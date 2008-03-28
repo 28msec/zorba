@@ -79,8 +79,8 @@ Module::Module(
 
 //-Module::
 
-void Module::accept(parsenode_visitor& v) const 
-{ 
+void Module::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -107,8 +107,8 @@ VersionDecl::VersionDecl(
 
 //-VersionDecl::
 
-void VersionDecl::accept(parsenode_visitor& v) const 
-{ 
+void VersionDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -148,8 +148,8 @@ MainModule::MainModule(
 
 //-MainModule::
 
-void MainModule::accept(parsenode_visitor& v) const 
-{ 
+void MainModule::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (prolog_h);
   ACCEPT (query_body_h);
@@ -161,7 +161,7 @@ void MainModule::accept(parsenode_visitor& v) const
 // -----------------
 LibraryModule::LibraryModule(
   const QueryLoc& _loc,
-  rchandle<ModuleDecl> _decl_h, 
+  rchandle<ModuleDecl> _decl_h,
   rchandle<Prolog> _prolog_h)
 :
   parsenode(_loc),
@@ -181,8 +181,8 @@ LibraryModule::LibraryModule(
 
 //-LibraryModule::
 
-void LibraryModule::accept(parsenode_visitor& v) const 
-{ 
+void LibraryModule::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (decl_h);
   ACCEPT (prolog_h);
@@ -206,8 +206,8 @@ ModuleDecl::ModuleDecl(
 
 //-ModuleDecl::
 
-void ModuleDecl::accept(parsenode_visitor& v) const 
-{ 
+void ModuleDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -237,8 +237,8 @@ Prolog::Prolog(
 
 //-Prolog::
 
-void Prolog::accept(parsenode_visitor& v) const 
-{ 
+void Prolog::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (sind_list_h);
   ACCEPT (vfo_list_h);
@@ -266,10 +266,10 @@ SIND_DeclList::SIND_DeclList(
 
 //-SIND_DeclList::
 
-void SIND_DeclList::accept(parsenode_visitor& v) const 
-{ 
+void SIND_DeclList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
-  
+
   for (vector<rchandle<parsenode> >::const_reverse_iterator it = sind_hv.rbegin();
        it!=sind_hv.rend(); ++it)
   {
@@ -291,10 +291,10 @@ VFO_DeclList::VFO_DeclList(
 
 //-VFO_DeclList::
 
-void VFO_DeclList::accept(parsenode_visitor& v) const 
-{ 
+void VFO_DeclList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
-  
+
   for (vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
        it!=vfo_hv.end(); ++it)
   {
@@ -333,8 +333,8 @@ NamespaceDecl::NamespaceDecl(
 }
 
 
-void NamespaceDecl::accept(parsenode_visitor& v) const 
-{ 
+void NamespaceDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -365,8 +365,8 @@ BoundarySpaceDecl::BoundarySpaceDecl(
 
 //-BoundarySpaceDecl::
 
-void BoundarySpaceDecl::accept(parsenode_visitor& v) const 
-{ 
+void BoundarySpaceDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -399,8 +399,8 @@ DefaultNamespaceDecl::DefaultNamespaceDecl(
 
 //-DefaultNamespaceDecl::
 
-void DefaultNamespaceDecl::accept(parsenode_visitor& v) const 
-{ 
+void DefaultNamespaceDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -430,8 +430,8 @@ OptionDecl::OptionDecl(
 
 //-OptionDecl::
 
-void OptionDecl::accept(parsenode_visitor& v) const 
-{ 
+void OptionDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //qname_h->accept(v);
   END_VISITOR ();
@@ -459,8 +459,8 @@ FTOptionDecl::FTOptionDecl(
 
 //-FTOptionDecl::
 
-void FTOptionDecl::accept(parsenode_visitor& v) const 
-{ 
+void FTOptionDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (match_option_h);
   END_VISITOR ();
@@ -492,8 +492,8 @@ OrderingModeDecl::OrderingModeDecl(
 
 //-OrderingModeDecl::
 
-void OrderingModeDecl::accept(parsenode_visitor& v) const 
-{ 
+void OrderingModeDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -524,8 +524,8 @@ EmptyOrderDecl::EmptyOrderDecl(
 
 //-EmptyOrderDecl::
 
-void EmptyOrderDecl::accept(parsenode_visitor& v) const 
-{ 
+void EmptyOrderDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -562,8 +562,8 @@ CopyNamespacesDecl::CopyNamespacesDecl(
 
 //-CopyNamespacesDecl::
 
-void CopyNamespacesDecl::accept(parsenode_visitor& v) const 
-{ 
+void CopyNamespacesDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -597,8 +597,8 @@ DefaultCollationDecl::DefaultCollationDecl(
 
 //-DefaultCollationDecl::
 
-void DefaultCollationDecl::accept(parsenode_visitor& v) const 
-{ 
+void DefaultCollationDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -625,8 +625,8 @@ BaseURIDecl::BaseURIDecl(
 
 //-BaseURIDecl::
 
-void BaseURIDecl::accept(parsenode_visitor& v) const 
-{ 
+void BaseURIDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -659,8 +659,8 @@ SchemaImport::SchemaImport(
 
 //-SchemaImport::
 
-void SchemaImport::accept(parsenode_visitor& v) const 
-{ 
+void SchemaImport::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (prefix_h);
   ACCEPT (at_list_h);
@@ -689,8 +689,8 @@ URILiteralList::URILiteralList(
 
 //-URILiteralList::
 
-void URILiteralList::accept(parsenode_visitor& v) const 
-{ 
+void URILiteralList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<string>::const_reverse_iterator it = uri_v.rbegin();
   for (; it!=uri_v.rend(); ++it) {
@@ -714,7 +714,7 @@ SchemaPrefix::SchemaPrefix(
 
 SchemaPrefix::SchemaPrefix(
   const QueryLoc& _loc,
-  std::string const& _prefix) 
+  std::string const& _prefix)
 :
   parsenode(_loc),
   prefix(_prefix),
@@ -725,8 +725,8 @@ SchemaPrefix::SchemaPrefix(
 
 //-SchemaPrefix::
 
-void SchemaPrefix::accept(parsenode_visitor& v) const 
-{ 
+void SchemaPrefix::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -760,8 +760,8 @@ ModuleImport::ModuleImport(
 
 //-ModuleImport::
 
-void ModuleImport::accept(parsenode_visitor& v) const 
-{ 
+void ModuleImport::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (uri_list_h);
   END_VISITOR ();
@@ -786,8 +786,8 @@ VarDecl::VarDecl(
 
 //-VarDecl::
 
-void VarDecl::accept(parsenode_visitor& v) const 
-{ 
+void VarDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (typedecl_h);
   ACCEPT (initexpr_h);
@@ -809,8 +809,8 @@ ConstructionDecl::ConstructionDecl(
 
 //-ConstructionDecl::
 
-void ConstructionDecl::accept(parsenode_visitor& v) const 
-{ 
+void ConstructionDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -838,8 +838,8 @@ FunctionDecl::FunctionDecl(
 
 //-FunctionDecl::
 
-void FunctionDecl::accept(parsenode_visitor& v) const 
-{ 
+void FunctionDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (paramlist_h);
   ACCEPT (return_type_h);
@@ -864,10 +864,10 @@ ParamList::ParamList(
 
 //-ParamList::
 
-void ParamList::accept(parsenode_visitor& v) const 
-{ 
+void ParamList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
-  
+
   for (vector<rchandle<Param> >::const_iterator it = param_hv.begin();
        it!=param_hv.end(); ++it)
   {
@@ -894,8 +894,8 @@ Param::Param(
 
 //-Param::
 
-void Param::accept(parsenode_visitor& v) const 
-{ 
+void Param::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (typedecl_h);
   END_VISITOR ();
@@ -916,8 +916,8 @@ EnclosedExpr::EnclosedExpr(
 
 //-EnclosedExpr::
 
-void EnclosedExpr::accept(parsenode_visitor& v) const 
-{ 
+void EnclosedExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -938,8 +938,8 @@ QueryBody::QueryBody(
 
 //-QueryBody::
 
-void QueryBody::accept(parsenode_visitor& v) const 
-{ 
+void QueryBody::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -958,8 +958,8 @@ Expr::Expr(
 
 //-Expr::
 
-void Expr::accept(parsenode_visitor& v) const 
-{ 
+void Expr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
   for (; it!=expr_hv.rend(); ++it) {
@@ -999,8 +999,8 @@ FLWORExpr::FLWORExpr(
 
 //-FLWORExpr::
 
-void FLWORExpr::accept(parsenode_visitor& v) const 
-{ 
+void FLWORExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (forlet_list_h);
   ACCEPT (where_h);
@@ -1022,8 +1022,8 @@ ForLetClauseList::ForLetClauseList(
 
 //-ForLetClauseList::
 
-void ForLetClauseList::accept(parsenode_visitor& v) const 
-{ 
+void ForLetClauseList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
   for (; it!=forlet_hv.end(); ++it) {
@@ -1052,8 +1052,8 @@ ForClause::ForClause(
 
 //-ForClause::
 
-void ForClause::accept(parsenode_visitor& v) const 
-{ 
+void ForClause::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (vardecl_list_h);
   END_VISITOR ();
@@ -1074,8 +1074,8 @@ VarInDeclList::VarInDeclList(
 
 //-VarInDeclList::
 
-void VarInDeclList::accept(parsenode_visitor& v) const 
-{ 
+void VarInDeclList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
   for (; it!=vardecl_hv.end(); ++it) {
@@ -1108,8 +1108,8 @@ VarInDecl::VarInDecl(
 
 //-VarInDecl::
 
-void VarInDecl::accept(parsenode_visitor& v) const 
-{ 
+void VarInDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (typedecl_h);
   ACCEPT (posvar_h);
@@ -1133,8 +1133,8 @@ PositionalVar::PositionalVar(
 
 //-PositionalVar::
 
-void PositionalVar::accept(parsenode_visitor& v) const 
-{ 
+void PositionalVar::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -1154,8 +1154,8 @@ LetClause::LetClause(
 
 //-LetClause::
 
-void LetClause::accept(parsenode_visitor& v) const 
-{ 
+void LetClause::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (vardecl_list_h);
   END_VISITOR ();
@@ -1176,8 +1176,8 @@ VarGetsDeclList::VarGetsDeclList(
 
 //-VarGetsDeclList::
 
-void VarGetsDeclList::accept(parsenode_visitor& v) const 
-{ 
+void VarGetsDeclList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
   for (; it!=vardecl_hv.end(); ++it) {
@@ -1208,8 +1208,8 @@ VarGetsDecl::VarGetsDecl(
 
 //-VarGetsDecl::
 
-void VarGetsDecl::accept(parsenode_visitor& v) const 
-{ 
+void VarGetsDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   if (typedecl_h != 0)
           typedecl_h->accept(v);
@@ -1234,8 +1234,8 @@ FTScoreVar::FTScoreVar(
 
 //-FTScoreVar::
 
-void FTScoreVar::accept(parsenode_visitor& v) const 
-{ 
+void FTScoreVar::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -1255,8 +1255,8 @@ WhereClause::WhereClause(
 
 //-WhereClause::
 
-void WhereClause::accept(parsenode_visitor& v) const 
-{ 
+void WhereClause::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (predicate_h);
   END_VISITOR ();
@@ -1279,8 +1279,8 @@ OrderByClause::OrderByClause(
 
 //-OrderByClause::
 
-void OrderByClause::accept(parsenode_visitor& v) const 
-{ 
+void OrderByClause::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (spec_list_h);
   END_VISITOR ();
@@ -1299,8 +1299,8 @@ OrderSpecList::OrderSpecList(
 
 //-OrderSpecList::
 
-void OrderSpecList::accept(parsenode_visitor& v) const 
-{ 
+void OrderSpecList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<OrderSpec> >::const_reverse_iterator it = spec_hv.rbegin();
   for (; it!=spec_hv.rend(); ++it) {
@@ -1327,8 +1327,8 @@ OrderSpec::OrderSpec(
 
 //-OrderSpec::
 
-void OrderSpec::accept(parsenode_visitor& v) const 
-{ 
+void OrderSpec::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (spec_h);
   ACCEPT (modifier_h);
@@ -1354,8 +1354,8 @@ OrderModifier::OrderModifier(
 
 //-OrderModifier::
 
-void OrderModifier::accept(parsenode_visitor& v) const 
-{ 
+void OrderModifier::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (dir_spec_h);
   ACCEPT (empty_spec_h);
@@ -1375,13 +1375,13 @@ OrderDirSpec::OrderDirSpec(
 {
 }
 
-  
+
 
 
 //-OrderDirSpec::
 
-void OrderDirSpec::accept(parsenode_visitor& v) const 
-{ 
+void OrderDirSpec::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -1401,8 +1401,8 @@ OrderEmptySpec::OrderEmptySpec(
 
 //-OrderEmptySpec::
 
-void OrderEmptySpec::accept(parsenode_visitor& v) const 
-{ 
+void OrderEmptySpec::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -1422,14 +1422,14 @@ OrderCollationSpec::OrderCollationSpec(
 
 //-OrderCollationSpec::
 
-void OrderCollationSpec::accept(parsenode_visitor& v) const 
-{ 
+void OrderCollationSpec::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
 
 
-// [42] QuantifiedExpr     
+// [42] QuantifiedExpr
 // -------------------
 QuantifiedExpr::QuantifiedExpr(
   const QueryLoc& _loc,
@@ -1447,8 +1447,8 @@ QuantifiedExpr::QuantifiedExpr(
 
 //-QuantifiedExpr::
 
-void QuantifiedExpr::accept(parsenode_visitor& v) const 
-{ 
+void QuantifiedExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (decl_list_h);
   ACCEPT (expr_h);
@@ -1468,8 +1468,8 @@ QVarInDeclList::QVarInDeclList(
 
 //-QVarInDeclList::
 
-void QVarInDeclList::accept(parsenode_visitor& v) const 
-{ 
+void QVarInDeclList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   for_each (qvar_decl_hv.begin (), qvar_decl_hv.end (), visitor_functor (v));
   END_VISITOR ();
@@ -1506,8 +1506,8 @@ QVarInDecl::QVarInDecl(
 
 //-QVarInDecl::
 
-void QVarInDecl::accept(parsenode_visitor& v) const 
-{ 
+void QVarInDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (val_h);
   END_VISITOR ();
@@ -1548,8 +1548,8 @@ TypeswitchExpr::TypeswitchExpr(
 
 //-TypeswitchExpr::
 
-void TypeswitchExpr::accept(parsenode_visitor& v) const 
-{ 
+void TypeswitchExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT_CHK (switch_expr_h);
   ACCEPT_CHK (default_clause_h);
@@ -1571,8 +1571,8 @@ CaseClauseList::CaseClauseList(
 
 //-CaseClauseList::
 
-void CaseClauseList::accept(parsenode_visitor& v) const 
-{ 
+void CaseClauseList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
   for (; it!=clause_hv.rend(); ++it) {
@@ -1613,8 +1613,8 @@ CaseClause::CaseClause(
 
 //-CaseClause::
 
-void CaseClause::accept(parsenode_visitor& v) const 
-{ 
+void CaseClause::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (type_h);
   ACCEPT (val_h);
@@ -1640,8 +1640,8 @@ IfExpr::IfExpr(
 
 //-IfExpr::
 
-void IfExpr::accept(parsenode_visitor& v) const 
-{ 
+void IfExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (cond_expr_h);
   ACCEPT (then_expr_h);
@@ -1666,8 +1666,8 @@ OrExpr::OrExpr(
 
 //-OrExpr::
 
-void OrExpr::accept(parsenode_visitor& v) const 
-{ 
+void OrExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (or_expr_h);
   ACCEPT (and_expr_h);
@@ -1691,8 +1691,8 @@ AndExpr::AndExpr(
 
 //-AndExpr::
 
-void AndExpr::accept(parsenode_visitor& v) const 
-{ 
+void AndExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (and_expr_h);
   ACCEPT (comp_expr_h);
@@ -1750,8 +1750,8 @@ ComparisonExpr::ComparisonExpr(
 
 //-ComparisonExpr::
 
-void ComparisonExpr::accept(parsenode_visitor& v) const 
-{ 
+void ComparisonExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (gencomp_h);
   ACCEPT (nodecomp_h);
@@ -1780,8 +1780,8 @@ FTContainsExpr::FTContainsExpr(
 
 //-FTContainsExpr::
 
-void FTContainsExpr::accept(parsenode_visitor& v) const 
-{ 
+void FTContainsExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (range_expr_h);
   ACCEPT (ftselect_h);
@@ -1806,8 +1806,8 @@ RangeExpr::RangeExpr(
 
 //-RangeExpr::
 
-void RangeExpr::accept(parsenode_visitor& v) const 
-{ 
+void RangeExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (from_expr_h);
   ACCEPT (to_expr_h);
@@ -1833,8 +1833,8 @@ AdditiveExpr::AdditiveExpr(
 
 //-AdditiveExpr::
 
-void AdditiveExpr::accept(parsenode_visitor& v) const 
-{ 
+void AdditiveExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (add_expr_h);
   ACCEPT (mult_expr_h);
@@ -1860,8 +1860,8 @@ MultiplicativeExpr::MultiplicativeExpr(
 
 //-MultiplicativeExpr::
 
-void MultiplicativeExpr::accept(parsenode_visitor& v) const 
-{ 
+void MultiplicativeExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (mult_expr_h);
   ACCEPT (union_expr_h);
@@ -1885,8 +1885,8 @@ UnionExpr::UnionExpr(
 
 //-UnionExpr::
 
-void UnionExpr::accept(parsenode_visitor& v) const 
-{ 
+void UnionExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (union_expr_h);
   ACCEPT (intex_expr_h);
@@ -1912,8 +1912,8 @@ IntersectExceptExpr::IntersectExceptExpr(
 
 //-IntersectExceptExpr::
 
-void IntersectExceptExpr::accept(parsenode_visitor& v) const 
-{ 
+void IntersectExceptExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (intex_expr_h);
   ACCEPT (instof_expr_h);
@@ -1937,8 +1937,8 @@ InstanceofExpr::InstanceofExpr(
 
 //-InstanceofExpr::
 
-void InstanceofExpr::accept(parsenode_visitor& v) const 
-{ 
+void InstanceofExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (treat_expr_h);
   ACCEPT (seqtype_h);
@@ -1962,8 +1962,8 @@ TreatExpr::TreatExpr(
 
 //-TreatExpr::
 
-void TreatExpr::accept(parsenode_visitor& v) const 
-{ 
+void TreatExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (castable_expr_h);
   ACCEPT (seqtype_h);
@@ -1987,8 +1987,8 @@ CastableExpr::CastableExpr(
 
 //-CastableExpr::
 
-void CastableExpr::accept(parsenode_visitor& v) const 
-{ 
+void CastableExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (cast_expr_h);
   ACCEPT (singletype_h);
@@ -1996,7 +1996,7 @@ void CastableExpr::accept(parsenode_visitor& v) const
 }
 
 
-// [57] CastExpr     
+// [57] CastExpr
 // -------------
 CastExpr::CastExpr(
   const QueryLoc& _loc,
@@ -2012,8 +2012,8 @@ CastExpr::CastExpr(
 
 //-CastExpr::
 
-void CastExpr::accept(parsenode_visitor& v) const 
-{ 
+void CastExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (unary_expr_h);
   ACCEPT (singletype_h);
@@ -2037,8 +2037,8 @@ UnaryExpr::UnaryExpr(
 
 //-UnaryExpr::
 
-void UnaryExpr::accept(parsenode_visitor& v) const 
-{ 
+void UnaryExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (signlist_h);
   ACCEPT (value_expr_h);
@@ -2060,8 +2060,8 @@ SignList::SignList(
 
 //-SignList::
 
-void SignList::accept(parsenode_visitor& v) const 
-{ 
+void SignList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2085,8 +2085,8 @@ GeneralComp::GeneralComp(
 
 //-GeneralComp::
 
-void GeneralComp::accept(parsenode_visitor& v) const 
-{ 
+void GeneralComp::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2106,8 +2106,8 @@ ValueComp::ValueComp(
 
 //-ValueComp::
 
-void ValueComp::accept(parsenode_visitor& v) const 
-{ 
+void ValueComp::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2127,8 +2127,8 @@ NodeComp::NodeComp(
 
 //-NodeComp::
 
-void NodeComp::accept(parsenode_visitor& v) const 
-{ 
+void NodeComp::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2150,8 +2150,8 @@ ValidateExpr::ValidateExpr(
 
 //-ValidateExpr::
 
-void ValidateExpr::accept(parsenode_visitor& v) const 
-{ 
+void ValidateExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -2174,8 +2174,8 @@ ExtensionExpr::ExtensionExpr(
 
 //-ExtensionExpr::
 
-void ExtensionExpr::accept(parsenode_visitor& v) const 
-{ 
+void ExtensionExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (pragma_list_h);
   ACCEPT (expr_h);
@@ -2195,8 +2195,8 @@ PragmaList::PragmaList(
 
 //-PragmaList::
 
-void PragmaList::accept(parsenode_visitor& v) const 
-{ 
+void PragmaList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<Pragma> >::const_reverse_iterator it = pragma_hv.rbegin();
   for (; it!=pragma_hv.rend(); ++it) {
@@ -2223,8 +2223,8 @@ Pragma::Pragma(
 
 //-Pragma::
 
-void Pragma::accept(parsenode_visitor& v) const 
-{ 
+void Pragma::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //name->accept(v);
   END_VISITOR ();
@@ -2255,8 +2255,8 @@ PathExpr::PathExpr(
 }
 
 
-void PathExpr::accept(parsenode_visitor& v) const 
-{ 
+void PathExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (relpath_expr_h);
   END_VISITOR ();
@@ -2267,7 +2267,7 @@ void PathExpr::accept(parsenode_visitor& v) const
 
   [69] RelativePathExpr ::= StepExpr |
                             StepExpr  SLASH  RelativePathExpr |
-                            StepExpr  SLASH_SLASH  RelativePathExpr 
+                            StepExpr  SLASH_SLASH  RelativePathExpr
 
 ********************************************************************************/
 RelativePathExpr::RelativePathExpr(
@@ -2284,7 +2284,7 @@ RelativePathExpr::RelativePathExpr(
 }
 
 
-void RelativePathExpr::accept(parsenode_visitor& v) const 
+void RelativePathExpr::accept(parsenode_visitor& v) const
 {
   void* visitor_state = v.begin_visit(*this);
 
@@ -2351,8 +2351,8 @@ AxisStep::AxisStep(
 
 
 
-void AxisStep::accept(parsenode_visitor& v) const 
-{ 
+void AxisStep::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   if (forward_step_h!=NULL) forward_step_h->accept(v);
   if (reverse_step_h!=NULL) reverse_step_h->accept(v);
@@ -2394,8 +2394,8 @@ ForwardStep::ForwardStep(
 
 
 
-void ForwardStep::accept(parsenode_visitor& v) const 
-{ 
+void ForwardStep::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   if (forward_axis_h!=NULL) forward_axis_h->accept(v);
   if (node_test_h!=NULL) node_test_h->accept(v);
@@ -2421,8 +2421,8 @@ ForwardAxis::ForwardAxis(
 
 
 
-void ForwardAxis::accept(parsenode_visitor& v) const 
-{ 
+void ForwardAxis::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2458,8 +2458,8 @@ AbbrevForwardStep::AbbrevForwardStep(
 
 
 
-void AbbrevForwardStep::accept(parsenode_visitor& v) const 
-{ 
+void AbbrevForwardStep::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   if (node_test_h!=NULL) node_test_h->accept(v);
   END_VISITOR ();
@@ -2496,8 +2496,8 @@ ReverseStep::ReverseStep(
 
 
 
-void ReverseStep::accept(parsenode_visitor& v) const 
-{ 
+void ReverseStep::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   if (axis_h!=NULL) axis_h->accept(v);
   if (node_test_h!=NULL) node_test_h->accept(v);
@@ -2522,8 +2522,8 @@ ReverseAxis::ReverseAxis(
 
 
 
-void ReverseAxis::accept(parsenode_visitor& v) const 
-{ 
+void ReverseAxis::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2568,8 +2568,8 @@ NameTest::NameTest(const QueryLoc& loc, rchandle<Wildcard> wild)
 
 
 
-void NameTest::accept(parsenode_visitor& v) const 
-{ 
+void NameTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2577,7 +2577,7 @@ void NameTest::accept(parsenode_visitor& v) const
 
 /*******************************************************************************
 
-  [80] Wildcard ::= STAR | ELEM_WILDCARD | PREFIX_WILDCARD 
+  [80] Wildcard ::= STAR | ELEM_WILDCARD | PREFIX_WILDCARD
 
 ********************************************************************************/
 Wildcard::Wildcard(
@@ -2596,8 +2596,8 @@ Wildcard::Wildcard(
 
 
 
-void Wildcard::accept(parsenode_visitor& v) const 
-{ 
+void Wildcard::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2619,8 +2619,8 @@ FilterExpr::FilterExpr(
 
 //-FilterExpr::
 
-void FilterExpr::accept(parsenode_visitor& v) const 
-{ 
+void FilterExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (primary_h);
   ACCEPT (pred_list_h);
@@ -2640,8 +2640,8 @@ PredicateList::PredicateList(
 
 //-PredicateList::
 
-void PredicateList::accept(parsenode_visitor& v) const 
-{ 
+void PredicateList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
   for (; it!=pred_hv.rend(); ++it) {
@@ -2699,7 +2699,7 @@ NumericLiteral::NumericLiteral(
 
 string NumericLiteral::toString () const {
   switch (type) {
-  case ParseConstants::num_integer: 
+  case ParseConstants::num_integer:
   case ParseConstants::num_decimal:
   case ParseConstants::num_double:
     return to_string(theValue);
@@ -2711,8 +2711,8 @@ string NumericLiteral::toString () const {
 
 //-NumericLiteral::
 
-void NumericLiteral::accept(parsenode_visitor& v) const 
-{ 
+void NumericLiteral::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2732,8 +2732,8 @@ VarRef::VarRef(
 
 //-VarRef::
 
-void VarRef::accept(parsenode_visitor& v) const 
-{ 
+void VarRef::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2757,8 +2757,8 @@ ParenthesizedExpr::ParenthesizedExpr(
 
 //-ParenthesizedExpr::
 
-void ParenthesizedExpr::accept(parsenode_visitor& v) const 
-{ 
+void ParenthesizedExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -2777,8 +2777,8 @@ ContextItemExpr::ContextItemExpr(
 
 //-ContextItemExpr::
 
-void ContextItemExpr::accept(parsenode_visitor& v) const 
-{ 
+void ContextItemExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -2799,8 +2799,8 @@ OrderedExpr::OrderedExpr(
 
 //-OrderedExpr::
 
-void OrderedExpr::accept(parsenode_visitor& v) const 
-{ 
+void OrderedExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -2821,8 +2821,8 @@ UnorderedExpr::UnorderedExpr(
 
 //-UnorderedExpr::
 
-void UnorderedExpr::accept(parsenode_visitor& v) const 
-{ 
+void UnorderedExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -2846,8 +2846,8 @@ FunctionCall::FunctionCall(
 
 //-FunctionCall::
 
-void FunctionCall::accept(parsenode_visitor& v) const 
-{ 
+void FunctionCall::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //fname_h->accept(v);
   ACCEPT (arg_list_h);
@@ -2867,8 +2867,8 @@ ArgList::ArgList(
 
 //-ArgList::
 
-void ArgList::accept(parsenode_visitor& v) const 
-{ 
+void ArgList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
   for (; it!=arg_hv.end(); ++it) {
@@ -2907,8 +2907,8 @@ DirElemConstructor::DirElemConstructor(
 
 //-DirElemConstructor::
 
-void DirElemConstructor::accept(parsenode_visitor& v) const 
-{ 
+void DirElemConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //open_name_h->accept(v);
   //close_name_h->accept(v);
@@ -2933,8 +2933,8 @@ DirElemContentList::DirElemContentList(
 
 //-DirElemContentList::
 
-void DirElemContentList::accept(parsenode_visitor& v) const 
-{ 
+void DirElemContentList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<DirElemContent> >::const_reverse_iterator it = dir_content_hv.rbegin();
   const DirElemContent* lPrev = 0;
@@ -2968,8 +2968,8 @@ DirAttributeList::DirAttributeList(
 }
 
 
-void DirAttributeList::accept(parsenode_visitor& v) const 
-{ 
+void DirAttributeList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<DirAttr> >::const_iterator it = theAttributes.begin();
   for (; it != theAttributes.end(); ++it)
@@ -2982,7 +2982,7 @@ void DirAttributeList::accept(parsenode_visitor& v) const
 
 
 // [97a] DirAttr
-  
+
 DirAttr::DirAttr(
   const QueryLoc& loc,
   rchandle<QName> name,
@@ -2995,8 +2995,8 @@ DirAttr::DirAttr(
 }
 
 
-void DirAttr::accept(parsenode_visitor& v) const 
-{ 
+void DirAttr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT(theValue);
   END_VISITOR ();
@@ -3028,8 +3028,8 @@ DirAttributeValue::DirAttributeValue(
 
 //-DirAttributeValue::
 
-void DirAttributeValue::accept(parsenode_visitor& v) const 
-{ 
+void DirAttributeValue::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (quot_attr_content_h);
   ACCEPT (apos_attr_content_h);
@@ -3049,8 +3049,8 @@ QuoteAttrContentList::QuoteAttrContentList(
 
 //-QuoteAttrContentList::
 
-void QuoteAttrContentList::accept(parsenode_visitor& v) const 
-{ 
+void QuoteAttrContentList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
     quot_atval_content_hv.rbegin();
@@ -3074,8 +3074,8 @@ AposAttrContentList::AposAttrContentList(
 
 //-AposAttrContentList::
 
-void AposAttrContentList::accept(parsenode_visitor& v) const 
-{ 
+void AposAttrContentList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
     apos_atval_content_hv.rbegin();
@@ -3112,8 +3112,8 @@ QuoteAttrValueContent::QuoteAttrValueContent(
 
 //-QuoteAttrValueContent::
 
-void QuoteAttrValueContent::accept(parsenode_visitor& v) const 
-{ 
+void QuoteAttrValueContent::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (common_content_h);
   END_VISITOR ();
@@ -3145,8 +3145,8 @@ AposAttrValueContent::AposAttrValueContent(
 
 //-AposAttrValueContent::
 
-void AposAttrValueContent::accept(parsenode_visitor& v) const 
-{ 
+void AposAttrValueContent::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3193,14 +3193,14 @@ DirElemContent::DirElemContent(
 
 //-DirElemContent::
 
-void DirElemContent::accept(parsenode_visitor& v) const 
-{ 
+void DirElemContent::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
 
   ACCEPT (direct_cons_h);
 
   ACCEPT (cdata_h);
-    
+
   ACCEPT (common_content_h);
   END_VISITOR ();
 }
@@ -3245,8 +3245,8 @@ CommonContent::CommonContent(
 
 //-CommonContent::
 
-void CommonContent::accept(parsenode_visitor& v) const 
-{ 
+void CommonContent::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -3261,14 +3261,14 @@ DirCommentConstructor::DirCommentConstructor(
 :
   exprnode(_loc),
   comment(_comment)
-{  
+{
 }
 
 
 //-DirCommentConstructor::
 
-void DirCommentConstructor::accept(parsenode_visitor& v) const 
-{ 
+void DirCommentConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3305,8 +3305,8 @@ DirPIConstructor::DirPIConstructor(
 
 //-DirPIConstructor::
 
-void DirPIConstructor::accept(parsenode_visitor& v) const 
-{ 
+void DirPIConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3331,8 +3331,8 @@ CDataSection::CDataSection(
 
 //-CDataSection::
 
-void CDataSection::accept(parsenode_visitor& v) const 
-{ 
+void CDataSection::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3359,8 +3359,8 @@ CompDocConstructor::CompDocConstructor(
 }
 
 
-void CompDocConstructor::accept(parsenode_visitor& v) const 
-{ 
+void CompDocConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -3381,8 +3381,8 @@ CompElemConstructor::CompElemConstructor(
 }
 
 
-void CompElemConstructor::accept(parsenode_visitor& v) const 
-{ 
+void CompElemConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR();
   if (dynamic_cast<QName*>(qname_expr_h.getp()) == NULL)
     ACCEPT(qname_expr_h);
@@ -3405,8 +3405,8 @@ CompAttrConstructor::CompAttrConstructor(
 }
 
 
-void CompAttrConstructor::accept(parsenode_visitor& v) const 
-{ 
+void CompAttrConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR();
   if (dynamic_cast<QName*>(qname_expr_h.getp()) == NULL)
     ACCEPT(qname_expr_h);
@@ -3427,8 +3427,8 @@ CompTextConstructor::CompTextConstructor(
 }
 
 
-void CompTextConstructor::accept(parsenode_visitor& v) const 
-{ 
+void CompTextConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (text_expr_h);
   END_VISITOR ();
@@ -3449,8 +3449,8 @@ CompCommentConstructor::CompCommentConstructor(
 
 //-CompCommentConstructor::
 
-void CompCommentConstructor::accept(parsenode_visitor& v) const 
-{ 
+void CompCommentConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (comment_expr_h);
   END_VISITOR ();
@@ -3486,8 +3486,8 @@ CompPIConstructor::CompPIConstructor(
 
 //-CompPIConstructor::
 
-void CompPIConstructor::accept(parsenode_visitor& v) const 
-{ 
+void CompPIConstructor::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (target_expr_h);
   ACCEPT (content_expr_h);
@@ -3511,8 +3511,8 @@ SingleType::SingleType(
 
 //-SingleType::
 
-void SingleType::accept(parsenode_visitor& v) const 
-{ 
+void SingleType::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (atomic_type_h);
   END_VISITOR ();
@@ -3533,8 +3533,8 @@ TypeDeclaration::TypeDeclaration(
 
 //-TypeDeclaration::
 
-void TypeDeclaration::accept(parsenode_visitor& v) const 
-{ 
+void TypeDeclaration::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (seqtype_h);
   END_VISITOR ();
@@ -3557,8 +3557,8 @@ SequenceType::SequenceType(
 
 //-SequenceType::
 
-void SequenceType::accept(parsenode_visitor& v) const 
-{ 
+void SequenceType::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (itemtype_h);
   ACCEPT (occur_h);
@@ -3580,8 +3580,8 @@ OccurrenceIndicator::OccurrenceIndicator(
 
 //-OccurrenceIndicator::
 
-void OccurrenceIndicator::accept(parsenode_visitor& v) const 
-{ 
+void OccurrenceIndicator::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3609,8 +3609,8 @@ ItemType::ItemType(
 
 //-ItemType::
 
-void ItemType::accept(parsenode_visitor& v) const 
-{ 
+void ItemType::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3630,8 +3630,8 @@ AtomicType::AtomicType(
 
 //-AtomicType::
 
-void AtomicType::accept(parsenode_visitor& v) const 
-{ 
+void AtomicType::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //qname_h->accept(v);
   END_VISITOR ();
@@ -3654,8 +3654,8 @@ AnyKindTest::AnyKindTest(
 
 //-AnyKindTest::
 
-void AnyKindTest::accept(parsenode_visitor& v) const 
-{ 
+void AnyKindTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3695,8 +3695,8 @@ DocumentTest::DocumentTest(
 
 //-DocumentTest::
 
-void DocumentTest::accept(parsenode_visitor& v) const 
-{ 
+void DocumentTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3714,8 +3714,8 @@ TextTest::TextTest(
 
 //-TextTest::
 
-void TextTest::accept(parsenode_visitor& v) const 
-{ 
+void TextTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3733,13 +3733,13 @@ CommentTest::CommentTest(
 
 //-CommentTest::
 
-void CommentTest::accept(parsenode_visitor& v) const 
-{ 
+void CommentTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
 
- 
+
 
 // [128] PITest
 
@@ -3753,8 +3753,8 @@ PITest::PITest(
 }
 
 
-void PITest::accept(parsenode_visitor& v) const 
-{ 
+void PITest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3774,8 +3774,8 @@ AttributeTest::AttributeTest(
 }
 
 
-void AttributeTest::accept(parsenode_visitor& v) const 
-{ 
+void AttributeTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR();
   END_VISITOR();
 }
@@ -3798,8 +3798,8 @@ SchemaAttributeTest::SchemaAttributeTest(
 
 //-SchemaAttributeTest::
 
-void SchemaAttributeTest::accept(parsenode_visitor& v) const 
-{ 
+void SchemaAttributeTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //if (attr_h!=NULL) attr_h->accept(v);
   END_VISITOR ();
@@ -3828,8 +3828,8 @@ ElementTest::ElementTest(
 }
 
 
-void ElementTest::accept(parsenode_visitor& v) const 
-{ 
+void ElementTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3849,8 +3849,8 @@ SchemaElementTest::SchemaElementTest(
 
 //-SchemaElementTest::
 
-void SchemaElementTest::accept(parsenode_visitor& v) const 
-{ 
+void SchemaElementTest::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //if (elem_h!=NULL) elem_h->accept(v);
   END_VISITOR ();
@@ -3893,8 +3893,8 @@ TypeName::TypeName(
 
 //-TypeName::
 
-void TypeName::accept(parsenode_visitor& v) const 
-{ 
+void TypeName::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //if (qname_h!=NULL) qname_h->accept(v);
   END_VISITOR ();
@@ -3903,7 +3903,7 @@ void TypeName::accept(parsenode_visitor& v) const
 
 /* lexical rules, see xquery.l */
 /* --------------------------- */
-// [140] URILiteral 
+// [140] URILiteral
 // [141] IntegerLiteral
 // [142] DecimalLiteral
 // [143] DoubleLiteral
@@ -3923,8 +3923,8 @@ StringLiteral::StringLiteral(
 
 //-StringLiteral::
 
-void StringLiteral::accept(parsenode_visitor& v) const 
-{ 
+void StringLiteral::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -3977,7 +3977,7 @@ string QName::get_prefix() const
 
 //-QName::
 
-void QName::accept(parsenode_visitor& v) const 
+void QName::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   END_VISITOR ();
@@ -4005,8 +4005,8 @@ RevalidationDecl::RevalidationDecl(
 
 //-RevalidationDecl::
 
-void RevalidationDecl::accept(parsenode_visitor& v) const 
-{ 
+void RevalidationDecl::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   //qname_h->accept(v);
   END_VISITOR ();
@@ -4030,8 +4030,8 @@ InsertExpr::InsertExpr(
 
 //-InsertExpr::
 
-void InsertExpr::accept(parsenode_visitor& v) const 
-{ 
+void InsertExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT(theSourceExpr);
   ACCEPT(theTargetExpr);
@@ -4052,8 +4052,8 @@ DeleteExpr::DeleteExpr(
 
 //-DeleteExpr::
 
-void DeleteExpr::accept(parsenode_visitor& v) const 
-{ 
+void DeleteExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (theTargetExpr);
   END_VISITOR ();
@@ -4078,8 +4078,8 @@ ReplaceExpr::ReplaceExpr(
 
 //-ReplaceExpr::
 
-void ReplaceExpr::accept(parsenode_visitor& v) const 
-{ 
+void ReplaceExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (theTargetExpr);
   ACCEPT (theReplaceExpr);
@@ -4103,8 +4103,8 @@ RenameExpr::RenameExpr(
 
 //-RenameExpr::
 
-void RenameExpr::accept(parsenode_visitor& v) const 
-{ 
+void RenameExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (theTargetExpr);
   ACCEPT (theNameExpr);
@@ -4143,8 +4143,8 @@ TransformExpr::TransformExpr(
 
 //-TransformExpr::
 
-void TransformExpr::accept(parsenode_visitor& v) const 
-{ 
+void TransformExpr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (varname_list_h);
   ACCEPT (source_expr_h);
@@ -4165,11 +4165,12 @@ VarNameList::VarNameList(
 
 //-VarNameList::
 
-void VarNameList::accept(parsenode_visitor& v) const 
-{ 
+void VarNameList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
-  vector<rchandle<VarBinding> >::const_reverse_iterator it = varbinding_hv.rbegin();
-  for (; it!=varbinding_hv.rend(); ++it) {
+  for (vector<rchandle<VarBinding> >::const_reverse_iterator it = varbinding_hv.rbegin();
+       it!=varbinding_hv.rend(); ++it)
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -4193,8 +4194,8 @@ VarBinding::VarBinding(
 
 //-VarBinding::
 
-void VarBinding::accept(parsenode_visitor& v) const 
-{ 
+void VarBinding::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (val_h);
   END_VISITOR ();
@@ -4259,8 +4260,8 @@ FTSelection::FTSelection(
 
 //-FTSelection::
 
-void FTSelection::accept(parsenode_visitor& v) const 
-{ 
+void FTSelection::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (ftor_h);
   ACCEPT (option_list_h);
@@ -4281,8 +4282,8 @@ FTMatchOptionProximityList::FTMatchOptionProximityList(
 
 //-FTMatchOptionProximityList::
 
-void FTMatchOptionProximityList::accept(parsenode_visitor& v) const 
-{ 
+void FTMatchOptionProximityList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<FTMatchOptionProximity> >::const_reverse_iterator it =
     opt_prox_hv.rbegin();
@@ -4328,8 +4329,8 @@ FTMatchOptionProximity::FTMatchOptionProximity(
 
 //-FTMatchOptionProximity::
 
-void FTMatchOptionProximity::accept(parsenode_visitor& v) const 
-{ 
+void FTMatchOptionProximity::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (opt_h);
   END_VISITOR ();
@@ -4352,8 +4353,8 @@ FTOr::FTOr(
 
 //-FTOr::
 
-void FTOr::accept(parsenode_visitor& v) const 
-{ 
+void FTOr::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (ftor_h);
   ACCEPT (ftand_h);
@@ -4377,8 +4378,8 @@ FTAnd::FTAnd(
 
 //-FTAnd::
 
-void FTAnd::accept(parsenode_visitor& v) const 
-{ 
+void FTAnd::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (ftand_h);
   ACCEPT (ftmild_not_h);
@@ -4402,8 +4403,8 @@ FTMildnot::FTMildnot(
 
 //-FTMildnot::
 
-void FTMildnot::accept(parsenode_visitor& v) const 
-{ 
+void FTMildnot::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (ftmild_not_h);
   ACCEPT (ftunary_not_h);
@@ -4427,8 +4428,8 @@ FTUnaryNot::FTUnaryNot(
 
 //-FTUnaryNot::
 
-void FTUnaryNot::accept(parsenode_visitor& v) const 
-{ 
+void FTUnaryNot::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (words_selection_h);
   END_VISITOR ();
@@ -4453,8 +4454,8 @@ FTWordsSelection::FTWordsSelection(
 
 //-FTWordsSelection::
 
-void FTWordsSelection::accept(parsenode_visitor& v) const 
-{ 
+void FTWordsSelection::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (words_h);
   ACCEPT (times_h);
@@ -4479,8 +4480,8 @@ FTWords::FTWords(
 
 //-FTWords::
 
-void FTWords::accept(parsenode_visitor& v) const 
-{ 
+void FTWords::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (words_val_h);
   ACCEPT (any_all_option_h);
@@ -4504,8 +4505,8 @@ FTWordsValue::FTWordsValue(
 
 //-FTWordsValue::
 
-void FTWordsValue::accept(parsenode_visitor& v) const 
-{ 
+void FTWordsValue::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (lit_h);
   ACCEPT (expr_h);
@@ -4525,8 +4526,8 @@ FTProximity::FTProximity(
 
 //-FTProximity::
 
-void FTProximity::accept(parsenode_visitor& v) const 
-{ 
+void FTProximity::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4544,14 +4545,14 @@ FTOrderedIndicator::FTOrderedIndicator(
 
 //-FTOrderedIndicator::
 
-void FTOrderedIndicator::accept(parsenode_visitor& v) const 
-{ 
+void FTOrderedIndicator::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
 
 
-// [354] FTMatchOption  
+// [354] FTMatchOption
 // -------------------
 FTMatchOption::FTMatchOption(
   const QueryLoc& _loc)
@@ -4563,8 +4564,8 @@ FTMatchOption::FTMatchOption(
 
 //-FTMatchOption::
 
-void FTMatchOption::accept(parsenode_visitor& v) const 
-{ 
+void FTMatchOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4584,8 +4585,8 @@ FTCaseOption::FTCaseOption(
 
 //-FTCaseOption::
 
-void FTCaseOption::accept(parsenode_visitor& v) const 
-{ 
+void FTCaseOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4605,8 +4606,8 @@ FTDiacriticsOption::FTDiacriticsOption(
 
 //-FTDiacriticsOption::
 
-void FTDiacriticsOption::accept(parsenode_visitor& v) const 
-{ 
+void FTDiacriticsOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4626,8 +4627,8 @@ FTStemOption::FTStemOption(
 
 //-FTStemOption::
 
-void FTStemOption::accept(parsenode_visitor& v) const 
-{ 
+void FTStemOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4653,8 +4654,8 @@ FTThesaurusOption::FTThesaurusOption(
 
 //-FTThesaurusOption::
 
-void FTThesaurusOption::accept(parsenode_visitor& v) const 
-{ 
+void FTThesaurusOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (thesaurusid_h);
   ACCEPT (thesaurus_list_h);
@@ -4674,8 +4675,8 @@ FTThesaurusList::FTThesaurusList(
 
 //-FTThesaurusList::
 
-void FTThesaurusList::accept(parsenode_visitor& v) const 
-{ 
+void FTThesaurusList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<FTThesaurusID> >::const_reverse_iterator it = thesaurus_hv.rbegin();
   for (; it!=thesaurus_hv.rend(); ++it) {
@@ -4704,8 +4705,8 @@ FTThesaurusID::FTThesaurusID(
 
 //-FTThesaurusID::
 
-void FTThesaurusID::accept(parsenode_visitor& v) const 
-{ 
+void FTThesaurusID::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (levels_h);
   END_VISITOR ();
@@ -4730,8 +4731,8 @@ FTStopwordOption::FTStopwordOption(
 
 //-FTStopwordOption::
 
-void FTStopwordOption::accept(parsenode_visitor& v) const 
-{ 
+void FTStopwordOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (refor_list_h);
   ACCEPT (incl_excl_list_h);
@@ -4751,8 +4752,8 @@ FTInclExclStringLiteralList::FTInclExclStringLiteralList(
 
 //-FTInclExclStringLiteralList::
 
-void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const 
-{ 
+void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<rchandle<FTInclExclStringLiteral> >::const_reverse_iterator it =
     incl_excl_lit_hv.rbegin();
@@ -4780,8 +4781,8 @@ FTRefOrList::FTRefOrList(
 
 //-FTRefOrList::
 
-void FTRefOrList::accept(parsenode_visitor& v) const 
-{ 
+void FTRefOrList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (stringlit_list_h);
   END_VISITOR ();
@@ -4800,8 +4801,8 @@ FTStringLiteralList::FTStringLiteralList(
 
 //-FTStringLiteralList::
 
-void FTStringLiteralList::accept(parsenode_visitor& v) const 
-{ 
+void FTStringLiteralList::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   vector<string>::const_reverse_iterator it = strlit_v.rbegin();
   for (; it!=strlit_v.rend(); ++it) {
@@ -4827,8 +4828,8 @@ FTInclExclStringLiteral::FTInclExclStringLiteral(
 
 //-FTInclExclStringLiteral::
 
-void FTInclExclStringLiteral::accept(parsenode_visitor& v) const 
-{ 
+void FTInclExclStringLiteral::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (ref_or_list_h);
   END_VISITOR ();
@@ -4849,8 +4850,8 @@ FTLanguageOption::FTLanguageOption(
 
 //-FTLanguageOption::
 
-void FTLanguageOption::accept(parsenode_visitor& v) const 
-{ 
+void FTLanguageOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4870,8 +4871,8 @@ FTWildcardOption::FTWildcardOption(
 
 //-FTWildcardOption::
 
-void FTWildcardOption::accept(parsenode_visitor& v) const 
-{ 
+void FTWildcardOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4891,8 +4892,8 @@ FTContent::FTContent(
 
 //-FTContent::
 
-void FTContent::accept(parsenode_visitor& v) const 
-{ 
+void FTContent::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4912,8 +4913,8 @@ FTAnyallOption::FTAnyallOption(
 
 //-FTAnyallOption::
 
-void FTAnyallOption::accept(parsenode_visitor& v) const 
-{ 
+void FTAnyallOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -4937,8 +4938,8 @@ FTRange::FTRange(
 
 //-FTRange::
 
-void FTRange::accept(parsenode_visitor& v) const 
-{ 
+void FTRange::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (src_expr_h);
   ACCEPT (dst_expr_h);
@@ -4962,8 +4963,8 @@ FTDistance::FTDistance(
 
 //-FTDistance::
 
-void FTDistance::accept(parsenode_visitor& v) const 
-{ 
+void FTDistance::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (dist_h);
   ACCEPT (unit_h);
@@ -4987,8 +4988,8 @@ FTWindow::FTWindow(
 
 //-FTWindow::
 
-void FTWindow::accept(parsenode_visitor& v) const 
-{ 
+void FTWindow::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (window_h);
   ACCEPT (unit_h);
@@ -5010,8 +5011,8 @@ FTTimes::FTTimes(
 
 //-FTTimes::
 
-void FTTimes::accept(parsenode_visitor& v) const 
-{ 
+void FTTimes::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (range_h);
   END_VISITOR ();
@@ -5032,8 +5033,8 @@ FTScope::FTScope(
 
 //-FTScope::
 
-void FTScope::accept(parsenode_visitor& v) const 
-{ 
+void FTScope::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -5053,8 +5054,8 @@ FTUnit::FTUnit(
 
 //-FTUnit::
 
-void FTUnit::accept(parsenode_visitor& v) const 
-{ 
+void FTUnit::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -5074,8 +5075,8 @@ FTBigUnit::FTBigUnit(
 
 //-FTBigUnit::
 
-void FTBigUnit::accept(parsenode_visitor& v) const 
-{ 
+void FTBigUnit::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
@@ -5095,8 +5096,8 @@ FTIgnoreOption::FTIgnoreOption(
 
 //-FTIgnoreOption::
 
-void FTIgnoreOption::accept(parsenode_visitor& v) const 
-{ 
+void FTIgnoreOption::accept(parsenode_visitor& v) const
+{
   BEGIN_VISITOR ();
   ACCEPT (union_h);
   END_VISITOR ();

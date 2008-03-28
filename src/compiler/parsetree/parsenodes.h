@@ -51,14 +51,14 @@ public:
 
 public:
 	const QueryLoc& get_location() const { return loc; }
-  
+
   virtual void accept(parsenode_visitor&) const = 0;
 
 };
 
 
 /*______________________________________________________________________
-|  
+|
 |  See Section 21.2.3.1 in
 |  "The C++ Programming Language", by B. Stroustrup (1997) AT&T
 |_______________________________________________________________________*/
@@ -80,7 +80,7 @@ public:
 	exprnode(const QueryLoc& loc) : parsenode(loc) { }
 
 public:
-  
+
 	virtual void accept(parsenode_visitor&) const = 0;
 
 };
@@ -285,8 +285,8 @@ class Module : public parsenode
 |
 |	::= MainModule
 |			| VersionDecl MainModule
-|			| LibraryModule 
-|			| VersionDecl LibraryModule 
+|			| LibraryModule
+|			| VersionDecl LibraryModule
 |_______________________________________________________________________*/
 {
 public:
@@ -377,7 +377,7 @@ protected:
 public:
 	LibraryModule(
 		const QueryLoc&,
-		rchandle<ModuleDecl>, 
+		rchandle<ModuleDecl>,
 		rchandle<Prolog>);
 
 
@@ -757,7 +757,7 @@ public:
 		StaticContextConsts::inherit_mode_t  inherit_mode);
 
 
-public: 
+public:
 	StaticContextConsts::preserve_mode_t get_preserve_mode() const
   { return preserve_mode; }
 	StaticContextConsts::inherit_mode_t  get_inherit_mode() const
@@ -930,7 +930,7 @@ public:
 class ModuleImport : public parsenode
 /*______________________________________________________________________
 |
-|	::= IMPORT_MODULE  URI_LITERAL 
+|	::= IMPORT_MODULE  URI_LITERAL
 |			|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL
 |			|	IMPORT_MODULE  URI_LITERAL  AT  URILiteralList
 |			|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL  AT  URILiteralList
@@ -1190,7 +1190,7 @@ public:
 class Expr : public exprnode
 /*______________________________________________________________________
 |
-|	::= ExprSingle 
+|	::= ExprSingle
 |			|	Expr  COMMA  ExprSingle
 |_______________________________________________________________________*/
 {
@@ -1603,7 +1603,7 @@ public:
 class OrderSpecList : public parsenode
 /*______________________________________________________________________
 |
-|	::= OrderSpec 
+|	::= OrderSpec
 |			|	OrderSpecList  COMMA  OrderSpec
 |_______________________________________________________________________*/
 {
@@ -1769,7 +1769,7 @@ public:
 };
 
 
-// [42] QuantifiedExpr 	   
+// [42] QuantifiedExpr 	
 // -------------------
 class QuantifiedExpr : public exprnode
 /*______________________________________________________________________
@@ -1832,8 +1832,8 @@ public:
 class QVarInDecl : public parsenode
 /*______________________________________________________________________
 |
-|	::= VARNAME  IN  ExprSingle 
-|			|	VARNAME  TypeDeclaration  IN  ExprSingle 
+|	::= VARNAME  IN  ExprSingle
+|			|	VARNAME  TypeDeclaration  IN  ExprSingle
 |_______________________________________________________________________*/
 {
 protected:
@@ -1871,7 +1871,7 @@ class TypeswitchExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
-|			|	TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT 
+|			|	TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT
 |					DOLLAR  VARNAME  RETURN  ExprSingle
 |_______________________________________________________________________*/
 {
@@ -1936,7 +1936,7 @@ public:
   { return clause_hv.rbegin(); }
 	std::vector<rchandle<CaseClause> >::const_reverse_iterator rend() const
   { return clause_hv.rend(); }
-	uint32_t size() const 
+	uint32_t size() const
   { return clause_hv.size(); }
 
 public:
@@ -2424,7 +2424,7 @@ public:
 
 
 
-// [57] CastExpr 	   
+// [57] CastExpr 	
 // -------------
 class CastExpr : public exprnode
 /*______________________________________________________________________
@@ -2563,7 +2563,7 @@ class ValueComp : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum ParseConstants::valcomp_t type; 
+	enum ParseConstants::valcomp_t type;
 
 public:
 	ValueComp(
@@ -2751,12 +2751,12 @@ public:
   operators from NameTests. For example, without lookahead the first part of the
   expression "/ * 5", for example is easily taken to be a complete expression,
   "/ *", which has a very different interpretation (the child nodes of "/").
- 
+
   To reduce the need for lookahead, therefore, if the token immediately following
   a slash is "*" or a keyword, then the slash must be the beginning, but not the
   entirety, of a PathExpr (and the following token must be a NameTest, not an
   operator).
- 
+
   A single slash may be used as the left-hand argument of an operator by
   parenthesizing it: (/) * 5. The expression 5 * /, on the other hand, is legal
   without parentheses.
@@ -2789,7 +2789,7 @@ public:
 
 	[69] RelativePathExpr ::= StepExpr |
                             StepExpr  SLASH  RelativePathExpr |
-                            StepExpr  SLASH_SLASH  RelativePathExpr 
+                            StepExpr  SLASH_SLASH  RelativePathExpr
 
   Note: for the 1st alternative production, a RelativePathExpr node is generated
   whose left child is a ContextItemExpr and its right child is the StepExpr.
@@ -3356,7 +3356,7 @@ class FunctionCall : public exprnode
 |
 |	::= QNAME  LPAR  ArgList  RPAR 	
 |																	gn:parensXQ
-|			 														gn:reserved-function-namesXQ 
+|			 														gn:reserved-function-namesXQ
 |_______________________________________________________________________*/
 {
 protected:
@@ -3510,7 +3510,7 @@ public:
 
 	DirElemContent(
 		const QueryLoc&,
-		rchandle<CommonContent>); 
+		rchandle<CommonContent>);
 
 
 public:
@@ -3652,7 +3652,7 @@ public:
         const QueryLoc&,
         rchandle<QName>,
         rchandle<DirAttributeValue>);
-  
+
 
 public:
 	rchandle<QName> get_name() const { return theName; }
@@ -3687,7 +3687,7 @@ public:
 
 public:
 	rchandle<QuoteAttrContentList> get_quot_attr_content() const
-  { 
+  {
     return quot_attr_content_h;
   }
 
@@ -3947,7 +3947,7 @@ public:
 
 /*******************************************************************************
 
-  [111] CompElemConstructor ::= 
+  [111] CompElemConstructor ::=
                           ELEMENT_QNAME_LBRACE RBRACE |
                           ELEMENT_QNAME_LBRACE ContentExp  RBRACE |
                           ELEMENT_LBRACE Expr RBRACE LBRACE RBRACE |
@@ -4328,7 +4328,7 @@ public:
 
 /*******************************************************************************
 
-  [126] TextTest ::= TEXT_LPAR  RPAR 
+  [126] TextTest ::= TEXT_LPAR  RPAR
 
 ********************************************************************************/
 class TextTest : public parsenode
@@ -4346,7 +4346,7 @@ public:
 class CommentTest : public parsenode
 /*______________________________________________________________________
 |
-|	::= COMMENT_LPAR  RPAR 
+|	::= COMMENT_LPAR  RPAR
 |_______________________________________________________________________*/
 {
 public:
@@ -4356,7 +4356,7 @@ public:
 	void accept(parsenode_visitor&) const;
 
 };
- 
+
 
 // [128] PITest
 // ------------
@@ -4452,8 +4452,8 @@ public:
                         ELEMENT_LPAR ElemNameOrWildcard COMMA TypeName HOOK RPAR
 
   Note: theElementName will be NULL in the case of the 1st production or in
-  case of wildcard (*) in the other productions. 
- 
+  case of wildcard (*) in the other productions.
+
 ********************************************************************************/
 class ElementTest : public parsenode
 {
@@ -4557,7 +4557,7 @@ public:
 // [138] IntegerLiteral
 // [139] DecimalLiteral
 // [140] DoubleLiteral
-// [141] URILiteral 
+// [141] URILiteral
 
 
 
@@ -4865,9 +4865,10 @@ public:
 
 public:
 	void push_back(rchandle<VarBinding> varbinding_h)
-		{ varbinding_hv.push_back(varbinding_h); }
+  { varbinding_hv.push_back(varbinding_h); }
 	rchandle<VarBinding> operator[](int i) const
-		{ return varbinding_hv[i]; }
+  { return varbinding_hv[i]; }
+  int size () { return varbinding_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4915,8 +4916,8 @@ public:
  *_______________________________________________________________________*/
 class TryExpr : public exprnode
 /*______________________________________________________________________
-|                                                                       *  
-| ::= TRY LBRACE ExprSingle RBRACE CatchListExpr                        *  
+|                                                                       *
+| ::= TRY LBRACE ExprSingle RBRACE CatchListExpr                        *
 |_______________________________________________________________________*/
 {
 protected:
@@ -4925,10 +4926,10 @@ protected:
 
 public:
   TryExpr(
-    const QueryLoc& aQueryLoc, 
-    rchandle<exprnode> aExprSingle, 
+    const QueryLoc& aQueryLoc,
+    rchandle<exprnode> aExprSingle,
     rchandle<exprnode> aCatchListExpr)
-  : exprnode(aQueryLoc), 
+  : exprnode(aQueryLoc),
     theExprSingle(aExprSingle),
     theCatchListExpr(aCatchListExpr)
   {}
@@ -4943,8 +4944,8 @@ public:
 
 class CatchListExpr : public exprnode
 /*______________________________________________________________________
-|                                                                       *  
-| ::=  CatchExpr*                                                       *  
+|                                                                       *
+| ::=  CatchExpr*                                                       *
 |_______________________________________________________________________*/
 {
 protected:
@@ -4968,7 +4969,7 @@ public:
 
 class CatchExpr : public exprnode
 /*_______________________________________________________________________________
-|                                                                                *  
+|                                                                                *
 | ::= CATCH_LPAR NameTest (COMMA DOLLAR VARNAME)? RPAR LBRACE ExprSingle RBRACE  *
 |________________________________________________________________________________*/
 {
@@ -4980,24 +4981,24 @@ protected:
 public:
   CatchExpr(
     const QueryLoc& aQueryLoc,
-    rchandle<NameTest> aNameTest, 
+    rchandle<NameTest> aNameTest,
     rchandle<parsenode> aExprSingle)
   : exprnode(aQueryLoc),
-    theNameTest(aNameTest), 
-    theVarname(""), 
-    theExprSingle(aExprSingle) 
+    theNameTest(aNameTest),
+    theVarname(""),
+    theExprSingle(aExprSingle)
   {}
 
   CatchExpr(
     const QueryLoc& aQueryLoc,
-    rchandle<NameTest> aNameTest, 
-    const std::string& aVarname, 
+    rchandle<NameTest> aNameTest,
+    const std::string& aVarname,
     rchandle<parsenode> aExprSingle)
   :
     exprnode(aQueryLoc),
-    theNameTest(aNameTest), 
-    theVarname(aVarname), 
-    theExprSingle(aExprSingle) 
+    theNameTest(aNameTest),
+    theVarname(aVarname),
+    theExprSingle(aExprSingle)
   {}
 
 public:
@@ -5286,7 +5287,7 @@ public:
 class FTWords : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTWordsValue 
+|	::=	FTWordsValue
 |			|	FTWordsValue  FTAnyallOption
 |_______________________________________________________________________*/
 {
@@ -5614,7 +5615,7 @@ class FTStopwordOption : public FTMatchOption
 |
 |	::=	WITH_STOP_WORDS  FTRefOrList
 |			|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
-|			| WITH_DEFAULT_STOP_WORDS 
+|			| WITH_DEFAULT_STOP_WORDS
 |			| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
 |			| WITHOUT_STOP_WORDS
 |_______________________________________________________________________*/
@@ -5683,7 +5684,7 @@ class FTRefOrList : public parsenode
 /*______________________________________________________________________
 |
 |	::=	AT  STRING_LITERAL
-|			| LPAR  FTStringLiteralList  RPAR 
+|			| LPAR  FTStringLiteralList  RPAR
 |_______________________________________________________________________*/
 {
 protected:

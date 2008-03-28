@@ -5577,7 +5577,9 @@ VarNameList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]" << endl;
 #endif
-       $$ = new VarNameList(LOC(@$));
+       VarNameList* lList = new VarNameList(LOC(@$));
+       lList->push_back (dynamic_cast<VarBinding*> ($1));
+       $$ = lList;
 		}
 	|	VarNameList  COMMA  DOLLAR  VarNameDecl 
 		{
