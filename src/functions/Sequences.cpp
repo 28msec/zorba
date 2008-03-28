@@ -512,10 +512,32 @@ xqtref_t op_to::type_check(
 }
 
 //15.5.2 fn:id
+fn_id::fn_id(
+  const signature& sig)
+:
+  function(sig)
+{
+}
+
+PlanIter_t
+fn_id::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnIdIterator(loc, argv);
+}
 
 //15.5.3 fn:idref
+fn_id_ref::fn_id_ref(
+  const signature& sig)
+:
+  function(sig)
+{
+}
 
-
+PlanIter_t
+fn_id_ref::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnIdRefIterator(loc, argv);
+}
 
 //15.5.4 fn:doc
 //-------------
@@ -532,9 +554,9 @@ PlanIter_t fn_doc_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 }
 
 xqtref_t fn_doc_func::type_check(
-	signature& /*sig*/) const
+	signature& ) const
 {
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 

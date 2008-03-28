@@ -84,6 +84,8 @@ namespace zorba
   class FnRemoveIterator;
   class FnReverseIterator;
   class OpToIterator;
+  class FnIdIterator;
+  class FnIdRefIterator;
   class FnDistinctValuesIterator;
   class FnInsertBeforeIterator;  
   class FnSubsequenceIterator;
@@ -415,6 +417,12 @@ namespace zorba
 
       virtual void beginVisit ( const OpToIterator& ) = 0;
       virtual void endVisit ( const OpToIterator& ) = 0;
+
+      virtual void beginVisit ( const FnIdIterator& ) = 0;
+      virtual void endVisit ( const FnIdIterator& ) = 0;
+
+      virtual void beginVisit ( const FnIdRefIterator& ) = 0;
+      virtual void endVisit ( const FnIdRefIterator& ) = 0;
 
       virtual void beginVisit ( const FnDistinctValuesIterator& ) = 0;
       virtual void endVisit ( const FnDistinctValuesIterator& ) = 0;       

@@ -377,9 +377,24 @@ public:
 
 
 //15.5.2 fn:id
+class fn_id : public function
+{
+public:
+  fn_id(const signature&);
+
+public:
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
 
 //15.5.3 fn:idref
+class fn_id_ref : public function
+{
+  public:
+    fn_id_ref(const signature&);
 
+  public:
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
 
 //15.5.4 fn:doc
 class fn_doc_func : public function

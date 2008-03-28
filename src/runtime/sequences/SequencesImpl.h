@@ -350,9 +350,10 @@ public:
 NARY_ITER_STATE(OpToIterator, OpToIteratorState);
 
 //15.5.2 fn:id
+NARY_ITER(FnIdIterator);
 
 //15.5.3 fn:idref
-
+NARY_ITER(FnIdRefIterator);
 
 //15.5.4 fn:doc
 

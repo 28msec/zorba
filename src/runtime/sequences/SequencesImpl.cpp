@@ -880,9 +880,22 @@ OpToIteratorState::reset(PlanState& planState) {
 }
 
 //15.5.2 fn:id
-
+store::Item_t 
+FnIdIterator::nextImpl(PlanState& planState) const {
+  //TODO complete the implementation
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  STACK_END(state);
+}
+  
 //15.5.3 fn:idref
-
+store::Item_t
+FnIdRefIterator::nextImpl(PlanState& planState) const {
+  //TODO complete the implementation
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  STACK_END(state);
+}
 
 
 /*______________________________________________________________________

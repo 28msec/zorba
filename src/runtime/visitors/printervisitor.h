@@ -249,6 +249,12 @@ public:
   
   virtual void beginVisit ( const OpToIterator& ) ;
   virtual void endVisit ( const OpToIterator& ) ;
+
+  virtual void beginVisit ( const FnIdIterator& ) ;
+  virtual void endVisit ( const FnIdIterator& ) ;
+
+  virtual void beginVisit ( const FnIdRefIterator& ) ;
+  virtual void endVisit ( const FnIdRefIterator& ) ;
   
   virtual void beginVisit ( const FnDistinctValuesIterator& ) ;
   virtual void endVisit   ( const FnDistinctValuesIterator& ) ;
