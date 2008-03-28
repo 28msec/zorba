@@ -405,7 +405,7 @@ static_context::set_default_collation_uri(const xqp_string& aURI)
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
-		ZORBA_ERROR_DESC( ZorbaError::XQST0038, "invalid collation uri");
+		ZORBA_ERROR_DESC( ZorbaError::XQST0038, "invalid collation uri " << lURI);
   }
   else
   {

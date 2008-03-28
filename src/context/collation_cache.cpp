@@ -3,6 +3,8 @@
 #include "context/collation_cache.h"
 #include "context/static_context.h"
 
+#include "errors/error_manager.h"
+
 namespace zorba {
 
   CollationCache::CollationCache(static_context* aStaticContext)
@@ -34,7 +36,7 @@ namespace zorba {
     xqp_string lURI;
     if (!theStaticContext->get_collation_uri(aName, lURI))
     {
-      return 0;
+      ZORBA_ERROR_DESC(ZorbaError::FOCH0002, "Collation " << aName << " not found in static context.");
     } else {
       CacheMap_t::iterator lFind = theMap.find(lURI);
       if ( lFind != theMap.end() )
@@ -44,6 +46,8 @@ namespace zorba {
       else
       {
         XQPCollator* lCollator = CollationFactory::createCollator(lURI);
+        if ( ! lCollator )
+          ZORBA_ERROR_DESC(ZorbaError::FOCH0002, "Collation " << aName << " not supported.");
         theMap[lURI] = lCollator;
         return lCollator;
       } 

@@ -127,7 +127,7 @@ public:
   }
   void bind_default_collation(const xqp_string& aCollURI)
   {
-    bind_str("coll:default:", aCollURI);
+    bind_str("coll:default:", aCollURI, ZorbaError::XQST0038);
   }
   bool lookup_default_collation(xqp_string& aCollURI) const
   {
