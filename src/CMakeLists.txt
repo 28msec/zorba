@@ -4,16 +4,8 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) # must be removed if pthread.h is removed from util/rwlock.h/cpp
 
+# only platform headers and configuration stuff is in there
 ADD_SUBDIRECTORY(common)
-
-# generate the zorbatypes library
-ADD_SUBDIRECTORY(zorbatypes)
-
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-  SET (requiredlibs ${requiredlibs} zorbatypes_static)
-ELSE (ZORBA_BUILD_STATIC_LIBRARY)
-  SET (requiredlibs ${requiredlibs} zorbatypes)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 # generate the zorba library
 SET(ZORBA_SRCS)
@@ -27,6 +19,7 @@ ADD_SRC_SUBFOLDER(ZORBA_SRCS compiler COMPILER_SRCS)
 FOREACH (SRCS ${COMPILER_BUILD_SRCS})
   LIST(APPEND ZORBA_SRCS ${SRCS})
 ENDFOREACH (SRCS)
+ADD_SRC_SUBFOLDER(ZORBA_SRCS zorbatypes ZORBATYPES_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS system SYSTEM_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS context CONTEXT_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS errors	ERRORS_SRCS)

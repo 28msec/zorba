@@ -38,6 +38,7 @@ namespace zorba {
   class expr; class var_expr;
   class function;
 	class XQType;
+  class StatelessExternalFunction;
 /*______________________________________________________________________
 |  
 |	XQuery 1.0 context
@@ -53,6 +54,7 @@ protected:
     int intValue;
     bool boolValue;
 		const XQType *typeValue; ///do manual ref counting on this
+    StatelessExternalFunction* stateless_function;
   } ctx_value_t;
   typedef xqp_string (* str_param_t) ();
   
@@ -74,6 +76,12 @@ protected:
       return parent == NULL ? false : parent->context_value (key, val);
 	}
 
+  StatelessExternalFunction*
+  lookup_stateless_function(xqp_string key) const {
+    ctx_value_t v;
+    return context_value (key, v) ? v.stateless_function : NULL;
+  }
+
   expr *lookup_expr (xqp_string key) const {
     ctx_value_t val;
     return context_value (key, val) ? val.exprValue : NULL;
@@ -91,6 +99,15 @@ protected:
     ctx_value_t v;
     v.functionValue = f;
     keymap.put (key, v);
+  }
+
+  bool bind_stateless_function(xqp_string key, StatelessExternalFunction* f) {
+    ctx_value_t v;
+    v.stateless_function = f;
+    if (lookup_once (key, v))
+      return false;
+    keymap.put (key, v);
+    return true;
   }
   void bind_str (xqp_string key, xqp_string v, enum ZorbaError::ErrorCode err = ZorbaError::XQP0019_INTERNAL_ERROR) {
     xqp_string old;

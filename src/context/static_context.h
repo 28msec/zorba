@@ -69,7 +69,6 @@ protected:
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
   static xqp_string fn_internal_key (int arity);
 
-  hashmap<StatelessExternalFunction*> m_stateless_ext_functions;
   std::auto_ptr<TypeManager> typemgr;
 
   static_context();
@@ -117,13 +116,15 @@ public:
   void bind_var (const store::Item *qname, expr *expr) {
     bind_expr ("var:" + qname_internal_key (qname), expr);
   }
-  void bind_collation(const xqp_string& aCollName, const xqp_string& aCollURI)
+  void bind_collation(const xqp_string& aCollURI)
   {
-    bind_str("coll:" + aCollName, aCollURI);
+    bind_str("coll:" + aCollURI, "");
   }
-  bool lookup_collation(const xqp_string& aCollName, xqp_string& aCollURI) const
+  bool lookup_collation(xqp_string& aCollURI) const
   {
-    return context_value<xqp_string>("coll:" + aCollName, aCollURI);  
+    // TODO better use a hashmap for collation itself
+    xqpString lTmp;
+    return context_value<xqp_string>("coll:" + aCollURI, lTmp);  
   }
   void bind_default_collation(const xqp_string& aCollURI)
   {
@@ -212,10 +213,10 @@ public:
 
   XQPCollator* create_collator(const xqp_string& aURI);
 
-	void add_collation(const xqp_string& uri, const xqp_string& name);
+	void add_collation(const xqp_string& uri);
   xqp_string default_collation_uri() const;
   void set_default_collation_uri(const xqp_string& uri);
-  bool get_collation_uri(const xqp_string& aName, xqp_string& aURI) const;
+  bool has_collation_uri(xqp_string& aURI) const;
 
 protected:
   xqp_string current_absolute_baseuri() const;

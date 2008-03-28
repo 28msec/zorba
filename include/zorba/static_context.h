@@ -58,8 +58,11 @@ namespace zorba {
       virtual TypeIdentifier_t   
       getContextItemType( ) const = 0;
 
+      virtual void
+      removeCollation( const String& uri ) = 0;
+
       virtual void   
-      addCollation( const String& uri, const String& name ) = 0;
+      addCollation( const String& uri ) = 0;
 
       virtual void   
       setDefaultCollation( const String& URI ) = 0;

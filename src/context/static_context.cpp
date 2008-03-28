@@ -344,7 +344,7 @@ xqtref_t static_context::get_collection_type(
  * collation management
  */
 void 
-static_context::add_collation(const xqp_string& aURI, const xqp_string& aName)
+static_context::add_collation(const xqp_string& aURI)
 {
   // TODO resolve_relative_uri does not work yet
   // xqp_string lURI = resolve_relative_uri(aURI); 
@@ -357,7 +357,7 @@ static_context::add_collation(const xqp_string& aURI, const xqp_string& aName)
   else
   {
     delete lCollator;
-    bind_collation(aName, lURI);
+    bind_collation(lURI);
   }
 }
 
@@ -391,9 +391,9 @@ static_context::default_collation_uri() const
 }
 
 bool
-static_context::get_collation_uri(const xqp_string& aName, xqp_string& aURI) const
+static_context::has_collation_uri(xqp_string& aURI) const
 {
-  return lookup_collation(aName, aURI);
+  return lookup_collation(aURI);
 }
 
 void 
@@ -606,15 +606,14 @@ static_context::bind_stateless_external_function(StatelessExternalFunction* aExt
   xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
   xqpString lURI = Unmarshaller::getInternalString(aExternalFunction->getURI());
 
-  return ! m_stateless_ext_functions.put(lLocalName +":" +lURI, aExternalFunction);
+  return bind_stateless_function(lLocalName +":" +lURI, aExternalFunction);
 }
 
 StatelessExternalFunction *
 static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_string aLocalName)
 {
-  StatelessExternalFunction* lExtFun;
-  return  m_stateless_ext_functions.get(
-                 qname_internal_key(default_function_namespace(), aPrefix, aLocalName), lExtFun)?lExtFun:0;
+  return lookup_stateless_function( 
+    qname_internal_key(default_function_namespace(), aPrefix, aLocalName)); 
 }
 
 }	/* namespace zorba */

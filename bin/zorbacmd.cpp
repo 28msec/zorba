@@ -1,6 +1,7 @@
 #include <memory>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <string>
 
@@ -9,21 +10,6 @@
 #include "zorbacmdproperties.h"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-
-void 
-slurp_file (const char *fname, std::string &result) {
-  std::ifstream qfile(fname, std::ios::binary | std::ios_base::in); assert (qfile);
-
-  qfile.seekg (0, std::ios::end);
-  size_t len = qfile.tellg ();
-  qfile.seekg (0, std::ios::beg);
-  char *str = new char [len];
-  qfile.read (str, len);
-  
-  std::string sstr (str, len);
-  result.swap (sstr);
-  delete [] str;
-}
 
 bool
 populateStaticContext(zorba::StaticContext_t& aStaticContext, ZorbaCMDProperties* aProperties)
@@ -127,32 +113,38 @@ int _tmain(int argc, _TCHAR* argv[])
                                            ? new std::ofstream(lProperties.getOutputFile().c_str()) 
                                            : 0 );
   std::ostream* lOutputStream = lFileStream.get();
-  if ( lOutputStream == 0 )
-  {
+  if ( lOutputStream == 0 ) {
     lOutputStream = &std::cout;
   }
-  else if ( !lOutputStream->good() )
-  {
+  else if ( !lOutputStream->good() ) {
     std::cerr << "could not write to output file " << lProperties.getOutputFile() << std::endl;
     return 2;
   }
 
-  // the query or the query file
-  std::string lQueryString;
+  // input file (either from a file or given as parameter)
+  const char* fname = lProperties.getQueryOrFile().c_str();
+  std::auto_ptr<std::istream> qfile(!lProperties.inlineQuery() && *fname!='\0' ?
+                                     (std::istream*) new std::ifstream(fname) :
+                                     (std::istream*) new std::istringstream(fname));
 
-  if ( lProperties.inlineQuery() )
-  {
-    lQueryString = lProperties.getQueryOrFile();
+  if ( !lProperties.inlineQuery() && !qfile->good() || qfile->eof() ) {
+    std::cerr << "file " << fname << " not found not readable" << std::endl;
+    return 3;
+  } else if (*fname == '\0') {
+    std::cerr << "no query given" << std::endl;
+    return 3;
   }
-  else
-  {
-    slurp_file(lProperties.getQueryOrFile().c_str(), lQueryString);
-  }
+
+
 
   // print the query if requested
   if ( lProperties.printQuery() )
   {
-      *lOutputStream << "Query:" << std::endl << lQueryString << std::endl;
+    *lOutputStream << "Query:\n";
+    std::copy (std::istreambuf_iterator<char> (*qfile), 
+               std::istreambuf_iterator<char> (), std::ostreambuf_iterator<char> (*lOutputStream));
+    *lOutputStream << std::endl;
+    qfile->seekg(0); // go back to the beginning
   }
 
   // time compilation and execution
@@ -168,17 +160,15 @@ int _tmain(int argc, _TCHAR* argv[])
   zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
 
   // populate the static context with information passed as parameter
-  if (! populateStaticContext(lStaticContext, &lProperties) )
-  {
+  if (! populateStaticContext(lStaticContext, &lProperties) ) {
     return 3;
   }
 
-  try 
-  {
+  try {
     if (lTiming)
       lStartCompileTime = boost::posix_time::microsec_clock::local_time();
 
-    lQuery = lZorbaInstance->createQuery(lQueryString, lStaticContext);
+    lQuery = lZorbaInstance->createQuery(*qfile, lStaticContext);
 
     if (lTiming)
       lStopCompileTime = boost::posix_time::microsec_clock::local_time();
@@ -245,8 +235,7 @@ int _tmain(int argc, _TCHAR* argv[])
     return 5;
   } 
   
-  if (lTiming)
-  {
+  if (lTiming) {
     lNumExecutions = lProperties.getNoOfExecutions();
 
     std::cerr << std::endl << "Number of executions = "
@@ -262,8 +251,7 @@ int _tmain(int argc, _TCHAR* argv[])
               << lDiffFirstExecutionTime.total_milliseconds()
               << " milliseconds (i.e. parsing the document is included)" << std::endl;
 
-    if (lNumExecutions > 1)
-    {
+    if (lNumExecutions > 1) {
       lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime) /
                             (lNumExecutions - 1); 
       std::cerr << "Average Execution time: " 

@@ -123,9 +123,10 @@ context_example_6(Zorba* aZorba)
 {
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
-  lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY/de/DE", "german");
+  lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY/de/DE");
 
-	XQuery_t lQuery = aZorba->createQuery("fn:compare('Strasse', 'Straße', 'german')", lStaticContext); 
+	XQuery_t lQuery = aZorba->createQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')", 
+                                         lStaticContext); 
 
   try {
 

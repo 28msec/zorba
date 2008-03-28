@@ -21,7 +21,7 @@ namespace zorba {
     public:
       virtual ~CollationCache();
 
-      XQPCollator* getCollator(const std::string& aName); 
+      XQPCollator* getCollator(xqpStringStore* aName); 
       XQPCollator* getDefaultCollator();
   };
 }

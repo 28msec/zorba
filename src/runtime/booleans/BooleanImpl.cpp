@@ -556,7 +556,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         XQPCollator *coll = aRuntimeCB->theCollationCache->getDefaultCollator();
         ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
       } else {
-        XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(*aCollation);
+        XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(aCollation->theStrStore);
         ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
       }
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
@@ -565,7 +565,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         XQPCollator *coll = aRuntimeCB->theCollationCache->getDefaultCollator();
         ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
       } else {
-        XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(*aCollation);
+        XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(aCollation->theStrStore);
         ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
       }
     } 

@@ -31,24 +31,25 @@ namespace zorba {
   }
 
   XQPCollator*
-  CollationCache::getCollator(const std::string& aName)
+  CollationCache::getCollator(xqpStringStore* aURI)
   {
-    xqp_string lURI;
-    if (!theStaticContext->get_collation_uri(aName, lURI))
+    // temporary soluion because the static context does not yet deal with string stores
+    xqpString lTmpURI(aURI); 
+    if (!theStaticContext->has_collation_uri(lTmpURI))
     {
-      ZORBA_ERROR_DESC(ZorbaError::FOCH0002, "Collation " << aName << " not found in static context.");
+      ZORBA_ERROR_DESC(ZorbaError::FOCH0002, "Collation " << aURI << " not found in static context.");
     } else {
-      CacheMap_t::iterator lFind = theMap.find(lURI);
+      CacheMap_t::iterator lFind = theMap.find(lTmpURI);
       if ( lFind != theMap.end() )
       {
         return lFind->second;
       }
       else
       {
-        XQPCollator* lCollator = CollationFactory::createCollator(lURI);
+        XQPCollator* lCollator = CollationFactory::createCollator(lTmpURI);
         if ( ! lCollator )
-          ZORBA_ERROR_DESC(ZorbaError::FOCH0002, "Collation " << aName << " not supported.");
-        theMap[lURI] = lCollator;
+          ZORBA_ERROR_DESC(ZorbaError::FOCH0002, "Collation " << aURI << " not supported.");
+        theMap[lTmpURI] = lCollator;
         return lCollator;
       } 
     }

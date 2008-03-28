@@ -22,7 +22,7 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-##############################################################################################################
+################################################################################
 # Variables
 SET(requiredlibs)
 SET(DEFINITIONS)
@@ -31,7 +31,7 @@ SET(DEFINITIONS)
 INCLUDE(CMakeCompiler.txt)
 
 
-##############################################################################################################
+################################################################################
 # Used libraries
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
@@ -42,7 +42,6 @@ IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
 ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
     SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
-    SET(requiredlibs_types ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
     INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
 ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 
@@ -93,16 +92,10 @@ IF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
             SET(requiredlibs ${requiredlibs} boost_program_options-mt)
             SET(requiredlibs ${requiredlibs} boost_date_time-mt)
             SET(requiredlibs ${requiredlibs} boost_filesystem-mt)
-            SET(requiredlibs_types ${requiredlibs} boost_program_options-mt)
-            SET(requiredlibs_types ${requiredlibs} boost_date_time-mt)
-            SET(requiredlibs_types ${requiredlibs} boost_filesystem-mt)
         ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
             SET(requiredlibs ${requiredlibs} boost_program_options)
             SET(requiredlibs ${requiredlibs} boost_date_time)
             SET(requiredlibs ${requiredlibs} boost_filesystem)
-            SET(requiredlibs_types ${requiredlibs} boost_program_options)
-            SET(requiredlibs_types ${requiredlibs} boost_date_time)
-            SET(requiredlibs_types ${requiredlibs} boost_filesystem)
         ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
     ELSE (NOT WIN32)
         IF (CYGWIN)
@@ -110,9 +103,6 @@ IF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
             SET(requiredlibs ${requiredlibs} boost_program_options-gcc-mt)
             SET(requiredlibs ${requiredlibs} boost_date_time-gcc-mt)
             SET(requiredlibs ${requiredlibs} boost_filesystem-gcc-mt)
-            SET(requiredlibs_types ${requiredlibs} boost_program_options-gcc-mt)
-            SET(requiredlibs_types ${requiredlibs} boost_date_time-gcc-mt)
-            SET(requiredlibs_types ${requiredlibs} boost_filesystem-gcc-mt)
         ENDIF (CYGWIN)
     ENDIF (NOT WIN32)
     MESSAGE(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
@@ -121,29 +111,27 @@ ELSE(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
     MESSAGE(FATAL_ERROR "The boost library is required in order to build Zorba.")
 ENDIF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
 
-##############################################################################################################
 IF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
   SET(requiredlibs ${requiredlibs} pthread)
 ENDIF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
-##############################################################################################################
+################################################################################
 # Custom user-defined settings
 
 INCLUDE ("CMakeUser.txt" OPTIONAL)
 
 
-##############################################################################################################
+################################################################################
 # Compiler setup
 
 MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
 
-IF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
-ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
-
+# add the include dir (i.e. the library) to the include path
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-
+# add cmake configuration (zorba options, etc.)
 INCLUDE(CMakeConfiguration.txt)
 
+# zorba versioning
 SET(ZORBA_MAJOR_NUMBER "0")
 SET(ZORBA_MINOR_NUMBER "5")
 SET(ZORBA_PATCH_NUMBER)
@@ -151,15 +139,14 @@ FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/svn_rev.txt ZORBA_PATCH_NUMBER)
 STRING(REGEX REPLACE "[^0-9]*([0-9]*)..*" "\\1" ZORBA_PATCH_NUMBER ${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
-
+# add compiler vvariables
 ADD_DEFINITIONS(${DEFINITIONS})
 
 
-##############################################################################################################
+################################################################################
 # Subfolders inclusion
 
 # Tell CMake to process the sub-directories
-#ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)

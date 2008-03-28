@@ -105,6 +105,7 @@ namespace zorba { namespace error {
   throw error::ErrorManager::createException(code, __FILE__, __LINE__); \
 } while (0)
 
+
 #define ZORBA_ERROR_DESC(code, desc) do {  \
   std::ostringstream lOStringStream; \
   lOStringStream << desc; \

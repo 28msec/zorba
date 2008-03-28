@@ -210,7 +210,7 @@ CompareStrIterator::nextImpl(PlanState& planState) const {
           n2 = n2->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(n2->getStringValue()->str());
+            coll = planState.theRuntimeCB->theCollationCache->getCollator(n2->getStringValue());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -1024,7 +1024,7 @@ ContainsIterator::nextImpl(PlanState& planState) const {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -1121,7 +1121,7 @@ StartsWithIterator::nextImpl(PlanState& planState) const {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -1219,7 +1219,7 @@ EndsWithIterator::nextImpl(PlanState& planState) const {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -1317,7 +1317,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -1421,7 +1421,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);

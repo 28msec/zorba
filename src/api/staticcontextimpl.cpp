@@ -155,13 +155,18 @@ namespace zorba {
     return TypeIdentifier::createAnyNodeType();
   }
 
-
-  void   
-  StaticContextImpl::addCollation( const String& URI, const String& name )
+  void
+  StaticContextImpl::removeCollation( const String& URI )
   {
     xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
-    xqpString lName = xqpString(Unmarshaller::getInternalString(name));
-    theCtx->add_collation(lURI, lName);
+    assert(false);
+  }
+
+  void   
+  StaticContextImpl::addCollation( const String& URI )
+  {
+    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
+    theCtx->add_collation(lURI);
   }
 
 

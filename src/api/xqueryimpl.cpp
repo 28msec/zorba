@@ -8,6 +8,7 @@
 #include <zorba/error.h>
 #include <zorba/exception.h>
 #include "errors/errors.h"
+#include "errors/error_manager.h"
 
 #include "system/globalenv.h"
 #include "api/staticcontextimpl.h"
@@ -34,7 +35,7 @@ namespace zorba {
 
 	XQueryImpl::XQueryImpl()
     : theStaticContext(0),
-      theUserStaticContext(false),
+      theQueryIsCompiled(false),
       theUserErrorHandler(false)
 	{ 
     theCompilerCB = new CompilerCB();
@@ -59,8 +60,7 @@ namespace zorba {
     if (!theUserErrorHandler) // see registerErrorHandler
       delete theErrorHandler;
 
-    if (!theUserStaticContext)
-      delete theStaticContext;;
+    delete theStaticContext;;
 
     delete theDynamicContext;
 
@@ -101,17 +101,18 @@ namespace zorba {
   XQueryImpl::compile(const xqpString& aQuery, const StaticContext_t& aStaticContext, const CompilerHints_t& aHints)
   {
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
-    theUserStaticContext = true; // rememeber that we do not have the ownership
 
     std::istringstream lQueryStream(aQuery);
     doCompile(lQueryStream, aHints);
   }
 
   void
-  XQueryImpl::compile(std::istream& aQuery, const StaticContext_t& aStaticContext, const CompilerHints_t& aHints)
+  XQueryImpl::compile(std::istream& aQuery, const StaticContext_t& aStaticContext, 
+                      const CompilerHints_t& aHints)
   {
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
-    theUserStaticContext = true; // rememeber that we do not have the ownership
+
+    doCompile(aQuery, aHints);
   }
 
   void
@@ -120,6 +121,9 @@ namespace zorba {
     if ( ! theStaticContext ) {
       // no context given => use the default one (i.e. a child of the root static context)
       theStaticContext = GENV.getRootStaticContext().create_child_context();
+    } else {
+      // otherwise create a child and we have ownership over that one
+      theStaticContext = theStaticContext->create_child_context();
     }
 
     theCompilerCB->m_sctx = theStaticContext;
@@ -136,22 +140,36 @@ namespace zorba {
       ZorbaImpl::notifyError(theErrorHandler, e);
     }
 
+    theQueryIsCompiled = true;
   }
 
    DynamicContext_t
    XQueryImpl::getDynamicContext()
    {
-     // make sure the query is compiled, we should gunarantee this, since only we can call compile internally
-     assert(theStaticContext); 
+     if ( ! theQueryIsCompiled ) {
+       try {
+         ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
+                          "Error getting the dynamic context because the query is not compiled");
+       } catch (error::ZorbaError &e) {
+         ZorbaImpl::notifyError(theErrorHandler, e);
+       }
+     }
       
-     return DynamicContext_t(new DynamicContextImpl(theDynamicContext, theStaticContext, theErrorHandler));
+     return DynamicContext_t(new DynamicContextImpl(theDynamicContext, theStaticContext, 
+                                                    theErrorHandler));
    }
 
    StaticContext_t
    XQueryImpl::getStaticContext()
    {
-     // make sure the query is compiled, we should gunarantee this, since only we can call compile internally
-     assert(theStaticContext); 
+     if ( ! theQueryIsCompiled ) {
+       try {
+         ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
+                          "Error getting the static context because the query is not compiled");
+       } catch (error::ZorbaError &e) {
+         ZorbaImpl::notifyError(theErrorHandler, e);
+       }
+     }
       
      return StaticContext_t(new StaticContextImpl(theStaticContext, theErrorHandler));
    }
@@ -169,6 +187,15 @@ namespace zorba {
   void
   XQueryImpl::serialize(std::ostream& os)
   {
+    if ( ! theQueryIsCompiled ) {
+      try {
+        ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
+                         "Error executing query because it is not compiled");
+      } catch (error::ZorbaError &e) {
+        ZorbaImpl::notifyError(theErrorHandler, e);
+      }
+    }
+
     PlanWrapper_t lPlan = generateWrapper();
     serializer lSerializer(theErrorManager);
 
