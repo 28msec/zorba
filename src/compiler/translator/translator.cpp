@@ -1813,9 +1813,16 @@ void *begin_visit(const SchemaImport& v)
   if (sp != NULL) {
     sctx_p->bind_ns (sp->get_prefix (), v.get_uri ());
   }
+
+#if 0
   std::string prefix = ((SchemaPrefix*)(v.get_prefix().getp()))->get_prefix();
   std::string uri = v.get_uri();
-  std::string at = (*((URILiteralList*)(v.get_at_list().getp())))[0];
+
+  // TODO: get_at_list() might return NULL
+  rchandle<URILiteralList> atlist = v.get_at_list();
+  if (atlist != NULL) {
+    std::string at = (*atlist) [0];
+  }
   //std::cout << "SchemaImport: " << prefix << " : " << uri
   //    << " @ " << at << std::endl;
   //std::cout << " Context: " << sctx_p->get_typemanager() << "\n";
@@ -1825,6 +1832,7 @@ void *begin_visit(const SchemaImport& v)
 
   //schema_p->registerXSD(at.c_str());	
   //schema_p->printXSDInfo();
+#endif
 
   return no_state;
 }
