@@ -2333,8 +2333,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     } else if (sz == 1 && fn_local == "lang") {
       arguments.insert (arguments.begin (), sctx_p->lookup_var_nofail (DOT_VAR));
     } else if (sz == 1 && fn_local == "resolve-uri") {
-      // TODO: check if static base uri is defined, throw FONS0005 if not
-      arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->baseuri()));
+      if (! hadBUriDecl)
+        ZORBA_ERROR (ZorbaError::FONS0005);
+      else
+        arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->baseuri()));
     }
   }
   sz = arguments.size ();  // recompute size
