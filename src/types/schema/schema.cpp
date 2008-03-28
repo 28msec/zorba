@@ -185,8 +185,8 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
 xqtref_t Schema::createIfExists(const TypeManager *manager, store::Item_t qname, TypeConstants::quantifier_t quantifier)
 {
 	const char* uri_cstr = qname->getNamespace().c_str();
-    if ( XMLString::equals(XSD_NAMESPACE, uri_cstr) )
-		return *(new xqtref_t(NULL));
+  if ( XMLString::equals(XSD_NAMESPACE, uri_cstr) )
+		return NULL;
 
 //	std::cout << "--createIfExists: " << qname->getNamespace() << "@" << qname->getLocalName() << "\n";
 
@@ -197,7 +197,7 @@ xqtref_t Schema::createIfExists(const TypeManager *manager, store::Item_t qname,
  //   XSModel* xsModel = _grammarPool->getXSModel();
 	//XSTypeDefinition* xsTypeDef = xsModel->getTypeDefinition(local, uri);
 
-	xqtref_t* res;
+	xqtref_t res;
 
 	//if (!xsTypeDef)
 	//	res = new xqtref_t(NULL);
@@ -208,10 +208,9 @@ xqtref_t Schema::createIfExists(const TypeManager *manager, store::Item_t qname,
 	//		res = new xqtref_t(new UserDefinedXQType(manager, qname, *(new xqtref_t(NULL)), quantifier));
 	//	}
 	//	else
-			res = new xqtref_t(NULL);
 //	}
 	
-	return *res;
+ 	return res;
 }
 
 store::Item_t parseAtomicValue(xqtref_t type, xqpString textValue)
