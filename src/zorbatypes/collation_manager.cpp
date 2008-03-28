@@ -28,7 +28,7 @@ namespace zorba {
       UErrorCode lError = U_ZERO_ERROR;
       lCollator = Collator::createInstance(Locale("root"), lError);
       assert(lError == U_ZERO_ERROR);
-      lCollator->setStrength(Collator::PRIMARY);
+      lCollator->setStrength(Collator::IDENTICAL);
       return new XQPCollator(lCollator);
     }
 
