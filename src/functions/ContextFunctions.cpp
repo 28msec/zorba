@@ -46,12 +46,6 @@ fn_current_dateTime::type_check(
   return GENV_TYPESYSTEM.DATETIME_TYPE_ONE;
 }
 
-bool
-fn_current_dateTime::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==0);
-}
 
 /*
  * 16.4 fn:current-date
@@ -77,12 +71,6 @@ fn_current_date::type_check(
   return GENV_TYPESYSTEM.DATE_TYPE_ONE;
 }
 
-bool
-fn_current_date::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==0);
-}
 
 /*
  * 16.5 fn:current-time
@@ -108,12 +96,6 @@ fn_current_time::type_check(
   return GENV_TYPESYSTEM.TIME_TYPE_ONE;
 }
 
-bool
-fn_current_time::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==0);
-}
 
 /*
  * 16.6 fn:implicit-timezone
@@ -139,12 +121,6 @@ fn_implicit_timezone::type_check(
   return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
 }
 
-bool
-fn_implicit_timezone::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==0);
-}
 
 /*
  * 16.7 fn:default-collation
@@ -170,11 +146,5 @@ fn_default_collation::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
-bool
-fn_default_collation::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==0);
-}
 
 } /* namespace zorba */

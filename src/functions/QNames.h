@@ -34,7 +34,6 @@ namespace zorba
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
   };
   
  /*
@@ -48,7 +47,6 @@ namespace zorba
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
   };
   
 /*
@@ -62,7 +60,6 @@ namespace zorba
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
 /*
@@ -76,7 +73,6 @@ namespace zorba
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
 /*
@@ -90,7 +86,6 @@ namespace zorba
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
 /*
@@ -104,7 +99,6 @@ namespace zorba
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
 /*
@@ -118,7 +112,6 @@ namespace zorba
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
 /*
@@ -132,7 +125,6 @@ namespace zorba
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
   };  
 } /* namespace zorba */
 #endif /* ZORBA_QNAMES_H */

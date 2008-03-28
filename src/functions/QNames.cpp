@@ -39,12 +39,6 @@ xqtref_t
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-    fn_resolve_qname::validate_args(
-    std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 /*end class fn_resolve_qname*/
 
  /*
@@ -71,12 +65,6 @@ xqtref_t
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-    fn_qname::validate_args(
-    std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 /*end class fn_qname*/
 
  /*
@@ -103,12 +91,6 @@ xqtref_t
   return GENV_TYPESYSTEM.QNAME_TYPE_ONE;
 }
 
-bool
-    op_qname_equal::validate_args(
-    std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 /*end class op_qname_equal*/
 
  /*
@@ -135,12 +117,6 @@ xqtref_t
   return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }
 
-bool
-    fn_prefix_from_qname::validate_args(
-    std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 /*end class fn_prefix_from_qname*/
 
 /*
@@ -167,12 +143,6 @@ xqtref_t
   return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }
 
-bool
-    fn_local_name_from_qname::validate_args(
-    std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 /*end class fn_local_name_from_qname*/
 
 /*
@@ -199,12 +169,6 @@ xqtref_t
   return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }
 
-bool
-    fn_namespace_uri_from_qname::validate_args(
-    std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 /*end class fn_namespace_uri_from_qname*/
 
 /*
@@ -231,12 +195,6 @@ xqtref_t
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-    fn_namespace_uri_for_prefix::validate_args(
-    std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 /*end class fn_namespace_uri_for_prefix*/
 
 /*
@@ -264,11 +222,5 @@ xqtref_t
   return GENV_TYPESYSTEM.create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE);
 }
 
-bool
-    fn_in_scope_prefixes::validate_args(
-    std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 /*end class fn_in_scope_prefixes*/
  }/*namespace zorba*/

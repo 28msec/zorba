@@ -29,10 +29,6 @@ xqtref_t fn_local_name::type_check(signature& sig) const
   return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
 }
 
-bool fn_local_name::validate_args(std::vector<PlanIter_t>& argv) const
-{
-  return argv.size() == 1;
-}
 
 /*******************************************************************************
   14.3 fn:namespace-uri
@@ -53,10 +49,6 @@ xqtref_t fn_namespace_uri::type_check(signature& sig) const
   return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
 }
 
-bool fn_namespace_uri::validate_args(std::vector<PlanIter_t>& argv) const
-{
-  return argv.size() == 1;
-}
 
 /*******************************************************************************
   14.5 fn:lang
@@ -76,10 +68,6 @@ PlanIter_t fn_lang::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv,
   return new FnLangIterator(loc, argv);
 }
 
-bool fn_lang::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1 || argv.size() == 2);
-}
 
 /*******************************************************************************
   15.5.6 fn:collection
@@ -99,8 +87,4 @@ PlanIter_t fn_collection::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   return new FnCollectionIterator(loc, argv);
 }
 
-bool fn_collection::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 }/* namespace zorba */

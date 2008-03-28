@@ -13,7 +13,6 @@ class fn_local_name : public function {
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
-    bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 class fn_namespace_uri : public function {
@@ -22,7 +21,6 @@ class fn_namespace_uri : public function {
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
-    bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 class fn_lang : public function {
@@ -31,7 +29,6 @@ class fn_lang : public function {
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature& s) const;
-    bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 class fn_collection : public function {
@@ -40,8 +37,8 @@ class fn_collection : public function {
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature& s) const;
-    bool validate_args(std::vector<PlanIter_t>&) const;
 };
+
 }
 
 #endif /* ZORBA_NODES_H */

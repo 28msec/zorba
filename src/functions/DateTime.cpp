@@ -23,11 +23,6 @@ PlanIter_t fn_datetime_ctor::codegen (const QueryLoc& loc, std::vector<PlanIter_
   return new FnDateTimeConstructorIterator(loc, argv[0], argv[1]);
 }
 
-bool fn_datetime_ctor::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return true;
-}
 
 xqtref_t fn_datetime_ctor::type_check (
     signature& ) const
@@ -50,13 +45,6 @@ PlanIter_t
 fn_years_from_duration::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnYearsFromDurationIterator(loc, argv);
-}
-
-bool
-fn_years_from_duration::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -84,13 +72,6 @@ fn_months_from_duration::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
   return new FnMonthsFromDurationIterator(loc, argv);
 }
 
-bool
-fn_months_from_duration::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_months_from_duration::type_check (
     signature&) const
@@ -114,13 +95,6 @@ PlanIter_t
 fn_days_from_duration::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnDaysFromDurationIterator(loc, argv);
-}
-
-bool
-fn_days_from_duration::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -148,13 +122,6 @@ fn_hours_from_duration::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new FnHoursFromDurationIterator(loc, argv);
 }
 
-bool
-fn_hours_from_duration::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_hours_from_duration::type_check (
     signature& ) const
@@ -178,13 +145,6 @@ PlanIter_t
 fn_minutes_from_duration::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnMinutesFromDurationIterator(loc, argv);
-}
-
-bool
-fn_minutes_from_duration::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -212,13 +172,6 @@ fn_seconds_from_duration::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   return new FnSecondsFromDurationIterator(loc, argv);
 }
 
-bool
-fn_seconds_from_duration::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_seconds_from_duration::type_check (
     signature&) const
@@ -242,13 +195,6 @@ PlanIter_t
 fn_year_from_datetime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnYearFromDatetimeIterator(loc, argv);
-}
-
-bool
-fn_year_from_datetime::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -276,13 +222,6 @@ fn_month_from_datetime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new FnMonthFromDatetimeIterator(loc, argv);
 }
 
-bool
-fn_month_from_datetime::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_month_from_datetime::type_check (
     signature& ) const
@@ -306,13 +245,6 @@ PlanIter_t
 fn_day_from_datetime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnDayFromDatetimeIterator(loc, argv);
-}
-
-bool
-fn_day_from_datetime::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -340,13 +272,6 @@ fn_hours_from_datetime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new FnHoursFromDatetimeIterator(loc, argv);
 }
 
-bool
-fn_hours_from_datetime::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_hours_from_datetime::type_check (
     signature& ) const
@@ -372,13 +297,6 @@ fn_minutes_from_datetime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   return new FnMinutesFromDatetimeIterator(loc, argv);
 }
 
-bool
-fn_minutes_from_datetime::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_minutes_from_datetime::type_check (
     signature& ) const
@@ -402,13 +320,6 @@ PlanIter_t
 fn_seconds_from_datetime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnSecondsFromDatetimeIterator(loc, argv);
-}
-
-bool
-fn_seconds_from_datetime::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -437,13 +348,6 @@ fn_timezone_from_datetime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
   return new FnTimezoneFromDatetimeIterator(loc, argv);
 }
 
-bool
-fn_timezone_from_datetime::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_timezone_from_datetime::type_check (
     signature&) const
@@ -469,13 +373,6 @@ fn_year_from_date::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
   return new FnYearFromDateIterator(loc, argv);
 }
 
-bool
-fn_year_from_date::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_year_from_date::type_check (
     signature&) const
@@ -499,13 +396,6 @@ PlanIter_t
 fn_month_from_date::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnMonthFromDateIterator(loc, argv);
-}
-
-bool
-fn_month_from_date::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -534,13 +424,6 @@ fn_day_from_date::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, A
   return new FnDayFromDateIterator(loc, argv);
 }
 
-bool
-fn_day_from_date::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_day_from_date::type_check (
     signature&) const
@@ -564,13 +447,6 @@ PlanIter_t
 fn_timezone_from_date::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnTimezoneFromDateIterator(loc, argv);
-}
-
-bool
-fn_timezone_from_date::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -598,13 +474,6 @@ fn_hours_from_time::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv,
   return new FnHoursFromTimeIterator(loc, argv);
 }
 
-bool
-fn_hours_from_time::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_hours_from_time::type_check (
     signature& ) const
@@ -630,13 +499,6 @@ fn_minutes_from_time::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   return new FnMinutesFromTimeIterator(loc, argv);
 }
 
-bool
-fn_minutes_from_time::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_minutes_from_time::type_check (
     signature&) const
@@ -660,13 +522,6 @@ PlanIter_t
 fn_seconds_from_time::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new FnSecondsFromTimeIterator(loc, argv);
-}
-
-bool
-fn_seconds_from_time::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
 }
 
 xqtref_t
@@ -695,13 +550,6 @@ fn_timezone_from_time::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
   return new FnTimezoneFromTimeIterator(loc, argv);
 }
 
-bool
-fn_timezone_from_time::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
-
 xqtref_t
 fn_timezone_from_time::type_check (
     signature&) const
@@ -725,13 +573,6 @@ PlanIter_t
 op_ym_durations_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
-}
-
-bool
-op_ym_durations_add::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -759,13 +600,6 @@ op_ym_durations_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   return new NumArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
 }
 
-bool
-op_ym_durations_subtract::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_ym_durations_subtract::type_check (
     signature&) const
@@ -789,13 +623,6 @@ PlanIter_t
 op_ym_durations_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<MultiplyOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_ym_durations_multiply::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -823,13 +650,6 @@ op_ym_durations_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_ym_durations_divide::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_ym_durations_divide::type_check (
     signature&) const
@@ -853,13 +673,6 @@ PlanIter_t
 op_divide_ymd_by_ymd::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_divide_ymd_by_ymd::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -887,13 +700,6 @@ op_dt_durations_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_dt_durations_add::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_dt_durations_add::type_check (
     signature&) const
@@ -917,13 +723,6 @@ PlanIter_t
 op_dt_durations_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_dt_durations_subtract::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -951,13 +750,6 @@ op_dt_durations_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   return new NumArithIterator<MultiplyOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_dt_durations_multiply::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_dt_durations_multiply::type_check (
     signature& ) const
@@ -981,13 +773,6 @@ PlanIter_t
 op_dt_durations_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_dt_durations_divide::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -1016,13 +801,6 @@ op_divide_dtd_by_dtd::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_divide_dtd_by_dtd::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_divide_dtd_by_dtd::type_check (
     signature&) const
@@ -1046,13 +824,6 @@ PlanIter_t
 op_sub_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_sub_dt::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -1080,13 +851,6 @@ op_sub_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annotatio
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_sub_d::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_sub_d::type_check (
     signature&) const
@@ -1110,13 +874,6 @@ PlanIter_t
 op_sub_t::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_sub_t::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -1144,13 +901,6 @@ op_add_ymd_to_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, A
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_add_ymd_to_dt::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_add_ymd_to_dt::type_check (
     signature&) const
@@ -1174,13 +924,6 @@ PlanIter_t
 op_add_dtd_to_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_add_dtd_to_dt::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -1209,13 +952,6 @@ op_sub_ymd_from_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv,
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_sub_ymd_from_dt::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_sub_ymd_from_dt::type_check (
     signature&) const
@@ -1239,13 +975,6 @@ PlanIter_t
 op_sub_dtd_from_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_sub_dtd_from_dt::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -1273,13 +1002,6 @@ op_add_ymd_to_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, An
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_add_ymd_to_d::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_add_ymd_to_d::type_check (
     signature& ) const
@@ -1303,13 +1025,6 @@ PlanIter_t
 op_add_dtd_to_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_add_dtd_to_d::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -1338,13 +1053,6 @@ op_sub_ymd_from_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_sub_ymd_from_d::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_sub_ymd_from_d::type_check (
     signature& ) const
@@ -1368,13 +1076,6 @@ PlanIter_t
 op_sub_dtd_from_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
-}
-
-bool
-op_sub_dtd_from_d::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
 }
 
 xqtref_t
@@ -1402,13 +1103,6 @@ op_add_dtd_to_t::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, An
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_add_dtd_to_t::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_add_dtd_to_t::type_check (
     signature& ) const
@@ -1434,13 +1128,6 @@ op_sub_dtd_from_t::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
 }
 
-bool
-op_sub_dtd_from_t::validate_args (
-    std::vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2);
-}
-
 xqtref_t
 op_sub_dtd_from_t::type_check (
     signature& ) const
@@ -1464,10 +1151,6 @@ PlanIter_t fn_adjust_dt_to_tz_1::codegen (const QueryLoc& loc, std::vector<PlanI
   return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
 }
 
-bool fn_adjust_dt_to_tz_1::validate_args (std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_adjust_dt_to_tz_1::type_check (signature& ) const
 {
@@ -1486,10 +1169,6 @@ PlanIter_t fn_adjust_dt_to_tz_2::codegen (const QueryLoc& loc, std::vector<PlanI
   return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
 }
 
-bool fn_adjust_dt_to_tz_2::validate_args (std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 xqtref_t fn_adjust_dt_to_tz_2::type_check (signature& ) const
 {
@@ -1511,10 +1190,6 @@ PlanIter_t fn_adjust_d_to_tz_1::codegen (const QueryLoc& loc, std::vector<PlanIt
   return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
 }
 
-bool fn_adjust_d_to_tz_1::validate_args (std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_adjust_d_to_tz_1::type_check (signature& ) const
 {
@@ -1533,10 +1208,6 @@ PlanIter_t fn_adjust_d_to_tz_2::codegen (const QueryLoc& loc, std::vector<PlanIt
   return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
 }
 
-bool fn_adjust_d_to_tz_2::validate_args (std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 xqtref_t fn_adjust_d_to_tz_2::type_check (signature& ) const
 {
@@ -1558,10 +1229,6 @@ PlanIter_t fn_adjust_t_to_tz_1::codegen (const QueryLoc& loc, std::vector<PlanIt
   return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
 }
 
-bool fn_adjust_t_to_tz_1::validate_args (std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_adjust_t_to_tz_1::type_check (signature& ) const
 {
@@ -1580,10 +1247,6 @@ PlanIter_t fn_adjust_t_to_tz_2::codegen (const QueryLoc& loc, std::vector<PlanIt
   return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
 }
 
-bool fn_adjust_t_to_tz_2::validate_args (std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 xqtref_t fn_adjust_t_to_tz_2::type_check (signature& ) const
 {

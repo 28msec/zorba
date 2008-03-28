@@ -17,7 +17,6 @@ public:
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
-	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 // 6.2.2 op:numeric-subtract
@@ -30,7 +29,6 @@ public:
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
-	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -44,7 +42,6 @@ public:
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
-	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -58,7 +55,6 @@ public:
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
-	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 // 6.2.5 op:numeric-integer-divide
@@ -71,7 +67,6 @@ public:
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
-	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 // 6.2.6 op:numeric-mod
@@ -84,7 +79,6 @@ public:
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
-	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 } // namespace zorba

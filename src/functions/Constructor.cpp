@@ -24,11 +24,6 @@ namespace zorba
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }
 
-  bool op_enclosed_expr::validate_args (
-      std::vector<PlanIter_t>& argv ) const
-  {
-    return ( argv.size() ==1 );
-  }
   /* end class op_enclosed_expr */
   
   /* begin class op_enclosed_expr */
@@ -50,10 +45,5 @@ namespace zorba
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }
   
-  bool op_docfilter_expr::validate_args (
-      std::vector<PlanIter_t>& argv ) const
-  {
-    return ( argv.size() ==1 );
-  }
   /* end class op_enclosed_expr */
 } /* namespace zorba */

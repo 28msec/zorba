@@ -26,11 +26,6 @@ xqtref_t op_add::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_add::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 op_subtract::op_subtract(
 	const signature& sig)
@@ -50,11 +45,6 @@ xqtref_t op_subtract::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_subtract::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 op_multiply::op_multiply(
 	const signature& sig)
@@ -74,11 +64,6 @@ xqtref_t op_multiply::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_multiply::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 op_divide::op_divide(
 	const signature& sig)
@@ -98,11 +83,6 @@ xqtref_t op_divide::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_divide::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 op_integer_divide::op_integer_divide(
 	const signature& sig)
@@ -122,11 +102,6 @@ xqtref_t op_integer_divide::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_integer_divide::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 op_mod::op_mod(
 	const signature& sig)
@@ -146,11 +121,6 @@ xqtref_t op_mod::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_mod::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 
 }

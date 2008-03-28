@@ -26,10 +26,6 @@ xqtref_t fn_trace_func::type_check(signature& sig) const
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
-bool fn_trace_func::validate_args(std::vector<PlanIter_t>& argv) const
-{
-  return argv.size() == 2;
-}
 
 /*******************************************************************************
   3 The Error Function
@@ -50,11 +46,6 @@ PlanIter_t fn_error::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new FnErrorIterator(loc, argv);
 }
 
-bool fn_error::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 0 || argv.size() == 1 ||
-             argv.size() == 2 || argv.size() == 3 );
-}
 
 /*******************************************************************************
   8.1 fn:resolve-uri
@@ -76,10 +67,6 @@ xqtref_t fn_resolve_uri::type_check(signature& sig) const
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool fn_resolve_uri::validate_args(std::vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1 || argv.size() == 2 );
-}
 
 }
 /* vim:set ts=2 sw=2: */
