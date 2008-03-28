@@ -2,55 +2,79 @@
 #include "util/Assert.h"
 #include "errors/error_manager.h"
 
+#include "system/globalenv.h"
+
+#include "store/naive/store_defs.h"
+#include "store/naive/simple_store.h"
 #include "store/naive/simple_pul.h"
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
-#include "zorbatypes/duration.h"
-#include "zorbatypes/datetime.h"
 
 
 namespace zorba { namespace store {
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addInsertInto(
+    Item*                target,
+    std::vector<Item_t>& children,
+    bool                 copy,
+    const CopyMode&      copymode)
+{
+  XmlNode* n = reinterpret_cast<XmlNode*>(target);
+
+  theTreeRoots.insert(n->getTree()->getRoot());
+
+  NodeUpdates* updates;
+  bool found = theNodeToUpdatesMap.get(n, updates);
+
+  UpdInsertChildren* upd = new UpdInsertChildren(UpdateConsts::UP_INSERT_INTO,
+                                                 n, children, copy, copymode);
+  theDoFirstList.push_back(upd);
+
+  if (!found)
+  {
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    theNodeToUpdatesMap.insert(n, updates);
+  }
+  else
+  {
+    updates->push_back(upd);
+  }
+}
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 void PULImpl::addInsertAttributes(
-    Item* target,
-    std::vector<XmlNode*>& attrs,
-    bool copy)
+    Item*                target,
+    std::vector<Item_t>& attrs,
+    bool                 copy,
+    const CopyMode&      copymode)
 {
-  ZORBA_ASSERT(target->isNode());
-
   XmlNode* n = reinterpret_cast<XmlNode*>(target);
 
   theTreeRoots.insert(n->getTree()->getRoot());
 
-  NodeUpdates* updatesp;
-  bool found = theNodeToUpdatesMap.get(n, updatesp);
+  NodeUpdates* updates;
+  bool found = theNodeToUpdatesMap.get(n, updates);
+
+  UpdInsertAttributes* upd = new UpdInsertAttributes(n, attrs, copy, copymode);
+  theDoFirstList.push_back(upd);
 
   if (!found)
   {
-    InsertAttributesPrimitive* upd = new InsertAttributesPrimitive(n, attrs, copy);
-    theDoFirstList.push_back(upd);
-
-    NodeUpdates updates(1);
-    updates[0] = upd;
-    updatesp = &updates;
-    theNodeToUpdatesMap.insert(n, updatesp);
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    theNodeToUpdatesMap.insert(n, updates);
   }
   else
   {
-    ulong numUpdates = updatesp->size();
-
-    for (ulong i = 0; i < numUpdates; i++)
-    {
-      if ((*updatesp)[i]->getKind() == UpdateConsts::PUL_DELETE)
-        return;
-    }
-
-    InsertAttributesPrimitive* upd = new InsertAttributesPrimitive(n, attrs, copy);
-    theDoFirstList.push_back(upd);
-    updatesp->push_back(upd);
+    updates->push_back(upd);
   }
 }
 
@@ -61,38 +85,34 @@ void PULImpl::addInsertAttributes(
 ********************************************************************************/
 void PULImpl::addDelete(Item* target)
 {
-  ZORBA_ASSERT(target->isNode());
-
   XmlNode* n = reinterpret_cast<XmlNode*>(target);
 
   theTreeRoots.insert(n->getTree()->getRoot());
 
-  NodeUpdates* updatesp;
-  bool found = theNodeToUpdatesMap.get(n, updatesp);
+  NodeUpdates* updates;
+  bool found = theNodeToUpdatesMap.get(n, updates);
 
   if (!found)
   {
-    DeletePrimitive* upd = new DeletePrimitive(n);
+    UpdDelete* upd = new UpdDelete(n);
     theDeleteList.push_back(upd);
 
-    NodeUpdates updates(1);
-    updates[0] = upd;
-    updatesp = &updates;
-    theNodeToUpdatesMap.insert(n, updatesp);
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    theNodeToUpdatesMap.insert(n, updates);
   }
   else
   {
-    ulong numUpdates = updatesp->size();
-
+    ulong numUpdates = updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if ((*updatesp)[i]->getKind() == UpdateConsts::PUL_DELETE)
+      if ((*updates)[i]->getKind() == UpdateConsts::UP_DELETE)
         return;
     }
 
-    DeletePrimitive* upd = new DeletePrimitive(n);
+    UpdDelete* upd = new UpdDelete(n);
     theDeleteList.push_back(upd);
-    updatesp->push_back(upd);
+    updates->push_back(upd);
   }
 }
 
@@ -100,76 +120,94 @@ void PULImpl::addDelete(Item* target)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addReplaceValue(Item* target, xqpStringStore* newValue)
+void PULImpl::addReplaceContent(Item* target, Item_t& newChild)
 {
-  ZORBA_ASSERT(target->isNode());
-
   XmlNode* n = reinterpret_cast<XmlNode*>(target);
 
   theTreeRoots.insert(n->getTree()->getRoot());
 
-  NodeUpdates* updatesp;
-  bool found = theNodeToUpdatesMap.get(n, updatesp);
+  NodeUpdates* updates;
+  bool found = theNodeToUpdatesMap.get(n, updates);
 
   if (!found)
   {
-    ReplaceValuePrimitive* upd = new ReplaceValuePrimitive(n, newValue);
-    theDoFirstList.push_back(upd);
-
-    NodeUpdates updates(1);
-    updates[0] = upd;
-    updatesp = &updates;
-    theNodeToUpdatesMap.insert(n, updatesp);
-  }
-  else
-  {
-    ReplaceValuePrimitive* upd = new ReplaceValuePrimitive(n, newValue);
-    theDoFirstList.push_back(upd);
-    updatesp->push_back(upd);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void PULImpl::addReplaceContent(Item* target, Item* newChild)
-{
-  ZORBA_ASSERT(target->isNode());
-
-  XmlNode* n = reinterpret_cast<XmlNode*>(target);
-  XmlNode* child = reinterpret_cast<XmlNode*>(newChild);
-
-  theTreeRoots.insert(n->getTree()->getRoot());
-
-  NodeUpdates* updatesp;
-  bool found = theNodeToUpdatesMap.get(n, updatesp);
-
-  if (!found)
-  {
-    ReplaceContentPrimitive* upd = new ReplaceContentPrimitive(n, child);
+    UpdatePrimitive* upd = new UpdReplaceContent(n, newChild);
     theReplaceContentList.push_back(upd);
 
-    NodeUpdates updates(1);
-    updates[0] = upd;
-    updatesp = &updates;
-    theNodeToUpdatesMap.insert(n, updatesp);
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    theNodeToUpdatesMap.insert(n, updates);
   }
   else
   {
-    ulong numUpdates = updatesp->size();
-
+    ulong numUpdates = updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if ((*updatesp)[i]->getKind() == UpdateConsts::REPLACE_CONTENT)
+      if ((*updates)[i]->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
+        ZORBA_ERROR(ZorbaError::XUDY0017);
+    }
+
+    UpdatePrimitive* upd = new UpdReplaceContent(n, newChild);
+    theReplaceContentList.push_back(upd);
+    updates->push_back(upd);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addReplaceValue(Item* target, xqpStringStore_t& newValue)
+{
+  XmlNode* n = reinterpret_cast<XmlNode*>(target);
+  StoreConsts::NodeKind targetKind = n->getNodeKind();
+
+  theTreeRoots.insert(n->getTree()->getRoot());
+
+  NodeUpdates* updates;
+  bool found = theNodeToUpdatesMap.get(n, updates);
+
+  UpdatePrimitive* upd;
+  switch (targetKind)
+  {
+  case StoreConsts::attributeNode:
+    upd = new UpdReplaceAttrValue(n, newValue);
+    break;
+  case StoreConsts::textNode:
+    upd = new UpdReplaceTextValue(n, newValue);
+    break;
+  case StoreConsts::piNode:
+    upd = new UpdReplacePiValue(n, newValue);
+    break;
+  case StoreConsts::commentNode:
+    upd = new UpdReplaceCommentValue(n, newValue);
+    break;
+  default:
+    ZORBA_FATAL(0, "");
+  }
+
+  if (!found)
+  {
+    theDoFirstList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    theNodeToUpdatesMap.insert(n, updates);
+  }
+  else
+  {
+    ulong numUpdates = updates->size();
+    for (ulong i = 0; i < numUpdates; i++)
+    {
+      if (UpdateConsts::isReplaceValue((*updates)[i]->getKind()))
       {
+        delete upd;
         ZORBA_ERROR(ZorbaError::XUDY0017);
       }
     }
 
-    ReplaceContentPrimitive* upd = new ReplaceContentPrimitive(n, child);
-    theReplaceContentList.push_back(upd);
-    updatesp->push_back(upd);
+    theDoFirstList.push_back(upd);
+    updates->push_back(upd);
   }
 }
 
@@ -177,43 +215,63 @@ void PULImpl::addReplaceContent(Item* target, Item* newChild)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addRename(Item* target, Item* newName)
+void PULImpl::addRename(Item* target, Item_t& newName)
 {
   ZORBA_ASSERT(target->isNode());
 
   XmlNode* n = reinterpret_cast<XmlNode*>(target);
-  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName);
+  StoreConsts::NodeKind targetKind = n->getNodeKind();
 
   theTreeRoots.insert(n->getTree()->getRoot());
 
-  NodeUpdates* updatesp;
-  bool found = theNodeToUpdatesMap.get(n, updatesp);
+  NodeUpdates* updates;
+  bool found = theNodeToUpdatesMap.get(n, updates);
+
+  UpdatePrimitive* upd;
+  switch (targetKind)
+  {
+  case StoreConsts::elementNode:
+  {
+    upd = new UpdRenameElem(n, newName);
+    break;
+  }
+  case StoreConsts::attributeNode:
+  {
+    upd = new UpdRenameAttr(n, newName);
+    break;
+  }
+  case StoreConsts::piNode:
+  {
+    xqpStringStore_t tmp = newName->getStringValue();
+    upd = new UpdRenamePi(n, tmp);
+    break;
+  }
+  default:
+    ZORBA_FATAL(0, "");
+  }
 
   if (!found)
   {
-    RenamePrimitive* upd = new RenamePrimitive(n, qn);
     theDoFirstList.push_back(upd);
 
-    NodeUpdates updates(1);
-    updates[0] = upd;
-    updatesp = &updates;
-    theNodeToUpdatesMap.insert(n, updatesp);
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    theNodeToUpdatesMap.insert(n, updates);
   }
   else
   {
-    ulong numUpdates = updatesp->size();
-
+    ulong numUpdates = updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if ((*updatesp)[i]->getKind() == UpdateConsts::RENAME)
+      if (UpdateConsts::isRename((*updates)[i]->getKind()))
       {
+        delete upd;
         ZORBA_ERROR(ZorbaError::XUDY0015);
       }
     }
 
-    RenamePrimitive* upd = new RenamePrimitive(n, qn);
     theDoFirstList.push_back(upd);
-    updatesp->push_back(upd);
+    updates->push_back(upd);
   }
 }
 
@@ -256,31 +314,65 @@ void PULImpl::applyUpdates()
 
   numUpdates = theDeleteList.size();
   for (i = 0; i < numUpdates; i++)
-    theDeleteList[i]->theTarget->switchTree();
+  {
+    XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
+    theDeleteList[i]->theTarget->switchTree(tree, NULL, 0, false);
+  }
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::verify()
+void UpdInsertChildren::apply()
 {
+  if (theKind == UpdateConsts::UP_INSERT_INTO)
+  {
+    ELEM_NODE(theTarget)->insertInto(theChildren,
+                                     theTarget->numChildren(),
+                                     theDoCopy,
+                                     theCopyMode);
+  }
+  else if (theKind == UpdateConsts::UP_INSERT_INTO_FIRST)
+  {
+    ELEM_NODE(theTarget)->insertFirst(theChildren, theDoCopy, theCopyMode);
+  }
+  else
+  {
+    ELEM_NODE(theTarget)->insertLast(theChildren, theDoCopy, theCopyMode);
+  }
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void InsertAttributesPrimitive::apply()
+void UpdInsertSiblings::apply()
 {
-  theTarget->insertAttributes(theAttributes, theDoCopy, theCopyMode);
+  if (theKind == UpdateConsts::UP_INSERT_BEFORE)
+  {
+    ELEM_NODE(theTarget)->insertBefore(theSiblings, theDoCopy, theCopyMode);
+  }
+  else
+  {
+    ELEM_NODE(theTarget)->insertAfter(theSiblings, theDoCopy, theCopyMode);
+  }
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void DeletePrimitive::apply()
+void UpdInsertAttributes::apply()
+{
+  ELEM_NODE(theTarget)->insertAttributes(theAttributes, theDoCopy, theCopyMode);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdDelete::apply()
 {
   theTarget->disconnect();
 }
@@ -289,27 +381,71 @@ void DeletePrimitive::apply()
 /*******************************************************************************
 
 ********************************************************************************/
-void ReplaceValuePrimitive::apply()
+void UpdReplaceContent::apply()
 {
-  theTarget->replaceValue(theNewValue, theOldValue);
+  ELEM_NODE(theTarget)->replaceContent(BASE_NODE(theNewChild), theOldChildren);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdReplaceAttrValue::apply()
+{
+  ATTR_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void ReplaceContentPrimitive::apply()
+void UpdReplaceTextValue::apply()
 {
-  theTarget->replaceElementContent(theNewChild, theOldChildren);
+  TEXT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void RenamePrimitive::apply()
+void UpdReplacePiValue::apply()
 {
-  theTarget->rename(theNewName, theOldName);
+  PI_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdReplaceCommentValue::apply()
+{
+  COMMENT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdRenameElem::apply()
+{
+  ELEM_NODE(theTarget)->rename(theNewName, theOldName);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdRenameAttr::apply()
+{
+  ATTR_NODE(theTarget)->rename(theNewName, theOldName);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdRenamePi::apply()
+{
+  PI_NODE(theTarget)->rename(theNewName, theOldName);
 }
 
 

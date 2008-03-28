@@ -49,9 +49,10 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
     store::Item_t res;
     store::Item_t itemQName;
     store::Item_t itemElem;
-    xqp_string resNs = "";
-    xqp_string resPre = "";
-    xqp_string resQName = "";
+    xqpStringStore_t qname;
+    xqpStringStore_t resNs;
+    xqpStringStore_t resPre;
+    xqpStringStore_t resLocal;
     int32_t index = -1;
     std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
     std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
@@ -66,11 +67,13 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
 
       //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
 
-      index = itemQName->getStringValue().trim().indexOf(":");
+      qname = itemQName->getStringValue();
+      index = qname->indexOf(":");
+
       if(-1 != index)
       {
-        resPre = itemQName->getStringValue().trim().substr( 0, index );
-        resQName = itemQName->getStringValue().trim().substr( index+1, itemQName->getStringValue().length() - index );
+        resPre = new xqpStringStore(qname->str().substr(0, index));
+        resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
 
         itemElem = consumeNext(theChild1.getp(), planState );
         if( itemElem != NULL )
@@ -82,9 +85,9 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
                ++iter
               )
           {
-            if( (*iter).first == resPre )
+            if( (*iter).first.getStore()->byteEqual(*resPre))
             {
-              resNs = (*iter).second;
+              resNs = (*iter).second.getStore();
               break;
             }
           }
@@ -92,12 +95,13 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
       }
       else
       {
-        resQName = itemQName->getStringValue().trim();
+        resNs = new xqpStringStore("");
+        resPre = new xqpStringStore("");
+        resLocal = itemQName->getStringValue();
       }
 
-      res = GENV_ITEMFACTORY->createQName(resNs.getStore(),
-                                                 resPre.getStore(),
-                                                 resQName.getStore());
+      res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
+
       STACK_PUSH( res, state );
     }
     STACK_END (state);
@@ -127,54 +131,58 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
 store::Item_t
 QNameIterator::nextImpl(PlanState& planState) const
 {
-    store::Item_t itemURI;
-    store::Item_t itemQName;
-    store::Item_t res;
-    xqp_string resNs = "";
-    xqp_string resQName = "";
-    int32_t index = -1;
+  store::Item_t itemURI;
+  store::Item_t itemQName;
+  store::Item_t res;
+  xqpStringStore_t qname;
+  xqpStringStore_t resNs;
+  xqpStringStore_t resPre;
+  xqpStringStore_t resLocal;
+  int32_t index = -1;
 
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-    itemURI = consumeNext(theChild0.getp(), planState );
-    if ( itemURI != NULL )
-    {
-      itemURI = itemURI->getAtomizationValue();
-      resNs = itemURI->getStringValue().trim();
-    }
+  itemURI = consumeNext(theChild0.getp(), planState );
+  if ( itemURI != NULL )
+  {
+    itemURI = itemURI->getAtomizationValue();
+    resNs = itemURI->getStringValue();
+  }
+  else
+  {
+    resNs = new xqpStringStore("");
+  }
 
-    itemQName = consumeNext(theChild1.getp(), planState );
-    if ( itemQName != NULL )
-    {
-      itemQName = itemQName->getAtomizationValue();
-      resQName = itemQName->getStringValue().trim();
+  itemQName = consumeNext(theChild1.getp(), planState );
+  if ( itemQName != NULL )
+  {
+    itemQName = itemQName->getAtomizationValue();
+    qname = itemQName->getStringValue();
       
-      //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
+    //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
 
-      index = resQName.indexOf(":");
+    index = qname->indexOf(":");
       
-      if( resNs.empty() && (-1 != index) )
-        ZORBA_ERROR(ZorbaError::FOCA0002);
-    }
+    if(resNs->empty() && (-1 != index) )
+      ZORBA_ERROR(ZorbaError::FOCA0002);
+  }
 
-    if( -1 != index )
-    {
-      res = GENV_ITEMFACTORY->createQName(
-        resNs.getStore(),
-        resQName.substr( 0, index ).getStore(),
-        resQName.substr( index+1, resQName.length() - index ).getStore());
-    }
-    else
-    {
-      xqpString empty("");
-      res = GENV_ITEMFACTORY->createQName(resNs.getStore(),
-                                                 empty.getStore(),
-                                                 resQName.getStore());
-    }
+  if( -1 != index )
+  {
+    resPre = new xqpStringStore(qname->str().substr(0, index));
+    resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
 
-    STACK_PUSH( res, state );
-    STACK_END (state);
+    res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
+  }
+  else
+  {
+    resPre = new xqpStringStore("");
+    res = GENV_ITEMFACTORY->createQName(resNs, resPre, qname);
+  }
+  
+  STACK_PUSH( res, state );
+  STACK_END (state);
 }
 /* end class QNameIterator */
 /**
@@ -360,7 +368,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
     itemPrefix = itemPrefix->getAtomizationValue();
 
     itemElem = consumeNext(theChild1.getp(), planState );
-    if( itemElem != NULL && !itemElem->getStringValue().empty())
+    if( itemElem != NULL && !itemElem->getStringValue()->empty())
     {
       itemElem->getNamespaceBindings(NamespaceBindings);
       for (
@@ -369,7 +377,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
             ++iter
           )
       {
-        if( (*iter).first == itemPrefix->getStringValue().trim() )
+        if( (*iter).first.getStore()->byteEqual(*itemPrefix->getStringValue()))
         {
           resNs = (*iter).second;
           break;

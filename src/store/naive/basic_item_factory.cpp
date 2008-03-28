@@ -583,7 +583,7 @@ Item_t BasicItemFactory::createAttributeNode(
     bool            assignIds)
 {
   XmlTree* xmlTree = NULL;
-  XmlNode* parent = NULL;
+  ElementNode* parent = NULL;
   AttributeNode* n = NULL;
   Item_t name;
   xqpStringStore_t lexicalValue;
@@ -612,12 +612,12 @@ Item_t BasicItemFactory::createAttributeNode(
     Item_t valueItem = valueIter->next();
     if (valueItem != 0)
     {
-      lexicalValue = valueItem->getStringValue().getStore();
+      lexicalValue = valueItem->getStringValue();
 
       valueItem = valueIter->next();
       while (valueItem != NULL)
       {
-        lexicalValue->str().append(valueItem->getStringValue().c_str());
+        lexicalValue->str().append(valueItem->getStringValue()->c_str());
         valueItem = valueIter->next();
       }
     }
@@ -660,7 +660,7 @@ Item_t BasicItemFactory::createAttributeNode(
     // node-constructor expr.
     else
     {
-      parent = ctx.top();
+      parent = reinterpret_cast<ElementNode*>(ctx.top());
 
       parent->checkUniqueAttr(name.getp());
 
@@ -779,7 +779,7 @@ Item_t BasicItemFactory::createTextNode(
 {
   // We must compute the value of the node before the node itself because
   // if the value is the empty sequence, no text node should be constructed.
-  xqpString value;
+  xqpStringStore_t value;
   Item_t valueItem = valueIter->next();
   if (valueItem != 0)
   {
@@ -788,8 +788,8 @@ Item_t BasicItemFactory::createTextNode(
     valueItem = valueIter->next();
     while (valueItem != NULL)
     {
-      value += " ";
-      value += valueItem->getAtomizationValue()->getStringValue();
+      value->str() += " ";
+      value->str() += valueItem->getAtomizationValue()->getStringValue()->str();
       valueItem = valueIter->next();
     }
   }
@@ -798,7 +798,7 @@ Item_t BasicItemFactory::createTextNode(
     return NULL;
   }
 
-  return createTextNode(qid, value.getStore(), isRoot, assignIds);
+  return createTextNode(qid, value, isRoot, assignIds);
 }
 
 

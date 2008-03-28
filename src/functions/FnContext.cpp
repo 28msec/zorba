@@ -21,7 +21,7 @@ ctx_variable::ctx_variable ( const signature& sig )
 
 PlanIter_t ctx_variable::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  xqpString varName = argv[0].cast<SingletonIterator>()->getValue()->getStringValue();
+  xqpStringStore_t varName = argv[0].cast<SingletonIterator>()->getValue()->getStringValue();
   return new CtxVariableIterator(loc, varName);
 }
 

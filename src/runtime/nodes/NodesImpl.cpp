@@ -105,7 +105,7 @@ store::Item_t FnCollectionIterator::nextImpl(PlanState& planState) const
 
   itemArg = consumeNext(theChildren[0].getp(), planState);
   if (itemArg != NULL)
-    uri = itemArg->getStringValue();
+    uri = itemArg->getStringValue().getp();
   else
   {
     uri = planState.theRuntimeCB->theDynamicContext->get_default_collection();

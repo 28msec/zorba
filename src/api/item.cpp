@@ -72,7 +72,7 @@ Item Item::getAtomizationValue() const
 
 String Item::getStringValue() const
 {
-  return &*m_item->getStringValue().theStrStore;
+  return m_item->getStringValue().getp();
 }
 
 bool Item::isNode() const

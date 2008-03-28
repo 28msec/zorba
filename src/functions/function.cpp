@@ -63,7 +63,7 @@ PlanIter_t user_function::get_plan() const
     for(uint32_t i = 0; i < m_params.size(); ++i) {
       param_map.put((uint64_t)&*m_params[i], &param_iter_vec[i]);
     }
-    m_plan = zorba::codegen(get_fname ()->getStringValue ().c_str (), &*m_expr_body, &param_map);
+    m_plan = zorba::codegen(get_fname()->getStringValue()->c_str (), &*m_expr_body, &param_map);
     for(uint32_t i = 0; i < param_iter_vec.size(); ++i) {
       std::vector<ref_iter_t>& vec = param_iter_vec[i];
       switch(vec.size()) {

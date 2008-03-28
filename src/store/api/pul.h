@@ -9,6 +9,7 @@
 namespace zorba { namespace store {
 
 class XmlNode;
+class CopyMode;
 
 /*******************************************************************************
 
@@ -19,17 +20,18 @@ public:
   virtual ~PUL() { }
 
   virtual void addInsertAttributes(
-        Item* target,
-        std::vector<XmlNode*>& attrs,
-        bool copy) = 0;
-
-  virtual void addReplaceValue(Item* target, xqpStringStore* newValue) = 0;
-
-  virtual void addReplaceContent(Item* target, Item* newChild) = 0;
-
-  virtual void addRename(Item* node, Item* name) = 0;
+        Item*                target,
+        std::vector<Item_t>& attrs,
+        bool                 copy,
+        const CopyMode&      copymode) = 0;
 
   virtual void addDelete(Item* node) = 0;
+
+  virtual void addReplaceContent(Item* target, Item_t& newChild) = 0;
+
+  virtual void addReplaceValue(Item* target, xqpStringStore_t& newValue) = 0;
+
+  virtual void addRename(Item* node, Item_t& name) = 0;
 
   virtual void applyUpdates() = 0;
 

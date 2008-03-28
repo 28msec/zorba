@@ -277,7 +277,7 @@ void SAX2_XMLReaderNative::emit_node(store::Item* item)
       item_qname = item->getNodeName();
       content_handler->startElement(item_qname->getNamespace(),
                                     item_qname->getLocalName(),
-                                    item_qname->getStringValue(),
+                                    item_qname->getStringValue().getp(),
                                     attrs, nss);
     }
       
@@ -287,7 +287,7 @@ void SAX2_XMLReaderNative::emit_node(store::Item* item)
     {
       content_handler->endElement(item_qname->getNamespace(),
                                   item_qname->getLocalName(),
-                                  item_qname->getStringValue());
+                                  item_qname->getStringValue().getp());
       emit_endPrefixMapping(local_nsBindings);
     }
 	}
@@ -302,14 +302,14 @@ void SAX2_XMLReaderNative::emit_node(store::Item* item)
 	{		
   //  if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
   //    tr << " ";    
-		emit_expanded_string(item->getStringValue());
+		emit_expanded_string(item->getStringValue().getp());
   //  previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
     if(lexical_handler)
     {
-      xqp_string    comment_str = item->getStringValue();
+      xqp_string    comment_str = item->getStringValue().getp();
       lexical_handler->comment(comment_str.c_str(), comment_str.bytes());
     }
 	}
@@ -318,7 +318,8 @@ void SAX2_XMLReaderNative::emit_node(store::Item* item)
   //  tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
   //  previous_item = PREVIOUS_ITEM_WAS_NODE;
     if(content_handler)
-      content_handler->processingInstruction(item->getTarget(), item->getStringValue());
+      content_handler->processingInstruction(item->getTarget(),
+                                             item->getStringValue().getp());
 	}
 	else 
 	{
@@ -336,7 +337,7 @@ void SAX2_XMLReaderNative::emit_item(store::Item* item)
   {
   //  if (previous_item == PREVIOUS_ITEM_WAS_TEXT )
   //    tr << " ";
-    emit_expanded_string(item->getStringValue());
+    emit_expanded_string(item->getStringValue().getp());
   //  previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
   else
@@ -360,7 +361,7 @@ void SAX2_XMLReaderNative::emit_expanded_string(xqp_string strtext)
   if(content_handler)
   {
     //use xml_emitter to normalize string
-    xmlemitter.emit_expanded_string(strtext, false);
+    xmlemitter.emit_expanded_string(strtext.getStore(), false);
     content_handler->characters(oss_transc.getbuff(), oss_transc.getsize());
     oss_transc.clear_output();
   }

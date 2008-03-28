@@ -17,7 +17,7 @@ namespace zorba
 
 CtxVariableIterator::CtxVariableIterator(
     const QueryLoc& loc,
-    xqp_string aVarname)
+    xqpStringStore* aVarname)
   : 
   NoaryBaseIterator<CtxVariableIterator, CtxVariableIteratorState>(loc),
   theVarName(aVarname)
@@ -37,31 +37,35 @@ CtxVariableIterator::openImpl(PlanState& planState, uint32_t& offset)
   
   CtxVariableIteratorState* lState = StateTraitsImpl<CtxVariableIteratorState>::getState(planState, this->stateOffset);
 
-  if (theVarName != ".")
-    lState->iter = planState.theRuntimeCB->theDynamicContext->get_variable(theVarName);
+  xqpStringStore dot(".");
+
+  if (!theVarName->equals(&dot))
+    lState->iter = planState.theRuntimeCB->theDynamicContext->get_variable(xqpString(theVarName.getp()));
 
 }
+
 
 store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t item;
+  xqpStringStore dot(".");
 
   CtxVariableIteratorState* aState;
   DEFAULT_STACK_INIT(CtxVariableIteratorState, aState, planState);
 
-	if(theVarName == ".")//looking for context item?
+	if(theVarName->equals(&dot))//looking for context item?
 	{
     item = planState.theRuntimeCB->theDynamicContext->context_item();
 		if(item == NULL)
 		{
-			ZORBA_ERROR_LOC_PARAM ( ZorbaError::XPDY0002, loc, "context item", "");
+			ZORBA_ERROR_LOC_PARAM( ZorbaError::XPDY0002, loc, "context item", "");
 		}
 		STACK_PUSH( item, aState);
 	}
 	else
 	{
 		if (aState->iter == NULL)
-			ZORBA_ERROR_LOC_PARAM ( ZorbaError::XPDY0002, loc, theVarName, "");
+			ZORBA_ERROR_LOC_PARAM( ZorbaError::XPDY0002, loc, theVarName, "");
 
     aState->iter->open();
 

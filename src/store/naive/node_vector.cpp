@@ -67,6 +67,23 @@ bool LoadedNodeVector::remove(XmlNode* n)
 }
 
 
+void LoadedNodeVector::copy(ConstrNodeVector& dest)
+{
+  ulong size = this->size();
+
+  ZORBA_FATAL(dest.empty(), "");
+
+  dest.theNodes.resize(size);
+  dest.theBitmap.resize(size);
+
+  for (ulong i = 0; i < size; i++)
+  {
+    dest.theNodes[i] = theNodes[i];
+    dest.theBitmap[i] = false;
+  }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class ConstrNodeVector                                                     //
@@ -74,9 +91,8 @@ bool LoadedNodeVector::remove(XmlNode* n)
 /////////////////////////////////////////////////////////////////////////////////
 
 
-ConstrNodeVector::ConstrNodeVector(ulong size) : NodeVector(size)
+ConstrNodeVector::ConstrNodeVector(ulong size) : NodeVector(size), theBitmap(size)
 {
-  theBitmap.resize(size);
   for (ulong i = 0; i < size; i++)
   {
     theBitmap[i] = false;
@@ -194,26 +210,52 @@ void ConstrNodeVector::resize(ulong newSize)
 
   ulong oldSize = size();
 
-  theNodes.resize(newSize);
-  theBitmap.resize(newSize);
-  for (ulong i = oldSize; i < newSize; i++)
+  if (newSize > oldSize)
   {
-    theBitmap[i] = false;
-    theNodes[i] = NULL;
+    theNodes.resize(newSize);
+    theBitmap.resize(newSize);
+
+    for (ulong i = oldSize; i < newSize; i++)
+    {
+      theBitmap[i] = false;
+      theNodes[i] = NULL;
+    }
+  }
+  else if (newSize < oldSize)
+  {
+    for (ulong i = newSize; i < oldSize; i++)
+    {
+      if (theBitmap[i])
+        *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = NULL; 
+     }
+
+    theNodes.resize(newSize);
+    theBitmap.resize(newSize);
   }
 }
 
 
-void ConstrNodeVector::copy(const NodeVector& src)
+void ConstrNodeVector::copy(ConstrNodeVector& dest)
 {
-  ulong size = src.size();
+  ulong size = this->size();
 
-  resize(size);
+  ZORBA_FATAL(dest.empty(), "");
+
+  dest.theNodes.resize(size);
+  dest.theBitmap.resize(size);
 
   for (ulong i = 0; i < size; i++)
   {
-    *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = src.theNodes[i];
-    theBitmap[i] = true;
+    if (theBitmap[i])
+    {
+      *(reinterpret_cast<XmlNode_t*>(&dest.theNodes[i])) = theNodes[i];
+      dest.theBitmap[i] = true;
+    }
+    else
+    {
+      dest.theNodes[i] = theNodes[i];
+      dest.theBitmap[i] = false;
+    }
   }
 }
 

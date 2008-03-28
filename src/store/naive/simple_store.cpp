@@ -237,7 +237,7 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
 
   if (!inserted && docItem.getp() != rootp->getp())
   {
-    ZORBA_ERROR_PARAM( ZorbaError::API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
+    ZORBA_ERROR_PARAM(ZorbaError::API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
     return NULL; 
   }
 
@@ -298,7 +298,7 @@ Collection_t SimpleStore::createCollection(xqpStringStore* uri)
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM( ZorbaError::API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(ZorbaError::API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
     return NULL;
   }
 

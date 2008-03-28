@@ -189,7 +189,7 @@ public:
      *  Serializes the given string, performing character expansion
      *  if necessary.
      */   
-    virtual void emit_expanded_string(xqp_string, bool emit_attribute_value);
+    virtual void emit_expanded_string(xqpStringStore* str, bool emit_attribute_value);
     
     /**
      *  Serializes the children of the given node, without

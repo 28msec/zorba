@@ -109,8 +109,15 @@ public:
        *  @return  string value of the item as defined in XQuery data model
        *           specification (Section 2.6.5).
        */
-      virtual xqp_string 
+      virtual xqpStringStore_t 
       getStringValue( ) const = 0;
+
+      /**
+       * Helper method with is used to return a StringValue of an Item
+       * by pointer instead of rchandle
+       */
+      virtual xqpStringStore*
+      getStringValueP();
 
       /**
        *  @return  "true" if the item is a node; false if the item is an atomic value
@@ -449,13 +456,6 @@ public:
 
       virtual void
       serializeXML( std::ostream& os );
-
-      /**
-       * Helper method with is used to return a StringValue of an Item
-       * by pointer instead of rchandle
-       */
-      virtual xqpStringStore*
-      getStringValueP();
 
   };   /* Item */
 

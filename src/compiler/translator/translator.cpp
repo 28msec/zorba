@@ -470,7 +470,7 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   QueryLoc loc = v.get_location ();
   xqp_string target_str = v.get_pi_target ();
-  if (target_str.substr (0).uppercase () == "XML")
+  if (target_str.uppercase () == "XML")
     ZORBA_ERROR_LOC ( ZorbaError::XPST0003, loc);
   expr_t
     target = new const_expr (loc, target_str),
@@ -770,7 +770,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     const_expr* constValueExpr = valueExpr.dyn_cast<const_expr> ().getp();
     if (constValueExpr != NULL)
     {
-      xqpString uri = constValueExpr->get_val()->getStringValue();
+      xqpString uri(constValueExpr->get_val()->getStringValue());
 
       if (prefix == "xml" && uri != "http://www.w3.org/XML/1998/namespace")
       {
@@ -2060,7 +2060,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
         && TypeOps::is_equal (*sctx_p->get_typemanager()->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
                               *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        store::Item_t castLiteral = GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), isCast, true);
+        store::Item_t castLiteral = GenericCast::instance()->castToQName(ce->get_val()->getStringValue(), isCast, true);
         if (castLiteral != NULL) {
           xqp_string pre = castLiteral->getPrefix ();
           if (! pre.empty ()) {
@@ -2296,7 +2296,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_PARAM ( ZorbaError::XPST0017,  "fn:string", sz );
+        ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  "fn:string", sz );
       }
     } else if (fn_local == "number") {
       switch (sz) {
@@ -2306,7 +2306,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, "fn:number", sz );
+        ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:number", sz );
       }
       var_expr_t tv = tempvar (loc, var_expr::let_var);
       expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
@@ -2322,7 +2322,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
     } else if (fn_local == "static-base-uri") {
       if (sz != 0)
-        ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, "fn:static-base-uri", sz );
+        ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:static-base-uri", sz );
+
       xqp_string baseuri = sctx_p->baseuri ();
       if (baseuri.empty ())
         nodestack.push (create_seq (loc));
@@ -2342,10 +2343,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   xqtref_t type =
     sctx_p->get_typemanager()->create_type (fn_qname, TypeConstants::QUANT_QUESTION);
 
-  if (type != NULL && fn_qname->getStringValue () != "xs:anyAtomicType")
+  xqpStringStore tmp("xs:anyAtomicType");
+
+  if (type != NULL && !fn_qname->getStringValue()->equals(&tmp))
   {
     if (sz != 1)
-      ZORBA_ERROR_PARAM ( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
+      ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
   }
   else
@@ -3686,8 +3689,15 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
     global_binding b = *i;
     var_expr_t var = b.first;
     expr_t expr = b.second;
+
     if (expr == NULL)
-      expr = new fo_expr (var->get_loc (), ctxf, new const_expr (var->get_loc (), var->get_varname ()->getStringValue ()));
+    {
+      xqpString varname = var->get_varname()->getStringValue().getp();
+      expr = new fo_expr (var->get_loc(),
+                          ctxf,
+                          new const_expr(var->get_loc(), varname));
+    }
+
     clauses.push_back (wrap_in_letclause (expr, var));
   }
 

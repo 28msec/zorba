@@ -362,7 +362,7 @@ store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
     else 
     {
       textNode = factory->createTextNode((ulong)&planState,
-                                         item->getStringValue().getStore(),
+                                         item->getStringValue(),
                                          false, // not root
                                          true); // assignIds
       STACK_PUSH(textNode, state);
@@ -511,9 +511,9 @@ PiIterator::PiIterator (
 store::Item_t PiIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
-  xqp_string target, content;
+  xqpString content;
+  xqpStringStore_t target;
   bool lFirst;
-  
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -527,30 +527,33 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
 
   // TODO: check if lItem is string, raise XPTY0004 if not
   target = lItem->getStringValue();
-  if (target.empty ())
+
+  if (target->empty())
     ZORBA_ERROR( ZorbaError::XQDY0041);
-  else if (target.substr (0).uppercase () == "XML") 
+  else if (target->uppercase()->byteEqual("XML", 3)) 
     ZORBA_ERROR( ZorbaError::XQDY0064);
   
-  for (lFirst = true; 0 != (lItem = consumeNext (theChild1.getp(), planState)); lFirst = false)
+  for (lFirst = true;
+       0 != (lItem = consumeNext (theChild1.getp(), planState));
+       lFirst = false)
   {
     if (! lFirst) content += " ";
 
-    xqpString strvalue = lItem->getStringValue();
-    if (strvalue.indexOf("?>") >= 0)
+    xqpStringStore_t strvalue = lItem->getStringValue();
+    if (strvalue->indexOf("?>") >= 0)
     {
       ZORBA_ERROR( ZorbaError::XQDY0026);
     }
-    content += strvalue;
+    content += strvalue->str();
   }
 
   content = content.trimL(" \n\r\t", 4);
 
-  lItem = GENV_ITEMFACTORY->createPiNode((unsigned long)&planState,
-                                                target.getStore(),
-                                                content.getStore (),
-                                                theIsRoot,
-                                                true);  // assingIds
+  lItem = GENV_ITEMFACTORY->createPiNode((ulong)&planState,
+                                         target,
+                                         content.getStore (),
+                                         theIsRoot,
+                                         true);  // assingIds
   STACK_PUSH(lItem, state);
   
   STACK_END (state);
@@ -574,7 +577,7 @@ CommentIterator::CommentIterator(
 store::Item_t CommentIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
-  xqp_string content = "";
+  xqpStringStore_t content = new xqpStringStore("");
   bool lFirst;
 
   PlanIteratorState* state;
@@ -588,29 +591,28 @@ store::Item_t CommentIterator::nextImpl(PlanState& planState) const
       break;
     
     if (!lFirst)
-      content += " ";
-    content += lItem->getStringValue();
+      content->str() += " ";
+    content->str() += lItem->getStringValue()->str();
     lFirst = false;
   }
 
-  
-  if (content != "")
+  if (!content->empty())
   {
-    if (content.indexOf("-") == (long)(content.size()-1))
+    if (content->indexOf("-") == (long)(content->bytes()-1))
     {
       ZORBA_ERROR( ZorbaError::XQDY0072);
     }
 
-    if (content.indexOf("--") >= 0)
+    if (content->indexOf("--") >= 0)
     {
       ZORBA_ERROR( ZorbaError::XQDY0072);
     }
   }
 
-  lItem = GENV_ITEMFACTORY->createCommentNode((unsigned long)&planState,
-                                                     content.getStore(),
-                                                     theIsRoot,
-                                                     true); // assingIds
+  lItem = GENV_ITEMFACTORY->createCommentNode((ulong)&planState,
+                                              content,
+                                              theIsRoot,
+                                              true); // assingIds
     
   STACK_PUSH(lItem, state);
     
@@ -663,7 +665,7 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  xqpString str;
+  xqpStringStore_t strval;
 
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
@@ -700,12 +702,12 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 
       else if (state->theAttrContentString == NULL)
       {
-        state->theAttrContentString = new xqpStringStore(state->theContextItem->getStringValue().c_str());
+        state->theAttrContentString = new xqpStringStore(state->theContextItem->getStringValue()->c_str());
       }
       else
       {
         state->theAttrContentString->str().append(" ");
-        state->theAttrContentString->str().append(state->theContextItem->getStringValue().c_str());
+        state->theAttrContentString->str().append(state->theContextItem->getStringValue()->c_str());
       }
     }
   }
@@ -726,18 +728,18 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
       }
       else
       {
-        str = lItem->getStringValue();
+        strval = lItem->getStringValue();
 
         if (state->theElemContentString != NULL)
-          str = " " + str;
+          strval = new xqpStringStore(" " + strval->str());
         else
-          state->theElemContentString = str.getStore();
+          state->theElemContentString = strval;
 
-        if (str == "")
+        if (strval->empty())
           continue;
 
         lItem = factory->createTextNode((ulong)&planState,
-                                        str.getStore(),
+                                        strval,
                                         false,
                                         true);  // assingIds
         STACK_PUSH(lItem, state);

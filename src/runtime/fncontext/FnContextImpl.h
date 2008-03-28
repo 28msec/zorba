@@ -26,10 +26,10 @@ public:
 class CtxVariableIterator : public NoaryBaseIterator<CtxVariableIterator, CtxVariableIteratorState>
 {
 private:
-  xqpString theVarName;
+  xqpStringStore_t theVarName;
 
 public:
-  CtxVariableIterator(const QueryLoc& loc, xqpString varName);
+  CtxVariableIterator(const QueryLoc& loc, xqpStringStore* varName);
 
   virtual ~CtxVariableIterator();
 
@@ -39,7 +39,7 @@ public:
 
   virtual void accept(PlanIterVisitor&) const;
 
-  xqp_string getVarName() const { return theVarName; }
+  xqp_string getVarName() const { return theVarName.getp(); }
 };
   
 }

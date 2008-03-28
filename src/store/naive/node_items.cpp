@@ -1,4 +1,6 @@
 
+#include <stack>
+
 #include "system/globalenv.h"
 #include "compiler/parser/query_loc.h"
 #include "errors/error_manager.h"
@@ -69,19 +71,6 @@ void XmlTree::free() throw()
   }
   delete this;
 }
-
-
-void XmlTree::removeReferences(ulong count) throw()
-{
-  SYNC_CODE(theRCLock.acquire();)
-
-  theRefCount -= count;
-  if (theRefCount == 0)
-    free();
-
-  SYNC_CODE(theRCLock.release();)
-}
-
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +156,8 @@ XmlNode::XmlNode(XmlNode* parent, StoreConsts::NodeKind nodeKind)
   Create a new node C and make it a child (or attribute) of a given node P. 
   C is placed in a given position among P's exisitng children (or attributes),
   and the ordpath of C is computed based on the ordpaths of its left and right
-  siblings (if any).
+  siblings (if any). Note: "pos" must be <= P->numChildren. If "pos" ==
+  P->numChuldren, the "this" is appended to the P's children.
 ********************************************************************************/
 XmlNode::XmlNode(XmlNode* parent, ulong pos, StoreConsts::NodeKind nodeKind)
   :
@@ -180,108 +170,12 @@ XmlNode::XmlNode(XmlNode* parent, ulong pos, StoreConsts::NodeKind nodeKind)
   setTree(parent->getTree());
   SYNC_CODE(theRCLockPtr = &(getTree()->getRCLock());)
 
+  setOrdPath(parent, pos, nodeKind);
+
   if (nodeKind == StoreConsts::attributeNode)
-  {
-    if (parent->theOrdPath.isValid())
-    {
-      ulong numChildren = parent->numChildren();
-      ulong numAttrs = parent->numAttributes();
-
-      if (numAttrs > 0)
-      {
-        if (pos == 0)
-        {
-          OrdPath::insertBefore(parent->theOrdPath,
-                                parent->getAttr(0)->theOrdPath,
-                                theOrdPath);
-        }
-        else if (pos == numAttrs && numChildren > 0)
-        {
-          OrdPath::insertInto(parent->theOrdPath,
-                              parent->getAttr(pos-1)->theOrdPath,
-                              parent->getChild(0)->theOrdPath,
-                              theOrdPath);
-        }
-        else if (pos == numAttrs)
-        {
-          OrdPath::insertAfter(parent->theOrdPath,
-                               parent->getAttr(pos-1)->theOrdPath,
-                               theOrdPath);
-        }
-        else
-        {
-          OrdPath::insertInto(parent->theOrdPath,
-                              parent->getAttr(pos-1)->theOrdPath,
-                              parent->getAttr(pos)->theOrdPath,
-                              theOrdPath);
-        }
-      }
-      else if (numChildren > 0)
-      {
-        OrdPath::insertBefore(parent->theOrdPath,
-                              parent->getChild(0)->getOrdPath(),
-                              theOrdPath);
-      }
-      else
-      {
-        theOrdPath = parent->theOrdPath;
-        theOrdPath.appendComp(1);
-      }
-    }
-    
     parent->attributes().insert(this, pos, false);
-  }
-  else // not attribute node
-  {
-    if (parent->theOrdPath.isValid())
-    {
-      ulong numChildren = parent->numChildren();
-      ulong numAttrs = parent->numAttributes();
-
-      if (numChildren > 0)
-      {
-        if (pos == 0 && numAttrs > 0)
-        {
-          OrdPath::insertInto(parent->theOrdPath,
-                              parent->getAttr(numAttrs-1)->theOrdPath,
-                              parent->getChild(0)->theOrdPath,
-                              theOrdPath);
-        }
-        else if (pos == 0)
-        {
-          OrdPath::insertBefore(parent->theOrdPath,
-                                parent->getChild(0)->theOrdPath,
-                                theOrdPath);
-        }
-        else if (pos == numChildren)
-        {
-          OrdPath::insertAfter(parent->theOrdPath,
-                               parent->getChild(numChildren-1)->theOrdPath,
-                               theOrdPath);
-        }
-        else
-        {
-          OrdPath::insertInto(parent->theOrdPath,
-                              parent->getChild(pos-1)->theOrdPath,
-                              parent->getChild(pos)->theOrdPath,
-                              theOrdPath);
-        }
-      }
-      else if (numAttrs > 0)
-      {
-        OrdPath::insertAfter(parent->theOrdPath,
-                             parent->getAttr(numAttrs-1)->theOrdPath,
-                             theOrdPath);
-      }
-      else
-      {
-        theOrdPath = parent->theOrdPath;
-        theOrdPath.appendComp(1);
-      }
-    }
-    
+  else 
     parent->children().insert(this, pos, false);
-  }
 }
 
 
@@ -346,12 +240,103 @@ void XmlNode::setId(XmlTree* tree, const OrdPathStack* op)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::disconnect() throw()
+void XmlNode::setOrdPath(
+    XmlNode*              parent,
+    ulong                 pos,
+    StoreConsts::NodeKind nodeKind)
 {
-  if (theParent == NULL)
+  if (!parent->theOrdPath.isValid())
     return;
 
-  theParent->removeChild(this);
+  ulong numChildren = parent->numChildren();
+  ulong numAttrs = parent->numAttributes();
+
+  if (nodeKind == StoreConsts::attributeNode)
+  {
+    if (numAttrs > 0)
+    {
+      if (pos == 0)
+      {
+        OrdPath::insertBefore(parent->theOrdPath,
+                              parent->getAttr(0)->theOrdPath,
+                              theOrdPath);
+      }
+      else if (pos == numAttrs && numChildren > 0)
+      {
+        OrdPath::insertInto(parent->theOrdPath,
+                            parent->getAttr(pos-1)->theOrdPath,
+                            parent->getChild(0)->theOrdPath,
+                            theOrdPath);
+      }
+      else if (pos == numAttrs)
+      {
+        OrdPath::insertAfter(parent->theOrdPath,
+                             parent->getAttr(pos-1)->theOrdPath,
+                             theOrdPath);
+      }
+      else
+      {
+        OrdPath::insertInto(parent->theOrdPath,
+                            parent->getAttr(pos-1)->theOrdPath,
+                            parent->getAttr(pos)->theOrdPath,
+                            theOrdPath);
+      }
+    }
+    else if (numChildren > 0)
+    {
+      OrdPath::insertBefore(parent->theOrdPath,
+                            parent->getChild(0)->getOrdPath(),
+                            theOrdPath);
+    }
+    else
+    {
+      theOrdPath = parent->theOrdPath;
+      theOrdPath.appendComp(1);
+    }
+  }
+  else // not attribute node
+  {
+    if (numChildren > 0)
+    {
+      if (pos == 0 && numAttrs > 0)
+      {
+        OrdPath::insertInto(parent->theOrdPath,
+                            parent->getAttr(numAttrs-1)->theOrdPath,
+                            parent->getChild(0)->theOrdPath,
+                            theOrdPath);
+      }
+      else if (pos == 0)
+      {
+        OrdPath::insertBefore(parent->theOrdPath,
+                              parent->getChild(0)->theOrdPath,
+                              theOrdPath);
+      }
+      else if (pos == numChildren)
+      {
+        OrdPath::insertAfter(parent->theOrdPath,
+                             parent->getChild(numChildren-1)->theOrdPath,
+                             theOrdPath);
+      }
+      else
+      {
+        OrdPath::insertInto(parent->theOrdPath,
+                            parent->getChild(pos-1)->theOrdPath,
+                            parent->getChild(pos)->theOrdPath,
+                            theOrdPath);
+      }
+    }
+    else if (numAttrs > 0)
+    {
+      OrdPath::insertAfter(parent->theOrdPath,
+                           parent->getAttr(numAttrs-1)->theOrdPath,
+                           theOrdPath);
+    }
+    else
+    {
+      theOrdPath = parent->theOrdPath;
+      theOrdPath.appendComp(1);
+    }
+  }
 }
 
 
@@ -402,6 +387,109 @@ bool XmlNode::removeAttr(XmlNode* attr)
   }
 
   return found;
+}
+
+
+/*******************************************************************************
+  Disconnect this node from its parent, if any.
+********************************************************************************/
+void XmlNode::disconnect() throw()
+{
+  if (theParent == NULL)
+    return;
+
+  theParent->removeChild(this);
+}
+
+
+/*******************************************************************************
+  Disconnect "this" node and its subtree from its current xml tree and make it
+  a member of a new given tree, placing as a child or attribute of a given
+  parent node P. The position among P's children/attributes where "this" is to
+  be placed is also given.     
+********************************************************************************/
+void XmlNode::switchTree(
+    XmlTree* newTree,
+    XmlNode* parent,
+    ulong    pos,
+    bool     assignIds)
+{
+  ZORBA_FATAL(parent == NULL || parent->getTree() == newTree, "");
+
+  ulong refcount = 0;
+  std::stack<XmlNode*> nodes;
+
+  XmlTree* oldTree = getTree();
+
+  SYNC_CODE(oldTree->getRCLock().acquire());
+
+  try
+  {
+    if (theParent != NULL)
+      theParent->removeChild(this);
+
+    theParent = parent;
+
+    refcount += theRefCount;
+    setTree(newTree);
+
+    if (assignIds)
+    {
+      if (theParent != NULL)
+        setOrdPath(parent, pos, getNodeKind());
+      else
+        theOrdPath.setAsRoot();
+    }
+
+    nodes.push(this);
+
+    while (!nodes.empty())
+    {
+      XmlNode* n = nodes.top();
+      nodes.pop();
+
+      ulong numAttrs = n->numAttributes();
+      for (ulong i = 0; i < numAttrs; i++)
+      {
+        XmlNode* attr = n->getAttr(i);
+        refcount += attr->theRefCount;
+        attr->setTree(newTree);
+        if (assignIds)
+        {
+          attr->theOrdPath = n->theOrdPath;
+          attr->theOrdPath.appendComp(2 * i + 1);
+        }
+      }
+
+      ulong numChildren = n->numChildren();
+      for (ulong i = 0; i < numChildren; i++)
+      {
+        XmlNode* child = n->getChild(i);
+        refcount += child->theRefCount;
+        child->setTree(newTree);
+        if (assignIds)
+        {
+          child->theOrdPath = n->theOrdPath;
+          child->theOrdPath.appendComp(2 * (numAttrs + i) + 1);
+        }
+
+        nodes.push(child);
+      }
+    }
+
+    newTree->getRefCount() += refcount;
+
+    oldTree->getRefCount() -= refcount;
+    if (oldTree->getRefCount() == 0)
+      oldTree->free();
+  }
+  catch(...)
+  {
+    SYNC_CODE(oldTree->getRCLock().release());
+    throw;
+  }
+
+  SYNC_CODE(oldTree->getRCLock().release());
 }
 
 
@@ -495,18 +583,18 @@ Iterator_t DocumentNode::getChildren() const
 
 Iterator_t DocumentNode::getTypedValue() const
 {
-  Item_t item = GET_FACTORY().createUntypedAtomic(getStringValue().getStore());
+  Item_t item = new UntypedAtomicItemImpl(getStringValue());
   return new ItemIterator(item);
 }
 
 
 Item_t DocumentNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(getStringValue().getStore());
+  return new UntypedAtomicItemImpl(getStringValue());
 }
 
 
-xqp_string DocumentNode::getStringValue() const
+xqpStringStore_t DocumentNode::getStringValue() const
 {
   std::ostringstream oss;
 
@@ -516,10 +604,10 @@ xqp_string DocumentNode::getStringValue() const
     StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
     if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
-      oss << getChild(i)->getStringValue();
+      oss << getChild(i)->getStringValue()->str();
   }
 
-  return oss.str();
+  return new xqpStringStore(oss.str());
 }
 
 
@@ -796,14 +884,14 @@ Iterator_t ElementNode::getTypedValue() const
 ********************************************************************************/
 Item_t ElementNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(getStringValue().getStore());
+  return new UntypedAtomicItemImpl(getStringValue());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string ElementNode::getStringValue() const
+xqpStringStore_t ElementNode::getStringValue() const
 {
   std::ostringstream oss;
 
@@ -813,10 +901,10 @@ xqp_string ElementNode::getStringValue() const
     StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
     if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
-      oss << getChild(i)->getStringValue();
+      oss << getChild(i)->getStringValue()->str();
   }
 
-  return oss.str();
+  return new xqpStringStore(oss.str());
 }
 
 
@@ -960,8 +1048,9 @@ void ElementNode::checkUniqueAttr(Item* attrName) const
   {
     if (getAttr(i)->getNodeName()->equals(attrName))
     {
-      ZORBA_ERROR_PARAM( ZorbaError::XQDY0025, "Attribute name " << attrName->getStringValue() 
-                       << " is not unique", "");
+      ZORBA_ERROR_PARAM(ZorbaError::XQDY0025,
+                        "Attribute name " << *attrName->getStringValue() 
+                        << " is not unique", "");
     }
   }
 }
@@ -1134,7 +1223,7 @@ XmlNode* ElementNode::copy(
   NODE_TRACE1("}");
 
   NODE_TRACE1("Copied elem node " << this << " to node " << copyNode
-              << " name = " << theName->getStringValue() << " parent = "
+              << " name = " << *theName->getStringValue() << " parent = "
               << (parent ? parent : 0x0)
               << " pos = " << pos << " copy mode = " << copymode.toString());
 
@@ -1149,7 +1238,7 @@ xqp_string ElementNode::show() const
 {
   std::stringstream str;
 
-  str <<  "<" << theName->getStringValue();
+  str <<  "<" << *theName->getStringValue();
 
   str << " nid=\"" << theOrdPath.show() << "\"";
 
@@ -1181,7 +1270,7 @@ xqp_string ElementNode::show() const
     item = iter->next();
   }
 
-  str << "</" << theName->getStringValue() << ">";
+  str << "</" << *theName->getStringValue() << ">";
   return str.str().c_str();
 }
 
@@ -1232,7 +1321,7 @@ LoadedElementNode::LoadedElementNode(
 {
   NODE_TRACE1("{\nConstructing root element node " << this
               << " tree = " << tree->getId() << ":" << tree
-              << " name = " << nodeName->getStringValue());
+              << " name = " << *nodeName->getStringValue());
 }
 
 
@@ -1251,7 +1340,7 @@ LoadedElementNode::LoadedElementNode(
               << parent << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << nodeName->getStringValue());
+              << " name = " << *nodeName->getStringValue());
 }
 
 
@@ -1268,7 +1357,7 @@ LoadedElementNode::LoadedElementNode(
   NODE_TRACE1("{\nConstructing element node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << nodeName->getStringValue());
+              << " name = " << *nodeName->getStringValue());
 }
 
 
@@ -1292,7 +1381,7 @@ ConstrElementNode::ConstrElementNode(
 {
   NODE_TRACE1("{\nConstructing root element node " << this
               << " tree = " << tree->getId() << ":" << tree
-              << " name = " << nodeName->getStringValue());
+              << " name = " << *nodeName->getStringValue());
 }
 
 
@@ -1309,7 +1398,7 @@ ConstrElementNode::ConstrElementNode(
   NODE_TRACE1("{\nConstructing element node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << nodeName->getStringValue());
+              << " name = " << *nodeName->getStringValue());
 }
 
 
@@ -1386,7 +1475,7 @@ void ConstrElementNode::constructSubtree(
   theChildren.resize(numChildren());
   theAttributes.resize(numAttributes());
 
-  NODE_TRACE2("Constructed elem node " << this << ":" << theName->getStringValue());
+  NODE_TRACE2("Constructed elem node " << this << ":" << *theName->getStringValue());
   NODE_TRACE1("}");
 }
 
@@ -1486,8 +1575,8 @@ AttributeNode::AttributeNode(
   if (isIdrefs)
     theFlags |= XmlNode::IsIdRefs;
 
-  NODE_TRACE1("Loaded attr node " << this << " name = " << attrName->show()
-              << std::endl);
+  NODE_TRACE1("Loaded attr node " << this << " name = "
+              << *attrName->getStringValue());
 }
 
 
@@ -1517,8 +1606,8 @@ AttributeNode::AttributeNode(
 
   NODE_TRACE1("Constructed root attribute node " << this
               << " tree = " << getTree()->getId() << ":" << getTree()
-              << " name = " << theName->getStringValue()
-              << " value = " << typedValue->getStringValue());
+              << " name = " << *theName->getStringValue()
+              << " value = " << *typedValue->getStringValue());
 }
 
 
@@ -1549,8 +1638,8 @@ AttributeNode::AttributeNode(
   NODE_TRACE1("Constructed attribute node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << theName->getStringValue()
-              << " value = " << typedValue->getStringValue());
+              << " name = " << *theName->getStringValue()
+              << " value = " << *typedValue->getStringValue());
 }
 
 
@@ -1580,8 +1669,8 @@ AttributeNode::AttributeNode(
   NODE_TRACE1("Constructed attribute node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << theName->getStringValue()
-              << " value = " << typedValue->getStringValue());
+              << " name = " << *theName->getStringValue()
+              << " value = " << *typedValue->getStringValue());
 }
 
 
@@ -1631,7 +1720,7 @@ XmlNode* AttributeNode::copy(
       typedValue = theTypedValue;
     else
     {
-      typedValue = new UntypedAtomicItemImpl(getStringValue().getStore());
+      typedValue = new UntypedAtomicItemImpl(getStringValue());
       deleteValue = true;
     }
   }
@@ -1675,7 +1764,6 @@ XmlNode* AttributeNode::copy(
     throw;
   }
 
-  NODE_TRACE1("}");
   NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = ");
   if (parent) { NODE_TRACE1(parent); }
@@ -1700,12 +1788,12 @@ Item_t AttributeNode::getAtomizationValue() const
   return theTypedValue;
 }
 
-xqp_string AttributeNode::getStringValue() const
+xqpStringStore_t AttributeNode::getStringValue() const
 {
   if (theTypedValue != 0)
     return theTypedValue->getStringValue();
   else
-    return "";
+    return new xqpStringStore("");
 }
 
 
@@ -1714,7 +1802,7 @@ xqp_string AttributeNode::getStringValue() const
 ********************************************************************************/
 xqp_string AttributeNode::show() const
 {
-  return theName->getStringValue() + "=\"" +
+  return theName->getStringValue()->str() + "=\"" +
          (theTypedValue != NULL ? theTypedValue->show() : "") + "\"";
 }
 

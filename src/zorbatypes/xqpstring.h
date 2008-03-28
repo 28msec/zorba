@@ -20,6 +20,9 @@ class xqpStringStore : public RCObject
 
   friend std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
 
+public:
+  typedef ptrdiff_t distance_type;
+
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -35,16 +38,36 @@ public:
   static uint32_t
   hash(const char* str);
 
+  static bool
+  is_unreservedCP(uint32_t cp);
+
+  static bool
+  is_ucscharCP(uint32_t cp);
+
+  bool
+  is_iprivateCP(uint32_t cp) const;
+  
+  bool
+  is_printableASCII(uint32_t cp) const;
+  
+  bool
+  is_Invalid_in_IRI(uint32_t cp) const;
+
 public:
   xqpStringStore() { }
-
-  xqpStringStore(const xqpStringStore &other) : RCObject(other), theString(other.theString) {}
-
-  xqpStringStore(const std::string& other) : theString(other) {}
 
   xqpStringStore(const char* start, const char* end) : theString(start, end) {}
 
   xqpStringStore(const char* start, long len) : theString(start, len) {}
+
+  xqpStringStore(const std::string& other) : theString(other) {}
+
+  xqpStringStore(const xqpStringStore &other) 
+    :
+    RCObject(other),
+    theString(other.theString)
+  {
+  }
 
   long*
   getSharedRefCounter() const { return NULL; }  
@@ -85,31 +108,55 @@ public:
   compare(const xqpStringStore* src, XQPCollator* coll = 0) const;
   
   int32_t
-  indexOf(const xqpStringStore* pattern, XQPCollator* col = 0) const;
+  indexOf(const char* pattern) const;
 
-  xqpStringStore*
+  int32_t
+  indexOf(const xqpStringStore* pattern, XQPCollator* col) const;
+
+  int32_t
+  lastIndexOf(const xqpStringStore* pattern, XQPCollator* coll) const;
+
+  bool
+  endsWith(const xqpStringStore* pattern, XQPCollator* col) const;
+
+  xqpStringStore_t
+  uppercase() const;
+      
+  xqpStringStore_t
+  lowercase() const;
+
+  xqpStringStore_t
   normalizeSpace() const;
 
-  xqpStringStore*
+  xqpStringStore_t
   trimL() const;
 
-  xqpStringStore*
+  xqpStringStore_t
   trimL(const char* start, uint16_t len) const;
 
-  xqpStringStore*
+  xqpStringStore_t
   trimR() const;
 
-  xqpStringStore*
+  xqpStringStore_t
   trimR(const char* start, uint16_t len) const;
 
-  xqpStringStore*
+  xqpStringStore_t
   trim() const;
 
-  xqpStringStore*
+  xqpStringStore_t
   trim(const char* start, uint16_t len) const;
 
-  xqpStringStore*
+  xqpStringStore_t
   formatAsXML(const char* src) const;
+
+  xqpStringStore_t
+  escapeHtmlUri() const;
+
+  xqpStringStore_t
+  iriToUri() const;
+
+  xqpStringStore_t
+  encodeForUri() const;
 
   UnicodeString
   getUnicodeString() const;
@@ -125,7 +172,6 @@ public:
     xqpStringStore_t theStrStore;
 
     typedef std::string::size_type  size_type;
-    typedef ptrdiff_t distance_type;
 
     //constructor/destructor
     /**Construct an empty xqpString
@@ -299,13 +345,19 @@ public:
      *  @return The offset into this of the start of pattern, or -1 if not found.
      */
     int32_t
-    lastIndexOf(xqpString pattern, XQPCollator* = 0) const;
+    lastIndexOf(xqpString pattern, XQPCollator* coll = 0) const
+    {
+      return theStrStore->lastIndexOf(pattern.getStore(), coll);
+    }
 
     /**Determine if this ends with the characters in pattern in the range [0, length).
      *  @param pattern The text to search for.
      */
     bool
-    endsWith(xqpString pattern, XQPCollator* = 0) const;
+    endsWith(xqpString pattern, XQPCollator* coll = 0) const
+    {
+      return theStrStore->endsWith(pattern.getStore(), coll);
+    }
 
     /**Returns a substring of the current string, starting at index, and length characters long.
      */
@@ -316,12 +368,12 @@ public:
      *Doesn't use ICU4C
      */
     xqpString
-    substr(distance_type index) const;
+    substr(xqpStringStore::distance_type index) const;
 
     xqpString
     formatAsXML(const char* src) const
     {
-      return theStrStore->formatAsXML(src);
+      return theStrStore->formatAsXML(src).getp();
     }
       
     const char*
@@ -346,10 +398,16 @@ public:
 
     //uppercase/lowercase
     xqpString
-    uppercase();
-      
+    uppercase() const
+    {
+      return theStrStore->uppercase().getp();
+    }
+
     xqpString
-    lowercase();
+    lowercase() const
+    {
+      return theStrStore->lowercase().getp();
+    }
 
     //normalization
     xqpString
@@ -359,17 +417,26 @@ public:
     //Upper and lowercase letters A-Z
     //digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
     xqpString
-    encodeForUri() const;
+    encodeForUri() const
+    {
+      return theStrStore->encodeForUri().getp();
+    }
 
     //This function converts an xs:string containing an IRI into a URI according to the
     //rules spelled out in Section 3.1 of http://www.ietf.org/rfc/rfc3987.txt
     xqpString
-    iriToUri() const;
+    iriToUri() const
+    {
+      return theStrStore->iriToUri().getp();
+    }
 
     //This function escapes all characters except printable characters of the US-ASCII
     //coded character set, specifically the octets ranging from 32 to 126 (decimal)
     xqpString
-    escapeHtmlUri() const;
+    escapeHtmlUri() const
+    {
+      return theStrStore->escapeHtmlUri().getp();
+    }
     
     //Returns an xqpString modified so that every character in that occurs at some position N
     //in the value of $mapString has been replaced by the character that occurs at position N
@@ -383,49 +450,49 @@ public:
     xqpString
     normalizeSpace() const
     {
-      return theStrStore->normalizeSpace();
+      return theStrStore->normalizeSpace().getp();
     }
     
     //Removes the leading whitespaces (#x20).
     xqpString
     trimL() const
     {
-      return theStrStore->trimL();
+      return theStrStore->trimL().getp();
     }
 
     //removes leading characters defined by start and len
     xqpString
     trimL(const char* start, uint16_t len) const
     {
-      return theStrStore->trimL(start, len);
+      return theStrStore->trimL(start, len).getp();
     }
 
     //Removes the trailing whitespaces (#x20).
     xqpString
     trimR() const
     {
-      return theStrStore->trimR();
+      return theStrStore->trimR().getp();
     }
 
     //removes trailing characters defined by start and len
     xqpString
     trimR(const char* start, uint16_t len) const
     {
-      return theStrStore->trimR(start, len);
+      return theStrStore->trimR(start, len).getp();
     }
 
     //Removes the leading and trailing whitespaces (#x20).
     xqpString
     trim() const
     {
-      return theStrStore->trim();
+      return theStrStore->trim().getp();
     }
     
     //removes leading and trailing characters defined by start and len
     xqpString
     trim(const char* start, uint16_t len) const
     {
-      return theStrStore->trim(start, len);
+      return theStrStore->trim(start, len).getp();
     }
     
       bool
@@ -461,33 +528,6 @@ public:
        */
       void
       reserve(size_type size=0);
-
-      /**Returns true is cp reprezents "unreserved" as defined by rfc3986
-       */
-      bool
-      is_unreservedCP(uint32_t cp) const;
-
-      /**Returns true is cp reprezents "ucschar" as defined by rfc3987
-       */
-      bool
-      is_ucscharCP(uint32_t cp) const;
-
-      /**Returns true for the following printable ASCII characters that are
-      *invalid in an IRI: "<", ">", " " " (double quote), space, "{", "}", "|", "\", "^", and "`".
-      */
-      bool
-      is_Invalid_in_IRI(uint32_t cp) const;
-
-      /**Returns true is cp reprezents "iprivate" as defined by rfc3987
-       */
-      bool
-      is_iprivateCP(uint32_t cp) const;
-
-      /**Returns true if cp is a printable characters of the US-ASCII coded
-       *character set meaning octets ranging from 32 to 126 (decimal).
-       */
-      bool
-      is_printableASCII(uint32_t cp) const;
 
       /**Create a map with:
        *-the codepoints of the chars from 'mapString' as first dimension

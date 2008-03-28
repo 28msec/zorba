@@ -314,7 +314,8 @@ public:
   interface, typically by inheriting from RCObject
 
 ********************************************************************************/
-template<class T> class rchandle {
+template<class T> class rchandle 
+{
 protected:
   T  *p;
 
@@ -325,7 +326,8 @@ protected:
                     SYNC_PARAM2(p->getRCLock()));
   }
 
-  template <class otherT> rchandle &assign (const rchandle<otherT> &rhs) {
+  template <class otherT> rchandle& assign (const rchandle<otherT>& rhs)
+  {
 		if (p != rhs.getp())
     {
 			if (p) p->removeReference(p->getSharedRefCounter()
@@ -359,7 +361,6 @@ public:
 
   T* getp() const             { return p; }
 
-
   // rchandle const-ness is unclear. The implicit operators are more
   // restrictive than the explicit cast() and getp() methods.
   operator T* ()              { return getp(); }
@@ -378,6 +379,7 @@ public:
   template <class otherT> rchandle<otherT> cast() const {
     return rchandle<otherT> (static_cast<otherT *> (p));
   }
+
   template <class otherT> rchandle<otherT> dyn_cast() const {
     return rchandle<otherT> (dynamic_cast<otherT *> (p));
   }  
@@ -385,6 +387,7 @@ public:
   template <class otherT> operator rchandle<otherT> () {
     return cast<otherT> ();
   }
+
   template <class otherT> operator const rchandle<otherT> () const {
     return cast<otherT> ();
   }
@@ -397,6 +400,30 @@ public:
     return assign (rhs);
 	}
 
+  template <class otherT> rchandle& transfer(rchandle<otherT>& rhs)
+  {
+		if (p != rhs.p)
+    {
+			if (p) p->removeReference(p->getSharedRefCounter()
+                                SYNC_PARAM2(p->getRCLock()));
+			p = static_cast<T*>(rhs.p);
+			rhs.p = NULL;
+		}
+		return *this;
+  }
+
+  rchandle& transfer(rchandle& rhs)
+  {
+		if (p != rhs.p)
+    {
+			if (p) p->removeReference(p->getSharedRefCounter()
+                                SYNC_PARAM2(p->getRCLock()));
+			p = rhs.p;
+			rhs.p = NULL;
+		}
+		return *this;
+  }
+
 public:
 	std::string debug() const
   {
@@ -405,6 +432,7 @@ public:
     return oss.str();
   }
 };
+
 
 template<class T> class const_rchandle : protected rchandle<T> {
 public:
@@ -429,6 +457,7 @@ public:
 	bool operator!= (const T * pp) const      { return rchandle<T>::operator!= (pp); } 
   bool operator< (const_rchandle h) const   { return rchandle<T>::operator<  (h); }
 };
+
 
 class RCHelper {
   public:

@@ -49,7 +49,7 @@ public:
 
   virtual void clear() = 0;
   virtual void resize(ulong size) = 0;
-  virtual void copy(const NodeVector& v) = 0;
+  virtual void copy(ConstrNodeVector& dest) = 0;
 };
 
 
@@ -72,7 +72,7 @@ public:
 
   void clear()                           { theNodes.clear(); }
   void resize(ulong size)                { theNodes.resize(size); }
-  void copy(const NodeVector& v)         { ZORBA_FATAL(0, ""); }
+  void copy(ConstrNodeVector& dest);
 
 private:
   LoadedNodeVector(const LoadedNodeVector& v);
@@ -85,6 +85,8 @@ private:
 ********************************************************************************/
 class ConstrNodeVector : public NodeVector
 {
+  friend class LoadedNodeVector;
+
 private:
   std::vector<bool> theBitmap;
 
@@ -102,7 +104,7 @@ public:
 
   void clear();
   void resize(ulong size);
-  void copy(const NodeVector& v);
+  void copy(ConstrNodeVector& dest);
 
 private:
   ConstrNodeVector(const ConstrNodeVector& v);

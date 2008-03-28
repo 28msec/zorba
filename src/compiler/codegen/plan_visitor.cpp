@@ -226,13 +226,19 @@ void end_visit(var_expr& v)
     break;
 
   case var_expr::context_var:
-    if (v.get_varname ()->getStringValue () == DOT_VAR) {
-      itstack.push (new CtxVariableIterator (loc, "."));
-    } else if (v.get_varname ()->getStringValue () == DOT_POS_VAR) {
+  {
+    xqpString varname = v.get_varname()->getStringValue().getp();
+    if (varname == DOT_VAR) 
+    {
+      xqpStringStore* vname = new xqpStringStore(".");
+      itstack.push (new CtxVariableIterator (loc, vname));
+    }
+    else if (varname == DOT_POS_VAR)
+    {
       itstack.push (new SingletonIterator (
         loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
       ));
-    } else if (v.get_varname ()->getStringValue () == LAST_IDX_VAR) {
+    } else if (varname == LAST_IDX_VAR) {
       itstack.push (new SingletonIterator (
         loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
       ));
@@ -241,6 +247,7 @@ void end_visit(var_expr& v)
     }
  
     break;
+  }
   case var_expr::catch_var:
   {
     vector<ref_iter_t> *map = NULL;
@@ -612,7 +619,9 @@ void end_visit(fo_expr& v)
   }
   else 
   {
-    ZORBA_ERROR_LOC_PARAM( ZorbaError::XPST0017, loc, func->get_signature().get_name()->getStringValue(), argv.size());
+    ZORBA_ERROR_LOC_PARAM(ZorbaError::XPST0017, loc,
+                          func->get_signature().get_name()->getStringValue(),
+                          argv.size());
   }
 }
 

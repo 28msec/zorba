@@ -118,7 +118,7 @@ int main(int argc, const char * argv[])
 
   xmlFile.close();
 
-  store->deleteCollection(coll1->getUri()->getStringValue().getStore());
+  store->deleteCollection(coll1->getUri()->getStringValue());
   coll1 = 0;
 
   fileName += ".res";

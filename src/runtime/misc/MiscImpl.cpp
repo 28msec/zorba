@@ -36,7 +36,7 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
   if (theChildren.size () >= 1)
     err_qname = consumeNext(theChildren[0].getp(), planState);
   if (theChildren.size () >= 2)
-    description = consumeNext(theChildren[1].getp(), planState)->getStringValue ();
+    description = consumeNext(theChildren[1].getp(), planState)->getStringValue().getp();
 
   ns = err_qname->getNamespace ();
   if (ns == err_ns)
@@ -64,10 +64,10 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
   //TODO:check if both relative and base uri's are valid. If not raise err:FORG0002.
   item = consumeNext(theChildren[0].getp(), planState );
   if ( item != NULL ){
-    strRelative = item->getStringValue();
+    strRelative = item->getStringValue().getp();
     if( theChildren.size() == 2 ) {
       item = consumeNext(theChildren[1].getp(), planState );
-      strBase = item->getStringValue();
+      strBase = item->getStringValue().getp();
       strResult = planState.theRuntimeCB->theStaticContext->resolve_relative_uri(strRelative, strBase);
     }
     else {

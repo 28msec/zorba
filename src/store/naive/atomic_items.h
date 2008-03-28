@@ -11,6 +11,8 @@
 #define ZORBA_STORE_ATOMIC_ITEMS_H
 
 #include "zorbatypes/xqpstring.h"
+#include "zorbatypes/representations.h"
+#include "zorbatypes/datetime.h"
 
 #include "store/api/item.h"
 
@@ -84,7 +86,7 @@ private:
   uint32_t hash() const;
   bool equals(Item_t) const;
   Item_t getEBV() const;
-  xqp_string getStringValue() const;
+  xqpStringStore_t getStringValue() const;
 
   xqp_string show() const;
 };
@@ -106,7 +108,7 @@ public:
   uint32_t hash() const;
   bool equals(Item_t) const;
   Item_t getEBV() const;
-  xqp_string getStringValue() const { return theValue.getp(); }
+  xqpStringStore_t getStringValue() const { return theValue.getp(); }
   xqpStringStore* getStringValueP() { return theValue.getp(); }
 
   virtual xqp_string show() const;
@@ -129,7 +131,7 @@ public:
   uint32_t hash() const;
   bool equals (Item_t) const;
   Item_t getEBV( ) const;
-  xqp_string getStringValue( ) const { return theValue.getp(); }
+  xqpStringStore_t getStringValue( ) const { return theValue.getp(); }
   xqpStringStore* getStringValueP() { return theValue.getp(); }
   xqp_string show() const;
 };
@@ -146,11 +148,13 @@ private:
 public:
   UntypedAtomicItemImpl(xqpStringStore* aValue) : theValue ( aValue ) {}
 
+  UntypedAtomicItemImpl(xqpStringStore_t& aValue) { theValue.transfer(aValue); }
+
   Item_t getType( ) const;
   uint32_t hash() const;
   bool equals ( Item_t ) const;
   Item_t getEBV( ) const;
-  xqp_string getStringValue() const { return theValue.getp(); }
+  xqpStringStore_t getStringValue() const { return theValue; }
   xqpStringStore* getStringValueP() { return theValue.getp(); }
   xqp_string show() const;
 };
@@ -170,7 +174,7 @@ public:
   virtual uint32_t hash() const;
   virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
-  virtual xqp_string getStringValue() const { return theValue.getp(); }
+  virtual xqpStringStore_t getStringValue() const { return theValue; }
   virtual xqpStringStore* getStringValueP() { return theValue.getp(); }
   virtual xqp_string show() const;
 };
@@ -187,7 +191,7 @@ public:
   DateTimeItemNaive(xqp_dateTime& aValue) : theValue(aValue) { };
   static int createFromDateAndTime(const xqp_date& date, const xqp_time& time, Item_t& item);
   
-  virtual xqp_string getStringValue() const;
+  virtual xqpStringStore_t getStringValue() const;
   
   virtual xqp_dateTime getDateTimeValue() const { return theValue; }
   virtual xqp_date getDateValue() const { return theValue; }
@@ -217,7 +221,7 @@ protected:
 
 public:
   DurationItemNaive(xqp_duration& aValue) : theValue(aValue) { };
-  virtual xqp_string getStringValue() const;
+  virtual xqpStringStore_t getStringValue() const;
   virtual xqp_duration getDurationValue() const;
   virtual Item_t getType() const;
   virtual bool equals(Item_t) const;
@@ -235,7 +239,7 @@ protected:
 
 public:
   DayTimeDurationItemNaive(xqp_dayTimeDuration& aValue) : theValue(aValue) { };
-  virtual xqp_string getStringValue() const;
+  virtual xqpStringStore_t getStringValue() const;
   virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
   virtual Item_t getType() const;
   virtual bool equals(Item_t) const;
@@ -253,7 +257,7 @@ protected:
 
 public:
   YearMonthDurationItemNaive(xqp_yearMonthDuration& aValue) : theValue(aValue) { };
-  virtual xqp_string getStringValue() const;
+  virtual xqpStringStore_t getStringValue() const;
   virtual xqp_yearMonthDuration getYearMonthDurationValue() const;
   virtual Item_t getType() const;
   virtual bool equals(Item_t) const;
@@ -278,7 +282,7 @@ public:
   virtual Item_t getType( ) const;
   virtual bool equals ( Item_t ) const;
   virtual Item_t getEBV( ) const;
-  virtual xqp_string getStringValue( ) const;
+  virtual xqpStringStore_t getStringValue( ) const;
   virtual xqp_string show() const;
   virtual bool isNaN() const;
 };
@@ -300,7 +304,7 @@ public:
     virtual Item_t getType( ) const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
 	};
@@ -317,7 +321,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
 	};
@@ -333,7 +337,7 @@ public:
 		virtual Item_t getType() const;
 		virtual bool equals ( Item_t ) const;
 		virtual Item_t getEBV( ) const;
-		virtual xqp_string getStringValue() const;
+		virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const;
     virtual bool isPosOrNegInf() const;
@@ -349,7 +353,7 @@ public:
 		virtual Item_t getType() const;
 		virtual bool equals ( Item_t ) const;
 		virtual Item_t getEBV( ) const;
-		virtual xqp_string getStringValue() const;
+		virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const;
     virtual bool isPosOrNegInf() const;
@@ -367,7 +371,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
 	};
   
@@ -383,7 +387,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -400,7 +404,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -418,7 +422,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -438,7 +442,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -459,7 +463,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -477,7 +481,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -496,7 +500,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -516,7 +520,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -538,7 +542,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -560,7 +564,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };
@@ -578,7 +582,7 @@ public:
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
     virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue() const;
+    virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
   };

@@ -7,7 +7,7 @@
 #include "store/api/copymode.h"
 #include "store/util/handle_hashset_item.h"
 #include "store/util/pointer_hashmap.h"
-
+#include "store/naive/node_vector.h"
 
 namespace zorba { namespace store {
 
@@ -43,7 +43,7 @@ public:
     :
     PointerHashMap<XmlNode,
                    NodeToUpdatesMap,
-                   NodeUpdates>(128, 0.6)
+                   NodeUpdates>(8, 0.6)
    {
    }
 };
@@ -66,18 +66,29 @@ protected:
   ItemHandleHashSet               theTreeRoots;
 
 public:
-  void addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs, bool copy);
-  void addReplaceValue(Item* target, xqpStringStore* newValue);
-  void addReplaceContent(Item* target, Item* newChild);
-  void addRename(Item* node, Item* newName);
+  void addInsertInto(
+        Item*                target,
+        std::vector<Item_t>& children,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void addInsertAttributes(
+        Item*                target,
+        std::vector<Item_t>& attrs,
+        bool                 copy,
+        const CopyMode&      copymode);
+
   void addDelete(Item* n);
+
+  void addReplaceContent(Item* target, Item_t& newChild);
+
+  void addReplaceValue(Item* target, xqpStringStore_t& newValue);
+
+  void addRename(Item* node, Item_t& newName);
 
   void applyUpdates();
 
   void mergeUpdates(const PUL& other);
-
-protected:
-  void verify();
 };
 
 
@@ -96,7 +107,7 @@ public:
 
   virtual ~UpdatePrimitive() { }
 
-  virtual UpdateConsts::UpdateKind getKind() = 0;
+  virtual UpdateConsts::UpdPrimKind getKind() = 0;
 
   virtual void apply() = 0;
 };
@@ -105,45 +116,36 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class InsertAttributesPrimitive : public UpdatePrimitive
+class UpdInsertChildren : public UpdatePrimitive
 {
   friend class PULImpl;
 
 protected:
-  std::vector<XmlNode*> theAttributes;
-  bool                  theDoCopy;
-  CopyMode              theCopyMode;
+  UpdateConsts::UpdPrimKind theKind;
+  std::vector<Item_t>       theChildren;
+  bool                      theDoCopy;
+  CopyMode                  theCopyMode;
 
 public:
-  InsertAttributesPrimitive(
-        XmlNode*              target,
-        std::vector<XmlNode*> attrs,
-        bool                  copy)
+  UpdInsertChildren(
+        UpdateConsts::UpdPrimKind kind,
+        XmlNode*                  target,
+        std::vector<Item_t>&      children,
+        bool                      copy,
+        const CopyMode&           copymode)
     :
     UpdatePrimitive(target),
-    theAttributes(attrs),
-    theDoCopy(copy)
+    theKind(kind),
+    theDoCopy(copy),
+    theCopyMode(copymode)
   {
+    ulong numChildren = children.size();
+    theChildren.resize(numChildren);
+    for (ulong i = 0; i < numChildren; i++)
+      theChildren[i].transfer(children[i]);
   }
 
-  UpdateConsts::UpdateKind getKind() { return UpdateConsts::INSERT_ATTRIBUTES; }
-
-  void apply();
-};
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class DeletePrimitive : public UpdatePrimitive
-{
-  friend class PULImpl;
-
-public:
-  DeletePrimitive(XmlNode* target) : UpdatePrimitive(target) { }
-
-  UpdateConsts::UpdateKind getKind() { return UpdateConsts::PUL_DELETE; }
+  UpdateConsts::UpdPrimKind getKind() { return theKind; }
 
   void apply();
 };
@@ -152,23 +154,134 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ReplaceValuePrimitive : public UpdatePrimitive
+class UpdInsertSiblings : public UpdatePrimitive
 {
   friend class PULImpl;
 
 protected:
-  xqpStringStore    * theNewValue;
+  UpdateConsts::UpdPrimKind theKind;
+  std::vector<Item_t>       theSiblings;
+  bool                      theDoCopy;
+  CopyMode                  theCopyMode;
+
+public:
+  UpdInsertSiblings(
+        UpdateConsts::UpdPrimKind kind,
+        XmlNode*                  target,
+        std::vector<Item_t>&      siblings,
+        bool                      copy,
+        const CopyMode&           copymode)
+    :
+    UpdatePrimitive(target),
+    theKind(kind),
+    theDoCopy(copy),
+    theCopyMode(copymode)
+  {
+    ulong numSiblings = siblings.size();
+    theSiblings.resize(numSiblings);
+    for (ulong i = 0; i < numSiblings; i++)
+      theSiblings[i].transfer(siblings[i]);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return theKind; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdInsertAttributes : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  std::vector<Item_t>  theAttributes;
+  bool                 theDoCopy;
+  CopyMode             theCopyMode;
+
+public:
+  UpdInsertAttributes(
+        XmlNode*              target,
+        std::vector<Item_t>&  attrs,
+        bool                  copy,
+        const CopyMode&       copymode)
+    :
+    UpdatePrimitive(target),
+    theDoCopy(copy),
+    theCopyMode(copymode)
+  {
+    ulong numAttrs = attrs.size();
+    theAttributes.resize(numAttrs);
+    for (ulong i = 0; i < numAttrs; i++)
+      theAttributes[i].transfer(attrs[i]);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_INSERT_ATTRIBUTES; }
+
+  void apply();
+};
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdDelete : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+public:
+  UpdDelete(XmlNode* target) : UpdatePrimitive(target) { }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_DELETE; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdReplaceContent : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  Item_t            theNewChild;
+  ConstrNodeVector  theOldChildren;
+
+public:
+  UpdReplaceContent(XmlNode* t, Item_t& newChild) : UpdatePrimitive(t)
+  {
+    theNewChild.transfer(newChild);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_CONTENT; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdReplaceAttrValue : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  xqpStringStore_t    theNewValue;
   xqpStringStore_t    theOldValue;
 
 public:
-  ReplaceValuePrimitive(XmlNode* target, xqpStringStore* newValue)
-    :
-    UpdatePrimitive(target),
-    theNewValue(newValue)
+  UpdReplaceAttrValue(XmlNode* t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
+    theNewValue.transfer(newValue);
   }
 
-  UpdateConsts::UpdateKind getKind() { return UpdateConsts::REPLACE_VALUE; }
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_ATTR_VALUE; }
 
   void apply();
 };
@@ -177,23 +290,23 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ReplaceContentPrimitive : public UpdatePrimitive
+class UpdReplaceTextValue : public UpdatePrimitive
 {
   friend class PULImpl;
 
 protected:
-  XmlNode                * theNewChild;
-  std::vector<XmlNode*>    theOldChildren;
+  xqpStringStore_t   theNewValue;
+  xqpStringStore_t   theOldValue;
 
 public:
-  ReplaceContentPrimitive(XmlNode* target, XmlNode* newChild)
+  UpdReplaceTextValue(XmlNode* t, xqpStringStore_t& newValue)
     :
-    UpdatePrimitive(target),
-    theNewChild(newChild)
+    UpdatePrimitive(t)
   {
+    theNewValue.transfer(newValue);
   }
 
-  UpdateConsts::UpdateKind getKind() { return UpdateConsts::REPLACE_CONTENT; }
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_TEXT_VALUE; }
 
   void apply();
 };
@@ -202,23 +315,117 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class RenamePrimitive : public UpdatePrimitive
+class UpdReplacePiValue : public UpdatePrimitive
 {
   friend class PULImpl;
 
 protected:
-  QNameItemImpl   * theNewName;
-  Item_t            theOldName;
+  xqpStringStore_t   theNewValue;
+  xqpStringStore_t   theOldValue;
 
 public:
-  RenamePrimitive(XmlNode* target, QNameItemImpl* name)
+  UpdReplacePiValue(XmlNode* t, xqpStringStore_t& newValue)
     :
-    UpdatePrimitive(target),
-    theNewName(name)
+    UpdatePrimitive(t)
   {
+    theNewValue.transfer(newValue);
   }
 
-  UpdateConsts::UpdateKind getKind() { return UpdateConsts::RENAME; }
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_PI_VALUE; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdReplaceCommentValue : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  xqpStringStore_t   theNewValue;
+  xqpStringStore_t   theOldValue;
+
+public:
+  UpdReplaceCommentValue(XmlNode* t, xqpStringStore_t& newValue)
+    :
+    UpdatePrimitive(t)
+  {
+    theNewValue.transfer(newValue);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_COMMENT_VALUE; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdRenameElem : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  Item_t   theNewName;
+  Item_t   theOldName;
+
+public:
+  UpdRenameElem(XmlNode* t, Item_t& newName) : UpdatePrimitive(t)
+  {
+    theNewName.transfer(newName);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_ELEM; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdRenameAttr : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  Item_t   theNewName;
+  Item_t   theOldName;
+
+public:
+  UpdRenameAttr(XmlNode* t, Item_t& newName) : UpdatePrimitive(t)
+  {
+    theNewName.transfer(newName);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_ATTR; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdRenamePi : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  xqpStringStore_t   theNewName;
+  xqpStringStore_t   theOldName;
+
+public:
+  UpdRenamePi(XmlNode* t, xqpStringStore_t& newName) : UpdatePrimitive(t)
+  {
+    theNewName.transfer(newName);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_PI; }
 
   void apply();
 };

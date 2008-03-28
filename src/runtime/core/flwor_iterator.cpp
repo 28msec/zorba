@@ -45,7 +45,7 @@ FLWORIterator::ForLetClause::ForLetClause(
     PlanIter_t& aInput)
   :
 #ifndef NDEBUG
-  theVarName(var->get_varname()->getStringValue().c_str()),
+  theVarName(var->get_varname()->getStringValue()->c_str()),
 #endif
   type ( FOR ),
   forVars ( aForVars ),
@@ -61,7 +61,7 @@ FLWORIterator::ForLetClause::ForLetClause (
     PlanIter_t& aInput )
   :
 #ifndef NDEBUG
-  theVarName(var->get_varname()->getStringValue().c_str()),
+  theVarName(var->get_varname()->getStringValue()->c_str()),
 #endif
   type ( FOR ),
   forVars ( aForVars ),
@@ -78,7 +78,7 @@ FLWORIterator::ForLetClause::ForLetClause (
     bool aNeedsMaterialization )
   :
 #ifndef NDEBUG
-  theVarName(var->get_varname()->getStringValue().c_str()),
+  theVarName(var->get_varname()->getStringValue()->c_str()),
 #endif
   type(LET),
   letVars(aLetVars),

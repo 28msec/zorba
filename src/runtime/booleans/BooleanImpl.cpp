@@ -554,19 +554,19 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
       if (aCollation == 0) {
         XQPCollator *coll = aRuntimeCB->theCollationCache->getDefaultCollator();
-        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
+        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
       } else {
         XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(*aCollation);
-        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
+        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
       }
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
         && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
       if (aCollation == 0) {
         XQPCollator *coll = aRuntimeCB->theCollationCache->getDefaultCollator();
-        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
+        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
       } else {
         XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(*aCollation);
-        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
+        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
       }
     } 
     

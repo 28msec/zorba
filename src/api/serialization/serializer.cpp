@@ -178,13 +178,14 @@ xqpString toHexString(unsigned char ch)
 }
 
 // emit_attribute_value is set to true if the string expansion is performed on a value of an attribute
-void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribute_value = false)
+void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_attribute_value = false)
 {
-	const unsigned char* chars = (const unsigned char*)str.c_str();
+	const unsigned char* chars = (const unsigned char*)str->c_str();
+
 	int is_quote;
   int skip = 0;
 	
-	for (unsigned int i = 0; i < str.bytes(); i++, chars++ )
+	for (unsigned int i = 0; i < str->bytes(); i++, chars++ )
 	{       
     // the input string is UTF-8
     if (skip == 0)
@@ -251,7 +252,7 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
       */      
       if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
       {
-        if (str.bytes()-i >= 1
+        if (str->bytes()-i >= 1
             &&
             (*(chars+1) == '{'))
           tr << *chars;
@@ -261,7 +262,7 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
       else
       {      
         is_quote = 0;
-        for (unsigned int j=1; j<str.bytes()-i; j++)
+        for (unsigned int j=1; j < str->bytes()-i; j++)
         {
 				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z') 
             ||
@@ -471,7 +472,7 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
 	{
     if (ser->indent)
 			emit_indentation(depth);
-		tr << "<" << item->getNodeName()->getStringValue();
+		tr << "<" << item->getNodeName()->getStringValue().getp();
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 
     bool should_remove_binding = emit_bindings(item);
@@ -481,7 +482,7 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
       bindings.pop_back();
 
 		if (closed_parent_tag)		
-			tr << "</" << item->getNodeName()->getStringValue() << ">";
+			tr << "</" << item->getNodeName()->getStringValue().getp() << ">";
 		else
 			tr << " />";
 
@@ -491,7 +492,7 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
 	}
 	else if (item->getNodeKind() == store::StoreConsts::attributeNode )
 	{
-		tr << " " << item->getNodeName()->getStringValue() << "=\"";
+		tr << " " << item->getNodeName()->getStringValue().getp() << "=\"";
 		emit_expanded_string(item->getStringValue(), true);
 		tr << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
@@ -507,14 +508,14 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
 	{
     if (ser->indent)
       emit_indentation(depth);
-    tr << "<!--" << item->getStringValue() << "-->";
+    tr << "<!--" << item->getStringValue().getp() << "-->";
     if (ser->indent)
       tr << ser->END_OF_LINE;		
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::piNode )
 	{
-    tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
+    tr << "<?" << item->getTarget() << " " << item->getStringValue().getp() << "?>";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else 
@@ -612,10 +613,12 @@ int is_content_type_meta(store::Item_t item, store::Item_t element_parent)
   
   if (element_parent == NULL)
     return 0;
-  
-  if (element_parent->getNodeName()->getStringValue().lowercase() == "head"
+
+  xqpString pname(element_parent->getNodeName()->getStringValue());
+  xqpString iname(item->getNodeName()->getStringValue());
+  if (pname.lowercase() == "head"
       &&
-      item->getNodeName()->getStringValue().lowercase() == "meta")
+      iname.lowercase() == "meta")
   {    
     // iterate through attributes
     Iterator_t it = item->getAttributes();
@@ -623,9 +626,11 @@ int is_content_type_meta(store::Item_t item, store::Item_t element_parent)
     store::Item_t child = it->next();
     while (child!= NULL)
     { 
-      if (child->getNodeName()->getStringValue().lowercase() == "http-equiv"
+      xqpString cname(child->getNodeName()->getStringValue());
+      xqpString cvalue(child->getStringValue());
+      if (cname.lowercase() == "http-equiv"
           &&
-          child->getStringValue().lowercase() == "content-type")
+          cvalue.lowercase() == "content-type")
         return 1;        
       
       child = it->next();
@@ -637,31 +642,22 @@ int is_content_type_meta(store::Item_t item, store::Item_t element_parent)
 
 int is_html_empty_element(store::Item_t item)
 {
-  if (item->getNodeName()->getStringValue().lowercase() == "area"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "base"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "basefont"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "br"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "col"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "frame"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "hr"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "img"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "input"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "isindex"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "link"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "meta"
-      ||
-      item->getNodeName()->getStringValue().lowercase() == "param")
+  xqpString str(item->getNodeName()->getStringValue());
+  str = str.lowercase();
+
+  if (str == "area" ||
+      str == "base" ||
+      str == "basefont" ||
+      str == "br" ||
+      str == "col" ||
+      str == "frame" ||
+      str == "hr" ||
+      str == "img" ||
+      str == "input" ||
+      str == "isindex" ||
+      str == "link" ||
+      str == "meta" ||
+      str == "param")
     return 1;
   else
     return 0;
@@ -690,7 +686,7 @@ void serializer::html_emitter::emit_node(store::Item* item, int depth, store::It
     
     if (ser->indent)
       emit_indentation(depth);
-    tr << "<" << item->getNodeName()->getStringValue();
+    tr << "<" << item->getNodeName()->getStringValue().getp();
     
     /*
       If there is a head element, and the include-content-type parameter has the value yes, the 
@@ -699,7 +695,7 @@ void serializer::html_emitter::emit_node(store::Item* item, int depth, store::It
     */
     if (ser->include_content_type == PARAMETER_VALUE_YES
         &&
-        item->getNodeName()->getStringValue().lowercase() == "head")
+        item->getNodeName()->getStringValue()->lowercase()->str() == "head")
     {
       tr << "/>";
       if (ser->indent)
@@ -722,7 +718,7 @@ void serializer::html_emitter::emit_node(store::Item* item, int depth, store::It
     closed_parent_tag |= emit_node_children(item, depth);
         
     if (closed_parent_tag)   
-      tr << "</" << item->getNodeName()->getStringValue() << ">";
+      tr << "</" << item->getNodeName()->getStringValue().getp() << ">";
     else
     {
       /* 
@@ -746,13 +742,16 @@ void serializer::html_emitter::emit_node(store::Item* item, int depth, store::It
     /*
       The HTML output method MUST NOT perform escaping for the content of the script and style elements.
     */
-    if (item->getNodeName()->getStringValue().lowercase() == "script"
+    xqpString iname(item->getNodeName()->getStringValue());
+    iname = iname.lowercase();
+
+    if (iname == "script"
         ||
-        item->getNodeName()->getStringValue().lowercase() == "style")
+        iname == "style")
     {
       if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
         tr << " ";    
-      tr << item->getStringValue();  // no character expansion
+      tr << item->getStringValue().getp();  // no character expansion
       previous_item = PREVIOUS_ITEM_WAS_TEXT;
     }
     else

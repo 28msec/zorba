@@ -17,6 +17,19 @@ struct CopyMode;
 
 extern ConstrNodeVector dummyVector;
 
+#define DOC_NODE(n) (reinterpret_cast<DocumentNode*>((n)))
+
+#define ATTR_NODE(n) (reinterpret_cast<AttributeNode*>((n)))
+
+#define ELEM_NODE(n) (reinterpret_cast<ElementNode*>((n)))
+
+#define TEXT_NODE(n) (reinterpret_cast<TextNode*>((n)))
+
+#define PI_NODE(n) (reinterpret_cast<PiNode*>((n)))
+
+#define COMMENT_NODE(n) (reinterpret_cast<CommentNode*>((n)))
+
+
 #define NODE_STOP \
   ZORBA_FATAL(0, "Invalid method invocation on " \
               << StoreConsts::toString(getNodeKind()))
@@ -42,11 +55,9 @@ public:
   void free() throw();
 
   long getRefCount() const      { return theRefCount; }
-  void setRefCount(ulong c)     { theRefCount = c; }
+  long& getRefCount()           { return theRefCount; }
   void addReference()           { ++theRefCount; }
   void removeReference()        { --theRefCount; }
-
-  void removeReferences(ulong count) throw();
 
   SYNC_CODE(RCLock& getRCLock() { return theRCLock; })
 
@@ -130,6 +141,9 @@ public:
   // SimpleStore Methods
   //
 
+  XmlNode* getParentP() const       { return theParent; }
+  void setParent(XmlNode* p)        { theParent = p; }
+
   XmlTree* getTree() const          { return (XmlTree*)theTreeRCPtr; }
   void setTree(const XmlTree* t)    { theTreeRCPtr = (long*)t; }
   ulong getTreeId() const           { return getTree()->getId(); }
@@ -138,12 +152,13 @@ public:
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 
-  XmlNode* getParentP() const       { return theParent; }
-  void setParent(XmlNode* p)        { theParent = p; }
+  void setOrdPath(XmlNode* parent, ulong pos, StoreConsts::NodeKind nodeKind);
 
-  void removeChild(ulong pos);
-  bool removeChild(XmlNode* child);
-  bool removeAttr(XmlNode* attr);
+  void switchTree(
+        XmlTree* newTree,
+        XmlNode* parent,
+        ulong pos,
+        bool assignIds);
 
   void deleteTree() throw();
 
@@ -151,42 +166,13 @@ public:
   void removeType(TypeUndoList& undoList);
   void revalidate();
 
-  void insertBefore(
-        std::vector<XmlNode*>& nodes,
-        bool                   copy,
-        const CopyMode&        copymode);
-
-  void insertAfter(
-        std::vector<XmlNode*>& nodes,
-        bool                   copy,
-        const CopyMode&        copymode);
-
-  void insertAttributes(
-        std::vector<XmlNode*>& attrs,
-        bool                   copy,
-        const CopyMode&        copymode);
-
-  void disconnect() throw();
-
-  void switchTree() throw();
-
-  void replaceValue(xqpStringStore* newValue, xqpStringStore_t& oldValue);
-
-  void replaceElementContent(XmlNode* newText, std::vector<XmlNode*>& children);
-
-  void rename(QNameItemImpl* newname, Item_t& oldName);
-
-  void renamePi(xqpStringStore* newName,  xqpStringStore_t& oldName);
-
-  void checkQName(QNameItemImpl* newName);
-
   virtual XmlNode* copy(
         XmlNode* rootParent,
         XmlNode* parent,
         ulong pos,
         const CopyMode& copyMode) = 0;
 
-  virtual void checkUniqueAttr(Item* qn) const { NODE_STOP; }
+  void disconnect() throw();
 
   virtual ulong numAttributes() const          { return 0; }
   virtual XmlNode* getAttr(ulong i) const      { NODE_STOP; return NULL; }
@@ -207,6 +193,11 @@ public:
   virtual bool isIdRefs() const          { NODE_STOP; return false; }
 
   virtual bool isConstructed() const     { NODE_STOP; return false; }
+
+protected:
+  void removeChild(ulong pos);
+  bool removeChild(XmlNode* child);
+  bool removeAttr(XmlNode* attr);
 };
 
 
@@ -245,7 +236,7 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const;
+  xqpStringStore_t getStringValue() const;
 
   xqp_string show() const;
 
@@ -326,6 +317,7 @@ class ElementNode : public XmlNode
 {
   friend class XmlNode;
   friend class LoadedElementNode;
+  friend class AttributeNode;
 
 protected:
   Item_t                theName;
@@ -365,7 +357,7 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const;
+  xqpStringStore_t getStringValue() const;
   bool getNilled() const;
 
   Iterator_t getAttributes() const;
@@ -380,6 +372,11 @@ public:
   //
   // SimpleStore Methods
   // 
+
+  bool isId() const             { return (theFlags & XmlNode::IsId) != 0; }
+  void resetIsId()              { theFlags &= ~XmlNode::IsId; }
+  bool isIdRefs() const         { return (theFlags & XmlNode::IsIdRefs) != 0; }
+  void resetIsIdRefs()          { theFlags &= ~XmlNode::IsIdRefs; }
 
   bool haveLocalBindings() const{ return (theFlags & XmlNode::HaveLocalBindings) != 0; }
 
@@ -398,11 +395,43 @@ public:
         ulong           pos,
         const CopyMode& copymode);
 
-  bool isId() const             { return (theFlags & XmlNode::IsId) != 0; }
-  void resetIsId()              { theFlags &= ~XmlNode::IsId; }
+  void insertInto(
+        std::vector<Item_t>& children,
+        ulong                pos,
+        bool                 copy,
+        const CopyMode&      copymode);
+  
+  void insertFirst(
+        std::vector<Item_t>& children,
+        bool                 copy,
+        const CopyMode&      copymode);
 
-  bool isIdRefs() const         { return (theFlags & XmlNode::IsIdRefs) != 0; }
-  void resetIsIdRefs()          { theFlags &= ~XmlNode::IsIdRefs; }
+  void insertLast(
+        std::vector<Item_t>& children,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void insertBefore(
+        std::vector<Item_t>& siblings,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void insertAfter(
+        std::vector<Item_t>& siblings,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void insertAttributes(
+        std::vector<Item_t>&  attrs,
+        bool                  copy,
+        const CopyMode&       copymode);
+
+  void replaceContent(XmlNode* newText, ConstrNodeVector& oldChildren);
+
+  void rename(Item_t& newname, Item_t& oldName);
+
+protected:
+  void checkQName(QNameItemImpl* newName);
 };
 
 
@@ -523,6 +552,7 @@ class AttributeNode : public XmlNode
 {
   friend class XmlLoader;
   friend class XmlNode;
+  friend class ElementNode;
 
 protected:
   Item_t   theName;
@@ -585,9 +615,13 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const;
+  xqpStringStore_t getStringValue() const;
 
   xqp_string show() const;
+
+  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+
+  void rename(Item_t& newname, Item_t& oldName);
 };
 
 
@@ -634,10 +668,12 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const   { return theContent.getp(); }
+  xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP()   { return theContent.getp(); }
 			
   xqp_string show() const;
+
+  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
 };
 
 
@@ -686,11 +722,15 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const    { return theContent.getp(); }
+  xqpStringStore_t getStringValue() const    { return theContent; }
 
   xqp_string getTarget() const { return theTarget.getp(); }
 
   xqp_string show() const;
+
+  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+
+  void rename(xqpStringStore_t& newName, xqpStringStore_t& oldName);
 };
 
 
@@ -735,10 +775,12 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const   { return theContent.getp(); }
+  xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP()   { return theContent.getp(); }
 
   xqp_string show() const;
+
+  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
 };
 
 

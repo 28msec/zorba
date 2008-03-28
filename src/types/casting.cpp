@@ -77,30 +77,50 @@ GenericCast* GenericCast::instance()
 /// @param isExplicit true when called from the translator
 /// @param isCast true when this is a cast, false when this is a castable
 /// TODO: return 0 instead of throwing an error code, let the caller decide on the error
-store::Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExplicit, namespace_context* aNCtx) const {
+store::Item_t GenericCast::castToQName (
+    xqpStringStore* qname,
+    bool isCast,
+    bool isExplicit,
+    namespace_context* aNCtx) const
+{
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  xqpString lNamespace = "";
-  xqpString lPrefix = "";
-  int32_t lIndex = qname.indexOf(":");
-  ZorbaError::ErrorCode code = isExplicit ? (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003) : ZorbaError::XQDY0074;
 
-  if (lIndex < 0) {
+  int32_t lIndex = qname->indexOf(":");
+
+  ZorbaError::ErrorCode code = (isExplicit ?
+                                (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003) :
+                                ZorbaError::XQDY0074);
+
+  if (lIndex < 0) 
+  {
     if (castableToNCName(qname))
-      return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), qname.getStore());
-    else ZORBA_ERROR (code);
-  } else if (lIndex == 0) {
-    ZORBA_ERROR (code);
-  } else {
+    {
+      xqpStringStore* lNamespace = new xqpStringStore("");
+      xqpStringStore* lPrefix = new xqpStringStore("");
 
-    lPrefix = qname.substr(0, lIndex);
-    xqpString lLocal = qname.substr(lIndex + 1);
+      return factory->createQName(lNamespace, lPrefix, qname);
+    }
+    else
+    {
+      ZORBA_ERROR(code);
+    }
+  }
+  else if (lIndex == 0) 
+  {
+    ZORBA_ERROR (code);
+  }
+  else
+  {
+     xqpStringStore* lNamespace = new xqpStringStore("");
+     xqpStringStore* lPrefix = new xqpStringStore(qname->str().substr(0, lIndex));
+     xqpStringStore* lLocal = new xqpStringStore(qname->str().substr(lIndex + 1));
     
     if (!castableToNCName(lPrefix) || !castableToNCName(lLocal))
       ZORBA_ERROR(code);
     
     // namespace resolution
     // raise XPST0081 (isCast false) or FONS0004 (isCast true) if namespace unknown
-    if (!lPrefix.empty() && aNCtx != 0)
+    if (!lPrefix->empty() && aNCtx != 0)
     {
       if (!aNCtx->findBinding(lPrefix, lNamespace))
       {
@@ -113,7 +133,7 @@ store::Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, boo
       }
     }
 
-    return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
+    return factory->createQName(lNamespace, lPrefix, lLocal);
   }
   return 0;
 }
@@ -127,78 +147,79 @@ store::Item_t GenericCast::stringSimpleCast(
   RootTypeManager& ts = GENV_TYPESYSTEM;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
 
-  xqpString lString = aSourceItem->getStringValue();
-  switch(TypeOps::get_atomic_type_code(*aTargetType)) {
+  xqpStringStore_t lString = aSourceItem->getStringValue();
+  switch(TypeOps::get_atomic_type_code(*aTargetType))
+  {
   case TypeConstants::XS_ANY_ATOMIC:
   case TypeConstants::XS_STRING:
   case TypeConstants::XS_NORMALIZED_STRING:
   case TypeConstants::XS_UNTYPED_ATOMIC:
     break;
   default:
-    lString = lString.trim(" \n\r\t",4);
+    lString = lString->trim(" \n\r\t",4);
     break;
   }
   
   switch(TypeOps::get_atomic_type_code(*aTargetType))
   {
   case TypeConstants::XS_ANY_ATOMIC:
-    lItem = factory->createUntypedAtomic(lString.getStore());
+    lItem = factory->createUntypedAtomic(lString);
     break;
   case TypeConstants::XS_STRING:
-    lItem = factory->createString(lString.getStore());
+    lItem = factory->createString(lString);
     break;
   case TypeConstants::XS_NORMALIZED_STRING:
-    lItem = factory->createNormalizedString(lString);
+    lItem = factory->createNormalizedString(lString.getp());
     break;
   case TypeConstants::XS_TOKEN:
-    lItem = factory->createToken(lString);
+    lItem = factory->createToken(lString.getp());
     break;
   case TypeConstants::XS_LANGUAGE:
-    lItem = factory->createLanguage(lString);
+    lItem = factory->createLanguage(lString.getp());
     break;
   case TypeConstants::XS_NMTOKEN:
-    lItem = factory->createNMTOKEN(lString);
+    lItem = factory->createNMTOKEN(lString.getp());
     break;
   case TypeConstants::XS_NAME:
-    lItem = factory->createName(lString);
+    lItem = factory->createName(lString.getp());
     break;
   case TypeConstants::XS_ID:
-    lItem = factory->createID(lString);
+    lItem = factory->createID(lString.getp());
     break;
   case TypeConstants::XS_IDREF:
-    lItem = factory->createIDREF(lString);
+    lItem = factory->createIDREF(lString.getp());
     break;
   case TypeConstants::XS_ENTITY:
-    lItem = factory->createENTITY(lString);
+    lItem = factory->createENTITY(lString.getp());
     break;
   case TypeConstants::XS_UNTYPED_ATOMIC:
-    lItem = factory->createUntypedAtomic(lString.getStore());
+    lItem = factory->createUntypedAtomic(lString);
     break;
   case TypeConstants::XS_DATETIME:
     {
       xqp_dateTime dt;
-      if (0 == DateTime::parseDateTime(lString, dt))
+      if (0 == DateTime::parseDateTime(lString.getp(), dt))
         lItem = factory->createDateTime(dt);
     }
     break;
   case TypeConstants::XS_DATE:
     {
       xqp_date d;
-      if (0 == DateTime::parseDate(lString, d))
+      if (0 == DateTime::parseDate(lString.getp(), d))
         lItem = factory->createDate(d);
     }
     break;
   case TypeConstants::XS_TIME:
     {
       xqp_time t;
-      if (0 == DateTime::parseTime(lString, t))
+      if (0 == DateTime::parseTime(lString.getp(), t))
         lItem = factory->createTime(t);
     }
     break;
   case TypeConstants::XS_DURATION:
     {
       Duration_t d_t;
-      if (Duration::parse_string(lString, d_t))
+      if (Duration::parse_string(lString.getp(), d_t))
       {
         xqp_duration d = d_t;
         lItem = factory->createDuration(d);
@@ -208,7 +229,7 @@ store::Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_DT_DURATION:
     {
       DayTimeDuration_t dtd_t;
-      if (DayTimeDuration::parse_string(lString, dtd_t))
+      if (DayTimeDuration::parse_string(lString.getp(), dtd_t))
       {
         xqp_duration d = dtd_t;
         lItem = factory->createDuration(d);
@@ -218,7 +239,7 @@ store::Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_YM_DURATION:
     {
       YearMonthDuration_t ymd_t;
-      if (YearMonthDuration::parse_string(lString, ymd_t))
+      if (YearMonthDuration::parse_string(lString.getp(), ymd_t))
       {
         xqp_duration d = ymd_t;
         lItem = factory->createDuration(d);
@@ -228,147 +249,147 @@ store::Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_GYEAR_MONTH:
     {
       xqp_gYearMonth ym;
-      if (0 == DateTime::parseGYearMonth(lString, ym))
+      if (0 == DateTime::parseGYearMonth(lString.getp(), ym))
         lItem = factory->createGYearMonth(ym);
     }
     break;
   case TypeConstants::XS_GYEAR:
     {
       xqp_gYear y;
-      if (0 == DateTime::parseGYear(lString, y))
+      if (0 == DateTime::parseGYear(lString.getp(), y))
         lItem = factory->createGYear(y);
     }
     break;
   case TypeConstants::XS_GMONTH_DAY:
     {
       xqp_gMonthDay md;
-      if (0 == DateTime::parseGMonthDay(lString, md))
+      if (0 == DateTime::parseGMonthDay(lString.getp(), md))
         lItem = factory->createGMonthDay(md);
     }
     break;
   case TypeConstants::XS_GDAY:
     {
       xqp_gDay d;
-      if (0 == DateTime::parseGDay(lString, d))
+      if (0 == DateTime::parseGDay(lString.getp(), d))
         lItem = factory->createGDay(d);
     }
     break;
   case TypeConstants::XS_GMONTH:
     {
       xqp_gMonth m;
-      if (0 == DateTime::parseGMonth(lString, m))
+      if (0 == DateTime::parseGMonth(lString.getp(), m))
         lItem = factory->createGMonth(m);
     }
     break;
   case TypeConstants::XS_FLOAT:
     {
       xqp_float n;
-      if (NumConversions::strToFloat(lString, n))
+      if (NumConversions::strToFloat(lString.getp(), n))
         lItem = factory->createFloat(n);
     }
     break;
       case TypeConstants::XS_DOUBLE:
       {
         xqp_double n;
-        if (NumConversions::strToDouble(lString, n))
+        if (NumConversions::strToDouble(lString.getp(), n))
           lItem = factory->createDouble(n);
       }
         break;
       case TypeConstants::XS_DECIMAL:
       {
         xqp_decimal n;
-        if (NumConversions::strToDecimal(lString, n))
+        if (NumConversions::strToDecimal(lString.getp(), n))
           lItem = factory->createDecimal(n);
       }
         break;
       case TypeConstants::XS_INTEGER:
       {
         xqp_integer n;
-        if (NumConversions::strToInteger(lString, n))
+        if (NumConversions::strToInteger(lString.getp(), n))
           lItem = factory->createInteger(n);
       }
         break;
       case TypeConstants::XS_NON_POSITIVE_INTEGER:
       {
         xqp_integer n;
-        if (NumConversions::strToInteger(lString, n))
+        if (NumConversions::strToInteger(lString.getp(), n))
           lItem = factory->createNonPositiveInteger(n);
       }
         break;
       case TypeConstants::XS_NEGATIVE_INTEGER:
       {
         xqp_integer n;
-        if (NumConversions::strToInteger(lString, n) && n < xqp_integer::parseInt(0))
+        if (NumConversions::strToInteger(lString.getp(), n) && n < xqp_integer::parseInt(0))
           lItem = factory->createNegativeInteger(n);
       }
         break;
       case TypeConstants::XS_LONG:
       {
         xqp_long n;
-        if (NumConversions::strToLongLong(lString, n))
+        if (NumConversions::strToLongLong(lString.getp(), n))
           lItem = factory->createLong(n);
       }
         break;
       case TypeConstants::XS_INT:
       {
         xqp_int n;
-        if (NumConversions::strToInt(lString, n))
+        if (NumConversions::strToInt(lString.getp(), n))
           lItem = factory->createInt(n);
       }
         break;
       case TypeConstants::XS_SHORT:
       {
         xqp_short n;
-        if (NumConversions::strToShort(lString, n))
+        if (NumConversions::strToShort(lString.getp(), n))
           lItem = factory->createShort(n);
       }
         break;
       case TypeConstants::XS_BYTE:
       {
         xqp_byte n;
-        if (NumConversions::strToByte(lString, n))
+        if (NumConversions::strToByte(lString.getp(), n))
           lItem = factory->createByte(n);
       }
         break;
       case TypeConstants::XS_NON_NEGATIVE_INTEGER:
       {
         xqp_uinteger n;
-        if (NumConversions::strToUInteger(lString, n))
+        if (NumConversions::strToUInteger(lString.getp(), n))
           lItem = factory->createNonNegativeInteger(n);
       }
         break;
       case TypeConstants::XS_UNSIGNED_LONG:
       {
         xqp_ulong n;
-        if (NumConversions::strToULongLong(lString, n))
+        if (NumConversions::strToULongLong(lString.getp(), n))
           lItem = factory->createUnsignedLong(n);
       }
         break;
       case TypeConstants::XS_UNSIGNED_INT:
       {
         xqp_uint n;
-        if (NumConversions::strToUInt(lString, n))
+        if (NumConversions::strToUInt(lString.getp(), n))
           lItem = factory->createUnsignedInt(n);
       }
         break;
       case TypeConstants::XS_UNSIGNED_SHORT:
       {
         xqp_ushort n;
-        if (NumConversions::strToUShort(lString, n))
+        if (NumConversions::strToUShort(lString.getp(), n))
           lItem = factory->createUnsignedShort(n);
       }
         break;
       case TypeConstants::XS_UNSIGNED_BYTE:
       {
         xqp_ubyte n;
-        if (NumConversions::strToUByte(lString, n))
+        if (NumConversions::strToUByte(lString.getp(), n))
           lItem = factory->createUnsignedByte(n);
       }
         break;
   case TypeConstants::XS_POSITIVE_INTEGER:
   {
     xqp_integer n;
-    if (NumConversions::strToInteger(lString, n) && n > xqp_integer::parseInt(0))
+    if (NumConversions::strToInteger(lString.getp(), n) && n > xqp_integer::parseInt(0))
       lItem = factory->createPositiveInteger(n);
   }
   break;
@@ -382,7 +403,7 @@ store::Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_HEXBINARY:
     break;
   case TypeConstants::XS_ANY_URI:
-    lItem = factory->createAnyURI(lString.getStore());
+    lItem = factory->createAnyURI(lString);
     break;
     
   case TypeConstants::XS_NCNAME:
@@ -390,13 +411,13 @@ store::Item_t GenericCast::stringSimpleCast(
     if (!TypeOps::is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
         !TypeOps::is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Cannot cast " + lString 
+      ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Cannot cast " + lString ->str()
                   + " to an NCName because its type is " + aSourceType->toString());
     }
 
     if (castableToNCName(lString))
     {
-      lItem = factory->createNCName(lString.getStore());
+      lItem = factory->createNCName(lString);
     }
     else
     {
@@ -418,7 +439,7 @@ store::Item_t GenericCast::stringSimpleCast(
   }
 
   case TypeConstants::XS_NOTATION:
-    lItem = factory->createNOTATION(lString);
+    lItem = factory->createNOTATION(lString.getp());
     break;
   default:
     // TODO parsing of user defined types
@@ -433,10 +454,11 @@ NCNameChar      ::=    NameChar - ':'
 NCNameStartChar ::=    Letter | '_' 
 NameChar			  ::=    Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Extender 
 */
-bool GenericCast::castableToNCName(const xqpString& str) const
+bool GenericCast::castableToNCName(const xqpStringStore* str) const
 {
 	uint32_t	cp;
-	std::vector<uint32_t> cps = str.getStore()->getCodepoints();
+
+	std::vector<uint32_t> cps = str->getCodepoints();
 	std::vector<uint32_t>::size_type	i, cps_size = cps.size();
 
 	if(cps_size == 0)
@@ -582,11 +604,11 @@ store::Item_t GenericCast::castToBoolean(
     } else if (TypeOps::is_equal(*aSourceType, *ATOMIC_TYPE(STRING))
                || TypeOps::is_equal(*aSourceType, *ATOMIC_TYPE(UNTYPED_ATOMIC)))
     {
-      xqp_string lString = aSourceItem->getStringValue().trim();
+      xqpStringStore_t lString = aSourceItem->getStringValue()->trim();
 
-      if (lString == "false" || lString == "0")
+      if (lString->byteEqual("false", 5) || lString->byteEqual("0", 1))
         lRetValue = false;
-      else if (lString != "true" && lString != "1")
+      else if (!lString->byteEqual("true", 4) && !lString->byteEqual("1", 1))
       {
         ZORBA_ERROR_DESC( ZorbaError::FORG0001,  "String cannot be cast to boolean");
       }

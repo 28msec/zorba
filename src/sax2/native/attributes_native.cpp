@@ -21,8 +21,8 @@ SAX2_AttributesNative::SAX2_AttributesNative(store::Item *item)
     item_qname = child->getNodeName();
     a.uri = item_qname->getNamespace();
     a.localname = item_qname->getLocalName();
-    a.qname = item_qname->getStringValue();
-    a.value = child->getStringValue();
+    a.qname = item_qname->getStringValue().getp();
+    a.value = child->getStringValue().getp();
     attrs.push_back(a);
 
     child = attr_it->next();

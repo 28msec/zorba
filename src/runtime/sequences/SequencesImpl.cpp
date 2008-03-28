@@ -929,8 +929,10 @@ FnDocIterator::~FnDocIterator()
 {
 }
 
-static store::Item_t get_doc (xqpStringStore *uriString, const char **err) {
+static store::Item_t get_doc (xqpStringStore *uriString, const char **err) 
+{
   store::Store& store = GENV.getStore();
+
   store::Item_t doc = store.getDocument(uriString);
     
   if (doc == NULL)
@@ -990,7 +992,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
   if (uriItem == NULL)
     return NULL;
 
-  uriString = uriItem->getStringValue().getStore();
+  uriString = uriItem->getStringValue();
 
   doc = get_doc (uriString, &err);
   if (doc == NULL)
@@ -1018,7 +1020,7 @@ store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
   if (uriItem == NULL)
     return NULL;
 
-  uriString = uriItem->getStringValue().getStore();
+  uriString = uriItem->getStringValue();
 
   doc = get_doc (uriString, &err);
   //TODO check if $uri is not a valid xs:anyURI and raise [err:FODC0005]

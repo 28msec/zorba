@@ -38,6 +38,106 @@ bool xqpStringStore::is_whitespace(uint32_t cp)
 
 
 /*******************************************************************************
+  Returns true is cp reprezents "unreserved" as defined by rfc3986.
+********************************************************************************/
+bool xqpStringStore::is_unreservedCP(uint32_t cp)
+{
+  bool ret = false;
+  if((0x30 <= cp && cp <= 0x39)|| //0-9
+     (0x41 <= cp && cp <= 0x5A)|| //A-Z
+     (0x61 <= cp && cp <= 0x7A)|| //a-z
+     cp == 0x2D || //-
+     cp == 0x2E || //.
+     cp == 0x5F || //_
+     cp == 0x7E)   //~
+  {  
+    ret = true;
+  }
+  return ret;
+}
+
+
+/*******************************************************************************
+  Returns true is cp reprezents "ucschar" as defined by rfc3987
+********************************************************************************/
+bool xqpStringStore::is_ucscharCP(uint32_t cp)
+{
+  bool ret = false;
+  if((0xA0 <= cp && cp <=0xD7FF) ||
+     (0xF900 <= cp && cp <=0xFDCF) ||
+     (0xFDF0 <= cp && cp <=0xFFEF) ||
+     (0x10000 <= cp && cp <=0x1FFFD) ||
+     (0x20000 <= cp && cp <=0x2FFFD) ||
+     (0x30000 <= cp && cp <=0x3FFFD) ||
+     (0x40000 <= cp && cp <=0x4FFFD) ||
+     (0x50000 <= cp && cp <=0x5FFFD) ||
+     (0x60000 <= cp && cp <=0x6FFFD) ||
+     (0x70000 <= cp && cp <=0x7FFFD) ||
+     (0x80000 <= cp && cp <=0x8FFFD) ||
+     (0x90000 <= cp && cp <=0x9FFFD) ||
+     (0xA0000 <= cp && cp <=0xAFFFD) ||
+     (0xB0000 <= cp && cp <=0xBFFFD) ||
+     (0xC0000 <= cp && cp <=0xCFFFD) ||
+     (0xD0000 <= cp && cp <=0xDFFFD) ||
+     (0xE0000 <= cp && cp <=0xEFFFD))
+  {
+    ret = true;
+  }
+  return ret;
+}
+
+
+/*******************************************************************************
+  Return true is cp reprezents "iprivate" as defined by rfc3987
+********************************************************************************/
+bool xqpStringStore::is_iprivateCP( uint32_t cp ) const
+{
+  bool ret = false;
+  if((0xE000 <= cp && cp <=0xF8FF) ||
+     (0xF0000 <= cp && cp <=0xFFFFD) ||
+     (0x100000 <= cp && cp <= 0x10FFFD)
+     )
+  {
+    ret = true;
+  }
+  return ret;
+}
+
+
+/*******************************************************************************
+  Return true if cp is a printable characters of the US-ASCII coded character
+  set meaning octets ranging from 32 to 126 (decimal).
+********************************************************************************/
+bool xqpStringStore::is_printableASCII(uint32_t cp) const
+{
+  bool ret = false;
+  if(0x20 <= cp && cp <=0x7E)//32 to 126 (decimal)
+  {
+    ret = true;
+  }
+  return ret;
+}
+
+
+/*******************************************************************************
+  Return true for the following printable ASCII characters that are invalid in
+  an IRI: "<", ">", " " " (double quote), space, "{", "}", "|", "\", "^", and "`".
+********************************************************************************/
+bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp) const
+{
+  bool ret = false;
+  if(0x3C == cp || 0x3E == cp || 0x22 == cp ||
+     0x7B == cp || 0x7D == cp || 0x7C == cp || 
+     0x5C == cp || 0X5E == cp || 0x60 == cp ||
+     0x20 == cp)
+  {
+    ret = true;
+  }
+  return ret;
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 uint32_t xqpStringStore::hash(const char* str)
@@ -132,6 +232,21 @@ int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
   given collation. Return the offset into this of the start of "pattern", or
   -1 if not found.
 ********************************************************************************/
+int32_t xqpStringStore::indexOf(const char* pattern) const
+{
+  if (empty())
+    return -1;
+
+  size_t lRes = theString.find(pattern);
+  return (lRes == std::string::npos) ? -1 : lRes;
+}
+
+
+/*******************************************************************************
+  Locate in "this" the first occurrence of the "pattern" substring, using the
+  given collation. Return the offset into this of the start of "pattern", or
+  -1 if not found.
+********************************************************************************/
 int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll) const
 {
   if (empty())
@@ -172,14 +287,118 @@ int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll
 
 
 /*******************************************************************************
+
+********************************************************************************/
+int32_t xqpStringStore::lastIndexOf(const xqpStringStore* pattern, XQPCollator* coll) const
+{
+  if ( ! coll )
+  {
+    size_t lRes = theString.rfind(pattern->c_str());
+    return (lRes == std::string::npos) ? -1 : lRes;
+  }
+
+  UErrorCode status = U_ZERO_ERROR;
+
+  StringSearch search(pattern->getUnicodeString(),
+                      getUnicodeString(), 
+                      (RuleBasedCollator *)coll->theCollator, NULL, status);
+
+  if(U_FAILURE(status))
+  {
+    assert(false);
+    return -1;
+  }
+
+  int32_t pos = search.last(status);
+  if (U_FAILURE(status))
+  {
+    assert(false);
+    return -1;
+  }
+
+  if(U_SUCCESS(status) && pos != USEARCH_DONE)
+  {
+    //TODO check if this condition is enough
+    return pos;
+  }
+
+  return -1;
+}
+
+
+/*******************************************************************************
+  Determine if "pattern" is a suffix of "this"
+********************************************************************************/
+bool xqpStringStore::endsWith(const xqpStringStore* pattern, XQPCollator* coll) const
+{
+  //TODO check if this condition is enough
+  return (lastIndexOf(pattern, coll) + pattern->numChars() == numChars());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::uppercase() const
+{
+  uint32_t i;
+  uint32_t len = numChars();
+  const char* c = c_str();
+  uint32_t cp;
+  char seq[4];
+
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+
+  for(i = 0; i < len; ++i)
+  {
+    cp = toUpper(UTF8Decode(c));
+    memset(seq, 0, sizeof(seq));
+    UTF8Encode(cp, seq);
+    newStr->theString += seq;
+  }
+  newStr->theString += "\0";
+
+  return newStr.release();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::lowercase() const
+{
+  uint32_t i;
+  uint32_t len = numChars();
+  const char* c = c_str();
+  uint32_t cp;
+  char seq[4];
+
+  //create the new xqpStringStore
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+
+  for(i = 0; i < len; ++i)
+  {
+    cp = toLower(UTF8Decode(c));
+    memset(seq, 0, sizeof(seq));
+    UTF8Encode(cp, seq);
+    newStr->theString += seq;
+  }
+  newStr->theString += "\0";
+
+  return newStr.release();
+}
+
+
+/*******************************************************************************
   Returns a new xqpString by stripping leading and trailing whitespace and
   replacing sequences of one or more than one whitespace character with a
   single space, #x20.
 ********************************************************************************/
-xqpStringStore* xqpStringStore::normalizeSpace() const
+xqpStringStore_t xqpStringStore::normalizeSpace() const
 {
   //create the new xqpStringStore
-  xqpStringStore_t tmp = new xqpStringStore("");
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+
   uint32_t len = numChars();
   const char* c = c_str();
   uint32_t cp, cpPrev;
@@ -198,14 +417,14 @@ xqpStringStore* xqpStringStore::normalizeSpace() const
         
       memset(seq, 0, sizeof(seq));
       UTF8Encode(cp, seq);
-      tmp->theString += seq;
+      newStr->theString += seq;
     }
     cpPrev = cp;
     --len;
   }
-  tmp->theString += "\0";
+  newStr->theString += "\0";
 
-  return tmp->trimR();
+  return newStr->trimR();
 }
 
 
@@ -215,12 +434,13 @@ xqpStringStore* xqpStringStore::normalizeSpace() const
   given set S of chars. S is defined as the 1st "len" chars in the "start"
   string. 
 ********************************************************************************/
-xqpStringStore* xqpStringStore::trimL(const char* start, uint16_t len) const
+xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len)
     return new xqpStringStore(*this);
 
-  std::string tmp = "";
+  //create the new xqpStringStore
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
 
   uint32_t StrLen = numChars();
   const char* c = c_str();
@@ -251,8 +471,8 @@ xqpStringStore* xqpStringStore::trimL(const char* start, uint16_t len) const
       char seq[4];
       memset(seq, 0, sizeof(seq));
       UTF8Encode(cp, seq);
-      tmp += seq;
-      tmp += c;
+      newStr->theString += seq;
+      newStr->theString += c;
       found = true;
     }
 
@@ -261,14 +481,14 @@ xqpStringStore* xqpStringStore::trimL(const char* start, uint16_t len) const
   }
 
   delete[] trimCP;
-  return new xqpStringStore(tmp);
+  return newStr.release();
 }
   
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore* xqpStringStore::trimL() const
+xqpStringStore_t xqpStringStore::trimL() const
 {
   char seq = ' ';
   return trimL( &seq, 1 );
@@ -278,7 +498,7 @@ xqpStringStore* xqpStringStore::trimL() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore* xqpStringStore::trimR(const char* start, uint16_t len) const
+xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len )
     return new xqpStringStore(*this);
@@ -291,7 +511,8 @@ xqpStringStore* xqpStringStore::trimR(const char* start, uint16_t len) const
     trimCP[i] = UTF8Decode(start);
 
   //create the new xqpStringStore
-  std::string tmp = "";
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+
   uint32_t pos = 0;
   uint32_t cp = 0;
   const char* end = c_str();
@@ -332,20 +553,20 @@ xqpStringStore* xqpStringStore::trimR(const char* start, uint16_t len) const
       
     memset(seq, 0, sizeof(seq));
     UTF8Encode(cp, seq);
-    tmp += seq;
+    newStr->theString += seq;
     
     --pos;
   }
 
   delete[] trimCP;
-  return new xqpStringStore(tmp);
+  return newStr.release();
 }
   
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore* xqpStringStore::trimR() const
+xqpStringStore_t xqpStringStore::trimR() const
 {
   char seq = ' ';
   return trimR( &seq, 1 );
@@ -355,12 +576,12 @@ xqpStringStore* xqpStringStore::trimR() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore* xqpStringStore::trim(const char* start, uint16_t len) const
+xqpStringStore_t xqpStringStore::trim(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len)
     return new xqpStringStore(*this);
 
-  xqpStringStore* tmp = trimL(start, len);
+  xqpStringStore_t tmp = trimL(start, len);
   return tmp->trimR(start, len);
 }
 
@@ -368,13 +589,13 @@ xqpStringStore* xqpStringStore::trim(const char* start, uint16_t len) const
 /*******************************************************************************
   Removes the leading and trailing whitespaces (#x20).
 ********************************************************************************/
-xqpStringStore* xqpStringStore::trim() const
+xqpStringStore_t xqpStringStore::trim() const
 {
   if(empty())
-    return new xqpStringStore(*this);
+    return new xqpStringStore("");
   
   char seq = ' ';
-  xqpStringStore* tmp = trimL(&seq, 1);
+  xqpStringStore_t tmp = trimL(&seq, 1);
   return tmp->trimR(&seq,1);
 }
 
@@ -382,7 +603,7 @@ xqpStringStore* xqpStringStore::trim() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore* xqpStringStore::formatAsXML(const char* src) const
+xqpStringStore_t xqpStringStore::formatAsXML(const char* src) const
 {
   uint32_t i;
   uint32_t len = numChars();
@@ -390,7 +611,7 @@ xqpStringStore* xqpStringStore::formatAsXML(const char* src) const
   uint32_t cp;
   char seq[4];
 
-  xqpStringStore* newStr = new xqpStringStore("");
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
 
   for(i = 0; i < len; ++i)
   {
@@ -411,7 +632,144 @@ xqpStringStore* xqpStringStore::formatAsXML(const char* src) const
   }
   newStr->theString += "\0";
 
-  return newStr;
+  return newStr.release();
+}
+
+
+/*******************************************************************************
+  Escape all characters except printable characters of the US-ASCII coded
+  character set, specifically the octets ranging from 32 to 126 (decimal)
+********************************************************************************/
+xqpStringStore_t xqpStringStore::escapeHtmlUri() const
+{
+  uint32_t i;
+  uint32_t len = numChars();
+  const char* c = c_str();
+  unsigned int cp;
+  char seq[4];
+  const char* prev = c_str();
+  distance_type length;
+
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+    
+  for(i = 0; i < len; ++i)
+  {
+    prev = c;
+    cp = UTF8Decode(c);
+    memset(seq, 0, sizeof(seq));
+    if(is_printableASCII(cp))
+    {
+      UTF8Encode(cp, seq);
+      newStr->theString += seq;
+    }
+    else
+    {
+      //codepoint has to be escaped
+      length = sequence_length(prev);
+      if(length != 1)
+      {
+        for(int j = 0; j < length;++j)
+        {
+          cp = mask8(*prev);
+          sprintf(seq, "%%%X", cp);
+          newStr->theString += seq;
+          prev++;
+        }
+      }
+    }
+  }
+  newStr->theString += "\0";
+
+  return newStr.release();
+}
+
+
+/*******************************************************************************
+  Converts an xs:string containing an IRI into a URI according to the rules
+  spelled out in Section 3.1 of http://www.ietf.org/rfc/rfc3987.txt
+********************************************************************************/
+xqpStringStore_t xqpStringStore::iriToUri() const
+{
+  uint32_t i;
+  uint32_t len = numChars();
+  const char* c = c_str();
+  unsigned int cp;
+  char seq[4];
+  const char* prev = c_str();
+  distance_type length;
+
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+    
+  for(i = 0; i < len; ++i)
+  {
+    prev = c;
+    cp = UTF8Decode(c);
+    memset(seq, 0, sizeof(seq));
+    if(!is_ucscharCP(cp) && !is_iprivateCP(cp) && !is_Invalid_in_IRI(cp))
+    {
+      UTF8Encode(cp, seq);
+      newStr->theString += seq;
+    }
+    else
+    {
+      //codepoint has to be escaped
+      length = sequence_length(prev);
+      for(int j = 0; j < length;++j)
+      {
+        cp = mask8(*prev);
+        sprintf(seq, "%%%X", cp);
+        newStr->theString += seq;
+        prev++;
+        }
+    }
+  }
+  newStr->theString += "\0";
+
+  return newStr.release();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::encodeForUri() const
+{
+  uint32_t i;
+  uint32_t len = numChars();
+  const char* c = c_str();
+  unsigned int cp;
+  char seq[4];
+  const char* prev = c_str();
+  distance_type length;
+  
+  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+    
+  for(i = 0; i < len; ++i)
+  {
+    prev = c;
+    cp = UTF8Decode(c);
+    memset(seq, 0, sizeof(seq));
+    if(is_unreservedCP(cp))
+    {
+      UTF8Encode(cp, seq);
+      newStr->theString += seq;
+    }
+    else
+    {
+      //codepoint has to be escaped
+      length = sequence_length(prev);
+      for(int j = 0; j < length; ++j)
+      {
+        cp = mask8(*prev);
+        sprintf(seq, "%%%X", cp);
+        newStr->theString += seq;
+        prev++;
+      }
+    }
+  }
+  newStr->theString += "\0";
+
+  return newStr.release();
 }
 
 
@@ -576,48 +934,6 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
   }
 
 
-  int32_t xqpString::lastIndexOf(xqpString pattern, XQPCollator* coll) const
-  {
-    if ( ! coll ) {
-      size_t lRes = theStrStore->theString.rfind(pattern.theStrStore->c_str());
-      return (lRes == std::string::npos)?-1:lRes;
-    }
-
-    UErrorCode status = U_ZERO_ERROR;
-
-    StringSearch search(pattern.theStrStore->getUnicodeString(),
-                        theStrStore->getUnicodeString(), 
-                        (RuleBasedCollator *)coll->theCollator, NULL, status);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-      return -1;
-    }
-
-    int32_t pos = search.last(status);
-    if (U_FAILURE(status))
-    {
-      assert(false);
-      return -1;
-    }
-
-    if(U_SUCCESS(status) && pos != USEARCH_DONE)
-    {
-      //TODO check if this condition is enough
-      return pos;
-    }
-
-    return -1;
-  }
-
-  bool xqpString::endsWith(xqpString pattern, XQPCollator* coll) const
-  {
-    //TODO check if this condition is enough
-    return( lastIndexOf(pattern, coll) + pattern.length() == length() );
-  }
-
-
   xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length) const
   {
     char* target;
@@ -634,7 +950,8 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     return ret;
   }
 
-  xqpString xqpString::substr(distance_type index) const
+
+xqpString xqpString::substr(xqpStringStore::distance_type index) const
   {
     if(index >= (int32_t)length())
     {
@@ -659,54 +976,6 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     return theStrStore->c_str();
   }
   
-  //uppercase/lowercase
-  xqpString xqpString::uppercase()
-  {
-    uint32_t i;
-    uint32_t len = length();
-    const char* c = c_str();
-    uint32_t cp;
-    char seq[4];
-
-    xqpStringStore_t newStr = new xqpStringStore("");
-
-    for(i=0; i<len; ++i)
-    {
-      cp = toUpper(UTF8Decode(c));
-      memset(seq, 0, sizeof(seq));
-      UTF8Encode(cp, seq);
-      newStr->theString += seq;
-    }
-    newStr->theString += "\0";
-
-    theStrStore = new xqpStringStore(newStr->theString);
-    return *this;
-  }
-
-  xqpString xqpString::lowercase()
-  {
-    uint32_t i;
-    uint32_t len = length();
-    const char* c = c_str();
-    uint32_t cp;
-    char seq[4];
-
-    xqpStringStore_t newStr = new xqpStringStore("");
-
-    for(i=0; i<len; ++i)
-    {
-      cp = toLower(UTF8Decode(c));
-      memset(seq, 0, sizeof(seq));
-      UTF8Encode(cp, seq);
-      newStr->theString += seq;
-    }
-    newStr->theString += "\0";
-
-    theStrStore = new xqpStringStore(newStr->theString);
-    return *this;
-  }
-
-
   //normalize
   xqpString xqpString::normalize(xqpString normMode)
   {
@@ -740,84 +1009,6 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     return getXqpString( result ); 
   }
 
-  bool xqpString::is_unreservedCP(uint32_t cp) const
-  {
-    bool ret = false;
-    if((0x30 <= cp && cp <= 0x39)|| //0-9
-       (0x41 <= cp && cp <= 0x5A)|| //A-Z
-       (0x61 <= cp && cp <= 0x7A)|| //a-z
-       cp == 0x2D || //-
-       cp == 0x2E || //.
-       cp == 0x5F || //_
-       cp == 0x7E)   //~
-      {  
-        ret = true;
-      }
-      return ret;
-  }
-
-  bool xqpString::is_ucscharCP(uint32_t cp) const
-  {
-    bool ret = false;
-    if((0xA0 <= cp && cp <=0xD7FF) ||
-      (0xF900 <= cp && cp <=0xFDCF) ||
-      (0xFDF0 <= cp && cp <=0xFFEF) ||
-      (0x10000 <= cp && cp <=0x1FFFD) ||
-      (0x20000 <= cp && cp <=0x2FFFD) ||
-      (0x30000 <= cp && cp <=0x3FFFD) ||
-      (0x40000 <= cp && cp <=0x4FFFD) ||
-      (0x50000 <= cp && cp <=0x5FFFD) ||
-      (0x60000 <= cp && cp <=0x6FFFD) ||
-      (0x70000 <= cp && cp <=0x7FFFD) ||
-      (0x80000 <= cp && cp <=0x8FFFD) ||
-      (0x90000 <= cp && cp <=0x9FFFD) ||
-      (0xA0000 <= cp && cp <=0xAFFFD) ||
-      (0xB0000 <= cp && cp <=0xBFFFD) ||
-      (0xC0000 <= cp && cp <=0xCFFFD) ||
-      (0xD0000 <= cp && cp <=0xDFFFD) ||
-      (0xE0000 <= cp && cp <=0xEFFFD))
-    {
-      ret = true;
-    }
-    return ret;
-  }
-
-  bool xqpString::is_Invalid_in_IRI(uint32_t cp) const
-  {
-    bool ret = false;
-    if(0x3C == cp || 0x3E == cp || 0x22 == cp ||
-       0x7B == cp || 0x7D == cp || 0x7C == cp || 
-       0x5C == cp || 0X5E == cp || 0x60 == cp ||
-       0x20 == cp)
-    {
-      ret = true;
-    }
-    return ret;
-  }
-
-  bool xqpString::is_iprivateCP( uint32_t cp ) const
-  {
-    bool ret = false;
-    if((0xE000 <= cp && cp <=0xF8FF) ||
-        (0xF0000 <= cp && cp <=0xFFFFD) ||
-        (0x100000 <= cp && cp <= 0x10FFFD)
-      )
-    {
-      ret = true;
-    }
-    return ret;
-  }
-
-  bool xqpString::is_printableASCII(uint32_t cp) const
-  {
-    bool ret = false;
-    if(0x20 <= cp && cp <=0x7E)//32 to 126 (decimal)
-    {
-      ret = true;
-    }
-    return ret;
-  }
-
 
   std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
   {
@@ -849,126 +1040,6 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     return mapArray;
   }
   
-  xqpString xqpString::encodeForUri() const
-  {
-    uint32_t i;
-    uint32_t len = length();
-    const char* c = c_str();
-    unsigned int cp;
-    char seq[4];
-    const char* prev = c_str();
-    distance_type length;
-
-    std::string tmp = "";
-    
-    for(i=0; i<len; ++i)
-    {
-      prev = c;
-      cp = UTF8Decode(c);
-      memset(seq, 0, sizeof(seq));
-      if(is_unreservedCP(cp))
-      {
-        UTF8Encode(cp, seq);
-        tmp += seq;
-      }
-      else{//codepoint has to be escaped
-        length = sequence_length(prev);
-        for(int j=0; j<length;++j)
-        {
-          cp = mask8(*prev);
-          sprintf(seq, "%%%X", cp);
-          tmp += seq;
-          prev++;
-        }
-      }
-    }
-    tmp += "\0";
-
-    xqpString res(tmp);
-    return res;
-  }
-
-  xqpString xqpString::iriToUri() const
-  {
-    uint32_t i;
-    uint32_t len = length();
-    const char* c = c_str();
-    unsigned int cp;
-    char seq[4];
-    const char* prev = c_str();
-    distance_type length;
-
-    std::string tmp = "";
-    
-    for(i=0; i<len; ++i)
-    {
-      prev = c;
-      cp = UTF8Decode(c);
-      memset(seq, 0, sizeof(seq));
-      if(!is_ucscharCP(cp) && !is_iprivateCP(cp) && !is_Invalid_in_IRI(cp))
-      {
-        UTF8Encode(cp, seq);
-        tmp += seq;
-      }
-      else{//codepoint has to be escaped
-        length = sequence_length(prev);
-        for(int j=0; j<length;++j)
-        {
-          cp = mask8(*prev);
-          sprintf(seq, "%%%X", cp);
-          tmp += seq;
-          prev++;
-        }
-      }
-    }
-    tmp += "\0";
-
-    xqpString res(tmp);
-    return res;
-  }
- 
-  xqpString xqpString::escapeHtmlUri() const
-  {
-    uint32_t i;
-    uint32_t len = length();
-    const char* c = c_str();
-    unsigned int cp;
-    char seq[4];
-    const char* prev = c_str();
-    distance_type length;
-
-    std::string tmp = "";
-    
-    for(i=0; i<len; ++i)
-    {
-      prev = c;
-      cp = UTF8Decode(c);
-      memset(seq, 0, sizeof(seq));
-      if(is_printableASCII(cp))
-      {
-        UTF8Encode(cp, seq);
-        tmp += seq;
-      }
-      else{//codepoint has to be escaped
-        length = sequence_length(prev);
-        if(length != 1)
-        {
-          for(int j=0; j<length;++j)
-          {
-            cp = mask8(*prev);
-            sprintf(seq, "%%%X", cp);
-            tmp += seq;
-            prev++;
-          }
-        }
-      }
-    }
-    tmp += "\0";
-
-    xqpString res(tmp);
-    return res;
-  }
-
   xqpString xqpString::translate(xqpString mapString, xqpString transString) const
   {
     std::map<uint32_t,uint32_t> myMap;

@@ -246,8 +246,8 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
     {
       // TODO get the error manager here and continue execution
       ZORBA_ERROR_PARAM(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                            "The document with URI " << *theDocUri
-                            <<" is not well formed", "");
+                        "The document with URI " << *theDocUri
+                        <<" is not well formed", "");
     }
     else
     {

@@ -193,7 +193,7 @@ store::Item_t FnStringIterator::nextImpl(PlanState& planState) const
 
   while((inVal = consumeNext(theChildren[0].getp(), planState)) != NULL) {
     state->hasOutput = true;
-    STACK_PUSH(GENV_ITEMFACTORY->createString(inVal->getStringValue().getStore()), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(inVal->getStringValue()), state);
   }
 
   if (!state->hasOutput && theEmptyStringOnNULL) {
