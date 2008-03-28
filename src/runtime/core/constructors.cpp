@@ -13,6 +13,8 @@
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
+#include "types/casting.h"
+#include "context/namespace_context.h"
 
 
 using namespace std;
@@ -410,6 +412,51 @@ store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+
+NameCastIterator::NameCastIterator(const QueryLoc& loc, PlanIter_t& aChild, NamespaceContext_t aNCtx)
+: UnaryBaseIterator<NameCastIterator, PlanIteratorState>(loc, aChild),
+  theNCtx(aNCtx)
+{}
+
+NameCastIterator::~NameCastIterator() {}
+
+store::Item_t NameCastIterator::nextImpl(PlanState& aPlanState) const
+{
+  store::Item_t lItem;
+  store::Item_t lRes;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+  lItem = consumeNext(theChild.getp(), aPlanState);
+  if (lItem == 0)
+  {
+    ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
+                          "Empty sequences cannot be cased to QName.");
+  }
+
+  try
+  {
+    lRes = GenericCast::instance()->castToQName(lItem->getStringValue(), true, true, &*theNCtx);
+  } catch (...)
+  {
+    // the returned error codes are wrong for name casting => they must be changed
+    ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
+                          "Item cannot be casted to QName.");
+  }
+
+  if (consumeNext(theChild.getp(), aPlanState) != 0)
+  {
+    ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
+                          "Non single sequences cannot be cased to QName.");
+  }
+
+  STACK_PUSH(lRes, state);
+  STACK_END(state);
+}
 
 /*******************************************************************************
 

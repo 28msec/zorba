@@ -185,6 +185,24 @@ public:
 
 
 /*******************************************************************************
+  NameCast Iterator casts QNames of computed elements that are not known
+  till execution time.
+********************************************************************************/
+class NameCastIterator : public UnaryBaseIterator<NameCastIterator, PlanIteratorState> {
+  friend class PrinterVisitor;
+private:
+  NamespaceContext_t theNCtx;
+
+public:
+  NameCastIterator(const QueryLoc& loc, PlanIter_t& aChild, NamespaceContext_t aNCtx);
+
+  virtual ~NameCastIterator();
+
+  store::Item_t nextImpl(PlanState& planState) const;
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+/*******************************************************************************
 
   CommentIterator constructs a comment element.
 
