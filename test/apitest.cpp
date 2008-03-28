@@ -100,16 +100,24 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // output the result (either using xml serialization or using show)
   cout << "Running query and printing result..." << endl;
-  if (lProp->useSerializer()) {
-    try {
+  if (lProp->useSerializer())
+  {
+    try
+    {
       *resultFile << query;
-    } catch (ZorbaException &e) {
+    }
+    catch (ZorbaException &e)
+    {
+      zengine->shutdown();
       cerr << "Execution error: " << e << endl;
       return 2;
     }
-  } else {
+  }
+  else
+  {
     ResultIterator_t result = query->iterator();
-    try {
+    try 
+    {
       result->open();
       Item lItem;
       while (result->next(lItem)) {
@@ -118,12 +126,17 @@ int _tmain(int argc, _TCHAR* argv[])
         *resultFile << lStoreItem->show() << endl;
       }
       result->close();
-    } catch (ZorbaException &e) {
+    }
+    catch (ZorbaException &e)
+    {
       result->close();
+      zengine->shutdown();
       cerr << "Execution error: " << e << endl;
       return 2;
     }
   }
-  
+
+  query.reset();
+  zengine->shutdown();
   return 0;
 }
