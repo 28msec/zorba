@@ -1,5 +1,4 @@
 
-#include "util/Assert.h"
 #include "errors/error_manager.h"
 
 #include "system/globalenv.h"
@@ -23,6 +22,40 @@ void PULImpl::addInsertInto(
     bool                 copy,
     const CopyMode&      copymode)
 {
+  addInsertChildren(UpdateConsts::UP_INSERT_INTO,
+                    target, children, copy, copymode);
+}
+
+
+void PULImpl::addInsertFirst(
+    Item*                target,
+    std::vector<Item_t>& children,
+    bool                 copy,
+    const CopyMode&      copymode)
+{
+  addInsertChildren(UpdateConsts::UP_INSERT_INTO_FIRST,
+                    target, children, copy, copymode);
+}
+
+
+void PULImpl::addInsertLast(
+    Item*                target,
+    std::vector<Item_t>& children,
+    bool                 copy,
+    const CopyMode&      copymode)
+{
+  addInsertChildren(UpdateConsts::UP_INSERT_INTO_LAST,
+                    target, children, copy, copymode);
+}
+
+
+void PULImpl::addInsertChildren(
+    UpdateConsts::UpdPrimKind kind,
+    Item*                     target,
+    std::vector<Item_t>&      children,
+    bool                      copy,
+    const CopyMode&           copymode)
+{
   XmlNode* n = reinterpret_cast<XmlNode*>(target);
 
   theTreeRoots.insert(n->getTree()->getRoot());
@@ -30,9 +63,67 @@ void PULImpl::addInsertInto(
   NodeUpdates* updates;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertChildren* upd = new UpdInsertChildren(UpdateConsts::UP_INSERT_INTO,
-                                                 n, children, copy, copymode);
-  theDoFirstList.push_back(upd);
+  UpdInsertChildren* upd = new UpdInsertChildren(kind, n, children, copy, copymode);
+
+  if (kind == UpdateConsts::UP_INSERT_INTO)
+    theDoFirstList.push_back(upd);
+  else
+    theInsertList.push_back(upd);
+
+  if (!found)
+  {
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    theNodeToUpdatesMap.insert(n, updates);
+  }
+  else
+  {
+    updates->push_back(upd);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addInsertBefore(
+    Item*                     target,
+    std::vector<Item_t>&      siblings,
+    bool                      copy,
+    const CopyMode&           copymode)
+{
+  addInsertSiblings(UpdateConsts::UP_INSERT_BEFORE,
+                    target, siblings, copy, copymode);
+}
+
+
+void PULImpl::addInsertAfter(
+    Item*                     target,
+    std::vector<Item_t>&      siblings,
+    bool                      copy,
+    const CopyMode&           copymode)
+{
+  addInsertSiblings(UpdateConsts::UP_INSERT_AFTER,
+                    target, siblings, copy, copymode);
+}
+
+
+void PULImpl::addInsertSiblings(
+    UpdateConsts::UpdPrimKind kind,
+    Item*                     target,
+    std::vector<Item_t>&      siblings,
+    bool                      copy,
+    const CopyMode&           copymode)
+{
+  XmlNode* n = reinterpret_cast<XmlNode*>(target);
+
+  theTreeRoots.insert(n->getTree()->getRoot());
+
+  NodeUpdates* updates;
+  bool found = theNodeToUpdatesMap.get(n, updates);
+
+  UpdInsertSiblings* upd = new UpdInsertSiblings(kind, n, siblings, copy, copymode);
+  theInsertList.push_back(upd);
 
   if (!found)
   {
@@ -217,8 +308,6 @@ void PULImpl::addReplaceValue(Item* target, xqpStringStore_t& newValue)
 ********************************************************************************/
 void PULImpl::addRename(Item* target, Item_t& newName)
 {
-  ZORBA_ASSERT(target->isNode());
-
   XmlNode* n = reinterpret_cast<XmlNode*>(target);
   StoreConsts::NodeKind targetKind = n->getNodeKind();
 

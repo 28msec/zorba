@@ -417,18 +417,27 @@ store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
-
-NameCastIterator::NameCastIterator(const QueryLoc& loc, PlanIter_t& aChild, NamespaceContext_t aNCtx)
-: UnaryBaseIterator<NameCastIterator, PlanIteratorState>(loc, aChild),
+NameCastIterator::NameCastIterator(
+    const QueryLoc& loc,
+    PlanIter_t& aChild,
+    NamespaceContext_t aNCtx)
+  :
+  UnaryBaseIterator<NameCastIterator, PlanIteratorState>(loc, aChild),
   theNCtx(aNCtx)
-{}
+{
+}
 
-NameCastIterator::~NameCastIterator() {}
+
+NameCastIterator::~NameCastIterator()
+{
+}
+
 
 store::Item_t NameCastIterator::nextImpl(PlanState& aPlanState) const
 {
   store::Item_t lItem;
   store::Item_t lRes;
+  xqpStringStore_t strval;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -447,14 +456,21 @@ store::Item_t NameCastIterator::nextImpl(PlanState& aPlanState) const
 
   try
   {
-    xqtref_t lItemType = GENV_TYPESYSTEM.create_type(lItem->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t lItemType = GENV_TYPESYSTEM.create_type(lItem->getType(),
+                                                     TypeConstants::QUANT_ONE);
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
     {
       lRes = lItem;
-    } else {
-      lRes = GenericCast::instance()->castToQName(lItem->getStringValue(), true, true, &*theNCtx);
     }
-  } catch (...)
+    else
+    {
+      lRes = GenericCast::instance()->castToQName(lItem->getStringValue(),
+                                                  true,
+                                                  true,
+                                                  &*theNCtx);
+    }
+  }
+  catch (...)
   {
     // the returned error codes are wrong for name casting => they must be changed
     ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
@@ -464,6 +480,7 @@ store::Item_t NameCastIterator::nextImpl(PlanState& aPlanState) const
   STACK_PUSH(lRes, state);
   STACK_END(state);
 }
+
 
 /*******************************************************************************
 

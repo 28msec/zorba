@@ -111,16 +111,16 @@ store::Item_t GenericCast::castToQName (
   }
   else
   {
-     xqpStringStore* lNamespace = new xqpStringStore("");
-     xqpStringStore* lPrefix = new xqpStringStore(qname->str().substr(0, lIndex));
-     xqpStringStore* lLocal = new xqpStringStore(qname->str().substr(lIndex + 1));
+    xqpString lNamespace;
+    xqpString lPrefix(qname->str().substr(0, lIndex));
+    xqpString lLocal(qname->str().substr(lIndex + 1));
     
-    if (!castableToNCName(lPrefix) || !castableToNCName(lLocal))
+    if (!castableToNCName(lPrefix.getStore()) || !castableToNCName(lLocal.getStore()))
       ZORBA_ERROR(code);
     
     // namespace resolution
     // raise XPST0081 (isCast false) or FONS0004 (isCast true) if namespace unknown
-    if (!lPrefix->empty() && aNCtx != 0)
+    if (aNCtx != 0)
     {
       if (!aNCtx->findBinding(lPrefix, lNamespace))
       {
@@ -133,7 +133,7 @@ store::Item_t GenericCast::castToQName (
       }
     }
 
-    return factory->createQName(lNamespace, lPrefix, lLocal);
+    return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
   }
   return 0;
 }

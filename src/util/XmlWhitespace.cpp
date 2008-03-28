@@ -3,7 +3,7 @@
 namespace zorba
 {
 
-inline xqpString xmlWhitespacePreserve(xqpString v)
+xqpString xmlWhitespacePreserve(xqpString v)
 {
     return v;
 }

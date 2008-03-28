@@ -72,6 +72,30 @@ public:
         bool                 copy,
         const CopyMode&      copymode);
 
+  void addInsertFirst(
+        Item*                target,
+        std::vector<Item_t>& children,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void addInsertLast(
+        Item*                target,
+        std::vector<Item_t>& children,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void addInsertBefore(
+        Item*                target,
+        std::vector<Item_t>& siblings,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void addInsertAfter(
+        Item*                target,
+        std::vector<Item_t>& siblings,
+        bool                 copy,
+        const CopyMode&      copymode);
+  
   void addInsertAttributes(
         Item*                target,
         std::vector<Item_t>& attrs,
@@ -89,6 +113,21 @@ public:
   void applyUpdates();
 
   void mergeUpdates(const PUL& other);
+
+protected:
+  void addInsertChildren(
+        UpdateConsts::UpdPrimKind kind,
+        Item*                     target,
+        std::vector<Item_t>&      children,
+        bool                      copy,
+        const CopyMode&           copymode);
+
+  void addInsertSiblings(
+        UpdateConsts::UpdPrimKind kind,
+        Item*                     target,
+        std::vector<Item_t>&      siblings,
+        bool                      copy,
+        const CopyMode&           copymode);
 };
 
 
