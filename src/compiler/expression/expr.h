@@ -201,6 +201,7 @@ public:
     context_var,
     param_var,
     catch_var,
+    transform_var,
     unknown_var  // TODO: get rid
   };
 
