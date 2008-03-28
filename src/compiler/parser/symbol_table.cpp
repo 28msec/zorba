@@ -11,10 +11,13 @@
 #include "util/fx/fxcharheap.h"
 #include "compiler/parser/util.h"
 
-#include <stdlib.h>
+#include "util/XmlWhitespace.h"
+
+#include <cstdlib>
 #include <string>
 
 using namespace std;
+
 namespace zorba {
 
 /**
@@ -141,31 +144,8 @@ off_t symbol_table::put_uri(char const* text, uint32_t length)
 {
   string result;
   if (! decode_string (text, length, &result)) return -1;
-  const char *result0 = result.c_str ();
-  length = result.length ();
-  trim_start (&result0, length);
-  trim_end   ( result0, length);
-  return heap.put (result0, 0, length);
-
-#if 0
-  if (do_trim_start_and_quotes)
-  {
-    trim_start(&text, length);
-
-    if (text[0] == '\"')
-    {
-      text++;
-      length--;
-    }
-
-    if (text[length-1] == '\"')
-    {
-      length--;
-    }
-  }
-  
-	return heap.put(text, 0, length);
-#endif
+  result = xmlWhitespaceCollapse (result);
+  return heap.put (result.c_str (), 0, result.length ());
 }
 
 off_t symbol_table::put_varname(char const* text, uint32_t length)

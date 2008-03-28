@@ -31,7 +31,7 @@ xqpString xmlWhitespaceReplace(xqpString str);
 xqpString xmlWhitespaceCollapse(xqpString str);
 
 /*
- * doesn't change the string, returns the same str
+ * Performs the specified action (preserve / replace / collapse)
  */ 
 xqpString xmlWhitespaceCollapse(xqpString str, XmlWhitespace_t wsct);
 
