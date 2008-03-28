@@ -15,6 +15,7 @@
 #include "store/api/copymode.h"
 #include "types/casting.h"
 #include "context/namespace_context.h"
+#include "types/typeops.h"
 
 
 using namespace std;
@@ -434,24 +435,30 @@ store::Item_t NameCastIterator::nextImpl(PlanState& aPlanState) const
   lItem = consumeNext(theChild.getp(), aPlanState);
   if (lItem == 0)
   {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
+    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
                           "Empty sequences cannot be cased to QName.");
+  }
+
+  if (consumeNext(theChild.getp(), aPlanState) != 0)
+  {
+    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
+                          "Non single sequences cannot be cased to QName.");
   }
 
   try
   {
-    lRes = GenericCast::instance()->castToQName(lItem->getStringValue(), true, true, &*theNCtx);
+    xqtref_t lItemType = GENV_TYPESYSTEM.create_type(lItem->getType(), TypeConstants::QUANT_ONE);
+    if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+    {
+      lRes = lItem;
+    } else {
+      lRes = GenericCast::instance()->castToQName(lItem->getStringValue(), true, true, &*theNCtx);
+    }
   } catch (...)
   {
     // the returned error codes are wrong for name casting => they must be changed
     ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
                           "Item cannot be casted to QName.");
-  }
-
-  if (consumeNext(theChild.getp(), aPlanState) != 0)
-  {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
-                          "Non single sequences cannot be cased to QName.");
   }
 
   STACK_PUSH(lRes, state);
