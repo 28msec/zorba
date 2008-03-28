@@ -140,6 +140,7 @@ DEF_ACCEPT (instanceof_expr)
 DEF_ACCEPT (treat_expr)
 DEF_ACCEPT (castable_expr)
 DEF_ACCEPT (cast_expr)
+DEF_ACCEPT (name_cast_expr)
 DEF_ACCEPT (validate_expr)
 DEF_ACCEPT (extension_expr)
 DEF_ACCEPT (relpath_expr)
@@ -636,6 +637,20 @@ void cast_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
+name_cast_expr::name_cast_expr(
+  const QueryLoc& loc,
+  rchandle<expr> _expr_h,
+  NamespaceContext_t aNCtx)
+: expr(loc), input_expr_h(_expr_h), theNCtx(aNCtx) 
+{}
+
+void name_cast_expr::next_iter (expr_iterator_data& v) {
+  BEGIN_EXPR_ITER ();
+  ITER (input_expr_h);
+  END_EXPR_ITER ();
+}
+
+rchandle<namespace_context> name_cast_expr::getNamespaceContext() { return theNCtx; }
 
 // [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
 

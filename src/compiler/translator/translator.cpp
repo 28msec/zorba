@@ -1026,9 +1026,9 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
                                              LOOKUP_FN("fn", "data", 1));
     atomExpr->add(nameExpr);
 
-    nameExpr = new cast_expr(v.get_location(),
+    nameExpr = new name_cast_expr(v.get_location(),
                              atomExpr.getp(),
-                             GENV_TYPESYSTEM.QNAME_TYPE_ONE);
+                             ns_ctx);
   }
 
   nodestack.push (new elem_expr(v.get_location(), nameExpr, contentExpr, ns_ctx));
@@ -1077,9 +1077,9 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
                                              LOOKUP_FN("fn", "data", 1));
     atomExpr->add(nameExpr);
 
-    expr_t castExpr = new cast_expr(v.get_location(),
+    expr_t castExpr = new name_cast_expr(v.get_location(),
                                     atomExpr.getp(),
-                                    GENV_TYPESYSTEM.QNAME_TYPE_ONE);
+                                    ns_ctx);
 
     //fo_expr* enclosedExpr = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
     //enclosedExpr->add(castExpr);

@@ -28,6 +28,7 @@ class normalizer : public expr_visitor {
     bool begin_visit(treat_expr&);
     bool begin_visit(castable_expr&);
     bool begin_visit(cast_expr&);
+    bool begin_visit(name_cast_expr&);
     bool begin_visit(validate_expr&);
     bool begin_visit(extension_expr&);
     bool begin_visit(relpath_expr&);
@@ -63,6 +64,7 @@ class normalizer : public expr_visitor {
     void end_visit(treat_expr&);
     void end_visit(castable_expr&);
     void end_visit(cast_expr&);
+    void end_visit(name_cast_expr&);
     void end_visit(validate_expr&);
     void end_visit(extension_expr&);
     void end_visit(relpath_expr&);

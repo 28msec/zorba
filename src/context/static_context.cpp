@@ -222,6 +222,22 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     return ns;
   }
 
+  bool static_context::lookup_elem_namespace(const xqp_string pfx, xqp_string& ns) const {
+    if (pfx.empty())
+    {
+      ns = default_elem_type_ns(); 
+    } else {
+      if (!context_value("ns:" + pfx, ns))
+      {
+        return false;
+      }
+    }
+    if (ns.empty())
+      return false;
+    else
+      return true;
+  }
+
   void static_context::bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCode err)
   {
     bind_str ("ns:" + prefix, ns, err);

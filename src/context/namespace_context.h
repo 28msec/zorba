@@ -29,6 +29,7 @@ class namespace_context : public SimpleRCObject {
 
     void bind_ns(xqp_string prefix, xqp_string ns);
     const bindings_t& get_bindings() const { return m_bindings; }
+    bool findBinding(const xqp_string& aPrefix, xqp_string aNamespace);
 
   private:
     static_context *m_sctx;

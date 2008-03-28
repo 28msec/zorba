@@ -112,7 +112,7 @@ namespace zorba
        * @param isCast true if a cast is requested, false if this is a castable inquiry
        * @return an item if the promotion is possible, otherwise raises an error
        */
-    store::Item_t castToQName (const xqpString &aStr, bool isCast, bool isExplicit) const;
+    store::Item_t castToQName (const xqpString &aStr, bool isCast, bool isExplicit, namespace_context* aNCtx = 0) const;
 
   protected:
       bool castableToNCName(const xqpString& str) const;

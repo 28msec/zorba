@@ -105,6 +105,7 @@ namespace zorba {
   UNARY_ACCEPT(CommentIterator);
   UNARY_ACCEPT(DocFilterIterator);
   UNARY_ACCEPT(CastIterator);
+  UNARY_ACCEPT(NameCastIterator);
   UNARY_ACCEPT(CastableIterator);
   UNARY_ACCEPT(PromoteIterator);
   UNARY_ACCEPT(PrefixFromQNameIterator);

@@ -34,6 +34,7 @@
 #include "types/typeops.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
+#include "context/namespace_context.h"
 
 
 namespace zorba
@@ -76,7 +77,7 @@ GenericCast* GenericCast::instance()
 /// @param isExplicit true when called from the translator
 /// @param isCast true when this is a cast, false when this is a castable
 /// TODO: return 0 instead of throwing an error code, let the caller decide on the error
-store::Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExplicit) const {
+store::Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExplicit, namespace_context* aNCtx) const {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   xqpString lNamespace = "";
   xqpString lPrefix = "";
@@ -90,16 +91,29 @@ store::Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, boo
   } else if (lIndex == 0) {
     ZORBA_ERROR (code);
   } else {
-    // TODO namespace resolution
-    // raise XPST0081 (isCast false) or FONS0004 (isCast true) if namespace unknown
 
     lPrefix = qname.substr(0, lIndex);
     xqpString lLocal = qname.substr(lIndex + 1);
     
-    if (castableToNCName(lPrefix) && castableToNCName(lLocal))
-      return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
-    else 
+    if (!castableToNCName(lPrefix) || !castableToNCName(lLocal))
       ZORBA_ERROR(code);
+    
+    // namespace resolution
+    // raise XPST0081 (isCast false) or FONS0004 (isCast true) if namespace unknown
+    if (!lPrefix.empty() && aNCtx != 0)
+    {
+      if (!aNCtx->findBinding(lPrefix, lNamespace))
+      {
+        if (isCast)
+        {
+          ZORBA_ERROR(ZorbaError::FONS0004);
+        } else {
+          ZORBA_ERROR(ZorbaError::XPST0081);
+        }
+      }
+    }
+
+    return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
   }
   return 0;
 }

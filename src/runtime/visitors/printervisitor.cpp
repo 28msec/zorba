@@ -1739,6 +1739,17 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
     thePrinter.endEndVisit();
   }
 
+  void PrinterVisitor::beginVisit(const NameCastIterator& a) {
+    thePrinter.startBeginVisit("NameCastIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const NameCastIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   void PrinterVisitor::beginVisit(const PromoteIterator& a) {
     thePrinter.startBeginVisit("PromoteIterator", (intptr_t) &a);
     std::ostringstream lStream;

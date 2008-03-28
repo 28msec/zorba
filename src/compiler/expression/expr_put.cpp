@@ -278,6 +278,16 @@ ostream& cast_expr::put( ostream& os) const
   return os;
 }
 
+ostream& name_cast_expr::put( ostream& os) const
+{
+  os << INDENT << "name_cast_expr ";
+  os << " (" << this << ") [\n";
+  ZORBA_ASSERT(input_expr_h!=NULL);
+  input_expr_h->put(os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
 ostream& validate_expr::put( ostream& os) const
 {
   os << INDENT << "validate_expr (" << this << ") [\n";

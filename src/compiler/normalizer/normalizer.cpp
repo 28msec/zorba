@@ -162,6 +162,11 @@ bool normalizer::begin_visit(cast_expr& /*node*/)
   return true;
 }
 
+bool normalizer::begin_visit(name_cast_expr& /*node*/)
+{
+  return true;
+}
+
 bool normalizer::begin_visit(validate_expr& /*node*/)
 {
   return true;
@@ -338,6 +343,10 @@ void normalizer::end_visit(castable_expr& /*node*/)
 }
 
 void normalizer::end_visit(cast_expr& /*node*/)
+{
+}
+
+void normalizer::end_visit(name_cast_expr& /*node*/)
 {
 }
 

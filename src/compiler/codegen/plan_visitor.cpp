@@ -681,6 +681,19 @@ void end_visit(cast_expr& v)
   itstack.push(new CastIterator(v.get_loc(), lChild, v.get_target_type()));
 }
 
+bool begin_visit(name_cast_expr&)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(name_cast_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lChild = pop_itstack();
+  itstack.push(new NameCastIterator(v.get_loc(), lChild, v.getNamespaceContext()));
+}
+
 bool begin_visit(validate_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");

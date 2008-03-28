@@ -5,6 +5,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "types/typeconstants.h"
+#include "context/namespace_context.h"
 
 namespace zorba {
 
@@ -54,6 +55,22 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
+class NameCastIterator : public UnaryBaseIterator<NameCastIterator, PlanIteratorState> {
+  friend class PrinterVisitor;
+private:
+  NamespaceContext_t theNCtx;
+
+public:
+  NameCastIterator(const QueryLoc& loc, PlanIter_t& aChild, NamespaceContext_t aNCtx)
+  : UnaryBaseIterator<NameCastIterator, PlanIteratorState>(loc, aChild),
+    theNCtx(aNCtx)
+  {}
+
+  virtual ~NameCastIterator() {}
+
+  store::Item_t nextImpl(PlanState& planState) const;
+  virtual void accept(PlanIterVisitor&) const;
+};
 
 /*******************************************************************************
   Implement 3.12.4: Castable

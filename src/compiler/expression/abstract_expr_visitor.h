@@ -40,6 +40,7 @@ public:
   virtual bool begin_visit(treat_expr&) { return true; }
   virtual bool begin_visit(castable_expr&) { return true; }
   virtual bool begin_visit(cast_expr&) { return true; }
+  virtual bool begin_visit(name_cast_expr&) { return true; }
   virtual bool begin_visit(validate_expr&) { return true; }
   virtual bool begin_visit(extension_expr&) { return true; }
   virtual bool begin_visit(relpath_expr&) { return true; }
@@ -78,6 +79,7 @@ public:
   virtual void end_visit(treat_expr&) { }
   virtual void end_visit(castable_expr&) { }
   virtual void end_visit(cast_expr&) { }
+  virtual void end_visit(name_cast_expr&) { }
   virtual void end_visit(validate_expr&) { }
   virtual void end_visit(extension_expr&) { }
   virtual void end_visit(relpath_expr&) { }

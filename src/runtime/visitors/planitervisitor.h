@@ -139,6 +139,7 @@ namespace zorba
   class DocumentContentIterator;
   class DocFilterIterator;
   class CastIterator;
+  class NameCastIterator;
   class CastableIterator;
   class PromoteIterator;
   class CtxVariableIterator;
@@ -591,6 +592,9 @@ namespace zorba
       
       virtual void beginVisit ( const CastIterator& ) = 0;
       virtual void endVisit ( const CastIterator& ) = 0;
+
+      virtual void beginVisit ( const NameCastIterator& ) = 0;
+      virtual void endVisit ( const NameCastIterator& ) = 0;
 
       virtual void beginVisit ( const PromoteIterator& ) = 0;
       virtual void endVisit ( const PromoteIterator& ) = 0;

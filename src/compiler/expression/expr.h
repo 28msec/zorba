@@ -61,6 +61,7 @@ enum expr_kind_t {
   treat_expr_kind,
   castable_expr_kind,
   cast_expr_kind,
+  name_cast_expr_kind,
   validate_expr_kind,
   extension_expr_kind,
   relpath_expr_kind,
@@ -899,6 +900,26 @@ public:
 
   bool is_optional() const;
 
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+  std::ostream& put(std::ostream&) const;
+};
+
+class name_cast_expr : public expr {
+private:
+  expr_t input_expr_h;
+  NamespaceContext_t theNCtx;
+public:
+  name_cast_expr (
+    const QueryLoc&,
+    expr_t,
+    NamespaceContext_t);
+
+  expr_kind_t get_expr_kind () { return name_cast_expr_kind; }
+  expr_t get_input() { return input_expr_h; }
+  NamespaceContext_t getNamespaceContext();
+
+public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;

@@ -48,6 +48,7 @@ public:
   virtual bool begin_visit(treat_expr&) = 0;
   virtual bool begin_visit(castable_expr&) = 0;
   virtual bool begin_visit(cast_expr&) = 0;
+  virtual bool begin_visit(name_cast_expr&) = 0;
   virtual bool begin_visit(validate_expr&) = 0;
   virtual bool begin_visit(extension_expr&) = 0;
   virtual bool begin_visit(relpath_expr&) = 0;
@@ -86,6 +87,7 @@ public:
   virtual void end_visit(treat_expr&) = 0;
   virtual void end_visit(castable_expr&) = 0;
   virtual void end_visit(cast_expr&) = 0;
+  virtual void end_visit(name_cast_expr&) = 0;
   virtual void end_visit(validate_expr&) = 0;
   virtual void end_visit(extension_expr&) = 0;
   virtual void end_visit(relpath_expr&) = 0;
