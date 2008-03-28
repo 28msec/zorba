@@ -31,11 +31,5 @@ xqtref_t ctx_variable::type_check(signature& sig) const
   return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 }
 
-
-bool ctx_variable::validate_args ( std::vector<PlanIter_t>& argv ) const
-{
-  return ( argv.size() == 1 );
-}
-
-  /* end class CtxVariable */
+/* end class CtxVariable */
 }

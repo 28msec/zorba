@@ -556,11 +556,6 @@ fn_doc_available_func::type_check( signature& ) const
   return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 }
 
-bool
-fn_doc_available_func::validate_args( vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 1);
-}
 /*end class fn_doc_available_func*/
 
 //15.5.6 fn:collection

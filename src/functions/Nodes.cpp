@@ -18,9 +18,6 @@ namespace zorba {
 
 PlanIter_t fn_local_name::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  if (!validate_args(argv))
-    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
-  
   return new FnLocalNameIterator ( loc, argv );
 }
 
@@ -38,9 +35,6 @@ fn_namespace_uri::fn_namespace_uri(const signature& sig)
 
 PlanIter_t fn_namespace_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  if (!validate_args(argv))
-    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
-  
   return new FnNamespaceUriIterator ( loc, argv );
 }
 
@@ -62,9 +56,6 @@ xqtref_t fn_lang::type_check(signature&) const
 
 PlanIter_t fn_lang::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  if (!validate_args(argv))
-    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
-
   return new FnLangIterator(loc, argv);
 }
 
@@ -81,9 +72,6 @@ xqtref_t fn_collection::type_check(signature&) const
 
 PlanIter_t fn_collection::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  if (!validate_args(argv))
-    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
-
   return new FnCollectionIterator(loc, argv);
 }
 

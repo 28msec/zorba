@@ -65,11 +65,8 @@ public:
 
   virtual void compute_annotation (AnnotationHolder *, std::vector<AnnotationHolder *> &, Annotation::key_t) const {}
 
-	// runtime arg validation: XXX move this out
-	virtual bool validate_args(std::vector<PlanIter_t>& argv) const {
-    uint32_t n = sig.arg_count ();
-    return n == VARIADIC_SIG_SIZE || argv.size() == sig.arg_count();
-  }
+	// runtime arg validation
+	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
   // Annotation calculator functions
   virtual bool isSource() const { return false; }

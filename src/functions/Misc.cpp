@@ -14,10 +14,6 @@ fn_trace_func::fn_trace_func(const signature& sig)
 
 PlanIter_t fn_trace_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  if ( !validate_args ( argv ) )
-	{
-    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
-  }
   return new FnTraceIterator ( loc, argv );
 }
 
@@ -40,9 +36,6 @@ xqtref_t fn_error::type_check(signature&) const
 
 PlanIter_t fn_error::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  if (!validate_args(argv))
-    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
-
   return new FnErrorIterator(loc, argv);
 }
 
@@ -56,9 +49,6 @@ fn_resolve_uri::fn_resolve_uri(const signature& sig)
 
 PlanIter_t fn_resolve_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  if (!validate_args(argv))
-    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
-
   return new FnResolveUriIterator ( loc, argv );
 }
 

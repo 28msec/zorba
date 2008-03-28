@@ -10,6 +10,11 @@
 
 namespace zorba {
 
+bool function::validate_args(std::vector<PlanIter_t>& argv) const {
+  uint32_t n = sig.arg_count ();
+  return n == VARIADIC_SIG_SIZE || argv.size() == sig.arg_count();
+}
+
 user_function::user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body)
   : function(_sig), m_loc(loc), m_expr_body(expr_body) { }
 
