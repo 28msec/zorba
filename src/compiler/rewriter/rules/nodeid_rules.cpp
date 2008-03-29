@@ -15,7 +15,7 @@ template<typename T> void exprs_to_holders (T exprs_begin, T exprs_end, vector <
     anns.push_back (static_cast<AnnotationHolder *> (&* (*i)));
 }
 
-static void propagate_down_nodeid_props(expr *target, expr *src) {
+static void propagate_down_nodeid_props(expr *src, expr *target) {
   Annotation::key_t k;
   k = AnnotationKey::IGNORES_SORTED_NODES; target->put_annotation (k, src->get_annotation (k));
   k = AnnotationKey::IGNORES_DUP_NODES; target->put_annotation (k, src->get_annotation (k));
@@ -109,9 +109,11 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
       expr_t arg = (*fo)[0];
       arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
       arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
-    } else if (f == LOOKUP_FN ("fn", "count", 1)) {
+    } else if (f == LOOKUP_FN ("fn", "count", 1)
+               || f == LOOKUP_FN ("fn", "exactly-one", 1)
+               || f == LOOKUP_OP1 ("exactly-one-noraise")) {
       expr_t arg = (*fo)[0];
-      arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);      
+      arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
     } else {
       vector <AnnotationHolder *> anns;
       exprs_to_holders (fo->begin (), fo->end (), anns);
