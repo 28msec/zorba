@@ -34,12 +34,6 @@ fn_codepoints_to_string::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
   return new CodepointsToStringIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_codepoints_to_string::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.INTEGER_TYPE_STAR;
-}
 
 /*end class fn_codepoints_to_string*/
 
@@ -60,12 +54,6 @@ fn_string_to_codepoints::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
   return new StringToCodepointsIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_string_to_codepoints::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 /*end class fn_string_to_codepoints*/
@@ -87,12 +75,6 @@ fn_string_compare_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new CompareStrIterator(loc, argv);
 }
 
-xqtref_t
-fn_string_compare_2::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 fn_string_compare_3::fn_string_compare_3(
@@ -108,12 +90,6 @@ fn_string_compare_3::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new CompareStrIterator(loc, argv);
 }
 
-xqtref_t
-fn_string_compare_3::type_check(
-    signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_string_compare*/
 
@@ -134,12 +110,6 @@ fn_codepoint_equal::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv,
   return new CodepointEqualIterator(loc, argv[0], argv[1]);
 }
 
-xqtref_t
-fn_codepoint_equal::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_codepoint_equal*/
 
@@ -161,12 +131,6 @@ fn_concat::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annotati
 }
 
 
-xqtref_t
-fn_concat::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 /*end class fn_concat*/
 
 /*
@@ -186,12 +150,6 @@ fn_string_join::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Ann
   return new StringJoinIterator(loc, argv[0], argv[1]);
 }
 
-xqtref_t
-fn_string_join::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_STAR;
-}
 
 /*end class fn_string_join*/
 
@@ -212,12 +170,6 @@ fn_substring_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Ann
   return new SubstringIterator(loc, argv);
 }
 
-xqtref_t
-fn_substring_2::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 fn_substring_3::fn_substring_3(
@@ -233,12 +185,6 @@ fn_substring_3::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Ann
   return new SubstringIterator(loc, argv);
 }
 
-xqtref_t
-fn_substring_3::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_substring*/
 
@@ -259,12 +205,6 @@ fn_string_length::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, A
   return new StringLengthIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_string_length::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_string_length*/
 
@@ -285,12 +225,6 @@ fn_normalize_space::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv,
   return new NormalizeSpaceIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_normalize_space::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_normalize_space*/
 
@@ -311,12 +245,6 @@ fn_normalize_unicode_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new NormalizeUnicodeIterator(loc, argv);
 }
 
-xqtref_t
-fn_normalize_unicode_1::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 fn_normalize_unicode_2::fn_normalize_unicode_2(
@@ -332,12 +260,6 @@ fn_normalize_unicode_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new NormalizeUnicodeIterator(loc, argv);
 }
 
-xqtref_t
-fn_normalize_unicode_2::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_normalize_unicode*/
 
@@ -359,12 +281,6 @@ fn_upper_case::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Anno
   return new UpperCaseIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_upper_case::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_upper_case*/
 
@@ -386,12 +302,6 @@ fn_lower_case::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Anno
   return new LowerCaseIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_lower_case::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_lower_case*/
 
@@ -413,12 +323,6 @@ fn_translate::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annot
   return new TranslateIterator(loc, argv);
 }
 
-xqtref_t
-fn_translate::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_translate*/
 
@@ -439,12 +343,6 @@ fn_encode_for_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
   return new EncodeForUriIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_encode_for_uri::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_encode_for_uri*/
 
@@ -465,12 +363,6 @@ fn_iri_to_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Anno
   return new IriToUriIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_iri_to_uri::type_check(
-signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_iri_to_uri*/
 
@@ -491,12 +383,6 @@ fn_escape_html_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv,
   return new EscapeHtmlUriIterator(loc, argv[0]);
 }
 
-xqtref_t
-fn_escape_html_uri::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_escape_html_uri*/
 
@@ -518,12 +404,6 @@ fn_contains_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Anno
   return new ContainsIterator(loc, argv);
 }
 
-xqtref_t
-fn_contains_2::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 fn_contains_3::fn_contains_3(
@@ -539,12 +419,6 @@ fn_contains_3::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Anno
   return new ContainsIterator(loc, argv);
 }
 
-xqtref_t
-fn_contains_3::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_contains*/
 
@@ -565,12 +439,6 @@ fn_starts_with_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, A
   return new StartsWithIterator(loc, argv);
 }
 
-xqtref_t
-fn_starts_with_2::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 fn_starts_with_3::fn_starts_with_3(
@@ -586,12 +454,6 @@ fn_starts_with_3::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, A
   return new StartsWithIterator(loc, argv);
 }
 
-xqtref_t
-fn_starts_with_3::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_starts_with*/
 
@@ -612,12 +474,6 @@ fn_ends_with_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Ann
   return new EndsWithIterator(loc, argv);
 }
 
-xqtref_t
-fn_ends_with_2::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 fn_ends_with_3::fn_ends_with_3(
@@ -633,12 +489,6 @@ fn_ends_with_3::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Ann
   return new EndsWithIterator(loc, argv);
 }
 
-xqtref_t
-fn_ends_with_3::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_ends_with*/
 
@@ -659,12 +509,6 @@ fn_substring_before_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
   return new SubstringBeforeIterator(loc, argv);
 }
 
-xqtref_t
-fn_substring_before_2::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 fn_substring_before_3::fn_substring_before_3(
@@ -680,12 +524,6 @@ fn_substring_before_3::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
   return new SubstringBeforeIterator(loc, argv);
 }
 
-xqtref_t
-fn_substring_before_3::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_substring_before*/
 
@@ -706,12 +544,6 @@ fn_substring_after_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   return new SubstringAfterIterator(loc, argv);
 }
 
-xqtref_t
-fn_substring_after_2::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 fn_substring_after_3::fn_substring_after_3(
@@ -727,12 +559,6 @@ fn_substring_after_3::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   return new SubstringAfterIterator(loc, argv);
 }
 
-xqtref_t
-fn_substring_after_3::type_check(
-  signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_substring_after*/
 
@@ -751,11 +577,6 @@ fn_matches::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annotat
   return new FnMatchesIterator(loc, argv);
 }
 
-xqtref_t
-fn_matches::type_check( signature& ) const
-{
-  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-}
 
 /*end class fn_matches*/
 
@@ -773,11 +594,6 @@ fn_replace::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annotat
   return new FnReplaceIterator(loc, argv);
 }
 
-xqtref_t
-fn_replace::type_check( signature& ) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
-}
 
 /*end class fn_replace*/
 
@@ -795,11 +611,6 @@ fn_tokenize::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annota
   return new FnTokenizeIterator(loc, argv);
 }
 
-xqtref_t
-fn_tokenize::type_check( signature& ) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_STAR;
-}
 
 /*end class fn_tokenize*/
 }/*namespace zorba*/

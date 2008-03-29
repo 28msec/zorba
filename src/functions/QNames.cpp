@@ -32,12 +32,6 @@ PlanIter_t
   return new ResolveQNameIterator(loc, argv[0], argv[1]);
 }
 
-xqtref_t
-    fn_resolve_qname::type_check(
-    signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_resolve_qname*/
 
@@ -58,12 +52,6 @@ PlanIter_t
   return new QNameIterator(loc, argv[0], argv[1]);
 }
 
-xqtref_t
-    fn_qname::type_check(
-    signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_qname*/
 
@@ -84,12 +72,6 @@ PlanIter_t
   return new QNameEqualIterator(loc, argv[0], argv[1]);
 }
 
-xqtref_t
-    op_qname_equal::type_check(
-    signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.QNAME_TYPE_ONE;
-}
 
 /*end class op_qname_equal*/
 
@@ -110,12 +92,6 @@ PlanIter_t
   return new PrefixFromQNameIterator(loc, argv[0]);
 }
 
-xqtref_t
-    fn_prefix_from_qname::type_check(
-    signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
-}
 
 /*end class fn_prefix_from_qname*/
 
@@ -136,12 +112,6 @@ PlanIter_t
   return new LocalNameFromQNameIterator(loc, argv[0]);
 }
 
-xqtref_t
-    fn_local_name_from_qname::type_check(
-    signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
-}
 
 /*end class fn_local_name_from_qname*/
 
@@ -162,12 +132,6 @@ PlanIter_t
   return new NamespaceUriFromQNameIterator(loc, argv[0]);
 }
 
-xqtref_t
-    fn_namespace_uri_from_qname::type_check(
-    signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
-}
 
 /*end class fn_namespace_uri_from_qname*/
 
@@ -188,12 +152,6 @@ PlanIter_t
   return new NamespaceUriForPrefixlIterator(loc, argv[0], argv[1]);
 }
 
-xqtref_t
-    fn_namespace_uri_for_prefix::type_check(
-    signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 /*end class fn_namespace_uri_for_prefix*/
 
@@ -212,14 +170,6 @@ PlanIter_t
     fn_in_scope_prefixes::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new InScopePrefixesIterator(loc, argv[0]);
-}
-
-xqtref_t
-    fn_in_scope_prefixes::type_check(
-    signature& /*sig*/) const
-{
-  // TODO - Fix Typemanager
-  return GENV_TYPESYSTEM.create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE);
 }
 
 /*end class fn_in_scope_prefixes*/

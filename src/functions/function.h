@@ -31,7 +31,6 @@ public:
   virtual ~function_typechecker() {}
   
   virtual xqtref_t return_type(const fo_expr *fo) = 0;
-  virtual xqtref_t type_check(const fo_expr *fo) = 0;
 };
 
 class function_codegenerator {
@@ -87,8 +86,6 @@ class user_function : public function {
     const std::vector<var_expr_t>& get_params() const;
 
     virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-
-    virtual xqtref_t type_check(signature&) const;
 
     virtual PlanIter_t get_plan() const;
 

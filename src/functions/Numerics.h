@@ -36,7 +36,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 //class op_numeric_add_int : public function
@@ -46,7 +45,6 @@ public:
 //	//
 //public:
 //	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-//	xqtref_t type_check(signature&) const;
 ////};
 
 
@@ -59,7 +57,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 
@@ -72,7 +69,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 
@@ -85,7 +81,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 // 6.2.5 op:numeric-integer-divide
@@ -97,7 +92,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 // 6.2.6 op:numeric-mod
@@ -109,7 +103,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 // 6.2.7 op:numeric-unary-plus
@@ -121,7 +114,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 // 6.2.8 op:numeric-unary-minus
@@ -133,7 +125,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 
@@ -162,7 +153,6 @@ public:
 	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 // 6.4.2 fn:ceiling
@@ -172,7 +162,6 @@ class fn_ceiling : public function
     fn_ceiling(const signature&);
 
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 // 6.4.3 fn:floor
@@ -182,7 +171,6 @@ class fn_floor : public function
     fn_floor(const signature&);
 
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check( signature&) const;
 };
 
 // 6.4.4 fn:round
@@ -192,7 +180,6 @@ class fn_round : public function
     fn_round(const signature&);
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check( signature& ) const;
 };
 
 // 6.4.5 fn:round-half-to-even
@@ -202,7 +189,6 @@ class fn_round_half_to_even : public function
     fn_round_half_to_even(const signature&);
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check( signature& ) const;
 };
 
 // Zorba specific functions:
@@ -216,7 +202,6 @@ public:
 		
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-	xqtref_t type_check(signature&) const;
 };
 
 }	/* namespace zorba */

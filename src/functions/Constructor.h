@@ -16,7 +16,6 @@ namespace zorba {
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   }; /* class op_enclosed_expr */
   
   class op_docfilter_expr : public function {
@@ -25,7 +24,6 @@ namespace zorba {
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   }; /* class op_docfilter_expr */
 } /* namespace zorba */
 

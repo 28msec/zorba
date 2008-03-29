@@ -26,10 +26,6 @@ PlanIter_t ctx_variable::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 }
 
 
-xqtref_t ctx_variable::type_check(signature& sig) const
-{
-  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-}
 
 /* end class CtxVariable */
 }

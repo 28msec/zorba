@@ -25,16 +25,6 @@ fn_data_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annot
 }
 
 
-xqtref_t
-fn_data_func::type_check (
-	  signature& /*sig*/ ) const
-{
-// 		return xs_anySimpleTypeSeq;
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-
-
 
 
 /*******************************************************************************
@@ -51,10 +41,6 @@ PlanIter_t fn_root_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 }
 
 
-xqtref_t fn_root_func::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
-}
 
 
 
@@ -72,10 +58,6 @@ PlanIter_t fn_nodename_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
 }
 
 
-xqtref_t fn_nodename_func::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
-}
 
 
 
@@ -93,10 +75,6 @@ PlanIter_t fn_nilled_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 }
 
 
-xqtref_t fn_nilled_func::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
-}
 
 
 
@@ -112,10 +90,6 @@ PlanIter_t fn_base_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
   return new FnBaseUriIterator(loc, argv);
 }
 
-xqtref_t fn_base_uri_func::type_check(signature&) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
-}
 
 
 /*******************************************************************************
@@ -130,10 +104,6 @@ PlanIter_t fn_document_uri_func::codegen (const QueryLoc& loc, std::vector<PlanI
   return new FnDocumentUriIterator(loc, argv);
 }
 
-xqtref_t fn_document_uri_func::type_check(signature&) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
-}
 
 
 /*******************************************************************************
@@ -150,12 +120,6 @@ PlanIter_t fn_name_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
   std::vector<PlanIter_t> lVec;
   lVec.push_back(nnIter);
   return new FnStringIterator(loc, lVec, true);
-}
-
-
-xqtref_t fn_name_func::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }
 
 

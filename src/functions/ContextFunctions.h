@@ -28,7 +28,6 @@ class fn_current_dateTime : public function
     fn_current_dateTime(const signature&);
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check( signature& ) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -40,7 +39,6 @@ class fn_current_date : public function
     fn_current_date(const signature&);
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check( signature& ) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -52,7 +50,6 @@ class fn_current_time : public function
     fn_current_time(const signature&);
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check( signature& ) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -64,7 +61,6 @@ class fn_implicit_timezone : public function
     fn_implicit_timezone(const signature&);
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check( signature& ) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -76,7 +72,6 @@ class fn_default_collation : public function
     fn_default_collation(const signature&);
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check( signature& ) const;
 
     bool requires_dyn_ctx () const { return true; }
 };

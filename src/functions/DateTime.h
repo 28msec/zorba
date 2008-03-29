@@ -20,7 +20,6 @@ class fn_datetime_ctor : public function
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
   /*______________________________________________________________________
@@ -38,7 +37,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -51,7 +49,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -64,7 +61,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -77,7 +73,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -90,7 +85,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -103,7 +97,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -116,7 +109,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -129,7 +121,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -142,7 +133,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -155,7 +145,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
   
 /*
@@ -168,7 +157,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -181,7 +169,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -194,7 +181,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -207,7 +193,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -220,7 +205,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -233,7 +217,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -246,7 +229,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -259,7 +241,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -272,7 +253,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -285,7 +265,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -298,7 +277,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -311,7 +289,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -324,7 +301,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -337,7 +313,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -350,7 +325,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -363,7 +337,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
   
 /*
@@ -376,7 +349,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -389,7 +361,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -402,7 +373,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -415,7 +385,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -428,7 +397,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
  /*
@@ -441,7 +409,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
  /*
@@ -454,7 +421,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
  /*
@@ -467,7 +433,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
   
 /*
@@ -480,7 +445,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -493,7 +457,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -506,7 +469,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -519,7 +481,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
   
 /*
@@ -532,7 +493,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -545,7 +505,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
   
@@ -559,7 +518,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -572,7 +530,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -585,7 +542,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -598,7 +554,6 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check(signature&) const;
   };
 
 /*
@@ -611,7 +566,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 class fn_adjust_dt_to_tz_2 : public function
@@ -621,7 +575,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 /*
@@ -634,7 +587,6 @@ class fn_adjust_d_to_tz_1 : public function
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 class fn_adjust_d_to_tz_2 : public function
@@ -644,7 +596,6 @@ class fn_adjust_d_to_tz_2 : public function
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 /*
@@ -657,7 +608,6 @@ class fn_adjust_t_to_tz_1 : public function
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 class fn_adjust_t_to_tz_2 : public function
@@ -667,7 +617,6 @@ class fn_adjust_t_to_tz_2 : public function
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 

@@ -66,10 +66,6 @@ PlanIter_t op_concatenate::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 }
 
 
-xqtref_t op_concatenate::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) const {
   int sz = arg_types.size ();
@@ -137,11 +133,6 @@ PlanIter_t fn_index_of::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 }
 
 
-xqtref_t fn_index_of::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 
 //15.1.4 fn:empty
@@ -155,11 +146,6 @@ PlanIter_t fn_empty::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 }
 
 
-xqtref_t fn_empty::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 
 //15.1.5 fn:exists
@@ -173,11 +159,6 @@ PlanIter_t fn_exists::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
 }
 
 
-xqtref_t fn_exists::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
-}
 
 
 //15.1.6 fn:distinct-values
@@ -188,11 +169,6 @@ PlanIter_t fn_distinct_values_1::codegen (const QueryLoc& loc, std::vector<PlanI
 }
 
 
-xqtref_t fn_distinct_values_1::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR;
-}
 
 //15.1.7 fn:insert-before
 //-----------------------
@@ -205,11 +181,6 @@ PlanIter_t fn_insert_before::codegen (const QueryLoc& loc, std::vector<PlanIter_
 }
 
 
-xqtref_t fn_insert_before::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_ONE; // what to do here?
-}
 
 //15.1.8 fn:remove
 //----------------
@@ -219,11 +190,6 @@ PlanIter_t fn_remove::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
 }
 
 
-xqtref_t fn_remove::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 
 //15.1.9 fn:reverse
@@ -234,11 +200,6 @@ PlanIter_t fn_reverse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 }
 
 
-xqtref_t fn_reverse::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 //15.1.10 fn:subsequence
 //----------------------
@@ -248,11 +209,6 @@ PlanIter_t fn_subsequence_2::codegen (const QueryLoc& loc, std::vector<PlanIter_
 }
 
 
-xqtref_t fn_subsequence_2::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 
 //15.1.11 fn:unordered
@@ -274,11 +230,6 @@ PlanIter_t fn_zero_or_one::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 }
 
 
-xqtref_t fn_zero_or_one::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 //15.2.2 fn:one-or-more
 fn_one_or_more::fn_one_or_more(const signature& sig)
@@ -290,11 +241,6 @@ PlanIter_t fn_one_or_more::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 }
 
 
-xqtref_t fn_one_or_more::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 //15.2.3 fn:exactly-one
 fn_exactly_one_noraise::fn_exactly_one_noraise(const signature& sig)
@@ -306,11 +252,6 @@ PlanIter_t fn_exactly_one_noraise::codegen (const QueryLoc& loc, std::vector<Pla
 }
 
 
-xqtref_t fn_exactly_one_noraise::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 
 
@@ -339,10 +280,6 @@ PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 }
 
 
-xqtref_t fn_union::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-}
 
 //15.3.3 op:intersect
 fn_intersect::fn_intersect(const signature& sig)
@@ -362,10 +299,6 @@ PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 }
 
 
-xqtref_t fn_intersect::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-}
 
 //15.3.4 op:except
 // except; requires two sorted inputs; does duplicate elimination
@@ -384,11 +317,6 @@ PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
 }
 
 
-xqtref_t fn_except::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-}
 
 #if 0
 // except; doesn't require sorted inputs but does not return the result in document order
@@ -413,11 +341,6 @@ PlanIter_t fn_count::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 }
 
 
-xqtref_t fn_count::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
-}
 
 //15.4.2 fn:avg
 fn_avg::fn_avg(const signature& sig)
@@ -429,11 +352,6 @@ PlanIter_t fn_avg::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
 }
 
 
-xqtref_t fn_avg::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
-}
 
 //15.4.3 fn:max
 fn_max_1::fn_max_1(const signature& sig)
@@ -445,11 +363,6 @@ PlanIter_t fn_max_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 }
 
 
-xqtref_t fn_max_1::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
-}
 
 //15.4.4 fn:min
 fn_min_1::fn_min_1(const signature& sig)
@@ -461,11 +374,6 @@ PlanIter_t fn_min_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 }
 
 
-xqtref_t fn_min_1::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
-}
 
 //15.4.5 fn:sum
 fn_sum_1::fn_sum_1(const signature& sig)
@@ -477,17 +385,7 @@ PlanIter_t fn_sum_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 }
 
 
-xqtref_t fn_sum_1::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
-}
 
-xqtref_t fn_sum_2::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
-}
 
 
 /*______________________________________________________________________
@@ -505,11 +403,6 @@ PlanIter_t op_to::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, A
 }
 
 
-xqtref_t op_to::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 //15.5.2 fn:id
 fn_id::fn_id(
@@ -553,11 +446,6 @@ PlanIter_t fn_doc_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new FnDocIterator(loc, argv[0]);
 }
 
-xqtref_t fn_doc_func::type_check(
-	signature& ) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 
 //15.5.5 fn:doc-available
@@ -572,11 +460,6 @@ fn_doc_available_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
   return new FnDocAvailableIterator(loc, argv);
 }
 
-xqtref_t
-fn_doc_available_func::type_check( signature& ) const
-{
-  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-}
 
 /*end class fn_doc_available_func*/
 
@@ -602,9 +485,6 @@ PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<Plan
   return new NodeSortIterator (loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
 }
 
-xqtref_t op_node_sort_distinct::type_check(signature& /*sig*/) const {
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
   const bool *a = action ();

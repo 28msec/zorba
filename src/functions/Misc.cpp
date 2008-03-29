@@ -17,10 +17,6 @@ PlanIter_t fn_trace_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   return new FnTraceIterator ( loc, argv );
 }
 
-xqtref_t fn_trace_func::type_check(signature& sig) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 
 /*******************************************************************************
@@ -29,10 +25,6 @@ xqtref_t fn_trace_func::type_check(signature& sig) const
 
 fn_error::fn_error (const signature &sig) : function (sig) {}
 
-xqtref_t fn_error::type_check(signature&) const
-{
-  return GENV_TYPESYSTEM.NONE_TYPE;
-}
 
 PlanIter_t fn_error::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -52,10 +44,6 @@ PlanIter_t fn_resolve_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
   return new FnResolveUriIterator ( loc, argv );
 }
 
-xqtref_t fn_resolve_uri::type_check(signature& sig) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-}
 
 
 }

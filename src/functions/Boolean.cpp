@@ -24,11 +24,6 @@ namespace zorba
     return this->createIterator(loc, argv);
   }
 
-  xqtref_t
-  GenericOpComparison::type_check ( signature& /*sig*/ ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class GenericOpComparison */
   
@@ -157,12 +152,6 @@ namespace zorba
     return new OpIsSameNodeIterator ( loc, argv );
   }
 
-  xqtref_t
-  op_is_same_node::type_check (
-      signature& sig ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class op_is_same_node */
 
@@ -173,12 +162,6 @@ namespace zorba
     return new OpNodeBeforeIterator ( loc, argv );
   }
 
-  xqtref_t
-  op_node_before::type_check (
-      signature& /*sig*/ ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class op_node_before */
 
@@ -189,12 +172,6 @@ namespace zorba
     return new OpNodeAfterIterator ( loc, argv );
   }
 
-  xqtref_t
-  op_node_after::type_check (
-      signature& sig ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class op_node_after */
   
@@ -207,12 +184,6 @@ namespace zorba
     return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::AND );
   }
 
-  xqtref_t
-  op_and::type_check (
-      signature& /*sig*/ ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class op_and */
   
@@ -225,12 +196,6 @@ namespace zorba
     return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::OR );
   }
 
-  xqtref_t
-  op_or::type_check (
-      signature& /*sig*/ ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class op_or */
 
@@ -243,12 +208,6 @@ namespace zorba
     return new SingletonIterator ( loc, GENV_ITEMFACTORY->createBoolean(true) );
   }
 
-  xqtref_t
-  fn_true::type_check (
-      signature& /*sig*/ ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class fn_true */
   
@@ -261,12 +220,6 @@ namespace zorba
     return new SingletonIterator ( loc, GENV_ITEMFACTORY->createBoolean(false) );
   }
 
-  xqtref_t
-  fn_false::type_check (
-      signature& /*sig*/ ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class fn_false */
   
@@ -279,12 +232,6 @@ namespace zorba
     return new FnBooleanIterator(loc, argv[0], true );
   }
 
-  xqtref_t
-  fn_not::type_check (
-      signature& /*sig*/ ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class fn_not */
 
@@ -297,12 +244,6 @@ namespace zorba
     return new FnBooleanIterator ( loc, argv[0] );
   }
 
-  xqtref_t
-  fn_boolean::type_check (
-      signature& /*sig*/ ) const
-  {
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
 
   /* end class fn_boolean */
 }

@@ -23,7 +23,6 @@ namespace zorba {
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check ( signature& ) const;
   };
 
 
@@ -34,7 +33,6 @@ namespace zorba {
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
   };
 
   class fn_nodename_func : public function
@@ -44,7 +42,6 @@ namespace zorba {
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
   };
 
   class fn_nilled_func : public function
@@ -54,7 +51,6 @@ namespace zorba {
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
   };
 
   class fn_base_uri_func : public function
@@ -64,7 +60,6 @@ namespace zorba {
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
   };
 
   class fn_document_uri_func : public function
@@ -74,7 +69,6 @@ namespace zorba {
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
   };
   
   class fn_name_func : public function
@@ -84,7 +78,6 @@ namespace zorba {
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
   };
 } /* namespace zorba */
 

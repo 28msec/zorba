@@ -18,7 +18,6 @@ namespace zorba
       GenericOpComparison ( const signature&);
 
       virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      virtual xqtref_t type_check ( signature& ) const;
       
     protected:
       virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
@@ -137,7 +136,6 @@ namespace zorba
     op_is_same_node( const signature& aSig) : function(aSig) {}
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check ( signature&) const;
   };
   
   class op_node_before : public function
@@ -146,7 +144,6 @@ namespace zorba
     op_node_before( const signature& aSig) : function(aSig) {}
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check ( signature&) const;
   };
   
   class op_node_after : public function
@@ -155,7 +152,6 @@ namespace zorba
     op_node_after( const signature& aSig) : function(aSig) {}
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check ( signature&) const;
   };
   
   /*-------------------------- Logical Expressions ---------------------------------------*/
@@ -166,7 +162,6 @@ namespace zorba
       
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check ( signature&) const;
   };
   
   class op_or : public function
@@ -176,7 +171,6 @@ namespace zorba
       
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check ( signature&) const;
   };
 
 
@@ -189,7 +183,6 @@ namespace zorba
       
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check ( signature&) const;
   }; /* class fn_true */
   
   // 9.1.2 fn:false
@@ -200,7 +193,6 @@ namespace zorba
       
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check ( signature&) const;
   }; /* class fn_false */
   
   // 9.3.1 fn:not
@@ -211,7 +203,6 @@ namespace zorba
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check ( signature&) const;
   };
 
   // 15 Functions and Operators on Sequences
@@ -223,7 +214,6 @@ namespace zorba
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      xqtref_t type_check ( signature& ) const;
   }; /* class fn_false */
 }
 

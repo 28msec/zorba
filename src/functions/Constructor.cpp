@@ -18,11 +18,6 @@ namespace zorba
     return new EnclosedIterator ( loc, argv[0] );
   }
 
-  xqtref_t op_enclosed_expr::type_check (
-      signature& sig ) const
-  {
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  }
 
   /* end class op_enclosed_expr */
   
@@ -39,11 +34,6 @@ namespace zorba
     return new DocFilterIterator ( loc, argv[0] );
   }
   
-  xqtref_t op_docfilter_expr::type_check (
-      signature& sig ) const
-  {
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  }
   
   /* end class op_enclosed_expr */
 } /* namespace zorba */

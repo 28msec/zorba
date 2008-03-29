@@ -50,11 +50,6 @@ PlanIter_t user_function::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   return new UDFunctionCallIterator(loc, argv, this);
 }
 
-xqtref_t user_function::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
 PlanIter_t user_function::get_plan() const
 {
   if (m_plan == NULL) {

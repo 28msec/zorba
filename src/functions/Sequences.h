@@ -57,7 +57,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
   void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 };
@@ -72,7 +71,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 
@@ -85,7 +83,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 
@@ -98,7 +95,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 
@@ -111,7 +107,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 class fn_distinct_values_2 : public fn_distinct_values_1
@@ -131,7 +126,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 
@@ -144,7 +138,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 
@@ -157,7 +150,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 
@@ -171,7 +163,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 // subsequence with a third length argument
@@ -200,7 +191,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 //15.2.2 fn:one-or-more
@@ -211,7 +201,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 //15.2.3 fn:exactly-one
@@ -222,7 +211,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 
 protected:
   bool raise_err;
@@ -249,7 +237,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 //15.3.3 op:intersect
@@ -260,7 +247,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 //15.3.4 op:except
@@ -271,7 +257,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 /*______________________________________________________________________
@@ -287,7 +272,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 //15.4.2 fn:avg
@@ -298,7 +282,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 //15.4.3 fn:max
@@ -309,7 +292,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 class fn_max_2 : public fn_max_1
@@ -329,7 +311,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 class fn_min_2 : public fn_min_1
@@ -347,7 +328,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 class fn_sum_2 : public fn_sum_1
@@ -355,7 +335,6 @@ class fn_sum_2 : public fn_sum_1
 public:
   fn_sum_2(const signature& sig)
     : fn_sum_1(sig) { }
-  xqtref_t type_check(signature&) const;
 };
 
 
@@ -372,7 +351,6 @@ public:
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t type_check(signature&) const;
 };
 
 
@@ -403,7 +381,6 @@ public:
   fn_doc_func(const signature&);
 
 public:
-  xqtref_t type_check(signature&) const;
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   virtual bool isSource() const { return true; }
 };
@@ -416,7 +393,6 @@ public:
   fn_doc_available_func(const signature&);
 
 public:
-  xqtref_t type_check(signature&) const;
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
@@ -439,7 +415,6 @@ public:
   static const function *op_for_action (const static_context *, const bool *, const AnnotationHolder &);
 
 public:
-  xqtref_t type_check(signature&) const;
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 };

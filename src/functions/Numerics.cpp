@@ -49,11 +49,6 @@ PlanIter_t op_numeric_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 	return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_numeric_add::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 
@@ -69,11 +64,6 @@ xqtref_t op_numeric_add::type_check(
 //	return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
 //}
 //
-//xqtref_t op_numeric_add_int::type_check(
-//	signature& sig) const
-//{
-//	return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
-//}
 
 
 
@@ -105,11 +95,6 @@ PlanIter_t op_numeric_subtract::codegen (const QueryLoc& loc, std::vector<PlanIt
 	return new NumArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_numeric_subtract::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 
@@ -141,11 +126,6 @@ PlanIter_t op_numeric_multiply::codegen (const QueryLoc& loc, std::vector<PlanIt
 	return new NumArithIterator<MultiplyOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_numeric_multiply::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 
@@ -187,11 +167,6 @@ PlanIter_t op_numeric_divide::codegen (const QueryLoc& loc, std::vector<PlanIter
 	return new NumArithIterator<DivideOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_numeric_divide::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 
@@ -235,11 +210,6 @@ PlanIter_t op_numeric_integer_divide::codegen (const QueryLoc& loc, std::vector<
 	return new NumArithIterator<IntegerDivideOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_numeric_integer_divide::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 
@@ -291,11 +261,6 @@ PlanIter_t op_numeric_mod::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 	return new NumArithIterator<ModOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_numeric_mod::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 
@@ -322,11 +287,6 @@ PlanIter_t op_numeric_unary_plus::codegen (const QueryLoc& loc, std::vector<Plan
 	return new OpNumericUnaryIterator(loc, argv[0], true);
 }
 
-xqtref_t op_numeric_unary_plus::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 
@@ -358,11 +318,6 @@ PlanIter_t op_numeric_unary_minus::codegen (const QueryLoc& loc, std::vector<Pla
 	return new OpNumericUnaryIterator(loc, argv[0], false);
 }
 
-xqtref_t op_numeric_unary_minus::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
   
@@ -393,10 +348,6 @@ PlanIter_t fn_abs::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
 	return new FnAbsIterator(loc, argv);
 }
 
-xqtref_t fn_abs::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 // 6.4.2 fn:ceiling
@@ -410,10 +361,6 @@ PlanIter_t fn_ceiling::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
   return new FnCeilingIterator(loc, argv);
 }
 
-xqtref_t fn_ceiling::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 // 6.4.3 fn:floor
@@ -427,10 +374,6 @@ PlanIter_t fn_floor::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new FnFloorIterator(loc, argv);
 }
 
-xqtref_t fn_floor::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 // 6.4.4 fn:round
 fn_round::fn_round(const signature& sig)
@@ -443,10 +386,6 @@ PlanIter_t fn_round::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new FnRoundIterator(loc, argv);
 }
 
-xqtref_t fn_round::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 // 6.4.5 fn:round-half-to-even
@@ -461,10 +400,6 @@ fn_round_half_to_even::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
   return new FnRoundHalfToEvenIterator(loc, argv[0], argv[1]);
 }
 
-xqtref_t fn_round_half_to_even::type_check(signature& /*sig*/) const
-{
-  return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 zor_numgen::zor_numgen(const signature& sig)
@@ -478,10 +413,6 @@ PlanIter_t zor_numgen::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 	return new ZorNumGen(loc);
 }
 
-xqtref_t zor_numgen::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
   
 } /* namespace zorba */

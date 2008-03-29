@@ -39,12 +39,6 @@ fn_current_dateTime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new FnCurrentDateTimeIterator(loc, argv);
 }
 
-xqtref_t
-fn_current_dateTime::type_check(
-  signature&) const
-{
-  return GENV_TYPESYSTEM.DATETIME_TYPE_ONE;
-}
 
 
 /*
@@ -64,12 +58,6 @@ fn_current_date::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, An
   return new FnCurrentDateIterator(loc, argv);
 }
 
-xqtref_t
-fn_current_date::type_check(
-  signature&) const
-{
-  return GENV_TYPESYSTEM.DATE_TYPE_ONE;
-}
 
 
 /*
@@ -89,12 +77,6 @@ fn_current_time::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, An
   return new FnCurrentTimeIterator(loc, argv);
 }
 
-xqtref_t
-fn_current_time::type_check(
-  signature&) const
-{
-  return GENV_TYPESYSTEM.TIME_TYPE_ONE;
-}
 
 
 /*
@@ -114,12 +96,6 @@ fn_implicit_timezone::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   return new FnImplicitTimezoneIterator(loc, argv);
 }
 
-xqtref_t
-fn_implicit_timezone::type_check(
-  signature&) const
-{
-  return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
-}
 
 
 /*
@@ -139,12 +115,6 @@ fn_default_collation::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   return new FnDefaultCollationIterator(loc, argv);
 }
 
-xqtref_t
-fn_default_collation::type_check(
-  signature&) const
-{
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
-}
 
 
 } /* namespace zorba */

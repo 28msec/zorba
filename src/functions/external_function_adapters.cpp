@@ -18,14 +18,4 @@ PlanIter_t stateless_external_function_adapter::codegen (const QueryLoc& loc, st
     return new StatelessExtFunctionCallIterator(loc, argv, m_function);
 }
 
-xqtref_t stateless_external_function_adapter::type_check(signature& s) const
-{
-    return sig.return_type();
-}
-
-bool stateless_external_function_adapter::validate_args(std::vector<PlanIter_t>& argv) const
-{
-    return argv.size() == sig.arg_count();
-}
-
 }

@@ -21,10 +21,6 @@ PlanIter_t fn_local_name::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   return new FnLocalNameIterator ( loc, argv );
 }
 
-xqtref_t fn_local_name::type_check(signature& sig) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
-}
 
 
 /*******************************************************************************
@@ -38,10 +34,6 @@ PlanIter_t fn_namespace_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_
   return new FnNamespaceUriIterator ( loc, argv );
 }
 
-xqtref_t fn_namespace_uri::type_check(signature& sig) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
-}
 
 
 /*******************************************************************************
@@ -49,10 +41,6 @@ xqtref_t fn_namespace_uri::type_check(signature& sig) const
 ********************************************************************************/
 fn_lang::fn_lang (const signature &sig) : function (sig) {}
 
-xqtref_t fn_lang::type_check(signature&) const
-{
-  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-}
 
 PlanIter_t fn_lang::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -65,10 +53,6 @@ PlanIter_t fn_lang::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv,
 ********************************************************************************/
 fn_collection::fn_collection (const signature &sig) : function (sig) {}
 
-xqtref_t fn_collection::type_check(signature&) const
-{
-  return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-}
 
 PlanIter_t fn_collection::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {

@@ -12,7 +12,6 @@ class fn_local_name : public function {
     fn_local_name(const signature&);
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 class fn_namespace_uri : public function {
@@ -20,7 +19,6 @@ class fn_namespace_uri : public function {
     fn_namespace_uri(const signature&);
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 class fn_lang : public function {
@@ -28,7 +26,6 @@ class fn_lang : public function {
     fn_lang(const signature&);
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
 };
 
 class fn_collection : public function {
@@ -36,7 +33,6 @@ class fn_collection : public function {
     fn_collection(const signature&);
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
 };
 
 }

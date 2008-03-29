@@ -20,11 +20,6 @@ PlanIter_t op_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
 	return new GenericArithIterator<AddOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_add::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 op_subtract::op_subtract(
@@ -39,11 +34,6 @@ PlanIter_t op_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 	return new GenericArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_subtract::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 op_multiply::op_multiply(
@@ -58,11 +48,6 @@ PlanIter_t op_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 	return new GenericArithIterator<MultiplyOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_multiply::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 op_divide::op_divide(
@@ -77,11 +62,6 @@ PlanIter_t op_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
 	return new GenericArithIterator<DivideOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_divide::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 op_integer_divide::op_integer_divide(
@@ -96,11 +76,6 @@ PlanIter_t op_integer_divide::codegen (const QueryLoc& loc, std::vector<PlanIter
 	return new GenericArithIterator<IntegerDivideOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_integer_divide::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 op_mod::op_mod(
@@ -115,11 +90,6 @@ PlanIter_t op_mod::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
 	return new GenericArithIterator<ModOperation>(loc, argv[0], argv[1]);
 }
 
-xqtref_t op_mod::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-}
 
 
 

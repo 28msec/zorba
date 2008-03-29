@@ -12,7 +12,6 @@ class fn_trace_func : public function {
     fn_trace_func(const signature&);
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 class fn_error : public function {
@@ -20,7 +19,6 @@ class fn_error : public function {
     fn_error(const signature& s);
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
 };
 
 class fn_resolve_uri : public function {
@@ -28,7 +26,6 @@ class fn_resolve_uri : public function {
     fn_resolve_uri(const signature&);
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature&) const;
 };
 
 }

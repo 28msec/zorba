@@ -14,10 +14,6 @@ class stateless_external_function_adapter : public external_function {
 
     virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
-    virtual xqtref_t type_check(signature& s) const;
-
-    virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
-
   private:
     StatelessExternalFunction *m_function;
 };
