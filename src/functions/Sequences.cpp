@@ -275,7 +275,11 @@ PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   else {
     PlanIter_t concat = new FnConcatIterator(loc, argv);
     return
+#if 0  // NodeDistinctIterator broken for now
       distinct ? new NodeDistinctIterator(loc, concat, true) : concat;
+#else
+      distinct ? new NodeSortIterator (loc, concat, true, true, true) : concat;
+#endif
   }
 }
 
@@ -308,7 +312,7 @@ fn_except::fn_except(const signature& sig)
 PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
-  if (ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE) 
+  if (ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE)
     return new HashSemiJoinIterator(loc, argv, true);
   else {
     ZORBA_NOT_IMPLEMENTED ("op:except when sorted output is required");
