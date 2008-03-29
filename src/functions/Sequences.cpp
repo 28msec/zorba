@@ -298,8 +298,10 @@ PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
          i != argv.end (); i++)
       inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
     return new SortSemiJoinIterator(loc, inputs);
-  } else
-    return new HashSemiJoinIterator(loc, argv);
+  } else {
+    // TODO: when NodeDistinctIterator is fixed, use that; if HashSemiJoin eliminates duplicates, remove completely.
+    return new NodeSortIterator (loc, new HashSemiJoinIterator(loc, argv), true, true, true);
+  }
 }
 
 
@@ -311,13 +313,16 @@ fn_except::fn_except(const signature& sig)
 
 PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  // bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
-  if (ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE)
-    return new HashSemiJoinIterator(loc, argv, true);
-  else {
-    ZORBA_NOT_IMPLEMENTED ("op:except when sorted output is required");
-    return NULL;
-  }
+  bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
+  bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
+
+  // TODO: use SortSemiJoinIterator when that gets an antijoin
+  PlanIter_t antijoin = new HashSemiJoinIterator(loc, argv, true);
+  if (! sort && ! distinct)
+    return antijoin;
+  else
+    // TODO: use NodeDistinctIterator when that is fixed and sort == false
+    return new NodeSortIterator (loc, antijoin, true, true, true);
 }
 
 
