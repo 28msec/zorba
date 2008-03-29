@@ -211,15 +211,16 @@ void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_at
       In addition, the non-whitespace control characters #x1 through #x1F and #x7F through #x9F in
       text nodes and attribute nodes MUST be output as character references.
     */
-    if (((*chars >= 0x1 && *chars <= 0x1F)
+    if ((*chars >= 0x1 && *chars <= 0x1F)
           ||
           (*chars >= 0x7F && *chars <= 0x9F))
-       &&
-       *chars != 0xA
-       &&
-       *chars != 0x9)
     {
-      tr << "&#x" << toHexString(*chars) << ";";
+      if ((!emit_attribute_value)
+             &&
+             (*chars == 0xA || *chars == 0x9))
+        tr << *chars;
+      else
+        tr << "&#x" << toHexString(*chars) << ";";
     }
     else switch (*chars)
 		{
@@ -499,8 +500,10 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
+    /* commented out
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";    
+      tr << " ";
+    */
 		emit_expanded_string(item->getStringValue());
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
