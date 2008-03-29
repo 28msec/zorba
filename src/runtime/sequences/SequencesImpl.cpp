@@ -579,21 +579,23 @@ HashSemiJoinIterator::~HashSemiJoinIterator() {}
 
 store::Item_t 
 HashSemiJoinIterator::nextImpl(PlanState& planState) const {
-  store::Item_t lItem;  
+  store::Item_t lItem;
+  bool not_found;
 
   HashSemiJoinIteratorState* state;
   DEFAULT_STACK_INIT(HashSemiJoinIteratorState, state, planState);
 
-  // eat the complete right-hand side and has it
+  // eat the complete right-hand side and hash it
   while ( (lItem = consumeNext(theChildren[1].getp(), planState)) != NULL ) {
     state->theRightInput->insert(lItem.getp());
   }
   
 
   while ( ( lItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
-    if ( state->theRightInput->find(lItem.getp()) && ! theAntijoin ) {
+    // TODO: eliminate duplicates in output?
+    not_found = ! state->theRightInput->find(lItem.getp());
+    if (not_found == theAntijoin)
       STACK_PUSH(lItem, state);
-    }
   }
 
   STACK_END (state);
