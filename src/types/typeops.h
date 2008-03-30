@@ -26,6 +26,11 @@ class TypeOps {
     static TypeConstants::quantifier_t quantifier(const XQType& type);
 
     /*
+     * Returns the castability fron the source type to the target type
+     */
+    static TypeConstants::castable_t castability(const XQType& src, const XQType& target);
+
+    /*
      * Returns true iff _type1_ is equal to _type2_ including the quantifier,
      * false otherwise.
      */

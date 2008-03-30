@@ -668,6 +668,10 @@ bool GenericCast::isCastable(
     // Item is castable if target type is a supertype
     return true;  
   }
+
+  if (TypeOps::castability(*lItemType, *aTargetType) == TypeConstants::NOT_CASTABLE) {
+    return false;
+  }
   
   // Most simple implementation: Check if string cast works
   try {

@@ -58,6 +58,12 @@ class TypeConstants {
       XS_NOTATION,
       ATOMIC_TYPE_CODE_LIST_SIZE // Used to indicate the size of the list.
     } atomic_type_code_t;
+
+    typedef enum {
+      NOT_CASTABLE,
+      CASTABLE,
+      MAYBE_CASTABLE,
+    } castable_t;
 };
 
 }

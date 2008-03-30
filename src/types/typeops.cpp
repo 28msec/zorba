@@ -33,6 +33,16 @@ TypeConstants::quantifier_t TypeOps::quantifier(const XQType &type)
   return type.get_quantifier();
 }
 
+TypeConstants::castable_t TypeOps::castability(const XQType& src, const XQType& target)
+{
+  if (src.type_kind() == XQType::ATOMIC_TYPE_KIND && target.type_kind() == XQType::ATOMIC_TYPE_KIND) {
+    const AtomicXQType& aSrc = static_cast<const AtomicXQType&>(src);
+    const AtomicXQType& aTarget = static_cast<const AtomicXQType&>(target);
+    return RootTypeManager::ATOMIC_CAST_MATRIX[aSrc.get_type_code()][aTarget.get_type_code()];
+  }
+  return TypeConstants::NOT_CASTABLE;
+}
+
 bool TypeOps::is_equal(const XQType& type1, const XQType& type2)
 {
   if (&type1 == &type2) return true;

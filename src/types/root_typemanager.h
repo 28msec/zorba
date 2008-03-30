@@ -107,6 +107,7 @@ class RootTypeManager : public TypeManagerImpl {
 
     static const bool ATOMIC_SUBTYPE_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE][TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
     static const bool QUANT_SUBTYPE_MATRIX[TypeConstants::QUANTIFIER_LIST_SIZE][TypeConstants::QUANTIFIER_LIST_SIZE];
+    static const TypeConstants::castable_t ATOMIC_CAST_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE][TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
     static const TypeConstants::quantifier_t QUANT_MULT_MATRIX[TypeConstants::QUANTIFIER_LIST_SIZE][TypeConstants::QUANTIFIER_LIST_SIZE];
     static const TypeConstants::quantifier_t QUANT_INTERS_MATRIX[TypeConstants::QUANTIFIER_LIST_SIZE][TypeConstants::QUANTIFIER_LIST_SIZE];
 
