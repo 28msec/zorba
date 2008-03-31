@@ -17,18 +17,6 @@ struct CopyMode;
 
 extern ConstrNodeVector dummyVector;
 
-#define DOC_NODE(n) (reinterpret_cast<DocumentNode*>((n)))
-
-#define ATTR_NODE(n) (reinterpret_cast<AttributeNode*>((n)))
-
-#define ELEM_NODE(n) (reinterpret_cast<ElementNode*>((n)))
-
-#define TEXT_NODE(n) (reinterpret_cast<TextNode*>((n)))
-
-#define PI_NODE(n) (reinterpret_cast<PiNode*>((n)))
-
-#define COMMENT_NODE(n) (reinterpret_cast<CommentNode*>((n)))
-
 
 #define NODE_STOP \
   ZORBA_FATAL(0, "Invalid method invocation on " \
@@ -166,13 +154,45 @@ public:
   void removeType(TypeUndoList& undoList);
   void revalidate();
 
+  void disconnect() throw();
+
+  void insertChildren(
+        std::vector<Item_t>& newChildren,
+        ulong                pos,
+        bool                 copy,
+        const CopyMode&      copymode);
+  
+  void insertChildrenFirst(
+        std::vector<Item_t>& newChildren,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void insertChildrenLast(
+        std::vector<Item_t>& newChildren,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void insertSiblingsBefore(
+        std::vector<Item_t>& siblings,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void insertSiblingsAfter(
+        std::vector<Item_t>& siblings,
+        bool                 copy,
+        const CopyMode&      copymode);
+
+  void replaceChild(
+        std::vector<Item_t>& newChildren,
+        ulong                pos,
+        bool                 copy,
+        const CopyMode&      copymode);
+
   virtual XmlNode* copy(
         XmlNode* rootParent,
         XmlNode* parent,
         ulong pos,
         const CopyMode& copyMode) = 0;
-
-  void disconnect() throw();
 
   virtual ulong numAttributes() const          { return 0; }
   virtual XmlNode* getAttr(ulong i) const      { NODE_STOP; return NULL; }
@@ -197,6 +217,7 @@ public:
 protected:
   void removeChild(ulong pos);
   bool removeChild(XmlNode* child);
+  void removeAttr(ulong pos);
   bool removeAttr(XmlNode* attr);
 };
 
@@ -385,6 +406,7 @@ public:
   void setNsContext(NsBindingsContext* ctx);
   xqpStringStore* findBinding(xqpStringStore* prefix) const;
   const NsBindings& getLocalBindings() const;
+  void addBindingForQName(Item* qname);
   void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
 
   void checkUniqueAttr(Item* attrName) const;
@@ -395,36 +417,16 @@ public:
         ulong           pos,
         const CopyMode& copymode);
 
-  void insertInto(
-        std::vector<Item_t>& children,
+  void insertAttributes(
+        std::vector<Item_t>&  newAttrs,
+        bool                  copy,
+        const CopyMode&       copymode);
+
+  void replaceAttribute(
+        std::vector<Item_t>& newAttrs,
         ulong                pos,
         bool                 copy,
         const CopyMode&      copymode);
-  
-  void insertFirst(
-        std::vector<Item_t>& children,
-        bool                 copy,
-        const CopyMode&      copymode);
-
-  void insertLast(
-        std::vector<Item_t>& children,
-        bool                 copy,
-        const CopyMode&      copymode);
-
-  void insertBefore(
-        std::vector<Item_t>& siblings,
-        bool                 copy,
-        const CopyMode&      copymode);
-
-  void insertAfter(
-        std::vector<Item_t>& siblings,
-        bool                 copy,
-        const CopyMode&      copymode);
-
-  void insertAttributes(
-        std::vector<Item_t>&  attrs,
-        bool                  copy,
-        const CopyMode&       copymode);
 
   void replaceContent(XmlNode* newText, ConstrNodeVector& oldChildren);
 

@@ -19,19 +19,63 @@ class PUL
 public:
   virtual ~PUL() { }
 
+  virtual void addDelete(Item_t& node) = 0;
+
+  virtual void addInsertInto(
+        Item_t&              target,
+        std::vector<Item_t>& children,
+        bool                 copy,
+        const CopyMode&      copymode) = 0;
+
+  virtual void addInsertFirst(
+        Item_t&              target,
+        std::vector<Item_t>& children,
+        bool                 copy,
+        const CopyMode&      copymode) = 0;
+
+  virtual void addInsertLast(
+        Item_t&              target,
+        std::vector<Item_t>& children,
+        bool                 copy,
+        const CopyMode&      copymode) = 0;
+
+  virtual void addInsertBefore(
+        Item_t&              target,
+        std::vector<Item_t>& siblings,
+        bool                 copy,
+        const CopyMode&      copymode) = 0;
+
+  virtual void addInsertAfter(
+        Item_t&              target,
+        std::vector<Item_t>& siblings,
+        bool                 copy,
+        const CopyMode&      copymode) = 0;
+  
   virtual void addInsertAttributes(
-        Item*                target,
+        Item_t&              target,
         std::vector<Item_t>& attrs,
         bool                 copy,
         const CopyMode&      copymode) = 0;
 
-  virtual void addDelete(Item* node) = 0;
+  virtual void addReplaceNode(
+        Item_t&              target,
+        std::vector<Item_t>& replacementNodes,
+        bool                 copy,
+        const CopyMode&      copymode) = 0;
 
-  virtual void addReplaceContent(Item* target, Item_t& newChild) = 0;
+  virtual void addReplaceContent(
+        Item_t&              target,
+        Item_t&              newTextChild,
+        bool                 copy,
+        const CopyMode&      copymode) = 0;
 
-  virtual void addReplaceValue(Item* target, xqpStringStore_t& newValue) = 0;
+  virtual void addReplaceValue(
+        Item_t&              target,
+        xqpStringStore_t&    newValue) = 0;
 
-  virtual void addRename(Item* node, Item_t& name) = 0;
+  virtual void addRename(
+        Item_t&              target,
+        Item_t&              newName) = 0;
 
   virtual void applyUpdates() = 0;
 

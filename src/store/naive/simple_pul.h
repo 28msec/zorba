@@ -63,52 +63,64 @@ protected:
 
   NodeToUpdatesMap                theNodeToUpdatesMap;
 
-  ItemHandleHashSet               theTreeRoots;
-
 public:
+  void addDelete(Item_t& n);
+
   void addInsertInto(
-        Item*                target,
+        Item_t&              target,
         std::vector<Item_t>& children,
         bool                 copy,
         const CopyMode&      copymode);
 
   void addInsertFirst(
-        Item*                target,
+        Item_t&              target,
         std::vector<Item_t>& children,
         bool                 copy,
         const CopyMode&      copymode);
 
   void addInsertLast(
-        Item*                target,
+        Item_t&              target,
         std::vector<Item_t>& children,
         bool                 copy,
         const CopyMode&      copymode);
 
   void addInsertBefore(
-        Item*                target,
+        Item_t&              target,
         std::vector<Item_t>& siblings,
         bool                 copy,
         const CopyMode&      copymode);
 
   void addInsertAfter(
-        Item*                target,
+        Item_t&              target,
         std::vector<Item_t>& siblings,
         bool                 copy,
         const CopyMode&      copymode);
   
   void addInsertAttributes(
-        Item*                target,
+        Item_t&              target,
         std::vector<Item_t>& attrs,
         bool                 copy,
         const CopyMode&      copymode);
 
-  void addDelete(Item* n);
+  void addReplaceNode(
+        Item_t&              target,
+        std::vector<Item_t>& replacementNodes,
+        bool                 copy,
+        const CopyMode&      copymode);
 
-  void addReplaceContent(Item* target, Item_t& newChild);
+  void addReplaceContent(
+        Item_t&              target,
+        Item_t&              newTextChild,
+        bool                 copy,
+        const CopyMode&      copymode);
 
-  void addReplaceValue(Item* target, xqpStringStore_t& newValue);
+  void addReplaceValue(
+        Item_t&              target,
+        xqpStringStore_t&    newValue);
 
-  void addRename(Item* node, Item_t& newName);
+  void addRename(
+        Item_t&              target,
+        Item_t&              newName);
 
   void applyUpdates();
 
@@ -117,14 +129,14 @@ public:
 protected:
   void addInsertChildren(
         UpdateConsts::UpdPrimKind kind,
-        Item*                     target,
+        Item_t&                   target,
         std::vector<Item_t>&      children,
         bool                      copy,
         const CopyMode&           copymode);
 
   void addInsertSiblings(
         UpdateConsts::UpdPrimKind kind,
-        Item*                     target,
+        Item_t&                   target,
         std::vector<Item_t>&      siblings,
         bool                      copy,
         const CopyMode&           copymode);
@@ -139,10 +151,10 @@ class UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  XmlNode    * theTarget;
+  Item_t  theTarget;
 
 public:
-  UpdatePrimitive(XmlNode* target) : theTarget(target) { }
+  UpdatePrimitive(Item_t& target) { theTarget.transfer(target); }
 
   virtual ~UpdatePrimitive() { }
 
@@ -154,6 +166,22 @@ public:
 
 /*******************************************************************************
 
+********************************************************************************/
+class UpdDelete : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+public:
+  UpdDelete(Item_t& target) : UpdatePrimitive(target) { }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_DELETE; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+  InsertInto, InsertIntoFirst, InsertIntoLast
 ********************************************************************************/
 class UpdInsertChildren : public UpdatePrimitive
 {
@@ -168,7 +196,7 @@ protected:
 public:
   UpdInsertChildren(
         UpdateConsts::UpdPrimKind kind,
-        XmlNode*                  target,
+        Item_t&                   target,
         std::vector<Item_t>&      children,
         bool                      copy,
         const CopyMode&           copymode)
@@ -191,7 +219,7 @@ public:
 
 
 /*******************************************************************************
-
+  InsertBefore, InsertAfter
 ********************************************************************************/
 class UpdInsertSiblings : public UpdatePrimitive
 {
@@ -206,7 +234,7 @@ protected:
 public:
   UpdInsertSiblings(
         UpdateConsts::UpdPrimKind kind,
-        XmlNode*                  target,
+        Item_t&                   target,
         std::vector<Item_t>&      siblings,
         bool                      copy,
         const CopyMode&           copymode)
@@ -229,7 +257,7 @@ public:
 
 
 /*******************************************************************************
-
+  InsertAttributes
 ********************************************************************************/
 class UpdInsertAttributes : public UpdatePrimitive
 {
@@ -242,7 +270,7 @@ protected:
 
 public:
   UpdInsertAttributes(
-        XmlNode*              target,
+        Item_t&               target,
         std::vector<Item_t>&  attrs,
         bool                  copy,
         const CopyMode&       copymode)
@@ -263,18 +291,81 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class UpdReplaceChild : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  Item_t               theChild;
+  std::vector<Item_t>  theNewChildren;
+  bool                 theDoCopy;
+  CopyMode             theCopyMode;
+  ulong                thePos;
+
+public:
+  UpdReplaceChild(
+        Item_t&              target,
+        Item_t&              child,
+        std::vector<Item_t>& newChildren,
+        bool                 copy,
+        const CopyMode&      copymode)
+    :
+    UpdatePrimitive(target),
+    theDoCopy(copy),
+    theCopyMode(copymode)
+  {
+    theChild.transfer(child);
+
+    ulong numChildren = newChildren.size();
+    theNewChildren.resize(numChildren);
+    for (ulong i = 0; i < numChildren; i++)
+      theNewChildren[i].transfer(newChildren[i]);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_CHILD; }
+
+  void apply();
+};
+
 
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdDelete : public UpdatePrimitive
+class UpdReplaceAttribute : public UpdatePrimitive
 {
   friend class PULImpl;
 
-public:
-  UpdDelete(XmlNode* target) : UpdatePrimitive(target) { }
+protected:
+  Item_t               theAttr;
+  std::vector<Item_t>  theNewAttrs;
+  bool                 theDoCopy;
+  CopyMode             theCopyMode;
+  ulong                thePos;
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_DELETE; }
+public:
+  UpdReplaceAttribute(
+        Item_t&              target,
+        Item_t&              attr,
+        std::vector<Item_t>& newAttrs,
+        bool                 copy,
+        const CopyMode&      copymode)
+    :
+    UpdatePrimitive(target),
+    theDoCopy(copy),
+    theCopyMode(copymode)
+  {
+    theAttr.transfer(attr);
+
+    ulong numAttrs = newAttrs.size();
+    theNewAttrs.resize(numAttrs);
+    for (ulong i = 0; i < numAttrs; i++)
+      theNewAttrs[i].transfer(newAttrs[i]);
+  }
+
+  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_ATTRIBUTE; }
 
   void apply();
 };
@@ -290,9 +381,17 @@ class UpdReplaceContent : public UpdatePrimitive
 protected:
   Item_t            theNewChild;
   ConstrNodeVector  theOldChildren;
+  bool              theDoCopy;
+  CopyMode          theCopyMode;
 
 public:
-  UpdReplaceContent(XmlNode* t, Item_t& newChild) : UpdatePrimitive(t)
+  UpdReplaceContent(
+        Item_t&         target,
+        Item_t&         newChild, 
+        bool            copy,
+        const CopyMode& copymode)
+    :
+    UpdatePrimitive(target)
   {
     theNewChild.transfer(newChild);
   }
@@ -315,7 +414,7 @@ protected:
   xqpStringStore_t    theOldValue;
 
 public:
-  UpdReplaceAttrValue(XmlNode* t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
+  UpdReplaceAttrValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
     theNewValue.transfer(newValue);
   }
@@ -338,7 +437,7 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplaceTextValue(XmlNode* t, xqpStringStore_t& newValue)
+  UpdReplaceTextValue(Item_t& t, xqpStringStore_t& newValue)
     :
     UpdatePrimitive(t)
   {
@@ -363,7 +462,7 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplacePiValue(XmlNode* t, xqpStringStore_t& newValue)
+  UpdReplacePiValue(Item_t& t, xqpStringStore_t& newValue)
     :
     UpdatePrimitive(t)
   {
@@ -388,7 +487,7 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplaceCommentValue(XmlNode* t, xqpStringStore_t& newValue)
+  UpdReplaceCommentValue(Item_t& t, xqpStringStore_t& newValue)
     :
     UpdatePrimitive(t)
   {
@@ -413,7 +512,7 @@ protected:
   Item_t   theOldName;
 
 public:
-  UpdRenameElem(XmlNode* t, Item_t& newName) : UpdatePrimitive(t)
+  UpdRenameElem(Item_t& t, Item_t& newName) : UpdatePrimitive(t)
   {
     theNewName.transfer(newName);
   }
@@ -436,7 +535,7 @@ protected:
   Item_t   theOldName;
 
 public:
-  UpdRenameAttr(XmlNode* t, Item_t& newName) : UpdatePrimitive(t)
+  UpdRenameAttr(Item_t& t, Item_t& newName) : UpdatePrimitive(t)
   {
     theNewName.transfer(newName);
   }
@@ -459,7 +558,7 @@ protected:
   xqpStringStore_t   theOldName;
 
 public:
-  UpdRenamePi(XmlNode* t, xqpStringStore_t& newName) : UpdatePrimitive(t)
+  UpdRenamePi(Item_t& t, xqpStringStore_t& newName) : UpdatePrimitive(t)
   {
     theNewName.transfer(newName);
   }

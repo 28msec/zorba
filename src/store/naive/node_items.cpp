@@ -373,6 +373,20 @@ bool XmlNode::removeChild(XmlNode* child)
 
 
 /*******************************************************************************
+  Remove the i-th attribute of "this" (it is assumed that i < numAttributes).
+********************************************************************************/
+void XmlNode::removeAttr(ulong i)
+{
+  XmlNode* attr = getAttr(i);
+
+  attributes().remove(i);
+
+  if (attr->theParent == this)
+    attr->theParent = NULL;
+}
+
+
+/*******************************************************************************
   If the given node N is an attribute of "this", remove it as an attribute of
   "this". Return true if N was an attribute of "this"; false otherwise.
 ********************************************************************************/
@@ -1023,6 +1037,24 @@ const NsBindings& ElementNode::getLocalBindings() const
 /*******************************************************************************
 
 ********************************************************************************/
+void ElementNode::addBindingForQName(Item* qname)
+{
+  xqpStringStore* prefix = qname->getPrefix().getStore();
+  xqpStringStore* ns = qname->getNamespace().getStore();
+
+  if (prefix->str() != "xml")
+  {
+    xqpStringStore* ns2 = findBinding(prefix);
+
+    if (ns2 == NULL && prefix->str() != "")
+      addLocalBinding(prefix, ns);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
 {
   if (!haveLocalBindings())
@@ -1424,16 +1456,7 @@ void ConstrElementNode::constructSubtree(
   if (theParent != NULL)
     setNsContext(theParent->getNsContext());
 
-  xqpStringStore* prefix = theName->getPrefix().getStore();
-  xqpStringStore* ns = theName->getNamespace().getStore();
-
-  if (prefix->str() != "xml")
-  {
-    xqpStringStore* ns2 = findBinding(prefix);
-
-    if (ns2 == NULL && !ns->empty())
-      addLocalBinding(prefix, ns);
-  }
+  addBindingForQName(theName);
 
   if (attributesIte != 0)
   {
@@ -1499,16 +1522,7 @@ void ConstrElementNode::addAttribute(
     }
   }
 
-  xqpStringStore* prefix = cnode->getNodeName()->getPrefix().getStore();
-  xqpStringStore* ns = cnode->getNodeName()->getNamespace().getStore();
-
-  if (prefix->str() != "xml")
-  {
-    xqpStringStore* ns2 = findBinding(prefix);
-
-    if (ns2 == NULL && prefix->str() != "")
-      addLocalBinding(prefix, ns);
-  }
+  addBindingForQName(cnode->getNodeName());
 }
 
 

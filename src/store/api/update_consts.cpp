@@ -21,14 +21,15 @@ static const char* theUpdateKindStrings[] =
 
 static const char* theUpdPrimKindStrings[] =
 {
-  "insert_before",
-  "insert_after",
+  "delete",
   "insert_into",
   "insert_into_first",
   "insert_into_last",
+  "insert_before",
+  "insert_after",
   "insert_attributes",
-  "delete",
-  "replace_node",
+  "replace_child",
+  "replace_attribute",
   "replace_content",
   "replace_attr_value",
   "replace_text_value",

@@ -121,16 +121,16 @@ void XmlNode::revalidate()
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::insertInto(
-    std::vector<Item_t>& children,
+void XmlNode::insertChildren(
+    std::vector<Item_t>& newChildren,
     ulong                pos,
     bool                 copy,
     const CopyMode&      copymode)
 {
-  ulong numChildren = children.size();
-  for (ulong i = 0; i < numChildren; i++)
+  ulong numNewChildren = newChildren.size();
+  for (ulong i = 0; i < numNewChildren; i++)
   {
-    XmlNode* child = BASE_NODE(children[i]);
+    XmlNode* child = BASE_NODE(newChildren[i]);
 
     if (copy)
     {
@@ -142,7 +142,7 @@ void ElementNode::insertInto(
 
       child->switchTree(getTree(), this, pos + i, true);
 
-      this->children().insert(child, pos + i, false);
+      children().insert(child, pos + i, false);
     }
   }
 }
@@ -151,15 +151,15 @@ void ElementNode::insertInto(
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::insertFirst(
-    std::vector<Item_t>& children,
+void XmlNode::insertChildrenFirst(
+    std::vector<Item_t>& newChildren,
     bool                 copy,
     const CopyMode&      copymode)
 {
-  ulong numChildren = children.size();
-  for (long i = numChildren - 1; i >= 0; i--)
+  ulong numNewChildren = newChildren.size();
+  for (long i = numNewChildren - 1; i >= 0; i--)
   {
-    XmlNode* child = BASE_NODE(children[i]);
+    XmlNode* child = BASE_NODE(newChildren[i]);
 
     if (copy)
     {
@@ -180,19 +180,19 @@ void ElementNode::insertFirst(
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::insertLast(
-    std::vector<Item_t>& children,
+void XmlNode::insertChildrenLast(
+    std::vector<Item_t>& newChildren,
     bool                 copy,
     const CopyMode&      copymode)
 {
-  insertInto(children, numChildren(), copy, copymode);
+  insertChildren(newChildren, numChildren(), copy, copymode);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::insertBefore(
+void XmlNode::insertSiblingsBefore(
     std::vector<Item_t>& siblings,
     bool                 copy,
     const CopyMode&      copymode)
@@ -201,26 +201,19 @@ void ElementNode::insertBefore(
 
   ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
 
-  ulong numChildren = this->numChildren();
-  ulong pos;
-
-  for (pos = 0; pos < numChildren; pos++)
-  {
-    if (parent->getChild(pos) == this)
-      break;
-  }
+  ulong pos = parent->children().find(this);
 
   if (pos == 0)
-    parent->insertFirst(siblings, copy, copymode);
+    parent->insertChildrenFirst(siblings, copy, copymode);
   else
-    parent->insertInto(siblings, pos, copy, copymode);
+    parent->insertChildren(siblings, pos, copy, copymode);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::insertAfter(
+void XmlNode::insertSiblingsAfter(
     std::vector<Item_t>& siblings,
     bool                 copy,
     const CopyMode&      copymode)
@@ -229,18 +222,43 @@ void ElementNode::insertAfter(
 
   ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
 
-  ulong numChildren = this->numChildren();
-  ulong pos;
-
-  for (pos = 0; pos < numChildren; pos++)
-  {
-    if (parent->getChild(pos) == this)
-      break;
-  }
-
+  ulong pos = parent->children().find(this);
   pos++;
 
-  parent->insertInto(siblings, pos, copy, copymode);
+  parent->insertChildren(siblings, pos, copy, copymode);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::replaceChild(
+    std::vector<Item_t>& newChildren,
+    ulong                pos,
+    bool                 copy,
+    const CopyMode&      copymode)
+{
+  removeChild(pos);
+
+  ulong numNewChildren = newChildren.size();
+
+  for (ulong i = 0; i < numNewChildren; i++)
+  {
+    XmlNode* child = BASE_NODE(newChildren[i]);
+
+    if (copy)
+    {
+      child->copy(this, this, pos + i, copymode);
+    }
+    else
+    {
+      ZORBA_FATAL(child->isConstructed(), "");
+
+      child->switchTree(getTree(), this, pos + i, true);
+
+      children().insert(child, pos + i, false);
+    }
+  }
 }
 
 
@@ -274,6 +292,46 @@ void ElementNode::insertAttributes(
 
       attributes().push_back(attr, false);
     }
+
+    addBindingForQName(attr->getNodeName());
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNode::replaceAttribute(
+    std::vector<Item_t>& newAttrs,
+    ulong                pos,
+    bool                 copy,
+    const CopyMode&      copymode)
+{
+  removeAttr(pos);
+
+  ulong numNewAttrs = newAttrs.size();
+
+  for (ulong i = 0; i < numNewAttrs; i++)
+  {
+    AttributeNode* attr = reinterpret_cast<AttributeNode*>(newAttrs[i].getp());
+
+    checkQName(reinterpret_cast<QNameItemImpl*>(attr->theName.getp()));
+    checkUniqueAttr(attr->theName);
+
+    if (copy)
+    {
+      attr->copy(this, this, pos + i, copymode);
+    }
+    else
+    {
+      ZORBA_FATAL(attr->isConstructed(), "");
+
+      attr->switchTree(getTree(), this, pos + i, true);
+
+      attributes().insert(attr, pos + i, false);
+    }
+
+    addBindingForQName(attr->getNodeName());
   }
 }
 

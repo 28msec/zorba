@@ -1,6 +1,6 @@
 
 #include "zorbatypes/xqpstring.h"
-#include "util/Assert.h"
+#include "errors/fatal.h"
 #include "store/naive/nsbindings.h"
 
 namespace zorba { namespace store {
@@ -67,8 +67,7 @@ void NsBindingsContext::addBinding(
   {
     if (theBindings[i].first.getStore()->byteEqual(*prefix))
     {
-      if (!theBindings[i].second.getStore()->byteEqual(*ns))
-        ZORBA_ASSERT(0);
+      ZORBA_FATAL(theBindings[i].second.getStore()->byteEqual(*ns), "");
 
       return;
     }
