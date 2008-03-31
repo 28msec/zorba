@@ -31,6 +31,7 @@
 #include "context/static_context.h"
 #include "types/root_typemanager.h"
 #include "store/api/item_factory.h"
+#include "runtime/api/plan_wrapper.h"
 
 using namespace std;
 namespace zorba {
@@ -199,6 +200,16 @@ constructed by static_context::qname_internal_key( .. )
 void	dynamic_context::add_variable(xqp_string var_name, Iterator_t var_iterator)
 {
   Iterator* lIter = &*var_iterator;
+  lIter->addReference(var_iterator->getSharedRefCounter()
+                      SYNC_PARAM2(var_iterator->getRCLock()));
+
+  dctx_value_t v = { lIter };
+  keymap.put ("var:" + var_name, v);
+}
+
+void	dynamic_context::add_variable(xqp_string var_name, PlanWrapper_t var_iterator)
+{
+  PlanWrapper* lIter = &*var_iterator;
   lIter->addReference(var_iterator->getSharedRefCounter()
                       SYNC_PARAM2(var_iterator->getRCLock()));
 

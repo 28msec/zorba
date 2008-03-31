@@ -14,6 +14,7 @@
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
 #include "api/zorbaimpl.h"
+#include "runtime/api/plan_wrapper.h"
 
 namespace zorba {
 
@@ -50,8 +51,14 @@ namespace zorba {
   }
 
   void
-  DynamicContextImpl::setVariable( const String& aQName, const ResultIterator& aResultIterator )
+  DynamicContextImpl::setVariable( const String& aQName, const ResultIterator_t& aResultIterator )
   {
+    PlanWrapper_t lPlan(Unmarshaller::getInternalPlan(aResultIterator));
+    xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
+
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+
+    theCtx->add_variable(lExpandedName, lPlan);
   }
 
   void

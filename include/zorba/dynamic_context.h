@@ -22,7 +22,7 @@ namespace zorba {
       setVariable( const String& aQName, const ItemSequence_t& aSequence ) = 0;
 
       virtual void
-      setVariable( const String& aQName, const ResultIterator& aResultIterator ) = 0;
+      setVariable( const String& aQName, const ResultIterator_t& aResultIterator ) = 0;
 
       virtual void
       setVariableAsDocument ( const String& aQName, const String& aDocURI, std::istream& ) = 0;

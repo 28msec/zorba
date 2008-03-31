@@ -69,20 +69,12 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 
     aState->iter->open();
 
-		do
-		{
-			item = aState->iter->next();
+    while ( (item = aState->iter->next()) != NULL )
 			STACK_PUSH (item , aState);
-		}
-	  while(item != NULL);
 
     aState->iter->close();
 	}
 
-  while(true)
-  {
-    STACK_PUSH (NULL , aState);
-  }
   STACK_END (aState);
 
 }

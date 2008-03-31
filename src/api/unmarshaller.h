@@ -18,6 +18,8 @@ class Unmarshaller {
       static static_context*  getInternalStaticContext(const StaticContext_t& aContext);
 
       static dynamic_context* getInternalDynamicContext(const DynamicContext_t& aContext);
+
+      static PlanWrapper_t    getInternalPlan(const ResultIterator_t& aResultIter);
 };
 
 }

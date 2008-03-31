@@ -19,7 +19,8 @@ namespace zorba {
 
   ResultIteratorImpl::~ResultIteratorImpl() 
   {
-    thePlan->close();
+    if (theIsOpened)
+      thePlan->close();
   }
  
   void 

@@ -5,7 +5,7 @@ CREATE_TEST_SOURCELIST(examples
   errors.cpp
   context.cpp
 ##serialization.cpp
-##chaining.cpp
+  chaining.cpp
   external_functions.cpp
   datamanager.cpp
 )

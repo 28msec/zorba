@@ -25,6 +25,7 @@ namespace zorba {
       virtual void 
       close();
 
+      friend class Unmarshaller;
     protected:
       PlanWrapper_t        thePlan;         
       bool                 theIsOpened;     
