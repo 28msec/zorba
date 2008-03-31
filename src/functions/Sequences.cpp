@@ -320,9 +320,9 @@ PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   PlanIter_t antijoin = new HashSemiJoinIterator(loc, argv, true);
   if (! sort && ! distinct)
     return antijoin;
-  else
-    // TODO: use NodeDistinctIterator when that is fixed and sort == false
-    return new NodeSortIterator (loc, antijoin, true, true, true);
+
+  // TODO: use NodeDistinctIterator when that is fixed and sort == false
+  return new NodeSortIterator (loc, antijoin, true, true, true);
 }
 
 
