@@ -255,6 +255,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token ORDERED										"'ordered'"
 %token ORDERED_LBRACE							"'ordered {'"
 %token ORDER_BY										"'<order by>'"
+%token GROUP_BY                   "'<group by>'"
 %token PARENT_AXIS								"'parent::'"
 %token PI_BEGIN										"'<?'"
 %token PI_END											"'?>'"
@@ -446,6 +447,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> NodeTest
 %type <node> OccurrenceIndicator
 %type <node> OptionDecl
+%type <node> GroupByClause
+%type <node> GroupSpecList
+%type <node> GroupSpec
+%type <node> GroupCollationSpec
+%type <node> LetClauseList
 %type <node> OrderByClause
 %type <node> OrderCollationSpec
 %type <node> OrderDirSpec
@@ -623,7 +629,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 // Module must not be destroyed since it is returned by the parser
 // TODO: FT stuff, update stuff
-%destructor { $$->safeRemoveRef (); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { $$->safeRemoveRef (); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 %destructor { $$->safeRemoveRef (); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor NonNodeEnclosedExpr EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr // DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl FTContainsExpr
 
 /*_____________________________________________________________________
@@ -1910,7 +1916,7 @@ FLWORExpr :
 #endif
 			$$ = new FLWORExpr(LOC (@$),
 								dynamic_cast<ForLetClauseList*>($1),
-								NULL,NULL,
+								NULL,NULL,NULL,
 								$3);
 		}
 	|	ForLetClauseList  WhereClause  RETURN  ExprSingle
@@ -1921,7 +1927,7 @@ FLWORExpr :
 			$$ = new FLWORExpr(LOC (@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
-								NULL,
+								NULL,NULL,
 								$4);
 		}
 	|	ForLetClauseList  OrderByClause  RETURN  ExprSingle
@@ -1931,7 +1937,7 @@ FLWORExpr :
 #endif
 			$$ = new FLWORExpr(LOC (@$),
 								dynamic_cast<ForLetClauseList*>($1),
-								NULL,
+								NULL,NULL,
 								dynamic_cast<OrderByClause*>($2),
 								$4);
 		}
@@ -1943,9 +1949,58 @@ FLWORExpr :
 			$$ = new FLWORExpr(LOC (@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
+                NULL,
 								dynamic_cast<OrderByClause*>($3),
 								$5);
 		}
+  | ForLetClauseList GroupByClause RETURN ExprSingle
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FLWORExpr [groupby.return]" << endl;
+#endif
+			$$ = new FLWORExpr(LOC (@$),
+								dynamic_cast<ForLetClauseList*>($1),
+								NULL,
+                dynamic_cast<GroupByClause*>($2),
+								NULL,
+								$4);
+    }
+  | ForLetClauseList WhereClause GroupByClause RETURN ExprSingle
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FLWORExpr [where.groupby.return]" << endl;
+#endif
+			$$ = new FLWORExpr(LOC (@$),
+								dynamic_cast<ForLetClauseList*>($1),
+								dynamic_cast<WhereClause*>($2),
+                dynamic_cast<GroupByClause*>($3),
+								NULL,
+								$5);
+    }
+  | ForLetClauseList GroupByClause OrderByClause RETURN ExprSingle
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FLWORExpr [groupby.orderby.return]" << endl;
+#endif
+			$$ = new FLWORExpr(LOC (@$),
+								dynamic_cast<ForLetClauseList*>($1),
+								NULL,
+                dynamic_cast<GroupByClause*>($2),
+								dynamic_cast<OrderByClause*>($3),
+								$5);
+    }
+  | ForLetClauseList WhereClause GroupByClause OrderByClause RETURN ExprSingle
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FLWORExpr [where.groupby.orderby.return]" << endl;
+#endif
+			$$ = new FLWORExpr(LOC (@$),
+								dynamic_cast<ForLetClauseList*>($1),
+								dynamic_cast<WhereClause*>($2),
+                dynamic_cast<GroupByClause*>($3),
+								dynamic_cast<OrderByClause*>($4),
+								$6);
+    }
 	;
 
 
@@ -2266,6 +2321,125 @@ WhereClause :
 								$2);
 		}
 	;
+
+GroupByClause :
+    GROUP_BY GroupSpecList
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupByClause [groupspec]" << endl;
+#endif
+      $$ = new GroupByClause(LOC(@$),
+                 dynamic_cast<GroupSpecList*>($2),
+                 NULL,
+                 NULL);
+    }
+  | GROUP_BY GroupSpecList LetClauseList
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupByClause [groupspec.let]" << endl;
+#endif
+      $$ = new GroupByClause(LOC(@$),
+                 dynamic_cast<GroupSpecList*>($2),
+                 dynamic_cast<LetClauseList*>($3),
+                 NULL);
+    }
+  | GROUP_BY GroupSpecList WhereClause
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupByClause [groupspec.where]" << endl;
+#endif
+      $$ = new GroupByClause(LOC(@$),
+                 dynamic_cast<GroupSpecList*>($2),
+                 NULL,
+                 dynamic_cast<WhereClause*>($3));
+    }
+  | GROUP_BY GroupSpecList LetClauseList WhereClause
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupByClause [groupspec.let.where]" << endl;
+#endif
+      $$ = new GroupByClause(LOC(@$),
+                 dynamic_cast<GroupSpecList*>($2),
+                 dynamic_cast<LetClauseList*>($3),
+                 dynamic_cast<WhereClause*>($4));
+    }
+  ;
+
+GroupSpecList :
+    GroupSpec
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupSpecList [single]" << endl;
+#endif
+      GroupSpecList* gsl_p = new GroupSpecList(LOC(@$));
+      gsl_p->push_back(dynamic_cast<GroupSpec*>($1));
+      $$ = gsl_p;
+    }
+  | GroupSpecList COMMA GroupSpec
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupSpecList [list]" << endl;
+#endif
+      GroupSpecList* gsl_p = dynamic_cast<GroupSpecList*>($1);
+      if (gsl_p) {
+        gsl_p->push_back(dynamic_cast<GroupSpec*>($3));
+      }
+      $$ = gsl_p;
+    }
+  ;
+
+GroupSpec :
+    DOLLAR VARNAME
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupSpec []" << endl;
+#endif
+      $$ = new GroupSpec(LOC(@$),
+                 driver.symtab.get((off_t)$2),
+                 NULL);
+    }
+  | DOLLAR VARNAME GroupCollationSpec
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupSpec [collation]" << endl;
+#endif
+      $$ = new GroupSpec(LOC(@$), 
+                 driver.symtab.get((off_t)$2), 
+                 dynamic_cast<GroupCollationSpec*>($3)); 
+    }
+  ;
+
+GroupCollationSpec :
+    COLLATION  URI_LITERAL
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GroupCollationSpec [ ]" << endl;
+#endif
+      $$ = new GroupCollationSpec(LOC(@$), driver.symtab.get((off_t)$2));
+    }
+  ;
+
+LetClauseList :
+    LetClause
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "LetClauseList [single]" << endl;
+#endif
+      LetClauseList* lc_list_p = new LetClauseList(LOC(@$));
+      lc_list_p->push_back(dynamic_cast<LetClause*>($1));
+      $$ = lc_list_p;
+    }
+  |
+    LetClauseList LetClause 
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "LetClauseList [list]" << endl;
+#endif
+      LetClauseList* lc_list_p = dynamic_cast<LetClauseList*>($1);
+      if (lc_list_p) lc_list_p->push_back(dynamic_cast<LetClause*>($2));
+      $$ = $1;
+    }
+  ;
 
 
 // [38] OrderByClause

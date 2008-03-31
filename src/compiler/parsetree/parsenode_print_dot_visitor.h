@@ -78,6 +78,11 @@ public:
 	void *begin_visit(const NodeComp &);
 	void *begin_visit(const OccurrenceIndicator &);
 	void *begin_visit(const OptionDecl &);
+  void *begin_visit(const GroupByClause&);
+  void *begin_visit(const GroupSpecList&);
+  void *begin_visit(const GroupSpec&);
+  void *begin_visit(const GroupCollationSpec&);
+  void *begin_visit(const LetClauseList&);
 	void *begin_visit(const OrderByClause &);
 	void *begin_visit(const OrderCollationSpec &);
 	void *begin_visit(const OrderDirSpec &);
@@ -274,6 +279,11 @@ public:
 	void end_visit(const NodeComp &, void *visit_state);
 	void end_visit(const OccurrenceIndicator &, void *visit_state);
 	void end_visit(const OptionDecl &, void *visit_state);
+  void end_visit(const GroupByClause &, void *visit_state);
+  void end_visit(const GroupSpecList &, void *visit_state);
+  void end_visit(const GroupSpec &, void *visit_state);
+  void end_visit(const GroupCollationSpec &, void *visit_state);
+  void end_visit(const LetClauseList &, void *visit_state);
 	void end_visit(const OrderByClause &, void *visit_state);
 	void end_visit(const OrderCollationSpec &, void *visit_state);
 	void end_visit(const OrderDirSpec &, void *visit_state);

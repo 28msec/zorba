@@ -1393,6 +1393,63 @@ void end_visit(const WhereClause& /*v*/, void* /*visit_state*/)
 }
 
 
+void *begin_visit(const GroupByClause&)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const GroupByClause& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const GroupSpecList&)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const GroupSpecList& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const GroupSpec&)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const GroupSpec& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const GroupCollationSpec&)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const GroupCollationSpec& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const LetClauseList&)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit(const LetClauseList& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+
 void *begin_visit(const OrderByClause& /*v*/)
 {
   TRACE_VISIT ();

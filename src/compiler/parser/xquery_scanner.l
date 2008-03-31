@@ -1314,6 +1314,10 @@ typedef zorba::xquery_parser::token token;
   BEGIN INITIAL;
   return token::NE;
 }
+"group"{SP}"by"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::GROUP_BY;
+}
 "order"{SP}"by"/{WordBreak} {
   BEGIN INITIAL;
   return token::ORDER_BY;
@@ -2215,6 +2219,11 @@ typedef zorba::xquery_parser::token token;
 "!=" {
   BEGIN INITIAL;
   return token::NE;
+}
+
+"group"{SP}"by"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::GROUP_BY;
 }
 
 "order"{SP}"by"/{WordBreak} {

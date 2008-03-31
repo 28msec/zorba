@@ -542,6 +542,56 @@ void *ParseNodePrintDOTVisitor::begin_visit(const OptionDecl &n)
 }
 
 
+void *ParseNodePrintDOTVisitor::begin_visit(const GroupByClause &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"GroupByClause\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+void *ParseNodePrintDOTVisitor::begin_visit(const GroupSpecList &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"GroupSpecList\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+void *ParseNodePrintDOTVisitor::begin_visit(const GroupSpec &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"GroupSpec\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+void *ParseNodePrintDOTVisitor::begin_visit(const GroupCollationSpec &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"GroupCollationSpec\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+void *ParseNodePrintDOTVisitor::begin_visit(const LetClauseList &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"LetClauseList\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
 
 void *ParseNodePrintDOTVisitor::begin_visit(const OrderByClause &n)
 {
@@ -2539,6 +2589,21 @@ void ParseNodePrintDOTVisitor::end_visit(const OptionDecl& /*n*/, void* /*visit_
 {
 }
 
+
+void ParseNodePrintDOTVisitor::end_visit(const GroupByClause&, void*)
+{}
+
+void ParseNodePrintDOTVisitor::end_visit(const GroupSpecList&, void*)
+{}
+
+void ParseNodePrintDOTVisitor::end_visit(const GroupSpec&, void*)
+{}
+
+void ParseNodePrintDOTVisitor::end_visit(const GroupCollationSpec&, void*)
+{}
+
+void ParseNodePrintDOTVisitor::end_visit(const LetClauseList&, void*)
+{}
 
 
 void ParseNodePrintDOTVisitor::end_visit(const OrderByClause& /*n*/, void* /*visit_state*/)

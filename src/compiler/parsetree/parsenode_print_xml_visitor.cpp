@@ -674,6 +674,72 @@ void *begin_visit(const OptionDecl &n)
 }
 
 
+void *begin_visit(GroupByClause const& n)
+{
+    INDENT;
+
+    os << "<GroupByClause pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
+void *begin_visit(GroupSpecList const& n)
+{
+    INDENT;
+
+    os << "<GroupSpecList pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
+void *begin_visit(GroupSpec const& n)
+{
+    INDENT;
+
+    os << "<GroupSpec pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
+void *begin_visit(GroupCollationSpec const& n)
+{
+    INDENT;
+
+    os << "<GroupCollationSpec pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
+void *begin_visit(LetClauseList const& n)
+{
+    INDENT;
+
+    os << "<LetClauseList pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
+
 void *begin_visit(const OrderByClause &n)
 {
     INDENT;
@@ -3097,6 +3163,51 @@ void end_visit(const OptionDecl& /*n*/, void* /*visit_state*/)
 
     INDENT;
     os << "</OptionDecl>";
+    NL;
+}
+
+void end_visit(GroupByClause const&, void*)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</GroupByClause>";
+    NL;
+}
+
+void end_visit(GroupSpecList const&, void*)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</GroupSpecList>";
+    NL;
+}
+
+void end_visit(GroupSpec const&, void*)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</GroupSpec>";
+    NL;
+}
+
+void end_visit(GroupCollationSpec const&, void*)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</GroupCollationSpec>";
+    NL;
+}
+
+void end_visit(LetClauseList const&, void*)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</LetClauseList>";
     NL;
 }
 

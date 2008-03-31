@@ -985,12 +985,14 @@ FLWORExpr::FLWORExpr(
   const QueryLoc& _loc,
   rchandle<ForLetClauseList> _forlet_list_h,
   rchandle<WhereClause> _where_h,
+  rchandle<GroupByClause> _groupby_h,
   rchandle<OrderByClause> _orderby_h,
   rchandle<exprnode> _return_val_h)
 :
   exprnode(_loc),
   forlet_list_h(_forlet_list_h),
   where_h(_where_h),
+  groupby_h(_groupby_h),
   orderby_h(_orderby_h),
   return_val_h(_return_val_h)
 {
@@ -1004,6 +1006,7 @@ void FLWORExpr::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   ACCEPT (forlet_list_h);
   ACCEPT (where_h);
+  ACCEPT (groupby_h);
   ACCEPT (orderby_h);
   ACCEPT (return_val_h);
   END_VISITOR ();
@@ -1259,6 +1262,92 @@ void WhereClause::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (predicate_h);
+  END_VISITOR ();
+}
+
+GroupByClause::GroupByClause(
+  const QueryLoc& _loc,
+  rchandle<GroupSpecList> _spec_list_h,
+  rchandle<LetClauseList> _let_h,
+  rchandle<WhereClause> _where_h)
+:
+  parsenode(_loc),
+  spec_list_h(_spec_list_h),
+  let_h(_let_h),
+  where_h(_where_h)
+{}
+
+void GroupByClause::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (spec_list_h);
+  ACCEPT (let_h);
+  ACCEPT (where_h);
+  END_VISITOR ();
+}
+
+GroupSpecList::GroupSpecList(
+  const QueryLoc& _loc)
+:
+  parsenode(_loc)
+{}
+
+void GroupSpecList::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  vector<rchandle<GroupSpec> >::const_reverse_iterator it = spec_hv.rbegin();
+  for (; it!=spec_hv.rend(); ++it) {
+    const GroupSpec *e_p = &**it;
+    ACCEPT_CHK (e_p);
+  }
+  END_VISITOR ();
+}
+
+GroupSpec::GroupSpec(
+  const QueryLoc& _loc,
+  std::string _var_name_h,
+  rchandle<GroupCollationSpec> _group_coll_spec_h)
+:
+  parsenode(_loc),
+  var_name_h(_var_name_h),
+  group_coll_spec_h(_group_coll_spec_h)
+{}
+
+void GroupSpec::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (group_coll_spec_h);
+  END_VISITOR ();
+}
+
+GroupCollationSpec::GroupCollationSpec (
+  const QueryLoc& _loc,
+  const std::string& _uri)
+:
+  parsenode(_loc),
+  uri(_uri)
+{}
+
+void GroupCollationSpec::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+LetClauseList::LetClauseList(
+  const QueryLoc& _loc)
+:
+  parsenode(_loc)
+{}
+
+void LetClauseList::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  vector<rchandle<LetClause> >::const_reverse_iterator it = let_hv.rbegin();
+  for (; it!=let_hv.rend(); ++it) {
+    const LetClause *e_p = &**it;
+    ACCEPT_CHK (e_p);
+  }
   END_VISITOR ();
 }
 

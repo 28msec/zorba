@@ -208,6 +208,11 @@ class NumericLiteral;
 class OccurrenceIndicator;
 class OptionDecl;
 class OrExpr;
+class GroupByClause;
+class GroupSpecList;
+class GroupSpec;
+class GroupCollationSpec;
+class LetClauseList;
 class OrderByClause;
 class OrderCollationSpec;
 class OrderDirSpec;
@@ -1235,6 +1240,7 @@ class FLWORExpr : public exprnode
 protected:
 	rchandle<ForLetClauseList> forlet_list_h;
 	rchandle<WhereClause> where_h;
+  rchandle<GroupByClause> groupby_h;
 	rchandle<OrderByClause> orderby_h;
 	rchandle<exprnode> return_val_h;
 
@@ -1243,6 +1249,7 @@ public:
 		const QueryLoc&,
 		rchandle<ForLetClauseList>,
 		rchandle<WhereClause>,
+    rchandle<GroupByClause>,
 		rchandle<OrderByClause>,
 		rchandle<exprnode>);
 
@@ -1250,6 +1257,7 @@ public:
 public:
 	rchandle<ForLetClauseList> get_forlet_list() const { return forlet_list_h; }
 	rchandle<WhereClause> get_where() const { return where_h; }
+  rchandle<GroupByClause> get_groupby() const { return groupby_h; }
 	rchandle<OrderByClause> get_orderby() const { return orderby_h; }
 	rchandle<exprnode> get_return_val() const { return return_val_h; }
 
@@ -1568,6 +1576,99 @@ public:
 
 };
 
+class GroupByClause : public parsenode
+{
+protected:
+  rchandle<GroupSpecList> spec_list_h;
+	rchandle<LetClauseList> let_h;
+	rchandle<WhereClause> where_h;
+
+public:
+  GroupByClause(
+    const QueryLoc&,
+    rchandle<GroupSpecList>,
+    rchandle<LetClauseList>,
+    rchandle<WhereClause>);
+
+public:
+  rchandle<GroupSpecList> get_spec_list() const { return spec_list_h; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
+
+class GroupSpecList : public parsenode
+{
+protected:
+  std::vector<rchandle<GroupSpec> > spec_hv;
+ 
+public:
+  GroupSpecList(const QueryLoc&);
+
+public:
+	void push_back(rchandle<GroupSpec> spec_h) { spec_hv.push_back(spec_h); }
+	rchandle<GroupSpec> operator[](int i) const { return spec_hv[i]; }
+  size_t size () { return spec_hv.size (); }
+
+public:
+	void accept(parsenode_visitor&) const;
+};
+
+class GroupSpec : public parsenode
+{
+protected:
+  std::string            var_name_h;
+  rchandle<GroupCollationSpec> group_coll_spec_h;
+
+public:
+  GroupSpec(
+    const QueryLoc&,
+    std::string,
+    rchandle<GroupCollationSpec>);
+
+public:
+  std::string get_var_name() const  { return var_name_h; }
+  rchandle<GroupCollationSpec> group_coll_spec() const { return group_coll_spec_h; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
+
+class GroupCollationSpec : public parsenode
+{
+protected:
+	std::string uri;
+
+public:
+	GroupCollationSpec(
+		const QueryLoc&,
+		std::string const& uri);
+
+public:
+	std::string get_uri() const { return uri; }
+
+public:
+	void accept(parsenode_visitor&) const;
+
+};
+
+class LetClauseList : public parsenode
+{
+protected:
+	std::vector<rchandle<LetClause> > let_hv;
+
+public:
+  LetClauseList(const QueryLoc&);
+
+public:
+	void push_back(rchandle<LetClause> let_h) { let_hv.push_back(let_h); }
+	rchandle<LetClause> operator[](int i) const { return let_hv[i]; }
+  int size () const { return let_hv.size (); }
+
+public:
+	void accept(parsenode_visitor&) const;
+
+};
 
 // [38] OrderByClause
 // ------------------

@@ -79,6 +79,11 @@ public:
 	virtual void *begin_visit(NodeComp const&) = 0;
 	virtual void *begin_visit(OccurrenceIndicator const&) = 0;
 	virtual void *begin_visit(OptionDecl const&) = 0;
+  virtual void *begin_visit(GroupByClause const&) = 0;
+  virtual void *begin_visit(GroupSpecList const&) = 0;
+  virtual void *begin_visit(GroupSpec const&) = 0;
+  virtual void *begin_visit(GroupCollationSpec const&) = 0;
+  virtual void *begin_visit(LetClauseList const&) = 0;
 	virtual void *begin_visit(OrderByClause const&) = 0;
 	virtual void *begin_visit(OrderCollationSpec const&) = 0;
 	virtual void *begin_visit(OrderDirSpec const&) = 0;
@@ -277,6 +282,11 @@ public:
 	virtual void end_visit(NodeComp const&, void *visit_state) = 0;
 	virtual void end_visit(OccurrenceIndicator const&, void *visit_state) = 0;
 	virtual void end_visit(OptionDecl const&, void *visit_state) = 0;
+  virtual void end_visit(GroupByClause const&, void *visit_state) = 0;
+  virtual void end_visit(GroupSpecList const&, void *visit_state) = 0;
+  virtual void end_visit(GroupSpec const&, void *visit_state) = 0;
+  virtual void end_visit(GroupCollationSpec const&, void *visit_state) = 0;
+  virtual void end_visit(LetClauseList const&, void *visit_state) = 0;
 	virtual void end_visit(OrderByClause const&, void *visit_state) = 0;
 	virtual void end_visit(OrderCollationSpec const&, void *visit_state) = 0;
 	virtual void end_visit(OrderDirSpec const&, void *visit_state) = 0;
