@@ -103,7 +103,6 @@ public:
 	int  		get_implicit_timezone();
 
 	void				add_variable(xqp_string varname, Iterator_t var_iterator);
-	void				add_variable(xqp_string varname, PlanWrapper_t var_iterator);
 	Iterator_t	get_variable(const xqp_string& varname);
 
 	xqp_string get_default_collection();

@@ -53,6 +53,8 @@ namespace zorba {
     class ConstrNodeVector;
     class NsBindingsContext;
     typedef rchandle<NsBindingsContext> NsBindingsContext_t;
+    class ResultIteratorChainer;
+    typedef rchandle<ResultIteratorChainer> ResultIteratorChainer_t;
   }
 
   namespace types {
@@ -179,6 +181,7 @@ typedef rchandle<NodeNameTest> NodeNameTest_t;
 typedef rchandle<static_context> static_context_t;
 typedef rchandle<CompilerCB> CompilerCB_t;
 typedef rchandle<PlanWrapper> PlanWrapper_t;
+
 
 /* datetime stuff */
 class DateTime;

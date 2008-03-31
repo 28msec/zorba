@@ -207,15 +207,6 @@ void	dynamic_context::add_variable(xqp_string var_name, Iterator_t var_iterator)
   keymap.put ("var:" + var_name, v);
 }
 
-void	dynamic_context::add_variable(xqp_string var_name, PlanWrapper_t var_iterator)
-{
-  PlanWrapper* lIter = &*var_iterator;
-  lIter->addReference(var_iterator->getSharedRefCounter()
-                      SYNC_PARAM2(var_iterator->getRCLock()));
-
-  dctx_value_t v = { lIter };
-  keymap.put ("var:" + var_name, v);
-}
 
 Iterator_t	dynamic_context::get_variable(const xqp_string& var_name)
 {

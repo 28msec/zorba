@@ -81,6 +81,17 @@ namespace zorba {
     theUserErrorHandler = true;
   }
 
+  void
+  XQueryImpl::resetErrorHandler()
+  {
+    assert (theErrorHandler);
+    if ( ! theUserErrorHandler ) 
+      return;
+
+    theErrorHandler = new DefaultErrorHandler();
+    theUserErrorHandler = false;
+  }
+
   /**
    * various ways to compile a query
    */

@@ -34,6 +34,9 @@ namespace zorba {
       virtual void
       registerErrorHandler(ErrorHandler*) = 0;
 
+      virtual void
+      resetErrorHandler() = 0;
+
       // xml serialization
       // prepares the query with the default dynamic that belongs to this query
       // it can be retrieved using getDynamicContext. 

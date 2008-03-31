@@ -21,6 +21,9 @@ namespace zorba {
       registerErrorHandler(ErrorHandler*);
 
       virtual void
+      resetErrorHandler();
+
+      virtual void
       serialize(std::ostream&);
 
       virtual ResultIterator_t
