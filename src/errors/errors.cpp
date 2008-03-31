@@ -24,6 +24,24 @@ namespace zorba { namespace error {
     theLineNumber(aLineNumber)
   {}
 
+  ZorbaError::ZorbaError(
+    const ::zorba::store::Item_t& aErrQName,
+    const xqpString& aDescription,
+    const QueryLoc& aLocation,
+    const std::string& aFileName,
+    int aLineNumber)
+    :
+    theQName(aErrQName),
+    theDescription(aDescription),
+    theQueryLocation(aLocation),
+    theFileName(aFileName),
+    theLineNumber(aLineNumber)
+  {
+    // compute err code from qname
+    theErrorCode = err_name_to_code(theQName->getLocalName());
+  }
+
+
   ZorbaError::ZorbaError(const ZorbaError& other)
     : theQName(other.theQName),
     theErrorCode(other.theErrorCode),
@@ -59,6 +77,17 @@ namespace zorba { namespace error {
     std::vector< ::zorba::store::Item_t> aErrorObject)
     :
     ZorbaError(aErrorCode, aDescription, aLocation, aFileName, aLineNumber),
+    theErrorObject(aErrorObject) {}
+
+  ZorbaUserError::ZorbaUserError(
+    const ::zorba::store::Item_t& aErrQName,
+    const xqpString& aDescription,
+    const QueryLoc& aLocation,
+    const std::string& aFileName,
+    int aLineNumber,
+    std::vector< ::zorba::store::Item_t> aErrorObject)
+    :
+    ZorbaError(aErrQName, aDescription, aLocation, aFileName, aLineNumber),
     theErrorObject(aErrorObject) {}
 
   ZorbaUserError::~ZorbaUserError() {}

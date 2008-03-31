@@ -25,26 +25,28 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
 {
   static const char *err_ns = "http://www.w3.org/2005/xqt-errors";
   store::Item_t err_qname = GENV_ITEMFACTORY->createQName (err_ns, "err", "FOER0000");
+  store::Item_t lTmpQName;
+  store::Item_t lTmpErrorObject;
   xqp_string ns;
   xqp_string description;
-  std::vector<store::Item_t> aErrorObject; // TODO
+  std::vector<store::Item_t> lErrorObject; 
 
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (theChildren.size () >= 1)
-    err_qname = consumeNext(theChildren[0].getp(), planState);
-  if (theChildren.size () >= 2)
-    description = consumeNext(theChildren[1].getp(), planState)->getStringValue().getp();
-
-  ns = err_qname->getNamespace ();
-  if (ns == err_ns)
-    ZORBA_ERROR_DESC (error::ZorbaError::err_name_to_code (err_qname->getLocalName()), description);
-  else {
-    ZORBA_USER_ERROR(ns, err_qname->getLocalName(), description,
-                     loc, aErrorObject);
+  if (theChildren.size () >= 1) {
+    lTmpQName = consumeNext(theChildren[0].getp(), planState);
+    if (lTmpQName != NULL)
+      err_qname = lTmpQName;
   }
+  if (theChildren.size () >= 2)
+    description = consumeNext(theChildren[1].getp(), planState)->getStringValue ().getp();
+  if (theChildren.size() == 3)
+    while ( (lTmpErrorObject = consumeNext(theChildren[2].getp(), planState)) != NULL)
+      lErrorObject.push_back(lTmpErrorObject);
+    
+  ZORBA_USER_ERROR(err_qname, description, loc, lErrorObject);
 
   STACK_END (state);
 }

@@ -84,17 +84,14 @@ namespace zorba { namespace error {
 
   ZorbaUserError
   ErrorManager::createUserException(
-    const xqpString& aErrorURI,
-    const xqpString aErrorLocalName,
+    const ::zorba::store::Item_t& aErrorQName,
     const xqpString& aDescription,
-    const QueryLoc& aLocation,
     std::vector< ::zorba::store::Item_t> aErrorObject,
+    const QueryLoc& aLocation,
     const std::string& aFileName,
     int aLineNumber)
   {
-    ::zorba::ZorbaError::ErrorCode aErrorCode = ZorbaError::err_name_to_code (aErrorLocalName);
-         
-    ZorbaUserError lError(aErrorCode, aDescription, aLocation, aFileName, aLineNumber, aErrorObject);
+    ZorbaUserError lError(aErrorQName, aDescription, aLocation, aFileName, aLineNumber, aErrorObject);
     return lError;
   }
 

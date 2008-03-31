@@ -54,11 +54,10 @@ namespace zorba { namespace error {
 
       static ZorbaUserError
       createUserException(
-        const xqpString& aErrorURI,
-        const xqpString aErrorLocalName,
+        const ::zorba::store::Item_t& aErrQname,
         const xqpString& aDescription,
-        const QueryLoc& aLocation,
         std::vector< ::zorba::store::Item_t> aErrorObject,
+        const QueryLoc& aLocation,
         const std::string& aFileName,
         int aLineNumber);
 
@@ -95,8 +94,8 @@ namespace zorba { namespace error {
       std::vector<ZorbaWarning>  theWarnings;
   };
 
-#define ZORBA_USER_ERROR(uri, localname, desc, loc, obj) do { \
-  throw error::ErrorManager::createUserException(uri, localname, desc, loc, obj, __FILE__, __LINE__); \
+#define ZORBA_USER_ERROR(err_qname, desc, loc, obj) do { \
+  throw error::ErrorManager::createUserException(err_qname, desc, obj, loc, __FILE__, __LINE__); \
 } while (0)
 
 

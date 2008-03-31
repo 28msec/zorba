@@ -20,6 +20,13 @@ namespace zorba { namespace error {
         const std::string& aFileName,
         int aLineNumber);
 
+    ZorbaError(
+        const ::zorba::store::Item_t& aErrorQName,
+        const xqpString& aDescription,
+        const QueryLoc& aLocation,
+        const std::string& aFileName,
+        int aLineNumber);
+
     ZorbaError(const ZorbaError& other);
 
     virtual ~ZorbaError();
@@ -133,6 +140,14 @@ namespace zorba { namespace error {
   public:
     ZorbaUserError(
         ::zorba::ZorbaError::ErrorCode aErrorCode,
+        const xqpString& aDescription,
+        const QueryLoc& aLocation,
+        const std::string& aFileName,
+        int aLineNumber,
+        std::vector< ::zorba::store::Item_t> aErrorObject);
+
+    ZorbaUserError(
+        const ::zorba::store::Item_t& aErrorQName,
         const xqpString& aDescription,
         const QueryLoc& aLocation,
         const std::string& aFileName,
