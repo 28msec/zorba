@@ -157,30 +157,25 @@ context_example_7(Zorba* aZorba)
   return (lStaticContext2->getOrderingMode() == StaticContext::unordered);
 }
 
-#if 0
 bool
-context_example_4(Zorba* aZorba)
+context_example_8(Zorba* aZorba)
 {
-  StaticContext_t lRootContext = aZorba->createStaticContext();
+	XQuery_t lQuery = aZorba->createQuery("fn:hours-from-dateTime(fn:current-dateTime())"); 
 
-  lRootContext->addCollation("http://www.flworfound.org/collations/PRIMARY/de", "german");
-
-  StaticContext_t lChildContext = lRootContext->createChildContext();
-
-	XQuery_t lQuery = aZorba->createQuery("fn:compare('Strasse', 'Straße', 'german')", lChildContext); 
+  DynamicContext_t lDynContext = lQuery->getDynamicContext();
 
   try {
+    Item lDateTimeItem = aZorba->getItemFactory()->createDateTime(2008, 03, 30, 16, 05, 42, 0); 
 
+    lDynContext->setCurrentDateTime(lDateTimeItem);
     std::cout << lQuery << std::endl;
-
-  } catch (DynamicException &e) {
+  } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return false;
   }
 
 	return true;
 }
-#endif
 
 
 int 
@@ -214,6 +209,10 @@ context(int argc, char* argv[])
   
   std::cout << "executing example 7" << std::endl;
 	assert(context_example_7(lZorba)); 
+  std::cout << std::endl;
+
+  std::cout << "executing example_8" << std::endl;
+	assert(context_example_8(lZorba)); 
   std::cout << std::endl;
   return 0;
 }

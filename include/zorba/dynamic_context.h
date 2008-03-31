@@ -33,13 +33,19 @@ namespace zorba {
       virtual void
       setContextItemAsDocument ( const String& aDocURI, std::istream& aInStream ) = 0;
 
-#if 0
       virtual void
-      setCurrentDateTime( struct ::tm datetime, long timezone_seconds ) = 0;
+      setCurrentDateTime( const Item& aDateTimeItem ) = 0;
       
-      virtual struct
-      ::tm getCurrentDateTime( long *timezone_seconds ) = 0;
+      virtual Item
+      getCurrentDateTime( ) = 0;
 
+      virtual void
+      setImplicitTimezone( int aTimezone ) = 0;
+
+      virtual int
+      getImplicitTimezone() = 0;
+
+#if 0
       virtual bool
       deleteVariable( xqp_string varname ) = 0;
 

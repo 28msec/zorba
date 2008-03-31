@@ -9,6 +9,11 @@
 #include "store/api/item.h"
 #include "store/api/item_iterator.h"
 #include "api/unmarshaller.h"
+#include "system/globalenv.h"
+#include "types/typeops.h"
+#include "types/typemanager.h"
+#include "types/root_typemanager.h"
+#include "api/zorbaimpl.h"
 
 namespace zorba {
 
@@ -52,10 +57,14 @@ namespace zorba {
   void
   DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& aDocURI, std::istream& aStream )
   {
-    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+    try {
+      XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
 
-    Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
-    setVariable ( aQName, lDocItem );
+      Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
+      setVariable ( aQName, lDocItem );
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(theErrorHandler, e);
+    }
   }
 
   void
@@ -68,10 +77,52 @@ namespace zorba {
   void
   DynamicContextImpl::setContextItemAsDocument ( const String& aDocURI, std::istream& aInStream )
   {
-    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+    try {
+      XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
 
-    Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
-    setContextItem ( lDocItem );
+      Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
+      setContextItem ( lDocItem );
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(theErrorHandler, e);
+    }
+  }
+
+  void
+  DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
+  {
+    try {
+      store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
+      xqtref_t lItemType = theStaticContext->get_typemanager()->create_type(lItem->getType(),
+                                                                            TypeConstants::QUANT_ONE);
+
+      if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)) {
+        ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT, "Given item of type [" << lItemType->toString() 
+                                                               << "] is not a subtype of [" 
+                                                               << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
+      }
+
+      theCtx->set_current_date_time(lItem);
+    } catch (error::ZorbaError &e) {
+      ZorbaImpl::notifyError(theErrorHandler, e);
+    }
+  }
+  
+  Item
+  DynamicContextImpl::getCurrentDateTime( )
+  {
+    return &*theCtx->get_current_date_time();
+  }
+
+  void
+  DynamicContextImpl::setImplicitTimezone( int aTimezone )
+  {
+    theCtx->set_implicit_timezone(aTimezone);
+  }
+
+  int
+  DynamicContextImpl::getImplicitTimezone()
+  {
+    return theCtx->get_implicit_timezone();
   }
 
 } /* namespace zorba */

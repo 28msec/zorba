@@ -22,10 +22,17 @@ namespace zorba {
       createInteger(int aInteger);
 
       virtual Item
-      createString(String aString);
+      createString(const String& aString);
 
       virtual Item
-      createAnyURI(String aURI);
+      createAnyURI(const String& aURI);
+
+      virtual Item
+      createDateTime(short year, short month, short day, 
+                     short hour, short minute, short second, short timeZone);
+
+      virtual Item
+      createDateTime( const String& aDateTimeValue );
 
     protected:
       store::ItemFactory* theItemFactory;

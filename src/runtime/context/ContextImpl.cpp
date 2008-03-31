@@ -36,7 +36,7 @@ FnCurrentDateTimeIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = planState.theRuntimeCB->theDynamicContext->get_execution_date_time();
+  itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
     STACK_PUSH( itemRes, state );
 
@@ -62,7 +62,7 @@ FnCurrentDateIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = planState.theRuntimeCB->theDynamicContext->get_execution_date_time();
+  itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
   {
     d = itemRes->getDateTimeValue()->getDate();
@@ -91,7 +91,7 @@ FnCurrentTimeIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = planState.theRuntimeCB->theDynamicContext->get_execution_date_time();
+  itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
   {
     t = itemRes->getDateTimeValue()->getTime();

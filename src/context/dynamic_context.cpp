@@ -50,30 +50,26 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 	this->parent = parent;
 	if(!parent)
 	{
+    // set the current time 
 		time_t		t0 = time(NULL);
 #if defined (WIN32)
 		struct	::tm	gmtm;
-		//gmtime_s(&gmtm, &t0);//thread safe gmtime on Windows
-    localtime_s(&gmtm, &t0);//thread safe localtime on Windows
+    localtime_s(&gmtm, &t0); //thread safe localtime on Windows
 #else
 		struct	::tm	gmtm;
-		//gmtime_r(&t0, &gmtm);//thread safe gmtime on Linux
-    localtime_r(&t0, &gmtm);//thread safe localtime on Linux
+    localtime_r(&t0, &gmtm); //thread safe localtime on Linux
 #endif
 
-		//execution_date_time = gmtm;
-		tzset();
-    //execution_timezone_seconds = _timezone;//global var set by _tzset in C runtime
-    set_execution_date_time(gmtm, -timezone);
-    
 		implicit_timezone = 0;
 
+    current_date_time_item = GENV_ITEMFACTORY->createDateTime(gmtm.tm_year, gmtm.tm_mon, gmtm.tm_mday, 
+                                                              gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec, implicit_timezone);
+    
 		ctxt_position = 0;
 	}
 	else
 	{
-		execution_date_time_item = parent->execution_date_time_item;
-		execution_timezone_seconds = parent->execution_timezone_seconds;
+		current_date_time_item = parent->current_date_time_item;
 		implicit_timezone = parent->implicit_timezone;
 		default_collection_uri = parent->default_collection_uri;
 
@@ -165,36 +161,27 @@ xqtref_t dynamic_context::context_item_type() const
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
-//daniel DECL_ENUM_PARAM (dynamic_context, ordering_mode)
-
 void dynamic_context::set_context_item_type(
 	xqtref_t v)
 {
 }
 
-void	dynamic_context::set_execution_date_time(struct ::tm datetime_value, long tz_seconds)
+void	dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem )
 {
-//	this->execution_date_time = t;
-	store::ItemFactory* item_factory = GENV_ITEMFACTORY;
-	this->execution_timezone_seconds = tz_seconds + datetime_value.tm_isdst ? 1 : 0;
-	execution_date_time_item = 
-    item_factory->createDateTime(
-					datetime_value.tm_year+1900, datetime_value.tm_mon, datetime_value.tm_mday,
-					datetime_value.tm_hour, datetime_value.tm_min, datetime_value.tm_sec,
-					(short)execution_timezone_seconds/60/60);
+  this->current_date_time_item = aDateTimeItem;
 }
 
-store::Item_t	dynamic_context::get_execution_date_time()
+store::Item_t	dynamic_context::get_current_date_time()
 {
-	return execution_date_time_item;
+	return current_date_time_item;
 }
 
-void  dynamic_context::set_implicit_timezone(long tzone_seconds)
+void  dynamic_context::set_implicit_timezone(int tzone_seconds)
 {
 	this->implicit_timezone = tzone_seconds;
 }
 
-long  dynamic_context::get_implicit_timezone()
+int  dynamic_context::get_implicit_timezone()
 {
 #if 0
   // If this is to be taken from the dynamic ctx, it kills optimization

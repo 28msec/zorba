@@ -33,7 +33,7 @@ namespace zorba {
   }
 
   Item
-  ItemFactoryImpl::createString(String aString)
+  ItemFactoryImpl::createString(const String& aString)
   {
     xqpStringStore* lString = Unmarshaller::getInternalString(aString);
 
@@ -44,12 +44,34 @@ namespace zorba {
   }
 
   Item
-  ItemFactoryImpl::createAnyURI(String aURI)
+  ItemFactoryImpl::createAnyURI(const String& aURI)
   {
     xqpStringStore* lString = Unmarshaller::getInternalString(aURI);
 
     store::Item_t lItem;
     lItem = theItemFactory->createAnyURI(lString);
+
+    return &*lItem;
+  }
+
+  Item
+  ItemFactoryImpl::createDateTime(short year, short month, short day, 
+                                  short hour, short minute, short second, 
+                                  short timeZone)
+  {
+    store::Item_t lItem;
+    lItem = theItemFactory->createDateTime(year, month, day, hour, minute, second, timezone);
+
+    return &*lItem;
+  }
+
+  Item
+  ItemFactoryImpl::createDateTime( const String& aDateTimeValue )
+  {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aDateTimeValue );
+
+    store::Item_t lItem;
+    lItem = theItemFactory->createDateTime( lString );
 
     return &*lItem;
   }

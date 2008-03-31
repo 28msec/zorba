@@ -14,10 +14,17 @@ namespace zorba {
       createInteger(int aInteger) = 0;
 
       virtual Item
-      createString(String aString) = 0;
+      createString(const String& aString) = 0;
 
       virtual Item
-      createAnyURI(String aURI) = 0;
+      createAnyURI(const String& aURI) = 0;
+
+      virtual Item
+      createDateTime(short year, short month, short day, 
+                     short hour, short minute, short second, short timeZone) = 0;
+
+      virtual Item
+      createDateTime( const String& aDateTimeValue ) = 0;
 
 
   }; /* class ItemFactory */

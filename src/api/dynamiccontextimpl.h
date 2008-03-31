@@ -33,6 +33,18 @@ namespace zorba {
       virtual void
       setContextItemAsDocument ( const String& aDocURI, std::istream& aInStream );
 
+      virtual void
+      setCurrentDateTime( const Item& aDateTimeItem );
+      
+      virtual Item
+      getCurrentDateTime( );
+
+      virtual void
+      setImplicitTimezone( int aTimezone );
+
+      virtual int
+      getImplicitTimezone();
+
       friend class Unmarshaller; // needs to get the context out of this class
     protected:
       // we do not held ownership for any of these objects

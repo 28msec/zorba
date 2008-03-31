@@ -34,7 +34,7 @@
 
 namespace zorba {
 
-class dynamic_context// : public context
+class dynamic_context
 {
 protected:
 
@@ -50,9 +50,7 @@ protected:
 	dynamic_context	      * parent;
 
 	hashmap<dctx_value_t>   keymap;
-	//struct ::tm	            execution_date_time;
-  store::Item_t                  execution_date_time_item;
-	long										execution_timezone_seconds;
+  store::Item_t           current_date_time_item;
 	int			                implicit_timezone;
 	xqp_string		          default_collection_uri;//default URI for fn:collection()
 
@@ -98,10 +96,11 @@ public:
 //daniel: get the function directly from library object
 //	const function* get_function(qnamekey_t key) { return lib->get(key); }
 
-	void		set_execution_date_time(struct ::tm t, long tz_seconds);
-  store::Item_t	get_execution_date_time();
-	void		set_implicit_timezone(long tzone_seconds);
-	long		get_implicit_timezone();
+	void		set_current_date_time( const store::Item_t& );
+  store::Item_t	get_current_date_time();
+
+	void		set_implicit_timezone( int tzone_seconds );
+	int  		get_implicit_timezone();
 
 	void				add_variable(xqp_string varname, Iterator_t var_iterator);
 	Iterator_t	get_variable(const xqp_string& varname);
