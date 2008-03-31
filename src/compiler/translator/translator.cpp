@@ -1555,6 +1555,36 @@ void *begin_visit(const FunctionDecl& /*v*/)
   return no_state;
 }
 
+expr_t wrap_in_globalvar_flwor(expr_t e)
+{
+  const function *ctxf = LOOKUP_OP1 ("ctxvariable");
+  flwor_expr::clause_list_t clauses;
+
+  for (std::list<global_binding>::iterator i = global_vars.begin ();
+      i != global_vars.end ();
+      i++)
+  {
+    global_binding b = *i;
+    var_expr_t var = b.first;
+    expr_t expr = b.second;
+
+    if (expr == NULL)
+    {
+      xqpString varname = var->get_varname()->getStringValue().getp();
+      expr = new fo_expr (var->get_loc(),
+          ctxf,
+          new const_expr(var->get_loc(), varname));
+    }
+
+    clauses.push_back (wrap_in_letclause (expr, var));
+  }
+
+  if (! clauses.empty ())
+    e = new flwor_expr (e->get_loc(), clauses, e);
+
+  return e;
+}
+
 void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
@@ -1580,7 +1610,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
           flwor->set_retval(body);
           body = &*flwor;
         }
-
+        body = wrap_in_globalvar_flwor(body);
         user_function *udf = dynamic_cast<user_function *>(LOOKUP_FN(v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs));
         ZORBA_ASSERT (udf != NULL);
 
@@ -3738,30 +3768,7 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  const function *ctxf = LOOKUP_OP1 ("ctxvariable");
-  flwor_expr::clause_list_t clauses;
-
-  for (std::list<global_binding>::iterator i = global_vars.begin ();
-       i != global_vars.end ();
-       i++)
-  {
-    global_binding b = *i;
-    var_expr_t var = b.first;
-    expr_t expr = b.second;
-
-    if (expr == NULL)
-    {
-      xqpString varname = var->get_varname()->getStringValue().getp();
-      expr = new fo_expr (var->get_loc(),
-                          ctxf,
-                          new const_expr(var->get_loc(), varname));
-    }
-
-    clauses.push_back (wrap_in_letclause (expr, var));
-  }
-
-  if (! clauses.empty ())
-    nodestack.push (new flwor_expr (v.get_location (), clauses, pop_nodestack ()));
+  nodestack.push(wrap_in_globalvar_flwor(pop_nodestack()));
 }
 
 
