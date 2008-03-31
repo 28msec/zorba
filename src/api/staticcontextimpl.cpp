@@ -8,6 +8,8 @@
 #include "context/static_context.h"
 #include "system/globalenv.h"
 #include <zorba/typeident.h>
+#include "errors/error_manager.h"
+#include "api/zorbaimpl.h"
 
 namespace zorba {
 
@@ -165,16 +167,24 @@ namespace zorba {
   void   
   StaticContextImpl::addCollation( const String& URI )
   {
-    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
-    theCtx->add_collation(lURI);
+    try {
+      xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
+      theCtx->add_collation(lURI);
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(theErrorHandler, e);
+    }
   }
 
 
   void   
   StaticContextImpl::setDefaultCollation( const String& URI )
   {
-    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
-    theCtx->set_default_collation_uri(lURI); 
+    try {
+      xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
+      theCtx->set_default_collation_uri(lURI); 
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(theErrorHandler, e);
+    }
   }
 
 
@@ -321,13 +331,17 @@ namespace zorba {
   void 
   StaticContextImpl::registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction)
   {
-    if ( ! theCtx->bind_stateless_external_function(aExternalFunction) ) {
-      // TODO currently, we do not have an error manager here, because
-      // an error manager is always "A function with uri " +aExternalFunction->getURI() +" and name " 
-      xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
-      xqpString lMsg = lLocalName +" is already registered";
-      // TODO use error handler here
-      throw StaticException(ZorbaError::API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
+    try {
+      if ( ! theCtx->bind_stateless_external_function(aExternalFunction) ) {
+        // TODO currently, we do not have an error manager here, because
+        // an error manager is always "A function with uri " +aExternalFunction->getURI() +" and name " 
+        xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
+        xqpString lMsg = lLocalName +" is already registered";
+
+        ZORBA_ERROR_DESC(ZorbaError::API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
+      }
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(theErrorHandler, e);
     }
   }
 

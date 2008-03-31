@@ -143,6 +143,27 @@ context_example_6(Zorba* aZorba)
 bool
 context_example_7(Zorba* aZorba)
 {
+  StaticContext_t lStaticContext = aZorba->createStaticContext();
+
+  try {
+    lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY");
+
+    XQuery_t lQuery = aZorba->createQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY')", 
+        lStaticContext); 
+
+    std::cout << lQuery << std::endl;
+
+  } catch (StaticException &e) {
+    std::cerr << e << std::endl;
+    return true;
+  }
+
+	return false;
+}
+
+bool
+context_example_8(Zorba* aZorba)
+{
 	XQuery_t lQuery1 = aZorba->createQuery("declare ordering ordered; 1"); 
 
   StaticContext_t lStaticContext1 = lQuery1->getStaticContext();
@@ -158,7 +179,7 @@ context_example_7(Zorba* aZorba)
 }
 
 bool
-context_example_8(Zorba* aZorba)
+context_example_9(Zorba* aZorba)
 {
 	XQuery_t lQuery = aZorba->createQuery("fn:hours-from-dateTime(fn:current-dateTime())"); 
 
@@ -214,5 +235,10 @@ context(int argc, char* argv[])
   std::cout << "executing example_8" << std::endl;
 	assert(context_example_8(lZorba)); 
   std::cout << std::endl;
+
+  std::cout << "executing example_9" << std::endl;
+	assert(context_example_9(lZorba)); 
+  std::cout << std::endl;
+
   return 0;
 }
