@@ -59,7 +59,6 @@ namespace zorba {
   {
     if (theIsOpened) {
       thePlan->reset();
-      theIsOpened = false;
     }
   }
 
