@@ -57,7 +57,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createDateTime(short year, short month, short day, 
                                   short hour, short minute, short second, 
-                                  short timeZone)
+                                  short timezone)
   {
     store::Item_t lItem;
     lItem = theItemFactory->createDateTime(year, month, day, hour, minute, second, timezone);
