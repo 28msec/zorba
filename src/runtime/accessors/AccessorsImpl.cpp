@@ -106,15 +106,13 @@ store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
 
   inNode = consumeNext(theChildren[0].getp(), planState);
 
-  if (inNode == NULL) {
-    return NULL;
-  }
+  if (inNode != NULL) {
+    if (!inNode->isNode()) {
+      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "The argument of the fn:node-name function is not a node");
+    }
 
-  if (!inNode->isNode()) {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "The argument of the fn:node-name function is not a node");
+    STACK_PUSH(inNode->getNodeName(), state);
   }
-  
-  STACK_PUSH(inNode->getNodeName(), state);
   STACK_END (state);
 }
 
@@ -129,8 +127,7 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
 
   inNode = consumeNext(theChildren[0].getp(), planState);
 
-  if (inNode != NULL)
-    if (inNode->getNodeKind() == store::StoreConsts::elementNode)
+  if (inNode != NULL && inNode->getNodeKind() == store::StoreConsts::elementNode)
       STACK_PUSH(GENV_ITEMFACTORY->createBoolean(inNode->getNilled()), state);
 
   STACK_END (state);
