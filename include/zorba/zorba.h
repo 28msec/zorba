@@ -27,13 +27,23 @@ namespace zorba {
   class Zorba 
   {
     public:
+
       /** \brief Gets an instance of the Zorba %XQuery Engine.
        *
+       * TODO
+       * on the first time the zorba engine is initialized
        */
       static Zorba* 
       getInstance();
 
       /** \brief Releases all resources aquired by the Zorba %XQuery Engine.
+       *
+       * also release resources aquired by the libraries used (i.e. icu, libxml2, xerces, libcurl)
+       * before calling shutdown, all xquery objects, items, contexts, ... have to be closed or
+       * out of scope
+       * otherwise this call may fails
+       * after shutdown has been called, any call to zorba are invalid. 
+       * getInstance may used to reinitialize the engine
        * 
        */
       virtual void 
