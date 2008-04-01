@@ -1,5 +1,4 @@
 SET(UTIL_SRCS
-    URI.cpp
     fx/mmfile.cpp
     fx/fxcharheap.cpp
     file.cpp
