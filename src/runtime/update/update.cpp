@@ -95,7 +95,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 
     elemParent = (parent->getNodeKind() == store::StoreConsts::elementNode);
 
-    source = consumeNext(theChild1, aPlanState);
+    source = consumeNext(theChild0, aPlanState);
 
     while (source != NULL)
     {
@@ -116,6 +116,8 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         if (numNodes == nodes.size())
           nodes.resize(2 * numNodes);
       }
+
+      source = consumeNext(theChild0, aPlanState);
     }
 
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
@@ -149,7 +151,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 
     elemTarget = (targetKind == store::StoreConsts::elementNode);
 
-    source = consumeNext(theChild1, aPlanState);
+    source = consumeNext(theChild0, aPlanState);
 
     while (source != NULL)
     {
@@ -170,6 +172,8 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         if (numNodes == nodes.size())
           nodes.resize(2 * numNodes);
       }
+
+      source = consumeNext(theChild0, aPlanState);
     }
 
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
