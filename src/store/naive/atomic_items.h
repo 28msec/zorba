@@ -84,7 +84,7 @@ private:
   xqpStringStore* getLocalNameP() const { return theLocal.getp(); }
 
   Item_t getType() const;
-  uint32_t hash() const;
+  uint32_t hash(RuntimeCB* aRuntimeCB) const;
   bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
   Item_t getEBV() const;
   xqpStringStore_t getStringValue() const;
@@ -106,7 +106,7 @@ public:
   {}
 
   Item_t getType() const;
-  uint32_t hash() const;
+  uint32_t hash(RuntimeCB* aRuntimeCB) const;
   bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
   Item_t getEBV() const;
   xqpStringStore_t getStringValue() const { return theValue.getp(); }
@@ -129,7 +129,7 @@ public:
   {}
 
   Item_t getType( ) const;
-  uint32_t hash() const;
+  uint32_t hash(RuntimeCB* aRuntimeCB) const;
   bool equals (Item_t, RuntimeCB* aRuntimeCB) const;
   Item_t getEBV( ) const;
   xqpStringStore_t getStringValue( ) const { return theValue.getp(); }
@@ -152,7 +152,7 @@ public:
   UntypedAtomicItemImpl(xqpStringStore_t& aValue) { theValue.transfer(aValue); }
 
   Item_t getType( ) const;
-  uint32_t hash() const;
+  uint32_t hash(RuntimeCB* aRuntimeCB) const;
   bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
   Item_t getEBV( ) const;
   xqpStringStore_t getStringValue() const { return theValue; }
@@ -172,7 +172,7 @@ public:
   StringItemNaive(const xqpStringStore_t& aValue) : theValue ( aValue ) {}
   
   virtual Item_t getType( ) const;
-  virtual uint32_t hash() const;
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
   virtual bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
   virtual Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const { return theValue; }
@@ -286,7 +286,7 @@ public:
   virtual xqpStringStore_t getStringValue( ) const;
   virtual xqp_string show() const;
   virtual bool isNaN() const;
-  virtual uint32_t hash() const;
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
 };
 
 
@@ -326,7 +326,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
-    virtual uint32_t hash() const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
 	};
 
   class DoubleItemNaive : public AtomicItem
@@ -344,7 +344,7 @@ public:
     virtual xqp_string show() const;
     virtual bool isNaN() const;
     virtual bool isPosOrNegInf() const;
-    virtual uint32_t hash() const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
 	};
 	
 	class FloatItemNaive : public AtomicItem
@@ -361,7 +361,7 @@ public:
     virtual xqp_string show() const;
     virtual bool isNaN() const;
     virtual bool isPosOrNegInf() const;
-    virtual uint32_t hash() const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
 	};
 	
 	class BooleanItemNaive : public AtomicItem

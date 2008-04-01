@@ -117,7 +117,7 @@ public:
   Item* getParent() const           { return theParent; }
 
   virtual bool equals(Item_t, RuntimeCB* aRuntimeCB) const { NODE_STOP; return 0; }
-  virtual uint32_t hash() const     { NODE_STOP; return 0; }
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB) const     { NODE_STOP; return 0; }
 
   virtual xqp_string getBaseURI() const;
   virtual xqp_string getDocumentURI() const;

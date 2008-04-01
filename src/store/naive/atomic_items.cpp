@@ -67,7 +67,7 @@ Item_t QNameItemImpl::getType() const
   return GET_STORE().theQNameType;
 }
 
-uint32_t QNameItemImpl::hash() const
+uint32_t QNameItemImpl::hash(RuntimeCB* aRuntimeCB) const
 {
   return hashfun::h32(thePrefix->str(),
                       hashfun::h32(theLocal->str(),
@@ -114,7 +114,7 @@ Item_t NCNameItemImpl::getType() const
   return GET_FACTORY().createQName(SimpleStore::XS_URI, "xs", "NCName");
 }
 
-uint32_t NCNameItemImpl::hash() const
+uint32_t NCNameItemImpl::hash(RuntimeCB* aRuntimeCB) const
 {
   return theValue->hash();
 }
@@ -144,7 +144,7 @@ Item_t AnyUriItemImpl::getType() const
   return GET_FACTORY().createQName(SimpleStore::XS_URI, "xs", "anyURI");
 }
 
-uint32_t AnyUriItemImpl::hash() const
+uint32_t AnyUriItemImpl::hash(RuntimeCB* aRuntimeCB) const
 {
   return theValue->hash();
 }
@@ -177,7 +177,7 @@ Item_t UntypedAtomicItemImpl::getType() const
   return static_cast<SimpleStore*>(&GENV.getStore())->theUntypedAtomicType;
 }
 
-uint32_t UntypedAtomicItemImpl::hash() const
+uint32_t UntypedAtomicItemImpl::hash(RuntimeCB* aRuntimeCB) const
 {
   return theValue->hash();
 }
@@ -207,7 +207,7 @@ Item_t StringItemNaive::getType() const
   return CREATE_XS_TYPE("string");
 }
 
-uint32_t StringItemNaive::hash() const
+uint32_t StringItemNaive::hash(RuntimeCB* aRuntimeCB) const
 {
   return theValue->hash();
 }
@@ -263,7 +263,7 @@ bool DecimalItemNaive::isNaN() const {
 }
 
 uint32_t
-DecimalItemNaive::hash() const
+DecimalItemNaive::hash(RuntimeCB* aRuntimeCB) const
 {
   // TODO we need a better hash function
   return 0;
@@ -348,7 +348,7 @@ Item_t IntegerItemNaive::getEBV() const
 	}
 
   uint32_t
-  IntegerItemNaive::hash() const
+  IntegerItemNaive::hash(RuntimeCB* aRuntimeCB) const
   {
     // TODO we need a better hash function
     return 0;
@@ -396,7 +396,7 @@ bool DoubleItemNaive::isPosOrNegInf() const {
 }
 
 uint32_t
-DoubleItemNaive::hash() const
+DoubleItemNaive::hash(RuntimeCB* aRuntimeCB) const
 {
   // TODO we need a better hash function
   return 0;
@@ -445,7 +445,7 @@ bool FloatItemNaive::isPosOrNegInf() const {
 }
 
 uint32_t
-FloatItemNaive::hash() const
+FloatItemNaive::hash(RuntimeCB* aRuntimeCB) const
 {
   // TODO we need a better hash function
   return 0;

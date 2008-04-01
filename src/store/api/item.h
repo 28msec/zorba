@@ -96,7 +96,7 @@ public:
    * @return The hash value
    */
   virtual uint32_t 
-  hash() const;
+  hash(RuntimeCB* aRuntimeCB) const;
   
   /**
    *  Compares (by value) two items. All comparisons must be done by this

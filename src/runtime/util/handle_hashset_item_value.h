@@ -71,7 +71,7 @@ public:
 
   static uint32_t hash(const Item* t, ValueCompareParam* aCompareParam)
   {
-    return t->hash();
+    return t->hash(NULL);
   }
 };
 
@@ -91,7 +91,7 @@ public:
 
   static uint32_t hash(const Item* t, ValueCollCompareParam* aCompareParam)
   {
-    return t->hash();
+    return t->hash(NULL);
   }
 };
 } // namespace store

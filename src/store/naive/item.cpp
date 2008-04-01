@@ -67,7 +67,7 @@ xqpStringStore* Item::getStringValueP()
  *
  * @return The hash value
  */
-uint32_t Item::hash() const
+uint32_t Item::hash(RuntimeCB* aRuntimeCB) const
 {
   ZORBA_ASSERT(false);
   return 0;
