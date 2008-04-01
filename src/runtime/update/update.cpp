@@ -208,7 +208,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 store::Item_t
 DeleteIterator::nextImpl(PlanState& aPlanState) const
 { 
-  Item_t target;
+  store::Item_t target;
   std::auto_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
