@@ -12,8 +12,6 @@
 #define ZORBA_MMFILE_H
 
 #include "common/common.h"
-
-
 #include <string>
 
 
@@ -33,7 +31,7 @@ protected:	// state
   std::string path;			// backing file path name
   off_t eofoff;					// offset to eof = size of array in bytes
   char* data;						// raw bytes
-#if defined (WIN32)
+#if defined(WIN32) && !defined(CYGWIN)
 	HANDLE	fd;
 	HANDLE	file_mapping;
 #else
