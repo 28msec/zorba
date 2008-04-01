@@ -108,6 +108,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     catch (ZorbaException &e)
     {
+      query.reset();
       zengine->shutdown();
       cerr << "Execution error: " << e << endl;
       return 2;
