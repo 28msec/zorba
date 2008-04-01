@@ -83,8 +83,8 @@ namespace zorba { namespace error {
     virtual bool
     isSerializationError() const
     {
-      return ::zorba::ZorbaError::SENR0001_Item_is_attribute_or_namespace_node <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::SEPM0016_Invalid_parameter_value;
+      return ::zorba::ZorbaError::SENR0001 <= theErrorCode && 
+             theErrorCode <= ::zorba::ZorbaError::SEPM0016;
     }
 
     virtual bool 

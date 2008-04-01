@@ -542,7 +542,7 @@ void serializer::emitter::emit_item(store::Item* item)
       //||
       //  item->getNodeKind() == namespaceNode)
     {
-      ZORBA_ERROR(ZorbaError::SENR0001_Item_is_attribute_or_namespace_node);
+      ZORBA_ERROR(ZorbaError::SENR0001);
     }
     else        
       emit_node(item, 0);
@@ -820,7 +820,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       indent = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016);
     }
   }
   else if (parameter_name == "standalone")
@@ -833,7 +833,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       standalone = PARAMETER_VALUE_OMIT;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016);
     }
   }
   else if (parameter_name == "omit-xml-declaration")
@@ -844,7 +844,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       omit_xml_declaration = PARAMETER_VALUE_NO;    
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016);
     }
   }
   else if (parameter_name == "byte-order-mark")
@@ -855,7 +855,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       byte_order_mark = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016);
     }
   }
   else if (parameter_name == "undeclare-prefixes")
@@ -866,7 +866,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016);
     }
   }
   else if (parameter_name == "method")
@@ -877,7 +877,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       method = PARAMETER_VALUE_HTML;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016);
     }
   }
   else if (parameter_name == "include-content-type")
@@ -888,7 +888,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       include_content_type = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016);
     }
   }
   else if (parameter_name == "encoding")
@@ -899,7 +899,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       encoding = PARAMETER_VALUE_UTF_16;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016);
     }
   }
   else if (parameter_name == "media-type")
@@ -908,7 +908,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   }
   else
   {
-    ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
+    ZORBA_ERROR( ZorbaError::SEPM0016);
   }
 }
 
