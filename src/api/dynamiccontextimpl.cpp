@@ -46,10 +46,6 @@ namespace zorba {
     theCtx->add_variable(lExpandedName, &*lIterator);
   }
 
-  void
-  DynamicContextImpl::setVariable( const String& aQName, const ItemSequence_t& aSequence )
-  {
-  }
 
   void
   DynamicContextImpl::setVariable( const String& aQName, const ResultIterator_t& aResultIterator )

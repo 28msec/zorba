@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_ITEM_SEQUENCE_H
-#define ZORBA_STORE_ITEM_SEQUENCE_H
+#ifndef ZORBA_STORE_ITEM_SEQUENCE_API_H
+#define ZORBA_STORE_ITEM_SEQUENCE_API_H
 
 #include <zorba/api_shared_types.h>
 

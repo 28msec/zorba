@@ -8,8 +8,6 @@
 
 namespace zorba {
 
-  class ResultIterator;
-
   class DynamicContext 
   {
     public:
@@ -17,9 +15,6 @@ namespace zorba {
 
       virtual void
       setVariable( const String& aQName, const Item& aItem ) = 0;
-
-      virtual void
-      setVariable( const String& aQName, const ItemSequence_t& aSequence ) = 0;
 
       virtual void
       setVariable( const String& aQName, const ResultIterator_t& aResultIterator ) = 0;

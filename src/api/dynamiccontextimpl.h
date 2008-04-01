@@ -19,9 +19,6 @@ namespace zorba {
       setVariable( const String& aQName, const Item& aItem );
 
       virtual void
-      setVariable( const String& aQName, const ItemSequence_t& aSequence );
-
-      virtual void
       setVariable( const String& aQName, const ResultIterator_t& aResultIterator );
 
       virtual void
