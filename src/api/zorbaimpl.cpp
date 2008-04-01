@@ -145,19 +145,34 @@ namespace zorba {
   ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
   {
     if (aError.isStaticError()) {
-      StaticException lStaticException(aError.theErrorCode, String(aError.theDescription.theStrStore));
+      StaticException lStaticException(aError.theErrorCode, String(aError.theDescription.theStrStore),
+                                       String(aError.theQueryLocation.getFilenameBegin().theStrStore),
+                                       aError.theQueryLocation.getLineBegin(),
+                                       aError.theQueryLocation.getColumnBegin());
       aErrorHandler->staticError(lStaticException);
     } else if (aError.isDynamicError()) {
-      DynamicException lDynamicException(aError.theErrorCode, String(aError.theDescription.theStrStore));
+      DynamicException lDynamicException(aError.theErrorCode, String(aError.theDescription.theStrStore),
+                                       String(aError.theQueryLocation.getFilenameBegin().theStrStore),
+                                       aError.theQueryLocation.getLineBegin(),
+                                       aError.theQueryLocation.getColumnBegin());
       aErrorHandler->dynamicError(lDynamicException);
     } else if (aError.isTypeError()) {
-      TypeException lTypeException(aError.theErrorCode, String(aError.theDescription.theStrStore));
+      TypeException lTypeException(aError.theErrorCode, String(aError.theDescription.theStrStore),
+                                       String(aError.theQueryLocation.getFilenameBegin().theStrStore),
+                                       aError.theQueryLocation.getLineBegin(),
+                                       aError.theQueryLocation.getColumnBegin());
       aErrorHandler->typeError(lTypeException);
     } else if (aError.isSerializationError()) {
-      SerializationException lSerException(aError.theErrorCode, String(aError.theDescription.theStrStore));
+      SerializationException lSerException(aError.theErrorCode, String(aError.theDescription.theStrStore),
+                                       String(aError.theQueryLocation.getFilenameBegin().theStrStore),
+                                       aError.theQueryLocation.getLineBegin(),
+                                       aError.theQueryLocation.getColumnBegin());
       aErrorHandler->serializationError(lSerException);
     } else if (aError.isInternalError()) {
-      SystemException lSystemException(aError.theErrorCode, String(aError.theDescription.theStrStore));
+      SystemException lSystemException(aError.theErrorCode, String(aError.theDescription.theStrStore),
+                                       String(aError.theQueryLocation.getFilenameBegin().theStrStore),
+                                       aError.theQueryLocation.getLineBegin(),
+                                       aError.theQueryLocation.getColumnBegin());
       aErrorHandler->systemError(lSystemException);
     }
   }

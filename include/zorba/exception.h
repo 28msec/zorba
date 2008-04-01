@@ -17,10 +17,24 @@ namespace zorba {
       virtual String
       getDescription() const;
 
+      virtual String
+      getFileName() const;
+
+      virtual unsigned int
+      getLineBegin() const;
+
+      virtual unsigned int
+      getColumnBegin() const;
+
     protected:
-      ZorbaException(const ZorbaError::ErrorCode&, const String&);
+      friend class ZorbaImpl;
+      ZorbaException(const ZorbaError::ErrorCode&, const String& aDescription, 
+                     const String& afilename, unsigned int linebegin, unsigned int columnbegin);
       ZorbaError::ErrorCode theErrorCode;
       String                theDescription;
+      String                theFileName;
+      unsigned int          theLineBegin;
+      unsigned int          theColumnBegin;
 
   }; /* class ZorbaException */
 
@@ -28,7 +42,8 @@ namespace zorba {
   {
     friend std::ostream& operator<<(std::ostream&, const DynamicException&);
     public:
-      DynamicException(const ZorbaError::ErrorCode&, const String&);
+      DynamicException(const ZorbaError::ErrorCode&, const String&,
+                       const String& afilename, unsigned int linebegin, unsigned int columnbegin);
       virtual ~DynamicException() throw();
 
   }; /* class DynamicException */
@@ -37,7 +52,8 @@ namespace zorba {
   {
     friend std::ostream& operator<<(std::ostream&, const StaticException&);
     public:
-      StaticException(const ZorbaError::ErrorCode&, const String&);
+      StaticException(const ZorbaError::ErrorCode&, const String&,
+                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
       virtual ~StaticException() throw();
 
   }; /* class StaticException */
@@ -46,7 +62,8 @@ namespace zorba {
   {
     friend std::ostream& operator<<(std::ostream&, const TypeException&);
     public:
-      TypeException(const ZorbaError::ErrorCode&, const String&);
+      TypeException(const ZorbaError::ErrorCode&, const String&,
+                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
       virtual ~TypeException() throw();
 
   }; /* class TypeException */
@@ -55,7 +72,8 @@ namespace zorba {
   {
     friend std::ostream& operator<<(std::ostream&, const SerializationException&);
     public:
-      SerializationException(const ZorbaError::ErrorCode&, const String&);
+      SerializationException(const ZorbaError::ErrorCode&, const String&,
+                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
       virtual ~SerializationException() throw();
 
   }; /* class SerializationException */
@@ -64,7 +82,8 @@ namespace zorba {
   {
     friend std::ostream& operator<<(std::ostream&, const SystemException&);
     public:
-      SystemException(const ZorbaError::ErrorCode&, const String&);
+      SystemException(const ZorbaError::ErrorCode&, const String&, 
+                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
       virtual ~SystemException() throw();
 
   }; /* class SystemException */
