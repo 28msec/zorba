@@ -480,7 +480,22 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
             (aItem0->getNamespace() == aItem1->getNamespace()))
           equal = 1;
     }
-
+    else if(TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE) &&
+            TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE))
+    {
+      if (aItem0->equals(aItem1, aRuntimeCB))
+        equal = 1;
+      else
+        equal = 0;
+    }
+    else if(TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE) &&
+            TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE))
+    {
+      if (aItem0->equals(aItem1, aRuntimeCB))
+        equal = 1;
+      else
+        equal = 0;
+    }
     if (equal == -2)
       return -2;
     else if (equal == 0)
