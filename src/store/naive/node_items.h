@@ -112,8 +112,9 @@ public:
 
   bool isNode() const               { return true; }
   bool isAtomic() const             { return false; }
+  bool isPul() const                { return false; }
 
-  Item_t getParent() const          { return theParent; }
+  Item* getParent() const           { return theParent; }
 
   virtual bool equals(Item_t) const { NODE_STOP; return 0; }
   virtual uint32_t hash() const     { NODE_STOP; return 0; }
@@ -129,7 +130,6 @@ public:
   // SimpleStore Methods
   //
 
-  XmlNode* getParentP() const       { return theParent; }
   void setParent(XmlNode* p)        { theParent = p; }
 
   XmlTree* getTree() const          { return (XmlTree*)theTreeRCPtr; }

@@ -14,6 +14,7 @@
 namespace zorba { namespace store {
 
 struct CopyMode;
+class PUL;
 
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
@@ -512,6 +513,8 @@ public:
         xqpStringStore* content,
         bool            isRoot,
         bool            assignIds) = 0;
+
+  virtual PUL* createPendingUpdateList() = 0;
 };
 
 } // namespace store

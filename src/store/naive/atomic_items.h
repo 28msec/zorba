@@ -39,9 +39,10 @@ public:
 
   virtual ~AtomicItem() {}
 
-  bool isNode() const { return false; }
+  bool isNode() const   { return false; }
   bool isAtomic() const { return true; }
-  
+  bool isPul() const    { return false; }
+
   virtual Item_t getAtomizationValue() const;
   virtual Iterator_t getTypedValue() const;
 };

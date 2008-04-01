@@ -1,11 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: item.h,v 1.1 2006/10/09 07:07:59 $
- *
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf, Donald Kossmann, Tim Kraska
- *
- */
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"
@@ -13,8 +5,6 @@
 #include "util/Assert.h"
 #include "zorbatypes/datetime.h"
 
-//#include "system/zorba_engine.h"
-//#include "system/zorba.h"
 #include "system/globalenv.h"
 
 #include "api/serialization/serializer.h"
@@ -23,6 +13,53 @@
 #include "types/typeops.h"
 
 namespace zorba { namespace store {
+
+
+Item_t
+Item::getType( ) const
+{
+  ZORBA_ASSERT(false);
+  return 0;
+}
+
+
+bool Item::equals(Item_t) const
+{
+  ZORBA_ASSERT(false);
+  return false;
+}
+
+
+Item_t Item::getEBV() const
+{
+  ZORBA_ASSERT(false);
+  return 0;
+}
+
+
+Item_t Item::getAtomizationValue() const
+{
+  ZORBA_ASSERT(false);
+  return 0;
+}
+
+
+xqpStringStore_t Item::getStringValue() const
+{
+  ZORBA_ASSERT(false);
+  return 0;
+}
+
+
+/**
+ * Helper method with is used to return a StringValue of an Item
+ * by pointer instead of rchandle
+ */
+xqpStringStore* Item::getStringValueP() 
+{
+  ZORBA_ASSERT(false);
+  return 0;
+}
 
 
 /**
@@ -403,7 +440,7 @@ store::Item_t Item::getNodeName() const
  * comment node, text node
  * @return node?
  */
-store::Item_t Item::getParent() const
+store::Item* Item::getParent() const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -475,17 +512,8 @@ xqp_string Item::getTarget() const
   return "";
 }
 
-/**
- * Helper method with is used to return a StringValue of an Item
- * by pointer instead of rchandle
- */
-xqpStringStore* Item::getStringValueP() {
-  ZORBA_ASSERT(false);
-  return 0;
-}
-
-
-bool Item::isNumeric() const {
+bool Item::isNumeric() const 
+{
   xqtref_t type = GENV_TYPESYSTEM.create_type(getType(), TypeConstants::QUANT_ONE);
   return TypeOps::is_numeric(*type);
 }

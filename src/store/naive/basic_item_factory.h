@@ -13,6 +13,7 @@
 namespace zorba { namespace store {
 
 struct CopyMode;
+class PUL;
 
 typedef StringPool UriPool;
 
@@ -226,6 +227,8 @@ public:
         xqpStringStore* content,
         bool            isRoot,
         bool            assignIds);
+
+  PUL* createPendingUpdateList();
 };
 
 } // namespace store

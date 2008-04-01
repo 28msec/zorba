@@ -123,9 +123,10 @@ public:
   ~PlanState();
 };
 
-/**
- * Root object of all iterator state o bjects
- */
+
+/*******************************************************************************
+  Root object of all iterator state o bjects
+********************************************************************************/
 class PlanIteratorState
 {
 public:
@@ -204,6 +205,7 @@ public:
   uint32_t getDuffsLine() const    { return theDuffsLine; }
 };
 
+
 template <class T>
 class StateTraitsImpl
 {
@@ -243,6 +245,7 @@ public:
   }
 
 };
+
 
 /*******************************************************************************
   Base class of all plan iterators.

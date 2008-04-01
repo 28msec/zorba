@@ -5,6 +5,8 @@
 #include "common/shared_types.h"
 
 #include "store/api/update_consts.h"
+#include "store/api/item.h"
+
 
 namespace zorba { namespace store {
 
@@ -14,10 +16,14 @@ class CopyMode;
 /*******************************************************************************
 
 ********************************************************************************/
-class PUL
+class PUL : public Item
 {
 public:
   virtual ~PUL() { }
+
+  bool isNode() const   { return false; }
+  bool isAtomic() const { return false; }
+  bool isPul() const    { return true; }
 
   virtual void addDelete(Item_t& node) = 0;
 

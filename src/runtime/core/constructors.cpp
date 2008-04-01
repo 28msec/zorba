@@ -186,6 +186,25 @@ ElementIterator::ElementIterator (
 }
 
 
+void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  StateTraitsImpl<ElementIteratorState>::createState(planState, this->stateOffset, offset);
+  StateTraitsImpl<ElementIteratorState>::initState(planState, this->stateOffset);
+
+  if (theQNameIter != 0)
+    theQNameIter->open(planState, offset);
+  
+  if ( theChildrenIter != 0 )
+    theChildrenIter->open(planState, offset);
+
+  if (theAttributesIter != 0)
+    theAttributesIter->open(planState, offset);
+
+  if (theNamespacesIter != 0)
+    theNamespacesIter->open(planState, offset);  
+}
+
+
 store::Item_t ElementIterator::nextImpl(PlanState& planState) const
 {
   std::auto_ptr<Iterator> cwrapper;
@@ -233,25 +252,6 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
                            copymode);
   STACK_PUSH(node, state);
   STACK_END (state);
-}
-
-
-void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  StateTraitsImpl<ElementIteratorState>::createState(planState, this->stateOffset, offset);
-  StateTraitsImpl<ElementIteratorState>::initState(planState, this->stateOffset);
-
-  if (theQNameIter != 0)
-    theQNameIter->open(planState, offset);
-  
-  if ( theChildrenIter != 0 )
-    theChildrenIter->open(planState, offset);
-
-  if (theAttributesIter != 0)
-    theAttributesIter->open(planState, offset);
-
-  if (theNamespacesIter != 0)
-    theNamespacesIter->open(planState, offset);  
 }
 
 

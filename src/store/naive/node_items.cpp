@@ -1046,7 +1046,7 @@ void ElementNode::addBindingForQName(Item* qname)
   {
     xqpStringStore* ns2 = findBinding(prefix);
 
-    if (ns2 == NULL && prefix->str() != "")
+    if (ns2 == NULL && !ns->empty())
       addLocalBinding(prefix, ns);
   }
 }

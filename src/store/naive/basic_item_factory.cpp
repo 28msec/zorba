@@ -15,6 +15,7 @@
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
 #include "store/naive/simple_temp_seq.h"
+#include "store/naive/simple_pul.h"
 #include "store/naive/qname_pool.h"
 #include "store/util/handle_hashset_string.h"
 #include "zorbatypes/datetime.h"
@@ -931,6 +932,16 @@ Item_t BasicItemFactory::createCommentNode(
 
   return n;
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PUL* BasicItemFactory::createPendingUpdateList()
+{
+  return new PULImpl();
+}
+
 
 } // namespace store
 } // namespace zorba
