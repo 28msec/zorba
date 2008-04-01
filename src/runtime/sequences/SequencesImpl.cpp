@@ -20,6 +20,7 @@
 #include "types/casting.h"
 #include "types/typeops.h"
 #include "store/api/store.h"
+#include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 
 #include "errors/error_manager.h"
@@ -882,20 +883,168 @@ OpToIteratorState::reset(PlanState& planState) {
 }
 
 //15.5.2 fn:id
+void
+FnIdIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theIterator = NULL;
+  theTypedValue = NULL;
+  inNode = NULL;
+  inArg = NULL;
+}
+
+void
+FnIdIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theIterator = NULL;
+  theTypedValue = NULL;
+  inNode = NULL;
+  inArg = NULL;
+}
+
 store::Item_t 
 FnIdIterator::nextImpl(PlanState& planState) const {
-  //TODO complete the implementation
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  STACK_END(state);
+  store::Item_t itemEl;
+  store::Item_t item;
+  Iterator_t    theAttributes;
+  store::Item_t res;
+  bool          push;
+  xqp_string    strArg;
+
+  FnIdIteratorState *state;
+  DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
+
+  if((state->inNode = consumeNext(theChildren[1].getp(), planState)) != NULL)
+    if (state->inNode->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      state->theIterator = state->inNode->getChildren();
+
+      while ((state->inArg = consumeNext(theChildren[0].getp(), planState)) != NULL)
+      {
+        state->theIterator->open();
+        while((itemEl = state->theIterator->next()) != NULL )
+        {
+          if(itemEl->getNodeKind() == store::StoreConsts::elementNode)
+          {
+            if(itemEl->isId())
+            {
+              state->theTypedValue = itemEl->getTypedValue();
+              state->theTypedValue->open();
+    
+              while (true)
+              {
+                item = state->theTypedValue->next();
+                if (item == NULL)
+                  break;
+
+                strArg = state->inArg->getStringValue().getp();
+    
+                if(strArg.matches(item->getStringValue().getp()," "))
+                  STACK_PUSH( itemEl, state );
+              }
+            }
+            else
+            {
+              push = false;
+              theAttributes = itemEl->getAttributes();
+              theAttributes->open();
+    
+              while (!push)
+              {
+                item = theAttributes->next();
+                if (item == NULL)
+                  break;
+    
+                if(item->isId())
+                {
+                  state->theTypedValue = item->getTypedValue();
+                  state->theTypedValue->open();
+    
+                  while (!push)
+                  {
+                    item = state->theTypedValue->next();
+                    if (item == NULL)
+                      break;
+
+                    strArg = state->inArg->getStringValue().getp();
+    
+                    if(strArg.matches(item->getStringValue().getp()," "))
+                    {
+                      push = true;
+                      break;
+                    }
+                  }
+                }
+              }
+              if(push)
+                STACK_PUSH( itemEl, state );
+            }
+          }
+        }
+      }
+    }
+  
+  STACK_END (state);
 }
   
 //15.5.3 fn:idref
+void
+FnIdRefIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  inNode = NULL;
+  inArg = NULL;
+  theIterator = NULL;
+}
+
+void
+FnIdRefIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  inNode = NULL;
+  inArg = NULL;
+  theIterator = NULL;
+}
+
+/**
+ * 
+ * @param planState 
+ * @return 
+ */
 store::Item_t
 FnIdRefIterator::nextImpl(PlanState& planState) const {
-  //TODO complete the implementation
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  store::Item_t itemEl;
+  xqp_string    strArg;
+  xqp_string    strNode;
+  
+  FnIdRefIteratorState* state;
+  DEFAULT_STACK_INIT(FnIdRefIteratorState, state, planState);
+
+  if((state->inNode = consumeNext(theChildren[1].getp(), planState)) != NULL)
+    if (state->inNode->getNodeKind() == store::StoreConsts::elementNode)
+      state->theIterator = state->inNode->getChildren();
+
+  while ((state->inArg = consumeNext(theChildren[0].getp(), planState)) != NULL)
+  {
+    state->theIterator->open();
+    while((itemEl = state->theIterator->next()) != NULL )
+    {
+      if(itemEl->getNodeKind() == store::StoreConsts::elementNode ||
+         itemEl->getNodeKind() == store::StoreConsts::attributeNode)
+      {
+        if(itemEl->isIdRefs())
+        {
+          strNode = state->inNode->getStringValue().getp();
+          strArg = state->inArg->getStringValue().getp();
+          
+          if(strNode.normalizeSpace().matches(strArg," "))
+            STACK_PUSH(state->inNode, state);
+        }
+      }
+    }
+  }
+  
   STACK_END(state);
 }
 

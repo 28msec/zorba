@@ -372,10 +372,10 @@ public:
   isId() const;
 
   /** Accessor for attribute node
-   * @return isIdrefs Used for attribute (defines the attribute an idref?))
+   * @return isIdRefs Used for attribute (defines the attribute an idref?))
    */
   virtual bool
-  isIdrefs() const;
+  isIdRefs() const;
   
   /** Accessor for element node
    *  @return  returns prefix namespace pairs

@@ -502,7 +502,7 @@ DECL(op_to,
     GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
 DECL(fn_id,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":id"),
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","id"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       sctx->get_typemanager()->create_node_type(new NodeTest(store::StoreConsts::elementNode),
                                                 NULL,
@@ -511,7 +511,7 @@ DECL(fn_id,
     );
 
 DECL(fn_id,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":id"),
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","id"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       sctx->get_typemanager()->create_node_type(new NodeTest(store::StoreConsts::elementNode),
@@ -521,12 +521,12 @@ DECL(fn_id,
     );
 
 DECL(fn_id_ref,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":idref"),
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","idref"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(fn_id_ref,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":idref"),
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","idref"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));

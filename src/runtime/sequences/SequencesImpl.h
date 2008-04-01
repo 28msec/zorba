@@ -350,10 +350,29 @@ public:
 NARY_ITER_STATE(OpToIterator, OpToIteratorState);
 
 //15.5.2 fn:id
-NARY_ITER(FnIdIterator);
+class FnIdIteratorState : public PlanIteratorState {
+  public:
+    Iterator_t    theIterator;
+    Iterator_t    theTypedValue;
+    store::Item_t inNode;
+    store::Item_t inArg;
+
+    void init(PlanState&);
+    void reset(PlanState&);
+};
+NARY_ITER_STATE(FnIdIterator, FnIdIteratorState);
 
 //15.5.3 fn:idref
-NARY_ITER(FnIdRefIterator);
+class FnIdRefIteratorState : public PlanIteratorState {
+  public:
+    Iterator_t    theIterator;
+    store::Item_t inNode;
+    store::Item_t inArg;
+
+    void init(PlanState&);
+    void reset(PlanState&);
+};
+NARY_ITER_STATE(FnIdRefIterator, FnIdRefIteratorState);
 
 //15.5.4 fn:doc
 

@@ -28,6 +28,8 @@
 #include "compiler/semantic_annotations/tsv_annotation.h"
 #include "types/typeops.h"
 
+#include "store/api/iterator.h"
+
 using namespace std;
 namespace zorba {
 

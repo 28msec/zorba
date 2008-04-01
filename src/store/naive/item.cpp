@@ -390,9 +390,9 @@ bool Item::isId() const
 }
 
 /** Accessor for attribute node
- * @return isIdrefs Used for attribute (defines the attribute an idref?))
+ * @return isIdRefs Used for attribute (defines the attribute an idref?))
  */
-bool Item::isIdrefs() const
+bool Item::isIdRefs() const
 {
   ZORBA_ASSERT(false);
   return false;
