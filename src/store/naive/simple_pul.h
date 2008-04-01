@@ -64,6 +64,8 @@ protected:
   NodeToUpdatesMap                theNodeToUpdatesMap;
 
 public:
+  ~PULImpl();
+
   void addDelete(Item_t& n);
 
   void addInsertInto(
@@ -140,6 +142,14 @@ protected:
         std::vector<Item_t>&      siblings,
         bool                      copy,
         const CopyMode&           copymode);
+
+  void mergeUpdateList(
+        std::vector<UpdatePrimitive*>        myList,
+        const std::vector<UpdatePrimitive*>& otherList,
+        bool                                 checkRename,
+        bool                                 checkReplaceValue,
+        bool                                 checkReplaceNode,
+        bool                                 checkReplaceContent);
 };
 
 
@@ -161,6 +171,7 @@ public:
   virtual UpdateConsts::UpdPrimKind getKind() = 0;
 
   virtual void apply() = 0;
+  virtual void undo() = 0;
 };
 
 
@@ -177,6 +188,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_DELETE; }
 
   void apply();
+  void undo();
 };
 
 
@@ -215,6 +227,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return theKind; }
 
   void apply();
+  void undo();
 };
 
 
@@ -253,6 +266,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return theKind; }
 
   void apply();
+  void undo();
 };
 
 
@@ -288,6 +302,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_INSERT_ATTRIBUTES; }
 
   void apply();
+  void undo();
 };
 
 
@@ -328,6 +343,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_CHILD; }
 
   void apply();
+  void undo();
 };
 
 
@@ -368,6 +384,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_ATTRIBUTE; }
 
   void apply();
+  void undo();
 };
 
 
@@ -399,6 +416,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_CONTENT; }
 
   void apply();
+  void undo();
 };
 
 
@@ -422,6 +440,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_ATTR_VALUE; }
 
   void apply();
+  void undo();
 };
 
 
@@ -447,6 +466,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_TEXT_VALUE; }
 
   void apply();
+  void undo();
 };
 
 
@@ -472,6 +492,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_PI_VALUE; }
 
   void apply();
+  void undo();
 };
 
 
@@ -497,6 +518,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_COMMENT_VALUE; }
 
   void apply();
+  void undo();
 };
 
 
@@ -520,6 +542,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_ELEM; }
 
   void apply();
+  void undo();
 };
 
 
@@ -543,6 +566,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_ATTR; }
 
   void apply();
+  void undo();
 };
 
 
@@ -566,6 +590,7 @@ public:
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_PI; }
 
   void apply();
+  void undo();
 };
 
 

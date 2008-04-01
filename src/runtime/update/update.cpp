@@ -1,12 +1,14 @@
 
 #include "common/shared_types.h"
 #include "errors/fatal.h"
+#include "system/globalenv.h"
 #include "context/static_context.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/update/update.h"
 #include "store/api/pul.h"
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 
 namespace zorba {
 
@@ -64,7 +66,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
   std::vector<store::Item_t> nodes(16);
   ulong numAttrs = 0;
   ulong numNodes = 0;
-  store::PUL* pul;
+  std::auto_ptr<store::PUL> pul;
 
   InsertIteratorState* state;
   DEFAULT_STACK_INIT(InsertIteratorState, state, aPlanState);
@@ -116,6 +118,8 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
       }
     }
 
+    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
     if (numAttrs > 0)
     {
       attrs.resize(numAttrs);
@@ -131,7 +135,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         pul->addInsertAfter(target, nodes, theDoCopy, state->theCopyMode);
     }
 
-    STACK_PUSH(pul, state);
+    STACK_PUSH(pul.release(), state);
   }
   else
   {
@@ -168,6 +172,8 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
       }
     }
 
+    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
     if (numAttrs > 0)
     {
       attrs.resize(numAttrs);
@@ -185,7 +191,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         pul->addInsertLast(target, nodes, theDoCopy, state->theCopyMode);
     }
 
-    STACK_PUSH(pul, state);
+    STACK_PUSH(pul.release(), state);
   }
 
   STACK_END (state);

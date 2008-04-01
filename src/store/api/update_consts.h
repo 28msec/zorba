@@ -67,6 +67,7 @@ public:
 
   static bool isRename(UpdPrimKind k);
   static bool isReplaceValue(UpdPrimKind k);
+  static bool isReplaceNode(UpdPrimKind k);
   static std::string toString(UpdateKind k);
   static std::string toString(UpdPrimKind k);
 };

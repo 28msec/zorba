@@ -68,5 +68,12 @@ bool UpdateConsts::isReplaceValue(UpdPrimKind k)
 }
 
 
+bool UpdateConsts::isReplaceNode(UpdPrimKind k)
+{
+  return (k == UP_REPLACE_CHILD ||
+          k == UP_REPLACE_ATTRIBUTE);
+}
+
+
 } // namespace store
 } // namespace zorba

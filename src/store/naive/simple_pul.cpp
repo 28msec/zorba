@@ -12,6 +12,34 @@
 
 namespace zorba { namespace store {
 
+/*******************************************************************************
+
+********************************************************************************/
+PULImpl::~PULImpl()
+{
+  ulong num;
+
+  num = theDoFirstList.size();
+  for (ulong i = 0; i < num; i++)
+    delete theDoFirstList[i];
+
+  num = theInsertList.size();
+  for (ulong i = 0; i < num; i++)
+    delete theInsertList[i];
+
+  num = theReplaceNodeList.size();
+  for (ulong i = 0; i < num; i++)
+    delete theReplaceNodeList[i];
+
+  num = theReplaceContentList.size();
+  for (ulong i = 0; i < num; i++)
+    delete theReplaceContentList[i];
+
+  num = theDeleteList.size();
+  for (ulong i = 0; i < num; i++)
+    delete theDeleteList[i];
+}
+
 
 /*******************************************************************************
   Create a delete primitive in "this" pul for the given node, if another delete
@@ -417,6 +445,106 @@ void PULImpl::addRename(Item_t& target, Item_t& newName)
 ********************************************************************************/
 void PULImpl::mergeUpdates(const PUL& other)
 {
+  const PULImpl* otherp = reinterpret_cast<const PULImpl*>(&other);
+
+  mergeUpdateList(theDoFirstList, otherp->theDoFirstList,
+                  true, true, false, false);
+
+  mergeUpdateList(theInsertList, otherp->theInsertList,
+                  false, false, false, false);
+
+  mergeUpdateList(theReplaceNodeList, otherp->theReplaceNodeList,
+                  false, false, true, false);
+
+  mergeUpdateList(theReplaceContentList, otherp->theReplaceContentList,
+                  false, false, false, true);
+
+  mergeUpdateList(theDeleteList, otherp->theDeleteList,
+                  false, false, false, false);
+}
+
+
+void PULImpl::mergeUpdateList(
+    std::vector<UpdatePrimitive*>        myList,
+    const std::vector<UpdatePrimitive*>& otherList,
+    bool                                 checkRename,
+    bool                                 checkReplaceValue,
+    bool                                 checkReplaceNode,
+    bool                                 checkReplaceContent)
+{
+  ulong numUpdates;
+  ulong numOtherUpdates;
+
+  numUpdates = myList.size();
+  numOtherUpdates = otherList.size();
+
+  myList.resize(numUpdates + numOtherUpdates);
+
+  for (ulong i = 0; i < numOtherUpdates; i++)
+  {
+    UpdatePrimitive* upd = otherList[i];
+    UpdateConsts::UpdPrimKind updKind = upd->getKind();
+    XmlNode* target;
+
+    if (updKind == UpdateConsts::UP_REPLACE_CHILD)
+      target = BASE_NODE(reinterpret_cast<UpdReplaceChild*>(upd)->theChild);
+    else
+      target = BASE_NODE(upd->theTarget);
+
+    NodeUpdates* targetUpdates;
+    bool found = theNodeToUpdatesMap.get(target, targetUpdates);
+
+    if (!found)
+    {
+      myList[numUpdates + i] = upd;
+
+      targetUpdates = new NodeUpdates(1);
+      (*targetUpdates)[0] = upd;
+      theNodeToUpdatesMap.insert(target, targetUpdates);
+    }
+    else
+    {
+      if (checkRename && UpdateConsts::isRename(updKind))
+      {
+        ulong numTargetUpdates = targetUpdates->size();
+        for (ulong j = 0; j < numTargetUpdates; j++)
+        {
+          if (UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
+            ZORBA_ERROR(ZorbaError::XUDY0015);
+        }
+      }
+      else if (checkReplaceValue && UpdateConsts::isReplaceValue(updKind))
+      {
+        ulong numTargetUpdates = targetUpdates->size();
+        for (ulong j = 0; j < numTargetUpdates; j++)
+        {
+          if (UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
+            ZORBA_ERROR(ZorbaError::XUDY0017);
+        }
+      }
+      else if (checkReplaceNode && UpdateConsts::isReplaceNode(updKind))
+      {
+        ulong numTargetUpdates = targetUpdates->size();
+        for (ulong j = 0; j < numTargetUpdates; j++)
+        {
+          if (UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
+            ZORBA_ERROR(ZorbaError::XUDY0016);
+        }
+      }
+      else if (checkReplaceContent && upd->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
+      {
+        ulong numTargetUpdates = targetUpdates->size();
+        for (ulong j = 0; j < numTargetUpdates; j++)
+        {
+          if ((*targetUpdates)[j]->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
+            ZORBA_ERROR(ZorbaError::XUDY0017);
+        }
+      }
+
+      myList[numUpdates + i] = upd;
+      targetUpdates->push_back(upd);
+    }
+  }
 }
 
 
@@ -466,6 +594,12 @@ void UpdDelete::apply()
 }
 
 
+void UpdDelete::undo()
+{
+
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -491,6 +625,11 @@ void UpdInsertChildren::apply()
 }
 
 
+void UpdInsertChildren::undo()
+{
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -509,12 +648,23 @@ void UpdInsertSiblings::apply()
 }
 
 
+void UpdInsertSiblings::undo()
+{
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 void UpdInsertAttributes::apply()
 {
   ELEM_NODE(theTarget)->insertAttributes(theAttributes, theDoCopy, theCopyMode);
+}
+
+
+void UpdInsertAttributes::undo()
+{
+
 }
 
 
@@ -531,6 +681,11 @@ void UpdReplaceChild::apply()
 }
 
 
+void UpdReplaceChild::undo()
+{
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -544,12 +699,24 @@ void UpdReplaceAttribute::apply()
 }
 
 
+void UpdReplaceAttribute::undo()
+{
+
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 void UpdReplaceContent::apply()
 {
   ELEM_NODE(theTarget)->replaceContent(BASE_NODE(theNewChild), theOldChildren);
+}
+
+
+void UpdReplaceContent::undo()
+{
+
 }
 
 
@@ -562,9 +729,21 @@ void UpdReplaceAttrValue::apply()
 }
 
 
+void UpdReplaceAttrValue::undo()
+{
+
+}
+
+
 void UpdReplaceTextValue::apply()
 {
   TEXT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+}
+
+
+void UpdReplaceTextValue::undo()
+{
+
 }
 
 
@@ -575,9 +754,21 @@ void UpdReplacePiValue::apply()
 }
 
 
+void UpdReplacePiValue::undo()
+{
+
+}
+
+
 void UpdReplaceCommentValue::apply()
 {
   COMMENT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+}
+
+
+void UpdReplaceCommentValue::undo()
+{
+
 }
 
 
@@ -590,9 +781,21 @@ void UpdRenameElem::apply()
 }
 
 
+void UpdRenameElem::undo()
+{
+
+}
+
+
 void UpdRenameAttr::apply()
 {
   ATTR_NODE(theTarget)->rename(theNewName, theOldName);
+}
+
+
+void UpdRenameAttr::undo()
+{
+
 }
 
 
@@ -601,6 +804,11 @@ void UpdRenamePi::apply()
   PI_NODE(theTarget)->rename(theNewName, theOldName);
 }
 
+
+void UpdRenamePi::undo()
+{
+
+}
 
 }
 }
