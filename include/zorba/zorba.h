@@ -51,54 +51,60 @@ namespace zorba {
 
       virtual ~Zorba();
 
+      /** \brief Creates an XQuery object.
+       *
+       */
+      virtual XQuery_t
+      createQuery() = 0;
+      
       /** \brief Creates and compiles an XQuery object.
        * 
        */
       virtual XQuery_t
-      createQuery(const String& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(const String& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates and compiles a XQuery object.
        * 
        */
       virtual XQuery_t
-      createQuery(const String& aQuery, const StaticContext_t& aContext, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(const String& aQuery, const StaticContext_t& aContext, ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Create and compile an XQuery object.
        * 
        */
       virtual XQuery_t
-      createQuery(std::istream& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Create and compile an XQuery object.
        * 
        */
       virtual XQuery_t
-      createQuery(std::istream& aQuery, const StaticContext_t& aContext, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(std::istream& aQuery, const StaticContext_t& aContext, ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates and compiles an XQuery object.
        * 
        */
       virtual XQuery_t
-      createQuery(const String& aQuery, const XQuery::CompilerHints_t&, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(const String& aQuery, const XQuery::CompilerHints_t&, ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates and compiles a XQuery object.
        * 
        */
       virtual XQuery_t
-      createQuery(const String& aQuery, const StaticContext_t& aContext, const XQuery::CompilerHints_t&,
+      compileQuery(const String& aQuery, const StaticContext_t& aContext, const XQuery::CompilerHints_t&,
                   ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Create and compile an XQuery object.
        * 
        */
       virtual XQuery_t
-      createQuery(std::istream& aQuery, const XQuery::CompilerHints_t&, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(std::istream& aQuery, const XQuery::CompilerHints_t&, ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Create and compile an XQuery object.
        * 
        */
       virtual XQuery_t
-      createQuery(std::istream& aQuery, const StaticContext_t& aContext, const XQuery::CompilerHints_t&,
+      compileQuery(std::istream& aQuery, const StaticContext_t& aContext, const XQuery::CompilerHints_t&,
                   ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Create a StaticContext.

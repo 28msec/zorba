@@ -14,11 +14,11 @@ bool
 chaining_example_1(Zorba* aZorba)
 {
   try {
-    XQuery_t lQuery1 = aZorba->createQuery("for $i in (1 to 20) return $i");
+    XQuery_t lQuery1 = aZorba->compileQuery("for $i in (1 to 20) return $i");
 
     ResultIterator_t lIterator = lQuery1->iterator();
 
-    XQuery_t lQuery2 = aZorba->createQuery("declare variable $x external; for $i in $x return $i * $i");
+    XQuery_t lQuery2 = aZorba->compileQuery("declare variable $x external; for $i in $x return $i * $i");
 
     DynamicContext_t lCtx = lQuery2->getDynamicContext();
 
@@ -56,11 +56,11 @@ chaining_example_2(Zorba* aZorba)
   MyChainingErrorHandler lErrorHandler1("handler 1");
   MyChainingErrorHandler lErrorHandler2("handler 2");
 
-  XQuery_t lQuery1 = aZorba->createQuery("let $i := (1 to 42) return $i * $i", &lErrorHandler1);
+  XQuery_t lQuery1 = aZorba->compileQuery("let $i := (1 to 42) return $i * $i", &lErrorHandler1);
 
   ResultIterator_t lIterator = lQuery1->iterator();
 
-  XQuery_t lQuery2 = aZorba->createQuery("declare variable $x external; for $i in $x return $i * $i", &lErrorHandler2);
+  XQuery_t lQuery2 = aZorba->compileQuery("declare variable $x external; for $i in $x return $i * $i", &lErrorHandler2);
 
   DynamicContext_t lCtx = lQuery2->getDynamicContext();
 

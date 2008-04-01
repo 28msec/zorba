@@ -12,7 +12,7 @@ bool
 error_example_1(Zorba* aZorba)
 {
   try {
-	  XQuery_t lQuery = aZorba->createQuery("1 div 0"); 
+	  XQuery_t lQuery = aZorba->compileQuery("1 div 0"); 
 
     std::cout << lQuery << std::endl;
   } catch ( ZorbaException& e) {
@@ -27,7 +27,7 @@ bool
 error_example_2(Zorba* aZorba)
 {
   try {
-	  XQuery_t lQuery = aZorba->createQuery("1 div"); 
+	  XQuery_t lQuery = aZorba->compileQuery("1 div"); 
 
   } catch ( StaticException& se ) {
     std::cout << se << std::endl;
@@ -60,7 +60,7 @@ error_example_3(Zorba* aZorba)
 {
   MyErrorHandler lHandler;
 
-	XQuery_t lQuery = aZorba->createQuery("for $i in", &lHandler); 
+	XQuery_t lQuery = aZorba->compileQuery("for $i in", &lHandler); 
 
 	return true;
 }
@@ -73,7 +73,7 @@ error_example_4(Zorba* aZorba)
 
   try {
     // move this outside if constant folding is fixed
-    XQuery_t lQuery = aZorba->createQuery("1 div 0"); 
+    XQuery_t lQuery = aZorba->compileQuery("1 div 0"); 
 
     lQuery->registerErrorHandler(&lHandler);
     std::cout << lQuery << std::endl;

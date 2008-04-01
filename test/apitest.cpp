@@ -84,7 +84,7 @@ int _tmain(int argc, _TCHAR* argv[])
   // start parsing the query
   XQuery_t query;
   try {
-    query = zengine->createQuery(*qfile, chints);
+    query = zengine->compileQuery(*qfile, chints);
   } catch (ZorbaException &e) {
     cerr << "Compilation error: " << e << endl;
     return 1;

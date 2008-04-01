@@ -16,7 +16,7 @@ datamanager_example_1(Zorba* aZorba, XmlDataManager* aDataManager)
 
   aDataManager->loadDocument("books.xml", lInStream);
 
-	XQuery_t lQuery = aZorba->createQuery("doc('books.xml')//book"); 
+	XQuery_t lQuery = aZorba->compileQuery("doc('books.xml')//book"); 
 
   std::cout << lQuery << std::endl;
 

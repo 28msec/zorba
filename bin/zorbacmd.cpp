@@ -168,7 +168,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lTiming)
       lStartCompileTime = boost::posix_time::microsec_clock::local_time();
 
-    lQuery = lZorbaInstance->createQuery(*qfile, lStaticContext);
+    lQuery = lZorbaInstance->compileQuery(*qfile, lStaticContext);
 
     if (lTiming)
       lStopCompileTime = boost::posix_time::microsec_clock::local_time();

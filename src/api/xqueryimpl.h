@@ -5,6 +5,7 @@
 #include <zorba/xquery.h>
 
 #include <zorba/api_shared_types.h>
+#include "zorbatypes/xqpstring.h"
 #include "common/shared_types.h" 
 #include "compiler/api/compilercb.h"
 
@@ -35,23 +36,32 @@ namespace zorba {
       virtual StaticContext_t
       getStaticContext();
 
-		// only allow ZorbaImpl to create us
-		friend class ZorbaImpl;
-		protected:
-      XQueryImpl();
+      void
+      compile(const String&);
 
       void 
-      compile(const xqpString&, const XQuery::CompilerHints_t& aHints);
+      compile(const String&, const XQuery::CompilerHints_t& aHints);
       
       void 
       compile(std::istream&, const XQuery::CompilerHints_t& aHints);
       
       void 
-      compile(const xqpString&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
+      compile(const String&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
       
       void 
       compile(std::istream&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
 
+      void
+      setFileName( const String& );
+
+		// only allow ZorbaImpl to create us
+		friend class ZorbaImpl;
+		protected:
+
+      xqpString theFileName;
+    
+      XQueryImpl();
+      
       void
       doCompile(std::istream&, const XQuery::CompilerHints_t& aHints);
 

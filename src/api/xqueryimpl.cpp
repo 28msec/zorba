@@ -93,12 +93,29 @@ namespace zorba {
   }
 
   /**
+   * Set the filename
+   */
+  void
+  XQueryImpl::setFileName( const String& aFileName )
+  {
+    xqpString lFileName = Unmarshaller::getInternalString( aFileName );
+    theFileName = lFileName;
+  }
+
+  /**
    * various ways to compile a query
    */
   void
-  XQueryImpl::compile(const xqpString& aQuery, const CompilerHints_t& aHints)
+  XQueryImpl::compile(const String& aQuery)
   {
-    std::istringstream lQueryStream(aQuery);
+    compile( aQuery, XQuery::CompilerHints() ); 
+  }
+
+  void
+  XQueryImpl::compile(const String& aQuery, const CompilerHints_t& aHints)
+  {
+    xqpString lQuery = Unmarshaller::getInternalString(aQuery);
+    std::istringstream lQueryStream(lQuery);
     doCompile(lQueryStream, aHints);
   }
 
@@ -109,11 +126,11 @@ namespace zorba {
   }
 
   void
-  XQueryImpl::compile(const xqpString& aQuery, const StaticContext_t& aStaticContext, const CompilerHints_t& aHints)
+  XQueryImpl::compile(const String& aQuery, const StaticContext_t& aStaticContext, const CompilerHints_t& aHints)
   {
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
-
-    std::istringstream lQueryStream(aQuery);
+    xqpString lQuery = Unmarshaller::getInternalString(aQuery);
+    std::istringstream lQueryStream(lQuery);
     doCompile(lQueryStream, aHints);
   }
 
@@ -146,7 +163,7 @@ namespace zorba {
 
     try {
       // let's ompile
-      thePlan = lCompiler.compile(aQuery); 
+      thePlan = lCompiler.compile(aQuery, theFileName); 
     } catch (error::ZorbaError &e) { // TODO this can be removed (see comment in the constructor)
       ZorbaImpl::notifyError(theErrorHandler, e);
     }
@@ -225,6 +242,16 @@ namespace zorba {
   ResultIterator_t
   XQueryImpl::iterator()
   {
+    if ( ! theQueryIsCompiled )
+    {
+      try
+      {
+        ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED,
+          "Error executing query because it is not compiled");
+      } catch(error::ZorbaError &e) {
+        ZorbaImpl::notifyError(theErrorHandler, e);
+      }
+    }
     PlanWrapper_t lPlan = generateWrapper();
     return ResultIterator_t(new ResultIteratorImpl(lPlan, theErrorManager, theErrorHandler));
   }

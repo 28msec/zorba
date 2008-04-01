@@ -100,7 +100,7 @@ func_example_1(Zorba* aZorba)
   MySimpleExternalFunction lFunc;
   sctx->registerStatelessExternalFunction(&lFunc);
 
-	XQuery_t lQuery = aZorba->createQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar($a1, $a2) external; foo:bar((1,2,3), (4,5,6))", sctx); 
+	XQuery_t lQuery = aZorba->compileQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar($a1, $a2) external; foo:bar((1,2,3), (4,5,6))", sctx); 
 
   std::cout << lQuery << std::endl;
 
@@ -135,7 +135,7 @@ func_example_3(Zorba* aZorba)
   
   lContext->registerStatelessExternalFunction(&lFunc);
 
-	XQuery_t lQuery = aZorba->createQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar2($a1, $a2) external; foo:bar2((1,2,3), (4,5,6))", lContext); 
+	XQuery_t lQuery = aZorba->compileQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar2($a1, $a2) external; foo:bar2((1,2,3), (4,5,6))", lContext); 
 
   std::cout << lQuery << std::endl;
 
@@ -151,7 +151,7 @@ func_example_4(Zorba* aZorba)
   
   lContext->registerStatelessExternalFunction(&lFunc);
 
-	XQuery_t lQuery = aZorba->createQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar2($a1, $a2) external; let $s1 := (1,2,3) let $s2 := (4,5,6) for $x in 1 to 6 return (foo:bar2($s1, $s2)[7-$x])", lContext); 
+	XQuery_t lQuery = aZorba->compileQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar2($a1, $a2) external; let $s1 := (1,2,3) let $s2 := (4,5,6) for $x in 1 to 6 return (foo:bar2($s1, $s2)[7-$x])", lContext); 
 
   std::cout << lQuery << std::endl;
 

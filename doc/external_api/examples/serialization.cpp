@@ -10,7 +10,7 @@ using namespace zorba;
 bool
 serialization_example_1(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
+	XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
   std::cout << lQuery << std::endl;
 
@@ -20,7 +20,7 @@ serialization_example_1(Zorba* aZorba)
 bool
 serialization_example_2(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
+	XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
   lQuery->serialize(std::cout);
 
@@ -30,7 +30,7 @@ serialization_example_2(Zorba* aZorba)
 bool
 serialization_example_3(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
+	XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
   XQuery::SerializerOptions lSerOptions;
   lSerOptions.ser_method = XQuery::SerializerOptions::serialization_method::HTML;
@@ -43,7 +43,7 @@ serialization_example_3(Zorba* aZorba)
 bool
 serialization_example_4(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
+	XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
   XQuery::SerializerOptions lSerOptions;
   lSerOptions.ser_method = XQuery::SerializerOptions::serialization_method::TEXT;
@@ -56,7 +56,7 @@ serialization_example_4(Zorba* aZorba)
 bool
 serialization_example_5(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
+	XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
   XQuery::SerializerOptions lSerOptions;
   lSerOptions.indent = XQuery::SerializerOptions::indent::YES;
@@ -69,7 +69,7 @@ serialization_example_5(Zorba* aZorba)
 bool
 serialization_example_6(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
+	XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
   XQuery::SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = XQuery::SerializerOptions::omit_xml_declaration::YES;

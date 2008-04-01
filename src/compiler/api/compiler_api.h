@@ -15,11 +15,11 @@ namespace zorba {
       virtual ~XQueryCompiler();
 
       PlanIter_t
-      compile(std::istream& aXQuery);
+      compile(std::istream& aXQuery, const xqpString & aFileName = "");
 
     protected:
       parsenode_t
-      parse(std::istream& aXQuery);
+      parse(std::istream& aXQuery, const xqpString & aFileName = "");
 
       expr_t
       normalize(parsenode_t);

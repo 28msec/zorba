@@ -12,7 +12,7 @@ using namespace zorba;
 bool
 context_example_1(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("declare variable $var external; $var + $var");
+	XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; $var + $var");
 
   ItemFactory* lFactory = aZorba->getItemFactory();
 
@@ -37,7 +37,7 @@ context_example_1(Zorba* aZorba)
 bool
 context_example_2(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("declare variable $var external; $var + $var");
+	XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; $var + $var");
 
   try {
 
@@ -54,7 +54,7 @@ context_example_2(Zorba* aZorba)
 bool
 context_example_3(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery(".");
+	XQuery_t lQuery = aZorba->compileQuery(".");
 
   ItemFactory* lFactory = aZorba->getItemFactory();
 
@@ -82,7 +82,7 @@ context_example_4(Zorba* aZorba)
 
   std::stringstream lDocStream("<books><book>Book 1</book><book>Book 2</book></books>");
 
-  XQuery_t lQuery = aZorba->createQuery("declare variable $var external; $var//book");
+  XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; $var//book");
 
   DynamicContext_t lCtx = lQuery->getDynamicContext();
 
@@ -103,7 +103,7 @@ context_example_5(Zorba* aZorba)
 
   std::stringstream lDocStream("<books><book>Book 1</book><book>Book 2</book></books>");
 
-  XQuery_t lQuery = aZorba->createQuery("declare variable $var external; .//book");
+  XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; .//book");
 
   DynamicContext_t lCtx = lQuery->getDynamicContext();
 
@@ -125,7 +125,7 @@ context_example_6(Zorba* aZorba)
 
   lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY/de/DE");
 
-	XQuery_t lQuery = aZorba->createQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')", 
+	XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')", 
                                          lStaticContext); 
 
   try {
@@ -148,7 +148,7 @@ context_example_7(Zorba* aZorba)
   try {
     lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY");
 
-    XQuery_t lQuery = aZorba->createQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY')", 
+    XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY')", 
         lStaticContext); 
 
     std::cout << lQuery << std::endl;
@@ -164,14 +164,14 @@ context_example_7(Zorba* aZorba)
 bool
 context_example_8(Zorba* aZorba)
 {
-	XQuery_t lQuery1 = aZorba->createQuery("declare ordering ordered; 1"); 
+	XQuery_t lQuery1 = aZorba->compileQuery("declare ordering ordered; 1"); 
 
   StaticContext_t lStaticContext1 = lQuery1->getStaticContext();
   
   if (lStaticContext1->getOrderingMode() != StaticContext::ordered)
     return false;
 
-	XQuery_t lQuery2 = aZorba->createQuery("declare ordering unordered; 1"); 
+	XQuery_t lQuery2 = aZorba->compileQuery("declare ordering unordered; 1"); 
 
   StaticContext_t lStaticContext2 = lQuery2->getStaticContext();
   
@@ -181,7 +181,7 @@ context_example_8(Zorba* aZorba)
 bool
 context_example_9(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("fn:hours-from-dateTime(fn:current-dateTime())"); 
+	XQuery_t lQuery = aZorba->compileQuery("fn:hours-from-dateTime(fn:current-dateTime())"); 
 
   DynamicContext_t lDynContext = lQuery->getDynamicContext();
 

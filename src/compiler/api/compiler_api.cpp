@@ -40,9 +40,9 @@ namespace zorba {
   { }
 
   PlanIter_t
-  XQueryCompiler::compile(std::istream& aXQuery)
+  XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
   {
-    parsenode_t lAST = parse(aXQuery);
+    parsenode_t lAST = parse(aXQuery, aFileName);
 
     expr_t lExpr = normalize(lAST);
     lExpr = optimize(lExpr);
@@ -63,10 +63,10 @@ namespace zorba {
   }
 
   parsenode_t
-  XQueryCompiler::parse(std::istream& aXQuery)
+  XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
   {
     xquery_driver lDriver(&*theCompilerCB);
-    lDriver.parse_stream(aXQuery);
+    lDriver.parse_stream(aXQuery, aFileName);
 
     if (Properties::instance()->printAST())
       print_parsetree_xml (std::cout, &*lDriver.get_expr());

@@ -11,7 +11,7 @@ using namespace zorba;
 bool
 example_1(Zorba* aZorba)
 {
-  XQuery_t lQuery = aZorba->createQuery("1+2"); 
+  XQuery_t lQuery = aZorba->compileQuery("1+2"); 
 
   std::cout << lQuery << std::endl;
 
@@ -21,7 +21,7 @@ example_1(Zorba* aZorba)
 bool
 example_2(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->createQuery("1+2"); 
+	XQuery_t lQuery = aZorba->compileQuery("1+2");
 
   ResultIterator_t lIterator = lQuery->iterator();
   lIterator->open();
@@ -42,7 +42,7 @@ example_3(Zorba* aZorba)
 
   try {
     // move this outside if constant folding is fixed
-	  XQuery_t lQuery = aZorba->createQuery("1 div 0"); 
+	  XQuery_t lQuery = aZorba->compileQuery("1 div 0"); 
     std::cout << lQuery << std::endl;
   } catch ( DynamicException& e ) {
     std::cerr <<  e << std::endl;
@@ -58,7 +58,7 @@ example_4(Zorba* aZorba)
 {
 
   try {
-    XQuery_t lQuery = aZorba->createQuery("for $x in (1, 2, 3)");
+    XQuery_t lQuery = aZorba->compileQuery("for $x in (1, 2, 3)");
   } catch ( StaticException& e ) {
     std::cerr <<  e << std::endl;
     return true;
@@ -74,7 +74,7 @@ example_5(Zorba* aZorba)
   std::istringstream lInStream(lQueryString);
 
   try {
-    XQuery_t lQuery = aZorba->createQuery(lInStream);
+    XQuery_t lQuery = aZorba->compileQuery(lInStream);
 
     std::cout << lQuery << std::endl;
   } catch ( StaticException& se ) {
@@ -94,7 +94,7 @@ example_6(Zorba* aZorba)
   XQuery::CompilerHints lHints;
   lHints.opt_level = XQuery::CompilerHints::O0;
 
-  XQuery_t lQuery = aZorba->createQuery("1+1", lHints);
+  XQuery_t lQuery = aZorba->compileQuery("1+1", lHints);
 
   std::cout << lQuery << std::endl;
 
@@ -107,6 +107,16 @@ example_7()
 
   std::cout << Zorba::version() << std::endl;
 
+  return true;
+}
+
+bool
+example_8( Zorba * aZorba )
+{
+  XQuery_t lQuery = aZorba->createQuery();
+  lQuery->setFileName("foo.xq");
+  lQuery->compile("1+2");
+  std::cout << lQuery << std::endl;
   return true;
 }
 
@@ -141,6 +151,10 @@ simple(int argc, char* argv[])
   
   std::cout << "executing example 7" << std::endl;
 	assert(example_7()); 
+  std::cout << std::endl;
+
+  std::cout << "executing example 8" << std::endl;
+  assert(example_8(lZorba));
   std::cout << std::endl;
   lZorba->shutdown();
   return 0;

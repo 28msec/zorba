@@ -107,6 +107,9 @@ namespace zorba {
     public:
       virtual ~XQuery() {}
 
+      //Set the filename of the Query
+       
+      
       // register an error handler
       // if no error handler has already been set when creating the query
       // the default error handler (i.e. throwing exceptions) is used
@@ -138,6 +141,25 @@ namespace zorba {
       // those that have been changed while compiling the query (e.g. in the query prolog)
       virtual StaticContext_t
       getStaticContext() = 0;
+
+      virtual void
+      compile(const String&) = 0;
+
+      virtual void 
+      compile(const String&, const XQuery::CompilerHints_t& aHints) = 0;
+      
+      virtual void 
+      compile(std::istream&, const XQuery::CompilerHints_t& aHints) = 0;
+      
+      virtual void 
+      compile(const String&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints) = 0;
+      
+      virtual void 
+      compile(std::istream&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints) = 0;
+
+      //Set the fileName
+      virtual void
+      setFileName( const String& ) = 0;
 
   };
 
