@@ -24,7 +24,7 @@ namespace zorba {
       resetErrorHandler();
 
       virtual void
-      serialize(std::ostream&);
+      serialize(std::ostream&, XQuery::SerializerOptions_t = XQuery::SerializerOptions());
 
       virtual ResultIterator_t
       iterator();

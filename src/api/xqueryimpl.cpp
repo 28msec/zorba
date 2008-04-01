@@ -196,7 +196,7 @@ namespace zorba {
   }
 
   void
-  XQueryImpl::serialize(std::ostream& os)
+  XQueryImpl::serialize(std::ostream& os, XQuery::SerializerOptions_t)
   {
     if ( ! theQueryIsCompiled ) {
       try {

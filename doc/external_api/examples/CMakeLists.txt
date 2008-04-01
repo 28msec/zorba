@@ -4,7 +4,7 @@ CREATE_TEST_SOURCELIST(examples
 	simple.cpp
   errors.cpp
   context.cpp
-##serialization.cpp
+  serialization.cpp
   chaining.cpp
   external_functions.cpp
   datamanager.cpp

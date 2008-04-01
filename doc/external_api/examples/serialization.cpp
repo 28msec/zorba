@@ -5,12 +5,12 @@
 
 #include <zorba/zorba.h>
 
-using namespace xqp;
+using namespace zorba;
 
 bool
-example_1(Zorba* aZorba)
+serialization_example_1(Zorba* aZorba)
 {
-	XQuery_t lQuery = zorba->createQuery("for i in (1 to 3) return <a>$i</a>"); 
+	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
   std::cout << lQuery << std::endl;
 
@@ -18,9 +18,9 @@ example_1(Zorba* aZorba)
 }
 
 bool
-example_2(Zorba* aZorba)
+serialization_example_2(Zorba* aZorba)
 {
-	XQuery_t lQuery = zorba->createQuery("for i in (1 to 3) return <a>$i</a>"); 
+	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
   lQuery->serialize(std::cout);
 
@@ -28,87 +28,84 @@ example_2(Zorba* aZorba)
 }
 
 bool
-example_3(Zorba* aZorba)
+serialization_example_3(Zorba* aZorba)
 {
-	XQuery_t lQuery = zorba->createQuery("for i in (1 to 3) return <a>$i</a>"); 
+	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
-  lQuery->serialize(std::cout, Serialization::HTML);
+  XQuery::SerializerOptions lSerOptions;
+  lSerOptions.ser_method = XQuery::SerializerOptions::serialization_method::HTML;
+
+  lQuery->serialize(std::cout, lSerOptions);
 
 	return true;
 }
 
 bool
-example_4(Zorba* aZorba)
+serialization_example_4(Zorba* aZorba)
 {
-	XQuery_t lQuery = zorba->createQuery("for i in (1 to 3) return <a>$i</a>"); 
+	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
-  lQuery->serialize(std::cout, Serialization::TEXT);
+  XQuery::SerializerOptions lSerOptions;
+  lSerOptions.ser_method = XQuery::SerializerOptions::serialization_method::TEXT;
+
+  lQuery->serialize(std::cout, lSerOptions);
 
 	return true;
 }
 
 bool
-example_5(Zorba* aZorba)
+serialization_example_5(Zorba* aZorba)
 {
-	XQuery_t lQuery = zorba->createQuery("for i in (1 to 3) return <a>$i</a>"); 
+	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
-  Serialization lSerialization;
-  lSerialization.add(Serialization::INDENT);
+  XQuery::SerializerOptions lSerOptions;
+  lSerOptions.indent = XQuery::SerializerOptions::indent::YES;
 
-  lQuery->serialize(std::cout, Serialization::XML, lSerialization);
+  lQuery->serialize(std::cout, lSerOptions);
 
 	return true;
 }
 
 bool
-example_6(Zorba* aZorba)
+serialization_example_6(Zorba* aZorba)
 {
-  PlanPrinter_t lPlanPrinter = zorba->getPlanPrinter();
+	XQuery_t lQuery = aZorba->createQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
-  // TODO not sure about this notation
+  XQuery::SerializerOptions lSerOptions;
+  lSerOptions.omit_xml_declaration = XQuery::SerializerOptions::omit_xml_declaration::YES;
 
-  // print the abstract syntax tree
-  std::cout << lPlanPrinter->ast("(1, 2, 3)") << std::endl;
-  
-  // print normalized expression tree (unoptimized)
-  std::cout << lPlanPrinter->expression("(1, 2, 3)", false) << std::endl;
+  lQuery->serialize(std::cout, lSerOptions);
 
-  // print the optimized expression tree
-  std::cout << lPlanPrinter->expression("(1, 2, 3)") << std::endl;
-
-  // print the iterator tree 
-  std::cout << PlanPrinter->iterator("(1, 2, 3)") << std::endl;
+	return true;
 }
-
-// TODO are there serialization errors?
 
 int 
 serialization(int argc, char* argv[])
 {
   Zorba* lZorba = Zorba::getInstance();
 
-  std::cout << "executing example 1" << std::endl;
-	assert(example_1(lZorba)); 
+  std::cout << "executing serialization example 1" << std::endl;
+	assert(serialization_example_1(lZorba)); 
   std::cout << std::endl;
 
-  std::cout << "executing example 2" << std::endl;
-	assert(example_2(lZorba)); 
+  std::cout << "executing serialization example 2" << std::endl;
+	assert(serialization_example_2(lZorba)); 
   std::cout << std::endl;
 
-  std::cout << "executing example 3" << std::endl;
-	assert(example_3(lZorba)); 
+  std::cout << "executing serialization example 3" << std::endl;
+	assert(serialization_example_3(lZorba)); 
   std::cout << std::endl;
 
-  std::cout << "executing example 4" << std::endl;
-	assert(example_4(lZorba)); 
+  std::cout << "executing serialization example 4" << std::endl;
+	assert(serialization_example_4(lZorba)); 
   std::cout << std::endl;
 
-  std::cout << "executing example 5" << std::endl;
-	assert(example_5(lZorba)); 
+  std::cout << "executing serialization example 5" << std::endl;
+	assert(serialization_example_5(lZorba)); 
   std::cout << std::endl;
-  
-  std::cout << "executing example 6" << std::endl;
-	assert(example_6(lZorba)); 
+
+  std::cout << "executing serialization example 6" << std::endl;
+	assert(serialization_example_6(lZorba)); 
   std::cout << std::endl;
 
   return 0;
