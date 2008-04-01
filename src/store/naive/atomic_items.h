@@ -286,6 +286,7 @@ public:
   virtual xqpStringStore_t getStringValue( ) const;
   virtual xqp_string show() const;
   virtual bool isNaN() const;
+  virtual uint32_t hash() const;
 };
 
 
@@ -325,6 +326,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash() const;
 	};
 
   class DoubleItemNaive : public AtomicItem
@@ -342,6 +344,7 @@ public:
     virtual xqp_string show() const;
     virtual bool isNaN() const;
     virtual bool isPosOrNegInf() const;
+    virtual uint32_t hash() const;
 	};
 	
 	class FloatItemNaive : public AtomicItem
@@ -358,6 +361,7 @@ public:
     virtual xqp_string show() const;
     virtual bool isNaN() const;
     virtual bool isPosOrNegInf() const;
+    virtual uint32_t hash() const;
 	};
 	
 	class BooleanItemNaive : public AtomicItem

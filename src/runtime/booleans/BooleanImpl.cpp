@@ -59,7 +59,7 @@ namespace zorba
     else
     {
       store::Item_t lType = item->getType();
-      type = GENV_TYPESYSTEM.create_type(lType, TypeConstants::QUANT_ONE);
+      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lType, TypeConstants::QUANT_ONE);
       if (
           ( consumeNext(iter, planState) == NULL )
           &&
@@ -267,8 +267,8 @@ namespace zorba
   
   std::pair<store::Item_t, store::Item_t> CompareIterator::valueCasting(RuntimeCB* aRuntimeCB,
                                                           store::Item_t aItem0, store::Item_t aItem1) {
-    xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
-    xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     // all untyped Atomics to String
     if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
@@ -284,8 +284,8 @@ namespace zorba
   
   std::pair<store::Item_t, store::Item_t> CompareIterator::generalCasting(RuntimeCB* aRuntimeCB,
                                                             store::Item_t aItem0, store::Item_t aItem1) {
-    xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
-    xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
       if (TypeOps::is_numeric(*type1))
@@ -362,8 +362,8 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   std::pair<store::Item_t, store::Item_t> CompareIterator::typePromotion(RuntimeCB* aRuntimeCB, 
                                                            store::Item_t aItem0, store::Item_t aItem1) {
-    xqtref_t aType0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
-    xqtref_t aType1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t aType0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t aType1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     
     store::Item_t lResult = GenericCast::instance()->promote(aItem0, aType1); 
     if (lResult != 0) {
@@ -460,8 +460,8 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
       return 1;
 
     int equal = -2;
-    xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
-    xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
 
     // TODO, equal implementation for types which do not support compare
 
@@ -511,8 +511,8 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   CompareIterator::compare(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
                            xqpString* aCollation)
   {
-    xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
-    xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     int8_t ret = -2;
     if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
         && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)) {

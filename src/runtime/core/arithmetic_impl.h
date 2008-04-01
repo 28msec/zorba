@@ -13,6 +13,7 @@ namespace zorba {
 class ArithOperationsCommons {
 public:
   static void createError(
+      RuntimeCB* aRuntimeCB,
       const char* aOp, 
       const QueryLoc*, 
       TypeConstants::atomic_type_code_t aType0,
@@ -35,8 +36,8 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline store::Item_t AddOperation::compute(RuntimeCB* /*aRuntimeCB*/, const QueryLoc* loc, const store::Item*, const store::Item*) {
-  ArithOperationsCommons::createError("add", loc, ATC0, ATC1);
+inline store::Item_t AddOperation::compute(RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item*, const store::Item*) {
+  ArithOperationsCommons::createError(aRuntimeCB, "add", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -55,8 +56,8 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline store::Item_t SubtractOperation::compute(RuntimeCB* /*aRuntimeCB*/, const QueryLoc* loc, const store::Item*, const store::Item*) {
-  ArithOperationsCommons::createError("sub", loc, ATC0, ATC1);
+inline store::Item_t SubtractOperation::compute(RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item*, const store::Item*) {
+  ArithOperationsCommons::createError(aRuntimeCB, "sub", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -75,8 +76,8 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline store::Item_t MultiplyOperation::compute(RuntimeCB* /*aRuntimeCB*/, const QueryLoc* loc, const store::Item*, const store::Item*) {
-  ArithOperationsCommons::createError("mul", loc, ATC0, ATC1);
+inline store::Item_t MultiplyOperation::compute(RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item*, const store::Item*) {
+  ArithOperationsCommons::createError(aRuntimeCB, "mul", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -95,8 +96,8 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline store::Item_t DivideOperation::compute(RuntimeCB* /*aRuntimeCB*/, const QueryLoc* loc, const store::Item*, const store::Item*) {
-  ArithOperationsCommons::createError("div", loc, ATC0, ATC1);
+inline store::Item_t DivideOperation::compute(RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item*, const store::Item*) {
+  ArithOperationsCommons::createError(aRuntimeCB, "div", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -115,8 +116,8 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline store::Item_t IntegerDivideOperation::compute(RuntimeCB* /*aRuntimeCB*/, const QueryLoc* loc, const store::Item*, const store::Item*) {
-  ArithOperationsCommons::createError("int-div", loc, ATC0, ATC1);
+inline store::Item_t IntegerDivideOperation::compute(RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item*, const store::Item*) {
+  ArithOperationsCommons::createError(aRuntimeCB, "int-div", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -135,8 +136,8 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline store::Item_t ModOperation::compute(RuntimeCB* /*aRuntimeCB*/, const QueryLoc* loc, const store::Item*, const store::Item*) {
-  ArithOperationsCommons::createError("mod", loc, ATC0, ATC1);
+inline store::Item_t ModOperation::compute(RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item*, const store::Item*) {
+  ArithOperationsCommons::createError(aRuntimeCB, "mod", loc, ATC0, ATC1);
   return 0;
 }
 

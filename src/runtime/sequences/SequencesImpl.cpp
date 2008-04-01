@@ -23,6 +23,8 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 
+#include "context/static_context.h"
+
 #include "errors/error_manager.h"
 
 #include "util/web/web.h"
@@ -183,41 +185,47 @@ FnExistsIterator::nextImpl(PlanState& planState) const {
  * The order in which the sequence of values is returned is ·implementation dependent·.
  * Here, we return the first item that is not a duplicate and throw away the remaining ones
  */
-bool ItemCmp::operator() ( const store::Item_t& i1, const store::Item_t& i2) const
-{
-  // TODO add theRuntimeCB here
-  return CompareIterator::compare(0, i1, i2)<0?true:false;
-}
-
 FnDistinctValuesIterator::FnDistinctValuesIterator(const QueryLoc& loc,
                                                    vector<PlanIter_t>& args)
  : NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState> ( loc, args )
 { }
 
-FnDistinctValuesIterator::~FnDistinctValuesIterator(){}
+FnDistinctValuesIterator::~FnDistinctValuesIterator()
+{
+}
 
 store::Item_t 
 FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
   store::Item_t lItem;
-  FnDistinctValuesIteratorState::AlreadySeenConstIter_t lConstIter;
+  xqtref_t lItemType;
   
   FnDistinctValuesIteratorState* state;
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
 
   if (theChildren.size() == 2)
   {
-    // TODO collation support
+    if ( (lItem = consumeNext(theChildren[1].getp(), planState)) != NULL ) {
+      lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lItem->getType(), TypeConstants::QUANT_ONE);
+      if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
+        ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0002, loc, "Non string item not allowed as second parameter to distinct-values");
+      }
+      xqpString lCollation(lItem->getStringValue());
+      state->theValueCompareParam = new store::ValueCollCompareParam(planState.theRuntimeCB);
+      state->theValueCompareParam->theCollation = lCollation;
+      state->theAlreadySeenMap = 
+        new store::ItemValueCollHandleHashSet(static_cast<store::ValueCollCompareParam*>(state->theValueCompareParam));
+    } else {
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, "An empty-sequence is not allowed as second parameter to distinct-values");
+    }
+  } else {
+    state->theValueCompareParam = new store::ValueCollCompareParam(planState.theRuntimeCB);
+    state->theAlreadySeenMap = new store::ItemValueCollHandleHashSet(state->theValueCompareParam);
   }
-      
-  while ( (lItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
-  {
-    // check if the item is alrady in the map
-    lConstIter = state->theAlreadySeenMap.find(lItem);
 
-    // if the item was not in the map
-    if ( lConstIter == state->theAlreadySeenMap.end() ) 
-    {
-      state->theAlreadySeenMap[lItem] = 1;
+  while ( (lItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
+    // check if the item is alrady in the map
+    if ( ! state->theAlreadySeenMap->find(lItem) ) {
+      state->theAlreadySeenMap->insert(lItem);
       STACK_PUSH(lItem, state);
     }
   }
@@ -234,7 +242,20 @@ FnDistinctValuesIteratorState::init(PlanState& planState)
 void
 FnDistinctValuesIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theAlreadySeenMap.clear();
+  theAlreadySeenMap->clear();
+}
+
+FnDistinctValuesIteratorState::FnDistinctValuesIteratorState()
+  : theAlreadySeenMap(0),
+    theValueCompareParam(0) {}
+
+FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() 
+{
+  if (theAlreadySeenMap) {
+    delete theAlreadySeenMap;
+    theAlreadySeenMap = 0;
+  }
+
 }
 
 
@@ -733,7 +754,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
   {
     do {
       // casting of untyped atomic
-      xqtref_t lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(),TypeConstants::QUANT_ONE);
+      xqtref_t lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lRunningItem->getType(),TypeConstants::QUANT_ONE);
       if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
         lRunningItem = GenericCast::instance()->cast(lRunningItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
@@ -750,7 +771,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
         if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
           break;
 
-        lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);
+        lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);
       }
       if (lMaxItem != 0) {
         // Type Promotion
@@ -759,13 +780,13 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
           lItemCur = GenericCast::instance()->promote(lMaxItem, lRunningType); 
           if (lItemCur != 0) {
             lMaxItem = lItemCur;
-            lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);
+            lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);
           } else {
             ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc,  "Promote not possible");
           }
         } else {
           lRunningItem = lItemCur;
-          lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(), TypeConstants::QUANT_ONE);
+          lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lRunningItem->getType(), TypeConstants::QUANT_ONE);
         }
         if (CompareIterator::valueComparison(planState.theRuntimeCB, lRunningItem, lMaxItem, 
                                              theCompareType) ) {

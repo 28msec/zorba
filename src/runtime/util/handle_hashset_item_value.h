@@ -4,6 +4,7 @@
 #include "util/hashfun.h"
 
 #include "store/util/handle_hashset.h"
+#include "runtime/booleans/BooleanImpl.h"
 
 
 namespace zorba { namespace store {
@@ -11,12 +12,17 @@ namespace zorba { namespace store {
 class ValueCompareParam
 {
 public:
+  ValueCompareParam(RuntimeCB* aRuntimeCB)
+    : theRuntimeCB(aRuntimeCB) {}
   RuntimeCB* theRuntimeCB;
 };
 
 class ValueCollCompareParam
 {
 public:
+  ValueCollCompareParam(RuntimeCB* aRuntimeCB)
+    : theRuntimeCB(aRuntimeCB) {}
+
   RuntimeCB* theRuntimeCB;
   xqp_string theCollation;
 };
@@ -27,11 +33,11 @@ class Externals<T, E, ValueCompareParam>
 public:
   static bool equal(const T* t1, const T* t2, ValueCompareParam* aCompareParam)
   {
-    return E::equal(t1, t2);
+    return E::equal(t1, t2, aCompareParam);
   }
   static uint32_t hash(const T* t1, ValueCompareParam* aCompareParam)
   {
-    return E::hash(t1);
+    return E::hash(t1, aCompareParam);
   }
 };
 
@@ -41,11 +47,11 @@ class Externals<T, E, ValueCollCompareParam>
 public:
   static bool equal(const T* t1, const T* t2, ValueCollCompareParam* aCompareParam)
   {
-    return E::equal(t1, t2);
+    return E::equal(t1, t2, aCompareParam);
   }
   static uint32_t hash(const T* t1, ValueCollCompareParam* aCompareParam)
   {
-    return E::hash(t1);
+    return E::hash(t1, aCompareParam);
   }
 };
 

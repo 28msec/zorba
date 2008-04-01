@@ -19,16 +19,18 @@
 #include "system/globalenv.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "context/static_context.h"
 
 namespace zorba
 {
 
   // Utility function -- is this item null or a NaN?
-static bool empty_item (store::Item_t s)
+static bool empty_item (RuntimeCB* aRuntimeCB, store::Item_t s)
 {
+  
   return (s == 0) ||
-         (TypeOps::is_numeric(*GENV_TYPESYSTEM.create_type(s->getType(), TypeConstants::QUANT_ONE)) &&
-          s->isNaN());
+         (TypeOps::is_numeric(*aRuntimeCB->theStaticContext->get_typemanager()->create_type(s->getType(), TypeConstants::QUANT_ONE))) &&
+          s->isNaN();
   }
 
 
@@ -184,14 +186,14 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
     bool desc,
     bool emptyLeast ) const
 {
-  if ( empty_item (s1) )
+  if ( empty_item (aRuntimeCB, s1) )
   {
-    if ( empty_item (s2) )
+    if ( empty_item (aRuntimeCB, s2) )
       return descAsc ( 0, desc );
     else
       return descAsc (emptyLeast ? -1 : 1, desc);
   }
-  else if ( empty_item (s2) )
+  else if ( empty_item (aRuntimeCB, s2) )
   {
     return descAsc (emptyLeast ? 1 : -1, desc);
   }

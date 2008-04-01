@@ -15,10 +15,12 @@
 #include "types/typeops.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
+#include "context/static_context.h"
 
 namespace zorba {
 
 void ArithOperationsCommons::createError(
+  RuntimeCB* aRuntimeCB,
   const char* aOp, 
   const QueryLoc* aLoc, 
   TypeConstants::atomic_type_code_t aType0,
@@ -29,9 +31,9 @@ void ArithOperationsCommons::createError(
   lStream << "The operation '";
   lStream << aOp;
   lStream << "' is not possible with parameters of the type ";
-  GENV_TYPESYSTEM.create_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
+  aRuntimeCB->theStaticContext->get_typemanager()->create_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << " and ";
-  GENV_TYPESYSTEM.create_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
+  aRuntimeCB->theStaticContext->get_typemanager()->create_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << ".";
   ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, *aLoc, lStream.str());
 }
@@ -78,8 +80,8 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
   n0 = n0->getAtomizationValue();
   n1 = n1->getAtomizationValue();
 
-  xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
-  xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeConstants::QUANT_ONE );
+  xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type ( n0->getType(), TypeConstants::QUANT_ONE );
+  xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type ( n1->getType(), TypeConstants::QUANT_ONE );
 
   if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
      || TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
@@ -270,7 +272,7 @@ store::Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstant
 
   if( i1->getDoubleValue().isZero() )
   {
-    xqtref_t type0 = GENV_TYPESYSTEM.create_type(i0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(i0->getType(), TypeConstants::QUANT_ONE);
     if( TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
       d = new YearMonthDuration();
     else
@@ -298,7 +300,7 @@ store::Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants:
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
   {
-    xqtref_t type0 = GENV_TYPESYSTEM.create_type(i0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(i0->getType(), TypeConstants::QUANT_ONE);
     if( TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
       d = new YearMonthDuration();
     else

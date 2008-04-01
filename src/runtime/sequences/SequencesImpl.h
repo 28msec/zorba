@@ -12,13 +12,17 @@
 #include <stack>
 
 #include "common/shared_types.h"
-#include "runtime/base/unarybase.h"  // TODO remove after refactoring
-#include "runtime/base/binarybase.h" // TODO remove after refactoring
+#include "runtime/base/unarybase.h"
+#include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
 #include "runtime/booleans/compare_types.h"
 
 namespace zorba
 {
+  namespace store {
+    class ItemValueCollHandleHashSet;
+    class ValueCollCompareParam;
+  }
 
   /*______________________________________________________________________
   |
@@ -72,19 +76,13 @@ NARY_ITER(FnEmptyIterator);
 NARY_ITER(FnExistsIterator);
 
 //15.1.6 fn:distinct-values
-
-
-struct ItemCmp 
-{
-    bool operator() ( const store::Item_t& i1, const store::Item_t& i2) const;
-};
-
 class FnDistinctValuesIteratorState : public PlanIteratorState {
 public:  
-  typedef std::map<store::Item_t, uint8_t, ItemCmp> AlreadySeenMap_t;
-  typedef AlreadySeenMap_t::const_iterator   AlreadySeenConstIter_t;
+  store::ItemValueCollHandleHashSet* theAlreadySeenMap;
+  store::ValueCollCompareParam* theValueCompareParam;
 
-  AlreadySeenMap_t theAlreadySeenMap;  
+  FnDistinctValuesIteratorState();
+  ~FnDistinctValuesIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);

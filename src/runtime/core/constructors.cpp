@@ -433,22 +433,22 @@ NameCastIterator::~NameCastIterator()
 }
 
 
-store::Item_t NameCastIterator::nextImpl(PlanState& aPlanState) const
+store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
   store::Item_t lRes;
   xqpStringStore_t strval;
 
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-  lItem = consumeNext(theChild.getp(), aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  lItem = consumeNext(theChild.getp(), planState);
   if (lItem == 0)
   {
     ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
                           "Empty sequences cannot be cased to QName.");
   }
 
-  if (consumeNext(theChild.getp(), aPlanState) != 0)
+  if (consumeNext(theChild.getp(), planState) != 0)
   {
     ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
                           "Non single sequences cannot be cased to QName.");
@@ -456,7 +456,7 @@ store::Item_t NameCastIterator::nextImpl(PlanState& aPlanState) const
 
   try
   {
-    xqtref_t lItemType = GENV_TYPESYSTEM.create_type(lItem->getType(),
+    xqtref_t lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lItem->getType(),
                                                      TypeConstants::QUANT_ONE);
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
     {

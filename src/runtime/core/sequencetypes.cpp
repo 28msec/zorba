@@ -4,6 +4,7 @@
 #include "types/casting.h"
 #include "types/typeops.h"
 #include "store/api/item_factory.h"
+#include "context/static_context.h"
 
 using namespace std;
 
@@ -127,14 +128,14 @@ CastIterator::CastIterator(
 CastIterator::~CastIterator(){}
 
 
-store::Item_t CastIterator::nextImpl(PlanState& aPlanState) const
+store::Item_t CastIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
   
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lItem = consumeNext(theChild.getp(), aPlanState);
+  lItem = consumeNext(theChild.getp(), planState);
   if (lItem == 0)
   {
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
@@ -148,7 +149,7 @@ store::Item_t CastIterator::nextImpl(PlanState& aPlanState) const
   else if (theQuantifier == TypeConstants::QUANT_ONE ||
           theQuantifier == TypeConstants::QUANT_QUESTION)
   {
-    if (consumeNext(theChild.getp(), aPlanState) != NULL)
+    if (consumeNext(theChild.getp(), planState) != NULL)
     {
       ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
                         "Sequence with more than one item cannot be casted to a type with quantifier ONE or QUESTION!");
@@ -160,11 +161,11 @@ store::Item_t CastIterator::nextImpl(PlanState& aPlanState) const
   {
     STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
 
-    lItem = consumeNext(theChild.getp(), aPlanState);
+    lItem = consumeNext(theChild.getp(), planState);
     while (lItem != 0)
     {
       STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
-      lItem = consumeNext(theChild.getp(), aPlanState);
+      lItem = consumeNext(theChild.getp(), planState);
     }
   }
 
@@ -188,14 +189,14 @@ CastableIterator::CastableIterator(
 
 CastableIterator::~CastableIterator(){}
 
-store::Item_t CastableIterator::nextImpl(PlanState& aPlanState) const 
+store::Item_t CastableIterator::nextImpl(PlanState& planState) const 
 {
   bool lBool;
   store::Item_t lItem;
 
   PlanIteratorState* lState;
-  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
-  lItem = consumeNext(theChild.getp(), aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
+  lItem = consumeNext(theChild.getp(), planState);
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       lBool = false;
@@ -205,7 +206,7 @@ store::Item_t CastableIterator::nextImpl(PlanState& aPlanState) const
   } else {
     lBool = GenericCast::instance()->isCastable(lItem, theCastType);
     if (lBool) {
-      lItem = consumeNext(theChild.getp(), aPlanState);
+      lItem = consumeNext(theChild.getp(), planState);
       if (lItem != 0) {
         if (theQuantifier == TypeConstants::QUANT_ONE || theQuantifier == TypeConstants::QUANT_QUESTION) {
           lBool = false;
@@ -213,7 +214,7 @@ store::Item_t CastableIterator::nextImpl(PlanState& aPlanState) const
           do {
             lBool = GenericCast::instance()->isCastable(lItem, theCastType);
             if (lBool)
-              lItem = consumeNext(theChild.getp(), aPlanState);
+              lItem = consumeNext(theChild.getp(), planState);
           } while (lBool && (lItem != 0));
         }
       }
@@ -232,14 +233,14 @@ PromoteIterator::PromoteIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const
 
 PromoteIterator::~PromoteIterator(){}
 
-store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const 
+store::Item_t PromoteIterator::nextImpl(PlanState& planState) const 
 {
   store::Item_t lItem;
   store::Item_t lResult;
   PlanIteratorState* lState;
-  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
 
-  lItem = consumeNext(theChild.getp(), aPlanState);
+  lItem = consumeNext(theChild.getp(), planState);
   
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
@@ -248,13 +249,13 @@ store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
-    if(consumeNext(theChild.getp(), aPlanState) != 0) {
+    if(consumeNext(theChild.getp(), planState) != 0) {
       ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  
       "Seq with 2 or more items cannot be promotioned to a QUANT_QUESTION or QUANT_ONE type.");
     }
     lResult = GenericCast::instance()->promote(lItem, thePromoteType);
     if (lResult == 0) {
-      ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " -> " + TypeOps::toString (*thePromoteType) );
+      ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " -> " + TypeOps::toString (*thePromoteType) );
     } else {
       STACK_PUSH(lResult, lState);
     }
@@ -262,11 +263,11 @@ store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
     do {
       lResult = GenericCast::instance()->promote(lItem, thePromoteType);
       if (lResult == 0) {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*GENV_TYPESYSTEM.create_type (lItem->getType ())) + " -> " + TypeOps::toString (*thePromoteType) );
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_type (lItem->getType ())) + " -> " + TypeOps::toString (*thePromoteType) );
       } else{
         STACK_PUSH(lResult, lState);
       }
-      lItem = consumeNext(theChild.getp(), aPlanState);
+      lItem = consumeNext(theChild.getp(), planState);
     } while (lItem != 0);
   }
   STACK_END (lState);
@@ -281,13 +282,13 @@ store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
 
 TreatIterator::~TreatIterator(){}
 
-store::Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
+store::Item_t TreatIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
   PlanIteratorState* lState;
-  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
 
-  lItem = consumeNext(theChild.getp(), aPlanState);
+  lItem = consumeNext(theChild.getp(), planState);
   
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
@@ -296,23 +297,23 @@ store::Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
-    if(consumeNext(theChild.getp(), aPlanState) != 0) {
+    if(consumeNext(theChild.getp(), planState) != 0) {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc, 
       "Seq with 2 or more items cannot treated as a QUANT_QUESTION or QUANT_ONE type.");
     }
     if ( !TypeOps::is_treatable(lItem, *theTreatType)) {
-      ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + TypeOps::toString (*theTreatType) );
+      ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + TypeOps::toString (*theTreatType) );
     } else {
       STACK_PUSH(lItem, lState);
     }
   } else {
     do {
       if ( !TypeOps::is_treatable(lItem, *theTreatType)) {
-        ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + TypeOps::toString (*theTreatType) );
+        ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + TypeOps::toString (*theTreatType) );
       } else{
         STACK_PUSH(lItem, lState);
       }
-      lItem = consumeNext(theChild.getp(), aPlanState);
+      lItem = consumeNext(theChild.getp(), planState);
     } while (lItem != 0);
   }
   STACK_END (lState);

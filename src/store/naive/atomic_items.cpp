@@ -262,6 +262,14 @@ bool DecimalItemNaive::isNaN() const {
   return theValue != theValue;
 }
 
+uint32_t
+DecimalItemNaive::hash() const
+{
+  // TODO we need a better hash function
+  return 0;
+}
+
+
 /*******************************************************************************
   class IntItemNaive
 ********************************************************************************/
@@ -338,6 +346,13 @@ Item_t IntegerItemNaive::getEBV() const
 	{
 		return "xs:integer(" + getStringValue()->str() + ")";
 	}
+
+  uint32_t
+  IntegerItemNaive::hash() const
+  {
+    // TODO we need a better hash function
+    return 0;
+  }
 	/* end class IntegerItem */
 	
 	/* start class DoubleItem */
@@ -380,6 +395,12 @@ bool DoubleItemNaive::isPosOrNegInf() const {
   return theValue.isPosInf() || theValue.isNegInf();
 }
 
+uint32_t
+DoubleItemNaive::hash() const
+{
+  // TODO we need a better hash function
+  return 0;
+}
   
 /*******************************************************************************
   class FloatItemNaive
@@ -423,6 +444,12 @@ bool FloatItemNaive::isPosOrNegInf() const {
   return theValue.isPosInf() || theValue.isNegInf();
 }
 
+uint32_t
+FloatItemNaive::hash() const
+{
+  // TODO we need a better hash function
+  return 0;
+}
 
 /*******************************************************************************
   class BooleanItemNaive
