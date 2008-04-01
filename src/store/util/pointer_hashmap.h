@@ -2,7 +2,8 @@
 #define ZORBA_STORE_UTIL_POINTER_HASHMAP
 
 #include "common/shared_types.h"
-#include "zorbatypes/xqpstring.h"
+#include "util/Assert.h"
+//#include "zorbatypes/xqpstring.h"
 
 #include "store/util/mutex.h"
 
@@ -51,6 +52,69 @@ protected:
     ~HashEntry() { theItem = NULL; theNext = NULL; }
   };
 
+public:  
+  class iterator
+  {
+    friend class PointerHashMap;
+
+  protected:
+    std::vector<HashEntry>*  theHashTab;
+    ulong                    thePos;
+
+  protected:
+    iterator(std::vector<HashEntry>* ht, ulong pos) 
+      :
+      theHashTab(ht),
+      thePos(pos)
+    {
+      while ((*theHashTab)[thePos].theItem == NULL)
+        thePos++;
+    }
+
+  public:
+    iterator() : theHashTab(NULL), thePos(-1) {}
+
+    iterator& operator = (const iterator& it) 
+    {
+      if(&it != this) 
+      {
+        theHashTab = it.theHashTab;
+        thePos = it.thePos;
+      }
+      return *this;
+    }
+
+    bool operator==(const iterator& other) const
+    {
+      return theHashTab == other.theHashTab && thePos == other.thePos;
+    }
+
+    bool operator!=(const iterator& it) const
+    {
+      return theHashTab != it.theHashTab || thePos != it.thePos;
+    }
+
+    iterator& operator++()
+    {
+      if (thePos < theHashTab->size())
+      {
+        thePos++;
+        while ((*theHashTab)[thePos].theItem == NULL)
+          thePos++;
+      }
+      return *this;
+    }
+
+    std::pair<const T*, V> operator*() const
+    {
+      ZORBA_ASSERT(thePos < theHashTab->size());
+      
+      HashEntry& entry = (*theHashTab)[thePos];
+
+      return std::pair<const T*, V>(entry.theItem, entry.theValue);
+    }
+  };
+
 protected:
   ulong                   theNumEntries;
 
@@ -72,6 +136,16 @@ public:
   bool get(const T* item, V*& value);
 
   void clear();
+
+  iterator begin()
+  {
+    return iterator(&theHashTab, 0);
+  }
+
+  iterator end()
+  {
+    return iterator(&theHashTab, theHashTab.size());
+  }
 
 protected:
   void expand();
