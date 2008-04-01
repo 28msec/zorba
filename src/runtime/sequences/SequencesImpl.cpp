@@ -46,27 +46,40 @@ namespace zorba {
 //15.1.2 op:concatenate 
 //---------------------
 void
-FnConcatIteratorState::init(PlanState& planState) {
+FnConcatIteratorState::init(PlanState& planState) 
+{
   PlanIteratorState::init(planState);
   theCurIter = 0;
 }
 
 void
-FnConcatIteratorState::reset(PlanState& planState) {
+FnConcatIteratorState::reset(PlanState& planState) 
+{
   PlanIteratorState::reset(planState);
   theCurIter = 0;
 }
 
+
+bool
+FnConcatIterator::isUpdateIterator() const
+{
+  return theChildren[0]->isUpdateIterator();
+}
+
+
 store::Item_t
-FnConcatIterator::nextImpl(PlanState& planState) const {
+FnConcatIterator::nextImpl(PlanState& planState) const 
+{
   store::Item_t item;
   
   FnConcatIteratorState* state;
   DEFAULT_STACK_INIT(FnConcatIteratorState, state, planState);
   
-  for (; state->theCurIter < theChildren.size(); ++state->theCurIter) {;
+  for (; state->theCurIter < theChildren.size(); ++state->theCurIter) 
+  {
     item = consumeNext(theChildren[state->theCurIter].getp(), planState);
-    while (item != NULL) {
+    while (item != NULL) 
+    {
       STACK_PUSH (item, state);
       item = consumeNext(theChildren[state->theCurIter].getp(), planState);
     }

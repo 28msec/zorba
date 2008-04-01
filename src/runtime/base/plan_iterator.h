@@ -280,6 +280,11 @@ public:
 public:
 
   /**
+   * Return true if "this" may return a pending update list.
+   */
+  virtual bool isUpdateIterator() const { return false; }
+
+  /**
    * Accept method for the PlanIterator-Tree-Visitor
    * 
    * @param PlanIterVisitor

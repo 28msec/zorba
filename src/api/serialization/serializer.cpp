@@ -371,7 +371,10 @@ bool serializer::emitter::havePrefix(const xqpString& pre) const
   return false;
 }
 
-int serializer::emitter::emit_node_children(store::Item* item, int depth, bool perform_escaping = true)
+int serializer::emitter::emit_node_children(
+    const store::Item* item,
+    int depth,
+    bool perform_escaping = true)
 {
   Iterator_t it;
   store::Item_t child;	
@@ -416,7 +419,7 @@ int serializer::emitter::emit_node_children(store::Item* item, int depth, bool p
 }
 
 
-bool serializer::emitter::emit_bindings(store::Item* item)
+bool serializer::emitter::emit_bindings(const store::Item* item)
 {
   // emit namespace bindings
   NsBindings nsBindings;
@@ -463,7 +466,10 @@ bool serializer::emitter::emit_bindings(store::Item* item)
     return false;
 }
 
-void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* element_parent /* = NULL */)
+void serializer::emitter::emit_node(
+    const store::Item* item,
+    int depth,
+    const store::Item* element_parent /* = NULL */)
 {
 	if( item->getNodeKind() == store::StoreConsts::documentNode )
 	{		
@@ -527,7 +533,7 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
 	}
 }
 
-void serializer::emitter::emit_item(store::Item* item)
+void serializer::emitter::emit_item(const store::Item* item)
 {
   if (item->isAtomic())
   {
@@ -539,11 +545,7 @@ void serializer::emitter::emit_item(store::Item* item)
   else
   {
     if (item->getNodeKind() == store::StoreConsts::attributeNode)
-      //||
-      //  item->getNodeKind() == namespaceNode)
-    {
       ZORBA_ERROR(ZorbaError::SENR0001);
-    }
     else        
       emit_node(item, 0);
   }  
@@ -610,7 +612,7 @@ void serializer::html_emitter::emit_declaration_end()
 
 // returns true if there is a META element, as a child of a HEAD element,
 // with an attribute "http-equiv" with value "content-type"
-int is_content_type_meta(store::Item_t item, store::Item_t element_parent)
+int is_content_type_meta(const store::Item* item, const store::Item* element_parent)
 {
   store::Item_t child;
   
@@ -643,7 +645,7 @@ int is_content_type_meta(store::Item_t item, store::Item_t element_parent)
   return 0;
 }
 
-int is_html_empty_element(store::Item_t item)
+int is_html_empty_element(const store::Item* item)
 {
   xqpString str(item->getNodeName()->getStringValue());
   str = str.lowercase();
@@ -666,7 +668,10 @@ int is_html_empty_element(store::Item_t item)
     return 0;
 }
 
-void serializer::html_emitter::emit_node(store::Item* item, int depth, store::Item* element_parent)
+void serializer::html_emitter::emit_node(
+    const store::Item* item,
+    int depth,
+    const store::Item* element_parent)
 {
   if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
@@ -961,6 +966,8 @@ void serializer::serialize(PlanWrapper *result, ostream& os)
   store::Item_t item = result->next();
   while (item != NULL )
   {
+    ZORBA_ASSERT(!item->isPul());
+
     e->emit_item(&*item);
     item = result->next();
   }
@@ -968,7 +975,7 @@ void serializer::serialize(PlanWrapper *result, ostream& os)
   e->emit_declaration_end();
 }
 
-void serializer::serialize(store::Item* item, ostream& os)
+void serializer::serialize(const store::Item* item, ostream& os)
 {
   validate_parameters();
   setup(os);

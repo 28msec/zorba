@@ -9,15 +9,18 @@
 
 #include "common/shared_types.h"
 
-namespace zorba { 
-    
+namespace zorba 
+{
 class RuntimeCB;
+class serializer;
 
-namespace store {
-  typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
-  typedef StoreConsts::NodeKind NodeKind;
-  
-  
+namespace store
+{
+
+typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
+typedef StoreConsts::NodeKind NodeKind;
+
+
 /**
  *
  *  'item' - top of the XQuery value hierarchy,
@@ -466,7 +469,13 @@ public:
   show() const;
 
   virtual void
-  serializeXML( std::ostream& os );
+  serializeXML(serializer& ser, std::ostream& os) const;
+
+  virtual void
+  applyUpdates();
+
+  virtual void
+  serializeUpdates(serializer& ser, std::ostream& os);
 
 };   /* Item */
 

@@ -14,29 +14,35 @@
 
 namespace zorba
 {
-	/**
-	 * Superclass for all iterators which have n child iterators 
-	 * and no additional state variables.
-	 */
-	template <class IterType, class StateType = PlanIteratorState>
-	class NaryBaseIterator : public Batcher<IterType>
-	{
-		protected:
-			std::vector<PlanIter_t> theChildren;
+/**
+ * Superclass for all iterators which have n child iterators 
+ * and no additional state variables.
+ */
+template <class IterType, class StateType = PlanIteratorState>
+class NaryBaseIterator : public Batcher<IterType>
+{
+protected:
+  std::vector<PlanIter_t> theChildren;
 
-		public:
-			NaryBaseIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args );
-			virtual ~NaryBaseIterator(){}
+public:
+  NaryBaseIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args );
 
-      void openImpl ( PlanState& planState, uint32_t& offset );
-			void resetImpl ( PlanState& planState ) const;
-			void closeImpl ( PlanState& planState );
+  virtual ~NaryBaseIterator(){}
 
-      virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); } 
-      virtual uint32_t getStateSizeOfSubtree() const;
-	}; /* class BinaryBaseIterator */
+  void openImpl ( PlanState& planState, uint32_t& offset );
+  void resetImpl ( PlanState& planState ) const;
+  void closeImpl ( PlanState& planState );
 
-	/* begin class NaryBaseIterator */
+  virtual uint32_t getStateSize() const
+  {
+    return StateTraitsImpl<StateType>::getStateSize();
+  }
+ 
+  virtual uint32_t getStateSizeOfSubtree() const;
+};
+
+
+
 	template <class IterType, class StateType>
 	NaryBaseIterator<IterType, StateType>::NaryBaseIterator (
 	    const QueryLoc& loc,
@@ -56,6 +62,7 @@ namespace zorba
 #endif
 	}
 
+
   template <class IterType, class StateType>
   void
   NaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset ) 
@@ -71,6 +78,7 @@ namespace zorba
 		}
 
   }
+
 
 	template <class IterType, class StateType>
 	void
@@ -119,26 +127,28 @@ namespace zorba
 	}
 	/* end class NaryBaseIterator */
 
-#define NARY_ITER_STATE(iterName, stateName) class iterName \
-  : public NaryBaseIterator<iterName, stateName > {\
-public:\
-  iterName(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :\
-    NaryBaseIterator<iterName, stateName >(loc, aChildren) \
-  { } \
-  virtual ~iterName() { } \
-  \
-  store::Item_t nextImpl(PlanState& aPlanState) const; \
-  \
-  virtual void accept(PlanIterVisitor& v) const \
-  {  \
-    v.beginVisit(*this); \
+
+#define NARY_ITER_STATE(iterName, stateName)                             \
+class iterName : public NaryBaseIterator<iterName, stateName > {         \
+ public:                                                                 \
+  iterName(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :    \
+    NaryBaseIterator<iterName, stateName >(loc, aChildren)               \
+      { }                                                                \
+                                                                         \
+  virtual ~iterName() { }                                                \
+                                                                         \
+  store::Item_t nextImpl(PlanState& aPlanState) const;                   \
+                                                                         \
+  virtual void accept(PlanIterVisitor& v) const                          \
+  {                                                                      \
+    v.beginVisit(*this);                                                 \
     std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin(); \
-    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end(); \
-    for ( ; iter != lEnd; ++iter ) { \
-      ( *iter )->accept ( v ); \
-    } \
-    v.endVisit(*this); \
-  } \
+    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();   \
+    for ( ; iter != lEnd; ++iter ) {                                     \
+      ( *iter )->accept ( v );                                           \
+    }                                                                    \
+    v.endVisit(*this);                                                   \
+  }                                                                      \
 };
 
 #define NARY_ITER(name) NARY_ITER_STATE(name, PlanIteratorState) 

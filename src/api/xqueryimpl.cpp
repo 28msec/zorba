@@ -7,6 +7,7 @@
 #include <zorba/default_error_handler.h>
 #include <zorba/error.h>
 #include <zorba/exception.h>
+
 #include "errors/errors.h"
 #include "errors/error_manager.h"
 
@@ -25,10 +26,11 @@
 
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
-#include "errors/error_manager.h"
 #include "runtime/api/plan_wrapper.h"
 
 #include "util/properties.h"
+
+#include "store/api/item.h"
 
 
 namespace zorba {
@@ -205,6 +207,12 @@ namespace zorba {
   /** 
    * various ways to execute a query
    */
+  bool
+  XQueryImpl::isUpdateQuery() const
+  {
+    return thePlan->isUpdateIterator();
+  }
+
   PlanWrapper_t
   XQueryImpl::generateWrapper()
   {
@@ -231,6 +239,51 @@ namespace zorba {
     try { 
       lSerializer.serialize(&*lPlan, os);
     } catch (error::ZorbaError& e) {
+      lPlan->close();
+      ZorbaImpl::notifyError(theErrorHandler, e);
+      return;
+    }
+
+    lPlan->close();
+  }
+
+  void XQueryImpl::applyUpdates(std::ostream& os)
+  {
+    if ( ! theQueryIsCompiled ) 
+    {
+      try
+      {
+        ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
+                         "Error executing query because it is not compiled");
+      } catch (error::ZorbaError &e) {
+        ZorbaImpl::notifyError(theErrorHandler, e);
+      }
+    }
+
+    PlanWrapper_t lPlan = generateWrapper();
+    serializer lSerializer(theErrorManager);
+
+    lPlan->open();
+    try 
+    { 
+      store::Item_t pul = lPlan->next();
+
+      try
+      {
+        if (!pul->isPul())
+          ZORBA_ERROR_DESC(ZorbaError::XQP0019_INTERNAL_ERROR,
+                           "Query does not return a pending update list");
+      }
+      catch (error::ZorbaError &e)
+      {
+        ZorbaImpl::notifyError(theErrorHandler, e);
+      }
+
+      pul->applyUpdates();
+      pul->serializeUpdates(lSerializer, os);
+    }
+    catch (error::ZorbaError& e)
+    {
       lPlan->close();
       ZorbaImpl::notifyError(theErrorHandler, e);
       return;

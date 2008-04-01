@@ -33,7 +33,8 @@ namespace zorba
 // see BooleanImpl.h
 
 //15.1.2 op:concatenate
-class FnConcatIteratorState : public  PlanIteratorState {
+class FnConcatIteratorState : public  PlanIteratorState 
+{
 public:
   uint32_t theCurIter;
 
@@ -41,7 +42,26 @@ public:
   void reset(PlanState&);
 };
 
-NARY_ITER_STATE(FnConcatIterator, FnConcatIteratorState);
+
+class FnConcatIterator : public NaryBaseIterator<FnConcatIterator,
+                                                 FnConcatIteratorState>
+{
+public:
+  FnConcatIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    :
+    NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(loc, aChildren)
+  {
+  }                                                               
+                                                                        
+  virtual ~FnConcatIterator() { }                                               
+
+  bool isUpdateIterator() const;
+
+  store::Item_t nextImpl(PlanState& aPlanState) const;
+
+  virtual void accept(PlanIterVisitor& v) const;
+};
+
 
 //15.1.3 fn:index-of
 /*

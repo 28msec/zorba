@@ -45,7 +45,7 @@ InsertIterator::InsertIterator (
   store::UpdateConsts::InsertType aType,
   PlanIter_t                      source,
   PlanIter_t                      target)
-:
+  :
   BinaryBaseIterator<InsertIterator, InsertIteratorState>(aLoc, source, target),
   theType(aType),
   theDoCopy(true)
@@ -208,9 +208,28 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 store::Item_t
 DeleteIterator::nextImpl(PlanState& aPlanState) const
 { 
-  PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-  STACK_END (aState);
+  Item_t target;
+  std::auto_ptr<store::PUL> pul;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  target = consumeNext(theChild, aPlanState);
+
+  while (target != NULL)
+  {
+    if (!target->isNode())
+      ZORBA_ERROR_LOC(ZorbaError::XUTY0007, loc);
+
+    pul->addDelete(target);
+
+    target = consumeNext(theChild, aPlanState);
+  }
+
+  STACK_PUSH(pul.release(), state);
+  STACK_END(state);
 }
 
 
@@ -220,12 +239,14 @@ DeleteIterator::nextImpl(PlanState& aPlanState) const
 ReplaceIterator::ReplaceIterator (
   const QueryLoc& aLoc,
   store::UpdateConsts::ReplaceType aType,
-  PlanIter_t aChild0,
-  PlanIter_t aChild1)
-:
-  BinaryBaseIterator<ReplaceIterator, PlanIteratorState>(aLoc, aChild0, aChild1),
+  PlanIter_t target,
+  PlanIter_t source)
+  :
+  BinaryBaseIterator<ReplaceIterator, PlanIteratorState>(aLoc, target, source),
   theType(aType)
-{}
+{
+}
+
 
 store::Item_t
 ReplaceIterator::nextImpl (PlanState& aPlanState) const
@@ -239,6 +260,16 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
 /*******************************************************************************
 
 ********************************************************************************/
+RenameIterator::RenameIterator (
+    const QueryLoc& aLoc,
+    PlanIter_t target,
+    PlanIter_t name)
+  :
+  BinaryBaseIterator<RenameIterator, PlanIteratorState>(aLoc, target, name)
+{
+}
+
+
 store::Item_t
 RenameIterator::nextImpl(PlanState& aPlanState) const
 {

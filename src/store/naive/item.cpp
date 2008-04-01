@@ -1,9 +1,10 @@
 
-#include "store/api/item.h"
-#include "store/api/iterator.h"
 #include "errors/error_manager.h"
 #include "util/Assert.h"
 #include "zorbatypes/datetime.h"
+
+#include "store/api/item.h"
+#include "store/api/iterator.h"
 
 #include "system/globalenv.h"
 
@@ -523,18 +524,25 @@ xqp_string Item::show() const
 {
   return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
 }
-  /* end class Item */
 
 
-void Item::serializeXML( std::ostream& os )
+void Item::serializeXML(serializer& ser, std::ostream& os) const
 {
-#if 0
-  serializer *ser;
-  ser = ZORBA_FOR_CURRENT_THREAD()->getItemSerializer();
-  
-  ser->serialize(this, os);
-#endif
+  ser.serialize(this, os);
 }
+
+
+void Item::applyUpdates()
+{
+  ZORBA_ASSERT(false);
+}
+
+
+void Item::serializeUpdates(serializer& ser, std::ostream& os)
+{
+  ZORBA_ASSERT(false);
+}
+
 
 } // namespace store
 } // namespace zorba

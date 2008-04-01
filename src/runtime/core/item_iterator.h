@@ -97,7 +97,12 @@ public:
         PlanIter_t& aThenIter,
         PlanIter_t& aElseIter,
         bool aIsBooleanIter = false);
-    
+
+  bool isUpdateIterator() const
+  {
+    return theThenIter->isUpdateIterator() || theElseIter->isUpdateIterator();
+  }
+
   void openImpl(PlanState& planState, uint32_t& offset);
   store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;

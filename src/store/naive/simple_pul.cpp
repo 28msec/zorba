@@ -443,9 +443,9 @@ void PULImpl::addRename(Item_t& target, Item_t& newName)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::mergeUpdates(const PUL& other)
+void PULImpl::mergeUpdates(const Item* other)
 {
-  const PULImpl* otherp = reinterpret_cast<const PULImpl*>(&other);
+  const PULImpl* otherp = reinterpret_cast<const PULImpl*>(other);
 
   mergeUpdateList(theDoFirstList, otherp->theDoFirstList,
                   true, true, false, false);
@@ -544,6 +544,20 @@ void PULImpl::mergeUpdateList(
       myList[numUpdates + i] = upd;
       targetUpdates->push_back(upd);
     }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::serializeUpdates(serializer& ser, std::ostream& os)
+{
+  NodeToUpdatesMap::iterator it;
+
+  for (it = theNodeToUpdatesMap.begin(); it != theNodeToUpdatesMap.end(); ++it)
+  {
+    (*it).first->serializeXML(ser, os);
   }
 }
 

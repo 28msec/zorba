@@ -178,7 +178,7 @@ public:
    *  If true => The iterator has to return xs:boolean+
    */
   FLWORIterator(
-        const QueryLoc&         loc,
+        const QueryLoc&             loc,
         std::vector<ForLetClause>&  forLetClauses,
         PlanIter_t&                 whereClause,
         OrderByClause*              orderByClause,
@@ -186,6 +186,11 @@ public:
         bool                        whereClauseReturnsBooleanPlus = false );
     
   ~FLWORIterator();
+
+  bool isUpdateIterator() const
+  {
+    return returnClause->isUpdateIterator();
+  }
 
   void openImpl ( PlanState& planState, uint32_t& offset );
   store::Item_t nextImpl(PlanState& planState) const;

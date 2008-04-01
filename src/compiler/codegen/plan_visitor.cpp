@@ -513,9 +513,7 @@ void end_visit(delete_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
-  vector<PlanIter_t> lVec;
-  lVec.push_back(lTarget);
-  PlanIter_t lDelete = new DeleteIterator(v.get_loc(), lVec);
+  PlanIter_t lDelete = new DeleteIterator(v.get_loc(), lTarget);
   itstack.push(&*lDelete);
 }
 
@@ -545,10 +543,7 @@ void end_visit(rename_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lName = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
-  vector<PlanIter_t> lVec;
-  lVec.push_back(lTarget);
-  lVec.push_back(lName);
-  PlanIter_t lRename = new RenameIterator(v.get_loc(), lVec);
+  PlanIter_t lRename = new RenameIterator(v.get_loc(), lTarget, lName);
   itstack.push(&*lRename);
 }
 

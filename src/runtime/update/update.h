@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "runtime/base/binarybase.h"
-#include "runtime/base/narybase.h"
+#include "runtime/base/unarybase.h"
 #include "store/api/update_consts.h"
 #include "store/api/copymode.h"
 
@@ -38,6 +38,8 @@ public:
 
   virtual ~InsertIterator() {}
 
+  bool isUpdateIterator() const { return true; }
+
   store::Item_t nextImpl(PlanState&) const;
 
   virtual void accept(PlanIterVisitor&) const;
@@ -47,7 +49,22 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-NARY_ITER(DeleteIterator);
+class DeleteIterator : public UnaryBaseIterator<DeleteIterator, PlanIteratorState>
+{
+ public:
+  DeleteIterator(const QueryLoc& aLoc, PlanIter_t target)
+    :
+    UnaryBaseIterator<DeleteIterator, PlanIteratorState>(aLoc, target)
+  {
+  }
+
+  virtual ~DeleteIterator() {}
+
+  bool isUpdateIterator() const { return true; }
+
+  store::Item_t nextImpl(PlanState&) const;
+  virtual void accept(PlanIterVisitor&) const;
+};
 
 
 /*******************************************************************************
@@ -62,9 +79,12 @@ public:
   ReplaceIterator (
     const QueryLoc& aLoc,
     store::UpdateConsts::ReplaceType aType,
-    PlanIter_t aChild0,
-    PlanIter_t aChild1);
+    PlanIter_t target,
+    PlanIter_t source);
+
   virtual ~ReplaceIterator() {}
+
+  bool isUpdateIterator() const { return true; }
 
   store::Item_t nextImpl(PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
@@ -74,7 +94,21 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-NARY_ITER(RenameIterator);
+class RenameIterator : public BinaryBaseIterator<RenameIterator, PlanIteratorState>
+{
+public:
+  RenameIterator (
+    const QueryLoc& aLoc,
+    PlanIter_t target,
+    PlanIter_t name);
+
+  virtual ~RenameIterator() {}
+
+  bool isUpdateIterator() const { return true; }
+
+  store::Item_t nextImpl(PlanState&) const;
+  virtual void accept(PlanIterVisitor&) const;
+};
 
 
 /*******************************************************************************

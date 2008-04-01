@@ -126,7 +126,9 @@ public:
 
   void applyUpdates();
 
-  void mergeUpdates(const PUL& other);
+  void serializeUpdates(serializer& ser, std::ostream& os);
+
+  void mergeUpdates(const Item* other);
 
 protected:
   void addInsertChildren(

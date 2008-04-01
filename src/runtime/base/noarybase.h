@@ -21,6 +21,7 @@ class NoaryBaseIterator : public Batcher<IterType>
 {
 public:
   NoaryBaseIterator ( const QueryLoc& loc );
+
   virtual ~NoaryBaseIterator();
 
   void openImpl (PlanState&, uint32_t& offset);
@@ -44,6 +45,7 @@ template <class IterType, class StateType>
 NoaryBaseIterator<IterType, StateType>::~NoaryBaseIterator()
 {
 }
+
 
 template <class IterType, class StateType>
 void

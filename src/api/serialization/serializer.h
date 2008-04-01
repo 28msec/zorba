@@ -57,7 +57,7 @@ public:
    * @param result The item to be serialized.
    * @param os The stream to serialize to.
    */
-  void serialize(store::Item* item, std::ostream& os);
+  void serialize(const store::Item* item, std::ostream& os);
 
   /**
    * Set the serializer's parameters. The list of handled parameters
@@ -183,7 +183,10 @@ public:
      *  The root function that performs the serialization
      *  of a normalized sequence.
      */
-    virtual void emit_node(store::Item* item, int depth, store::Item* element_parent = NULL);
+    virtual void emit_node(
+        const store::Item* item,
+        int depth,
+        const store::Item* element_parent = NULL);
     
     /**
      *  Serializes the given string, performing character expansion
@@ -197,7 +200,10 @@ public:
      * 
      *  @return  returns 1 if the functions has closed parent's tag with ">"
      */ 
-    virtual int emit_node_children(store::Item* item, int depth, bool perform_escaping);
+    virtual int emit_node_children(
+        const store::Item* item,
+        int depth,
+        bool perform_escaping);
 
     /**
      *  Serializes the namespace bindings, if any.
@@ -205,14 +211,14 @@ public:
      *  @return  returns true if the function has added a set of bindings to the list,
      *           which should be removed when the elememnt is out of the scope.
      */ 
-    virtual bool emit_bindings(store::Item* item);
+    virtual bool emit_bindings(const store::Item* item);
         
     /**
      * Serializes the given item, depending on its type, and its children.
      *
      * @param item the item to serialize
      */
-    virtual void emit_item(store::Item* item);
+    virtual void emit_item(const store::Item* item);
 
     /**
      * Outputs indentation whitespace, depending of depth. 
@@ -250,8 +256,12 @@ public:
   public:
     html_emitter(serializer* the_serializer, transcoder& the_transcoder);
     virtual void emit_declaration();
-    virtual void emit_declaration_end();   
-    virtual void emit_node(store::Item* item, int depth, store::Item* element_parent = NULL);
+    virtual void emit_declaration_end();
+
+    virtual void emit_node(
+        const store::Item* item,
+        int depth,
+        const store::Item* element_parent = NULL);
   };  
 };
 

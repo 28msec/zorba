@@ -83,9 +83,11 @@ public:
         Item_t&              target,
         Item_t&              newName) = 0;
 
-  virtual void applyUpdates() = 0;
+  //virtual void applyUpdates();
 
-  virtual void mergeUpdates(const PUL& other) = 0;
+  //virtual void serializeUpdates(serializer ser&, std::ostream& os);
+
+  virtual void mergeUpdates(const Item* other) = 0;
 };
 
 

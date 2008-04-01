@@ -115,6 +115,7 @@ namespace zorba {
   UNARY_ACCEPT(DocumentIterator);
   UNARY_ACCEPT(DocumentContentIterator);
   UNARY_ACCEPT(FnAdjustToTimeZoneIterator_1);
+  UNARY_ACCEPT(DeleteIterator);
 
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);
@@ -132,7 +133,8 @@ namespace zorba {
   BINARY_ACCEPT(FnAdjustToTimeZoneIterator_2);
   BINARY_ACCEPT(InsertIterator);
   BINARY_ACCEPT(ReplaceIterator);
-  
+  BINARY_ACCEPT(RenameIterator);
+
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);
   NARY_ACCEPT(CompareStrIterator);
@@ -151,7 +153,8 @@ namespace zorba {
   NARY_ACCEPT(HashSemiJoinIterator);
   NARY_ACCEPT(SortSemiJoinIterator);
   NARY_ACCEPT(FnStringIterator);
-  
+  NARY_ACCEPT(FnConcatIterator);
+
   // special iterators
   void ElementIterator::accept(PlanIterVisitor& v) const
   {
