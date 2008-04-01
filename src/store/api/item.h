@@ -9,11 +9,15 @@
 
 #include "common/shared_types.h"
 
-namespace zorba { namespace store {
+namespace zorba { 
+    
+class RuntimeCB;
+
+namespace store {
   typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
   typedef StoreConsts::NodeKind NodeKind;
-
-
+  
+  
 /**
  *
  *  'item' - top of the XQuery value hierarchy,
@@ -102,7 +106,7 @@ public:
    *  @return  true, if the two items are the "same"
    */
   virtual bool 
-  equals(Item_t) const;
+  equals(Item_t, RuntimeCB* aRuntimeCB) const;
   
   /**
    *  Computes the Effective Boolean Value for that item as specified in the

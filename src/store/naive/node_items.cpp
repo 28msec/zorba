@@ -1078,7 +1078,7 @@ void ElementNode::checkUniqueAttr(Item* attrName) const
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    if (getAttr(i)->getNodeName()->equals(attrName))
+    if (getAttr(i)->getNodeName()->equals(attrName, NULL))
     {
       ZORBA_ERROR_PARAM(ZorbaError::XQDY0025,
                         "Attribute name " << *attrName->getStringValue() 
@@ -1730,7 +1730,7 @@ XmlNode* AttributeNode::copy(
     if (theName->getLocalName() == "id" && theName->getPrefix() == "xml")
       isId = true;
 
-    if (theTypedValue->getType()->equals(GET_STORE().theUntypedAtomicType))
+    if (theTypedValue->getType()->equals(GET_STORE().theUntypedAtomicType, NULL))
       typedValue = theTypedValue;
     else
     {

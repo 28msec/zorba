@@ -690,7 +690,7 @@ void *begin_visit(const DirAttributeList& v)
     attr_expr* attrExpr = expr.dyn_cast<attr_expr> ().getp();
 
     for (unsigned long i = 0; i < numAttrs; i++) {
-      if (attributes[i]->getQName()->equals(attrExpr->getQName()))
+      if (attributes[i]->getQName()->equals(attrExpr->getQName(), NULL))
          ZORBA_ERROR_LOC( ZorbaError::XQST0040, v.get_location());
     }
 

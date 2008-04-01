@@ -13,7 +13,7 @@
 #include "errors/error_manager.h"
 #include "compiler/parser/query_loc.h"
 #include "util/hashfun.h"
-
+#include "runtime/api/runtimecb.h"
 #include "system/globalenv.h"
 
 #include "store/naive/atomic_items.h"
@@ -75,7 +75,7 @@ uint32_t QNameItemImpl::hash() const
 }
 
 
-bool QNameItemImpl::equals(Item_t item) const
+bool QNameItemImpl::equals(Item_t item, RuntimeCB* aRuntimeCB) const
 {
   return (this == item.getp() ||
           (theNamespace->byteEqual(*item->getNamespace().getStore()) &&
@@ -119,7 +119,7 @@ uint32_t NCNameItemImpl::hash() const
   return theValue->hash();
 }
 
-bool NCNameItemImpl::equals(Item_t item) const
+bool NCNameItemImpl::equals(Item_t item, RuntimeCB* aRuntimeCB) const
 {
   return item->getStringValue()->equals(theValue);
 }
@@ -150,7 +150,7 @@ uint32_t AnyUriItemImpl::hash() const
 }
 
 
-bool AnyUriItemImpl::equals(Item_t item) const
+bool AnyUriItemImpl::equals(Item_t item, RuntimeCB* aRuntimeCB) const
 {
   return item->getStringValue()->equals(theValue.getp());
 }
@@ -182,7 +182,7 @@ uint32_t UntypedAtomicItemImpl::hash() const
   return theValue->hash();
 }
 
-bool UntypedAtomicItemImpl::equals(Item_t item) const
+bool UntypedAtomicItemImpl::equals(Item_t item, RuntimeCB* aRuntimeCB) const
 {
   return item->getStringValue()->equals(theValue.getp());
 }
@@ -212,7 +212,7 @@ uint32_t StringItemNaive::hash() const
   return theValue->hash();
 }
 
-bool StringItemNaive::equals(Item_t item) const
+bool StringItemNaive::equals(Item_t item, RuntimeCB* aRuntimeCB) const
 {
   return item->getStringValue()->equals(theValue.getp());
 }
@@ -237,7 +237,7 @@ Item_t DecimalItemNaive::getType() const
   return CREATE_XS_TYPE("decimal");
 }
 
-bool DecimalItemNaive::equals ( Item_t item ) const
+bool DecimalItemNaive::equals ( Item_t item, RuntimeCB* aRuntimeCB ) const
 {
   return item->getDecimalValue() == theValue;
 }
@@ -292,7 +292,7 @@ Item_t IntItemNaive::getType() const
   return CREATE_XS_TYPE("int");
 }
 
-bool IntItemNaive::equals ( Item_t item ) const
+bool IntItemNaive::equals ( Item_t item, RuntimeCB* aRuntimeCB ) const
 {
   return item->getIntValue() == theValue;
 }
@@ -326,7 +326,7 @@ Item_t IntegerItemNaive::getType() const
   return CREATE_XS_TYPE("integer");
 }
 
-bool IntegerItemNaive::equals ( Item_t item ) const
+bool IntegerItemNaive::equals ( Item_t item, RuntimeCB* aRuntimeCB ) const
 {
   return item->getIntegerValue() == theValue;
 }
@@ -361,7 +361,7 @@ Item_t DoubleItemNaive::getType() const
   return CREATE_XS_TYPE("double");
 }
 
-bool DoubleItemNaive::equals ( Item_t item ) const
+bool DoubleItemNaive::equals ( Item_t item, RuntimeCB* aRuntimeCB ) const
 {
   return item->getDoubleValue() == theValue;
 }
@@ -410,7 +410,7 @@ Item_t FloatItemNaive::getType() const
   return CREATE_XS_TYPE("float");
 }
 
-bool FloatItemNaive::equals ( Item_t item ) const
+bool FloatItemNaive::equals ( Item_t item, RuntimeCB* aRuntimeCB ) const
 {
   return item->getFloatValue() == theValue;
 }
@@ -459,7 +459,7 @@ Item_t BooleanItemNaive::getType() const
   return CREATE_XS_TYPE("boolean");
 }
 
-bool BooleanItemNaive::equals ( Item_t item ) const
+bool BooleanItemNaive::equals ( Item_t item, RuntimeCB* aRuntimeCB ) const
 {
   return item->getBooleanValue() == theValue;
 }
@@ -493,7 +493,7 @@ Item_t NonPositiveIntegerItemNaive::getType() const {
   return CREATE_XS_TYPE("nonPositiveInteger");
 }
 
-bool NonPositiveIntegerItemNaive::equals(Item_t aItem) const {
+bool NonPositiveIntegerItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getIntegerValue();
 }
 
@@ -521,7 +521,7 @@ Item_t NegativeIntegerItemNaive::getType() const {
   return CREATE_XS_TYPE("negativeInteger");
 }
 
-bool NegativeIntegerItemNaive::equals(Item_t aItem) const {
+bool NegativeIntegerItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getIntegerValue();
 }
 
@@ -553,7 +553,7 @@ Item_t LongItemNaive::getType() const {
   return CREATE_XS_TYPE("long");
 }
 
-bool LongItemNaive::equals(Item_t aItem) const {
+bool LongItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getLongValue();
 }
 
@@ -593,7 +593,7 @@ Item_t ShortItemNaive::getType() const {
   return CREATE_XS_TYPE("short");
 }
 
-bool ShortItemNaive::equals(Item_t aItem) const {
+bool ShortItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getLongValue();
 }
 
@@ -637,7 +637,7 @@ Item_t ByteItemNaive::getType() const {
   return CREATE_XS_TYPE("byte");
 }
 
-bool ByteItemNaive::equals(Item_t aItem) const {
+bool ByteItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getLongValue();
 }
 
@@ -670,7 +670,7 @@ Item_t NonNegativeIntegerItemNaive::getType() const {
   return CREATE_XS_TYPE("nonNegativeInteger");
 }
 
-bool NonNegativeIntegerItemNaive::equals(Item_t aItem) const {
+bool NonNegativeIntegerItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getUnsignedIntegerValue();
 }
 
@@ -707,7 +707,7 @@ Item_t UnsignedLongItemNaive::getType() const {
   return CREATE_XS_TYPE("unsignedLong");
 }
 
-bool UnsignedLongItemNaive::equals(Item_t aItem) const {
+bool UnsignedLongItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getUnsignedLongValue();
 }
 
@@ -747,7 +747,7 @@ Item_t UnsignedIntItemNaive::getType() const {
   return CREATE_XS_TYPE("unsignedInt");
 }
 
-bool UnsignedIntItemNaive::equals(Item_t aItem) const {
+bool UnsignedIntItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getUnsignedIntValue();
 }
 
@@ -792,7 +792,7 @@ Item_t UnsignedShortItemNaive::getType() const {
   return CREATE_XS_TYPE("unsignedShort");
 }
 
-bool UnsignedShortItemNaive::equals(Item_t aItem) const {
+bool UnsignedShortItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getUnsignedShortValue();
 }
 
@@ -840,7 +840,7 @@ Item_t UnsignedByteItemNaive::getType() const {
   return CREATE_XS_TYPE("unsignedByte");
 }
 
-bool UnsignedByteItemNaive::equals(Item_t aItem) const {
+bool UnsignedByteItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getUnsignedByteValue();
 }
 
@@ -872,7 +872,7 @@ Item_t PositiveIntegerItemNaive::getType() const {
   return CREATE_XS_TYPE("positiveInteger");
 }
 
-bool PositiveIntegerItemNaive::equals(Item_t aItem) const {
+bool PositiveIntegerItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue == aItem->getUnsignedIntegerValue();
 }
 
@@ -896,7 +896,7 @@ Item_t Base64BinaryItemNaive::getType() const {
   return CREATE_XS_TYPE("base64Binary");
 }
 
-bool Base64BinaryItemNaive::equals(Item_t aItem) const {
+bool Base64BinaryItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue.equal(aItem->getBase64BinaryValue());
 }
 
@@ -915,7 +915,7 @@ Item_t HexBinaryItemNaive::getType() const {
   return CREATE_XS_TYPE("hexBinary");
 }
 
-bool HexBinaryItemNaive::equals(Item_t aItem) const {
+bool HexBinaryItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const {
   return theValue.equal(aItem->getHexBinaryValue());
 }
 
@@ -982,12 +982,11 @@ Item_t DateTimeItemNaive::getType() const
   }
 }
 
-bool DateTimeItemNaive::equals(Item_t aItem) const
+bool DateTimeItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const
 {
-  // TODO: get somehow the RuntimeCB to extract the implicit timezone
   try {
-    return 0 == theValue->compare(*aItem->getDateTimeValue(), 0);
-    //                                   ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+    return 0 == theValue->compare(*aItem->getDateTimeValue(), 
+                                   aRuntimeCB->theDynamicContext->get_implicit_timezone());
   } catch (InvalidTimezoneException) {
     ZORBA_ERROR(ZorbaError::FODT0003);
     return false;
@@ -1032,7 +1031,7 @@ Item_t DurationItemNaive::getType() const
   return CREATE_XS_TYPE("duration");
 }
 
-bool DurationItemNaive::equals(Item_t aItem) const
+bool DurationItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const
 {
   return *theValue == *aItem->getDurationValue();
 }
@@ -1066,7 +1065,7 @@ Item_t DayTimeDurationItemNaive::getType() const
   return CREATE_XS_TYPE("dayTimeDuration");
 }
 
-bool DayTimeDurationItemNaive::equals(Item_t aItem) const
+bool DayTimeDurationItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const
 {
   return *theValue == *aItem->getDayTimeDurationValue();
 }
@@ -1100,7 +1099,7 @@ Item_t YearMonthDurationItemNaive::getType() const
   return CREATE_XS_TYPE("yearMonthDuration");
 }
 
-bool YearMonthDurationItemNaive::equals(Item_t aItem) const
+bool YearMonthDurationItemNaive::equals(Item_t aItem, RuntimeCB* aRuntimeCB) const
 {
   return *theValue == *aItem->getYearMonthDurationValue();
 }

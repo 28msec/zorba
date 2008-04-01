@@ -23,7 +23,7 @@ Item::getType( ) const
 }
 
 
-bool Item::equals(Item_t) const
+bool Item::equals(Item_t, RuntimeCB* aRuntimeCB) const
 {
   ZORBA_ASSERT(false);
   return false;

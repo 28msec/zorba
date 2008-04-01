@@ -28,7 +28,7 @@ void XmlNode::removeType(TypeUndoList& undoList)
   {
     ElementNode* n = reinterpret_cast<ElementNode*>(this);
 
-    if (! n->theTypeName->equals(GET_STORE().theUntypedType))
+    if (! n->theTypeName->equals(GET_STORE().theUntypedType, NULL))
     {
       NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
 

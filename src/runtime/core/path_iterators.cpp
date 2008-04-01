@@ -118,7 +118,7 @@ store::Item_t KindTestIterator::nextImpl(PlanState& planState) const
       }
 
 doctest1:
-      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().getp()))
+      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().getp(), planState.theRuntimeCB))
       {
         skip = true;
         break;
@@ -145,7 +145,7 @@ doctest1:
         break;
       }
 
-      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().getp()))
+      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().getp(), planState.theRuntimeCB))
       {
         skip = true;
         break;
@@ -242,7 +242,7 @@ store::Item_t NameTestIterator::nextImpl(PlanState& planState) const
     {
     case match_no_wild:
     {
-      if (theQName->equals(contextNode->getNodeName().getp()))
+      if (theQName->equals(contextNode->getNodeName().getp(), planState.theRuntimeCB))
         return contextNode;
 
       break;
