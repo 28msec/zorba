@@ -8,6 +8,7 @@
 #include "zorbatypes/integer.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
+#include "zorbatypes/binary.h"
 
 namespace zorba
 {
@@ -58,9 +59,8 @@ namespace zorba
   typedef unsigned long long  xqp_ulong;
   typedef unsigned short      xqp_ushort;
   typedef Integer             xqp_uinteger;
-  typedef void*               xqp_base64Binary;
-  typedef void*               xqp_base64Binary;
-  typedef void*               xqp_hexBinary;
+  typedef Base64              xqp_base64Binary;
+  typedef Base16              xqp_hexBinary;
 
 } /* namespace zorba */
 #endif /* ZORBA_REPRESENTATIONS_H */

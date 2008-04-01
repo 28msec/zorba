@@ -155,7 +155,7 @@ public:
   /** Accessor for xs:base64Binary
    */
   virtual xqp_base64Binary 
-  getBase64Binary() const;
+  getBase64BinaryValue() const;
 
   /** Accessor for xs:boolean
    */

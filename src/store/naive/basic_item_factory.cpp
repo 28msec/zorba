@@ -89,9 +89,9 @@ Item_t BasicItemFactory::createString(xqpStringStore* value)
 }
 
 
-Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary /*value*/)
+Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary value)
 {
-  return Item_t ( NULL );
+  return new Base64BinaryItemNaive ( value );
 }
 
 
@@ -309,8 +309,8 @@ Item_t BasicItemFactory::createGYearMonth ( short /*year*/, short /*month*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createHexBinary ( xqp_hexBinary /*value*/ )
-{ return Item_t ( NULL ); }
+Item_t BasicItemFactory::createHexBinary ( xqp_hexBinary value )
+{ return new HexBinaryItemNaive ( value ); }
 
 
 Item_t BasicItemFactory::createID ( const xqp_string& /*value*/ )

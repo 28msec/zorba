@@ -582,10 +582,37 @@ public:
   
     virtual Item_t getType() const;
     virtual bool equals ( Item_t ) const;
-    virtual Item_t getEBV( ) const;
+    virtual Item_t getEBV() const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+  };
+
+  class Base64BinaryItemNaive : public AtomicItem {
+  private:
+     xqp_base64Binary theValue;
+  public:
+    Base64BinaryItemNaive(xqp_base64Binary aValue) : theValue(aValue) {}
+    virtual xqp_base64Binary getBase64BinaryValue() const { return theValue; }
+
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual xqpStringStore_t getStringValue() const;
+    virtual xqp_string show() const;
+  };
+
+
+  class HexBinaryItemNaive : public AtomicItem {
+  private:
+    xqp_hexBinary theValue;
+  public:
+    HexBinaryItemNaive(xqp_hexBinary aValue) : theValue(aValue) {}
+    virtual xqp_hexBinary getHexBinaryValue() const { return theValue; }
+
+     virtual Item_t getType() const;
+     virtual bool equals ( Item_t ) const;
+     virtual xqpStringStore_t getStringValue() const;
+     virtual xqp_string show() const;
   };
 
 } // namespace store

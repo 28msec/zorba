@@ -88,10 +88,10 @@ uint32_t Item::hash() const
   
 /** Accessor for xs:base64Binary
  */
-xqp_base64Binary Item::getBase64Binary() const
+xqp_base64Binary Item::getBase64BinaryValue() const
 {
   ZORBA_ASSERT(false);
-  return NULL;
+  return xqp_base64Binary("");
 }
 
 /** Accessor for xs:boolean
@@ -275,7 +275,7 @@ xqp_gYearMonth Item::getGYearMonthValue() const
 xqp_hexBinary Item::getHexBinaryValue() const
 {
   ZORBA_ASSERT(false);
-  return xqp_hexBinary();
+  return xqp_hexBinary("");
 }
 
 /** Accessor for xs:nonNegativeIntegerValue, xs:positiveInteger, xs:unsignedInt

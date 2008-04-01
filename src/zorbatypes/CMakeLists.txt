@@ -3,6 +3,7 @@ SET(ZORBATYPES_SRCS
   floatimpl.cpp
   integer.cpp
   numconversions.cpp
+  binary.cpp
   utf8/xqpString.cpp
   utf8/Unicode_util.cpp
   collation_manager.cpp)

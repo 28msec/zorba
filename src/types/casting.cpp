@@ -399,8 +399,10 @@ store::Item_t GenericCast::stringSimpleCast(
     break;
   }
   case TypeConstants::XS_BASE64BINARY:
+    lItem = factory->createBase64Binary(xqp_base64Binary(lString.getp()));
     break;
   case TypeConstants::XS_HEXBINARY:
+    lItem = factory->createHexBinary(xqp_hexBinary(lString.getp()));
     break;
   case TypeConstants::XS_ANY_URI:
     lItem = factory->createAnyURI(lString);

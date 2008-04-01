@@ -863,6 +863,44 @@ xqp_string PositiveIntegerItemNaive::show() const {
 }
 
 /*******************************************************************************
+  class Base64BinaryItemNaive
+********************************************************************************/
+Item_t Base64BinaryItemNaive::getType() const {
+  return CREATE_XS_TYPE("base64Binary");
+}
+
+bool Base64BinaryItemNaive::equals(Item_t aItem) const {
+  return theValue.equal(aItem->getBase64BinaryValue());
+}
+
+xqpStringStore_t Base64BinaryItemNaive::getStringValue() const {
+  return theValue.str().getStore();
+}
+
+xqp_string Base64BinaryItemNaive::show() const {
+  return "xs:base64Binary(" + getStringValue()->str() + ")";
+}
+
+/*******************************************************************************
+  class HexBinaryItemNaive
+********************************************************************************/
+Item_t HexBinaryItemNaive::getType() const {
+  return CREATE_XS_TYPE("hexBinary");
+}
+
+bool HexBinaryItemNaive::equals(Item_t aItem) const {
+  return theValue.equal(aItem->getHexBinaryValue());
+}
+
+xqpStringStore_t HexBinaryItemNaive::getStringValue() const {
+  return theValue.str().getStore();
+}
+
+xqp_string HexBinaryItemNaive::show() const {
+  return "xs:hexBinary(" + getStringValue()->str() + ")";
+}
+
+/*******************************************************************************
  * class DateTimeItem
  *******************************************************************************/
 int DateTimeItemNaive::createFromDateAndTime(const xqp_date& date, const xqp_time& time, Item_t& item)
