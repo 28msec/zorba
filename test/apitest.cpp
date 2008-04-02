@@ -104,7 +104,10 @@ int _tmain(int argc, _TCHAR* argv[])
   {
     try
     {
-      *resultFile << query;
+      if (query->isUpdateQuery())
+        query->applyUpdates(*resultFile);
+      else
+        *resultFile << query;
     }
     catch (ZorbaException &e)
     {
@@ -131,6 +134,7 @@ int _tmain(int argc, _TCHAR* argv[])
     catch (ZorbaException &e)
     {
       result->close();
+      query.reset();
       zengine->shutdown();
       cerr << "Execution error: " << e << endl;
       return 2;

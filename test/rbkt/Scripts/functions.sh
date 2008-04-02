@@ -228,12 +228,15 @@ function run_query_in_bucket
 
   mkdir -p `dirname ${resultFile}`
   if [ -e "${inputDir}/${queryName}.xq.res" ]; then
-    cat "${inputDir}/${queryName}.xq.res" | ${scriptsDir}/tidy_xmlfrag >"${resultFile}"
-    if [ ! -f "${resultFile}" ]; then echo "ERROR 12 run_query_in_bucket: could not create output file"; exit 19; fi
-    rm "${inputDir}/${queryName}.xq.res"
+    mv "${inputDir}/${queryName}.xq.res" "${resultFile}"
+    if [ ! -f "${resultFile}" ]; then
+      echo "ERROR 12 run_query_in_bucket: could not create output file"; exit 19;
+    fi
   else
     touch "${resultFile}"
-    if [ $? != 0 ]; then echo "ERROR 13 run_query_in_bucket: touch failed"; exit 19; fi
+    if [ $? != 0 ]; then
+      echo "ERROR 13 run_query_in_bucket: touch failed"; exit 19;
+    fi
   fi
 
   if [ -e "${inputDir}/${queryName}.xq.err" ]; then
@@ -244,7 +247,7 @@ function run_query_in_bucket
   # Do the diffs
   #
   if [ -e "${expResultFile}" ]; then
-    cat "${expResultFile}" | ${scriptsDir}/tidy_xmlfrag | diff -I '^Duration.*:' "${resultFile}" - > "${diffFile}"
+    cat "${expResultFile}" | diff -I '^Duration.*:' "${resultFile}" - > "${diffFile}"
     #cat "${expResultFile}" | diff -I '^Duration.*:' "${resultFile}" - > "${diffFile}"
   else
     echo "Missing expected results for ${queryName}"
