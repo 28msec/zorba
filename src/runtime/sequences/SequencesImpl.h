@@ -72,6 +72,7 @@ class FnIndexOfIteratorState : public PlanIteratorState {
 public:  
   uint32_t theCurrentPos; // the current position in the sequence
   store::Item_t   theSearchItem; // the item to search for
+  XQPCollator* theCollator;
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -150,6 +151,7 @@ class FnRemoveIteratorState : public PlanIteratorState {
 public:  
   xqp_integer theCurrentPos; // the current position in the sequence
   xqp_integer thePosition; // the position to delete
+  XQPCollator* theCollator;
 
   void init(PlanState&);
   void reset(PlanState&);

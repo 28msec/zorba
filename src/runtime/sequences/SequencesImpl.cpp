@@ -43,6 +43,25 @@ namespace zorba {
 | 15.1 General Functions and Operators on Sequences
 |_______________________________________________________________________*/
 
+static XQPCollator*
+getCollator(RuntimeCB* aRuntimeCB, const QueryLoc& loc, PlanState& planState, const PlanIterator* iter)
+{
+  store::Item_t lCollationItem = PlanIterator::consumeNext(iter, planState);
+
+  if (lCollationItem == NULL)
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, "An empty-sequence is not allowed as collation parameter");
+
+  if (PlanIterator::consumeNext(iter, planState) != NULL)
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, "A sequence of more then one item is not allowed as collation parameter");
+    
+  xqtref_t lCollationItemType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lCollationItem->getType(), 
+                                                                                               TypeConstants::QUANT_ONE);
+
+  // TODO resolve uri (base-uri)
+
+  return planState.theRuntimeCB->theCollationCache->getCollator(lCollationItem->getStringValue());
+}
+
 
 //15.1.2 op:concatenate 
 //---------------------
@@ -90,10 +109,11 @@ FnConcatIterator::nextImpl(PlanState& planState) const
 }
 
 //15.1.3 fn:index-of
-// FIXME this iterator has three arguments (i.e. the collaction as #3)
 store::Item_t 
 FnIndexOfIterator::nextImpl(PlanState& planState) const {
   store::Item_t lSequenceItem;
+  store::Item_t lCollationItem;
+  xqtref_t      lCollationItemType;
   int8_t lCmpRes;
 
   FnIndexOfIteratorState* state;
@@ -106,18 +126,17 @@ FnIndexOfIterator::nextImpl(PlanState& planState) const {
          "An empty sequence is not allowed as search item of fn:index-of");    
   }
 
+  if ( theChildren.size() == 3 )
+    state->theCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
+
   while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
   {
     // inc the position in the sequence; do it at the beginning of the loop because index-of starts with one
     ++state->theCurrentPos; 
     
-    // The items in the sequence theChild0 are compared with theSearchItem under the rules for the eq operator. 
-    // Values of type xs:untypedAtomic are compared as if they were of type xs:string. 
-    // Values that cannot be compared, i.e. the eq operator is not defined for their types, are considered to be distinct. 
-    // If an item compares equal, then the position of that item in the sequence $seqParam is included in the result.
     lCmpRes = CompareIterator::valueCompare(planState.theRuntimeCB, 
-                                            lSequenceItem, state->theSearchItem);
-    if ( lCmpRes == 0 ) // FIXME collation support
+                                            lSequenceItem, state->theSearchItem, state->theCollator);
+    if ( lCmpRes == 0 ) 
       STACK_PUSH(GENV_ITEMFACTORY->createInteger(
         Integer::parseInt(state->theCurrentPos)), 
         state
@@ -133,6 +152,7 @@ FnIndexOfIteratorState::init(PlanState& planState)
  PlanIteratorState::init(planState);
  theCurrentPos = 0;
  theSearchItem = NULL;
+ theCollator = 0;
 }
 
 void
@@ -140,6 +160,7 @@ FnIndexOfIteratorState::reset(PlanState& planState) {
  PlanIteratorState::reset(planState);
  theCurrentPos = 0;
  theSearchItem = NULL;
+ theCollator = 0;
 }
 
 
@@ -212,24 +233,19 @@ store::Item_t
 FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
   store::Item_t lItem;
   xqtref_t lItemType;
+  XQPCollator* lCollator;
   
   FnDistinctValuesIteratorState* state;
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
 
   if (theChildren.size() == 2)
   {
-    if ( (lItem = consumeNext(theChildren[1].getp(), planState)) != NULL ) {
-      lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lItem->getType(), TypeConstants::QUANT_ONE);
-      if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
-        ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0002, loc, "Non string item not allowed as second parameter to distinct-values");
-      }
-      state->theValueCompareParam = new store::ValueCollCompareParam(planState.theRuntimeCB);
-      state->theValueCompareParam->theCollator = planState.theRuntimeCB->theCollationCache->getCollator(lItem->getStringValue());
-      state->theAlreadySeenMap = 
-        new store::ItemValueCollHandleHashSet(static_cast<store::ValueCollCompareParam*>(state->theValueCompareParam));
-    } else {
-      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, "An empty-sequence is not allowed as second parameter to distinct-values");
-    }
+    lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[1].getp());
+
+    state->theValueCompareParam = new store::ValueCollCompareParam(planState.theRuntimeCB);
+    state->theValueCompareParam->theCollator = lCollator;
+    state->theAlreadySeenMap = 
+      new store::ItemValueCollHandleHashSet(static_cast<store::ValueCollCompareParam*>(state->theValueCompareParam));
   } else {
     state->theValueCompareParam = new store::ValueCollCompareParam(planState.theRuntimeCB);
     state->theAlreadySeenMap = new store::ItemValueCollHandleHashSet(state->theValueCompareParam);
@@ -334,11 +350,12 @@ FnInsertBeforeIteratorState::reset(PlanState& planState) {
 
 
 //15.1.8 fn:remove
-// FIXME this iterator has three arguments (i.e. the collaction as #3)
 store::Item_t 
 FnRemoveIterator::nextImpl(PlanState& planState) const {
   store::Item_t lSequenceItem;
   store::Item_t lPositionItem;
+  store::Item_t lCollationItem;
+  xqtref_t      lCollationItemType;
 
   FnRemoveIteratorState* state;
   DEFAULT_STACK_INIT(FnRemoveIteratorState, state, planState);
@@ -349,8 +366,10 @@ FnRemoveIterator::nextImpl(PlanState& planState) const {
     ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006,
          loc, "An empty sequence is not allowed as second argument to of fn:remove.");
   }
-
   state->thePosition = lPositionItem->getIntegerValue();
+
+  if ( theChildren.size() == 3 )
+    state->theCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
 
   while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
   {
@@ -372,6 +391,7 @@ FnRemoveIteratorState::init(PlanState& planState)
   PlanIteratorState::init(planState);
   theCurrentPos = xqp_integer::parseInt(0);
   thePosition   = xqp_integer::parseInt(0);
+  theCollator = 0;
 }
 
 void
@@ -379,6 +399,7 @@ FnRemoveIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theCurrentPos = xqp_integer::parseInt(0);
   thePosition = xqp_integer::parseInt(0);
+  theCollator = 0;
 }
 
 
@@ -751,29 +772,29 @@ FnMinMaxIterator::FnMinMaxIterator
 
 store::Item_t 
 FnMinMaxIterator::nextImpl(PlanState& planState) const {
-  store::Item_t lMaxItem;
-  store::Item_t lRunningItem;
+  store::Item_t lMaxItem = NULL;
+  store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
+  XQPCollator*  lCollator = 0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() == 3)
-    assert(false);
+    lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
 
-  lMaxItem = 0;
   lRunningItem = consumeNext(theChildren[0].getp(), planState);
   if ( lRunningItem != NULL )
   {
     do {
       // casting of untyped atomic
-      xqtref_t lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lRunningItem->getType(),TypeConstants::QUANT_ONE);
+      xqtref_t lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lRunningItem->getType(),
+                                                                                              TypeConstants::QUANT_ONE);
       if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
         lRunningItem = GenericCast::instance()->cast(lRunningItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
       }
 
-      // FIXME collation support
       // implementation dependent: return the first occurence)
       if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
         /** It must be checked if the sequence contains any 
@@ -793,16 +814,17 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
           lItemCur = GenericCast::instance()->promote(lMaxItem, lRunningType); 
           if (lItemCur != 0) {
             lMaxItem = lItemCur;
-            lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);
+            lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lMaxItem->getType(), 
+                                                                                       TypeConstants::QUANT_ONE);
           } else {
             ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc,  "Promote not possible");
           }
         } else {
           lRunningItem = lItemCur;
-          lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lRunningItem->getType(), TypeConstants::QUANT_ONE);
+          lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lRunningItem->getType(), 
+                                                                                         TypeConstants::QUANT_ONE);
         }
-        if (CompareIterator::valueComparison(planState.theRuntimeCB, lRunningItem, lMaxItem, 
-                                             theCompareType) ) {
+        if (CompareIterator::valueComparison(planState.theRuntimeCB, lRunningItem, lMaxItem, theCompareType, lCollator) ) {
           lMaxType = lRunningType;
           lMaxItem = lRunningItem;
         }
