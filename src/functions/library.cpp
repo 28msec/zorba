@@ -137,11 +137,6 @@ DECL(fn_namespace_uri,
 DECL(fn_lang,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "lang"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
- 
-DECL(fn_lang,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "lang"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
@@ -504,26 +499,12 @@ DECL(op_to,
 DECL(fn_id,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","id"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      sctx->get_typemanager()->create_node_type(new NodeTest(store::StoreConsts::elementNode),
-                                                NULL,
-                                                TypeConstants::QUANT_ONE)
-     )
-    );
-
-DECL(fn_id,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","id"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       sctx->get_typemanager()->create_node_type(new NodeTest(store::StoreConsts::elementNode),
                                                 NULL,
                                                 TypeConstants::QUANT_ONE)
      )
     );
-
-DECL(fn_id_ref,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","idref"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(fn_id_ref,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","idref"),
