@@ -13,6 +13,7 @@
 #define ZORBA_ASSERT_H
 
 #include <string>
+#include <iostream>
 #include "common/config/config.h"
 
 #ifdef HAVE_EXECINFO_H
@@ -26,21 +27,20 @@
 namespace zorba {
 
 class StackTracePrinter {
-  public:
-    StackTracePrinter()
-    {
+public:
+  StackTracePrinter(std::ostream *is)
+  {
 #ifdef HAVE_EXECINFO_H
 #define TRACE_SIZE 25
-      void *trace[TRACE_SIZE];
-      int sz = backtrace(trace, TRACE_SIZE);
-      char **syms = backtrace_symbols(trace, sz);
-      for(int i = 0; i < sz; ++i) {
-        std::cerr << syms[i] << std::endl;
-      }
-      free(syms);
+    void *trace[TRACE_SIZE];
+    int sz = backtrace(trace, TRACE_SIZE);
+    char **syms = backtrace_symbols(trace, sz);
+    for(int i = 0; i < sz; ++i)
+      *is << syms[i] << std::endl;
+    free(syms);
 #undef TRACE_SIZE
 #endif
-    }
+  }
 };
 
 #define __ZORBA_ASSERT_aux3( line ) #line
@@ -48,7 +48,7 @@ class StackTracePrinter {
 #define __ZORBA_ASSERT_aux1( cond, line )                               \
   do {                                                                  \
     if (! (cond)) {                                                     \
-      StackTracePrinter p;                                              \
+      StackTracePrinter p (&std::cerr);                                 \
       ZORBA_ERROR_PARAM(::zorba::ZorbaError::XQP0005_SYSTEM_ASSERT_FAILED, #cond, __FILE__ ":" __ZORBA_ASSERT_aux2 (line)); \
     }                                                                   \
   } while(0)
