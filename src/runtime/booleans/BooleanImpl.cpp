@@ -379,7 +379,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   bool
   CompareIterator::generalComparison(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                     CompareConsts::CompareType aCompType, xqpString* aCollation)
+                                     CompareConsts::CompareType aCompType, XQPCollator* aCollation)
   {
     int8_t compValue = -2;
     switch(aCompType)
@@ -388,10 +388,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
       case CompareConsts::GENERAL_EQUAL:
       case CompareConsts::VALUE_NOT_EQUAL:
       case CompareConsts::GENERAL_NOT_EQUAL:
-        if (aCollation == 0)
-          compValue = CompareIterator::generalEqual(aRuntimeCB, aItem0, aItem1);
-        else
-          compValue = CompareIterator::generalEqual(aRuntimeCB, aItem0, aItem1, aCollation);
+        compValue = CompareIterator::generalEqual(aRuntimeCB, aItem0, aItem1, aCollation);
         break;
       case CompareConsts::VALUE_GREATER:
       case CompareConsts::GENERAL_GREATER:
@@ -401,10 +398,8 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
       case CompareConsts::GENERAL_LESS:
       case CompareConsts::VALUE_LESS_EQUAL:
       case CompareConsts::GENERAL_LESS_EQUAL:
-        if (aCollation == 0)
-          compValue = CompareIterator::generalCompare(aRuntimeCB, aItem0, aItem1);
-        else
-          compValue = CompareIterator::generalCompare(aRuntimeCB, aItem0, aItem1, aCollation);
+        compValue = CompareIterator::generalCompare(aRuntimeCB, aItem0, aItem1, aCollation);
+        break;
       default:
         break;
     }
@@ -414,7 +409,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   bool CompareIterator::valueComparison(RuntimeCB* aRuntimeCB, 
                                         const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                        CompareConsts::CompareType aCompType, xqpString* aCollation)
+                                        CompareConsts::CompareType aCompType, XQPCollator* aCollation)
   {
     int8_t compValue = -2;
     switch(aCompType)
@@ -423,9 +418,6 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
       case CompareConsts::GENERAL_EQUAL:
       case CompareConsts::VALUE_NOT_EQUAL:
       case CompareConsts::GENERAL_NOT_EQUAL:
-        if (aCollation == 0)
-          compValue = CompareIterator::valueEqual(aRuntimeCB, aItem0, aItem1);
-        else
           compValue = CompareIterator::valueEqual(aRuntimeCB, aItem0, aItem1, aCollation);
         break;
       case CompareConsts::VALUE_GREATER:
@@ -436,9 +428,6 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
       case CompareConsts::GENERAL_LESS:
       case CompareConsts::VALUE_LESS_EQUAL:
       case CompareConsts::GENERAL_LESS_EQUAL:
-        if (aCollation == 0)
-          compValue = CompareIterator::valueCompare(aRuntimeCB, aItem0, aItem1);
-        else
           compValue = CompareIterator::valueCompare(aRuntimeCB, aItem0, aItem1, aCollation);
       default:
         break;
@@ -449,11 +438,11 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   int8_t
   CompareIterator::equal(RuntimeCB* aRuntimeCB, 
-                         const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation)
+                         const store::Item_t& aItem0, const store::Item_t& aItem1, XQPCollator* aCollation)
   {
     int result;
     // tries first normal compare
-    result = CompareIterator::compare(aRuntimeCB, aItem0, aItem1);
+    result = CompareIterator::compare(aRuntimeCB, aItem0, aItem1, aCollation);
     if (result == 0)
       return 0;
     else if (result == -1 || result == 1 || result == 2)
@@ -506,7 +495,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   int8_t CompareIterator::valueEqual(RuntimeCB* aRuntimeCB,
                                      const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                     xqpString* aCollation) {
+                                     XQPCollator* aCollation) {
     std::pair<store::Item_t, store::Item_t> lPair;
     lPair = valueCasting(aRuntimeCB, aItem0, aItem1);
     lPair = typePromotion(aRuntimeCB, lPair.first, lPair.second);
@@ -515,7 +504,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   int8_t CompareIterator::generalEqual(RuntimeCB* aRuntimeCB,
                                        const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                       xqpString* aCollation) {
+                                       XQPCollator* aCollation) {
     std::pair<store::Item_t, store::Item_t> lPair;
     lPair = generalCasting(aRuntimeCB, aItem0, aItem1);
     lPair = typePromotion(aRuntimeCB, lPair.first, lPair.second);
@@ -524,7 +513,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   int8_t 
   CompareIterator::compare(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                           xqpString* aCollation)
+                           XQPCollator* aCollation)
   {
     xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
@@ -568,21 +557,15 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
         && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
       if (aCollation == 0) {
-        XQPCollator *coll = aRuntimeCB->theCollationCache->getDefaultCollator();
-        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
-      } else {
-        XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(aCollation->theStrStore);
-        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
+        aCollation =  aRuntimeCB->theCollationCache->getDefaultCollator();
       }
+        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), aCollation);
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
         && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
       if (aCollation == 0) {
-        XQPCollator *coll = aRuntimeCB->theCollationCache->getDefaultCollator();
-        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
-      } else {
-        XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(aCollation->theStrStore);
-        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), coll);
+        aCollation = aRuntimeCB->theCollationCache->getDefaultCollator();
       }
+      ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), aCollation);
     } 
     
     // catch InvalidTimezoneException
@@ -669,7 +652,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   int8_t CompareIterator::valueCompare(RuntimeCB* aRuntimeCB,
                                        const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                       xqpString* aCollation) {
+                                       XQPCollator* aCollation) {
     std::pair<store::Item_t, store::Item_t> lPair;
     lPair = valueCasting(aRuntimeCB, aItem0, aItem1);
     lPair = typePromotion(aRuntimeCB, lPair.first, lPair.second);
@@ -678,7 +661,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   
   int8_t CompareIterator::generalCompare(RuntimeCB* aRuntimeCB,
                                          const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                         xqpString* aCollation) {
+                                         XQPCollator* aCollation) {
     std::pair<store::Item_t, store::Item_t> lPair;
     lPair = generalCasting(aRuntimeCB, aItem0, aItem1);
     lPair = typePromotion(aRuntimeCB, lPair.first, lPair.second);

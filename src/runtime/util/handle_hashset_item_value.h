@@ -21,10 +21,11 @@ class ValueCollCompareParam
 {
 public:
   ValueCollCompareParam(RuntimeCB* aRuntimeCB)
-    : theRuntimeCB(aRuntimeCB) {}
+    : theRuntimeCB(aRuntimeCB),
+      theCollator(0) {}
 
   RuntimeCB* theRuntimeCB;
-  xqp_string theCollation;
+  XQPCollator* theCollator;
 };
 
 template <class T, class E>
@@ -86,12 +87,12 @@ public:
   {
     const store::Item_t l1 = const_cast<Item*>(t1);
     const store::Item_t l2 = const_cast<Item*>(t2);
-    return CompareIterator::valueEqual(aCompareParam->theRuntimeCB, l1, l2, &(aCompareParam->theCollation)) == 0; 
+    return CompareIterator::valueEqual(aCompareParam->theRuntimeCB, l1, l2, (aCompareParam->theCollator)) == 0; 
   }
 
   static uint32_t hash(const Item* t, ValueCollCompareParam* aCompareParam)
   {
-    return t->hash(NULL);
+    return t->hash(aCompareParam->theRuntimeCB, aCompareParam->theCollator);
   }
 };
 } // namespace store

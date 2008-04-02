@@ -155,16 +155,23 @@ uint32_t xqpStringStore::hash(const char* str)
 /*******************************************************************************
 
 ********************************************************************************/
-uint32_t xqpStringStore::hash() const
+uint32_t xqpStringStore::hash(XQPCollator* coll) const
 {
-  uint32_t hash = 5381;
-  int c;
-  const char *str = c_str();
-  while ((c = *str++))
-  {
-    hash = ((hash << 5) + hash) + c; // hash*33 + c
-  }
-  return hash;
+    if(!coll) {
+      return hash(c_str());
+    }
+
+    CollationKey collKey;
+    UErrorCode status = U_ZERO_ERROR;
+    
+    coll->theCollator->getCollationKey(this->getUnicodeString(), collKey, status);
+
+    if(U_FAILURE(status))
+    {
+      assert(false);
+    }
+    
+    return collKey.hashCode();
 }
 
 
@@ -930,20 +937,7 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
 
   uint32_t xqpString::hash(XQPCollator* coll) const
   {
-    if(!coll)
-      return theStrStore->hash();
-
-    CollationKey collKey;
-    UErrorCode status = U_ZERO_ERROR;
-    
-    coll->theCollator->getCollationKey(this->getUnicodeString(), collKey, status);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-    }
-    
-    return collKey.hashCode();
+    return theStrStore->hash(coll);
   }
 
   void xqpString::reserve(xqpString::size_type size)

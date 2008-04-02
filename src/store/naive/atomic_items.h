@@ -84,8 +84,8 @@ private:
   xqpStringStore* getLocalNameP() const { return theLocal.getp(); }
 
   Item_t getType() const;
-  uint32_t hash(RuntimeCB* aRuntimeCB) const;
-  bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
+  uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
+  bool equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   Item_t getEBV() const;
   xqpStringStore_t getStringValue() const;
 
@@ -106,8 +106,8 @@ public:
   {}
 
   Item_t getType() const;
-  uint32_t hash(RuntimeCB* aRuntimeCB) const;
-  bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
+  uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
+  bool equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   Item_t getEBV() const;
   xqpStringStore_t getStringValue() const { return theValue.getp(); }
   xqpStringStore* getStringValueP() { return theValue.getp(); }
@@ -129,8 +129,8 @@ public:
   {}
 
   Item_t getType( ) const;
-  uint32_t hash(RuntimeCB* aRuntimeCB) const;
-  bool equals (Item_t, RuntimeCB* aRuntimeCB) const;
+  uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
+  bool equals (Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   Item_t getEBV( ) const;
   xqpStringStore_t getStringValue( ) const { return theValue.getp(); }
   xqpStringStore* getStringValueP() { return theValue.getp(); }
@@ -152,8 +152,8 @@ public:
   UntypedAtomicItemImpl(xqpStringStore_t& aValue) { theValue.transfer(aValue); }
 
   Item_t getType( ) const;
-  uint32_t hash(RuntimeCB* aRuntimeCB) const;
-  bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+  uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
+  bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
   Item_t getEBV( ) const;
   xqpStringStore_t getStringValue() const { return theValue; }
   xqpStringStore* getStringValueP() { return theValue.getp(); }
@@ -172,8 +172,8 @@ public:
   StringItemNaive(const xqpStringStore_t& aValue) : theValue ( aValue ) {}
   
   virtual Item_t getType( ) const;
-  virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
-  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
+  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const { return theValue; }
   virtual xqpStringStore* getStringValueP() { return theValue.getp(); }
@@ -204,7 +204,7 @@ public:
   virtual xqp_gDay getGDayValue() const { return theValue; }
   
   virtual Item_t getType() const;
-  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
+  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
   
@@ -225,7 +225,7 @@ public:
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_duration getDurationValue() const;
   virtual Item_t getType() const;
-  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
+  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
 };
@@ -243,7 +243,7 @@ public:
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
   virtual Item_t getType() const;
-  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
+  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
 };
@@ -261,7 +261,7 @@ public:
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_yearMonthDuration getYearMonthDurationValue() const;
   virtual Item_t getType() const;
-  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB) const;
+  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
 };
@@ -281,12 +281,12 @@ public:
   virtual xqp_decimal getDecimalValue() const { return theValue; }
 
   virtual Item_t getType( ) const;
-  virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+  virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
   virtual Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue( ) const;
   virtual xqp_string show() const;
   virtual bool isNaN() const;
-  virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
 };
 
 
@@ -304,7 +304,7 @@ public:
     virtual xqp_long getLongValue() const;
     
     virtual Item_t getType( ) const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -321,12 +321,12 @@ public:
     virtual xqp_decimal getDecimalValue() const;
 
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
-    virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
 	};
 
   class DoubleItemNaive : public AtomicItem
@@ -338,13 +338,13 @@ public:
 		virtual xqp_double getDoubleValue() const { return theValue; }
 		
 		virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
 		virtual Item_t getEBV( ) const;
 		virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const;
     virtual bool isPosOrNegInf() const;
-    virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
 	};
 	
 	class FloatItemNaive : public AtomicItem
@@ -355,13 +355,13 @@ public:
 		virtual xqp_float getFloatValue() const { return theValue; }
 		
 		virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
 		virtual Item_t getEBV( ) const;
 		virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const;
     virtual bool isPosOrNegInf() const;
-    virtual uint32_t hash(RuntimeCB* aRuntimeCB) const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
 	};
 	
 	class BooleanItemNaive : public AtomicItem
@@ -374,7 +374,7 @@ public:
     virtual xqp_boolean getBooleanValue() const { return theValue; }
 
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -390,7 +390,7 @@ public:
     virtual xqp_decimal getDecimalValue() const;
     
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -407,7 +407,7 @@ public:
     virtual xqp_decimal getDecimalValue() const;
     
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -425,7 +425,7 @@ public:
     virtual xqp_decimal getDecimalValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -445,7 +445,7 @@ public:
     virtual xqp_int getIntValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -466,7 +466,7 @@ public:
     virtual xqp_short getShortValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -484,7 +484,7 @@ public:
     virtual xqp_decimal getDecimalValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -503,7 +503,7 @@ public:
     virtual xqp_uinteger getUnsignedIntegerValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -523,7 +523,7 @@ public:
     virtual xqp_ulong getUnsignedLongValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -545,7 +545,7 @@ public:
     virtual xqp_uint getUnsignedIntValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -567,7 +567,7 @@ public:
     virtual xqp_ushort getUnsignedShortValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -585,7 +585,7 @@ public:
     virtual xqp_decimal getDecimalValue() const;
   
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual Item_t getEBV() const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
@@ -600,7 +600,7 @@ public:
     virtual xqp_base64Binary getBase64BinaryValue() const { return theValue; }
 
     virtual Item_t getType() const;
-    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
   };
@@ -614,7 +614,7 @@ public:
     virtual xqp_hexBinary getHexBinaryValue() const { return theValue; }
 
      virtual Item_t getType() const;
-     virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB ) const;
+     virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
      virtual xqpStringStore_t getStringValue() const;
      virtual xqp_string show() const;
   };

@@ -110,42 +110,42 @@ namespace zorba
        *         -2, if it is not possible to compare the values the two passed items
        */
       static int8_t compare(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                            xqpString* aCollation = 0);
+                            XQPCollator* aCollation = 0);
       
       /**
        * Value Comparison on the passed items
        * @param aItem0 
        * @param aItem1 
-       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
+       * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
        * @return -1 (smaller), 0 (equal), 1 (bigger), 
        *          2 (not equal, not bigger, not smaller), -2 (value comparison not possible)
        */
       static int8_t valueCompare(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                 xqpString* aCollation = 0);
+                                 XQPCollator* aCollation = 0);
       
       /**
        * General Comparison on the passed items
        * @param aItem0 
        * @param aItem1 
-       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
+       * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
        * @return -1 (smaller), 0 (equal), 1 (bigger), 
        *          2 (not equal, not bigger, not smaller), -2 (general comparison not possible)
        */
       static int8_t generalCompare(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                   xqpString* aCollation = 0);
+                                   XQPCollator* aCollation = 0);
       
       /**
        * Checks if the two passed items contains the same value (without castings and promotions which are used in general 
        * and value comparison).
        * @param item0 
        * @param item1 
-       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
+       * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
        * @return  0, if item0 == item1
        *          1, if item0 != item1
        *         -2, if it is not possible to compare the values of the passed items
        */
       static int8_t equal(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                          xqpString* aCollation = 0);
+                          XQPCollator* aCollation = 0);
       
       /**
        * Value Equal on the passed items
@@ -155,17 +155,17 @@ namespace zorba
        * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
        */
       static int8_t valueEqual(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                               xqpString* aCollation = 0);
+                               XQPCollator* aCollation = 0);
       
       /**
        * General Equal on the passed items
        * @param aItem0 
        * @param aItem1 
-       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
+       * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
        * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
        */
       static int8_t generalEqual(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                 xqpString* aCollation = 0);
+                                 XQPCollator* aCollation = 0);
       
       /**
        * Value comparison of the passed two items with the operator 
@@ -178,7 +178,7 @@ namespace zorba
        * @return 
        */
       static bool valueComparison(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
-                                  CompareConsts::CompareType aCompType, xqpString* aCollation = 0);
+                                  CompareConsts::CompareType aCompType, XQPCollator* aCollation = 0);
       
       /**
        * General comparison of the passed two items with the operator 
@@ -191,7 +191,7 @@ namespace zorba
        * @return 
        */
       static bool generalComparison(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem_1,
-                                    CompareConsts::CompareType aCompType, xqpString* aCollation = 0);
+                                    CompareConsts::CompareType aCompType, XQPCollator* aCollation = 0);
 
       virtual void accept(PlanIterVisitor&) const;
   }; /* class CompareIterator */

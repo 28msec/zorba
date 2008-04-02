@@ -11,7 +11,6 @@
 
 namespace zorba 
 {
-class RuntimeCB;
 class serializer;
 
 namespace store
@@ -96,20 +95,31 @@ public:
   /**
    * Get a hash value computed from the value of this item.
    *
+   * @param RuntimeCB the runtime control block that contains the
+   *        dynamic and static context
+   *
+   * @param An optional XQPCollator that is used for hasing string
+   *        items
+   *
    * @return The hash value
    */
   virtual uint32_t 
-  hash(RuntimeCB* aRuntimeCB) const;
+  hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   
   /**
    *  Compares (by value) two items. All comparisons must be done by this
    *  method. A store may carry out pooling and implement the value comparison
    *  using "pointer identity".
    *
+   *  @param RuntimeCB the runtime control block that contains
+   *                   the dynamic and static context
+   *
+   *  @param An optional XQPCollator that is used for comparing string items
+   *
    *  @return  true, if the two items are the "same"
    */
   virtual bool 
-  equals(Item_t, RuntimeCB* aRuntimeCB) const;
+  equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   
   /**
    *  Computes the Effective Boolean Value for that item as specified in the

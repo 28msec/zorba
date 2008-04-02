@@ -24,6 +24,7 @@
 #include "store/api/item_factory.h"
 
 #include "context/static_context.h"
+#include "context/collation_cache.h"
 
 #include "errors/error_manager.h"
 
@@ -222,9 +223,8 @@ FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
       if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
         ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0002, loc, "Non string item not allowed as second parameter to distinct-values");
       }
-      xqpString lCollation(lItem->getStringValue());
       state->theValueCompareParam = new store::ValueCollCompareParam(planState.theRuntimeCB);
-      state->theValueCompareParam->theCollation = lCollation;
+      state->theValueCompareParam->theCollator = planState.theRuntimeCB->theCollationCache->getCollator(lItem->getStringValue());
       state->theAlreadySeenMap = 
         new store::ItemValueCollHandleHashSet(static_cast<store::ValueCollCompareParam*>(state->theValueCompareParam));
     } else {

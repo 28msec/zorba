@@ -24,7 +24,7 @@ Item::getType( ) const
 }
 
 
-bool Item::equals(Item_t, RuntimeCB* aRuntimeCB) const
+bool Item::equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
   ZORBA_ASSERT(false);
   return false;
@@ -68,7 +68,7 @@ xqpStringStore* Item::getStringValueP()
  *
  * @return The hash value
  */
-uint32_t Item::hash(RuntimeCB* aRuntimeCB) const
+uint32_t Item::hash(RuntimeCB* aRuntimeCB, XQPCollator* coll) const
 {
   ZORBA_ASSERT(false);
   return 0;

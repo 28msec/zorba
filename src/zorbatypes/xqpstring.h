@@ -90,7 +90,7 @@ public:
   std::string::size_type numChars() const;
 
   uint32_t 
-  hash() const;
+  hash(XQPCollator* = 0) const;
 
   bool
   byteEqual(const xqpStringStore& src) const;
