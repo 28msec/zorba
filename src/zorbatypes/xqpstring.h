@@ -300,7 +300,7 @@ public:
     }
     
     uint32_t
-    hash() const { return theStrStore->hash(); }
+    hash(XQPCollator* = 0) const;
 
     // xqpString::Length
     /**

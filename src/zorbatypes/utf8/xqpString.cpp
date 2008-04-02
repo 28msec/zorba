@@ -928,6 +928,23 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     return compare(tmp, coll);
   }
 
+  uint32_t xqpString::hash(XQPCollator* coll) const
+  {
+    if(!coll)
+      return theStrStore->hash();
+
+    CollationKey collKey;
+    UErrorCode status = U_ZERO_ERROR;
+    
+    coll->theCollator->getCollationKey(this->getUnicodeString(), collKey, status);
+
+    if(U_FAILURE(status))
+    {
+      assert(false);
+    }
+    
+    return collKey.hashCode();
+  }
 
   void xqpString::reserve(xqpString::size_type size)
   {
