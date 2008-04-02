@@ -142,8 +142,12 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
 
 off_t symbol_table::put_uri(char const* text, uint32_t length)
 {
+  trim_start(&text, length);
+  trim_end(text, length);
+  
   string result;
-  if (! decode_string (text, length, &result)) return -1;
+  if (! decode_string (text, length, &result)) 
+    return -1;
   result = xmlWhitespaceCollapse (result);
   return heap.put (result.c_str (), 0, result.length ());
 }

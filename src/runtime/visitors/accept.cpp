@@ -134,6 +134,7 @@ namespace zorba {
   BINARY_ACCEPT(InsertIterator);
   BINARY_ACCEPT(ReplaceIterator);
   BINARY_ACCEPT(RenameIterator);
+  BINARY_ACCEPT(FnDeepEqualIterator_2);
 
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);
@@ -154,6 +155,7 @@ namespace zorba {
   NARY_ACCEPT(SortSemiJoinIterator);
   NARY_ACCEPT(FnStringIterator);
   NARY_ACCEPT(FnConcatIterator);
+  NARY_ACCEPT(FnDeepEqualIterator_3);
 
   // special iterators
   void ElementIterator::accept(PlanIterVisitor& v) const

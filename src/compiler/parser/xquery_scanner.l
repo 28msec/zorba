@@ -116,7 +116,7 @@ std::string start_state(int);
 
 
 /* known expensive option */
-%option yylineno
+/* %option yylineno */
 
 
   /*_____________________________________________________________________
@@ -769,10 +769,8 @@ typedef zorba::xquery_parser::token token;
   /* transition to NAMESPACEDECL */
   /* --------------------------- */
 "at"{SP}{URILiteral} {
-  const char *p = yytext + 2;
-  for (; *p != '\'' && *p != '"'; p++);
   BEGIN MODE_NAMESPACEDECL;
-  TRY_URILIT (AT_URI_LITERAL, p, yyleng + (p - yytext));
+  TRY_URILIT (AT_URI_LITERAL, yytext+2, yyleng-2);
 }
 
 
@@ -1797,7 +1795,6 @@ typedef zorba::xquery_parser::token token;
 
 
 
-
   /*______________________________________________________________________
    |
    | NAMESPACEKEYWORD State
@@ -2068,10 +2065,8 @@ typedef zorba::xquery_parser::token token;
   /* transition to NAMESPACEDECL */
   /* --------------------------- */
 "at"{SP}{URILiteral} {
-  const char *p = yytext + 2;
-  for (; *p != '\'' && *p != '"'; p++);
   BEGIN MODE_NAMESPACEDECL;
-  TRY_URILIT (AT_URI_LITERAL, p, yyleng + (p - yytext));
+  TRY_URILIT (AT_URI_LITERAL, yytext+2, yyleng-2);
 }
 
   /* transition to INITIAL */

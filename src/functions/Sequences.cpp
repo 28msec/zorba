@@ -263,6 +263,22 @@ PlanIter_t fn_exactly_one_noraise::codegen (const QueryLoc& loc, std::vector<Pla
 |_______________________________________________________________________*/
 
 //15.3.1 fn:deep-equal
+fn_deep_equal_2::fn_deep_equal_2(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_deep_equal_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnDeepEqualIterator_2(loc, argv[0], argv[1]);
+}
+
+fn_deep_equal_3::fn_deep_equal_3(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_deep_equal_3::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnDeepEqualIterator_3(loc, argv);
+}
+
 
 //15.3.2 op:union
 //ordered
