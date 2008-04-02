@@ -355,12 +355,12 @@ void XmlNode::removeChild(ulong i)
 
 
 /*******************************************************************************
-  If the given node N is a child of "this", remove it as a child of "this".
-  Return true if N was a child of "this"; false otherwise.
+  If the given node N is a child of "this", disconnect N from "this". Return
+  true if N was a child of "this"; false otherwise.
 ********************************************************************************/
 bool XmlNode::removeChild(XmlNode* child)
 {
-  bool found = children().remove(child);
+  bool found = children().find(child);
 
   if (found)
   {
@@ -407,12 +407,49 @@ bool XmlNode::removeAttr(XmlNode* attr)
 /*******************************************************************************
   Disconnect this node from its parent, if any.
 ********************************************************************************/
-void XmlNode::disconnect() throw()
+ulong XmlNode::disconnect() throw()
 {
   if (theParent == NULL)
-    return;
+    return 0;
 
-  theParent->removeChild(this);
+  ulong pos;
+
+  if (getNodeKind() == StoreConsts::attributeNode)
+  {
+    pos = theParent->attributes().find(this);
+    if (pos < theParent->numAttributes())
+      theParent->attributes().remove(pos);
+  }
+  else
+  {
+    pos = theParent->children().find(this);
+    if (pos < theParent->numChildren())
+      theParent->children().remove(pos);
+  }
+
+  theParent = NULL;
+
+  return pos;
+}
+
+
+/*******************************************************************************
+  Connect this to the given parent at the given position.
+********************************************************************************/
+void XmlNode::connect(XmlNode* parent, ulong pos) throw()
+{
+  ZORBA_FATAL(theParent == NULL, "");
+
+  theParent = parent;
+
+  if (getNodeKind() == StoreConsts::attributeNode)
+  {
+    parent->attributes().insert(this, pos, false);
+  }
+  else
+  {
+    parent->children().insert(this, pos, false);
+  }
 }
 
 

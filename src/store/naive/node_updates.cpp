@@ -22,7 +22,7 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::removeType(TypeUndoList& undoList)
+void XmlNode::removeType()
 {
   if (getNodeKind() == StoreConsts::elementNode)
   {
@@ -32,15 +32,13 @@ void XmlNode::removeType(TypeUndoList& undoList)
     {
       NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
 
-      undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
-
       n->resetIsId();
       n->resetIsIdRefs();
 
       n->theTypeName = GET_STORE().theAnyType;
 
-      if (n->theParent && n->theParent->getNodeKind() == StoreConsts::elementNode)
-        n->theParent->removeType(undoList);
+      if (n->theParent != NULL)
+        n->theParent->removeType();
     }
   }
   else if (getNodeKind() == StoreConsts::attributeNode)
@@ -49,19 +47,13 @@ void XmlNode::removeType(TypeUndoList& undoList)
 
     NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
 
-    undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
-
     n->theTypeName = GET_STORE().theUntypedAtomicType;
 
     n->resetIsId();
     n->resetIsIdRefs();
 
     if (n->theParent != NULL)
-      n->theParent->removeType(undoList);
-  }
-  else
-  {
-    ZORBA_FATAL(0, "");
+      n->theParent->removeType();
   }
 }
 
@@ -115,6 +107,37 @@ void XmlNode::setToUntyped()
 ********************************************************************************/
 void XmlNode::revalidate()
 {
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::removeChildren(
+    ulong  pos,
+    ulong  numChildren)
+{
+  ZORBA_FATAL(pos + numChildren <= this->numChildren(), "");
+
+  for (ulong i = 0; i < numChildren; i++)
+  {
+    XmlNode* child = getChild(pos);
+    XmlNode* parent = child->theParent;
+
+    removeChild(pos);
+
+    if (parent == this)
+    {
+      ZORBA_FATAL(child->getTree() == getTree(), "");
+
+      XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
+      child->switchTree(tree, NULL, 0, false);
+    }
+    else
+    {
+      ZORBA_FATAL(child->getTree() != getTree(), "");
+    }
+  }
 }
 
 
@@ -265,6 +288,37 @@ void XmlNode::replaceChild(
 /*******************************************************************************
 
 ********************************************************************************/
+void ElementNode::removeAttributes(
+    ulong  pos,
+    ulong  numAttrs)
+{
+  ZORBA_FATAL(pos + numAttrs <= this->numAttributes(), "");
+
+  for (ulong i = 0; i < numAttrs; i++)
+  {
+    XmlNode* attr = getAttr(pos);
+    XmlNode* parent = attr->theParent;
+
+    removeAttr(pos);
+
+    if (parent == this)
+    {
+      ZORBA_FATAL(attr->getTree() == getTree(), "");
+
+      XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
+      attr->switchTree(tree, NULL, 0, false);
+    }
+    else
+    {
+      ZORBA_FATAL(attr->getTree() != getTree(), "");
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void ElementNode::insertAttributes(
     std::vector<Item_t>& attrs,
     bool                 copy,
@@ -277,7 +331,7 @@ void ElementNode::insertAttributes(
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(attrs[i].getp());
 
-    checkQName(reinterpret_cast<QNameItemImpl*>(attr->theName.getp()));
+    checkNamespaceConflict(attr->theName, ZorbaError::XUDY0024);
     checkUniqueAttr(attr->theName);
 
     if (copy)
@@ -315,7 +369,7 @@ void ElementNode::replaceAttribute(
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(newAttrs[i].getp());
 
-    checkQName(reinterpret_cast<QNameItemImpl*>(attr->theName.getp()));
+    checkNamespaceConflict(attr->theName, ZorbaError::XUDY0024);
     checkUniqueAttr(attr->theName);
 
     if (copy)
@@ -370,17 +424,19 @@ void ElementNode::replaceContent(
   Check if the ns binding implied by the given qname conflicts with the current
   ns bindings of "this" node.
 ********************************************************************************/
-void ElementNode::checkQName(QNameItemImpl* newName)
+void ElementNode::checkNamespaceConflict(
+    const Item*           qname,
+    ZorbaError::ErrorCode ecode) const
 {
-  xqpStringStore* ns = findBinding(newName->getPrefixP());
+  xqpStringStore* ns = findBinding(qname->getPrefix().getStore());
 
-  if (ns != NULL && ns->byteEqual(*newName->getNamespaceP()))
+  if (ns != NULL && ns->byteEqual(*qname->getNamespace().getStore()))
   {
-    ZORBA_ERROR_DESC(ZorbaError::XUDY0024,
-                     "The implied namespace binding of " << newName->show()
+    ZORBA_ERROR_DESC(ecode,
+                     "The implied namespace binding of " << qname->show()
                      << " conflicts with namespace binding ["
-                     << newName->getPrefixP() << ", " 
-                     << newName->getNamespaceP() << "]");
+                     << qname->getPrefix() << ", " 
+                     << qname->getNamespace() << "]");
   }
 }
 
@@ -432,7 +488,7 @@ void ElementNode::rename(Item_t& newName, Item_t& oldName)
 {
   QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
 
-  checkQName(qn);
+  checkNamespaceConflict(newName, ZorbaError::XUDY0024);
 
   oldName.transfer(theName);
   theName.transfer(newName);
@@ -448,7 +504,7 @@ void AttributeNode::rename(Item_t& newName, Item_t& oldName)
     ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
 
     QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
-    parent->checkQName(qn);
+    parent->checkNamespaceConflict(newName, ZorbaError::XUDY0024);
     parent->addLocalBinding(qn->getPrefixP(), qn->getNamespaceP());
   }
 

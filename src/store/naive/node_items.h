@@ -2,7 +2,7 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITEMS
 #define ZORBA_SIMPLE_STORE_NODE_ITEMS
 
-
+#include <zorba/error.h>
 #include "common/common.h"
 #include "store/api/item.h"
 #include "common/shared_types.h"
@@ -70,6 +70,8 @@ class XmlNode : public Item
   friend class ConstrDocumentNode;
   friend class ElementNode;
   friend class ConstrElementNode;
+  friend class UpdDelete;
+  friend class UpdInsertSiblings;
   friend class XmlLoader;
 
 public:
@@ -151,10 +153,12 @@ public:
   void deleteTree() throw();
 
   void setToUntyped();
-  void removeType(TypeUndoList& undoList);
+  void removeType();
   void revalidate();
 
-  void disconnect() throw();
+  void removeChildren(
+        ulong  pos,
+        ulong  numChildren);
 
   void insertChildren(
         std::vector<Item_t>& newChildren,
@@ -215,6 +219,8 @@ public:
   virtual bool isConstructed() const     { NODE_STOP; return false; }
 
 protected:
+  ulong disconnect() throw();
+  void connect(XmlNode* node, ulong pos) throw();
   void removeChild(ulong pos);
   bool removeChild(XmlNode* child);
   void removeAttr(ulong pos);
@@ -409,6 +415,10 @@ public:
   void addBindingForQName(Item* qname);
   void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
 
+  void checkNamespaceConflict(
+        const Item*           qname,
+        ZorbaError::ErrorCode ecode) const;
+
   void checkUniqueAttr(Item* attrName) const;
 
   XmlNode* copy(
@@ -416,6 +426,10 @@ public:
         XmlNode*        parent,
         ulong           pos,
         const CopyMode& copymode);
+
+  void removeAttributes(
+        ulong  pos,
+        ulong  numAttributes);
 
   void insertAttributes(
         std::vector<Item_t>&  newAttrs,
@@ -431,9 +445,6 @@ public:
   void replaceContent(XmlNode* newText, ConstrNodeVector& oldChildren);
 
   void rename(Item_t& newname, Item_t& oldName);
-
-protected:
-  void checkQName(QNameItemImpl* newName);
 };
 
 

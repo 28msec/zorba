@@ -151,7 +151,8 @@ protected:
         bool                                 checkRename,
         bool                                 checkReplaceValue,
         bool                                 checkReplaceNode,
-        bool                                 checkReplaceContent);
+        bool                                 checkReplaceContent,
+        bool                                 checkDelete);
 };
 
 
@@ -164,9 +165,13 @@ class UpdatePrimitive
 
 protected:
   Item_t  theTarget;
+  bool    theIsApplied;
 
 public:
-  UpdatePrimitive(Item_t& target) { theTarget.transfer(target); }
+  UpdatePrimitive(Item_t& target) : theIsApplied(false)
+  {
+    theTarget.transfer(target);
+  }
 
   virtual ~UpdatePrimitive() { }
 
@@ -183,6 +188,10 @@ public:
 class UpdDelete : public UpdatePrimitive
 {
   friend class PULImpl;
+
+protected:
+  XmlNode     * theParent;
+  ulong         thePos;
 
 public:
   UpdDelete(Item_t& target) : UpdatePrimitive(target) { }

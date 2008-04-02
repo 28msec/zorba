@@ -409,6 +409,7 @@ void Item::getNamespaceBindings(
   ZORBA_ASSERT(false);
 }
 
+
 /** Accessor for element node
  *  @return  boolean?
  */

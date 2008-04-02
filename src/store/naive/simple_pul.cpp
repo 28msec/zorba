@@ -209,7 +209,13 @@ void PULImpl::addInsertAttributes(
     bool                 copy,
     const CopyMode&      copymode)
 {
-  XmlNode* n = BASE_NODE(target);
+  ElementNode* n = ELEM_NODE(target);
+
+  ulong numAttrs = attrs.size();
+  for (ulong i = 0; i < numAttrs; i++)
+  {
+    n->checkNamespaceConflict(attrs[i]->getNodeName(), ZorbaError::XUDY0023);
+  }
 
   NodeUpdates* updates;
   bool found = theNodeToUpdatesMap.get(n, updates);
@@ -448,19 +454,19 @@ void PULImpl::mergeUpdates(const Item* other)
   const PULImpl* otherp = reinterpret_cast<const PULImpl*>(other);
 
   mergeUpdateList(theDoFirstList, otherp->theDoFirstList,
-                  true, true, false, false);
+                  true, true, false, false, false);
 
   mergeUpdateList(theInsertList, otherp->theInsertList,
-                  false, false, false, false);
+                  false, false, false, false, false);
 
   mergeUpdateList(theReplaceNodeList, otherp->theReplaceNodeList,
-                  false, false, true, false);
+                  false, false, true, false, false);
 
   mergeUpdateList(theReplaceContentList, otherp->theReplaceContentList,
-                  false, false, false, true);
+                  false, false, false, true, false);
 
   mergeUpdateList(theDeleteList, otherp->theDeleteList,
-                  false, false, false, false);
+                  false, false, false, false, true);
 }
 
 
@@ -470,7 +476,8 @@ void PULImpl::mergeUpdateList(
     bool                                 checkRename,
     bool                                 checkReplaceValue,
     bool                                 checkReplaceNode,
-    bool                                 checkReplaceContent)
+    bool                                 checkReplaceContent,
+    bool                                 checkDelete)
 {
   ulong numUpdates;
   ulong numOtherUpdates;
@@ -540,6 +547,15 @@ void PULImpl::mergeUpdateList(
             ZORBA_ERROR(ZorbaError::XUDY0017);
         }
       }
+      else if (checkDelete && upd->getKind() == UpdateConsts::UP_DELETE)
+      {
+        ulong numTargetUpdates = targetUpdates->size();
+        for (ulong j = 0; j < numTargetUpdates; j++)
+        {
+          if ((*targetUpdates)[j]->getKind() == UpdateConsts::UP_DELETE)
+            continue;
+        }
+      }
 
       myList[numUpdates + i] = upd;
       targetUpdates->push_back(upd);
@@ -567,50 +583,97 @@ void PULImpl::serializeUpdates(serializer& ser, std::ostream& os)
 ********************************************************************************/
 void PULImpl::applyUpdates()
 {
-  ulong i;
-  ulong numUpdates;
-
-  numUpdates = theDoFirstList.size();
-  for (i = 0; i < numUpdates; i++)
-    theDoFirstList[i]->apply();
-
-  numUpdates = theInsertList.size();
-  for (i = 0; i < numUpdates; i++)
-    theInsertList[i]->apply();
-
-  numUpdates = theReplaceNodeList.size();
-  for (i = 0; i < numUpdates; i++)
-    theReplaceNodeList[i]->apply();
-
-  numUpdates = theReplaceContentList.size();
-  for (i = 0; i < numUpdates; i++)
-    theReplaceContentList[i]->apply();
-
-  numUpdates = theDeleteList.size();
-  for (i = 0; i < numUpdates; i++)
-    theDeleteList[i]->apply();
-
-  numUpdates = theDeleteList.size();
-  for (i = 0; i < numUpdates; i++)
+  try
   {
-    XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-    BASE_NODE(theDeleteList[i]->theTarget)->switchTree(tree, NULL, 0, false);
+    ulong i;
+    ulong numUpdates;
+
+    numUpdates = theDoFirstList.size();
+    for (i = 0; i < numUpdates; i++)
+      theDoFirstList[i]->apply();
+
+    numUpdates = theInsertList.size();
+    for (i = 0; i < numUpdates; i++)
+      theInsertList[i]->apply();
+
+    numUpdates = theReplaceNodeList.size();
+    for (i = 0; i < numUpdates; i++)
+      theReplaceNodeList[i]->apply();
+
+    numUpdates = theReplaceContentList.size();
+    for (i = 0; i < numUpdates; i++)
+      theReplaceContentList[i]->apply();
+
+    numUpdates = theDeleteList.size();
+    for (i = 0; i < numUpdates; i++)
+      theDeleteList[i]->apply();
+  }
+  catch (...)
+  {
+    long numUpdates = theDeleteList.size();
+    for (long i = numUpdates; i >= 0; --i)
+      if (theDeleteList[i]->theIsApplied)
+        theDeleteList[i]->undo();
+  }
+
+  ulong numUpdates = theDeleteList.size();
+  for (ulong i = 0; i < numUpdates; i++)
+  {
+    UpdDelete* upd = reinterpret_cast<UpdDelete*>(theDeleteList[i]);
+    if (upd->theParent != NULL)
+    {
+      XmlNode* target = BASE_NODE(upd->theTarget);
+      XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
+      target->switchTree(tree, NULL, 0, false);
+
+      StoreConsts::NodeKind targetKind = target->getNodeKind();
+      if (targetKind == StoreConsts::elementNode || 
+          targetKind == StoreConsts::attributeNode ||
+          targetKind == StoreConsts::textNode)
+        upd->theParent->removeType();
+    }
+  }
+
+  ulong numUpdates = theInsertList.size();
+  for (ulong i = 0; i < numUpdates; i++)
+  {
+    UpdDelete* upd = theInsertList[i];
+    UpdateConsts::UpdPrimKind updKind = upd->getKind();
+    XmlNode* target = BASE_NODE(upd->theTarget);
+
+    if (updKind == UpdateConsts::UP_INSERT_BEFORE || 
+        updKind == UpdateConsts::UP_INSERT_AFTER)
+      target->theParent->removeType();
+    else
+      target->removeType();
   }
 }
 
 
 /*******************************************************************************
-
+  Just disconnect the current target from the its parent (if any).
 ********************************************************************************/
 void UpdDelete::apply()
 {
-  BASE_NODE(theTarget)->disconnect();
+  XmlNode* target = BASE_NODE(theTarget);
+
+  theParent = target->theParent;
+
+  if (theParent != NULL)
+    thePos = target->disconnect();
+
+  theIsApplied = true;
 }
 
 
 void UpdDelete::undo()
 {
+  if (theParent != NULL)
+  {
+    XmlNode* target = BASE_NODE(theTarget);
 
+    target->connect(theParent, thePos);
+  }
 }
 
 
@@ -636,11 +699,18 @@ void UpdInsertChildren::apply()
   {
     target->insertChildrenLast(theChildren, theDoCopy, theCopyMode);
   }
+
+  theIsApplied = true;
 }
 
 
 void UpdInsertChildren::undo()
 {
+  XmlNode* target = BASE_NODE(theTarget);
+
+  ulong pos = target->children().find(BASE_NODE(theChildren[0]));
+
+  target->removeChildren(pos, theChildren.size());
 }
 
 
@@ -659,11 +729,18 @@ void UpdInsertSiblings::apply()
   {
     target->insertSiblingsAfter(theSiblings, theDoCopy, theCopyMode);
   }
+
+  theIsApplied = true;
 }
 
 
 void UpdInsertSiblings::undo()
 {
+  XmlNode* parent = BASE_NODE(theTarget)->theParent;
+
+  ulong pos = parent->children().find(BASE_NODE(theSiblings[0]));
+
+  parent->removeChildren(pos, theSiblings.size());
 }
 
 
@@ -673,12 +750,18 @@ void UpdInsertSiblings::undo()
 void UpdInsertAttributes::apply()
 {
   ELEM_NODE(theTarget)->insertAttributes(theAttributes, theDoCopy, theCopyMode);
+
+  theIsApplied = true;
 }
 
 
 void UpdInsertAttributes::undo()
 {
+  ElementNode* target = ELEM_NODE(theTarget);
 
+  ulong pos = target->attributes().find(BASE_NODE(theAttributes[0]));
+
+  target->removeAttributes(pos, theAttributes.size());
 }
 
 
@@ -692,6 +775,8 @@ void UpdReplaceChild::apply()
   thePos = target->children().find(BASE_NODE(theChild));
 
   target->replaceChild(theNewChildren, thePos, theDoCopy, theCopyMode);
+
+  theIsApplied = true;
 }
 
 
@@ -710,6 +795,8 @@ void UpdReplaceAttribute::apply()
   thePos = target->attributes().find(BASE_NODE(theAttr));
 
   target->replaceAttribute(theNewAttrs, thePos, theDoCopy, theCopyMode);
+
+  theIsApplied = true;
 }
 
 
@@ -725,6 +812,8 @@ void UpdReplaceAttribute::undo()
 void UpdReplaceContent::apply()
 {
   ELEM_NODE(theTarget)->replaceContent(BASE_NODE(theNewChild), theOldChildren);
+
+  theIsApplied = true;
 }
 
 
@@ -740,6 +829,8 @@ void UpdReplaceContent::undo()
 void UpdReplaceAttrValue::apply()
 {
   ATTR_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+
+  theIsApplied = true;
 }
 
 
@@ -752,6 +843,8 @@ void UpdReplaceAttrValue::undo()
 void UpdReplaceTextValue::apply()
 {
   TEXT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+
+  theIsApplied = true;
 }
 
 
@@ -765,6 +858,8 @@ void UpdReplacePiValue::apply()
 {
 
   PI_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+
+  theIsApplied = true;
 }
 
 
@@ -777,6 +872,8 @@ void UpdReplacePiValue::undo()
 void UpdReplaceCommentValue::apply()
 {
   COMMENT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+
+  theIsApplied = true;
 }
 
 
@@ -792,6 +889,8 @@ void UpdReplaceCommentValue::undo()
 void UpdRenameElem::apply()
 {
   ELEM_NODE(theTarget)->rename(theNewName, theOldName);
+
+  theIsApplied = true;
 }
 
 
@@ -804,6 +903,8 @@ void UpdRenameElem::undo()
 void UpdRenameAttr::apply()
 {
   ATTR_NODE(theTarget)->rename(theNewName, theOldName);
+
+  theIsApplied = true;
 }
 
 
@@ -816,6 +917,8 @@ void UpdRenameAttr::undo()
 void UpdRenamePi::apply()
 {
   PI_NODE(theTarget)->rename(theNewName, theOldName);
+
+  theIsApplied = true;
 }
 
 
