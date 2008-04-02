@@ -68,9 +68,11 @@ namespace zorba {
 # define TRACE_VISIT_OUT()
 #endif
 
-#define DOT_VAR "$$dot"
-#define DOT_POS_VAR "$$pos"
-#define LAST_IDX_VAR "$$last-idx"
+#define DOT_VARNAME "$$dot"
+#define DOT_POS_VARNAME "$$pos"
+#define LAST_IDX_VARNAME "$$last-idx"
+
+#define DOT_VAR sctx_p->lookup_var_nofail (DOT_VARNAME)
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
@@ -141,9 +143,9 @@ protected:
     hadEmptyOrdDecl (false),
     hadOrdModeDecl (false)
   {
-    theDotVar = bind_var(QueryLoc::null, DOT_VAR, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-    theDotPosVar = bind_var(QueryLoc::null, DOT_POS_VAR, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
-    theLastVar = bind_var (QueryLoc::null, LAST_IDX_VAR, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
+    theDotVar = bind_var(QueryLoc::null, DOT_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+    theDotPosVar = bind_var(QueryLoc::null, DOT_POS_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
+    theLastVar = bind_var (QueryLoc::null, LAST_IDX_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
   }
 
   expr_t pop_nodestack (int n = 1)
@@ -1541,8 +1543,11 @@ void *begin_visit(const VarDecl& /*v*/)
 void end_visit(const VarDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  xqp_string varname = v.get_varname();
+  if (sctx_p->lookup_var (varname) != NULL)
+    ZORBA_ERROR (ZorbaError::XQST0049);
   global_vars.push_back(global_binding(bind_var(v.get_location(),
-                                                v.get_varname(),
+                                                varname,
                                                 var_expr::let_var),
                                        v.is_extern() ? expr_t(NULL) : pop_nodestack()));
 }
@@ -2293,7 +2298,7 @@ TRACE_VISIT ();
 void end_visit(const ContextItemExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var_nofail (DOT_VAR));
+  var_expr *e = static_cast<var_expr *> (DOT_VAR);
   nodestack.push(e);
 }
 
@@ -2379,10 +2384,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   if (fn_qname->getNamespace() == XQUERY_FN_NS) {
     xqp_string fn_local = fn_qname->getLocalName ();
     if (fn_local == "position") {
-      nodestack.push(sctx_p->lookup_var_nofail (DOT_POS_VAR));
+      nodestack.push(sctx_p->lookup_var_nofail (DOT_POS_VARNAME));
       return;
     } else if (fn_local == "last") {
-      nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VAR));
+      nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VARNAME));
       return;
     } else if (fn_local == "string") {
       // TODO: casting to xs:string? is almost correct;
@@ -2391,7 +2396,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       fn_qname = sctx_p->lookup_fn_qname("xs", "string");
       switch (sz) {
       case 0:
-        arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
+        arguments.push_back (DOT_VAR);
         break;
       case 1:
         break;
@@ -2401,7 +2406,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     } else if (fn_local == "number") {
       switch (sz) {
       case 0:
-        arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
+        arguments.push_back (DOT_VAR);
         break;
       case 1:
         break;
@@ -2419,7 +2424,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                 || fn_local == "base-uri" || fn_local == "namespace-uri"
                 || fn_local == "local-name"))
     {
-      arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
+      arguments.push_back (DOT_VAR);
     } else if (fn_local == "static-base-uri") {
       if (sz != 0)
         ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:static-base-uri", sz );
@@ -2431,7 +2436,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         nodestack.push (new cast_expr (loc, new const_expr (loc, baseuri), GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
       return;
     } else if (sz == 1 && fn_local == "lang") {
-      arguments.insert (arguments.begin (), sctx_p->lookup_var_nofail (DOT_VAR));
+      arguments.insert (arguments.begin (), DOT_VAR);
     } else if (sz == 1 && fn_local == "resolve-uri") {
       if (! hadBUriDecl)
         ZORBA_ERROR (ZorbaError::FONS0005);
@@ -3331,10 +3336,10 @@ void *begin_visit(const PathExpr& v)
   if (v.get_type() == ParseConstants::path_relative) {
     const RelativePathExpr *vrpe = v.get_relpath_expr ().dyn_cast<RelativePathExpr> ().getp ();
     if (vrpe != NULL && vrpe->get_step_expr ().dyn_cast<AxisStep> () != NULL)
-      rpe->add_back (sctx_p->lookup_var_nofail (DOT_VAR));
+      rpe->add_back (DOT_VAR);
   } else {
     rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
-    ctx_rpe->add_back(sctx_p->lookup_var_nofail (DOT_VAR));
+    ctx_rpe->add_back(DOT_VAR);
 
     rchandle<match_expr> me = new match_expr(v.get_location());
     me->setTestKind(match_anykind_test);
@@ -3447,11 +3452,11 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
     count_expr->add(lcseq->get_var().getp());
 
     rchandle<forlet_clause> lclast =
-      wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
+      wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VARNAME);
 
     rchandle<forlet_clause> fc =
       wrap_in_forclause(lcseq->get_var().getp(), v.get_location(),
-                        DOT_VAR, DOT_POS_VAR);
+                        DOT_VARNAME, DOT_POS_VARNAME);
 
     rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
     flwor->add(lcseq);
@@ -3538,8 +3543,8 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   rchandle<forlet_clause> lcseq = wrap_in_letclause(seq);
   rchandle<fo_expr> count_expr = new fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
   count_expr->add(lcseq->get_var().getp());
-  rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
-  rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().getp(), v.get_location (), DOT_VAR, DOT_POS_VAR);
+  rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VARNAME);
+  rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().getp(), v.get_location (), DOT_VARNAME, DOT_POS_VARNAME);
   rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
   flwor->add(lcseq);
   flwor->add(lclast);
@@ -3562,7 +3567,7 @@ void post_predicate_visit(const PredicateList& /*v*/, void* /*visit_state*/)
 
   flwor->add(predlet);
 
-  expr_t dot = sctx_p->lookup_var_nofail (DOT_VAR);
+  expr_t dot = DOT_VAR;
 
   rchandle<fo_expr> cond = new fo_expr(loc, LOOKUP_OPN("or"));
   cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
@@ -3571,7 +3576,7 @@ void post_predicate_visit(const PredicateList& /*v*/, void* /*visit_state*/)
   cond->add (new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
 
   rchandle<fo_expr> eq = new fo_expr(loc, LOOKUP_OP2("value-equal"));
-  eq->add(sctx_p->lookup_var_nofail (DOT_POS_VAR));
+  eq->add(sctx_p->lookup_var_nofail (DOT_POS_VARNAME));
   eq->add(predvar);
   expr_t then_ite = new if_expr(loc, &*eq, dot, create_seq(loc));
 
