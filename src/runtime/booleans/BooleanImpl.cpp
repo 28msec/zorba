@@ -459,6 +459,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
     {
       equal = (*aItem0->getDurationValue() == *aItem1->getDurationValue());
+      return (equal==-2)?-2:(equal==0?1:0);
     }
     else if(TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
@@ -468,6 +469,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         if((aItem0->getNamespace().empty() && aItem1->getNamespace().empty()) ||
             (aItem0->getNamespace() == aItem1->getNamespace()))
           equal = 1;
+      return (equal==-2)?-2:(equal==0?1:0);
     }
     else if(TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE) &&
             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE))
@@ -476,6 +478,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         equal = 1;
       else
         equal = 0;
+      return (equal==-2)?-2:(equal==0?1:0);
     }
     else if(TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE) &&
             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE))
@@ -484,13 +487,9 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         equal = 1;
       else
         equal = 0;
+      return (equal==-2)?-2:(equal==0?1:0);
     }
-    if (equal == -2)
-      return -2;
-    else if (equal == 0)
-      return 1;
-    else
-      return 0;
+    return -2;
   }
   
   int8_t CompareIterator::valueEqual(RuntimeCB* aRuntimeCB,
@@ -517,55 +516,54 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
   {
     xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
-    int8_t ret = -2;
     if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
         && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)) {
       if (aItem0->getBooleanValue() == aItem1->getBooleanValue())
-        ret = 0;
+        return 0;
       else if (aItem0->getBooleanValue() < aItem1->getBooleanValue())
         return -1;
       else
         return 1;
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
-        && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
+               && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
       if ( aItem0->getFloatValue() < aItem1->getFloatValue())
-        ret = -1;
+        return -1;
       else if ( aItem0->getFloatValue() == aItem1->getFloatValue())
-        ret = 0;
+        return 0;
       else if (aItem0->getFloatValue() > aItem1->getFloatValue())
-        ret = 1;
+        return 1;
       else
-        ret = 2;
+        return 2;
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
-        && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
+               && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
       if ( aItem0->getDoubleValue() < aItem1->getDoubleValue())
-        ret = -1;
+        return -1;
       else if ( aItem0->getDoubleValue() == aItem1->getDoubleValue())
-        ret = 0;
+        return 0;
       else if (aItem0->getDoubleValue() > aItem1->getDoubleValue())
-        ret = 1;
+        return 1;
       else
-        ret = 2;
+        return 2;
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
-    && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
+               && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
       if ( aItem0->getDecimalValue() < aItem1->getDecimalValue())
-        ret = -1;
+        return -1;
       else if ( aItem0->getDecimalValue() == aItem1->getDecimalValue())
-        ret = 0;
+        return 0;
       else
-        ret = 1;
+        return 1;
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
-        && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
+               && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
       if (aCollation == 0) {
         aCollation =  aRuntimeCB->theCollationCache->getDefaultCollator();
       }
-        ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), aCollation);
+      return aItem0->getStringValue()->compare(aItem1->getStringValue(), aCollation);
     } else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
-        && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
+               && TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
       if (aCollation == 0) {
         aCollation = aRuntimeCB->theCollationCache->getDefaultCollator();
       }
-      ret = aItem0->getStringValue()->compare(aItem1->getStringValue(), aCollation);
+      return aItem0->getStringValue()->compare(aItem1->getStringValue(), aCollation);
     } 
     
     // catch InvalidTimezoneException
@@ -574,21 +572,21 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
                 &&
                 TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
       {
-        ret = aItem0->getDateValue()->compare(*aItem1->getDateValue(),
+        return aItem0->getDateValue()->compare(*aItem1->getDateValue(),
                                    aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
       {
-        ret = aItem0->getTimeValue()->compare(*aItem1->getTimeValue(),
+        return aItem0->getTimeValue()->compare(*aItem1->getTimeValue(),
                                    aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
       {
-        ret = aItem0->getDateTimeValue()->compare(*aItem1->getDateTimeValue(),
+        return aItem0->getDateTimeValue()->compare(*aItem1->getDateTimeValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
                                       
       }
@@ -596,35 +594,35 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
       {
-        ret = aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue(),
+        return aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE))
       {
-        ret = aItem0->getGYearValue()->compare(*aItem1->getGYearValue(),
+        return aItem0->getGYearValue()->compare(*aItem1->getGYearValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE))
       {
-        ret = aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue(),
+        return aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE))
       {
-        ret = aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue(),
+        return aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GDAY_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
       {
-        ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue(),
+        return aItem0->getGDayValue()->compare(*aItem1->getGDayValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
@@ -637,7 +635,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
               &&
               TypeOps::is_equal(*type0, *type1))
       {
-        ret = aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
+        return aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
       }
     } 
     catch (InvalidTimezoneException)
@@ -647,7 +645,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
 
     // TODO comparisons for all types
 
-    return ret;
+    return -2;
   }
   
   int8_t CompareIterator::valueCompare(RuntimeCB* aRuntimeCB,
