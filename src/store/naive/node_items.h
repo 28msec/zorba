@@ -118,8 +118,14 @@ public:
 
   Item* getParent() const           { return theParent; }
 
-  virtual bool equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const { NODE_STOP; return 0; }
-  virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const     { NODE_STOP; return 0; }
+  bool equals(
+        Item_t other,
+        RuntimeCB* aRuntimeCB,
+        XQPCollator* aCollation = 0) const { NODE_STOP; return 0; }
+
+  uint32_t hash(
+        RuntimeCB* aRuntimeCB,
+        XQPCollator* aCollation = 0) const { NODE_STOP; return 0; }
 
   virtual xqp_string getBaseURI() const;
   virtual xqp_string getDocumentURI() const;
@@ -153,7 +159,8 @@ public:
   void deleteTree() throw();
 
   void setToUntyped();
-  void removeType();
+  void removeType(TypeUndoList& undoList);
+  void restoreType(const TypeUndoList& undoList);
   void revalidate();
 
   void removeChildren(

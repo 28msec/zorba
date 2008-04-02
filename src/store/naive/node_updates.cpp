@@ -22,38 +22,82 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::removeType()
+void XmlNode::removeType(TypeUndoList& undoList)
 {
-  if (getNodeKind() == StoreConsts::elementNode)
-  {
-    ElementNode* n = reinterpret_cast<ElementNode*>(this);
+  XmlNode* currNode = this;
 
-    if (! n->theTypeName->equals(GET_STORE().theUntypedType, NULL))
+  while(currNode != NULL)
+  {
+    if (currNode->getNodeKind() == StoreConsts::elementNode)
     {
+      ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
+
+      if (n->theTypeName->equals(GET_STORE().theUntypedType, NULL))
+        break;
+
       NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
 
-      n->resetIsId();
-      n->resetIsIdRefs();
+      undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
 
       n->theTypeName = GET_STORE().theAnyType;
-
-      if (n->theParent != NULL)
-        n->theParent->removeType();
+      n->resetIsId();
+      n->resetIsIdRefs();
     }
+    else if (currNode->getNodeKind() == StoreConsts::attributeNode)
+    {
+      AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
+
+      NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
+
+      undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
+
+      n->theTypeName = GET_STORE().theUntypedAtomicType;
+      n->resetIsId();
+      n->resetIsIdRefs();
+    }
+    else
+    {
+      break;
+    }
+
+    currNode = currNode->theParent;
   }
-  else if (getNodeKind() == StoreConsts::attributeNode)
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::restoreType(const TypeUndoList& undoList)
+{
+  XmlNode* currNode = this;
+  ulong pos = undoList.size() - 1;
+
+  while(currNode != NULL)
   {
-    AttributeNode* n = reinterpret_cast<AttributeNode*>(this);
+    if (currNode->getNodeKind() == StoreConsts::elementNode)
+    {
+      ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-    NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
+      ZORBA_FATAL(n == undoList[pos].first, "");
 
-    n->theTypeName = GET_STORE().theUntypedAtomicType;
+      n->theTypeName = undoList[pos].second.theTypeName;
+    }
+    else if (currNode->getNodeKind() == StoreConsts::attributeNode)
+    {
+      AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
-    n->resetIsId();
-    n->resetIsIdRefs();
+      ZORBA_FATAL(n == undoList[pos].first, "");
 
-    if (n->theParent != NULL)
-      n->theParent->removeType();
+      n->theTypeName = undoList[pos].second.theTypeName;
+    }
+    else
+    {
+      break;
+    }
+
+    currNode = currNode->theParent;
+    pos--;
   }
 }
 

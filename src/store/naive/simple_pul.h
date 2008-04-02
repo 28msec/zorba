@@ -8,6 +8,8 @@
 #include "store/util/handle_hashset_item.h"
 #include "store/util/pointer_hashmap.h"
 #include "store/naive/node_vector.h"
+#include "store/naive/node_updates.h"
+
 
 namespace zorba { namespace store {
 
@@ -50,7 +52,8 @@ public:
 
 
 /*******************************************************************************
-
+  theDoFirstList : insertInto, insertAttributes, replaceValue, rename
+  theInsertList  : insertBefore, insertAfter, insertIntoFirst, insertIntoLast 
 ********************************************************************************/
 class PULImpl : public PUL
 {
@@ -164,8 +167,9 @@ class UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  Item_t  theTarget;
-  bool    theIsApplied;
+  Item_t        theTarget;
+  bool          theIsApplied;
+  TypeUndoList  theTypeUndoList;
 
 public:
   UpdatePrimitive(Item_t& target) : theIsApplied(false)

@@ -7,7 +7,7 @@ namespace zorba { namespace store {
 
 struct NodeTypeInfo
 {
-  NodeTypeInfo(Item_t& tname, bool isId, bool isIdRefs) 
+  NodeTypeInfo(Item* tname, bool isId, bool isIdRefs) 
     :
     theTypeName(tname),
     theIsId(isId),
@@ -15,10 +15,10 @@ struct NodeTypeInfo
   {
   }
 
-  Item_t  theTypeName;
-  bool    theIsId;
-  bool    theIsIdRefs;
-  bool    theIsNillable;
+  Item    * theTypeName;
+  bool      theIsId;
+  bool      theIsIdRefs;
+  bool      theIsNillable;
 };
 
 

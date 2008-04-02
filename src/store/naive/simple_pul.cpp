@@ -616,6 +616,7 @@ void PULImpl::applyUpdates()
         theDeleteList[i]->undo();
   }
 
+
   ulong numUpdates = theDeleteList.size();
   for (ulong i = 0; i < numUpdates; i++)
   {
@@ -625,27 +626,7 @@ void PULImpl::applyUpdates()
       XmlNode* target = BASE_NODE(upd->theTarget);
       XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
       target->switchTree(tree, NULL, 0, false);
-
-      StoreConsts::NodeKind targetKind = target->getNodeKind();
-      if (targetKind == StoreConsts::elementNode || 
-          targetKind == StoreConsts::attributeNode ||
-          targetKind == StoreConsts::textNode)
-        upd->theParent->removeType();
     }
-  }
-
-  ulong numUpdates = theInsertList.size();
-  for (ulong i = 0; i < numUpdates; i++)
-  {
-    UpdDelete* upd = theInsertList[i];
-    UpdateConsts::UpdPrimKind updKind = upd->getKind();
-    XmlNode* target = BASE_NODE(upd->theTarget);
-
-    if (updKind == UpdateConsts::UP_INSERT_BEFORE || 
-        updKind == UpdateConsts::UP_INSERT_AFTER)
-      target->theParent->removeType();
-    else
-      target->removeType();
   }
 }
 
@@ -660,7 +641,15 @@ void UpdDelete::apply()
   theParent = target->theParent;
 
   if (theParent != NULL)
+  {
     thePos = target->disconnect();
+
+    StoreConsts::NodeKind targetKind = target->getNodeKind();
+    if (targetKind == StoreConsts::elementNode || 
+        targetKind == StoreConsts::attributeNode ||
+        targetKind == StoreConsts::textNode)
+      theParent->removeType(theTypeUndoList);
+  }
 
   theIsApplied = true;
 }
@@ -673,6 +662,7 @@ void UpdDelete::undo()
     XmlNode* target = BASE_NODE(theTarget);
 
     target->connect(theParent, thePos);
+    target->theParent->restoreType(theTypeUndoList);
   }
 }
 
