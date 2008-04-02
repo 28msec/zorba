@@ -119,11 +119,17 @@ namespace zorba {
       virtual void
       resetErrorHandler() = 0;
 
+      virtual bool
+      isUpdateQuery() const = 0;
+
       // xml serialization
       // prepares the query with the default dynamic that belongs to this query
       // it can be retrieved using getDynamicContext. 
       virtual void
       serialize(std::ostream&, SerializerOptions_t = SerializerOptions()) = 0;
+
+      virtual void 
+      applyUpdates(std::ostream& os) = 0;
 
       // get an result iterator
       // prepares the query with the default dynamic context if non is set using prepare
