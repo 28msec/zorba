@@ -399,10 +399,20 @@ store::Item_t GenericCast::stringSimpleCast(
     break;
   }
   case TypeConstants::XS_BASE64BINARY:
-    lItem = factory->createBase64Binary(xqp_base64Binary(lString.getp()));
+    if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(HEXBINARY)))
+    {
+      lItem = factory->createBase64Binary(xqp_base64Binary(aSourceItem->getHexBinaryValue()));
+    } else {
+      lItem = factory->createBase64Binary(xqp_base64Binary(lString.getp()));
+    }
     break;
   case TypeConstants::XS_HEXBINARY:
-    lItem = factory->createHexBinary(xqp_hexBinary(lString.getp()));
+    if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(BASE64BINARY)))
+    {
+      lItem = factory->createHexBinary(xqp_hexBinary(aSourceItem->getBase64BinaryValue()));
+    } else {
+      lItem = factory->createHexBinary(xqp_hexBinary(lString.getp()));
+    }
     break;
   case TypeConstants::XS_ANY_URI:
     lItem = factory->createAnyURI(lString);
