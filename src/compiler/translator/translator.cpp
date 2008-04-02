@@ -2435,7 +2435,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       else
         nodestack.push (new cast_expr (loc, new const_expr (loc, baseuri), GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
       return;
-    } else if (sz == 1 && fn_local == "lang") {
+    } else if (sz == 1 && (fn_local == "lang" || fn_local == "id" || fn_local == "idref")) {
       arguments.insert (arguments.begin (), DOT_VAR);
     } else if (sz == 1 && fn_local == "resolve-uri") {
       if (! hadBUriDecl)
