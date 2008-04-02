@@ -725,6 +725,19 @@ bool DayTimeDuration::parse_string(const xqpString& s, DayTimeDuration_t& dt_t, 
   while (frac >= 1)
     frac /= 10;
 
+  long carry = seconds / 60;
+  seconds = seconds % 60;
+
+  minutes += carry;
+  carry  = minutes / 60;
+  minutes = minutes % 60;
+
+  hours += carry;
+  carry = hours / 24;
+  hours = hours % 24;
+
+  days += carry;
+  
   dt_t = new DayTimeDuration(negative, days, hours, minutes, seconds, 
                              round(frac * boost::posix_time::time_duration::ticks_per_second()));
   return true;
