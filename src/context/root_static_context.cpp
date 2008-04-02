@@ -30,6 +30,7 @@ void root_static_context::init() {
   set_context_item_static_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
   set_default_collation_uri ("http://www.w3.org/2005/xpath-functions/collation/codepoint");
   add_collation("http://www.flworfound.org/collations/IDENTICAL/en/US");
+  add_collation("http://www.w3.org/2005/xpath-functions/collation/codepoint");
   set_construction_mode(StaticContextConsts::cons_strip);
   set_ordering_mode(StaticContextConsts::ordered);
   set_order_empty_mode(StaticContextConsts::empty_greatest);
