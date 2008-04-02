@@ -20,6 +20,7 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "context/static_context.h"
+#include "context/collation_cache.h"
 
 namespace zorba
 {
@@ -132,10 +133,24 @@ FLWORIterator::OrderSpec::OrderSpec (
   :
   orderByIter ( aOrderByIter ),
   empty_least ( aEmpty_least ),
-  descending ( aDescending )
+  descending ( aDescending ),
+  collator(0)
 {
 }
 
+FLWORIterator::OrderSpec::OrderSpec (
+    PlanIter_t aOrderByIter,
+    bool aEmpty_least,
+    bool aDescending,
+    const xqpString& aCollation)
+  :
+  orderByIter ( aOrderByIter ),
+  empty_least ( aEmpty_least ),
+  descending ( aDescending ),
+  collation(aCollation),
+  collator(0)
+{
+}
 
 void FLWORIterator::OrderSpec::accept ( PlanIterVisitor& v ) const
 {
@@ -184,7 +199,8 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
     const store::Item_t& s1,
     const store::Item_t& s2,
     bool desc,
-    bool emptyLeast ) const
+    bool emptyLeast,
+    XQPCollator* collator) const
 {
   if ( empty_item (aRuntimeCB, s1) )
   {
@@ -201,7 +217,7 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
   {
     // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
     // That's why empty_item is needed.
-    int8_t result = CompareIterator::valueCompare ( aRuntimeCB, s1 , s2 );
+    int8_t result = CompareIterator::valueCompare ( aRuntimeCB, s1 , s2, collator );
     if (result > 1 || result < -1) {
       ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Non-comparable types found while sorting" );
       
@@ -235,7 +251,8 @@ bool FLWORIterator::OrderKeyCmp::operator() (
                          *s1iter,
                          *s2iter,
                          orderSpecIter->descending,
-                         orderSpecIter->empty_least);
+                         orderSpecIter->empty_least,
+                         orderSpecIter->collator);
     if ( cmp == 1 )
     {
       return false;
@@ -586,6 +603,10 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
     {
       iter->orderByIter->open ( planState, offset );
       iter->runtimeCB = planState.theRuntimeCB; // TODO check if this is the right place and the right runtimecb
+      if (iter->collation.size() != 0) {
+        xqpString lTmp = iter->collation;
+        iter->collator = planState.theRuntimeCB->theCollationCache->getCollator(lTmp.theStrStore);
+      }
     }
   }
   

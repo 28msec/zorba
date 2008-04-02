@@ -99,9 +99,12 @@ public:
     bool empty_least;
     bool descending;
     mutable RuntimeCB* runtimeCB; // TODO hack
+    xqpString collation;
+    mutable XQPCollator* collator; // TODO hack
   public:
     void accept ( PlanIterVisitor& ) const;
     OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending );
+    OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending, const xqpString& collation );
   };
 
   /**
@@ -149,7 +152,8 @@ public:
         const store::Item_t& s1,
         const store::Item_t& s2,
         bool asc,
-        bool emptyLeast) const;
+        bool emptyLeast,
+        XQPCollator* collator = 0) const;
           
     /**
      * Helper functions to switch the ordering between ascending and descending

@@ -85,10 +85,6 @@ namespace zorba {
   void
   PlanWrapper::close() throw ()
   {
-#ifndef NDEBUG
-    assert(theIsOpened);
-#endif
-
     theIterator->close(*theStateBlock); 
 
 #ifndef NDEBUG

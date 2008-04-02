@@ -323,9 +323,13 @@ void end_visit(flwor_expr& v)
        i++) 
   {
     flwor_expr::orderspec_t spec = *i;
+    // TODO remove if the scanner is fixed
+    std::string lTmp;
+    if (!spec.second->collation.compare("http://www.w3.org/2005/xpath-functions/collation/codepoint") == 0) 
+      lTmp = spec.second->collation.substr(1, spec.second->collation.size());
     orderSpecs.push_back(FLWORIterator::OrderSpec(pop_itstack (),
 																									spec.second->empty_mode == StaticContextConsts::empty_least, // TODO choose different representation for decoupling
-                                                  spec.second->dir == ParseConstants::dir_descending));
+                                                  spec.second->dir == ParseConstants::dir_descending, lTmp));
   }
   reverse (orderSpecs.begin (), orderSpecs.end ());
 

@@ -235,8 +235,8 @@ namespace zorba {
     PlanWrapper_t lPlan = generateWrapper();
     serializer lSerializer(theErrorManager);
 
-    lPlan->open();
     try { 
+      lPlan->open();
       lSerializer.serialize(&*lPlan, os);
     } catch (error::ZorbaError& e) {
       lPlan->close();
@@ -263,9 +263,9 @@ namespace zorba {
     PlanWrapper_t lPlan = generateWrapper();
     serializer lSerializer(theErrorManager);
 
-    lPlan->open();
     try 
     { 
+      lPlan->open();
       store::Item_t pul = lPlan->next();
 
       try

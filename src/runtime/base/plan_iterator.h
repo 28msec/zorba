@@ -431,10 +431,11 @@ protected:
   {
 #ifndef NDEBUG
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-    assert( lState->theIsOpened ); // must be open
-    lState->theIsOpened = false;
 #endif
     static_cast<IterType*>(this)->closeImpl(planState);
+#ifndef NDEBUG
+    lState->theIsOpened = false;
+#endif
   }
 
 
