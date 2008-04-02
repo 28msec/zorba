@@ -97,6 +97,8 @@ protected:
   }
   void bind_func (xqp_string key, function *f) {
     ctx_value_t v;
+    if (lookup_func (key) != NULL)
+      ZORBA_ERROR (ZorbaError::XQST0034);
     v.functionValue = f;
     keymap.put (key, v);
   }
