@@ -2015,9 +2015,13 @@ void end_visit(const ValueComp& /*v*/, void* /*visit_state*/)
 }
 
 
-void *begin_visit(const VersionDecl& /*v*/)
+void *begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT ();
+  if (v.get_version () != "1.0")
+    ZORBA_ERROR_LOC (ZorbaError::XQST0031, v.get_location ());
+  if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
+    ZORBA_ERROR_LOC (ZorbaError::XQST0087, v.get_location ());
   return no_state;
 }
 

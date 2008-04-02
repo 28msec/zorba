@@ -346,6 +346,7 @@ class MainModule : public parsenode
 protected:
 	rchandle<Prolog> prolog_h;
 	rchandle<QueryBody> query_body_h;
+  rchandle<VersionDecl> version_decl_h;
 
 public:
 	MainModule(
@@ -360,6 +361,8 @@ public:
 public:
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
 	rchandle<QueryBody> get_query_body() const { return query_body_h; }
+  rchandle<VersionDecl> get_version_decl() const { return version_decl_h; }
+  void set_version_decl(rchandle<VersionDecl> vd) { version_decl_h = vd; }
 
 public:
 	void accept(parsenode_visitor&) const;

@@ -151,6 +151,7 @@ MainModule::MainModule(
 void MainModule::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+  ACCEPT (version_decl_h);
   ACCEPT (prolog_h);
   ACCEPT (query_body_h);
   END_VISITOR ();

@@ -755,6 +755,7 @@ Module :
 		}
   | VersionDecl MainModule
 		{
+      dynamic_cast<MainModule *> ($2)->set_version_decl (static_cast<VersionDecl *> ($1));
 			$$ = $2;
 			driver.set_expr ($$);
 #ifdef ZORBA_DEBUG_PARSER
@@ -786,7 +787,7 @@ VersionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version]" << endl;
 #endif
-       std::string encoding;
+       std::string encoding = "utf-8";
        $$ = new VersionDecl (LOC (@$), SYMTAB ($2), encoding);
 		}
 	|	XQUERY_VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
