@@ -2061,6 +2061,14 @@ void *begin_visit(const VFO_DeclList& v)
         return_type = pop_tstack ();
       }
       store::Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
+      {
+        xqp_string ns = qname->getNamespace ();
+        if (ns == XQUERY_FN_NS
+            || ns == sctx_p->lookup_ns ("xml", ZorbaError::XQP0019_INTERNAL_ERROR)
+            || ns == sctx_p->lookup_ns ("xs", ZorbaError::XQP0019_INTERNAL_ERROR)
+            || ns == sctx_p->lookup_ns ("xsi", ZorbaError::XQP0019_INTERNAL_ERROR))
+          ZORBA_ERROR_LOC_PARAM (ZorbaError::XQST0045, n->get_location (), qname->getLocalName (), "");
+      }
       signature sig(qname, arg_types, return_type);
       switch(n->get_type()) {
         case ParseConstants::fn_extern:
