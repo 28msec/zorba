@@ -1592,8 +1592,10 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     case ParseConstants::fn_read:
       {
         expr_t body = pop_nodestack ();
-        if (v.get_return_type () != NULL)
-          pop_tstack ();
+        if (v.get_return_type () != NULL) {
+          xqtref_t rt = pop_tstack ();
+          body = new promote_expr (body->get_loc (), body, rt);
+        }
 
         int nargs = v.get_param_count ();
         vector<var_expr_t> params;
@@ -2058,7 +2060,6 @@ void *begin_visit(const VFO_DeclList& v)
         }
       }
       int nargs = params->size();
-
       xqtref_t return_type = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
       if (n->get_return_type () != NULL) {
         n->get_return_type ()->accept (*this);
