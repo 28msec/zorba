@@ -61,8 +61,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemQName = consumeNext(theChild0.getp(), planState );
-  if( itemQName != NULL)
-  {
+  if( itemQName != NULL) {
     itemQName = itemQName->getAtomizationValue();
 
     //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
@@ -70,31 +69,26 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
     qname = itemQName->getStringValue()->trim();
     index = qname->indexOf(":");
 
-    if(-1 != index)
-    {
+    if(-1 != index) {
       resPre = new xqpStringStore(qname->str().substr(0, index));
       resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
 
       itemElem = consumeNext(theChild1, planState );
-      if( itemElem != NULL )
-      {
+      if( itemElem != NULL ) {
         itemElem->getNamespaceBindings(NamespaceBindings);
-        for (
-             iter = NamespaceBindings.begin();
+        for (iter = NamespaceBindings.begin();
              iter != NamespaceBindings.end();
-             ++iter
-             )
+             ++iter)
         {
-          if( (*iter).first.getStore()->byteEqual(*resPre))
-          {
+          if ((*iter).first.getStore()->byteEqual(*resPre)) {
             resNs = (*iter).second.getStore();
             break;
           }
         }
+        if (resNs == NULL)
+          ZORBA_ERROR (ZorbaError::FONS0004);
       }
-    }
-    else
-    {
+    } else {
       resNs = new xqpStringStore("");
       resPre = new xqpStringStore("");
       resLocal = qname;
