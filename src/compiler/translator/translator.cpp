@@ -1232,6 +1232,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       string col = sctx_p->default_collation_uri ();
       if (mod && mod->get_collation_spec () != NULL)
         col = mod->get_collation_spec ()->get_uri ();
+      if (! sctx_p->has_collation_uri (col))
+        ZORBA_ERROR (ZorbaError::XQST0076);
       rchandle<order_modifier> emod (new order_modifier (dir_spec, empty_spec, col));
       flwor->add (flwor_expr::orderspec_t (pop_nodestack (), emod));
     }
