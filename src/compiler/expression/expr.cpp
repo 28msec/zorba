@@ -599,6 +599,13 @@ void treat_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
+xqtref_t treat_expr::return_type (static_context *sctx) {
+  xqtref_t input_type = get_input ()->return_type (sctx);
+  if (TypeOps::is_subtype (*input_type, *target_type))
+    return input_type;
+  else
+    return target_type;
+}
 
 // [56] [http://www.w3.org/TR/xquery/#prod-xquery-CastableExpr]
 
