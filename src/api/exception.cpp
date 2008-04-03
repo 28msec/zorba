@@ -92,7 +92,8 @@ namespace zorba {
 
   std::ostream& operator<< (std::ostream& os, const SystemException& aException)
   {
-    return os << (ZorbaException)aException;
+    return  os << "System error "
+               << "[" << ZorbaError::getErrorCode(aException.getErrorCode()) << "] " << aException.getDescription();
   }
 
 

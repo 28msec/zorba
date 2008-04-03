@@ -148,6 +148,15 @@ namespace zorba {
   void
   XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
   {
+    if (theQueryIsCompiled) {
+       try {
+         ZORBA_ERROR_DESC(ZorbaError::API0004_XQUERY_ALREADY_COMPILED, 
+                          "Can't compile the query because it is already compiled");
+       } catch (error::ZorbaError &e) {
+         ZorbaImpl::notifyError(theErrorHandler, e);
+       }
+    }
+
     if ( ! theStaticContext ) {
       // no context given => use the default one (i.e. a child of the root static context)
       theStaticContext = GENV.getRootStaticContext().create_child_context();

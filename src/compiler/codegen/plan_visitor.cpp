@@ -324,7 +324,7 @@ void end_visit(flwor_expr& v)
   {
     flwor_expr::orderspec_t spec = *i;
     orderSpecs.push_back(FLWORIterator::OrderSpec(pop_itstack (),
-                         spec.second->empty_mode == StaticContextConsts::empty_least, // TODO choose different representation for decoupling
+                         spec.second->empty_mode == StaticContextConsts::empty_least,
                          spec.second->dir == ParseConstants::dir_descending, spec.second->collation));
   }
   reverse (orderSpecs.begin (), orderSpecs.end ());

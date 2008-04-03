@@ -108,7 +108,7 @@ namespace zorba {
     XQuery_t lXQuery(new XQueryImpl());
     if (aErrorHandler != 0)
       lXQuery->registerErrorHandler(aErrorHandler);
-    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(aQuery, aHints);
+    lXQuery->compile(aQuery, aHints);
     return lXQuery;
   }
 
@@ -119,7 +119,7 @@ namespace zorba {
     XQuery_t lXQuery(new XQueryImpl());
     if (aErrorHandler != 0)
       lXQuery->registerErrorHandler(aErrorHandler);
-    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(aQuery, aStaticContext, aHints);
+    lXQuery->compile(aQuery, aStaticContext, aHints);
     return lXQuery;
   }
 

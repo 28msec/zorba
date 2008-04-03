@@ -120,6 +120,19 @@ example_8( Zorba * aZorba )
   return true;
 }
 
+bool
+example_9( Zorba * aZorba )
+{
+  try {
+    XQuery_t lQuery = aZorba->compileQuery("1+1");
+    lQuery->compile("1+2");
+  } catch (SystemException & e) {
+    std::cout << e << std::endl;
+    return true;
+  }
+  return false;
+}
+
 int 
 simple(int argc, char* argv[])
 {
@@ -156,6 +169,11 @@ simple(int argc, char* argv[])
   std::cout << "executing example 8" << std::endl;
   assert(example_8(lZorba));
   std::cout << std::endl;
+
+  std::cout << "executing example 9" << std::endl;
+  assert(example_9(lZorba));
+  std::cout << std::endl;
+
   lZorba->shutdown();
   return 0;
 }
