@@ -17,8 +17,12 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "types/typemanager.h"
+#include "types/casting.h"
 
 namespace zorba {
+
+#define GENV_GCAST (*GenericCast::instance ())
+
 /**
  *______________________________________________________________________
  *
@@ -63,8 +67,6 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
   itemQName = consumeNext(theChild0.getp(), planState );
   if( itemQName != NULL) {
     itemQName = itemQName->getAtomizationValue();
-
-    //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
 
     qname = itemQName->getStringValue()->trim();
     index = qname->indexOf(":");
@@ -138,43 +140,36 @@ QNameIterator::nextImpl(PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemURI = consumeNext(theChild0.getp(), planState );
-  if ( itemURI != NULL )
-  {
+  if  ( itemURI != NULL ) {
     itemURI = itemURI->getAtomizationValue();
     resNs = itemURI->getStringValue()->trim();
-  }
-  else
-  {
+  } else {
     resNs = new xqpStringStore("");
   }
 
   itemQName = consumeNext(theChild1.getp(), planState );
-  if ( itemQName != NULL )
-  {
+  if ( itemQName != NULL ) {
     itemQName = itemQName->getAtomizationValue();
     qname = itemQName->getStringValue()->trim();
       
     //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
 
     index = qname->indexOf(":");
-      
-    if(resNs->empty() && (-1 != index) )
-      ZORBA_ERROR(ZorbaError::FOCA0002);
   }
 
-  if( -1 != index )
-  {
+  if( -1 != index ) {
     resPre = new xqpStringStore(qname->str().substr(0, index));
     resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
-
-    res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
-  }
-  else
-  {
+  } else {
     resPre = new xqpStringStore("");
-    res = GENV_ITEMFACTORY->createQName(resNs, resPre, qname);
+    resLocal = qname;
   }
   
+  if ((index != -1 && ! GENV_GCAST.castableToNCName (resPre))
+      || ! GENV_GCAST.castableToNCName (resLocal))
+    ZORBA_ERROR (ZorbaError::FOCA0002);
+
+  res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
   STACK_PUSH( res, state );
   STACK_END (state);
 }

@@ -118,8 +118,9 @@ namespace zorba
         bool isExplicit,
         namespace_context* aNCtx = 0) const;
 
-  protected:
     bool castableToNCName(const xqpStringStore* str) const;
+
+  protected:
     bool isLetter(uint32_t cp)const;
     bool isBaseChar(uint32_t cp)const;
     bool isIdeographic(uint32_t cp)const;
