@@ -391,7 +391,7 @@ static_context::default_collation_uri() const
 }
 
 bool
-static_context::has_collation_uri(xqp_string& aURI) const
+static_context::has_collation_uri(const xqp_string& aURI) const
 {
   return lookup_collation(aURI);
 }

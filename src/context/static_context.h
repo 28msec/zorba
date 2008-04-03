@@ -120,7 +120,7 @@ public:
   {
     bind_str("coll:" + aCollURI, "");
   }
-  bool lookup_collation(xqp_string& aCollURI) const
+  bool lookup_collation(const xqp_string& aCollURI) const
   {
     // TODO better use a hashmap for collation itself
     xqpString lTmp;
@@ -216,7 +216,7 @@ public:
 	void add_collation(const xqp_string& uri);
   xqp_string default_collation_uri() const;
   void set_default_collation_uri(const xqp_string& uri);
-  bool has_collation_uri(xqp_string& aURI) const;
+  bool has_collation_uri(const xqp_string& aURI) const;
 
 protected:
   xqp_string current_absolute_baseuri() const;
