@@ -120,7 +120,6 @@ namespace zorba {
   BINARY_ACCEPT(StringJoinIterator);
   BINARY_ACCEPT(LogicIterator);
   BINARY_ACCEPT(CompareIterator);
-  BINARY_ACCEPT(FnRoundHalfToEvenIterator);
   BINARY_ACCEPT(FnDateTimeConstructorIterator);
   BINARY_ACCEPT(AttributeIterator);
   BINARY_ACCEPT(PiIterator);

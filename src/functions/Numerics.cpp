@@ -397,7 +397,7 @@ function(sig)
 PlanIter_t
 fn_round_half_to_even::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnRoundHalfToEvenIterator(loc, argv[0], argv[1]);
+  return new FnRoundHalfToEvenIterator(loc, argv);
 }
 
 

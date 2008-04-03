@@ -864,18 +864,6 @@ namespace zorba
   }
   
 // 6.4.5 fn:round-half-to-even
-  FnRoundHalfToEvenIterator::
-  FnRoundHalfToEvenIterator(const QueryLoc& loc,
-                                            PlanIter_t& iter0,
-                                            PlanIter_t& iter1)
-  :
-  BinaryBaseIterator<FnRoundHalfToEvenIterator, PlanIteratorState>( loc, iter0, iter1 )
-  {
-  }
-
-  FnRoundHalfToEvenIterator::~ FnRoundHalfToEvenIterator()
-  {}
-
   store::Item_t FnRoundHalfToEvenIterator::nextImpl(PlanState& planState) const
   {
     store::Item_t item;
@@ -887,12 +875,11 @@ namespace zorba
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     
-    item = consumeNext(theChild0.getp(), planState );
+    item = consumeNext(theChildren [0].getp(), planState );
     if ( item != NULL )
     {
-      itemPrec = consumeNext(theChild1.getp(), planState );
-      if ( itemPrec != NULL )
-      {
+      if (theChildren.size () == 2) {
+        itemPrec = consumeNext(theChildren [1].getp(), planState );
         itemPrec = itemPrec->getAtomizationValue();
         precision = itemPrec->getIntegerValue();
       }
@@ -930,7 +917,7 @@ namespace zorba
             loc, "Wrong operator type for a round-half-to-even operation.");
       }
 
-      if ( consumeNext(theChild0.getp(), planState ) != NULL )
+      if ( consumeNext(theChildren [0].getp(), planState ) != NULL )
       {
         ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
            loc, "Round-half-to-even operation has a sequences greater than one as an operator.");
@@ -939,6 +926,7 @@ namespace zorba
     }
     STACK_END (state);
   }
+
   
   ZorNumGen::ZorNumGen ( const QueryLoc& loc ) 
     : NoaryBaseIterator<ZorNumGen, ZorNumGenState>(loc) {}

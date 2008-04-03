@@ -154,15 +154,7 @@ namespace zorba
   NARY_ITER(FnRoundIterator);
   
 // 6.4.5 fn:round-half-to-even
-  class FnRoundHalfToEvenIterator : public BinaryBaseIterator<FnRoundHalfToEvenIterator, PlanIteratorState>
-  {
-    public:
-      FnRoundHalfToEvenIterator(const QueryLoc&, PlanIter_t&, PlanIter_t&);
-      virtual ~FnRoundHalfToEvenIterator();
-
-      store::Item_t nextImpl(PlanState&) const;
-      virtual void accept(PlanIterVisitor&) const;
-  };
+  NARY_ITER(FnRoundHalfToEvenIterator);
 
   class ZorNumGenState : public PlanIteratorState
   {
