@@ -1107,22 +1107,25 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
       case 's': flags |= UREGEX_DOTALL; break;
       case 'm': flags |= UREGEX_MULTILINE; break;
       case 'x': flags |= UREGEX_COMMENTS; break;
-      default: break;  // FORX0001
+      default:
+        throw zorbatypesException("", ZorbatypesError::FORX0001);
+        break;
       }
     }
     return flags;
   }
 
   bool
-  xqpString::matches(xqpString pattern, xqpString flags)
+    xqpString::matches(xqpString pattern, xqpString flags)
   {
     UErrorCode status = U_ZERO_ERROR;
     UnicodeString uspattern = pattern.getUnicodeString (),
       us = getUnicodeString ();
+
     RegexMatcher matcher (uspattern, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
+      throw zorbatypesException("", ZorbatypesError::FORX0002);
       return false;
-      // FORX0002
     }
 
     matcher.reset (us);
@@ -1137,8 +1140,8 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
       us = getUnicodeString ();
     RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
+      throw zorbatypesException("", ZorbatypesError::FORX0002);
       return "";
-      // FORX0002
     }
     UnicodeString result = matcher.replaceAll (replacement.getUnicodeString (), status);
     if (U_FAILURE(status)) {
@@ -1156,8 +1159,8 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
       us = getUnicodeString ();
     RegexMatcher m (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
+      throw zorbatypesException("", ZorbatypesError::FORX0002);
       return "";
-      // FORX0002
     }
     if (m.find ()) {
       int32_t start = m.start (status), end = m.end (status);

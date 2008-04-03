@@ -28,6 +28,9 @@
 
 #include "errors/error_manager.h"
 
+#include "zorbatypes/zorbatypesError.h"
+#include "errors/error_messages.h"
+
 #include "util/web/web.h"
 #include "store/util/handle_hashset_node.h"
 
@@ -984,6 +987,7 @@ FnIdIterator::nextImpl(PlanState& planState) const {
   store::Item_t res;
   bool          push;
   xqp_string    strArg;
+  bool          tmp;
 
   FnIdIteratorState *state;
   DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
@@ -1012,8 +1016,15 @@ FnIdIterator::nextImpl(PlanState& planState) const {
                   break;
 
                 strArg = state->inArg->getStringValue().getp();
-    
-                if(strArg.matches(item->getStringValue().getp()," "))
+
+                try {
+                  tmp = strArg.matches(item->getStringValue().getp()," ");
+                }
+                catch(zorbatypesException& ex){
+                  ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+                }
+                
+                if(tmp)
                   STACK_PUSH( itemEl, state );
               }
             }

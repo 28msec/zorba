@@ -3,10 +3,11 @@
 
 #include <string>
 #include "errors/errors.h"
+#include "zorbatypes/zorbatypesError.h"
 
 namespace zorba {  namespace error {
 
-
+::zorba::ZorbaError::ErrorCode DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code);
 
 class AlertMessages
 {
@@ -25,6 +26,7 @@ class AlertMessages
        std::string* errorMsg,
        const std::string* param1,
        std::string::size_type);
+  
   };
 
 

@@ -484,5 +484,134 @@ string AlertMessagesEnglish::warning_decode(ZorbaWarning::WarningCode& code)
   return "?";
 }
 
+::zorba::ZorbaError::ErrorCode DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
+{
+  switch( code )
+  {
+    case  ::zorba::ZorbatypesError::FOER0000:
+      return ::zorba::ZorbaError::FOER0000;
+      break;
+    case  ::zorba::ZorbatypesError::FOAR0001:
+      return ::zorba::ZorbaError::FOAR0001;
+      break;
+    case  ::zorba::ZorbatypesError::FOAR0002:
+      return ::zorba::ZorbaError::FOAR0002;
+      break;
+    case ::zorba::ZorbatypesError::FOCA0001:
+      return ::zorba::ZorbaError::FOCA0001;
+      break;
+    case ::zorba::ZorbatypesError::FOCA0002:
+      return ::zorba::ZorbaError::FOCA0002;
+      break;
+    case ::zorba::ZorbatypesError::FOCA0003:
+      return ::zorba::ZorbaError::FOCA0003;
+      break;
+    case ::zorba::ZorbatypesError::FOCA0005:
+      return ::zorba::ZorbaError::FOCA0005;
+      break;
+    case ::zorba::ZorbatypesError::FOCA0006:
+      return ::zorba::ZorbaError::FOCA0006;
+      break;
+    case ::zorba::ZorbatypesError::FOCH0001:
+      return ::zorba::ZorbaError::FOCH0001;
+      break;
+    case ::zorba::ZorbatypesError::FOCH0002:
+      return ::zorba::ZorbaError::FOCH0002;
+      break;
+      
+      
+    case ::zorba::ZorbatypesError::FOCH0003:
+      return ::zorba::ZorbaError::FOCH0003;
+      break;
+    case ::zorba::ZorbatypesError::FOCH0004:
+      return ::zorba::ZorbaError::FOCH0004;
+      break;
+    case ::zorba::ZorbatypesError::FODC0001:
+      return ::zorba::ZorbaError::FODC0001;
+      break;
+    case ::zorba::ZorbatypesError::FODC0002:
+      return ::zorba::ZorbaError::FODC0002;
+      break;
+    case ::zorba::ZorbatypesError::FODC0003:
+      return ::zorba::ZorbaError::FODC0003;
+      break;
+    case ::zorba::ZorbatypesError::FODC0004:
+      return ::zorba::ZorbaError::FODC0004;
+      break;
+    case ::zorba::ZorbatypesError::FODC0005:
+      return ::zorba::ZorbaError::FODC0005;
+      break;
+    case ::zorba::ZorbatypesError::FODT0001:
+      return ::zorba::ZorbaError::FODT0001;
+      break;
+    case ::zorba::ZorbatypesError::FODT0002:
+      return ::zorba::ZorbaError::FODT0002;
+      break;
+    case ::zorba::ZorbatypesError::FODT0003:
+      return ::zorba::ZorbaError::FODT0003;
+      break;
+
+      
+    case ::zorba::ZorbatypesError::FONS0004:
+      return ::zorba::ZorbaError::FONS0004;
+      break;
+    case ::zorba::ZorbatypesError::FONS0005:
+      return ::zorba::ZorbaError::FONS0005;
+      break;
+    case ::zorba::ZorbatypesError::FORG0001:
+      return ::zorba::ZorbaError::FORG0001;
+      break;
+    case ::zorba::ZorbatypesError::FORG0002:
+      return ::zorba::ZorbaError::FORG0002;
+      break;
+    case ::zorba::ZorbatypesError::FORG0003:
+      return ::zorba::ZorbaError::FORG0003;
+      break;
+    case ::zorba::ZorbatypesError::FORG0004:
+      return ::zorba::ZorbaError::FORG0004;
+      break;
+    case ::zorba::ZorbatypesError::FORG0005:
+      return ::zorba::ZorbaError::FORG0005;
+      break;
+    case ::zorba::ZorbatypesError::FORG0006:
+      return ::zorba::ZorbaError::FORG0006;
+      break;
+    case ::zorba::ZorbatypesError::FORG0008:
+      return ::zorba::ZorbaError::FORG0008;
+      break;
+    case ::zorba::ZorbatypesError::FORG0009:
+      return ::zorba::ZorbaError::FORG0009;
+      break;
+
+      
+    case ::zorba::ZorbatypesError::FORX0001:
+      return ::zorba::ZorbaError::FORX0001;
+      break;
+    case ::zorba::ZorbatypesError::FORX0002:
+      return ::zorba::ZorbaError::FORX0002;
+      break;
+    case ::zorba::ZorbatypesError::FORX0003:
+      return ::zorba::ZorbaError::FORX0003;
+      break;
+    case ::zorba::ZorbatypesError::FORX0004:
+      return ::zorba::ZorbaError::FORX0004;
+      break;
+    case ::zorba::ZorbatypesError::FOTY0012:
+      return ::zorba::ZorbaError::FOTY0012;
+      break;
+    case ::zorba::ZorbatypesError::FOUP0001:
+      return ::zorba::ZorbaError::FOUP0001;
+      break;
+    case ::zorba::ZorbatypesError::FOUP0002:
+      return ::zorba::ZorbaError::FOUP0002;
+      break;
+
+    default:
+      return ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE;
+      break;
+  }
+  return ::zorba::ZorbaError::FORX0001;
+}
+
 } /* namespace error */
 } /* namespace zorba */

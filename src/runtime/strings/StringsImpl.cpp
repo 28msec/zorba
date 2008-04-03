@@ -10,7 +10,7 @@
  */
 #include <iostream>
 
-#include "zorbatypes/utf8.h"
+#include "zorbatypes/zorbatypesError.h"
 #include "zorbatypes/numconversions.h"
 
 #include "common/common.h"
@@ -23,6 +23,8 @@
 #include "store/api/item_factory.h"
 #include "context/static_context.h"
 #include "context/collation_cache.h"
+
+#include "errors/error_messages.h"
 
 
 using namespace std;
@@ -61,8 +63,8 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const {
           try{
             resStr += lCode;
             }
-            catch(exception_invalid_code_point){
-              ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0001, loc, lUtf8Code);
+            catch(zorbatypesException& ex){
+              ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, lUtf8Code);
             }
         }
         else
@@ -1467,6 +1469,7 @@ FnMatchesIterator::nextImpl(PlanState& planState) const
   xqp_string pattern;
   xqp_string flags;
   store::Item_t item;
+  bool res = false;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1485,8 +1488,14 @@ FnMatchesIterator::nextImpl(PlanState& planState) const
     assert (item != NULL);
     flags = item->getStringValue().getp();
   }
+  try{
+    res = input.matches(pattern, flags);
+  }
+  catch(zorbatypesException& ex){
+    ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+  }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(input.matches(pattern, flags)), state); 
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(res), state); 
   
   STACK_END (state);
 }
@@ -1511,7 +1520,9 @@ store::Item_t
 FnReplaceIterator::nextImpl(PlanState& planState) const
 {
   xqp_string input, pattern, replacement, flags;
+  xqp_string res;
   store::Item_t item;
+  bool tmp;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1534,11 +1545,25 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
     flags = item->getStringValue().getp();
   }
 
-  if(xqp_string().matches(pattern, flags))
+  try {
+    tmp = xqp_string().matches(pattern, flags);
+  }
+  catch(zorbatypesException& ex){
+    ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+  }
+  
+  if(tmp)
     ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
-  STACK_PUSH(GENV_ITEMFACTORY->createString(input.replace(pattern, replacement, flags).getStore ()), state);
+  try{
+    res = input.replace(pattern, replacement, flags);
+  }
+  catch(zorbatypesException& ex){
+    ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+  }
+  
+  STACK_PUSH(GENV_ITEMFACTORY->createString(res.getStore ()), state);
   
   STACK_END (state);
 }
@@ -1578,6 +1603,8 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
   xqp_string remaining;
   xqp_string token;
   store::Item_t item;
+  bool tmp;
+  
   
   FnTokenizeIteratorState* state;
   DEFAULT_STACK_INIT(FnTokenizeIteratorState, state, planState);
@@ -1596,13 +1623,26 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
     state->theFlags = item->getStringValue().getp();
   }
 
-  if(xqp_string().matches(state->thePattern, state->theFlags))
+  try{
+    tmp = xqp_string().matches(state->thePattern, state->theFlags);
+  }
+  catch(zorbatypesException& ex){
+    ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+  }
+  
+  if(tmp)
     ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
   do
-  {  
-    token = state->theString.tokenize(state->thePattern, state->theFlags, &remaining);
+  {
+    try{
+      token = state->theString.tokenize(state->thePattern, state->theFlags, &remaining);
+    }
+    catch(zorbatypesException& ex){
+      ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+    }
+    
     assert (remaining.length () < state->theString.length ());
     state->theString = remaining;
     STACK_PUSH(GENV_ITEMFACTORY->createString(token.getStore()), state);
