@@ -270,9 +270,7 @@ public:
 
 
 //15.3.2 op:union
-// do this using concat, dup-elim and sort
-//  in ordered mode: concat, dupelim-sort
-//  in unordered mode:  concat, dupelim-hashbased
+// implemented using concat and sort
 
 //15.3.3 op:intersect
 //15.3.4 op:except
@@ -281,6 +279,13 @@ namespace store {
     class NodeHashSet;
 }
 
+/**
+ * hashing semi(anti)join iterator
+ *
+ * first producer goes in the result if a match in the second producer is found/not found.
+ * the order of the first producer is retained.
+ * no duplicate elimination is performed
+ */
 class HashSemiJoinIteratorState : public PlanIteratorState {
 public:
   store::NodeHashSet* theRightInput;
@@ -315,19 +320,16 @@ protected:
 
 };
 
-class SortSemiJoinIteratorState : public PlanIteratorState {
-public:
-
-  SortSemiJoinIteratorState();
-  ~SortSemiJoinIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
+/**
+ * Sortmerge based semijoin iterator
+ *
+ * first producer goes in the result if a match in the second producer is found
+ * precondition: both inputs must be sorted
+ * postcondition: the order of the first producer is retained
+ * no duplicate elimination is done on the output
+ */
 class SortSemiJoinIterator : public NaryBaseIterator<SortSemiJoinIterator, 
-                                                     SortSemiJoinIteratorState>
+                                                     PlanIteratorState>
 {
 
 public:
@@ -340,10 +342,6 @@ public:
  
   virtual void 
   accept(PlanIterVisitor&) const;
-
-protected:
-  bool theAntijoin;
-
 };
 
   /*______________________________________________________________________

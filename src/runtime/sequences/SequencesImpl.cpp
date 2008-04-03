@@ -667,7 +667,6 @@ HashSemiJoinIterator::nextImpl(PlanState& planState) const {
   
 
   while ( ( lItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
-    // TODO: eliminate duplicates in output?
     not_found = ! state->theRightInput->find(lItem.getp());
     if (not_found == theAntijoin)
       STACK_PUSH(lItem, state);
@@ -677,25 +676,9 @@ HashSemiJoinIterator::nextImpl(PlanState& planState) const {
 }
 
 // sort-merge semi-join
-SortSemiJoinIteratorState::SortSemiJoinIteratorState() {
-}
-
-SortSemiJoinIteratorState::~SortSemiJoinIteratorState() {
-}
-
-void
-SortSemiJoinIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void
-SortSemiJoinIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
-
 SortSemiJoinIterator::SortSemiJoinIterator(const QueryLoc& loc,
                                    std::vector<PlanIter_t>& args)
- : NaryBaseIterator<SortSemiJoinIterator, SortSemiJoinIteratorState> ( loc, args )
+ : NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState> ( loc, args )
 {
 }
 
@@ -705,8 +688,8 @@ store::Item_t
 SortSemiJoinIterator::nextImpl(PlanState& planState) const {
   store::Item_t lOuter, lInner, lPrev;  
 
-  SortSemiJoinIteratorState* state;
-  DEFAULT_STACK_INIT(SortSemiJoinIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   
   while ((lOuter = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
