@@ -334,7 +334,7 @@ PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
   bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
 
-  // TODO: use SortSemiJoinIterator when that gets an antijoin
+  // TODO: use SortSemiJoinIterator when that gets an antijoin (trac ticket 254)
   PlanIter_t antijoin = new HashSemiJoinIterator(loc, argv, true);
   if (! sort && ! distinct)
     return antijoin;
