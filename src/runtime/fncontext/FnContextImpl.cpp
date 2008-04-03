@@ -12,71 +12,44 @@
 namespace zorba
 {
 
-
-
-
-CtxVariableIterator::CtxVariableIterator(
-    const QueryLoc& loc,
-    xqpStringStore* aVarname)
-  : 
-  NoaryBaseIterator<CtxVariableIterator, CtxVariableIteratorState>(loc),
-  theVarName(aVarname)
-{
-}
-
-CtxVariableIterator::~CtxVariableIterator() { }
-
-
-
-void
-CtxVariableIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  StateTraitsImpl<CtxVariableIteratorState>::createState(planState, this->stateOffset, offset);
-
-  StateTraitsImpl<CtxVariableIteratorState>::initState(planState, this->stateOffset);
-  
-  CtxVariableIteratorState* lState = StateTraitsImpl<CtxVariableIteratorState>::getState(planState, this->stateOffset);
-
-  xqpStringStore dot(".");
-
-  if (!theVarName->equals(&dot))
-    lState->iter = planState.theRuntimeCB->theDynamicContext->get_variable(xqpString(theVarName.getp()));
-
-}
-
-
 store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t item;
-  xqpStringStore dot(".");
+  xqpStringStore_t theVarName;
+  xqpStringStore dot (".");
+  
+  CtxVariableIteratorState* state;
+  DEFAULT_STACK_INIT(CtxVariableIteratorState, state, planState);
 
-  CtxVariableIteratorState* aState;
-  DEFAULT_STACK_INIT(CtxVariableIteratorState, aState, planState);
+  item = consumeNext(theChildren[0].getp(), planState);
 
-	if(theVarName->equals(&dot))//looking for context item?
+  if (item == NULL)
+    return NULL;
+
+  theVarName = item->getStringValue();
+
+	if(theVarName->equals(&dot))  //looking for context item?
 	{
     item = planState.theRuntimeCB->theDynamicContext->context_item();
 		if(item == NULL)
 		{
 			ZORBA_ERROR_LOC_PARAM( ZorbaError::XPDY0002, loc, "context item", "");
 		}
-		STACK_PUSH( item, aState);
-	}
-	else
-	{
-		if (aState->iter == NULL)
+		STACK_PUSH( item, state);
+	} else {
+    state->iter = planState.theRuntimeCB->theDynamicContext->get_variable(xqpString(theVarName.getp()));
+    if (state->iter == NULL)
 			ZORBA_ERROR_LOC_PARAM( ZorbaError::XPDY0002, loc, theVarName, "");
 
-    aState->iter->open();
+    state->iter->open();
 
-    while ( (item = aState->iter->next()) != NULL )
-			STACK_PUSH (item , aState);
+    while ( (item = state->iter->next()) != NULL )
+			STACK_PUSH (item, state);
 
-    aState->iter->close();
+    state->iter->close();
 	}
 
-  STACK_END (aState);
-
+  STACK_END (state);  
 }
 
 }

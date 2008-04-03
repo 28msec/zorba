@@ -19,7 +19,6 @@
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
-#include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/update/update.h"
 #include "runtime/qnames/QNamesImpl.h"
@@ -67,7 +66,6 @@ namespace zorba {
   NOARY_ACCEPT(EmptyIterator);
   NOARY_ACCEPT(SingletonIterator);
   NOARY_ACCEPT(ForVarIterator);
-  NOARY_ACCEPT(CtxVariableIterator);
   
   // unary iterators
   UNARY_ACCEPT(NodeDistinctIterator);

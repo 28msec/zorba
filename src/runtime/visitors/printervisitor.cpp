@@ -1780,7 +1780,6 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
 
   void PrinterVisitor::beginVisit(const CtxVariableIterator& a) {
     thePrinter.startBeginVisit("CtxVariableIterator", (intptr_t) &a);
-    thePrinter.addAttribute("varname", a.getVarName());
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }

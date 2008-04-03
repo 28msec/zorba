@@ -2,7 +2,7 @@
 #define ZORBA_FN_CONTEXT_IMPL_H
 
 #include "common/shared_types.h"
-#include "runtime/base/noarybase.h"
+#include "runtime/base/narybase.h"
 
 namespace zorba
 {
@@ -22,25 +22,7 @@ public:
   Iterator_t iter;
 };
 
-
-class CtxVariableIterator : public NoaryBaseIterator<CtxVariableIterator, CtxVariableIteratorState>
-{
-private:
-  xqpStringStore_t theVarName;
-
-public:
-  CtxVariableIterator(const QueryLoc& loc, xqpStringStore* varName);
-
-  virtual ~CtxVariableIterator();
-
-
-  void openImpl ( PlanState& planState, uint32_t& offset );
-  store::Item_t nextImpl(PlanState& planState) const;
-
-  virtual void accept(PlanIterVisitor&) const;
-
-  xqp_string getVarName() const { return theVarName.getp(); }
-};
+NARY_ITER_STATE (CtxVariableIterator, CtxVariableIteratorState);
   
 }
 

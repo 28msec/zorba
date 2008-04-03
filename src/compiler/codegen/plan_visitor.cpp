@@ -230,8 +230,10 @@ void end_visit(var_expr& v)
     xqpString varname = v.get_varname()->getStringValue().getp();
     if (varname == DOT_VAR) 
     {
-      xqpStringStore* vname = new xqpStringStore(".");
-      itstack.push (new CtxVariableIterator (loc, vname));
+      xqpStringStore *vname = new xqpStringStore (".");
+      vector<PlanIter_t> ctx_args;
+      ctx_args.push_back (new SingletonIterator (loc, ITEM_FACTORY->createString (vname)));
+      itstack.push (new CtxVariableIterator (loc, ctx_args));
     }
     else if (varname == DOT_POS_VAR)
     {
