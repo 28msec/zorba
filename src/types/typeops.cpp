@@ -197,41 +197,30 @@ bool TypeOps::is_promotable(const XQType& srctype, const XQType& targettype)
 bool TypeOps::is_treatable(const store::Item_t item, const XQType& type)
 {
   switch(type.type_kind()) {
-    case XQType::NODE_TYPE_KIND:
-      {
-        if (!item->isNode()) {
-          return false;
-        }
-        const NodeXQType& nType = static_cast<const NodeXQType&>(type);
-        rchandle<NodeTest> nodeTest = nType.get_nodetest();
-        switch(nodeTest->get_kind()) {
-          case store::StoreConsts::anyNode:
-            return true;
-
-          case store::StoreConsts::documentNode:
-            return item->getNodeKind() == store::StoreConsts::documentNode;
-
-          case store::StoreConsts::textNode:
-            return item->getNodeKind() == store::StoreConsts::textNode;
-
-          case store::StoreConsts::piNode:
-            return item->getNodeKind() == store::StoreConsts::piNode
-              && (nodeTest->get_nametest() == NULL
-                || nodeTest->get_nametest()->get_local() == NULL
-                || nodeTest->get_nametest()->get_local()->byteEqual(*item->getTarget().getStore()));
-
-          case store::StoreConsts::commentNode:
-            return item->getNodeKind() == store::StoreConsts::commentNode;
-
-          default:
-            break;
-        }
-      }
-
+  case XQType::NODE_TYPE_KIND: {
+    if (!item->isNode())
+      return false;
+    
+    const NodeXQType& nType = static_cast<const NodeXQType&>(type);
+    rchandle<NodeTest> nodeTest = nType.get_nodetest();
+    switch(nodeTest->get_kind()) {
+    case store::StoreConsts::piNode:
+      return item->getNodeKind() == store::StoreConsts::piNode
+        && (nodeTest->get_nametest() == NULL
+            || nodeTest->get_nametest()->get_local() == NULL
+            || nodeTest->get_nametest()->get_local()->byteEqual(*item->getTarget().getStore()));
+      
     default:
       break;
+    }
   }
-  return is_subtype(*type.get_manager()->create_type(item->getType(), TypeConstants::QUANT_ONE), type);
+
+  default:
+    break;
+  }
+
+  // TODO: remove above switch when item_type is complete
+  return is_subtype(*type.get_manager()->item_type (item), type);
 }
 
 bool TypeOps::is_atomic(const XQType& type)
