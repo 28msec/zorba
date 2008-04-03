@@ -27,7 +27,7 @@ namespace zorba {
     isUpdateQuery() const;
 
     void
-    serialize(std::ostream&, XQuery::SerializerOptions_t = XQuery::SerializerOptions());
+    serialize(std::ostream&, const XQuery::SerializerOptions_t& = XQuery::SerializerOptions());
 
     void 
     applyUpdates(std::ostream& os);
@@ -77,6 +77,9 @@ namespace zorba {
 
     CompilerCB::config_t
     getCompilerConfig(const XQuery::CompilerHints_t&);
+
+    void
+    setSerializationParameters(serializer*, const XQuery::SerializerOptions&);
 
     PlanWrapper_t
     generateWrapper();

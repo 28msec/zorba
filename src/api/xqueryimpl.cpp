@@ -252,13 +252,14 @@ namespace zorba {
   }
 
   void
-  XQueryImpl::serialize(std::ostream& os, XQuery::SerializerOptions_t)
+  XQueryImpl::serialize(std::ostream& os, const XQuery::SerializerOptions_t& opt)
   {
     checkClosed();
     checkCompiled();
 
     PlanWrapper_t lPlan = generateWrapper();
     serializer lSerializer(theErrorManager);
+    setSerializationParameters(&lSerializer, opt);
 
     try { 
       lPlan->open();
@@ -329,6 +330,41 @@ namespace zorba {
     lConfig.opt_level = aHints.opt_level==XQuery::CompilerHints::O0 ? CompilerCB::config_t::O0 : CompilerCB::config_t::O1;
 
     return lConfig;
+  }
+
+  void
+  XQueryImpl::setSerializationParameters(serializer* ser, const XQuery::SerializerOptions_t& opt)
+  {
+    switch (opt.ser_method) {
+      case XQuery::SerializerOptions::serialization_method::XML: ser->set_parameter("method", "xml"); break;
+      case XQuery::SerializerOptions::serialization_method::HTML: ser->set_parameter("method", "html"); break;
+    }
+    switch (opt.byte_order_mark) {
+      case XQuery::SerializerOptions::byte_order_mark::YES: ser->set_parameter("byte-order-mark", "yes"); break;
+      case XQuery::SerializerOptions::byte_order_mark::NO:  ser->set_parameter("byte-order-mark", "no"); break;
+    }
+    switch (opt.include_content_type) {
+      case XQuery::SerializerOptions::include_content_type::YES: ser->set_parameter("include-content-type", "yes"); break;
+      case XQuery::SerializerOptions::include_content_type::NO:  ser->set_parameter("include-content-type", "no"); break;
+    }
+    switch (opt.indent) {
+      case XQuery::SerializerOptions::indent::YES: ser->set_parameter("indent", "yes"); break;
+      case XQuery::SerializerOptions::indent::NO:  ser->set_parameter("indent", "no"); break;
+    }
+    switch (opt.omit_xml_declaration) {
+      case XQuery::SerializerOptions::omit_xml_declaration::YES: ser->set_parameter("omit-xml-declaration", "yes"); break;
+      case XQuery::SerializerOptions::omit_xml_declaration::NO:  ser->set_parameter("omit-xml-declaration", "no"); break;
+    }
+    switch (opt.standalone) {
+      case XQuery::SerializerOptions::standalone::YES: ser->set_parameter("standalone", "yes"); break;
+      case XQuery::SerializerOptions::standalone::NO:  ser->set_parameter("standalone", "no"); break;
+      case XQuery::SerializerOptions::standalone::OMIT:ser->set_parameter("standalone", "omit"); break;
+    }
+    switch (opt.undeclare_prefixes) {
+      case XQuery::SerializerOptions::undeclare_prefixes::YES: ser->set_parameter("undeclare-prefixes", "yes"); break;
+      case XQuery::SerializerOptions::undeclare_prefixes::NO:  ser->set_parameter("undeclare-prefixes", "no"); break;
+    }
+    
   }
 
   void

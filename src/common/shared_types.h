@@ -231,6 +231,9 @@ typedef rchandle<ForVarIterator> var_iter_t;
 class LetVarIterator;
 typedef rchandle<LetVarIterator> ref_iter_t;
 
+/* api */
+class serializer;
+
 }
 
 #endif /* ZORBA_SHARED_TYPES_H */

@@ -30,8 +30,7 @@ namespace zorba {
         typedef struct serialization_method {
           typedef enum {
             XML, 
-            HTML, 
-            TEXT
+            HTML
           } serialization_method_t;
         };
 
@@ -99,7 +98,7 @@ namespace zorba {
             byte_order_mark(byte_order_mark::NO),
             indent(indent::NO),
             normalization_form(normalization_form::none),
-            omit_xml_declaration(omit_xml_declaration::YES),
+            omit_xml_declaration(omit_xml_declaration::NO),
             standalone(standalone::OMIT),
             undeclare_prefixes(undeclare_prefixes::NO) {}
       } SerializerOptions_t;
@@ -123,7 +122,7 @@ namespace zorba {
       // prepares the query with the default dynamic that belongs to this query
       // it can be retrieved using getDynamicContext. 
       virtual void
-      serialize(std::ostream&, SerializerOptions_t = SerializerOptions()) = 0;
+      serialize(std::ostream&, const SerializerOptions_t& = SerializerOptions()) = 0;
 
       virtual void 
       applyUpdates(std::ostream& os) = 0;
