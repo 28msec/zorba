@@ -75,18 +75,22 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
       resPre = new xqpStringStore(qname->str().substr(0, index));
       resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
 
+      // must check for FOCA0002 first
+      if (!GENV_GCAST.castableToNCName (resPre) || ! GENV_GCAST.castableToNCName (resLocal))
+        ZORBA_ERROR (ZorbaError::FOCA0002);
+      
       itemElem = consumeNext(theChild1, planState );
       if( itemElem != NULL ) {
         itemElem->getNamespaceBindings(NamespaceBindings);
         for (iter = NamespaceBindings.begin();
              iter != NamespaceBindings.end();
              ++iter)
-        {
+          {
           if ((*iter).first.getStore()->byteEqual(*resPre)) {
             resNs = (*iter).second.getStore();
             break;
           }
-        }
+          }
         if (resNs == NULL)
           ZORBA_ERROR (ZorbaError::FONS0004);
       }
@@ -94,6 +98,8 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
       resNs = new xqpStringStore("");
       resPre = new xqpStringStore("");
       resLocal = qname;
+      if (! GENV_GCAST.castableToNCName (resLocal))
+        ZORBA_ERROR (ZorbaError::FOCA0002);
     }
 
     res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
@@ -152,8 +158,6 @@ QNameIterator::nextImpl(PlanState& planState) const
     itemQName = itemQName->getAtomizationValue();
     qname = itemQName->getStringValue()->trim();
       
-    //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
-
     index = qname->indexOf(":");
   }
 
