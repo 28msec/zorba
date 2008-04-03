@@ -80,8 +80,6 @@ namespace zorba {
 		checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
 		const char		*keybuff;
 		const ctx_value_t *val;
-    // TODO
-		//Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 
 		//keybuff[sizeof(keybuff)-1] = 0;
 		for(it = keymap.begin();it!=keymap.end();it++)
@@ -95,23 +93,11 @@ namespace zorba {
 				const_cast<XQType *> (val->typeValue)->removeReference(val->typeValue->getSharedRefCounter()
                                         SYNC_PARAM2(val->typeValue->getRCLock()));
 			}
-			else if(!strncmp(keybuff, "collation:", 10))
-			{
-			//val = &(*it).val;
-			//if(!val->collationValue->is_user_created)
-			//{
-			//	if(z)
-			//	{
-			//		z->coll_manager->removeReference(val->collationValue->coll_string, val->collationValue->coll_strength);
-			//	}
-      //  delete val->collationValue;
-			//}
-			}
-            else if (!strncmp(keybuff, "fn:", 3))
-            {
-                val = &(*it).val;
-                delete val->functionValue;
-            }
+      else if (!strncmp(keybuff, "fn:", 3))
+      {
+          val = &(*it).val;
+          delete val->functionValue;
+      }
 		}
 	}
 
@@ -405,7 +391,7 @@ static_context::set_default_collation_uri(const xqp_string& aURI)
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
-		ZORBA_ERROR_DESC( ZorbaError::XQST0038, "invalid collation uri " << lURI);
+		ZORBA_ERROR_DESC_OSS( ZorbaError::XQST0038, "invalid collation uri " << lURI);
   }
   else
   {
@@ -527,7 +513,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
       {
         if((tempuri.indexOf("/") != 1) && (tempuri.indexOf("\\") != 1))
         {
-          ZORBA_ERROR_PARAM( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
+          ZORBA_ERROR_PARAM_OSS( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
           return "";
         }
         xqp_string    tempabs;
@@ -541,7 +527,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
         
         if(last_slash < 0)
         {
-          ZORBA_ERROR_PARAM( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
+          ZORBA_ERROR_PARAM_OSS( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
           return "";
         }
         abs_uri = abs_uri.substr(0, last_slash+1);
@@ -569,7 +555,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
 
 	if(!GenericCast::instance()->isCastable(abs_uri, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
   {
-    ZORBA_ERROR_PARAM( ZorbaError::XQP0020_INVALID_URI,  base_uri << " + " << uri, "");
+    ZORBA_ERROR_PARAM_OSS( ZorbaError::XQP0020_INVALID_URI,  base_uri << " + " << uri, "");
     return "";
   }
 

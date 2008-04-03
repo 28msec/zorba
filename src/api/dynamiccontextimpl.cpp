@@ -100,9 +100,9 @@ namespace zorba {
                                                                             TypeConstants::QUANT_ONE);
 
       if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)) {
-        ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT, "Given item of type [" << lItemType->toString() 
-                                                               << "] is not a subtype of [" 
-                                                               << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
+        ZORBA_ERROR_DESC_OSS(ZorbaError::API0014_INVALID_ARGUMENT, "Given item of type [" << lItemType->toString() 
+                                                                   << "] is not a subtype of [" 
+                                                                   << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
       }
 
       theCtx->set_current_date_time(lItem);

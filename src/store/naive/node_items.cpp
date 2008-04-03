@@ -1117,9 +1117,9 @@ void ElementNode::checkUniqueAttr(Item* attrName) const
   {
     if (getAttr(i)->getNodeName()->equals(attrName, NULL))
     {
-      ZORBA_ERROR_PARAM(ZorbaError::XQDY0025,
-                        "Attribute name " << *attrName->getStringValue() 
-                        << " is not unique", "");
+      ZORBA_ERROR_PARAM_OSS(ZorbaError::XQDY0025,
+                            "Attribute name " << *attrName->getStringValue() 
+                            << " is not unique", "");
     }
   }
 }

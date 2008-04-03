@@ -476,11 +476,11 @@ void ElementNode::checkNamespaceConflict(
 
   if (ns != NULL && ns->byteEqual(*qname->getNamespace().getStore()))
   {
-    ZORBA_ERROR_DESC(ecode,
-                     "The implied namespace binding of " << qname->show()
-                     << " conflicts with namespace binding ["
-                     << qname->getPrefix() << ", " 
-                     << qname->getNamespace() << "]");
+    ZORBA_ERROR_DESC_OSS(ecode,
+                         "The implied namespace binding of " << qname->show()
+                         << " conflicts with namespace binding ["
+                         << qname->getPrefix() << ", " 
+                         << qname->getNamespace() << "]");
   }
 }
 

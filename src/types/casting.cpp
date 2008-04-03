@@ -433,7 +433,7 @@ store::Item_t GenericCast::stringSimpleCast(
     }
     else
     {
-      ZORBA_ERROR_PARAM( ZorbaError::XQDY0041, "Cannot cast " << lString << " to an NCName", ""); 
+      ZORBA_ERROR_PARAM_OSS( ZorbaError::XQDY0041, "Cannot cast " << lString << " to an NCName", ""); 
     }
     break;
   }

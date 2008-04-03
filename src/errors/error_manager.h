@@ -105,11 +105,14 @@ namespace zorba { namespace error {
 } while (0)
 
 
-#define ZORBA_ERROR_DESC(code, desc) do {  \
+#define ZORBA_ERROR_DESC_OSS(code, desc) do {  \
   std::ostringstream lOStringStream; \
   lOStringStream << desc; \
   throw error::ErrorManager::createException(code, lOStringStream.str(), __FILE__, __LINE__); \
 } while (0) 
+
+#define ZORBA_ERROR_DESC(code, desc) \
+  ZORBA_ERROR_DESC_OSS (code, (desc))
 
 #define ZORBA_ERROR_LOC(code, loc) do { \
   throw error::ErrorManager::createException(code, __FILE__, __LINE__, loc); \
@@ -122,19 +125,25 @@ namespace zorba { namespace error {
 
 
 // create an exception, replace params, and throw it
-#define ZORBA_ERROR_PARAM(code, param1, param2) do { \
+#define ZORBA_ERROR_PARAM_OSS(code, param1, param2) do { \
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \
   throw error::ErrorManager::createException(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__); \
 } while (0) 
 
-#define ZORBA_ERROR_LOC_PARAM(code, loc, param1, param2) do { \
+#define ZORBA_ERROR_PARAM(code, param1, param2) \
+  ZORBA_ERROR_PARAM_OSS(code, (param1), (param2))
+
+#define ZORBA_ERROR_LOC_PARAM_OSS(code, loc, param1, param2) do { \
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \
   throw error::ErrorManager::createException(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__, loc); \
 } while (0) 
+
+#define ZORBA_ERROR_LOC_PARAM(code, loc, param1, param2) \
+  ZORBA_ERROR_LOC_PARAM_OSS(code, loc, (param1), (param2))
 
 
 // create an error, remeber it, and continue
@@ -144,22 +153,26 @@ namespace zorba { namespace error {
 
 
 // create an error, replace params, and continue
-#define ZORBA_ERROR_PARAM_CONTINUE(manager, code, param1, param2) do {\
+#define ZORBA_ERROR_PARAM_CONTINUE_OSS(manager, code, param1, param2) do {\
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \
   throw manager->addError(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__); \
 } while (0) 
 
+#define ZORBA_ERROR_PARAM_CONTINUE(manager, code, param1, param2) \
+  ZORBA_ERROR_PARAM_CONTINUE_OSS(manager, code, (param1), (param2))
 
 // create an error, with location, replace params, and continue
-#define ZORBA_ERROR_LOC_PARAM_CONTINUE(manager, code, loc, param1, param2) do { \
+#define ZORBA_ERROR_LOC_PARAM_CONTINUE_OSS(manager, code, loc, param1, param2) do { \
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \
   throw manager->addError(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__, loc); \
 } while (0) 
 
+#define ZORBA_ERROR_LOC_PARAM_CONTINUE(manager, code, loc, param1, param2) \
+  ZORBA_ERROR_PARAM_LOC_CONTINUE_OSS(manager, code, loc, (param1), (param2))
 
 // create a warning and continue
 #define ZORBA_WARNING(manager, code, desc, loc) do {\
