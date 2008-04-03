@@ -45,6 +45,8 @@ class TypeManagerImpl : public TypeManager {
 
     xqtref_t create_none_type() const;
 
+    xqtref_t item_type (store::Item_t item) const;
+
   protected:
     TypeManager *m_parent;
 };

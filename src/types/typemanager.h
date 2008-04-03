@@ -51,6 +51,11 @@ class TypeManager {
     virtual xqtref_t create_empty_type() const = 0;
 
     virtual xqtref_t create_none_type() const = 0;
+    
+    // TODO: does this belong here or in TypeOps?
+    // This operation can potentially create types based on qnames (from element tags).
+    virtual xqtref_t item_type (store::Item_t item) const = 0;
+    
 
   protected:
     int m_level;
@@ -60,3 +65,8 @@ class TypeManager {
 
 #endif /* ZORBA_TYPEMANAGER_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

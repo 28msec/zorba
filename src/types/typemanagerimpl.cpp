@@ -237,4 +237,10 @@ xqtref_t TypeManagerImpl::create_none_type() const
   return GENV_TYPESYSTEM.NONE_TYPE;
 }
 
+xqtref_t TypeManagerImpl::item_type (store::Item_t item) const {
+  if (item->isAtomic ())
+    return create_type (item->getType (), TypeConstants::QUANT_ONE);
+  return create_node_type (new NodeTest (item->getNodeKind ()), xqtref_t (NULL), TypeConstants::QUANT_ONE);
+}
+
 /* vim:set ts=2 sw=2: */
