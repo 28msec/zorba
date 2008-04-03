@@ -27,10 +27,9 @@ static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_
   return fh;
 }
 
-static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t /*type*/)
+static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t type)
 {
-  // TODO : Need to add typematch_expr
-  return e;
+  return new treat_expr (e->get_loc (), e, type, ZorbaError::XPTY0004);
 }
 
 static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type)
@@ -121,10 +120,7 @@ bool normalizer::begin_visit(fo_expr& node)
       arg = wrap_in_atomization(m_sctx, arg);
       arg = wrap_in_type_conversion(arg, arg_type);
     }
-
-    if (TypeOps::quantifier(*arg_type) != TypeConstants::QUANT_STAR) {
-      arg = wrap_in_typematch(arg, arg_type);
-    }
+    else arg = wrap_in_typematch(arg, arg_type);
 
     node[i] = arg;
   }
