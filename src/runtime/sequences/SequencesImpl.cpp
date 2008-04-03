@@ -57,8 +57,7 @@ getCollator(RuntimeCB* aRuntimeCB, const QueryLoc& loc, PlanState& planState, co
   if (PlanIterator::consumeNext(iter, planState) != NULL)
       ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, "A sequence of more then one item is not allowed as collation parameter");
     
-  xqtref_t lCollationItemType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lCollationItem->getType(), 
-                                                                                               TypeConstants::QUANT_ONE);
+  xqtref_t lCollationItemType = planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lCollationItem);
 
   // TODO resolve uri (base-uri)
 
@@ -808,8 +807,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
   {
     do {
       // casting of untyped atomic
-      xqtref_t lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lRunningItem->getType(),
-                                                                                              TypeConstants::QUANT_ONE);
+      xqtref_t lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lRunningItem);
       if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
         lRunningItem = GenericCast::instance()->cast(lRunningItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
@@ -825,7 +823,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
         if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
           break;
 
-        lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);
+        lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lMaxItem);
       }
       if (lMaxItem != 0) {
         // Type Promotion
@@ -834,15 +832,13 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
           lItemCur = GenericCast::instance()->promote(lMaxItem, lRunningType); 
           if (lItemCur != 0) {
             lMaxItem = lItemCur;
-            lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lMaxItem->getType(), 
-                                                                                       TypeConstants::QUANT_ONE);
+            lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lMaxItem);
           } else {
             ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc,  "Promote not possible");
           }
         } else {
           lRunningItem = lItemCur;
-          lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->create_type(lRunningItem->getType(), 
-                                                                                         TypeConstants::QUANT_ONE);
+          lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lRunningItem);
         }
         if (CompareIterator::valueComparison(planState.theRuntimeCB, lRunningItem, lMaxItem, theCompareType, lCollator) ) {
           lMaxType = lRunningType;

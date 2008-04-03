@@ -56,8 +56,8 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
 
   if (lTreatItem != 0)
   {
-    if (TypeOps::is_subtype(*ts.create_type (lTreatItem->getType()),
-                      *theSequenceType))
+    if (TypeOps::is_subtype(*ts.item_type (lTreatItem),
+                            *theSequenceType))
     {
       lTreatItem = consumeNext(theChild.getp(), planState);
       if (lTreatItem != 0)
@@ -72,7 +72,7 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
           lResult = true;
           do
           {
-            if (!TypeOps::is_subtype(*ts.create_type(lTreatItem->getType()),
+            if (!TypeOps::is_subtype(*ts.item_type (lTreatItem),
                                *theSequenceType))
             {
               lResult = false;
@@ -255,7 +255,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& planState) const
     }
     lResult = GenericCast::instance()->promote(lItem, thePromoteType);
     if (lResult == 0) {
-      ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " -> " + TypeOps::toString (*thePromoteType) );
+      ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
     } else {
       STACK_PUSH(lResult, lState);
     }
@@ -263,7 +263,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& planState) const
     do {
       lResult = GenericCast::instance()->promote(lItem, thePromoteType);
       if (lResult == 0) {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_type (lItem->getType ())) + " -> " + TypeOps::toString (*thePromoteType) );
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
       } else{
         STACK_PUSH(lResult, lState);
       }
@@ -302,14 +302,14 @@ store::Item_t TreatIterator::nextImpl(PlanState& planState) const
       "Seq with 2 or more items cannot treated as a QUANT_QUESTION or QUANT_ONE type.");
     }
     if ( !TypeOps::is_treatable(lItem, *theTreatType)) {
-      ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + TypeOps::toString (*theTreatType) );
+      ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lItem)) + " as " + TypeOps::toString (*theTreatType) );
     } else {
       STACK_PUSH(lItem, lState);
     }
   } else {
     do {
       if ( !TypeOps::is_treatable(lItem, *theTreatType)) {
-        ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + TypeOps::toString (*theTreatType) );
+        ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lItem)) + " as " + TypeOps::toString (*theTreatType) );
       } else{
         STACK_PUSH(lItem, lState);
       }

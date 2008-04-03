@@ -28,11 +28,8 @@ namespace zorba
   // Utility function -- is this item null or a NaN?
 static bool empty_item (RuntimeCB* aRuntimeCB, store::Item_t s)
 {
-  
-  return (s == 0) ||
-         (TypeOps::is_numeric(*aRuntimeCB->theStaticContext->get_typemanager()->create_type(s->getType(), TypeConstants::QUANT_ONE))) &&
-          s->isNaN();
-  }
+  return (s == 0) || (s->isNumeric () && s->isNaN());
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////

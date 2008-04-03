@@ -80,8 +80,8 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
   n0 = n0->getAtomizationValue();
   n1 = n1->getAtomizationValue();
 
-  xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type ( n0->getType(), TypeConstants::QUANT_ONE );
-  xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_type ( n1->getType(), TypeConstants::QUANT_ONE );
+  xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->item_type (n0);
+  xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->item_type (n1);
 
   if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
      || TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
@@ -272,7 +272,7 @@ store::Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstant
 
   if( i1->getDoubleValue().isZero() )
   {
-    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(i0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->item_type (const_cast<store::Item *> (i0));
     if( TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
       d = new YearMonthDuration();
     else
@@ -300,7 +300,7 @@ store::Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants:
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
   {
-    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_type(i0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->item_type (const_cast<store::Item *> (i0));
     if( TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
       d = new YearMonthDuration();
     else
