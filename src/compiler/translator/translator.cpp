@@ -371,18 +371,6 @@ void end_visit(const DefaultCollationDecl& /*v*/, void* /*visit_state*/)
 void *begin_visit(DefaultNamespaceDecl const& v)
 {
   TRACE_VISIT ();
-// TODO adapt to new store
-//  switch (v.get_mode()) {
-//  case ns_element_default: {
-//    namespace_node* ns_p = new dom_namespace_node("#elem#",v.get_default_namespace());
-//    zorp->get_dynamic_context()->set_default_element_type_namespace(*ns_p);
-//    break;
-//  }
-//  case ns_function_default: {
-//    namespace_node* ns_p = new dom_namespace_node("#func#",v.get_default_namespace());
-//    sctx_p->set_default_function_namespace(ns_p);
-//    break;
-//  }}
   switch (v.get_mode()) {
   case ParseConstants::ns_element_default:
     sctx_p->set_default_elem_type_ns (v.get_default_namespace ());
@@ -1601,7 +1589,12 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         expr_t body = pop_nodestack ();
         if (v.get_return_type () != NULL) {
           xqtref_t rt = pop_tstack ();
-          body = new promote_expr (body->get_loc (), body, rt);
+          // Perhaps promote_expr should handle user-defined types too.
+          // Perhaps it already does. Not sure. TODO.
+          if (TypeOps::is_simple (*rt))
+            body = new promote_expr (body->get_loc (), body, rt);
+          else
+            body = new treat_expr (body->get_loc (), body, rt, ZorbaError::XPTY0004);
         }
 
         int nargs = v.get_param_count ();
