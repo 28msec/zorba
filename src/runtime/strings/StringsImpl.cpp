@@ -1634,8 +1634,7 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
     ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
-  do
-  {
+  while (! state->theString.empty ()) {
     try{
       token = state->theString.tokenize(state->thePattern, state->theFlags, &remaining);
     }
@@ -1647,7 +1646,6 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
     state->theString = remaining;
     STACK_PUSH(GENV_ITEMFACTORY->createString(token.getStore()), state);
   }
-  while (! state->theString.empty ());
 
   STACK_END(state);
 }
