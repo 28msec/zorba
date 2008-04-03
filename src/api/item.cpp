@@ -27,17 +27,13 @@ Item::Item(const Item& other)
 
 Item::~Item()
 {
-  if (!isNull()) {
-    RCHelper::removeReference(m_item);
-  }
+  close();
 }
 
 const Item& Item::operator =(const Item& rhs)
 {
   if (m_item != rhs.m_item) {
-    if (!isNull()) {
-      RCHelper::removeReference(m_item);
-    }
+    close();
     m_item = rhs.m_item;
     if (!isNull()) {
       RCHelper::addReference(m_item);
@@ -49,9 +45,7 @@ const Item& Item::operator =(const Item& rhs)
 const Item& Item::operator =(store::Item *rhs)
 {
   if (m_item != rhs) {
-    if (!isNull()) {
-      RCHelper::removeReference(m_item);
-    }
+    close();
     m_item = rhs;
     if (!isNull()) {
       RCHelper::addReference(m_item);
@@ -88,6 +82,14 @@ bool Item::isAtomic() const
 bool Item::isNull() const
 {
   return m_item == NULL;
+}
+
+void
+Item::close()
+{
+  if (!isNull()) {
+    RCHelper::removeReference(m_item);
+  }
 }
 
 }

@@ -33,6 +33,9 @@ public:
   bool
   isNull() const;
 
+  void
+  close();
+
   const Item& operator =(const Item& rhs);
   const Item& operator =(store::Item *rhs);
 

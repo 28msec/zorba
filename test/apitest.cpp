@@ -86,6 +86,7 @@ int _tmain(int argc, _TCHAR* argv[])
   try {
     query = zengine->compileQuery(*qfile, chints);
   } catch (ZorbaException &e) {
+    // no need to close because the object is not valid
     cerr << "Compilation error: " << e << endl;
     return 1;
   }
@@ -111,7 +112,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     catch (ZorbaException &e)
     {
-      query.reset();
+      query->close();
       zengine->shutdown();
       cerr << "Execution error: " << e << endl;
       return 2;
@@ -134,14 +135,14 @@ int _tmain(int argc, _TCHAR* argv[])
     catch (ZorbaException &e)
     {
       result->close();
-      query.reset();
+      query->close();
       zengine->shutdown();
       cerr << "Execution error: " << e << endl;
       return 2;
     }
   }
 
-  query.reset();
+  query->close();
   zengine->shutdown();
   return 0;
 }

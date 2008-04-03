@@ -36,9 +36,10 @@
 namespace zorba {
 
 	XQueryImpl::XQueryImpl()
-    : theStaticContext(0),
-      theQueryIsCompiled(false),
-      theUserErrorHandler(false)
+    : thePlan(0),
+      theStaticContext(0),
+      theUserErrorHandler(false),
+      theIsClosed(false)
 	{ 
     theCompilerCB = new CompilerCB();
 
@@ -57,16 +58,10 @@ namespace zorba {
 
   XQueryImpl::~XQueryImpl()
   {
-    delete theErrorManager;
-
-    if (!theUserErrorHandler) // see registerErrorHandler
-      delete theErrorHandler;
-
-    delete theStaticContext;;
-
-    delete theDynamicContext;
-
-    delete theCompilerCB;
+    // only release resouces if not already released
+    // be careful with having non-pointers/rchandles as members in xqueryimpl 
+    if (!theIsClosed)
+      close();
   }
 
   /**
@@ -75,6 +70,8 @@ namespace zorba {
   void
   XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
   {
+    checkClosed();
+      
     assert (theErrorHandler);
     if ( ! theUserErrorHandler ) {
       delete theErrorHandler;
@@ -86,6 +83,8 @@ namespace zorba {
   void
   XQueryImpl::resetErrorHandler()
   {
+    checkClosed();
+
     assert (theErrorHandler);
     if ( ! theUserErrorHandler ) 
       return;
@@ -100,8 +99,36 @@ namespace zorba {
   void
   XQueryImpl::setFileName( const String& aFileName )
   {
+    checkClosed();
+
     xqpString lFileName = Unmarshaller::getInternalString( aFileName );
     theFileName = lFileName;
+  }
+
+  void
+  XQueryImpl::close()
+  {
+    if (theIsClosed)
+      checkClosed();
+
+    // only destroy the plan if we compiled it successfully
+    if (thePlan) {
+      RCHelper::removeReference(thePlan); // may still be used by (cloned) xqueries
+      thePlan = 0;
+    }
+
+    delete theErrorManager;
+
+    if (!theUserErrorHandler) // see registerErrorHandler
+      delete theErrorHandler;
+
+    delete theStaticContext;;
+
+    delete theDynamicContext;
+
+    delete theCompilerCB;
+
+    theIsClosed = true;
   }
 
   /**
@@ -110,12 +137,14 @@ namespace zorba {
   void
   XQueryImpl::compile(const String& aQuery)
   {
+    checkClosed();
     compile( aQuery, XQuery::CompilerHints() ); 
   }
 
   void
   XQueryImpl::compile(const String& aQuery, const CompilerHints_t& aHints)
   {
+    checkClosed();
     xqpString lQuery = Unmarshaller::getInternalString(aQuery);
     std::istringstream lQueryStream(lQuery);
     doCompile(lQueryStream, aHints);
@@ -124,12 +153,15 @@ namespace zorba {
   void
   XQueryImpl::compile(std::istream& aQuery, const CompilerHints_t& aHints)
   {
+    checkClosed();
     doCompile(aQuery, aHints);
   }
 
   void
-  XQueryImpl::compile(const String& aQuery, const StaticContext_t& aStaticContext, const CompilerHints_t& aHints)
+  XQueryImpl::compile(const String& aQuery, const StaticContext_t& aStaticContext, 
+                      const CompilerHints_t& aHints)
   {
+    checkClosed();
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
     xqpString lQuery = Unmarshaller::getInternalString(aQuery);
     std::istringstream lQueryStream(lQuery);
@@ -140,6 +172,7 @@ namespace zorba {
   XQueryImpl::compile(std::istream& aQuery, const StaticContext_t& aStaticContext, 
                       const CompilerHints_t& aHints)
   {
+    checkClosed();
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
 
     doCompile(aQuery, aHints);
@@ -148,7 +181,7 @@ namespace zorba {
   void
   XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
   {
-    if (theQueryIsCompiled) {
+    if (thePlan) {
        try {
          ZORBA_ERROR_DESC(ZorbaError::API0004_XQUERY_ALREADY_COMPILED, 
                           "Can't compile the query because it is already compiled");
@@ -174,25 +207,19 @@ namespace zorba {
 
     try {
       // let's ompile
-      thePlan = lCompiler.compile(aQuery, theFileName); 
-    } catch (error::ZorbaError &e) { // TODO this can be removed (see comment in the constructor)
+      PlanIter_t aPlan = lCompiler.compile(aQuery, theFileName); 
+      thePlan = aPlan.getp();
+      RCHelper::addReference(thePlan);
+    } catch (error::ZorbaError &e) { 
       ZorbaImpl::notifyError(theErrorHandler, e);
     }
-
-    theQueryIsCompiled = true;
   }
 
    DynamicContext_t
    XQueryImpl::getDynamicContext()
    {
-     if ( ! theQueryIsCompiled ) {
-       try {
-         ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
-                          "Error getting the dynamic context because the query is not compiled");
-       } catch (error::ZorbaError &e) {
-         ZorbaImpl::notifyError(theErrorHandler, e);
-       }
-     }
+     checkClosed();
+     checkCompiled();
       
      return DynamicContext_t(new DynamicContextImpl(theDynamicContext, theStaticContext, 
                                                     theErrorHandler));
@@ -201,14 +228,8 @@ namespace zorba {
    StaticContext_t
    XQueryImpl::getStaticContext()
    {
-     if ( ! theQueryIsCompiled ) {
-       try {
-         ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
-                          "Error getting the static context because the query is not compiled");
-       } catch (error::ZorbaError &e) {
-         ZorbaImpl::notifyError(theErrorHandler, e);
-       }
-     }
+     checkClosed();
+     checkCompiled();
       
      return StaticContext_t(new StaticContextImpl(theStaticContext, theErrorHandler));
    }
@@ -218,7 +239,8 @@ namespace zorba {
    */
   bool
   XQueryImpl::isUpdateQuery() const
-  {
+  { 
+    checkClosed();
     return thePlan->isUpdateIterator();
   }
 
@@ -232,14 +254,8 @@ namespace zorba {
   void
   XQueryImpl::serialize(std::ostream& os, XQuery::SerializerOptions_t)
   {
-    if ( ! theQueryIsCompiled ) {
-      try {
-        ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
-                         "Error executing query because it is not compiled");
-      } catch (error::ZorbaError &e) {
-        ZorbaImpl::notifyError(theErrorHandler, e);
-      }
-    }
+    checkClosed();
+    checkCompiled();
 
     PlanWrapper_t lPlan = generateWrapper();
     serializer lSerializer(theErrorManager);
@@ -258,16 +274,8 @@ namespace zorba {
 
   void XQueryImpl::applyUpdates(std::ostream& os)
   {
-    if ( ! theQueryIsCompiled ) 
-    {
-      try
-      {
-        ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
-                         "Error executing query because it is not compiled");
-      } catch (error::ZorbaError &e) {
-        ZorbaImpl::notifyError(theErrorHandler, e);
-      }
-    }
+    checkClosed();
+    checkCompiled();
 
     PlanWrapper_t lPlan = generateWrapper();
     serializer lSerializer(theErrorManager);
@@ -304,16 +312,9 @@ namespace zorba {
   ResultIterator_t
   XQueryImpl::iterator()
   {
-    if ( ! theQueryIsCompiled )
-    {
-      try
-      {
-        ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED,
-          "Error executing query because it is not compiled");
-      } catch(error::ZorbaError &e) {
-        ZorbaImpl::notifyError(theErrorHandler, e);
-      }
-    }
+    checkClosed();
+    checkCompiled();
+
     PlanWrapper_t lPlan = generateWrapper();
     return ResultIterator_t(new ResultIteratorImpl(lPlan, theErrorManager, theErrorHandler));
   }
@@ -321,6 +322,7 @@ namespace zorba {
   CompilerCB::config_t
   XQueryImpl::getCompilerConfig(const XQuery::CompilerHints_t& aHints)
   {
+    checkClosed();
     CompilerCB::config_t lConfig;
 
     // set the optimization level
@@ -328,6 +330,56 @@ namespace zorba {
 
     return lConfig;
   }
+
+  void
+  XQueryImpl::checkClosed() const
+  {
+    if (theIsClosed) {
+      try {
+        ZORBA_ERROR_DESC(ZorbaError::API0022_QUERY_ALREADY_CLOSED,
+          "Can't perform the operation because the query is already closed");
+      } catch(error::ZorbaError &e) {
+        ZorbaImpl::notifyError(theErrorHandler, e);
+      }
+    }
+  }
+
+  void
+  XQueryImpl::checkCompiled() const
+  {
+    if ( ! thePlan ) {
+      try {
+        ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
+            "Can't perform the operation because the query is not compiled");
+      } catch (error::ZorbaError &e) {
+        ZorbaImpl::notifyError(theErrorHandler, e);
+      }
+    }
+  }
+
+  XQuery_t
+  XQueryImpl::clone() const
+  {
+    checkClosed();
+
+    XQuery_t lXQuery(new XQueryImpl());
+
+    XQueryImpl* lImpl = static_cast<XQueryImpl*>(lXQuery.get());
+    assert(lImpl);
+    lImpl->registerErrorHandler(theErrorHandler);
+    lImpl->thePlan = thePlan;
+    lImpl->theFileName = theFileName;
+
+    // child static context
+    lImpl->theStaticContext = theStaticContext->create_child_context();
+
+    // child dynamic context
+    delete lImpl->theDynamicContext;
+    lImpl->theDynamicContext = new dynamic_context(theDynamicContext);
+
+    return lXQuery;
+  }
+
 
 
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)

@@ -82,7 +82,8 @@ namespace zorba {
   }
 
   XQuery_t
-  ZorbaImpl::compileQuery(const String& aQuery, const XQuery::CompilerHints_t& aHints, ErrorHandler* aErrorHandler)
+  ZorbaImpl::compileQuery(const String& aQuery, const XQuery::CompilerHints_t& aHints, 
+                          ErrorHandler* aErrorHandler)
   {
     XQuery_t lXQuery(new XQueryImpl());
     if (aErrorHandler != 0)
@@ -92,8 +93,9 @@ namespace zorba {
   }
 
   XQuery_t
-  ZorbaImpl::compileQuery(const String& aQuery, const StaticContext_t& aStaticContext, const XQuery::CompilerHints_t& aHints, 
-                         ErrorHandler* aErrorHandler)
+  ZorbaImpl::compileQuery(const String& aQuery, const StaticContext_t& aStaticContext, 
+                          const XQuery::CompilerHints_t& aHints, 
+                          ErrorHandler* aErrorHandler)
   {
     XQuery_t lXQuery(new XQueryImpl());
     if (aErrorHandler != 0)
@@ -103,7 +105,8 @@ namespace zorba {
   }
 
   XQuery_t
-  ZorbaImpl::compileQuery(std::istream& aQuery, const XQuery::CompilerHints_t& aHints, ErrorHandler* aErrorHandler)
+  ZorbaImpl::compileQuery(std::istream& aQuery, const XQuery::CompilerHints_t& aHints, 
+                          ErrorHandler* aErrorHandler)
   {
     XQuery_t lXQuery(new XQueryImpl());
     if (aErrorHandler != 0)
@@ -113,8 +116,9 @@ namespace zorba {
   }
 
   XQuery_t
-  ZorbaImpl::compileQuery(std::istream& aQuery, const StaticContext_t& aStaticContext, const XQuery::CompilerHints_t& aHints,
-                         ErrorHandler* aErrorHandler)
+  ZorbaImpl::compileQuery(std::istream& aQuery, const StaticContext_t& aStaticContext, 
+                          const XQuery::CompilerHints_t& aHints,
+                          ErrorHandler* aErrorHandler)
   {
     XQuery_t lXQuery(new XQueryImpl());
     if (aErrorHandler != 0)

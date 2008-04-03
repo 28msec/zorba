@@ -107,9 +107,6 @@ namespace zorba {
     public:
       virtual ~XQuery() {}
 
-      //Set the filename of the Query
-       
-      
       // register an error handler
       // if no error handler has already been set when creating the query
       // the default error handler (i.e. throwing exceptions) is used
@@ -166,6 +163,12 @@ namespace zorba {
       //Set the fileName
       virtual void
       setFileName( const String& ) = 0;
+
+      virtual void
+      close() = 0;
+
+      virtual XQuery_t
+      clone() const = 0;
 
   };
 

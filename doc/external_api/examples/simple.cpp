@@ -133,6 +133,39 @@ example_9( Zorba * aZorba )
   return false;
 }
 
+bool
+example_10( Zorba * aZorba )
+{
+  XQuery_t lQuery1 = aZorba->compileQuery("declare variable $i external; 1 to $i");
+  XQuery_t lQuery2 = lQuery1->clone();
+
+  ResultIterator_t lIterator1 = lQuery1->iterator();
+  DynamicContext_t lDynContext1 = lQuery1->getDynamicContext();
+  lDynContext1->setVariable("i", aZorba->getItemFactory()->createInteger(5));
+
+  lIterator1->open();
+
+  Item lItem;
+  while ( lIterator1->next(lItem) ) {
+    DynamicContext_t lDynContext2 = lQuery2->getDynamicContext();
+    lDynContext2->setVariable("i", lItem);
+
+    ResultIterator_t lIterator2 = lQuery2->iterator();
+    
+    lIterator2->open();
+    while ( lIterator2->next(lItem) ) {
+      std::cout << lItem.getStringValue();
+    }
+    lIterator2->close();
+    std::cout << std::endl;
+  }
+
+  lIterator1->close();
+
+  return true;
+}
+
+
 int 
 simple(int argc, char* argv[])
 {
@@ -172,6 +205,10 @@ simple(int argc, char* argv[])
 
   std::cout << "executing example 9" << std::endl;
   assert(example_9(lZorba));
+  std::cout << std::endl;
+
+  std::cout << "executing example 10" << std::endl;
+  assert(example_10(lZorba));
   std::cout << std::endl;
 
   lZorba->shutdown();
