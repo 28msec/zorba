@@ -40,6 +40,8 @@ class NodeTest : virtual public SimpleRCObject
 {
  public:
   static const rchandle<NodeTest> ANY_NODE_TEST;
+  static const rchandle<NodeTest> ELEMENT_TEST;
+  static const rchandle<NodeTest> ATTRIBUTE_TEST;
   static const rchandle<NodeTest> PI_TEST;
   static const rchandle<NodeTest> TEXT_TEST;
   static const rchandle<NodeTest> COMMENT_TEST;

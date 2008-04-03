@@ -6,6 +6,8 @@
 using namespace zorba;
 
 const rchandle<NodeTest> NodeTest::ANY_NODE_TEST(new NodeTest(store::StoreConsts::anyNode));
+const rchandle<NodeTest> NodeTest::ELEMENT_TEST(new NodeTest(store::StoreConsts::elementNode));
+const rchandle<NodeTest> NodeTest::ATTRIBUTE_TEST(new NodeTest(store::StoreConsts::attributeNode));
 const rchandle<NodeTest> NodeTest::PI_TEST(new NodeTest(store::StoreConsts::piNode));
 const rchandle<NodeTest> NodeTest::TEXT_TEST(new NodeTest(store::StoreConsts::textNode));
 const rchandle<NodeTest> NodeTest::COMMENT_TEST(new NodeTest(store::StoreConsts::commentNode));

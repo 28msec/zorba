@@ -976,7 +976,8 @@ void elem_expr::next_iter (expr_iterator_data& v) {
 }
 
 xqtref_t elem_expr::return_type (static_context *sctx) {
-  return sctx->get_typemanager ()->create_node_type (new NodeTest (store::StoreConsts::elementNode), theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
+  return
+    sctx->get_typemanager ()->create_node_type (NodeTest::ELEMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
 }
 
 
@@ -999,7 +1000,7 @@ void doc_expr::next_iter (expr_iterator_data& v) {
 }
 
 xqtref_t doc_expr::return_type (static_context *sctx) {
-  return sctx->get_typemanager ()->create_node_type (new NodeTest (store::StoreConsts::documentNode), theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
+  return sctx->get_typemanager ()->create_node_type (NodeTest::DOCUMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
 }
 
 
@@ -1038,7 +1039,7 @@ void attr_expr::next_iter (expr_iterator_data& v) {
 }
 
 xqtref_t attr_expr::return_type (static_context *sctx) {
-  return sctx->get_typemanager ()->create_node_type (new NodeTest (store::StoreConsts::attributeNode), theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE);
+  return sctx->get_typemanager ()->create_node_type (NodeTest::ATTRIBUTE_TEST, theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE);
 }
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
