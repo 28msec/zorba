@@ -11,6 +11,8 @@
  *
  */
 
+
+#include <unicode/regex.h>
 #include "zorbatypes/xqpstring.h"
 
 #include "zorbatypes/Unicode_util.h"
@@ -18,9 +20,9 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/collation_manager.h"
 
-#include <unicode/regex.h>
 
 using namespace std;
+
 
 namespace zorba
 {
