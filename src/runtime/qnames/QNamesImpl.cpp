@@ -406,9 +406,12 @@ store::Item_t
 InScopePrefixesIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t itemElem;
+  xqpStringStore *xml = new xqpStringStore ("xml");
 
   InScopePrefixesState* state;
   DEFAULT_STACK_INIT(InScopePrefixesState, state, planState);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createNCName(xml), state);
 
   itemElem = consumeNext(theChild.getp(), planState );
   if( itemElem != NULL)
@@ -421,8 +424,6 @@ InScopePrefixesIterator::nextImpl(PlanState& planState) const
       state->theCurrentPos++;
     }
   }
-
-  //STACK_PUSH(GENV_ITEMFACTORY->createNCName("xml"), state);
 
   STACK_END (state);
 }
