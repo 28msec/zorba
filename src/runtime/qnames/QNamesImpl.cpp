@@ -154,14 +154,15 @@ QNameIterator::nextImpl(PlanState& planState) const
   }
 
   itemQName = consumeNext(theChild1.getp(), planState );
-  if ( itemQName != NULL ) {
-    itemQName = itemQName->getAtomizationValue();
-    qname = itemQName->getStringValue()->trim();
-      
-    index = qname->indexOf(":");
-  }
+  itemQName = itemQName->getAtomizationValue();
+  qname = itemQName->getStringValue()->trim();
+  
+  index = qname->indexOf(":");
 
   if( -1 != index ) {
+    if (resNs->empty ())
+      ZORBA_ERROR (ZorbaError::FOCA0002);
+
     resPre = new xqpStringStore(qname->str().substr(0, index));
     resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
   } else {
