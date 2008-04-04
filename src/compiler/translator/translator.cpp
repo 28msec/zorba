@@ -1897,33 +1897,33 @@ void end_visit(const SIND_DeclList& /*v*/, void* /*visit_state*/)
 
 void *begin_visit(const SchemaImport& v)
 {
-  TRACE_VISIT ();
-  SchemaPrefix *sp = &*v.get_prefix();
-  if (sp != NULL) {
-    sctx_p->bind_ns (sp->get_prefix (), v.get_uri ());
-  }
+    TRACE_VISIT ();
+    SchemaPrefix *sp = &*v.get_prefix();
+    if (sp != NULL) {
+        sctx_p->bind_ns (sp->get_prefix (), v.get_uri ());
+    }
 
-#if 0
-  std::string prefix = ((SchemaPrefix*)(v.get_prefix().getp()))->get_prefix();
-  std::string uri = v.get_uri();
+    std::string prefix = ((SchemaPrefix*)(v.get_prefix().getp()))->get_prefix();
+    std::string uri = v.get_uri();
 
-  // TODO: get_at_list() might return NULL
-  rchandle<URILiteralList> atlist = v.get_at_list();
-  if (atlist != NULL) {
-    std::string at = (*atlist) [0];
-  }
-  //std::cout << "SchemaImport: " << prefix << " : " << uri
-  //    << " @ " << at << std::endl;
-  //std::cout << " Context: " << sctx_p->get_typemanager() << "\n";
+    // TODO: get_at_list() might return NULL
+    rchandle<URILiteralList> atlist = v.get_at_list();
+    if (atlist != NULL) 
+    {
+        std::string at = (*atlist) [0];
 
-  //((DelegatingTypeManager*)sctx_p->get_typemanager())->initializeSchema();
-  //Schema* schema_p = ((DelegatingTypeManager*)sctx_p->get_typemanager())->getSchema();
+        //std::cout << "SchemaImport: " << prefix << " : " << uri
+        //    << " @ " << at << std::endl;
+        //std::cout << " Context: " << sctx_p->get_typemanager() << "\n";
 
-  //schema_p->registerXSD(at.c_str());	
-  //schema_p->printXSDInfo();
-#endif
+        ((DelegatingTypeManager*)sctx_p->get_typemanager())->initializeSchema();
+        Schema* schema_p = ((DelegatingTypeManager*)sctx_p->get_typemanager())->getSchema();
 
-  return no_state;
+        schema_p->registerXSD(at.c_str());	
+        //schema_p->printXSDInfo();
+    }
+
+    return no_state;
 }
 
 void end_visit(const SchemaImport& /*v*/, void* /*visit_state*/)

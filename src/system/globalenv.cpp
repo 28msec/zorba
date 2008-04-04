@@ -9,6 +9,7 @@
 #include "functions/library.h"
 #include "store/naive/simple_store.h"
 #include "compiler/api/compiler_api.h"
+#include "types/schema/schema.h"
 
 using namespace zorba;
 
@@ -56,10 +57,16 @@ void GlobalEnvironment::init()
   LIBXML_TEST_VERSION
 
   m_globalEnv->m_compilerSubSys = XQueryCompilerSubsystem::create();
+
+  // initialize Xerces-C lib
+  Schema::initialize();
 }
 
 void GlobalEnvironment::destroy()
 {
+  // terminate Xerces-C lib
+  Schema::terminate();
+
   // do cleanup of the libxml2 library
   // however, after that, a user will have to call 
   // LIBXML_TEST_VERSION if he wants to use libxml2

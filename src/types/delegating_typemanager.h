@@ -14,18 +14,29 @@ namespace zorba {
 class DelegatingTypeManager : public TypeManagerImpl {
   public:
     DelegatingTypeManager(TypeManager *parent)
-      : TypeManagerImpl(parent->level() + 1, parent) { }
+        : TypeManagerImpl(parent->level() + 1, parent) 
+    {
+        _schema = NULL; 
+    }
+    
+    virtual ~DelegatingTypeManager()
+    {
+        if ( _schema!=NULL )
+            delete _schema;
+    }
+
 
     virtual xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
 
 	virtual xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
 
-	
-	void initializeSchema();
+    void initializeSchema();
     void terminateSchema();
-    
+	 
     Schema* getSchema() const
-    { return _schema; }
+    { 
+        return _schema; 
+    }
     
   private:
     Schema *_schema;

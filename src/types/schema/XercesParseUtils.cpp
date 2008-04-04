@@ -1260,5 +1260,44 @@ bool XercesParseUtils::parseXSQName(xqpString textValue, store::Item_t &result)
   return false;
 }
 
+    // user atomic types
+bool XercesParseUtils::parseUserAtomicTypes(xqpString textValue, store::Item_t &result)
+{
+    std::cout << "parseUserAtomicTypes: " << textValue;
+    //try 
+    //{
+    //    const XMLCh* localPart = ;
+    //    const XMLCh* uriStr = ;
+
+    //    // retrieve Grammar for the uri
+    //    SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->getGrammar(uriStr);
+    //    if (sGrammar) 
+    //    {
+    //        xsiTypeDV = fGrammarResolver->getDatatypeValidator(uriStr, localPart);
+
+    //        if (!xsiTypeDV) {
+    //            emitError();
+    //        }
+
+    //        fCurrentDatatypeValidator = xsiTypeDV;
+    //    }
+    //    else
+    //        emitError();
+    //}
+    //catch (XMLException& idve)
+    //{
+    //    emitError (XMLValid::DatatypeError, idve.getCode(), idve.getType(), idve.getMessage());
+    //    fErrorOccurred = true;
+    //}
+    //catch(const OutOfMemoryException&) {
+    //    throw;
+    //}
+    //catch (...)
+    //{
+    //    emitError(XMLValid::GenericError);
+    //    throw;
+    //}
+    return false;
+}
 
 } // namespace zorba
