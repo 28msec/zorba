@@ -72,6 +72,11 @@ class XmlNode : public Item
   friend class ConstrElementNode;
   friend class UpdDelete;
   friend class UpdInsertSiblings;
+  friend class UpdReplaceChild;
+  friend class UpdReplaceContent;
+  friend class UpdReplaceAttribute;
+  friend class UpdReplaceAttrValue;
+  friend class UpdReplaceTextValue;
   friend class XmlLoader;
 
 public:
@@ -449,7 +454,11 @@ public:
         bool                 copy,
         const CopyMode&      copymode);
 
-  void replaceContent(XmlNode* newText, ConstrNodeVector& oldChildren);
+  void replaceContent(
+        XmlNode*          newText,
+        ConstrNodeVector& oldChildren,
+        bool              copy,
+        const CopyMode&   copymode);
 
   void rename(Item_t& newname, Item_t& oldName);
 };
@@ -461,6 +470,7 @@ public:
 class LoadedElementNode : public ElementNode
 {
   friend class ElementNode;
+  friend class UpdReplaceContent;
 
 protected:
   LoadedNodeVector  theChildren;
@@ -513,6 +523,8 @@ private:
 ********************************************************************************/
 class ConstrElementNode : public ElementNode
 {
+  friend class UpdReplaceContent;
+
 protected:
   ConstrNodeVector  theChildren;
   ConstrNodeVector  theAttributes;

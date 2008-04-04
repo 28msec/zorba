@@ -134,6 +134,8 @@ public:
   void mergeUpdates(const Item* other);
 
 protected:
+  void undoUpdates();
+
   void addInsertChildren(
         UpdateConsts::UpdPrimKind kind,
         Item_t&                   target,
@@ -169,10 +171,11 @@ class UpdatePrimitive
 protected:
   Item_t        theTarget;
   bool          theIsApplied;
+  bool          theRemoveType;
   TypeUndoList  theTypeUndoList;
 
 public:
-  UpdatePrimitive(Item_t& target) : theIsApplied(false)
+ UpdatePrimitive(Item_t& target) : theIsApplied(false), theRemoveType(false)
   {
     theTarget.transfer(target);
   }
@@ -226,18 +229,7 @@ public:
         Item_t&                   target,
         std::vector<Item_t>&      children,
         bool                      copy,
-        const CopyMode&           copymode)
-    :
-    UpdatePrimitive(target),
-    theKind(kind),
-    theDoCopy(copy),
-    theCopyMode(copymode)
-  {
-    ulong numChildren = children.size();
-    theChildren.resize(numChildren);
-    for (ulong i = 0; i < numChildren; i++)
-      theChildren[i].transfer(children[i]);
-  }
+        const CopyMode&           copymode);
 
   UpdateConsts::UpdPrimKind getKind() { return theKind; }
 
@@ -265,18 +257,7 @@ public:
         Item_t&                   target,
         std::vector<Item_t>&      siblings,
         bool                      copy,
-        const CopyMode&           copymode)
-    :
-    UpdatePrimitive(target),
-    theKind(kind),
-    theDoCopy(copy),
-    theCopyMode(copymode)
-  {
-    ulong numSiblings = siblings.size();
-    theSiblings.resize(numSiblings);
-    for (ulong i = 0; i < numSiblings; i++)
-      theSiblings[i].transfer(siblings[i]);
-  }
+        const CopyMode&           copymode);
 
   UpdateConsts::UpdPrimKind getKind() { return theKind; }
 
@@ -302,17 +283,7 @@ public:
         Item_t&               target,
         std::vector<Item_t>&  attrs,
         bool                  copy,
-        const CopyMode&       copymode)
-    :
-    UpdatePrimitive(target),
-    theDoCopy(copy),
-    theCopyMode(copymode)
-  {
-    ulong numAttrs = attrs.size();
-    theAttributes.resize(numAttrs);
-    for (ulong i = 0; i < numAttrs; i++)
-      theAttributes[i].transfer(attrs[i]);
-  }
+        const CopyMode&       copymode);
 
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_INSERT_ATTRIBUTES; }
 
@@ -333,7 +304,6 @@ protected:
   std::vector<Item_t>  theNewChildren;
   bool                 theDoCopy;
   CopyMode             theCopyMode;
-  ulong                thePos;
 
 public:
   UpdReplaceChild(
@@ -341,19 +311,7 @@ public:
         Item_t&              child,
         std::vector<Item_t>& newChildren,
         bool                 copy,
-        const CopyMode&      copymode)
-    :
-    UpdatePrimitive(target),
-    theDoCopy(copy),
-    theCopyMode(copymode)
-  {
-    theChild.transfer(child);
-
-    ulong numChildren = newChildren.size();
-    theNewChildren.resize(numChildren);
-    for (ulong i = 0; i < numChildren; i++)
-      theNewChildren[i].transfer(newChildren[i]);
-  }
+        const CopyMode&      copymode);
 
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_CHILD; }
 
@@ -374,7 +332,6 @@ protected:
   std::vector<Item_t>  theNewAttrs;
   bool                 theDoCopy;
   CopyMode             theCopyMode;
-  ulong                thePos;
 
 public:
   UpdReplaceAttribute(
@@ -382,19 +339,7 @@ public:
         Item_t&              attr,
         std::vector<Item_t>& newAttrs,
         bool                 copy,
-        const CopyMode&      copymode)
-    :
-    UpdatePrimitive(target),
-    theDoCopy(copy),
-    theCopyMode(copymode)
-  {
-    theAttr.transfer(attr);
-
-    ulong numAttrs = newAttrs.size();
-    theNewAttrs.resize(numAttrs);
-    for (ulong i = 0; i < numAttrs; i++)
-      theNewAttrs[i].transfer(newAttrs[i]);
-  }
+        const CopyMode&      copymode);
 
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_ATTRIBUTE; }
 

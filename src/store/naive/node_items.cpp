@@ -21,7 +21,7 @@
 
 #ifndef NDEBUG
 
-int traceLevel = 0;
+int traceLevel = 1;
 
 #define NODE_TRACE(level, msg)               \
 {                                            \
@@ -482,7 +482,10 @@ void XmlNode::switchTree(
     theParent = parent;
 
     refcount += theRefCount;
+
     setTree(newTree);
+    if (theParent == NULL)
+      newTree->setRoot(this);
 
     if (assignIds)
     {

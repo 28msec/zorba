@@ -105,6 +105,7 @@ public:
   void clear();
   void resize(ulong size);
   void copy(ConstrNodeVector& dest);
+  void copy(LoadedNodeVector& dest)  { dest.theNodes = theNodes; }
 
 private:
   ConstrNodeVector(const ConstrNodeVector& v);

@@ -71,9 +71,9 @@ void XmlNode::removeType(TypeUndoList& undoList)
 void XmlNode::restoreType(const TypeUndoList& undoList)
 {
   XmlNode* currNode = this;
-  ulong pos = undoList.size() - 1;
+  long pos = undoList.size() - 1;
 
-  while(currNode != NULL)
+  while(currNode != NULL && pos >= 0)
   {
     if (currNode->getNodeKind() == StoreConsts::elementNode)
     {
@@ -441,7 +441,9 @@ void ElementNode::replaceAttribute(
 ********************************************************************************/
 void ElementNode::replaceContent(
     XmlNode*          newTextChild,
-    ConstrNodeVector& oldChildren)
+    ConstrNodeVector& oldChildren,
+    bool              copy,
+    const CopyMode&   copymode)
 {
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
@@ -454,33 +456,17 @@ void ElementNode::replaceContent(
   children().copy(oldChildren);
   children().clear();
 
-  newTextChild->theParent = this;
-  newTextChild->setTree(getTree());
-
-  newTextChild->theOrdPath = theOrdPath;
-  newTextChild->theOrdPath.appendComp(1);
-
-  children().push_back(newTextChild, false);
-}
-
-
-/*******************************************************************************
-  Check if the ns binding implied by the given qname conflicts with the current
-  ns bindings of "this" node.
-********************************************************************************/
-void ElementNode::checkNamespaceConflict(
-    const Item*           qname,
-    ZorbaError::ErrorCode ecode) const
-{
-  xqpStringStore* ns = findBinding(qname->getPrefix().getStore());
-
-  if (ns != NULL && ns->byteEqual(*qname->getNamespace().getStore()))
+  if (copy)
   {
-    ZORBA_ERROR_DESC_OSS(ecode,
-                         "The implied namespace binding of " << qname->show()
-                         << " conflicts with namespace binding ["
-                         << qname->getPrefix() << ", " 
-                         << qname->getNamespace() << "]");
+    newTextChild->copy(this, this, 0, copymode);
+  }
+  else
+  {
+    ZORBA_FATAL(newTextChild->isConstructed(), "");
+
+    newTextChild->switchTree(getTree(), this, 0, true);
+
+    children().push_back(newTextChild, false);
   }
 }
 
@@ -561,6 +547,27 @@ void PiNode::rename(xqpStringStore_t& newName, xqpStringStore_t& oldName)
 {
   oldName.transfer(theTarget);
   theTarget.transfer(newName);
+}
+
+
+/*******************************************************************************
+  Check if the ns binding implied by the given qname conflicts with the current
+  ns bindings of "this" node.
+********************************************************************************/
+void ElementNode::checkNamespaceConflict(
+    const Item*           qname,
+    ZorbaError::ErrorCode ecode) const
+{
+  xqpStringStore* ns = findBinding(qname->getPrefix().getStore());
+
+  if (ns != NULL && ns->byteEqual(*qname->getNamespace().getStore()))
+  {
+    ZORBA_ERROR_DESC_OSS(ecode,
+                         "The implied namespace binding of " << qname->show()
+                         << " conflicts with namespace binding ["
+                         << qname->getPrefix() << ", " 
+                         << qname->getNamespace() << "]");
+  }
 }
 
 }
