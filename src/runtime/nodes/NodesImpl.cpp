@@ -62,7 +62,13 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
   inNode = consumeNext(theChildren[0].getp(), planState);
 
   if (inNode != NULL)
-    STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getNamespace().getStore()), state);
+  {
+    if(inNode->getNodeKind() == store::StoreConsts::elementNode ||
+       inNode->getNodeKind() == store::StoreConsts::attributeNode)
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getNodeName()->getNamespace().getStore()), state);
+    else
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(xqp_string().getStore()), state);
+  }
 
   STACK_END (state);
 }
