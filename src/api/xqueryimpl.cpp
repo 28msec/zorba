@@ -225,8 +225,8 @@ namespace zorba {
                                                     theErrorHandler));
    }
 
-   StaticContext_t
-   XQueryImpl::getStaticContext()
+   const StaticContext_t
+   XQueryImpl::getStaticContext() const
    {
      checkClosed();
      checkCompiled();

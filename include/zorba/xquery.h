@@ -143,8 +143,8 @@ namespace zorba {
       // the static context has all the components and values that have been
       // set before (by supplying a static context) compiling the query and
       // those that have been changed while compiling the query (e.g. in the query prolog)
-      virtual StaticContext_t
-      getStaticContext() = 0;
+      virtual const StaticContext_t
+      getStaticContext() const = 0;
 
       virtual void
       compile(const String&) = 0;

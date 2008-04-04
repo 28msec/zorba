@@ -20,7 +20,7 @@ namespace zorba {
       virtual ~StaticContext() {}
 
       virtual StaticContext_t
-      createChildContext() = 0;
+      createChildContext() const = 0;
       
       virtual bool   
       addNamespace( const String& prefix, const String& URI ) = 0;

@@ -38,8 +38,8 @@ namespace zorba {
     DynamicContext_t
     getDynamicContext();
 
-    StaticContext_t
-    getStaticContext();
+    const StaticContext_t
+    getStaticContext() const;
 
     void
     compile(const String&);
