@@ -63,6 +63,10 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 
   if (inNode != NULL)
   {
+    if(!inNode->isNode())
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc,
+                           "The argument passed to fn:namespace-uri() is not a node.");
+
     if(inNode->getNodeKind() == store::StoreConsts::elementNode ||
        inNode->getNodeKind() == store::StoreConsts::attributeNode)
       STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getNodeName()->getNamespace().getStore()), state);
