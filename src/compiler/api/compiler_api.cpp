@@ -76,19 +76,14 @@ namespace zorba {
   expr_t
   XQueryCompiler::normalize(parsenode_t aParsenode)
   {
-    expr_t lExpr = translate (false, *aParsenode, theCompilerCB);
+    expr_t lExpr = translate (Properties::instance()->printTranslatedExpressions(), *aParsenode, theCompilerCB);
     if ( lExpr == NULL ) { // todo, can this happen?
       ZORBA_ERROR( ZorbaError::API0002_COMPILE_FAILED);
       return NULL;
     }
 
-    if (Properties::instance()->printTranslatedExpressions())
-      lExpr->put(std::cout);
-  
-    normalize_expr_tree (NULL , theCompilerCB, lExpr);
-
-    if (Properties::instance()->printNormalizedExpressions())
-      lExpr->put(std::cout);
+    normalize_expr_tree (Properties::instance()->printNormalizedExpressions() ? "query" : NULL, 
+                         theCompilerCB, lExpr);
 
     return lExpr;
  }
