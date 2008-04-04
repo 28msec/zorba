@@ -96,6 +96,8 @@ namespace zorba {
         SerializerOptions() 
           : ser_method(serialization_method::XML),
             byte_order_mark(byte_order_mark::NO),
+            escape_uri_attributes(escape_uri_attributes::NO),
+            include_content_type(include_content_type::NO),
             indent(indent::NO),
             normalization_form(normalization_form::none),
             omit_xml_declaration(omit_xml_declaration::NO),
