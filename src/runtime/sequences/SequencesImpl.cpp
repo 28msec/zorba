@@ -743,18 +743,21 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
   lSumItem = consumeNext(theChildren[0].getp(), planState);
   if (lSumItem != NULL) // return empty-sequence if input is empty
   {
-    while ( (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
+    for (; (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL;
+         ++lCount)
     {
       // TODO add datetime
-      if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
-        lSumItem = lRunningItem;
-        break;
+      if (lRunningItem->isNumeric()) {
+        if (lRunningItem->isNaN()) {
+          lSumItem = lRunningItem;
+          break;
+        }
+        lSumItem = NumArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem);
       }
-      lSumItem = NumArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem); 
-      ++lCount;
+      else ZORBA_ERROR (ZorbaError::FORG0006);
     }
 
-    STACK_PUSH(NumArithIterator<DivideOperation>::compute(planState.theRuntimeCB, loc, lSumItem, 
+    STACK_PUSH(NumArithIterator<DivideOperation>::compute(planState.theRuntimeCB, loc, lSumItem,
                GENV_ITEMFACTORY->createInteger(lCount)), state);
   }
 
