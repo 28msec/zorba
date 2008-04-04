@@ -2733,8 +2733,10 @@ PredicateList::PredicateList(
 void PredicateList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
-  for (; it!=pred_hv.rend(); ++it) {
+  
+  for (vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
+       it!=pred_hv.end(); ++it) 
+  {
     const exprnode* e_p = &**it;
     ZORBA_ASSERT(e_p!=NULL);
     v.pre_predicate_visit(*this, visitor_state);
