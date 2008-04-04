@@ -23,6 +23,9 @@ public:
   const String& operator =(const String& other);
   const String& operator =(xqpStringStore *other);
 
+  int
+  compare(const String& string) const;
+
 private:
   friend class Unmarshaller;
   friend std::ostream& operator <<(std::ostream& os, const String& str);

@@ -76,4 +76,14 @@ namespace zorba {
     return &*lItem;
   }
 
+  Item
+  ItemFactoryImpl::createDate( const String& aDateValue )
+  {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aDateValue );
+
+    store::Item_t lItem;
+    lItem = theItemFactory->createDate( lString );
+
+    return &*lItem;
+  }
 } /* namespace zorba */

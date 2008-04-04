@@ -26,6 +26,8 @@ namespace zorba {
       virtual Item
       createDateTime( const String& aDateTimeValue ) = 0;
 
+      virtual Item
+      createDate( const String& aDateValue ) = 0;
 
   }; /* class ItemFactory */
 

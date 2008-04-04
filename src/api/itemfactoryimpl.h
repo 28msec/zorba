@@ -34,6 +34,9 @@ namespace zorba {
       virtual Item
       createDateTime( const String& aDateTimeValue );
 
+      virtual Item
+      createDate( const String& aDateValue );
+
     protected:
       store::ItemFactory* theItemFactory;
 

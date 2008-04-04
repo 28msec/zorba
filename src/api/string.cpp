@@ -72,6 +72,13 @@ const String& String::operator =(xqpStringStore *rhs)
   return *this;
 }
 
+int
+String::compare(const String& string) const
+{
+  return m_string->compare(string.m_string);
+}
+
+
 std::ostream& operator <<(std::ostream& os, const String& str)
 {
   return os << *str.m_string;

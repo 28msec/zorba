@@ -1,0 +1,10 @@
+#ifndef XQP_UPDATE_TESTDRIVER_CONFIG_H
+#define XQP_UPDATE_TESTDRIVER_CONFIG_H
+
+namespace zorba {
+
+static std::string UPDATE_SRC_DIR = "@CMAKE_CURRENT_SOURCE_DIR@";
+static std::string UPDATE_BINARY_DIR = "@CMAKE_CURRENT_BINARY_DIR@";
+
+}
+#endif

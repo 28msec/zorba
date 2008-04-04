@@ -146,9 +146,13 @@ Item_t BasicItemFactory::createDate ( short /*year*/, short /*month*/, short /*d
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createDate ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createDate ( const xqp_string& value )
 {
-  return Item_t ( NULL );
+  DateTime_t dt_t;
+  if (DateTime::parseDate(value, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
 }
 
 Item_t BasicItemFactory::createDateTime(xqp_dateTime& value)
@@ -186,9 +190,13 @@ Item_t BasicItemFactory::createDateTime(
     return Item_t(NULL);
 }
 
-Item_t BasicItemFactory::createDateTime ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createDateTime ( const xqp_string& value )
 {
-  return Item_t(NULL);
+  DateTime_t dt_t;
+  if (DateTime::parseDateTime(value, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
 }
 
 Item_t BasicItemFactory::createDateTime (const Item_t& date, const Item_t& time)
