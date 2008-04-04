@@ -99,7 +99,8 @@ public:
       if (thePos < theHashTab->size())
       {
         thePos++;
-        while ((*theHashTab)[thePos].theItem == NULL)
+        while (thePos < theHashTab->size() &&
+               (*theHashTab)[thePos].theItem == NULL)
           thePos++;
       }
       return *this;
@@ -424,6 +425,9 @@ void PointerHashMap<T, E, V>::expand()
   // Now rehash every entry
   for (ulong i = 0; i < oldsize; i++)
   {
+    if (oldTab[i].theItem == NULL)
+      continue;
+
     entry = &theHashTab[E::hash(oldTab[i].theItem) % theHashTabSize];
 
     if (entry->theItem != NULL)
