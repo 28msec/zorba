@@ -4,7 +4,7 @@
 #include <ostream>
 #include <zorba/exception.h>
 #include <zorba/error.h>
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 
 namespace zorba {
 

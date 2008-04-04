@@ -1,7 +1,7 @@
 #ifndef XQP_STATIC_CONTEXT_API_H
 #define XQP_STATIC_CONTEXT_API_H
 
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 #include <zorba/typeident.h> 
 
 namespace zorba {

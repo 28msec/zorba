@@ -10,7 +10,7 @@ SET(API_SRCS
     staticcontextimpl.cpp
     dynamiccontextimpl.cpp
     resultiteratorimpl.cpp
-    string.cpp
+    zorbastring.cpp
     itemfactoryimpl.cpp
     serialization/serializer.cpp
     item.cpp

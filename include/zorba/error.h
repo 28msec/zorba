@@ -1,7 +1,7 @@
 #ifndef ZORBA_ERROR_API_H
 #define ZORBA_ERROR_API_H
 
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 
 namespace zorba {
 

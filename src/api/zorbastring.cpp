@@ -1,4 +1,4 @@
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 #include "util/rchandle.h"
 #include "zorbatypes/xqpstring.h"
 

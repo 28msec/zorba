@@ -1,5 +1,5 @@
 #include <zorba/error.h>
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 #include "errors/errors.h"
 
 namespace zorba {

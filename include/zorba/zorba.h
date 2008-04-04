@@ -13,7 +13,7 @@
 #include <zorba/result_iterator.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 #include <zorba/exception.h>
 #include <zorba/error_handler.h>
 #include <zorba/xmldatamanager.h>

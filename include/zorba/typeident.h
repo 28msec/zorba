@@ -4,7 +4,7 @@
 #include <boost/shared_ptr.hpp>
 #include <zorba/api_shared_types.h>
 #include <zorba/identtypes.h>
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 
 namespace zorba {
 

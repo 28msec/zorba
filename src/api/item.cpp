@@ -1,5 +1,5 @@
 #include <zorba/item.h>
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 #include "util/rchandle.h"
 #include "store/api/item.h"
 

@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 #include <zorba/item.h>
 #include <zorba/default_error_handler.h>
 

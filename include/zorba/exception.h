@@ -2,7 +2,7 @@
 #define ZORBA_EXCEPTION_API_H
 
 #include <zorba/error.h>
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 
 namespace zorba {
 

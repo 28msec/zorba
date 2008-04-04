@@ -2,7 +2,7 @@
 #define ZORBA_UNMARSHALLER_H
 
 #include <zorba/item.h>
-#include <zorba/string.h>
+#include <zorba/zorbastring.h>
 
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
