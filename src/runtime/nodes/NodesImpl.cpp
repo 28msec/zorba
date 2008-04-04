@@ -85,6 +85,8 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 //---------------------
 store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
 {
+  store::Item_t inNode;
+  
   //TODO the store does not implement support for the languages
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
