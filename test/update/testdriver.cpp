@@ -206,11 +206,16 @@ main(int argc, char** argv)
     std::vector<State*>::const_iterator lIter = lSpec.statesBegin();
     std::vector<State*>::const_iterator lEnd = lSpec.statesEnd();
 
+    int lRun = 0;
+
     for(;lIter!=lEnd;++lIter)
     {
       State* lState = *lIter;     
 
       std::string lQueryFile = lSpecPath.native_file_string() + "/" + (*lIter)->theName + ".xq";
+      std::cout << std::endl << "Query (Run " << ++lRun << "):" << std::endl;
+      printFile(std::cout, lQueryFile);
+      std::cout << std::endl;
       std::ifstream lQueryStream(lQueryFile.c_str());
 
       try {
