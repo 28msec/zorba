@@ -1310,7 +1310,7 @@ xqp_string ElementNode::show() const
 {
   std::stringstream str;
 
-  str <<  "<" << *theName->getStringValue();
+  str <<  "<" << *theName->getStringValue() << "-elem";
 
   str << " nid=\"" << theOrdPath.show() << "\"";
 
@@ -1342,7 +1342,7 @@ xqp_string ElementNode::show() const
     item = iter->next();
   }
 
-  str << "</" << *theName->getStringValue() << ">";
+  str << "</" << *theName->getStringValue() << "-elem>";
   return str.str().c_str();
 }
 
@@ -2023,7 +2023,7 @@ Item_t TextNode::getAtomizationValue() const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-  return theContent.getp();
+  return xqp_string ("<text nid=\"") + theOrdPath.show() + "\">" + theContent.getp() + "</text>";
 }
 
 
