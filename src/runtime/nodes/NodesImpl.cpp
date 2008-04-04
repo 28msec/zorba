@@ -41,6 +41,10 @@ store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
 
   if (inNode != NULL)
   {
+    if(!inNode->isNode())
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc,
+                           "The argument passed to fn:local-name is not a node.");
+    
     if (inNode->getNodeKind() == store::StoreConsts::elementNode)
       STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getNodeName()->getLocalName().getStore()), state);
   }
@@ -84,6 +88,16 @@ store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
   //TODO the store does not implement support for the languages
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  inNode = consumeNext(theChildren[0].getp(), planState);
+
+  if (inNode != NULL)
+  {
+    if(!inNode->isNode())
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc,
+                           "The argument passed to fn:lang is not a node.");
+  }
+  
   STACK_END (state);
 }
 

@@ -80,7 +80,7 @@ store::Item_t FnRootIterator::nextImpl(PlanState& planState) const
 
   if (!contextNode->isNode())
   {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The argument of the fn:root function is not a node");
+    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The argument of the fn:root function is not a node.");
   }
 
   parentNode = contextNode->getParent();
@@ -106,9 +106,10 @@ store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
 
   inNode = consumeNext(theChildren[0].getp(), planState);
 
-  if (inNode != NULL) {
+  if (inNode != NULL)
+  {
     if (!inNode->isNode()) {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "The argument of the fn:node-name function is not a node");
+      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "The argument of the fn:node-name function is not a node.");
     }
 
     STACK_PUSH(inNode->getNodeName(), state);
@@ -127,8 +128,15 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
 
   inNode = consumeNext(theChildren[0].getp(), planState);
 
-  if (inNode != NULL && inNode->getNodeKind() == store::StoreConsts::elementNode)
+  if (inNode != NULL)
+  {
+    if (!inNode->isNode()) {
+      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "The argument of the fn:nilled function is not a node.");
+    }
+    
+    if(inNode->getNodeKind() == store::StoreConsts::elementNode)
       STACK_PUSH(GENV_ITEMFACTORY->createBoolean(inNode->getNilled()), state);
+  }
 
   STACK_END (state);
 }
@@ -149,7 +157,7 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
     }
     else {
       ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
-                            "The argument of the fn:base-uri function is not a node");
+                            "The argument of the fn:base-uri function is not a node.");
     }
   }
   
@@ -172,7 +180,7 @@ store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
     }
     else {
       ZORBA_ERROR_LOC_DESC(
-          ZorbaError::XPTY0004, loc, "The argument of the fn:document-uri function is not a node");
+          ZorbaError::XPTY0004, loc, "The argument of the fn:document-uri function is not a node.");
     }
   }
   
