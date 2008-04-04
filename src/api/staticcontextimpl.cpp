@@ -60,7 +60,7 @@ namespace zorba {
   }
 
   StaticContext_t
-  StaticContextImpl::createChildContext()
+  StaticContextImpl::createChildContext() const
   {
     // TODO, do we need a parent pointer
     StaticContext_t lContext(new StaticContextImpl(*this));

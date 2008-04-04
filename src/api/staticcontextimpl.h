@@ -25,7 +25,7 @@ namespace zorba {
       virtual ~StaticContextImpl();
 
       virtual StaticContext_t
-      createChildContext();
+      createChildContext() const;
       
       virtual bool   
       addNamespace( const String& prefix, const String& URI );
