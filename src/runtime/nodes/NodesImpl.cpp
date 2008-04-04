@@ -11,12 +11,13 @@
 
 #include <vector>
 
-  #include "system/globalenv.h"
+#include "system/globalenv.h"
 #include "runtime/nodes/NodesImpl.h"
 #include "store/api/item_factory.h"
 
 #include "runtime/context/ContextImpl.h"
 #include "runtime/api/runtimecb.h"
+#include "runtime/util/iterator_impl.h"
 #include "context/dynamic_context.h"
 
 #include "store/api/store.h"
@@ -78,8 +79,18 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
 {
   //TODO the store does not implement support for the languages
+
+  store::Item_t item, node;
+  xqpStringStore_t lang;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  lang = (NULL == (item = CONSUME (0)))
+    ? item->getStringValue ()
+    : xqpStringStore_t (new xqpStringStore ());
+  node = CONSUME (1);
+
   STACK_END (state);
 }
 
