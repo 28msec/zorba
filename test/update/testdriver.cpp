@@ -271,7 +271,7 @@ main(int argc, char** argv)
               std::cerr << std::endl;
 
               std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-              std::cerr << "Got "; 
+              std::cerr << "Got: " << std::endl; 
               printFile(std::cerr, lRefFile.native_file_string());
               printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
               std::cerr << std::endl << "Expected ";
