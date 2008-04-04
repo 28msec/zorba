@@ -1,5 +1,10 @@
-#ifndef XERCESINCLUDES_H_
-#define XERCESINCLUDES_H_
+/*
+ *	Copyright 2006-2008 FLWOR Foundation.
+ *  Author: Cezar Andrei (cezar dot andrei at gmail dot com)
+ *
+ */
+#ifndef ZORBA_XERCESINCLUDES_H_
+#define ZORBA_XERCESINCLUDES_H_
 
 //#undef Assert
 
@@ -28,4 +33,4 @@
 //
 //#define Assert( cond ) ZORBA_ASSERT (cond)
 
-#endif /*XERCESINCLUDES_H_*/
+#endif /*ZORBA_XERCESINCLUDES_H_*/

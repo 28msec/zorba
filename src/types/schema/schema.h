@@ -3,8 +3,8 @@
  *  Author: Cezar Andrei (cezar dot andrei at gmail dot com)
  *
  */
-#ifndef SCHEMA_H_
-#define SCHEMA_H_
+#ifndef ZORBA_SCHEMA_H_
+#define ZORBA_SCHEMA_H_
 
 #include "xercesIncludes.h"
 
@@ -56,4 +56,4 @@ private:
 };
 
 } // namespace zorba
-#endif /*SCHEMA_H_*/
+#endif /*ZORBA_SCHEMA_H_*/

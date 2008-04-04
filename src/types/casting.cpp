@@ -144,8 +144,20 @@ store::Item_t GenericCast::stringSimpleCast(
     const xqtref_t& aTargetType) const
 {
   store::Item_t lItem = 0;
+
   RootTypeManager& ts = GENV_TYPESYSTEM;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
+
+  if (aSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
+      aTargetType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+      TypeOps::castability(*aSourceType, *aTargetType)==TypeConstants::NOT_CASTABLE )
+  {
+      // http://www.w3.org/TR/xpath-functions/#casting
+      ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Passed item (of type " + 
+          TypeOps::toString (*aSourceType) + ") is not castable to passed target type (" + 
+          TypeOps::toString (*aTargetType) + ").");
+      return lItem;
+  }
 
   xqpStringStore_t lString = aSourceItem->getStringValue();
   switch(TypeOps::get_atomic_type_code(*aTargetType))
@@ -648,7 +660,7 @@ store::Item_t GenericCast::cast(store::Item_t aItem, const xqtref_t& aTargetType
   lResult = stringSimpleCast(aItem, lItemType, aTargetType);
   if ( lResult == 0 ) 
   {
-    ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
+      ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
       "Passed item (of type " + TypeOps::toString (*lItemType) + ") is not castable to passed target type (" + TypeOps::toString (*aTargetType) + ").");
   }
 

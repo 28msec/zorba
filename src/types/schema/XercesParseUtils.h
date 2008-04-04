@@ -3,13 +3,12 @@
  *  Author: Cezar Andrei (cezar dot andrei at gmail dot com)
  *
  */
-#ifndef XERCESPATHUTILS_H_
-#define XERCESPATHUTILS_H_
+#ifndef ZORBA_XERCESPATHUTILS_H_
+#define ZORBA_XERCESPATHUTILS_H_
 
 #include "xercesIncludes.h"
 
 #include <zorba/api_shared_types.h>
-//#include <zorba/rchandle.h>
 #include "util/rchandle.h"
 #include <zorba/item.h>
 #include "common/shared_types.h"
@@ -81,4 +80,4 @@ public:
     static bool parseUserAtomicTypes(xqpString textValue, store::Item_t &result);
 };
 } // namespace zorba
-#endif /*XERCESPATHUTILS_H_*/
+#endif /*ZORBA_XERCESPATHUTILS_H_*/

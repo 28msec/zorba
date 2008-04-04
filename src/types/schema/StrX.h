@@ -1,5 +1,10 @@
-#ifndef STRX_H_
-#define STRX_H_
+/*
+ *	Copyright 2006-2008 FLWOR Foundation.
+ *  Author: Cezar Andrei (cezar dot andrei at gmail dot com)
+ *
+ */
+#ifndef ZORBA_STRX_H_
+#define ZORBA_STRX_H_
 
 
 #include <stdlib.h>
@@ -64,4 +69,4 @@ inline XERCES_STD_QUALIFIER ostream& operator<<(XERCES_STD_QUALIFIER ostream& ta
 }
 
 } // namespace zorba
-#endif /*STRX_H_*/
+#endif /*ZORBA_STRX_H_*/
