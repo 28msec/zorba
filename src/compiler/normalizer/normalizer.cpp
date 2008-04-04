@@ -419,7 +419,7 @@ void normalizer::end_visit(transform_expr&)
 void zorba::normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_t root) {
   normalizer n (aCompilerCB);
   root->accept(n);
-  if (norm_descr != NULL) {
+  if (aCompilerCB->m_config.print_normalized) {
     std::cout << "Expression tree for " << norm_descr << " after normalization:\n";
     root->put(std::cout) << std::endl;
   }

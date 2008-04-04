@@ -95,11 +95,10 @@ namespace zorba {
 class TranslatorImpl : public parsenode_visitor
 {
 public:
-  friend TranslatorImpl *make_translator (bool, CompilerCB*);
+  friend TranslatorImpl *make_translator (CompilerCB*);
 
 protected:
   uint32_t depth;
-  bool     print_translated;
 
   CompilerCB                        *compilerCB;
   static_context                    *sctx_p;
@@ -127,9 +126,9 @@ protected:
 
   var_expr_t theDotVar, theDotPosVar, theLastVar;
 
-  TranslatorImpl (bool print_, CompilerCB* aCompilerCB)
+  TranslatorImpl (CompilerCB* aCompilerCB)
     :
-    depth (0), print_translated (print_),
+    depth (0),
     compilerCB(aCompilerCB),
     sctx_p (aCompilerCB->m_sctx),
     sctx_list (aCompilerCB->m_sctx_list),
@@ -1617,12 +1616,11 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         ZORBA_ASSERT (udf != NULL);
 
         assert (body != NULL);
-        if (print_translated) {
+        if (compilerCB->m_config.print_translated) {
           cout << "Expression tree for " << v.get_name ()->get_qname () << " after translation:" << endl;
           body->put(cout) << endl;
         }
-        normalize_expr_tree (Properties::instance ()->printNormalizedExpressions ()
-                             ? v.get_name ()->get_qname ().c_str () : NULL,
+        normalize_expr_tree (v.get_name ()->get_qname ().c_str (),
                              compilerCB, body);
 
         if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) {
@@ -4671,15 +4669,15 @@ void end_visit(const VarGetsDeclList& /*v*/, void* /*visit_state*/)
 };
 
 
-TranslatorImpl *make_translator (bool print, CompilerCB* aCompilerCB)  {
-  return new TranslatorImpl (print, aCompilerCB);
+TranslatorImpl *make_translator (CompilerCB* aCompilerCB)  {
+  return new TranslatorImpl (aCompilerCB);
 }
 
-rchandle<expr> translate (bool print, const parsenode &root, CompilerCB* aCompilerCB) {
-  auto_ptr<TranslatorImpl> t (make_translator (print, aCompilerCB));
+rchandle<expr> translate (const parsenode &root, CompilerCB* aCompilerCB) {
+  auto_ptr<TranslatorImpl> t (make_translator (aCompilerCB));
   root.accept (*t);
   rchandle<expr> result = t->result ();
-  if (print) {
+  if (aCompilerCB->m_config.print_translated) {
     cout << "Expression tree for query after translation:\n";
     result->put(cout) << endl;
   }

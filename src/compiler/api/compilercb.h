@@ -16,6 +16,7 @@ namespace zorba {
         } opt_level_t;
 
         opt_level_t opt_level;
+        bool print_translated, print_normalized, print_optimized;
 
         __config_t() { opt_level = O1; }
       } config_t;
