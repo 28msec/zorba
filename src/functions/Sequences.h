@@ -228,21 +228,10 @@ public:
 |_______________________________________________________________________*/
 
 //15.3.1 fn:deep-equal
-class fn_deep_equal_2 : public function
+class fn_deep_equal : public function
 {
 public:
-  fn_deep_equal_2(const signature&);
-
-public:
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
-
-class fn_deep_equal_3 : public function
-{
-public:
-  fn_deep_equal_3(const signature&);
-
-public:
+  fn_deep_equal(const signature&);
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 

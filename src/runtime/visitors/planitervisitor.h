@@ -184,7 +184,6 @@ namespace zorba
   class FnNamespaceUriIterator;
   class FnLangIterator;
   class FnCollectionIterator;
-  class FnDeepEqualIterator_2;
   class FnDeepEqualIterator_3;
 
 #define PLAN_ITER_VISTOR(class)    \
@@ -704,7 +703,6 @@ namespace zorba
       PLAN_ITER_VISTOR(ReplaceIterator);
       PLAN_ITER_VISTOR(RenameIterator);
       PLAN_ITER_VISTOR(TransformIterator);
-      PLAN_ITER_VISTOR(FnDeepEqualIterator_2);
       PLAN_ITER_VISTOR(FnDeepEqualIterator_3);
 	  
   }; /* class PlanIterVisitor */

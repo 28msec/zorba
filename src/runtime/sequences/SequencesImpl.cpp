@@ -601,15 +601,6 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) const {
 
 //15.3.1 fn:deep-equal
 store::Item_t 
-FnDeepEqualIterator_2::nextImpl(PlanState& planState) const 
-{
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  STACK_END (state);
-}       
-
-store::Item_t 
 FnDeepEqualIterator_3::nextImpl(PlanState& planState) const
 {
   PlanIteratorState* state;

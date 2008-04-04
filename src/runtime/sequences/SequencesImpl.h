@@ -239,35 +239,7 @@ protected:
 
 //15.3.1 fn:deep-equal
 
-class FnDeepEqualIterator_2 : public BinaryBaseIterator<FnDeepEqualIterator_2, PlanIteratorState>
-{
-public:
-  FnDeepEqualIterator_2(const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1)
-    :
-    BinaryBaseIterator<FnDeepEqualIterator_2, PlanIteratorState>(loc, arg0, arg1){ }
-
-  virtual ~FnDeepEqualIterator_2() {};
-
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  virtual void accept(PlanIterVisitor&) const;
-};
-
-class FnDeepEqualIterator_3 : public NaryBaseIterator<FnDeepEqualIterator_3, PlanIteratorState>
-{
-public:
-  FnDeepEqualIterator_3(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    :
-    NaryBaseIterator<FnDeepEqualIterator_3, PlanIteratorState>(loc, aChildren){ }
-
-  virtual ~FnDeepEqualIterator_3() {};
-
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  virtual void accept(PlanIterVisitor&) const;
-};
-
-
+NARY_ITER (FnDeepEqualIterator_3);
 
 //15.3.2 op:union
 // implemented using concat and sort
