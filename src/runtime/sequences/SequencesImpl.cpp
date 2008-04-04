@@ -726,31 +726,38 @@ store::Item_t
 FnAvgIterator::nextImpl(PlanState& planState) const {
   store::Item_t lSumItem;
   store::Item_t lRunningItem;
-  xqp_integer lCount = Integer::parseInt(1);
+  xqtref_t type;
+  bool numeric;
+  int lCount = 0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSumItem = consumeNext(theChildren[0].getp(), planState);
-  if (lSumItem != NULL) // return empty-sequence if input is empty
+  for (; (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL;
+       ++lCount)
   {
-    for (; (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL;
-         ++lCount)
+    // TODO add datetime
+    type = GENV_TYPESYSTEM.item_type (lRunningItem);
+    numeric = TypeOps::is_numeric (*type);
+    if (numeric
+        || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      // TODO add datetime
-      if (lRunningItem->isNumeric()) {
-        if (lRunningItem->isNaN()) {
-          lSumItem = lRunningItem;
-          break;
-        }
-        lSumItem = NumArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem);
+      if (numeric && lRunningItem->isNaN()) {
+        lSumItem = lRunningItem;
+        break;
       }
-      else ZORBA_ERROR (ZorbaError::FORG0006);
+      if (lCount == 0)
+        lSumItem = lRunningItem;
+      else
+        lSumItem = NumArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem);
     }
-
-    STACK_PUSH(NumArithIterator<DivideOperation>::compute(planState.theRuntimeCB, loc, lSumItem,
-               GENV_ITEMFACTORY->createInteger(lCount)), state);
+    else ZORBA_ERROR (ZorbaError::FORG0006);
   }
+
+  if (lCount > 0)
+    STACK_PUSH(NumArithIterator<DivideOperation>::compute(planState.theRuntimeCB, loc, lSumItem,
+                                                          GENV_ITEMFACTORY->createInteger(Integer::parseInt (lCount))), state);
+  // else return empty sequence
 
   STACK_END (state);
 }
