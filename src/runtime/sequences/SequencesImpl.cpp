@@ -742,10 +742,8 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
     if (numeric
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      if (numeric && lRunningItem->isNaN()) {
-        lSumItem = lRunningItem;
-        break;
-      }
+      // DO NOT short-circuit for INF and NaN!
+      // Must check all items in case FORG0006 is needed
       if (lCount == 0)
         lSumItem = lRunningItem;
       else
