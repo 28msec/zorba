@@ -14,6 +14,7 @@
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/core/arithmetic_impl.h"
+#include "runtime/util/iterator_impl.h"
 
 #include "system/globalenv.h"
 
@@ -677,26 +678,36 @@ SortSemiJoinIterator::~SortSemiJoinIterator() {}
 
 store::Item_t 
 SortSemiJoinIterator::nextImpl(PlanState& planState) const {
-  store::Item_t lOuter, lInner, lPrev;  
+  store::Item_t item [2];  
+  bool order;
+  int i;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  
-  while ((lOuter = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
 
-    // continue on the inner as long as the other is greater
-    while  (((lInner = consumeNext(theChildren[1].getp(), planState)) != NULL ) && 
-             GENV_STORE.compareNodes(lOuter.getp(), lInner.getp()) < 0) { }
+  for (;;) {
 
-    // do we have a match
-    if (GENV_STORE.equalNodes(lOuter.getp(), lInner.getp())) {
-      STACK_PUSH(lOuter, state);
+    // load items
+    for (i = 0; i < 2; i++) {
+      if (item [i] == NULL) {
+        if ((item [i] = CONSUME (i)) == NULL)
+          goto done;
+      }
     }
+
+    // advance, output
+    order = GENV_STORE.compareNodes (item [0].getp(), item [1].getp());
+    if (order == 0)
+      STACK_PUSH (item [0], state);
+    item [order >= 0 ? 0 : 1] = NULL;
+
   }
 
+done:
   STACK_END (state);
 }
+
 /*______________________________________________________________________
 |
 | 15.4 Aggregate Functions
