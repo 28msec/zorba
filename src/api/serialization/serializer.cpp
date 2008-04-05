@@ -966,7 +966,8 @@ void serializer::serialize(PlanWrapper *result, ostream& os)
   store::Item_t item = result->next();
   while (item != NULL )
   {
-    ZORBA_ASSERT(!item->isPul());
+    if (item->isPul())
+      ZORBA_ERROR(ZorbaError::API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
 
     e->emit_item(&*item);
     item = result->next();

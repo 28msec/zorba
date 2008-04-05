@@ -5,7 +5,7 @@
 
 #include "store/api/item.h"
 #include "runtime/api/plan_wrapper.h"
-#include "errors/errors.h"
+#include "errors/error_manager.h"
 
 namespace zorba {
 
@@ -36,19 +36,25 @@ namespace zorba {
   ResultIteratorImpl::next(Item& aItem)
   {
     store::Item_t lItem;
-    try {
+    try 
+    {
       if (!theIsOpened) 
         return false; // todo throw error here
 
       lItem = thePlan->next();
-    } catch (error::ZorbaError& e) {
+    }
+    catch (error::ZorbaError& e)
+    {
       ZorbaImpl::notifyError(theErrorHandler, e);
       return false; // if no exception is thrown in the error handler
     }
 
     if (lItem == NULL)
       return false;
-      
+    
+    if (lItem->isPul())
+      ZORBA_ERROR(ZorbaError::API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY);
+
     aItem = &*lItem;
 
     return true;
