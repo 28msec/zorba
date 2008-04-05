@@ -8,10 +8,7 @@ void namespace_context::bind_ns(xqp_string prefix, xqp_string ns)
   m_bindings.push_back(std::pair<xqp_string, xqp_string>(prefix, ns));
 }
 
-bool
-namespace_context::findBinding(
-    const xqp_string& aPrefix,
-    xqp_string aNamespace)
+bool namespace_context::findBinding(xqp_string aPrefix, xqp_string &aNamespace)
 {
   bindings_t::const_iterator lIter = m_bindings.begin();
   bindings_t::const_iterator lEnd = m_bindings.end();
