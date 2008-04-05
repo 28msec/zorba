@@ -159,7 +159,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
-        if (!elemParent)
+        if (!elemTarget)
           ZORBA_ERROR_LOC(ZorbaError::XUTY0022, loc);
 
         attrs[numAttrs++].transfer(source);

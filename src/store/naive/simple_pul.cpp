@@ -569,9 +569,10 @@ void PULImpl::mergeUpdateList(
 ********************************************************************************/
 void PULImpl::serializeUpdates(serializer& ser, std::ostream& os)
 {
-  NodeToUpdatesMap::iterator it;
+  NodeToUpdatesMap::iterator it = theNodeToUpdatesMap.begin();
+  NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
 
-  for (it = theNodeToUpdatesMap.begin(); it != theNodeToUpdatesMap.end(); ++it)
+  for (; it != end; ++it)
   {
     const XmlNode* target = (*it).first;
     target->getTree()->getRoot()->serializeXML(ser, os);

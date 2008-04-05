@@ -1406,7 +1406,7 @@ LoadedElementNode::LoadedElementNode(
     Item*     nodeName,
     Item*     typeName)
   :
-  ElementNode(parent, nodeName, typeName)
+  ElementNode(parent, pos, nodeName, typeName)
 {
   NODE_TRACE1("{\nConstructing element node " << this << " parent = "
               << parent << " pos = " << pos

@@ -2,8 +2,7 @@
 #define ZORBA_STORE_UTIL_POINTER_HASHMAP
 
 #include "common/shared_types.h"
-#include "util/Assert.h"
-//#include "zorbatypes/xqpstring.h"
+#include "errors/fatal.h"
 
 #include "store/util/mutex.h"
 
@@ -67,7 +66,8 @@ public:
       theHashTab(ht),
       thePos(pos)
     {
-      while ((*theHashTab)[thePos].theItem == NULL)
+      while (thePos < theHashTab->size() &&
+             (*theHashTab)[thePos].theItem == NULL)
         thePos++;
     }
 
@@ -108,7 +108,7 @@ public:
 
     std::pair<const T*, V> operator*() const
     {
-      ZORBA_ASSERT(thePos < theHashTab->size());
+      ZORBA_FATAL(thePos < theHashTab->size(), "");
       
       HashEntry& entry = (*theHashTab)[thePos];
 

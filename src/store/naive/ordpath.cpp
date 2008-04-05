@@ -481,8 +481,8 @@ void OrdPath::insertInto(
   long dewey1[MAX_NUM_COMPS];
   ulong offsets1[MAX_NUM_COMPS];
 
-  ulong numComps2;
-  ulong bitSize2;
+  ulong numComps2 = 0;
+  ulong bitSize2 = 0;
   long dewey2[MAX_BYTE_LEN];
   ulong offsets2[MAX_BYTE_LEN];
 
