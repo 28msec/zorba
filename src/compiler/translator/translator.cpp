@@ -76,6 +76,8 @@ namespace zorba {
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
+#define CTXTS sctx_p->get_typemanager ()
+
   typedef rchandle<expr> expr_t;
   typedef rchandle<var_expr> var_expr_t;
   typedef std::pair<var_expr_t, expr_t> global_binding;
@@ -1910,15 +1912,17 @@ void *begin_visit(const SchemaImport& v)
     {
         std::string at = (*atlist) [0];
 
-        //std::cout << "SchemaImport: " << prefix << " : " << uri
-        //    << " @ " << at << std::endl;
-        //std::cout << " Context: " << sctx_p->get_typemanager() << "\n";
+#if 0
+        cout << "SchemaImport: " << prefix << " : " << uri
+             << " @ " << at << std::endl;
+        cout << " Context: " << CTXTS << "\n";
+#endif
 
-        ((DelegatingTypeManager*)sctx_p->get_typemanager())->initializeSchema();
-        Schema* schema_p = ((DelegatingTypeManager*)sctx_p->get_typemanager())->getSchema();
+        ((DelegatingTypeManager*)CTXTS)->initializeSchema();
+        Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
 
         schema_p->registerXSD(at.c_str());	
-        //schema_p->printXSDInfo();
+        // schema_p->printXSDInfo();
     }
 
     return no_state;
@@ -1963,7 +1967,7 @@ void end_visit(const SingleType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   if (v.get_hook_bit ())
-    tstack.push (sctx_p->get_typemanager()->create_type (*pop_tstack (), TypeConstants::QUANT_QUESTION));
+    tstack.push (CTXTS->create_type (*pop_tstack (), TypeConstants::QUANT_QUESTION));
   // else leave type as it is on tstack
 }
 
@@ -2155,7 +2159,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
   } else {  // a QName cast
     const const_expr *ce = node.dyn_cast<const_expr> ().getp();
     if (ce != NULL
-        && TypeOps::is_equal (*sctx_p->get_typemanager()->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
+        && TypeOps::is_equal (*CTXTS->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
                               *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
         store::Item_t castLiteral = GenericCast::instance()->castToQName(ce->get_val()->getStringValue(), isCast, true);
@@ -2212,62 +2216,34 @@ void *begin_visit(const ComparisonExpr& /*v*/)
 
 void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
 {
+#define M( pc, op ) case ParseConstants::pc: f = LOOKUP_OP2 (op); break;
+
   TRACE_VISIT_OUT ();
 
   function *f = NULL;
   if (v.get_gencomp()!=NULL) {
     switch (v.get_gencomp()->get_type()) {
-    case ParseConstants::op_eq:
-      f = (LOOKUP_OP2 ("equal"));
-      break;
-    case ParseConstants::op_ne:
-      f = (LOOKUP_OP2 ("not-equal"));
-      break;
-    case ParseConstants::op_lt:
-      f = (LOOKUP_OP2 ("less"));
-      break;
-    case ParseConstants::op_le:
-      f = (LOOKUP_OP2 ("less-equal"));
-      break;
-    case ParseConstants::op_gt:
-      f = (LOOKUP_OP2 ("greater"));
-      break;
-    case ParseConstants::op_ge:
-      f = (LOOKUP_OP2 ("greater-equal"));
-      break;
+    M (op_eq, "equal");
+    M (op_ne, "not-equal");
+    M (op_lt, "less");
+    M (op_le, "less-equal");
+    M (op_gt, "greater");
+    M (op_ge, "greater-equal");
     }
   } else if (v.get_valcomp () != NULL) {
     switch (v.get_valcomp()->get_type()) {
-    case ParseConstants::op_val_eq:
-      f = (LOOKUP_OP2 ("value-equal"));
-      break;
-    case ParseConstants::op_val_ne:
-      f = (LOOKUP_OP2 ("value-not-equal"));
-      break;
-    case ParseConstants::op_val_lt:
-      f = (LOOKUP_OP2 ("value-less"));
-      break;
-    case ParseConstants::op_val_le:
-      f = (LOOKUP_OP2 ("value-less-equal"));
-      break;
-    case ParseConstants::op_val_gt:
-      f = (LOOKUP_OP2 ("value-greater"));
-      break;
-    case ParseConstants::op_val_ge:
-      f = (LOOKUP_OP2 ("value-greater-equal"));
-      break;
+    M (op_val_eq, "value-equal");
+    M (op_val_ne, "value-not-equal");
+    M (op_val_lt, "value-less");
+    M (op_val_le, "value-less-equal");
+    M (op_val_gt, "value-greater");
+    M (op_val_ge, "value-greater-equal");
     }
   } else if (v.get_nodecomp()!=NULL) {
     switch (v.get_nodecomp()->get_type()) {
-    case ParseConstants::op_is:
-      f = (LOOKUP_OP2 ("is-same-node"));
-      break;
-    case ParseConstants::op_precedes:
-      f = (LOOKUP_OP2 ("node-before"));
-      break;
-    case ParseConstants::op_follows:
-      f = (LOOKUP_OP2 ("node-after"));
-      break;
+    M (op_is, "is-same-node");
+    M (op_precedes, "node-before");
+    M (op_follows, "node-after");
     }
   }
 
@@ -2278,6 +2254,8 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
   fo_p->add(e2_h);
   fo_p->add(e1_h);
   nodestack.push(fo_p);
+
+#undef M
 }
 
 
@@ -2441,7 +2419,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   // try constructor functions
   xqtref_t type =
-    sctx_p->get_typemanager()->create_type (fn_qname, TypeConstants::QUANT_QUESTION);
+    CTXTS->create_type (fn_qname, TypeConstants::QUANT_QUESTION);
 
   xqpStringStore tmp("xs:anyAtomicType");
 
@@ -2678,7 +2656,7 @@ void *begin_visit(const OccurrenceIndicator& v)
   }
 
   if (q != TypeConstants::QUANT_ONE)
-    tstack.push (sctx_p->get_typemanager()->create_type (*pop_tstack (), q));
+    tstack.push (CTXTS->create_type (*pop_tstack (), q));
 
   return no_state;
 }
@@ -2700,7 +2678,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
   xqtref_t t =
-    sctx_p->get_typemanager()->create_atomic_type(sctx_p->lookup_qname("",
+    CTXTS->create_atomic_type(sctx_p->lookup_qname("",
                                                             qname->get_prefix (),
                                                             qname->get_localname ()),
                                 TypeConstants::QUANT_ONE);
@@ -2864,10 +2842,7 @@ void end_visit(const AnyKindTest& v, void* /*visit_state*/)
   }
   else
   {
-    xqtref_t seqmatch = sctx_p->get_typemanager()->
-      create_node_type(NodeTest::ANY_NODE_TEST, NULL, TypeConstants::QUANT_ONE);
-
-    tstack.push(seqmatch);
+    tstack.push(GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
   }
 }
 
@@ -2895,19 +2870,10 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
       match->setTestKind(match_doc_test);
 
       axisExpr->setTest(match);
+    } else {
+      tstack.push(GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE);
     }
-    else
-    {
-      rchandle<NodeTest> nodeTest = new NodeTest(store::StoreConsts::documentNode);
-
-      xqtref_t seqmatch = sctx_p->get_typemanager()->
-        create_node_type(nodeTest, NULL, TypeConstants::QUANT_ONE);
-
-      tstack.push(seqmatch);
-    }
-  }
-  else
-  {
+  } else {
     rchandle<QName> elemName = elemTest->getElementName();
     rchandle<TypeName> typeName = elemTest->getTypeName();
     bool nilled =  elemTest->isNilledAllowed();
@@ -3000,10 +2966,10 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
-      contentType = sctx_p->get_typemanager()->create_type(qnameItem, TypeConstants::QUANT_ONE);
+      contentType = CTXTS->create_type(qnameItem, TypeConstants::QUANT_ONE);
     }
 
-    xqtref_t seqmatch = sctx_p->get_typemanager()->
+    xqtref_t seqmatch = CTXTS->
       create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
@@ -3063,10 +3029,10 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
-      contentType = sctx_p->get_typemanager()->create_type(qnameItem, TypeConstants::QUANT_ONE);
+      contentType = CTXTS->create_type(qnameItem, TypeConstants::QUANT_ONE);
     }
 
-    xqtref_t seqmatch = sctx_p->get_typemanager()->
+    xqtref_t seqmatch = CTXTS->
       create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
@@ -3092,13 +3058,8 @@ void end_visit(const TextTest& v, void* /*visit_state*/)
     rchandle<match_expr> match = new match_expr(v.get_location());
     match->setTestKind(match_text_test);
     axisExpr->setTest(match);
-  }
-  else
-  {
-    xqtref_t seqmatch = sctx_p->get_typemanager()->
-      create_node_type(NodeTest::TEXT_TEST, NULL, TypeConstants::QUANT_ONE);
-
-    tstack.push(seqmatch);
+  } else {
+    tstack.push(GENV_TYPESYSTEM.TEXT_TYPE_ONE);
   }
 }
 
@@ -3116,18 +3077,12 @@ void end_visit(const CommentTest& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL)
-  {
+  if (axisExpr != NULL) {
     rchandle<match_expr> match = new match_expr(v.get_location());
     match->setTestKind(match_comment_test);
     axisExpr->setTest(match);
-  }
-  else
-  {
-    xqtref_t seqmatch = sctx_p->get_typemanager()->
-      create_node_type(NodeTest::COMMENT_TEST, NULL, TypeConstants::QUANT_ONE);
-
-    tstack.push(seqmatch);
+  } else {
+    tstack.push(GENV_TYPESYSTEM.COMMENT_TYPE_ONE);
   }
 }
 
@@ -3143,21 +3098,15 @@ void end_visit(const PITest& v, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL)
-  {
+  if (axisExpr != NULL) {
     string target = v.get_target();
     rchandle<match_expr> match = new match_expr(v.get_location());
     match->setTestKind(match_pi_test);
     if (target != "")
       match->setQName(sctx_p->lookup_elem_qname(target));
     axisExpr->setTest(match);
-  }
-  else
-  {
-    xqtref_t seqmatch = sctx_p->get_typemanager()->
-      create_node_type(NodeTest::PI_TEST, NULL, TypeConstants::QUANT_ONE);
-
-    tstack.push(seqmatch);
+  } else {
+    tstack.push(GENV_TYPESYSTEM.PI_TYPE_ONE);
   }
 }
 
