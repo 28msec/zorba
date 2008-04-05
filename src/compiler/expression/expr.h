@@ -135,6 +135,7 @@ public:
   virtual void accept_children(expr_visitor &v);
   virtual void next_iter (expr_iterator_data &) = 0;
   virtual std::ostream& put(std::ostream&) const;
+  virtual std::string toString () const;
 
   virtual xqtref_t return_type(static_context *sctx);
 

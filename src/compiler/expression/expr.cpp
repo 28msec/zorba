@@ -185,6 +185,12 @@ expr::expr(
 
 expr::~expr() { }
 
+string expr::toString () const {
+  ostringstream oss;
+  put (oss);
+  return oss.str ();
+}
+
   expr_iterator_data *expr::make_iter () {
     return new expr_iterator_data (this);
   }
