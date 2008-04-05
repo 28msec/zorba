@@ -126,11 +126,11 @@ public:
   bool equals(
         Item_t other,
         RuntimeCB* aRuntimeCB,
-        XQPCollator* aCollation = 0) const { NODE_STOP; return 0; }
+        XQPCollator* aCollation = 0) const { return this == other.getp(); }
 
   uint32_t hash(
         RuntimeCB* aRuntimeCB,
-        XQPCollator* aCollation = 0) const { NODE_STOP; return 0; }
+        XQPCollator* aCollation = 0) const;
 
   virtual xqp_string getBaseURI() const;
   virtual xqp_string getDocumentURI() const;
