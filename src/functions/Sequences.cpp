@@ -294,6 +294,14 @@ PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 }
 
 
+// For intersect and except, it's always more efficient to sort the output
+// and use hash-join than to sort the inputs and use mergesort-join. Only if
+// the inputs happen to be sorted for a different reason will we use mergesort:
+// for $x in path/expr1 for $y in path/expr2 return ($x, $y, ($x intersect $y))
+//
+// For now, codegen doesn't know whether the inputs are sorted or not.
+// TODO: annotate expressions with USE_HASH / USE_MERGESORT properties
+// during optimization.
 
 //15.3.3 op:intersect
 fn_intersect::fn_intersect(const signature& sig)
@@ -302,16 +310,15 @@ fn_intersect::fn_intersect(const signature& sig)
 PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
-  if (ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VALUE) {
-    std::vector<PlanIter_t> inputs;
-    for (std::vector<PlanIter_t>::iterator i = argv.begin ();
-         i != argv.end (); i++)
-      inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
-    return new SortSemiJoinIterator(loc, inputs);
-  } else {
+#if 0  // we can't access PRODUCES_* from the inputs
+  std::vector<PlanIter_t> inputs;
+  for (std::vector<PlanIter_t>::iterator i = argv.begin ();
+       i != argv.end (); i++)
+    inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
+  return new SortSemiJoinIterator(loc, inputs);
+#endif
     // TODO: when NodeDistinctIterator is fixed, use that.
     return new NodeSortIterator (loc, new HashSemiJoinIterator(loc, argv), true, true, true);
-  }
 }
 
 

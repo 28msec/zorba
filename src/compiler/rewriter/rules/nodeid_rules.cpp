@@ -105,15 +105,34 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
         || f == LOOKUP_FN ("fn", "max", 1)
         || f == LOOKUP_FN ("fn", "max", 2)
         || f == LOOKUP_FN ("fn", "min", 1)
-        || f == LOOKUP_FN ("fn", "min", 2)) {
+        || f == LOOKUP_FN ("fn", "min", 2))
+    {
       expr_t arg = (*fo)[0];
       arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
       arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
     } else if (f == LOOKUP_FN ("fn", "count", 1)
+               || f == LOOKUP_FN ("fn", "sum", 1)
+               || f == LOOKUP_FN ("fn", "sum", 2)
+               || f == LOOKUP_FN ("fn", "avg", 1)
                || f == LOOKUP_FN ("fn", "exactly-one", 1)
-               || f == LOOKUP_OP1 ("exactly-one-noraise")) {
+               || f == LOOKUP_OP1 ("exactly-one-noraise"))
+    {
       expr_t arg = (*fo)[0];
       arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+    } else if (f == LOOKUP_OP2 ("union")
+               || f == LOOKUP_OP2 ("intersect")
+               || f == LOOKUP_OP2 ("except"))
+    {
+      // Union, intersect and except CAN use sorted inputs, but do not require
+      // them. For intersect and except, it's ALWAYS more efficient to sort
+      // the output than to sort the inputs. For union, it's unclear.
+      // In any case, if a sort is eliminated, it won't be missed, as other
+      // stages can put it back in.
+      for (int i = 0; i < 2; i++) {
+        expr_t arg = (*fo) [i];
+        arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+        arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
+      }
     } else {
       vector <AnnotationHolder *> anns;
       exprs_to_holders (fo->begin (), fo->end (), anns);
