@@ -26,6 +26,10 @@ void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
 
       if (newRoot != NULL) {
         rCtx.setRoot(newRoot);
+#if 0  // debug each rule
+        std::cout << "After " << (*i)->getRuleName () << ":" << std::endl;
+        newRoot->put (std::cout) << std::endl;
+#endif
       }
     }
   } while(modified);

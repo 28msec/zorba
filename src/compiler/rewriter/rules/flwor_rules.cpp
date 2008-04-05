@@ -39,6 +39,9 @@ namespace zorba {
     RewriterContext rCtx (rCtx0.getCompilerCB (), root);
     auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new SubstVars (var, subst))));
     rw->rewrite (rCtx);
+#if 0  // debug substitutions
+    cout << "After subst " << var << ":" << endl; rCtx.getRoot()->put (cout) << endl;
+#endif
     return rCtx.getRoot ();
   }
 
@@ -66,30 +69,30 @@ bool used_upto_first_repeated_clause (var_expr *v, flwor_expr *flwor, static_con
   return false;
 }
 
+#define WHERE flwor->get_where ()
 
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   flwor_expr *flwor = dynamic_cast<flwor_expr *>(node);
   if (flwor == NULL) return NULL;
 
-  expr_t where = flwor->get_where();
   VarSetAnnVal myvars;
   flwor_vars (flwor, myvars);
 
   // 'for $x in ... return $x'
-  if (where == NULL && flwor->forlet_count () == 1 && myvars.varset.size () == 1
+  if (WHERE == NULL && flwor->forlet_count () == 1 && myvars.varset.size () == 1
       && flwor->orderspec_count () == 0
       && &*(flwor->get_retval ()) == &*((*flwor) [0]->get_var ()))
     return (*flwor) [0]->get_expr ();
 
   // 'for $x in ... return ... WHERE cond' when cond doesn't depend on FLWOR vars
-  if (where != NULL) {
-    const var_ptr_set &free_vars = get_varset_annotation (where, AnnotationKey::FREE_VARS);
+  if (WHERE != NULL) {
+    const var_ptr_set &free_vars = get_varset_annotation (WHERE, AnnotationKey::FREE_VARS);
     var_ptr_set diff;
     set_intersection (myvars.varset.begin (), myvars.varset.end (), free_vars.begin (), free_vars.end (), inserter (diff, diff.begin ()));
     if (diff.empty ()) {
       flwor->set_where (NULL);
-      return fix_if_annotations (new if_expr (LOC (node), where, flwor, new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"))));
+      return fix_if_annotations (new if_expr (LOC (node), WHERE, flwor, new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"))));
     }
   }
 
@@ -144,8 +147,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // FLWOR with no remaining clauses
   if (flwor->forlet_count() == 0) {
     expr_t result = flwor->get_retval();
-    if (where != NULL)
-      result = fix_if_annotations (new if_expr(LOC (where), where, result, new fo_expr(LOC (where), LOOKUP_OPN("concatenate"))));
+    if (WHERE != NULL)
+      result = fix_if_annotations (new if_expr(LOC (WHERE), WHERE, result, new fo_expr(LOC (WHERE), LOOKUP_OPN("concatenate"))));
     return result;
   }
   return modified ? node : NULL;
@@ -186,26 +189,25 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   if (flwor == NULL) return NULL;
 
   static_context *sctx = rCtx.getStaticContext();
-  expr_t where = flwor->get_where ();
   if_expr *ite_result = flwor->get_retval().dyn_cast<if_expr> ();
 
   rchandle<const_expr> pos;
   forlet_clause::varref_t pvar;
 
   // 'for $x in ... return if (...) then ... else ()'
-  if (ite_result != NULL && where == NULL &&
+  if (ite_result != NULL && WHERE == NULL &&
       TypeOps::is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE))
   {
     expr_t cond = ite_result->get_cond_expr (),
       then = ite_result->get_then_expr ();
-    flwor->set_where (cond);
     flwor->set_retval (then);
+    flwor->set_where (cond);
     return flwor;
   }
   
   // 'for $x at $p where $p = ... return ...'
-  if (where != NULL && refactor_index_pred (rCtx, where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
-    rchandle<fo_expr> result = new fo_expr (LOC (where), LOOKUP_FN ("fn", "subsequence", 3),
+  if (WHERE != NULL && refactor_index_pred (rCtx, WHERE, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
+    rchandle<fo_expr> result = new fo_expr (LOC (WHERE), LOOKUP_FN ("fn", "subsequence", 3),
                                             pvar->get_forlet_clause ()->get_expr (), &*pos, new const_expr (LOC (pos), xqp_double::parseInt (1)));
     fix_annotations (&*result);
     forlet_clause *clause = pvar->get_forlet_clause ();
@@ -221,6 +223,8 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
 RULE_REWRITE_POST(RefactorPredFLWOR) {
   return NULL;
 }
+
+#undef WHERE
 
 }
 /* vim:set ts=2 sw=2: */
