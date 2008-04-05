@@ -285,7 +285,7 @@ PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   else {
     PlanIter_t concat = new FnConcatIterator(loc, argv);
     return
-#if 0  // NodeDistinctIterator broken for now
+#if 1  // NodeDistinctIterator broken for now
       distinct ? new NodeDistinctIterator(loc, concat, true) : concat;
 #else
       distinct ? new NodeSortIterator (loc, concat, true, true, true) : concat;
@@ -497,7 +497,7 @@ PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<Plan
   bool distinct = A_DISTINCT;
   if (ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES))
     distinct = false;
-#if 0  // NodeDistinctIterator seems broken for now
+#if 1  // NodeDistinctIterator seems broken for now
   if (! A_SORT || ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES))
     return distinct ? new NodeDistinctIterator (loc, argv [0], A_ATOMICS) : NULL;
 #endif

@@ -123,7 +123,7 @@ Item_t StoreNodeDistinctIterator::next()
 
     ZORBA_ASSERT(contextNode->isNode());
 
-    if (!theNodeSet.insert(contextNode))
+    if (theNodeSet.insert(contextNode))
       return contextNode;
   }
 }
