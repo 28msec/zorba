@@ -2163,14 +2163,8 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
         && TypeOps::is_equal (*CTXTS->item_type (ce->get_val ()),
                               *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        store::Item_t castLiteral = GenericCast::instance()->castToQName(ce->get_val()->getStringValue(), isCast, true);
-        if (castLiteral != NULL) {
-          xqp_string pre = castLiteral->getPrefix ();
-          if (! pre.empty ()) {
-            xqp_string ns = sctx_p->lookup_ns (pre, isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0081);
-            castLiteral = ITEM_FACTORY->createQName(ns.getStore (), pre.getStore (), castLiteral->getLocalName ().getStore ());
-          }
-        }
+        store::Item_t castLiteral = GenericCast::instance()->castToQName(ce->get_val()->getStringValue(), isCast, true, ns_ctx);
+        assert (castLiteral != NULL || ! isCast);
         if (isCast)
           return new const_expr (loc, castLiteral);
         else
