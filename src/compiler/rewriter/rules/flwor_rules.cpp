@@ -91,8 +91,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     var_ptr_set diff;
     set_intersection (myvars.varset.begin (), myvars.varset.end (), free_vars.begin (), free_vars.end (), inserter (diff, diff.begin ()));
     if (diff.empty ()) {
+      expr_t old_where = WHERE;
       flwor->set_where (NULL);
-      return fix_if_annotations (new if_expr (LOC (node), WHERE, flwor, new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"))));
+      return fix_if_annotations (new if_expr (LOC (node), old_where, flwor, new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"))));
     }
   }
 
