@@ -2151,7 +2151,8 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
 /// Creates a cast_expr or castable_expr.
 expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast) {
-  if (! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE)) {
+  if (! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE)
+      && ! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION)) {
     if (isCast)
       return new cast_expr (loc, node, type);
     else
