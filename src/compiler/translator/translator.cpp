@@ -2151,7 +2151,7 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
 /// Creates a cast_expr or castable_expr.
 expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast) {
-  if (TypeOps::get_atomic_type_code (*type) != TypeConstants::XS_QNAME) {
+  if (! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE)) {
     if (isCast)
       return new cast_expr (loc, node, type);
     else
@@ -2159,7 +2159,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
   } else {  // a QName cast
     const const_expr *ce = node.dyn_cast<const_expr> ().getp();
     if (ce != NULL
-        && TypeOps::is_equal (*CTXTS->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
+        && TypeOps::is_equal (*CTXTS->item_type (ce->get_val ()),
                               *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
         store::Item_t castLiteral = GenericCast::instance()->castToQName(ce->get_val()->getStringValue(), isCast, true);
