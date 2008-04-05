@@ -425,10 +425,12 @@ void PointerHashMap<T, E, V>::expand()
   // Now rehash every entry
   for (ulong i = 0; i < oldsize; i++)
   {
-    if (oldTab[i].theItem == NULL)
+    const T* item = oldTab[i].theItem;
+
+    if (item == NULL)
       continue;
 
-    entry = &theHashTab[E::hash(oldTab[i].theItem) % theHashTabSize];
+    entry = &theHashTab[E::hash(item) % theHashTabSize];
 
     if (entry->theItem != NULL)
     {
@@ -454,7 +456,8 @@ void PointerHashMap<T, E, V>::expand()
       }
     }
 
-    *entry = oldTab[i];
+    entry->theItem = item;
+    entry->theValue = oldTab[i].theValue;
   }
 }
 

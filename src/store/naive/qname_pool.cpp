@@ -414,6 +414,9 @@ void QNamePool::resizeHashTab()
   {
     QNameItemImpl* qn = oldTab[i].theQNameSlot;
 
+    if (qn == NULL)
+      continue;
+
     ulong h = hashfun::h32(qn->thePrefix->c_str(),
                            hashfun::h32(qn->theLocal->c_str(),
                                         hashfun::h32(qn->theNamespace->c_str())));

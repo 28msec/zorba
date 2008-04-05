@@ -393,6 +393,9 @@ void resizeHashTab(ulong newSize)
   {
     T* item = oldTab[i].theItem;
 
+    if (item == NULL)
+      continue;
+
     entry = &theHashTab[Externals<T,E,C>::hash(item, theCompareParam) % theHashTabSize];
 
     if (entry->theItem != NULL)
