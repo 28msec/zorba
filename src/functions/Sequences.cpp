@@ -309,7 +309,7 @@ PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
       inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
     return new SortSemiJoinIterator(loc, inputs);
   } else {
-    // TODO: when NodeDistinctIterator is fixed, use that; if HashSemiJoin eliminates duplicates, remove completely.
+    // TODO: when NodeDistinctIterator is fixed, use that.
     return new NodeSortIterator (loc, new HashSemiJoinIterator(loc, argv), true, true, true);
   }
 }
@@ -317,7 +317,6 @@ PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 
 
 //15.3.4 op:except
-// except; requires two sorted inputs; does duplicate elimination
 fn_except::fn_except(const signature& sig)
 : function(sig) { }
 
@@ -326,7 +325,7 @@ PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
   bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
 
-  // TODO: use SortSemiJoinIterator when that gets an antijoin (trac ticket 254)
+  // TODO: use SortAntiJoinIterator when available (trac ticket 254)
   PlanIter_t antijoin = new HashSemiJoinIterator(loc, argv, true);
   if (! sort && ! distinct)
     return antijoin;

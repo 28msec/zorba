@@ -678,7 +678,7 @@ SortSemiJoinIterator::~SortSemiJoinIterator() {}
 
 store::Item_t 
 SortSemiJoinIterator::nextImpl(PlanState& planState) const {
-  store::Item_t item [2];  
+  store::Item_t item [2];
   bool order;
   int i;
 
@@ -698,9 +698,11 @@ SortSemiJoinIterator::nextImpl(PlanState& planState) const {
 
     // advance, output
     order = GENV_STORE.compareNodes (item [0].getp(), item [1].getp());
-    if (order == 0)
+    if (order == 0) {
       STACK_PUSH (item [0], state);
-    item [order >= 0 ? 0 : 1] = NULL;
+      item [0] = item [1] = NULL;
+    }
+    else item [order > 0 ? 0 : 1] = NULL;
 
   }
 

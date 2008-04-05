@@ -252,11 +252,11 @@ namespace store {
 }
 
 /**
- * hashing semi(anti)join iterator
+ * Hashing semi(anti)join iterator.
  *
- * first producer goes in the result if a match in the second producer is found/not found.
- * the order of the first producer is retained.
- * no duplicate elimination is performed
+ * First producer goes in the result if a match in the second producer is found/not found.
+ * The order of the first producer is retained.
+ * No duplicate elimination is performed.
  */
 class HashSemiJoinIteratorState : public PlanIteratorState {
 public:
@@ -293,12 +293,14 @@ protected:
 };
 
 /**
- * Sortmerge based semijoin iterator
+ * Sortmerge based semijoin iterator.
  *
- * first producer goes in the result if a match in the second producer is found
- * precondition: both inputs must be sorted
- * postcondition: the order of the first producer is retained
- * no duplicate elimination is done on the output
+ * First producer goes in the result if a match in the second producer is found.
+ * Precondition: both inputs must be sorted.
+ * Postcondition: the order of the first producer is retained.
+ * If either of the inputs is guaranteed to contain no duplicates,
+ * then the output will be duplicate-free. Otherwise the output
+ * may contain duplicates.
  */
 class SortSemiJoinIterator : public NaryBaseIterator<SortSemiJoinIterator, 
                                                      PlanIteratorState>
