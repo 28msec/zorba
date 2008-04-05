@@ -103,13 +103,19 @@ class TestErrorHandler : public zorba::ErrorHandler {
     {
       return m_errors;
     }
+    const std::vector<zorba::String>& getErrorDescs()
+    {
+      return m_desc;
+    }
 
   private:
     std::vector<std::string> m_errors;
+    std::vector<zorba::String> m_desc;
 
     void registerError(const zorba::ZorbaException& e)
     {
       m_errors.push_back(zorba::ZorbaError::getErrorCode(e.getErrorCode()).c_str());
+      m_desc.push_back(e.getDescription());
     }
 };
 
@@ -139,9 +145,14 @@ printErrors(TestErrorHandler& errHandler)
   std::cerr << "Errors:" << std::endl;
   
   const std::vector<std::string>& errors = errHandler.getErrorList();
+  const std::vector<zorba::String>& descs = errHandler.getErrorDescs();
 
-  for(std::vector<std::string>::const_iterator i = errors.begin(); i != errors.end(); ++i) {
-    std::cerr << *i << std::endl;
+  std::vector<std::string>::const_iterator codeIter = errors.begin();
+  std::vector<zorba::String>::const_iterator descIter = descs.begin();
+
+    for(; codeIter != errors.end(); ++codeIter, ++descIter) {
+      assert (descIter != descs.end());
+      std::cerr << *codeIter << ": " << *descIter << std::endl;
   }
   return;
 }

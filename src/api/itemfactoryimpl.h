@@ -62,7 +62,7 @@ namespace zorba {
       createLong ( long long aLong );
     
       virtual Item
-      createInt ( int32_t aInt );
+      createInt ( int aInt );
     
       virtual Item
       createShort ( short aShort );

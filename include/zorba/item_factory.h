@@ -157,11 +157,11 @@ namespace zorba {
       /** \brief Creates a Int Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#int]
        *
-       * @param aInt int32_t representation of the Int.
+       * @param aInt int representation of the Int.
        * @return The NCName Item
        */
       virtual Item
-      createInt ( int32_t aInt ) = 0;
+      createInt ( int aInt ) = 0;
     
       /** \brief Creates a Short Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#short]

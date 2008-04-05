@@ -29,6 +29,7 @@ public:
    * @param namespace namespace of the qname
    * @param prefix prefix of the qname
    * @param localName local name of the qname
+   * TODO why do we need a prefix?
    */
   virtual Item_t createQName(
         xqpStringStore* namespace_p,
@@ -49,6 +50,7 @@ public:
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
+   * TODO where is the value parsed and checked?
    */
   virtual Item_t createAnyURI(xqpStringStore* value) = 0;
   virtual Item_t createAnyURI(const char* value) = 0;

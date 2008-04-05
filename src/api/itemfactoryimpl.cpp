@@ -144,7 +144,7 @@ namespace zorba {
   }
     
   Item
-  ItemFactoryImpl::createInt ( int32_t aInt )
+  ItemFactoryImpl::createInt ( int aInt )
   {
     store::Item_t lItem;
     return &*lItem;
