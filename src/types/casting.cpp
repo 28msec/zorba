@@ -78,19 +78,22 @@ GenericCast* GenericCast::instance()
 /// @param isCast true when this is a cast, false when this is a castable
 /// TODO: return 0 instead of throwing an error code, let the caller decide on the error
 store::Item_t GenericCast::castToQName (
-    xqpStringStore* qname,
+    xqpStringStore_t qname,
     bool isCast,
     bool isExplicit,
     namespace_context* aNCtx) const
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
 
-  int32_t lIndex = qname->indexOf(":");
-
   ZorbaError::ErrorCode code = (isExplicit ?
                                 (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003) :
                                 ZorbaError::XQDY0074);
 
+  // whitespace normalization for target type (xs:QName)
+  if (isExplicit && isCast)
+    qname = qname->trim ();
+
+  int32_t lIndex = qname->indexOf(":");
   if (lIndex < 0) 
   {
     if (castableToNCName(qname))

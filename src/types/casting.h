@@ -113,7 +113,7 @@ namespace zorba
      * @return an item if the promotion is possible, otherwise raises an error
      */
     store::Item_t castToQName(
-        xqpStringStore* aStr,
+        xqpStringStore_t aStr,
         bool isCast,
         bool isExplicit,
         namespace_context* aNCtx = 0) const;
