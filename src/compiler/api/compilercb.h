@@ -17,6 +17,7 @@ namespace zorba {
 
         opt_level_t opt_level;
         bool print_translated, print_normalized, print_optimized;
+        bool print_item_flow;  // TODO: move to RuntimeCB
 
         __config_t() { opt_level = O1; }
       } config_t;

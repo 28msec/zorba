@@ -79,6 +79,7 @@ namespace zorba {
     // TODO: move these out
     theCompilerCB->m_config.print_translated = Properties::instance()->printTranslatedExpressions();
     theCompilerCB->m_config.print_normalized = Properties::instance()->printNormalizedExpressions();
+    theCompilerCB->m_config.print_item_flow = Properties::instance()->printItemFlow();
 
     expr_t lExpr = translate (*aParsenode, theCompilerCB);
     if ( lExpr == NULL ) { // TODO: can this happen?

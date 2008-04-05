@@ -358,7 +358,15 @@ public:
   static
   store::Item_t consumeNext(const PlanIterator* subIter, PlanState& planState)
   {
+#ifndef NDEBUG
+    store::Item_t item = subIter->produceNext(planState);
+    if (planState.theCompilerCB->m_config.print_item_flow) {
+      std::cout << "next (" << subIter << " = " << typeid (*subIter).name() << ") -> " << (item == NULL ? xqp_string ("(null)") : item->show ()) << std::endl;
+    }
+    return item;
+#else
     return subIter->produceNext(planState);
+#endif
   }
 #endif
 };

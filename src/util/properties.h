@@ -30,6 +30,7 @@ namespace zorba {
       bool thePrintTranslatedExpressions;
       bool thePrintOptimizedExpressions;
       bool thePrintIteratorTree;
+      bool thePrintItemFlow;
 #ifndef NDEBUG
       bool theTraceTranslator;
       bool theTraceCodegen;
@@ -144,6 +145,9 @@ namespace zorba {
       
       bool
       printIteratorTree() { return thePrintIteratorTree; }
+
+      bool
+      printItemFlow() { return thePrintItemFlow; }
 #ifndef NDEBUG
       bool
       traceCodegen() { return theTraceCodegen; }
