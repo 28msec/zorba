@@ -154,7 +154,7 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
   {
     Item_t lContextNode = theInput->next();
     if (lContextNode != 0)
-      ZORBA_ASSERT(lContextNode->isAtomic());
+      if (!lContextNode->isAtomic()) ZORBA_ERROR (ZorbaError::XPTY0018);
     return lContextNode;
   }
 
@@ -277,7 +277,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
   {
     Item_t lContextNode = theInput->next();
     if (lContextNode != 0)
-      ZORBA_ASSERT(lContextNode->isAtomic());
+      if (!lContextNode->isAtomic()) ZORBA_ERROR (ZorbaError::XPTY0018);
     return lContextNode;
   }
 
