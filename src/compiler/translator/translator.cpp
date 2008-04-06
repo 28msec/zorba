@@ -3353,15 +3353,6 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
     ZORBA_ASSERT(rpe != NULL);
 
     rpe->add_back(arg2);
-    if (v.get_step_type() == ParseConstants::st_slashslash)
-    {
-      rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
-      rchandle<match_expr> me = new match_expr(v.get_location());
-      me->setTestKind(match_anykind_test);
-      ase->setAxis(axis_kind_descendant_or_self);
-      ase->setTest(me);
-      rpe->add_back(&*ase);
-    }
   }
   else
   {
@@ -3374,12 +3365,26 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
     rpe->add_back(flwor);
   }
 
+  if (v.get_step_type() == ParseConstants::st_slashslash)
+  {
+    rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
+    rchandle<match_expr> me = new match_expr(v.get_location());
+    me->setTestKind(match_anykind_test);
+    ase->setAxis(axis_kind_descendant_or_self);
+    ase->setTest(me);
+    rpe->add_back(&*ase);
+  }
+
   rchandle<exprnode> rstep = v.get_relpath_expr();
   ZORBA_ASSERT(rstep != NULL);
 
-  if (rstep.dyn_cast<RelativePathExpr> () != NULL || rstep.dyn_cast<AxisStep> () != NULL)
-     nodestack.push(&*rpe);
-  else {
+  if (rstep.dyn_cast<RelativePathExpr> () != NULL ||
+      rstep.dyn_cast<AxisStep> () != NULL)
+  {
+    nodestack.push(&*rpe);
+  }
+  else 
+  {
     push_scope();
     rchandle<forlet_clause> lcseq = wrap_in_letclause(&*rpe);
 
@@ -3404,6 +3409,7 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
   }
 }
 
+
 void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
@@ -3416,7 +3422,9 @@ void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
 
   rchandle<exprnode> rstep = v.get_relpath_expr();
 
-  if (rstep.dyn_cast<RelativePathExpr> () != NULL || rstep.dyn_cast<AxisStep> () != NULL) {
+  if (rstep.dyn_cast<RelativePathExpr> () != NULL ||
+      rstep.dyn_cast<AxisStep> () != NULL)
+  {
     if (arg1 == NULL) {
       // In this case, all the steps in the rpe tree have been processed.
       nodestack.push(arg1);
@@ -3431,7 +3439,9 @@ void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
       rpe->add_back(arg2);
       nodestack.push(rpe);
     }
-  } else {
+  }
+  else
+  {
     flwor_expr *f = arg1.dyn_cast<flwor_expr> ();
     ZORBA_ASSERT(f != NULL);
     f->set_retval(arg2);
