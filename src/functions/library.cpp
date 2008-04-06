@@ -521,8 +521,8 @@ DECL(fn_unordered,
 
 DECL(op_either_nodes_or_atomics,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":either-nodes-or-atomics"),
-  GENV_TYPESYSTEM.ANY_ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ANY_ITEM_TYPE_STAR));
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(op_distinct_nodes,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":distinct-nodes"),
