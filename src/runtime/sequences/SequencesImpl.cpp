@@ -86,7 +86,7 @@ FnConcatIteratorState::reset(PlanState& planState)
 bool
 FnConcatIterator::isUpdateIterator() const
 {
-  return theChildren[0]->isUpdateIterator();
+  return (!theChildren.empty() && theChildren[0]->isUpdateIterator());
 }
 
 
