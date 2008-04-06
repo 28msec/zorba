@@ -15,6 +15,11 @@
 namespace zorba
 {
 
+namespace store 
+{
+  class PUL;
+}
+
 class FlworState;
 
  
@@ -44,12 +49,12 @@ public:
 #ifndef NDEBUG
     xqpStringStore           theVarName;
 #endif
-    ForLetType               type;
-    std::vector<var_iter_t>  forVars;
-    std::vector<var_iter_t>  posVars;
-    std::vector<ref_iter_t>  letVars;
-    PlanIter_t               input;
-    bool                     needsMaterialization;
+    ForLetType               theType;
+    std::vector<var_iter_t>  theForVars;
+    std::vector<var_iter_t>  thePosVars;
+    std::vector<ref_iter_t>  theLetVars;
+    PlanIter_t               theInput;
+    bool                     theNeedsMaterialization;
 
   public:
     /**
@@ -94,13 +99,15 @@ public:
   {
     friend class FLWORIterator;
     friend class OrderKeyCmp;
+
   protected:
-    PlanIter_t orderByIter;
-    bool empty_least;
-    bool descending;
-    mutable RuntimeCB* runtimeCB; // TODO hack
-    xqpString collation;
-    mutable XQPCollator* collator; // TODO hack
+    PlanIter_t             theOrderByIter;
+    bool                   theEmptyLeast;
+    bool                   theDescending;
+    mutable RuntimeCB    * theRuntimeCB; // TODO hack
+    xqpString              theCollation;
+    mutable XQPCollator  * theCollator; // TODO hack
+
   public:
     void accept ( PlanIterVisitor& ) const;
     OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending );
@@ -116,7 +123,8 @@ public:
     friend class FLWORIterator;
   public:
     std::vector<OrderSpec> orderSpecs;
-    bool stable;
+    bool                   stable;
+
   public:
     void accept ( PlanIterVisitor& ) const;
     OrderByClause ( std::vector<OrderSpec> orderSpecs, bool stable );
@@ -193,7 +201,7 @@ public:
 
   bool isUpdateIterator() const
   {
-    return returnClause->isUpdateIterator();
+    return theIsUpdateIterator;
   }
 
   void openImpl ( PlanState& planState, uint32_t& offset );
@@ -234,45 +242,62 @@ public:
   bool                      doOrderBy; //just indicates if the FLWOR has an orderby
   PlanIter_t                returnClause; 
   bool                      whereClauseReturnsBooleanPlus;
-  const int                 bindingsNb; //Number of FORs and LETs (overall)  
+  bool                      theIsUpdateIterator;
+  const int                 theNumBindings; //Number of FORs and LETs (overall)  
 };
 
+
+
+/*******************************************************************************
+
+  varBindingState : A vector that stores, for each LET, if the LET is already
+                    bound or not, and for for each FOR its positional integer
+                    value.
+
+  orderMap        : An std::multimap used to implement the order-by clause.
+                    For each binding V of the for/let variables, the order-by
+                    tuple T is evaluated and stored in this multimap. The value
+                    associated with T is an iterator over a temp sequence that
+                    computes the return clause for the V binding.
+
+********************************************************************************/
 class FlworState : public PlanIteratorState
 {
-  
-  public:
-    //varBindingState holds if a LET is already bound or not and futhermore for FORs it holds
-    //as wenn the positional integer value
-    checked_vector<uint32_t> varBindingState;
+ public:
+  checked_vector<uint32_t>                    varBindingState;
           
-    //orderMap, curOrderPos and curOrderResultSeq are just needed if we have a Orderclause
-    //The MultiMap does the actual ordering
-    //When returning the result, this indicates, which return sequence we are
-    // touching at the moment and the curOrderPos indicates 
-    FLWORIterator::order_map_t* orderMap; 
-    Iterator_t curOrderResultSeq; 
-    FLWORIterator::order_map_t::const_iterator curOrderPos; 
-     
-    /**
-     * Init the state for a certain nb of variables but not the ordering
-     * @nb_variables  Number of FOR and LET clauses
-     */
-    void init(PlanState&, size_t nb_variables);
-          
-    /**
-     * Init the state for a certain nb of variables and ordering
-     * @nb_variables  Number of FOR and LET clauses
-     * @orderSpecs    The OrderSpec which defines how to compare during ordering
-     */
-    void init(PlanState&, size_t nb_variables, std::vector<FLWORIterator::OrderSpec>* orderSpecs);
-    /**
-     * Resets the state
-     */
-    void reset(PlanState&);
-          
-    ~FlworState();
-    FlworState();
+  //When returning the result, this indicates, which return sequence we are
+  // touching at the moment and the curOrderPos indicates 
+  FLWORIterator::order_map_t                * orderMap; 
+  Iterator_t                                  curOrderResultSeq; 
+  FLWORIterator::order_map_t::const_iterator  curOrderPos; 
 
+  store::PUL                                * thePul;
+
+  /**
+   * Init the state for a certain nb of variables but not the ordering
+   * @nb_variables  Number of FOR and LET clauses
+   */
+  void init(PlanState& state, size_t numVars, bool isUpdate);
+          
+  /**
+   * Init the state for a certain nb of variables and ordering
+   * @nb_variables  Number of FOR and LET clauses
+   * @orderSpecs    The OrderSpec which defines how to compare during ordering
+   */
+  void init(
+        PlanState& state,
+        size_t numVars,
+        std::vector<FLWORIterator::OrderSpec>* orderSpecs,
+        bool isUpdate);
+
+  /**
+   * Resets the state
+   */
+  void reset(PlanState&);
+          
+  ~FlworState();
+  FlworState();
 };  
 
 
