@@ -45,11 +45,9 @@ expr_t RuleMajorDriver::rewriteRec(RewriterContext& rCtx, RewriteRule *rule, exp
     modified = true;
   }
   for(expr_iterator i = parent->expr_begin(); !i.done(); ++i) {
-    if (*i != NULL) {
-      expr_t new_e = rewriteRec(rCtx, rule, &**i, modified);
-      if (new_e != NULL) {
-        *i = &*new_e;
-      }
+    expr_t new_e = rewriteRec(rCtx, rule, &**i, modified);
+    if (new_e != NULL) {
+      *i = &*new_e;
     }
   }
   newParent = rule->rewritePost(&*parent, rCtx);

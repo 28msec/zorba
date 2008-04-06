@@ -595,6 +595,16 @@ namespace zorba {
     thePrinter.endEndVisit();
   }
 
+  void PrinterVisitor::beginVisit ( const EitherNodesOrAtomicsIterator& a ) {
+    thePrinter.startBeginVisit("EitherNodesOrAtomicsIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const EitherNodesOrAtomicsIterator& /*a*/) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a ) {
     thePrinter.startBeginVisit("NumArithIterator_AddOperation", (intptr_t) &a);
     printCommons(  &a );

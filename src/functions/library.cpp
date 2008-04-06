@@ -519,10 +519,15 @@ DECL(fn_unordered,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+DECL(op_either_nodes_or_atomics,
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":either-nodes-or-atomics"),
+  GENV_TYPESYSTEM.ANY_ITEM_TYPE_STAR,
+  GENV_TYPESYSTEM.ANY_ITEM_TYPE_STAR));
+
 DECL(op_distinct_nodes,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":distinct-nodes"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(op_distinct_nodes_or_atomics,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":distinct-nodes-or-atomics"),
@@ -531,8 +536,8 @@ DECL(op_distinct_nodes_or_atomics,
 
 DECL(op_sort_nodes_ascending,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-ascending"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(op_sort_nodes_asc_or_atomics,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-asc-or-atomics"),
@@ -541,8 +546,8 @@ DECL(op_sort_nodes_asc_or_atomics,
 
 DECL(op_sort_nodes_descending,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-descending"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(op_sort_nodes_desc_or_atomics,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-desc-or-atomics"),
@@ -551,8 +556,8 @@ DECL(op_sort_nodes_desc_or_atomics,
 
 DECL(op_sort_distinct_nodes_ascending,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-ascending"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(op_sort_distinct_nodes_asc_or_atomics,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-asc-or-atomics"),

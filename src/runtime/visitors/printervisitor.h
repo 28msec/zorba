@@ -183,7 +183,9 @@ public:
   virtual void endVisit ( const InstanceOfIterator& ) ;       
   
   virtual void beginVisit ( const TreatIterator& ) ;
-  virtual void endVisit ( const TreatIterator& ) ;       
+  virtual void endVisit ( const TreatIterator& ) ;
+  virtual void beginVisit ( const EitherNodesOrAtomicsIterator& ) ;
+  virtual void endVisit ( const EitherNodesOrAtomicsIterator& ) ;
   
   virtual void beginVisit ( const NumArithIterator<AddOperation>& ) ;
   virtual void beginVisit ( const NumArithIterator<SubtractOperation>& ) ;

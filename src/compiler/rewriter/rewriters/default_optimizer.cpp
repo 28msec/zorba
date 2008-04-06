@@ -33,8 +33,8 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
   ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
   ADD_DRIVER(FoldRules);
-  ADD_SINGLETON_DRIVER(MarkNodesWithNodeIdProperties);
-  ADD_SINGLETON_DRIVER(EliminateDocOrderSort);
+  ADD_SINGLETON_DRIVER(MarkConsumerNodeProps);
+  ADD_SINGLETON_DRIVER(EliminateProducerNodeOps);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()

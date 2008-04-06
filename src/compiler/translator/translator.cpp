@@ -2495,7 +2495,7 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
 
   fo_h->add(e2_h);
   fo_h->add(e1_h);
-  nodestack.push(fo_h);
+  nodestack.push(new fo_expr (v.get_location (), LOOKUP_OP1 ("sort-distinct-nodes-ascending"), fo_h));
 }
 
 void *begin_visit(const MultiplicativeExpr& /*v*/)
@@ -3881,7 +3881,7 @@ void end_visit(const UnionExpr& v, void* /*visit_state*/)
   fo_expr *fo_h = new fo_expr(v.get_location(), LOOKUP_OP2 ("union"));
   fo_h->add(e2_h);
   fo_h->add(e1_h);
-  nodestack.push(fo_h);
+  nodestack.push(new fo_expr (v.get_location (), LOOKUP_OP1 ("sort-distinct-nodes-ascending"), fo_h));
 }
 
 void *begin_visit(const UnorderedExpr& /*v*/)

@@ -23,6 +23,7 @@
 #include <vector>
 #include "common/shared_types.h"
 #include "functions/function.h"
+#include "functions/single_seq_func.h"
 
 namespace zorba {
 
@@ -33,16 +34,6 @@ class zorba;
 | 15.1 General Functions and Operators on Sequences
 |_______________________________________________________________________*/
 
-
-  class single_seq_function : public function {
-  protected:
-    int src;
-
-  public:
-    single_seq_function (const signature &sig, int src_ = 0) : function (sig), src (src_) {}
-    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-    void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
-  };
 
 //15.1.1 fn:boolean (effective boolean value)
 //-----------------
@@ -419,11 +410,23 @@ public:
   op_node_sort_distinct(const signature& sig) : single_seq_function (sig) {}
   // (sort?, atomics?, distinct?, ascending?)
   virtual const bool *action () const = 0;
+#if 0
+  virtual const function *min_action (const AnnotationHolder &, const AnnotationHolder &);
+#endif
   static const function *op_for_action (const static_context *, const bool *, const AnnotationHolder &);
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
+};
+
+class op_either_nodes_or_atomics : public op_node_sort_distinct {
+public:
+  op_either_nodes_or_atomics (const signature& sig) : op_node_sort_distinct (sig) {}
+  const bool *action () const {
+    static const bool a [] = { false, true, false, false };
+    return a;
+  }
 };
 
 class op_distinct_nodes : public op_node_sort_distinct

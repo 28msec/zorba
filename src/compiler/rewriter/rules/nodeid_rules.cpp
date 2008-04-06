@@ -69,10 +69,9 @@ static bool propagate_up_nodeid_props_to_flwor_variables(flwor_expr *flwor)
 // If the result of a FLWOR ignores node order, than the sources of all
 // FOR variables do too. This does not hold for dup nodes:
 // (let $a := <u><v>1</v></u> let $x := ($a, $a) for $y in $x return <a>{$y}</a>)//u
-static void propagate_down_nodeid_props_to_flwor_variables (flwor_expr *flwor) {
+static void mark_for_vars_ignoring_sort (flwor_expr *flwor) {
   Annotation::key_t k = AnnotationKey::IGNORES_SORTED_NODES;
-  expr_t retval = flwor->get_retval ();
-  if (retval->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE)
+  if (flwor->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE)
     return;
   for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
         i != flwor->clause_end(); i++) {
@@ -94,7 +93,7 @@ static bool mark_casts (expr_t input, xqtref_t target) {
   return false;
 }
 
-RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
+RULE_REWRITE_PRE(MarkConsumerNodeProps)
 {
   switch (node->get_expr_kind ()) {
   case fo_expr_kind: {
@@ -110,7 +109,8 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
       expr_t arg = (*fo)[0];
       arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
       arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
-    } else if (f == LOOKUP_FN ("fn", "count", 1)
+    } else if (f == LOOKUP_FN ("fn", "unordered", 1)
+               || f == LOOKUP_FN ("fn", "count", 1)
                || f == LOOKUP_FN ("fn", "sum", 1)
                || f == LOOKUP_FN ("fn", "sum", 2)
                || f == LOOKUP_FN ("fn", "avg", 1)
@@ -152,21 +152,20 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
   case flwor_expr_kind: {
     flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
     propagate_down_nodeid_props (node, flwor->get_retval ());
-    propagate_down_nodeid_props_to_flwor_variables (flwor);
+    mark_for_vars_ignoring_sort (flwor);
     break;
   }
 
-  default:
-    {
-      cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
-      if (ce != NULL) {
-        expr_t input = ce->get_input ();
-        if (! mark_casts (input, ce->get_target_type ()))
-            propagate_down_nodeid_props (node, input);
-        break;
-      }
+  default: {
+    cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
+    if (ce != NULL) {
+      expr_t input = ce->get_input ();
+      if (! mark_casts (input, ce->get_target_type ()))
+        propagate_down_nodeid_props (node, input);
+      break;
     }
-
+  }
+    
     {
       castable_base_expr *ce = dynamic_cast<castable_base_expr *> (node);
       if (ce != NULL) {
@@ -174,33 +173,41 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
         break;
       }
     }
-
+    
   }
 
   return NULL;
 }
+RULE_REWRITE_POST(MarkConsumerNodeProps) { return NULL; }
 
-RULE_REWRITE_POST(MarkNodesWithNodeIdProperties)
+RULE_REWRITE_PRE(MarkProducerNodeProps) { return NULL; }
+RULE_REWRITE_POST(MarkProducerNodeProps)
 {
   switch(node->get_expr_kind()) {
   case flwor_expr_kind: {
     flwor_expr *flwor = static_cast<flwor_expr *>(node);
-    if (propagate_up_nodeid_props_to_flwor_variables(flwor)) {
-      return node;
-    }
-    if (propagate_up_nodeid_props(flwor, &*flwor->get_retval())) {
-      return node;
-    }
+    if (propagate_up_nodeid_props_to_flwor_variables(flwor))
+      return node;  // TODO: minimize rewriting
+    propagate_up_nodeid_props(flwor, &*flwor->get_retval());
     break;
   }
 
+#if 0  // under construction
   case trycatch_expr_kind: {
     trycatch_expr *tc = static_cast<trycatch_expr *>(node);
     for(expr_iterator i = tc->expr_begin(); !i.done(); ++i) {
-      if (*i != NULL) {
-      }
     }
     break;
+  }
+#endif
+
+  case fo_expr_kind: {
+    fo_expr *fo = dynamic_cast<fo_expr *>(node);
+    const function *f = fo->get_func ();
+    const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
+    if (nsdf != NULL) {
+      const bool *action = nsdf->action ();
+    }
   }
     
   default:
@@ -209,7 +216,7 @@ RULE_REWRITE_POST(MarkNodesWithNodeIdProperties)
   return NULL;
 }
 
-RULE_REWRITE_PRE(EliminateDocOrderSort)
+RULE_REWRITE_PRE(EliminateProducerNodeOps)
 {
   fo_expr *fo = dynamic_cast<fo_expr *>(node);
   if (fo != NULL) {
@@ -228,10 +235,7 @@ RULE_REWRITE_PRE(EliminateDocOrderSort)
   return NULL;
 }
 
-RULE_REWRITE_POST(EliminateDocOrderSort)
-{
-  return NULL;
-}
+RULE_REWRITE_POST(EliminateProducerNodeOps) { return NULL; }
 
 }
 /* vim:set ts=2 sw=2: */

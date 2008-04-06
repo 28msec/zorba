@@ -470,9 +470,9 @@ void typeswitch_expr::next_iter (expr_iterator_data& v) {
 
 if_expr::if_expr(
   const QueryLoc& loc,
-  rchandle<expr> _cond_expr_h,
-  rchandle<expr> _then_expr_h,
-  rchandle<expr> _else_expr_h)
+  expr_t _cond_expr_h,
+  expr_t _then_expr_h,
+  expr_t _else_expr_h)
 :
   expr(loc),
   cond_expr_h(_cond_expr_h),
@@ -542,9 +542,9 @@ xqtref_t fo_expr::return_type(static_context *sctx)
 
 ft_contains_expr::ft_contains_expr(
   const QueryLoc& loc,
-  rchandle<expr> _range_h,
-  rchandle<expr> _ft_select_h,
-  rchandle<expr> _ft_ignore_h)
+  expr_t _range_h,
+  expr_t _ft_select_h,
+  expr_t _ft_ignore_h)
 :
   expr(loc),
   range_h(_range_h),
@@ -566,7 +566,7 @@ void ft_contains_expr::next_iter (expr_iterator_data& v) {
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 
 castable_base_expr::castable_base_expr (const QueryLoc& loc,
-                                        rchandle<expr> _expr_h,
+                                        expr_t _expr_h,
                                         xqtref_t _type)
   : expr(loc), expr_h(_expr_h), type (_type)
 {}
@@ -574,7 +574,7 @@ castable_base_expr::castable_base_expr (const QueryLoc& loc,
 xqtref_t castable_base_expr::get_type() const { return type; }
 
 instanceof_expr::instanceof_expr(const QueryLoc& loc,
-                                 rchandle<expr> _expr_h,
+                                 expr_t _expr_h,
                                  xqtref_t _type)
   : castable_base_expr (loc, _expr_h, _type)
 {}
@@ -590,7 +590,7 @@ void instanceof_expr::next_iter (expr_iterator_data& v) {
 
 treat_expr::treat_expr(
   const QueryLoc& loc,
-  rchandle<expr> _expr_h,
+  expr_t _expr_h,
   xqtref_t _type,
   enum ZorbaError::ErrorCode err_)
 :
@@ -617,7 +617,7 @@ xqtref_t treat_expr::return_type (static_context *sctx) {
 
 castable_expr::castable_expr(
   const QueryLoc& loc,
-  rchandle<expr> _expr_h,
+  expr_t _expr_h,
   xqtref_t _type)
 :
   castable_base_expr (loc, _expr_h, _type)
@@ -636,7 +636,7 @@ void castable_expr::next_iter (expr_iterator_data& v) {
 
 cast_expr::cast_expr(
   const QueryLoc& loc,
-  rchandle<expr> _expr_h,
+  expr_t _expr_h,
   xqtref_t _type)
   : cast_base_expr (loc, _expr_h, _type)
 {
@@ -652,7 +652,7 @@ void cast_expr::next_iter (expr_iterator_data& v) {
 
 name_cast_expr::name_cast_expr(
   const QueryLoc& loc,
-  rchandle<expr> _expr_h,
+  expr_t _expr_h,
   NamespaceContext_t aNCtx)
 : expr(loc), input_expr_h(_expr_h), theNCtx(aNCtx) 
 {}
@@ -670,7 +670,7 @@ rchandle<namespace_context> name_cast_expr::getNamespaceContext() { return theNC
 validate_expr::validate_expr(
   const QueryLoc& loc,
   enum ParseConstants::validation_mode_t _valmode,
-  rchandle<expr> _expr_h)
+  expr_t _expr_h)
 :
   expr(loc),
   valmode(_valmode),
@@ -922,7 +922,7 @@ xqtref_t const_expr::return_type(static_context *sctx)
 order_expr::order_expr(
   const QueryLoc& loc,
   order_type_t _type,
-  rchandle<expr> _expr_h)
+  expr_t _expr_h)
 :
   expr(loc),
   type(_type),
@@ -991,7 +991,7 @@ xqtref_t elem_expr::return_type (static_context *sctx) {
 
 doc_expr::doc_expr(
   const QueryLoc& loc,
-  rchandle<expr> aContent)
+  expr_t aContent)
 :
   constructor_expr(loc),
   theContent(aContent)
@@ -1086,8 +1086,8 @@ xqtref_t text_expr::return_type (static_context *sctx) {
 
 pi_expr::pi_expr(
   const QueryLoc& loc,
-  rchandle<expr> _target_expr_h,
-  rchandle<expr> _content_expr_h)
+  expr_t _target_expr_h,
+  expr_t _content_expr_h)
 :
   text_expr(loc, text_expr::pi_constructor, _content_expr_h),
   target_expr_h(_target_expr_h)

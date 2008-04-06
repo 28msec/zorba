@@ -53,6 +53,7 @@ namespace zorba
   class FollowingAxisIterator;
   class InstanceOfIterator;
   class TreatIterator;
+  class EitherNodesOrAtomicsIterator;
   class AddOperation;
   class SubtractOperation;
   class MultiplyOperation;
@@ -354,7 +355,9 @@ namespace zorba
        
       virtual void beginVisit ( const TreatIterator& ) = 0;
       virtual void endVisit ( const TreatIterator& ) = 0;
-       
+      virtual void beginVisit ( const EitherNodesOrAtomicsIterator& ) = 0;
+      virtual void endVisit ( const EitherNodesOrAtomicsIterator& ) = 0;
+              
       virtual void beginVisit ( const NumArithIterator<AddOperation>& ) = 0;
       virtual void beginVisit ( const NumArithIterator<SubtractOperation>& ) = 0;
       virtual void beginVisit ( const NumArithIterator<MultiplyOperation>& ) = 0;

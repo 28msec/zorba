@@ -12,17 +12,16 @@
 
 #include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
+#include "functions/single_seq_func.h"
 
 namespace zorba {
 
-  class fn_data_func : public function
+  class fn_data_func : public single_seq_function
   {
   public:
-    fn_data_func ( const signature& );
-    
-  public:
+    fn_data_func ( const signature& sig) : single_seq_function (sig) {}    
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
   };
 
 

@@ -4,6 +4,8 @@
 #include "errors/errors.h"
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
+#include "runtime/base/narybase.h"
+#include "runtime/util/iterator_impl.h"
 #include "types/typeconstants.h"
 
 namespace zorba {
@@ -110,6 +112,13 @@ public:
   store::Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
+
+class EitherNodesOrAtomicsIteratorState : public PlanIteratorState {
+public:
+  bool atomics;
+};
+
+NARY_ITER_STATE(EitherNodesOrAtomicsIterator, EitherNodesOrAtomicsIteratorState);
 
 } /* namespace zorba */
 #endif  /* ZORBA_SEQUENCETYPES_H */

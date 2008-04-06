@@ -20,6 +20,7 @@
 
 #include "functions/Sequences.h"
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/core/sequencetypes.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "context/static_context.h"
 #include "util/tracer.h"
@@ -279,18 +280,7 @@ fn_union::fn_union(const signature& sig)
 
 PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
-  if (ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VALUE)
-    return new NodeSortIterator(loc, new FnConcatIterator(loc, argv), true, distinct, false);
-  else {
-    PlanIter_t concat = new FnConcatIterator(loc, argv);
-    return
-#if 1  // NodeDistinctIterator broken for now
-      distinct ? new NodeDistinctIterator(loc, concat, true) : concat;
-#else
-      distinct ? new NodeSortIterator (loc, concat, true, true, true) : concat;
-#endif
-  }
+  return new FnConcatIterator(loc, argv);
 }
 
 
@@ -309,16 +299,18 @@ fn_intersect::fn_intersect(const signature& sig)
 
 PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
 #if 0  // we can't access PRODUCES_* from the inputs
+  bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
+  bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
+
   std::vector<PlanIter_t> inputs;
   for (std::vector<PlanIter_t>::iterator i = argv.begin ();
        i != argv.end (); i++)
     inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
   return new SortSemiJoinIterator(loc, inputs);
 #endif
-    // TODO: when NodeDistinctIterator is fixed, use that.
-    return new NodeSortIterator (loc, new HashSemiJoinIterator(loc, argv), true, true, true);
+
+  return new HashSemiJoinIterator(loc, argv);
 }
 
 
@@ -329,27 +321,10 @@ fn_except::fn_except(const signature& sig)
 
 PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
-  bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
-
   // TODO: use SortAntiJoinIterator when available (trac ticket 254)
-  PlanIter_t antijoin = new HashSemiJoinIterator(loc, argv, true);
-  if (! sort && ! distinct)
-    return antijoin;
-
-  // TODO: use NodeDistinctIterator when that is fixed and sort == false
-  return new NodeSortIterator (loc, antijoin, true, true, true);
+  return new HashSemiJoinIterator(loc, argv, true);
 }
 
-
-
-#if 0
-// except; doesn't require sorted inputs but does not return the result in document order
-//         also does duplicate elimination
-PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-}
-#endif
 
 /*______________________________________________________________________
 |
@@ -498,18 +473,15 @@ fn_doc_available_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 #define A_DISTINCT a [2]
 #define A_ASCENDING a [3]
 
-PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder& ann) const {
   const bool *a = action ();
   bool distinct = A_DISTINCT;
-  if (ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES))
-    distinct = false;
-#if 1  // NodeDistinctIterator seems broken for now
-  if (! A_SORT || ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES))
-    return distinct ? new NodeDistinctIterator (loc, argv [0], A_ATOMICS) : NULL;
-#endif
-  return new NodeSortIterator (loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
+  if (! A_SORT)
+    return distinct ? new NodeDistinctIterator (loc, argv [0], A_ATOMICS)
+      : (A_ATOMICS ? new EitherNodesOrAtomicsIterator (loc, argv) : argv [0]);
+  else
+    return new NodeSortIterator (loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
 }
-
 
 void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
   const bool *a = action ();
@@ -524,12 +496,12 @@ void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::v
 }
 
 const function *op_node_sort_distinct::op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder &ann) {
-#define LOOKUP_OP1( local ) static_cast<const function *> (sctx->lookup_builtin_fn ((xqp_string (":") + local).c_str (), 1))
-  bool distinct = A_DISTINCT;
-  if (ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES))
-    distinct = false;
+#define LOOKUP_OP1( local ) (static_cast<const function *> (sctx->lookup_builtin_fn ((xqp_string (":") + local).c_str (), 1)))
+  bool distinct = A_DISTINCT && ! ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES);
+
   if (! A_SORT || ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES))
-    return distinct ? LOOKUP_OP1 ("distinct-nodes" + (A_ATOMICS ? "-or-atomics" : "")) : NULL;
+    return distinct ? LOOKUP_OP1 ("distinct-nodes" + (A_ATOMICS ? "-or-atomics" : ""))
+      : (A_ATOMICS ? LOOKUP_OP1 ("either-nodes-or-atomics") : NULL);
   xqp_string part1 = xqp_string ("sort-") + (distinct ? "distinct-" : "") + "nodes-";
   xqp_string part2 = xqp_string (A_ASCENDING ? "asc" : "desc") + (A_ATOMICS ? "-or-atomics" : "ending");
   return LOOKUP_OP1 (part1 + part2);
