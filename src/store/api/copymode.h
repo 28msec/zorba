@@ -2,6 +2,7 @@
 #define ZORBA_STORE_API_COPYMODE
 
 #include <string>
+#include "context/static_context_consts.h"
 
 namespace zorba { namespace store {
 
@@ -13,6 +14,17 @@ public:
   bool  theNsPreserve;
   bool  theNsInherit;
 
+  CopyMode(
+    StaticContextConsts::construction_mode_t aConstrMode,
+    StaticContextConsts::preserve_mode_t aPreserveMode,
+    StaticContextConsts::inherit_mode_t aInheritMode)
+  :
+    theAssignIds(true),
+    theTypePreserve(aConstrMode == StaticContextConsts::cons_preserve ? true : false),
+    theNsPreserve(aPreserveMode == StaticContextConsts::preserve_ns ? true : false),
+    theNsInherit(aInheritMode == StaticContextConsts::inherit_ns ? true : false)
+  {}
+
   CopyMode()
     :
     theAssignIds(true),
@@ -21,6 +33,14 @@ public:
     theNsInherit(true)
   {
   }
+
+  CopyMode(const CopyMode& aCopyMode)
+  :
+    theAssignIds(aCopyMode.theAssignIds),
+    theTypePreserve(aCopyMode.theTypePreserve),
+    theNsPreserve(aCopyMode.theNsPreserve),
+    theNsInherit(aCopyMode.theNsInherit)
+  {}
 
   void set(bool assignIds, bool typePreserve, bool nsPreserve, bool nsInherit)
   {

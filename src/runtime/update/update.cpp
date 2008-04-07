@@ -16,37 +16,13 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-void
-InsertIteratorState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  static_context* sctx = planState.theRuntimeCB->theStaticContext;
-
-  theCopyMode.theTypePreserve =
-    (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
-
-  theCopyMode.theNsPreserve =
-    (sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
-
-  theCopyMode.theNsInherit = 
-    (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
-}
-
-
-void
-InsertIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-}
-
-
 InsertIterator::InsertIterator (
   const QueryLoc&                 aLoc,
   store::UpdateConsts::InsertType aType,
   PlanIter_t                      source,
   PlanIter_t                      target)
   :
-  BinaryBaseIterator<InsertIterator, InsertIteratorState>(aLoc, source, target),
+  BinaryBaseIterator<InsertIterator, PlanIteratorState>(aLoc, source, target),
   theType(aType),
   theDoCopy(true)
 {
@@ -68,8 +44,17 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
   ulong numNodes = 0;
   std::auto_ptr<store::PUL> pul;
 
-  InsertIteratorState* state;
-  DEFAULT_STACK_INIT(InsertIteratorState, state, aPlanState);
+  static_context* sctx;
+  store::CopyMode lCopyMode;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  sctx = aPlanState.theRuntimeCB->theStaticContext;
+  lCopyMode = store::CopyMode(
+    sctx->construction_mode(),
+    sctx->preserve_mode(),
+    sctx->inherit_mode());
 
   target = consumeNext(theChild1, aPlanState);
 
@@ -125,16 +110,17 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
     if (numAttrs > 0)
     {
       attrs.resize(numAttrs);
-      pul->addInsertAttributes(parent, attrs, theDoCopy, state->theCopyMode);
+
+      pul->addInsertAttributes(parent, attrs, theDoCopy, lCopyMode);
     }
 
     if (numNodes > 0)
     {
       nodes.resize(numNodes);
       if (theType == store::UpdateConsts::BEFORE)
-        pul->addInsertBefore(target, nodes, theDoCopy, state->theCopyMode);
+        pul->addInsertBefore(target, nodes, theDoCopy, lCopyMode);
       else
-        pul->addInsertAfter(target, nodes, theDoCopy, state->theCopyMode);
+        pul->addInsertAfter(target, nodes, theDoCopy, lCopyMode);
     }
 
     STACK_PUSH(pul.release(), state);
@@ -181,18 +167,18 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
     if (numAttrs > 0)
     {
       attrs.resize(numAttrs);
-      pul->addInsertAttributes(target, attrs, theDoCopy, state->theCopyMode);
+      pul->addInsertAttributes(target, attrs, theDoCopy, lCopyMode);
     }
 
     if (numNodes > 0)
     {
       nodes.resize(numNodes);
       if (theType == store::UpdateConsts::INTO)
-        pul->addInsertInto(target, nodes, theDoCopy, state->theCopyMode);
+        pul->addInsertInto(target, nodes, theDoCopy, lCopyMode);
       else if (theType == store::UpdateConsts::AS_FIRST_INTO)
-        pul->addInsertFirst(target, nodes, theDoCopy, state->theCopyMode);
+        pul->addInsertFirst(target, nodes, theDoCopy, lCopyMode);
       else
-        pul->addInsertLast(target, nodes, theDoCopy, state->theCopyMode);
+        pul->addInsertLast(target, nodes, theDoCopy, lCopyMode);
     }
 
     STACK_PUSH(pul.release(), state);
@@ -243,7 +229,8 @@ ReplaceIterator::ReplaceIterator (
   PlanIter_t source)
   :
   BinaryBaseIterator<ReplaceIterator, PlanIteratorState>(aLoc, target, source),
-  theType(aType)
+  theType(aType),
+  theDoCopy(true)
 {
 }
 
@@ -251,9 +238,131 @@ ReplaceIterator::ReplaceIterator (
 store::Item_t
 ReplaceIterator::nextImpl (PlanState& aPlanState) const
 {
-  PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-  STACK_END (aState);
+  store::StoreConsts::NodeKind lTargetKind;
+  store::StoreConsts::NodeKind lWithKind;
+  store::Item_t lWith;
+  store::Item_t lTarget;
+  store::Item_t lParent;
+  std::vector<store::Item_t> lNodes(16);
+  std::vector<store::Item_t> lAttrs(16);
+  ulong lNumNodes = 0;
+  ulong lNumAttrs = 0;
+  std::auto_ptr<store::PUL> lPul;
+
+  static_context* sctx;
+  store::CopyMode lCopyMode;
+
+  PlanIteratorState* lState;
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+  
+  sctx = aPlanState.theRuntimeCB->theStaticContext;
+  lCopyMode = store::CopyMode(
+    sctx->construction_mode(),
+    sctx->preserve_mode(),
+    sctx->inherit_mode());
+
+  lTarget = consumeNext(theChild0, aPlanState);
+  if (lTarget == 0)
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUDY0027, loc);
+  }
+  if (consumeNext(theChild0, aPlanState) != 0) {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, loc);
+  }
+  lTargetKind = lTarget->getNodeKind();
+
+  if (!( lTarget->isNode() && (
+     lTargetKind == store::StoreConsts::elementNode
+  || lTargetKind == store::StoreConsts::attributeNode
+  || lTargetKind == store::StoreConsts::textNode
+  || lTargetKind == store::StoreConsts::commentNode
+  || lTargetKind == store::StoreConsts::piNode
+  )))
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUTY0008, loc);
+  }
+
+  if (theType == store::UpdateConsts::NODE) {
+    if (lTarget->getParent() == 0)
+    {
+      ZORBA_ERROR_LOC(ZorbaError::XUDY0009, loc);
+    }
+    lParent = lTarget->getParent();
+    
+    if ( lTargetKind == store::StoreConsts::attributeNode)
+    {
+      lWith = consumeNext(theChild1, aPlanState);
+      while (lWith != 0) 
+      {
+        lWithKind = lWith->getNodeKind();
+        if (!(lWith->isNode() && lWithKind == store::StoreConsts::attributeNode))
+        {
+          ZORBA_ERROR_LOC(ZorbaError::XUTY0011, loc);
+        }
+        lAttrs[lNumAttrs++].transfer(lWith);
+        if (lNumAttrs == lAttrs.size())
+          lAttrs.resize(2 * lNumAttrs);
+
+        lWith = consumeNext(theChild1, aPlanState);
+      }
+    } else {
+      lWith = consumeNext(theChild1, aPlanState);
+      while (lWith != 0)
+      {
+        lWithKind = lWith->getNodeKind();
+        if (!(lWith->isNode() && (
+           lWithKind == store::StoreConsts::elementNode
+        || lWithKind == store::StoreConsts::textNode
+        || lWithKind == store::StoreConsts::commentNode
+        || lWithKind == store::StoreConsts::piNode
+        )))
+        {
+          ZORBA_ERROR_LOC(ZorbaError::XUTY0010, loc);
+        }
+        lNodes[lNumNodes++].transfer(lWith);
+        if (lNumNodes == lNodes.size())
+          lNodes.resize(2 * lNumNodes);
+
+        lWith = consumeNext(theChild1, aPlanState);
+      }
+
+    }
+    lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+    if (lNumNodes > 0)
+    {
+      lNodes.resize(lNumNodes);
+      lPul->addReplaceNode(lTarget, lNodes, theDoCopy, lCopyMode);
+    }
+  } else {
+    // the compiler added a test constructor around
+    // the with expression => lWith is always a text node
+    lWith = consumeNext(theChild1, aPlanState); 
+    lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+    if (lTargetKind == store::StoreConsts::elementNode)
+    {
+      lPul->addReplaceContent(lTarget, lWith, theDoCopy, lCopyMode);
+    } else {
+      xqp_string lText;
+      if (lWith != 0)
+        lText = lWith->getStringValueP();
+      else
+        lText = "";
+      if (lTargetKind == store::StoreConsts::commentNode
+      && (lText.indexOf("--") >= 0 || lText.endsWith("-")))
+      {
+          ZORBA_ERROR_LOC(ZorbaError::XQDY0072, loc);
+      }
+      if (lTargetKind == store::StoreConsts::piNode && lText.indexOf("?>") >= 0)
+      {
+          ZORBA_ERROR_LOC(ZorbaError::XQDY0026, loc);
+      }
+      lPul->addReplaceValue(lTarget, lText.theStrStore);
+    }
+  }
+
+  STACK_PUSH(lPul.release(), lState);
+
+  STACK_END (lState);
 }
 
 

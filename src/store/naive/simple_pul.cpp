@@ -939,7 +939,7 @@ UpdReplaceChild::UpdReplaceChild(
 {
   theChild.transfer(child);
 
-  StoreConsts::NodeKind childKind = child->getNodeKind();
+  StoreConsts::NodeKind childKind = theChild->getNodeKind();
   if (childKind == StoreConsts::elementNode || childKind == StoreConsts::textNode)
     theRemoveType = true;
 

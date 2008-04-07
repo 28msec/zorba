@@ -13,17 +13,7 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-class InsertIteratorState : public PlanIteratorState
-{
-public:
-  store::CopyMode theCopyMode;
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
-class InsertIterator : public BinaryBaseIterator<InsertIterator, InsertIteratorState>
+class InsertIterator : public BinaryBaseIterator<InsertIterator, PlanIteratorState>
 {
 private:
   store::UpdateConsts::InsertType theType;
@@ -74,6 +64,7 @@ class ReplaceIterator : public BinaryBaseIterator<ReplaceIterator, PlanIteratorS
 {
 private:
   store::UpdateConsts::ReplaceType theType;
+  bool                             theDoCopy;
 
 public:
   ReplaceIterator (
