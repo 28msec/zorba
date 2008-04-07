@@ -9,6 +9,8 @@
 #include <vector>
 #include <sstream>
 
+#include "errors/fatal.h"
+
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
@@ -23,6 +25,7 @@
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
+#include "store/api/pul.h"
 
 #include "context/static_context.h"
 #include "context/collation_cache.h"
@@ -83,31 +86,41 @@ FnConcatIteratorState::reset(PlanState& planState)
 }
 
 
-bool
-FnConcatIterator::isUpdateIterator() const
-{
-  return (!theChildren.empty() && theChildren[0]->isUpdateIterator());
-}
-
-
 store::Item_t
 FnConcatIterator::nextImpl(PlanState& planState) const 
 {
   store::Item_t item;
-  
+  std::auto_ptr<store::PUL> pul;
+
   FnConcatIteratorState* state;
   DEFAULT_STACK_INIT(FnConcatIteratorState, state, planState);
-  
+
+  if (isUpdateIterator())
+    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
   for (; state->theCurIter < theChildren.size(); ++state->theCurIter) 
   {
     item = consumeNext(theChildren[state->theCurIter].getp(), planState);
     while (item != NULL) 
     {
-      STACK_PUSH (item, state);
+      if (isUpdateIterator())
+      {
+        ZORBA_FATAL(item->isPul(), "");
+
+        pul->mergeUpdates(item);
+      }
+      else
+      {
+        STACK_PUSH (item, state);
+      }
+
       item = consumeNext(theChildren[state->theCurIter].getp(), planState);
     }
   }
   
+  if (isUpdateIterator())
+    STACK_PUSH(pul.release(), state);
+
   STACK_END (state);
 }
 

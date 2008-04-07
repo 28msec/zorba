@@ -131,7 +131,7 @@ public:
 
   void serializeUpdates(serializer& ser, std::ostream& os);
 
-  void mergeUpdates(const Item* other);
+  void mergeUpdates(Item* other);
 
 protected:
   void undoUpdates();
@@ -151,13 +151,13 @@ protected:
         const CopyMode&           copymode);
 
   void mergeUpdateList(
-        std::vector<UpdatePrimitive*>        myList,
-        const std::vector<UpdatePrimitive*>& otherList,
-        bool                                 checkRename,
-        bool                                 checkReplaceValue,
-        bool                                 checkReplaceNode,
-        bool                                 checkReplaceContent,
-        bool                                 checkDelete);
+        std::vector<UpdatePrimitive*>& myList,
+        std::vector<UpdatePrimitive*>& otherList,
+        bool                           checkRename,
+        bool                           checkReplaceValue,
+        bool                           checkReplaceNode,
+        bool                           checkReplaceContent,
+        bool                           checkDelete);
 };
 
 

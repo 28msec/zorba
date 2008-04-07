@@ -21,7 +21,7 @@
 
 #ifndef NDEBUG
 
-int traceLevel = -1;
+int traceLevel = 1;
 
 #define NODE_TRACE(level, msg)               \
 {                                            \

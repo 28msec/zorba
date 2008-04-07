@@ -87,7 +87,7 @@ public:
 
   //virtual void serializeUpdates(serializer ser&, std::ostream& os);
 
-  virtual void mergeUpdates(const Item* other) = 0;
+  virtual void mergeUpdates(Item* other) = 0;
 };
 
 

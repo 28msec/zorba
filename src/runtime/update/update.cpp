@@ -63,11 +63,11 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
     ZORBA_ERROR_LOC(ZorbaError::XUDY0027, loc);
   }
 
-  targetKind = target->getNodeKind();
-
-  if (theType == store::UpdateConsts::BEFORE || theType == store::UpdateConsts::AFTER)
+  if (theType == store::UpdateConsts::BEFORE ||
+      theType == store::UpdateConsts::AFTER)
   {
-    if (!target->isNode() || targetKind == store::StoreConsts::attributeNode)
+    if (!target->isNode() ||
+        target->getNodeKind() == store::StoreConsts::attributeNode)
       ZORBA_ERROR_LOC(ZorbaError::XUTY0006, loc);
 
     if (consumeNext(theChild1, aPlanState) != NULL)
@@ -88,6 +88,9 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
+        if (numNodes > 0)
+          ZORBA_ERROR_LOC(ZorbaError::XUTY0004, loc);
+
         if (!elemParent)
           ZORBA_ERROR_LOC(ZorbaError::XUDY0030, loc);
 
@@ -127,9 +130,13 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
   }
   else
   {
-    if (!target->isNode() ||
-        (targetKind != store::StoreConsts::documentNode &&
-         targetKind != store::StoreConsts::elementNode))
+    if (!target->isNode())
+      ZORBA_ERROR_LOC(ZorbaError::XUTY0005, loc);
+
+    targetKind = target->getNodeKind();
+
+    if (targetKind != store::StoreConsts::documentNode &&
+        targetKind != store::StoreConsts::elementNode)
       ZORBA_ERROR_LOC(ZorbaError::XUTY0005, loc);
 
     if (consumeNext(theChild1, aPlanState) != NULL)
@@ -145,6 +152,9 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
+        if (numNodes > 0)
+          ZORBA_ERROR_LOC(ZorbaError::XUTY0004, loc);
+
         if (!elemTarget)
           ZORBA_ERROR_LOC(ZorbaError::XUTY0022, loc);
 

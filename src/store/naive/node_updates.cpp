@@ -380,7 +380,7 @@ void ElementNode::insertAttributes(
 
     if (copy)
     {
-      attr->copy(this, this, numAttrs, copymode);
+      attr->copy(this, this, numAttrs + i, copymode);
     }
     else
     {

@@ -449,9 +449,9 @@ void PULImpl::addRename(Item_t& target, Item_t& newName)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::mergeUpdates(const Item* other)
+void PULImpl::mergeUpdates(Item* other)
 {
-  const PULImpl* otherp = reinterpret_cast<const PULImpl*>(other);
+  PULImpl* otherp = reinterpret_cast<PULImpl*>(other);
 
   mergeUpdateList(theDoFirstList, otherp->theDoFirstList,
                   true, true, false, false, false);
@@ -471,13 +471,13 @@ void PULImpl::mergeUpdates(const Item* other)
 
 
 void PULImpl::mergeUpdateList(
-    std::vector<UpdatePrimitive*>        myList,
-    const std::vector<UpdatePrimitive*>& otherList,
-    bool                                 checkRename,
-    bool                                 checkReplaceValue,
-    bool                                 checkReplaceNode,
-    bool                                 checkReplaceContent,
-    bool                                 checkDelete)
+    std::vector<UpdatePrimitive*>& myList,
+    std::vector<UpdatePrimitive*>& otherList,
+    bool                           checkRename,
+    bool                           checkReplaceValue,
+    bool                           checkReplaceNode,
+    bool                           checkReplaceContent,
+    bool                           checkDelete)
 {
   ulong numUpdates;
   ulong numOtherUpdates;
@@ -561,6 +561,8 @@ void PULImpl::mergeUpdateList(
       targetUpdates->push_back(upd);
     }
   }
+
+  otherList.clear();
 }
 
 

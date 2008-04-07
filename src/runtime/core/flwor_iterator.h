@@ -272,13 +272,11 @@ class FlworState : public PlanIteratorState
   Iterator_t                                  curOrderResultSeq; 
   FLWORIterator::order_map_t::const_iterator  curOrderPos; 
 
-  store::PUL                                * thePul;
-
   /**
    * Init the state for a certain nb of variables but not the ordering
    * @nb_variables  Number of FOR and LET clauses
    */
-  void init(PlanState& state, size_t numVars, bool isUpdate);
+  void init(PlanState& state, size_t numVars);
           
   /**
    * Init the state for a certain nb of variables and ordering
@@ -288,8 +286,7 @@ class FlworState : public PlanIteratorState
   void init(
         PlanState& state,
         size_t numVars,
-        std::vector<FLWORIterator::OrderSpec>* orderSpecs,
-        bool isUpdate);
+        std::vector<FLWORIterator::OrderSpec>* orderSpecs);
 
   /**
    * Resets the state

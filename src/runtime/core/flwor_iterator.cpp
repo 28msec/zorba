@@ -319,11 +319,15 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
   //Needed variables
   int curVar = 0;
   store::Item_t curItem;
+  std::auto_ptr<store::PUL> pul;
 
   FlworState* flworState;
   DEFAULT_STACK_INIT(FlworState, flworState, planState);
 
   assert(flworState->varBindingState.size() > 0);
+
+  if (isUpdateIterator())
+    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   while ( true )
   {
@@ -350,7 +354,7 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
         {
           if (theIsUpdateIterator)
           {
-            STACK_PUSH(flworState->thePul, flworState);
+            STACK_PUSH(pul.release(), flworState);
           }
           else if ( doOrderBy )
           {
@@ -380,14 +384,14 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
     {
       // In the case we not need to do ordering, we now returning the items
       // produced by the ReturnClause
-      if (theIsUpdateIterator)
+      if (isUpdateIterator())
       {
         curItem = consumeNext(returnClause, planState);
         while (curItem != 0)
         {
           ZORBA_FATAL(curItem->isPul(), "");
 
-          flworState->thePul->mergeUpdates(curItem);
+          pul->mergeUpdates(curItem);
 
           curItem = consumeNext(returnClause, planState);
         }
@@ -595,12 +599,11 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
   {
     flworState->init(planState,
                      theNumBindings,
-                     &orderByClause->orderSpecs,
-                     theIsUpdateIterator);
+                     &orderByClause->orderSpecs);
   }
   else
   {
-    flworState->init(planState, theNumBindings, theIsUpdateIterator);
+    flworState->init(planState, theNumBindings);
   }
 
 #ifndef NDEBUG
@@ -759,8 +762,7 @@ void FLWORIterator::accept ( PlanIterVisitor& v ) const
 
 FlworState::FlworState()
   :
-  orderMap(0),
-  thePul(0)
+  orderMap(0)
 {
 }
 
@@ -773,34 +775,24 @@ FlworState::~FlworState()
     delete orderMap;
     orderMap = 0;
   }
-
-  if (thePul)
-  {
-    delete thePul;
-    thePul = 0;
-  }
 }
 
 
-void FlworState::init(PlanState& planState, size_t numVars, bool isUpdate)
+void FlworState::init(PlanState& planState, size_t numVars)
 {
   PlanIteratorState::init(planState);
   std::vector<uint32_t> v(numVars, 0);
   varBindingState.swap (v);
   assert(varBindingState.size() > 0);
-
-  if (isUpdate)
-    thePul = GENV_ITEMFACTORY->createPendingUpdateList();
 }
 
 
 void FlworState::init(
     PlanState& planState,
     size_t numVars,
-    std::vector<FLWORIterator::OrderSpec>* orderSpecs,
-    bool isUpdate)
+    std::vector<FLWORIterator::OrderSpec>* orderSpecs)
 {
-  init (planState, numVars, isUpdate);
+  init (planState, numVars);
   orderMap = new FLWORIterator::order_map_t(orderSpecs);
 }
 
