@@ -46,6 +46,8 @@ store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
        inNode->getNodeKind() == store::StoreConsts::commentNode ||
        inNode->getNodeKind() == store::StoreConsts::textNode)
       STACK_PUSH(GENV_ITEMFACTORY->createString(strRes.getStore()), state);
+    else if(inNode->getNodeKind() == store::StoreConsts::piNode)
+      STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getTarget().getStore()), state);
     else
       STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getNodeName()->getLocalName().getStore()), state);
   }
