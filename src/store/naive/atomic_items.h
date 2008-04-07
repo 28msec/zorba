@@ -375,6 +375,7 @@ public:
 
     virtual Item_t getType() const;
     virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
     virtual Item_t getEBV( ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;

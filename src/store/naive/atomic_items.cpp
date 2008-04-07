@@ -464,6 +464,11 @@ bool BooleanItemNaive::equals ( Item_t item, RuntimeCB* aRuntimeCB, XQPCollator*
   return item->getBooleanValue() == theValue;
 }
 
+uint32_t BooleanItemNaive::hash ( RuntimeCB* aRuntimeCB, XQPCollator* aCollation ) const
+{
+  return theValue?0:1;
+}
+
 Item_t BooleanItemNaive::getEBV() const
 {
   return this->getAtomizationValue();
