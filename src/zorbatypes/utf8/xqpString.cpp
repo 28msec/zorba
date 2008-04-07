@@ -1138,12 +1138,21 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     UErrorCode status = U_ZERO_ERROR;
     UnicodeString uspattern = pattern.getUnicodeString (),
       us = getUnicodeString ();
+
     RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
       throw zorbatypesException("", ZorbatypesError::FORX0002);
       return "";
     }
-    UnicodeString result = matcher.replaceAll (replacement.getUnicodeString (), status);
+
+    if((replacement.indexOf("$") != -1 && !replacement.matches("\\$[0-9]",""))||
+        (replacement.indexOf("\\") != -1 && !replacement.matches("\\$[0-9]","")))
+    {
+      throw zorbatypesException("", ZorbatypesError::FORX0004);
+      return "";
+    }
+    
+    UnicodeString result = matcher.replaceAll (replacement.getUnicodeString(), status);
     if (U_FAILURE(status)) {
       return "";
       // TODO: error
