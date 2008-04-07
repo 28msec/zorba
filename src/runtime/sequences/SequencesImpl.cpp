@@ -455,54 +455,42 @@ void FnReverseIteratorState::reset(PlanState& planState)
 //15.1.10 fn:subsequence
 store::Item_t 
 FnSubsequenceIterator::nextImpl(PlanState& planState) const {
-  store::Item_t lSequence;
-  store::Item_t lStartingLoc;
-  store::Item_t lLength;
+  store::Item_t item;
+  xqp_integer lSkip;
+  xqp_integer zero = xqp_integer::parseInt (0), minus_one = xqp_integer::parseInt (-1);
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
   
-  lStartingLoc = consumeNext(theChildren[1].getp(), planState);
-  if ( lStartingLoc == NULL ) 
-  {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc, 
-         "An empty sequence is not allowed as starting location of fn:subsequence.");    
-  }
+  xqp_integer::parseDouble (CONSUME (1)->getDoubleValue ().round (), lSkip);
+  lSkip += minus_one;
   
-  state->theStartingLoc = lStartingLoc->getDoubleValue();
-  if (state->theStartingLoc <= xqp_double::parseInt(0))
-    state->theStartingLoc = xqp_double::parseInt(1);
-    
   if (theChildren.size() == 3)
-  {
-    lLength = consumeNext(theChildren[2].getp(), planState);
-    if ( lLength == NULL )
-    {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc, 
-           "An empty sequence is not allowed as third argument of fn:subsequence.");
-    }
-    if(lStartingLoc->getDoubleValue() <= xqp_double::parseInt(0))
-      state->theLength = lLength->getDoubleValue() + lStartingLoc->getDoubleValue() + xqp_double::parseInt(-1);
-    else
-      state->theLength = lLength->getDoubleValue();
-  }
-  else
-  {
-    state->theLength = xqp_double::parseInt(-1);
+    xqp_integer::parseDouble (CONSUME (2)->getDoubleValue ().round (),
+                              state->theRemaining);
+
+  if (lSkip < zero) {
+    if (theChildren.size () >= 3)
+      state->theRemaining += lSkip;
+    lSkip = zero;
   }
 
-  while ( ((lSequence = consumeNext(theChildren[0].getp(), planState)) != NULL) 
-          && (( state->theLength == xqp_double::parseInt(-1) ) || ( state->theCurrentLength <= state->theLength  )))
+  if (theChildren.size () == 3 && state->theRemaining <= zero)
+    goto done;
+
+  for (; lSkip > zero; --lSkip)
+    if (NULL == (item = CONSUME (0)))
+      goto done;
+  
+  while (((theChildren.size () < 3) || (state->theRemaining > xqp_integer::parseInt (0)))
+         && (NULL != (item = CONSUME (0))))
   {
-    if (state->theCurrentPos >= state->theStartingLoc)
-    {
-      ++state->theCurrentLength;
-      STACK_PUSH(lSequence, state);
-    }
-    
-    ++state->theCurrentPos; 
+    if (theChildren.size () >= 3)
+      state->theRemaining--;
+      STACK_PUSH (item, state);
   }
 
+done:
   STACK_END (state);
 }
 
@@ -510,20 +498,12 @@ void
 FnSubsequenceIteratorState::init(PlanState& planState) 
 {
  PlanIteratorState::init(planState);
- theStartingLoc = xqp_double::parseInt(0);
- theLength = xqp_double::parseInt(0);
- theCurrentPos = xqp_integer::parseInt(1); // position starts with 1, not 0
- theCurrentLength = xqp_integer::parseInt(1);
 }
 
 void
 FnSubsequenceIteratorState::reset(PlanState& planState) 
 {
  PlanIteratorState::reset(planState);
- theStartingLoc = xqp_double::parseInt(0);
- theLength = xqp_double::parseInt(0);
- theCurrentPos = xqp_integer::parseInt(1); // position starts with 1, not 0
- theCurrentLength = xqp_integer::parseInt(1);
 }
 
 

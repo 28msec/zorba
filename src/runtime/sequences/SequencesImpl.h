@@ -180,11 +180,7 @@ NARY_ITER_STATE(FnReverseIterator, FnReverseIteratorState);
 // of $startingLoc and continuing for the number of items indicated by the value of $length.
 class FnSubsequenceIteratorState : public PlanIteratorState {
 public:
-  xqp_double  theStartingLoc; // second argument (startingLoc)
-  xqp_double  theLength; // third optional argument (length)
-
-  xqp_integer theCurrentPos; // the current position in the sequence
-  xqp_integer theCurrentLength; // used for returning a specific number of items
+  xqp_integer theRemaining;
 
   void init(PlanState&);
   void reset(PlanState&);  
@@ -430,3 +426,8 @@ NARY_ITER(FnDocAvailableIterator);
 } /* namespace zorba */
 #endif /* ZORBA_SEQUENCES_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
