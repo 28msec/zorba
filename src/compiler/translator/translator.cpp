@@ -16,7 +16,6 @@
 #include "zorbatypes/Unicode_util.h"
 
 #include "common/common.h"
-#include "store/api/item.h"
 #include "util/properties.h"
 #include "context/static_context_consts.h"
 
@@ -44,10 +43,13 @@
 #include "functions/signature.h"
 #include "functions/external_function_adapters.h"
 #include "util/stl_extra.h"
-#include "store/api/store.h"
-#include "store/api/item_factory.h"
 #include "types/delegating_typemanager.h"
 #include "types/schema/schema.h"
+
+#include "store/api/item.h"
+#include "store/api/update_consts.h"
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 using namespace std;
 
@@ -3971,7 +3973,7 @@ void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
   expr_t lReplacement = pop_nodestack();
   expr_t lTarget = pop_nodestack();
 
-  if (v.getType() == UpdateConsts::NODE)
+  if (v.getType() == store::UpdateConsts::NODE)
   {
     fo_expr* lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
     lEnclosed->add(lReplacement);
