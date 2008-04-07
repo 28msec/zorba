@@ -32,7 +32,8 @@ public:
   Item_t createQName(
         xqpStringStore* ns,
         xqpStringStore* pre,
-        xqpStringStore* local);
+        xqpStringStore* local,
+        bool*           inserted = 0);
 
   Item_t createQName(
         const char* ns,

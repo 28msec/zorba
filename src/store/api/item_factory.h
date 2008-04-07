@@ -29,12 +29,12 @@ public:
    * @param namespace namespace of the qname
    * @param prefix prefix of the qname
    * @param localName local name of the qname
-   * TODO why do we need a prefix?
    */
   virtual Item_t createQName(
-        xqpStringStore* namespace_p,
+        xqpStringStore* nameSpace,
         xqpStringStore* prefix,
-        xqpStringStore* localName) = 0;
+        xqpStringStore* localName,
+        bool*           inserted = 0) = 0;
 
   virtual Item_t createQName(
         const char* ns,

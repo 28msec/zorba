@@ -78,7 +78,14 @@ QNamePool::~QNamePool()
 
 
 /*******************************************************************************
+  If the pool does not already contain a qname with the given namespace, prefix,
+  and local name, then create such a qname, insert it in the pool and return an
+  rchandle to it. Otherwise, return an rchandle to the existing qname. 
 
+  Note: The given namespace, prefix, and local name pointers may point to heap 
+  or stack allocated strings. If a qname is inserted, then the strings are 
+  copied internally into xqpStringStore objects. So, it's always the caller
+  who is resposnible for freeing the given strings.
 ********************************************************************************/
 Item_t QNamePool::insert(
     const char* ns,
@@ -117,12 +124,23 @@ Item_t QNamePool::insert(
 
 
 /*******************************************************************************
+  If the pool does not already contain a qname with the given namespace, prefix,
+  and local name, then create such a qname, insert it in the pool and return an
+  rchandle to it. Otherwise, return an rchandle to the existing qname. 
 
+  The method also returns a boolean that says whether a qname was inserted or
+  one existed already in the pool.
+
+  Note: The given namespace, prefix, and local name must be heap-allocated
+  xqpStringStore objects. If a qname is inserted, then ownership of those
+  xqpStringStore objects is transfered to the inserted qname. Otherwise, the
+  caller is resposnible for freeing the objects.
 ********************************************************************************/
 Item_t QNamePool::insert(
     xqpStringStore* ns,
     xqpStringStore* pre,
-    xqpStringStore* ln)
+    xqpStringStore* ln,
+    bool*           inserted)
 {
   QNameItemImpl* qn;
   bool found;
@@ -141,6 +159,9 @@ Item_t QNamePool::insert(
     qn->thePrefix = pre;
     qn->theLocal = ln;
   }
+
+  if (inserted)    
+    *inserted = (!found);
 
   return qn;
 }

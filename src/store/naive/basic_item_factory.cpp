@@ -41,9 +41,10 @@ BasicItemFactory::~BasicItemFactory()
 Item_t BasicItemFactory::createQName(
     xqpStringStore* ns,
     xqpStringStore* pre,
-    xqpStringStore* local)
+    xqpStringStore* local,
+    bool*           inserted)
 {
-  return theQNamePool->insert(ns, pre, local);
+  return theQNamePool->insert(ns, pre, local, inserted);
 }
 
 

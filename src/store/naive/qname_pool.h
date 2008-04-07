@@ -83,7 +83,8 @@ public:
   Item_t insert(
         xqpStringStore* ns,
         xqpStringStore* pre,
-        xqpStringStore* ln);
+        xqpStringStore* ln,
+        bool*           inserted);
 
   void remove(QNameItemImpl* qn);
 
