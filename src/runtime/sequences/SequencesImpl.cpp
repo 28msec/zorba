@@ -457,8 +457,8 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) const {
   }
   
   state->theStartingLoc = lStartingLoc->getDoubleValue();
-  if (state->theStartingLoc < xqp_double::parseInt(0))
-    state->theStartingLoc = xqp_double::parseInt(0);
+  if (state->theStartingLoc <= xqp_double::parseInt(0))
+    state->theStartingLoc = xqp_double::parseInt(1);
     
   if (theChildren.size() == 3)
   {
@@ -468,7 +468,10 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) const {
       ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc, 
            "An empty sequence is not allowed as third argument of fn:subsequence.");
     }
-    state->theLength = lLength->getDoubleValue();
+    if(lStartingLoc->getDoubleValue() <= xqp_double::parseInt(0))
+      state->theLength = lLength->getDoubleValue() + lStartingLoc->getDoubleValue() + xqp_double::parseInt(-1);
+    else
+      state->theLength = lLength->getDoubleValue();
   }
   else
   {
