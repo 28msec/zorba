@@ -392,9 +392,45 @@ RenameIterator::RenameIterator (
 store::Item_t
 RenameIterator::nextImpl(PlanState& aPlanState) const
 {
-  PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-  STACK_END (aState);
+  store::StoreConsts::NodeKind lTargetKind;
+  store::Item_t lTarget;
+  store::Item_t lNewname;
+  std::auto_ptr<store::PUL> lPul;
+
+  PlanIteratorState* lState;
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+
+  lTarget = consumeNext(theChild0, aPlanState);
+  if (lTarget == NULL)
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUDY0027, loc);
+  }
+  
+  lTargetKind = lTarget->getNodeKind();
+
+  if (!(lTarget->isNode() && (
+      lTargetKind == store::StoreConsts::elementNode
+   || lTargetKind == store::StoreConsts::attributeNode
+   || lTargetKind == store::StoreConsts::piNode
+  )))
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUTY0012, loc);
+  }
+
+  if (consumeNext(theChild0, aPlanState) != 0)
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUTY0012, loc);
+  }
+
+  // because of codegen, it can be assumed that newname is already a qname 
+  lNewname = consumeNext(theChild1, aPlanState);
+
+  lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  lPul->addRename(lTarget, lNewname);
+
+  STACK_PUSH(lPul.release(), lState);
+
+  STACK_END (lState);
 }
 
 
