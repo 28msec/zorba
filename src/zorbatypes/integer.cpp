@@ -274,9 +274,20 @@ Integer& Integer::operator++() {
   return *this;
 }
 
+Integer& Integer::operator--() {
+  theInteger--;
+  return *this;
+}
+
 Integer Integer::operator++(int) {
   Integer lRes(theInteger);
   theInteger++;
+  return lRes;
+}
+
+Integer Integer::operator--(int) {
+  Integer lRes(theInteger);
+  theInteger--;
   return lRes;
 }
 

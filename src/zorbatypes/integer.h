@@ -156,6 +156,14 @@ namespace zorba {
       Integer 
       operator++(int);
       
+      /** prefix */
+      Integer& 
+      operator--();
+      
+      /** postfix */
+      Integer 
+      operator--(int);
+      
       Integer 
       round(Integer aPrecision) const; 
       
