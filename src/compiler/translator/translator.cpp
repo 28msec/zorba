@@ -486,16 +486,12 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   expr_t attrExpr;
   expr_t contentExpr;
 
-  rchandle<QName> end_tag = v.get_end_name  ();
-  if (end_tag != NULL && v.get_elem_name ()->get_qname () != end_tag->get_qname ())
+  rchandle<QName> end_tag = v.get_end_name();
+  if (end_tag != NULL && v.get_elem_name ()->get_qname() != end_tag->get_qname ())
     ZORBA_ERROR( ZorbaError::XPST0003);
+
   if (v.get_dir_content_list() != NULL)
-  {
     contentExpr = pop_nodestack();
-    fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
-    lDocFilter->add(contentExpr);
-    contentExpr = lDocFilter;
-  }
 
   if (v.get_attr_list() != NULL)
     attrExpr = pop_nodestack();
@@ -967,11 +963,8 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
 
   expr_t lContent = pop_nodestack();
 
-  fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1("doc-filter"));
-  lDocFilter->add(lContent);
-
   fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
-  lEnclosed->add(lDocFilter);
+  lEnclosed->add(lContent);
 
   nodestack.push (new doc_expr (v.get_location (), lEnclosed ));
 }
@@ -994,11 +987,8 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   {
     contentExpr = pop_nodestack();
 
-    fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
-    lDocFilter->add(contentExpr);
-
     fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1 ("enclosed-expr"));
-    lEnclosed->add(lDocFilter);
+    lEnclosed->add(contentExpr);
     contentExpr = lEnclosed;
   }
 
@@ -1044,11 +1034,8 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
   {
     valueExpr = pop_nodestack();
 
-    fo_expr* docFilterExpr = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
-    docFilterExpr->add(valueExpr);
-
     fo_expr* enclosedExpr = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
-    enclosedExpr->add(docFilterExpr);
+    enclosedExpr->add(valueExpr);
 
     valueExpr = enclosedExpr;
   }
@@ -1069,12 +1056,8 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
     atomExpr->add(nameExpr);
 
     expr_t castExpr = new name_cast_expr(v.get_location(),
-                                    atomExpr.getp(),
-                                    ns_ctx);
-
-    //fo_expr* enclosedExpr = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
-    //enclosedExpr->add(castExpr);
-
+                                         atomExpr.getp(),
+                                         ns_ctx);
     nameExpr = castExpr;
   }
 
@@ -3153,7 +3136,9 @@ var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
   xqpString lname("$$temp" + to_string(tempvar_counter++));
 
   return new var_expr(loc, kind,
-                      ITEM_FACTORY->createQName(empty.getStore (), empty.getStore (), lname.getStore ()));
+                      ITEM_FACTORY->createQName(empty.getStore(),
+                                                empty.getStore(),
+                                                lname.getStore()));
 }
 
 
@@ -3949,10 +3934,14 @@ void *begin_visit(const InsertExpr& /*v*/)
 void end_visit(const InsertExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  expr_t aTarget = pop_nodestack();
-  expr_t aSource = pop_nodestack();
-  expr_t aInsert = new insert_expr(v.get_location(), v.getType(), aSource, aTarget);
-  nodestack.push(aInsert);
+  expr_t lTarget = pop_nodestack();
+  expr_t lSource = pop_nodestack();
+  fo_expr* lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+  lEnclosed->add(lSource);
+  lSource = lEnclosed;
+
+  expr_t lInsert = new insert_expr(v.get_location(), v.getType(), lSource, lTarget);
+  nodestack.push(lInsert);
 }
 
 void *begin_visit(const RenameExpr& /*v*/)
@@ -3979,10 +3968,21 @@ void *begin_visit(const ReplaceExpr& /*v*/)
 void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  expr_t aReplacement = pop_nodestack();
-  expr_t aTarget = pop_nodestack();
-  expr_t aReplace = new replace_expr(v.get_location(), v.getType(), aTarget, aReplacement);
-  nodestack.push(aReplace);
+  expr_t lReplacement = pop_nodestack();
+  expr_t lTarget = pop_nodestack();
+
+  if (v.getType() == UpdateConsts::NODE)
+  {
+    fo_expr* lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+    lEnclosed->add(lReplacement);
+    lReplacement = lEnclosed;
+  }
+
+  expr_t lReplace = new replace_expr(v.get_location(),
+                                     v.getType(),
+                                     lTarget,
+                                     lReplacement);
+  nodestack.push(lReplace);
 }
 
 void *begin_visit(const RevalidationDecl& /*v*/)

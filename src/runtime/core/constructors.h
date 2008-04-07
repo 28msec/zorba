@@ -284,8 +284,9 @@ public:
 
 
 /*******************************************************************************
-   Used to make the casting and concatenation of 
-   atomic values in the sequences of an enclosed expression.
+   Used to concatenate adjacent atomic values in the input sequence into a 
+   text node. Concatenation inserts a single space between each pair of atomic
+   values.
 ********************************************************************************/
 class EnclosedIteratorState : public PlanIteratorState
 {
@@ -293,6 +294,7 @@ public:
   xqpStringStore  * theAttrContentString;
   xqpStringStore  * theElemContentString;
   store::Item_t     theContextItem;
+  Iterator_t        theDocChildren;
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -319,7 +321,7 @@ public:
   void setAttrContent()       { theAttrContent = true; }
 };
 
-
+#if 0
 /*******************************************************************************
 
   Filters out all DocumentNodes and returns their children instead of them.
@@ -329,7 +331,6 @@ class DocFilterIteratorState : public PlanIteratorState
 {
 public:
   Iterator_t     theChildren;
-  store::Item_t  theCurItem;
     
   DocFilterIteratorState();
   ~DocFilterIteratorState();
@@ -348,7 +349,7 @@ public:
 
   virtual void accept(PlanIterVisitor&) const;
 };
-
+#endif
 
 } /* namespace zorba */
 #endif  /* ZORBA_CONSTRUCTORS_H */

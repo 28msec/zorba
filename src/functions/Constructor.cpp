@@ -17,23 +17,7 @@ namespace zorba
   {
     return new EnclosedIterator ( loc, argv[0] );
   }
-
-
   /* end class op_enclosed_expr */
   
-  /* begin class op_enclosed_expr */
-  op_docfilter_expr::op_docfilter_expr (
-      const signature& sig )
-      :
-      function ( sig )
-  {
-  }
   
-  PlanIter_t op_docfilter_expr::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
-  {
-    return new DocFilterIterator ( loc, argv[0] );
-  }
-  
-  
-  /* end class op_enclosed_expr */
 } /* namespace zorba */

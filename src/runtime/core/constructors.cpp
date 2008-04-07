@@ -651,6 +651,7 @@ void EnclosedIteratorState::init(PlanState& planState)
   PlanIteratorState::init(planState);
   theAttrContentString = NULL;
   theElemContentString = NULL;
+  theDocChildren = NULL;
 }
 
 
@@ -662,8 +663,15 @@ void EnclosedIteratorState::reset(PlanState& planState)
     delete theAttrContentString; 
     theAttrContentString = NULL;
   }
+
   theElemContentString = NULL;
   theContextItem = NULL;
+
+  if (theDocChildren != NULL)
+  {
+    theDocChildren->close();
+    theDocChildren = 0;
+  }
 }
 
 
@@ -671,6 +679,12 @@ EnclosedIteratorState::~EnclosedIteratorState()
 {
   if (theAttrContentString)
     delete theAttrContentString;
+
+  if (theDocChildren != NULL)
+  {
+    theDocChildren->close();
+    theDocChildren = 0;
+  }
 }
 
 
@@ -738,34 +752,57 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
   {
     while ( true )
     {
-      lItem = consumeNext(theChild.getp(), planState);
-
-      if (lItem == NULL)
-        break;
-
-      else if (lItem->isNode())
+      if (state->theDocChildren != 0)
       {
-        state->theElemContentString = NULL;
-
-        STACK_PUSH(lItem, state);
+        lItem = state->theDocChildren->next();
+        if (lItem == 0)
+        {
+          state->theDocChildren->close();
+          state->theDocChildren = 0;
+        }
+        else
+        {
+          STACK_PUSH(lItem, state);
+        }
       }
       else
       {
-        strval = lItem->getStringValue();
+        lItem = consumeNext(theChild.getp(), planState);
+        if (lItem == NULL)
+          break;
 
-        if (state->theElemContentString != NULL)
-          strval = new xqpStringStore(" " + strval->str());
+        if (lItem->isNode())
+        {
+          state->theElemContentString = NULL;
+
+          if (lItem->getNodeKind() == store::StoreConsts::documentNode)
+          {
+            state->theDocChildren = lItem->getChildren();
+            state->theDocChildren->open();
+          }
+          else
+          {
+            STACK_PUSH(lItem, state);
+          }
+        }
         else
-          state->theElemContentString = strval;
+        {
+          strval = lItem->getStringValue();
 
-        if (strval->empty())
-          continue;
+          if (state->theElemContentString != NULL)
+            strval = new xqpStringStore(" " + strval->str());
+          else
+            state->theElemContentString = strval;
 
-        lItem = factory->createTextNode((ulong)&planState,
-                                        strval,
-                                        false,
-                                        true);  // assingIds
-        STACK_PUSH(lItem, state);
+          if (strval->empty())
+            continue;
+
+          lItem = factory->createTextNode((ulong)&planState,
+                                          strval,
+                                          false,
+                                          true);  // assingIds
+          STACK_PUSH(lItem, state);
+        }
       }
     }
   }
@@ -773,7 +810,7 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
-
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -838,7 +875,8 @@ store::Item_t DocFilterIterator::nextImpl(PlanState& planState) const
       if (lItem == 0)
         break;
 
-      if (lItem->isNode() && lItem->getNodeKind() == store::StoreConsts::documentNode)
+      if (lItem->isNode() &&
+          lItem->getNodeKind() == store::StoreConsts::documentNode)
       {
         state->theChildren = lItem->getChildren();
         state->theChildren->open();
@@ -851,5 +889,5 @@ store::Item_t DocFilterIterator::nextImpl(PlanState& planState) const
   }
   STACK_END (state);
 }
-
+#endif
 }

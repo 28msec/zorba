@@ -125,9 +125,6 @@ public:
   virtual void beginVisit ( const EnclosedIterator& ) ;
   virtual void endVisit ( const EnclosedIterator& ) ;
 
-  virtual void beginVisit ( const DocFilterIterator& ) ;
-  virtual void endVisit ( const DocFilterIterator& ) ;
-
   virtual void beginVisit ( const IfThenElseIterator& ) ;
   virtual void endVisit ( const IfThenElseIterator& ) ;
 

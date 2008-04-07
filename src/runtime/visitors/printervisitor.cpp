@@ -371,16 +371,6 @@ namespace zorba {
     thePrinter.endEndVisit();
   }
 
-  void PrinterVisitor::beginVisit ( const DocFilterIterator& a ) {
-    thePrinter.startBeginVisit("DocFilterIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
-  }
-  void PrinterVisitor::endVisit ( const DocFilterIterator& /*a*/) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
   void PrinterVisitor::beginVisit ( const IfThenElseIterator& a ) {
     thePrinter.startBeginVisit("IfThenElseIterator", (intptr_t) &a);
     printCommons(  &a );
