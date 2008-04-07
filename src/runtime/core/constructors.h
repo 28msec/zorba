@@ -317,8 +317,8 @@ public:
   
   virtual void accept(PlanIterVisitor&) const;
 
-  bool getAttrContent() const { return theAttrContent; }
-  void setAttrContent()       { theAttrContent = true; }
+  bool getAttrContent() const;
+  void setAttrContent();
 };
 
 #if 0

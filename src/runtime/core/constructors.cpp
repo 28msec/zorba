@@ -698,6 +698,17 @@ EnclosedIterator::EnclosedIterator (
 }
 
 
+bool EnclosedIterator::getAttrContent() const
+{
+  return theAttrContent;
+}
+
+void EnclosedIterator::setAttrContent()
+{
+  theAttrContent = true;
+}
+
+
 store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
