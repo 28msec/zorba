@@ -16,6 +16,17 @@ namespace zorba {
 
       virtual String
       getDescription() const;
+    protected:
+      friend class ZorbaImpl;
+      ZorbaException(const ZorbaError::ErrorCode&, const String& aDescription);
+      ZorbaError::ErrorCode theErrorCode;
+      String                theDescription;
+  }; /* class ZorbaException */
+
+  class QueryException : public ZorbaException 
+  {
+    public:
+      virtual ~QueryException() throw();
 
       virtual String
       getFileName() const;
@@ -27,18 +38,16 @@ namespace zorba {
       getColumnBegin() const;
 
     protected:
+      friend std::ostream& operator<<(std::ostream&, const QueryException&);
       friend class ZorbaImpl;
-      ZorbaException(const ZorbaError::ErrorCode&, const String& aDescription, 
+      QueryException(const ZorbaError::ErrorCode&, const String& aDescription, 
                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
-      ZorbaError::ErrorCode theErrorCode;
-      String                theDescription;
       String                theFileName;
       unsigned int          theLineBegin;
       unsigned int          theColumnBegin;
+  };
 
-  }; /* class ZorbaException */
-
-  class DynamicException : public ZorbaException
+  class DynamicException : public QueryException
   {
     friend std::ostream& operator<<(std::ostream&, const DynamicException&);
     public:
@@ -48,7 +57,7 @@ namespace zorba {
 
   }; /* class DynamicException */
 
-  class StaticException : public ZorbaException
+  class StaticException : public QueryException
   {
     friend std::ostream& operator<<(std::ostream&, const StaticException&);
     public:
@@ -58,7 +67,7 @@ namespace zorba {
 
   }; /* class StaticException */
 
-  class TypeException : public ZorbaException
+  class TypeException : public QueryException
   {
     friend std::ostream& operator<<(std::ostream&, const TypeException&);
     public:
@@ -68,7 +77,7 @@ namespace zorba {
 
   }; /* class TypeException */
 
-  class SerializationException : public ZorbaException
+  class SerializationException : public QueryException
   {
     friend std::ostream& operator<<(std::ostream&, const SerializationException&);
     public:
@@ -80,15 +89,15 @@ namespace zorba {
 
   class SystemException : public ZorbaException
   {
-    friend std::ostream& operator<<(std::ostream&, const SystemException&);
+    friend std::ostream& operator<<(std::ostream&, const ZorbaException&);
     public:
-      SystemException(const ZorbaError::ErrorCode&, const String&, 
-                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
+      SystemException(const ZorbaError::ErrorCode&, const String&);
       virtual ~SystemException() throw();
 
   }; /* class SystemException */
 
   std::ostream& operator<< (std::ostream& os, const ZorbaException& aException);
+  std::ostream& operator<< (std::ostream& os, const QueryException& aException);
   std::ostream& operator<< (std::ostream& os, const StaticException& aException);
   std::ostream& operator<< (std::ostream& os, const DynamicException& aException);
   std::ostream& operator<< (std::ostream& os, const TypeException& aException);

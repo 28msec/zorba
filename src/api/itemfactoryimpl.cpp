@@ -1,4 +1,5 @@
 #include <zorba/item.h>
+#include "errors/errors.h"
 #include "api/itemfactoryimpl.h"
 
 #include "system/globalenv.h"
@@ -69,21 +70,32 @@ namespace zorba {
   ItemFactoryImpl::createQName(const String& aNamespace, const String& aPrefix,
                                const String& aLocalname)
   {
+    xqpStringStore* lNamespace = Unmarshaller::getInternalString( aNamespace );
+    xqpStringStore* lPrefix = Unmarshaller::getInternalString( aPrefix );
+    xqpStringStore* lLocalname = Unmarshaller::getInternalString( aLocalname );
+
     store::Item_t lItem;
+    lItem = theItemFactory->createQName(lNamespace, lPrefix, lLocalname);
     return &*lItem;
   }
 
   Item
   ItemFactoryImpl::createQName(const String& aNamespace, const String& aLocalname)
   {
+    xqpStringStore* lNamespace = Unmarshaller::getInternalString( aNamespace );
+    xqpString lPrefix("");
+    xqpStringStore* lLocalname = Unmarshaller::getInternalString( aLocalname );
     store::Item_t lItem;
+    lItem = theItemFactory->createQName(lNamespace, &*lPrefix.theStrStore, lLocalname);
     return &*lItem;
   }
 
   Item 
   ItemFactoryImpl::createNCName(const String& aValue)
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+    lItem = theItemFactory->createNCName(lString);
     return &*lItem;
   }
     
@@ -91,13 +103,19 @@ namespace zorba {
   ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
   {
     store::Item_t lItem;
-    return &*lItem;
+    try { 
+      lItem = theItemFactory->createBase64Binary(aBinData, aLength);
+      return &*lItem;
+    } catch (error::ZorbaError &e) {
+      return &*lItem;
+    }
   }
       
   Item 
   ItemFactoryImpl::createBoolean(bool aValue)
   {
     store::Item_t lItem;
+    lItem = theItemFactory->createBoolean(aValue);
     return &*lItem;
   }
     
@@ -118,6 +136,7 @@ namespace zorba {
   Item 
   ItemFactoryImpl::createDecimal (const String& aValue)
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -132,6 +151,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createInteger(const String& aInteger)
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aInteger );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -203,6 +223,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createDouble ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -210,6 +231,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createDuration( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -225,13 +247,15 @@ namespace zorba {
   Item 
   ItemFactoryImpl::createENTITIES ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
       
   Item
-  ItemFactoryImpl::createENTITY ( const String& value )
+  ItemFactoryImpl::createENTITY ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -239,13 +263,15 @@ namespace zorba {
   Item
   ItemFactoryImpl::createFloat ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
     
   Item
-  ItemFactoryImpl::createGDay ( const String& value )
+  ItemFactoryImpl::createGDay ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -267,6 +293,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createGMonth ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -274,6 +301,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createGMonthDay ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -286,8 +314,9 @@ namespace zorba {
   }
     
   Item
-  ItemFactoryImpl::createGYear ( const String& value )
+  ItemFactoryImpl::createGYear ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -300,8 +329,9 @@ namespace zorba {
   }
     
   Item
-  ItemFactoryImpl::createGYearMonth ( const String& value )
+  ItemFactoryImpl::createGYearMonth ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -323,6 +353,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createID ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -330,6 +361,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createIDREF ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -337,6 +369,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createIDREFS ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -344,6 +377,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createLanguage ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -351,6 +385,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createNMTOKEN ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -358,6 +393,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createNMTOKENS ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -365,6 +401,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createNOTATION ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -372,6 +409,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createName ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -379,6 +417,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createNegativeInteger ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -393,6 +432,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createNonNegativeInteger ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -407,6 +447,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createNonPositiveInteger ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -421,6 +462,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createNormalizedString ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -428,6 +470,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createPositiveInteger ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -442,6 +485,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createTime ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }
@@ -463,6 +507,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createToken ( const String& aValue )
   {
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     return &*lItem;
   }

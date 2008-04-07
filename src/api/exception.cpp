@@ -8,13 +8,9 @@
 
 namespace zorba {
 
-  ZorbaException::ZorbaException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
-                                 const String& afilename, unsigned int linebegin, unsigned int columnbegin)
+  ZorbaException::ZorbaException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription)
     : theErrorCode(aErrorCode),
-      theDescription(aDescription),
-      theFileName(afilename),
-      theLineBegin(linebegin),
-      theColumnBegin(columnbegin) {}
+      theDescription(aDescription) {}
 
   ZorbaException::~ZorbaException() throw() { }
 
@@ -24,76 +20,90 @@ namespace zorba {
   String
   ZorbaException::getDescription() const { return theDescription; }
 
+  QueryException::QueryException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
+                                 const String& afilename, unsigned int linebegin, unsigned int columnbegin)
+    : ZorbaException(aErrorCode, aDescription),
+      theFileName(afilename),
+      theLineBegin(linebegin),
+      theColumnBegin(columnbegin) {}
+
+  QueryException::~QueryException() throw() { }
+
   String
-  ZorbaException::getFileName() const { return theFileName; }
+  QueryException::getFileName() const { return theFileName; }
 
   unsigned int
-  ZorbaException::getLineBegin() const { return theLineBegin; }
+  QueryException::getLineBegin() const { return theLineBegin; }
 
   unsigned int
-  ZorbaException::getColumnBegin() const { return theColumnBegin; }
+  QueryException::getColumnBegin() const { return theColumnBegin; }
 
   DynamicException::DynamicException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
                       const String& afilename, unsigned int linebegin, unsigned int columnbegin)
-    : ZorbaException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
+    : QueryException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
 
   DynamicException::~DynamicException() throw()  { }
 
   StaticException::StaticException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
                       const String& afilename, unsigned int linebegin, unsigned int columnbegin)
-    : ZorbaException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
+    : QueryException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
 
   StaticException::~StaticException() throw() { }
 
 
   TypeException::TypeException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
                       const String& afilename, unsigned int linebegin, unsigned int columnbegin)
-    : ZorbaException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
+    : QueryException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
 
   TypeException::~TypeException() throw() { }
 
   SerializationException::SerializationException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
                       const String& afilename, unsigned int linebegin, unsigned int columnbegin)
-    : ZorbaException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
+    : QueryException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
 
   SerializationException::~SerializationException() throw() { }
 
-  SystemException::SystemException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
-                      const String& afilename, unsigned int linebegin, unsigned int columnbegin)
-    : ZorbaException(aErrorCode, aDescription, afilename, linebegin, columnbegin) {}
+  SystemException::SystemException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription)
+    : ZorbaException(aErrorCode, aDescription) {}
 
-  SystemException::~SystemException() throw() { }
+  SystemException::~SystemException() throw() {}
 
   std::ostream& operator<< (std::ostream& os, const ZorbaException& aException)
   {
-    return os << "Error on line " << aException.getLineBegin() << " column " << aException.getColumnBegin() << std::endl
-           << "[" << ZorbaError::getErrorCode(aException.getErrorCode()) << "] " << aException.getDescription();
+    return os << "[" << ZorbaError::getErrorCode(aException.getErrorCode()) << "] " 
+              << aException.getDescription();
+  }
+
+  std::ostream& operator<< (std::ostream& os, const QueryException& aException)
+  {
+    return os << "Error on line " << aException.getLineBegin() 
+              << " column " << aException.getColumnBegin() << std::endl
+              << (ZorbaException)aException;
   }
 
   std::ostream& operator<< (std::ostream& os, const DynamicException& aException)
   {
-    return os << (ZorbaException)aException;
+    return os << (QueryException)aException;
   }
 
   std::ostream& operator<< (std::ostream& os, const StaticException& aException)
   {
-    return os << (ZorbaException)aException;
+    return os << (QueryException)aException;
   }
 
   std::ostream& operator<< (std::ostream& os, const TypeException& aException)
   {
-    return os << (ZorbaException)aException;
+    return os << (QueryException)aException;
   }
 
   std::ostream& operator<< (std::ostream& os, const SerializationException& aException)
   {
-    return os << (ZorbaException)aException;
+    return os << (QueryException)aException;
   }
 
   std::ostream& operator<< (std::ostream& os, const SystemException& aException)
   {
-    return  os << "System error "
-               << "[" << ZorbaError::getErrorCode(aException.getErrorCode()) << "] " << aException.getDescription();
+    return  os << (ZorbaException)aException;
   }
 
 

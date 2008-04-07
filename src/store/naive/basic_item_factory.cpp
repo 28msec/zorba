@@ -95,6 +95,11 @@ Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary value)
   return new Base64BinaryItemNaive ( value );
 }
 
+Item_t BasicItemFactory::createBase64Binary(const char* value, size_t length)
+{
+  return new Base64BinaryItemNaive( Base64(value, length) );
+}
+
 
 Item_t BasicItemFactory::createBoolean(xqp_boolean value)
 {

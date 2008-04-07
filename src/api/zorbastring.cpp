@@ -78,10 +78,34 @@ String::compare(const String& string) const
   return m_string->compare(string.m_string);
 }
 
+bool
+String::equals(const String& string) const
+{
+  return m_string->equals(string.m_string);
+}
+
+size_t
+String::length() const
+{
+  return m_string->numChars();
+}
+
+bool
+String::empty()  const
+{
+  return m_string->empty();
+}
+
+bool 
+String::operator==(const String& str) const
+{
+  return equals(str);
+}
 
 std::ostream& operator <<(std::ostream& os, const String& str)
 {
   return os << *str.m_string;
 }
+
 
 }

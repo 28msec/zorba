@@ -749,6 +749,7 @@ namespace zorba {
         XQP0021_USER_ERROR,
         XQP0022_GET_RESULTS_AS_DOM_FAILED,
         XQP0023_GET_RESULTS_AS_SAX_FAILED,
+        XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
 
         //
         // Zorba API errors

@@ -15,6 +15,7 @@ public:
   Item(store::Item *item);
   ~Item();
 
+  // returns QName Item of the type
   Item
   getType() const;
 
@@ -23,6 +24,9 @@ public:
 
   String
   getStringValue() const;
+
+  Item
+  getEBV() const;
 
   bool
   isNode() const;
@@ -38,6 +42,36 @@ public:
 
   const Item& operator =(const Item& rhs);
   const Item& operator =(store::Item *rhs);
+
+  /** functions for QName */
+  // prefix for qname items
+  String
+  getPrefix() const;
+
+  // localname for qname items
+  String
+  getLocalName() const;
+
+  // namespace for qname items
+  String
+  getNamespace() const;
+
+
+  /** functions for numerics */
+
+  //@return true, if containing number is not-a-number (possible for floating-point numbers)
+  bool
+  isNaN() const;
+
+  // @return true, if containing numbers represents -INF or +INF
+  bool
+  isPosOrNegInf() const;
+
+  /** functions for boolean */
+  bool
+  getBooleanValue() const;
+
+
 
 private:
   friend class Unmarshaller;

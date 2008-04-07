@@ -173,10 +173,7 @@ namespace zorba {
                                        aError.theQueryLocation.getColumnBegin());
       aErrorHandler->serializationError(lSerException);
     } else if (aError.isInternalError()) {
-      SystemException lSystemException(aError.theErrorCode, String(aError.theDescription.theStrStore),
-                                       String(aError.theQueryLocation.getFilenameBegin().theStrStore),
-                                       aError.theQueryLocation.getLineBegin(),
-                                       aError.theQueryLocation.getColumnBegin());
+      SystemException lSystemException(aError.theErrorCode, String(aError.theDescription.theStrStore));
       aErrorHandler->systemError(lSystemException);
     }
   }

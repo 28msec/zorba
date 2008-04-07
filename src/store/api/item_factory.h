@@ -71,6 +71,13 @@ public:
    * @param value)?
    */
   virtual Item_t createBase64Binary(xqp_base64Binary value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+   * @param value
+   * @param size of the value
+   */
+  virtual Item_t createBase64Binary(const char* aValue, size_t aLength) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]

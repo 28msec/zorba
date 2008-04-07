@@ -26,6 +26,18 @@ public:
   int
   compare(const String& string) const;
 
+  bool
+  equals(const String& string) const;
+
+  size_t
+  length() const;
+
+  bool
+  empty() const;
+
+  bool 
+  operator==(const String& str) const;
+
 private:
   friend class Unmarshaller;
   friend std::ostream& operator <<(std::ostream& os, const String& str);

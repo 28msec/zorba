@@ -186,6 +186,16 @@ DEF_ERR_CODE (XQP0018_NODEID_ERROR, XQP0018, "Nodeid error: /s")
 
 DEF_ERR_CODE (XQP0019_INTERNAL_ERROR, XQP0019, "Zorba internal error /s")
 
+DEF_ERR_CODE (XQP0020_INVALID_URI, XQP0020, "Invalid URI /s")
+
+DEF_ERR_CODE (XQP0021_USER_ERROR, XQP0021, "User error")
+
+DEF_ERR_CODE (XQP0022_GET_RESULTS_AS_DOM_FAILED, XQP0022, "Couldn't get result as DOM")
+
+DEF_ERR_CODE (XQP0023_GET_RESULTS_AS_SAX_FAILED, XQP0023, "Couldn't get result as SAX")
+
+DEF_ERR_CODE (XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, XQP0024, "The function called (/s) is not available for the given item type (/s).")
+
 
 //
 // XPDY
