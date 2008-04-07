@@ -48,7 +48,7 @@ namespace zorba
 }
 
 /* First part of user declarations.  */
-#line 22 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 23 "/home/wcandillon/eth/zorba/trunk/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -78,7 +78,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 82 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 82 "/home/wcandillon/eth/zorba/trunk/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -92,7 +92,7 @@ namespace zorba {
 # undef YYERROR_VERBOSE
 # define YYERROR_VERBOSE 1
 #else
-# define YYERROR_VERBOSE 0
+# define YYERROR_VERBOSE 1
 #endif
 
 /* Enabling the token table.  */
@@ -129,7 +129,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 94 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 95 "/home/wcandillon/eth/zorba/trunk/xquery/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -139,7 +139,7 @@ namespace zorba
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 143 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 143 "/home/wcandillon/eth/zorba/trunk/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
@@ -466,7 +466,7 @@ namespace zorba
     /// Generate an error message.
     /// \param state   the state where the error occurred.
     /// \param tok     the look-ahead token.
-    virtual std::string yysyntax_error_ (int yystate);
+    virtual std::string yysyntax_error_ (int yystate, int tok);
 
 #if YYDEBUG
     /// \brief Report a symbol value on the debug stream.
