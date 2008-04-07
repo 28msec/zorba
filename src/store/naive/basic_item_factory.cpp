@@ -726,9 +726,13 @@ Item_t BasicItemFactory::createTextNode(
   TextNode* n = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
 
-  ZORBA_FATAL(isRoot || !ctx.empty(), "");
+  // This assertion does not hold in the case of text nodes created by the
+  // source expr of an insert expr.
+  // ZORBA_FATAL(isRoot || !ctx.empty(), "");
 
   bool topRoot = ctx.empty();
+  if (topRoot)
+    isRoot = true;
 
   try
   {

@@ -298,7 +298,7 @@ namespace zorba {
       }
 
       pul->applyUpdates();
-      pul->serializeUpdates(lSerializer, os);
+      //pul->serializeUpdates(lSerializer, os);
     }
     catch (error::ZorbaError& e)
     {

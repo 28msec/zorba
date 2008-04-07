@@ -319,6 +319,8 @@ public:
 
   bool getAttrContent() const;
   void setAttrContent();
+
+  bool isUpdateIterator() const { return theChild->isUpdateIterator(); }
 };
 
 #if 0

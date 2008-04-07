@@ -2,6 +2,7 @@
 
 #include <istream>
 
+#include "errors/fatal.h"
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
 #include "api/itemfactoryimpl.h"
@@ -175,6 +176,10 @@ namespace zorba {
     } else if (aError.isInternalError()) {
       SystemException lSystemException(aError.theErrorCode, String(aError.theDescription.theStrStore));
       aErrorHandler->systemError(lSystemException);
+    }
+    else 
+    {
+      ZORBA_FATAL(0, "Unexpected type of error");
     }
   }
 } /* namespace zorba */

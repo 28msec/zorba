@@ -42,11 +42,7 @@ public:
 class DeleteIterator : public UnaryBaseIterator<DeleteIterator, PlanIteratorState>
 {
  public:
-  DeleteIterator(const QueryLoc& aLoc, PlanIter_t target)
-    :
-    UnaryBaseIterator<DeleteIterator, PlanIteratorState>(aLoc, target)
-  {
-  }
+  DeleteIterator(const QueryLoc& aLoc, PlanIter_t target);
 
   virtual ~DeleteIterator() {}
 

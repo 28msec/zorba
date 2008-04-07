@@ -26,6 +26,11 @@ InsertIterator::InsertIterator (
   theType(aType),
   theDoCopy(true)
 {
+  if (source->isUpdateIterator())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
+
+  if (target->isUpdateIterator())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
 }
 
 
@@ -67,7 +72,8 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
       theType == store::UpdateConsts::AFTER)
   {
     if (!target->isNode() ||
-        target->getNodeKind() == store::StoreConsts::attributeNode)
+        target->getNodeKind() == store::StoreConsts::attributeNode ||
+        target->getNodeKind() == store::StoreConsts::documentNode)
       ZORBA_ERROR_LOC(ZorbaError::XUTY0006, loc);
 
     if (consumeNext(theChild1, aPlanState) != NULL)
@@ -201,6 +207,15 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 /*******************************************************************************
 
 ********************************************************************************/
+DeleteIterator::DeleteIterator(const QueryLoc& aLoc, PlanIter_t target)
+  :
+  UnaryBaseIterator<DeleteIterator, PlanIteratorState>(aLoc, target)
+{
+  if (target->isUpdateIterator())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
+}
+
+
 store::Item_t
 DeleteIterator::nextImpl(PlanState& aPlanState) const
 { 
