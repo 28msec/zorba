@@ -404,6 +404,7 @@ namespace zorba {
     assert(lImpl);
     lImpl->registerErrorHandler(theErrorHandler);
     lImpl->thePlan = thePlan;
+    RCHelper::addReference(lImpl->thePlan); 
     lImpl->theFileName = theFileName;
 
     // child static context
