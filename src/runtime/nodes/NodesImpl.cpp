@@ -42,7 +42,11 @@ store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
 
   if (inNode != NULL)
   {
-    if (inNode->getNodeKind() == store::StoreConsts::elementNode)
+    if(inNode->getNodeKind() == store::StoreConsts::documentNode ||
+       inNode->getNodeKind() == store::StoreConsts::commentNode ||
+       inNode->getNodeKind() == store::StoreConsts::textNode)
+      STACK_PUSH(GENV_ITEMFACTORY->createString(strRes.getStore()), state);
+    else
       STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getNodeName()->getLocalName().getStore()), state);
   }
   else
