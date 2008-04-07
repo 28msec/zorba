@@ -39,6 +39,8 @@
 #include "util/hashmap.h"
 #include "compiler/parser/parse_constants.h"
 
+#include "types/typeops.h"
+
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
@@ -657,8 +659,9 @@ bool begin_visit(treat_expr& /*v*/)
 void end_visit(treat_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t p = pop_itstack ();
-  itstack.push (new TreatIterator (v.get_loc (), p, v.get_target_type (), v.get_err ()));
+  std::vector<PlanIter_t> argv;
+  argv.push_back (pop_itstack ());
+  itstack.push (new TreatIterator (v.get_loc (), argv, v.get_target_type (), v.get_check_prime (), v.get_err ()));
 }
 
 bool begin_visit(castable_expr& /*v*/)

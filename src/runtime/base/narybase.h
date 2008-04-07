@@ -127,16 +127,8 @@ public:
 	}
 	/* end class NaryBaseIterator */
 
-
-#define NARY_ITER_STATE(iterName, stateName)                             \
-class iterName : public NaryBaseIterator<iterName, stateName > {         \
- public:                                                                 \
-  iterName(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :    \
-    NaryBaseIterator<iterName, stateName >(loc, aChildren)               \
-      { }                                                                \
-                                                                         \
-  virtual ~iterName() { }                                                \
-                                                                         \
+#define NARY_ITER_METHODS                                                \
+public:                                                                  \
   store::Item_t nextImpl(PlanState& aPlanState) const;                   \
                                                                          \
   virtual void accept(PlanIterVisitor& v) const                          \
@@ -148,7 +140,16 @@ class iterName : public NaryBaseIterator<iterName, stateName > {         \
       ( *iter )->accept ( v );                                           \
     }                                                                    \
     v.endVisit(*this);                                                   \
-  }                                                                      \
+  }
+
+#define NARY_ITER_STATE(iterName, stateName)                             \
+class iterName : public NaryBaseIterator<iterName, stateName > {         \
+public:                                                                  \
+  iterName(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :    \
+    NaryBaseIterator<iterName, stateName >(loc, aChildren)               \
+      { }                                                                \
+                                                                         \
+  NARY_ITER_METHODS                                                      \
 };
 
 #define NARY_ITER(name) NARY_ITER_STATE(name, PlanIteratorState) 
@@ -156,3 +157,9 @@ class iterName : public NaryBaseIterator<iterName, stateName > {         \
 } /* namespace zorba */
 
 #endif /* ZORBA_NARYBASE_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

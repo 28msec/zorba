@@ -839,6 +839,7 @@ public:
 class treat_expr : public cast_base_expr {
 protected:
   enum ZorbaError::ErrorCode err;
+  bool check_prime;
 
 public:
   expr_kind_t get_expr_kind () { return treat_expr_kind; }
@@ -846,9 +847,12 @@ public:
     const QueryLoc&,
     expr_t,
     xqtref_t,
-    enum ZorbaError::ErrorCode);
+    enum ZorbaError::ErrorCode,
+    bool check_prime = true);
 
   enum ZorbaError::ErrorCode get_err () { return err; }
+  bool get_check_prime () { return check_prime; }
+  void set_check_prime (bool check_prime_) { check_prime = check_prime_; }
 
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);

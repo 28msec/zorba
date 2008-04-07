@@ -586,7 +586,9 @@ namespace zorba {
 
   void PrinterVisitor::beginVisit ( const TreatIterator& a ) {
     thePrinter.startBeginVisit("TreatIterator", (intptr_t) &a);
-    thePrinter.addAttribute("type", TypeOps::toString(*a.theTreatType));
+    if (a.check_prime)
+      thePrinter.addAttribute("type", TypeOps::toString(*a.theTreatType));
+    thePrinter.addAttribute("quant", TypeOps::decode_quantifier (a.theQuantifier));
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }

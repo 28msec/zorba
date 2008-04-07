@@ -86,7 +86,6 @@ namespace zorba {
   UNARY_ACCEPT(FollowingAxisIterator);
   UNARY_ACCEPT(FnBooleanIterator);
   UNARY_ACCEPT(InstanceOfIterator);
-  UNARY_ACCEPT(TreatIterator);
   UNARY_ACCEPT(CodepointsToStringIterator);
   UNARY_ACCEPT(StringToCodepointsIterator);
   UNARY_ACCEPT(StringLengthIterator);

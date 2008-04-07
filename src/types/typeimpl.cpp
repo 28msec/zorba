@@ -2,6 +2,7 @@
 #include "system/globalenv.h"
 #include "types/typeconstants.h"
 #include "types/typeimpl.h"
+#include "types/typeops.h"
 #include "types/root_typemanager.h"
 
 namespace zorba {
@@ -67,24 +68,9 @@ const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CO
   "XS_NOTATION"
 };
 
-static inline const char *decode_quantifier (TypeConstants::quantifier_t quant) {
-  switch (quant) {
-  case TypeConstants::QUANT_ONE:
-    return "";
-  case TypeConstants::QUANT_QUESTION:
-    return "?";
-  case TypeConstants::QUANT_STAR:
-    return "*";
-  case TypeConstants::QUANT_PLUS:
-    return "+";
-  default:
-    return "<unknown-quant>";
-  }
-}
-
 std::ostream& XQType::serialize(std::ostream& os) const
 {
-  return os << "[XQType " << KIND_STRINGS[type_kind()] << decode_quantifier (get_quantifier()) << "]";
+  return os << "[XQType " << KIND_STRINGS[type_kind()] << TypeOps::decode_quantifier (get_quantifier()) << "]";
 }
 
 
@@ -97,7 +83,7 @@ std::string XQType::toString() const
 
 std::ostream& AtomicXQType::serialize(std::ostream& os) const
 {
-  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()] << decode_quantifier (get_quantifier()) << "]";
+  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()] << TypeOps::decode_quantifier (get_quantifier()) << "]";
 }
 
 NodeXQType::NodeXQType(

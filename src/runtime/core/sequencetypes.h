@@ -96,21 +96,21 @@ public:
 };
 
 /**
- * Iterator which tries to promote an item to the passed target type. If it is not possible,
- * a type error is thrown.
+ * Iterator which checks if a sequence is an instance of the target type. If not,
+ * an error is thrown.
  **/
-class TreatIterator : public UnaryBaseIterator<TreatIterator, PlanIteratorState> {
+class TreatIterator : public NaryBaseIterator<TreatIterator, PlanIteratorState> {
   friend class PrinterVisitor;
 private:
   xqtref_t theTreatType;
   TypeConstants::quantifier_t theQuantifier;
+  bool check_prime;
   ZorbaError::ErrorCode theErrorCode;
 
 public:
-  TreatIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCode);
-  virtual ~TreatIterator();
-  store::Item_t nextImpl(PlanState& aPlanState) const;
-  virtual void accept(PlanIterVisitor&) const;
+  TreatIterator(const QueryLoc&, std::vector<PlanIter_t>&, const xqtref_t& aTreatType, bool check_prime, enum ZorbaError::ErrorCode);
+  
+  NARY_ITER_METHODS
 };
 
 class EitherNodesOrAtomicsIteratorState : public PlanIteratorState {

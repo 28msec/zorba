@@ -59,10 +59,18 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   cast_base_expr *pe;
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) {
     expr_t arg = pe->get_input();
-    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-    if (TypeOps::is_subtype(*arg_type, *pe->get_target_type()))
+    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext()),
+      target_type = pe->get_target_type();
+    if (TypeOps::is_subtype(*arg_type, *target_type))
       return arg;
-    else return NULL;
+    if (node->get_expr_kind () == treat_expr_kind) {
+      treat_expr *te = dynamic_cast<treat_expr *> (pe);
+      if (te->get_check_prime ()
+          && TypeOps::is_subtype (*TypeOps::prime_type (*arg_type),
+                                  *TypeOps::prime_type (*target_type)))
+        te->set_check_prime (false);
+    }
+    return NULL;
   }
 
   return NULL;

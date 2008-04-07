@@ -1,4 +1,5 @@
 #include "runtime/core/sequencetypes.h"
+#include "runtime/util/iterator_impl.h"
 #include "system/globalenv.h"
 #include "errors/error_manager.h"
 #include "types/casting.h"
@@ -10,14 +11,6 @@ using namespace std;
 
 namespace zorba
 {
-
-  static xqtref_t seq_target_type (xqtref_t type) {
-    TypeManager &ts = GENV_TYPESYSTEM;
-    if (TypeOps::is_equal (*type, *ts.create_empty_type ()))
-      return type;
-    else
-      return TypeOps::prime_type (*type);
-  }
 
 /*******************************************************************************
 
@@ -121,7 +114,7 @@ CastIterator::CastIterator(
     const xqtref_t& aCastType)
   : UnaryBaseIterator<CastIterator, PlanIteratorState>(loc, aChild)
 {
-  theCastType = seq_target_type (aCastType);
+  theCastType = TypeOps::prime_type (*aCastType);
   theQuantifier = TypeOps::quantifier(*aCastType);
 }
 
@@ -183,7 +176,7 @@ CastableIterator::CastableIterator(
 :
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(aLoc, aChild)
 {
-  theCastType = seq_target_type (aCastType);
+  theCastType = TypeOps::prime_type (*aCastType);
   theQuantifier = TypeOps::quantifier(*aCastType);
 }
 
@@ -227,7 +220,7 @@ store::Item_t CastableIterator::nextImpl(PlanState& planState) const
 PromoteIterator::PromoteIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const xqtref_t& aPromoteType)
   : UnaryBaseIterator<PromoteIterator, PlanIteratorState>(aLoc, aChild)
 {
-  thePromoteType = seq_target_type (aPromoteType);
+  thePromoteType = TypeOps::prime_type (*aPromoteType);
   theQuantifier = TypeOps::quantifier(*aPromoteType);
 }
 
@@ -273,22 +266,22 @@ store::Item_t PromoteIterator::nextImpl(PlanState& planState) const
   STACK_END (lState);
 }
 
-  TreatIterator::TreatIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const xqtref_t& aTreatType, ZorbaError::ErrorCode aErrorCode)
-  : UnaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChild), theErrorCode (aErrorCode)
+TreatIterator::TreatIterator(const QueryLoc& aLoc, std::vector<PlanIter_t>& aChildren, const xqtref_t& aTreatType, bool check_prime_, ZorbaError::ErrorCode aErrorCode)
+  : NaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChildren),
+    check_prime (check_prime_), theErrorCode (aErrorCode)
 {
-  theTreatType = seq_target_type (aTreatType);
+  theTreatType = TypeOps::prime_type (*aTreatType);
   theQuantifier = TypeOps::quantifier(*aTreatType);
 }
-
-TreatIterator::~TreatIterator(){}
 
 store::Item_t TreatIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
+
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
 
-  lItem = consumeNext(theChild.getp(), planState);
+  lItem = CONSUME (0);
   
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
@@ -297,23 +290,23 @@ store::Item_t TreatIterator::nextImpl(PlanState& planState) const
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
-    if(consumeNext(theChild.getp(), planState) != 0) {
+    if (CONSUME (0) != 0) {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc, 
       "Seq with 2 or more items cannot treated as a QUANT_QUESTION or QUANT_ONE type.");
     }
-    if ( !TypeOps::is_treatable(lItem, *theTreatType)) {
+    if ( check_prime && !TypeOps::is_treatable(lItem, *theTreatType)) {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lItem)) + " as " + TypeOps::toString (*theTreatType) );
     } else {
       STACK_PUSH(lItem, lState);
     }
   } else {
     do {
-      if ( !TypeOps::is_treatable(lItem, *theTreatType)) {
+      if ( check_prime && !TypeOps::is_treatable(lItem, *theTreatType)) {
         ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lItem)) + " as " + TypeOps::toString (*theTreatType) );
       } else{
         STACK_PUSH(lItem, lState);
       }
-      lItem = consumeNext(theChild.getp(), planState);
+      lItem = CONSUME (0);
     } while (lItem != 0);
   }
   STACK_END (lState);

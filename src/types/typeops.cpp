@@ -1,4 +1,3 @@
-#include <boost/smart_ptr.hpp>
 #include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 #include "types/typeops.h"
@@ -10,6 +9,21 @@
 #include "util/Assert.h"
 
 namespace zorba {
+
+  const char *TypeOps::decode_quantifier (TypeConstants::quantifier_t quant) {
+    switch (quant) {
+    case TypeConstants::QUANT_ONE:
+      return "";
+    case TypeConstants::QUANT_QUESTION:
+      return "?";
+    case TypeConstants::QUANT_STAR:
+      return "*";
+    case TypeConstants::QUANT_PLUS:
+      return "+";
+    default:
+      return "<unknown-quant>";
+    }
+  }
 
 std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
 {

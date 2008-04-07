@@ -4,18 +4,23 @@
 #include <string>
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
+#include "zorba/typeident.h"
+
+#include <boost/smart_ptr.hpp>
 
 namespace zorba {
 
 typedef boost::shared_ptr<TypeIdentifier> type_ident_ref_t;
 
 class TypeOps {
-  public:
+public:
     /*
      * Writes a string representation of the given type to the output stream.
      */
     static std::ostream& serialize(std::ostream& os, const XQType& type);
   
+    static const char *decode_quantifier (TypeConstants::quantifier_t quant);
+
     static std::string toString (const XQType& type);
 
     static const TypeManager *get_lower_manager(const TypeManager* m1, const TypeManager* m2);
