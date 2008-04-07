@@ -720,16 +720,19 @@ bool GenericCast::isCastable(
 }
 
 store::Item_t GenericCast::promote(store::Item_t aItem, const xqtref_t& aTargetType) const {
-  xqtref_t lItemType = GENV_TYPESYSTEM.create_type(aItem->getType(), TypeConstants::QUANT_ONE);
+  xqtref_t lItemType = GENV_TYPESYSTEM.item_type (aItem);
 
-  if (TypeOps::is_subtype(*lItemType, *aTargetType)) {
+  if (TypeOps::is_equal (*aTargetType, *GENV_TYPESYSTEM.NONE_TYPE))
+      return NULL;
+
+  if (TypeOps::is_subtype(*lItemType, *aTargetType))
     return aItem;
-  }
 
   store::Item_t lResult = 0;
-  if (TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) && ! TypeOps::is_equal(*TypeOps::prime_type (*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE)) {
+  if (TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+      && ! TypeOps::is_equal(*TypeOps::prime_type (*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
     lResult = GenericCast::instance()->cast(aItem, aTargetType);
-  } else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
+  else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
     // Numeric Promotion to xs:float
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
       lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.FLOAT_TYPE_ONE); 
