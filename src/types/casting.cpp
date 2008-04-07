@@ -98,8 +98,8 @@ store::Item_t GenericCast::castToQName (
   {
     if (castableToNCName(qname))
     {
-      xqpStringStore* lNamespace = new xqpStringStore("");
-      xqpStringStore* lPrefix = new xqpStringStore("");
+      xqpStringStore_t lNamespace = new xqpStringStore("");
+      xqpStringStore_t lPrefix = new xqpStringStore("");
 
       return factory->createQName(lNamespace, lPrefix, qname);
     }
@@ -117,8 +117,9 @@ store::Item_t GenericCast::castToQName (
     xqpString lNamespace;
     xqpString lPrefix(qname->str().substr(0, lIndex));
     xqpString lLocal(qname->str().substr(lIndex + 1));
-    
-    if (!castableToNCName(lPrefix.getStore()) || !castableToNCName(lLocal.getStore()))
+
+    if (!castableToNCName(lPrefix.getStore()) ||
+        !castableToNCName(lLocal.getStore()))
       ZORBA_ERROR(code);
     
     // namespace resolution
@@ -136,7 +137,9 @@ store::Item_t GenericCast::castToQName (
       }
     }
 
-    return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
+    return factory->createQName(lNamespace.getStore(),
+                                lPrefix.getStore(),
+                                lLocal.getStore());
   }
   return 0;
 }
