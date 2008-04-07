@@ -17,6 +17,7 @@ public:
   Variable() : theInline(false) {}
 };
 
+
 class State {
 public:
   enum CompareType {
@@ -33,14 +34,14 @@ public:
     assert(false);
   }
 
-  std::string theName;
-  std::vector<Variable*> theVars;
-  bool hasDate;
-  std::string theDate;
-  bool hasCompare;
-  std::string theCompare;
-  CompareType theCompareType;
-  bool hasErrors;
+  std::string              theName;
+  std::vector<Variable*>   theVars;
+  bool                     hasDate;
+  std::string              theDate;
+  bool                     hasCompare;
+  std::vector<std::string> theCompares;
+  std::vector<CompareType> theCompareTypes;
+  bool                     hasErrors;
   std::vector<std::string> theErrors;
 
   State() : hasDate(false), hasCompare(false), hasErrors(false)
@@ -75,6 +76,7 @@ public:
   }
 };
 
+
 class Specification
 {
   typedef char char_t;
@@ -85,8 +87,15 @@ class Specification
 public:
   std::vector<State*> theStates;
 
+private:
+  State     * theCurState;
+  Variable  * theCurVar;
+
+public:
   Specification() {}
-  ~Specification() {
+
+  ~Specification() 
+  {
     std::vector<State*>::iterator lIter = theStates.begin();
     std::vector<State*>::iterator lEnd =  theStates.end();
     for (;lIter != lEnd; ++lIter)
@@ -114,107 +123,73 @@ public:
   }
 
 private:
-  State* theCurState;
-  Variable* theCurVar;
-
-  void addState(iterator_t str, iterator_t end) {
+  void addState(iterator_t str, iterator_t end) 
+  {
     theCurState = new State();
     theCurState->theName = std::string(str, end);
   }
 
-  void setDate(iterator_t str, iterator_t end) {
+  void setDate(iterator_t str, iterator_t end) 
+  {
     theCurState->hasDate = true;
     theCurState->theDate = std::string(str, end);
   }
 
-  void setCompare(iterator_t str, iterator_t end) {
+  void addCompare(iterator_t str, iterator_t end) 
+  {
     theCurState->hasCompare = true;
-    theCurState->theCompare = std::string(str, end);
+    theCurState->theCompares.push_back(std::string(str, end));
   }
 
-  void setCompareType(iterator_t str, iterator_t end) {
+  void addCompareType(iterator_t str, iterator_t end) 
+  {
     std::string lCompareType = std::string(str, end);
-    if (lCompareType.compare("Text") == 0) {
-      theCurState->theCompareType = State::TEXT;
-    } else if (lCompareType.compare("Fragment") == 0) {
-      theCurState->theCompareType = State::FRAGMENT;
-    } else {
+    if (lCompareType.compare("Text") == 0) 
+    {
+      theCurState->theCompareTypes.push_back(State::TEXT);
+    }
+    else if (lCompareType.compare("Fragment") == 0) 
+    {
+      theCurState->theCompareTypes.push_back(State::FRAGMENT);
+    }
+    else 
+    {
       assert(false);
     }
   }
 
-  void addError(iterator_t str, iterator_t end) {
+  void addError(iterator_t str, iterator_t end) 
+  {
     theCurState->hasErrors = true;
     std::string lError = std::string(str, end);
     theCurState->theErrors.push_back(lError);
   }
 
-  void addQuery(iterator_t str, iterator_t end) {
+  void addQuery(iterator_t str, iterator_t end) 
+  {
     theStates.push_back(theCurState);
     theCurState = 0;
   }
 
-  void setVarName(iterator_t str, iterator_t end) {
+  void setVarName(iterator_t str, iterator_t end) 
+  {
     theCurVar = new Variable();
     theCurVar->theName = std::string(str, end);
   }
 
-  void setVarValue(iterator_t str, iterator_t end) {
+  void setVarValue(iterator_t str, iterator_t end) 
+  {
     theCurVar->theValue = std::string(str,end);
   }
 
-  void addVariable(iterator_t str, iterator_t end, bool aInline) {
+  void addVariable(iterator_t str, iterator_t end, bool aInline) 
+  {
     theCurVar->theInline = aInline;
     theCurState->theVars.push_back(theCurVar);
     theCurVar = 0;
   }
 
 public:
-  void printContent() {
-    std::cout << "STATES (Size: " << statesSize() << ")" << std::endl;
-    std::vector<State*>::const_iterator lIter = statesBegin();
-    std::vector<State*>::const_iterator lEnd = statesEnd();
-
-    for(;lIter!=lEnd;++lIter)
-    {
-      std::cout << "STATE" << std::endl;
-      std::cout << "  Name: " << (*lIter)->theName << std::endl; 
-      std::cout << "  HasDate: " << (*lIter)->hasDate << std::endl; 
-      if ((*lIter)->hasDate) {
-        std::cout << "  Date: " << (*lIter)->theDate << std::endl; 
-      }
-
-      std::cout << "  VARS (Size: " << (*lIter)->varsSize() << ")" << std::endl;
-      std::vector<Variable*>::const_iterator lIter2 = (*lIter)->varsBegin();
-      std::vector<Variable*>::const_iterator lEnd2 = (*lIter)->varsEnd();
-      
-      for(;lIter2!=lEnd2;++lIter2)
-      {
-        std::cout << "  VAR" << std::endl;
-        std::cout << "    Inline: " << (*lIter2)->theInline << std::endl;
-        std::cout << "    Name: " << (*lIter2)->theName << std::endl;
-        std::cout << "    Value: " << (*lIter2)->theValue << std::endl;
-      }
-
-      std::cout << "  HasCompare: " << (*lIter)->hasCompare << std::endl; 
-      if ((*lIter)->hasCompare) {
-        std::cout << "  Compare: " << (*lIter)->theCompare << std::endl; 
-        std::cout << "  CompareType: " << State::compareTypeStr((*lIter)->theCompareType) << std::endl; 
-      }
-
-      std::cout << "  HasErrors: " << (*lIter)->hasErrors << std::endl;
-      if ((*lIter)->hasErrors) {
-        std::vector<std::string>::const_iterator lIter3 = (*lIter)->theErrors.begin();
-        std::vector<std::string>::const_iterator lEnd3  = (*lIter)->theErrors.end();
-        for(;lIter3!=lEnd3;++lIter3)
-        {
-          std::cout << "    Error: " << *lIter3 << std::endl;
-        }
-      }
-
-    }
-  }
-
   bool
   parseFile(std::string str)
   {
@@ -258,9 +233,9 @@ public:
     rule_t compare
       =  boost::spirit::str_p("Compare:")
       >> boost::spirit::blank_p
-      >> (+boost::spirit::graph_p)[bind(&Specification::setCompare, this, _1, _2)]
+      >> (+boost::spirit::graph_p)[bind(&Specification::addCompare, this, _1, _2)]
       >> boost::spirit::blank_p
-      >> (+boost::spirit::graph_p)[bind(&Specification::setCompareType, this, _1, _2)]
+      >> (+boost::spirit::graph_p)[bind(&Specification::addCompareType, this, _1, _2)]
       >> !boost::spirit::eol_p;
 
 
@@ -276,7 +251,7 @@ public:
        (
            state 
         >> !args 
-        >> !(compare | +error)
+        >> !(+compare | +error)
        )[bind(&Specification::addQuery, this, _1, _2)]
       );
 
@@ -288,5 +263,58 @@ public:
 
     return boost::spirit::parse(first, last, defs).full; 
   }
+
+  void printContent() 
+  {
+    std::cout << "STATES (Size: " << statesSize() << ")" << std::endl;
+    std::vector<State*>::const_iterator lIter = statesBegin();
+    std::vector<State*>::const_iterator lEnd = statesEnd();
+
+    for(;lIter!=lEnd;++lIter)
+    {
+      std::cout << "STATE" << std::endl;
+      std::cout << "  Name: " << (*lIter)->theName << std::endl; 
+      std::cout << "  HasDate: " << (*lIter)->hasDate << std::endl; 
+      if ((*lIter)->hasDate) {
+        std::cout << "  Date: " << (*lIter)->theDate << std::endl; 
+      }
+
+      std::cout << "  VARS (Size: " << (*lIter)->varsSize() << ")" << std::endl;
+      std::vector<Variable*>::const_iterator lIter2 = (*lIter)->varsBegin();
+      std::vector<Variable*>::const_iterator lEnd2 = (*lIter)->varsEnd();
+      
+      for(;lIter2!=lEnd2;++lIter2)
+      {
+        std::cout << "  VAR" << std::endl;
+        std::cout << "    Inline: " << (*lIter2)->theInline << std::endl;
+        std::cout << "    Name: " << (*lIter2)->theName << std::endl;
+        std::cout << "    Value: " << (*lIter2)->theValue << std::endl;
+      }
+
+      std::cout << "  HasCompare: " << (*lIter)->hasCompare << std::endl; 
+      if ((*lIter)->hasCompare) 
+      {
+        ulong numCompares = (*lIter)->theCompares.size();
+        for (ulong i = 0; i < numCompares; i++)
+        {
+          std::cout << "  Compare: " << (*lIter)->theCompares[i] << std::endl; 
+          std::cout << "  CompareType: " << State::compareTypeStr((*lIter)->theCompareTypes[i]) << std::endl; 
+        }
+      }
+
+      std::cout << "  HasErrors: " << (*lIter)->hasErrors << std::endl;
+      if ((*lIter)->hasErrors) {
+        std::vector<std::string>::const_iterator lIter3 = (*lIter)->theErrors.begin();
+        std::vector<std::string>::const_iterator lEnd3  = (*lIter)->theErrors.end();
+        for(;lIter3!=lEnd3;++lIter3)
+        {
+          std::cout << "    Error: " << *lIter3 << std::endl;
+        }
+      }
+
+    }
+  }
+
 };
+
 #endif

@@ -218,9 +218,12 @@ main(int argc, char** argv)
       std::cout << std::endl;
       std::ifstream lQueryStream(lQueryFile.c_str());
 
-      try {
+      try 
+      {
         lQueries.push_back(engine->compileQuery(lQueryStream, getCompilerHints()));
-      } catch (zorba::ZorbaException &e) {
+      }
+      catch (zorba::ZorbaException &e)
+      {
         if (isErrorExpected(e, lState)) {
           return 0;
         } else {
@@ -230,7 +233,8 @@ main(int argc, char** argv)
       }
 
       zorba::DynamicContext_t lDynCtx = lQueries.back()->getDynamicContext();
-      if (lState->hasDate) {
+      if (lState->hasDate) 
+      {
         std::string lDateTime = lState->theDate; 
         if (lDateTime.find("T") == std::string::npos) {
           lDateTime += "T00:00:00";
@@ -247,47 +251,74 @@ main(int argc, char** argv)
         set_var(lVar->theInline, lVar->theName, lVar->theValue, lDynCtx);
       }
 
-      try {
-        if (lQueries.back()->isUpdateQuery()) {
+      try 
+      {
+        if (lQueries.back()->isUpdateQuery()) 
+        {
           std::stringstream lStream;
           lQueries.back()->applyUpdates(lStream);
           std::cout << "Updating Query -> no Result" << std::endl;
-        } else {
+        }
+        else
+        {
           if ( fs::exists(lResultFile)) { fs::remove (lResultFile); }
           std::ofstream lResFileStream(lResultFile.native_file_string().c_str());
           lQueries.back()->serialize(lResFileStream, lSerOptions);
           lResFileStream.flush();
           std::cout << "Result:" << std::endl;
           printFile(std::cout, lResultFile.native_file_string());
-          if (  lState->hasCompare )
-          {
-            fs::path lRefFile = fs::system_complete(fs::path( lRefPath.native_file_string() + "/" 
-                                   + lState->theCompare , fs::native) );
-            int lLine, lCol, lPos;
-            bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
-            if (!lRes) {
-              std::cerr << std::endl << "Result does not match expected result" << std::endl;
-              printFile(std::cerr, lRefFile.native_file_string());
-              std::cerr << std::endl;
 
-              std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-              std::cerr << "Got: " << std::endl; 
-              printFile(std::cerr, lRefFile.native_file_string());
-              printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
-              std::cerr << std::endl << "Expected ";
-              printPart(std::cerr, lRefFile.native_file_string(), lPos, 15);
-              std::cerr <<  std::endl;
+          if (lState->hasCompare)
+          {
+            bool lRes = false;
+            ulong numRefs = lState->theCompares.size();
+            for (ulong i = 0; i < numRefs && !lRes; i++)
+            {
+              fs::path lRefFile = fs::system_complete(fs::path(lRefPath.native_file_string() + "/" 
+                                   + lState->theCompares[i], fs::native) );
+              int lLine, lCol, lPos;
+              lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
+
+              if (!lRes) 
+              {
+                std::cerr << std::endl << "Result does not match expected result : "
+                          << std::endl;
+
+                printFile(std::cerr, lRefFile.native_file_string());
+                std::cerr << std::endl;
+
+                std::cerr << "See line " << lLine << ", col " << lCol
+                          << " of expected result. " << std::endl;
+                std::cerr << "Got: " << std::endl; 
+                printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
+                std::cerr << std::endl << "Expected ";
+                printPart(std::cerr, lRefFile.native_file_string(), lPos, 15);
+                std::cerr <<  std::endl;
+              }
+            }
+
+            if (!lRes) 
+            {
+              std::cerr << std::endl << "Result does not match any of the expected results"
+                        << std::endl;
               return 4;
             }
-          } else if (lState->hasErrors) {
+          }
+          else if (lState->hasErrors)
+          {
             std::cerr << "Query must throw an error!" << std::endl;
             return 5; 
-          } else {
-            // if the queries is not an updating query, it must return a result or throw an error
+          }
+          else
+          {
+            // if the queries is not an updating query, it must return a result
+            // or throw an error
             assert(false);
           }
         }
-      } catch (zorba::ZorbaException &e) {
+      }
+      catch (zorba::ZorbaException &e)
+      {
         if (isErrorExpected(e, lState)) {
           return 0;
         } else {
