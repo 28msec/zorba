@@ -84,19 +84,38 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 //---------------------
 store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
 {
-  //TODO the store does not implement support for the languages
-
-  store::Item_t item, node;
-  xqpStringStore_t lang;
+  store::Item_t   item, node;
+  Iterator_t      theAttributes;
+  bool            found = false;
+  xqp_string      reqLang;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lang = (NULL == (item = CONSUME (0)))
-    ? item->getStringValue ()
-    : xqpStringStore_t (new xqpStringStore ());
-  node = CONSUME (1);
+  if(NULL != (item = CONSUME(0)))
+  {
+    reqLang = item->getStringValue().getp();
+    
+    for(node = CONSUME(1); NULL != node && !found; node = node->getParent() )
+    {
+      theAttributes = node->getAttributes();
+      theAttributes->open();
+    
+      while (!found)
+      {
+        item = theAttributes->next();
+        if (item == NULL)
+          break;
 
+        if((xqp_string(item->getNodeName()->getStringValue().getp()).matches("lang", "i")) &&
+           (xqp_string(item->getStringValue().getp()).matches(xqp_string("^") + reqLang + "(-|$)", "i")))
+          found = true;
+      }
+    }
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(found), state);
+  
   STACK_END (state);
 }
 
