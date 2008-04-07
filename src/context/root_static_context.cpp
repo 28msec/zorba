@@ -1,16 +1,17 @@
 #include "types/root_typemanager.h"
 #include "context/root_static_context.h"
+#include "context/namespace_context.h"
 #include "system/globalenv.h"
 
 namespace zorba {
 
 static const char *default_ns_initializers [] = {
   "fn", XQUERY_FN_NS,
-  "xml", "http://www.w3.org/XML/1998/namespace",
-  "xs", "http://www.w3.org/2001/XMLSchema",
-  "xsi", "http://www.w3.org/2001/XMLSchema-instance",
-  "local", "http://www.w3.org/2005/xquery-local-functions",
-  "err", "http://www.w3.org/2005/xqt-errors",
+  "xml", XML_NS,
+  "xs", XML_SCHEMA_NS,
+  "xsi", XSI_NS,
+  "local", XQUERY_LOCAL_FN_NS,
+  "err", XQUERY_ERR_NS,
   NULL, NULL
 };
 

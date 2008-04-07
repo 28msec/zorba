@@ -45,10 +45,6 @@
 #define THROW_XQP_EXCEPTION		
 #endif
 
-// TODO make this a static member of the context
-#define XQUERY_FN_NS  "http://www.w3.org/2005/xpath-functions"
-#define XQUERY_OP_NS  "http://www.w3.org/2005/xpath-functions"
-
 namespace zorba {
 
 class namespace_node;

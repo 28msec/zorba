@@ -19,6 +19,7 @@
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
 #include "context/dynamic_context.h"
+#include "context/namespace_context.h"
 
 #include "store/api/store.h"
 #include "store/api/collection.h"
@@ -84,7 +85,7 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 //---------------------
 store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t   item, node;
+  store::Item_t   item, node, attr, attrName;
   Iterator_t      theAttributes;
   bool            found = false;
   xqp_string      reqLang;
@@ -101,15 +102,13 @@ store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
       theAttributes = node->getAttributes();
       theAttributes->open();
     
-      while (!found)
+      for ((theAttributes = node->getAttributes())->open ();
+           ! found && NULL != (attr = theAttributes->next()); )
       {
-        item = theAttributes->next();
-        if (item == NULL)
-          break;
-
-        if((xqp_string(item->getNodeName()->getStringValue().getp()).matches("lang", "i")) &&
-           (xqp_string(item->getStringValue().getp()).matches(xqp_string("^") + reqLang + "(-|$)", "i")))
-          found = true;
+        attrName = attr->getNodeName();
+        found = xqp_string (attrName->getLocalName ()) == "lang"
+          && xqp_string (attrName->getNamespace ()) == XML_NS
+          && xqp_string(attr->getStringValue()).matches(xqp_string("^") + reqLang + "(-|$)", "i");
       }
     }
   }

@@ -41,6 +41,7 @@
 #include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 #include "types/typemanager.h"
 #include "functions/function.h"
 #include "functions/library.h"

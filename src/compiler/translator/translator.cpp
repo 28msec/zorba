@@ -761,12 +761,12 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     {
       xqpString uri(constValueExpr->get_val()->getStringValue());
 
-      if (prefix == "xml" && uri != "http://www.w3.org/XML/1998/namespace")
+      if (prefix == "xml" && uri != XML_NS)
       {
         ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
                           "Predefined prefix \"xml\" is not bound to uri \"http://www.w3.org/XML/1998/namespace\"");
       }
-      if (prefix != "xml" && uri == "http://www.w3.org/XML/1998/namespace")
+      if (prefix != "xml" && uri == XML_NS)
       {
         ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
                           "Uri \"http://www.w3.org/XML/1998/namespace\" can only be bound to prefix \"xml\"");
@@ -2056,9 +2056,9 @@ void *begin_visit(const VFO_DeclList& v)
       {
         xqp_string ns = qname->getNamespace ();
         if (ns == XQUERY_FN_NS
-            || ns == sctx_p->lookup_ns ("xml", ZorbaError::XQP0019_INTERNAL_ERROR)
-            || ns == sctx_p->lookup_ns ("xs", ZorbaError::XQP0019_INTERNAL_ERROR)
-            || ns == sctx_p->lookup_ns ("xsi", ZorbaError::XQP0019_INTERNAL_ERROR))
+            || ns == XML_NS
+            || ns == XML_SCHEMA_NS
+            || ns == XSI_NS)
           ZORBA_ERROR_LOC_PARAM (ZorbaError::XQST0045, n->get_location (), qname->getLocalName (), "");
       }
       signature sig(qname, arg_types, return_type);

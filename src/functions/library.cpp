@@ -9,7 +9,6 @@
 #include <iostream>
 #include <memory>
 
-
 #include "system/globalenv.h"
 #include "functions/library.h"
 #include "functions/function.h"
@@ -31,7 +30,8 @@
 #include "functions/Nodes.h"
 
 #include "context/static_context.h"
-//#include "system/zorba.h"
+#include "context/namespace_context.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
