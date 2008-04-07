@@ -10,6 +10,7 @@
 %defines
 %name-prefix="zorba"
 %define "parser_class_name" "xquery_parser"
+%error-verbose
 
 /*
 **	Because the parser uses the xquery_driver and reciprocally, both 
