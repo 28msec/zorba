@@ -19,7 +19,14 @@ namespace zorba {
         bool print_translated, print_normalized, print_optimized;
         bool print_item_flow;  // TODO: move to RuntimeCB
 
-        __config_t() { opt_level = O1; }
+        __config_t() 
+        { 
+          opt_level        = O1;    
+          print_translated = false; 
+          print_normalized = false; 
+          print_optimized  = false; 
+          print_item_flow  = false; 
+        }
       } config_t;
       
       ~CompilerCB();
