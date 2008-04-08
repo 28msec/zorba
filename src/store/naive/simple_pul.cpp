@@ -333,7 +333,7 @@ void PULImpl::addReplaceContent(
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addReplaceValue(Item_t& target, xqpStringStore_t& newValue)
+void PULImpl::addReplaceValue(Item_t& target, xqpStringStore* newValue)
 {
   XmlNode* n = BASE_NODE(target);
   StoreConsts::NodeKind targetKind = n->getNodeKind();

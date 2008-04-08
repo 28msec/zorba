@@ -237,9 +237,8 @@ int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
 
 
 /*******************************************************************************
-  Locate in "this" the first occurrence of the "pattern" substring, using the
-  given collation. Return the offset into this of the start of "pattern", or
-  -1 if not found.
+  Locate in "this" the first occurrence of the "pattern" substring. Return the
+  offset into this of the start of "pattern", or -1 if not found.
 ********************************************************************************/
 int32_t xqpStringStore::indexOf(const char* pattern) const
 {
@@ -298,6 +297,16 @@ int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll
 /*******************************************************************************
 
 ********************************************************************************/
+int32_t xqpStringStore::lastIndexOf(const char* pattern) const
+{
+  size_t lRes = theString.rfind(pattern);
+  return (lRes == std::string::npos) ? -1 : lRes;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 int32_t xqpStringStore::lastIndexOf(const xqpStringStore* pattern, XQPCollator* coll) const
 {
   if ( ! coll )
@@ -332,6 +341,16 @@ int32_t xqpStringStore::lastIndexOf(const xqpStringStore* pattern, XQPCollator* 
   }
 
   return -1;
+}
+
+
+/*******************************************************************************
+  Determine if "pattern" is a suffix of "this"
+********************************************************************************/
+bool xqpStringStore::endsWith(const char* pattern) const
+{
+  //TODO check if this condition is enough
+  return (lastIndexOf(pattern) + strlen(pattern) == bytes());
 }
 
 

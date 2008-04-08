@@ -1,21 +1,20 @@
 
-
-#include "runtime/api/runtimecb.h"
-#include "runtime/core/constructors.h"
 #include "util/Assert.h"
 #include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
+#include "types/casting.h"
+#include "types/typeops.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
+
+#include "runtime/api/runtimecb.h"
+#include "runtime/core/constructors.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
-#include "types/casting.h"
-#include "context/namespace_context.h"
-#include "types/typeops.h"
 
 
 using namespace std;
@@ -505,10 +504,10 @@ store::Item_t TextIterator::nextImpl(PlanState& planState) const
 
   valueWrapper = new PlanIteratorWrapper(theChild, planState);
       
-  node = GENV_ITEMFACTORY->createTextNode((unsigned long)&planState,
-                                                 valueWrapper,
-                                                 theIsRoot,
-                                                 true); // assignIds
+  node = GENV_ITEMFACTORY->createTextNode((ulong)&planState,
+                                          valueWrapper,
+                                          theIsRoot,
+                                          true); // assignIds
 
   STACK_PUSH(node, state);
     
@@ -821,84 +820,5 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
-#if 0
-/*******************************************************************************
 
-********************************************************************************/
-DocFilterIteratorState::DocFilterIteratorState()
-{
-}
-
-
-DocFilterIteratorState::~DocFilterIteratorState()
-{
-  if (theChildren != NULL)
-  {
-    theChildren->close();
-    theChildren = 0;
-  }
-}
-
-
-void DocFilterIteratorState::init(PlanState& planState) 
-{
-  PlanIteratorState::init(planState);
-  theChildren = 0;
-}
-
-
-void DocFilterIteratorState::reset(PlanState& planState ) 
-{
-  PlanIteratorState::reset(planState);
-  if (theChildren != NULL)
-  {
-    theChildren->close();
-    theChildren = 0;
-  }
-}
-
-
-store::Item_t DocFilterIterator::nextImpl(PlanState& planState) const
-{
-  store::Item_t lItem;
-  
-  DocFilterIteratorState* state;
-  DEFAULT_STACK_INIT(DocFilterIteratorState, state, planState);
- 
-  while (true)
-  {
-    if (state->theChildren != 0)
-    {
-      lItem = state->theChildren->next();
-      if (lItem == 0)
-      {
-        state->theChildren->close();
-        state->theChildren = 0;
-      }
-      else
-      {
-        STACK_PUSH(lItem, state);
-      }
-    }
-    else
-    {
-      lItem = consumeNext(theChild.getp(), planState);
-      if (lItem == 0)
-        break;
-
-      if (lItem->isNode() &&
-          lItem->getNodeKind() == store::StoreConsts::documentNode)
-      {
-        state->theChildren = lItem->getChildren();
-        state->theChildren->open();
-      }
-      else
-      {
-        STACK_PUSH(lItem, state);
-      }
-    }
-  }
-  STACK_END (state);
-}
-#endif
 }

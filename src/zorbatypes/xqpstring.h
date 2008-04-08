@@ -114,7 +114,13 @@ public:
   indexOf(const xqpStringStore* pattern, XQPCollator* col) const;
 
   int32_t
+  lastIndexOf(const char* pattern) const;
+
+  int32_t
   lastIndexOf(const xqpStringStore* pattern, XQPCollator* coll) const;
+
+  bool
+  endsWith(const char* pattern) const;
 
   bool
   endsWith(const xqpStringStore* pattern, XQPCollator* col) const;

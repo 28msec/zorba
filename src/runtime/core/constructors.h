@@ -324,36 +324,6 @@ public:
   bool isUpdateIterator() const { return theChild->isUpdateIterator(); }
 };
 
-#if 0
-/*******************************************************************************
-
-  Filters out all DocumentNodes and returns their children instead of them.
-
-********************************************************************************/
-class DocFilterIteratorState : public PlanIteratorState
-{
-public:
-  Iterator_t     theChildren;
-    
-  DocFilterIteratorState();
-  ~DocFilterIteratorState();
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator,
-                                                   DocFilterIteratorState>
-{
-public:
-  DocFilterIterator( const QueryLoc& loc, PlanIter_t& aChild)
-    : UnaryBaseIterator<DocFilterIterator, DocFilterIteratorState>(loc, aChild) {}
-
-  store::Item_t nextImpl(PlanState& planState) const;
-
-  virtual void accept(PlanIterVisitor&) const;
-};
-#endif
-
 } /* namespace zorba */
 #endif  /* ZORBA_CONSTRUCTORS_H */
 

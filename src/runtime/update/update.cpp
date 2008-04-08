@@ -261,6 +261,11 @@ ReplaceIterator::ReplaceIterator (
   theType(aType),
   theDoCopy(true)
 {
+  if (target->isUpdateIterator())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
+
+  if (source->isUpdateIterator())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
 }
 
 
@@ -269,6 +274,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
 {
   store::StoreConsts::NodeKind lTargetKind;
   store::StoreConsts::NodeKind lWithKind;
+  Iterator_t withWrapper;
   store::Item_t lWith;
   store::Item_t lTarget;
   store::Item_t lParent;
@@ -366,41 +372,49 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
 
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-    if (lNumNodes > 0)
-    {
-      lNodes.resize(lNumNodes);
-      lPul->addReplaceNode(lTarget, lNodes, theDoCopy, lCopyMode);
-    }
+    lNodes.resize(lNumNodes);
+    lPul->addReplaceNode(lTarget, lNodes, theDoCopy, lCopyMode);
   }
   else
   {
-    // the compiler added a test constructor around
-    // the with expression => lWith is always a text node
-    lWith = consumeNext(theChild1, aPlanState); 
-
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
     if (lTargetKind == store::StoreConsts::elementNode)
     {
+
+      withWrapper = new PlanIteratorWrapper(theChild1, aPlanState);
+
+      lWith = GENV_ITEMFACTORY->createTextNode((ulong)&aPlanState,
+                                               withWrapper,
+                                               false,
+                                               true);
+
       lPul->addReplaceContent(lTarget, lWith, theDoCopy, lCopyMode);
     }
     else
     {
-      xqp_string lText;
-      if (lWith != 0)
-        lText = lWith->getStringValueP();
-      else
-        lText = "";
-      if (lTargetKind == store::StoreConsts::commentNode
-          && (lText.indexOf("--") >= 0 || lText.endsWith("-")))
+      std::auto_ptr<xqpStringStore> stringValue(new xqpStringStore(""));
+
+      lWith = consumeNext(theChild1, aPlanState); 
+      while (lWith != 0)
+      {
+        stringValue->str() += lWith->getStringValue()->c_str();
+
+        lWith = consumeNext(theChild1, aPlanState);
+      }
+
+      if (lTargetKind == store::StoreConsts::commentNode &&
+          (stringValue->indexOf("--") >= 0 || stringValue->endsWith("-")))
       {
         ZORBA_ERROR_LOC(ZorbaError::XQDY0072, loc);
       }
-      if (lTargetKind == store::StoreConsts::piNode && lText.indexOf("?>") >= 0)
+      else if (lTargetKind == store::StoreConsts::piNode &&
+               stringValue->indexOf("?>") >= 0)
       {
         ZORBA_ERROR_LOC(ZorbaError::XQDY0026, loc);
       }
-      lPul->addReplaceValue(lTarget, lText.theStrStore);
+
+      lPul->addReplaceValue(lTarget, stringValue.release());
     }
   }
 
