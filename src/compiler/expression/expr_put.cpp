@@ -19,8 +19,8 @@ using namespace std;
 namespace zorba {
   
   static inline ostream &put_qname (store::Item_t qname, ostream &os) {
-    xqp_string pfx = qname->getPrefix ();
-    if (! pfx.empty ())
+    xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace ();
+    if (! ns.empty ())
       os << pfx << "[=" << qname->getNamespace () << "]:";
     os << qname->getLocalName ();
     return os;
