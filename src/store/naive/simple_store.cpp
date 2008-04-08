@@ -52,8 +52,10 @@ SimpleStore::SimpleStore()
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
-  theQueryContextContainer(new QueryContextContainer),
-  theTraceLevel(0)
+  theQueryContextContainer(new QueryContextContainer)
+#ifndef NDEBUG
+  ,theTraceLevel(0)
+#endif
 {
 }
 
@@ -77,7 +79,9 @@ void SimpleStore::init()
     theUntypedAtomicType = theItemFactory->createQName(XS_URI, "xs", "untypedAtomic");
     theQNameType = theItemFactory->createQName(XS_URI, "xs", "QName");
 
+#ifndef NDEBUG
     theTraceLevel = Properties::instance()->storeTraceLevel();
+#endif
   }
 }
 

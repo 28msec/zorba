@@ -5,6 +5,7 @@
 #include <string>
 #include <cassert>
 #include <iostream>
+#include "common/common.h"
 
 #include <boost/spirit.hpp>
 #include <boost/bind.hpp>

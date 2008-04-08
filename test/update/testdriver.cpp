@@ -13,6 +13,7 @@
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
+#include "common/common.h"
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
