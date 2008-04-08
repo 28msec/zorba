@@ -236,7 +236,6 @@ bool TypeOps::is_treatable(const store::Item_t item, const XQType& type)
     break;
   }
 
-  // TODO: remove above switch when item_type is complete
   return is_subtype(*type.get_manager()->item_type (item), type);
 }
 

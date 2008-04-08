@@ -89,7 +89,7 @@ static void mark_for_vars_ignoring_sort (flwor_expr *flwor) {
     flwor_expr::forletref_t ref = *i;
     forlet_clause::varref_t vref = ref->get_var();
     forlet_clause::varref_t pvref = ref->get_pos_var ();
-    if (vref->get_kind() == var_expr::let_var && pvref == NULL)
+    if (vref->get_kind() == var_expr::for_var && pvref == NULL)
       ref->get_expr ()->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
   }
 }
