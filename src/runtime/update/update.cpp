@@ -296,12 +296,10 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
 
   lTarget = consumeNext(theChild0, aPlanState);
   if (lTarget == 0)
-  {
     ZORBA_ERROR_LOC(ZorbaError::XUDY0027, loc);
-  }
-  if (consumeNext(theChild0, aPlanState) != 0) {
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, loc);
-  }
+
+  if (consumeNext(theChild0, aPlanState) != 0)
+    ZORBA_ERROR_LOC(ZorbaError::XUTY0008, loc);
 
   if (!lTarget->isNode())
      ZORBA_ERROR_LOC(ZorbaError::XUTY0008, loc);
