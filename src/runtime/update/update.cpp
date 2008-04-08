@@ -432,6 +432,11 @@ RenameIterator::RenameIterator (
   :
   BinaryBaseIterator<RenameIterator, PlanIteratorState>(aLoc, target, name)
 {
+  if (target->isUpdateIterator())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
+
+  if (name->isUpdateIterator())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
 }
 
 
@@ -452,13 +457,14 @@ RenameIterator::nextImpl(PlanState& aPlanState) const
     ZORBA_ERROR_LOC(ZorbaError::XUDY0027, loc);
   }
   
+  if (!lTarget->isNode())
+    ZORBA_ERROR_LOC(ZorbaError::XUTY0012, loc);
+
   lTargetKind = lTarget->getNodeKind();
 
-  if (!(lTarget->isNode() && (
-      lTargetKind == store::StoreConsts::elementNode
-   || lTargetKind == store::StoreConsts::attributeNode
-   || lTargetKind == store::StoreConsts::piNode
-  )))
+  if (!(lTargetKind == store::StoreConsts::elementNode ||
+        lTargetKind == store::StoreConsts::attributeNode ||
+        lTargetKind == store::StoreConsts::piNode))
   {
     ZORBA_ERROR_LOC(ZorbaError::XUTY0012, loc);
   }

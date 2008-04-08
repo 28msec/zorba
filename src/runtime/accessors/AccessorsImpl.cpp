@@ -20,6 +20,7 @@ namespace zorba {
 // 2.4 fn:data
 //---------------------
 FnDataIteratorState::FnDataIteratorState() {}
+
 FnDataIteratorState::~FnDataIteratorState() {}
 
 void FnDataIteratorState::init(PlanState& planState) 
@@ -34,6 +35,15 @@ void FnDataIteratorState::reset(PlanState& planState)
   theTypedValue = NULL;
 }
 
+
+FnDataIterator::FnDataIterator (
+    const QueryLoc& loc,
+    PlanIter_t& childIter)
+  :
+  UnaryBaseIterator<FnDataIterator, FnDataIteratorState> ( loc, childIter )
+{
+}
+
 store::Item_t
 FnDataIterator::nextImpl(PlanState& planState) const
 {
@@ -44,7 +54,7 @@ FnDataIterator::nextImpl(PlanState& planState) const
   DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
   
   while (true) {
-    item = consumeNext( theChildren[0].getp(), planState );
+    item = consumeNext( theChild, planState );
     if (item == NULL)
       break;
     state->theTypedValue = item->getTypedValue();

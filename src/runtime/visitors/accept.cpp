@@ -112,6 +112,7 @@ namespace zorba {
   UNARY_ACCEPT(DocumentContentIterator);
   UNARY_ACCEPT(FnAdjustToTimeZoneIterator_1);
   UNARY_ACCEPT(DeleteIterator);
+  UNARY_ACCEPT(FnDataIterator);
 
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);

@@ -3951,6 +3951,7 @@ void end_visit(const InsertExpr& v, void* /*visit_state*/)
   nodestack.push(lInsert);
 }
 
+
 void *begin_visit(const RenameExpr& /*v*/)
 {
   TRACE_VISIT ();
@@ -3959,11 +3960,21 @@ void *begin_visit(const RenameExpr& /*v*/)
 
 void end_visit(const RenameExpr& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
-  expr_t aName = pop_nodestack();
-  expr_t aTarget = pop_nodestack();
-  expr_t aRename = new rename_expr(v.get_location(), aTarget, aName);
-  nodestack.push(aRename);
+  TRACE_VISIT_OUT();
+
+  expr_t nameExpr = pop_nodestack();
+
+  rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(),
+                                             LOOKUP_FN("fn", "data", 1));
+  atomExpr->add(nameExpr);
+
+  nameExpr = new name_cast_expr(v.get_location(), atomExpr.getp(), ns_ctx);
+
+  expr_t targetExpr = pop_nodestack();
+
+  expr_t renameExpr = new rename_expr(v.get_location(), targetExpr, nameExpr);
+
+  nodestack.push(renameExpr);
 }
 
 void *begin_visit(const ReplaceExpr& /*v*/)

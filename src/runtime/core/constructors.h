@@ -195,7 +195,8 @@ public:
   NameCast Iterator casts QNames of computed elements that are not known
   till execution time.
 ********************************************************************************/
-class NameCastIterator : public UnaryBaseIterator<NameCastIterator, PlanIteratorState> {
+class NameCastIterator : public UnaryBaseIterator<NameCastIterator, PlanIteratorState>
+{
   friend class PrinterVisitor;
 private:
   NamespaceContext_t theNCtx;
@@ -207,6 +208,8 @@ public:
 
   store::Item_t nextImpl(PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
+
+  bool isUpdateIterator() const { return theChild->isUpdateIterator(); }
 };
 
 /*******************************************************************************

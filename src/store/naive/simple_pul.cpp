@@ -616,6 +616,7 @@ void PULImpl::applyUpdates()
   catch (...)
   {
     undoUpdates();
+    throw;
   }
 
   try

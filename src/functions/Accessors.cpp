@@ -17,10 +17,14 @@ using namespace std;
 namespace zorba {
 
 PlanIter_t
-fn_data_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+fn_data_func::codegen(
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann ) const
 {
-  return new FnDataIterator ( loc, argv );
+  return new FnDataIterator ( loc, argv[0] );
 }
+
 
 xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const { 
   return sig.return_type ();

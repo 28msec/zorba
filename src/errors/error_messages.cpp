@@ -403,7 +403,7 @@ DEF_ERR_CODE(XUTY0007, XUTY0007, "It is a type error if the target expression of
 
 DEF_ERR_CODE(XUTY0008, XUTY0008, "In a replace expression, it is a type error if the target expression returns a non-empty result that does not consist of a single element, attribute, text, comment, or processing instruction node.")
 
-DEF_ERR_CODE(XUDY0009, XUTY0009, "In a replace expression where value of is not specified, it is a dynamic error if the node returned by the target expression does not have a parent.")
+DEF_ERR_CODE(XUDY0009, XUDY0009, "In a replace expression where value of is not specified, it is a dynamic error if the node returned by the target expression does not have a parent.")
 
   DEF_ERR_CODE(XUTY0010, XUTY0010, "In a replace expression where value of is not specified and the target is an element, text, comment, or processing instruction node, it is a type error if the replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes.")
 

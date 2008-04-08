@@ -12,11 +12,13 @@
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
+#include "runtime/base/unarybase.h"
 
 namespace zorba {
 
 // 2.4 fn:data
-class FnDataIteratorState : public PlanIteratorState {
+class FnDataIteratorState : public PlanIteratorState 
+{
 public:
   Iterator_t theTypedValue;
   FnDataIteratorState();
@@ -26,7 +28,20 @@ public:
   void reset(PlanState& planState);
 };
 
-NARY_ITER_STATE(FnDataIterator, FnDataIteratorState);
+
+class FnDataIterator : public UnaryBaseIterator<FnDataIterator, FnDataIteratorState>
+{
+public:
+  FnDataIterator(const QueryLoc& loc, PlanIter_t& aChild);
+
+  virtual ~FnDataIterator() { }
+
+  store::Item_t nextImpl(PlanState& planState) const;
+  virtual void accept(PlanIterVisitor&) const;
+
+  bool isUpdateIterator() const { return theChild->isUpdateIterator(); }
+};
+
 
 // 14.9 fn:root
 NARY_ITER(FnRootIterator);
