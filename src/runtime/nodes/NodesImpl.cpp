@@ -97,11 +97,10 @@ store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
   {
     reqLang = item->getStringValue().getp();
     
-    for(node = CONSUME(1); NULL != node && !found; node = node->getParent() )
+    for(node = CONSUME(1);
+        NULL != node && node->getNodeKind () == store::StoreConsts::elementNode && ! found;
+        node = node->getParent())
     {
-      theAttributes = node->getAttributes();
-      theAttributes->open();
-    
       for ((theAttributes = node->getAttributes())->open ();
            ! found && NULL != (attr = theAttributes->next()); )
       {
