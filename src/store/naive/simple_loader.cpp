@@ -387,11 +387,11 @@ void XmlLoader::startElement(
   Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
                                reinterpret_cast<const char*>(prefix),
                                reinterpret_cast<const char*>(lname));
-  Item_t tname = store.theAnyType.getp();
+  Item* tname = store.theUntypedType.getp();
 
   // Create the element node and push it to the node stack
   LoadedElementNode* elemNode = new LoadedElementNode(qname.getp(),
-                                                      tname.getp(),
+                                                      tname,
                                                       numBindings,
                                                       numAttributes);
   if (loader.theNodeStack.empty())
@@ -452,7 +452,7 @@ void XmlLoader::startElement(
       const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
       Item_t qname = qnpool.insert(uri, prefix, lname);
-      Item_t tname = store.theUntypedAtomicType;
+      Item* tname = store.theUntypedAtomicType.getp();
 
       xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
       Item* typedVal = new UntypedAtomicItemImpl(value);
