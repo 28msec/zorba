@@ -167,13 +167,12 @@ store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
 
   if (inNode != NULL)
   {
-    if (inNode->isNode()) {
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getDocumentURI().getStore()), state);
-    }
-    else {
+    if (!inNode->isNode())
       ZORBA_ERROR_LOC_DESC(
           ZorbaError::XPTY0004, loc, "The argument of the fn:document-uri function is not a node");
-    }
+    
+    if(inNode->getNodeKind() == store::StoreConsts::documentNode)
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getDocumentURI().getStore()), state);
   }
   
   STACK_END (state);
