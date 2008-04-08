@@ -76,6 +76,8 @@ class NodeXQType : public XQType {
 
     xqtref_t get_content_type() const { return m_content_type; }
 
+    virtual std::ostream& serialize(std::ostream& os) const;
+
   private:
     rchandle<NodeTest> m_nodetest;
     xqtref_t m_content_type;

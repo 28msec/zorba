@@ -95,6 +95,18 @@ NodeXQType::NodeXQType(
   XQType(manager, quantifier), m_nodetest(nodetest), m_content_type(content_type)
 {
 }
+
+std::ostream& NodeXQType::serialize(std::ostream& os) const
+{
+  rchandle<NodeTest> node_test = get_nodetest ();
+  store::StoreConsts::NodeKind node_kind = node_test->get_kind ();
+  xqtref_t content_type = get_content_type ();
+  return
+    os << "[NodeXQType "
+       << store::StoreConsts::toString (node_kind) << " "
+       << (content_type == NULL ? "" : xqp_string ("content=") + content_type->toString ())
+       << TypeOps::decode_quantifier (get_quantifier()) << "]";
+}
     
 UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
     XQType(manager, quantifier), _qname(qname), _baseType(baseType)
