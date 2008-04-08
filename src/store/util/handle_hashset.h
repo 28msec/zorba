@@ -178,7 +178,7 @@ bool find(const T* item)
   If the set does not already contain an item that is "equal" to the given item,
   insert the given item to the set and return true. Otherwise, return false.
 ********************************************************************************/
-bool insert(const T* item)
+bool insert(T* item)
 {
   bool found;
 
@@ -187,7 +187,7 @@ bool insert(const T* item)
   HashEntry* entry = hashInsert(item, Externals<T,E,C>::hash(item, theCompareParam), found);
 
   if (!found)
-    entry->theItem = const_cast<T*>(item);
+    entry->theItem = (item);
 
   return !found;
 }
@@ -198,7 +198,7 @@ bool insert(const T* item)
   item, insert the given item to the set and return true as well as an rchandle
   to the given item. Otherwise, return false and an rchandle to item I.
 ********************************************************************************/
-bool insert(const T* item,  rchandle<T>& outItem)
+bool insert(T* item,  rchandle<T>& outItem)
 {
   bool found;
 
@@ -208,7 +208,7 @@ bool insert(const T* item,  rchandle<T>& outItem)
 
   if (!found)
   {
-    entry->theItem = const_cast<T*>(item);
+    entry->theItem = item;
     outItem = entry->theItem;
     return true;
   }
@@ -279,9 +279,9 @@ protected:
 
 ********************************************************************************/
 HashEntry* hashInsert(
-    const T*      item,
-    ulong         hvalue,
-    bool&         found)
+    T*         item,
+    ulong      hvalue,
+    bool&      found)
 {
   HashEntry* lastentry = NULL;
 
@@ -375,7 +375,7 @@ void resizeHashTab(ulong newSize)
   HashEntry* entry;
   HashEntry* lastentry;
 
-  // Make a copy of theHashTab, and then resize it to double theHashTabSize
+  // Make a copy of theHashTab, and then resize it to the given new size.
   std::vector<HashEntry> oldTab = theHashTab;
   ulong oldsize = oldTab.size();
 
@@ -406,7 +406,7 @@ void resizeHashTab(ulong newSize)
       while (lastentry->theNext != NULL)
         lastentry = lastentry->theNext;
 
-      // Get an entry from the free list in the overflow section of the hash
+      // Get an entry from the free list in the collision section of the hash
       // table. If no free entry exists, a new entry is appended into the table.
       if (theHashTab[theHashTabSize].theNext == 0)
       {

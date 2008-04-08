@@ -182,6 +182,8 @@ void PointerHashMap<T, E, V>::clear()
 
   SYNC_CODE(AutoMutex lock(theMutex);)
 
+  theNumEntries = 0;
+
   ulong n = theHashTab.size();
 
   for (ulong i = 0; i < n; i++)
