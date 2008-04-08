@@ -1,7 +1,7 @@
 #ifndef ZORBA_STORE_UTIL_HANDLE_HASHSET
 #define ZORBA_STORE_UTIL_HANDLE_HASHSET
 
-#include <vector>
+#include "util/checked_vector.h"
 
 #include "common/shared_types.h"
 
@@ -77,7 +77,7 @@ public:
 protected:
   ulong                   theNumEntries;
 
-  std::vector<HashEntry>  theHashTab;
+  checked_vector<HashEntry> theHashTab;
   ulong                   theHashTabSize;
   ulong                   theInitialSize;
   double                  theLoadFactor;
@@ -100,11 +100,7 @@ HandleSet(ulong size)
   theLoadFactor(DEFAULT_LOAD_FACTOR),
   theCompareParam(0)
 {
-  theHashTab.resize(theHashTabSize + 32);
-
-  HashEntry* lastentry = &theHashTab[theHashTabSize + 31];
-  for (HashEntry* entry = &theHashTab[theHashTabSize]; entry < lastentry; entry++)
-    entry->theNext = entry + 1;
+  format ();
 }
 
 HandleSet(C* aCompareParam, ulong size) 
@@ -115,11 +111,7 @@ HandleSet(C* aCompareParam, ulong size)
   theLoadFactor(DEFAULT_LOAD_FACTOR),
   theCompareParam(aCompareParam)
 {
-  theHashTab.resize(theHashTabSize + 32);
-
-  HashEntry* lastentry = &theHashTab[theHashTabSize + 31];
-  for (HashEntry* entry = &theHashTab[theHashTabSize]; entry < lastentry; entry++)
-    entry->theNext = entry + 1;
+  format ();
 }
 
 
@@ -139,13 +131,41 @@ virtual ~HandleSet()
 /*******************************************************************************
 
 ********************************************************************************/
+
+HashEntry *freelist () {
+  return &theHashTab [theHashTabSize];
+}
+
+HashEntry *bucket (ulong hvalue) {
+  return &theHashTab [hvalue % theHashTabSize];
+}
+
+void format () {
+  theHashTab.clear ();
+  theHashTab.resize(theHashTabSize + 32);
+
+  HashEntry* lastentry = &theHashTab[theHashTabSize + 31];
+  for (HashEntry* entry = freelist (); entry < lastentry; entry++)
+    entry->theNext = entry + 1;
+}
+
+HashEntry *gotoLast (HashEntry *entry) {
+  for (;;) {
+    theHashTab [entry - &theHashTab [0]];  // assertion
+    HashEntry *next = entry->theNext;
+    if (next == NULL)
+      return entry;
+    else
+      entry = next;
+  }
+}
+
 void clear() 
 {
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  theHashTab.clear();
+  format ();
   theNumEntries = 0;
-  resizeHashTab (theHashTabSize);
 }
 
 
@@ -157,7 +177,7 @@ bool find(const T* item)
 {
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry* entry = &theHashTab[Externals<T,E,C>::hash(item, theCompareParam) % theHashTabSize];
+  HashEntry* entry = bucket (Externals<T,E,C>::hash(item, theCompareParam));
 
   if (entry->theItem == NULL)
     return false;
@@ -228,7 +248,7 @@ bool remove(const T* item)
 {
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry* entry = &theHashTab[Externals<T,E,C>::hash(item) % theHashTabSize];
+  HashEntry* entry = bucket (Externals<T,E,C>::hash(item));
 
   if (entry->theItem == NULL)
     return false;
@@ -253,8 +273,8 @@ bool remove(const T* item)
       }
 
       entry->theItem = NULL;
-      entry->theNext = theHashTab[theHashTabSize].theNext;
-      theHashTab[theHashTabSize].theNext = entry;
+      entry->theNext = freelist ()->theNext;
+      freelist ()->theNext = entry;
 
       if (theHashTabSize > theInitialSize &&
           theNumEntries < (theHashTabSize /2) * theLoadFactor)
@@ -288,7 +308,7 @@ HashEntry* hashInsert(
   found = false;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given item.
-  HashEntry* entry = &theHashTab[hvalue % theHashTabSize];
+  HashEntry* entry = bucket (hvalue);
 
   // If the hash bucket is empty, its 1st entry is used to store the new string.
   if (entry->theItem == NULL)
@@ -320,13 +340,9 @@ HashEntry* hashInsert(
 
     if (lastentry->theItem == NULL)
     {
-      entry = &theHashTab[hvalue % theHashTabSize];
+      entry = bucket (hvalue);
 
-      while (entry != NULL)
-      {
-        lastentry = entry;
-        entry =  entry->theNext;
-      }
+      lastentry = gotoLast (entry);
     }
   }
 
@@ -335,30 +351,24 @@ HashEntry* hashInsert(
   {
     resizeHashTab(theHashTabSize * 2);
 
-    entry = &theHashTab[hvalue % theHashTabSize];
+    entry = bucket (hvalue);
 
     if (entry->theItem == NULL)
       return entry;
 
-    while (entry != NULL)
-    {
-      lastentry = entry;
-      entry =  entry->theNext;
-    }
+    lastentry = gotoLast (entry);
   }
 
   // Get an entry from the free list in the overflow section of the hash teble
-  // If no free entry exists, a new entry is appended into the hash table. 
-  if (theHashTab[theHashTabSize].theNext == 0)
+  // If no free entry exists, a new entry is appended into the hash table.
+  if (freelist ()->theNext == 0)
   {
-    theHashTab.push_back(HashEntry());
-    entry = &theHashTab[theHashTab.size() - 1];
-    lastentry->theNext = entry;
+    return add_overflow_entry (lastentry);
   }
   else
   {
-    entry = theHashTab[theHashTabSize].theNext;
-    theHashTab[theHashTabSize].theNext = entry->theNext;
+    entry = freelist ()->theNext;
+    freelist ()->theNext = entry->theNext;
     lastentry->theNext = entry;
     entry->theNext = NULL;
   }
@@ -366,6 +376,22 @@ HashEntry* hashInsert(
   return entry;
 }
 
+HashEntry *add_overflow_entry (HashEntry *lastentry) {
+  HashEntry *oldbase = &theHashTab [0];
+  theHashTab.push_back(HashEntry());
+  HashEntry *newbase = &theHashTab [0];
+  int delta = (newbase - oldbase);
+  if (delta != 0) {
+    lastentry += delta;
+    for (unsigned i = 0; i < theHashTab.size (); i++) {
+      HashEntry *e = newbase + i;
+      if (e->theItem != NULL && e->theNext != NULL)
+        e->theNext += delta;
+    }
+  }
+
+  return ((lastentry->theNext = newbase + theHashTab.size() - 1));
+}
 
 /*******************************************************************************
 
@@ -373,21 +399,13 @@ HashEntry* hashInsert(
 void resizeHashTab(ulong newSize)
 {
   HashEntry* entry;
-  HashEntry* lastentry;
 
   // Make a copy of theHashTab, and then resize it to the given new size.
-  std::vector<HashEntry> oldTab = theHashTab;
+  checked_vector<HashEntry> oldTab = theHashTab;
   ulong oldsize = oldTab.size();
 
   theHashTabSize = newSize;
-
-  theHashTab.clear();
-  theHashTab.resize(theHashTabSize + 32);
-
-  // Format the overflow area of theHashTab as a list of free entries
-  lastentry = &theHashTab[theHashTabSize + 31];
-  for (entry = &theHashTab[theHashTabSize]; entry < lastentry; entry++)
-    entry->theNext = entry + 1;
+  format ();
  
   // Now rehash every entry
   for (ulong i = 0; i < oldsize; i++)
@@ -397,27 +415,23 @@ void resizeHashTab(ulong newSize)
     if (item == NULL)
       continue;
 
-    entry = &theHashTab[Externals<T,E,C>::hash(item, theCompareParam) % theHashTabSize];
+    entry = bucket (Externals<T,E,C>::hash(item, theCompareParam));
 
     if (entry->theItem != NULL)
     {
       // Go to the last entry of the current bucket
-      HashEntry* lastentry = entry;
-      while (lastentry->theNext != NULL)
-        lastentry = lastentry->theNext;
+      HashEntry* lastentry = gotoLast (entry);
 
       // Get an entry from the free list in the collision section of the hash
       // table. If no free entry exists, a new entry is appended into the table.
-      if (theHashTab[theHashTabSize].theNext == 0)
+      if (freelist ()->theNext == 0)
       {
-        theHashTab.push_back(HashEntry());
-        entry = &theHashTab[theHashTab.size() - 1];
-        lastentry->theNext = entry;
+        entry = add_overflow_entry (lastentry);
       }
       else
       {
-        entry = theHashTab[theHashTabSize].theNext;
-        theHashTab[theHashTabSize].theNext = entry->theNext;
+        entry = freelist ()->theNext;
+        freelist ()->theNext = entry->theNext;
         lastentry->theNext = entry;
         entry->theNext = NULL;
       }
