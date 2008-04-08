@@ -9,6 +9,17 @@ using namespace std;
 
 namespace zorba {
 
+static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics (xqtref_t type) {
+  xqtref_t pt = TypeOps::prime_type (*type);
+  if (TypeOps::is_subtype (*pt, *GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE))
+    return op_node_sort_distinct::NODES;
+  else if (TypeOps::is_subtype (*pt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
+    return op_node_sort_distinct::ATOMICS;
+  else
+    return op_node_sort_distinct::MIXED;
+
+}
+
 template<typename T> void exprs_to_holders (T exprs_begin, T exprs_end, vector <AnnotationHolder *> &anns)
 {
   for (T i = exprs_begin; i < exprs_end; i++)
@@ -218,6 +229,7 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
 
 RULE_REWRITE_PRE(EliminateProducerNodeOps)
 {
+  static_context *sctx = rCtx.getStaticContext ();
   fo_expr *fo = dynamic_cast<fo_expr *>(node);
   if (fo != NULL) {
     const function *f = fo->get_func ();
@@ -225,7 +237,7 @@ RULE_REWRITE_PRE(EliminateProducerNodeOps)
       return (*fo)[0];
     const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
     if (nsdf != NULL) {
-      const function *fmin = op_node_sort_distinct::op_for_action (rCtx.getStaticContext (), nsdf->action (), *node);
+      const function *fmin = nsdf->min_action (sctx, node, NULL, nodes_or_atomics ((*fo) [0]->return_type (sctx)));
       if (fmin != NULL)
         fo->set_func (fmin);
       else

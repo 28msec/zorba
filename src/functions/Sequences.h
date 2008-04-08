@@ -407,13 +407,13 @@ public:
 
 class op_node_sort_distinct : public single_seq_function {
 public:
+  typedef enum { NODES, ATOMICS, MIXED } nodes_or_atomics_t;
+
   op_node_sort_distinct(const signature& sig) : single_seq_function (sig) {}
   // (sort?, atomics?, distinct?, ascending?)
   virtual const bool *action () const = 0;
-#if 0
-  virtual const function *min_action (const AnnotationHolder &, const AnnotationHolder &);
-#endif
-  static const function *op_for_action (const static_context *, const bool *, const AnnotationHolder &);
+  static const function *op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder *parent, const AnnotationHolder *child, nodes_or_atomics_t noa);
+  virtual const function *min_action (const static_context *sctx, const AnnotationHolder *self, const AnnotationHolder *child, nodes_or_atomics_t noa) const;
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;

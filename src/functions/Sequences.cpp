@@ -468,10 +468,10 @@ fn_doc_available_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 
 // internal functions
 
-#define A_SORT a [0]
-#define A_ATOMICS a [1]
-#define A_DISTINCT a [2]
-#define A_ASCENDING a [3]
+#define A_SORT ((a) [0])
+#define A_ATOMICS ((a) [1])
+#define A_DISTINCT ((a) [2])
+#define A_ASCENDING ((a) [3])
 
 PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder& ann) const {
   const bool *a = action ();
@@ -495,17 +495,30 @@ void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::v
   }
 }
 
-const function *op_node_sort_distinct::op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder &ann) {
+const function *op_node_sort_distinct::op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder *parent, const AnnotationHolder *child, nodes_or_atomics_t noa) {
 #define LOOKUP_OP1( local ) (static_cast<const function *> (sctx->lookup_builtin_fn ((xqp_string (":") + local).c_str (), 1)))
-  bool distinct = A_DISTINCT && ! ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES);
+  bool distinct = A_DISTINCT && ! parent->get_annotation (AnnotationKey::IGNORES_DUP_NODES);
 
-  if (! A_SORT || ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES))
-    return distinct ? LOOKUP_OP1 ("distinct-nodes" + (A_ATOMICS ? "-or-atomics" : ""))
-      : (A_ATOMICS ? LOOKUP_OP1 ("either-nodes-or-atomics") : NULL);
+  if (A_ATOMICS && noa == ATOMICS)
+    return NULL;
+
+  bool atomics = A_ATOMICS && noa == MIXED;
+
+  if (! A_SORT || parent->get_annotation (AnnotationKey::IGNORES_SORTED_NODES))
+#if 1
+    return distinct ? LOOKUP_OP1 ("distinct-nodes" + (atomics ? "-or-atomics" : ""))
+#else
+    return distinct ? LOOKUP_OP1 ("sort-distinct-nodes-asc" + (atomics ? "-or-atomics" : "ending"))
+#endif
+      : (atomics ? LOOKUP_OP1 ("either-nodes-or-atomics") : NULL);
   xqp_string part1 = xqp_string ("sort-") + (distinct ? "distinct-" : "") + "nodes-";
-  xqp_string part2 = xqp_string (A_ASCENDING ? "asc" : "desc") + (A_ATOMICS ? "-or-atomics" : "ending");
+  xqp_string part2 = xqp_string (A_ASCENDING ? "asc" : "desc") + (atomics ? "-or-atomics" : "ending");
   return LOOKUP_OP1 (part1 + part2);
 #undef LOOKUP_OP1
+}
+
+const function *op_node_sort_distinct::min_action (const static_context *sctx, const AnnotationHolder *self, const AnnotationHolder *child, nodes_or_atomics_t noa) const {
+  return op_for_action (sctx, action (), self, child, noa);
 }
 
 PlanIter_t fn_unordered::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &) const
