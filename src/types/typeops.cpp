@@ -218,15 +218,17 @@ bool TypeOps::is_treatable(const store::Item_t item, const XQType& type)
     
     const NodeXQType& nType = static_cast<const NodeXQType&>(type);
     rchandle<NodeTest> nodeTest = nType.get_nodetest();
+    store::StoreConsts::NodeKind kind = nodeTest->get_kind ();
+    rchandle<NodeNameTest> nameTest = nodeTest->get_nametest();
+
+    if (kind != store::StoreConsts::anyNode && kind != item->getNodeKind ())
+      return false;
+    if (nameTest != NULL && ! nameTest->matches (item->getNodeName ()))
+      return false;
+
+    // TODO: check content type
     switch(nodeTest->get_kind()) {
-    case store::StoreConsts::piNode:
-      return item->getNodeKind() == store::StoreConsts::piNode
-        && (nodeTest->get_nametest() == NULL
-            || nodeTest->get_nametest()->get_local() == NULL
-            || nodeTest->get_nametest()->get_local()->byteEqual(*item->getTarget().getStore()));
-      
-    default:
-      break;
+    default: return true;
     }
   }
 

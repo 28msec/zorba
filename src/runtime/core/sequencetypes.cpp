@@ -49,8 +49,7 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
 
   if (lTreatItem != 0)
   {
-    if (TypeOps::is_subtype(*ts.item_type (lTreatItem),
-                            *theSequenceType))
+    if (TypeOps::is_treatable(lTreatItem, *theSequenceType))
     {
       lTreatItem = consumeNext(theChild.getp(), planState);
       if (lTreatItem != 0)
@@ -65,8 +64,7 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
           lResult = true;
           do
           {
-            if (!TypeOps::is_subtype(*ts.item_type (lTreatItem),
-                               *theSequenceType))
+            if (!TypeOps::is_treatable(lTreatItem, *theSequenceType))
             {
               lResult = false;
             }
