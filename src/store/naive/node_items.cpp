@@ -21,12 +21,10 @@
 
 #ifndef NDEBUG
 
-int traceLevel = -1;
-
-#define NODE_TRACE(level, msg)               \
-{                                            \
-  if (level <= traceLevel)                   \
-    std::cout << msg << std::endl;           \
+#define NODE_TRACE(level, msg)                \
+{                                             \
+  if (level <= GET_STORE().getTraceLevel())   \
+    std::cout << msg << std::endl;            \
 }
 
 #define NODE_TRACE1(msg) NODE_TRACE(1, msg);

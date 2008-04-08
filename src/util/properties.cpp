@@ -35,7 +35,8 @@ namespace zorba
     thePrintItemFlow(false)
 #ifndef NDEBUG
     ,theTraceTranslator(false),
-    theTraceCodegen(false)
+    theTraceCodegen(false),
+    theStoreTraceLevel(0)
 #endif
   {
   }
@@ -127,6 +128,7 @@ namespace zorba
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")
+      ("store-trace-level", po::value<long>(&theStoreTraceLevel), "store trace level (<= 0 : no tracing)")
 #endif
       ("external-vars,x", po::value<std::vector<std::string> >(&theExternalVars), "external variables (e.g. -x x=file1.xml -x y:=strValue)")
     ;

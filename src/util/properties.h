@@ -34,6 +34,7 @@ namespace zorba {
 #ifndef NDEBUG
       bool theTraceTranslator;
       bool theTraceCodegen;
+      long theStoreTraceLevel;
 #endif
       std::vector<std::string> theExternalVars;            
       /**
@@ -154,6 +155,9 @@ namespace zorba {
       
       bool
       traceTranslator() { return theTraceTranslator; }
+
+      long
+      storeTraceLevel() { return theStoreTraceLevel; }
 #endif
 
       std::vector<std::pair<std::string,std::string> > getExternalVars();

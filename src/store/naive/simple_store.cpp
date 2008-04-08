@@ -11,6 +11,7 @@
 #include "errors/error_manager.h"
 #include "errors/fatal.h"
 #include "util/hashfun.h"
+#include "util/properties.h"
 
 #include "store/util/handle_hashset_string.h"
 #include "store/util/pointer_hashmap_string.h"
@@ -51,7 +52,8 @@ SimpleStore::SimpleStore()
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
-  theQueryContextContainer(new QueryContextContainer)
+  theQueryContextContainer(new QueryContextContainer),
+  theTraceLevel(0)
 {
 }
 
@@ -74,6 +76,8 @@ void SimpleStore::init()
     theAnyType = theItemFactory->createQName(XS_URI, "xs", "anyType");
     theUntypedAtomicType = theItemFactory->createQName(XS_URI, "xs", "untypedAtomic");
     theQNameType = theItemFactory->createQName(XS_URI, "xs", "QName");
+
+    theTraceLevel = Properties::instance()->storeTraceLevel();
   }
 }
 

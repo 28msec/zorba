@@ -61,6 +61,8 @@ protected:
 
   QueryContextContainer  * theQueryContextContainer; 
 
+  long                     theTraceLevel;
+
 private:
   SimpleStore();
 
@@ -74,6 +76,8 @@ public:
 
   StringPool& getNamespacePool() const    { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }
+
+  long getTraceLevel() const              { return theTraceLevel; }
 
   XmlLoader* getXmlLoader();
 
