@@ -262,7 +262,7 @@ Decimal Decimal::operator-() const {
 }
 
 Decimal Decimal::round() const {
-  return round(Integer::parseInt((int32_t)0));
+  return round(Integer::zero());
 }
 
 Decimal Decimal::round(Integer aPrecision) const {
@@ -321,6 +321,15 @@ xqpString Decimal::decimalToString(MAPM theValue) {
 
 xqpString Decimal::toString() const {
   return decimalToString(theDecimal);
+}
+
+uint32_t Decimal::hash() const
+{
+  Decimal lDecimal(theDecimal %  65535);
+  Integer lInteger = Integer::parseDecimal(lDecimal);
+  uint32_t lHash;
+  NumConversions::integerToUInt(lInteger, lHash);
+  return lHash;
 }
 
 std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) {

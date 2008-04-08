@@ -62,6 +62,7 @@ public:
   static bool doubleToInt(const xqp_double&, xqp_int&);
   static bool doubleToLongLong(const xqp_double&, xqp_long&);
   static bool doubleToLong(const xqp_double&, long&);
+  static bool integerToUInt(const xqp_integer&, xqp_uint&);
 }; /* class NumConversions */
 
 } /* namespace zorba */

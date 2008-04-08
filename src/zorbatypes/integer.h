@@ -214,6 +214,9 @@ namespace zorba {
 
       xqpString
       toString() const;
+
+      uint32_t 
+      hash() const;
   }; // class Integer
 
   std::ostream& operator<<(std::ostream& os, const Integer&);

@@ -52,13 +52,6 @@ namespace zorba {
     // then however, the compilercb can not be const in the runtime?!
     PlanIter_t plan = codegen ("query", lExpr);  // TODO can NULL be returned?
 
-
-    if (Properties::instance()->printIteratorTree()) {
-      XMLIterPrinter vp(std::cout);
-      PrinterVisitor pv(vp, plan);
-    }
-
-
     return plan;
   }
 

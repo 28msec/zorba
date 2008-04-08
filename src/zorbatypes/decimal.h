@@ -98,6 +98,7 @@ public:
   bool operator>=(const Decimal& aDecimal) const { return theDecimal >= aDecimal.theDecimal; }
 
   xqpString toString() const;
+  uint32_t hash() const;
 }; // class Decimal
 
 

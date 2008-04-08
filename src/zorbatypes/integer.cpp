@@ -270,24 +270,24 @@ Integer Integer::operator-() const {
 }
 
 Integer& Integer::operator++() {
-  theInteger++;
+  ++theInteger;
   return *this;
 }
 
 Integer& Integer::operator--() {
-  theInteger--;
+  --theInteger;
   return *this;
 }
 
 Integer Integer::operator++(int) {
   Integer lRes(theInteger);
-  theInteger++;
+  ++theInteger;
   return lRes;
 }
 
 Integer Integer::operator--(int) {
   Integer lRes(theInteger);
-  theInteger--;
+  --theInteger;
   return lRes;
 }
 
@@ -362,6 +362,14 @@ xqpString Integer::toString() const {
   theInteger.toIntegerString(lBuffer);
   xqpString lResult = lBuffer;
   return lResult;
+}
+
+uint32_t Integer::hash() const
+{
+  Integer lInteger(theInteger % 65535);
+  uint32_t lHash;
+  NumConversions::integerToUInt(lInteger, lHash);
+  return lHash;
 }
 
 std::ostream& operator<<(std::ostream& os, const Integer& aInteger) {

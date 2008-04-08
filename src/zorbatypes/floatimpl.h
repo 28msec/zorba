@@ -51,6 +51,9 @@ namespace zorba {
       
       static MAPM
       cutMantissa(MAPM aMAPM);
+
+      static uint32_t 
+      hash(FloatCommons::NumType, MAPM aMAPM);
   };
 
   /**
@@ -70,12 +73,17 @@ namespace zorba {
       
       static MAPM
       cutMantissa(MAPM aMAPM);
+
+      static uint32_t 
+      hash(FloatCommons::NumType, MAPM aMAPM);
   };
 
   template <typename FloatType>
   class FloatImpl {
     friend class Integer;
     friend class FloatCommons;
+    template <typename Type>
+      friend class FloatImplTraits;
 
     private:
       FloatCommons::NumType theType;
@@ -288,6 +296,9 @@ namespace zorba {
       
       xqpString 
       toString() const;
+
+      uint32_t
+      hash() const;
 
   }; // class FloatImpl
 

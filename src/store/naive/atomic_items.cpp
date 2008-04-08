@@ -265,8 +265,7 @@ bool DecimalItemNaive::isNaN() const {
 uint32_t
 DecimalItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
-  // TODO we need a better hash function
-  return 0;
+  return theValue.hash();
 }
 
 
@@ -308,11 +307,16 @@ xqpStringStore_t IntItemNaive::getStringValue() const
   return NumConversions::intToStr(theValue).getStore();
 }
 
-  xqp_string IntItemNaive::show() const
-	{
-		return "xs:int(" + getStringValue()->str() + ")";
-	}
+xqp_string IntItemNaive::show() const
+{
+  return "xs:int(" + getStringValue()->str() + ")";
+}
 
+uint32_t
+IntItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return uint32_t(32767) + theValue;
+}
 /*******************************************************************************
   class IntegerItemNaive
 ********************************************************************************/
@@ -350,8 +354,7 @@ Item_t IntegerItemNaive::getEBV() const
   uint32_t
   IntegerItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
   {
-    // TODO we need a better hash function
-    return 0;
+    return theValue.hash();
   }
 	/* end class IntegerItem */
 	
@@ -398,8 +401,7 @@ bool DoubleItemNaive::isPosOrNegInf() const {
 uint32_t
 DoubleItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
-  // TODO we need a better hash function
-  return 0;
+  return theValue.hash();
 }
   
 /*******************************************************************************
@@ -447,8 +449,7 @@ bool FloatItemNaive::isPosOrNegInf() const {
 uint32_t
 FloatItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
-  // TODO we need a better hash function
-  return 0;
+  return theValue.hash();
 }
 
 /*******************************************************************************
@@ -515,6 +516,12 @@ xqp_string NonPositiveIntegerItemNaive::show() const {
   return "xs:nonPositiveInteger(" + getStringValue()->str() + ")";
 }
 
+uint32_t
+NonPositiveIntegerItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
+  
 /*******************************************************************************
   class NonPositiveIntegerItemNaive
 ********************************************************************************/
@@ -543,6 +550,12 @@ xqp_string NegativeIntegerItemNaive::show() const {
   return "xs:negativeInteger(" + getStringValue()->str() + ")";
 }
 
+uint32_t
+NegativeIntegerItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
+  
 /*******************************************************************************
   class LongItemNaive
 ********************************************************************************/
@@ -575,6 +588,12 @@ xqp_string LongItemNaive::show() const {
   return "xs:long(" + getStringValue()->str() + ")";
 }
 
+uint32_t
+LongItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue % 65535;
+}
+  
 /*******************************************************************************
   class ShortItemNaive
 ********************************************************************************/
@@ -613,6 +632,12 @@ xqpStringStore_t ShortItemNaive::getStringValue() const {
 
 xqp_string ShortItemNaive::show() const {
   return "xs:short(" + getStringValue()->str() + ")";
+}
+
+uint32_t
+ShortItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue;
 }
 
 /*******************************************************************************
@@ -659,6 +684,12 @@ xqp_string ByteItemNaive::show() const {
   return "xs:byte(" + getStringValue()->str() + ")";
 }
 
+uint32_t
+ByteItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue;
+}
+
 
 /*******************************************************************************
   class NonNegativeINtegerItemNaive
@@ -692,6 +723,11 @@ xqp_string NonNegativeIntegerItemNaive::show() const {
   return "xs:nonNegativeInteger(" + getStringValue()->str() + ")";
 }
 
+uint32_t
+NonNegativeIntegerItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
 
 /*******************************************************************************
   class UnsignedLongItemNaive
@@ -727,6 +763,12 @@ xqpStringStore_t UnsignedLongItemNaive::getStringValue() const {
 
 xqp_string UnsignedLongItemNaive::show() const {
   return "xs:unsignedLong(" + getStringValue()->str() + ")";
+}
+
+uint32_t
+UnsignedLongItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue % 65535;
 }
 
 /*******************************************************************************
@@ -767,6 +809,12 @@ xqpStringStore_t UnsignedIntItemNaive::getStringValue() const {
 
 xqp_string UnsignedIntItemNaive::show() const {
   return "xs:unsignedInt(" + getStringValue()->str() + ")";
+}
+
+uint32_t
+UnsignedIntItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue;
 }
 
 
@@ -812,6 +860,12 @@ xqpStringStore_t UnsignedShortItemNaive::getStringValue() const {
 
 xqp_string UnsignedShortItemNaive::show() const {
   return "xs:unsignedShort(" + getStringValue()->str() + ")";
+}
+
+uint32_t
+UnsignedShortItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue;
 }
 
 /*******************************************************************************
@@ -862,6 +916,12 @@ xqp_string UnsignedByteItemNaive::show() const {
   return "xs:unsignedByte(" + getStringValue()->str() + ")";
 }
 
+uint32_t
+UnsignedByteItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue;
+}
+
 /*******************************************************************************
   class PositiveIntegerItemNaive
 ********************************************************************************/
@@ -894,6 +954,12 @@ xqp_string PositiveIntegerItemNaive::show() const {
   return "xs:positiveInteger(" + getStringValue()->str() + ")";
 }
 
+uint32_t
+PositiveIntegerItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
+
 /*******************************************************************************
   class Base64BinaryItemNaive
 ********************************************************************************/
@@ -913,6 +979,12 @@ xqp_string Base64BinaryItemNaive::show() const {
   return "xs:base64Binary(" + getStringValue()->str() + ")";
 }
 
+uint32_t
+Base64BinaryItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
+
 /*******************************************************************************
   class HexBinaryItemNaive
 ********************************************************************************/
@@ -930,6 +1002,12 @@ xqpStringStore_t HexBinaryItemNaive::getStringValue() const {
 
 xqp_string HexBinaryItemNaive::show() const {
   return "xs:hexBinary(" + getStringValue()->str() + ")";
+}
+
+uint32_t
+HexBinaryItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue.hash();
 }
 
 /*******************************************************************************

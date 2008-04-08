@@ -5,6 +5,7 @@
 #include "zorbatypes/floatimpl.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/decimal.h"
+#include "zorbatypes/numconversions.h"
 
 namespace zorba {
 
@@ -45,6 +46,22 @@ MAPM FloatImplTraits<double>::cutMantissa(MAPM aMAPM) {
   return Decimal::round(aMAPM, 16-aMAPM.exponent());
 }
 
+uint32_t FloatImplTraits<double>::hash(FloatCommons::NumType aType, MAPM aMAPM) {
+  if (aType == FloatCommons::INF_POS 
+   || aType == FloatCommons::INF_NEG
+   || aType == FloatCommons::NOT_A_NUM)
+  {
+    return 0;
+  }
+
+  Float lFloat(aType, aMAPM % 65535);
+  Integer lInteger;
+  Integer::parseFloat(lFloat, lInteger);
+  uint32_t lHash;
+  NumConversions::integerToUInt(lInteger, lHash);
+  return lHash;
+}
+  
 bool FloatImplTraits<float>::isPosInf(MAPM aMAPM) {
   if (aMAPM > 0) {
     return aMAPM.exponent() > 38 || aMAPM > MAPM("3.4028235e+38");
@@ -69,6 +86,22 @@ bool FloatImplTraits<float>::isNegInf(MAPM aMAPM) {
 // FIXME this is not yet correct! Just a very simple temporary solution.
 MAPM FloatImplTraits<float>::cutMantissa(MAPM aMAPM) {
   return Decimal::round(aMAPM, 7-aMAPM.exponent());
+}
+
+uint32_t FloatImplTraits<float>::hash(FloatCommons::NumType aType, MAPM aMAPM) {
+  if (aType == FloatCommons::INF_POS 
+   || aType == FloatCommons::INF_NEG
+   || aType == FloatCommons::NOT_A_NUM)
+  {
+    return 0;
+  }
+
+  Float lFloat(aType, aMAPM % 65535);
+  Integer lInteger;
+  Integer::parseFloat(lFloat, lInteger);
+  uint32_t lHash;
+  NumConversions::integerToUInt(lInteger, lHash);
+  return lHash;
 }
   
 const xqpString FloatCommons::INF_POS_STR = "INF";
@@ -965,6 +998,12 @@ xqpString FloatImpl<FloatType>::toString() const {
     }
     return lResult;
   }
+}
+
+template <typename FloatType>
+uint32_t FloatImpl<FloatType>::hash() const
+{
+  return FloatImplTraits<FloatType>::hash(theType, theFloatImpl);
 }
 
 template class FloatImpl<double>;

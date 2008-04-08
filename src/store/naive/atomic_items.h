@@ -309,6 +309,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
 	};
 
 	class IntegerItemNaive : public AtomicItem
@@ -396,6 +397,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class NegativeIntegerItemNaive : public AtomicItem {
@@ -413,6 +415,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class LongItemNaive : public AtomicItem {
@@ -431,6 +434,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class ShortItemNaive : public AtomicItem {
@@ -451,6 +455,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class ByteItemNaive : public AtomicItem {
@@ -472,6 +477,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class NonNegativeIntegerItemNaive : public AtomicItem {
@@ -490,6 +496,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class UnsignedLongItemNaive : public AtomicItem {
@@ -509,6 +516,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class UnsignedIntItemNaive : public AtomicItem {
@@ -529,6 +537,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class UnsignedShortItemNaive : public AtomicItem {
@@ -551,6 +560,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class UnsignedByteItemNaive : public AtomicItem {
@@ -573,6 +583,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
   
   class PositiveIntegerItemNaive : public AtomicItem {
@@ -591,6 +602,7 @@ public:
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const { return false; }
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
 
   class Base64BinaryItemNaive : public AtomicItem {
@@ -604,6 +616,7 @@ public:
     virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
     virtual xqpStringStore_t getStringValue() const;
     virtual xqp_string show() const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
 
 
@@ -614,10 +627,11 @@ public:
     HexBinaryItemNaive(xqp_hexBinary aValue) : theValue(aValue) {}
     virtual xqp_hexBinary getHexBinaryValue() const { return theValue; }
 
-     virtual Item_t getType() const;
-     virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
-     virtual xqpStringStore_t getStringValue() const;
-     virtual xqp_string show() const;
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0 ) const;
+    virtual xqpStringStore_t getStringValue() const;
+    virtual xqp_string show() const;
+    virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   };
 
 } // namespace store

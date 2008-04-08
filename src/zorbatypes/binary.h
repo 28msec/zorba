@@ -36,6 +36,8 @@ public:
 
   static std::vector<char> encode(const std::vector<char>&);
   static std::vector<char> decode(const std::vector<char>&);
+
+  uint32_t hash() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
@@ -70,6 +72,8 @@ public:
 
   static std::vector<char> encode(const std::vector<char>&);
   static std::vector<char> decode(const std::vector<char>&);
+
+  uint32_t hash() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Base16& aBase16);

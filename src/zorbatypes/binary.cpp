@@ -223,6 +223,24 @@ std::vector<char> Base64::decode(const std::vector<char>& aSource)
   return lRes;
 }
 
+uint32_t Base64::hash() const
+{
+  uint32_t lHash = 0;
+  std::vector<char>::const_iterator lIter = theData.begin();
+  std::vector<char>::const_iterator lEnd = theData.end();
+  for(;lIter!=lEnd;++lIter)
+  {
+    uint32_t lDiff = 65535-*lIter;
+    if (lDiff < lHash)
+    {
+      lHash = lHash - lDiff;
+    } else {
+      lHash += *lIter; 
+    }
+  }
+  return lHash;
+}
+
 std::ostream& operator<<(std::ostream& os, const Base64& aBase64)
 {
   std::vector<char>::const_iterator lIter = aBase64.getData().begin();
@@ -368,6 +386,23 @@ std::vector<char> Base16::decode(const std::vector<char>& aSource)
   return lRes;
 }
 
+uint32_t Base16::hash() const
+{
+  uint32_t lHash = 0;
+  std::vector<char>::const_iterator lIter = theData.begin();
+  std::vector<char>::const_iterator lEnd = theData.end();
+  for(;lIter!=lEnd;++lIter)
+  {
+    uint32_t lDiff = 65535-*lIter;
+    if (lDiff < lHash)
+    {
+      lHash = lHash - lDiff;
+    } else {
+      lHash += *lIter; 
+    }
+  }
+  return lHash;
+}
 std::ostream& operator<<(std::ostream& os, const Base16& aBase16)
 {
   std::vector<char>::const_iterator lIter = aBase16.getData().begin();

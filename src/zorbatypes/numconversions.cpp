@@ -221,4 +221,10 @@ namespace zorba {
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLong(lStr, aLong);
   }
+
+  bool NumConversions::integerToUInt(const xqp_integer& aInteger, xqp_uint& aUInt) {
+    xqpString lStr = aInteger.toString();
+    return NumConversions::strToUInt(lStr, aUInt);
+  }
+
 } /* namespace zorba */
