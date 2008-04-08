@@ -269,9 +269,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
   store::Item_t lTarget;
   store::Item_t lParent;
   std::vector<store::Item_t> lNodes(16);
-  std::vector<store::Item_t> lAttrs(16);
   ulong lNumNodes = 0;
-  ulong lNumAttrs = 0;
   std::auto_ptr<store::PUL> lPul;
 
   static_context* sctx;
@@ -294,24 +292,28 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
   if (consumeNext(theChild0, aPlanState) != 0) {
     ZORBA_ERROR_LOC(ZorbaError::XUST0001, loc);
   }
+
+  if (!lTarget->isNode())
+     ZORBA_ERROR_LOC(ZorbaError::XUTY0008, loc);
+
   lTargetKind = lTarget->getNodeKind();
 
-  if (!( lTarget->isNode() && (
-     lTargetKind == store::StoreConsts::elementNode
-  || lTargetKind == store::StoreConsts::attributeNode
-  || lTargetKind == store::StoreConsts::textNode
-  || lTargetKind == store::StoreConsts::commentNode
-  || lTargetKind == store::StoreConsts::piNode
-  )))
+  if (!( lTargetKind == store::StoreConsts::elementNode ||
+         lTargetKind == store::StoreConsts::attributeNode ||
+         lTargetKind == store::StoreConsts::textNode ||
+         lTargetKind == store::StoreConsts::commentNode ||
+         lTargetKind == store::StoreConsts::piNode))
   {
     ZORBA_ERROR_LOC(ZorbaError::XUTY0008, loc);
   }
 
-  if (theType == store::UpdateConsts::NODE) {
+  if (theType == store::UpdateConsts::NODE) 
+  {
     if (lTarget->getParent() == 0)
     {
       ZORBA_ERROR_LOC(ZorbaError::XUDY0009, loc);
     }
+
     lParent = lTarget->getParent();
     
     if ( lTargetKind == store::StoreConsts::attributeNode)
@@ -319,67 +321,80 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
       lWith = consumeNext(theChild1, aPlanState);
       while (lWith != 0) 
       {
-        lWithKind = lWith->getNodeKind();
-        if (!(lWith->isNode() && lWithKind == store::StoreConsts::attributeNode))
+        if (!lWith->isNode() ||
+            lWith->getNodeKind() != store::StoreConsts::attributeNode)
         {
           ZORBA_ERROR_LOC(ZorbaError::XUTY0011, loc);
         }
-        lAttrs[lNumAttrs++].transfer(lWith);
-        if (lNumAttrs == lAttrs.size())
-          lAttrs.resize(2 * lNumAttrs);
 
-        lWith = consumeNext(theChild1, aPlanState);
-      }
-    } else {
-      lWith = consumeNext(theChild1, aPlanState);
-      while (lWith != 0)
-      {
-        lWithKind = lWith->getNodeKind();
-        if (!(lWith->isNode() && (
-           lWithKind == store::StoreConsts::elementNode
-        || lWithKind == store::StoreConsts::textNode
-        || lWithKind == store::StoreConsts::commentNode
-        || lWithKind == store::StoreConsts::piNode
-        )))
-        {
-          ZORBA_ERROR_LOC(ZorbaError::XUTY0010, loc);
-        }
         lNodes[lNumNodes++].transfer(lWith);
         if (lNumNodes == lNodes.size())
           lNodes.resize(2 * lNumNodes);
 
         lWith = consumeNext(theChild1, aPlanState);
       }
-
     }
+    else
+    {
+      lWith = consumeNext(theChild1, aPlanState);
+      while (lWith != 0)
+      {
+        if (!lWith->isNode())
+          ZORBA_ERROR_LOC(ZorbaError::XUTY0010, loc);
+
+        lWithKind = lWith->getNodeKind();
+
+        if (!(lWithKind == store::StoreConsts::elementNode
+              || lWithKind == store::StoreConsts::textNode
+              || lWithKind == store::StoreConsts::commentNode
+              || lWithKind == store::StoreConsts::piNode))
+        {
+          ZORBA_ERROR_LOC(ZorbaError::XUTY0010, loc);
+        }
+
+        lNodes[lNumNodes++].transfer(lWith);
+        if (lNumNodes == lNodes.size())
+          lNodes.resize(2 * lNumNodes);
+
+        lWith = consumeNext(theChild1, aPlanState);
+      }
+    }
+
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
     if (lNumNodes > 0)
     {
       lNodes.resize(lNumNodes);
       lPul->addReplaceNode(lTarget, lNodes, theDoCopy, lCopyMode);
     }
-  } else {
+  }
+  else
+  {
     // the compiler added a test constructor around
     // the with expression => lWith is always a text node
     lWith = consumeNext(theChild1, aPlanState); 
+
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
     if (lTargetKind == store::StoreConsts::elementNode)
     {
       lPul->addReplaceContent(lTarget, lWith, theDoCopy, lCopyMode);
-    } else {
+    }
+    else
+    {
       xqp_string lText;
       if (lWith != 0)
         lText = lWith->getStringValueP();
       else
         lText = "";
       if (lTargetKind == store::StoreConsts::commentNode
-      && (lText.indexOf("--") >= 0 || lText.endsWith("-")))
+          && (lText.indexOf("--") >= 0 || lText.endsWith("-")))
       {
-          ZORBA_ERROR_LOC(ZorbaError::XQDY0072, loc);
+        ZORBA_ERROR_LOC(ZorbaError::XQDY0072, loc);
       }
       if (lTargetKind == store::StoreConsts::piNode && lText.indexOf("?>") >= 0)
       {
-          ZORBA_ERROR_LOC(ZorbaError::XQDY0026, loc);
+        ZORBA_ERROR_LOC(ZorbaError::XQDY0026, loc);
       }
       lPul->addReplaceValue(lTarget, lText.theStrStore);
     }
