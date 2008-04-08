@@ -101,11 +101,15 @@ std::ostream& NodeXQType::serialize(std::ostream& os) const
   rchandle<NodeTest> node_test = get_nodetest ();
   store::StoreConsts::NodeKind node_kind = node_test->get_kind ();
   xqtref_t content_type = get_content_type ();
-  return
-    os << "[NodeXQType "
-       << store::StoreConsts::toString (node_kind) << " "
-       << (content_type == NULL ? "" : xqp_string ("content=") + content_type->toString ())
-       << TypeOps::decode_quantifier (get_quantifier()) << "]";
+  rchandle<NodeNameTest> nametest = node_test->get_nametest();
+  os << "[NodeXQType " << store::StoreConsts::toString (node_kind)
+     << TypeOps::decode_quantifier (get_quantifier()) << " ";
+  if (nametest != NULL) {
+    os << "nametest=[uri: " << nametest->get_uri () << ", local: " << nametest->get_local () << "]";
+  }
+  if (content_type != NULL)
+    os << (xqp_string ("content=") + content_type->toString ());
+  return os << "]";
 }
     
 UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
