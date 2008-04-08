@@ -897,6 +897,7 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     char seq[4] = {0,0,0,0};
     UTF8Encode(cp, seq);
     theStrStore = new xqpStringStore(theStrStore->theString + seq);
+
     return *this;
   }
 
@@ -984,7 +985,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     }
 
     const char * d = theStrStore->c_str();
-    advance(d, index, d+bytes());
+    advance(d, index, d+length());
 
     xqpString ret(d);
 
@@ -1032,22 +1033,24 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
 
   std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
   {
-    uint16_t mapLen = mapString.theStrStore->bytes()+1;
-    uint16_t transLen = transString.theStrStore->bytes()+1;
-    const char* mapPtr = mapString.theStrStore->c_str();
-    const char* transPtr = transString.theStrStore->c_str();
-    uint32_t tmp0, tmp1;
+    uint16_t      mapLen    = mapString.length();
+    uint16_t      transLen  = transString.length();
+    const char*   mapPtr    = mapString.theStrStore->c_str();
+    const char*   transPtr  = transString.theStrStore->c_str();
+    uint32_t      tmp0, tmp1;
     
     std::map<uint32_t,uint32_t> mapArray;
     std::map<uint32_t,uint32_t>::iterator it;
     
     if(mapLen >0)
     {
-      while((--mapLen > 0) && (--transLen > 0))
+      while((mapLen > 0) && (transLen > 0))
       {
         tmp0 = UTF8Decode(mapPtr);
         tmp1 = UTF8Decode(transPtr);
         mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, tmp1));
+        --mapLen;
+        --transLen;
       }
       
       while(mapLen > 0)
@@ -1062,7 +1065,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   
   xqpString xqpString::translate(xqpString mapString, xqpString transString) const
   {
-    std::map<uint32_t,uint32_t> myMap;
+    std::map<uint32_t,uint32_t>           myMap;
     std::map<uint32_t,uint32_t>::iterator it;
 
     //create the map
