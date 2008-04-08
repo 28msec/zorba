@@ -240,7 +240,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   node = GENV_ITEMFACTORY->
          createElementNode((ulong)&planState,
                            qnameItem.getp(),
-                           GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
+                           GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
                            cwrapper.get(),
                            awrapper.get(),
                            NULL,
