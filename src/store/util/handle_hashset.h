@@ -145,6 +145,7 @@ void clear()
 
   theHashTab.clear();
   theNumEntries = 0;
+  resizeHashTab (theHashTabSize);
 }
 
 
