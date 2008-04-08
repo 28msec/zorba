@@ -388,7 +388,7 @@ main(int argc, char** argv)
         {
           std::cerr << " but got result:" << std::endl;
           printFile(std::cerr, lResultFile.native_file_string());
-          std::cerr<< std::endl;
+          std::cerr << "=== end of result ===" << std::endl;
         } 
         return 7;
       }
@@ -396,26 +396,25 @@ main(int argc, char** argv)
   }
   std::cout << "Result:" << std::endl;
   printFile(std::cout, lResultFile.native_file_string());
+  std::cout << "=== end of result ===" << std::endl;
   std::cout.flush();
-  std::cout << std::endl;
-
 
   // last, we have to diff the result
   int lLine, lCol, lPos; // where do the files differ
   bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
   if ( !lRes )  // results differ
   {
-    std::cerr << std::endl << "Result does not match expected result" << std::endl;
+    std::cerr << std::endl << "Result does not match expected result:" << std::endl;
     printFile(std::cerr, lRefFile.native_file_string());
-    std::cerr << std::endl;
+    std::cerr << "=== end of expected result ===" << std::endl;
 
     std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-    std::cerr << "Got "; 
-    printFile(std::cerr, lRefFile.native_file_string());
+    std::cerr << "Actual: <";
     printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
-    std::cerr << std::endl << "Expected ";
+    std::cerr << ">" << std::endl;
+    std::cerr << "Expected: <";
     printPart(std::cerr, lRefFile.native_file_string(), lPos, 15);
-    std::cerr <<  std::endl;
+    std::cerr << ">" << std::endl;
 
     return 8;
   }
