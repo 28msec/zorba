@@ -57,7 +57,7 @@ void *begin_visit(const AbbrevForwardStep &n)
     INDENT;
 
     os << "<AbbrevForwardStep pos='" << n.get_location() << "' ptr='" << &n << "'";
-
+    if (n.get_attr_bit ()) os << " attr='true'";
     os << ">";
 
     INDENT_INC;
@@ -431,7 +431,7 @@ void *begin_visit(const ForwardAxis &n)
     INDENT;
 
     os << "<ForwardAxis pos='" << n.get_location() << "' ptr='" << &n << "'";
-
+    os << " axis='" << ParseConstants::decode_fwd_axis (n.get_axis ()) << "'";
     os << ">";
 
     INDENT_INC;

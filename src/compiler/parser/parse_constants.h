@@ -208,14 +208,27 @@ class ParseConstants
 
 
 
-    static const char *decode_numeric_type (enum numeric_type_t t) {
-      switch (t) {
-        case num_integer: return "integer";
-        case num_decimal: return "decimal";
-        case num_double:  return "double";
-        default: assert (false); return "?";
-      }
+  static const char *decode_numeric_type (enum numeric_type_t t) {
+    switch (t) {
+    case num_integer: return "integer";
+    case num_decimal: return "decimal";
+    case num_double:  return "double";
+    default: assert (false); return "?";
     }
+  }
+
+  static const char *decode_fwd_axis (forward_axis_t a) {
+    switch (a) {
+    case axis_child: return "child";
+    case axis_descendant: return "descendant";
+    case axis_attribute: return "attr";
+    case axis_self: return "self";
+    case axis_descendant_or_self: return "descendant-or-self";
+    case axis_following_sibling: return "following-sibling";
+    case axis_following: return "following";
+    default: assert (false); return "?";
+    }
+  }
 
 }; /* class ParseConstants */
 
