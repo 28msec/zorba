@@ -9,6 +9,10 @@
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "runtime/core/var_iterators.h"
+#include "store/api/store.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+#include "store/api/temp_seq.h"
 
 namespace zorba 
 {
@@ -469,25 +473,63 @@ RenameIterator::nextImpl(PlanState& aPlanState) const
 ********************************************************************************/
 TransformIterator::TransformIterator(
   const QueryLoc& aLoc,
+  std::vector<CopyClause>& aCopyClauses,
   PlanIter_t aModifyIter,
   PlanIter_t aReturnIter)
 :
   Batcher<TransformIterator>(aLoc),
+  theCopyClauses(aCopyClauses),
   theModifyIter(aModifyIter),
   theReturnIter(aReturnIter)
 {}
 
-void
-TransformIterator::addAssign(PlanIter_t anIter)
-{
-  theAssignIters.push_back(anIter); 
-}
+TransformIterator::~TransformIterator(){}
 
 store::Item_t
 TransformIterator::nextImpl(PlanState& aPlanState) const
 {
+  CopyClause::const_iter_t lIter, lEnd;
+  std::vector<ref_iter_t>::const_iterator lIter2, lEnd2;
+  store::Item_t lItem;
+
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
+
+  {
+    lIter = theCopyClauses.begin();
+    lEnd = theCopyClauses.end();
+    for(;lIter!=lEnd;++lIter)
+    {
+      Iterator_t lIterWrapper = new PlanIteratorWrapper(lIter->theInput, aPlanState);
+      // TODO must copy everything
+      store::TempSeq_t lTmpSeq = GENV_STORE.createTempSeq(lIterWrapper, true); 
+      lIter2 = lIter->theCopyVars.begin();
+      lEnd2 = lIter->theCopyVars.end();
+      for(;lIter2!=lEnd2;++lIter2)
+      {
+        Iterator_t lSeqIter = lTmpSeq->getIterator();
+        lSeqIter->open();
+        (*lIter2)->bind(lSeqIter, aPlanState);
+      }
+    }
+
+    // Assumption: Codegen did the check if theModifyIter is an updating expr,
+    // empty seq producion expr or an error expr
+    lItem = consumeNext(theModifyIter, aPlanState);
+
+    if (lItem != 0 && lItem->isPul())
+    {
+      lItem->applyUpdates();  
+    }
+
+    lItem = consumeNext(theReturnIter, aPlanState);
+    while (lItem != 0)
+    {
+      STACK_PUSH(lItem, aState); 
+      lItem = consumeNext(theReturnIter, aPlanState);
+    }
+  }
+
   STACK_END (aState);
 }
 
@@ -495,11 +537,11 @@ void
 TransformIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
   StateTraitsImpl<PlanIteratorState>::createState(planState, this->stateOffset, offset);
 
-  std::vector<PlanIter_t>::iterator lIter = theAssignIters.begin();
-  std::vector<PlanIter_t>::iterator lEnd = theAssignIters.end();
+  CopyClause::iter_t lIter = theCopyClauses.begin();
+  CopyClause::iter_t lEnd = theCopyClauses.end();
   for ( ; lIter != lEnd ; ++lIter )
   {
-    (*lIter)->open(planState, offset );
+    lIter->theInput->open(planState, offset );
   }
   theModifyIter->open( planState, offset );
   theReturnIter->open( planState , offset);
@@ -510,11 +552,11 @@ TransformIterator::resetImpl ( PlanState& planState ) const
 {
   StateTraitsImpl<PlanIteratorState>::reset(planState, this->stateOffset);
   
-  std::vector<PlanIter_t>::const_iterator lIter = theAssignIters.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theAssignIters.end();
+  CopyClause::const_iter_t lIter = theCopyClauses.begin();
+  CopyClause::const_iter_t lEnd = theCopyClauses.end();
   for ( ; lIter != lEnd ; ++lIter )
   {
-    (*lIter)->reset(planState);
+    lIter->theInput->reset(planState);
   }
   theModifyIter->reset( planState );
   theReturnIter->reset( planState );
@@ -523,11 +565,11 @@ TransformIterator::resetImpl ( PlanState& planState ) const
 void 
 TransformIterator::closeImpl ( PlanState& planState ) const
 {
-  std::vector<PlanIter_t>::const_iterator lIter = theAssignIters.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theAssignIters.end();
+  CopyClause::const_iter_t lIter = theCopyClauses.begin();
+  CopyClause::const_iter_t lEnd = theCopyClauses.end();
   for ( ; lIter != lEnd ; ++lIter )
   {
-    (*lIter)->close(planState);
+    lIter->theInput->close(planState);
   }
   theModifyIter->close( planState );
   theReturnIter->close( planState );
@@ -538,11 +580,11 @@ TransformIterator::closeImpl ( PlanState& planState ) const
 uint32_t 
 TransformIterator::getStateSizeOfSubtree() const {
   uint32_t lSize = getStateSize();
-  std::vector<PlanIter_t>::const_iterator lIter = theAssignIters.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theAssignIters.end();
+  CopyClause::const_iter_t lIter = theCopyClauses.begin();
+  CopyClause::const_iter_t lEnd = theCopyClauses.end();
   for ( ; lIter != lEnd ; ++lIter )
   {
-    lSize += (*lIter)->getStateSizeOfSubtree();
+    lSize += lIter->theInput->getStateSizeOfSubtree();
   }
   lSize += theModifyIter->getStateSizeOfSubtree();
   lSize += theReturnIter->getStateSizeOfSubtree();

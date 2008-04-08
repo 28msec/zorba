@@ -101,20 +101,39 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class CopyClause
+{
+  friend class TransformIterator;
+  typedef std::vector<CopyClause>::const_iterator const_iter_t;
+  typedef std::vector<CopyClause>::iterator       iter_t;
+
+  std::vector<ref_iter_t> theCopyVars;
+  PlanIter_t              theInput;
+
+  CopyClause(
+    std::vector<ref_iter_t>& aCopyVars,
+    PlanIter_t               aInput)
+  :
+    theCopyVars(aCopyVars),
+    theInput(aInput)
+  {}
+};
+
 class TransformIterator : public Batcher<TransformIterator>
 {
 private:
-  std::vector<PlanIter_t> theAssignIters;
+  std::vector<CopyClause> theCopyClauses;
   PlanIter_t theModifyIter;
   PlanIter_t theReturnIter;
 
 public:
   TransformIterator (
     const QueryLoc& aLoc,
+    std::vector<CopyClause>& aCopyClauses,
     PlanIter_t aModifyIter,
     PlanIter_t aReturnIter);
 
-  void addAssign(PlanIter_t anIter);
+  virtual ~TransformIterator();
 
   void openImpl(PlanState& planState, uint32_t& offset);
   store::Item_t nextImpl(PlanState& planState) const;

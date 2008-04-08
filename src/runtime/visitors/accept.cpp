@@ -181,10 +181,10 @@ namespace zorba {
 
   void TransformIterator::accept(PlanIterVisitor &v) const {
     v.beginVisit(*this);
-    std::vector<PlanIter_t>::const_iterator lIter = theAssignIters.begin();
-    std::vector<PlanIter_t>::const_iterator lEnd = theAssignIters.end();
+    CopyClause::const_iter_t lIter = theCopyClauses.begin();
+    CopyClause::const_iter_t lEnd = theCopyClauses.end();
     for ( ; lIter != lEnd; ++lIter ) {
-      ( *lIter )->accept ( v );
+      lIter->theInput->accept ( v );
     } 
     theModifyIter->accept(v);
     theReturnIter->accept(v);

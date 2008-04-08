@@ -562,15 +562,16 @@ void end_visit(transform_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReturn = pop_itstack();
   PlanIter_t lModify = pop_itstack();
-  rchandle<TransformIterator> lTransform = new TransformIterator(v.get_loc(), lModify, lReturn);
-  std::vector<var_expr_t>::const_iterator lIter = v.begin();
-  std::vector<var_expr_t>::const_iterator lEnd = v.end();
-  for ( ; lIter!= lEnd ; ++lIter)
-  {
-    PlanIter_t lAssign = pop_itstack();
-    lTransform->addAssign(lAssign);
-  }
-  itstack.push(&*lTransform);
+  // FIXME
+//  rchandle<TransformIterator> lTransform = new TransformIterator(v.get_loc(), lModify, lReturn);
+//  std::vector<var_expr_t>::const_iterator lIter = v.begin();
+//  std::vector<var_expr_t>::const_iterator lEnd = v.end();
+//  for ( ; lIter!= lEnd ; ++lIter)
+//  {
+//    PlanIter_t lAssign = pop_itstack();
+//    lTransform->addAssign(lAssign);
+//  }
+//  itstack.push(&*lTransform);
 }
 
 
