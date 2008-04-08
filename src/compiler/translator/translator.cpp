@@ -2715,7 +2715,10 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     if (v.getQName() != NULL)
     {
       string qname = v.getQName()->get_qname();
-      store::Item_t qn_h = sctx_p->lookup_elem_qname (qname);
+      store::Item_t qn_h =
+        axisExpr->getAxis () == axis_kind_attribute
+        ? sctx_p->lookup_qname ("", qname)
+        : sctx_p->lookup_elem_qname (qname);
       matchExpr->setQName(qn_h);
     }
     else
@@ -3538,16 +3541,9 @@ void end_visit(const ForwardStep& /*v*/, void* /*visit_state*/)
 }
 
 
-void *begin_visit(const AbbrevForwardStep& /*v*/)
+void *begin_visit(const AbbrevForwardStep& v)
 {
   TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit(const AbbrevForwardStep& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
 
   rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
@@ -3559,6 +3555,14 @@ void end_visit(const AbbrevForwardStep& v, void* /*visit_state*/)
   {
     ase->setAxis(axis_kind_child);
   }
+
+  return no_state;
+}
+
+
+void end_visit(const AbbrevForwardStep& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
 }
 
 
