@@ -21,7 +21,7 @@
 
 #ifndef NDEBUG
 
-int traceLevel = 0;
+int traceLevel = -1;
 
 #define NODE_TRACE(level, msg)               \
 {                                            \
@@ -223,12 +223,9 @@ Item_t XmlNode::getEBV() const
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-XmlNode* XmlNode::copy(XmlNode* parent, ulong pos, const CopyMode& copymode)
+Item* XmlNode::copyXmlTree(const CopyMode& copymode)
 {
-  return copy(parent, parent, pos, copymode);
+  return copy(NULL, NULL, 0, copymode);
 }
 
 

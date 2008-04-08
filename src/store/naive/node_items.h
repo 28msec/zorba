@@ -137,7 +137,7 @@ public:
 
   Item_t getEBV() const;
 
-  XmlNode* copy(XmlNode* parent, ulong pos, const CopyMode& copyMode);
+  Item* copyXmlTree(const CopyMode& copymode);
 
   //
   // SimpleStore Methods

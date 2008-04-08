@@ -5,6 +5,7 @@
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"
+#include "store/naive/store_defs.h"
 
 #include "system/globalenv.h"
 
@@ -579,6 +580,16 @@ bool Item::isNumeric() const
 xqp_string Item::show() const
 {
   return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Item* Item::copyXmlTree(const CopyMode& copymode)
+{
+  ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
 }
 
 

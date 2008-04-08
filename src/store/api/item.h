@@ -9,9 +9,11 @@
 
 #include "common/shared_types.h"
 
+
 namespace zorba 
 {
 class serializer;
+ class CopyMode;
 
 namespace store
 {
@@ -472,6 +474,13 @@ public:
    */
   virtual xqp_string
   getTarget() const;
+
+  /**
+   * Make a copy of the xml tree rooted at "this" node.
+   * @param copymode 
+   * @return A pointer to the root node of the copied tree 
+   */
+  Item* copyXmlTree(const CopyMode& copymode);
 
   /** Method to print to content of the Item
    */
