@@ -2372,8 +2372,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       return;
     } else if (sz == 0 &&
                (fn_local == "string-length" || fn_local == "normalize-space"
+                || fn_local == "root"
                 || fn_local == "base-uri" || fn_local == "namespace-uri"
-                || fn_local == "local-name"))
+                || fn_local == "local-name" || fn_local == "name"))
     {
       arguments.push_back (DOT_VAR);
     } else if (fn_local == "static-base-uri") {
