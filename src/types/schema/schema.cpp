@@ -186,11 +186,6 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
 	//std::cout << "Val: " << val << "\tResult: '" << res->getStringValue() << "'\n\n\n\n";
 }
 
-//void Schema::loadXsdInXQTypesystem(TypeSystem& typeSystem)
-//{
-//  typeSystem.createType();
-//}
-
 xqtref_t Schema::createIfExists(const TypeManager *typeManager, store::Item_t qname, TypeConstants::quantifier_t quantifier)
 {
 	const char* uri_cstr = qname->getNamespace().c_str();
@@ -200,8 +195,8 @@ xqtref_t Schema::createIfExists(const TypeManager *typeManager, store::Item_t qn
 	//std::cout << "--createIfExists: " << qname->getNamespace() << "@" << qname->getLocalName() << "\n";
 
     const char* localCStr = qname->getLocalName().c_str();
-    const XMLCh* local = XMLString::transcode(localCStr);
-	const XMLCh* uri = XMLString::transcode(uri_cstr);
+    XMLCh* local = XMLString::transcode(localCStr);
+	XMLCh* uri = XMLString::transcode(uri_cstr);
 
     if (_grammarPool==NULL)
         // there is no schema import i.e. no user defined types 
@@ -209,8 +204,10 @@ xqtref_t Schema::createIfExists(const TypeManager *typeManager, store::Item_t qn
 
     XSModel* xsModel = _grammarPool->getXSModel();
 	XSTypeDefinition* xsTypeDef = xsModel->getTypeDefinition(local, uri);
-
-	xqtref_t res;
+    XMLString::release(&local);
+    XMLString::release(&uri);
+	
+    xqtref_t res;
 
 	if ( xsTypeDef==NULL )
 		res = NULL;
@@ -466,9 +463,9 @@ store::Item_t parseAtomicValue(xqtref_t type, xqpString textValue)
     return 0;
 }
 
-void Schema::getValidatingItemIterator()
-{
-    
-}
+//void Schema::getValidatingItemIterator()
+//{
+//    
+//}
 
 } // namespace zorba

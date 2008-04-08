@@ -47,7 +47,7 @@ public:
     store::Item_t parseAtomicValue(xqtref_t type, xqpString textValue);    
     
     // Validator getValidator();
-    void getValidatingItemIterator();
+    //void getValidatingItemIterator();
 
     
 private:
