@@ -401,8 +401,9 @@ void resizeHashTab(ulong newSize)
   HashEntry* entry;
 
   // Make a copy of theHashTab, and then resize it to the given new size.
-  checked_vector<HashEntry> oldTab = theHashTab;
-  ulong oldsize = oldTab.size();
+  ulong oldsize = theHashTab.size();
+  checked_vector<HashEntry> oldTab;
+  theHashTab.swap (oldTab);
 
   theHashTabSize = newSize;
   format ();
