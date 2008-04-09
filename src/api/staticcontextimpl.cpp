@@ -69,10 +69,12 @@ namespace zorba {
 
   
   bool   
-  StaticContextImpl::addNamespace( const String& prefix, const String& URI )
+  StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
   {
-    assert(false);
-    return false;
+    xqpString lPrefix = Unmarshaller::getInternalString(aPrefix);
+    xqpString lURI = Unmarshaller::getInternalString(aURI);
+    theCtx->bind_ns(lPrefix, lURI);
+    return true; // TODO should we catch the exception XQST0033
   }
 
   
@@ -92,9 +94,10 @@ namespace zorba {
 
 
   void   
-  StaticContextImpl::setDefaultElementAndTypeNamespace( const String& URI )
+  StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
   {
-    assert(false);
+    xqpString lURI = Unmarshaller::getInternalString(aURI);
+    theCtx->set_default_elem_type_ns(lURI);
   }
 
   
