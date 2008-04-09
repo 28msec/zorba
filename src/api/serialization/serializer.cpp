@@ -265,64 +265,39 @@ void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_at
         is_quote = 0;
         for (unsigned int j=1; j < str->bytes()-i; j++)
         {
-				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z') 
+				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z')
             ||
             (*(chars+j) >= 'A' && *(chars+j) <= 'Z')
             ||
             (*(chars+j) >= '0' && *(chars+j) <= '9')
             ||
-            (*(chars+j) == '#')))
+            *(chars+j) == '#'
+            ||
+            *(chars+j) == ';'))
 				  {
             break;				
 				  }
 				
-				  if (*(chars+j) == ';' 
-            &&
-            (j>1))
+				  if (*(chars+j) == ';')
 		  		{
-            is_quote = 1;
+            if (j>1)
+              is_quote = 1;
             break;				
 				  }
 			 }
 			
 			 if (is_quote)
+       {
 			   tr << *chars;
+         /*
+         tr << std::string(chars, j+1);
+         chars += j;
+         i += j;
+         */
+       }
 			 else
 				  tr << "&amp;";
       }
-      /*
-      {      
-        is_quote = 0;
-        unsigned int j;
-        for (j = 1; j < str.bytes() - i; j++)
-        {
-				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z') 
-            ||
-            (*(chars+j) >= 'A' && *(chars+j) <= 'Z')
-            ||
-            (*(chars+j) >= '0' && *(chars+j) <= '9')
-            ||
-            (*(chars+j) == '#')))
-				  {
-            break;
-          }
-        }
-
-        if (j < str.bytes() - i && *(chars+j) == ';' && j > 1)
-          is_quote = 1;
-
-        if (is_quote)
-        {
-          tr << std::string(chars, j+1);
-          chars += j;
-          i += j;
-        }
-        else
-        {
-				  tr << "&amp;";
-        }
-      }
-      */
       break;      
 			
 		default:
