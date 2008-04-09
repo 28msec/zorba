@@ -519,6 +519,10 @@ void end_visit(insert_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lSource = pop_itstack();
+  if (lTarget->isUpdateIterator() || lSource->isUpdateIterator())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_loc());
+  }
   PlanIter_t lInsert = new InsertIterator(v.get_loc(), v.getType(), lSource, lTarget); 
   itstack.push(&*lInsert);
 }
@@ -533,6 +537,10 @@ void end_visit(delete_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
+  if (lTarget->isUpdateIterator())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_loc());
+  }
   PlanIter_t lDelete = new DeleteIterator(v.get_loc(), lTarget);
   itstack.push(&*lDelete);
 }
@@ -548,6 +556,10 @@ void end_visit(replace_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReplacement = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
+  if (lReplacement->isUpdateIterator() || lTarget->isUpdateIterator())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_loc());
+  }
   PlanIter_t lReplace = new ReplaceIterator(v.get_loc(), v.getType(), lTarget, lReplacement);
   itstack.push(&*lReplace);
 }
@@ -563,6 +575,10 @@ void end_visit(rename_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lName = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
+  if (lName->isUpdateIterator() || lTarget->isUpdateIterator())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_loc());
+  }
   PlanIter_t lRename = new RenameIterator(v.get_loc(), lTarget, lName);
   itstack.push(&*lRename);
 }
@@ -585,6 +601,10 @@ void end_visit(transform_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReturn = pop_itstack();
+  if (lReturn->isUpdateIterator())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_loc());
+  }
   PlanIter_t lModify = pop_itstack();
 
   vector<CopyClause> lClauses;
@@ -600,6 +620,10 @@ void end_visit(transform_expr& v)
   for(;lIter!=lEnd;++lIter)
   {
     PlanIter_t lInput = pop_stack(lInputs);
+    if (lInput->isUpdateIterator())
+    {
+      ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_loc());
+    }
     vector<ref_iter_t>* lVarIters = 0;
     var_expr* lVar = (*lIter)->getVar();
     ZORBA_ASSERT(copy_var_iter_map.get((uint64_t)lVar, lVarIters));
