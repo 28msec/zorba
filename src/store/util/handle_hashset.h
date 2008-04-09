@@ -363,7 +363,7 @@ HashEntry* hashInsert(
   // If no free entry exists, a new entry is appended into the hash table.
   if (freelist ()->theNext == 0)
   {
-    return add_overflow_entry (lastentry);
+    return addOverflowEntry (lastentry);
   }
   else
   {
@@ -376,19 +376,21 @@ HashEntry* hashInsert(
   return entry;
 }
 
-HashEntry *add_overflow_entry (HashEntry *lastentry) {
+HashEntry *addOverflowEntry (HashEntry *lastentry) {
+  checked_vector<HashEntry> newTab (theHashTab.size () + 1);
+
   HashEntry *oldbase = &theHashTab [0];
-  theHashTab.push_back(HashEntry());
-  HashEntry *newbase = &theHashTab [0];
+  HashEntry *newbase = &newTab [0];
   int delta = (newbase - oldbase);
-  if (delta != 0) {
-    lastentry += delta;
-    for (unsigned i = 0; i < theHashTab.size (); i++) {
-      HashEntry *e = newbase + i;
-      if (e->theItem != NULL && e->theNext != NULL)
-        e->theNext += delta;
+  lastentry += delta;
+  for (unsigned i = 0; i < theHashTab.size (); i++) {
+    HashEntry *e = oldbase + i;
+    if (e->theItem != NULL && e->theNext != NULL) {
+      newbase [i].theItem = e->theItem;
+      newbase [i].theNext = e->theNext + delta;
     }
   }
+  newTab.swap (theHashTab);
 
   return ((lastentry->theNext = newbase + theHashTab.size() - 1));
 }
@@ -427,7 +429,7 @@ void resizeHashTab(ulong newSize)
       // table. If no free entry exists, a new entry is appended into the table.
       if (freelist ()->theNext == 0)
       {
-        entry = add_overflow_entry (lastentry);
+        entry = addOverflowEntry (lastentry);
       }
       else
       {
