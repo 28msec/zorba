@@ -6,7 +6,7 @@
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
 #include "store/util/handle_hashset_item.h"
-#include "store/util/pointer_hashmap.h"
+#include "store/util/hashmap.h"
 #include "store/naive/node_vector.h"
 #include "store/naive/node_updates.h"
 
@@ -24,9 +24,7 @@ typedef std::vector<UpdatePrimitive*> NodeUpdates;
 /*******************************************************************************
 
 ********************************************************************************/
-class NodeToUpdatesMap : public PointerHashMap<XmlNode,
-                                               NodeToUpdatesMap,
-                                               NodeUpdates>
+class NodeToUpdatesMap : public HashMap<XmlNode*, NodeUpdates, NodeToUpdatesMap>
 {
 public:
 
@@ -43,9 +41,7 @@ public:
 
   NodeToUpdatesMap() 
     :
-    PointerHashMap<XmlNode,
-                   NodeToUpdatesMap,
-                   NodeUpdates>(8, 0.6)
+    HashMap<XmlNode*, NodeUpdates, NodeToUpdatesMap>(8)
    {
    }
 };

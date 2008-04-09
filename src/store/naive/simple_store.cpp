@@ -50,8 +50,8 @@ SimpleStore::SimpleStore()
   theNamespacePool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
-  theDocuments(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
-  theCollections(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
+  theDocuments(DEFAULT_COLLECTION_MAP_SIZE),
+  theCollections(DEFAULT_COLLECTION_MAP_SIZE),
   theQueryContextContainer(new QueryContextContainer)
 #ifndef NDEBUG
   ,theTraceLevel(0)
@@ -217,7 +217,6 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
 
   if (root != NULL)
   {
-
     rootp = &root;
     theDocuments.insert(uri, rootp);
   }

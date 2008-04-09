@@ -65,8 +65,9 @@ Item_t BasicItemFactory::createNCName(xqpStringStore* value)
 
 Item_t BasicItemFactory::createAnyURI(xqpStringStore* value)
 {
-  theUriPool->insert(value);
-  return new AnyUriItemImpl(value);
+  xqpStringStore_t str = value;
+  theUriPool->insert(str, str);
+  return new AnyUriItemImpl(str);
 }
 
 

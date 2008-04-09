@@ -227,7 +227,8 @@ void PULImpl::addInsertAttributes(
   {
     updates = new NodeUpdates(1);
     (*updates)[0] = upd;
-    theNodeToUpdatesMap.insert(n, updates);
+    XmlNode* tmp = reinterpret_cast<XmlNode*>(n);
+    theNodeToUpdatesMap.insert(tmp, updates);
   }
   else
   {
