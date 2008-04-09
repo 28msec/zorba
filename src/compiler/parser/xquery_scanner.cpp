@@ -379,7 +379,7 @@ typedef unsigned char YY_CHAR;
 
 #define yytext_ptr yytext
 
-#include <FlexLexer.h>
+#include "compiler/parser/FlexLexer.h"
 
 int yyFlexLexer::yywrap() { return 1; }
 
