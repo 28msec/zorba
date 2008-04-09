@@ -2246,10 +2246,11 @@ TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ContextItemExpr& /*v*/, void* /*visit_state*/)
+void end_visit(const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (DOT_VAR);
+  e->set_loc(v.get_location());
   nodestack.push(e);
 }
 

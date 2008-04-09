@@ -80,10 +80,10 @@ QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc)
   QueryLoc lLoc;
   lLoc.setFilenameBegin(aLoc.begin.filename);
   lLoc.setLineBegin(aLoc.begin.line);
-  lLoc.setColumnBegin(aLoc.begin.line);
+  lLoc.setColumnBegin(aLoc.begin.column);
   lLoc.setFilenameEnd(aLoc.end.filename);
   lLoc.setLineEnd(aLoc.end.line);
-  lLoc.setColumnEnd(aLoc.end.line);
+  lLoc.setColumnEnd(aLoc.end.column);
   return lLoc;
 }
 

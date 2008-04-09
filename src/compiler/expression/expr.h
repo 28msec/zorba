@@ -128,6 +128,7 @@ public:
 
 public:
   QueryLoc get_loc() const { return loc; }
+  void set_loc(const QueryLoc& aLoc) { loc = aLoc; }
 
 public:
   virtual expr_iterator expr_begin ();

@@ -77,8 +77,9 @@ namespace zorba {
   std::ostream& operator<< (std::ostream& os, const QueryException& aException)
   {
     return os << "Error on line " << aException.getLineBegin() 
-              << " column " << aException.getColumnBegin() << std::endl
-              << (ZorbaException)aException;
+        << " column " << aException.getColumnBegin() + 1
+        << ": " 
+        << (ZorbaException)aException;
   }
 
   std::ostream& operator<< (std::ostream& os, const DynamicException& aException)

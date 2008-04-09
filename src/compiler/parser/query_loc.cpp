@@ -27,7 +27,7 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
     std::string lStr = aQueryLoc.getFilenameBegin();
     aOstr << lStr << ":";
   }
-  aOstr << aQueryLoc.getLineBegin() << "." << aQueryLoc.getColumnBegin();
+  aOstr << aQueryLoc.getLineBegin() << "." << aQueryLoc.getColumnBegin() << "-" << aQueryLoc.getColumnEnd();
 
   return aOstr;
 }

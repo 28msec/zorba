@@ -85,7 +85,7 @@ int _tmain(int argc, _TCHAR* argv[])
   XQuery_t query;
   try {
     query = zengine->compileQuery(*qfile, chints);
-  } catch (ZorbaException &e) {
+  } catch (QueryException &e) {
     // no need to close because the object is not valid
     cerr << "Compilation error: " << e << endl;
     return 1;
@@ -101,28 +101,19 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // output the result (either using xml serialization or using show)
   cout << "Running query and printing result..." << endl;
-  if (lProp->useSerializer())
+  
+  try
   {
-    try
+    if (lProp->useSerializer())
     {
       if (query->isUpdateQuery())
         query->applyUpdates(*resultFile);
       else
         *resultFile << query;
     }
-    catch (ZorbaException &e)
+    else
     {
-      query->close();
-      zengine->shutdown();
-      cerr << "Execution error: " << e << endl;
-      return 2;
-    }
-  }
-  else
-  {
-    ResultIterator_t result = query->iterator();
-    try 
-    {
+      ResultIterator_t result = query->iterator();
       result->open();
       Item lItem;
       while (result->next(lItem)) {
@@ -132,14 +123,20 @@ int _tmain(int argc, _TCHAR* argv[])
       }
       result->close();
     }
-    catch (ZorbaException &e)
-    {
-      result->close();
-      query->close();
-      zengine->shutdown();
-      cerr << "Execution error: " << e << endl;
-      return 2;
-    }
+  }
+  catch (QueryException &e)
+  {
+    query->close();
+    zengine->shutdown();
+    cerr << "Execution error: " << e << endl;
+    return 2;
+  }
+  catch (ZorbaException &e)
+  {
+    query->close();
+    zengine->shutdown();
+    cerr << "Execution error: " << e << endl;
+    return 2;
   }
 
   query->close();

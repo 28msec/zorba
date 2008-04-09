@@ -39,6 +39,8 @@
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/xquery_scanner.h"
 #include "compiler/parser/xquery_driver.h"
@@ -89,8 +91,18 @@ std::string start_state(int);
 { \
   if (yy_flex_debug) { \
     std::cout<<'<'<<start_state(YY_START)<<">" /* << " [["<<yytext<<"]]" */ << std::endl; \
-    yylloc->columns(yyleng); \
   } \
+  \
+  int last_endl = 0;\
+  for (int i=0; i<yyleng; i++) \
+    if (yytext[i] == '\n')  \
+    { \
+      yylloc->lines(1);\
+      last_endl = i+1;\
+    }\
+  \
+  yylloc->step();\
+  yylloc->columns(yyleng - last_endl);\
 }
 
 
@@ -113,11 +125,7 @@ std::string start_state(int);
 %option nounistd
 %option c++
 %option prefix="Zorba"
-
-
-/* known expensive option */
-/* %option yylineno */
-
+      
 
   /*_____________________________________________________________________
    |
@@ -288,18 +296,10 @@ ValidationMode        ("strict"|"lax"|"skip")
 */
 
 %%
-%{
- yylloc->step ();
-%}
-
-{blank}+   { yylloc->step(); }
-[\n]+      { yylloc->lines(yyleng); yylloc->step (); }
-
 
 %{
 typedef zorba::xquery_parser::token token;
 %}
-
 
 
   /*______________________________________________________________________
@@ -773,7 +773,6 @@ typedef zorba::xquery_parser::token token;
   TRY_URILIT (AT_URI_LITERAL, yytext+2, yyleng-2);
 }
 
-
   /* pop previous state */
   /* ------------------ */
 "}" {
@@ -781,17 +780,30 @@ typedef zorba::xquery_parser::token token;
   return token::RBRACE;
 }
 
-
-  /*______________________________________________________________________
-   |
-   | Update rules <INITIAL,MODE_OPERATOR>
-   |______________________________________________________________________*/
-
 "declare"{SP}"revalidation"{SP} {
   BEGIN MODE_DECLAREREVALIDATION;
   return token::DECLARE_REVALIDATION;
 }
 
+"as"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::AS;
+}
+
+  /*______________________________________________________________________
+    |
+    | TRY-CATCH rules <INITIAL>
+    |______________________________________________________________________*/
+
+"try"/{WordBreak} {
+  return token::TRY;
+}
+
+
+  /*______________________________________________________________________
+    |
+    | Update rules <INITIAL,MODE_OPERATOR>
+    |______________________________________________________________________*/
 
 <INITIAL,MODE_OPERATOR>{
 
@@ -850,20 +862,6 @@ typedef zorba::xquery_parser::token token;
   return token::MODIFY;
 }
 
-}
-
-"as"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AS;
-}
-
-  /*______________________________________________________________________
-   |
-   | TRY-CATCH rules <INITIAL>
-   |______________________________________________________________________*/
-
-"try"/{WordBreak} {
-  return token::TRY;
 }
 
 <MODE_OPERATOR>{

@@ -601,7 +601,20 @@ store::Item_t
 FnDeepEqualIterator_3::nextImpl(PlanState& planState) const
 {
   PlanIteratorState* state;
+  store::Item_t arg1, arg2, collation;  
+
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  arg1 = consumeNext(theChildren[0].getp(), planState);
+  arg2 = consumeNext(theChildren[1].getp(), planState);
+
+  if (theChildren.size() > 2)
+  {
+    collation = consumeNext(theChildren[3].getp(), planState);
+
+  }
+  
+
 
   STACK_END (state);
 }
