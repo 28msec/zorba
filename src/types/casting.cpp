@@ -148,6 +148,10 @@ xqpStringStore_t checkBooleanToNumericCast(xqpStringStore_t lString,
                           const xqtref_t& aSourceType,
                           const xqtref_t& aTargetType)
 {
+    if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND || 
+        aTargetType->type_kind() != XQType::ATOMIC_TYPE_KIND )
+        return lString;
+
     switch(TypeOps::get_atomic_type_code(*aSourceType))
     {
     case TypeConstants::XS_BOOLEAN:
