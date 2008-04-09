@@ -7,10 +7,11 @@
 
 #include "store/util/mutex.h"
 
-namespace zorba { namespace store {
-class QNameItemImpl;
-
+namespace zorba { 
 typedef rchandle<class xqpStringStore> xqpStringStore_t;
+
+namespace store {
+class QNameItemImpl;
 typedef rchandle<class QNameItemImpl> QNameItemImpl_t;
 
 
