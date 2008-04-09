@@ -144,6 +144,31 @@ store::Item_t GenericCast::castToQName (
   return 0;
 }
   
+xqpStringStore_t checkBooleanToNumericCast(xqpStringStore_t lString,
+                          const xqtref_t& aSourceType,
+                          const xqtref_t& aTargetType)
+{
+    switch(TypeOps::get_atomic_type_code(*aSourceType))
+    {
+    case TypeConstants::XS_BOOLEAN:
+        if ( TypeOps::is_subtype(*aTargetType, *ATOMIC_TYPE(DECIMAL)) ||
+             TypeOps::is_subtype(*aTargetType, *ATOMIC_TYPE(FLOAT)) || 
+              TypeOps::is_subtype(*aTargetType, *ATOMIC_TYPE(DOUBLE)) )
+        {
+            xqpStringStore_t trueStr = new xqpStringStore("true");
+            xqpStringStore_t oneStr = new xqpStringStore("1");
+            if ( trueStr->equals(lString) || oneStr->equals(lString) )
+                return oneStr;
+            else
+                return new xqpStringStore("0");
+        }
+        break;
+    default:
+        break;
+    }
+    return lString;
+}
+
 store::Item_t GenericCast::stringSimpleCast(
     const store::Item_t aSourceItem,
     const xqtref_t& aSourceType,
@@ -178,6 +203,9 @@ store::Item_t GenericCast::stringSimpleCast(
     break;
   }
   
+  // check if boolean "true/false" to numeric types is required
+  lString = checkBooleanToNumericCast(lString, aSourceType, aTargetType);
+
   switch(TypeOps::get_atomic_type_code(*aTargetType))
   {
   case TypeConstants::XS_ANY_ATOMIC:
@@ -324,7 +352,7 @@ store::Item_t GenericCast::stringSimpleCast(
       {
         xqp_integer n;
         if (NumConversions::strToInteger(lString.getp(), n))
-          lItem = factory->createInteger(n);
+            lItem = factory->createInteger(n);
       }
         break;
       case TypeConstants::XS_NON_POSITIVE_INTEGER:
