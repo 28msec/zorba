@@ -13,7 +13,6 @@
 namespace zorba 
 {
 class serializer;
- class CopyMode;
 
 namespace store
 {
@@ -480,7 +479,7 @@ public:
    * @param copymode 
    * @return A pointer to the root node of the copied tree 
    */
-  Item* copyXmlTree(const CopyMode& copymode);
+  virtual Item* copyXmlTree(const CopyMode& copymode);
 
   /** Method to print to content of the Item
    */

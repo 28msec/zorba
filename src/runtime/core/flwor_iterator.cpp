@@ -454,7 +454,7 @@ void FLWORIterator::matResultAndOrder(
   }
 
   Iterator_t iterWrapper = new PlanIteratorWrapper(returnClause, planState);
-  store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false);
+  store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false, false);
   Iterator_t iter = result->getIterator();
   iter->open();
   flworState->orderMap->insert(std::pair<std::vector<store::Item_t>, Iterator_t>(orderKey, iter));
@@ -558,7 +558,7 @@ bool FLWORIterator::bindVariable (
     //Depending on the query, we might need to materialize the LET-Binding
     if ( lForLetClause.theNeedsMaterialization )
     {
-      store::TempSeq_t tmpSeq = GENV_STORE.createTempSeq(iterWrapper, true);
+      store::TempSeq_t tmpSeq = GENV_STORE.createTempSeq(iterWrapper, false, true);
       std::vector<ref_iter_t>::const_iterator letIter;
       for (letIter = lForLetClause.theLetVars.begin();
            letIter != lForLetClause.theLetVars.end();

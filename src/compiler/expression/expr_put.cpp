@@ -597,13 +597,24 @@ ostream& rename_expr::put( ostream& os) const
   return os;
 }
 
+ostream& copy_clause::put( ostream& os) const
+{
+  os << INDENT << "copy (" << this << ") [\n";
+  ZORBA_ASSERT(theVar != 0);
+  theVar->put(os);
+  ZORBA_ASSERT(theExpr != 0);
+  theExpr->put(os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
 ostream& transform_expr::put( ostream& os) const
 {
   os << INDENT << "transform_expr (" << this << ") [\n";
-  for (vector<rchandle<var_expr> >::const_iterator it = theAssigns.begin();
-       it != theAssigns.end(); ++it)
+  for (vector<rchandle<copy_clause> >::const_iterator it = theCopyClauses.begin();
+       it != theCopyClauses.end(); ++it)
   {
-    rchandle<expr> e = *it;
+    rchandle<copy_clause> e = *it;
     ZORBA_ASSERT(e != NULL);
     e->put(os);
   }

@@ -4020,7 +4020,6 @@ void end_visit(const RevalidationDecl& /*v*/, void* /*visit_state*/)
 void *begin_visit(const TransformExpr& /*v*/)
 {
   TRACE_VISIT ();
-  nodestack.push(NULL);
   return no_state;
 }
 
@@ -4030,14 +4029,17 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
   expr_t aReturn = pop_nodestack();
   expr_t aModify = pop_nodestack();
   rchandle<transform_expr> aTransform = new transform_expr(v.get_location(), aModify, aReturn);
-  rchandle<var_expr> anAssign = pop_nodestack().dyn_cast<var_expr> ();
-  while (anAssign != 0)
+  const size_t lSize = v.get_varname_list()->size();
+  for (size_t i = 0; i < lSize; ++i)
   {
-    aTransform->add(anAssign);
-    anAssign = pop_nodestack();
+    expr_t aExpr = pop_nodestack();
+    var_expr_t aVarExpr = pop_nodestack().cast<var_expr>();
+    aVarExpr->set_kind(var_expr::copy_var);
+    copy_clause* lCCE = new copy_clause( aVarExpr, aExpr);
+    aTransform->add(lCCE);
+    pop_scope();
   }
   nodestack.push(&*aTransform);
-  pop_scope (v.get_varname_list ()->size ());
 }
 
 void *begin_visit(const VarNameList& /*v*/)
@@ -4055,7 +4057,7 @@ void *begin_visit(const VarBinding& v)
 {
   TRACE_VISIT ();
   push_scope ();
-  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::transform_var);
+  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::copy_var);
   return no_state;
 }
 

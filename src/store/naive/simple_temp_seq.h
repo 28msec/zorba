@@ -30,7 +30,7 @@ public:
 
   SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
 
-  SimpleTempSeq(Iterator_t iter, bool lazy = true);
+  SimpleTempSeq(Iterator_t iter, bool copy = false, bool lazy = true);
 
   virtual ~SimpleTempSeq();
 

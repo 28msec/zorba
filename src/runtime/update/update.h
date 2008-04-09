@@ -110,6 +110,7 @@ class CopyClause
   std::vector<ref_iter_t> theCopyVars;
   PlanIter_t              theInput;
 
+public:
   CopyClause(
     std::vector<ref_iter_t>& aCopyVars,
     PlanIter_t               aInput)

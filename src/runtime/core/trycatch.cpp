@@ -181,7 +181,7 @@ TryCatchIterator::nextImpl(PlanState& planState) const
   try { 
     lIterator = new PlanIteratorWrapper ( theChild, planState );
     lIterator->open();
-    state->theTargetSequence = GENV_STORE.createTempSeq( lIterator, false );
+    state->theTargetSequence = GENV_STORE.createTempSeq( lIterator, false, false );
     state->theTempIterator = state->theTargetSequence->getIterator();
     state->theTempIterator->open();
   } catch (error::ZorbaError& e) {

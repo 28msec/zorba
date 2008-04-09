@@ -2205,7 +2205,8 @@ void *begin_visit(const VarBinding &n)
 {
     INDENT;
 
-    os << "<VarBinding pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<VarBinding varname='" << n.get_varname() 
+       << "' npos='" << n.get_location() << "' ptr='" << &n << "'";
 
     os << ">";
 

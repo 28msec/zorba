@@ -112,7 +112,7 @@ public:
 
 class transform_expr_iterator_data : public expr_iterator_data {
 public:
-  std::vector<rchandle<var_expr> >::iterator theAssigns_iter;
+  std::vector<rchandle<copy_clause> >::iterator clause_iter;
 
 public:
   transform_expr_iterator_data (expr *e_) : expr_iterator_data(e_) {}
@@ -252,6 +252,7 @@ string var_expr::decode_var_kind(
   case quant_var: return "QUANT"; break;
   case context_var: return "CTX"; break;
   case catch_var: return "CATCH"; break;
+  case copy_var: return "COPY"; break;
   default: return "???";
   }
 }
@@ -1243,6 +1244,8 @@ void rename_expr::next_iter(expr_iterator_data& v)
 }
 
 
+copy_clause::copy_clause(rchandle<var_expr> aVar, expr_t aExpr)
+: theVar(aVar), theExpr(aExpr) {}
 
 // [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
 
@@ -1261,9 +1264,10 @@ expr_iterator_data *transform_expr::make_iter () { return new transform_expr_ite
 void transform_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER2(transform_expr_iterator_data);
-  for (vv.theAssigns_iter = begin (); vv.theAssigns_iter != end (); ++(vv.theAssigns_iter)) {
-    ITER (*vv.theAssigns_iter);
-  }
+  ITER_FOR_EACH(clause_iter, theCopyClauses.begin(), theCopyClauses.end(),
+                (*vv.clause_iter)->theExpr);
+  ITER(theModifyExpr);
+  ITER(theReturnExpr);
   END_EXPR_ITER();
 } 
 

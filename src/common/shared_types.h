@@ -12,6 +12,7 @@ namespace zorba {
   }
   
   namespace store {
+    class CopyMode;
     class Item;
     typedef rchandle<Item> Item_t;
     class ItemIterator;

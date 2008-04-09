@@ -116,7 +116,7 @@ public:
   Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false);
 
   TempSeq_t createTempSeq();
-  TempSeq_t createTempSeq(Iterator* iterator, bool lazy = true);
+  TempSeq_t createTempSeq(Iterator* iterator, bool copyNodes = false, bool lazy = true);
 
   store::Item_t getReference(store::Item_t);
 

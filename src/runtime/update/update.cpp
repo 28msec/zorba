@@ -522,8 +522,7 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
     for(; lIter != lEnd; ++lIter)
     {
       Iterator_t lIterWrapper = new PlanIteratorWrapper(lIter->theInput, aPlanState);
-      // TODO must copy everything
-      store::TempSeq_t lTmpSeq = GENV_STORE.createTempSeq(lIterWrapper, true); 
+      store::TempSeq_t lTmpSeq = GENV_STORE.createTempSeq(lIterWrapper, true, true); 
       lIter2 = lIter->theCopyVars.begin();
       lEnd2 = lIter->theCopyVars.end();
       for(;lIter2!=lEnd2;++lIter2)

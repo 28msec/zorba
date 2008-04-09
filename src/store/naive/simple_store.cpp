@@ -524,14 +524,16 @@ void SimpleStore::apply(PUL_t pendingUpdateList, Requester requester)
 /*******************************************************************************
   Creates a new TempSeq. The instance can be used, e.g. for variable bindings
 
-  @param iterator The source for the XMDInstance
-  @param lazy			Hint for the store. If possible a XMDInstance should be
-                  evaluated lazily. For XQueryP it might be necassary to set
-                  this to false.
+  @param iterator   The source for the XMDInstance
+  @param copyNodes  If true, all nodes are copied before they are saved in the
+                    temp sequence.
+  @param lazy		    Hint for the store. If possible a XMDInstance should be
+                    evaluated lazily. For XQueryP it might be necassary to set
+                    this to false.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(Iterator* iterator, bool lazy)
+TempSeq_t SimpleStore::createTempSeq(Iterator* iterator, bool copyNodes, bool lazy)
 {
-  TempSeq_t tempSeq = new SimpleTempSeq(iterator, lazy);
+  TempSeq_t tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
   return tempSeq;
 }
 

@@ -117,6 +117,7 @@ protected:
   hash64map<vector<ref_iter_t> *>      lvar_iter_map;
   hash64map<vector<ref_iter_t> *>    * param_var_iter_map;
   hash64map<vector<ref_iter_t> *>      catchvar_iter_map;
+  hash64map<vector<ref_iter_t> *>      copy_var_iter_map;
 
 public:
 	plan_visitor(hash64map<vector<ref_iter_t> *> *param_var_map = NULL)
@@ -128,6 +129,7 @@ public:
         for_each(pvar_iter_map.begin(), pvar_iter_map.end(), vector_destroyer<var_iter_t>());
         for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<ref_iter_t>());
         for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<ref_iter_t>());
+        for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<ref_iter_t>());
     }
 
 public:
@@ -256,6 +258,20 @@ void end_visit(var_expr& v)
   {
     vector<ref_iter_t> *map = NULL;
     bool bound = catchvar_iter_map.get ((uint64_t) &v, map);
+      
+    ZORBA_ASSERT (bound);
+    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
+            loc,
+            (void *) &v);
+    map->push_back (v_p);
+    itstack.push(v_p);
+  }
+  break;
+  case var_expr::copy_var:
+  {
+    vector<ref_iter_t> *map = NULL;
+    uint64_t k = (uint64_t) &v;
+    bool bound = copy_var_iter_map.get (k, map);
       
     ZORBA_ASSERT (bound);
     LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
@@ -554,6 +570,14 @@ void end_visit(rename_expr& v)
 bool begin_visit(transform_expr& v)
 {
   CODEGEN_TRACE_IN("");
+  vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
+  vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
+  for (;lIter!=lEnd;++lIter)
+  {
+    rchandle<var_expr> var = (*lIter)->getVar();
+    uint64_t k = (uint64_t) &*var;
+    copy_var_iter_map.put(k, new vector<ref_iter_t>());
+  }
   return true;
 }
 
@@ -562,16 +586,28 @@ void end_visit(transform_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReturn = pop_itstack();
   PlanIter_t lModify = pop_itstack();
-  // FIXME
-//  rchandle<TransformIterator> lTransform = new TransformIterator(v.get_loc(), lModify, lReturn);
-//  std::vector<var_expr_t>::const_iterator lIter = v.begin();
-//  std::vector<var_expr_t>::const_iterator lEnd = v.end();
-//  for ( ; lIter!= lEnd ; ++lIter)
-//  {
-//    PlanIter_t lAssign = pop_itstack();
-//    lTransform->addAssign(lAssign);
-//  }
-//  itstack.push(&*lTransform);
+
+  vector<CopyClause> lClauses;
+  stack<PlanIter_t> lInputs;
+  size_t lSize = v.size();
+  for (size_t i = 0; i < lSize; ++i)
+  {
+    lInputs.push(pop_itstack());  
+  }
+
+  vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
+  vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
+  for(;lIter!=lEnd;++lIter)
+  {
+    PlanIter_t lInput = pop_stack(lInputs);
+    vector<ref_iter_t>* lVarIters = 0;
+    var_expr* lVar = (*lIter)->getVar();
+    ZORBA_ASSERT(copy_var_iter_map.get((uint64_t)lVar, lVarIters));
+    lClauses.push_back(CopyClause (*lVarIters, lInput));
+  }
+
+  TransformIterator* lTransform = new TransformIterator(v.get_loc(), lClauses, lModify, lReturn); 
+  itstack.push(lTransform);
 }
 
 

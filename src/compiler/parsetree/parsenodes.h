@@ -4972,7 +4972,7 @@ public:
   { varbinding_hv.push_back(varbinding_h); }
 	rchandle<VarBinding> operator[](int i) const
   { return varbinding_hv[i]; }
-  int size () { return varbinding_hv.size (); }
+  size_t size () { return varbinding_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5001,7 +5001,7 @@ public:
 
 
 public:
-	std::string get_varname() const { return varname; }
+	const std::string& get_varname() const { return varname; }
 	rchandle<exprnode> get_val() const { return val_h; }
 
 public:

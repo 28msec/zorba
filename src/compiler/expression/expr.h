@@ -204,7 +204,7 @@ public:
     context_var,
     param_var,
     catch_var,
-    transform_var,
+    copy_var,
     unknown_var  // TODO: get rid
   };
 
@@ -1625,6 +1625,21 @@ public:
 };
 
 
+class copy_clause : public SimpleRCObject
+{
+  friend class transform_expr;
+private:
+  rchandle<var_expr> theVar;
+  expr_t             theExpr;
+
+public:
+  copy_clause(rchandle<var_expr> aVar, expr_t aExpr);
+
+  rchandle<var_expr> getVar()  const { return theVar; }
+  expr_t             getExpr() const { return theExpr; }
+
+  std::ostream& put(std::ostream&) const;
+};
 
 // [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
 class transform_expr : public expr
@@ -1637,7 +1652,7 @@ public:
 	typedef rchandle<var_expr> varref_t;
 
 protected:
-	std::vector<varref_t> theAssigns;
+	std::vector<rchandle<copy_clause> > theCopyClauses;
 	expr_t theModifyExpr;
 	expr_t theReturnExpr;
 
@@ -1653,24 +1668,24 @@ public:
 	expr_t getReturnExpr() const { return theReturnExpr; }
 
 public:
-	void add(varref_t anAssign)
-  { theAssigns.push_back(anAssign); }
+	void add(rchandle<copy_clause> aCopyClause)
+  { theCopyClauses.push_back(aCopyClause); }
 
-	varref_t & operator[](int i)
-  { return theAssigns[i]; }
-	varref_t const& operator[](int i) const
-  { return theAssigns[i]; }
+	rchandle<copy_clause>& operator[](int i)
+  { return theCopyClauses[i]; }
+	rchandle<copy_clause> const& operator[](int i) const
+  { return theCopyClauses[i]; }
 
-	std::vector<varref_t>::const_iterator begin() const
-  { return theAssigns.begin(); }
-	std::vector<varref_t>::iterator begin()
-  { return theAssigns.begin(); }
-	std::vector<varref_t>::const_iterator end() const
-  { return theAssigns.end(); }
-	std::vector<varref_t>::iterator end()
-  { return theAssigns.end(); }
-	uint32_t size() const
-  { return theAssigns.size(); }
+	std::vector<rchandle<copy_clause> >::const_iterator begin() const
+  { return theCopyClauses.begin(); }
+	std::vector<rchandle<copy_clause> >::iterator begin()
+  { return theCopyClauses.begin(); }
+	std::vector<rchandle<copy_clause> >::const_iterator end() const
+  { return theCopyClauses.end(); }
+	std::vector<rchandle<copy_clause> >::iterator end()
+  { return theCopyClauses.end(); }
+	size_t size() const
+  { return theCopyClauses.size(); }
 
   expr_iterator_data *make_iter ();
 

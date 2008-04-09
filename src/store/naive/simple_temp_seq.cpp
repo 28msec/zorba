@@ -8,17 +8,22 @@
 
 #include "store/api/item.h"
 #include "store/naive/simple_temp_seq.h"
+#include "store/api/copymode.h"
 
 namespace zorba { namespace store {
 
 /*******************************************************************************
 
 ********************************************************************************/
-  SimpleTempSeq::SimpleTempSeq(Iterator_t iter, bool lazy)
+SimpleTempSeq::SimpleTempSeq(Iterator_t iter, bool copy, bool lazy)
 {
   Item_t curItem = iter->next();
+  CopyMode lCopyMode;
   while ( curItem != NULL )
 	{
+    if (copy && curItem->isNode()) {
+      curItem = curItem->copyXmlTree(lCopyMode);
+    }
     theItems.push_back(curItem);
     curItem = iter->next();
   }
