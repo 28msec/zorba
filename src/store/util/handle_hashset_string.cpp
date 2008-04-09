@@ -1,4 +1,4 @@
-#include <cassert>
+
 #include "errors/fatal.h"
 #include "store/util/handle_hashset_string.h"
 
@@ -46,9 +46,9 @@ bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
   {
     SYNC_CODE(AutoMutex lock(theMutex);)
 
-    HashEntry* entry = &theHashTab[hval];
+    HashEntry<xqpStringStore_t, DummyHashValue>* entry = &theHashTab[hval];
 
-    if (entry->theItem != NULL)
+    if (!entry->isFree())
     {
       while (entry != NULL)
       {
@@ -68,9 +68,9 @@ bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
     }
   }
 
-  std::auto_ptr<xqpStringStore>tmp(new xqpStringStore(str));
-  insert(tmp.get(), outStr);
-  tmp.release();
+  xqpStringStore_t tmp(new xqpStringStore(str));
+  insert(tmp, outStr);
+
   return true;
 }
 
@@ -81,9 +81,9 @@ bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
 ********************************************************************************/
 void StringPool::garbageCollect()
 {
-  HashEntry* entry;
+  HashEntry<xqpStringStore_t, DummyHashValue>* entry;
 
-  HashEntry* freeList = NULL;
+  HashEntry<xqpStringStore_t, DummyHashValue>* freeList = NULL;
 
   ulong size = theHashTabSize;
 
@@ -109,7 +109,7 @@ void StringPool::garbageCollect()
       }
       else
       {
-        HashEntry* nextEntry = entry->theNext;
+        HashEntry<xqpStringStore_t, DummyHashValue>* nextEntry = entry->theNext;
         *entry = *nextEntry;
         nextEntry->theItem = NULL;
         nextEntry->theNext = freeList;
@@ -119,7 +119,7 @@ void StringPool::garbageCollect()
     }
 
     // Handle the overflow entries of the current hash bucket.
-    HashEntry* prevEntry = entry;
+    HashEntry<xqpStringStore_t, DummyHashValue>* prevEntry = entry;
     entry = entry->theNext;
 
     while (entry != NULL)

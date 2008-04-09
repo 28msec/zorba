@@ -1,8 +1,8 @@
 #ifndef ZORBA_STORE_UTIL_NODE_HANDLE_HASHSET
 #define ZORBA_STORE_UTIL_NODE_HANDLE_HASHSET
 
-#include "store/util/handle_hashset.h"
-
+#include "store/util/hashset.h"
+#include "store/naive/node_items.h"
 
 namespace zorba { namespace store {
 
@@ -11,16 +11,22 @@ namespace zorba { namespace store {
   A hash-based set container of node rchandles, where equality is based on
   node identity (i.e.  ordpath).
 ********************************************************************************/
-class NodeHashSet : public HandleSet<Item, NodeHashSet>
+class NodeHashSet : public HashSet<rchandle<Item>, NodeHashSet>
 {
 public:
 
-  static bool equal(const Item* t1, const Item* t2);
+  static bool equal(const Item_t& t1, const Item_t& t2)
+  {
+    return t1->equals(t2, 0);
+  }
 
-  static uint32_t hash(const Item* t);
+  static uint32_t hash(const Item_t& t)
+  {
+    return t->hash(0);
+  }
 
 public:
-  NodeHashSet(ulong size = 1024) : HandleSet<Item, NodeHashSet>(size) {}
+  NodeHashSet(ulong size = 1024) : HashSet<rchandle<Item>, NodeHashSet>(size) {}
 };
 
 } // namespace store

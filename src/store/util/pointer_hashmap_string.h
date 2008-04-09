@@ -4,7 +4,7 @@
 #include "common/common.h"
 #include "zorbatypes/xqpstring.h"
 
-#include "store/util/pointer_hashmap.h"
+#include "store/util/hashmap.h"
 
 
 namespace zorba { namespace store {
@@ -14,7 +14,7 @@ namespace zorba { namespace store {
   V. String equality is based on string value. Class V must have a destructor.
 ********************************************************************************/
 template <class V>
-class StringHashMap : public PointerHashMap<xqpStringStore, StringHashMap<V>, V>
+class StringHashMap : public HashMap<xqpStringStore*, V, StringHashMap<V> >
 {
 public:
   static bool equal(const xqpStringStore* s1, const xqpStringStore* s2)
@@ -28,9 +28,9 @@ public:
   }
 
 public:
- StringHashMap(ulong size, double lf = 0.6)
+ StringHashMap(ulong size)
    :
-  PointerHashMap<xqpStringStore, StringHashMap, V>(size, lf) {};
+  HashMap<xqpStringStore*, V, StringHashMap>(size) {};
 
   ~StringHashMap() { };
 };
