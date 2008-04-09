@@ -53,6 +53,8 @@ FLWORIterator::ForLetClause::ForLetClause(
   theForVars ( aForVars ),
   theInput ( aInput )
 {
+  if (theInput->isUpdateIterator())
+    ZORBA_ERROR(ZorbaError::XUST0001);
 }
 
 
@@ -292,6 +294,9 @@ FLWORIterator::FLWORIterator(
   theIsUpdateIterator(aReturnClause->isUpdateIterator()),
   theNumBindings(aForLetClauses.size())
 {
+  if (whereClause != 0 && whereClause->isUpdateIterator())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, loc);
+
   if ( orderByClause == 0 || orderByClause->orderSpecs.size() == 0 )
   {
     orderByClause = 0;

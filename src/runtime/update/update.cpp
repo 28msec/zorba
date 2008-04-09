@@ -494,14 +494,17 @@ TransformIterator::TransformIterator(
   std::vector<CopyClause>& aCopyClauses,
   PlanIter_t aModifyIter,
   PlanIter_t aReturnIter)
-:
+  :
   Batcher<TransformIterator>(aLoc),
   theCopyClauses(aCopyClauses),
   theModifyIter(aModifyIter),
   theReturnIter(aReturnIter)
-{}
+{
+}
+
 
 TransformIterator::~TransformIterator(){}
+
 
 store::Item_t
 TransformIterator::nextImpl(PlanState& aPlanState) const
@@ -516,7 +519,7 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
   {
     lIter = theCopyClauses.begin();
     lEnd = theCopyClauses.end();
-    for(;lIter!=lEnd;++lIter)
+    for(; lIter != lEnd; ++lIter)
     {
       Iterator_t lIterWrapper = new PlanIteratorWrapper(lIter->theInput, aPlanState);
       // TODO must copy everything

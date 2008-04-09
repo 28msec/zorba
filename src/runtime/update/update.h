@@ -119,12 +119,13 @@ class CopyClause
   {}
 };
 
+
 class TransformIterator : public Batcher<TransformIterator>
 {
 private:
   std::vector<CopyClause> theCopyClauses;
-  PlanIter_t theModifyIter;
-  PlanIter_t theReturnIter;
+  PlanIter_t              theModifyIter;
+  PlanIter_t              theReturnIter;
 
 public:
   TransformIterator (
