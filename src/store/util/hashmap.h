@@ -517,17 +517,18 @@ void extendCollisionArea(HashEntry<T, V>*& lastentry)
 
   HashEntry<T, V>* oldbase = &theHashTab[0];
   HashEntry<T, V>* newbase = &newTab[0];
-  int delta = (newbase - oldbase);
+  long delta = (newbase - oldbase);
 
   lastentry += delta;
 
   for (ulong i = 0; i < theHashTab.size(); i++)
   {
     HashEntry<T, V>* e = oldbase + i;
-    if (!e->isFree() && e->theNext != NULL) 
+    if (!e->isFree()) 
     {
-      newbase[i].theItem = e->theItem;
-      newbase[i].theNext = e->theNext + delta;
+      newbase[i] = *e;
+      if (e->theNext != NULL)
+        newbase[i].theNext += delta;
     }
   }
   newTab.swap(theHashTab);
