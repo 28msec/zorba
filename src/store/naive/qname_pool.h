@@ -2,17 +2,11 @@
 #define ZORBA_STORE_QNAME_POOL_H
 
 #include <vector>
-
+#include "common/shared_types.h"
 #include "common/common.h"
-
 #include "store/util/mutex.h"
 
-namespace zorba { 
-typedef rchandle<class xqpStringStore> xqpStringStore_t;
-
-namespace store {
-class QNameItemImpl;
-typedef rchandle<class QNameItemImpl> QNameItemImpl_t;
+namespace zorba { namespace store {
 
 
 /*******************************************************************************

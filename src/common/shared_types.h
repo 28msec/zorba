@@ -199,6 +199,7 @@ class GDay;
 class GMonth;
 class xqpString;
 class xqpStringStore;
+typedef rchandle<xqpStringStore> xqpStringStore_t;
 typedef rchandle<DateTime> DateTime_t;
 typedef rchandle<Date> Date_t;
 typedef rchandle<Time> Time_t;
