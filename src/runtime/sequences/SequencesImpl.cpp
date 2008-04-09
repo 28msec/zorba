@@ -663,12 +663,12 @@ HashSemiJoinIterator::nextImpl(PlanState& planState) const {
 
   // eat the complete right-hand side and hash it
   while ( (lItem = consumeNext(theChildren[1].getp(), planState)) != NULL ) {
-    state->theRightInput->insert(lItem.getp());
+    state->theRightInput->insert(lItem);
   }
   
 
   while ( ( lItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
-    not_found = ! state->theRightInput->find(lItem.getp());
+    not_found = ! state->theRightInput->find(lItem);
     if (not_found == theAntijoin)
       STACK_PUSH(lItem, state);
   }
