@@ -22,7 +22,7 @@ class TSVAnnotationValue : public AnnotationValue {
     Annotation::value_ref_t oldv = e->get_annotation (k);
     if (oldv == FALSE_VALUE)
       v = FALSE_VALUE;
-    if (oldv == NULL || oldv == UNKNOWN_VALUE || v == NULL)
+    else if (oldv == UNKNOWN_VALUE || v == NULL)
       v = UNKNOWN_VALUE;
         
     e->put_annotation (k, v);

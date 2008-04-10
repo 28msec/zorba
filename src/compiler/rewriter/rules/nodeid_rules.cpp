@@ -82,15 +82,15 @@ static bool propagate_up_nodeid_props_to_flwor_variables(flwor_expr *flwor)
 // (let $a := <u><v>1</v></u> let $x := ($a, $a) for $y in $x return <a>{$y}</a>)//u
 static void mark_for_vars_ignoring_sort (flwor_expr *flwor) {
   Annotation::key_t k = AnnotationKey::IGNORES_SORTED_NODES;
-  if (flwor->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE)
-    return;
+  Annotation::value_ref_t v = flwor->get_annotation (k);
   for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
         i != flwor->clause_end(); i++) {
     flwor_expr::forletref_t ref = *i;
     forlet_clause::varref_t vref = ref->get_var();
     forlet_clause::varref_t pvref = ref->get_pos_var ();
-    if (vref->get_kind() == var_expr::for_var && pvref == NULL)
-      TSVAnnotationValue::update_annotation (ref->get_expr (), k, TSVAnnotationValue::TRUE_VALUE);
+    if (vref->get_kind() == var_expr::for_var) {
+      TSVAnnotationValue::update_annotation (ref->get_expr (), k, (pvref == NULL) ? v : TSVAnnotationValue::FALSE_VALUE);
+    }
   }
 }
 
@@ -100,18 +100,24 @@ static void init_let_vars_consumer_props (flwor_expr *flwor) {
   for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
         i != flwor->clause_end(); i++)
   {
+    int todo = 0;
     flwor_expr::forletref_t ref = *i;
     forlet_clause::varref_t vref = ref->get_var();
     for (int j = 0; j < 2; j++) {
       Annotation::key_t k = j == 0 ? AnnotationKey::IGNORES_SORTED_NODES : AnnotationKey::IGNORES_DUP_NODES;
-      if (vref->get_kind() == var_expr::let_var
-          && vref->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE
-          && ref->get_expr ()->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE)
-      {
-        vref->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
-        ref->get_expr ()->put_annotation (k, TSVAnnotationValue::UNKNOWN_VALUE);
+      if (vref->get_kind() == var_expr::let_var) {
+        Annotation::value_ref_t v = vref->get_annotation (k);
+        TSVAnnotationValue::update_annotation (ref->get_expr (), k, v);
+        if (v != TSVAnnotationValue::TRUE_VALUE)
+        {
+          vref->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+          todo |= (1 << j);
+        }
       }
     }
+
+    if (todo != 0)
+      vref->put_annotation (AnnotationKey::LET_VAR_NODEID_ANALYSIS, Annotation::value_ref_t (new IntAnnotationValue (todo)));
   }
 }
 
@@ -119,8 +125,9 @@ static void init_let_vars_consumer_props (flwor_expr *flwor) {
 // mark the var value accordingly
 static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
   bool modified = false;
-  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
-       i != flwor->clause_end(); i++)
+
+  for (flwor_expr::clause_list_t::reverse_iterator i = flwor->clause_rbegin();
+       i != flwor->clause_rend(); i++)
   {
     flwor_expr::forletref_t ref = *i;
     forlet_clause::varref_t vref = ref->get_var();
@@ -128,14 +135,20 @@ static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
       Annotation::key_t k =
         j == 0 ? AnnotationKey::IGNORES_SORTED_NODES : AnnotationKey::IGNORES_DUP_NODES;
       
+      Annotation::value_ref_t analysis_ann = vref->get_annotation (AnnotationKey::LET_VAR_NODEID_ANALYSIS);
       if (vref->get_kind() == var_expr::let_var
-          && vref->get_annotation (k) == TSVAnnotationValue::TRUE_VALUE
-          && ref->get_expr ()->get_annotation (k) == TSVAnnotationValue::UNKNOWN_VALUE)
+          && analysis_ann != NULL
+          && 0 != ((1 << j) & static_cast<IntAnnotationValue *> (analysis_ann.get ())->n))
       {
-        modified = true;
-        ref->get_expr ()->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+        Annotation::value_ref_t v = vref->get_annotation (k);
+        TSVAnnotationValue::update_annotation (ref->get_expr (), k, v);
+        if (v == TSVAnnotationValue::TRUE_VALUE) {
+          modified = true;
+        }
       }
+
     }
+    vref->remove_annotation (AnnotationKey::LET_VAR_NODEID_ANALYSIS);
   }
     
   return modified;
@@ -210,9 +223,9 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
 
   case flwor_expr_kind: {
     flwor_expr *flwor = static_cast<flwor_expr *> (node);
-    propagate_down_nodeid_props (node, flwor->get_retval ());
-    mark_for_vars_ignoring_sort (flwor);
     init_let_vars_consumer_props (flwor);
+    mark_for_vars_ignoring_sort (flwor);
+    propagate_down_nodeid_props (node, flwor->get_retval ());
     break;
   }
 

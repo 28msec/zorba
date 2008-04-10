@@ -13,6 +13,8 @@ enum {
   
   FREE_VARS,
 
+  LET_VAR_NODEID_ANALYSIS,
+
   EXPENSIVE_OP,
   UNFOLDABLE_OP,
   

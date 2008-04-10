@@ -299,7 +299,7 @@ fn_intersect::fn_intersect(const signature& sig)
 
 PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-#if 0  // we can't access PRODUCES_* from the inputs
+#if 0  // we can't access PRODUCES_* from the inputs, must rethink
   bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
   bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VALUE;
 
@@ -505,7 +505,7 @@ const function *op_node_sort_distinct::op_for_action (const static_context *sctx
   bool atomics = A_ATOMICS && noa == MIXED;
 
   if (! A_SORT || parent->get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE)
-#if 1
+#if 1  // NodeDistinctIterator not that stable
     return distinct ? LOOKUP_OP1 ("distinct-nodes" + (atomics ? "-or-atomics" : ""))
 #else
     return distinct ? LOOKUP_OP1 ("sort-distinct-nodes-asc" + (atomics ? "-or-atomics" : "ending"))

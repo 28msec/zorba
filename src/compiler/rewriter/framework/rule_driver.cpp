@@ -3,6 +3,8 @@
 #include "compiler/rewriter/framework/rewrite_rule.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
+#define DEBUG_EACH_RULE 0
+
 namespace zorba {
 
 RuleMajorDriver::RuleMajorDriver() { }
@@ -26,11 +28,14 @@ void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
 
       if (newRoot != NULL) {
         rCtx.setRoot(newRoot);
-#if 0  // debug each rule
-        std::cout << "After " << (*i)->getRuleName () << ":" << std::endl;
-        newRoot->put (std::cout) << std::endl;
-#endif
       }
+
+#if DEBUG_EACH_RULE
+      if (modified) {
+        std::cout << "After " << (*i)->getRuleName () << ":" << std::endl;
+        rCtx.getRoot ()->put (std::cout) << std::endl;
+      }
+#endif
     }
   } while(modified);
 }

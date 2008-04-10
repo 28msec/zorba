@@ -372,6 +372,10 @@ public: // accessors
   { return clause_v.begin(); }
   clause_list_t::iterator clause_end()
   { return clause_v.end(); }
+  clause_list_t::reverse_iterator clause_rbegin()
+  { return clause_v.rbegin(); }
+  clause_list_t::reverse_iterator clause_rend()
+  { return clause_v.rend(); }
 
   void add(orderspec_t const& v)
   { orderspec_v.push_back(v); } 

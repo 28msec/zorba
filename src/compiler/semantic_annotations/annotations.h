@@ -15,12 +15,17 @@ namespace Annotation {
 
 class AnnotationValue {
 public:
-  virtual ~AnnotationValue() { }
+  virtual ~AnnotationValue() {}
   virtual bool equals (const AnnotationValue &other) { 
-    if (typeid (other) != typeid (*this))
-      return false;
     return this == &other;
   }
+};
+
+class IntAnnotationValue : public AnnotationValue {
+public:
+  int n;
+  
+  IntAnnotationValue (int n_) : n (n_) {}
 };
 
 inline bool operator== (Annotation::value_ref_t v1, Annotation::value_ref_t v2) {
