@@ -1,4 +1,5 @@
 #include "compiler/semantic_annotations/annotations.h"
+#include "compiler/semantic_annotations/annotation_holder.h"
 
 namespace zorba {
 
@@ -15,6 +16,18 @@ class TSVAnnotationValue : public AnnotationValue {
     } tsv_t;
 
     tsv_t getValue() const { return m_value; }
+
+  // pessimistic
+  static void update_annotation (AnnotationHolder *e, Annotation::key_t k, Annotation::value_ref_t v) {
+    Annotation::value_ref_t oldv = e->get_annotation (k);
+    if (oldv == FALSE_VALUE)
+      v = FALSE_VALUE;
+    if (oldv == NULL || oldv == UNKNOWN_VALUE || v == NULL)
+      v = UNKNOWN_VALUE;
+        
+    e->put_annotation (k, v);
+  }
+
 
   private:
     TSVAnnotationValue(tsv_t value)

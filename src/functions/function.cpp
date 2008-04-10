@@ -15,6 +15,19 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const {
   return n == VARIADIC_SIG_SIZE || argv.size() == sig.arg_count();
 }
 
+void function::compute_annotation (AnnotationHolder *, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
+  switch (k) {
+  case AnnotationKey::IGNORES_SORTED_NODES:
+  case AnnotationKey::IGNORES_DUP_NODES:
+    for (unsigned src = 0; src < kids.size (); src++)
+      if (kids [src] != NULL)
+        TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::UNKNOWN_VALUE);
+    break;
+  default: break;
+  }  
+}
+
+
 user_function::user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body)
   : function(_sig), m_loc(loc), m_expr_body(expr_body) { }
 

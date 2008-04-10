@@ -20,16 +20,16 @@ static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics (xqtref_t type
 
 }
 
+static void propagate_down_nodeid_props(expr *src, expr *target) {
+  Annotation::key_t k;
+  k = AnnotationKey::IGNORES_SORTED_NODES; TSVAnnotationValue::update_annotation (target, k, src->get_annotation (k));
+  k = AnnotationKey::IGNORES_DUP_NODES; TSVAnnotationValue::update_annotation (target, k, src->get_annotation (k));
+}
+
 template<typename T> void exprs_to_holders (T exprs_begin, T exprs_end, vector <AnnotationHolder *> &anns)
 {
   for (T i = exprs_begin; i < exprs_end; i++)
     anns.push_back (static_cast<AnnotationHolder *> (&* (*i)));
-}
-
-static void propagate_down_nodeid_props(expr *src, expr *target) {
-  Annotation::key_t k;
-  k = AnnotationKey::IGNORES_SORTED_NODES; target->put_annotation (k, src->get_annotation (k));
-  k = AnnotationKey::IGNORES_DUP_NODES; target->put_annotation (k, src->get_annotation (k));
 }
 
 static bool propagate_up_nodeid_props(expr *target, expr *src) {
@@ -90,14 +90,61 @@ static void mark_for_vars_ignoring_sort (flwor_expr *flwor) {
     forlet_clause::varref_t vref = ref->get_var();
     forlet_clause::varref_t pvref = ref->get_pos_var ();
     if (vref->get_kind() == var_expr::for_var && pvref == NULL)
-      ref->get_expr ()->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+      TSVAnnotationValue::update_annotation (ref->get_expr (), k, TSVAnnotationValue::TRUE_VALUE);
   }
+}
+
+// Assume all LET var values could ignore sort order and duplicate nodes,
+// and allow expressions further down the tree to challenge this assumption.
+static void init_let_vars_consumer_props (flwor_expr *flwor) {
+  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
+        i != flwor->clause_end(); i++)
+  {
+    flwor_expr::forletref_t ref = *i;
+    forlet_clause::varref_t vref = ref->get_var();
+    for (int j = 0; j < 2; j++) {
+      Annotation::key_t k = j == 0 ? AnnotationKey::IGNORES_SORTED_NODES : AnnotationKey::IGNORES_DUP_NODES;
+      if (vref->get_kind() == var_expr::let_var
+          && vref->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE
+          && ref->get_expr ()->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE)
+      {
+        vref->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+        ref->get_expr ()->put_annotation (k, TSVAnnotationValue::UNKNOWN_VALUE);
+      }
+    }
+  }
+}
+
+// If no expression involving a LET var cares about sort order / dup nodes,
+// mark the var value accordingly
+static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
+  bool modified = false;
+  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
+       i != flwor->clause_end(); i++)
+  {
+    flwor_expr::forletref_t ref = *i;
+    forlet_clause::varref_t vref = ref->get_var();
+    for (int j = 0; j < 2; j++) {
+      Annotation::key_t k =
+        j == 0 ? AnnotationKey::IGNORES_SORTED_NODES : AnnotationKey::IGNORES_DUP_NODES;
+      
+      if (vref->get_kind() == var_expr::let_var
+          && vref->get_annotation (k) == TSVAnnotationValue::TRUE_VALUE
+          && ref->get_expr ()->get_annotation (k) == TSVAnnotationValue::UNKNOWN_VALUE)
+      {
+        modified = true;
+        ref->get_expr ()->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+      }
+    }
+  }
+    
+  return modified;
 }
 
 static bool mark_casts (expr_t input, xqtref_t target) {
   if (TypeOps::type_max_cnt (*target) <= 1) {
-    input->put_annotation (AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
-    input->put_annotation (AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
+    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
     return true;
   }
 
@@ -108,7 +155,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
 {
   switch (node->get_expr_kind ()) {
   case fo_expr_kind: {
-    fo_expr *fo = dynamic_cast<fo_expr *>(node);
+    fo_expr *fo = static_cast<fo_expr *>(node);
     const function *f = fo->get_func ();
     if (f == LOOKUP_FN("fn", "empty", 1)
         || f == LOOKUP_FN("fn", "exists", 1)
@@ -118,8 +165,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
         || f == LOOKUP_FN ("fn", "min", 2))
     {
       expr_t arg = (*fo)[0];
-      arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
-      arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+      TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+      TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
     } else if (f == LOOKUP_FN ("fn", "unordered", 1)
                || f == LOOKUP_FN ("fn", "count", 1)
                || f == LOOKUP_FN ("fn", "sum", 1)
@@ -129,7 +176,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
                || f == LOOKUP_OP1 ("exactly-one-noraise"))
     {
       expr_t arg = (*fo)[0];
-      arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+      TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+      TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::FALSE_VALUE);
     } else if (f == LOOKUP_OP2 ("union")
                || f == LOOKUP_OP2 ("intersect")
                || f == LOOKUP_OP2 ("except"))
@@ -141,8 +189,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       // stages can put it back in.
       for (int i = 0; i < 2; i++) {
         expr_t arg = (*fo) [i];
-        arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
-        arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
+        TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+        TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
       }
     } else {
       vector <AnnotationHolder *> anns;
@@ -154,35 +202,37 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
   }
 
   case if_expr_kind: {
-    if_expr *ite = dynamic_cast<if_expr *> (node);
+    if_expr *ite = static_cast<if_expr *> (node);
     propagate_down_nodeid_props (node, ite->get_then_expr ());
     propagate_down_nodeid_props (node, ite->get_else_expr ());
     break;
   }
 
   case flwor_expr_kind: {
-    flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
+    flwor_expr *flwor = static_cast<flwor_expr *> (node);
     propagate_down_nodeid_props (node, flwor->get_retval ());
     mark_for_vars_ignoring_sort (flwor);
+    init_let_vars_consumer_props (flwor);
     break;
   }
 
   case relpath_expr_kind: {
-    expr_t arg = (*dynamic_cast<relpath_expr *> (node)) [0];
-    arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
-    arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
+    expr_t arg = (*static_cast<relpath_expr *> (node)) [0];
+    TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+    TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
     break;
   }
 
-  default: {
-    cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
-    if (ce != NULL) {
-      expr_t input = ce->get_input ();
-      if (! mark_casts (input, ce->get_target_type ()))
-        propagate_down_nodeid_props (node, input);
-      break;
+  default:
+    {
+      cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
+      if (ce != NULL) {
+        expr_t input = ce->get_input ();
+        if (! mark_casts (input, ce->get_target_type ()))
+          propagate_down_nodeid_props (node, input);
+        break;
+      }
     }
-  }
     
     {
       castable_base_expr *ce = dynamic_cast<castable_base_expr *> (node);
@@ -191,12 +241,28 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
         break;
       }
     }
-    
+
+    {
+      for(expr_iterator i = node->expr_begin(); !i.done(); ++i) {
+        TSVAnnotationValue::update_annotation (*i, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::FALSE_VALUE);
+        TSVAnnotationValue::update_annotation (*i, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::FALSE_VALUE);
+      }
+    }
+    break;
   }
 
   return NULL;
 }
-RULE_REWRITE_POST(MarkConsumerNodeProps) { return NULL; }
+RULE_REWRITE_POST(MarkConsumerNodeProps) {
+  switch (node->get_expr_kind ()) {
+  case flwor_expr_kind:
+    return analyze_let_vars_consumer_props (static_cast<flwor_expr *> (node)) ? node : NULL;
+
+  default: break;
+  }
+
+  return NULL;
+}
 
 RULE_REWRITE_PRE(MarkProducerNodeProps) { return NULL; }
 RULE_REWRITE_POST(MarkProducerNodeProps)
@@ -220,7 +286,7 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
 #endif
 
   case fo_expr_kind: {
-    fo_expr *fo = dynamic_cast<fo_expr *>(node);
+    fo_expr *fo = static_cast<fo_expr *>(node);
     const function *f = fo->get_func ();
     const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
     if (nsdf != NULL) {

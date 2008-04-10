@@ -92,7 +92,7 @@ void op_concatenate::compute_annotation (AnnotationHolder *parent, std::vector<A
   case AnnotationKey::IGNORES_SORTED_NODES:
   case AnnotationKey::IGNORES_DUP_NODES:
     for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
-      (*i)->put_annotation (k, parent->get_annotation (k));
+      TSVAnnotationValue::update_annotation ((*i), k, parent->get_annotation (k));
     break;
   default: break;
   }
@@ -301,7 +301,7 @@ PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 {
 #if 0  // we can't access PRODUCES_* from the inputs
   bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
-  bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
+  bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VALUE;
 
   std::vector<PlanIter_t> inputs;
   for (std::vector<PlanIter_t>::iterator i = argv.begin ();
@@ -489,7 +489,7 @@ void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::v
   case AnnotationKey::IGNORES_SORTED_NODES:
   case AnnotationKey::IGNORES_DUP_NODES:
     if (parent->get_annotation (k) == TSVAnnotationValue::TRUE_VALUE || (k == AnnotationKey::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT))
-      kids [src]->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+      TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::TRUE_VALUE);
     break;
   default: break;
   }
@@ -497,14 +497,14 @@ void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::v
 
 const function *op_node_sort_distinct::op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder *parent, const AnnotationHolder *child, nodes_or_atomics_t noa) {
 #define LOOKUP_OP1( local ) (static_cast<const function *> (sctx->lookup_builtin_fn ((xqp_string (":") + local).c_str (), 1)))
-  bool distinct = A_DISTINCT && ! parent->get_annotation (AnnotationKey::IGNORES_DUP_NODES);
+  bool distinct = A_DISTINCT && parent->get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
 
   if (A_ATOMICS && noa == ATOMICS)
     return NULL;
 
   bool atomics = A_ATOMICS && noa == MIXED;
 
-  if (! A_SORT || parent->get_annotation (AnnotationKey::IGNORES_SORTED_NODES))
+  if (! A_SORT || parent->get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE)
 #if 1
     return distinct ? LOOKUP_OP1 ("distinct-nodes" + (atomics ? "-or-atomics" : ""))
 #else
@@ -529,10 +529,10 @@ PlanIter_t fn_unordered::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 void fn_unordered::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
   switch (k) {
   case AnnotationKey::IGNORES_SORTED_NODES:
-    kids [src]->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+    TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::TRUE_VALUE);
     break;
   case AnnotationKey::IGNORES_DUP_NODES:
-    kids [src]->put_annotation (k, parent->get_annotation (k));
+    TSVAnnotationValue::update_annotation (kids [src], k, parent->get_annotation (k));
     break;
   default: break;
   }
@@ -544,7 +544,7 @@ void single_seq_function::compute_annotation (AnnotationHolder *parent, std::vec
   switch (k) {
   case AnnotationKey::IGNORES_SORTED_NODES:
   case AnnotationKey::IGNORES_DUP_NODES:
-    kids [src]->put_annotation (k, parent->get_annotation (k));
+    TSVAnnotationValue::update_annotation (kids [src], k, parent->get_annotation (k));
     break;
   default: break;
   }

@@ -62,7 +62,7 @@ public:
 
   virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 
-  virtual void compute_annotation (AnnotationHolder *, std::vector<AnnotationHolder *> &, Annotation::key_t) const {}
+  virtual void compute_annotation (AnnotationHolder *, std::vector<AnnotationHolder *> &, Annotation::key_t) const;
 
 	// runtime arg validation
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
