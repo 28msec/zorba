@@ -84,7 +84,7 @@ public:
   /**
    *  @return  (dynamic) XQuery type of the item
    */
-  virtual Item_t
+  virtual Item*
   getType( ) const;
 
   /**

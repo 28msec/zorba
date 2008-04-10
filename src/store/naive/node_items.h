@@ -266,7 +266,7 @@ public:
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::documentNode; }
 
-  Item_t getType() const; 
+  Item* getType() const; 
 
   xqp_string getBaseURI() const     { return theBaseUri.getp(); }
   xqp_string getDocumentURI() const { return theDocUri.getp(); }
@@ -391,7 +391,7 @@ public:
   //
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::elementNode; }
-  Item_t getType() const                    { return theTypeName; }
+  Item* getType() const               { return theTypeName.getp(); }
   Item_t getNodeName() const                { return theName; }
 
   Iterator_t getTypedValue() const;
@@ -635,15 +635,15 @@ public:
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::attributeNode; }
 
-  Item_t getType() const     { return theTypeName; }
+  Item* getType() const { return theTypeName.getp(); }
 
-  Item_t getNodeName() const { return theName; }
+  Item_t getNodeName() const  { return theName; }
 
-  bool isId() const          { return (theFlags & XmlNode::IsId) != 0; }
-  void resetIsId()           { theFlags &= ~XmlNode::IsId; }
+  bool isId() const           { return (theFlags & XmlNode::IsId) != 0; }
+  void resetIsId()            { theFlags &= ~XmlNode::IsId; }
 
-  bool isIdRefs() const      { return (theFlags & XmlNode::IsIdRefs) != 0; }
-  void resetIsIdRefs()       { theFlags &= ~XmlNode::IsIdRefs; }
+  bool isIdRefs() const       { return (theFlags & XmlNode::IsIdRefs) != 0; }
+  void resetIsIdRefs()        { theFlags &= ~XmlNode::IsIdRefs; }
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -696,7 +696,7 @@ public:
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::textNode; }
 
-  Item_t getType() const;
+  Item* getType() const;
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -750,7 +750,7 @@ public:
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::piNode; }
 
-  Item_t getType() const;
+  Item* getType() const;
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -803,7 +803,7 @@ public:
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::commentNode; }
 
-  Item_t getType() const;
+  Item* getType() const;
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;

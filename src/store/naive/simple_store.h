@@ -38,11 +38,8 @@ protected:
 public:
   xqpStringStore_t         theEmptyNs;
   xqpStringStore_t         theXmlSchemaNs;
-  store::Item_t            theUntypedType;
-  store::Item_t            theAnyType;
-  store::Item_t            theUntypedAtomicType;
-  store::Item_t            theQNameType;
-  store::Item_t            theNotationType;
+
+  checked_vector<Item_t>   theSchemaTypeNames;
 
 protected:
   bool                     theIsInitialized;
@@ -73,6 +70,7 @@ private:
   virtual ~SimpleStore();
 
   void init();
+  void initTypeNames();
   void shutdown();
 
 public:

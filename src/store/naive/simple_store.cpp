@@ -74,15 +74,80 @@ void SimpleStore::init()
 
     theNamespacePool->insertc("", theEmptyNs);
     theNamespacePool->insertc(XS_URI, theXmlSchemaNs);
-    theUntypedType = theItemFactory->createQName(XS_URI, "xs", "untyped");
-    theAnyType = theItemFactory->createQName(XS_URI, "xs", "anyType");
-    theUntypedAtomicType = theItemFactory->createQName(XS_URI, "xs", "untypedAtomic");
-    theQNameType = theItemFactory->createQName(XS_URI, "xs", "QName");
+
+    initTypeNames();
 
 #ifndef NDEBUG
     theTraceLevel = Properties::instance()->storeTraceLevel();
 #endif
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::initTypeNames()
+{
+  theSchemaTypeNames.resize(XS_LAST);
+
+  theSchemaTypeNames[0]  = theQNamePool->insert(XS_URI, "xs", "untyped");
+  theSchemaTypeNames[1]  = theQNamePool->insert(XS_URI, "xs", "untypedAtomic");
+  theSchemaTypeNames[2]  = theQNamePool->insert(XS_URI, "xs", "anyType");
+  theSchemaTypeNames[3]  = theQNamePool->insert(XS_URI, "xs", "anySimpleType");
+  theSchemaTypeNames[4]  = theQNamePool->insert(XS_URI, "xs", "anyAtomicType");
+
+  theSchemaTypeNames[5]  = theQNamePool->insert(XS_URI, "xs", "string");
+  theSchemaTypeNames[6]  = theQNamePool->insert(XS_URI, "xs", "normalizedString");
+  theSchemaTypeNames[7]  = theQNamePool->insert(XS_URI, "xs", "language");
+  theSchemaTypeNames[8]  = theQNamePool->insert(XS_URI, "xs", "token");
+  theSchemaTypeNames[9]  = theQNamePool->insert(XS_URI, "xs", "NMTOKEN");
+
+  theSchemaTypeNames[10] = theQNamePool->insert(XS_URI, "xs", "anyURI");
+  theSchemaTypeNames[11] = theQNamePool->insert(XS_URI, "xs", "Name");
+  theSchemaTypeNames[12] = theQNamePool->insert(XS_URI, "xs", "NCName");
+  theSchemaTypeNames[13] = theQNamePool->insert(XS_URI, "xs", "QName");
+  theSchemaTypeNames[14] = theQNamePool->insert(XS_URI, "xs", "notation");
+
+  theSchemaTypeNames[15] = theQNamePool->insert(XS_URI, "xs", "ID");
+  theSchemaTypeNames[16] = theQNamePool->insert(XS_URI, "xs", "IDREF");
+
+  theSchemaTypeNames[17] = theQNamePool->insert(XS_URI, "xs", "ENTITY");
+
+  theSchemaTypeNames[18] = theQNamePool->insert(XS_URI, "xs", "dateTime");
+  theSchemaTypeNames[19] = theQNamePool->insert(XS_URI, "xs", "date");
+  theSchemaTypeNames[20] = theQNamePool->insert(XS_URI, "xs", "time");
+  theSchemaTypeNames[21] = theQNamePool->insert(XS_URI, "xs", "duration");
+  theSchemaTypeNames[22] = theQNamePool->insert(XS_URI, "xs", "dayTimeDuration");
+  theSchemaTypeNames[23] = theQNamePool->insert(XS_URI, "xs", "yearMonthDuration");
+
+  theSchemaTypeNames[24] = theQNamePool->insert(XS_URI, "xs", "float");
+  theSchemaTypeNames[25] = theQNamePool->insert(XS_URI, "xs", "double");
+  theSchemaTypeNames[26] = theQNamePool->insert(XS_URI, "xs", "decimal");
+  theSchemaTypeNames[27] = theQNamePool->insert(XS_URI, "xs", "integer");
+  theSchemaTypeNames[28] = theQNamePool->insert(XS_URI, "xs", "nonPositiveInteger");
+  theSchemaTypeNames[29] = theQNamePool->insert(XS_URI, "xs", "nonNegativeInteger");
+  theSchemaTypeNames[30] = theQNamePool->insert(XS_URI, "xs", "negativeInteger");
+  theSchemaTypeNames[31] = theQNamePool->insert(XS_URI, "xs", "positiveInteger");
+
+  theSchemaTypeNames[32] = theQNamePool->insert(XS_URI, "xs", "long");
+  theSchemaTypeNames[33] = theQNamePool->insert(XS_URI, "xs", "int");
+  theSchemaTypeNames[34] = theQNamePool->insert(XS_URI, "xs", "short");
+  theSchemaTypeNames[35] = theQNamePool->insert(XS_URI, "xs", "byte");
+  theSchemaTypeNames[36] = theQNamePool->insert(XS_URI, "xs", "unsignedLong");
+  theSchemaTypeNames[37] = theQNamePool->insert(XS_URI, "xs", "unsignedInt");
+  theSchemaTypeNames[38] = theQNamePool->insert(XS_URI, "xs", "unsignedShort");
+  theSchemaTypeNames[39] = theQNamePool->insert(XS_URI, "xs", "unsignedByte");
+
+  theSchemaTypeNames[40] = theQNamePool->insert(XS_URI, "xs", "gYearMonth");
+  theSchemaTypeNames[41] = theQNamePool->insert(XS_URI, "xs", "gYear");
+  theSchemaTypeNames[42] = theQNamePool->insert(XS_URI, "xs", "gMonthDay");
+  theSchemaTypeNames[43] = theQNamePool->insert(XS_URI, "xs", "gDay");
+  theSchemaTypeNames[44] = theQNamePool->insert(XS_URI, "xs", "gMonth");
+
+  theSchemaTypeNames[45] = theQNamePool->insert(XS_URI, "xs", "base64Binary");
+  theSchemaTypeNames[46] = theQNamePool->insert(XS_URI, "xs", "hexBinary");
+  theSchemaTypeNames[47] = theQNamePool->insert(XS_URI, "xs", "boolean");
 }
 
 
@@ -118,10 +183,9 @@ void SimpleStore::shutdown()
 
   if (theQNamePool != NULL)
   {
-    theUntypedType = NULL;
-    theAnyType = NULL;
-    theUntypedAtomicType = NULL;
-    theQNameType = NULL;
+    ulong numTypes = theSchemaTypeNames.size();
+    for (ulong i = 0; i < numTypes; i++)
+      theSchemaTypeNames[i] = NULL;
 
     delete theQNamePool;
     theQNamePool = NULL;

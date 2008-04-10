@@ -6,6 +6,7 @@
 
 #include <zorba/store_consts.h>
 
+#include "common/common.h"
 #include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "util/Assert.h"
@@ -336,7 +337,7 @@ void XmlLoader::endDocument(void * ctx)
   children.resize(revChildNodes.size());
 
   std::vector<XmlNode*>::const_reverse_iterator it;
-  unsigned long i = 0;
+  ulong i = 0;
   for (it = revChildNodes.rbegin();
        it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
        it++, i++)
@@ -381,14 +382,14 @@ void XmlLoader::startElement(
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
   QNamePool& qnpool = store.getQNamePool();
 
-  unsigned long numAttributes = (unsigned long)numAttrs;
-  unsigned long numBindings = (unsigned long)numNamespaces;
+  ulong numAttributes = (ulong)numAttrs;
+  ulong numBindings = (ulong)numNamespaces;
 
   // Construct node name and type
   Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
                                reinterpret_cast<const char*>(prefix),
                                reinterpret_cast<const char*>(lname));
-  Item* tname = store.theUntypedType.getp();
+  Item* tname = store.theSchemaTypeNames[XS_UNTYPED].getp();
 
   // Create the element node and push it to the node stack
   LoadedElementNode* elemNode = new LoadedElementNode(qname.getp(),
@@ -418,7 +419,7 @@ void XmlLoader::startElement(
   {
     NsBindings& bindings = elemNode->getNsContext()->getBindings();
 
-    for (unsigned long i = 0; i < numBindings; ++i)
+    for (ulong i = 0; i < numBindings; ++i)
     {
       const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
       const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
@@ -443,8 +444,8 @@ void XmlLoader::startElement(
   {
     NodeVector& attrNodes = elemNode->attributes();
 
-    unsigned long index = 0;
-    for (unsigned long i = 0; i < numAttributes; ++i, index += 5)
+    ulong index = 0;
+    for (ulong i = 0; i < numAttributes; ++i, index += 5)
     {
       const char* lname = reinterpret_cast<const char*>(attributes[index]);
       const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
@@ -453,7 +454,7 @@ void XmlLoader::startElement(
       const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
       Item_t qname = qnpool.insert(uri, prefix, lname);
-      Item* tname = store.theUntypedAtomicType.getp();
+      Item* tname = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp();
 
       xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
       Item* typedVal = new UntypedAtomicItemImpl(value);
@@ -537,7 +538,7 @@ void  XmlLoader::endElement(
   children.resize(revChildNodes.size());
 
   std::vector<XmlNode*>::const_reverse_iterator it;
-  unsigned long i = 0;
+  ulong i = 0;
   for (it = revChildNodes.rbegin();
        it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
        it++, i++)

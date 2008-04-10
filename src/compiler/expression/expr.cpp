@@ -915,7 +915,8 @@ void const_expr::next_iter (expr_iterator_data& v) {
 
 xqtref_t const_expr::return_type(static_context *sctx)
 {
-  xqtref_t type = sctx->get_typemanager()->create_type(val->getType(), TypeConstants::QUANT_ONE);
+  xqtref_t type = sctx->get_typemanager()->
+                  create_named_type(val->getType(), TypeConstants::QUANT_ONE);
   return type;
 }
 

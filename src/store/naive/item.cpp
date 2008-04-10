@@ -17,7 +17,7 @@
 namespace zorba { namespace store {
 
 
-Item_t
+Item*
 Item::getType( ) const
 {
   ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -572,7 +572,7 @@ xqp_string Item::getTarget() const
 
 bool Item::isNumeric() const 
 {
-  xqtref_t type = GENV_TYPESYSTEM.create_type(getType(), TypeConstants::QUANT_ONE);
+  xqtref_t type = GENV_TYPESYSTEM.create_named_type(getType(), TypeConstants::QUANT_ONE);
   return TypeOps::is_numeric(*type);
 }
 

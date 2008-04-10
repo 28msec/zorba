@@ -90,46 +90,60 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
 {
   if (is_equal(subtype, *GENV_TYPESYSTEM.NONE_TYPE))
     return true;
+
   if (is_equal (subtype, supertype))
     return true;
-  if (is_equal (subtype, *GENV_TYPESYSTEM.EMPTY_TYPE) && quantifier (supertype) != TypeConstants::QUANT_ONE)
+
+  if (is_equal(subtype, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
+      quantifier(supertype) != TypeConstants::QUANT_ONE)
     return true;
+
   if (!RootTypeManager::QUANT_SUBTYPE_MATRIX[subtype.get_quantifier()][supertype.get_quantifier()])
     return false;
-  switch(supertype.type_kind()) {
+
+  switch(supertype.type_kind()) 
+  {
     case XQType::ATOMIC_TYPE_KIND:
-      switch(subtype.type_kind()) {
-        case XQType::ATOMIC_TYPE_KIND:
-        {
-          const AtomicXQType& a1 = static_cast<const AtomicXQType&>(subtype);
-          const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
-          return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
-        }
-        case XQType::USER_DEFINED_KIND:
-        {
-            const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
-            return udSubType.isSubTypeOf(supertype);
-        }
-        default:
-          return false;
+    {
+      switch(subtype.type_kind()) 
+      {
+      case XQType::ATOMIC_TYPE_KIND:
+      {
+        const AtomicXQType& a1 = static_cast<const AtomicXQType&>(subtype);
+        const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
+        return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
+      }
+      case XQType::USER_DEFINED_KIND:
+      {
+        const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+        return udSubType.isSubTypeOf(supertype);
+      }
+      default:
+        return false;
       }
       break;
+    }
 
     case XQType::NODE_TYPE_KIND:
-      switch(subtype.type_kind()) {
-        case XQType::NODE_TYPE_KIND:
-        {
-          const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
-          const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
-          return n1.get_nodetest()->is_sub_nodetest_of(*n2.get_nodetest());
-        }
-        default:
-          return false;
+    {
+      switch(subtype.type_kind())
+      {
+      case XQType::NODE_TYPE_KIND:
+      {
+        const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
+        const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
+        return n1.get_nodetest()->is_sub_nodetest_of(*n2.get_nodetest());
+      }
+      default:
+        return false;
       }
       break;
+    }
 
     case XQType::ANY_TYPE_KIND:
-      switch(subtype.type_kind()) {
+    {
+      switch(subtype.type_kind()) 
+      {
         case XQType::ATOMIC_TYPE_KIND:
         case XQType::NODE_TYPE_KIND:
         case XQType::ANY_TYPE_KIND:
@@ -142,8 +156,10 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
           return false;
       }
       break;
+    }
 
     case XQType::ITEM_KIND:
+    {
       switch(subtype.type_kind()) {
         case XQType::ATOMIC_TYPE_KIND:
         case XQType::NODE_TYPE_KIND:
@@ -154,8 +170,9 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
           return false;
       }
       break;
-
+    }
     case XQType::ANY_SIMPLE_TYPE_KIND:
+    {
       switch(subtype.type_kind()) {
         case XQType::ATOMIC_TYPE_KIND:
         case XQType::ANY_SIMPLE_TYPE_KIND:
@@ -171,8 +188,9 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
           return false;
       }
       break;
-
+    }
     case XQType::UNTYPED_KIND:
+    {
       switch(subtype.type_kind()) {
         case XQType::UNTYPED_KIND:
           return true;
@@ -181,8 +199,9 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
           return false;
       }
       break;
-
+    }
     case XQType::EMPTY_KIND:
+    {
       switch(subtype.type_kind()) {
         case XQType::EMPTY_KIND:
           return true;
@@ -191,18 +210,19 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
           return false;
       }
       break;
-
+    }
     case XQType::NONE_KIND:
       return false;
 
     case XQType::USER_DEFINED_KIND:
-      {
-          const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
-          return udSubType.isSubTypeOf(supertype);
-      }
+    {
+      const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+      return udSubType.isSubTypeOf(supertype);
+    }
   }
   return false;
 }
+
 
 bool TypeOps::is_promotable(const XQType& srctype, const XQType& targettype)
 {
@@ -236,7 +256,7 @@ bool TypeOps::is_treatable(const store::Item_t item, const XQType& type)
     break;
   }
 
-  return is_subtype(*type.get_manager()->item_type (item), type);
+  return is_subtype(*type.get_manager()->create_value_type (item.getp()), type);
 }
 
 bool TypeOps::is_atomic(const XQType& type)
@@ -421,73 +441,79 @@ static inline IdentTypes::quantifier_t get_typeident_quant(TypeConstants::quanti
   return IdentTypes::QUANT_ONE;
 }
 
+
 type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
 {
   IdentTypes::quantifier_t q = get_typeident_quant(quantifier(type));
-  switch(type.type_kind()) {
-    case XQType::ATOMIC_TYPE_KIND:
-      {
-        const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
-        store::Item_t& qname = *GENV_TYPESYSTEM.m_atomic_typecode_qname_map[at.get_type_code()];
-        return TypeIdentifier::createNamedType(&*qname->getNamespace().theStrStore, &*qname->getLocalName().theStrStore, q);
-      }
-    case XQType::NODE_TYPE_KIND:
-      {
-        const NodeXQType& nt = static_cast<const NodeXQType&>(type);
-        type_ident_ref_t content_type = nt.get_content_type() != NULL ? get_type_identifier(*nt.get_content_type()) : type_ident_ref_t();
-        const NodeTest *test = nt.get_nodetest().getp();
-        const NodeNameTest *nametest = test->get_nametest().getp();
-        switch(test->get_kind()) {
-          case store::StoreConsts::anyNode:
-            return TypeIdentifier::createAnyNodeType(q);
+  switch(type.type_kind()) 
+  {
+  case XQType::ATOMIC_TYPE_KIND:
+  {
+    const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
+    store::Item* qname = GENV_TYPESYSTEM.m_atomic_typecode_qname_map[at.get_type_code()];
+    return TypeIdentifier::createNamedType(qname->getNamespace().getStore(),
+                                           qname->getLocalName().getStore(),
+                                           q);
+  }
+  case XQType::NODE_TYPE_KIND:
+  {
+    const NodeXQType& nt = static_cast<const NodeXQType&>(type);
+    type_ident_ref_t content_type = nt.get_content_type() != NULL ? get_type_identifier(*nt.get_content_type()) : type_ident_ref_t();
+    const NodeTest *test = nt.get_nodetest().getp();
+    const NodeNameTest *nametest = test->get_nametest().getp();
+    switch(test->get_kind()) 
+    {
+    case store::StoreConsts::anyNode:
+      return TypeIdentifier::createAnyNodeType(q);
 
-          case store::StoreConsts::textNode:
-            return TypeIdentifier::createTextType(q);
+    case store::StoreConsts::textNode:
+      return TypeIdentifier::createTextType(q);
 
-          case store::StoreConsts::piNode:
-            return TypeIdentifier::createPIType(q);
+    case store::StoreConsts::piNode:
+      return TypeIdentifier::createPIType(q);
 
-          case store::StoreConsts::commentNode:
-            return TypeIdentifier::createCommentType(q);
+    case store::StoreConsts::commentNode:
+      return TypeIdentifier::createCommentType(q);
 
-          case store::StoreConsts::documentNode:
-            return TypeIdentifier::createDocumentType(content_type, q);
+    case store::StoreConsts::documentNode:
+      return TypeIdentifier::createDocumentType(content_type, q);
 
-          case store::StoreConsts::elementNode:
-            return TypeIdentifier::createElementType(&*nametest->get_uri(), nametest->get_uri() == NULL, &*nametest->get_local(), nametest->get_local() == NULL, content_type, q);
+    case store::StoreConsts::elementNode:
+      return TypeIdentifier::createElementType(&*nametest->get_uri(), nametest->get_uri() == NULL, &*nametest->get_local(), nametest->get_local() == NULL, content_type, q);
+      
+    case store::StoreConsts::attributeNode:
+      return TypeIdentifier::createAttributeType(&*nametest->get_uri(), nametest->get_uri() == NULL, &*nametest->get_local(), nametest->get_local() == NULL, content_type, q);
 
-          case store::StoreConsts::attributeNode:
-            return TypeIdentifier::createAttributeType(&*nametest->get_uri(), nametest->get_uri() == NULL, &*nametest->get_local(), nametest->get_local() == NULL, content_type, q);
-
-          default:
-            // cannot happen
-            ZORBA_ASSERT(false);
-            return type_ident_ref_t();
-        }
-      }
-    case XQType::ANY_TYPE_KIND:
-      return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME->getLocalName().theStrStore, q);
-
-    case XQType::ITEM_KIND:
-      return TypeIdentifier::createItemType(q);
-
-    case XQType::ANY_SIMPLE_TYPE_KIND:
-      return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName().theStrStore, q);
-
-    case XQType::UNTYPED_KIND:
-      return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_UNTYPED_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_UNTYPED_QNAME->getLocalName().theStrStore, q);
-
-    case XQType::EMPTY_KIND:
-      return TypeIdentifier::createEmptyType();
-
-    case XQType::USER_DEFINED_KIND:
-        //TODO for Vinayak return type identifier
     default:
-      break;
+      // cannot happen
+      ZORBA_ASSERT(false);
+      return type_ident_ref_t();
+    }
+  }
+  case XQType::ANY_TYPE_KIND:
+    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME->getLocalName().theStrStore, q);
+
+  case XQType::ITEM_KIND:
+    return TypeIdentifier::createItemType(q);
+
+  case XQType::ANY_SIMPLE_TYPE_KIND:
+    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName().theStrStore, q);
+
+  case XQType::UNTYPED_KIND:
+    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_UNTYPED_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_UNTYPED_QNAME->getLocalName().theStrStore, q);
+    
+  case XQType::EMPTY_KIND:
+    return TypeIdentifier::createEmptyType();
+
+  case XQType::USER_DEFINED_KIND:
+    //TODO for Vinayak return type identifier
+  default:
+    break;
   }
   ZORBA_ASSERT(false);
   return type_ident_ref_t();
 }
+
 
 int TypeOps::type_max_cnt (const XQType& type) {
   return is_equal (type, *GENV_TYPESYSTEM.EMPTY_TYPE)

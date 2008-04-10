@@ -325,8 +325,8 @@ namespace zorba
     n0 = n0->getAtomizationValue();
     n1 = n1->getAtomizationValue();
 
-    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->item_type ( n0);
-    xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->item_type ( n1);
+    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type ( n0);
+    xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type ( n1);
 
     return computeAtomic(aRuntimeCB, aLoc, n0, type0, n1, type1);
   }
@@ -567,11 +567,11 @@ namespace zorba
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
       // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
@@ -636,11 +636,11 @@ namespace zorba
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
@@ -708,13 +708,13 @@ namespace zorba
     {
       //get the value and the type of the item
       item = item->getAtomizationValue();
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
       //item type is subtype of DOUBLE
@@ -765,13 +765,13 @@ namespace zorba
     {
       //get the value and the type of the item
       item = item->getAtomizationValue();
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
       //item type is subtype of DOUBLE
@@ -822,13 +822,13 @@ namespace zorba
     {
       //get the value and the type of the item
       item = item->getAtomizationValue();
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
       //item type is subtype of DOUBLE
@@ -886,13 +886,13 @@ namespace zorba
       
       //get the value and the type of the item
       item = item->getAtomizationValue();
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->item_type ( item);
+        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
       //item type is subtype of DOUBLE

@@ -116,7 +116,7 @@ Item_t QNamePool::insert(
 
   if (!found)
   {
-    qn->theNamespace = pooledNs;
+    qn->theNamespace.transfer(pooledNs);
     qn->thePrefix = new xqpStringStore(pre);
     qn->theLocal = new xqpStringStore(ln);
   }

@@ -213,7 +213,7 @@ namespace zorba {
     if (i == 2) return NULL;
 
     store::Item_t val = val_expr->get_val ();
-    if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
+    if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_named_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
       xqp_integer ival = val->getIntegerValue (), zero = xqp_integer::parseInt (0);
       if (ival < zero)
         return new const_expr (LOC (val_expr), false);

@@ -26,9 +26,13 @@ class DelegatingTypeManager : public TypeManagerImpl {
     }
 
 
-    virtual xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
+    virtual xqtref_t create_named_atomic_type(
+        store::Item* qname,
+        TypeConstants::quantifier_t quantifier) const;
 
-	virtual xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
+    virtual xqtref_t create_named_type(
+        store::Item* qname,
+        TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
 
     void initializeSchema();
     void terminateSchema();

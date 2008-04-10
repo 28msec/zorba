@@ -2173,7 +2173,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
   } else {  // a QName cast
     const const_expr *ce = node.dyn_cast<const_expr> ().getp();
     if (ce != NULL
-        && TypeOps::is_equal (*CTXTS->item_type (ce->get_val ()),
+        && TypeOps::is_equal (*CTXTS->create_value_type (ce->get_val ()),
                               *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
         store::Item_t castLiteral = GenericCast::instance()->castToQName(ce->get_val()->getStringValue(), isCast, true, ns_ctx);
@@ -2432,7 +2432,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   // try constructor functions
   xqtref_t type =
-    CTXTS->create_type (fn_qname, TypeConstants::QUANT_QUESTION);
+    CTXTS->create_named_type (fn_qname, TypeConstants::QUANT_QUESTION);
 
   xqpStringStore tmp("xs:anyAtomicType");
 
@@ -2695,10 +2695,10 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
   xqtref_t t =
-    CTXTS->create_atomic_type(sctx_p->lookup_qname("",
-                                                            qname->get_prefix (),
-                                                            qname->get_localname ()),
-                                TypeConstants::QUANT_ONE);
+    CTXTS->create_named_atomic_type(sctx_p->lookup_qname("",
+                                                         qname->get_prefix (),
+                                                         qname->get_localname ()),
+                                    TypeConstants::QUANT_ONE);
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
   if (t == NULL)
@@ -2986,7 +2986,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
-      contentType = CTXTS->create_type(qnameItem, TypeConstants::QUANT_ONE);
+      contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
     }
 
     xqtref_t seqmatch = CTXTS->
@@ -3049,7 +3049,7 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
-      contentType = CTXTS->create_type(qnameItem, TypeConstants::QUANT_ONE);
+      contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
     }
 
     xqtref_t seqmatch = CTXTS->

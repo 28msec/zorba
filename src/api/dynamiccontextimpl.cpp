@@ -96,8 +96,9 @@ namespace zorba {
   {
     try {
       store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
-      xqtref_t lItemType = theStaticContext->get_typemanager()->create_type(lItem->getType(),
-                                                                            TypeConstants::QUANT_ONE);
+      xqtref_t lItemType = theStaticContext->get_typemanager()->
+                           create_named_type(lItem->getType(),
+                                             TypeConstants::QUANT_ONE);
 
       if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)) {
         ZORBA_ERROR_DESC_OSS(ZorbaError::API0014_INVALID_ARGUMENT, "Given item of type [" << lItemType->toString() 

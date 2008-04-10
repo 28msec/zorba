@@ -630,9 +630,9 @@ DocumentNode::~DocumentNode()
 }
 
 
-Item_t DocumentNode::getType() const
+Item* DocumentNode::getType() const
 {
-  return GET_STORE().theAnyType;
+  return GET_STORE().theSchemaTypeNames[XS_UNTYPED];
 }
 
 
@@ -1151,7 +1151,7 @@ XmlNode* ElementNode::copy(
 
   Item* typeName = (copymode.theTypePreserve ?
                     theTypeName.getp() :
-                    GET_STORE().theUntypedType.getp());
+                    GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp());
   try
   {
     if (parent == NULL)
@@ -1203,8 +1203,8 @@ XmlNode* ElementNode::copy(
     else // ! nsPreserve
     {
       if (copymode.theTypePreserve &&
-          (theTypeName == GET_STORE().theQNameType ||
-           theTypeName == GET_STORE().theNotationType))
+          (theTypeName == GET_STORE().theSchemaTypeNames[XS_QNAME] ||
+           theTypeName == GET_STORE().theSchemaTypeNames[XS_NOTATION]))
       {
         ZORBA_ERROR(ZorbaError::XQTY0086);
       }
@@ -1772,12 +1772,12 @@ XmlNode* AttributeNode::copy(
   }
   else
   {
-    typeName = GET_STORE().theUntypedAtomicType.getp();
+    typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp();
 
     if (theName->getLocalName() == "id" && theName->getPrefix() == "xml")
       isId = true;
 
-    if (theTypedValue->getType()->equals(GET_STORE().theUntypedAtomicType, NULL))
+    if (theTypedValue->getType() == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
       typedValue = theTypedValue;
     else
     {
@@ -2006,9 +2006,9 @@ XmlNode* TextNode::copy(
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t TextNode::getType() const
+Item* TextNode::getType() const
 {
-  return GET_STORE().theUntypedAtomicType;
+  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
 
 
@@ -2176,9 +2176,9 @@ XmlNode* PiNode::copy(
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t PiNode::getType() const
+Item* PiNode::getType() const
 {
-  return GET_STORE().theUntypedAtomicType;
+  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
 
 
@@ -2338,9 +2338,9 @@ XmlNode* CommentNode::copy(
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t CommentNode::getType() const
+Item* CommentNode::getType() const
 {
-  return GET_STORE().theUntypedAtomicType;
+  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
 
 

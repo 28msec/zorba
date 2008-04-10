@@ -215,17 +215,38 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_ANY_SIMPLE_TYPE_QNAME, "anySimpleType");
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
 
-#define ATOMIC_TYPE_DEFN(basename) \
-  basename##_TYPE_ONE = new AtomicXQType(this, TypeConstants::XS_##basename, TypeConstants::QUANT_ONE); \
-  basename##_TYPE_QUESTION = new AtomicXQType(this, TypeConstants::XS_##basename, TypeConstants::QUANT_QUESTION); \
-  basename##_TYPE_STAR = new AtomicXQType(this, TypeConstants::XS_##basename, TypeConstants::QUANT_STAR); \
-  basename##_TYPE_PLUS = new AtomicXQType(this, TypeConstants::XS_##basename, TypeConstants::QUANT_PLUS); \
-  m_atomic_typecode_qname_map[TypeConstants::XS_##basename] = &XS_##basename##_QNAME; \
-  m_atomic_qnametype_map[XS_##basename##_QNAME] = TypeConstants::XS_##basename; \
-  m_atomic_typecode_map[TypeConstants::XS_##basename][TypeConstants::QUANT_ONE] = &basename##_TYPE_ONE; \
-  m_atomic_typecode_map[TypeConstants::XS_##basename][TypeConstants::QUANT_QUESTION] = &basename##_TYPE_QUESTION; \
-  m_atomic_typecode_map[TypeConstants::XS_##basename][TypeConstants::QUANT_STAR] = &basename##_TYPE_STAR; \
-  m_atomic_typecode_map[TypeConstants::XS_##basename][TypeConstants::QUANT_PLUS] = &basename##_TYPE_PLUS;
+#define ATOMIC_TYPE_DEFN(tname)                                                 \
+  tname##_TYPE_ONE = new AtomicXQType(this,                                     \
+                                      TypeConstants::XS_##tname,                \
+                                      TypeConstants::QUANT_ONE);                \
+                                                                                \
+  tname##_TYPE_QUESTION = new AtomicXQType(this,                                \
+                                          TypeConstants::XS_##tname,            \
+                                          TypeConstants::QUANT_QUESTION);       \
+                                                                                \
+  tname##_TYPE_STAR = new AtomicXQType(this,                                    \
+                                       TypeConstants::XS_##tname,               \
+                                       TypeConstants::QUANT_STAR);              \
+                                                                                \
+  tname##_TYPE_PLUS = new AtomicXQType(this,                                    \
+                                       TypeConstants::XS_##tname,               \
+                                       TypeConstants::QUANT_PLUS);              \
+                                                                                \
+  m_atomic_typecode_qname_map[TypeConstants::XS_##tname] = XS_##tname##_QNAME;  \
+                                                                                \
+  m_atomic_qnametype_map[XS_##tname##_QNAME] = TypeConstants::XS_##tname;       \
+                                                                                \
+  m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_ONE] =  \
+    &tname##_TYPE_ONE;                                                          \
+                                                                                \
+  m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_QUESTION] = \
+    &tname##_TYPE_QUESTION;                                                     \
+                                                                                \
+  m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_STAR] = \
+    &tname##_TYPE_STAR;                                                         \
+                                                                                \
+  m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_PLUS] = \
+    &tname##_TYPE_PLUS;
 
   ATOMIC_TYPE_DEFN(ANY_ATOMIC)
   ATOMIC_TYPE_DEFN(STRING)
@@ -294,11 +315,13 @@ RootTypeManager::RootTypeManager()
   basename##_TYPE_QUESTION = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_QUESTION); \
   basename##_TYPE_STAR = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_STAR); \
   basename##_TYPE_PLUS = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_PLUS);
+
   NODE_TYPE_DEFN(PI)
   NODE_TYPE_DEFN(TEXT)
   NODE_TYPE_DEFN(COMMENT)
   NODE_TYPE_DEFN(DOCUMENT)
   NODE_TYPE_DEFN(ANY_NODE)
+
 #undef NODE_TYPE_DEFN
 }
 

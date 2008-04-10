@@ -33,14 +33,14 @@ void XmlNode::removeType(TypeUndoList& undoList)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      if (n->theTypeName->equals(GET_STORE().theUntypedType, NULL))
+      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
         break;
 
       NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
 
       undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
 
-      n->theTypeName = GET_STORE().theAnyType;
+      n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
       n->resetIsId();
       n->resetIsIdRefs();
     }
@@ -52,7 +52,7 @@ void XmlNode::removeType(TypeUndoList& undoList)
 
       undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
 
-      n->theTypeName = GET_STORE().theUntypedAtomicType;
+      n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
       n->resetIsId();
       n->resetIsIdRefs();
     }
@@ -112,7 +112,7 @@ void XmlNode::setToUntyped()
   {
     ElementNode* n = reinterpret_cast<ElementNode*>(this);
 
-    n->theTypeName = GET_STORE().theUntypedType;
+    n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
 
     n->resetIsId();
     n->resetIsIdRefs();
@@ -135,7 +135,7 @@ void XmlNode::setToUntyped()
   {
     AttributeNode* n = reinterpret_cast<AttributeNode*>(this);
 
-    n->theTypeName = GET_STORE().theUntypedAtomicType;
+    n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
     n->resetIsId();
     n->resetIsIdRefs();

@@ -455,7 +455,9 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
 
   try
   {
-    xqtref_t lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->item_type (lItem);
+    xqtref_t lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
+                         create_value_type (lItem);
+
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
     {
       lRes = lItem;
