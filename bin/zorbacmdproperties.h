@@ -12,7 +12,7 @@ private:
 
   // output options
   std::string theOutputFile;
-  bool        thePrintQuery, theSerializeAsHTML, theSerializeAsText,
+  bool        thePrintQuery, theSerializeAsHTML, 
               theIndent, theByteOrderMark, theOmitXMLDeclaration;
 
   // static context options
@@ -88,9 +88,6 @@ public:
 
   bool 
   serializeHTML()       { return theSerializeAsHTML; }
-
-  bool 
-  serializeText()       { return theSerializeAsText; }
 
   bool 
   indent()              { return theIndent; }

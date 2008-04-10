@@ -37,14 +37,18 @@ populateStaticContext(zorba::StaticContext_t& aStaticContext, ZorbaCMDProperties
 
   if (aProperties->getBaseUri().size() != 0 )
   {
-    // TODO
-    //aStaticContext->setBaseURI( zorba::xqp_string(aProperties->getBaseUri()) );
+    aStaticContext->setBaseURI( aProperties->getBaseUri() );
   }
 
   if (aProperties->getDefaultCollation().size() != 0 )
   {
-    // TODO 
-    //aStaticContext->setDefaultCollation( zorba::xqp_string(aProperties->getDefaultCollation()) );
+    try {
+      aStaticContext->addCollation( aProperties->getDefaultCollation() );
+    } catch (zorba::ZorbaException& e) {
+      std::cerr << "The given collation '" << aProperties->getDefaultCollation() << "' is not a valid collation." << std::endl;
+      return false;
+    }
+    aStaticContext->setDefaultCollation( aProperties->getDefaultCollation() );
   }
   return true;
 }
@@ -69,6 +73,34 @@ populateDynamicContext(zorba::DynamicContext_t& aDynamicContext, ZorbaCMDPropert
     
   return true;
 }
+
+bool
+createSerializerOptions(zorba::XQuery::SerializerOptions& lSerOptions, ZorbaCMDProperties* aProperties)
+{
+  if ( aProperties->indent() )
+    lSerOptions.indent = zorba::XQuery::SerializerOptions::indent::YES;
+  else
+    lSerOptions.indent = zorba::XQuery::SerializerOptions::indent::NO;
+
+  if ( aProperties->omitXMLDeclaration() )
+    lSerOptions.omit_xml_declaration = zorba::XQuery::SerializerOptions::omit_xml_declaration::YES;
+  else
+    lSerOptions.omit_xml_declaration = zorba::XQuery::SerializerOptions::omit_xml_declaration::NO;
+
+  if ( aProperties->byteOrderMark() )
+    lSerOptions.byte_order_mark = zorba::XQuery::SerializerOptions::byte_order_mark::YES;
+  else
+    lSerOptions.byte_order_mark = zorba::XQuery::SerializerOptions::byte_order_mark::NO;
+
+  if ( aProperties->serializeHTML() )
+    lSerOptions.ser_method = zorba::XQuery::SerializerOptions::serialization_method::HTML;
+  else  
+    lSerOptions.ser_method = zorba::XQuery::SerializerOptions::serialization_method::XML;
+
+  return true;
+}
+
+
 
 #ifndef _WIN32_WCE
 int main(int argc, char* argv[])
@@ -199,13 +231,10 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lTiming)
       lStartFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
 
-      
-    if (lProperties.serializeHTML()) {
-  //  lQuery->serializeHTML(*lOutputStream);
-    } else if (lProperties.serializeText()) {
-  //  lQuery->serializeTEXT(*lOutputStream);
-    } else
-      *lOutputStream << lQuery;
+    zorba::XQuery::SerializerOptions lSerOptions;
+    createSerializerOptions(lSerOptions, &lProperties); 
+
+    lQuery->serialize(*lOutputStream, lSerOptions);
 
     if (lTiming)
       lStopFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
@@ -215,14 +244,8 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lTiming)
       lStartExecutionTime = boost::posix_time::microsec_clock::local_time();
 
-    while (--lNumExecutions >= 0 )
-    {
-      if (lProperties.serializeHTML()) {
-//        lQuery->serializeHTML(*lOutputStream);
-      } else if (lProperties.serializeText()) {
-//        lQuery->serializeTEXT(*lOutputStream);
-      } else
-        *lOutputStream << lQuery;
+    while (--lNumExecutions >= 0 ) {
+      lQuery->serialize(*lOutputStream, lSerOptions);
     }
 
     if (lTiming)

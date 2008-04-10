@@ -28,8 +28,6 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
     ("serialize-html", "Serialize the result as HTML")
 
-    ("serialize-text", "Serialize the result as text")
-
     ("indent", "Indent output")
 
     ("print-query", "Print the query")
@@ -49,7 +47,7 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
     ("default-collation", 
      boost::program_options::value<std::string>(&theDefaultCollation)->default_value(""), 
-     "Set the value of the default collation in the static context.")
+     "Add the given collation and set the value of the default collation in the static context to the given collation.")
 
     ("construction-mode", 
      boost::program_options::value<std::string>(&theConstructionMode)->default_value(""), 
@@ -175,7 +173,6 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
   // output
   theSerializeAsHTML    = (lVarMap.count("serialize-html") != 0);
-  theSerializeAsText    = (lVarMap.count("serialize-text") != 0);
   theIndent             = (lVarMap.count("indent") != 0);
   theByteOrderMark      = (lVarMap.count("byte-order-mark") != 0);
   theOmitXMLDeclaration = (lVarMap.count("omit-xml-declaration") != 0);
