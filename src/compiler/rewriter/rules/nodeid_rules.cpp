@@ -167,6 +167,13 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     break;
   }
 
+  case relpath_expr_kind: {
+    expr_t arg = (*dynamic_cast<relpath_expr *> (node)) [0];
+    arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+    arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
+    break;
+  }
+
   default: {
     cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
     if (ce != NULL) {
