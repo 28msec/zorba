@@ -70,6 +70,7 @@ class MyLazySimpleExternalFunction : public StatelessExternalFunction
     virtual ItemSequence_t 
     evaluate(const StatelessExternalFunction::Arguments_t& args) const 
     {
+        // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
         return ItemSequence_t(new LazyConcatItemSequence(args));
     }
 
