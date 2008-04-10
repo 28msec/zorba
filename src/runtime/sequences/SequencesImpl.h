@@ -47,20 +47,18 @@ class FnConcatIterator : public NaryBaseIterator<FnConcatIterator,
                                                  FnConcatIteratorState>
 {
 protected:
-  bool  theIsUpdate;
+  bool  theIsUpdating;
 
 public:
-  FnConcatIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+  FnConcatIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aIsUpdating)
     :
-    NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(loc, aChildren)
-  {
-    theIsUpdate = (!theChildren.empty() && theChildren[0]->isUpdateIterator());
-  }                                                               
+    NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(loc, aChildren),
+    theIsUpdating(aIsUpdating)
+  { }                                                               
                                                                         
   virtual ~FnConcatIterator() { }                                               
 
-  bool isUpdateIterator() const { return theIsUpdate; }
-
+  virtual bool isUpdateIterator() const { return theIsUpdating; }
   store::Item_t nextImpl(PlanState& aPlanState) const;
 
   virtual void accept(PlanIterVisitor& v) const;

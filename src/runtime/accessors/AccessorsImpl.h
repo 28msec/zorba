@@ -38,8 +38,6 @@ public:
 
   store::Item_t nextImpl(PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
-
-  bool isUpdateIterator() const { return theChild->isUpdateIterator(); }
 };
 
 

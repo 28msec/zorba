@@ -28,8 +28,7 @@ public:
 
   virtual ~InsertIterator() {}
 
-  bool isUpdateIterator() const { return true; }
-
+  virtual bool isUpdateIterator() const { return true; }
   store::Item_t nextImpl(PlanState&) const;
 
   virtual void accept(PlanIterVisitor&) const;
@@ -46,8 +45,7 @@ class DeleteIterator : public UnaryBaseIterator<DeleteIterator, PlanIteratorStat
 
   virtual ~DeleteIterator() {}
 
-  bool isUpdateIterator() const { return true; }
-
+  virtual bool isUpdateIterator() const { return true; }
   store::Item_t nextImpl(PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -71,8 +69,7 @@ public:
 
   virtual ~ReplaceIterator() {}
 
-  bool isUpdateIterator() const { return true; }
-
+  virtual bool isUpdateIterator() const { return true; }
   store::Item_t nextImpl(PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -91,8 +88,7 @@ public:
 
   virtual ~RenameIterator() {}
 
-  bool isUpdateIterator() const { return true; }
-
+  virtual bool isUpdateIterator() const { return true; }
   store::Item_t nextImpl(PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
 };

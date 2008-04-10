@@ -65,7 +65,7 @@ op_concatenate::op_concatenate(
 
 PlanIter_t op_concatenate::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-	return new FnConcatIterator(loc, argv);
+	return new FnConcatIterator(loc, argv, ann.isUpdating());
 }
 
 
@@ -280,7 +280,7 @@ fn_union::fn_union(const signature& sig)
 
 PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnConcatIterator(loc, argv);
+  return new FnConcatIterator(loc, argv, false);
 }
 
 

@@ -32,26 +32,16 @@ IfThenElseIterator::IfThenElseIterator(
     PlanIter_t& aCondIter,
     PlanIter_t& aThenIter,
     PlanIter_t& aElseIter,
+    bool aIsUpdating,
     bool aIsBooleanIter )
   :
   Batcher<IfThenElseIterator> ( loc ),
   theCondIter ( aCondIter ),
   theThenIter ( aThenIter ),
   theElseIter ( aElseIter ),
+  theIsUpdating ( aIsUpdating ),
   theIsBooleanIter ( aIsBooleanIter )
-{
-  if (theCondIter->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, loc);
-
-  bool thenUpdate = theThenIter->isUpdateIterator();
-  bool elseUpdate = theElseIter->isUpdateIterator();
-
-  if (thenUpdate && !elseUpdate)
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, loc);
-
-  if (!thenUpdate && elseUpdate)
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, loc);
-}
+{ }
 
 
 store::Item_t IfThenElseIterator::nextImpl ( PlanState& planState ) const

@@ -29,13 +29,7 @@ InsertIterator::InsertIterator (
   BinaryBaseIterator<InsertIterator, PlanIteratorState>(aLoc, source, target),
   theType(aType),
   theDoCopy(true)
-{
-  if (source->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
-
-  if (target->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
-}
+{ }
 
 
 store::Item_t
@@ -214,10 +208,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 DeleteIterator::DeleteIterator(const QueryLoc& aLoc, PlanIter_t target)
   :
   UnaryBaseIterator<DeleteIterator, PlanIteratorState>(aLoc, target)
-{
-  if (target->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
-}
+{ }
 
 
 store::Item_t
@@ -260,13 +251,7 @@ ReplaceIterator::ReplaceIterator (
   BinaryBaseIterator<ReplaceIterator, PlanIteratorState>(aLoc, target, source),
   theType(aType),
   theDoCopy(true)
-{
-  if (target->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
-
-  if (source->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
-}
+{ }
 
 
 store::Item_t
@@ -431,13 +416,7 @@ RenameIterator::RenameIterator (
     PlanIter_t name)
   :
   BinaryBaseIterator<RenameIterator, PlanIteratorState>(aLoc, target, name)
-{
-  if (target->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
-
-  if (name->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, aLoc);
-}
+{ }
 
 
 store::Item_t

@@ -77,6 +77,7 @@ private:
   PlanIter_t theCondIter;
   PlanIter_t theThenIter;
   PlanIter_t theElseIter;
+  bool theIsUpdating;
   bool theIsBooleanIter;
     
 public:
@@ -96,13 +97,10 @@ public:
         PlanIter_t& aCondIter,
         PlanIter_t& aThenIter,
         PlanIter_t& aElseIter,
+        bool aIsUpdating,
         bool aIsBooleanIter = false);
 
-  bool isUpdateIterator() const
-  {
-    return theThenIter->isUpdateIterator() || theElseIter->isUpdateIterator();
-  }
-
+  virtual bool isUpdateIterator() const { return theIsUpdating; }
   void openImpl(PlanState& planState, uint32_t& offset);
   store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;

@@ -95,7 +95,7 @@ FnConcatIterator::nextImpl(PlanState& planState) const
   FnConcatIteratorState* state;
   DEFAULT_STACK_INIT(FnConcatIteratorState, state, planState);
 
-  if (isUpdateIterator())
+  if (theIsUpdating)
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   for (; state->theCurIter < theChildren.size(); ++state->theCurIter) 
@@ -103,7 +103,7 @@ FnConcatIterator::nextImpl(PlanState& planState) const
     item = consumeNext(theChildren[state->theCurIter].getp(), planState);
     while (item != NULL) 
     {
-      if (isUpdateIterator())
+      if (theIsUpdating)
       {
         ZORBA_FATAL(item->isPul(), "");
 
@@ -118,7 +118,7 @@ FnConcatIterator::nextImpl(PlanState& planState) const
     }
   }
   
-  if (isUpdateIterator())
+  if (theIsUpdating)
     STACK_PUSH(pul.release(), state);
 
   STACK_END (state);

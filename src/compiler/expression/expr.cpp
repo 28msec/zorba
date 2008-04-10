@@ -361,6 +361,7 @@ void flwor_expr::next_iter (expr_iterator_data& v) {
 expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
 {
   expr_t flwor_copy = new flwor_expr(get_loc());
+  flwor_copy->setUpdating(isUpdating());
   flwor_expr *flwor_copy_ptr = static_cast<flwor_expr *>(flwor_copy.getp());
 
   for(clause_list_t::iterator i = clause_v.begin(); i != clause_v.end(); ++i) {

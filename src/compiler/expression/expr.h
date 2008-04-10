@@ -695,7 +695,7 @@ protected:
 
 public:
   fo_expr (const QueryLoc& loc, const function *f)
-   : expr(loc), func (f) { assert (f != NULL); }
+   : expr(loc), func (f)  { assert (f != NULL); }
   fo_expr (const QueryLoc& loc, const function *f, expr_t arg)
    : expr(loc), func (f)
   {
@@ -1522,6 +1522,7 @@ public:
 	virtual ~insert_expr();
 
 public:
+  virtual bool isUpdating() const { return true; }
   store::UpdateConsts::InsertType getType() const { return theType; }
 	expr_t getSouceExpr() const { return theSourceExpr; }
 	expr_t getTargetExpr() const { return theTargetExpr; }
@@ -1555,6 +1556,7 @@ public:
 	expr_t getTargetExpr() const { return theTargetExpr; }
 
 public:
+  virtual bool isUpdating() const { return true; }
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
@@ -1588,6 +1590,7 @@ public:
 	expr_t getReplaceExpr() const { return theReplaceExpr; }
 
 public:
+  virtual bool isUpdating() const { return true; }
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
@@ -1618,6 +1621,7 @@ public:
 	expr_t getNameExpr() const { return theTargetExpr; }
 
 public:
+  virtual bool isUpdating() const { return true; }
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;

@@ -195,15 +195,12 @@ public:
         PlanIter_t&                 whereClause,
         OrderByClause*              orderByClause,
         PlanIter_t&                 returnClause,
+        bool                        aIsUpdating,
         bool                        whereClauseReturnsBooleanPlus = false );
     
   ~FLWORIterator();
 
-  bool isUpdateIterator() const
-  {
-    return theIsUpdateIterator;
-  }
-
+  virtual bool isUpdateIterator() const { return theIsUpdating; }
   void openImpl ( PlanState& planState, uint32_t& offset );
   store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
@@ -242,7 +239,7 @@ public:
   bool                      doOrderBy; //just indicates if the FLWOR has an orderby
   PlanIter_t                returnClause; 
   bool                      whereClauseReturnsBooleanPlus;
-  bool                      theIsUpdateIterator;
+  bool                      theIsUpdating;
   const int                 theNumBindings; //Number of FORs and LETs (overall)  
 };
 

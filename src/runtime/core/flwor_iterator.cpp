@@ -52,10 +52,7 @@ FLWORIterator::ForLetClause::ForLetClause(
   theType ( FOR ),
   theForVars ( aForVars ),
   theInput ( aInput )
-{
-  if (theInput->isUpdateIterator())
-    ZORBA_ERROR(ZorbaError::XUST0001);
-}
+{ }
 
 
 FLWORIterator::ForLetClause::ForLetClause (
@@ -283,6 +280,7 @@ FLWORIterator::FLWORIterator(
     PlanIter_t& aWhereClause,
     FLWORIterator::OrderByClause* aOrderByClause,
     PlanIter_t& aReturnClause,
+    bool aIsUpdating,
     bool aWhereClauseReturnsBooleanPlus)
   :
   Batcher<FLWORIterator>(loc),
@@ -291,12 +289,9 @@ FLWORIterator::FLWORIterator(
   orderByClause(aOrderByClause),
   returnClause(aReturnClause),
   whereClauseReturnsBooleanPlus(aWhereClauseReturnsBooleanPlus),
-  theIsUpdateIterator(aReturnClause->isUpdateIterator()),
+  theIsUpdating(aIsUpdating),
   theNumBindings(aForLetClauses.size())
 {
-  if (whereClause != 0 && whereClause->isUpdateIterator())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, loc);
-
   if ( orderByClause == 0 || orderByClause->orderSpecs.size() == 0 )
   {
     orderByClause = 0;
@@ -331,7 +326,7 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
 
   assert(flworState->varBindingState.size() > 0);
 
-  if (isUpdateIterator())
+  if (theIsUpdating)
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   while ( true )
@@ -357,7 +352,7 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
         // that we finished by returning NULL
         if ( curVar == -1 )
         {
-          if (theIsUpdateIterator)
+          if (theIsUpdating)
           {
             STACK_PUSH(pul.release(), flworState);
           }
@@ -389,7 +384,7 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
     {
       // In the case we not need to do ordering, we now returning the items
       // produced by the ReturnClause
-      if (isUpdateIterator())
+      if (theIsUpdating)
       {
         curItem = consumeNext(returnClause, planState);
         while (curItem != 0)

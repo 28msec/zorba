@@ -7,11 +7,17 @@
 namespace zorba {
 
 class AnnotationHolder {
+  private:
+    bool theIsUpdating;
   public:
+    AnnotationHolder() : theIsUpdating(false) {}
     virtual ~AnnotationHolder() { }
     void put_annotation(Annotation::key_t key, Annotation::value_ref_t annot);
     const Annotation::value_ref_t get_annotation(Annotation::key_t key) const;
     void remove_annotation(Annotation::key_t key);
+
+    virtual bool isUpdating() const { return theIsUpdating; }
+    void setUpdating(bool aIsUpdating) { theIsUpdating = aIsUpdating; }
 
   protected:
     typedef std::map<Annotation::key_t, Annotation::value_ref_t> annotations_t;

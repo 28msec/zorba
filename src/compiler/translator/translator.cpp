@@ -1187,8 +1187,10 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   int i, j;
 
+  expr_t lReturnExpr = pop_nodestack();
   rchandle<flwor_expr> flwor = new flwor_expr (v.get_location ());
-  flwor->set_retval (pop_nodestack ());
+  flwor->setUpdating(lReturnExpr->isUpdating());
+  flwor->set_retval (lReturnExpr);
   OrderByClause *orderby = &*v.get_orderby ();
   if (orderby) {
     flwor->set_order_stable (orderby->get_stable_bit ());
@@ -1209,11 +1211,23 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       if (! sctx_p->has_collation_uri (col))
         ZORBA_ERROR (ZorbaError::XQST0076);
       rchandle<order_modifier> emod (new order_modifier (dir_spec, empty_spec, col));
-      flwor->add (flwor_expr::orderspec_t (pop_nodestack (), emod));
+      expr_t lOrderExpr = pop_nodestack();
+      if (lOrderExpr->isUpdating())
+      {
+        ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+      }
+      flwor->add (flwor_expr::orderspec_t (lOrderExpr, emod));
     }
   }
   if (v.get_where () != NULL)
-    flwor->set_where (pop_nodestack ());
+  {
+    expr_t lClauseExpr = pop_nodestack();
+    if (lClauseExpr->isUpdating())
+    {
+      ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+    }
+    flwor->set_where (lClauseExpr);
+  }
   ForLetClauseList *clauses = v.get_forlet_list ().getp ();
   vector <forlet_clause *> eclauses;
 
@@ -1235,7 +1249,12 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
         // for var
         vars.push_back (ve);
         // value expression
-        exprs.push_back(pop_nodestack ());
+        expr_t lValueExpr = pop_nodestack();
+        if (lValueExpr->isUpdating())
+        {
+          ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+        }
+        exprs.push_back(lValueExpr);
         // pos var
         if ((*decl_list) [j]->get_posvar () == NULL)
           pos_vars.push_back (NULL);
@@ -1254,7 +1273,12 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     } else {  // let clause
       for (j = 0; j < size; j++) {
         var_expr_t ve = pop_nodestack ().cast<var_expr> ();
-        exprs.push_back(pop_nodestack ());
+        expr_t lValueExpr = pop_nodestack();
+        if (lValueExpr->isUpdating())
+        {
+          ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+        }
+        exprs.push_back(lValueExpr);
         ve->set_kind (var_expr::let_var);
         vars.push_back (ve);
         pop_scope ();
@@ -1561,7 +1585,11 @@ expr_t wrap_in_globalvar_flwor(expr_t e)
   }
 
   if (! clauses.empty ())
+  {
+    bool lUpdating = e->isUpdating();
     e = new flwor_expr (e->get_loc(), clauses, e);
+    e->setUpdating(lUpdating);
+  }
 
   return e;
 }
@@ -2267,10 +2295,13 @@ void end_visit(const Expr& v, void* /*visit_state*/)
 
   if (v.numberOfChildren () > 1) {
     fo_expr *elist_h = create_seq (v.get_location());
+    bool lIsUpdating = false;
     for (int i = 0; i < v.numberOfChildren (); i++) {
       expr_t e_h = pop_nodestack();
+      lIsUpdating = lIsUpdating || e_h->isUpdating();
       elist_h->add(e_h);
     }
+    elist_h->setUpdating(lIsUpdating);
     nodestack.push(elist_h);
   }
 }
@@ -2439,7 +2470,11 @@ TRACE_VISIT_OUT ();
   expr_t t_h = pop_nodestack ();
   expr_t c_h = pop_nodestack ();
 
-  nodestack.push(new if_expr(v.get_location(),c_h,t_h,e_h));
+  bool lIsUpdating = t_h->isUpdating() || c_h->isUpdating();
+
+  if_expr *lIfExpr = new if_expr(v.get_location(),c_h,t_h,e_h);
+  lIfExpr->setUpdating(lIsUpdating);
+  nodestack.push(lIfExpr);
 }
 
 
@@ -3928,8 +3963,12 @@ void *begin_visit(const DeleteExpr& /*v*/)
 void end_visit(const DeleteExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  expr_t aTarget = pop_nodestack();
-  expr_t aDelete = new delete_expr(v.get_location(), aTarget);
+  expr_t lTarget = pop_nodestack();
+  if (lTarget->isUpdating())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+  }
+  expr_t aDelete = new delete_expr(v.get_location(), lTarget);
   nodestack.push(aDelete);
 }
 
@@ -3944,6 +3983,10 @@ void end_visit(const InsertExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   expr_t lTarget = pop_nodestack();
   expr_t lSource = pop_nodestack();
+  if (lTarget->isUpdating() || lSource->isUpdating())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+  }
   fo_expr* lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
   lEnclosed->add(lSource);
   lSource = lEnclosed;
@@ -3964,14 +4007,17 @@ void end_visit(const RenameExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   expr_t nameExpr = pop_nodestack();
+  expr_t targetExpr = pop_nodestack();
+
+  if (nameExpr->isUpdating() || targetExpr->isUpdating())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+  }
 
   rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(),
                                              LOOKUP_FN("fn", "data", 1));
   atomExpr->add(nameExpr);
-
   nameExpr = new name_cast_expr(v.get_location(), atomExpr.getp(), ns_ctx);
-
-  expr_t targetExpr = pop_nodestack();
 
   expr_t renameExpr = new rename_expr(v.get_location(), targetExpr, nameExpr);
 
@@ -3989,6 +4035,10 @@ void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   expr_t lReplacement = pop_nodestack();
   expr_t lTarget = pop_nodestack();
+  if (lReplacement->isUpdating() || lTarget->isUpdating())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+  }
 
   if (v.getType() == store::UpdateConsts::NODE)
   {
@@ -4026,20 +4076,28 @@ void *begin_visit(const TransformExpr& /*v*/)
 void end_visit(const TransformExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  expr_t aReturn = pop_nodestack();
-  expr_t aModify = pop_nodestack();
-  rchandle<transform_expr> aTransform = new transform_expr(v.get_location(), aModify, aReturn);
+  expr_t lReturn = pop_nodestack();
+  if (lReturn->isUpdating())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+  }
+  expr_t lModify = pop_nodestack();
+  transform_expr* lTransform = new transform_expr(v.get_location(), lModify, lReturn);
   const size_t lSize = v.get_varname_list()->size();
   for (size_t i = 0; i < lSize; ++i)
   {
-    expr_t aExpr = pop_nodestack();
-    var_expr_t aVarExpr = pop_nodestack().cast<var_expr>();
-    aVarExpr->set_kind(var_expr::copy_var);
-    copy_clause* lCCE = new copy_clause( aVarExpr, aExpr);
-    aTransform->add(lCCE);
+    expr_t lExpr = pop_nodestack();
+    if (lExpr->isUpdating())
+    {
+      ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+    }
+    var_expr_t lVarExpr = pop_nodestack().cast<var_expr>();
+    lVarExpr->set_kind(var_expr::copy_var);
+    copy_clause* lCCE = new copy_clause( lVarExpr, lExpr);
+    lTransform->add(lCCE);
     pop_scope();
   }
-  nodestack.push(&*aTransform);
+  nodestack.push(lTransform);
 }
 
 void *begin_visit(const VarNameList& /*v*/)

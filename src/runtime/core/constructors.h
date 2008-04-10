@@ -43,8 +43,6 @@ public:
   DocumentIterator(const QueryLoc& loc, PlanIter_t& aChild)
     : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
 
-  bool isUpdateIterator() const { return false; }
-
   void openImpl(PlanState& planState, uint32_t& offset);
   store::Item_t nextImpl(PlanState& planState) const;
 
@@ -127,8 +125,6 @@ public:
       namespace_context*  localBindings,
       bool                isRoot);
 
-  bool isUpdateIterator() const { return false; }
-  
   void openImpl(PlanState& planState, uint32_t& offset);
   store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
@@ -183,8 +179,6 @@ public:
         PlanIter_t& aValueIter,
         bool isRoot);
 
-  bool isUpdateIterator() const { return false; }
-    
   store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
@@ -208,8 +202,6 @@ public:
 
   store::Item_t nextImpl(PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
-
-  bool isUpdateIterator() const { return theChild->isUpdateIterator(); }
 };
 
 /*******************************************************************************
@@ -231,8 +223,6 @@ public:
         PlanIter_t& aComment,
         bool isRoot);
 
-  bool isUpdateIterator() const { return false; }
-  
   store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
@@ -256,8 +246,6 @@ public:
         PlanIter_t& aContent,
         bool isRoot);
 
-  bool isUpdateIterator() const { return false; }
-  
   store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
@@ -280,8 +268,6 @@ protected:
 public:
   TextIterator( const QueryLoc& loc, PlanIter_t& aChild, bool isRoot);
 
-  bool isUpdateIterator() const { return false; }
-  
   store::Item_t nextImpl(PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -323,8 +309,6 @@ public:
 
   bool getAttrContent() const;
   void setAttrContent();
-
-  bool isUpdateIterator() const { return theChild->isUpdateIterator(); }
 };
 
 } /* namespace zorba */
