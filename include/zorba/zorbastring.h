@@ -38,6 +38,9 @@ public:
   bool 
   operator==(const String& str) const;
 
+  bool 
+  operator!=(const String& str) const;
+
 private:
   friend class Unmarshaller;
   friend std::ostream& operator <<(std::ostream& os, const String& str);

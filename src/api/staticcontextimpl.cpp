@@ -10,6 +10,7 @@
 #include <zorba/typeident.h>
 #include "errors/error_manager.h"
 #include "api/zorbaimpl.h"
+#include "types/casting.h"
 
 namespace zorba {
 
@@ -315,19 +316,27 @@ namespace zorba {
   }
 
 
-  bool   
-  StaticContextImpl::setBaseURI( const String& baseURI )
+  void   
+  StaticContextImpl::setBaseURI( const String& aBaseURI )
   {
-    assert(false);
-    return false;
+    xqpString lBaseURI = Unmarshaller::getInternalString(aBaseURI);
+ 
+    if(!GenericCast::instance()->isCastable(lBaseURI, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
+      try {
+        ZORBA_ERROR_DESC(ZorbaError::XQP0020_INVALID_URI, lBaseURI);
+      } catch (error::ZorbaError& e) {
+        ZorbaImpl::notifyError(theErrorHandler, e);
+      }
+    }
+    theCtx->set_baseuri(lBaseURI, false);
   }
 
 
   String   
   StaticContextImpl::getBaseURI( ) const
   {
-    assert(false);
-    return "";
+    xqpString lBaseURI = theCtx->baseuri();
+    return String(lBaseURI.theStrStore);
   }
 
 

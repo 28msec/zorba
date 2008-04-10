@@ -109,7 +109,7 @@ namespace zorba {
       getCopyNamespacesMode( preserve_mode_t& preserve, 
                               inherit_mode_t& inherit ) const = 0;
 
-      virtual bool   
+      virtual void   
       setBaseURI( const String& baseURI ) = 0;
 
       virtual String   

@@ -114,7 +114,7 @@ namespace zorba {
       getCopyNamespacesMode( StaticContext::preserve_mode_t& preserve, 
                              StaticContext::inherit_mode_t& inherit ) const;
 
-      virtual bool   
+      virtual void
       setBaseURI( const String& baseURI );
 
       virtual String   

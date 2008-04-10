@@ -102,6 +102,12 @@ String::operator==(const String& str) const
   return equals(str);
 }
 
+bool 
+String::operator!=(const String& str) const
+{
+  return !equals(str);
+}
+
 std::ostream& operator <<(std::ostream& os, const String& str)
 {
   return os << *str.m_string;

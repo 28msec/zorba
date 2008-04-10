@@ -125,6 +125,11 @@ context_example_6(Zorba* aZorba)
 
   lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY/de/DE");
 
+  lStaticContext->setBaseURI("http://www.flworfound.org/");
+
+  if ( lStaticContext->getBaseURI() != "http://www.flworfound.org/")
+    return false;
+
 	XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')", 
                                          lStaticContext); 
 
