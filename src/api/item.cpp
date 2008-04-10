@@ -1,8 +1,12 @@
 #include <zorba/item.h>
 #include <zorba/zorbastring.h>
 #include <zorba/exception.h>
+#include <zorba/default_error_handler.h>
+#include "api/serialization/serializer.h"
+#include "errors/error_manager.h"
 #include "errors/errors.h"
 #include "util/rchandle.h"
+#include "api/zorbaimpl.h"
 #include "store/api/item.h"
 
 namespace zorba {
@@ -75,6 +79,19 @@ Item Item::getAtomizationValue() const
 String Item::getStringValue() const
 {
   return m_item->getStringValue().getp();
+}
+
+void Item::serialize(std::ostream& os) const
+{
+  try {
+    error::ErrorManager lErrorManger;
+    serializer lSerializer(&lErrorManger);
+    lSerializer.set_parameter("omit-xml-declaration", "yes");
+    m_item->serializeXML(lSerializer, os);
+  } catch (::zorba::error::ZorbaError& e) {
+    DefaultErrorHandler lErrorHandler;
+    ZorbaImpl::notifyError(&lErrorHandler, e);
+  }
 }
 
 Item Item::getEBV() const

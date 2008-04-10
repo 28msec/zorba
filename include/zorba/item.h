@@ -1,6 +1,7 @@
 #ifndef ZORBA_ITEM_API_H
 #define ZORBA_ITEM_API_H
 
+#include <ostream>
 #include <zorba/api_shared_types.h>
 
 namespace zorba {
@@ -24,6 +25,9 @@ public:
 
   String
   getStringValue() const;
+
+  void
+  serialize(std::ostream&) const;
 
   Item
   getEBV() const;

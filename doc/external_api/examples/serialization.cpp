@@ -109,6 +109,31 @@ serialization_example_6(Zorba* aZorba)
 	return true;
 }
 
+bool
+serialization_example_7(Zorba* aZorba)
+{
+  XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
+
+  ResultIterator_t lIterator = lQuery->iterator();
+
+  try {
+    lIterator->open();
+
+    Item lItem;
+    while ( lIterator->next(lItem) ) {
+      lItem.serialize(std::cout);
+    }
+
+    lIterator->close();
+
+  } catch (ZorbaException& e) {
+    std::cerr << e << std::endl;
+    lIterator->close();
+    return false;
+  }
+	return true;
+}
+
 int 
 serialization(int argc, char* argv[])
 {
@@ -136,6 +161,10 @@ serialization(int argc, char* argv[])
 
   std::cout << "executing serialization example 6" << std::endl;
 	assert(serialization_example_6(lZorba)); 
+  std::cout << std::endl;
+
+  std::cout << "executing serialization example 7" << std::endl;
+	assert(serialization_example_7(lZorba)); 
   std::cout << std::endl;
 
   return 0;

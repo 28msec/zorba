@@ -26,6 +26,7 @@ class MySimpleExternalFunction : public StatelessExternalFunction
                 vec.push_back(lItem);
             }
         }
+        // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
         return ItemSequence_t(new IteratorBackedItemSequence(vec));
     }
 
