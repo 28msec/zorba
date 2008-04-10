@@ -33,6 +33,9 @@ class GlobalEnvironment {
     M_APM                     m_mapm; // this is a pointer type
     std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
 
+//#if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
+    unsigned char*    icu_appdata;
+//#endif
 
     static GlobalEnvironment *m_globalEnv;
 };

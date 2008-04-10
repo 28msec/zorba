@@ -10,6 +10,10 @@
 #include "store/naive/simple_store.h"
 #include "compiler/api/compiler_api.h"
 #include "types/schema/schema.h"
+#include <unicode/utypes.h>
+#include <unicode/udata.h>
+#include "store/naive/node_items.h"
+#include "store/api/collection.h"
 
 using namespace zorba;
 
@@ -33,6 +37,37 @@ void GlobalEnvironment::init()
   // see http://www.icu-project.org/userguide/design.html#Init_and_Termination
   // and http://www.icu-project.org/apiref/icu4c/uclean_8h.html
   {
+#if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
+    {
+      char    self_path[1024];
+      GetModuleFileName(NULL, self_path, sizeof(self_path));
+      //PathRemoveFileSpec(self_path);
+      char  *filename;
+      filename = strrchr(self_path, '\\');
+      if(filename)
+        filename[1] = 0;
+      else
+        self_path[0] = 0;
+      //strcat(self_path, "\\");
+      strcat(self_path, U_ICUDATA_NAME);//icudt39l.dat");
+      strcat(self_path, ".dat");
+      //unsigned char *icu_data;
+      HANDLE    hfile;
+      hfile = CreateFile(self_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+      assert(hfile != INVALID_HANDLE_VALUE);
+      DWORD   icusize;
+      icusize = GetFileSize(hfile, NULL);
+      m_globalEnv->icu_appdata = new unsigned char[icusize];
+      DWORD   nr_read;
+      ReadFile(hfile, m_globalEnv->icu_appdata, icusize, &nr_read, NULL);
+      CloseHandle(hfile);
+      UErrorCode    data_err = U_ZERO_ERROR;
+      udata_setCommonData(m_globalEnv->icu_appdata, &data_err);
+      assert(data_err == U_ZERO_ERROR);
+
+    //  u_setDataDirectory(self_path);
+    }
+#endif
     UErrorCode lICUInitStatus = U_ZERO_ERROR;
     u_init(&lICUInitStatus);
     assert(lICUInitStatus == U_ZERO_ERROR);
@@ -91,6 +126,9 @@ void GlobalEnvironment::destroy()
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
   {
     u_cleanup();
+#if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
+    delete[] m_globalEnv->icu_appdata;
+#endif
   }
 
   delete m_globalEnv;

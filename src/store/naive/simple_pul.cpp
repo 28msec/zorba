@@ -9,6 +9,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 
+#include "store/api/collection.h"
 
 namespace zorba { namespace store {
 

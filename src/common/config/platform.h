@@ -3,7 +3,7 @@
 
 #include "common/config/config.h"
 
-#if defined (WIN32) && ! defined (CYGWIN)
+#if (defined (WIN32) || defined (WINCE)) && ! defined (CYGWIN)
 # include "common/config/win32.h"
 #endif
 

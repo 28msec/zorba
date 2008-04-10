@@ -19,6 +19,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/nsbindings.h"
+#include "store/api/collection.h"
 #include "zorbatypes/datetime.h"
 
 

@@ -55,7 +55,7 @@ namespace zorba {
 
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
-    theCtx->add_variable(lExpandedName, lRes);
+    theCtx->add_variable(lExpandedName, &*lRes);
   }
 
   void

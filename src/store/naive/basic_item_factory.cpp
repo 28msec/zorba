@@ -17,6 +17,7 @@
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_pul.h"
 #include "store/naive/qname_pool.h"
+#include "store/api/collection.h"
 #include "store/util/handle_hashset_string.h"
 #include "zorbatypes/datetime.h"
 

@@ -12,6 +12,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/basic_item_factory.h"
+#include "store/api/collection.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 

@@ -2,7 +2,7 @@
 #define WIN32_COMPATIBLE_DEFS_WITH_GNU_25_JULY_2007
 
 #include <iostream>
-#include <io.h>
+//#include <io.h>
 
 #include "common/config/stdint.h"
 

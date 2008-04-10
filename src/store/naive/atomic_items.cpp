@@ -8,6 +8,7 @@
 
 #include "zorbatypes/numconversions.h"
 #include "store/api/item.h"
+#include "store/naive/node_items.h"
 
 #include "util/Assert.h"
 #include "errors/error_manager.h"
@@ -19,6 +20,7 @@
 #include "store/naive/atomic_items.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "store/api/collection.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/basic_item_factory.h"

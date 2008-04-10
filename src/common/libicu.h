@@ -1,5 +1,4 @@
 #ifndef ZORBA_LIBICU_H
-
 #if defined CYGWIN
 #  define U_HAVE_INTTYPES 0
 #  define U_HAVE_INT8_T 1

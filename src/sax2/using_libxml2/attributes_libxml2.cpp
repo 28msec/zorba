@@ -79,7 +79,7 @@ const xqp_string SAX2_AttributesLibXML2::getType(const unsigned int index) const
 
 const xqp_string SAX2_AttributesLibXML2::getValue(const unsigned int index) const
 {
-  return xqpStringStore(attributes[index*5+3], attributes[index*5+4]);
+  return new xqpStringStore(attributes[index*5+3], attributes[index*5+4]);
 }
 
 int SAX2_AttributesLibXML2::getIndex(const xqp_string uri, const xqp_string localPart ) const
@@ -130,7 +130,7 @@ const xqp_string SAX2_AttributesLibXML2::getValue(const xqp_string uri, const xq
   {
     if((uri == attributes[i*5+2]) &&
       (localPart == attributes[i*5+0]))
-      return xqpStringStore(attributes[i*5+3], attributes[i*5+4]);
+      return new xqpStringStore(attributes[i*5+3], attributes[i*5+4]);
   }
   
   return "";
@@ -148,7 +148,7 @@ const xqp_string SAX2_AttributesLibXML2::getValue(const xqp_string qName) const
     if((!strncmp(strqName, attributes[i*5+1], prefix_len)) &&
       (strqName[prefix_len] == ':') &&
       (!strcmp(strqName+prefix_len+1, attributes[i*5+0])))
-      return xqpStringStore(attributes[i*5+3], attributes[i*5+4]);
+      return new xqpStringStore(attributes[i*5+3], attributes[i*5+4]);
   }
   
   return "";
