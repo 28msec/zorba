@@ -27,6 +27,7 @@
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/nodes/NodesImpl.h"
 #include "store/api/iterator.h"
+#include "util/properties.h"
 
 #include "types/typeops.h"
 
@@ -58,7 +59,10 @@ namespace zorba {
     }
     {
       std::stringstream lStream;
-      lStream << theId;
+      if (Properties::instance()->stableIteratorIds()) 
+        lStream << theId;
+      else
+        lStream << aIter;
       thePrinter.addAttribute("id", lStream.str());
     }
   }
