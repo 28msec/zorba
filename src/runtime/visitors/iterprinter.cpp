@@ -14,7 +14,7 @@ XMLIterPrinter::start() {}
 void
 XMLIterPrinter::stop() {}
   
-void XMLIterPrinter::startBeginVisit(const std::string& aName, intptr_t) {
+void XMLIterPrinter::startBeginVisit(const std::string& aName, int) {
   if (theOpenStart)
     theOStream << ">\n";
   printSpaces(theNameStack.size());
@@ -23,7 +23,7 @@ void XMLIterPrinter::startBeginVisit(const std::string& aName, intptr_t) {
   theOpenStart = true;
 }
 
-void XMLIterPrinter::endBeginVisit(intptr_t) {}
+void XMLIterPrinter::endBeginVisit(int) {}
 
 void XMLIterPrinter::addAttribute(const std::string& aName, const std::string& aValue)
 {
@@ -68,14 +68,14 @@ DOTIterPrinter::stop()
   theOStream << "}" << std::endl;
 }
   
-void DOTIterPrinter::startBeginVisit(const std::string& aName, intptr_t aAddr) 
+void DOTIterPrinter::startBeginVisit(const std::string& aName, int aAddr) 
 {
   printSpaces(theIndent);
   theOStream << aAddr << " [ label=\"" << aName;
   ++theIndent;
 }
 
-void DOTIterPrinter::endBeginVisit(intptr_t aAddr) 
+void DOTIterPrinter::endBeginVisit(int aAddr) 
 {
   --theIndent;
   printSpaces(theIndent);

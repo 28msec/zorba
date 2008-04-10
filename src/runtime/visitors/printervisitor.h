@@ -21,16 +21,18 @@ class PrinterVisitor : public PlanIterVisitor
 private:
   IterPrinter& thePrinter;
   PlanIterator* theIterator;
+  int      theId;
       
 public:
   PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter) 
     : thePrinter(aPrinter),
-      theIterator(aIter) {}
+      theIterator(aIter),
+      theId(0) {}
 
   void print();
       
 private:
-  void printCommons(const PlanIterator* aIter);
+  void printCommons(const PlanIterator* aIter, int theId);
       
 public:
   virtual ~PrinterVisitor() {}

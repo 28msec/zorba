@@ -34,9 +34,9 @@ namespace zorba {
 
 #define PRINTER_VISITOR_DEFINITION(class)  \
   void PrinterVisitor::beginVisit ( const class& a )  {  \
-    thePrinter.startBeginVisit(#class, (intptr_t) &a);  \
-    printCommons(  &a );  \
-    thePrinter.endBeginVisit( (intptr_t) &a); \
+    thePrinter.startBeginVisit(#class, ++theId);  \
+    printCommons(  &a, theId );  \
+    thePrinter.endBeginVisit( theId); \
   } \
   void PrinterVisitor::endVisit ( const class& ) { \
     thePrinter.startEndVisit(); \
@@ -50,7 +50,7 @@ namespace zorba {
     thePrinter.stop();
   }
 
-  void PrinterVisitor::printCommons(const PlanIterator* aIter) {
+  void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
     {
       std::stringstream lStream;
       lStream << aIter->loc;
@@ -58,15 +58,15 @@ namespace zorba {
     }
     {
       std::stringstream lStream;
-      lStream << aIter;
-      thePrinter.addAttribute("addr", lStream.str());
+      lStream << theId;
+      thePrinter.addAttribute("id", lStream.str());
     }
   }
 
   void PrinterVisitor::beginVisit ( const FnDataIterator& a) {
-    thePrinter.startBeginVisit("FnDataIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDataIterator", ++theId);
+    printCommons(  &a, theId );
+    thePrinter.endBeginVisit( theId);
   }
   void PrinterVisitor::endVisit ( const FnDataIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -74,9 +74,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnRootIterator& a ) {
-    thePrinter.startBeginVisit("FnRootIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnRootIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnRootIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -84,9 +84,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnNodeNameIterator& a ) {
-    thePrinter.startBeginVisit("FnNodeNameIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnNodeNameIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnNodeNameIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -94,9 +94,9 @@ namespace zorba {
   }
   
   void PrinterVisitor::beginVisit ( const FnNilledIterator& a ) {
-    thePrinter.startBeginVisit("FnNilledIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnNilledIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnNilledIterator& ) {
     thePrinter.startEndVisit();
@@ -104,9 +104,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnBaseUriIterator& a ) {
-    thePrinter.startBeginVisit("FnBaseUriIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnBaseUriIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   
   void PrinterVisitor::endVisit ( const FnBaseUriIterator& ) {
@@ -115,9 +115,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnDocumentUriIterator& a ) {
-    thePrinter.startBeginVisit("FnDocumentUriIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDocumentUriIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   
   void PrinterVisitor::endVisit ( const FnDocumentUriIterator& ) {
@@ -126,9 +126,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnErrorIterator& a ) {
-    thePrinter.startBeginVisit("FnErrorIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnErrorIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   
   void PrinterVisitor::endVisit ( const FnErrorIterator& ) {
@@ -137,9 +137,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnResolveUriIterator& a ) {
-    thePrinter.startBeginVisit("FnResolveUriIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnResolveUriIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   
   void PrinterVisitor::endVisit ( const FnResolveUriIterator& ) {
@@ -148,9 +148,9 @@ namespace zorba {
   }
   
   void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a ) {
-    thePrinter.startBeginVisit("UDFunctionCallIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("UDFunctionCallIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const UDFunctionCallIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -158,9 +158,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const StatelessExtFunctionCallIterator& a ) {
-    thePrinter.startBeginVisit("StatelessExtFunctionCallIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("StatelessExtFunctionCallIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const StatelessExtFunctionCallIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -168,9 +168,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnStringIterator& a ) {
-    thePrinter.startBeginVisit("FnStringIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnStringIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnStringIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -178,9 +178,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnLocalNameIterator& a ) {
-    thePrinter.startBeginVisit("FnLocalNameIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnLocalNameIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnLocalNameIterator&) {
     thePrinter.startEndVisit();
@@ -188,9 +188,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnNamespaceUriIterator& a ) {
-    thePrinter.startBeginVisit("FnNamespaceUriIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnNamespaceUriIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnNamespaceUriIterator&) {
     thePrinter.startEndVisit();
@@ -198,9 +198,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnLangIterator& a ) {
-    thePrinter.startBeginVisit("FnLangIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnLangIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnLangIterator&) {
     thePrinter.startEndVisit();
@@ -208,9 +208,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnCollectionIterator& a ) {
-    thePrinter.startBeginVisit("FnCollectionIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnCollectionIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnCollectionIterator&) {
     thePrinter.startEndVisit();
@@ -218,9 +218,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnBooleanIterator& a ) {
-    thePrinter.startBeginVisit("FnBooleanIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnBooleanIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnBooleanIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -228,9 +228,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const LogicIterator& a ) {
-    thePrinter.startBeginVisit("LogicIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("LogicIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const LogicIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -238,9 +238,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const CompareIterator& a ) {
-    thePrinter.startBeginVisit("CompareIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("CompareIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const CompareIterator& ) {
     thePrinter.startEndVisit();
@@ -248,9 +248,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ElementIterator& a) {
-    thePrinter.startBeginVisit("ElementIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ElementIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const ElementIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -258,9 +258,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ElementContentIterator& a ) {
-    thePrinter.startBeginVisit("ElementContentIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ElementContentIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const ElementContentIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -268,9 +268,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const AttributeIterator& a ) {
-    thePrinter.startBeginVisit("AttributeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("AttributeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const AttributeIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -278,9 +278,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const DocumentIterator& a ) {
-    thePrinter.startBeginVisit("DocumentIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("DocumentIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const DocumentIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -288,9 +288,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const DocumentContentIterator& a ) {
-    thePrinter.startBeginVisit("DocumentContentIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("DocumentContentIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const DocumentContentIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -298,9 +298,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const CommentIterator& a ) {
-    thePrinter.startBeginVisit("CommentIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("CommentIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const CommentIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -308,9 +308,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const PiIterator& a ) {
-    thePrinter.startBeginVisit("PiIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("PiIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const PiIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -318,10 +318,10 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const SingletonIterator& a) {
-    thePrinter.startBeginVisit("SingletonIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("SingletonIterator", ++theId);
     thePrinter.addAttribute("value", a.getValue()->show());
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const SingletonIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -329,9 +329,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const EmptyIterator& a ) {
-    thePrinter.startBeginVisit("EmptyIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("EmptyIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const EmptyIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -339,10 +339,10 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ForVarIterator& a ) {
-    thePrinter.startBeginVisit("ForVarIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("ForVarIterator", ++theId);
     thePrinter.addAttribute("varname", a.getVarName());
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const ForVarIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -350,10 +350,10 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const LetVarIterator& a ) {
-    thePrinter.startBeginVisit("LetVarIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("LetVarIterator", ++theId);
     thePrinter.addAttribute("varname", a.getVarName());
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const LetVarIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -361,10 +361,10 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const EnclosedIterator& a ) {
-    thePrinter.startBeginVisit("EnclosedIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("EnclosedIterator", ++theId);
     thePrinter.addAttribute("attr_cont", (a.getAttrContent() ? "true" : "false"));
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const EnclosedIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -372,9 +372,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const IfThenElseIterator& a ) {
-    thePrinter.startBeginVisit("IfThenElseIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("IfThenElseIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const IfThenElseIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -384,9 +384,9 @@ namespace zorba {
 
 
   void PrinterVisitor::beginVisit ( const NodeDistinctIterator& a ) {
-    thePrinter.startBeginVisit("NodeDistinctIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("NodeDistinctIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit ( const NodeDistinctIterator& /*a*/) {
@@ -395,9 +395,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const NodeSortIterator& a ) {
-    thePrinter.startBeginVisit("NodeSortIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("NodeSortIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit ( const NodeSortIterator& /*a*/) {
@@ -406,7 +406,7 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const KindTestIterator& a ) {
-    thePrinter.startBeginVisit("KindTestIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("KindTestIterator", ++theId);
     thePrinter.addAttribute("test kind", toString(a.getTestKind()));
     if (a.getQName() != 0)
       thePrinter.addAttribute("qname",a.getQName()->show());
@@ -421,8 +421,8 @@ namespace zorba {
       lStream << a.nilledAllowed();
       thePrinter.addAttribute("nill allowed",lStream.str());
     }
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const KindTestIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -430,13 +430,13 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const NameTestIterator& a ) {
-    thePrinter.startBeginVisit("NameTestIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("NameTestIterator", ++theId);
     if (a.getQName() != NULL)
       thePrinter.addAttribute("qname", a.getQName()->show());
     else
       thePrinter.addAttribute("qname", "*");
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const NameTestIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -444,9 +444,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const SelfAxisIterator& a ) {
-    thePrinter.startBeginVisit("SelfAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("SelfAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
 
   }
   void PrinterVisitor::endVisit ( const SelfAxisIterator& /*a*/) {
@@ -455,9 +455,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const AttributeAxisIterator& a ) {
-    thePrinter.startBeginVisit("AttributeAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("AttributeAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const AttributeAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -465,9 +465,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ParentAxisIterator& a ) {
-    thePrinter.startBeginVisit("ParentAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ParentAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const ParentAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -475,9 +475,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const AncestorAxisIterator& a ) {
-    thePrinter.startBeginVisit("AncestorAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("AncestorAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const AncestorAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -485,9 +485,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const AncestorSelfAxisIterator& a ) {
-    thePrinter.startBeginVisit("AncestorSelfAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("AncestorSelfAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const AncestorSelfAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -495,9 +495,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const RSiblingAxisIterator& a ) {
-    thePrinter.startBeginVisit("RSiblingAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("RSiblingAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const RSiblingAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -505,9 +505,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const LSiblingAxisIterator& a ) {
-    thePrinter.startBeginVisit("LSiblingAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("LSiblingAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const LSiblingAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -515,9 +515,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ChildAxisIterator& a ) {
-    thePrinter.startBeginVisit("ChildAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ChildAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const ChildAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -525,9 +525,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const DescendantAxisIterator& a ) {
-    thePrinter.startBeginVisit("DescendantAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("DescendantAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const DescendantAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -535,9 +535,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const DescendantSelfAxisIterator& a ) {
-    thePrinter.startBeginVisit("DescendantSelfAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("DescendantSelfAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const DescendantSelfAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -545,9 +545,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const PrecedingAxisIterator& a ) {
-    thePrinter.startBeginVisit("PrecedingAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("PrecedingAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const PrecedingAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -555,9 +555,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FollowingAxisIterator& a ) {
-    thePrinter.startBeginVisit("FollowingAxisIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FollowingAxisIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FollowingAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -565,9 +565,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const InstanceOfIterator& a ) {
-    thePrinter.startBeginVisit("InstanceOfIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("InstanceOfIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const InstanceOfIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -575,12 +575,12 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const TreatIterator& a ) {
-    thePrinter.startBeginVisit("TreatIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("TreatIterator", ++theId);
     if (a.check_prime)
       thePrinter.addAttribute("type", TypeOps::toString(*a.theTreatType));
     thePrinter.addAttribute("quant", TypeOps::decode_quantifier (a.theQuantifier));
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const TreatIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -588,9 +588,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const EitherNodesOrAtomicsIterator& a ) {
-    thePrinter.startBeginVisit("EitherNodesOrAtomicsIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("EitherNodesOrAtomicsIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const EitherNodesOrAtomicsIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -598,34 +598,34 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a ) {
-    thePrinter.startBeginVisit("NumArithIterator_AddOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NumArithIterator_AddOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const NumArithIterator<SubtractOperation>& a ) {
-    thePrinter.startBeginVisit("NumArithIterator_SubtractOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NumArithIterator_SubtractOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const NumArithIterator<MultiplyOperation>& a ) {
-    thePrinter.startBeginVisit("NumArithIterator_MultiplyOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NumArithIterator_MultiplyOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const NumArithIterator<DivideOperation>& a ) {
-    thePrinter.startBeginVisit("NumArithIterator_DivideOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NumArithIterator_DivideOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const NumArithIterator<IntegerDivideOperation>& a ) {
-    thePrinter.startBeginVisit("NumArithIterator_IntegerDivideOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NumArithIterator_IntegerDivideOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const NumArithIterator<ModOperation>& a ) {
-    thePrinter.startBeginVisit("NumArithIterator_ModOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NumArithIterator_ModOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const NumArithIterator<AddOperation>& /*a*/) {
     thePrinter.startEndVisit();
@@ -653,34 +653,34 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const GenericArithIterator<AddOperation>& a ) {
-    thePrinter.startBeginVisit("GenericArithIterator_AddOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("GenericArithIterator_AddOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const GenericArithIterator<SubtractOperation>& a ) {
-    thePrinter.startBeginVisit("GenericArithIterator_SubtractOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("GenericArithIterator_SubtractOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const GenericArithIterator<MultiplyOperation>& a ) {
-    thePrinter.startBeginVisit("GenericArithIterator_MultiplyOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("GenericArithIterator_MultiplyOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const GenericArithIterator<DivideOperation>& a ) {
-    thePrinter.startBeginVisit("GenericArithIterator_DivideOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("GenericArithIterator_DivideOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const GenericArithIterator<IntegerDivideOperation>& a ) {
-    thePrinter.startBeginVisit("GenericArithIterator_IntegerDivideOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("GenericArithIterator_IntegerDivideOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::beginVisit ( const GenericArithIterator<ModOperation>& a ) {
-    thePrinter.startBeginVisit("GenericArithIterator_ModOperation", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("GenericArithIterator_ModOperation", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const GenericArithIterator<AddOperation>& /*a*/) {
     thePrinter.startEndVisit();
@@ -708,9 +708,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const OpNumericUnaryIterator& a ) {
-    thePrinter.startBeginVisit("OpNumericUnaryIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("OpNumericUnaryIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const OpNumericUnaryIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -718,9 +718,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnAbsIterator& a ) {
-    thePrinter.startBeginVisit("FnAbsIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnAbsIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnAbsIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -729,9 +729,9 @@ namespace zorba {
 
   void PrinterVisitor::beginVisit( const FnCeilingIterator& a)
   {
-    thePrinter.startBeginVisit("FnCeilingIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnCeilingIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit( const FnCeilingIterator& )
@@ -742,9 +742,9 @@ namespace zorba {
 
   void PrinterVisitor::beginVisit( const FnFloorIterator& a )
   {
-    thePrinter.startBeginVisit("FnFloorIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnFloorIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit( const FnFloorIterator& )
@@ -755,9 +755,9 @@ namespace zorba {
 
   void PrinterVisitor::beginVisit( const FnRoundIterator& a)
   {
-    thePrinter.startBeginVisit("FnRoundIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnRoundIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit( const FnRoundIterator& )
@@ -768,9 +768,9 @@ namespace zorba {
 
   void PrinterVisitor::beginVisit( const FnRoundHalfToEvenIterator& a)
   {
-    thePrinter.startBeginVisit("FnRoundHalfToEvenIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnRoundHalfToEvenIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit( const FnRoundHalfToEvenIterator& )
@@ -780,9 +780,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnConcatIterator& a ) {
-    thePrinter.startBeginVisit("FnConcatIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnConcatIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnConcatIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -790,9 +790,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnEmptyIterator& a ) {
-    thePrinter.startBeginVisit("FnEmptyIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnEmptyIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnEmptyIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -800,9 +800,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnExistsIterator& a ) {
-    thePrinter.startBeginVisit("FnExistsIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnExistsIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnExistsIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -810,9 +810,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnIndexOfIterator& a ) {
-    thePrinter.startBeginVisit("FnIndexOfIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnIndexOfIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnIndexOfIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -820,9 +820,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnRemoveIterator& a ) {
-    thePrinter.startBeginVisit("FnRemoveIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnRemoveIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnRemoveIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -830,9 +830,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnReverseIterator& a ) {
-    thePrinter.startBeginVisit("FnReverseIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnReverseIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnReverseIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -840,9 +840,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const OpToIterator& a ) {
-    thePrinter.startBeginVisit("OpToIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("OpToIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit (const OpToIterator&) {
     thePrinter.startEndVisit();
@@ -850,9 +850,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnIdIterator& a ) {
-    thePrinter.startBeginVisit("FnIdIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnIdIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit (const FnIdIterator&) {
     thePrinter.startEndVisit();
@@ -860,9 +860,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnIdRefIterator& a ) {
-    thePrinter.startBeginVisit("FnIdRefIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnIdRefIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit (const FnIdRefIterator&) {
     thePrinter.startEndVisit();
@@ -870,9 +870,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnDistinctValuesIterator& a ) {
-    thePrinter.startBeginVisit("FnDistinctValuesIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDistinctValuesIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnDistinctValuesIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -880,9 +880,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnInsertBeforeIterator& a ) {
-    thePrinter.startBeginVisit("FnInsertBeforeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnInsertBeforeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnInsertBeforeIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -890,9 +890,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnSubsequenceIterator& a ) {
-    thePrinter.startBeginVisit("FnSubsequenceIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnSubsequenceIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnSubsequenceIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -900,9 +900,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnZeroOrOneIterator& a ) {
-    thePrinter.startBeginVisit("FnZeroOrOneIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnZeroOrOneIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnZeroOrOneIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -910,9 +910,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnOneOrMoreIterator& a ) {
-    thePrinter.startBeginVisit("FnOneOrMoreIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnOneOrMoreIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnOneOrMoreIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -920,9 +920,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnExactlyOneIterator& a ) {
-    thePrinter.startBeginVisit("FnExactlyOneIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnExactlyOneIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnExactlyOneIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -930,9 +930,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnCountIterator& a){
-    thePrinter.startBeginVisit("FnCountIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("FnCountIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit ( const FnCountIterator& ){
@@ -941,9 +941,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnAvgIterator& a){
-    thePrinter.startBeginVisit("FnAvgIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("FnAvgIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit ( const FnAvgIterator& ){
@@ -952,11 +952,11 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnMinMaxIterator& a){
-    thePrinter.startBeginVisit("FnMinMaxIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("FnMinMaxIterator", ++theId);
     thePrinter.addAttribute("type", 
         ((a.getType() == FnMinMaxIterator::MIN) != 0 ? std::string("min") : std::string("max")));
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit ( const FnMinMaxIterator& ){
@@ -965,9 +965,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnSumIterator& a){
-    thePrinter.startBeginVisit("FnSumIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("FnSumIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit ( const FnSumIterator& ){
@@ -976,9 +976,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnDocIterator& a ) {
-    thePrinter.startBeginVisit("FnDocIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDocIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnDocIterator& ) {
     thePrinter.startEndVisit();
@@ -986,9 +986,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnDocAvailableIterator& a ) {
-    thePrinter.startBeginVisit("FnDocAvailableIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDocAvailableIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnDocAvailableIterator& ) {
     thePrinter.startEndVisit();
@@ -998,9 +998,9 @@ namespace zorba {
   void 
   PrinterVisitor::beginVisit ( const HashSemiJoinIterator& a) 
   {
-    thePrinter.startBeginVisit("HashSemiJoinIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("HashSemiJoinIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void 
@@ -1013,9 +1013,9 @@ namespace zorba {
   void
   PrinterVisitor::beginVisit ( const SortSemiJoinIterator& a) 
   {
-    thePrinter.startBeginVisit("SortSemiJoinIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("SortSemiJoinIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void 
@@ -1026,9 +1026,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnTraceIterator& a ) {
-    thePrinter.startBeginVisit("FnTraceIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnTraceIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnTraceIterator& ) {
     thePrinter.startEndVisit();
@@ -1036,9 +1036,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ResolveQNameIterator& a ) {
-    thePrinter.startBeginVisit("ResolveQNameIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ResolveQNameIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const ResolveQNameIterator& ) {
@@ -1047,9 +1047,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const QNameIterator& a ) {
-    thePrinter.startBeginVisit("QNameIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("QNameIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const QNameIterator& ) {
@@ -1058,9 +1058,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const QNameEqualIterator& a ) {
-    thePrinter.startBeginVisit("QNameEqualIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("QNameEqualIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const QNameEqualIterator& ) {
@@ -1069,9 +1069,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const PrefixFromQNameIterator& a ) {
-    thePrinter.startBeginVisit("PrefixFromQNameIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("PrefixFromQNameIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const PrefixFromQNameIterator& ) {
@@ -1080,9 +1080,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const LocalNameFromQNameIterator& a ) {
-    thePrinter.startBeginVisit("LocalNameFromQNameIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("LocalNameFromQNameIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const LocalNameFromQNameIterator& ) {
@@ -1091,9 +1091,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const NamespaceUriFromQNameIterator& a ) {
-    thePrinter.startBeginVisit("NamespaceUriFromQNameIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NamespaceUriFromQNameIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const NamespaceUriFromQNameIterator& ) {
@@ -1102,9 +1102,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const NamespaceUriForPrefixlIterator& a ) {
-    thePrinter.startBeginVisit("NamespaceUriForPrefixlIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NamespaceUriForPrefixlIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const NamespaceUriForPrefixlIterator& ) {
@@ -1113,9 +1113,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const InScopePrefixesIterator& a ) {
-    thePrinter.startBeginVisit("InScopePrefixesIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("InScopePrefixesIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const InScopePrefixesIterator& ) {
@@ -1124,9 +1124,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const CodepointsToStringIterator& a ) {
-    thePrinter.startBeginVisit("CodepointsToStringIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("CodepointsToStringIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const CodepointsToStringIterator& ) {
     thePrinter.startEndVisit();
@@ -1134,9 +1134,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const StringToCodepointsIterator& a ) {
-    thePrinter.startBeginVisit("StringToCodepointsIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("StringToCodepointsIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const StringToCodepointsIterator& ) {
     thePrinter.startEndVisit();
@@ -1144,9 +1144,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const CompareStrIterator& a ) {
-    thePrinter.startBeginVisit("CompareStrIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("CompareStrIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const CompareStrIterator& ) {
     thePrinter.startEndVisit();
@@ -1154,9 +1154,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const CodepointEqualIterator& a ) {
-    thePrinter.startBeginVisit("CodepointEqualIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("CodepointEqualIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const CodepointEqualIterator& ) {
     thePrinter.startEndVisit();
@@ -1164,9 +1164,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ConcatStrIterator& a ) {
-    thePrinter.startBeginVisit("ConcatStrIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ConcatStrIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const ConcatStrIterator& ) {
     thePrinter.startEndVisit();
@@ -1174,9 +1174,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const StringJoinIterator& a ) {
-    thePrinter.startBeginVisit("StringJoinIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("StringJoinIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const StringJoinIterator& ) {
     thePrinter.startEndVisit();
@@ -1184,9 +1184,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const SubstringIterator& a ) {
-    thePrinter.startBeginVisit("SubstringIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("SubstringIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const SubstringIterator& ) {
     thePrinter.startEndVisit();
@@ -1194,9 +1194,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const StringLengthIterator& a ) {
-    thePrinter.startBeginVisit("StringLengthIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("StringLengthIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const StringLengthIterator& ) {
     thePrinter.startEndVisit();
@@ -1204,9 +1204,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const NormalizeSpaceIterator& a ) {
-    thePrinter.startBeginVisit("NormalizeSpaceIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NormalizeSpaceIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const NormalizeSpaceIterator& ) {
     thePrinter.startEndVisit();
@@ -1214,9 +1214,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const NormalizeUnicodeIterator& a ) {
-    thePrinter.startBeginVisit("NormalizeUnicodeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("NormalizeUnicodeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const NormalizeUnicodeIterator& ) {
     thePrinter.startEndVisit();
@@ -1224,9 +1224,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const UpperCaseIterator& a ) {
-    thePrinter.startBeginVisit("UpperCaseIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("UpperCaseIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const UpperCaseIterator& ) {
     thePrinter.startEndVisit();
@@ -1234,9 +1234,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const LowerCaseIterator& a ) {
-    thePrinter.startBeginVisit("LowerCaseIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("LowerCaseIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const LowerCaseIterator& ) {
     thePrinter.startEndVisit();
@@ -1244,9 +1244,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const TranslateIterator& a ) {
-    thePrinter.startBeginVisit("TranslateIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("TranslateIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const TranslateIterator& ) {
     thePrinter.startEndVisit();
@@ -1254,9 +1254,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const EncodeForUriIterator& a ) {
-    thePrinter.startBeginVisit("EncodeForUriIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("EncodeForUriIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const EncodeForUriIterator& ) {
     thePrinter.startEndVisit();
@@ -1264,9 +1264,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const IriToUriIterator& a ) {
-    thePrinter.startBeginVisit("IriToUriIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("IriToUriIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const IriToUriIterator& ) {
     thePrinter.startEndVisit();
@@ -1274,9 +1274,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const EscapeHtmlUriIterator& a ) {
-    thePrinter.startBeginVisit("EscapeHtmlUriIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("EscapeHtmlUriIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const EscapeHtmlUriIterator& ) {
     thePrinter.startEndVisit();
@@ -1284,9 +1284,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ContainsIterator& a ) {
-    thePrinter.startBeginVisit("ContainsIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ContainsIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const ContainsIterator& ) {
     thePrinter.startEndVisit();
@@ -1294,9 +1294,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const StartsWithIterator& a ) {
-    thePrinter.startBeginVisit("StartsWithIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("StartsWithIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const StartsWithIterator& ) {
     thePrinter.startEndVisit();
@@ -1304,9 +1304,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const EndsWithIterator& a ) {
-    thePrinter.startBeginVisit("EndsWithIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("EndsWithIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const EndsWithIterator& ) {
     thePrinter.startEndVisit();
@@ -1314,9 +1314,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const SubstringBeforeIterator& a ) {
-    thePrinter.startBeginVisit("SubstringBeforeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("SubstringBeforeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const SubstringBeforeIterator& ) {
     thePrinter.startEndVisit();
@@ -1324,9 +1324,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const SubstringAfterIterator& a ) {
-    thePrinter.startBeginVisit("SubstringAfterIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("SubstringAfterIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const SubstringAfterIterator& ) {
     thePrinter.startEndVisit();
@@ -1334,9 +1334,9 @@ namespace zorba {
   }
   
   void PrinterVisitor::beginVisit ( const FnMatchesIterator& a ) {
-    thePrinter.startBeginVisit("FnMatchesIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnMatchesIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnMatchesIterator& ) {
     thePrinter.startEndVisit();
@@ -1344,9 +1344,9 @@ namespace zorba {
   }
   
   void PrinterVisitor::beginVisit ( const FnReplaceIterator& a ) {
-    thePrinter.startBeginVisit("FnReplaceIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnReplaceIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnReplaceIterator& ) {
     thePrinter.startEndVisit();
@@ -1354,9 +1354,9 @@ namespace zorba {
   }
   
   void PrinterVisitor::beginVisit ( const FnTokenizeIterator& a ) {
-    thePrinter.startBeginVisit("FnTokenizeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnTokenizeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnTokenizeIterator& ) {
     thePrinter.startEndVisit();
@@ -1364,9 +1364,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const ZorNumGen& a ) {
-    thePrinter.startBeginVisit("ZorNumGen", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ZorNumGen", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const ZorNumGen& ) {
     thePrinter.startEndVisit();
@@ -1374,9 +1374,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const TextIterator& a )  {
-    thePrinter.startBeginVisit("TextIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("TextIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const TextIterator& ) {
     thePrinter.startEndVisit();
@@ -1384,9 +1384,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnDateTimeConstructorIterator& a )  {
-    thePrinter.startBeginVisit("FnDateTimeConstructorIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDateTimeConstructorIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnDateTimeConstructorIterator& ) {
     thePrinter.startEndVisit();
@@ -1394,9 +1394,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnYearsFromDurationIterator& a )  {
-    thePrinter.startBeginVisit("FnYearsFromDurationIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnYearsFromDurationIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FnYearsFromDurationIterator& ) {
     thePrinter.startEndVisit();
@@ -1404,9 +1404,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnMonthsFromDurationIterator& a )  {
-    thePrinter.startBeginVisit("FnMonthsFromDurationIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnMonthsFromDurationIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnMonthsFromDurationIterator& ) {
@@ -1415,9 +1415,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnDaysFromDurationIterator& a )  {
-    thePrinter.startBeginVisit("FnDaysFromDurationIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDaysFromDurationIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnDaysFromDurationIterator& ) {
@@ -1426,9 +1426,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnHoursFromDurationIterator& a )  {
-    thePrinter.startBeginVisit("FnHoursFromDurationIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnHoursFromDurationIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnHoursFromDurationIterator& ) {
@@ -1437,9 +1437,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnMinutesFromDurationIterator& a )  {
-    thePrinter.startBeginVisit("FnMinutesFromDurationIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnMinutesFromDurationIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnMinutesFromDurationIterator& ) {
@@ -1448,9 +1448,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnSecondsFromDurationIterator& a )  {
-    thePrinter.startBeginVisit("FnSecondsFromDurationIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnSecondsFromDurationIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnSecondsFromDurationIterator& ) {
@@ -1459,9 +1459,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnYearFromDatetimeIterator& a )  {
-    thePrinter.startBeginVisit("FnYearFromDatetimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnYearFromDatetimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnYearFromDatetimeIterator& ) {
@@ -1470,9 +1470,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnMonthFromDatetimeIterator& a )  {
-    thePrinter.startBeginVisit("FnMonthFromDatetimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnMonthFromDatetimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnMonthFromDatetimeIterator& ) {
@@ -1481,9 +1481,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnDayFromDatetimeIterator& a )  {
-    thePrinter.startBeginVisit("FnDayFromDatetimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDayFromDatetimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnDayFromDatetimeIterator& ) {
@@ -1492,9 +1492,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnHoursFromDatetimeIterator& a )  {
-    thePrinter.startBeginVisit("FnHoursFromDatetimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnHoursFromDatetimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnHoursFromDatetimeIterator& ) {
@@ -1503,9 +1503,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnMinutesFromDatetimeIterator& a )  {
-    thePrinter.startBeginVisit("FnMinutesFromDatetimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnMinutesFromDatetimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnMinutesFromDatetimeIterator& ) {
@@ -1514,9 +1514,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnSecondsFromDatetimeIterator& a )  {
-    thePrinter.startBeginVisit("FnSecondsFromDatetimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnSecondsFromDatetimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnSecondsFromDatetimeIterator& ) {
@@ -1525,9 +1525,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnTimezoneFromDatetimeIterator& a )  {
-    thePrinter.startBeginVisit("FnTimezoneFromDatetimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnTimezoneFromDatetimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnTimezoneFromDatetimeIterator& ) {
@@ -1536,9 +1536,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnYearFromDateIterator& a )  {
-    thePrinter.startBeginVisit("FnYearFromDateIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnYearFromDateIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnYearFromDateIterator& ) {
@@ -1547,9 +1547,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnMonthFromDateIterator& a )  {
-    thePrinter.startBeginVisit("FnMonthFromDateIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnMonthFromDateIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnMonthFromDateIterator& ) {
@@ -1558,9 +1558,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnDayFromDateIterator& a )  {
-    thePrinter.startBeginVisit("FnDayFromDateIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnDayFromDateIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnDayFromDateIterator& ) {
@@ -1569,9 +1569,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnTimezoneFromDateIterator& a )  {
-    thePrinter.startBeginVisit("FnTimezoneFromDateIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnTimezoneFromDateIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnTimezoneFromDateIterator& ) {
@@ -1580,9 +1580,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnHoursFromTimeIterator& a )  {
-    thePrinter.startBeginVisit("FnHoursFromTimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnHoursFromTimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnHoursFromTimeIterator& ) {
@@ -1591,9 +1591,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnMinutesFromTimeIterator& a )  {
-    thePrinter.startBeginVisit("FnMinutesFromTimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnMinutesFromTimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnMinutesFromTimeIterator& ) {
@@ -1602,9 +1602,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnSecondsFromTimeIterator& a )  {
-    thePrinter.startBeginVisit("FnSecondsFromTimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnSecondsFromTimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnSecondsFromTimeIterator& ) {
@@ -1613,9 +1613,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FnTimezoneFromTimeIterator& a )  {
-    thePrinter.startBeginVisit("FnTimezoneFromTimeIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FnTimezoneFromTimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit ( const FnTimezoneFromTimeIterator& ) {
@@ -1624,9 +1624,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {
-    thePrinter.startBeginVisit("FLWORIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("FLWORIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const FLWORIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -1634,9 +1634,9 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const TryCatchIterator& a ) {
-    thePrinter.startBeginVisit("TryCatchIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("TryCatchIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
   void PrinterVisitor::endVisit ( const TryCatchIterator& /*a*/) {
     thePrinter.startEndVisit();
@@ -1644,8 +1644,8 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisitFlworWhereClause(const  PlanIterator& a){
-    thePrinter.startBeginVisit("WhereClause", (intptr_t) &a);
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("WhereClause", ++theId);
+    thePrinter.endBeginVisit(theId);
     a.accept(*this);
   }
 
@@ -1655,7 +1655,7 @@ namespace zorba {
   }
 
   //void PrinterVisitor::beginVisitFlworVariables(){
-  //  thePrinter.startBeginVisit("FlworVariables", (intptr_t) &a);
+  //  thePrinter.startBeginVisit("FlworVariables", ++theId);
   //}
   //
   //void PrinterVisitor::endVisitFlworVariables(){
@@ -1669,12 +1669,12 @@ void PrinterVisitor::beginVisitFlworLetVariable(
       bool materialize,
       const xqpStringStore& varName)
 {
-  thePrinter.startBeginVisit("LetVariable", (intptr_t) &a);
+  thePrinter.startBeginVisit("LetVariable", ++theId);
 #ifndef NDEBUG
   thePrinter.addAttribute("name", varName.str());
 #endif
   thePrinter.addAttribute("materialize", materialize ? "true" : "false");
-  thePrinter.endBeginVisit( (intptr_t) &a);
+  thePrinter.endBeginVisit(theId);
   a.accept(*this);
 }
 
@@ -1689,11 +1689,11 @@ void PrinterVisitor::beginVisitFlworForVariable(
       const PlanIterator& a,
       const xqpStringStore& varName)
 {
-  thePrinter.startBeginVisit("ForVariable", (intptr_t) &a);
+  thePrinter.startBeginVisit("ForVariable", ++theId);
 #ifndef NDEBUG
   thePrinter.addAttribute("name", varName.str());
 #endif
-  thePrinter.endBeginVisit( (intptr_t) &a);
+  thePrinter.endBeginVisit(theId);
   a.accept(*this);
 }
 
@@ -1706,8 +1706,8 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
 
 
   void PrinterVisitor::beginVisitFlworOrderBy(const PlanIterator& a){
-    thePrinter.startBeginVisit("OrderByClause", (intptr_t) &a);
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("OrderByClause", ++theId);
+    thePrinter.endBeginVisit(theId);
     a.accept(*this);
   }    
 
@@ -1717,8 +1717,8 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisitFlworReturn(const PlanIterator& a){
-    thePrinter.startBeginVisit("ReturnClause", (intptr_t) &a);
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("ReturnClause", ++theId);
+    thePrinter.endBeginVisit(theId);
     a.accept(*this);
   }
 
@@ -1728,12 +1728,12 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const CastIterator& a) {
-    thePrinter.startBeginVisit("CastIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("CastIterator", ++theId);
     std::ostringstream lStream;
     TypeOps::serialize(lStream, *a.theCastType);
     thePrinter.addAttribute("type", lStream.str());
-    printCommons(  &a );
-    thePrinter.endBeginVisit((intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const CastIterator&) {
@@ -1742,9 +1742,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const NameCastIterator& a) {
-    thePrinter.startBeginVisit("NameCastIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("NameCastIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const NameCastIterator&) {
@@ -1753,12 +1753,12 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const PromoteIterator& a) {
-    thePrinter.startBeginVisit("PromoteIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("PromoteIterator", ++theId);
     std::ostringstream lStream;
     TypeOps::serialize(lStream, *a.thePromoteType);
     thePrinter.addAttribute("type", lStream.str());
-    printCommons(  &a );
-    thePrinter.endBeginVisit((intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const PromoteIterator&) {
@@ -1767,12 +1767,12 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const CastableIterator& a) {
-    thePrinter.startBeginVisit("CastableIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("CastableIterator", ++theId);
     std::ostringstream lStream;
     TypeOps::serialize(lStream, *a.theCastType);
     thePrinter.addAttribute("type", lStream.str());
-    printCommons(  &a );
-    thePrinter.endBeginVisit((intptr_t) &a);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const CastableIterator&) {
@@ -1781,9 +1781,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const CtxVariableIterator& a) {
-    thePrinter.startBeginVisit("CtxVariableIterator", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
+    thePrinter.startBeginVisit("CtxVariableIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
   }
 
   void PrinterVisitor::endVisit(const CtxVariableIterator&) {
@@ -1792,9 +1792,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const OpIsSameNodeIterator& a) {
-    thePrinter.startBeginVisit("OpIsSameNodeIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("OpIsSameNodeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const OpIsSameNodeIterator&) {
@@ -1803,9 +1803,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const OpNodeBeforeIterator& a) {
-    thePrinter.startBeginVisit("OpNodeBeforeIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("OpNodeBeforeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const OpNodeBeforeIterator&) {
@@ -1814,9 +1814,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const OpNodeAfterIterator& a) {
-    thePrinter.startBeginVisit("OpNodeAfterIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("OpNodeAfterIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const OpNodeAfterIterator&) {
@@ -1825,9 +1825,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const FnCurrentDateTimeIterator& a) {
-    thePrinter.startBeginVisit("FnCurrentDateTimeIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("FnCurrentDateTimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const FnCurrentDateTimeIterator&) {
@@ -1836,9 +1836,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const FnCurrentDateIterator& a) {
-    thePrinter.startBeginVisit("FnCurrentDateIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("FnCurrentDateIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const FnCurrentDateIterator&) {
@@ -1847,9 +1847,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const FnCurrentTimeIterator& a) {
-    thePrinter.startBeginVisit("FnCurrentTimeIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("FnCurrentTimeIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const FnCurrentTimeIterator&) {
@@ -1858,9 +1858,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const FnImplicitTimezoneIterator& a) {
-    thePrinter.startBeginVisit("FnImplicitTimezoneIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("FnImplicitTimezoneIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const FnImplicitTimezoneIterator&) {
@@ -1869,9 +1869,9 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::beginVisit(const FnDefaultCollationIterator& a) {
-    thePrinter.startBeginVisit("FnDefaultCollationIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
+    thePrinter.startBeginVisit("FnDefaultCollationIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(++theId);
   }
 
   void PrinterVisitor::endVisit(const FnDefaultCollationIterator&) {

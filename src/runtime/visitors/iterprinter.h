@@ -25,8 +25,8 @@ namespace zorba {
       virtual void start() = 0;
       virtual void stop() = 0;
 
-      virtual void startBeginVisit(const std::string& aName, intptr_t aAddr) = 0;
-      virtual void endBeginVisit(intptr_t aAddr) = 0;
+      virtual void startBeginVisit(const std::string& aName, int aAddr) = 0;
+      virtual void endBeginVisit(int aAddr) = 0;
 
       virtual void addAttribute(const std::string& aName, const std::string& aValue) = 0;
 
@@ -53,8 +53,8 @@ namespace zorba {
       virtual void start();
       virtual void stop();
 
-      virtual void startBeginVisit(const std::string& aName, intptr_t aAddr);
-      virtual void endBeginVisit(intptr_t aAddr);
+      virtual void startBeginVisit(const std::string& aName, int aAddr);
+      virtual void endBeginVisit(int aAddr);
 
       virtual void addAttribute(const std::string& aName, const std::string& aValue);
 
@@ -67,7 +67,7 @@ namespace zorba {
    */
   class DOTIterPrinter : public IterPrinter {
     private:
-      std::stack<intptr_t> theNameStack;
+      std::stack<int> theNameStack;
       uint32_t theIndent;
       
     public:
@@ -77,8 +77,8 @@ namespace zorba {
       virtual void start();
       virtual void stop();
 
-      virtual void startBeginVisit(const std::string& aName, intptr_t aAddr);
-      virtual void endBeginVisit(intptr_t aAddr);
+      virtual void startBeginVisit(const std::string& aName, int aAddr);
+      virtual void endBeginVisit(int aAddr);
 
       virtual void addAttribute(const std::string& aName, const std::string& aValue);
 
