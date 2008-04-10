@@ -3831,7 +3831,9 @@ void *begin_visit(const TypeswitchExpr& v)
     defret = pop_nodestack ();
     if (! defvar_name.empty ()) {
       pop_scope ();
+      bool lUpdating = defret->isUpdating();
       defret = &*wrap_in_let_flwor (&*sv, defvar, defret);
+      defret->setUpdating(lUpdating);
     }
   }
 
@@ -3851,16 +3853,26 @@ void *begin_visit(const TypeswitchExpr& v)
     xqtref_t type = pop_tstack ();
     if (! name.empty ()) {
       pop_scope ();
-      nodestack.push (&*wrap_in_let_flwor (new cast_expr (loc, &*sv, type), var, pop_nodestack ()));
+      expr_t lExpr = pop_nodestack();
+      expr_t lFlwor = wrap_in_let_flwor (new cast_expr (loc, &*sv, type), var, lExpr);
+      lFlwor->setUpdating(lExpr->isUpdating());
+      nodestack.push (lFlwor);
     }
+    expr_t lThen = pop_nodestack();
+    bool lUpdating = lThen->isUpdating() || defret->isUpdating();
     defret = new if_expr (e_p->get_location (),
                           new instanceof_expr (loc, &*sv, type),
-                          pop_nodestack (), defret);
+                          lThen, defret);
+    defret->setUpdating(lUpdating);
   }
 
   {
     v.get_switch_expr ()->accept (*this);
     expr_t se = pop_nodestack ();
+    if (se->isUpdating())
+    {
+      ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+    }
     nodestack.push (&*wrap_in_let_flwor (se, sv, defret));
   }
 
