@@ -31,8 +31,8 @@ class fn_lang : public function {
 class fn_collection : public function {
   public:
     fn_collection(const signature&);
-    
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
 };
 
 }

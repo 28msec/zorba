@@ -381,6 +381,7 @@ public:
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   virtual bool isSource() const { return true; }
+  bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
 };
 
 
