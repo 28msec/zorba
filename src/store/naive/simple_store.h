@@ -7,6 +7,8 @@
 #include "store/api/store.h"
 #include "store/util/pointer_hashmap_string.h"
 #include "store/util/mutex.h"
+#include "store/api/collection.h"
+#include "store/naive/node_items.h"
 
 
 namespace zorba { 

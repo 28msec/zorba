@@ -13,7 +13,7 @@
 
 namespace zorba { namespace store {
 
-struct CopyMode;
+class CopyMode;
 
 extern ConstrNodeVector dummyVector;
 

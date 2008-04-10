@@ -12,7 +12,7 @@
 
 namespace zorba { namespace store {
 
-struct CopyMode;
+class CopyMode;
 class PUL;
 
 typedef StringPool UriPool;

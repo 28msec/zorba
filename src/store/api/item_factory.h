@@ -13,7 +13,7 @@
 
 namespace zorba { namespace store {
 
-struct CopyMode;
+class CopyMode;
 class PUL;
 
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;

@@ -6,7 +6,7 @@
 
 namespace zorba { namespace store {
 
-struct CopyMode
+class CopyMode
 {
 public:
   bool  theAssignIds;
