@@ -200,7 +200,7 @@ public:
     
   ~FLWORIterator();
 
-  virtual bool isUpdateIterator() const { return theIsUpdating; }
+  virtual bool isUpdating() const { return theIsUpdating; }
   void openImpl ( PlanState& planState, uint32_t& offset );
   store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;

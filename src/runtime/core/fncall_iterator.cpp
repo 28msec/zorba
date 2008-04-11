@@ -56,6 +56,11 @@ void UDFunctionCallIteratorState::resetChildIters()
   theChildIterators.clear();
 }
 
+bool UDFunctionCallIterator::isUpdating() const 
+{ 
+  return theUDF->isUpdating(); 
+}
+
 void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::openImpl(planState, offset);
@@ -147,10 +152,11 @@ void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 
 StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
-    const StatelessExternalFunction *function)
+    const StatelessExternalFunction *function,
+    bool aIsUpdating)
   : NaryBaseIterator<StatelessExtFunctionCallIterator, 
                      StatelessExtFunctionCallIteratorState>(loc, args),
-    m_function(function) { }
+    m_function(function), theIsUpdating(aIsUpdating) { }
 
 void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
@@ -177,6 +183,18 @@ store::Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState) c
   state->m_result = m_function->evaluate(state->m_extArgs);
   while (state->m_result->next(lOutsideItem)) {
     lSequenceItem = Unmarshaller::getInternalItem(lOutsideItem);
+    if (theIsUpdating)
+    {
+      if (!lSequenceItem->isPul())
+      {
+        ZORBA_ERROR_LOC(ZorbaError::XUDY0019, loc);
+      }
+    } else {
+      if (lSequenceItem->isPul())
+      {
+        ZORBA_ERROR_LOC(ZorbaError::XUDY0018, loc); 
+      }
+    }
     STACK_PUSH(lSequenceItem, state);
   }
 

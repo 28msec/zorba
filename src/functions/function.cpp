@@ -28,8 +28,17 @@ void function::compute_annotation (AnnotationHolder *, std::vector<AnnotationHol
 }
 
 
-user_function::user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body)
-  : function(_sig), m_loc(loc), m_expr_body(expr_body) { }
+user_function::user_function( 
+  const QueryLoc& loc, 
+  const signature& _sig, 
+  expr_t expr_body, 
+  bool aIsUpdating
+)
+: function(_sig), 
+  m_loc(loc), 
+  m_expr_body(expr_body), 
+  theUpdateType((aIsUpdating ? UPDATE_EXPR : SIMPLE_EXPR))
+  { }
 
 user_function::~user_function() { }
 

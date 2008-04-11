@@ -8,8 +8,6 @@
 namespace zorba {
 
 class AnnotationHolder {
-  private:
-    expr_update_t theUpdateType;
   public:
     AnnotationHolder() : theUpdateType(SIMPLE_EXPR) {}
     virtual ~AnnotationHolder() { }
@@ -24,6 +22,7 @@ class AnnotationHolder {
   protected:
     typedef std::map<Annotation::key_t, Annotation::value_ref_t> annotations_t;
     annotations_t m_annotations;
+    expr_update_t theUpdateType;
 };
 
 }

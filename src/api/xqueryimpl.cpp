@@ -241,7 +241,7 @@ namespace zorba {
   XQueryImpl::isUpdateQuery() const
   { 
     checkClosed();
-    return thePlan->isUpdateIterator();
+    return thePlan->isUpdating();
   }
 
   PlanWrapper_t
@@ -286,19 +286,23 @@ namespace zorba {
       lPlan->open();
       store::Item_t pul = lPlan->next();
 
-      try
+      // updating expression might not return a pul because of vacuous expressions
+      if (pul != 0)
       {
-        if (!pul->isPul())
-          ZORBA_ERROR_DESC(ZorbaError::XQP0019_INTERNAL_ERROR,
-                           "Query does not return a pending update list");
-      }
-      catch (error::ZorbaError &e)
-      {
-        ZorbaImpl::notifyError(theErrorHandler, e);
-      }
+        try
+        {
+          if (!pul->isPul())
+            ZORBA_ERROR_DESC(ZorbaError::XQP0019_INTERNAL_ERROR,
+                             "Query does not return a pending update list");
+        }
+        catch (error::ZorbaError &e)
+        {
+          ZorbaImpl::notifyError(theErrorHandler, e);
+        }
 
-      pul->applyUpdates();
-      //pul->serializeUpdates(lSerializer, os);
+        pul->applyUpdates();
+        //pul->serializeUpdates(lSerializer, os);
+      }
     }
     catch (error::ZorbaError& e)
     {

@@ -72,11 +72,12 @@ public:
   virtual bool isSource() const { return false; }
 
   virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
+  bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 };
 
 class user_function : public function {
   public:
-    user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body);
+    user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body, bool aIsUpdating);
     virtual ~user_function();
 
     const QueryLoc& get_location() const;
@@ -95,6 +96,8 @@ class user_function : public function {
 
     bool requires_dyn_ctx () const;
 
+    virtual expr_update_t getUpdateType() const { return theUpdateType; }
+
   private:
     QueryLoc m_loc;
     expr_t m_expr_body;
@@ -102,6 +105,7 @@ class user_function : public function {
     mutable PlanIter_t m_plan;
     mutable std::vector<ref_iter_t> m_param_iters;
     mutable int32_t m_state_size;
+    expr_update_t theUpdateType;
 };
 
 class external_function : public function {

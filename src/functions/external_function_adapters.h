@@ -9,13 +9,19 @@ namespace zorba {
 
 class stateless_external_function_adapter : public external_function {
   public:
-    stateless_external_function_adapter(const signature& sig, StatelessExternalFunction *function);
+    stateless_external_function_adapter(
+      const signature& sig, 
+      StatelessExternalFunction *function,
+      bool aIsUpdating);
     ~stateless_external_function_adapter();
 
     virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
+    virtual expr_update_t getUpdateType() const { return theUpdateType; }
+
   private:
     StatelessExternalFunction *m_function;
+    expr_update_t theUpdateType;
 };
 
 } /* namespace zorba */

@@ -58,7 +58,7 @@ public:
                                                                         
   virtual ~FnConcatIterator() { }                                               
 
-  virtual bool isUpdateIterator() const { return theIsUpdating; }
+  virtual bool isUpdating() const { return theIsUpdating; }
   store::Item_t nextImpl(PlanState& aPlanState) const;
 
   virtual void accept(PlanIterVisitor& v) const;

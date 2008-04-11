@@ -1649,10 +1649,19 @@ expr_t wrap_in_globalvar_flwor(expr_t e)
 void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  switch(v.get_type()) {
+  ParseConstants::function_type_t lFuncType = v.get_type();
+  switch(lFuncType) {
     case ParseConstants::fn_read:
+    case ParseConstants::fn_update:
       {
         expr_t body = pop_nodestack ();
+        if (
+           (lFuncType == ParseConstants::fn_read && body->isUpdating())
+        || (lFuncType == ParseConstants::fn_update && body->getUpdateType() == SIMPLE_EXPR)
+        )
+        {
+          ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+        }
         if (v.get_return_type () != NULL) {
           xqtref_t rt = pop_tstack ();
           // Perhaps promote_expr should handle user-defined types too.
@@ -2148,12 +2157,22 @@ void *begin_visit(const VFO_DeclList& v)
             StatelessExternalFunction *ef = sctx_p->lookup_stateless_external_function(
               n->get_name()->get_prefix(), n->get_name()->get_localname());
             ZORBA_ASSERT(ef != NULL);
-            sctx_p->bind_fn(qname, new stateless_external_function_adapter(sig, ef), nargs);
+            sctx_p->bind_fn(qname, new stateless_external_function_adapter(sig, ef, false), nargs);
           }
           break;
-
+        case ParseConstants::fn_extern_update:
+        {
+          StatelessExternalFunction *ef = sctx_p->lookup_stateless_external_function(
+            n->get_name()->get_prefix(), n->get_name()->get_localname());
+          ZORBA_ASSERT(ef != NULL);
+          stateless_external_function_adapter* f = new stateless_external_function_adapter(sig, ef, true);
+          sctx_p->bind_fn(qname, f, nargs);
+        }
         case ParseConstants::fn_read:
-          sctx_p->bind_fn (qname, new user_function (n->get_location(), sig, NULL), nargs);
+          sctx_p->bind_fn (qname, new user_function (n->get_location(), sig, NULL, false), nargs);
+          break;
+        case ParseConstants::fn_update:
+          sctx_p->bind_fn (qname, new user_function (n->get_location(), sig, NULL, true), nargs);
           break;
         default:
           ZORBA_ASSERT(false);
