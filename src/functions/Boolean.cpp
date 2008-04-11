@@ -10,6 +10,8 @@
 #include "runtime/core/item_iterator.h"
 #include "store/api/item_factory.h"
 #include "types/typeops.h"
+#include "compiler/semantic_annotations/annotation_keys.h"
+#include "compiler/semantic_annotations/tsv_annotation.h"
 
 namespace zorba
 {
@@ -23,7 +25,19 @@ namespace zorba
   {
     return this->createIterator(loc, argv);
   }
+  
 
+  void GenericOpComparison::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const
+  {
+    switch (k) {
+    case AnnotationKey::IGNORES_SORTED_NODES:
+    case AnnotationKey::IGNORES_DUP_NODES:
+      for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
+        TSVAnnotationValue::update_annotation ((*i), k, TSVAnnotationValue::TRUE_VAL);
+      break;
+    default: break;
+    }
+  }
 
   /* end class GenericOpComparison */
   

@@ -14,13 +14,14 @@ namespace zorba
 {
   class GenericOpComparison : public function
   {
-    public:
-      GenericOpComparison ( const signature&);
-
-      virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-      
-    protected:
-      virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
+  public:
+    GenericOpComparison ( const signature&);
+    
+    virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
+    
+  protected:
+    virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
   };
 
   class ValueOpComparison : public GenericOpComparison {
@@ -218,3 +219,9 @@ namespace zorba
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
