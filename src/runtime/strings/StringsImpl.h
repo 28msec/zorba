@@ -54,7 +54,7 @@ public:
 class StringToCodepointsState : public PlanIteratorState
 {
 private:
-  std::vector<uint32_t> resVector;
+  checked_vector<uint32_t> resVector;
   uint32_t iter;
 public:
   void init(PlanState&);
@@ -62,7 +62,7 @@ public:
 
   // TODO for performance reasons we should inline these functions or provide direct access to the members
   void setIterator(uint32_t);
-  void setVector(std::vector<uint32_t> vect);
+  void setVector(checked_vector<uint32_t> vect);
   
   uint32_t getItem(uint32_t iter);
   uint32_t getVectSize();

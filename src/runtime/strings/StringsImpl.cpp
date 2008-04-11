@@ -151,7 +151,7 @@ StringToCodepointsState::getIterator() {
 }
 
 void
-StringToCodepointsState::setVector(std::vector<uint32_t> vect)
+StringToCodepointsState::setVector(checked_vector<uint32_t> vect)
 {
   resVector = vect;
 }
@@ -314,8 +314,8 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
   std::stringstream lResStream;
   xqpStringStore_t tmp;
 
-  std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator end  = theChildren.end();
+  checked_vector<PlanIter_t>::const_iterator iter = theChildren.begin();
+  checked_vector<PlanIter_t>::const_iterator end  = theChildren.end();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

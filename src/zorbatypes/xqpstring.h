@@ -6,11 +6,11 @@
 
 #include <stdlib.h>
 #include <iostream>
-#include <vector>
 #include <map>
 
 #include "zorbatypes/zorbatypes_decl.h"
 #include "util/rchandle.h"
+#include "util/checked_vector.h"
 
 namespace zorba {
 
@@ -167,7 +167,7 @@ public:
   UnicodeString
   getUnicodeString() const;
 
-  std::vector<uint32_t>
+  checked_vector<uint32_t>
   getCodepoints() const;
 };
 
@@ -396,7 +396,7 @@ public:
       return theStrStore->getUnicodeString();
     }
 
-    std::vector<uint32_t>
+    checked_vector<uint32_t>
     getCodepoints() const
     {
       return theStrStore->getCodepoints();

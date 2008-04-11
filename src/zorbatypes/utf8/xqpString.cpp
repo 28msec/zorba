@@ -827,9 +827,9 @@ UnicodeString xqpStringStore::getUnicodeString() const
 /*******************************************************************************
 
 ********************************************************************************/
-std::vector<uint32_t> xqpStringStore::getCodepoints() const
+checked_vector<uint32_t> xqpStringStore::getCodepoints() const
 {
-  std::vector<uint32_t> tt;
+  checked_vector<uint32_t> tt;
   uint16_t vLength;
   
   vLength = numChars() + 1;
