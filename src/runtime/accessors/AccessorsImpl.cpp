@@ -152,6 +152,8 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
+  inNode = consumeNext(theChildren[0].getp(), planState);
+
   if (inNode != NULL)
   {
     if (inNode->isNode()) {
