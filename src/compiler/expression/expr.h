@@ -118,6 +118,15 @@ public:
 protected:
   QueryLoc loc;
 
+  struct {
+    struct {
+      bool valid;
+      xqtref_t t;
+      static_context *sctx;
+    } type;
+  } cache;
+  void invalidate () { cache.type.valid = false; }
+  virtual bool cache_compliant () { return false; }
 
 protected:
   virtual expr_iterator_data *make_iter ();
@@ -139,6 +148,7 @@ public:
   virtual std::string toString () const;
 
   virtual xqtref_t return_type(static_context *sctx);
+  virtual xqtref_t return_type_impl(static_context *sctx);
 
   expr_t clone();
   virtual expr_t clone(substitution_t& substitution);
@@ -234,7 +244,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual expr_t clone(substitution_t& substitution);
-  virtual xqtref_t return_type (static_context *);
+  virtual xqtref_t return_type_impl (static_context *);
 
   void set_forlet_clause(forlet_clause *flclause) { m_forlet_clause = flclause; }
   forlet_clause *get_forlet_clause() { return m_forlet_clause; }
@@ -413,7 +423,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual expr_t clone(substitution_t& substitution);
-  xqtref_t return_type (static_context *sctx);
+  xqtref_t return_type_impl (static_context *sctx);
 };
 
 class catch_clause : public SimpleRCObject {
@@ -513,8 +523,9 @@ protected:
   xqtref_t target_type;
   
 public:
-  expr_t get_input() { return input_expr_h; }
-  void set_input(expr_t input) { input_expr_h = input; }
+  bool cache_compliant () { return true; }
+  expr_t get_input() { invalidate (); return input_expr_h; }
+  void set_input(expr_t input) { invalidate (); input_expr_h = input; }
   
   xqtref_t get_target_type() const;
   void set_target_type(xqtref_t target);
@@ -524,7 +535,7 @@ class cast_base_expr : public cast_or_castable_base_expr {
 public:
 
   cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
-  xqtref_t return_type (static_context *sctx);
+  xqtref_t return_type_impl (static_context *sctx);
 };
 
 class promote_expr : public cast_base_expr {
@@ -543,7 +554,7 @@ class castable_base_expr : public cast_or_castable_base_expr {
 public:
   castable_base_expr (const QueryLoc&, expr_t, xqtref_t);
 
-  xqtref_t return_type (static_context *sctx);
+  xqtref_t return_type_impl (static_context *sctx);
 };
 
 /*______________________________________________________________________
@@ -599,7 +610,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
-  xqtref_t return_type (static_context *sctx);  
+  xqtref_t return_type_impl (static_context *sctx);  
 };
 
 
@@ -768,21 +779,23 @@ public:
 
 
 public:
-  expr_t get_cond_expr() const { return cond_expr_h; }
-  void set_cond_expr(expr_t e_h) { cond_expr_h = e_h; }
+  bool cache_compliant () { return true; }
+  
+  expr_t get_cond_expr() { invalidate (); return cond_expr_h; }
+  void set_cond_expr(expr_t e_h) { invalidate (); cond_expr_h = e_h; }
 
-  expr_t get_then_expr() const { return then_expr_h; }
-  void set_then_expr(expr_t e_h) { then_expr_h = e_h; }
+  expr_t get_then_expr() { invalidate (); return then_expr_h; }
+  void set_then_expr(expr_t e_h) { invalidate (); then_expr_h = e_h; }
 
-  expr_t get_else_expr() const { return else_expr_h; }
-  void set_else_expr(expr_t e_h) { else_expr_h = e_h; }
+  expr_t get_else_expr() { invalidate (); return else_expr_h; }
+  void set_else_expr(expr_t e_h) { invalidate (); else_expr_h = e_h; }
 
 public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  xqtref_t return_type (static_context *sctx);
+  xqtref_t return_type_impl (static_context *sctx);
 };
 
 class signature;
@@ -797,7 +810,7 @@ protected:
   std::auto_ptr<signature> sig;
 
 public:
-  function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type);
+  function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type_impl);
 
   store::Item_t get_name () const { return name; }
   expr_t get_body () { return body; }
@@ -854,23 +867,25 @@ public:
 
 
 public:
+  bool cache_compliant () { return true; }
+
   expr_iterator_data *make_iter ();
   
-  void add(expr_t e_h) { assert (e_h != NULL); argv.push_back(e_h); }
+  void add(expr_t e_h) { invalidate (); assert (e_h != NULL); argv.push_back(e_h); }
 
   uint32_t size() const { return argv.size(); }
 
-  expr_t& operator[](int i) { return argv[i]; }
+  expr_t& operator[](int i) { invalidate (); return argv[i]; }
   const expr_t& operator[](int i) const { return argv[i]; }
 
   std::vector<expr_t>::const_iterator begin() const { return argv.begin(); }
   std::vector<expr_t>::const_iterator end() const { return argv.end(); }
-  std::vector<expr_t>::iterator begin() { return argv.begin(); }
-  std::vector<expr_t>::iterator end() { return argv.end(); }
+  std::vector<expr_t>::iterator begin() { invalidate (); return argv.begin(); }
+  std::vector<expr_t>::iterator end() { invalidate (); return argv.end(); }
 
 public:
   const function* get_func() const { return func; }
-  void set_func (const function *f) { func = f; }
+  void set_func (const function *f) { invalidate (); func = f; }
   const signature &get_signature () const;
   store::Item_t get_fname () const;
 
@@ -878,7 +893,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual xqtref_t return_type(static_context *sctx);
+  virtual xqtref_t return_type_impl(static_context *sctx);
 };
 
 
@@ -1067,7 +1082,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  xqtref_t return_type(static_context *sctx);
+  xqtref_t return_type_impl(static_context *sctx);
 };
 
 
@@ -1120,7 +1135,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  xqtref_t return_type(static_context *sctx);
+  xqtref_t return_type_impl(static_context *sctx);
 };
 
 
@@ -1180,7 +1195,7 @@ public:
 
   store::StoreConsts::NodeKind getNodeKind() const;
 
-  xqtref_t return_type(static_context *sctx);
+  xqtref_t return_type_impl(static_context *sctx);
 };
 
 
@@ -1228,7 +1243,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
-  virtual xqtref_t return_type(static_context *sctx);
+  virtual xqtref_t return_type_impl(static_context *sctx);
 };
 
 
@@ -1269,7 +1284,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual xqtref_t return_type(static_context *sctx);
+  virtual xqtref_t return_type_impl(static_context *sctx);
 };
 
 
@@ -1318,7 +1333,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  xqtref_t return_type (static_context *);
+  xqtref_t return_type_impl (static_context *);
 };
 
 
@@ -1348,7 +1363,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual xqtref_t return_type(static_context *sctx);
+  virtual xqtref_t return_type_impl(static_context *sctx);
 
 };
 
@@ -1395,7 +1410,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual xqtref_t return_type(static_context *sctx);
+  virtual xqtref_t return_type_impl(static_context *sctx);
 
 };
 
@@ -1433,7 +1448,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual xqtref_t return_type(static_context *sctx);
+  virtual xqtref_t return_type_impl(static_context *sctx);
 };
 
 

@@ -50,7 +50,7 @@ namespace zorba {
 #define ITER( m )                                                \
   do {                                                           \
     v.state = __LINE__; v.i = reinterpret_cast<expr_t *> (&(m)); \
-    if (m != NULL) return;                                       \
+    if (m != NULL) { invalidate (); return; }                    \
   case __LINE__:; } while (0)
 #define ITER_FOR_EACH( iter, begin, end, expr )                      \
   for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))  {          \
@@ -181,6 +181,7 @@ expr::expr(
 :
   loc(_loc)
 {
+  invalidate ();
 }
 
 expr::~expr() { }
@@ -203,6 +204,7 @@ string expr::toString () const {
   }
 
   expr_iterator expr::expr_begin() {
+    invalidate ();
     expr_iterator_data *iter_data = make_iter ();
     iter_data->next ();
     return expr_iterator (iter_data);
@@ -226,7 +228,21 @@ string expr::toString () const {
     return NULL; // Make the compiler happy
   }
 
-  xqtref_t expr::return_type(static_context *sctx)
+  xqtref_t expr::return_type(static_context *sctx) {
+    bool cc = cache_compliant ();
+    if (! cc)
+      return return_type_impl (sctx);
+    if (! cache.type.valid
+        || (cache.type.sctx != sctx && ! TypeOps::is_subtype (*cache.type.t, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE)))
+    {
+      cache.type.t = return_type_impl (sctx);
+      cache.type.sctx = sctx;
+      cache.type.valid = true;
+    }
+    return cache.type.t;
+  }
+
+  xqtref_t expr::return_type_impl(static_context *sctx)
   {
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }
@@ -384,7 +400,7 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
   return flwor_copy;
 }
 
-  xqtref_t flwor_expr::return_type (static_context *sctx) {
+  xqtref_t flwor_expr::return_type_impl (static_context *sctx) {
     // TODO: quant multiplication
     return sctx->get_typemanager ()->create_type (*retval_h->return_type (sctx), TypeConstants::QUANT_STAR);
   }
@@ -428,6 +444,7 @@ xqtref_t cast_or_castable_base_expr::get_target_type() const {
 }
 
 void cast_or_castable_base_expr::set_target_type(xqtref_t target) {
+  invalidate ();
   target_type = target;
 }
 
@@ -507,7 +524,7 @@ void if_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-  xqtref_t if_expr::return_type (static_context *sctx) {
+  xqtref_t if_expr::return_type_impl (static_context *sctx) {
     return TypeOps::union_type (*then_expr_h->return_type (sctx), *else_expr_h->return_type (sctx));
   }
 
@@ -539,7 +556,7 @@ const signature &fo_expr::get_signature () const {
 store::Item_t fo_expr::get_fname () const
 { return func->get_fname (); }
 
-xqtref_t fo_expr::return_type(static_context *sctx)
+xqtref_t fo_expr::return_type_impl(static_context *sctx)
 {
   vector<xqtref_t> types;
   for (vector<expr_t>::iterator i = begin (); i != end (); i++)
@@ -614,7 +631,7 @@ void treat_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-xqtref_t treat_expr::return_type (static_context *sctx) {
+xqtref_t treat_expr::return_type_impl (static_context *sctx) {
   xqtref_t input_type = get_input ()->return_type (sctx);
   if (TypeOps::is_subtype (*input_type, *target_type))
     return input_type;
@@ -744,7 +761,7 @@ void relpath_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-xqtref_t relpath_expr::return_type(static_context *sctx) {
+xqtref_t relpath_expr::return_type_impl(static_context *sctx) {
   if (theSteps.empty ())
     return GENV_TYPESYSTEM.EMPTY_TYPE;
   return sctx->get_typemanager()->create_type_x_quant (*theSteps [size () - 1]->return_type (sctx), TypeConstants::QUANT_STAR);
@@ -777,7 +794,7 @@ void axis_step_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-xqtref_t axis_step_expr::return_type(static_context *sctx) {
+xqtref_t axis_step_expr::return_type_impl(static_context *sctx) {
   return theNodeTest == NULL ? GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE : theNodeTest->return_type (sctx);
 }
 
@@ -841,7 +858,7 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
   return store::StoreConsts::anyNode;
 }
 
-xqtref_t match_expr::return_type(static_context *sctx) {
+xqtref_t match_expr::return_type_impl(static_context *sctx) {
   return GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
 }
 
@@ -919,7 +936,7 @@ void const_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-xqtref_t const_expr::return_type(static_context *sctx)
+xqtref_t const_expr::return_type_impl(static_context *sctx)
 {
   xqtref_t type = sctx->get_typemanager()->
                   create_named_type(val->getType(), TypeConstants::QUANT_ONE);
@@ -991,7 +1008,7 @@ void elem_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-xqtref_t elem_expr::return_type (static_context *sctx) {
+xqtref_t elem_expr::return_type_impl (static_context *sctx) {
   return
     sctx->get_typemanager ()->create_node_type (NodeTest::ELEMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
 }
@@ -1015,7 +1032,7 @@ void doc_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-xqtref_t doc_expr::return_type (static_context *sctx) {
+xqtref_t doc_expr::return_type_impl (static_context *sctx) {
   return sctx->get_typemanager ()->create_node_type (NodeTest::DOCUMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
 }
 
@@ -1054,7 +1071,7 @@ void attr_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-xqtref_t attr_expr::return_type (static_context *sctx) {
+xqtref_t attr_expr::return_type_impl (static_context *sctx) {
   return sctx->get_typemanager ()->create_node_type (NodeTest::ATTRIBUTE_TEST, theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE);
 }
 
@@ -1078,7 +1095,7 @@ void text_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-xqtref_t text_expr::return_type (static_context *sctx) {
+xqtref_t text_expr::return_type_impl (static_context *sctx) {
   rchandle<NodeTest>  nt;
   switch (type) {
   case text_constructor: nt = NodeTest::TEXT_TEST; break;
@@ -1116,10 +1133,10 @@ void pi_expr::next_iter (expr_iterator_data& v) {
 void function_def_expr::next_iter (expr_iterator_data& v) {
 }
 
-function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type)
+function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type_impl)
   : expr (loc), name (name_)
 {
-  assert (return_type != NULL);
+  assert (return_type_impl != NULL);
   params.swap (params_);
   vector<xqtref_t> args;
   // TODO: copy param types into sig
@@ -1128,15 +1145,15 @@ function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, 
   sig = auto_ptr<signature> (new signature (get_name (), args, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
-xqtref_t castable_base_expr::return_type (static_context *sctx) {
+xqtref_t castable_base_expr::return_type_impl (static_context *sctx) {
   return sctx->get_typemanager ()->create_atomic_type (TypeConstants::XS_BOOLEAN, TypeConstants::QUANT_ONE);
 }
 
-xqtref_t cast_base_expr::return_type (static_context *sctx) { return target_type; }
+xqtref_t cast_base_expr::return_type_impl (static_context *sctx) { return target_type; }
 
-xqtref_t order_expr::return_type(static_context *sctx) { return expr_h->return_type (sctx); }
+xqtref_t order_expr::return_type_impl(static_context *sctx) { return expr_h->return_type (sctx); }
 
-xqtref_t var_expr::return_type(static_context *sctx) {
+xqtref_t var_expr::return_type_impl(static_context *sctx) {
   xqtref_t type1 = NULL;
   if (kind == for_var || kind == let_var) {
     assert (m_forlet_clause != NULL);
