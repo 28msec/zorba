@@ -120,7 +120,7 @@ public:
    *  @return  true, if the two items are the "same"
    */
   virtual bool 
-  equals(Item_t, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
+  equals(const Item*, RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   
   /**
    *  Computes the Effective Boolean Value for that item as specified in the

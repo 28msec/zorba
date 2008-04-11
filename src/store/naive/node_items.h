@@ -124,9 +124,9 @@ public:
   Item* getParent() const           { return theParent; }
 
   bool equals(
-        Item_t other,
+        const Item* other,
         RuntimeCB* aRuntimeCB,
-        XQPCollator* aCollation = 0) const { return this == other.getp(); }
+        XQPCollator* aCollation = 0) const { return this == other; }
 
   uint32_t hash(
         RuntimeCB* aRuntimeCB,
