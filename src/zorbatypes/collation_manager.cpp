@@ -1,4 +1,8 @@
+#include "common/common.h"
+
+#ifndef ZORBA_NO_UNICODE
 #include "common/libicu.h"
+#endif
 
 //#include <boost/algorithm/string/split.hpp>
 //#include <boost/algorithm/string/classification.hpp> 
@@ -22,6 +26,7 @@ namespace zorba {
     delete theCollator;
   }
 
+#ifndef ZORBA_NO_UNICODE
   XQPCollator*
   CollationFactory::createCollator(const std::string& aCollationURI)
   {
@@ -108,6 +113,22 @@ namespace zorba {
 
     return new XQPCollator(lCollator);
   }
+#else // ZORBA_NO_UNICODE
+XQPCollator*
+CollationFactory::createCollator(const std::string& aCollationURI)
+{
+  Collator  *coll = new Collator;
+  return new XQPCollator(coll);
+}
+
+XQPCollator*
+CollationFactory::createCollator()
+{
+  Collator  *coll = new Collator;
+  return new XQPCollator(coll);
+}
+
+#endif//#ifndef ZORBA_NO_UNICODE
 
   CollationFactory::CollationFactory()
     : theRootCollator(0)

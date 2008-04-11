@@ -58,4 +58,7 @@
 #cmakedefine HAVE_PTHREAD_SPINLOCK
 #cmakedefine HAVE_PTHREAD_MUTEX
 
+/* Configure Zorba features*/
+#cmakedefine ZORBA_NO_UNICODE
+
 #endif

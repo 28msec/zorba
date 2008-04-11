@@ -59,6 +59,7 @@ void serializer::transcoder::verbatim(const char ch)
   os << ch;
 }
   
+#ifndef ZORBA_NO_UNICODE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // UTF-8 to UTF-16 transcoder
 
@@ -139,6 +140,8 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
   return *this;
 }
 
+#endif//#ifndef ZORBA_NO_UNICODE
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default emitter
 serializer::emitter::emitter(serializer *the_serializer, transcoder& the_transcoder)
@@ -154,12 +157,14 @@ void serializer::emitter::emit_declaration()
     {
       tr << (char)0xEF << (char)0xBB << (char)0xBF;
     }
+#ifndef ZORBA_NO_UNICODE
     else if (ser->encoding == PARAMETER_VALUE_UTF_16)
     {
       // Little-endian
       tr.verbatim((char)0xFF); // TODO isn't the value truncated?
       tr.verbatim((char)0xFE);
     }
+#endif
   }
 }
 
@@ -542,8 +547,10 @@ void serializer::xml_emitter::emit_declaration()
     tr << "<?xml version=\"" << ser->version << "\" encoding=\"";
     if (ser->encoding == PARAMETER_VALUE_UTF_8)
       tr << "UTF-8";
+#ifndef ZORBA_NO_UNICODE
     else if (ser->encoding == PARAMETER_VALUE_UTF_16)
       tr << "UTF-16";
+#endif
     tr << "\"";
       
     if ( ser->standalone != PARAMETER_VALUE_OMIT )
@@ -689,8 +696,10 @@ void serializer::html_emitter::emit_node(
       tr << "<meta http-equiv=\"content-type\" content=\"" << ser->media_type << "; charset=";
       if (ser->encoding == PARAMETER_VALUE_UTF_8)
         tr << "UTF-8";
+#ifndef ZORBA_NO_UNICODE
       else if (ser->encoding == PARAMETER_VALUE_UTF_16)
         tr << "UTF-16";
+#endif      
       tr << "\">";
       
       if (ser->indent)
@@ -875,8 +884,10 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   {
     if (value == "UTF-8")
       encoding = PARAMETER_VALUE_UTF_8;
+#ifndef ZORBA_NO_UNICODE
     else if (value == "UTF-16")
       encoding = PARAMETER_VALUE_UTF_16;
+#endif
     else
     {
       ZORBA_ERROR( ZorbaError::SEPM0016);
@@ -909,8 +920,10 @@ bool serializer::setup(ostream& os)
 {
   if (encoding == PARAMETER_VALUE_UTF_8)
     tr = new transcoder(os); // the strings are UTF_8, so we use the ``transparent'' transcoder
+#ifndef ZORBA_NO_UNICODE
   else if (encoding == PARAMETER_VALUE_UTF_16)
     tr = new utf8_to_utf16_transcoder(os);
+#endif
   else
   {
     ZORBA_ASSERT(0);

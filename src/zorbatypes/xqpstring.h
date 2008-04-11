@@ -2,6 +2,9 @@
 #define ZORBA_XQPSTRING_H
 
 #include "common/common.h"
+
+#ifndef ZORBA_NO_UNICODE
+
 #include "common/libicu.h"
 
 #include <stdlib.h>
@@ -585,6 +588,11 @@ public:
   }
 
 } /* namespace zorba */
+
+#else //ifndef ZORBA_NO_UNICODE
+#include "xqpstring_ascii.h"
+#endif
+
 #endif
 
 /*

@@ -70,6 +70,9 @@ MESSAGE(STATUS "ZORBA_BUILD_STATIC_LIBRARY:     " ${ZORBA_BUILD_STATIC_LIBRARY})
 SET(ZORBA_DEBUG_PARSER OFF CACHE BOOL "debug the parser")
 MESSAGE(STATUS "ZORBA_DEBUG_PARSER:             " ${ZORBA_DEBUG_PARSER})     
 
+SET(ZORBA_NO_UNICODE OFF CACHE BOOL "disable ICU")
+MESSAGE(STATUS "ZORBA_NO_UNICODE:               " ${ZORBA_NO_UNICODE})
+
 # below we print some variables you might be interested in, when compiling
 
 # if you are building in-source, this is the same as CMAKE_SOURCE_DIR, otherwise 

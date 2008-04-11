@@ -1,5 +1,7 @@
 #include <libxml/parser.h>
+#ifndef ZORBA_NO_UNICODE
 #include <unicode/uclean.h>
+#endif//#ifndef ZORBA_NO_UNICODE
 
 #include "zorbatypes/m_apm.h"
 
@@ -10,8 +12,10 @@
 #include "store/naive/simple_store.h"
 #include "compiler/api/compiler_api.h"
 #include "types/schema/schema.h"
+#ifndef ZORBA_NO_UNICODE
 #include <unicode/utypes.h>
 #include <unicode/udata.h>
+#endif//#ifndef ZORBA_NO_UNICODE
 #include "store/naive/node_items.h"
 #include "store/api/collection.h"
 
@@ -36,6 +40,7 @@ void GlobalEnvironment::init()
   // from one thread only
   // see http://www.icu-project.org/userguide/design.html#Init_and_Termination
   // and http://www.icu-project.org/apiref/icu4c/uclean_8h.html
+#ifndef ZORBA_NO_UNICODE
   {
 #if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
     {
@@ -72,6 +77,7 @@ void GlobalEnvironment::init()
     u_init(&lICUInitStatus);
     assert(lICUInitStatus == U_ZERO_ERROR);
   }
+#endif//ifndef ZORBA_NO_UNICODE
   
   m_globalEnv->m_store.reset(new store::SimpleStore());
   static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
@@ -124,12 +130,14 @@ void GlobalEnvironment::destroy()
   // releases statically initialized memory and prevents
   // valgrind from reporting those problems at the end
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
-  {
+#ifndef ZORBA_NO_UNICODE
+{
     u_cleanup();
 #if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
     delete[] m_globalEnv->icu_appdata;
 #endif
   }
+#endif//ifndef ZORBA_NO_UNICODE
 
   delete m_globalEnv;
 	m_globalEnv = NULL;

@@ -5,6 +5,7 @@ SET(ZORBATYPES_SRCS
   numconversions.cpp
   binary.cpp
   utf8/xqpString.cpp
+  xqpString_ascii.cpp
   utf8/Unicode_util.cpp
   collation_manager.cpp)
   

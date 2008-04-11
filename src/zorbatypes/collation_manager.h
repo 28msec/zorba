@@ -3,9 +3,17 @@
 
 #include <string>
 #include <map>
+#ifndef ZORBA_NO_UNICODE
 #include "common/libicu.h"
+#endif//#ifndef ZORBA_NO_UNICODE
 
 namespace zorba {
+
+#ifdef ZORBA_NO_UNICODE
+class Collator
+{
+};
+#endif
 
   class XQPCollator 
   {

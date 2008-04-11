@@ -12,9 +12,11 @@
  */
 
 
+
 #include <unicode/regex.h>
 #include "zorbatypes/xqpstring.h"
 
+#ifndef ZORBA_NO_UNICODE
 #include "zorbatypes/Unicode_util.h"
 #include "zorbatypes/utf8.h"
 #include "zorbatypes/numconversions.h"
@@ -1299,3 +1301,5 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     return ret;
   }
 }/* namespace zorba */
+
+#endif//#ifndef ZORBA_NO_UNICODE

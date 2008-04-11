@@ -114,9 +114,11 @@ protected:
     PARAMETER_VALUE_XML,
 	PARAMETER_VALUE_HTML,
   
-    PARAMETER_VALUE_UTF_8,
-    PARAMETER_VALUE_UTF_16
-        
+    PARAMETER_VALUE_UTF_8
+#ifndef ZORBA_NO_UNICODE
+    ,PARAMETER_VALUE_UTF_16
+#endif
+
   } PARAMETER_VALUE_TYPE;
 
 public:
@@ -140,6 +142,7 @@ public:
     std::ostream& os;
   };
   
+#ifndef ZORBA_NO_UNICODE
   class utf8_to_utf16_transcoder : public transcoder
   {
     public:
@@ -155,7 +158,7 @@ public:
       int chars_in_buffer;
       int chars_expected;
   };
-  
+#endif//#ifndef ZORBA_NO_UNICODE
   
   class emitter : public SimpleRCObject
   {
