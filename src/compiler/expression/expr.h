@@ -1568,7 +1568,6 @@ public:
 	expr_t getTargetExpr() const { return theTargetExpr; }
 
 public:
-  virtual bool isUpdating() const { return true; }
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
@@ -1602,7 +1601,6 @@ public:
 	expr_t getReplaceExpr() const { return theReplaceExpr; }
 
 public:
-  virtual bool isUpdating() const { return true; }
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
@@ -1633,7 +1631,6 @@ public:
 	expr_t getNameExpr() const { return theTargetExpr; }
 
 public:
-  virtual bool isUpdating() const { return true; }
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
