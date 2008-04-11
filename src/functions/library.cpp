@@ -63,7 +63,6 @@ do                                                             \
   type##_ptr.release();                                        \
 } while(0)
 
-
 #define ITEM_FACTORY (*(GENV.getStore().getItemFactory()))
 
 void BuiltinFunctionLibrary::populateContext(static_context *sctx)
@@ -363,9 +362,9 @@ DECL(fn_doc_available_func,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_concatenate,
-       (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":concatenate"),
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-        true, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":concatenate"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      true, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(fn_exists,
     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","exists"),

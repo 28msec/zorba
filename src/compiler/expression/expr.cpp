@@ -377,7 +377,7 @@ void flwor_expr::next_iter (expr_iterator_data& v) {
 expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
 {
   expr_t flwor_copy = new flwor_expr(get_loc());
-  flwor_copy->setUpdating(isUpdating());
+  flwor_copy->setUpdateType(getUpdateType());
   flwor_expr *flwor_copy_ptr = static_cast<flwor_expr *>(flwor_copy.getp());
 
   for(clause_list_t::iterator i = clause_v.begin(); i != clause_v.end(); ++i) {
@@ -1180,7 +1180,9 @@ insert_expr::insert_expr(
   theType(aType),
 	theSourceExpr(aSourceExpr),
 	theTargetExpr(aTargetExpr)
-{}
+{
+  setUpdateType(UPDATE_EXPR);
+}
 
 insert_expr::~insert_expr()
 {}
@@ -1204,7 +1206,9 @@ delete_expr::delete_expr(
 :
 	expr(loc),
 	theTargetExpr(aTargetExpr)
-{}
+{
+  setUpdateType(UPDATE_EXPR);
+}
 
 delete_expr::~delete_expr()
 {}
@@ -1230,7 +1234,9 @@ replace_expr::replace_expr(
   theType(aType),
 	theTargetExpr(aTargetExpr),
 	theReplaceExpr(aReplaceExpr)
-{}
+{
+  setUpdateType(UPDATE_EXPR);
+}
 
 replace_expr::~replace_expr()
 {}
@@ -1255,7 +1261,9 @@ rename_expr::rename_expr(
 	expr(loc),
 	theTargetExpr(aTargetExpr),
 	theNameExpr(aNameExpr)
-{}
+{
+  setUpdateType(UPDATE_EXPR);
+}
 
 rename_expr::~rename_expr()
 {}

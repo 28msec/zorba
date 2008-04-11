@@ -19,6 +19,8 @@ class fn_error : public function {
     fn_error(const signature& s);
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+    virtual expr_update_t getUpdateType() const { return VACUOUS_EXPR; }
 };
 
 class fn_resolve_uri : public function {

@@ -69,6 +69,13 @@ enum match_wild_t
   match_name_wild
 };
 
+enum expr_update_t
+{
+  UPDATE_EXPR,
+  VACUOUS_EXPR,
+  SIMPLE_EXPR
+};
+
 
 }; // namespace zorba
 

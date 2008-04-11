@@ -3,21 +3,23 @@
 
 #include <map>
 #include "compiler/semantic_annotations/annotations.h"
+#include "compiler/expression/expr_consts.h"
 
 namespace zorba {
 
 class AnnotationHolder {
   private:
-    bool theIsUpdating;
+    expr_update_t theUpdateType;
   public:
-    AnnotationHolder() : theIsUpdating(false) {}
+    AnnotationHolder() : theUpdateType(SIMPLE_EXPR) {}
     virtual ~AnnotationHolder() { }
     void put_annotation(Annotation::key_t key, Annotation::value_ref_t annot);
     const Annotation::value_ref_t get_annotation(Annotation::key_t key) const;
     void remove_annotation(Annotation::key_t key);
 
-    virtual bool isUpdating() const { return theIsUpdating; }
-    void setUpdating(bool aIsUpdating) { theIsUpdating = aIsUpdating; }
+    bool isUpdating() const { return theUpdateType == UPDATE_EXPR; }
+    expr_update_t getUpdateType() const { return theUpdateType; } 
+    void setUpdateType(expr_update_t aUpdateType) { theUpdateType = aUpdateType; }
 
   protected:
     typedef std::map<Annotation::key_t, Annotation::value_ref_t> annotations_t;

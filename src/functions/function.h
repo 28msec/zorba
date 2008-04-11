@@ -15,6 +15,7 @@
 #include "functions/signature.h"
 #include "compiler/parser/query_loc.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
+#include "compiler/expression/expr_consts.h"
 
 namespace zorba {
 
@@ -70,6 +71,7 @@ public:
   // Annotation calculator functions
   virtual bool isSource() const { return false; }
 
+  virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
 };
 
 class user_function : public function {

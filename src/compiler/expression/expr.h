@@ -1535,7 +1535,6 @@ public:
 	virtual ~insert_expr();
 
 public:
-  virtual bool isUpdating() const { return true; }
   store::UpdateConsts::InsertType getType() const { return theType; }
 	expr_t getSouceExpr() const { return theSourceExpr; }
 	expr_t getTargetExpr() const { return theTargetExpr; }

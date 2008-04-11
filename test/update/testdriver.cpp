@@ -312,9 +312,7 @@ main(int argc, char** argv)
           }
           else
           {
-            // if the queries is not an updating query, it must return a result
-            // or throw an error
-            assert(false);
+            std::cerr << "Query returns result but no expected result defined!" << std::endl;
           }
         }
       }
