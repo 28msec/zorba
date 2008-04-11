@@ -11,6 +11,7 @@
 #include "system/globalenv.h"
 #include "functions/Accessors.h"
 #include "runtime/accessors/AccessorsImpl.h"
+#include "types/typeops.h"
 
 using namespace std;
 
@@ -26,8 +27,11 @@ fn_data_func::codegen(
 }
 
 
-xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const { 
-  return sig.return_type ();
+xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const {
+  if (TypeOps::is_subtype (*arg_types [0], *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+    return arg_types [0];
+  else
+    return sig.return_type ();
 }
 
 /*******************************************************************************
