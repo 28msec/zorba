@@ -749,34 +749,63 @@ store::Item_t
 FnAvgIterator::nextImpl(PlanState& planState) const {
   store::Item_t lSumItem;
   store::Item_t lRunningItem;
-  xqtref_t type;
-  bool numeric;
+  xqtref_t      lRunningType;
   int lCount = 0;
+  bool lHitNumeric = false, lHitYearMonth = false, lHitDayTime = false;
+  xqtref_t lUntypedAtomic     = GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE; 
+  xqtref_t lYearMonthDuration = GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE; 
+  xqtref_t lDayTimeDuration   = GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for (; (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL;
-       ++lCount)
-  {
-    // TODO add datetime
-    type = GENV_TYPESYSTEM.create_value_type (lRunningItem);
-    numeric = TypeOps::is_numeric (*type);
-    if (numeric
-        || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-    {
+  while ((lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL) {
+    lRunningType = GENV_TYPESYSTEM.create_value_type (lRunningItem);
+
+    if (TypeOps::is_numeric (*lRunningType) || TypeOps::is_equal (*lRunningType, *lUntypedAtomic)) {
+      lHitNumeric = true;
+      if ( lHitYearMonth )
+        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+                                                        + " for function fn:avg. Expected type " 
+                                                        + lYearMonthDuration->toString() +".");
+      if ( lHitDayTime ) 
+        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+                                                        + " for function fn:avg. Expected type " 
+                                                        + lDayTimeDuration->toString() +".");
+
+    } else if (TypeOps::is_equal (*lRunningType, *lYearMonthDuration)) {
+      lHitYearMonth = true;
+      if ( lHitNumeric )
+        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+                                                        + " for function fn:avg. Expected a numeric type.");
+      if ( lHitDayTime ) 
+        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+                                                        + " for function fn:avg. Expected type " 
+                                                        + lDayTimeDuration->toString() +".");
+
+    } else if (TypeOps::is_equal (*lRunningType, *lDayTimeDuration)) {
+      lHitDayTime = true;
+      if ( lHitNumeric )
+        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+                                                        + " for function fn:avg. Expected a numeric type.");
+      if ( lHitYearMonth )
+        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+                                                        + " for function fn:avg. Expected type " 
+                                                        + lYearMonthDuration->toString() +".");
+    } else {
+      ZORBA_ERROR_LOC(ZorbaError::FORG0006, loc);
+    }
+    if ( lCount++ == 0 ) {
+      lSumItem = lRunningItem;
+    } else {
       // DO NOT short-circuit for INF and NaN!
       // Must check all items in case FORG0006 is needed
-      if (lCount == 0)
-        lSumItem = lRunningItem;
-      else
-        lSumItem = NumArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem);
+      lSumItem = GenericArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem);
     }
-    else ZORBA_ERROR (ZorbaError::FORG0006);
   }
 
   if (lCount > 0)
-    STACK_PUSH(NumArithIterator<DivideOperation>::compute(planState.theRuntimeCB, loc, lSumItem,
+    STACK_PUSH(GenericArithIterator<DivideOperation>::compute(planState.theRuntimeCB, loc, lSumItem,
                                                           GENV_ITEMFACTORY->createInteger(Integer::parseInt (lCount))), state);
   // else return empty sequence
 
