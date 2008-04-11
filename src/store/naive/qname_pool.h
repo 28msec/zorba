@@ -1,10 +1,12 @@
-#ifndef ZORBA_STORE_QNAME_POOL_H
-#define ZORBA_STORE_QNAME_POOL_H
+#ifndef ZORBA_SIMPLE_STORE_QNAME_POOL
+#define ZORBA_SIMPLE_STORE_QNAME_POOL
 
 #include <vector>
 #include "common/shared_types.h"
 #include "common/common.h"
-#include "store/util/mutex.h"
+#include "util/hashfun.h"
+#include "store/util/hashset.h"
+#include "store/naive/atomic_items.h"
 
 namespace zorba { namespace store {
 
@@ -25,45 +27,50 @@ namespace zorba { namespace store {
                    the free list.
   theNumFree     : Number of free slots in theCache.
 
-  theNumQnames   : The total number of qnames stored in the pool.
-
-  theHashTab     : A hash table mapping qnames (i.e. triplets of strings) to
+  theHashSet     : A hash set mapping qnames (i.e. triplets of strings) to
                    QName slots.
-  theHashTabSize : The number of hash buckets in theHashTab. 
-  theLoadFactor  :
+
 ********************************************************************************/
 class QNamePool
 {
 protected:
 
-  class HashEntry
+  class QNamePoolHashSet : public HashSet<QNameItemImpl*, QNamePoolHashSet>
   {
+    friend class QNamePool;
+
   public:
-    QNameItemImpl  * theQNameSlot;
-    HashEntry      * theNext;
+    static bool equal(const QNameItemImpl* t1, const QNameItemImpl* t2)
+    {
+      return (t1->theLocal->byteEqual(*t2->theLocal) &&
+              t1->theNamespace->byteEqual(*t2->theNamespace) &&
+              t1->thePrefix->byteEqual(*t2->thePrefix));
+    }
 
-    HashEntry() : theQNameSlot(NULL), theNext(NULL) { }
+    static uint32_t hash(const QNameItemImpl* t)
+    {
+      return  hashfun::h32(t->thePrefix->c_str(),
+                           hashfun::h32(t->theNamespace->c_str(),
+                                        hashfun::h32(t->theLocal->c_str())));
+    }
 
-    ~HashEntry() { }
+  public:
+    QNamePoolHashSet(ulong size) : HashSet<QNameItemImpl*, QNamePoolHashSet>(size) {}
   };
+
+
+ typedef HashEntry<QNameItemImpl*, DummyHashValue> QNHashEntry;
 
 public:
   static const ulong MAX_CACHE_SIZE = 65536;
-  static const float DEFAULT_LOAD_FACTOR;// = 0.6;//daniel: to compile on windows
 
 protected:
-  QNameItemImpl         * theCache;
-  ulong                   theCacheSize;
-	ulong                   theFirstFree;
-  ulong                   theNumFree;
+  QNameItemImpl     * theCache;
+  ulong               theCacheSize;
+	ulong               theFirstFree;
+  ulong               theNumFree;
 
-  ulong                   theNumQNames;
-
-  std::vector<HashEntry>  theHashTab;
-  ulong                   theHashTabSize;
-  float                   theLoadFactor;
-
-  SYNC_CODE(Mutex         theMutex;)
+  QNamePoolHashSet    theHashSet;
 
 public:
   QNamePool(ulong size);
@@ -84,23 +91,18 @@ public:
   void remove(QNameItemImpl* qn);
 
 protected:
-  QNameItemImpl* cacheInsert(HashEntry* entry);
+  QNameItemImpl* cacheInsert(ulong hval);
 
-  HashEntry* hashInsert(
+  void cachePin(QNameItemImpl* qn);
+
+  QNHashEntry* hashFind(
         const char* ns,
         const char* pre,
         const char* ln,
         ulong       nslen,
         ulong       prelen,
         ulong       lnlen,
-        bool&       found);
-
-  void hashRemove(
-        xqpStringStore* ns,
-        xqpStringStore* pre,
-        xqpStringStore* ln);
-
-  void resizeHashTab();
+        ulong       hval);
 };
 
 

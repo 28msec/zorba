@@ -250,9 +250,11 @@ iterator end()
 ********************************************************************************/
 bool find(const T& item)
 {
+  ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
+
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry<T, V>* entry = bucket(Externals<T,E,C>::hash(item, theCompareParam));
+  HashEntry<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -275,9 +277,11 @@ bool find(const T& item)
 ********************************************************************************/
 bool get(const T& item, V*& value)
 {
-  SYNC_CODE(AutoMutex lock(this->theMutex);)
+  ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
 
-  HashEntry<T, V>* entry = bucket(Externals<T,E,C>::hash(item, theCompareParam));
+  SYNC_CODE(AutoMutex lock(theMutex);)
+
+  HashEntry<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -306,12 +310,11 @@ bool get(const T& item, V*& value)
 bool insert(T& item, V*& value)
 {
   bool found;
+  ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
 
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry<T, V>* entry = hashInsert(item,
-                                      Externals<T,E,C>::hash(item, theCompareParam),
-                                      found);
+  HashEntry<T, V>* entry = hashInsert(item, hval, found);
 
   if (!found)
   {
@@ -333,9 +336,17 @@ bool insert(T& item, V*& value)
 ********************************************************************************/
 bool remove(const T& item)
 {
+  ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
+
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry<T, V>* entry = bucket(Externals<T,E,C>::hash(item, theCompareParam));
+  return removeNoSync(item, hval);
+}
+
+
+bool removeNoSync(const T& item, ulong hval)
+{
+  HashEntry<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
