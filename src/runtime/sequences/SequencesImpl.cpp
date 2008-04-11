@@ -795,7 +795,7 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
                                                         + " for function fn:avg. Expected type " 
                                                         + lYearMonthDuration->toString() +".");
     } else {
-      ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "The avg() function only accepts numeric or duration types.");
+      ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "The fn:avg function only accepts numeric or duration types.");
     }
     if ( lCount++ == 0 ) {
       lSumItem = lRunningItem;
