@@ -11,7 +11,7 @@
 
 #include "common/common.h"
 
-#include "util/URI.h"
+#include "URI.h"
 
 #ifdef WIN32
 	#include <algorithm>
