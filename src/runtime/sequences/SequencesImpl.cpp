@@ -760,8 +760,10 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   while ((lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL) {
+    
     lRunningType = GENV_TYPESYSTEM.create_value_type (lRunningItem);
 
+    std::cout << "type " << lRunningType->toString() << std::endl;
     if (TypeOps::is_numeric (*lRunningType) || TypeOps::is_equal (*lRunningType, *lUntypedAtomic)) {
       lHitNumeric = true;
       if ( lHitYearMonth )
@@ -793,7 +795,7 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
                                                         + " for function fn:avg. Expected type " 
                                                         + lYearMonthDuration->toString() +".");
     } else {
-      ZORBA_ERROR_LOC(ZorbaError::FORG0006, loc);
+      ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "The avg() function only accepts numeric or duration types.");
     }
     if ( lCount++ == 0 ) {
       lSumItem = lRunningItem;
@@ -906,19 +908,13 @@ FnSumIterator::nextImpl(PlanState& planState) const {
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   lSumItem = consumeNext(theChildren[0].getp(), planState);
-  if (lSumItem != NULL) // return 0 or given value if empty sequence
-  {
-    while ( (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
-    {
-      // TODO add datetime
+  if (lSumItem != NULL) { // return 0 or given value if empty sequence
+    while ( (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
       lSumItem = GenericArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem); 
-      // TODO break if one item is NaN
     }
 
     STACK_PUSH(lSumItem, state);
-  }
-  else
-  {
+  } else {
     if (theChildren.size() == 2)
     {
       lSumItem = consumeNext(theChildren[1].getp(), planState);
@@ -927,9 +923,7 @@ FnSumIterator::nextImpl(PlanState& planState) const {
         STACK_PUSH(lSumItem, state);
       }
       // return the empty sequence otherwise
-    }
-    else
-    {
+    } else {
       STACK_PUSH(GENV_ITEMFACTORY->createInteger(Integer::parseInt((int32_t)0)), state);
     }
   }
