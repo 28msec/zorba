@@ -28,6 +28,9 @@ class TSVAnnotationValue : public AnnotationValue {
     e->put_annotation (k, v);
   }
 
+  static Annotation::value_ref_t from_bool (bool x) {
+    return x ? TRUE_VAL : FALSE_VAL;
+  }
 
   private:
     TSVAnnotationValue(tsv_t value)

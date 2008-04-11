@@ -238,10 +238,9 @@ ostream& ft_contains_expr::put( ostream& os) const
 
 ostream& instanceof_expr::put( ostream& os) const
 {
-  os << INDENT << "instanceof_expr "; TypeOps::serialize (os, *type);
+  os << INDENT << "instanceof_expr "; TypeOps::serialize (os, *target_type);
   os << " (" << this << ") [\n";
-  ZORBA_ASSERT(expr_h!=NULL);
-  expr_h->put(os);
+  input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
 }
@@ -259,10 +258,9 @@ ostream& treat_expr::put( ostream& os) const
 ostream& castable_expr::put( ostream& os) const
 {
   os << INDENT << "castable_expr ";
-  TypeOps::serialize (os, *type);
+  TypeOps::serialize (os, *target_type);
   os << " (" << this << ") [\n";
-  ZORBA_ASSERT(expr_h!=NULL);
-  expr_h->put(os);
+  input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
 }

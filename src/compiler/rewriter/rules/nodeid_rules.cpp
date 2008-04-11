@@ -250,7 +250,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     {
       castable_base_expr *ce = dynamic_cast<castable_base_expr *> (node);
       if (ce != NULL) {
-        mark_casts (ce->get_expr (), ce->get_type ());
+        mark_casts (ce->get_input (), ce->get_target_type ());
         break;
       }
     }

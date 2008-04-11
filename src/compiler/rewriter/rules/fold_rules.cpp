@@ -245,12 +245,12 @@ namespace zorba {
   RULE_REWRITE_PRE(PartialEval) {
     castable_base_expr *cbe;
     if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) {
-      expr_t arg = cbe->get_expr();
+      expr_t arg = cbe->get_input();
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-      if (TypeOps::is_subtype(*arg_type, *cbe->get_type()))
+      if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
         return new const_expr (LOC (node), true);
       else if (node->get_expr_kind () == instanceof_expr_kind)
-        return TypeOps::intersect_type (*arg_type, *cbe->get_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
+        return TypeOps::intersect_type (*arg_type, *cbe->get_target_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
           ? new const_expr (LOC (node), false) : NULL;
       else
         return NULL;

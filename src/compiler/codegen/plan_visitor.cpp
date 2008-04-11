@@ -688,7 +688,7 @@ void end_visit(instanceof_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t p = pop_itstack ();
-  itstack.push (new InstanceOfIterator (v.get_loc (), p, v.get_type ()));
+  itstack.push (new InstanceOfIterator (v.get_loc (), p, v.get_target_type ()));
 }
 
 bool begin_visit(treat_expr& /*v*/)
@@ -715,7 +715,7 @@ void end_visit(castable_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  itstack.push(new CastableIterator(v.get_loc(), lChild, v.get_type()));
+  itstack.push(new CastableIterator(v.get_loc(), lChild, v.get_target_type()));
 }
 
 bool begin_visit(cast_expr& /*v*/)

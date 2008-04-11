@@ -416,13 +416,25 @@ void trycatch_expr::next_iter(expr_iterator_data& v)
 case_clause::case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
 
 
-cast_base_expr::cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
-  : expr(loc),
-  input_expr_h(input),
-  target_type(type) { }
+cast_or_castable_base_expr::cast_or_castable_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
+  : expr (loc), input_expr_h (input), target_type (type)
+{
+  assert (type != NULL);
+  assert (input != NULL);
+}
 
-xqtref_t cast_base_expr::get_target_type() { return target_type; }
-void cast_base_expr::set_target_type(xqtref_t target) { target_type = target; }
+xqtref_t cast_or_castable_base_expr::get_target_type() const {
+  return target_type;
+}
+
+void cast_or_castable_base_expr::set_target_type(xqtref_t target) {
+  target_type = target;
+}
+
+
+cast_base_expr::cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
+  : cast_or_castable_base_expr (loc, input, type)
+{}
 
 
 promote_expr::promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
@@ -566,10 +578,8 @@ void ft_contains_expr::next_iter (expr_iterator_data& v) {
 castable_base_expr::castable_base_expr (const QueryLoc& loc,
                                         expr_t _expr_h,
                                         xqtref_t _type)
-  : expr(loc), expr_h(_expr_h), type (_type)
+  : cast_or_castable_base_expr (loc, _expr_h, _type)
 {}
-
-xqtref_t castable_base_expr::get_type() const { return type; }
 
 instanceof_expr::instanceof_expr(const QueryLoc& loc,
                                  expr_t _expr_h,
@@ -579,7 +589,7 @@ instanceof_expr::instanceof_expr(const QueryLoc& loc,
 
 void instanceof_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
-  ITER (expr_h);
+  ITER (input_expr_h);
   END_EXPR_ITER();  
 }
 
@@ -622,11 +632,11 @@ castable_expr::castable_expr(
   castable_base_expr (loc, _expr_h, _type)
 {}
 
-bool castable_expr::is_optional() const { return TypeOps::quantifier(*type) == TypeConstants::QUANT_QUESTION; }
+bool castable_expr::is_optional() const { return TypeOps::quantifier(*target_type) == TypeConstants::QUANT_QUESTION; }
 
 void castable_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
-  ITER (expr_h);
+  ITER (input_expr_h);
   END_EXPR_ITER ();
 }
 
