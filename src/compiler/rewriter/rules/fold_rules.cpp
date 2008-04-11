@@ -42,7 +42,7 @@ namespace zorba {
       expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 2),
                                      new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ())),
                                      new const_expr (loc, e.theDescription));
-      err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VALUE);
+      err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
       return err_expr;
     }
   }
@@ -86,12 +86,12 @@ namespace zorba {
     switch (node->get_expr_kind ()) {
     case flwor_expr_kind:
     case relpath_expr_kind:
-      node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
     default:
       for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
-        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VALUE) {
-          node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {
+          node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
           break;
         }
       }
@@ -109,7 +109,7 @@ namespace zorba {
     case fo_expr_kind: {
       const function *f = dynamic_cast<fo_expr *> (node)->get_func ();
       if (f->requires_dyn_ctx () || dynamic_cast<const fn_error *> (f) != NULL)
-        node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+        node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
     }
     case elem_expr_kind:
@@ -117,15 +117,15 @@ namespace zorba {
     case text_expr_kind:
     case pi_expr_kind:
     case doc_expr_kind:
-      node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
     default: break;
     }
 
-    if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE)
+    if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VAL)
       for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
-        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VALUE) {
-          node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {
+          node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
           break;
         }
       }
@@ -152,11 +152,11 @@ namespace zorba {
 
     if (standalone_expr (node) &&
         ! already_folded (node, rCtx) && get_varset_annotation (node, AnnotationKey::FREE_VARS).empty ()
-        && node->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE
+        && node->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VAL
         && (rquant == TypeConstants::QUANT_ONE || rquant == TypeConstants::QUANT_QUESTION
             || TypeOps::is_equal (*rtype, *GENV_TYPESYSTEM.EMPTY_TYPE))
         && (fold_expensive_ops || 
-            node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VALUE))
+            node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VAL))
     {
       vector<store::Item_t> result;
       expr_t folded = execute (rCtx.getCompilerCB(), node, result);

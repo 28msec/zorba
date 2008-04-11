@@ -5,14 +5,14 @@ namespace zorba {
 
 class TSVAnnotationValue : public AnnotationValue {
   public:
-    static Annotation::value_ref_t TRUE_VALUE;
-    static Annotation::value_ref_t FALSE_VALUE;
-    static Annotation::value_ref_t UNKNOWN_VALUE;
+    static Annotation::value_ref_t TRUE_VAL;
+    static Annotation::value_ref_t FALSE_VAL;
+    static Annotation::value_ref_t MAYBE_VAL;
 
     typedef enum {
       TSV_TRUE,
       TSV_FALSE,
-      TSV_UNKNOWN
+      TSV_MAYBE
     } tsv_t;
 
     tsv_t getValue() const { return m_value; }
@@ -20,10 +20,10 @@ class TSVAnnotationValue : public AnnotationValue {
   // pessimistic
   static void update_annotation (AnnotationHolder *e, Annotation::key_t k, Annotation::value_ref_t v) {
     Annotation::value_ref_t oldv = e->get_annotation (k);
-    if (oldv == FALSE_VALUE)
-      v = FALSE_VALUE;
-    else if (oldv == UNKNOWN_VALUE || v == NULL)
-      v = UNKNOWN_VALUE;
+    if (oldv == FALSE_VAL)
+      v = FALSE_VAL;
+    else if (oldv == MAYBE_VAL || v == NULL)
+      v = MAYBE_VAL;
         
     e->put_annotation (k, v);
   }

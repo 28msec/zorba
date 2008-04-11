@@ -21,7 +21,7 @@ void function::compute_annotation (AnnotationHolder *, std::vector<AnnotationHol
   case AnnotationKey::IGNORES_DUP_NODES:
     for (unsigned src = 0; src < kids.size (); src++)
       if (kids [src] != NULL)
-        TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::UNKNOWN_VALUE);
+        TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::MAYBE_VAL);
     break;
   default: break;
   }  
@@ -103,7 +103,7 @@ xqtref_t function::return_type (const std::vector<xqtref_t> &) const {
 
 bool user_function::requires_dyn_ctx () const {
   // All undeclared functions unfoldable. TODO: better analysis
-  return m_expr_body == NULL || m_expr_body->get_annotation (AnnotationKey::UNFOLDABLE_OP) == TSVAnnotationValue::TRUE_VALUE;
+  return m_expr_body == NULL || m_expr_body->get_annotation (AnnotationKey::UNFOLDABLE_OP) == TSVAnnotationValue::TRUE_VAL;
 }
 
 }
