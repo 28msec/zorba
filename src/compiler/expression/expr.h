@@ -507,7 +507,6 @@ public:
 class cast_base_expr : public expr {
 public:
 
-  cast_base_expr(const QueryLoc& loc);
   cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
 
 protected:
@@ -529,7 +528,6 @@ class promote_expr : public cast_base_expr {
 public:
   expr_kind_t get_expr_kind () { return promote_expr_kind; }
 
-  promote_expr(const QueryLoc& loc);
   promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
 
 public:

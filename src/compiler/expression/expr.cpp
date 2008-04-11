@@ -416,8 +416,6 @@ void trycatch_expr::next_iter(expr_iterator_data& v)
 case_clause::case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
 
 
-cast_base_expr::cast_base_expr(const QueryLoc& loc) : expr(loc) { }
-
 cast_base_expr::cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
   : expr(loc),
   input_expr_h(input),
@@ -426,8 +424,6 @@ cast_base_expr::cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
 xqtref_t cast_base_expr::get_target_type() { return target_type; }
 void cast_base_expr::set_target_type(xqtref_t target) { target_type = target; }
 
-
-promote_expr::promote_expr(const QueryLoc& loc) : cast_base_expr(loc) { }
 
 promote_expr::promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
   : cast_base_expr (loc, input, type)
