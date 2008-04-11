@@ -29,6 +29,7 @@ namespace zorba {
       bool thePrintNormalizedExpressions;
       bool thePrintTranslatedExpressions;
       bool thePrintOptimizedExpressions;
+      bool thePrintIntermediateOptimizations;
       bool thePrintIteratorTree;
       bool thePrintItemFlow;
       bool theStableIteratorIds;
@@ -37,6 +38,7 @@ namespace zorba {
       bool theTraceCodegen;
       long theStoreTraceLevel;
 #endif
+      bool theCompileOnly;
       std::vector<std::string> theExternalVars;            
       /**
        * Constructor.
@@ -146,6 +148,9 @@ namespace zorba {
       printOptimizedExpressions() { return thePrintOptimizedExpressions; }
       
       bool
+      printIntermediateOptimizations() { return thePrintIntermediateOptimizations; }
+
+      bool
       printIteratorTree() { return thePrintIteratorTree; }
 
       bool
@@ -153,6 +158,9 @@ namespace zorba {
 
       bool
       stableIteratorIds() { return theStableIteratorIds; }
+
+      bool
+      compileOnly () { return theCompileOnly; }
 
 #ifndef NDEBUG
       bool

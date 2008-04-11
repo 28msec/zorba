@@ -99,44 +99,38 @@ int _tmain(int argc, _TCHAR* argv[])
     set_var (iter->first, iter->second, dctx);
   }
 
-  // output the result (either using xml serialization or using show)
-  cout << "Running query and printing result..." << endl;
+  if (! lProp->compileOnly ()) {
+    // output the result (either using xml serialization or using show)
+    cout << "Running query and printing result..." << endl;
   
-  try
-  {
-    if (lProp->useSerializer())
-    {
-      if (query->isUpdateQuery())
-        query->applyUpdates(*resultFile);
-      else
-        *resultFile << query;
-    }
-    else
-    {
-      ResultIterator_t result = query->iterator();
-      result->open();
-      Item lItem;
-      while (result->next(lItem)) {
-        // unmarshall the store item from the api item
-        store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
-        *resultFile << lStoreItem->show() << endl;
+    try {
+      if (lProp->useSerializer()) {
+        if (query->isUpdateQuery())
+          query->applyUpdates(*resultFile);
+        else
+          *resultFile << query;
+      } else {
+        ResultIterator_t result = query->iterator();
+        result->open();
+        Item lItem;
+        while (result->next(lItem)) {
+          // unmarshall the store item from the api item
+          store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
+          *resultFile << lStoreItem->show() << endl;
       }
-      result->close();
+        result->close();
+      }
+    } catch (QueryException &e) {
+      query->close();
+      zengine->shutdown();
+      cerr << "Execution error: " << e << endl;
+      return 2;
+    } catch (ZorbaException &e) {
+      query->close();
+      zengine->shutdown();
+      cerr << "Execution error: " << e << endl;
+      return 2;
     }
-  }
-  catch (QueryException &e)
-  {
-    query->close();
-    zengine->shutdown();
-    cerr << "Execution error: " << e << endl;
-    return 2;
-  }
-  catch (ZorbaException &e)
-  {
-    query->close();
-    zengine->shutdown();
-    cerr << "Execution error: " << e << endl;
-    return 2;
   }
 
   query->close();

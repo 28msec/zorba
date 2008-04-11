@@ -3,7 +3,7 @@
 #include "compiler/rewriter/framework/rewrite_rule.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
-#define DEBUG_EACH_RULE 0
+#include "util/properties.h"
 
 namespace zorba {
 
@@ -30,12 +30,10 @@ void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
         rCtx.setRoot(newRoot);
       }
 
-#if DEBUG_EACH_RULE
-      if (modified) {
+      if (modified && Properties::instance()->printIntermediateOptimizations ()) {
         std::cout << "After " << (*i)->getRuleName () << ":" << std::endl;
         rCtx.getRoot ()->put (std::cout) << std::endl;
       }
-#endif
     }
   } while(modified);
 }

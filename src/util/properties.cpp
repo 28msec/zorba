@@ -31,14 +31,16 @@ namespace zorba
     thePrintAST(false),
     thePrintNormalizedExpressions(false),
     thePrintOptimizedExpressions(false),
+    thePrintIntermediateOptimizations (false),
     thePrintIteratorTree(false),
     thePrintItemFlow(false),
     theStableIteratorIds(false)
 #ifndef NDEBUG
     ,theTraceTranslator(false),
     theTraceCodegen(false),
-    theStoreTraceLevel(0)
+    theStoreTraceLevel(0),
 #endif
+    theCompileOnly(false)
   {
   }
   
@@ -127,11 +129,13 @@ namespace zorba
       ("print-iterator-tree,i", "print the iterator tree")
       ("print-item-flow,f", "show items produced by all iterators")
       ("stable-iterator-id", "print the iterator plan with stable ids")
+      ("print-intermediate-opt", "print intermediate optimizations")
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")
       ("store-trace-level", po::value<long>(&theStoreTraceLevel), "store trace level (<= 0 : no tracing)")
 #endif
+      ("compile-only", "only compile (don't execute)")
       ("external-vars,x", po::value<std::vector<std::string> >(&theExternalVars), "external variables (e.g. -x x=file1.xml -x y:=strValue)")
     ;
   
@@ -221,6 +225,7 @@ namespace zorba
     thePrintNormalizedExpressions = (lVarMap.count("print-normalized") != 0);
     thePrintTranslatedExpressions = (lVarMap.count("print-translated") != 0);
     thePrintOptimizedExpressions = (lVarMap.count("print-optimized") != 0);
+    thePrintIntermediateOptimizations = (lVarMap.count("print-intermediate-opt") != 0);
     thePrintIteratorTree = (lVarMap.count("print-iterator-tree") != 0);
     thePrintItemFlow = (lVarMap.count("print-item-flow") != 0);
     theStableIteratorIds = (lVarMap.count("stable-iterator-id") != 0);
@@ -228,6 +233,7 @@ namespace zorba
     theTraceTranslator = (lVarMap.count("trace-translator") != 0);
     theTraceCodegen = (lVarMap.count("trace-codegen") != 0);
 #endif
+    theCompileOnly = (lVarMap.count("compile-only") != 0);
     
     Properties::theLoaded = true;
     
