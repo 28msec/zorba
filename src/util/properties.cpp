@@ -38,9 +38,9 @@ namespace zorba
 #ifndef NDEBUG
     ,theTraceTranslator(false),
     theTraceCodegen(false),
-    theStoreTraceLevel(0),
+    theStoreTraceLevel(0)
 #endif
-    theCompileOnly(false)
+    ,theCompileOnly(false)
   {
   }
   

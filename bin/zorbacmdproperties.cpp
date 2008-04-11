@@ -68,6 +68,9 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
     ("context-item", boost::program_options::value<std::string> (&theContextItem), 
      "Provide the context item given an XML document in a file")
+
+    ("optimization-level", boost::program_options::value<std::string>(&theOptLevel)->default_value("O1"),
+     "Optimization level for compiling the query (i.e. O0, O1)")
     ;
 
   boost::program_options::options_description lHiddenOptions ("Hidden Options" );
@@ -112,7 +115,7 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
   if ( theBoundarySpace.size() != 0 )
   {
-    if ( ! theBoundarySpace.compare("strip") == 0 || theBoundarySpace.compare("preserve") == 0 )
+    if ( ! (theBoundarySpace.compare("strip") == 0 || theBoundarySpace.compare("preserve") == 0 ))
     {
       std::cerr << "Only strip and preserve are allowed as values for the option boundary-space." 
                 << std::endl;
@@ -122,7 +125,7 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
   if ( theConstructionMode.size() != 0 )
   {
-    if ( ! theConstructionMode.compare("strip") == 0 || theConstructionMode.compare("preserve") == 0 )
+    if ( ! (theConstructionMode.compare("strip") == 0 || theConstructionMode.compare("preserve") == 0 ))
     {
       std::cerr << "Only strip and preserve are allowed as values for the option construction-mode." 
                 << std::endl;
@@ -132,12 +135,18 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
   if ( theOrderingMode.size() != 0 )
   {
-    if ( ! theOrderingMode.compare("ordered") == 0 || theOrderingMode.compare("unordered") == 0 )
+    if ( ! (theOrderingMode.compare("ordered") == 0 || theOrderingMode.compare("unordered") == 0 ))
     {
       std::cerr << "Only ordered and unordered are allowed as values for the option ordering-mode." 
                 << std::endl;
       return false;
     }
+  }
+
+  if ( ! (theOptLevel.compare("O0") == 0 || theOptLevel.compare("O1") == 0 ))
+  {
+    std::cerr << "Only O0 or O1 are allowed as values for the option opt-level." << std::endl;
+    return false;
   }
 
   std::vector<std::string>::const_iterator lIter = theExternalVarsString.begin();

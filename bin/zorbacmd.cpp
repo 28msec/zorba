@@ -197,10 +197,16 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   try {
+    zorba::XQuery::CompilerHints lHints;
+
+    // default is O1
+    if (lProperties.getOptLevel() == "O0")
+      lHints.opt_level = zorba::XQuery::CompilerHints::O0;
+
     if (lTiming)
       lStartCompileTime = boost::posix_time::microsec_clock::local_time();
 
-    lQuery = lZorbaInstance->compileQuery(*qfile, lStaticContext);
+    lQuery = lZorbaInstance->compileQuery(*qfile, lStaticContext, lHints);
 
     if (lTiming)
       lStopCompileTime = boost::posix_time::microsec_clock::local_time();

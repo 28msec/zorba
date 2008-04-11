@@ -19,6 +19,9 @@ private:
   std::string theBaseUri, theBoundarySpace, theDefaultCollation, 
               theConstructionMode, theOrderingMode;
 
+  // optimization level (i.e. O0, O1)
+  std::string theOptLevel;
+
 public:
   struct ExternalVariable {
     std::string var_name;
@@ -101,6 +104,9 @@ public:
   
   const std::string&
   getContextItem()      { return theContextItem; }
+
+  const std::string&
+  getOptLevel()         { return theOptLevel; } 
 
   ExternalVars_t::const_iterator
   externalVarsBegin()   { return theExternalVars.begin(); }
