@@ -154,14 +154,32 @@ static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
   return modified;
 }
 
-static bool mark_casts (expr_t input, xqtref_t target) {
-  if (TypeOps::type_max_cnt (*target) <= 1) {
-    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
-    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VAL);
-    return true;
-  }
+  static void mark_casts (cast_or_castable_base_expr *node, expr_t input, static_context *sctx) {
+    xqtref_t target = node->get_target_type ();
+    if (TypeOps::is_equal (*target, *GENV_TYPESYSTEM.EMPTY_TYPE)) {
+      TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
+      TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VAL);
+    }
 
-  return false;
+    bool is_cast = dynamic_cast<cast_base_expr *> (input.getp ()) != NULL;
+
+    TypeConstants::quantifier_t q = TypeOps::quantifier (*target);
+
+    if (! is_cast || q == TypeConstants::QUANT_ONE) {
+      TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
+    } else if (is_cast) {
+      TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES,
+                                             TSVAnnotationValue::from_bool (node->get_annotation (AnnotationKey::IGNORES_DUP_NODES) == TSVAnnotationValue::TRUE_VAL));
+    }
+
+    bool ignores_dups =
+      q == TypeConstants::QUANT_STAR
+      || (q == TypeConstants::QUANT_PLUS
+          && TypeOps::type_min_cnt (*input->return_type (sctx)) >= 1);
+    if (is_cast)
+      ignores_dups = ignores_dups && node->get_annotation (AnnotationKey::IGNORES_DUP_NODES) == TSVAnnotationValue::TRUE_VAL;
+    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES,
+                                           TSVAnnotationValue::from_bool (ignores_dups));
 }
 
 RULE_REWRITE_PRE(MarkConsumerNodeProps)
@@ -238,19 +256,10 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
 
   default:
     {
-      cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
+      cast_or_castable_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
       if (ce != NULL) {
         expr_t input = ce->get_input ();
-        if (! mark_casts (input, ce->get_target_type ()))
-          propagate_down_nodeid_props (node, input);
-        break;
-      }
-    }
-    
-    {
-      castable_base_expr *ce = dynamic_cast<castable_base_expr *> (node);
-      if (ce != NULL) {
-        mark_casts (ce->get_input (), ce->get_target_type ());
+        mark_casts (ce, input, rCtx.getStaticContext ());
         break;
       }
     }
