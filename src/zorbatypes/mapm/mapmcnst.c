@@ -103,8 +103,8 @@
 #include "m_apm_lc.h"
 
 int	MM_lc_PI_digits = 0;
-int	MM_lc_log_digits;
-int     MM_cpp_min_precision;       /* only used in C++ wrapper */
+int	MM_lc_log_digits = 0;
+int MM_cpp_min_precision = 0;       /* only used in C++ wrapper */
 
 M_APM	MM_Zero          = NULL;
 M_APM	MM_One           = NULL;
