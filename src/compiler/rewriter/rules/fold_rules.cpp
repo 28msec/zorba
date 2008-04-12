@@ -1,5 +1,5 @@
-#include "compiler/rewriter/rules/ruleset.h"
 #include "context/static_context.h"
+#include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/expr.h"
 #include "compiler/codegen/plan_visitor.h"
@@ -8,10 +8,11 @@
 #include "types/casting.h"
 #include "system/globalenv.h"
 #include "runtime/api/plan_wrapper.h"
+
 #include "functions/function.h"
 #include "functions/Misc.h"
-#include "errors/error_messages.h"
 
+#include "errors/error_messages.h"
 #include "errors/errors.h"
 
 using namespace std;

@@ -1230,7 +1230,12 @@ PlanIter_t codegen (const char *descr, expr *root, hash64map<vector<ref_iter_t> 
   plan_visitor c( param_var_map);
   root->accept (c);
   PlanIter_t result = c.pop_itstack ();
-  if (result != NULL && descr != NULL && Properties::instance()->printIteratorTree()) {
+
+  // HACK: print only main query if stable id's is active.
+  // If stable-id's is active, we are comparing iterator plans.
+  if (result != NULL && descr != NULL && Properties::instance()->printIteratorTree()
+      && (xqp_string ("main query") == descr || ! Properties::instance()->stableIteratorIds())) 
+  {
     cout << "Iterator tree for " << descr << ":\n";
     XMLIterPrinter vp(cout);
     PrinterVisitor pv(vp, result);

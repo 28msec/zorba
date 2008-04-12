@@ -50,7 +50,7 @@ namespace zorba {
     // TODO we might pass the CompilerCB here, however, we also need it in the runtime
     // because codegeneration for udfs is triggered there
     // then however, the compilercb can not be const in the runtime?!
-    PlanIter_t plan = codegen ("query", lExpr);  // TODO can NULL be returned?
+    PlanIter_t plan = codegen ("main query", lExpr);
 
     return plan;
   }
