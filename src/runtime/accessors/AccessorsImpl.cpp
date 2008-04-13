@@ -14,6 +14,7 @@
 #include "runtime/accessors/AccessorsImpl.h"
 #include "util/Assert.h"
 #include "store/api/item_factory.h"
+#include "context/namespace_context.h"
 
 namespace zorba {
 
@@ -147,7 +148,9 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
 //---------------------
 store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t inNode;
+  store::Item_t inNode, attr, attrName;
+  Iterator_t    theAttributes;
+  bool          found = false;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -156,12 +159,28 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
 
   if (inNode != NULL)
   {
-    if (inNode->isNode()) {
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getBaseURI().getStore()), state);
+    if(inNode->getNodeKind() == store::StoreConsts::documentNode ||
+        inNode->getNodeKind() == store::StoreConsts::piNode)
+    {
+      if (!inNode->getBaseURI().getStore()->byteEqual("",0))
+        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getBaseURI().getStore()), state);
     }
-    else {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
-                            "The argument of the fn:base-uri function is not a node");
+    else if(inNode->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      if (!inNode->getBaseURI().getStore()->byteEqual("",0))
+        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getBaseURI().getStore()), state);
+      else
+      {
+        for ((theAttributes = inNode->getAttributes())->open ();
+              ! found && NULL != (attr = theAttributes->next()); )
+        {
+          attrName = attr->getNodeName();
+          found = xqp_string (attrName->getLocalName ()) == "base"
+              && xqp_string (attrName->getNamespace ()) == XML_NS;
+        }
+        if(found)
+          STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(attr->getStringValue()), state);
+      }
     }
   }
   
@@ -186,7 +205,8 @@ store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
           ZorbaError::XPTY0004, loc, "The argument of the fn:document-uri function is not a node");
     
     if(inNode->getNodeKind() == store::StoreConsts::documentNode)
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getDocumentURI().getStore()), state);
+      if(!inNode->getDocumentURI().byteEqual("",0))
+        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getDocumentURI().getStore()), state);
   }
   
   STACK_END (state);
