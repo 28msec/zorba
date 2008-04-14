@@ -134,7 +134,12 @@ public:
         RuntimeCB* aRuntimeCB,
         XQPCollator* aCollation = 0) const;
 
-  virtual xqpStringStore_t getBaseURI() const;
+  xqpStringStore_t getBaseURI() const
+  {
+    bool local = false;
+    return getBaseURIInternal(local);
+  }
+
   virtual xqpStringStore_t getDocumentURI() const;
 
   Item_t getEBV() const;
@@ -161,7 +166,7 @@ public:
         XmlTree* newTree,
         XmlNode* parent,
         ulong pos,
-        bool assignIds);
+        const CopyMode& copymode);
 
   void deleteTree() throw();
 
@@ -233,6 +238,8 @@ public:
   virtual bool isConstructed() const     { NODE_STOP; return false; }
 
 protected:
+  virtual xqpStringStore_t getBaseURIInternal(bool& local) const;
+
   ulong disconnect() throw();
   void connect(XmlNode* node, ulong pos) throw();
   void removeChild(ulong pos);
@@ -270,7 +277,6 @@ public:
 
   Item* getType() const; 
 
-  xqpStringStore_t getBaseURI() const     { return theBaseUri.getp(); }
   xqpStringStore_t getDocumentURI() const { return theDocUri.getp(); }
 
   Iterator_t getChildren() const;
@@ -293,6 +299,9 @@ public:
 
   NsBindingsContext* getNsContext() const                { return NULL; }
   xqpStringStore* findBinding(xqpStringStore* pre) const { return NULL; }
+
+protected:
+  xqpStringStore_t getBaseURIInternal(bool& local) const;
 };
 
 
@@ -463,6 +472,9 @@ public:
         const CopyMode&   copymode);
 
   void rename(Item_t& newname, Item_t& oldName);
+
+protected:
+  void addBaseUriAttribute(xqpStringStore* baseUri);
 };
 
 
@@ -502,8 +514,6 @@ public:
         Item*     nodeName,
         Item*     typeName);
 
-  xqpStringStore_t getBaseURI() const;
-  
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
   const NodeVector& attributes() const { return theAttributes; }
@@ -515,6 +525,9 @@ public:
   XmlNode* getChild(ulong i) const     { return theChildren.get(i); }
 
   bool isConstructed() const           { return false; }
+
+protected:
+  xqpStringStore_t getBaseURIInternal(bool& local) const;
 
 private:
   //disable default copy constructor
@@ -553,8 +566,6 @@ public:
         bool              copy,
         const CopyMode&   copymode);
 
-  xqpStringStore_t getBaseURI() const;
-
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
   const NodeVector& attributes() const { return theAttributes; }
@@ -568,6 +579,8 @@ public:
   bool isConstructed() const           { return true; }
 
 protected:
+  xqpStringStore_t getBaseURIInternal(bool& local) const;
+
   void addAttribute(
         XmlNode*        cnode,
         bool            copy,
@@ -658,8 +671,6 @@ public:
 
   bool isBaseUri() const      { return (theFlags & XmlNode::IsBaseUri) != 0; }
 
-  xqpStringStore_t getBaseURI() const { return 0; }
-
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
@@ -712,8 +723,6 @@ public:
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::textNode; }
 
   Item* getType() const;
-
-  xqpStringStore_t getBaseURI() const { return 0; }
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -821,8 +830,6 @@ public:
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::commentNode; }
 
   Item* getType() const;
-
-  xqpStringStore_t getBaseURI() const { return 0; }
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;

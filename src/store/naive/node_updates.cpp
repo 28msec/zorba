@@ -175,8 +175,10 @@ void XmlNode::removeChildren(
     {
       ZORBA_FATAL(child->getTree() == getTree(), "");
 
+      CopyMode copymode;
+      copymode.set(false, true, true, false);
       XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-      child->switchTree(tree, NULL, 0, false);
+      child->switchTree(tree, NULL, 0, copymode);
     }
     else
     {
@@ -208,7 +210,7 @@ void XmlNode::insertChildren(
     {
       ZORBA_FATAL(child->isConstructed(), "");
 
-      child->switchTree(getTree(), this, pos + i, true);
+      child->switchTree(getTree(), this, pos + i, copymode);
 
       children().insert(child, pos + i, false);
     }
@@ -237,7 +239,7 @@ void XmlNode::insertChildrenFirst(
     {
       ZORBA_FATAL(child->isConstructed(), "");
 
-      child->switchTree(getTree(), this, 0, true);
+      child->switchTree(getTree(), this, 0, copymode);
 
       this->children().insert(child, 0, false);
     }
@@ -322,7 +324,7 @@ void XmlNode::replaceChild(
     {
       ZORBA_FATAL(child->isConstructed(), "");
 
-      child->switchTree(getTree(), this, pos + i, true);
+      child->switchTree(getTree(), this, pos + i, copymode);
 
       children().insert(child, pos + i, false);
     }
@@ -350,8 +352,10 @@ void ElementNode::removeAttributes(
     {
       ZORBA_FATAL(attr->getTree() == getTree(), "");
 
+      CopyMode copymode;
+      copymode.set(false, true, true, false);
       XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-      attr->switchTree(tree, NULL, 0, false);
+      attr->switchTree(tree, NULL, 0, copymode);
     }
     else
     {
@@ -387,7 +391,7 @@ void ElementNode::insertAttributes(
     {
       ZORBA_FATAL(attr->isConstructed(), "");
 
-      attr->switchTree(getTree(), this, numAttrs + i, true);
+      attr->switchTree(getTree(), this, numAttrs + i, copymode);
 
       attributes().push_back(attr, false);
     }
@@ -425,7 +429,7 @@ void ElementNode::replaceAttribute(
     {
       ZORBA_FATAL(attr->isConstructed(), "");
 
-      attr->switchTree(getTree(), this, pos + i, true);
+      attr->switchTree(getTree(), this, pos + i, copymode);
 
       attributes().insert(attr, pos + i, false);
     }
@@ -465,7 +469,7 @@ void ElementNode::replaceContent(
   {
     ZORBA_FATAL(newTextChild->isConstructed(), "");
 
-    newTextChild->switchTree(getTree(), this, 0, true);
+    newTextChild->switchTree(getTree(), this, 0, copymode);
 
     children().push_back(newTextChild, false);
   }

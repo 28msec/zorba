@@ -202,10 +202,12 @@ uint32_t XmlNode::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t XmlNode::getBaseURI() const
+xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
 {
+  local = false;
   return theParent ? theParent->getBaseURI().getp() : 0;
 }
+
 
 
 xqpStringStore_t XmlNode::getDocumentURI() const
@@ -468,12 +470,14 @@ void XmlNode::connect(XmlNode* parent, ulong pos) throw()
   be placed is also given.     
 ********************************************************************************/
 void XmlNode::switchTree(
-    XmlTree* newTree,
-    XmlNode* parent,
-    ulong    pos,
-    bool     assignIds)
+    XmlTree*        newTree,
+    XmlNode*        parent,
+    ulong           pos,
+    const CopyMode& copymode)
 {
   ZORBA_FATAL(parent == NULL || parent->getTree() == newTree, "");
+
+  bool assignIds = copymode.theAssignIds;
 
   ulong refcount = 0;
   std::stack<XmlNode*> nodes;
@@ -485,7 +489,19 @@ void XmlNode::switchTree(
   try
   {
     if (theParent != NULL)
+    {
+      if (getNodeKind() == StoreConsts::elementNode)
+      {
+        bool local;
+        xqpStringStore_t baseuri = getBaseURIInternal(local);
+        if (!local)
+        {
+          reinterpret_cast<ElementNode*>(this)->addBaseUriAttribute(baseuri);
+        }
+      }
+
       theParent->removeChild(this);
+    }
 
     theParent = parent;
 
@@ -634,6 +650,13 @@ DocumentNode::~DocumentNode()
 Item* DocumentNode::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNTYPED];
+}
+
+
+xqpStringStore_t DocumentNode::getBaseURIInternal(bool& local) const
+{
+  local = true;
+  return theBaseUri;
 }
 
 
@@ -1314,6 +1337,24 @@ XmlNode* ElementNode::copy(
 /*******************************************************************************
 
 ********************************************************************************/
+void ElementNode::addBaseUriAttribute(xqpStringStore* baseUri)
+{
+  const SimpleStore& store = GET_STORE();
+  Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
+  Item_t tname = store.theSchemaTypeNames[XS_ANY_URI];
+  Item* typedValue = new AnyUriItemImpl(baseUri);
+  AttributeNode* attr = new AttributeNode(qname, tname, false, false);
+  attr->theParent = this;
+  attr->setHidden();
+  attr->theTypedValue = typedValue;
+  
+  attributes().push_back(attr, false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 xqp_string ElementNode::show() const
 {
   std::stringstream str;
@@ -1444,7 +1485,7 @@ LoadedElementNode::LoadedElementNode(
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t LoadedElementNode::getBaseURI() const
+xqpStringStore_t LoadedElementNode::getBaseURIInternal(bool& local) const
 {
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
@@ -1452,10 +1493,12 @@ xqpStringStore_t LoadedElementNode::getBaseURI() const
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(getAttr(i));
     if (attr->isBaseUri())
     {
+      local = true;
       return attr->getStringValue();
     }
   }
 
+  local = false;
   return theParent ? theParent->getBaseURI().getp() : 0;
 }
 
@@ -1579,16 +1622,7 @@ void ConstrElementNode::constructSubtree(
 
   if (!haveBaseUri && staticBaseUri != NULL && !staticBaseUri->empty())
   {
-    const SimpleStore& store = GET_STORE();
-    Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
-    Item_t tname = store.theSchemaTypeNames[XS_ANY_URI];
-    Item* typedValue = new AnyUriItemImpl(staticBaseUri);
-    AttributeNode* attr = new AttributeNode(qname, tname, false, false);
-    attr->theParent = this;
-    attr->setHidden();
-    attr->theTypedValue = typedValue;
-
-    theAttributes.push_back(attr, false);
+    addBaseUriAttribute(staticBaseUri);
   }
 
   theChildren.resize(numChildren());
@@ -1661,7 +1695,7 @@ void ConstrElementNode::addChild(
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t ConstrElementNode::getBaseURI() const
+xqpStringStore_t ConstrElementNode::getBaseURIInternal(bool& local) const
 {
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
@@ -1669,10 +1703,12 @@ xqpStringStore_t ConstrElementNode::getBaseURI() const
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(getAttr(i));
     if (attr->isBaseUri())
     {
+      local = true;
       return attr->getStringValue();
     }
   }
 
+  local = false;
   return theParent ? theParent->getBaseURI().getp() : new xqpStringStore("");
 }
 

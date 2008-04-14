@@ -623,6 +623,9 @@ void PULImpl::applyUpdates()
 
   try
   {
+    CopyMode copymode;
+    copymode.set(false, true, true, false);
+
     ulong numUpdates = theReplaceNodeList.size();
     for (ulong i = 0; i < numUpdates; i++)
     {
@@ -633,7 +636,7 @@ void PULImpl::applyUpdates()
                                 reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
 
       XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-      node->switchTree(tree, NULL, 0, false);
+      node->switchTree(tree, NULL, 0, copymode);
     }
 
     numUpdates = theReplaceContentList.size();
@@ -646,7 +649,7 @@ void PULImpl::applyUpdates()
       for (ulong j = 0; j < numChildren; j++)
       {
         XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-        upd->theOldChildren.get(j)->switchTree(tree, NULL, 0, false);
+        upd->theOldChildren.get(j)->switchTree(tree, NULL, 0, copymode);
       }
     }
 
@@ -658,7 +661,7 @@ void PULImpl::applyUpdates()
       {
         XmlNode* target = BASE_NODE(upd->theTarget);
         XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-        target->switchTree(tree, NULL, 0, false);
+        target->switchTree(tree, NULL, 0, copymode);
       }
     }
   }
