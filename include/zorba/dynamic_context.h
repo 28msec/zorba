@@ -43,9 +43,6 @@ namespace zorba {
       virtual void
       setDefaultCollection( const Item& aCollectionUri ) = 0;
 
-      virtual Iterator_t
-      getAvailableCollections ( ) = 0;
-
 
 #if 0
       virtual bool

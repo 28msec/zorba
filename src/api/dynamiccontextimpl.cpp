@@ -139,10 +139,5 @@ namespace zorba {
   }
 
 
-  Iterator_t
-  DynamicContextImpl::getAvailableCollections ( )
-  {
-  }
-
 
 } /* namespace zorba */
