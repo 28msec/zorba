@@ -18,6 +18,7 @@ SET(API_SRCS
     unmarshaller.cpp
     xmldatamanagerimpl.cpp
     resultiteratorchainer.cpp
+    collectionimpl.cpp
     )
 
 SET(API_BUILD_SRCS

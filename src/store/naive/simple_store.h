@@ -15,6 +15,10 @@ namespace zorba {
 
 class GlobalEnvironment;
 
+namespace error {
+  class ErrorManager;
+}
+
 namespace store {
 
 typedef StringHashMap<Collection_t> CollectionSet;
@@ -83,7 +87,7 @@ public:
   long getTraceLevel() const              { return theTraceLevel; }
 #endif
 
-  XmlLoader* getXmlLoader();
+  XmlLoader* getXmlLoader(error::ErrorManager*);
 
   ulong getTreeId();
 

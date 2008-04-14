@@ -7,7 +7,13 @@
 
 #include "store/naive/ordpath.h"
 
-namespace zorba { namespace store {
+namespace zorba { 
+  
+  namespace error {
+    class ErrorManager;
+  }
+
+  namespace store {
 
 class XmlTree;
 class XmlNode;
@@ -48,8 +54,10 @@ protected:
 
   char                             theBuffer[4096];
 
+  error::ErrorManager            * theErrorManager;
+
 public:
-  XmlLoader();
+  XmlLoader(error::ErrorManager*);
 
   ~XmlLoader();
 

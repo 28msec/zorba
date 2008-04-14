@@ -7,13 +7,15 @@
 #include <zorba/default_error_handler.h>
 
 #include "api/zorbaimpl.h"
+#include "api/unmarshaller.h"
+#include "api/collectionimpl.h"
 #include "errors/errors.h"
 #include "errors/error_manager.h"
 
+#include "store/api/collection.h"
 #include "store/api/item.h"
 #include "system/globalenv.h"
 #include "store/api/store.h"
-#include "api/unmarshaller.h"
 #include "zorbatypes/xqpstring.h"
 
 namespace zorba {
@@ -67,6 +69,54 @@ namespace zorba {
     std::ifstream lFileIn(lString->c_str());
 
     return loadDocument(local_file_uri, lFileIn, aErrorHandler);
+  }
+
+  Item
+  XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHandler)
+  {
+    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+    try {
+      return &*theStore->getDocument(lUri); 
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
+      return Item();
+    }
+  }
+
+  void
+  XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorHandler)
+  {
+    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+    try {
+      theStore->deleteDocument(lUri); 
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
+    }
+  }
+
+  Collection_t
+  XmlDataManagerImpl::createCollection(const String& uri, ErrorHandler* aErrorHandler)
+  {
+    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+    try {
+      return Collection_t(new CollectionImpl(theStore->createCollection(lUri), 
+                                             aErrorHandler!=0?aErrorHandler:theErrorHandler));
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
+      return Collection_t();
+    }
+  }
+
+  Collection_t
+  XmlDataManagerImpl::getCollection(const String& uri, ErrorHandler* aErrorHandler)
+  {
+    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+  }
+
+  void
+  XmlDataManagerImpl::deleteCollection(const String& uri, ErrorHandler* aErrorHandler)
+  {
+    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
   }
 
 } /* namespace zorba */

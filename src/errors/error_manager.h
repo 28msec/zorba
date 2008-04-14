@@ -13,78 +13,84 @@ namespace zorba { namespace error {
   {
   public:
     ErrorManager();
-      virtual ~ErrorManager();
+    virtual ~ErrorManager();
 
-      static ZorbaError
-      createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
-        const xqpString&               aDescription,
-        const std::string&             aFileName,
-        int                            aLineNumber,
-        const QueryLoc&                aLocation);
+    static ZorbaError
+    createException(
+      ::zorba::ZorbaError::ErrorCode aErrorCode,
+      const xqpString&               aDescription,
+      const std::string&             aFileName,
+      int                            aLineNumber,
+      const QueryLoc&                aLocation);
 
-      static ZorbaError
-      createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
-        const std::string&             aFileName,
-        int                            aLineNumber);
+    static ZorbaError
+    createException(
+      ::zorba::ZorbaError::ErrorCode aErrorCode,
+      const std::string&             aFileName,
+      int                            aLineNumber);
 
-      static ZorbaError
-      createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
-        const std::string&             aDesc, 
-        const std::string&             aFileName,
-        int                            aLineNumber);
+    static ZorbaError
+    createException(
+      ::zorba::ZorbaError::ErrorCode aErrorCode,
+      const std::string&             aDesc, 
+      const std::string&             aFileName,
+      int                            aLineNumber);
 
-      static ZorbaError
-      createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
-        const std::string&             aParam1,
-        const std::string&             aParam2,
-        const std::string&             aFileName,
-        int                            aLineNumber,
-        const QueryLoc&                aLocation = QueryLoc::null);
+    static ZorbaError
+    createException(
+      ::zorba::ZorbaError::ErrorCode aErrorCode,
+      const std::string&             aParam1,
+      const std::string&             aParam2,
+      const std::string&             aFileName,
+      int                            aLineNumber,
+      const QueryLoc&                aLocation = QueryLoc::null);
 
-      static ZorbaError
-      createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
-        const std::string&             aFileName,
-        int                            aLineNumber, 
-        const QueryLoc&                aLocation);
+    static ZorbaError
+    createException(
+      ::zorba::ZorbaError::ErrorCode aErrorCode,
+      const std::string&             aFileName,
+      int                            aLineNumber, 
+      const QueryLoc&                aLocation);
 
-      static ZorbaUserError
-      createUserException(
-        const ::zorba::store::Item_t& aErrQname,
-        const xqpString& aDescription,
-        std::vector< ::zorba::store::Item_t> aErrorObject,
-        const QueryLoc& aLocation,
-        const std::string& aFileName,
-        int aLineNumber);
+    static ZorbaUserError
+    createUserException(
+      const ::zorba::store::Item_t& aErrQname,
+      const xqpString& aDescription,
+      std::vector< ::zorba::store::Item_t> aErrorObject,
+      const QueryLoc& aLocation,
+      const std::string& aFileName,
+      int aLineNumber);
 
-      void
-      addError(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
-        const xqpString& aDescription,
-        const QueryLoc& aLocation,
-        const std::string& aFileName,
-        int aLineNumber);
+    void
+    addError(
+      ::zorba::ZorbaError::ErrorCode aErrorCode,
+      const xqpString& aDescription,
+      const std::string& aFileName,
+      int aLineNumber,
+      const QueryLoc& aLocation = QueryLoc::null);
 
-      void
-      addError(
-        ::zorba::ZorbaError::ErrorCode aErrorCode, 
-        const std::string& aParam1,
-        const std::string& aParam2,
-        const std::string& aFileName,
-        int aLineNumber,
-        const QueryLoc& aLocation = QueryLoc::null);
+    void
+    addError(
+      ::zorba::ZorbaError::ErrorCode aErrorCode, 
+      const std::string& aParam1,
+      const std::string& aParam2,
+      const std::string& aFileName,
+      int aLineNumber,
+      const QueryLoc& aLocation = QueryLoc::null);
 
-      void
-      addWarning(
-        ZorbaWarning::WarningCode aWarningCode,
-        const xqpString& aDescription,
-        const QueryLoc& aLocation,
-        const std::string& aFileName,
-        int aLineNumber);
+    void
+    addWarning(
+      ZorbaWarning::WarningCode aWarningCode,
+      const xqpString& aDescription,
+      const QueryLoc& aLocation,
+      const std::string& aFileName,
+      int aLineNumber);
+
+    bool
+    hasErrors() { return theErrors.size() != 0; }
+
+    std::vector<ZorbaError>&
+    getErrors() { return theErrors; }
 
     protected:
       // contains all errors that were raised but the execution went on
@@ -147,8 +153,8 @@ namespace zorba { namespace error {
 
 
 // create an error, remeber it, and continue
-#define ZORBA_ERROR_DESC_CONTINUE(manager, code, loc, desc) do { \
-    manager->addError(code, desc, __FILE__, __LINE__, loc);     \
+#define ZORBA_ERROR_DESC_CONTINUE(manager, code,  desc) do { \
+    manager->addError(code, desc, __FILE__, __LINE__);     \
 } while (0) 
 
 
@@ -157,7 +163,7 @@ namespace zorba { namespace error {
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \
-  throw manager->addError(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__); \
+  manager->addError(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__); \
 } while (0) 
 
 #define ZORBA_ERROR_PARAM_CONTINUE(manager, code, param1, param2) \

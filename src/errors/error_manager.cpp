@@ -100,9 +100,9 @@ namespace zorba { namespace error {
   ErrorManager::addError(
     ::zorba::ZorbaError::ErrorCode aErrorCode,
     const xqpString& aDescription,
-    const QueryLoc& aLocation,
     const std::string& aFileName,
-    int aLineNumber)
+    int aLineNumber,
+    const QueryLoc& aLocation)
   {
     ZorbaError lError(aErrorCode, aDescription, aLocation, aFileName, aLineNumber);
     theErrors.push_back(lError);

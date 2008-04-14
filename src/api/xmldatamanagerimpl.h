@@ -28,6 +28,21 @@ namespace zorba {
       Item
       loadDocument(const String& local_file_uri, ErrorHandler* aErrorHandler = 0);
 
+      Item
+      getDocument(const String& uri, ErrorHandler* aErrorHandler = 0);
+
+      void
+      deleteDocument(const String& uri, ErrorHandler* aErrorHandler = 0);
+
+      Collection_t
+      createCollection(const String& uri, ErrorHandler* aErrorHandler = 0);
+
+      Collection_t
+      getCollection(const String& uri, ErrorHandler* aErrorHandler = 0);
+
+      void
+      deleteCollection(const String& uri, ErrorHandler* aErrorHandler = 0);
+
     protected:
       XmlDataManagerImpl();
 

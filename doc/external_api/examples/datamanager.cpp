@@ -11,14 +11,48 @@ using namespace zorba;
 bool
 datamanager_example_1(Zorba* aZorba, XmlDataManager* aDataManager)
 {
+  try {
+    std::stringstream lInStream("<books><book>Book 1</book><book>Book 2</book></books>");
 
-  std::stringstream lInStream("<books><book>Book 1</book><book>Book 2</book></books>");
+    aDataManager->loadDocument("books.xml", lInStream);
 
-  aDataManager->loadDocument("books.xml", lInStream);
+	  XQuery_t lQuery = aZorba->compileQuery("doc('books.xml')//book"); 
 
-	XQuery_t lQuery = aZorba->compileQuery("doc('books.xml')//book"); 
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException& e) {
+    std::cerr << e << std::endl;
+    return false;
+  }
 
-  std::cout << lQuery << std::endl;
+	return true;
+}
+
+bool
+datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
+{
+  try {
+    Collection_t lCollection = 
+      aDataManager->createCollection("http://www.flworfound.org/collections/mybooks");
+
+    std::cout << "URI "  << lCollection->getUri().getStringValue() << std::endl;
+
+    for (int i = 0; i < 10; ++i) {
+      std::stringstream lInStream;
+      lInStream << "<book>Book " << i << "</book>";
+      lCollection->addDocument(lInStream);
+    }
+
+	  XQuery_t lQuery = aZorba->compileQuery("for $i in fn:collection() return $i//book"); 
+
+    Item lDefaultCollection = aZorba->getItemFactory()
+      ->createAnyURI("http://www.flworfound.org/collections/mybooks");
+    lQuery->getDynamicContext()->setDefaultCollection(lDefaultCollection);
+
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException& e) {
+    std::cerr << e << std::endl;
+    return false;
+  }
 
 	return true;
 }
@@ -34,6 +68,9 @@ datamanager(int argc, char* argv[])
 	assert(datamanager_example_1(lZorba, lDataManager)); 
   std::cout << std::endl;
 
+  std::cout << "executing example 2" << std::endl;
+	assert(datamanager_example_2(lZorba, lDataManager)); 
+  std::cout << std::endl;
   
   return 0;
 }

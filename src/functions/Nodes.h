@@ -28,9 +28,16 @@ class fn_lang : public function {
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
-class fn_collection : public function {
+class fn_collection_0 : public function {
   public:
-    fn_collection(const signature&);
+    fn_collection_0(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
+};
+
+class fn_collection_1 : public function {
+  public:
+    fn_collection_1(const signature&);
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
 };

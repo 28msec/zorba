@@ -144,8 +144,7 @@ store::Item_t FnCollectionIterator::nextImpl(PlanState& planState) const
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
 
-  itemArg = consumeNext(theChildren[0].getp(), planState);
-  if (itemArg != NULL)
+  if (theChildren.size() == 1 && (itemArg = consumeNext(theChildren[0].getp(), planState)) != NULL) 
     uri = itemArg->getStringValue().getp();
   else
   {
@@ -158,10 +157,11 @@ store::Item_t FnCollectionIterator::nextImpl(PlanState& planState) const
   theColl = GENV_STORE.getCollection(uri.getStore());
 
   if(theColl == NULL)
-    ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0004, loc,
-                         "Invalid argument to fn:collection.");
+    ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0004, loc, "Invalid argument to fn:collection.");
 
   state->theIterator = theColl->getIterator(false);
+  assert(state->theIterator!=NULL);
+  state->theIterator->open();
   
   while((itemColl = state->theIterator->next()) != NULL )
     STACK_PUSH (itemColl, state);

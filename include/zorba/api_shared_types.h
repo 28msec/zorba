@@ -15,6 +15,7 @@ namespace zorba {
   class StatelessExternalFunction;
   class TypeIdentifier;
   class ItemSequence;
+  class Collection;
 
   class ErrorHandler;
 
@@ -24,8 +25,9 @@ namespace zorba {
   typedef boost::shared_ptr<DynamicContext>             DynamicContext_t;
   typedef boost::shared_ptr<ResultIterator>             ResultIterator_t;
   typedef boost::shared_ptr<TypeIdentifier>             TypeIdentifier_t;
+  typedef boost::shared_ptr<Collection>                 Collection_t;
 
-  // auto pointer
+  // auto pointer (used for transfering ownership of the return type of external functions)
   typedef std::auto_ptr<ItemSequence>                   ItemSequence_t;
 
   // data handlers 

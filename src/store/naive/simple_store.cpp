@@ -216,9 +216,9 @@ ulong SimpleStore::getTreeId()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader* SimpleStore::getXmlLoader()
+XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 {
-  return new XmlLoader();
+  return new XmlLoader(aErrorManager);
 }
 
 
@@ -276,9 +276,13 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
   if (found)
     return rootp->getp();
 
-  std::auto_ptr<XmlLoader> loader(getXmlLoader());
+  error::ErrorManager lErrorManager;
+  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
 
   XmlNode_t root = loader->loadXml(uri, stream);
+  if (lErrorManager.hasErrors()) {
+    throw lErrorManager.getErrors().front();
+  }
 
   if (root != NULL)
   {

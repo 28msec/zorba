@@ -130,4 +130,12 @@ namespace zorba {
     return theCtx->get_implicit_timezone();
   }
 
+  void
+  DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
+  {
+    store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
+    xqpString     lString(lItem->getStringValue());
+    theCtx->set_default_collection(lString);
+  }
+
 } /* namespace zorba */

@@ -56,9 +56,14 @@ Iterator_t SimpleCollection::getIterator(bool idsNeeded)
 ********************************************************************************/
 Item_t SimpleCollection::addToCollection(std::istream& stream)
 {
-  XmlLoader* loader = GET_STORE().getXmlLoader();
+  error::ErrorManager lErrorManager;
+  std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
 
   XmlNode* root = loader->loadXml(NULL, stream);
+
+  if (lErrorManager.hasErrors()) {
+    throw lErrorManager.getErrors().front();
+  }
 
   if (root != NULL)
   {

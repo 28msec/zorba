@@ -40,6 +40,10 @@ namespace zorba {
       virtual int
       getImplicitTimezone() = 0;
 
+      virtual void
+      setDefaultCollection( const Item& aCollectionUri ) = 0;
+
+
 #if 0
       virtual bool
       deleteVariable( xqp_string varname ) = 0;

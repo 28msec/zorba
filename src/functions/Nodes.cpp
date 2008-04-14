@@ -51,10 +51,18 @@ PlanIter_t fn_lang::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv,
 /*******************************************************************************
   15.5.6 fn:collection
 ********************************************************************************/
-fn_collection::fn_collection (const signature &sig) : function (sig) {}
+fn_collection_0::fn_collection_0 (const signature &sig) : function (sig) {}
 
 
-PlanIter_t fn_collection::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_collection_0::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnCollectionIterator(loc, argv);
+}
+
+fn_collection_1::fn_collection_1 (const signature &sig) : function (sig) {}
+
+
+PlanIter_t fn_collection_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnCollectionIterator(loc, argv);
 }

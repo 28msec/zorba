@@ -51,12 +51,13 @@ int traceLevel = 0;
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader::XmlLoader()
+XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
 :
   theBaseUri(NULL),
   theDocUri(NULL),
   theTree(NULL),
-  theRootNode(NULL)
+  theRootNode(NULL),
+  theErrorManager(aErrorManager)
 {
   theOrdPath.init();
 
@@ -163,18 +164,20 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 
     if (stream.bad())
     {
-      ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, "Input stream in bad state");
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                                ZorbaError::XQP0016_LOADER_IO_ERROR, "Input stream in bad state");
     }
 
     return stream.gcount();
   }
   catch (std::iostream::failure e)
   {
-    ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, e.what());
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZorbaError::XQP0016_LOADER_IO_ERROR, e.what());
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown exception");
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
+                              ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown exception");
   }
 
   return -1;
@@ -199,7 +202,13 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown I/O error");
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
+                                ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown I/O error");
+      abort();
+      return NULL;
+    } else if (numChars == 0) {
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
+                                ZorbaError::XQP0016_LOADER_IO_ERROR, "No input data.");
       abort();
       return NULL;
     }
@@ -208,9 +217,8 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 
     if (ctxt == NULL)
     {
-      // TODO get the error manager here and continue execution
-      ZORBA_ERROR_DESC(ZorbaError::XQP0017_LOADER_PARSING_ERROR, 
-                       "Failed to initialize parser");
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZorbaError::XQP0017_LOADER_PARSING_ERROR, 
+                                "Failed to initialize parser");
       abort();
 			return NULL;
     }
@@ -222,8 +230,8 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 
     if (numChars < 0)
     {
-      // TODO get the error manager here and continue execution
-      ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown I/O error");
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                                ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown I/O error");
       xmlFreeParserCtxt(ctxt);
       abort();
       return NULL;
@@ -246,15 +254,14 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
   {
     if (theDocUri != NULL)
     {
-      // TODO get the error manager here and continue execution
-      ZORBA_ERROR_PARAM_OSS(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                        "The document with URI " << *theDocUri
-                        <<" is not well formed", "");
+      ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager, ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                     "The document with URI " << *theDocUri
+                                     <<" is not well formed", "");
     }
     else
     {
-      // TODO get the error manager here and continue execution
-      ZORBA_ERROR_DESC(ZorbaError::XQP0017_LOADER_PARSING_ERROR, "Not well formed XML");
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                                ZorbaError::XQP0017_LOADER_PARSING_ERROR, "Not well formed XML");
     }
 
     abort();
@@ -721,13 +728,13 @@ void XmlLoader::processingInstruction(
 ********************************************************************************/
 void  XmlLoader::error(void * ctx, const char * msg, ... )
 {
+  XmlLoader* loader = (static_cast<XmlLoader *>(ctx));
   char buf[1024];
   va_list args;
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  // TODO continue execution
-  ZORBA_ERROR_DESC(ZorbaError::XQP0017_LOADER_PARSING_ERROR, buf);
+  ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager, ZorbaError::XQP0017_LOADER_PARSING_ERROR, buf);
 }
 
 
