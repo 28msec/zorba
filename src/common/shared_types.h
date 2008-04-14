@@ -56,6 +56,8 @@ namespace zorba {
     typedef rchandle<NsBindingsContext> NsBindingsContext_t;
     class ResultIteratorChainer;
     typedef rchandle<ResultIteratorChainer> ResultIteratorChainer_t;
+    class Iterator;
+    typedef rchandle<Iterator> Iterator_t;
   }
 
   namespace types {
@@ -214,8 +216,6 @@ typedef rchandle<GMonthDay> GMonthDay_t;
 typedef rchandle<GDay> GDay_t;
 typedef rchandle<GMonth> GMonth_t;
 
-class Iterator;
-typedef rchandle<Iterator> Iterator_t;
 
 /* numerics */
 template <class Object> class FloatImpl;

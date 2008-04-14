@@ -141,8 +141,8 @@ namespace zorba
   {
     store::Item_t lItem0;
     store::Item_t lItem1;
-    Iterator_t lIter0;
-    Iterator_t lIter1;
+    store::Iterator_t lIter0;
+    store::Iterator_t lIter1;
     store::TempSeq_t temp0;
     store::TempSeq_t temp1;
     int32_t i0;

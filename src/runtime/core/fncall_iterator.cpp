@@ -48,8 +48,8 @@ void UDFunctionCallIteratorState::resetPlan()
 
 void UDFunctionCallIteratorState::resetChildIters()
 {
-  std::vector<Iterator_t>::const_iterator lIter = theChildIterators.begin();
-  std::vector<Iterator_t>::const_iterator lEnd = theChildIterators.end();
+  std::vector<store::Iterator_t>::const_iterator lIter = theChildIterators.begin();
+  std::vector<store::Iterator_t>::const_iterator lEnd = theChildIterators.end();
   for ( ; lIter != lEnd; ++lIter)
     (*lIter)->close();
 

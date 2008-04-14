@@ -11,6 +11,7 @@ namespace zorba {
   class StaticContext;
   class DynamicContext;
   class XmlDataManager;
+  class Iterator;
   class ResultIterator;
   class StatelessExternalFunction;
   class TypeIdentifier;
@@ -24,6 +25,7 @@ namespace zorba {
   typedef boost::shared_ptr<StaticContext>              StaticContext_t;
   typedef boost::shared_ptr<DynamicContext>             DynamicContext_t;
   typedef boost::shared_ptr<ResultIterator>             ResultIterator_t;
+  typedef boost::shared_ptr<Iterator>                   Iterator_t;
   typedef boost::shared_ptr<TypeIdentifier>             TypeIdentifier_t;
   typedef boost::shared_ptr<Collection>                 Collection_t;
 

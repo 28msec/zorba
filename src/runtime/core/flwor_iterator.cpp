@@ -466,11 +466,11 @@ void FLWORIterator::matResultAndOrder(
     ++lSpecIter;
   }
 
-  Iterator_t iterWrapper = new PlanIteratorWrapper(returnClause, planState);
+  store::Iterator_t iterWrapper = new PlanIteratorWrapper(returnClause, planState);
   store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false, false);
-  Iterator_t iter = result->getIterator();
+  store::Iterator_t iter = result->getIterator();
   iter->open();
-  flworState->orderMap->insert(std::pair<std::vector<store::Item_t>, Iterator_t>(orderKey, iter));
+  flworState->orderMap->insert(std::pair<std::vector<store::Item_t>, store::Iterator_t>(orderKey, iter));
   returnClause->reset(planState);
 
 }
@@ -567,7 +567,7 @@ bool FLWORIterator::bindVariable (
       return false;
     }
 
-    Iterator_t iterWrapper = new PlanIteratorWrapper(lForLetClause.theInput, planState);
+    store::Iterator_t iterWrapper = new PlanIteratorWrapper(lForLetClause.theInput, planState);
     //Depending on the query, we might need to materialize the LET-Binding
     if ( lForLetClause.theNeedsMaterialization )
     {
@@ -577,7 +577,7 @@ bool FLWORIterator::bindVariable (
            letIter != lForLetClause.theLetVars.end();
            letIter++ )
       {
-        Iterator_t iter = tmpSeq->getIterator();
+        store::Iterator_t iter = tmpSeq->getIterator();
         iter->open();
         (*letIter)->bind(iter, planState);
       }

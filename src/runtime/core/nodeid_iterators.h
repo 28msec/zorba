@@ -13,7 +13,7 @@ namespace zorba
 class NodeDistinctState : public PlanIteratorState
 {
 public:
-  Iterator_t  theStoreIterator;
+  store::Iterator_t  theStoreIterator;
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -60,7 +60,7 @@ NARY_ITER_STATE (NodeUniqIterator, NodeUniqIteratorState);
 class NodeSortState : public PlanIteratorState
 {
 public:
-  Iterator_t  theStoreIterator;
+  store::Iterator_t  theStoreIterator;
   void init(PlanState&);
   void reset(PlanState&);
 };

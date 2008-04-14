@@ -7,7 +7,7 @@ namespace zorba{
 
 SAX2_AttributesNative::SAX2_AttributesNative(store::Item *item)
 {
-  Iterator_t    attr_it;
+  store::Iterator_t    attr_it;
   SAX2_XmlAttribute   a;
   store::Item_t      item_qname;
   attr_it = item->getAttributes();

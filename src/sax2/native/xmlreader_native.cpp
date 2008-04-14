@@ -177,7 +177,7 @@ bool SAX2_XMLReaderNative::parse(XQuery_t xquery, ErrorHandler* aErrorHandler)
 
 void SAX2_XMLReaderNative::emit_node_children(store::Item* item)//, bool perform_escaping = true)
 {
-  Iterator_t it;
+  store::Iterator_t it;
   store::Item_t child;	
 //  int closed_parent_tag = 0;
   

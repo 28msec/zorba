@@ -40,7 +40,7 @@ protected:
 
 	typedef union
 	{
-		Iterator* var_iterator;
+    store::Iterator* var_iterator;
 	}
   dctx_value_t;
 
@@ -59,7 +59,7 @@ protected:
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
 
-  Iterator* lookup_var_iter (xqp_string key) const;
+  store::Iterator* lookup_var_iter (xqp_string key) const;
 
   store::Item_t		ctxt_item;
 	unsigned long		ctxt_position;
@@ -102,8 +102,8 @@ public:
 	void		set_implicit_timezone( int tzone_seconds );
 	int  		get_implicit_timezone();
 
-	void				add_variable(xqp_string varname, Iterator_t var_iterator);
-	Iterator_t	get_variable(const xqp_string& varname);
+	void				add_variable(xqp_string varname, store::Iterator_t var_iterator);
+  store::Iterator_t	get_variable(const xqp_string& varname);
 
 	xqp_string get_default_collection();
 	void set_default_collection(xqp_string default_collection_uri);

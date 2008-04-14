@@ -11,6 +11,7 @@
 
 #include <vector>
 
+#include "util/Assert.h"
 #include "system/globalenv.h"
 #include "runtime/nodes/NodesImpl.h"
 #include "store/api/item_factory.h"
@@ -87,7 +88,7 @@ store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t    item, node, attr;
   store::Item*     attrName;
-  Iterator_t       theAttributes;
+  store::Iterator_t       theAttributes;
   bool             found = false;
   xqpStringStore_t reqLang;
 
@@ -160,7 +161,7 @@ store::Item_t FnCollectionIterator::nextImpl(PlanState& planState) const
     ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0004, loc, "Invalid argument to fn:collection.");
 
   state->theIterator = theColl->getIterator(false);
-  assert(state->theIterator!=NULL);
+  ZORBA_ASSERT(state->theIterator!=NULL);
   state->theIterator->open();
   
   while((itemColl = state->theIterator->next()) != NULL )

@@ -80,7 +80,7 @@ store::Item_t KindTestIterator::nextImpl(PlanState& planState) const
         break;
       }
 
-      Iterator_t children = contextNode->getChildren();
+      store::Iterator_t children = contextNode->getChildren();
       children->open();
       store::Item_t child = children->next();
       match_test_t elemTest = match_no_test;
@@ -718,7 +718,7 @@ DescendantAxisState::reset(PlanState& planState)
 store::Item_t DescendantAxisIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t desc;
-  Iterator_t children;
+  store::Iterator_t children;
 
   DescendantAxisState* state;
   DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
@@ -748,7 +748,7 @@ store::Item_t DescendantAxisIterator::nextImpl(PlanState& planState) const
     children = state->theContextNode->getChildren();
     children->open();
 
-    state->theCurrentPath.push(std::pair<store::Item_t, Iterator_t>
+    state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
                               (state->theContextNode, children));
     
     desc = children->next();
@@ -757,7 +757,7 @@ store::Item_t DescendantAxisIterator::nextImpl(PlanState& planState) const
     {
       if (desc->getNodeKind() == store::StoreConsts::elementNode)
       {
-        state->theCurrentPath.push(std::pair<store::Item_t, Iterator_t>
+        state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
                                   (desc, desc->getChildren()));
       }
 
@@ -854,9 +854,9 @@ store::Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState) const
       if (desc->getNodeKind() == store::StoreConsts::elementNode ||
           desc->getNodeKind() == store::StoreConsts::documentNode)
       {
-        Iterator_t children = desc->getChildren();
+        store::Iterator_t children = desc->getChildren();
         children->open();
-        state->theCurrentPath.push(std::pair<store::Item_t, Iterator_t>
+        state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
                                   (desc, children));
       }
 
@@ -931,7 +931,7 @@ store::Item_t PrecedingAxisIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t ancestor;
   store::Item_t desc;
-  Iterator_t children;
+  store::Iterator_t children;
 
   PrecedingAxisState* state;
   DEFAULT_STACK_INIT(PrecedingAxisState, state, planState);
@@ -968,7 +968,7 @@ store::Item_t PrecedingAxisIterator::nextImpl(PlanState& planState) const
       children = ancestor->getChildren();
       children->open();
 
-      state->theCurrentPath.push(std::pair<store::Item_t, Iterator_t>(ancestor, children));
+      state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>(ancestor, children));
     
       desc = children->next();
 
@@ -976,9 +976,9 @@ store::Item_t PrecedingAxisIterator::nextImpl(PlanState& planState) const
       {
         if (desc->getNodeKind() == store::StoreConsts::elementNode)
         {
-          Iterator_t children = desc->getChildren();
+          store::Iterator_t children = desc->getChildren();
           children->open();
-          state->theCurrentPath.push(std::pair<store::Item_t, Iterator_t>
+          state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
                                     (desc, children));
         }
 
@@ -1048,7 +1048,7 @@ store::Item_t FollowingAxisIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t ancestor;
   store::Item_t following;
-  Iterator_t children;
+  store::Iterator_t children;
 
   FollowingAxisState* state;
   DEFAULT_STACK_INIT(FollowingAxisState, state, planState);
@@ -1085,7 +1085,7 @@ store::Item_t FollowingAxisIterator::nextImpl(PlanState& planState) const
       children = ancestor->getChildren();
       children->open();
 
-      state->theCurrentPath.push(std::pair<store::Item_t, Iterator_t>(ancestor, children));
+      state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>(ancestor, children));
 
       do
       {
@@ -1099,9 +1099,9 @@ store::Item_t FollowingAxisIterator::nextImpl(PlanState& planState) const
       {
         if (following->getNodeKind() == store::StoreConsts::elementNode)
         {
-          Iterator_t children = following->getChildren();
+          store::Iterator_t children = following->getChildren();
           children->open();
-          state->theCurrentPath.push(std::pair<store::Item_t, Iterator_t>
+          state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
                                     (following, children));
         }
 

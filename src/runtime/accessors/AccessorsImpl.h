@@ -20,7 +20,7 @@ namespace zorba {
 class FnDataIteratorState : public PlanIteratorState 
 {
 public:
-  Iterator_t theTypedValue;
+  store::Iterator_t theTypedValue;
   FnDataIteratorState();
   ~FnDataIteratorState();
 

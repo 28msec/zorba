@@ -3,8 +3,7 @@
 
 #include "common/shared_types.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
   /**
    * General iterator interface. Used to program iterators which return a
@@ -33,5 +32,6 @@ namespace zorba
       close() = 0;
 
   };
+} /* namespace store */
 } /* namespace zorba */
 #endif

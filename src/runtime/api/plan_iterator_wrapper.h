@@ -16,7 +16,7 @@ namespace zorba {
     The wrapper does not allocate a new state block, but it points to the same 
     block that contains the state of the wrapped plan iterator.
    ********************************************************************************/
-  class PlanIteratorWrapper : public Iterator
+  class PlanIteratorWrapper : public store::Iterator
   {
     private:
       const PlanIterator*   theIterator;

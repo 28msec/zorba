@@ -17,7 +17,7 @@ namespace zorba {
     like separation of code and execution, or garabage collection, and it
     provides a simple interface that the application can use.
    ********************************************************************************/
-  class PlanWrapper : public Iterator
+  class PlanWrapper : public store::Iterator
   {
     protected:
       PlanIter_t   theIterator;

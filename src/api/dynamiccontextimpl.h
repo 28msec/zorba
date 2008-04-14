@@ -45,6 +45,9 @@ namespace zorba {
       virtual void
       setDefaultCollection( const Item& aCollectionUri );
 
+      virtual Iterator_t
+      getAvailableCollections ( );
+
       friend class Unmarshaller; // needs to get the context out of this class
     protected:
       // we do not held ownership for any of these objects

@@ -39,7 +39,7 @@ void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   NodeDistinctState* state = new (planState.theBlock + stateOffset) NodeDistinctState;
 
-  Iterator_t input = new PlanIteratorWrapper(theChild, planState);
+  store::Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
   state->theStoreIterator = GENV.getStore().distinctNodes(input, theAcceptAtomics);
   state->theStoreIterator->open();
@@ -84,7 +84,7 @@ void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
   StateTraitsImpl<NodeSortState>::createState(planState, this->stateOffset, offset);
 
   theChild->open(planState, offset);
-  Iterator_t input = new PlanIteratorWrapper(theChild, planState);
+  store::Iterator_t input = new PlanIteratorWrapper(theChild, planState);
   // input->open();
 
   NodeSortState* state;

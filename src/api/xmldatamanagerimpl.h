@@ -31,7 +31,7 @@ namespace zorba {
       Item
       getDocument(const String& uri, ErrorHandler* aErrorHandler = 0);
 
-      void
+      bool
       deleteDocument(const String& uri, ErrorHandler* aErrorHandler = 0);
 
       Collection_t
@@ -40,7 +40,7 @@ namespace zorba {
       Collection_t
       getCollection(const String& uri, ErrorHandler* aErrorHandler = 0);
 
-      void
+      bool
       deleteCollection(const String& uri, ErrorHandler* aErrorHandler = 0);
 
     protected:

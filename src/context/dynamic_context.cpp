@@ -197,9 +197,9 @@ int  dynamic_context::get_implicit_timezone()
 var_name is expanded name localname:nsURI
 constructed by static_context::qname_internal_key( .. )
 */
-void	dynamic_context::add_variable(xqp_string var_name, Iterator_t var_iterator)
+void	dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_iterator)
 {
-  Iterator* lIter = &*var_iterator;
+  store::Iterator* lIter = &*var_iterator;
   lIter->addReference(var_iterator->getSharedRefCounter()
                       SYNC_PARAM2(var_iterator->getRCLock()));
 
@@ -208,13 +208,13 @@ void	dynamic_context::add_variable(xqp_string var_name, Iterator_t var_iterator)
 }
 
 
-Iterator_t	dynamic_context::get_variable(const xqp_string& var_name)
+store::Iterator_t	dynamic_context::get_variable(const xqp_string& var_name)
 {
 	return lookup_var_iter("var:" + var_name);
 }
 
 
-Iterator* dynamic_context::lookup_var_iter(xqp_string key) const
+store::Iterator* dynamic_context::lookup_var_iter(xqp_string key) const
 { 
 	dctx_value_t val;
 

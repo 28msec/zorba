@@ -19,7 +19,7 @@ namespace zorba
 ********************************************************************************/
 class CtxVariableIteratorState : public  PlanIteratorState {
 public:
-  Iterator_t iter;
+  store::Iterator_t iter;
 };
 
 NARY_ITER_STATE (CtxVariableIterator, CtxVariableIteratorState);

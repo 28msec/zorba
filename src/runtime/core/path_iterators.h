@@ -194,7 +194,7 @@ public:
 class AttributeAxisState : public AxisState
 {
 public:
-  Iterator_t  theAttributes;
+  store::Iterator_t  theAttributes;
   AttributeAxisState();
   ~AttributeAxisState();
   void init(PlanState&);
@@ -312,7 +312,7 @@ public:
 class RSiblingAxisState : public AxisState
 {
 public:
-  Iterator_t  theChildren;
+  store::Iterator_t  theChildren;
   RSiblingAxisState();
   ~RSiblingAxisState();
   void init(PlanState&);
@@ -341,7 +341,7 @@ public:
 class LSiblingAxisState : public AxisState
 {
 public:
-  Iterator_t  theChildren;
+  store::Iterator_t  theChildren;
   LSiblingAxisState();
   ~LSiblingAxisState();
   void init(PlanState&);
@@ -373,7 +373,7 @@ public:
 class ChildAxisState : public AxisState
 {
 public:
-  Iterator_t  theChildren;
+  store::Iterator_t  theChildren;
 
   ChildAxisState();
   ~ChildAxisState();
@@ -407,7 +407,7 @@ public:
 class DescendantAxisState : public AxisState
 {
 public:
-  std::stack<std::pair<store::Item_t, Iterator_t> > theCurrentPath;
+  std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
   DescendantAxisState();
   ~DescendantAxisState();
   void init(PlanState&);
@@ -439,7 +439,7 @@ public:
 class DescendantSelfAxisState : public AxisState
 {
 public:
-  std::stack<std::pair<store::Item_t, Iterator_t> > theCurrentPath;
+  std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
   DescendantSelfAxisState();
   ~DescendantSelfAxisState();
   void init(PlanState&);
@@ -471,7 +471,7 @@ class PrecedingAxisState : public AxisState
 {
 public:
   std::stack<store::Item_t>                         theAncestorPath;
-  std::stack<std::pair<store::Item_t, Iterator_t> > theCurrentPath;
+  std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
   PrecedingAxisState();
   ~PrecedingAxisState();
   void init(PlanState&);
@@ -502,7 +502,7 @@ class FollowingAxisState : public AxisState
 {
 public:
   std::stack<store::Item_t>                         theAncestorPath;
-  std::stack<std::pair<store::Item_t, Iterator_t> > theCurrentPath;
+  std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
   FollowingAxisState();
   ~FollowingAxisState();
   void init(PlanState&);

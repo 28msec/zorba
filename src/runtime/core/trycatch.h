@@ -19,10 +19,10 @@ namespace zorba
 
       // used for evaluating the target expression eagerly
       store::TempSeq_t  theTargetSequence;
-      Iterator_t theTempIterator;
+      store::Iterator_t theTempIterator;
       PlanIter_t theCatchIterator;
 
-      std::vector<Iterator_t> theErrorIters;
+      std::vector<store::Iterator_t> theErrorIters;
   };
 
   class TryCatchIterator : public UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> {

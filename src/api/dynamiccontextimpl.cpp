@@ -50,7 +50,7 @@ namespace zorba {
   void
   DynamicContextImpl::setVariable( const String& aQName, const ResultIterator_t& aResultIterator )
   {
-    Iterator_t lRes = new store::ResultIteratorChainer(&*aResultIterator);
+    store::Iterator_t lRes = new store::ResultIteratorChainer(&*aResultIterator);
     xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
 
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
@@ -137,5 +137,12 @@ namespace zorba {
     xqpString     lString(lItem->getStringValue());
     theCtx->set_default_collection(lString);
   }
+
+
+  Iterator_t
+  DynamicContextImpl::getAvailableCollections ( )
+  {
+  }
+
 
 } /* namespace zorba */

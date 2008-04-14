@@ -32,7 +32,7 @@ class FLWORIterator : public Batcher<FLWORIterator>
 public:
   class OrderKeyCmp;
   
-  typedef std::multimap<std::vector<store::Item_t>, Iterator_t, OrderKeyCmp> order_map_t;
+  typedef std::multimap<std::vector<store::Item_t>, store::Iterator_t, OrderKeyCmp> order_map_t;
       
   /**
      Wrappes a FOR or LET clause. 
@@ -284,7 +284,7 @@ class FlworState : public PlanIteratorState
   //When returning the result, this indicates, which return sequence we are
   // touching at the moment and the curOrderPos indicates 
   FLWORIterator::order_map_t                * orderMap; 
-  Iterator_t                                  curOrderResultSeq; 
+  store::Iterator_t                                  curOrderResultSeq; 
   FLWORIterator::order_map_t::const_iterator  curOrderPos; 
 
   /**

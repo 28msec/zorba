@@ -20,7 +20,7 @@ namespace zorba {
       virtual Item
       getDocument(const String& uri, ErrorHandler* aErrorHandler = 0) = 0;
 
-      virtual void
+      virtual bool
       deleteDocument(const String& uri, ErrorHandler* aErrorHandler = 0) = 0;
 
       virtual Collection_t
@@ -29,7 +29,7 @@ namespace zorba {
       virtual Collection_t
       getCollection(const String& uri, ErrorHandler* aErrorHandler = 0) = 0;
 
-      virtual void
+      virtual bool
       deleteCollection(const String& uri, ErrorHandler* aErrorHandler = 0) = 0;
 
   }; /* class XmlDataManager */

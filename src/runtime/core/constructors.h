@@ -27,7 +27,7 @@ public:
   bool      theNsPreserve;
   bool      theNsInherit;
 
-  Iterator* childWrapper;
+  store::Iterator* childWrapper;
 
   ~DocumentIteratorState();
 
@@ -284,7 +284,7 @@ public:
   xqpStringStore  * theAttrContentString;
   xqpStringStore  * theElemContentString;
   store::Item_t     theContextItem;
-  Iterator_t        theDocChildren;
+  store::Iterator_t        theDocChildren;
 
   void init(PlanState&);
   void reset(PlanState&);

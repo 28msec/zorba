@@ -1012,7 +1012,7 @@ store::Item_t
 FnIdIterator::nextImpl(PlanState& planState) const {
   store::Item_t itemEl;
   store::Item_t item;
-  Iterator_t    theAttributes;
+  store::Iterator_t    theAttributes;
   store::Item_t res;
   bool          push;
   xqp_string    strArg;

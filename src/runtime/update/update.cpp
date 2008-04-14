@@ -259,7 +259,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
 {
   store::StoreConsts::NodeKind lTargetKind;
   store::StoreConsts::NodeKind lWithKind;
-  Iterator_t withWrapper;
+  store::Iterator_t withWrapper;
   store::Item_t lWith;
   store::Item_t lTarget;
   store::Item_t lParent;
@@ -500,13 +500,13 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
     lEnd = theCopyClauses.end();
     for(; lIter != lEnd; ++lIter)
     {
-      Iterator_t lIterWrapper = new PlanIteratorWrapper(lIter->theInput, aPlanState);
+      store::Iterator_t lIterWrapper = new PlanIteratorWrapper(lIter->theInput, aPlanState);
       store::TempSeq_t lTmpSeq = GENV_STORE.createTempSeq(lIterWrapper, true, true); 
       lIter2 = lIter->theCopyVars.begin();
       lEnd2 = lIter->theCopyVars.end();
       for(;lIter2!=lEnd2;++lIter2)
       {
-        Iterator_t lSeqIter = lTmpSeq->getIterator();
+        store::Iterator_t lSeqIter = lTmpSeq->getIterator();
         lSeqIter->open();
         (*lIter2)->bind(lSeqIter, aPlanState);
       }

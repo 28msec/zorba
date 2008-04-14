@@ -356,7 +356,7 @@ int serializer::emitter::emit_node_children(
     int depth,
     bool perform_escaping = true)
 {
-  Iterator_t it;
+  store::Iterator_t it;
   store::Item_t child;	
   int closed_parent_tag = 0;
   
@@ -608,7 +608,7 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
       iname.lowercase() == "meta")
   {    
     // iterate through attributes
-    Iterator_t it = item->getAttributes();
+    store::Iterator_t it = item->getAttributes();
     it->open();
     store::Item_t child = it->next();
     while (child!= NULL)

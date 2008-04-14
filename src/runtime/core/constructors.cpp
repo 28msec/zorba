@@ -206,8 +206,8 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 store::Item_t ElementIterator::nextImpl(PlanState& planState) const
 {
-  std::auto_ptr<Iterator> cwrapper;
-  std::auto_ptr<Iterator> awrapper;
+  std::auto_ptr<store::Iterator> cwrapper;
+  std::auto_ptr<store::Iterator> awrapper;
 
   store::Item_t qnameItem;
   store::Item_t node;
@@ -393,8 +393,8 @@ AttributeIterator::AttributeIterator(
 store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t node;
-  Iterator_t nameWrapper;
-  Iterator_t valueWrapper;
+  store::Iterator_t nameWrapper;
+  store::Iterator_t valueWrapper;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -507,7 +507,7 @@ TextIterator::TextIterator(
 store::Item_t TextIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t node;
-  Iterator_t valueWrapper;
+  store::Iterator_t valueWrapper;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

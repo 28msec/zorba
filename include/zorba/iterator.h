@@ -1,16 +1,15 @@
-#ifndef ZORBA_RESULT_ITERATOR_API_H
-#define ZORBA_RESULT_ITERATOR_API_H
+#ifndef ZORBA_ITERATOR_API_H
+#define ZORBA_ITERATOR_API_H
 
 #include <zorba/api_shared_types.h>
-#include <zorba/iterator.h>
 
 namespace zorba {
 
-  class ResultIterator  : public Iterator
+  class Iterator 
   {
     public:
 
-      virtual ~ResultIterator() {}
+      virtual ~Iterator() {}
 
       virtual void 
       open() = 0;

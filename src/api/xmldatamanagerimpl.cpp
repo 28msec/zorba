@@ -83,14 +83,16 @@ namespace zorba {
     }
   }
 
-  void
+  bool
   XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorHandler)
   {
     xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
     try {
       theStore->deleteDocument(lUri); 
+      return true;
     } catch (error::ZorbaError& e) {
       ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
+      return false;
     }
   }
 
@@ -111,12 +113,26 @@ namespace zorba {
   XmlDataManagerImpl::getCollection(const String& uri, ErrorHandler* aErrorHandler)
   {
     xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+    try {
+      return Collection_t(new CollectionImpl(theStore->getCollection(lUri),
+                                             aErrorHandler!=0?aErrorHandler:theErrorHandler));
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
+      return Collection_t();
+    }
   }
 
-  void
+  bool
   XmlDataManagerImpl::deleteCollection(const String& uri, ErrorHandler* aErrorHandler)
   {
     xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+    try {
+      theStore->deleteCollection(lUri);
+      return true;
+    } catch (error::ZorbaError& e) {
+      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
+      return false;
+    }
   }
 
 } /* namespace zorba */

@@ -59,7 +59,7 @@ public:
 class LetVarState : public PlanIteratorState 
 {
 public:
-  Iterator_t theSourceIter;
+  store::Iterator_t theSourceIter;
   LetVarState();
   ~LetVarState();
   void init(PlanState& planState) { PlanIteratorState::init(planState); }
@@ -84,7 +84,7 @@ public:
 public:
   xqpString getVarName() const { return theVarName; }
 
-  void bind(Iterator_t it, PlanState& planState);
+  void bind(store::Iterator_t it, PlanState& planState);
 };
 
 

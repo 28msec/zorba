@@ -83,7 +83,7 @@ store::Item_t LetVarIterator::nextImpl(PlanState& planState) const
 }
 
 
-void LetVarIterator::bind(Iterator_t it, PlanState& planState)
+void LetVarIterator::bind(store::Iterator_t it, PlanState& planState)
 {
   LetVarState* state;
   state = StateTraitsImpl<LetVarState>::getState(planState, this->stateOffset);
