@@ -199,12 +199,23 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     }
   }
 
-  xqp_string static_context::lookup_ns (xqp_string prefix, enum ZorbaError::ErrorCode err) const
-  {
+  bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const {
+    return context_value ("ns:" + prefix, ns) && ! ns.empty();    
+  }
+
+  xqp_string static_context::lookup_ns (xqp_string prefix, enum ZorbaError::ErrorCode err) const {
     xqp_string ns;
-    if(!context_value ("ns:" + prefix, ns) || ns.empty())
-		{
-			ZORBA_ERROR(err);
+		if (! lookup_ns (prefix, ns)) {
+      if (err != ZorbaError::MAX_ZORBA_ERROR_CODE)
+        ZORBA_ERROR(err);
+		}
+    return ns;
+  }
+
+  xqp_string static_context::lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const {
+    xqp_string ns;
+		if (! lookup_ns (prefix, ns)) {
+      return default_ns;
 		}
     return ns;
   }

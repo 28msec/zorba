@@ -781,70 +781,47 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
   expr_t valueExpr = pop_nodestack();
 
-  if (valueExpr != NULL)
-  {
+  if (valueExpr != NULL) {
     // delete boundary
     nodestack.pop();
   }
 
   QName* qname = v.get_name().getp();
 
-  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
-  {
+  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns") {
     xqpString prefix;
 
-    if (qname->get_qname() == "xmlns")
-    {
-      // we have a defult-namespace declaration
-      prefix = "";
-    }
-    else
-    {
+    if (qname->get_qname() != "xmlns") {
       prefix = qname->get_localname();
-      if (prefix == "xmlns")
-      {
+      if (prefix == "xmlns") {
         ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
                              "Cannot bind predefined prefix \"xmlns\"");
       }
     }
+    // else we have a defult-namespace declaration
 
     const_expr* constValueExpr = valueExpr.dyn_cast<const_expr> ().getp();
-    if (constValueExpr != NULL)
-    {
+    if (constValueExpr != NULL) {
       xqpString uri(constValueExpr->get_val()->getStringValue());
 
-      if (prefix == "xml" && uri != XML_NS)
-      {
+      if ((prefix == "xml") != (uri == XML_NS)) {
         ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
-                          "Predefined prefix \"xml\" is not bound to uri \"http://www.w3.org/XML/1998/namespace\"");
-      }
-      if (prefix != "xml" && uri == XML_NS)
-      {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
-                          "Uri \"http://www.w3.org/XML/1998/namespace\" can only be bound to prefix \"xml\"");
+                          "Uri \"" XML_NS "\" can only be bound to prefix \"xml\" and vice-versa");
       }
       sctx_p->bind_ns(prefix, uri, ZorbaError::XQST0071);
       ns_ctx->bind_ns(prefix, uri);
-    }
-    else if (valueExpr == NULL)
-    {
+    } else if (valueExpr == NULL) {
       if (prefix == "xml")
-      {
         ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
                           "Cannot unbind predefined prefix \"xml\"");
-      }
 
       // unbind the prefix
       sctx_p->bind_ns(prefix, "", ZorbaError::XQST0071);
       ns_ctx->bind_ns(prefix, "");
     }
     else
-    {
       ZORBA_ERROR_LOC( ZorbaError::XQST0022, v.get_location());
-    }
-  }
-  else
-  {
+  } else {
     expr_t nameExpr = new const_expr(v.get_location(),
                                      sctx_p->lookup_qname("", qname->get_qname()));
     expr_t attrExpr = new attr_expr(v.get_location(), nameExpr, valueExpr);
@@ -1034,11 +1011,9 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  expr_t nameExpr;
-  expr_t contentExpr = 0;
+  expr_t nameExpr, contentExpr;
 
-  if (v.get_content_expr() != 0)
-  {
+  if (v.get_content_expr() != 0) {
     contentExpr = pop_nodestack();
 
     fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1 ("enclosed-expr"));
@@ -1048,22 +1023,17 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
 
   QName* constQName = v.get_qname_expr().dyn_cast<QName> ().getp();
 
-  if (constQName != NULL)
-  {
+  if (constQName != NULL) {
     nameExpr = new const_expr(v.get_location(),
                               sctx_p->lookup_elem_qname(constQName->get_qname()));
-  }
-  else
-  {
+  } else {
     nameExpr = pop_nodestack();
 
     rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(),
                                              LOOKUP_FN("fn", "data", 1));
     atomExpr->add(nameExpr);
 
-    nameExpr = new name_cast_expr(v.get_location(),
-                             atomExpr.getp(),
-                             ns_ctx);
+    nameExpr = new name_cast_expr(v.get_location(), atomExpr.getp(), ns_ctx);
   }
 
   nodestack.push (new elem_expr(v.get_location(), nameExpr, contentExpr, ns_ctx));
@@ -2867,10 +2837,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     if (v.getQName() != NULL)
     {
       string qname = v.getQName()->get_qname();
-      store::Item_t qn_h =
-        axisExpr->getAxis () == axis_kind_attribute
-        ? sctx_p->lookup_qname ("", qname)
-        : sctx_p->lookup_elem_qname (qname);
+      store::Item_t qn_h = sctx_p->lookup_qname ("", qname);
       matchExpr->setQName(qn_h);
     }
     else

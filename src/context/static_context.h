@@ -81,16 +81,18 @@ public:
   xqp_string default_elem_type_ns () const;
   void set_default_elem_type_ns (xqp_string);
 
+  bool lookup_ns (xqp_string prefix, xqp_string &ns) const;
   xqp_string lookup_ns (xqp_string prefix, enum ZorbaError::ErrorCode err = ZorbaError::XPST0081) const;
+  xqp_string lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const;
   void bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCode err = ZorbaError::XQST0033);
 
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local) const;
   store::Item_t lookup_elem_qname (xqp_string name) const {
-    return lookup_qname (default_elem_type_ns (), name);
+    return lookup_qname (lookup_ns_or_default ("", default_elem_type_ns ()), name);
   }
   store::Item_t lookup_elem_qname (xqp_string pfx, xqp_string local) const {
-    return lookup_qname (default_elem_type_ns (), pfx, local);
+    return lookup_qname (lookup_ns_or_default ("", default_elem_type_ns ()), pfx, local);
   }
   bool lookup_elem_namespace(const xqp_string pfx, xqp_string& ns) const;
 
