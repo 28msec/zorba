@@ -186,34 +186,24 @@ store::Item_t GenericCast::castToQName (
                                 (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003) :
                                 ZorbaError::XQDY0074);
 
+  xqpString lNamespace, lPrefix, lLocal;
+
   // whitespace normalization for target type (xs:QName)
   if (isExplicit && isCast)
     qname = qname->trim ();
 
   int32_t lIndex = qname->indexOf(":");
-  if (lIndex < 0) 
-  {
-    if (castableToNCName(qname))
-    {
-      xqpStringStore_t lNamespace = new xqpStringStore("");
-      xqpStringStore_t lPrefix = new xqpStringStore("");
-
-      return factory->createQName(lNamespace, lPrefix, qname);
+  if (lIndex < 0) {
+    if (castableToNCName(qname)) {
+      aNCtx->findBinding ("", lNamespace);
+      lLocal = &*qname;
     }
-    else
-    {
-      ZORBA_ERROR(code);
-    }
-  }
-  else if (lIndex == 0) 
-  {
+    else ZORBA_ERROR(code);
+  } else if (lIndex == 0) {
     ZORBA_ERROR (code);
-  }
-  else
-  {
-    xqpString lNamespace;
-    xqpString lPrefix(qname->str().substr(0, lIndex));
-    xqpString lLocal(qname->str().substr(lIndex + 1));
+  } else {
+    lPrefix = qname->str().substr(0, lIndex);
+    lLocal = qname->str().substr(lIndex + 1);
 
     if (!castableToNCName(lPrefix.getStore()) ||
         !castableToNCName(lLocal.getStore()))
@@ -221,24 +211,14 @@ store::Item_t GenericCast::castToQName (
     
     // namespace resolution
     // raise XPST0081 (isCast false) or FONS0004 (isCast true) if namespace unknown
-    if (aNCtx != 0)
-    {
-      if (!aNCtx->findBinding(lPrefix, lNamespace))
-      {
-        if (isCast)
-        {
-          ZORBA_ERROR(ZorbaError::FONS0004);
-        } else {
-          ZORBA_ERROR(ZorbaError::XPST0081);
-        }
-      }
-    }
-
-    return factory->createQName(lNamespace.getStore(),
-                                lPrefix.getStore(),
-                                lLocal.getStore());
+    assert (aNCtx != 0);
+    if (! aNCtx->findBinding(lPrefix, lNamespace))
+      ZORBA_ERROR (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0081);
   }
-  return 0;
+
+  return factory->createQName(lNamespace.getStore(),
+                              lPrefix.getStore(),
+                              lLocal.getStore());
 }
   
 
