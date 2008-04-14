@@ -117,12 +117,17 @@ store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
 
   inNode = consumeNext(theChildren[0].getp(), planState);
 
-  if (inNode != NULL) {
-    if (!inNode->isNode()) {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "The argument of the fn:node-name function is not a node");
-    }
-
-    STACK_PUSH(inNode->getNodeName(), state);
+  if (inNode != NULL)
+  {
+    if( inNode->getNodeKind() == store::StoreConsts::elementNode ||
+        inNode->getNodeKind() == store::StoreConsts::attributeNode)
+      STACK_PUSH(inNode->getNodeName(), state);
+    else if(inNode->getNodeKind() == store::StoreConsts::piNode)
+      STACK_PUSH(
+          GENV_ITEMFACTORY->createQName(xqp_string().getStore(),
+                                        xqp_string().getStore(),
+                                        inNode->getTarget().getStore()),
+          state);
   }
   STACK_END (state);
 }
