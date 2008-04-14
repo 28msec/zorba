@@ -39,6 +39,12 @@ static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type
   return ph;
 }
 
+static inline void checkNonUpdating(expr_t lExpr)
+{
+  if (lExpr != 0 && lExpr->isUpdating())
+    ZORBA_ERROR_LOC(ZorbaError::XUST0001, lExpr->get_loc());
+}
+
 bool normalizer::begin_visit(expr& /*node*/)
 {
   return true;
@@ -81,22 +87,25 @@ bool normalizer::begin_visit(flwor_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(case_clause& /*node*/)
+bool normalizer::begin_visit(case_clause& node)
 {
+  checkNonUpdating(node.var_h);
   return true;
 }
 
-bool normalizer::begin_visit(promote_expr& /*node*/)
+bool normalizer::begin_visit(promote_expr& node)
 {
+  checkNonUpdating(node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(trycatch_expr& /*node*/)
+bool normalizer::begin_visit(trycatch_expr& node)
 {
+  checkNonUpdating(node.get_try_expr());
   return true;
 }
 
-bool normalizer::begin_visit(typeswitch_expr& /*node*/)
+bool normalizer::begin_visit(typeswitch_expr& node)
 {
   return true;
 }
@@ -114,6 +123,8 @@ bool normalizer::begin_visit(fo_expr& node)
   int n = node.size();
   for(int i = 0; i < n; ++i) {
     expr::expr_t arg = node[i];
+    if (!node.isUpdating())
+      checkNonUpdating(arg);
     const xqtref_t& arg_type = sign[i];
     xqtref_t arg_prime_type = TypeOps::prime_type(*arg_type);
     if (TypeOps::is_subtype(*arg_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) {
@@ -138,38 +149,44 @@ bool normalizer::begin_visit(ft_contains_expr& /*node*/)
   return true;
 }
 
-bool normalizer::begin_visit(instanceof_expr& /*node*/)
+bool normalizer::begin_visit(instanceof_expr& node)
+{
+  checkNonUpdating(node.get_input());
+  return true;
+}
+
+bool normalizer::begin_visit(treat_expr& node)
 {
   return true;
 }
 
-bool normalizer::begin_visit(treat_expr& /*node*/)
+bool normalizer::begin_visit(castable_expr& node)
 {
+  checkNonUpdating(node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(castable_expr& /*node*/)
+bool normalizer::begin_visit(cast_expr& node)
 {
+  checkNonUpdating(node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(cast_expr& /*node*/)
+bool normalizer::begin_visit(name_cast_expr& node)
 {
+  checkNonUpdating(node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(name_cast_expr& /*node*/)
+bool normalizer::begin_visit(validate_expr& node)
 {
+  checkNonUpdating(node.get_expr());
   return true;
 }
 
-bool normalizer::begin_visit(validate_expr& /*node*/)
+bool normalizer::begin_visit(extension_expr& node)
 {
-  return true;
-}
-
-bool normalizer::begin_visit(extension_expr& /*node*/)
-{
+  checkNonUpdating(node.get_expr());
   return true;
 }
 
@@ -183,8 +200,13 @@ bool normalizer::begin_visit(relpath_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(axis_step_expr& /*node*/)
+bool normalizer::begin_visit(axis_step_expr& node)
 {
+  // Predicates might be updating
+  for (size_t i = 0; i <  node.numPreds(); ++i)
+  {
+    checkNonUpdating(node[i]);
+  }
   return true;
 }
 
@@ -203,14 +225,18 @@ bool normalizer::begin_visit(order_expr& /*node*/)
   return true;
 }
 
-bool normalizer::begin_visit(elem_expr& /*node*/)
+bool normalizer::begin_visit(elem_expr& node)
 {
   //node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
+  checkNonUpdating(node.getQNameExpr());
+  checkNonUpdating(node.getAttrs());
+  checkNonUpdating(node.getContent());
   return true;
 }
 
-bool normalizer::begin_visit(doc_expr& /*node*/)
+bool normalizer::begin_visit(doc_expr& node)
 {
+  checkNonUpdating(node.getContent());
   return true;
 }
 
@@ -220,6 +246,9 @@ bool normalizer::begin_visit(doc_expr& /*node*/)
 bool normalizer::begin_visit(attr_expr& node)
 {
   assert (node.getQNameExpr() != NULL);
+
+  checkNonUpdating(node.getQNameExpr());
+  checkNonUpdating(node.getValueExpr());
 
   // node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
   
@@ -243,13 +272,15 @@ bool normalizer::begin_visit(attr_expr& node)
 
 #undef LOOKUP_OP1
 
-bool normalizer::begin_visit(text_expr& /*node*/)
+bool normalizer::begin_visit(text_expr& node)
 {
+  checkNonUpdating(node.get_text());
   return true;
 }
 
-bool normalizer::begin_visit(pi_expr& /*node*/)
+bool normalizer::begin_visit(pi_expr& node)
 {
+  checkNonUpdating(node.get_target_expr());
   return true;
 }
 

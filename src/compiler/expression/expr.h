@@ -1102,7 +1102,7 @@ protected:
 public:
   relpath_expr(const QueryLoc&);
 
-	uint32_t size() const        { return theSteps.size(); }
+	size_t size() const        { return theSteps.size(); }
 	void add_back(expr_t step)   { theSteps.push_back(step); }
 	void add_front(expr_t step)  { theSteps.insert(theSteps.begin (), step); }
   void erase(ulong i)          { theSteps.erase(theSteps.begin() + i); }
@@ -1158,7 +1158,7 @@ public:
   void setTest(rchandle<match_expr> v) { theNodeTest = v; }
 
   void addPred(expr_t e)                { thePreds.push_back(e); }
-  uint32_t numPreds() const             { return thePreds.size(); }
+  size_t numPreds() const             { return thePreds.size(); }
   expr_t & operator[](int i)            { return thePreds[i]; }
   expr_t const& operator[](int i) const { return thePreds[i]; }
 
