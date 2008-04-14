@@ -2837,7 +2837,10 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     if (v.getQName() != NULL)
     {
       string qname = v.getQName()->get_qname();
-      store::Item_t qn_h = sctx_p->lookup_qname ("", qname);
+      store::Item_t qn_h =
+        axisExpr->getAxis () == axis_kind_attribute
+        ? sctx_p->lookup_qname ("", qname)
+        : sctx_p->lookup_elem_qname (qname);
       matchExpr->setQName(qn_h);
     }
     else
