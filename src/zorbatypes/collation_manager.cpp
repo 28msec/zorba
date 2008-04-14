@@ -26,12 +26,12 @@ namespace zorba {
     delete theCollator;
   }
 
-#ifndef ZORBA_NO_UNICODE
   XQPCollator*
   CollationFactory::createCollator(const std::string& aCollationURI)
   {
     if (aCollationURI == "http://www.w3.org/2005/xpath-functions/collation/codepoint")
     {
+#ifndef ZORBA_NO_UNICODE
       Collator* lCollator;
       UErrorCode lError = U_ZERO_ERROR;
       lCollator = Collator::createInstance(Locale("root"), lError);
@@ -40,6 +40,10 @@ namespace zorba {
       lCollator->setAttribute(UCOL_CASE_FIRST, UCOL_UPPER_FIRST, lError);
       assert( lError == U_ZERO_ERROR );
       return new XQPCollator(lCollator);
+#else
+      Collator  *coll = new Collator;
+      return new XQPCollator(coll);
+#endif
     }
 
     size_t lStartURI = aCollationURI.find("http://www.flworfound.org/collations/"); 
@@ -61,15 +65,16 @@ namespace zorba {
       ::free(collstrdup);
       return 0;
     }
-    tok2 = strtok_s(collstrdup, "/", &strtok_context);
+    tok2 = strtok_s(NULL, "/", &strtok_context);
     if ( !tok2)
     {
       ::free(collstrdup);
       return 0;
     }
-    tok3 = strtok_s(collstrdup, "/", &strtok_context);
+    tok3 = strtok_s(NULL, "/", &strtok_context);
 
     Collator* lCollator;
+#ifndef ZORBA_NO_UNICODE
     UErrorCode lError = U_ZERO_ERROR;
     if ( tok3 == NULL ) {
       lCollator = Collator::createInstance(Locale(tok2), lError);
@@ -81,17 +86,30 @@ namespace zorba {
       ::free(collstrdup);
       return 0;
     }
+#else
+    lCollator = new Collator;
+#endif
 
     if (!strcmp(tok1, "PRIMARY")) {
+#ifndef ZORBA_NO_UNICODE
       lCollator->setStrength(Collator::PRIMARY);
+#endif
     } else if (!strcmp(tok1, "SECONDARY")) {
+#ifndef ZORBA_NO_UNICODE
       lCollator->setStrength(Collator::SECONDARY);
+#endif
     } else if (!strcmp(tok1, "TERTIARY")) {
+#ifndef ZORBA_NO_UNICODE
       lCollator->setStrength(Collator::TERTIARY);
+#endif
     } else if (!strcmp(tok1, "QUATERNARY")) {
+#ifndef ZORBA_NO_UNICODE
       lCollator->setStrength(Collator::QUATERNARY);
+#endif
     } else if (!strcmp(tok1, "IDENTICAL")) {
+#ifndef ZORBA_NO_UNICODE
       lCollator->setStrength(Collator::IDENTICAL);
+#endif
     } else {
       ::free(collstrdup);
       return 0;
@@ -104,31 +122,19 @@ namespace zorba {
   XQPCollator*
   CollationFactory::createCollator()
   {
+    Collator* lCollator;
+#ifndef ZORBA_NO_UNICODE
     UErrorCode lError = U_ZERO_ERROR;
-    Collator* lCollator = Collator::createInstance(Locale("en", "US"), lError); 
+    lCollator = Collator::createInstance(Locale("en", "US"), lError); 
     if( U_FAILURE(lError) ) {
       assert(false);
     }
     lCollator->setStrength(Collator::IDENTICAL);
-
+#else
+    lCollator = new Collator;
+#endif
     return new XQPCollator(lCollator);
   }
-#else // ZORBA_NO_UNICODE
-XQPCollator*
-CollationFactory::createCollator(const std::string& aCollationURI)
-{
-  Collator  *coll = new Collator;
-  return new XQPCollator(coll);
-}
-
-XQPCollator*
-CollationFactory::createCollator()
-{
-  Collator  *coll = new Collator;
-  return new XQPCollator(coll);
-}
-
-#endif//#ifndef ZORBA_NO_UNICODE
 
   CollationFactory::CollationFactory()
     : theRootCollator(0)

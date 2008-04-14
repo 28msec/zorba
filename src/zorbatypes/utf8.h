@@ -5,6 +5,8 @@
 #include "zorbatypesError.h"
 #include <iterator>
 
+#ifndef ZORBA_NO_UNICODE
+
 namespace zorba {
   // Unicode constants
   // Leading (high) surrogates: 0xd800 - 0xdbff
@@ -478,5 +480,7 @@ namespace zorba {
   }
 
 }/* namespace zorba */
+
+#endif//#ifndef ZORBA_NO_UNICODE
 
 #endif /* ZORBA_UTF8_H */

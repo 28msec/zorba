@@ -1,3 +1,4 @@
+#include "common/common.h"
 #include "zorbatypes/utf8.h"
 #include "compiler/parser/util.h"
 #include "compiler/parser/query_loc.h"
@@ -18,9 +19,13 @@ int decode_entity (const char *in, string *out) {
     unsigned long n = strtoul (in, (char **) &in, base);
     if (*in++ != ';')
       ZORBA_ERROR_LOC (ZorbaError::XPST0003, loc);
+#ifndef ZORBA_NO_UNICODE
     if (! is_code_point_valid (n))
       ZORBA_ERROR_LOC (ZorbaError::XQST0090, loc);
     UTF8Encode (n, back_inserter (*out));
+#else
+    out += (char)n;
+#endif
     return in - start;
   }
 #define M( str, len, r ) if (strncmp (in, str, len) == 0) { *out += r; return len; }

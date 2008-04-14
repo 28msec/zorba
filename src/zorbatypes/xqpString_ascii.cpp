@@ -716,7 +716,7 @@ xqpStringStore_t xqpStringStore::trim(const char* start, uint16_t len) const
     }
   }
 
-  if(off1 < off2)
+  if(off1 <= off2)
     newStr->theString.append(c+off1, off2-off1+1);
 
   return newStr;
