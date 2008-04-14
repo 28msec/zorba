@@ -78,6 +78,22 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
 	return false;
 }
 
+bool
+datamanager_example_4(Zorba* aZorba, XmlDataManager* aDataManager)
+{
+  try {
+    // error if the collection already exists
+    Collection_t lCollection = 
+      aDataManager->createCollection("http://www.flworfound.org/collections/mybooks");
+
+  } catch (ZorbaException& e) {
+    std::cerr << e << std::endl;
+    return true;
+  }
+
+	return false;
+}
+
 int 
 datamanager(int argc, char* argv[])
 {
@@ -94,6 +110,10 @@ datamanager(int argc, char* argv[])
   
   std::cout << "executing example 3" << std::endl;
 	assert(datamanager_example_3(lZorba, lDataManager)); 
+  std::cout << std::endl;
+
+  std::cout << "executing example 4" << std::endl;
+	assert(datamanager_example_4(lZorba, lDataManager)); 
   std::cout << std::endl;
   return 0;
 }
