@@ -143,7 +143,8 @@ public:
   bool is_enclosed_expr(expr* e)
   {
     fo_expr* foe = dynamic_cast<fo_expr*>(e);
-    if (foe != NULL && foe->get_fname()->getLocalName() == ":enclosed-expr")
+    if (foe != NULL &&
+        foe->get_fname()->getLocalName()->byteEqual(":enclosed-expr", 14))
       return true;
 
     return false;

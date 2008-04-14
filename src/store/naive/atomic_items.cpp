@@ -83,8 +83,8 @@ bool QNameItemImpl::equals(
     XQPCollator* aCollation) const
 {
   return (this == item ||
-          (theNamespace->byteEqual(*item->getNamespace().getStore()) &&
-           theLocal->byteEqual(*item->getLocalName().getStore())));
+          (theNamespace->byteEqual(*item->getNamespace()) &&
+           theLocal->byteEqual(*item->getLocalName())));
 }
 
 
@@ -141,6 +141,21 @@ Item_t NCNameItemImpl::getEBV() const
 xqp_string NCNameItemImpl::show() const
 {
   return "xs:NCName(" + theValue->str() + ")";
+}
+
+
+/*******************************************************************************
+  class NCNameItemImpl
+********************************************************************************/
+Item* IDItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_ID];
+}
+
+
+xqp_string IDItemImpl::show() const
+{
+  return "xs:ID(" + theValue->str() + ")";
 }
 
 

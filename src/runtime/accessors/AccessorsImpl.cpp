@@ -126,7 +126,7 @@ store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
       STACK_PUSH(
           GENV_ITEMFACTORY->createQName(xqp_string().getStore(),
                                         xqp_string().getStore(),
-                                        inNode->getTarget().getStore()),
+                                        inNode->getTarget()),
           state);
   }
   STACK_END (state);
@@ -157,8 +157,8 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
 //---------------------
 store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t inNode, attr, attrName;
-  Iterator_t    theAttributes;
+  store::Item_t inNode;
+  xqpStringStore_t baseuri;
   bool          found = false;
 
   PlanIteratorState *state;
@@ -168,28 +168,16 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
 
   if (inNode != NULL)
   {
-    if(inNode->getNodeKind() == store::StoreConsts::documentNode ||
-        inNode->getNodeKind() == store::StoreConsts::piNode)
+    if (inNode->isNode()) 
     {
-      if (!inNode->getBaseURI().getStore()->byteEqual("",0))
-        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getBaseURI().getStore()), state);
+      baseuri = inNode->getBaseURI();
+      if (baseuri != NULL)
+        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(baseuri), state);
     }
-    else if(inNode->getNodeKind() == store::StoreConsts::elementNode)
+    else
     {
-      if (!inNode->getBaseURI().getStore()->byteEqual("",0))
-        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getBaseURI().getStore()), state);
-      else
-      {
-        for ((theAttributes = inNode->getAttributes())->open ();
-              ! found && NULL != (attr = theAttributes->next()); )
-        {
-          attrName = attr->getNodeName();
-          found = xqp_string (attrName->getLocalName ()) == "base"
-              && xqp_string (attrName->getNamespace ()) == XML_NS;
-        }
-        if(found)
-          STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(attr->getStringValue()), state);
-      }
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc,
+                           "The argument of the fn:base-uri function is not a node");
     }
   }
   
@@ -210,16 +198,17 @@ store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
   if (inNode != NULL)
   {
     if (!inNode->isNode())
-      ZORBA_ERROR_LOC_DESC(
-          ZorbaError::XPTY0004, loc, "The argument of the fn:document-uri function is not a node");
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc,
+                           "The argument of the fn:document-uri function is not a node");
     
     if(inNode->getNodeKind() == store::StoreConsts::documentNode)
-      if(!inNode->getDocumentURI().byteEqual("",0))
-        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getDocumentURI().getStore()), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getDocumentURI()), state);
   }
   
   STACK_END (state);
 }
+
+
 // 2.3 fn:string
 //---------------------
 store::Item_t FnStringIterator::nextImpl(PlanState& planState) const

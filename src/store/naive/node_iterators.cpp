@@ -81,7 +81,18 @@ Item_t AttributesIterator::next()
   if (theCurrentPos >= theNumAttributes)
     return NULL;
 
-  XmlNode* cnode = theParentNode->getAttr(theCurrentPos);
+  AttributeNode* cnode =
+    reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+
+  while (cnode->isHidden())
+  {
+    theCurrentPos++;
+
+    if (theCurrentPos >= theNumAttributes)
+      return NULL;
+
+    cnode = reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+  }
 
   theCurrentPos++;
 

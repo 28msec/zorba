@@ -49,7 +49,7 @@ void library_init()
 static string get_qname(const function &f)
 {
   store::Item_t name = f.get_fname();
-  return name->getPrefix() + ":" + name->getLocalName();
+  return name->getPrefix()->str() + ":" + name->getLocalName()->str();
 }
 
 #define DECL(type, sig)                                        \

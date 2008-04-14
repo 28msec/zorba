@@ -85,7 +85,9 @@ public:
     HaveLocalBindings =   2,
     IsId              =   4,
     IsIdRefs          =   8,
-    IsNillable        =  16
+    IsNillable        =  16,
+    IsBaseUri         =  32,
+    IsHidden          =  64
   };
 
 protected:
@@ -132,8 +134,8 @@ public:
         RuntimeCB* aRuntimeCB,
         XQPCollator* aCollation = 0) const;
 
-  virtual xqp_string getBaseURI() const;
-  virtual xqp_string getDocumentURI() const;
+  virtual xqpStringStore_t getBaseURI() const;
+  virtual xqpStringStore_t getDocumentURI() const;
 
   Item_t getEBV() const;
 
@@ -268,8 +270,8 @@ public:
 
   Item* getType() const; 
 
-  xqp_string getBaseURI() const     { return theBaseUri.getp(); }
-  xqp_string getDocumentURI() const { return theDocUri.getp(); }
+  xqpStringStore_t getBaseURI() const     { return theBaseUri.getp(); }
+  xqpStringStore_t getDocumentURI() const { return theDocUri.getp(); }
 
   Iterator_t getChildren() const;
 
@@ -391,8 +393,8 @@ public:
   //
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::elementNode; }
-  Item* getType() const               { return theTypeName.getp(); }
-  Item_t getNodeName() const                { return theName; }
+  Item* getType() const                     { return theTypeName.getp(); }
+  Item* getNodeName() const                 { return theName.getp(); }
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -499,6 +501,8 @@ public:
         XmlNode*  parent,
         Item*     nodeName,
         Item*     typeName);
+
+  xqpStringStore_t getBaseURI() const;
   
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -545,8 +549,11 @@ public:
         Iterator*         attributesIte,
         Iterator*         childrenIte,
         const NsBindings& nsBindings,
+        xqpStringStore*   staticBaseUri,
         bool              copy,
         const CopyMode&   copymode);
+
+  xqpStringStore_t getBaseURI() const;
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -585,6 +592,7 @@ class AttributeNode : public XmlNode
   friend class XmlLoader;
   friend class XmlNode;
   friend class ElementNode;
+  friend class ConstrElementNode;
 
 protected:
   Item_t   theName;
@@ -635,15 +643,22 @@ public:
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::attributeNode; }
 
-  Item* getType() const { return theTypeName.getp(); }
+  Item* getType() const       { return theTypeName.getp(); }
 
-  Item_t getNodeName() const  { return theName; }
+  Item* getNodeName() const   { return theName.getp(); }
 
   bool isId() const           { return (theFlags & XmlNode::IsId) != 0; }
   void resetIsId()            { theFlags &= ~XmlNode::IsId; }
 
   bool isIdRefs() const       { return (theFlags & XmlNode::IsIdRefs) != 0; }
   void resetIsIdRefs()        { theFlags &= ~XmlNode::IsIdRefs; }
+
+  bool isHidden() const       { return (theFlags & XmlNode::IsHidden) != 0; }
+  void setHidden()            { theFlags |= XmlNode::IsHidden; }
+
+  bool isBaseUri() const      { return (theFlags & XmlNode::IsBaseUri) != 0; }
+
+  xqpStringStore_t getBaseURI() const { return 0; }
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -697,6 +712,8 @@ public:
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::textNode; }
 
   Item* getType() const;
+
+  xqpStringStore_t getBaseURI() const { return 0; }
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -756,7 +773,7 @@ public:
   Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const    { return theContent; }
 
-  xqp_string getTarget() const { return theTarget.getp(); }
+  xqpStringStore* getTarget() const { return theTarget.getp(); }
 
   xqp_string show() const;
 
@@ -804,6 +821,8 @@ public:
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::commentNode; }
 
   Item* getType() const;
+
+  xqpStringStore_t getBaseURI() const { return 0; }
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;

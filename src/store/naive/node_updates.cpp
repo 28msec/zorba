@@ -524,7 +524,7 @@ void ElementNode::rename(Item_t& newName, Item_t& oldName)
   oldName.transfer(theName);
   theName.transfer(newName);
 
-  addLocalBinding(qn->getPrefixP(), qn->getNamespaceP());
+  addLocalBinding(qn->getPrefix(), qn->getNamespace());
 }
 
 
@@ -536,7 +536,7 @@ void AttributeNode::rename(Item_t& newName, Item_t& oldName)
 
     QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
     parent->checkNamespaceConflict(newName, ZorbaError::XUDY0024);
-    parent->addLocalBinding(qn->getPrefixP(), qn->getNamespaceP());
+    parent->addLocalBinding(qn->getPrefix(), qn->getNamespace());
   }
 
   oldName.transfer(theName);
@@ -559,15 +559,15 @@ void ElementNode::checkNamespaceConflict(
     const Item*           qname,
     ZorbaError::ErrorCode ecode) const
 {
-  xqpStringStore* ns = findBinding(qname->getPrefix().getStore());
+  xqpStringStore* ns = findBinding(qname->getPrefix());
 
-  if (ns != NULL && ns->byteEqual(*qname->getNamespace().getStore()))
+  if (ns != NULL && ns->byteEqual(*qname->getNamespace()))
   {
     ZORBA_ERROR_DESC_OSS(ecode,
                          "The implied namespace binding of " << qname->show()
                          << " conflicts with namespace binding ["
-                         << qname->getPrefix() << ", " 
-                         << qname->getNamespace() << "]");
+                         << qname->getPrefix()->str() << ", " 
+                         << qname->getNamespace()->str() << "]");
   }
 }
 

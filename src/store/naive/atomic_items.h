@@ -73,17 +73,13 @@ private:
 
   void free();
 
-  bool isInCache() const                { return thePosition != 0; }
-  bool isOverflow() const               { return thePosition == 0; }
+  bool isInCache() const               { return thePosition != 0; }
+  bool isOverflow() const              { return thePosition == 0; }
 
  public:
-  xqp_string getNamespace() const       { return theNamespace.getp(); }
-  xqp_string getPrefix() const          { return thePrefix.getp(); }
-  xqp_string getLocalName() const       { return theLocal.getp(); }
-
-  xqpStringStore* getNamespaceP() const { return theNamespace.getp(); }
-  xqpStringStore* getPrefixP() const    { return thePrefix.getp(); }
-  xqpStringStore* getLocalNameP() const { return theLocal.getp(); }
+  xqpStringStore* getNamespace() const { return theNamespace.getp(); }
+  xqpStringStore* getPrefix() const    { return thePrefix.getp(); }
+  xqpStringStore* getLocalName() const { return theLocal.getp(); }
 
   Item* getType() const;
   uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
@@ -100,14 +96,14 @@ private:
 ********************************************************************************/
 class NCNameItemImpl : public AtomicItem
 {
-private:
+protected:
   xqpStringStore_t  theValue;
 
 public:
   NCNameItemImpl(xqpStringStore* aValue) : theValue(aValue)
   {}
 
-  Item* getType() const;
+  virtual Item* getType() const;
   uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   bool equals(const Item*, RuntimeCB*, XQPCollator* aCollation = 0) const;
   Item_t getEBV() const;
@@ -116,6 +112,21 @@ public:
 
   virtual xqp_string show() const;
 };
+
+
+/*******************************************************************************
+  class IDItem
+********************************************************************************/
+class IDItemImpl : public NCNameItemImpl
+{
+public:
+  IDItemImpl(xqpStringStore* aValue) : NCNameItemImpl(aValue) { }
+
+  Item* getType() const;
+
+  virtual xqp_string show() const;
+};
+
 
 
 /*******************************************************************************

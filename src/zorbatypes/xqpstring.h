@@ -102,6 +102,12 @@ public:
   byteEqual(const char* src, uint32_t srcLen) const;
 
   bool
+  byteEqual(const char* src) const
+  {
+    return byteEqual(src, strlen(src));
+  }
+
+  bool
   equals(const xqpStringStore* src) const
   {
     return ((this == src) || (compare(src, 0) == 0));

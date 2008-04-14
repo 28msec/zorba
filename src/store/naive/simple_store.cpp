@@ -37,6 +37,7 @@ const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6f;
 const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
+const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 
 
 /*******************************************************************************

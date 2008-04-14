@@ -126,21 +126,21 @@ Item::close()
 String Item::getPrefix() const
 {
   ITEM_TRY
-    return m_item->getPrefix().theStrStore.getp();
+    return m_item->getPrefix();
   ITEM_CATCH
 }
 
 String Item::getLocalName() const
 {
   ITEM_TRY
-    return m_item->getLocalName().theStrStore.getp();
+    return m_item->getLocalName();
   ITEM_CATCH
 }
 
 String Item::getNamespace() const
 {
   ITEM_TRY
-    return m_item->getNamespace().theStrStore.getp();
+    return m_item->getNamespace();
   ITEM_CATCH
 }
 

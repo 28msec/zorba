@@ -193,6 +193,7 @@ public:
         Iterator*         attributesIte,
         Iterator*         namespacesIte,
         const NsBindings& localBindings,
+        xqpStringStore*   baseURI,
         bool              isRoot,
         bool              assignIds,
         bool              copy,

@@ -12,6 +12,7 @@
 #include "store/naive/node_iterators.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/basic_item_factory.h"
+#include "store/naive/qname_pool.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/nsbindings.h"
 #include "store/api/temp_seq.h"
@@ -201,15 +202,15 @@ uint32_t XmlNode::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string XmlNode::getBaseURI() const
+xqpStringStore_t XmlNode::getBaseURI() const
 {
-  return theParent ? theParent->getBaseURI() : "";
+  return theParent ? theParent->getBaseURI().getp() : 0;
 }
 
 
-xqp_string XmlNode::getDocumentURI() const
+xqpStringStore_t XmlNode::getDocumentURI() const
 {
-  return theParent ? theParent->getDocumentURI() : "";
+  return theParent ? theParent->getDocumentURI().getp() : new xqpStringStore("");
 }
 
 
@@ -1086,8 +1087,8 @@ const NsBindings& ElementNode::getLocalBindings() const
 ********************************************************************************/
 void ElementNode::addBindingForQName(Item* qname)
 {
-  xqpStringStore* prefix = qname->getPrefix().getStore();
-  xqpStringStore* ns = qname->getNamespace().getStore();
+  xqpStringStore* prefix = qname->getPrefix();
+  xqpStringStore* ns = qname->getNamespace();
 
   if (prefix->str() != "xml")
   {
@@ -1213,7 +1214,7 @@ XmlNode* ElementNode::copy(
       xqpStringStore* ns;
       std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext);
 
-      prefix = theName->getPrefix().getStore();
+      prefix = theName->getPrefix();
       ns = getNsContext()->findBinding(prefix);
 
       // ns may be null only if the prefix was empty and there was no default
@@ -1239,10 +1240,10 @@ XmlNode* ElementNode::copy(
 
       for (ulong i = 0; i < numAttrs; i++)
       {
-        prefix = getAttr(i)->getNodeName()->getPrefix().getStore();
+        prefix = getAttr(i)->getNodeName()->getPrefix();
         ns = getNsContext()->findBinding(prefix);
 
-        ZORBA_ASSERT(prefix->str() == "" || ns != NULL);
+        ZORBA_ASSERT(prefix->empty() || prefix->str() == "xml" || ns != NULL);
 
         if (ns != NULL)
         {
@@ -1440,6 +1441,26 @@ LoadedElementNode::LoadedElementNode(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t LoadedElementNode::getBaseURI() const
+{
+  ulong numAttrs = numAttributes();
+  for (ulong i = 0; i < numAttrs; i++)
+  {
+    AttributeNode* attr = reinterpret_cast<AttributeNode*>(getAttr(i));
+    if (attr->isBaseUri())
+    {
+      return attr->getStringValue();
+    }
+  }
+
+  return theParent ? theParent->getBaseURI().getp() : 0;
+}
+
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class ConstrElementNode                                                    //
@@ -1488,11 +1509,13 @@ void ConstrElementNode::constructSubtree(
     Iterator*         attributesIte,
     Iterator*         childrenIte,
     const NsBindings& localBindings,
+    xqpStringStore*   staticBaseUri,
     bool              copy,
     const CopyMode&   copymode)
 {
   Item_t item;
   Item_t prevItem;
+  bool haveBaseUri = false;
 
   if (!localBindings.empty())
   {
@@ -1515,6 +1538,12 @@ void ConstrElementNode::constructSubtree(
 
       addAttribute(BASE_NODE(item), copy, copymode);
 
+      Item* qname = item->getNodeName();
+      if (!haveBaseUri &&
+          qname->getPrefix()->byteEqual("xml", 3) &&
+          qname->getLocalName()->byteEqual("base", 4))
+        haveBaseUri = true;
+
       item = attributesIte->next();
     }
   }
@@ -1532,6 +1561,12 @@ void ConstrElementNode::constructSubtree(
       if (cnode->getNodeKind() == StoreConsts::attributeNode)
       {
         addAttribute(cnode, copy, copymode);
+
+        Item* qname = item->getNodeName();
+        if (!haveBaseUri &&
+            qname->getPrefix()->byteEqual("xml", 3) &&
+            qname->getLocalName()->byteEqual("base", 4))
+          haveBaseUri = true;
       }
       else if (cnode->theParent != this)
       {
@@ -1540,6 +1575,20 @@ void ConstrElementNode::constructSubtree(
 
       item = childrenIte->next();
     }
+  }
+
+  if (!haveBaseUri && staticBaseUri != NULL && !staticBaseUri->empty())
+  {
+    const SimpleStore& store = GET_STORE();
+    Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
+    Item_t tname = store.theSchemaTypeNames[XS_ANY_URI];
+    Item* typedValue = new AnyUriItemImpl(staticBaseUri);
+    AttributeNode* attr = new AttributeNode(qname, tname, false, false);
+    attr->theParent = this;
+    attr->setHidden();
+    attr->theTypedValue = typedValue;
+
+    theAttributes.push_back(attr, false);
   }
 
   theChildren.resize(numChildren());
@@ -1557,7 +1606,7 @@ void ConstrElementNode::addAttribute(
 {
   if (cnode->theParent != this)
   {
-    checkUniqueAttr(cnode->getNodeName().getp());
+    checkUniqueAttr(cnode->getNodeName());
 
     if (copy)
     {
@@ -1609,6 +1658,25 @@ void ConstrElementNode::addChild(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t ConstrElementNode::getBaseURI() const
+{
+  ulong numAttrs = numAttributes();
+  for (ulong i = 0; i < numAttrs; i++)
+  {
+    AttributeNode* attr = reinterpret_cast<AttributeNode*>(getAttr(i));
+    if (attr->isBaseUri())
+    {
+      return attr->getStringValue();
+    }
+  }
+
+  return theParent ? theParent->getBaseURI().getp() : new xqpStringStore("");
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class AttributeNode                                                        //
@@ -1635,6 +1703,10 @@ AttributeNode::AttributeNode(
 
   if (isIdrefs)
     theFlags |= XmlNode::IsIdRefs;
+
+  if (attrName->getPrefix()->byteEqual("xml", 3) &&
+      attrName->getLocalName()->byteEqual("base", 4))
+    theFlags |= XmlNode::IsBaseUri;
 
   NODE_TRACE1("Loaded attr node " << this << " name = "
               << *attrName->getStringValue());
@@ -1664,6 +1736,10 @@ AttributeNode::AttributeNode(
 
   if (isIdrefs)
     theFlags |= XmlNode::IsIdRefs;
+
+  if (attrName->getPrefix()->byteEqual("xml", 3) &&
+      attrName->getLocalName()->byteEqual("base", 4))
+    theFlags |= XmlNode::IsBaseUri;
 
   NODE_TRACE1("Constructed root attribute node " << this
               << " tree = " << getTree()->getId() << ":" << getTree()
@@ -1696,6 +1772,10 @@ AttributeNode::AttributeNode(
   if (isIdRefs)
     theFlags |= XmlNode::IsIdRefs;
 
+  if (attrName->getPrefix()->byteEqual("xml", 3) &&
+      attrName->getLocalName()->byteEqual("base", 4))
+    theFlags |= XmlNode::IsBaseUri;
+
   NODE_TRACE1("Constructed attribute node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
@@ -1726,6 +1806,10 @@ AttributeNode::AttributeNode(
 
   if (isIdRefs)
     theFlags |= XmlNode::IsIdRefs;
+
+  if (attrName->getPrefix()->byteEqual("xml", 3) &&
+      attrName->getLocalName()->byteEqual("base", 4))
+    theFlags |= XmlNode::IsBaseUri;
 
   NODE_TRACE1("Constructed attribute node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
@@ -1774,7 +1858,8 @@ XmlNode* AttributeNode::copy(
   {
     typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp();
 
-    if (theName->getLocalName() == "id" && theName->getPrefix() == "xml")
+    if (theName->getLocalName()->byteEqual("id") &&
+        theName->getPrefix()->byteEqual("xml", 3))
       isId = true;
 
     if (theTypedValue->getType() == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
@@ -1824,6 +1909,9 @@ XmlNode* AttributeNode::copy(
 
     throw;
   }
+
+  if (isHidden())
+    copyNode->setHidden();
 
   NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = ");

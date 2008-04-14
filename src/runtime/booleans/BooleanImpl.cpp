@@ -503,9 +503,9 @@ CompareIterator::equal(
           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
   {
     equal = 0;
-    if(aItem0->getLocalName() == aItem1->getLocalName())
-      if((aItem0->getNamespace().empty() && aItem1->getNamespace().empty()) ||
-         (aItem0->getNamespace() == aItem1->getNamespace()))
+    if(aItem0->getLocalName()->equals(aItem1->getLocalName()))
+      if((aItem0->getNamespace()->empty() && aItem1->getNamespace()->empty()) ||
+         (aItem0->getNamespace()->equals(aItem1->getNamespace())))
         equal = 1;
     return (equal==-2)?-2:(equal==0?1:0);
   }

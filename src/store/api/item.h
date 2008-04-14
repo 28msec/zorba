@@ -358,30 +358,30 @@ public:
    *  of these methods.
    */
   
-  /** Accessor for element node
-   *  @return  attribute*
+  /** Accessor for document node
+   *  @return  uri?
    */
-  virtual Iterator_t
-  getAttributes() const;
+  virtual xqpStringStore_t
+  getDocumentURI() const;
 
   /** Accessor for document node, element node, attribute node,
    * processing instruction node, comment node, text node
    *  @return  uri?
    */
-  virtual xqp_string
+  virtual xqpStringStore_t
   getBaseURI() const;
+
+  /** Accessor for element node
+   *  @return  attribute*
+   */
+  virtual Iterator_t
+  getAttributes() const;
   
   /** Accessor for document node, element node
    *  @return  node*
    */
   virtual Iterator_t
   getChildren() const;
-
-  /** Accessor for document node
-   *  @return  uri?
-   */
-  virtual xqp_string
-  getDocumentURI() const;
 
   /** Accessor for attribute node
    * @return isId: Used for attribute items (defines the attribute an id?)
@@ -419,7 +419,7 @@ public:
   /** Accessor for element node, attribute node
    *  @return qname?
    */
-  virtual Item_t
+  virtual Item*
   getNodeName() const;
 
   /**
@@ -440,38 +440,38 @@ public:
   /** Accessor for xs:qname, namespace node
    * @return namespace uri
    */
-  virtual xqp_string
+  virtual xqpStringStore*
   getNamespace() const;
 
   /** Accessor for xs:qname, namespace node
    * @return namespace prefix
    */
-  virtual xqp_string
+  virtual xqpStringStore*
   getPrefix() const;
 
   /** Accessor for xs:qname
    * @return namespace local name
    */
-  virtual xqp_string
+  virtual xqpStringStore*
   getLocalName() const;
 
   /** Accessor for document node
    * @return unparsed entity public id
    */
-  virtual xqp_string
+  virtual xqpStringStore*
   getUnparsedEntityPublicId() const;
 
   /** Accessor for document node
    * @return unparsed entity system id
    */
-  virtual xqp_string
+  virtual xqpStringStore*
   getUnparsedEntitySystemId() const;
 
   /**
    *  Accessor for processing instruction node
    * @return target of the PI
    */
-  virtual xqp_string
+  virtual xqpStringStore*
   getTarget() const;
 
   /**

@@ -451,8 +451,8 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
   {
     const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
     store::Item* qname = GENV_TYPESYSTEM.m_atomic_typecode_qname_map[at.get_type_code()];
-    return TypeIdentifier::createNamedType(qname->getNamespace().getStore(),
-                                           qname->getLocalName().getStore(),
+    return TypeIdentifier::createNamedType(qname->getNamespace(),
+                                           qname->getLocalName(),
                                            q);
   }
   case XQType::NODE_TYPE_KIND:
@@ -491,16 +491,16 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
     }
   }
   case XQType::ANY_TYPE_KIND:
-    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME->getLocalName().theStrStore, q);
+    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME->getNamespace(), &*GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME->getLocalName(), q);
 
   case XQType::ITEM_KIND:
     return TypeIdentifier::createItemType(q);
 
   case XQType::ANY_SIMPLE_TYPE_KIND:
-    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName().theStrStore, q);
+    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace(), &*GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName(), q);
 
   case XQType::UNTYPED_KIND:
-    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_UNTYPED_QNAME->getNamespace().theStrStore, &*GENV_TYPESYSTEM.XS_UNTYPED_QNAME->getLocalName().theStrStore, q);
+    return TypeIdentifier::createNamedType(&*GENV_TYPESYSTEM.XS_UNTYPED_QNAME->getNamespace(), &*GENV_TYPESYSTEM.XS_UNTYPED_QNAME->getLocalName(), q);
     
   case XQType::EMPTY_KIND:
     return TypeIdentifier::createEmptyType();

@@ -30,6 +30,7 @@ class SimpleStore : public Store
  
 public:
   static const char* XS_URI;
+  static const char* XML_URI;
 
 protected:
   static const float DEFAULT_HASH_LOAD_FACTOR;

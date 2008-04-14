@@ -48,9 +48,9 @@ store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
        inNode->getNodeKind() == store::StoreConsts::textNode)
       STACK_PUSH(GENV_ITEMFACTORY->createString(strRes.getStore()), state);
     else if(inNode->getNodeKind() == store::StoreConsts::piNode)
-      STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getTarget().getStore()), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getTarget()), state);
     else
-      STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getNodeName()->getLocalName().getStore()), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getNodeName()->getLocalName()), state);
   }
   else
     STACK_PUSH(GENV_ITEMFACTORY->createString(strRes.getStore()), state);
@@ -73,7 +73,7 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
   {
     if(inNode->getNodeKind() == store::StoreConsts::elementNode ||
        inNode->getNodeKind() == store::StoreConsts::attributeNode)
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getNodeName()->getNamespace().getStore()), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getNodeName()->getNamespace()), state);
     else
       STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(xqp_string().getStore()), state);
   }
@@ -85,10 +85,11 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 //---------------------
 store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t   item, node, attr, attrName;
-  Iterator_t      theAttributes;
-  bool            found = false;
-  xqp_string      reqLang;
+  store::Item_t    item, node, attr;
+  store::Item*     attrName;
+  Iterator_t       theAttributes;
+  bool             found = false;
+  xqpStringStore_t reqLang;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -105,9 +106,9 @@ store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
            ! found && NULL != (attr = theAttributes->next()); )
       {
         attrName = attr->getNodeName();
-        found = xqp_string (attrName->getLocalName ()) == "lang"
-          && xqp_string (attrName->getNamespace ()) == XML_NS
-          && xqp_string(attr->getStringValue()).matches(xqp_string("^") + reqLang + "(-|$)", "i");
+        found = (attrName->getLocalName()->byteEqual("lang", 4) &&
+                 attrName->getNamespace()->byteEqual(XML_NS, strlen(XML_NS)) &&
+                 xqp_string(attr->getStringValue()).matches(xqp_string("^" + reqLang->str() + "(-|$)"), "i"));
       }
     }
   }

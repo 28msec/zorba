@@ -215,10 +215,10 @@ QNameEqualIterator::nextImpl(PlanState& planState) const
       arg1 = arg1->getAtomizationValue();
       arg2 = arg2->getAtomizationValue();
     
-      if(arg1->getLocalName() == arg2->getLocalName())
+      if(arg1->getLocalName()->equals(arg2->getLocalName()))
       {
-        if((arg1->getNamespace().empty() && arg2->getNamespace().empty()) ||
-            (arg1->getNamespace() == arg2->getNamespace()))
+        if((arg1->getNamespace()->empty() && arg2->getNamespace()->empty()) ||
+           (arg1->getNamespace()->equals(arg2->getNamespace())))
           res = GENV_ITEMFACTORY->createBoolean(true);
         else
           res = GENV_ITEMFACTORY->createBoolean(false);
@@ -249,20 +249,20 @@ QNameEqualIterator::nextImpl(PlanState& planState) const
 store::Item_t
 PrefixFromQNameIterator::nextImpl(PlanState& planState) const
 {
-    store::Item_t item;
-    xqp_string tmp="";
+  store::Item_t item;
+  xqpStringStore* pre;
 
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-    item = consumeNext(theChild.getp(), planState);
-    if ( item != NULL )
-    {
-      item = item->getAtomizationValue();
-      tmp = item->getPrefix();
-      if(!tmp.empty())
-        STACK_PUSH( GENV_ITEMFACTORY->createNCName(tmp.getStore()), state );
-    }
-    STACK_END (state);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  item = consumeNext(theChild.getp(), planState);
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
+    pre = item->getPrefix();
+    if(!pre->empty())
+      STACK_PUSH( GENV_ITEMFACTORY->createNCName(pre), state );
+  }
+  STACK_END (state);
 }
 /* end class PrefixFromQNameIterator */
 
@@ -289,7 +289,7 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState) const
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createNCName(item->getLocalName().getStore()), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createNCName(item->getLocalName()), state);
   }
   STACK_END (state);
 }
@@ -320,7 +320,7 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
-      STACK_PUSH( GENV_ITEMFACTORY->createString(item->getNamespace().getStore()), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createString(item->getNamespace()), state );
     }
     STACK_END (state);
 }

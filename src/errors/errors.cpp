@@ -38,7 +38,7 @@ namespace zorba { namespace error {
     theLineNumber(aLineNumber)
   {
     // compute err code from qname
-    theErrorCode = err_name_to_code(theQName->getLocalName());
+    theErrorCode = err_name_to_code(theQName->getLocalName()->str());
   }
 
 

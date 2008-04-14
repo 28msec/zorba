@@ -34,8 +34,8 @@ NodeNameTest::NodeNameTest(
 NodeNameTest::NodeNameTest(rchandle<store::Item> qname)
   :
   m_kind(CONSTANT),
-  m_uri(qname->getNamespace().theStrStore),
-  m_local(qname->getLocalName().theStrStore)
+  m_uri(qname->getNamespace()),
+  m_local(qname->getLocalName())
 {
 }
 
@@ -67,9 +67,9 @@ bool NodeNameTest::operator ==(const NodeNameTest& other) const
 
 bool NodeNameTest::matches(store::Item *qname) const
 {
-  return ((m_uri->str() == "*" || m_uri->byteEqual(*qname->getNamespace().theStrStore))
+  return ((m_uri->str() == "*" || m_uri->byteEqual(*qname->getNamespace()))
           &&
-          (m_local->str() == "*" || m_local->byteEqual(*qname->getLocalName().theStrStore)));
+          (m_local->str() == "*" || m_local->byteEqual(*qname->getLocalName())));
 }
 
 

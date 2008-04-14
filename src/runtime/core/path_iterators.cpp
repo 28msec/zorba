@@ -118,7 +118,8 @@ store::Item_t KindTestIterator::nextImpl(PlanState& planState) const
       }
 
 doctest1:
-      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().getp(), planState.theRuntimeCB))
+      if (theQName != NULL &&
+          !theQName->equals(contextNode->getNodeName(), planState.theRuntimeCB))
       {
         skip = true;
         break;
@@ -145,7 +146,8 @@ doctest1:
         break;
       }
 
-      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().getp(), planState.theRuntimeCB))
+      if (theQName != NULL &&
+          !theQName->equals(contextNode->getNodeName(), planState.theRuntimeCB))
       {
         skip = true;
         break;
@@ -192,7 +194,8 @@ doctest2:
         break;
       }
 
-      if (theQName != NULL  && theQName->getLocalName() != contextNode->getTarget())
+      if (theQName != NULL &&
+          !theQName->getLocalName()->equals(contextNode->getTarget()))
         skip = true;
 
       break;
@@ -242,7 +245,7 @@ store::Item_t NameTestIterator::nextImpl(PlanState& planState) const
     {
     case match_no_wild:
     {
-      if (theQName->equals(contextNode->getNodeName().getp(), planState.theRuntimeCB))
+      if (theQName->equals(contextNode->getNodeName(), planState.theRuntimeCB))
         return contextNode;
 
       break;
@@ -253,14 +256,14 @@ store::Item_t NameTestIterator::nextImpl(PlanState& planState) const
     }
     case match_prefix_wild:
     {
-      if (theQName->getLocalName() == contextNode->getNodeName()->getLocalName())
+      if (theQName->getLocalName()->equals(contextNode->getNodeName()->getLocalName()))
         return contextNode;
 
       break;
     }
     case match_name_wild:
     {
-      if (theQName->getNamespace() == contextNode->getNodeName()->getPrefix())
+      if (theQName->getNamespace()->equals(contextNode->getNodeName()->getNamespace()))
         return contextNode;
 
       break;

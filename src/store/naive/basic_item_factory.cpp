@@ -521,6 +521,7 @@ Item_t BasicItemFactory::createElementNode(
     Iterator*         attrsIter,
     Iterator*         nsIter,
     const NsBindings& localBindings,
+    xqpStringStore*   baseUri,
     bool              isRoot,
     bool              assignIds,
     bool              copy,
@@ -554,11 +555,13 @@ Item_t BasicItemFactory::createElementNode(
       parent = ctx.top();
 
       n = new ConstrElementNode(parent, name, type);
+      baseUri = NULL;
     }
 
     ctx.push(n);
 
-    n->constructSubtree(attrsIter, childrenIter, localBindings, copy, copymode);
+    n->constructSubtree(attrsIter, childrenIter, localBindings,
+                        baseUri, copy, copymode);
 
     ctx.pop();
   }
@@ -613,14 +616,15 @@ Item_t BasicItemFactory::createAttributeNode(
     // around thIteme expression.
     name = nameIter->next();
 
-    if (name->getLocalName().size() == 0)
+    if (name->getLocalName()->empty())
     {
       ZORBA_ERROR_DESC(ZorbaError::XQDY0074,
                        "Attribute name must not have an empty local part.");
     }
   
-    if (name->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
-        (name->getNamespace() == "" && name->getLocalName() == "xmlns"))
+    if (name->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
+        (name->getNamespace()->empty() &&
+         name->getLocalName()->byteEqual("xmlns", 5)))
     {
       ZORBA_ERROR(ZorbaError::XQDY0044);
     }

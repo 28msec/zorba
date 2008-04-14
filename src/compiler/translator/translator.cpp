@@ -2179,7 +2179,7 @@ void *begin_visit(const VFO_DeclList& v)
             || ns == XML_NS
             || ns == XML_SCHEMA_NS
             || ns == XSI_NS)
-          ZORBA_ERROR_LOC_PARAM (ZorbaError::XQST0045, n->get_location (), qname->getLocalName (), "");
+          ZORBA_ERROR_LOC_PARAM (ZorbaError::XQST0045, n->get_location (), qname->getLocalName()->str(), "");
       }
       signature sig(qname, arg_types, return_type);
       switch(n->get_type()) {
@@ -2469,7 +2469,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
 
-  if (fn_qname->getNamespace() == XQUERY_FN_NS) {
+  if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS, strlen(XQUERY_FN_NS))) {
     xqp_string fn_local = fn_qname->getLocalName ();
     if (fn_local == "position") {
       nodestack.push(sctx_p->lookup_var_nofail (DOT_POS_VARNAME));
@@ -3087,8 +3087,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname());
 
       rchandle<NodeNameTest> nodeNameTest =
-        new NodeNameTest(qnameItem->getNamespace().getStore(),
-                         qnameItem->getLocalName().getStore());
+        new NodeNameTest(qnameItem->getNamespace(), qnameItem->getLocalName());
 
       nodeTest = new NodeTest(store::StoreConsts::elementNode, nodeNameTest);
     }
@@ -3150,8 +3149,8 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
       store::Item_t qnameItem = sctx_p->lookup_qname("", attrName->get_qname());
 
       rchandle<NodeNameTest> nodeNameTest =
-        new NodeNameTest(qnameItem->getNamespace().getStore(),
-                         qnameItem->getLocalName().getStore());
+        new NodeNameTest(qnameItem->getNamespace(),
+                         qnameItem->getLocalName());
 
       nodeTest = new NodeTest(store::StoreConsts::attributeNode, nodeNameTest);
     }

@@ -212,6 +212,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   store::Item_t qnameItem;
   store::Item_t node;
 
+  static_context* sctx = planState.theRuntimeCB->theStaticContext;
   store::CopyMode copymode;
   
   ElementIteratorState* state;
@@ -221,7 +222,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
 
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
-  if (qnameItem->getLocalName().size() == 0)
+  if (qnameItem->getLocalName()->empty())
   {
     ZORBA_ERROR_DESC( ZorbaError::XQDY0074, "Element name must not have an empty local part.");
   }
@@ -245,6 +246,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
                            awrapper.get(),
                            NULL,
                            theLocalBindings->get_bindings(),
+                           sctx->baseuri().getStore(),
                            theIsRoot,
                            true, // assignIds
                            true, // copy
@@ -436,7 +438,7 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
   store::Item_t lRes;
-  xqpStringStore_t strval;
+  xqtref_t lItemType;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -453,28 +455,34 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
                           "Non single sequences cannot be cased to QName.");
   }
 
-  try
-  {
-    xqtref_t lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
-                         create_value_type (lItem);
+  lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
+              create_value_type(lItem);
 
-    if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
-    {
-      lRes = lItem;
-    }
-    else
+  if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+  {
+    lRes.transfer(lItem);
+  }
+  else if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
+           !TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  {
+    ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, 
+                         "Item cannot be casted to QName.");
+  }
+  else
+  {
+    try
     {
       lRes = GenericCast::instance()->castToQName(lItem->getStringValue(),
                                                   true,
                                                   true,
                                                   &*theNCtx);
     }
-  }
-  catch (...)
-  {
-    // the returned error codes are wrong for name casting => they must be changed
-    ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
-                          "Item cannot be casted to QName.");
+    catch (...)
+    {
+      // the returned error codes are wrong for name casting => they must be changed
+      ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
+                            "Item cannot be casted to QName.");
+    }
   }
 
   STACK_PUSH(lRes, state);

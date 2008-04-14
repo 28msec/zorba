@@ -264,7 +264,9 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
 	xqtref_t	static_context::get_variable_type(
 		store::Item *var_name)
 	{
-		return lookup_type( "type:var:" + qname_internal_key("", var_name->getPrefix(), var_name->getLocalName()));
+		return lookup_type( "type:var:" + qname_internal_key("",
+                                                         var_name->getPrefix(),
+                                                         var_name->getLocalName()));
 	}
 
 	void static_context::set_context_item_static_type(xqtref_t t)
@@ -289,7 +291,10 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
 
 void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 {
-	bind_type("type:fun:"+qname_internal_key( default_function_namespace(), qname->getPrefix(), qname->getLocalName()), t);
+	bind_type("type:fun:"+qname_internal_key( default_function_namespace(),
+                                            qname->getPrefix(),
+                                            qname->getLocalName()),
+            t);
 }
 
 xqtref_t static_context::get_function_type(
@@ -297,7 +302,9 @@ xqtref_t static_context::get_function_type(
 {
 	// TODO
 	//return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-	return lookup_type("type:fun:" + qname_internal_key( default_function_namespace(), qname->getPrefix(), qname->getLocalName()));
+	return lookup_type("type:fun:" + qname_internal_key(default_function_namespace(),
+                                                      qname->getPrefix(),
+                                                      qname->getLocalName()));
 }
 
 void static_context::set_document_type(xqp_string docURI, xqtref_t t)
