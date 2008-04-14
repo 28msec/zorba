@@ -121,6 +121,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
   } catch (boost::program_options::error& e)
   {
+    std::cerr << e.what() << std::endl;
     lProperties.printHelp();
     return 1;
   }

@@ -763,7 +763,6 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
     
     lRunningType = GENV_TYPESYSTEM.create_value_type (lRunningItem);
 
-    std::cout << "type " << lRunningType->toString() << std::endl;
     if (TypeOps::is_numeric (*lRunningType) || TypeOps::is_equal (*lRunningType, *lUntypedAtomic)) {
       lHitNumeric = true;
       if ( lHitYearMonth )

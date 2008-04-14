@@ -15,8 +15,6 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
     ( "version", "Print program version")
 
     ( "help,h", "Print the help list")
-
-    ( "properties-file", "Take options in a file")
     ;
 
   boost::program_options::options_description lOutputOptions ( "Output Options" );
@@ -94,22 +92,6 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
   // parse the command line options
   store ( boost::program_options::command_line_parser ( argc, argv ).
         options ( lAllOptions ).positional( lPositionalOptions ).run(), lVarMap );
-
-  notify ( lVarMap );
-
-  // if an option-file is specified, load it and eventually override command line options
-  if ( lVarMap.count( "option-file" ) != 0 )
-  {
-    std::ifstream lPropertyFile ( lVarMap["option-file"].as<std::string>().c_str() );
-    if ( !lPropertyFile )
-    {
-      std::cerr << "option-file " << lVarMap["option-file"].as<std::string>()  
-        << " not found or not readable" << std::endl;
-      return false;
-    }
-    boost::program_options::store( boost::program_options::parse_config_file(lPropertyFile, 
-                                   lAllOptions), lVarMap) ;
-  }
 
   notify ( lVarMap );
 
