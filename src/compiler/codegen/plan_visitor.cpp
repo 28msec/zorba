@@ -118,6 +118,7 @@ protected:
   hash64map<vector<ref_iter_t> *>    * param_var_iter_map;
   hash64map<vector<ref_iter_t> *>      catchvar_iter_map;
   hash64map<vector<ref_iter_t> *>      copy_var_iter_map;
+  hash64map<vector<ref_iter_t> *>      group_var_iter_map;
 
 public:
 	plan_visitor(hash64map<vector<ref_iter_t> *> *param_var_map = NULL)
@@ -130,6 +131,7 @@ public:
         for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<ref_iter_t>());
         for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<ref_iter_t>());
         for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<ref_iter_t>());
+        for_each(group_var_iter_map.begin(), group_var_iter_map.end(), vector_destroyer<ref_iter_t>());
     }
 
 public:
@@ -281,6 +283,20 @@ void end_visit(var_expr& v)
     itstack.push(v_p);
   }
   break;
+  case var_expr::groupby_var:
+  {
+    vector<ref_iter_t> *map = NULL;
+    uint64_t k = (uint64_t) &v;
+    bool bound = group_var_iter_map.get (k, map);
+      
+    ZORBA_ASSERT (bound);
+    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
+            loc,
+            (void *) &v);
+    map->push_back (v_p);
+    itstack.push(v_p);
+  }
+  break;
   case var_expr::unknown_var:
     assert (false);
     break;
@@ -326,6 +342,16 @@ bool begin_visit(flwor_expr& v)
     else
       ZORBA_ASSERT (false);
   }
+  
+  for(flwor_expr::group_list_t::const_iterator it = v.group_begin();
+      it != v.group_end();
+      ++it)
+  {
+    rchandle<var_expr> var = (*it)->getInnerVar();
+    uint64_t k = (uint64_t) &*var;
+    group_var_iter_map.put(k, new vector<ref_iter_t>());
+  }
+
   return true;
 }
 
@@ -350,6 +376,22 @@ void end_visit(flwor_expr& v)
   reverse (orderSpecs.begin (), orderSpecs.end ());
 
   auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
+
+  vector<FLWORIterator::GroupClause> groupBys;
+  for(flwor_expr::group_list_t::reverse_iterator i = v.group_rbegin();
+      i != v.group_rend();
+      ++i)
+  {
+    rchandle<group_clause> group = *i;
+    vector<ref_iter_t>* lInnerVars = 0;
+    var_expr* lVar = group->getInnerVar();
+    ZORBA_ASSERT(group_var_iter_map.get((uint64_t)lVar, lInnerVars));
+
+    PlanIter_t lInput = pop_itstack();
+
+    xqp_string lCollation = group->getCollation();
+    groupBys.push_back(FLWORIterator::GroupClause(lInput, *lInnerVars, lCollation));
+  }
 
   PlanIter_t where = NULL;
   if (v.get_where () != NULL)
@@ -398,7 +440,7 @@ void end_visit(flwor_expr& v)
   }
 
   FLWORIterator *iter = new FLWORIterator(
-    v.get_loc(), clauses, where, orderby.release(), ret, v.isUpdating(), false);
+    v.get_loc(), clauses, where, groupBys, orderby.release(), ret, v.isUpdating(), false);
   itstack.push(iter);
 }
 

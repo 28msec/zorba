@@ -1271,6 +1271,31 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       flwor->add (flwor_expr::orderspec_t (lOrderExpr, emod));
     }
   }
+
+  GroupByClause *lGroupBy = &*v.get_groupby();
+  if (lGroupBy)
+  {
+    // TODO let and where after group by
+
+    GroupSpecList *lGroupList = lGroupBy->get_spec_list();
+    size_t lSize = lGroupList->size();
+    for (int i = (lSize-1); i >= 0; --i)
+    {
+      GroupSpec* lSpec = &*((*lGroupList)[i]);
+
+      var_expr_t lOuterVarExpr = pop_nodestack().cast<var_expr>();
+      var_expr_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
+
+      group_clause* lClause = 0;
+      if (lSpec->group_coll_spec() != 0)
+        lClause = new group_clause(lOuterVarExpr, lInnerVarExpr, lSpec->group_coll_spec()->get_uri());
+      else
+        lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
+      flwor->add(lClause);
+      pop_scope();
+    }
+  }
+
   if (v.get_where () != NULL)
   {
     expr_t lClauseExpr = pop_nodestack();
@@ -1458,7 +1483,7 @@ void end_visit(const GroupByClause& /*v*/, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const GroupSpecList&)
+void *begin_visit(const GroupSpecList& v)
 {
   TRACE_VISIT ();
   return no_state;
@@ -1469,9 +1494,15 @@ void end_visit(const GroupSpecList& /*v*/, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const GroupSpec&)
+void *begin_visit(const GroupSpec& v)
 {
   TRACE_VISIT ();
+  var_expr *e = static_cast<var_expr*>(sctx_p->lookup_var(v.get_var_name()));
+  if (e == NULL)
+    ZORBA_ERROR_PARAM(ZorbaError::XPST0008, v.get_var_name(), "");
+  push_scope();
+  bind_var_and_push(v.get_location(), v.get_var_name(), var_expr::groupby_var);
+  nodestack.push(rchandle<expr>(e));
   return no_state;
 }
 

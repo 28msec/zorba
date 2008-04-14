@@ -72,6 +72,7 @@ public:
 class flwor_expr_iterator_data : public expr_iterator_data {
 public:
   flwor_expr::clause_list_t::iterator clause_iter;
+  flwor_expr::group_list_t::iterator group_iter;
   flwor_expr::orderspec_list_t::iterator order_mod_iter;
   
 public:
@@ -269,6 +270,7 @@ string var_expr::decode_var_kind(
   case context_var: return "CTX"; break;
   case catch_var: return "CATCH"; break;
   case copy_var: return "COPY"; break;
+  case groupby_var: return "GROUPBY"; break;
   default: return "???";
   }
 }
@@ -365,6 +367,9 @@ void flwor_expr::next_iter (expr_iterator_data& v) {
                  (*vv.clause_iter)->expr_h);
   
   ITER (where_h);
+
+  ITER_FOR_EACH (group_iter, group_v.begin(), group_v.end(),
+                 (*vv.group_iter)->theOuterVar);
 
   ITER_FOR_EACH (order_mod_iter, orderspec_begin (), orderspec_end (),
                  (*vv.order_mod_iter).first);

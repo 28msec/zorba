@@ -1708,6 +1708,17 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   thePrinter.endEndVisit();
 }
 
+void PrinterVisitor::beginVisitFlworGroupBy(const PlanIterator& a) {
+  thePrinter.startBeginVisit("GroupByClause", ++theId);
+  thePrinter.endBeginVisit(theId);
+  a.accept(*this);
+}
+
+void PrinterVisitor::endVisitFlworGroupBy(const PlanIterator& a) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
 
   void PrinterVisitor::beginVisitFlworOrderBy(const PlanIterator& a){
     thePrinter.startBeginVisit("OrderByClause", ++theId);

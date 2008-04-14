@@ -117,6 +117,22 @@ xqpStringStore FLWORIterator::ForLetClause::getVarName() const
 #endif
 }
 
+FLWORIterator::GroupClause::GroupClause(
+  PlanIter_t aInput, std::vector<ref_iter_t> aInnerVars)
+: theInput(aInput), theInnerVars(aInnerVars)
+{}
+
+FLWORIterator::GroupClause::GroupClause(
+  PlanIter_t aInput, std::vector<ref_iter_t> aInnerVars, xqpString& aCollation)
+: theInput(aInput), theInnerVars(aInnerVars), theCollation(aCollation)
+{}
+
+void FLWORIterator::GroupClause::accept ( PlanIterVisitor& v ) const
+{
+  v.beginVisitFlworGroupBy(*theInput);
+  v.endVisitFlworGroupBy(*theInput);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -278,6 +294,7 @@ FLWORIterator::FLWORIterator(
     const QueryLoc& loc,
     std::vector<FLWORIterator::ForLetClause> &aForLetClauses,
     PlanIter_t& aWhereClause,
+    std::vector<FLWORIterator::GroupClause>& aGroupByClauses,
     FLWORIterator::OrderByClause* aOrderByClause,
     PlanIter_t& aReturnClause,
     bool aIsUpdating,
@@ -286,6 +303,7 @@ FLWORIterator::FLWORIterator(
   Batcher<FLWORIterator>(loc),
   forLetClauses(aForLetClauses),
   whereClause(aWhereClause),
+  theGroupByClauses(aGroupByClauses),
   orderByClause(aOrderByClause),
   returnClause(aReturnClause),
   whereClauseReturnsBooleanPlus(aWhereClauseReturnsBooleanPlus),
@@ -742,6 +760,14 @@ void FLWORIterator::accept ( PlanIterVisitor& v ) const
   {
     v.beginVisitFlworWhereClause(*whereClause);
     v.endVisitFlworWhereClause(*whereClause);
+  }
+  {
+    std::vector<FLWORIterator::GroupClause>::const_iterator lIter = theGroupByClauses.begin();
+    std::vector<FLWORIterator::GroupClause>::const_iterator lEnd  = theGroupByClauses.end();
+    for (;lIter!=lEnd;++lIter)
+    {
+      lIter->accept(v);
+    }
   }
   if ( doOrderBy )
   {

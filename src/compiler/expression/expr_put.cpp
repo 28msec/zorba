@@ -96,6 +96,19 @@ ostream& flwor_expr::put( ostream& os) const
     where_h->put(os);
   }
 
+  for (flwor_expr::group_list_t::const_iterator lIter = group_begin();
+       lIter != group_end();
+       ++lIter)
+  {
+    groupref_t lGroup = *lIter;
+    ZORBA_ASSERT(lGroup != 0);
+    os << INDENT << "GROUP BY [\n";
+    os << INDENT << "Outer:\n";
+    lGroup->getOuterVar()->put(os);
+    os << DENT << "Inner:\n";
+    lGroup->getInnerVar()->put(os);
+    os << INDENT << "]\n"; UNDENT;
+  }
   
   for (vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
        ord_it!=orderspec_end(); ++ord_it) 

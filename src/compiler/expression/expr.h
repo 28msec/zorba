@@ -215,6 +215,7 @@ public:
     param_var,
     catch_var,
     copy_var,
+    groupby_var,
     unknown_var  // TODO: get rid
   };
 
@@ -334,6 +335,27 @@ public:
   rchandle<forlet_clause> clone(expr::substitution_t& substitution);
 };
 
+class group_clause : public SimpleRCObject {
+public:
+  rchandle<var_expr> theOuterVar;
+  rchandle<var_expr> theInnerVar;
+  std::string        theCollation;
+
+public:
+  group_clause(rchandle<var_expr> aOuterVar, rchandle<var_expr> aInnerVar) 
+  : theOuterVar(aOuterVar), theInnerVar(aInnerVar), theCollation("") {}
+
+  group_clause(rchandle<var_expr> aOuterVar, rchandle<var_expr> aInnerVar, const std::string aCollation)
+  : theOuterVar(aOuterVar), theInnerVar(aInnerVar), theCollation(aCollation) {}
+
+  rchandle<var_expr> getOuterVar() const { return theOuterVar; }
+  rchandle<var_expr> getInnerVar() const { return theInnerVar; }
+
+  std::string getCollation() const { return theCollation; }
+  
+  // TODO clone?
+};
+
 
 /*______________________________________________________________________
 | ::= ForLetClauseList  RETURN  ExprSingle
@@ -351,12 +373,15 @@ public:
   typedef std::pair<expr_t,orderref_t> orderspec_t;
   typedef std::vector<forletref_t> clause_list_t;
   typedef std::vector<orderspec_t> orderspec_list_t;
+  typedef rchandle<group_clause> groupref_t;
+  typedef std::vector<groupref_t> group_list_t;
 
 protected:  // state
   clause_list_t clause_v;
   orderspec_list_t orderspec_v;
   bool order_stable;  // per clause, not per spec!
   expr_t where_h;
+  group_list_t group_v;
   expr_t retval_h;
 
 public: // ctor,dtor
@@ -386,6 +411,18 @@ public: // accessors
   { return clause_v.rbegin(); }
   clause_list_t::reverse_iterator clause_rend()
   { return clause_v.rend(); }
+
+  group_list_t::const_iterator group_begin() const
+  { return group_v.begin(); }
+  group_list_t::const_iterator group_end() const
+  { return group_v.end(); }
+
+  group_list_t::reverse_iterator group_rbegin()
+  { return group_v.rbegin(); }
+  group_list_t::reverse_iterator group_rend()
+  { return group_v.rend(); }
+
+  void add(rchandle<group_clause> v) { group_v.push_back(v); }
 
   void add(orderspec_t const& v)
   { orderspec_v.push_back(v); } 

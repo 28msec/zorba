@@ -1594,7 +1594,9 @@ public:
     rchandle<WhereClause>);
 
 public:
-  rchandle<GroupSpecList> get_spec_list() const { return spec_list_h; }
+  GroupSpecList* get_spec_list() const { return &*spec_list_h; }
+  LetClauseList* get_let() const { return &*let_h; }
+  WhereClause* get_where() const { return &*where_h; }
 
 public:
   void accept(parsenode_visitor&) const;

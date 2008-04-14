@@ -488,6 +488,9 @@ public:
   virtual void beginVisitFlworForVariable(const PlanIterator&, const xqpStringStore&);
   virtual void endVisitFlworForVariable(const PlanIterator&);
 
+  virtual void beginVisitFlworGroupBy(const PlanIterator&);
+  virtual void endVisitFlworGroupBy(const PlanIterator&);
+
   virtual void beginVisitFlworOrderBy(const PlanIterator&);
   virtual void endVisitFlworOrderBy(const PlanIterator&);
 

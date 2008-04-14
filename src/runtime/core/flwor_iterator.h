@@ -91,6 +91,22 @@ public:
     xqpStringStore getVarName() const;
   };
 
+  class GroupClause
+  {
+    friend class FLWORIterator;
+    friend class PrinterVisitor;
+  private:
+    PlanIter_t              theInput;
+    std::vector<ref_iter_t> theInnerVars;
+    xqpString               theCollation;
+
+  public:
+    GroupClause(PlanIter_t aInput, std::vector<ref_iter_t> aInnerVars);
+    GroupClause(PlanIter_t aInput, std::vector<ref_iter_t> aInnerVars, xqpString& aCollation);
+
+    void accept ( PlanIterVisitor& ) const;
+  };
+
   /**
    *  Wrapper for a OrderSpec
    * http://www.w3.org/TR/xquery/#id-orderby-return
@@ -193,6 +209,7 @@ public:
         const QueryLoc&             loc,
         std::vector<ForLetClause>&  forLetClauses,
         PlanIter_t&                 whereClause,
+        std::vector<GroupClause>&   aGroupByClauses,
         OrderByClause*              orderByClause,
         PlanIter_t&                 returnClause,
         bool                        aIsUpdating,
@@ -235,6 +252,7 @@ public:
  private:
   std::vector<ForLetClause> forLetClauses;
   PlanIter_t                whereClause; //can be null
+  std::vector<GroupClause>  theGroupByClauses;
   OrderByClause           * orderByClause;  //can be null
   bool                      doOrderBy; //just indicates if the FLWOR has an orderby
   PlanIter_t                returnClause; 
