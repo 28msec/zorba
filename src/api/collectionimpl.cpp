@@ -35,7 +35,7 @@ namespace zorba {
   CollectionImpl::getUri() 
   {
     ZORBA_TRY
-    return &*theCollection->getUri();
+      return &*theCollection->getUri();
     ZORBA_CATCH
     return Item();
   }
@@ -44,8 +44,8 @@ namespace zorba {
   CollectionImpl::addItem(const Item& aItem) 
   {
     ZORBA_TRY
-    store::Item* lItem = Unmarshaller::getInternalItem(aItem);
-    theCollection->addToCollection(lItem);
+      store::Item* lItem = Unmarshaller::getInternalItem(aItem);
+      theCollection->addToCollection(lItem);
     ZORBA_CATCH
     return true;
   }
@@ -54,8 +54,8 @@ namespace zorba {
   CollectionImpl::deleteItem(const Item& aItem) 
   {
     ZORBA_TRY
-    store::Item* lItem = Unmarshaller::getInternalItem(aItem);
-    theCollection->removeFromCollection(lItem);
+      store::Item* lItem = Unmarshaller::getInternalItem(aItem);
+      theCollection->removeFromCollection(lItem);
     ZORBA_CATCH
     return true;
   }
@@ -64,8 +64,8 @@ namespace zorba {
   CollectionImpl::addItems(const ResultIterator_t& aResultIterator) 
   {
     ZORBA_TRY
-    PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
-    theCollection->addToCollection(&*lPlan);
+      PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
+      theCollection->addToCollection(&*lPlan);
     ZORBA_CATCH
     return true;
   }

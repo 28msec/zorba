@@ -47,6 +47,11 @@ int traceLevel = 0;
 #define LOADER_TRACE3(msg)
 #endif
 
+#define ZORBA_LOADER_CHECK_ERROR(loader) \
+  do { \
+    if (loader.theErrorManager->hasErrors()) \
+      return; \
+  } while (0);
 
 /*******************************************************************************
 
@@ -282,6 +287,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 void XmlLoader::startDocument(void * ctx)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   xqpStringStore* docUri = loader.theDocUri;
   xqpStringStore* baseUri = loader.theBaseUri;
@@ -319,6 +325,7 @@ void XmlLoader::startDocument(void * ctx)
 void XmlLoader::endDocument(void * ctx)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   // This check is required because it is possible (in case of mal-formed doc)
   // that libXml calls endDocument() without having called startDocument().
@@ -387,6 +394,7 @@ void XmlLoader::startElement(
 {
   SimpleStore& store = GET_STORE();
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  ZORBA_LOADER_CHECK_ERROR(loader);
   QNamePool& qnpool = store.getQNamePool();
 
   ulong numAttributes = (ulong)numAttrs;
@@ -520,6 +528,7 @@ void  XmlLoader::endElement(
     const xmlChar * uri)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   // Collect the children of this element node from the node stack
   std::vector<XmlNode*> revChildNodes;
@@ -601,6 +610,7 @@ void  XmlLoader::endElement(
 void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   xqpStringStore* content = new xqpStringStore(reinterpret_cast<const char*>(ch), len);
 
@@ -632,6 +642,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   xqpStringStore* content = new xqpStringStore(reinterpret_cast<const char*>(ch), len);
 
@@ -664,6 +675,7 @@ void XmlLoader::comment(
     const xmlChar * content)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   xqpStringStore* contentp = new xqpStringStore(reinterpret_cast<const char*>(content));
 
@@ -697,6 +709,7 @@ void XmlLoader::processingInstruction(
     const xmlChar * data)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   xqpStringStore* datap = new xqpStringStore(reinterpret_cast<const char*>(data));
   xqpStringStore* targetp = new xqpStringStore(reinterpret_cast<const char*>(target));
@@ -757,6 +770,8 @@ void  XmlLoader::warning(void * ctx, const char * msg, ... )
     loader.theWarnings.str() += "+ ";
   loader.theWarnings.str() += buf;
 }
+
+#undef ZORBA_ERROR_DESC_CONTINUE
 
 } // namespace store
 } // namespace zorba
