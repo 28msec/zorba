@@ -409,7 +409,7 @@ xqpStringStore_t xqpStringStore::uppercase() const
   {
     strstore->theString.append(1, toupper(*cit));
   }
-  strstore->theString.append(1, 0);
+  //strstore->theString.append(1, 0);
 
   return strstore;
 }
@@ -448,7 +448,7 @@ xqpStringStore_t xqpStringStore::lowercase() const
   {
     strstore->theString.append(1, tolower(*cit));
   }
-  strstore->theString.append(1, 0);
+  //strstore->theString.append(1, 0);
 
   return strstore;
 }

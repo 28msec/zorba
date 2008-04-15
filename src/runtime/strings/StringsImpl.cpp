@@ -519,10 +519,17 @@ SubstringIterator::nextImpl(PlanState& planState) const
               if(tmpLen >= 0)
               {
                 if(tmpStart <= 0)
-                  resStr = stringVal.substr(tmpStart-1,  tmpStart-1 + tmpLen);
+                {
+                  if((tmpLen+tmpStart-1) >= 0)
+                    resStr = stringVal.substr(0,  tmpStart-1 + tmpLen);
+                //  else
+                //    ZORBA_ERROR_ALERT();
+                }
                 else
                   resStr = stringVal.substr(tmpStart-1, tmpLen);
               }
+              //else
+              //  ZORBA_ERROR_ALERT();
             }
           }
         }

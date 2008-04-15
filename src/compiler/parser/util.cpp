@@ -19,12 +19,12 @@ int decode_entity (const char *in, string *out) {
     unsigned long n = strtoul (in, (char **) &in, base);
     if (*in++ != ';')
       ZORBA_ERROR_LOC (ZorbaError::XPST0003, loc);
-#ifndef ZORBA_NO_UNICODE
     if (! is_code_point_valid (n))
       ZORBA_ERROR_LOC (ZorbaError::XQST0090, loc);
+#ifndef ZORBA_NO_UNICODE
     UTF8Encode (n, back_inserter (*out));
 #else
-    out += (char)n;
+    *out += (char)n;
 #endif
     return in - start;
   }

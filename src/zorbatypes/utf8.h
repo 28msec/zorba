@@ -80,6 +80,8 @@ namespace zorba {
         return static_cast<uint16_t>(0xffff & oc);
     }
 
+#endif//ZORBA_NO_UNICODE
+
   template <typename u32>
       inline bool is_code_point_valid(u32 cp)
   {
@@ -90,6 +92,7 @@ namespace zorba {
         (0x10000<= cp  && cp <=0x10FFFF));
   }
 
+#ifndef ZORBA_NO_UNICODE
   template<typename octet_type>
       inline uint8_t mask8(octet_type oc){
     return static_cast<uint8_t>(0xff & oc);

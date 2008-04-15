@@ -1,4 +1,6 @@
 #include <libxml/parser.h>
+#include "common/common.h"
+
 #ifndef ZORBA_NO_UNICODE
 #include <unicode/uclean.h>
 #endif//#ifndef ZORBA_NO_UNICODE

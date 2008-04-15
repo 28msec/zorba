@@ -1898,7 +1898,7 @@ XmlNode* AttributeNode::copy(
   {
     typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
-    if (theName->getLocalName()->byteEqual("id") &&
+    if (theName->getLocalName()->byteEqual("id", 2) &&
         theName->getPrefix()->byteEqual("xml", 3))
       isId = true;
 
