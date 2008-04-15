@@ -323,8 +323,6 @@ void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 xqtref_t static_context::get_function_type(
 	const store::Item_t qname) 
 {
-	// TODO
-	//return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 	return lookup_type("type:fun:" + qname_internal_key(default_function_namespace(),
                                                       qname->getPrefix(),
                                                       qname->getLocalName()));
@@ -338,8 +336,6 @@ void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 xqtref_t static_context::get_document_type(
 	const xqp_string docURI) 
 {
-	// TODO
-//	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 	return lookup_type("type:doc:" + docURI);
 
 }
@@ -352,8 +348,6 @@ void static_context::set_collection_type(xqp_string collURI, xqtref_t t)
 xqtref_t static_context::get_collection_type(
 	const xqp_string collURI) 
 {
-	// TODO
-//	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 	return lookup_type("type:collection:" + collURI);
 }
 
@@ -363,9 +357,7 @@ xqtref_t static_context::get_collection_type(
 void 
 static_context::add_collation(const xqp_string& aURI)
 {
-  // TODO resolve_relative_uri does not work yet
-  // xqp_string lURI = resolve_relative_uri(aURI); 
-  xqp_string lURI = aURI;
+  xqp_string lURI = resolve_relative_uri(aURI); 
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
@@ -416,9 +408,7 @@ static_context::has_collation_uri(const xqp_string& aURI) const
 void 
 static_context::set_default_collation_uri(const xqp_string& aURI)
 {
-  // TODO resolve_relative_uri does not work yet
-  // xqp_string lURI = resolve_relative_uri(aURI); 
-  xqp_string lURI = aURI;
+  xqp_string lURI = resolve_relative_uri(aURI); 
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
@@ -506,7 +496,6 @@ void static_context::compute_current_absolute_baseuri()
 		set_current_absolute_baseuri(loaded_uri);
 		return;
 	}
-//	set_current_absolute_baseuri("");
 }
 
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri) {
