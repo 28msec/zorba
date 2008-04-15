@@ -28,88 +28,85 @@ namespace zorba {
       virtual String   
       getNamespaceURIByPrefix( const String& prefix ) const = 0;
 
-      virtual void   
+      virtual bool   
       deleteNamespace( const String& prefix ) = 0;
 
-      virtual void   
+      virtual bool   
       setDefaultElementAndTypeNamespace( const String& URI ) = 0;
       
       virtual String   
       getDefaultElementAndTypeNamespace( ) const = 0;
 
-      virtual void   
+      virtual bool   
       setDefaultFunctionNamespace( const String& URI ) = 0;
       
       virtual String   
       getDefaultFunctionNamespace( ) const = 0;
 
-      virtual void   
+      virtual bool   
       addExternalVariableType( const String& var_name, TypeIdentifier_t var_type) = 0;
 
       virtual TypeIdentifier_t 
       getExternalVariableType( const String& var_name ) = 0;
 
-      virtual void   
+      virtual bool   
       deleteExternalVariableType( const String& var_name ) = 0;
 
-      virtual void   
+      virtual bool   
       setContextItemType( TypeIdentifier_t type ) = 0;
 
       virtual TypeIdentifier_t   
       getContextItemType( ) const = 0;
 
-      virtual void
-      removeCollation( const String& uri ) = 0;
-
-      virtual void   
+      virtual bool   
       addCollation( const String& uri ) = 0;
 
-      virtual void   
+      virtual bool   
       setDefaultCollation( const String& URI ) = 0;
 
       virtual String 
       getDefaultCollation() const = 0;
 
-      virtual void   
+      virtual bool   
       setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode ) = 0;
 
       virtual xpath1_0compatib_mode_t  
       getXPath1_0CompatibMode( ) const = 0;
 
-      virtual void   
+      virtual bool   
       setConstructionMode( construction_mode_t ) = 0;
 
       virtual construction_mode_t  
       getConstructionMode( ) const = 0;
 
-      virtual void   
+      virtual bool   
       setOrderingMode( ordering_mode_t ) = 0;
 
       virtual ordering_mode_t  
       getOrderingMode( ) const = 0;
 
-      virtual void   
+      virtual bool   
       setDefaultOrderForEmptySequences( order_empty_mode_t ) = 0;
 
       virtual order_empty_mode_t   
       getDefaultOrderForEmptySequences( ) const = 0;
 
-      virtual void   
+      virtual bool   
       setBoundarySpacePolicy( boundary_space_mode_t ) = 0;
 
       virtual boundary_space_mode_t  
       getBoundarySpacePolicy( ) const = 0;
 
 
-      virtual void   
+      virtual bool   
       setCopyNamespacesMode( preserve_mode_t preserve, 
                              inherit_mode_t inherit ) = 0;
 
-      virtual void   
+      virtual bool   
       getCopyNamespacesMode( preserve_mode_t& preserve, 
                               inherit_mode_t& inherit ) const = 0;
 
-      virtual void   
+      virtual bool   
       setBaseURI( const String& baseURI ) = 0;
 
       virtual String   
@@ -119,7 +116,7 @@ namespace zorba {
       /**
        * functions that are used for registering external functions
        */
-      virtual void 
+      virtual bool 
       registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
 
 

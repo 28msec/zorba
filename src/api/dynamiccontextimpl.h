@@ -15,34 +15,34 @@ namespace zorba {
       DynamicContextImpl(dynamic_context* dctx, static_context* sctx, ErrorHandler* aErrorHandler);
       virtual ~DynamicContextImpl();
 
-      virtual void
+      virtual bool
       setVariable( const String& aQName, const Item& aItem );
 
-      virtual void
+      virtual bool
       setVariable( const String& aQName, const ResultIterator_t& aResultIterator );
 
-      virtual void
+      virtual bool
       setVariableAsDocument( const String& aQName, const String& aDocURI, std::istream& aStream );;
 
-      virtual void
+      virtual bool
       setContextItem ( const Item& aItem );
 
-      virtual void
+      virtual bool
       setContextItemAsDocument ( const String& aDocURI, std::istream& aInStream );
 
-      virtual void
+      virtual bool
       setCurrentDateTime( const Item& aDateTimeItem );
       
       virtual Item
       getCurrentDateTime( );
 
-      virtual void
+      virtual bool
       setImplicitTimezone( int aTimezone );
 
       virtual int
       getImplicitTimezone();
 
-      virtual void
+      virtual bool
       setDefaultCollection( const Item& aCollectionUri );
 
       friend class Unmarshaller; // needs to get the context out of this class

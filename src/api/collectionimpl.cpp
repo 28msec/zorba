@@ -16,13 +16,6 @@
 
 namespace zorba {
 
-#define ZORBA_TRY try { 
-#define ZORBA_CATCH } catch (error::ZorbaError& e) { \
-  ZorbaImpl::notifyError(theErrorHandler, e); \
-  return false; \
-  }
-  
-
   CollectionImpl::CollectionImpl(const store::Collection_t& aCollection, ErrorHandler* aErrorHandler)
     : theCollection(aCollection),
       theErrorHandler(aErrorHandler)
@@ -46,8 +39,9 @@ namespace zorba {
     ZORBA_TRY
       store::Item* lItem = Unmarshaller::getInternalItem(aItem);
       theCollection->addToCollection(lItem);
+      return true;
     ZORBA_CATCH
-    return true;
+    return false;
   }
  
   bool
@@ -56,8 +50,9 @@ namespace zorba {
     ZORBA_TRY
       store::Item* lItem = Unmarshaller::getInternalItem(aItem);
       theCollection->removeFromCollection(lItem);
+      return true;
     ZORBA_CATCH
-    return true;
+    return false;
   }
  
   bool
@@ -66,8 +61,9 @@ namespace zorba {
     ZORBA_TRY
       PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
       theCollection->addToCollection(&*lPlan);
+      return true;
     ZORBA_CATCH
-    return true;
+    return false;
   }
 
   bool
@@ -75,10 +71,9 @@ namespace zorba {
   {
     ZORBA_TRY
       theCollection->addToCollection(lInStream);
+      return true;
     ZORBA_CATCH
-    return true;
+    return false;
   }
-#undef ZORBA_TRY
-#undef ZORBA_CATCH
 
 } /* namespace zorba */

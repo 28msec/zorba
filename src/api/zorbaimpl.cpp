@@ -14,6 +14,7 @@
 
 namespace zorba {
 
+
   ZorbaImpl::ZorbaImpl() 
     : theIsInitialized(false) {}
 
@@ -181,5 +182,21 @@ namespace zorba {
     {
       ZORBA_FATAL(0, "Unexpected type of error");
     }
+  }
+
+  void
+  ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDesc)
+  {
+    SystemException lSystemException(ZorbaError::XQP0019_INTERNAL_ERROR, 
+        String(aDesc));
+    aErrorHandler->systemError(lSystemException);
+  }
+
+  void
+  ZorbaImpl::notifyError(ErrorHandler* aErrorHandler)
+  {
+    SystemException lSystemException(ZorbaError::XQP0019_INTERNAL_ERROR, 
+                                     "An internal error occured.");
+    aErrorHandler->systemError(lSystemException);
   }
 } /* namespace zorba */

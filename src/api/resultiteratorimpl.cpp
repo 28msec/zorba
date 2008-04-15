@@ -26,46 +26,44 @@ namespace zorba {
   void 
   ResultIteratorImpl::open()
   {
-    if ( ! theIsOpened ) {
-      thePlan->open();
-      theIsOpened = true;
-    } 
+    ZORBA_TRY
+      if ( ! theIsOpened ) {
+        thePlan->open();
+        theIsOpened = true;
+      } 
+    ZORBA_CATCH
   }
 
   bool
   ResultIteratorImpl::next(Item& aItem)
   {
-    store::Item_t lItem;
-    try 
-    {
+    ZORBA_TRY
+      store::Item_t lItem;
       if (!theIsOpened) 
         return false; // todo throw error here
 
       lItem = thePlan->next();
-    }
-    catch (error::ZorbaError& e)
-    {
-      ZorbaImpl::notifyError(theErrorHandler, e);
-      return false; // if no exception is thrown in the error handler
-    }
 
-    if (lItem == NULL)
-      return false;
+      if (lItem == NULL)
+        return false;
     
-    if (lItem->isPul())
-      ZORBA_ERROR(ZorbaError::API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY);
+      if (lItem->isPul())
+        ZORBA_ERROR(ZorbaError::API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY);
 
-    aItem = &*lItem;
-
-    return true;
+      aItem = &*lItem;
+      return true;
+    ZORBA_CATCH
+    return false;
   }
 
   void 
   ResultIteratorImpl::close()
   {
-    if (theIsOpened) {
-      thePlan->reset();
-    }
+    ZORBA_TRY
+      if (theIsOpened) {
+        thePlan->reset();
+      }
+    ZORBA_CATCH
   }
 
 } /* namespace zorba */

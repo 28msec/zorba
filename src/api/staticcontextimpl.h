@@ -33,94 +33,91 @@ namespace zorba {
       virtual String   
       getNamespaceURIByPrefix( const String& prefix ) const;
 
-      virtual void   
+      virtual bool   
       deleteNamespace( const String& prefix );
 
-      virtual void   
+      virtual bool   
       setDefaultElementAndTypeNamespace( const String& URI );
       
       virtual String   
       getDefaultElementAndTypeNamespace( ) const;
 
-      virtual void   
+      virtual bool   
       setDefaultFunctionNamespace( const String& URI );
       
       virtual String   
       getDefaultFunctionNamespace( ) const;
 
-      virtual void   
+      virtual bool   
       addExternalVariableType( const String& var_name, TypeIdentifier_t var_type);
 
       virtual TypeIdentifier_t 
       getExternalVariableType( const String& var_name );
 
-      virtual void   
+      virtual bool   
       deleteExternalVariableType( const String& var_name );
 
-      virtual void   
+      virtual bool   
       setContextItemType( TypeIdentifier_t type );
 
       virtual TypeIdentifier_t   
       getContextItemType( ) const;
 
-      virtual void
-      removeCollation( const String& URI );
-
-      virtual void   
+      virtual bool   
       addCollation( const String& URI );
 
-      virtual void   
+      virtual bool   
       setDefaultCollation( const String& URI );
 
       virtual String 
       getDefaultCollation() const;
 
-      virtual void   
+      virtual bool   
       setXPath1_0CompatibMode( StaticContext::xpath1_0compatib_mode_t mode );
 
       virtual StaticContext::xpath1_0compatib_mode_t  
       getXPath1_0CompatibMode( ) const;
 
-      virtual void   
+      virtual bool   
       setConstructionMode( StaticContext::construction_mode_t );
 
       virtual StaticContext::construction_mode_t  
       getConstructionMode( ) const;
 
-      virtual void   
+      virtual bool   
       setOrderingMode( StaticContext::ordering_mode_t );
 
       virtual StaticContext::ordering_mode_t  
       getOrderingMode( ) const;
 
-      virtual void   
+      virtual bool   
       setDefaultOrderForEmptySequences( StaticContext::order_empty_mode_t );
 
       virtual StaticContext::order_empty_mode_t   
       getDefaultOrderForEmptySequences( ) const;
 
-      virtual void   
+      virtual bool   
       setBoundarySpacePolicy( StaticContext::boundary_space_mode_t );
 
       virtual StaticContext::boundary_space_mode_t  
       getBoundarySpacePolicy( ) const;
 
 
-      virtual void   
+      virtual bool   
       setCopyNamespacesMode( StaticContext::preserve_mode_t preserve, 
                              StaticContext::inherit_mode_t inherit );
 
-      virtual void   
+      virtual bool   
       getCopyNamespacesMode( StaticContext::preserve_mode_t& preserve, 
                              StaticContext::inherit_mode_t& inherit ) const;
 
-      virtual void
+      virtual bool
       setBaseURI( const String& baseURI );
 
       virtual String   
       getBaseURI( ) const;
 
-      virtual void 
+      virtual bool 
       registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction);
 
       friend class Unmarshaller; // needs to get the context out of this class

@@ -30,71 +30,84 @@ namespace zorba {
   {
   }
 
-  void
+  bool
   DynamicContextImpl::setVariable( const String& aQName, const Item& aItem )
   {
-    // unmarshall the string and the item
-    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
-    xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
+    ZORBA_TRY
+      // unmarshall the string and the item
+      store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
+      xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
 
-    // create an item iterator to store in the dyn context
-    store::ItemIterator_t lIterator = new store::ItemIterator(lItem);
+      // create an item iterator to store in the dyn context
+      store::ItemIterator_t lIterator = new store::ItemIterator(lItem);
 
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+      xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
-    // add it to the internal context
-    theCtx->add_variable(lExpandedName, &*lIterator);
+      // add it to the internal context
+      theCtx->add_variable(lExpandedName, &*lIterator);
+      return true;
+    ZORBA_CATCH
+    return false;
   }
 
 
-  void
+  bool
   DynamicContextImpl::setVariable( const String& aQName, const ResultIterator_t& aResultIterator )
   {
-    store::Iterator_t lRes = new store::ResultIteratorChainer(&*aResultIterator);
-    xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
+    ZORBA_TRY
+      store::Iterator_t lRes = new store::ResultIteratorChainer(&*aResultIterator);
+      xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
 
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+      xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
-    theCtx->add_variable(lExpandedName, &*lRes);
+      theCtx->add_variable(lExpandedName, &*lRes);
+      return true;
+    ZORBA_CATCH
+    return false;
   }
 
-  void
-  DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& aDocURI, std::istream& aStream )
+  bool
+  DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& aDocURI, 
+                                             std::istream& aStream )
   {
-    try {
+    ZORBA_TRY
       XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
 
       Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
       setVariable ( aQName, lDocItem );
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(theErrorHandler, e);
-    }
+      return true;
+    ZORBA_CATCH
+    return false;
   }
 
-  void
+  bool
   DynamicContextImpl::setContextItem ( const Item& aItem )
   {
-    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
-    theCtx->set_context_item(lItem, 0);
+    ZORBA_TRY
+      store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
+      theCtx->set_context_item(lItem, 0);
+      return true;
+    ZORBA_CATCH
+    return false;
   }
   
-  void
+  bool
   DynamicContextImpl::setContextItemAsDocument ( const String& aDocURI, std::istream& aInStream )
   {
-    try {
+    ZORBA_TRY
       XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
 
       Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
       setContextItem ( lDocItem );
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(theErrorHandler, e);
-    }
+      return true;
+    ZORBA_CATCH
+    return false;
   }
 
-  void
+  bool
   DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
   {
-    try {
+    ZORBA_TRY
       store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
       xqtref_t lItemType = theStaticContext->get_typemanager()->
                            create_named_type(lItem->getType(),
@@ -107,35 +120,49 @@ namespace zorba {
       }
 
       theCtx->set_current_date_time(lItem);
-    } catch (error::ZorbaError &e) {
-      ZorbaImpl::notifyError(theErrorHandler, e);
-    }
+      return true;
+    ZORBA_CATCH
+    return false;
   }
   
   Item
   DynamicContextImpl::getCurrentDateTime( )
   {
-    return &*theCtx->get_current_date_time();
+    ZORBA_TRY
+      return &*theCtx->get_current_date_time();
+    ZORBA_CATCH
+    return Item();
   }
 
-  void
+  bool
   DynamicContextImpl::setImplicitTimezone( int aTimezone )
   {
-    theCtx->set_implicit_timezone(aTimezone);
+    ZORBA_TRY
+      theCtx->set_implicit_timezone(aTimezone);
+      return true;
+    ZORBA_CATCH
+    return false;
   }
 
   int
   DynamicContextImpl::getImplicitTimezone()
   {
-    return theCtx->get_implicit_timezone();
+    ZORBA_TRY
+      return theCtx->get_implicit_timezone();
+    ZORBA_CATCH
+    return 0;
   }
 
-  void
+  bool
   DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
   {
-    store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
-    xqpString     lString(lItem->getStringValue());
-    theCtx->set_default_collection(lString);
+    ZORBA_TRY
+      store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
+      xqpString     lString(lItem->getStringValue());
+      theCtx->set_default_collection(lString);
+      return true;
+    ZORBA_CATCH
+    return false;
   }
 
 

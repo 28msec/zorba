@@ -68,7 +68,11 @@ Item Item::getType() const
 #define ITEM_TRY try {
 #define ITEM_CATCH } catch (::zorba::error::ZorbaError &e) {  \
   throw SystemException(e.theErrorCode, String(e.theDescription.theStrStore)); \
-  }
+  } catch (std::exception& e) { \
+    throw SystemException(ZorbaError::XQP0019_INTERNAL_ERROR, e.what()); \
+  } catch (...) { \
+    throw SystemException(ZorbaError::XQP0019_INTERNAL_ERROR, "Internal error"); \
+  } 
 
 
 Item Item::getAtomizationValue() const
@@ -91,27 +95,45 @@ void Item::serialize(std::ostream& os) const
   } catch (::zorba::error::ZorbaError& e) {
     DefaultErrorHandler lErrorHandler;
     ZorbaImpl::notifyError(&lErrorHandler, e);
+  } catch (std::exception& e) {
+    DefaultErrorHandler lErrorHandler;
+    ZorbaImpl::notifyError(&lErrorHandler, e.what());
+  } catch (...) {
+    DefaultErrorHandler lErrorHandler;
+    ZorbaImpl::notifyError(&lErrorHandler, "Internal error");
   }
 }
 
 Item Item::getEBV() const
 {
-  return &*m_item->getEBV();
+  ITEM_TRY
+    return &*m_item->getEBV();
+  ITEM_CATCH
+  return Item();
 }
 
 bool Item::isNode() const
 {
-  return m_item->isNode();
+  ITEM_TRY
+    return m_item->isNode();
+  ITEM_CATCH
+  return false;
 }
 
 bool Item::isAtomic() const
 {
-  return m_item->isAtomic();
+  ITEM_TRY
+    return m_item->isAtomic();
+  ITEM_CATCH
+  return false;
 }
 
 bool Item::isNull() const
 {
-  return m_item == NULL;
+  ITEM_TRY
+    return m_item == NULL;
+  ITEM_CATCH
+  return false;
 }
 
 void
@@ -128,6 +150,7 @@ String Item::getPrefix() const
   ITEM_TRY
     return m_item->getPrefix();
   ITEM_CATCH
+  return "";
 }
 
 String Item::getLocalName() const
@@ -135,6 +158,7 @@ String Item::getLocalName() const
   ITEM_TRY
     return m_item->getLocalName();
   ITEM_CATCH
+  return "";
 }
 
 String Item::getNamespace() const
@@ -142,6 +166,7 @@ String Item::getNamespace() const
   ITEM_TRY
     return m_item->getNamespace();
   ITEM_CATCH
+  return "";
 }
 
 /** Numeric Items */
@@ -151,6 +176,7 @@ bool Item::isNaN() const
   ITEM_TRY
     return m_item->isNaN();
   ITEM_CATCH
+  return false;
 }
 
 // @return true, if containing numbers represents -INF or +INF
@@ -159,6 +185,7 @@ bool Item::isPosOrNegInf() const
   ITEM_TRY
     return m_item->isPosOrNegInf();
   ITEM_CATCH
+  return false;
 }
 
 /** Boolean Items */
@@ -168,6 +195,7 @@ Item::getBooleanValue() const
   ITEM_TRY
     return m_item->getBooleanValue();
   ITEM_CATCH
+  return false;
 }
 
 }

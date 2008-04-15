@@ -3,6 +3,7 @@
 
 #include <istream>
 
+#include <exception>
 #include <zorba/zorba.h>
 
 namespace zorba {
@@ -10,6 +11,16 @@ namespace zorba {
   namespace error {
     class ZorbaError;
   }
+
+#define ZORBA_TRY try { 
+#define ZORBA_CATCH } catch (error::ZorbaError& e) { \
+    ZorbaImpl::notifyError(theErrorHandler, e); \
+  } catch (std::exception& e) { \
+    ZorbaImpl::notifyError(theErrorHandler, e.what()); \
+  } catch (...) { \
+    ZorbaImpl::notifyError(theErrorHandler); \
+  } \
+  
 
   /**
    *
@@ -62,6 +73,13 @@ namespace zorba {
 
       static void
       notifyError(ErrorHandler*, error::ZorbaError&);
+
+      // notify zorba internal error 
+      static void
+      notifyError(ErrorHandler*, const std::string&);
+
+      static void
+      notifyError(ErrorHandler*);
 
     protected:
       friend class Zorba;

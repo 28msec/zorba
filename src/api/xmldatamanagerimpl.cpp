@@ -24,11 +24,9 @@ namespace zorba {
   {
     theErrorHandler = new DefaultErrorHandler();
 
-    try {
+    ZORBA_TRY
       theStore = & GENV.getStore();
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(theErrorHandler, e);
-    }
+    ZORBA_CATCH
   }
 
   XmlDataManagerImpl::~XmlDataManagerImpl() 
@@ -47,92 +45,83 @@ namespace zorba {
   Item
   XmlDataManagerImpl::loadDocument(const String& uri, std::istream& stream, ErrorHandler* aErrorHandler)
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString(uri);
+    ZORBA_TRY
+      xqpStringStore* lString = Unmarshaller::getInternalString(uri);
 
-    try { 
       if ( ! stream.good() ) {
         ZORBA_ERROR_DESC(ZorbaError::API0015_CANNOT_OPEN_FILE, "cannot read from stream");
       }
 
       return &*theStore->loadDocument(lString, stream); 
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
-      return Item(); 
-    }
+    ZORBA_CATCH
+    return Item(); 
   }
 
   Item
   XmlDataManagerImpl::loadDocument(const String& local_file_uri, ErrorHandler* aErrorHandler)
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString(local_file_uri);
+    ZORBA_TRY
+      xqpStringStore* lString = Unmarshaller::getInternalString(local_file_uri);
 
-    std::ifstream lFileIn(lString->c_str());
+      std::ifstream lFileIn(lString->c_str());
 
-    return loadDocument(local_file_uri, lFileIn, aErrorHandler);
+      return loadDocument(local_file_uri, lFileIn, aErrorHandler);
+    ZORBA_CATCH
+    return Item();
   }
 
   Item
   XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHandler)
   {
-    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    try {
+    ZORBA_TRY
+      xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
       return &*theStore->getDocument(lUri); 
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
-      return Item();
-    }
+    ZORBA_CATCH
+    return Item();
   }
 
   bool
   XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorHandler)
   {
-    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    try {
+    ZORBA_TRY
+      xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
       theStore->deleteDocument(lUri); 
       return true;
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
-      return false;
-    }
+    ZORBA_CATCH
+    return false;
   }
 
   Collection_t
   XmlDataManagerImpl::createCollection(const String& uri, ErrorHandler* aErrorHandler)
   {
-    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    try {
+    ZORBA_TRY
+      xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
       return Collection_t(new CollectionImpl(theStore->createCollection(lUri), 
                                              aErrorHandler!=0?aErrorHandler:theErrorHandler));
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
-      return Collection_t();
-    }
+    ZORBA_CATCH
+    return Collection_t();
   }
 
   Collection_t
   XmlDataManagerImpl::getCollection(const String& uri, ErrorHandler* aErrorHandler)
   {
-    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    try {
+    ZORBA_TRY
+      xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
       return Collection_t(new CollectionImpl(theStore->getCollection(lUri),
                                              aErrorHandler!=0?aErrorHandler:theErrorHandler));
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
-      return Collection_t();
-    }
+    ZORBA_CATCH
+    return Collection_t();
   }
 
   bool
   XmlDataManagerImpl::deleteCollection(const String& uri, ErrorHandler* aErrorHandler)
   {
-    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    try {
+    ZORBA_TRY
+      xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
       theStore->deleteCollection(lUri);
       return true;
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(aErrorHandler!=0?aErrorHandler:theErrorHandler, e);
-      return false;
-    }
+    ZORBA_CATCH
+    return false;
   }
 
 } /* namespace zorba */
