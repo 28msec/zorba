@@ -6,95 +6,136 @@
 
 namespace zorba {
 
-  class ZorbaException
-  {
-    public:
-      virtual ~ZorbaException() throw();
+class ZorbaException
+{
+ public:
+  virtual ~ZorbaException() throw();
 
-      virtual ZorbaError::ErrorCode
-      getErrorCode() const;
+  virtual ZorbaError::ErrorCode
+  getErrorCode() const;
 
-      virtual String
-      getDescription() const;
-    protected:
-      friend class ZorbaImpl;
-      ZorbaException(const ZorbaError::ErrorCode&, const String& aDescription);
-      ZorbaError::ErrorCode theErrorCode;
-      String                theDescription;
-  }; /* class ZorbaException */
+  virtual String
+  getDescription() const;
 
-  class QueryException : public ZorbaException 
-  {
-    public:
-      virtual ~QueryException() throw();
+protected:
+  friend class ZorbaImpl;
 
-      virtual String
-      getFileName() const;
+  ZorbaException(const ZorbaError::ErrorCode&, const String& aDescription);
 
-      virtual unsigned int
-      getLineBegin() const;
+protected:
+  ZorbaError::ErrorCode theErrorCode;
+  String                theDescription;
+};
 
-      virtual unsigned int
-      getColumnBegin() const;
 
-    protected:
-      friend std::ostream& operator<<(std::ostream&, const QueryException&);
-      friend class ZorbaImpl;
-      QueryException(const ZorbaError::ErrorCode&, const String& aDescription, 
-                     const String& afilename, unsigned int linebegin, unsigned int columnbegin);
-      String                theFileName;
-      unsigned int          theLineBegin;
-      unsigned int          theColumnBegin;
-  };
+class QueryException : public ZorbaException 
+{
+ public:
+  virtual ~QueryException() throw();
 
-  class DynamicException : public QueryException
-  {
-    friend std::ostream& operator<<(std::ostream&, const DynamicException&);
-    public:
-      DynamicException(const ZorbaError::ErrorCode&, const String&,
-                       const String& afilename, unsigned int linebegin, unsigned int columnbegin);
-      virtual ~DynamicException() throw();
+  virtual String
+  getFileName() const;
 
-  }; /* class DynamicException */
+  virtual unsigned int
+  getLineBegin() const;
 
-  class StaticException : public QueryException
-  {
-    friend std::ostream& operator<<(std::ostream&, const StaticException&);
-    public:
-      StaticException(const ZorbaError::ErrorCode&, const String&,
-                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
-      virtual ~StaticException() throw();
+  virtual unsigned int
+  getColumnBegin() const;
 
-  }; /* class StaticException */
+protected:
+  friend std::ostream& operator<<(std::ostream&, const QueryException&);
 
-  class TypeException : public QueryException
-  {
-    friend std::ostream& operator<<(std::ostream&, const TypeException&);
-    public:
-      TypeException(const ZorbaError::ErrorCode&, const String&,
-                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
-      virtual ~TypeException() throw();
+  friend class ZorbaImpl;
 
-  }; /* class TypeException */
+  QueryException(
+        const ZorbaError::ErrorCode&,
+        const String& aDescription, 
+        const String& afilename,
+        unsigned int linebegin,
+        unsigned int columnbegin);
 
-  class SerializationException : public QueryException
-  {
-    friend std::ostream& operator<<(std::ostream&, const SerializationException&);
-    public:
-      SerializationException(const ZorbaError::ErrorCode&, const String&,
-                      const String& afilename, unsigned int linebegin, unsigned int columnbegin);
-      virtual ~SerializationException() throw();
+protected:
+  String                theFileName;
+  unsigned int          theLineBegin;
+  unsigned int          theColumnBegin;
+};
 
-  }; /* class SerializationException */
 
-  class SystemException : public ZorbaException
-  {
-    friend std::ostream& operator<<(std::ostream&, const ZorbaException&);
-    public:
-      SystemException(const ZorbaError::ErrorCode&, const String&);
-      virtual ~SystemException() throw();
+class DynamicException : public QueryException
+{
+  friend std::ostream& operator<<(std::ostream&, const DynamicException&);
 
-  }; /* class SystemException */
+public:
+  DynamicException(
+        const ZorbaError::ErrorCode&,
+        const String&,
+        const String& afilename,
+        unsigned int linebegin,
+        unsigned int columnbegin);
+
+  virtual ~DynamicException() throw();
+};
+
+
+class StaticException : public QueryException
+{
+  friend std::ostream& operator<<(std::ostream&, const StaticException&);
+
+public:
+  StaticException(
+        const ZorbaError::ErrorCode&,
+        const String&,
+        const String& afilename,
+        unsigned int linebegin,
+        unsigned int columnbegin);
+
+  virtual ~StaticException() throw();
+};
+
+
+class TypeException : public QueryException
+{
+  friend std::ostream& operator<<(std::ostream&, const TypeException&);
+
+ public:
+  TypeException(
+        const ZorbaError::ErrorCode&,
+        const String&,
+        const String& afilename,
+        unsigned int linebegin,
+        unsigned int columnbegin);
+
+  virtual ~TypeException() throw();
+};
+
+
+class SerializationException : public QueryException
+{
+  friend std::ostream& operator<<(std::ostream&, const SerializationException&);
+
+ public:
+  SerializationException(
+        const ZorbaError::ErrorCode&,
+        const String&,
+        const String& afilename,
+        unsigned int linebegin,
+        unsigned int columnbegin);
+
+  virtual ~SerializationException() throw();
+};
+
+
+class SystemException : public ZorbaException
+{
+  friend std::ostream& operator<<(std::ostream&, const ZorbaException&);
+
+ public:
+  SystemException(const ZorbaError::ErrorCode&, const String&);
+
+  virtual ~SystemException() throw();
+};
+
+
 
   std::ostream& operator<< (std::ostream& os, const ZorbaException& aException);
   std::ostream& operator<< (std::ostream& os, const QueryException& aException);
