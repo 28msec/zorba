@@ -161,7 +161,7 @@ uint32_t xqpStringStore::hash(const char* str)
 uint32_t xqpStringStore::hash(XQPCollator* coll) const
 {
 //    if(!coll) {
-//      return hash(c_str());
+        return hash(c_str());
 //    }
 
 //    CollationKey collKey;
@@ -173,8 +173,9 @@ uint32_t xqpStringStore::hash(XQPCollator* coll) const
 //    {
 //      assert(false);
 //    }
-    
+     
 //    return collKey.hashCode();
+/*
   uint32_t hash = 5381;
   std::string::const_iterator  cit;
   for(cit = theString.begin(); cit != theString.end(); cit++)
@@ -182,6 +183,7 @@ uint32_t xqpStringStore::hash(XQPCollator* coll) const
     hash = ((hash << 5) + hash) + *cit; // hash*33 + c
   }
   return hash;
+*/
 }
 
 
