@@ -2441,10 +2441,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS, strlen(XQUERY_FN_NS))) {
     xqp_string fn_local = fn_qname->getLocalName ();
-    if (fn_local == "position") {
+    if (fn_local == "position" && sz == 0) {
       nodestack.push(sctx_p->lookup_var_nofail (DOT_POS_VARNAME));
       return;
-    } else if (fn_local == "last") {
+    } else if (fn_local == "last" && sz == 0) {
       nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VARNAME));
       return;
     } else if (fn_local == "string") {
