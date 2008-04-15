@@ -108,6 +108,7 @@ namespace zorba {
   StaticContextImpl::deleteNamespace( const String& prefix )
   {
     assert(false);
+    return false;
   }
 
 
@@ -191,6 +192,7 @@ namespace zorba {
   StaticContextImpl::deleteExternalVariableType( const String& var_name )
   {
     assert(false);
+    return false;
   }
 
 
@@ -198,6 +200,7 @@ namespace zorba {
   StaticContextImpl::setContextItemType( TypeIdentifier_t type )
   {
     assert(false);
+    return false;
   }
 
 
