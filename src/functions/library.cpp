@@ -735,10 +735,12 @@ DECL(fn_codepoint_equal,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
+// the string concat function, not the sequence op:concat
 DECL(fn_concat,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","concat"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      true, GENV_TYPESYSTEM.STRING_TYPE_ONE));
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_string_join,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","string-join"),
