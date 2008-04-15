@@ -5,12 +5,14 @@
 
 #include <exception>
 #include <zorba/zorba.h>
+#include "common/shared_types.h"
 
 namespace zorba {
 
   namespace error {
     class ZorbaError;
   }
+
 
 #define ZORBA_TRY try { 
 #define ZORBA_CATCH } catch (error::ZorbaError& e) { \
@@ -80,6 +82,9 @@ namespace zorba {
 
       static void
       notifyError(ErrorHandler*);
+
+      static void
+      checkItem(const store::Item_t& aItem);
 
     protected:
       friend class Zorba;

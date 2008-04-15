@@ -10,6 +10,7 @@
 #include "api/xmldatamanagerimpl.h"
 
 #include "errors/errors.h"
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
 
 namespace zorba {
@@ -198,5 +199,12 @@ namespace zorba {
     SystemException lSystemException(ZorbaError::XQP0019_INTERNAL_ERROR, 
                                      "An internal error occured.");
     aErrorHandler->systemError(lSystemException);
+  }
+
+  void
+  ZorbaImpl::checkItem(const store::Item_t& aItem)
+  {
+    if (aItem == NULL)
+      ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT, "Invalid item given");
   }
 } /* namespace zorba */

@@ -36,6 +36,7 @@ namespace zorba {
     ZORBA_TRY
       // unmarshall the string and the item
       store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
+      ZorbaImpl::checkItem(lItem);
       xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
 
       // create an item iterator to store in the dyn context
@@ -85,6 +86,7 @@ namespace zorba {
   {
     ZORBA_TRY
       store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
+      ZorbaImpl::checkItem(lItem);
       theCtx->set_context_item(lItem, 0);
       return true;
     ZORBA_CATCH
@@ -110,8 +112,7 @@ namespace zorba {
     ZORBA_TRY
       store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
     
-      if (lItem == NULL)
-        ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT, "Invalid item given");
+      ZorbaImpl::checkItem(lItem);
 
       xqtref_t lItemType = theStaticContext->get_typemanager()->
                            create_named_type(lItem->getType(),
@@ -162,6 +163,7 @@ namespace zorba {
   {
     ZORBA_TRY
       store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
+      ZorbaImpl::checkItem(lItem);
       xqpString     lString(lItem->getStringValue());
       theCtx->set_default_collection(lString);
       return true;
