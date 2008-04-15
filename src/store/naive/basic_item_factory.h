@@ -176,24 +176,23 @@ public:
 
 
   Item_t createDocumentNode(
-        ulong           qid,
-        xqpStringStore* baseURI,
-        xqpStringStore* docURI,
-        Iterator*       children,
-        bool            isRoot,
-        bool            assignIds,
-        bool            copy,
-        const CopyMode& copymode);
+        ulong             qid,
+        xqpStringStore_t& baseURI,
+        Iterator*         children,
+        bool              isRoot,
+        bool              assignIds,
+        bool              copy,
+        const CopyMode&   copymode);
 
   Item_t createElementNode(
         ulong             qid,
-        Item*             name,
-        Item*             type,
+        Item_t&           name,
+        Item_t&           type,
         Iterator*         childrenIte,
         Iterator*         attributesIte,
         Iterator*         namespacesIte,
         const NsBindings& localBindings,
-        xqpStringStore*   baseURI,
+        xqpStringStore_t& baseURI,
         bool              isRoot,
         bool              assignIds,
         bool              copy,
@@ -202,7 +201,7 @@ public:
   Item_t createAttributeNode(
         ulong     qid,
         Iterator* nameIter,
-        Item*     typeName,
+        Item_t&   typeName,
         Iterator* valueIter,
         bool      isRoot,
         bool      assignIds);
@@ -214,23 +213,23 @@ public:
         bool            assignIds);
 
   Item_t createTextNode(
-        ulong           qid,
-        xqpStringStore* content,
-        bool            isRoot,
-        bool            assignIds);
+        ulong             qid,
+        xqpStringStore_t& content,
+        bool              isRoot,
+        bool              assignIds);
 
   Item_t createPiNode (
-        ulong           qid,
-        xqpStringStore* target,
-        xqpStringStore* content,
-        bool            isRoot,
-        bool            assignIds);
+        ulong             qid,
+        xqpStringStore_t& target,
+        xqpStringStore_t& content,
+        bool              isRoot,
+        bool              assignIds);
 
   Item_t createCommentNode (
-        ulong           qid,
-        xqpStringStore* content,
-        bool            isRoot,
-        bool            assignIds);
+        ulong             qid,
+        xqpStringStore_t& content,
+        bool              isRoot,
+        bool              assignIds);
 
   PUL* createPendingUpdateList();
 };

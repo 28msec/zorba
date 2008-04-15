@@ -58,11 +58,11 @@ void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
 {
-  // Note: baseUri and docUri have to be rchandles because if createDocumentNode
-  // throws and exception, we don't know if the exception was thrown before or
-  // after the ownership of the uris was transfered to the doc node.
-  xqpStringStore_t baseUri = 0;
-  xqpStringStore_t docUri = 0;
+  // Note: baseUri has to be rchandles because if createDocumentNode throws
+  // an exception, we don't know if the exception was thrown before or after
+  // the ownership of the uris was transfered to the doc node.
+  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
+                             baseuri().getStore();
   store::Item_t node;
 
   store::CopyMode copymode;
@@ -75,15 +75,9 @@ store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
                state->theNsPreserve,
                state->theNsInherit);
 
-  // maybe we can make these members of the class in order to save new's when calling 
-  // close or reset
-  baseUri = new xqpStringStore("");
-  docUri = new xqpStringStore("");
-
   node = GENV_ITEMFACTORY->
          createDocumentNode((ulong)&planState,
                             baseUri,
-                            docUri,
                             state->childWrapper,
                             true, // is root
                             true, // assign ids
@@ -187,8 +181,12 @@ ElementIterator::ElementIterator (
 
 void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<ElementIteratorState>::createState(planState, this->stateOffset, offset);
-  StateTraitsImpl<ElementIteratorState>::initState(planState, this->stateOffset);
+  StateTraitsImpl<ElementIteratorState>::createState(planState,
+                                                     this->stateOffset,
+                                                     offset);
+
+  StateTraitsImpl<ElementIteratorState>::initState(planState,
+                                                   this->stateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);
@@ -208,17 +206,18 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
 {
   std::auto_ptr<store::Iterator> cwrapper;
   std::auto_ptr<store::Iterator> awrapper;
-
+  store::CopyMode copymode;
   store::Item_t qnameItem;
+  store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   store::Item_t node;
 
-  static_context* sctx = planState.theRuntimeCB->theStaticContext;
-  store::CopyMode copymode;
+  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
+                             baseuri().getStore();
   
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
 
-  qnameItem = consumeNext(theQNameIter.getp(), planState);
+  qnameItem = consumeNext(theQNameIter, planState);
 
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
@@ -240,13 +239,13 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
 
   node = GENV_ITEMFACTORY->
          createElementNode((ulong)&planState,
-                           qnameItem.getp(),
-                           GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
+                           qnameItem,
+                           typeName,
                            cwrapper.get(),
                            awrapper.get(),
                            NULL,
                            theLocalBindings->get_bindings(),
-                           sctx->baseuri().getStore(),
+                           baseUri,
                            theIsRoot,
                            true, // assignIds
                            true, // copy
@@ -335,6 +334,7 @@ store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   store::Item_t item;
   store::Item_t textNode;
+  xqpStringStore_t content;
 
   ElementContentState* state;
   DEFAULT_STACK_INIT(ElementContentState, state, planState);
@@ -363,8 +363,9 @@ store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
     }
     else 
     {
+      content = item->getStringValue();
       textNode = factory->createTextNode((ulong)&planState,
-                                         item->getStringValue(),
+                                         content,
                                          false, // not root
                                          true); // assignIds
       STACK_PUSH(textNode, state);
@@ -384,7 +385,7 @@ AttributeIterator::AttributeIterator(
     PlanIter_t&  aValueIter,
     bool         isRoot)
   :
-    BinaryBaseIterator<AttributeIterator, PlanIteratorState>( loc, aQNameIter, aValueIter ),
+  BinaryBaseIterator<AttributeIterator, PlanIteratorState>(loc, aQNameIter, aValueIter),
     theIsRoot(isRoot)
 {
 }
@@ -395,6 +396,7 @@ store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
   store::Item_t node;
   store::Iterator_t nameWrapper;
   store::Iterator_t valueWrapper;
+  store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -403,9 +405,9 @@ store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
   valueWrapper = new PlanIteratorWrapper(theChild1, planState);
   
   node = GENV_ITEMFACTORY->
-         createAttributeNode((unsigned long)&planState,
+         createAttributeNode((ulong)&planState,
                              nameWrapper,
-                             GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME,
+                             typeName,
                              valueWrapper,
                              theIsRoot,
                              true);  // assignIds
@@ -449,7 +451,7 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
                           "Empty sequences cannot be cased to QName.");
   }
 
-  if (consumeNext(theChild.getp(), planState) != 0)
+  if (consumeNext(theChild, planState) != 0)
   {
     ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
                           "Non single sequences cannot be cased to QName.");
@@ -543,18 +545,18 @@ PiIterator::PiIterator (
 store::Item_t PiIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
-  xqpString content;
+  xqpStringStore_t content(new xqpStringStore(""));
   xqpStringStore_t target;
   bool lFirst;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
-  lItem = consumeNext(theChild0.getp(), planState);
+  lItem = consumeNext(theChild0, planState);
   if (lItem == 0)
     ZORBA_ERROR( ZorbaError::XPTY0004);
 
-  if (consumeNext(theChild0.getp(), planState) != 0)
+  if (consumeNext(theChild0, planState) != 0)
     ZORBA_ERROR( ZorbaError::XPTY0004);
 
   // TODO: check if lItem is string, raise XPTY0004 if not
@@ -569,21 +571,21 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
        0 != (lItem = consumeNext (theChild1.getp(), planState));
        lFirst = false)
   {
-    if (! lFirst) content += " ";
+    if (! lFirst) content->str() += " ";
 
     xqpStringStore_t strvalue = lItem->getStringValue();
     if (strvalue->indexOf("?>") >= 0)
     {
       ZORBA_ERROR( ZorbaError::XQDY0026);
     }
-    content += strvalue->str();
+    content->str() += strvalue->str();
   }
 
-  content = content.trimL(" \n\r\t", 4);
+  content = content->trimL(" \n\r\t", 4);
 
   lItem = GENV_ITEMFACTORY->createPiNode((ulong)&planState,
                                          target,
-                                         content.getStore (),
+                                         content,
                                          theIsRoot,
                                          true);  // assingIds
   STACK_PUSH(lItem, state);

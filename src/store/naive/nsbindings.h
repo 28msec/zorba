@@ -39,7 +39,7 @@ public:
   void setParent(NsBindingsContext* p)        { theParent = p; }
   const NsBindingsContext* getParent() const  { return theParent.getp(); }
 
-  xqpStringStore* findBinding(xqpStringStore* prefix) const;
+  xqpStringStore* findBinding(const xqpStringStore* prefix) const;
 
   void addBinding(xqpStringStore* prefix, xqpStringStore* ns);
 };

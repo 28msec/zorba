@@ -35,7 +35,7 @@ NsBindingsContext::~NsBindingsContext()
 }
 
 
-xqpStringStore* NsBindingsContext::findBinding(xqpStringStore* prefix) const
+xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) const
 {
   const NsBindingsContext* currentContext = this;
 

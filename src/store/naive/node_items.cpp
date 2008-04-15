@@ -209,13 +209,6 @@ xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
 }
 
 
-
-xqpStringStore_t XmlNode::getDocumentURI() const
-{
-  return theParent ? theParent->getDocumentURI().getp() : new xqpStringStore("");
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -616,25 +609,29 @@ void XmlNode::deleteTree() throw()
 /*******************************************************************************
 
 ********************************************************************************/
-DocumentNode::DocumentNode(xqpStringStore* baseUri, xqpStringStore* docUri)
+DocumentNode::DocumentNode(xqpStringStore_t& baseUri, xqpStringStore_t& docUri)
   :
-  XmlNode(),
-  theBaseUri(baseUri),
-  theDocUri(docUri)
+  XmlNode()
 {
+  if (baseUri != NULL && !baseUri->empty())
+    theBaseUri.transfer(baseUri);
+
+  theDocUri.transfer(docUri);
 }
 
 
 DocumentNode::DocumentNode(
-    XmlTree*        tree,
-    bool            assignIds,
-    xqpStringStore* baseUri,
-    xqpStringStore* docUri)
+    XmlTree*          tree,
+    bool              assignIds,
+    xqpStringStore_t& baseUri,
+    xqpStringStore_t& docUri)
   :
-  XmlNode(tree, assignIds),
-  theBaseUri(baseUri),
-  theDocUri(docUri)
+  XmlNode(tree, assignIds)
 {
+  if (baseUri != NULL && !baseUri->empty())
+    theBaseUri.transfer(baseUri);
+
+  theDocUri.transfer(docUri);
 }
 
 
@@ -710,12 +707,14 @@ XmlNode* DocumentNode::copy(
   XmlTree* tree = NULL;
   LoadedDocumentNode* copyNode = NULL;
 
+  xqpStringStore_t baseuri = theBaseUri;
+  xqpStringStore_t docuri = theDocUri;
+
   try
   {
     tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-    copyNode = new LoadedDocumentNode(tree, copymode.theAssignIds,
-                                      theBaseUri, theDocUri);
+    copyNode = new LoadedDocumentNode(tree, copymode.theAssignIds, baseuri, docuri);
 
     ulong numChildren = this->numChildren();
     for (ulong i = 0; i < numChildren; i++)
@@ -773,13 +772,14 @@ xqp_string DocumentNode::show() const
   Node constructor used during loading of an xml doc
 ********************************************************************************/
 LoadedDocumentNode::LoadedDocumentNode(
-    xqpStringStore* baseUri,
-    xqpStringStore* docUri)
+    xqpStringStore_t& baseUri,
+    xqpStringStore_t& docUri)
   :
   DocumentNode(baseUri, docUri)
 {
-  NODE_TRACE1("Loaded doc node " << this << " base uri = " << *baseUri
-              << " doc uri = " << *docUri);
+  NODE_TRACE1("Loaded doc node " << this << " base uri = "
+              << (theBaseUri != 0 ? theBaseUri->c_str() : "NULL")
+              << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
 }
 
 
@@ -787,16 +787,16 @@ LoadedDocumentNode::LoadedDocumentNode(
 
 ********************************************************************************/
 LoadedDocumentNode::LoadedDocumentNode(
-    XmlTree*        tree,
-    bool            assignIds,
-    xqpStringStore* baseUri,
-    xqpStringStore* docUri)
+    XmlTree*          tree,
+    bool              assignIds,
+    xqpStringStore_t& baseUri,
+    xqpStringStore_t& docUri)
   :
   DocumentNode(tree, assignIds, baseUri, docUri)
 {
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
-              << " doc uri = " << docUri);
+              << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
 }
 
 
@@ -811,16 +811,16 @@ LoadedDocumentNode::LoadedDocumentNode(
 
 ********************************************************************************/
 ConstrDocumentNode::ConstrDocumentNode(
-    XmlTree*        tree,
-    bool            assignIds,
-    xqpStringStore* baseUri,
-    xqpStringStore* docUri)
+    XmlTree*          tree,
+    bool              assignIds,
+    xqpStringStore_t& baseUri,
+    xqpStringStore_t& docUri)
   :
   DocumentNode(tree, assignIds, baseUri, docUri)
 {
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
-              << " doc uri = " << docUri);
+              << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
 }
 
 
@@ -893,54 +893,54 @@ void ConstrDocumentNode::constructSubtree(
 /*******************************************************************************
 
 ********************************************************************************/
-ElementNode::ElementNode(Item*  nodeName, Item* typeName)
+ElementNode::ElementNode(Item_t&  nodeName, Item_t& typeName)
   :
   XmlNode(),
-  theName(nodeName),
-  theTypeName(typeName),
   theFlags(0)
 {
+  theName.transfer(nodeName);
+  theTypeName.transfer(typeName);
 }
 
 
 ElementNode::ElementNode(
     XmlTree* tree,
     bool     assignIds,
-    Item*    nodeName,
-    Item*    typeName)
+    Item_t&  nodeName,
+    Item_t&  typeName)
   :
   XmlNode(tree, assignIds),
-  theName(nodeName),
-  theTypeName(typeName),
   theFlags(0)
 {
+  theName.transfer(nodeName);
+  theTypeName.transfer(typeName);
 }
 
 
 ElementNode::ElementNode(
     XmlNode* parent,
     ulong    pos,
-    Item*    nodeName,
-    Item*    typeName)
+    Item_t&  nodeName,
+    Item_t&  typeName)
   :
   XmlNode(parent, pos, StoreConsts::elementNode),
-  theName(nodeName),
-  theTypeName(typeName),
   theFlags(0)
 {
+  theName.transfer(nodeName);
+  theTypeName.transfer(typeName);
 }
 
 
 ElementNode::ElementNode(
     XmlNode* parent,
-    Item*    nodeName,
-    Item*    typeName)
+    Item_t&  nodeName,
+    Item_t&  typeName)
   :
   XmlNode(parent, StoreConsts::elementNode),
-  theName(nodeName),
-  theTypeName(typeName),
   theFlags(0)
 {
+  theName.transfer(nodeName);
+  theTypeName.transfer(typeName);
 }
 
 
@@ -1086,7 +1086,7 @@ void ElementNode::setNsContext(NsBindingsContext* parentCtx)
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore* ElementNode::findBinding(xqpStringStore* prefix) const
+xqpStringStore* ElementNode::findBinding(const xqpStringStore* prefix) const
 {
   if (theNsContext == NULL)
     return NULL;
@@ -1108,7 +1108,7 @@ const NsBindings& ElementNode::getLocalBindings() const
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::addBindingForQName(Item* qname)
+void ElementNode::addBindingForQName(const Item* qname)
 {
   xqpStringStore* prefix = qname->getPrefix();
   xqpStringStore* ns = qname->getNamespace();
@@ -1144,7 +1144,7 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::checkUniqueAttr(Item* attrName) const
+void ElementNode::checkUniqueAttr(const Item* attrName) const
 {
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
@@ -1173,25 +1173,25 @@ XmlNode* ElementNode::copy(
   XmlTree* tree = NULL;
   LoadedElementNode* copyNode = NULL;
 
-  Item* typeName = (copymode.theTypePreserve ?
-                    theTypeName.getp() :
-                    GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp());
+  Item_t qname = theName;
+  Item_t typeName = (copymode.theTypePreserve ?
+                     theTypeName :
+                     GET_STORE().theSchemaTypeNames[XS_UNTYPED]);
   try
   {
     if (parent == NULL)
     {
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      copyNode = new LoadedElementNode(tree, copymode.theAssignIds,
-                                       theName, typeName);
+      copyNode = new LoadedElementNode(tree, copymode.theAssignIds, qname, typeName);
     }
     else if (parent == rootParent)
     {
-      copyNode = new LoadedElementNode(parent, pos, theName, typeName);
+      copyNode = new LoadedElementNode(parent, pos, qname, typeName);
     }
     else
     {
-      copyNode = new LoadedElementNode(parent, theName, typeName);
+      copyNode = new LoadedElementNode(parent, qname, typeName);
     }
 
     copyNode->theFlags = theFlags;
@@ -1337,16 +1337,16 @@ XmlNode* ElementNode::copy(
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::addBaseUriAttribute(xqpStringStore* baseUri)
+void ElementNode::addBaseUriAttribute(xqpStringStore_t& baseUri)
 {
   const SimpleStore& store = GET_STORE();
   Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
   Item_t tname = store.theSchemaTypeNames[XS_ANY_URI];
-  Item* typedValue = new AnyUriItemImpl(baseUri);
+  Item_t typedValue = new AnyUriItemImpl(baseUri);
   AttributeNode* attr = new AttributeNode(qname, tname, false, false);
   attr->theParent = this;
   attr->setHidden();
-  attr->theTypedValue = typedValue;
+  attr->theTypedValue.transfer(typedValue);
   
   attributes().push_back(attr, false);
 }
@@ -1407,10 +1407,10 @@ xqp_string ElementNode::show() const
   Node constructor used during loading of an xml doc
 ********************************************************************************/
 LoadedElementNode::LoadedElementNode(
-    Item*  nodeName,
-    Item*  typeName,
-    ulong  numBindings,
-    ulong  numAttributes)
+    Item_t& nodeName,
+    Item_t& typeName,
+    ulong   numBindings,
+    ulong   numAttributes)
   :
   ElementNode(nodeName, typeName)
 {
@@ -1423,7 +1423,7 @@ LoadedElementNode::LoadedElementNode(
   if (numAttributes > 0)
     theAttributes.resize(numAttributes);
 
-  NODE_TRACE1("Loaded elem node " << this << " name = " << nodeName->show()
+  NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
               << " num bindings = " << numBindings << " num attributes = "
               << numAttributes << std::endl);
 }
@@ -1435,14 +1435,14 @@ LoadedElementNode::LoadedElementNode(
 LoadedElementNode::LoadedElementNode(
     XmlTree*  tree,
     bool      assignIds,
-    Item*     nodeName,
-    Item*     typeName)
+    Item_t&   nodeName,
+    Item_t&   typeName)
   :
   ElementNode(tree, assignIds, nodeName, typeName)
 {
   NODE_TRACE1("{\nConstructing root element node " << this
               << " tree = " << tree->getId() << ":" << tree
-              << " name = " << *nodeName->getStringValue());
+              << " name = " << *theName->getStringValue());
 }
 
 
@@ -1452,8 +1452,8 @@ LoadedElementNode::LoadedElementNode(
 LoadedElementNode::LoadedElementNode(
     XmlNode*  parent,
     ulong     pos,
-    Item*     nodeName,
-    Item*     typeName)
+    Item_t&   nodeName,
+    Item_t&   typeName)
   :
   ElementNode(parent, pos, nodeName, typeName)
 {
@@ -1461,7 +1461,7 @@ LoadedElementNode::LoadedElementNode(
               << parent << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << *nodeName->getStringValue());
+              << " name = " << *theName->getStringValue());
 }
 
 
@@ -1470,15 +1470,15 @@ LoadedElementNode::LoadedElementNode(
 ********************************************************************************/
 LoadedElementNode::LoadedElementNode(
     XmlNode*  parent,
-    Item*     nodeName,
-    Item*     typeName)
+    Item_t&   nodeName,
+    Item_t&   typeName)
   :
   ElementNode(parent, nodeName, typeName)
 {
   NODE_TRACE1("{\nConstructing element node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << *nodeName->getStringValue());
+              << " name = " << *theName->getStringValue());
 }
 
 
@@ -1517,14 +1517,14 @@ xqpStringStore_t LoadedElementNode::getBaseURIInternal(bool& local) const
 ConstrElementNode::ConstrElementNode(
     XmlTree*  tree,
     bool      assignIds,
-    Item*     nodeName,
-    Item*     typeName)
+    Item_t&   nodeName,
+    Item_t&   typeName)
   :
   ElementNode(tree, assignIds, nodeName, typeName)
 {
   NODE_TRACE1("{\nConstructing root element node " << this
               << " tree = " << tree->getId() << ":" << tree
-              << " name = " << *nodeName->getStringValue());
+              << " name = " << *theName->getStringValue());
 }
 
 
@@ -1533,15 +1533,15 @@ ConstrElementNode::ConstrElementNode(
 ********************************************************************************/
 ConstrElementNode::ConstrElementNode(
     XmlNode*  parent,
-    Item*     nodeName,
-    Item*     typeName)
+    Item_t&    nodeName,
+    Item_t&    typeName)
   :
   ElementNode(parent, nodeName, typeName)
 {
   NODE_TRACE1("{\nConstructing element node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << *nodeName->getStringValue());
+              << " name = " << *theName->getStringValue());
 }
 
 
@@ -1552,7 +1552,7 @@ void ConstrElementNode::constructSubtree(
     Iterator*         attributesIte,
     Iterator*         childrenIte,
     const NsBindings& localBindings,
-    xqpStringStore*   staticBaseUri,
+    xqpStringStore_t& staticBaseUri,
     bool              copy,
     const CopyMode&   copymode)
 {
@@ -1724,28 +1724,29 @@ xqpStringStore_t ConstrElementNode::getBaseURIInternal(bool& local) const
   Node constructor used during loading of an xml doc
 ********************************************************************************/
 AttributeNode::AttributeNode(
-    Item*  attrName,
-    Item*  typeName,
-    bool   isId,
-    bool   isIdrefs)
+    Item_t&  attrName,
+    Item_t&  typeName,
+    bool     isId,
+    bool     isIdrefs)
   :
   XmlNode(),
-  theName(attrName),
-  theTypeName(typeName),
   theFlags(0)
 {
+  theName.transfer(attrName);
+  theTypeName.transfer(typeName);
+
   if (isId)
     theFlags |= XmlNode::IsId;
 
   if (isIdrefs)
     theFlags |= XmlNode::IsIdRefs;
 
-  if (attrName->getPrefix()->byteEqual("xml", 3) &&
-      attrName->getLocalName()->byteEqual("base", 4))
+  if (theName->getPrefix()->byteEqual("xml", 3) &&
+      theName->getLocalName()->byteEqual("base", 4))
     theFlags |= XmlNode::IsBaseUri;
 
   NODE_TRACE1("Loaded attr node " << this << " name = "
-              << *attrName->getStringValue());
+              << *theName->getStringValue());
 }
 
 
@@ -1755,32 +1756,33 @@ AttributeNode::AttributeNode(
 AttributeNode::AttributeNode(
     XmlTree*  tree,
     bool      assignIds,
-    Item*     attrName,
-    Item*     typeName,
-    Item*     typedValue,
+    Item_t&   attrName,
+    Item_t&   typeName,
+    Item_t&   typedValue,
     bool      isId,
     bool      isIdrefs)
   :
   XmlNode(tree, assignIds),
-  theName(attrName),
-  theTypeName(typeName),
-  theTypedValue(typedValue),
   theFlags(0)
 {
+  theName.transfer(attrName);
+  theTypeName.transfer(typeName);
+  theTypedValue.transfer(typedValue);
+
   if (isId)
     theFlags |= XmlNode::IsId;
 
   if (isIdrefs)
     theFlags |= XmlNode::IsIdRefs;
 
-  if (attrName->getPrefix()->byteEqual("xml", 3) &&
-      attrName->getLocalName()->byteEqual("base", 4))
+  if (theName->getPrefix()->byteEqual("xml", 3) &&
+      theName->getLocalName()->byteEqual("base", 4))
     theFlags |= XmlNode::IsBaseUri;
 
   NODE_TRACE1("Constructed root attribute node " << this
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " name = " << *theName->getStringValue()
-              << " value = " << *typedValue->getStringValue());
+              << " value = " << *theTypedValue->getStringValue());
 }
 
 
@@ -1790,33 +1792,34 @@ AttributeNode::AttributeNode(
 AttributeNode::AttributeNode(
     XmlNode*  parent,
     ulong     pos,
-    Item*     attrName,
-    Item*     typeName,
-    Item*     typedValue,
+    Item_t&   attrName,
+    Item_t&   typeName,
+    Item_t&   typedValue,
     bool      isId,
     bool      isIdRefs)
   :
   XmlNode(parent, pos, StoreConsts::attributeNode),
-  theName(attrName),
-  theTypeName(typeName),
-  theTypedValue(typedValue),
   theFlags(0)
 {
+  theName.transfer(attrName);
+  theTypeName.transfer(typeName);
+  theTypedValue.transfer(typedValue);
+
   if (isId)
     theFlags |= XmlNode::IsId;
 
   if (isIdRefs)
     theFlags |= XmlNode::IsIdRefs;
 
-  if (attrName->getPrefix()->byteEqual("xml", 3) &&
-      attrName->getLocalName()->byteEqual("base", 4))
+  if (theName->getPrefix()->byteEqual("xml", 3) &&
+      theName->getLocalName()->byteEqual("base", 4))
     theFlags |= XmlNode::IsBaseUri;
 
   NODE_TRACE1("Constructed attribute node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << *theName->getStringValue()
-              << " value = " << *typedValue->getStringValue());
+              << " value = " << *theTypedValue->getStringValue());
 }
 
 
@@ -1825,33 +1828,34 @@ AttributeNode::AttributeNode(
 ********************************************************************************/
 AttributeNode::AttributeNode(
     XmlNode*  parent,
-    Item*     attrName,
-    Item*     typeName,
-    Item*     typedValue,
+    Item_t&   attrName,
+    Item_t&   typeName,
+    Item_t&   typedValue,
     bool      isId,
     bool      isIdRefs)
   :
   XmlNode(parent, StoreConsts::attributeNode),
-  theName(attrName),
-  theTypeName(typeName),
-  theTypedValue(typedValue),
   theFlags(0)
 {
+  theName.transfer(attrName);
+  theTypeName.transfer(typeName);
+  theTypedValue.transfer(typedValue);
+
   if (isId)
     theFlags |= XmlNode::IsId;
 
   if (isIdRefs)
     theFlags |= XmlNode::IsIdRefs;
 
-  if (attrName->getPrefix()->byteEqual("xml", 3) &&
-      attrName->getLocalName()->byteEqual("base", 4))
+  if (theName->getPrefix()->byteEqual("xml", 3) &&
+      theName->getLocalName()->byteEqual("base", 4))
     theFlags |= XmlNode::IsBaseUri;
 
   NODE_TRACE1("Constructed attribute node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << *theName->getStringValue()
-              << " value = " << *typedValue->getStringValue());
+              << " value = " << *theTypedValue->getStringValue());
 }
 
 
@@ -1877,22 +1881,22 @@ XmlNode* AttributeNode::copy(
 
   XmlTree* tree = NULL;
   AttributeNode* copyNode = NULL;
-  Item* typeName;
-  Item* typedValue;
-  bool deleteValue = false;
+  Item_t qname = theName;
+  Item_t typeName;
+  Item_t typedValue;
   bool isId = false;
   bool isIdRefs = false;
 
   if (copymode.theTypePreserve)
   {
-    typeName = theTypeName.getp();
+    typeName = theTypeName;
     isId = this->isId();
     isIdRefs = this->isIdRefs();
-    typedValue = theTypedValue.getp();
+    typedValue = theTypedValue;
   }
   else
   {
-    typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp();
+    typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
     if (theName->getLocalName()->byteEqual("id") &&
         theName->getPrefix()->byteEqual("xml", 3))
@@ -1901,10 +1905,7 @@ XmlNode* AttributeNode::copy(
     if (theTypedValue->getType() == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
       typedValue = theTypedValue;
     else
-    {
       typedValue = new UntypedAtomicItemImpl(getStringValue());
-      deleteValue = true;
-    }
   }
 
   try
@@ -1913,20 +1914,19 @@ XmlNode* AttributeNode::copy(
     {
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      copyNode = new AttributeNode(tree, copymode.theAssignIds, theName,
+      copyNode = new AttributeNode(tree, copymode.theAssignIds, qname,
                                    typeName, typedValue, isId, isIdRefs);
     }
     else if (parent == rootParent)
     {
-      copyNode = new AttributeNode(parent, pos, theName,
+      copyNode = new AttributeNode(parent, pos, qname,
                                    typeName, typedValue, isId, isIdRefs);
     }
     else
     {
-      copyNode = new AttributeNode(parent, theName,
+      copyNode = new AttributeNode(parent, qname,
                                    typeName, typedValue, isId, isIdRefs);
     }
-    typedValue = NULL;
   }
   catch (...)
   {
@@ -1939,9 +1939,6 @@ XmlNode* AttributeNode::copy(
       copyNode->disconnect();
       copyNode->deleteTree();
     }
-
-    if (typedValue && deleteValue)
-      delete typedValue;
 
     throw;
   }
@@ -2002,9 +1999,11 @@ xqp_string AttributeNode::show() const
 /*******************************************************************************
   Node constructor used during loading of an xml doc
 ********************************************************************************/
-TextNode::TextNode(xqpStringStore* value) : XmlNode(), theContent(value)
+TextNode::TextNode(xqpStringStore_t& value) : XmlNode()
 {
-  NODE_TRACE1("Loaded text node " << this << " content = " << *value);
+  theContent.transfer(value);
+
+  NODE_TRACE1("Loaded text node " << this << " content = " << *theContent);
 }
 
 
@@ -2012,14 +2011,16 @@ TextNode::TextNode(xqpStringStore* value) : XmlNode(), theContent(value)
 
 ********************************************************************************/
 TextNode::TextNode(
-    XmlTree*        tree,
-    bool            assignIds,
-    xqpStringStore* value)
+    XmlTree*          tree,
+    bool              assignIds,
+    xqpStringStore_t& value)
   :
-  XmlNode(tree, assignIds),
-  theContent(value)
+  XmlNode(tree, assignIds)
 {
-  NODE_TRACE1("Constructed root text node " << this << " content = " << *value);
+  theContent.transfer(value);
+
+  NODE_TRACE1("Constructed root text node " << this << " content = "
+              << *theContent);
 }
 
 
@@ -2027,17 +2028,19 @@ TextNode::TextNode(
 
 ********************************************************************************/
 TextNode::TextNode(
-    XmlNode*        parent,
-    ulong           pos,
-    xqpStringStore* value)
+    XmlNode*          parent,
+    ulong             pos,
+    xqpStringStore_t& value)
   :
-  XmlNode(parent, pos, StoreConsts::textNode),
-  theContent(value)
+  XmlNode(parent, pos, StoreConsts::textNode)
 {
+  theContent.transfer(value);
+
   NODE_TRACE1("Constructed text node " << this << " parent = " << parent
               << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
-              << " ordpath = " << theOrdPath.show() << " content = " << *value);
+              << " ordpath = " << theOrdPath.show() << " content = "
+              << *theContent);
 }
 
 
@@ -2045,15 +2048,17 @@ TextNode::TextNode(
 
 ********************************************************************************/
 TextNode::TextNode(
-    XmlNode*        parent,
-    xqpStringStore* value)
+    XmlNode*          parent,
+    xqpStringStore_t& value)
   :
-  XmlNode(parent, StoreConsts::textNode),
-  theContent(value)
+  XmlNode(parent, StoreConsts::textNode)
 {
+  theContent.transfer(value);
+
   NODE_TRACE1("Constructed text node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
-              << " ordpath = " << theOrdPath.show() << " content = " << *value);
+              << " ordpath = " << theOrdPath.show() << " content = "
+              << *theContent);
 }
 
 
@@ -2079,6 +2084,7 @@ XmlNode* TextNode::copy(
 
   XmlTree* tree = NULL;
   TextNode* copyNode = NULL;
+  xqpStringStore_t content = theContent;
 
   try
   {
@@ -2086,7 +2092,7 @@ XmlNode* TextNode::copy(
     {
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      copyNode = new TextNode(tree, copymode.theAssignIds, theContent);
+      copyNode = new TextNode(tree, copymode.theAssignIds, content);
     }
     else
     {
@@ -2099,9 +2105,9 @@ XmlNode* TextNode::copy(
       }
 
       if (parent == rootParent)
-        copyNode = new TextNode(parent, pos, theContent);
+        copyNode = new TextNode(parent, pos, content);
       else
-        copyNode = new TextNode(parent, theContent);
+        copyNode = new TextNode(parent, content);
     }
   }
   catch (...)
@@ -2168,13 +2174,14 @@ xqp_string TextNode::show() const
 /*******************************************************************************
   Node constructor used during loading of an xml doc
 ********************************************************************************/
-PiNode::PiNode(xqpStringStore* target, xqpStringStore* content)
+PiNode::PiNode(xqpStringStore_t& target, xqpStringStore_t& content)
   :
-  XmlNode(),
-  theTarget(target),
-  theContent(content)
+  XmlNode()
 {
-  NODE_TRACE1("Loaded pi node " << this << " target = " << target << std::endl);
+  theTarget.transfer(target);
+  theContent.transfer(content);
+
+  NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget << std::endl);
 }
 
 
@@ -2182,16 +2189,17 @@ PiNode::PiNode(xqpStringStore* target, xqpStringStore* content)
 
 ********************************************************************************/
 PiNode::PiNode(
-    XmlTree*        tree,
-    bool            assignIds,
-    xqpStringStore* target,
-    xqpStringStore* content)
+    XmlTree*          tree,
+    bool              assignIds,
+    xqpStringStore_t& target,
+    xqpStringStore_t& content)
   :
-  XmlNode(tree, assignIds),
-  theTarget(target),
-  theContent(content)
+  XmlNode(tree, assignIds)
 {
-  NODE_TRACE1("Constructed root pi node " << this << " target = " << *target);
+  theTarget.transfer(target);
+  theContent.transfer(content);
+
+  NODE_TRACE1("Constructed root pi node " << this << " target = " << *theTarget);
 }
 
 
@@ -2199,19 +2207,20 @@ PiNode::PiNode(
 
 ********************************************************************************/
 PiNode::PiNode(
-    XmlNode*        parent,
-    ulong           pos,
-    xqpStringStore* target,
-    xqpStringStore* content)
+    XmlNode*          parent,
+    ulong             pos,
+    xqpStringStore_t& target,
+    xqpStringStore_t& content)
   :
-  XmlNode(parent, pos, StoreConsts::piNode),
-  theTarget(target),
-  theContent(content)
+  XmlNode(parent, pos, StoreConsts::piNode)
 {
+  theTarget.transfer(target);
+  theContent.transfer(content);
+
   NODE_TRACE1("Constructed pi node " << this << " parent = " << parent
               << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
-              << " ordpath = " << theOrdPath.show() << " target = " << *target);
+              << " ordpath = " << theOrdPath.show() << " target = " << *theTarget);
 }
 
 
@@ -2219,17 +2228,18 @@ PiNode::PiNode(
 
 ********************************************************************************/
 PiNode::PiNode(
-    XmlNode*        parent,
-    xqpStringStore* target,
-    xqpStringStore* content)
+    XmlNode*          parent,
+    xqpStringStore_t& target,
+    xqpStringStore_t& content)
   :
-  XmlNode(parent, StoreConsts::piNode),
-  theTarget(target),
-  theContent(content)
+  XmlNode(parent, StoreConsts::piNode)
 {
+  theTarget.transfer(target);
+  theContent.transfer(content);
+
   NODE_TRACE1("Constructed pi node " << this << " parent = " << parent
               << " tree = " << getTree()->getId() << ":" << getTree()
-              << " ordpath = " << theOrdPath.show() << " target = " << *target);
+              << " ordpath = " << theOrdPath.show() << " target = " << *theTarget);
 }
 
 
@@ -2255,6 +2265,8 @@ XmlNode* PiNode::copy(
 
   XmlTree* tree = NULL;
   PiNode* copyNode = NULL;
+  xqpStringStore_t content = theContent;
+  xqpStringStore_t target = theTarget;
 
   try
   {
@@ -2262,15 +2274,15 @@ XmlNode* PiNode::copy(
     {
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      copyNode = new PiNode(tree, copymode.theAssignIds, theTarget, theContent);
+      copyNode = new PiNode(tree, copymode.theAssignIds, target, content);
     }
     else if (parent == rootParent)
     {
-      copyNode = new PiNode(parent, pos, theTarget, theContent);
+      copyNode = new PiNode(parent, pos, target, content);
     }
     else
     {
-      copyNode = new PiNode(parent, theTarget, theContent);
+      copyNode = new PiNode(parent, target, content);
     }
   }
   catch (...)
@@ -2338,12 +2350,13 @@ xqp_string PiNode::show() const
 /*******************************************************************************
   Node constructor used during loading of an xml doc
 ********************************************************************************/
-CommentNode::CommentNode(xqpStringStore* content)
+CommentNode::CommentNode(xqpStringStore_t& content)
   :
-  XmlNode(),
-  theContent(content)
+  XmlNode()
 {
-  NODE_TRACE1("Loaded comment node " << this << " content = " << content);
+  theContent.transfer(content);
+
+  NODE_TRACE1("Loaded comment node " << this << " content = " << *theContent);
 }
 
 
@@ -2351,14 +2364,16 @@ CommentNode::CommentNode(xqpStringStore* content)
 
 ********************************************************************************/
 CommentNode::CommentNode(
-    XmlTree*        tree,
-    bool            assignIds,
-    xqpStringStore* content)
+    XmlTree*          tree,
+    bool              assignIds,
+    xqpStringStore_t& content)
   :
-  XmlNode(tree, assignIds),
-  theContent(content)
+  XmlNode(tree, assignIds)
 {
-  NODE_TRACE1("Constructed root comment node " << this << " content = " << *content);
+  theContent.transfer(content);
+
+  NODE_TRACE1("Constructed root comment node " << this << " content = "
+              << *theContent);
 }
 
 
@@ -2366,17 +2381,19 @@ CommentNode::CommentNode(
 
 ********************************************************************************/
 CommentNode::CommentNode(
-    XmlNode*        parent,
-    ulong           pos,
-    xqpStringStore* content)
+    XmlNode*          parent,
+    ulong             pos,
+    xqpStringStore_t& content)
   :
-  XmlNode(parent, pos, StoreConsts::commentNode),
-  theContent(content)
+  XmlNode(parent, pos, StoreConsts::commentNode)
 {
+  theContent.transfer(content);
+
   NODE_TRACE1("Constructed comment node " << this << " parent = " << parent
               << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
-              << " ordpath = " << theOrdPath.show() << " content = " << *content);
+              << " ordpath = " << theOrdPath.show() << " content = "
+              << *theContent);
 }
 
 
@@ -2384,15 +2401,17 @@ CommentNode::CommentNode(
 
 ********************************************************************************/
 CommentNode::CommentNode(
-    XmlNode*        parent,
-    xqpStringStore* content)
+    XmlNode*          parent,
+    xqpStringStore_t& content)
   :
-  XmlNode(parent, StoreConsts::commentNode),
-  theContent(content)
+  XmlNode(parent, StoreConsts::commentNode)
 {
+  theContent.transfer(content);
+
   NODE_TRACE1("Constructed comment node " << this << " parent = " << parent
               << " tree = " << getTree()->getId() << ":" << getTree()
-              << " ordpath = " << theOrdPath.show() << " content = " << *content);
+              << " ordpath = " << theOrdPath.show() << " content = "
+              << *theContent);
 }
 
 
@@ -2418,6 +2437,7 @@ XmlNode* CommentNode::copy(
 
   XmlTree* tree = NULL;
   CommentNode* copyNode = NULL;
+  xqpStringStore_t content = theContent;
 
   try
   {
@@ -2425,15 +2445,15 @@ XmlNode* CommentNode::copy(
     {
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      copyNode = new CommentNode(tree, copymode.theAssignIds, theContent);
+      copyNode = new CommentNode(tree, copymode.theAssignIds, content);
     }
     else if (parent == rootParent)
     {
-      copyNode = new CommentNode(parent, pos, theContent);
+      copyNode = new CommentNode(parent, pos, content);
     }
     else
     {
-      copyNode = new CommentNode(parent, theContent);
+      copyNode = new CommentNode(parent, content);
     }
   }
   catch (...)

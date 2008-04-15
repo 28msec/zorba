@@ -41,6 +41,7 @@ public:
   virtual PlanIter_t codegen(const fo_expr *fo) = 0;
 };
 
+
 class function
 {
 protected:
@@ -74,6 +75,7 @@ public:
   virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 };
+
 
 class user_function : public function {
   public:

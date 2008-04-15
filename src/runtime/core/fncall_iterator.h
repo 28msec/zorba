@@ -10,11 +10,11 @@ namespace zorba {
 
 class UDFunctionCallIteratorState : public PlanIteratorState {
   public:
-    PlanState *theFnBodyStateBlock;
-    PlanIterator *thePlan;
-    uint32_t thePlanStateSize;
-    std::vector<store::Iterator_t> theChildIterators;
-    bool thePlanOpen;
+    PlanState                     * theFnBodyStateBlock;
+    PlanIterator                  * thePlan;
+    uint32_t                        thePlanStateSize;
+    std::vector<store::Iterator_t>  theChildIterators;
+    bool                            thePlanOpen;
 
     UDFunctionCallIteratorState();
     ~UDFunctionCallIteratorState();
@@ -25,14 +25,17 @@ class UDFunctionCallIteratorState : public PlanIteratorState {
     void resetChildIters();
 };
 
+
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> {
   public:
-    UDFunctionCallIterator(const QueryLoc& loc, 
-                           std::vector<PlanIter_t>& args, 
-                           const user_function *aUDF)
-      : NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(loc, args), 
-        theUDF(aUDF) { }
+    UDFunctionCallIterator(
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& args, 
+        const user_function *aUDF)
+      :
+      NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(loc, args), 
+      theUDF(aUDF) { }
 
     virtual ~UDFunctionCallIterator() { }
 
@@ -46,8 +49,9 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
  
 
   protected:
-    const user_function *theUDF;
+    const user_function * theUDF;
 };
+
 
 class StatelessExtFunctionCallIteratorState : public PlanIteratorState {
   public:
@@ -59,6 +63,7 @@ class StatelessExtFunctionCallIteratorState : public PlanIteratorState {
 
     void reset(PlanState&);
 };
+
 
 class StatelessExtFunctionCallIterator
   : public NaryBaseIterator

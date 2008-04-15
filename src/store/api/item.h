@@ -361,7 +361,7 @@ public:
   /** Accessor for document node
    *  @return  uri?
    */
-  virtual xqpStringStore_t
+  virtual xqpStringStore*
   getDocumentURI() const;
 
   /** Accessor for document node, element node, attribute node,

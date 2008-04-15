@@ -450,18 +450,18 @@ Item_t BasicItemFactory::createUnsignedShort(xqp_ushort value)
 
 ********************************************************************************/
 Item_t BasicItemFactory::createDocumentNode(
-    unsigned long   qid,
-    xqpStringStore* baseUri,
-    xqpStringStore* docUri,
-    Iterator*       childrenIter,
-    bool            isRoot,
-    bool            assignIds,
-    bool            copy,
-    const CopyMode& copymode)
+    unsigned long     qid,
+    xqpStringStore_t& baseUri,
+    Iterator*         childrenIter,
+    bool              isRoot,
+    bool              assignIds,
+    bool              copy,
+    const CopyMode&   copymode)
 {
   XmlTree* xmlTree = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
   ConstrDocumentNode* n = NULL;
+  xqpStringStore_t docUri;
 
   assert(isRoot);
 
@@ -515,13 +515,13 @@ Item_t BasicItemFactory::createDocumentNode(
 ********************************************************************************/
 Item_t BasicItemFactory::createElementNode(
     unsigned long     qid,
-    Item*             name,
-    Item*             type,
+    Item_t&           name,
+    Item_t&           typeName,
     Iterator*         childrenIter,
     Iterator*         attrsIter,
     Iterator*         nsIter,
     const NsBindings& localBindings,
-    xqpStringStore*   baseUri,
+    xqpStringStore_t& baseUri,
     bool              isRoot,
     bool              assignIds,
     bool              copy,
@@ -545,7 +545,7 @@ Item_t BasicItemFactory::createElementNode(
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
       xmlTree->addReference();
 
-      n = new ConstrElementNode(xmlTree, assignIds, name, type);
+      n = new ConstrElementNode(xmlTree, assignIds, name, typeName);
     }
 
     // We are at a node-constructor expr directly nested inside another
@@ -554,7 +554,7 @@ Item_t BasicItemFactory::createElementNode(
     {
       parent = ctx.top();
 
-      n = new ConstrElementNode(parent, name, type);
+      n = new ConstrElementNode(parent, name, typeName);
       baseUri = NULL;
     }
 
@@ -597,7 +597,7 @@ Item_t BasicItemFactory::createElementNode(
 Item_t BasicItemFactory::createAttributeNode(
     ulong           qid,
     Iterator*       nameIter,
-    Item*           type,
+    Item_t&         typeName,
     Iterator*       valueIter,
     bool            isRoot,
     bool            assignIds)
@@ -606,56 +606,46 @@ Item_t BasicItemFactory::createAttributeNode(
   ElementNode* parent = NULL;
   AttributeNode* n = NULL;
   Item_t name;
+  Item_t typedValue;
   xqpStringStore_t lexicalValue;
-  UntypedAtomicItemImpl* typedValue = NULL;
 
-  try
+  // Compute the attribute name. Note: we don't have to check that itemQName
+  // is indeed a valid qname, because the compiler wraps an xs:qname cast
+  // around thIteme expression.
+  name = nameIter->next();
+
+  if (name->getLocalName()->empty())
   {
-    // Compute the attribute name. Note: we don't have to check that itemQName
-    // is indeed a valid qname, because the compiler wraps an xs:qname cast
-    // around thIteme expression.
-    name = nameIter->next();
-
-    if (name->getLocalName()->empty())
-    {
-      ZORBA_ERROR_DESC(ZorbaError::XQDY0074,
-                       "Attribute name must not have an empty local part.");
-    }
+    ZORBA_ERROR_DESC(ZorbaError::XQDY0074,
+                     "Attribute name must not have an empty local part.");
+  }
   
-    if (name->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
-        (name->getNamespace()->empty() &&
-         name->getLocalName()->byteEqual("xmlns", 5)))
-    {
-      ZORBA_ERROR(ZorbaError::XQDY0044);
-    }
-
-    // Compute the attribute value.
-    Item_t valueItem = valueIter->next();
-    if (valueItem != 0)
-    {
-      lexicalValue = valueItem->getStringValue();
-
-      valueItem = valueIter->next();
-      while (valueItem != NULL)
-      {
-        lexicalValue->str().append(valueItem->getStringValue()->c_str());
-        valueItem = valueIter->next();
-      }
-    }
-    else
-    {
-      lexicalValue = new xqpStringStore("");
-    }
-    
-    typedValue = new UntypedAtomicItemImpl(lexicalValue);
-  }
-  catch (...)
+  if (name->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
+      (name->getNamespace()->empty() &&
+       name->getLocalName()->byteEqual("xmlns", 5)))
   {
-    if (typedValue)
-      delete typedValue;
-
-    throw;
+    ZORBA_ERROR(ZorbaError::XQDY0044);
   }
+
+  // Compute the attribute value.
+  Item_t valueItem = valueIter->next();
+  if (valueItem != 0)
+  {
+    lexicalValue = valueItem->getStringValue();
+
+    valueItem = valueIter->next();
+    while (valueItem != NULL)
+    {
+      lexicalValue->str().append(valueItem->getStringValue()->c_str());
+      valueItem = valueIter->next();
+    }
+  }
+  else
+  {
+    lexicalValue = new xqpStringStore("");
+  }
+  
+  typedValue = new UntypedAtomicItemImpl(lexicalValue);
 
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
 
@@ -673,8 +663,7 @@ Item_t BasicItemFactory::createAttributeNode(
       xmlTree->addReference();
 
       n = new AttributeNode(xmlTree, assignIds,
-                            name, type, typedValue, false, false);
-      typedValue = NULL;
+                            name, typeName, typedValue, false, false);
     }
 
     // We are at a node-constructor expr directly nested inside another
@@ -685,15 +674,11 @@ Item_t BasicItemFactory::createAttributeNode(
 
       parent->checkUniqueAttr(name.getp());
 
-      n = new AttributeNode(parent, name, type, typedValue, false, false);
-      typedValue = NULL;
+      n = new AttributeNode(parent, name, typeName, typedValue, false, false);
     }
   }
   catch (...)
   {
-    if (typedValue)
-      delete typedValue;
-
     if (xmlTree)
     {
       xmlTree->removeReference();
@@ -722,10 +707,10 @@ Item_t BasicItemFactory::createAttributeNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createTextNode(
-    unsigned long   qid,
-    xqpStringStore* content,
-    bool            isRoot,
-    bool            assignIds)
+    unsigned long     qid,
+    xqpStringStore_t& content,
+    bool              isRoot,
+    bool              assignIds)
 {
   XmlTree* xmlTree = NULL;
   XmlNode* parent = NULL;
@@ -831,11 +816,11 @@ Item_t BasicItemFactory::createTextNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createPiNode(
-    unsigned long   qid,
-    xqpStringStore* target,
-    xqpStringStore* content,
-    bool            isRoot,
-    bool            assignIds)
+    unsigned long     qid,
+    xqpStringStore_t& target,
+    xqpStringStore_t& content,
+    bool              isRoot,
+    bool              assignIds)
 {
   XmlTree* xmlTree = NULL;
   XmlNode* parent = NULL;
@@ -897,10 +882,10 @@ Item_t BasicItemFactory::createPiNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createCommentNode(
-    unsigned long   qid,
-    xqpStringStore* content,
-    bool            isRoot,
-    bool            assignIds)
+    unsigned long     qid,
+    xqpStringStore_t& content,
+    bool              isRoot,
+    bool              assignIds)
 {
   XmlTree* xmlTree = NULL;
   XmlNode* parent = NULL;

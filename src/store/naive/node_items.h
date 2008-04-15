@@ -140,7 +140,7 @@ public:
     return getBaseURIInternal(local);
   }
 
-  virtual xqpStringStore_t getDocumentURI() const;
+  virtual xqpStringStore* getDocumentURI() const { return 0; }
 
   Item_t getEBV() const;
 
@@ -259,13 +259,15 @@ protected:
   xqpStringStore_t    theDocUri;
 
 public:
-  DocumentNode(xqpStringStore* baseUri, xqpStringStore* docUri);
+  DocumentNode(
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
 
   DocumentNode(
-        XmlTree*        tree,
-        bool            assignIds,
-        xqpStringStore* baseUri,
-        xqpStringStore* docUri);
+        XmlTree*          tree,
+        bool              assignIds,
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
 
   virtual ~DocumentNode();
 
@@ -277,7 +279,7 @@ public:
 
   Item* getType() const; 
 
-  xqpStringStore_t getDocumentURI() const { return theDocUri.getp(); }
+  xqpStringStore* getDocumentURI() const { return theDocUri.getp(); }
 
   Iterator_t getChildren() const;
 
@@ -314,13 +316,15 @@ private:
   LoadedNodeVector theChildren;
 
 public:
-  LoadedDocumentNode(xqpStringStore* baseUri, xqpStringStore* docUri);
+  LoadedDocumentNode(
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
 
   LoadedDocumentNode(
-        XmlTree*        tree,
-        bool            assignIds,
-        xqpStringStore* baseUri,
-        xqpStringStore* docUri);
+        XmlTree*          tree,
+        bool              assignIds,
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
 
   ulong numChildren() const          { return theChildren.size(); }
   NodeVector& children()             { return theChildren; }
@@ -341,10 +345,10 @@ protected:
 
 public:
   ConstrDocumentNode(
-        XmlTree*        tree,
-        bool            assignIds,
-        xqpStringStore* baseUri,
-        xqpStringStore* docUri);
+        XmlTree*          tree,
+        bool              assignIds,
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
         
   void constructSubtree(
         Iterator*       children,
@@ -376,24 +380,26 @@ protected:
   uint32_t              theFlags;
 
 public:
-  ElementNode(Item* nodeName, Item* typeName);
+  ElementNode(
+        Item_t& nodeName,
+        Item_t& typeName);
 
   ElementNode(
         XmlTree* tree,
         bool     assignIds,
-        Item*    nodeName,
-        Item*    typeName);
+        Item_t&  nodeName,
+        Item_t&  typeName);
 
   ElementNode(
         XmlNode* parent,
         ulong    pos,
-        Item*    nodeName,
-        Item*    typeName);
+        Item_t&  nodeName,
+        Item_t&  typeName);
 
   ElementNode(
         XmlNode* parent,
-        Item*    nodeName,
-        Item*    typeName);
+        Item_t&  nodeName,
+        Item_t&  typeName);
 
   virtual ~ElementNode();
 
@@ -433,16 +439,16 @@ public:
   NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
   void setNsContext(NsBindingsContext* ctx);
-  xqpStringStore* findBinding(xqpStringStore* prefix) const;
+  xqpStringStore* findBinding(const xqpStringStore* prefix) const;
   const NsBindings& getLocalBindings() const;
-  void addBindingForQName(Item* qname);
+  void addBindingForQName(const Item* qname);
   void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
 
   void checkNamespaceConflict(
         const Item*           qname,
         ZorbaError::ErrorCode ecode) const;
 
-  void checkUniqueAttr(Item* attrName) const;
+  void checkUniqueAttr(const Item* attrName) const;
 
   XmlNode* copy(
         XmlNode*        rootParent,
@@ -474,7 +480,7 @@ public:
   void rename(Item_t& newname, Item_t& oldName);
 
 protected:
-  void addBaseUriAttribute(xqpStringStore* baseUri);
+  void addBaseUriAttribute(xqpStringStore_t& baseUri);
 };
 
 
@@ -492,27 +498,27 @@ protected:
 
 public:
   LoadedElementNode(
-        Item*   nodeName,
-        Item*   typeName,
+        Item_t& nodeName,
+        Item_t& typeName,
         ulong   numBindings,
         ulong   numAttributes);
 
   LoadedElementNode(
         XmlTree*  tree,
         bool      assgignIds,
-        Item*     nodeName,
-        Item*     typeName);
+        Item_t&   nodeName,
+        Item_t&   typeName);
 
   LoadedElementNode(
         XmlNode*  parent,
         ulong     pos,
-        Item*     nodeName,
-        Item*     typeName);
+        Item_t&   nodeName,
+        Item_t&   typeName);
 
   LoadedElementNode(
         XmlNode*  parent,
-        Item*     nodeName,
-        Item*     typeName);
+        Item_t&   nodeName,
+        Item_t&   typeName);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -550,19 +556,19 @@ public:
   ConstrElementNode(
         XmlTree*  tree,
         bool      assgignIds,
-			  Item*     nodeName,
-        Item*     typeName);
+			  Item_t&   nodeName,
+        Item_t&   typeName);
 
   ConstrElementNode(
         XmlNode*  parent,
-        Item*     nodeName,
-        Item*     typeName);
+        Item_t&   nodeName,
+        Item_t&   typeName);
 
   void constructSubtree(
         Iterator*         attributesIte,
         Iterator*         childrenIte,
         const NsBindings& nsBindings,
-        xqpStringStore*   staticBaseUri,
+        xqpStringStore_t& staticBaseUri,
         bool              copy,
         const CopyMode&   copymode);
 
@@ -615,34 +621,34 @@ protected:
 
 public:
   AttributeNode(
-        Item*    attrName,
-        Item*    typeName,
+        Item_t&  attrName,
+        Item_t&  typeName,
         bool     isId,
         bool     isIdrefs);
 
   AttributeNode(
         XmlTree* tree,
         bool     assignIds,
-        Item*    attrName,
-        Item*    typeName,
-        Item*    typedValue,
+        Item_t&  attrName,
+        Item_t&  typeName,
+        Item_t&  typedValue,
         bool     isId,
         bool     isIdrefs);
 
   AttributeNode(
         XmlNode*  parent,
         ulong     pos,
-        Item*     attrName,
-        Item*     typeName,
-        Item*     typedValue,
+        Item_t&   attrName,
+        Item_t&   typeName,
+        Item_t&   typedValue,
         bool      isId,
         bool      isIdrefs);
 
   AttributeNode(
         XmlNode*  parent,
-        Item*     attrName,
-        Item*     typeName,
-        Item*     typedValue,
+        Item_t&   attrName,
+        Item_t&   typeName,
+        Item_t&   typedValue,
         bool      isId,
         bool      isIdrefs);
 
@@ -681,7 +687,7 @@ public:
 
   void rename(Item_t& newname, Item_t& oldName);
 };
-
+   
 
 /*******************************************************************************
 
@@ -696,21 +702,21 @@ protected:
   xqpStringStore_t theContent;
 
 public:
-  TextNode(xqpStringStore* content);
+  TextNode(xqpStringStore_t& content);
 
   TextNode(
-        XmlTree*        tree,
-        bool            assignIds,
-        xqpStringStore* content);
+        XmlTree*          tree,
+        bool              assignIds,
+        xqpStringStore_t& content);
 
   TextNode(
-        XmlNode*        parent,
-        ulong           pos,
-        xqpStringStore* content);
+        XmlNode*          parent,
+        ulong             pos,
+        xqpStringStore_t& content);
 
   TextNode(
-        XmlNode*        parent,
-        xqpStringStore* content);
+        XmlNode*          parent,
+        xqpStringStore_t& content);
 
   ~TextNode();
 
@@ -727,7 +733,7 @@ public:
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
-  xqpStringStore* getStringValueP()   { return theContent.getp(); }
+  xqpStringStore* getStringValueP()         { return theContent.getp(); }
 			
   xqp_string show() const;
 
@@ -747,24 +753,24 @@ class PiNode : public XmlNode
   xqpStringStore_t theContent;
 
 public:
-  PiNode(xqpStringStore* target, xqpStringStore* content);
+  PiNode(xqpStringStore_t& target, xqpStringStore_t& content);
 
   PiNode(
-        XmlTree*        tree,
-        bool            assignIds,
-        xqpStringStore* target,
-        xqpStringStore* content);
+        XmlTree*          tree,
+        bool              assignIds,
+        xqpStringStore_t& target,
+        xqpStringStore_t& content);
 
   PiNode(
-        XmlNode*        parent,
-        ulong           pos,
-        xqpStringStore* target,
-        xqpStringStore* content);
+        XmlNode*          parent,
+        ulong             pos,
+        xqpStringStore_t& target,
+        xqpStringStore_t& content);
 
   PiNode(
-        XmlNode*        parent,
-        xqpStringStore* target,
-        xqpStringStore* content);
+        XmlNode*          parent,
+        xqpStringStore_t& target,
+        xqpStringStore_t& content);
 
   ~PiNode();
 
@@ -803,21 +809,21 @@ protected:
   xqpStringStore_t theContent;
 
 public:
-  CommentNode(xqpStringStore* content);
+  CommentNode(xqpStringStore_t& content);
 
   CommentNode(
-        XmlTree*        tree,
-        bool            assignIds,
-        xqpStringStore* content);
+        XmlTree*          tree,
+        bool              assignIds,
+        xqpStringStore_t& content);
 
   CommentNode(
-        XmlNode*        parent,
-        ulong           pos,
-        xqpStringStore* content);
+        XmlNode*          parent,
+        ulong             pos,
+        xqpStringStore_t& content);
 
   CommentNode(
-        XmlNode*        parent,
-        xqpStringStore* content);
+        XmlNode*          parent,
+        xqpStringStore_t& content);
 
   ~CommentNode();
 

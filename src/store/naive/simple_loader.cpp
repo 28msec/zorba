@@ -170,19 +170,22 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
     if (stream.bad())
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZorbaError::XQP0016_LOADER_IO_ERROR, "Input stream in bad state");
+                                ZorbaError::XQP0016_LOADER_IO_ERROR,
+                                "Input stream in bad state");
     }
 
     return stream.gcount();
   }
   catch (std::iostream::failure e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZorbaError::XQP0016_LOADER_IO_ERROR, e.what());
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                              ZorbaError::XQP0016_LOADER_IO_ERROR, e.what());
   }
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                              ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown exception");
+                              ZorbaError::XQP0016_LOADER_IO_ERROR,
+                              "Unknown exception");
   }
 
   return -1;
@@ -208,12 +211,16 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
     if (numChars < 0)
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                                ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown I/O error");
+                                ZorbaError::XQP0016_LOADER_IO_ERROR,
+                                "Unknown I/O error");
       abort();
       return NULL;
-    } else if (numChars == 0) {
+    }
+    else if (numChars == 0)
+    {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                                ZorbaError::XQP0016_LOADER_IO_ERROR, "No input data.");
+                                ZorbaError::XQP0016_LOADER_IO_ERROR,
+                                "No input data.");
       abort();
       return NULL;
     }
@@ -222,7 +229,8 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZorbaError::XQP0017_LOADER_PARSING_ERROR, 
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                                ZorbaError::XQP0017_LOADER_PARSING_ERROR, 
                                 "Failed to initialize parser");
       abort();
 			return NULL;
@@ -236,7 +244,8 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
     if (numChars < 0)
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown I/O error");
+                                ZorbaError::XQP0016_LOADER_IO_ERROR,
+                                "Unknown I/O error");
       xmlFreeParserCtxt(ctxt);
       abort();
       return NULL;
@@ -259,14 +268,16 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
   {
     if (theDocUri != NULL)
     {
-      ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager, ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+      ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
+                                     ZorbaError::XQP0017_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
     }
     else
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZorbaError::XQP0017_LOADER_PARSING_ERROR, "Not well formed XML");
+                                ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                "Not well formed XML");
     }
 
     abort();
@@ -289,18 +300,14 @@ void XmlLoader::startDocument(void * ctx)
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  xqpStringStore* docUri = loader.theDocUri;
-  xqpStringStore* baseUri = loader.theBaseUri;
+  xqpStringStore_t docUri = loader.theDocUri;
+  xqpStringStore_t baseUri = loader.theBaseUri;
   if (docUri == NULL)
   {
     std::ostringstream uristream;
     uristream << "zorba://internalDocumentURI-" << loader.theTree->getId();
 
     docUri = new xqpStringStore(uristream.str().c_str());
-  }
-  if (baseUri == NULL)
-  {
-    baseUri = new xqpStringStore("");
   }
 
   LoadedDocumentNode* docNode = new LoadedDocumentNode(baseUri, docUri);
@@ -404,10 +411,10 @@ void XmlLoader::startElement(
   Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
                                reinterpret_cast<const char*>(prefix),
                                reinterpret_cast<const char*>(lname));
-  Item* tname = store.theSchemaTypeNames[XS_UNTYPED].getp();
+  Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
 
   // Create the element node and push it to the node stack
-  LoadedElementNode* elemNode = new LoadedElementNode(qname.getp(),
+  LoadedElementNode* elemNode = new LoadedElementNode(qname,
                                                       tname,
                                                       numBindings,
                                                       numAttributes);
@@ -472,8 +479,8 @@ void XmlLoader::startElement(
       xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
 
       bool isId;
-      Item* typeName;
-      Item* typedValue;
+      Item_t typeName;
+      Item_t typedValue;
 
       if (prefix != NULL &&
           qname->getPrefix()->byteEqual("xml", 3) &&
@@ -481,20 +488,20 @@ void XmlLoader::startElement(
       {
         // TODO: xml:id normalization on the string value
         isId = true;
-        typeName = store.theSchemaTypeNames[XS_ID].getp();
+        typeName = store.theSchemaTypeNames[XS_ID];
         typedValue = new IDItemImpl(value);
       }
       else
       {
         isId = false;
-        typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp();
+        typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
         typedValue = new UntypedAtomicItemImpl(value);
       }
 
       AttributeNode* attrNode = new AttributeNode(qname, typeName, isId, false);
       attrNode->theParent = elemNode;
       attrNode->setId(loader.theTree, &loader.theOrdPath);
-      attrNode->theTypedValue = typedValue;
+      attrNode->theTypedValue.transfer(typedValue);
 
       attrNodes.set(attrNode, i, false);
 
@@ -612,7 +619,8 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  xqpStringStore* content = new xqpStringStore(reinterpret_cast<const char*>(ch), len);
+  const char* charp = reinterpret_cast<const char*>(ch);
+  xqpStringStore_t content(new xqpStringStore(charp, len));
 
   XmlNode* textNode = new TextNode(content);
 
@@ -626,9 +634,9 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
   SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
-  LOADER_TRACE1("Text Node = " << textNode << " content = " << content->c_str()
-                << std::endl << " ordpath = " << textNode->getOrdPath().show()
-                << std::endl);
+  LOADER_TRACE1("Text Node = " << textNode << " content = "
+                << std::string(charp, len) << std::endl << " ordpath = "
+                << textNode->getOrdPath().show() << std::endl);
 }
 
 
@@ -644,7 +652,8 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  xqpStringStore* content = new xqpStringStore(reinterpret_cast<const char*>(ch), len);
+  const char* charp = reinterpret_cast<const char*>(ch);
+  xqpStringStore_t content(new xqpStringStore(charp, len));
 
   XmlNode* textNode = new TextNode(content);
 
@@ -658,42 +667,9 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
  
-  LOADER_TRACE1("Text Node = " << textNode << " content = " << content->c_str()
-                << std::endl << " ordpath = " << textNode->getOrdPath().show()
-                << std::endl);
-}
-
-
-/*******************************************************************************
-  SAX2 callback when a comment has been detected by the parser.
-
-  ctx: the user data (XML parser context)
-  content:  the comment content
-********************************************************************************/
-void XmlLoader::comment(
-    void * ctx,
-    const xmlChar * content)
-{
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
-  ZORBA_LOADER_CHECK_ERROR(loader);
-
-  xqpStringStore* contentp = new xqpStringStore(reinterpret_cast<const char*>(content));
-
-  XmlNode* commentNode = new CommentNode(contentp);
-
-  if (loader.theNodeStack.empty())
-    loader.setRoot(commentNode);
-
-  loader.theNodeStack.push(commentNode);
-
-  commentNode->setId(loader.theTree, &loader.theOrdPath);
-  loader.theOrdPath.nextChild();
-
-  SYNC_CODE(commentNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
-  LOADER_TRACE1("Comment Node = " << commentNode
-                << std::endl << " ordpath = " << commentNode->getOrdPath().show()
-                << std::endl); 
+  LOADER_TRACE1("Text Node = " << textNode << " content = "
+                << std::string(charp, len) << std::endl << " ordpath = "
+                << textNode->getOrdPath().show() << std::endl);
 }
 
 
@@ -705,16 +681,16 @@ void XmlLoader::comment(
 ********************************************************************************/
 void XmlLoader::processingInstruction(
     void * ctx, 
-    const xmlChar * target, 
+    const xmlChar * targetp, 
     const xmlChar * data)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  xqpStringStore* datap = new xqpStringStore(reinterpret_cast<const char*>(data));
-  xqpStringStore* targetp = new xqpStringStore(reinterpret_cast<const char*>(target));
+  xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
+  xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
 
-  XmlNode* piNode = new PiNode(targetp, datap);
+  XmlNode* piNode = new PiNode(target, content);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(piNode);
@@ -726,9 +702,41 @@ void XmlLoader::processingInstruction(
 
   SYNC_CODE(piNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
-  LOADER_TRACE1("Pi Node = " << piNode
-                << " target : " << target << " data: " << data << std::endl
-                << " ordpath = " << piNode->getOrdPath().show() << std::endl);
+  LOADER_TRACE1("Pi Node = " << piNode << " target = "
+                << targetp << std::endl << " ordpath = "
+                << piNode->getOrdPath().show() << std::endl);
+}
+
+
+/*******************************************************************************
+  SAX2 callback when a comment has been detected by the parser.
+
+  ctx: the user data (XML parser context)
+  content:  the comment content
+********************************************************************************/
+void XmlLoader::comment(void * ctx, const xmlChar * ch)
+{
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
+
+  const char* charp = reinterpret_cast<const char*>(ch);
+  xqpStringStore_t content(new xqpStringStore(charp));
+
+  XmlNode* commentNode = new CommentNode(content);
+
+  if (loader.theNodeStack.empty())
+    loader.setRoot(commentNode);
+
+  loader.theNodeStack.push(commentNode);
+
+  commentNode->setId(loader.theTree, &loader.theOrdPath);
+  loader.theOrdPath.nextChild();
+
+  SYNC_CODE(commentNode->theRCLockPtr = &loader.theTree->getRCLock();)
+
+  LOADER_TRACE1("Comment Node = " << commentNode << " content = "
+                << charp << std::endl << " ordpath = "
+                << commentNode->getOrdPath().show() << std::endl);
 }
 
 
@@ -747,7 +755,8 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager, ZorbaError::XQP0017_LOADER_PARSING_ERROR, buf);
+  ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
+                            ZorbaError::XQP0017_LOADER_PARSING_ERROR, buf);
 }
 
 
