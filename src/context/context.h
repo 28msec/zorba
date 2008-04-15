@@ -49,22 +49,24 @@ class context : public SimpleRCObject
 {
 protected:
   typedef union { 
-    expr *exprValue;
-    function *functionValue;
-    int intValue;
-    bool boolValue;
-		const XQType *typeValue; ///do manual ref counting on this
+    expr             * exprValue;
+    function         * functionValue;
+    int                intValue;
+    bool               boolValue;
+		const XQType     * typeValue; ///do manual ref counting on this
     StatelessExternalFunction* stateless_function;
   } ctx_value_t;
+
   typedef xqp_string (* str_param_t) ();
   
 protected:
-	context *parent;
-	hashmap<ctx_value_t> keymap;
-	hashmap<xqp_string> str_keymap;
+	context              * parent;
+	hashmap<ctx_value_t>   keymap;
+	hashmap<xqp_string>    str_keymap;
 
   bool lookup_once (xqp_string key, xqp_string &val) const
   { return str_keymap.get (key, val); }
+
   bool lookup_once (xqp_string key, ctx_value_t &val) const
   { return keymap.get (key, val); }
 
@@ -86,15 +88,18 @@ protected:
     ctx_value_t val;
     return context_value (key, val) ? val.exprValue : NULL;
   }
+
   // unlike other lookups, failure does not raise an assertion
   function *lookup_func (xqp_string key) const {
     ctx_value_t val;
     return (context_value (key, val)) ? val.functionValue : NULL;
   }
+
   void bind_expr (xqp_string key, expr *e) {
     ctx_value_t v = { e };
     keymap.put (key, v);
   }
+
   void bind_func (xqp_string key, function *f) {
     ctx_value_t v;
     if (lookup_func (key) != NULL)
@@ -111,6 +116,7 @@ protected:
     keymap.put (key, v);
     return true;
   }
+
   void bind_str (xqp_string key, xqp_string v, enum ZorbaError::ErrorCode err = ZorbaError::XQP0019_INTERNAL_ERROR) {
     xqp_string old;
     if (err != ZorbaError::MAX_ZORBA_ERROR_CODE && lookup_once (key, old))

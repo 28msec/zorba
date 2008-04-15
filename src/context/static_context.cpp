@@ -64,82 +64,93 @@ namespace zorba {
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-  static_context::static_context()
-  : context(NULL)
-  { }
+static_context::static_context()
+  :
+  context(NULL)
+{
+}
+
   
-  static_context::static_context (static_context *_parent)
-  : context (_parent) {}
+static_context::static_context (static_context *_parent)
+  :
+  context (_parent)
+{
+}
 
-	static_context::~static_context()
+
+static_context::~static_context()
+{
+  //debug
+  //test_obj.use_me();
+  //end debug
+
+  ///free the pointers from ctx_value_t from keymap
+  checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
+  const char		*keybuff;
+  const ctx_value_t *val;
+  
+  //keybuff[sizeof(keybuff)-1] = 0;
+  for(it = keymap.begin();it!=keymap.end();it++)
 	{
-		//debug
-		//test_obj.use_me();
-		//end debug
-
-		///free the pointers from ctx_value_t from keymap
-		checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
-		const char		*keybuff;
-		const ctx_value_t *val;
-
-		//keybuff[sizeof(keybuff)-1] = 0;
-		for(it = keymap.begin();it!=keymap.end();it++)
+    ///it is an entry
+    //keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
+    keybuff = (*it).key.c_str();
+    if(!strncmp(keybuff, "type:", 5))
 		{
-			///it is an entry
-			//keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
-			keybuff = (*it).key.c_str();
-			if(!strncmp(keybuff, "type:", 5))
-			{
-				val = &(*it).val;
-				const_cast<XQType *> (val->typeValue)->removeReference(val->typeValue->getSharedRefCounter()
-                                        SYNC_PARAM2(val->typeValue->getRCLock()));
-			}
-      else if (!strncmp(keybuff, "fn:", 3))
-      {
-          val = &(*it).val;
-          delete val->functionValue;
-      }
-		}
-	}
+      val = &(*it).val;
+      const_cast<XQType *> (val->typeValue)->removeReference(val->typeValue->getSharedRefCounter()
+                                                             SYNC_PARAM2(val->typeValue->getRCLock()));
+    }
+    else if (!strncmp(keybuff, "fn:", 3))
+    {
+      val = &(*it).val;
+      delete val->functionValue;
+    }
+  }
+}
 
-  DECL_ENUM_PARAM (static_context, construction_mode)
-  DECL_ENUM_PARAM (static_context, order_empty_mode)
-  DECL_ENUM_PARAM (static_context, boundary_space_mode)
-  DECL_ENUM_PARAM (static_context, inherit_mode)
-  DECL_ENUM_PARAM (static_context, preserve_mode)
-  DECL_ENUM_PARAM (static_context, xpath1_0compatib_mode)
-	DECL_ENUM_PARAM (static_context, ordering_mode)
+
+DECL_ENUM_PARAM (static_context, construction_mode)
+DECL_ENUM_PARAM (static_context, order_empty_mode)
+DECL_ENUM_PARAM (static_context, boundary_space_mode)
+DECL_ENUM_PARAM (static_context, inherit_mode)
+DECL_ENUM_PARAM (static_context, preserve_mode)
+DECL_ENUM_PARAM (static_context, xpath1_0compatib_mode)
+DECL_ENUM_PARAM (static_context, ordering_mode)
 
 //  DECL_STR_PARAM (static_context, baseuri)
 //  DECL_STR_PARAM (static_context, default_collation)
-  DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
-  DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
-  DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
-  DECL_STR_PARAM (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE)
-  DECL_STR_PARAM (static_context, entity_file_uri, MAX_ZORBA_ERROR_CODE)
+DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
+DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
+DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
+DECL_STR_PARAM (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE)
+DECL_STR_PARAM (static_context, entity_file_uri, MAX_ZORBA_ERROR_CODE)
 
-  TypeManager *static_context::get_typemanager ()
-  {
-    TypeManager *tm = typemgr.get();
-    if (tm != NULL) {
-      return tm;
-    }
-    return dynamic_cast<static_context *>(parent)->get_typemanager();
+
+TypeManager *static_context::get_typemanager ()
+{
+  TypeManager *tm = typemgr.get();
+  if (tm != NULL) {
+    return tm;
   }
-
-  void static_context::set_typemanager(std::auto_ptr<TypeManager> _typemgr)
-  {
-    typemgr = _typemgr;
-  }
+  return dynamic_cast<static_context *>(parent)->get_typemanager();
+}
 
 
-  pair<xqp_string, xqp_string> parse_qname (xqp_string qname)
-  {
-		std::string::size_type n = static_cast<std::string> (qname).find (':');
-    return (n == string::npos)
-      ? pair<xqp_string, xqp_string> ("", qname)
-      : pair<xqp_string, xqp_string> (qname.substr (0, n), qname.substr (n+1));
-  }
+void static_context::set_typemanager(std::auto_ptr<TypeManager> _typemgr)
+{
+  typemgr = _typemgr;
+}
+
+
+pair<xqp_string, xqp_string> parse_qname (xqp_string qname)
+{
+  std::string::size_type n = static_cast<std::string> (qname).find (':');
+  return (n == string::npos)
+    ? pair<xqp_string, xqp_string> ("", qname)
+    : pair<xqp_string, xqp_string> (qname.substr (0, n), qname.substr (n+1));
+}
+  
 
 xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
 {
@@ -165,6 +176,7 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
   pair<xqp_string, xqp_string> rqname = parse_qname (qname);
   return lookup_qname (default_ns, rqname.first, rqname.second);
 }
+
 
   xqp_string static_context::qname_internal_key (const store::Item *qname) const
   {
