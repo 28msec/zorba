@@ -348,10 +348,12 @@ main(int argc, char** argv)
   // set the variables in the dynamic context
   zorba::DynamicContext_t lDynCtxt = lQuery->getDynamicContext();
 
-  // set the current date time such that tests that use fn:current-time behave deterministically
-  zorba::Item lDateTimeItem = engine->getItemFactory()->createDateTime(2008, 03, 30, 16, 05, 42, 0); 
+  if (lSpec.hasDateSet()) {
+    // set the current date time such that tests that use fn:current-time behave deterministically
+    zorba::Item lDateTimeItem = engine->getItemFactory()->createDateTime(lSpec.getDate());
 
-  lDynCtxt->setCurrentDateTime(lDateTimeItem);
+    lDynCtxt->setCurrentDateTime(lDateTimeItem);
+  }
 
   set_vars(&lSpec, lDynCtxt);
 

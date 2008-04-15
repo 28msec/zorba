@@ -27,6 +27,7 @@ private:
   std::string theVarName, theVarValue;
   std::vector<Variable> theVariables;
   std::vector<std::string> theErrors;
+  std::string theDate;
 
   void setInline(iterator_t, iterator_t) {
     theInline = true;
@@ -50,6 +51,11 @@ private:
     theErrors.push_back(s);
   }
 
+  void setDate(iterator_t str, iterator_t end) {
+    std::string s(str, end);
+    theDate = s;
+  }
+
 public:
   std::vector<Variable>::const_iterator
   variablesBegin() { return theVariables.begin(); }
@@ -66,6 +72,15 @@ public:
 
   size_t
   errorsSize() { return theErrors.size(); }
+
+  bool hasDateSet() {
+    return theDate.size() != 0;
+  }
+
+  std::string getDate() {
+    return theDate;
+  }
+
 
   bool
   parseFile(std::string str)
@@ -96,7 +111,13 @@ public:
       >> (*boost::spirit::print_p)[bind(&Specification::addError, this, _1, _2)] 
       >> !boost::spirit::eol_p;
 
-    rule_t defs = *( argument | error );
+    rule_t date
+      =  boost::spirit::str_p("Date:") 
+      >> !boost::spirit::blank_p
+      >> (*boost::spirit::print_p)[bind(&Specification::setDate, this, _1, _2)] 
+      >> !boost::spirit::eol_p;
+
+    rule_t defs = *( argument | error | date );
 
     iterator_t first(str.c_str());
     if (!first)
