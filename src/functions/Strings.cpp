@@ -13,6 +13,8 @@
 #include "system/globalenv.h"
 #include "functions/Strings.h"
 #include "runtime/strings/StringsImpl.h"
+#include "errors/error_manager.h"
+#include "zorbatypes/Unicode_util.h"
 
 using namespace std;
 namespace zorba {
@@ -127,7 +129,10 @@ fn_concat::fn_concat(
 PlanIter_t
 fn_concat::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-    return new ConcatStrIterator(loc,argv);
+  unsigned sz = argv.size ();
+  if (sz < 2)
+    ZORBA_ERROR_PARAM (ZorbaError::XPST0017, "fn_concat", to_string (sz));
+  return new ConcatStrIterator(loc,argv);
 }
 
 
