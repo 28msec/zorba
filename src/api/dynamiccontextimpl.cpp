@@ -109,6 +109,10 @@ namespace zorba {
   {
     ZORBA_TRY
       store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
+    
+      if (lItem == NULL)
+        ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT, "Invalid item given");
+
       xqtref_t lItemType = theStaticContext->get_typemanager()->
                            create_named_type(lItem->getType(),
                                              TypeConstants::QUANT_ONE);
