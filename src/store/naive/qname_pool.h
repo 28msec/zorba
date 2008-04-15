@@ -42,9 +42,9 @@ protected:
   public:
     static bool equal(const QNameItemImpl* t1, const QNameItemImpl* t2)
     {
-      return (t1->theLocal->byteEqual(*t2->getLocalName()) &&
-              t1->theNamespace->byteEqual(*t2->getNamespace()) &&
-              t1->thePrefix->byteEqual(*t2->getPrefix()));
+      return (t1->getLocalName()->byteEqual(*t2->getLocalName()) &&
+              t1->getNamespace()->byteEqual(*t2->getNamespace()) &&
+              t1->getPrefix()->byteEqual(*t2->getPrefix()));
     }
 
     static uint32_t hash(const QNameItemImpl* t)
