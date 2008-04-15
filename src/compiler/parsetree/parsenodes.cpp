@@ -1600,6 +1600,7 @@ void QVarInDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (val_h);
+  ACCEPT (typedecl_h);
   END_VISITOR ();
 }
 

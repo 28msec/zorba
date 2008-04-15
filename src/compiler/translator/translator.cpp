@@ -1940,7 +1940,10 @@ void end_visit(const QVarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
-  bind_var_and_push (v.get_location (), v.get_name (), var_expr::for_var);
+  xqtref_t type;
+  if (v.get_typedecl () != NULL)
+    type = pop_tstack ();
+  bind_var_and_push (v.get_location (), v.get_name (), var_expr::for_var, type);
 }
 
 
