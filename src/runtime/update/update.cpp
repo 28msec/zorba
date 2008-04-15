@@ -13,6 +13,8 @@
 #include "store/api/store.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/temp_seq.h"
+#include "store/api/copymode.h"
+#include "store/api/item_iterator.h"
 
 namespace zorba 
 {
@@ -490,6 +492,7 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
   CopyClause::const_iter_t lIter, lEnd;
   std::vector<ref_iter_t>::const_iterator lIter2, lEnd2;
   store::Item_t lItem;
+  store::CopyMode lCopyMode;
 
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
@@ -499,13 +502,22 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
     lEnd = theCopyClauses.end();
     for(; lIter != lEnd; ++lIter)
     {
-      store::Iterator_t lIterWrapper = new PlanIteratorWrapper(lIter->theInput, aPlanState);
-      store::TempSeq_t lTmpSeq = GENV_STORE.createTempSeq(lIterWrapper, true, true); 
+      store::Item_t lCopyItem = consumeNext(lIter->theInput, aPlanState);
+      if (lCopyItem == 0 || !lCopyItem->isNode())
+      {
+        ZORBA_ERROR_LOC(ZorbaError::XUTY0013, loc);
+      }
+      lCopyItem = lCopyItem->copyXmlTree(lCopyMode);
+      if (consumeNext(lIter->theInput, aPlanState))
+      {
+        ZORBA_ERROR_LOC(ZorbaError::XUTY0013, loc);
+      }
+
       lIter2 = lIter->theCopyVars.begin();
       lEnd2 = lIter->theCopyVars.end();
       for(;lIter2!=lEnd2;++lIter2)
       {
-        store::Iterator_t lSeqIter = lTmpSeq->getIterator();
+        store::Iterator_t lSeqIter = new store::ItemIterator(lCopyItem);
         lSeqIter->open();
         (*lIter2)->bind(lSeqIter, aPlanState);
       }

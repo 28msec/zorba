@@ -1652,16 +1652,21 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   ParseConstants::function_type_t lFuncType = v.get_type();
   switch(lFuncType) {
-    case ParseConstants::fn_read:
     case ParseConstants::fn_update:
+      if (v.get_return_type() != 0)
+        ZORBA_ERROR_LOC(ZorbaError::XUST0028, v.get_location());
+    case ParseConstants::fn_read:
       {
         expr_t body = pop_nodestack ();
-        if (
-           (lFuncType == ParseConstants::fn_read && body->isUpdating())
-        || (lFuncType == ParseConstants::fn_update && body->getUpdateType() == SIMPLE_EXPR)
-        )
+        if (lFuncType == ParseConstants::fn_read)
         {
-          ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+          if (body->isUpdating())
+            ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+        } else if (lFuncType == ParseConstants::fn_update)
+        {
+          if (body->getUpdateType() == SIMPLE_EXPR)
+            ZORBA_ERROR_LOC(ZorbaError::XUST0002, v.get_location());
+
         }
         if (v.get_return_type () != NULL) {
           xqtref_t rt = pop_tstack ();
@@ -1714,6 +1719,9 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         udf->set_params(params);
       }
       break;
+    case ParseConstants::fn_extern_update:
+      if (v.get_return_type() != 0)
+        ZORBA_ERROR_LOC(ZorbaError::XUST0028, v.get_location());
     default:
       break;
   }
