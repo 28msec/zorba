@@ -149,14 +149,12 @@ namespace zorba {
 
   RULE_REWRITE_PRE(FoldConst) {
     xqtref_t rtype = node->return_type (rCtx.getStaticContext ());
-    TypeConstants::quantifier_t rquant = TypeOps::quantifier (*rtype);
 
     if (standalone_expr (node) &&
         ! already_folded (node, rCtx) && get_varset_annotation (node, AnnotationKey::FREE_VARS).empty ()
         && node->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VAL
-        && (rquant == TypeConstants::QUANT_ONE || rquant == TypeConstants::QUANT_QUESTION
-            || TypeOps::is_equal (*rtype, *GENV_TYPESYSTEM.EMPTY_TYPE))
-        && (fold_expensive_ops || 
+        && TypeOps::type_max_cnt (*rtype) <= 1
+        && (fold_expensive_ops ||
             node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VAL))
     {
       vector<store::Item_t> result;
@@ -240,6 +238,13 @@ namespace zorba {
       return partial_eval_logic (fo, false);
     else if (f == LOOKUP_OP2 ("value-equal") || f == LOOKUP_OP2 ("equal"))
       return partial_eval_eq (rCtx, *fo);
+    else if (f == LOOKUP_FN ("fn", "count", 1)) {
+      int type_cnt = TypeOps::type_cnt (*(*fo) [0]->return_type (rCtx.getStaticContext()));
+      if (type_cnt != -1)
+        return new const_expr (fo->get_loc (), Integer::parseInt (type_cnt));
+      else
+        return NULL;
+    }
     return NULL;
   }
 

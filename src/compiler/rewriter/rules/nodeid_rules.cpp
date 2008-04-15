@@ -159,13 +159,14 @@ static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
     if (TypeOps::is_equal (*target, *GENV_TYPESYSTEM.EMPTY_TYPE)) {
       TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
       TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VAL);
+      return;
     }
 
     bool is_cast = dynamic_cast<cast_base_expr *> (input.getp ()) != NULL;
 
     TypeConstants::quantifier_t q = TypeOps::quantifier (*target);
 
-    if (! is_cast || q == TypeConstants::QUANT_ONE) {
+    if (! is_cast || q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION) {
       TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
     } else if (is_cast) {
       TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES,

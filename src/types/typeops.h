@@ -122,14 +122,19 @@ public:
     static type_ident_ref_t get_type_identifier(const XQType& type);
 
     /*
-     * Returns 0, 1 or 2 (2 meaning "many")
+     * @return 0, 1 or 2 (2 meaning "many")
      */
     static int type_max_cnt (const XQType& type);
 
     /*
-     * Returns 0 or 1
+     * @return 0 or 1
      */
     static int type_min_cnt (const XQType& type);
+
+    /*
+     * @return 0, 1 or -1 (-1 means "not certain")
+     */
+    static int type_cnt (const XQType& type);
 
     static const int QUANT_MAX_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];
     static const int QUANT_MIN_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];

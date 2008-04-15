@@ -527,6 +527,15 @@ int TypeOps::type_min_cnt (const XQType& type) {
     : QUANT_MIN_CNT [quantifier (type)];
 }
 
+int TypeOps::type_cnt (const XQType& type) {
+  if (is_equal (type, *GENV_TYPESYSTEM.EMPTY_TYPE))
+    return 0;
+  TypeConstants::quantifier_t q = quantifier (type);
+  if (QUANT_MIN_CNT [q] == QUANT_MAX_CNT [q])
+    return QUANT_MIN_CNT [q];
+  return -1;
+}
+
 const int TypeOps::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
 const int TypeOps::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
 
