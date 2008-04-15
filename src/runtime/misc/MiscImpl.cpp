@@ -16,6 +16,7 @@
 #include "context/static_context.h"
 #include "store/api/store.h"
 #include "system/globalenv.h"
+#include "zorbatypes/URI.h"
 
 namespace zorba {
 
@@ -59,6 +60,7 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
   xqp_string strRelative;
   xqp_string strBase;
   xqp_string strResult;
+  URI::error_t err;
   
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -69,7 +71,17 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
     strRelative = item->getStringValue().getp();
     item = consumeNext(theChildren[1].getp(), planState );
     strBase = item->getStringValue().getp();
-    strResult = static_context::make_absolute_uri(strRelative, strBase);
+    err = URI::resolve_relative (strBase, strRelative, strResult);
+    switch (err) {
+    case URI::INVALID_URI:
+      ZORBA_ERROR (ZorbaError::FORG0002);
+      break;
+    case URI::RESOLUTION_ERROR:
+      ZORBA_ERROR (ZorbaError::FORG0009);
+      break;
+    case URI::MAX_ERROR_CODE:
+      break;
+    }
     STACK_PUSH(GENV_ITEMFACTORY->createString(strResult.getStore()), state);
   }
 

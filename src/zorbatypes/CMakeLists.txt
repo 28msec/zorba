@@ -6,6 +6,7 @@ SET(ZORBATYPES_SRCS
   binary.cpp
   utf8/xqpString.cpp
   xqpString_ascii.cpp
+  URI.cpp
   utf8/Unicode_util.cpp
   collation_manager.cpp)
   
