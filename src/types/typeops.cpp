@@ -216,7 +216,7 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
 
     case XQType::USER_DEFINED_KIND:
     {
-      const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+      const UserDefinedXQType& udSubType = dynamic_cast<const UserDefinedXQType&>(subtype);
       return udSubType.isSubTypeOf(supertype);
     }
   }
