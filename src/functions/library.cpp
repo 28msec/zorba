@@ -151,10 +151,8 @@ DECL(fn_collection_1,
 
 
 //begin functions on AnyURI
-DECL(fn_resolve_uri,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "resolve-uri"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+// resolve-uri / 1 handled by translator
 
  DECL(fn_resolve_uri,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "resolve-uri"),

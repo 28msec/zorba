@@ -220,14 +220,16 @@ protected:
   xqp_string current_absolute_baseuri() const;
   xqp_string encapsulating_entity_baseuri() const;
   xqp_string entity_file_uri() const;
-	xqp_string	make_absolute_uri(xqp_string uri, xqp_string base_uri);
-	void				compute_current_absolute_baseuri();
+	void compute_current_absolute_baseuri();
 public:
   xqp_string baseuri() const;
-	void set_baseuri(xqp_string, bool from_prolog = true);
-	void set_current_absolute_baseuri(xqp_string);
-	void set_encapsulating_entity_baseuri(xqp_string);
-	void set_entity_file_uri(xqp_string);
+  void set_baseuri(xqp_string, bool from_prolog = true);
+  void set_current_absolute_baseuri(xqp_string);
+  void set_encapsulating_entity_baseuri(xqp_string);
+  void set_entity_file_uri(xqp_string);
+
+  // TODO: move this method to URI class in zorbatypes
+  static xqp_string make_absolute_uri(xqp_string uri, xqp_string base_uri);
 
   xqp_string resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri = xqp_string() );
 

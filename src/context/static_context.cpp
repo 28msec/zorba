@@ -581,7 +581,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
 	return abs_uri;
 }
 
-xqp_string		static_context::resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri )
+xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_base_uri)
 {
 	///check if it is an absolute URI
 	if(((std::string)uri).find("://") != std::string::npos)
@@ -590,11 +590,10 @@ xqp_string		static_context::resolve_relative_uri( xqp_string uri, xqp_string abs
   if(abs_base_uri.empty())
 	  abs_base_uri = current_absolute_baseuri();
 
-	if(abs_base_uri.empty())
+	if(abs_base_uri.empty()) {
 		compute_current_absolute_baseuri();
-
-	///try again
-	abs_base_uri = current_absolute_baseuri();
+    abs_base_uri = current_absolute_baseuri();
+  }
 
 	if(abs_base_uri.empty())
 	{
