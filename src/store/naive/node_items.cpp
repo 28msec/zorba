@@ -1,6 +1,8 @@
 
 #include <stack>
 
+#include <zorba/exception.h>
+
 #include "system/globalenv.h"
 #include "compiler/parser/query_loc.h"
 #include "errors/error_manager.h"
@@ -1106,19 +1108,37 @@ const NsBindings& ElementNode::getLocalBindings() const
 
 
 /*******************************************************************************
-
+  Add the ns binding that is implied by the given 
 ********************************************************************************/
-void ElementNode::addBindingForQName(const Item* qname)
+void ElementNode::addBindingForQName(Item* qname)
 {
   xqpStringStore* prefix = qname->getPrefix();
   xqpStringStore* ns = qname->getNamespace();
+
+  // If ns is empty, then prefix must be empty
+  ZORBA_FATAL(!ns->empty() || prefix->empty(),
+              "prefix = " << prefix->str() << "ns = " << ns->str());
 
   if (prefix->str() != "xml")
   {
     xqpStringStore* ns2 = findBinding(prefix);
 
-    if (ns2 == NULL && !ns->empty())
-      addLocalBinding(prefix, ns);
+    if (ns2 == NULL)
+    {
+      if (!ns->empty())
+        addLocalBinding(prefix, ns);
+    }
+    else if (!ns2->byteEqual(*ns))
+    {
+      std::auto_ptr<xqpStringStore> prefix(new xqpStringStore("XXX"));
+      while (findBinding(prefix.get()) != NULL)
+        prefix->str() += "X";
+
+      QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(qname);
+      qn->thePrefix = prefix.get();
+      addLocalBinding(prefix.get(), ns);
+      prefix.release();
+    }
   }
 }
 
@@ -1138,6 +1158,27 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
   theNsContext->addBinding(prefix, ns);
 
   theFlags |= XmlNode::HaveLocalBindings;
+}
+
+
+/*******************************************************************************
+  Check if the ns binding implied by the given qname conflicts with the current
+  ns bindings of "this" node.
+********************************************************************************/
+void ElementNode::checkNamespaceConflict(
+    const Item*           qname,
+    ZorbaError::ErrorCode ecode) const
+{
+  xqpStringStore* ns = findBinding(qname->getPrefix());
+
+  if (ns != NULL && ns->byteEqual(*qname->getNamespace()))
+  {
+    ZORBA_ERROR_DESC_OSS(ecode,
+                         "The implied namespace binding of " << qname->show()
+                         << " conflicts with namespace binding ["
+                         << qname->getPrefix()->str() << ", " 
+                         << qname->getNamespace()->str() << "]");
+  }
 }
 
 
@@ -1210,7 +1251,22 @@ XmlNode* ElementNode::copy(
         }
 
         if (copymode.theNsInherit && rootParent)
+        {
+          // If the copynode does not belong to any namespace and the parent
+          // has a default ns binding, then undeclare this default binding
+          xqpStringStore* prefix = theName->getPrefix();
+          if (prefix->empty() &&
+              theName->getNamespace()->empty() &&
+              rootParent->getNodeKind() == StoreConsts::elementNode)
+          {
+            xqpStringStore* ns = reinterpret_cast<ElementNode*>(rootParent)->
+                                 findBinding(prefix);
+            if (ns != NULL)
+              copyNode->addLocalBinding(prefix, theName->getNamespace());
+          }
+
           copyNode->setNsContext(rootParent->getNsContext());
+        }
       }
       else if (haveLocalBindings())
       {
@@ -1579,12 +1635,11 @@ void ConstrElementNode::constructSubtree(
       ZORBA_FATAL(item->isNode(), "");
       ZORBA_FATAL(item->getNodeKind() == StoreConsts::attributeNode, "");
 
-      addAttribute(BASE_NODE(item), copy, copymode);
+      AttributeNode* attr = ATTR_NODE(item);
 
-      Item* qname = item->getNodeName();
-      if (!haveBaseUri &&
-          qname->getPrefix()->byteEqual("xml", 3) &&
-          qname->getLocalName()->byteEqual("base", 4))
+      addAttribute(attr, copy, copymode);
+
+      if (!haveBaseUri && attr->isBaseUri())
         haveBaseUri = true;
 
       item = attributesIte->next();
@@ -1599,21 +1654,21 @@ void ConstrElementNode::constructSubtree(
       ZORBA_FATAL(item->isNode(), "");
       ZORBA_FATAL(item->getNodeKind() != StoreConsts::documentNode, "");
 
-      XmlNode* cnode = BASE_NODE(item);
-
-      if (cnode->getNodeKind() == StoreConsts::attributeNode)
+      if (item->getNodeKind() == StoreConsts::attributeNode)
       {
-        addAttribute(cnode, copy, copymode);
+        AttributeNode* attr = ATTR_NODE(item);
 
-        Item* qname = item->getNodeName();
-        if (!haveBaseUri &&
-            qname->getPrefix()->byteEqual("xml", 3) &&
-            qname->getLocalName()->byteEqual("base", 4))
+        addAttribute(attr, copy, copymode);
+
+        if (!haveBaseUri && attr->isBaseUri())
           haveBaseUri = true;
       }
-      else if (cnode->theParent != this)
+      else
       {
-        addChild(cnode, copy, copymode);
+        XmlNode* cnode = BASE_NODE(item);
+
+        if (cnode->theParent != this)
+          addChild(cnode, copy, copymode);
       }
 
       item = childrenIte->next();
@@ -1634,25 +1689,33 @@ void ConstrElementNode::constructSubtree(
 
 
 void ConstrElementNode::addAttribute(
-    XmlNode*        cnode,
+    AttributeNode*  attr,
     bool            copy,
     const CopyMode& copymode)
 {
-  if (cnode->theParent != this)
+  if (attr->theParent != this)
   {
-    checkUniqueAttr(cnode->getNodeName());
+    checkUniqueAttr(attr->theName);
 
     if (copy)
     {
-      cnode = cnode->copy(this, this, numAttributes(), copymode);
+      attr->copy(this, this, numAttributes(), copymode);
     }
     else
     {
-      theAttributes.push_back(cnode, true);
+      try
+      {
+        checkNamespaceConflict(attr->theName, ZorbaError::XQDY0025);
+      }
+      catch(ZorbaException& e)
+      {
+        attr->copy(this, this, numAttributes(), copymode);
+        return;
+      }
+
+      theAttributes.push_back(attr, true);
     }
   }
-
-  addBindingForQName(cnode->getNodeName());
 }
 
 
@@ -1815,6 +1878,8 @@ AttributeNode::AttributeNode(
       theName->getLocalName()->byteEqual("base", 4))
     theFlags |= XmlNode::IsBaseUri;
 
+  reinterpret_cast<ElementNode*>(parent)->addBindingForQName(theName);
+
   NODE_TRACE1("Constructed attribute node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
@@ -1850,6 +1915,8 @@ AttributeNode::AttributeNode(
   if (theName->getPrefix()->byteEqual("xml", 3) &&
       theName->getLocalName()->byteEqual("base", 4))
     theFlags |= XmlNode::IsBaseUri;
+
+  reinterpret_cast<ElementNode*>(parent)->addBindingForQName(theName);
 
   NODE_TRACE1("Constructed attribute node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()

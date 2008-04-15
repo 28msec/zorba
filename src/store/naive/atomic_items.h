@@ -55,9 +55,9 @@ class QNameItemImpl : public AtomicItem
 {
   friend class QNamePool;
   friend class QNamePoolHashSet;
+  friend class ElementNode;
 
 private:
-public:
   xqpStringStore_t  theNamespace;
   xqpStringStore_t  thePrefix;
   xqpStringStore_t  theLocal;

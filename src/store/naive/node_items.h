@@ -441,8 +441,8 @@ public:
   void setNsContext(NsBindingsContext* ctx);
   xqpStringStore* findBinding(const xqpStringStore* prefix) const;
   const NsBindings& getLocalBindings() const;
-  void addBindingForQName(const Item* qname);
   void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
+  void addBindingForQName(Item* qname);
 
   void checkNamespaceConflict(
         const Item*           qname,
@@ -588,7 +588,7 @@ protected:
   xqpStringStore_t getBaseURIInternal(bool& local) const;
 
   void addAttribute(
-        XmlNode*        cnode,
+        AttributeNode*  cnode,
         bool            copy,
         const CopyMode& copymode);
 

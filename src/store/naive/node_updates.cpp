@@ -555,25 +555,5 @@ void PiNode::rename(xqpStringStore_t& newName, xqpStringStore_t& oldName)
 }
 
 
-/*******************************************************************************
-  Check if the ns binding implied by the given qname conflicts with the current
-  ns bindings of "this" node.
-********************************************************************************/
-void ElementNode::checkNamespaceConflict(
-    const Item*           qname,
-    ZorbaError::ErrorCode ecode) const
-{
-  xqpStringStore* ns = findBinding(qname->getPrefix());
-
-  if (ns != NULL && ns->byteEqual(*qname->getNamespace()))
-  {
-    ZORBA_ERROR_DESC_OSS(ecode,
-                         "The implied namespace binding of " << qname->show()
-                         << " conflicts with namespace binding ["
-                         << qname->getPrefix()->str() << ", " 
-                         << qname->getNamespace()->str() << "]");
-  }
-}
-
 }
 }
