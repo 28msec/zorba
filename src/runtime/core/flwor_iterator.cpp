@@ -390,7 +390,6 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
             }
           }
 
-          STACK_PUSH ( NULL, flworState );
           goto stop;
         }
       }
@@ -413,6 +412,7 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
 
           curItem = consumeNext(returnClause, planState);
         }
+        returnClause->reset(planState);
       }
       else if ( !doOrderBy )
       {
@@ -433,7 +433,6 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
   }
 
  stop:
-  STACK_PUSH ( NULL, flworState );
   STACK_END (flworState);
 }
 

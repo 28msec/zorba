@@ -233,7 +233,6 @@ DeleteIterator::nextImpl(PlanState& aPlanState) const
 
     target = consumeNext(theChild, aPlanState);
   }
-
   STACK_PUSH(pul.release(), state);
   STACK_END(state);
 }
