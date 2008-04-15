@@ -56,8 +56,9 @@ namespace zorba {
        *
        */
       virtual XQuery_t
-      createQuery() = 0;
+      createQuery(ErrorHandler* aErrorHandler = 0) = 0;
       
+
       /** \brief Creates and compiles an XQuery object.
        * 
        */
@@ -134,4 +135,11 @@ namespace zorba {
 
   }; /* class Zorba */
 } /* namespace xqp */
+
+/** \example simple.cpp
+ *  This is a simple example that demonstrate how to use the Zorba XQuery Engine to
+ *  compile and execute queries.
+ *
+ */
+
 #endif /* XQP_ZORBA_API_H */

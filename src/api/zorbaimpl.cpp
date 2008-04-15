@@ -52,9 +52,11 @@ namespace zorba {
   }
 
   XQuery_t
-  ZorbaImpl::createQuery()
+  ZorbaImpl::createQuery(ErrorHandler* aErrorHandler)
   {
     XQuery_t lXQuery(new XQueryImpl());
+    if (aErrorHandler != 0)
+      lXQuery->registerErrorHandler(aErrorHandler);
     return lXQuery;
   }
 

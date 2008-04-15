@@ -251,6 +251,7 @@ namespace zorba {
   { 
     ZORBA_TRY
       checkClosed();
+      checkCompiled();
       return thePlan->isUpdating();
     ZORBA_CATCH
     return false;

@@ -36,7 +36,7 @@ namespace zorba {
       virtual ~ZorbaImpl();
 
       XQuery_t
-      createQuery();
+      createQuery(ErrorHandler* aErrorHandler = 0);
 
       XQuery_t
       compileQuery(const String& aQuery, ErrorHandler* aErrorHandler = 0);
