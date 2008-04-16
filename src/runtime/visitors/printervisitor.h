@@ -543,7 +543,7 @@ public:
   PRINTER_VISITOR(ReplaceIterator);
   PRINTER_VISITOR(RenameIterator);
   PRINTER_VISITOR(TransformIterator);
-  PRINTER_VISITOR(FnDeepEqualIterator_3);
+  PRINTER_VISITOR(FnDeepEqualIterator);
 };
 
 } /* namespace zorba */

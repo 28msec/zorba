@@ -1901,7 +1901,7 @@ void PrinterVisitor::endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ReplaceIterator);
   PRINTER_VISITOR_DEFINITION(RenameIterator);
   PRINTER_VISITOR_DEFINITION(TransformIterator);
-  PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator_3);
+  PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator);
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */
 

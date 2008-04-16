@@ -591,15 +591,14 @@ DECL(op_sort_distinct_nodes_descending,
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
   
-// hidden - not yet complete
 DECL(fn_deep_equal,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":deep-equal"),
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "deep-equal"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_deep_equal,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":deep-equal"),
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "deep-equal"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.STRING_TYPE_ONE,

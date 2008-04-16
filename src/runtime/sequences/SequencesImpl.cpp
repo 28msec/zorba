@@ -1,7 +1,7 @@
 /**
  * Copyright FLWOR Foundation
  *
- * Author: David Graf (david.graf@28msec.com)
+ * Authors: David Graf (david.graf@28msec.com), Nicolae Brinza (nicolae.brinza@ipdevel.ro)
  */
 
 #include <string>
@@ -31,7 +31,6 @@
 #include "context/collation_cache.h"
 
 #include "errors/error_manager.h"
-
 #include "zorbatypes/zorbatypesError.h"
 #include "errors/error_messages.h"
 
@@ -598,24 +597,150 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) const {
 |_______________________________________________________________________*/
 
 //15.3.1 fn:deep-equal
+
+bool DeepEqual(store::Item_t& item1, store::Item_t& item2, XQPCollator* collator, RuntimeCB* theRuntimeCB);
+    
+bool DeepEqual(store::Iterator_t it1, store::Iterator_t it2, XQPCollator* collator, RuntimeCB* theRuntimeCB)
+{
+  store::Item_t child1, child2;
+  
+  it1->open();
+  it2->open();
+  child1 = it1->next();
+  child2 = it2->next();
+  while (1)
+  {
+    if (child1 == NULL && child2 == NULL)
+      return true;
+    else if (child1 == NULL || child2 == NULL)
+      return false;
+    else if (!DeepEqual(child1, child2, collator, theRuntimeCB))
+      return false;
+      
+    child1 = it1->next();
+    child2 = it2->next();
+  }
+    
+  return true;
+}
+
+bool DeepEqual(store::Item_t& item1, store::Item_t& item2, XQPCollator* collator, RuntimeCB* theRuntimeCB)
+{
+  if (item1.isNull() && item2.isNull())
+    return true;
+  
+  if (item1->isNode() != item2->isNode())
+    return false;
+  
+  if (item1->isAtomic())
+  {
+    assert(item2->isAtomic());
+    
+    // check NaN
+    xqtref_t type1 = theRuntimeCB->theStaticContext->get_typemanager()->create_value_type(item1.getp());
+    xqtref_t type2 = theRuntimeCB->theStaticContext->get_typemanager()->create_value_type(item2.getp());
+    
+    if (((TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
+          &&
+          item1->getFloatValue().isNaN())
+          ||
+          (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
+          &&
+          item1->getDoubleValue().isNaN()))
+          &&
+          ((TypeOps::is_subtype(*type2, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
+          &&
+          item2->getFloatValue().isNaN())
+          ||
+          (TypeOps::is_subtype(*type2, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
+          &&
+          item2->getDoubleValue().isNaN())))
+      return true;
+    
+    int result = CompareIterator::valueCompare(theRuntimeCB, item1, item2, collator);
+    return (result == 0);
+  }
+  else
+  {
+    assert(item1->isNode());
+    assert(item2->isNode());
+    
+    if (item1->getNodeKind() != item2->getNodeKind())
+      return false;
+
+    switch (item1->getNodeKind())
+    {
+      case store::StoreConsts::anyNode:
+        ZORBA_ASSERT(false);  // case not treated
+        break;
+        
+      case store::StoreConsts::documentNode:
+        ZORBA_ASSERT(false);  // case not treated
+        break;
+        
+      case store::StoreConsts::elementNode:
+        if (0 != item1->getNodeName()->getStringValue()->compare(item2->getNodeName()->getStringValue(), collator))
+          return false;
+        return DeepEqual(item1->getAttributes(), item2->getAttributes(), collator, theRuntimeCB)
+            &&
+            DeepEqual(item1->getChildren(), item2->getChildren(), collator, theRuntimeCB);
+        break;
+        
+      case store::StoreConsts::attributeNode:
+        if (0 != item1->getNodeName()->getStringValue()->compare(item2->getNodeName()->getStringValue(), collator))
+          return false;
+        return DeepEqual(item1->getTypedValue(), item2->getTypedValue(), collator, theRuntimeCB);
+        break;
+        
+      case store::StoreConsts::textNode:     /* deliberate fall-through */
+      case store::StoreConsts::commentNode:
+        return (0 == item1->getStringValue()->compare(item2->getStringValue(), collator));
+        break;
+        
+      case store::StoreConsts::piNode:
+        if (0 != item1->getNodeName()->getStringValue()->compare(item2->getNodeName()->getStringValue(), collator))
+          return false;
+        return (0 == item1->getStringValue()->compare(item2->getStringValue(), collator));
+        break;
+    }
+    
+    ZORBA_ASSERT(false);  // should never reach here
+    return false;
+  }
+}
+
 store::Item_t 
-FnDeepEqualIterator_3::nextImpl(PlanState& planState) const
+FnDeepEqualIterator::nextImpl(PlanState& planState) const
 {
   PlanIteratorState* state;
-  store::Item_t arg1, arg2, collation;  
-
+  store::Item_t arg1, arg2;
+  XQPCollator* collator = NULL;
+  bool equal = true;
+  
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  arg1 = consumeNext(theChildren[0].getp(), planState);
-  arg2 = consumeNext(theChildren[1].getp(), planState);
-
-  if (theChildren.size() > 2)
+  if ( theChildren.size() == 3 )
   {
-    collation = consumeNext(theChildren[3].getp(), planState);
+    collator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
+  }
 
+  while (1)
+  {
+    arg1 = consumeNext(theChildren[0].getp(), planState);
+    arg2 = consumeNext(theChildren[1].getp(), planState);
+
+    if (arg1 == NULL && arg2 == NULL)
+      break;
+    else if (arg1 == NULL || arg2 == NULL)
+    {
+      equal = false;
+      break;
+    }
+
+    equal = equal && DeepEqual(arg1, arg2, collator, planState.theRuntimeCB);
   }
   
-
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(equal), state);
 
   STACK_END (state);
 }

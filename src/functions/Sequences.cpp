@@ -269,7 +269,7 @@ fn_deep_equal::fn_deep_equal(const signature& sig)
 
 PlanIter_t fn_deep_equal::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnDeepEqualIterator_3(loc, argv);
+  return new FnDeepEqualIterator(loc, argv);
 }
 
 

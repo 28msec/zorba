@@ -237,7 +237,7 @@ protected:
 
 //15.3.1 fn:deep-equal
 
-NARY_ITER (FnDeepEqualIterator_3);
+NARY_ITER (FnDeepEqualIterator);
 
 //15.3.2 op:union
 // implemented using concat and sort

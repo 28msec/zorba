@@ -24,11 +24,12 @@
 
 #include "runtime/api/plan_wrapper.h"
 #include "store/api/iterator.h"
-
 #include "store/api/item.h"
 #include "api/serialization/serializer.h"
+#include "zorbatypes/numconversions.h"
 #include "errors/error_manager.h"
 #include "util/Assert.h"
+#include "zorbatypes/utf8.h"
 
 using namespace std;
 
@@ -193,22 +194,24 @@ void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_at
 	for (unsigned int i = 0; i < str->bytes(); i++, chars++ )
 	{       
     // the input string is UTF-8
-    if (skip == 0)
-    {
-      if (*chars < 0x80)
-        skip = 0;      
-      else if ((*chars >> 5) == 0x6)
-        skip = 2;
-      else if ((*chars >> 4) == 0xe)
-        skip = 3;
-      else if ((*chars >> 3) == 0x1e)
-        skip = 4;
-    }
-       
+    
+    if (*chars < 0x80)
+      skip = 0;
+    else if ((*chars >> 5) == 0x6)
+      skip = 2;
+    else if ((*chars >> 4) == 0xe)
+      skip = 3;
+    else if ((*chars >> 3) == 0x1e)
+      skip = 4;
+    
+    const unsigned char* temp = chars;
+    unsigned int cp = UTF8Decode(temp);
+  
     if (skip)
     {
-      skip--;
-      tr << *chars;
+      tr << "&#" << NumConversions::longToStr(UTF8Decode(chars)) << ";";
+      chars += skip;
+      skip = 0;
       continue;
     }
     

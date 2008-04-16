@@ -97,7 +97,7 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
     else if(TypeOps::is_equal(*type0, *type1))
       return Operation::template computeSingleType<TypeConstants::XS_DURATION> ( aRuntimeCB, &aLoc, n0, n1 );
     else
-      ZORBA_ERROR_DESC(ZorbaError::XPTY0004,
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, aLoc,
                        "Arithmetic operation not defined between the given types(" 
                        + type0->toString() + " and " + type1->toString() + ").");
   }

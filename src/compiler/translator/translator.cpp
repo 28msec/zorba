@@ -4084,7 +4084,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
   if (e == NULL)
-    ZORBA_ERROR_PARAM ( ZorbaError::XPST0008, v.get_varname (), "");
+    ZORBA_ERROR_LOC_PARAM( ZorbaError::XPST0008, v.get_location(), v.get_varname (), "");
   nodestack.push (rchandle<expr> (e));
 }
 
