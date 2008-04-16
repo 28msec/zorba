@@ -24,6 +24,10 @@ root_static_context::root_static_context()
 
 void root_static_context::init() 
 {
+  // must be initialized or there be assertions
+  set_current_absolute_baseuri ("");
+  set_baseuri(implementation_baseuri());
+
   set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
   const char **p = default_ns_initializers;
   for (; *p != NULL; p += 2)
@@ -41,12 +45,6 @@ void root_static_context::init()
   set_inherit_mode(StaticContextConsts::inherit_ns);
   set_preserve_mode(StaticContextConsts::preserve_ns);
   set_default_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-
-  set_current_absolute_baseuri("http://www.flworfound.org");
-}
-
-root_static_context::~root_static_context()
-{
 }
 
 }

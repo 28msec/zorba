@@ -35,6 +35,9 @@ GlobalEnvironment& GlobalEnvironment::getInstance()
 
 void GlobalEnvironment::init()
 {
+  // initialize Xerces-C lib
+  Schema::initialize();
+
   m_globalEnv = new GlobalEnvironment();
 
   // initialize the icu library
@@ -100,9 +103,6 @@ void GlobalEnvironment::init()
   LIBXML_TEST_VERSION
 
   m_globalEnv->m_compilerSubSys = XQueryCompilerSubsystem::create();
-
-  // initialize Xerces-C lib
-  Schema::initialize();
 }
 
 void GlobalEnvironment::destroy()

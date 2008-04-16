@@ -12,7 +12,7 @@ class URI
     MAX_ERROR_CODE
   } error_t;
 
-  static bool is_valid (const xqpStringStore_t& uri);
+  static bool is_valid (const xqpStringStore_t& uri, bool has_base_uri = true);
 
   // Has semantics of fn:resolve-uri (uri, base):
   // * if @p rel is absolute OR if @p base is relative, result is @p rel
@@ -25,3 +25,8 @@ class URI
   };
 
 }
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

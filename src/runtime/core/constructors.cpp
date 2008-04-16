@@ -62,7 +62,7 @@ store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
   // an exception, we don't know if the exception was thrown before or after
   // the ownership of the uris was transfered to the doc node.
   xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
-                             baseuri().getStore();
+                             final_baseuri().getStore();
   store::Item_t node;
 
   store::CopyMode copymode;
@@ -212,7 +212,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   store::Item_t node;
 
   xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
-                             baseuri().getStore();
+                             final_baseuri().getStore();
   
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);

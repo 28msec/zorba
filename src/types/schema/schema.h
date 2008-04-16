@@ -63,3 +63,8 @@ private:
 } // namespace zorba
 
 #endif /*ZORBA_SCHEMA_H_*/
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

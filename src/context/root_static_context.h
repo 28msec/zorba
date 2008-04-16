@@ -9,7 +9,7 @@ class root_static_context : public static_context {
   private:
     root_static_context();
     void init();
-    virtual ~root_static_context();
+    virtual ~root_static_context() {}
     
     friend class GlobalEnvironment;
 };
@@ -17,3 +17,8 @@ class root_static_context : public static_context {
 }
 
 #endif /* ZORBA_ROOT_STATIC_CONTEXT_H */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

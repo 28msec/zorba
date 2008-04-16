@@ -222,6 +222,8 @@ protected:
   xqp_string entity_file_uri() const;
 	void compute_current_absolute_baseuri();
 public:
+  xqp_string implementation_baseuri () const { return "http://www.flworfound.org/"; }
+  xqp_string final_baseuri ();
   xqp_string baseuri() const;
   void set_baseuri(xqp_string, bool from_prolog = true);
   void set_current_absolute_baseuri(xqp_string);

@@ -111,7 +111,6 @@ static_context::~static_context()
   }
 }
 
-
 DECL_ENUM_PARAM (static_context, construction_mode)
 DECL_ENUM_PARAM (static_context, order_empty_mode)
 DECL_ENUM_PARAM (static_context, boundary_space_mode)
@@ -127,7 +126,6 @@ DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
 DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
 DECL_STR_PARAM (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE)
 DECL_STR_PARAM (static_context, entity_file_uri, MAX_ZORBA_ERROR_CODE)
-
 
 TypeManager *static_context::get_typemanager ()
 {
@@ -429,8 +427,7 @@ xqp_string static_context::baseuri () const
   xqp_string val;                                        
   if(!context_value ("int:" "from_prolog_baseuri", val))  // if not found val remains ""
   {
-    if (!context_value("int:" "baseuri", val))
-      val = current_absolute_baseuri();
+    context_value("int:" "baseuri", val);
   }
   return val;
 }
@@ -441,6 +438,7 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
     bind_str ("int:" "from_prolog_baseuri", val, ZorbaError::XQST0032);
   else
     str_keymap.put ("int:" "baseuri", val);
+  compute_current_absolute_baseuri ();
 }
 
 void static_context::compute_current_absolute_baseuri()
@@ -455,8 +453,7 @@ void static_context::compute_current_absolute_baseuri()
 	xqp_string		loaded_uri;
 
 	prolog_baseuri = baseuri();
-  cout << "PBU " << prolog_baseuri << endl;
-	if(((std::string)prolog_baseuri).find("://") != std::string::npos) {
+	if (URI::is_valid (prolog_baseuri.getStore (), false)) {
 		// is already absolute baseuri
 		set_current_absolute_baseuri(prolog_baseuri);
 		return;
@@ -473,6 +470,7 @@ void static_context::compute_current_absolute_baseuri()
 			return;
 		}
 
+    set_current_absolute_baseuri (make_absolute_uri(prolog_baseuri, implementation_baseuri()));
 		return;
 	}
 
@@ -490,9 +488,7 @@ void static_context::compute_current_absolute_baseuri()
 
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri) {
   xqpStringStore_t result;
-  xqpStringStore_t urip = uri.getStore();
-  xqpStringStore_t base_urip = base_uri.getStore();
-  URI::error_t err = URI::resolve_relative (urip, base_urip, result);
+  URI::error_t err = URI::resolve_relative (base_uri.getStore (), uri.getStore (), result);
   switch (err) {
   case URI::MAX_ERROR_CODE:
     return result.getp();
@@ -501,26 +497,26 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
   }
 }
 
-xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_base_uri) {
-	if(((std::string)uri).find("://") != std::string::npos)
-		return uri;
-	
-  if(abs_base_uri.empty())
-	  abs_base_uri = current_absolute_baseuri();
+xqp_string static_context::final_baseuri () {
+  // cached value
+  string abs_base_uri = current_absolute_baseuri();
 
 	if(abs_base_uri.empty()) {
 		compute_current_absolute_baseuri();
     abs_base_uri = current_absolute_baseuri();
   }
 
-	if(abs_base_uri.empty())
-	{
-		// cannot resolve relative uri
+  // won't happen -- we default to a non-empty URI
+	if(abs_base_uri.empty()) {
 		ZORBA_ERROR_DESC( ZorbaError::XPST0001, "empty base URI");
 		return "";
 	}
+  
+  return abs_base_uri;
+}
 
-  return make_absolute_uri (uri, abs_base_uri);
+xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_base_uri) {
+  return make_absolute_uri (uri, abs_base_uri.empty () ? final_baseuri () : abs_base_uri);
 }
 
 bool

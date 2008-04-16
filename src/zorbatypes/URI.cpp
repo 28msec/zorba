@@ -26,10 +26,9 @@ public:
 };
 
 
-bool URI::is_valid (const xqpStringStore_t& uri) 
-{
+bool URI::is_valid (const xqpStringStore_t& uri, bool has_base_uri) {
   XMLChArray xuri(uri->c_str());
-  return XMLUri::isValidURI (true, xuri.get ());
+  return XMLUri::isValidURI (has_base_uri, xuri.get ());
 }
 
 
@@ -39,8 +38,7 @@ URI::error_t URI::resolve_relative (
     xqpStringStore_t&        result)
 {
   XMLChArray xbase (base->c_str()), xrel (rel->c_str());
-  try
-  {
+  try {
     if (! XMLUri::isValidURI (true, xbase.get ()) ||
         ! XMLUri::isValidURI (true, xrel.get ()))
       return URI::INVALID_URI;
@@ -49,18 +47,14 @@ URI::error_t URI::resolve_relative (
         || ! XMLUri::isValidURI (false, xbase.get ()))
     {
       result = rel;
-    }
-    else
-    {
+    } else {
       XMLUri baseuri (xbase.get ());
       XMLUri resuri (&baseuri, xrel.get ());
       char *raw_result = XMLString::transcode (resuri.getUriText ());
       result = new xqpStringStore(raw_result);
       delete [] raw_result;
     }
-  }
-  catch (MalformedURLException &e)
-  {
+  } catch (MalformedURLException &e) {
     return URI::RESOLUTION_ERROR;
   }
 

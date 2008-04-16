@@ -2522,7 +2522,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       if (sz != 0)
         ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:static-base-uri", sz );
 
-      xqp_string baseuri = sctx_p->baseuri ();
+      xqp_string baseuri = sctx_p->final_baseuri ();
       if (baseuri.empty ())
         nodestack.push (create_seq (loc));
       else
@@ -2531,10 +2531,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     } else if (sz == 1 && (fn_local == "lang" || fn_local == "id" || fn_local == "idref")) {
       arguments.insert (arguments.begin (), DOT_VAR);
     } else if (sz == 1 && fn_local == "resolve-uri") {
+#if 0  // even if the base-uri is not declared in the prolog, we have a default
       if (! hadBUriDecl)
         ZORBA_ERROR (ZorbaError::FONS0005);
       else
-        arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->baseuri()));
+#endif
+        arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
     }
   }
   sz = arguments.size ();  // recompute size
