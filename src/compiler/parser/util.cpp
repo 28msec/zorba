@@ -8,19 +8,27 @@ using namespace std;
 namespace zorba {
 
 // TODO: reuse (better) code that is probably available elsewhere in Zorba
-int decode_entity (const char *in, string *out) {
+int decode_entity (const char *in, string *out) 
+{
   QueryLoc loc;
   const char *start = in;
-  if (in [0] == '#') {
+
+  if (in [0] == '#') 
+  {
     ++in;
     int base = 10;
     if (*in == 'x') { base = 16; ++in; }
+
     for (; *in == '0'; ++in);
+
     unsigned long n = strtoul (in, (char **) &in, base);
+
     if (*in++ != ';')
       ZORBA_ERROR_LOC (ZorbaError::XPST0003, loc);
+
     if (! is_code_point_valid (n))
       ZORBA_ERROR_LOC (ZorbaError::XQST0090, loc);
+
 #ifndef ZORBA_NO_UNICODE
     UTF8Encode (n, back_inserter (*out));
 #else
@@ -28,6 +36,7 @@ int decode_entity (const char *in, string *out) {
 #endif
     return in - start;
   }
+
 #define M( str, len, r ) if (strncmp (in, str, len) == 0) { *out += r; return len; }
   M ("amp;", 4, "&") else
   M ("lt;", 3, "<") else

@@ -946,37 +946,55 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
 
   switch (v.get_type())
   {
-    case ParseConstants::cont_entity: assert (false); break;
-    case ParseConstants::cont_charref:
+  case ParseConstants::cont_entity:
+  {
+    assert (false); 
+    break;
+  }
+  case ParseConstants::cont_charref:
+  {
+    string content;
+    string charrefs = v.get_ref();
+
+    const char* curRef = charrefs.c_str();
+    const char* end = curRef + charrefs.size();
+
+    while (curRef < end)
     {
-      string content;
-      decode_entity (v.get_ref ().c_str (), &content);
-      expr_t lConstExpr = new const_expr(loc, content);
-      nodestack.push(lConstExpr);
-      break;
+      curRef += decode_entity(curRef, &content);
+      if (curRef >= end)
+        break;
+
+      if (*curRef == '&')
+        curRef++;
     }
-    case ParseConstants::cont_escape_lbrace:
-    {
-      // we always create a text node here because if we are in an attribute, we atomice
-      // the text node into its string value
-      xqpString content("{");
-      expr_t lConstExpr = new const_expr(loc, content);
-      nodestack.push ( lConstExpr );
-      break;
-    }
-    case ParseConstants::cont_escape_rbrace:
-    {
-      // we always create a text node here because if we are in an attribute, we atomice
-      // the text node into its string value
-      xqpString content("}");
-      expr_t lConstExpr = new const_expr(loc, content);
-      nodestack.push ( lConstExpr );
-      break;
-    }
-    case ParseConstants::cont_expr:
-    {
-       break;
-    }
+
+    expr_t lConstExpr = new const_expr(loc, content);
+    nodestack.push(lConstExpr);
+    break;
+  }
+  case ParseConstants::cont_escape_lbrace:
+  {
+    // we always create a text node here because if we are in an attribute, we atomice
+    // the text node into its string value
+    xqpString content("{");
+    expr_t lConstExpr = new const_expr(loc, content);
+    nodestack.push ( lConstExpr );
+    break;
+  }
+  case ParseConstants::cont_escape_rbrace:
+  {
+    // we always create a text node here because if we are in an attribute, we atomice
+    // the text node into its string value
+    xqpString content("}");
+    expr_t lConstExpr = new const_expr(loc, content);
+    nodestack.push ( lConstExpr );
+    break;
+  }
+  case ParseConstants::cont_expr:
+  {
+    break;
+  }
   }
   TRACE_VISIT_OUT ();
 }
