@@ -1,11 +1,11 @@
 #include <iostream>
 
 #include <zorba/zorba.h>
-#include <zorba/sax2.h>
+#include <zorba/default_content_handler.h>
 
 using namespace zorba;
 
-class XMLSerializer: public SAX2_ContentHandler
+class XMLSerializer: public DefaultContentHandler
 {
   protected:
     std::ostream & theOStream;
@@ -19,11 +19,6 @@ class XMLSerializer: public SAX2_ContentHandler
     virtual ~XMLSerializer(){}
 
     void setDocumentLocator( const SAX2_Locator * const locator ){}
-
-    void startDocument()
-    {
-      //theOStream << "<?xml version=\"1.0\" ?>\n";
-    }
 
     void endDocument()
     {
@@ -60,12 +55,6 @@ class XMLSerializer: public SAX2_ContentHandler
         theOStream << whitespace;
       }
     }
-
-    void startPrefixMapping( const String	& prefix, const String	& uri ){}
-
-    void endPrefixMapping( const String & prefix ){}
-
-    void skippedEntity( const	String & name ){}
 };
 
 int sax2( int argc, char * argv[] )
