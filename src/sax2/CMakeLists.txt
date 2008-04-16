@@ -1,5 +1,0 @@
-SET(SAX2_SRCS
-	sax2_exception.cpp
-	)
-
-ADD_SRC_SUBFOLDER(SAX2_SRCS native SAX2_NATIVE_SRCS)

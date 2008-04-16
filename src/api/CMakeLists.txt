@@ -4,6 +4,7 @@ SET(API_SRCS
     zorba.cpp
     zorbaimpl.cpp
     xqueryimpl.cpp
+    sax2impl.cpp
     default_error_handler.cpp
     exception.cpp
     error.cpp

@@ -214,3 +214,4 @@ simple(int argc, char* argv[])
   lZorba->shutdown();
   return 0;
 }
+

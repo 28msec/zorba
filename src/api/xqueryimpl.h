@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <zorba/xquery.h>
+#include <zorba/sax2.h>
 
 #include <zorba/api_shared_types.h>
 #include "zorbatypes/xqpstring.h"
@@ -60,6 +61,14 @@ namespace zorba {
     setFileName( const String& );
 
     void
+    registerSAXHandler( SAX2_ContentHandler *  aSAXHandler );
+    
+    void
+    executeSAX( SAX2_ContentHandler *  aSAXHandler );
+
+    void executeSAX();
+
+    void
     close();
 
     XQuery_t
@@ -110,9 +119,12 @@ namespace zorba {
 
     // utility stuff
     bool                   theUserErrorHandler; // who has ownership of the error handler
-    ErrorHandler         * theErrorHandler; // provided by user or default one throwing exceptions 
+    ErrorHandler         * theErrorHandler; // provided by user or default one throwing exceptions
+    
     error::ErrorManager  * theErrorManager; // see note in the constructor
 
+    SAX2_ContentHandler     * theSAX2Handler; // sax content handler that provide event-based xml parser 
+    
     bool                   theIsClosed; // remember whether the query has been closed
 
 	}; /* class XQueryImpl */

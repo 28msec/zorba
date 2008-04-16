@@ -27,8 +27,12 @@
 #define ZORBA_SERIALIZER_H
 
 #include <ostream>
+
+#include <zorba/sax2.h>
+
 #include "zorbatypes/representations.h"
 #include "common/shared_types.h"
+#include "api/sax2impl.hpp"
 
 
 namespace zorba
@@ -51,6 +55,12 @@ public:
    */
   void serialize(PlanWrapper *result, std::ostream& os);
   
+  /**
+   * Parse the given sequence with SAX2 interface
+   *
+   */
+   void serializeSAX2( PlanWrapper *result, std::ostream & os,  SAX2_ContentHandler * aSAX2ContentHandler );  
+
   /**
    * Serializes the given item to the output stream.
    *
@@ -112,7 +122,7 @@ protected:
     PARAMETER_VALUE_OMIT,
 		
     PARAMETER_VALUE_XML,
-	PARAMETER_VALUE_HTML,
+	  PARAMETER_VALUE_HTML,
   
     PARAMETER_VALUE_UTF_8
 #ifndef ZORBA_NO_UNICODE
@@ -158,8 +168,9 @@ public:
       int chars_in_buffer;
       int chars_expected;
   };
+
 #endif//#ifndef ZORBA_NO_UNICODE
-  
+
   class emitter : public SimpleRCObject
   {
   public:
@@ -235,6 +246,7 @@ public:
   protected:
     bool haveBinding(std::pair<xqpString,xqpString>& nsBinding) const;
     bool havePrefix(const xqpString& pre) const;
+    std::string expand_string( xqpStringStore * str, bool emit_attribute_value );
 
     serializer *ser;
     transcoder& tr;
@@ -265,9 +277,49 @@ public:
         const store::Item* item,
         int depth,
         const store::Item* element_parent = NULL);
-  };  
-};
+  };
 
+  class sax2_emitter : public emitter
+  {
+  protected:
+    SAX2_ContentHandler * theSAX2ContentHandler;
+    SAX2LocatorImpl    theLocator;
+  public:
+    sax2_emitter( serializer * the_serializer, transcoder & the_transcoder,
+                  SAX2_ContentHandler * aSAX2ContentHandler );
+
+    void emit_startPrefixMapping( const store::Item * item, NsBindings & nsBindings );
+
+    void emit_endPrefixMapping( NsBindings & nsBindings );
+
+    virtual void emit_declaration();
+
+    virtual void emit_declaration_end();
+
+    virtual void emit_node(
+        const store::Item * item,
+        int depth,
+        const store::Item * element_parent = 0);
+   
+    void emit_node( store::Item * item );
+
+    //virtual void emit_expanded_string(xqpStringStore* str, bool emit_attribute_value);
+    void emit_expanded_string( xqp_string strtext );
+    
+    virtual int emit_node_children(
+        const store::Item* item,
+        int depth,
+        bool perform_escaping);
+
+    void emit_node_children( const store::Item * item );
+
+    virtual bool emit_bindings(const store::Item* item);
+        
+    virtual void emit_item( const store::Item* item );
+
+    virtual void emit_indentation(int depth);
+  };
+};
 } // namespace zorba
 
 #endif // #ifdef ZORBA_SERIALIZER_H

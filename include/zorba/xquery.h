@@ -3,11 +3,11 @@
 
 #include <ostream>
 
+#include <zorba/sax2.h>
 #include <zorba/api_shared_types.h>
 
 
 namespace zorba {
-
 
   /** \brief This class is the representation for an %XQuery in the %Zorba
    *         engine.
@@ -252,6 +252,18 @@ namespace zorba {
       //Set the fileName
       virtual void
       setFileName( const String& ) = 0;
+
+      //Register a SAX handler
+      virtual void
+      registerSAXHandler( SAX2_ContentHandler * ) = 0;
+
+      //Execute the query with an handler given
+      virtual void
+      executeSAX( SAX2_ContentHandler * ) = 0;
+
+      //Execute the query
+      virtual void
+      executeSAX() = 0;
 
       virtual void
       close() = 0;

@@ -21,6 +21,7 @@
  * @file serialization/serializer.cpp
  *
  */
+#include <sstream>
 
 #include "runtime/api/plan_wrapper.h"
 #include "store/api/iterator.h"
@@ -30,6 +31,8 @@
 #include "errors/error_manager.h"
 #include "util/Assert.h"
 #include "zorbatypes/utf8.h"
+
+#include "api/sax2impl.hpp"
 
 using namespace std;
 
@@ -59,7 +62,7 @@ void serializer::transcoder::verbatim(const char ch)
 {
   os << ch;
 }
-  
+
 #ifndef ZORBA_NO_UNICODE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // UTF-8 to UTF-16 transcoder
@@ -183,9 +186,16 @@ xqpString toHexString(unsigned char ch)
   return result;
 }
 
-// emit_attribute_value is set to true if the string expansion is performed on a value of an attribute
-void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_attribute_value = false)
+void serializer::emitter::emit_expanded_string( xqpStringStore * str, bool emit_attribute_value = false )
 {
+  tr << expand_string( str, emit_attribute_value );
+}
+
+// emit_attribute_value is set to true if the string expansion is performed on a value of an attribute
+std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_attribute_value = false)
+{
+  std::stringstream lStringStream;
+  transcoder lTranscoder( lStringStream ); 
 	const unsigned char* chars = (const unsigned char*)str->c_str();
 
 	int is_quote;
@@ -209,7 +219,7 @@ void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_at
   
     if (skip)
     {
-      tr << "&#" << NumConversions::longToStr(UTF8Decode(chars)) << ";";
+      lTranscoder << "&#" << NumConversions::longToStr(UTF8Decode(chars)) << ";";
       chars += skip;
       skip = 0;
       continue;
@@ -226,9 +236,9 @@ void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_at
       if ((!emit_attribute_value)
              &&
              (*chars == 0xA || *chars == 0x9))
-        tr << *chars;
+        lTranscoder << *chars;
       else
-        tr << "&#x" << toHexString(*chars) << ";";
+        lTranscoder << "&#x" << toHexString(*chars) << ";";
     }
     else switch (*chars)
 		{
@@ -237,20 +247,20 @@ void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_at
         The HTML output method MUST NOT escape "<" characters occurring in attribute values.
       */
       if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
-        tr << *chars;
+        lTranscoder << *chars;
       else
-        tr << "&lt;";             
+        lTranscoder << "&lt;";             
 			break;
       
 		case '>':
-			tr << "&gt;";
+			lTranscoder << "&gt;";
 			break;
 			
     case '"':
       if (emit_attribute_value)
-        tr << "&quot;";
+        lTranscoder << "&quot;";
       else
-        tr << *chars;
+        lTranscoder << *chars;
 			break;
 			
 		case '&':
@@ -264,9 +274,9 @@ void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_at
         if (str->bytes()-i >= 1
             &&
             (*(chars+1) == '{'))
-          tr << *chars;
+          lTranscoder << *chars;
         else
-          tr << "&amp;";
+          lTranscoder << "&amp;";
       }
       else
       {      
@@ -295,24 +305,25 @@ void serializer::emitter::emit_expanded_string(xqpStringStore* str, bool emit_at
 			 }
 			
 			 if (is_quote)
-       {
-			   tr << *chars;
+			   lTranscoder << *chars;
+       //{
          /*
          tr << std::string(chars, j+1);
          chars += j;
          i += j;
          */
-       }
+      // }
 			 else
-				  tr << "&amp;";
+				 lTranscoder << "&amp;";
       }
       break;      
 			
 		default:
-			tr << *chars;
+			lTranscoder << *chars;
 			break;
 		}
-	}	
+	}
+  return lStringStream.str();
 }
 
 void serializer::emitter::emit_indentation(int depth)
@@ -757,6 +768,201 @@ void serializer::html_emitter::emit_node(
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+// SAX2 emitter
+serializer::sax2_emitter::sax2_emitter( serializer * the_serializer, transcoder & the_transcoder, SAX2_ContentHandler * aSAX2ContentHandler )
+  : emitter(the_serializer, the_transcoder), theSAX2ContentHandler( aSAX2ContentHandler ){}
+
+void serializer::sax2_emitter::emit_node_children( const store::Item* item )
+{
+  store::Iterator_t it;
+  store::Item_t child;	
+	// output all the other nodes
+	it = item->getChildren();
+  it->open();
+	child = it->next();
+	while (child!= NULL)
+	{
+    if (child->getNodeKind() != store::StoreConsts::attributeNode)
+    {
+      emit_node(&*child);
+    }
+    child = it->next();
+  }
+}
+
+void serializer::sax2_emitter::emit_startPrefixMapping( const store::Item* item, NsBindings &nsBindings)
+{
+  if( !theSAX2ContentHandler )
+  {
+    return;
+  }
+  // emit namespace bindings
+  NsBindings::size_type   ns_size;
+
+  ns_size = nsBindings.size();
+    
+  for (unsigned long i = 0; i < ns_size; i++)
+  {
+    String lFirst( nsBindings[i].first );
+    String lSecond( nsBindings[i].second );
+    theSAX2ContentHandler->startPrefixMapping( lFirst, lSecond);
+  }
+}
+
+void serializer::sax2_emitter::emit_endPrefixMapping( NsBindings &nsBindings)
+{
+  if( !theSAX2ContentHandler )
+  {
+    return;
+  }
+  // emit namespace bindings
+  NsBindings::size_type   ns_size;
+
+  ns_size = nsBindings.size();
+    
+  for (unsigned long i = 0; i < ns_size; i++)
+  {
+    String lFirst( nsBindings[i].first );
+    theSAX2ContentHandler->endPrefixMapping( lFirst );
+  }
+
+}
+
+void serializer::sax2_emitter::emit_declaration()
+{
+  theSAX2ContentHandler->startDocument();
+}
+
+void serializer::sax2_emitter::emit_declaration_end()
+{
+  theSAX2ContentHandler->endDocument();
+}
+
+bool serializer::sax2_emitter::emit_bindings( const store::Item * item )
+{
+  //TODO: unimplemented method
+  return false;
+}
+
+void serializer::sax2_emitter::emit_indentation( int depth ){}
+
+void serializer::sax2_emitter::emit_node( const store::Item * item, int depth, const store::Item * element_parent ){}
+
+int serializer::sax2_emitter::emit_node_children( const store::Item* item, int depth, bool perform_escaping )
+{
+
+}
+
+
+
+void serializer::sax2_emitter::emit_node( store::Item* item )
+{
+	if( item->getNodeKind() == store::StoreConsts::documentNode )
+	{
+    String lPublicID( item->getUnparsedEntityPublicId() );
+    String lSystemID( item->getUnparsedEntitySystemId() );
+    theLocator.setPublicId( lPublicID );
+    theLocator.setSystemId( lSystemID );
+		emit_node_children(item);    
+	}
+	else if (item->getNodeKind() == store::StoreConsts::elementNode)
+	{
+    NsBindings local_nsBindings;
+    store::Item_t      item_qname;
+
+    if(theSAX2ContentHandler)
+    {
+      item->getNamespaceBindings(local_nsBindings,
+                                 store::StoreConsts::ONLY_LOCAL_NAMESPACES);//only local namespaces
+
+      SAX2AttributesImpl attrs(item);
+      SAX2NamespacesImpl nss(&local_nsBindings, item);
+
+      emit_startPrefixMapping(item, local_nsBindings);
+
+      item_qname = item->getNodeName();
+      String lNS( item_qname->getNamespace() );
+      String lLocalName( item_qname->getLocalName() );
+      String lStringValue( item_qname->getStringValue().getp() );
+      theSAX2ContentHandler->startElement( lNS, lLocalName, lStringValue, attrs, nss);
+    }
+      
+		emit_node_children(item);
+
+    if(theSAX2ContentHandler)
+    {
+
+      String lNS( item_qname->getNamespace() );
+      String lLocalName( item_qname->getLocalName() );
+      String lStringValue( item_qname->getStringValue().getp() );
+      theSAX2ContentHandler->endElement( lNS, lLocalName, lStringValue );
+      emit_endPrefixMapping(local_nsBindings);
+    }
+	}
+	else if (item->getNodeKind() == store::StoreConsts::textNode)
+	{		
+		emit_expanded_string(item->getStringValue().getp());
+	}
+	else if (item->getNodeKind() == store::StoreConsts::commentNode)
+	{
+    //TODO: unimplemented lexical handler
+    //if(lexical_handler)
+    //{
+      //xqp_string    comment_str = item->getStringValue().getp();
+    //}
+	}
+	else if (item->getNodeKind() == store::StoreConsts::piNode )
+	{
+    if(theSAX2ContentHandler){
+      String lTarget( item->getTarget() );
+      String lStringValue( item->getStringValue().getp() );
+      theSAX2ContentHandler->processingInstruction( lTarget, lStringValue );
+    }
+	}
+//TODO: unimplemented error handling
+//	else 
+	//{
+//		tr << "node of type: " << item->getNodeKind();		
+    //SAX2_ParseException   saxx("Unknown node type", &theLocator);
+    //if(error_handler)
+    //  error_handler->fatalError(saxx);
+    //throw saxx;
+	//}
+}
+
+void serializer::sax2_emitter::emit_item(const store::Item* item)
+{
+  if (item->isAtomic())
+  {
+    emit_expanded_string(item->getStringValue().getp());
+  }
+  else
+  {
+    if (item->getNodeKind() == store::StoreConsts::attributeNode)
+    {
+      //TODO: unimplemented error handling
+      //SAX2_ParseException   saxx("Node is attribute or namespace", &theLocator);
+      //if(error_handler)
+      //  error_handler->fatalError(saxx);
+      //throw saxx;
+    }
+    else        
+      emit_node( const_cast< store::Item * >( item ) );
+  }  
+}
+
+void serializer::sax2_emitter::emit_expanded_string(xqp_string strtext)
+{
+  if ( theSAX2ContentHandler )
+  {
+    //use xml_emitter to normalize string
+    std::string lStr = expand_string( strtext.getStore(), false );
+    const String lString( lStr );
+    theSAX2ContentHandler->characters( lString );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Serializer
 
 const xqp_string serializer::END_OF_LINE = "\n";
@@ -964,6 +1170,29 @@ void serializer::serialize(PlanWrapper *result, ostream& os)
     item = result->next();
   }
   
+  e->emit_declaration_end();
+}
+
+void serializer::serializeSAX2( PlanWrapper * result, ostream & os,
+                                SAX2_ContentHandler * aSAX2ContentHandler )
+{
+ 
+  validate_parameters();
+  if (!setup(os))
+    return;
+  
+  e = new sax2_emitter( this, *tr, aSAX2ContentHandler ); 
+  e->emit_declaration();
+
+  store::Item_t item = result->next();
+  while (item != NULL )
+  {
+    if (item->isPul())
+      ZORBA_ERROR(ZorbaError::API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
+
+    e->emit_item(&*item);
+    item = result->next();
+  }
   e->emit_declaration_end();
 }
 

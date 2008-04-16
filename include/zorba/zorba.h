@@ -17,8 +17,8 @@
 #include <zorba/exception.h>
 #include <zorba/error_handler.h>
 #include <zorba/xmldatamanager.h>
+#include <zorba/default_error_handler.h>
 #include <zorba/collection.h>
-
 
 namespace zorba {
 

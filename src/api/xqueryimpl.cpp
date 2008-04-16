@@ -7,6 +7,7 @@
 #include <zorba/default_error_handler.h>
 #include <zorba/error.h>
 #include <zorba/exception.h>
+#include <zorba/sax2.h>
 
 #include "errors/errors.h"
 #include "errors/error_manager.h"
@@ -32,13 +33,13 @@
 
 #include "store/api/item.h"
 
-
 namespace zorba {
 
 	XQueryImpl::XQueryImpl()
     : thePlan(0),
       theStaticContext(0),
       theUserErrorHandler(false),
+      theSAX2Handler(0),
       theIsClosed(false)
 	{ 
     theCompilerCB = new CompilerCB();
@@ -105,6 +106,54 @@ namespace zorba {
   {
     xqpString lFileName = Unmarshaller::getInternalString( aFileName );
     theFileName = lFileName;
+  }
+
+  /**
+   * Set the SAX handler
+   */
+  void
+  XQueryImpl::registerSAXHandler( SAX2_ContentHandler * aSAXHandler )
+  {
+    theSAX2Handler = aSAXHandler;
+  }
+
+  /**
+   * Execute the query with the given SAX handler
+   */
+  void
+  XQueryImpl::executeSAX( SAX2_ContentHandler * aSAXHandler )
+  {
+    registerSAXHandler( aSAXHandler );
+    executeSAX();
+  }
+
+  /**
+   *  Execute the query
+   */
+  void
+  XQueryImpl::executeSAX()
+  {
+    checkClosed();
+    checkCompiled();
+
+    PlanWrapper_t lPlan = generateWrapper();
+    serializer lSerializer(theErrorManager);
+    XQuery::SerializerOptions opt;
+    setSerializationParameters(&lSerializer, opt);
+
+    try { 
+      lPlan->open();
+      lSerializer.serializeSAX2(&*lPlan, std::cerr, theSAX2Handler );
+      std::cerr << std::endl;
+    } catch (error::ZorbaError& e) {
+      lPlan->close();
+      ZorbaImpl::notifyError(theErrorHandler, e);
+      return;
+    }
+
+    lPlan->close();
+      //SAX2_XMLReaderNative xmlreader( theSAXHandler, 0, 0, 0, 0 );
+      //xmlreader.parse( this, theErrorHandler );
   }
 
   void
