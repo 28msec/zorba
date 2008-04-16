@@ -3,6 +3,8 @@
  *  Author: Cezar Andrei (cezar dot andrei at gmail dot com)
  *
  */
+#include "common/common.h"
+
 #include "schema.h"
 #include "StrX.h"
 #include "LoadSchemaErrorHandler.h"
@@ -24,10 +26,10 @@ namespace zorba
 {
 const char* Schema::XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
 
-bool Schema::_isInitialized = false;
 
 xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef);
 
+bool Schema::_isInitialized = false;
 
 void Schema::initialize()
 {
@@ -55,6 +57,8 @@ void Schema::terminate()
         _isInitialized = false;
     }
 }
+
+#ifndef ZORBA_NO_XMLSCHEMA
 
 Schema::Schema()
 {
@@ -219,6 +223,7 @@ xqtref_t Schema::createIfExists(
 	
  	return res;
 }
+#endif//ZORBA_NO_XMLSCHEMA
 
 
 xqtref_t getXQTypeForXSTypeDefinition(
@@ -472,3 +477,4 @@ store::Item_t parseAtomicValue(xqtref_t type, xqpString textValue)
 //}
 
 } // namespace zorba
+

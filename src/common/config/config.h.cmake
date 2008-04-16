@@ -60,5 +60,6 @@
 
 /* Configure Zorba features*/
 #cmakedefine ZORBA_NO_UNICODE
+#cmakedefine ZORBA_NO_XMLSCHEMA
 
 #endif

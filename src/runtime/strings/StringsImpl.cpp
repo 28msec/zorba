@@ -1472,6 +1472,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
 store::Item_t
 FnMatchesIterator::nextImpl(PlanState& planState) const
 {
+#ifndef ZORBA_NO_UNICODE
   xqp_string input;
   xqp_string pattern;
   xqp_string flags;
@@ -1505,6 +1506,10 @@ FnMatchesIterator::nextImpl(PlanState& planState) const
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(res), state); 
   
   STACK_END (state);
+#else
+  ZORBA_ERROR(ZorbaError::FORX0002);///invalid regular expression (no reg exp supported)
+  return NULL;
+#endif
 }
 /*end class FnMatchesIterator*/
 
@@ -1526,6 +1531,7 @@ FnMatchesIterator::nextImpl(PlanState& planState) const
 store::Item_t
 FnReplaceIterator::nextImpl(PlanState& planState) const
 {
+#ifndef ZORBA_NO_UNICODE
   xqp_string input, pattern, replacement, flags;
   xqp_string res;
   store::Item_t item;
@@ -1573,6 +1579,10 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
   STACK_PUSH(GENV_ITEMFACTORY->createString(res.getStore ()), state);
   
   STACK_END (state);
+#else
+  ZORBA_ERROR(ZorbaError::FORX0002);///invalid regular expression (no reg exp supported)
+  return NULL;
+#endif
 }
 /*end class FnReplaceIterator*/
 
@@ -1607,6 +1617,7 @@ FnTokenizeIteratorState::reset(PlanState& planState)
 store::Item_t
 FnTokenizeIterator::nextImpl(PlanState& planState) const
 {
+#ifndef ZORBA_NO_UNICODE
   xqp_string remaining;
   xqp_string token;
   store::Item_t item;
@@ -1655,6 +1666,10 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
   }
 
   STACK_END(state);
+#else
+  ZORBA_ERROR(ZorbaError::FORX0002);///invalid regular expression (no reg exp supported)
+  return NULL;
+#endif
 }
 /*end class FnTokenizeIterator*/
 } /* namespace zorba */

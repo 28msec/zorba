@@ -4,7 +4,9 @@
 #include "types/typemanagerimpl.h"
 #include <zorba/typeident.h>
 #include "common/shared_types.h"
+#ifndef ZORBA_NO_XMLSCHEMA
 #include "types/schema/schema.h"
+#endif
 
 namespace zorba {
 
@@ -16,13 +18,17 @@ class DelegatingTypeManager : public TypeManagerImpl {
     DelegatingTypeManager(TypeManager *parent)
         : TypeManagerImpl(parent->level() + 1, parent) 
     {
-        _schema = NULL; 
+#ifndef ZORBA_NO_XMLSCHEMA
+      _schema = NULL; 
+#endif
     }
     
     virtual ~DelegatingTypeManager()
     {
+#ifndef ZORBA_NO_XMLSCHEMA
         if ( _schema!=NULL )
             delete _schema;
+#endif
     }
 
 
@@ -34,6 +40,7 @@ class DelegatingTypeManager : public TypeManagerImpl {
         store::Item* qname,
         TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
 
+#ifndef ZORBA_NO_XMLSCHEMA
     void initializeSchema();
     void terminateSchema();
 	 
@@ -41,9 +48,10 @@ class DelegatingTypeManager : public TypeManagerImpl {
     { 
         return _schema; 
     }
-    
+ 
   private:
     Schema *_schema;
+#endif
 };
 
 }

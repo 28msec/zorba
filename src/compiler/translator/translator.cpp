@@ -2001,6 +2001,7 @@ void end_visit(const SIND_DeclList& /*v*/, void* /*visit_state*/)
 
 void *begin_visit(const SchemaImport& v)
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     TRACE_VISIT ();
     SchemaPrefix *sp = &*v.get_prefix();
     if (sp != NULL) {
@@ -2030,6 +2031,10 @@ void *begin_visit(const SchemaImport& v)
     }
 
     return no_state;
+#else
+  ZORBA_ERROR(ZorbaError::XQST0009);
+  return no_state;
+#endif
 }
 
 void end_visit(const SchemaImport& /*v*/, void* /*visit_state*/)

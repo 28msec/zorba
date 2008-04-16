@@ -1,3 +1,7 @@
+#include "common/common.h"
+
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include "LoadSchemaErrorHandler.h"
 #include "StrX.h"
 
@@ -49,3 +53,5 @@ void LoadSchemaErrorHandler::resetErrors()
 }
 
 } // namspace xqp
+
+#endif //#ifndef ZORBA_NO_XMLSCHEMA

@@ -895,12 +895,17 @@ void *ParseNodePrintDOTVisitor::begin_visit(const SchemaElementTest &n)
 
 void *ParseNodePrintDOTVisitor::begin_visit(const SchemaImport &n)
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
           << "label=\"SchemaImport\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
-
+  
     NL;
     return no_state;
+#else
+  ZORBA_ERROR(ZorbaError::XQST0009);//xml schema not supported
+  return no_state;
+#endif
 }
 
 

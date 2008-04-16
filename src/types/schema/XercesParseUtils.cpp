@@ -3,6 +3,10 @@
  *  Author: Cezar Andrei (cezar dot andrei at gmail dot com)
  *
  */
+#include "common/common.h"
+
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include "XercesParseUtils.h"
 #include "StrX.h"
 #include "LoadSchemaErrorHandler.h"
@@ -1301,3 +1305,5 @@ bool XercesParseUtils::parseUserAtomicTypes(xqpString textValue, store::Item_t &
 }
 
 } // namespace zorba
+
+#endif //#ifndef ZORBA_NO_XMLSCHEMA

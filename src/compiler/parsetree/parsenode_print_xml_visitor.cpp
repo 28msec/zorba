@@ -1096,6 +1096,7 @@ void *begin_visit(const SchemaElementTest &n)
 
 void *begin_visit(const SchemaImport &n)
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     INDENT;
 
     os << "<SchemaImport pos='" << n.get_location() << "' ptr='" << &n << "'";
@@ -1105,6 +1106,10 @@ void *begin_visit(const SchemaImport &n)
     INDENT_INC;
     NL;
     return no_state;
+#else
+  ZORBA_ERROR(ZorbaError::XQST0009);
+  return no_state;
+#endif
 }
 
 

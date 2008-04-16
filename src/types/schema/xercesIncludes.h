@@ -27,9 +27,9 @@
 #include <xercesc/util/XMLUni.hpp>
 
 
-//#ifdef CYGWIN
-//#undef WIN32
-//#endif
+#ifdef CYGWIN
+#undef WIN32
+#endif
 //
 //#define Assert( cond ) ZORBA_ASSERT (cond)
 

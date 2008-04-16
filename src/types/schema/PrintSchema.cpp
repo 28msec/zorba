@@ -1,3 +1,7 @@
+#include "common/common.h"
+
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include "PrintSchema.h"
 #include "StrX.h"
 #include "schema.h"
@@ -257,3 +261,5 @@ void PrintSchema::processTypeDefinitions(bool excludeBuiltIn,
 }
 
 } // namespace xqp
+
+#endif //#ifndef ZORBA_NO_XMLSCHEMA

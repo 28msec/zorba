@@ -73,6 +73,9 @@ MESSAGE(STATUS "ZORBA_DEBUG_PARSER:             " ${ZORBA_DEBUG_PARSER})
 SET(ZORBA_NO_UNICODE OFF CACHE BOOL "disable ICU")
 MESSAGE(STATUS "ZORBA_NO_UNICODE:               " ${ZORBA_NO_UNICODE})
 
+SET(ZORBA_NO_XMLSCHEMA OFF CACHE BOOL "disable XMLSchema")
+MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA:               " ${ZORBA_NO_XMLSCHEMA})
+
 # below we print some variables you might be interested in, when compiling
 
 # if you are building in-source, this is the same as CMAKE_SOURCE_DIR, otherwise 
