@@ -18,7 +18,7 @@ context_example_1(Zorba* aZorba)
 
   Item lItem = lFactory->createInteger(4);
 
-  DynamicContext_t lCtx = lQuery->getDynamicContext();
+  DynamicContext* lCtx = lQuery->getDynamicContext();
 
   lCtx->setVariable("var", lItem);
 
@@ -60,7 +60,7 @@ context_example_3(Zorba* aZorba)
 
   Item lItem = lFactory->createInteger(4);
 
-  DynamicContext_t lCtx = lQuery->getDynamicContext();
+  DynamicContext* lCtx = lQuery->getDynamicContext();
 
   lCtx->setContextItem(lItem);
 
@@ -84,7 +84,7 @@ context_example_4(Zorba* aZorba)
 
   XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; $var//book");
 
-  DynamicContext_t lCtx = lQuery->getDynamicContext();
+  DynamicContext* lCtx = lQuery->getDynamicContext();
 
   lCtx->setVariableAsDocument("var", "books.xml", lDocStream);
 
@@ -105,7 +105,7 @@ context_example_5(Zorba* aZorba)
 
   XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; .//book");
 
-  DynamicContext_t lCtx = lQuery->getDynamicContext();
+  DynamicContext* lCtx = lQuery->getDynamicContext();
 
   lCtx->setContextItemAsDocument("books.xml", lDocStream);
 
@@ -171,14 +171,14 @@ context_example_8(Zorba* aZorba)
 {
 	XQuery_t lQuery1 = aZorba->compileQuery("declare ordering ordered; 1"); 
 
-  StaticContext_t lStaticContext1 = lQuery1->getStaticContext();
+  const StaticContext* lStaticContext1 = lQuery1->getStaticContext();
   
   if (lStaticContext1->getOrderingMode() != StaticContext::ordered)
     return false;
 
 	XQuery_t lQuery2 = aZorba->compileQuery("declare ordering unordered; 1"); 
 
-  StaticContext_t lStaticContext2 = lQuery2->getStaticContext();
+  const StaticContext* lStaticContext2 = lQuery2->getStaticContext();
   
   return (lStaticContext2->getOrderingMode() == StaticContext::unordered);
 }
@@ -188,7 +188,7 @@ context_example_9(Zorba* aZorba)
 {
 	XQuery_t lQuery = aZorba->compileQuery("fn:hours-from-dateTime(fn:current-dateTime())"); 
 
-  DynamicContext_t lDynContext = lQuery->getDynamicContext();
+  DynamicContext* lDynContext = lQuery->getDynamicContext();
 
   try {
     Item lDateTimeItem = aZorba->getItemFactory()->createDateTime(2008, 03, 30, 16, 05, 42, 0); 

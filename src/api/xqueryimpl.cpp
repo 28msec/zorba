@@ -38,6 +38,9 @@ namespace zorba {
 	XQueryImpl::XQueryImpl()
     : thePlan(0),
       theStaticContext(0),
+      theDynamicContext(0),
+      theDynamicContextWrapper(0),
+      theStaticContextWrapper(0),
       theUserErrorHandler(false),
       theSAX2Handler(0),
       theIsClosed(false)
@@ -178,6 +181,12 @@ namespace zorba {
 
       delete theDynamicContext;
 
+      if (theDynamicContextWrapper)
+        delete theDynamicContextWrapper;
+
+      if (theStaticContextWrapper)
+        delete theStaticContextWrapper;
+
       delete theCompilerCB;
 
       theIsClosed = true;
@@ -267,29 +276,36 @@ namespace zorba {
     RCHelper::addReference(thePlan);
   }
 
-   DynamicContext_t
-   XQueryImpl::getDynamicContext()
+   DynamicContext*
+   XQueryImpl::getDynamicContext() const
    {
      ZORBA_TRY
        checkClosed();
        checkCompiled();
+
+       if (!theDynamicContextWrapper)
+        theDynamicContextWrapper = new DynamicContextImpl(theDynamicContext, theStaticContext, 
+                                                         theErrorHandler);
+
+        return theDynamicContextWrapper;
         
-       return DynamicContext_t(new DynamicContextImpl(theDynamicContext, theStaticContext, 
-                                                      theErrorHandler));
      ZORBA_CATCH
-     return DynamicContext_t();
+     return 0;
    }
 
-   const StaticContext_t
+   const StaticContext*
    XQueryImpl::getStaticContext() const
    {
      ZORBA_TRY
        checkClosed();
        checkCompiled();
-        
-       return StaticContext_t(new StaticContextImpl(theStaticContext, theErrorHandler));
+
+       if (!theStaticContextWrapper)
+         theStaticContextWrapper = new StaticContextImpl(theStaticContext, theErrorHandler);
+
+         return theStaticContextWrapper;
      ZORBA_CATCH
-     return StaticContext_t();
+     return 0;
    }
 
   /** 
@@ -453,6 +469,7 @@ namespace zorba {
   {
     ZORBA_TRY
       checkClosed();
+      checkCompiled();
 
       XQuery_t lXQuery(new XQueryImpl());
 

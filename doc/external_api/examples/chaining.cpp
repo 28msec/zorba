@@ -20,7 +20,7 @@ chaining_example_1(Zorba* aZorba)
 
     XQuery_t lQuery2 = aZorba->compileQuery("declare variable $x external; for $i in $x return $i * $i");
 
-    DynamicContext_t lCtx = lQuery2->getDynamicContext();
+    DynamicContext* lCtx = lQuery2->getDynamicContext();
 
     lCtx->setVariable("x", lIterator);
 
@@ -62,7 +62,7 @@ chaining_example_2(Zorba* aZorba)
 
   XQuery_t lQuery2 = aZorba->compileQuery("declare variable $x external; for $i in $x return $i * $i", &lErrorHandler2);
 
-  DynamicContext_t lCtx = lQuery2->getDynamicContext();
+  DynamicContext* lCtx = lQuery2->getDynamicContext();
 
   lCtx->setVariable("x", lIterator);
 

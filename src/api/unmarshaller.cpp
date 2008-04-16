@@ -17,9 +17,9 @@ namespace zorba {
   }
 
   dynamic_context*
-  Unmarshaller::getInternalDynamicContext(const DynamicContext_t& aCtx)
+  Unmarshaller::getInternalDynamicContext(const DynamicContext* aCtx)
   {
-    return static_cast<DynamicContextImpl*>(aCtx.get())->theCtx; 
+    return static_cast<const DynamicContextImpl*>(aCtx)->theCtx; 
   }
 
   PlanWrapper_t

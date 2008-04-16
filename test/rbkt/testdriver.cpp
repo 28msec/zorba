@@ -161,7 +161,7 @@ printErrors(TestErrorHandler& errHandler)
 // inlineFile specifies whether the given parameter is a file and it's value should
 // be inlined or not
 void
-set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext_t dctx)
+set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
   boost::replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
 
@@ -184,7 +184,7 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 }
 
 void 
-set_vars (Specification* aSpec, zorba::DynamicContext_t dctx) 
+set_vars (Specification* aSpec, zorba::DynamicContext* dctx) 
 {
   for (std::vector<Specification::Variable>::const_iterator lIter = aSpec->variablesBegin();
        lIter != aSpec->variablesEnd(); ++lIter)
@@ -346,7 +346,7 @@ main(int argc, char** argv)
 
 
   // set the variables in the dynamic context
-  zorba::DynamicContext_t lDynCtxt = lQuery->getDynamicContext();
+  zorba::DynamicContext* lDynCtxt = lQuery->getDynamicContext();
 
   if (lSpec.hasDateSet()) {
     // set the current date time such that tests that use fn:current-time behave deterministically

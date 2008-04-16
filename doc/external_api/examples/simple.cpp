@@ -40,9 +40,8 @@ bool
 example_3(Zorba* aZorba)
 {
 
+	XQuery_t lQuery = aZorba->compileQuery("1 div 0"); 
   try {
-    // move this outside if constant folding is fixed
-	  XQuery_t lQuery = aZorba->compileQuery("1 div 0"); 
     std::cout << lQuery << std::endl;
   } catch ( DynamicException& e ) {
     std::cerr <<  e << std::endl;
@@ -140,14 +139,14 @@ example_10( Zorba * aZorba )
   XQuery_t lQuery2 = lQuery1->clone();
 
   ResultIterator_t lIterator1 = lQuery1->iterator();
-  DynamicContext_t lDynContext1 = lQuery1->getDynamicContext();
+  DynamicContext* lDynContext1 = lQuery1->getDynamicContext();
   lDynContext1->setVariable("i", aZorba->getItemFactory()->createInteger(5));
 
   lIterator1->open();
 
   Item lItem;
   while ( lIterator1->next(lItem) ) {
-    DynamicContext_t lDynContext2 = lQuery2->getDynamicContext();
+    DynamicContext* lDynContext2 = lQuery2->getDynamicContext();
     lDynContext2->setVariable("i", lItem);
 
     ResultIterator_t lIterator2 = lQuery2->iterator();

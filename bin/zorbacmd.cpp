@@ -54,7 +54,7 @@ populateStaticContext(zorba::StaticContext_t& aStaticContext, ZorbaCMDProperties
 }
 
 bool
-populateDynamicContext(zorba::DynamicContext_t& aDynamicContext, ZorbaCMDProperties* aProperties)
+populateDynamicContext(zorba::DynamicContext* aDynamicContext, ZorbaCMDProperties* aProperties)
 {
   if ( aProperties->getContextItem().size() != 0 ) {
     std::ifstream lInStream(aProperties->getContextItem().c_str());
@@ -219,7 +219,7 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // populat the dynamic context
-  zorba::DynamicContext_t lDynamicContext = lQuery->getDynamicContext();
+  zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
   try {
     if ( ! populateDynamicContext(lDynamicContext, &lProperties) )
     {

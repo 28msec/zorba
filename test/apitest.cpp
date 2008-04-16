@@ -14,7 +14,7 @@
 using namespace zorba;
 using namespace std;
 
-void set_var (string name, string val, DynamicContext_t dctx)
+void set_var (string name, string val, DynamicContext* dctx)
 {
   if (name [name.size () - 1] == ':') 
   {
@@ -93,7 +93,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // set external variables
   vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
-  DynamicContext_t dctx = query->getDynamicContext ();
+  DynamicContext* dctx = query->getDynamicContext ();
   for (vector<pair <string, string> >::const_iterator iter = ext_vars.begin ();
        iter != ext_vars.end (); iter++) {
     set_var (iter->first, iter->second, dctx);

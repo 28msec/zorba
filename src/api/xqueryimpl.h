@@ -13,6 +13,9 @@
 
 namespace zorba {
 
+  class DynamicContextImpl;
+  class StaticContextImpl;
+
 	class XQueryImpl : public XQuery 
 	{
   public:
@@ -36,10 +39,10 @@ namespace zorba {
     ResultIterator_t
     iterator();
 
-    DynamicContext_t
-    getDynamicContext();
+    DynamicContext*
+    getDynamicContext() const;
 
-    const StaticContext_t
+    const StaticContext*
     getStaticContext() const;
 
     void
@@ -116,6 +119,10 @@ namespace zorba {
     // dynamic stuff
     // one dynamic context that always belongs to a query
     dynamic_context      * theDynamicContext;
+
+    // Caching and holding on to the api context wrappers
+    mutable DynamicContextImpl*    theDynamicContextWrapper;
+    mutable StaticContextImpl*     theStaticContextWrapper;
 
     // utility stuff
     bool                   theUserErrorHandler; // who has ownership of the error handler

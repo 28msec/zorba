@@ -89,7 +89,7 @@ getCompilerHints()
 // inlineFile specifies whether the given parameter is a file and it's value should
 // be inlined or not
 void
-set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext_t dctx)
+set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
   boost::replace_all(val, "$UPDATE_SRC_DIR", zorba::UPDATE_SRC_DIR);
 
@@ -233,7 +233,7 @@ main(int argc, char** argv)
         }
       }
 
-      zorba::DynamicContext_t lDynCtx = lQueries.back()->getDynamicContext();
+      zorba::DynamicContext* lDynCtx = lQueries.back()->getDynamicContext();
       if (lState->hasDate) 
       {
         std::string lDateTime = lState->theDate; 

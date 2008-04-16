@@ -222,16 +222,40 @@ namespace zorba {
       virtual ResultIterator_t
       iterator() = 0;
 
-      // get the static context of this query
-      // you can modify it and afterwards execute the query with the changes that were applied
-      virtual DynamicContext_t
-      getDynamicContext() = 0;
+      /** \brief Get the dynamic context of this query.
+       *
+       * This function returns the dynamic context that belongs to this query and
+       * is used during query execution.
+       * The context can be used, for example, to set values of external variables,
+       * the default collation, or the current datetime.
+       * It is only available if the query has been compiled, otherwise
+       * an error is reported. Moreover, the context must not be modified during the
+       * execution of a query (i.e. if a ResultIterator is opened).
+       * The lifetime of the context returned by this function is restricted
+       * by the lifetime of the according query object.
+       *
+       * @throw SystemException if the query has not been compiled or is closed.
+       * @return DynamicContext of this query.
+       */
+      virtual DynamicContext*
+      getDynamicContext() const = 0;
 
-      // get the static context that belongs to this query
-      // the static context has all the components and values that have been
-      // set before (by supplying a static context) compiling the query and
-      // those that have been changed while compiling the query (e.g. in the query prolog)
-      virtual const StaticContext_t
+      /** \brief Get the static context of this query.
+       *
+       * This function returns the static context that belongs to this query.
+       * The static context is only available if the query has been compiled, otherwise
+       * an error is reported.
+       * The context has all the components and values that have been set by the either
+       * the static context that was passed when creating the query and and those that
+       * were set in the prolog of the query.
+       * Note that after compilation of the query the static context is a read only structure.
+       * Moreover, the lifetime of the context returned by this function is restricted
+       * by the lifetime of the according query object.
+       *
+       * @throw SystemException if the query has not been compiled or is closed.
+       * @return StaticContext of this query.
+       */
+      virtual const StaticContext*
       getStaticContext() const = 0;
 
       virtual void
@@ -268,6 +292,20 @@ namespace zorba {
       virtual void
       close() = 0;
 
+      /** \brief Clone this query object for executing it in another thread.
+       *
+       * A query object is not thread safe, i.e. it can't be executed in several threads.
+       * In order to execute it in another thread it needs to be cloned with this function.
+       * Moreover, this function also clones the StaticContext and DynamicContext of 
+       * the XQuery object. In the DynamicContext of the cloned query different variable
+       * values can be used, e.g. set different external variable values.
+       *
+       * For an example of cloning a query and setting different values in the dynamic context
+       * see example_10 in file \link simple.cpp \endlink.
+       *
+       * @return The cloned XQuery object.
+       * @throw SystemException if the query has not been compiled or is closed.
+       */
       virtual XQuery_t
       clone() const = 0;
 
