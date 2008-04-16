@@ -447,11 +447,11 @@ void Item::getNamespaceBindings(
 /** Accessor for element node
  *  @return  boolean?
  */
-bool Item::getNilled() const
+store::Item_t Item::getNilled() const
 {
   ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return false;
+  return 0;
 }
 
 /** Accessor for document node, element node, attribute node, namespace node,
@@ -575,7 +575,7 @@ xqp_string Item::show() const
 /*******************************************************************************
 
 ********************************************************************************/
-Item* Item::copyXmlTree(const CopyMode& copymode)
+Item* Item::copyXmlTree(const CopyMode& copymode) const
 {
   ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());

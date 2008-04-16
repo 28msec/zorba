@@ -661,8 +661,7 @@ Item_t BasicItemFactory::createAttributeNode(
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
       xmlTree->addReference();
 
-      n = new AttributeNode(xmlTree, assignIds,
-                            name, typeName, typedValue, false, false);
+      n = new AttributeNode(xmlTree, assignIds, name, typeName, typedValue, false);
     }
 
     // We are at a node-constructor expr directly nested inside another
@@ -673,7 +672,7 @@ Item_t BasicItemFactory::createAttributeNode(
 
       parent->checkUniqueAttr(name.getp());
 
-      n = new AttributeNode(parent, name, typeName, typedValue, false, false);
+      n = new AttributeNode(parent, name, typeName, typedValue, false);
     }
   }
   catch (...)

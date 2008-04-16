@@ -87,6 +87,9 @@ private:
   Item_t getEBV() const;
   xqpStringStore_t getStringValue() const;
 
+  bool isId() const;
+  bool isBaseUri() const;
+
   xqp_string show() const;
 };
 

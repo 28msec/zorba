@@ -132,17 +132,19 @@ store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
 store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t inNode;
-  bool res;
   
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   inNode = consumeNext(theChildren[0].getp(), planState);
 
-  if (inNode != NULL && inNode->getNodeKind() == store::StoreConsts::elementNode)
+  if (inNode != NULL)
   {
-    res = (inNode->getParent() != NULL) ? inNode->getNilled() : false;
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(res), state);
+    if (inNode->isNode()) 
+      STACK_PUSH(inNode->getNilled(), state);
+    else
+      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc,
+                           "The argument of the fn:nilled function is not a node");
   }
   
   STACK_END (state);

@@ -104,6 +104,26 @@ xqpStringStore_t QNameItemImpl::getStringValue( ) const
 }
 
 
+bool QNameItemImpl::isId() const
+{
+  if (thePrefix->byteEqual("xml", 3) &&
+      theLocal->byteEqual("id", 2))
+    return true;
+
+  return false;
+}
+
+
+bool QNameItemImpl::isBaseUri() const
+{
+  if (thePrefix->byteEqual("xml", 3) &&
+      theLocal->byteEqual("base", 4))
+    return true;
+
+  return false;
+}
+
+
 xqp_string QNameItemImpl::show() const
 {
   return "xs:QName(" + theNamespace->str() + "," + thePrefix->str() + "," +

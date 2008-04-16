@@ -210,12 +210,16 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   store::Item_t qnameItem;
   store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   store::Item_t node;
-
-  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
-                             final_baseuri().getStore();
+  xqpStringStore_t baseUri;
   
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
+
+  baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
+  if (baseUri->empty())
+  {
+    ZORBA_ERROR_LOC(ZorbaError::XPST0001, loc);
+  }
 
   qnameItem = consumeNext(theQNameIter, planState);
 
@@ -223,7 +227,8 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   // the compiler wraps an xs:qname cast around the expression
   if (qnameItem->getLocalName()->empty())
   {
-    ZORBA_ERROR_DESC( ZorbaError::XQDY0074, "Element name must not have an empty local part.");
+    ZORBA_ERROR_LOC_DESC(ZorbaError::XQDY0074, loc,
+                     "Element name must not have an empty local part.");
   }
 
   if (theChildrenIter != 0)

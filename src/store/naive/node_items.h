@@ -144,7 +144,9 @@ public:
 
   Item_t getEBV() const;
 
-  Item* copyXmlTree(const CopyMode& copymode);
+  virtual Item_t getNilled() const { return 0; }
+
+  Item* copyXmlTree(const CopyMode& copymode) const;
 
   //
   // SimpleStore Methods
@@ -215,7 +217,7 @@ public:
         XmlNode* rootParent,
         XmlNode* parent,
         ulong pos,
-        const CopyMode& copyMode) = 0;
+        const CopyMode& copyMode) const = 0;
 
   virtual ulong numAttributes() const          { return 0; }
   virtual XmlNode* getAttr(ulong i) const      { NODE_STOP; return NULL; }
@@ -297,7 +299,7 @@ public:
         XmlNode* rootParent,
         XmlNode* parent,
         ulong pos,
-        const CopyMode& copyMode);
+        const CopyMode& copyMode) const;
 
   NsBindingsContext* getNsContext() const                { return NULL; }
   xqpStringStore* findBinding(xqpStringStore* pre) const { return NULL; }
@@ -414,7 +416,7 @@ public:
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
-  bool getNilled() const;
+  Item_t getNilled() const;
 
   Iterator_t getAttributes() const;
   Iterator_t getChildren() const;
@@ -454,7 +456,7 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         ulong           pos,
-        const CopyMode& copymode);
+        const CopyMode& copymode) const;
 
   void removeAttributes(
         ulong  pos,
@@ -480,9 +482,14 @@ public:
   void rename(Item_t& newname, Item_t& oldName);
 
 protected:
-  void addBaseUriAttribute(
-        xqpStringStore_t& staticBaseUri,
-        xqpStringStore_t& baseUri);
+  void addBaseUriProperty(
+        xqpStringStore_t& absUri,
+        xqpStringStore_t& relUri);
+
+  void adjustBaseUriProperty(
+        AttributeNode*    attr,
+        xqpStringStore_t& absUri,
+        xqpStringStore_t& relUri);
 };
 
 
@@ -591,9 +598,11 @@ protected:
   xqpStringStore_t getBaseURIInternal(bool& local) const;
 
   void addAttribute(
-        AttributeNode*  cnode,
-        bool            copy,
-        const CopyMode& copymode);
+        AttributeNode*    cnode,
+        bool              copy,
+        const CopyMode&   copymode,
+        xqpStringStore_t& staticBaseUri,
+        bool&             isBaseUri);
 
   void addChild(
         XmlNode*        cnode,
@@ -626,7 +635,6 @@ public:
   AttributeNode(
         Item_t&  attrName,
         Item_t&  typeName,
-        bool     isId,
         bool     isIdrefs);
 
   AttributeNode(
@@ -635,7 +643,6 @@ public:
         Item_t&  attrName,
         Item_t&  typeName,
         Item_t&  typedValue,
-        bool     isId,
         bool     isIdrefs);
 
   AttributeNode(
@@ -644,7 +651,6 @@ public:
         Item_t&   attrName,
         Item_t&   typeName,
         Item_t&   typedValue,
-        bool      isId,
         bool      isIdrefs);
 
   AttributeNode(
@@ -652,7 +658,6 @@ public:
         Item_t&   attrName,
         Item_t&   typeName,
         Item_t&   typedValue,
-        bool      isId,
         bool      isIdrefs);
 
   virtual ~AttributeNode();
@@ -661,7 +666,7 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         ulong           pos,
-        const CopyMode& copymode);
+        const CopyMode& copymode) const;
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::attributeNode; }
 
@@ -727,7 +732,7 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         ulong           pos,
-        const CopyMode& copymode);
+        const CopyMode& copymode) const;
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::textNode; }
 
@@ -781,7 +786,7 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         ulong           pos,
-        const CopyMode& copymode);
+        const CopyMode& copymode) const;
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::piNode; }
 
@@ -834,7 +839,7 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         ulong           pos,
-        const CopyMode& copymode);
+        const CopyMode& copymode) const;
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::commentNode; }
 

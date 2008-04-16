@@ -478,27 +478,10 @@ void XmlLoader::startElement(
       Item_t qname = qnpool.insert(uri, prefix, lname);
       xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
 
-      bool isId;
-      Item_t typeName;
-      Item_t typedValue;
+      Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+      Item_t typedValue = new UntypedAtomicItemImpl(value);
 
-      if (prefix != NULL &&
-          qname->getPrefix()->byteEqual("xml", 3) &&
-          qname->getLocalName()->byteEqual("id", 2))
-      {
-        // TODO: xml:id normalization on the string value
-        isId = true;
-        typeName = store.theSchemaTypeNames[XS_ID];
-        typedValue = new IDItemImpl(value);
-      }
-      else
-      {
-        isId = false;
-        typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-        typedValue = new UntypedAtomicItemImpl(value);
-      }
-
-      AttributeNode* attrNode = new AttributeNode(qname, typeName, isId, false);
+      AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
       attrNode->theParent = elemNode;
       attrNode->setId(loader.theTree, &loader.theOrdPath);
       attrNode->theTypedValue.transfer(typedValue);

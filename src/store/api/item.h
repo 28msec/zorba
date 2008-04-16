@@ -406,7 +406,7 @@ public:
   /** Accessor for element node
    *  @return  boolean?
    */
-  virtual bool
+  virtual Item_t
   getNilled() const;
 
   /** Accessor for document node, element node, attribute node, namespace node,
@@ -479,7 +479,7 @@ public:
    * @param copymode 
    * @return A pointer to the root node of the copied tree 
    */
-  virtual Item* copyXmlTree(const CopyMode& copymode);
+  virtual Item* copyXmlTree(const CopyMode& copymode) const;
 
   /** Method to print to content of the Item
    */
