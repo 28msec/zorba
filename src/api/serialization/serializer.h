@@ -299,12 +299,11 @@ public:
     virtual void emit_node(
         const store::Item * item,
         int depth,
-        const store::Item * element_parent = 0);
+        const store::Item * element_parent);
    
     void emit_node( store::Item * item );
 
-    //virtual void emit_expanded_string(xqpStringStore* str, bool emit_attribute_value);
-    void emit_expanded_string( xqp_string strtext );
+    virtual void emit_expanded_string( xqpStringStore * aStrStore, bool aEmitAttributeValue = false );
     
     virtual int emit_node_children(
         const store::Item* item,
@@ -316,8 +315,6 @@ public:
     virtual bool emit_bindings(const store::Item* item);
         
     virtual void emit_item( const store::Item* item );
-
-    virtual void emit_indentation(int depth);
   };
 };
 } // namespace zorba

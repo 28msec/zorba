@@ -214,8 +214,8 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
     else if ((*chars >> 3) == 0x1e)
       skip = 4;
     
-    const unsigned char* temp = chars;
-    unsigned int cp = UTF8Decode(temp);
+    //const unsigned char* temp = chars;
+    //unsigned int cp = UTF8Decode(temp);
   
     if (skip)
     {
@@ -844,13 +844,14 @@ bool serializer::sax2_emitter::emit_bindings( const store::Item * item )
   return false;
 }
 
-void serializer::sax2_emitter::emit_indentation( int depth ){}
-
-void serializer::sax2_emitter::emit_node( const store::Item * item, int depth, const store::Item * element_parent ){}
+void serializer::sax2_emitter::emit_node( const store::Item * item, int depth, const store::Item * element_parent )
+{
+  emit_node( item, 0, 0 );
+}
 
 int serializer::sax2_emitter::emit_node_children( const store::Item* item, int depth, bool perform_escaping )
 {
-
+  return emit_node_children( item, 0, false );
 }
 
 
@@ -951,12 +952,12 @@ void serializer::sax2_emitter::emit_item(const store::Item* item)
   }  
 }
 
-void serializer::sax2_emitter::emit_expanded_string(xqp_string strtext)
+void serializer::sax2_emitter::emit_expanded_string( xqpStringStore * aStrStore, bool aEmitAttributeValue )
 {
   if ( theSAX2ContentHandler )
   {
     //use xml_emitter to normalize string
-    std::string lStr = expand_string( strtext.getStore(), false );
+    std::string lStr = expand_string( aStrStore, aEmitAttributeValue );
     const String lString( lStr );
     theSAX2ContentHandler->characters( lString );
   }
