@@ -68,7 +68,7 @@ class XMLSerializer: public SAX2_ContentHandler
     void skippedEntity( const	String & name ){}
 };
 
-int simple_sax( int argc, char * argv[] )
+int sax2( int argc, char * argv[] )
 {
   XMLSerializer lContentHandler( std::cerr );
   Zorba * lZorba = Zorba::getInstance();

@@ -2,7 +2,7 @@
 CREATE_TEST_SOURCELIST(examples
 	examples.cpp
 	simple.cpp
-  simple_sax.cpp
+  sax2.cpp
   errors.cpp
   context.cpp
   serialization.cpp
