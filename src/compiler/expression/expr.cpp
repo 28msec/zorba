@@ -1101,14 +1101,23 @@ void text_expr::next_iter (expr_iterator_data& v) {
 }
 
 xqtref_t text_expr::return_type_impl (static_context *sctx) {
-  rchandle<NodeTest>  nt;
+  rchandle<NodeTest> nt;
+  TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
   switch (type) {
-  case text_constructor: nt = NodeTest::TEXT_TEST; break;
+  case text_constructor: {
+    xqtref_t t  = get_text ()->return_type (sctx);
+    if (TypeOps::is_equal (*t, *GENV_TYPESYSTEM.EMPTY_TYPE))
+      return t;
+    else if (TypeOps::type_min_cnt (*t) == 0)
+      q = TypeConstants::QUANT_QUESTION;
+    nt = NodeTest::TEXT_TEST;
+    break;
+  }
   case comment_constructor: nt = NodeTest::COMMENT_TEST; break;
   case pi_constructor: nt = NodeTest::PI_TEST; break;
   default: assert (false); break;
   }
-  return sctx->get_typemanager ()->create_node_type (nt, text == NULL ? NULL : text->return_type (sctx), TypeConstants::QUANT_ONE);
+  return sctx->get_typemanager ()->create_node_type (nt, text == NULL ? NULL : text->return_type (sctx), q);
 }
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
