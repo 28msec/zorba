@@ -68,6 +68,8 @@ static_context::static_context()
   :
   context(NULL)
 {
+  set_encapsulating_entity_baseuri ("");
+  set_entity_file_uri ("");
 }
 
   
@@ -118,8 +120,8 @@ DECL_ENUM_PARAM (static_context, preserve_mode)
 DECL_ENUM_PARAM (static_context, xpath1_0compatib_mode)
 DECL_ENUM_PARAM (static_context, ordering_mode)
 
-//  DECL_STR_PARAM (static_context, baseuri)
-//  DECL_STR_PARAM (static_context, default_collation)
+// DECL_STR_PARAM (static_context, baseuri)
+// DECL_STR_PARAM (static_context, default_collation)
 DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
 DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
 DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
@@ -422,12 +424,6 @@ static_context::set_default_collation_uri(const xqp_string& aURI)
 }
 
 
-
-/*
-  DECL_STR_PARAM (static_context, current_absolute_baseuri)
-  DECL_STR_PARAM (static_context, encapsulating_entity_baseuri)
-  DECL_STR_PARAM (static_context, entity_file_uri)
-*/
 xqp_string static_context::baseuri () const 
 {
   xqp_string val;                                        
@@ -458,41 +454,34 @@ void static_context::compute_current_absolute_baseuri()
 	xqp_string		loaded_uri;
 
 	prolog_baseuri = baseuri();
-	if(((std::string)prolog_baseuri).find("://") != std::string::npos)
-	{
-		//is already absolute baseuri
+  cout << "PBU " << prolog_baseuri << endl;
+	if(((std::string)prolog_baseuri).find("://") != std::string::npos) {
+		// is already absolute baseuri
 		set_current_absolute_baseuri(prolog_baseuri);
 		return;
-	}
-	else if(!prolog_baseuri.empty())
-	{
-		///is relative, needs to be resolved
+	} else if (!prolog_baseuri.empty()) {
+		/// is relative, needs to be resolved
 		ee_baseuri = encapsulating_entity_baseuri();
-		if(!ee_baseuri.empty())
-		{
+		if(!ee_baseuri.empty()) {
 			set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
 			return;
 		}
 		loaded_uri = entity_file_uri();
-		if(!loaded_uri.empty())
-		{
+		if(!loaded_uri.empty()) {
 			set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
 			return;
 		}
 
-	//	set_current_absolute_baseuri("");
 		return;
 	}
 
 	ee_baseuri = encapsulating_entity_baseuri();
-	if(!ee_baseuri.empty())
-	{
+	if(!ee_baseuri.empty()) {
 		set_current_absolute_baseuri(ee_baseuri);
 		return;
 	}
 	loaded_uri = entity_file_uri();
-	if(!loaded_uri.empty())
-	{
+	if(!loaded_uri.empty()) {
 		set_current_absolute_baseuri(loaded_uri);
 		return;
 	}
@@ -523,7 +512,7 @@ xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_
 
 	if(abs_base_uri.empty())
 	{
-		//then error ! cannot resolve relative uri
+		// cannot resolve relative uri
 		ZORBA_ERROR_DESC( ZorbaError::XPST0001, "empty base URI");
 		return "";
 	}

@@ -72,11 +72,6 @@ Module::Module(
 }
 
 
-// ostream& Module::put(ostream& os) const
-// {
-//   return os;
-// }
-
 //-Module::
 
 void Module::accept(parsenode_visitor& v) const
@@ -99,11 +94,6 @@ VersionDecl::VersionDecl(
 {
 }
 
-
-// ostream& VersionDecl::put(ostream& os) const
-// {
-//   return os;
-// }
 
 //-VersionDecl::
 
@@ -138,14 +128,6 @@ MainModule::MainModule(
 }
 
 
-// ostream& MainModule::put(ostream& s) const
-// {
-//   s << INDENT << "MainModule[" << endl;
-//   if (prolog_h!=NULL) prolog_h->put(s);
-//   query_body_h->put(s);
-//   return s << OUTDENT << "]\n";
-// }
-
 //-MainModule::
 
 void MainModule::accept(parsenode_visitor& v) const
@@ -171,14 +153,6 @@ LibraryModule::LibraryModule(
 {
 }
 
-
-// ostream& LibraryModule::put(ostream& s) const
-// {
-//   s << INDENT << "LibraryModule[" << endl;
-//   if (decl_h!=NULL) decl_h->put(s);
-//   prolog_h->put(s);
-//   return s << OUTDENT << "]\n";
-// }
 
 //-LibraryModule::
 
@@ -228,14 +202,6 @@ Prolog::Prolog(
 }
 
 
-// ostream& Prolog::put(ostream& s) const
-// {
-//   s << INDENT << "Prolog[" << endl;
-//   if (sind_list_h!=NULL) sind_list_h->put(s);
-//   if (vfo_list_h!=NULL) vfo_list_h->put(s);
-//   return s << OUTDENT << "]\n";
-// }
-
 //-Prolog::
 
 void Prolog::accept(parsenode_visitor& v) const
@@ -257,22 +223,14 @@ SIND_DeclList::SIND_DeclList(
 }
 
 
-// ostream& SIND_DeclList::put(ostream& s) const
-// {
-//   s << INDENT << "SIND_DeclList[" << endl;
-//   vector<rchandle<parsenode> >::const_iterator it = sind_hv.begin();
-//   for (; it!=sind_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-//   return s << OUTDENT << "]\n";
-// }
-
 //-SIND_DeclList::
 
 void SIND_DeclList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
 
-  for (vector<rchandle<parsenode> >::const_reverse_iterator it = sind_hv.rbegin();
-       it!=sind_hv.rend(); ++it)
+  for (vector<rchandle<parsenode> >::const_iterator it = sind_hv.begin();
+       it!=sind_hv.end(); ++it)
   {
     ACCEPT_CHK ((*it));
   }
@@ -353,17 +311,6 @@ BoundarySpaceDecl::BoundarySpaceDecl(
 }
 
 
-// ostream& BoundarySpaceDecl::put(ostream& s) const
-// {
-//   s << INDENT << "BoundarySpaceDecl[";
-//   switch (mode) {
-//   case StaticContextConsts::preserve_space: s << "preserve"; break;
-//   case StaticContextConsts::strip_space: s << "strip"; break;
-//   default: s << "???";
-//   }
-//   return s << OUTDENT << "]\n";
-// }
-
 //-BoundarySpaceDecl::
 
 void BoundarySpaceDecl::accept(parsenode_visitor& v) const
@@ -386,17 +333,6 @@ DefaultNamespaceDecl::DefaultNamespaceDecl(
 {
 }
 
-
-// ostream& DefaultNamespaceDecl::put(ostream& s) const
-// {
-//   s << INDENT << "DefaultNamespaceDecl[";
-//   switch (mode) {
-//   case ns_element_default: s << "element: "; break;
-//   case ns_function_default: s << "function: "; break;
-//   default: s << "???";
-//   }
-//   return s << default_namespace << "]\n";
-// }
 
 //-DefaultNamespaceDecl::
 
@@ -421,14 +357,6 @@ OptionDecl::OptionDecl(
 }
 
 
-// ostream& OptionDecl::put(ostream& s) const
-// {
-//   s << INDENT << "OptionDecl[";
-//   if (qname_h!=NULL) qname_h->put(s);
-//   s << " " << val << endl;
-//   return s << OUTDENT << "]\n";
-// }
-
 //-OptionDecl::
 
 void OptionDecl::accept(parsenode_visitor& v) const
@@ -450,13 +378,6 @@ FTOptionDecl::FTOptionDecl(
 {
 }
 
-
-// ostream& FTOptionDecl::put(ostream& s) const
-// {
-//   s << INDENT << "FTOptionDecl[";
-//   if (match_option_h!=NULL) match_option_h->put(s);
-//   return s << OUTDENT << "]\n";
-// }
 
 //-FTOptionDecl::
 
@@ -480,17 +401,6 @@ OrderingModeDecl::OrderingModeDecl(
 }
 
 
-// ostream& OrderingModeDecl::put(ostream& s) const
-// {
-//   s << INDENT << "OrderingModeDecl[";
-//   switch (mode) {
-//   case StaticContextConsts::ordered: s << "ordered"; break;
-//   case StaticContextConsts::unordered: s << "unordered"; break;
-//   default: s << "???";
-//   }
-//   return s << OUTDENT << "]\n";
-// }
-
 //-OrderingModeDecl::
 
 void OrderingModeDecl::accept(parsenode_visitor& v) const
@@ -511,17 +421,6 @@ EmptyOrderDecl::EmptyOrderDecl(
 {
 }
 
-
-// ostream& EmptyOrderDecl::put(ostream& s) const
-// {
-//   s << INDENT << "EmptyOrderDecl[";
-//   switch (mode) {
-//   case StaticContextConsts::empty_greatest: s << "greatest"; break;
-//   case StaticContextConsts::empty_least: s << "least"; break;
-//   default: s << "???";
-//   }
-//   return s << OUTDENT << "]\n";
-// }
 
 //-EmptyOrderDecl::
 
@@ -545,21 +444,6 @@ CopyNamespacesDecl::CopyNamespacesDecl(
 {
 }
 
-
-// ostream& CopyNamespacesDecl::put(ostream& s) const
-// {
-//   s << INDENT << "CopyNamespacesDecl[";
-//   switch (preserve_mode) {
-//   case StaticContextConsts::preserve_ns: s << "preserve"; break;
-//   case StaticContextConsts::no_preserve_ns: s << "no preserve"; break;
-//   }
-//   s << ", ";
-//   switch (inherit_mode) {
-//   case StaticContextConsts::inherit_ns: s << "inherit"; break;
-//   case StaticContextConsts::no_inherit_ns: s << "no inherit"; break;
-//   }
-//   return s << OUTDENT << "]\n";
-// }
 
 //-CopyNamespacesDecl::
 
@@ -589,13 +473,6 @@ DefaultCollationDecl::DefaultCollationDecl(
 }
 
 
-// ostream& DefaultCollationDecl::put(ostream& s) const
-// {
-//   s << INDENT << "DefaultCollationDecl[";
-//   s << "collation=" << collation << endl;
-//   return s << OUTDENT << "]\n";
-// }
-
 //-DefaultCollationDecl::
 
 void DefaultCollationDecl::accept(parsenode_visitor& v) const
@@ -616,13 +493,6 @@ BaseURIDecl::BaseURIDecl(
 {
 }
 
-
-// ostream& BaseURIDecl::put(ostream& s) const
-// {
-//   s << INDENT << "BaseURIDecl[";
-//   s << base_uri;
-//   return s << OUTDENT << "]\n";
-// }
 
 //-BaseURIDecl::
 
@@ -649,15 +519,6 @@ SchemaImport::SchemaImport(
 }
 
 
-// ostream& SchemaImport::put(ostream& s) const
-// {
-//   s << INDENT << "SchemaImport[";
-//   if (prefix_h!=NULL) prefix_h->put(s);
-//   s << "uri=" << uri << endl;
-//   if (at_list_h!=NULL) at_list_h->put(s);
-//   return s << OUTDENT << "]\n";
-// }
-
 //-SchemaImport::
 
 void SchemaImport::accept(parsenode_visitor& v) const
@@ -679,24 +540,17 @@ URILiteralList::URILiteralList(
 }
 
 
-// ostream& URILiteralList::put(ostream& s) const
-// {
-//   s << INDENT << "URILiteralList[" << endl;
-//   ++printdepth;
-//   vector<string>::const_iterator it = uri_v.begin();
-//   for (; it!=uri_v.end(); ++it) { s << *it << endl; }
-//   return s << OUTDENT << "]\n";
-// }
-
 //-URILiteralList::
 
 void URILiteralList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+#if 0
   vector<string>::const_reverse_iterator it = uri_v.rbegin();
   for (; it!=uri_v.rend(); ++it) {
     // ..do something useful
   }
+#endif
   END_VISITOR ();
 }
 
