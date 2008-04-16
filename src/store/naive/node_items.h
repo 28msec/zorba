@@ -480,7 +480,9 @@ public:
   void rename(Item_t& newname, Item_t& oldName);
 
 protected:
-  void addBaseUriAttribute(xqpStringStore_t& baseUri);
+  void addBaseUriAttribute(
+        xqpStringStore_t& staticBaseUri,
+        xqpStringStore_t& baseUri);
 };
 
 
@@ -569,6 +571,7 @@ public:
         Iterator*         childrenIte,
         const NsBindings& nsBindings,
         xqpStringStore_t& staticBaseUri,
+        bool              isRoot,
         bool              copy,
         const CopyMode&   copymode);
 

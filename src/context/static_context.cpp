@@ -429,7 +429,8 @@ xqp_string static_context::baseuri () const
   xqp_string val;                                        
   if(!context_value ("int:" "from_prolog_baseuri", val))  // if not found val remains ""
   {
-    context_value("int:" "baseuri", val);
+    if (!context_value("int:" "baseuri", val))
+      val = current_absolute_baseuri();
   }
   return val;
 }
@@ -488,11 +489,13 @@ void static_context::compute_current_absolute_baseuri()
 }
 
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri) {
-  xqp_string result;
-  URI::error_t err = URI::resolve_relative (uri, base_uri, result);
+  xqpStringStore_t result;
+  xqpStringStore_t urip = uri.getStore();
+  xqpStringStore_t base_urip = base_uri.getStore();
+  URI::error_t err = URI::resolve_relative (urip, base_urip, result);
   switch (err) {
   case URI::MAX_ERROR_CODE:
-    return result;
+    return result.getp();
   default:
     ZORBA_ERROR (ZorbaError::FORG0002);
   }

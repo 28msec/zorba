@@ -555,13 +555,12 @@ Item_t BasicItemFactory::createElementNode(
       parent = ctx.top();
 
       n = new ConstrElementNode(parent, name, typeName);
-      baseUri = NULL;
     }
 
     ctx.push(n);
 
     n->constructSubtree(attrsIter, childrenIter, localBindings,
-                        baseUri, copy, copymode);
+                        baseUri, isRoot, copy, copymode);
 
     ctx.pop();
   }

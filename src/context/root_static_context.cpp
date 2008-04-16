@@ -42,7 +42,7 @@ void root_static_context::init()
   set_preserve_mode(StaticContextConsts::preserve_ns);
   set_default_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
-  set_current_absolute_baseuri("");
+  set_current_absolute_baseuri("http://www.flworfound.org");
 }
 
 root_static_context::~root_static_context()

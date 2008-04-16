@@ -11,45 +11,61 @@ XERCES_CPP_NAMESPACE_USE
 
 namespace zorba {
 
-  class XMLChArray {
-    XMLCh *buf;
+class XMLChArray 
+{
+  XMLCh *buf;
     
-  public:
-    XMLChArray (XMLCh *buf_) : buf (buf_) {}
-    XMLChArray (xqp_string str)
-      : buf (XMLString::transcode (str.c_str ()))
-    {}
-    XMLCh *get () { return buf; }
-    ~XMLChArray () { XMLString::release (&buf); }
-  };
+public:
+  XMLChArray (XMLCh *buf_) : buf (buf_) {}
 
-  bool URI::is_valid (xqp_string uri) {
-    XMLChArray xuri (uri);
-    return XMLUri::isValidURI (true, xuri.get ());
-  }
+  XMLChArray (const char* str) : buf (XMLString::transcode (str)) {}
 
-  URI::error_t URI::resolve_relative (xqp_string base, xqp_string rel, xqp_string &result) {
-    XMLChArray xbase (base), xrel (rel);
-    try {
-      if (! XMLUri::isValidURI (true, xbase.get ()) || ! XMLUri::isValidURI (true, xrel.get ()))
-        return URI::INVALID_URI;
-      if (XMLUri::isValidURI (false, xrel.get ())
-          || ! XMLUri::isValidURI (false, xbase.get ()))
-      {
-        result = rel;
-      } else {
-        XMLUri baseuri (xbase.get ());
-        XMLUri resuri (&baseuri, xrel.get ());
-        char *raw_result = XMLString::transcode (resuri.getUriText ());
-        result = xqp_string (raw_result);
-        delete [] raw_result;
-      }
-    } catch (MalformedURLException &e) {
-      return URI::RESOLUTION_ERROR;
+  XMLCh *get () { return buf; }
+
+  ~XMLChArray () { XMLString::release (&buf); }
+};
+
+
+bool URI::is_valid (const xqpStringStore_t& uri) 
+{
+  XMLChArray xuri(uri->c_str());
+  return XMLUri::isValidURI (true, xuri.get ());
+}
+
+
+URI::error_t URI::resolve_relative (
+    const xqpStringStore_t&  base,
+    const xqpStringStore_t&  rel,
+    xqpStringStore_t&        result)
+{
+  XMLChArray xbase (base->c_str()), xrel (rel->c_str());
+  try
+  {
+    if (! XMLUri::isValidURI (true, xbase.get ()) ||
+        ! XMLUri::isValidURI (true, xrel.get ()))
+      return URI::INVALID_URI;
+
+    if (XMLUri::isValidURI (false, xrel.get ())
+        || ! XMLUri::isValidURI (false, xbase.get ()))
+    {
+      result = rel;
     }
-
-    return URI::MAX_ERROR_CODE;
+    else
+    {
+      XMLUri baseuri (xbase.get ());
+      XMLUri resuri (&baseuri, xrel.get ());
+      char *raw_result = XMLString::transcode (resuri.getUriText ());
+      result = new xqpStringStore(raw_result);
+      delete [] raw_result;
+    }
   }
+  catch (MalformedURLException &e)
+  {
+    return URI::RESOLUTION_ERROR;
+  }
+
+  return URI::MAX_ERROR_CODE;
+}
 
 #if 0  // old relative URI resolution code -- might be useful for low footprint
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri)

@@ -32,7 +32,6 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
   xqp_string description;
   std::vector<store::Item_t> lErrorObject; 
 
-
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -57,22 +56,27 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
 store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t item;
-  xqp_string strRelative;
-  xqp_string strBase;
-  xqp_string strResult;
+  xqpStringStore_t strRelative;
+  xqpStringStore_t strBase;
+  xqpStringStore_t strResult;
   URI::error_t err;
   
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   //TODO:check if both relative and base uri's are valid. If not raise err:FORG0002.
-  item = consumeNext(theChildren[0].getp(), planState );
-  if ( item != NULL ){
-    strRelative = item->getStringValue().getp();
-    item = consumeNext(theChildren[1].getp(), planState );
-    strBase = item->getStringValue().getp();
+  item = consumeNext(theChildren[0], planState );
+  if ( item != NULL )
+  {
+    strRelative = item->getStringValue();
+
+    item = consumeNext(theChildren[1], planState );
+    strBase = item->getStringValue();
+
     err = URI::resolve_relative (strBase, strRelative, strResult);
-    switch (err) {
+
+    switch (err) 
+    {
     case URI::INVALID_URI:
       ZORBA_ERROR (ZorbaError::FORG0002);
       break;
@@ -82,7 +86,8 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
     case URI::MAX_ERROR_CODE:
       break;
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createString(strResult.getStore()), state);
+
+    STACK_PUSH(GENV_ITEMFACTORY->createString(strResult), state);
   }
 
   //TODO fix the implementation
