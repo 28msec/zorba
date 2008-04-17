@@ -1,0 +1,6 @@
+#!/bin/bash
+BUILDDIR=$1
+D=$BUILDDIR/test/rbkt/CompilerResults/IterPlan
+for f in `cd $D; find . -name *.iter`; do
+ cp $D/$f `dirname $0`/ExpCompilerResults/IterPlan/$f
+done

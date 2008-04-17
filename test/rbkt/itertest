@@ -16,6 +16,6 @@ if test $STATUS -ne 0; then
    echo; echo 'Difference:'
    cat $OUT.iter.diff
 else
-   rm $OUT.*
+   rm $OUT.iter.diff
 fi
 exit $STATUS
