@@ -487,10 +487,11 @@ void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::v
   const bool *a = action ();
   switch (k) {
   case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
-    if (parent->get_annotation (k) == TSVAnnotationValue::TRUE_VAL || (k == AnnotationKey::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT))
-      TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::TRUE_VAL);
+  case AnnotationKey::IGNORES_DUP_NODES: {
+    bool ignores = (parent->get_annotation (k) == TSVAnnotationValue::TRUE_VAL || (k == AnnotationKey::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT));
+    TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::from_bool (ignores));
     break;
+  }
   default: break;
   }
 }
