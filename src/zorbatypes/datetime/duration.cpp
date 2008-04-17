@@ -501,17 +501,12 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
 
 Decimal DayTimeDuration::operator/(const DurationBase& db) const
 {
-  long lLong = days * NO_SEC_IN_DAY + timeDuration.total_seconds()+ timeDuration.fractional_seconds();
-  Decimal op1 = Decimal::parseLong(lLong);
-  if( is_negative )
-    op1 = -op1;
-
+  Decimal op1, op2;
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  long lLong2 = dtd.days * NO_SEC_IN_DAY + dtd.timeDuration.total_seconds() + dtd.timeDuration.fractional_seconds();
-  Decimal op2 = Decimal::parseLong(lLong2);
-  if( is_negative )
-    op2 = -op2;
-
+  
+  assert(Decimal::parseNativeDouble(getTotalSeconds(), op1));
+  assert(Decimal::parseNativeDouble(dtd.getTotalSeconds(), op2));
+  
   return op1/op2;
 }
 
@@ -544,6 +539,12 @@ double DayTimeDuration::getSeconds() const
 {
   double frac_sec = double(timeDuration.fractional_seconds()) / boost::posix_time::time_duration::ticks_per_second();
   return (is_negative? -1 : 1) * (timeDuration.seconds()+frac_sec);
+}
+
+double DayTimeDuration::getTotalSeconds() const
+{
+  double frac_sec = double(timeDuration.fractional_seconds()) / boost::posix_time::time_duration::ticks_per_second();
+  return (is_negative? -1 : 1) * (days*NO_SEC_IN_DAY + timeDuration.total_seconds() + frac_sec);
 }
 
 // parse a 'nS' string, with fractional seconds, returns true on success and false on failure

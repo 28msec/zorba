@@ -214,6 +214,9 @@ namespace zorba
 
       virtual double
       getSeconds() const;
+      
+      double
+      getTotalSeconds() const;
 
       bool
       isNegative() const { return is_negative; }
