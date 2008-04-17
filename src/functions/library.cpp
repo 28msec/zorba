@@ -29,6 +29,10 @@
 #include "functions/arithmetic.h"
 #include "functions/Nodes.h"
 
+#ifdef ZORBA_WITH_REST
+#include "functions/Rest.h"
+#endif
+
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
@@ -1270,6 +1274,18 @@ DECL(zor_numgen,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 // end zorba functions
+
+#ifdef ZORBA_WITH_REST
+// zorba-rest functions
+DECL(rest_get_1,
+     (ITEM_FACTORY.createQName("http://www.flworfound.org/", "zorba-rest", "get"),
+     GENV_TYPESYSTEM.STRING_TYPE_ONE, // need to make this an ANY_URI_TYPE_ONE
+     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// DECL(rest_get_2,
+//      (ITEM_FACTORY.createQName("http://www.flworfound.org/", "zorba-rest", "get"),
+//      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+#endif
 
 // begin context functions
 DECL(ctx_variable,

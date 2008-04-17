@@ -2,6 +2,7 @@
 #include "context/root_static_context.h"
 #include "context/namespace_context.h"
 #include "system/globalenv.h"
+#include "common/common.h"
 
 namespace zorba {
 
@@ -12,6 +13,9 @@ static const char *default_ns_initializers [] = {
   "xsi", XSI_NS,
   "local", XQUERY_LOCAL_FN_NS,
   "err", XQUERY_ERR_NS,
+#ifdef ZORBA_WITH_REST
+  "zorba-rest", "http://www.flworfound.org/rest/",
+#endif
   NULL, NULL
 };
 

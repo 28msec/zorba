@@ -544,6 +544,10 @@ public:
   PRINTER_VISITOR(RenameIterator);
   PRINTER_VISITOR(TransformIterator);
   PRINTER_VISITOR(FnDeepEqualIterator);
+
+#ifdef ZORBA_WITH_REST
+  PRINTER_VISITOR(ZorbaRestGetIterator);
+#endif
 };
 
 } /* namespace zorba */

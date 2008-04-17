@@ -24,6 +24,7 @@
 #ifndef ZORBA_PLAN_ITERATOR_H
 #define ZORBA_PLAN_ITERATOR_H
 
+#include "util/Assert.h"
 #include "store/api/item.h"
 #include "common/shared_types.h"
 #include "compiler/api/compilercb.h"
@@ -68,7 +69,7 @@
   case __LINE__:                                               \
     stateObject->setDuffsLine(__LINE__ + 1);                   \
   case __LINE__ + 1:                                           \
-    assert (false && "nextImpl() called past iterator end");   \
+    ZORBA_ASSERT (false && "nextImpl() called past iterator end");   \
     return NULL;                                               \
   default:                                                     \
     return NULL;                                               \
@@ -395,7 +396,7 @@ protected:
   {
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
 #ifndef NDEBUG
-    assert(lState->theIsOpened); // open must hve been called before
+    ZORBA_ASSERT(lState->theIsOpened); // open must hve been called before
 #endif
     uint32_t i = 0;
     do
@@ -409,7 +410,7 @@ protected:
   {
 #ifndef NDEBUG
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-    assert(lState->theIsOpened); // open must have been called before
+    ZORBA_ASSERT(lState->theIsOpened); // open must have been called before
 #endif
     return static_cast<const IterType*>(this)->nextImpl(planState);
   }
@@ -421,7 +422,7 @@ protected:
 #ifndef NDEBUG
     // do it after openImpl because the state is created there
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-    assert( ! lState->theIsOpened ); // don't call open twice
+    ZORBA_ASSERT( ! lState->theIsOpened ); // don't call open twice
     lState->theIsOpened = true;
 #endif
   }
@@ -430,7 +431,7 @@ protected:
   {
 #ifndef NDEBUG
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-    assert( lState->theIsOpened ); // must be open
+    ZORBA_ASSERT( lState->theIsOpened ); // must be open
 #endif
     static_cast<const IterType*>(this)->resetImpl(planState);
   }

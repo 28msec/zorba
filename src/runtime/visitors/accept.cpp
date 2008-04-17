@@ -22,6 +22,9 @@
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/update/update.h"
 #include "runtime/qnames/QNamesImpl.h"
+#ifdef ZORBA_WITH_REST
+#include "runtime/rest/rest.h"
+#endif
 #include "store/api/iterator.h"
 
 #define NOARY_ACCEPT(type) \

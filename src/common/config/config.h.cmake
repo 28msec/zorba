@@ -46,6 +46,10 @@
 #cmakedefine HAVE_EXECINFO_H
 #cmakedefine HAVE_FLEXLEXER_H
 
+/* rest support */
+#cmakedefine HAVE_CURL_H
+#cmakedefine ZORBA_WITH_REST
+
 /* function checks */
 #cmakedefine HAVE_STRTOF_FUNCTION    
 #cmakedefine HAVE_STRICMP_FUNCTION   

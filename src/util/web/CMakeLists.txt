@@ -1,11 +1,11 @@
-IF(WITH_CURL)
+IF(HAVE_CURL_H)
 
   SET(WEB_SRCS
     web_curl.cpp)
 
-ELSE(WITH_CURL)
+ELSE(HAVE_CURL_H)
 
   SET(WEB_SRCS
     web_none.cpp)
 
-ENDIF(WITH_CURL)
+ENDIF(HAVE_CURL_H)

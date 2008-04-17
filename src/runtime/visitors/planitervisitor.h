@@ -1,6 +1,8 @@
 #ifndef ZORBA_PLANITERVISITOR_H
 #define ZORBA_PLANITERVISITOR_H
 
+#include "common/common.h"
+
 namespace zorba
 {
   class xqpStringStore;
@@ -185,6 +187,10 @@ namespace zorba
   class FnLangIterator;
   class FnCollectionIterator;
   class FnDeepEqualIterator;
+
+#ifdef ZORBA_WITH_REST
+  class ZorbaRestGetIterator;
+#endif
 
 #define PLAN_ITER_VISTOR(class)    \
   virtual void beginVisit ( const class& ) = 0;  \
@@ -706,6 +712,10 @@ namespace zorba
       PLAN_ITER_VISTOR(RenameIterator);
       PLAN_ITER_VISTOR(TransformIterator);
       PLAN_ITER_VISTOR(FnDeepEqualIterator);
+
+#ifdef ZORBA_WITH_REST
+      PLAN_ITER_VISTOR(ZorbaRestGetIterator);
+#endif
 	  
   }; /* class PlanIterVisitor */
 } /* namespace zorba */

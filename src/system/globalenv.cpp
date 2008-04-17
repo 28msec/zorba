@@ -5,6 +5,12 @@
 #include <unicode/uclean.h>
 #endif//#ifndef ZORBA_NO_UNICODE
 
+#include "common/common.h"
+
+#ifdef ZORBA_WITH_REST
+#include <curl/curl.h>
+#endif
+
 #include "zorbatypes/m_apm.h"
 
 #include "globalenv.h"
@@ -102,6 +108,10 @@ void GlobalEnvironment::init()
   // free it at the end, i.e. when zorba is shutdown
   LIBXML_TEST_VERSION
 
+#ifdef ZORBA_WITH_REST
+  curl_global_init(CURL_GLOBAL_ALL);
+#endif
+
   m_globalEnv->m_compilerSubSys = XQueryCompilerSubsystem::create();
 }
 
@@ -115,6 +125,10 @@ void GlobalEnvironment::destroy()
   // LIBXML_TEST_VERSION if he wants to use libxml2
   // beyond the lifecycle of zorba
   xmlCleanupParser(); 
+
+#ifdef ZORBA_WITH_REST
+  curl_global_cleanup();
+#endif
 
   // release resources aquired by the mapm library
   // this will force zorba users to reinit mapm

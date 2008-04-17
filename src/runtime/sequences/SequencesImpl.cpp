@@ -1338,9 +1338,9 @@ static store::Item_t get_doc (xqpStringStore *uriString, const char **err)
   if (doc == NULL)
   {
     xqp_string uriCopy = uriString;
-
     if (uriCopy.lowercase().indexOf("http://") == 0)
     {
+#ifdef HAVE_CURL_H
       // retrieve web file
       xqp_string xmlString;
       int result = http_get(uriCopy.c_str(), xmlString);
@@ -1356,6 +1356,10 @@ static store::Item_t get_doc (xqpStringStore *uriString, const char **err)
       {
         *err = "Failed to parse document."; return NULL;
       }
+#else
+      *err = "Can't perform HTTP request. Please build Zorba with libcurl."; 
+      return NULL;
+#endif
     }
     else 
     {

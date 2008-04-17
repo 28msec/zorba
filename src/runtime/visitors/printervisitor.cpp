@@ -1,5 +1,7 @@
 #include <sstream>
 
+#include "common/common.h"
+
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/context/ContextImpl.h"
 #include "runtime/core/item_iterator.h"
@@ -21,6 +23,9 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
+#ifdef ZORBA_WITH_REST
+#include "runtime/rest/rest.h"
+#endif
 #include "types/root_typemanager.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
@@ -1902,6 +1907,9 @@ void PrinterVisitor::endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(RenameIterator);
   PRINTER_VISITOR_DEFINITION(TransformIterator);
   PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator);
+#ifdef ZORBA_WITH_REST
+  PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);
+#endif
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */
 
