@@ -37,8 +37,8 @@ public:
   static const char* XML_URI;
 
 protected:
-  static const float DEFAULT_HASH_LOAD_FACTOR;
   static const ulong DEFAULT_COLLECTION_MAP_SIZE;
+  static const ulong NAMESPACE_POOL_SIZE;
 
 public:
   xqpStringStore_t         theEmptyNs;

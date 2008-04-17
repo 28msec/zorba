@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_UTIL_STRING_HANDLE_HASHSET
-#define ZORBA_STORE_UTIL_STRING_HANDLE_HASHSET
+#ifndef ZORBA_SIMPLE_STORE_STRING_POOL
+#define ZORBA_SIMPLE_STORE_STRING_POOL
 
 #include "common/common.h"
 #include "zorbatypes/xqpstring.h"
@@ -12,14 +12,12 @@ namespace zorba { namespace store {
 /*******************************************************************************
   A hash-based set container of string rchandles, where equality is based on
   string value.
+
+  It is used to implement a pool of URI strings.
 ********************************************************************************/
 class StringPool : public HashSet<xqpStringStore_t, StringPool>
 {
 public:
-  static const ulong DEFAULT_POOL_SIZE;
-  static const float DEFAULT_LOAD_FACTOR;
-
-
   static bool equal(const xqpStringStore_t& s1, const xqpStringStore_t& s2)
   {
     return s1->byteEqual(*s2);

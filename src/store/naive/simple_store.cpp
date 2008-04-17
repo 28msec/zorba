@@ -13,9 +13,9 @@
 #include "util/hashfun.h"
 #include "util/properties.h"
 
-#include "store/util/handle_hashset_string.h"
 #include "store/util/pointer_hashmap_string.h"
 
+#include "store/naive/string_pool.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_collection.h"
@@ -32,8 +32,7 @@ namespace zorba { namespace store {
 
 typedef rchandle<TempSeq> TempSeq_t;
 
-const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6f;
-
+const ulong SimpleStore::NAMESPACE_POOL_SIZE = 128;
 const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
@@ -48,7 +47,7 @@ SimpleStore::SimpleStore()
   theIsInitialized(false),
   theUriCounter(0),
   theTreeCounter(1),
-  theNamespacePool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
+  theNamespacePool(new StringPool(NAMESPACE_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE),

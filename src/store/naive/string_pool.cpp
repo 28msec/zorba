@@ -1,12 +1,8 @@
 
 #include "errors/fatal.h"
-#include "store/util/handle_hashset_string.h"
+#include "store/naive/string_pool.h"
 
 namespace zorba { namespace store {
-
-const ulong StringPool::DEFAULT_POOL_SIZE = 1024;
-const float StringPool::DEFAULT_LOAD_FACTOR = 0.6f;
-
 
 /*******************************************************************************
 
