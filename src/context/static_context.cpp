@@ -435,9 +435,12 @@ xqp_string static_context::baseuri () const
 void static_context::set_baseuri (xqp_string val, bool from_prolog) 
 {
 	if (from_prolog)
+    // throw XQST0032 if from_prolog_baseuri is already defined
     bind_str ("int:" "from_prolog_baseuri", val, ZorbaError::XQST0032);
   else
+    // overwite existing value of baseuri, if any
     str_keymap.put ("int:" "baseuri", val);
+
   compute_current_absolute_baseuri ();
 }
 
@@ -453,7 +456,9 @@ void static_context::compute_current_absolute_baseuri()
 	xqp_string		loaded_uri;
 
 	prolog_baseuri = baseuri();
-	if (URI::is_valid (prolog_baseuri.getStore (), false)) {
+
+	if (!prolog_baseuri.empty() &&
+      URI::is_valid (prolog_baseuri.getStore (), false)) {
 		// is already absolute baseuri
 		set_current_absolute_baseuri(prolog_baseuri);
 		return;
@@ -488,12 +493,14 @@ void static_context::compute_current_absolute_baseuri()
 
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri) {
   xqpStringStore_t result;
-  URI::error_t err = URI::resolve_relative (base_uri.getStore (), uri.getStore (), result);
+  URI::error_t err = URI::resolve_relative (base_uri.getStore (),
+                                            uri.getStore (),
+                                            result);
   switch (err) {
   case URI::MAX_ERROR_CODE:
     return result.getp();
   default:
-    ZORBA_ERROR (ZorbaError::FORG0002);
+    ZORBA_ERROR (ZorbaError::XQST0046);
   }
 }
 
