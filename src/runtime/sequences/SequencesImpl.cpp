@@ -1134,95 +1134,106 @@ FnIdIteratorState::reset(PlanState& planState)
 }
 
 store::Item_t 
-FnIdIterator::nextImpl(PlanState& planState) const {
+FnIdIterator::nextImpl(PlanState& planState) const 
+{
   store::Item_t itemEl;
   store::Item_t item;
-  store::Iterator_t    theAttributes;
+  store::Iterator_t theAttributes;
   store::Item_t res;
   bool          push;
   xqp_string    strArg;
   bool          tmp;
+  store::Item*  rootNode;
 
   FnIdIteratorState *state;
   DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
 
-  if((state->inNode = consumeNext(theChildren[1].getp(), planState)) != NULL)
-    if (state->inNode->getNodeKind() == store::StoreConsts::elementNode)
+  if((state->inNode = consumeNext(theChildren[1], planState)) != NULL)
+  {
+    rootNode = state->inNode.getp();
+    while (rootNode->getParent() != NULL)
+      rootNode = rootNode->getParent();
+
+    if (rootNode->getNodeKind() != store::StoreConsts::documentNode)
+      ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0001, loc,
+                           "No target document for fn:id function");
+
+    state->inNode = rootNode;
+    state->theIterator = state->inNode->getChildren();
+
+    while ((state->inArg = consumeNext(theChildren[0], planState)) != NULL)
     {
-      state->theIterator = state->inNode->getChildren();
+      state->theIterator->open();
 
-      while ((state->inArg = consumeNext(theChildren[0].getp(), planState)) != NULL)
+      while((itemEl = state->theIterator->next()) != NULL )
       {
-        state->theIterator->open();
-        while((itemEl = state->theIterator->next()) != NULL )
+        if(itemEl->getNodeKind() == store::StoreConsts::elementNode)
         {
-          if(itemEl->getNodeKind() == store::StoreConsts::elementNode)
+          if(itemEl->isId())
           {
-            if(itemEl->isId())
-            {
-              state->theTypedValue = itemEl->getTypedValue();
-              state->theTypedValue->open();
+            state->theTypedValue = itemEl->getTypedValue();
+            state->theTypedValue->open();
     
-              while (true)
-              {
-                item = state->theTypedValue->next();
-                if (item == NULL)
-                  break;
+            while (true)
+            {
+              item = state->theTypedValue->next();
+              if (item == NULL)
+                break;
 
-                strArg = state->inArg->getStringValue().getp();
+              strArg = state->inArg->getStringValue().getp();
 
-                try {
-                  tmp = strArg.matches(item->getStringValue().getp()," ");
-                }
-                catch(zorbatypesException& ex){
-                  ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
-                }
-                
-                if(tmp)
-                  STACK_PUSH( itemEl, state );
+              try {
+                tmp = strArg.matches(item->getStringValue().getp()," ");
               }
+              catch(zorbatypesException& ex){
+                ZORBA_ERROR_LOC(error::DecodeZorbatypesError(ex.ErrorCode()), loc);
+              }
+                
+              if(tmp)
+                STACK_PUSH( itemEl, state );
             }
-            else
+          }
+          else
+          {
+            push = false;
+            theAttributes = itemEl->getAttributes();
+            theAttributes->open();
+            
+            while (!push)
             {
-              push = false;
-              theAttributes = itemEl->getAttributes();
-              theAttributes->open();
+              item = theAttributes->next();
+              if (item == NULL)
+                break;
     
-              while (!push)
+              if(item->isId())
               {
-                item = theAttributes->next();
-                if (item == NULL)
-                  break;
+                state->theTypedValue = item->getTypedValue();
+                state->theTypedValue->open();
     
-                if(item->isId())
+                while (!push)
                 {
-                  state->theTypedValue = item->getTypedValue();
-                  state->theTypedValue->open();
-    
-                  while (!push)
-                  {
-                    item = state->theTypedValue->next();
-                    if (item == NULL)
-                      break;
+                  item = state->theTypedValue->next();
+                  if (item == NULL)
+                    break;
 
-                    strArg = state->inArg->getStringValue().getp();
+                  strArg = state->inArg->getStringValue().getp();
     
-                    if(strArg.matches(item->getStringValue().getp()," "))
-                    {
-                      push = true;
-                      break;
-                    }
+                  if(strArg.matches(item->getStringValue().getp()," "))
+                  {
+                    push = true;
+                    break;
                   }
                 }
               }
-              if(push)
-                STACK_PUSH( itemEl, state );
             }
+            if(push)
+              STACK_PUSH( itemEl, state );
           }
         }
       }
     }
-  
+  }
+
   STACK_END (state);
 }
   
