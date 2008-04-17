@@ -1,4 +1,6 @@
 
+#include <zorba/exception.h>
+
 #include "errors/error_manager.h"
 
 #include "system/globalenv.h"
@@ -615,7 +617,16 @@ void PULImpl::applyUpdates()
     for (i = 0; i < numUpdates; i++)
       theDeleteList[i]->apply();
   }
-  catch (...)
+  catch (ZorbaException& e)
+  {
+#ifndef NDEBUG
+    std::cerr << "Exception thrown during pul::applyUpdates: "
+              << std::endl <<  e << std::endl;
+#endif
+    undoUpdates();
+    throw e;
+  }
+  catch(...)
   {
     undoUpdates();
     throw;
@@ -682,27 +693,27 @@ void PULImpl::undoUpdates()
     long numUpdates;
 
     numUpdates = theDeleteList.size();
-    for (long i = numUpdates; i >= 0; --i)
+    for (long i = numUpdates-1; i >= 0; --i)
       if (theDeleteList[i]->theIsApplied)
         theDeleteList[i]->undo();
 
     numUpdates = theReplaceContentList.size();
-    for (long i = numUpdates; i >= 0; --i)
+    for (long i = numUpdates-1; i >= 0; --i)
       if (theReplaceContentList[i]->theIsApplied)
         theReplaceContentList[i]->undo();
 
     numUpdates = theReplaceNodeList.size();
-    for (long i = numUpdates; i >= 0; --i)
+    for (long i = numUpdates-1; i >= 0; --i)
       if (theReplaceNodeList[i]->theIsApplied)
         theReplaceNodeList[i]->undo();
 
     numUpdates = theInsertList.size();
-    for (long i = numUpdates; i >= 0; --i)
+    for (long i = numUpdates-1; i >= 0; --i)
       if (theInsertList[i]->theIsApplied)
         theInsertList[i]->undo();
 
     numUpdates = theDoFirstList.size();
-    for (long i = numUpdates; i >= 0; --i)
+    for (long i = numUpdates-1; i >= 0; --i)
       if (theDoFirstList[i]->theIsApplied)
         theDoFirstList[i]->undo();
   }

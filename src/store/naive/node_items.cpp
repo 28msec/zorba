@@ -1205,15 +1205,22 @@ void ElementNode::checkNamespaceConflict(
     const Item*           qname,
     ZorbaError::ErrorCode ecode) const
 {
-  xqpStringStore* ns = findBinding(qname->getPrefix());
+  const QNameItemImpl* qn = reinterpret_cast<const QNameItemImpl*>(qname);
 
-  if (ns != NULL && ns->byteEqual(*qname->getNamespace()))
+  xqpStringStore* prefix = qn->getPrefix();
+  xqpStringStore* ns = qn->getNamespace();
+
+  if (prefix->empty() && ns->empty())
+    return;
+
+  xqpStringStore* ns2 = findBinding(prefix);
+
+  if (ns2 != NULL && !ns2->byteEqual(*ns))
   {
     ZORBA_ERROR_DESC_OSS(ecode,
                          "The implied namespace binding of " << qname->show()
                          << " conflicts with namespace binding ["
-                         << qname->getPrefix()->str() << ", " 
-                         << qname->getNamespace()->str() << "]");
+                         << prefix->str() << ", " << ns2->str() << "]");
   }
 }
 
