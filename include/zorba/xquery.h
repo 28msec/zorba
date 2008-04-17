@@ -191,8 +191,7 @@ namespace zorba {
       /** \brief Reset the error handling mechanism to throwing exceptions, i.e.\ behave as if no
        *         ErrorHandler had been set.
        *   
-       *  @throw SystemException if the query has been closed.
-       *  @see close()
+       *  @throw SystemException if the query has been closed already.
        *  @see registerErrorHandler(ErrorHandler*)
        */
       virtual void
@@ -289,6 +288,19 @@ namespace zorba {
       virtual void
       executeSAX() = 0;
 
+      /** \brief Close the query and release all aquired ressources.
+       *
+       * While a query is compiled and/or active, it holds on to a couple of ressources.
+       * Before Zorba can be safely shutdown, all ressources must be released.
+       * For queries this can be done by calling close. However, if close is not
+       * called explicitly, it will be automatically called by the XQuery objects
+       * destructor, i.e. if the last boost smart pointer holding on to this XQuery object
+       * is destroyed.
+       *
+       * Note that calling close explicitly is usually not necessary. 
+       *
+       * @throw SystemException if the XQuery object has already been closed.
+       */
       virtual void
       close() = 0;
 
