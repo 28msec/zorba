@@ -355,6 +355,13 @@ main(int argc, char** argv)
     lDynCtxt->setCurrentDateTime(lDateTimeItem);
   }
 
+  if (lSpec.hasTimezoneSet()) {
+    int lTimezone = atoi(lSpec.getTimezone().c_str());
+
+    std::cout << "timezone " << lTimezone << std::endl;
+    lDynCtxt->setImplicitTimezone(lTimezone);
+  }
+
   set_vars(&lSpec, lDynCtxt);
 
   {

@@ -27,7 +27,7 @@ private:
   std::string theVarName, theVarValue;
   std::vector<Variable> theVariables;
   std::vector<std::string> theErrors;
-  std::string theDate;
+  std::string theDate, theTimezone;
 
   void setInline(iterator_t, iterator_t) {
     theInline = true;
@@ -56,6 +56,11 @@ private:
     theDate = s;
   }
 
+  void setTimezone(iterator_t str, iterator_t end) {
+    std::string s(str, end);
+    theTimezone = s;
+  }
+
 public:
   std::vector<Variable>::const_iterator
   variablesBegin() { return theVariables.begin(); }
@@ -77,8 +82,16 @@ public:
     return theDate.size() != 0;
   }
 
+  bool hasTimezoneSet() {
+    return theTimezone.size() != 0;
+  }
+
   std::string getDate() {
     return theDate;
+  }
+
+  std::string getTimezone() {
+    return theTimezone;
   }
 
 
@@ -116,8 +129,13 @@ public:
       >> !boost::spirit::blank_p
       >> (*boost::spirit::print_p)[bind(&Specification::setDate, this, _1, _2)] 
       >> !boost::spirit::eol_p;
+    rule_t timezone
+      =  boost::spirit::str_p("Timezone:") 
+      >> !boost::spirit::blank_p
+      >> (*boost::spirit::print_p)[bind(&Specification::setTimezone, this, _1, _2)] 
+      >> !boost::spirit::eol_p;
 
-    rule_t defs = *( argument | error | date );
+    rule_t defs = *( argument | error | date | timezone );
 
     iterator_t first(str.c_str());
     if (!first)
