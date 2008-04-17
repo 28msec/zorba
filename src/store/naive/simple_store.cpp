@@ -27,6 +27,8 @@
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/query_context.h"
 
+#include "store/api/PUL.h"
+
 namespace zorba { namespace store {
 
 typedef rchandle<TempSeq> TempSeq_t;

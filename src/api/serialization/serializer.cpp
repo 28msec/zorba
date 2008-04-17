@@ -204,7 +204,7 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
 	for (unsigned int i = 0; i < str->bytes(); i++, chars++ )
 	{       
     // the input string is UTF-8
-    
+#ifndef ZORBA_NO_UNICODE    
     if (*chars < 0x80)
       skip = 0;
     else if ((*chars >> 5) == 0x6)
@@ -224,7 +224,8 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
       skip = 0;
       continue;
     }
-    
+#endif//ZORBA_NO_UNICODE
+
     /*
       In addition, the non-whitespace control characters #x1 through #x1F and #x7F through #x9F in
       text nodes and attribute nodes MUST be output as character references.

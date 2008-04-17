@@ -491,7 +491,7 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
     strstarted = true;
     wsp = false;
   }
-  newStr->theString += "\0";
+  //newStr->theString += "\0";
 
   return newStr;//->trimR();
 }
@@ -771,7 +771,7 @@ xqpStringStore_t xqpStringStore::formatAsXML(const char* src) const
       newStr->theString += ';';
     }
   }
-  newStr->theString += "\0";
+  //newStr->theString += "\0";
 
   return newStr.release();
 }
@@ -820,7 +820,7 @@ xqpStringStore_t xqpStringStore::escapeHtmlUri() const
       }
     }
   }
-  newStr->theString += "\0";
+  //newStr->theString += "\0";
 
   return newStr.release();
 }
@@ -866,7 +866,7 @@ xqpStringStore_t xqpStringStore::iriToUri() const
         }
     }
   }
-  newStr->theString += "\0";
+  //newStr->theString += "\0";
 
   return newStr.release();
 }
@@ -911,7 +911,7 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
       }
     }
   }
-  newStr->theString += "\0";
+  //newStr->theString += "\0";
 
   return newStr.release();
 }
@@ -1242,7 +1242,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
         tmp += cp;
       }
     }
-    tmp += "\0";
+    //tmp += "\0";
 
     xqpString res(tmp);
     return res;
