@@ -517,7 +517,7 @@ void XmlNode::switchTree(
       ulong numAttrs = n->numAttributes();
       for (ulong i = 0; i < numAttrs; i++)
       {
-        AttributeNode* attr = reinterpret_cast<AttributeNode*>(n->getAttr(i));
+        AttributeNode* attr = n->getAttr(i);
         refcount += attr->theRefCount;
         attr->setTree(newTree);
         if (assignIds)
@@ -1009,6 +1009,9 @@ xqpStringStore_t ElementNode::getStringValue() const
 ********************************************************************************/
 Item_t ElementNode::getNilled() const
 {
+  if (theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+    return new BooleanItemNaive(false);
+
   bool nilled = true;
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
@@ -1026,15 +1029,15 @@ Item_t ElementNode::getNilled() const
 
   nilled = false;
 
-  const char* xsi = "http://www.w3.org/2001/XMLSchema-instance";
-  ulong xsilen = strlen(xsi);
+  //const char* xsi = "http://www.w3.org/2001/XMLSchema-instance";
+  //ulong xsilen = strlen(xsi);
 
   ulong numAttrs = this->numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    XmlNode* attr = getAttr(i);
-    if (attr->getNamespace()->byteEqual(xsi, xsilen) &&
-        attr->getLocalName()->byteEqual("nil", 3))
+    AttributeNode* attr = getAttr(i);
+    if (attr->theName->getNamespace()->byteEqual("xsi", 3) &&
+        attr->theName->getLocalName()->byteEqual("nil", 3))
     {
       nilled = true;
       break;
@@ -1391,7 +1394,7 @@ XmlNode* ElementNode::copy(
     ulong numAttrs = this->numAttributes();
     for (ulong i = 0; i < numAttrs; i++)
     {
-      AttributeNode* attr = reinterpret_cast<AttributeNode*>(getAttr(i));
+      AttributeNode* attr = getAttr(i);
 
       if (attr->isBaseUri())
       {
@@ -1662,7 +1665,7 @@ xqpStringStore_t LoadedElementNode::getBaseURIInternal(bool& local) const
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    AttributeNode* attr = reinterpret_cast<AttributeNode*>(getAttr(i));
+    AttributeNode* attr = getAttr(i);
     if (attr->isBaseUri() && attr->isHidden())
     {
       local = true;
@@ -1892,7 +1895,7 @@ xqpStringStore_t ConstrElementNode::getBaseURIInternal(bool& local) const
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    AttributeNode* attr = reinterpret_cast<AttributeNode*>(getAttr(i));
+    AttributeNode* attr = getAttr(i);
     if (attr->isBaseUri() && attr->isHidden())
     {
       local = true;

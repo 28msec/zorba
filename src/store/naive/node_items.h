@@ -220,7 +220,7 @@ public:
         const CopyMode& copyMode) const = 0;
 
   virtual ulong numAttributes() const          { return 0; }
-  virtual XmlNode* getAttr(ulong i) const      { NODE_STOP; return NULL; }
+  virtual AttributeNode* getAttr(ulong i) const{ NODE_STOP; return NULL; }
   virtual NodeVector& attributes()             { NODE_STOP; return dummyVector; }
   virtual const NodeVector& attributes() const { NODE_STOP; return dummyVector; }
 
@@ -532,7 +532,11 @@ public:
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
   const NodeVector& attributes() const { return theAttributes; }
-  XmlNode* getAttr(ulong i) const      { return theAttributes.get(i); }
+
+  AttributeNode* getAttr(ulong i) const
+  {
+    return reinterpret_cast<AttributeNode*>(theAttributes.get(i));
+  }
 
   ulong numChildren() const            { return theChildren.size(); }
   NodeVector& children()               { return theChildren; }
@@ -585,7 +589,11 @@ public:
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
   const NodeVector& attributes() const { return theAttributes; }
-  XmlNode* getAttr(ulong i) const      { return theAttributes.get(i); }
+
+  AttributeNode* getAttr(ulong i) const
+  {
+    return reinterpret_cast<AttributeNode*>(theAttributes.get(i)); 
+  }
 
   ulong numChildren() const            { return theChildren.size(); }
   NodeVector& children()               { return theChildren; }
