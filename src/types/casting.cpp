@@ -672,7 +672,17 @@ store::Item_t GenericCast::stringSimpleCast(
     return factory->createNOTATION(lString.getp());
   
   default:
-    // TODO parsing of user defined types
+    // TODO parsing of user defined types    
+    //if (aSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
+    //    TypeOps::get_atomic_type_code(*aSourceType) == TypeConstants::XS_STRING &&
+    //    aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
+    //{
+    //    store::Item_t result;
+    //    if ( delegatingTypeManager->getSchema()->parseUserAtomicTypes(textValue, aSourceType, aTargetType, result) )
+    //    {
+    //        return result;
+    //    }
+    //}
     return 0;
   }
 

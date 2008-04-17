@@ -17,7 +17,9 @@
 #include "util/Assert.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
-
+#include "types/typeops.h"
+#include "types/casting.h"
+#include "types/delegating_typemanager.h"
 
 using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
@@ -26,10 +28,25 @@ namespace zorba
 {
 const char* Schema::XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
 
+bool Schema::_isInitialized = false;
 
+XMLCh* transcode(xqp_string str);
+xqp_string transcode(XMLCh* str);
 xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef);
 
-bool Schema::_isInitialized = false;
+
+XMLCh* transcode(xqp_string str)
+{
+    XMLCh* res = XMLString::transcode(str.c_str());
+    return res;
+}
+
+xqp_string transcode(const XMLCh *const str)
+{
+    xqpString res = xqpString(XMLString::transcode(str));
+    return res;
+}
+
 
 void Schema::initialize()
 {
@@ -89,7 +106,7 @@ void Schema::registerXSD(const char* xsdFileName)
         LoadSchemaErrorHandler handler;    
         parser->setErrorHandler(&handler);
 
-        cout << "==Parsing== " << xsdFileName << endl;
+        //cout << "==Parsing== " << xsdFileName << endl;
         parser->loadGrammar(xsdFileName, Grammar::SchemaGrammarType, true);
         
         if (handler.getSawErrors())
@@ -188,6 +205,30 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
 	//val = "  p:local  ";
 	//XercesParseUtils::parseXSQName(val, res);
 	//std::cout << "Val: " << val << "\tResult: '" << res->getStringValue() << "'\n\n\n\n";
+
+
+
+    //std::cout <<"\n\nValidate the value of a user defined atomic type:\n";
+    //
+    //RootTypeManager& ts = GENV_TYPESYSTEM;
+    //const DelegatingTypeManager *typeManager = new DelegatingTypeManager(&ts);
+
+    //store::ItemFactory* factory = GENV_ITEMFACTORY;
+    //
+    //xqpString lNamespace("simple.xsd");
+    //xqpString lPrefix("");
+    //xqpString lLocal("HatSizeType");
+    //store::Item_t qname = factory->createQName(lNamespace.getStore(),
+    //    lPrefix.getStore(), lLocal.getStore());;
+
+    //xqtref_t type = createIfExists(typeManager, qname, TypeConstants::QUANT_ONE);
+    //
+    //const xqpString textValue("17");
+    //xqtref_t aSourceType = ts.STRING_TYPE_ONE;
+    //xqtref_t aTargetType = type;
+
+    //store::Item_t result;
+    //parseUserAtomicTypes(textValue, aSourceType, aTargetType, result);
 }
 
 xqtref_t Schema::createIfExists(
@@ -219,16 +260,14 @@ xqtref_t Schema::createIfExists(
 	if ( xsTypeDef==NULL )
 		res = NULL;
 	else
-    res = getXQTypeForXSTypeDefinition(typeManager, xsTypeDef);
+        res = getXQTypeForXSTypeDefinition(typeManager, xsTypeDef);
 	
  	return res;
 }
 #endif//ZORBA_NO_XMLSCHEMA
 
 
-xqtref_t getXQTypeForXSTypeDefinition(
-    const TypeManager *typeManager,
-    XSTypeDefinition* xsTypeDef)
+xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef)
 {
   if (!xsTypeDef)
   {
@@ -447,34 +486,89 @@ xqtref_t getXQTypeForXSTypeDefinition(
     return NULL;
 }
 
-
-store::Item_t parseAtomicValue(xqtref_t type, xqpString textValue)
+// user atomic types
+bool Schema::parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSourceType,
+    const xqtref_t& aTargetType, store::Item_t &result)
 {
-	//switch(type->type_kind())
-	//{
-	//case XQType::ATOMIC_TYPE_KIND:
-	//	
+    //std::cout << "parseUserAtomicTypes: " << textValue;
 
-	//case XQType::ANY_SIMPLE_TYPE_KIND:
-	//	//factory->
+    ZORBA_ASSERT( aSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
+        TypeOps::get_atomic_type_code(*aSourceType) == TypeConstants::XS_STRING);
+    ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-	//case XQType::ANY_TYPE_KIND:
-	//case XQType::EMPTY_KIND:
-	//case XQType::ITEM_KIND:
-	//case XQType::NODE_TYPE_KIND:
-	//case XQType::NONE_KIND:
-	//case XQType::UNTYPED_KIND:
-	//case XQType::USER_DEFINED_KIND:
-	//default:
-	//}
+    const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*aTargetType);
+    ZORBA_ASSERT( udXQType.isAtomic() );
 
-    return 0;
+    store::Item_t typeQName = udXQType.getQName();
+    XMLCh* localPart = transcode(typeQName->getLocalName());
+    XMLCh* uriStr = transcode(typeQName->getNamespace());
+
+    try 
+    {
+        // Create grammar resolver and string pool that we pass to the scanner
+        GrammarResolver* fGrammarResolver;
+        fGrammarResolver = new GrammarResolver(_grammarPool);
+        fGrammarResolver->useCachedGrammarInParse(true);
+
+        // retrieve Grammar for the uri
+        SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->getGrammar(uriStr);
+        if (sGrammar) 
+        {
+            DatatypeValidator* xsiTypeDV = fGrammarResolver->getDatatypeValidator(uriStr, localPart);
+            
+            XMLString::release(&localPart);
+            XMLString::release(&uriStr);
+
+            if (!xsiTypeDV) 
+            {
+                ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
+                    "Type '" << TypeOps::toString (*aTargetType) << "' not found in current context.");
+            }
+
+            xsiTypeDV->validate( transcode(textValue) );
+        }
+        else
+        {
+            XMLString::release(&localPart);
+            XMLString::release(&uriStr);
+
+            ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
+                "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
+
+            return false;
+        }
+
+    }
+    catch (XMLException& idve)
+    {
+        ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
+            "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to '" << 
+            TypeOps::toString( *aTargetType ) << "' : " << transcode(idve.getMessage()));
+        return false;
+    }
+    catch(const OutOfMemoryException&) 
+    {
+        throw;
+    }
+    catch (...)
+    {
+        throw;
+    }
+
+    const XQType* baseType_ptr = udXQType.getBaseType().getp();
+
+    while ( baseType_ptr->type_kind() == XQType::USER_DEFINED_KIND )
+    {        
+        const UserDefinedXQType* udBaseType_ptr = static_cast<const UserDefinedXQType*>(baseType_ptr);
+        baseType_ptr = udBaseType_ptr->getBaseType().getp();
+    }
+
+    ZORBA_ASSERT( baseType_ptr->type_kind() == XQType::ATOMIC_TYPE_KIND );
+
+    result = GenericCast::instance()->cast(textValue, xqtref_t(baseType_ptr));
+    
+    return true;
 }
-
-//void Schema::getValidatingItemIterator()
-//{
-//    
-//}
 
 } // namespace zorba
 

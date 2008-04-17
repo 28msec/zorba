@@ -76,8 +76,7 @@ public:
 	static bool parseXSAnyUri(xqpString textValue, store::Item_t &result);
 	static bool parseXSQName(xqpString textValue, store::Item_t &result);
 
-    // user defined atomic type
-    static bool parseUserAtomicTypes(xqpString textValue, store::Item_t &result);
+    // for user defined types see schema.h
 };
 } // namespace zorba
 #endif /*ZORBA_XERCESPATHUTILS_H_*/

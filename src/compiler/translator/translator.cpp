@@ -2017,17 +2017,15 @@ void *begin_visit(const SchemaImport& v)
     {
         std::string at = (*atlist) [0];
 
-#if 0
-        cout << "SchemaImport: " << prefix << " : " << uri
-             << " @ " << at << std::endl;
-        cout << " Context: " << CTXTS << "\n";
-#endif
+        //cout << "SchemaImport: " << prefix << " : " << uri
+        //     << " @ " << at << std::endl;
+        //cout << " Context: " << CTXTS << "\n";
 
         ((DelegatingTypeManager*)CTXTS)->initializeSchema();
         Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
 
         schema_p->registerXSD(at.c_str());	
-        // schema_p->printXSDInfo();
+        //schema_p->printXSDInfo();
     }
 
     return no_state;

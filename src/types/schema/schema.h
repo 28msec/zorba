@@ -38,6 +38,10 @@ public:
   void registerXSD(const char* xsdFileName);
   void printXSDInfo(bool excludeBuiltIn = true);
 
+    // user defined atomic type
+    bool parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSourceType,
+        const xqtref_t& aTargetType, store::Item_t &result);    
+    
   /*
    * Checks if the Type with the qname exists in the schema as a user-defined type
    * if it does than return an XQType for it, if not return NULL
@@ -50,8 +54,7 @@ public:
 
   store::Item_t parseAtomicValue(xqtref_t type, xqpString textValue);    
     
-  // Validator getValidator();
-  //void getValidatingItemIterator();
+
     
 private:
   static bool _isInitialized;

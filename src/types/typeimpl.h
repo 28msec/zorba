@@ -147,7 +147,7 @@ class NoneXQType : public XQType {
 class UserDefinedXQType : public XQType
 {
 private:
-    store::Item_t& _qname;
+    store::Item_t _qname;
     xqtref_t _baseType;
     bool _isAtomic;
     
@@ -157,13 +157,15 @@ public:
       return USER_DEFINED_KIND;
     }
 
-    UserDefinedXQType(const TypeManager *manager, store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
+    UserDefinedXQType(const TypeManager *manager, store::Item_t qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
     
     bool isSubTypeOf(const XQType& superType) const;
 
-    store::Item_t& getQName() const      { return _qname; }
-    bool isAtomic() const        { return _isAtomic; }
-    xqtref_t getBaseType() const { return _baseType; }
+    store::Item_t getQName() const { return _qname;    }
+    bool isAtomic()          const { return _isAtomic; }
+    xqtref_t getBaseType()   const { return _baseType; }
+
+    virtual std::ostream& serialize(std::ostream& os) const;
 };
 
 }

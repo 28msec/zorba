@@ -4,6 +4,8 @@
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
+#include "util/Assert.h"
+
 
 namespace zorba {
 
@@ -112,10 +114,10 @@ std::ostream& NodeXQType::serialize(std::ostream& os) const
   return os << "]";
 }
     
-UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
+UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
     XQType(manager, quantifier), _qname(qname), _baseType(baseType)
 {
-    assert(baseType!=NULL);
+    ZORBA_ASSERT(baseType!=NULL);
 
     switch (baseType.getp()->type_kind())
     {
@@ -141,7 +143,9 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& superType) const
     }
     
     //const XQType* baseType_ptr = &getBaseType();
-    const XQType* baseType_ptr = getBaseType().getp();
+    xqtref_t baseType = getBaseType();
+    const XQType* baseType_ptr = baseType.getp();
+
     do
     {
         if (baseType_ptr == &superType)
@@ -155,7 +159,7 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& superType) const
             
         case XQType::USER_DEFINED_KIND:
             {
-                UserDefinedXQType* udBaseType_ptr = (UserDefinedXQType*)baseType_ptr;//static_cast<UD&>(baseType);
+                UserDefinedXQType* udBaseType_ptr = (UserDefinedXQType*)(baseType_ptr);//static_cast<UD&>(baseType);
                 //baseType_ptr = &(udBaseType_ptr->getBaseType());
                 baseType_ptr = udBaseType_ptr->getBaseType().getp();
             }
@@ -169,4 +173,11 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& superType) const
     
     return false;
 }
+
+std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
+{
+    return os << "[UserDefinedXQType " << _qname->getLocalName()->str() << "@" << 
+        _qname->getNamespace()->str() << " " << ( _isAtomic ? "isAtomic" : "" ) << " base:" <<
+        TypeOps::toString(*_baseType) << " ]";
+}    
 }
