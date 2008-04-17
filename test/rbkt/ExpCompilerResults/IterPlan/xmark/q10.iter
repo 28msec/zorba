@@ -1,0 +1,367 @@
+Iterator tree for main query:
+<FLWORIterator loc="2.0-49" id="1">
+ <LetVariable name="auction" materialize="true">
+  <FnDocIterator loc="2.16-35" id="3">
+   <PromoteIterator type="[AtomicXQType XS_STRING]" loc="1.0-40" id="4">
+    <FnDataIterator loc="1.0-40" id="6">
+     <CtxVariableIterator loc="1.0-40" id="7">
+      <SingletonIterator value="xs:string(input-context)" loc="1.0-40" id="8"/>
+     </CtxVariableIterator>
+    </FnDataIterator>
+   </PromoteIterator>
+  </FnDocIterator>
+ </LetVariable>
+ <ReturnClause>
+  <FLWORIterator loc="3.0-49" id="10">
+   <ForVariable name="i">
+    <FnDistinctValuesIterator loc="3.10-81" id="12">
+     <FnDataIterator loc="3.26-80" id="13">
+      <NodeSortIterator loc="3.26-80" id="14">
+       <NameTestIterator qname="xs:QName(,,category)" loc="3.72-80" id="16">
+        <AttributeAxisIterator loc="3.71-80" id="17">
+         <NameTestIterator qname="xs:QName(,,interest)" loc="3.62-70" id="18">
+          <ChildAxisIterator loc="3.62-70" id="19">
+           <NameTestIterator qname="xs:QName(,,profile)" loc="3.54-61" id="20">
+            <ChildAxisIterator loc="3.54-61" id="21">
+             <NameTestIterator qname="xs:QName(,,person)" loc="3.47-53" id="22">
+              <ChildAxisIterator loc="3.47-53" id="23">
+               <NameTestIterator qname="xs:QName(,,people)" loc="3.40-46" id="24">
+                <ChildAxisIterator loc="3.40-46" id="25">
+                 <NameTestIterator qname="xs:QName(,,site)" loc="3.35-39" id="26">
+                  <ChildAxisIterator loc="3.35-39" id="27">
+                   <LetVarIterator varname="auction" loc="2.5-35" id="28"/>
+                  </ChildAxisIterator>
+                 </NameTestIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+              </ChildAxisIterator>
+             </NameTestIterator>
+            </ChildAxisIterator>
+           </NameTestIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+        </AttributeAxisIterator>
+       </NameTestIterator>
+      </NodeSortIterator>
+     </FnDataIterator>
+    </FnDistinctValuesIterator>
+   </ForVariable>
+   <LetVariable name="p" materialize="true">
+    <FLWORIterator loc="5.0-11" id="30">
+     <ForVariable name="t">
+      <NodeSortIterator loc="5.10-37" id="32">
+       <NameTestIterator qname="xs:QName(,,person)" loc="5.31-37" id="34">
+        <ChildAxisIterator loc="5.31-37" id="35">
+         <NameTestIterator qname="xs:QName(,,people)" loc="5.24-30" id="36">
+          <ChildAxisIterator loc="5.24-30" id="37">
+           <NameTestIterator qname="xs:QName(,,site)" loc="5.19-23" id="38">
+            <ChildAxisIterator loc="5.19-23" id="39">
+             <LetVarIterator varname="auction" loc="2.5-35" id="40"/>
+            </ChildAxisIterator>
+           </NameTestIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+        </ChildAxisIterator>
+       </NameTestIterator>
+      </NodeSortIterator>
+     </ForVariable>
+     <WhereClause>
+      <CompareIterator loc="6.6-40" id="42">
+       <FnDataIterator loc="6.6-35" id="43">
+        <NameTestIterator qname="xs:QName(,,category)" loc="6.27-35" id="44">
+         <AttributeAxisIterator loc="6.26-35" id="45">
+          <NameTestIterator qname="xs:QName(,,interest)" loc="6.17-25" id="46">
+           <ChildAxisIterator loc="6.17-25" id="47">
+            <NameTestIterator qname="xs:QName(,,profile)" loc="6.9-16" id="48">
+             <ChildAxisIterator loc="6.9-16" id="49">
+              <ForVarIterator varname="t" loc="5.5-37" id="50"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+           </ChildAxisIterator>
+          </NameTestIterator>
+         </AttributeAxisIterator>
+        </NameTestIterator>
+       </FnDataIterator>
+       <ForVarIterator varname="i" loc="3.5-81" id="51"/>
+      </CompareIterator>
+     </WhereClause>
+     <ReturnClause>
+      <ElementIterator loc="8.0-11" id="53">
+       <SingletonIterator value="xs:QName(,,personne)" loc="8.0-11" id="54"/>
+       <ElementContentIterator loc="8.0-11" id="55">
+        <FnConcatIterator loc="9.0-0" id="56">
+         <ElementIterator loc="9.0-15" id="57">
+          <SingletonIterator value="xs:QName(,,statistiques)" loc="9.0-15" id="58"/>
+          <ElementContentIterator loc="9.0-15" id="59">
+           <FnConcatIterator loc="10.0-0" id="60">
+            <ElementIterator loc="10.0-39" id="61">
+             <SingletonIterator value="xs:QName(,,sexe)" loc="10.0-39" id="62"/>
+             <ElementContentIterator loc="10.0-39" id="63">
+              <EnclosedIterator attr_cont="false" loc="10.6-32" id="64">
+               <NodeSortIterator loc="10.7-31" id="65">
+                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="10.25-31" id="67">
+                 <ChildAxisIterator loc="10.25-31" id="68">
+                  <NameTestIterator qname="xs:QName(,,gender)" loc="10.18-24" id="69">
+                   <ChildAxisIterator loc="10.18-24" id="70">
+                    <NameTestIterator qname="xs:QName(,,profile)" loc="10.10-17" id="71">
+                     <ChildAxisIterator loc="10.10-17" id="72">
+                      <ForVarIterator varname="t" loc="5.5-37" id="73"/>
+                     </ChildAxisIterator>
+                    </NameTestIterator>
+                   </ChildAxisIterator>
+                  </NameTestIterator>
+                 </ChildAxisIterator>
+                </KindTestIterator>
+               </NodeSortIterator>
+              </EnclosedIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+            <ElementIterator loc="11.0-34" id="74">
+             <SingletonIterator value="xs:QName(,,age)" loc="11.0-34" id="75"/>
+             <ElementContentIterator loc="11.0-34" id="76">
+              <EnclosedIterator attr_cont="false" loc="11.5-28" id="77">
+               <NodeSortIterator loc="11.6-27" id="78">
+                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="11.21-27" id="80">
+                 <ChildAxisIterator loc="11.21-27" id="81">
+                  <NameTestIterator qname="xs:QName(,,age)" loc="11.17-20" id="82">
+                   <ChildAxisIterator loc="11.17-20" id="83">
+                    <NameTestIterator qname="xs:QName(,,profile)" loc="11.9-16" id="84">
+                     <ChildAxisIterator loc="11.9-16" id="85">
+                      <ForVarIterator varname="t" loc="5.5-37" id="86"/>
+                     </ChildAxisIterator>
+                    </NameTestIterator>
+                   </ChildAxisIterator>
+                  </NameTestIterator>
+                 </ChildAxisIterator>
+                </KindTestIterator>
+               </NodeSortIterator>
+              </EnclosedIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+            <ElementIterator loc="12.0-52" id="87">
+             <SingletonIterator value="xs:QName(,,education)" loc="12.0-52" id="88"/>
+             <ElementContentIterator loc="12.0-52" id="89">
+              <EnclosedIterator attr_cont="false" loc="12.11-40" id="90">
+               <NodeSortIterator loc="12.12-39" id="91">
+                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="12.33-39" id="93">
+                 <ChildAxisIterator loc="12.33-39" id="94">
+                  <NameTestIterator qname="xs:QName(,,education)" loc="12.23-32" id="95">
+                   <ChildAxisIterator loc="12.23-32" id="96">
+                    <NameTestIterator qname="xs:QName(,,profile)" loc="12.15-22" id="97">
+                     <ChildAxisIterator loc="12.15-22" id="98">
+                      <ForVarIterator varname="t" loc="5.5-37" id="99"/>
+                     </ChildAxisIterator>
+                    </NameTestIterator>
+                   </ChildAxisIterator>
+                  </NameTestIterator>
+                 </ChildAxisIterator>
+                </KindTestIterator>
+               </NodeSortIterator>
+              </EnclosedIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+            <ElementIterator loc="13.0-46" id="100">
+             <SingletonIterator value="xs:QName(,,revenu)" loc="13.0-46" id="101"/>
+             <ElementContentIterator loc="13.0-46" id="102">
+              <EnclosedIterator attr_cont="false" loc="13.8-37" id="103">
+               <FnDataIterator loc="13.9-36" id="104">
+                <NodeSortIterator loc="13.17-35" id="105">
+                 <NameTestIterator qname="xs:QName(,,income)" loc="13.29-35" id="107">
+                  <AttributeAxisIterator loc="13.28-35" id="108">
+                   <NameTestIterator qname="xs:QName(,,profile)" loc="13.20-27" id="109">
+                    <ChildAxisIterator loc="13.20-27" id="110">
+                     <ForVarIterator varname="t" loc="5.5-37" id="111"/>
+                    </ChildAxisIterator>
+                   </NameTestIterator>
+                  </AttributeAxisIterator>
+                 </NameTestIterator>
+                </NodeSortIterator>
+               </FnDataIterator>
+              </EnclosedIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+           </FnConcatIterator>
+          </ElementContentIterator>
+         </ElementIterator>
+         <ElementIterator loc="15.0-14" id="112">
+          <SingletonIterator value="xs:QName(,,coordonnees)" loc="15.0-14" id="113"/>
+          <ElementContentIterator loc="15.0-14" id="114">
+           <FnConcatIterator loc="16.0-0" id="115">
+            <ElementIterator loc="16.0-27" id="116">
+             <SingletonIterator value="xs:QName(,,nom)" loc="16.0-27" id="117"/>
+             <ElementContentIterator loc="16.0-27" id="118">
+              <EnclosedIterator attr_cont="false" loc="16.5-21" id="119">
+               <NodeSortIterator loc="16.6-20" id="120">
+                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="16.14-20" id="122">
+                 <ChildAxisIterator loc="16.14-20" id="123">
+                  <NameTestIterator qname="xs:QName(,,name)" loc="16.9-13" id="124">
+                   <ChildAxisIterator loc="16.9-13" id="125">
+                    <ForVarIterator varname="t" loc="5.5-37" id="126"/>
+                   </ChildAxisIterator>
+                  </NameTestIterator>
+                 </ChildAxisIterator>
+                </KindTestIterator>
+               </NodeSortIterator>
+              </EnclosedIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+            <ElementIterator loc="17.0-37" id="127">
+             <SingletonIterator value="xs:QName(,,rue)" loc="17.0-37" id="128"/>
+             <ElementContentIterator loc="17.0-37" id="129">
+              <EnclosedIterator attr_cont="false" loc="17.5-31" id="130">
+               <NodeSortIterator loc="17.6-30" id="131">
+                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="17.24-30" id="133">
+                 <ChildAxisIterator loc="17.24-30" id="134">
+                  <NameTestIterator qname="xs:QName(,,street)" loc="17.17-23" id="135">
+                   <ChildAxisIterator loc="17.17-23" id="136">
+                    <NameTestIterator qname="xs:QName(,,address)" loc="17.9-16" id="137">
+                     <ChildAxisIterator loc="17.9-16" id="138">
+                      <ForVarIterator varname="t" loc="5.5-37" id="139"/>
+                     </ChildAxisIterator>
+                    </NameTestIterator>
+                   </ChildAxisIterator>
+                  </NameTestIterator>
+                 </ChildAxisIterator>
+                </KindTestIterator>
+               </NodeSortIterator>
+              </EnclosedIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+            <ElementIterator loc="18.0-39" id="140">
+             <SingletonIterator value="xs:QName(,,ville)" loc="18.0-39" id="141"/>
+             <ElementContentIterator loc="18.0-39" id="142">
+              <EnclosedIterator attr_cont="false" loc="18.7-31" id="143">
+               <NodeSortIterator loc="18.8-30" id="144">
+                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="18.24-30" id="146">
+                 <ChildAxisIterator loc="18.24-30" id="147">
+                  <NameTestIterator qname="xs:QName(,,city)" loc="18.19-23" id="148">
+                   <ChildAxisIterator loc="18.19-23" id="149">
+                    <NameTestIterator qname="xs:QName(,,address)" loc="18.11-18" id="150">
+                     <ChildAxisIterator loc="18.11-18" id="151">
+                      <ForVarIterator varname="t" loc="5.5-37" id="152"/>
+                     </ChildAxisIterator>
+                    </NameTestIterator>
+                   </ChildAxisIterator>
+                  </NameTestIterator>
+                 </ChildAxisIterator>
+                </KindTestIterator>
+               </NodeSortIterator>
+              </EnclosedIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+            <ElementIterator loc="19.0-40" id="153">
+             <SingletonIterator value="xs:QName(,,pays)" loc="19.0-40" id="154"/>
+             <ElementContentIterator loc="19.0-40" id="155">
+              <EnclosedIterator attr_cont="false" loc="19.6-33" id="156">
+               <NodeSortIterator loc="19.7-32" id="157">
+                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="19.26-32" id="159">
+                 <ChildAxisIterator loc="19.26-32" id="160">
+                  <NameTestIterator qname="xs:QName(,,country)" loc="19.18-25" id="161">
+                   <ChildAxisIterator loc="19.18-25" id="162">
+                    <NameTestIterator qname="xs:QName(,,address)" loc="19.10-17" id="163">
+                     <ChildAxisIterator loc="19.10-17" id="164">
+                      <ForVarIterator varname="t" loc="5.5-37" id="165"/>
+                     </ChildAxisIterator>
+                    </NameTestIterator>
+                   </ChildAxisIterator>
+                  </NameTestIterator>
+                 </ChildAxisIterator>
+                </KindTestIterator>
+               </NodeSortIterator>
+              </EnclosedIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+            <ElementIterator loc="20.0-9" id="166">
+             <SingletonIterator value="xs:QName(,,reseau)" loc="20.0-9" id="167"/>
+             <ElementContentIterator loc="20.0-9" id="168">
+              <FnConcatIterator loc="21.0-0" id="169">
+               <ElementIterator loc="21.0-45" id="170">
+                <SingletonIterator value="xs:QName(,,courrier)" loc="21.0-45" id="171"/>
+                <ElementContentIterator loc="21.0-45" id="172">
+                 <EnclosedIterator attr_cont="false" loc="21.10-34" id="173">
+                  <NodeSortIterator loc="21.11-33" id="174">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="21.27-33" id="176">
+                    <ChildAxisIterator loc="21.27-33" id="177">
+                     <NameTestIterator qname="xs:QName(,,emailaddress)" loc="21.14-26" id="178">
+                      <ChildAxisIterator loc="21.14-26" id="179">
+                       <ForVarIterator varname="t" loc="5.5-37" id="180"/>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </NodeSortIterator>
+                 </EnclosedIterator>
+                </ElementContentIterator>
+               </ElementIterator>
+               <ElementIterator loc="22.0-43" id="181">
+                <SingletonIterator value="xs:QName(,,pagePerso)" loc="22.0-43" id="182"/>
+                <ElementContentIterator loc="22.0-43" id="183">
+                 <EnclosedIterator attr_cont="false" loc="22.11-31" id="184">
+                  <NodeSortIterator loc="22.12-30" id="185">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="22.24-30" id="187">
+                    <ChildAxisIterator loc="22.24-30" id="188">
+                     <NameTestIterator qname="xs:QName(,,homepage)" loc="22.15-23" id="189">
+                      <ChildAxisIterator loc="22.15-23" id="190">
+                       <ForVarIterator varname="t" loc="5.5-37" id="191"/>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </NodeSortIterator>
+                 </EnclosedIterator>
+                </ElementContentIterator>
+               </ElementIterator>
+              </FnConcatIterator>
+             </ElementContentIterator>
+            </ElementIterator>
+           </FnConcatIterator>
+          </ElementContentIterator>
+         </ElementIterator>
+         <ElementIterator loc="25.0-53" id="192">
+          <SingletonIterator value="xs:QName(,,cartePaiement)" loc="25.0-53" id="193"/>
+          <ElementContentIterator loc="25.0-53" id="194">
+           <EnclosedIterator attr_cont="false" loc="25.15-37" id="195">
+            <NodeSortIterator loc="25.16-36" id="196">
+             <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="25.30-36" id="198">
+              <ChildAxisIterator loc="25.30-36" id="199">
+               <NameTestIterator qname="xs:QName(,,creditcard)" loc="25.19-29" id="200">
+                <ChildAxisIterator loc="25.19-29" id="201">
+                 <ForVarIterator varname="t" loc="5.5-37" id="202"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+              </ChildAxisIterator>
+             </KindTestIterator>
+            </NodeSortIterator>
+           </EnclosedIterator>
+          </ElementContentIterator>
+         </ElementIterator>
+        </FnConcatIterator>
+       </ElementContentIterator>
+      </ElementIterator>
+     </ReturnClause>
+    </FLWORIterator>
+   </LetVariable>
+   <ReturnClause>
+    <ElementIterator loc="27.7-49" id="204">
+     <SingletonIterator value="xs:QName(,,categorie)" loc="27.7-49" id="205"/>
+     <ElementContentIterator loc="27.7-49" id="206">
+      <EnclosedIterator attr_cont="false" loc="27.18-37" id="207">
+       <FnConcatIterator loc="27.19-32" id="208">
+        <ElementIterator loc="27.19-32" id="209">
+         <SingletonIterator value="xs:QName(,,id)" loc="27.19-32" id="210"/>
+         <ElementContentIterator loc="27.19-32" id="211">
+          <EnclosedIterator attr_cont="false" loc="27.23-27" id="212">
+           <ForVarIterator varname="i" loc="3.5-81" id="213"/>
+          </EnclosedIterator>
+         </ElementContentIterator>
+        </ElementIterator>
+        <LetVarIterator varname="p" loc="4.5-11" id="214"/>
+       </FnConcatIterator>
+      </EnclosedIterator>
+     </ElementContentIterator>
+    </ElementIterator>
+   </ReturnClause>
+  </FLWORIterator>
+ </ReturnClause>
+</FLWORIterator>
+

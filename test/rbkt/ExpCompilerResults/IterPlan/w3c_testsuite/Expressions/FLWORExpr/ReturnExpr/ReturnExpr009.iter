@@ -1,0 +1,47 @@
+Iterator tree for main query:
+<FLWORIterator loc="8.0-36" id="1">
+ <LetVariable name="input-context" materialize="true">
+  <CtxVariableIterator loc="5.0-40" id="3">
+   <SingletonIterator value="xs:string(input-context)" loc="5.0-40" id="4"/>
+  </CtxVariableIterator>
+ </LetVariable>
+ <ReturnClause>
+  <FLWORIterator loc="8.0-36" id="6">
+   <ForVariable name="file">
+    <NodeSortIterator loc="8.13-45" id="8">
+     <NameTestIterator qname="xs:QName(,,File)" loc="8.41-45" id="10">
+      <ChildAxisIterator loc="8.41-45" id="11">
+       <FnSubsequenceIterator loc="8.38-39" id="12">
+        <NameTestIterator qname="xs:QName(,,Folder)" loc="8.30-36" id="13">
+         <DescendantAxisIterator loc="8.30-36" id="14">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="5.0-40" id="15">
+           <LetVarIterator varname="input-context" loc="5.0-40" id="16"/>
+          </TreatIterator>
+         </DescendantAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)" loc="8.38-39" id="17"/>
+        <SingletonIterator value="xs:double(1)" loc="8.38-39" id="18"/>
+       </FnSubsequenceIterator>
+      </ChildAxisIterator>
+     </NameTestIterator>
+    </NodeSortIterator>
+   </ForVariable>
+   <ReturnClause>
+    <FnSubsequenceIterator loc="9.34-35" id="20">
+     <NodeSortIterator loc="9.8-32" id="21">
+      <NameTestIterator qname="xs:QName(,,FileName)" loc="9.24-32" id="23">
+       <DescendantAxisIterator loc="9.24-32" id="24">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="5.0-40" id="25">
+         <LetVarIterator varname="input-context" loc="5.0-40" id="26"/>
+        </TreatIterator>
+       </DescendantAxisIterator>
+      </NameTestIterator>
+     </NodeSortIterator>
+     <SingletonIterator value="xs:double(1)" loc="9.34-35" id="27"/>
+     <SingletonIterator value="xs:double(1)" loc="9.34-35" id="28"/>
+    </FnSubsequenceIterator>
+   </ReturnClause>
+  </FLWORIterator>
+ </ReturnClause>
+</FLWORIterator>
+

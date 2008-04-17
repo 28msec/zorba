@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY(Scripts)
+ADD_SUBDIRECTORY(ExpCompilerResults)
 
 # create the result directory for all tests
 IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)

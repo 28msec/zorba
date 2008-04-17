@@ -1,0 +1,42 @@
+Iterator tree for main query:
+<CommentIterator loc="9.0-86" id="1">
+ <EnclosedIterator attr_cont="true" loc="9.0-86" id="2">
+  <NodeSortIterator loc="9.25-85" id="3">
+   <NameTestIterator qname="xs:QName(,wildcard,description)" loc="9.72-85" id="5">
+    <ChildAxisIterator loc="9.72-85" id="6">
+     <FLWORIterator loc="9.36-71" id="7">
+      <ForVariable name="$$dot">
+       <NodeDistinctIterator loc="9.9-85" id="9">
+        <NameTestIterator qname="xs:QName(,wildcard,test-case)" loc="9.25-36" id="11">
+         <DescendantAxisIterator loc="9.25-71" id="12">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="6.0-40" id="13">
+           <CtxVariableIterator loc="6.0-40" id="14">
+            <SingletonIterator value="xs:string(input-context)" loc="6.0-40" id="15"/>
+           </CtxVariableIterator>
+          </TreatIterator>
+         </DescendantAxisIterator>
+        </NameTestIterator>
+       </NodeDistinctIterator>
+      </ForVariable>
+      <WhereClause>
+       <CompareIterator loc="9.37-70" id="17">
+        <FnDataIterator loc="9.37-42" id="18">
+         <NameTestIterator qname="xs:QName(,,name)" loc="9.38-42" id="19">
+          <AttributeAxisIterator loc="9.37-42" id="20">
+           <ForVarIterator varname="$$dot" loc="9.37-42" id="21"/>
+          </AttributeAxisIterator>
+         </NameTestIterator>
+        </FnDataIterator>
+        <SingletonIterator value="xs:string(Constr-compcomment-dash-4)" loc="9.43-70" id="22"/>
+       </CompareIterator>
+      </WhereClause>
+      <ReturnClause>
+       <ForVarIterator varname="$$dot" loc="9.37-42" id="24"/>
+      </ReturnClause>
+     </FLWORIterator>
+    </ChildAxisIterator>
+   </NameTestIterator>
+  </NodeSortIterator>
+ </EnclosedIterator>
+</CommentIterator>
+

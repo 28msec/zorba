@@ -1,0 +1,410 @@
+Iterator tree for main query:
+<FLWORIterator loc="18.0-103" id="1">
+ <LetVariable name="input-context1" materialize="true">
+  <CtxVariableIterator loc="14.0-41" id="3">
+   <SingletonIterator value="xs:string(input-context1)" loc="14.0-41" id="4"/>
+  </CtxVariableIterator>
+ </LetVariable>
+ <LetVariable name="input-context2" materialize="true">
+  <CtxVariableIterator loc="15.0-41" id="6">
+   <SingletonIterator value="xs:string(input-context2)" loc="15.0-41" id="7"/>
+  </CtxVariableIterator>
+ </LetVariable>
+ <ReturnClause>
+  <LogicIterator loc="18.0-103" id="9">
+   <LogicIterator loc="18.1-102" id="10">
+    <LogicIterator loc="18.1-102" id="11">
+     <OpNodeAfterIterator loc="18.2-98" id="12">
+      <TreatIterator quant="?" loc="18.45-48" id="14">
+       <NodeDistinctIterator loc="18.45-48" id="15">
+        <FnSubsequenceIterator loc="18.46-47" id="17">
+         <NameTestIterator qname="xs:QName(,,empnum)" loc="18.39-45" id="18">
+          <ChildAxisIterator loc="18.39-48" id="19">
+           <FnSubsequenceIterator loc="18.36-37" id="20">
+            <NameTestIterator qname="xs:QName(,,employee)" loc="18.27-35" id="21">
+             <ChildAxisIterator loc="18.27-38" id="22">
+              <FnSubsequenceIterator loc="18.24-25" id="23">
+               <NameTestIterator qname="xs:QName(,,works)" loc="18.18-23" id="24">
+                <ChildAxisIterator loc="18.18-26" id="25">
+                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="14.0-41" id="26">
+                  <LetVarIterator varname="input-context1" loc="14.0-41" id="27"/>
+                 </TreatIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)" loc="18.24-25" id="28"/>
+               <SingletonIterator value="xs:double(1)" loc="18.24-25" id="29"/>
+              </FnSubsequenceIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(1)" loc="18.36-37" id="30"/>
+            <SingletonIterator value="xs:double(1)" loc="18.36-37" id="31"/>
+           </FnSubsequenceIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)" loc="18.46-47" id="32"/>
+         <SingletonIterator value="xs:double(1)" loc="18.46-47" id="33"/>
+        </FnSubsequenceIterator>
+       </NodeDistinctIterator>
+      </TreatIterator>
+      <TreatIterator quant="?" loc="18.95-98" id="34">
+       <NodeDistinctIterator loc="18.95-98" id="35">
+        <FnSubsequenceIterator loc="18.96-97" id="37">
+         <NameTestIterator qname="xs:QName(,,empnum)" loc="18.89-95" id="38">
+          <ChildAxisIterator loc="18.89-98" id="39">
+           <FnSubsequenceIterator loc="18.86-87" id="40">
+            <NameTestIterator qname="xs:QName(,,employee)" loc="18.77-85" id="41">
+             <ChildAxisIterator loc="18.77-88" id="42">
+              <FnSubsequenceIterator loc="18.74-75" id="43">
+               <NameTestIterator qname="xs:QName(,,staff)" loc="18.68-73" id="44">
+                <ChildAxisIterator loc="18.68-76" id="45">
+                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="15.0-41" id="46">
+                  <LetVarIterator varname="input-context2" loc="15.0-41" id="47"/>
+                 </TreatIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)" loc="18.74-75" id="48"/>
+               <SingletonIterator value="xs:double(1)" loc="18.74-75" id="49"/>
+              </FnSubsequenceIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(1)" loc="18.86-87" id="50"/>
+            <SingletonIterator value="xs:double(1)" loc="18.86-87" id="51"/>
+           </FnSubsequenceIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)" loc="18.96-97" id="52"/>
+         <SingletonIterator value="xs:double(1)" loc="18.96-97" id="53"/>
+        </FnSubsequenceIterator>
+       </NodeDistinctIterator>
+      </TreatIterator>
+     </OpNodeAfterIterator>
+     <OpNodeAfterIterator loc="19.5-101" id="54">
+      <TreatIterator quant="?" loc="19.48-51" id="56">
+       <NodeDistinctIterator loc="19.48-51" id="57">
+        <FnSubsequenceIterator loc="19.49-50" id="59">
+         <NameTestIterator qname="xs:QName(,,empnum)" loc="19.42-48" id="60">
+          <ChildAxisIterator loc="19.42-51" id="61">
+           <FnSubsequenceIterator loc="19.39-40" id="62">
+            <NameTestIterator qname="xs:QName(,,employee)" loc="19.30-38" id="63">
+             <ChildAxisIterator loc="19.30-41" id="64">
+              <FnSubsequenceIterator loc="19.27-28" id="65">
+               <NameTestIterator qname="xs:QName(,,works)" loc="19.21-26" id="66">
+                <ChildAxisIterator loc="19.21-29" id="67">
+                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="14.0-41" id="68">
+                  <LetVarIterator varname="input-context1" loc="14.0-41" id="69"/>
+                 </TreatIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)" loc="19.27-28" id="70"/>
+               <SingletonIterator value="xs:double(1)" loc="19.27-28" id="71"/>
+              </FnSubsequenceIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(2)" loc="19.39-40" id="72"/>
+            <SingletonIterator value="xs:double(1)" loc="19.39-40" id="73"/>
+           </FnSubsequenceIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)" loc="19.49-50" id="74"/>
+         <SingletonIterator value="xs:double(1)" loc="19.49-50" id="75"/>
+        </FnSubsequenceIterator>
+       </NodeDistinctIterator>
+      </TreatIterator>
+      <TreatIterator quant="?" loc="19.98-101" id="76">
+       <NodeDistinctIterator loc="19.98-101" id="77">
+        <FnSubsequenceIterator loc="19.99-100" id="79">
+         <NameTestIterator qname="xs:QName(,,empnum)" loc="19.92-98" id="80">
+          <ChildAxisIterator loc="19.92-101" id="81">
+           <FnSubsequenceIterator loc="19.89-90" id="82">
+            <NameTestIterator qname="xs:QName(,,employee)" loc="19.80-88" id="83">
+             <ChildAxisIterator loc="19.80-91" id="84">
+              <FnSubsequenceIterator loc="19.77-78" id="85">
+               <NameTestIterator qname="xs:QName(,,staff)" loc="19.71-76" id="86">
+                <ChildAxisIterator loc="19.71-79" id="87">
+                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="15.0-41" id="88">
+                  <LetVarIterator varname="input-context2" loc="15.0-41" id="89"/>
+                 </TreatIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)" loc="19.77-78" id="90"/>
+               <SingletonIterator value="xs:double(1)" loc="19.77-78" id="91"/>
+              </FnSubsequenceIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(2)" loc="19.89-90" id="92"/>
+            <SingletonIterator value="xs:double(1)" loc="19.89-90" id="93"/>
+           </FnSubsequenceIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)" loc="19.99-100" id="94"/>
+         <SingletonIterator value="xs:double(1)" loc="19.99-100" id="95"/>
+        </FnSubsequenceIterator>
+       </NodeDistinctIterator>
+      </TreatIterator>
+     </OpNodeAfterIterator>
+    </LogicIterator>
+    <OpNodeAfterIterator loc="20.5-101" id="96">
+     <TreatIterator quant="?" loc="20.48-51" id="98">
+      <NodeDistinctIterator loc="20.48-51" id="99">
+       <FnSubsequenceIterator loc="20.49-50" id="101">
+        <NameTestIterator qname="xs:QName(,,empnum)" loc="20.42-48" id="102">
+         <ChildAxisIterator loc="20.42-51" id="103">
+          <FnSubsequenceIterator loc="20.39-40" id="104">
+           <NameTestIterator qname="xs:QName(,,employee)" loc="20.30-38" id="105">
+            <ChildAxisIterator loc="20.30-41" id="106">
+             <FnSubsequenceIterator loc="20.27-28" id="107">
+              <NameTestIterator qname="xs:QName(,,works)" loc="20.21-26" id="108">
+               <ChildAxisIterator loc="20.21-29" id="109">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="14.0-41" id="110">
+                 <LetVarIterator varname="input-context1" loc="14.0-41" id="111"/>
+                </TreatIterator>
+               </ChildAxisIterator>
+              </NameTestIterator>
+              <SingletonIterator value="xs:double(1)" loc="20.27-28" id="112"/>
+              <SingletonIterator value="xs:double(1)" loc="20.27-28" id="113"/>
+             </FnSubsequenceIterator>
+            </ChildAxisIterator>
+           </NameTestIterator>
+           <SingletonIterator value="xs:double(3)" loc="20.39-40" id="114"/>
+           <SingletonIterator value="xs:double(1)" loc="20.39-40" id="115"/>
+          </FnSubsequenceIterator>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)" loc="20.49-50" id="116"/>
+        <SingletonIterator value="xs:double(1)" loc="20.49-50" id="117"/>
+       </FnSubsequenceIterator>
+      </NodeDistinctIterator>
+     </TreatIterator>
+     <TreatIterator quant="?" loc="20.98-101" id="118">
+      <NodeDistinctIterator loc="20.98-101" id="119">
+       <FnSubsequenceIterator loc="20.99-100" id="121">
+        <NameTestIterator qname="xs:QName(,,empnum)" loc="20.92-98" id="122">
+         <ChildAxisIterator loc="20.92-101" id="123">
+          <FnSubsequenceIterator loc="20.89-90" id="124">
+           <NameTestIterator qname="xs:QName(,,employee)" loc="20.80-88" id="125">
+            <ChildAxisIterator loc="20.80-91" id="126">
+             <FnSubsequenceIterator loc="20.77-78" id="127">
+              <NameTestIterator qname="xs:QName(,,staff)" loc="20.71-76" id="128">
+               <ChildAxisIterator loc="20.71-79" id="129">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="15.0-41" id="130">
+                 <LetVarIterator varname="input-context2" loc="15.0-41" id="131"/>
+                </TreatIterator>
+               </ChildAxisIterator>
+              </NameTestIterator>
+              <SingletonIterator value="xs:double(1)" loc="20.77-78" id="132"/>
+              <SingletonIterator value="xs:double(1)" loc="20.77-78" id="133"/>
+             </FnSubsequenceIterator>
+            </ChildAxisIterator>
+           </NameTestIterator>
+           <SingletonIterator value="xs:double(3)" loc="20.89-90" id="134"/>
+           <SingletonIterator value="xs:double(1)" loc="20.89-90" id="135"/>
+          </FnSubsequenceIterator>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)" loc="20.99-100" id="136"/>
+        <SingletonIterator value="xs:double(1)" loc="20.99-100" id="137"/>
+       </FnSubsequenceIterator>
+      </NodeDistinctIterator>
+     </TreatIterator>
+    </OpNodeAfterIterator>
+   </LogicIterator>
+   <LogicIterator loc="22.1-102" id="138">
+    <LogicIterator loc="22.1-102" id="139">
+     <OpNodeBeforeIterator loc="22.2-98" id="140">
+      <TreatIterator quant="?" loc="22.45-48" id="142">
+       <NodeDistinctIterator loc="22.45-48" id="143">
+        <FnSubsequenceIterator loc="22.46-47" id="145">
+         <NameTestIterator qname="xs:QName(,,empnum)" loc="22.39-45" id="146">
+          <ChildAxisIterator loc="22.39-48" id="147">
+           <FnSubsequenceIterator loc="22.36-37" id="148">
+            <NameTestIterator qname="xs:QName(,,employee)" loc="22.27-35" id="149">
+             <ChildAxisIterator loc="22.27-38" id="150">
+              <FnSubsequenceIterator loc="22.24-25" id="151">
+               <NameTestIterator qname="xs:QName(,,works)" loc="22.18-23" id="152">
+                <ChildAxisIterator loc="22.18-26" id="153">
+                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="14.0-41" id="154">
+                  <LetVarIterator varname="input-context1" loc="14.0-41" id="155"/>
+                 </TreatIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)" loc="22.24-25" id="156"/>
+               <SingletonIterator value="xs:double(1)" loc="22.24-25" id="157"/>
+              </FnSubsequenceIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(1)" loc="22.36-37" id="158"/>
+            <SingletonIterator value="xs:double(1)" loc="22.36-37" id="159"/>
+           </FnSubsequenceIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)" loc="22.46-47" id="160"/>
+         <SingletonIterator value="xs:double(1)" loc="22.46-47" id="161"/>
+        </FnSubsequenceIterator>
+       </NodeDistinctIterator>
+      </TreatIterator>
+      <TreatIterator quant="?" loc="22.95-98" id="162">
+       <NodeDistinctIterator loc="22.95-98" id="163">
+        <FnSubsequenceIterator loc="22.96-97" id="165">
+         <NameTestIterator qname="xs:QName(,,empnum)" loc="22.89-95" id="166">
+          <ChildAxisIterator loc="22.89-98" id="167">
+           <FnSubsequenceIterator loc="22.86-87" id="168">
+            <NameTestIterator qname="xs:QName(,,employee)" loc="22.77-85" id="169">
+             <ChildAxisIterator loc="22.77-88" id="170">
+              <FnSubsequenceIterator loc="22.74-75" id="171">
+               <NameTestIterator qname="xs:QName(,,staff)" loc="22.68-73" id="172">
+                <ChildAxisIterator loc="22.68-76" id="173">
+                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="15.0-41" id="174">
+                  <LetVarIterator varname="input-context2" loc="15.0-41" id="175"/>
+                 </TreatIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)" loc="22.74-75" id="176"/>
+               <SingletonIterator value="xs:double(1)" loc="22.74-75" id="177"/>
+              </FnSubsequenceIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(1)" loc="22.86-87" id="178"/>
+            <SingletonIterator value="xs:double(1)" loc="22.86-87" id="179"/>
+           </FnSubsequenceIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)" loc="22.96-97" id="180"/>
+         <SingletonIterator value="xs:double(1)" loc="22.96-97" id="181"/>
+        </FnSubsequenceIterator>
+       </NodeDistinctIterator>
+      </TreatIterator>
+     </OpNodeBeforeIterator>
+     <OpNodeBeforeIterator loc="23.5-101" id="182">
+      <TreatIterator quant="?" loc="23.48-51" id="184">
+       <NodeDistinctIterator loc="23.48-51" id="185">
+        <FnSubsequenceIterator loc="23.49-50" id="187">
+         <NameTestIterator qname="xs:QName(,,empnum)" loc="23.42-48" id="188">
+          <ChildAxisIterator loc="23.42-51" id="189">
+           <FnSubsequenceIterator loc="23.39-40" id="190">
+            <NameTestIterator qname="xs:QName(,,employee)" loc="23.30-38" id="191">
+             <ChildAxisIterator loc="23.30-41" id="192">
+              <FnSubsequenceIterator loc="23.27-28" id="193">
+               <NameTestIterator qname="xs:QName(,,works)" loc="23.21-26" id="194">
+                <ChildAxisIterator loc="23.21-29" id="195">
+                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="14.0-41" id="196">
+                  <LetVarIterator varname="input-context1" loc="14.0-41" id="197"/>
+                 </TreatIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)" loc="23.27-28" id="198"/>
+               <SingletonIterator value="xs:double(1)" loc="23.27-28" id="199"/>
+              </FnSubsequenceIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(2)" loc="23.39-40" id="200"/>
+            <SingletonIterator value="xs:double(1)" loc="23.39-40" id="201"/>
+           </FnSubsequenceIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)" loc="23.49-50" id="202"/>
+         <SingletonIterator value="xs:double(1)" loc="23.49-50" id="203"/>
+        </FnSubsequenceIterator>
+       </NodeDistinctIterator>
+      </TreatIterator>
+      <TreatIterator quant="?" loc="23.98-101" id="204">
+       <NodeDistinctIterator loc="23.98-101" id="205">
+        <FnSubsequenceIterator loc="23.99-100" id="207">
+         <NameTestIterator qname="xs:QName(,,empnum)" loc="23.92-98" id="208">
+          <ChildAxisIterator loc="23.92-101" id="209">
+           <FnSubsequenceIterator loc="23.89-90" id="210">
+            <NameTestIterator qname="xs:QName(,,employee)" loc="23.80-88" id="211">
+             <ChildAxisIterator loc="23.80-91" id="212">
+              <FnSubsequenceIterator loc="23.77-78" id="213">
+               <NameTestIterator qname="xs:QName(,,staff)" loc="23.71-76" id="214">
+                <ChildAxisIterator loc="23.71-79" id="215">
+                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="15.0-41" id="216">
+                  <LetVarIterator varname="input-context2" loc="15.0-41" id="217"/>
+                 </TreatIterator>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)" loc="23.77-78" id="218"/>
+               <SingletonIterator value="xs:double(1)" loc="23.77-78" id="219"/>
+              </FnSubsequenceIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(2)" loc="23.89-90" id="220"/>
+            <SingletonIterator value="xs:double(1)" loc="23.89-90" id="221"/>
+           </FnSubsequenceIterator>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)" loc="23.99-100" id="222"/>
+         <SingletonIterator value="xs:double(1)" loc="23.99-100" id="223"/>
+        </FnSubsequenceIterator>
+       </NodeDistinctIterator>
+      </TreatIterator>
+     </OpNodeBeforeIterator>
+    </LogicIterator>
+    <OpNodeBeforeIterator loc="24.5-101" id="224">
+     <TreatIterator quant="?" loc="24.48-51" id="226">
+      <NodeDistinctIterator loc="24.48-51" id="227">
+       <FnSubsequenceIterator loc="24.49-50" id="229">
+        <NameTestIterator qname="xs:QName(,,empnum)" loc="24.42-48" id="230">
+         <ChildAxisIterator loc="24.42-51" id="231">
+          <FnSubsequenceIterator loc="24.39-40" id="232">
+           <NameTestIterator qname="xs:QName(,,employee)" loc="24.30-38" id="233">
+            <ChildAxisIterator loc="24.30-41" id="234">
+             <FnSubsequenceIterator loc="24.27-28" id="235">
+              <NameTestIterator qname="xs:QName(,,works)" loc="24.21-26" id="236">
+               <ChildAxisIterator loc="24.21-29" id="237">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="14.0-41" id="238">
+                 <LetVarIterator varname="input-context1" loc="14.0-41" id="239"/>
+                </TreatIterator>
+               </ChildAxisIterator>
+              </NameTestIterator>
+              <SingletonIterator value="xs:double(1)" loc="24.27-28" id="240"/>
+              <SingletonIterator value="xs:double(1)" loc="24.27-28" id="241"/>
+             </FnSubsequenceIterator>
+            </ChildAxisIterator>
+           </NameTestIterator>
+           <SingletonIterator value="xs:double(3)" loc="24.39-40" id="242"/>
+           <SingletonIterator value="xs:double(1)" loc="24.39-40" id="243"/>
+          </FnSubsequenceIterator>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)" loc="24.49-50" id="244"/>
+        <SingletonIterator value="xs:double(1)" loc="24.49-50" id="245"/>
+       </FnSubsequenceIterator>
+      </NodeDistinctIterator>
+     </TreatIterator>
+     <TreatIterator quant="?" loc="24.98-101" id="246">
+      <NodeDistinctIterator loc="24.98-101" id="247">
+       <FnSubsequenceIterator loc="24.99-100" id="249">
+        <NameTestIterator qname="xs:QName(,,empnum)" loc="24.92-98" id="250">
+         <ChildAxisIterator loc="24.92-101" id="251">
+          <FnSubsequenceIterator loc="24.89-90" id="252">
+           <NameTestIterator qname="xs:QName(,,employee)" loc="24.80-88" id="253">
+            <ChildAxisIterator loc="24.80-91" id="254">
+             <FnSubsequenceIterator loc="24.77-78" id="255">
+              <NameTestIterator qname="xs:QName(,,staff)" loc="24.71-76" id="256">
+               <ChildAxisIterator loc="24.71-79" id="257">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="15.0-41" id="258">
+                 <LetVarIterator varname="input-context2" loc="15.0-41" id="259"/>
+                </TreatIterator>
+               </ChildAxisIterator>
+              </NameTestIterator>
+              <SingletonIterator value="xs:double(1)" loc="24.77-78" id="260"/>
+              <SingletonIterator value="xs:double(1)" loc="24.77-78" id="261"/>
+             </FnSubsequenceIterator>
+            </ChildAxisIterator>
+           </NameTestIterator>
+           <SingletonIterator value="xs:double(3)" loc="24.89-90" id="262"/>
+           <SingletonIterator value="xs:double(1)" loc="24.89-90" id="263"/>
+          </FnSubsequenceIterator>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)" loc="24.99-100" id="264"/>
+        <SingletonIterator value="xs:double(1)" loc="24.99-100" id="265"/>
+       </FnSubsequenceIterator>
+      </NodeDistinctIterator>
+     </TreatIterator>
+    </OpNodeBeforeIterator>
+   </LogicIterator>
+  </LogicIterator>
+ </ReturnClause>
+</FLWORIterator>
+
