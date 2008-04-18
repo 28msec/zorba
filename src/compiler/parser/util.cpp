@@ -45,7 +45,7 @@ int decode_entity (const char *in, string *out)
   M ("apos;", 5, "'")
 #undef M
 
-  ZORBA_ERROR_LOC (ZorbaError::XPST0003, loc);
+  ZORBA_ERROR_LOC_DESC(ZorbaError::XPST0003, loc, "Invalid entity reference");
   return -1;
 }
 

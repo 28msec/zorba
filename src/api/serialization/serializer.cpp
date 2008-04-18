@@ -294,13 +294,16 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
           lTranscoder << "&amp;";
       }
       else
-      {      
+      { 
         int is_quote = 0;
         for (int j=1; j < chars_end - chars; j++)
         {
-				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z')
+          if (j==1 && *(chars+j) != '#')
+            break;
+          
+				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'f')
             ||
-            (*(chars+j) >= 'A' && *(chars+j) <= 'Z')
+            (*(chars+j) >= 'A' && *(chars+j) <= 'F')
             ||
             (*(chars+j) >= '0' && *(chars+j) <= '9')
             ||
@@ -321,13 +324,10 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
 			
 			 if (is_quote)
 			   lTranscoder << *chars;
-       //{
-         /*
-         tr << std::string(chars, j+1);
-         chars += j;
-         i += j;
-         */
-      // }
+          //{
+          //  tr << std::string(chars, j+1);
+          //  chars += j;
+          //}
 			 else
 				 lTranscoder << "&amp;";
       }
