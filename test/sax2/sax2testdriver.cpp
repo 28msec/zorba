@@ -11,7 +11,7 @@
 #include <boost/filesystem/convenience.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "testdriverconfig.h" // SRC and BIN dir definitions
+#include "sax2testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
 #include <zorba/zorba.h>
 #include <zorba/default_content_handler.h>
