@@ -89,7 +89,7 @@ class TestContentHandler: public DefaultContentHandler
 
   void startDocument()
   {
-    std::cerr << "startDocument()" << std::endl;
+    theOStream << "startDocument()" << std::endl;
   }
 
   void startElement(
@@ -99,32 +99,32 @@ class TestContentHandler: public DefaultContentHandler
         const   SAX2_Attributes & attrs,
         const SAX2_Namespaces &ns)
   {
-    std::cerr << "startElement()" << std::endl;
-    std::cerr << "LocalName: " << localname << std::endl;
-    std::cerr << "QName: " << qname << std::endl;
+    theOStream << "startElement()" << std::endl;
+    theOStream << "LocalName: " << localname << std::endl;
+    theOStream << "QName: " << qname << std::endl;
     for ( unsigned int i = 0; i < attrs.getLength(); i++ )
     {
-      std::cerr << "Attribute name: " << attrs.getQName( i ) << ", ";
-      std::cerr << "value: " << attrs.getValue( i ) << std::endl;
+      theOStream << "Attribute name: " << attrs.getQName( i ) << ", ";
+      theOStream << "value: " << attrs.getValue( i ) << std::endl;
     }
   }
 
   void startPrefixMapping (const String & prefix,	const String & uri)
   {
-    std::cerr << "startPrefixMapping()" << std::endl;
-    std::cerr << "Prefix: " << prefix << std::endl;
-    std::cerr << "URI: " << uri << std::endl;
+    theOStream << "startPrefixMapping()" << std::endl;
+    theOStream << "Prefix: " << prefix << std::endl;
+    theOStream << "URI: " << uri << std::endl;
   }
 
   void endPrefixMapping( const String & prefix )
   {
-    std::cerr << "endPrefixMapping()" << std::endl;
-    std::cerr << "Prefix: " << prefix << std::endl;
+    theOStream << "endPrefixMapping()" << std::endl;
+    theOStream << "Prefix: " << prefix << std::endl;
   }
 
   void skippedEntity( const String & name )
   {
-    std::cerr << "Skipped entity: " << name << std::endl;
+    theOStream << "Skipped entity: " << name << std::endl;
   }
 };
 
