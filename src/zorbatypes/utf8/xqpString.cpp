@@ -375,7 +375,7 @@ xqpStringStore_t xqpStringStore::uppercase() const
   uint32_t len = numChars();
   const char* c = c_str();
   uint32_t cp;
-  char seq[4];
+  char seq[5];
 
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
 
@@ -401,7 +401,7 @@ xqpStringStore_t xqpStringStore::lowercase() const
   uint32_t len = numChars();
   const char* c = c_str();
   uint32_t cp;
-  char seq[4];
+  char seq[5];
 
   //create the new xqpStringStore
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
@@ -432,7 +432,7 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
   uint32_t len = numChars();
   const char* c = c_str();
   uint32_t cp, cpPrev;
-  char seq[4];
+  char seq[5];
 
   cpPrev = 0x20;
   while(len > 0)
@@ -498,7 +498,7 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 
     if(firstCp)
     {
-      char seq[4];
+      char seq[5];
       memset(seq, 0, sizeof(seq));
       UTF8Encode(cp, seq);
       newStr->theString += seq;
@@ -547,7 +547,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
   uint32_t cp = 0;
   const char* end = c_str();
   const char* c = c_str();
-  char seq[4];
+  char seq[5];
 
   zorba::advance(end, StrLen, end + bytes());
 
@@ -639,7 +639,7 @@ xqpStringStore_t xqpStringStore::formatAsXML(const char* src) const
   uint32_t len = numChars();
   const char* c = c_str();
   uint32_t cp;
-  char seq[4];
+  char seq[5];
 
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
 
@@ -676,7 +676,7 @@ xqpStringStore_t xqpStringStore::escapeHtmlUri() const
   uint32_t len = numChars();
   const char* c = c_str();
   unsigned int cp;
-  char seq[4];
+  char seq[5];
   const char* prev = c_str();
   distance_type length;
 
@@ -724,7 +724,7 @@ xqpStringStore_t xqpStringStore::iriToUri() const
   uint32_t len = numChars();
   const char* c = c_str();
   unsigned int cp;
-  char seq[4];
+  char seq[5];
   const char* prev = c_str();
   distance_type length;
 
@@ -768,7 +768,7 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
   uint32_t len = numChars();
   const char* c = c_str();
   unsigned int cp;
-  char seq[4];
+  char seq[5];
   const char* prev = c_str();
   distance_type length;
   
@@ -882,8 +882,8 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
 
   xqpString& xqpString::operator=(uint32_t cp)
   {
-    theStrStore->theString.reserve(4);
-    char seq[4] = {0,0,0,0};
+    theStrStore->theString.reserve(5);
+    char seq[5] = {0,0,0,0,0};
     UTF8Encode(cp, seq);
     theStrStore = new xqpStringStore(seq);
     return *this;
@@ -914,8 +914,8 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
 
   xqpString& xqpString::operator+=(uint32_t cp)
   {
-    theStrStore->theString.reserve(4);
-    char seq[4] = {0,0,0,0};
+    theStrStore->theString.reserve(5);
+    char seq[5] = {0,0,0,0,0};
     UTF8Encode(cp, seq);
     theStrStore = new xqpStringStore(theStrStore->theString + seq);
 
@@ -1097,7 +1097,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     uint32_t len = length();
     const char* c = c_str();
     uint32_t cp, i;
-    char seq[4];
+    char seq[5];
 
     for(i=0; i<len; ++i)
     {
@@ -1118,7 +1118,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     }
     tmp += "\0";
 
-    xqpString res(tmp);
+    xqpString res(tmp.c_str());
     return res;
   }
 
