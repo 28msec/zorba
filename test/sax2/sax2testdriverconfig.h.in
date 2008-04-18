@@ -1,0 +1,10 @@
+#ifndef XQP_RBKT_TESTDRIVER_CONFIG_H
+#define XQP_RBKT_TESTDRIVER_CONFIG_H
+
+namespace zorba {
+
+static std::string SAX2_SRC_DIR = "@CMAKE_CURRENT_SOURCE_DIR@";
+static std::string SAX2_BINARY_DIR = "@CMAKE_CURRENT_BINARY_DIR@";
+
+}
+#endif

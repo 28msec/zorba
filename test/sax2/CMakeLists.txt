@@ -1,0 +1,35 @@
+# create the result directory for all tests
+IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
+    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
+ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
+
+# configure and compile the testdriver
+CONFIGURE_FILE(sax2testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/sax2testdriverconfig.h)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+ADD_EXECUTABLE(sax2testdriver sax2testdriver.cpp)
+TARGET_LINK_LIBRARIES(sax2testdriver ${requiredlibs} zorba)
+
+# collect all queries (suffix .xq) in all subdirectories of the Queries dir
+FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
+
+MESSAGE(STATUS "Adding SAX2 tests for CTest")
+SET(TESTCOUNTER 0)
+
+FOREACH(TESTFILE ${TESTFILES})
+
+ STRING(LENGTH ${TESTFILE} TESTFILELENGTH)
+ MATH(EXPR TESTLENGTH '${TESTFILELENGTH}-3' )
+ STRING(SUBSTRING ${TESTFILE} 0 ${TESTLENGTH} TESTNAME)
+
+
+ ADD_TEST(${TESTNAME} sax2testdriver ${TESTFILE})
+ SET_TESTS_PROPERTIES (${TESTNAME} PROPERTIES TIMEOUT "10")
+
+ MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
+ MATH(EXPR TESTMOD "${TESTCOUNTER}/1000")
+ IF (${TESTMOD})
+   MESSAGE(STATUS "Adding another 1000 Tests")
+   SET(TESTCOUNTER 0)
+ ENDIF (${TESTMOD})
+                
+ENDFOREACH(TESTFILE)

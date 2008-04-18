@@ -855,7 +855,7 @@ void serializer::sax2_emitter::emit_declaration_end()
 
 bool serializer::sax2_emitter::emit_bindings( const store::Item * item )
 {
-  //TODO: unimplemented method
+  
   return false;
 }
 
@@ -893,7 +893,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 
       SAX2AttributesImpl attrs(item);
       SAX2NamespacesImpl nss(&local_nsBindings, item);
-
+      
       emit_startPrefixMapping(item, local_nsBindings);
 
       item_qname = item->getNodeName();
