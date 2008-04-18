@@ -88,17 +88,18 @@ bool TypeOps::is_equal(const XQType& type1, const XQType& type2)
 
 bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
 {
-  if (is_equal(subtype, *GENV_TYPESYSTEM.NONE_TYPE))
+  if (subtype.type_kind () == XQType::NONE_KIND)
     return true;
 
   if (is_equal (subtype, supertype))
     return true;
 
+  TypeConstants::quantifier_t superq = quantifier(supertype);
   if (is_empty (subtype) &&
-      quantifier(supertype) != TypeConstants::QUANT_ONE)
+      superq != TypeConstants::QUANT_ONE && superq != TypeConstants::QUANT_PLUS)
     return true;
 
-  if (!RootTypeManager::QUANT_SUBTYPE_MATRIX[subtype.get_quantifier()][supertype.get_quantifier()])
+  if (!RootTypeManager::QUANT_SUBTYPE_MATRIX[subtype.get_quantifier()][superq])
     return false;
 
   switch(supertype.type_kind()) 
@@ -361,30 +362,32 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
   }
 }
 
-xqtref_t TypeOps::prime_type(const XQType& type)
-{
-  if (is_empty (type)) {
+xqtref_t TypeOps::prime_type(const XQType& type) {
+  switch (type.type_kind ()) {
+  case XQType::EMPTY_KIND:
     return GENV_TYPESYSTEM.NONE_TYPE;
-  } else if (type.type_kind() == XQType::ATOMIC_TYPE_KIND) {
+  case XQType::ATOMIC_TYPE_KIND: {
     const AtomicXQType& atype = static_cast<const AtomicXQType&>(type);
     return type.get_manager()->create_atomic_type(atype.get_type_code(), TypeConstants::QUANT_ONE);
-  } else if (is_equal(type, *GENV_TYPESYSTEM.NONE_TYPE)) {
-    return GENV_TYPESYSTEM.NONE_TYPE;
-  } else if (type.type_kind() == XQType::ITEM_KIND) {
+  }
+  case XQType::NONE_KIND:
+    return &type;
+  case XQType::ITEM_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
-  } else if (is_equal(type, *GENV_TYPESYSTEM.ANY_TYPE)) {
+  case XQType::ANY_TYPE_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
-  } else if (is_equal(type, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE)) {
+  case XQType::ANY_SIMPLE_TYPE_KIND:
     return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
-  } else if (is_equal(type, *GENV_TYPESYSTEM.UNTYPED_TYPE)) {
+  case XQType::UNTYPED_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
-  } else if (type.type_kind() == XQType::NODE_TYPE_KIND) {
+  case XQType::NODE_TYPE_KIND: {
     const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
     return type.get_manager()->create_node_type(ntype.get_nodetest(), ntype.get_content_type(), TypeConstants::QUANT_ONE);
   }
-  ZORBA_ASSERT(false);
-
-  return NULL;
+  default:
+    ZORBA_ASSERT(false);
+    return NULL;
+  }
 }
 
 xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
