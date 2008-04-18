@@ -197,11 +197,11 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
   std::stringstream lStringStream;
   transcoder lTranscoder( lStringStream ); 
 	const unsigned char* chars = (const unsigned char*)str->c_str();
+  const unsigned char* chars_end  = chars + str->bytes();
 
-	int is_quote;
-  int skip = 0;
-	
-	for (unsigned int i = 0; i < str->bytes(); i++, chars++ )
+	int skip = 0;
+  
+	for (; chars < chars_end; chars++ )
 	{       
     // the input string is UTF-8
 #ifndef ZORBA_NO_UNICODE    
@@ -213,15 +213,29 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
       skip = 3;
     else if ((*chars >> 3) == 0x1e)
       skip = 4;
-    
-    //const unsigned char* temp = chars;
-    //unsigned int cp = UTF8Decode(temp);
-  
+
     if (skip)
     {
-      lTranscoder << "&#" << NumConversions::longToStr(UTF8Decode(chars)) << ";";
-      chars += skip;
-      skip = 0;
+      const unsigned char* temp = chars;
+      unsigned int cp = UTF8Decode(temp);
+      
+      if (cp >= 0x10000 && cp <= 0x10FFFF)
+      {
+        temp = chars;
+        lTranscoder << "&#" << NumConversions::longToStr(UTF8Decode(temp)) << ";";
+        chars += (skip-1);
+        skip = 0;
+      }
+      else
+      {
+        while (skip)
+        {
+          lTranscoder<< *chars;
+          if (skip > 1)
+            chars++;
+          skip--;
+        }
+      }
       continue;
     }
 #endif//ZORBA_NO_UNICODE
@@ -272,7 +286,7 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
       */      
       if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
       {
-        if (str->bytes()-i >= 1
+        if (chars_end - chars > 1
             &&
             (*(chars+1) == '{'))
           lTranscoder << *chars;
@@ -281,8 +295,8 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
       }
       else
       {      
-        is_quote = 0;
-        for (unsigned int j=1; j < str->bytes()-i; j++)
+        int is_quote = 0;
+        for (int j=1; j < chars_end - chars; j++)
         {
 				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z')
             ||
