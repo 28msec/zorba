@@ -202,7 +202,7 @@ public:
   void addReference(long* counter
                     SYNC_PARAM2(RCLock* lock)) const
   {
-#if defined WIN32 && !defined ZORBA_FOR_ONE_THREAD_ONLY
+#if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
     if(lock)
     {
       if (counter) InterlockedIncrement(counter);
@@ -224,7 +224,7 @@ public:
   void removeReference (long* counter 
                         SYNC_PARAM2(RCLock* lock))
   {
-#if defined WIN32 && !defined ZORBA_FOR_ONE_THREAD_ONLY
+#if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
     if(lock)
     {
       if (counter)
