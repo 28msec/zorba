@@ -1110,7 +1110,7 @@ xqtref_t text_expr::return_type_impl (static_context *sctx) {
   switch (type) {
   case text_constructor: {
     xqtref_t t  = get_text ()->return_type (sctx);
-    if (TypeOps::is_equal (*t, *GENV_TYPESYSTEM.EMPTY_TYPE))
+    if (TypeOps::is_empty (*t))
       return t;
     else if (TypeOps::type_min_cnt (*t) == 0)
       q = TypeConstants::QUANT_QUESTION;

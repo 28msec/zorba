@@ -156,7 +156,7 @@ static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
 
   static void mark_casts (cast_or_castable_base_expr *node, expr_t input, static_context *sctx) {
     xqtref_t target = node->get_target_type ();
-    if (TypeOps::is_equal (*target, *GENV_TYPESYSTEM.EMPTY_TYPE)) {
+    if (TypeOps::is_empty (*target)) {
       TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
       TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VAL);
       return;

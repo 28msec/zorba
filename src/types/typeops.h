@@ -73,6 +73,8 @@ public:
      */
     static bool is_numeric(const XQType& type);
 
+    static bool is_empty(const XQType& type);
+
     /*
      * Returns the atomic_type_code_t for the given type.
      * The input type MUST be atomic.

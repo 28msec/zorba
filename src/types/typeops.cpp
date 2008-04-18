@@ -94,7 +94,7 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
   if (is_equal (subtype, supertype))
     return true;
 
-  if (is_equal(subtype, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
+  if (is_empty (subtype) &&
       quantifier(supertype) != TypeConstants::QUANT_ONE)
     return true;
 
@@ -276,6 +276,10 @@ bool TypeOps::is_numeric(const XQType& type)
     || is_subtype(type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE);
 }
 
+bool TypeOps::is_empty(const XQType& type) {
+  return type.type_kind () == XQType::EMPTY_KIND;
+}
+
 TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& type)
 {
   assert(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
@@ -289,9 +293,9 @@ xqtref_t TypeOps::union_type(const XQType& type1, const XQType& type2)
     return &type2;
   else if (is_subtype (type2, type1))
     return &type1;
-  else if (is_equal (type1, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  else if (is_empty (type1))
     return mgr->create_type_x_quant (type2, TypeConstants::QUANT_QUESTION);
-  else if (is_equal (type2, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  else if (is_empty (type2))
     return mgr->create_type_x_quant (type1, TypeConstants::QUANT_QUESTION);
   else if (quantifier (type1) == TypeConstants::QUANT_ONE && quantifier (type2) == TypeConstants::QUANT_ONE) {
     if (type1.type_kind () == type2.type_kind ())
@@ -359,7 +363,7 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
 
 xqtref_t TypeOps::prime_type(const XQType& type)
 {
-  if (is_equal(type, *GENV_TYPESYSTEM.EMPTY_TYPE)) {
+  if (is_empty (type)) {
     return GENV_TYPESYSTEM.NONE_TYPE;
   } else if (type.type_kind() == XQType::ATOMIC_TYPE_KIND) {
     const AtomicXQType& atype = static_cast<const AtomicXQType&>(type);
@@ -516,19 +520,19 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
 
 
 int TypeOps::type_max_cnt (const XQType& type) {
-  return is_equal (type, *GENV_TYPESYSTEM.EMPTY_TYPE)
+  return is_empty (type)
     ? 0
     : QUANT_MAX_CNT [quantifier (type)];
 }
 
 int TypeOps::type_min_cnt (const XQType& type) {
-  return is_equal (type, *GENV_TYPESYSTEM.EMPTY_TYPE)
+  return is_empty (type)
     ? 0
     : QUANT_MIN_CNT [quantifier (type)];
 }
 
 int TypeOps::type_cnt (const XQType& type) {
-  if (is_equal (type, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  if (is_empty (type))
     return 0;
   TypeConstants::quantifier_t q = quantifier (type);
   if (QUANT_MIN_CNT [q] == QUANT_MAX_CNT [q])

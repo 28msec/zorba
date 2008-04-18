@@ -197,7 +197,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
 
   // 'for $x in ... return if (...) then ... else ()'
   if (ite_result != NULL && WHERE == NULL &&
-      TypeOps::is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE))
+      TypeOps::is_empty (*ite_result->get_else_expr ()->return_type (sctx)))
   {
     expr_t cond = ite_result->get_cond_expr (),
       then = ite_result->get_then_expr ();

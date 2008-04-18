@@ -77,7 +77,7 @@ bool normalizer::begin_visit(flwor_expr& node)
     xqtref_t vartype = clause->get_var ()->get_type ();
     if (vartype != NULL) {
       bool is_for = clause->get_type () == forlet_clause::for_clause;
-      if (is_for && TypeOps::is_equal (*GENV_TYPESYSTEM.EMPTY_TYPE, *vartype))
+      if (is_for && TypeOps::is_empty (*vartype))
         ZORBA_ERROR_LOC (ZorbaError::XPTY0004, loc);
       xqtref_t promote_type = is_for ? m_sctx->get_typemanager()->create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
       expr_t e = clause->get_expr ();
