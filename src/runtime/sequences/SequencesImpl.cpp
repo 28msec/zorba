@@ -32,6 +32,7 @@
 
 #include "errors/error_manager.h"
 #include "zorbatypes/zorbatypesError.h"
+#include "zorbatypes/URI.h"
 #include "errors/error_messages.h"
 
 #include "util/web/web.h"
@@ -1398,6 +1399,9 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
 
   uriString = uriItem->getStringValue();
 
+  if(!URI::is_valid(uriString,true))
+    ZORBA_ERROR_DESC(ZorbaError::FODC0005, "Invalid argument to fn:doc or fn:doc-available.");
+
   doc = get_doc (uriString, &err);
   if (doc == NULL)
     ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc, uriString->c_str(), (err == NULL ? "" :  err));
@@ -1426,9 +1430,11 @@ store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
 
   uriString = uriItem->getStringValue();
 
+  if(!URI::is_valid(uriString,true))
+    ZORBA_ERROR_DESC(ZorbaError::FODC0005, "Invalid argument to fn:doc or fn:doc-available.");
+
   doc = get_doc (uriString, &err);
-  //TODO check if $uri is not a valid xs:anyURI and raise [err:FODC0005]
-    
+
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(doc != NULL), state);
   STACK_END (state);
 }

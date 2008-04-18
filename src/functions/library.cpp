@@ -359,7 +359,7 @@ DECL(fn_in_scope_prefixes,
 // Sequences
 DECL(fn_doc_func,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","doc"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
 
 DECL(fn_doc_available_func,
