@@ -353,6 +353,15 @@ bool begin_visit(flwor_expr& v)
     group_var_iter_map.put(k, new vector<ref_iter_t>());
   }
 
+  for(flwor_expr::group_list_t::const_iterator it = v.non_group_begin();
+      it != v.non_group_end();
+      ++it)
+  {
+    rchandle<var_expr> var = (*it)->getInnerVar();
+    uint64_t k = (uint64_t) &*var;
+    group_var_iter_map.put(k, new vector<ref_iter_t>());
+  }
+
   return true;
 }
 
@@ -377,6 +386,21 @@ void end_visit(flwor_expr& v)
   reverse (orderSpecs.begin (), orderSpecs.end ());
 
   auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
+
+  vector<FLWORIterator::GroupClause> nonGroupBys;
+  for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_rbegin();
+      i != v.non_group_rend();
+      ++i)
+  {
+    rchandle<group_clause> group = *i;
+    vector<ref_iter_t>* lInnerVars = 0;
+    var_expr* lVar = group->getInnerVar();
+    ZORBA_ASSERT(group_var_iter_map.get((uint64_t)lVar, lInnerVars));
+
+    PlanIter_t lInput = pop_itstack();
+
+    nonGroupBys.push_back(FLWORIterator::GroupClause(lInput, *lInnerVars));
+  }
 
   vector<FLWORIterator::GroupClause> groupBys;
   for(flwor_expr::group_list_t::reverse_iterator i = v.group_rbegin();
@@ -441,7 +465,8 @@ void end_visit(flwor_expr& v)
   }
 
   FLWORIterator *iter = new FLWORIterator(
-    v.get_loc(), clauses, where, groupBys, orderby.release(), ret, v.isUpdating(), false);
+    v.get_loc(), clauses, where, groupBys, nonGroupBys, 
+    orderby.release(), ret, v.isUpdating(), false);
   itstack.push(iter);
 }
 

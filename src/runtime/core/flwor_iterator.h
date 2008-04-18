@@ -210,6 +210,7 @@ public:
         std::vector<ForLetClause>&  forLetClauses,
         PlanIter_t&                 whereClause,
         std::vector<GroupClause>&   aGroupByClauses,
+        std::vector<GroupClause>&   aNonGroupByClauses,
         OrderByClause*              orderByClause,
         PlanIter_t&                 returnClause,
         bool                        aIsUpdating,
@@ -253,6 +254,7 @@ public:
   std::vector<ForLetClause> forLetClauses;
   PlanIter_t                whereClause; //can be null
   std::vector<GroupClause>  theGroupByClauses;
+  std::vector<GroupClause>  theNonGroupByClauses;
   OrderByClause           * orderByClause;  //can be null
   bool                      doOrderBy; //just indicates if the FLWOR has an orderby
   PlanIter_t                returnClause; 

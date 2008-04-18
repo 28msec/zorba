@@ -295,6 +295,7 @@ FLWORIterator::FLWORIterator(
     std::vector<FLWORIterator::ForLetClause> &aForLetClauses,
     PlanIter_t& aWhereClause,
     std::vector<FLWORIterator::GroupClause>& aGroupByClauses,
+    std::vector<FLWORIterator::GroupClause>& aNonGroupByClauses,
     FLWORIterator::OrderByClause* aOrderByClause,
     PlanIter_t& aReturnClause,
     bool aIsUpdating,
@@ -304,6 +305,7 @@ FLWORIterator::FLWORIterator(
   forLetClauses(aForLetClauses),
   whereClause(aWhereClause),
   theGroupByClauses(aGroupByClauses),
+  theNonGroupByClauses(aNonGroupByClauses),
   orderByClause(aOrderByClause),
   returnClause(aReturnClause),
   whereClauseReturnsBooleanPlus(aWhereClauseReturnsBooleanPlus),
@@ -755,6 +757,7 @@ void FLWORIterator::accept ( PlanIterVisitor& v ) const
   {
     iter->accept ( v );
   }
+
   if ( whereClause != NULL )
   {
     v.beginVisitFlworWhereClause(*whereClause);
@@ -763,6 +766,14 @@ void FLWORIterator::accept ( PlanIterVisitor& v ) const
   {
     std::vector<FLWORIterator::GroupClause>::const_iterator lIter = theGroupByClauses.begin();
     std::vector<FLWORIterator::GroupClause>::const_iterator lEnd  = theGroupByClauses.end();
+    for (;lIter!=lEnd;++lIter)
+    {
+      lIter->accept(v);
+    }
+  }
+  {
+    std::vector<FLWORIterator::GroupClause>::const_iterator lIter = theNonGroupByClauses.begin();
+    std::vector<FLWORIterator::GroupClause>::const_iterator lEnd  = theNonGroupByClauses.end();
     for (;lIter!=lEnd;++lIter)
     {
       lIter->accept(v);

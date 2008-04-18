@@ -1288,7 +1288,7 @@ public:
 public:
 	void push_back(rchandle<ForOrLetClause> forlet_h) { forlet_hv.push_back(forlet_h); }
 	rchandle<ForOrLetClause> operator[](int i) const { return forlet_hv[i]; }
-  int size () const { return forlet_hv.size (); }
+  size_t size () const { return forlet_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1356,7 +1356,7 @@ public:
 public:
 	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
 	rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
-	int size() const { return vardecl_hv.size();}
+	size_t size() const { return vardecl_hv.size();}
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1582,6 +1582,7 @@ public:
 class GroupByClause : public parsenode
 {
 protected:
+  FLWORExpr*              flwor_h;
   rchandle<GroupSpecList> spec_list_h;
 	rchandle<LetClauseList> let_h;
 	rchandle<WhereClause> where_h;
@@ -1594,6 +1595,8 @@ public:
     rchandle<WhereClause>);
 
 public:
+  void set_flwor(FLWORExpr* a) { flwor_h = a; }
+  FLWORExpr*     get_flwor() const { return flwor_h; }
   GroupSpecList* get_spec_list() const { return &*spec_list_h; }
   LetClauseList* get_let() const { return &*let_h; }
   WhereClause* get_where() const { return &*where_h; }
@@ -1612,7 +1615,7 @@ public:
 
 public:
 	void push_back(rchandle<GroupSpec> spec_h) { spec_hv.push_back(spec_h); }
-	rchandle<GroupSpec> operator[](int i) const { return spec_hv[i]; }
+	GroupSpec* operator[](int i) const { return &*spec_hv[i]; }
   size_t size () { return spec_hv.size (); }
 
 public:

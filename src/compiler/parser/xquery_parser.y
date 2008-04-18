@@ -1960,48 +1960,60 @@ FLWORExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [groupby.return]" << endl;
 #endif
-			$$ = new FLWORExpr(LOC (@$),
+      GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>($2);
+			FLWORExpr* lFLWOR = new FLWORExpr(LOC (@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								NULL,
-                dynamic_cast<GroupByClause*>($2),
+                lGroupBy,
 								NULL,
 								$4);
+      lGroupBy->set_flwor(lFLWOR);
+      $$ = lFLWOR;
     }
   | ForLetClauseList WhereClause GroupByClause RETURN ExprSingle
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.groupby.return]" << endl;
 #endif
-			$$ = new FLWORExpr(LOC (@$),
+      GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>($3);
+			FLWORExpr* lFLWOR = new FLWORExpr(LOC (@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
-                dynamic_cast<GroupByClause*>($3),
+                lGroupBy,
 								NULL,
 								$5);
+      lGroupBy->set_flwor(lFLWOR);
+      $$ = lFLWOR;
     }
   | ForLetClauseList GroupByClause OrderByClause RETURN ExprSingle
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [groupby.orderby.return]" << endl;
 #endif
-			$$ = new FLWORExpr(LOC (@$),
+      GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>($2);
+			FLWORExpr* lFLWOR = new FLWORExpr(LOC (@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								NULL,
-                dynamic_cast<GroupByClause*>($2),
+                lGroupBy,
 								dynamic_cast<OrderByClause*>($3),
 								$5);
+      lGroupBy->set_flwor(lFLWOR);
+      $$ = lFLWOR;
     }
   | ForLetClauseList WhereClause GroupByClause OrderByClause RETURN ExprSingle
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.groupby.orderby.return]" << endl;
 #endif
-			$$ = new FLWORExpr(LOC (@$),
+      GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>($3);
+			FLWORExpr* lFLWOR = new FLWORExpr(LOC (@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
-                dynamic_cast<GroupByClause*>($3),
+                lGroupBy,
 								dynamic_cast<OrderByClause*>($4),
 								$6);
+      lGroupBy->set_flwor(lFLWOR);
+      $$ = lFLWOR;
     }
 	;
 

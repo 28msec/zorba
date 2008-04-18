@@ -382,6 +382,7 @@ protected:  // state
   bool order_stable;  // per clause, not per spec!
   expr_t where_h;
   group_list_t group_v;
+  group_list_t non_group_v;
   expr_t retval_h;
 
 public: // ctor,dtor
@@ -422,7 +423,18 @@ public: // accessors
   group_list_t::reverse_iterator group_rend()
   { return group_v.rend(); }
 
+  group_list_t::const_iterator non_group_begin() const
+  { return non_group_v.begin(); }
+  group_list_t::const_iterator non_group_end() const
+  { return non_group_v.end(); }
+
+  group_list_t::reverse_iterator non_group_rbegin()
+  { return non_group_v.rbegin(); }
+  group_list_t::reverse_iterator non_group_rend()
+  { return non_group_v.rend(); }
+
   void add(rchandle<group_clause> v) { group_v.push_back(v); }
+  void add_non_group(rchandle<group_clause> v) { non_group_v.push_back(v); }
 
   void add(orderspec_t const& v)
   { orderspec_v.push_back(v); } 

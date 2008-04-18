@@ -12,6 +12,7 @@
 #include <stack>
 #include <sstream>
 #include <list>
+#include <set>
 
 #include "zorbatypes/Unicode_util.h"
 
@@ -1282,6 +1283,18 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       flwor->add(lClause);
       pop_scope();
     }
+
+    
+    expr_t lVar = pop_nodestack();
+    while (lVar != 0)
+    {
+      var_expr_t lOuterVarExpr = lVar.cast<var_expr>();
+      var_expr_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
+      group_clause* lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
+      flwor->add_non_group(lClause);
+      pop_scope();
+      lVar = pop_nodestack();
+    }
   }
 
   if (v.get_where () != NULL)
@@ -1460,9 +1473,53 @@ void end_visit(const WhereClause& /*v*/, void* /*visit_state*/)
 }
 
 
-void *begin_visit(const GroupByClause&)
+void *begin_visit(const GroupByClause& v)
 {
   TRACE_VISIT ();
+
+  nodestack.push(0);
+
+  std::set<std::string> lFVars;;
+
+  ForLetClauseList* lForLetList = &*(v.get_flwor()->get_forlet_list());
+  for (size_t i = 0; i < lForLetList->size(); ++i)
+  {
+    ForOrLetClause* lFL = (*lForLetList)[i];
+    if (lFL->for_or_let() == ForOrLetClause::for_clause)
+    {
+      ForClause* lF = static_cast<ForClause*>(lFL);
+      VarInDeclList* lV = &*(lF->get_vardecl_list());
+      for (size_t j = 0; j < lV->size(); ++j)
+      {
+        VarInDecl* lVD = &*(*lV)[j];
+        lFVars.insert(lVD->get_varname());
+      }
+    }
+  }
+
+  GroupSpecList* lList = v.get_spec_list();
+  for (size_t i = 0; i < lList->size(); ++i)
+  {
+    GroupSpec* lSpec = (*lList)[i];
+    std::set<std::string>::iterator lFindIter = lFVars.find(lSpec->get_var_name());
+    if (lFindIter != lFVars.end())
+    {
+      lFVars.erase(lFindIter);
+    }
+  }
+
+  std::set<std::string>::iterator lIter = lFVars.begin();
+  std::set<std::string>::iterator lEnd = lFVars.end();
+  for(;lIter!=lEnd;++lIter)
+  {
+    var_expr *e = static_cast<var_expr*>(sctx_p->lookup_var(*lIter));
+    if (e == NULL)
+      ZORBA_ERROR_PARAM(ZorbaError::XPST0008, *lIter, "");
+    push_scope();
+    bind_var_and_push(v.get_location(), *lIter, var_expr::groupby_var);
+    nodestack.push(rchandle<expr>(e));
+  }
+
   return no_state;
 }
 

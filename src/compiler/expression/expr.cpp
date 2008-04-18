@@ -73,6 +73,7 @@ class flwor_expr_iterator_data : public expr_iterator_data {
 public:
   flwor_expr::clause_list_t::iterator clause_iter;
   flwor_expr::group_list_t::iterator group_iter;
+  flwor_expr::group_list_t::iterator non_group_iter;
   flwor_expr::orderspec_list_t::iterator order_mod_iter;
   
 public:
@@ -370,6 +371,9 @@ void flwor_expr::next_iter (expr_iterator_data& v) {
 
   ITER_FOR_EACH (group_iter, group_v.begin(), group_v.end(),
                  (*vv.group_iter)->theOuterVar);
+
+  ITER_FOR_EACH (non_group_iter, non_group_v.begin(), non_group_v.end(),
+                 (*vv.non_group_iter)->theOuterVar);
 
   ITER_FOR_EACH (order_mod_iter, orderspec_begin (), orderspec_end (),
                  (*vv.order_mod_iter).first);
