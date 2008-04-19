@@ -97,6 +97,15 @@ namespace zorba {
   }
 
 
+/*******************************************************************************
+
+  theGlobalVars:
+  Global vars are the ones declared in the prolog (both external and non-external
+  vars). theGlobalVars vector contains one entry per global var V. The entry maps
+  the var_expr for V to the expr E that defines V (E is NULL for external vars)
+  Note: global vars are treated like LET vars.
+
+********************************************************************************/
 class TranslatorImpl : public parsenode_visitor
 {
 public:
@@ -105,16 +114,16 @@ public:
 protected:
   uint32_t depth;
 
-  CompilerCB                        *compilerCB;
-  static_context                    *sctx_p;
-  vector<rchandle<static_context> > &sctx_list;
-  std::stack<expr_t>                 nodestack;
-  std::stack<xqtref_t>               tstack;  // types stack
-  int                                tempvar_counter;
-  std::list<global_binding>          global_vars;
-  const RelativePathExpr           * theRootRelPathExpr;
-  std::stack<const RelativePathExpr *> relpathstack;
-  rchandle<namespace_context>          ns_ctx;
+  CompilerCB                           * compilerCB;
+  static_context                       * sctx_p;
+  vector<rchandle<static_context> >    & sctx_list;
+  std::stack<expr_t>                     nodestack;
+  std::stack<xqtref_t>                   tstack;  // types stack
+  int                                    tempvar_counter;
+  std::list<global_binding>              theGlobalVars;
+  const RelativePathExpr               * theRootRelPathExpr;
+  std::stack<const RelativePathExpr *>   relpathstack;
+  rchandle<namespace_context>            ns_ctx;
 
   // FOR WHITESPACE CHECKING OF DirElemContent (stack is need because of nested elements)
   /**
@@ -293,6 +302,118 @@ expr_t result ()
 }
 
 
+/*******************************************************************************
+  Create a flwor expr with one LET clause for each global var and a return 
+  clause consisting of the given expr e.
+********************************************************************************/
+expr_t wrap_in_globalvar_flwor(expr_t e)
+{
+  const function *ctxf = LOOKUP_OP1 ("ctxvariable");
+  flwor_expr::clause_list_t clauses;
+
+  for (std::list<global_binding>::iterator i = theGlobalVars.begin ();
+      i != theGlobalVars.end ();
+      i++)
+  {
+    global_binding b = *i;
+    var_expr_t var = b.first;
+    expr_t expr = b.second;
+
+    if (expr == NULL)
+    {
+      xqpString varname = var->get_varname()->getStringValue().getp();
+      expr = new fo_expr (var->get_loc(),
+                          ctxf,
+                          new const_expr(var->get_loc(), varname));
+    }
+
+    clauses.push_back (wrap_in_letclause (expr, var));
+  }
+
+  if (! clauses.empty ())
+  {
+    expr_update_t lUpdateType = e->getUpdateType();
+    e = new flwor_expr (e->get_loc(), clauses, e);
+    e->setUpdateType(lUpdateType);
+  }
+
+  return e;
+}
+
+
+/*******************************************************************************
+  Create a LET clause for the given LET variable "lv", with the given expr "e" as
+  its defining expression.
+********************************************************************************/
+rchandle<forlet_clause> wrap_in_letclause(expr_t e, var_expr_t lv)
+{
+  assert (lv->get_kind () == var_expr::let_var);
+  return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, e.getp());
+}
+
+
+rchandle<forlet_clause> wrap_in_letclause(expr_t e, const QueryLoc& loc, string name)
+{
+  return wrap_in_letclause (e, bind_var (loc, name, var_expr::let_var));
+}
+
+
+rchandle<forlet_clause> wrap_in_letclause(expr_t e)
+{
+  return wrap_in_letclause (e, tempvar(e->get_loc(), var_expr::let_var));
+}
+
+
+/*******************************************************************************
+  Create a FOR clause for the given FOR variable "fv" and its associated POS var
+  "pv" (pv may be NULL). Use the given expr "e" as the defining expr for "fv". 
+********************************************************************************/
+rchandle<forlet_clause> wrap_in_forclause(expr_t e, var_expr_t fv, var_expr_t pv)
+{
+  assert (fv->get_kind () == var_expr::for_var);
+  if (pv != NULL)
+    assert (pv->get_kind() == var_expr::pos_var);
+  return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, e);
+}
+
+
+rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
+{
+  var_expr_t fv = tempvar(expr->get_loc(), var_expr::for_var);
+  var_expr_t pv = (add_posvar ? tempvar(expr->get_loc(), var_expr::pos_var) : 
+                                var_expr_t (NULL));
+  return wrap_in_forclause (expr, fv, pv);
+}
+
+
+rchandle<forlet_clause> wrap_in_forclause(
+    expr_t expr,
+    const QueryLoc& loc,
+    string fv_name,
+    string pv_name)
+{
+  return wrap_in_forclause (expr,
+                            bind_var (loc, fv_name, var_expr::for_var),
+                            bind_var (loc, pv_name, var_expr::pos_var));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr_t wrap_in_dos_and_dupelim(expr_t expr)
+{
+  rchandle<fo_expr> dos = new fo_expr(expr->get_loc(),
+                                      LOOKUP_OP1("sort-distinct-nodes-asc-or-atomics"));
+  dos->add(expr);
+  return &*dos;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+
 void *begin_visit(const parsenode& /*v*/)
 {
   TRACE_VISIT ();
@@ -317,6 +438,9 @@ void end_visit(const exprnode& /*v*/, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void *begin_visit(const ArgList& /*v*/)
 {
   TRACE_VISIT ();
@@ -329,6 +453,26 @@ void end_visit(const ArgList& /*v*/, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void *begin_visit(const QueryBody& /*v*/)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const QueryBody& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+
+  nodestack.push(wrap_in_globalvar_flwor(pop_nodestack()));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void *begin_visit(const BaseURIDecl& v)
 {
   TRACE_VISIT ();
@@ -461,7 +605,7 @@ void end_visit(const EmptyOrderDecl& /*v*/, void* /*visit_state*/)
 /*******************************************************************************
 
    Enclosed Expr
-   Used in direct element/attribute constructors and in function definition.
+   Used in direct and computed node constructors.
 
 ********************************************************************************/
 void *begin_visit(const EnclosedExpr& /*v*/)
@@ -483,7 +627,7 @@ void end_visit(const EnclosedExpr& v, void* /*visit_state*/)
 
 /*******************************************************************************
 
-  Direct Node Construction
+  Node Construction
 
 ********************************************************************************/
 
@@ -1660,6 +1804,8 @@ void end_visit(const OrderEmptySpec& /*v*/, void* /*visit_state*/)
 
 /*******************************************************************************
 
+  VarDecl represents a variable declaration in the prolog.
+
 ********************************************************************************/
 
 void *begin_visit(const VarDecl& /*v*/)
@@ -1671,138 +1817,472 @@ void *begin_visit(const VarDecl& /*v*/)
 void end_visit(const VarDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+
   xqp_string varname = v.get_varname();
   if (sctx_p->lookup_var (varname) != NULL)
     ZORBA_ERROR (ZorbaError::XQST0049);
-  global_vars.push_back(global_binding(bind_var(v.get_location(),
-                                                varname,
-                                                var_expr::let_var),
-                                       v.is_extern() ? expr_t(NULL) : pop_nodestack()));
+
+  theGlobalVars.push_back(global_binding(bind_var(v.get_location(),
+                                                  varname,
+                                                  var_expr::let_var),
+                                         v.is_extern() ? expr_t(NULL) :
+                                                         pop_nodestack()));
 }
 
 
-void *begin_visit(const FunctionDecl& /*v*/)
+/*******************************************************************************
+
+  Function declarions and invocations.
+
+  VFO_DeclList represents a list of prolog declarations that consists of all
+  the variable, udf, and option declaration in the prolog. 
+ 
+********************************************************************************/
+
+void *begin_visit(const VFO_DeclList& v)
+{
+  TRACE_VISIT ();
+
+  // Function declaration translation must be done in two passes because of
+  // mutually recursive functions. So, here's the 1st pass. The second pass
+  // happens when accept() is called on each individual FunctionDecl node in
+  // the list.
+
+  for (vector<rchandle<parsenode> >::const_iterator it = v.begin();
+       it != v.end();
+       ++it)
+  {
+    const FunctionDecl *n = it->dyn_cast<FunctionDecl> ().getp ();
+
+    // skip variable and option declarations.
+    if (n == NULL)
+      continue;
+
+    rchandle<ParamList> params = n->get_paramlist ();
+    if (params == NULL)
+      params = new ParamList (n->get_location ());
+
+    int nargs = params->size();
+    std::vector<xqtref_t> arg_types;
+    for (std::vector<rchandle<Param> >::const_iterator it = params->begin ();
+         it != params->end ();
+         ++it)
+    {
+      const Param *p = (*it).getp ();
+      const TypeDeclaration *td = p->get_typedecl ().getp ();
+      if (td == NULL)
+      {
+        arg_types.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+      }
+      else
+      {
+        td->accept (*this);
+        arg_types.push_back (pop_tstack ());
+      }
+    }
+
+    xqtref_t return_type = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+    if (n->get_return_type () != NULL) 
+    {
+      n->get_return_type ()->accept (*this);
+      return_type = pop_tstack ();
+    }
+
+    store::Item_t qname = sctx_p->lookup_fn_qname(n->get_name()->get_prefix(),
+                                                  n->get_name()->get_localname());
+    {
+      xqp_string ns = qname->getNamespace ();
+      if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
+        ZORBA_ERROR_LOC_PARAM (ZorbaError::XQST0045,
+                               n->get_location (),
+                               qname->getLocalName()->str(), "");
+    }
+
+    signature sig(qname, arg_types, return_type);
+
+    switch(n->get_type()) 
+    {
+    case ParseConstants::fn_extern:
+    {
+      StatelessExternalFunction *ef =
+        sctx_p->lookup_stateless_external_function(n->get_name()->get_prefix(),
+                                                   n->get_name()->get_localname());
+      ZORBA_ASSERT(ef != NULL);
+
+      sctx_p->bind_fn(qname,
+                      new stateless_external_function_adapter(sig, ef, false),
+                      nargs);
+      break;
+    }
+    case ParseConstants::fn_extern_update:
+    {
+      StatelessExternalFunction *ef =
+        sctx_p->lookup_stateless_external_function(n->get_name()->get_prefix(),
+                                                   n->get_name()->get_localname());
+      ZORBA_ASSERT(ef != NULL);
+
+      sctx_p->bind_fn(qname, 
+                      new stateless_external_function_adapter(sig, ef, true),
+                      nargs);
+    }
+    case ParseConstants::fn_read:
+    {
+      sctx_p->bind_fn(qname,
+                      new user_function(n->get_location(), sig, NULL, false),
+                      nargs);
+      break;
+    }
+    case ParseConstants::fn_update:
+    {
+      sctx_p->bind_fn(qname,
+                      new user_function (n->get_location(), sig, NULL, true),
+                      nargs);
+      break;
+    }
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+
+  return no_state;
+}
+
+
+void end_visit(const VFO_DeclList& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void *begin_visit(const FunctionDecl&)
 {
   TRACE_VISIT ();
   push_scope ();
   return no_state;
 }
 
-expr_t wrap_in_globalvar_flwor(expr_t e)
-{
-  const function *ctxf = LOOKUP_OP1 ("ctxvariable");
-  flwor_expr::clause_list_t clauses;
-
-  for (std::list<global_binding>::iterator i = global_vars.begin ();
-      i != global_vars.end ();
-      i++)
-  {
-    global_binding b = *i;
-    var_expr_t var = b.first;
-    expr_t expr = b.second;
-
-    if (expr == NULL)
-    {
-      xqpString varname = var->get_varname()->getStringValue().getp();
-      expr = new fo_expr (var->get_loc(),
-          ctxf,
-          new const_expr(var->get_loc(), varname));
-    }
-
-    clauses.push_back (wrap_in_letclause (expr, var));
-  }
-
-  if (! clauses.empty ())
-  {
-    expr_update_t lUpdateType = e->getUpdateType();
-    e = new flwor_expr (e->get_loc(), clauses, e);
-    e->setUpdateType(lUpdateType);
-  }
-
-  return e;
-}
 
 void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+
   ParseConstants::function_type_t lFuncType = v.get_type();
-  switch(lFuncType) {
-    case ParseConstants::fn_update:
-      if (v.get_return_type() != 0)
-        ZORBA_ERROR_LOC(ZorbaError::XUST0028, v.get_location());
-    case ParseConstants::fn_read:
+  switch(lFuncType) 
+  {
+  case ParseConstants::fn_update:
+  {
+    if (v.get_return_type() != 0)
+      ZORBA_ERROR_LOC(ZorbaError::XUST0028, v.get_location());
+
+    // Fall through the fn_read case.
+  }
+  case ParseConstants::fn_read:
+  {
+    expr_t body = pop_nodestack ();
+    if (lFuncType == ParseConstants::fn_read)
+    {
+      if (body->isUpdating())
+        ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+    }
+    else if (lFuncType == ParseConstants::fn_update)
+    {
+      if (body->getUpdateType() == SIMPLE_EXPR)
+        ZORBA_ERROR_LOC(ZorbaError::XUST0002, v.get_location());
+    }
+
+    if (v.get_return_type () != NULL) 
+    {
+      xqtref_t rt = pop_tstack ();
+      // Perhaps promote_expr should handle user-defined types too.
+      // Perhaps it already does. Not sure. TODO.
+      if (TypeOps::is_simple (*rt))
+        body = new promote_expr (body->get_loc (), body, rt);
+      else
+        body = new treat_expr (body->get_loc (), body, rt, ZorbaError::XPTY0004);
+    }
+
+    int nargs = v.get_param_count ();
+    vector<var_expr_t> args;
+    if (nargs > 0)
+    {
+      rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr> ();
+      ZORBA_ASSERT(flwor != NULL);
+
+      for(int i = 0; i < nargs; ++i)
       {
-        expr_t body = pop_nodestack ();
-        if (lFuncType == ParseConstants::fn_read)
-        {
-          if (body->isUpdating())
-            ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
-        } else if (lFuncType == ParseConstants::fn_update)
-        {
-          if (body->getUpdateType() == SIMPLE_EXPR)
-            ZORBA_ERROR_LOC(ZorbaError::XUST0002, v.get_location());
-
-        }
-        if (v.get_return_type () != NULL) {
-          xqtref_t rt = pop_tstack ();
-          // Perhaps promote_expr should handle user-defined types too.
-          // Perhaps it already does. Not sure. TODO.
-          if (TypeOps::is_simple (*rt))
-            body = new promote_expr (body->get_loc (), body, rt);
-          else
-            body = new treat_expr (body->get_loc (), body, rt, ZorbaError::XPTY0004);
-        }
-
-        int nargs = v.get_param_count ();
-        vector<var_expr_t> params;
-        if (nargs > 0) {
-          rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr> ();
-          ZORBA_ASSERT(flwor != NULL);
-
-          for(int i = 0; i < nargs; ++i) {
-            rchandle<forlet_clause>& flc = (*flwor)[i];
-            var_expr *param_var = flc->get_expr().dyn_cast<var_expr> ().getp ();
-            ZORBA_ASSERT(param_var != NULL);
-            params.push_back(param_var);
-          }
-          flwor->set_retval(body);
-          body = &*flwor;
-        }
-        body = wrap_in_globalvar_flwor(body);
-        user_function *udf = dynamic_cast<user_function *>(LOOKUP_FN(v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs));
-        ZORBA_ASSERT (udf != NULL);
-
-        assert (body != NULL);
-        if (compilerCB->m_config.print_translated) {
-          cout << "Expression tree for " << v.get_name ()->get_qname () << " after translation:" << endl;
-          body->put(cout) << endl;
-        }
-        normalize_expr_tree (v.get_name ()->get_qname ().c_str (),
-                             compilerCB, body);
-
-        if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) {
-          RewriterContext rCtx(compilerCB, body);
-          GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-          body = rCtx.getRoot();
-          if (Properties::instance ()->printOptimizedExpressions ()) {
-            cout << "Optimized expression tree for " << v.get_name ()->get_qname () << endl;
-            body->put (cout) << endl;
-          }
-        }
-
-        udf->set_body (body);
-        udf->set_params(params);
+        rchandle<forlet_clause>& flc = (*flwor)[i];
+        var_expr* arg_var = flc->get_expr().dyn_cast<var_expr> ().getp();
+        ZORBA_ASSERT(arg_var != NULL);
+        args.push_back(arg_var);
       }
-      break;
-    case ParseConstants::fn_extern_update:
-      if (v.get_return_type() != 0)
-        ZORBA_ERROR_LOC(ZorbaError::XUST0028, v.get_location());
-    default:
-      break;
+
+      flwor->set_retval(body);
+      body = &*flwor;
+    }
+
+    body = wrap_in_globalvar_flwor(body);
+    assert(body != NULL);
+
+    user_function *udf = dynamic_cast<user_function *>(
+                         LOOKUP_FN(v.get_name ()->get_prefix (),
+                                   v.get_name ()->get_localname (),
+                                   nargs));
+    ZORBA_ASSERT (udf != NULL);
+    
+    if (compilerCB->m_config.print_translated) 
+    {
+      cout << "Expression tree for " << v.get_name ()->get_qname ()
+           << " after translation:" << endl;
+      body->put(cout) << endl;
+    }
+
+    normalize_expr_tree(v.get_name ()->get_qname().c_str(), compilerCB, body);
+
+    if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1)
+    {
+      RewriterContext rCtx(compilerCB, body);
+      GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+      body = rCtx.getRoot();
+      if (Properties::instance ()->printOptimizedExpressions()) 
+      {
+        cout << "Optimized expression tree for " << v.get_name()->get_qname() << endl;
+        body->put (cout) << endl;
+      }
+    }
+
+    udf->set_body(body);
+    udf->set_params(args);
+    break;
+  }
+  case ParseConstants::fn_extern_update:
+  {
+    if (v.get_return_type() != 0)
+      ZORBA_ERROR_LOC(ZorbaError::XUST0028, v.get_location());
+  }
+  default:
+    break;
   }
   pop_scope ();
 }
 
+
+void *begin_visit(const ParamList& v)
+{
+  TRACE_VISIT ();
+  if (v.size() > 0) {
+    nodestack.push(new flwor_expr(v.get_location()));
+  }
+  return no_state;
+}
+
+
+void end_visit(const ParamList& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void *begin_visit(const Param& /*v*/)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit(const Param& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+
+  rchandle<flwor_expr> flwor = nodestack.top().cast<flwor_expr> ();
+  ZORBA_ASSERT(flwor != NULL);
+
+  store::Item_t qname = sctx_p->lookup_qname ("", v.get_name());
+
+  var_expr_t param_var = new var_expr (v.get_location(), var_expr::param_var, qname);
+  var_expr_t subst_var = new var_expr(v.get_location(), var_expr::let_var, qname);
+
+  flwor->add(wrap_in_letclause(&*param_var, subst_var));
+
+  sctx_p->bind_var(qname, subst_var);
+
+  if (v.get_typedecl () != NULL) 
+  {
+    param_var->set_type (pop_tstack ());
+    subst_var->set_type(param_var->get_type());
+  }
+}
+
+
+void *begin_visit(const FunctionCall& /*v*/)
+{
+  TRACE_VISIT ();
+  nodestack.push(NULL);
+  return no_state;
+}
+
+void end_visit(const FunctionCall& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+
+  QueryLoc loc = v.get_location ();
+
+  std::vector<expr_t> arguments;
+  while (true) 
+  {
+    expr_t e_h = pop_nodestack();
+    if (e_h == NULL)
+      break;
+    arguments.push_back(e_h);
+  }
+  int sz = arguments.size ();
+
+  rchandle<QName> qn_h = v.get_fname();
+  string prefix = qn_h->get_prefix();
+  string fname = qn_h->get_localname();
+
+  store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
+
+  if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS, strlen(XQUERY_FN_NS))) 
+  {
+    xqp_string fn_local = fn_qname->getLocalName ();
+
+    if (fn_local == "position" && sz == 0) 
+    {
+      nodestack.push(sctx_p->lookup_var_nofail(DOT_POS_VARNAME));
+      return;
+    }
+    else if (fn_local == "last" && sz == 0)
+    {
+      nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VARNAME));
+      return;
+    }
+    else if (fn_local == "string")
+    {
+      // TODO: casting to xs:string? is almost correct;
+      // it fails, however, the following test:
+      // 'fn:string (()) instance of xs:string'
+      fn_qname = sctx_p->lookup_fn_qname("xs", "string");
+      switch (sz) 
+      {
+      case 0:
+        arguments.push_back (DOT_VAR);
+        break;
+      case 1:
+        break;
+      default:
+        ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  "fn:string", sz );
+      }
+    }
+    else if (fn_local == "number") 
+    {
+      switch (sz) 
+      {
+      case 0:
+        arguments.push_back (DOT_VAR);
+        break;
+      case 1:
+        break;
+      default:
+        ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:number", sz );
+      }
+
+      var_expr_t tv = tempvar (loc, var_expr::let_var);
+
+      expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
+
+      expr_t ret = new if_expr (loc,
+                                new castable_expr (loc,
+                                                   &*tv,
+                                                   GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+                                new cast_expr (loc,
+                                               &*tv,
+                                               GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+                                nan_expr);
+
+      expr_t data_expr = new fo_expr (loc, LOOKUP_FN("fn", "data", 1), arguments [0]);
+
+      nodestack.push(&*wrap_in_let_flwor(new treat_expr(loc,
+                                                        data_expr,
+                                                        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+                                                        ZorbaError::XPTY0004),
+                                         tv,
+                                         ret));
+      return;
+    }
+    else if (sz == 0 &&
+             (fn_local == "string-length" ||
+              fn_local == "normalize-space" ||
+              fn_local == "root" ||
+              fn_local == "base-uri" ||
+              fn_local == "namespace-uri" ||
+              fn_local == "local-name" ||
+              fn_local == "name"))
+    {
+      arguments.push_back (DOT_VAR);
+    }
+    else if (fn_local == "static-base-uri")
+    {
+      if (sz != 0)
+        ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:static-base-uri", sz );
+
+      xqp_string baseuri = sctx_p->final_baseuri ();
+      if (baseuri.empty ())
+        nodestack.push (create_seq (loc));
+      else
+        nodestack.push (new cast_expr (loc,
+                                       new const_expr (loc, baseuri),
+                                       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
+      return;
+    }
+    else if (sz == 1 &&
+             (fn_local == "lang" || fn_local == "id" || fn_local == "idref")) 
+    {
+      arguments.insert (arguments.begin (), DOT_VAR);
+    }
+    else if (sz == 1 && fn_local == "resolve-uri")
+    {
+#if 0  // even if the base-uri is not declared in the prolog, we have a default
+      if (! hadBUriDecl)
+        ZORBA_ERROR (ZorbaError::FONS0005);
+      else
+#endif
+        arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
+    }
+  }
+  sz = arguments.size ();  // recompute size
+
+  // try constructor functions
+  xqtref_t type = CTXTS->create_named_type(fn_qname, TypeConstants::QUANT_QUESTION);
+
+  xqpStringStore tmp("xs:anyAtomicType");
+
+  if (type != NULL && !fn_qname->getStringValue()->equals(&tmp))
+  {
+    if (sz != 1)
+      ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
+    nodestack.push (create_cast_expr (loc, arguments [0], type, true));
+  }
+  else
+  {
+    rchandle<fo_expr> fo_h = new fo_expr (loc, LOOKUP_FN (prefix, fname, sz));
+    fo_h->setUpdateType(fo_h->get_func()->getUpdateType());
+
+    // TODO this should be a const iterator
+    std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
+    for(; iter != arguments.rend(); ++iter)
+    {
+      fo_h->add(*iter);
+    }
+
+    nodestack.push(&*fo_h);
+  }
+}
+
+
+/*******************************************************************************
+
+
+********************************************************************************/
 
 void *begin_visit(const GeneralComp& /*v*/)
 {
@@ -1926,44 +2406,6 @@ void end_visit(const OrderingModeDecl& /*v*/, void* /*visit_state*/)
  TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const Param& /*v*/)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const Param& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
-
-  rchandle<flwor_expr> flwor = nodestack.top().cast<flwor_expr> ();
-  ZORBA_ASSERT(flwor != NULL);
-  store::Item_t qname = sctx_p->lookup_qname ("", v.get_name());
-  var_expr_t param_var = new var_expr (v.get_location(), var_expr::param_var, qname);
-  var_expr_t subst_var = new var_expr(v.get_location(), var_expr::let_var, qname);
-  flwor->add(wrap_in_letclause(&*param_var, subst_var));
-  sctx_p->bind_var(qname, subst_var);
-  if (v.get_typedecl () != NULL) {
-    param_var->set_type (pop_tstack ());
-    subst_var->set_type(param_var->get_type());
-  }
-}
-
-
-void *begin_visit(const ParamList& v)
-{
-  TRACE_VISIT ();
-  if (v.size() > 0) {
-    nodestack.push(new flwor_expr(v.get_location()));
-  }
-  return no_state;
-}
-
-void end_visit(const ParamList& /*v*/, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
-}
-
 
 void *begin_visit(const Pragma& /*v*/)
 {
@@ -1989,17 +2431,6 @@ void end_visit(const PragmaList& /*v*/, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
-
-void *begin_visit(const PredicateList& /*v*/)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const PredicateList& /*v*/, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
-}
 
 void *begin_visit(const Prolog& /*v*/)
 {
@@ -2198,84 +2629,6 @@ void end_visit(const VersionDecl& /*v*/, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
-
-void *begin_visit(const VFO_DeclList& v)
-{
-  TRACE_VISIT ();
-
-  // Function declaration translation must be done in two passes
-  // because of mutually recursive functions. So, here's the 1st pass.
-  for (vector<rchandle<parsenode> >::const_iterator it = v.begin();
-       it != v.end(); ++it)
-  {
-    const FunctionDecl *n = it->dyn_cast<FunctionDecl> ().getp ();
-    if (n != NULL) {
-      rchandle<ParamList> params = n->get_paramlist ();
-      if (params == NULL) params = new ParamList (n->get_location ());
-      std::vector<xqtref_t> arg_types;
-      for (std::vector<rchandle<Param> >::const_iterator it = params->begin ();
-           it != params->end (); ++it)
-      {
-        const Param *p = (*it).getp ();
-        const TypeDeclaration *td = p->get_typedecl ().getp ();
-        if (td == NULL)
-          arg_types.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-        else {
-          td->accept (*this);
-          arg_types.push_back (pop_tstack ());
-        }
-      }
-      int nargs = params->size();
-      xqtref_t return_type = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-      if (n->get_return_type () != NULL) {
-        n->get_return_type ()->accept (*this);
-        return_type = pop_tstack ();
-      }
-      store::Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
-      {
-        xqp_string ns = qname->getNamespace ();
-        if (ns == XQUERY_FN_NS
-            || ns == XML_NS
-            || ns == XML_SCHEMA_NS
-            || ns == XSI_NS)
-          ZORBA_ERROR_LOC_PARAM (ZorbaError::XQST0045, n->get_location (), qname->getLocalName()->str(), "");
-      }
-      signature sig(qname, arg_types, return_type);
-      switch(n->get_type()) {
-        case ParseConstants::fn_extern:
-          {
-            StatelessExternalFunction *ef = sctx_p->lookup_stateless_external_function(
-              n->get_name()->get_prefix(), n->get_name()->get_localname());
-            ZORBA_ASSERT(ef != NULL);
-            sctx_p->bind_fn(qname, new stateless_external_function_adapter(sig, ef, false), nargs);
-          }
-          break;
-        case ParseConstants::fn_extern_update:
-        {
-          StatelessExternalFunction *ef = sctx_p->lookup_stateless_external_function(
-            n->get_name()->get_prefix(), n->get_name()->get_localname());
-          ZORBA_ASSERT(ef != NULL);
-          stateless_external_function_adapter* f = new stateless_external_function_adapter(sig, ef, true);
-          sctx_p->bind_fn(qname, f, nargs);
-        }
-        case ParseConstants::fn_read:
-          sctx_p->bind_fn (qname, new user_function (n->get_location(), sig, NULL, false), nargs);
-          break;
-        case ParseConstants::fn_update:
-          sctx_p->bind_fn (qname, new user_function (n->get_location(), sig, NULL, true), nargs);
-          break;
-        default:
-          ZORBA_ASSERT(false);
-      }
-    }
-  }
-  return no_state;
-}
-
-void end_visit(const VFO_DeclList& /*v*/, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
-}
 
 
 void *begin_visit(const AdditiveExpr& /*v*/)
@@ -2489,139 +2842,6 @@ void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
     ZORBA_ERROR( ZorbaError::XQST0079);
 }
 
-void *begin_visit(const FilterExpr& /*v*/)
-{
-TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const FilterExpr& /*v*/, void* /*visit_state*/)
-{
-TRACE_VISIT_OUT ();
-}
-
-void *begin_visit(const FunctionCall& /*v*/)
-{
-  TRACE_VISIT ();
-  nodestack.push(NULL);
-  return no_state;
-}
-
-void end_visit(const FunctionCall& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
-
-  QueryLoc loc = v.get_location ();
-
-  std::vector<expr_t> arguments;
-  while (true) {
-    expr_t e_h = pop_nodestack();
-    if (e_h == NULL)
-      break;
-    arguments.push_back(e_h);
-  }
-  int sz = arguments.size ();
-
-  rchandle<QName> qn_h = v.get_fname();
-  string prefix = qn_h->get_prefix();
-  string fname = qn_h->get_localname();
-
-  store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
-
-  if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS, strlen(XQUERY_FN_NS))) {
-    xqp_string fn_local = fn_qname->getLocalName ();
-    if (fn_local == "position" && sz == 0) {
-      nodestack.push(sctx_p->lookup_var_nofail (DOT_POS_VARNAME));
-      return;
-    } else if (fn_local == "last" && sz == 0) {
-      nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VARNAME));
-      return;
-    } else if (fn_local == "string") {
-      // TODO: casting to xs:string? is almost correct;
-      // it fails, however, the following test:
-      // 'fn:string (()) instance of xs:string'
-      fn_qname = sctx_p->lookup_fn_qname("xs", "string");
-      switch (sz) {
-      case 0:
-        arguments.push_back (DOT_VAR);
-        break;
-      case 1:
-        break;
-      default:
-        ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  "fn:string", sz );
-      }
-    } else if (fn_local == "number") {
-      switch (sz) {
-      case 0:
-        arguments.push_back (DOT_VAR);
-        break;
-      case 1:
-        break;
-      default:
-        ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:number", sz );
-      }
-      var_expr_t tv = tempvar (loc, var_expr::let_var);
-      expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
-      expr_t ret = new if_expr (loc, new castable_expr (loc, &*tv, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE), new cast_expr (loc, &*tv, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE), nan_expr);
-      expr_t data_expr = new fo_expr (loc, LOOKUP_FN("fn", "data", 1), arguments [0]);
-      nodestack.push (&*wrap_in_let_flwor (new treat_expr (loc, data_expr, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, ZorbaError::XPTY0004), tv, ret));
-      return;
-    } else if (sz == 0 &&
-               (fn_local == "string-length" || fn_local == "normalize-space"
-                || fn_local == "root"
-                || fn_local == "base-uri" || fn_local == "namespace-uri"
-                || fn_local == "local-name" || fn_local == "name"))
-    {
-      arguments.push_back (DOT_VAR);
-    } else if (fn_local == "static-base-uri") {
-      if (sz != 0)
-        ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:static-base-uri", sz );
-
-      xqp_string baseuri = sctx_p->final_baseuri ();
-      if (baseuri.empty ())
-        nodestack.push (create_seq (loc));
-      else
-        nodestack.push (new cast_expr (loc, new const_expr (loc, baseuri), GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
-      return;
-    } else if (sz == 1 && (fn_local == "lang" || fn_local == "id" || fn_local == "idref")) {
-      arguments.insert (arguments.begin (), DOT_VAR);
-    } else if (sz == 1 && fn_local == "resolve-uri") {
-#if 0  // even if the base-uri is not declared in the prolog, we have a default
-      if (! hadBUriDecl)
-        ZORBA_ERROR (ZorbaError::FONS0005);
-      else
-#endif
-        arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
-    }
-  }
-  sz = arguments.size ();  // recompute size
-
-  // try constructor functions
-  xqtref_t type =
-    CTXTS->create_named_type (fn_qname, TypeConstants::QUANT_QUESTION);
-
-  xqpStringStore tmp("xs:anyAtomicType");
-
-  if (type != NULL && !fn_qname->getStringValue()->equals(&tmp))
-  {
-    if (sz != 1)
-      ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
-    nodestack.push (create_cast_expr (loc, arguments [0], type, true));
-  }
-  else
-  {
-    rchandle<fo_expr> fo_h = new fo_expr (loc, LOOKUP_FN (prefix, fname, sz));
-    fo_h->setUpdateType(fo_h->get_func()->getUpdateType());
-
-    // TODO this should be a const iterator
-    std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
-    for(; iter != arguments.rend(); ++iter) {
-      fo_h->add(*iter);
-    }
-
-    nodestack.push(&*fo_h);
-  }
-}
 
 void *begin_visit(const IfExpr& /*v*/)
 {
@@ -3360,65 +3580,11 @@ var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 }
 
 
-rchandle<forlet_clause> wrap_in_forclause(
-    expr_t expr,
-    var_expr_t fv,
-    var_expr_t pv)
-{
-  assert (fv->get_kind () == var_expr::for_var);
-  if (pv != NULL)
-    assert (pv->get_kind() == var_expr::pos_var);
-  return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.getp());
-}
-
-rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
-{
-  var_expr_t fv = tempvar(expr->get_loc(), var_expr::for_var);
-  var_expr_t pv = add_posvar
-    ? tempvar(expr->get_loc(), var_expr::pos_var)
-    : var_expr_t (NULL);
-  return wrap_in_forclause (expr, fv, pv);
-}
-
-rchandle<forlet_clause> wrap_in_forclause(
-    expr_t expr,
-    const QueryLoc& loc,
-    string fv_name,
-    string pv_name)
-{
-  return wrap_in_forclause (expr,
-                            bind_var (loc, fv_name, var_expr::for_var),
-                            bind_var (loc, pv_name, var_expr::pos_var));
-}
-
-rchandle<forlet_clause> wrap_in_letclause(expr_t expr, var_expr_t lv)
-{
-  assert (lv->get_kind () == var_expr::let_var);
-  return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.getp());
-}
-
-rchandle<forlet_clause> wrap_in_letclause(expr_t expr, const QueryLoc& loc, string name)
-{
-  return wrap_in_letclause (expr, bind_var (loc, name, var_expr::let_var));
-}
-
-rchandle<forlet_clause> wrap_in_letclause(expr_t expr)
-{
-  return wrap_in_letclause (expr, tempvar(expr->get_loc(), var_expr::let_var));
-}
-
 rchandle<flwor_expr> wrap_in_let_flwor (expr_t expr, var_expr_t lv, expr_t ret) {
   rchandle<flwor_expr> fe = new flwor_expr (lv->get_loc ());
   fe->add (wrap_in_letclause (expr, lv));
   fe->set_retval (ret);
   return fe;
-}
-
-expr_t wrap_in_dos_and_dupelim(expr_t expr)
-{
-  rchandle<fo_expr> dos = new fo_expr(expr->get_loc(), LOOKUP_OP1("sort-distinct-nodes-asc-or-atomics"));
-  dos->add(expr);
-  return &*dos;
 }
 
 
@@ -3445,71 +3611,84 @@ expr_t wrap_in_dos_and_dupelim(expr_t expr)
   4. path_relative
 
   In case 1, the PathExpr does not have any child node.
+
+  rpe-i says how step-i is connected with step-(i+1), i.e. with / or //.
+
 ********************************************************************************/
-void *begin_visit(const PathExpr& v)
+void *begin_visit(const PathExpr& pe)
 {
   TRACE_VISIT();
 
-  expr_t result;
-  rchandle<relpath_expr> rpe = NULL;
+  const QueryLoc& loc = pe.get_location();
+  ParseConstants::pathtype_t pe_type = pe.get_type();
+  RelativePathExpr* rpe = pe.get_relpath_expr().dyn_cast<RelativePathExpr>().getp();
+  assert(rpe != NULL);
 
-  // Save theRootRelPathExpr state.
+  expr_t result;
+  rchandle<relpath_expr> path_expr = NULL;
+
+  // We are starting the translation of a new pe P. P may be inside
+  // another pe, so save the root of the outer pe in the relpathstack
   relpathstack.push(theRootRelPathExpr);
   theRootRelPathExpr = NULL;
 
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
   nodestack.push(NULL);
 
-  if (v.get_type() != ParseConstants::path_leading_lone_slash)
+  if (pe_type != ParseConstants::path_leading_lone_slash)
   {
-    rpe = new relpath_expr(v.get_location());
+    path_expr = new relpath_expr(loc);
 
-    result = rpe.getp();
+    result = path_expr.getp();
   }
 
-  /*
-    If path expr starts with / or // (cases 1, 2, or 3), create an expr E =
-    fn:root(./self::node()).  In case 2 or 3 make E the 1st step of the rpe
-    that was created above.  In case 1, just push E to the nodestack.
-    In case 4, add a "." to path expressions starting with an axis step
-  */
-  if (v.get_type() == ParseConstants::path_relative) {
-    const RelativePathExpr *vrpe = v.get_relpath_expr ().dyn_cast<RelativePathExpr> ().getp ();
-    if (vrpe != NULL && vrpe->get_step_expr ().dyn_cast<AxisStep> () != NULL)
-      rpe->add_back (DOT_VAR);
-  } else {
-    rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
-    ctx_rpe->add_back(DOT_VAR);
+  // In case 4, add a "." to path expressions starting with an axis step, i.e,
+  // convert path expr: "axis:node_test/..." to: "./axis:node_test/..."  
+  if (pe_type == ParseConstants::path_relative) 
+  {
+    if (rpe != NULL && rpe->get_step_expr().dyn_cast<AxisStep> () != NULL)
+      path_expr->add_back(DOT_VAR);
+  }
 
-    rchandle<match_expr> me = new match_expr(v.get_location());
+  // Else, if path expr starts with / or // (cases 1, 2, or 3), create an expr
+  // R = fn:root(./self::node()). 
+  // In case 1, just push R to the nodestack.
+  // In case 2, put "R/..." to the nodestact 
+  // In case 3, put "R/descendant-or-self/...." to the nodestack
+  else
+  {
+    rchandle<relpath_expr> ctx_path_expr = new relpath_expr(loc);
+    ctx_path_expr->add_back(DOT_VAR);
+
+    rchandle<match_expr> me = new match_expr(loc);
     me->setTestKind(match_anykind_test);
-    rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
+    rchandle<axis_step_expr> ase = new axis_step_expr(loc);
     ase->setAxis(axis_kind_self);
     ase->setTest(me);
 
-    ctx_rpe->add_back(&*ase);
+    ctx_path_expr->add_back(&*ase);
 
-    rchandle<fo_expr> fo = new fo_expr(v.get_location(), LOOKUP_FN("fn", "root", 1));
-    fo->add(&*ctx_rpe);
+    rchandle<fo_expr> fo = new fo_expr(loc, LOOKUP_FN("fn", "root", 1));
+    fo->add(&*ctx_path_expr);
 
     result = fo.getp();
 
-    if (rpe != NULL)
+    if (path_expr != NULL)
     {
-      rpe->add_back(&*fo);
-      result = &*rpe;
+      path_expr->add_back(&*fo);
+      result = path_expr.getp();
     }
-  }
 
-  if (v.get_type() == ParseConstants::path_leading_slashslash)
-  {
-    rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
-    rchandle<match_expr> me = new match_expr(v.get_location());
-    me->setTestKind(match_anykind_test);
-    ase->setAxis(axis_kind_descendant_or_self);
-    ase->setTest(me);
+    if (pe_type == ParseConstants::path_leading_slashslash)
+    {
+      rchandle<axis_step_expr> ase = new axis_step_expr(loc);
+      rchandle<match_expr> me = new match_expr(loc);
+      me->setTestKind(match_anykind_test);
+      ase->setAxis(axis_kind_descendant_or_self);
+      ase->setTest(me);
 
-    rpe->add_back(&*ase);
+      path_expr->add_back(&*ase);
+    }
   }
 
   nodestack.push(result.getp());
@@ -3533,30 +3712,44 @@ void end_visit(const PathExpr& /*v*/, void* /*visit_state*/)
 }
 
 
-void* begin_visit(const RelativePathExpr& v)
+void* begin_visit(const RelativePathExpr& rpe)
 {
   TRACE_VISIT ();
 
   if (theRootRelPathExpr == NULL)
-    theRootRelPathExpr = &v;
+    theRootRelPathExpr = &rpe;
 
   return no_state;
 }
 
-void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
+
+void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 {
+  // Let rpe be the i-th rpe in the Path Tree. This method is called after
+  // having translated step-i, but before starting the translation of rpe-(i+1)
+
+  const QueryLoc& loc = rpe.get_location();
+
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
 
-  rchandle<relpath_expr> rpe = NULL;
+  rchandle<relpath_expr> path_expr = NULL;
 
+  // There were 2 exprs in the stack: arg2 is the expr for step-i and arg1 is
+  // the expr we have constructed so far for the ancestors of rpe-i. We are
+  // in this case if step-i is an axis step with no predicates.
   if (arg1 != NULL)
   {
-    rpe = arg1.dyn_cast<relpath_expr> ();
-    ZORBA_ASSERT(rpe != NULL);
+    path_expr = arg1.dyn_cast<relpath_expr> ();
+    ZORBA_ASSERT(path_expr != NULL);
 
-    rpe->add_back(arg2);
+    path_expr->add_back(arg2);
   }
+
+  // Else, step-i was not an axis step, or it contained predicates. In this
+  // case, translation of step-i resulted in a flwor expr that includes step-i
+  // and all the ancestors of rpe-i. We create a new path_expr and make the
+  // flwor expr its 1st step (i.e. flwor/.... or flwor/descendant-or-sef/...)
   else
   {
     flwor_expr* flwor = arg2.dyn_cast<flwor_expr> ();
@@ -3564,46 +3757,55 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
 
     nodestack.push(NULL);
 
-    rpe = new relpath_expr(v.get_location());
-    rpe->add_back(flwor);
+    path_expr = new relpath_expr(loc);
+    path_expr->add_back(flwor);
   }
 
-  if (v.get_step_type() == ParseConstants::st_slashslash)
+  if (rpe.get_step_type() == ParseConstants::st_slashslash)
   {
-    rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
-    rchandle<match_expr> me = new match_expr(v.get_location());
+    rchandle<axis_step_expr> ase = new axis_step_expr(loc);
+    rchandle<match_expr> me = new match_expr(loc);
     me->setTestKind(match_anykind_test);
     ase->setAxis(axis_kind_descendant_or_self);
     ase->setTest(me);
-    rpe->add_back(&*ase);
+    path_expr->add_back(&*ase);
   }
 
-  rchandle<exprnode> rstep = v.get_relpath_expr();
-  ZORBA_ASSERT(rstep != NULL);
+  rchandle<exprnode> child2 = rpe.get_relpath_expr();
+  ZORBA_ASSERT(child2 != NULL);
 
-  if (rstep.dyn_cast<RelativePathExpr> () != NULL ||
-      rstep.dyn_cast<AxisStep> () != NULL)
+  // If the second child of rpe-i is another rpe or an axis step, then
+  // we push the current path_expr to the stack.
+  if (child2.dyn_cast<RelativePathExpr> () != NULL ||
+      child2.dyn_cast<AxisStep> () != NULL)
   {
-    nodestack.push(&*rpe);
+    nodestack.push(&*path_expr);
   }
+
+  // Else we have reached the last step of the Path Tree, and this step
+  // is not an axis step. In this case, we create a flwor expr with a
+  // LET var $temp equal to the current path_expr, a LET variable $last-idx
+  // equal to count($temp), and a FOR variable $dot ranging over $temp, and
+  // associated with a POS var $pos. The return value of the flwor will be
+  // set, by the end_visit(rpe) method below, to the translation of child2.
   else 
   {
     push_scope();
-    rchandle<forlet_clause> lcseq = wrap_in_letclause(&*rpe);
+    rchandle<forlet_clause> lcseq = wrap_in_letclause(&*path_expr);
 
-    rchandle<fo_expr> count_expr = new
-      fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
-
+    rchandle<fo_expr> count_expr = new fo_expr(loc, LOOKUP_FN("fn", "count", 1));
     count_expr->add(lcseq->get_var().getp());
 
-    rchandle<forlet_clause> lclast =
-      wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VARNAME);
+    rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr,
+                                                       loc,
+                                                       LAST_IDX_VARNAME);
 
-    rchandle<forlet_clause> fc =
-      wrap_in_forclause(lcseq->get_var().getp(), v.get_location(),
-                        DOT_VARNAME, DOT_POS_VARNAME);
+    rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().getp(),
+                                                   loc,
+                                                   DOT_VARNAME,
+                                                   DOT_POS_VARNAME);
 
-    rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
+    rchandle<flwor_expr> flwor = new flwor_expr(loc);
     flwor->add(lcseq);
     flwor->add(lclast);
     flwor->add(fc);
@@ -3613,34 +3815,37 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
 }
 
 
-void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
+void end_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  if (theRootRelPathExpr == &v)
+  if (theRootRelPathExpr == &rpe)
     theRootRelPathExpr = NULL;
 
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
 
-  rchandle<exprnode> rstep = v.get_relpath_expr();
+  rchandle<exprnode> child2 = rpe.get_relpath_expr();
 
-  if (rstep.dyn_cast<RelativePathExpr> () != NULL ||
-      rstep.dyn_cast<AxisStep> () != NULL)
+  if (child2.dyn_cast<RelativePathExpr> () != NULL ||
+      child2.dyn_cast<AxisStep> () != NULL)
   {
-    if (arg1 == NULL) {
+    if (arg1 == NULL) 
+    {
       // In this case, all the steps in the rpe tree have been processed.
       nodestack.push(arg1);
       nodestack.push(arg2);
-    } else {
-      // In this case, v is the bottom RelativePathExpr node in the tree (rpe3
+    }
+    else
+    {
+      // In this case, rpe is the bottom RelativePathExpr node in the tree (rpe3
       // in the example). At the top of the node stack is the expr corresponding
-      // to the right child of v (step4 in the example), followed by the
+      // to the right child of rpe (step4 in the example), followed by the
       // relpath_expr
-      relpath_expr* rpe = arg1.dyn_cast<relpath_expr> ();
-      ZORBA_ASSERT(rpe != NULL);
-      rpe->add_back(arg2);
-      nodestack.push(rpe);
+      relpath_expr* path_expr = arg1.dyn_cast<relpath_expr> ();
+      ZORBA_ASSERT(path_expr != NULL);
+      path_expr->add_back(arg2);
+      nodestack.push(path_expr);
     }
   }
   else
@@ -3648,39 +3853,120 @@ void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
     flwor_expr *f = arg1.dyn_cast<flwor_expr> ();
     ZORBA_ASSERT(f != NULL);
     f->set_retval(arg2);
+
     nodestack.push(f);
+
     pop_scope();
   }
 }
 
 
-void *begin_visit(const AxisStep& v)
+/*******************************************************************************
+
+  StepExpr ::= AxisStep  |  FilterExpr
+
+  AxisStep ::= (ForwardStep | ReverseStep)  PredicateList?
+
+  FilterExpr ::= PrimaryExpr  PredicateList?
+
+********************************************************************************/
+
+void* begin_visit(const FilterExpr& /*v*/)
 {
   TRACE_VISIT ();
-
-  rchandle<axis_step_expr> aexpr_h = new axis_step_expr(v.get_location());
-  nodestack.push(&*aexpr_h);
   return no_state;
 }
 
+void end_visit(const FilterExpr& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void* begin_visit(const AxisStep& v)
+{
+  TRACE_VISIT ();
+
+  rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
+  nodestack.push(ase.getp());
+  return no_state;
+}
+
+
 void post_step_visit(const AxisStep& v, void* /*visit_state*/)
 {
-  PredicateList *pl = v.get_predicate_list().getp();
-  if (pl != NULL && pl->size() > 0) {
-    expr_t arg2 = pop_nodestack();
-    expr_t arg1 = pop_nodestack();
+  // This method is called from AxisStep::accept() after the step itself is
+  // translated, but before the associated predicate list (if any) is translated.
 
-    relpath_expr *rpe = arg1.dyn_cast<relpath_expr> ();
-    ZORBA_ASSERT(rpe != NULL);
+  PredicateList* pl = v.get_predicate_list().getp();
 
-    rpe->add_back(arg2);
+  if (pl == NULL || pl->size() == 0)
+    return;
 
-    expr_t dose = wrap_in_dos_and_dupelim(rpe);
-    nodestack.push(dose);
+  const QueryLoc& loc = v.get_location();
+
+  expr_t e = pop_nodestack();
+  rchandle<axis_step_expr> ase = e.dyn_cast<axis_step_expr>();
+  ZORBA_ASSERT(ase != NULL);
+
+  e = pop_nodestack();
+  relpath_expr* path_expr = e.dyn_cast<relpath_expr>();
+  ZORBA_ASSERT(path_expr != NULL);
+
+  expr_t input_seq = wrap_in_dos_and_dupelim(path_expr);
+
+  push_scope();
+
+  rchandle<flwor_expr> flwor = new flwor_expr(loc);
+
+  // for each item in the input seq
+  rchandle<forlet_clause> fc_outer_dot = wrap_in_forclause(input_seq, false);
+
+  // compute the input seq for the pred (= outer_dot/ase)
+  rchandle<relpath_expr> path_step = new relpath_expr(loc);
+  path_step->add_back(fc_outer_dot->get_var());
+  path_step->add_back(ase);
+    
+  rchandle<forlet_clause> lc_pred_seq = wrap_in_letclause(path_step);
+
+  flwor->add(fc_outer_dot);
+  flwor->add(lc_pred_seq);
+
+  nodestack.push(flwor);
+  nodestack.push(lc_pred_seq->get_var());
+}
+
+
+void end_visit(const AxisStep& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+
+  PredicateList* pl = v.get_predicate_list().getp();
+  if (pl != NULL && pl->size() > 0) 
+  {
+    expr_t e = pop_nodestack();
+    rchandle<flwor_expr> ret_clause = e.dyn_cast<flwor_expr>();
+    ZORBA_ASSERT(ret_clause != NULL);
+
+    e = pop_nodestack();
+    rchandle<flwor_expr> flwor = e.dyn_cast<flwor_expr>();
+    ZORBA_ASSERT(flwor != NULL);
+
+    flwor->set_retval(ret_clause);
+    nodestack.push(flwor);
+    pop_scope();
   }
 }
 
-void end_visit(const AxisStep& /*v*/, void* /*visit_state*/)
+
+void *begin_visit(const PredicateList& /*v*/)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit(const PredicateList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -3688,51 +3974,82 @@ void end_visit(const AxisStep& /*v*/, void* /*visit_state*/)
 
 void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 {
+  // This method is called from PredicateList::accept(), before calling accept()
+  // on each predicate in the list
+
+  const QueryLoc& loc = v.get_location();
+
   push_scope();
-  expr_t seq = pop_nodestack();
-  rchandle<forlet_clause> lcseq = wrap_in_letclause(seq);
-  rchandle<fo_expr> count_expr = new fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
-  count_expr->add(lcseq->get_var().getp());
-  rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VARNAME);
-  rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().getp(), v.get_location (), DOT_VARNAME, DOT_POS_VARNAME);
-  rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
-  flwor->add(lcseq);
-  flwor->add(lclast);
-  flwor->add(fc);
-  nodestack.push(&*flwor);
+
+  rchandle<flwor_expr> flwor = new flwor_expr(loc);
+
+  // get the predicate input seq
+  expr_t input_seq = pop_nodestack();
+
+  // create a LET var equal to the pred input seq.
+  rchandle<forlet_clause> lc_input_seq = wrap_in_letclause(input_seq);
+
+  // compute the size of the pred input seq
+  rchandle<fo_expr> count_expr = new fo_expr(loc, LOOKUP_FN("fn", "count", 1));
+  count_expr->add(lc_input_seq->get_var());
+
+  rchandle<forlet_clause> lc_last = wrap_in_letclause(&*count_expr,
+                                                      loc,
+                                                      LAST_IDX_VARNAME);
+
+  // Iterate over the pred input seq
+  rchandle<forlet_clause> dot = wrap_in_forclause(lc_input_seq->get_var(),
+                                                  loc,
+                                                  DOT_VARNAME,
+                                                  DOT_POS_VARNAME);
+  flwor->add(lc_input_seq);
+  flwor->add(lc_last);
+  flwor->add(dot);
+
+  nodestack.push(flwor.getp());
 }
 
 
 void post_predicate_visit(const PredicateList& /*v*/, void* /*visit_state*/)
 {
-  expr_t pred = pop_nodestack();
-  QueryLoc loc = pred->get_loc ();
-  expr_t f = pop_nodestack();
+  // This method is called from PredicateList::accept(), after calling accept()
+  // on each predicate in the list
 
-  flwor_expr *flwor = f.dyn_cast<flwor_expr> ();
+  expr_t pred = pop_nodestack();
+
+  expr_t f = pop_nodestack();
+  flwor_expr* flwor = f.dyn_cast<flwor_expr> ();
   ZORBA_ASSERT(flwor != NULL);
 
-  rchandle<forlet_clause> predlet = wrap_in_letclause(pred);
-  var_expr *predvar = predlet->get_var().getp();
+  QueryLoc loc = pred->get_loc();
 
-  flwor->add(predlet);
+  rchandle<forlet_clause> lc_pred = wrap_in_letclause(pred);
+  var_expr* predvar = lc_pred->get_var().getp();
+
+  flwor->add(lc_pred);
 
   expr_t dot = DOT_VAR;
 
+  // Check if the pred expr returns a numeric result
   rchandle<fo_expr> cond = new fo_expr(loc, LOOKUP_OPN("or"));
   cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
   cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
   cond = new fo_expr(loc, LOOKUP_OPN("or"), &*cond);
-  cond->add (new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
+  cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
 
+  // If so: return $dot if the value of the pred expr is equal to the value
+  // of $dot_pos var, otherwise return the empty seq.
   rchandle<fo_expr> eq = new fo_expr(loc, LOOKUP_OP2("value-equal"));
-  eq->add(sctx_p->lookup_var_nofail (DOT_POS_VARNAME));
+  eq->add(sctx_p->lookup_var_nofail(DOT_POS_VARNAME));
   eq->add(predvar);
-  expr_t then_ite = new if_expr(loc, &*eq, dot, create_seq(loc));
 
-  rchandle<if_expr> else_ite = new if_expr(loc, predvar, dot, create_seq (loc));
+  expr_t then_ite = new if_expr(loc, eq.getp(), dot, create_seq(loc));
 
-  expr_t type_ite = new if_expr(loc, &*cond, then_ite, &*else_ite);
+  // Else, return $dot if the the value of the pred expr is true, otherwise
+  // return the empty seq.
+  expr_t else_ite = new if_expr(loc, predvar, dot, create_seq(loc));
+
+  expr_t type_ite = new if_expr(loc, cond.getp(), then_ite, else_ite);
 
   flwor->set_retval(type_ite);
   nodestack.push(flwor);
@@ -3921,23 +4238,6 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
   rchandle<fo_expr> quant = new fo_expr(v.get_location(), v.get_qmode() == ParseConstants::quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
   quant->add (&*flwor);
   nodestack.push (&*quant);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void *begin_visit(const QueryBody& /*v*/)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const QueryBody& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
-
-  nodestack.push(wrap_in_globalvar_flwor(pop_nodestack()));
 }
 
 
