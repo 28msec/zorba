@@ -34,7 +34,8 @@ namespace zorba
     thePrintIntermediateOptimizations (false),
     thePrintIteratorTree(false),
     thePrintItemFlow(false),
-    theStableIteratorIds(false)
+    theStableIteratorIds(false),
+    theNoTreeIds (false)
 #ifndef NDEBUG
     ,theTraceTranslator(false),
     theTraceCodegen(false),
@@ -128,7 +129,8 @@ namespace zorba
       ("print-optimized", "print the optimized expression tree")
       ("print-iterator-tree,i", "print the iterator tree")
       ("print-item-flow,f", "show items produced by all iterators")
-      ("stable-iterator-id", "print the iterator plan with stable ids")
+      ("stable-iterator-ids", "print the iterator plan with stable ids")
+      ("no-tree-ids", "suppress ids and locations from compiler tree dumps")
       ("print-intermediate-opt", "print intermediate optimizations")
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
@@ -228,7 +230,8 @@ namespace zorba
     thePrintIntermediateOptimizations = (lVarMap.count("print-intermediate-opt") != 0);
     thePrintIteratorTree = (lVarMap.count("print-iterator-tree") != 0);
     thePrintItemFlow = (lVarMap.count("print-item-flow") != 0);
-    theStableIteratorIds = (lVarMap.count("stable-iterator-id") != 0);
+    theStableIteratorIds = (lVarMap.count("stable-iterator-ids") != 0);
+    theNoTreeIds = (lVarMap.count("no-tree-ids") != 0);
 #ifndef NDEBUG
     theTraceTranslator = (lVarMap.count("trace-translator") != 0);
     theTraceCodegen = (lVarMap.count("trace-codegen") != 0);

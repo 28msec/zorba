@@ -1310,10 +1310,10 @@ PlanIter_t codegen(
   root->accept (c);
   PlanIter_t result = c.pop_itstack ();
 
-  // HACK: print only main query if stable id's is active.
-  // If stable-id's is active, we are comparing iterator plans.
+  // HACK: print only main query if no-tree-id's is active.
+  // When that happens, we are comparing iterator plans.
   if (result != NULL && descr != NULL && Properties::instance()->printIteratorTree()
-      && (xqp_string ("main query") == descr || ! Properties::instance()->stableIteratorIds())) 
+      && (xqp_string ("main query") == descr || ! Properties::instance()->noTreeIds())) 
   {
     cout << "Iterator tree for " << descr << ":\n";
     XMLIterPrinter vp(cout);

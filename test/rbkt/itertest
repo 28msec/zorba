@@ -5,8 +5,9 @@ TEST=`dirname $3`/`basename $3 .iter`
 OUT=$BINDIR/test/rbkt/CompilerResults/IterPlan/$TEST
 EXPECTED=$SRCDIR/test/rbkt/ExpCompilerResults/IterPlan/$TEST.iter
 mkdir -p `dirname $OUT`
-$BINDIR/test/apitest -i --compile-only --stable-iterator-id $SRCDIR/test/rbkt/Queries/$TEST.xq >$OUT.iter
-diff $EXPECTED $OUT.iter >$OUT.iter.diff
+$BINDIR/test/apitest -i --compile-only --no-tree-ids $SRCDIR/test/rbkt/Queries/$TEST.xq >$OUT.iter
+# -w ignores all whitespace -- a bit too lax
+diff -b $EXPECTED $OUT.iter >$OUT.iter.diff
 STATUS=$?
 if test $STATUS -ne 0; then
    echo 'Iterator plan changed. Actual plan:'

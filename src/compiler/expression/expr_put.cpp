@@ -6,13 +6,16 @@
 #include "context/static_context_consts.h"
 
 #include "compiler/expression/expr.h"
-#include "functions/function.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenodes.h"
+
+#include "functions/function.h"
+
+#include "types/typeops.h"
+
 #include "util/Assert.h"
 #include "util/tracer.h"
-#include "types/typeops.h"
-//#include "system/zorba.h"
+#include "util/properties.h"
 
 
 using namespace std;
@@ -32,9 +35,19 @@ static int printdepth0 = -2;
 #define UNDENT    printdepth0 -= 2;
 #define INDENT    (printdepth0 += 2, DENT)
 
+static inline string expr_addr (const void *e) {
+  if (Properties::instance ()->noTreeIds ())
+    return "";
+  else {
+    ostringstream os;
+    os << " (" << e << ")";
+    return os.str ();
+  }
+}
+
 ostream& var_expr::put(ostream& os) const
 {
-  os << INDENT << "var kind=" << decode_var_kind(get_kind()) << " (" << this << ")";
+  os << INDENT << "var kind=" << decode_var_kind(get_kind()) << expr_addr (this);
   if (varname_h != NULL)
   {
     os << " name=";
@@ -51,7 +64,7 @@ ostream& var_expr::put(ostream& os) const
 
 ostream & forlet_clause::put( ostream& os) const
 {
-  os << INDENT << "forlet (" << this << ") [\n";
+  os << INDENT << "forlet" << expr_addr (this) << " [\n";
 
   ZORBA_ASSERT(var_h != NULL);
   var_h->put(os);
@@ -76,7 +89,7 @@ ostream & forlet_clause::put( ostream& os) const
 
 ostream& flwor_expr::put( ostream& os) const
 {
-  os << INDENT << "flwor_expr (" << this << ") [\n";
+  os << INDENT << "flwor_expr" << expr_addr (this) << " [\n";
 
   vector<forletref_t>::const_iterator it = clause_begin();
   for (; it!=clause_end(); ++it)
@@ -146,7 +159,7 @@ ostream& promote_expr::put(ostream& os) const
 {
   os << INDENT << "promote_expr ";
   TypeOps::serialize(os, *target_type); 
-  os << " (" << this << ") [\n";
+  os << "" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(input_expr_h!=NULL);
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
@@ -155,7 +168,7 @@ ostream& promote_expr::put(ostream& os) const
 
 ostream& trycatch_expr::put( ostream& os) const
 {
-  os << INDENT << "trycatch_expr (" << this << ") [\n";
+  os << INDENT << "trycatch_expr" << expr_addr (this) << " [\n";
 
   ZORBA_ASSERT(try_expr_h!=NULL);
   try_expr_h->put(os);
@@ -176,7 +189,7 @@ ostream& trycatch_expr::put( ostream& os) const
 
 ostream& typeswitch_expr::put( ostream& os) const
 {
-  os << INDENT << "typeswitch_expr (" << this << ") [\n";
+  os << INDENT << "typeswitch_expr" << expr_addr (this) << " [\n";
 
   //d Assert<null_pointer>(switch_expr_h!=NULL);
   ZORBA_ASSERT(switch_expr_h!=NULL);
@@ -201,7 +214,7 @@ ostream& typeswitch_expr::put( ostream& os) const
 
 ostream& if_expr::put( ostream& os) const
 {
-  os << INDENT << "if_expr (" << this << ") [\n";
+  os << INDENT << "if_expr" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(cond_expr_h!=NULL);
   cond_expr_h->put(os);
   ZORBA_ASSERT(then_expr_h!=NULL);
@@ -217,7 +230,7 @@ ostream& if_expr::put( ostream& os) const
 ostream& fo_expr::put( ostream& os) const
 {
   store::Item_t qname = func->get_fname ();
-  os << INDENT << qname->getStringValue() << "/" << size () << " (" << this << ") [\n";
+  os << INDENT << qname->getStringValue() << "/" << size () << "" << expr_addr (this) << " [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();
        it != end(); ++it)
@@ -232,7 +245,7 @@ ostream& fo_expr::put( ostream& os) const
 
 ostream& ft_contains_expr::put( ostream& os) const
 {
-  os << INDENT << "ft_contains_expr (" << this << ") [\n";
+  os << INDENT << "ft_contains_expr" << expr_addr (this) << " [\n";
   //d Assert<null_pointer>(range_h!=NULL);
   ZORBA_ASSERT(range_h!=NULL);
   range_h->put(os) << endl;
@@ -248,7 +261,7 @@ ostream& ft_contains_expr::put( ostream& os) const
 ostream& instanceof_expr::put( ostream& os) const
 {
   os << INDENT << "instanceof_expr "; TypeOps::serialize (os, *target_type);
-  os << " (" << this << ") [\n";
+  os << "" << expr_addr (this) << " [\n";
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
@@ -257,7 +270,7 @@ ostream& instanceof_expr::put( ostream& os) const
 ostream& treat_expr::put( ostream& os) const
 {
   os << INDENT << "treat_expr "; TypeOps::serialize (os, *target_type);
-  os << " (" << this << ") [\n";
+  os << "" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(input_expr_h!=NULL);
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
@@ -268,7 +281,7 @@ ostream& castable_expr::put( ostream& os) const
 {
   os << INDENT << "castable_expr ";
   TypeOps::serialize (os, *target_type);
-  os << " (" << this << ") [\n";
+  os << "" << expr_addr (this) << " [\n";
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
@@ -278,7 +291,7 @@ ostream& cast_expr::put( ostream& os) const
 {
   os << INDENT << "cast_expr ";
   TypeOps::serialize (os, *target_type);
-  os << " (" << this << ") [\n";
+  os << "" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(input_expr_h!=NULL);
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
@@ -288,7 +301,7 @@ ostream& cast_expr::put( ostream& os) const
 ostream& name_cast_expr::put( ostream& os) const
 {
   os << INDENT << "name_cast_expr ";
-  os << " (" << this << ") [\n";
+  os << "" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(input_expr_h!=NULL);
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
@@ -297,7 +310,7 @@ ostream& name_cast_expr::put( ostream& os) const
 
 ostream& validate_expr::put( ostream& os) const
 {
-  os << INDENT << "validate_expr (" << this << ") [\n";
+  os << INDENT << "validate_expr" << expr_addr (this) << " [\n";
 
   switch (valmode) {
   case ParseConstants::val_strict: os << "strict\n"; break;
@@ -313,7 +326,7 @@ ostream& validate_expr::put( ostream& os) const
 
 ostream& extension_expr::put( ostream& os) const
 {
-  os << INDENT << "extension_expr (" << this << ") [\n";
+  os << INDENT << "extension_expr" << expr_addr (this) << " [\n";
 
   /*
   vector<rchandle<pragma> >::const_iterator it = begin();
@@ -346,7 +359,7 @@ ostream& extension_expr::put( ostream& os) const
 
 ostream& relpath_expr::put( ostream& os) const
 {
-  os << INDENT << "relpath_expr (" << this << ") [\n";
+  os << INDENT << "relpath_expr" << expr_addr (this) << " [\n";
 
   for (std::vector<expr_t>::const_iterator it = begin(); it != end(); ++it)
   {
@@ -362,7 +375,7 @@ ostream& relpath_expr::put( ostream& os) const
 
 ostream& axis_step_expr::put(ostream& os) const
 {
-  os << INDENT << "axis_step_expr (" << this << ") [\n";
+  os << INDENT << "axis_step_expr" << expr_addr (this) << " [\n";
 
   os << INDENT;
   switch (theAxis)
@@ -455,7 +468,7 @@ ostream& match_expr::put(ostream& os) const
 
 ostream& const_expr::put( ostream& os) const
 {
-  os << INDENT << "const_expr (" << this << ")[ ";
+  os << INDENT << "const_expr" << expr_addr (this) << "[ ";
   os << val->getStringValue();
   os << " ]\n"; UNDENT;
   return os;
@@ -463,7 +476,7 @@ ostream& const_expr::put( ostream& os) const
 
 ostream& order_expr::put( ostream& os) const
 {
-  os << INDENT << "order_expr (" << this << ")\n";
+  os << INDENT << "order_expr" << expr_addr (this) << "\n";
   os << DENT << "[ ";
 
   switch (type) 
@@ -481,7 +494,7 @@ ostream& order_expr::put( ostream& os) const
 
 ostream& elem_expr::put(ostream& os) const
 {
-  os << INDENT << "elem_expr (" << this << ") [\n";
+  os << INDENT << "elem_expr" << expr_addr (this) << " [\n";
 
   if (theQNameExpr != NULL)
     theQNameExpr->put(os);
@@ -495,7 +508,7 @@ ostream& elem_expr::put(ostream& os) const
 
 ostream& doc_expr::put( ostream& os) const
 {
-  os << INDENT << "doc_expr (" << this << ") [\n";
+  os << INDENT << "doc_expr" << expr_addr (this) << " [\n";
 
   ZORBA_ASSERT(theContent != NULL);
   theContent->put(os);
@@ -505,7 +518,7 @@ ostream& doc_expr::put( ostream& os) const
 
 ostream& attr_expr::put( ostream& os) const
 {
-  os << INDENT << "attr_expr (" << this << ") [\n";
+  os << INDENT << "attr_expr" << expr_addr (this) << " [\n";
 
   theQNameExpr->put (os);
   
@@ -520,7 +533,7 @@ ostream& attr_expr::put( ostream& os) const
 
 ostream& text_expr::put(ostream& os) const
 {
-  os << INDENT << "text_expr (" << this << ") [\n";
+  os << INDENT << "text_expr" << expr_addr (this) << " [\n";
 
   text->put(os);
 
@@ -530,7 +543,7 @@ ostream& text_expr::put(ostream& os) const
 
 ostream& pi_expr::put( ostream& os) const
 {
-  os << INDENT << "pi_expr (" << this << ") [\n";
+  os << INDENT << "pi_expr" << expr_addr (this) << " [\n";
 
   os << DENT << "TARGET\n";
   ZORBA_ASSERT(target_expr_h != NULL);
@@ -545,14 +558,14 @@ ostream& pi_expr::put( ostream& os) const
 }
 
   ostream& function_def_expr::put (ostream &os) const {
-    os << INDENT << "fn_def_expr (" << this << ") [\n";
+    os << INDENT << "fn_def_expr" << expr_addr (this) << " [\n";
     os << DENT << "]\n"; UNDENT;
     return os;
   }
 
 ostream& insert_expr::put( ostream& os) const
 {
-  os << INDENT << "insert_expr (" << this << ") [\n";
+  os << INDENT << "insert_expr" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(theSourceExpr!=NULL);
   theSourceExpr->put(os);
   os << DENT << ",\n";
@@ -564,7 +577,7 @@ ostream& insert_expr::put( ostream& os) const
 
 ostream& delete_expr::put( ostream& os) const
 {
-  os << INDENT << "delete_expr (" << this << ") [\n";
+  os << INDENT << "delete_expr" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(theTargetExpr!=NULL);
   theTargetExpr->put(os);
   os << DENT << "]\n"; UNDENT;
@@ -573,7 +586,7 @@ ostream& delete_expr::put( ostream& os) const
 
 ostream& replace_expr::put( ostream& os) const
 {
-  os << INDENT << "replace_expr (" << this << ") [\n";
+  os << INDENT << "replace_expr" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(theTargetExpr!=NULL);
   theTargetExpr->put(os);
   os << DENT << ",\n";
@@ -585,7 +598,7 @@ ostream& replace_expr::put( ostream& os) const
 
 ostream& rename_expr::put( ostream& os) const
 {
-  os << INDENT << "rename_expr (" << this << ") [\n";
+  os << INDENT << "rename_expr" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(theTargetExpr!=NULL);
   theTargetExpr->put(os);
   os << DENT << ",\n";
@@ -597,7 +610,7 @@ ostream& rename_expr::put( ostream& os) const
 
 ostream& copy_clause::put( ostream& os) const
 {
-  os << INDENT << "copy (" << this << ") [\n";
+  os << INDENT << "copy" << expr_addr (this) << " [\n";
   ZORBA_ASSERT(theVar != 0);
   theVar->put(os);
   ZORBA_ASSERT(theExpr != 0);
@@ -608,7 +621,7 @@ ostream& copy_clause::put( ostream& os) const
 
 ostream& transform_expr::put( ostream& os) const
 {
-  os << INDENT << "transform_expr (" << this << ") [\n";
+  os << INDENT << "transform_expr" << expr_addr (this) << " [\n";
   for (vector<rchandle<copy_clause> >::const_iterator it = theCopyClauses.begin();
        it != theCopyClauses.end(); ++it)
   {

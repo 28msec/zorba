@@ -1,17 +1,17 @@
 Iterator tree for main query:
-<CommentIterator loc="9.0-92" id="1">
- <EnclosedIterator attr_cont="true" loc="9.0-92" id="2">
-  <NodeSortIterator loc="9.25-91" id="3">
-   <NameTestIterator qname="xs:QName(,wildcard,description)" loc="9.78-91" id="5">
-    <ChildAxisIterator loc="9.78-91" id="6">
-     <FLWORIterator loc="9.25-77" id="7">
+<CommentIterator>
+ <EnclosedIterator attr_cont="true">
+  <NodeSortIterator>
+   <NameTestIterator qname="xs:QName(,wildcard,description)">
+    <ChildAxisIterator>
+     <FLWORIterator>
       <ForVariable name="$$temp1">
-       <NodeDistinctIterator loc="9.9-91" id="9">
-        <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0" loc="9.9-91" id="11">
-         <DescendantSelfAxisIterator loc="9.9-91" id="12">
-          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="6.0-40" id="13">
-           <CtxVariableIterator loc="6.0-40" id="14">
-            <SingletonIterator value="xs:string(input-context)" loc="6.0-40" id="15"/>
+       <NodeDistinctIterator>
+        <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+         <DescendantSelfAxisIterator>
+          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+           <CtxVariableIterator>
+            <SingletonIterator value="xs:string(input-context)"/>
            </CtxVariableIterator>
           </TreatIterator>
          </DescendantSelfAxisIterator>
@@ -19,28 +19,28 @@ Iterator tree for main query:
        </NodeDistinctIterator>
       </ForVariable>
       <ReturnClause>
-       <FLWORIterator loc="9.36-77" id="17">
+       <FLWORIterator>
         <ForVariable name="$$dot">
-         <NameTestIterator qname="xs:QName(,wildcard,test-case)" loc="9.25-36" id="19">
-          <ChildAxisIterator loc="9.25-77" id="20">
-           <ForVarIterator varname="$$temp1" loc="9.9-91" id="21"/>
+         <NameTestIterator qname="xs:QName(,wildcard,test-case)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$temp1"/>
           </ChildAxisIterator>
          </NameTestIterator>
         </ForVariable>
         <WhereClause>
-         <CompareIterator loc="9.37-76" id="23">
-          <FnDataIterator loc="9.37-42" id="24">
-           <NameTestIterator qname="xs:QName(,,name)" loc="9.38-42" id="25">
-            <AttributeAxisIterator loc="9.37-42" id="26">
-             <ForVarIterator varname="$$dot" loc="9.37-42" id="27"/>
+         <CompareIterator>
+          <FnDataIterator>
+           <NameTestIterator qname="xs:QName(,,name)">
+            <AttributeAxisIterator>
+             <ForVarIterator varname="$$dot"/>
             </AttributeAxisIterator>
            </NameTestIterator>
           </FnDataIterator>
-          <SingletonIterator value="xs:string(Constr-compcomment-doubledash-4)" loc="9.43-76" id="28"/>
+          <SingletonIterator value="xs:string(Constr-compcomment-doubledash-4)"/>
          </CompareIterator>
         </WhereClause>
         <ReturnClause>
-         <ForVarIterator varname="$$dot" loc="9.37-42" id="30"/>
+         <ForVarIterator varname="$$dot"/>
         </ReturnClause>
        </FLWORIterator>
       </ReturnClause>

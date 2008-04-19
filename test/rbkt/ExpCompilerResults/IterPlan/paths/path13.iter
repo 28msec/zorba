@@ -1,44 +1,44 @@
 Iterator tree for main query:
-<NodeSortIterator loc="7.2-6" id="1">
- <FLWORIterator loc="7.3-6" id="3">
+<NodeSortIterator>
+ <FLWORIterator>
   <ForVariable name="$$dot">
-   <NameTestIterator qname="xs:QName(,,b)" loc="7.2-3" id="5">
-    <ChildAxisIterator loc="7.2-6" id="6">
-     <ElementIterator loc="2.4-8" id="7">
-      <SingletonIterator value="xs:QName(,,a)" loc="2.4-8" id="8"/>
-      <ElementContentIterator loc="2.4-8" id="9">
-       <FnConcatIterator loc="3.0-8" id="10">
-        <ElementIterator loc="3.8-23" id="11">
-         <SingletonIterator value="xs:QName(,,b)" loc="3.8-23" id="12"/>
-         <ElementContentIterator loc="3.8-23" id="13">
-          <ElementIterator loc="3.11-19" id="14">
-           <SingletonIterator value="xs:QName(,,c)" loc="3.11-19" id="15"/>
-           <ElementContentIterator loc="3.11-19" id="16">
-            <TextIterator loc="3.14-15" id="17">
-             <SingletonIterator value="xs:string(5)" loc="3.14-15" id="18"/>
+   <NameTestIterator qname="xs:QName(,,b)">
+    <ChildAxisIterator>
+     <ElementIterator>
+      <SingletonIterator value="xs:QName(,,a)"/>
+      <ElementContentIterator>
+       <FnConcatIterator>
+        <ElementIterator>
+         <SingletonIterator value="xs:QName(,,b)"/>
+         <ElementContentIterator>
+          <ElementIterator>
+           <SingletonIterator value="xs:QName(,,c)"/>
+           <ElementContentIterator>
+            <TextIterator>
+             <SingletonIterator value="xs:string(5)"/>
             </TextIterator>
            </ElementContentIterator>
           </ElementIterator>
          </ElementContentIterator>
         </ElementIterator>
-        <ElementIterator loc="4.8-23" id="19">
-         <SingletonIterator value="xs:QName(,,b)" loc="4.8-23" id="20"/>
-         <ElementContentIterator loc="4.8-23" id="21">
-          <ElementIterator loc="4.11-19" id="22">
-           <SingletonIterator value="xs:QName(,,c)" loc="4.11-19" id="23"/>
-           <ElementContentIterator loc="4.11-19" id="24">
-            <TextIterator loc="4.14-15" id="25">
-             <SingletonIterator value="xs:string(6)" loc="4.14-15" id="26"/>
+        <ElementIterator>
+         <SingletonIterator value="xs:QName(,,b)"/>
+         <ElementContentIterator>
+          <ElementIterator>
+           <SingletonIterator value="xs:QName(,,c)"/>
+           <ElementContentIterator>
+            <TextIterator>
+             <SingletonIterator value="xs:string(6)"/>
             </TextIterator>
            </ElementContentIterator>
           </ElementIterator>
          </ElementContentIterator>
         </ElementIterator>
-        <ElementIterator loc="5.8-22" id="27">
-         <SingletonIterator value="xs:QName(,,b)" loc="5.8-22" id="28"/>
-         <ElementContentIterator loc="5.8-22" id="29">
-          <ElementIterator loc="5.11-18" id="30">
-           <SingletonIterator value="xs:QName(,,d)" loc="5.11-18" id="31"/>
+        <ElementIterator>
+         <SingletonIterator value="xs:QName(,,b)"/>
+         <ElementContentIterator>
+          <ElementIterator>
+           <SingletonIterator value="xs:QName(,,d)"/>
           </ElementIterator>
          </ElementContentIterator>
         </ElementIterator>
@@ -49,47 +49,47 @@ Iterator tree for main query:
    </NameTestIterator>
   </ForVariable>
   <LetVariable name="$$temp4" materialize="true">
-   <NameTestIterator qname="xs:QName(,,c)" loc="7.4-5" id="33">
-    <ChildAxisIterator loc="7.4-5" id="34">
-     <ForVarIterator varname="$$dot" loc="7.4-5" id="35"/>
+   <NameTestIterator qname="xs:QName(,,c)">
+    <ChildAxisIterator>
+     <ForVarIterator varname="$$dot"/>
     </ChildAxisIterator>
    </NameTestIterator>
   </LetVariable>
   <ReturnClause>
-   <IfThenElseIterator loc="7.4-5" id="37">
-    <LogicIterator loc="7.4-5" id="38">
-     <LogicIterator loc="7.4-5" id="39">
-      <InstanceOfIterator loc="7.4-5" id="40">
-       <LetVarIterator varname="$$temp4" loc="7.4-5" id="41"/>
+   <IfThenElseIterator>
+    <LogicIterator>
+     <LogicIterator>
+      <InstanceOfIterator>
+       <LetVarIterator varname="$$temp4"/>
       </InstanceOfIterator>
-      <InstanceOfIterator loc="7.4-5" id="42">
-       <LetVarIterator varname="$$temp4" loc="7.4-5" id="43"/>
+      <InstanceOfIterator>
+       <LetVarIterator varname="$$temp4"/>
       </InstanceOfIterator>
      </LogicIterator>
-     <InstanceOfIterator loc="7.4-5" id="44">
-      <LetVarIterator varname="$$temp4" loc="7.4-5" id="45"/>
+     <InstanceOfIterator>
+      <LetVarIterator varname="$$temp4"/>
      </InstanceOfIterator>
     </LogicIterator>
-    <IfThenElseIterator loc="7.4-5" id="46">
-     <FnBooleanIterator loc="7.4-5" id="47">
-      <CompareIterator loc="7.4-5" id="48">
-       <ForVarIterator varname="$$pos" loc="7.3-6" id="49"/>
-       <PromoteIterator type="[AtomicXQType XS_ANY_ATOMIC]" loc="7.4-5" id="50">
-        <FnDataIterator loc="7.4-5" id="52">
-         <LetVarIterator varname="$$temp4" loc="7.4-5" id="53"/>
+    <IfThenElseIterator>
+     <FnBooleanIterator>
+      <CompareIterator>
+       <ForVarIterator varname="$$pos"/>
+       <PromoteIterator type="[AtomicXQType XS_ANY_ATOMIC]">
+        <FnDataIterator>
+         <LetVarIterator varname="$$temp4"/>
         </FnDataIterator>
        </PromoteIterator>
       </CompareIterator>
      </FnBooleanIterator>
-     <ForVarIterator varname="$$dot" loc="7.4-5" id="54"/>
-     <FnConcatIterator loc="7.4-5" id="55"/>
+     <ForVarIterator varname="$$dot"/>
+     <FnConcatIterator/>
     </IfThenElseIterator>
-    <IfThenElseIterator loc="7.4-5" id="56">
-     <FnBooleanIterator loc="7.4-5" id="57">
-      <LetVarIterator varname="$$temp4" loc="7.4-5" id="58"/>
+    <IfThenElseIterator>
+     <FnBooleanIterator>
+      <LetVarIterator varname="$$temp4"/>
      </FnBooleanIterator>
-     <ForVarIterator varname="$$dot" loc="7.4-5" id="59"/>
-     <FnConcatIterator loc="7.4-5" id="60"/>
+     <ForVarIterator varname="$$dot"/>
+     <FnConcatIterator/>
     </IfThenElseIterator>
    </IfThenElseIterator>
   </ReturnClause>

@@ -33,6 +33,7 @@ namespace zorba {
       bool thePrintIteratorTree;
       bool thePrintItemFlow;
       bool theStableIteratorIds;
+      bool theNoTreeIds;
 #ifndef NDEBUG
       bool theTraceTranslator;
       bool theTraceCodegen;
@@ -158,6 +159,9 @@ namespace zorba {
 
       bool
       stableIteratorIds() { return theStableIteratorIds; }
+
+      bool
+      noTreeIds() { return theNoTreeIds; }
 
       bool
       compileOnly () { return theCompileOnly; }

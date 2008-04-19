@@ -1,19 +1,19 @@
 Iterator tree for main query:
-<CompareIterator loc="7.0-78" id="1">
- <NormalizeSpaceIterator loc="7.0-62" id="2">
-  <IriToUriIterator loc="7.16-61" id="3">
-   <PromoteIterator type="[AtomicXQType XS_STRING]" loc="7.57-60" id="4">
-    <FnSubsequenceIterator loc="7.58-59" id="6">
-     <FnConcatIterator loc="7.28-40" id="7">
-      <SingletonIterator value="xs:string(somestring)" loc="7.28-40" id="8"/>
-      <FnCurrentTimeIterator loc="7.42-56" id="9"/>
+<CompareIterator>
+ <NormalizeSpaceIterator>
+  <IriToUriIterator>
+   <PromoteIterator type="[AtomicXQType XS_STRING]">
+    <FnSubsequenceIterator>
+     <FnConcatIterator>
+      <SingletonIterator value="xs:string(somestring)"/>
+      <FnCurrentTimeIterator/>
      </FnConcatIterator>
-     <SingletonIterator value="xs:double(1)" loc="7.58-59" id="11"/>
-     <SingletonIterator value="xs:double(1)" loc="7.58-59" id="12"/>
+     <SingletonIterator value="xs:double(1)"/>
+     <SingletonIterator value="xs:double(1)"/>
     </FnSubsequenceIterator>
    </PromoteIterator>
   </IriToUriIterator>
  </NormalizeSpaceIterator>
- <SingletonIterator value="xs:string(somestring)" loc="7.66-78" id="13"/>
+ <SingletonIterator value="xs:string(somestring)"/>
 </CompareIterator>
 

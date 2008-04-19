@@ -1,26 +1,26 @@
 Iterator tree for main query:
-<FLWORIterator loc="2.0-57" id="1">
+<FLWORIterator>
  <LetVariable name="auction" materialize="true">
-  <FnDocIterator loc="2.16-35" id="3">
-   <PromoteIterator type="[AtomicXQType XS_STRING]" loc="1.0-40" id="4">
-    <FnDataIterator loc="1.0-40" id="6">
-     <CtxVariableIterator loc="1.0-40" id="7">
-      <SingletonIterator value="xs:string(input-context)" loc="1.0-40" id="8"/>
+  <FnDocIterator>
+   <PromoteIterator type="[AtomicXQType XS_STRING]">
+    <FnDataIterator>
+     <CtxVariableIterator>
+      <SingletonIterator value="xs:string(input-context)"/>
      </CtxVariableIterator>
     </FnDataIterator>
    </PromoteIterator>
   </FnDocIterator>
  </LetVariable>
  <ReturnClause>
-  <FLWORIterator loc="3.0-57" id="10">
+  <FLWORIterator>
    <ForVariable name="p">
-    <NameTestIterator qname="xs:QName(,,person)" loc="3.31-37" id="12">
-     <ChildAxisIterator loc="3.31-37" id="13">
-      <NameTestIterator qname="xs:QName(,,people)" loc="3.24-30" id="14">
-       <ChildAxisIterator loc="3.24-30" id="15">
-        <NameTestIterator qname="xs:QName(,,site)" loc="3.19-23" id="16">
-         <ChildAxisIterator loc="3.19-23" id="17">
-          <LetVarIterator varname="auction" loc="2.5-35" id="18"/>
+    <NameTestIterator qname="xs:QName(,,person)">
+     <ChildAxisIterator>
+      <NameTestIterator qname="xs:QName(,,people)">
+       <ChildAxisIterator>
+        <NameTestIterator qname="xs:QName(,,site)">
+         <ChildAxisIterator>
+          <LetVarIterator varname="auction"/>
          </ChildAxisIterator>
         </NameTestIterator>
        </ChildAxisIterator>
@@ -29,17 +29,17 @@ Iterator tree for main query:
     </NameTestIterator>
    </ForVariable>
    <ReturnClause>
-    <ElementIterator loc="8.7-57" id="20">
-     <SingletonIterator value="xs:QName(,,item)" loc="8.7-57" id="21"/>
-     <AttributeIterator loc="8.13-38" id="22">
-      <SingletonIterator value="xs:QName(,,person)" loc="8.13-38" id="23"/>
-      <EnclosedIterator attr_cont="true" loc="8.21-37" id="24">
-       <FnDataIterator loc="8.22-36" id="25">
-        <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0" loc="8.30-36" id="26">
-         <ChildAxisIterator loc="8.30-36" id="27">
-          <NameTestIterator qname="xs:QName(,,name)" loc="8.25-29" id="28">
-           <ChildAxisIterator loc="8.25-29" id="29">
-            <ForVarIterator varname="p" loc="3.5-37" id="30"/>
+    <ElementIterator>
+     <SingletonIterator value="xs:QName(,,item)"/>
+     <AttributeIterator>
+      <SingletonIterator value="xs:QName(,,person)"/>
+      <EnclosedIterator attr_cont="true">
+       <FnDataIterator>
+        <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+         <ChildAxisIterator>
+          <NameTestIterator qname="xs:QName(,,name)">
+           <ChildAxisIterator>
+            <ForVarIterator varname="p"/>
            </ChildAxisIterator>
           </NameTestIterator>
          </ChildAxisIterator>
@@ -47,18 +47,18 @@ Iterator tree for main query:
        </FnDataIterator>
       </EnclosedIterator>
      </AttributeIterator>
-     <ElementContentIterator loc="8.7-57" id="31">
-      <EnclosedIterator attr_cont="false" loc="8.39-50" id="32">
-       <FnCountIterator loc="8.40-49" id="33">
-        <FLWORIterator loc="5.0-9" id="35">
+     <ElementContentIterator>
+      <EnclosedIterator attr_cont="false">
+       <FnCountIterator>
+        <FLWORIterator>
          <ForVariable name="t">
-          <NameTestIterator qname="xs:QName(,,closed_auction)" loc="5.40-54" id="37">
-           <ChildAxisIterator loc="5.40-54" id="38">
-            <NameTestIterator qname="xs:QName(,,closed_auctions)" loc="5.24-39" id="39">
-             <ChildAxisIterator loc="5.24-39" id="40">
-              <NameTestIterator qname="xs:QName(,,site)" loc="5.19-23" id="41">
-               <ChildAxisIterator loc="5.19-23" id="42">
-                <LetVarIterator varname="auction" loc="2.5-35" id="43"/>
+          <NameTestIterator qname="xs:QName(,,closed_auction)">
+           <ChildAxisIterator>
+            <NameTestIterator qname="xs:QName(,,closed_auctions)">
+             <ChildAxisIterator>
+              <NameTestIterator qname="xs:QName(,,site)">
+               <ChildAxisIterator>
+                <LetVarIterator varname="auction"/>
                </ChildAxisIterator>
               </NameTestIterator>
              </ChildAxisIterator>
@@ -67,29 +67,29 @@ Iterator tree for main query:
           </NameTestIterator>
          </ForVariable>
          <WhereClause>
-          <CompareIterator loc="6.6-31" id="45">
-           <FnDataIterator loc="6.6-22" id="46">
-            <NameTestIterator qname="xs:QName(,,person)" loc="6.16-22" id="47">
-             <AttributeAxisIterator loc="6.15-22" id="48">
-              <NameTestIterator qname="xs:QName(,,buyer)" loc="6.9-14" id="49">
-               <ChildAxisIterator loc="6.9-14" id="50">
-                <ForVarIterator varname="t" loc="5.5-54" id="51"/>
+          <CompareIterator>
+           <FnDataIterator>
+            <NameTestIterator qname="xs:QName(,,person)">
+             <AttributeAxisIterator>
+              <NameTestIterator qname="xs:QName(,,buyer)">
+               <ChildAxisIterator>
+                <ForVarIterator varname="t"/>
                </ChildAxisIterator>
               </NameTestIterator>
              </AttributeAxisIterator>
             </NameTestIterator>
            </FnDataIterator>
-           <FnDataIterator loc="6.25-31" id="52">
-            <NameTestIterator qname="xs:QName(,,id)" loc="6.29-31" id="53">
-             <AttributeAxisIterator loc="6.28-31" id="54">
-              <ForVarIterator varname="p" loc="3.5-37" id="55"/>
+           <FnDataIterator>
+            <NameTestIterator qname="xs:QName(,,id)">
+             <AttributeAxisIterator>
+              <ForVarIterator varname="p"/>
              </AttributeAxisIterator>
             </NameTestIterator>
            </FnDataIterator>
           </CompareIterator>
          </WhereClause>
          <ReturnClause>
-          <ForVarIterator varname="t" loc="5.5-54" id="57"/>
+          <ForVarIterator varname="t"/>
          </ReturnClause>
         </FLWORIterator>
        </FnCountIterator>

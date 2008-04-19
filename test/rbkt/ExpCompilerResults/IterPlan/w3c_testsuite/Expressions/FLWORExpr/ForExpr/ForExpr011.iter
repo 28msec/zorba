@@ -1,12 +1,12 @@
 Iterator tree for main query:
-<FLWORIterator loc="8.0-70" id="1">
+<FLWORIterator>
  <ForVariable name="folder">
-  <NodeSortIterator loc="8.15-37" id="3">
-   <NameTestIterator qname="xs:QName(,,Folder)" loc="8.31-37" id="5">
-    <DescendantAxisIterator loc="8.31-37" id="6">
-     <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="5.0-40" id="7">
-      <CtxVariableIterator loc="5.0-40" id="8">
-       <SingletonIterator value="xs:string(input-context)" loc="5.0-40" id="9"/>
+  <NodeSortIterator>
+   <NameTestIterator qname="xs:QName(,,Folder)">
+    <DescendantAxisIterator>
+     <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+      <CtxVariableIterator>
+       <SingletonIterator value="xs:string(input-context)"/>
       </CtxVariableIterator>
      </TreatIterator>
     </DescendantAxisIterator>
@@ -14,39 +14,39 @@ Iterator tree for main query:
   </NodeSortIterator>
  </ForVariable>
  <ForVariable name="file">
-  <NameTestIterator qname="xs:QName(,,File)" loc="8.57-61" id="11">
-   <DescendantAxisIterator loc="8.57-61" id="12">
-    <ForVarIterator varname="folder" loc="8.5-37" id="13"/>
+  <NameTestIterator qname="xs:QName(,,File)">
+   <DescendantAxisIterator>
+    <ForVarIterator varname="folder"/>
    </DescendantAxisIterator>
   </NameTestIterator>
  </ForVariable>
  <ReturnClause>
-  <ElementIterator loc="10.0-70" id="15">
-   <SingletonIterator value="xs:QName(,,File)" loc="10.0-70" id="16"/>
-   <AttributeIterator loc="10.6-35" id="17">
-    <SingletonIterator value="xs:QName(,,folder)" loc="10.6-35" id="18"/>
-    <EnclosedIterator attr_cont="true" loc="10.14-34" id="19">
-     <FnDataIterator loc="10.15-33" id="20">
-      <NameTestIterator qname="xs:QName(,,FolderName)" loc="10.23-33" id="21">
-       <ChildAxisIterator loc="10.23-33" id="22">
-        <ForVarIterator varname="folder" loc="8.5-37" id="23"/>
+  <ElementIterator>
+   <SingletonIterator value="xs:QName(,,File)"/>
+   <AttributeIterator>
+    <SingletonIterator value="xs:QName(,,folder)"/>
+    <EnclosedIterator attr_cont="true">
+     <FnDataIterator>
+      <NameTestIterator qname="xs:QName(,,FolderName)">
+       <ChildAxisIterator>
+        <ForVarIterator varname="folder"/>
        </ChildAxisIterator>
       </NameTestIterator>
      </FnDataIterator>
     </EnclosedIterator>
    </AttributeIterator>
-   <ElementContentIterator loc="10.0-70" id="24">
-    <EnclosedIterator attr_cont="false" loc="10.36-63" id="25">
-     <CastIterator type="[AtomicXQType XS_STRING]" loc="10.37-62" id="26">
-      <NodeDistinctIterator loc="10.50-61" id="28">
-       <FnSubsequenceIterator loc="10.59-60" id="30">
-        <NameTestIterator qname="xs:QName(,,FileName)" loc="10.50-58" id="31">
-         <ChildAxisIterator loc="10.50-61" id="32">
-          <ForVarIterator varname="file" loc="8.40-61" id="33"/>
+   <ElementContentIterator>
+    <EnclosedIterator attr_cont="false">
+     <CastIterator type="[AtomicXQType XS_STRING]">
+      <NodeDistinctIterator>
+       <FnSubsequenceIterator>
+        <NameTestIterator qname="xs:QName(,,FileName)">
+         <ChildAxisIterator>
+          <ForVarIterator varname="file"/>
          </ChildAxisIterator>
         </NameTestIterator>
-        <SingletonIterator value="xs:double(1)" loc="10.59-60" id="34"/>
-        <SingletonIterator value="xs:double(1)" loc="10.59-60" id="35"/>
+        <SingletonIterator value="xs:double(1)"/>
+        <SingletonIterator value="xs:double(1)"/>
        </FnSubsequenceIterator>
       </NodeDistinctIterator>
      </CastIterator>

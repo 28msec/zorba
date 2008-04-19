@@ -1,25 +1,25 @@
 Iterator tree for main query:
-<NodeSortIterator loc="1.0-3" id="1">
- <NameTestIterator qname="xs:QName(,,b)" loc="5.2-3" id="3">
-  <ChildAxisIterator loc="5.2-3" id="4">
-   <FLWORIterator loc="2.0-9" id="5">
+<NodeSortIterator>
+ <NameTestIterator qname="xs:QName(,,b)">
+  <ChildAxisIterator>
+   <FLWORIterator>
     <LetVariable name="x" materialize="true">
-     <ElementIterator loc="2.11-40" id="7">
-      <SingletonIterator value="xs:QName(,,a)" loc="2.11-40" id="8"/>
-      <ElementContentIterator loc="2.11-40" id="9">
-       <FnConcatIterator loc="2.14-25" id="10">
-        <ElementIterator loc="2.14-25" id="11">
-         <SingletonIterator value="xs:QName(,,b)" loc="2.14-25" id="12"/>
-         <AttributeIterator loc="2.17-23" id="13">
-          <SingletonIterator value="xs:QName(,,id)" loc="2.17-23" id="14"/>
-          <SingletonIterator value="xs:string(1)" loc="2.21-22" id="15"/>
+     <ElementIterator>
+      <SingletonIterator value="xs:QName(,,a)"/>
+      <ElementContentIterator>
+       <FnConcatIterator>
+        <ElementIterator>
+         <SingletonIterator value="xs:QName(,,b)"/>
+         <AttributeIterator>
+          <SingletonIterator value="xs:QName(,,id)"/>
+          <SingletonIterator value="xs:string(1)"/>
          </AttributeIterator>
         </ElementIterator>
-        <ElementIterator loc="2.25-36" id="16">
-         <SingletonIterator value="xs:QName(,,b)" loc="2.25-36" id="17"/>
-         <AttributeIterator loc="2.28-34" id="18">
-          <SingletonIterator value="xs:QName(,,id)" loc="2.28-34" id="19"/>
-          <SingletonIterator value="xs:string(2)" loc="2.32-33" id="20"/>
+        <ElementIterator>
+         <SingletonIterator value="xs:QName(,,b)"/>
+         <AttributeIterator>
+          <SingletonIterator value="xs:QName(,,id)"/>
+          <SingletonIterator value="xs:string(2)"/>
          </AttributeIterator>
         </ElementIterator>
        </FnConcatIterator>
@@ -27,14 +27,14 @@ Iterator tree for main query:
      </ElementIterator>
     </LetVariable>
     <ForVariable name="y">
-     <FnConcatIterator loc="3.11-12" id="22">
-      <SingletonIterator value="xs:integer(1)" loc="3.11-12" id="23"/>
-      <SingletonIterator value="xs:integer(2)" loc="3.13-14" id="24"/>
-      <SingletonIterator value="xs:integer(3)" loc="3.15-16" id="25"/>
+     <FnConcatIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(2)"/>
+      <SingletonIterator value="xs:integer(3)"/>
      </FnConcatIterator>
     </ForVariable>
     <ReturnClause>
-     <LetVarIterator varname="x" loc="2.5-41" id="27"/>
+     <LetVarIterator varname="x"/>
     </ReturnClause>
    </FLWORIterator>
   </ChildAxisIterator>

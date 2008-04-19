@@ -1,9 +1,9 @@
 Iterator tree for main query:
-<CastIterator type="[AtomicXQType XS_STRING]" loc="8.1-95" id="1">
- <FnNamespaceUriIterator loc="8.11-94" id="3">
-  <ElementIterator loc="8.28-93" id="4">
-   <SingletonIterator value="xs:QName(http://www.example.com/examples,,anElement)" loc="8.28-93" id="5"/>
-   <FnConcatIterator loc="8.39-80" id="6"/>
+<CastIterator type="[AtomicXQType XS_STRING]">
+ <FnNamespaceUriIterator>
+  <ElementIterator>
+   <SingletonIterator value="xs:QName(http://www.example.com/examples,,anElement)"/>
+   <FnConcatIterator/>
   </ElementIterator>
  </FnNamespaceUriIterator>
 </CastIterator>

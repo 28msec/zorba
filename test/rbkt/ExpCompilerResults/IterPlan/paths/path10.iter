@@ -1,82 +1,82 @@
 Iterator tree for main query:
-<NodeSortIterator loc="1.0-6" id="1">
- <NameTestIterator qname="xs:QName(,,c)" loc="14.5-6" id="3">
-  <ChildAxisIterator loc="14.5-6" id="4">
-   <NameTestIterator qname="xs:QName(,,b)" loc="14.3-4" id="5">
-    <DescendantAxisIterator loc="14.3-4" id="6">
-     <ElementIterator loc="3.0-4" id="7">
-      <SingletonIterator value="xs:QName(,,a)" loc="3.0-4" id="8"/>
-      <ElementContentIterator loc="3.0-4" id="9">
-       <FnConcatIterator loc="4.0-2" id="10">
-        <ElementIterator loc="4.2-6" id="11">
-         <SingletonIterator value="xs:QName(,,b)" loc="4.2-6" id="12"/>
-         <ElementContentIterator loc="4.2-6" id="13">
-          <FnConcatIterator loc="4.5-10" id="14">
-           <EnclosedIterator attr_cont="false" loc="4.5-10" id="15">
-            <FnConcatIterator loc="4.6-7" id="16">
-             <SingletonIterator value="xs:integer(1)" loc="4.6-7" id="17"/>
-             <SingletonIterator value="xs:integer(2)" loc="4.8-9" id="18"/>
+<NodeSortIterator>
+ <NameTestIterator qname="xs:QName(,,c)">
+  <ChildAxisIterator>
+   <NameTestIterator qname="xs:QName(,,b)">
+    <DescendantAxisIterator>
+     <ElementIterator>
+      <SingletonIterator value="xs:QName(,,a)"/>
+      <ElementContentIterator>
+       <FnConcatIterator>
+        <ElementIterator>
+         <SingletonIterator value="xs:QName(,,b)"/>
+         <ElementContentIterator>
+          <FnConcatIterator>
+           <EnclosedIterator attr_cont="false">
+            <FnConcatIterator>
+             <SingletonIterator value="xs:integer(1)"/>
+             <SingletonIterator value="xs:integer(2)"/>
             </FnConcatIterator>
            </EnclosedIterator>
-           <ElementIterator loc="5.4-8" id="19">
-            <SingletonIterator value="xs:QName(,,c)" loc="5.4-8" id="20"/>
-            <AttributeIterator loc="5.7-13" id="21">
-             <SingletonIterator value="xs:QName(,,id)" loc="5.7-13" id="22"/>
-             <SingletonIterator value="xs:string(1)" loc="5.11-12" id="23"/>
+           <ElementIterator>
+            <SingletonIterator value="xs:QName(,,c)"/>
+            <AttributeIterator>
+             <SingletonIterator value="xs:QName(,,id)"/>
+             <SingletonIterator value="xs:string(1)"/>
             </AttributeIterator>
-            <ElementContentIterator loc="5.4-8" id="24">
-             <ElementIterator loc="6.6-24" id="25">
-              <SingletonIterator value="xs:QName(,,b)" loc="6.6-24" id="26"/>
-              <ElementContentIterator loc="6.6-24" id="27">
-               <ElementIterator loc="6.9-20" id="28">
-                <SingletonIterator value="xs:QName(,,c)" loc="6.9-20" id="29"/>
-                <AttributeIterator loc="6.12-18" id="30">
-                 <SingletonIterator value="xs:QName(,,id)" loc="6.12-18" id="31"/>
-                 <SingletonIterator value="xs:string(3)" loc="6.16-17" id="32"/>
+            <ElementContentIterator>
+             <ElementIterator>
+              <SingletonIterator value="xs:QName(,,b)"/>
+              <ElementContentIterator>
+               <ElementIterator>
+                <SingletonIterator value="xs:QName(,,c)"/>
+                <AttributeIterator>
+                 <SingletonIterator value="xs:QName(,,id)"/>
+                 <SingletonIterator value="xs:string(3)"/>
                 </AttributeIterator>
                </ElementIterator>
               </ElementContentIterator>
              </ElementIterator>
             </ElementContentIterator>
            </ElementIterator>
-           <ElementIterator loc="8.4-15" id="33">
-            <SingletonIterator value="xs:QName(,,c)" loc="8.4-15" id="34"/>
-            <AttributeIterator loc="8.7-13" id="35">
-             <SingletonIterator value="xs:QName(,,id)" loc="8.7-13" id="36"/>
-             <SingletonIterator value="xs:string(2)" loc="8.11-12" id="37"/>
+           <ElementIterator>
+            <SingletonIterator value="xs:QName(,,c)"/>
+            <AttributeIterator>
+             <SingletonIterator value="xs:QName(,,id)"/>
+             <SingletonIterator value="xs:string(2)"/>
             </AttributeIterator>
            </ElementIterator>
           </FnConcatIterator>
          </ElementContentIterator>
         </ElementIterator>
-        <ElementIterator loc="10.2-19" id="38">
-         <SingletonIterator value="xs:QName(,,c)" loc="10.2-19" id="39"/>
-         <ElementContentIterator loc="10.2-19" id="40">
-          <ElementIterator loc="10.5-15" id="41">
-           <SingletonIterator value="xs:QName(,,b)" loc="10.5-15" id="42"/>
-           <ElementContentIterator loc="10.5-15" id="43">
-            <TextIterator loc="10.8-11" id="44">
-             <SingletonIterator value="xs:string(foo)" loc="10.8-11" id="45"/>
+        <ElementIterator>
+         <SingletonIterator value="xs:QName(,,c)"/>
+         <ElementContentIterator>
+          <ElementIterator>
+           <SingletonIterator value="xs:QName(,,b)"/>
+           <ElementContentIterator>
+            <TextIterator>
+             <SingletonIterator value="xs:string(foo)"/>
             </TextIterator>
            </ElementContentIterator>
           </ElementIterator>
          </ElementContentIterator>
         </ElementIterator>
-        <ElementIterator loc="11.2-36" id="46">
-         <SingletonIterator value="xs:QName(,,c)" loc="11.2-36" id="47"/>
-         <ElementContentIterator loc="11.2-36" id="48">
-          <ElementIterator loc="11.5-31" id="49">
-           <SingletonIterator value="xs:QName(,,b)" loc="11.5-31" id="50"/>
-           <ElementContentIterator loc="11.5-31" id="51">
-            <FnConcatIterator loc="11.8-12" id="52">
-             <TextIterator loc="11.8-12" id="53">
-              <SingletonIterator value="xs:string(boo )" loc="11.8-12" id="54"/>
+        <ElementIterator>
+         <SingletonIterator value="xs:QName(,,c)"/>
+         <ElementContentIterator>
+          <ElementIterator>
+           <SingletonIterator value="xs:QName(,,b)"/>
+           <ElementContentIterator>
+            <FnConcatIterator>
+             <TextIterator>
+              <SingletonIterator value="xs:string(boo )"/>
              </TextIterator>
-             <ElementIterator loc="11.12-26" id="55">
-              <SingletonIterator value="xs:QName(,,c)" loc="11.12-26" id="56"/>
-              <AttributeIterator loc="11.15-21" id="57">
-               <SingletonIterator value="xs:QName(,,id)" loc="11.15-21" id="58"/>
-               <SingletonIterator value="xs:string(4)" loc="11.19-20" id="59"/>
+             <ElementIterator>
+              <SingletonIterator value="xs:QName(,,c)"/>
+              <AttributeIterator>
+               <SingletonIterator value="xs:QName(,,id)"/>
+               <SingletonIterator value="xs:string(4)"/>
               </AttributeIterator>
              </ElementIterator>
             </FnConcatIterator>

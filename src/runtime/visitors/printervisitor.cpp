@@ -57,18 +57,20 @@ namespace zorba {
   }
 
   void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
-    {
-      std::stringstream lStream;
-      lStream << aIter->loc;
-      thePrinter.addAttribute("loc", lStream.str());
-    }
-    {
-      std::stringstream lStream;
-      if (Properties::instance()->stableIteratorIds()) 
-        lStream << theId;
-      else
-        lStream << aIter;
-      thePrinter.addAttribute("id", lStream.str());
+    if (! Properties::instance()->noTreeIds()) {
+      {
+        std::stringstream lStream;
+        lStream << aIter->loc;
+        thePrinter.addAttribute("loc", lStream.str());
+      }
+      {
+        std::stringstream lStream;
+        if (Properties::instance()->stableIteratorIds()) 
+          lStream << theId;
+        else
+          lStream << aIter;
+        thePrinter.addAttribute("id", lStream.str());
+      }
     }
   }
 
