@@ -1,12 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: function.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Authors: John Cowan,Paul Pedersen
- *
- */
- 
 #ifndef ZORBA_FUNCTION_H
 #define ZORBA_FUNCTION_H
 
@@ -19,12 +10,11 @@
 
 namespace zorba {
 
-typedef rchandle<class PlanIterator> PlanIter_t;
-typedef rchandle<class expr> expr_t;
-typedef rchandle<class var_expr> var_expr_t;
-typedef rchandle<class LetVarIterator> ref_iter_t;
 
 class fo_expr;
+
+typedef rchandle<var_expr> var_expr_t;
+
 
 class function_typechecker {
 public:
@@ -77,40 +67,53 @@ public:
 };
 
 
-class user_function : public function {
-  public:
-    user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body, bool aIsUpdating);
-    virtual ~user_function();
+class user_function : public function 
+{
+public:
+  user_function(
+        const QueryLoc& loc,
+        const signature& _sig,
+        expr_t expr_body, 
+        bool aIsUpdating);
 
-    const QueryLoc& get_location() const;
+  virtual ~user_function();
 
-    void set_body(expr_t body);
-    expr_t get_body() const;
+  const QueryLoc& get_location() const;
 
-    void set_params(std::vector<var_expr_t>& params);
-    const std::vector<var_expr_t>& get_params() const;
+  virtual expr_update_t getUpdateType() const { return theUpdateType; }
 
-    virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  void set_body(expr_t body);
+  expr_t get_body() const;
 
-    virtual PlanIter_t get_plan() const;
+  void set_params(std::vector<var_expr_t>& params);
+  const std::vector<var_expr_t>& get_params() const;
 
-    virtual std::vector<ref_iter_t>& get_param_iters() const;
+  virtual PlanIter_t codegen(
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const;
 
-    bool requires_dyn_ctx () const;
+  virtual PlanIter_t get_plan() const;
 
-    virtual expr_update_t getUpdateType() const { return theUpdateType; }
+  virtual std::vector<LetVarIter_t>& get_param_iters() const;
 
-  private:
-    QueryLoc m_loc;
-    expr_t m_expr_body;
+  bool requires_dyn_ctx () const;
+
+ private:
+    QueryLoc                m_loc;
+    expr_t                  m_expr_body;
     std::vector<var_expr_t> m_params;
-    mutable PlanIter_t m_plan;
-    mutable std::vector<ref_iter_t> m_param_iters;
-    mutable int32_t m_state_size;
-    expr_update_t theUpdateType;
+
+    expr_update_t           theUpdateType;
+
+    mutable PlanIter_t                m_plan;
+    mutable std::vector<LetVarIter_t> m_param_iters;
+    mutable int32_t                   m_state_size;
 };
 
-class external_function : public function {
+
+class external_function : public function 
+{
   public:
     external_function(const signature& sig)
       : function(sig) { }

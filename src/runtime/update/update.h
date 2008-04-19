@@ -103,13 +103,13 @@ class CopyClause
   typedef std::vector<CopyClause>::const_iterator const_iter_t;
   typedef std::vector<CopyClause>::iterator       iter_t;
 
-  std::vector<ref_iter_t> theCopyVars;
-  PlanIter_t              theInput;
+  std::vector<LetVarIter_t> theCopyVars;
+  PlanIter_t                theInput;
 
 public:
   CopyClause(
-    std::vector<ref_iter_t>& aCopyVars,
-    PlanIter_t               aInput)
+    std::vector<LetVarIter_t>& aCopyVars,
+    PlanIter_t                 aInput)
   :
     theCopyVars(aCopyVars),
     theInput(aInput)

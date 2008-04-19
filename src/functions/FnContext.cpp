@@ -19,7 +19,10 @@ ctx_variable::ctx_variable ( const signature& sig )
 }
 
 
-PlanIter_t ctx_variable::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+PlanIter_t ctx_variable::codegen (
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann ) const
 {
   return new CtxVariableIterator(loc, argv);
 }

@@ -15,7 +15,7 @@ namespace zorba
 store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t item;
-  xqpStringStore_t theVarName;
+  xqpStringStore_t varName;
   xqpStringStore dot (".");
   
   CtxVariableIteratorState* state;
@@ -26,9 +26,9 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
   if (item == NULL)
     return NULL;
 
-  theVarName = item->getStringValue();
+  varName = item->getStringValue();
 
-	if(theVarName->equals(&dot))  //looking for context item?
+	if(varName->equals(&dot))  //looking for context item?
 	{
     item = planState.theRuntimeCB->theDynamicContext->context_item();
 		if(item == NULL)
@@ -36,17 +36,21 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 			ZORBA_ERROR_LOC_PARAM( ZorbaError::XPDY0002, loc, "context item", "");
 		}
 		STACK_PUSH( item, state);
-	} else {
-    state->iter = planState.theRuntimeCB->theDynamicContext->get_variable(xqpString(theVarName.getp()));
-    if (state->iter == NULL)
-			ZORBA_ERROR_LOC_PARAM( ZorbaError::XPDY0002, loc, theVarName, "");
+	} 
+  else 
+  {
+    state->theIter = planState.theRuntimeCB->theDynamicContext->
+                     get_variable(xqpString(varName.getp()));
 
-    state->iter->open();
+    if (state->theIter == NULL)
+			ZORBA_ERROR_LOC_PARAM( ZorbaError::XPDY0002, loc, varName, "");
 
-    while ( (item = state->iter->next()) != NULL )
+    state->theIter->open();
+
+    while ( (item = state->theIter->next()) != NULL )
 			STACK_PUSH (item, state);
 
-    state->iter->close();
+    state->theIter->close();
 	}
 
   STACK_END (state);  

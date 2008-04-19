@@ -228,10 +228,10 @@ typedef FloatImpl<float>  Float;
 /* runtime */
 class RuntimeCB;
 class ForVarIterator;
-typedef rchandle<ForVarIterator> var_iter_t;
+typedef rchandle<ForVarIterator> ForVarIter_t;
 
 class LetVarIterator;
-typedef rchandle<LetVarIterator> ref_iter_t;
+typedef rchandle<LetVarIterator> LetVarIter_t;
 
 /* api */
 class serializer;

@@ -43,7 +43,7 @@ static bool empty_item (RuntimeCB* aRuntimeCB, store::Item_t s)
 
 FLWORIterator::ForLetClause::ForLetClause(
     const var_expr* var,
-    std::vector<var_iter_t> aForVars,
+    std::vector<ForVarIter_t> aForVars,
     PlanIter_t& aInput)
   :
 #ifndef NDEBUG
@@ -57,8 +57,8 @@ FLWORIterator::ForLetClause::ForLetClause(
 
 FLWORIterator::ForLetClause::ForLetClause (
     const var_expr* var,
-    std::vector<var_iter_t> aForVars,
-    std::vector<var_iter_t> aPosVars,
+    std::vector<ForVarIter_t> aForVars,
+    std::vector<ForVarIter_t> aPosVars,
     PlanIter_t& aInput )
   :
 #ifndef NDEBUG
@@ -74,7 +74,7 @@ FLWORIterator::ForLetClause::ForLetClause (
 
 FLWORIterator::ForLetClause::ForLetClause (
     const var_expr* var,
-    std::vector<ref_iter_t> aLetVars,
+    std::vector<LetVarIter_t> aLetVars,
     PlanIter_t& aInput,
     bool aNeedsMaterialization )
   :
@@ -118,12 +118,12 @@ xqpStringStore FLWORIterator::ForLetClause::getVarName() const
 }
 
 FLWORIterator::GroupClause::GroupClause(
-  PlanIter_t aInput, std::vector<ref_iter_t> aInnerVars)
+  PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars)
 : theInput(aInput), theInnerVars(aInnerVars)
 {}
 
 FLWORIterator::GroupClause::GroupClause(
-  PlanIter_t aInput, std::vector<ref_iter_t> aInnerVars, xqpString& aCollation)
+  PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars, xqpString& aCollation)
 : theInput(aInput), theInnerVars(aInnerVars), theCollation(aCollation)
 {}
 
@@ -534,12 +534,12 @@ bool FLWORIterator::bindVariable (
     //We increase the position counter
     ++ ( flworState->varBindingState[varNb] );
 
-    std::vector<var_iter_t>::const_iterator forIter;
+    std::vector<ForVarIter_t>::const_iterator forIter;
     for (forIter = lForLetClause.theForVars.begin();
          forIter != lForLetClause.theForVars.end();
          forIter++)
     {
-      var_iter_t variable = (*forIter);
+      ForVarIter_t variable = (*forIter);
       variable->bind(lItem, planState);
     }
 
@@ -548,12 +548,12 @@ bool FLWORIterator::bindVariable (
       store::Item_t posItem = GENV_ITEMFACTORY->
                        createInteger(Integer::parseInt(flworState->varBindingState[varNb]));
 
-      std::vector<var_iter_t>::const_iterator posIter;
+      std::vector<ForVarIter_t>::const_iterator posIter;
       for (posIter = lForLetClause.thePosVars.begin();
            posIter != lForLetClause.thePosVars.end();
            posIter++)
       {
-        var_iter_t variable = (*posIter);
+        ForVarIter_t variable = (*posIter);
         variable->bind(posItem, planState);
       }
     }
@@ -573,7 +573,7 @@ bool FLWORIterator::bindVariable (
     if ( lForLetClause.theNeedsMaterialization )
     {
       store::TempSeq_t tmpSeq = GENV_STORE.createTempSeq(iterWrapper, false, true);
-      std::vector<ref_iter_t>::const_iterator letIter;
+      std::vector<LetVarIter_t>::const_iterator letIter;
       for (letIter = lForLetClause.theLetVars.begin();
            letIter != lForLetClause.theLetVars.end();
            letIter++ )
@@ -585,7 +585,7 @@ bool FLWORIterator::bindVariable (
     }
     else
     {
-      std::vector<ref_iter_t>::const_iterator letIter;
+      std::vector<LetVarIter_t>::const_iterator letIter;
       for (letIter = lForLetClause.theLetVars.begin();
            letIter != lForLetClause.theLetVars.end();
            letIter++)

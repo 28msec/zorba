@@ -131,8 +131,8 @@ TryCatchIterator::bindErrorVars(error::ZorbaError& e, const CatchClause* clause,
   store::Item_t lErrorCodeItem = 
     GENV_ITEMFACTORY->createString(xqpString(error::ZorbaError::toString(e.theErrorCode)).theStrStore);
 
-  std::vector<ref_iter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
-  std::vector<ref_iter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();
+  std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
+  std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();
   for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ ) {
     store::Iterator_t lErrorCodeIter = new store::ItemIterator(lErrorCodeItem);
     lErrorCodeIter->open();
@@ -140,8 +140,8 @@ TryCatchIterator::bindErrorVars(error::ZorbaError& e, const CatchClause* clause,
     (*lErrorCodeVarIter)->bind(lErrorCodeIter, planState);
   }
   
-  std::vector<ref_iter_t>::const_iterator lErrorDescVarIter = clause->errordesc_var.begin();
-  std::vector<ref_iter_t>::const_iterator lErrorDescVarIterEnd = clause->errordesc_var.end();
+  std::vector<LetVarIter_t>::const_iterator lErrorDescVarIter = clause->errordesc_var.begin();
+  std::vector<LetVarIter_t>::const_iterator lErrorDescVarIterEnd = clause->errordesc_var.end();
   for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ ) {
     // bind the description or the empty sequence
     store::Iterator_t lErrorDescIter;
@@ -156,8 +156,8 @@ TryCatchIterator::bindErrorVars(error::ZorbaError& e, const CatchClause* clause,
   }
 
   // TODO bind the error objects
-  std::vector<ref_iter_t>::const_iterator lErrorObjVarIter = clause->errorobj_var.begin();
-  std::vector<ref_iter_t>::const_iterator lErrorObjVarIterEnd = clause->errorobj_var.end();
+  std::vector<LetVarIter_t>::const_iterator lErrorObjVarIter = clause->errorobj_var.begin();
+  std::vector<LetVarIter_t>::const_iterator lErrorObjVarIterEnd = clause->errorobj_var.end();
   for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ ) {
     store::Iterator_t lErrorObjIter = new store::ItemIterator();
     lErrorObjIter->open();

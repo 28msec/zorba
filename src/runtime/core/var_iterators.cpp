@@ -1,3 +1,4 @@
+
 #include "store/api/iterator.h"
 #include "store/api/item.h"
 #include "util/Assert.h"
@@ -13,24 +14,12 @@ namespace zorba
 //  ForVarIterator                                                             //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
-LetVarState::LetVarState(){}
-
-LetVarState::~LetVarState()
-{
-  if (theSourceIter != NULL)
-    theSourceIter->close();
-}
-
-void LetVarState::reset(PlanState& planState) 
-{ 
-  PlanIteratorState::reset(planState); 
-  if (theSourceIter != NULL) {
-    theSourceIter->reset();
-  }
-}
 
 
-ForVarIterator::ForVarIterator(xqpString name, const QueryLoc& loc, const void* origin) 
+ForVarIterator::ForVarIterator(
+    xqpString name,
+    const QueryLoc& loc,
+    const void* origin) 
   : 
   NoaryBaseIterator<ForVarIterator, ForVarState >(loc), 
   theVarName(name),
@@ -62,6 +51,25 @@ void ForVarIterator::bind(store::Item_t value, PlanState& planState)
 //  LetVarIterator                                                             //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+LetVarState::LetVarState()
+{
+}
+
+
+LetVarState::~LetVarState()
+{
+  if (theSourceIter != NULL)
+    theSourceIter->close();
+}
+
+
+void LetVarState::reset(PlanState& planState) 
+{ 
+  PlanIteratorState::reset(planState); 
+  if (theSourceIter != NULL) 
+    theSourceIter->reset();
+}
 
 
 LetVarIterator::LetVarIterator(xqpString vn, const QueryLoc& loc, const void* origin)

@@ -8,84 +8,89 @@
 
 namespace zorba {
 
-class UDFunctionCallIteratorState : public PlanIteratorState {
-  public:
-    PlanState                     * theFnBodyStateBlock;
-    PlanIterator                  * thePlan;
-    uint32_t                        thePlanStateSize;
-    std::vector<store::Iterator_t>  theChildIterators;
-    bool                            thePlanOpen;
+class UDFunctionCallIteratorState : public PlanIteratorState 
+{
+ public:
+  PlanState                     * theFnBodyStateBlock;
+  PlanIterator                  * thePlan;
+  uint32_t                        thePlanStateSize;
+  std::vector<store::Iterator_t>  theChildIterators;
+  bool                            thePlanOpen;
 
-    UDFunctionCallIteratorState();
-    ~UDFunctionCallIteratorState();
+  UDFunctionCallIteratorState();
+  ~UDFunctionCallIteratorState();
 
-    void openPlan();
-    void closePlan();
-    void resetPlan();
-    void resetChildIters();
+  void openPlan();
+  void closePlan();
+  void resetPlan();
+  void resetChildIters();
 };
 
 
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
-                                                       UDFunctionCallIteratorState> {
-  public:
-    UDFunctionCallIterator(
+                                                       UDFunctionCallIteratorState> 
+{
+ protected:
+  const user_function * theUDF;
+
+public:
+  UDFunctionCallIterator(
         const QueryLoc& loc, 
         std::vector<PlanIter_t>& args, 
         const user_function *aUDF)
-      :
-      NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(loc, args), 
-      theUDF(aUDF) { }
+    :
+    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(loc, args), 
+    theUDF(aUDF) { }
 
-    virtual ~UDFunctionCallIterator() { }
+  virtual ~UDFunctionCallIterator() { }
+    
+  bool isUpdating() const;
+  void openImpl(PlanState& planState, uint32_t& offset);
+  store::Item_t nextImpl(PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
+  void closeImpl(PlanState& planState);
 
-    bool isUpdating() const;
-    void openImpl(PlanState& planState, uint32_t& offset);
-    store::Item_t nextImpl(PlanState& planState) const;
-    void resetImpl(PlanState& planState) const;
-    void closeImpl(PlanState& planState);
-
-    virtual void accept(PlanIterVisitor& v) const;
- 
-
-  protected:
-    const user_function * theUDF;
+  virtual void accept(PlanIterVisitor& v) const;
 };
 
 
-class StatelessExtFunctionCallIteratorState : public PlanIteratorState {
-  public:
-    StatelessExtFunctionCallIteratorState();
-    ~StatelessExtFunctionCallIteratorState();
+class StatelessExtFunctionCallIteratorState : public PlanIteratorState 
+{
+ public:
+  std::vector<ItemSequence*> m_extArgs;
+  ItemSequence_t             m_result;
 
-    std::vector<ItemSequence*> m_extArgs;
-    ItemSequence_t m_result;
+  StatelessExtFunctionCallIteratorState();
+  ~StatelessExtFunctionCallIteratorState();
 
-    void reset(PlanState&);
+  void reset(PlanState&);
 };
 
 
-class StatelessExtFunctionCallIterator
-  : public NaryBaseIterator
-      <StatelessExtFunctionCallIterator, StatelessExtFunctionCallIteratorState> {
-  public:
-    StatelessExtFunctionCallIterator(const QueryLoc& loc,
-                                     std::vector<PlanIter_t>& args,
-                                     const StatelessExternalFunction *function,
-                                     bool aIsUpdating);
-    virtual ~StatelessExtFunctionCallIterator() { }
+class StatelessExtFunctionCallIterator : 
+                   public NaryBaseIterator<StatelessExtFunctionCallIterator,
+                                           StatelessExtFunctionCallIteratorState>
+{
+ public:
+  StatelessExtFunctionCallIterator(
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& args,
+        const StatelessExternalFunction *function,
+        bool aIsUpdating);
 
-    void openImpl(PlanState& planState, uint32_t& offset);
+  virtual ~StatelessExtFunctionCallIterator() { }
 
-    virtual bool isUpdating() const { return theIsUpdating; }
-    store::Item_t nextImpl(PlanState& planState) const;
-    void closeImpl(PlanState& planState);
+  void openImpl(PlanState& planState, uint32_t& offset);
 
-    virtual void accept(PlanIterVisitor& v) const;
+  virtual bool isUpdating() const { return theIsUpdating; }
+  store::Item_t nextImpl(PlanState& planState) const;
+  void closeImpl(PlanState& planState);
 
-  protected:
-    const StatelessExternalFunction *m_function;
-    bool theIsUpdating;
+  virtual void accept(PlanIterVisitor& v) const;
+
+ protected:
+  const StatelessExternalFunction *m_function;
+  bool theIsUpdating;
 };
 
 }

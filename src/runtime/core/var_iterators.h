@@ -14,7 +14,9 @@ class Item;
 
 /*******************************************************************************
 
-  FOR variables. A ForVarIterator represents a reference to a for variable.
+  FOR variables. A ForVarIterator represents a reference to a for variable V.
+
+  theValue stores the current value of V.
 
 ********************************************************************************/
 class ForVarState : public PlanIteratorState 
@@ -22,7 +24,7 @@ class ForVarState : public PlanIteratorState
 public:
   store::Item_t theValue;
 
-  void init(PlanState& planState) { PlanIteratorState::init(planState); }
+  void init(PlanState& planState)  { PlanIteratorState::init(planState); }
   void reset(PlanState& planState) { PlanIteratorState::reset(planState); }
 };
 
@@ -50,26 +52,31 @@ public:
 
 /*******************************************************************************
 
-  LET variables. A LetVarIterator represents a reference to a let variable.
+  LET variables. A LetVarIterator represents a reference to a let variable V.
   
-  theSourceIter is a PlanIteratorWraper. The wrapper may wrap the actual
-  expression that defines the var, or an iterator over a temp sequence, if
-  the result of the defining expression has been materialized.
+  theSourceIter stores the current "value" of V: it is a PlanIteratorWraper
+  that may wrap the actual expression that defines the var, or an iterator
+  over a temp sequence, if the result of the defining expression needs
+  materialization.
+
 ********************************************************************************/
 class LetVarState : public PlanIteratorState 
 {
 public:
   store::Iterator_t theSourceIter;
+
   LetVarState();
   ~LetVarState();
-  void init(PlanState& planState) { PlanIteratorState::init(planState); }
+
+  void init(PlanState& planState)  { PlanIteratorState::init(planState); }
   void reset(PlanState& planState);
 };
+
 
 class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
 {
 private:
-  xqpString    theVarName;
+  xqpString     theVarName;
   const void  * theOrigin;  ///< like origin in var_iterator
   
 public:
@@ -81,7 +88,6 @@ public:
 
   void accept(PlanIterVisitor&) const;
 
-public:
   xqpString getVarName() const { return theVarName; }
 
   void bind(store::Iterator_t it, PlanState& planState);

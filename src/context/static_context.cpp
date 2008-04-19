@@ -185,8 +185,8 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
 
   xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const
   {
-    return qname_internal_key2
-      (prefix.empty () ? default_ns : lookup_ns (prefix), local);
+    return qname_internal_key2(prefix.empty () ? default_ns : lookup_ns (prefix),
+                               local);
   }
 
   xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const
@@ -200,16 +200,26 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     return "fn:" + to_string (arity) + "/";
   }
 
-  function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int arity) const {
-    function *f = lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
-    if (f != NULL) return f;
-    else {
-      f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
-      if (f == NULL)
-        ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, local, to_string (arity));
-      return f;
-    }
+
+function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int arity) const 
+{
+  function *f = lookup_func (fn_internal_key (arity) +
+                             qname_internal_key (default_function_namespace (),
+                                                 prefix,
+                                                 local));
+  if (f != NULL)
+    return f;
+  else 
+  {
+    f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) +
+                     qname_internal_key (default_function_namespace (),
+                                         prefix,
+                                         local));
+    if (f == NULL)
+      ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, local, to_string (arity));
+    return f;
   }
+}
 
   bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const {
     return context_value ("ns:" + prefix, ns) && ! ns.empty();    

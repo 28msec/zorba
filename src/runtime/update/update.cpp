@@ -490,7 +490,7 @@ store::Item_t
 TransformIterator::nextImpl(PlanState& aPlanState) const
 {
   CopyClause::const_iter_t lIter, lEnd;
-  std::vector<ref_iter_t>::const_iterator lIter2, lEnd2;
+  std::vector<LetVarIter_t>::const_iterator lIter2, lEnd2;
   store::Item_t lItem;
   store::CopyMode lCopyMode;
 

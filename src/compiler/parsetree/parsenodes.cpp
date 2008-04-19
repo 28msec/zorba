@@ -2294,15 +2294,15 @@ AxisStep::AxisStep(
 }
 
 
-
-
 void AxisStep::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  if (forward_step_h!=NULL) forward_step_h->accept(v);
-  if (reverse_step_h!=NULL) reverse_step_h->accept(v);
+  if (forward_step_h != NULL) forward_step_h->accept(v);
+  if (reverse_step_h != NULL) reverse_step_h->accept(v);
+
   v.post_step_visit(*this, visitor_state);
-  if (predicate_list_h!=NULL) predicate_list_h->accept(v);
+
+  if (predicate_list_h != NULL) predicate_list_h->accept(v);
   END_VISITOR ();
 }
 
@@ -2562,8 +2562,6 @@ FilterExpr::FilterExpr(
 }
 
 
-//-FilterExpr::
-
 void FilterExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
@@ -2582,8 +2580,6 @@ PredicateList::PredicateList(
 {
 }
 
-
-//-PredicateList::
 
 void PredicateList::accept(parsenode_visitor& v) const
 {
@@ -2655,8 +2651,6 @@ string NumericLiteral::toString () const {
   }
 }
 
-
-//-NumericLiteral::
 
 void NumericLiteral::accept(parsenode_visitor& v) const
 {

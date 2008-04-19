@@ -103,9 +103,9 @@ store::Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
   {
     // Bind the args.
     state->openPlan();
-    std::vector<ref_iter_t>& iters = theUDF->get_param_iters();
+    std::vector<LetVarIter_t>& iters = theUDF->get_param_iters();
     for (uint32_t i = 0; i < iters.size (); ++i) {
-      ref_iter_t& ref = iters[i];
+      LetVarIter_t& ref = iters[i];
       if ( ref != NULL) {
         state->theChildIterators.push_back(new PlanIteratorWrapper(theChildren[i], planState));
         state->theChildIterators.back()->open();

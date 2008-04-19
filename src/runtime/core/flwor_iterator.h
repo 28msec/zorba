@@ -47,14 +47,14 @@ public:
     enum ForLetType {FOR, LET};
 
 #ifndef NDEBUG
-    xqpStringStore           theVarName;
+    xqpStringStore             theVarName;
 #endif
-    ForLetType               theType;
-    std::vector<var_iter_t>  theForVars;
-    std::vector<var_iter_t>  thePosVars;
-    std::vector<ref_iter_t>  theLetVars;
-    PlanIter_t               theInput;
-    bool                     theNeedsMaterialization;
+    ForLetType                 theType;
+    std::vector<ForVarIter_t>  theForVars;
+    std::vector<ForVarIter_t>  thePosVars;
+    std::vector<LetVarIter_t>  theLetVars;
+    PlanIter_t                 theInput;
+    bool                       theNeedsMaterialization;
 
   public:
     /**
@@ -62,7 +62,7 @@ public:
      */
     ForLetClause(
         const var_expr* var,
-        std::vector<var_iter_t> forVars,
+        std::vector<ForVarIter_t> forVars,
         PlanIter_t& input);
           
     /**
@@ -70,8 +70,8 @@ public:
      */
     ForLetClause(
         const var_expr* var,
-        std::vector<var_iter_t> forVars,
-        std::vector<var_iter_t> posVars,
+        std::vector<ForVarIter_t> forVars,
+        std::vector<ForVarIter_t> posVars,
         PlanIter_t& input);
 
     /**
@@ -82,7 +82,7 @@ public:
      */
     ForLetClause(
         const var_expr* var,
-        std::vector<ref_iter_t> letVars,
+        std::vector<LetVarIter_t> letVars,
         PlanIter_t& input,
         bool needsMaterialization);
           
@@ -96,13 +96,13 @@ public:
     friend class FLWORIterator;
     friend class PrinterVisitor;
   private:
-    PlanIter_t              theInput;
-    std::vector<ref_iter_t> theInnerVars;
-    xqpString               theCollation;
+    PlanIter_t                theInput;
+    std::vector<LetVarIter_t> theInnerVars;
+    xqpString                 theCollation;
 
   public:
-    GroupClause(PlanIter_t aInput, std::vector<ref_iter_t> aInnerVars);
-    GroupClause(PlanIter_t aInput, std::vector<ref_iter_t> aInnerVars, xqpString& aCollation);
+    GroupClause(PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars);
+    GroupClause(PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars, xqpString& aCollation);
 
     void accept ( PlanIterVisitor& ) const;
   };
@@ -155,8 +155,10 @@ public:
   {
   public:
     OrderKeyCmp() : mOrderSpecs ( 0 ) {}
+
     OrderKeyCmp ( std::vector<OrderSpec>* aOrderSpecs ) 
-      : mOrderSpecs ( aOrderSpecs ) {}
+      :
+      mOrderSpecs ( aOrderSpecs ) {}
 
     /**
      * The key comparison function, a Strict Weak Ordering whose argument type is key_type;
