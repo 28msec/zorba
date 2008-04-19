@@ -3991,14 +3991,14 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
   // compute the size of the pred input seq
   rchandle<fo_expr> count_expr = new fo_expr(loc, LOOKUP_FN("fn", "count", 1));
-  count_expr->add(lc_input_seq->get_var());
+  count_expr->add(&*lc_input_seq->get_var());
 
   rchandle<forlet_clause> lc_last = wrap_in_letclause(&*count_expr,
                                                       loc,
                                                       LAST_IDX_VARNAME);
 
   // Iterate over the pred input seq
-  rchandle<forlet_clause> dot = wrap_in_forclause(lc_input_seq->get_var(),
+  rchandle<forlet_clause> dot = wrap_in_forclause(&*lc_input_seq->get_var(),
                                                   loc,
                                                   DOT_VARNAME,
                                                   DOT_POS_VARNAME);
