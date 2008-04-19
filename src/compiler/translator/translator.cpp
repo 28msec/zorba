@@ -3924,10 +3924,10 @@ void post_step_visit(const AxisStep& v, void* /*visit_state*/)
 
   // compute the input seq for the pred (= outer_dot/ase)
   rchandle<relpath_expr> path_step = new relpath_expr(loc);
-  path_step->add_back(fc_outer_dot->get_var());
-  path_step->add_back(ase);
+  path_step->add_back(&*fc_outer_dot->get_var());
+  path_step->add_back(&*ase);
     
-  rchandle<forlet_clause> lc_pred_seq = wrap_in_letclause(path_step);
+  rchandle<forlet_clause> lc_pred_seq = wrap_in_letclause(&*path_step);
 
   flwor->add(fc_outer_dot);
   flwor->add(lc_pred_seq);
