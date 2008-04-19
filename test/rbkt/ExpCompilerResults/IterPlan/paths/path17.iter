@@ -1,13 +1,3 @@
-backward 0 non-ch 1
-backward 0 non-ch 0
-backward 0 non-ch 1
-backward 0 non-ch 0
-backward 1 non-ch 1
-backward 0 non-ch 1
-backward 0 non-ch 0
-backward 0 non-ch 1
-backward 0 non-ch 0
-backward 1 non-ch 1
 Iterator tree for main query:
 <ElementIterator loc="3.0-20" id="1">
  <SingletonIterator value="xs:QName(,,missing-variable)" loc="3.0-20" id="2"/>
