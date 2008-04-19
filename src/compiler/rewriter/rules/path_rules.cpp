@@ -15,13 +15,11 @@ RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
       
       if (axisStep != NULL &&
           axisStep->getAxis() == axis_kind_descendant_or_self &&
-          axisStep->numPreds() == 0 &&
           axisStep->getTest()->getTestKind() == match_anykind_test)
       {
         axis_step_expr* nextStep = dynamic_cast<axis_step_expr*>((*re)[i+1].getp());
         if (nextStep != NULL &&
-            nextStep->getAxis() == axis_kind_child &&
-            axisStep->numPreds() == 0)
+            nextStep->getAxis() == axis_kind_child)
         {
           nextStep->setAxis(axis_kind_descendant);
           (*re).erase(i);

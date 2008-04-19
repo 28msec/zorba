@@ -1169,16 +1169,6 @@ public:
   rchandle<match_expr> getTest() const { return theNodeTest; }
   void setTest(rchandle<match_expr> v) { theNodeTest = v; }
 
-  void addPred(expr_t e)                { thePreds.push_back(e); }
-  size_t numPreds() const             { return thePreds.size(); }
-  expr_t & operator[](int i)            { return thePreds[i]; }
-  expr_t const& operator[](int i) const { return thePreds[i]; }
-
-  std::vector<expr_t>::const_iterator begin() const { return thePreds.begin(); }
-  std::vector<expr_t>::const_iterator end() const   { return thePreds.end(); }
-  std::vector<expr_t>::iterator begin() { return thePreds.begin(); }
-  std::vector<expr_t>::iterator end()   { return thePreds.end(); }
-
   expr_iterator_data *make_iter ();
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);

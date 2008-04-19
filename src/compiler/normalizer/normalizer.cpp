@@ -202,11 +202,6 @@ bool normalizer::begin_visit(relpath_expr& node)
 
 bool normalizer::begin_visit(axis_step_expr& node)
 {
-  // Predicates might be updating
-  for (size_t i = 0; i <  node.numPreds(); ++i)
-  {
-    checkNonUpdating(&*node[i]);
-  }
   return true;
 }
 

@@ -394,15 +394,6 @@ ostream& axis_step_expr::put(ostream& os) const
     printdepth0 = saveIndent;
   }
   
-  for (vector<rchandle<expr> >::const_iterator it = thePreds.begin();
-       it != thePreds.end(); ++it)
-  {
-    rchandle<expr> e = *it;
-    //d Assert<null_pointer>(e_h!=NULL);
-    ZORBA_ASSERT(e != NULL);
-    e->put(os);
-  }
-
   os << DENT << "]\n"; UNDENT;
   return os;
 }
