@@ -18,9 +18,9 @@ class RewriterContext {
     CompilerCB* getCompilerCB() { return compilerCB; }
 
   private:
-    CompilerCB     *compilerCB;
-    static_context *m_sctx;
-    expr_t m_root;
+    CompilerCB      * compilerCB;
+    static_context  * m_sctx;
+    expr_t            m_root;
 };
 
 }

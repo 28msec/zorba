@@ -185,7 +185,8 @@ static bool refactor_index_pred (RewriterContext& rCtx, expr_t cond, forlet_clau
   return false;
 }
 
-RULE_REWRITE_PRE(RefactorPredFLWOR) {
+RULE_REWRITE_PRE(RefactorPredFLWOR) 
+{
   flwor_expr *flwor = dynamic_cast<flwor_expr *>(node);
   if (flwor == NULL) return NULL;
 
@@ -199,17 +200,24 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   if (ite_result != NULL && WHERE == NULL &&
       TypeOps::is_empty (*ite_result->get_else_expr ()->return_type (sctx)))
   {
-    expr_t cond = ite_result->get_cond_expr (),
-      then = ite_result->get_then_expr ();
+    expr_t cond = ite_result->get_cond_expr ();
+    expr_t then = ite_result->get_then_expr ();
     flwor->set_retval (then);
     flwor->set_where (cond);
     return flwor;
   }
   
   // 'for $x at $p where $p = ... return ...'
-  if (WHERE != NULL && refactor_index_pred (rCtx, WHERE, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
-    rchandle<fo_expr> result = new fo_expr (LOC (WHERE), LOOKUP_FN ("fn", "subsequence", 3),
-                                            pvar->get_forlet_clause ()->get_expr (), &*pos, new const_expr (LOC (pos), xqp_double::parseInt (1)));
+  if (WHERE != NULL &&
+      refactor_index_pred (rCtx, WHERE, pvar, pos) &&
+      count_variable_uses (flwor, &*pvar, 2) <= 1) 
+  {
+    rchandle<fo_expr> result = new fo_expr (LOC (WHERE),
+                                            LOOKUP_FN ("fn", "subsequence", 3),
+                                            pvar->get_forlet_clause ()->get_expr (),
+                                            &*pos,
+                                            new const_expr (LOC (pos),
+                                                            xqp_double::parseInt (1)));
     fix_annotations (&*result);
     forlet_clause *clause = pvar->get_forlet_clause ();
     clause->set_expr (&*result);
