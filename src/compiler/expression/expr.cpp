@@ -807,6 +807,9 @@ xqtref_t axis_step_expr::return_type_impl(static_context *sctx) {
   return theNodeTest == NULL ? GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE : theNodeTest->return_type (sctx);
 }
 
+bool axis_step_expr::is_reverse_axis (axis_kind_t k) {
+  return k == axis_kind_ancestor || k == axis_kind_ancestor_or_self || k == axis_kind_parent;
+}
 
 /*******************************************************************************
 

@@ -290,14 +290,19 @@ RULE_REWRITE_POST(MarkConsumerNodeProps) {
 RULE_REWRITE_PRE(MarkProducerNodeProps) { return NULL; }
 RULE_REWRITE_POST(MarkProducerNodeProps)
 {
+  static_context *sctx = rCtx.getStaticContext ();
+
   switch(node->get_expr_kind()) {
+#if 0
   case flwor_expr_kind: {
     flwor_expr *flwor = static_cast<flwor_expr *>(node);
     if (propagate_up_nodeid_props_to_flwor_variables(flwor))
-      return node;  // TODO: minimize rewriting
+      return node;
+    // TODO: only if FLWOR has no FOR clauses
     propagate_up_nodeid_props(flwor, &*flwor->get_retval());
     break;
   }
+#endif
 
 #if 0  // under construction
   case trycatch_expr_kind: {
@@ -311,10 +316,46 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
   case fo_expr_kind: {
     fo_expr *fo = static_cast<fo_expr *>(node);
     const function *f = fo->get_func ();
+
+    // TODO: f->compute_annotations ()
+
     const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
     if (nsdf != NULL) {
-      const bool *action = nsdf->action ();
+      // not necessary to consider IGNORES_* annotations here, but it's easier to write, and it shouldn't hurt
+      const function *fmin = nsdf->min_action (sctx, node, (*fo) [0], nodes_or_atomics ((*fo) [0]->return_type (sctx)));
+      if (fmin != NULL)
+        fo->set_func (fmin);
+      else
+        return (*fo)[0];
     }
+    break;
+  }
+
+  case relpath_expr_kind: {
+    relpath_expr *relp = static_cast<relpath_expr *> (node);
+    if (TypeOps::type_max_cnt (*((*relp) [0]->return_type (sctx))) > 1)
+      return NULL;
+    int sz = relp->size ();
+    bool backward_steps = false, non_child_steps = false;
+    for (int i = 1; i < sz; i++) {
+      axis_step_expr *ase = ((*relp) [i]).dyn_cast<axis_step_expr> ().getp();
+      if (ase == NULL)
+        return NULL;
+      backward_steps = backward_steps || ase->is_reverse_axis ();
+      non_child_steps = non_child_steps || (ase->getAxis () != axis_kind_child);
+    }
+    cout << "backward " << backward_steps << " non-ch " << non_child_steps << endl;
+    bool sorted = false, distinct = false;
+    if (sz == 2) {
+      distinct = true;
+      sorted = ! backward_steps;
+    } else {
+      if (! non_child_steps)
+        sorted = distinct = true;
+    }
+    node->put_annotation (AnnotationKey::PRODUCES_SORTED_NODES, TSVAnnotationValue::from_bool (sorted));
+    node->put_annotation (AnnotationKey::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::from_bool (distinct));
+    break;
   }
     
   default:
@@ -344,6 +385,9 @@ RULE_REWRITE_PRE(EliminateProducerNodeOps)
 }
 
 RULE_REWRITE_POST(EliminateProducerNodeOps) { return NULL; }
+
+RULE_REWRITE_PRE(EliminateConsumerNodeOps) { return NULL; }
+RULE_REWRITE_POST(EliminateConsumerNodeOps) { return NULL; }
 
 }
 /* vim:set ts=2 sw=2: */

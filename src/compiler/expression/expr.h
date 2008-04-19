@@ -1116,7 +1116,6 @@ public:
 
 	size_t size() const        { return theSteps.size(); }
 	void add_back(expr_t step)   { theSteps.push_back(step); }
-	void add_front(expr_t step)  { theSteps.insert(theSteps.begin (), step); }
   void erase(ulong i)          { theSteps.erase(theSteps.begin() + i); }
 
 	expr_t& operator[](int n)    { return theSteps[n]; }
@@ -1165,6 +1164,7 @@ public:
 public:
   axis_kind_t getAxis() const          { return theAxis; }
   void setAxis(axis_kind_t v)          { theAxis = v; }
+  bool is_reverse_axis () const        { return is_reverse_axis (getAxis ()); }
 
   rchandle<match_expr> getTest() const { return theNodeTest; }
   void setTest(rchandle<match_expr> v) { theNodeTest = v; }
@@ -1175,6 +1175,9 @@ public:
   std::ostream& put(std::ostream&) const;
 
   xqtref_t return_type_impl(static_context *sctx);
+
+public:
+  static bool is_reverse_axis (axis_kind_t kind);
 };
 
 

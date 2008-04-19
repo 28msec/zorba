@@ -1,3 +1,5 @@
+backward 0 non-ch 0
+backward 0 non-ch 1
 Iterator tree for main query:
 <CommentIterator loc="9.0-92" id="1">
  <EnclosedIterator attr_cont="true" loc="9.0-92" id="2">

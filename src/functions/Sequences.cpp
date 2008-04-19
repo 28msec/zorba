@@ -485,6 +485,7 @@ PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<Plan
 
 void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
   const bool *a = action ();
+
   switch (k) {
   case AnnotationKey::IGNORES_SORTED_NODES:
   case AnnotationKey::IGNORES_DUP_NODES: {
@@ -492,21 +493,33 @@ void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::v
     TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::from_bool (ignores));
     break;
   }
+
+  case AnnotationKey::PRODUCES_SORTED_NODES:
+  case AnnotationKey::PRODUCES_DISTINCT_NODES: {
+    bool produces = (kids [0]->get_annotation (k) == TSVAnnotationValue::TRUE_VAL || (k == AnnotationKey::PRODUCES_SORTED_NODES ? A_SORT : A_DISTINCT));
+    parent->put_annotation (k, TSVAnnotationValue::from_bool (produces));
+    break;
+  }
+
   default: break;
   }
 }
 
 const function *op_node_sort_distinct::op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder *parent, const AnnotationHolder *child, nodes_or_atomics_t noa) {
 #define LOOKUP_OP1( local ) (static_cast<const function *> (sctx->lookup_builtin_fn ((xqp_string (":") + local).c_str (), 1)))
-  bool distinct = A_DISTINCT && parent->get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
+  bool distinct = A_DISTINCT 
+    && (parent == NULL || parent->get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL)
+    && (child == NULL || child->get_annotation (AnnotationKey::PRODUCES_DISTINCT_NODES) != TSVAnnotationValue::TRUE_VAL);
 
   if (A_ATOMICS && noa == ATOMICS)
     return NULL;
 
   bool atomics = A_ATOMICS && noa == MIXED;
 
-  if (! A_SORT || parent->get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VAL)
-#if 1  // NodeDistinctIterator not that stable
+  if (! A_SORT
+      || (parent != NULL && parent->get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VAL)
+      || (child != NULL && child->get_annotation (AnnotationKey::PRODUCES_SORTED_NODES) == TSVAnnotationValue::TRUE_VAL))
+#if 1  // trust NodeDistinctIterator
     return distinct ? LOOKUP_OP1 ("distinct-nodes" + (atomics ? "-or-atomics" : ""))
 #else
     return distinct ? LOOKUP_OP1 ("sort-distinct-nodes-asc" + (atomics ? "-or-atomics" : "ending"))

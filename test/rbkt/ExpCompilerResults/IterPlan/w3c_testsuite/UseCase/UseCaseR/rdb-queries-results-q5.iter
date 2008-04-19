@@ -1,3 +1,35 @@
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
+backward 0 non-ch 0
 Iterator tree for main query:
 <FLWORIterator loc="6.0-9" id="1">
  <LetVariable name="input-context1" materialize="true">
@@ -101,105 +133,103 @@ Iterator tree for main query:
            <ContainsIterator loc="15.10-49" id="66">
             <PromoteIterator type="[AtomicXQType XS_STRING]" loc="15.19-36" id="67">
              <FnDataIterator loc="15.19-36" id="69">
-              <NodeDistinctIterator loc="15.19-36" id="70">
-               <NameTestIterator qname="xs:QName(,,description)" loc="15.25-36" id="72">
-                <ChildAxisIterator loc="15.25-36" id="73">
-                 <ForVarIterator varname="item" loc="11.9-44" id="74"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
-              </NodeDistinctIterator>
+              <NameTestIterator qname="xs:QName(,,description)" loc="15.25-36" id="70">
+               <ChildAxisIterator loc="15.25-36" id="71">
+                <ForVarIterator varname="item" loc="11.9-44" id="72"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
              </FnDataIterator>
             </PromoteIterator>
-            <SingletonIterator value="xs:string(Bicycle)" loc="15.39-48" id="75"/>
+            <SingletonIterator value="xs:string(Bicycle)" loc="15.39-48" id="73"/>
            </ContainsIterator>
           </LogicIterator>
-          <CompareIterator loc="16.10-41" id="76">
-           <FnDataIterator loc="16.10-22" id="77">
-            <NameTestIterator qname="xs:QName(,,itemno)" loc="16.16-22" id="78">
-             <ChildAxisIterator loc="16.16-22" id="79">
-              <ForVarIterator varname="item" loc="11.9-44" id="80"/>
+          <CompareIterator loc="16.10-41" id="74">
+           <FnDataIterator loc="16.10-22" id="75">
+            <NameTestIterator qname="xs:QName(,,itemno)" loc="16.16-22" id="76">
+             <ChildAxisIterator loc="16.16-22" id="77">
+              <ForVarIterator varname="item" loc="11.9-44" id="78"/>
              </ChildAxisIterator>
             </NameTestIterator>
            </FnDataIterator>
-           <FnDataIterator loc="16.26-41" id="81">
-            <NameTestIterator qname="xs:QName(,,itemno)" loc="16.35-41" id="82">
-             <ChildAxisIterator loc="16.35-41" id="83">
-              <ForVarIterator varname="highbid" loc="12.9-47" id="84"/>
+           <FnDataIterator loc="16.26-41" id="79">
+            <NameTestIterator qname="xs:QName(,,itemno)" loc="16.35-41" id="80">
+             <ChildAxisIterator loc="16.35-41" id="81">
+              <ForVarIterator varname="highbid" loc="12.9-47" id="82"/>
              </ChildAxisIterator>
             </NameTestIterator>
            </FnDataIterator>
           </CompareIterator>
          </LogicIterator>
-         <CompareIterator loc="17.10-42" id="85">
-          <FnDataIterator loc="17.10-25" id="86">
-           <NameTestIterator qname="xs:QName(,,userid)" loc="17.19-25" id="87">
-            <ChildAxisIterator loc="17.19-25" id="88">
-             <ForVarIterator varname="highbid" loc="12.9-47" id="89"/>
+         <CompareIterator loc="17.10-42" id="83">
+          <FnDataIterator loc="17.10-25" id="84">
+           <NameTestIterator qname="xs:QName(,,userid)" loc="17.19-25" id="85">
+            <ChildAxisIterator loc="17.19-25" id="86">
+             <ForVarIterator varname="highbid" loc="12.9-47" id="87"/>
             </ChildAxisIterator>
            </NameTestIterator>
           </FnDataIterator>
-          <FnDataIterator loc="17.29-42" id="90">
-           <NameTestIterator qname="xs:QName(,,userid)" loc="17.36-42" id="91">
-            <ChildAxisIterator loc="17.36-42" id="92">
-             <ForVarIterator varname="buyer" loc="10.9-45" id="93"/>
+          <FnDataIterator loc="17.29-42" id="88">
+           <NameTestIterator qname="xs:QName(,,userid)" loc="17.36-42" id="89">
+            <ChildAxisIterator loc="17.36-42" id="90">
+             <ForVarIterator varname="buyer" loc="10.9-45" id="91"/>
             </ChildAxisIterator>
            </NameTestIterator>
           </FnDataIterator>
          </CompareIterator>
         </LogicIterator>
-        <CompareIterator loc="18.10-26" id="94">
-         <FnDataIterator loc="18.10-22" id="95">
-          <NameTestIterator qname="xs:QName(,,bid)" loc="18.19-22" id="96">
-           <ChildAxisIterator loc="18.19-22" id="97">
-            <ForVarIterator varname="highbid" loc="12.9-47" id="98"/>
+        <CompareIterator loc="18.10-26" id="92">
+         <FnDataIterator loc="18.10-22" id="93">
+          <NameTestIterator qname="xs:QName(,,bid)" loc="18.19-22" id="94">
+           <ChildAxisIterator loc="18.19-22" id="95">
+            <ForVarIterator varname="highbid" loc="12.9-47" id="96"/>
            </ChildAxisIterator>
           </NameTestIterator>
          </FnDataIterator>
-         <FnMinMaxIterator type="max" loc="18.25-26" id="99">
-          <FnDataIterator loc="19.47-59" id="101">
-           <NameTestIterator qname="xs:QName(,,bid)" loc="20.56-59" id="102">
-            <ChildAxisIterator loc="20.56-59" id="103">
-             <FLWORIterator loc="19.47-55" id="104">
+         <FnMinMaxIterator type="max" loc="18.25-26" id="97">
+          <FnDataIterator loc="19.47-59" id="99">
+           <NameTestIterator qname="xs:QName(,,bid)" loc="20.56-59" id="100">
+            <ChildAxisIterator loc="20.56-59" id="101">
+             <FLWORIterator loc="19.47-55" id="102">
               <ForVariable name="$$temp1">
-               <NodeDistinctIterator loc="19.30-59" id="106">
-                <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0" loc="19.30-59" id="108">
-                 <DescendantSelfAxisIterator loc="19.30-59" id="109">
-                  <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="4.0-41" id="110">
-                   <LetVarIterator varname="input-context3" loc="4.0-41" id="111"/>
+               <NodeDistinctIterator loc="19.30-59" id="104">
+                <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0" loc="19.30-59" id="106">
+                 <DescendantSelfAxisIterator loc="19.30-59" id="107">
+                  <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*" loc="4.0-41" id="108">
+                   <LetVarIterator varname="input-context3" loc="4.0-41" id="109"/>
                   </TreatIterator>
                  </DescendantSelfAxisIterator>
                 </KindTestIterator>
                </NodeDistinctIterator>
               </ForVariable>
               <ReturnClause>
-               <FLWORIterator loc="20.32-55" id="113">
+               <FLWORIterator loc="20.32-55" id="111">
                 <ForVariable name="$$dot">
-                 <NameTestIterator qname="xs:QName(,,bid_tuple)" loc="19.47-56" id="115">
-                  <ChildAxisIterator loc="19.47-55" id="116">
-                   <ForVarIterator varname="$$temp1" loc="19.30-59" id="117"/>
+                 <NameTestIterator qname="xs:QName(,,bid_tuple)" loc="19.47-56" id="113">
+                  <ChildAxisIterator loc="19.47-55" id="114">
+                   <ForVarIterator varname="$$temp1" loc="19.30-59" id="115"/>
                   </ChildAxisIterator>
                  </NameTestIterator>
                 </ForVariable>
                 <WhereClause>
-                 <CompareIterator loc="20.33-54" id="119">
-                  <FnDataIterator loc="20.33-39" id="120">
-                   <NameTestIterator qname="xs:QName(,,itemno)" loc="20.33-39" id="121">
-                    <ChildAxisIterator loc="20.33-39" id="122">
-                     <ForVarIterator varname="$$dot" loc="20.33-39" id="123"/>
+                 <CompareIterator loc="20.33-54" id="117">
+                  <FnDataIterator loc="20.33-39" id="118">
+                   <NameTestIterator qname="xs:QName(,,itemno)" loc="20.33-39" id="119">
+                    <ChildAxisIterator loc="20.33-39" id="120">
+                     <ForVarIterator varname="$$dot" loc="20.33-39" id="121"/>
                     </ChildAxisIterator>
                    </NameTestIterator>
                   </FnDataIterator>
-                  <FnDataIterator loc="20.42-54" id="124">
-                   <NameTestIterator qname="xs:QName(,,itemno)" loc="20.48-54" id="125">
-                    <ChildAxisIterator loc="20.48-54" id="126">
-                     <ForVarIterator varname="item" loc="11.9-44" id="127"/>
+                  <FnDataIterator loc="20.42-54" id="122">
+                   <NameTestIterator qname="xs:QName(,,itemno)" loc="20.48-54" id="123">
+                    <ChildAxisIterator loc="20.48-54" id="124">
+                     <ForVarIterator varname="item" loc="11.9-44" id="125"/>
                     </ChildAxisIterator>
                    </NameTestIterator>
                   </FnDataIterator>
                  </CompareIterator>
                 </WhereClause>
                 <ReturnClause>
-                 <ForVarIterator varname="$$dot" loc="20.33-39" id="129"/>
+                 <ForVarIterator varname="$$dot" loc="20.33-39" id="127"/>
                 </ReturnClause>
                </FLWORIterator>
               </ReturnClause>
@@ -212,53 +242,45 @@ Iterator tree for main query:
        </LogicIterator>
       </WhereClause>
       <ReturnClause>
-       <ElementIterator loc="23.8-21" id="131">
-        <SingletonIterator value="xs:QName(,,jones_bike)" loc="23.8-21" id="132"/>
-        <ElementContentIterator loc="23.8-21" id="133">
-         <FnConcatIterator loc="24.0-12" id="134">
-          <EnclosedIterator attr_cont="false" loc="24.12-28" id="135">
-           <NodeSortIterator loc="24.14-26" id="136">
-            <NameTestIterator qname="xs:QName(,,itemno)" loc="24.20-26" id="138">
-             <ChildAxisIterator loc="24.20-26" id="139">
-              <ForVarIterator varname="item" loc="11.9-44" id="140"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
-           </NodeSortIterator>
+       <ElementIterator loc="23.8-21" id="129">
+        <SingletonIterator value="xs:QName(,,jones_bike)" loc="23.8-21" id="130"/>
+        <ElementContentIterator loc="23.8-21" id="131">
+         <FnConcatIterator loc="24.0-12" id="132">
+          <EnclosedIterator attr_cont="false" loc="24.12-28" id="133">
+           <NameTestIterator qname="xs:QName(,,itemno)" loc="24.20-26" id="134">
+            <ChildAxisIterator loc="24.20-26" id="135">
+             <ForVarIterator varname="item" loc="11.9-44" id="136"/>
+            </ChildAxisIterator>
+           </NameTestIterator>
           </EnclosedIterator>
-          <EnclosedIterator attr_cont="false" loc="25.12-33" id="141">
-           <NodeSortIterator loc="25.14-31" id="142">
-            <NameTestIterator qname="xs:QName(,,description)" loc="25.20-31" id="144">
-             <ChildAxisIterator loc="25.20-31" id="145">
-              <ForVarIterator varname="item" loc="11.9-44" id="146"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
-           </NodeSortIterator>
+          <EnclosedIterator attr_cont="false" loc="25.12-33" id="137">
+           <NameTestIterator qname="xs:QName(,,description)" loc="25.20-31" id="138">
+            <ChildAxisIterator loc="25.20-31" id="139">
+             <ForVarIterator varname="item" loc="11.9-44" id="140"/>
+            </ChildAxisIterator>
+           </NameTestIterator>
           </EnclosedIterator>
-          <ElementIterator loc="26.12-49" id="147">
-           <SingletonIterator value="xs:QName(,,high_bid)" loc="26.12-49" id="148"/>
-           <ElementContentIterator loc="26.12-49" id="149">
-            <EnclosedIterator attr_cont="false" loc="26.22-38" id="150">
-             <NodeSortIterator loc="26.24-36" id="151">
-              <NameTestIterator qname="xs:QName(,,bid)" loc="26.33-36" id="153">
-               <ChildAxisIterator loc="26.33-36" id="154">
-                <ForVarIterator varname="highbid" loc="12.9-47" id="155"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-             </NodeSortIterator>
+          <ElementIterator loc="26.12-49" id="141">
+           <SingletonIterator value="xs:QName(,,high_bid)" loc="26.12-49" id="142"/>
+           <ElementContentIterator loc="26.12-49" id="143">
+            <EnclosedIterator attr_cont="false" loc="26.22-38" id="144">
+             <NameTestIterator qname="xs:QName(,,bid)" loc="26.33-36" id="145">
+              <ChildAxisIterator loc="26.33-36" id="146">
+               <ForVarIterator varname="highbid" loc="12.9-47" id="147"/>
+              </ChildAxisIterator>
+             </NameTestIterator>
             </EnclosedIterator>
            </ElementContentIterator>
           </ElementIterator>
-          <ElementIterator loc="27.12-54" id="156">
-           <SingletonIterator value="xs:QName(,,high_bidder)" loc="27.12-54" id="157"/>
-           <ElementContentIterator loc="27.12-54" id="158">
-            <EnclosedIterator attr_cont="false" loc="27.25-40" id="159">
-             <NodeSortIterator loc="27.27-38" id="160">
-              <NameTestIterator qname="xs:QName(,,name)" loc="27.34-38" id="162">
-               <ChildAxisIterator loc="27.34-38" id="163">
-                <ForVarIterator varname="buyer" loc="10.9-45" id="164"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-             </NodeSortIterator>
+          <ElementIterator loc="27.12-54" id="148">
+           <SingletonIterator value="xs:QName(,,high_bidder)" loc="27.12-54" id="149"/>
+           <ElementContentIterator loc="27.12-54" id="150">
+            <EnclosedIterator attr_cont="false" loc="27.25-40" id="151">
+             <NameTestIterator qname="xs:QName(,,name)" loc="27.34-38" id="152">
+              <ChildAxisIterator loc="27.34-38" id="153">
+               <ForVarIterator varname="buyer" loc="10.9-45" id="154"/>
+              </ChildAxisIterator>
+             </NameTestIterator>
             </EnclosedIterator>
            </ElementContentIterator>
           </ElementIterator>

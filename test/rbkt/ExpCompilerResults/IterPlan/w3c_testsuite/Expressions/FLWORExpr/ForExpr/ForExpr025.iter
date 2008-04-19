@@ -1,3 +1,5 @@
+backward 0 non-ch 0
+backward 0 non-ch 0
 Iterator tree for main query:
 <FLWORIterator loc="8.0-21" id="1">
  <LetVariable name="input-context" materialize="true">
@@ -46,13 +48,11 @@ Iterator tree for main query:
     </NodeSortIterator>
    </ForVariable>
    <ReturnClause>
-    <NodeSortIterator loc="9.7-21" id="32">
-     <NameTestIterator qname="xs:QName(,,FileName)" loc="9.13-21" id="34">
-      <ChildAxisIterator loc="9.13-21" id="35">
-       <ForVarIterator varname="file" loc="8.48-88" id="36"/>
-      </ChildAxisIterator>
-     </NameTestIterator>
-    </NodeSortIterator>
+    <NameTestIterator qname="xs:QName(,,FileName)" loc="9.13-21" id="32">
+     <ChildAxisIterator loc="9.13-21" id="33">
+      <ForVarIterator varname="file" loc="8.48-88" id="34"/>
+     </ChildAxisIterator>
+    </NameTestIterator>
    </ReturnClause>
   </FLWORIterator>
  </ReturnClause>

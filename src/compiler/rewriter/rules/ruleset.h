@@ -29,7 +29,7 @@ RULE(InferVarTypes);
 RULE(MarkConsumerNodeProps);
 RULE(EliminateProducerNodeOps);
 RULE(MarkProducerNodeProps);
-// RULE(EliminateConsumerNodeOps);
+RULE(EliminateConsumerNodeOps);
 
 RULE(EliminateTypeEnforcingOperations);
 RULE(EliminateUnusedLetVars);

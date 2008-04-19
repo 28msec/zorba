@@ -19,6 +19,7 @@ public:
   void reset(PlanState&);
 };
 
+// Preserves the order of input nodes
 class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>
 {
 private:
