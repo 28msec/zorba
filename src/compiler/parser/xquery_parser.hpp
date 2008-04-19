@@ -48,7 +48,7 @@ namespace zorba
 }
 
 /* First part of user declarations.  */
-#line 23 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
+#line 23 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -78,7 +78,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 82 "/home/dagraf/Work/28msec/zorba4/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 82 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -129,7 +129,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 95 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
+#line 95 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -139,7 +139,7 @@ namespace zorba
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 143 "/home/dagraf/Work/28msec/zorba4/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 143 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
@@ -369,68 +369,70 @@ namespace zorba
      WITH = 472,
      TRY = 473,
      CATCH_LPAR = 474,
-     ALL = 475,
-     ALL_WORDS = 476,
-     ANY = 477,
-     ANY_WORD = 478,
-     AT_END = 479,
-     AT_LEAST = 480,
-     AT_MOST = 481,
-     AT_START = 482,
-     CASE_INSENSITIVE = 483,
-     CASE_SENSITIVE = 484,
-     DECLARE_FTOPTION = 485,
-     DIACRITICS_INSENSITIVE = 486,
-     DIACRITICS_SENSITIVE = 487,
-     DIFFERENT = 488,
-     DISTANCE = 489,
-     ENTIRE_CONTENT = 490,
-     EXACTLY = 491,
-     FROM = 492,
-     FTAND = 493,
-     FTCONTAINS = 494,
-     FTNOT = 495,
-     FTOR = 496,
-     LANGUAGE = 497,
-     LEVELS = 498,
-     LOWERCASE = 499,
-     FTNOT_IN = 500,
-     OCCURS = 501,
-     PARAGRAPH = 502,
-     PHRASE = 503,
-     RELATIONSHIP = 504,
-     SAME = 505,
-     SCORE = 506,
-     SENTENCE = 507,
-     SENTENCES = 508,
-     TIMES = 509,
-     UPPERCASE = 510,
-     WEIGHT = 511,
-     WINDOW = 512,
-     WITHOUT_CONTENT = 513,
-     WITHOUT_DIACRITICS = 514,
-     WITHOUT_STEMMING = 515,
-     WITHOUT_STOP_WORDS = 516,
-     WITHOUT_THESAURUS = 517,
-     WITHOUT_WILDCARDS = 518,
-     WITH_DEFAULT_STOP_WORDS = 519,
-     WITH_DIACRITICS = 520,
-     WITH_STEMMING = 521,
-     WITH_STOP_WORDS = 522,
-     WITH_THESAURUS = 523,
-     WITH_WILDCARDS = 524,
-     WORDS = 525,
-     FTCONTAINS_REDUCE = 526,
-     RANGE_REDUCE = 527,
-     ADDITIVE_REDUCE = 528,
-     MULTIPLICATIVE_REDUCE = 529,
-     UNION_REDUCE = 530,
-     INTERSECT_EXCEPT_REDUCE = 531,
-     QVARINDECLLIST_REDUCE = 532,
-     COMMA_DOLLAR = 533,
-     UNARY_PREC = 534,
-     SEQUENCE_TYPE_REDUCE = 535,
-     STEP_REDUCE = 536
+     USING_DOLLAR = 475,
+     EVAL = 476,
+     ALL = 477,
+     ALL_WORDS = 478,
+     ANY = 479,
+     ANY_WORD = 480,
+     AT_END = 481,
+     AT_LEAST = 482,
+     AT_MOST = 483,
+     AT_START = 484,
+     CASE_INSENSITIVE = 485,
+     CASE_SENSITIVE = 486,
+     DECLARE_FTOPTION = 487,
+     DIACRITICS_INSENSITIVE = 488,
+     DIACRITICS_SENSITIVE = 489,
+     DIFFERENT = 490,
+     DISTANCE = 491,
+     ENTIRE_CONTENT = 492,
+     EXACTLY = 493,
+     FROM = 494,
+     FTAND = 495,
+     FTCONTAINS = 496,
+     FTNOT = 497,
+     FTOR = 498,
+     LANGUAGE = 499,
+     LEVELS = 500,
+     LOWERCASE = 501,
+     FTNOT_IN = 502,
+     OCCURS = 503,
+     PARAGRAPH = 504,
+     PHRASE = 505,
+     RELATIONSHIP = 506,
+     SAME = 507,
+     SCORE = 508,
+     SENTENCE = 509,
+     SENTENCES = 510,
+     TIMES = 511,
+     UPPERCASE = 512,
+     WEIGHT = 513,
+     WINDOW = 514,
+     WITHOUT_CONTENT = 515,
+     WITHOUT_DIACRITICS = 516,
+     WITHOUT_STEMMING = 517,
+     WITHOUT_STOP_WORDS = 518,
+     WITHOUT_THESAURUS = 519,
+     WITHOUT_WILDCARDS = 520,
+     WITH_DEFAULT_STOP_WORDS = 521,
+     WITH_DIACRITICS = 522,
+     WITH_STEMMING = 523,
+     WITH_STOP_WORDS = 524,
+     WITH_THESAURUS = 525,
+     WITH_WILDCARDS = 526,
+     WORDS = 527,
+     FTCONTAINS_REDUCE = 528,
+     RANGE_REDUCE = 529,
+     ADDITIVE_REDUCE = 530,
+     MULTIPLICATIVE_REDUCE = 531,
+     UNION_REDUCE = 532,
+     INTERSECT_EXCEPT_REDUCE = 533,
+     QVARINDECLLIST_REDUCE = 534,
+     COMMA_DOLLAR = 535,
+     UNARY_PREC = 536,
+     SEQUENCE_TYPE_REDUCE = 537,
+     STEP_REDUCE = 538
    };
 
     };

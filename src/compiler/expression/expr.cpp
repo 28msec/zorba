@@ -43,8 +43,8 @@ namespace zorba {
   static expr_t *expr_iter_done = &dummy_expr;
 
 #define BEGIN_EXPR_ITER() switch (v.state) { case 0:
-#define BEGIN_EXPR_ITER2( type )                 \
-  type &vv = dynamic_cast<type &> (v);           \
+#define BEGIN_EXPR_ITER2( type )                                        \
+  type##_iterator_data &vv = dynamic_cast<type##_iterator_data &> (v);  \
   BEGIN_EXPR_ITER()
 #define END_EXPR_ITER()   v.i = expr_iter_done; }
 #define ITER( m )                                                \
@@ -120,7 +120,12 @@ public:
   transform_expr_iterator_data (expr *e_) : expr_iterator_data(e_) {}
 };
 
-  
+
+class eval_expr_iterator_data : public expr_iterator_data {
+public:
+  eval_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
+};
+
 #define DEF_ACCEPT( type )                         \
   void type::accept (expr_visitor &v) {            \
     if (v.begin_visit (*this))                     \
@@ -133,6 +138,7 @@ DEF_ACCEPT (var_expr)
 DEF_ACCEPT (flwor_expr)
 DEF_ACCEPT (promote_expr)
 DEF_ACCEPT (trycatch_expr)
+DEF_ACCEPT (eval_expr)
 DEF_ACCEPT (typeswitch_expr)
 DEF_ACCEPT (if_expr)
 DEF_ACCEPT (function_def_expr)
@@ -362,7 +368,7 @@ expr_iterator_data *flwor_expr::make_iter () {
 }
 
 void flwor_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2 (flwor_expr_iterator_data);
+  BEGIN_EXPR_ITER2 (flwor_expr);
 
   ITER_FOR_EACH (clause_iter, clause_v.begin (), clause_v.end (),
                  (*vv.clause_iter)->expr_h);
@@ -429,7 +435,7 @@ trycatch_expr::trycatch_expr(const QueryLoc& loc)
 
 void trycatch_expr::next_iter(expr_iterator_data& v)
 {
-  BEGIN_EXPR_ITER2(trycatch_expr_iterator_data);
+  BEGIN_EXPR_ITER2 (trycatch_expr);
   ITER (try_expr_h);
   for (vv.clause_iter = begin (); vv.clause_iter != end (); ++(vv.clause_iter)) {
     ITER ((*vv.clause_iter)->var_h);
@@ -440,6 +446,16 @@ void trycatch_expr::next_iter(expr_iterator_data& v)
 
 case_clause::case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
 
+
+expr_iterator_data *eval_expr::make_iter () {
+  return new eval_expr_iterator_data (this);
+}
+
+void eval_expr::next_iter (expr_iterator_data& v) {
+  BEGIN_EXPR_ITER2 (eval_expr);
+  ITER (expr_h);
+  END_EXPR_ITER ();
+}
 
 cast_or_castable_base_expr::cast_or_castable_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
   : expr (loc), input_expr_h (input), target_type (type)
@@ -490,7 +506,7 @@ expr_iterator_data *typeswitch_expr::make_iter () {
 }
 
 void typeswitch_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2(typeswitch_expr_iterator_data);
+  BEGIN_EXPR_ITER2 (typeswitch_expr);
   ITER (switch_expr_h);
   for (vv.clause_iter = begin (); vv.clause_iter != end (); ++(vv.clause_iter)) {
     ITER ((*vv.clause_iter)->var_h);
@@ -553,7 +569,7 @@ void if_expr::next_iter (expr_iterator_data& v) {
 expr_iterator_data *fo_expr::make_iter () { return new fo_expr_iterator_data (this); }
 
 void fo_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2(fo_expr_iterator_data);
+  BEGIN_EXPR_ITER2 (fo_expr);
   ITER_FOR_EACH (arg_iter, begin (), end (), *vv.arg_iter);
   END_EXPR_ITER ();
 }
@@ -763,7 +779,7 @@ relpath_expr::relpath_expr(const QueryLoc& loc)
 expr_iterator_data *relpath_expr::make_iter () { return new relpath_expr_iterator_data (this); }
 
 void relpath_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2(relpath_expr_iterator_data);
+  BEGIN_EXPR_ITER2 (relpath_expr);
 
   ITER_FOR_EACH (step_iter, begin (), end (), *vv.step_iter);
 
@@ -794,7 +810,7 @@ expr_iterator_data *axis_step_expr::make_iter () {
 }
 
 void axis_step_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2(axis_step_expr_iterator_data);
+  BEGIN_EXPR_ITER2 (axis_step_expr);
 
   ITER_FOR_EACH (pred_iter, thePreds.begin (), thePreds.end (), *vv.pred_iter);
 
@@ -1317,7 +1333,7 @@ expr_iterator_data *transform_expr::make_iter () { return new transform_expr_ite
 
 void transform_expr::next_iter(expr_iterator_data& v)
 {
-  BEGIN_EXPR_ITER2(transform_expr_iterator_data);
+  BEGIN_EXPR_ITER2 (transform_expr);
   ITER_FOR_EACH(clause_iter, theCopyClauses.begin(), theCopyClauses.end(),
                 (*vv.clause_iter)->theExpr);
   ITER(theModifyExpr);

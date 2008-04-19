@@ -144,7 +144,7 @@ public:
   virtual void accept(expr_visitor&);
   virtual void accept_children(expr_visitor &v);
   virtual void next_iter (expr_iterator_data &) = 0;
-  virtual std::ostream& put(std::ostream&) const;
+  virtual std::ostream& put(std::ostream&) const = 0;
   virtual std::string toString () const;
 
   virtual xqtref_t return_type(static_context *sctx);
@@ -543,6 +543,21 @@ private:
     std::ostream& put(std::ostream&) const;
 };
 
+class eval_expr : public expr {
+  expr_t expr_h;
+
+public:
+  eval_expr (const QueryLoc &loc, expr_t expr_)
+    : expr (loc), expr_h (expr_)
+  {}
+
+  const expr_t &get_expr () const { return expr_h; }
+  expr_t get_expr () { return expr_h; }
+
+  expr_iterator_data *make_iter ();
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+};
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 

@@ -667,6 +667,11 @@ typedef zorba::xquery_parser::token token;
   return token::LET_DOLLAR;
 }
 
+"using"{SP}"$" {
+  BEGIN MODE_VARNAME;
+  return token::USING_DOLLAR;
+}
+
 "some"{SP}"$" {
   BEGIN MODE_VARNAME;
   return token::SOME_DOLLAR;
@@ -1334,6 +1339,10 @@ typedef zorba::xquery_parser::token token;
   BEGIN INITIAL;
   return token::RETURN;
 }
+"eval"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::EVAL;
+}
 "satisfies"/{WordBreak} {
   BEGIN INITIAL;
   return token::SATISFIES;
@@ -1431,6 +1440,10 @@ typedef zorba::xquery_parser::token token;
 "let"{SP}"$" {
   BEGIN MODE_VARNAME;
   return token::LET_DOLLAR;
+}
+"using"{SP}"$" {
+  BEGIN MODE_VARNAME;
+  return token::USING_DOLLAR;
 }
 "let"{SP}"score"{SP}"$" {
   BEGIN MODE_VARNAME;
@@ -2237,6 +2250,11 @@ typedef zorba::xquery_parser::token token;
 "return"/{WordBreak} {
   BEGIN INITIAL;
   return token::RETURN;
+}
+
+"eval"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::EVAL;
 }
 
 "satisfies"/{WordBreak} {

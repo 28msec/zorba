@@ -32,11 +32,6 @@ static int printdepth0 = -2;
 #define UNDENT    printdepth0 -= 2;
 #define INDENT    (printdepth0 += 2, DENT)
 
-ostream& expr::put( ostream& os) const
-{
-  return os;
-}
-
 ostream& var_expr::put(ostream& os) const
 {
   os << INDENT << "var kind=" << decode_var_kind(get_kind()) << " (" << this << ")";
@@ -149,8 +144,9 @@ ostream& flwor_expr::put( ostream& os) const
 
 ostream& promote_expr::put(ostream& os) const
 {
-  os << INDENT << "promote_expr (" << this << ") [\n";
-  os << DENT; TypeOps::serialize(os, *target_type); os << "\n";
+  os << INDENT << "promote_expr ";
+  TypeOps::serialize(os, *target_type); 
+  os << " (" << this << ") [\n";
   ZORBA_ASSERT(input_expr_h!=NULL);
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;

@@ -344,6 +344,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token CATCH_LPAR                 "'<catch (>'" 
 
 
+/* eval-related */
+/* ------------ */
+%token USING_DOLLAR               "'<using>'"
+%token EVAL                       "'<eval>'"
 
 /* full-text-related */
 /* ----------------- */
@@ -581,6 +585,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> CatchListExpr
 %type <expr> CatchExpr
 
+/* eval-related      */
+/* ----------------- */
+%type <expr> EvalExpr
 
 /* full-text-related */
 /* ----------------- */
@@ -631,7 +638,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // Module must not be destroyed since it is returned by the parser
 // TODO: FT stuff, update stuff
 %destructor { $$->safeRemoveRef (); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
-%destructor { $$->safeRemoveRef (); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor NonNodeEnclosedExpr EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr // DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl FTContainsExpr
+%destructor { $$->safeRemoveRef (); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor NonNodeEnclosedExpr EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr // DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl FTContainsExpr
 
 /*_____________________________________________________________________
  *
@@ -1905,7 +1912,11 @@ ExprSingle :
 #endif
       $$ = $1;
     }
-	;
+  | EvalExpr
+    {
+      $$ = $1;
+    }
+    ;
 
 
 // [33] FLWORExpr
@@ -5857,6 +5868,23 @@ CatchExpr :
                           $7);
     }
   ;
+
+
+/*_______________________________________________________________________
+ *                                                                       *
+ *  Eval productions                                                     *
+ *                                                                       *
+ *_______________________________________________________________________*/
+
+EvalExpr :
+    USING_DOLLAR VarGetsDeclList EVAL ExprSingle
+    {
+       $$ = new EvalExpr (LOC (@$),
+                          dynamic_cast<VarGetsDeclList *> ($2),
+                          $4);
+    }
+    ;
+
 
 /*_______________________________________________________________________
  *                                                                       *
