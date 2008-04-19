@@ -3932,8 +3932,8 @@ void post_step_visit(const AxisStep& v, void* /*visit_state*/)
   flwor->add(fc_outer_dot);
   flwor->add(lc_pred_seq);
 
-  nodestack.push(flwor);
-  nodestack.push(lc_pred_seq->get_var());
+  nodestack.push(&*flwor);
+  nodestack.push(&*lc_pred_seq->get_var());
 }
 
 
@@ -3952,8 +3952,8 @@ void end_visit(const AxisStep& v, void* /*visit_state*/)
     rchandle<flwor_expr> flwor = e.dyn_cast<flwor_expr>();
     ZORBA_ASSERT(flwor != NULL);
 
-    flwor->set_retval(ret_clause);
-    nodestack.push(flwor);
+    flwor->set_retval(&*ret_clause);
+    nodestack.push(&*flwor);
     pop_scope();
   }
 }
