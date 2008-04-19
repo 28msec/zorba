@@ -344,7 +344,6 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
       backward_steps = backward_steps || ase->is_reverse_axis ();
       non_child_steps = non_child_steps || (ase->getAxis () != axis_kind_child);
     }
-    cout << "backward " << backward_steps << " non-ch " << non_child_steps << endl;
     bool sorted = false, distinct = false;
     if (sz == 2) {
       distinct = true;
