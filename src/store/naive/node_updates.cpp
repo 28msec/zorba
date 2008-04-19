@@ -461,6 +461,9 @@ void ElementNode::replaceContent(
   children().copy(oldChildren);
   children().clear();
 
+  if (newTextChild->getStringValueP()->empty())
+    return;
+
   if (copy)
   {
     newTextChild->copy(this, this, 0, copymode);

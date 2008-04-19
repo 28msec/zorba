@@ -1085,10 +1085,16 @@ void UpdReplaceContent::apply()
 void UpdReplaceContent::undo()
 {
   ElementNode* target = ELEM_NODE(theTarget);
-  XmlNode* child = target->getChild(0);
+
+  if (target->numChildren() > 0)
+  {
+    ZORBA_FATAL(target->numChildren() == 1, "");
+
+    XmlNode* child = target->getChild(0);
  
-  child->disconnect();
-  child->deleteTree();
+    child->disconnect();
+    child->deleteTree();
+  }
 
   if (target->isConstructed())
   {
