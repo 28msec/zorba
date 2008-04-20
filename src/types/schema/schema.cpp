@@ -90,11 +90,11 @@ Schema::~Schema()
 
 void Schema::registerXSD(const char* xsdFileName)
 {
-    SAX2XMLReader* parser;
+    auto_ptr<SAX2XMLReader> parser;
     
     try
-    {        
-        parser = XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager, _grammarPool);
+    {
+        parser.reset (XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager, _grammarPool));
         parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);
         parser->setFeature(XMLUni::fgXercesSchema, true);
         parser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);
@@ -128,8 +128,6 @@ void Schema::registerXSD(const char* xsdFileName)
     {
         cerr << "\nUnexpected exception during parsing: '" << xsdFileName << "'\n" << endl;
     }
-    
-    delete parser;
 }
 
 void Schema::printXSDInfo(bool excludeBuiltIn)

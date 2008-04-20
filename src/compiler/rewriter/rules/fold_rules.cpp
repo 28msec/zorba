@@ -199,8 +199,8 @@ namespace zorba {
 
   static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo) {
     int i;
-    fo_expr *count_expr;
-    const_expr *val_expr;
+    fo_expr *count_expr = NULL;
+    const_expr *val_expr = NULL;
     const function *fn_count = LOOKUP_FN ("fn", "count", 1);
 
     for (i = 0; i < 2; i++) {
@@ -209,7 +209,7 @@ namespace zorba {
           && count_expr->get_func () == fn_count)
         break;
     }
-    if (i == 2) return NULL;
+    if (count_expr == NULL) return NULL;
 
     store::Item_t val = val_expr->get_val ();
     if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_named_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {

@@ -50,7 +50,7 @@ namespace zorba {
 #define ITER( m )                                                \
   do {                                                           \
     v.state = __LINE__; v.i = reinterpret_cast<expr_t *> (&(m)); \
-    if (m != NULL) { invalidate (); return; }                    \
+    if ((m) != NULL) { invalidate (); return; }                  \
   case __LINE__:; } while (0)
 #define ITER_FOR_EACH( iter, begin, end, expr )                      \
   for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))  {          \
