@@ -805,44 +805,6 @@ void serializer::sax2_emitter::emit_node_children( const store::Item* item )
   }
 }
 
-void serializer::sax2_emitter::emit_startPrefixMapping( const store::Item* item, NsBindings &nsBindings)
-{
-  if( !theSAX2ContentHandler )
-  {
-    return;
-  }
-  // emit namespace bindings
-  NsBindings::size_type   ns_size;
-
-  ns_size = nsBindings.size();
-    
-  for (unsigned long i = 0; i < ns_size; i++)
-  {
-    String lFirst( nsBindings[i].first );
-    String lSecond( nsBindings[i].second );
-    theSAX2ContentHandler->startPrefixMapping( lFirst, lSecond);
-  }
-}
-
-void serializer::sax2_emitter::emit_endPrefixMapping( NsBindings &nsBindings)
-{
-  if( !theSAX2ContentHandler )
-  {
-    return;
-  }
-  // emit namespace bindings
-  NsBindings::size_type   ns_size;
-
-  ns_size = nsBindings.size();
-    
-  for (unsigned long i = 0; i < ns_size; i++)
-  {
-    String lFirst( nsBindings[i].first );
-    theSAX2ContentHandler->endPrefixMapping( lFirst );
-  }
-
-}
-
 void serializer::sax2_emitter::emit_declaration()
 {
   theSAX2ContentHandler->startDocument();
@@ -885,6 +847,9 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 	{
     NsBindings local_nsBindings;
     store::Item_t      item_qname;
+    std::vector< xqpString > aNSList; 
+    NsBindings::size_type ns_size;
+    
 
     if(theSAX2ContentHandler)
     {
@@ -893,8 +858,31 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 
       SAX2AttributesImpl attrs(item);
       SAX2NamespacesImpl nss(&local_nsBindings, item);
+      ns_size = local_nsBindings.size(); 
+      std::vector< xqpString >::size_type ans_size = theNameSpaces.size();
+      for ( unsigned long i = 0; i < ns_size; i++ )
+      {
+        bool is_declared = false;
+        for ( unsigned long j = 0; j < ans_size; j++ )
+        {
+          if ( theNameSpaces.at( j ) == local_nsBindings[i].second )
+          {
+            is_declared = true;
+            break;
+          }
+        }
+    
+        if ( ! is_declared )
+        {
+          aNSList.push_back( local_nsBindings[i].second );
+          theNameSpaces.push_back( local_nsBindings[i].second );
+          String lFirst( local_nsBindings[i].first );
+          String lSecond( local_nsBindings[i].second );
+          theSAX2ContentHandler->startPrefixMapping( lFirst, lSecond );
+        }
+      }       
       
-      emit_startPrefixMapping(item, local_nsBindings);
+      //emit_startPrefixMapping( item, local_nsBindings );
 
       item_qname = item->getNodeName();
       String lNS( item_qname->getNamespace() );
@@ -912,7 +900,19 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
       String lLocalName( item_qname->getLocalName() );
       String lStringValue( item_qname->getStringValue().getp() );
       theSAX2ContentHandler->endElement( lNS, lLocalName, lStringValue );
-      emit_endPrefixMapping(local_nsBindings);
+
+      for ( unsigned long i = 0; i < ns_size; i++ )
+      {
+        for ( unsigned long j = 0; j < aNSList.size(); j++ )
+        {
+          if ( aNSList.at( j ) == local_nsBindings[ i ].second )
+          {
+            String lFirst( local_nsBindings[i].first );
+            theSAX2ContentHandler->endPrefixMapping( lFirst );
+          }
+        }
+      }
+      //emit_endPrefixMapping( local_nsBindings );
     }
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)

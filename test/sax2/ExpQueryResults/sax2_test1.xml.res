@@ -1,4 +1,3 @@
-setDocumentLocator()
 startDocument()
 startPrefixMapping()
 Prefix: test
@@ -18,6 +17,25 @@ QName: test:text
 startElement()
 LocalName: b
 QName: b
+startPrefixMapping()
+Prefix: foo
+URI: http://foo.org/
+startElement()
+LocalName: bar
+QName: foo:bar
+startElement()
+LocalName: bar
+QName: foo:bar
+Attribute name: foo, value: foo
+endPrefixMapping()
+Prefix: foo
+startPrefixMapping()
+Prefix: bar
+URI: http://bar.org/
+startElement()
+LocalName: foo
+QName: bar:foo
+endPrefixMapping()
+Prefix: bar
 endPrefixMapping()
 Prefix: test
-

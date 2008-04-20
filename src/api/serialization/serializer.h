@@ -27,6 +27,7 @@
 #define ZORBA_SERIALIZER_H
 
 #include <ostream>
+#include <vector>
 
 #include <zorba/sax2.h>
 
@@ -283,7 +284,9 @@ public:
   {
   protected:
     SAX2_ContentHandler * theSAX2ContentHandler;
-    SAX2LocatorImpl    theLocator;
+    SAX2LocatorImpl       theLocator;
+    std::vector< xqpString > theNameSpaces;
+
   public:
     sax2_emitter( serializer * the_serializer, transcoder & the_transcoder,
                   SAX2_ContentHandler * aSAX2ContentHandler );
