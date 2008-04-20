@@ -38,17 +38,15 @@ Iterator tree for main query:
    <ElementContentIterator>
     <EnclosedIterator attr_cont="false">
      <CastIterator type="[AtomicXQType XS_STRING]">
-      <NodeDistinctIterator>
-       <FnSubsequenceIterator>
-        <NameTestIterator qname="xs:QName(,,FileName)">
-         <ChildAxisIterator>
-          <ForVarIterator varname="file"/>
-         </ChildAxisIterator>
-        </NameTestIterator>
-        <SingletonIterator value="xs:double(1)"/>
-        <SingletonIterator value="xs:double(1)"/>
-       </FnSubsequenceIterator>
-      </NodeDistinctIterator>
+      <FnSubsequenceIterator>
+       <NameTestIterator qname="xs:QName(,,FileName)">
+        <ChildAxisIterator>
+         <ForVarIterator varname="file"/>
+        </ChildAxisIterator>
+       </NameTestIterator>
+       <SingletonIterator value="xs:double(1)"/>
+       <SingletonIterator value="xs:double(1)"/>
+      </FnSubsequenceIterator>
      </CastIterator>
     </EnclosedIterator>
    </ElementContentIterator>

@@ -29,17 +29,15 @@ Iterator tree for main query:
        </FnBooleanIterator>
       </WhereClause>
       <ReturnClause>
-       <NodeDistinctIterator>
-        <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,File)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="f"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
-         <SingletonIterator value="xs:double(1)"/>
-         <SingletonIterator value="xs:double(1)"/>
-        </FnSubsequenceIterator>
-       </NodeDistinctIterator>
+       <FnSubsequenceIterator>
+        <NameTestIterator qname="xs:QName(,,File)">
+         <ChildAxisIterator>
+          <ForVarIterator varname="f"/>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)"/>
+        <SingletonIterator value="xs:double(1)"/>
+       </FnSubsequenceIterator>
       </ReturnClause>
      </FLWORIterator>
     </FnCountIterator>

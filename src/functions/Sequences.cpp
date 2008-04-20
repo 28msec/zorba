@@ -560,6 +560,10 @@ void single_seq_function::compute_annotation (AnnotationHolder *parent, std::vec
   case AnnotationKey::IGNORES_DUP_NODES:
     TSVAnnotationValue::update_annotation (kids [src], k, parent->get_annotation (k));
     break;
+  case AnnotationKey::PRODUCES_DISTINCT_NODES:
+  case AnnotationKey::PRODUCES_SORTED_NODES:
+    parent->put_annotation (k, kids [src]->get_annotation (k));
+    break;
   default: break;
   }
 }

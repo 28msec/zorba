@@ -293,16 +293,15 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
   static_context *sctx = rCtx.getStaticContext ();
 
   switch(node->get_expr_kind()) {
-#if 0
   case flwor_expr_kind: {
     flwor_expr *flwor = static_cast<flwor_expr *>(node);
     if (propagate_up_nodeid_props_to_flwor_variables(flwor))
       return node;
-    // TODO: only if FLWOR has no FOR clauses
+#if 0 // TODO: only if FLWOR has no FOR clauses
     propagate_up_nodeid_props(flwor, &*flwor->get_retval());
+#endif
     break;
   }
-#endif
 
 #if 0  // under construction
   case trycatch_expr_kind: {
@@ -317,17 +316,21 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
     fo_expr *fo = static_cast<fo_expr *>(node);
     const function *f = fo->get_func ();
 
-    // TODO: f->compute_annotations ()
-
     const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
     if (nsdf != NULL) {
       // not necessary to consider IGNORES_* annotations here, but it's easier to write, and it shouldn't hurt
       const function *fmin = nsdf->min_action (sctx, node, (*fo) [0], nodes_or_atomics ((*fo) [0]->return_type (sctx)));
       if (fmin != NULL)
-        fo->set_func (fmin);
+        fo->set_func (f = fmin);
       else
         return (*fo)[0];
     }
+
+    vector <AnnotationHolder *> anns;
+    exprs_to_holders (fo->begin (), fo->end (), anns);
+    f->compute_annotation (node, anns, AnnotationKey::PRODUCES_DISTINCT_NODES);
+    f->compute_annotation (node, anns, AnnotationKey::PRODUCES_SORTED_NODES);
+
     break;
   }
 
@@ -356,9 +359,14 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
     node->put_annotation (AnnotationKey::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::from_bool (distinct));
     break;
   }
-    
-  default:
+
+  default: {
+    cast_base_expr *cbe = dynamic_cast<cast_base_expr *> (node);
+    if (cbe != NULL) {
+      propagate_up_nodeid_props (node, cbe->get_input ());
+    }
     break;
+  }
   }
   return NULL;
 }
