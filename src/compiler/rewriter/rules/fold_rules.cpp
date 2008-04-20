@@ -209,7 +209,7 @@ namespace zorba {
           && count_expr->get_func () == fn_count)
         break;
     }
-    if (count_expr == NULL) return NULL;
+    if (i == 2) return NULL;
 
     store::Item_t val = val_expr->get_val ();
     if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_named_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
