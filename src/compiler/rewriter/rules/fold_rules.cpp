@@ -7,7 +7,8 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 #include "system/globalenv.h"
-#include "runtime/api/plan_wrapper.h"
+
+#include "runtime/util/plan_wrapper_holder.h"
 
 #include "functions/function.h"
 #include "functions/Misc.h"
@@ -18,16 +19,6 @@
 using namespace std;
 
 namespace zorba {
-
-  class PlanWrapperHolder {
-    auto_ptr<PlanWrapper> pw;
-
-  public:
-    PlanWrapperHolder (PlanIter_t plan, CompilerCB* compilercb) : pw (new PlanWrapper (plan, compilercb, 0))
-    { pw->open (); }
-    ~PlanWrapperHolder() { pw->close (); }
-    PlanWrapper *operator-> () { return pw.get(); }
-  };
 
   static expr_t execute (CompilerCB* compilercb, expr_t node, vector<store::Item_t> &result) {
     PlanIter_t plan = codegen ("const-folded expr", node);
