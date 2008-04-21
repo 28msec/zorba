@@ -174,8 +174,12 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 		else
 			dctx->setContextItem (lItem);
   } else {
-    std::ifstream is (val.c_str ());
-    assert (is);
+    const char *val_fname = val.c_str ();
+    std::ifstream is (val_fname);
+    if (! is) {
+      std::cerr << "Could not open file `" << val_fname << "' for variable `" << name << "'" << std::endl;
+      assert (false);
+    }
 		if(name != ".")
 			dctx->setVariableAsDocument (name, val.c_str(), is);
 		else
