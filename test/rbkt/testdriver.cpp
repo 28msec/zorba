@@ -163,17 +163,18 @@ printErrors(TestErrorHandler& errHandler, const char *msg)
 void
 set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
-  boost::replace_all(val, "$RBKT_SRC_DIR", "file://" + zorba::RBKT_SRC_DIR);
 
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance()->getItemFactory();
 
   if (!inlineFile) {
+    boost::replace_all(val, "$RBKT_SRC_DIR", "file://" +zorba::RBKT_SRC_DIR);
     zorba::Item lItem = lFactory->createString(val);
 		if(name != ".")
 			dctx->setVariable (name, lItem);
 		else
 			dctx->setContextItem (lItem);
   } else {
+    boost::replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
     const char *val_fname = val.c_str ();
     std::ifstream is (val_fname);
     if (! is) {
