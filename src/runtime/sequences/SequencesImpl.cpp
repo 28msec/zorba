@@ -1400,7 +1400,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
   uriString = uriItem->getStringValue();
 
   if(!URI::is_valid(uriString,true))
-    ZORBA_ERROR_DESC(ZorbaError::FODC0005, "Invalid argument to fn:doc or fn:doc-available.");
+    ZORBA_ERROR_PARAM(ZorbaError::FODC0005, xqp_string(uriString), "");
 
   doc = get_doc (uriString, &err);
   if (doc == NULL)
@@ -1431,7 +1431,7 @@ store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
   uriString = uriItem->getStringValue();
 
   if(!URI::is_valid(uriString,true))
-    ZORBA_ERROR_DESC(ZorbaError::FODC0005, "Invalid argument to fn:doc or fn:doc-available.");
+    ZORBA_ERROR_PARAM(ZorbaError::FODC0005, xqp_string(uriString), "");
 
   doc = get_doc (uriString, &err);
 
