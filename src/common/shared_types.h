@@ -120,7 +120,8 @@ class TryExpr; class CatchListExpr; class CatchExpr;
 
 
 class exprnode;
-class AdditiveExpr; class AndExpr; class AxisStep; class CDataSection;
+class AdditiveExpr; class AndExpr; class AxisStep; class FilterExpr; 
+class CDataSection;
 class CastExpr; class CastableExpr; class CommonContent; class ComparisonExpr;
 class CompAttrConstructor; class CompCommentConstructor; class CompDocConstructor;
 class CompElemConstructor; class CompPIConstructor; class CompTextConstructor;
