@@ -137,12 +137,12 @@ isErrorExpected(TestErrorHandler& errHandler, Specification* aSpec)
 
 // print all errors that were raised
 void
-printErrors(TestErrorHandler& errHandler)
+printErrors(TestErrorHandler& errHandler, const char *msg)
 {
   if (!errHandler.errors()) {
     return;
   }
-  std::cerr << "Errors:" << std::endl;
+  std::cerr << msg << ":" << std::endl;
   
   const std::vector<std::string>& errors = errHandler.getErrorList();
   const std::vector<zorba::String>& descs = errHandler.getErrorDescs();
@@ -339,8 +339,8 @@ main(int argc, char** argv)
     } 
     else 
     { 
-      std::cerr << "Error compiling query" << std::endl;
-      printErrors(errHandler); return 4;
+      printErrors(errHandler, "Error compiling query");
+      return 4;
     }
   }
 
@@ -371,20 +371,16 @@ main(int argc, char** argv)
 
     lResFileStream << lQuery;
 
-    if (errHandler.errors())
-    {
-      if (isErrorExpected(errHandler, &lSpec)) { return 0; } // again done, we expected this error
-      else 
-      { 
-        std::cerr << "Error executing query" << std::endl;
-        printErrors(errHandler); 
+    if (errHandler.errors()) {
+      if (isErrorExpected(errHandler, &lSpec)) { 
+        printErrors(errHandler, "The following execution error occurred as expected");
+        return 0;
+      } else {
+        printErrors(errHandler, "Unexpected error executing query");
         return 6;
       }
-    }
-    else if ( lSpec.errorsSize() > 0 )
-    {
-      if ( ! fs::exists(lRefFile) )
-      {
+    } else if ( lSpec.errorsSize() > 0 ) {
+      if ( ! fs::exists(lRefFile) ) {
         std::cerr << "Expected error(s)";
         for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
             lIter != lSpec.errorsEnd(); ++lIter)
@@ -393,8 +389,7 @@ main(int argc, char** argv)
         }
         if ( fs::exists(lResultFile) && fs::file_size(lResultFile) == 0)
           std::cerr << " but got empty result" << std::endl;
-        else
-        {
+        else {
           std::cerr << " but got result:" << std::endl;
           printFile(std::cerr, lResultFile.native_file_string());
           std::cerr << "=== end of result ===" << std::endl;
