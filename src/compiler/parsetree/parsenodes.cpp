@@ -2218,14 +2218,30 @@ void PathExpr::accept(parsenode_visitor& v) const
 RelativePathExpr::RelativePathExpr(
   const QueryLoc& _loc,
   enum ParseConstants::steptype_t _step_type,
-  rchandle<exprnode> _step_expr_h,
-  rchandle<exprnode> _relpath_expr_h)
+  rchandle<exprnode> step,
+  rchandle<exprnode> rpe)
   :
   exprnode(_loc),
   step_type(_step_type),
-  step_expr_h(_step_expr_h),
-  relpath_expr_h(_relpath_expr_h)
+  step_expr_h(step)
 {
+  RelativePathExpr* rpep = dynamic_cast<RelativePathExpr*>(rpe.getp());
+  if (rpep != NULL)
+  {
+    ContextItemExpr* dot = dynamic_cast<ContextItemExpr*>(rpep->step_expr_h.getp());
+    if (dot != NULL)
+      relpath_expr_h = rpep->relpath_expr_h;
+    else
+      relpath_expr_h = rpe;
+  }
+  else
+  {
+    relpath_expr_h = rpe;
+  }
+
+  FilterExpr* filter = dynamic_cast<FilterExpr*>(step.getp());
+  if (filter != NULL)
+    filter->setIsPathStep();
 }
 
 
@@ -2238,21 +2254,10 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
     return;
   }
 
-  // Skip this rpe if it is not the root of an rpe subtree and its left child
-  // is a dot expression.
-  else if (!v.is_root_rpe(this) &&
-           dynamic_cast<const ContextItemExpr*>(step_expr_h.getp()) != NULL)
-  {
-    ACCEPT (relpath_expr_h);
-  }
-
-  else
-  {
-    ACCEPT (step_expr_h);
-    v.intermediate_visit(*this, visitor_state);
-    ACCEPT (relpath_expr_h);
-    END_VISITOR ();
-  }
+  ACCEPT (step_expr_h);
+  v.intermediate_visit(*this, visitor_state);
+  ACCEPT (relpath_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2297,12 +2302,14 @@ AxisStep::AxisStep(
 void AxisStep::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+
   if (forward_step_h != NULL) forward_step_h->accept(v);
   if (reverse_step_h != NULL) reverse_step_h->accept(v);
 
-  v.post_step_visit(*this, visitor_state);
+  v.post_axis_visit(*this, visitor_state);
 
   if (predicate_list_h != NULL) predicate_list_h->accept(v);
+
   END_VISITOR ();
 }
 
@@ -2548,16 +2555,21 @@ void Wildcard::accept(parsenode_visitor& v) const
 }
 
 
-// [81] FilterExpr
-// ---------------
+/*******************************************************************************
+
+  [81] FilterExpr ::= PrimaryExpr  PredicateList?
+
+********************************************************************************/
+
 FilterExpr::FilterExpr(
-  const QueryLoc& _loc,
-  rchandle<exprnode> _primary_h,
-  rchandle<PredicateList> _pred_list_h)
-:
+    const QueryLoc& _loc,
+    rchandle<exprnode> _primary_h,
+    rchandle<PredicateList> _pred_list_h)
+  :
   exprnode(_loc),
   primary_h(_primary_h),
-  pred_list_h(_pred_list_h)
+  pred_list_h(_pred_list_h),
+  theIsPathStep(false)
 {
 }
 
@@ -2565,14 +2577,17 @@ FilterExpr::FilterExpr(
 void FilterExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+
   ACCEPT (primary_h);
+  v.post_primary_visit(*this, visitor_state);
   ACCEPT (pred_list_h);
+
   END_VISITOR ();
 }
 
 
 // [82] PredicateList
-// ------------------
+
 PredicateList::PredicateList(
   const QueryLoc& _loc)
 :

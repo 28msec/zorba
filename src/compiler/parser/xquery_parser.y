@@ -3562,8 +3562,10 @@ PathExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [relative]" << endl;
 #endif
-            RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>($1);
-            $$ = rpe == NULL ? $1 : new PathExpr(LOC (@$), ParseConstants::path_relative, $1);
+       RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>($1);
+       $$ = (rpe == NULL ?
+             $1 :
+             new PathExpr(LOC(@$), ParseConstants::path_relative, $1));
 		}
 	;
 
@@ -3576,22 +3578,29 @@ RelativePathExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step]" << endl;
 #endif
-            AxisStep *as = dynamic_cast<AxisStep *>($1);
-            $$ = as != NULL ? new RelativePathExpr(LOC (@$), ParseConstants::st_slash, new ContextItemExpr(LOC (@$)), $1) : $1;
+       AxisStep *as = dynamic_cast<AxisStep *>($1);
+       $$ = (as != NULL ?
+             new RelativePathExpr(LOC (@$),
+                                  ParseConstants::st_slash,
+                                  new ContextItemExpr(LOC(@$)),
+                                  $1) :
+             $1);
 		}
+
 	|	StepExpr  SLASH  RelativePathExpr 
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step/relative]" << endl;
 #endif
-			$$ = new RelativePathExpr(LOC (@$), ParseConstants::st_slash, $1, $3);
+			$$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3);
 		}
+
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step//relative]" << endl;
 #endif
-			$$ = new RelativePathExpr(LOC (@$), ParseConstants::st_slashslash, $1, $3);
+			$$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3);
 		}
 	;
 
@@ -3910,7 +3919,7 @@ FilterExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary]" << endl;
 #endif
-			$$ = $1;
+       $$ = $1;
 		}
 	|	PrimaryExpr  PredicateList
 		{
@@ -3918,8 +3927,8 @@ FilterExpr :
 			 cout << "FilterExpr [primary.predlist]" << endl;
 #endif
 			$$ = new FilterExpr(LOC (@$),
-								$1,
-								dynamic_cast<PredicateList*>($2));
+                          $1,
+                          dynamic_cast<PredicateList*>($2));
 		}
 	;
 

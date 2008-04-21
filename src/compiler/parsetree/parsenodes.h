@@ -3201,18 +3201,17 @@ public:
 };
 
 
+/*******************************************************************************
 
-// [81] FilterExpr
-// ---------------
+  [81] FilterExpr ::= PrimaryExpr  PredicateList?
+
+********************************************************************************/
 class FilterExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= PrimaryExpr  PredicateList  | PrimaryExpr
-|_______________________________________________________________________*/
 {
 protected:
-	rchandle<exprnode> primary_h;
-	rchandle<PredicateList> pred_list_h;
+  rchandle<exprnode>      primary_h;
+  rchandle<PredicateList> pred_list_h;
+  bool                    theIsPathStep;
 
 public:
 	FilterExpr(
@@ -3224,6 +3223,9 @@ public:
 public:
 	rchandle<exprnode> get_primary() const { return primary_h; }
 	rchandle<PredicateList> get_pred_list() const { return pred_list_h; }
+
+  bool isPathStep() const { return theIsPathStep; }
+  void setIsPathStep()       { theIsPathStep = true; }
 
 public:
 	void accept(parsenode_visitor&) const;
