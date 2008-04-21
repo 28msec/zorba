@@ -1366,7 +1366,8 @@ static store::Item_t get_doc (xqpStringStore *uriString, const char **err)
     {
       // load file
       ifstream ifs;
-      ifs.open(uriString->c_str(), ios::in);
+      xqpStringStore_t decodedURI = URI::decode_file_URI(uriString);
+      ifs.open(decodedURI->c_str(), ios::in);
       if (ifs.is_open() == false)
       {
         *err = "File does not exist."; return NULL;
@@ -1385,10 +1386,10 @@ static store::Item_t get_doc (xqpStringStore *uriString, const char **err)
 
 store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t doc;
-  store::Item_t uriItem;
+  store::Item_t   doc;
+  store::Item_t   uriItem;
   xqpStringStore* uriString;
-  const char *err = NULL;
+  const char*     err = NULL;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1399,7 +1400,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
 
   uriString = uriItem->getStringValue();
 
-  if(!URI::is_valid(uriString,true))
+  if(!URI::is_valid(uriString))
     ZORBA_ERROR_PARAM(ZorbaError::FODC0005, xqp_string(uriString), "");
 
   doc = get_doc (uriString, &err);
@@ -1416,10 +1417,10 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
 |_______________________________________________________________________*/
 store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t doc;
-  store::Item_t uriItem;
+  store::Item_t   doc;
+  store::Item_t   uriItem;
   xqpStringStore* uriString;
-  const char *err = NULL;
+  const char*     err = NULL;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1430,7 +1431,7 @@ store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
 
   uriString = uriItem->getStringValue();
 
-  if(!URI::is_valid(uriString,true))
+  if(!URI::is_valid(uriString))
     ZORBA_ERROR_PARAM(ZorbaError::FODC0005, xqp_string(uriString), "");
 
   doc = get_doc (uriString, &err);

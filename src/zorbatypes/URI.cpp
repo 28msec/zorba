@@ -61,6 +61,17 @@ URI::error_t URI::resolve_relative (
   return URI::MAX_ERROR_CODE;
 }
 
+xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
+{
+  if(uri->indexOf("file://") == 0)
+  {
+    xqp_string res(uri->c_str() + 7);
+    return res.getStore();
+  }
+  else
+    return uri;
+}
+
 #if 0  // old relative URI resolution code -- might be useful for low footprint
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri)
 {

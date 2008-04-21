@@ -22,8 +22,9 @@ class URI
         const xqpStringStore_t& base,
         const xqpStringStore_t& rel,
         xqpStringStore_t&       result);
-  };
 
+  static xqpStringStore_t  decode_file_URI(const xqpStringStore_t& uri);
+  };
 }
 /*
  * Local variables:
