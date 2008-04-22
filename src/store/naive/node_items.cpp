@@ -497,6 +497,9 @@ void XmlNode::switchTree(
     if (theParent == NULL)
       newTree->setRoot(this);
 
+    if (oldTree->getRoot() == this)
+      oldTree->setRoot(NULL);
+
     if (assignIds)
     {
       if (theParent != NULL)
@@ -568,6 +571,7 @@ void XmlNode::switchTree(
   catch(...)
   {
     SYNC_CODE(oldTree->getRCLock().release());
+    ZORBA_FATAL(0, "");
     throw;
   }
 

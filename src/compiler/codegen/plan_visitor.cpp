@@ -114,7 +114,7 @@ protected:
   hash64map<vector<LetVarIter_t> *>      lvar_iter_map;
   hash64map<vector<LetVarIter_t> *>    * param_var_iter_map;
   hash64map<vector<LetVarIter_t> *>      catchvar_iter_map;
-  hash64map<vector<LetVarIter_t> *>      copy_var_iter_map;
+  hash64map<vector<ForVarIter_t> *>      copy_var_iter_map;
   hash64map<vector<LetVarIter_t> *>      group_var_iter_map;
 
 public:
@@ -132,7 +132,7 @@ public:
     for_each(pvar_iter_map.begin(), pvar_iter_map.end(), vector_destroyer<ForVarIter_t>());
     for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
     for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
-    for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<LetVarIter_t>());
+    for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<ForVarIter_t>());
     for_each(group_var_iter_map.begin(), group_var_iter_map.end(), vector_destroyer<LetVarIter_t>());
   }
 
@@ -280,14 +280,14 @@ void end_visit(var_expr& v)
   break;
   case var_expr::copy_var:
   {
-    vector<LetVarIter_t> *map = NULL;
+    vector<ForVarIter_t> *map = NULL;
     uint64_t k = (uint64_t) &v;
     bool bound = copy_var_iter_map.get (k, map);
       
     ZORBA_ASSERT (bound);
-    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-            loc,
-            (void *) &v);
+    ForVarIterator* v_p = new ForVarIterator(v.get_varname()->getLocalName(),
+                                             loc,
+                                             (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
   }
@@ -668,13 +668,14 @@ void end_visit(rename_expr& v)
 bool begin_visit(transform_expr& v)
 {
   CODEGEN_TRACE_IN("");
+
   vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
   vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
-  for (;lIter!=lEnd;++lIter)
+  for (; lIter != lEnd; ++lIter)
   {
     rchandle<var_expr> var = (*lIter)->getVar();
     uint64_t k = (uint64_t) &*var;
-    copy_var_iter_map.put(k, new vector<LetVarIter_t>());
+    copy_var_iter_map.put(k, new vector<ForVarIter_t>());
   }
   return true;
 }
@@ -698,7 +699,7 @@ void end_visit(transform_expr& v)
   for(;lIter!=lEnd;++lIter)
   {
     PlanIter_t lInput = pop_stack(lInputs);
-    vector<LetVarIter_t>* lVarIters = 0;
+    vector<ForVarIter_t>* lVarIters = 0;
     var_expr* lVar = (*lIter)->getVar();
     ZORBA_ASSERT(copy_var_iter_map.get((uint64_t)lVar, lVarIters));
     lClauses.push_back(CopyClause (*lVarIters, lInput));

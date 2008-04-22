@@ -491,11 +491,7 @@ public:
 
   virtual void
   applyUpdates();
-
-  virtual void
-  serializeUpdates(serializer& ser, std::ostream& os);
-
-};   /* Item */
+}; 
 
 
 } // namespace store

@@ -89,11 +89,11 @@ public:
     friend class HashMap;
 
   protected:
-    checked_vector<HashEntry<T, V> >*  theHashTab;
-    ulong                              thePos;
+    const checked_vector<HashEntry<T, V> >*  theHashTab;
+    ulong                                    thePos;
 
   protected:
-  iterator(checked_vector<HashEntry<T, V> >* ht, ulong pos) 
+    iterator(const checked_vector<HashEntry<T, V> >* ht, ulong pos) 
       :
       theHashTab(ht),
       thePos(pos)
@@ -142,7 +142,7 @@ public:
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
       
-      HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      const HashEntry<T, V>& entry = (*theHashTab)[thePos];
 
       return std::pair<T, V>(entry.theItem, entry.theValue);
     }
@@ -232,13 +232,13 @@ void clear()
 /*******************************************************************************
 
 ********************************************************************************/
-iterator begin()
+iterator begin() const
 {
   return iterator(&theHashTab, 0);
 }
 
 
-iterator end()
+iterator end() const
 {
   return iterator(&theHashTab, theHashTab.size());
 }

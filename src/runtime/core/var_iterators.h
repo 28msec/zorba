@@ -28,6 +28,7 @@ public:
   void reset(PlanState& planState) { PlanIteratorState::reset(planState); }
 };
 
+
 class ForVarIterator : public NoaryBaseIterator<ForVarIterator, ForVarState>
 {
 protected:

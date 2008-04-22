@@ -100,15 +100,16 @@ public:
 class CopyClause
 {
   friend class TransformIterator;
+
   typedef std::vector<CopyClause>::const_iterator const_iter_t;
   typedef std::vector<CopyClause>::iterator       iter_t;
 
-  std::vector<LetVarIter_t> theCopyVars;
+  std::vector<ForVarIter_t> theCopyVars;
   PlanIter_t                theInput;
 
 public:
   CopyClause(
-    std::vector<LetVarIter_t>& aCopyVars,
+    std::vector<ForVarIter_t>& aCopyVars,
     PlanIter_t                 aInput)
   :
     theCopyVars(aCopyVars),

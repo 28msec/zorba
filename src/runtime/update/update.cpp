@@ -483,68 +483,84 @@ TransformIterator::TransformIterator(
 }
 
 
-TransformIterator::~TransformIterator(){}
+TransformIterator::~TransformIterator()
+{
+}
 
 
 store::Item_t
 TransformIterator::nextImpl(PlanState& aPlanState) const
 {
-  CopyClause::const_iter_t lIter, lEnd;
-  std::vector<LetVarIter_t>::const_iterator lIter2, lEnd2;
-  store::Item_t lItem;
+  std::vector<ForVarIter_t>::const_iterator lVarRefIter; 
+  std::vector<ForVarIter_t>::const_iterator lVarRefEnd;
+  rchandle<store::PUL> lPul;
   store::CopyMode lCopyMode;
+  store::Item_t lItem;
 
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
   {
-    lIter = theCopyClauses.begin();
-    lEnd = theCopyClauses.end();
-    for(; lIter != lEnd; ++lIter)
+    ulong numCopyClauses = theCopyClauses.size(); 
+    std::vector<store::Item*> copyNodes(numCopyClauses);
+
+    // For each copy var compute the target node and bind that node to all
+    // reference of the copy var.
+    for(ulong i = 0; i < numCopyClauses; i++)
     {
-      store::Item_t lCopyItem = consumeNext(lIter->theInput, aPlanState);
-      if (lCopyItem == 0 || !lCopyItem->isNode())
+      const CopyClause& copyClause = theCopyClauses[i];
+
+      store::Item_t lCopyNode = consumeNext(copyClause.theInput, aPlanState);
+      if (lCopyNode == 0 || !lCopyNode->isNode())
       {
         ZORBA_ERROR_LOC(ZorbaError::XUTY0013, loc);
       }
-      lCopyItem = lCopyItem->copyXmlTree(lCopyMode);
-      if (consumeNext(lIter->theInput, aPlanState))
+
+      copyNodes[i] = lCopyNode->copyXmlTree(lCopyMode);
+
+      if (consumeNext(copyClause.theInput, aPlanState))
       {
         ZORBA_ERROR_LOC(ZorbaError::XUTY0013, loc);
       }
 
-      lIter2 = lIter->theCopyVars.begin();
-      lEnd2 = lIter->theCopyVars.end();
-      for(;lIter2!=lEnd2;++lIter2)
+      lVarRefIter = copyClause.theCopyVars.begin();
+      lVarRefEnd = copyClause.theCopyVars.end();
+      for(; lVarRefIter != lVarRefEnd; ++lVarRefIter)
       {
-        store::Iterator_t lSeqIter = new store::ItemIterator(lCopyItem);
-        lSeqIter->open();
-        (*lIter2)->bind(lSeqIter, aPlanState);
+        (*lVarRefIter)->bind(copyNodes[i], aPlanState);
       }
     }
 
-    // Assumption: Codegen did the check if theModifyIter is an updating expr,
-    // empty seq producion expr or an error expr
-    lItem = consumeNext(theModifyIter, aPlanState);
+    // generate the PUL for the modify clause. Assumption: Codegen did the
+    // check if theModifyIter is an updating expr, empty seq producion expr
+    // or an error expr
+    lPul = consumeNext(theModifyIter, aPlanState);
 
-    if (lItem != 0 && lItem->isPul())
+    if (lPul != 0)
     {
-      lItem->applyUpdates();  
-    }
+      ZORBA_FATAL(lPul->isPul(), "");
 
+      lPul->checkTransformUpdates(copyNodes);
+
+      lPul->applyUpdates();  
+    }
+  }
+
+  // Compute and return the results
+  lItem = consumeNext(theReturnIter, aPlanState);
+  while (lItem != 0)
+  {
+    STACK_PUSH(lItem, aState); 
     lItem = consumeNext(theReturnIter, aPlanState);
-    while (lItem != 0)
-    {
-      STACK_PUSH(lItem, aState); 
-      lItem = consumeNext(theReturnIter, aPlanState);
-    }
   }
 
   STACK_END (aState);
 }
 
+
 void 
-TransformIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
+TransformIterator::openImpl ( PlanState& planState, uint32_t& offset ) 
+{
   StateTraitsImpl<PlanIteratorState>::createState(planState, this->stateOffset, offset);
 
   CopyClause::iter_t lIter = theCopyClauses.begin();
@@ -556,6 +572,7 @@ TransformIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
   theModifyIter->open( planState, offset );
   theReturnIter->open( planState , offset);
 }
+
 
 void 
 TransformIterator::resetImpl ( PlanState& planState ) const
@@ -572,6 +589,7 @@ TransformIterator::resetImpl ( PlanState& planState ) const
   theReturnIter->reset( planState );
 }
 
+
 void 
 TransformIterator::closeImpl ( PlanState& planState ) const
 {
@@ -587,8 +605,10 @@ TransformIterator::closeImpl ( PlanState& planState ) const
   StateTraitsImpl<PlanIteratorState>::destroyState(planState, this->stateOffset);
 }
 
+
 uint32_t 
-TransformIterator::getStateSizeOfSubtree() const {
+TransformIterator::getStateSizeOfSubtree() const 
+{
   uint32_t lSize = getStateSize();
   CopyClause::const_iter_t lIter = theCopyClauses.begin();
   CopyClause::const_iter_t lEnd = theCopyClauses.end();

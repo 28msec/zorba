@@ -470,8 +470,6 @@ void ElementNode::replaceContent(
   }
   else
   {
-    ZORBA_FATAL(newTextChild->isConstructed(), "");
-
     newTextChild->switchTree(getTree(), this, 0, copymode);
 
     children().push_back(newTextChild, false);

@@ -88,6 +88,8 @@ public:
   //virtual void serializeUpdates(serializer ser&, std::ostream& os);
 
   virtual void mergeUpdates(Item* other) = 0;
+
+  virtual void checkTransformUpdates(const std::vector<Item*>& rootNodes) const = 0;
 };
 
 

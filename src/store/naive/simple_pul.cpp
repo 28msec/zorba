@@ -573,6 +573,39 @@ void PULImpl::mergeUpdateList(
 /*******************************************************************************
 
 ********************************************************************************/
+void PULImpl::checkTransformUpdates(const std::vector<Item*>& rootNodes) const
+{
+  ulong numRoots = rootNodes.size();
+
+  NodeToUpdatesMap::iterator it = theNodeToUpdatesMap.begin();
+  NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
+
+  for (; it != end; ++it)
+  {
+    const XmlNode* targetNode = (*it).first;
+
+    bool found = false;
+
+    for (ulong i = 0; i < numRoots; i++)
+    {
+      XmlNode* rootNode = reinterpret_cast<XmlNode*>(rootNodes[i]);
+
+      if (targetNode->getTree() == rootNode->getTree())
+      {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+      ZORBA_ERROR(ZorbaError::XUDY0014);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void PULImpl::serializeUpdates(serializer& ser, std::ostream& os)
 {
   NodeToUpdatesMap::iterator it = theNodeToUpdatesMap.begin();
