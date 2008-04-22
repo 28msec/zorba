@@ -49,19 +49,19 @@ namespace zorba {
     thePrinter.endEndVisit();                            \
   }
 
-  
-class PrinterVisitor : public PlanIterVisitor 
+
+class PrinterVisitor : public PlanIterVisitor
 {
 private:
   IterPrinter& thePrinter;
   PlanIterator* theIterator;
   int      theId;
-      
+
 public:
-  PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter) 
+  PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter)
     : thePrinter(aPrinter),
       theIterator(aIter),
-      theId(0) 
+      theId(0)
   {}
 
   void print() {
@@ -79,7 +79,7 @@ public:
       }
       {
         std::stringstream lStream;
-        if (Properties::instance()->stableIteratorIds()) 
+        if (Properties::instance()->stableIteratorIds())
           lStream << theId;
         else
           lStream << aIter;
@@ -93,7 +93,7 @@ public:
   PRINTER_VISITOR_DEFINITION (FnRootIterator)
 
   PRINTER_VISITOR_DEFINITION (FnNodeNameIterator)
-  
+
   PRINTER_VISITOR_DEFINITION (FnNilledIterator)
 
   PRINTER_VISITOR_DEFINITION (FnBaseUriIterator)
@@ -103,7 +103,7 @@ public:
   PRINTER_VISITOR_DEFINITION (FnErrorIterator)
 
   PRINTER_VISITOR_DEFINITION (FnResolveUriIterator)
-  
+
   PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
 
   PRINTER_VISITOR_DEFINITION (StatelessExtFunctionCallIterator)
@@ -394,57 +394,13 @@ public:
 
   PRINTER_VISITOR_DEFINITION (FnAbsIterator)
 
-  void beginVisit( const FnCeilingIterator& a)
-  {
-    thePrinter.startBeginVisit("FnCeilingIterator", ++theId);
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
+  PRINTER_VISITOR_DEFINITION (FnCeilingIterator)
 
-  void endVisit( const FnCeilingIterator& )
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
+  PRINTER_VISITOR_DEFINITION (FnFloorIterator)
 
-  void beginVisit( const FnFloorIterator& a )
-  {
-    thePrinter.startBeginVisit("FnFloorIterator", ++theId);
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
+  PRINTER_VISITOR_DEFINITION (FnRoundIterator)
 
-  void endVisit( const FnFloorIterator& )
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void beginVisit( const FnRoundIterator& a)
-  {
-    thePrinter.startBeginVisit("FnRoundIterator", ++theId);
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void endVisit( const FnRoundIterator& )
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void beginVisit( const FnRoundHalfToEvenIterator& a)
-  {
-    thePrinter.startBeginVisit("FnRoundHalfToEvenIterator", ++theId);
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void endVisit( const FnRoundHalfToEvenIterator& )
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
+  PRINTER_VISITOR_DEFINITION (FnRoundHalfToEvenIterator)
 
   PRINTER_VISITOR_DEFINITION (FnConcatIterator)
 
@@ -482,7 +438,7 @@ public:
 
   void beginVisit ( const FnMinMaxIterator& a){
     thePrinter.startBeginVisit("FnMinMaxIterator", ++theId);
-    thePrinter.addAttribute("type", 
+    thePrinter.addAttribute("type",
         ((a.getType() == FnMinMaxIterator::MIN) != 0 ? std::string("min") : std::string("max")));
     printCommons( &a, theId );
     thePrinter.endBeginVisit(++theId);
@@ -499,35 +455,9 @@ public:
 
   PRINTER_VISITOR_DEFINITION (FnDocAvailableIterator)
 
-  void 
-  beginVisit ( const HashSemiJoinIterator& a) 
-  {
-    thePrinter.startBeginVisit("HashSemiJoinIterator", ++theId);
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
+  PRINTER_VISITOR_DEFINITION (HashSemiJoinIterator)
 
-  void 
-  endVisit ( const HashSemiJoinIterator& ) 
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void
-  beginVisit ( const SortSemiJoinIterator& a) 
-  {
-    thePrinter.startBeginVisit("SortSemiJoinIterator", ++theId);
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void 
-  endVisit ( const SortSemiJoinIterator& ) 
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
+  PRINTER_VISITOR_DEFINITION (SortSemiJoinIterator)
 
   PRINTER_VISITOR_DEFINITION (FnTraceIterator)
 
@@ -588,11 +518,11 @@ public:
   PRINTER_VISITOR_DEFINITION (SubstringBeforeIterator)
 
   PRINTER_VISITOR_DEFINITION (SubstringAfterIterator)
-  
+
   PRINTER_VISITOR_DEFINITION (FnMatchesIterator)
-  
+
   PRINTER_VISITOR_DEFINITION (FnReplaceIterator)
-  
+
   PRINTER_VISITOR_DEFINITION (FnTokenizeIterator)
 
   PRINTER_VISITOR_DEFINITION (ZorNumGen)
@@ -724,7 +654,7 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
     thePrinter.startBeginVisit("OrderByClause", ++theId);
     thePrinter.endBeginVisit(theId);
     a.accept(*this);
-  }    
+  }
 
   void endVisitFlworOrderBy(const PlanIterator& /*a*/){
     thePrinter.startEndVisit();
@@ -805,15 +735,23 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION (FnImplicitTimezoneIterator)
 
   PRINTER_VISITOR_DEFINITION (FnDefaultCollationIterator)
-  
+
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_1);
+
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
+
   PRINTER_VISITOR_DEFINITION(InsertIterator);
+
   PRINTER_VISITOR_DEFINITION(DeleteIterator);
+
   PRINTER_VISITOR_DEFINITION(ReplaceIterator);
+
   PRINTER_VISITOR_DEFINITION(RenameIterator);
+
   PRINTER_VISITOR_DEFINITION(TransformIterator);
+
   PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator);
+
 #ifdef ZORBA_WITH_REST
   PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);
 #endif
