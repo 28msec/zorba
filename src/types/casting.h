@@ -114,13 +114,13 @@ public:
    */
   store::Item_t promote(store::Item_t aItem, const xqtref_t& aTargetType) const;
 
-protected:
-  bool isLetter(uint32_t cp)const;
-  bool isBaseChar(uint32_t cp)const;
-  bool isIdeographic(uint32_t cp)const;
-  bool isDigit(uint32_t cp)const;
-  bool isCombiningChar(uint32_t cp)const;
-  bool isExtender(uint32_t cp)const;
+public:
+  static bool isLetter(uint32_t cp);
+  static bool isBaseChar(uint32_t cp);
+  static bool isIdeographic(uint32_t cp);
+  static bool isDigit(uint32_t cp);
+  static bool isCombiningChar(uint32_t cp);
+  static bool isExtender(uint32_t cp);
 
 private:
   /**

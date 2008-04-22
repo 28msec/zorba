@@ -9,9 +9,9 @@ namespace zorba {
 
 class RootTypeManager;
 class static_context;
-namespace store {
-  class ItemFactory;
-}
+//namespace store {
+//  class ItemFactory;
+//}
 
 class GlobalEnvironment {
   public:

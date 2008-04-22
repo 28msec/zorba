@@ -82,6 +82,9 @@ MESSAGE(STATUS "ZORBA_NO_UNICODE:               " ${ZORBA_NO_UNICODE})
 SET(ZORBA_NO_XMLSCHEMA OFF CACHE BOOL "disable XMLSchema")
 MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA:               " ${ZORBA_NO_XMLSCHEMA})
 
+SET(ZORBA_MINIMAL_STORE OFF CACHE BOOL "activate the minimal store instead of naive store")
+MESSAGE(STATUS "ZORBA_MINIMAL_STORE:               " ${ZORBA_MINIMAL_STORE})
+
 # below we print some variables you might be interested in, when compiling
 
 # if you are building in-source, this is the same as CMAKE_SOURCE_DIR, otherwise 

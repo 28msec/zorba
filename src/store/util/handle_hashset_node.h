@@ -1,8 +1,9 @@
 #ifndef ZORBA_STORE_UTIL_NODE_HANDLE_HASHSET
 #define ZORBA_STORE_UTIL_NODE_HANDLE_HASHSET
 
+#include "common/common.h"
 #include "store/util/hashset.h"
-#include "store/naive/node_items.h"
+//#include STORE_PATH "/node_items.h"
 
 namespace zorba { namespace store {
 

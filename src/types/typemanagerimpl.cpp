@@ -5,7 +5,7 @@
 #include <zorba/item.h>
 #include "zorbatypes/xqpstring.h"
 #include "system/globalenv.h"
-#include "store/naive/atomic_items.h"
+#include "store/current_store_headers.h"
 #include "types/node_test.h"
 #include "types/typeops.h"
 #include "store/api/item_factory.h"

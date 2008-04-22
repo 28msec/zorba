@@ -17,14 +17,13 @@
 #include "types/root_typemanager.h"
 #include "context/root_static_context.h"
 #include "functions/library.h"
-#include "store/naive/simple_store.h"
+#include "store/current_store_headers.h"
 #include "compiler/api/compiler_api.h"
 #include "types/schema/schema.h"
 #ifndef ZORBA_NO_UNICODE
 #include <unicode/utypes.h>
 #include <unicode/udata.h>
 #endif//#ifndef ZORBA_NO_UNICODE
-#include "store/naive/node_items.h"
 #include "store/api/collection.h"
 
 using namespace zorba;
@@ -106,7 +105,9 @@ void GlobalEnvironment::init()
   // shared library used.
   // calling its init is done here because we also want to
   // free it at the end, i.e. when zorba is shutdown
+#ifndef ZORBA_MINIMAL_STORE
   LIBXML_TEST_VERSION
+#endif
 
 #ifdef ZORBA_WITH_REST
   curl_global_init(CURL_GLOBAL_ALL);
@@ -124,7 +125,9 @@ void GlobalEnvironment::destroy()
   // however, after that, a user will have to call 
   // LIBXML_TEST_VERSION if he wants to use libxml2
   // beyond the lifecycle of zorba
+#ifndef ZORBA_MINIMAL_STORE
   xmlCleanupParser(); 
+#endif
 
 #ifdef ZORBA_WITH_REST
   curl_global_cleanup();

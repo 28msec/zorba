@@ -484,6 +484,7 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
     return NULL;
 }
 
+#ifndef ZORBA_NO_XMLSCHEMA
 // user atomic types
 bool Schema::parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSourceType,
     const xqtref_t& aTargetType, store::Item_t &result)
@@ -567,6 +568,7 @@ bool Schema::parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSo
     
     return true;
 }
+#endif//ZORBA_NO_XMLSCHEMA
 
 } // namespace zorba
 
