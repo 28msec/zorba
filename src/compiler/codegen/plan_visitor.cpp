@@ -1333,9 +1333,8 @@ PlanIter_t codegen(
       && (xqp_string ("main query") == descr || ! Properties::instance()->noTreeIds())) 
   {
     cout << "Iterator tree for " << descr << ":\n";
-    XMLIterPrinter vp(cout);
-    PrinterVisitor pv(vp, result);
-    pv.print();
+    XMLIterPrinter vp (cout);
+    print_iter_plan (vp, result);
     cout << endl;
   }
 	
