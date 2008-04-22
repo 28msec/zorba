@@ -55,8 +55,8 @@ protected:
   xqpStringStore                   theWarnings;
 
   //char                             theBuffer[4096];
-  char  current_c;
-  char  prev_c;
+  int  current_c;
+  int  prev_c;
 
   typedef struct
   {
@@ -90,9 +90,10 @@ public:
 
   XmlNode* loadXml(xqpStringStore* uri, std::istream& xmlStream);
 protected:
-  char read_char(std::istream &stream);
+  int  read_char(std::istream &stream);
   void unread_char();
-  bool isWhitespace(char c);
+  bool isWhitespace(int c);
+  bool isNameChar(int c);
   void skip_whitespaces(std::istream &stream);
   bool read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_attr);
   bool read_attributes(std::istream &stream, attr_list_t &all_attributes);
@@ -100,9 +101,12 @@ protected:
   bool compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2);
   bool read_tag(std::istream& stream);
   bool read_characters(std::istream &stream, bool *end_document);
+  bool read_comment(std::istream &stream);
+  bool read_pi(std::istream &stream);
 protected:
   void abort();
   void reset();
+  void clear_tag_stack();
   long readPacket(std::istream& stream, char* buf, long size);
 
   void setRoot(XmlNode* root);

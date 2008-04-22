@@ -24,6 +24,7 @@
 
 #include "types/casting.h"
 #include "context/namespace_context.h"
+#include <string>
 
 namespace zorba { namespace store {
 
@@ -87,8 +88,18 @@ XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
 ********************************************************************************/
 XmlLoader::~XmlLoader()
 {
+  ///delete all remaining tags
+  clear_tag_stack();
 }
 
+void XmlLoader::clear_tag_stack()
+{
+  std::list<TAG_ELEM*>::reverse_iterator    tag_it;
+
+  for(tag_it = tag_stack.rbegin(); tag_it != tag_stack.rend(); tag_it++)
+    delete (*tag_it);
+  tag_stack.clear();
+}
 
 /*******************************************************************************
   Method called to do cleanup in case of errors.
@@ -123,6 +134,8 @@ void XmlLoader::abort()
   }
 
   theWarnings.clear();
+
+  clear_tag_stack();
 }
 
 
@@ -144,6 +157,8 @@ void XmlLoader::reset()
   ZORBA_ASSERT(theBindingsStack.empty());
 
   theWarnings.clear();
+
+  clear_tag_stack();
 }
 
 
@@ -192,7 +207,7 @@ void XmlLoader::setRoot(XmlNode* root)
 //  return -1;
 //}
 
-char XmlLoader::read_char(std::istream &stream)
+int XmlLoader::read_char(std::istream &stream)
 {
   prev_c = current_c;
   if(current_c)
@@ -200,7 +215,9 @@ char XmlLoader::read_char(std::istream &stream)
     current_c = 0;
     return prev_c;
   }
-  stream >> prev_c;
+  prev_c = stream.get();
+  if(stream.eof())
+    return (prev_c=0);
   return prev_c;
 }
 
@@ -209,7 +226,7 @@ void XmlLoader::unread_char()
   current_c = prev_c;
 }
 
-bool XmlLoader::isWhitespace(char c)
+bool XmlLoader::isWhitespace(int c)
 {
   if((c == ' ') || (c == '\t') || (c == '\r') || (c == '\n'))
     return true;
@@ -217,9 +234,19 @@ bool XmlLoader::isWhitespace(char c)
     return false;
 }
 
+bool XmlLoader::isNameChar(int c)
+{
+  if((c != '.') && (c != '-') && (c != '_') && (c != ':') &&
+    !GenericCast::isLetter(c) && !GenericCast::isDigit(c) &&
+    !GenericCast::isCombiningChar(c) && !GenericCast::isExtender(c))
+    return false;
+  else
+    return true;
+}
+
 void XmlLoader::skip_whitespaces(std::istream &stream)
 {
-  char c;
+  int c;
   while(1)
   {
     c = read_char(stream);
@@ -235,7 +262,7 @@ void XmlLoader::skip_whitespaces(std::istream &stream)
 
 bool XmlLoader::read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_attr)
 {
-  char c;
+  int c;
   c = read_char(stream);
   if(c != ':')
   {
@@ -301,7 +328,7 @@ bool XmlLoader::read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_at
 bool XmlLoader::read_attributes(std::istream &stream, attr_list_t &all_attributes)
 {
   ATTR_ELEM   new_elem;
-  char c;
+  int c;
   while(1)
   {
     //for each attribute
@@ -311,6 +338,7 @@ bool XmlLoader::read_attributes(std::istream &stream, attr_list_t &all_attribute
     skip_whitespaces(stream);
 
     c = read_char(stream);
+    unread_char();
     if(!c)
       return false;
     if((c == '>') || (c == '/'))
@@ -345,6 +373,7 @@ bool XmlLoader::read_attributes(std::istream &stream, attr_list_t &all_attribute
       last_attr.attr_value += c;
     }
   }
+  return true;
 }
 
 bool XmlLoader::fill_in_uri(std::string &prefix, std::string &result_uri)
@@ -378,9 +407,20 @@ bool XmlLoader::compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2)
 bool XmlLoader::read_tag(std::istream& stream)
 {
   char  c;
+  bool is_end_tag = false;
+
   c = read_char(stream);
   if(c != '<')
     return false;
+  c = read_char(stream);
+  if(c == '/')
+    is_end_tag = true;
+  else if(c == '!')
+    return read_comment(stream);
+  else if(c == '?')
+    return read_pi(stream);
+  else
+    unread_char();
 
   skip_whitespaces(stream);
 
@@ -393,9 +433,8 @@ bool XmlLoader::read_tag(std::istream& stream)
   }
 
   skip_whitespaces(stream);
-  c = read_char(stream);
 
-  if(c == '/')
+  if(is_end_tag)
   {
     if(tag_stack.empty())
     {
@@ -415,7 +454,7 @@ bool XmlLoader::read_tag(std::istream& stream)
     }
 
     delete tag_elem;
-endTag:
+
     skip_whitespaces(stream);
     c = read_char(stream);
     if(c != '>')
@@ -430,10 +469,8 @@ endTag:
     tag_stack.pop_back();
     return true;
   }
-  else
-    unread_char();
 
-  skip_whitespaces(stream);
+//  skip_whitespaces(stream);
 
   //read all attributes and namespaces in this tag
   attr_list_t   all_attributes;
@@ -551,8 +588,15 @@ endTag:
   c = read_char(stream);
   if(c == '/')
   {
+    c = read_char(stream);
+    if(c != '>')
+      return false;
     ///end this tag
-    goto endTag;
+    //notify as SAX event
+    endElement(tag_elem->name.localname.c_str(), tag_elem->name.prefix.c_str(), tag_elem->name.uri.c_str());
+
+    delete tag_elem;
+    tag_stack.pop_back();
   }
 
   return true;
@@ -560,7 +604,7 @@ endTag:
 
 bool XmlLoader::read_characters(std::istream &stream, bool *end_document)
 {
-  char c;
+  int c;
   std::string chars;
 
   *end_document = false;
@@ -590,6 +634,107 @@ bool XmlLoader::read_characters(std::istream &stream, bool *end_document)
   return true;
 }
 
+bool XmlLoader::read_comment(std::istream &stream)
+{
+  int c;
+  std::string comment_str;
+
+  c = read_char(stream);
+  if(c != '-')
+    return false;
+  c = read_char(stream);
+  if(c != '-')
+    return false;
+
+  while(1)
+  {
+    c = read_char(stream);
+    if(!c)
+      return false;
+    if(c == '-')
+    {
+      c = read_char(stream);
+      if(c != '-')
+      {
+        comment_str += '-';
+        comment_str += c;
+        continue;
+      }
+      c = read_char(stream);
+      if(c != '>')
+        return false;
+      break;
+    }
+    comment_str += c;
+  }
+
+
+  //send comment as SAX event
+  comment(comment_str.c_str());
+
+  return true;
+}
+
+bool XmlLoader::read_pi(std::istream &stream)
+{
+  int c;
+  std::string pitarget;
+  std::string pidata;
+
+  c = read_char(stream);
+  if(!((c == '_') || (c == ':') || GenericCast::isLetter(c)))
+    return false;
+  pitarget = c;
+  while(1)
+  {
+    c = read_char(stream);
+    if(isWhitespace(c))
+      break;
+    if(c == '?')
+      break;
+    if(!isNameChar(c))
+      return false;
+    pitarget += c;
+  }
+
+  if((pitarget.length() == 3) &&
+    (tolower(pitarget[0]) == 'x') &&
+    (tolower(pitarget[1]) == 'm') &&
+    (tolower(pitarget[2]) == 'l'))
+    return false;
+
+  if(c != '?')
+  {
+    //read pi data
+    skip_whitespaces(stream);
+    while(1)
+    {
+      c = read_char(stream);
+      if(!c)
+        return false;
+      if(c == '?')
+      {
+        c = read_char(stream);
+        if(c == '>')
+          break;
+        pidata += '?';
+      }
+      pidata += c;
+    }
+  }
+  else
+  {
+    c = read_char(stream);
+    if(c != '>')
+      return false;
+  }
+
+  //send Processing Instruction as SAX event
+  processingInstruction(pitarget.c_str(), pidata.c_str());
+
+  return true;
+}
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -597,6 +742,9 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 {
   bool  end_document = false;
   theDocUri = uri;
+  theTree = new XmlTree(NULL, GET_STORE().getTreeId());
+  prev_c = 0;
+  current_c = 0;
 
   startDocument();
 
@@ -605,21 +753,36 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
   {
     if(!read_tag(stream))
     {
+      endDocument();
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
                                      ZorbaError::XQP0017_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
+      abort();
+      return NULL;
     }
     if(!read_characters(stream, &end_document))
     {
+       endDocument();
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
                                      ZorbaError::XQP0017_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
+      abort();
+      return NULL;
     }
   }
 
   endDocument();
+  if(!tag_stack.empty())
+  {
+    ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
+                                   ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                   "The document with URI " << *theDocUri
+                                   <<" is not well formed", "");
+    abort();
+    return NULL;
+  }
 
 /*  xmlParserCtxtPtr ctxt = NULL;
   long numChars;
