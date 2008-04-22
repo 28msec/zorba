@@ -362,7 +362,9 @@ public:
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
 	rchandle<QueryBody> get_query_body() const { return query_body_h; }
   rchandle<VersionDecl> get_version_decl() const { return version_decl_h; }
+
   void set_version_decl(rchandle<VersionDecl> vd) { version_decl_h = vd; }
+  void set_prolog (rchandle<Prolog> prolog_) { prolog_h = prolog_; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -451,6 +453,8 @@ public:
 	rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
 	rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
 
+	void set_vfo_list(rchandle<VFO_DeclList> vfo_list_) { vfo_list_h = vfo_list_; }
+
 public:
 	void accept(parsenode_visitor&) const;
 
@@ -497,6 +501,7 @@ public:
 
 public:
 	void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
+  void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin (), vfo_h); }
 	rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
   std::vector<rchandle<parsenode> >::iterator begin () { return vfo_hv.begin (); }
   std::vector<rchandle<parsenode> >::iterator end   () { return vfo_hv.end   (); }

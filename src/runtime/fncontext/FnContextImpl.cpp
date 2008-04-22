@@ -1,9 +1,10 @@
 /*
  *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: David Graf, Tim Kraska, Markos Zaharioudakis
+ *  Authors: David Graf, Tim Kraska, Markos Zaharioudakis, Dan Muresan
  */
 
 #include "compiler/api/compiler_api.h"
+#include "compiler/parsetree/parsenodes.h"
 
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/core/item_iterator.h"
@@ -58,9 +59,28 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
-  static PlanIter_t compile (XQueryCompiler &compiler, xqp_string query) {
+  static PlanIter_t compile (XQueryCompiler &compiler, xqp_string query, checked_vector<store::Item_t> varnames) {
     istringstream os (query);
-    return compiler.compile (os);
+    parsenode_t ast = compiler.parse (os);
+    QueryLoc loc;
+
+    rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
+    assert (mm != NULL);
+    rchandle<Prolog> prolog = mm->get_prolog ();
+    if (prolog == NULL) {
+      prolog = new Prolog (loc, NULL, NULL);
+      mm->set_prolog (prolog);
+    }
+    rchandle<VFO_DeclList> vfo = prolog->get_vfo_list ();
+    if (vfo == NULL) {
+      vfo = new VFO_DeclList (loc);
+      prolog->set_vfo_list (vfo);
+    }
+
+    for (int i = (int) varnames.size () - 1; i >= 0; i--)
+      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ().getp()), NULL, NULL));
+
+    return compiler.compile (ast);
   }
 
 store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
@@ -75,10 +95,13 @@ store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
   state->ccb.reset (ccb);
   ccb->m_sctx = ccb->m_sctx->create_child_context ();
   item = CONSUME (0);
-  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue ()), ccb, dctx.get ()));
+  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames), ccb, dctx.get ()));
 
   for (unsigned i = 0; i < theChildren.size () - 1; i++) {
     store::Iterator_t lIter = new PlanIteratorWrapper (theChildren [i + 1], planState);
+    // TODO: is saving an open iterator efficient?
+    // Then again if we close theChildren [1] here,
+    // we won't be able to re-open it later via the PlanIteratorWrapper
     dctx->add_variable (ccb->m_sctx->qname_internal_key (varnames [i]),
                         lIter);
   }

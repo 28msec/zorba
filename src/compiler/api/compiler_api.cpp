@@ -39,12 +39,8 @@ namespace zorba {
   XQueryCompiler::~XQueryCompiler()
   { }
 
-  PlanIter_t
-  XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
-  {
-    parsenode_t lAST = parse(aXQuery, aFileName);
-
-    expr_t lExpr = normalize(lAST);
+  PlanIter_t XQueryCompiler::compile(parsenode_t ast) {
+    expr_t lExpr = normalize(ast);
     lExpr = optimize(lExpr);
 
     // TODO we might pass the CompilerCB here, however, we also need it in the runtime
@@ -53,6 +49,13 @@ namespace zorba {
     PlanIter_t plan = codegen ("main query", lExpr, theCompilerCB);
 
     return plan;
+  }
+
+  PlanIter_t
+  XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
+  {
+    parsenode_t lAST = parse(aXQuery, aFileName);
+    return compile (lAST);
   }
 
   parsenode_t

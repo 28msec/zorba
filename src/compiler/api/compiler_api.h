@@ -9,25 +9,22 @@
 namespace zorba {
 
   class XQueryCompiler {
-    public:
-      XQueryCompiler(CompilerCB*  aCompilerCB);
-
-      virtual ~XQueryCompiler();
-
-      PlanIter_t
-      compile(std::istream& aXQuery, const xqpString & aFileName = "");
-
-    protected:
-      parsenode_t
-      parse(std::istream& aXQuery, const xqpString & aFileName = "");
-
-      expr_t
-      normalize(parsenode_t);
-
-      expr_t
-      optimize(expr_t lExpr);
-
-      CompilerCB* theCompilerCB;
+  public:
+    XQueryCompiler(CompilerCB*  aCompilerCB);
+    
+    virtual ~XQueryCompiler();
+    
+    parsenode_t parse(std::istream& aXQuery, const xqpString & aFileName = "");
+    
+    PlanIter_t compile(std::istream& aXQuery, const xqpString & aFileName = "");
+    PlanIter_t compile(parsenode_t);
+    
+  protected:
+    expr_t normalize(parsenode_t);
+    
+    expr_t optimize(expr_t lExpr);
+    
+    CompilerCB* theCompilerCB;
   };
 
   class XQueryCompilerSubsystem {
