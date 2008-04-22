@@ -24,14 +24,6 @@ namespace zorba {
 
   ItemFactoryImpl::~ItemFactoryImpl() {}
 
-  Item
-  ItemFactoryImpl::createInteger(int aInteger) 
-  {
-    store::Item_t lItem;
-    lItem = theItemFactory->createInt(aInteger);
-
-    return &*lItem;
-  }
 
   Item
   ItemFactoryImpl::createString(const String& aString)
@@ -120,31 +112,49 @@ namespace zorba {
   }
     
   Item 
-  ItemFactoryImpl::createDecimal (unsigned long aValue)
+  ItemFactoryImpl::createDecimalFromLong (unsigned long aValue)
   {
     store::Item_t lItem;
+
+    // no error possible
+    Decimal lDecimal = Decimal::parseULong(aValue);
+    lItem = theItemFactory->createDecimal(lDecimal);
     return &*lItem;
   }
     
   Item 
-  ItemFactoryImpl::createDecimal (double aValue)
+  ItemFactoryImpl::createDecimalFromDouble (double aValue)
   {
     store::Item_t lItem;
+    Decimal lDecimal;
+    if (Decimal::parseNativeDouble(aValue, lDecimal)) {
+      lItem = theItemFactory->createDecimal(lDecimal);
+      return &*lItem;
+    }
+
     return &*lItem;
   }
 
   Item 
   ItemFactoryImpl::createDecimal (const String& aValue)
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
+    Decimal lDecimal;
+    if (Decimal::parseString(lString->c_str(), lDecimal)) {
+      lItem = theItemFactory->createDecimal(lDecimal);
+      return &*lItem;
+    }
+
     return &*lItem;
   }
 
   Item
-  ItemFactoryImpl::createInteger(long aInteger)
+  ItemFactoryImpl::createInteger(long long aInteger)
   {
     store::Item_t lItem;
+    Integer lInteger = Integer::parseLongLong(aInteger);
+    lItem = theItemFactory->createInteger(lInteger);
     return &*lItem;
   }
 
@@ -153,6 +163,11 @@ namespace zorba {
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aInteger );
     store::Item_t lItem;
+    Integer lInteger;
+    if (Integer::parseString(lString->c_str(), lInteger)) {
+      lItem = theItemFactory->createInteger(lInteger);
+      return &*lItem;
+    }
     return &*lItem;
   }
     

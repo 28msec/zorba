@@ -98,7 +98,7 @@ namespace zorba {
        * @return The Decimal Item
        */
       virtual Item 
-      createDecimal (unsigned long aValue) = 0;
+      createDecimalFromLong (unsigned long aValue) = 0;
     
       /** \brief Creates a Decimal Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#decimal]
@@ -107,7 +107,7 @@ namespace zorba {
        * @return The Decimal Item
        */
       virtual Item 
-      createDecimal (double aValue) = 0;
+      createDecimalFromDouble (double aValue) = 0;
 
       /** \brief Creates a Decimal Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#decimal]
@@ -121,20 +121,11 @@ namespace zorba {
       /** \brief Creates an Integer Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#integer]
        *
-       * @param aInteger int representation of the Integer.
-       * @return The Integer Item
-       */
-      virtual Item
-      createInteger(int aInteger) = 0;
-
-      /** \brief Creates an Integer Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#integer]
-       *
        * @param aInteger unsigned long representation of the Integer.
        * @return The Integer Item
        */
       virtual Item
-      createInteger(long aInteger) = 0;
+      createInteger(long long aInteger) = 0;
 
       /** \brief Creates an Integer Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#integer]

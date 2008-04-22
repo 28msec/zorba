@@ -1,7 +1,6 @@
 #include <cassert>
 #include <iostream>
 
-
 #include <zorba/zorba.h>
 
 using namespace zorba;
@@ -49,15 +48,6 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "anyURI") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "http://www.flworfound.org/");
-
-    /** Integer */
-    lItem = lFactory->createInteger(5);
-    assert( checkType(lItem.getType(), "int") ); // TODO type should be integer not int
-    assert( lItem.isAtomic() );
-    assert( lItem.getStringValue() == "5" );
-    assert( ! lItem.isNaN() );
-    CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
-    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /** QName */
     lItem = lFactory->createQName("http://www.flworfound.org", "flwor", "name");
@@ -114,11 +104,33 @@ int itemfactory(int argc, char* argv[])
     assert ( ! lItem.getBooleanValue() );
 
     /** Decimal */
-//  lItem = lFactory->createDecimal(12678967);
-//  assert ( checkType(lItem.getType(), "decimal") );
-//  assert ( lItem.isAtomic() );
-//  assert ( lItem.getStringValue() = "12678967" );
-//  assert ( !lItem.getEBV().getBooleanValue() );
+    lItem = lFactory->createDecimalFromLong(12678967);
+    assert ( checkType(lItem.getType(), "decimal") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "12678967" );
+    assert ( lItem.getEBV().getBooleanValue() );
+
+    lItem = lFactory->createDecimalFromDouble(12678967.32342);
+    assert ( checkType(lItem.getType(), "decimal") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "12678967.32342" );
+    assert ( lItem.getEBV().getBooleanValue() );
+
+    lItem = lFactory->createDecimal("NaN");
+    assert ( lItem.isNull() );
+
+    /** Integer */
+    lItem = lFactory->createInteger(23424223);
+    assert ( checkType(lItem.getType(), "integer") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "23424223" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.isNaN() );
+    CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createInteger("NaN");
+    assert ( lItem.isNull() );
 
   } catch (ZorbaException &e) {
     std::cerr << e << std::endl;

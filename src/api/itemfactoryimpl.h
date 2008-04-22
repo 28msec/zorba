@@ -41,19 +41,16 @@ namespace zorba {
       createBoolean(bool aValue);
     
       virtual Item 
-      createDecimal (unsigned long aValue);
+      createDecimalFromLong (unsigned long aValue);
     
       virtual Item 
-      createDecimal (double aValue);
+      createDecimalFromDouble (double aValue);
 
       virtual Item 
       createDecimal (const String& aValue);
 
       virtual Item
-      createInteger(int aInteger);
-
-      virtual Item
-      createInteger(long aInteger);
+      createInteger(long long aInteger);
 
       virtual Item
       createInteger(const String& aInteger);
