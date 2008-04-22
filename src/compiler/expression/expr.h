@@ -181,7 +181,6 @@ class sequential_expr : public expr {
 public:
   expr_kind_t get_expr_kind () { return constructor_expr_kind; }
 
-  sequential_expr (const QueryLoc& loc) : expr (loc) {}
   sequential_expr (const QueryLoc& loc, expr_t first, expr_t second)
     : expr (loc)
   {
@@ -189,8 +188,14 @@ public:
     sequence.push_back (second);
   }
 
+  sequential_expr (const QueryLoc& loc, checked_vector<expr_t> sequence_, expr_t result)
+    : expr (loc), sequence (sequence_)
+  {
+    sequence.push_back (result);
+  }
+
   const expr_t &operator [] (int i) const { return sequence [i]; }
-  expr_t &operator [] (int i) { return sequence [i]; }
+  expr_t &operator [] (int i) { invalidate (); return sequence [i]; }
 
   bool cache_compliant () { return true; }
 

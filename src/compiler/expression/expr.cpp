@@ -261,9 +261,7 @@ string expr::toString () const {
 
   xqtref_t sequential_expr::return_type_impl(static_context *sctx)
   {
-    return (sequence.empty ())
-      ? GENV_TYPESYSTEM.EMPTY_TYPE
-      : sequence [sequence.size ()]->return_type (sctx);
+    return sequence [sequence.size () - 1]->return_type (sctx);
   }
 
   expr_iterator_data *sequential_expr::make_iter () {
