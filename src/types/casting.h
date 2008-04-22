@@ -36,7 +36,18 @@ namespace zorba
  */
 class GenericCast
 {
+  typedef store::Item_t (*CastFunc)(store::Item*, store::ItemFactory*);
+  typedef store::Item_t (*DownCastFunc)(
+                            const store::Item*, 
+                            TypeConstants::atomic_type_code_t aTargetAtomicType,
+                            RootTypeManager& aTS,
+                            store::ItemFactory*
+                        ); 
 private:
+  static const int theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+  static const CastFunc theCastMatrix[23][23];
+  static const DownCastFunc theDownCastMatrix[23];
+
   GenericCast() {}
     
 public:
@@ -45,6 +56,7 @@ public:
   static GenericCast* instance();
 
 public:
+
   /**
    * Executes the casting of the passed item. If the passed item has the same type or a subtype
    * of the passed targetType, the passed item is directly returned.
