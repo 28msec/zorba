@@ -208,13 +208,15 @@ constructed by static_context::qname_internal_key( .. )
 */
 void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_iterator)
 {
-  store::Iterator* lIter = &*var_iterator;
-  lIter->addReference(var_iterator->getSharedRefCounter()
-                      SYNC_PARAM2(var_iterator->getRCLock()));
-
+  // TODO: lazy conversion to a temp sequence
   dctx_value_t v;
-  v.type = dynamic_context::dctx_value_t::var_iterator_val;
-  v.val.var_iterator = lIter;
+  var_iterator->open ();
+  store::TempSeq_t seq = GENV_STORE.createTempSeq (var_iterator.getp());
+  var_iterator->close ();
+  seq->addReference(seq->getSharedRefCounter()
+                    SYNC_PARAM2(seq->getRCLock()));
+  v.type = dynamic_context::dctx_value_t::temp_seq_val;
+  v.val.temp_seq = seq.getp();
   keymap.put ("var:" + var_name, v);
 }
 
@@ -234,16 +236,7 @@ store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) {
     else
       return NULL;///variable not found
 	}
-  if (val.type == dynamic_context::dctx_value_t::var_iterator_val) {
-    store::TempSeq_t seq = GENV_STORE.createTempSeq (val.val.var_iterator);
-    val.val.var_iterator->removeReference(val.val.var_iterator->getSharedRefCounter()
-                                           SYNC_PARAM2(val.val.var_iterator->getRCLock()));
-    seq->addReference(seq->getSharedRefCounter()
-                      SYNC_PARAM2(seq->getRCLock()));
-    val.type = dynamic_context::dctx_value_t::temp_seq_val;
-    val.val.temp_seq = seq.getp();
-    keymap.put (key, val);
-  }
+  assert (val.type == dynamic_context::dctx_value_t::temp_seq_val);
   return val.val.temp_seq->getIterator ();
 }
 
