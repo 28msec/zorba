@@ -25,6 +25,7 @@
 #include "types/casting.h"
 #include "context/namespace_context.h"
 #include <string>
+#include <stdarg.h>
 
 namespace zorba { namespace store {
 
