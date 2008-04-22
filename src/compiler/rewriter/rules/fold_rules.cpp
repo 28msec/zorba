@@ -21,7 +21,7 @@ using namespace std;
 namespace zorba {
 
   static expr_t execute (CompilerCB* compilercb, expr_t node, vector<store::Item_t> &result) {
-    PlanIter_t plan = codegen ("const-folded expr", node);
+    PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
     QueryLoc loc = LOC (node);
     store::Item_t item;
     try {

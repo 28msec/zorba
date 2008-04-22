@@ -34,6 +34,8 @@ public:
 
 NARY_ITER_STATE (CtxVariableIterator, CtxVariableIteratorState);
 
+NARY_ITER (CtxVarAssignIterator);
+
 class EvalIteratorState : public PlanIteratorState {
 public:
   PlanWrapperHolder eval_plan;

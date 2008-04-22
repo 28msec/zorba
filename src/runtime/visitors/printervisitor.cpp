@@ -720,6 +720,8 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
 
   PRINTER_VISITOR_DEFINITION (CtxVariableIterator)
 
+  PRINTER_VISITOR_DEFINITION (CtxVarAssignIterator)
+
   PRINTER_VISITOR_DEFINITION (EvalIterator)
 
   PRINTER_VISITOR_DEFINITION (OpIsSameNodeIterator)

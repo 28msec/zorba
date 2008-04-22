@@ -66,7 +66,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::openImpl(planState, offset);
   UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
 
-  state->thePlan = theUDF->get_plan().getp();
+  state->thePlan = theUDF->get_plan(planState.theCompilerCB).getp();
   state->thePlanStateSize = state->thePlan->getStateSizeOfSubtree();
   state->theFnBodyStateBlock = new PlanState(state->thePlanStateSize);
   state->theFnBodyStateBlock->theRuntimeCB = planState.theRuntimeCB;

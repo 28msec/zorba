@@ -9,6 +9,7 @@
 #include "runtime/core/item_iterator.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/util/iterator_impl.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
@@ -32,10 +33,7 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
   CtxVariableIteratorState* state;
   DEFAULT_STACK_INIT(CtxVariableIteratorState, state, planState);
 
-  varName = consumeNext(theChildren[0].getp(), planState);
-
-  if (varName == NULL)
-    return NULL;
+  varName = CONSUME (0);
 
 	if(varName->getStringValue ()->equals (&dot)) {  // looking for context item?
     item = planState.theRuntimeCB->theDynamicContext->context_item();
@@ -67,25 +65,22 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 
 store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
   store::Item_t item;
-  EvalIteratorState* state;
   CompilerCB *ccb = new CompilerCB (*planState.theCompilerCB);
   XQueryCompiler compiler (ccb);
   auto_ptr<dynamic_context> dctx (new dynamic_context (planState.dctx ()));
 
+  EvalIteratorState* state;
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
-
-#if 0
-#endif
 
   state->ccb.reset (ccb);
   ccb->m_sctx = ccb->m_sctx->create_child_context ();
-  item = consumeNext (theChildren [0].getp (), planState);
+  item = CONSUME (0);
   state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue ()), ccb, dctx.get ()));
 
   for (unsigned i = 0; i < theChildren.size () - 1; i++) {
     store::Iterator_t lIter = new PlanIteratorWrapper (theChildren [i + 1], planState);
     dctx->add_variable (ccb->m_sctx->qname_internal_key (varnames [i]),
-                        GENV_STORE.createTempSeq (lIter)->getIterator ());
+                        lIter);
   }
 
   while (NULL != (item = state->eval_plan->next ())) {
@@ -95,5 +90,19 @@ store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
   STACK_END (state);
 }
 
+store::Item_t CtxVarAssignIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t varName;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  varName = CONSUME (0);
+
+  planState.theRuntimeCB->theDynamicContext->add_variable (static_context::qname_internal_key (varName),
+                                                           new PlanIteratorWrapper (theChildren [1], planState));
+
+  STACK_END (state);
+}
 
 }

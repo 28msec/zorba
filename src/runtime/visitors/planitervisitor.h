@@ -146,6 +146,7 @@ namespace zorba
   class CastableIterator;
   class PromoteIterator;
   class CtxVariableIterator;
+  class CtxVarAssignIterator;
   class EvalIterator;
   class FnDateTimeConstructorIterator;
   class FnYearsFromDurationIterator;
@@ -537,6 +538,8 @@ namespace zorba
     PLAN_ITER_VISITOR (FnTimezoneFromTimeIterator);
 
     PLAN_ITER_VISITOR (CtxVariableIterator);
+
+    PLAN_ITER_VISITOR (CtxVarAssignIterator);
 
     PLAN_ITER_VISITOR (EvalIterator);
 

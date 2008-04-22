@@ -299,10 +299,10 @@ expr_t result ()
   Create a flwor expr with one LET clause for each global var and a return 
   clause consisting of the given expr e.
 ********************************************************************************/
-expr_t wrap_in_globalvar_flwor(expr_t e)
+expr_t wrap_in_globalvar_assign(expr_t e)
 {
-  const function *ctxf = LOOKUP_OP1 ("ctxvariable");
-  flwor_expr::clause_list_t clauses;
+  const function *ctxf = LOOKUP_OP2 ("ctxvar-assign");
+  checked_vector<expr_t> assigns;
 
   for (std::list<global_binding>::iterator i = theGlobalVars.begin ();
       i != theGlobalVars.end ();
@@ -312,20 +312,17 @@ expr_t wrap_in_globalvar_flwor(expr_t e)
     var_expr_t var = b.first;
     expr_t expr = b.second;
 
-    if (expr == NULL)
-    {
-      expr = new fo_expr (var->get_loc(),
-                          ctxf,
-                          new const_expr(var->get_loc(), var->get_varname ()));
+    if (expr != NULL) {
+      expr_t qname_expr = new const_expr (var->get_loc(), var->get_varname ());
+      assigns.push_back (new fo_expr (var->get_loc(),
+                                      ctxf, qname_expr, expr));
     }
-
-    clauses.push_back (wrap_in_letclause (expr, var));
   }
 
-  if (! clauses.empty ())
+  if (! assigns.empty ())
   {
     expr_update_t lUpdateType = e->getUpdateType();
-    e = new flwor_expr (e->get_loc(), clauses, e);
+    e = new sequential_expr (e->get_loc(), assigns, e);
     e->setUpdateType(lUpdateType);
   }
 
@@ -505,7 +502,7 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  nodestack.push(wrap_in_globalvar_flwor(pop_nodestack()));
+  nodestack.push(wrap_in_globalvar_assign(pop_nodestack()));
 }
 
 
@@ -1861,11 +1858,9 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   if (sctx_p->lookup_var (varname) != NULL)
     ZORBA_ERROR (ZorbaError::XQST0049);
 
-  theGlobalVars.push_back(global_binding(bind_var(v.get_location(),
-                                                  varname,
-                                                  var_expr::let_var),
-                                         v.is_extern() ? expr_t(NULL) :
-                                                         pop_nodestack()));
+  var_expr_t ve = bind_var (v.get_location(), varname, var_expr::context_var);
+  expr_t val = v.is_extern() ? expr_t(NULL) : pop_nodestack();
+  theGlobalVars.push_back(global_binding(ve, val));
 }
 
 
@@ -2059,7 +2054,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       body = &*flwor;
     }
 
-    body = wrap_in_globalvar_flwor(body);
     assert(body != NULL);
 
     user_function *udf = dynamic_cast<user_function *>(

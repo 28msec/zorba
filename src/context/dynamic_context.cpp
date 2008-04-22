@@ -24,13 +24,16 @@
 
 #include <assert.h>
 #include <time.h>
+
 #include "store/api/iterator.h"
+#include "store/api/temp_seq.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
 
 #include "system/globalenv.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "types/root_typemanager.h"
-#include "store/api/item_factory.h"
 #include "runtime/api/plan_wrapper.h"
 
 using namespace std;
@@ -94,8 +97,17 @@ dynamic_context::~dynamic_context()
 		if(!strncmp(keybuff, "var:", 4))
 		{
 			val = &(*it).val;
-			val->var_iterator->removeReference(val->var_iterator->getSharedRefCounter()
-                                         SYNC_PARAM2(val->var_iterator->getRCLock()));
+      switch (val->type) {
+      case dynamic_context::dctx_value_t::var_iterator_val:
+        val->val.var_iterator->removeReference(val->val.var_iterator->getSharedRefCounter()
+                                               SYNC_PARAM2(val->val.var_iterator->getRCLock()));
+        break;
+      case dynamic_context::dctx_value_t::temp_seq_val:
+        val->val.temp_seq->removeReference(val->val.temp_seq->getSharedRefCounter()
+                                           SYNC_PARAM2(val->val.temp_seq->getRCLock()));
+        break;
+      default: assert (false);
+      }
 		}
 	}
 }
@@ -194,35 +206,45 @@ int  dynamic_context::get_implicit_timezone()
 var_name is expanded name localname:nsURI
 constructed by static_context::qname_internal_key( .. )
 */
-void	dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_iterator)
+void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_iterator)
 {
   store::Iterator* lIter = &*var_iterator;
   lIter->addReference(var_iterator->getSharedRefCounter()
                       SYNC_PARAM2(var_iterator->getRCLock()));
 
-  dctx_value_t v = { lIter };
+  dctx_value_t v;
+  v.type = dynamic_context::dctx_value_t::var_iterator_val;
+  v.val.var_iterator = lIter;
   keymap.put ("var:" + var_name, v);
 }
 
 
-store::Iterator_t	dynamic_context::get_variable(store::Item_t varname)
-{
+store::Iterator_t	dynamic_context::get_variable(store::Item_t varname) {
 	return lookup_var_iter("var:" + static_context::qname_internal_key (varname));
 }
 
 
-store::Iterator* dynamic_context::lookup_var_iter(xqp_string key) const
-{ 
-	dctx_value_t val;
+store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) { 
+  dctx_value_t val;
 
-	if(!keymap.get (key, val))
+  if(!keymap.get (key, val))
 	{
-		if(parent)
-			return parent->lookup_var_iter(key);
-		else
-			return NULL;///variable not found
+    if(parent)
+      return parent->lookup_var_iter(key);
+    else
+      return NULL;///variable not found
 	}
-	return val.var_iterator;
+  if (val.type == dynamic_context::dctx_value_t::var_iterator_val) {
+    store::TempSeq_t seq = GENV_STORE.createTempSeq (val.val.var_iterator);
+    val.val.var_iterator->removeReference(val.val.var_iterator->getSharedRefCounter()
+                                           SYNC_PARAM2(val.val.var_iterator->getRCLock()));
+    seq->addReference(seq->getSharedRefCounter()
+                      SYNC_PARAM2(seq->getRCLock()));
+    val.type = dynamic_context::dctx_value_t::temp_seq_val;
+    val.val.temp_seq = seq.getp();
+    keymap.put (key, val);
+  }
+  return val.val.temp_seq->getIterator ();
 }
 
 

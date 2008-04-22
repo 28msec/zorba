@@ -104,7 +104,7 @@ std::vector<LetVarIter_t>& user_function::get_param_iters() const
 }
 
 
-PlanIter_t user_function::get_plan() const
+PlanIter_t user_function::get_plan(CompilerCB *ccb) const
 {
   if (m_plan == NULL) 
   {
@@ -118,6 +118,7 @@ PlanIter_t user_function::get_plan() const
 
     m_plan = zorba::codegen(get_fname()->getStringValue()->c_str (),
                             &*m_expr_body,
+                            ccb,
                             &param_map);
 
     for(uint32_t i = 0; i < param_iter_vec.size(); ++i) 

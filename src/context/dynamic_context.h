@@ -38,11 +38,14 @@ class dynamic_context
 {
 protected:
 
-	typedef union
-	{
-    store::Iterator* var_iterator;
-	}
-  dctx_value_t;
+  typedef struct {
+    enum { var_iterator_val, temp_seq_val } type;
+    union
+    {
+      store::Iterator* var_iterator;
+      store::TempSeq*  temp_seq;
+    } val;
+  } dctx_value_t;
 
 protected:
 	static bool static_init;
@@ -52,14 +55,14 @@ protected:
 	hashmap<dctx_value_t>   keymap;
   store::Item_t           current_date_time_item;
 	int			                implicit_timezone;
-	xqp_string		          default_collection_uri;//default URI for fn:collection()
+	xqp_string		          default_collection_uri;  //default URI for fn:collection()
 
 protected:
   xqp_string qname_internal_key (store::Item_t qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
 
-  store::Iterator* lookup_var_iter (xqp_string key) const;
+  store::Iterator_t lookup_var_iter (xqp_string key);
 
   store::Item_t		ctxt_item;
 	unsigned long		ctxt_position;

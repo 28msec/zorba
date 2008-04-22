@@ -7,11 +7,16 @@
 #include "context/static_context_consts.h"
 
 #include "compiler/codegen/plan_visitor.h"
-#include "system/globalenv.h"
-#include "util/Assert.h"
-#include "context/namespace_context.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/parser/parse_constants.h"
+
+#include "system/globalenv.h"
+#include "util/Assert.h"
+
+#include "context/namespace_context.h"
+#include "context/static_context.h"
+
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/item_iterator.h"
@@ -22,21 +27,22 @@
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
 #include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/misc/MiscImpl.h"
 #include "runtime/update/update.h"
-#include "store/api/item_factory.h"
-#include "util/tracer.h"
-#include "functions/function.h"
-#include "util/stl_extra.h"
-#include "util/hashmap.h"
-#include "compiler/parser/parse_constants.h"
-
-#include "types/typeops.h"
-
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
+#include "functions/function.h"
+
+#include "util/tracer.h"
+#include "util/stl_extra.h"
+#include "util/hashmap.h"
+
+#include "types/typeops.h"
+
 #include "store/api/store.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 
 
@@ -117,12 +123,17 @@ protected:
   hash64map<vector<ForVarIter_t> *>      copy_var_iter_map;
   hash64map<vector<LetVarIter_t> *>      group_var_iter_map;
 
+  CompilerCB *ccb;
+
+#define LOOKUP_OP1( local ) static_cast<function *> (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
+
 public:
-	plan_visitor(hash64map<vector<LetVarIter_t> *> *param_var_map = NULL)
+	plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *param_var_map = NULL)
     :
     depth (0),
     theLastNSCtx(NULL), 
-    param_var_iter_map(param_var_map)
+    param_var_iter_map(param_var_map),
+    ccb (ccb_)
   {
   }
 
@@ -170,9 +181,14 @@ bool begin_visit(sequential_expr& /*v*/)
   return true;
 }
 
-void end_visit(sequential_expr& /*v*/)
+void end_visit(sequential_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+  checked_vector<PlanIter_t> argv;
+  for (unsigned i = 0; i < v.size (); i++)
+    argv.push_back (pop_itstack ());
+  reverse (argv.begin (), argv.end ());
+  itstack.push (new SequentialIterator (v.get_loc (), argv));
 }
 
 bool begin_visit(var_expr& /*v*/)
@@ -189,8 +205,8 @@ void end_visit(var_expr& v)
 
   switch (v.kind) 
   {
-  case var_expr::for_var:
-  {
+
+  case var_expr::for_var: {
     vector<ForVarIter_t> *map = NULL;
     bool bound = fvar_iter_map.get ((uint64_t) &v, map);
     
@@ -200,10 +216,10 @@ void end_visit(var_expr& v)
             (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
+    break;
   }
-  break;
-  case var_expr::pos_var:
-  {
+
+  case var_expr::pos_var: {
     vector<ForVarIter_t> *map = NULL;
     bool bound = pvar_iter_map.get ((uint64_t) &v, map);
 
@@ -213,10 +229,10 @@ void end_visit(var_expr& v)
             (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
+    break;
   }
-  break;
-  case var_expr::let_var:
-  {
+
+  case var_expr::let_var: {
     vector<LetVarIter_t> *map = NULL;
     bool bound = lvar_iter_map.get ((uint64_t) &v, map);
       
@@ -226,10 +242,10 @@ void end_visit(var_expr& v)
             (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
+    break;
   }
-  break;
-  case var_expr::param_var:
-  {
+
+  case var_expr::param_var: {
     vector<LetVarIter_t> *map = NULL;    
     ZORBA_ASSERT (param_var_iter_map->get ((uint64_t) &v, map));
     LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
@@ -238,20 +254,16 @@ void end_visit(var_expr& v)
     
     map->push_back (v_p);
     itstack.push(v_p);
-  }
     break;
+  }
 
-  case var_expr::context_var:
-  {
+  case var_expr::context_var: {
     xqpString varname = v.get_varname()->getStringValue().getp();
-    if (varname == DOT_VAR) 
-    {
+    if (varname == DOT_VAR) {
       vector<PlanIter_t> ctx_args;
       ctx_args.push_back (new SingletonIterator (loc, ITEM_FACTORY->createQName ("", "", ".")));
       itstack.push (new CtxVariableIterator (loc, ctx_args));
-    }
-    else if (varname == DOT_POS_VAR)
-    {
+    } else if (varname == DOT_POS_VAR) {
       itstack.push (new SingletonIterator (
         loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
       ));
@@ -260,11 +272,13 @@ void end_visit(var_expr& v)
         loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
       ));
     } else {
-      assert(false);
+      expr_t lookup_expr = new fo_expr (v.get_loc (), LOOKUP_OP1 ("ctxvariable"), new const_expr (v.get_loc (), v.get_varname ()));
+      lookup_expr->accept (*this);
     }
  
     break;
   }
+
   case var_expr::catch_var:
   {
     vector<LetVarIter_t> *map = NULL;
@@ -1329,9 +1343,10 @@ void end_visit(extension_expr& /*v*/)
 PlanIter_t codegen(
     const char *descr,
     expr *root,
+    CompilerCB *ccb,
     hash64map<vector<LetVarIter_t> *> *param_var_map)
 {
-  plan_visitor c( param_var_map);
+  plan_visitor c(ccb, param_var_map);
   root->accept (c);
   PlanIter_t result = c.pop_itstack ();
 

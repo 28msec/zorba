@@ -2,8 +2,8 @@
  *
  *  $Id: library.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
- *   Copyright 2006-2007 FLWOR Foundation.
- *  Author: John Cowan,Paul Pedersen
+ *  Copyright 2006-2007 FLWOR Foundation.
+ *  Author: John Cowan, Paul Pedersen
  */
 
 #include <iostream>
@@ -1290,8 +1290,13 @@ DECL(rest_get_1,
 // begin context functions
 DECL(ctx_variable,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":ctxvariable"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+DECL(ctx_var_assign,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":ctxvar-assign"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.EMPTY_TYPE));
 // end context functions
 }
 

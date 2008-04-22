@@ -7,6 +7,7 @@
 #include "compiler/parser/query_loc.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
 #include "compiler/expression/expr_consts.h"
+#include "compiler/api/compilercb.h"
 
 namespace zorba {
 
@@ -93,7 +94,7 @@ public:
         std::vector<PlanIter_t>& argv,
         AnnotationHolder &ann) const;
 
-  virtual PlanIter_t get_plan() const;
+  virtual PlanIter_t get_plan(CompilerCB *) const;
 
   virtual std::vector<LetVarIter_t>& get_param_iters() const;
 

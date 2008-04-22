@@ -194,6 +194,8 @@ public:
     sequence.push_back (result);
   }
 
+  const unsigned size () const { return sequence.size (); }
+
   const expr_t &operator [] (int i) const { return sequence [i]; }
   expr_t &operator [] (int i) { invalidate (); return sequence [i]; }
 

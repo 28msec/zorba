@@ -12,13 +12,6 @@
 namespace zorba
 {
 
-ctx_variable::ctx_variable ( const signature& sig )
-  :
-  function ( sig )
-{
-}
-
-
 PlanIter_t ctx_variable::codegen (
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
@@ -27,7 +20,13 @@ PlanIter_t ctx_variable::codegen (
   return new CtxVariableIterator(loc, argv);
 }
 
+PlanIter_t ctx_var_assign::codegen (
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann ) const
+{
+  return new CtxVarAssignIterator(loc, argv);
+}
 
 
-/* end class CtxVariable */
 }
