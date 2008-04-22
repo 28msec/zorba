@@ -28,86 +28,50 @@ public:
   virtual ~expr_visitor() {}
 
 public:
+  
+#define EXPR_VISITOR_METHODS( e )         \
+  virtual bool begin_visit(e&) = 0;       \
+  virtual void end_visit(e&) = 0
+  
+  EXPR_VISITOR_METHODS (expr);
+  EXPR_VISITOR_METHODS (sequential_expr);
+  EXPR_VISITOR_METHODS (var_expr);
+  EXPR_VISITOR_METHODS (order_modifier);
+  EXPR_VISITOR_METHODS (flwor_expr);
+  EXPR_VISITOR_METHODS (case_clause);
+  EXPR_VISITOR_METHODS (promote_expr);
+  EXPR_VISITOR_METHODS (trycatch_expr);
+  EXPR_VISITOR_METHODS (eval_expr);
+  EXPR_VISITOR_METHODS (typeswitch_expr);
+  EXPR_VISITOR_METHODS (if_expr);
+  EXPR_VISITOR_METHODS (fo_expr);
+  EXPR_VISITOR_METHODS (ft_select_expr);
+  EXPR_VISITOR_METHODS (ft_contains_expr);
+  EXPR_VISITOR_METHODS (instanceof_expr);
+  EXPR_VISITOR_METHODS (treat_expr);
+  EXPR_VISITOR_METHODS (castable_expr);
+  EXPR_VISITOR_METHODS (cast_expr);
+  EXPR_VISITOR_METHODS (name_cast_expr);
+  EXPR_VISITOR_METHODS (validate_expr);
+  EXPR_VISITOR_METHODS (extension_expr);
+  EXPR_VISITOR_METHODS (relpath_expr);
+  EXPR_VISITOR_METHODS (axis_step_expr);
+  EXPR_VISITOR_METHODS (match_expr);
+  EXPR_VISITOR_METHODS (const_expr);
+  EXPR_VISITOR_METHODS (order_expr);
+  EXPR_VISITOR_METHODS (elem_expr);
+  EXPR_VISITOR_METHODS (doc_expr);
+  EXPR_VISITOR_METHODS (attr_expr);
+  EXPR_VISITOR_METHODS (text_expr);
+  EXPR_VISITOR_METHODS (pi_expr);
+  EXPR_VISITOR_METHODS (function_def_expr);
+  EXPR_VISITOR_METHODS (insert_expr);
+  EXPR_VISITOR_METHODS (delete_expr);
+  EXPR_VISITOR_METHODS (rename_expr);
+  EXPR_VISITOR_METHODS (replace_expr);
+  EXPR_VISITOR_METHODS (transform_expr);
 
- /*..........................................
-  :  begin visit                            :
-  :.........................................*/
-  virtual bool begin_visit(expr&) = 0;
-  virtual bool begin_visit(var_expr&) = 0;
-  virtual bool begin_visit(order_modifier&) = 0;
-  virtual bool begin_visit(flwor_expr&) = 0;
-  virtual bool begin_visit(case_clause&) = 0;
-  virtual bool begin_visit(promote_expr&) = 0;
-  virtual bool begin_visit(trycatch_expr&) = 0;
-  virtual bool begin_visit(eval_expr&) = 0;
-  virtual bool begin_visit(typeswitch_expr&) = 0;
-  virtual bool begin_visit(if_expr&) = 0;
-  virtual bool begin_visit(fo_expr&) = 0;
-  virtual bool begin_visit(ft_select_expr&) = 0;
-  virtual bool begin_visit(ft_contains_expr&) = 0;
-  virtual bool begin_visit(instanceof_expr&) = 0;
-  virtual bool begin_visit(treat_expr&) = 0;
-  virtual bool begin_visit(castable_expr&) = 0;
-  virtual bool begin_visit(cast_expr&) = 0;
-  virtual bool begin_visit(name_cast_expr&) = 0;
-  virtual bool begin_visit(validate_expr&) = 0;
-  virtual bool begin_visit(extension_expr&) = 0;
-  virtual bool begin_visit(relpath_expr&) = 0;
-  virtual bool begin_visit(axis_step_expr&) = 0;
-  virtual bool begin_visit(match_expr&) = 0;
-  virtual bool begin_visit(const_expr&) = 0;
-  virtual bool begin_visit(order_expr&) = 0;
-  virtual bool begin_visit(elem_expr&) = 0;
-  virtual bool begin_visit(doc_expr&) = 0;
-  virtual bool begin_visit(attr_expr&) = 0;
-  virtual bool begin_visit(text_expr&) = 0;
-  virtual bool begin_visit(pi_expr&) = 0;
-  virtual bool begin_visit(function_def_expr&) = 0;
-  virtual bool begin_visit(insert_expr&) = 0;
-  virtual bool begin_visit(delete_expr&) = 0;
-  virtual bool begin_visit(rename_expr&) = 0;
-  virtual bool begin_visit(replace_expr&) = 0;
-  virtual bool begin_visit(transform_expr&) = 0;
-
- /*..........................................
-  :  end visit                              :
-  :.........................................*/
-  virtual void end_visit(expr&) = 0;
-  virtual void end_visit(var_expr&) = 0;
-  virtual void end_visit(order_modifier&) = 0;
-  virtual void end_visit(flwor_expr&) = 0;
-  virtual void end_visit(case_clause&) = 0;
-  virtual void end_visit(promote_expr&) = 0;
-  virtual void end_visit(trycatch_expr&) = 0;
-  virtual void end_visit(eval_expr&) = 0;
-  virtual void end_visit(typeswitch_expr&) = 0;
-  virtual void end_visit(if_expr&) = 0;
-  virtual void end_visit(fo_expr&) = 0;
-  virtual void end_visit(ft_select_expr&) = 0;
-  virtual void end_visit(ft_contains_expr&) = 0;
-  virtual void end_visit(instanceof_expr&) = 0;
-  virtual void end_visit(treat_expr&) = 0;
-  virtual void end_visit(castable_expr&) = 0;
-  virtual void end_visit(cast_expr&) = 0;
-  virtual void end_visit(name_cast_expr&) = 0;
-  virtual void end_visit(validate_expr&) = 0;
-  virtual void end_visit(extension_expr&) = 0;
-  virtual void end_visit(relpath_expr&) = 0;
-  virtual void end_visit(axis_step_expr&) = 0;
-  virtual void end_visit(match_expr&) = 0;
-  virtual void end_visit(const_expr&) = 0;
-  virtual void end_visit(order_expr&) = 0;
-  virtual void end_visit(elem_expr&) = 0;
-  virtual void end_visit(doc_expr&) = 0;
-  virtual void end_visit(attr_expr&) = 0;
-  virtual void end_visit(text_expr&) = 0;
-  virtual void end_visit(pi_expr&) = 0;
-  virtual void end_visit(function_def_expr&) = 0;
-  virtual void end_visit(insert_expr&) = 0;
-  virtual void end_visit(delete_expr&) = 0;
-  virtual void end_visit(rename_expr&) = 0;
-  virtual void end_visit(replace_expr&) = 0;
-  virtual void end_visit(transform_expr&) = 0;
+#undef EXPR_VISITOR_METHODS
 };
 
 } /* namespace zorba */

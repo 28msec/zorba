@@ -7,7 +7,7 @@
 #include "system/globalenv.h"
 #include <iostream>
 
-using namespace zorba;
+namespace zorba {
 
 #define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (sctx->lookup_fn (pfx, local, arity))
 
@@ -45,22 +45,31 @@ static inline void checkNonUpdating(const expr* lExpr)
     ZORBA_ERROR_LOC(ZorbaError::XUST0001, lExpr->get_loc());
 }
 
-bool normalizer::begin_visit(expr& /*node*/)
-{
-  return true;
-}
+class normalizer : public expr_visitor {
+  static_context *m_sctx;
 
-bool normalizer::begin_visit(var_expr& /*node*/)
-{
-  return true;
-}
+public:
+  normalizer(CompilerCB* aCompilerCB) : m_sctx(aCompilerCB->m_sctx) { }
+  ~normalizer() { }
 
-bool normalizer::begin_visit(order_modifier& /*node*/)
-{
-  return true;
-}
+#define DEF_VISIT_METHODS( e )                  \
+  bool begin_visit (e& node) { return true; }   \
+  void end_visit (e& node) {}
 
-bool normalizer::begin_visit(flwor_expr& node)
+DEF_VISIT_METHODS (expr)
+
+DEF_VISIT_METHODS (sequential_expr)
+
+DEF_VISIT_METHODS (var_expr)
+
+DEF_VISIT_METHODS (order_modifier)
+
+DEF_VISIT_METHODS (eval_expr)
+
+DEF_VISIT_METHODS (typeswitch_expr)
+
+void end_visit (flwor_expr&) {}
+bool begin_visit (flwor_expr& node)
 {
   QueryLoc loc = node.get_loc ();
   expr::expr_t where_h = node.get_where();
@@ -87,41 +96,36 @@ bool normalizer::begin_visit(flwor_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(case_clause& node)
+void end_visit (case_clause&) {}
+bool begin_visit (case_clause& node)
 {
   checkNonUpdating(&*node.var_h);
   return true;
 }
 
-bool normalizer::begin_visit(promote_expr& node)
+void end_visit (promote_expr&) {}
+bool begin_visit (promote_expr& node)
 {
   checkNonUpdating(&*node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(trycatch_expr& node)
+void end_visit (trycatch_expr&) {}
+bool begin_visit (trycatch_expr& node)
 {
   checkNonUpdating(&*node.get_try_expr());
   return true;
 }
 
-bool normalizer::begin_visit(eval_expr& node)
-{
-  return true;
-}
-
-bool normalizer::begin_visit(typeswitch_expr& node)
-{
-  return true;
-}
-
-bool normalizer::begin_visit(if_expr& node)
+void end_visit (if_expr&) {}
+bool begin_visit (if_expr& node)
 {
   node.set_cond_expr(wrap_in_bev(m_sctx, node.get_cond_expr()));
   return true;
 }
 
-bool normalizer::begin_visit(fo_expr& node)
+void end_visit (fo_expr&) {}
+bool begin_visit (fo_expr& node)
 {
   const signature& sign = node.get_signature();
 
@@ -144,58 +148,52 @@ bool normalizer::begin_visit(fo_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(ft_select_expr& /*node*/)
-{
-  return true;
-}
-
-bool normalizer::begin_visit(ft_contains_expr& /*node*/)
-{
-  return true;
-}
-
-bool normalizer::begin_visit(instanceof_expr& node)
+void end_visit (instanceof_expr&) {}
+bool begin_visit (instanceof_expr& node)
 {
   checkNonUpdating(&*node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(treat_expr& node)
-{
-  return true;
-}
+DEF_VISIT_METHODS (treat_expr)
 
-bool normalizer::begin_visit(castable_expr& node)
+void end_visit (castable_expr&) {}
+bool begin_visit (castable_expr& node)
 {
   checkNonUpdating(&*node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(cast_expr& node)
+void end_visit (cast_expr&) {}
+bool begin_visit (cast_expr& node)
 {
   checkNonUpdating(&*node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(name_cast_expr& node)
+void end_visit (name_cast_expr&) {}
+bool begin_visit (name_cast_expr& node)
 {
   checkNonUpdating(&*node.get_input());
   return true;
 }
 
-bool normalizer::begin_visit(validate_expr& node)
+void end_visit (validate_expr&) {}
+bool begin_visit (validate_expr& node)
 {
   checkNonUpdating(&*node.get_expr());
   return true;
 }
 
-bool normalizer::begin_visit(extension_expr& node)
+void end_visit (extension_expr&) {}
+bool begin_visit (extension_expr& node)
 {
   checkNonUpdating(&*node.get_expr());
   return true;
 }
 
-bool normalizer::begin_visit(relpath_expr& node)
+void end_visit (relpath_expr&) {}
+bool begin_visit (relpath_expr& node)
 {
   if (node.size() > 0) {
     expr_t ie = node[0];
@@ -205,27 +203,13 @@ bool normalizer::begin_visit(relpath_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(axis_step_expr& node)
-{
-  return true;
-}
+DEF_VISIT_METHODS (axis_step_expr)
+DEF_VISIT_METHODS (match_expr)
+DEF_VISIT_METHODS (const_expr)
+DEF_VISIT_METHODS (order_expr)
 
-bool normalizer::begin_visit(match_expr& /*node*/)
-{
-  return true;
-}
-
-bool normalizer::begin_visit(const_expr& /*node*/)
-{
-  return true;
-}
-
-bool normalizer::begin_visit(order_expr& /*node*/)
-{
-  return true;
-}
-
-bool normalizer::begin_visit(elem_expr& node)
+void end_visit (elem_expr&) {}
+bool begin_visit (elem_expr& node)
 {
   //node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
   checkNonUpdating(&*node.getQNameExpr());
@@ -234,7 +218,8 @@ bool normalizer::begin_visit(elem_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(doc_expr& node)
+void end_visit (doc_expr&) {}
+bool begin_visit (doc_expr& node)
 {
   checkNonUpdating(node.getContent());
   return true;
@@ -243,7 +228,8 @@ bool normalizer::begin_visit(doc_expr& node)
 // FIXME => static inline function (see also translator)
 #define LOOKUP_OP1( local ) static_cast<function *> (m_sctx->lookup_builtin_fn (":" local, 1))
 
-bool normalizer::begin_visit(attr_expr& node)
+void end_visit (attr_expr&) {}
+bool begin_visit (attr_expr& node)
 {
   assert (node.getQNameExpr() != NULL);
 
@@ -272,192 +258,41 @@ bool normalizer::begin_visit(attr_expr& node)
 
 #undef LOOKUP_OP1
 
-bool normalizer::begin_visit(text_expr& node)
+void end_visit (text_expr&) {}
+bool begin_visit (text_expr& node)
 {
   checkNonUpdating(&*node.get_text());
   return true;
 }
 
-bool normalizer::begin_visit(pi_expr& node)
+void end_visit (pi_expr&) {}
+bool begin_visit (pi_expr& node)
 {
   checkNonUpdating(&*node.get_target_expr());
   return true;
 }
 
-bool normalizer::begin_visit(insert_expr&)
-{
-  return true;
-}
+DEF_VISIT_METHODS (insert_expr)
+DEF_VISIT_METHODS (delete_expr)
+DEF_VISIT_METHODS (rename_expr)
+DEF_VISIT_METHODS (replace_expr)
+DEF_VISIT_METHODS (transform_expr)
+DEF_VISIT_METHODS (function_def_expr)
 
-bool normalizer::begin_visit(delete_expr&)
-{
-  return true;
-}
+DEF_VISIT_METHODS (ft_select_expr)
+DEF_VISIT_METHODS (ft_contains_expr)
 
-bool normalizer::begin_visit(rename_expr&)
-{
-  return true;
-}
+};
 
-bool normalizer::begin_visit(replace_expr&)
-{
-  return true;
-}
-
-bool normalizer::begin_visit(transform_expr&)
-{
-  return true;
-}
-
-void normalizer::end_visit(expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(var_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(order_modifier& /*node*/)
-{
-}
-
-void normalizer::end_visit(flwor_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(case_clause& /*node*/)
-{
-}
-
-void normalizer::end_visit(promote_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(trycatch_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(eval_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(typeswitch_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(if_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(fo_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(ft_select_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(ft_contains_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(instanceof_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(treat_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(castable_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(cast_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(name_cast_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(validate_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(extension_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(relpath_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(axis_step_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(match_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(const_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(order_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(elem_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(doc_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(attr_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(text_expr& /*node*/)
-{
-}
-
-void normalizer::end_visit(pi_expr& /*node*/)
-{
-}
-
-bool normalizer::begin_visit (function_def_expr& /*v*/) {
-  return true;
-}
-
-void normalizer::end_visit (function_def_expr &v) {
-}
-
-void normalizer::end_visit(insert_expr&)
-{}
-
-void normalizer::end_visit(delete_expr&)
-{}
-
-void normalizer::end_visit(replace_expr&)
-{}
-
-void normalizer::end_visit(rename_expr&)
-{}
-
-void normalizer::end_visit(transform_expr&)
-{}
-
-void zorba::normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_t root) {
+void normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_t root) {
   normalizer n (aCompilerCB);
   root->accept(n);
   if (aCompilerCB->m_config.print_normalized) {
     std::cout << "Expression tree for " << norm_descr << " after normalization:\n";
     root->put(std::cout) << std::endl;
   }
+}
+
 }
 
 /* vim:set ts=2 sw=2: */

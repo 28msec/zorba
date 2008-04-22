@@ -122,6 +122,13 @@ public:
   eval_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
+class sequential_expr_iterator_data : public expr_iterator_data {
+public:
+  checked_vector<expr_t>::iterator iter;
+
+  sequential_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
+};
+
 #define DEF_ACCEPT( type )                         \
   void type::accept (expr_visitor &v) {            \
     if (v.begin_visit (*this))                     \
@@ -130,6 +137,7 @@ public:
   }
 
 DEF_ACCEPT (expr)
+DEF_ACCEPT (sequential_expr)
 DEF_ACCEPT (var_expr)
 DEF_ACCEPT (flwor_expr)
 DEF_ACCEPT (promote_expr)
@@ -249,6 +257,26 @@ string expr::toString () const {
   xqtref_t expr::return_type_impl(static_context *sctx)
   {
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  }
+
+  xqtref_t sequential_expr::return_type_impl(static_context *sctx)
+  {
+    return (sequence.empty ())
+      ? GENV_TYPESYSTEM.EMPTY_TYPE
+      : sequence [sequence.size ()]->return_type (sctx);
+  }
+
+  expr_iterator_data *sequential_expr::make_iter () {
+    return new sequential_expr_iterator_data (this);
+  }
+
+  void sequential_expr::next_iter (expr_iterator_data& v) {
+  BEGIN_EXPR_ITER2 (sequential_expr);
+
+  ITER_FOR_EACH (iter, sequence.begin (), sequence.end (),
+                 (*vv.iter));
+
+  END_EXPR_ITER();
   }
 
 /////////////////////////////////////////////////////////////////////////

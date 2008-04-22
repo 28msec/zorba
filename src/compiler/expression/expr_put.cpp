@@ -45,6 +45,16 @@ static inline string expr_addr (const void *e) {
   }
 }
 
+ostream& sequential_expr::put( ostream& os) const
+{
+  os << INDENT << "sequential_expr" << expr_addr (this) << " [\n";
+  for (checked_vector<expr_t>::const_iterator i = this->sequence.begin ();
+       i != sequence.end (); i++)
+    (*i)->put (os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
 ostream& var_expr::put(ostream& os) const
 {
   os << INDENT << "var kind=" << decode_var_kind(get_kind()) << expr_addr (this);

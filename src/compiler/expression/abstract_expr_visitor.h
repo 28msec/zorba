@@ -21,85 +21,49 @@ public:
 
 public:
 
- /*..........................................
-  :  begin visit                            :
-  :.........................................*/
-  virtual bool begin_visit(expr&) { return true; }
-  virtual bool begin_visit(var_expr&) { return true; }
-  virtual bool begin_visit(order_modifier&) { return true; }
-  virtual bool begin_visit(flwor_expr&) { return true; }
-  virtual bool begin_visit(case_clause&) { return true; }
-  virtual bool begin_visit(promote_expr&) { return true; }
-  virtual bool begin_visit(trycatch_expr&) { return true; }
-  virtual bool begin_visit(eval_expr&) { return true; }
-  virtual bool begin_visit(typeswitch_expr&) { return true; }
-  virtual bool begin_visit(if_expr&) { return true; }
-  virtual bool begin_visit(fo_expr&) { return true; }
-  virtual bool begin_visit(ft_select_expr&) { return true; }
-  virtual bool begin_visit(ft_contains_expr&) { return true; }
-  virtual bool begin_visit(instanceof_expr&) { return true; }
-  virtual bool begin_visit(treat_expr&) { return true; }
-  virtual bool begin_visit(castable_expr&) { return true; }
-  virtual bool begin_visit(cast_expr&) { return true; }
-  virtual bool begin_visit(name_cast_expr&) { return true; }
-  virtual bool begin_visit(validate_expr&) { return true; }
-  virtual bool begin_visit(extension_expr&) { return true; }
-  virtual bool begin_visit(relpath_expr&) { return true; }
-  virtual bool begin_visit(axis_step_expr&) { return true; }
-  virtual bool begin_visit(match_expr&) { return true; }
-  virtual bool begin_visit(const_expr&) { return true; }
-  virtual bool begin_visit(order_expr&) { return true; }
-  virtual bool begin_visit(elem_expr&) { return true; }
-  virtual bool begin_visit(doc_expr&) { return true; }
-  virtual bool begin_visit(attr_expr&) { return true; }
-  virtual bool begin_visit(text_expr&) { return true; }
-  virtual bool begin_visit(pi_expr&) { return true; }
-  virtual bool begin_visit(function_def_expr&) { return true; }
-  virtual bool begin_visit(insert_expr&) { return true; }
-  virtual bool begin_visit(delete_expr&) { return true; }
-  virtual bool begin_visit(rename_expr&) { return true; }
-  virtual bool begin_visit(replace_expr&) { return true; }
-  virtual bool begin_visit(transform_expr&) { return true; }
+#define EXPR_VISITOR_METHODS( e )               \
+  virtual bool begin_visit(e&) { return true; } \
+  virtual void end_visit(e&) { }
 
- /*..........................................
-  :  end visit                              :
-  :.........................................*/
-  virtual void end_visit(expr&) { }
-  virtual void end_visit(var_expr&) { }
-  virtual void end_visit(order_modifier&) { }
-  virtual void end_visit(flwor_expr&) { }
-  virtual void end_visit(case_clause&) { }
-  virtual void end_visit(promote_expr&) { }
-  virtual void end_visit(trycatch_expr&) { }
-  virtual void end_visit(eval_expr&) { }
-  virtual void end_visit(typeswitch_expr&) { }
-  virtual void end_visit(if_expr&) { }
-  virtual void end_visit(fo_expr&) { }
-  virtual void end_visit(ft_select_expr&) { }
-  virtual void end_visit(ft_contains_expr&) { }
-  virtual void end_visit(instanceof_expr&) { }
-  virtual void end_visit(treat_expr&) { }
-  virtual void end_visit(castable_expr&) { }
-  virtual void end_visit(cast_expr&) { }
-  virtual void end_visit(name_cast_expr&) { }
-  virtual void end_visit(validate_expr&) { }
-  virtual void end_visit(extension_expr&) { }
-  virtual void end_visit(relpath_expr&) { }
-  virtual void end_visit(axis_step_expr&) { }
-  virtual void end_visit(match_expr&) { }
-  virtual void end_visit(const_expr&) { }
-  virtual void end_visit(order_expr&) { }
-  virtual void end_visit(elem_expr&) { }
-  virtual void end_visit(doc_expr&) { }
-  virtual void end_visit(attr_expr&) { }
-  virtual void end_visit(text_expr&) { }
-  virtual void end_visit(pi_expr&) { }
-  virtual void end_visit(function_def_expr&) { }
-  virtual void end_visit(insert_expr&) { }
-  virtual void end_visit(delete_expr&) { }
-  virtual void end_visit(rename_expr&) { }
-  virtual void end_visit(replace_expr&) { }
-  virtual void end_visit(transform_expr&) { }
+  EXPR_VISITOR_METHODS (expr);
+  EXPR_VISITOR_METHODS (sequential_expr);
+  EXPR_VISITOR_METHODS (var_expr);
+  EXPR_VISITOR_METHODS (order_modifier);
+  EXPR_VISITOR_METHODS (flwor_expr);
+  EXPR_VISITOR_METHODS (case_clause);
+  EXPR_VISITOR_METHODS (promote_expr);
+  EXPR_VISITOR_METHODS (trycatch_expr);
+  EXPR_VISITOR_METHODS (eval_expr);
+  EXPR_VISITOR_METHODS (typeswitch_expr);
+  EXPR_VISITOR_METHODS (if_expr);
+  EXPR_VISITOR_METHODS (fo_expr);
+  EXPR_VISITOR_METHODS (ft_select_expr);
+  EXPR_VISITOR_METHODS (ft_contains_expr);
+  EXPR_VISITOR_METHODS (instanceof_expr);
+  EXPR_VISITOR_METHODS (treat_expr);
+  EXPR_VISITOR_METHODS (castable_expr);
+  EXPR_VISITOR_METHODS (cast_expr);
+  EXPR_VISITOR_METHODS (name_cast_expr);
+  EXPR_VISITOR_METHODS (validate_expr);
+  EXPR_VISITOR_METHODS (extension_expr);
+  EXPR_VISITOR_METHODS (relpath_expr);
+  EXPR_VISITOR_METHODS (axis_step_expr);
+  EXPR_VISITOR_METHODS (match_expr);
+  EXPR_VISITOR_METHODS (const_expr);
+  EXPR_VISITOR_METHODS (order_expr);
+  EXPR_VISITOR_METHODS (elem_expr);
+  EXPR_VISITOR_METHODS (doc_expr);
+  EXPR_VISITOR_METHODS (attr_expr);
+  EXPR_VISITOR_METHODS (text_expr);
+  EXPR_VISITOR_METHODS (pi_expr);
+  EXPR_VISITOR_METHODS (function_def_expr);
+  EXPR_VISITOR_METHODS (insert_expr);
+  EXPR_VISITOR_METHODS (delete_expr);
+  EXPR_VISITOR_METHODS (rename_expr);
+  EXPR_VISITOR_METHODS (replace_expr);
+  EXPR_VISITOR_METHODS (transform_expr);
+
+#undef EXPR_VISITOR_METHODS
 
 };
 

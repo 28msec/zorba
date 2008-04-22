@@ -47,6 +47,7 @@ namespace zorba {
 
 enum expr_kind_t {
   expr_kind,
+  sequential_expr_kind,
   constructor_expr_kind,
   var_expr_kind,
   flwor_expr_kind,
@@ -104,9 +105,9 @@ public:
 
 
 /*______________________________________________________________________
-|  
-| base class for the expression tree node hierarchy
-|_______________________________________________________________________*/
+ |  
+ | base class for the expression tree node hierarchy
+ |_______________________________________________________________________*/
 
 class expr : public SimpleRCObject, public AnnotationHolder {
 public:
@@ -171,6 +172,34 @@ public:
     e->next_iter (*this);
   }
   bool done () const;
+};
+
+// imperative construct: do this, then that
+class sequential_expr : public expr {
+  checked_vector<expr_t> sequence;
+
+public:
+  expr_kind_t get_expr_kind () { return constructor_expr_kind; }
+
+  sequential_expr (const QueryLoc& loc) : expr (loc) {}
+  sequential_expr (const QueryLoc& loc, expr_t first, expr_t second)
+    : expr (loc)
+  {
+    sequence.push_back (first);
+    sequence.push_back (second);
+  }
+
+  const expr_t &operator [] (int i) const { return sequence [i]; }
+  expr_t &operator [] (int i) { return sequence [i]; }
+
+  bool cache_compliant () { return true; }
+
+  virtual xqtref_t return_type_impl (static_context *);
+
+  expr_iterator_data *make_iter ();
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+  std::ostream& put(std::ostream&) const;
 };
 
 class constructor_expr : public expr {

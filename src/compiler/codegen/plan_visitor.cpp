@@ -152,21 +152,28 @@ public:
     return false;
   }
 
-/*..........................................
- :  begin visit                            :
- :.........................................*/
+
 bool begin_visit(expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-
 void end_visit(expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
 
+bool begin_visit(sequential_expr& /*v*/)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(sequential_expr& /*v*/)
+{
+  CODEGEN_TRACE_OUT("");
+}
 
 bool begin_visit(var_expr& /*v*/)
 {
