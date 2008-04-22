@@ -167,7 +167,8 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance()->getItemFactory();
 
   if (!inlineFile) {
-    boost::replace_all(val, "$RBKT_SRC_DIR", "file://" +zorba::RBKT_SRC_DIR);
+    boost::replace_all(val, "$RBKT_SRC_DIR", "file://" + zorba::RBKT_SRC_DIR);
+    boost::replace_all(val, " ", "%20");
     zorba::Item lItem = lFactory->createString(val);
 		if(name != ".")
 			dctx->setVariable (name, lItem);

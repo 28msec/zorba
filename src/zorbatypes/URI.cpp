@@ -66,7 +66,7 @@ xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
   if(uri->indexOf("file://") == 0)
   {
     xqp_string res(uri->c_str() + 7);
-    return res.getStore();
+    return res.replace("%20"," ","").getStore();
   }
   else
     return uri;
