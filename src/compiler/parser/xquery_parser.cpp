@@ -38,7 +38,7 @@
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
-#line 736 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 736 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_scanner.h"
@@ -47,7 +47,7 @@
 
 
 /* Line 317 of lalr1.cc.  */
-#line 51 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 51 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -205,814 +205,814 @@ namespace zorba
     switch (yytype)
       {
         case 53: /* "\"'DECIMAL'\"" */
-#line 636 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 636 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ delete (*yyvaluep).decval; };
-#line 211 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 211 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 80: /* "\"'DOUBLE'\"" */
-#line 635 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 635 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ delete (*yyvaluep).dval; };
-#line 216 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 216 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 111: /* "\"'INTEGER'\"" */
-#line 634 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 634 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ delete (*yyvaluep).ival; };
-#line 221 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 221 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 286: /* "VersionDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 226 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 226 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 287: /* "MainModule" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 231 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 231 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 288: /* "LibraryModule" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 236 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 236 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 289: /* "ModuleDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 241 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 241 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 290: /* "Prolog" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 246 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 246 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 291: /* "SIND_DeclList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 251 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 251 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 292: /* "VFO_DeclList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 256 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 256 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 293: /* "SIND_Decl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 261 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 261 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 294: /* "VFO_Decl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 266 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 266 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 295: /* "Setter" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 271 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 271 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 296: /* "Import" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 276 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 276 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 297: /* "NamespaceDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 281 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 281 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 298: /* "BoundarySpaceDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 286 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 286 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 299: /* "DefaultNamespaceDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 291 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 291 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 300: /* "OptionDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 296 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 296 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 302: /* "OrderingModeDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 301 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 301 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 303: /* "EmptyOrderDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 306 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 306 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 304: /* "CopyNamespacesDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 311 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 311 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 305: /* "DefaultCollationDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 316 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 316 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 306: /* "BaseURIDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 321 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 321 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 307: /* "SchemaImport" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 326 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 326 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 308: /* "URILiteralList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 331 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 331 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 309: /* "SchemaPrefix" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 336 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 336 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 310: /* "ModuleImport" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 341 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 341 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 311: /* "VarDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 346 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 346 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 312: /* "ConstructionDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 351 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 351 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 313: /* "FunctionDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 356 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 356 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 314: /* "ParamList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 361 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 361 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 315: /* "Param" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 366 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 366 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 316: /* "EnclosedExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 371 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 371 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 317: /* "NonNodeEnclosedExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 376 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 376 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 318: /* "QueryBody" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 381 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 381 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 319: /* "Expr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 386 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 386 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 320: /* "ExprSingle" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 391 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 391 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 321: /* "FLWORExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 396 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 396 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 322: /* "ForLetClauseList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 401 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 401 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 323: /* "ForLetClause" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 406 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 406 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 324: /* "ForClause" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 411 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 411 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 325: /* "VarInDeclList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 416 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 416 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 326: /* "VarInDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 421 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 421 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 327: /* "PositionalVar" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 426 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 426 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 329: /* "LetClause" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 431 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 431 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 330: /* "VarGetsDeclList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 436 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 436 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 331: /* "VarGetsDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 441 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 441 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 332: /* "WhereClause" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 446 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 446 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 333: /* "GroupByClause" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 451 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 451 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 334: /* "GroupSpecList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 456 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 456 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 335: /* "GroupSpec" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 461 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 461 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 336: /* "GroupCollationSpec" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 466 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 466 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 337: /* "LetClauseList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 471 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 471 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 338: /* "OrderByClause" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 476 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 476 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 339: /* "OrderSpecList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 481 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 481 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 340: /* "OrderSpec" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 486 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 486 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 341: /* "OrderModifier" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 491 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 491 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 342: /* "OrderDirSpec" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 496 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 496 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 343: /* "OrderEmptySpec" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 501 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 501 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 344: /* "OrderCollationSpec" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 506 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 506 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 345: /* "QuantifiedExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 511 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 511 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 346: /* "QVarInDeclList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 516 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 516 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 347: /* "QVarInDecl" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 521 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 521 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 348: /* "TypeswitchExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 526 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 526 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 349: /* "CaseClauseList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 531 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 531 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 350: /* "CaseClause" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 536 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 536 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 351: /* "IfExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 541 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 541 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 352: /* "OrExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 546 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 546 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 353: /* "AndExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 551 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 551 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 354: /* "ComparisonExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 556 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 556 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 356: /* "RangeExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 561 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 561 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 357: /* "AdditiveExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 566 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 566 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 358: /* "MultiplicativeExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 571 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 571 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 359: /* "UnionExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 576 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 576 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 360: /* "IntersectExceptExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 581 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 581 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 361: /* "InstanceofExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 586 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 586 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 362: /* "TreatExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 591 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 591 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 363: /* "CastableExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 596 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 596 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 364: /* "CastExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 601 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 601 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 365: /* "UnaryExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 606 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 606 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 366: /* "SignList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 611 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 611 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 367: /* "ValueExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 616 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 616 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 368: /* "GeneralComp" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 621 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 621 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 369: /* "ValueComp" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 626 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 626 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 370: /* "NodeComp" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 631 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 631 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 371: /* "ValidateExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 636 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 636 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 372: /* "ExtensionExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 641 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 373: /* "PragmaList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 646 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 646 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 374: /* "Pragma" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 651 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 651 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 375: /* "PathExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 656 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 656 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 376: /* "RelativePathExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 661 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 661 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 377: /* "StepExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 666 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 666 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 378: /* "AxisStep" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 671 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 671 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 379: /* "ForwardStep" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 676 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 676 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 380: /* "ForwardAxis" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 681 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 681 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 381: /* "AbbrevForwardStep" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 686 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 686 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 382: /* "ReverseStep" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 691 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 691 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 383: /* "ReverseAxis" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 696 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 696 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 384: /* "NodeTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 701 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 701 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 385: /* "NameTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 706 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 706 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 386: /* "Wildcard" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 711 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 711 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 387: /* "FilterExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 716 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 716 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 388: /* "PredicateList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 721 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 721 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 389: /* "Predicate" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 726 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 726 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 390: /* "PrimaryExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 731 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 731 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 391: /* "Literal" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 736 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 736 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 392: /* "NumericLiteral" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 741 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 741 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 393: /* "VarRef" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 746 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 746 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 394: /* "ParenthesizedExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 751 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 751 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 395: /* "ContextItemExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 756 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 756 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 396: /* "OrderedExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 761 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 761 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 397: /* "UnorderedExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 766 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 766 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 398: /* "FunctionCall" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 771 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 771 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 399: /* "ArgList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 776 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 776 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 400: /* "Constructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 781 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 781 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 401: /* "DirectConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 786 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 786 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 402: /* "DirElemConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 791 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 791 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 403: /* "DirElemContentList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 796 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 796 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 404: /* "DirAttributeList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 801 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 801 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 405: /* "DirAttr" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 806 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 806 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 406: /* "DirAttributeValue" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 811 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 811 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 407: /* "Opt_QuoteAttrContentList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 816 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 816 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 408: /* "QuoteAttrContentList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 821 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 821 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 409: /* "Opt_AposAttrContentList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 826 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 826 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 410: /* "AposAttrContentList" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 831 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 831 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 411: /* "QuoteAttrValueContent" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 836 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 836 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 412: /* "AposAttrValueContent" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 841 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 841 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 413: /* "DirElemContent" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 846 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 846 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 414: /* "CommonContent" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 851 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 851 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 415: /* "DirCommentConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 856 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 856 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 416: /* "DirPIConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 861 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 861 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 417: /* "CDataSection" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 866 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 866 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 418: /* "ComputedConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 871 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 871 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 419: /* "CompDocConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 876 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 876 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 420: /* "CompElemConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 881 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 881 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 421: /* "CompAttrConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 886 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 886 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 422: /* "CompTextConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 891 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 891 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 423: /* "CompCommentConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 896 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 896 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 424: /* "CompPIConstructor" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 901 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 901 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 425: /* "SingleType" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 906 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 906 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 426: /* "TypeDeclaration" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 911 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 911 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 427: /* "SequenceType" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 916 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 916 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 428: /* "OccurrenceIndicator" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 921 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 921 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 429: /* "ItemType" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 926 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 926 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 430: /* "AtomicType" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 931 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 931 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 431: /* "KindTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 936 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 936 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 432: /* "AnyKindTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 941 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 941 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 433: /* "DocumentTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 946 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 946 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 434: /* "TextTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 951 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 951 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 435: /* "CommentTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 956 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 956 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 436: /* "PITest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 961 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 961 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 437: /* "AttributeTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 966 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 966 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 438: /* "SchemaAttributeTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 971 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 971 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 439: /* "ElementTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 976 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 976 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 440: /* "SchemaElementTest" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 981 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 981 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 441: /* "TypeName" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 986 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 986 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 442: /* "TypeName_WITH_HOOK" */
-#line 640 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 640 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->node)->safeRemoveRef (); };
-#line 991 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 991 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 443: /* "StringLiteral" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 996 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 996 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 452: /* "TryExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 1001 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1001 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 453: /* "CatchListExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 1006 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1006 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 454: /* "CatchExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 1011 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1011 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 455: /* "EvalExpr" */
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 	{ (yyvaluep->expr)->safeRemoveRef (); };
-#line 1016 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1016 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	break;
 
 	default:
@@ -1088,12 +1088,12 @@ namespace zorba
 
 
     /* User initialization code.  */
-    #line 69 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+    #line 69 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 {
   yylloc.begin.filename = yylloc.end.filename = &(driver.theFilename.getStore()->str());
 }
   /* Line 547 of yacc.c.  */
-#line 1097 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1097 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
@@ -1209,7 +1209,7 @@ namespace zorba
     switch (yyn)
       {
 	  case 2:
-#line 757 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 757 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [main]" << endl;
@@ -1220,7 +1220,7 @@ namespace zorba
     break;
 
   case 3:
-#line 765 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 765 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<MainModule *> ((yysemantic_stack_[(2) - (2)].node))->set_version_decl (static_cast<VersionDecl *> ((yysemantic_stack_[(2) - (1)].node)));
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -1232,7 +1232,7 @@ namespace zorba
     break;
 
   case 4:
-#line 774 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 774 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [library]" << endl;
@@ -1242,7 +1242,7 @@ namespace zorba
     break;
 
   case 5:
-#line 781 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 781 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.library]" << endl;
@@ -1252,7 +1252,7 @@ namespace zorba
     break;
 
   case 6:
-#line 794 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 794 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version]" << endl;
@@ -1263,7 +1263,7 @@ namespace zorba
     break;
 
   case 7:
-#line 802 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 802 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version.encoding]" << endl;
@@ -1273,7 +1273,7 @@ namespace zorba
     break;
 
   case 8:
-#line 815 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 815 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [prolog.querybody]" << endl;
@@ -1285,7 +1285,7 @@ namespace zorba
     break;
 
   case 9:
-#line 825 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 825 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [querybody]" << endl;
@@ -1297,7 +1297,7 @@ namespace zorba
     break;
 
   case 10:
-#line 840 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 840 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LibraryModule [ ]" << endl;
@@ -1309,7 +1309,7 @@ namespace zorba
     break;
 
   case 11:
-#line 855 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 855 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleDecl [ ]" << endl;
@@ -1321,7 +1321,7 @@ namespace zorba
     break;
 
   case 12:
-#line 870 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 870 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind]" << endl;
@@ -1333,7 +1333,7 @@ namespace zorba
     break;
 
   case 13:
-#line 879 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 879 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [vfo]" << endl;
@@ -1345,7 +1345,7 @@ namespace zorba
     break;
 
   case 14:
-#line 888 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 888 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind.vfo]" << endl;
@@ -1357,7 +1357,7 @@ namespace zorba
     break;
 
   case 15:
-#line 903 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 903 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [single]" << endl;
@@ -1369,7 +1369,7 @@ namespace zorba
     break;
 
   case 16:
-#line 912 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 912 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [list]" << endl;
@@ -1383,7 +1383,7 @@ namespace zorba
     break;
 
   case 17:
-#line 929 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 929 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [single]" << endl;
@@ -1395,7 +1395,7 @@ namespace zorba
     break;
 
   case 18:
-#line 938 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 938 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [list]" << endl;
@@ -1409,7 +1409,7 @@ namespace zorba
     break;
 
   case 19:
-#line 955 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 955 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [setter]" << endl;
@@ -1419,7 +1419,7 @@ namespace zorba
     break;
 
   case 20:
-#line 962 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 962 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [import]" << endl;
@@ -1429,7 +1429,7 @@ namespace zorba
     break;
 
   case 21:
-#line 969 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 969 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [namespace]" << endl;
@@ -1439,7 +1439,7 @@ namespace zorba
     break;
 
   case 22:
-#line 976 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 976 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [default namespace]" << endl;
@@ -1449,7 +1449,7 @@ namespace zorba
     break;
 
   case 23:
-#line 988 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 988 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [var]" << endl;
@@ -1459,7 +1459,7 @@ namespace zorba
     break;
 
   case 24:
-#line 995 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 995 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [function]" << endl;
@@ -1469,7 +1469,7 @@ namespace zorba
     break;
 
   case 25:
-#line 1002 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1002 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [option]" << endl;
@@ -1479,7 +1479,7 @@ namespace zorba
     break;
 
   case 26:
-#line 1011 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1011 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [ftoption]" << endl;
@@ -1489,7 +1489,7 @@ namespace zorba
     break;
 
   case 27:
-#line 1024 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1024 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [boundary space]" << endl;
@@ -1499,7 +1499,7 @@ namespace zorba
     break;
 
   case 28:
-#line 1031 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1031 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [default collation]" << endl;
@@ -1509,7 +1509,7 @@ namespace zorba
     break;
 
   case 29:
-#line 1038 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1038 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [base uri]" << endl;
@@ -1519,7 +1519,7 @@ namespace zorba
     break;
 
   case 30:
-#line 1045 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1045 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [construction]" << endl;
@@ -1529,7 +1529,7 @@ namespace zorba
     break;
 
   case 31:
-#line 1052 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1052 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [ordering mode]" << endl;
@@ -1539,7 +1539,7 @@ namespace zorba
     break;
 
   case 32:
-#line 1059 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1059 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [empty order]" << endl;
@@ -1549,7 +1549,7 @@ namespace zorba
     break;
 
   case 33:
-#line 1066 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1066 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [copy namespaces]" << endl;
@@ -1559,7 +1559,7 @@ namespace zorba
     break;
 
   case 34:
-#line 1075 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1075 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [revalidation]" << endl;
@@ -1569,7 +1569,7 @@ namespace zorba
     break;
 
   case 35:
-#line 1088 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1088 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [schema]" << endl;
@@ -1579,7 +1579,7 @@ namespace zorba
     break;
 
   case 36:
-#line 1095 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1095 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [module]" << endl;
@@ -1589,7 +1589,7 @@ namespace zorba
     break;
 
   case 37:
-#line 1113 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1113 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NamespaceDecl [ ]" << endl;
@@ -1601,7 +1601,7 @@ namespace zorba
     break;
 
   case 38:
-#line 1128 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1128 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [preserve]" << endl;
@@ -1612,7 +1612,7 @@ namespace zorba
     break;
 
   case 39:
-#line 1136 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1136 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [strip]" << endl;
@@ -1623,7 +1623,7 @@ namespace zorba
     break;
 
   case 40:
-#line 1150 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1150 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [element]" << endl;
@@ -1635,7 +1635,7 @@ namespace zorba
     break;
 
   case 41:
-#line 1159 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1159 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [function]" << endl;
@@ -1647,7 +1647,7 @@ namespace zorba
     break;
 
   case 42:
-#line 1174 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1174 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OptionDecl [ ]" << endl;
@@ -1659,7 +1659,7 @@ namespace zorba
     break;
 
   case 43:
-#line 1190 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1190 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOptionDecl [ ]" << endl;
@@ -1670,7 +1670,7 @@ namespace zorba
     break;
 
   case 44:
-#line 1204 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1204 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [ordered]" << endl;
@@ -1681,7 +1681,7 @@ namespace zorba
     break;
 
   case 45:
-#line 1212 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1212 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [unordered]" << endl;
@@ -1692,7 +1692,7 @@ namespace zorba
     break;
 
   case 46:
-#line 1227 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1227 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty greatest]" << endl;
@@ -1703,7 +1703,7 @@ namespace zorba
     break;
 
   case 47:
-#line 1235 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1235 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty least]" << endl;
@@ -1714,7 +1714,7 @@ namespace zorba
     break;
 
   case 48:
-#line 1249 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1249 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
@@ -1726,7 +1726,7 @@ namespace zorba
     break;
 
   case 49:
-#line 1258 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1258 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
@@ -1738,7 +1738,7 @@ namespace zorba
     break;
 
   case 50:
-#line 1267 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1267 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
@@ -1750,7 +1750,7 @@ namespace zorba
     break;
 
   case 51:
-#line 1276 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1276 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
@@ -1762,7 +1762,7 @@ namespace zorba
     break;
 
   case 52:
-#line 1298 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1298 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultCollationMode [ ]" << endl;
@@ -1773,7 +1773,7 @@ namespace zorba
     break;
 
   case 53:
-#line 1312 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1312 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BaseURIDecl [ ]" << endl;
@@ -1784,7 +1784,7 @@ namespace zorba
     break;
 
   case 54:
-#line 1326 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1326 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri]" << endl;
@@ -1797,7 +1797,7 @@ namespace zorba
     break;
 
   case 55:
-#line 1336 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1336 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri]" << endl;
@@ -1810,7 +1810,7 @@ namespace zorba
     break;
 
   case 56:
-#line 1346 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1346 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri.urilist]" << endl;
@@ -1823,7 +1823,7 @@ namespace zorba
     break;
 
   case 57:
-#line 1356 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1356 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri.aturi]" << endl;
@@ -1836,7 +1836,7 @@ namespace zorba
     break;
 
   case 58:
-#line 1372 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1372 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [single]" << endl;
@@ -1848,7 +1848,7 @@ namespace zorba
     break;
 
   case 59:
-#line 1381 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1381 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [list]" << endl;
@@ -1862,7 +1862,7 @@ namespace zorba
     break;
 
   case 60:
-#line 1399 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1399 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [namespace]" << endl;
@@ -1872,7 +1872,7 @@ namespace zorba
     break;
 
   case 61:
-#line 1406 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1406 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [default element]" << endl;
@@ -1882,7 +1882,7 @@ namespace zorba
     break;
 
   case 62:
-#line 1419 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1419 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri]" << endl;
@@ -1894,7 +1894,7 @@ namespace zorba
     break;
 
   case 63:
-#line 1428 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1428 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri]" << endl;
@@ -1907,7 +1907,7 @@ namespace zorba
     break;
 
   case 64:
-#line 1438 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1438 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri.at_uri.list]" << endl;
@@ -1919,7 +1919,7 @@ namespace zorba
     break;
 
   case 65:
-#line 1447 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1447 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri.at_uri.list]" << endl;
@@ -1932,7 +1932,7 @@ namespace zorba
     break;
 
   case 66:
-#line 1464 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1464 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [expr]" << endl;
@@ -1945,7 +1945,7 @@ namespace zorba
     break;
 
   case 67:
-#line 1474 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1474 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [external]" << endl;
@@ -1958,7 +1958,7 @@ namespace zorba
     break;
 
   case 68:
-#line 1484 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1484 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.expr]" << endl;
@@ -1971,7 +1971,7 @@ namespace zorba
     break;
 
   case 69:
-#line 1494 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1494 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.external]" << endl;
@@ -1984,7 +1984,7 @@ namespace zorba
     break;
 
   case 70:
-#line 1510 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1510 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [preserve]" << endl;
@@ -1995,7 +1995,7 @@ namespace zorba
     break;
 
   case 71:
-#line 1518 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1518 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [strip]" << endl;
@@ -2006,7 +2006,7 @@ namespace zorba
     break;
 
   case 72:
-#line 1532 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1532 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [external]" << endl;
@@ -2019,7 +2019,7 @@ namespace zorba
     break;
 
   case 73:
-#line 1542 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1542 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]" << endl;
@@ -2033,7 +2033,7 @@ namespace zorba
     break;
 
   case 74:
-#line 1553 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1553 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.external]" << endl;
@@ -2047,7 +2047,7 @@ namespace zorba
     break;
 
   case 75:
-#line 1564 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1564 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]" << endl;
@@ -2062,7 +2062,7 @@ namespace zorba
     break;
 
   case 76:
-#line 1576 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1576 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.external]" << endl;
@@ -2077,7 +2077,7 @@ namespace zorba
     break;
 
   case 77:
-#line 1588 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1588 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]" << endl;
@@ -2092,7 +2092,7 @@ namespace zorba
     break;
 
   case 78:
-#line 1600 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1600 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.external]" << endl;
@@ -2107,7 +2107,7 @@ namespace zorba
     break;
 
   case 79:
-#line 1612 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1612 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]" << endl;
@@ -2122,7 +2122,7 @@ namespace zorba
     break;
 
   case 80:
-#line 1624 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1624 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) external]" << endl;
@@ -2135,7 +2135,7 @@ namespace zorba
     break;
 
   case 81:
-#line 1634 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1634 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]" << endl;
@@ -2149,7 +2149,7 @@ namespace zorba
     break;
 
   case 82:
-#line 1645 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1645 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.external]" << endl;
@@ -2163,7 +2163,7 @@ namespace zorba
     break;
 
   case 83:
-#line 1656 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1656 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]" << endl;
@@ -2178,7 +2178,7 @@ namespace zorba
     break;
 
   case 84:
-#line 1668 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1668 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.external]" << endl;
@@ -2193,7 +2193,7 @@ namespace zorba
     break;
 
   case 85:
-#line 1680 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1680 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]" << endl;
@@ -2208,7 +2208,7 @@ namespace zorba
     break;
 
   case 86:
-#line 1692 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1692 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.external]" << endl;
@@ -2223,7 +2223,7 @@ namespace zorba
     break;
 
   case 87:
-#line 1704 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1704 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]" << endl;
@@ -2238,7 +2238,7 @@ namespace zorba
     break;
 
   case 88:
-#line 1722 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1722 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [single]" << endl;
@@ -2252,7 +2252,7 @@ namespace zorba
     break;
 
   case 89:
-#line 1733 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1733 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [list]" << endl;
@@ -2266,7 +2266,7 @@ namespace zorba
     break;
 
   case 90:
-#line 1750 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1750 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname]" << endl;
@@ -2278,7 +2278,7 @@ namespace zorba
     break;
 
   case 91:
-#line 1759 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1759 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname.type]" << endl;
@@ -2290,7 +2290,7 @@ namespace zorba
     break;
 
   case 92:
-#line 1774 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1774 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EnclosedExpr [ ]" << endl;
@@ -2301,7 +2301,7 @@ namespace zorba
     break;
 
   case 93:
-#line 1785 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1785 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NonNodeEnclosedExpr [ ]" << endl;
@@ -2311,7 +2311,7 @@ namespace zorba
     break;
 
   case 94:
-#line 1799 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1799 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QueryBody [expr]" << endl;
@@ -2322,7 +2322,7 @@ namespace zorba
     break;
 
   case 95:
-#line 1813 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1813 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [single]" << endl;
@@ -2334,7 +2334,7 @@ namespace zorba
     break;
 
   case 96:
-#line 1822 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1822 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [expr.single]" << endl;
@@ -2346,7 +2346,7 @@ namespace zorba
     break;
 
   case 97:
-#line 1837 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1837 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [FLWORExpr]" << endl;
@@ -2356,7 +2356,7 @@ namespace zorba
     break;
 
   case 98:
-#line 1844 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1844 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [QuantifiedExpr]" << endl;
@@ -2366,7 +2366,7 @@ namespace zorba
     break;
 
   case 99:
-#line 1851 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1851 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TypeswitchExpr]" << endl;
@@ -2376,7 +2376,7 @@ namespace zorba
     break;
 
   case 100:
-#line 1858 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1858 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [IfExpr]" << endl;
@@ -2386,7 +2386,7 @@ namespace zorba
     break;
 
   case 101:
-#line 1865 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1865 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [OrExpr]" << endl;
@@ -2396,7 +2396,7 @@ namespace zorba
     break;
 
   case 102:
-#line 1874 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1874 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [InsertExpr]" << endl;
@@ -2406,7 +2406,7 @@ namespace zorba
     break;
 
   case 103:
-#line 1881 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1881 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [DeleteExpr]" << endl;
@@ -2416,7 +2416,7 @@ namespace zorba
     break;
 
   case 104:
-#line 1888 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1888 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [RenameExpr]" << endl;
@@ -2426,7 +2426,7 @@ namespace zorba
     break;
 
   case 105:
-#line 1895 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1895 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [ReplaceExpr]" << endl;
@@ -2436,7 +2436,7 @@ namespace zorba
     break;
 
   case 106:
-#line 1902 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1902 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TransformExpr]" << endl;
@@ -2446,7 +2446,7 @@ namespace zorba
     break;
 
   case 107:
-#line 1909 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1909 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
       cout << "ExprSingle [TryExpr]" << endl;
@@ -2456,14 +2456,14 @@ namespace zorba
     break;
 
   case 108:
-#line 1916 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1916 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 109:
-#line 1926 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1926 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [return]" << endl;
@@ -2476,7 +2476,7 @@ namespace zorba
     break;
 
   case 110:
-#line 1936 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1936 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.return]" << endl;
@@ -2490,7 +2490,7 @@ namespace zorba
     break;
 
   case 111:
-#line 1947 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1947 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [orderby.return]" << endl;
@@ -2504,7 +2504,7 @@ namespace zorba
     break;
 
   case 112:
-#line 1958 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1958 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.orderby.return]" << endl;
@@ -2519,7 +2519,7 @@ namespace zorba
     break;
 
   case 113:
-#line 1970 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1970 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [groupby.return]" << endl;
@@ -2537,7 +2537,7 @@ namespace zorba
     break;
 
   case 114:
-#line 1985 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 1985 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.groupby.return]" << endl;
@@ -2555,7 +2555,7 @@ namespace zorba
     break;
 
   case 115:
-#line 2000 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2000 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [groupby.orderby.return]" << endl;
@@ -2573,7 +2573,7 @@ namespace zorba
     break;
 
   case 116:
-#line 2015 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2015 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.groupby.orderby.return]" << endl;
@@ -2591,7 +2591,7 @@ namespace zorba
     break;
 
   case 117:
-#line 2036 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2036 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [single]" << endl;
@@ -2603,7 +2603,7 @@ namespace zorba
     break;
 
   case 118:
-#line 2045 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2045 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [list]" << endl;
@@ -2615,7 +2615,7 @@ namespace zorba
     break;
 
   case 119:
-#line 2060 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2060 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [for]" << endl;
@@ -2625,7 +2625,7 @@ namespace zorba
     break;
 
   case 120:
-#line 2067 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2067 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [let]" << endl;
@@ -2635,7 +2635,7 @@ namespace zorba
     break;
 
   case 121:
-#line 2080 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2080 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForClause [ ]" << endl;
@@ -2646,7 +2646,7 @@ namespace zorba
     break;
 
   case 122:
-#line 2094 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2094 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [single]" << endl;
@@ -2658,7 +2658,7 @@ namespace zorba
     break;
 
   case 123:
-#line 2103 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2103 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [list]" << endl;
@@ -2672,7 +2672,7 @@ namespace zorba
     break;
 
   case 124:
-#line 2120 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2120 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [in]" << endl;
@@ -2685,7 +2685,7 @@ namespace zorba
     break;
 
   case 125:
-#line 2130 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2130 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.in]" << endl;
@@ -2699,7 +2699,7 @@ namespace zorba
     break;
 
   case 126:
-#line 2141 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2141 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.in]" << endl;
@@ -2714,7 +2714,7 @@ namespace zorba
     break;
 
   case 127:
-#line 2153 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2153 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.in]" << endl;
@@ -2729,7 +2729,7 @@ namespace zorba
     break;
 
   case 128:
-#line 2166 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2166 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [scorevar.in]" << endl;
@@ -2743,7 +2743,7 @@ namespace zorba
     break;
 
   case 129:
-#line 2177 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2177 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.scorevar.in]" << endl;
@@ -2758,7 +2758,7 @@ namespace zorba
     break;
 
   case 130:
-#line 2189 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2189 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.scorevar.in]" << endl;
@@ -2773,7 +2773,7 @@ namespace zorba
     break;
 
   case 131:
-#line 2201 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2201 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.scorevar.in]" << endl;
@@ -2788,7 +2788,7 @@ namespace zorba
     break;
 
   case 132:
-#line 2219 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2219 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PositionalVar [ ]" << endl;
@@ -2799,7 +2799,7 @@ namespace zorba
     break;
 
   case 133:
-#line 2234 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2234 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTScoreVar [ ]" << endl;
@@ -2810,7 +2810,7 @@ namespace zorba
     break;
 
   case 134:
-#line 2248 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2248 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClause [ ]" << endl;
@@ -2822,7 +2822,7 @@ namespace zorba
     break;
 
   case 135:
-#line 2263 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2263 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [single]" << endl;
@@ -2834,7 +2834,7 @@ namespace zorba
     break;
 
   case 136:
-#line 2272 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2272 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [list.single]" << endl;
@@ -2848,7 +2848,7 @@ namespace zorba
     break;
 
   case 137:
-#line 2289 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2289 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [gets]" << endl;
@@ -2862,7 +2862,7 @@ namespace zorba
     break;
 
   case 138:
-#line 2300 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2300 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.gets]" << endl;
@@ -2876,7 +2876,7 @@ namespace zorba
     break;
 
   case 139:
-#line 2312 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2312 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [scorevar.gets]" << endl;
@@ -2890,7 +2890,7 @@ namespace zorba
     break;
 
   case 140:
-#line 2323 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2323 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.scorevar.gets]" << endl;
@@ -2904,7 +2904,7 @@ namespace zorba
     break;
 
   case 141:
-#line 2341 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2341 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "WhereClause [ ]" << endl;
@@ -2915,7 +2915,7 @@ namespace zorba
     break;
 
   case 142:
-#line 2352 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2352 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupByClause [groupspec]" << endl;
@@ -2928,7 +2928,7 @@ namespace zorba
     break;
 
   case 143:
-#line 2362 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2362 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupByClause [groupspec.let]" << endl;
@@ -2941,7 +2941,7 @@ namespace zorba
     break;
 
   case 144:
-#line 2372 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2372 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupByClause [groupspec.where]" << endl;
@@ -2954,7 +2954,7 @@ namespace zorba
     break;
 
   case 145:
-#line 2382 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2382 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupByClause [groupspec.let.where]" << endl;
@@ -2967,7 +2967,7 @@ namespace zorba
     break;
 
   case 146:
-#line 2395 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2395 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupSpecList [single]" << endl;
@@ -2979,7 +2979,7 @@ namespace zorba
     break;
 
   case 147:
-#line 2404 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2404 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupSpecList [list]" << endl;
@@ -2993,7 +2993,7 @@ namespace zorba
     break;
 
   case 148:
-#line 2418 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2418 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupSpec []" << endl;
@@ -3005,7 +3005,7 @@ namespace zorba
     break;
 
   case 149:
-#line 2427 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2427 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupSpec [collation]" << endl;
@@ -3017,7 +3017,7 @@ namespace zorba
     break;
 
   case 150:
-#line 2439 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2439 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupCollationSpec [ ]" << endl;
@@ -3027,7 +3027,7 @@ namespace zorba
     break;
 
   case 151:
-#line 2449 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2449 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClauseList [single]" << endl;
@@ -3039,7 +3039,7 @@ namespace zorba
     break;
 
   case 152:
-#line 2459 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2459 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClauseList [list]" << endl;
@@ -3051,7 +3051,7 @@ namespace zorba
     break;
 
   case 153:
-#line 2474 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2474 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [ ]" << endl;
@@ -3062,7 +3062,7 @@ namespace zorba
     break;
 
   case 154:
-#line 2482 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2482 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [stable]" << endl;
@@ -3074,7 +3074,7 @@ namespace zorba
     break;
 
   case 155:
-#line 2497 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2497 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [single]" << endl;
@@ -3086,7 +3086,7 @@ namespace zorba
     break;
 
   case 156:
-#line 2506 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2506 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [list]" << endl;
@@ -3100,7 +3100,7 @@ namespace zorba
     break;
 
   case 157:
-#line 2523 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2523 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single]" << endl;
@@ -3112,7 +3112,7 @@ namespace zorba
     break;
 
   case 158:
-#line 2532 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2532 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single.modifier]" << endl;
@@ -3124,7 +3124,7 @@ namespace zorba
     break;
 
   case 159:
-#line 2547 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2547 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir]" << endl;
@@ -3137,7 +3137,7 @@ namespace zorba
     break;
 
   case 160:
-#line 2557 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2557 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty]" << endl;
@@ -3150,7 +3150,7 @@ namespace zorba
     break;
 
   case 161:
-#line 2567 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2567 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [collation]" << endl;
@@ -3163,7 +3163,7 @@ namespace zorba
     break;
 
   case 162:
-#line 2577 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2577 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty]" << endl;
@@ -3176,7 +3176,7 @@ namespace zorba
     break;
 
   case 163:
-#line 2587 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2587 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.collation]" << endl;
@@ -3189,7 +3189,7 @@ namespace zorba
     break;
 
   case 164:
-#line 2597 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2597 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty.collation]" << endl;
@@ -3202,7 +3202,7 @@ namespace zorba
     break;
 
   case 165:
-#line 2607 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2607 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty.collation]" << endl;
@@ -3215,7 +3215,7 @@ namespace zorba
     break;
 
   case 166:
-#line 2623 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2623 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [ascending]" << endl;
@@ -3225,7 +3225,7 @@ namespace zorba
     break;
 
   case 167:
-#line 2630 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2630 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [descending]" << endl;
@@ -3235,7 +3235,7 @@ namespace zorba
     break;
 
   case 168:
-#line 2643 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2643 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [greatest]" << endl;
@@ -3246,7 +3246,7 @@ namespace zorba
     break;
 
   case 169:
-#line 2651 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2651 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [least]" << endl;
@@ -3257,7 +3257,7 @@ namespace zorba
     break;
 
   case 170:
-#line 2665 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2665 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderCollationSpec [ ]" << endl;
@@ -3268,7 +3268,7 @@ namespace zorba
     break;
 
   case 171:
-#line 2679 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2679 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [some]" << endl;
@@ -3281,7 +3281,7 @@ namespace zorba
     break;
 
   case 172:
-#line 2689 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2689 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [every]" << endl;
@@ -3294,7 +3294,7 @@ namespace zorba
     break;
 
   case 173:
-#line 2705 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2705 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [single]" << endl;
@@ -3307,7 +3307,7 @@ namespace zorba
     break;
 
   case 174:
-#line 2715 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2715 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [list]" << endl;
@@ -3319,7 +3319,7 @@ namespace zorba
     break;
 
   case 175:
-#line 2730 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2730 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [in]" << endl;
@@ -3331,7 +3331,7 @@ namespace zorba
     break;
 
   case 176:
-#line 2739 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2739 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [type.in]" << endl;
@@ -3344,7 +3344,7 @@ namespace zorba
     break;
 
   case 177:
-#line 2755 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2755 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.return]" << endl;
@@ -3357,7 +3357,7 @@ namespace zorba
     break;
 
   case 178:
-#line 2765 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2765 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.varname.return]" << endl;
@@ -3371,7 +3371,7 @@ namespace zorba
     break;
 
   case 179:
-#line 2782 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2782 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [single]" << endl;
@@ -3383,7 +3383,7 @@ namespace zorba
     break;
 
   case 180:
-#line 2791 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2791 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [list]" << endl;
@@ -3395,7 +3395,7 @@ namespace zorba
     break;
 
   case 181:
-#line 2806 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2806 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.return]" << endl;
@@ -3407,7 +3407,7 @@ namespace zorba
     break;
 
   case 182:
-#line 2815 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2815 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.as.return]" << endl;
@@ -3420,7 +3420,7 @@ namespace zorba
     break;
 
   case 183:
-#line 2831 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2831 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IfExpr [ ]" << endl;
@@ -3431,7 +3431,7 @@ namespace zorba
     break;
 
   case 184:
-#line 2845 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2845 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [and]" << endl;
@@ -3441,7 +3441,7 @@ namespace zorba
     break;
 
   case 185:
-#line 2852 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2852 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [or.and]" << endl;
@@ -3452,7 +3452,7 @@ namespace zorba
     break;
 
   case 186:
-#line 2866 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2866 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [comp]" << endl;
@@ -3462,7 +3462,7 @@ namespace zorba
     break;
 
   case 187:
-#line 2873 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2873 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [and.comp]" << endl;
@@ -3473,7 +3473,7 @@ namespace zorba
     break;
 
   case 188:
-#line 2895 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2895 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains]" << endl;
@@ -3483,7 +3483,7 @@ namespace zorba
     break;
 
   case 189:
-#line 2902 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2902 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -3497,7 +3497,7 @@ namespace zorba
     break;
 
   case 190:
-#line 2913 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2913 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -3511,7 +3511,7 @@ namespace zorba
     break;
 
   case 191:
-#line 2924 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2924 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "is" | "<<" | ">>" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -3525,7 +3525,7 @@ namespace zorba
     break;
 
   case 192:
-#line 2941 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2941 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range]" << endl;
@@ -3535,7 +3535,7 @@ namespace zorba
     break;
 
   case 193:
-#line 2948 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2948 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect]" << endl;
@@ -3548,7 +3548,7 @@ namespace zorba
     break;
 
   case 194:
-#line 2958 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2958 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect.ftignore]" << endl;
@@ -3561,7 +3561,7 @@ namespace zorba
     break;
 
   case 195:
-#line 2974 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2974 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add]" << endl;
@@ -3571,7 +3571,7 @@ namespace zorba
     break;
 
   case 196:
-#line 2981 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2981 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add.to.add]" << endl;
@@ -3582,7 +3582,7 @@ namespace zorba
     break;
 
   case 197:
-#line 2995 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 2995 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult]" << endl;
@@ -3592,7 +3592,7 @@ namespace zorba
     break;
 
   case 198:
-#line 3002 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3002 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult+mult]" << endl;
@@ -3602,7 +3602,7 @@ namespace zorba
     break;
 
   case 199:
-#line 3009 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3009 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult-mult]" << endl;
@@ -3612,7 +3612,7 @@ namespace zorba
     break;
 
   case 200:
-#line 3022 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3022 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [union]" << endl;
@@ -3622,7 +3622,7 @@ namespace zorba
     break;
 
   case 201:
-#line 3029 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3029 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult*union]" << endl;
@@ -3632,7 +3632,7 @@ namespace zorba
     break;
 
   case 202:
-#line 3036 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3036 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.div.union]" << endl;
@@ -3642,7 +3642,7 @@ namespace zorba
     break;
 
   case 203:
-#line 3043 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3043 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.idiv.union]" << endl;
@@ -3652,7 +3652,7 @@ namespace zorba
     break;
 
   case 204:
-#line 3050 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3050 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.mod.union]" << endl;
@@ -3662,7 +3662,7 @@ namespace zorba
     break;
 
   case 205:
-#line 3063 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3063 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [interexcept]" << endl;
@@ -3672,7 +3672,7 @@ namespace zorba
     break;
 
   case 206:
-#line 3070 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3070 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union.union.interexcept]" << endl;
@@ -3683,7 +3683,7 @@ namespace zorba
     break;
 
   case 207:
-#line 3078 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3078 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union|interexcept]" << endl;
@@ -3694,7 +3694,7 @@ namespace zorba
     break;
 
   case 208:
-#line 3092 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3092 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [instanceof]" << endl;
@@ -3704,7 +3704,7 @@ namespace zorba
     break;
 
   case 209:
-#line 3099 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3099 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]" << endl;
@@ -3714,7 +3714,7 @@ namespace zorba
     break;
 
   case 210:
-#line 3106 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3106 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.except.instanceof]" << endl;
@@ -3724,7 +3724,7 @@ namespace zorba
     break;
 
   case 211:
-#line 3119 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3119 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat]" << endl;
@@ -3734,7 +3734,7 @@ namespace zorba
     break;
 
   case 212:
-#line 3126 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3126 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat.seqtype]" << endl;
@@ -3746,7 +3746,7 @@ namespace zorba
     break;
 
   case 213:
-#line 3141 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3141 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable]" << endl;
@@ -3756,7 +3756,7 @@ namespace zorba
     break;
 
   case 214:
-#line 3148 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3148 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable.seqtype]" << endl;
@@ -3768,7 +3768,7 @@ namespace zorba
     break;
 
   case 215:
-#line 3163 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3163 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast]" << endl;
@@ -3778,7 +3778,7 @@ namespace zorba
     break;
 
   case 216:
-#line 3170 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3170 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast.singletype]" << endl;
@@ -3790,7 +3790,7 @@ namespace zorba
     break;
 
   case 217:
-#line 3185 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3185 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary]" << endl;
@@ -3800,7 +3800,7 @@ namespace zorba
     break;
 
   case 218:
-#line 3192 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3192 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary.singletype]" << endl;
@@ -3812,7 +3812,7 @@ namespace zorba
     break;
 
   case 219:
-#line 3207 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3207 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [value]" << endl;
@@ -3822,7 +3822,7 @@ namespace zorba
     break;
 
   case 220:
-#line 3214 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3214 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [signlist.value]" << endl;
@@ -3834,7 +3834,7 @@ namespace zorba
     break;
 
   case 221:
-#line 3229 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3229 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [+]" << endl;
@@ -3844,7 +3844,7 @@ namespace zorba
     break;
 
   case 222:
-#line 3236 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3236 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [-]" << endl;
@@ -3854,7 +3854,7 @@ namespace zorba
     break;
 
   case 223:
-#line 3243 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3243 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.+]" << endl;
@@ -3864,7 +3864,7 @@ namespace zorba
     break;
 
   case 224:
-#line 3250 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3250 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.-]" << endl;
@@ -3876,7 +3876,7 @@ namespace zorba
     break;
 
   case 225:
-#line 3265 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3265 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [validate]" << endl;
@@ -3886,7 +3886,7 @@ namespace zorba
     break;
 
   case 226:
-#line 3272 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3272 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [path]" << endl;
@@ -3896,7 +3896,7 @@ namespace zorba
     break;
 
   case 227:
-#line 3279 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3279 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [extension]" << endl;
@@ -3906,7 +3906,7 @@ namespace zorba
     break;
 
   case 228:
-#line 3293 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3293 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [=]" << endl;
@@ -3916,7 +3916,7 @@ namespace zorba
     break;
 
   case 229:
-#line 3300 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3300 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [!=]" << endl;
@@ -3926,7 +3926,7 @@ namespace zorba
     break;
 
   case 230:
-#line 3307 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3307 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<]" << endl;
@@ -3936,7 +3936,7 @@ namespace zorba
     break;
 
   case 231:
-#line 3314 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3314 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<=]" << endl;
@@ -3946,7 +3946,7 @@ namespace zorba
     break;
 
   case 232:
-#line 3321 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3321 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>]" << endl;
@@ -3956,7 +3956,7 @@ namespace zorba
     break;
 
   case 233:
-#line 3328 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3328 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>=]" << endl;
@@ -3966,7 +3966,7 @@ namespace zorba
     break;
 
   case 234:
-#line 3341 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3341 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [eq]" << endl;
@@ -3976,7 +3976,7 @@ namespace zorba
     break;
 
   case 235:
-#line 3348 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3348 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ne]" << endl;
@@ -3986,7 +3986,7 @@ namespace zorba
     break;
 
   case 236:
-#line 3355 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3355 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [lt]" << endl;
@@ -3996,7 +3996,7 @@ namespace zorba
     break;
 
   case 237:
-#line 3362 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3362 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [le]" << endl;
@@ -4006,7 +4006,7 @@ namespace zorba
     break;
 
   case 238:
-#line 3369 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3369 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [gt]" << endl;
@@ -4016,7 +4016,7 @@ namespace zorba
     break;
 
   case 239:
-#line 3376 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3376 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ge]" << endl;
@@ -4026,7 +4026,7 @@ namespace zorba
     break;
 
   case 240:
-#line 3389 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3389 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [is]" << endl;
@@ -4036,7 +4036,7 @@ namespace zorba
     break;
 
   case 241:
-#line 3396 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3396 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [<<]" << endl;
@@ -4046,7 +4046,7 @@ namespace zorba
     break;
 
   case 242:
-#line 3403 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3403 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [>>]" << endl;
@@ -4056,7 +4056,7 @@ namespace zorba
     break;
 
   case 243:
-#line 3417 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3417 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [expr]" << endl;
@@ -4066,7 +4066,7 @@ namespace zorba
     break;
 
   case 244:
-#line 3424 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3424 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [mode.expr]" << endl;
@@ -4078,7 +4078,7 @@ namespace zorba
     break;
 
   case 245:
-#line 3439 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3439 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist]" << endl;
@@ -4090,7 +4090,7 @@ namespace zorba
     break;
 
   case 246:
-#line 3448 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3448 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist.expr]" << endl;
@@ -4102,7 +4102,7 @@ namespace zorba
     break;
 
   case 247:
-#line 3463 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3463 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [single]" << endl;
@@ -4114,7 +4114,7 @@ namespace zorba
     break;
 
   case 248:
-#line 3472 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3472 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [list]" << endl;
@@ -4128,7 +4128,7 @@ namespace zorba
     break;
 
   case 249:
-#line 3489 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3489 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]" << endl;
@@ -4141,7 +4141,7 @@ namespace zorba
     break;
 
   case 250:
-#line 3497 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3497 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval))),
@@ -4150,7 +4150,7 @@ namespace zorba
     break;
 
   case 251:
-#line 3540 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3540 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/]" << endl;
@@ -4160,7 +4160,7 @@ namespace zorba
     break;
 
   case 252:
-#line 3547 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3547 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/relative]" << endl;
@@ -4170,7 +4170,7 @@ namespace zorba
     break;
 
   case 253:
-#line 3554 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3554 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [//relative]" << endl;
@@ -4180,49 +4180,56 @@ namespace zorba
     break;
 
   case 254:
-#line 3561 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3561 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [relative]" << endl;
 #endif
-            RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
-            (yyval.expr) = rpe == NULL ? (yysemantic_stack_[(1) - (1)].expr) : new PathExpr(LOC ((yyloc)), ParseConstants::path_relative, (yysemantic_stack_[(1) - (1)].expr));
+       RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
+       (yyval.expr) = (rpe == NULL ?
+             (yysemantic_stack_[(1) - (1)].expr) :
+             new PathExpr(LOC((yyloc)), ParseConstants::path_relative, (yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 255:
-#line 3575 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3577 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step]" << endl;
 #endif
-            AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
-            (yyval.expr) = as != NULL ? new RelativePathExpr(LOC ((yyloc)), ParseConstants::st_slash, new ContextItemExpr(LOC ((yyloc))), (yysemantic_stack_[(1) - (1)].expr)) : (yysemantic_stack_[(1) - (1)].expr);
+       AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
+       (yyval.expr) = (as != NULL ?
+             new RelativePathExpr(LOC ((yyloc)),
+                                  ParseConstants::st_slash,
+                                  new ContextItemExpr(LOC((yyloc))),
+                                  (yysemantic_stack_[(1) - (1)].expr)) :
+             (yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 256:
-#line 3583 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3591 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step/relative]" << endl;
 #endif
-			(yyval.expr) = new RelativePathExpr(LOC ((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 257:
-#line 3590 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3599 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step//relative]" << endl;
 #endif
-			(yyval.expr) = new RelativePathExpr(LOC ((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 258:
-#line 3603 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3612 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [axis]" << endl;
@@ -4232,7 +4239,7 @@ namespace zorba
     break;
 
   case 259:
-#line 3610 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3619 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [filter]" << endl;
@@ -4242,7 +4249,7 @@ namespace zorba
     break;
 
   case 260:
-#line 3623 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3632 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward]" << endl;
@@ -4254,7 +4261,7 @@ namespace zorba
     break;
 
   case 261:
-#line 3632 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward.predlist]" << endl;
@@ -4266,7 +4273,7 @@ namespace zorba
     break;
 
   case 262:
-#line 3641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3650 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse]" << endl;
@@ -4278,7 +4285,7 @@ namespace zorba
     break;
 
   case 263:
-#line 3650 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3659 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse.predlist]" << endl;
@@ -4290,7 +4297,7 @@ namespace zorba
     break;
 
   case 264:
-#line 3665 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3674 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [nodetest]" << endl;
@@ -4302,7 +4309,7 @@ namespace zorba
     break;
 
   case 265:
-#line 3674 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3683 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [abbrev]" << endl;
@@ -4313,7 +4320,7 @@ namespace zorba
     break;
 
   case 266:
-#line 3688 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3697 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [child]" << endl;
@@ -4323,7 +4330,7 @@ namespace zorba
     break;
 
   case 267:
-#line 3695 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3704 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant]" << endl;
@@ -4333,7 +4340,7 @@ namespace zorba
     break;
 
   case 268:
-#line 3702 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3711 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [attribute]" << endl;
@@ -4343,7 +4350,7 @@ namespace zorba
     break;
 
   case 269:
-#line 3709 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3718 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [self]" << endl;
@@ -4353,7 +4360,7 @@ namespace zorba
     break;
 
   case 270:
-#line 3716 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3725 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant_or_self]" << endl;
@@ -4363,7 +4370,7 @@ namespace zorba
     break;
 
   case 271:
-#line 3723 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3732 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following_sibling]" << endl;
@@ -4373,7 +4380,7 @@ namespace zorba
     break;
 
   case 272:
-#line 3730 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3739 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following]" << endl;
@@ -4383,7 +4390,7 @@ namespace zorba
     break;
 
   case 273:
-#line 3743 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3752 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [nodetest]" << endl;
@@ -4393,7 +4400,7 @@ namespace zorba
     break;
 
   case 274:
-#line 3750 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3759 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [@ nodetest]" << endl;
@@ -4403,7 +4410,7 @@ namespace zorba
     break;
 
   case 275:
-#line 3763 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3772 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [nodetest]" << endl;
@@ -4415,7 +4422,7 @@ namespace zorba
     break;
 
   case 276:
-#line 3772 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3781 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [..]" << endl;
@@ -4427,7 +4434,7 @@ namespace zorba
     break;
 
   case 277:
-#line 3787 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3796 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [parent]" << endl;
@@ -4437,7 +4444,7 @@ namespace zorba
     break;
 
   case 278:
-#line 3794 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3803 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor]" << endl;
@@ -4447,7 +4454,7 @@ namespace zorba
     break;
 
   case 279:
-#line 3801 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3810 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding_sibling]" << endl;
@@ -4457,7 +4464,7 @@ namespace zorba
     break;
 
   case 280:
-#line 3808 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3817 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding]" << endl;
@@ -4467,7 +4474,7 @@ namespace zorba
     break;
 
   case 281:
-#line 3815 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3824 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor_or_self]" << endl;
@@ -4477,7 +4484,7 @@ namespace zorba
     break;
 
   case 282:
-#line 3833 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3842 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [kindtest]" << endl;
@@ -4487,7 +4494,7 @@ namespace zorba
     break;
 
   case 283:
-#line 3840 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3849 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [nametest]" << endl;
@@ -4497,7 +4504,7 @@ namespace zorba
     break;
 
   case 284:
-#line 3853 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3862 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [qname]" << endl;
@@ -4507,7 +4514,7 @@ namespace zorba
     break;
 
   case 285:
-#line 3860 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3869 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [wildcard]" << endl;
@@ -4517,7 +4524,7 @@ namespace zorba
     break;
 
   case 286:
-#line 3873 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3882 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*]" << endl;
@@ -4530,7 +4537,7 @@ namespace zorba
     break;
 
   case 287:
-#line 3883 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3892 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [pref:*]" << endl;
@@ -4543,7 +4550,7 @@ namespace zorba
     break;
 
   case 288:
-#line 3893 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3902 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*:qname]" << endl;
@@ -4556,29 +4563,29 @@ namespace zorba
     break;
 
   case 289:
-#line 3909 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3918 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary]" << endl;
 #endif
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 290:
-#line 3916 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3925 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary.predlist]" << endl;
 #endif
 			(yyval.expr) = new FilterExpr(LOC ((yyloc)),
-								(yysemantic_stack_[(2) - (1)].expr),
-								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
+                          (yysemantic_stack_[(2) - (1)].expr),
+                          dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 291:
-#line 3931 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3940 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [single]" << endl;
@@ -4590,7 +4597,7 @@ namespace zorba
     break;
 
   case 292:
-#line 3940 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3949 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [list]" << endl;
@@ -4604,7 +4611,7 @@ namespace zorba
     break;
 
   case 293:
-#line 3957 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3966 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Predicate [ ]" << endl;
@@ -4614,7 +4621,7 @@ namespace zorba
     break;
 
   case 294:
-#line 3971 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3980 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [literal]" << endl;
@@ -4624,7 +4631,7 @@ namespace zorba
     break;
 
   case 295:
-#line 3978 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3987 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [varref]" << endl;
@@ -4634,7 +4641,7 @@ namespace zorba
     break;
 
   case 296:
-#line 3985 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 3994 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [paren]" << endl;
@@ -4644,7 +4651,7 @@ namespace zorba
     break;
 
   case 297:
-#line 3992 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4001 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [context_item]" << endl;
@@ -4654,7 +4661,7 @@ namespace zorba
     break;
 
   case 298:
-#line 3999 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4008 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [funcall]" << endl;
@@ -4664,7 +4671,7 @@ namespace zorba
     break;
 
   case 299:
-#line 4006 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4015 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [cons]" << endl;
@@ -4674,7 +4681,7 @@ namespace zorba
     break;
 
   case 300:
-#line 4013 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4022 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [ordered]" << endl;
@@ -4684,7 +4691,7 @@ namespace zorba
     break;
 
   case 301:
-#line 4020 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4029 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [unordered]" << endl;
@@ -4694,7 +4701,7 @@ namespace zorba
     break;
 
   case 302:
-#line 4033 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4042 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [numeric]" << endl;
@@ -4704,7 +4711,7 @@ namespace zorba
     break;
 
   case 303:
-#line 4040 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4049 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [string]" << endl;
@@ -4714,7 +4721,7 @@ namespace zorba
     break;
 
   case 304:
-#line 4053 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4062 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [decimal]" << endl;
@@ -4725,7 +4732,7 @@ namespace zorba
     break;
 
   case 305:
-#line 4061 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4070 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [int]" << endl;
@@ -4736,7 +4743,7 @@ namespace zorba
     break;
 
   case 306:
-#line 4069 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4078 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [double]" << endl;
@@ -4747,7 +4754,7 @@ namespace zorba
     break;
 
   case 307:
-#line 4083 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4092 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarRef [ ]" << endl;
@@ -4757,7 +4764,7 @@ namespace zorba
     break;
 
   case 308:
-#line 4096 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4105 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [()]" << endl;
@@ -4767,7 +4774,7 @@ namespace zorba
     break;
 
   case 309:
-#line 4103 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4112 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [(expr)]" << endl;
@@ -4778,7 +4785,7 @@ namespace zorba
     break;
 
   case 310:
-#line 4117 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4126 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ContextItemExpr [.]" << endl;
@@ -4788,7 +4795,7 @@ namespace zorba
     break;
 
   case 311:
-#line 4130 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4139 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderedExpr [expr]" << endl;
@@ -4799,7 +4806,7 @@ namespace zorba
     break;
 
   case 312:
-#line 4144 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4153 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnorderedExpr [expr]" << endl;
@@ -4810,7 +4817,7 @@ namespace zorba
     break;
 
   case 313:
-#line 4203 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4212 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [ ]" << endl;
@@ -4822,7 +4829,7 @@ namespace zorba
     break;
 
   case 314:
-#line 4212 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4221 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [arglist]" << endl;
@@ -4834,7 +4841,7 @@ namespace zorba
     break;
 
   case 315:
-#line 4227 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4236 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [single]" << endl;
@@ -4846,7 +4853,7 @@ namespace zorba
     break;
 
   case 316:
-#line 4236 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4245 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [list]" << endl;
@@ -4858,7 +4865,7 @@ namespace zorba
     break;
 
   case 317:
-#line 4251 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4260 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [direct]" << endl;
@@ -4868,7 +4875,7 @@ namespace zorba
     break;
 
   case 318:
-#line 4258 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4267 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [computed]" << endl;
@@ -4878,7 +4885,7 @@ namespace zorba
     break;
 
   case 319:
-#line 4271 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4280 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [element]" << endl;
@@ -4888,7 +4895,7 @@ namespace zorba
     break;
 
   case 320:
-#line 4278 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4287 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [comment]" << endl;
@@ -4898,7 +4905,7 @@ namespace zorba
     break;
 
   case 321:
-#line 4285 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4294 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [pi]" << endl;
@@ -4908,7 +4915,7 @@ namespace zorba
     break;
 
   case 322:
-#line 4298 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4307 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname/> ]" << endl;
@@ -4922,7 +4929,7 @@ namespace zorba
     break;
 
   case 323:
-#line 4309 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4318 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist/> ]" << endl;
@@ -4936,7 +4943,7 @@ namespace zorba
     break;
 
   case 324:
-#line 4320 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4329 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname></qname>]" << endl;
@@ -4950,7 +4957,7 @@ namespace zorba
     break;
 
   case 325:
-#line 4331 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4340 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname>content</qname>]" << endl;
@@ -4964,7 +4971,7 @@ namespace zorba
     break;
 
   case 326:
-#line 4342 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4351 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist></qname>]" << endl;
@@ -4978,7 +4985,7 @@ namespace zorba
     break;
 
   case 327:
-#line 4353 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4362 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist>content</qname>]" << endl;
@@ -4992,7 +4999,7 @@ namespace zorba
     break;
 
   case 328:
-#line 4371 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4380 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [single]" << endl;
@@ -5004,7 +5011,7 @@ namespace zorba
     break;
 
   case 329:
-#line 4380 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4389 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [list]" << endl;
@@ -5016,7 +5023,7 @@ namespace zorba
     break;
 
   case 330:
-#line 4395 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4404 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [single]" << endl;
@@ -5028,7 +5035,7 @@ namespace zorba
     break;
 
   case 331:
-#line 4404 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4413 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [list]" << endl;
@@ -5042,7 +5049,7 @@ namespace zorba
     break;
 
   case 332:
-#line 4421 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4430 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttr [ ]" << endl;
@@ -5054,7 +5061,7 @@ namespace zorba
     break;
 
   case 333:
-#line 4436 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4445 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [quote]" << endl;
@@ -5065,7 +5072,7 @@ namespace zorba
     break;
 
   case 334:
-#line 4444 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4453 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [apos]" << endl;
@@ -5076,7 +5083,7 @@ namespace zorba
     break;
 
   case 335:
-#line 4458 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4467 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList[empty]" << endl;
@@ -5086,14 +5093,14 @@ namespace zorba
     break;
 
   case 336:
-#line 4465 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4474 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 337:
-#line 4472 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4481 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [""]" << endl;
@@ -5105,7 +5112,7 @@ namespace zorba
     break;
 
   case 338:
-#line 4481 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4490 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [single]" << endl;
@@ -5117,7 +5124,7 @@ namespace zorba
     break;
 
   case 339:
-#line 4490 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4499 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list ""]" << endl;
@@ -5131,7 +5138,7 @@ namespace zorba
     break;
 
   case 340:
-#line 4501 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4510 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list]" << endl;
@@ -5145,7 +5152,7 @@ namespace zorba
     break;
 
   case 341:
-#line 4518 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4527 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']" << endl;
@@ -5155,14 +5162,14 @@ namespace zorba
     break;
 
   case 342:
-#line 4525 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4534 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 343:
-#line 4532 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4541 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']" << endl;
@@ -5174,7 +5181,7 @@ namespace zorba
     break;
 
   case 344:
-#line 4541 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4550 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [single]" << endl;
@@ -5186,7 +5193,7 @@ namespace zorba
     break;
 
   case 345:
-#line 4550 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4559 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.'']" << endl;
@@ -5200,7 +5207,7 @@ namespace zorba
     break;
 
   case 346:
-#line 4561 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4570 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.single]" << endl;
@@ -5214,7 +5221,7 @@ namespace zorba
     break;
 
   case 347:
-#line 4578 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4587 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [quote_attr_content]" << endl;
@@ -5225,7 +5232,7 @@ namespace zorba
     break;
 
   case 348:
-#line 4586 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4595 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [common_content]" << endl;
@@ -5236,7 +5243,7 @@ namespace zorba
     break;
 
   case 349:
-#line 4600 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4609 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [apos_attr_content]" << endl;
@@ -5247,7 +5254,7 @@ namespace zorba
     break;
 
   case 350:
-#line 4608 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4617 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [common_content]" << endl;
@@ -5258,7 +5265,7 @@ namespace zorba
     break;
 
   case 351:
-#line 4622 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4631 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cons]" << endl;
@@ -5269,7 +5276,7 @@ namespace zorba
     break;
 
   case 352:
-#line 4630 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4639 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [elem_content]" << endl;
@@ -5280,7 +5287,7 @@ namespace zorba
     break;
 
   case 353:
-#line 4638 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4647 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cdata]" << endl;
@@ -5292,7 +5299,7 @@ namespace zorba
     break;
 
   case 354:
-#line 4647 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4656 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [common_content]" << endl;
@@ -5304,7 +5311,7 @@ namespace zorba
     break;
 
   case 355:
-#line 4662 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4671 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [char_ref]\n";
@@ -5316,7 +5323,7 @@ namespace zorba
     break;
 
   case 356:
-#line 4671 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4680 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [{{]" << endl;
@@ -5327,7 +5334,7 @@ namespace zorba
     break;
 
   case 357:
-#line 4679 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4688 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [}}]" << endl;
@@ -5338,7 +5345,7 @@ namespace zorba
     break;
 
   case 358:
-#line 4687 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4696 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [expr]" << endl;
@@ -5349,7 +5356,7 @@ namespace zorba
     break;
 
   case 359:
-#line 4701 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4710 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirCommentConstructor [ ]" << endl;
@@ -5360,7 +5367,7 @@ namespace zorba
     break;
 
   case 360:
-#line 4709 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4718 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
        cout << "DirCommentConstructor [ ]" << endl;
@@ -5370,7 +5377,7 @@ namespace zorba
     break;
 
   case 361:
-#line 4727 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4736 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target]" << endl;
@@ -5381,7 +5388,7 @@ namespace zorba
     break;
 
   case 362:
-#line 4735 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4744 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]" << endl;
@@ -5393,7 +5400,7 @@ namespace zorba
     break;
 
   case 363:
-#line 4755 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4764 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CDataSection [ ]" << endl;
@@ -5403,7 +5410,7 @@ namespace zorba
     break;
 
   case 364:
-#line 4773 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4782 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [doc]" << endl;
@@ -5413,7 +5420,7 @@ namespace zorba
     break;
 
   case 365:
-#line 4780 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4789 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [elem]" << endl;
@@ -5423,7 +5430,7 @@ namespace zorba
     break;
 
   case 366:
-#line 4787 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4796 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [attr]" << endl;
@@ -5433,7 +5440,7 @@ namespace zorba
     break;
 
   case 367:
-#line 4794 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4803 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [text]" << endl;
@@ -5443,7 +5450,7 @@ namespace zorba
     break;
 
   case 368:
-#line 4801 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4810 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [comment]" << endl;
@@ -5453,7 +5460,7 @@ namespace zorba
     break;
 
   case 369:
-#line 4808 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4817 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [pi]" << endl;
@@ -5463,7 +5470,7 @@ namespace zorba
     break;
 
   case 370:
-#line 4821 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4830 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompDocConstructor [ ]" << endl;
@@ -5474,7 +5481,7 @@ namespace zorba
     break;
 
   case 371:
-#line 4835 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4844 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [ ]" << endl;
@@ -5486,7 +5493,7 @@ namespace zorba
     break;
 
   case 372:
-#line 4844 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4853 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [content]" << endl;
@@ -5498,7 +5505,7 @@ namespace zorba
     break;
 
   case 373:
-#line 4853 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4862 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name]" << endl;
@@ -5509,7 +5516,7 @@ namespace zorba
     break;
 
   case 374:
-#line 4861 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4870 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name.content]" << endl;
@@ -5520,7 +5527,7 @@ namespace zorba
     break;
 
   case 375:
-#line 4889 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4898 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [ ]" << endl;
@@ -5532,7 +5539,7 @@ namespace zorba
     break;
 
   case 376:
-#line 4898 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4907 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [val]" << endl;
@@ -5544,7 +5551,7 @@ namespace zorba
     break;
 
   case 377:
-#line 4907 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4916 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name]" << endl;
@@ -5555,7 +5562,7 @@ namespace zorba
     break;
 
   case 378:
-#line 4915 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4924 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name.val]" << endl;
@@ -5566,7 +5573,7 @@ namespace zorba
     break;
 
   case 379:
-#line 4929 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4938 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompTextConstructor [content]" << endl;
@@ -5577,7 +5584,7 @@ namespace zorba
     break;
 
   case 380:
-#line 4943 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4952 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompCommentConstructor [content]" << endl;
@@ -5588,7 +5595,7 @@ namespace zorba
     break;
 
   case 381:
-#line 4957 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4966 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [ ]" << endl;
@@ -5600,7 +5607,7 @@ namespace zorba
     break;
 
   case 382:
-#line 4966 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4975 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [content]" << endl;
@@ -5612,7 +5619,7 @@ namespace zorba
     break;
 
   case 383:
-#line 4975 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4984 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]" << endl;
@@ -5623,7 +5630,7 @@ namespace zorba
     break;
 
   case 384:
-#line 4983 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 4992 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]" << endl;
@@ -5634,7 +5641,7 @@ namespace zorba
     break;
 
   case 385:
-#line 4997 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5006 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic]" << endl;
@@ -5646,7 +5653,7 @@ namespace zorba
     break;
 
   case 386:
-#line 5006 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5015 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic ?]" << endl;
@@ -5658,7 +5665,7 @@ namespace zorba
     break;
 
   case 387:
-#line 5021 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5030 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeDeclaration [as seqtype]" << endl;
@@ -5669,7 +5676,7 @@ namespace zorba
     break;
 
   case 388:
-#line 5035 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5044 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type]" << endl;
@@ -5681,7 +5688,7 @@ namespace zorba
     break;
 
   case 389:
-#line 5044 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5053 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type.occurs]" << endl;
@@ -5693,7 +5700,7 @@ namespace zorba
     break;
 
   case 390:
-#line 5053 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5062 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [void]" << endl;
@@ -5703,7 +5710,7 @@ namespace zorba
     break;
 
   case 391:
-#line 5093 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5102 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [?]" << endl;
@@ -5714,7 +5721,7 @@ namespace zorba
     break;
 
   case 392:
-#line 5101 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5110 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [*]" << endl;
@@ -5725,7 +5732,7 @@ namespace zorba
     break;
 
   case 393:
-#line 5109 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5118 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [+]" << endl;
@@ -5736,7 +5743,7 @@ namespace zorba
     break;
 
   case 394:
-#line 5123 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5132 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [atomic]" << endl;
@@ -5746,7 +5753,7 @@ namespace zorba
     break;
 
   case 395:
-#line 5130 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5139 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [kind]" << endl;
@@ -5756,7 +5763,7 @@ namespace zorba
     break;
 
   case 396:
-#line 5137 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5146 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [item]" << endl;
@@ -5766,7 +5773,7 @@ namespace zorba
     break;
 
   case 397:
-#line 5150 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5159 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AtomicType [qname]" << endl;
@@ -5777,7 +5784,7 @@ namespace zorba
     break;
 
   case 398:
-#line 5164 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5173 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [doc]" << endl;
@@ -5787,7 +5794,7 @@ namespace zorba
     break;
 
   case 399:
-#line 5171 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5180 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [elem]" << endl;
@@ -5797,7 +5804,7 @@ namespace zorba
     break;
 
   case 400:
-#line 5178 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5187 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [attr]" << endl;
@@ -5807,7 +5814,7 @@ namespace zorba
     break;
 
   case 401:
-#line 5185 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5194 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_elem]" << endl;
@@ -5817,7 +5824,7 @@ namespace zorba
     break;
 
   case 402:
-#line 5192 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5201 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_attr]" << endl;
@@ -5827,7 +5834,7 @@ namespace zorba
     break;
 
   case 403:
-#line 5199 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5208 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [pi]" << endl;
@@ -5837,7 +5844,7 @@ namespace zorba
     break;
 
   case 404:
-#line 5206 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5215 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [comment]" << endl;
@@ -5847,7 +5854,7 @@ namespace zorba
     break;
 
   case 405:
-#line 5213 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5222 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [text]" << endl;
@@ -5857,7 +5864,7 @@ namespace zorba
     break;
 
   case 406:
-#line 5220 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5229 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [any]" << endl;
@@ -5867,7 +5874,7 @@ namespace zorba
     break;
 
   case 407:
-#line 5233 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5242 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AnyKindTest [ ]" << endl;
@@ -5877,7 +5884,7 @@ namespace zorba
     break;
 
   case 408:
-#line 5246 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5255 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [ ]" << endl;
@@ -5887,7 +5894,7 @@ namespace zorba
     break;
 
   case 409:
-#line 5253 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5262 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [elem]" << endl;
@@ -5898,7 +5905,7 @@ namespace zorba
     break;
 
   case 410:
-#line 5261 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5270 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [schema_elem]" << endl;
@@ -5909,7 +5916,7 @@ namespace zorba
     break;
 
   case 411:
-#line 5275 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5284 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TextTest [ ]" << endl;
@@ -5919,7 +5926,7 @@ namespace zorba
     break;
 
   case 412:
-#line 5288 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5297 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommentTest [ ]" << endl;
@@ -5929,7 +5936,7 @@ namespace zorba
     break;
 
   case 413:
-#line 5301 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5310 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ ]" << endl;
@@ -5939,7 +5946,7 @@ namespace zorba
     break;
 
   case 414:
-#line 5308 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5317 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ncname]" << endl;
@@ -5949,7 +5956,7 @@ namespace zorba
     break;
 
   case 415:
-#line 5315 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5324 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [stringlit]" << endl;
@@ -5959,7 +5966,7 @@ namespace zorba
     break;
 
   case 416:
-#line 5328 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5337 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [ ]" << endl;
@@ -5971,7 +5978,7 @@ namespace zorba
     break;
 
   case 417:
-#line 5337 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5346 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name]" << endl;
@@ -5983,7 +5990,7 @@ namespace zorba
     break;
 
   case 418:
-#line 5346 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5355 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name.type]" << endl;
@@ -5995,7 +6002,7 @@ namespace zorba
     break;
 
   case 419:
-#line 5355 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5364 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*]" << endl;
@@ -6007,7 +6014,7 @@ namespace zorba
     break;
 
   case 420:
-#line 5364 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5373 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*.type]" << endl;
@@ -6019,7 +6026,7 @@ namespace zorba
     break;
 
   case 421:
-#line 5379 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5388 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaAttributeTest [ ]" << endl;
@@ -6030,7 +6037,7 @@ namespace zorba
     break;
 
   case 422:
-#line 5393 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5402 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [ ]" << endl;
@@ -6042,7 +6049,7 @@ namespace zorba
     break;
 
   case 423:
-#line 5402 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5411 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name]" << endl;
@@ -6054,7 +6061,7 @@ namespace zorba
     break;
 
   case 424:
-#line 5411 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5420 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]" << endl;
@@ -6066,7 +6073,7 @@ namespace zorba
     break;
 
   case 425:
-#line 5420 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5429 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]" << endl;
@@ -6078,7 +6085,7 @@ namespace zorba
     break;
 
   case 426:
-#line 5429 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5438 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*]" << endl;
@@ -6091,7 +6098,7 @@ namespace zorba
     break;
 
   case 427:
-#line 5439 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5448 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]" << endl;
@@ -6104,7 +6111,7 @@ namespace zorba
     break;
 
   case 428:
-#line 5449 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5458 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]" << endl;
@@ -6117,7 +6124,7 @@ namespace zorba
     break;
 
   case 429:
-#line 5465 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5474 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaElementTest [ ]" << endl;
@@ -6128,7 +6135,7 @@ namespace zorba
     break;
 
   case 430:
-#line 5489 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5498 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name]" << endl;
@@ -6139,7 +6146,7 @@ namespace zorba
     break;
 
   case 431:
-#line 5499 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5508 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name?]" << endl;
@@ -6151,7 +6158,7 @@ namespace zorba
     break;
 
   case 432:
-#line 5522 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5531 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StringLiteral [ ]" << endl;
@@ -6161,7 +6168,7 @@ namespace zorba
     break;
 
   case 433:
-#line 5565 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5574 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [strict]" << endl;
@@ -6172,7 +6179,7 @@ namespace zorba
     break;
 
   case 434:
-#line 5573 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5582 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [lax]" << endl;
@@ -6181,7 +6188,7 @@ namespace zorba
     break;
 
   case 435:
-#line 5579 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5588 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [skip]" << endl;
@@ -6190,7 +6197,7 @@ namespace zorba
     break;
 
   case 436:
-#line 5590 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5599 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr]" << endl;
@@ -6202,7 +6209,7 @@ namespace zorba
     break;
 
   case 437:
-#line 5599 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5608 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.as_first]" << endl;
@@ -6214,7 +6221,7 @@ namespace zorba
     break;
 
   case 438:
-#line 5608 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5617 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.as_last]" << endl;
@@ -6226,7 +6233,7 @@ namespace zorba
     break;
 
   case 439:
-#line 5617 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5626 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.after]" << endl;
@@ -6238,7 +6245,7 @@ namespace zorba
     break;
 
   case 440:
-#line 5626 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5635 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.before]" << endl;
@@ -6250,7 +6257,7 @@ namespace zorba
     break;
 
   case 441:
-#line 5636 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5645 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr]" << endl;
@@ -6262,7 +6269,7 @@ namespace zorba
     break;
 
   case 442:
-#line 5645 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5654 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.as_first]" << endl;
@@ -6274,7 +6281,7 @@ namespace zorba
     break;
 
   case 443:
-#line 5654 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5663 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.as_last]" << endl;
@@ -6286,7 +6293,7 @@ namespace zorba
     break;
 
   case 444:
-#line 5663 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5672 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.after]" << endl;
@@ -6298,7 +6305,7 @@ namespace zorba
     break;
 
   case 445:
-#line 5672 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5681 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.before]" << endl;
@@ -6310,7 +6317,7 @@ namespace zorba
     break;
 
   case 446:
-#line 5687 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5696 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteNodeExpr [expr]" << endl;
@@ -6320,7 +6327,7 @@ namespace zorba
     break;
 
   case 447:
-#line 5695 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5704 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteNodesExpr [expr]" << endl;
@@ -6330,7 +6337,7 @@ namespace zorba
     break;
 
   case 448:
-#line 5708 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5717 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [expr.expr]" << endl;
@@ -6342,7 +6349,7 @@ namespace zorba
     break;
 
   case 449:
-#line 5717 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5726 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceValueOfExpr [value.expr]" << endl;
@@ -6354,7 +6361,7 @@ namespace zorba
     break;
 
   case 450:
-#line 5732 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5741 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RenameExpr [expr.expr]" << endl;
@@ -6365,7 +6372,7 @@ namespace zorba
     break;
 
   case 451:
-#line 5761 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5770 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TransformExpr [ ]" << endl;
@@ -6376,7 +6383,7 @@ namespace zorba
     break;
 
   case 452:
-#line 5775 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5784 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]" << endl;
@@ -6388,7 +6395,7 @@ namespace zorba
     break;
 
   case 453:
-#line 5784 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5793 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [list]" << endl;
@@ -6401,7 +6408,7 @@ namespace zorba
     break;
 
   case 454:
-#line 5800 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5809 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
        cout << "VarNameDecl [" << driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)) << "]" << endl;
@@ -6411,7 +6418,7 @@ namespace zorba
     break;
 
   case 455:
-#line 5817 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5826 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TryExpr []" << endl;
@@ -6422,7 +6429,7 @@ namespace zorba
     break;
 
   case 456:
-#line 5827 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5836 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchList [single]" << endl;
@@ -6434,7 +6441,7 @@ namespace zorba
     break;
 
   case 457:
-#line 5837 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5846 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchList [list]" << endl;
@@ -6448,7 +6455,7 @@ namespace zorba
     break;
 
   case 458:
-#line 5851 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5860 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest]" << endl;
@@ -6460,7 +6467,7 @@ namespace zorba
     break;
 
   case 459:
-#line 5861 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5870 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest,VarName]" << endl;
@@ -6473,7 +6480,7 @@ namespace zorba
     break;
 
   case 460:
-#line 5881 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5890 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new EvalExpr (LOC ((yyloc)),
                           dynamic_cast<VarGetsDeclList *> ((yysemantic_stack_[(4) - (2)].node)),
@@ -6482,7 +6489,7 @@ namespace zorba
     break;
 
   case 461:
-#line 5901 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5910 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or]" << endl;
@@ -6491,7 +6498,7 @@ namespace zorba
     break;
 
   case 462:
-#line 5907 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5916 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity]" << endl;
@@ -6500,7 +6507,7 @@ namespace zorba
     break;
 
   case 463:
-#line 5913 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5922 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.weight_range]" << endl;
@@ -6509,7 +6516,7 @@ namespace zorba
     break;
 
   case 464:
-#line 5919 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5928 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity.weight_range]" << endl;
@@ -6518,7 +6525,7 @@ namespace zorba
     break;
 
   case 465:
-#line 5931 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5940 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_single]" << endl;
@@ -6527,7 +6534,7 @@ namespace zorba
     break;
 
   case 466:
-#line 5937 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5946 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_single]" << endl;
@@ -6536,7 +6543,7 @@ namespace zorba
     break;
 
   case 467:
-#line 5943 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5952 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_list]" << endl;
@@ -6545,7 +6552,7 @@ namespace zorba
     break;
 
   case 468:
-#line 5949 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5958 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_list]" << endl;
@@ -6554,7 +6561,7 @@ namespace zorba
     break;
 
   case 469:
-#line 5961 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5970 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [and]" << endl;
@@ -6563,7 +6570,7 @@ namespace zorba
     break;
 
   case 470:
-#line 5967 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5976 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [or.and]" << endl;
@@ -6572,7 +6579,7 @@ namespace zorba
     break;
 
   case 471:
-#line 5979 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5988 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [mild_not]" << endl;
@@ -6581,7 +6588,7 @@ namespace zorba
     break;
 
   case 472:
-#line 5985 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 5994 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [and.mild_not]" << endl;
@@ -6590,7 +6597,7 @@ namespace zorba
     break;
 
   case 473:
-#line 5997 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6006 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [unary_not]" << endl;
@@ -6599,7 +6606,7 @@ namespace zorba
     break;
 
   case 474:
-#line 6003 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6012 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [mild_not.unary_not]" << endl;
@@ -6608,7 +6615,7 @@ namespace zorba
     break;
 
   case 475:
-#line 6015 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6024 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [words]" << endl;
@@ -6617,7 +6624,7 @@ namespace zorba
     break;
 
   case 476:
-#line 6021 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6030 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [not.words]" << endl;
@@ -6626,7 +6633,7 @@ namespace zorba
     break;
 
   case 477:
-#line 6033 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6042 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words]" << endl;
@@ -6635,7 +6642,7 @@ namespace zorba
     break;
 
   case 478:
-#line 6039 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6048 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words.times]" << endl;
@@ -6644,7 +6651,7 @@ namespace zorba
     break;
 
   case 479:
-#line 6045 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6054 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [selection]" << endl;
@@ -6653,7 +6660,7 @@ namespace zorba
     break;
 
   case 480:
-#line 6057 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6066 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value]" << endl;
@@ -6662,7 +6669,7 @@ namespace zorba
     break;
 
   case 481:
-#line 6063 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6072 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value.any_all_option]" << endl;
@@ -6671,7 +6678,7 @@ namespace zorba
     break;
 
   case 482:
-#line 6075 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6084 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [literal]" << endl;
@@ -6680,7 +6687,7 @@ namespace zorba
     break;
 
   case 483:
-#line 6081 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6090 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [expr]" << endl;
@@ -6689,7 +6696,7 @@ namespace zorba
     break;
 
   case 484:
-#line 6093 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6102 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [order]" << endl;
@@ -6698,7 +6705,7 @@ namespace zorba
     break;
 
   case 485:
-#line 6099 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6108 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [window]" << endl;
@@ -6707,7 +6714,7 @@ namespace zorba
     break;
 
   case 486:
-#line 6105 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6114 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [distance]" << endl;
@@ -6716,7 +6723,7 @@ namespace zorba
     break;
 
   case 487:
-#line 6111 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6120 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [scope]" << endl;
@@ -6725,7 +6732,7 @@ namespace zorba
     break;
 
   case 488:
-#line 6117 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6126 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [content]" << endl;
@@ -6734,7 +6741,7 @@ namespace zorba
     break;
 
   case 489:
-#line 6129 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6138 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOrderedIndicator [ ]" << endl;
@@ -6743,7 +6750,7 @@ namespace zorba
     break;
 
   case 490:
-#line 6141 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6150 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [case]" << endl;
@@ -6753,7 +6760,7 @@ namespace zorba
     break;
 
   case 491:
-#line 6148 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6157 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [diacritics]" << endl;
@@ -6763,7 +6770,7 @@ namespace zorba
     break;
 
   case 492:
-#line 6155 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6164 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stem]" << endl;
@@ -6773,7 +6780,7 @@ namespace zorba
     break;
 
   case 493:
-#line 6162 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6171 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [thesaurus]" << endl;
@@ -6783,7 +6790,7 @@ namespace zorba
     break;
 
   case 494:
-#line 6169 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6178 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stopword]" << endl;
@@ -6793,7 +6800,7 @@ namespace zorba
     break;
 
   case 495:
-#line 6176 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6185 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [language]" << endl;
@@ -6803,7 +6810,7 @@ namespace zorba
     break;
 
   case 496:
-#line 6183 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6192 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [wildcard]" << endl;
@@ -6813,7 +6820,7 @@ namespace zorba
     break;
 
   case 497:
-#line 6196 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6205 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [lower]" << endl;
@@ -6822,7 +6829,7 @@ namespace zorba
     break;
 
   case 498:
-#line 6202 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6211 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [upper]" << endl;
@@ -6831,7 +6838,7 @@ namespace zorba
     break;
 
   case 499:
-#line 6208 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6217 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [sensitive]" << endl;
@@ -6840,7 +6847,7 @@ namespace zorba
     break;
 
   case 500:
-#line 6214 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6223 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [insensitive]" << endl;
@@ -6849,7 +6856,7 @@ namespace zorba
     break;
 
   case 501:
-#line 6226 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6235 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [with]" << endl;
@@ -6858,7 +6865,7 @@ namespace zorba
     break;
 
   case 502:
-#line 6232 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6241 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [without]" << endl;
@@ -6867,7 +6874,7 @@ namespace zorba
     break;
 
   case 503:
-#line 6238 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6247 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [sensitive]" << endl;
@@ -6876,7 +6883,7 @@ namespace zorba
     break;
 
   case 504:
-#line 6244 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6253 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [insensitive]" << endl;
@@ -6885,7 +6892,7 @@ namespace zorba
     break;
 
   case 505:
-#line 6256 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6265 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [with]" << endl;
@@ -6894,7 +6901,7 @@ namespace zorba
     break;
 
   case 506:
-#line 6262 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6271 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [without]" << endl;
@@ -6903,7 +6910,7 @@ namespace zorba
     break;
 
   case 507:
-#line 6274 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6283 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [id]" << endl;
@@ -6912,7 +6919,7 @@ namespace zorba
     break;
 
   case 508:
-#line 6280 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6289 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [default]" << endl;
@@ -6921,7 +6928,7 @@ namespace zorba
     break;
 
   case 509:
-#line 6286 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6295 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id)]" << endl;
@@ -6930,7 +6937,7 @@ namespace zorba
     break;
 
   case 510:
-#line 6292 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6301 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id,id,..)]" << endl;
@@ -6939,7 +6946,7 @@ namespace zorba
     break;
 
   case 511:
-#line 6298 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6307 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default)]" << endl;
@@ -6948,7 +6955,7 @@ namespace zorba
     break;
 
   case 512:
-#line 6304 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6313 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default,id,id,..)]" << endl;
@@ -6957,7 +6964,7 @@ namespace zorba
     break;
 
   case 513:
-#line 6310 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6319 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [without]" << endl;
@@ -6966,7 +6973,7 @@ namespace zorba
     break;
 
   case 514:
-#line 6322 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6331 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [single]" << endl;
@@ -6975,7 +6982,7 @@ namespace zorba
     break;
 
   case 515:
-#line 6328 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6337 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [list]" << endl;
@@ -6984,7 +6991,7 @@ namespace zorba
     break;
 
   case 516:
-#line 6340 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6349 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name]" << endl;
@@ -6993,7 +7000,7 @@ namespace zorba
     break;
 
   case 517:
-#line 6346 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6355 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel]" << endl;
@@ -7002,7 +7009,7 @@ namespace zorba
     break;
 
   case 518:
-#line 6352 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6361 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.range]" << endl;
@@ -7011,7 +7018,7 @@ namespace zorba
     break;
 
   case 519:
-#line 6358 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6367 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel.range]" << endl;
@@ -7020,7 +7027,7 @@ namespace zorba
     break;
 
   case 520:
-#line 6370 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6379 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list]" << endl;
@@ -7029,7 +7036,7 @@ namespace zorba
     break;
 
   case 521:
-#line 6376 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6385 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list.incl_excl]" << endl;
@@ -7038,7 +7045,7 @@ namespace zorba
     break;
 
   case 522:
-#line 6382 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6391 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default]" << endl;
@@ -7047,7 +7054,7 @@ namespace zorba
     break;
 
   case 523:
-#line 6388 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6397 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default.incl_excl]" << endl;
@@ -7056,7 +7063,7 @@ namespace zorba
     break;
 
   case 524:
-#line 6394 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6403 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [without]" << endl;
@@ -7065,7 +7072,7 @@ namespace zorba
     break;
 
   case 525:
-#line 6406 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6415 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [.]" << endl;
@@ -7074,7 +7081,7 @@ namespace zorba
     break;
 
   case 526:
-#line 6412 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6421 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [*]" << endl;
@@ -7083,7 +7090,7 @@ namespace zorba
     break;
 
   case 527:
-#line 6424 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6433 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [.]" << endl;
@@ -7092,7 +7099,7 @@ namespace zorba
     break;
 
   case 528:
-#line 6430 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6439 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [(*)]" << endl;
@@ -7101,7 +7108,7 @@ namespace zorba
     break;
 
   case 529:
-#line 6442 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6451 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [.]" << endl;
@@ -7110,7 +7117,7 @@ namespace zorba
     break;
 
   case 530:
-#line 6448 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6457 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [*]" << endl;
@@ -7119,7 +7126,7 @@ namespace zorba
     break;
 
   case 531:
-#line 6460 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6469 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [union]" << endl;
@@ -7128,7 +7135,7 @@ namespace zorba
     break;
 
   case 532:
-#line 6466 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6475 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [except]" << endl;
@@ -7137,7 +7144,7 @@ namespace zorba
     break;
 
   case 533:
-#line 6478 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6487 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTLanguageOption [ ]" << endl;
@@ -7146,7 +7153,7 @@ namespace zorba
     break;
 
   case 534:
-#line 6490 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6499 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [with]" << endl;
@@ -7155,7 +7162,7 @@ namespace zorba
     break;
 
   case 535:
-#line 6496 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6505 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [without]" << endl;
@@ -7164,7 +7171,7 @@ namespace zorba
     break;
 
   case 536:
-#line 6508 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6517 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [start]" << endl;
@@ -7173,7 +7180,7 @@ namespace zorba
     break;
 
   case 537:
-#line 6514 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6523 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [end]" << endl;
@@ -7182,7 +7189,7 @@ namespace zorba
     break;
 
   case 538:
-#line 6520 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6529 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [entire]" << endl;
@@ -7191,7 +7198,7 @@ namespace zorba
     break;
 
   case 539:
-#line 6532 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6541 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any]" << endl;
@@ -7200,7 +7207,7 @@ namespace zorba
     break;
 
   case 540:
-#line 6538 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6547 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any_word]" << endl;
@@ -7209,7 +7216,7 @@ namespace zorba
     break;
 
   case 541:
-#line 6544 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6553 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all]" << endl;
@@ -7218,7 +7225,7 @@ namespace zorba
     break;
 
   case 542:
-#line 6550 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6559 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all_words]" << endl;
@@ -7227,7 +7234,7 @@ namespace zorba
     break;
 
   case 543:
-#line 6556 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6565 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [phrase]" << endl;
@@ -7236,7 +7243,7 @@ namespace zorba
     break;
 
   case 544:
-#line 6568 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6577 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [exactly]" << endl;
@@ -7246,7 +7253,7 @@ namespace zorba
     break;
 
   case 545:
-#line 6575 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6584 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_least]" << endl;
@@ -7256,7 +7263,7 @@ namespace zorba
     break;
 
   case 546:
-#line 6582 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6591 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_most]" << endl;
@@ -7266,7 +7273,7 @@ namespace zorba
     break;
 
   case 547:
-#line 6589 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6598 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [range]" << endl;
@@ -7276,7 +7283,7 @@ namespace zorba
     break;
 
   case 548:
-#line 6602 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6611 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDistance [ ]" << endl;
@@ -7285,7 +7292,7 @@ namespace zorba
     break;
 
   case 549:
-#line 6614 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6623 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWindow [ ]" << endl;
@@ -7294,7 +7301,7 @@ namespace zorba
     break;
 
   case 550:
-#line 6626 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6635 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [ ]" << endl;
@@ -7303,7 +7310,7 @@ namespace zorba
     break;
 
   case 551:
-#line 6638 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6647 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [same]" << endl;
@@ -7312,7 +7319,7 @@ namespace zorba
     break;
 
   case 552:
-#line 6644 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6653 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [different]" << endl;
@@ -7321,7 +7328,7 @@ namespace zorba
     break;
 
   case 553:
-#line 6656 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6665 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [words]" << endl;
@@ -7330,7 +7337,7 @@ namespace zorba
     break;
 
   case 554:
-#line 6662 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6671 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [sentences]" << endl;
@@ -7339,7 +7346,7 @@ namespace zorba
     break;
 
   case 555:
-#line 6668 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6677 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [paragraph]" << endl;
@@ -7348,7 +7355,7 @@ namespace zorba
     break;
 
   case 556:
-#line 6680 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6689 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [sentence]" << endl;
@@ -7357,7 +7364,7 @@ namespace zorba
     break;
 
   case 557:
-#line 6686 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6695 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [paragraph]" << endl;
@@ -7366,7 +7373,7 @@ namespace zorba
     break;
 
   case 558:
-#line 6698 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6707 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTIgnoreOption [ ]" << endl;
@@ -7376,7 +7383,7 @@ namespace zorba
 
 
     /* Line 675 of lalr1.cc.  */
-#line 7380 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 7387 "/home/markos/zorba/xquery/build-gdb/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -9359,37 +9366,37 @@ namespace zorba
     3213,  3228,  3235,  3242,  3249,  3264,  3271,  3278,  3292,  3299,
     3306,  3313,  3320,  3327,  3340,  3347,  3354,  3361,  3368,  3375,
     3388,  3395,  3402,  3416,  3423,  3438,  3447,  3462,  3471,  3488,
-    3497,  3539,  3546,  3553,  3560,  3574,  3582,  3589,  3602,  3609,
-    3622,  3631,  3640,  3649,  3664,  3673,  3687,  3694,  3701,  3708,
-    3715,  3722,  3729,  3742,  3749,  3762,  3771,  3786,  3793,  3800,
-    3807,  3814,  3832,  3839,  3852,  3859,  3872,  3882,  3892,  3908,
-    3915,  3930,  3939,  3956,  3970,  3977,  3984,  3991,  3998,  4005,
-    4012,  4019,  4032,  4039,  4052,  4060,  4068,  4082,  4095,  4102,
-    4116,  4129,  4143,  4202,  4211,  4226,  4235,  4250,  4257,  4270,
-    4277,  4284,  4297,  4308,  4319,  4330,  4341,  4352,  4370,  4379,
-    4394,  4403,  4420,  4435,  4443,  4458,  4464,  4471,  4480,  4489,
-    4500,  4518,  4524,  4531,  4540,  4549,  4560,  4577,  4585,  4599,
-    4607,  4621,  4629,  4637,  4646,  4661,  4670,  4678,  4686,  4700,
-    4708,  4726,  4734,  4754,  4772,  4779,  4786,  4793,  4800,  4807,
-    4820,  4834,  4843,  4852,  4860,  4888,  4897,  4906,  4914,  4928,
-    4942,  4956,  4965,  4974,  4982,  4996,  5005,  5020,  5034,  5043,
-    5052,  5092,  5100,  5108,  5122,  5129,  5136,  5149,  5163,  5170,
-    5177,  5184,  5191,  5198,  5205,  5212,  5219,  5232,  5245,  5252,
-    5260,  5274,  5287,  5300,  5307,  5314,  5327,  5336,  5345,  5354,
-    5363,  5378,  5392,  5401,  5410,  5419,  5428,  5438,  5448,  5464,
-    5488,  5498,  5521,  5564,  5572,  5578,  5589,  5598,  5607,  5616,
-    5625,  5635,  5644,  5653,  5662,  5671,  5686,  5694,  5707,  5716,
-    5731,  5760,  5774,  5783,  5799,  5816,  5826,  5836,  5850,  5860,
-    5880,  5900,  5906,  5912,  5918,  5930,  5936,  5942,  5948,  5960,
-    5966,  5978,  5984,  5996,  6002,  6014,  6020,  6032,  6038,  6044,
-    6056,  6062,  6074,  6080,  6092,  6098,  6104,  6110,  6116,  6128,
-    6140,  6147,  6154,  6161,  6168,  6175,  6182,  6195,  6201,  6207,
-    6213,  6225,  6231,  6237,  6243,  6255,  6261,  6273,  6279,  6285,
-    6291,  6297,  6303,  6309,  6321,  6327,  6339,  6345,  6351,  6357,
-    6369,  6375,  6381,  6387,  6393,  6405,  6411,  6423,  6429,  6441,
-    6447,  6459,  6465,  6477,  6489,  6495,  6507,  6513,  6519,  6531,
-    6537,  6543,  6549,  6555,  6567,  6574,  6581,  6588,  6601,  6613,
-    6625,  6637,  6643,  6655,  6661,  6667,  6679,  6685,  6697
+    3497,  3539,  3546,  3553,  3560,  3576,  3590,  3598,  3611,  3618,
+    3631,  3640,  3649,  3658,  3673,  3682,  3696,  3703,  3710,  3717,
+    3724,  3731,  3738,  3751,  3758,  3771,  3780,  3795,  3802,  3809,
+    3816,  3823,  3841,  3848,  3861,  3868,  3881,  3891,  3901,  3917,
+    3924,  3939,  3948,  3965,  3979,  3986,  3993,  4000,  4007,  4014,
+    4021,  4028,  4041,  4048,  4061,  4069,  4077,  4091,  4104,  4111,
+    4125,  4138,  4152,  4211,  4220,  4235,  4244,  4259,  4266,  4279,
+    4286,  4293,  4306,  4317,  4328,  4339,  4350,  4361,  4379,  4388,
+    4403,  4412,  4429,  4444,  4452,  4467,  4473,  4480,  4489,  4498,
+    4509,  4527,  4533,  4540,  4549,  4558,  4569,  4586,  4594,  4608,
+    4616,  4630,  4638,  4646,  4655,  4670,  4679,  4687,  4695,  4709,
+    4717,  4735,  4743,  4763,  4781,  4788,  4795,  4802,  4809,  4816,
+    4829,  4843,  4852,  4861,  4869,  4897,  4906,  4915,  4923,  4937,
+    4951,  4965,  4974,  4983,  4991,  5005,  5014,  5029,  5043,  5052,
+    5061,  5101,  5109,  5117,  5131,  5138,  5145,  5158,  5172,  5179,
+    5186,  5193,  5200,  5207,  5214,  5221,  5228,  5241,  5254,  5261,
+    5269,  5283,  5296,  5309,  5316,  5323,  5336,  5345,  5354,  5363,
+    5372,  5387,  5401,  5410,  5419,  5428,  5437,  5447,  5457,  5473,
+    5497,  5507,  5530,  5573,  5581,  5587,  5598,  5607,  5616,  5625,
+    5634,  5644,  5653,  5662,  5671,  5680,  5695,  5703,  5716,  5725,
+    5740,  5769,  5783,  5792,  5808,  5825,  5835,  5845,  5859,  5869,
+    5889,  5909,  5915,  5921,  5927,  5939,  5945,  5951,  5957,  5969,
+    5975,  5987,  5993,  6005,  6011,  6023,  6029,  6041,  6047,  6053,
+    6065,  6071,  6083,  6089,  6101,  6107,  6113,  6119,  6125,  6137,
+    6149,  6156,  6163,  6170,  6177,  6184,  6191,  6204,  6210,  6216,
+    6222,  6234,  6240,  6246,  6252,  6264,  6270,  6282,  6288,  6294,
+    6300,  6306,  6312,  6318,  6330,  6336,  6348,  6354,  6360,  6366,
+    6378,  6384,  6390,  6396,  6402,  6414,  6420,  6432,  6438,  6450,
+    6456,  6468,  6474,  6486,  6498,  6504,  6516,  6522,  6528,  6540,
+    6546,  6552,  6558,  6564,  6576,  6583,  6590,  6597,  6610,  6622,
+    6634,  6646,  6652,  6664,  6670,  6676,  6688,  6694,  6706
   };
 
   // Print the state stack on the debug stream.
@@ -9504,7 +9511,7 @@ namespace zorba
 
 } // namespace zorba
 
-#line 6707 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_parser.y"
+#line 6716 "/home/markos/zorba/xquery/src/compiler/parser/xquery_parser.y"
 
 
 
