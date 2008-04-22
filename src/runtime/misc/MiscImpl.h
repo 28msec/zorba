@@ -23,6 +23,8 @@ NARY_ITER(FnErrorIterator);
 // 8.1 fn:resolve-uri
 NARY_ITER(FnResolveUriIterator);
 
+NARY_ITER(SequentialIterator);
+
 } /* namespace zorba */
 
 #endif /* ZORBA_MISC_IMPL_H */

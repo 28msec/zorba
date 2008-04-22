@@ -8,6 +8,7 @@ namespace zorba
   class xqpStringStore;
 
   class PlanIterator;
+  class SequentialIterator;
   class FnDataIterator;
   class FnRootIterator;
   class FnNodeNameIterator;
@@ -193,9 +194,9 @@ namespace zorba
   class ZorbaRestGetIterator;
 #endif
 
-#define PLAN_ITER_VISTOR(class)    \
+#define PLAN_ITER_VISITOR(class)                  \
   virtual void beginVisit ( const class& ) = 0;  \
-  virtual void endVisit ( const class& ) = 0; 
+  virtual void endVisit ( const class& ) = 0
 
   
   /**
@@ -203,522 +204,376 @@ namespace zorba
    */
   class PlanIterVisitor
   {
-    public:
-      virtual ~PlanIterVisitor() {}
+  public:
+    virtual ~PlanIterVisitor() {}
 
-      virtual void beginVisit ( const FnDataIterator& ) = 0;
-      virtual void endVisit ( const FnDataIterator& ) = 0;
+    PLAN_ITER_VISITOR (SequentialIterator);
+
+    PLAN_ITER_VISITOR (FnDataIterator);
        
-      virtual void beginVisit ( const FnRootIterator& ) = 0;
-      virtual void endVisit ( const FnRootIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnRootIterator);
        
-      virtual void beginVisit ( const FnNodeNameIterator& ) = 0;
-      virtual void endVisit ( const FnNodeNameIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnNodeNameIterator);
 
-      virtual void beginVisit ( const FnNilledIterator& ) = 0;
-      virtual void endVisit ( const FnNilledIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnNilledIterator);
 
-      virtual void beginVisit ( const FnBaseUriIterator& ) = 0;
-      virtual void endVisit ( const FnBaseUriIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnBaseUriIterator);
 
-      virtual void beginVisit ( const FnDocumentUriIterator& ) = 0;
-      virtual void endVisit ( const FnDocumentUriIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnDocumentUriIterator);
 
-      virtual void beginVisit ( const FnResolveUriIterator& ) = 0;
-      virtual void endVisit ( const FnResolveUriIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnResolveUriIterator);
 
-      virtual void beginVisit ( const FnStringIterator& ) = 0;
-      virtual void endVisit ( const FnStringIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnStringIterator);
 
-      virtual void beginVisit ( const FnLocalNameIterator& ) = 0;
-      virtual void endVisit ( const FnLocalNameIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnLocalNameIterator);
 
-      virtual void beginVisit ( const FnNamespaceUriIterator& ) = 0;
-      virtual void endVisit ( const FnNamespaceUriIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnNamespaceUriIterator);
 
-      virtual void beginVisit ( const FnLangIterator& ) = 0;
-      virtual void endVisit ( const FnLangIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnLangIterator);
 
-      virtual void beginVisit ( const FnCollectionIterator& ) = 0;
-      virtual void endVisit ( const FnCollectionIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnCollectionIterator);
 
-      virtual void beginVisit ( const FnErrorIterator& ) = 0;
-      virtual void endVisit ( const FnErrorIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnErrorIterator);
        
-      virtual void beginVisit ( const FnBooleanIterator& ) = 0;
-      virtual void endVisit ( const FnBooleanIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnBooleanIterator);
        
-      virtual void beginVisit ( const LogicIterator& ) = 0;
-      virtual void endVisit ( const LogicIterator& ) = 0;
+    PLAN_ITER_VISITOR (LogicIterator);
        
-      virtual void beginVisit ( const CompareIterator& ) = 0;
-      virtual void endVisit ( const CompareIterator& ) = 0;
+    PLAN_ITER_VISITOR (CompareIterator);
        
-      virtual void beginVisit ( const ElementIterator& ) = 0;
-      virtual void endVisit ( const ElementIterator& ) = 0;
+    PLAN_ITER_VISITOR (ElementIterator);
        
-      virtual void beginVisit ( const ElementContentIterator& ) = 0;
-      virtual void endVisit ( const ElementContentIterator& ) = 0;
+    PLAN_ITER_VISITOR (ElementContentIterator);
        
-      virtual void beginVisit ( const AttributeIterator & ) = 0;
-      virtual void endVisit ( const AttributeIterator& ) = 0;
+    PLAN_ITER_VISITOR (AttributeIterator );
       
-      virtual void beginVisit ( const DocumentIterator& ) = 0;
-      virtual void endVisit ( const DocumentIterator& ) = 0;
+    PLAN_ITER_VISITOR (DocumentIterator);
       
-      virtual void beginVisit ( const DocumentContentIterator& ) = 0;
-      virtual void endVisit ( const DocumentContentIterator& ) = 0;
+    PLAN_ITER_VISITOR (DocumentContentIterator);
        
-      virtual void beginVisit ( const UDFunctionCallIterator& ) = 0;
-      virtual void endVisit ( const UDFunctionCallIterator& ) = 0;
+    PLAN_ITER_VISITOR (UDFunctionCallIterator);
        
-      virtual void beginVisit ( const StatelessExtFunctionCallIterator& ) = 0;
-      virtual void endVisit ( const StatelessExtFunctionCallIterator& ) = 0;
+    PLAN_ITER_VISITOR (StatelessExtFunctionCallIterator);
        
-      virtual void beginVisit ( const CommentIterator& ) = 0;
-      virtual void endVisit ( const CommentIterator& ) = 0;
+    PLAN_ITER_VISITOR (CommentIterator);
        
-      virtual void beginVisit ( const PiIterator& ) = 0;
-      virtual void endVisit ( const PiIterator& ) = 0;
+    PLAN_ITER_VISITOR (PiIterator);
        
-      virtual void beginVisit ( const SingletonIterator& ) = 0;
-      virtual void endVisit ( const SingletonIterator& ) = 0;
+    PLAN_ITER_VISITOR (SingletonIterator);
 
-      virtual void beginVisit ( const EmptyIterator& ) = 0;
-      virtual void endVisit ( const EmptyIterator& ) = 0;
+    PLAN_ITER_VISITOR (EmptyIterator);
        
-      virtual void beginVisit ( const ForVarIterator& ) = 0;
-      virtual void endVisit ( const ForVarIterator& ) = 0;
+    PLAN_ITER_VISITOR (ForVarIterator);
        
-      virtual void beginVisit ( const LetVarIterator& ) = 0;
-      virtual void endVisit ( const LetVarIterator& ) = 0;
+    PLAN_ITER_VISITOR (LetVarIterator);
 
-      virtual void beginVisit ( const EnclosedIterator& ) = 0;
-      virtual void endVisit ( const EnclosedIterator& ) = 0;
+    PLAN_ITER_VISITOR (EnclosedIterator);
       
-      virtual void beginVisit ( const IfThenElseIterator& ) = 0;
-      virtual void endVisit ( const IfThenElseIterator& ) = 0;
+    PLAN_ITER_VISITOR (IfThenElseIterator);
        
-      virtual void beginVisit ( const FLWORIterator& ) = 0;
-      virtual void endVisit ( const FLWORIterator& ) = 0;
+    PLAN_ITER_VISITOR (FLWORIterator);
  
-      virtual void beginVisit ( const TryCatchIterator& ) = 0;
-      virtual void endVisit ( const TryCatchIterator& ) = 0;
+    PLAN_ITER_VISITOR (TryCatchIterator);
 
-      virtual void beginVisit ( const NodeDistinctIterator& a ) = 0;
-      virtual void endVisit ( const NodeDistinctIterator& a ) = 0;
+    PLAN_ITER_VISITOR (NodeDistinctIterator);
 
-      virtual void beginVisit ( const NodeSortIterator& a ) = 0;
-      virtual void endVisit ( const NodeSortIterator& a ) = 0;
+    PLAN_ITER_VISITOR (NodeSortIterator);
 
-      virtual void beginVisit ( const KindTestIterator& ) = 0;
-      virtual void endVisit ( const KindTestIterator& ) = 0;
+    PLAN_ITER_VISITOR (KindTestIterator);
        
-      virtual void beginVisit ( const NameTestIterator& ) = 0;
-      virtual void endVisit ( const NameTestIterator& ) = 0;
+    PLAN_ITER_VISITOR (NameTestIterator);
        
-      virtual void beginVisit ( const SelfAxisIterator& ) = 0;
-      virtual void endVisit ( const SelfAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (SelfAxisIterator);
        
-      virtual void beginVisit ( const AttributeAxisIterator& ) = 0;
-      virtual void endVisit ( const AttributeAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (AttributeAxisIterator);
        
-      virtual void beginVisit ( const ParentAxisIterator& ) = 0;
-      virtual void endVisit ( const ParentAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (ParentAxisIterator);
        
-      virtual void beginVisit ( const AncestorAxisIterator& ) = 0;
-      virtual void endVisit ( const AncestorAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (AncestorAxisIterator);
        
-      virtual void beginVisit ( const AncestorSelfAxisIterator& ) = 0;
-      virtual void endVisit ( const AncestorSelfAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (AncestorSelfAxisIterator);
        
-      virtual void beginVisit ( const RSiblingAxisIterator& ) = 0;
-      virtual void endVisit ( const RSiblingAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (RSiblingAxisIterator);
        
-      virtual void beginVisit ( const LSiblingAxisIterator& ) = 0;
-      virtual void endVisit ( const LSiblingAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (LSiblingAxisIterator);
        
-      virtual void beginVisit ( const ChildAxisIterator& ) = 0;
-      virtual void endVisit ( const ChildAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (ChildAxisIterator);
        
-      virtual void beginVisit ( const DescendantAxisIterator& ) = 0;
-      virtual void endVisit ( const DescendantAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (DescendantAxisIterator);
        
-      virtual void beginVisit ( const DescendantSelfAxisIterator& ) = 0;
-      virtual void endVisit ( const DescendantSelfAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (DescendantSelfAxisIterator);
        
-      virtual void beginVisit ( const PrecedingAxisIterator& ) = 0;
-      virtual void endVisit ( const PrecedingAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (PrecedingAxisIterator);
        
-      virtual void beginVisit ( const FollowingAxisIterator& ) = 0;
-      virtual void endVisit ( const FollowingAxisIterator& ) = 0;
+    PLAN_ITER_VISITOR (FollowingAxisIterator);
 
-      virtual void beginVisit ( const InstanceOfIterator& ) = 0;
-      virtual void endVisit ( const InstanceOfIterator& ) = 0;
+    PLAN_ITER_VISITOR (InstanceOfIterator);
        
-      virtual void beginVisit ( const TreatIterator& ) = 0;
-      virtual void endVisit ( const TreatIterator& ) = 0;
-      virtual void beginVisit ( const EitherNodesOrAtomicsIterator& ) = 0;
-      virtual void endVisit ( const EitherNodesOrAtomicsIterator& ) = 0;
+    PLAN_ITER_VISITOR (TreatIterator);
+    PLAN_ITER_VISITOR (EitherNodesOrAtomicsIterator);
               
-      virtual void beginVisit ( const NumArithIterator<AddOperation>& ) = 0;
-      virtual void beginVisit ( const NumArithIterator<SubtractOperation>& ) = 0;
-      virtual void beginVisit ( const NumArithIterator<MultiplyOperation>& ) = 0;
-      virtual void beginVisit ( const NumArithIterator<DivideOperation>& ) = 0;
-      virtual void beginVisit ( const NumArithIterator<IntegerDivideOperation>& ) = 0;
-      virtual void beginVisit ( const NumArithIterator<ModOperation>& ) = 0;
-      virtual void endVisit ( const NumArithIterator<AddOperation>& ) = 0;
-      virtual void endVisit ( const NumArithIterator<SubtractOperation>& ) = 0;
-      virtual void endVisit ( const NumArithIterator<MultiplyOperation>& ) = 0;
-      virtual void endVisit ( const NumArithIterator<DivideOperation>& ) = 0;
-      virtual void endVisit ( const NumArithIterator<IntegerDivideOperation>& ) = 0;
-      virtual void endVisit ( const NumArithIterator<ModOperation>& ) = 0;
-       
-      virtual void beginVisit ( const GenericArithIterator<AddOperation>& ) = 0;
-      virtual void beginVisit ( const GenericArithIterator<SubtractOperation>& ) = 0;
-      virtual void beginVisit ( const GenericArithIterator<MultiplyOperation>& ) = 0;
-      virtual void beginVisit ( const GenericArithIterator<DivideOperation>& ) = 0;
-      virtual void beginVisit ( const GenericArithIterator<IntegerDivideOperation>& ) = 0;
-      virtual void beginVisit ( const GenericArithIterator<ModOperation>& ) = 0;
-      virtual void endVisit ( const GenericArithIterator<AddOperation>& ) = 0;
-      virtual void endVisit ( const GenericArithIterator<SubtractOperation>& ) = 0;
-      virtual void endVisit ( const GenericArithIterator<MultiplyOperation>& ) = 0;
-      virtual void endVisit ( const GenericArithIterator<DivideOperation>& ) = 0;
-      virtual void endVisit ( const GenericArithIterator<IntegerDivideOperation>& ) = 0;
-      virtual void endVisit ( const GenericArithIterator<ModOperation>& ) = 0;
-       
-      virtual void beginVisit ( const OpNumericUnaryIterator& ) = 0;
-      virtual void endVisit ( const OpNumericUnaryIterator& ) = 0;
-       
-      virtual void beginVisit ( const FnAbsIterator& ) = 0;
-      virtual void endVisit ( const FnAbsIterator& ) = 0;
+    virtual void beginVisit ( const NumArithIterator<AddOperation>& ) = 0;
+    virtual void beginVisit ( const NumArithIterator<SubtractOperation>& ) = 0;
+    virtual void beginVisit ( const NumArithIterator<MultiplyOperation>& ) = 0;
+    virtual void beginVisit ( const NumArithIterator<DivideOperation>& ) = 0;
+    virtual void beginVisit ( const NumArithIterator<IntegerDivideOperation>& ) = 0;
+    virtual void beginVisit ( const NumArithIterator<ModOperation>& ) = 0;
+    virtual void endVisit ( const NumArithIterator<AddOperation>& ) = 0;
+    virtual void endVisit ( const NumArithIterator<SubtractOperation>& ) = 0;
+    virtual void endVisit ( const NumArithIterator<MultiplyOperation>& ) = 0;
+    virtual void endVisit ( const NumArithIterator<DivideOperation>& ) = 0;
+    virtual void endVisit ( const NumArithIterator<IntegerDivideOperation>& ) = 0;
+    virtual void endVisit ( const NumArithIterator<ModOperation>& ) = 0;
+    
+    virtual void beginVisit ( const GenericArithIterator<AddOperation>& ) = 0;
+    virtual void beginVisit ( const GenericArithIterator<SubtractOperation>& ) = 0;
+    virtual void beginVisit ( const GenericArithIterator<MultiplyOperation>& ) = 0;
+    virtual void beginVisit ( const GenericArithIterator<DivideOperation>& ) = 0;
+    virtual void beginVisit ( const GenericArithIterator<IntegerDivideOperation>& ) = 0;
+    virtual void beginVisit ( const GenericArithIterator<ModOperation>& ) = 0;
+    virtual void endVisit ( const GenericArithIterator<AddOperation>& ) = 0;
+    virtual void endVisit ( const GenericArithIterator<SubtractOperation>& ) = 0;
+    virtual void endVisit ( const GenericArithIterator<MultiplyOperation>& ) = 0;
+    virtual void endVisit ( const GenericArithIterator<DivideOperation>& ) = 0;
+    virtual void endVisit ( const GenericArithIterator<IntegerDivideOperation>& ) = 0;
+    virtual void endVisit ( const GenericArithIterator<ModOperation>& ) = 0;
+    
+    PLAN_ITER_VISITOR (OpNumericUnaryIterator);
+    
+    PLAN_ITER_VISITOR (FnAbsIterator);
 
-      virtual void beginVisit( const FnCeilingIterator& ) = 0;
-      virtual void endVisit( const FnCeilingIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnCeilingIterator);
 
-      virtual void beginVisit( const FnFloorIterator& ) = 0;
-      virtual void endVisit( const FnFloorIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnFloorIterator);
 
-      virtual void beginVisit( const FnRoundIterator& ) = 0;
-      virtual void endVisit( const FnRoundIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnRoundIterator);
 
-      virtual void beginVisit( const FnRoundHalfToEvenIterator& ) = 0;
-      virtual void endVisit( const FnRoundHalfToEvenIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnRoundHalfToEvenIterator);
       
-      virtual void beginVisit ( const FnConcatIterator& ) = 0;
-      virtual void endVisit ( const FnConcatIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnConcatIterator);
 
-      virtual void beginVisit ( const FnEmptyIterator& ) = 0;
-      virtual void endVisit ( const FnEmptyIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnEmptyIterator);
 
-      virtual void beginVisit ( const FnExistsIterator& ) = 0;
-      virtual void endVisit ( const FnExistsIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnExistsIterator);
 
-      virtual void beginVisit ( const FnIndexOfIterator& ) = 0;
-      virtual void endVisit ( const FnIndexOfIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnIndexOfIterator);
 
-      virtual void beginVisit ( const FnRemoveIterator& ) = 0;
-      virtual void endVisit ( const FnRemoveIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnRemoveIterator);
 
-      virtual void beginVisit ( const FnReverseIterator& ) = 0;
-      virtual void endVisit ( const FnReverseIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnReverseIterator);
 
-      virtual void beginVisit ( const OpToIterator& ) = 0;
-      virtual void endVisit ( const OpToIterator& ) = 0;
+    PLAN_ITER_VISITOR (OpToIterator);
 
-      virtual void beginVisit ( const FnIdIterator& ) = 0;
-      virtual void endVisit ( const FnIdIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnIdIterator);
 
-      virtual void beginVisit ( const FnIdRefIterator& ) = 0;
-      virtual void endVisit ( const FnIdRefIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnIdRefIterator);
 
-      virtual void beginVisit ( const FnDistinctValuesIterator& ) = 0;
-      virtual void endVisit ( const FnDistinctValuesIterator& ) = 0;       
+    PLAN_ITER_VISITOR (FnDistinctValuesIterator);
 
-      virtual void beginVisit ( const FnInsertBeforeIterator& ) = 0;
-      virtual void endVisit ( const FnInsertBeforeIterator& ) = 0;       
+    PLAN_ITER_VISITOR (FnInsertBeforeIterator);
 
-      virtual void beginVisit ( const FnSubsequenceIterator& ) = 0;
-      virtual void endVisit ( const FnSubsequenceIterator& ) = 0;       
+    PLAN_ITER_VISITOR (FnSubsequenceIterator);
 
-      virtual void beginVisit ( const FnZeroOrOneIterator& ) = 0;
-      virtual void endVisit ( const FnZeroOrOneIterator& ) = 0;       
+    PLAN_ITER_VISITOR (FnZeroOrOneIterator);
 
-      virtual void beginVisit ( const FnOneOrMoreIterator& ) = 0;
-      virtual void endVisit ( const FnOneOrMoreIterator& ) = 0;       
+    PLAN_ITER_VISITOR (FnOneOrMoreIterator);
        
-      virtual void beginVisit ( const FnExactlyOneIterator& ) = 0;
-      virtual void endVisit ( const FnExactlyOneIterator& ) = 0;       
+    PLAN_ITER_VISITOR (FnExactlyOneIterator);
 
-      virtual void beginVisit ( const FnCountIterator& ) = 0;
-      virtual void endVisit ( const FnCountIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnCountIterator);
 
-      virtual void beginVisit ( const FnAvgIterator& ) = 0;
-      virtual void endVisit ( const FnAvgIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnAvgIterator);
 
-      virtual void beginVisit ( const FnMinMaxIterator& ) = 0;
-      virtual void endVisit ( const FnMinMaxIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnMinMaxIterator);
 
-      virtual void beginVisit ( const FnSumIterator& ) = 0;
-      virtual void endVisit ( const FnSumIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnSumIterator);
 
-      virtual void beginVisit ( const FnDocIterator& ) = 0;
-      virtual void endVisit ( const FnDocIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnDocIterator);
 
-      virtual void beginVisit ( const FnDocAvailableIterator& ) = 0;
-      virtual void endVisit ( const FnDocAvailableIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnDocAvailableIterator);
       
-      virtual void beginVisit ( const HashSemiJoinIterator& ) = 0;
-      virtual void endVisit ( const HashSemiJoinIterator& ) = 0;
+    PLAN_ITER_VISITOR (HashSemiJoinIterator);
 
-      virtual void beginVisit ( const SortSemiJoinIterator& ) = 0;
-      virtual void endVisit ( const SortSemiJoinIterator& ) = 0;
+    PLAN_ITER_VISITOR (SortSemiJoinIterator);
 
-      virtual void beginVisit ( const FnTraceIterator& ) = 0;
-      virtual void endVisit ( const FnTraceIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnTraceIterator);
 
-      virtual void beginVisit( const ResolveQNameIterator& ) = 0;
-      virtual void endVisit( const ResolveQNameIterator& ) = 0;
+    PLAN_ITER_VISITOR (ResolveQNameIterator);
 
-      virtual void beginVisit( const QNameIterator& ) = 0;
-      virtual void endVisit( const QNameIterator& ) = 0;
+    PLAN_ITER_VISITOR (QNameIterator);
       
-      virtual void beginVisit( const QNameEqualIterator& ) = 0;
-      virtual void endVisit( const QNameEqualIterator& ) = 0;
+    PLAN_ITER_VISITOR (QNameEqualIterator);
 
-      virtual void beginVisit( const PrefixFromQNameIterator& ) = 0;
-      virtual void endVisit( const PrefixFromQNameIterator& ) = 0;
+    PLAN_ITER_VISITOR (PrefixFromQNameIterator);
 
-      virtual void beginVisit( const LocalNameFromQNameIterator& ) = 0;
-      virtual void endVisit( const LocalNameFromQNameIterator& ) = 0;
+    PLAN_ITER_VISITOR (LocalNameFromQNameIterator);
 
-      virtual void beginVisit( const NamespaceUriFromQNameIterator& ) = 0;
-      virtual void endVisit( const NamespaceUriFromQNameIterator& ) = 0;
+    PLAN_ITER_VISITOR (NamespaceUriFromQNameIterator);
 
-      virtual void beginVisit( const InScopePrefixesIterator& ) = 0;
-      virtual void endVisit( const InScopePrefixesIterator& ) = 0;
+    PLAN_ITER_VISITOR (InScopePrefixesIterator);
 
-      virtual void beginVisit( const NamespaceUriForPrefixlIterator& ) = 0;
-      virtual void endVisit( const NamespaceUriForPrefixlIterator& ) = 0;
+    PLAN_ITER_VISITOR (NamespaceUriForPrefixlIterator);
 
-      virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
-      virtual void endVisit ( const CodepointsToStringIterator& ) = 0;
+    PLAN_ITER_VISITOR (CodepointsToStringIterator);
        
-      virtual void beginVisit ( const StringToCodepointsIterator& ) = 0;
-      virtual void endVisit ( const StringToCodepointsIterator& ) = 0;
+    PLAN_ITER_VISITOR (StringToCodepointsIterator);
        
-      virtual void beginVisit ( const CompareStrIterator& ) = 0;
-      virtual void endVisit ( const CompareStrIterator& ) = 0;
+    PLAN_ITER_VISITOR (CompareStrIterator);
        
-      virtual void beginVisit ( const CodepointEqualIterator& ) = 0;
-      virtual void endVisit ( const CodepointEqualIterator& ) = 0;
+    PLAN_ITER_VISITOR (CodepointEqualIterator);
        
-      virtual void beginVisit ( const ConcatStrIterator& ) = 0;
-      virtual void endVisit ( const ConcatStrIterator& ) = 0;
+    PLAN_ITER_VISITOR (ConcatStrIterator);
        
-      virtual void beginVisit ( const StringJoinIterator& ) = 0;
-      virtual void endVisit ( const StringJoinIterator& ) = 0;
+    PLAN_ITER_VISITOR (StringJoinIterator);
        
-      virtual void beginVisit ( const SubstringIterator& ) = 0;
-      virtual void endVisit ( const SubstringIterator& ) = 0;
+    PLAN_ITER_VISITOR (SubstringIterator);
        
-      virtual void beginVisit ( const StringLengthIterator& ) = 0;
-      virtual void endVisit ( const StringLengthIterator& ) = 0;
+    PLAN_ITER_VISITOR (StringLengthIterator);
        
-      virtual void beginVisit ( const NormalizeSpaceIterator& ) = 0;
-      virtual void endVisit ( const NormalizeSpaceIterator& ) = 0;
+    PLAN_ITER_VISITOR (NormalizeSpaceIterator);
        
-      virtual void beginVisit ( const NormalizeUnicodeIterator& ) = 0;
-      virtual void endVisit ( const NormalizeUnicodeIterator& ) = 0;
+    PLAN_ITER_VISITOR (NormalizeUnicodeIterator);
        
-      virtual void beginVisit ( const UpperCaseIterator& ) = 0;
-      virtual void endVisit ( const UpperCaseIterator& ) = 0;
+    PLAN_ITER_VISITOR (UpperCaseIterator);
        
-      virtual void beginVisit ( const LowerCaseIterator& ) = 0;
-      virtual void endVisit ( const LowerCaseIterator& ) = 0;
+    PLAN_ITER_VISITOR (LowerCaseIterator);
        
-      virtual void beginVisit ( const TranslateIterator& ) = 0;
-      virtual void endVisit ( const TranslateIterator& ) = 0;
+    PLAN_ITER_VISITOR (TranslateIterator);
        
-      virtual void beginVisit ( const EncodeForUriIterator& ) = 0;
-      virtual void endVisit ( const EncodeForUriIterator& ) = 0;
+    PLAN_ITER_VISITOR (EncodeForUriIterator);
        
-      virtual void beginVisit ( const IriToUriIterator& ) = 0;
-      virtual void endVisit ( const IriToUriIterator& ) = 0;
+    PLAN_ITER_VISITOR (IriToUriIterator);
        
-      virtual void beginVisit ( const EscapeHtmlUriIterator& ) = 0;
-      virtual void endVisit ( const EscapeHtmlUriIterator& ) = 0;
+    PLAN_ITER_VISITOR (EscapeHtmlUriIterator);
        
-      virtual void beginVisit ( const ContainsIterator& ) = 0;
-      virtual void endVisit ( const ContainsIterator& ) = 0;
+    PLAN_ITER_VISITOR (ContainsIterator);
        
-      virtual void beginVisit ( const StartsWithIterator& ) = 0;
-      virtual void endVisit ( const StartsWithIterator& ) = 0;
+    PLAN_ITER_VISITOR (StartsWithIterator);
        
-      virtual void beginVisit ( const EndsWithIterator& ) = 0;
-      virtual void endVisit ( const EndsWithIterator& ) = 0;
+    PLAN_ITER_VISITOR (EndsWithIterator);
        
-      virtual void beginVisit ( const SubstringBeforeIterator& ) = 0;
-      virtual void endVisit ( const SubstringBeforeIterator& ) = 0;
+    PLAN_ITER_VISITOR (SubstringBeforeIterator);
        
-      virtual void beginVisit ( const SubstringAfterIterator& ) = 0;
-      virtual void endVisit ( const SubstringAfterIterator& ) = 0;
+    PLAN_ITER_VISITOR (SubstringAfterIterator);
 
-      virtual void beginVisit ( const FnMatchesIterator& ) = 0;
-      virtual void endVisit ( const FnMatchesIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnMatchesIterator);
 
-      virtual void beginVisit ( const FnReplaceIterator& ) = 0;
-      virtual void endVisit ( const FnReplaceIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnReplaceIterator);
 
-      virtual void beginVisit ( const FnTokenizeIterator& ) = 0;
-      virtual void endVisit ( const FnTokenizeIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnTokenizeIterator);
 
-      virtual void beginVisit ( const ZorNumGen& ) = 0;
-      virtual void endVisit ( const ZorNumGen& ) = 0;
+    PLAN_ITER_VISITOR (ZorNumGen);
       
-      virtual void beginVisit ( const TextIterator& ) = 0;
-      virtual void endVisit ( const TextIterator& ) = 0;
+    PLAN_ITER_VISITOR (TextIterator);
             
-      virtual void beginVisitFlworWhereClause(const  PlanIterator&) = 0;
-      virtual void endVisitFlworWhereClause(const PlanIterator&) = 0;
+    virtual void beginVisitFlworWhereClause(const  PlanIterator&) = 0;
+    virtual void endVisitFlworWhereClause(const PlanIterator&) = 0;
+    
+    virtual void beginVisitFlworLetVariable(const PlanIterator&, bool, const xqpStringStore&) = 0;
+    virtual void endVisitFlworLetVariable(const PlanIterator&) = 0;
+    
+    virtual void beginVisitFlworForVariable(const PlanIterator&, const xqpStringStore&) = 0;
+    virtual void endVisitFlworForVariable(const PlanIterator&) = 0;
+    
+    virtual void beginVisitFlworGroupBy(const PlanIterator&) = 0;
+    virtual void endVisitFlworGroupBy(const PlanIterator&) = 0;
+    
+    virtual void beginVisitFlworOrderBy(const PlanIterator&) = 0;
+    virtual void endVisitFlworOrderBy(const PlanIterator&) = 0;
+    
+    virtual void beginVisitFlworReturn(const PlanIterator&) = 0;
+    virtual void endVisitFlworReturn(const PlanIterator&) = 0;
       
-//    virtual void beginVisitFlworVariables() = 0;
-//    virtual void endVisitFlworVariables() = 0;
-        
-      virtual void beginVisitFlworLetVariable(const PlanIterator&, bool, const xqpStringStore&) = 0;
-      virtual void endVisitFlworLetVariable(const PlanIterator&) = 0;
-        
-      virtual void beginVisitFlworForVariable(const PlanIterator&, const xqpStringStore&) = 0;
-      virtual void endVisitFlworForVariable(const PlanIterator&) = 0;
-        
-      virtual void beginVisitFlworGroupBy(const PlanIterator&) = 0;
-      virtual void endVisitFlworGroupBy(const PlanIterator&) = 0;
-        
-      virtual void beginVisitFlworOrderBy(const PlanIterator&) = 0;
-      virtual void endVisitFlworOrderBy(const PlanIterator&) = 0;
+    PLAN_ITER_VISITOR (CastIterator);
 
-      virtual void beginVisitFlworReturn(const PlanIterator&) = 0;
-      virtual void endVisitFlworReturn(const PlanIterator&) = 0;
+    PLAN_ITER_VISITOR (NameCastIterator);
+
+    PLAN_ITER_VISITOR (PromoteIterator);
+
+    PLAN_ITER_VISITOR (CastableIterator);
+
+    PLAN_ITER_VISITOR (FnDateTimeConstructorIterator);
+
+    PLAN_ITER_VISITOR (FnYearsFromDurationIterator);
+
+    PLAN_ITER_VISITOR (FnMonthsFromDurationIterator);
+
+    PLAN_ITER_VISITOR (FnDaysFromDurationIterator);
+
+    PLAN_ITER_VISITOR (FnHoursFromDurationIterator);
+
+    PLAN_ITER_VISITOR (FnMinutesFromDurationIterator);
+
+    PLAN_ITER_VISITOR (FnSecondsFromDurationIterator);
+
+    PLAN_ITER_VISITOR (FnYearFromDatetimeIterator);
+
+    PLAN_ITER_VISITOR (FnMonthFromDatetimeIterator);
+
+    PLAN_ITER_VISITOR (FnDayFromDatetimeIterator);
+
+    PLAN_ITER_VISITOR (FnHoursFromDatetimeIterator);
       
-      virtual void beginVisit ( const CastIterator& ) = 0;
-      virtual void endVisit ( const CastIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnMinutesFromDatetimeIterator);
 
-      virtual void beginVisit ( const NameCastIterator& ) = 0;
-      virtual void endVisit ( const NameCastIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnSecondsFromDatetimeIterator);
 
-      virtual void beginVisit ( const PromoteIterator& ) = 0;
-      virtual void endVisit ( const PromoteIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnTimezoneFromDatetimeIterator);
 
-      virtual void beginVisit ( const CastableIterator& ) = 0;
-      virtual void endVisit ( const CastableIterator& ) = 0;
+    PLAN_ITER_VISITOR (FnYearFromDateIterator);
 
-      virtual void beginVisit ( const FnDateTimeConstructorIterator&) = 0;
-      virtual void endVisit ( const FnDateTimeConstructorIterator&) = 0;
+    PLAN_ITER_VISITOR (FnMonthFromDateIterator);
 
-      virtual void beginVisit ( const FnYearsFromDurationIterator&) = 0;
-      virtual void endVisit ( const FnYearsFromDurationIterator&) = 0;
+    PLAN_ITER_VISITOR (FnDayFromDateIterator);
 
-      virtual void beginVisit ( const FnMonthsFromDurationIterator&) = 0;
-      virtual void endVisit ( const FnMonthsFromDurationIterator&) = 0;
+    PLAN_ITER_VISITOR (FnTimezoneFromDateIterator);
 
-      virtual void beginVisit ( const FnDaysFromDurationIterator&) = 0;
-      virtual void endVisit ( const FnDaysFromDurationIterator&) = 0;
-
-      virtual void beginVisit ( const FnHoursFromDurationIterator&) = 0;
-      virtual void endVisit ( const FnHoursFromDurationIterator&) = 0;
-
-      virtual void beginVisit ( const FnMinutesFromDurationIterator&) = 0;
-      virtual void endVisit ( const FnMinutesFromDurationIterator&) = 0;
-
-      virtual void beginVisit ( const FnSecondsFromDurationIterator&) = 0;
-      virtual void endVisit ( const FnSecondsFromDurationIterator&) = 0;
-
-      virtual void beginVisit ( const FnYearFromDatetimeIterator&) = 0;
-      virtual void endVisit ( const FnYearFromDatetimeIterator&) = 0;
-
-      virtual void beginVisit ( const FnMonthFromDatetimeIterator&) = 0;
-      virtual void endVisit ( const FnMonthFromDatetimeIterator&) = 0;
-
-      virtual void beginVisit ( const FnDayFromDatetimeIterator&) = 0;
-      virtual void endVisit ( const FnDayFromDatetimeIterator&) = 0;
-
-      virtual void beginVisit ( const FnHoursFromDatetimeIterator&) = 0;
-      virtual void endVisit ( const FnHoursFromDatetimeIterator&) = 0;
+    PLAN_ITER_VISITOR (FnHoursFromTimeIterator);
       
-      virtual void beginVisit ( const FnMinutesFromDatetimeIterator&) = 0;
-      virtual void endVisit ( const FnMinutesFromDatetimeIterator&) = 0;
+    PLAN_ITER_VISITOR (FnMinutesFromTimeIterator);
 
-      virtual void beginVisit ( const FnSecondsFromDatetimeIterator&) = 0;
-      virtual void endVisit ( const FnSecondsFromDatetimeIterator&) = 0;
+    PLAN_ITER_VISITOR (FnSecondsFromTimeIterator);
 
-      virtual void beginVisit ( const FnTimezoneFromDatetimeIterator&) = 0;
-      virtual void endVisit ( const FnTimezoneFromDatetimeIterator&) = 0;
+    PLAN_ITER_VISITOR (FnTimezoneFromTimeIterator);
 
-      virtual void beginVisit ( const FnYearFromDateIterator&) = 0;
-      virtual void endVisit ( const FnYearFromDateIterator&) = 0;
+    PLAN_ITER_VISITOR (CtxVariableIterator);
 
-      virtual void beginVisit ( const FnMonthFromDateIterator&) = 0;
-      virtual void endVisit ( const FnMonthFromDateIterator&) = 0;
+    PLAN_ITER_VISITOR (EvalIterator);
 
-      virtual void beginVisit ( const FnDayFromDateIterator&) = 0;
-      virtual void endVisit ( const FnDayFromDateIterator&) = 0;
+    PLAN_ITER_VISITOR (OpIsSameNodeIterator);
 
-      virtual void beginVisit ( const FnTimezoneFromDateIterator&) = 0;
-      virtual void endVisit ( const FnTimezoneFromDateIterator&) = 0;
+    PLAN_ITER_VISITOR (OpNodeBeforeIterator);
 
-      virtual void beginVisit ( const FnHoursFromTimeIterator&) = 0;
-      virtual void endVisit ( const FnHoursFromTimeIterator&) = 0;
-      
-      virtual void beginVisit ( const FnMinutesFromTimeIterator&) = 0;
-      virtual void endVisit ( const FnMinutesFromTimeIterator&) = 0;
+    PLAN_ITER_VISITOR (OpNodeAfterIterator);
 
-      virtual void beginVisit ( const FnSecondsFromTimeIterator&) = 0;
-      virtual void endVisit ( const FnSecondsFromTimeIterator&) = 0;
+    PLAN_ITER_VISITOR (FnCurrentDateTimeIterator);
 
-      virtual void beginVisit ( const FnTimezoneFromTimeIterator&) = 0;
-      virtual void endVisit ( const FnTimezoneFromTimeIterator&) = 0;
+    PLAN_ITER_VISITOR (FnCurrentDateIterator);
 
-      virtual void beginVisit(const CtxVariableIterator&) = 0;
-      virtual void endVisit(const CtxVariableIterator&) = 0;
+    PLAN_ITER_VISITOR (FnCurrentTimeIterator);
 
-      virtual void beginVisit(const EvalIterator&) = 0;
-      virtual void endVisit(const EvalIterator&) = 0;
+    PLAN_ITER_VISITOR (FnImplicitTimezoneIterator);
 
-      virtual void beginVisit(const OpIsSameNodeIterator&) = 0;
-      virtual void endVisit(const OpIsSameNodeIterator&) = 0;
+    PLAN_ITER_VISITOR (FnDefaultCollationIterator);
 
-      virtual void beginVisit(const OpNodeBeforeIterator&) = 0;
-      virtual void endVisit(const OpNodeBeforeIterator&) = 0;
+    PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_1);
 
-      virtual void beginVisit(const OpNodeAfterIterator&) = 0;
-      virtual void endVisit(const OpNodeAfterIterator&) = 0;
+    PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_2);
 
-      virtual void beginVisit(const FnCurrentDateTimeIterator&) = 0;
-      virtual void endVisit(const FnCurrentDateTimeIterator&) = 0;
+    PLAN_ITER_VISITOR(InsertIterator);
 
-      virtual void beginVisit(const FnCurrentDateIterator&) = 0;
-      virtual void endVisit(const FnCurrentDateIterator&) = 0;
+    PLAN_ITER_VISITOR(DeleteIterator);
 
-      virtual void beginVisit(const FnCurrentTimeIterator&) = 0;
-      virtual void endVisit(const FnCurrentTimeIterator&) = 0;
+    PLAN_ITER_VISITOR(ReplaceIterator);
 
-      virtual void beginVisit(const FnImplicitTimezoneIterator&) = 0;
-      virtual void endVisit(const FnImplicitTimezoneIterator&) = 0;
+    PLAN_ITER_VISITOR(RenameIterator);
 
-      virtual void beginVisit(const FnDefaultCollationIterator&) = 0;
-      virtual void endVisit(const FnDefaultCollationIterator&) = 0;
+    PLAN_ITER_VISITOR(TransformIterator);
 
-	    PLAN_ITER_VISTOR(FnAdjustToTimeZoneIterator_1);
-      PLAN_ITER_VISTOR(FnAdjustToTimeZoneIterator_2);
-      PLAN_ITER_VISTOR(InsertIterator);
-      PLAN_ITER_VISTOR(DeleteIterator);
-      PLAN_ITER_VISTOR(ReplaceIterator);
-      PLAN_ITER_VISTOR(RenameIterator);
-      PLAN_ITER_VISTOR(TransformIterator);
-      PLAN_ITER_VISTOR(FnDeepEqualIterator);
+    PLAN_ITER_VISITOR(FnDeepEqualIterator);
 
 #ifdef ZORBA_WITH_REST
-      PLAN_ITER_VISTOR(ZorbaRestGetIterator);
+    PLAN_ITER_VISITOR(ZorbaRestGetIterator);
 #endif
 	  
   }; /* class PlanIterVisitor */

@@ -90,6 +90,8 @@ public:
 
   PRINTER_VISITOR_DEFINITION (FnDataIterator)
 
+  PRINTER_VISITOR_DEFINITION (SequentialIterator)
+
   PRINTER_VISITOR_DEFINITION (FnRootIterator)
 
   PRINTER_VISITOR_DEFINITION (FnNodeNameIterator)

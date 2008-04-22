@@ -10,11 +10,16 @@
  */
 
 #include "runtime/misc/MiscImpl.h"
-#include "errors/error_manager.h"
-#include "store/api/item_factory.h"
 #include "runtime/api/runtimecb.h"
-#include "context/static_context.h"
+#include "runtime/util/iterator_impl.h"
+
+#include "errors/error_manager.h"
+
+#include "store/api/item_factory.h"
 #include "store/api/store.h"
+
+#include "context/static_context.h"
+
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
 
@@ -92,6 +97,22 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
 
   //TODO fix the implementation
   
+  STACK_END (state);
+}
+
+store::Item_t SequentialIterator::nextImpl(PlanState& planState) const {
+  store::Item_t item;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  for (unsigned i = 0; i < theChildren.size () - 1; i++) {
+    while (NULL != CONSUME (i));
+  }
+
+  while (NULL != (item = CONSUME (theChildren.size () - 1)))
+    STACK_PUSH (item, state);
+
   STACK_END (state);
 }
 
