@@ -103,7 +103,7 @@ public:
 	int  		get_implicit_timezone();
 
 	void				add_variable(xqp_string varname, store::Iterator_t var_iterator);
-  store::Iterator_t	get_variable(const xqp_string& varname);
+  store::Iterator_t	get_variable(store::Item_t);
 
 	xqp_string get_default_collection();
 	void set_default_collection(xqp_string default_collection_uri);

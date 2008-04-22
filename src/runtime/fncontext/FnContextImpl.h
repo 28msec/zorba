@@ -3,6 +3,7 @@
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
+#include "runtime/util/plan_wrapper_holder.h"
 
 namespace zorba
 {
@@ -32,7 +33,30 @@ public:
 };
 
 NARY_ITER_STATE (CtxVariableIterator, CtxVariableIteratorState);
-  
+
+class EvalIteratorState : public PlanIteratorState {
+public:
+  PlanWrapperHolder eval_plan;
+  std::auto_ptr<CompilerCB> ccb;
+};
+
+class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState> {
+  checked_vector<store::Item_t> varnames;
+
+public:
+  EvalIterator(const QueryLoc& loc, checked_vector<store::Item_t> varnames_, std::vector<PlanIter_t>& aChildren) :
+    NaryBaseIterator<EvalIterator, EvalIteratorState> (loc, aChildren),
+    varnames (varnames_)
+  {}
+
+  NARY_ITER_METHODS
+};
+
 }
 
 #endif //ZORBA_FN_CONTEXT_IMPL_H
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

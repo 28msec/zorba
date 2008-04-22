@@ -105,6 +105,11 @@ bool normalizer::begin_visit(trycatch_expr& node)
   return true;
 }
 
+bool normalizer::begin_visit(eval_expr& node)
+{
+  return true;
+}
+
 bool normalizer::begin_visit(typeswitch_expr& node)
 {
   return true;
@@ -329,6 +334,10 @@ void normalizer::end_visit(promote_expr& /*node*/)
 }
 
 void normalizer::end_visit(trycatch_expr& /*node*/)
+{
+}
+
+void normalizer::end_visit(eval_expr& /*node*/)
 {
 }
 

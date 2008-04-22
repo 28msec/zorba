@@ -1813,6 +1813,17 @@ void PrinterVisitor::endVisitFlworGroupBy(const PlanIterator& a) {
     thePrinter.endEndVisit();
   }
 
+  void PrinterVisitor::beginVisit(const EvalIterator& a) {
+    thePrinter.startBeginVisit("EvalIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const EvalIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   void PrinterVisitor::beginVisit(const OpIsSameNodeIterator& a) {
     thePrinter.startBeginVisit("OpIsSameNodeIterator", ++theId);
     printCommons( &a, theId );

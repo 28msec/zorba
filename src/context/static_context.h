@@ -60,7 +60,6 @@ class TypeManager;
 class static_context : public context
 {
 protected:
-  xqp_string qname_internal_key (const store::Item *qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
   static xqp_string fn_internal_key (int arity);
@@ -85,6 +84,8 @@ public:
   xqp_string lookup_ns (xqp_string prefix, enum ZorbaError::ErrorCode err = ZorbaError::XPST0081) const;
   xqp_string lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const;
   void bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCode err = ZorbaError::XQST0033);
+
+  static xqp_string qname_internal_key (const store::Item *qname);
 
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local) const;

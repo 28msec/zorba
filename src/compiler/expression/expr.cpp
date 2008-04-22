@@ -84,7 +84,6 @@ class trycatch_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<trycatch_expr::clauseref_t>::const_iterator clause_iter;
 
-public:
   trycatch_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
@@ -92,37 +91,34 @@ class typeswitch_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<typeswitch_expr::clauseref_t>::const_iterator clause_iter;
 
-public:
   typeswitch_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
 class relpath_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<expr_t>::iterator step_iter;
-  
-public:
+
   relpath_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
 class axis_step_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<expr_t>::iterator pred_iter;
-  
-public:
+
   axis_step_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
 class transform_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<rchandle<copy_clause> >::iterator clause_iter;
-
-public:
   transform_expr_iterator_data (expr *e_) : expr_iterator_data(e_) {}
 };
 
 
 class eval_expr_iterator_data : public expr_iterator_data {
 public:
+  checked_vector<eval_expr::eval_var>::iterator var_iter;
+
   eval_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
@@ -454,6 +450,7 @@ expr_iterator_data *eval_expr::make_iter () {
 void eval_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER2 (eval_expr);
   ITER (expr_h);
+  ITER_FOR_EACH (var_iter, vars.begin (), vars.end (), vv.var_iter->val);
   END_EXPR_ITER ();
 }
 

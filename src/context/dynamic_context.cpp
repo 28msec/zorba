@@ -103,19 +103,16 @@ dynamic_context::~dynamic_context()
 
 xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qname) const
 {
+  // TODO: use static_context::qname_internal_key()
   pair<xqp_string, xqp_string> rqname = parse_qname (qname);
-	if(!rqname.first.empty())
-	{
-		if(!sctx)
-		{
-			///actually the whole static context is missing
-			ZORBA_ERROR_DESC( ZorbaError::XPST0001, "entire static context");
+  if (rqname.first.empty ())
+    return rqname.second + ":";
+  if(!sctx) {
+    ///actually the whole static context is missing
+    ZORBA_ERROR_PARAM( ZorbaError::XPST0001, "entire static context", "");
 			return (const char*)NULL;
-		}
-		return rqname.second + ":" + sctx->lookup_ns(rqname.first);
-	}
-  return rqname.second;
-	
+  }
+  return rqname.second + ":" + sctx->lookup_ns(rqname.first);	
 }
 
 
@@ -208,9 +205,9 @@ void	dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_it
 }
 
 
-store::Iterator_t	dynamic_context::get_variable(const xqp_string& var_name)
+store::Iterator_t	dynamic_context::get_variable(store::Item_t varname)
 {
-	return lookup_var_iter("var:" + var_name);
+	return lookup_var_iter("var:" + static_context::qname_internal_key (varname));
 }
 
 

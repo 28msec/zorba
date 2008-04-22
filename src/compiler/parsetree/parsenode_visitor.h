@@ -194,6 +194,8 @@ public:
   virtual void *begin_visit(CatchListExpr const&) = 0;
   virtual void *begin_visit(CatchExpr const &) = 0;
 
+  virtual void *begin_visit (EvalExpr const&) = 0;
+
 /* full-text-related */
 	virtual void *begin_visit(FTAnd const&) = 0;
 	virtual void *begin_visit(FTAnyallOption const&) = 0;
@@ -396,6 +398,8 @@ public:
   virtual void end_visit(TryExpr const&, void *visit_state) = 0;
   virtual void end_visit(CatchListExpr const&, void *visit_state) = 0;
   virtual void end_visit(CatchExpr const&, void *visit_state) = 0;
+
+  virtual void end_visit (EvalExpr const&, void *) = 0;
 
 /* full-text-related */
 	virtual void end_visit(FTAnd const&, void *visit_state) = 0;

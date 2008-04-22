@@ -145,6 +145,7 @@ namespace zorba
   class CastableIterator;
   class PromoteIterator;
   class CtxVariableIterator;
+  class EvalIterator;
   class FnDateTimeConstructorIterator;
   class FnYearsFromDurationIterator;
   class FnMonthsFromDurationIterator;
@@ -679,6 +680,9 @@ namespace zorba
 
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;
+
+      virtual void beginVisit(const EvalIterator&) = 0;
+      virtual void endVisit(const EvalIterator&) = 0;
 
       virtual void beginVisit(const OpIsSameNodeIterator&) = 0;
       virtual void endVisit(const OpIsSameNodeIterator&) = 0;

@@ -31,6 +31,7 @@ public:
   virtual bool begin_visit(case_clause&) { return true; }
   virtual bool begin_visit(promote_expr&) { return true; }
   virtual bool begin_visit(trycatch_expr&) { return true; }
+  virtual bool begin_visit(eval_expr&) { return true; }
   virtual bool begin_visit(typeswitch_expr&) { return true; }
   virtual bool begin_visit(if_expr&) { return true; }
   virtual bool begin_visit(fo_expr&) { return true; }
@@ -70,6 +71,7 @@ public:
   virtual void end_visit(case_clause&) { }
   virtual void end_visit(promote_expr&) { }
   virtual void end_visit(trycatch_expr&) { }
+  virtual void end_visit(eval_expr&) { }
   virtual void end_visit(typeswitch_expr&) { }
   virtual void end_visit(if_expr&) { }
   virtual void end_visit(fo_expr&) { }

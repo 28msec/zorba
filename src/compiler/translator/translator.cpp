@@ -314,10 +314,9 @@ expr_t wrap_in_globalvar_flwor(expr_t e)
 
     if (expr == NULL)
     {
-      xqpString varname = var->get_varname()->getStringValue().getp();
       expr = new fo_expr (var->get_loc(),
                           ctxf,
-                          new const_expr(var->get_loc(), varname));
+                          new const_expr(var->get_loc(), var->get_varname ()));
     }
 
     clauses.push_back (wrap_in_letclause (expr, var));
@@ -4686,6 +4685,28 @@ void *begin_visit(const TryExpr& v)
 void end_visit(const TryExpr& v, void* visit_state)
 {
   TRACE_VISIT_OUT ();
+}
+
+void *begin_visit (const EvalExpr& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const EvalExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT ();
+  rchandle<eval_expr> result = new eval_expr(v.get_location(), pop_nodestack ());
+
+  rchandle<VarGetsDeclList> vgdl = v.get_vars ();
+  
+  for (int i = 0; i < vgdl->size (); i++) {
+    var_expr_t ve = pop_nodestack ().dyn_cast<var_expr> ();
+    expr_t val = pop_nodestack ();
+    result->add_var (eval_expr::eval_var (ve->get_varname (), val));
+  }
+
+  nodestack.push (&*result);
 }
 
 void *begin_visit(const CatchListExpr& v)

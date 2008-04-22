@@ -239,9 +239,8 @@ void end_visit(var_expr& v)
     xqpString varname = v.get_varname()->getStringValue().getp();
     if (varname == DOT_VAR) 
     {
-      xqpStringStore *vname = new xqpStringStore (".");
       vector<PlanIter_t> ctx_args;
-      ctx_args.push_back (new SingletonIterator (loc, ITEM_FACTORY->createString (vname)));
+      ctx_args.push_back (new SingletonIterator (loc, ITEM_FACTORY->createQName ("", "", ".")));
       itstack.push (new CtxVariableIterator (loc, ctx_args));
     }
     else if (varname == DOT_POS_VAR)
@@ -548,6 +547,24 @@ void end_visit(trycatch_expr& v)
   std::vector<TryCatchIterator::CatchClause> ccs(rev_ccs.rbegin(), rev_ccs.rend());
   PlanIter_t lChild = pop_itstack();
   itstack.push(new TryCatchIterator(v.get_loc(), lChild, ccs));
+}
+
+bool begin_visit (eval_expr& v) {
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit (eval_expr& v) {
+  CODEGEN_TRACE_OUT("");
+  checked_vector<PlanIter_t> argv;
+  checked_vector<store::Item_t> varnames;
+  for (unsigned i = 0; i < v.var_count (); i++) {
+    varnames.push_back (v.var_at (i).varname);
+    argv.push_back (pop_itstack ());
+  }
+  argv.push_back (pop_itstack ());
+  reverse (argv.begin (), argv.end ());
+  itstack.push (new EvalIterator (v.get_loc (), varnames, argv));
 }
 
 bool begin_visit(typeswitch_expr& /*v*/)

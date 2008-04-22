@@ -19,6 +19,7 @@ class normalizer : public expr_visitor {
     bool begin_visit(case_clause&);
     bool begin_visit(promote_expr&);
     bool begin_visit(trycatch_expr&);
+    bool begin_visit(eval_expr&);
     bool begin_visit(typeswitch_expr&);
     bool begin_visit(if_expr&);
     bool begin_visit(fo_expr&);
@@ -55,6 +56,7 @@ class normalizer : public expr_visitor {
     void end_visit(case_clause&);
     void end_visit(promote_expr&);
     void end_visit(trycatch_expr&);
+    void end_visit(eval_expr&);
     void end_visit(typeswitch_expr&);
     void end_visit(if_expr&);
     void end_visit(fo_expr&);

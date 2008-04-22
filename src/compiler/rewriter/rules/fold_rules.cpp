@@ -25,7 +25,7 @@ namespace zorba {
     QueryLoc loc = LOC (node);
     store::Item_t item;
     try {
-      for (PlanWrapperHolder pw  (plan, compilercb); (item = pw->next ()) != NULL; )
+      for (PlanWrapperHolder pw  (new PlanWrapper (plan, compilercb, NULL)); (item = pw->next ()) != NULL; )
         result.push_back (item);
       return NULL;
     } catch (error::ZorbaError& e) {

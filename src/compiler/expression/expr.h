@@ -544,7 +544,18 @@ private:
 };
 
 class eval_expr : public expr {
+public:
+  class eval_var {
+  public:
+    store::Item_t varname;
+    expr_t val;
+
+    eval_var (store::Item_t varname_, expr_t val_) : varname (varname_), val (val_) {}
+  };
+
+protected:
   expr_t expr_h;
+  checked_vector<eval_var> vars;
 
 public:
   eval_expr (const QueryLoc &loc, expr_t expr_)
@@ -554,9 +565,15 @@ public:
   const expr_t &get_expr () const { return expr_h; }
   expr_t get_expr () { return expr_h; }
 
+  unsigned var_count () const { return vars.size (); }
+  eval_var &var_at (unsigned i) { return vars [i]; }
+
+  void add_var (eval_var var) { vars.push_back (var); }
+
   expr_iterator_data *make_iter ();
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
+  std::ostream& put(std::ostream&) const;
 };
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]

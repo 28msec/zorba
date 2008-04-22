@@ -2260,6 +2260,19 @@ void *begin_visit(const CatchExpr &n)
     return no_state;
 }
 
+void *begin_visit (const EvalExpr &n)
+{
+    INDENT;
+
+    os << "<EvalExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
 void *begin_visit(const FTAnd &n)
 {
     INDENT;
@@ -4203,6 +4216,16 @@ void end_visit(const CatchExpr& /*n*/, void* /*visit_state*/)
 
     INDENT;
     os << "</CatchExpr>";
+    NL;
+}
+
+
+void end_visit(const EvalExpr& /*n*/, void* /*visit_state*/)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</EvalExpr>";
     NL;
 }
 

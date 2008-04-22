@@ -6,11 +6,11 @@
 #include <iostream>
 #include <ostream>
 /*______________________________________________________________________
-|  
-|	 Design note: Visitor pattern.  See, for example:
-|	 "Modern C++ Design" by Andrei Alexandrescu, Addison Wesley (const 2001),
-|	 Chapter 10.
-|_______________________________________________________________________*/
+ |  
+ |	 Design note: Visitor pattern.  See, for example:
+ |	 "Modern C++ Design" by Andrei Alexandrescu, Addison Wesley (const 2001),
+ |	 Chapter 10.
+ |_______________________________________________________________________*/
 
 namespace zorba {
 
@@ -22,7 +22,6 @@ class ParseNodePrintDOTVisitor : public parsenode_visitor
 #define INDENT_DEC  theIndent -= 2
 #define NL  os << std::endl
 
-
 protected:
     int theIndent;
     std::ostream& os;
@@ -32,7 +31,7 @@ public:
     void print(parsenode*);
 
 public:
-    /*..........................................
+/*..........................................
  	:  begin visit                            :
  	:.........................................*/
 	void *begin_visit(const parsenode &);
@@ -60,7 +59,6 @@ public:
 	void *begin_visit(const ElementTest &);
 	void *begin_visit(const EmptyOrderDecl &);
 	void *begin_visit(const ForClause &);
-//	void *begin_visit(const ForLetClause &);
 	void *begin_visit(const ForLetClauseList &);
 	void *begin_visit(const ForwardAxis &);
 	void *begin_visit(const ForwardStep &);
@@ -151,7 +149,6 @@ public:
 	void *begin_visit(const DirPIConstructor &);
 	void *begin_visit(const EnclosedExpr &);
 	void *begin_visit(const Expr &);
-    // void *begin_visit(const ExprSingle &);
 	void *begin_visit(const ExtensionExpr &);
 	void *begin_visit(const FLWORExpr &);
 	void *begin_visit(const FilterExpr &);
@@ -261,7 +258,6 @@ public:
 	void end_visit(const ElementTest &, void *visit_state);
 	void end_visit(const EmptyOrderDecl &, void *visit_state);
 	void end_visit(const ForClause &, void *visit_state);
-    // void end_visit(const ForLetClause &, void *visit_state);
 	void end_visit(const ForLetClauseList &, void *visit_state);
 	void end_visit(const ForwardAxis &, void *visit_state);
 	void end_visit(const ForwardStep &, void *visit_state);
@@ -352,7 +348,6 @@ public:
 	void end_visit(const DirPIConstructor &, void *visit_state);
 	void end_visit(const EnclosedExpr &, void *visit_state);
 	void end_visit(const Expr &, void *visit_state);
-    // void end_visit(const ExprSingle &, void *visit_state);
 	void end_visit(const ExtensionExpr &, void *visit_state);
 	void end_visit(const FLWORExpr &, void *visit_state);
 	void end_visit(const FilterExpr &, void *visit_state);
@@ -436,7 +431,7 @@ public:
     
 };
 
-} // namespace
+} // namespace zorba
 
 #endif
 

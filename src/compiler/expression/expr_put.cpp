@@ -187,6 +187,14 @@ ostream& trycatch_expr::put( ostream& os) const
   return os;
 }
 
+ostream& eval_expr::put( ostream& os) const
+{
+  os << INDENT << "eval_expr" << expr_addr (this) << " [\n";
+  expr_h->put (os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
 ostream& typeswitch_expr::put( ostream& os) const
 {
   os << INDENT << "typeswitch_expr" << expr_addr (this) << " [\n";

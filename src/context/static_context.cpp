@@ -178,7 +178,7 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
 }
 
 
-  xqp_string static_context::qname_internal_key (const store::Item *qname) const
+  xqp_string static_context::qname_internal_key (const store::Item *qname)
   {
     return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
   }

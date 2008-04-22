@@ -512,6 +512,9 @@ public:
   virtual void beginVisit(const CtxVariableIterator&);
   virtual void endVisit(const CtxVariableIterator&);
   
+  virtual void beginVisit(const EvalIterator&);
+  virtual void endVisit(const EvalIterator&);
+  
   virtual void beginVisit(const OpIsSameNodeIterator&);
   virtual void endVisit(const OpIsSameNodeIterator&);
   
