@@ -9,8 +9,17 @@ startElement()
 LocalName: Case
 QName: test:Case
 Attribute name: name, value: test1
+URI: 
+Local name: name
+Type: xs:untypedAtomic
 Attribute name: emptyAttribute, value: 
+URI: 
+Local name: emptyAttribute
+Type: xs:untypedAtomic
 Attribute name: test:ns_id, value: auio
+URI: http://test.org/schema
+Local name: ns_id
+Type: xs:untypedAtomic
 endPrefixMapping()
 Prefix: test
 startPrefixMapping()

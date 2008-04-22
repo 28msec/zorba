@@ -5,6 +5,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cassert>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -97,7 +98,7 @@ class TestContentHandler: public DefaultContentHandler
         const   String & localname,
         const   String & qname,
         const   SAX2_Attributes & attrs,
-        const SAX2_Namespaces &ns)
+        const   SAX2_Namespaces &ns )
   {
     theOStream << "startElement()" << std::endl;
     theOStream << "LocalName: " << localname << std::endl;
@@ -106,6 +107,13 @@ class TestContentHandler: public DefaultContentHandler
     {
       theOStream << "Attribute name: " << attrs.getQName( i ) << ", ";
       theOStream << "value: " << attrs.getValue( i ) << std::endl;
+      theOStream << "URI: " << attrs.getURI( i ) << std::endl;
+      theOStream << "Local name: " << attrs.getLocalName( i ) << std::endl;
+      theOStream << "Type: " << attrs.getType( i ) << std::endl;
+      assert ( attrs.getType ( i )  == attrs.getType ( attrs.getQName ( i ) ) );
+      assert ( attrs.getType ( i )  == attrs.getType ( attrs.getURI( i ), attrs.getLocalName( i ) ) );
+      assert ( attrs.getValue( i )  == attrs.getValue( attrs.getQName( i ) ) );
+      assert ( attrs.getValue ( i ) == attrs.getValue( attrs.getURI( i ), attrs.getLocalName( i ) ) );
     }
   }
 

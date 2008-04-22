@@ -24,6 +24,7 @@ SAX2AttributesImpl::SAX2AttributesImpl(store::Item *item)
     a.localname = item_qname->getLocalName();
     a.qname = item_qname->getStringValue().getp();
     a.value = child->getStringValue().getp();
+    a.type = child->getType()->getStringValue().getp();
     attrs.push_back(a);
 
     child = attr_it->next();
@@ -64,8 +65,7 @@ const String SAX2AttributesImpl::getQName(const unsigned int index) const
 
 const String SAX2AttributesImpl::getType(const unsigned int index) const
 {
-  //TODO: unimplemented method
-  return "";
+  return &*(attrs[index].type).theStrStore;
 }
 
 const String SAX2AttributesImpl::getValue(const unsigned int index) const
@@ -104,13 +104,34 @@ int SAX2AttributesImpl::getIndex(const String & qName ) const
 
 const String SAX2AttributesImpl::getType(const String & uri, const String & localPart ) const
 {
-  //TODO: uniplemented method
+  unsigned int  i;
+  unsigned int  size = attrs.size();
+  for(i=0;i<size;i++)
+  {
+    String lattruri(attrs[i].uri);
+    String llocalname(attrs[i].localname);
+    if((uri == lattruri) && (localPart == llocalname))
+    {
+      String lType(attrs[i].type);
+      return lType;
+    }
+  }
   return "";
 }
 
 const String SAX2AttributesImpl::getType(const String & qName) const
 {
-  //TODO: uniplemented method
+  unsigned int  i;
+  unsigned int  size = attrs.size();
+  for(i=0;i<size;i++)
+  {
+    String lQName( attrs[i].qname );
+    if(qName == lQName)
+    {
+      String lType( attrs[i].type ); 
+      return lType;
+    }
+  }
   return "";
 }
 
@@ -120,12 +141,12 @@ const String SAX2AttributesImpl::getValue(const String & uri, const String & loc
   unsigned int  size = attrs.size();
   for(i=0;i<size;i++)
   {
-    String lAttrURI(attrs[i].uri);
-    String lLocalName(attrs[i].localname);
-    if((uri == lAttrURI) && (localPart == lLocalName))
+    String lattruri(attrs[i].uri);
+    String llocalname(attrs[i].localname);
+    if((uri == lattruri) && (localPart == llocalname))
     {
-      String lValue(attrs[i].value);
-      return lValue;
+      String lvalue(attrs[i].value);
+      return lvalue;
     }
   }
   return "";
@@ -144,7 +165,6 @@ const String SAX2AttributesImpl::getValue(const String & qName) const
       return lValue;
     }
   }
-
   return "";
 }
 

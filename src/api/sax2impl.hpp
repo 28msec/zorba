@@ -17,6 +17,7 @@ class SAX2AttributesImpl: public SAX2_Attributes
     xqp_string    localname;
     xqp_string    qname;
     xqp_string    value;
+    xqp_string    type;
   }SAX2_XmlAttribute;
   //list of pairs localname/prefix/URI/valueBegin/valueEnd
   std::vector<SAX2_XmlAttribute>   attrs;
