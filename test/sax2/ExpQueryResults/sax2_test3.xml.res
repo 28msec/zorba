@@ -20,12 +20,15 @@ Attribute name: test:ns_id, value: auio
 URI: http://test.org/schema
 Local name: ns_id
 Type: xs:untypedAtomic
+Comment:  this is a comment 
 startElement()
 LocalName: text
 QName: test:text
 startElement()
 LocalName: b
 QName: b
+startCDATA()
+endCDATA()
 endPrefixMapping()
 Prefix: test
 

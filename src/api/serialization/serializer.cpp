@@ -785,7 +785,16 @@ void serializer::html_emitter::emit_node(
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // SAX2 emitter
 serializer::sax2_emitter::sax2_emitter( serializer * the_serializer, transcoder & the_transcoder, SAX2_ContentHandler * aSAX2ContentHandler )
-  : emitter(the_serializer, the_transcoder), theSAX2ContentHandler( aSAX2ContentHandler ){}
+  : 
+      emitter(the_serializer, the_transcoder),
+      theSAX2ContentHandler( aSAX2ContentHandler ),
+      theSAX2DTDHandler( 0 ),
+      theSAX2DeclHandler( 0 )
+  {
+    theSAX2DeclHandler    = dynamic_cast< SAX2_DeclHandler * >( aSAX2ContentHandler );
+    theSAX2DTDHandler     = dynamic_cast< SAX2_DTDHandler * >( aSAX2ContentHandler );
+    theSAX2LexicalHandler = dynamic_cast< SAX2_LexicalHandler * >( aSAX2ContentHandler );
+  }
 
 void serializer::sax2_emitter::emit_node_children( const store::Item* item )
 {
@@ -917,15 +926,17 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
-		emit_expanded_string(item->getStringValue().getp());
-	}
+		//TODO: if CDATA
+    emit_expanded_string(item->getStringValue().getp());
+	  //TODO: if CDATA
+  }
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
-    //TODO: unimplemented lexical handler
-    //if(lexical_handler)
-    //{
-      //xqp_string    comment_str = item->getStringValue().getp();
-    //}
+    if ( theSAX2LexicalHandler )
+    { 
+      String lComment ( item->getStringValue().getp() );
+      theSAX2LexicalHandler->comment( lComment ); 
+    }
 	}
 	else if (item->getNodeKind() == store::StoreConsts::piNode )
 	{

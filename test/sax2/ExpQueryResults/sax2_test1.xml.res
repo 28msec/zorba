@@ -20,6 +20,9 @@ Attribute name: test:ns_id, value: auio
 URI: http://test.org/schema
 Local name: ns_id
 Type: xs:untypedAtomic
+Comment: 
+    <foo>Bar</foo>
+  
 startElement()
 LocalName: text
 QName: test:text
@@ -41,6 +44,7 @@ Local name: foo
 Type: xs:untypedAtomic
 endPrefixMapping()
 Prefix: foo
+Comment:  This is a comment 
 startPrefixMapping()
 Prefix: bar
 URI: http://bar.org/

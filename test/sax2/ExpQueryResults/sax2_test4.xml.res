@@ -22,6 +22,7 @@ Local name: ns_id
 Type: xs:untypedAtomic
 endPrefixMapping()
 Prefix: test
+Comment:  this is a comment 
 startPrefixMapping()
 Prefix: test
 URI: http://test.org/schema2

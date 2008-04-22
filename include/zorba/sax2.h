@@ -144,8 +144,8 @@ class SAX2_DeclHandler
 
     virtual void
     attributeDecl ( const String & eName, const String & aName,
-                   const String & type, const String & type,
-                   const String & mode, const String & value ) = 0;
+                    const String & type,  const String & mode,
+                    const String & value ) = 0;
 
     virtual void
     internalEntityDecl ( const String & name, const String & value ) = 0;
@@ -159,10 +159,10 @@ class SAX2_LexicalHandler
 {
   public:
     virtual
-      ~SAX2_LexicalHandler () {}
+    ~SAX2_LexicalHandler () {}
 
     virtual void
-    comment ( const String & chars, const unsigned int length ) = 0;
+    comment ( const String & chars ) = 0;
 
     virtual void
     endCDATA () = 0;
@@ -182,7 +182,23 @@ class SAX2_LexicalHandler
 
     virtual void
     startEntity ( const String & name ) = 0;
+};
 
+class SAX2_DTDHandler
+{
+  public:
+    virtual
+    ~SAX2_DTDHandler () {}
+
+    virtual void
+    notationDecl ( const String & name, const String & publicId, const String & systemId ) = 0;
+
+    virtual void
+    unparsedEntityDecl ( const String & name, const String & publicId,
+                         const String & systemId, const String & notationName ) = 0;
+
+    virtual void
+    resetDocType () = 0;
 };
 }
 //end namespace zorba

@@ -134,6 +134,44 @@ class TestContentHandler: public DefaultContentHandler
   {
     theOStream << "Skipped entity: " << name << std::endl;
   }
+
+  void comment( const String &  chars )
+  {
+    theOStream << "Comment: " << chars << std::endl;
+  }
+
+  void startDTD( const String & name, const String & publicId, const String & systemId )
+  {
+    theOStream << "startDTD()" << std::endl;
+    theOStream << "Name: " << name << std::endl;
+    //std::cerr << "PublicId: " << publicId << std::endl;
+    //std::cerr << "SystemId: " << systemId << std::endl;
+  }
+
+  void endDTD()
+  {
+    theOStream << "endDTD()" << std::endl;
+  }
+
+  void startCDATA()
+  {
+    theOStream << "startCDATA()" << std::endl;
+  }
+
+  void endCDATA()
+  {
+    theOStream << "endCDATA()" << std::endl;
+  }
+
+  void startEntity( const String & name )
+  {
+    theOStream << "startEntity: " << name << std::endl;
+  }
+  
+  void endEntity( const String & name )
+  {
+    theOStream << "startEntity: " << name << std::endl;
+  }
 };
 
 class TestErrorHandler : public zorba::ErrorHandler {
