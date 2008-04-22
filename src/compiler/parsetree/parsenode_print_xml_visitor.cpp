@@ -397,21 +397,6 @@ void *begin_visit(const ForClause &n)
 }
 
 
-// bool
-// begin_visit(const ForLetClause &n)
-// {
-//     INDENT;
-//
-//     os << "<MainModule pos='" << n.get_location() << "' ptr='" << &n << "'";
-//
-//     os << ">";
-//
-//     INDENT_INC;
-//     NL;
-//     return no_state;
-// }
-
-
 void *begin_visit(const ForLetClauseList &n)
 {
     INDENT;
@@ -1735,21 +1720,6 @@ void *begin_visit(const Expr &n)
 }
 
 
-// bool
-// begin_visit(const ExprSingle &n)
-// {
-//     INDENT;
-//
-//     os << "<MainModule pos='" << n.get_location() << "' ptr='" << &n << "'";
-//
-//     os << ">";
-//
-//     INDENT_INC;
-//     NL;
-//     return no_state;
-// }
-
-
 void *begin_visit(const ExtensionExpr &n)
 {
     INDENT;
@@ -3045,17 +3015,6 @@ void end_visit(const ForClause& /*n*/, void* /*visit_state*/)
 }
 
 
-// void
-// end_visit(const ForLetClause& /*n*/, void* /*visit_state*/)
-// {
-//     INDENT_DEC;
-//
-//     INDENT;
-//     os << "</MainModule>";
-//     NL;
-// }
-
-
 void end_visit(const ForLetClauseList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
@@ -3869,17 +3828,6 @@ void end_visit(const Expr& /*n*/, void* /*visit_state*/)
     os << "</Expr>";
     NL;
 }
-
-
-// void
-// end_visit(const ExprSingle& /*n*/, void* /*visit_state*/)
-// {
-//     INDENT_DEC;
-//
-//     INDENT;
-//     os << "</MainModule>";
-//     NL;
-// }
 
 
 void end_visit(const ExtensionExpr& /*n*/, void* /*visit_state*/)
