@@ -1,734 +1,744 @@
 Iterator tree for main query:
-<FLWORIterator>
- <LetVariable name="input-context1" materialize="true">
-  <CtxVariableIterator>
-   <SingletonIterator value="xs:string(input-context1)"/>
-  </CtxVariableIterator>
- </LetVariable>
- <LetVariable name="input-context2" materialize="true">
-  <CtxVariableIterator>
-   <SingletonIterator value="xs:string(input-context2)"/>
-  </CtxVariableIterator>
- </LetVariable>
- <ReturnClause>
+<LogicIterator>
+ <LogicIterator>
   <LogicIterator>
-   <LogicIterator>
-    <LogicIterator>
-     <OpNodeAfterIterator>
-      <TreatIterator quant="?">
-       <NodeDistinctIterator>
-        <FLWORIterator>
-         <ForVariable name="$$temp9">
-          <NodeDistinctIterator>
-           <FLWORIterator>
-            <ForVariable name="$$temp5">
-             <NodeDistinctIterator>
-              <FLWORIterator>
-               <ForVariable name="$$temp1">
-                <NodeDistinctIterator>
-                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                  <LetVarIterator varname="input-context1"/>
-                 </TreatIterator>
-                </NodeDistinctIterator>
-               </ForVariable>
-               <ReturnClause>
-                <FnSubsequenceIterator>
-                 <NameTestIterator qname="xs:QName(,,works)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$temp1"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                 <SingletonIterator value="xs:double(1)"/>
-                 <SingletonIterator value="xs:double(1)"/>
-                </FnSubsequenceIterator>
-               </ReturnClause>
-              </FLWORIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,employee)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$temp5"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-              <SingletonIterator value="xs:double(1)"/>
-              <SingletonIterator value="xs:double(1)"/>
-             </FnSubsequenceIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </NodeDistinctIterator>
-         </ForVariable>
-         <ReturnClause>
-          <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,empnum)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$temp9"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
-           <SingletonIterator value="xs:double(1)"/>
-           <SingletonIterator value="xs:double(1)"/>
-          </FnSubsequenceIterator>
-         </ReturnClause>
-        </FLWORIterator>
-       </NodeDistinctIterator>
-      </TreatIterator>
-      <TreatIterator quant="?">
-       <NodeDistinctIterator>
-        <FLWORIterator>
-         <ForVariable name="$$temp21">
-          <NodeDistinctIterator>
-           <FLWORIterator>
-            <ForVariable name="$$temp17">
-             <NodeDistinctIterator>
-              <FLWORIterator>
-               <ForVariable name="$$temp13">
-                <NodeDistinctIterator>
-                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                  <LetVarIterator varname="input-context2"/>
-                 </TreatIterator>
-                </NodeDistinctIterator>
-               </ForVariable>
-               <ReturnClause>
-                <FnSubsequenceIterator>
-                 <NameTestIterator qname="xs:QName(,,staff)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$temp13"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                 <SingletonIterator value="xs:double(1)"/>
-                 <SingletonIterator value="xs:double(1)"/>
-                </FnSubsequenceIterator>
-               </ReturnClause>
-              </FLWORIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,employee)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$temp17"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-              <SingletonIterator value="xs:double(1)"/>
-              <SingletonIterator value="xs:double(1)"/>
-             </FnSubsequenceIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </NodeDistinctIterator>
-         </ForVariable>
-         <ReturnClause>
-          <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,empnum)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$temp21"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
-           <SingletonIterator value="xs:double(1)"/>
-           <SingletonIterator value="xs:double(1)"/>
-          </FnSubsequenceIterator>
-         </ReturnClause>
-        </FLWORIterator>
-       </NodeDistinctIterator>
-      </TreatIterator>
-     </OpNodeAfterIterator>
-     <OpNodeAfterIterator>
-      <TreatIterator quant="?">
-       <NodeDistinctIterator>
-        <FLWORIterator>
-         <ForVariable name="$$temp33">
-          <NodeDistinctIterator>
-           <FLWORIterator>
-            <ForVariable name="$$temp29">
-             <NodeDistinctIterator>
-              <FLWORIterator>
-               <ForVariable name="$$temp25">
-                <NodeDistinctIterator>
-                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                  <LetVarIterator varname="input-context1"/>
-                 </TreatIterator>
-                </NodeDistinctIterator>
-               </ForVariable>
-               <ReturnClause>
-                <FnSubsequenceIterator>
-                 <NameTestIterator qname="xs:QName(,,works)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$temp25"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                 <SingletonIterator value="xs:double(1)"/>
-                 <SingletonIterator value="xs:double(1)"/>
-                </FnSubsequenceIterator>
-               </ReturnClause>
-              </FLWORIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,employee)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$temp29"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-              <SingletonIterator value="xs:double(2)"/>
-              <SingletonIterator value="xs:double(1)"/>
-             </FnSubsequenceIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </NodeDistinctIterator>
-         </ForVariable>
-         <ReturnClause>
-          <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,empnum)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$temp33"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
-           <SingletonIterator value="xs:double(1)"/>
-           <SingletonIterator value="xs:double(1)"/>
-          </FnSubsequenceIterator>
-         </ReturnClause>
-        </FLWORIterator>
-       </NodeDistinctIterator>
-      </TreatIterator>
-      <TreatIterator quant="?">
-       <NodeDistinctIterator>
-        <FLWORIterator>
-         <ForVariable name="$$temp45">
-          <NodeDistinctIterator>
-           <FLWORIterator>
-            <ForVariable name="$$temp41">
-             <NodeDistinctIterator>
-              <FLWORIterator>
-               <ForVariable name="$$temp37">
-                <NodeDistinctIterator>
-                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                  <LetVarIterator varname="input-context2"/>
-                 </TreatIterator>
-                </NodeDistinctIterator>
-               </ForVariable>
-               <ReturnClause>
-                <FnSubsequenceIterator>
-                 <NameTestIterator qname="xs:QName(,,staff)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$temp37"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                 <SingletonIterator value="xs:double(1)"/>
-                 <SingletonIterator value="xs:double(1)"/>
-                </FnSubsequenceIterator>
-               </ReturnClause>
-              </FLWORIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,employee)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$temp41"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-              <SingletonIterator value="xs:double(2)"/>
-              <SingletonIterator value="xs:double(1)"/>
-             </FnSubsequenceIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </NodeDistinctIterator>
-         </ForVariable>
-         <ReturnClause>
-          <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,empnum)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$temp45"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
-           <SingletonIterator value="xs:double(1)"/>
-           <SingletonIterator value="xs:double(1)"/>
-          </FnSubsequenceIterator>
-         </ReturnClause>
-        </FLWORIterator>
-       </NodeDistinctIterator>
-      </TreatIterator>
-     </OpNodeAfterIterator>
-    </LogicIterator>
-    <OpNodeAfterIterator>
-     <TreatIterator quant="?">
-      <NodeDistinctIterator>
-       <FLWORIterator>
-        <ForVariable name="$$temp57">
-         <NodeDistinctIterator>
-          <FLWORIterator>
-           <ForVariable name="$$temp53">
-            <NodeDistinctIterator>
-             <FLWORIterator>
-              <ForVariable name="$$temp49">
-               <NodeDistinctIterator>
-                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                 <LetVarIterator varname="input-context1"/>
-                </TreatIterator>
-               </NodeDistinctIterator>
-              </ForVariable>
-              <ReturnClause>
-               <FnSubsequenceIterator>
-                <NameTestIterator qname="xs:QName(,,works)">
-                 <ChildAxisIterator>
-                  <ForVarIterator varname="$$temp49"/>
-                 </ChildAxisIterator>
-                </NameTestIterator>
-                <SingletonIterator value="xs:double(1)"/>
-                <SingletonIterator value="xs:double(1)"/>
-               </FnSubsequenceIterator>
-              </ReturnClause>
-             </FLWORIterator>
-            </NodeDistinctIterator>
-           </ForVariable>
-           <ReturnClause>
-            <FnSubsequenceIterator>
-             <NameTestIterator qname="xs:QName(,,employee)">
-              <ChildAxisIterator>
-               <ForVarIterator varname="$$temp53"/>
-              </ChildAxisIterator>
-             </NameTestIterator>
-             <SingletonIterator value="xs:double(3)"/>
-             <SingletonIterator value="xs:double(1)"/>
-            </FnSubsequenceIterator>
-           </ReturnClause>
-          </FLWORIterator>
-         </NodeDistinctIterator>
-        </ForVariable>
-        <ReturnClause>
-         <FnSubsequenceIterator>
-          <NameTestIterator qname="xs:QName(,,empnum)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="$$temp57"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
-          <SingletonIterator value="xs:double(1)"/>
-          <SingletonIterator value="xs:double(1)"/>
-         </FnSubsequenceIterator>
-        </ReturnClause>
-       </FLWORIterator>
-      </NodeDistinctIterator>
-     </TreatIterator>
-     <TreatIterator quant="?">
-      <NodeDistinctIterator>
-       <FLWORIterator>
-        <ForVariable name="$$temp69">
-         <NodeDistinctIterator>
-          <FLWORIterator>
-           <ForVariable name="$$temp65">
-            <NodeDistinctIterator>
-             <FLWORIterator>
-              <ForVariable name="$$temp61">
-               <NodeDistinctIterator>
-                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                 <LetVarIterator varname="input-context2"/>
-                </TreatIterator>
-               </NodeDistinctIterator>
-              </ForVariable>
-              <ReturnClause>
-               <FnSubsequenceIterator>
-                <NameTestIterator qname="xs:QName(,,staff)">
-                 <ChildAxisIterator>
-                  <ForVarIterator varname="$$temp61"/>
-                 </ChildAxisIterator>
-                </NameTestIterator>
-                <SingletonIterator value="xs:double(1)"/>
-                <SingletonIterator value="xs:double(1)"/>
-               </FnSubsequenceIterator>
-              </ReturnClause>
-             </FLWORIterator>
-            </NodeDistinctIterator>
-           </ForVariable>
-           <ReturnClause>
-            <FnSubsequenceIterator>
-             <NameTestIterator qname="xs:QName(,,employee)">
-              <ChildAxisIterator>
-               <ForVarIterator varname="$$temp65"/>
-              </ChildAxisIterator>
-             </NameTestIterator>
-             <SingletonIterator value="xs:double(3)"/>
-             <SingletonIterator value="xs:double(1)"/>
-            </FnSubsequenceIterator>
-           </ReturnClause>
-          </FLWORIterator>
-         </NodeDistinctIterator>
-        </ForVariable>
-        <ReturnClause>
-         <FnSubsequenceIterator>
-          <NameTestIterator qname="xs:QName(,,empnum)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="$$temp69"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
-          <SingletonIterator value="xs:double(1)"/>
-          <SingletonIterator value="xs:double(1)"/>
-         </FnSubsequenceIterator>
-        </ReturnClause>
-       </FLWORIterator>
-      </NodeDistinctIterator>
-     </TreatIterator>
-    </OpNodeAfterIterator>
-   </LogicIterator>
-   <LogicIterator>
-    <LogicIterator>
-     <OpNodeBeforeIterator>
-      <TreatIterator quant="?">
-       <NodeDistinctIterator>
-        <FLWORIterator>
-         <ForVariable name="$$temp81">
-          <NodeDistinctIterator>
-           <FLWORIterator>
-            <ForVariable name="$$temp77">
-             <NodeDistinctIterator>
-              <FLWORIterator>
-               <ForVariable name="$$temp73">
-                <NodeDistinctIterator>
-                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                  <LetVarIterator varname="input-context1"/>
-                 </TreatIterator>
-                </NodeDistinctIterator>
-               </ForVariable>
-               <ReturnClause>
-                <FnSubsequenceIterator>
-                 <NameTestIterator qname="xs:QName(,,works)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$temp73"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                 <SingletonIterator value="xs:double(1)"/>
-                 <SingletonIterator value="xs:double(1)"/>
-                </FnSubsequenceIterator>
-               </ReturnClause>
-              </FLWORIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,employee)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$temp77"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-              <SingletonIterator value="xs:double(1)"/>
-              <SingletonIterator value="xs:double(1)"/>
-             </FnSubsequenceIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </NodeDistinctIterator>
-         </ForVariable>
-         <ReturnClause>
-          <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,empnum)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$temp81"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
-           <SingletonIterator value="xs:double(1)"/>
-           <SingletonIterator value="xs:double(1)"/>
-          </FnSubsequenceIterator>
-         </ReturnClause>
-        </FLWORIterator>
-       </NodeDistinctIterator>
-      </TreatIterator>
-      <TreatIterator quant="?">
-       <NodeDistinctIterator>
-        <FLWORIterator>
-         <ForVariable name="$$temp93">
-          <NodeDistinctIterator>
-           <FLWORIterator>
-            <ForVariable name="$$temp89">
-             <NodeDistinctIterator>
-              <FLWORIterator>
-               <ForVariable name="$$temp85">
-                <NodeDistinctIterator>
-                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                  <LetVarIterator varname="input-context2"/>
-                 </TreatIterator>
-                </NodeDistinctIterator>
-               </ForVariable>
-               <ReturnClause>
-                <FnSubsequenceIterator>
-                 <NameTestIterator qname="xs:QName(,,staff)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$temp85"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                 <SingletonIterator value="xs:double(1)"/>
-                 <SingletonIterator value="xs:double(1)"/>
-                </FnSubsequenceIterator>
-               </ReturnClause>
-              </FLWORIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,employee)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$temp89"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-              <SingletonIterator value="xs:double(1)"/>
-              <SingletonIterator value="xs:double(1)"/>
-             </FnSubsequenceIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </NodeDistinctIterator>
-         </ForVariable>
-         <ReturnClause>
-          <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,empnum)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$temp93"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
-           <SingletonIterator value="xs:double(1)"/>
-           <SingletonIterator value="xs:double(1)"/>
-          </FnSubsequenceIterator>
-         </ReturnClause>
-        </FLWORIterator>
-       </NodeDistinctIterator>
-      </TreatIterator>
-     </OpNodeBeforeIterator>
-     <OpNodeBeforeIterator>
-      <TreatIterator quant="?">
-       <NodeDistinctIterator>
-        <FLWORIterator>
-         <ForVariable name="$$temp105">
-          <NodeDistinctIterator>
-           <FLWORIterator>
-            <ForVariable name="$$temp101">
-             <NodeDistinctIterator>
-              <FLWORIterator>
-               <ForVariable name="$$temp97">
-                <NodeDistinctIterator>
-                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                  <LetVarIterator varname="input-context1"/>
-                 </TreatIterator>
-                </NodeDistinctIterator>
-               </ForVariable>
-               <ReturnClause>
-                <FnSubsequenceIterator>
-                 <NameTestIterator qname="xs:QName(,,works)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$temp97"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                 <SingletonIterator value="xs:double(1)"/>
-                 <SingletonIterator value="xs:double(1)"/>
-                </FnSubsequenceIterator>
-               </ReturnClause>
-              </FLWORIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,employee)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$temp101"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-              <SingletonIterator value="xs:double(2)"/>
-              <SingletonIterator value="xs:double(1)"/>
-             </FnSubsequenceIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </NodeDistinctIterator>
-         </ForVariable>
-         <ReturnClause>
-          <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,empnum)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$temp105"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
-           <SingletonIterator value="xs:double(1)"/>
-           <SingletonIterator value="xs:double(1)"/>
-          </FnSubsequenceIterator>
-         </ReturnClause>
-        </FLWORIterator>
-       </NodeDistinctIterator>
-      </TreatIterator>
-      <TreatIterator quant="?">
-       <NodeDistinctIterator>
-        <FLWORIterator>
-         <ForVariable name="$$temp117">
-          <NodeDistinctIterator>
-           <FLWORIterator>
-            <ForVariable name="$$temp113">
-             <NodeDistinctIterator>
-              <FLWORIterator>
-               <ForVariable name="$$temp109">
-                <NodeDistinctIterator>
-                 <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                  <LetVarIterator varname="input-context2"/>
-                 </TreatIterator>
-                </NodeDistinctIterator>
-               </ForVariable>
-               <ReturnClause>
-                <FnSubsequenceIterator>
-                 <NameTestIterator qname="xs:QName(,,staff)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$temp109"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                 <SingletonIterator value="xs:double(1)"/>
-                 <SingletonIterator value="xs:double(1)"/>
-                </FnSubsequenceIterator>
-               </ReturnClause>
-              </FLWORIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,employee)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$temp113"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-              <SingletonIterator value="xs:double(2)"/>
-              <SingletonIterator value="xs:double(1)"/>
-             </FnSubsequenceIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </NodeDistinctIterator>
-         </ForVariable>
-         <ReturnClause>
-          <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,empnum)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$temp117"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
-           <SingletonIterator value="xs:double(1)"/>
-           <SingletonIterator value="xs:double(1)"/>
-          </FnSubsequenceIterator>
-         </ReturnClause>
-        </FLWORIterator>
-       </NodeDistinctIterator>
-      </TreatIterator>
-     </OpNodeBeforeIterator>
-    </LogicIterator>
-    <OpNodeBeforeIterator>
-     <TreatIterator quant="?">
-      <NodeDistinctIterator>
-       <FLWORIterator>
-        <ForVariable name="$$temp129">
-         <NodeDistinctIterator>
-          <FLWORIterator>
-           <ForVariable name="$$temp125">
-            <NodeDistinctIterator>
-             <FLWORIterator>
-              <ForVariable name="$$temp121">
-               <NodeDistinctIterator>
-                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                 <LetVarIterator varname="input-context1"/>
-                </TreatIterator>
-               </NodeDistinctIterator>
-              </ForVariable>
-              <ReturnClause>
-               <FnSubsequenceIterator>
-                <NameTestIterator qname="xs:QName(,,works)">
-                 <ChildAxisIterator>
-                  <ForVarIterator varname="$$temp121"/>
-                 </ChildAxisIterator>
-                </NameTestIterator>
-                <SingletonIterator value="xs:double(1)"/>
-                <SingletonIterator value="xs:double(1)"/>
-               </FnSubsequenceIterator>
-              </ReturnClause>
-             </FLWORIterator>
-            </NodeDistinctIterator>
-           </ForVariable>
-           <ReturnClause>
-            <FnSubsequenceIterator>
-             <NameTestIterator qname="xs:QName(,,employee)">
-              <ChildAxisIterator>
-               <ForVarIterator varname="$$temp125"/>
-              </ChildAxisIterator>
-             </NameTestIterator>
-             <SingletonIterator value="xs:double(3)"/>
-             <SingletonIterator value="xs:double(1)"/>
-            </FnSubsequenceIterator>
-           </ReturnClause>
-          </FLWORIterator>
-         </NodeDistinctIterator>
-        </ForVariable>
-        <ReturnClause>
-         <FnSubsequenceIterator>
-          <NameTestIterator qname="xs:QName(,,empnum)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="$$temp129"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
-          <SingletonIterator value="xs:double(1)"/>
-          <SingletonIterator value="xs:double(1)"/>
-         </FnSubsequenceIterator>
-        </ReturnClause>
-       </FLWORIterator>
-      </NodeDistinctIterator>
-     </TreatIterator>
-     <TreatIterator quant="?">
-      <NodeDistinctIterator>
-       <FLWORIterator>
-        <ForVariable name="$$temp141">
-         <NodeDistinctIterator>
-          <FLWORIterator>
-           <ForVariable name="$$temp137">
-            <NodeDistinctIterator>
-             <FLWORIterator>
-              <ForVariable name="$$temp133">
-               <NodeDistinctIterator>
-                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-                 <LetVarIterator varname="input-context2"/>
-                </TreatIterator>
-               </NodeDistinctIterator>
-              </ForVariable>
-              <ReturnClause>
-               <FnSubsequenceIterator>
-                <NameTestIterator qname="xs:QName(,,staff)">
-                 <ChildAxisIterator>
-                  <ForVarIterator varname="$$temp133"/>
-                 </ChildAxisIterator>
-                </NameTestIterator>
-                <SingletonIterator value="xs:double(1)"/>
-                <SingletonIterator value="xs:double(1)"/>
-               </FnSubsequenceIterator>
-              </ReturnClause>
-             </FLWORIterator>
-            </NodeDistinctIterator>
-           </ForVariable>
-           <ReturnClause>
-            <FnSubsequenceIterator>
-             <NameTestIterator qname="xs:QName(,,employee)">
-              <ChildAxisIterator>
-               <ForVarIterator varname="$$temp137"/>
-              </ChildAxisIterator>
-             </NameTestIterator>
-             <SingletonIterator value="xs:double(3)"/>
-             <SingletonIterator value="xs:double(1)"/>
-            </FnSubsequenceIterator>
-           </ReturnClause>
-          </FLWORIterator>
-         </NodeDistinctIterator>
-        </ForVariable>
-        <ReturnClause>
-         <FnSubsequenceIterator>
-          <NameTestIterator qname="xs:QName(,,empnum)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="$$temp141"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
-          <SingletonIterator value="xs:double(1)"/>
-          <SingletonIterator value="xs:double(1)"/>
-         </FnSubsequenceIterator>
-        </ReturnClause>
-       </FLWORIterator>
-      </NodeDistinctIterator>
-     </TreatIterator>
-    </OpNodeBeforeIterator>
-   </LogicIterator>
+   <OpNodeAfterIterator>
+    <TreatIterator quant="?">
+     <NodeDistinctIterator>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <NodeDistinctIterator>
+         <FLWORIterator>
+          <ForVariable name="$$dot">
+           <NodeDistinctIterator>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <NodeDistinctIterator>
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <CtxVariableIterator>
+                 <SingletonIterator value="xs:QName(,,input-context1)"/>
+                </CtxVariableIterator>
+               </TreatIterator>
+              </NodeDistinctIterator>
+             </ForVariable>
+             <ReturnClause>
+              <FnSubsequenceIterator>
+               <NameTestIterator qname="xs:QName(,,works)">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)"/>
+               <SingletonIterator value="xs:double(1)"/>
+              </FnSubsequenceIterator>
+             </ReturnClause>
+            </FLWORIterator>
+           </NodeDistinctIterator>
+          </ForVariable>
+          <ReturnClause>
+           <FnSubsequenceIterator>
+            <NameTestIterator qname="xs:QName(,,employee)">
+             <ChildAxisIterator>
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(1)"/>
+            <SingletonIterator value="xs:double(1)"/>
+           </FnSubsequenceIterator>
+          </ReturnClause>
+         </FLWORIterator>
+        </NodeDistinctIterator>
+       </ForVariable>
+       <ReturnClause>
+        <FnSubsequenceIterator>
+         <NameTestIterator qname="xs:QName(,,empnum)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)"/>
+         <SingletonIterator value="xs:double(1)"/>
+        </FnSubsequenceIterator>
+       </ReturnClause>
+      </FLWORIterator>
+     </NodeDistinctIterator>
+    </TreatIterator>
+    <TreatIterator quant="?">
+     <NodeDistinctIterator>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <NodeDistinctIterator>
+         <FLWORIterator>
+          <ForVariable name="$$dot">
+           <NodeDistinctIterator>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <NodeDistinctIterator>
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <CtxVariableIterator>
+                 <SingletonIterator value="xs:QName(,,input-context2)"/>
+                </CtxVariableIterator>
+               </TreatIterator>
+              </NodeDistinctIterator>
+             </ForVariable>
+             <ReturnClause>
+              <FnSubsequenceIterator>
+               <NameTestIterator qname="xs:QName(,,staff)">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)"/>
+               <SingletonIterator value="xs:double(1)"/>
+              </FnSubsequenceIterator>
+             </ReturnClause>
+            </FLWORIterator>
+           </NodeDistinctIterator>
+          </ForVariable>
+          <ReturnClause>
+           <FnSubsequenceIterator>
+            <NameTestIterator qname="xs:QName(,,employee)">
+             <ChildAxisIterator>
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(1)"/>
+            <SingletonIterator value="xs:double(1)"/>
+           </FnSubsequenceIterator>
+          </ReturnClause>
+         </FLWORIterator>
+        </NodeDistinctIterator>
+       </ForVariable>
+       <ReturnClause>
+        <FnSubsequenceIterator>
+         <NameTestIterator qname="xs:QName(,,empnum)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)"/>
+         <SingletonIterator value="xs:double(1)"/>
+        </FnSubsequenceIterator>
+       </ReturnClause>
+      </FLWORIterator>
+     </NodeDistinctIterator>
+    </TreatIterator>
+   </OpNodeAfterIterator>
+   <OpNodeAfterIterator>
+    <TreatIterator quant="?">
+     <NodeDistinctIterator>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <NodeDistinctIterator>
+         <FLWORIterator>
+          <ForVariable name="$$dot">
+           <NodeDistinctIterator>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <NodeDistinctIterator>
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <CtxVariableIterator>
+                 <SingletonIterator value="xs:QName(,,input-context1)"/>
+                </CtxVariableIterator>
+               </TreatIterator>
+              </NodeDistinctIterator>
+             </ForVariable>
+             <ReturnClause>
+              <FnSubsequenceIterator>
+               <NameTestIterator qname="xs:QName(,,works)">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)"/>
+               <SingletonIterator value="xs:double(1)"/>
+              </FnSubsequenceIterator>
+             </ReturnClause>
+            </FLWORIterator>
+           </NodeDistinctIterator>
+          </ForVariable>
+          <ReturnClause>
+           <FnSubsequenceIterator>
+            <NameTestIterator qname="xs:QName(,,employee)">
+             <ChildAxisIterator>
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(2)"/>
+            <SingletonIterator value="xs:double(1)"/>
+           </FnSubsequenceIterator>
+          </ReturnClause>
+         </FLWORIterator>
+        </NodeDistinctIterator>
+       </ForVariable>
+       <ReturnClause>
+        <FnSubsequenceIterator>
+         <NameTestIterator qname="xs:QName(,,empnum)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)"/>
+         <SingletonIterator value="xs:double(1)"/>
+        </FnSubsequenceIterator>
+       </ReturnClause>
+      </FLWORIterator>
+     </NodeDistinctIterator>
+    </TreatIterator>
+    <TreatIterator quant="?">
+     <NodeDistinctIterator>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <NodeDistinctIterator>
+         <FLWORIterator>
+          <ForVariable name="$$dot">
+           <NodeDistinctIterator>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <NodeDistinctIterator>
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <CtxVariableIterator>
+                 <SingletonIterator value="xs:QName(,,input-context2)"/>
+                </CtxVariableIterator>
+               </TreatIterator>
+              </NodeDistinctIterator>
+             </ForVariable>
+             <ReturnClause>
+              <FnSubsequenceIterator>
+               <NameTestIterator qname="xs:QName(,,staff)">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)"/>
+               <SingletonIterator value="xs:double(1)"/>
+              </FnSubsequenceIterator>
+             </ReturnClause>
+            </FLWORIterator>
+           </NodeDistinctIterator>
+          </ForVariable>
+          <ReturnClause>
+           <FnSubsequenceIterator>
+            <NameTestIterator qname="xs:QName(,,employee)">
+             <ChildAxisIterator>
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(2)"/>
+            <SingletonIterator value="xs:double(1)"/>
+           </FnSubsequenceIterator>
+          </ReturnClause>
+         </FLWORIterator>
+        </NodeDistinctIterator>
+       </ForVariable>
+       <ReturnClause>
+        <FnSubsequenceIterator>
+         <NameTestIterator qname="xs:QName(,,empnum)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)"/>
+         <SingletonIterator value="xs:double(1)"/>
+        </FnSubsequenceIterator>
+       </ReturnClause>
+      </FLWORIterator>
+     </NodeDistinctIterator>
+    </TreatIterator>
+   </OpNodeAfterIterator>
   </LogicIterator>
- </ReturnClause>
-</FLWORIterator>
+  <OpNodeAfterIterator>
+   <TreatIterator quant="?">
+    <NodeDistinctIterator>
+     <FLWORIterator>
+      <ForVariable name="$$dot">
+       <NodeDistinctIterator>
+        <FLWORIterator>
+         <ForVariable name="$$dot">
+          <NodeDistinctIterator>
+           <FLWORIterator>
+            <ForVariable name="$$dot">
+             <NodeDistinctIterator>
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <CtxVariableIterator>
+                <SingletonIterator value="xs:QName(,,input-context1)"/>
+               </CtxVariableIterator>
+              </TreatIterator>
+             </NodeDistinctIterator>
+            </ForVariable>
+            <ReturnClause>
+             <FnSubsequenceIterator>
+              <NameTestIterator qname="xs:QName(,,works)">
+               <ChildAxisIterator>
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
+              <SingletonIterator value="xs:double(1)"/>
+              <SingletonIterator value="xs:double(1)"/>
+             </FnSubsequenceIterator>
+            </ReturnClause>
+           </FLWORIterator>
+          </NodeDistinctIterator>
+         </ForVariable>
+         <ReturnClause>
+          <FnSubsequenceIterator>
+           <NameTestIterator qname="xs:QName(,,employee)">
+            <ChildAxisIterator>
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
+           </NameTestIterator>
+           <SingletonIterator value="xs:double(3)"/>
+           <SingletonIterator value="xs:double(1)"/>
+          </FnSubsequenceIterator>
+         </ReturnClause>
+        </FLWORIterator>
+       </NodeDistinctIterator>
+      </ForVariable>
+      <ReturnClause>
+       <FnSubsequenceIterator>
+        <NameTestIterator qname="xs:QName(,,empnum)">
+         <ChildAxisIterator>
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)"/>
+        <SingletonIterator value="xs:double(1)"/>
+       </FnSubsequenceIterator>
+      </ReturnClause>
+     </FLWORIterator>
+    </NodeDistinctIterator>
+   </TreatIterator>
+   <TreatIterator quant="?">
+    <NodeDistinctIterator>
+     <FLWORIterator>
+      <ForVariable name="$$dot">
+       <NodeDistinctIterator>
+        <FLWORIterator>
+         <ForVariable name="$$dot">
+          <NodeDistinctIterator>
+           <FLWORIterator>
+            <ForVariable name="$$dot">
+             <NodeDistinctIterator>
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <CtxVariableIterator>
+                <SingletonIterator value="xs:QName(,,input-context2)"/>
+               </CtxVariableIterator>
+              </TreatIterator>
+             </NodeDistinctIterator>
+            </ForVariable>
+            <ReturnClause>
+             <FnSubsequenceIterator>
+              <NameTestIterator qname="xs:QName(,,staff)">
+               <ChildAxisIterator>
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
+              <SingletonIterator value="xs:double(1)"/>
+              <SingletonIterator value="xs:double(1)"/>
+             </FnSubsequenceIterator>
+            </ReturnClause>
+           </FLWORIterator>
+          </NodeDistinctIterator>
+         </ForVariable>
+         <ReturnClause>
+          <FnSubsequenceIterator>
+           <NameTestIterator qname="xs:QName(,,employee)">
+            <ChildAxisIterator>
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
+           </NameTestIterator>
+           <SingletonIterator value="xs:double(3)"/>
+           <SingletonIterator value="xs:double(1)"/>
+          </FnSubsequenceIterator>
+         </ReturnClause>
+        </FLWORIterator>
+       </NodeDistinctIterator>
+      </ForVariable>
+      <ReturnClause>
+       <FnSubsequenceIterator>
+        <NameTestIterator qname="xs:QName(,,empnum)">
+         <ChildAxisIterator>
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)"/>
+        <SingletonIterator value="xs:double(1)"/>
+       </FnSubsequenceIterator>
+      </ReturnClause>
+     </FLWORIterator>
+    </NodeDistinctIterator>
+   </TreatIterator>
+  </OpNodeAfterIterator>
+ </LogicIterator>
+ <LogicIterator>
+  <LogicIterator>
+   <OpNodeBeforeIterator>
+    <TreatIterator quant="?">
+     <NodeDistinctIterator>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <NodeDistinctIterator>
+         <FLWORIterator>
+          <ForVariable name="$$dot">
+           <NodeDistinctIterator>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <NodeDistinctIterator>
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <CtxVariableIterator>
+                 <SingletonIterator value="xs:QName(,,input-context1)"/>
+                </CtxVariableIterator>
+               </TreatIterator>
+              </NodeDistinctIterator>
+             </ForVariable>
+             <ReturnClause>
+              <FnSubsequenceIterator>
+               <NameTestIterator qname="xs:QName(,,works)">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)"/>
+               <SingletonIterator value="xs:double(1)"/>
+              </FnSubsequenceIterator>
+             </ReturnClause>
+            </FLWORIterator>
+           </NodeDistinctIterator>
+          </ForVariable>
+          <ReturnClause>
+           <FnSubsequenceIterator>
+            <NameTestIterator qname="xs:QName(,,employee)">
+             <ChildAxisIterator>
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(1)"/>
+            <SingletonIterator value="xs:double(1)"/>
+           </FnSubsequenceIterator>
+          </ReturnClause>
+         </FLWORIterator>
+        </NodeDistinctIterator>
+       </ForVariable>
+       <ReturnClause>
+        <FnSubsequenceIterator>
+         <NameTestIterator qname="xs:QName(,,empnum)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)"/>
+         <SingletonIterator value="xs:double(1)"/>
+        </FnSubsequenceIterator>
+       </ReturnClause>
+      </FLWORIterator>
+     </NodeDistinctIterator>
+    </TreatIterator>
+    <TreatIterator quant="?">
+     <NodeDistinctIterator>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <NodeDistinctIterator>
+         <FLWORIterator>
+          <ForVariable name="$$dot">
+           <NodeDistinctIterator>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <NodeDistinctIterator>
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <CtxVariableIterator>
+                 <SingletonIterator value="xs:QName(,,input-context2)"/>
+                </CtxVariableIterator>
+               </TreatIterator>
+              </NodeDistinctIterator>
+             </ForVariable>
+             <ReturnClause>
+              <FnSubsequenceIterator>
+               <NameTestIterator qname="xs:QName(,,staff)">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)"/>
+               <SingletonIterator value="xs:double(1)"/>
+              </FnSubsequenceIterator>
+             </ReturnClause>
+            </FLWORIterator>
+           </NodeDistinctIterator>
+          </ForVariable>
+          <ReturnClause>
+           <FnSubsequenceIterator>
+            <NameTestIterator qname="xs:QName(,,employee)">
+             <ChildAxisIterator>
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(1)"/>
+            <SingletonIterator value="xs:double(1)"/>
+           </FnSubsequenceIterator>
+          </ReturnClause>
+         </FLWORIterator>
+        </NodeDistinctIterator>
+       </ForVariable>
+       <ReturnClause>
+        <FnSubsequenceIterator>
+         <NameTestIterator qname="xs:QName(,,empnum)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)"/>
+         <SingletonIterator value="xs:double(1)"/>
+        </FnSubsequenceIterator>
+       </ReturnClause>
+      </FLWORIterator>
+     </NodeDistinctIterator>
+    </TreatIterator>
+   </OpNodeBeforeIterator>
+   <OpNodeBeforeIterator>
+    <TreatIterator quant="?">
+     <NodeDistinctIterator>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <NodeDistinctIterator>
+         <FLWORIterator>
+          <ForVariable name="$$dot">
+           <NodeDistinctIterator>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <NodeDistinctIterator>
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <CtxVariableIterator>
+                 <SingletonIterator value="xs:QName(,,input-context1)"/>
+                </CtxVariableIterator>
+               </TreatIterator>
+              </NodeDistinctIterator>
+             </ForVariable>
+             <ReturnClause>
+              <FnSubsequenceIterator>
+               <NameTestIterator qname="xs:QName(,,works)">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)"/>
+               <SingletonIterator value="xs:double(1)"/>
+              </FnSubsequenceIterator>
+             </ReturnClause>
+            </FLWORIterator>
+           </NodeDistinctIterator>
+          </ForVariable>
+          <ReturnClause>
+           <FnSubsequenceIterator>
+            <NameTestIterator qname="xs:QName(,,employee)">
+             <ChildAxisIterator>
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(2)"/>
+            <SingletonIterator value="xs:double(1)"/>
+           </FnSubsequenceIterator>
+          </ReturnClause>
+         </FLWORIterator>
+        </NodeDistinctIterator>
+       </ForVariable>
+       <ReturnClause>
+        <FnSubsequenceIterator>
+         <NameTestIterator qname="xs:QName(,,empnum)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)"/>
+         <SingletonIterator value="xs:double(1)"/>
+        </FnSubsequenceIterator>
+       </ReturnClause>
+      </FLWORIterator>
+     </NodeDistinctIterator>
+    </TreatIterator>
+    <TreatIterator quant="?">
+     <NodeDistinctIterator>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <NodeDistinctIterator>
+         <FLWORIterator>
+          <ForVariable name="$$dot">
+           <NodeDistinctIterator>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <NodeDistinctIterator>
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <CtxVariableIterator>
+                 <SingletonIterator value="xs:QName(,,input-context2)"/>
+                </CtxVariableIterator>
+               </TreatIterator>
+              </NodeDistinctIterator>
+             </ForVariable>
+             <ReturnClause>
+              <FnSubsequenceIterator>
+               <NameTestIterator qname="xs:QName(,,staff)">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+               </NameTestIterator>
+               <SingletonIterator value="xs:double(1)"/>
+               <SingletonIterator value="xs:double(1)"/>
+              </FnSubsequenceIterator>
+             </ReturnClause>
+            </FLWORIterator>
+           </NodeDistinctIterator>
+          </ForVariable>
+          <ReturnClause>
+           <FnSubsequenceIterator>
+            <NameTestIterator qname="xs:QName(,,employee)">
+             <ChildAxisIterator>
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
+            </NameTestIterator>
+            <SingletonIterator value="xs:double(2)"/>
+            <SingletonIterator value="xs:double(1)"/>
+           </FnSubsequenceIterator>
+          </ReturnClause>
+         </FLWORIterator>
+        </NodeDistinctIterator>
+       </ForVariable>
+       <ReturnClause>
+        <FnSubsequenceIterator>
+         <NameTestIterator qname="xs:QName(,,empnum)">
+          <ChildAxisIterator>
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+         </NameTestIterator>
+         <SingletonIterator value="xs:double(1)"/>
+         <SingletonIterator value="xs:double(1)"/>
+        </FnSubsequenceIterator>
+       </ReturnClause>
+      </FLWORIterator>
+     </NodeDistinctIterator>
+    </TreatIterator>
+   </OpNodeBeforeIterator>
+  </LogicIterator>
+  <OpNodeBeforeIterator>
+   <TreatIterator quant="?">
+    <NodeDistinctIterator>
+     <FLWORIterator>
+      <ForVariable name="$$dot">
+       <NodeDistinctIterator>
+        <FLWORIterator>
+         <ForVariable name="$$dot">
+          <NodeDistinctIterator>
+           <FLWORIterator>
+            <ForVariable name="$$dot">
+             <NodeDistinctIterator>
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <CtxVariableIterator>
+                <SingletonIterator value="xs:QName(,,input-context1)"/>
+               </CtxVariableIterator>
+              </TreatIterator>
+             </NodeDistinctIterator>
+            </ForVariable>
+            <ReturnClause>
+             <FnSubsequenceIterator>
+              <NameTestIterator qname="xs:QName(,,works)">
+               <ChildAxisIterator>
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
+              <SingletonIterator value="xs:double(1)"/>
+              <SingletonIterator value="xs:double(1)"/>
+             </FnSubsequenceIterator>
+            </ReturnClause>
+           </FLWORIterator>
+          </NodeDistinctIterator>
+         </ForVariable>
+         <ReturnClause>
+          <FnSubsequenceIterator>
+           <NameTestIterator qname="xs:QName(,,employee)">
+            <ChildAxisIterator>
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
+           </NameTestIterator>
+           <SingletonIterator value="xs:double(3)"/>
+           <SingletonIterator value="xs:double(1)"/>
+          </FnSubsequenceIterator>
+         </ReturnClause>
+        </FLWORIterator>
+       </NodeDistinctIterator>
+      </ForVariable>
+      <ReturnClause>
+       <FnSubsequenceIterator>
+        <NameTestIterator qname="xs:QName(,,empnum)">
+         <ChildAxisIterator>
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)"/>
+        <SingletonIterator value="xs:double(1)"/>
+       </FnSubsequenceIterator>
+      </ReturnClause>
+     </FLWORIterator>
+    </NodeDistinctIterator>
+   </TreatIterator>
+   <TreatIterator quant="?">
+    <NodeDistinctIterator>
+     <FLWORIterator>
+      <ForVariable name="$$dot">
+       <NodeDistinctIterator>
+        <FLWORIterator>
+         <ForVariable name="$$dot">
+          <NodeDistinctIterator>
+           <FLWORIterator>
+            <ForVariable name="$$dot">
+             <NodeDistinctIterator>
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <CtxVariableIterator>
+                <SingletonIterator value="xs:QName(,,input-context2)"/>
+               </CtxVariableIterator>
+              </TreatIterator>
+             </NodeDistinctIterator>
+            </ForVariable>
+            <ReturnClause>
+             <FnSubsequenceIterator>
+              <NameTestIterator qname="xs:QName(,,staff)">
+               <ChildAxisIterator>
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
+              <SingletonIterator value="xs:double(1)"/>
+              <SingletonIterator value="xs:double(1)"/>
+             </FnSubsequenceIterator>
+            </ReturnClause>
+           </FLWORIterator>
+          </NodeDistinctIterator>
+         </ForVariable>
+         <ReturnClause>
+          <FnSubsequenceIterator>
+           <NameTestIterator qname="xs:QName(,,employee)">
+            <ChildAxisIterator>
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
+           </NameTestIterator>
+           <SingletonIterator value="xs:double(3)"/>
+           <SingletonIterator value="xs:double(1)"/>
+          </FnSubsequenceIterator>
+         </ReturnClause>
+        </FLWORIterator>
+       </NodeDistinctIterator>
+      </ForVariable>
+      <ReturnClause>
+       <FnSubsequenceIterator>
+        <NameTestIterator qname="xs:QName(,,empnum)">
+         <ChildAxisIterator>
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
+        </NameTestIterator>
+        <SingletonIterator value="xs:double(1)"/>
+        <SingletonIterator value="xs:double(1)"/>
+       </FnSubsequenceIterator>
+      </ReturnClause>
+     </FLWORIterator>
+    </NodeDistinctIterator>
+   </TreatIterator>
+  </OpNodeBeforeIterator>
+ </LogicIterator>
+</LogicIterator>
 

@@ -6,7 +6,7 @@ Iterator tree for main query:
     <DescendantAxisIterator>
      <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
       <CtxVariableIterator>
-       <SingletonIterator value="xs:string(input-context)"/>
+       <SingletonIterator value="xs:QName(,,input-context)"/>
       </CtxVariableIterator>
      </TreatIterator>
     </DescendantAxisIterator>

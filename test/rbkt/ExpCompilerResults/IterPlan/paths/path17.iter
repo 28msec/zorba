@@ -7,14 +7,14 @@ Iterator tree for main query:
     <ForVariable name="x">
      <NodeSortIterator>
       <FLWORIterator>
-       <ForVariable name="$$temp1">
+       <ForVariable name="$$dot">
         <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
          <DescendantSelfAxisIterator>
           <FnDocIterator>
            <PromoteIterator type="[AtomicXQType XS_STRING]">
             <FnDataIterator>
              <CtxVariableIterator>
-              <SingletonIterator value="xs:string(input-context)"/>
+              <SingletonIterator value="xs:QName(,,input-context)"/>
              </CtxVariableIterator>
             </FnDataIterator>
            </PromoteIterator>
@@ -27,7 +27,7 @@ Iterator tree for main query:
          <ForVariable name="$$dot">
           <NameTestIterator qname="xs:QName(,wildcard,input-file)">
            <ChildAxisIterator>
-            <ForVarIterator varname="$$temp1"/>
+            <ForVarIterator varname="$$dot"/>
            </ChildAxisIterator>
           </NameTestIterator>
          </ForVariable>

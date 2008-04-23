@@ -48,7 +48,7 @@ Iterator tree for main query:
     </ChildAxisIterator>
    </NameTestIterator>
   </ForVariable>
-  <LetVariable name="$$temp4" materialize="true">
+  <LetVariable name="$$temp3" materialize="true">
    <NameTestIterator qname="xs:QName(,,c)">
     <ChildAxisIterator>
      <ForVarIterator varname="$$dot"/>
@@ -60,14 +60,14 @@ Iterator tree for main query:
     <LogicIterator>
      <LogicIterator>
       <InstanceOfIterator>
-       <LetVarIterator varname="$$temp4"/>
+       <LetVarIterator varname="$$temp3"/>
       </InstanceOfIterator>
       <InstanceOfIterator>
-       <LetVarIterator varname="$$temp4"/>
+       <LetVarIterator varname="$$temp3"/>
       </InstanceOfIterator>
      </LogicIterator>
      <InstanceOfIterator>
-      <LetVarIterator varname="$$temp4"/>
+      <LetVarIterator varname="$$temp3"/>
      </InstanceOfIterator>
     </LogicIterator>
     <IfThenElseIterator>
@@ -76,7 +76,7 @@ Iterator tree for main query:
        <ForVarIterator varname="$$pos"/>
        <PromoteIterator type="[AtomicXQType XS_ANY_ATOMIC]">
         <FnDataIterator>
-         <LetVarIterator varname="$$temp4"/>
+         <LetVarIterator varname="$$temp3"/>
         </FnDataIterator>
        </PromoteIterator>
       </CompareIterator>
@@ -86,7 +86,7 @@ Iterator tree for main query:
     </IfThenElseIterator>
     <IfThenElseIterator>
      <FnBooleanIterator>
-      <LetVarIterator varname="$$temp4"/>
+      <LetVarIterator varname="$$temp3"/>
      </FnBooleanIterator>
      <ForVarIterator varname="$$dot"/>
      <FnConcatIterator/>

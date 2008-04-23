@@ -1,47 +1,42 @@
 Iterator tree for main query:
 <FLWORIterator>
- <LetVariable name="input-context" materialize="true">
-  <CtxVariableIterator>
-   <SingletonIterator value="xs:string(input-context)"/>
-  </CtxVariableIterator>
- </LetVariable>
- <ReturnClause>
-  <FLWORIterator>
-   <ForVariable name="file">
-    <NodeSortIterator>
-     <NameTestIterator qname="xs:QName(,,File)">
-      <ChildAxisIterator>
-       <FnSubsequenceIterator>
-        <NameTestIterator qname="xs:QName(,,Folder)">
-         <DescendantAxisIterator>
-          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-           <LetVarIterator varname="input-context"/>
-          </TreatIterator>
-         </DescendantAxisIterator>
-        </NameTestIterator>
-        <SingletonIterator value="xs:double(1)"/>
-        <SingletonIterator value="xs:double(1)"/>
-       </FnSubsequenceIterator>
-      </ChildAxisIterator>
-     </NameTestIterator>
-    </NodeSortIterator>
-   </ForVariable>
-   <ReturnClause>
-    <FnSubsequenceIterator>
-     <NodeSortIterator>
-      <NameTestIterator qname="xs:QName(,,FileName)">
+ <ForVariable name="file">
+  <NodeSortIterator>
+   <NameTestIterator qname="xs:QName(,,File)">
+    <ChildAxisIterator>
+     <FnSubsequenceIterator>
+      <NameTestIterator qname="xs:QName(,,Folder)">
        <DescendantAxisIterator>
         <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
-         <LetVarIterator varname="input-context"/>
+         <CtxVariableIterator>
+          <SingletonIterator value="xs:QName(,,input-context)"/>
+         </CtxVariableIterator>
         </TreatIterator>
        </DescendantAxisIterator>
       </NameTestIterator>
-     </NodeSortIterator>
-     <SingletonIterator value="xs:double(1)"/>
-     <SingletonIterator value="xs:double(1)"/>
-    </FnSubsequenceIterator>
-   </ReturnClause>
-  </FLWORIterator>
+      <SingletonIterator value="xs:double(1)"/>
+      <SingletonIterator value="xs:double(1)"/>
+     </FnSubsequenceIterator>
+    </ChildAxisIterator>
+   </NameTestIterator>
+  </NodeSortIterator>
+ </ForVariable>
+ <ReturnClause>
+  <FnSubsequenceIterator>
+   <NodeSortIterator>
+    <NameTestIterator qname="xs:QName(,,FileName)">
+     <DescendantAxisIterator>
+      <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+       <CtxVariableIterator>
+        <SingletonIterator value="xs:QName(,,input-context)"/>
+       </CtxVariableIterator>
+      </TreatIterator>
+     </DescendantAxisIterator>
+    </NameTestIterator>
+   </NodeSortIterator>
+   <SingletonIterator value="xs:double(1)"/>
+   <SingletonIterator value="xs:double(1)"/>
+  </FnSubsequenceIterator>
  </ReturnClause>
 </FLWORIterator>
 

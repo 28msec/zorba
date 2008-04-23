@@ -5,13 +5,13 @@ Iterator tree for main query:
    <NameTestIterator qname="xs:QName(,wildcard,description)">
     <ChildAxisIterator>
      <FLWORIterator>
-      <ForVariable name="$$temp1">
+      <ForVariable name="$$dot">
        <NodeDistinctIterator>
         <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
          <DescendantSelfAxisIterator>
           <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
            <CtxVariableIterator>
-            <SingletonIterator value="xs:string(input-context)"/>
+            <SingletonIterator value="xs:QName(,,input-context)"/>
            </CtxVariableIterator>
           </TreatIterator>
          </DescendantSelfAxisIterator>
@@ -23,7 +23,7 @@ Iterator tree for main query:
         <ForVariable name="$$dot">
          <NameTestIterator qname="xs:QName(,wildcard,test-case)">
           <ChildAxisIterator>
-           <ForVarIterator varname="$$temp1"/>
+           <ForVarIterator varname="$$dot"/>
           </ChildAxisIterator>
          </NameTestIterator>
         </ForVariable>
