@@ -54,7 +54,10 @@ protected:
 
   xqpStringStore                   theWarnings;
 
-  //char                             theBuffer[4096];
+  char                             theBuffer[4096];
+  int  buff_size;
+  int  buff_pos;
+
   int  current_c;
   int  prev_c;
 

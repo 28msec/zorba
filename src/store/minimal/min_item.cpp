@@ -595,12 +595,5 @@ void Item::applyUpdates()
 }
 
 
-void Item::serializeUpdates(serializer& ser, std::ostream& os)
-{
-  ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-}
-
-
 } // namespace store
 } // namespace zorba

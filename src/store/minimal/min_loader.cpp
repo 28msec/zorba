@@ -81,6 +81,9 @@ XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
   //theSaxHandler.processingInstruction = &XmlLoader::processingInstruction;
   //theSaxHandler.warning = &XmlLoader::warning;
   //theSaxHandler.error = &XmlLoader::error;
+
+  buff_size = 0;
+  buff_pos = 0;
 }
 
 
@@ -137,6 +140,10 @@ void XmlLoader::abort()
   theWarnings.clear();
 
   clear_tag_stack();
+
+  buff_size = 0;
+  buff_pos = 0;
+
 }
 
 
@@ -160,6 +167,9 @@ void XmlLoader::reset()
   theWarnings.clear();
 
   clear_tag_stack();
+
+  buff_size = 0;
+  buff_pos = 0;
 }
 
 
@@ -210,15 +220,21 @@ void XmlLoader::setRoot(XmlNode* root)
 
 int XmlLoader::read_char(std::istream &stream)
 {
+  if(buff_pos == buff_size)
+  {
+    stream.read(theBuffer, sizeof(theBuffer));
+    buff_size = stream.gcount();
+    if(!buff_size)
+      return 0;
+    buff_pos = 0;
+  }
   prev_c = current_c;
   if(current_c)
   {
     current_c = 0;
     return prev_c;
   }
-  prev_c = stream.get();
-  if(stream.eof())
-    return (prev_c=0);
+  prev_c = theBuffer[buff_pos++];
   return prev_c;
 }
 

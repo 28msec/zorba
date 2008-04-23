@@ -131,6 +131,8 @@ public:
 
   void mergeUpdates(Item* other);
 
+  void checkTransformUpdates(const std::vector<Item*>& rootNodes) const;
+
 protected:
   void undoUpdates();
 
@@ -366,7 +368,9 @@ public:
         bool            copy,
         const CopyMode& copymode)
     :
-    UpdatePrimitive(target)
+    UpdatePrimitive(target),
+    theDoCopy(copy),
+    theCopyMode(copymode)
   {
     theNewChild.transfer(newChild);
   }
