@@ -310,6 +310,8 @@ typedef zorba::xquery_parser::token token;
    |  expression or subexpression.
    |______________________________________________________________________*/
 
+  /* <MODE_INITIAL> */
+
   /* maintain INITIAL */
   /* ---------------- */
 "validate"{S}"{" {
@@ -363,7 +365,14 @@ typedef zorba::xquery_parser::token token;
 
     /* transition to MODE_PROCESSING_INSTRUCTION_CTOR */
     /* ---------------------------------------------- */
-"processing-instruction"  {
+
+    /* TODO: fix 'if (1) then 2 else processing-instruction' */
+
+"processing-instruction"{SP}/{Nmstart}  {
+  BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
+  return token::PROCESSING_INSTRUCTION;
+}
+"processing-instruction"{S}/"{"  {
   BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
   return token::PROCESSING_INSTRUCTION;
 }
@@ -974,7 +983,7 @@ typedef zorba::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
-  /* END MODE INITIAL */
+  /* END <MODE INITIAL> */
 
 
 
@@ -1110,7 +1119,7 @@ typedef zorba::xquery_parser::token token;
   TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
 }
 
-}  /* <MODE_CATCH> */
+}  /* END <MODE_CATCH> */
 
 
 
@@ -1160,7 +1169,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-}  /* <MODE_PROCESSING_INSTRUCTION_CTOR> */
+}  /* END <MODE_PROCESSING_INSTRUCTION_CTOR> */
 
 
 
@@ -1204,7 +1213,7 @@ typedef zorba::xquery_parser::token token;
   return token::UNORDERED;
 }
 
-} /* <MODE_DECLAREORDERING> */
+}  /* END <MODE_DECLAREORDERING> */
 
 
 
@@ -1252,7 +1261,7 @@ typedef zorba::xquery_parser::token token;
   return token::REVAL_SKIP;
 }
 
-} /* <MODE_DECLAREORDERING> */
+}  /* END <MODE_DECLAREORDERING> */
 
 
 
@@ -1828,7 +1837,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_OPERATOR> */
+}  /* END <MODE_OPERATOR> */
 
 
 
@@ -1883,7 +1892,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_XQUERY_VERSION> */
+}  /* END <MODE_XQUERY_VERSION> */
 
 
 
@@ -1956,7 +1965,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_NAMESPACEDECL> */
+}  /* END <MODE_NAMESPACEDECL> */
 
 
 
@@ -2084,7 +2093,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_NAMESPACEKEYWORD> */
+}  /* END <MODE_NAMESPACEKEYWORD> */
 
 
 
@@ -2146,7 +2155,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_XMLSPACE_DECL> */
+}  /* END <MODE_XMLSPACE_DECL> */
 
 
 
@@ -2205,7 +2214,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_SINGLETYPE> */
+}  /* END <MODE_SINGLETYPE> */
 
 
 
@@ -2611,7 +2620,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_ITEMTYPE> */
+}  /* END <MODE_ITEMTYPE> */
 
 
 
@@ -2706,7 +2715,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_KINDTEST> */
+}  /* END <MODE_KINDTEST> */
 
 
 
@@ -2779,7 +2788,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_KINDTESTFORPI> */
+}  /* END <MODE_KINDTESTFORPI> */
 
 
 
@@ -2852,7 +2861,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_CLOSE_KINDTEST> */
+}  /* END <MODE_CLOSE_KINDTEST> */
 
 
 
@@ -2987,7 +2996,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_OPTION> */
+}  /* END <MODE_OPTION> */
 
 
 
@@ -3047,7 +3056,7 @@ typedef zorba::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
-} /* <MODE_PRAGMA> */
+}  /* END <MODE_PRAGMA> */
 
 
 
@@ -3098,7 +3107,7 @@ typedef zorba::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
-} /* <MODE_PRAGMACONTENTS> */
+}  /* END <MODE_PRAGMACONTENTS> */
 
 
 
@@ -3165,7 +3174,7 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-} /* <MODE_VARNAME> */
+}  /* END <MODE_VARNAME> */
 
 
 
@@ -3258,7 +3267,7 @@ typedef zorba::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
-} /* <MODE_START_TAG> */
+}  /* END <MODE_START_TAG> */
 
 
 
@@ -3431,7 +3440,7 @@ typedef zorba::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
-} /* <MODE_END_TAG> */
+}  /* END <MODE_END_TAG> */
 
 
 
@@ -3482,7 +3491,7 @@ typedef zorba::xquery_parser::token token;
  {CatchAll} {
    return token::UNRECOGNIZED;
  }
-} /* <MODE_XML_COMMENT> */
+}  /* END <MODE_XML_COMMENT> */
 
 
 
@@ -3543,7 +3552,7 @@ typedef zorba::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
-} /* <MODE_EXPR_COMMENT> */
+}  /* END <MODE_EXPR_COMMENT> */
 
 
 
@@ -3605,7 +3614,7 @@ typedef zorba::xquery_parser::token token;
   TRY_SVAL_TOKEN (PI_TARGET_LITERAL, put(yytext, yyleng));
 }
 
-} /* <MODE_PROCESSING_INSTRUCTION> */
+}  /* END <MODE_PROCESSING_INSTRUCTION> */
 
 
 
@@ -3652,7 +3661,7 @@ typedef zorba::xquery_parser::token token;
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
 }
 
-} /* <MODE_PROCESSING_INSTRUCTION_CONTENT> */
+}  /* END <MODE_PROCESSING_INSTRUCTION_CONTENT> */
 
 
 
@@ -3701,7 +3710,7 @@ typedef zorba::xquery_parser::token token;
   yymore();
 }
 
-} /* <MODE_CDATA_SECTION> */
+}  /* END <MODE_CDATA_SECTION> */
 
 
 
@@ -3788,7 +3797,7 @@ typedef zorba::xquery_parser::token token;
   return token::DOUBLE_RBRACE;
 }
 
-} /* <MODE_QUOTE_ATTRIBUTE_CONTENT> */
+}  /* END <MODE_QUOTE_ATTRIBUTE_CONTENT> */
 
 
 
@@ -3875,7 +3884,7 @@ typedef zorba::xquery_parser::token token;
   return token::DOUBLE_RBRACE;
 }
 
-} /* <MODE_APOS_ATTRIBUTE_CONTENT> */
+}  /* END <MODE_APOS_ATTRIBUTE_CONTENT> */
 
 
 
@@ -3956,6 +3965,7 @@ std::string start_state(int state)
     case MODE_PRAGMACONTENTS: return "MODE_PRAGMACONTENTS";
     case MODE_PROCESSING_INSTRUCTION: return "MODE_PROCESSING_INSTRUCTION";
     case MODE_PROCESSING_INSTRUCTION_CONTENT: return "MODE_PROCESSING_INSTRUCTION_CONTENT";
+    case MODE_PROCESSING_INSTRUCTION_CTOR: return "MODE_PROCESSING_INSTRUCTION_CTOR";
     case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
     case MODE_SINGLETYPE: return "MODE_SINGLETYPE";
     case MODE_START_TAG: return "MODE_START_TAG";
