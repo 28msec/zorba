@@ -36,7 +36,7 @@
 #include "zorbatypes/duration.h"
 #include "context/namespace_context.h"
 #include "types/typeconstants.h"
-
+#include "util/Assert.h"
 
 namespace zorba
 {
@@ -1391,9 +1391,41 @@ store::Item_t GenericCast::stringSimpleCast(
     const xqtref_t&    aSourceType,
     const xqtref_t&    aTargetType) const
 {
-  RootTypeManager& ts = GENV_TYPESYSTEM;
-  store::ItemFactory* factory = GENV_ITEMFACTORY;
+    switch (aTargetType->type_kind())
+    {
+    case XQType::ATOMIC_TYPE_KIND:
+    case XQType::ANY_SIMPLE_TYPE_KIND:
+    case XQType::ANY_TYPE_KIND:
+    case XQType::EMPTY_KIND:
+    case XQType::NODE_TYPE_KIND:
+    case XQType::ITEM_KIND:
+    case XQType::NONE_KIND:
+        return stringSimpleCastBuiltIn(aSourceItem, aSourceType, aTargetType);
 
+    case XQType::USER_DEFINED_KIND:
+        // TODO parsing of user defined types    
+        if (aSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
+            TypeOps::get_atomic_type_code(*aSourceType) == TypeConstants::XS_STRING &&
+            aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
+        {
+            //    store::Item_t result;
+            //    if ( delegatingTypeManager->getSchema()->parseUserAtomicTypes(textValue, aSourceType, aTargetType, result) )
+            //    {
+            //        return result;
+            //    }
+        }
+        return 0;
+    default:
+        ZORBA_ASSERT(false);
+    }
+    return 0;
+}
+
+store::Item_t GenericCast::stringSimpleCastBuiltIn(
+    const store::Item* aSourceItem,
+    const xqtref_t&    aSourceType, 
+    const xqtref_t& aTargetType) const
+{
   if (aSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
       aTargetType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
       TypeOps::castability(*aSourceType, *aTargetType) == TypeConstants::NOT_CASTABLE )
@@ -1405,6 +1437,9 @@ store::Item_t GenericCast::stringSimpleCast(
                          << TypeOps::toString (*aTargetType) << ").");
     return 0;
   }
+
+  RootTypeManager& ts = GENV_TYPESYSTEM;
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
 
   xqpStringStore_t lString = aSourceItem->getStringValue();
 
@@ -1722,23 +1757,10 @@ store::Item_t GenericCast::stringSimpleCast(
     return factory->createNOTATION(lString.getp());
   
   default:
-    // TODO parsing of user defined types    
-    //if (aSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
-    //    TypeOps::get_atomic_type_code(*aSourceType) == TypeConstants::XS_STRING &&
-    //    aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
-    //{
-    //    store::Item_t result;
-    //    if ( delegatingTypeManager->getSchema()->parseUserAtomicTypes(textValue, aSourceType, aTargetType, result) )
-    //    {
-    //        return result;
-    //    }
-    //}
     return 0;
   }
-
   return 0;
 }
-
 
 store::Item_t GenericCast::castToBoolean(
     const store::Item* aSourceItem,

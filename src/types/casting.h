@@ -133,7 +133,12 @@ private:
         const store::Item* aSourceItem,
         const xqtref_t& aSourceType,
         const xqtref_t& aTargetType) const;
-  
+
+  store::Item_t stringSimpleCastBuiltIn(
+    const store::Item* aSourceItem,
+    const xqtref_t&    aSourceType, 
+    const xqtref_t& aTargetType) const;
+
   store::Item_t castToBoolean(
         const store::Item* aSourceItem,
         const xqtref_t& aSourceType) const;
