@@ -6925,7 +6925,7 @@ static yyconst flex_int16_t yy_rule_linenum[501] =
 #define yymore() ((yy_more_flag) = 1)
 #define YY_MORE_ADJ (yy_more_len)
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 /* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: xquery.l,v 1.4 2006/11/14 05:24:43 Paul Pedersen Exp $
@@ -6947,7 +6947,7 @@ static yyconst flex_int16_t yy_rule_linenum[501] =
  |  [http://www.ximep-2006.org/papers/Paper-Chamberlin-Carey.pdf]
  |
  |_______________________________________________________________________*/
-#line 26 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 26 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 
 #if defined (WIN32)
 #pragma warning(disable: 4786)
@@ -7320,7 +7320,7 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
-#line 298 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 298 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 
 
 
@@ -7456,7 +7456,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 315 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 315 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::VALIDATE_LBRACE;
@@ -7465,7 +7465,7 @@ YY_RULE_SETUP
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 320 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 320 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   TRY_SVAL_TOKEN (VALIDATE_MODE, put(yytext+9, yyleng-9));
@@ -7474,7 +7474,7 @@ YY_RULE_SETUP
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 325 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 325 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TYPESWITCH_LPAR;
 }
@@ -7482,7 +7482,7 @@ YY_RULE_SETUP
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 329 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 329 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ELEMENT_LBRACE;
@@ -7491,7 +7491,7 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 334 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 334 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ATTRIBUTE_LBRACE;
@@ -7500,7 +7500,7 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 339 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 339 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   TRY_SVAL_TOKEN (ATTRIBUTE_QNAME_LBRACE, put_qname(yytext+10, yyleng-11, true, true));
@@ -7509,7 +7509,7 @@ YY_RULE_SETUP
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 344 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 344 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   TRY_SVAL_TOKEN (ELEMENT_QNAME_LBRACE, put_qname(yytext+8, yyleng-9, true, true));
@@ -7518,7 +7518,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 349 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 349 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::DOCUMENT_LBRACE;
@@ -7527,7 +7527,7 @@ YY_RULE_SETUP
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 354 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 354 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::TEXT_LBRACE;
@@ -7537,7 +7537,7 @@ YY_RULE_SETUP
 /* ---------------------------------------------- */
 case 10:
 YY_RULE_SETUP
-#line 361 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 361 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
   return token::PROCESSING_INSTRUCTION;
@@ -7546,7 +7546,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 367 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 367 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::COMMENT_LBRACE;
@@ -7555,7 +7555,7 @@ YY_RULE_SETUP
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 372 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 372 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FUNCTION;
 }
@@ -7563,14 +7563,14 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 376 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 376 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_UPDATING_FUNCTION;
 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 380 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 380 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
@@ -7579,7 +7579,7 @@ YY_RULE_SETUP
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 385 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 385 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ORDERED_LBRACE;
@@ -7588,7 +7588,7 @@ YY_RULE_SETUP
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 390 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 390 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::UNORDERED_LBRACE;
@@ -7596,21 +7596,21 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 395 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 395 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SEMI;
 }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 398 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 398 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 401 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 401 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LPAR;
 }
@@ -7618,7 +7618,7 @@ YY_RULE_SETUP
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 404 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 404 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::IF_LPAR;
 }
@@ -7628,7 +7628,7 @@ YY_RULE_SETUP
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 411 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 411 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::ELEMENT_LPAR;
@@ -7637,7 +7637,7 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 416 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 416 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::ATTRIBUTE_LPAR;
@@ -7646,7 +7646,7 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 421 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 421 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::SCHEMA_ELEMENT_LPAR;
@@ -7655,7 +7655,7 @@ YY_RULE_SETUP
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 426 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 426 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::SCHEMA_ATTRIBUTE_LPAR;
@@ -7664,7 +7664,7 @@ YY_RULE_SETUP
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 431 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 431 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::COMMENT_LPAR;
@@ -7673,7 +7673,7 @@ YY_RULE_SETUP
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 436 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 436 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::TEXT_LPAR;
@@ -7682,7 +7682,7 @@ YY_RULE_SETUP
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 441 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 441 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::NODE_LPAR;
@@ -7691,7 +7691,7 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 446 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 446 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::DOCUMENT_NODE_LPAR;
@@ -7702,7 +7702,7 @@ YY_RULE_SETUP
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 454 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 454 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTESTFORPI, MODE_OPERATOR);
   return token::PI_LPAR;
@@ -7715,126 +7715,126 @@ YY_RULE_SETUP
   }*/
 case 30:
 YY_RULE_SETUP
-#line 465 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 465 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::MINUS;
 }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 468 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 468 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PLUS;
 }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 471 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 471 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SLASH;
 }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 474 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 474 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEADING_LONE_SLASH;
 }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 477 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 477 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SLASH_SLASH;
 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 480 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 480 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANCESTOR_OR_SELF_AXIS;
 }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 483 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 483 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANCESTOR_AXIS;
 }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 486 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 486 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ATTRIBUTE_AXIS;
 }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 489 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 489 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CHILD_AXIS;
 }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 492 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 492 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDANT_OR_SELF_AXIS;
 }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 495 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 495 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDANT_AXIS;
 }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 498 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 498 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FOLLOWING_SIBLING_AXIS;
 }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 501 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 501 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FOLLOWING_AXIS;
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 504 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 504 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARENT_AXIS;
 }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 507 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 507 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRECEDING_SIBLING_AXIS;
 }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 510 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 510 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRECEDING_AXIS;
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 513 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 513 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SELF_AXIS;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 516 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 516 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_SIGN;
 }
@@ -7846,14 +7846,14 @@ case 48:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 524 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 524 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 527 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 527 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -7865,14 +7865,14 @@ case 50:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 533 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 533 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 536 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 536 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -7884,14 +7884,14 @@ case 52:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 542 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 542 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 545 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 545 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -7900,7 +7900,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 551 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 551 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
@@ -7908,7 +7908,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 556 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 556 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
@@ -7916,7 +7916,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 561 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 561 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::RPAR;
@@ -7924,7 +7924,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 566 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 566 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
@@ -7932,7 +7932,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 571 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 571 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::STAR;
@@ -7941,7 +7941,7 @@ YY_RULE_SETUP
 case 59:
 /* rule 59 can match eol */
 YY_RULE_SETUP
-#line 576 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 576 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
@@ -7950,7 +7950,7 @@ YY_RULE_SETUP
 case 60:
 /* rule 60 can match eol */
 YY_RULE_SETUP
-#line 581 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 581 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DECLARE_CONSTRUCTION;
@@ -7959,7 +7959,7 @@ YY_RULE_SETUP
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 586 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 586 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DECLARE_DEFAULT_ORDER;
@@ -7967,7 +7967,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 591 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 591 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DOT_DOT;
@@ -7975,7 +7975,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 596 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 596 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DOT;
@@ -7986,7 +7986,7 @@ YY_RULE_SETUP
 case 64:
 /* rule 64 can match eol */
 YY_RULE_SETUP
-#line 604 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 604 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_DEFAULT_COLLATION;
@@ -7995,7 +7995,7 @@ YY_RULE_SETUP
 case 65:
 /* rule 65 can match eol */
 YY_RULE_SETUP
-#line 609 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 609 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_NAMESPACE;
@@ -8007,7 +8007,7 @@ case 66:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 614 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 614 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::MODULE_NAMESPACE;
@@ -8019,7 +8019,7 @@ case 67:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 619 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 619 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_BASE_URI;
@@ -8030,7 +8030,7 @@ YY_RULE_SETUP
 case 68:
 /* rule 68 can match eol */
 YY_RULE_SETUP
-#line 627 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 627 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_DEFAULT_ELEMENT;
@@ -8039,7 +8039,7 @@ YY_RULE_SETUP
 case 69:
 /* rule 69 can match eol */
 YY_RULE_SETUP
-#line 632 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 632 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_DEFAULT_FUNCTION;
@@ -8051,7 +8051,7 @@ case 70:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 637 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 637 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::IMPORT_SCHEMA;
@@ -8063,7 +8063,7 @@ case 71:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 642 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 642 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::IMPORT_MODULE;
@@ -8072,7 +8072,7 @@ YY_RULE_SETUP
 case 72:
 /* rule 72 can match eol */
 YY_RULE_SETUP
-#line 647 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 647 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_COPY_NAMESPACES;
@@ -8082,7 +8082,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 73:
 YY_RULE_SETUP
-#line 655 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 655 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -8091,7 +8091,7 @@ YY_RULE_SETUP
 case 74:
 /* rule 74 can match eol */
 YY_RULE_SETUP
-#line 660 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 660 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::FOR_DOLLAR;
@@ -8100,7 +8100,7 @@ YY_RULE_SETUP
 case 75:
 /* rule 75 can match eol */
 YY_RULE_SETUP
-#line 665 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 665 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_DOLLAR;
@@ -8109,7 +8109,7 @@ YY_RULE_SETUP
 case 76:
 /* rule 76 can match eol */
 YY_RULE_SETUP
-#line 670 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 670 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::USING_DOLLAR;
@@ -8118,7 +8118,7 @@ YY_RULE_SETUP
 case 77:
 /* rule 77 can match eol */
 YY_RULE_SETUP
-#line 675 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 675 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::SOME_DOLLAR;
@@ -8127,7 +8127,7 @@ YY_RULE_SETUP
 case 78:
 /* rule 78 can match eol */
 YY_RULE_SETUP
-#line 680 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 680 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::EVERY_DOLLAR;
@@ -8136,7 +8136,7 @@ YY_RULE_SETUP
 case 79:
 /* rule 79 can match eol */
 YY_RULE_SETUP
-#line 685 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 685 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DECLARE_VARIABLE_DOLLAR;
@@ -8146,7 +8146,7 @@ YY_RULE_SETUP
 /* ------------------------- */
 case 80:
 YY_RULE_SETUP
-#line 694 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 694 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_XML_COMMENT, MODE_OPERATOR);
   return token::XML_COMMENT_BEGIN;
@@ -8156,7 +8156,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 81:
 YY_RULE_SETUP
-#line 702 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 702 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_PROCESSING_INSTRUCTION, MODE_OPERATOR);
   return token::PI_BEGIN;
@@ -8166,7 +8166,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 82:
 YY_RULE_SETUP
-#line 710 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 710 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
   return token::CDATA_BEGIN;
@@ -8175,7 +8175,7 @@ YY_RULE_SETUP
 case 83:
 /* rule 83 can match eol */
 YY_RULE_SETUP
-#line 716 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 716 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -8184,7 +8184,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 84:
 YY_RULE_SETUP
-#line 721 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 721 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_START_TAG, MODE_OPERATOR);
   return token::START_TAG;
@@ -8195,7 +8195,7 @@ YY_RULE_SETUP
 case 85:
 /* rule 85 can match eol */
 YY_RULE_SETUP
-#line 729 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 729 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_XMLSPACE_DECL;
   return token::DECLARE_BOUNDARY_SPACE;
@@ -8205,7 +8205,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 86:
 YY_RULE_SETUP
-#line 737 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 737 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
@@ -8215,7 +8215,7 @@ YY_RULE_SETUP
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 744 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 744 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_DECLAREORDERING;
   return token::DECLARE_ORDERING;
@@ -8229,7 +8229,7 @@ case 88:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 752 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 752 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_XQUERY_VERSION;
   return token::XQUERY_VERSION;
@@ -8239,7 +8239,7 @@ YY_RULE_SETUP
 /* -------------------- */
 case 89:
 YY_RULE_SETUP
-#line 760 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 760 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -8250,7 +8250,7 @@ YY_RULE_SETUP
 case 90:
 /* rule 90 can match eol */
 YY_RULE_SETUP
-#line 768 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 768 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPTION;
   return token::DECLARE_OPTION;
@@ -8261,7 +8261,7 @@ YY_RULE_SETUP
 case 91:
 /* rule 91 can match eol */
 YY_RULE_SETUP
-#line 776 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 776 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   TRY_URILIT (AT_URI_LITERAL, yytext+2, yyleng-2);
@@ -8271,7 +8271,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 92:
 YY_RULE_SETUP
-#line 783 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 783 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::RBRACE;
@@ -8280,7 +8280,7 @@ YY_RULE_SETUP
 case 93:
 /* rule 93 can match eol */
 YY_RULE_SETUP
-#line 788 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 788 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_DECLAREREVALIDATION;
   return token::DECLARE_REVALIDATION;
@@ -8292,7 +8292,7 @@ case 94:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 793 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 793 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AS;
@@ -8308,7 +8308,7 @@ case 95:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 803 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 803 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TRY;
 }
@@ -8324,7 +8324,7 @@ case 96:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 815 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 815 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INSERT_NODE;
@@ -8336,7 +8336,7 @@ case 97:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 819 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 819 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INSERT_NODES;
@@ -8348,7 +8348,7 @@ case 98:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 823 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 823 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DELETE_NODE;
@@ -8360,7 +8360,7 @@ case 99:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 827 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 827 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DELETE_NODES;
@@ -8372,7 +8372,7 @@ case 100:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 831 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 831 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::REPLACE;
@@ -8384,7 +8384,7 @@ case 101:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 835 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 835 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::REPLACE_VALUE_OF;
@@ -8396,7 +8396,7 @@ case 102:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 839 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 839 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   getDriver()->set_rename(true);
@@ -8406,7 +8406,7 @@ YY_RULE_SETUP
 case 103:
 /* rule 103 can match eol */
 YY_RULE_SETUP
-#line 845 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 845 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::COPY_DOLLAR;
@@ -8418,7 +8418,7 @@ case 104:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 849 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 849 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTO;
@@ -8430,7 +8430,7 @@ case 105:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 853 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 853 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AFTER;
@@ -8442,7 +8442,7 @@ case 106:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 857 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 857 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::BEFORE;
@@ -8454,7 +8454,7 @@ case 107:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 861 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 861 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WITH;
@@ -8466,7 +8466,7 @@ case 108:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 865 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 865 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MODIFY;
@@ -8477,7 +8477,7 @@ YY_RULE_SETUP
 case 109:
 /* rule 109 can match eol */
 YY_RULE_SETUP
-#line 873 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 873 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_CATCH);
   return token::CATCH_LPAR;
@@ -8487,7 +8487,7 @@ YY_RULE_SETUP
 
 case 110:
 YY_RULE_SETUP
-#line 881 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 881 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::RPAR;
@@ -8495,7 +8495,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 886 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 886 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
@@ -8503,7 +8503,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 891 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 891 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STAR;
@@ -8511,7 +8511,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 896 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 896 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
@@ -8519,7 +8519,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 901 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 901 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
@@ -8532,21 +8532,21 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 115:
 YY_RULE_SETUP
-#line 914 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 914 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTAND;
 }
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 917 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 917 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTNOT;
 }
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 920 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 920 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTOR;
 }
@@ -8557,7 +8557,7 @@ case 118:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 923 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 923 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTNOT_IN;
 }
@@ -8568,7 +8568,7 @@ case 119:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 926 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 926 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL;
 }
@@ -8579,7 +8579,7 @@ case 120:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 929 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 929 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL_WORDS;
 }
@@ -8590,7 +8590,7 @@ case 121:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 932 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 932 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY;
 }
@@ -8601,7 +8601,7 @@ case 122:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 935 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 935 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY_WORD;
 }
@@ -8612,7 +8612,7 @@ case 123:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 938 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 938 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_END;
 }
@@ -8623,7 +8623,7 @@ case 124:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 941 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 941 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_LEAST;
 }
@@ -8634,7 +8634,7 @@ case 125:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 944 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 944 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_MOST;
 }
@@ -8645,7 +8645,7 @@ case 126:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 947 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 947 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_START;
 }
@@ -8656,7 +8656,7 @@ case 127:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 950 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 950 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_INSENSITIVE;
 }
@@ -8667,7 +8667,7 @@ case 128:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 953 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 953 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_SENSITIVE;
 }
@@ -8678,7 +8678,7 @@ case 129:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 956 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 956 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FTOPTION;
 }
@@ -8689,7 +8689,7 @@ case 130:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 959 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 959 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_INSENSITIVE;
 }
@@ -8700,7 +8700,7 @@ case 131:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 962 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 962 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_SENSITIVE;
 }
@@ -8711,7 +8711,7 @@ case 132:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 965 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 965 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIFFERENT;
 }
@@ -8722,7 +8722,7 @@ case 133:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 968 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 968 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DISTANCE;
 }
@@ -8733,7 +8733,7 @@ case 134:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 971 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 971 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTIRE_CONTENT;
 }
@@ -8744,7 +8744,7 @@ case 135:
 (yy_c_buf_p) = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 974 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 974 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::EXACTLY;
 }
@@ -8755,7 +8755,7 @@ case 136:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 977 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 977 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FROM;
 }
@@ -8766,7 +8766,7 @@ case 137:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 980 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 980 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LANGUAGE;
 }
@@ -8777,7 +8777,7 @@ case 138:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 983 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 983 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEVELS;
 }
@@ -8788,7 +8788,7 @@ case 139:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 986 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 986 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LOWERCASE;
 }
@@ -8799,7 +8799,7 @@ case 140:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 989 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 989 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::OCCURS;
 }
@@ -8810,7 +8810,7 @@ case 141:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 992 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 992 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARAGRAPH;
 }
@@ -8821,7 +8821,7 @@ case 142:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 995 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 995 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PHRASE;
 }
@@ -8832,7 +8832,7 @@ case 143:
 (yy_c_buf_p) = yy_cp = yy_bp + 12;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 998 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 998 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RELATIONSHIP;
 }
@@ -8843,7 +8843,7 @@ case 144:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1001 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1001 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SAME;
 }
@@ -8854,7 +8854,7 @@ case 145:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1004 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1004 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SCORE;
 }
@@ -8865,7 +8865,7 @@ case 146:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1007 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1007 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCE;
 }
@@ -8876,7 +8876,7 @@ case 147:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1010 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1010 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCES;
 }
@@ -8887,7 +8887,7 @@ case 148:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1013 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1013 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TIMES;
 }
@@ -8898,7 +8898,7 @@ case 149:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1016 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1016 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UPPERCASE;
 }
@@ -8909,7 +8909,7 @@ case 150:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1019 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1019 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WEIGHT;
 }
@@ -8920,7 +8920,7 @@ case 151:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1022 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1022 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WINDOW;
 }
@@ -8931,7 +8931,7 @@ case 152:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1025 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1025 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_CONTENT;
 }
@@ -8942,7 +8942,7 @@ case 153:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1028 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1028 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_DIACRITICS;
 }
@@ -8953,7 +8953,7 @@ case 154:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1031 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1031 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STEMMING;
 }
@@ -8964,7 +8964,7 @@ case 155:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1034 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1034 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STOP_WORDS;
 }
@@ -8975,7 +8975,7 @@ case 156:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1037 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1037 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_THESAURUS;
 }
@@ -8986,7 +8986,7 @@ case 157:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1040 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1040 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_WILDCARDS;
 }
@@ -8997,7 +8997,7 @@ case 158:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1043 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1043 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DEFAULT_STOP_WORDS;
 }
@@ -9008,7 +9008,7 @@ case 159:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1046 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1046 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DIACRITICS;
 }
@@ -9019,7 +9019,7 @@ case 160:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1049 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1049 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STEMMING;
 }
@@ -9030,7 +9030,7 @@ case 161:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1052 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1052 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STOP_WORDS;
 }
@@ -9041,7 +9041,7 @@ case 162:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1055 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1055 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_THESAURUS;
 }
@@ -9052,7 +9052,7 @@ case 163:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1058 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1058 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_WILDCARDS;
 }
@@ -9063,7 +9063,7 @@ case 164:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1061 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1061 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WORDS;
 }
@@ -9071,7 +9071,7 @@ YY_RULE_SETUP
 case 165:
 /* rule 165 can match eol */
 YY_RULE_SETUP
-#line 1065 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1065 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -9079,7 +9079,7 @@ YY_RULE_SETUP
 /* catch all */
 case 166:
 YY_RULE_SETUP
-#line 1070 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1070 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -9094,7 +9094,7 @@ YY_RULE_SETUP
 
 case 167:
 YY_RULE_SETUP
-#line 1086 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1086 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
@@ -9102,7 +9102,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 1091 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1091 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
 }
@@ -9110,7 +9110,7 @@ YY_RULE_SETUP
 case 169:
 /* rule 169 can match eol */
 YY_RULE_SETUP
-#line 1095 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1095 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -9132,7 +9132,7 @@ case 170:
 (yy_c_buf_p) = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1113 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1113 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDERED;
@@ -9144,7 +9144,7 @@ case 171:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1118 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1118 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNORDERED;
@@ -9167,7 +9167,7 @@ case 172:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1138 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1138 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::REVAL_STRICT;
@@ -9179,7 +9179,7 @@ case 173:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1143 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1143 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::REVAL_LAX;
@@ -9191,7 +9191,7 @@ case 174:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1148 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1148 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::REVAL_SKIP;
@@ -9209,7 +9209,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 175:
 YY_RULE_SETUP
-#line 1167 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1167 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL);
   return token::LBRACE;
@@ -9217,7 +9217,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 1171 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1171 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   /* yy_push_state(INITIAL); */
@@ -9226,7 +9226,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 1176 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1176 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -9238,7 +9238,7 @@ case 178:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1180 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1180 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::THEN;
@@ -9250,7 +9250,7 @@ case 179:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1184 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1184 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ELSE;
@@ -9262,7 +9262,7 @@ case 180:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1188 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1188 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXTERNAL;
@@ -9274,7 +9274,7 @@ case 181:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1192 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1192 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AND;
@@ -9286,7 +9286,7 @@ case 182:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1196 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1196 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   if (!getDriver()->ftcontains()) {
     BEGIN INITIAL;
@@ -9301,7 +9301,7 @@ case 183:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1205 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1205 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SCORE;
@@ -9309,7 +9309,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 1211 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1211 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GETS;
@@ -9317,7 +9317,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 1215 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1215 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::COMMA;
@@ -9329,7 +9329,7 @@ case 186:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1219 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1219 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DIV;
@@ -9337,7 +9337,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 1223 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1223 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EQUALS;
@@ -9349,7 +9349,7 @@ case 188:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1227 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1227 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXCEPT;
@@ -9361,7 +9361,7 @@ case 189:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1231 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1231 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_EQ;
@@ -9373,7 +9373,7 @@ case 190:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1235 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1235 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GE;
@@ -9385,7 +9385,7 @@ case 191:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1239 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1239 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GT;
@@ -9397,7 +9397,7 @@ case 192:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1243 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1243 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LE;
@@ -9409,7 +9409,7 @@ case 193:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1247 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1247 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LT;
@@ -9421,7 +9421,7 @@ case 194:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1251 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1251 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_NE;
@@ -9429,7 +9429,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 1255 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1255 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GE;
@@ -9437,7 +9437,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 1259 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1259 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FOLLOWS;
@@ -9445,7 +9445,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 1263 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1263 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GT;
@@ -9457,7 +9457,7 @@ case 198:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1267 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1267 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IDIV;
@@ -9469,7 +9469,7 @@ case 199:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1271 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1271 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTERSECT;
@@ -9481,7 +9481,7 @@ case 200:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1278 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1278 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::_IN_;
@@ -9493,7 +9493,7 @@ case 201:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1282 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1282 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IS;
@@ -9501,7 +9501,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 1286 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1286 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LBRACK;
@@ -9509,7 +9509,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 1290 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1290 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LE;
@@ -9517,7 +9517,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 1294 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1294 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRECEDES;
@@ -9525,7 +9525,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 1298 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1298 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LT;
@@ -9533,7 +9533,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 1302 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1302 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MINUS;
@@ -9545,7 +9545,7 @@ case 207:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1306 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1306 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MOD;
@@ -9553,7 +9553,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 1310 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1310 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STAR;
@@ -9561,7 +9561,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 1314 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1314 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NE;
@@ -9573,7 +9573,7 @@ case 210:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1318 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1318 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GROUP_BY;
@@ -9585,7 +9585,7 @@ case 211:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1322 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1322 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDER_BY;
@@ -9597,7 +9597,7 @@ case 212:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1326 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1326 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STABLE_ORDER_BY;
@@ -9609,7 +9609,7 @@ case 213:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1330 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1330 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OR;
@@ -9617,7 +9617,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 1334 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1334 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PLUS;
@@ -9629,7 +9629,7 @@ case 215:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1338 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1338 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::RETURN;
@@ -9641,7 +9641,7 @@ case 216:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1342 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1342 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EVAL;
@@ -9653,7 +9653,7 @@ case 217:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1346 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1346 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SATISFIES;
@@ -9661,7 +9661,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 1350 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1350 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SLASH;
@@ -9669,7 +9669,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 1354 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1354 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LEADING_LONE_SLASH;
@@ -9677,7 +9677,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 1358 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1358 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SLASH_SLASH;
@@ -9689,7 +9689,7 @@ case 221:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1362 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1362 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::TO;
@@ -9701,7 +9701,7 @@ case 222:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1366 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1366 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNION;
@@ -9709,7 +9709,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 1370 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1370 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VBAR;
@@ -9721,7 +9721,7 @@ case 224:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1374 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1374 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WHERE;
@@ -9733,7 +9733,7 @@ case 225:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1378 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1378 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRESERVE;
@@ -9745,7 +9745,7 @@ case 226:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1382 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1382 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STRIP;
@@ -9759,7 +9759,7 @@ case 227:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1392 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1392 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CASTABLE_AS;
@@ -9771,7 +9771,7 @@ case 228:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1396 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1396 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CAST_AS;
@@ -9785,7 +9785,7 @@ case 229:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1404 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1404 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::INSTANCE_OF;
@@ -9797,7 +9797,7 @@ case 230:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1408 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1408 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::TREAT_AS;
@@ -9809,7 +9809,7 @@ case 231:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1412 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1412 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::CASE;
@@ -9821,7 +9821,7 @@ case 232:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1416 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1416 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   if (getDriver()->rename()) {
     getDriver()->set_rename(false);
@@ -9840,7 +9840,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 233:
 YY_RULE_SETUP
-#line 1432 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1432 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -9849,7 +9849,7 @@ YY_RULE_SETUP
 case 234:
 /* rule 234 can match eol */
 YY_RULE_SETUP
-#line 1436 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1436 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::FOR_DOLLAR;
@@ -9858,7 +9858,7 @@ YY_RULE_SETUP
 case 235:
 /* rule 235 can match eol */
 YY_RULE_SETUP
-#line 1440 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1440 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_DOLLAR;
@@ -9867,7 +9867,7 @@ YY_RULE_SETUP
 case 236:
 /* rule 236 can match eol */
 YY_RULE_SETUP
-#line 1444 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1444 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::USING_DOLLAR;
@@ -9876,7 +9876,7 @@ YY_RULE_SETUP
 case 237:
 /* rule 237 can match eol */
 YY_RULE_SETUP
-#line 1448 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1448 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_SCORE_DOLLAR;
@@ -9886,7 +9886,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 238:
 YY_RULE_SETUP
-#line 1456 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1456 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
@@ -9899,7 +9899,7 @@ case 239:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1463 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1463 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_URITOOPERATOR;
   return token::COLLATION;
@@ -9909,7 +9909,7 @@ YY_RULE_SETUP
 /* --------------------------------------- */
 case 240:
 YY_RULE_SETUP
-#line 1471 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1471 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::RBRACE;
@@ -9919,14 +9919,14 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 241:
 YY_RULE_SETUP
-#line 1479 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1479 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RPAR;
 }
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
-#line 1482 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1482 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::HOOK;
 }
@@ -9937,7 +9937,7 @@ case 243:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1485 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1485 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::EMPTY_GREATEST;
 }
@@ -9948,7 +9948,7 @@ case 244:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1488 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1488 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::EMPTY_LEAST;
 }
@@ -9959,7 +9959,7 @@ case 245:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1491 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1491 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ASCENDING;
 }
@@ -9970,7 +9970,7 @@ case 246:
 (yy_c_buf_p) = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1494 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1494 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDING;
 }
@@ -9981,14 +9981,14 @@ case 247:
 (yy_c_buf_p) = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1497 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1497 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DEFAULT;
 }
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
-#line 1500 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1500 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RBRACK;
 }
@@ -9996,7 +9996,7 @@ YY_RULE_SETUP
 case 249:
 /* rule 249 can match eol */
 YY_RULE_SETUP
-#line 1503 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1503 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -10013,7 +10013,7 @@ case 250:
 (yy_c_buf_p) = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1516 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1516 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   getDriver()->set_ftcontains(true);
@@ -10022,7 +10022,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 1521 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1521 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTAND;
@@ -10030,7 +10030,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-#line 1525 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1525 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTNOT;
@@ -10038,7 +10038,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 1529 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1529 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTOR;
@@ -10050,7 +10050,7 @@ case 254:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1533 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1533 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTNOT_IN;
@@ -10062,7 +10062,7 @@ case 255:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1537 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1537 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT_LEAST;
@@ -10074,7 +10074,7 @@ case 256:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1541 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1541 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT_MOST;
@@ -10086,7 +10086,7 @@ case 257:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1545 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1545 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DISTANCE;
@@ -10098,7 +10098,7 @@ case 258:
 (yy_c_buf_p) = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1549 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1549 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXACTLY;
@@ -10110,7 +10110,7 @@ case 259:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1553 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1553 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FROM;
@@ -10122,7 +10122,7 @@ case 260:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1557 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1557 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OCCURS;
@@ -10134,7 +10134,7 @@ case 261:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1561 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1561 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WINDOW;
@@ -10148,7 +10148,7 @@ case 262:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1569 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1569 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL;
 }
@@ -10159,7 +10159,7 @@ case 263:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1572 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1572 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL_WORDS;
 }
@@ -10170,7 +10170,7 @@ case 264:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1575 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1575 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY;
 }
@@ -10181,7 +10181,7 @@ case 265:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1578 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1578 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY_WORD;
 }
@@ -10192,7 +10192,7 @@ case 266:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1581 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1581 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_END;
 }
@@ -10203,7 +10203,7 @@ case 267:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1584 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1584 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_START;
 }
@@ -10214,7 +10214,7 @@ case 268:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1587 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1587 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_INSENSITIVE;
 }
@@ -10225,7 +10225,7 @@ case 269:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1590 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1590 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_SENSITIVE;
 }
@@ -10236,7 +10236,7 @@ case 270:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1593 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1593 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FTOPTION;
 }
@@ -10247,7 +10247,7 @@ case 271:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1596 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1596 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_INSENSITIVE;
 }
@@ -10258,7 +10258,7 @@ case 272:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1599 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1599 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_SENSITIVE;
 }
@@ -10269,7 +10269,7 @@ case 273:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1602 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1602 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIFFERENT;
 }
@@ -10280,7 +10280,7 @@ case 274:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1605 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1605 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTIRE_CONTENT;
 }
@@ -10291,7 +10291,7 @@ case 275:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1608 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1608 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LANGUAGE;
 }
@@ -10302,7 +10302,7 @@ case 276:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1611 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1611 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEVELS;
 }
@@ -10313,7 +10313,7 @@ case 277:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1614 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1614 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LOWERCASE;
 }
@@ -10324,7 +10324,7 @@ case 278:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1617 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1617 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARAGRAPH;
 }
@@ -10335,7 +10335,7 @@ case 279:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1620 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1620 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PHRASE;
 }
@@ -10346,7 +10346,7 @@ case 280:
 (yy_c_buf_p) = yy_cp = yy_bp + 12;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1623 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1623 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RELATIONSHIP;
 }
@@ -10357,7 +10357,7 @@ case 281:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1626 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1626 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SAME;
 }
@@ -10368,7 +10368,7 @@ case 282:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1629 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1629 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SCORE;
 }
@@ -10379,7 +10379,7 @@ case 283:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1632 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1632 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCE;
 }
@@ -10390,7 +10390,7 @@ case 284:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1635 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1635 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCES;
 }
@@ -10401,7 +10401,7 @@ case 285:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1638 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1638 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TIMES;
 }
@@ -10412,7 +10412,7 @@ case 286:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1641 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1641 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UPPERCASE;
 }
@@ -10423,7 +10423,7 @@ case 287:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1644 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1644 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WEIGHT;
 }
@@ -10434,7 +10434,7 @@ case 288:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1647 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1647 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_CONTENT;
 }
@@ -10445,7 +10445,7 @@ case 289:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1650 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1650 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_DIACRITICS;
 }
@@ -10456,7 +10456,7 @@ case 290:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1653 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1653 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STEMMING;
 }
@@ -10467,7 +10467,7 @@ case 291:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1656 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1656 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STOP_WORDS;
 }
@@ -10478,7 +10478,7 @@ case 292:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1659 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1659 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_THESAURUS;
 }
@@ -10489,7 +10489,7 @@ case 293:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1662 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1662 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_WILDCARDS;
 }
@@ -10500,7 +10500,7 @@ case 294:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1665 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1665 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DEFAULT_STOP_WORDS;
 }
@@ -10511,7 +10511,7 @@ case 295:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1668 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1668 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DIACRITICS;
 }
@@ -10522,7 +10522,7 @@ case 296:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1671 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1671 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STEMMING;
 }
@@ -10533,7 +10533,7 @@ case 297:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1674 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1674 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STOP_WORDS;
 }
@@ -10544,7 +10544,7 @@ case 298:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1677 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1677 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_THESAURUS;
 }
@@ -10555,7 +10555,7 @@ case 299:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1680 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1680 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_WILDCARDS;
 }
@@ -10566,14 +10566,14 @@ case 300:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1683 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1683 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WORDS;
 }
 	YY_BREAK
 case 301:
 YY_RULE_SETUP
-#line 1686 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1686 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -10581,7 +10581,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 302:
 YY_RULE_SETUP
-#line 1691 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1691 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10589,7 +10589,7 @@ YY_RULE_SETUP
 case 303:
 /* rule 303 can match eol */
 YY_RULE_SETUP
-#line 1695 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1695 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10606,7 +10606,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 304:
 YY_RULE_SETUP
-#line 1714 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1714 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -10617,7 +10617,7 @@ YY_RULE_SETUP
 case 305:
 /* rule 305 can match eol */
 YY_RULE_SETUP
-#line 1721 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1721 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -10628,7 +10628,7 @@ case 306:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1725 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1725 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENCODING;
 }
@@ -10636,7 +10636,7 @@ YY_RULE_SETUP
 case 307:
 /* rule 307 can match eol */
 YY_RULE_SETUP
-#line 1729 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1729 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10654,14 +10654,14 @@ YY_RULE_SETUP
 
 case 308:
 YY_RULE_SETUP
-#line 1750 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1750 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
 	YY_BREAK
 case 309:
 YY_RULE_SETUP
-#line 1754 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1754 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -10672,14 +10672,14 @@ YY_RULE_SETUP
 case 310:
 /* rule 310 can match eol */
 YY_RULE_SETUP
-#line 1761 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1761 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
 }
 	YY_BREAK
 case 311:
 YY_RULE_SETUP
-#line 1765 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1765 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
@@ -10690,28 +10690,28 @@ case 312:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1769 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1769 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT;
 }
 	YY_BREAK
 case 313:
 YY_RULE_SETUP
-#line 1773 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1773 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::EQUALS;
 }
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 1777 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1777 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
 }
 	YY_BREAK
 case 315:
 YY_RULE_SETUP
-#line 1781 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1781 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10719,7 +10719,7 @@ YY_RULE_SETUP
 case 316:
 /* rule 316 can match eol */
 YY_RULE_SETUP
-#line 1785 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1785 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10735,7 +10735,7 @@ YY_RULE_SETUP
 case 317:
 /* rule 317 can match eol */
 YY_RULE_SETUP
-#line 1802 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1802 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
@@ -10755,7 +10755,7 @@ YY_RULE_SETUP
 case 318:
 /* rule 318 can match eol */
 YY_RULE_SETUP
-#line 1822 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1822 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
@@ -10767,7 +10767,7 @@ case 319:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1827 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1827 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::NAMESPACE;
@@ -10781,7 +10781,7 @@ case 320:
 (yy_c_buf_p) = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1834 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1834 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INHERIT;
@@ -10793,7 +10793,7 @@ case 321:
 (yy_c_buf_p) = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1839 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1839 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NO_INHERIT;
@@ -10803,7 +10803,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 322:
 YY_RULE_SETUP
-#line 1846 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1846 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
@@ -10816,7 +10816,7 @@ case 323:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1853 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1853 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DEFAULT_ELEMENT;
 }
@@ -10827,7 +10827,7 @@ case 324:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1857 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1857 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRESERVE;
 }
@@ -10838,21 +10838,21 @@ case 325:
 (yy_c_buf_p) = yy_cp = yy_bp + 11;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1861 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1861 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::NO_PRESERVE;
 }
 	YY_BREAK
 case 326:
 YY_RULE_SETUP
-#line 1865 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1865 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
 	YY_BREAK
 case 327:
 YY_RULE_SETUP
-#line 1869 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1869 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10860,7 +10860,7 @@ YY_RULE_SETUP
 case 328:
 /* rule 328 can match eol */
 YY_RULE_SETUP
-#line 1873 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1873 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10883,7 +10883,7 @@ case 329:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1895 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1895 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRESERVE;
@@ -10895,7 +10895,7 @@ case 330:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1900 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1900 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STRIP;
@@ -10905,14 +10905,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 331:
 YY_RULE_SETUP
-#line 1907 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1907 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
 	YY_BREAK
 case 332:
 YY_RULE_SETUP
-#line 1911 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1911 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10920,7 +10920,7 @@ YY_RULE_SETUP
 case 333:
 /* rule 333 can match eol */
 YY_RULE_SETUP
-#line 1915 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1915 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10938,7 +10938,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 334:
 YY_RULE_SETUP
-#line 1936 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1936 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
@@ -10948,14 +10948,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 335:
 YY_RULE_SETUP
-#line 1943 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1943 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
 	YY_BREAK
 case 336:
 YY_RULE_SETUP
-#line 1947 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1947 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10963,7 +10963,7 @@ YY_RULE_SETUP
 case 337:
 /* rule 337 can match eol */
 YY_RULE_SETUP
-#line 1951 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1951 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10983,7 +10983,7 @@ case 338:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1970 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1970 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FIRST_INTO;
@@ -10995,7 +10995,7 @@ case 339:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1974 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1974 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LAST_INTO;
@@ -11005,7 +11005,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 340:
 YY_RULE_SETUP
-#line 1982 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1982 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -11014,7 +11014,7 @@ YY_RULE_SETUP
 case 341:
 /* rule 341 can match eol */
 YY_RULE_SETUP
-#line 1987 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1987 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::VOID_TEST;
@@ -11024,7 +11024,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 342:
 YY_RULE_SETUP
-#line 1994 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1994 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
@@ -11034,7 +11034,7 @@ YY_RULE_SETUP
 case 343:
 /* rule 343 can match eol */
 YY_RULE_SETUP
-#line 2000 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2000 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::ELEMENT_LPAR;
@@ -11043,7 +11043,7 @@ YY_RULE_SETUP
 case 344:
 /* rule 344 can match eol */
 YY_RULE_SETUP
-#line 2005 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2005 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::ATTRIBUTE_LPAR;
@@ -11052,7 +11052,7 @@ YY_RULE_SETUP
 case 345:
 /* rule 345 can match eol */
 YY_RULE_SETUP
-#line 2010 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2010 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::SCHEMA_ELEMENT_LPAR;
@@ -11061,7 +11061,7 @@ YY_RULE_SETUP
 case 346:
 /* rule 346 can match eol */
 YY_RULE_SETUP
-#line 2015 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2015 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::SCHEMA_ATTRIBUTE_LPAR;
@@ -11070,7 +11070,7 @@ YY_RULE_SETUP
 case 347:
 /* rule 347 can match eol */
 YY_RULE_SETUP
-#line 2020 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2020 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::COMMENT_LPAR;
@@ -11079,7 +11079,7 @@ YY_RULE_SETUP
 case 348:
 /* rule 348 can match eol */
 YY_RULE_SETUP
-#line 2025 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2025 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::TEXT_LPAR;
@@ -11088,7 +11088,7 @@ YY_RULE_SETUP
 case 349:
 /* rule 349 can match eol */
 YY_RULE_SETUP
-#line 2030 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2030 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::NODE_LPAR;
@@ -11097,7 +11097,7 @@ YY_RULE_SETUP
 case 350:
 /* rule 350 can match eol */
 YY_RULE_SETUP
-#line 2035 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2035 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::DOCUMENT_NODE_LPAR;
@@ -11108,7 +11108,7 @@ YY_RULE_SETUP
 case 351:
 /* rule 351 can match eol */
 YY_RULE_SETUP
-#line 2042 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2042 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTESTFORPI, MODE_OCCURRENCE_INDICATOR);
   return token::PI_LPAR;
@@ -11117,7 +11117,7 @@ YY_RULE_SETUP
 case 352:
 /* rule 352 can match eol */
 YY_RULE_SETUP
-#line 2047 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2047 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR;
   return token::ITEM_TEST;
@@ -11127,7 +11127,7 @@ YY_RULE_SETUP
 /* -------------------- */
 case 353:
 YY_RULE_SETUP
-#line 2054 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2054 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -11137,7 +11137,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 354:
 YY_RULE_SETUP
-#line 2061 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2061 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -11149,7 +11149,7 @@ case 355:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2066 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2066 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::THEN;
@@ -11161,7 +11161,7 @@ case 356:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2071 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2071 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ELSE;
@@ -11172,7 +11172,7 @@ YY_RULE_SETUP
 case 357:
 /* rule 357 can match eol */
 YY_RULE_SETUP
-#line 2078 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2078 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   TRY_URILIT (AT_URI_LITERAL, yytext+2, yyleng-2);
@@ -11186,7 +11186,7 @@ case 358:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2085 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2085 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXTERNAL;
@@ -11198,7 +11198,7 @@ case 359:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2090 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2090 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AND;
@@ -11210,7 +11210,7 @@ case 360:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2095 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2095 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT;
@@ -11218,7 +11218,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 361:
 YY_RULE_SETUP
-#line 2100 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2100 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GETS;
@@ -11226,7 +11226,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 362:
 YY_RULE_SETUP
-#line 2105 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2105 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::COMMA;
@@ -11238,7 +11238,7 @@ case 363:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2110 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2110 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DIV;
@@ -11246,7 +11246,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 364:
 YY_RULE_SETUP
-#line 2115 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2115 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EQUALS;
@@ -11258,7 +11258,7 @@ case 365:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2120 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2120 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXCEPT;
@@ -11270,7 +11270,7 @@ case 366:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2125 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2125 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_EQ;
@@ -11282,7 +11282,7 @@ case 367:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2130 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2130 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GE;
@@ -11294,7 +11294,7 @@ case 368:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2135 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2135 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GT;
@@ -11306,7 +11306,7 @@ case 369:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2140 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2140 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LE;
@@ -11318,7 +11318,7 @@ case 370:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2145 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2145 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LT;
@@ -11330,7 +11330,7 @@ case 371:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2150 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2150 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_NE;
@@ -11338,7 +11338,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 372:
 YY_RULE_SETUP
-#line 2155 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2155 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GE;
@@ -11346,7 +11346,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 373:
 YY_RULE_SETUP
-#line 2160 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2160 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FOLLOWS;
@@ -11354,7 +11354,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 374:
 YY_RULE_SETUP
-#line 2165 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2165 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GT;
@@ -11366,7 +11366,7 @@ case 375:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2170 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2170 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IDIV;
@@ -11378,7 +11378,7 @@ case 376:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2175 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2175 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTERSECT;
@@ -11390,7 +11390,7 @@ case 377:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2180 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2180 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::_IN_;
@@ -11402,7 +11402,7 @@ case 378:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2185 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2185 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IS;
@@ -11410,7 +11410,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 379:
 YY_RULE_SETUP
-#line 2190 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2190 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LBRACK;
@@ -11418,7 +11418,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 380:
 YY_RULE_SETUP
-#line 2195 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2195 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LPAR;
@@ -11426,7 +11426,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 381:
 YY_RULE_SETUP
-#line 2200 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2200 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LE;
@@ -11434,7 +11434,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 382:
 YY_RULE_SETUP
-#line 2205 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2205 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRECEDES;
@@ -11442,7 +11442,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 383:
 YY_RULE_SETUP
-#line 2210 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2210 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LT;
@@ -11450,7 +11450,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 384:
 YY_RULE_SETUP
-#line 2215 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2215 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MINUS;
@@ -11462,7 +11462,7 @@ case 385:
 (yy_c_buf_p) = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2220 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2220 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MOD;
@@ -11470,7 +11470,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 386:
 YY_RULE_SETUP
-#line 2225 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2225 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NE;
@@ -11482,7 +11482,7 @@ case 387:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2230 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2230 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GROUP_BY;
@@ -11494,7 +11494,7 @@ case 388:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2235 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2235 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDER_BY;
@@ -11506,7 +11506,7 @@ case 389:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2240 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2240 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STABLE_ORDER_BY;
@@ -11518,7 +11518,7 @@ case 390:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2245 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2245 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OR;
@@ -11530,7 +11530,7 @@ case 391:
 (yy_c_buf_p) = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2250 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2250 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::RETURN;
@@ -11542,7 +11542,7 @@ case 392:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2255 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2255 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EVAL;
@@ -11554,7 +11554,7 @@ case 393:
 (yy_c_buf_p) = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2260 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2260 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SATISFIES;
@@ -11566,7 +11566,7 @@ case 394:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2265 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2265 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::TO;
@@ -11578,7 +11578,7 @@ case 395:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2270 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2270 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNION;
@@ -11586,7 +11586,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 396:
 YY_RULE_SETUP
-#line 2275 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2275 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VBAR;
@@ -11598,7 +11598,7 @@ case 397:
 (yy_c_buf_p) = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2280 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2280 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WHERE;
@@ -11612,7 +11612,7 @@ case 398:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2287 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2287 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CASTABLE_AS;
@@ -11624,7 +11624,7 @@ case 399:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2292 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2292 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CAST_AS;
@@ -11638,7 +11638,7 @@ case 400:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2299 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2299 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::INSTANCE_OF;
 }
@@ -11649,7 +11649,7 @@ case 401:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2303 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2303 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TREAT_AS;
 }
@@ -11660,14 +11660,14 @@ case 402:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2307 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2307 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE;
 }
 	YY_BREAK
 case 403:
 YY_RULE_SETUP
-#line 2311 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2311 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RPAR;
 }
@@ -11678,14 +11678,14 @@ case 404:
 (yy_c_buf_p) = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2315 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2315 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AS;
 }
 	YY_BREAK
 case 405:
 YY_RULE_SETUP
-#line 2320 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2320 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OCCURRENCE_INDICATOR;
@@ -11694,7 +11694,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 406:
 YY_RULE_SETUP
-#line 2326 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2326 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11702,7 +11702,7 @@ YY_RULE_SETUP
 case 407:
 /* rule 407 can match eol */
 YY_RULE_SETUP
-#line 2330 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2330 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11719,7 +11719,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 408:
 YY_RULE_SETUP
-#line 2350 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2350 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
@@ -11729,7 +11729,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 409:
 YY_RULE_SETUP
-#line 2357 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2357 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_CLOSE_KINDTEST;
   return token::STAR;
@@ -11737,7 +11737,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 410:
 YY_RULE_SETUP
-#line 2362 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2362 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_CLOSE_KINDTEST;
   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
@@ -11747,7 +11747,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 411:
 YY_RULE_SETUP
-#line 2369 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2369 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
@@ -11756,7 +11756,7 @@ YY_RULE_SETUP
 /* --------------------------------- */
 case 412:
 YY_RULE_SETUP
-#line 2375 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2375 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::RPAR;
@@ -11767,7 +11767,7 @@ YY_RULE_SETUP
 case 413:
 /* rule 413 can match eol */
 YY_RULE_SETUP
-#line 2382 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2382 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
   return token::ELEMENT_LPAR;
@@ -11776,7 +11776,7 @@ YY_RULE_SETUP
 case 414:
 /* rule 414 can match eol */
 YY_RULE_SETUP
-#line 2387 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2387 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
   return token::SCHEMA_ELEMENT_LPAR;
@@ -11786,7 +11786,7 @@ YY_RULE_SETUP
 /* --------- */
 case 415:
 YY_RULE_SETUP
-#line 2394 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2394 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11794,7 +11794,7 @@ YY_RULE_SETUP
 case 416:
 /* rule 416 can match eol */
 YY_RULE_SETUP
-#line 2398 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2398 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11812,7 +11812,7 @@ YY_RULE_SETUP
 /* --------------------------------- */
 case 417:
 YY_RULE_SETUP
-#line 2418 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2418 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::RPAR;
@@ -11822,7 +11822,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 418:
 YY_RULE_SETUP
-#line 2426 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2426 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
@@ -11831,7 +11831,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 419:
 YY_RULE_SETUP
-#line 2432 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2432 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
 }
@@ -11839,14 +11839,14 @@ YY_RULE_SETUP
 case 420:
 /* rule 420 can match eol */
 YY_RULE_SETUP
-#line 2436 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2436 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 	YY_BREAK
 case 421:
 YY_RULE_SETUP
-#line 2440 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2440 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11854,7 +11854,7 @@ YY_RULE_SETUP
 case 422:
 /* rule 422 can match eol */
 YY_RULE_SETUP
-#line 2444 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2444 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11871,7 +11871,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 423:
 YY_RULE_SETUP
-#line 2464 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2464 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::RPAR;
@@ -11881,7 +11881,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 424:
 YY_RULE_SETUP
-#line 2471 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2471 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_KINDTEST;
   return token::COMMA;
@@ -11891,7 +11891,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 425:
 YY_RULE_SETUP
-#line 2478 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2478 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
@@ -11901,7 +11901,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 426:
 YY_RULE_SETUP
-#line 2485 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2485 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
@@ -11910,14 +11910,14 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 427:
 YY_RULE_SETUP
-#line 2491 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2491 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::HOOK;
 }
 	YY_BREAK
 case 428:
 YY_RULE_SETUP
-#line 2495 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2495 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11925,7 +11925,7 @@ YY_RULE_SETUP
 case 429:
 /* rule 429 can match eol */
 YY_RULE_SETUP
-#line 2499 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2499 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11950,7 +11950,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 430:
 YY_RULE_SETUP
-#line 2527 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2527 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_HOOK;
@@ -11958,7 +11958,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 431:
 YY_RULE_SETUP
-#line 2532 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2532 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_STAR;
@@ -11966,7 +11966,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 432:
 YY_RULE_SETUP
-#line 2537 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2537 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_PLUS;
@@ -11976,7 +11976,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 433:
 YY_RULE_SETUP
-#line 2544 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2544 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
@@ -11985,7 +11985,7 @@ YY_RULE_SETUP
 /* --------------------------------------- */
 case 434:
 YY_RULE_SETUP
-#line 2550 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2550 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yyless(0);
   BEGIN MODE_OPERATOR;
@@ -11994,7 +11994,7 @@ YY_RULE_SETUP
 case 435:
 /* rule 435 can match eol */
 YY_RULE_SETUP
-#line 2555 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2555 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12013,7 +12013,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 436:
 YY_RULE_SETUP
-#line 2577 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2577 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
@@ -12021,7 +12021,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 437:
 YY_RULE_SETUP
-#line 2582 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2582 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12029,7 +12029,7 @@ YY_RULE_SETUP
 case 438:
 /* rule 438 can match eol */
 YY_RULE_SETUP
-#line 2586 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2586 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12049,7 +12049,7 @@ YY_RULE_SETUP
 case 439:
 /* rule 439 can match eol */
 YY_RULE_SETUP
-#line 2608 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2608 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMACONTENTS;
   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng,true,true));
@@ -12057,7 +12057,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 440:
 YY_RULE_SETUP
-#line 2613 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2613 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (QNAME_AND_END_PRAGMA, put(yytext, yyleng-2));
@@ -12066,14 +12066,14 @@ YY_RULE_SETUP
 case 441:
 /* rule 441 can match eol */
 YY_RULE_SETUP
-#line 2618 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2618 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
 	YY_BREAK
 case 442:
 YY_RULE_SETUP
-#line 2622 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2622 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12092,7 +12092,7 @@ YY_RULE_SETUP
 case 443:
 /* rule 443 can match eol */
 YY_RULE_SETUP
-#line 2643 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2643 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (PRAGMA_LITERAL_AND_END, put(yytext, yyleng-2));
@@ -12100,7 +12100,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 444:
 YY_RULE_SETUP
-#line 2648 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2648 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12119,7 +12119,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 445:
 YY_RULE_SETUP
-#line 2670 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2670 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (VARNAME, put_varname(yytext, yyleng));
@@ -12129,14 +12129,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 446:
 YY_RULE_SETUP
-#line 2677 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2677 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
 	YY_BREAK
 case 447:
 YY_RULE_SETUP
-#line 2681 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2681 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12144,7 +12144,7 @@ YY_RULE_SETUP
 case 448:
 /* rule 448 can match eol */
 YY_RULE_SETUP
-#line 2685 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2685 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12165,7 +12165,7 @@ YY_RULE_SETUP
 /* ----------------------------- */
 case 449:
 YY_RULE_SETUP
-#line 2709 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2709 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ELEMENT_CONTENT;
   return token::TAG_END;
@@ -12175,7 +12175,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 450:
 YY_RULE_SETUP
-#line 2716 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2716 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT;
   return token::QUOTE;
@@ -12185,7 +12185,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 451:
 YY_RULE_SETUP
-#line 2723 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2723 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
   return token::APOS;
@@ -12195,7 +12195,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 452:
 YY_RULE_SETUP
-#line 2730 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2730 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::EQUALS;
@@ -12205,7 +12205,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 453:
 YY_RULE_SETUP
-#line 2737 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2737 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::EMPTY_TAG_END;
@@ -12216,21 +12216,21 @@ YY_RULE_SETUP
 case 454:
 /* rule 454 can match eol */
 YY_RULE_SETUP
-#line 2744 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2744 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* continue lexing */
 }
 	YY_BREAK
 case 455:
 YY_RULE_SETUP
-#line 2748 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2748 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
 }
 	YY_BREAK
 case 456:
 YY_RULE_SETUP
-#line 2752 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2752 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12254,7 +12254,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 457:
 YY_RULE_SETUP
-#line 2779 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2779 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_END_TAG;
   return token::START_TAG_END;
@@ -12264,7 +12264,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 458:
 YY_RULE_SETUP
-#line 2786 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2786 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL);
   return token::LBRACE;
@@ -12274,7 +12274,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 459:
 YY_RULE_SETUP
-#line 2793 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2793 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_XML_COMMENT);
   return token::XML_COMMENT_BEGIN;
@@ -12284,7 +12284,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 460:
 YY_RULE_SETUP
-#line 2800 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2800 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_PROCESSING_INSTRUCTION);
   return token::PI_BEGIN;
@@ -12294,7 +12294,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 461:
 YY_RULE_SETUP
-#line 2807 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2807 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_CDATA_SECTION);
   return token::CDATA_BEGIN;
@@ -12304,7 +12304,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 462:
 YY_RULE_SETUP
-#line 2814 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2814 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_START_TAG);
   return token::START_TAG;
@@ -12315,35 +12315,35 @@ YY_RULE_SETUP
 case 463:
 /* rule 463 can match eol */
 YY_RULE_SETUP
-#line 2821 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2821 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, true));
 }
 	YY_BREAK
 case 464:
 YY_RULE_SETUP
-#line 2825 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2825 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng));
 }
 	YY_BREAK
 case 465:
 YY_RULE_SETUP
-#line 2829 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2829 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
 }
 	YY_BREAK
 case 466:
 YY_RULE_SETUP
-#line 2833 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2833 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 467:
 YY_RULE_SETUP
-#line 2837 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2837 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12352,7 +12352,7 @@ YY_RULE_SETUP
 /* -------------- */
 case 468:
 YY_RULE_SETUP
-#line 2843 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2843 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12370,7 +12370,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 469:
 YY_RULE_SETUP
-#line 2864 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2864 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::TAG_END;
@@ -12381,7 +12381,7 @@ YY_RULE_SETUP
 case 470:
 /* rule 470 can match eol */
 YY_RULE_SETUP
-#line 2871 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2871 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
    TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng, false, true));
 }
@@ -12390,7 +12390,7 @@ YY_RULE_SETUP
 /* -------------- */
 case 471:
 YY_RULE_SETUP
-#line 2877 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2877 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12408,7 +12408,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 472:
 YY_RULE_SETUP
-#line 2898 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2898 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::XML_COMMENT_END;
@@ -12419,14 +12419,14 @@ YY_RULE_SETUP
 case 473:
 /* rule 473 can match eol */
 YY_RULE_SETUP
-#line 2905 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2905 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng));
 }
 	YY_BREAK
 case 474:
 YY_RULE_SETUP
-#line 2909 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2909 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
    return token::UNRECOGNIZED;
  }
@@ -12445,7 +12445,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 475:
 YY_RULE_SETUP
-#line 2930 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2930 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
 }
@@ -12454,20 +12454,20 @@ YY_RULE_SETUP
 /* --------------------- */
 case 476:
 YY_RULE_SETUP
-#line 2936 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2936 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT);
 }
 	YY_BREAK
 case 477:
 YY_RULE_SETUP
-#line 2940 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2940 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* do nothing */
 }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_COMMENT):
-#line 2944 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2944 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12486,7 +12486,7 @@ case YY_STATE_EOF(MODE_EXPR_COMMENT):
 case 478:
 /* rule 478 can match eol */
 YY_RULE_SETUP
-#line 2965 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2965 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT;
   /* continue lexing */
@@ -12496,7 +12496,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 479:
 YY_RULE_SETUP
-#line 2972 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2972 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   return token::PI_END;
@@ -12506,7 +12506,7 @@ YY_RULE_SETUP
 /* ------------------------------- */
 case 480:
 YY_RULE_SETUP
-#line 2979 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2979 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PROCESSING_INSTRUCTION;
   TRY_SVAL_TOKEN (PI_TARGET_LITERAL, put(yytext, yyleng));
@@ -12526,7 +12526,7 @@ YY_RULE_SETUP
 case 481:
 /* rule 481 can match eol */
 YY_RULE_SETUP
-#line 3001 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3001 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
@@ -12545,7 +12545,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 482:
 YY_RULE_SETUP
-#line 3023 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3023 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3));
@@ -12556,7 +12556,7 @@ YY_RULE_SETUP
 case 483:
 /* rule 483 can match eol */
 YY_RULE_SETUP
-#line 3030 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3030 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yymore();
 }
@@ -12580,7 +12580,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 484:
 YY_RULE_SETUP
-#line 3057 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3057 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::QUOTE;
@@ -12590,7 +12590,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 485:
 YY_RULE_SETUP
-#line 3064 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3064 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL);
   return token::LBRACE;
@@ -12600,7 +12600,7 @@ YY_RULE_SETUP
 /* -------------------------------- */
 case 486:
 YY_RULE_SETUP
-#line 3071 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3071 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ESCAPE_QUOTE;
 }
@@ -12608,35 +12608,35 @@ YY_RULE_SETUP
 case 487:
 /* rule 487 can match eol */
 YY_RULE_SETUP
-#line 3075 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3075 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, true));
 }
 	YY_BREAK
 case 488:
 YY_RULE_SETUP
-#line 3079 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3079 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng));
 }
 	YY_BREAK
 case 489:
 YY_RULE_SETUP
-#line 3083 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3083 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
 }
 	YY_BREAK
 case 490:
 YY_RULE_SETUP
-#line 3087 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3087 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 491:
 YY_RULE_SETUP
-#line 3091 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3091 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12655,7 +12655,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 492:
 YY_RULE_SETUP
-#line 3113 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3113 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::APOS;
@@ -12665,7 +12665,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 493:
 YY_RULE_SETUP
-#line 3120 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3120 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT);
   return token::LBRACE;
@@ -12675,7 +12675,7 @@ YY_RULE_SETUP
 /* ------------------------------- */
 case 494:
 YY_RULE_SETUP
-#line 3127 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3127 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ESCAPE_APOS;
 }
@@ -12683,35 +12683,35 @@ YY_RULE_SETUP
 case 495:
 /* rule 495 can match eol */
 YY_RULE_SETUP
-#line 3131 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3131 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, true));
 }
 	YY_BREAK
 case 496:
 YY_RULE_SETUP
-#line 3135 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3135 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng));
 }
 	YY_BREAK
 case 497:
 YY_RULE_SETUP
-#line 3139 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3139 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
 }
 	YY_BREAK
 case 498:
 YY_RULE_SETUP
-#line 3143 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3143 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 499:
 YY_RULE_SETUP
-#line 3147 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3147 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12719,12 +12719,12 @@ YY_RULE_SETUP
 /* <MODE_APOS_ATTRIBUTE_CONTENT> */
 case 500:
 YY_RULE_SETUP
-#line 3154 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3154 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 return token::UNRECOGNIZED;
 	YY_BREAK
 case 501:
 YY_RULE_SETUP
-#line 3156 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3156 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
 #line 12731 "xquery_scanner.yy.cpp"
@@ -13810,7 +13810,7 @@ void Zorbafree (void * ptr )
 
 /* %ok-for-header */
 
-#line 3156 "/home/markos/zorba/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3156 "/usr/local/src/zorba/test/zorbatest/build/zorba/src/compiler/parser/xquery_scanner.l"
 
 
 
