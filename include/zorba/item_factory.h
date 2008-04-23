@@ -244,11 +244,12 @@ namespace zorba {
        * @param aHour short-valued representation of the hours.
        * @param aMinute short-valued representation of the minutes.
        * @param aSecond short-valued representation of the seconds.
+       * @param aFrac_Seconds short-valued representation of the fractional seconds.
        * @return The Duration Item
        */
       virtual Item
       createDuration ( short aYears, short aMonths, short aDays, 
-                       short aHours, short aMinutes, short aSeconds ) = 0;
+                       short aHours, short aMinutes, short aSeconds, short aFrac_Seconds ) = 0;
     
       /** \brief Creates a Entities Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#ENTITIES]

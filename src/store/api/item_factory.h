@@ -202,9 +202,10 @@ public:
    * @param hours
    * @param minutes
    * @param seconds
+   * @param frac_seconds
 			  */
   virtual Item_t createDuration (
-			    short years, short months, short days, short hours, short minutes, short seconds
+			    short years, short months, short days, short hours, short minutes, short seconds, short frac_seconds
 			) = 0;
 
   /**

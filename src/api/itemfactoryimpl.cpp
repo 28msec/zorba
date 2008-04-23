@@ -266,24 +266,22 @@ namespace zorba {
   ItemFactoryImpl::createDuration( const String& aValue )
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    const xqpString s = lString;
-    store::Item_t lItem;
+    const xqpString s(lString);
+    store::Item_t   lItem;
 
-    Duration_t lDuration;
-    if (Duration::parse_string(s, lDuration)) {
-      // TODO
- //     lItem = theItemFactory->createDuration(lDuration);
-    }
+    lItem = theItemFactory->createDuration(s);
 
     return &*lItem;
   }
       
   Item
   ItemFactoryImpl::createDuration ( short aYears, short aMonths, short aDays, 
-                       short aHours, short aMinutes, short aSeconds )
+                       short aHours, short aMinutes, short aSeconds, short aFrac_Seconds )
   {
     store::Item_t lItem;
-    // TODO
+    
+    lItem = theItemFactory->createDuration(aYears, aMonths, aDays, aHours, aMinutes, aSeconds, aFrac_Seconds);
+    
     return &*lItem;
   }
     

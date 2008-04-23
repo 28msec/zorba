@@ -232,15 +232,40 @@ Item_t BasicItemFactory::createDuration (xqp_duration& value )
   return new DurationItemNaive(value);
 }
 
-Item_t BasicItemFactory::createDuration ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createDuration ( const xqp_string& value )
 {
+  YearMonthDuration_t ymd_t;
+  DayTimeDuration_t   dtd_t;
+  
+  if (YearMonthDuration::parse_string(value, ymd_t)){
+    xqp_duration d = ymd_t;
+    return new DurationItemNaive(d);
+  }
+  else if(DayTimeDuration::parse_string(value, dtd_t)){
+    xqp_duration d = ymd_t;
+    return new DurationItemNaive(d);
+  }
+
   return Item_t(NULL);
 }
 
 Item_t BasicItemFactory::createDuration (
-	    short /*years*/, short /*months*/, short /*days*/, short /*hours*/, short /*minutes*/, short /*seconds*/
+    short years, short months, short days, short hours, short minutes, short seconds, short frac_seconds
 	)
-{ return Item_t ( NULL ); }
+{
+  if(years != 0 || months!=0){
+    YearMonthDuration_t ymd_t = new YearMonthDuration(years*12 + months);
+    xqp_duration d = ymd_t;
+    return new DurationItemNaive(d);
+  }
+  else if(days!=0 || hours!=0 || minutes!=0 || seconds!=0 || frac_seconds !=0) {
+    DayTimeDuration_t dtd_t = new DayTimeDuration(days, hours, minutes, seconds, frac_seconds);
+    xqp_duration d = dtd_t;
+    return new DurationItemNaive(d); 
+  }
+  else
+    return Item_t ( NULL );
+}
 
 
 Item_t BasicItemFactory::createENTITIES ( const xqp_string& /*value*/ )

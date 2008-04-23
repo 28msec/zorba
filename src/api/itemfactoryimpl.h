@@ -89,7 +89,7 @@ namespace zorba {
       
       virtual Item
       createDuration ( short aYears, short aMonths, short aDays, 
-                       short aHours, short aMinutes, short aSeconds );
+                       short aHours, short aMinutes, short aSeconds, short aFrac_Seconds );
     
       virtual Item createENTITIES ( const String& aValue );
       

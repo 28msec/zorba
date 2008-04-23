@@ -89,7 +89,7 @@ public:
   
   Item_t createDuration(const xqp_string& value);
 
-  Item_t createDuration(short years, short months, short days, short hours, short minutes, short seconds);
+  Item_t createDuration(short years, short months, short days, short hours, short minutes, short seconds, short frac_seconds);
 
   Item_t createENTITIES ( const xqp_string& value );
 
