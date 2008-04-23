@@ -8,6 +8,8 @@
 #include "compiler/semantic_annotations/tsv_annotation.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 
+using namespace std;
+
 namespace zorba {
 
 

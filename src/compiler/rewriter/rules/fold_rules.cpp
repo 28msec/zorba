@@ -104,6 +104,12 @@ namespace zorba {
         node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
     }
+      
+    case var_expr_kind:
+      if (static_cast<var_expr *> (node)->get_kind () == var_expr::context_var)
+        node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
+      break;
+      
     case elem_expr_kind:
     case attr_expr_kind:
     case text_expr_kind:

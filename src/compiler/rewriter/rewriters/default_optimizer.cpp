@@ -31,12 +31,18 @@ DefaultOptimizer::DefaultOptimizer()
 {
   ADD_SINGLETON_DRIVER(InferVarTypes);
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
+
   ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
+
   ADD_DRIVER(FoldRules);
+
   ADD_SINGLETON_DRIVER(MarkConsumerNodeProps);
   ADD_SINGLETON_DRIVER(EliminateProducerNodeOps);
   ADD_SINGLETON_DRIVER(MarkProducerNodeProps);
   ADD_SINGLETON_DRIVER(EliminateConsumerNodeOps);
+
+  // For UDFs, which need this annotation in udf::requires_dyn_ctx()
+  ADD_SINGLETON_DRIVER(MarkUnfoldableOps);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()
