@@ -223,6 +223,7 @@ void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_it
   seq->addReference(seq->getSharedRefCounter()
                     SYNC_PARAM2(seq->getRCLock()));
   v.type = dynamic_context::dctx_value_t::temp_seq_val;
+  v.in_progress = false;
   v.val.temp_seq = seq.getp();
   keymap.put ("var:" + var_name, v);
 }
