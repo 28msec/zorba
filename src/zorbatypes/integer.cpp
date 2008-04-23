@@ -367,6 +367,9 @@ xqpString Integer::toString() const {
 uint32_t Integer::hash() const
 {
   Integer lInteger(theInteger % 65535);
+  Integer zero;
+  if (lInteger < zero)
+    lInteger = -lInteger;
   uint32_t lHash;
   NumConversions::integerToUInt(lInteger, lHash);
   return lHash;
