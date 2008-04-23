@@ -143,11 +143,11 @@ DECL(fn_lang,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(fn_collection_0,
+DECL(fn_collection,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "collection"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
-DECL(fn_collection_1,
+DECL(fn_collection,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "collection"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
