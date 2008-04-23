@@ -91,13 +91,11 @@ namespace zorba {
       createDuration ( short aYears, short aMonths, short aDays, 
                        short aHours, short aMinutes, short aSeconds, short aFrac_Seconds );
     
-      virtual Item createENTITIES ( const String& aValue );
-      
-      virtual Item
-      createENTITY ( const String& value );
-    
       virtual Item
       createFloat ( const String& aValue );
+    
+      virtual Item
+      createFloat ( float aValue );
     
       virtual Item
       createGDay ( const String& value );
@@ -131,57 +129,18 @@ namespace zorba {
     
       virtual Item
       createHexBinary ( const char* aHexData, size_t aSize );
-    
-      virtual Item
-      createID ( const String& aValue );
-    
-      virtual Item
-      createIDREF ( const String& aValue );
-    
-      virtual Item
-      createIDREFS ( const String& aValue );
-    
-      virtual Item
-      createLanguage ( const String& aValue );
-    
-      virtual Item
-      createNMTOKEN ( const String& aValue );
-    
-      virtual Item
-      createNMTOKENS ( const String& aValue );
-    
-      virtual Item
-      createNOTATION ( const String& aValue );
-    
-      virtual Item
-      createName ( const String& aValue );
-    
-      virtual Item
-      createNegativeInteger ( const String& aValue );
-    
-      virtual Item
-      createNegativeInteger ( long aValue );
 
       virtual Item
-      createNonNegativeInteger ( const String& aValue );
-    
-      virtual Item
-      createNonNegativeInteger ( unsigned long aValue );
+      createNegativeInteger ( long long aValue );
 
       virtual Item
-      createNonPositiveInteger ( const String& aValue );
-    
-      virtual Item
-      createNonPositiveInteger ( long aValue );
+      createNonNegativeInteger ( unsigned long long aValue );
 
       virtual Item
-      createNormalizedString ( const String& aValue );
+      createNonPositiveInteger ( long long aValue );
     
       virtual Item
-      createPositiveInteger ( const String& aValue );
-    
-      virtual Item
-      createPositiveInteger ( unsigned long aValue );
+      createPositiveInteger ( unsigned long long aValue );
 
       virtual Item
       createTime ( const String& aValue );
@@ -191,9 +150,6 @@ namespace zorba {
     
       virtual Item
       createTime ( short aHour, short aMinute, short aSecond, short aTimezone );
-    
-      virtual Item
-      createToken ( const String& aValue );
     
       virtual Item
       createUnsignedByte(const unsigned char aValue);

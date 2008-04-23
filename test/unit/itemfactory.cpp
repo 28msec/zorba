@@ -220,6 +220,83 @@ int itemfactory(int argc, char* argv[])
     assert ( !lItem.isPosOrNegInf() );
     assert ( lItem.isNaN() );
 
+    /* Float */
+    lItem = lFactory->createFloat("23.42");
+    assert ( checkType(lItem.getType(), "float") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "23.42" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createFloat("INF");
+    assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.isNaN() );
+
+    lItem = lFactory->createFloat("-INF");
+    assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.isNaN() );
+
+    lItem = lFactory->createFloat("-inf");
+    assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.isNaN() );
+
+    lItem = lFactory->createFloat("inf");
+    assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.isNaN() );
+
+    lItem = lFactory->createFloat("NAN");
+    assert ( !lItem.isPosOrNegInf() );
+    assert ( lItem.isNaN() );
+
+    lItem = lFactory->createFloat("nAn");
+    assert ( !lItem.isPosOrNegInf() );
+    assert ( lItem.isNaN() );
+
+    lItem = lFactory->createFloat(23.42);
+    assert ( checkType(lItem.getType(), "float") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "23.4200000762939" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /* NonNegativeInteger */
+    lItem = lFactory->createNonNegativeInteger(32423423);
+    assert ( checkType(lItem.getType(), "nonNegativeInteger") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "32423423" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /* NegativeInteger */
+    lItem = lFactory->createNegativeInteger(-32423423);
+    assert ( checkType(lItem.getType(), "negativeInteger") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "-32423423" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createNegativeInteger(1);
+    assert ( lItem.isNull() );
+
+    /* NonPositiveInteger */
+    lItem = lFactory->createNonPositiveInteger(-32423423);
+    assert ( checkType(lItem.getType(), "nonPositiveInteger") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "-32423423" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createNonPositiveInteger(1);
+    assert ( lItem.isNull() );
+
+    /* PositiveInteger */
+    lItem = lFactory->createPositiveInteger(32423423);
+    assert ( checkType(lItem.getType(), "positiveInteger") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "32423423" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
     /* Unsigned Byte */
     lItem = lFactory->createUnsignedByte('a');
     assert ( checkType(lItem.getType(), "unsignedByte") );
@@ -240,6 +317,14 @@ int itemfactory(int argc, char* argv[])
     /* Unsigned Long */
     lItem = lFactory->createUnsignedLong(10);
     assert ( checkType(lItem.getType(), "unsignedLong") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "10" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /* Unsigned Int */
+    lItem = lFactory->createUnsignedInt(10);
+    assert ( checkType(lItem.getType(), "unsignedInt") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "10" );
     assert ( lItem.getEBV().getBooleanValue() );

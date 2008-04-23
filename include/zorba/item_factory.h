@@ -251,33 +251,24 @@ namespace zorba {
       createDuration ( short aYears, short aMonths, short aDays, 
                        short aHours, short aMinutes, short aSeconds, short aFrac_Seconds ) = 0;
     
-      /** \brief Creates a Entities Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#ENTITIES]
+      /** \brief creates a float item 
+       *         see [http://www.w3.org/tr/xmlschema-2/#float]
        *
-       * @param aValue String representation of the Entities.
-       * @return The Entities Item
-       */
-      virtual Item 
-      createENTITIES ( const String& aValue ) = 0;
-      
-      /** \brief Creates a Entity Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#ENTITY]
-       *
-       * @param aValue String representation of the Entity.
-       * @return The Entity Item
-       */
-      virtual Item
-      createENTITY ( const String& value ) = 0;
-    
-      /** \brief Creates a Float Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#float]
-       *
-       * @param aValue String representation of the Float.
-       * @return The Float Item
+       * @param aValue string representation of the float.
+       * @return the float item
        */
       virtual Item
       createFloat ( const String& aValue ) = 0;
     
+      /** \brief creates a float item 
+       *         see [http://www.w3.org/tr/xmlschema-2/#float]
+       *
+       * @param aValue float representation of the float.
+       * @return the float item
+       */
+      virtual Item
+      createFloat ( float aValue ) = 0;
+
       /** \brief Creates a gDay Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#gDay]
        *
@@ -380,105 +371,15 @@ namespace zorba {
       virtual Item
       createHexBinary ( const char* aHexData, size_t aSize ) = 0;
     
-      /** \brief Creates an ID Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#ID]
-       *
-       * @param aValue String representation of the ID.
-       * @return The ID Item
-       */
-      virtual Item
-      createID ( const String& aValue ) = 0;
-    
-      /** \brief Creates an IDREF  Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#IDREF]
-       *
-       * @param aValue String representation of the IDREF.
-       * @return The IDREF Item
-       */
-      virtual Item
-      createIDREF ( const String& aValue ) = 0;
-    
-      /** \brief Creates a IDREFS Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#IDREFS]
-       *
-       * @param aValue String representation of the IDREFS.
-       * @return The IDREFS Item
-       */
-      virtual Item
-      createIDREFS ( const String& aValue ) = 0;
-    
-      /** \brief Creates a Lanugage Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#language]
-       *
-       * @param aValue String representation of the language.
-       * @return The Language Item
-       */
-      virtual Item
-      createLanguage ( const String& aValue ) = 0;
-    
-      /** \brief Creates a NMToken Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#NMToken]
-       *
-       * @param aValue String representation of the NMToken.
-       * @return The NMToken Item
-       */
-      virtual Item
-      createNMTOKEN ( const String& aValue ) = 0;
-    
-      /** \brief Creates a NMTokens Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#NMTokens]
-       *
-       * @param aValue String representation of the NMTokens.
-       * @return The NMTokens Item
-       */
-      virtual Item
-      createNMTOKENS ( const String& aValue ) = 0;
-    
-      /** \brief Creates a Notation Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#NOTATION]
-       *
-       * @param aValue String representation of the NCName
-       * @return The Notation Item
-       */
-      virtual Item
-      createNOTATION ( const String& aValue ) = 0;
-    
-      /** \brief Creates a Name Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#Name]
-       *
-       * @param aValue String representation of the Name.
-       * @return The Name Item
-       */
-      virtual Item
-      createName ( const String& aValue ) = 0;
-    
       /** \brief Creates a negativeInteger Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
        *
-       * @param aValue String representation of the negativeInteger.
+       * @param aValue long long representation of the negativeInteger.
        * @return The negativeInteger Item
        */
       virtual Item
-      createNegativeInteger ( const String& aValue ) = 0;
-    
-      /** \brief Creates a negativeInteger Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
-       *
-       * @param aValue long representation of the negativeInteger.
-       * @return The negativeInteger Item
-       */
-      virtual Item
-      createNegativeInteger ( long aValue ) = 0;
+      createNegativeInteger ( long long aValue ) = 0;
 
-      /** \brief Creates a nonNegativeInteger Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
-       *
-       * @param aValue String representation of the nonNegativeInteger.
-       * @return The nonNegativeInteger Item
-       */
-      virtual Item
-      createNonNegativeInteger ( const String& aValue ) = 0;
-    
       /** \brief Creates a nonNegativeInteger Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
        *
@@ -486,44 +387,17 @@ namespace zorba {
        * @return The nonNegativeInteger Item
        */
       virtual Item
-      createNonNegativeInteger ( unsigned long aValue ) = 0;
+      createNonNegativeInteger ( unsigned long long aValue ) = 0;
 
       /** \brief Creates a nonPositiveInteger Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
        *
-       * @param aValue String representation of the NCName
+       * @param aValue long long representation of the NCName
        * @return The nonPositiveInteger Item
        */
       virtual Item
-      createNonPositiveInteger ( const String& aValue ) = 0;
-    
-      /** \brief Creates a nonPositiveInteger Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
-       *
-       * @param aValue long representation of the NCName
-       * @return The nonPositiveInteger Item
-       */
-      virtual Item
-      createNonPositiveInteger ( long aValue ) = 0;
+      createNonPositiveInteger ( long long aValue ) = 0;
 
-      /** \brief Creates a normalizedString Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#normalizedString]
-       *
-       * @param aValue String representation of the normalized string.
-       * @return The normalizedString Item
-       */
-      virtual Item
-      createNormalizedString ( const String& aValue ) = 0;
-    
-      /** \brief Creates a positiveInteger\ Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
-       *
-       * @param aValue String representation of the positiveInteger.
-       * @return The positiveInteger Item
-       */
-      virtual Item
-      createPositiveInteger ( const String& aValue ) = 0;
-    
       /** \brief Creates a positiveInteger\ Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
        *
@@ -531,7 +405,7 @@ namespace zorba {
        * @return The positiveInteger Item
        */
       virtual Item
-      createPositiveInteger ( unsigned long aValue ) = 0;
+      createPositiveInteger ( unsigned long long aValue ) = 0;
 
       /** \brief Creates a Time Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#time]
@@ -564,15 +438,6 @@ namespace zorba {
        */
       virtual Item
       createTime ( short aHour, short aMinute, short aSecond, short aTimezone ) = 0;
-    
-      /** \brief Creates a Token Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#token]
-       *
-       * @param aValue String representation of the token.
-       * @return The Token Item
-       */
-      virtual Item
-      createToken ( const String& aValue ) = 0;
     
       /** \brief Creates an Unsigned Byte Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedByte]

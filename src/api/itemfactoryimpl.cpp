@@ -279,24 +279,9 @@ namespace zorba {
   {
     store::Item_t lItem;
     
-    lItem = theItemFactory->createDuration(aYears, aMonths, aDays, aHours, aMinutes, aSeconds, aFrac_Seconds);
+    lItem = theItemFactory->createDuration(aYears, aMonths, aDays, aHours, aMinutes, 
+                                           aSeconds, aFrac_Seconds);
     
-    return &*lItem;
-  }
-    
-  Item 
-  ItemFactoryImpl::createENTITIES ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-      
-  Item
-  ItemFactoryImpl::createENTITY ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
     return &*lItem;
   }
     
@@ -305,9 +290,77 @@ namespace zorba {
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+    Float lFloat;
+    if (Float::parseString(lString->c_str(), lFloat)) {
+      lItem = theItemFactory->createFloat(lFloat);
+    } 
     return &*lItem;
   }
     
+  Item
+  ItemFactoryImpl::createFloat ( float aValue )
+  {
+    store::Item_t lItem;
+    Float lFloat = Float::parseFloatType(aValue);
+    lItem = theItemFactory->createFloat(lFloat);
+    return &*lItem;
+  }
+
+  Item
+  ItemFactoryImpl::createHexBinary ( const char* aHexData, size_t aSize )
+  {
+    store::Item_t lItem;
+    xqp_hexBinary n;
+    if (xqp_hexBinary::parseString(aHexData, aSize, n))
+      lItem = theItemFactory->createHexBinary(n);
+    
+    return &*lItem;
+  }
+    
+  Item
+  ItemFactoryImpl::createNegativeInteger ( long long aValue )
+  {
+    store::Item_t lItem;
+    if (aValue < 0) {
+      Integer lInteger;
+      lInteger = Integer::parseLongLong(aValue);
+      lItem = theItemFactory->createNegativeInteger(lInteger);
+    }
+    return &*lItem;
+  }
+    
+  Item
+  ItemFactoryImpl::createNonNegativeInteger ( unsigned long long aValue )
+  {
+    store::Item_t lItem;
+    Integer lInteger;
+    lInteger = Integer::parseULongLong(aValue);
+    lItem = theItemFactory->createNonNegativeInteger(lInteger);
+    return &*lItem;
+  }
+
+  Item
+  ItemFactoryImpl::createNonPositiveInteger ( long long aValue )
+  {
+    store::Item_t lItem;
+    if (aValue < 0) {
+      Integer lInteger;
+      lInteger = Integer::parseLongLong(aValue);
+      lItem = theItemFactory->createNonPositiveInteger(lInteger);
+    }
+    return &*lItem;
+  }
+
+  Item
+  ItemFactoryImpl::createPositiveInteger ( unsigned long long aValue )
+  {
+    store::Item_t lItem;
+    Integer lInteger;
+    lInteger = Integer::parseLongLong(aValue);
+    lItem = theItemFactory->createPositiveInteger(lInteger);
+    return &*lItem;
+  }
+
   Item
   ItemFactoryImpl::createGDay ( const String& aValue )
   {
@@ -384,149 +437,6 @@ namespace zorba {
   }
     
   Item
-  ItemFactoryImpl::createHexBinary ( const char* aHexData, size_t aSize )
-  {
-    store::Item_t lItem;
-    xqp_hexBinary n;
-    if (xqp_hexBinary::parseString(aHexData, aSize, n))
-      lItem = theItemFactory->createHexBinary(n);
-    
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createID ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createIDREF ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createIDREFS ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createLanguage ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createNMTOKEN ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createNMTOKENS ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createNOTATION ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createName ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createNegativeInteger ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createNegativeInteger ( long aValue )
-  {
-    store::Item_t lItem;
-    return &*lItem;
-  }
-
-  Item
-  ItemFactoryImpl::createNonNegativeInteger ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createNonNegativeInteger ( unsigned long aValue )
-  {
-    store::Item_t lItem;
-    return &*lItem;
-  }
-
-  Item
-  ItemFactoryImpl::createNonPositiveInteger ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createNonPositiveInteger ( long aValue )
-  {
-    store::Item_t lItem;
-    return &*lItem;
-  }
-
-  Item
-  ItemFactoryImpl::createNormalizedString ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createPositiveInteger ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createPositiveInteger ( unsigned long aValue )
-  {
-    store::Item_t lItem;
-    return &*lItem;
-  }
-
-  Item
   ItemFactoryImpl::createTime ( const String& aValue )
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
@@ -549,14 +459,6 @@ namespace zorba {
   }
     
   Item
-  ItemFactoryImpl::createToken ( const String& aValue )
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
   ItemFactoryImpl::createUnsignedByte(const unsigned char aValue)
   {
     store::Item_t lItem;
@@ -568,6 +470,14 @@ namespace zorba {
   ItemFactoryImpl::createUnsignedInt(unsigned int aValue)
   {
     store::Item_t lItem;
+    
+    try {
+      uint32_t lInteger = boost::numeric_cast<uint32_t>(aValue);
+      lItem = theItemFactory->createUnsignedInt(lInteger);
+    } catch (boost::bad_numeric_cast e) {
+      return &*lItem;
+    }
+
     return &*lItem;
   }
     
