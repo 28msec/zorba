@@ -370,7 +370,7 @@ namespace zorba
      TRY = 473,
      CATCH_LPAR = 474,
      USING_DOLLAR = 475,
-     EVAL = 476,
+     EVAL_LBRACE = 476,
      ALL = 477,
      ALL_WORDS = 478,
      ANY = 479,

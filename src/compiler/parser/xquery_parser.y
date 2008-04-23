@@ -346,8 +346,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* eval-related */
 /* ------------ */
-%token USING_DOLLAR               "'<using>'"
-%token EVAL                       "'<eval>'"
+%token USING_DOLLAR               "'<using $>'"
+%token EVAL_LBRACE                "'<eval {>'"
 
 /* full-text-related */
 /* ----------------- */
@@ -501,6 +501,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> VarGetsDeclList
 %type <node> VarInDecl
 %type <node> VarInDeclList
+%type <node> EvalVarDecl
+%type <node> EvalVarDeclList
 %type <node> VersionDecl
 %type <node> VFO_Decl
 %type <node> VFO_DeclList
@@ -637,7 +639,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 // Module must not be destroyed since it is returned by the parser
 // TODO: FT stuff, update stuff
-%destructor { RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 %destructor { RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor NonNodeEnclosedExpr EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr // DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl FTContainsExpr
 
 /*_____________________________________________________________________
@@ -2282,6 +2284,30 @@ VarGetsDeclList :
 	;
 
 
+EvalVarDeclList :
+		EvalVarDecl
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarGetsDeclList [single]" << endl;
+#endif
+			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC (@$));
+			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($1));
+			$$ = vgdl_p;
+		}
+	|	EvalVarDeclList  COMMA  DOLLAR  EvalVarDecl
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarGetsDeclList [list.single]" << endl;
+#endif
+			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>($1);
+			if (vgdl_p) {
+				vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($4));
+			}
+			$$ = $1;
+		}
+	;
+
+
 // [36b] VarGetsDecl
 // ------------------
 VarGetsDecl :
@@ -2332,6 +2358,21 @@ VarGetsDecl :
 		}
 	;
 
+
+EvalVarDecl :
+		VarGetsDecl
+		{
+      $$ = $1;
+    }
+  | VARNAME
+    {
+      std::string name = driver.symtab.get ((off_t)$1);
+      $$ = new VarGetsDecl(LOC (@$),
+                           name, NULL, NULL,
+                           new VarRef (LOC (@$), name));
+                           
+    }
+    ;
 
 
 // [37] WhereClause
@@ -5886,14 +5927,17 @@ CatchExpr :
  *_______________________________________________________________________*/
 
 EvalExpr :
-    USING_DOLLAR VarGetsDeclList EVAL ExprSingle
+    USING_DOLLAR EvalVarDeclList EVAL_LBRACE ExprSingle RBRACE
     {
        $$ = new EvalExpr (LOC (@$),
                           dynamic_cast<VarGetsDeclList *> ($2),
                           $4);
     }
+  | EVAL_LBRACE ExprSingle RBRACE
+    {
+      $$ = new EvalExpr (LOC (@$), new VarGetsDeclList (LOC (@$)), $2);
+    }
     ;
-
 
 /*_______________________________________________________________________
  *                                                                       *

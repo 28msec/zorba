@@ -326,6 +326,11 @@ typedef zorba::xquery_parser::token token;
   return token::TYPESWITCH_LPAR;
 }
 
+"eval"{S}"{" {
+  PUSH_BEGIN (INITIAL, INITIAL);
+  return token::EVAL_LBRACE;
+}
+
 "element"{S}"{" {
   PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ELEMENT_LBRACE;
@@ -804,108 +809,6 @@ typedef zorba::xquery_parser::token token;
   return token::TRY;
 }
 
-
-  /*______________________________________________________________________
-    |
-    | Update rules <INITIAL,MODE_OPERATOR>
-    |______________________________________________________________________*/
-
-<INITIAL,MODE_OPERATOR>{
-
-"insert"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INSERT_NODE;
-}
-"insert"{SP}"nodes"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INSERT_NODES;
-}
-"delete"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::DELETE_NODE;
-}
-"delete"{SP}"nodes"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::DELETE_NODES;
-}
-"replace"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::REPLACE;
-}
-"replace"{SP}"value"{SP}"of"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::REPLACE_VALUE_OF;
-}
-"rename"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  getDriver()->set_rename(true);
-  return token::RENAME;
-}
-
-"copy"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::COPY_DOLLAR;
-}
-"into"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INTO;
-}
-"after"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AFTER;
-}
-"before"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::BEFORE;
-}
-"with"/{WordBreak}  {
-  BEGIN INITIAL;
-  return token::WITH;
-}
-"modify"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::MODIFY;
-}
-
-}
-
-<MODE_OPERATOR>{
-"catch"{S}"(" {
-  yy_push_state(MODE_CATCH);
-  return token::CATCH_LPAR;
-}
-}
-
-<MODE_CATCH>{
-
-")" {
-  yy_pop_state();
-  return token::RPAR;
-}
-
-{QName}  {
-  BEGIN INITIAL;
-  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
-}
-
-"*" {
-  BEGIN INITIAL;
-  return token::STAR;
-}
-
-{NCName}":*" {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
-}
-
-"*:"{NCName} {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
-}
-
-}
-
-
   /*______________________________________________________________________
    |
    | FT rules <INITIAL>
@@ -1074,6 +977,167 @@ typedef zorba::xquery_parser::token token;
   /* END MODE INITIAL */
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*______________________________________________________________________
+    |
+    | Update rules <INITIAL,MODE_OPERATOR>
+    |______________________________________________________________________*/
+
+<INITIAL,MODE_OPERATOR>{
+
+"insert"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::INSERT_NODE;
+}
+"insert"{SP}"nodes"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::INSERT_NODES;
+}
+"delete"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::DELETE_NODE;
+}
+"delete"{SP}"nodes"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::DELETE_NODES;
+}
+"replace"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::REPLACE;
+}
+"replace"{SP}"value"{SP}"of"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::REPLACE_VALUE_OF;
+}
+"rename"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL;
+  getDriver()->set_rename(true);
+  return token::RENAME;
+}
+
+"copy"{SP}"$" {
+  BEGIN MODE_VARNAME;
+  return token::COPY_DOLLAR;
+}
+"into"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::INTO;
+}
+"after"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::AFTER;
+}
+"before"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::BEFORE;
+}
+"with"/{WordBreak}  {
+  BEGIN INITIAL;
+  return token::WITH;
+}
+"modify"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::MODIFY;
+}
+
+}  /* <INITIAL, MODE_OPERATOR> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<MODE_CATCH>{
+
+")" {
+  yy_pop_state();
+  return token::RPAR;
+}
+
+{QName}  {
+  BEGIN INITIAL;
+  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
+}
+
+"*" {
+  BEGIN INITIAL;
+  return token::STAR;
+}
+
+{NCName}":*" {
+  BEGIN MODE_OPERATOR;
+  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
+}
+
+"*:"{NCName} {
+  BEGIN MODE_OPERATOR;
+  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
+}
+
+}  /* <MODE_CATCH> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    |  The PROCESSING_INSTRUCTION_CTOR State
@@ -1096,7 +1160,27 @@ typedef zorba::xquery_parser::token token;
   /* eat up whitespace */
 }
 
-}
+}  /* <MODE_PROCESSING_INSTRUCTION_CTOR> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /*______________________________________________________________________
    |
@@ -1121,6 +1205,24 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_DECLAREORDERING> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   /*______________________________________________________________________
@@ -1151,6 +1253,29 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_DECLAREORDERING> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   /*______________________________________________________________________
@@ -1339,9 +1464,9 @@ typedef zorba::xquery_parser::token token;
   BEGIN INITIAL;
   return token::RETURN;
 }
-"eval"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::EVAL;
+"eval"{S}"{" {
+  PUSH_BEGIN (INITIAL, INITIAL);
+  return token::EVAL_LBRACE;
 }
 "satisfies"/{WordBreak} {
   BEGIN INITIAL;
@@ -1457,6 +1582,13 @@ typedef zorba::xquery_parser::token token;
   yy_push_state(MODE_EXPR_COMMENT);
 }
 
+
+  /* transition to MODE_CATCH   */
+  /* -------------------------- */
+"catch"{S}"(" {
+  yy_push_state(MODE_CATCH);
+  return token::CATCH_LPAR;
+}
 
   /* transition to URITOOPERATOR */
   /* --------------------------- */
@@ -1700,6 +1832,27 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | XQUERY_VERSION State
@@ -1731,6 +1884,23 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_XQUERY_VERSION> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1791,6 +1961,27 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | URITOOPERATOR State
@@ -1803,6 +1994,25 @@ typedef zorba::xquery_parser::token token;
   BEGIN MODE_OPERATOR;
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1879,6 +2089,26 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
     |
     | XMLSPACE_DECL State
@@ -1921,6 +2151,29 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | SINGLETYPE State
@@ -1953,6 +2206,33 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_SINGLETYPE> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2252,9 +2532,9 @@ typedef zorba::xquery_parser::token token;
   return token::RETURN;
 }
 
-"eval"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::EVAL;
+"eval"{S}"{" {
+  PUSH_BEGIN (INITIAL, INITIAL);
+  return token::EVAL_LBRACE;
 }
 
 "satisfies"/{WordBreak} {
@@ -2336,6 +2616,33 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | KINDTEST State
@@ -2403,6 +2710,33 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | KINDTESTFORPI
@@ -2446,6 +2780,24 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_KINDTESTFORPI> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2501,6 +2853,28 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_CLOSE_KINDTEST> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2561,6 +2935,32 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | OPTION State
@@ -2588,6 +2988,30 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_OPTION> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2628,6 +3052,31 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | PRAGMACONTENTS State
@@ -2650,6 +3099,36 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_PRAGMACONTENTS> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2687,6 +3166,32 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_VARNAME> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2754,6 +3259,28 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_START_TAG> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2849,6 +3376,32 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | END_TAG State
@@ -2883,6 +3436,26 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | XML_COMMENT State
@@ -2910,6 +3483,31 @@ typedef zorba::xquery_parser::token token;
    return token::UNRECOGNIZED;
  }
 } /* <MODE_XML_COMMENT> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2950,6 +3548,32 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | PROCESSING_INSTRUCTION State
@@ -2986,6 +3610,31 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | PROCESSING_INSTRUCTION_CONTENT State
@@ -3004,6 +3653,27 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_PROCESSING_INSTRUCTION_CONTENT> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3032,6 +3702,32 @@ typedef zorba::xquery_parser::token token;
 }
 
 } /* <MODE_CDATA_SECTION> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3097,6 +3793,37 @@ typedef zorba::xquery_parser::token token;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*______________________________________________________________________
    |
    | APOS_ATTRIBUTE_CONTENT State
@@ -3151,10 +3878,55 @@ typedef zorba::xquery_parser::token token;
 } /* <MODE_APOS_ATTRIBUTE_CONTENT> */
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <*>. return token::UNRECOGNIZED;
 
-%%
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* END OF FLEX RULES */
+
+%%
 
 /*
   Finally, because the scanner related driver's member function depend
