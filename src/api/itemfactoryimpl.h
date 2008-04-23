@@ -196,7 +196,7 @@ namespace zorba {
       createToken ( const String& aValue );
     
       virtual Item
-      createUnsignedByte(const char aValue);
+      createUnsignedByte(const unsigned char aValue);
     
       virtual Item
       createUnsignedInt(unsigned int aValue);

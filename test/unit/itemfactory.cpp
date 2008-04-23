@@ -205,6 +205,15 @@ int itemfactory(int argc, char* argv[])
     assert ( !lItem.isPosOrNegInf() );
     assert ( lItem.isNaN() );
 
+    /* Unsigned Byte */
+    lItem = lFactory->createUnsignedByte('a');
+    assert ( checkType(lItem.getType(), "unsignedByte") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "97" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+
     /* Unsigned Short */
     lItem = lFactory->createUnsignedShort(10);
     assert ( checkType(lItem.getType(), "unsignedShort") );

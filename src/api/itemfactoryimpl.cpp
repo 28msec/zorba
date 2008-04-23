@@ -554,9 +554,10 @@ namespace zorba {
   }
     
   Item
-  ItemFactoryImpl::createUnsignedByte(const char aValue)
+  ItemFactoryImpl::createUnsignedByte(const unsigned char aValue)
   {
     store::Item_t lItem;
+    lItem = theItemFactory->createUnsignedByte(aValue);
     return &*lItem;
   }
     

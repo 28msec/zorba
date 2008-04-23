@@ -577,11 +577,11 @@ namespace zorba {
       /** \brief Creates an Unsigned Byte Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
        *
-       * @param aValue unsignedByte char representation of the unsigned byte
+       * @param aValue unsignedByte unsigned char representation of the unsigned byte
        * @return The Unsigned Byte Item
        */
       virtual Item
-      createUnsignedByte(const char aValue) = 0;
+      createUnsignedByte(const unsigned char aValue) = 0;
     
       /** \brief Creates an unsigned int Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
