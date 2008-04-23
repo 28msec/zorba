@@ -166,6 +166,22 @@ public:
 
 #endif
 
+namespace RCHelper {
+  template<class T>
+  static void addReference(T *t)
+  {
+    t->addReference(t->getSharedRefCounter()
+                    SYNC_PARAM2(t->getRCLock()));
+  }
+  
+  template<class T>
+  static void removeReference(T *t)
+  {
+    t->removeReference(t->getSharedRefCounter()
+                       SYNC_PARAM2(t->getRCLock()));
+  }
+};
+
 
 /*******************************************************************************
   
@@ -299,10 +315,6 @@ public:
   SYNC_CODE(RCLock* getRCLock() const { return NULL; })
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
-
-  void safeRemoveRef () {
-    removeReference(getSharedRefCounter() SYNC_PARAM2(getRCLock()));
-  }
 };
 
 
@@ -459,21 +471,18 @@ public:
 };
 
 
-class RCHelper {
-  public:
-    template<class T>
-    static void addReference(T *t)
-    {
-      t->addReference(t->getSharedRefCounter()
-          SYNC_PARAM2(t->getRCLock()));
-    }
-
-    template<class T>
-    static void removeReference(T *t)
-    {
-      t->removeReference(t->getSharedRefCounter()
-          SYNC_PARAM2(t->getRCLock()));
-    }
+namespace RCHelper {
+  template<class T>
+  static void addReference(rchandle<T> &t)
+  {
+    addReference (t.getp ());
+  }
+  
+  template<class T>
+  static void removeReference(rchandle<T> &t)
+  {
+    removeReference (t.getp ());
+  }
 };
 
 

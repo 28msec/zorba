@@ -101,12 +101,10 @@ dynamic_context::~dynamic_context()
       case dynamic_context::dctx_value_t::no_val:
         break;
       case dynamic_context::dctx_value_t::var_iterator_val:
-        val->val.var_iterator->removeReference(val->val.var_iterator->getSharedRefCounter()
-                                               SYNC_PARAM2(val->val.var_iterator->getRCLock()));
+        RCHelper::removeReference (val->val.var_iterator);
         break;
       case dynamic_context::dctx_value_t::temp_seq_val:
-        val->val.temp_seq->removeReference(val->val.temp_seq->getSharedRefCounter()
-                                           SYNC_PARAM2(val->val.temp_seq->getRCLock()));
+        RCHelper::removeReference (val->val.temp_seq);
         break;
       default:
         assert (false);
@@ -220,8 +218,7 @@ void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_it
   var_iterator->open ();
   store::TempSeq_t seq = GENV_STORE.createTempSeq (var_iterator.getp());
   var_iterator->close ();
-  seq->addReference(seq->getSharedRefCounter()
-                    SYNC_PARAM2(seq->getRCLock()));
+  RCHelper::addReference (seq);
   v.type = dynamic_context::dctx_value_t::temp_seq_val;
   v.in_progress = false;
   v.val.temp_seq = seq.getp();

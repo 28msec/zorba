@@ -95,10 +95,8 @@ protected:
     return (context_value (key, val)) ? val.functionValue : NULL;
   }
 
-  void bind_expr (xqp_string key, expr *e) {
-    ctx_value_t v = { e };
-    keymap.put (key, v);
-  }
+  // defined in in static_context.cpp
+  void bind_expr (xqp_string key, expr *e);
 
   void bind_func (xqp_string key, function *f) {
     ctx_value_t v;

@@ -31,7 +31,14 @@
 #include <assert.h>
 
 #include <zorba/stateless_function.h>
+
 #include "context/static_context_consts.h"
+#include "context/static_context.h"
+#include "context/namespace_context.h"
+#include "context/collation_cache.h"
+
+#include "compiler/expression/expr.h"
+
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/Unicode_util.h"
 #include "zorbatypes/URI.h"
@@ -40,16 +47,16 @@
 
 #include "errors/error_manager.h"
 #include "system/globalenv.h"
-#include "context/static_context.h"
-#include "context/namespace_context.h"
+
 #include "types/typemanager.h"
+#include "types/casting.h"
+
 #include "functions/function.h"
 #include "functions/library.h"
-#include "types/casting.h"
 #include "functions/signature.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-#include "context/collation_cache.h"
 
 
 // MS Visual Studio does not fully support throw(), and issues a warning
@@ -89,7 +96,6 @@ static_context::~static_context()
   ///free the pointers from ctx_value_t from keymap
   checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
   const char		*keybuff;
-  const ctx_value_t *val;
   
   //keybuff[sizeof(keybuff)-1] = 0;
   for(it = keymap.begin();it!=keymap.end();it++)
@@ -97,19 +103,25 @@ static_context::~static_context()
     ///it is an entry
     //keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
     keybuff = (*it).key.c_str();
-    if(!strncmp(keybuff, "type:", 5))
-		{
-      val = &(*it).val;
-      const_cast<XQType *> (val->typeValue)->removeReference(val->typeValue->getSharedRefCounter()
-                                                             SYNC_PARAM2(val->typeValue->getRCLock()));
-    }
-    else if (!strncmp(keybuff, "fn:", 3))
-    {
-      val = &(*it).val;
+    const ctx_value_t *val = &(*it).val;
+
+    if (0 == strncmp(keybuff, "type:", 5)) {
+      RCHelper::removeReference (const_cast<XQType *> (val->typeValue));
+    } else if (0 == strncmp(keybuff, "var:", 4)) {
+      RCHelper::removeReference (const_cast<expr *> (val->exprValue));
+    } else if (0 == strncmp(keybuff, "fn:", 3)) {
       delete val->functionValue;
     }
   }
 }
+
+void context::bind_expr (xqp_string key, expr *e) {
+  ctx_value_t v = { e };
+  RCHelper::addReference (e);
+  keymap.put (key, v);
+}
+
+
 
 DECL_ENUM_PARAM (static_context, construction_mode)
 DECL_ENUM_PARAM (static_context, order_empty_mode)
@@ -283,8 +295,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
 		ctx_value_t v;
     v.typeValue = &*t;
     keymap.put (key, v);
-		t->addReference(t->getSharedRefCounter()
-                    SYNC_PARAM2(t->getRCLock()));///will be decremented in static context destructor
+    RCHelper::addReference (const_cast<XQType *> (t.getp ()));
 	}
 
 	void static_context::add_variable_type(
