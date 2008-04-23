@@ -1,12 +1,15 @@
 #include <zorba/item.h>
+#include <boost/cast.hpp>
 #include "errors/errors.h"
 #include "api/itemfactoryimpl.h"
 
+#include "zorbatypes/duration.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
 #include "api/unmarshaller.h"
 
 #include "store/api/item.h"
+
 
 namespace zorba {
   
@@ -175,6 +178,8 @@ namespace zorba {
   ItemFactoryImpl::createLong ( long long aLong )
   {
     store::Item_t lItem;
+
+    lItem = theItemFactory->createLong(aLong);
     return &*lItem;
   }
     
@@ -182,6 +187,14 @@ namespace zorba {
   ItemFactoryImpl::createInt ( int aInt )
   {
     store::Item_t lItem;
+
+    try {
+      int32_t lInteger = boost::numeric_cast<int32_t>(aInt);
+      lItem = theItemFactory->createInt(lInteger);
+    } catch (boost::bad_numeric_cast e) {
+      return &*lItem;
+    }
+
     return &*lItem;
   }
     
@@ -189,23 +202,22 @@ namespace zorba {
   ItemFactoryImpl::createShort ( short aShort )
   {
     store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createByte ( char value )
-  {
-    store::Item_t lItem;
-    return &*lItem;
-  }
-    
-  Item
-  ItemFactoryImpl::createDate ( short aYear, short aMonth, short aDay )
-  {
-    store::Item_t lItem;
-    return &*lItem;
-  }
 
+    lItem = theItemFactory->createShort(aShort);
+
+    return &*lItem;
+  }
+    
+  Item
+  ItemFactoryImpl::createByte ( char aValue )
+  {
+    store::Item_t lItem;
+  
+    lItem = theItemFactory->createByte(aValue);
+
+    return &*lItem;
+  }
+    
   Item
   ItemFactoryImpl::createDateTime(short year, short month, short day, 
                                   short hour, short minute, short second, 
@@ -232,6 +244,8 @@ namespace zorba {
   ItemFactoryImpl::createDouble ( double aValue )
   {
     store::Item_t lItem;
+    Double lDouble = Double::parseFloatType(aValue);
+    lItem = theItemFactory->createDouble(lDouble);
     return &*lItem;
   }
 
@@ -239,7 +253,12 @@ namespace zorba {
   ItemFactoryImpl::createDouble ( const String& aValue )
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
+  
     store::Item_t lItem;
+    Double lDouble;
+    if (Double::parseString(lString->c_str(), lDouble)) {
+      lItem = theItemFactory->createDouble(lDouble);
+    } 
     return &*lItem;
   }
     
@@ -247,7 +266,15 @@ namespace zorba {
   ItemFactoryImpl::createDuration( const String& aValue )
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
+    const xqpString s = lString;
     store::Item_t lItem;
+
+    Duration_t lDuration;
+    if (Duration::parse_string(s, lDuration)) {
+      // TODO
+ //     lItem = theItemFactory->createDuration(lDuration);
+    }
+
     return &*lItem;
   }
       
@@ -256,6 +283,7 @@ namespace zorba {
                        short aHours, short aMinutes, short aSeconds )
   {
     store::Item_t lItem;
+    // TODO
     return &*lItem;
   }
     
@@ -542,9 +570,10 @@ namespace zorba {
   }
     
   Item
-  ItemFactoryImpl::createUnsignedLong(unsigned long aValue)
+  ItemFactoryImpl::createUnsignedLong(unsigned long long aValue)
   {
     store::Item_t lItem;
+    lItem = theItemFactory->createUnsignedLong(aValue);
     return &*lItem;
   }
     
@@ -552,6 +581,7 @@ namespace zorba {
   ItemFactoryImpl::createUnsignedShort(unsigned short aValue)
   {
     store::Item_t lItem;
+    lItem = theItemFactory->createUnsignedShort(aValue);
     return &*lItem;
   }
 } /* namespace zorba */

@@ -71,9 +71,6 @@ namespace zorba {
       createDate ( const String& aDate );
       
       virtual Item
-      createDate ( short aYear, short aMonth, short aDay );
-
-      virtual Item
       createDateTime(short aYear, short aMonth, short aDay, 
                      short aHour, short aMinute, short aSecond, 
                      short aTimezone);
@@ -205,7 +202,7 @@ namespace zorba {
       createUnsignedInt(unsigned int aValue);
     
       virtual Item
-      createUnsignedLong(unsigned long aValue);
+      createUnsignedLong(unsigned long long aValue);
     
       virtual Item
       createUnsignedShort(unsigned short aValue);

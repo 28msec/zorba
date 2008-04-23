@@ -81,15 +81,15 @@ namespace zorba
        */
       static int
       createDateTime(int years, int months, int days,
-                         int hours, int minutes, int seconds, int fractional_seconds, DateTime_t& dt_t);
+                     int hours, int minutes, int seconds, int fractional_seconds, DateTime_t& dt_t);
       
       /**
        *  The function will use the absolute values of all int parameters except years. TimeZone may be NULL
        */
       static int
       createDateTime(int years, int months, int days,
-                         int hours, int minutes, int seconds, int fractional_seconds,
-                         TimeZone_t& tz_t, DateTime_t& dt_t);
+                     int hours, int minutes, int seconds, int fractional_seconds,
+                     TimeZone_t& tz_t, DateTime_t& dt_t);
 
       /**
        *  The function will use the absolute values of all int parameters except years. TimeZone is a reference

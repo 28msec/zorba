@@ -132,6 +132,96 @@ int itemfactory(int argc, char* argv[])
     lItem = lFactory->createInteger("NaN");
     assert ( lItem.isNull() );
 
+    /** Int */
+    lItem = lFactory->createInt(23424223);
+    assert ( checkType(lItem.getType(), "int") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "23424223" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.isNaN() );
+    CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /** Short */
+    lItem = lFactory->createShort(233);
+    assert ( checkType(lItem.getType(), "short") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "233" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.isNaN() );
+    CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+    
+    /** Char */
+    lItem = lFactory->createByte('a');
+    assert ( checkType(lItem.getType(), "byte") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "97" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /** Double */
+    lItem = lFactory->createDouble(213123);
+    assert ( checkType(lItem.getType(), "double") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "213123" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    double x = 0;
+    lItem = lFactory->createDouble(static_cast<double>(x)/static_cast<double>(x));
+    assert ( checkType(lItem.getType(), "double") );
+    assert ( lItem.isNaN() );
+
+    lItem = lFactory->createDouble(std::numeric_limits<double>::infinity());
+    assert ( checkType(lItem.getType(), "double") );
+    assert ( lItem.isPosOrNegInf() );
+
+    lItem = lFactory->createDouble("213123");
+    assert ( lItem.getStringValue() == "213123" );
+
+    lItem = lFactory->createDouble("INF");
+    assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.isNaN() );
+
+    lItem = lFactory->createDouble("-INF");
+    assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.isNaN() );
+
+    lItem = lFactory->createDouble("-inf");
+    assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.isNaN() );
+
+    lItem = lFactory->createDouble("inf");
+    assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.isNaN() );
+
+    lItem = lFactory->createDouble("NAN");
+    assert ( !lItem.isPosOrNegInf() );
+    assert ( lItem.isNaN() );
+
+    lItem = lFactory->createDouble("nAn");
+    assert ( !lItem.isPosOrNegInf() );
+    assert ( lItem.isNaN() );
+
+    /* Unsigned Short */
+    lItem = lFactory->createUnsignedShort(10);
+    assert ( checkType(lItem.getType(), "unsignedShort") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "10" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /* Unsigned Long */
+    lItem = lFactory->createUnsignedLong(10);
+    assert ( checkType(lItem.getType(), "unsignedLong") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "10" );
+    assert ( lItem.getEBV().getBooleanValue() );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+
   } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return 1;

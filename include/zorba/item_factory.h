@@ -181,17 +181,6 @@ namespace zorba {
       virtual Item
       createDate ( const String& aDate ) = 0;
       
-      /** \brief Creates a Date Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#date]
-       *
-       * @param aYear String representation of the year.
-       * @param aMonth String representation of the month.
-       * @param aDay String representation of the day.
-       * @return The Date Item
-       */
-      virtual Item
-      createDate ( short aYear, short aMonth, short aDay ) = 0;
-
       /** \brief Creates a DateTime Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
        *
@@ -605,11 +594,11 @@ namespace zorba {
       /** \brief Creates an unsignedLong Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
        *
-       * @param aValue unsignedLong long representation of the unsignedLong.
+       * @param aValue unsignedLong long long representation of the unsignedLong.
        * @return The unsignedLong Item
        */
       virtual Item
-      createUnsignedLong(unsigned long aValue) = 0;
+      createUnsignedLong(unsigned long long aValue) = 0;
     
       /** \brief Creates a unsignedShort Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
