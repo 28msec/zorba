@@ -82,9 +82,11 @@ uint32_t FloatImplTraits<double>::hash(FloatCommons::NumType aType, MAPM aMAPM) 
     return 0;
   }
 
-  Float lFloat(aType, aMAPM % 65535);
+  Double lDouble(aType, aMAPM % 65535);
+  if (lDouble < Double::zero())
+    lDouble = -lDouble;
   Integer lInteger;
-  Integer::parseFloat(lFloat, lInteger);
+  Integer::parseDouble(lDouble, lInteger);
   uint32_t lHash;
   NumConversions::integerToUInt(lInteger, lHash);
   return lHash;
@@ -125,6 +127,8 @@ uint32_t FloatImplTraits<float>::hash(FloatCommons::NumType aType, MAPM aMAPM) {
   }
 
   Float lFloat(aType, aMAPM % 65535);
+  if (lFloat < Float::zero())
+    lFloat = -lFloat;
   Integer lInteger;
   Integer::parseFloat(lFloat, lInteger);
   uint32_t lHash;

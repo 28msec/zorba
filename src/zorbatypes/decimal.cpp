@@ -387,6 +387,8 @@ uint32_t Decimal::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   Decimal lDecimal(theDecimal %  65535);
+  if (lDecimal < Decimal::zero())
+    lDecimal = -lDecimal;
   Integer lInteger = Integer::parseDecimal(lDecimal);
   uint32_t lHash;
   NumConversions::integerToUInt(lInteger, lHash);
