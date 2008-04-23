@@ -98,6 +98,8 @@ dynamic_context::~dynamic_context()
 		{
 			val = &(*it).val;
       switch (val->type) {
+      case dynamic_context::dctx_value_t::no_val:
+        break;
       case dynamic_context::dctx_value_t::var_iterator_val:
         val->val.var_iterator->removeReference(val->val.var_iterator->getSharedRefCounter()
                                                SYNC_PARAM2(val->val.var_iterator->getRCLock()));
@@ -106,7 +108,8 @@ dynamic_context::~dynamic_context()
         val->val.temp_seq->removeReference(val->val.temp_seq->getSharedRefCounter()
                                            SYNC_PARAM2(val->val.temp_seq->getRCLock()));
         break;
-      default: assert (false);
+      default:
+        assert (false);
       }
 		}
 	}
@@ -210,6 +213,10 @@ void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_it
 {
   // TODO: lazy conversion to a temp sequence
   dctx_value_t v;
+  v.type = dynamic_context::dctx_value_t::no_val;
+  v.in_progress = true;
+  keymap.put ("var:" + var_name, v);
+
   var_iterator->open ();
   store::TempSeq_t seq = GENV_STORE.createTempSeq (var_iterator.getp());
   var_iterator->close ();
@@ -236,6 +243,8 @@ store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) {
     else
       return NULL;///variable not found
 	}
+  if (val.in_progress)
+    ZORBA_ERROR (ZorbaError::XQST0054);
   assert (val.type == dynamic_context::dctx_value_t::temp_seq_val);
   return val.val.temp_seq->getIterator ();
 }

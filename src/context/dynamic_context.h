@@ -39,7 +39,8 @@ class dynamic_context
 protected:
 
   typedef struct {
-    enum { var_iterator_val, temp_seq_val } type;
+    enum { no_val, var_iterator_val, temp_seq_val } type;
+    bool in_progress;
     union
     {
       store::Iterator* var_iterator;
