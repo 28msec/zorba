@@ -103,7 +103,6 @@ XmlNode::XmlNode() : Item(), theParent(NULL)
 {
   ZORBA_FATAL(tree != NULL && tree->getRoot() == NULL, "");
 
-  SYNC_CODE(theRCLockPtr = &(tree->getRCLock());)
   setTree(tree);
   tree->setRoot(this);
 
@@ -130,7 +129,6 @@ XmlNode::XmlNode(XmlNode* parent, StoreConsts::NodeKind nodeKind)
   assert(parent->getTree() != NULL);
 
   setTree(parent->getTree());
-  SYNC_CODE(theRCLockPtr = &(getTree()->getRCLock());)
 
   if (nodeKind == StoreConsts::attributeNode)
   {
@@ -171,7 +169,6 @@ XmlNode::XmlNode(XmlNode* parent, ulong pos, StoreConsts::NodeKind nodeKind)
   assert(parent->getTree() != NULL);
 
   setTree(parent->getTree());
-  SYNC_CODE(theRCLockPtr = &(getTree()->getRCLock());)
 
   setOrdPath(parent, pos, nodeKind);
 
@@ -188,6 +185,16 @@ XmlNode::XmlNode(XmlNode* parent, ulong pos, StoreConsts::NodeKind nodeKind)
 XmlNode::~XmlNode()
 {
   ZORBA_ASSERT(theRefCount == 0);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::setTree(const XmlTree* t)
+{
+  theTreeRCPtr = (long*)t;
+  SYNC_CODE(theRCLockPtr = &(t->getRCLock());)
 }
 
 
@@ -566,7 +573,11 @@ void XmlNode::switchTree(
 
     oldTree->getRefCount() -= refcount;
     if (oldTree->getRefCount() == 0)
+    {
+      SYNC_CODE(oldTree->getRCLock().release());
       oldTree->free();
+      oldTree = NULL;
+    }
   }
   catch(...)
   {
@@ -575,7 +586,8 @@ void XmlNode::switchTree(
     throw;
   }
 
-  SYNC_CODE(oldTree->getRCLock().release());
+  if (oldTree)
+    SYNC_CODE(oldTree->getRCLock().release());
 }
 
 

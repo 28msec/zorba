@@ -47,7 +47,7 @@ public:
   void addReference()           { ++theRefCount; }
   void removeReference()        { --theRefCount; }
 
-  SYNC_CODE(RCLock& getRCLock() { return theRCLock; })
+  SYNC_CODE(RCLock& getRCLock() const { return theRCLock; })
 
   ulong getId() const           { return theId; }
   XmlNode* getRoot() const      { return theRootNode; }
@@ -154,8 +154,8 @@ public:
 
   void setParent(XmlNode* p)        { theParent = p; }
 
+  void setTree(const XmlTree* t);
   XmlTree* getTree() const          { return (XmlTree*)theTreeRCPtr; }
-  void setTree(const XmlTree* t)    { theTreeRCPtr = (long*)t; }
   ulong getTreeId() const           { return getTree()->getId(); }
   const OrdPath& getOrdPath() const { return theOrdPath; }
   OrdPath& getOrdPath()             { return theOrdPath; }
