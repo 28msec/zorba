@@ -6,8 +6,6 @@
 namespace zorba{
 
   class DefaultContentHandler: public SAX2_ContentHandler,
-                               public SAX2_DTDHandler,
-                               public SAX2_DeclHandler,
                                public SAX2_LexicalHandler
   {
     public:

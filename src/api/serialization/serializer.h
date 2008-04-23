@@ -284,8 +284,6 @@ public:
   {
   protected:
     SAX2_ContentHandler * theSAX2ContentHandler;
-    SAX2_DTDHandler     * theSAX2DTDHandler;
-    SAX2_DeclHandler    * theSAX2DeclHandler;
     SAX2_LexicalHandler * theSAX2LexicalHandler;
 
     SAX2LocatorImpl       theLocator;

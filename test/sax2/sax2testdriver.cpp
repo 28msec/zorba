@@ -162,16 +162,6 @@ class TestContentHandler: public DefaultContentHandler
   {
     theOStream << "endCDATA()" << std::endl;
   }
-
-  void startEntity( const String & name )
-  {
-    theOStream << "startEntity: " << name << std::endl;
-  }
-  
-  void endEntity( const String & name )
-  {
-    theOStream << "startEntity: " << name << std::endl;
-  }
 };
 
 class TestErrorHandler : public zorba::ErrorHandler {

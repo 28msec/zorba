@@ -788,11 +788,8 @@ serializer::sax2_emitter::sax2_emitter( serializer * the_serializer, transcoder 
   : 
       emitter(the_serializer, the_transcoder),
       theSAX2ContentHandler( aSAX2ContentHandler ),
-      theSAX2DTDHandler( 0 ),
-      theSAX2DeclHandler( 0 )
+      theSAX2LexicalHandler( 0 )
   {
-    theSAX2DeclHandler    = dynamic_cast< SAX2_DeclHandler * >( aSAX2ContentHandler );
-    theSAX2DTDHandler     = dynamic_cast< SAX2_DTDHandler * >( aSAX2ContentHandler );
     theSAX2LexicalHandler = dynamic_cast< SAX2_LexicalHandler * >( aSAX2ContentHandler );
   }
 
