@@ -2392,7 +2392,10 @@ void end_visit(const ModuleImport& /*v*/, void* /*visit_state*/)
 void *begin_visit(const NamespaceDecl& v)
 {
   TRACE_VISIT ();
-  sctx_p->bind_ns (v.get_prefix (), v.get_uri ());
+  xqp_string pre = v.get_prefix (), uri = v.get_uri ();
+  if (pre == "xml" || pre == "xmlns" || uri == XML_NS)
+    ZORBA_ERROR_LOC (ZorbaError::XQST0070, v.get_location ());
+  sctx_p->bind_ns (pre, uri);
   return NULL;
 }
 
