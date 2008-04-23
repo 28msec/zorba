@@ -365,7 +365,6 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
 
     if (lTargetKind == store::StoreConsts::elementNode)
     {
-
       withWrapper = new PlanIteratorWrapper(theChild1, aPlanState);
 
       lWith = GENV_ITEMFACTORY->createTextNode((ulong)&aPlanState,
@@ -373,7 +372,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
                                                false,
                                                true);
 
-      lPul->addReplaceContent(lTarget, lWith, theDoCopy, lCopyMode);
+      lPul->addReplaceContent(lTarget, lWith, false, lCopyMode);
     }
     else
     {
