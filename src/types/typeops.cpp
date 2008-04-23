@@ -7,6 +7,7 @@
 #include "store/api/item.h"
 #include "types/root_typemanager.h"
 #include "util/Assert.h"
+#include "types/delegating_typemanager.h"
 
 namespace zorba {
 
@@ -116,8 +117,8 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       }
       case XQType::USER_DEFINED_KIND:
       {
-        const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
-        return udSubType.isSubTypeOf(supertype);
+        //const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+        return false; //udSubType.isSubTypeOf(supertype);
       }
       default:
         return false;
@@ -218,7 +219,7 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
     case XQType::USER_DEFINED_KIND:
     {
       const UserDefinedXQType& udSuperType = dynamic_cast<const UserDefinedXQType&>(supertype);
-      return udSuperType.isSubTypeOf(subtype);
+      return udSuperType.isSuperTypeOf(subtype);
     }
   }
   return false;
@@ -384,6 +385,14 @@ xqtref_t TypeOps::prime_type(const XQType& type) {
     const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
     return type.get_manager()->create_node_type(ntype.get_nodetest(), ntype.get_content_type(), TypeConstants::QUANT_ONE);
   }
+  case XQType::USER_DEFINED_KIND:
+  {
+    const UserDefinedXQType& udType = static_cast<const UserDefinedXQType&>(type);
+    const DelegatingTypeManager* delTM = static_cast<const DelegatingTypeManager*>(type.get_manager());
+
+    return delTM->create_named_type(udType.getQName(), TypeConstants::QUANT_ONE);
+  }
+
   default:
     ZORBA_ASSERT(false);
     return NULL;

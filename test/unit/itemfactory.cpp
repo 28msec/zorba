@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <limits>
 
 #include <zorba/zorba.h>
 

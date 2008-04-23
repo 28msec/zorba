@@ -159,7 +159,7 @@ public:
 
     UserDefinedXQType(const TypeManager *manager, store::Item_t qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
     
-    bool isSubTypeOf(const XQType& superType) const;
+    bool isSuperTypeOf(const XQType& subType) const;
 
     store::Item_t getQName() const { return _qname;    }
     bool isAtomic()          const { return _isAtomic; }

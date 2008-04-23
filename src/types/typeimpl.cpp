@@ -135,20 +135,19 @@ UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t q
     }        
 }
 
-bool UserDefinedXQType::isSubTypeOf(const XQType& superType) const
+bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 {
-    if (this==&superType)
+    if (this==&subType)
     {
         return true;
     }
     
-    //const XQType* baseType_ptr = &getBaseType();
     xqtref_t baseType = getBaseType();
     const XQType* baseType_ptr = baseType.getp();
 
     do
     {
-        if (baseType_ptr == &superType)
+        if (baseType_ptr == &subType)
             return true;
         
         switch(baseType_ptr->type_kind())
@@ -159,8 +158,7 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& superType) const
             
         case XQType::USER_DEFINED_KIND:
             {
-                UserDefinedXQType* udBaseType_ptr = (UserDefinedXQType*)(baseType_ptr);//static_cast<UD&>(baseType);
-                //baseType_ptr = &(udBaseType_ptr->getBaseType());
+                const UserDefinedXQType* udBaseType_ptr = static_cast<const UserDefinedXQType*>(baseType_ptr);
                 baseType_ptr = udBaseType_ptr->getBaseType().getp();
             }
             break;
