@@ -51,8 +51,6 @@ public:
 
   Item_t createBase64Binary(xqp_base64Binary value);
 
-  Item_t createBase64Binary(const char* value, size_t length);
-
   Item_t createBoolean(xqp_boolean value);
 
   Item_t createDecimal(xqp_decimal value);

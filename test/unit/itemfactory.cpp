@@ -89,6 +89,20 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.getStringValue().length() == 96 );
     CHECK_NOT_IMPLEMENTED (lItem, getBooleanValue() );
 
+    /** HexBinary */
+    lItem = lFactory->createHexBinary("", 0);
+    assert ( checkType(lItem.getType(), "hexBinary") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "" );
+    assert ( lItem.getStringValue().length() == 0 );
+
+    lItem = lFactory->createHexBinary("d433abfb43281793214aac", 22);
+    assert ( checkType(lItem.getType(), "hexBinary") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "D433ABFB43281793214AAC" );
+    assert ( lItem.getStringValue().length() == 22 );
+    CHECK_NOT_IMPLEMENTED (lItem, getBooleanValue() );
+
     /** Boolean */
     lItem = lFactory->createBoolean(true);
     assert ( checkType(lItem.getType(), "boolean") );

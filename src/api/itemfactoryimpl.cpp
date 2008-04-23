@@ -98,12 +98,11 @@ namespace zorba {
   ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
   {
     store::Item_t lItem;
-    try { 
-      lItem = theItemFactory->createBase64Binary(aBinData, aLength);
-      return &*lItem;
-    } catch (error::ZorbaError &e) {
-      return &*lItem;
-    }
+    xqp_base64Binary n;
+    if (xqp_base64Binary::parseString(aBinData, aLength, n))
+      lItem = theItemFactory->createBase64Binary(n);
+    
+    return &*lItem;
   }
       
   Item 
@@ -388,6 +387,10 @@ namespace zorba {
   ItemFactoryImpl::createHexBinary ( const char* aHexData, size_t aSize )
   {
     store::Item_t lItem;
+    xqp_hexBinary n;
+    if (xqp_hexBinary::parseString(aHexData, aSize, n))
+      lItem = theItemFactory->createHexBinary(n);
+    
     return &*lItem;
   }
     

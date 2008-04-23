@@ -36,6 +36,17 @@ Base64::Base64(const Base16& aBase16)
   theData = Base64::encode(lOrig);
 }
 
+bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
+{
+  aBase64.theData.clear();
+  try {
+    aBase64.insertData(aString, aLength);
+  } catch (...) {
+    return false;
+  }
+  return true;
+}
+
 void Base64::insertData(const char* aCharStar, size_t len)
 {
   if (len % 4 != 0) {
@@ -281,6 +292,17 @@ Base16::Base16(const Base64& aBase64)
 {
   std::vector<char> lOrig = Base64::decode(aBase64.getData());
   theData = Base16::encode(lOrig);
+}
+
+bool Base16::parseString(const char* aString, size_t aLength, Base16& aBase16)
+{
+  aBase16.theData.clear();
+  try {
+    aBase16.insertData(aString, aLength);
+  } catch (...) {
+    return false;
+  }
+  return true;
 }
 
 void Base16::insertData(const char* aCharStar, size_t len)

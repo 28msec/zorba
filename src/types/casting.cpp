@@ -355,21 +355,25 @@ inline store::Item_t str_bool(store::Item* aItem, store::ItemFactory* aFactory)
 
 inline store::Item_t str_b64(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  // TODO currently, the parse exception of Base64 is thrown in the constructor
-  // of Base64.
-  // Constructor of Base64 that accepts string must be be removed!!
-  return aFactory->createBase64Binary(xqp_base64Binary(aItem->getStringValue().getp()));
+  xqp_base64Binary n;
+  if (xqp_base64Binary::parseString(aItem->getStringValue().getp(), n))
+    return aFactory->createBase64Binary(n);
+  else
+    return 0;
 }
 
 inline store::Item_t str_hxB(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  // TODO the same as for str_b64
-  return aFactory->createHexBinary(xqp_hexBinary(aItem->getStringValue().getp()));
+  xqp_hexBinary n;
+  if (xqp_hexBinary::parseString(aItem->getStringValue().getp(), n))
+    return aFactory->createHexBinary(n);
+  else
+    return 0;
 }
 
 inline store::Item_t str_aURI(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  // TODO the same as for str_b64
+  // TODO createAnyURI does not always succeed
   return aFactory->createAnyURI(aItem->getStringValue());
 }
 
@@ -1660,15 +1664,25 @@ store::Item_t GenericCast::stringSimpleCast(
   {
     if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(HEXBINARY)))
       return factory->createBase64Binary(xqp_base64Binary(aSourceItem->getHexBinaryValue()));
-    else
-      return factory->createBase64Binary(xqp_base64Binary(lString.getp()));
+    else {
+      xqp_base64Binary n;
+      // This is a hack, but will be removed anyway
+      if (xqp_base64Binary::parseString(xqpString(&*lString),n))
+        return factory->createBase64Binary(n);
+    }
+    break;
   }
   case TypeConstants::XS_HEXBINARY:
   {
     if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(BASE64BINARY)))
       return factory->createHexBinary(xqp_hexBinary(aSourceItem->getBase64BinaryValue()));
-   else
-      return factory->createHexBinary(xqp_hexBinary(lString.getp()));
+    else {
+      xqp_hexBinary n;
+      // This is a hack, but will be removed anyway
+      if (xqp_hexBinary::parseString(xqpString(&*lString), n))
+        return factory->createHexBinary(n);
+    }
+    break;
   }
   case TypeConstants::XS_ANY_URI:
     return factory->createAnyURI(lString);

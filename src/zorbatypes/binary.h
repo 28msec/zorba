@@ -23,12 +23,16 @@ public:
   Base64(const Base64& aBase64) { theData = aBase64.theData; }
   explicit Base64(const Base16& aBase16);
   Base64() {}
-  Base64(const char* aCharStar, size_t len) { insertData(aCharStar, len); }
-  Base64(const xqpString& aString) { insertData(aString.c_str(), aString.length()); }
+
+  static bool parseString(const xqpString& aString, Base64& aBase64) {
+    return parseString(aString.c_str(), aString.length(), aBase64);
+  }
+  static bool parseString(const char* aString, size_t aLength, Base64& aBase64);
 
 private:
   void insertData(const char* aCharStar, size_t len);
 public:
+
   const std::vector<char>& getData() const { return theData; }
   size_t size() const { return theData.size(); }
   bool equal(const Base64& aBase64) const;
@@ -58,8 +62,11 @@ public:
   Base16(const Base16& aBase16) { theData = aBase16.theData; }
   explicit Base16(const Base64& aBase64);
   Base16() {}
-  Base16(const char* aCharStar, size_t len) { insertData(aCharStar, len);}
-  Base16(const xqpString& aString) { insertData(aString.c_str(), aString.length()); }
+
+  static bool parseString(const xqpString& aString, Base16& aBase16) {
+    return parseString(aString.c_str(), aString.length(), aBase16);
+  }
+  static bool parseString(const char* aString, size_t aLength, Base16& aBase16);
 
 private:
   void insertData(const char* aCharStar, size_t len);
