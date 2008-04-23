@@ -2,7 +2,7 @@
 #define ZORBA_EXPR_ANNOTATIONS_H
 
 #include <set>
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
 
 namespace zorba {
 

@@ -12,7 +12,9 @@
 
 #include "compiler/parser/parse_constants.h"
 
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
+
+#include "store/api/fullText/ft_options.h"
 
 namespace zorba {
 

@@ -1,5 +1,5 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
 #include "compiler/api/compilercb.h"
 
 namespace zorba {

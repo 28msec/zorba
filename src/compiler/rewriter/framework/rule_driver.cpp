@@ -1,4 +1,4 @@
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
 #include "compiler/rewriter/framework/rule_driver.h"
 #include "compiler/rewriter/framework/rewrite_rule.h"
 #include "compiler/rewriter/framework/rewriter_context.h"

@@ -2,7 +2,7 @@
 #define ZORBA_PLAN_VISITOR_H
 
 #include <vector>
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
 #include "runtime/core/item_iterator.h"
 #include "common/shared_types.h"
 

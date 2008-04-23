@@ -12,7 +12,7 @@
 
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parsetree/parsenodes.h" 
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
 #include "compiler/translator/translator.h"
 #include "compiler/normalizer/normalizer.h"
 #include "compiler/rewriter/framework/rewriter_context.h"

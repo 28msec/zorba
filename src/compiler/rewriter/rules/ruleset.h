@@ -1,7 +1,7 @@
 #ifndef ZORBA_RULESET_H
 #define ZORBA_RULESET_H
 
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewrite_rule.h"
 #include "compiler/semantic_annotations/annotation_keys.h"

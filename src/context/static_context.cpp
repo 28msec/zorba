@@ -37,7 +37,7 @@
 #include "context/namespace_context.h"
 #include "context/collation_cache.h"
 
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/Unicode_util.h"

@@ -1,4 +1,5 @@
 #include "compiler/expression/expr_annotations.h"
+#include "compiler/expression/expr.h"
 #include "functions/function.h"
 
 namespace zorba {

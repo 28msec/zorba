@@ -7,7 +7,6 @@
 #include "runtime/core/item_iterator.h"
 #include "util/Assert.h"
 #include "store/api/temp_seq.h"
-#include "compiler/expression/expr.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planitervisitor.h"
 
