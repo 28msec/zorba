@@ -383,6 +383,12 @@ main(int argc, char** argv)
         return 0;
       } else {
         printErrors(errHandler, "Unexpected error executing query");
+        std::cerr << "Expected error(s)";
+        for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
+            lIter != lSpec.errorsEnd(); ++lIter)
+        {
+          std::cerr << " " << *lIter;
+        }
         return 6;
       }
     } else if ( lSpec.errorsSize() > 0 ) {
