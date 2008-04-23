@@ -409,8 +409,7 @@ uint32_t Integer::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   Integer lInteger(theInteger % 65535);
-  Integer zero;
-  if (lInteger < zero)
+  if (lInteger < Integer::zero())
     lInteger = -lInteger;
   uint32_t lHash;
   NumConversions::integerToUInt(lInteger, lHash);
