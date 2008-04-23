@@ -1696,7 +1696,7 @@ void *begin_visit(const GroupByClause& v)
     if (e == NULL)
       ZORBA_ERROR_PARAM(ZorbaError::XPST0008, *lIter, "");
     push_scope();
-    bind_var_and_push(v.get_location(), *lIter, var_expr::groupby_var);
+    bind_var_and_push(v.get_location(), *lIter, var_expr::non_groupby_var);
     nodestack.push(rchandle<expr>(e));
   }
 

@@ -125,7 +125,8 @@ ostream& flwor_expr::put( ostream& os) const
     lGroup->getOuterVar()->put(os);
     os << DENT << "Inner:\n";
     lGroup->getInnerVar()->put(os);
-    os << INDENT << "]\n"; UNDENT;
+    UNDENT;
+    os << DENT << "]\n"; UNDENT;
   }
   
   for (vector<orderspec_t>::const_iterator ord_it = orderspec_begin();

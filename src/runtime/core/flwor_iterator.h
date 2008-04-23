@@ -97,12 +97,14 @@ public:
     friend class PrinterVisitor;
   private:
     PlanIter_t                theInput;
-    std::vector<LetVarIter_t> theInnerVars;
+    std::vector<ForVarIter_t> theInnerVars;
+    std::vector<LetVarIter_t> theNonInnerVars;
     xqpString                 theCollation;
 
   public:
-    GroupClause(PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars);
-    GroupClause(PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars, xqpString& aCollation);
+    GroupClause(PlanIter_t aInput, std::vector<ForVarIter_t> aInnerVars);
+    GroupClause(PlanIter_t aInput, std::vector<ForVarIter_t> aInnerVars, xqpString& aCollation);
+    GroupClause(PlanIter_t aInput, std::vector<LetVarIter_t> aNonInnerVars);
 
     void accept ( PlanIterVisitor& ) const;
   };

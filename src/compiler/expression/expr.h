@@ -252,6 +252,7 @@ public:
     catch_var,
     copy_var,
     groupby_var,
+    non_groupby_var,
     unknown_var  // TODO: get rid
   };
 

@@ -121,7 +121,8 @@ protected:
   hash64map<vector<LetVarIter_t> *>    * param_var_iter_map;
   hash64map<vector<LetVarIter_t> *>      catchvar_iter_map;
   hash64map<vector<ForVarIter_t> *>      copy_var_iter_map;
-  hash64map<vector<LetVarIter_t> *>      group_var_iter_map;
+  hash64map<vector<ForVarIter_t> *>      group_var_iter_map;
+  hash64map<vector<LetVarIter_t> *>      non_group_var_iter_map;
 
   CompilerCB *ccb;
 
@@ -144,7 +145,8 @@ public:
     for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
     for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
     for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<ForVarIter_t>());
-    for_each(group_var_iter_map.begin(), group_var_iter_map.end(), vector_destroyer<LetVarIter_t>());
+    for_each(group_var_iter_map.begin(), group_var_iter_map.end(), vector_destroyer<ForVarIter_t>());
+    for_each(non_group_var_iter_map.begin(), non_group_var_iter_map.end(), vector_destroyer<LetVarIter_t>());
   }
 
 public:
@@ -308,9 +310,23 @@ void end_visit(var_expr& v)
   break;
   case var_expr::groupby_var:
   {
-    vector<LetVarIter_t> *map = NULL;
+    vector<ForVarIter_t> *map = NULL;
     uint64_t k = (uint64_t) &v;
     bool bound = group_var_iter_map.get (k, map);
+      
+    ZORBA_ASSERT (bound);
+    ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
+            loc,
+            (void *) &v);
+    map->push_back (v_p);
+    itstack.push(v_p);
+  }
+  break;
+  case var_expr::non_groupby_var:
+  {
+    vector<LetVarIter_t> *map = NULL;
+    uint64_t k = (uint64_t) &v;
+    bool bound = non_group_var_iter_map.get (k, map);
       
     ZORBA_ASSERT (bound);
     LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
@@ -372,7 +388,7 @@ bool begin_visit(flwor_expr& v)
   {
     rchandle<var_expr> var = (*it)->getInnerVar();
     uint64_t k = (uint64_t) &*var;
-    group_var_iter_map.put(k, new vector<LetVarIter_t>());
+    group_var_iter_map.put(k, new vector<ForVarIter_t>());
   }
 
   for(flwor_expr::group_list_t::const_iterator it = v.non_group_begin();
@@ -381,7 +397,7 @@ bool begin_visit(flwor_expr& v)
   {
     rchandle<var_expr> var = (*it)->getInnerVar();
     uint64_t k = (uint64_t) &*var;
-    group_var_iter_map.put(k, new vector<LetVarIter_t>());
+    non_group_var_iter_map.put(k, new vector<LetVarIter_t>());
   }
 
   return true;
@@ -417,7 +433,7 @@ void end_visit(flwor_expr& v)
     rchandle<group_clause> group = *i;
     vector<LetVarIter_t>* lInnerVars = 0;
     var_expr* lVar = group->getInnerVar();
-    ZORBA_ASSERT(group_var_iter_map.get((uint64_t)lVar, lInnerVars));
+    ZORBA_ASSERT(non_group_var_iter_map.get((uint64_t)lVar, lInnerVars));
 
     PlanIter_t lInput = pop_itstack();
 
@@ -430,7 +446,7 @@ void end_visit(flwor_expr& v)
       ++i)
   {
     rchandle<group_clause> group = *i;
-    vector<LetVarIter_t>* lInnerVars = 0;
+    vector<ForVarIter_t>* lInnerVars = 0;
     var_expr* lVar = group->getInnerVar();
     ZORBA_ASSERT(group_var_iter_map.get((uint64_t)lVar, lInnerVars));
 

@@ -118,13 +118,18 @@ xqpStringStore FLWORIterator::ForLetClause::getVarName() const
 }
 
 FLWORIterator::GroupClause::GroupClause(
-  PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars)
+  PlanIter_t aInput, std::vector<ForVarIter_t> aInnerVars)
 : theInput(aInput), theInnerVars(aInnerVars)
 {}
 
 FLWORIterator::GroupClause::GroupClause(
-  PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars, xqpString& aCollation)
+  PlanIter_t aInput, std::vector<ForVarIter_t> aInnerVars, xqpString& aCollation)
 : theInput(aInput), theInnerVars(aInnerVars), theCollation(aCollation)
+{}
+
+FLWORIterator::GroupClause::GroupClause(
+  PlanIter_t aInput, std::vector<LetVarIter_t> aInnerVars)
+: theInput(aInput), theNonInnerVars(aInnerVars)
 {}
 
 void FLWORIterator::GroupClause::accept ( PlanIterVisitor& v ) const
