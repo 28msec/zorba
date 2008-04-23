@@ -67,9 +67,14 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal) {
   if (lStop || !lGotDigit) {
     return false;
   } else {
+#ifndef ZORBA_NO_BIGNUMBERS
     MAPM lNumber = aCharStar;
     aDecimal.theDecimal = lNumber;
     return true;
+#else
+    aDecimal.theDecimal = atof(aCharStar);
+    return true;
+#endif
   }
 }
 
@@ -92,7 +97,11 @@ Decimal Decimal::parseLong(long aLong) {
 }
 
 Decimal Decimal::parseULong(unsigned long aULong) {
+#ifndef ZORBA_NO_BIGNUMBERS
   MAPM lNumber = NumConversions::ulongToStr(aULong).c_str();
+#else
+  MAPM lNumber = aULong;
+#endif
   return Decimal(lNumber);
 }
 
@@ -109,26 +118,45 @@ Decimal Decimal::parseInt(int32_t aInt) {
 }
 
 Decimal Decimal::parseUInt(uint32_t aUInt) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::uintToStr(aUInt);
   Decimal lDecimal;
   lDecimal.theDecimal = lStrRep.c_str();
   return lDecimal;
+#else
+  Decimal lDecimal;
+  lDecimal.theDecimal = aUInt;
+  return lDecimal;
+#endif
 }
 
 Decimal Decimal::parseLongLong(long long aLong) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::longLongToStr(aLong);
   Decimal lDecimal;
   lDecimal.theDecimal = lStrRep.c_str();
   return lDecimal;
+#else
+  Decimal lDecimal;
+  lDecimal.theDecimal = (MAPM)aLong;
+  return lDecimal;
+#endif
 }
 
 Decimal Decimal::parseULongLong(unsigned long long aULong) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
   Decimal lDecimal;
   lDecimal.theDecimal = lStrRep.c_str();
   return lDecimal;
+#else
+  Decimal lDecimal;
+  lDecimal.theDecimal = (MAPM)aULong;
+  return lDecimal;
+#endif
 }
 
+#ifndef ZORBA_NO_BIGNUMBERS
 MAPM Decimal::round(MAPM aValue, MAPM aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
@@ -150,6 +178,32 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, MAPM aPrecision) {
   aCur /= aExp;
   return aCur;
 }
+#else
+MAPM Decimal::round(MAPM aValue, int aPrecision) 
+{
+  double  intpart;
+  double  exp = modf(aValue, &intpart);
+  double  prec = pow((double)10, aPrecision);
+  exp *= prec;
+  exp = ::floor(exp+0.5);
+  return intpart + exp/prec;
+}
+
+MAPM Decimal::roundHalfToEven(MAPM aValue, int aPrecision) 
+{
+  double  intpart;
+  double  exp = modf(aValue, &intpart);
+  double  prec = pow((double)10, aPrecision);
+  exp *= prec;
+  bool  bHalfVal = false;
+  if((exp-0.5) == ::floor(exp))
+    bHalfVal = true;
+  exp = ::floor(exp+0.5);
+  if(bHalfVal && (((long long)exp)%2))
+    exp--;
+  return intpart + exp/prec;
+}
+#endif
 
 Decimal& Decimal::operator=(const Decimal& aDecimal) {
   theDecimal = aDecimal.theDecimal;
@@ -238,22 +292,22 @@ Decimal& Decimal::operator/=(const Decimal& aDecimal) {
 }
 
 Decimal Decimal::operator%(const Integer& aInteger) const {
-  MAPM lRes = theDecimal % aInteger.theInteger;
+  MAPM lRes = (IMAPM)theDecimal % aInteger.theInteger;
   return Decimal(lRes);
 }
 
 Decimal Decimal::operator%(const Decimal& aDecimal) const {
-  MAPM lRes = theDecimal % aDecimal.theDecimal;
+  MAPM lRes = (IMAPM)theDecimal % (IMAPM)aDecimal.theDecimal;
   return Decimal(lRes);
 }
 
 Decimal& Decimal::operator%=(const Integer& aInteger) {
-  theDecimal %= aInteger.theInteger;
+  theDecimal = (IMAPM)theDecimal % aInteger.theInteger;
   return *this;
 }
 
 Decimal& Decimal::operator%=(const Decimal& aDecimal) {
-  theDecimal %= aDecimal.theDecimal;
+  theDecimal = (IMAPM)theDecimal % (IMAPM)aDecimal.theDecimal;
   return *this;
 }
 
@@ -298,9 +352,10 @@ bool Decimal::operator>=(const Integer& aInteger) const {
 }
 
 xqpString Decimal::decimalToString(MAPM theValue) {
+#ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
   theValue.toFixPtString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
-  
+
   // Note in the canonical representation the decimal point is required
   // and there must be at least one digit to the right and one digit to 
   // the left of the decimal point (which may be 0)
@@ -317,6 +372,11 @@ xqpString Decimal::decimalToString(MAPM theValue) {
     
   xqpString lResult = lBuffer;
   return lResult;
+#else
+  char lBuffer[124];
+  sprintf(lBuffer, "%lf", theValue);
+  return xqpString(lBuffer);
+#endif
 }
 
 xqpString Decimal::toString() const {
@@ -325,11 +385,15 @@ xqpString Decimal::toString() const {
 
 uint32_t Decimal::hash() const
 {
+#ifndef ZORBA_NO_BIGNUMBERS
   Decimal lDecimal(theDecimal %  65535);
   Integer lInteger = Integer::parseDecimal(lDecimal);
   uint32_t lHash;
   NumConversions::integerToUInt(lInteger, lHash);
   return lHash;
+#else
+  return (((uint32_t)theDecimal)%65535);
+#endif
 }
 
 std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) {

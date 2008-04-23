@@ -8,11 +8,12 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
 #include "zorbatypes/numconversions.h"
+#include <stdlib.h>
 
 namespace zorba {
 
 Integer& Integer::zero() {
-  static Integer lValue(MAPM(0));
+  static Integer lValue(IMAPM(0));
   return lValue;
 }
 
@@ -59,9 +60,14 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger) {
   if (lStop || !lGotDigit) {
     return false;
   } else {
+#ifndef ZORBA_NO_BIGNUMBERS
     MAPM lNumber = aCharStar;
     aInteger.theInteger = lNumber;
     return true;
+#else
+    aInteger.theInteger = atoi(aCharStar);
+    return true;
+#endif
   }
 }
 
@@ -91,9 +97,14 @@ bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger) {
   if (lStop) {
     return false;
   } else {
+#ifndef ZORBA_NO_BIGNUMBERS
     MAPM lNumber = aStarChar;
     aUInteger.theInteger = lNumber;
     return true;
+#else
+    aUInteger.theInteger = (IMAPM)atoi(aStarChar);
+    return true;
+#endif
   }
 }
   
@@ -135,17 +146,25 @@ Integer Integer::parseDecimal(const Decimal& aDecimal) {
 }
 
 Integer Integer::parseLongLong(long long aLong) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::longLongToStr(aLong);
   MAPM lMAPM = lStrRep.c_str();
   Integer lInteger(lMAPM);
   return lInteger;
+#else
+  return Integer((IMAPM)aLong);
+#endif
 }
 
 Integer Integer::parseULongLong(unsigned long long aULong) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
   MAPM lMAPM = lStrRep.c_str();
   Integer lInteger(lMAPM);
   return lInteger;
+#else
+  return Integer((IMAPM)aULong);
+#endif
 }
 
 Integer Integer::parseInt(int32_t aInt) {
@@ -155,10 +174,14 @@ Integer Integer::parseInt(int32_t aInt) {
 }
 
 Integer Integer::parseUInt(uint32_t aUInt) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::uintToStr(aUInt);
   MAPM lMAPM = lStrRep.c_str();
   Integer lInteger(lMAPM);
   return lInteger;
+#else
+  return Integer((IMAPM)aUInt);
+#endif
 }
 
 Integer Integer::parseLong(long aLong) { 
@@ -167,14 +190,22 @@ Integer Integer::parseLong(long aLong) {
 }
 
 Integer Integer::parseULong(unsigned long aULong) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
   MAPM lNumber = lStrRep.c_str();
   return Integer(lNumber);
+#else
+  return Integer((IMAPM)aULong);
+#endif
 }
 Integer Integer::parseSizeT(size_t aSizeT) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::sizetToStr(aSizeT);
   MAPM lNumber = lStrRep.c_str();
   return Integer(lNumber);
+#else
+  return Integer((IMAPM)aSizeT);
+#endif
 }
 
 
@@ -184,8 +215,12 @@ Integer& Integer::operator=(const Integer& aInteger) {
 }
 
 MAPM Integer::longlongToMAPM(long long aLong) {
+#ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::longLongToStr(aLong);
   return MAPM(lStrRep.c_str());
+#else
+  return (MAPM)aLong;
+#endif
 }
 
 Integer Integer::operator+(const Integer& aInteger) const {
@@ -256,7 +291,7 @@ Integer Integer::operator%(const Integer& aInteger) const {
 }
 
 Decimal Integer::operator%(const Decimal& aDecimal) const {
-  MAPM lRes = theInteger % aDecimal.theDecimal;
+  MAPM lRes = theInteger % (IMAPM)aDecimal.theDecimal;
   return Decimal(lRes);
 }
 
@@ -358,14 +393,21 @@ bool Integer::operator>=(const Double& aDouble) const {
 }
 
 xqpString Integer::toString() const {
+#ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
   theInteger.toIntegerString(lBuffer);
   xqpString lResult = lBuffer;
   return lResult;
+#else
+  char lBuffer[124];
+  sprintf(lBuffer, "%l", theInteger);
+  return xqpString(lBuffer);
+#endif
 }
 
 uint32_t Integer::hash() const
 {
+#ifndef ZORBA_NO_BIGNUMBERS
   Integer lInteger(theInteger % 65535);
   Integer zero;
   if (lInteger < zero)
@@ -373,6 +415,9 @@ uint32_t Integer::hash() const
   uint32_t lHash;
   NumConversions::integerToUInt(lInteger, lHash);
   return lHash;
+#else
+  return (uint32_t)theInteger%65535;
+#endif
 }
 
 std::ostream& operator<<(std::ostream& os, const Integer& aInteger) {

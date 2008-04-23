@@ -508,6 +508,7 @@ void PULImpl::mergeUpdateList(
     if (!found)
     {
       myList[numUpdates + i] = upd;
+      otherList[i] = NULL;
 
       targetUpdates = new NodeUpdates(1);
       (*targetUpdates)[0] = upd;
@@ -562,6 +563,7 @@ void PULImpl::mergeUpdateList(
       }
 
       myList[numUpdates + i] = upd;
+      otherList[i] = NULL;
       targetUpdates->push_back(upd);
     }
   }

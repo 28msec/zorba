@@ -217,7 +217,6 @@ typedef rchandle<GMonthDay> GMonthDay_t;
 typedef rchandle<GDay> GDay_t;
 typedef rchandle<GMonth> GMonth_t;
 
-
 /* numerics */
 template <class Object> class FloatImpl;
 class Integer;

@@ -834,11 +834,11 @@ SortSemiJoinIterator::nextImpl(PlanState& planState) const {
 
     // advance, output
     order = GENV_STORE.compareNodes (item [0].getp(), item [1].getp());
-    if (order == 0) {
+    if (!order) {
       STACK_PUSH (item [0], state);
       item [0] = item [1] = NULL;
     }
-    else item [order > 0 ? 0 : 1] = NULL;
+    else item [order? 0 : 1] = NULL;
 
   }
 

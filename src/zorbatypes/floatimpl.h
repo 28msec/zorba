@@ -1,11 +1,20 @@
 #ifndef ZORBA_FLOATIMPL_H
 #define ZORBA_FLOATIMPL_H
 
+#include "common/common.h"
+#ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
+#else
+#include <math.h>
+#endif
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
 
 namespace zorba {
+
+#ifdef ZORBA_NO_BIGNUMBERS
+typedef double    MAPM;
+#endif
 
   class FloatCommons {
     public:
@@ -34,6 +43,7 @@ namespace zorba {
    */
   template <typename FloatType> class FloatImplTraits;
 
+#ifndef ZORBA_NO_BIGNUMBERS
   /**
    * Specialization for double
    */
@@ -77,6 +87,26 @@ namespace zorba {
       static uint32_t 
       hash(FloatCommons::NumType, MAPM aMAPM);
   };
+#else
+  template <typename FloatType>
+  class FloatImplTraits {
+    public:
+      static bool
+      isPosInf(FloatType aMAPM);
+      
+      static bool
+      isZero(FloatType aMAPM); 
+      
+      static bool
+      isNegInf(FloatType aMAPM); 
+      
+      static FloatType
+      cutMantissa(FloatType aMAPM);
+
+      static uint32_t 
+      hash(FloatCommons::NumType, FloatType aMAPM);
+  };
+#endif
 
   template <typename FloatType>
   class FloatImpl {
@@ -87,7 +117,11 @@ namespace zorba {
 
     private:
       FloatCommons::NumType theType;
+#ifndef ZORBA_NO_BIGNUMBERS
       MAPM theFloatImpl;
+#else
+      FloatType  theFloatImpl;
+#endif
 
       FloatImpl(FloatCommons::NumType aType, MAPM aFloatImpl) : theType(aType), theFloatImpl(aFloatImpl) { }
 

@@ -7,6 +7,32 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/numconversions.h"
 
+/*
+#if defined WIN32 || defined WIN_CE
+  #define   _fpclass   __fpclass
+#else
+//#define FP_NAN         0
+//#define FP_INFINITE    1
+//#define FP_ZERO        2
+//#define FP_SUBNORMAL   3
+//#define FP_NORMAL      4
+
+#define _FPCLASS_SNAN      FP_NAN  // Signaling NaN
+#define _FPCLASS_QNAN      -1      // Quiet NaN
+#define _FPCLASS_NINF      FP_INFINITE // Negative infinity ( –INF)
+_FPCLASS_NN:// Negative normalized non-zero
+    case _FPCLASS_ND:// Negative denormalized
+      return FloatCommons::NORMAL_NEG;
+    case _FPCLASS_NZ:// Negative zero ( – 0)
+    case _FPCLASS_PZ:// Positive 0 (+0)
+    case _FPCLASS_PD:// Positive denormalized
+    case _FPCLASS_PN:// Positive normalized non-zero
+      return FloatCommons::NORMAL;
+    case _FPCLASS_PINF:// Positive infinity (+INF)
+     return FloatCommons::INF_POS;
+#endif
+*/
+
 namespace zorba {
 
 Double FloatCommons::parseFloat(const Float& aFloat) {
@@ -19,6 +45,8 @@ Float FloatCommons::parseDouble(const Double& aDouble) {
   FloatImpl<float>::checkInfZeroPrecision(lFloat);
   return lFloat;
 }
+
+#ifndef ZORBA_NO_BIGNUMBERS
 
 bool FloatImplTraits<double>::isPosInf(MAPM aMAPM) {
   if (aMAPM > 0) {
@@ -103,7 +131,80 @@ uint32_t FloatImplTraits<float>::hash(FloatCommons::NumType aType, MAPM aMAPM) {
   NumConversions::integerToUInt(lInteger, lHash);
   return lHash;
 }
-  
+
+#else
+template <typename FloatType>
+bool FloatImplTraits<FloatType>::isPosInf(FloatType aMAPM)
+{
+#if defined WIN32 || defined WIN_CE
+  int fclass;
+  fclass = _fpclass(aMAPM);
+  if(fclass == _FPCLASS_PINF)
+    return true;
+  else
+    return false;
+#else
+  if(!isfinite(aMAPM) && !isnan(aMAPM) && (aMAPM>0))
+    return true;
+  else
+    return false;
+#endif
+}
+template <typename FloatType>
+bool FloatImplTraits<FloatType>::isZero(FloatType aMAPM)
+{
+#if defined WIN32 || defined WIN_CE
+  int fclass;
+  fclass = _fpclass(aMAPM);
+  if((fclass == _FPCLASS_NZ) || (fclass == _FPCLASS_PZ))
+    return true;
+  else
+    return false;
+#else
+  if(aMAPM == 0)
+    return true;
+  else
+    return false;
+#endif
+}
+template <typename FloatType>
+bool FloatImplTraits<FloatType>::isNegInf(FloatType aMAPM)
+{
+#if defined WIN32 || defined WIN_CE
+  int fclass;
+  fclass = _fpclass(aMAPM);
+  if(fclass == _FPCLASS_NINF)
+    return true;
+  else
+    return false;
+#else
+  if(!isfinite(aMAPM) && !isnan(aMAPM) && (aMAPM<0))
+    return true;
+  else
+    return false;
+#endif
+}
+template <typename FloatType>
+FloatType FloatImplTraits<FloatType>::cutMantissa(FloatType aMAPM) 
+{
+  double intpart;
+  return modf(aMAPM, &intpart);
+}
+template <typename FloatType>
+uint32_t FloatImplTraits<FloatType>::hash(FloatCommons::NumType aType, FloatType aMAPM)
+{
+  if (aType == FloatCommons::INF_POS 
+   || aType == FloatCommons::INF_NEG
+   || aType == FloatCommons::NOT_A_NUM)
+  {
+    return 0;
+  }
+
+  return ((uint32_t)aMAPM) % 65535;
+}
+
+#endif
+
 const xqpString FloatCommons::INF_POS_STR = "INF";
 const xqpString FloatCommons::INF_NEG_STR = "-INF";
 const xqpString FloatCommons::NOT_A_NUM_STR = "NaN";
@@ -193,6 +294,7 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar
 
 template <typename FloatType>
 FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) {
+#ifndef ZORBA_NO_BIGNUMBERS
   if (aFloat != aFloat) {
     return FloatCommons::NOT_A_NUM;
   } else if (aFloat == std::numeric_limits<FloatType>::infinity()) {
@@ -204,6 +306,46 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) {
   } else {
     return FloatCommons::NORMAL;
   }
+#else
+#if !defined WIN32 && !defined WIN_CE
+  if(finite(aFloat))
+    if(aFloat >= 0)
+      return FloatCommons::NORMAL;
+    else
+      return FloatCommons::NORMAL_NEG;
+
+  if(isnan(aFloat))
+    return FloatCommons::NOT_A_NUM;
+
+  if(aFloat > 0)
+    return FloatCommons::INF_POS;
+  else
+    return FloatCommons::INF_NEG;
+#else
+  int fclass;
+  fclass = _fpclass(aFloat);
+  switch(fclass)
+  {
+    case _FPCLASS_SNAN:// Signaling NaN
+    case _FPCLASS_QNAN:// Quiet NaN
+      return FloatCommons::NOT_A_NUM;
+    case _FPCLASS_NINF:// Negative infinity ( –INF)
+      return FloatCommons::INF_NEG;
+    case _FPCLASS_NN:// Negative normalized non-zero
+    case _FPCLASS_ND:// Negative denormalized
+      return FloatCommons::NORMAL_NEG;
+    case _FPCLASS_NZ:// Negative zero ( – 0)
+    case _FPCLASS_PZ:// Positive 0 (+0)
+    case _FPCLASS_PD:// Positive denormalized
+    case _FPCLASS_PN:// Positive normalized non-zero
+      return FloatCommons::NORMAL;
+    case _FPCLASS_PINF:// Positive infinity (+INF)
+     return FloatCommons::INF_POS;
+    default:
+      return FloatCommons::NORMAL;
+  };
+#endif//WIN32
+#endif
 }
 
 template <typename FloatType>
@@ -299,7 +441,11 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
       break;
     }
   } else {
+#ifndef ZORBA_NO_BIGNUMBERS
     lNumber = aCharStar;
+#else
+    lNumber = atof(aCharStar);
+#endif
     if (lIsNegative) {
       lType = FloatCommons::NORMAL_NEG;
     } else {
@@ -312,6 +458,10 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
 
   checkInfZeroPrecision(aFloatImpl);
   return true;
+
+
+
+
 }
 
 template <typename FloatType>
@@ -653,7 +803,11 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl
   } else if (!aFloatImpl.isFinite() || isZero()) {
     lFloatImpl = *this;
   } else {
+#ifndef ZORBA_NO_BIGNUMBERS
     MAPM lRes = theFloatImpl % aFloatImpl.theFloatImpl;
+#else
+    MAPM lRes = fmod(theFloatImpl, aFloatImpl.theFloatImpl);
+#endif
     if ( lRes == 0 && isNeg()) {
       lFloatImpl.theType = FloatCommons::NORMAL_NEG;
       lFloatImpl.theFloatImpl = 0;
@@ -701,7 +855,11 @@ FloatImpl<FloatType> FloatImpl<FloatType>::floor() const {
   switch(theType) {
   case FloatCommons::NORMAL_NEG:
   case FloatCommons::NORMAL:
+#ifndef ZORBA_NO_BIGNUMBERS
     lFloatImpl.theFloatImpl = theFloatImpl.floor();
+#else
+    lFloatImpl.theFloatImpl = ::floor(theFloatImpl);
+#endif
   case FloatCommons::NOT_A_NUM:
   case FloatCommons::INF_POS:
   case FloatCommons::INF_NEG:
@@ -718,7 +876,11 @@ FloatImpl<FloatType> FloatImpl<FloatType>::ceil() const {
   switch(theType) {
   case FloatCommons::NORMAL_NEG:
   case FloatCommons::NORMAL:
+#ifndef ZORBA_NO_BIGNUMBERS
     lFloatImpl.theFloatImpl = theFloatImpl.ceil();
+#else
+    lFloatImpl.theFloatImpl = ::ceil(theFloatImpl);
+#endif
   case FloatCommons::NOT_A_NUM:
   case FloatCommons::INF_POS:
   case FloatCommons::INF_NEG:
@@ -948,12 +1110,18 @@ xqpString FloatImpl<FloatType>::toIntegerString() const {
       break;
   }
 
+#ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
   theFloatImpl.toIntegerString(lBuffer);
+#else
+  char lBuffer[124];
+  sprintf(lBuffer, "%d", (int)theFloatImpl);
+#endif
   xqpString lResult = lBuffer;
   return lResult;
 }
 
+#ifndef ZORBA_NO_BIGNUMBERS
 template <typename FloatType>
 xqpString FloatImpl<FloatType>::toString() const {
   switch(theType) {
@@ -999,6 +1167,51 @@ xqpString FloatImpl<FloatType>::toString() const {
     return lResult;
   }
 }
+
+#else //ZORBA_NO_BIGNUMBERS
+template <>
+xqpString FloatImpl<float>::toString() const {
+  switch(theType) {
+    case FloatCommons::NOT_A_NUM:
+      return FloatCommons::NOT_A_NUM_STR;
+    case FloatCommons::INF_POS:
+      return FloatCommons::INF_POS_STR;
+    case FloatCommons::INF_NEG:
+      return FloatCommons::INF_NEG_STR;
+    case FloatCommons::NORMAL_NEG:
+      if (theFloatImpl == 0)
+        return "-0";
+    default: 
+      break;
+  }
+
+  char lBuffer[124];
+  sprintf(lBuffer, "%f", theFloatImpl);
+  return lBuffer;
+}
+
+template <>
+xqpString FloatImpl<double>::toString() const {
+  switch(theType) {
+    case FloatCommons::NOT_A_NUM:
+      return FloatCommons::NOT_A_NUM_STR;
+    case FloatCommons::INF_POS:
+      return FloatCommons::INF_POS_STR;
+    case FloatCommons::INF_NEG:
+      return FloatCommons::INF_NEG_STR;
+    case FloatCommons::NORMAL_NEG:
+      if (theFloatImpl == 0)
+        return "-0";
+    default: 
+      break;
+  }
+
+  char lBuffer[124];
+  sprintf(lBuffer, "%lf", theFloatImpl);
+  return lBuffer;
+}
+
+#endif//ZORBA_NO_BIGNUMBERS
 
 template <typename FloatType>
 uint32_t FloatImpl<FloatType>::hash() const

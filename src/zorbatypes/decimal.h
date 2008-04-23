@@ -1,12 +1,21 @@
 #ifndef ZORBA_DECIMAL_H
 #define ZORBA_DECIMAL_H
 
+#include "common/common.h"
+
+#ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
+#else
+#include <math.h>
+#endif
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
 namespace zorba {
 
+#ifdef ZORBA_NO_BIGNUMBERS
+typedef double    MAPM;
+#endif
 
 class Decimal {
   friend class Integer;
@@ -22,8 +31,13 @@ public:
   Decimal(const Decimal& aDecimal) : theDecimal(aDecimal.theDecimal) { }
 
 public:
+#ifndef ZORBA_NO_BIGNUMBERS
   static MAPM round(MAPM aValue, MAPM aPrecision);
   static MAPM roundHalfToEven(MAPM aValue, MAPM aPrecision);
+#else
+  static MAPM round(MAPM aValue, int aPrecision);
+  static MAPM roundHalfToEven(MAPM aValue, int aPrecision);
+#endif
 
 private:
   static xqpString decimalToString(MAPM);
@@ -73,8 +87,13 @@ public:
   Decimal& operator%=(const Decimal&);
 
   Decimal operator-() const; 
+#ifndef ZORBA_NO_BIGNUMBERS
   Decimal floor() const { return Decimal(theDecimal.floor()); }
   Decimal ceil() const { return Decimal(theDecimal.ceil()); }
+#else
+  Decimal floor() const { return Decimal(::floor(theDecimal)); }
+  Decimal ceil() const { return Decimal(::ceil(theDecimal)); }
+#endif
   Decimal round() const;
   Decimal round(Integer aPrecision) const; 
   Decimal roundHalfToEven(Integer aPrecision) const;

@@ -1,12 +1,23 @@
 #ifndef ZORBA_INTEGER_H
 #define ZORBA_INTEGER_H
 
+#include "common/common.h"
+
+#ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
+#endif
+
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
 
 namespace zorba {
+#ifndef ZORBA_NO_BIGNUMBERS
+  typedef MAPM    IMAPM;
+#else
+  typedef int     IMAPM;
+  typedef double  MAPM;
+#endif
 
   class Integer {
     friend class Decimal;
@@ -15,8 +26,8 @@ namespace zorba {
     friend class FloatImpl;
 
     private:
-      MAPM theInteger;
-      Integer(MAPM aInteger) : theInteger(aInteger) { }
+      IMAPM theInteger;
+      Integer(IMAPM aInteger) : theInteger(aInteger) { }
     
     public:
       Integer() : theInteger(0) { }
@@ -26,17 +37,20 @@ namespace zorba {
       static MAPM 
       longlongToMAPM(long long);
       
-      static MAPM
+      static IMAPM
       floatingToInteger(MAPM theFloating) 
       {
+#ifndef ZORBA_NO_BIGNUMBERS
         // TODO inf and nan handling
         if (theFloating >= 0)
           return theFloating.floor();
         else
           return theFloating.ceil();
+#else
+        return (IMAPM)theFloating;
+#endif
       }
-
-    public:
+  public:
       /**
        * @return integer that represents 0
        */

@@ -66,5 +66,6 @@
 #cmakedefine ZORBA_NO_UNICODE
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_MINIMAL_STORE
+#cmakedefine ZORBA_NO_BIGNUMBERS
 
 #endif

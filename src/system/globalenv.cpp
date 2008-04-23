@@ -11,7 +11,9 @@
 #include <curl/curl.h>
 #endif
 
+#ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
+#endif
 
 #include "globalenv.h"
 #include "types/root_typemanager.h"
@@ -96,9 +98,10 @@ void GlobalEnvironment::init()
   rctx->init();
   BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext.get());
 
+#ifndef ZORBA_NO_UNICODE
   // initialize mapm for bignum handling
   m_globalEnv->m_mapm = m_apm_init();
-
+#endif
   // This initializes the libxml2 library and checks 
   // potential ABI mismatches between
   // the version it was compiled for and the actual 
@@ -133,12 +136,14 @@ void GlobalEnvironment::destroy()
   curl_global_cleanup();
 #endif
 
+#ifndef ZORBA_NO_UNICODE
   // release resources aquired by the mapm library
   // this will force zorba users to reinit mapm
   // if they shutdown zorba but want to use mapm beyond
   m_apm_free(m_globalEnv->m_mapm);
   m_apm_free_all_mem();
   m_globalEnv->m_mapm = 0;
+#endif
 
   m_globalEnv->m_rootStaticContext.reset(NULL);
   m_globalEnv->m_store.reset(NULL);

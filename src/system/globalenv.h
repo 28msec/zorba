@@ -2,7 +2,10 @@
 #define ZORBA_GLOBALENV_H
 
 #include <memory>
+#include "common/common.h"
+#ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
+#endif
 #include "common/shared_types.h"
 
 namespace zorba {
@@ -30,7 +33,9 @@ class GlobalEnvironment {
 
     std::auto_ptr<store::Store> m_store;
     std::auto_ptr<static_context> m_rootStaticContext;
+#ifndef ZORBA_NO_UNICODE
     M_APM                     m_mapm; // this is a pointer type
+#endif
     std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
 
 //#if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)

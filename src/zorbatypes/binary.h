@@ -13,7 +13,7 @@ private:
   std::vector<char> theData;
 
   static const char* ENCODE_TABLE; 
-  static const char DECODE_TABLE[0x80];
+  static const unsigned char DECODE_TABLE[0x80];
   static size_t ENCODE_INPUT;
   static size_t ENCODE_OUTPUT;
   static size_t DECODE_INPUT;
@@ -48,7 +48,7 @@ private:
   std::vector<char> theData;
 
   static const char* ENCODE_TABLE; 
-  static const char DECODE_TABLE[0x80];
+  static const unsigned char DECODE_TABLE[0x80];
   static size_t ENCODE_INPUT;
   static size_t ENCODE_OUTPUT;
   static size_t DECODE_INPUT;
