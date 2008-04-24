@@ -1,8 +1,12 @@
+#include <zorba/error.h>
+
 #include "errors/errors.h"
 #include "system/globalenv.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+
+#include "context/ns_consts.h"
 
 namespace zorba { namespace error {
 
@@ -13,10 +17,7 @@ namespace zorba { namespace error {
     const std::string& aFileName,
     int aLineNumber)
     :
-    theQName(GENV_ITEMFACTORY->createQName(
-        "http://www.w3.org/2005/xqt-errors",
-        "err",
-        ZorbaError::toString(aErrorCode).c_str())),
+    theQName(GENV_ITEMFACTORY->createQName(XQUERY_ERR_NS, "err", ZorbaError::toString(aErrorCode).c_str())),
     theErrorCode(aErrorCode),
     theDescription(aDescription),
     theQueryLocation(aLocation),
@@ -38,7 +39,10 @@ namespace zorba { namespace error {
     theLineNumber(aLineNumber)
   {
     // compute err code from qname
-    theErrorCode = err_name_to_code(theQName->getLocalName()->str());
+    if (xqp_string (theQName->getNamespace ()) == XQUERY_ERR_NS)
+      theErrorCode = err_name_to_code(theQName->getLocalName()->str());
+    else
+      theErrorCode = ::zorba::ZorbaError::XQP0021_USER_ERROR;
   }
 
 

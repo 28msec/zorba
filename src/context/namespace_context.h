@@ -8,14 +8,7 @@
 
 #include "util/rchandle.h"
 
-// TODO make these static members of the context
-#define XQUERY_FN_NS  "http://www.w3.org/2005/xpath-functions"
-#define XQUERY_OP_NS  "http://www.w3.org/2005/xpath-functions"
-#define XML_NS "http://www.w3.org/XML/1998/namespace"
-#define XML_SCHEMA_NS "http://www.w3.org/2001/XMLSchema"
-#define XSI_NS "http://www.w3.org/2001/XMLSchema-instance"
-#define XQUERY_LOCAL_FN_NS "http://www.w3.org/2005/xquery-local-functions"
-#define XQUERY_ERR_NS  "http://www.w3.org/2005/xqt-errors"
+#include "context/ns_consts.h"
 
 namespace zorba {
 
@@ -50,3 +43,8 @@ class namespace_context : public SimpleRCObject {
 
 #endif /* ZORBA_NAMESPACE_CONTEXT_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
