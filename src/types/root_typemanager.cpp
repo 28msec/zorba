@@ -316,11 +316,13 @@ RootTypeManager::RootTypeManager()
   basename##_TYPE_STAR = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_STAR); \
   basename##_TYPE_PLUS = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_PLUS);
 
-  NODE_TYPE_DEFN(PI)
-  NODE_TYPE_DEFN(TEXT)
-  NODE_TYPE_DEFN(COMMENT)
-  NODE_TYPE_DEFN(DOCUMENT)
   NODE_TYPE_DEFN(ANY_NODE)
+  NODE_TYPE_DEFN(DOCUMENT)
+  NODE_TYPE_DEFN(ELEMENT)
+  NODE_TYPE_DEFN(ATTRIBUTE)
+  NODE_TYPE_DEFN(TEXT)
+  NODE_TYPE_DEFN(PI)
+  NODE_TYPE_DEFN(COMMENT)
 
 #undef NODE_TYPE_DEFN
 }
