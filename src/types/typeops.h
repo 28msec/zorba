@@ -73,7 +73,15 @@ public:
      */
     static bool is_numeric(const XQType& type);
 
+    /*
+     * Returns true is the given type is the empty type.
+     */
     static bool is_empty(const XQType& type);
+
+    /*
+     * Returns true is the given type could be a date / time type.
+     */
+    static bool maybe_date_time (const XQType& type);
 
     /*
      * Returns the atomic_type_code_t for the given type.

@@ -11,6 +11,10 @@
 
 namespace zorba {
 
+
+// Worth using if a function needs GENV_TYPESYSTEM more than once
+#define CACHE_ROOT_TS( var ) RootTypeManager &var = GENV_TYPESYSTEM
+
   const char *TypeOps::decode_quantifier (TypeConstants::quantifier_t quant) {
     switch (quant) {
     case TypeConstants::QUANT_ONE:
@@ -273,13 +277,24 @@ bool TypeOps::is_simple(const XQType& type)
 
 bool TypeOps::is_numeric(const XQType& type)
 {
-  return is_subtype(type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
-    || is_subtype(type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
-    || is_subtype(type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE);
+  CACHE_ROOT_TS (genv_ts);
+  return is_subtype(type, *genv_ts.DOUBLE_TYPE_ONE)
+    || is_subtype(type, *genv_ts.FLOAT_TYPE_ONE)
+    || is_subtype(type, *genv_ts.DECIMAL_TYPE_ONE);
 }
 
 bool TypeOps::is_empty(const XQType& type) {
   return type.type_kind () == XQType::EMPTY_KIND;
+}
+
+bool TypeOps::maybe_date_time(const XQType& type) {
+  const XQType &prime = *prime_type (type);
+  if (! is_atomic (prime))
+    return false;
+  CACHE_ROOT_TS (genv_ts);
+  return is_subtype (*genv_ts.DATE_TYPE_ONE, prime)
+    || is_subtype (*genv_ts.TIME_TYPE_ONE, prime)
+    || is_subtype (*genv_ts.DATETIME_TYPE_ONE, prime);
 }
 
 TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& type)
@@ -402,86 +417,92 @@ xqtref_t TypeOps::prime_type(const XQType& type) {
 xqtref_t TypeOps::primitive_type(const XQType& type)
 {
   // TODO more efficient?
-  if (is_subtype(type, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
-    return GENV_TYPESYSTEM.STRING_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE; 
-  else if (is_subtype(type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
-    return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
-    return GENV_TYPESYSTEM.FLOAT_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
-    return GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
-    return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
-    return GENV_TYPESYSTEM.DATETIME_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
-    return GENV_TYPESYSTEM.TIME_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
-    return GENV_TYPESYSTEM.DATE_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
-    return GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE))
-    return GENV_TYPESYSTEM.GYEAR_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE))
-    return GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
-    return GENV_TYPESYSTEM.GDAY_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE))
-    return GENV_TYPESYSTEM.GMONTH_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE))
-    return GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE))
-    return GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
-    return GENV_TYPESYSTEM.ANY_URI_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
-    return GENV_TYPESYSTEM.QNAME_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
-    return GENV_TYPESYSTEM.NOTATION_TYPE_ONE;
+  CACHE_ROOT_TS (genv_ts);
+
+  if (is_subtype(type, *genv_ts.STRING_TYPE_ONE))
+    return genv_ts.STRING_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.BOOLEAN_TYPE_ONE))
+    return genv_ts.BOOLEAN_TYPE_ONE; 
+  else if (is_subtype(type, *genv_ts.DECIMAL_TYPE_ONE))
+    return genv_ts.DECIMAL_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.FLOAT_TYPE_ONE))
+    return genv_ts.FLOAT_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.DOUBLE_TYPE_ONE))
+    return genv_ts.DOUBLE_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.DURATION_TYPE_ONE))
+    return genv_ts.DURATION_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.DATETIME_TYPE_ONE))
+    return genv_ts.DATETIME_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.TIME_TYPE_ONE))
+    return genv_ts.TIME_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.DATE_TYPE_ONE))
+    return genv_ts.DATE_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.GYEAR_MONTH_TYPE_ONE))
+    return genv_ts.GYEAR_MONTH_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.GYEAR_TYPE_ONE))
+    return genv_ts.GYEAR_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.GMONTH_DAY_TYPE_ONE))
+    return genv_ts.GMONTH_DAY_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.GDAY_TYPE_ONE))
+    return genv_ts.GDAY_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.GMONTH_TYPE_ONE))
+    return genv_ts.GMONTH_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.HEXBINARY_TYPE_ONE))
+    return genv_ts.HEXBINARY_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.BASE64BINARY_TYPE_ONE))
+    return genv_ts.BASE64BINARY_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.ANY_URI_TYPE_ONE))
+    return genv_ts.ANY_URI_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.QNAME_TYPE_ONE))
+    return genv_ts.QNAME_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.NOTATION_TYPE_ONE))
+    return genv_ts.NOTATION_TYPE_ONE;
   
   assert(false);
-  return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+  return genv_ts.ANY_ATOMIC_TYPE_ONE;
 }
 
 xqtref_t TypeOps::cast_primitive_type(const XQType& type)
 {
   // TODO more efficient?
-  if (is_subtype(type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-    return GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
-    return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
-    return GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
-  else if (is_subtype(type, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE))
-    return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
+  CACHE_ROOT_TS (genv_ts);
+
+  if (is_subtype(type, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE))
+    return genv_ts.UNTYPED_ATOMIC_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.INTEGER_TYPE_ONE))
+    return genv_ts.INTEGER_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.YM_DURATION_TYPE_ONE))
+    return genv_ts.YM_DURATION_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.DT_DURATION_TYPE_ONE))
+    return genv_ts.DT_DURATION_TYPE_ONE;
 
   return primitive_type(type);
 }
 
 xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
 {
-  if (is_subtype(type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-      || is_subtype(type2, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-      || is_subtype(type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
-      || is_subtype(type2, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
-    return GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
+  CACHE_ROOT_TS (genv_ts);
+
+  if (is_subtype(type1, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)
+      || is_subtype(type2, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)
+      || is_subtype(type1, *genv_ts.DOUBLE_TYPE_ONE)
+      || is_subtype(type2, *genv_ts.DOUBLE_TYPE_ONE)) {
+    return genv_ts.DOUBLE_TYPE_ONE;
   }
-  if (is_subtype(type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
-      || is_subtype(type2, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
-    return GENV_TYPESYSTEM.FLOAT_TYPE_ONE;
+  if (is_subtype(type1, *genv_ts.FLOAT_TYPE_ONE)
+      || is_subtype(type2, *genv_ts.FLOAT_TYPE_ONE)) {
+    return genv_ts.FLOAT_TYPE_ONE;
   }
-  bool b = is_subtype(type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE);
-  b = is_subtype(type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE);
-  if ((is_subtype(type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
-       && !is_subtype(type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
-       || (is_subtype(type2, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
-       && !is_subtype(type2, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
-    return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
+  bool b = is_subtype(type1, *genv_ts.DECIMAL_TYPE_ONE);
+  b = is_subtype(type1, *genv_ts.INTEGER_TYPE_ONE);
+  if ((is_subtype(type1, *genv_ts.DECIMAL_TYPE_ONE)
+       && !is_subtype(type1, *genv_ts.INTEGER_TYPE_ONE))
+       || (is_subtype(type2, *genv_ts.DECIMAL_TYPE_ONE))
+       && !is_subtype(type2, *genv_ts.INTEGER_TYPE_ONE)) {
+    return genv_ts.DECIMAL_TYPE_ONE;
   }
 
-  return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+  return genv_ts.INTEGER_TYPE_ONE;
 }
 
 rchandle<NodeNameTest> TypeOps::get_nametest(const XQType& type)
