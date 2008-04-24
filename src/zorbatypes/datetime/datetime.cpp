@@ -104,7 +104,7 @@ int DateTime::createDateTime(int years, int months, int days,
   return 0;
 }
 
-int DateTime::createDateTime(int years, int months, int days,
+int DateTime::createDateTime(int years, int months, int days, 
                              int hours, int minutes, double seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
 {
   dt_t = new DateTime();
@@ -123,7 +123,6 @@ int DateTime::createDateTime(int years, int months, int days,
   return 0;
 }
 
-
 int DateTime::createDateTime(int years, int months, int days,
                              int hours, int minutes, int seconds, int fractional_seconds, const TimeZone& tz, DateTime_t& dt_t)
 {
@@ -139,6 +138,42 @@ int DateTime::createDateTime(int years, int months, int days,
       
   dt_t->the_time_zone = tz;
 
+  return 0;
+}
+
+int DateTime::createDate(int years, int months, int days, TimeZone_t& tz_t, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = DATE_FACET;
+  dt_t->data[YEAR_DATA] = years;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = abs<int>(days);
+  dt_t->data[HOUR_DATA] = 0;
+  dt_t->data[MINUTE_DATA] = 0;
+  dt_t->data[SECONDS_DATA] = 0;
+  dt_t->data[FRACSECONDS_DATA] = 0;
+      
+  if (!tz_t.isNull())
+    dt_t->the_time_zone = *tz_t;
+  
+  return 0;
+}
+
+int DateTime::createTime(int hours, int minutes, double seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = TIME_FACET;
+  dt_t->data[YEAR_DATA] = 1;
+  dt_t->data[MONTH_DATA] = 1;
+  dt_t->data[DAY_DATA] = 1;
+  dt_t->data[HOUR_DATA] = abs<int>(hours);
+  dt_t->data[MINUTE_DATA] = abs<int>(minutes);
+  dt_t->data[SECONDS_DATA] = floor<double>(abs<double>(seconds));
+  dt_t->data[FRACSECONDS_DATA] = round(frac(abs<double>(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
+      
+  if (!tz_t.isNull())
+    dt_t->the_time_zone = *tz_t;
+  
   return 0;
 }
 

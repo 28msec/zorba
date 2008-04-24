@@ -89,14 +89,18 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
   if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
      || 
      TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
-  {     
-    if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
+  {  
+    if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
     {
-      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> (aRuntimeCB, &aLoc, n1, n0);
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME> (aRuntimeCB, &aLoc, n0, n1);
+    }
+    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
+    {
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE> (aRuntimeCB, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
     {
-      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (aRuntimeCB, &aLoc, n1, n0);
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME> (aRuntimeCB, &aLoc, n0, n1);
     }
     else if(TypeOps::is_numeric(*type1))
     {
@@ -174,10 +178,26 @@ store::Item_t AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS
 }
 
 template<>
+store::Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+{
+  xqp_dateTime d = i1->getDateTimeValue()->addDuration(*i0->getDurationValue()->toDuration());
+  return GENV_ITEMFACTORY->createDateTime (d);
+}
+
+template<>
 store::Item_t AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_date d = i0->getDateValue()->addDuration(*i1->getDurationValue()->toDuration());
+  return GENV_ITEMFACTORY->createDate (d);
+}
+
+template<>
+store::Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+{
+  xqp_date d = i1->getDateValue()->addDuration(*i0->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createDate (d);
 }
 
@@ -188,6 +208,15 @@ store::Item_t AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DUR
   xqp_time t = i0->getTimeValue()->addDuration(*i1->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createTime (t);
 }
+
+template<>
+store::Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+{
+  xqp_time t = i1->getTimeValue()->addDuration(*i0->getDurationValue()->toDuration());
+  return GENV_ITEMFACTORY->createTime (t);
+}
+
  /* end class AddOperations */
 
 /* start class SubtractOperations */

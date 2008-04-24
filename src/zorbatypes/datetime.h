@@ -78,6 +78,7 @@ namespace zorba
       
       /**
        *  The function will use the absolute values of all int parameters except years. No TimeZone.
+       *  Returns 0 on success
        */
       static int
       createDateTime(int years, int months, int days,
@@ -85,6 +86,7 @@ namespace zorba
       
       /**
        *  The function will use the absolute values of all int parameters except years. TimeZone may be NULL
+       *  Returns 0 on success
        */
       static int
       createDateTime(int years, int months, int days,
@@ -92,6 +94,7 @@ namespace zorba
       
       /**
        *  The function will use the absolute values of all int parameters except years. TimeZone may be NULL
+       *  Returns 0 on success
        */
       static int
       createDateTime(int years, int months, int days,
@@ -100,11 +103,26 @@ namespace zorba
 
       /**
        *  The function will use the absolute values of all int parameters except years. TimeZone is a reference
+       *  Returns 0 on success
        */
       static int
       createDateTime(int years, int months, int days,
-                         int hours, int minutes, int seconds, int fractional_seconds,
-                         const TimeZone& tz, DateTime_t& dt_t);
+                     int hours, int minutes, int seconds, int fractional_seconds,
+                     const TimeZone& tz, DateTime_t& dt_t);
+      
+      /**
+       *  The function will use the absolute values of all int parameters except years. TimeZone may be NULL
+       *  Returns 0 on success
+       */
+      static int
+      createDate(int years, int months, int days, TimeZone_t& tz_t, DateTime_t& dt_t);
+      
+      /**
+       *  The function will use the absolute values of all int parameters. TimeZone is a reference
+       *  Returns 0 on success
+       */
+      static int
+      createTime(int hours, int minutes, double seconds, const TimeZone_t& tz, DateTime_t& dt_t);
 
       /**
        *  Throws InvalidTimezoneException if the given timezone is not valid.
