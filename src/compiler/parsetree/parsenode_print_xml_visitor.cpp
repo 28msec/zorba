@@ -37,236 +37,85 @@ void print(parsenode* p)
     os << "</ParseNodeTree>" << std::endl;
 }
 
+#define IDS \
+  " pos='" << n.get_location() << "' ptr='" << &n << "'"
 
-void *begin_visit(const parsenode &n)
-{
-    INDENT;
 
-    os << "<ParseNode pos='" << n.get_location() << "' ptr='" << &n << "'";
+#define BEGIN_TAG( cls )                        \
+  void *begin_visit (const cls &n) {            \
+    INDENT;                                     \
+    os << "<" #cls << IDS << ">";               \
+    INDENT_INC; NL;                             \
+    return no_state;                            \
+  }
 
-    os << ">";
+#define NO_END_TAG( cls )                                     \
+  void end_visit(const cls& /*n*/, void* /*visit_state*/) {}
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+#define END_TAG( cls ) \
+  void end_visit(const cls& /*n*/, void* /*visit_state*/) {  \
+    INDENT_DEC; INDENT;                                      \
+    os << "</" #cls ">";                                     \
+    NL;                                                      \
+  }
 
+BEGIN_TAG (parsenode)
 
 void *begin_visit(const AbbrevForwardStep &n)
 {
     INDENT;
 
-    os << "<AbbrevForwardStep pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<AbbrevForwardStep" << IDS;
     if (n.get_attr_bit ()) os << " attr='true'";
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
+BEGIN_TAG (AnyKindTest)
 
-void *begin_visit(const AnyKindTest &n)
-{
-    INDENT;
+BEGIN_TAG (AposAttrContentList)
 
-    os << "<AnyKindTest pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (AposAttrValueContent)
 
-    os << ">";
+BEGIN_TAG (ArgList)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (AtomicType)
 
+BEGIN_TAG (AttributeTest)
 
-void *begin_visit(const AposAttrContentList &n)
-{
-    INDENT;
+BEGIN_TAG (BaseURIDecl)
 
-    os << "<AposAttrContentList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const AposAttrValueContent &n)
-{
-    INDENT;
-
-    os << "<AposAttrValueContent pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ArgList &n)
-{
-    INDENT;
-
-    os << "<ArgList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const AtomicType &n)
-{
-    INDENT;
-
-    os << "<AtomicType pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const AttributeTest &n)
-{
-    INDENT;
-
-    os << "<AttributeTest pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const BaseURIDecl &n)
-{
-    INDENT;
-
-    os << "<BaseURIDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const BoundarySpaceDecl &n)
-{
-    INDENT;
-
-    os << "<BoundarySpaceDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (BoundarySpaceDecl)
 
 void *begin_visit(const CaseClause &n)
 {
     INDENT;
 
-    os << "<CaseClause pos='" << n.get_location() << "' ptr='" << &n << "' var='" << n.get_varname () << "'";
+    os << "<CaseClause" << IDS << " var='" << n.get_varname () << "'";
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
+BEGIN_TAG (CaseClauseList)
 
-void *begin_visit(const CaseClauseList &n)
-{
-    INDENT;
+BEGIN_TAG (CommentTest)
 
-    os << "<CaseClauseList pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (ConstructionDecl)
 
-    os << ">";
+BEGIN_TAG (CopyNamespacesDecl)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const CommentTest &n)
-{
-    INDENT;
-
-    os << "<CommentTest pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ConstructionDecl &n)
-{
-    INDENT;
-
-    os << "<ConstructionDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const CopyNamespacesDecl &n)
-{
-    INDENT;
-
-    os << "<CopyNamespacesDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const DefaultCollationDecl &n)
-{
-    INDENT;
-
-    os << "<DefaultCollationDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (DefaultCollationDecl)
 
 void *begin_visit(const DefaultNamespaceDecl &n)
 {
     INDENT;
 
-    os << "<DefaultNamespaceDecl mode='" << n.get_mode () << "' uri='" << n.get_default_namespace () << "' pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<DefaultNamespaceDecl mode='" << n.get_mode () << "' uri='" << n.get_default_namespace () << "'" << IDS;
 
     os << "/>";
 
@@ -274,15 +123,9 @@ void *begin_visit(const DefaultNamespaceDecl &n)
     return no_state;
 }
 
-void end_visit(const NamespaceDecl& /*n*/, void* /*visit_state*/)
-{
-}
+NO_END_TAG (NamespaceDecl)
 
-
-void end_visit(const DefaultNamespaceDecl& /*n*/, void* /*visit_state*/)
-{
-}
-
+NO_END_TAG (DefaultNamespaceDecl)
 
 void *begin_visit(const DirAttr &n)
 {
@@ -293,171 +136,57 @@ void *begin_visit(const DirAttr &n)
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
+BEGIN_TAG (DirAttributeList)
 
-void *begin_visit(const DirAttributeList &n)
-{
-    INDENT;
+BEGIN_TAG (DirAttributeValue)
 
-    os << "<DirAttributeList pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (DirElemContentList)
 
-    os << ">";
+BEGIN_TAG (DocumentTest)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (ElementTest)
 
+BEGIN_TAG (EmptyOrderDecl)
 
-void *begin_visit(const DirAttributeValue &n)
-{
-    INDENT;
+BEGIN_TAG (ForClause)
 
-    os << "<DirAttributeValue pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const DirElemContentList &n)
-{
-    INDENT;
-
-    os << "<DirElemContentList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const DocumentTest &n)
-{
-    INDENT;
-
-    os << "<DocumentTest pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ElementTest &n)
-{
-    INDENT;
-
-    os << "<ElementTest pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const EmptyOrderDecl &n)
-{
-    INDENT;
-
-    os << "<EmptyOrderDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ForClause &n)
-{
-    INDENT;
-
-    os << "<ForClause pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ForLetClauseList &n)
-{
-    INDENT;
-
-    os << "<ForLetClauseList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (ForLetClauseList)
 
 void *begin_visit(const ForwardAxis &n)
 {
     INDENT;
 
-    os << "<ForwardAxis pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<ForwardAxis" << IDS;
     os << " axis='" << ParseConstants::decode_fwd_axis (n.get_axis ()) << "'";
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
-
-void *begin_visit(const ForwardStep &n)
-{
-    INDENT;
-
-    os << "<ForwardStep pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (ForwardStep)
 
 void *begin_visit(const FunctionDecl &n)
 {
     INDENT;
 
-    os << "<FunctionDecl name='" << n.get_name ()->get_qname () << "' pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<FunctionDecl name='" << n.get_name ()->get_qname () << "'" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
-
 
 void *begin_visit(const GeneralComp &n)
 {
     INDENT;
 
-    os << "<GeneralComp pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<GeneralComp" << IDS;
 
     os << "/>";
     
@@ -466,121 +195,53 @@ void *begin_visit(const GeneralComp &n)
     return no_state;
 }
 
-void end_visit(const GeneralComp& /*n*/, void* /*visit_state*/)
-{
-}
+NO_END_TAG (GeneralComp)
 
+BEGIN_TAG (ItemType)
 
-void *begin_visit(const ItemType &n)
-{
-    INDENT;
+BEGIN_TAG (LetClause)
 
-    os << "<ItemType pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const LetClause &n)
-{
-    INDENT;
-
-    os << "<LetClause pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const LibraryModule &n)
-{
-    INDENT;
-
-    os << "<LibraryModule pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (LibraryModule)
 
 void *begin_visit(const MainModule  &n)
 {
     INDENT;
 
-    os << "<MainModule pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<MainModule" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
 
     return no_state;
 }
 
-
-void *begin_visit(const Module &n)
-{
-    INDENT;
-
-    os << "<Module pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (Module)
 
 void *begin_visit(const ModuleDecl &n)
 {
     INDENT;
 
-    os << "<ModuleDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<ModuleDecl" << IDS;
     os << " prefix='" << n.get_prefix() << "' "
        << "target_namespace='" << n.get_target_namespace() << "' ptr='" << &n << "'";
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
-
-void *begin_visit(const ModuleImport &n)
-{
-    INDENT;
-
-    os << "<ModuleImport pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (ModuleImport)
 
 void *begin_visit(const NameTest &n)
 {
     INDENT;
 
-    os << "<NameTest pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<NameTest" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
 
     // Hack: visitor is broken, QName is never visited.
     // However fixing this would impact the translator.
@@ -590,35 +251,25 @@ void *begin_visit(const NameTest &n)
     return no_state;
 }
 
-void end_visit(const NameTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</NameTest>";
-    NL;
-}
-
+END_TAG (NameTest)
 
 void *begin_visit(const NamespaceDecl &n)
 {
     INDENT;
 
-    os << "<NamespaceDecl prefix='" << n.get_prefix () << "' uri='" << n.get_uri () << "' pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<NamespaceDecl prefix='" << n.get_prefix () << "' uri='" << n.get_uri () << "'" << IDS;
 
     os << "/>";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
-
 
 void *begin_visit(const NodeComp &n)
 {
     INDENT;
 
-    os << "<NodeComp pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<NodeComp" << IDS;
 
     os << "/>";
 
@@ -626,49 +277,21 @@ void *begin_visit(const NodeComp &n)
     return no_state;
 }
 
-void end_visit(const NodeComp& /*n*/, void* /*visit_state*/)
-{
-}
+NO_END_TAG (NodeComp)
 
+BEGIN_TAG (OccurrenceIndicator)
 
-void *begin_visit(const OccurrenceIndicator &n)
-{
-    INDENT;
-
-    os << "<OccurrenceIndicator pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const OptionDecl &n)
-{
-    INDENT;
-
-    os << "<OptionDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (OptionDecl)
 
 void *begin_visit(GroupByClause const& n)
 {
     INDENT;
 
-    os << "<GroupByClause pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<GroupByClause" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
@@ -676,12 +299,11 @@ void *begin_visit(GroupSpecList const& n)
 {
     INDENT;
 
-    os << "<GroupSpecList pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<GroupSpecList" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
@@ -689,12 +311,11 @@ void *begin_visit(GroupSpec const& n)
 {
     INDENT;
 
-    os << "<GroupSpec pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<GroupSpec" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
@@ -702,12 +323,11 @@ void *begin_visit(GroupCollationSpec const& n)
 {
     INDENT;
 
-    os << "<GroupCollationSpec pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<GroupCollationSpec" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
@@ -715,147 +335,37 @@ void *begin_visit(LetClauseList const& n)
 {
     INDENT;
 
-    os << "<LetClauseList pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<LetClauseList" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
+BEGIN_TAG (OrderByClause)
 
-void *begin_visit(const OrderByClause &n)
-{
-    INDENT;
+BEGIN_TAG (OrderCollationSpec)
 
-    os << "<OrderByClause pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (OrderDirSpec)
 
-    os << ">";
+BEGIN_TAG (OrderEmptySpec)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (OrderModifier)
 
+BEGIN_TAG (OrderSpec)
 
-void *begin_visit(const OrderCollationSpec &n)
-{
-    INDENT;
+BEGIN_TAG (OrderSpecList)
 
-    os << "<OrderCollationSpec pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (OrderingModeDecl)
 
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const OrderDirSpec &n)
-{
-    INDENT;
-
-    os << "<OrderDirSpec pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const OrderEmptySpec &n)
-{
-    INDENT;
-
-    os << "<OrderEmptySpec pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const OrderModifier &n)
-{
-    INDENT;
-
-    os << "<OrderModifier pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const OrderSpec &n)
-{
-    INDENT;
-
-    os << "<OrderSpec pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const OrderSpecList &n)
-{
-    INDENT;
-
-    os << "<OrderSpecList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const OrderingModeDecl &n)
-{
-    INDENT;
-
-    os << "<OrderingModeDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const PITest &n)
-{
-    INDENT;
-
-    os << "<PITest pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (PITest)
 
 void *begin_visit(const Param &n)
 {
     INDENT;
 
-    os << "<Param name='" << n.get_name () << "' pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<Param name='" << n.get_name () << "'" << IDS;
 
     os << "/>";
 
@@ -863,233 +373,48 @@ void *begin_visit(const Param &n)
     return no_state;
 }
 
+NO_END_TAG (Param)
 
-void end_visit(const Param& /*n*/, void* /*visit_state*/)
-{
-}
+BEGIN_TAG (ParamList)
 
+BEGIN_TAG (PositionalVar)
 
-void *begin_visit(const ParamList &n)
-{
-    INDENT;
+BEGIN_TAG (Pragma)
 
-    os << "<ParamList pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (PragmaList)
 
-    os << ">";
+BEGIN_TAG (PredicateList)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (Prolog)
 
+BEGIN_TAG (QVarInDecl)
 
-void *begin_visit(const PositionalVar &n)
-{
-    INDENT;
+BEGIN_TAG (QVarInDeclList)
 
-    os << "<PositionalVar pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (QuoteAttrValueContent)
 
-    os << ">";
+BEGIN_TAG (QuoteAttrContentList)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (ReverseAxis)
 
+BEGIN_TAG (ReverseStep)
 
-void *begin_visit(const Pragma &n)
-{
-    INDENT;
+BEGIN_TAG (SIND_DeclList)
 
-    os << "<Pragma pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (SchemaAttributeTest)
 
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const PragmaList &n)
-{
-    INDENT;
-
-    os << "<PragmaList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const PredicateList &n)
-{
-    INDENT;
-
-    os << "<PredicateList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const Prolog &n)
-{
-    INDENT;
-
-    os << "<Prolog pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const QVarInDecl &n)
-{
-    INDENT;
-
-    os << "<QVarInDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const QVarInDeclList &n)
-{
-    INDENT;
-
-    os << "<QVarInDeclList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const QuoteAttrValueContent &n)
-{
-    INDENT;
-
-    os << "<QuoteAttrValueContent pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const QuoteAttrContentList &n)
-{
-    INDENT;
-
-    os << "<QuoteAttrContentList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ReverseAxis &n)
-{
-    INDENT;
-
-    os << "<ReverseAxis pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ReverseStep &n)
-{
-    INDENT;
-
-    os << "<ReverseStep pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const SIND_DeclList &n)
-{
-    INDENT;
-
-    os << "<SIND_DeclList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const SchemaAttributeTest &n)
-{
-    INDENT;
-
-    os << "<SchemaAttributeTest pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const SchemaElementTest &n)
-{
-    INDENT;
-
-    os << "<SchemaElementTest pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (SchemaElementTest)
 
 void *begin_visit(const SchemaImport &n)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
     INDENT;
 
-    os << "<SchemaImport pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<SchemaImport" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 #else
   ZORBA_ERROR(ZorbaError::XQST0009);
@@ -1097,124 +422,27 @@ void *begin_visit(const SchemaImport &n)
 #endif
 }
 
+BEGIN_TAG (SchemaPrefix)
 
-void *begin_visit(const SchemaPrefix &n)
-{
-    INDENT;
+BEGIN_TAG (SequenceType)
 
-    os << "<SchemaPrefix pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (SignList)
 
-    os << ">";
+BEGIN_TAG (SingleType)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (TextTest)
 
+BEGIN_TAG (TypeDeclaration)
 
-void *begin_visit(const SequenceType &n)
-{
-    INDENT;
+BEGIN_TAG (TypeName)
 
-    os << "<SequenceType pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const SignList &n)
-{
-    INDENT;
-
-    os << "<SignList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const SingleType &n)
-{
-    INDENT;
-
-    os << "<SingleType pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const TextTest &n)
-{
-    INDENT;
-
-    os << "<TextTest pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const TypeDeclaration &n)
-{
-    INDENT;
-
-    os << "<TypeDeclaration pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const TypeName &n)
-{
-    INDENT;
-
-    os << "<TypeName pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const URILiteralList &n)
-{
-    INDENT;
-
-    os << "<URILiteralList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (URILiteralList)
 
 void *begin_visit(const ValueComp &n)
 {
     INDENT;
 
-    os << "<ValueComp pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<ValueComp" << IDS;
 
     os << "/>";
 
@@ -1222,10 +450,7 @@ void *begin_visit(const ValueComp &n)
     return no_state;
 }
 
-void end_visit(const ValueComp& /*n*/, void* /*visit_state*/)
-{
-}
-
+NO_END_TAG (ValueComp)
 
 void *begin_visit(const VarDecl &n)
 {
@@ -1235,11 +460,9 @@ void *begin_visit(const VarDecl &n)
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
-
 
 void *begin_visit(const VarGetsDecl &n)
 {
@@ -1249,25 +472,11 @@ void *begin_visit(const VarGetsDecl &n)
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
-
-void *begin_visit(const VarGetsDeclList &n)
-{
-    INDENT;
-
-    os << "<VarGetsDeclList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (VarGetsDeclList)
 
 void *begin_visit(const VarInDecl &n)
 {
@@ -1277,75 +486,35 @@ void *begin_visit(const VarInDecl &n)
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
-
-void *begin_visit(const VarInDeclList &n)
-{
-    INDENT;
-
-    os << "<VarInDeclList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (VarInDeclList)
 
 void *begin_visit(const VersionDecl &n)
 {
     INDENT;
 
-    os << "<VersionDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<VersionDecl" << IDS;
     os << "version='" << n.get_version() << "' "
        << "encoding='" << n.get_encoding() << "' ";
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
+BEGIN_TAG (VFO_DeclList)
 
-void *begin_visit(const VFO_DeclList &n)
-{
-    INDENT;
-
-    os << "<VFO_DeclList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const WhereClause &n)
-{
-    INDENT;
-
-    os << "<WhereClause pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (WhereClause)
 
 void *begin_visit(const QName &n)
 {
   INDENT;
 
-  os << "<QName name='" << n.get_qname () << "' pos='" << n.get_location() << "' ptr='" << &n << "'";
+  os << "<QName name='" << n.get_qname () << "'" << IDS;
 
   os << "/>";
 
@@ -1354,128 +523,29 @@ void *begin_visit(const QName &n)
   return no_state;
 }
 
-void end_visit(const QName& /*n*/, void* /*visit_state*/)
-{
-}
+NO_END_TAG (QName)
 
+BEGIN_TAG (Wildcard)
 
-void *begin_visit(const Wildcard &n)
-{
-    INDENT;
+BEGIN_TAG (exprnode)
 
-    os << "<Wildcard pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (AdditiveExpr)
 
-    os << ">";
+BEGIN_TAG (AndExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (AxisStep)
 
+BEGIN_TAG (CDataSection)
 
-void *begin_visit(const exprnode &n)
-{
-    INDENT;
+BEGIN_TAG (CastExpr)
 
-    os << "<exprnode pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const AdditiveExpr &n)
-{
-    INDENT;
-
-    os << "<AdditiveExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const AndExpr &n)
-{
-    INDENT;
-
-    os << "<AndExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const AxisStep &n)
-{
-    INDENT;
-
-    os << "<AxisStep pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const CDataSection &n)
-{
-    INDENT;
-
-    os << "<CDataSection pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const CastExpr &n)
-{
-    INDENT;
-
-    os << "<CastExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const CastableExpr &n)
-{
-    INDENT;
-
-    os << "<CastableExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (CastableExpr)
 
 void *begin_visit(const CommonContent &n)
 {
     INDENT;
 
-    os << "<CommonContent pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<CommonContent" << IDS;
 
     os << ">";
 
@@ -1515,328 +585,72 @@ void *begin_visit(const CommonContent &n)
     INDENT_DEC;
     INDENT;
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
-
 
 void *begin_visit(const ComparisonExpr &n)
 {
     INDENT;
 
-    os << "<ComparisonExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<ComparisonExpr" << IDS;
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
 
     // Hack: visitor does not visit
 
     return no_state;
 }
 
+BEGIN_TAG (CompAttrConstructor)
 
-void *begin_visit(const CompAttrConstructor &n)
-{
-    INDENT;
+BEGIN_TAG (CompCommentConstructor)
 
-    os << "<CompAttrConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (CompDocConstructor)
 
-    os << ">";
+BEGIN_TAG (CompElemConstructor)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (CompPIConstructor)
 
+BEGIN_TAG (CompTextConstructor)
 
-void *begin_visit(const CompCommentConstructor &n)
-{
-    INDENT;
+BEGIN_TAG (ContextItemExpr)
 
-    os << "<CompCommentConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (DirCommentConstructor)
 
-    os << ">";
+BEGIN_TAG (DirElemConstructor)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (DirElemContent)
 
+BEGIN_TAG (DirPIConstructor)
 
-void *begin_visit(const CompDocConstructor &n)
-{
-    INDENT;
+BEGIN_TAG (EnclosedExpr)
 
-    os << "<CompDocConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (Expr)
 
-    os << ">";
+BEGIN_TAG (ExtensionExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FLWORExpr)
 
+BEGIN_TAG (FilterExpr)
 
-void *begin_visit(const CompElemConstructor &n)
-{
-    INDENT;
+BEGIN_TAG (FunctionCall)
 
-    os << "<CompElemConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (IfExpr)
 
-    os << ">";
+BEGIN_TAG (InstanceofExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (IntersectExceptExpr)
 
-
-void *begin_visit(const CompPIConstructor &n)
-{
-    INDENT;
-
-    os << "<CompPIConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const CompTextConstructor &n)
-{
-    INDENT;
-
-    os << "<CompTextConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ContextItemExpr &n)
-{
-    INDENT;
-
-    os << "<ContextItemExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const DirCommentConstructor &n)
-{
-    INDENT;
-
-    os << "<DirCommentConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const DirElemConstructor &n)
-{
-    INDENT;
-
-    os << "<DirElemConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const DirElemContent &n)
-{
-    INDENT;
-
-    os << "<DirElemContent pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const DirPIConstructor &n)
-{
-    INDENT;
-
-    os << "<DirPIConstructor pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const EnclosedExpr &n)
-{
-    INDENT;
-
-    os << "<EnclosedExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const Expr &n)
-{
-    INDENT;
-
-    os << "<Expr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ExtensionExpr &n)
-{
-    INDENT;
-
-    os << "<ExtensionExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const FLWORExpr &n)
-{
-    INDENT;
-
-    os << "<FLWORExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const FilterExpr &n)
-{
-    INDENT;
-
-    os << "<FilterExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const FunctionCall &n)
-{
-    INDENT;
-
-    os << "<FunctionCall pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const IfExpr &n)
-{
-    INDENT;
-
-    os << "<IfExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const InstanceofExpr &n)
-{
-    INDENT;
-
-    os << "<InstanceofExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const IntersectExceptExpr &n)
-{
-    INDENT;
-
-    os << "<IntersectExceptExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const MultiplicativeExpr &n)
-{
-    INDENT;
-
-    os << "<MultiplicativeExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (MultiplicativeExpr)
 
 void *begin_visit(const NumericLiteral &n)
 {
     INDENT;
 
-    os << "<NumericLiteral pos='" << n.get_location() << "' ptr='" << &n << " type='" 
+    os << "<NumericLiteral" << IDS << " type='" 
        << ParseConstants::decode_numeric_type (n.get_type ()) << "' val='" << n.toString () << "'";
 
     os << "/>";
@@ -1845,52 +659,13 @@ void *begin_visit(const NumericLiteral &n)
     return no_state;
 }
 
-void end_visit(const NumericLiteral& /*n*/, void* /*visit_state*/)
-{
-}
+NO_END_TAG (NumericLiteral)
 
+BEGIN_TAG (OrExpr)
 
-void *begin_visit(const OrExpr &n)
-{
-    INDENT;
+BEGIN_TAG (OrderedExpr)
 
-    os << "<OrExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const OrderedExpr &n)
-{
-    INDENT;
-
-    os << "<OrderedExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ParenthesizedExpr &n)
-{
-    INDENT;
-
-    os << "<ParenthesizedExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (ParenthesizedExpr)
 
 void *begin_visit(const PathExpr &n)
 {
@@ -1900,171 +675,47 @@ void *begin_visit(const PathExpr &n)
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
+BEGIN_TAG (QuantifiedExpr)
 
-void *begin_visit(const QuantifiedExpr &n)
-{
-    INDENT;
+BEGIN_TAG (QueryBody)
 
-    os << "<QuantifiedExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (RangeExpr)
 
-    os << ">";
+BEGIN_TAG (RelativePathExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (StringLiteral)
 
-
-void *begin_visit(const QueryBody &n)
-{
-    INDENT;
-
-    os << "<QueryBody pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const RangeExpr &n)
-{
-    INDENT;
-
-    os << "<RangeExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const RelativePathExpr &n)
-{
-    INDENT;
-
-    os << "<RelativePathExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const StringLiteral &n)
-{
-    INDENT;
-
-    os << "<StringLiteral pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const TreatExpr &n)
-{
-    INDENT;
-
-    os << "<TreatExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (TreatExpr)
 
 void *begin_visit(const TypeswitchExpr &n)
 {
     INDENT;
 
-    os << "<TypeswitchExpr pos='" << n.get_location() << "' ptr='" << &n << " default-var='" << n.get_default_varname() << "'";
+    os << "<TypeswitchExpr" << IDS << " default-var='" << n.get_default_varname() << "'";
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
+BEGIN_TAG (UnaryExpr)
 
-void *begin_visit(const UnaryExpr &n)
-{
-    INDENT;
+BEGIN_TAG (UnionExpr)
 
-    os << "<UnaryExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (UnorderedExpr)
 
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const UnionExpr &n)
-{
-    INDENT;
-
-    os << "<UnionExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const UnorderedExpr &n)
-{
-    INDENT;
-
-    os << "<UnorderedExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ValidateExpr &n)
-{
-    INDENT;
-
-    os << "<ValidateExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (ValidateExpr)
 
 void *begin_visit(const VarRef &n)
 {
     INDENT;
 
-    os << "<VarRef pos='" << n.get_location() << "' ptr='" << &n << "' var='" << n.get_varname () << "'";
+    os << "<VarRef" << IDS << " var='" << n.get_varname () << "'";
 
     os << "/>";
 
@@ -2072,109 +723,21 @@ void *begin_visit(const VarRef &n)
     return no_state;
 }
 
+NO_END_TAG (VarRef)
 
-void end_visit(const VarRef& /*n*/, void* /*visit_state*/)
-{
-}
+BEGIN_TAG (DeleteExpr)
 
+BEGIN_TAG (InsertExpr)
 
-void *begin_visit(const DeleteExpr &n)
-{
-    INDENT;
+BEGIN_TAG (RenameExpr)
 
-    os << "<DeleteExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (ReplaceExpr)
 
-    os << ">";
+BEGIN_TAG (RevalidationDecl)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (TransformExpr)
 
-
-void *begin_visit(const InsertExpr &n)
-{
-    INDENT;
-
-    os << "<InsertExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const RenameExpr &n)
-{
-    INDENT;
-
-    os << "<RenameExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const ReplaceExpr &n)
-{
-    INDENT;
-
-    os << "<ReplaceExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const RevalidationDecl &n)
-{
-    INDENT;
-
-    os << "<RevalidationDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const TransformExpr &n)
-{
-    INDENT;
-
-    os << "<TransformExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
-
-void *begin_visit(const VarNameList &n)
-{
-    INDENT;
-
-    os << "<VarNameList pos='" << n.get_location() << "' ptr='" << &n << "'";
-
-    os << ">";
-
-    INDENT_INC;
-    NL;
-    return no_state;
-}
-
+BEGIN_TAG (VarNameList)
 
 void *begin_visit(const VarBinding &n)
 {
@@ -2185,2377 +748,451 @@ void *begin_visit(const VarBinding &n)
 
     os << ">";
 
-    INDENT_INC;
-    NL;
+    INDENT_INC; NL;
     return no_state;
 }
 
+BEGIN_TAG (TryExpr)
 
-void *begin_visit(const TryExpr &n)
-{
-    INDENT;
+BEGIN_TAG (CatchListExpr)
 
-    os << "<TryExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (CatchExpr)
 
-    os << ">";
+BEGIN_TAG (EvalExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTAnd)
 
-void *begin_visit(const CatchListExpr &n)
-{
-    INDENT;
+BEGIN_TAG (FTAnyallOption)
 
-    os << "<CatchListExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (FTBigUnit)
 
-    os << ">";
+BEGIN_TAG (FTCaseOption)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTContainsExpr)
 
-void *begin_visit(const CatchExpr &n)
-{
-    INDENT;
+BEGIN_TAG (FTContent)
 
-    os << "<CatchExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (FTDiacriticsOption)
 
-    os << ">";
+BEGIN_TAG (FTDistance)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTIgnoreOption)
 
-void *begin_visit (const EvalExpr &n)
-{
-    INDENT;
+BEGIN_TAG (FTInclExclStringLiteral)
 
-    os << "<EvalExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (FTInclExclStringLiteralList)
 
-    os << ">";
+BEGIN_TAG (FTLanguageOption)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTMatchOption)
 
-void *begin_visit(const FTAnd &n)
-{
-    INDENT;
+BEGIN_TAG (FTMatchOptionProximityList)
 
-    os << "<FTAnd pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (FTMildnot)
 
-    os << ">";
+BEGIN_TAG (FTOptionDecl)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTOr)
 
+BEGIN_TAG (FTOrderedIndicator)
 
-void *begin_visit(const FTAnyallOption &n)
-{
-    INDENT;
+BEGIN_TAG (FTProximity)
 
-    os << "<FTAnyallOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (FTRange)
 
-    os << ">";
+BEGIN_TAG (FTRefOrList)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTScope)
 
+BEGIN_TAG (FTScoreVar)
 
-void *begin_visit(const FTBigUnit &n)
-{
-    INDENT;
+BEGIN_TAG (FTSelection)
 
-    os << "<FTBigUnit pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (FTStemOption)
 
-    os << ">";
+BEGIN_TAG (FTStopwordOption)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTStringLiteralList)
 
+BEGIN_TAG (FTThesaurusID)
 
-void *begin_visit(const FTCaseOption &n)
-{
-    INDENT;
+BEGIN_TAG (FTThesaurusList)
 
-    os << "<FTCaseOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (FTThesaurusOption)
 
-    os << ">";
+BEGIN_TAG (FTTimes)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTUnaryNot)
 
+BEGIN_TAG (FTUnit)
 
-void *begin_visit(const FTContainsExpr &n)
-{
-    INDENT;
+BEGIN_TAG (FTWildcardOption)
 
-    os << "<FTContainsExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+BEGIN_TAG (FTWindow)
 
-    os << ">";
+BEGIN_TAG (FTWords)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+BEGIN_TAG (FTWordsSelection)
 
+BEGIN_TAG (FTWordsValue)
 
-void *begin_visit(const FTContent &n)
-{
-    INDENT;
+END_TAG (parsenode)
 
-    os << "<FTContent pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (AbbrevForwardStep)
 
-    os << ">";
+END_TAG (AnyKindTest)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (AposAttrContentList)
 
+END_TAG (AposAttrValueContent)
 
-void *begin_visit(const FTDiacriticsOption &n)
-{
-    INDENT;
+END_TAG (ArgList)
 
-    os << "<FTDiacriticsOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (AtomicType)
 
-    os << ">";
+END_TAG (AttributeTest)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (BaseURIDecl)
 
+END_TAG (BoundarySpaceDecl)
 
-void *begin_visit(const FTDistance &n)
-{
-    INDENT;
+END_TAG (CaseClause)
 
-    os << "<FTDistance pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (CaseClauseList)
 
-    os << ">";
+END_TAG (CommentTest)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (ConstructionDecl)
 
+END_TAG (CopyNamespacesDecl)
 
-void *begin_visit(const FTIgnoreOption &n)
-{
-    INDENT;
+END_TAG (DefaultCollationDecl)
 
-    os << "<FTIgnoreOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (DirAttr)
 
-    os << ">";
+END_TAG (DirAttributeList)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (DirAttributeValue)
 
+END_TAG (DirElemContentList)
 
-void *begin_visit(const FTInclExclStringLiteral &n)
-{
-    INDENT;
+END_TAG (DocumentTest)
 
-    os << "<FTInclExclStringLiteral pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (ElementTest)
 
-    os << ">";
+END_TAG (EmptyOrderDecl)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (ForClause)
 
+END_TAG (ForLetClauseList)
 
-void *begin_visit(const FTInclExclStringLiteralList &n)
-{
-    INDENT;
+END_TAG (ForwardAxis)
 
-    os << "<FTInclExclStringLiteralList pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (ForwardStep)
 
-    os << ">";
+END_TAG (FunctionDecl)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (ItemType)
 
+END_TAG (LetClause)
 
-void *begin_visit(const FTLanguageOption &n)
-{
-    INDENT;
+END_TAG (LibraryModule)
 
-    os << "<FTLanguageOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (MainModule )
 
-    os << ">";
+END_TAG (Module)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (ModuleDecl)
 
+END_TAG (ModuleImport)
 
-void *begin_visit(const FTMatchOption &n)
-{
-    INDENT;
+END_TAG (OccurrenceIndicator)
 
-    os << "<FTMatchOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (OptionDecl)
 
-    os << ">";
+END_TAG (GroupByClause )
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (GroupSpecList )
 
+END_TAG (GroupSpec )
 
-void *begin_visit(const FTMatchOptionProximityList &n)
-{
-    INDENT;
+END_TAG (GroupCollationSpec )
 
-    os << "<FTMatchOptionProximityList pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (LetClauseList )
 
-    os << ">";
+END_TAG (OrderByClause)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (OrderCollationSpec)
 
+END_TAG (OrderDirSpec)
 
-void *begin_visit(const FTMildnot &n)
-{
-    INDENT;
+END_TAG (OrderEmptySpec)
 
-    os << "<FTMildnot pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (OrderModifier)
 
-    os << ">";
+END_TAG (OrderSpec)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (OrderSpecList)
 
+END_TAG (OrderingModeDecl)
 
-void *begin_visit(const FTOptionDecl &n)
-{
-    INDENT;
+END_TAG (PITest)
 
-    os << "<FTOptionDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (ParamList)
 
-    os << ">";
+END_TAG (PositionalVar)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (Pragma)
 
+END_TAG (PragmaList)
 
-void *begin_visit(const FTOr &n)
-{
-    INDENT;
+END_TAG (PredicateList)
 
-    os << "<FTOr pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (Prolog)
 
-    os << ">";
+END_TAG (QVarInDecl)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (QVarInDeclList)
 
+END_TAG (QuoteAttrValueContent)
 
-void *begin_visit(const FTOrderedIndicator &n)
-{
-    INDENT;
+END_TAG (QuoteAttrContentList)
 
-    os << "<FTOrderedIndicator pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (ReverseAxis)
 
-    os << ">";
+END_TAG (ReverseStep)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (SIND_DeclList)
 
+END_TAG (SchemaAttributeTest)
 
-void *begin_visit(const FTProximity &n)
-{
-    INDENT;
+END_TAG (SchemaElementTest)
 
-    os << "<FTProximity pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (SchemaImport)
 
-    os << ">";
+END_TAG (SchemaPrefix)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (SequenceType)
 
+END_TAG (SignList)
 
-void *begin_visit(const FTRange &n)
-{
-    INDENT;
+END_TAG (SingleType)
 
-    os << "<FTRange pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (TextTest)
 
-    os << ">";
+END_TAG (TypeDeclaration)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (TypeName)
 
+END_TAG (URILiteralList)
 
-void *begin_visit(const FTRefOrList &n)
-{
-    INDENT;
+END_TAG (VarDecl)
 
-    os << "<FTRefOrList pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (VarGetsDecl)
 
-    os << ">";
+END_TAG (VarGetsDeclList)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (VarInDecl)
 
+END_TAG (VarInDeclList)
 
-void *begin_visit(const FTScope &n)
-{
-    INDENT;
+END_TAG (VersionDecl)
 
-    os << "<FTScope pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (VFO_DeclList)
 
-    os << ">";
+END_TAG (WhereClause)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (Wildcard)
 
+END_TAG (exprnode)
 
-void *begin_visit(const FTScoreVar &n)
-{
-    INDENT;
+END_TAG (AdditiveExpr)
 
-    os << "<FTScoreVar pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (AndExpr)
 
-    os << ">";
+END_TAG (AxisStep)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (CDataSection)
 
+END_TAG (CastExpr)
 
-void *begin_visit(const FTSelection &n)
-{
-    INDENT;
+END_TAG (CastableExpr)
 
-    os << "<FTSelection pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (CommonContent)
 
-    os << ">";
+END_TAG (ComparisonExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (CompAttrConstructor)
 
+END_TAG (CompCommentConstructor)
 
-void *begin_visit(const FTStemOption &n)
-{
-    INDENT;
+END_TAG (CompDocConstructor)
 
-    os << "<FTStemOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (CompElemConstructor)
 
-    os << ">";
+END_TAG (CompPIConstructor)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (CompTextConstructor)
 
+END_TAG (ContextItemExpr)
 
-void *begin_visit(const FTStopwordOption &n)
-{
-    INDENT;
+END_TAG (DirCommentConstructor)
 
-    os << "<FTStopwordOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (DirElemConstructor)
 
-    os << ">";
+END_TAG (DirElemContent)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (DirPIConstructor)
 
+END_TAG (EnclosedExpr)
 
-void *begin_visit(const FTStringLiteralList &n)
-{
-    INDENT;
+END_TAG (Expr)
 
-    os << "<FTStringLiteralList pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (ExtensionExpr)
 
-    os << ">";
+END_TAG (FLWORExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (FilterExpr)
 
+END_TAG (FunctionCall)
 
-void *begin_visit(const FTThesaurusID &n)
-{
-    INDENT;
+END_TAG (IfExpr)
 
-    os << "<FTThesaurusID pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (InstanceofExpr)
 
-    os << ">";
+END_TAG (IntersectExceptExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (MultiplicativeExpr)
 
+END_TAG (OrExpr)
 
-void *begin_visit(const FTThesaurusList &n)
-{
-    INDENT;
+END_TAG (OrderedExpr)
 
-    os << "<FTThesaurusList pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (ParenthesizedExpr)
 
-    os << ">";
+END_TAG (PathExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (QuantifiedExpr)
 
+END_TAG (QueryBody)
 
-void *begin_visit(const FTThesaurusOption &n)
-{
-    INDENT;
+END_TAG (RangeExpr)
 
-    os << "<FTThesaurusOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (RelativePathExpr)
 
-    os << ">";
+END_TAG (StringLiteral)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (TreatExpr)
 
+END_TAG (TypeswitchExpr)
 
-void *begin_visit(const FTTimes &n)
-{
-    INDENT;
+END_TAG (UnaryExpr)
 
-    os << "<FTTimes pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (UnionExpr)
 
-    os << ">";
+END_TAG (UnorderedExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (ValidateExpr)
 
+END_TAG (DeleteExpr)
 
-void *begin_visit(const FTUnaryNot &n)
-{
-    INDENT;
+END_TAG (InsertExpr)
 
-    os << "<FTUnaryNot pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (RenameExpr)
 
-    os << ">";
+END_TAG (ReplaceExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (RevalidationDecl)
 
+END_TAG (TransformExpr)
 
-void *begin_visit(const FTUnit &n)
-{
-    INDENT;
+END_TAG (VarNameList)
 
-    os << "<FTUnit pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (VarBinding)
 
-    os << ">";
+END_TAG (TryExpr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (CatchListExpr)
 
+END_TAG (CatchExpr)
 
-void *begin_visit(const FTWildcardOption &n)
-{
-    INDENT;
+END_TAG (EvalExpr)
 
-    os << "<FTWildcardOption pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (FTAnd)
 
-    os << ">";
+END_TAG (FTAnyallOption)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (FTBigUnit)
 
+END_TAG (FTCaseOption)
 
-void *begin_visit(const FTWindow &n)
-{
-    INDENT;
+END_TAG (FTContainsExpr)
 
-    os << "<FTWindow pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (FTContent)
 
-    os << ">";
+END_TAG (FTDiacriticsOption)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (FTDistance)
 
+END_TAG (FTIgnoreOption)
 
-void *begin_visit(const FTWords &n)
-{
-    INDENT;
+END_TAG (FTInclExclStringLiteral)
 
-    os << "<FTWords pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (FTInclExclStringLiteralList)
 
-    os << ">";
+END_TAG (FTLanguageOption)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (FTMatchOption)
 
+END_TAG (FTMatchOptionProximityList)
 
-void *begin_visit(const FTWordsSelection &n)
-{
-    INDENT;
+END_TAG (FTMildnot)
 
-    os << "<FTWordsSelection pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (FTOptionDecl)
 
-    os << ">";
+END_TAG (FTOr)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (FTOrderedIndicator)
 
+END_TAG (FTProximity)
 
-void *begin_visit(const FTWordsValue &n)
-{
-    INDENT;
+END_TAG (FTRange)
 
-    os << "<FTWordsValue pos='" << n.get_location() << "' ptr='" << &n << "'";
+END_TAG (FTRefOrList)
 
-    os << ">";
+END_TAG (FTScope)
 
-    INDENT_INC;
-    NL;
-    return no_state;
-}
+END_TAG (FTScoreVar)
 
+END_TAG (FTSelection)
 
-void end_visit(const parsenode& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
+END_TAG (FTStemOption)
 
-    INDENT;
-    os << "</ParseNode>";
-    NL;
-}
+END_TAG (FTStopwordOption)
 
+END_TAG (FTStringLiteralList)
 
-void end_visit(const AbbrevForwardStep& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
+END_TAG (FTThesaurusID)
 
-    INDENT;
-    os << "</AbbrevForwardStep>";
-    NL;
-}
+END_TAG (FTThesaurusList)
 
+END_TAG (FTThesaurusOption)
 
-void end_visit(const AnyKindTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
+END_TAG (FTTimes)
 
-    INDENT;
-    os << "</AnyKindTest>";
-    NL;
-}
+END_TAG (FTUnaryNot)
 
+END_TAG (FTUnit)
 
-void end_visit(const AposAttrContentList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
+END_TAG (FTWildcardOption)
 
-    INDENT;
-    os << "</AposAttrContentList>";
-    NL;
-}
+END_TAG (FTWindow)
 
+END_TAG (FTWords)
 
-void end_visit(const AposAttrValueContent& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
+END_TAG (FTWordsSelection)
 
-    INDENT;
-    os << "</AposAttrValueContent>";
-    NL;
-}
-
-
-void end_visit(const ArgList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ArgList>";
-    NL;
-}
-
-
-void end_visit(const AtomicType& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</AtomicType>";
-    NL;
-}
-
-
-void end_visit(const AttributeTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</AttributeTest>";
-    NL;
-}
-
-
-void end_visit(const BaseURIDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</BaseURIDecl>";
-    NL;
-}
-
-
-void end_visit(const BoundarySpaceDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</BoundarySpaceDecl>";
-    NL;
-}
-
-
-void end_visit(const CaseClause& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CaseClause>";
-    NL;
-}
-
-
-void end_visit(const CaseClauseList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CaseClauseList>";
-    NL;
-}
-
-
-void end_visit(const CommentTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CommentTest>";
-    NL;
-}
-
-
-void end_visit(const ConstructionDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ConstructionDecl>";
-    NL;
-}
-
-
-void end_visit(const CopyNamespacesDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CopyNamespacesDecl>";
-    NL;
-}
-
-
-void end_visit(const DefaultCollationDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DefaultCollationDecl>";
-    NL;
-}
-
-
-void end_visit(const DirAttr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DirAttr>";
-    NL;
-}
-
-
-void end_visit(const DirAttributeList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DirAttributeList>";
-    NL;
-}
-
-
-void end_visit(const DirAttributeValue& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DirAttributeValue>";
-    NL;
-}
-
-
-void end_visit(const DirElemContentList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DirElemContentList>";
-    NL;
-}
-
-
-void end_visit(const DocumentTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DocumentTest>";
-    NL;
-}
-
-
-void end_visit(const ElementTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ElementTest>";
-    NL;
-}
-
-
-void end_visit(const EmptyOrderDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</EmptyOrderDecl>";
-    NL;
-}
-
-
-void end_visit(const ForClause& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ForClause>";
-    NL;
-}
-
-
-void end_visit(const ForLetClauseList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ForLetClauseList>";
-    NL;
-}
-
-
-void end_visit(const ForwardAxis& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ForwardAxis>";
-    NL;
-}
-
-
-void end_visit(const ForwardStep& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ForwardStep>";
-    NL;
-}
-
-
-void end_visit(const FunctionDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FunctionDecl>";
-    NL;
-}
-
-
-void end_visit(const ItemType& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ItemType>";
-    NL;
-}
-
-
-void end_visit(const LetClause& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</LetClause>";
-    NL;
-}
-
-
-void end_visit(const LibraryModule& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</LibraryModule>";
-    NL;
-}
-
-
-void end_visit(const MainModule & /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</MainModule>";
-    NL;
-}
-
-
-void end_visit(const Module& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</Module>";
-    NL;
-}
-
-
-void end_visit(const ModuleDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ModuleDecl>";
-    NL;
-}
-
-
-void end_visit(const ModuleImport& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ModuleImport>";
-    NL;
-}
-
-
-void end_visit(const OccurrenceIndicator& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OccurrenceIndicator>";
-    NL;
-}
-
-
-void end_visit(const OptionDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OptionDecl>";
-    NL;
-}
-
-void end_visit(GroupByClause const&, void*)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</GroupByClause>";
-    NL;
-}
-
-void end_visit(GroupSpecList const&, void*)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</GroupSpecList>";
-    NL;
-}
-
-void end_visit(GroupSpec const&, void*)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</GroupSpec>";
-    NL;
-}
-
-void end_visit(GroupCollationSpec const&, void*)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</GroupCollationSpec>";
-    NL;
-}
-
-void end_visit(LetClauseList const&, void*)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</LetClauseList>";
-    NL;
-}
-
-
-void end_visit(const OrderByClause& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderByClause>";
-    NL;
-}
-
-
-void end_visit(const OrderCollationSpec& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderCollationSpec>";
-    NL;
-}
-
-
-void end_visit(const OrderDirSpec& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderDirSpec>";
-    NL;
-}
-
-
-void end_visit(const OrderEmptySpec& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderEmptySpec>";
-    NL;
-}
-
-
-void end_visit(const OrderModifier& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderModifier>";
-    NL;
-}
-
-
-void end_visit(const OrderSpec& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderSpec>";
-    NL;
-}
-
-
-void end_visit(const OrderSpecList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderSpecList>";
-    NL;
-}
-
-
-void end_visit(const OrderingModeDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderingModeDecl>";
-    NL;
-}
-
-
-void end_visit(const PITest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</PITest>";
-    NL;
-}
-
-
-void end_visit(const ParamList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ParamList>";
-    NL;
-}
-
-
-void end_visit(const PositionalVar& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</PositionalVar>";
-    NL;
-}
-
-
-void end_visit(const Pragma& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</Pragma>";
-    NL;
-}
-
-
-void end_visit(const PragmaList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</PragmaList>";
-    NL;
-}
-
-
-void end_visit(const PredicateList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</PredicateList>";
-    NL;
-}
-
-
-void end_visit(const Prolog& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</Prolog>";
-    NL;
-}
-
-
-void end_visit(const QVarInDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</QVarInDecl>";
-    NL;
-}
-
-
-void end_visit(const QVarInDeclList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</QVarInDeclList>";
-    NL;
-}
-
-
-void end_visit(const QuoteAttrValueContent& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</QuoteAttrValueContent>";
-    NL;
-}
-
-
-void end_visit(const QuoteAttrContentList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</QuoteAttrContentList>";
-    NL;
-}
-
-
-void end_visit(const ReverseAxis& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ReverseAxis>";
-    NL;
-}
-
-
-void end_visit(const ReverseStep& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ReverseStep>";
-    NL;
-}
-
-
-void end_visit(const SIND_DeclList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</SIND_DeclList>";
-    NL;
-}
-
-
-void end_visit(const SchemaAttributeTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</SchemaAttributeTest>";
-    NL;
-}
-
-
-void end_visit(const SchemaElementTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</SchemaElementTest>";
-    NL;
-}
-
-
-void end_visit(const SchemaImport& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</SchemaImport>";
-    NL;
-}
-
-
-void end_visit(const SchemaPrefix& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</SchemaPrefix>";
-    NL;
-}
-
-
-void end_visit(const SequenceType& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</SequenceType>";
-    NL;
-}
-
-
-void end_visit(const SignList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</SignList>";
-    NL;
-}
-
-
-void end_visit(const SingleType& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</SingleType>";
-    NL;
-}
-
-
-void end_visit(const TextTest& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</TextTest>";
-    NL;
-}
-
-
-void end_visit(const TypeDeclaration& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</TypeDeclaration>";
-    NL;
-}
-
-
-void end_visit(const TypeName& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</TypeName>";
-    NL;
-}
-
-
-void end_visit(const URILiteralList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</URILiteralList>";
-    NL;
-}
-
-
-void end_visit(const VarDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VarDecl>";
-    NL;
-}
-
-
-void end_visit(const VarGetsDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VarGetsDecl>";
-    NL;
-}
-
-
-void end_visit(const VarGetsDeclList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VarGetsDeclList>";
-    NL;
-}
-
-
-void end_visit(const VarInDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VarInDecl>";
-    NL;
-}
-
-
-void end_visit(const VarInDeclList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VarInDeclList>";
-    NL;
-}
-
-
-void end_visit(const VersionDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VersionDecl>";
-    NL;
-}
-
-
-void end_visit(const VFO_DeclList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VFO_DeclList>";
-    NL;
-}
-
-
-void end_visit(const WhereClause& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</WhereClause>";
-    NL;
-}
-
-
-void end_visit(const Wildcard& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</Wildcard>";
-    NL;
-}
-
-
-void end_visit(const exprnode& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</exprnode>";
-    NL;
-}
-
-
-void end_visit(const AdditiveExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</AdditiveExpr>";
-    NL;
-}
-
-
-void end_visit(const AndExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</AndExpr>";
-    NL;
-}
-
-
-void end_visit(const AxisStep& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</AxisStep>";
-    NL;
-}
-
-
-void end_visit(const CDataSection& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CDataSection>";
-    NL;
-}
-
-
-void end_visit(const CastExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CastExpr>";
-    NL;
-}
-
-
-void end_visit(const CastableExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CastableExpr>";
-    NL;
-}
-
-
-void end_visit(const CommonContent& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CommonContent>";
-    NL;
-}
-
-
-void end_visit(const ComparisonExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ComparisonExpr>";
-    NL;
-}
-
-
-void end_visit(const CompAttrConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CompAttrConstructor>";
-    NL;
-}
-
-
-void end_visit(const CompCommentConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CompCommentConstructor>";
-    NL;
-}
-
-
-void end_visit(const CompDocConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CompDocConstructor>";
-    NL;
-}
-
-
-void end_visit(const CompElemConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CompElemConstructor>";
-    NL;
-}
-
-
-void end_visit(const CompPIConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CompPIConstructor>";
-    NL;
-}
-
-
-void end_visit(const CompTextConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CompTextConstructor>";
-    NL;
-}
-
-
-void end_visit(const ContextItemExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ContextItemExpr>";
-    NL;
-}
-
-
-void end_visit(const DirCommentConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DirCommentConstructor>";
-    NL;
-}
-
-
-void end_visit(const DirElemConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DirElemConstructor>";
-    NL;
-}
-
-
-void end_visit(const DirElemContent& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DirElemContent>";
-    NL;
-}
-
-
-void end_visit(const DirPIConstructor& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DirPIConstructor>";
-    NL;
-}
-
-
-void end_visit(const EnclosedExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</EnclosedExpr>";
-    NL;
-}
-
-
-void end_visit(const Expr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</Expr>";
-    NL;
-}
-
-
-void end_visit(const ExtensionExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ExtensionExpr>";
-    NL;
-}
-
-
-void end_visit(const FLWORExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FLWORExpr>";
-    NL;
-}
-
-
-void end_visit(const FilterExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FilterExpr>";
-    NL;
-}
-
-
-void end_visit(const FunctionCall& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FunctionCall>";
-    NL;
-}
-
-
-void end_visit(const IfExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</IfExpr>";
-    NL;
-}
-
-
-void end_visit(const InstanceofExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</InstanceofExpr>";
-    NL;
-}
-
-
-void end_visit(const IntersectExceptExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</IntersectExceptExpr>";
-    NL;
-}
-
-
-void end_visit(const MultiplicativeExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</MultiplicativeExpr>";
-    NL;
-}
-
-
-void end_visit(const OrExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrExpr>";
-    NL;
-}
-
-
-void end_visit(const OrderedExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</OrderedExpr>";
-    NL;
-}
-
-
-void end_visit(const ParenthesizedExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ParenthesizedExpr>";
-    NL;
-}
-
-
-void end_visit(const PathExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</PathExpr>";
-    NL;
-}
-
-
-void end_visit(const QuantifiedExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</QuantifiedExpr>";
-    NL;
-}
-
-
-void end_visit(const QueryBody& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</QueryBody>";
-    NL;
-}
-
-
-void end_visit(const RangeExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</RangeExpr>";
-    NL;
-}
-
-
-void end_visit(const RelativePathExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</RelativePathExpr>";
-    NL;
-}
-
-
-void end_visit(const StringLiteral& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</StringLiteral>";
-    NL;
-}
-
-
-void end_visit(const TreatExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</TreatExpr>";
-    NL;
-}
-
-
-void end_visit(const TypeswitchExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</TypeswitchExpr>";
-    NL;
-}
-
-
-void end_visit(const UnaryExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</UnaryExpr>";
-    NL;
-}
-
-
-void end_visit(const UnionExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</UnionExpr>";
-    NL;
-}
-
-
-void end_visit(const UnorderedExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</UnorderedExpr>";
-    NL;
-}
-
-
-void end_visit(const ValidateExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ValidateExpr>";
-    NL;
-}
-
-
-void end_visit(const DeleteExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DeleteExpr>";
-    NL;
-}
-
-
-void end_visit(const InsertExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</InsertExpr>";
-    NL;
-}
-
-
-void end_visit(const RenameExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</RenameExpr>";
-    NL;
-}
-
-
-void end_visit(const ReplaceExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</ReplaceExpr>";
-    NL;
-}
-
-
-void end_visit(const RevalidationDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</RevalidationDecl>";
-    NL;
-}
-
-
-void end_visit(const TransformExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</TransformExpr>";
-    NL;
-}
-
-
-void end_visit(const VarNameList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VarNameList>";
-    NL;
-}
-
-
-void end_visit(const VarBinding& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</VarBinding>";
-    NL;
-}
-
-
-void end_visit(const TryExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</TryExpr>";
-    NL;
-}
-
-void end_visit(const CatchListExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CatchListExpr>";
-    NL;
-}
-
-void end_visit(const CatchExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</CatchExpr>";
-    NL;
-}
-
-
-void end_visit(const EvalExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</EvalExpr>";
-    NL;
-}
-
-
-void end_visit(const FTAnd& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTAnd>";
-    NL;
-}
-
-
-void end_visit(const FTAnyallOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTAnyallOption>";
-    NL;
-}
-
-
-void end_visit(const FTBigUnit& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTBigUnit>";
-    NL;
-}
-
-
-void end_visit(const FTCaseOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTCaseOption>";
-    NL;
-}
-
-
-void end_visit(const FTContainsExpr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTContainsExpr>";
-    NL;
-}
-
-
-void end_visit(const FTContent& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTContent>";
-    NL;
-}
-
-
-void end_visit(const FTDiacriticsOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTDiacriticsOption>";
-    NL;
-}
-
-
-void end_visit(const FTDistance& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTDistance>";
-    NL;
-}
-
-
-void end_visit(const FTIgnoreOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTIgnoreOption>";
-    NL;
-}
-
-
-void end_visit(const FTInclExclStringLiteral& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTInclExclStringLiteral>";
-    NL;
-}
-
-
-void end_visit(const FTInclExclStringLiteralList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTInclExclStringLiteralList>";
-    NL;
-}
-
-
-void end_visit(const FTLanguageOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTLanguageOption>";
-    NL;
-}
-
-
-void end_visit(const FTMatchOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTMatchOption>";
-    NL;
-}
-
-
-void end_visit(const FTMatchOptionProximityList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTMatchOptionProximityList>";
-    NL;
-}
-
-
-void end_visit(const FTMildnot& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTMildnot>";
-    NL;
-}
-
-
-void end_visit(const FTOptionDecl& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTOptionDecl>";
-    NL;
-}
-
-
-void end_visit(const FTOr& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTOr>";
-    NL;
-}
-
-
-void end_visit(const FTOrderedIndicator& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTOrderedIndicator>";
-    NL;
-}
-
-
-void end_visit(const FTProximity& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTProximity>";
-    NL;
-}
-
-
-void end_visit(const FTRange& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTRange>";
-    NL;
-}
-
-
-void end_visit(const FTRefOrList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTRefOrList>";
-    NL;
-}
-
-
-void end_visit(const FTScope& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTScope>";
-    NL;
-}
-
-
-void end_visit(const FTScoreVar& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTScoreVar>";
-    NL;
-}
-
-
-void end_visit(const FTSelection& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTSelection>";
-    NL;
-}
-
-
-void end_visit(const FTStemOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTStemOption>";
-    NL;
-}
-
-
-void end_visit(const FTStopwordOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTStopwordOption>";
-    NL;
-}
-
-
-void end_visit(const FTStringLiteralList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTStringLiteralList>";
-    NL;
-}
-
-
-void end_visit(const FTThesaurusID& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTThesaurusID>";
-    NL;
-}
-
-
-void end_visit(const FTThesaurusList& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTThesaurusList>";
-    NL;
-}
-
-
-void end_visit(const FTThesaurusOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTThesaurusOption>";
-    NL;
-}
-
-
-void end_visit(const FTTimes& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTTimes>";
-    NL;
-}
-
-
-void end_visit(const FTUnaryNot& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTUnaryNot>";
-    NL;
-}
-
-
-void end_visit(const FTUnit& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTUnit>";
-    NL;
-}
-
-
-void end_visit(const FTWildcardOption& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTWildcardOption>";
-    NL;
-}
-
-
-void end_visit(const FTWindow& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTWindow>";
-    NL;
-}
-
-
-void end_visit(const FTWords& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTWords>";
-    NL;
-}
-
-
-void end_visit(const FTWordsSelection& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTWordsSelection>";
-    NL;
-}
-
-
-void end_visit(const FTWordsValue& /*n*/, void* /*visit_state*/)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</FTWordsValue>";
-    NL;
-}
+END_TAG (FTWordsValue)
 
 };
 
