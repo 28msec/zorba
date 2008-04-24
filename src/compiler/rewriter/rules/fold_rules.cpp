@@ -12,6 +12,8 @@
 
 #include "functions/function.h"
 #include "functions/Misc.h"
+#include "functions/Boolean.h"
+#include "functions/arithmetic.h"
 
 #include "errors/error_messages.h"
 #include "errors/errors.h"
@@ -95,12 +97,29 @@ namespace zorba {
     return NULL;
   }
 
+  static bool maybe_needs_implicit_timezone (const fo_expr *fo, static_context *sctx) {
+    const function *f = fo->get_func ();
+    return ((dynamic_cast<const GenericOpComparison *> (f) != NULL
+             || dynamic_cast<const op_subtract *> (f) != NULL)
+            && (TypeOps::maybe_date_time (*(*fo) [0]->return_type (sctx))
+                || TypeOps::maybe_date_time (*(*fo) [1]->return_type (sctx))))
+      || ((f == LOOKUP_FN ("fn", "distinct-values", 1)
+          || f == LOOKUP_FN ("fn", "distinct-values", 2)
+          || f == LOOKUP_FN ("fn", "min", 1)
+          || f == LOOKUP_FN ("fn", "min", 2)
+          || f == LOOKUP_FN ("fn", "max", 1)
+          || f == LOOKUP_FN ("fn", "max", 2))
+          && TypeOps::maybe_date_time (*TypeOps::prime_type (*(*fo) [0]->return_type (sctx))));
+  }
+
   RULE_REWRITE_POST(MarkUnfoldableOps) {
     Annotation::key_t k = AnnotationKey::UNFOLDABLE_OP;
     switch (node->get_expr_kind ()) {
     case fo_expr_kind: {
-      const function *f = dynamic_cast<fo_expr *> (node)->get_func ();
-      if (f->requires_dyn_ctx () || dynamic_cast<const fn_error *> (f) != NULL)
+      fo_expr *fo = static_cast<fo_expr *> (node);
+      const function *f = fo->get_func ();
+      if (f->requires_dyn_ctx () || dynamic_cast<const fn_error *> (f) != NULL
+          || maybe_needs_implicit_timezone (fo, rCtx.getStaticContext ()))
         node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
     }

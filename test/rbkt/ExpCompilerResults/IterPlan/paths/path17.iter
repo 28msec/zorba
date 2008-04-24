@@ -31,7 +31,7 @@ Iterator tree for main query:
            </ChildAxisIterator>
           </NameTestIterator>
          </ForVariable>
-         <WhereClause>
+         <LetVariable name="$$temp3" materialize="true">
           <LogicIterator>
            <FnEmptyIterator>
             <NameTestIterator qname="xs:QName(,,variable)">
@@ -51,6 +51,9 @@ Iterator tree for main query:
             <SingletonIterator value="xs:string(emptydoc)"/>
            </CompareIterator>
           </LogicIterator>
+         </LetVariable>
+         <WhereClause>
+          <LetVarIterator varname="$$temp3"/>
          </WhereClause>
          <ReturnClause>
           <ForVarIterator varname="$$dot"/>

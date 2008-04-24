@@ -289,12 +289,30 @@ bool TypeOps::is_empty(const XQType& type) {
 
 bool TypeOps::maybe_date_time(const XQType& type) {
   const XQType &prime = *prime_type (type);
-  if (! is_atomic (prime))
-    return false;
-  CACHE_ROOT_TS (genv_ts);
-  return is_subtype (*genv_ts.DATE_TYPE_ONE, prime)
-    || is_subtype (*genv_ts.TIME_TYPE_ONE, prime)
-    || is_subtype (*genv_ts.DATETIME_TYPE_ONE, prime);
+  switch (prime.type_kind ()) {
+  case XQType::ATOMIC_TYPE_KIND:
+    switch (static_cast<const AtomicXQType &> (type).get_type_code ()) {
+    case TypeConstants::XS_ANY_ATOMIC:
+    case TypeConstants::XS_DATE:
+    case TypeConstants::XS_TIME:
+    case TypeConstants::XS_DATETIME:
+    case TypeConstants::XS_GYEAR_MONTH:
+    case TypeConstants::XS_GYEAR:
+    case TypeConstants::XS_GMONTH_DAY:
+    case TypeConstants::XS_GDAY:
+    case TypeConstants::XS_GMONTH:
+      return true;
+    default: return false;
+    }
+    break;
+  case XQType::ANY_TYPE_KIND:
+  case XQType::ANY_SIMPLE_TYPE_KIND:
+  case XQType::ITEM_KIND:
+    return true;
+  case XQType::USER_DEFINED_KIND:
+    return true;  // TODO: finer analysis
+  default: return false;
+  }
 }
 
 TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& type)

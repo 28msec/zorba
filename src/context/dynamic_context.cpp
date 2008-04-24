@@ -194,13 +194,7 @@ void  dynamic_context::set_implicit_timezone(int tzone_seconds)
 
 int  dynamic_context::get_implicit_timezone()
 {
-#if 0
-  // If this is to be taken from the dynamic ctx, it kills optimization
-  // (const folding) as datetime code calls this from all over the place.
   return implicit_timezone;
-#else
-	return 0;
-#endif
 }
 
 /*

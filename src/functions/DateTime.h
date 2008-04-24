@@ -140,11 +140,10 @@ class fn_datetime_ctor : public function
  *-----------------------*/
   class fn_hours_from_datetime : public function
   {
-    public:
-      fn_hours_from_datetime(const signature&);
-
-    public:
-      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  public:
+    fn_hours_from_datetime(const signature&);
+    bool requires_dyn_ctx () const { return true; }
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
 /*
@@ -562,7 +561,7 @@ class fn_datetime_ctor : public function
 class fn_adjust_dt_to_tz_1 : public function
 {
 public:
-  virtual bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx () const { return true; }
   fn_adjust_dt_to_tz_1(const signature&);
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
@@ -583,7 +582,7 @@ class fn_adjust_d_to_tz_1 : public function
 {
   public:
     fn_adjust_d_to_tz_1(const signature&);
-    virtual bool requires_dyn_ctx () const { return true; }
+    bool requires_dyn_ctx () const { return true; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
@@ -603,7 +602,7 @@ class fn_adjust_t_to_tz_1 : public function
 {
   public:
     fn_adjust_t_to_tz_1(const signature&);
-    virtual bool requires_dyn_ctx () const { return true; }
+    bool requires_dyn_ctx () const { return true; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
