@@ -29,10 +29,18 @@ namespace zorba {
   {
     public:
 
-      /** \brief Gets an instance of the Zorba %XQuery Engine.
+      /** \brief Gets the singleton instance of Zorba object.
        *
-       * TODO
-       * on the first time the zorba engine is initialized
+       * The Zorba object provides factory methods creating and/or compiling XQuery
+       * objects, creating StaticContext objects, and accessing components as, for example,
+       * the ItemFactory or the XmlDataManager.
+       *
+       * The first time this function is called, the %Zorba Engine is initialized.
+       * Thereby, it initializes all the libraries that are used in the system, i.e.
+       * ICU, libxml2, xerces, and libcurl.
+       *
+       * @return Zorba the singleton Zorba object
+       *
        */
       static Zorba* 
       getInstance();
@@ -54,60 +62,170 @@ namespace zorba {
 
       /** \brief Creates an XQuery object.
        *
+       * This methods creates an XQuery object without implicitliy assigning it a query.
+       * A object returned by this method can be compiled (see compileQuery).
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+       *
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
       createQuery(ErrorHandler* aErrorHandler = 0) = 0;
       
 
       /** \brief Creates and compiles an XQuery object.
+       *
+       * This methods creates an XQuery object and compiles the query string passed to this method.
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
        * 
+       * @param aQuery the query string for the new XQuery object.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
       compileQuery(const String& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Creates and compiles a XQuery object.
+      /** \brief Creates and compiles an XQuery object using a StaticContext.
+       *
+       * This methods creates an XQuery object and compiles the query string passed to this method.
+       * Compilation is done using the information contained in the StaticContext that
+       * is passed as parameter.
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
        * 
+       * @param aQuery the query string for the new XQuery object.
+       * @param aContext the StaticContext that contains information used for compiling the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
-      compileQuery(const String& aQuery, const StaticContext_t& aContext, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(const String& aQuery, const StaticContext_t& aContext, 
+                   ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Create and compile an XQuery object.
+      /** \brief Creates and compiles an XQuery object.
+       *
+       * This methods creates an XQuery object and compiles the query that is passed to this method
+       * as an input stream.
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
        * 
+       * @param aQuery the input stream providing the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
       compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Create and compile an XQuery object.
+      /** \brief Creates and compiles an XQuery object using a StaticContext.
+       *
+       * This methods creates an XQuery object and compiles the query that is passed to this method
+       * as an input stream.
+       * Compilation is done using the information contained in the StaticContext that
+       * is passed as parameter.
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
        * 
+       * @param aQuery the input stream providing the query.
+       * @param aContext the StaticContext that contains information used for compiling the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
-      compileQuery(std::istream& aQuery, const StaticContext_t& aContext, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(std::istream& aQuery, const StaticContext_t& aContext, 
+                   ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Creates and compiles an XQuery object.
+      /** \brief Creates and compiles an XQuery object using the given CompilerHints.
+       *
+       * This methods creates an XQuery object and compiles the query string passed to this method.
+       * Compilation and optimization is done with respect to the given CompilerHints.
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
        * 
+       * @param aQuery the query string for the new XQuery object.
+       * @param aCompilerHints the CompilerHints used to compile the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
-      compileQuery(const String& aQuery, const XQuery::CompilerHints_t&, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(const String& aQuery, const XQuery::CompilerHints_t& aCompilerHints, 
+                   ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Creates and compiles a XQuery object.
+      /** \brief Creates and compiles an XQuery object using the given CompilerHints. Moreover,
+       *         the information from the StaticContext is used to compile the query.
+       *
+       * This methods creates an XQuery object and compiles the query string passed to this method.
+       * Compilation and optimization is done with respect to the given CompilerHints.
+       * Moreover, compilation is done using the information contained in the StaticContext.
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
        * 
+       * @param aQuery the query string for the new XQuery object.
+       * @param aContext the StaticContext that contains information used for compiling the query.
+       * @param aCompilerHints the CompilerHints used to compile the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
-      compileQuery(const String& aQuery, const StaticContext_t& aContext, const XQuery::CompilerHints_t&,
-                  ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(const String& aQuery, const StaticContext_t& aContext, 
+                   const XQuery::CompilerHints_t&,
+                   ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Create and compile an XQuery object.
+      /** \brief Creates and compiles an XQuery object using the given CompilerHints. 
+       *
+       * This methods creates an XQuery object and compiles the query that is passed to this method
+       * as an input stream.
+       * Compilation and optimization is done with respect to the given CompilerHints.
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
        * 
+       * @param aQuery the input stream providing the query.
+       * @param aCompilerHints the CompilerHints used to compile the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
-      compileQuery(std::istream& aQuery, const XQuery::CompilerHints_t&, ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(std::istream& aQuery, const XQuery::CompilerHints_t& aCompilerHints, 
+                   ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Create and compile an XQuery object.
+      /** \brief Creates and compiles an XQuery object using the given CompilerHints. 
+       *
+       * This methods creates an XQuery object and compiles the query that is passed to this method
+       * as an input stream.
+       * Compilation and optimization is done with respect to the given CompilerHints.
+       * Moreover, compilation is done using the information contained in the StaticContext.
+       *
+       * Optionally, this query takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
        * 
+       * @param aQuery the input stream providing the query.
+       * @param aContext the StaticContext that contains information used for compiling the query.
+       * @param aCompilerHints the CompilerHints used to compile the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
        */
       virtual XQuery_t
-      compileQuery(std::istream& aQuery, const StaticContext_t& aContext, const XQuery::CompilerHints_t&,
-                  ErrorHandler* aErrorHandler = 0) = 0;
+      compileQuery(std::istream& aQuery, const StaticContext_t& aContext, 
+                   const XQuery::CompilerHints_t&,
+                   ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Create a StaticContext.
        *
