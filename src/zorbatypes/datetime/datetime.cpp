@@ -559,59 +559,36 @@ DateTime& DateTime::operator=(const DateTime_t& dt_t)
 
 int DateTime::compare(const DateTime& dt, int timezone_seconds) const
 {
-  // TODO: handle timezone
   DateTime_t d1_t, d2_t;
   
   d1_t = normalizeTimeZone(timezone_seconds);
   d2_t = dt.normalizeTimeZone(timezone_seconds);
     
-  /*
-  d1_t->facet = DATETIME_FACET;
-  d2_t->facet = DATETIME_FACET;
-  
-  cout << "d1: " << d1_t->toString() << endl;
-  cout << "d2: " << d2_t->toString() << endl;
-  
-  d1_t = normalizeTimeZone(0);
-  d2_t = dt.normalizeTimeZone(0);
-  
-  cout << "d1: " << d1_t->toString() << endl;
-  cout << "d2: " << d2_t->toString() << endl;
-  */
-  
-  // compare signed year first
-  // if (FACET_MEMBERS[d1_t->facet][YEAR_DATA] && FACET_MEMBERS[d2_t->facet][YEAR_DATA])
-  {
-    if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
-      return -1;
-    else if (d1_t->data[YEAR_DATA] > d2_t->data[YEAR_DATA])
-      return 1;
-  }
+  if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
+    return -1;
+  else if (d1_t->data[YEAR_DATA] > d2_t->data[YEAR_DATA])
+    return 1;
   
   // compare the rest of the data
-  if (//FACET_MEMBERS[d1_t->facet][YEAR_DATA] && FACET_MEMBERS[d2_t->facet][YEAR_DATA]
-      //&&
-      d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
+  if (d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
   {
     for (int i=1; i<7; i++)
-      // if (FACET_MEMBERS[d1_t->facet][i] && FACET_MEMBERS[d2_t->facet][i])
-      {
-        if (d1_t->data[i] > d2_t->data[i])
-          return -1;
-        else if (d1_t->data[i] < d2_t->data[i])
-          return 1;
-      }
+    {
+      if (d1_t->data[i] > d2_t->data[i])
+        return -1;
+      else if (d1_t->data[i] < d2_t->data[i])
+        return 1;
+    }
   }
   else
   {
     for (int i=1; i<7; i++)
-      // if (FACET_MEMBERS[d1_t->facet][i] && FACET_MEMBERS[d2_t->facet][i])
-      {
-        if (d1_t->data[i] < d2_t->data[i])
-          return -1;
-        else if (d1_t->data[i] > d2_t->data[i])
-          return 1;
-      }
+    {
+      if (d1_t->data[i] < d2_t->data[i])
+        return -1;
+      else if (d1_t->data[i] > d2_t->data[i])
+        return 1;
+    }
   }
   
   return 0;
@@ -619,22 +596,6 @@ int DateTime::compare(const DateTime& dt, int timezone_seconds) const
 
 DurationBase_t DateTime::subtractDateTime(const DateTime& dt, int implicit_timezone_seconds) const
 {
-  /*
-  DateTime_t d1,d2;
-  d1 = normalizeTimeZone();
-  d2 = dt.normalizeTimeZone();
-  
-  d1->facet = DATETIME_FACET;
-  d2->facet = DATETIME_FACET;
-  
-  
-  cout << "d1: " << d1->toString() << endl;
-  cout << "d2: " << d2->toString() << endl;
-  
-  cout << "d1: " << d1->toDayTimeDuration()->toString() << endl;
-  cout << "d2: " << d2->toDayTimeDuration()->toString() << endl;
-  */
-  
   return *normalizeTimeZone(implicit_timezone_seconds)->toDayTimeDuration()
       - *dt.normalizeTimeZone(implicit_timezone_seconds)->toDayTimeDuration();
 }

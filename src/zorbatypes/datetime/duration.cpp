@@ -258,17 +258,22 @@ DayTimeDuration::DayTimeDuration() : is_negative(false), days(0), timeDuration(0
 {
 };
 
-DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long minutes, long seconds, long frac_seconds)
+DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long minutes, 
+                                 long seconds, long frac_seconds)
 {
-  if (abs<long>(hours) >= 24)
-  {
-    the_days += quotient<long>(hours, 24);
-    hours = modulo<long>(hours, 24);
-  }
-  
   is_negative = negative;
   days = abs<long>(the_days);
-  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes), abs<long>(seconds), abs<long>(frac_seconds));
+  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes), 
+      abs<long>(seconds), abs<long>(frac_seconds));
+  
+  if (timeDuration.hours() >= 24)
+  {
+    days += quotient<long>(timeDuration.hours(), 24);
+    hours = modulo<long>(timeDuration.hours(), 24);
+    
+    timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(timeDuration.minutes()),
+        abs<long>(timeDuration.seconds()), abs<long>(timeDuration.fractional_seconds()));
+  }
   
   if (isZero())
     is_negative = false;
@@ -290,18 +295,22 @@ DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, double
   else
     is_negative = false;
   
-  if (abs<long>(hours) >= 24)
-  {
-    the_days += quotient<long>(abs<long>(hours), 24);
-    hours = modulo<long>(abs<long>(hours), 24);
-  }
-  
   seconds = abs<double>(seconds);
   long_seconds = floor(seconds);
   frac_seconds = round(frac(seconds) * boost::posix_time::time_duration::ticks_per_second());
   
   days = abs<long>(the_days);
-  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes), long_seconds, frac_seconds);
+  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes),
+      abs<long>(long_seconds), abs<long>(frac_seconds));
+  
+  if (timeDuration.hours() >= 24)
+  {
+    days += quotient<long>(timeDuration.hours(), 24);
+    hours = modulo<long>(timeDuration.hours(), 24);
+    
+    timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(timeDuration.minutes()),
+        abs<long>(timeDuration.seconds()), abs<long>(timeDuration.fractional_seconds()));
+  }
 }
 
 DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, long seconds, long frac_seconds)
@@ -319,16 +328,19 @@ DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, long s
   else
     is_negative = false;
   
-  if (abs<long>(hours) >= 24)
-  {
-    the_days += quotient<long>(abs<long>(hours), 24);
-    hours = modulo<long>(abs<long>(hours), 24);
-  }
-  
   days = abs<long>(the_days);
-  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes), abs<long>(seconds), abs<long>(frac_seconds));
+  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes),
+      abs<long>(seconds), abs<long>(frac_seconds));
+  
+  if (timeDuration.hours() >= 24)
+  {
+    days += quotient<long>(timeDuration.hours(), 24);
+    hours = modulo<long>(timeDuration.hours(), 24);
+    
+    timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(timeDuration.minutes()),
+        abs<long>(timeDuration.seconds()), abs<long>(timeDuration.fractional_seconds()));
+  }
 }
-
 
 DayTimeDuration& DayTimeDuration::operator=(const DayTimeDuration_t& dt_t)
 {
@@ -414,11 +426,22 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
 
     if ( timeDuration.fractional_seconds() != 0 )
     {
-      // delete the trailing zeros
-      int temp = timeDuration.fractional_seconds();
-      while (temp != 0 && ((temp%10) == 0))
+      int frac_seconds = timeDuration.fractional_seconds();
+      result += ".";
+      
+      // print leading 0s, if any
+      int temp = boost::posix_time::time_duration::ticks_per_second() / 10;
+      while (temp > frac_seconds && temp > 0)
+      {
+        result += '0';
         temp /= 10;
-      result += "." + NumConversions::longToStr(temp);
+      }
+      
+      // strip trailing 0s, if any
+      while (frac_seconds%10 == 0 && frac_seconds > 0)
+        frac_seconds = frac_seconds / 10;
+      
+      result += to_string(frac_seconds);
     }
 
     result += "S";
@@ -478,54 +501,35 @@ DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 
 DurationBase_t DayTimeDuration::operator*(const Double value) const
 {
-  bool b;
-  long resFrac;
-  xqp_double frac = xqp_double::parseLong(timeDuration.fractional_seconds());
-  xqp_double lFrac = frac * value;
-  b = NumConversions::doubleToLong(lFrac.round(), resFrac);
-  assert(b);
+  Double result;
+  long seconds;
+  long frac_seconds;
   
-  long resSeconds = days * NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE + timeDuration.total_seconds();
-  xqp_double lDouble = xqp_double::parseLong(resSeconds) * value;
-  b = NumConversions::doubleToLong(lDouble.round(), resSeconds);
-  assert(b);
+  result = Double::parseFloatType(getTotalSeconds()) * value;
   
-  //TODO Should normalization be part of the constructor?
-  DayTimeDuration* dt = new DayTimeDuration(
-      is_negative,
-      resSeconds / NO_SEC_IN_DAY, //days
-      (resSeconds % NO_SEC_IN_DAY) / NO_SEC_IN_HOUR, //hours
-      ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) / NO_SECONDS_IN_MINUTE, //minutes
-      ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) % NO_SECONDS_IN_MINUTE, //seconds
-      resFrac);
-
+  assert(NumConversions::doubleToLong(result.floor(), seconds));
+  
+  result = (result - result.floor()) * Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
+  assert(NumConversions::doubleToLong(result.round(), frac_seconds));
+  
+  DayTimeDuration* dt = new DayTimeDuration( 0, 0, 0, seconds, frac_seconds);
   return dt;
 }
 
 DurationBase_t DayTimeDuration::operator/(const Double value) const
 {
-  bool b;
-  long resFrac;
-  xqp_double frac = xqp_double::parseLong(timeDuration.fractional_seconds());
-  xqp_double lFrac = frac / value;
-  b = NumConversions::doubleToLong(lFrac.round(), resFrac);
-  assert(b);
+  Double result;
+  long seconds;
+  long frac_seconds;
   
-  long resSeconds;
-  xqp_double seconds = xqp_double::parseLong(days * NO_SEC_IN_DAY + timeDuration.total_seconds());
-  xqp_double lDouble = seconds / value;
-  b = NumConversions::doubleToLong(lDouble.round(), resSeconds);
-  assert(b);
-
-  //TODO Should normalization be part of the constructor?
-  DayTimeDuration* dt = new DayTimeDuration(
-      (resSeconds < 0)? !is_negative: is_negative ,
-      resSeconds / NO_SEC_IN_DAY, //days
-      (resSeconds % NO_SEC_IN_DAY) / NO_SEC_IN_HOUR, //hours
-      ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) / NO_SECONDS_IN_MINUTE, //minutes
-      ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) % NO_SECONDS_IN_MINUTE, //seconds
-      resFrac);
-
+  result = Double::parseFloatType(getTotalSeconds()) / value;
+  
+  assert(NumConversions::doubleToLong(result.floor(), seconds));
+  
+  result = (result - result.floor()) * Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
+  assert(NumConversions::doubleToLong(result.round(), frac_seconds));
+  
+  DayTimeDuration* dt = new DayTimeDuration( 0, 0, seconds, frac_seconds);
   return dt;
 }
 
@@ -581,6 +585,7 @@ double DayTimeDuration::getTotalSeconds() const
 static bool parse_s_string(std::string ss, unsigned int& position, long& seconds, long& frac_seconds)
 {
   long result;
+  double temp_frac_seconds;
   
   if (position == ss.size() || parse_int(ss, position, result))
     return false;
@@ -598,14 +603,14 @@ static bool parse_s_string(std::string ss, unsigned int& position, long& seconds
     position++;
     seconds = result;
 
-    if (position == ss.size() || parse_int(ss, position, result))
+    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
       return false;
 
     if (position == ss.size() || ss[position] != 'S')
       return false;
 
     position++;
-    frac_seconds = result;
+    frac_seconds = round(temp_frac_seconds * boost::posix_time::time_duration::ticks_per_second());
   }
 
   return true;
@@ -615,6 +620,7 @@ static bool parse_s_string(std::string ss, unsigned int& position, long& seconds
 static bool parse_ms_string(std::string ss, unsigned int& position, long& minutes, long& seconds, long& frac_seconds)
 {
   long result;
+  double temp_frac_seconds;
   
   if (position == ss.size() || parse_int(ss, position, result))
     return false;
@@ -639,14 +645,14 @@ static bool parse_ms_string(std::string ss, unsigned int& position, long& minute
     position++;
     seconds = result;
 
-    if (position == ss.size() || parse_int(ss, position, result))
+    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
       return false;
 
     if (position == ss.size() || ss[position] != 'S')
       return false;
 
     position++;
-    frac_seconds = result;
+    frac_seconds = round(temp_frac_seconds * boost::posix_time::time_duration::ticks_per_second());
   }
 
   return true;
@@ -656,6 +662,7 @@ static bool parse_ms_string(std::string ss, unsigned int& position, long& minute
 static bool parse_hms_string(std::string ss, unsigned int& position, long& hours, long& minutes, long& seconds, long& frac_seconds)
 {
   long result;
+  double temp_frac_seconds;
   
   if (position == ss.size() || parse_int(ss, position, result))
     return false;
@@ -687,14 +694,14 @@ static bool parse_hms_string(std::string ss, unsigned int& position, long& hours
     position++;
     seconds = result;
 
-    if (position == ss.size() || parse_int(ss, position, result))
+    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
       return false;
 
     if (position == ss.size() || ss[position] != 'S')
       return false;
 
     position++;
-    frac_seconds = result;
+    frac_seconds = round(temp_frac_seconds * boost::posix_time::time_duration::ticks_per_second());
   }
 
   return true;
@@ -750,11 +757,6 @@ bool DayTimeDuration::parse_string(const xqpString& s, DayTimeDuration_t& dt_t, 
 
   if (ss.size() != position)
     return false;
-  
-  // process the fractional seconds
-  double frac = frac_seconds;
-  while (frac >= 1)
-    frac /= 10;
 
   long carry = seconds / 60;
   seconds = seconds % 60;
@@ -769,8 +771,7 @@ bool DayTimeDuration::parse_string(const xqpString& s, DayTimeDuration_t& dt_t, 
 
   days += carry;
   
-  dt_t = new DayTimeDuration(negative, days, hours, minutes, seconds, 
-                             round(frac * boost::posix_time::time_duration::ticks_per_second()));
+  dt_t = new DayTimeDuration(negative, days, hours, minutes, seconds, frac_seconds);
   return true;
 }
 

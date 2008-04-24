@@ -85,11 +85,17 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
 
   xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->
                    create_value_type (n1);
-
-  if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
+  
+  if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )
+      &&
+      TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
+  {
+    return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME> (aRuntimeCB, &aLoc, n0, n1);
+  }
+  else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
      || 
      TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
-  {  
+  {
     if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
     {
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME> (aRuntimeCB, &aLoc, n0, n1);
@@ -97,10 +103,6 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
     {
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE> (aRuntimeCB, &aLoc, n0, n1);
-    }
-    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
-    {
-      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME> (aRuntimeCB, &aLoc, n0, n1);
     }
     else if(TypeOps::is_numeric(*type1))
     {
@@ -128,7 +130,7 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
   {
     if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> (  aRuntimeCB, &aLoc, n0, n1 );
-    else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
+    else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE))
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
   else if ((TypeOps::is_numeric(*type0)
