@@ -452,6 +452,9 @@ void OrdPath::insertBeforeOrAfter(
   bitSize = commonBitSize + newBits;
   ulong byteSize = (bitSize + 7) / 8;
 
+  if (result.theBuffer)
+    delete [] result.theBuffer;
+
   result.theBuffer = new unsigned char[byteSize];
   memset(result.theBuffer, 0, byteSize);
   memcpy(result.theBuffer, sibling.theBuffer, commonByteSize);
@@ -577,6 +580,10 @@ void OrdPath::insertInto(
   bitSize = commonBitSize + newBits;
   ulong commonByteSize = (commonBitSize + 7) / 8;
   ulong byteSize = (bitSize + 7) / 8;
+
+  if (result.theBuffer)
+    delete [] result.theBuffer;
+
   result.theBuffer = new unsigned char[byteSize];
   memset(result.theBuffer, 0, byteSize);
   memcpy(result.theBuffer, (copy1 ? sib1.theBuffer : sib2.theBuffer), commonByteSize);
