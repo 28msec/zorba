@@ -36,7 +36,7 @@ namespace zorba
  */
 class GenericCast
 {
-  typedef store::Item_t (*CastFunc)(store::Item*, store::ItemFactory*);
+  typedef store::Item_t (*CastFunc)(store::Item*, store::ItemFactory*, namespace_context *nsCtx);
   typedef store::Item_t (*DownCastFunc)(
                             const store::Item*, 
                             TypeConstants::atomic_type_code_t aTargetAtomicType,

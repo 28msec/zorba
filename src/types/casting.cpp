@@ -162,7 +162,7 @@ void checkBooleanToNumericCast(
 }
 
 #define SAME_S_AND_T(type)                                                     \
-  inline store::Item_t type##_##type(store::Item* aItem, store::ItemFactory*)  \
+  inline store::Item_t type##_##type(store::Item* aItem, store::ItemFactory*, namespace_context *nsCtx)  \
   {                                                                            \
     return aItem;                                                              \
   }                                                                            \
@@ -194,317 +194,326 @@ SAME_S_AND_T(NOT)
 #undef SAME_S_AND_T
 
 
-inline store::Item_t str_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t str_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return aFactory->createUntypedAtomic(aItem->getStringValue());
+return aFactory->createUntypedAtomic(aItem->getStringValue());
 }
 
-inline store::Item_t str_flt(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t str_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  xqp_float n;
-  if (NumConversions::strToFloat(aItem->getStringValue().getp(), n))
-    return aFactory->createFloat(n);
-  else
+xqp_float n;
+if (NumConversions::strToFloat(aItem->getStringValue().getp(), n))
+  return aFactory->createFloat(n);
+else
+  return 0;
+}
+
+inline store::Item_t str_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_double n;
+if (NumConversions::strToDouble(aItem->getStringValue().getp(), n))
+  return aFactory->createDouble(n);
+else
+  return 0;
+}
+
+inline store::Item_t str_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_decimal n;
+if (NumConversions::strToDecimal(aItem->getStringValue().getp(), n))
+  return aFactory->createDecimal(n);
+else
+  return 0;
+}
+
+inline store::Item_t str_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_integer n;
+if (NumConversions::strToInteger(aItem->getStringValue().getp(), n))
+  return aFactory->createInteger(n);
+else
+  return 0;
+}
+
+inline store::Item_t str_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+Duration_t d_t;
+if (Duration::parse_string(aItem->getStringValue().getp(), d_t))
+{
+  xqp_duration d = d_t;
+  return aFactory->createDuration(d);
+} else
+  return 0;
+}
+
+inline store::Item_t str_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+YearMonthDuration_t ymd_t;
+if (YearMonthDuration::parse_string(aItem->getStringValue().getp(), ymd_t))
+{
+  xqp_duration d = ymd_t;
+  return aFactory->createDuration(d);
+} else
+  return 0;
+}
+
+inline store::Item_t str_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+DayTimeDuration_t dtd_t;
+if (DayTimeDuration::parse_string(aItem->getStringValue().getp(), dtd_t))
+{
+  xqp_duration d = dtd_t;
+  return aFactory->createDuration(d);
+} else
+  return 0;
+}
+
+inline store::Item_t str_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_dateTime dt;
+if (0 == DateTime::parseDateTime(aItem->getStringValue().getp(), dt))
+  return aFactory->createDateTime(dt);
+else
+  return 0;
+}
+
+inline store::Item_t str_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_time t;
+if (0 == DateTime::parseTime(aItem->getStringValue().getp(), t))
+  return aFactory->createTime(t);
+else
+  return 0;
+}
+
+inline store::Item_t str_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_date d;
+if (0 == DateTime::parseDate(aItem->getStringValue().getp(), d))
+  return aFactory->createDate(d);
+else
+  return 0;
+}
+
+inline store::Item_t str_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_gYearMonth ym;
+if (0 == DateTime::parseGYearMonth(aItem->getStringValue().getp(), ym))
+  return aFactory->createGYearMonth(ym);
+else
+  return 0;
+}
+
+inline store::Item_t str_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_gYear y;
+if (0 == DateTime::parseGYear(aItem->getStringValue().getp(), y))
+  return aFactory->createGYear(y);
+else
+  return 0;
+}
+
+inline store::Item_t str_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_gMonthDay md;
+if (0 == DateTime::parseGMonthDay(aItem->getStringValue().getp(), md))
+  return aFactory->createGMonthDay(md);
+else
+  return 0;
+}
+
+inline store::Item_t str_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_gDay d;
+if (0 == DateTime::parseGDay(aItem->getStringValue().getp(), d))
+  return aFactory->createGDay(d);
+else
+  return 0;
+}
+
+inline store::Item_t str_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_gMonth m;
+if (0 == DateTime::parseGMonth(aItem->getStringValue().getp(), m))
+  return aFactory->createGMonth(m);
+else
+  return 0;
+}
+
+inline store::Item_t str_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+bool lRetValue = true;
+xqpStringStore_t lString = aItem->getStringValue()->trim();
+
+if (lString->byteEqual("false", 5) || lString->byteEqual("0", 1))
+  lRetValue = false;
+else if (!lString->byteEqual("true", 4) && !lString->byteEqual("1", 1))
+  return 0;
+
+return aFactory->createBoolean(lRetValue);
+}
+
+inline store::Item_t str_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_base64Binary n;
+if (xqp_base64Binary::parseString(aItem->getStringValue().getp(), n))
+  return aFactory->createBase64Binary(n);
+else
+  return 0;
+}
+
+inline store::Item_t str_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+xqp_hexBinary n;
+if (xqp_hexBinary::parseString(aItem->getStringValue().getp(), n))
+  return aFactory->createHexBinary(n);
+else
+  return 0;
+}
+
+inline store::Item_t str_aURI(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+// TODO createAnyURI does not always succeed
+return aFactory->createAnyURI(aItem->getStringValue());
+}
+
+inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  xqpStringStore *str = aItem->getStringValueP();
+  int32_t idx = str->indexOf(":");
+  int32_t lidx = str->lastIndexOf(":");
+  if (idx != lidx)
     return 0;
-}
+  
+  if (idx < 0)
+    return aFactory->createQName(0,0,str);
 
-inline store::Item_t str_dbl(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_double n;
-  if (NumConversions::strToDouble(aItem->getStringValue().getp(), n))
-    return aFactory->createDouble(n);
-  else
-    return 0;
-}
-
-inline store::Item_t str_dec(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_decimal n;
-  if (NumConversions::strToDecimal(aItem->getStringValue().getp(), n))
-    return aFactory->createDecimal(n);
-  else
-    return 0;
-}
-
-inline store::Item_t str_int(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_integer n;
-  if (NumConversions::strToInteger(aItem->getStringValue().getp(), n))
-    return aFactory->createInteger(n);
-  else
-    return 0;
-}
-
-inline store::Item_t str_dur(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  Duration_t d_t;
-  if (Duration::parse_string(aItem->getStringValue().getp(), d_t))
-  {
-    xqp_duration d = d_t;
-    return aFactory->createDuration(d);
-  } else
-    return 0;
-}
-
-inline store::Item_t str_yMD(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  YearMonthDuration_t ymd_t;
-  if (YearMonthDuration::parse_string(aItem->getStringValue().getp(), ymd_t))
-  {
-    xqp_duration d = ymd_t;
-    return aFactory->createDuration(d);
-  } else
-    return 0;
-}
-
-inline store::Item_t str_dTD(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  DayTimeDuration_t dtd_t;
-  if (DayTimeDuration::parse_string(aItem->getStringValue().getp(), dtd_t))
-  {
-    xqp_duration d = dtd_t;
-    return aFactory->createDuration(d);
-  } else
-    return 0;
-}
-
-inline store::Item_t str_dT(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_dateTime dt;
-  if (0 == DateTime::parseDateTime(aItem->getStringValue().getp(), dt))
-    return aFactory->createDateTime(dt);
-  else
-    return 0;
-}
-
-inline store::Item_t str_tim(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_time t;
-  if (0 == DateTime::parseTime(aItem->getStringValue().getp(), t))
-    return aFactory->createTime(t);
-  else
-    return 0;
-}
-
-inline store::Item_t str_dat(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_date d;
-  if (0 == DateTime::parseDate(aItem->getStringValue().getp(), d))
-    return aFactory->createDate(d);
-  else
-    return 0;
-}
-
-inline store::Item_t str_gYM(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_gYearMonth ym;
-  if (0 == DateTime::parseGYearMonth(aItem->getStringValue().getp(), ym))
-    return aFactory->createGYearMonth(ym);
-  else
-    return 0;
-}
-
-inline store::Item_t str_gYr(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_gYear y;
-  if (0 == DateTime::parseGYear(aItem->getStringValue().getp(), y))
-    return aFactory->createGYear(y);
-  else
-    return 0;
-}
-
-inline store::Item_t str_gMD(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_gMonthDay md;
-  if (0 == DateTime::parseGMonthDay(aItem->getStringValue().getp(), md))
-    return aFactory->createGMonthDay(md);
-  else
-    return 0;
-}
-
-inline store::Item_t str_gDay(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_gDay d;
-  if (0 == DateTime::parseGDay(aItem->getStringValue().getp(), d))
-    return aFactory->createGDay(d);
-  else
-    return 0;
-}
-
-inline store::Item_t str_gMon(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_gMonth m;
-  if (0 == DateTime::parseGMonth(aItem->getStringValue().getp(), m))
-    return aFactory->createGMonth(m);
-  else
-    return 0;
-}
-
-inline store::Item_t str_bool(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  bool lRetValue = true;
-  xqpStringStore_t lString = aItem->getStringValue()->trim();
-
-  if (lString->byteEqual("false", 5) || lString->byteEqual("0", 1))
-    lRetValue = false;
-  else if (!lString->byteEqual("true", 4) && !lString->byteEqual("1", 1))
-    return 0;
-
-  return aFactory->createBoolean(lRetValue);
-}
-
-inline store::Item_t str_b64(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_base64Binary n;
-  if (xqp_base64Binary::parseString(aItem->getStringValue().getp(), n))
-    return aFactory->createBase64Binary(n);
-  else
-    return 0;
-}
-
-inline store::Item_t str_hxB(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  xqp_hexBinary n;
-  if (xqp_hexBinary::parseString(aItem->getStringValue().getp(), n))
-    return aFactory->createHexBinary(n);
-  else
-    return 0;
-}
-
-inline store::Item_t str_aURI(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  // TODO createAnyURI does not always succeed
-  return aFactory->createAnyURI(aItem->getStringValue());
-}
-
-inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory)
-{
   // TODO
   assert(false);
   return 0;
 }
 
-inline store::Item_t str_NOT(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t str_NOT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createNOTATION(aItem->getStringValue().getp());
 }
 
-inline store::Item_t uA_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createString(aItem->getStringValue());  
 }
 
-inline store::Item_t uA_flt(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_flt(aItem, aFactory);
+  return str_flt(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_dbl(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_dbl(aItem, aFactory);
+  return str_dbl(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_dec(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_dec(aItem, aFactory);
+  return str_dec(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_int(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_int(aItem, aFactory);
+  return str_int(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_dur(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_dur(aItem, aFactory);
+  return str_dur(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_yMD(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_yMD(aItem, aFactory);
+  return str_yMD(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_dTD(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_dTD(aItem, aFactory);
+  return str_dTD(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_dT(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_dT(aItem, aFactory);
+  return str_dT(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_tim(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_tim(aItem, aFactory);
+  return str_tim(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_dat(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_dat(aItem, aFactory);
+  return str_dat(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_gYM(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_gYM(aItem, aFactory);
+  return str_gYM(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_gYr(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_gYr(aItem, aFactory);
+  return str_gYr(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_gMD(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_gMD(aItem, aFactory);
+  return str_gMD(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_gDay(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_gDay(aItem, aFactory);
+  return str_gDay(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_gMon(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_gMon(aItem, aFactory);
+  return str_gMon(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_bool(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_bool(aItem, aFactory);
+  return str_bool(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_b64(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_b64(aItem, aFactory);
+  return str_b64(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_hxB(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_hxB(aItem, aFactory);
+  return str_hxB(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t uA_aURI(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t uA_aURI(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_aURI(aItem, aFactory);
+  return str_aURI(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t flt_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t flt_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t flt_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t flt_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t flt_dbl(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t flt_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createDouble(FloatCommons::parseFloat(aItem->getFloatValue()));
 }
 
-inline store::Item_t flt_dec(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t flt_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   xqp_decimal n;
   if (xqp_decimal::parseFloat(aItem->getFloatValue(), n))
@@ -512,7 +521,7 @@ inline store::Item_t flt_dec(store::Item* aItem, store::ItemFactory* aFactory)
   return 0;
 }
 
-inline store::Item_t flt_int(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t flt_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   xqp_int n;
   if (NumConversions::floatToInt(aItem->getFloatValue(), n))
@@ -520,27 +529,27 @@ inline store::Item_t flt_int(store::Item* aItem, store::ItemFactory* aFactory)
   return 0;
 }
 
-inline store::Item_t flt_bool(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t flt_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createBoolean(aItem->getEBV());
 }
 
-inline store::Item_t dbl_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dbl_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t dbl_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dbl_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t dbl_flt(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dbl_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createFloat(FloatCommons::parseDouble(aItem->getDoubleValue()));
 }
 
-inline store::Item_t dbl_dec(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dbl_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   xqp_decimal n;
   if (xqp_decimal::parseDouble(aItem->getDoubleValue(), n))
@@ -548,7 +557,7 @@ inline store::Item_t dbl_dec(store::Item* aItem, store::ItemFactory* aFactory)
   return 0;
 }
 
-inline store::Item_t dbl_int(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dbl_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   xqp_int n;
   if (NumConversions::doubleToInt(aItem->getDoubleValue(), n))
@@ -556,32 +565,32 @@ inline store::Item_t dbl_int(store::Item* aItem, store::ItemFactory* aFactory)
   return 0;
 }
 
-inline store::Item_t dbl_bool(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dbl_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createBoolean(aItem->getEBV());
 }
 
-inline store::Item_t dec_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dec_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t dec_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dec_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t dec_flt(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dec_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createFloat(xqp_float::parseDecimal(aItem->getDecimalValue()));
 }
 
-inline store::Item_t dec_dbl(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dec_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createDouble(xqp_double::parseDecimal(aItem->getDecimalValue()));
 }
 
-inline store::Item_t dec_int(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dec_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   xqp_int n;
   if (NumConversions::decimalToInt(aItem->getDecimalValue(), n))
@@ -589,276 +598,276 @@ inline store::Item_t dec_int(store::Item* aItem, store::ItemFactory* aFactory)
   return 0;
 }
 
-inline store::Item_t dec_bool(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dec_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createBoolean(aItem->getEBV());
 }
 
-inline store::Item_t int_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t int_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t int_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t int_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t int_flt(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t int_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createFloat(xqp_float::parseInteger(aItem->getIntegerValue()));
 }
 
-inline store::Item_t int_dbl(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t int_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createDouble(xqp_double::parseInteger(aItem->getIntegerValue()));
 }
 
-inline store::Item_t int_dec(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t int_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createDecimal(xqp_decimal::parseInteger(aItem->getIntegerValue()));
 }
 
-inline store::Item_t int_bool(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t int_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createBoolean(aItem->getEBV());
 }
 
-inline store::Item_t dur_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dur_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t dur_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dur_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t dur_yMD(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  assert(false);
-  return 0;
-}
-
-inline store::Item_t dur_dTD(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dur_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t yMD_uA(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return str_uA(aItem, aFactory);
-}
-
-inline store::Item_t yMD_str(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return uA_str(aItem, aFactory);
-}
-
-inline store::Item_t yMD_dur(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dur_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t yMD_dTD(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t yMD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return str_uA(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t yMD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return uA_str(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t yMD_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dTD_uA(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return str_uA(aItem, aFactory);
-}
-
-inline store::Item_t dTD_str(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return uA_str(aItem, aFactory);
-}
-
-inline store::Item_t dTD_dur(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t yMD_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dTD_yMD(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dTD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return str_uA(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t dTD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return uA_str(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t dTD_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_uA(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return str_uA(aItem, aFactory);
-}
-
-inline store::Item_t dT_str(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return uA_str(aItem, aFactory);
-}
-
-inline store::Item_t dT_tim(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dTD_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_dat(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dT_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return str_uA(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t dT_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return uA_str(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t dT_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gYM(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dT_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gYr(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dT_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gMD(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dT_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gDay(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dT_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gMon(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dT_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t tim_uA(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return str_uA(aItem, aFactory);
-}
-
-inline store::Item_t tim_str(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return uA_str(aItem, aFactory);
-}
-
-inline store::Item_t dat_uA(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return str_uA(aItem, aFactory);
-}
-
-inline store::Item_t dat_str(store::Item* aItem, store::ItemFactory* aFactory)
-{
-  return uA_str(aItem, aFactory);
-}
-
-inline store::Item_t dat_dT(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dT_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gYM(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t tim_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return str_uA(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t tim_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return uA_str(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t dat_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return str_uA(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t dat_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return uA_str(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t dat_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gYr(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dat_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gMD(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dat_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gDay(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dat_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gMon(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dat_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t gYM_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t dat_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  assert(false);
+  return 0;
 }
 
-inline store::Item_t gYM_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gYM_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t gYr_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gYM_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t gYr_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gYr_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t gMD_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gYr_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t gMD_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gMD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t gDay_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gMD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t gDay_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gDay_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t gMon_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gDay_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t gMon_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gMon_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t bool_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t gMon_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t bool_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t bool_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t bool_flt(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t bool_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+{
+  return uA_str(aItem, aFactory, nsCtx);
+}
+
+inline store::Item_t bool_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   if (aItem->getBooleanValue())
     return aFactory->createFloat(xqp_float::parseInt(1));
@@ -866,7 +875,7 @@ inline store::Item_t bool_flt(store::Item* aItem, store::ItemFactory* aFactory)
     return aFactory->createFloat(xqp_float::zero());
 }
 
-inline store::Item_t bool_dbl(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t bool_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   if (aItem->getBooleanValue())
     return aFactory->createDouble(xqp_double::parseInt(1));
@@ -874,7 +883,7 @@ inline store::Item_t bool_dbl(store::Item* aItem, store::ItemFactory* aFactory)
     return aFactory->createDouble(xqp_double::zero());
 }
 
-inline store::Item_t bool_dec(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t bool_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   if (aItem->getBooleanValue())
     return aFactory->createDecimal(xqp_decimal::parseInt(1));
@@ -882,7 +891,7 @@ inline store::Item_t bool_dec(store::Item* aItem, store::ItemFactory* aFactory)
     return aFactory->createDecimal(xqp_decimal::zero());
 }
 
-inline store::Item_t bool_int(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t bool_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   if (aItem->getBooleanValue())
     return aFactory->createInteger(xqp_integer::parseInt(1));
@@ -890,64 +899,64 @@ inline store::Item_t bool_int(store::Item* aItem, store::ItemFactory* aFactory)
     return aFactory->createInteger(xqp_integer::zero());
 }
 
-inline store::Item_t b64_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t b64_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t b64_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t b64_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t b64_hxB(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t b64_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createHexBinary(xqp_hexBinary(aItem->getBase64BinaryValue()));
 }
 
-inline store::Item_t hxB_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t hxB_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t hxB_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t hxB_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t hxB_b64(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t hxB_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
   return aFactory->createBase64Binary(xqp_base64Binary(aItem->getHexBinaryValue()));
 }
 
-inline store::Item_t aURI_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t aURI_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t aURI_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t aURI_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t QN_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t QN_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t QN_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t QN_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t NOT_uA(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t NOT_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return str_uA(aItem, aFactory);
+  return str_uA(aItem, aFactory, nsCtx);
 }
 
-inline store::Item_t NOT_str(store::Item* aItem, store::ItemFactory* aFactory)
+inline store::Item_t NOT_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  return uA_str(aItem, aFactory);
+  return uA_str(aItem, aFactory, nsCtx);
 }
 
 const int GenericCast::theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] = {
@@ -1237,7 +1246,7 @@ store::Item_t GenericCast::cast(store::Item* aItem, const xqtref_t& aTargetType)
   CastFunc lCastFunc = theCastMatrix[lPrimitiveSourceMapping][lPrimitiveTargetMapping];
   assert(lCastFunc != 0);
 
-  store::Item_t lResult = (*lCastFunc)(aItem, lFactory); 
+  store::Item_t lResult = (*lCastFunc)(aItem, lFactory, NULL); 
 
   if (!TypeOps::is_equal(*aTargetType, *lPrimitiveTargetType))
   {
