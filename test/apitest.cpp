@@ -101,7 +101,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if (! lProp->compileOnly ()) {
     // output the result (either using xml serialization or using show)
-    cout << "Running query and printing result..." << endl;
+    // cout << "Running query and printing result..." << endl;
   
     try {
       if (lProp->useSerializer()) {

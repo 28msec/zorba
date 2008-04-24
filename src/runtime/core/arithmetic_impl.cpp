@@ -87,39 +87,44 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
                    create_value_type (n1);
 
   if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
-     || TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
-  {
-    if(TypeOps::is_numeric(*type1))
+     || 
+     TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
+  {     
+    if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
+    {
+      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> (aRuntimeCB, &aLoc, n1, n0);
+    }
+    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
+    {
+      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (aRuntimeCB, &aLoc, n1, n0);
+    }
+    else if(TypeOps::is_numeric(*type1))
     {
       n1 = GenericCast::instance()->cast ( n1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( aRuntimeCB, &aLoc, n0, n1 );
     }
     else if(TypeOps::is_equal(*type0, *type1))
       return Operation::template computeSingleType<TypeConstants::XS_DURATION> ( aRuntimeCB, &aLoc, n0, n1 );
-    else
-      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, aLoc,
-                       "Arithmetic operation not defined between the given types(" 
-                       + type0->toString() + " and " + type1->toString() + ").");
   }
   else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
   {
     if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME> (  aRuntimeCB, &aLoc, n0, n1 );
-    else
+    else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
   else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
   {
-    if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
+    if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE> (  aRuntimeCB, &aLoc, n0, n1 );
-    else
+    else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
   else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
   {
     if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> (  aRuntimeCB, &aLoc, n0, n1 );
-    else
+    else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
   else if ((TypeOps::is_numeric(*type0)
@@ -129,13 +134,11 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
   {
     return NumArithIterator<Operation>::computeAtomic( aRuntimeCB, aLoc, n0, type0, n1, type1);
   }
-  else
-  {
-    ZORBA_ERROR_DESC(ZorbaError::XPTY0004,
-               "Arithmetic operation not defined between the given types(" 
-               + type0->toString() + " and " + type1->toString() + ").");
-
-  }
+  
+  ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, aLoc,
+                       "Arithmetic operation not defined between the given types("
+                       + type0->toString() + " and " + type1->toString() + ").");
+  
   return 0;
 }
 

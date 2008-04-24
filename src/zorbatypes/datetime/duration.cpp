@@ -274,6 +274,36 @@ DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long 
     is_negative = false;
 }
 
+DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, double seconds)
+{
+  long long_seconds;
+  long frac_seconds;
+  
+  if (the_days != 0)
+    is_negative = the_days < 0;
+  else if (hours != 0)
+    is_negative = hours < 0;
+  else if (minutes != 0)
+    is_negative = minutes < 0;
+  else if (seconds != 0)
+    is_negative = seconds < 0;
+  else
+    is_negative = false;
+  
+  if (abs<long>(hours) >= 24)
+  {
+    the_days += quotient<long>(abs<long>(hours), 24);
+    hours = modulo<long>(abs<long>(hours), 24);
+  }
+  
+  seconds = abs<double>(seconds);
+  long_seconds = floor(seconds);
+  frac_seconds = round(frac(seconds) * boost::posix_time::time_duration::ticks_per_second());
+  
+  days = abs<long>(the_days);
+  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes), long_seconds, frac_seconds);
+}
+
 DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, long seconds, long frac_seconds)
 {
   if (the_days != 0)

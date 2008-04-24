@@ -37,6 +37,9 @@ class QueryException : public ZorbaException
   getFileName() const;
 
   virtual unsigned int
+  getFileLineNumber() const;
+
+  virtual unsigned int
   getLineBegin() const;
 
   virtual unsigned int
@@ -51,11 +54,13 @@ protected:
         const ZorbaError::ErrorCode&,
         const String& aDescription, 
         const String& afilename,
+        unsigned int afilelinenumber,
         unsigned int linebegin,
         unsigned int columnbegin);
 
 protected:
   String                theFileName;
+  unsigned int          theFileLineNumber;          
   unsigned int          theLineBegin;
   unsigned int          theColumnBegin;
 };
@@ -70,6 +75,7 @@ public:
         const ZorbaError::ErrorCode&,
         const String&,
         const String& afilename,
+        unsigned int afilelinenumber,
         unsigned int linebegin,
         unsigned int columnbegin);
 
@@ -86,6 +92,7 @@ public:
         const ZorbaError::ErrorCode&,
         const String&,
         const String& afilename,
+        unsigned int afilelinenumber,
         unsigned int linebegin,
         unsigned int columnbegin);
 
@@ -102,6 +109,7 @@ class TypeException : public QueryException
         const ZorbaError::ErrorCode&,
         const String&,
         const String& afilename,
+        unsigned int afilelinenumber,
         unsigned int linebegin,
         unsigned int columnbegin);
 
@@ -118,6 +126,7 @@ class SerializationException : public QueryException
         const ZorbaError::ErrorCode&,
         const String&,
         const String& afilename,
+        unsigned int afilelinenumber,
         unsigned int linebegin,
         unsigned int columnbegin);
 
