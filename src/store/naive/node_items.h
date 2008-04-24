@@ -165,10 +165,9 @@ public:
   void setOrdPath(XmlNode* parent, ulong pos, StoreConsts::NodeKind nodeKind);
 
   void switchTree(
-        XmlTree* newTree,
         XmlNode* parent,
         ulong pos,
-        const CopyMode& copymode);
+        const CopyMode& copymode) throw();
 
   void deleteTree() throw();
 
@@ -734,7 +733,7 @@ public:
         XmlNode*          parent,
         xqpStringStore_t& content);
 
-  ~TextNode();
+  virtual ~TextNode();
 
   XmlNode* copy(
         XmlNode*        rootParent,

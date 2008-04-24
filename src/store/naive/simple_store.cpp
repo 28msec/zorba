@@ -270,25 +270,23 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
   if (uri == NULL)
     return NULL;
 
-  XmlNode_t* rootp;
-  bool found = theDocuments.get(uri, rootp);
+  XmlNode_t root;
+  bool found = theDocuments.get(uri, root);
 
   if (found)
-    return rootp->getp();
+    return root.getp();
 
   error::ErrorManager lErrorManager;
   std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
 
-  XmlNode_t root = loader->loadXml(uri, stream);
-  if (lErrorManager.hasErrors()) {
+  root = loader->loadXml(uri, stream);
+  if (lErrorManager.hasErrors()) 
+  {
     throw lErrorManager.getErrors().front();
   }
 
   if (root != NULL)
-  {
-    rootp = &root;
-    theDocuments.insert(uri, rootp);
-  }
+    theDocuments.insert(uri, root);
 
   return root;
 }
@@ -308,18 +306,18 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
 		return NULL;
   }
 
-  XmlNode_t* rootp = reinterpret_cast<XmlNode_t*>(&docItem);
-  bool inserted = theDocuments.insert(uri, rootp);
+  XmlNode_t root = reinterpret_cast<XmlNode*>(docItem.getp());
+  bool inserted = theDocuments.insert(uri, root);
 
-  if (!inserted && docItem.getp() != rootp->getp())
+  if (!inserted && docItem.getp() != root.getp())
   {
     ZORBA_ERROR_PARAM(ZorbaError::API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
     return NULL; 
   }
 
-  ZORBA_FATAL(docItem.getp() == rootp->getp(), "");
+  ZORBA_FATAL(docItem.getp() == root.getp(), "");
 
-	return *rootp;
+	return root;
 }
 
 
@@ -332,10 +330,10 @@ Item_t SimpleStore::getDocument(xqpStringStore* uri)
   if (uri == NULL)
     return NULL;
 
-  XmlNode_t* rootp;
-  bool found = theDocuments.get(uri, rootp);
+  XmlNode_t root;
+  bool found = theDocuments.get(uri, root);
   if (found)
-    return rootp->getp();
+    return root.getp();
 
   return NULL;
 }
@@ -368,9 +366,7 @@ Collection_t SimpleStore::createCollection(xqpStringStore* uri)
 
   Collection_t collection(new SimpleCollection(uriItem));
 
-  Collection_t* collp = &collection;
-
-  bool inserted = theCollections.insert(uri, collp);
+  bool inserted = theCollections.insert(uri, collection);
 
   if (!inserted)
   {
@@ -403,9 +399,9 @@ Collection_t SimpleStore::getCollection(xqpStringStore* uri)
   if (uri == NULL)
     return NULL;
 
-  Collection_t* collectionp;
-  if (theCollections.get(uri, collectionp) )
-    return collectionp->getp();
+  Collection_t collection;
+  if (theCollections.get(uri, collection) )
+    return collection.getp();
   else
     return NULL;
 }

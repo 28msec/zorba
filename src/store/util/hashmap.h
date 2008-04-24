@@ -272,10 +272,10 @@ bool find(const T& item)
 
 
 /*******************************************************************************
-  If the given item is already in the set, return true and a pointer to the value
+  If the given item is already in the set, return true and a copy of the value
   associated with the item; otherwise return false.
 ********************************************************************************/
-bool get(const T& item, V*& value)
+bool get(const T& item, V& value)
 {
   ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
 
@@ -290,7 +290,7 @@ bool get(const T& item, V*& value)
   {
     if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
     {
-      value = &entry->theValue;
+      value = entry->theValue;
       return true;
     }
 
@@ -305,9 +305,9 @@ bool get(const T& item, V*& value)
   If the set does not already contain an item I that is "equal" to the given
   item, make a copy of the given item and its associated value and place the
   new (item, value) pair in the map; then return true. Otherwise, return false,
-  as well as a pointer to the value associated with the found item I.
+  as well as a copy of the value associated with the found item I.
 ********************************************************************************/
-bool insert(T& item, V*& value)
+bool insert(T& item, V& value)
 {
   bool found;
   ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
@@ -319,11 +319,11 @@ bool insert(T& item, V*& value)
   if (!found)
   {
     entry->theItem = item;
-    entry->theValue = *value;
+    entry->theValue = value;
   }
   else
   {
-    value = &entry->theValue;
+    value = entry->theValue;
   }
 
   return !found;

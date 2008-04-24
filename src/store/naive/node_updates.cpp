@@ -177,8 +177,8 @@ void XmlNode::removeChildren(
 
       CopyMode copymode;
       copymode.set(false, true, true, false);
-      XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-      child->switchTree(tree, NULL, 0, copymode);
+
+      child->switchTree(NULL, 0, copymode);
     }
     else
     {
@@ -210,9 +210,7 @@ void XmlNode::insertChildren(
     {
       ZORBA_FATAL(child->isConstructed(), "");
 
-      child->switchTree(getTree(), this, pos + i, copymode);
-
-      children().insert(child, pos + i, false);
+      child->switchTree(this, pos + i, copymode);
     }
   }
 }
@@ -239,9 +237,7 @@ void XmlNode::insertChildrenFirst(
     {
       ZORBA_FATAL(child->isConstructed(), "");
 
-      child->switchTree(getTree(), this, 0, copymode);
-
-      this->children().insert(child, 0, false);
+      child->switchTree(this, 0, copymode);
     }
   }
 }
@@ -324,9 +320,7 @@ void XmlNode::replaceChild(
     {
       ZORBA_FATAL(child->isConstructed(), "");
 
-      child->switchTree(getTree(), this, pos + i, copymode);
-
-      children().insert(child, pos + i, false);
+      child->switchTree(this, pos + i, copymode);
     }
   }
 }
@@ -354,8 +348,8 @@ void ElementNode::removeAttributes(
 
       CopyMode copymode;
       copymode.set(false, true, true, false);
-      XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-      attr->switchTree(tree, NULL, 0, copymode);
+
+      attr->switchTree(NULL, 0, copymode);
     }
     else
     {
@@ -384,17 +378,9 @@ void ElementNode::insertAttributes(
     checkUniqueAttr(attr->theName);
 
     if (copy)
-    {
       attr->copy(this, this, numAttrs + i, copymode);
-    }
     else
-    {
-      ZORBA_FATAL(attr->isConstructed(), "");
-
-      attr->switchTree(getTree(), this, numAttrs + i, copymode);
-
-      attributes().push_back(attr, false);
-    }
+      attr->switchTree(this, numAttrs + i, copymode);
 
     addBindingForQName(attr->getNodeName());
   }
@@ -422,17 +408,9 @@ void ElementNode::replaceAttribute(
     checkUniqueAttr(attr->theName);
 
     if (copy)
-    {
       attr->copy(this, this, pos + i, copymode);
-    }
     else
-    {
-      ZORBA_FATAL(attr->isConstructed(), "");
-
-      attr->switchTree(getTree(), this, pos + i, copymode);
-
-      attributes().insert(attr, pos + i, false);
-    }
+      attr->switchTree(this, pos + i, copymode);
 
     addBindingForQName(attr->getNodeName());
   }
@@ -465,15 +443,9 @@ void ElementNode::replaceContent(
     return;
 
   if (copy)
-  {
     newTextChild->copy(this, this, 0, copymode);
-  }
   else
-  {
-    newTextChild->switchTree(getTree(), this, 0, copymode);
-
-    children().push_back(newTextChild, false);
-  }
+    newTextChild->switchTree(this, 0, copymode);
 }
 
 

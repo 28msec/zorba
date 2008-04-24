@@ -82,7 +82,7 @@ bool insert(T& item)
 /******************************************************************************
   If the set does not already contain an item I that is "equal" to the given
   item, insert the given item to the set and return true. Otherwise, return
-  false and an rchandle to the found item I.
+  false and a copy of the found item I.
 ********************************************************************************/
 bool insert(T& item,  T& outItem)
 {

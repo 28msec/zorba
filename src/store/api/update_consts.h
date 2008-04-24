@@ -35,13 +35,15 @@ public:
     AS_LAST_INTO,
     AFTER,
     BEFORE
-  } InsertType;
+  }
+  InsertType;
 
   typedef enum
   {
     VALUE_OF_NODE,
     NODE
-  } ReplaceType;
+  }
+  ReplaceType;
     
 
   enum UpdPrimKind 
