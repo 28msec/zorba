@@ -288,15 +288,16 @@ namespace zorba {
   }; /* class Zorba */
 } /* namespace xqp */
 
-/** \example simple.cpp
+/** 
+ * \example simple.cpp
  *  This is a simple example that demonstrate how to use the Zorba XQuery Engine to
  *  create, compile, and execute queries.
  *
- *  \example datamanger.cpp
+ * \example datamanager.cpp
  *  This file contains some examples that demonstrate how the XmlDataManager can be used
  *  to load files, create collection, etc.
  *
- *  \example itemfactory.cpp
+ * \example context.cpp
  *  This file demonstrates how the ItemFactory can be used to create new Items and 
  *  bind the Items to external variables in the dynamic context of a query.
  *

@@ -5,10 +5,12 @@
 
 using namespace zorba;
 
+// implement a new sax content handler
+// that prints information to an output stream passed in the constructor
 class XMLSerializer: public DefaultContentHandler
 {
   protected:
-    std::ostream & theOStream;
+    std::ostream& theOStream;
     bool preserveWhiteSpaces;
 
   public:
@@ -29,8 +31,7 @@ class XMLSerializer: public DefaultContentHandler
                         const SAX2_Attributes &attrs, const SAX2_Namespaces &ns )
     {
       theOStream << "<" << qname;
-      for ( unsigned int i = 0; i < attrs.getLength(); i++ )
-      {
+      for ( unsigned int i = 0; i < attrs.getLength(); i++ ) {
         theOStream  <<  " " << attrs.getQName( i ) << "=\"" << attrs.getValue( i ) << "\"";    
       }
       theOStream << ">";
@@ -50,8 +51,7 @@ class XMLSerializer: public DefaultContentHandler
 
     void ignorableWhitespace( const String & whitespace )
     {
-      if ( preserveWhiteSpaces )
-      {
+      if ( preserveWhiteSpaces ) {
         theOStream << whitespace;
       }
     }
@@ -59,20 +59,27 @@ class XMLSerializer: public DefaultContentHandler
 
 int sax2( int argc, char * argv[] )
 {
-  XMLSerializer lContentHandler( std::cerr );
-  Zorba * lZorba = Zorba::getInstance();
-  try
-  {
+  // create a SAX content handler that prints all events to standard out
+  XMLSerializer lContentHandler( std::cout );
+
+  // initialize the Zorba engine and get a pointer to it
+  Zorba* lZorba = Zorba::getInstance();
+
+  try {
+
+    // compile a query
     XQuery_t lQuery = lZorba->compileQuery("<a xmlns:f=\"foo\" xmlns=\"http://flworfound.org/defaultns\"> text a text a <b xmlns:ns1=\"http://flworfound.org/usecase1\" attr1=\"value1\" attr2=\"value2\"> text b </b><f:bar>foo</f:bar><foo /><bar /><b><![CDATA[ foo ]]></b></a>");
+
+    // register the content handler created above
     lQuery->registerSAXHandler( &lContentHandler );
+
+    // execute the query and call according SAX callbacks 
+    // i.e. equivalent to serializing to xml and parsing using SAX).
     lQuery->executeSAX();
-    lQuery->close();
-  } catch ( StaticException &e ) {
-    std::cerr << e << std::endl;
-  } catch ( DynamicException &e ) {
+
+  } catch ( ZorbaException &e ) {
     std::cerr << e << std::endl;
   }
-  lZorba->shutdown();
   return 0;
 }
 
