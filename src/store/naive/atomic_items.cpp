@@ -1237,7 +1237,7 @@ bool DateTimeItemNaive::equals(
 
 Item_t DateTimeItemNaive::getEBV() const
 {
-  // TODO:
+  ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for DateTime!");
   return NULL;
 }
 
@@ -1283,7 +1283,7 @@ bool DurationItemNaive::equals(
 
 Item_t DurationItemNaive::getEBV() const
 {
-  // TODO:
+  ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for Duration!");
   return NULL;
 }
 
@@ -1320,7 +1320,7 @@ bool DayTimeDurationItemNaive::equals(
 
 Item_t DayTimeDurationItemNaive::getEBV() const
 {
-  // TODO:
+  ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for DayTimeDuration!");
   return NULL;
 }
 
@@ -1357,7 +1357,7 @@ bool YearMonthDurationItemNaive::equals(
 
 Item_t YearMonthDurationItemNaive::getEBV() const
 {
-  // TODO:
+  ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for YearMonthDuration!");
   return NULL;
 }
 

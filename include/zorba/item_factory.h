@@ -55,8 +55,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#QName]
        *
        * @param aNamespace String representation of the namespace.
-       * @param aLocalname String representation of the localname.
-       *
+       * @param aLocalname String representation of the localname.       *
        * @return The QName Item.
        */
       virtual Item
@@ -66,7 +65,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#NCName]
        *
        * @param aValue String representation of the NCName.
-       * @return The NCName Item
+       * @return The NCName Item.
        */
       virtual Item 
       createNCName(const String& aValue) = 0;
@@ -77,7 +76,7 @@ namespace zorba {
        *
        * @param aBinData a pointer to the base64 binary data.
        * @param aLength the length of the base64 binary data.
-       * @return The Base64Binary Item
+       * @return The Base64Binary Item.
        */
       virtual Item 
       createBase64Binary(const char* aBinData, size_t aLength) = 0;
@@ -86,7 +85,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#bool]
        *
        * @param aValue bool representation of the Boolean.
-       * @return The Boolean Item
+       * @return The Boolean Item.
        */
       virtual Item 
       createBoolean(bool aValue) = 0;
@@ -95,7 +94,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#decimal]
        *
        * @param aValue unsigned long representation of the Decimal.
-       * @return The Decimal Item
+       * @return The Decimal Item.
        */
       virtual Item 
       createDecimalFromLong (unsigned long aValue) = 0;
@@ -104,7 +103,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#decimal]
        *
        * @param aValue double representation of the Decimal.
-       * @return The Decimal Item
+       * @return The Decimal Item.
        */
       virtual Item 
       createDecimalFromDouble (double aValue) = 0;
@@ -113,7 +112,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#decimal]
        *
        * @param aValue String representation of the Decimal (e.g. 12678967.543233).
-       * @return The Decimal Item
+       * @return The Decimal Item.
        */
       virtual Item 
       createDecimal (const String& aValue) = 0;
@@ -122,7 +121,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#integer]
        *
        * @param aInteger unsigned long representation of the Integer.
-       * @return The Integer Item
+       * @return The Integer Item.
        */
       virtual Item
       createInteger(long long aInteger) = 0;
@@ -131,7 +130,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#integer]
        *
        * @param aInteger String representation of the Integer.
-       * @return The Integer Item
+       * @return The Integer Item.
        */
       virtual Item
       createInteger(const String& aInteger) = 0;
@@ -140,7 +139,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#long]
        *
        * @param aLong long long representation of the Long.
-       * @return The Long Item
+       * @return The Long Item.
        */
       virtual Item
       createLong ( long long aLong ) = 0;
@@ -149,7 +148,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#int]
        *
        * @param aInt int representation of the Int.
-       * @return The NCName Item
+       * @return The NCName Item.
        */
       virtual Item
       createInt ( int aInt ) = 0;
@@ -158,7 +157,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#short]
        *
        * @param aShort short representation of the Short.
-       * @return The Short Item
+       * @return The Short Item.
        */
       virtual Item
       createShort ( short aShort ) = 0;
@@ -167,7 +166,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#byte]
        *
        * @param aByte char representation of the Byte.
-       * @return The Byte Item
+       * @return The Byte Item.
        */
       virtual Item
       createByte ( char value ) = 0;
@@ -176,10 +175,21 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#date]
        *
        * @param aDate String representation of the Date (e.g. 2002-10-10).
-       * @return The Date Item
+       * @return The Date Item.
        */
       virtual Item
       createDate ( const String& aDate ) = 0;
+
+      /** \brief Creates a Date Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#date]
+       *
+       * @param aYear short-valued representation of the year.
+       * @param aMonth short-valued representation of the month.
+       * @param aDay short-valued representation of the day.
+       * @return The Date Item.
+       */
+      virtual Item
+      createDate ( short aYear, short aMonth, short aDay ) = 0;
       
       /** \brief Creates a DateTime Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
@@ -189,14 +199,14 @@ namespace zorba {
        * @param aDay short-valued representation of the day.
        * @param aHour short-valued representation of the hour.
        * @param aMinute short-valued representation of the minute.
-       * @param aSecond short-valued representation of the second.
-       * @param aTimezone short-valued representation of the timezone.
+       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @param aTimeZone_hours short-valued representation of the difference in hours to UTC.
        * @return The DateTime Item.
        */
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay, 
-                     short aHour, short aMinute, short aSecond, 
-                     short aTimezone) = 0;
+                     short aHour, short aMinute, double aSecond,
+                     short aTimeZone_hours) = 0;
 
       /** \brief Creates a DateTime Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
@@ -212,7 +222,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#double]
        *
        * @param aValue double representation of the Double.
-       * @return The Double Item
+       * @return The Double Item.
        */
       virtual Item
       createDouble ( double aValue ) = 0;
@@ -221,7 +231,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#double]
        *
        * @param aValue String representation of the Double.
-       * @return The Double Item
+       * @return The Double Item.
        */
       virtual Item
       createDouble ( const String& aValue ) = 0;
@@ -229,8 +239,8 @@ namespace zorba {
       /** \brief Creates a Duration Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#duration]
        *
-       * @param aValue String representation of the NCName
-       * @return The Duration Item
+       * @param aValue String representation of the NCName.
+       * @return The Duration Item.
        */
       virtual Item
       createDuration( const String& aValue ) = 0;
@@ -243,19 +253,18 @@ namespace zorba {
        * @param aDay short-valued representation of the days.
        * @param aHour short-valued representation of the hours.
        * @param aMinute short-valued representation of the minutes.
-       * @param aSecond short-valued representation of the seconds.
-       * @param aFrac_Seconds short-valued representation of the fractional seconds.
-       * @return The Duration Item
+       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @return The Duration Item.
        */
       virtual Item
       createDuration ( short aYears, short aMonths, short aDays, 
-                       short aHours, short aMinutes, short aSeconds, short aFrac_Seconds ) = 0;
+                       short aHours, short aMinutes, double aSeconds ) = 0;
     
       /** \brief creates a float item 
        *         see [http://www.w3.org/tr/xmlschema-2/#float]
        *
        * @param aValue string representation of the float.
-       * @return the float item
+       * @return the float item.
        */
       virtual Item
       createFloat ( const String& aValue ) = 0;
@@ -264,7 +273,7 @@ namespace zorba {
        *         see [http://www.w3.org/tr/xmlschema-2/#float]
        *
        * @param aValue float representation of the float.
-       * @return the float item
+       * @return the float item.
        */
       virtual Item
       createFloat ( float aValue ) = 0;
@@ -273,7 +282,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#gDay]
        *
        * @param aValue String representation of the gDay.
-       * @return The gDay Item
+       * @return The gDay Item.
        */
       virtual Item
       createGDay ( const String& value ) = 0;
@@ -282,7 +291,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#gDay]
        *
        * @param aDay short representation of the gDay.
-       * @return The gDay Item
+       * @return The gDay Item.
        */
       virtual Item
       createGDay ( short aDay ) = 0;
@@ -300,7 +309,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#gMonth]
        *
        * @param aValue String representation of the gMonth.
-       * @return The gMonth Item
+       * @return The gMonth Item.
        */
       virtual Item
       createGMonth ( const String& aValue ) = 0;
@@ -309,7 +318,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#gMonthDay]
        *
        * @param aValue String representation of the gMonthDay.
-       * @return The gMonthDay Item
+       * @return The gMonthDay Item.
        */
       virtual Item
       createGMonthDay ( const String& aValue ) = 0;
@@ -319,7 +328,7 @@ namespace zorba {
        *
        * @param aMonth short representation of the month.
        * @param aDay short representation of the day.
-       * @return The gMonthDay Item
+       * @return The gMonthDay Item.
        */
       virtual Item
       createGMonthDay ( short month, short day ) = 0;
@@ -328,7 +337,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#gYear]
        *
        * @param aValue String representation of the gYear.
-       * @return The gYear Item
+       * @return The gYear Item.
        */
       virtual Item
       createGYear ( const String& value ) = 0;
@@ -337,7 +346,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#gYear]
        *
        * @param aYear short representation of the gYear.
-       * @return The gYear Item
+       * @return The gYear Item.
        */
       virtual Item
       createGYear ( short year ) = 0;
@@ -346,7 +355,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
        *
        * @param aValue String representation of the gYearMonth.
-       * @return The gYearMonth Item
+       * @return The gYearMonth Item.
        */
       virtual Item
       createGYearMonth ( const String& value ) = 0;
@@ -356,7 +365,7 @@ namespace zorba {
        *
        * @param aYear short representation of the year.
        * @param aMonth short representation of the month.
-       * @return The gYearMonth Item
+       * @return The gYearMonth Item.
        */
       virtual Item
       createGYearMonth ( short year, short month ) = 0;
@@ -366,7 +375,7 @@ namespace zorba {
        *
        * @param aHexData pointer to the hexdata.
        * @param aSize size of the hexdata.
-       * @return The HexBinary Item
+       * @return The HexBinary Item.
        */
       virtual Item
       createHexBinary ( const char* aHexData, size_t aSize ) = 0;
@@ -375,7 +384,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
        *
        * @param aValue long long representation of the negativeInteger.
-       * @return The negativeInteger Item
+       * @return The negativeInteger Item.
        */
       virtual Item
       createNegativeInteger ( long long aValue ) = 0;
@@ -384,7 +393,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
        *
        * @param aValue unsigned long representation of the nonNegativeInteger.
-       * @return The nonNegativeInteger Item
+       * @return The nonNegativeInteger Item.
        */
       virtual Item
       createNonNegativeInteger ( unsigned long long aValue ) = 0;
@@ -392,8 +401,8 @@ namespace zorba {
       /** \brief Creates a nonPositiveInteger Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
        *
-       * @param aValue long long representation of the NCName
-       * @return The nonPositiveInteger Item
+       * @param aValue long long representation of the NCName.
+       * @return The nonPositiveInteger Item.
        */
       virtual Item
       createNonPositiveInteger ( long long aValue ) = 0;
@@ -402,7 +411,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
        *
        * @param aValue unsigned long representation of the positiveInteger.
-       * @return The positiveInteger Item
+       * @return The positiveInteger Item.
        */
       virtual Item
       createPositiveInteger ( unsigned long long aValue ) = 0;
@@ -421,29 +430,29 @@ namespace zorba {
        *
        * @param aHour short representation of the hour.
        * @param aMinute short representation of the minute.
-       * @param aSecond short representation of the second.
-       * @return The Time Item
+       * @param aSecond double representation of the seconds and fractional seconds.
+       * @return The Time Item.
        */
       virtual Item
-      createTime ( short aHour, short aMinute, short aSecond ) = 0;
+      createTime ( short aHour, short aMinute, double aSecond ) = 0;
     
       /** \brief Creates a Time Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#time]
        *
        * @param aHour short representation of the hour.
        * @param aMinute short representation of the minute.
-       * @param aSecond short representation of the second.
-       * @param aTimezone short representation of the timezone difference in hours to UTC.
-       * @return The Time Item
+       * @param aSecond double representation of the seconds and fractional seconds.
+       * @param aTimeZone_hours short representation of the timezone difference in hours to UTC.
+       * @return The Time Item.
        */
       virtual Item
-      createTime ( short aHour, short aMinute, short aSecond, short aTimezone ) = 0;
+      createTime ( short aHour, short aMinute, double aSecond, short aTimeZone_hours ) = 0;
     
       /** \brief Creates an Unsigned Byte Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
        *
-       * @param aValue unsignedByte unsigned char representation of the unsigned byte
-       * @return The Unsigned Byte Item
+       * @param aValue unsignedByte unsigned char representation of the unsigned byte.
+       * @return The Unsigned Byte Item.
        */
       virtual Item
       createUnsignedByte(const unsigned char aValue) = 0;
@@ -452,7 +461,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
        *
        * @param aValue unsigned int representation of the unsignedInt.
-       * @return The unsignedInt Item
+       * @return The unsignedInt Item.
        */
       virtual Item
       createUnsignedInt(unsigned int aValue) = 0;
@@ -461,7 +470,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
        *
        * @param aValue unsignedLong long long representation of the unsignedLong.
-       * @return The unsignedLong Item
+       * @return The unsignedLong Item.
        */
       virtual Item
       createUnsignedLong(unsigned long long aValue) = 0;
@@ -470,7 +479,7 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
        *
        * @param aValue unsigned short representation of the unsignedShort.
-       * @return The unsignedShort Item
+       * @return The unsignedShort Item.
        */
       virtual Item
       createUnsignedShort(unsigned short aValue) = 0;

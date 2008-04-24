@@ -146,7 +146,7 @@ public:
         short day,
         short hour,
         short minute,
-        short second) = 0;
+        double second) = 0;
 
   /**
    * @param year
@@ -155,11 +155,11 @@ public:
    * @param hour
    * @param minute
    * @param second
-   * @param timeZone Difference in hours to UTC
+   * @param timeZone_hours Difference in hours to UTC
    */
   virtual Item_t createDateTime ( 
-				short year , short month, short day, short hour, short minute, short second, short timeZone 
-			) = 0;
+      short year , short month, short day,
+      short hour, short minute, double second, short timeZone_hours) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#dateTime]
@@ -195,11 +195,9 @@ public:
    * @param hours
    * @param minutes
    * @param seconds
-   * @param frac_seconds
-			  */
+   */
   virtual Item_t createDuration (
-			    short years, short months, short days, short hours, short minutes, short seconds, short frac_seconds
-			) = 0;
+			    short years, short months, short days, short hours, short minutes, double seconds) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITIES]
@@ -382,15 +380,15 @@ public:
    * @param minute
    * @param second
    */
-  virtual Item_t createTime ( short hour, short minute, short second ) = 0;
+  virtual Item_t createTime ( short hour, short minute, double second ) = 0;
 
   /**
    * @param hour
    * @param minute
    * @param second
-   * @param timeZone Difference in hours to UTC
+   * @param timeZone_hours Difference in hours to UTC
    */
-  virtual Item_t createTime ( short hour, short minute, short second, short timeZone ) = 0;
+  virtual Item_t createTime ( short hour, short minute, double second, short timeZone_hours ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#token]

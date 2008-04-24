@@ -143,14 +143,24 @@ Item_t BasicItemFactory::createDate(xqp_date& value)
   return new DateTimeItemNaive(value);
 }
 
-Item_t BasicItemFactory::createDate ( short /*year*/, short /*month*/, short /*day*/ )
+Item_t BasicItemFactory::createDate (
+    short year,
+    short month,
+    short day )
 {
-  return Item_t ( NULL );
+  DateTime_t dt_t;
+  TimeZone_t tz_t;
+  
+  if(DateTime::createDate(year, month, day, tz_t, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t ( NULL );
 }
 
 Item_t BasicItemFactory::createDate ( const xqp_string& value )
 {
   DateTime_t dt_t;
+  
   if (DateTime::parseDate(value, dt_t) == 0)
     return new DateTimeItemNaive(dt_t);
   else
@@ -163,30 +173,36 @@ Item_t BasicItemFactory::createDateTime(xqp_dateTime& value)
 }
 
 Item_t BasicItemFactory::createDateTime(
-    short /*year*/,
-    short /*month*/,
-    short /*day*/,
-    short /*hour*/,
-    short /*minute*/,
-    short /*second*/)
+    short   year,
+    short   month,
+    short   day,
+    short   hour,
+    short   minute,
+    double  second)
 {
-  return Item_t ( NULL );
+  DateTime_t dt_t;
+  TimeZone_t tz_t;
+  
+  if(DateTime::createDateTime(year, month, day, hour, minute, second, tz_t, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t ( NULL );
 }
 
 
 Item_t BasicItemFactory::createDateTime(
-    short year ,
-    short month,
-    short day,
-    short hour,
-    short minute,
-    short second,
-    short timeZone_hours)
+    short   year ,
+    short   month,
+    short   day,
+    short   hour,
+    short   minute,
+    double  second,
+    short   timeZone_hours)
 {
   DateTime_t dt_t;
-  TimeZone tz( timeZone_hours );
+  TimeZone_t tz_t = new TimeZone( timeZone_hours );
 
-  if (DateTime::createDateTime(year, month, day, hour, minute, second, 0, tz, dt_t) == 0)
+  if (DateTime::createDateTime(year, month, day, hour, minute, second, tz_t, dt_t) == 0)
     return new DateTimeItemNaive(dt_t);
   else
     return Item_t(NULL);
@@ -195,7 +211,8 @@ Item_t BasicItemFactory::createDateTime(
 Item_t BasicItemFactory::createDateTime ( const xqp_string& value )
 {
   DateTime_t dt_t;
-  if (DateTime::parseDateTime(value, dt_t) == 0)
+  
+  if ( DateTime::parseDateTime(value, dt_t) == 0 )
     return new DateTimeItemNaive(dt_t);
   else
     return Item_t(NULL);
@@ -231,11 +248,11 @@ Item_t BasicItemFactory::createDuration ( const xqp_string& value )
   YearMonthDuration_t ymd_t;
   DayTimeDuration_t   dtd_t;
   
-  if (YearMonthDuration::parse_string(value, ymd_t)){
+  if( YearMonthDuration::parse_string(value, ymd_t) ){
     xqp_duration d = ymd_t;
     return new DurationItemNaive(d);
   }
-  else if(DayTimeDuration::parse_string(value, dtd_t)){
+  else if( DayTimeDuration::parse_string(value, dtd_t) ){
     xqp_duration d = ymd_t;
     return new DurationItemNaive(d);
   }
@@ -244,16 +261,20 @@ Item_t BasicItemFactory::createDuration ( const xqp_string& value )
 }
 
 Item_t BasicItemFactory::createDuration (
-    short years, short months, short days, short hours, short minutes, short seconds, short frac_seconds
-	)
+    short   years,
+    short   months,
+    short   days,
+    short   hours,
+    short   minutes,
+    double  seconds)
 {
-  if(years != 0 || months!=0){
+  if( years != 0 || months!=0 ){
     YearMonthDuration_t ymd_t = new YearMonthDuration(years*12 + months);
     xqp_duration d = ymd_t;
     return new DurationItemNaive(d);
   }
-  else if(days!=0 || hours!=0 || minutes!=0 || seconds!=0 || frac_seconds !=0) {
-    DayTimeDuration_t dtd_t = new DayTimeDuration(days, hours, minutes, seconds, frac_seconds);
+  else if( days!=0 || hours!=0 || minutes!=0 || seconds!=0 ) {
+    DayTimeDuration_t dtd_t = new DayTimeDuration(days, hours, minutes, seconds);
     xqp_duration d = dtd_t;
     return new DurationItemNaive(d); 
   }
@@ -424,19 +445,43 @@ Item_t BasicItemFactory::createTime(xqp_time& value)
   return new DateTimeItemNaive(value);
 }
 
-Item_t BasicItemFactory::createTime(const xqp_string& /*value*/)
+Item_t BasicItemFactory::createTime(const xqp_string& value)
 {
-  return Item_t(NULL);
+  DateTime_t dt_t;
+  
+  if( DateTime::parseTime(value, dt_t) == 0 )
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
 }
 
-Item_t BasicItemFactory::createTime(short /*hour*/, short /*minute*/, short /*second*/)
+Item_t BasicItemFactory::createTime(
+    short   hour,
+    short   minute,
+    double  second)
 {
-  return Item_t ( NULL );
+  DateTime_t dt_t;
+  TimeZone_t tz_t;
+  
+  if( DateTime::createTime(hour, minute, second, tz_t, dt_t) == 0 )
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createTime(short /*hour*/, short /*minute*/, short /*second*/, short /*timeZone*/)
+Item_t BasicItemFactory::createTime(
+    short   hour,
+    short   minute,
+    double  second,
+    short   timeZone_hours)
 {
-  return Item_t ( NULL );
+  DateTime_t dt_t;
+  TimeZone_t tz_t = new TimeZone(timeZone_hours);
+  
+  if( DateTime::createTime(hour, minute, second, tz_t, dt_t) == 0 )
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t ( NULL );
 }
 
 Item_t BasicItemFactory::createToken ( const xqp_string& /*value*/ )

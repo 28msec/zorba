@@ -73,9 +73,9 @@ public:
 
   Item_t createDateTime(xqp_dateTime& value);
  
-  Item_t createDateTime(short year, short month, short day, short hour, short minute, short second);
+  Item_t createDateTime(short year, short month, short day, short hour, short minute, double second);
 
-  Item_t createDateTime(short year , short month, short day, short hour, short minute, short second, short timeZone);
+  Item_t createDateTime(short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
 
   Item_t createDateTime(const xqp_string& value);
   
@@ -87,7 +87,7 @@ public:
   
   Item_t createDuration(const xqp_string& value);
 
-  Item_t createDuration(short years, short months, short days, short hours, short minutes, short seconds, short frac_seconds);
+  Item_t createDuration(short years, short months, short days, short hours, short minutes, double seconds);
 
   Item_t createENTITIES ( const xqp_string& value );
 
@@ -157,9 +157,9 @@ public:
   
   Item_t createTime(const xqp_string& value );
 
-  Item_t createTime(short hour, short minute, short second );
+  Item_t createTime(short hour, short minute, double second );
 
-  Item_t createTime(short hour, short minute, short second, short timeZone);
+  Item_t createTime(short hour, short minute, double second, short timeZone_hours);
 
   Item_t createToken(const xqp_string& value);
 

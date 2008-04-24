@@ -69,11 +69,14 @@ namespace zorba {
     
       virtual Item
       createDate ( const String& aDate );
-      
+
+      virtual Item
+      createDate ( short aYear, short aMonth, short aDay );
+
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay, 
-                     short aHour, short aMinute, short aSecond, 
-                     short aTimezone);
+                     short aHour, short aMinute, double aSecond,
+                     short aTimezone_hours);
 
       virtual Item
       createDateTime( const String& aDateTimeValue );
@@ -89,7 +92,7 @@ namespace zorba {
       
       virtual Item
       createDuration ( short aYears, short aMonths, short aDays, 
-                       short aHours, short aMinutes, short aSeconds, short aFrac_Seconds );
+                       short aHours, short aMinutes, double aSeconds );
     
       virtual Item
       createFloat ( const String& aValue );
@@ -146,10 +149,10 @@ namespace zorba {
       createTime ( const String& aValue );
     
       virtual Item
-      createTime ( short aHour, short aMinute, short aSecond );
+      createTime ( short aHour, short aMinute, double aSecond );
     
       virtual Item
-      createTime ( short aHour, short aMinute, short aSecond, short aTimezone );
+      createTime ( short aHour, short aMinute, double aSecond, short aTimezone_hours );
     
       virtual Item
       createUnsignedByte(const unsigned char aValue);

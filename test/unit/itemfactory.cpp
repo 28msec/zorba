@@ -330,6 +330,50 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.getEBV().getBooleanValue() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
+    /** Date*/
+    lItem = lFactory->createDate("1999-05-31");
+    assert ( checkType(lItem.getType(), "date") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "1999-05-31" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createDate(1999,05,31);
+    assert ( checkType(lItem.getType(), "date") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "1999-05-31" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /** DateTime*/
+    lItem = lFactory->createDateTime("1999-05-31T01:02:03.04-01:00");
+    assert ( checkType(lItem.getType(), "dateTime") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "1999-05-31T01:02:03.04-01:00" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createDateTime(1999, 05, 31, 01, 02, 3.04, -1);
+    assert ( checkType(lItem.getType(), "dateTime") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "1999-05-31T01:02:03.04-01:00" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /** Time*/
+    lItem = lFactory->createTime("08:00:00+09:00");
+    assert ( checkType(lItem.getType(), "time") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "08:00:00+09:00" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createTime(8,9,10.123);
+    assert ( checkType(lItem.getType(), "time") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "08:09:10.123" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createTime(17,0,0,-6);
+    assert ( checkType(lItem.getType(), "time") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "17:00:00-06:00" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
   } catch (ZorbaException &e) {
     std::cerr << e << std::endl;

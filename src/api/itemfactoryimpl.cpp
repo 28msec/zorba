@@ -62,6 +62,18 @@ namespace zorba {
   }
 
   Item
+  ItemFactoryImpl::createDate (
+      short aYear,
+      short aMonth,
+      short aDay )
+  {
+    store::Item_t lItem;
+    lItem = theItemFactory->createDate( aYear, aMonth, aDay );
+
+    return &*lItem;
+  }
+
+  Item
   ItemFactoryImpl::createQName(const String& aNamespace, const String& aPrefix,
                                const String& aLocalname)
   {
@@ -218,12 +230,12 @@ namespace zorba {
   }
     
   Item
-  ItemFactoryImpl::createDateTime(short year, short month, short day, 
-                                  short hour, short minute, short second, 
-                                  short timezone)
+  ItemFactoryImpl::createDateTime(short aYear, short aMonth, short aDay,
+                                  short aHour, short aMinute, double aSecond,
+                                  short aTimezone_hours)
   {
     store::Item_t lItem;
-    lItem = theItemFactory->createDateTime(year, month, day, hour, minute, second, timezone);
+    lItem = theItemFactory->createDateTime(aYear, aMonth, aDay, aHour, aMinute, aSecond, aTimezone_hours);
 
     return &*lItem;
   }
@@ -275,12 +287,11 @@ namespace zorba {
       
   Item
   ItemFactoryImpl::createDuration ( short aYears, short aMonths, short aDays, 
-                       short aHours, short aMinutes, short aSeconds, short aFrac_Seconds )
+                                    short aHours, short aMinutes, double aSeconds )
   {
     store::Item_t lItem;
     
-    lItem = theItemFactory->createDuration(aYears, aMonths, aDays, aHours, aMinutes, 
-                                           aSeconds, aFrac_Seconds);
+    lItem = theItemFactory->createDuration(aYears, aMonths, aDays, aHours, aMinutes, aSeconds);
     
     return &*lItem;
   }
@@ -441,20 +452,29 @@ namespace zorba {
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+
+    lItem = theItemFactory->createTime( lString );
+    
     return &*lItem;
   }
     
   Item
-  ItemFactoryImpl::createTime ( short aHour, short aMinute, short aSecond )
+  ItemFactoryImpl::createTime ( short aHour, short aMinute, double aSecond )
   {
     store::Item_t lItem;
+
+    lItem = theItemFactory->createTime( aHour, aMinute, aSecond );
+    
     return &*lItem;
   }
     
   Item
-  ItemFactoryImpl::createTime ( short aHour, short aMinute, short aSecond, short aTimezone )
+  ItemFactoryImpl::createTime ( short aHour, short aMinute, double aSecond, short aTimezone_hours )
   {
     store::Item_t lItem;
+
+    lItem = theItemFactory->createTime( aHour, aMinute, aSecond, aTimezone_hours );
+    
     return &*lItem;
   }
     
