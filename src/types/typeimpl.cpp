@@ -174,8 +174,8 @@ bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 
 std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
 {
-    return os << "[UserDefinedXQType " << _qname->getLocalName()->str() << "@" << 
-        _qname->getNamespace()->str() << " " << ( _isAtomic ? "isAtomic" : "" ) << " base:" <<
-        TypeOps::toString(*_baseType) << " ]";
+    return os << "[UserDefinedXQType " << " " << TypeOps::decode_quantifier (get_quantifier()) 
+        << _qname->getLocalName()->str() << "@" << _qname->getNamespace()->str() << " " << 
+        ( _isAtomic ? "isAtomic" : "" ) << " base:" << TypeOps::toString(*_baseType) << " ]";
 }    
-}
+}  // namespace zorba
