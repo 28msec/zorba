@@ -93,7 +93,7 @@ namespace zorba {
     return NULL;
   }
 
-  RULE_REWRITE_PRE(MarkUnfoldableOps) {
+  RULE_REWRITE_PRE(MarkUnfoldableExprs) {
     return NULL;
   }
 
@@ -112,7 +112,7 @@ namespace zorba {
           && TypeOps::maybe_date_time (*TypeOps::prime_type (*(*fo) [0]->return_type (sctx))));
   }
 
-  RULE_REWRITE_POST(MarkUnfoldableOps) {
+  RULE_REWRITE_POST(MarkUnfoldableExprs) {
     Annotation::key_t k = AnnotationKey::UNFOLDABLE_OP;
     switch (node->get_expr_kind ()) {
     case fo_expr_kind: {
@@ -139,6 +139,38 @@ namespace zorba {
     default: break;
     }
 
+    if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VAL)
+      for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
+        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {
+          node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
+          break;
+        }
+      }
+    return NULL;
+  }
+
+  RULE_REWRITE_PRE(MarkImpureExprs) {
+    return NULL;
+  }
+
+  RULE_REWRITE_POST(MarkImpureExprs) {
+    Annotation::key_t k = AnnotationKey::IMPURE_EXPR;
+    switch (node->get_expr_kind ()) {
+    case elem_expr_kind:
+    case attr_expr_kind:
+    case text_expr_kind:
+    case pi_expr_kind:
+    case doc_expr_kind:
+      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
+      break;
+    case fo_expr_kind:
+      if (static_cast<fo_expr *> (node)->get_func () == LOOKUP_OP2 ("ctxvar-assign"))
+        node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
+      break;
+    default: break;
+    }
+
+    // TODO: count ((<a/>)) is pure
     if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VAL)
       for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
         if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {

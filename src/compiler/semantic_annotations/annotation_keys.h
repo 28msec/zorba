@@ -17,6 +17,7 @@ enum {
 
   EXPENSIVE_OP,
   UNFOLDABLE_OP,
+  IMPURE_EXPR,
   
   MAX_ANNOTATION
 };

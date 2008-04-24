@@ -28,50 +28,6 @@ Iterator tree for main query:
      </ChildAxisIterator>
     </NameTestIterator>
    </ForVariable>
-   <LetVariable name="a" materialize="true">
-    <FLWORIterator>
-     <ForVariable name="t">
-      <NameTestIterator qname="xs:QName(,,closed_auction)">
-       <ChildAxisIterator>
-        <NameTestIterator qname="xs:QName(,,closed_auctions)">
-         <ChildAxisIterator>
-          <NameTestIterator qname="xs:QName(,,site)">
-           <ChildAxisIterator>
-            <LetVarIterator varname="auction"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
-         </ChildAxisIterator>
-        </NameTestIterator>
-       </ChildAxisIterator>
-      </NameTestIterator>
-     </ForVariable>
-     <WhereClause>
-      <CompareIterator>
-       <FnDataIterator>
-        <NameTestIterator qname="xs:QName(,,person)">
-         <AttributeAxisIterator>
-          <NameTestIterator qname="xs:QName(,,buyer)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="t"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
-         </AttributeAxisIterator>
-        </NameTestIterator>
-       </FnDataIterator>
-       <FnDataIterator>
-        <NameTestIterator qname="xs:QName(,,id)">
-         <AttributeAxisIterator>
-          <ForVarIterator varname="p"/>
-         </AttributeAxisIterator>
-        </NameTestIterator>
-       </FnDataIterator>
-      </CompareIterator>
-     </WhereClause>
-     <ReturnClause>
-      <ForVarIterator varname="t"/>
-     </ReturnClause>
-    </FLWORIterator>
-   </LetVariable>
    <ReturnClause>
     <ElementIterator>
      <SingletonIterator value="xs:QName(,,item)"/>
@@ -94,7 +50,48 @@ Iterator tree for main query:
      <ElementContentIterator>
       <EnclosedIterator attr_cont="false">
        <FnCountIterator>
-        <LetVarIterator varname="a"/>
+        <FLWORIterator>
+         <ForVariable name="t">
+          <NameTestIterator qname="xs:QName(,,closed_auction)">
+           <ChildAxisIterator>
+            <NameTestIterator qname="xs:QName(,,closed_auctions)">
+             <ChildAxisIterator>
+              <NameTestIterator qname="xs:QName(,,site)">
+               <ChildAxisIterator>
+                <LetVarIterator varname="auction"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+           </ChildAxisIterator>
+          </NameTestIterator>
+         </ForVariable>
+         <WhereClause>
+          <CompareIterator>
+           <FnDataIterator>
+            <NameTestIterator qname="xs:QName(,,person)">
+             <AttributeAxisIterator>
+              <NameTestIterator qname="xs:QName(,,buyer)">
+               <ChildAxisIterator>
+                <ForVarIterator varname="t"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
+             </AttributeAxisIterator>
+            </NameTestIterator>
+           </FnDataIterator>
+           <FnDataIterator>
+            <NameTestIterator qname="xs:QName(,,id)">
+             <AttributeAxisIterator>
+              <ForVarIterator varname="p"/>
+             </AttributeAxisIterator>
+            </NameTestIterator>
+           </FnDataIterator>
+          </CompareIterator>
+         </WhereClause>
+         <ReturnClause>
+          <ForVarIterator varname="t"/>
+         </ReturnClause>
+        </FLWORIterator>
        </FnCountIterator>
       </EnclosedIterator>
      </ElementContentIterator>

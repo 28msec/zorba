@@ -17,7 +17,8 @@ namespace zorba {
   public:
     FoldRules() {
       ADD_RULE(MarkExpensiveOps);
-      ADD_RULE(MarkUnfoldableOps);
+      ADD_RULE(MarkUnfoldableExprs);
+      ADD_RULE(MarkImpureExprs);
       // Most rules try to update the freevars annotations, but for now let's stay on the safe side
       ADD_RULE(MarkFreeVars);
       ADD_RULE(FoldConst (false));
@@ -42,7 +43,7 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(EliminateConsumerNodeOps);
 
   // For UDFs, which need this annotation in udf::requires_dyn_ctx()
-  ADD_SINGLETON_DRIVER(MarkUnfoldableOps);
+  ADD_SINGLETON_DRIVER(MarkUnfoldableExprs);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()

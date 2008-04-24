@@ -37,7 +37,8 @@ RULE(RefactorPredFLWOR);
 RULE(EliminateExtraneousPathSteps);
 RULE(MarkFreeVars);
 RULE(MarkExpensiveOps);
-RULE(MarkUnfoldableOps);
+RULE(MarkUnfoldableExprs);
+RULE(MarkImpureExprs);
 
 class FoldConst : public RewriteRule {
 protected:

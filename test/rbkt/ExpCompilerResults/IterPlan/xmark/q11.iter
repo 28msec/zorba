@@ -28,61 +28,6 @@ Iterator tree for main query:
      </ChildAxisIterator>
     </NameTestIterator>
    </ForVariable>
-   <LetVariable name="l" materialize="true">
-    <FLWORIterator>
-     <ForVariable name="i">
-      <NameTestIterator qname="xs:QName(,,initial)">
-       <ChildAxisIterator>
-        <NameTestIterator qname="xs:QName(,,open_auction)">
-         <ChildAxisIterator>
-          <NameTestIterator qname="xs:QName(,,open_auctions)">
-           <ChildAxisIterator>
-            <NameTestIterator qname="xs:QName(,,site)">
-             <ChildAxisIterator>
-              <LetVarIterator varname="auction"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
-           </ChildAxisIterator>
-          </NameTestIterator>
-         </ChildAxisIterator>
-        </NameTestIterator>
-       </ChildAxisIterator>
-      </NameTestIterator>
-     </ForVariable>
-     <WhereClause>
-      <CompareIterator>
-       <FnDataIterator>
-        <NameTestIterator qname="xs:QName(,,income)">
-         <AttributeAxisIterator>
-          <NameTestIterator qname="xs:QName(,,profile)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="p"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
-         </AttributeAxisIterator>
-        </NameTestIterator>
-       </FnDataIterator>
-       <GenericArithIterator_MultiplyOperation>
-        <SingletonIterator value="xs:integer(5000)"/>
-        <PromoteIterator type="[AtomicXQType XS_ANY_ATOMIC]">
-         <FnDataIterator>
-          <FnExactlyOneIterator>
-           <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-            <ChildAxisIterator>
-             <ForVarIterator varname="i"/>
-            </ChildAxisIterator>
-           </KindTestIterator>
-          </FnExactlyOneIterator>
-         </FnDataIterator>
-        </PromoteIterator>
-       </GenericArithIterator_MultiplyOperation>
-      </CompareIterator>
-     </WhereClause>
-     <ReturnClause>
-      <ForVarIterator varname="i"/>
-     </ReturnClause>
-    </FLWORIterator>
-   </LetVariable>
    <ReturnClause>
     <ElementIterator>
      <SingletonIterator value="xs:QName(,,items)"/>
@@ -105,7 +50,59 @@ Iterator tree for main query:
      <ElementContentIterator>
       <EnclosedIterator attr_cont="false">
        <FnCountIterator>
-        <LetVarIterator varname="l"/>
+        <FLWORIterator>
+         <ForVariable name="i">
+          <NameTestIterator qname="xs:QName(,,initial)">
+           <ChildAxisIterator>
+            <NameTestIterator qname="xs:QName(,,open_auction)">
+             <ChildAxisIterator>
+              <NameTestIterator qname="xs:QName(,,open_auctions)">
+               <ChildAxisIterator>
+                <NameTestIterator qname="xs:QName(,,site)">
+                 <ChildAxisIterator>
+                  <LetVarIterator varname="auction"/>
+                 </ChildAxisIterator>
+                </NameTestIterator>
+               </ChildAxisIterator>
+              </NameTestIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+           </ChildAxisIterator>
+          </NameTestIterator>
+         </ForVariable>
+         <WhereClause>
+          <CompareIterator>
+           <FnDataIterator>
+            <NameTestIterator qname="xs:QName(,,income)">
+             <AttributeAxisIterator>
+              <NameTestIterator qname="xs:QName(,,profile)">
+               <ChildAxisIterator>
+                <ForVarIterator varname="p"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
+             </AttributeAxisIterator>
+            </NameTestIterator>
+           </FnDataIterator>
+           <GenericArithIterator_MultiplyOperation>
+            <SingletonIterator value="xs:integer(5000)"/>
+            <PromoteIterator type="[AtomicXQType XS_ANY_ATOMIC]">
+             <FnDataIterator>
+              <FnExactlyOneIterator>
+               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                <ChildAxisIterator>
+                 <ForVarIterator varname="i"/>
+                </ChildAxisIterator>
+               </KindTestIterator>
+              </FnExactlyOneIterator>
+             </FnDataIterator>
+            </PromoteIterator>
+           </GenericArithIterator_MultiplyOperation>
+          </CompareIterator>
+         </WhereClause>
+         <ReturnClause>
+          <ForVarIterator varname="i"/>
+         </ReturnClause>
+        </FLWORIterator>
        </FnCountIterator>
       </EnclosedIterator>
      </ElementContentIterator>

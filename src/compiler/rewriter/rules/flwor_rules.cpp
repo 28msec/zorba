@@ -126,10 +126,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           subst_vars (rCtx, node, vref, cexpr);
           MODIFY (i = flwor->remove_forlet_clause (i));
         } else ++i;
-      } else {
+      } else {  // uses == 1 or 0
         if (uses == 1) {
           if (flwor->forlet_count () == 1 // TODO: if cardinality FLWOR result = 1...
-              || cexpr->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VAL
+              || cexpr->get_annotation (AnnotationKey::IMPURE_EXPR) != TSVAnnotationValue::TRUE_VAL
               || used_upto_first_repeated_clause (&*vref, flwor, sctx))
             {
               subst_vars (rCtx, node, vref, cexpr);
