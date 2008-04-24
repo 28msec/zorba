@@ -30,6 +30,9 @@
 
 #include "store/api/pul.h"
 
+#include "system/globalenv.h"
+#include "types/root_typemanager.h"
+
 namespace zorba { namespace store {
 
 typedef rchandle<TempSeq> TempSeq_t;
@@ -46,7 +49,7 @@ const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 ********************************************************************************/
 SimpleStore::SimpleStore()
   :
-  theIsInitialized(false),
+  theIsInitialized(0),
   theUriCounter(0),
   theTreeCounter(1),
 //  theNamespacePool(new StringPool(NAMESPACE_POOL_SIZE)),
@@ -69,20 +72,22 @@ void SimpleStore::init()
 {
   if (!theIsInitialized)
   {
-    theIsInitialized = true;
-
     theUriCounter = 0;
     theTreeCounter = 1;
 
 //    theNamespacePool->insertc("", theEmptyNs);
 //    theNamespacePool->insertc(XS_URI, theXmlSchemaNs);
 
-    initTypeNames();
+    //initTypeNames();
 
 #ifndef NDEBUG
     theTraceLevel = Properties::instance()->storeTraceLevel();
 #endif
+  } else if(theIsInitialized == 1)
+  {
+    initTypeNames();
   }
+  theIsInitialized++;
 }
 
 
@@ -93,63 +98,65 @@ void SimpleStore::initTypeNames()
 {
   theSchemaTypeNames.resize(XS_LAST);
 
-  theSchemaTypeNames[0]  = new QNameItemImpl(XS_URI, "xs", "untyped");
-  theSchemaTypeNames[1]  = new QNameItemImpl(XS_URI, "xs", "untypedAtomic");
-  theSchemaTypeNames[2]  = new QNameItemImpl(XS_URI, "xs", "anyType");
-  theSchemaTypeNames[3]  = new QNameItemImpl(XS_URI, "xs", "anySimpleType");
-  theSchemaTypeNames[4]  = new QNameItemImpl(XS_URI, "xs", "anyAtomicType");
+  RootTypeManager   &typemanager = GENV_TYPESYSTEM;
 
-  theSchemaTypeNames[5]  = new QNameItemImpl(XS_URI, "xs", "string");
-  theSchemaTypeNames[6]  = new QNameItemImpl(XS_URI, "xs", "normalizedString");
-  theSchemaTypeNames[7]  = new QNameItemImpl(XS_URI, "xs", "language");
-  theSchemaTypeNames[8]  = new QNameItemImpl(XS_URI, "xs", "token");
-  theSchemaTypeNames[9]  = new QNameItemImpl(XS_URI, "xs", "NMTOKEN");
+  theSchemaTypeNames[XS_UNTYPED]  = typemanager.XS_UNTYPED_QNAME;//new QNameItemImpl(XS_URI, "xs", "untyped");
+  theSchemaTypeNames[XS_UNTYPED_ATOMIC]  = typemanager.XS_UNTYPED_ATOMIC_QNAME;//new QNameItemImpl(XS_URI, "xs", "untypedAtomic");
+  theSchemaTypeNames[XS_ANY]  = typemanager.XS_ANY_TYPE_QNAME;//new QNameItemImpl(XS_URI, "xs", "anyType");
+  theSchemaTypeNames[XS_ANY_SIMPLE]  = typemanager.XS_ANY_SIMPLE_TYPE_QNAME;//new QNameItemImpl(XS_URI, "xs", "anySimpleType");
+  theSchemaTypeNames[XS_ANY_ATOMIC]  = typemanager.XS_ANY_ATOMIC_QNAME;//new QNameItemImpl(XS_URI, "xs", "anyAtomicType");
 
-  theSchemaTypeNames[10] = new QNameItemImpl(XS_URI, "xs", "anyURI");
-  theSchemaTypeNames[11] = new QNameItemImpl(XS_URI, "xs", "Name");
-  theSchemaTypeNames[12] = new QNameItemImpl(XS_URI, "xs", "NCName");
-  theSchemaTypeNames[13] = new QNameItemImpl(XS_URI, "xs", "QName");
-  theSchemaTypeNames[14] = new QNameItemImpl(XS_URI, "xs", "notation");
+  theSchemaTypeNames[XS_STRING]  = typemanager.XS_STRING_QNAME;//new QNameItemImpl(XS_URI, "xs", "string");
+  theSchemaTypeNames[XS_NORMALIZED_STRING]  = typemanager.XS_NORMALIZED_STRING_QNAME;//new QNameItemImpl(XS_URI, "xs", "normalizedString");
+  theSchemaTypeNames[XS_LANGUAGE]  = typemanager.XS_LANGUAGE_QNAME;//new QNameItemImpl(XS_URI, "xs", "language");
+  theSchemaTypeNames[XS_TOKEN]  = typemanager.XS_TOKEN_QNAME;//new QNameItemImpl(XS_URI, "xs", "token");
+  theSchemaTypeNames[XS_NMTOKEN]  = typemanager.XS_NMTOKEN_QNAME;//new QNameItemImpl(XS_URI, "xs", "NMTOKEN");
 
-  theSchemaTypeNames[15] = new QNameItemImpl(XS_URI, "xs", "ID");
-  theSchemaTypeNames[16] = new QNameItemImpl(XS_URI, "xs", "IDREF");
+  theSchemaTypeNames[XS_ANY_URI] = typemanager.XS_ANY_URI_QNAME;//new QNameItemImpl(XS_URI, "xs", "anyURI");
+  theSchemaTypeNames[XS_NAME] = typemanager.XS_NAME_QNAME;//new QNameItemImpl(XS_URI, "xs", "Name");
+  theSchemaTypeNames[XS_NCNAME] = typemanager.XS_NCNAME_QNAME;//new QNameItemImpl(XS_URI, "xs", "NCName");
+  theSchemaTypeNames[XS_QNAME] = typemanager.XS_QNAME_QNAME;//new QNameItemImpl(XS_URI, "xs", "QName");
+  theSchemaTypeNames[XS_NOTATION] = typemanager.XS_NOTATION_QNAME;//new QNameItemImpl(XS_URI, "xs", "notation");
 
-  theSchemaTypeNames[17] = new QNameItemImpl(XS_URI, "xs", "ENTITY");
+  theSchemaTypeNames[XS_ID] = typemanager.XS_ID_QNAME;//new QNameItemImpl(XS_URI, "xs", "ID");
+  theSchemaTypeNames[XS_IDREF] = typemanager.XS_IDREF_QNAME;//new QNameItemImpl(XS_URI, "xs", "IDREF");
 
-  theSchemaTypeNames[18] = new QNameItemImpl(XS_URI, "xs", "dateTime");
-  theSchemaTypeNames[19] = new QNameItemImpl(XS_URI, "xs", "date");
-  theSchemaTypeNames[20] = new QNameItemImpl(XS_URI, "xs", "time");
-  theSchemaTypeNames[21] = new QNameItemImpl(XS_URI, "xs", "duration");
-  theSchemaTypeNames[22] = new QNameItemImpl(XS_URI, "xs", "dayTimeDuration");
-  theSchemaTypeNames[23] = new QNameItemImpl(XS_URI, "xs", "yearMonthDuration");
+  theSchemaTypeNames[XS_ENTITY] = typemanager.XS_ENTITY_QNAME;//new QNameItemImpl(XS_URI, "xs", "ENTITY");
 
-  theSchemaTypeNames[24] = new QNameItemImpl(XS_URI, "xs", "float");
-  theSchemaTypeNames[25] = new QNameItemImpl(XS_URI, "xs", "double");
-  theSchemaTypeNames[26] = new QNameItemImpl(XS_URI, "xs", "decimal");
-  theSchemaTypeNames[27] = new QNameItemImpl(XS_URI, "xs", "integer");
-  theSchemaTypeNames[28] = new QNameItemImpl(XS_URI, "xs", "nonPositiveInteger");
-  theSchemaTypeNames[29] = new QNameItemImpl(XS_URI, "xs", "nonNegativeInteger");
-  theSchemaTypeNames[30] = new QNameItemImpl(XS_URI, "xs", "negativeInteger");
-  theSchemaTypeNames[31] = new QNameItemImpl(XS_URI, "xs", "positiveInteger");
+  theSchemaTypeNames[XS_DATETIME] = typemanager.XS_DATETIME_QNAME;//new QNameItemImpl(XS_URI, "xs", "dateTime");
+  theSchemaTypeNames[XS_DATE] = typemanager.XS_DATE_QNAME;//new QNameItemImpl(XS_URI, "xs", "date");
+  theSchemaTypeNames[XS_TIME] = typemanager.XS_TIME_QNAME;//new QNameItemImpl(XS_URI, "xs", "time");
+  theSchemaTypeNames[XS_DURATION] = typemanager.XS_DURATION_QNAME;//new QNameItemImpl(XS_URI, "xs", "duration");
+  theSchemaTypeNames[XS_DT_DURATION] = typemanager.XS_DT_DURATION_QNAME;//new QNameItemImpl(XS_URI, "xs", "dayTimeDuration");
+  theSchemaTypeNames[XS_YM_DURATION] = typemanager.XS_YM_DURATION_QNAME;//new QNameItemImpl(XS_URI, "xs", "yearMonthDuration");
 
-  theSchemaTypeNames[32] = new QNameItemImpl(XS_URI, "xs", "long");
-  theSchemaTypeNames[33] = new QNameItemImpl(XS_URI, "xs", "int");
-  theSchemaTypeNames[34] = new QNameItemImpl(XS_URI, "xs", "short");
-  theSchemaTypeNames[35] = new QNameItemImpl(XS_URI, "xs", "byte");
-  theSchemaTypeNames[36] = new QNameItemImpl(XS_URI, "xs", "unsignedLong");
-  theSchemaTypeNames[37] = new QNameItemImpl(XS_URI, "xs", "unsignedInt");
-  theSchemaTypeNames[38] = new QNameItemImpl(XS_URI, "xs", "unsignedShort");
-  theSchemaTypeNames[39] = new QNameItemImpl(XS_URI, "xs", "unsignedByte");
+  theSchemaTypeNames[XS_FLOAT] = typemanager.XS_FLOAT_QNAME;//new QNameItemImpl(XS_URI, "xs", "float");
+  theSchemaTypeNames[XS_DOUBLE] = typemanager.XS_DOUBLE_QNAME;//new QNameItemImpl(XS_URI, "xs", "double");
+  theSchemaTypeNames[XS_DECIMAL] = typemanager.XS_DECIMAL_QNAME;//new QNameItemImpl(XS_URI, "xs", "decimal");
+  theSchemaTypeNames[XS_INTEGER] = typemanager.XS_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "integer");
+  theSchemaTypeNames[XS_NON_POSITIVE_INTEGER] = typemanager.XS_NON_POSITIVE_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "nonPositiveInteger");
+  theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER] = typemanager.XS_NON_NEGATIVE_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "nonNegativeInteger");
+  theSchemaTypeNames[XS_NEGATIVE_INTEGER] = typemanager.XS_NEGATIVE_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "negativeInteger");
+  theSchemaTypeNames[XS_POSITIVE_INTEGER] = typemanager.XS_POSITIVE_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "positiveInteger");
 
-  theSchemaTypeNames[40] = new QNameItemImpl(XS_URI, "xs", "gYearMonth");
-  theSchemaTypeNames[41] = new QNameItemImpl(XS_URI, "xs", "gYear");
-  theSchemaTypeNames[42] = new QNameItemImpl(XS_URI, "xs", "gMonthDay");
-  theSchemaTypeNames[43] = new QNameItemImpl(XS_URI, "xs", "gDay");
-  theSchemaTypeNames[44] = new QNameItemImpl(XS_URI, "xs", "gMonth");
+  theSchemaTypeNames[XS_LONG] = typemanager.XS_LONG_QNAME;//new QNameItemImpl(XS_URI, "xs", "long");
+  theSchemaTypeNames[XS_INT] = typemanager.XS_INT_QNAME;//new QNameItemImpl(XS_URI, "xs", "int");
+  theSchemaTypeNames[XS_SHORT] = typemanager.XS_SHORT_QNAME;//new QNameItemImpl(XS_URI, "xs", "short");
+  theSchemaTypeNames[XS_BYTE] = typemanager.XS_BYTE_QNAME;//new QNameItemImpl(XS_URI, "xs", "byte");
+  theSchemaTypeNames[XS_UNSIGNED_LONG] = typemanager.XS_UNSIGNED_LONG_QNAME;//new QNameItemImpl(XS_URI, "xs", "unsignedLong");
+  theSchemaTypeNames[XS_UNSIGNED_INT] = typemanager.XS_UNSIGNED_INT_QNAME;//new QNameItemImpl(XS_URI, "xs", "unsignedInt");
+  theSchemaTypeNames[XS_UNSIGNED_SHORT] = typemanager.XS_UNSIGNED_SHORT_QNAME;//new QNameItemImpl(XS_URI, "xs", "unsignedShort");
+  theSchemaTypeNames[XS_UNSIGNED_BYTE] = typemanager.XS_UNSIGNED_BYTE_QNAME;//new QNameItemImpl(XS_URI, "xs", "unsignedByte");
 
-  theSchemaTypeNames[45] = new QNameItemImpl(XS_URI, "xs", "base64Binary");
-  theSchemaTypeNames[46] = new QNameItemImpl(XS_URI, "xs", "hexBinary");
-  theSchemaTypeNames[47] = new QNameItemImpl(XS_URI, "xs", "boolean");
+  theSchemaTypeNames[XS_GYEAR_MONTH] = typemanager.XS_GYEAR_MONTH_QNAME;//new QNameItemImpl(XS_URI, "xs", "gYearMonth");
+  theSchemaTypeNames[XS_GYEAR] = typemanager.XS_GYEAR_QNAME;//new QNameItemImpl(XS_URI, "xs", "gYear");
+  theSchemaTypeNames[XS_GMONTH_DAY] = typemanager.XS_GMONTH_DAY_QNAME;//new QNameItemImpl(XS_URI, "xs", "gMonthDay");
+  theSchemaTypeNames[XS_GDAY] = typemanager.XS_GDAY_QNAME;//new QNameItemImpl(XS_URI, "xs", "gDay");
+  theSchemaTypeNames[XS_GMONTH] = typemanager.XS_GMONTH_QNAME;//new QNameItemImpl(XS_URI, "xs", "gMonth");
+
+  theSchemaTypeNames[XS_BASE64BINARY] = typemanager.XS_BASE64BINARY_QNAME;//new QNameItemImpl(XS_URI, "xs", "base64Binary");
+  theSchemaTypeNames[XS_HEXBINARY] = typemanager.XS_HEXBINARY_QNAME;//new QNameItemImpl(XS_URI, "xs", "hexBinary");
+  theSchemaTypeNames[XS_BOOLEAN] = typemanager.XS_BOOLEAN_QNAME;//new QNameItemImpl(XS_URI, "xs", "boolean");
 }
 
 
@@ -271,25 +278,23 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
   if (uri == NULL)
     return NULL;
 
-  XmlNode_t* rootp;
-  bool found = theDocuments.get(uri, rootp);
+  XmlNode_t root;
+  bool found = theDocuments.get(uri, root);
 
   if (found)
-    return rootp->getp();
+    return root.getp();
 
   error::ErrorManager lErrorManager;
   std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
 
-  XmlNode_t root = loader->loadXml(uri, stream);
-  if (lErrorManager.hasErrors()) {
+  root = loader->loadXml(uri, stream);
+  if (lErrorManager.hasErrors()) 
+  {
     throw lErrorManager.getErrors().front();
   }
 
   if (root != NULL)
-  {
-    rootp = &root;
-    theDocuments.insert(uri, rootp);
-  }
+    theDocuments.insert(uri, root);
 
   return root;
 }
@@ -309,18 +314,18 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
 		return NULL;
   }
 
-  XmlNode_t* rootp = reinterpret_cast<XmlNode_t*>(&docItem);
-  bool inserted = theDocuments.insert(uri, rootp);
+  XmlNode_t root = reinterpret_cast<XmlNode*>(docItem.getp());
+  bool inserted = theDocuments.insert(uri, root);
 
-  if (!inserted && docItem.getp() != rootp->getp())
+  if (!inserted && docItem.getp() != root.getp())
   {
     ZORBA_ERROR_PARAM(ZorbaError::API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
     return NULL; 
   }
 
-  ZORBA_FATAL(docItem.getp() == rootp->getp(), "");
+  ZORBA_FATAL(docItem.getp() == root.getp(), "");
 
-	return *rootp;
+	return root;
 }
 
 
@@ -333,10 +338,10 @@ Item_t SimpleStore::getDocument(xqpStringStore* uri)
   if (uri == NULL)
     return NULL;
 
-  XmlNode_t* rootp;
-  bool found = theDocuments.get(uri, rootp);
+  XmlNode_t root;
+  bool found = theDocuments.get(uri, root);
   if (found)
-    return rootp->getp();
+    return root.getp();
 
   return NULL;
 }
@@ -369,9 +374,7 @@ Collection_t SimpleStore::createCollection(xqpStringStore* uri)
 
   Collection_t collection(new SimpleCollection(uriItem));
 
-  Collection_t* collp = &collection;
-
-  bool inserted = theCollections.insert(uri, collp);
+  bool inserted = theCollections.insert(uri, collection);
 
   if (!inserted)
   {
@@ -404,9 +407,9 @@ Collection_t SimpleStore::getCollection(xqpStringStore* uri)
   if (uri == NULL)
     return NULL;
 
-  Collection_t* collectionp;
-  if (theCollections.get(uri, collectionp) )
-    return collectionp->getp();
+  Collection_t collection;
+  if (theCollections.get(uri, collection) )
+    return collection.getp();
   else
     return NULL;
 }

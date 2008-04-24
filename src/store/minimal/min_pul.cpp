@@ -18,6 +18,26 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
+NodeToUpdatesMap::~NodeToUpdatesMap()
+{
+  SYNC_CODE(AutoMutex lock(this->theMutex);)
+
+  ulong n = theHashTab.size();
+
+  for (ulong i = 0; i < n; i++)
+  {
+    HashEntry<XmlNode*, NodeUpdates*>* entry = &this->theHashTab[i];
+    if (entry->theItem != NULL)
+    {
+      delete entry->theValue;
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PULImpl::~PULImpl()
 {
   ulong num;
@@ -680,8 +700,7 @@ void PULImpl::applyUpdates()
                                 reinterpret_cast<UpdReplaceChild*>(upd)->theChild :
                                 reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
 
-      XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-      node->switchTree(tree, NULL, 0, copymode);
+      node->switchTree(NULL, 0, copymode);
     }
 
     numUpdates = theReplaceContentList.size();
@@ -693,8 +712,7 @@ void PULImpl::applyUpdates()
       ulong numChildren = upd->theOldChildren.size();
       for (ulong j = 0; j < numChildren; j++)
       {
-        XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-        upd->theOldChildren.get(j)->switchTree(tree, NULL, 0, copymode);
+        upd->theOldChildren.get(j)->switchTree(NULL, 0, copymode);
       }
     }
 
@@ -705,8 +723,7 @@ void PULImpl::applyUpdates()
       if (upd->theParent != NULL)
       {
         XmlNode* target = BASE_NODE(upd->theTarget);
-        XmlTree* tree = new XmlTree(NULL, GET_STORE().getTreeId());
-        target->switchTree(tree, NULL, 0, copymode);
+        target->switchTree(NULL, 0, copymode);
       }
     }
   }

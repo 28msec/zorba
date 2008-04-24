@@ -47,7 +47,7 @@ public:
   checked_vector<Item_t>   theSchemaTypeNames;
 
 protected:
-  bool                     theIsInitialized;
+  int                      theIsInitialized;
 
   ulong                    theUriCounter;
   SYNC_CODE(Mutex          theUriCounterMutex;)

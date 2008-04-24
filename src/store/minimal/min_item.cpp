@@ -101,7 +101,7 @@ xqp_base64Binary Item::getBase64BinaryValue() const
 {
   ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_base64Binary("");
+  return xqp_base64Binary();
 }
 
 /** Accessor for xs:boolean
@@ -308,7 +308,7 @@ xqp_hexBinary Item::getHexBinaryValue() const
 {
   ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_hexBinary("");
+  return xqp_hexBinary();
 }
 
 /** Accessor for xs:nonNegativeIntegerValue, xs:positiveInteger, xs:unsignedInt

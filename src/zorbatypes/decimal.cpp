@@ -409,7 +409,7 @@ xqpString Decimal::toIntegerString() const {
   theDecimal.toIntegerString(lBuffer);
 #else
   char lBuffer[124];
-  sprintf(lBuffer, "%d", (int)theInteger);
+  sprintf(lBuffer, "%d", (int)theDecimal);
 #endif
   xqpString lResult = lBuffer;
   return lResult;

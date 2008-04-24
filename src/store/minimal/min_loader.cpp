@@ -632,7 +632,12 @@ bool XmlLoader::read_characters(std::istream &stream, bool *end_document)
     {
       *end_document = true;
       if(!chars.empty())
-        return false;
+      {
+        for(int i=0; i < chars.length(); i++)
+          if(!isWhitespace(chars[i]))
+            return false;
+        return true;
+      }
       else
         return true;
     }

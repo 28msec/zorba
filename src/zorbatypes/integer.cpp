@@ -400,7 +400,7 @@ xqpString Integer::toString() const {
   return lResult;
 #else
   char lBuffer[124];
-  sprintf(lBuffer, "%l", theInteger);
+  sprintf(lBuffer, "%d", theInteger);
   return xqpString(lBuffer);
 #endif
 }

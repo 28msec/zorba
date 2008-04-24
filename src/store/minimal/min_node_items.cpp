@@ -466,54 +466,60 @@ void XmlNode::connect(XmlNode* parent, ulong pos) throw()
 
 /*******************************************************************************
   Disconnect "this" node and its subtree from its current xml tree and make it
-  a member of a new given tree, placing as a child or attribute of a given
+  a member of a new given tree, placing it as a child or attribute of a given
   parent node P. The position among P's children/attributes where "this" is to
   be placed is also given.     
 ********************************************************************************/
 void XmlNode::switchTree(
-    XmlTree*        newTree,
     XmlNode*        parent,
     ulong           pos,
-    const CopyMode& copymode)
+    const CopyMode& copymode) throw()
 {
-  ZORBA_FATAL(parent == NULL || parent->getTree() == newTree, "");
-
-  bool assignIds = copymode.theAssignIds;
-
-  ulong refcount = 0;
-  std::stack<XmlNode*> nodes;
-
-  XmlTree* oldTree = getTree();
-
-  SYNC_CODE(oldTree->getRCLock().acquire());
-
   try
   {
+    ulong refcount = 0;
+    std::stack<XmlNode*> nodes;
+
+    XmlTree* newTree = (parent == NULL ? 
+                        new XmlTree(this, GET_STORE().getTreeId()) :
+                        parent->getTree());
+
+    XmlTree* oldTree = getTree();
+
+    bool assignIds = (copymode.theAssignIds && parent != NULL);
+
     if (theParent != NULL)
-    {
       theParent->removeChild(this);
-    }
-
-    theParent = parent;
-
-    refcount += theRefCount;
-
-    setTree(newTree);
-    if (theParent == NULL)
-      newTree->setRoot(this);
 
     if (oldTree->getRoot() == this)
       oldTree->setRoot(NULL);
 
-    if (assignIds)
+    setTree(newTree);
+    theParent = parent;
+
+    if (parent)
     {
-      if (theParent != NULL)
-        setOrdPath(parent, pos, getNodeKind());
+      if (getNodeKind() == StoreConsts::attributeNode)
+      {
+        if (assignIds)
+          setOrdPath(parent, pos, StoreConsts::attributeNode);
+
+        parent->attributes().insert(this, pos, false);
+      }
       else
-        theOrdPath.setAsRoot();
+      {
+        if (assignIds)
+          setOrdPath(parent, pos, getNodeKind());
+
+        parent->children().insert(this, pos, false);
+      }
     }
 
     nodes.push(this);
+
+    SYNC_CODE(oldTree->getRCLock().acquire());
+
+    refcount += theRefCount;
 
     while (!nodes.empty())
     {
@@ -565,27 +571,37 @@ void XmlNode::switchTree(
 
         nodes.push(child);
       }
-    }
+    } // done traversing tree
 
-    newTree->getRefCount() += refcount;
 
     oldTree->getRefCount() -= refcount;
     if (oldTree->getRefCount() == 0)
     {
       SYNC_CODE(oldTree->getRCLock().release());
       oldTree->free();
-      oldTree = NULL;
+    }
+    else
+    {
+      SYNC_CODE(oldTree->getRCLock().release());
+    }
+
+    SYNC_CODE(newTree->getRCLock().acquire());
+
+    newTree->getRefCount() += refcount;
+    if (newTree->getRefCount() == 0)
+    {
+      SYNC_CODE(newTree->getRCLock().release());
+      newTree->free();
+    }
+    else
+    {
+      SYNC_CODE(newTree->getRCLock().release());
     }
   }
   catch(...)
   {
-    SYNC_CODE(oldTree->getRCLock().release());
-    ZORBA_FATAL(0,"");
-    throw;
+    ZORBA_FATAL(0, "Unexpected exception");
   }
-
-  if(oldTree)
-    SYNC_CODE(oldTree->getRCLock().release());
 }
 
 
