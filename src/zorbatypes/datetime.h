@@ -122,7 +122,7 @@ namespace zorba
        *  Returns 0 on success
        */
       static int
-      createTime(int hours, int minutes, double seconds, const TimeZone_t& tz, DateTime_t& dt_t);
+      createTime(int hours, int minutes, double seconds, TimeZone_t& tz, DateTime_t& dt_t);
 
       /**
        *  Throws InvalidTimezoneException if the given timezone is not valid.
