@@ -502,6 +502,28 @@ FloatImpl<FloatType> FloatImpl<FloatType>::parseLong(long aLong) {
 }
 
 template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::parseDecimal(const Decimal& aDecimal)
+{
+  FloatImpl<FloatType> lFloat;
+  lFloat.theFloatImpl = aDecimal.theDecimal; 
+  lFloat.theType 
+    = ( lFloat.theFloatImpl >= 0 ? FloatCommons::NORMAL : FloatCommons::NORMAL_NEG);
+  checkInfZeroPrecision(lFloat);
+  return lFloat;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::parseInteger(const Integer& aInteger)
+{
+  FloatImpl<FloatType> lFloat;
+  lFloat.theFloatImpl = aInteger.theInteger; 
+  lFloat.theType 
+    = ( lFloat.theFloatImpl >= 0 ? FloatCommons::NORMAL : FloatCommons::NORMAL_NEG);
+  checkInfZeroPrecision(lFloat);
+  return lFloat;
+}
+
+template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::operator+(const FloatImpl& aFloatImpl) const{
   FloatImpl lFloatImpl;
   switch(theType) {

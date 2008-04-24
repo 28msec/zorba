@@ -501,19 +501,22 @@ inline store::Item_t flt_str(store::Item* aItem, store::ItemFactory* aFactory)
 
 inline store::Item_t flt_dbl(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createDouble(FloatCommons::parseFloat(aItem->getFloatValue()));
 }
 
 inline store::Item_t flt_dec(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
+  xqp_decimal n;
+  if (xqp_decimal::parseFloat(aItem->getFloatValue(), n))
+    return aFactory->createDecimal(n);
   return 0;
 }
 
 inline store::Item_t flt_int(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
+  xqp_int n;
+  if (NumConversions::floatToInt(aItem->getFloatValue(), n))
+    return aFactory->createInt(n);
   return 0;
 }
 
@@ -534,19 +537,22 @@ inline store::Item_t dbl_str(store::Item* aItem, store::ItemFactory* aFactory)
 
 inline store::Item_t dbl_flt(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createFloat(FloatCommons::parseDouble(aItem->getDoubleValue()));
 }
 
 inline store::Item_t dbl_dec(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
+  xqp_decimal n;
+  if (xqp_decimal::parseDouble(aItem->getDoubleValue(), n))
+    return aFactory->createDecimal(n);
   return 0;
 }
 
 inline store::Item_t dbl_int(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
+  xqp_int n;
+  if (NumConversions::doubleToInt(aItem->getDoubleValue(), n))
+    return aFactory->createInt(n);
   return 0;
 }
 
@@ -567,19 +573,19 @@ inline store::Item_t dec_str(store::Item* aItem, store::ItemFactory* aFactory)
 
 inline store::Item_t dec_flt(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createFloat(xqp_float::parseDecimal(aItem->getDecimalValue()));
 }
 
 inline store::Item_t dec_dbl(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createDouble(xqp_double::parseDecimal(aItem->getDecimalValue()));
 }
 
 inline store::Item_t dec_int(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
+  xqp_int n;
+  if (NumConversions::decimalToInt(aItem->getDecimalValue(), n))
+    return aFactory->createInt(n);
   return 0;
 }
 
@@ -600,20 +606,17 @@ inline store::Item_t int_str(store::Item* aItem, store::ItemFactory* aFactory)
 
 inline store::Item_t int_flt(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createFloat(xqp_float::parseInteger(aItem->getIntegerValue()));
 }
 
 inline store::Item_t int_dbl(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createDouble(xqp_double::parseInteger(aItem->getIntegerValue()));
 }
 
 inline store::Item_t int_dec(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createDecimal(xqp_decimal::parseInteger(aItem->getIntegerValue()));
 }
 
 inline store::Item_t int_bool(store::Item* aItem, store::ItemFactory* aFactory)
@@ -899,8 +902,7 @@ inline store::Item_t b64_str(store::Item* aItem, store::ItemFactory* aFactory)
 
 inline store::Item_t b64_hxB(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createHexBinary(xqp_hexBinary(aItem->getBase64BinaryValue()));
 }
 
 inline store::Item_t hxB_uA(store::Item* aItem, store::ItemFactory* aFactory)
@@ -915,8 +917,7 @@ inline store::Item_t hxB_str(store::Item* aItem, store::ItemFactory* aFactory)
 
 inline store::Item_t hxB_b64(store::Item* aItem, store::ItemFactory* aFactory)
 {
-  assert(false);
-  return 0;
+  return aFactory->createBase64Binary(xqp_base64Binary(aItem->getHexBinaryValue()));
 }
 
 inline store::Item_t aURI_uA(store::Item* aItem, store::ItemFactory* aFactory)
@@ -1041,6 +1042,9 @@ store::Item_t str_down(
                 RootTypeManager& aTS,
                 store::ItemFactory* aFactory)
 {
+  xqpStringStore_t lString = aItem->getStringValue();
+  // TODO all
+  assert(false);
   switch(aTargetAtomicType)
   {
   case TypeConstants::XS_NORMALIZED_STRING:
@@ -1064,7 +1068,6 @@ store::Item_t str_down(
   default:
     assert(false);
   }
-  assert(false);
   return 0;
 }
 
@@ -1074,36 +1077,94 @@ store::Item_t int_down(
                 RootTypeManager& aTS,
                 store::ItemFactory* aFactory)
 {
+  xqp_integer lInteger = aItem->getIntegerValue();
+  xqpStringStore_t lString = aItem->getStringValue();
+
   switch(aTargetAtomicType)
   {
   case TypeConstants::XS_NON_POSITIVE_INTEGER:
+  {
+    if (lInteger <= xqp_integer::zero())
+      return aFactory->createNonPositiveInteger(lInteger);
     break;
+  }
   case TypeConstants::XS_NEGATIVE_INTEGER:
+  {
+    if (lInteger < xqp_integer::zero())
+      return aFactory->createNegativeInteger(lInteger);
     break;
+  }
   case TypeConstants::XS_LONG:
+  {
+    xqp_long n;
+    if (NumConversions::strToLongLong(lString.getp(), n))
+      return aFactory->createLong(n);
     break;
+  }
   case TypeConstants::XS_INT:
+  {
+    xqp_int n;
+    if (NumConversions::strToInt(lString.getp(), n))
+      return aFactory->createInt(n);
     break;
+  }
   case TypeConstants::XS_SHORT:
+  {
+    xqp_short n;
+    if (NumConversions::strToShort(lString.getp(), n))
+      return aFactory->createShort(n);
     break;
+  }
   case TypeConstants::XS_BYTE:
+  {
+    xqp_byte n;
+    if (NumConversions::strToByte(lString.getp(), n))
+      return aFactory->createByte(n);
     break;
+  }
   case TypeConstants::XS_NON_NEGATIVE_INTEGER:
+  {
+    if (lInteger >= xqp_integer::zero())
+      return aFactory->createNonNegativeInteger(lInteger);
     break;
+  }
   case TypeConstants::XS_UNSIGNED_LONG:
+  {
+    xqp_ulong n;
+    if (NumConversions::strToULongLong(lString.getp(), n))
+      return aFactory->createUnsignedLong(n);
     break;
+  }
   case TypeConstants::XS_UNSIGNED_INT:
+  {
+    xqp_uint n;
+    if (NumConversions::strToUInt(lString.getp(), n))
+      return aFactory->createUnsignedInt(n);
     break;
+  }
   case TypeConstants::XS_UNSIGNED_SHORT:
+  {
+    xqp_ushort n;
+    if (NumConversions::strToUShort(lString.getp(), n))
+      return aFactory->createUnsignedShort(n);
     break;
+  }
   case TypeConstants::XS_UNSIGNED_BYTE:
+  {
+    xqp_ubyte n;
+    if (NumConversions::strToUByte(lString.getp(), n))
+      return aFactory->createUnsignedByte(n);
     break;
+  }
   case TypeConstants::XS_POSITIVE_INTEGER:
+  {
+    if (lInteger > xqp_integer::zero())
+      return aFactory->createPositiveInteger(lInteger);
     break;
+  }
   default:
     assert(false);
   }
-  assert(false);
   return 0;
 }
 
@@ -1178,7 +1239,7 @@ store::Item_t GenericCast::cast(store::Item* aItem, const xqtref_t& aTargetType)
 
   store::Item_t lResult = (*lCastFunc)(aItem, lFactory); 
 
-  if (TypeOps::is_equal(*aTargetType, *lPrimitiveTargetType))
+  if (!TypeOps::is_equal(*aTargetType, *lPrimitiveTargetType))
   {
     DownCastFunc lDownCastFunc = theDownCastMatrix[lPrimitiveTargetMapping];
     assert(lDownCastFunc != 0);

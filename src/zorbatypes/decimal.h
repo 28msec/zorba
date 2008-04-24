@@ -53,6 +53,8 @@ public:
   static Decimal parseULongLong(unsigned long long);
   static Decimal parseInt(int32_t aInt);
   static Decimal parseUInt(uint32_t aUInt);
+  static bool parseFloat(const Float&, Decimal&);
+  static bool parseDouble(const Double&, Decimal&);
 
   Decimal& operator=(const Decimal&);
 
@@ -117,6 +119,7 @@ public:
   bool operator>=(const Decimal& aDecimal) const { return theDecimal >= aDecimal.theDecimal; }
 
   xqpString toString() const;
+  xqpString toIntegerString() const;
   uint32_t hash() const;
 }; // class Decimal
 

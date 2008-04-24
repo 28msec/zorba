@@ -111,6 +111,7 @@ typedef double    MAPM;
   template <typename FloatType>
   class FloatImpl {
     friend class Integer;
+    friend class Decimal;
     friend class FloatCommons;
     template <typename Type>
       friend class FloatImplTraits;
@@ -220,6 +221,12 @@ typedef double    MAPM;
        */
       static FloatImpl<FloatType>
       parseLong(long);
+
+      static FloatImpl<FloatType>
+      parseDecimal(const Decimal&);
+
+      static FloatImpl<FloatType>
+      parseInteger(const Integer&);
 
       FloatImpl<FloatType>& operator=(const FloatImpl& aFloatImpl) 
       {

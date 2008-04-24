@@ -156,6 +156,26 @@ Decimal Decimal::parseULongLong(unsigned long long aULong) {
 #endif
 }
 
+bool Decimal::parseFloat(const Float& aFloat, Decimal& aDecimal)
+{
+  if (!aFloat.isFinite() || aFloat.isNaN()) {
+    return false;
+  } else {
+    aDecimal.theDecimal = aFloat.theFloatImpl;
+    return true;
+  }
+}
+
+bool Decimal::parseDouble(const Double& aDouble, Decimal& aDecimal)
+{
+  if (!aDouble.isFinite() || aDouble.isNaN()) {
+    return false;
+  } else {
+    aDecimal.theDecimal = aDouble.theFloatImpl;
+    return true;
+  }
+}
+
 #ifndef ZORBA_NO_BIGNUMBERS
 MAPM Decimal::round(MAPM aValue, MAPM aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
@@ -381,6 +401,18 @@ xqpString Decimal::decimalToString(MAPM theValue) {
 
 xqpString Decimal::toString() const {
   return decimalToString(theDecimal);
+}
+
+xqpString Decimal::toIntegerString() const {
+#ifndef ZORBA_NO_BIGNUMBERS
+  char lBuffer[1024];
+  theDecimal.toIntegerString(lBuffer);
+#else
+  char lBuffer[124];
+  sprintf(lBuffer, "%d", (int)theInteger);
+#endif
+  xqpString lResult = lBuffer;
+  return lResult;
 }
 
 uint32_t Decimal::hash() const

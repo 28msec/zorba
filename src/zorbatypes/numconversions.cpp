@@ -205,13 +205,11 @@ namespace zorba {
     return boost::lexical_cast<std::string>(aSizeT);
   }
 
-  // TODO must be tested if it works for numbers like 1e3
   bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt) {
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToInt(lStr, aInt);
   }
 
-  // TODO must be tested if it works for numbers like 1e3
   bool NumConversions::doubleToLongLong(const xqp_double& aDouble, xqp_long& aLong) {
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLongLong(lStr, aLong);
@@ -225,6 +223,16 @@ namespace zorba {
   bool NumConversions::integerToUInt(const xqp_integer& aInteger, xqp_uint& aUInt) {
     xqpString lStr = aInteger.toString();
     return NumConversions::strToUInt(lStr, aUInt);
+  }
+
+  bool NumConversions::floatToInt(const xqp_float& aFloat, xqp_int& aInt) {
+    xqpString lStr = aFloat.toIntegerString();
+    return NumConversions::strToInt(lStr, aInt);
+  }
+
+  bool NumConversions::decimalToInt(const xqp_decimal& aDecimal, xqp_int& aInt) {
+    xqpString lStr = aDecimal.toIntegerString();
+    return NumConversions::strToInt(lStr, aInt);
   }
 
 } /* namespace zorba */
