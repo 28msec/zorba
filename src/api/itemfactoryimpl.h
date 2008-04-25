@@ -107,7 +107,7 @@ namespace zorba {
       createGDay ( short aDay );
     
       virtual Item
-      createGMonth ( short& aMonth );
+      createGMonth ( short aMonth );
     
       virtual Item
       createGMonth ( const String& aValue );
@@ -116,19 +116,19 @@ namespace zorba {
       createGMonthDay ( const String& aValue );
     
       virtual Item
-      createGMonthDay ( short month, short day );
+      createGMonthDay ( short aMonth, short aDay );
     
       virtual Item
       createGYear ( const String& value );
     
       virtual Item
-      createGYear ( short year );
+      createGYear ( short aYear );
     
       virtual Item
       createGYearMonth ( const String& value );
     
       virtual Item
-      createGYearMonth ( short year, short month );
+      createGYearMonth ( short aYear, short aMonth );
     
       virtual Item
       createHexBinary ( const char* aHexData, size_t aSize );

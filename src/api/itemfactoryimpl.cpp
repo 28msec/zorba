@@ -377,6 +377,9 @@ namespace zorba {
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+
+    lItem = theItemFactory->createGDay( lString );
+    
     return &*lItem;
   }
     
@@ -384,13 +387,19 @@ namespace zorba {
   ItemFactoryImpl::createGDay ( short aDay )
   {
     store::Item_t lItem;
+
+    lItem = theItemFactory->createGDay( aDay );
+    
     return &*lItem;
   }
     
   Item
-  ItemFactoryImpl::createGMonth ( short& aMonth )
+  ItemFactoryImpl::createGMonth ( short aMonth )
   {
     store::Item_t lItem;
+
+    lItem = theItemFactory->createGMonth( aMonth );
+    
     return &*lItem;
   }
     
@@ -399,6 +408,9 @@ namespace zorba {
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+    
+    lItem = theItemFactory->createGMonth( lString );
+    
     return &*lItem;
   }
     
@@ -407,13 +419,19 @@ namespace zorba {
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+
+    lItem = theItemFactory->createGMonthDay( lString );
+    
     return &*lItem;
   }
     
   Item
-  ItemFactoryImpl::createGMonthDay ( short month, short day )
+  ItemFactoryImpl::createGMonthDay ( short aMonth, short aDay )
   {
     store::Item_t lItem;
+
+    lItem = theItemFactory->createGMonthDay( aMonth, aDay );
+    
     return &*lItem;
   }
     
@@ -422,13 +440,19 @@ namespace zorba {
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+
+    lItem = theItemFactory->createGYear( lString );
+    
     return &*lItem;
   }
     
   Item
-  ItemFactoryImpl::createGYear ( short year )
+  ItemFactoryImpl::createGYear ( short aYear )
   {
     store::Item_t lItem;
+
+    lItem = theItemFactory->createGYear( aYear );
+    
     return &*lItem;
   }
     
@@ -437,13 +461,19 @@ namespace zorba {
   {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
+    
+    lItem = theItemFactory->createGYearMonth( lString );
+    
     return &*lItem;
   }
     
   Item
-  ItemFactoryImpl::createGYearMonth ( short year, short month )
+  ItemFactoryImpl::createGYearMonth ( short aYear, short aMonth )
   {
     store::Item_t lItem;
+
+    lItem = theItemFactory->createGYearMonth( aYear, aMonth );
+    
     return &*lItem;
   }
     

@@ -285,7 +285,7 @@ namespace zorba {
        * @return The gDay Item.
        */
       virtual Item
-      createGDay ( const String& value ) = 0;
+      createGDay ( const String& aValue ) = 0;
     
       /** \brief Creates a gDay Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#gDay]
@@ -296,16 +296,7 @@ namespace zorba {
       virtual Item
       createGDay ( short aDay ) = 0;
     
-      /** \brief Creates a gMonth Item 
-       *         see [http://www.w3.org/TR/xmlschema-2/#gMonth]
-       *
-       * @param aMonth short representation of the gMonth.
-       * @return The gMonth Item.
-       */
-      virtual Item
-      createGMonth ( short& aMonth ) = 0;
-    
-      /** \brief Creates a gMonth Item 
+      /** \brief Creates a gMonth Item
        *         see [http://www.w3.org/TR/xmlschema-2/#gMonth]
        *
        * @param aValue String representation of the gMonth.
@@ -313,6 +304,15 @@ namespace zorba {
        */
       virtual Item
       createGMonth ( const String& aValue ) = 0;
+
+      /** \brief Creates a gMonth Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#gMonth]
+       *
+       * @param aMonth short representation of the gMonth.
+       * @return The gMonth Item.
+       */
+      virtual Item
+      createGMonth ( short aMonth ) = 0;
     
       /** \brief Creates a gMonthDay Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#gMonthDay]
@@ -331,7 +331,7 @@ namespace zorba {
        * @return The gMonthDay Item.
        */
       virtual Item
-      createGMonthDay ( short month, short day ) = 0;
+      createGMonthDay ( short aMonth, short aDay ) = 0;
     
       /** \brief Creates a gYear Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#gYear]
@@ -349,7 +349,7 @@ namespace zorba {
        * @return The gYear Item.
        */
       virtual Item
-      createGYear ( short year ) = 0;
+      createGYear ( short aYear ) = 0;
     
       /** \brief Creates a gYearMonth Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
@@ -358,7 +358,7 @@ namespace zorba {
        * @return The gYearMonth Item.
        */
       virtual Item
-      createGYearMonth ( const String& value ) = 0;
+      createGYearMonth ( const String& aValue ) = 0;
     
       /** \brief Creates a gYearMonth Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
@@ -368,7 +368,7 @@ namespace zorba {
        * @return The gYearMonth Item.
        */
       virtual Item
-      createGYearMonth ( short year, short month ) = 0;
+      createGYearMonth ( short aYear, short aMonth ) = 0;
     
       /** \brief Creates a HexBinary Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#hexBinary]

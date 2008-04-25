@@ -375,6 +375,71 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.getStringValue() == "17:00:00-06:00" );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
+    /** GYearMonth*/
+    lItem = lFactory->createGYearMonth("1976-02");
+    assert ( checkType(lItem.getType(), "gYearMonth") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "1976-02" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createGYearMonth(1976,02);
+    assert ( checkType(lItem.getType(), "gYearMonth") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "1976-02" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /** GYear*/
+    lItem = lFactory->createGYear("1977");
+    assert ( checkType(lItem.getType(), "gYear") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "1977" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createGYear(1977);
+    assert ( checkType(lItem.getType(), "gYear") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "1977" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /** GMonth*/
+    lItem = lFactory->createGMonth("--12Z");
+    assert ( checkType(lItem.getType(), "gMonth") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "--12Z" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createGMonth(11);
+    assert ( checkType(lItem.getType(), "gMonth") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "--11" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+    
+    /** GMonthDay*/
+    lItem = lFactory->createGMonthDay("--12-25-14:00");
+    assert ( checkType(lItem.getType(), "gMonthDay") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "--12-25-14:00" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createGMonthDay(12, 25);
+    assert ( checkType(lItem.getType(), "gMonthDay") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "--12-25" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    /** GDay*/
+    lItem = lFactory->createGDay("---25-14:00");
+    assert ( checkType(lItem.getType(), "gDay") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "---25-14:00" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
+    lItem = lFactory->createGDay(25);
+    assert ( checkType(lItem.getType(), "gDay") );
+    assert ( lItem.isAtomic() );
+    assert ( lItem.getStringValue() == "---25" );
+    CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
+
   } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return 1;

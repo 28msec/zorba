@@ -301,68 +301,126 @@ Item_t BasicItemFactory::createGDay (xqp_gDay& value )
   return new DateTimeItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGDay ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createGDay ( const xqp_string& value )
 {
-  return Item_t(NULL);
+  DateTime_t dt_t;
+  
+  if (DateTime::parseGDay(value, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
 }
 
-
-Item_t BasicItemFactory::createGDay ( short /*day*/ )
-{ return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGDay ( short day )
+{
+  DateTime_t dt_t;
+  
+  if (DateTime::createGDay(day, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
+}
 
 Item_t BasicItemFactory::createGMonth(xqp_gMonth& value )
 {
   return new DateTimeItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGMonth ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createGMonth ( const xqp_string& value )
 {
-  return Item_t(NULL);
+  DateTime_t dt_t;
+  
+  if (DateTime::parseGMonth(value, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
 }
 
-Item_t BasicItemFactory::createGMonth ( short /*month*/ )
-{ return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGMonth ( short month )
+{
+  DateTime_t dt_t;
+
+  if(DateTime::createGMonth(month, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t ( NULL );
+}
 
 Item_t BasicItemFactory::createGMonthDay (xqp_gMonthDay& value)
 {
   return new DateTimeItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGMonthDay ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createGMonthDay ( const xqp_string& value )
 {
-  return Item_t(NULL);
+  DateTime_t dt_t;
+  
+  if (DateTime::parseGMonthDay(value, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
 }
 
+Item_t BasicItemFactory::createGMonthDay ( short month, short day )
+{
+  DateTime_t dt_t;
 
-Item_t BasicItemFactory::createGMonthDay ( short /*month*/, short /*day*/ )
-{ return Item_t ( NULL ); }
+  if(DateTime::createGMonthDay(month, day, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t ( NULL );
+}
 
 Item_t BasicItemFactory::createGYear (xqp_gYear& value )
 {
   return new DateTimeItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGYear ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createGYear ( const xqp_string& value )
 {
-  return Item_t(NULL);
+  DateTime_t dt_t;
+  
+  if (DateTime::parseGYear(value, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
 }
 
 
-Item_t BasicItemFactory::createGYear ( short /*year*/ )
-{ return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGYear ( short year )
+{
+  DateTime_t dt_t;
+
+  if(DateTime::createGYear(year, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t ( NULL );
+}
 
 Item_t BasicItemFactory::createGYearMonth (xqp_gYearMonth& value )
 {
   return new DateTimeItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGYearMonth ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createGYearMonth ( const xqp_string& value )
 {
-  return Item_t(NULL);
+  DateTime_t dt_t;
+  
+  if (DateTime::parseGYearMonth(value, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t(NULL);
 }
 
-Item_t BasicItemFactory::createGYearMonth ( short /*year*/, short /*month*/ )
-{ return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGYearMonth ( short year, short month )
+{
+  DateTime_t dt_t;
+
+  if(DateTime::createGYearMonth(year, month, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
+  else
+    return Item_t ( NULL );
+}
 
 
 Item_t BasicItemFactory::createHexBinary ( xqp_hexBinary value )
