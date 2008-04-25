@@ -56,6 +56,8 @@ public:
         Iterator_t positions,
         bool streaming = false);
 
+  virtual void append(Iterator_t iter, bool copy);
+
   virtual Item_t getItem(int32_t position);
   virtual bool containsItem(int32_t position);
 

@@ -79,6 +79,8 @@ private:
   void shutdown();
 
 public:
+  Item *getTypeQName(Item *item);
+
   store::ItemFactory* getItemFactory() const     { return theItemFactory; }
 
 //  StringPool& getNamespacePool() const    { return *theNamespacePool; }

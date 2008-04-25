@@ -1238,7 +1238,41 @@ Item* DateTimeItemNaive::getType() const
 
 Item_t DateTimeItemNaive::getEBV() const
 {
-  ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for DateTime!");
+  switch (theValue->getFacet())
+  {
+    case DateTime::DATE_FACET:
+      ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for xs:Date!");
+      break;
+      
+    case DateTime::TIME_FACET:
+      ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for xs:Time!");
+      break;
+    
+    case DateTime::GYEARMONTH_FACET:
+      ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for xs:GYearMonth!");
+      break;
+    
+    case DateTime::GYEAR_FACET:
+      ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for xs:GYear!");
+      break;
+    
+    case DateTime::GMONTH_FACET:
+      ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for xs:GMonth!");
+      break;
+
+    case DateTime::GMONTHDAY_FACET:
+      ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for xs:GMonthDay!");
+      break;
+    
+    case DateTime::GDAY_FACET:
+      ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for xs:GDay!");
+      break;
+
+    default:
+    case DateTime::DATETIME_FACET:
+      ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for DateTime!");
+      break;
+  }
   return NULL;
 }
 

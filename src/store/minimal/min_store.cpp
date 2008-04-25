@@ -159,6 +159,22 @@ void SimpleStore::initTypeNames()
   theSchemaTypeNames[XS_BOOLEAN] = typemanager.XS_BOOLEAN_QNAME;//new QNameItemImpl(XS_URI, "xs", "boolean");
 }
 
+Item *SimpleStore::getTypeQName(Item *item)
+{
+  QNameItemImpl *qname = dynamic_cast<QNameItemImpl*>(item);
+  if(!qname)
+    return item;
+
+  checked_vector<Item_t>::const_iterator  i;
+  const xqpStringStore  *ln = qname->getLocalName();
+  for(i=theSchemaTypeNames.begin(); i != theSchemaTypeNames.end(); i++)
+  {
+    if((*i)->getLocalName()->byteEqual(*ln))
+      return &*(*i);
+  }
+
+  return item;
+}
 
 /*******************************************************************************
 

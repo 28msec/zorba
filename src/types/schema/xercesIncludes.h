@@ -29,5 +29,9 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/XMLUni.hpp>
 
+//daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
+#ifdef CYGWIN
+#undef WIN32
+#endif
 
 #endif /*ZORBA_XERCESINCLUDES_H_*/

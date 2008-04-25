@@ -785,8 +785,12 @@ xqp_string DocumentNode::show() const
   std::stringstream strStream;
 
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
-            << "<document baseUri = \"" << *theBaseUri << "\" docUri = \""
-            << *theDocUri << "\">" << std::endl;
+            << "<document";
+  if (theBaseUri != NULL)
+    strStream << " baseUri = \"" << *theBaseUri;
+  if (theDocUri != NULL)
+    strStream << " docUri = \"" << *theDocUri;
+  strStream << "\">" << std::endl;
 
   Iterator_t iter = getChildren();
   Item_t item = iter->next();
@@ -1799,6 +1803,19 @@ void ConstrElementNode::constructSubtree(
     }
   }
   
+  // Conservatively, add a hidden base-uri attr here. If the childrenIte does
+  // not produce any explicit base-uri attribute, then the base-uri added here
+  // is the correct one, and it MUST be added here, because it is needed for
+  // resolving any relative uris that may appear in the children. If the 
+  // childrenIte does produce an explicit base-uri attribute, then the base-uri
+  // added here will be replaced with the explicit one.
+  if (!haveBaseUri && isRoot)
+  {
+    xqpStringStore_t nulluri;
+    addBaseUriProperty(staticBaseUri, nulluri);
+    haveBaseUri = true;
+  }
+
   if (childrenIte != 0)
   {
     item = childrenIte->next();
@@ -1854,7 +1871,7 @@ void ConstrElementNode::addAttribute(
     bool              copy,
     const CopyMode&   copymode,
     xqpStringStore_t& staticBaseUri,
-    bool&             isBaseUri)
+    bool&             haveBaseUri)
 {
   if (attr->theParent != this)
   {
@@ -1882,9 +1899,34 @@ void ConstrElementNode::addAttribute(
 
   if (attr->isBaseUri())
   {
-    isBaseUri = true;
+    // Remove the base-uri that was added consevatively in constructSubtree().
+    if (haveBaseUri)
+    {
+      ulong numAttrs = numAttributes();
+      for (ulong i = 0; i < numAttrs; i++)
+      {
+        AttributeNode* attr = getAttr(i);
+        if (attr->isBaseUri())
+        {
+          ZORBA_FATAL(attr->isHidden(), "");
+          attr->disconnect();
+          delete attr;
+          break;
+        }
+      }
+    }
+
+    haveBaseUri = true;
     xqpStringStore_t baseUri = attr->getStringValue();
-    addBaseUriProperty(staticBaseUri, baseUri);
+    if (theParent != NULL)
+    {
+      xqpStringStore_t parentBaseUri = theParent->getBaseURI();
+      addBaseUriProperty(parentBaseUri, baseUri);
+    }
+    else
+    {
+      addBaseUriProperty(staticBaseUri, baseUri);
+    }
   }
 }
 

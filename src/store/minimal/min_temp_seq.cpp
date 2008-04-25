@@ -102,6 +102,23 @@ Iterator_t SimpleTempSeq::getIterator(Iterator_t positions, bool streaming)
 /*******************************************************************************
 
 ********************************************************************************/
+void SimpleTempSeq::append(Iterator_t iter, bool copy)
+{
+  Item_t curItem = iter->next();
+  CopyMode lCopyMode;
+  while ( curItem != NULL )
+  {
+    if (copy && curItem->isNode()) {
+      curItem = curItem->copyXmlTree(lCopyMode);
+    }
+    theItems.push_back(curItem);
+    curItem = iter->next();
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 Item_t SimpleTempSeq::getItem(int32_t position)
 {
   if ( this->containsItem(position))
