@@ -38,7 +38,7 @@ namespace zorba
       class OrderKeyCmp;
   
       typedef std::multimap<std::vector<store::Item_t>, store::Iterator_t, OrderKeyCmp> order_map_t;
-      typedef store::ItemValuesCollHandleHashMap<std::vector<store::TempSeq_t> > group_map_t;
+      typedef store::ItemValuesCollHandleHashMap<std::vector<store::TempSeq_t>* > group_map_t;
       
   /**
       Wrappes a FOR or LET clause. 
@@ -100,7 +100,7 @@ namespace zorba
       class GroupingSpec{
         friend class FLWORIterator;
         friend class PrinterVisitor;
-        friend class GroupByClause;
+        friend class GroupByClause;//Just for older gcc's
         protected:
           PlanIter_t              theInput;
           std::vector<ForVarIter_t> theInnerVars;
@@ -114,7 +114,7 @@ namespace zorba
       class GroupingOuterVar{
         friend class FLWORIterator;
         friend class PrinterVisitor;
-        friend class GroupByClause;
+        friend class GroupByClause; //Just for older gcc's
         protected:
           PlanIter_t              theInput;
           std::vector<LetVarIter_t> theOuterVars;
