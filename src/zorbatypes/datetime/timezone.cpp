@@ -9,6 +9,7 @@
 
 #include <zorbatypes/timezone.h>
 #include "zorbatypes/datetime/parse.h"
+#include <util/hashfun.h>
 
 #define RETURN_FALSE_ON_EXCEPTION(sequence)     \
   try                                           \
@@ -156,6 +157,7 @@ bool TimeZone::is_not_a_date_time() const
 {
   return the_time_zone.is_not_a_date_time();
 }
+
 long TimeZone::getHours() const
 {
   return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.hours();
@@ -175,5 +177,18 @@ long TimeZone::getFractionalSeconds() const
 {
   return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.fractional_seconds();
 }
+
+uint32_t TimeZone::hash(int implicit_timezone_seconds) const
+{
+  uint32_t hval = 0;
+  
+  hval = hashfun::h32<long>(getHours(), hval);
+  hval = hashfun::h32<long>(getMinutes(), hval);
+  hval = hashfun::h32<long>(getSeconds(), hval);
+  hval = hashfun::h32<long>(getFractionalSeconds(), hval);
+
+  return hval;
+}
+
 
 } // namespace zorba

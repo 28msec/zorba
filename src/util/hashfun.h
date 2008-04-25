@@ -104,6 +104,35 @@ namespace zorba {
 
         return hval;
       }
+      
+      /*
+       * 32 bit Fowler/Noll/Vo FNV-1a hash a POD
+       *
+       * input:
+       *  val_to_hash  - POD value to hash
+       *  len   - maximum number of characters of input
+       *  hval  - previous hash value or 0 if first call
+       *
+       * @return 32 bit hash as a static hash type
+       *
+       */
+      template <typename T>
+      static inline uint32_t h32(T val_to_hash, uint32_t hval)
+      {
+        unsigned char *s = (unsigned char *)&val_to_hash; /* unsigned char ptr */
+        int len = sizeof(T);
+
+        while (len-- != 0) {
+
+          /* multiply by the 32 bit FNV magic prime mod 2^32 */
+          hval *= FNV_32_PRIME;
+
+          /* xor the bottom with the current octet */
+          hval ^= (uint32_t)*s++;
+        }
+
+        return hval;
+      }
 
       /*
        * 32 bit Fowler/Noll/Vo FNV-1a hash on a C++ string

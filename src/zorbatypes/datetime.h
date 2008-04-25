@@ -232,7 +232,8 @@ namespace zorba
       TimeZone
       getTimezone() const;
       
-      uint32_t hash(int implicit_timezone_seconds) const;
+      uint32_t 
+      hash(int implicit_timezone_seconds) const;
       
       /**
        *  Throws InvalidTimezoneException if the given timezone is not valid.

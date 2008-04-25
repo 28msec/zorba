@@ -11,6 +11,7 @@
 #include <zorbatypes/duration.h>
 #include <zorbatypes/timezone.h>
 #include <zorbatypes/zorbatypes_decl.h>
+#include <util/hashfun.h>
 
 #include "zorbatypes/datetime/parse.h"
 
@@ -262,8 +263,21 @@ int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime_t& dt_t)
 
 uint32_t DateTime::hash(int implicit_timezone_seconds) const
 {
+  uint32_t hval = 0;
+  DateTime_t dt_t = normalizeTimeZone(implicit_timezone_seconds);
   
-  return 0;
+  hval = hashfun::h32<int>((int)dt_t->facet, hval);
+  hval = hashfun::h32<int>(dt_t->data[YEAR_DATA], hval);
+  hval = hashfun::h32<int>(dt_t->data[MONTH_DATA], hval);
+  hval = hashfun::h32<int>(dt_t->data[DAY_DATA], hval);
+  hval = hashfun::h32<int>(dt_t->data[HOUR_DATA], hval);
+  hval = hashfun::h32<int>(dt_t->data[MINUTE_DATA], hval);
+  hval = hashfun::h32<int>(dt_t->data[SECONDS_DATA], hval);
+  hval = hashfun::h32<int>(dt_t->data[FRACSECONDS_DATA], hval);
+  
+  hval = dt_t->the_time_zone.hash(hval);
+  
+  return hval;
 }
 
 // Returns 0 on success

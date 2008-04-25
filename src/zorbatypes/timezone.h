@@ -57,7 +57,9 @@ namespace zorba
 
       virtual long
       getFractionalSeconds() const;
-
+      
+      uint32_t 
+      hash(int implicit_timezone_seconds) const;
 
     protected:
       TimeZone& operator=(const TimeZone_t& t_t);
