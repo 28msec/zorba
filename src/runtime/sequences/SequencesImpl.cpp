@@ -1137,14 +1137,14 @@ FnIdIteratorState::reset(PlanState& planState)
 store::Item_t 
 FnIdIterator::nextImpl(PlanState& planState) const 
 {
-  store::Item_t itemEl;
-  store::Item_t item;
+  store::Item_t     itemEl;
+  store::Item_t     item;
   store::Iterator_t theAttributes;
-  store::Item_t res;
-  bool          push;
-  xqp_string    strArg;
-  bool          tmp;
-  store::Item*  rootNode;
+  store::Item_t     res;
+  bool              push;
+  xqp_string        strArg;
+  bool              tmp;
+  store::Item*      rootNode;
 
   FnIdIteratorState *state;
   DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
@@ -1246,6 +1246,7 @@ FnIdRefIteratorState::init(PlanState& planState)
   inNode = NULL;
   inArg = NULL;
   theIterator = NULL;
+  theTypedValue = NULL;
 }
 
 void
@@ -1255,6 +1256,7 @@ FnIdRefIteratorState::reset(PlanState& planState)
   inNode = NULL;
   inArg = NULL;
   theIterator = NULL;
+  theTypedValue = NULL;
 }
 
 /**
@@ -1264,38 +1266,106 @@ FnIdRefIteratorState::reset(PlanState& planState)
  */
 store::Item_t
 FnIdRefIterator::nextImpl(PlanState& planState) const {
-  store::Item_t itemEl;
-  xqp_string    strArg;
-  xqp_string    strNode;
-  
-  FnIdRefIteratorState* state;
-  DEFAULT_STACK_INIT(FnIdRefIteratorState, state, planState);
+  store::Item_t     itemNode;
+  store::Item_t     item;
+  store::Iterator_t theAttributes;
+  store::Item_t     res;
+  bool              push;
+  xqp_string        strArg;
+  bool              tmp;
+  store::Item*      rootNode;
 
-  if((state->inNode = consumeNext(theChildren[1].getp(), planState)) != NULL)
-    if (state->inNode->getNodeKind() == store::StoreConsts::elementNode)
-      state->theIterator = state->inNode->getChildren();
+  FnIdIteratorState *state;
+  DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
 
-  while ((state->inArg = consumeNext(theChildren[0].getp(), planState)) != NULL)
+  if((state->inNode = consumeNext(theChildren[1], planState)) != NULL)
   {
-    state->theIterator->open();
-    while((itemEl = state->theIterator->next()) != NULL )
+    rootNode = state->inNode.getp();
+    while (rootNode->getParent() != NULL)
+      rootNode = rootNode->getParent();
+
+    if (rootNode->getNodeKind() != store::StoreConsts::documentNode)
+      ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0001, loc,
+                           "No target document for fn:idref function");
+
+    state->inNode = rootNode;
+    state->theIterator = state->inNode->getChildren();
+
+    while ((state->inArg = consumeNext(theChildren[0], planState)) != NULL)
     {
-      if(itemEl->getNodeKind() == store::StoreConsts::elementNode ||
-         itemEl->getNodeKind() == store::StoreConsts::attributeNode)
+      state->theIterator->open();
+
+      while((itemNode = state->theIterator->next()) != NULL )
       {
-        if(itemEl->isIdRefs())
+        if(itemNode->getNodeKind() == store::StoreConsts::elementNode ||
+           itemNode->getNodeKind() == store::StoreConsts::attributeNode)
         {
-          strNode = state->inNode->getStringValue().getp();
-          strArg = state->inArg->getStringValue().getp();
-          
-          if(strNode.normalizeSpace().matches(strArg," "))
-            STACK_PUSH(state->inNode, state);
+          if(itemNode->isIdRefs())
+          {
+            state->theTypedValue = itemNode->getTypedValue();
+            state->theTypedValue->open();
+    
+            while (true)
+            {
+              item = state->theTypedValue->next();
+              if (item == NULL)
+                break;
+
+              strArg = state->inArg->getStringValue().getp();
+
+              try {
+                tmp = strArg.matches(item->getStringValue().getp()," ");
+              }
+              catch(zorbatypesException& ex){
+                ZORBA_ERROR_LOC(error::DecodeZorbatypesError(ex.ErrorCode()), loc);
+              }
+                
+              if(tmp)
+                STACK_PUSH( itemNode, state );
+            }
+          }
+          else
+          {
+            push = false;
+            theAttributes = itemNode->getAttributes();
+            theAttributes->open();
+            
+            while (!push)
+            {
+              item = theAttributes->next();
+              if (item == NULL)
+                break;
+    
+              if(item->isId())
+              {
+                state->theTypedValue = item->getTypedValue();
+                state->theTypedValue->open();
+    
+                while (!push)
+                {
+                  item = state->theTypedValue->next();
+                  if (item == NULL)
+                    break;
+
+                  strArg = state->inArg->getStringValue().getp();
+    
+                  if(strArg.matches(item->getStringValue().getp()," "))
+                  {
+                    push = true;
+                    break;
+                  }
+                }
+              }
+            }
+            if(push)
+              STACK_PUSH( itemNode, state );
+          }
         }
       }
     }
   }
-  
-  STACK_END(state);
+
+  STACK_END (state);
 }
 
 
