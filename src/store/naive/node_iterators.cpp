@@ -161,36 +161,49 @@ void StoreNodeDistinctIterator::close()
 
 Item_t StoreNodeDistinctOrAtomicIterator::next()
 {
-  if (theUsed && theAtomic) 
+  Item_t contextNode;
+
+  if (theAtomicMode) 
   {
-    Item_t lContextNode = theInput->next();
-    if (lContextNode != 0)
-      if (!lContextNode->isAtomic()) ZORBA_ERROR (ZorbaError::XPTY0018);
-    return lContextNode;
+    contextNode = theInput->next();
+    if (contextNode == 0)
+      return NULL;
+
+    if (!contextNode->isAtomic())
+      ZORBA_ERROR (ZorbaError::XPTY0018);
+
+    return contextNode;
   }
 
-  if (!theUsed)
+  contextNode = theInput->next();
+  if (contextNode == 0)
+    return NULL;
+
+  if (contextNode->isAtomic())
   {
-    Item_t lContextNode = theInput->next();
-    if (lContextNode == 0)
-      return lContextNode;
+    if (theNodeMode)
+      ZORBA_ERROR (ZorbaError::XPTY0018);
 
-    theUsed = true;
-
-    if (lContextNode->isAtomic())
-    {
-      theAtomic = true;
-      return lContextNode;
-    }
-    else
-    {
-      theAtomic = false;
-      theNodeSet.insert(lContextNode);
-    }
-    return lContextNode;
+    theAtomicMode = true;
+    return contextNode;
   }
-  
-  return StoreNodeDistinctIterator::next();
+  else
+  {
+    theNodeMode = true;
+
+    while (true)
+    {
+      if (theNodeSet.insert(contextNode))
+        return contextNode;
+
+      contextNode = theInput->next();
+      if (contextNode == NULL)
+        return NULL;
+
+      if (contextNode->isAtomic())
+        ZORBA_ERROR (ZorbaError::XPTY0018);
+    }
+  }
 }
 
 
@@ -284,12 +297,18 @@ void StoreNodeSortIterator::close()
 
 Item_t StoreNodeSortOrAtomicIterator::next()
 {
-  if (theUsed && theAtomic)
+  Item_t contextNode;
+
+  if (theAtomicMode)
   {
-    Item_t lContextNode = theInput->next();
-    if (lContextNode != 0)
-      if (!lContextNode->isAtomic()) ZORBA_ERROR (ZorbaError::XPTY0018);
-    return lContextNode;
+    Item_t contextNode = theInput->next();
+    if (contextNode == 0)
+      return NULL;
+
+    if (!contextNode->isAtomic())
+      ZORBA_ERROR (ZorbaError::XPTY0018);
+
+    return contextNode;
   }
 
   if (theCurrentNode < 0)
@@ -298,22 +317,21 @@ Item_t StoreNodeSortOrAtomicIterator::next()
 
     while (true)
     {
-      Item_t contextNode = theInput->next();
+      contextNode = theInput->next();
       if (contextNode == NULL)
         break;
 
-      if (!theUsed)
+      if (contextNode->isAtomic())
       {
-        theUsed = true;
-        if (contextNode->isAtomic())
-        {
-          theAtomic = true;
-          return contextNode;
-        }
-        else
-        {
-          theAtomic = false;
-        }
+        if (theNodeMode)
+          ZORBA_ERROR (ZorbaError::XPTY0018);
+
+        theAtomicMode = true;
+        return contextNode;
+      }
+      else
+      {
+        theNodeMode = true;
       }
 
       ZORBA_ASSERT(contextNode->isNode());

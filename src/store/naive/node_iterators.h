@@ -97,20 +97,26 @@ public:
 class StoreNodeDistinctOrAtomicIterator : public StoreNodeDistinctIterator
 {
 protected:
-  bool theAtomic;
-  bool theUsed;
+  bool theAtomicMode;
+  bool theNodeMode;
 
 public:
   StoreNodeDistinctOrAtomicIterator(Iterator* aInput)
     :
     StoreNodeDistinctIterator(aInput),
-    theAtomic(false),
-    theUsed(false)
+    theAtomicMode(false),
+    theNodeMode(false)
   {
   }
 
   Item_t next(); 
-  void reset() { theUsed = false; StoreNodeDistinctIterator::reset(); }
+
+  void reset() 
+  {
+    theNodeMode = theAtomicMode = false;
+    StoreNodeDistinctIterator::reset(); 
+  }
+
   void close() { StoreNodeDistinctIterator::close(); }
 };
 
@@ -186,20 +192,26 @@ public:
 class StoreNodeSortOrAtomicIterator : public StoreNodeSortIterator
 {
 protected:
-  bool theAtomic;
-  bool theUsed;
+  bool theAtomicMode;
+  bool theNodeMode;
 
 public:
   StoreNodeSortOrAtomicIterator(const Iterator_t& aInput, bool aAsc, bool aDistinct)
     :
     StoreNodeSortIterator(aInput, aAsc, aDistinct),
-    theAtomic(false),
-    theUsed(false)
+    theAtomicMode(false),
+    theNodeMode(false)
   {
   }
 
   Item_t next();
-  void reset() { theUsed = false; StoreNodeSortIterator::reset(); }
+
+  void reset() 
+  {
+    theNodeMode = theAtomicMode = false;
+    StoreNodeSortIterator::reset(); 
+  }
+
   void close() { StoreNodeSortIterator::close(); }
 };
 
