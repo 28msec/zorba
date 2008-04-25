@@ -787,8 +787,12 @@ xqp_string DocumentNode::show() const
   std::stringstream strStream;
 
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
-            << "<document baseUri = \"" << *theBaseUri << "\" docUri = \""
-            << *theDocUri << "\">" << std::endl;
+            << "<document";
+  if (theBaseUri != NULL)
+    strStream << " baseUri = \"" << *theBaseUri;
+  if (theDocUri != NULL)
+    strStream << " docUri = \"" << *theDocUri;
+  strStream << "\">" << std::endl;
 
   Iterator_t iter = getChildren();
   Item_t item = iter->next();

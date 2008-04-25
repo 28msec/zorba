@@ -2175,7 +2175,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
 
-  if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS, strlen(XQUERY_FN_NS))) 
+  if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS))
   {
     xqp_string fn_local = fn_qname->getLocalName ();
 
