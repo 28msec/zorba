@@ -46,7 +46,6 @@ SimpleTempSeq::~SimpleTempSeq()
 ********************************************************************************/
 Iterator_t SimpleTempSeq::getIterator()
 {
-  std::cout << "2" << std::endl;
   return new SimpleTempSeqIter(this);
 }
 
