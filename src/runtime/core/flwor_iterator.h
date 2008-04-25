@@ -100,6 +100,7 @@ namespace zorba
       class GroupingSpec{
         friend class FLWORIterator;
         friend class PrinterVisitor;
+        friend class GroupByClause;
         protected:
           PlanIter_t              theInput;
           std::vector<ForVarIter_t> theInnerVars;
@@ -113,6 +114,7 @@ namespace zorba
       class GroupingOuterVar{
         friend class FLWORIterator;
         friend class PrinterVisitor;
+        friend class GroupByClause;
         protected:
           PlanIter_t              theInput;
           std::vector<LetVarIter_t> theOuterVars;

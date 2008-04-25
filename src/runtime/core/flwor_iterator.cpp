@@ -585,11 +585,13 @@ void FLWORIterator::bindGroupBy ( FLWORIterator::group_map_t::iterator lGroupMap
   }
 
   //Bind non-grouping vars
-  std::vector<store::TempSeq_t>::const_iterator lOuterSeqIter = ( *lGroupMapIter ).second.begin();
+  std::vector<store::TempSeq_t> lVector = ( *lGroupMapIter ).second;
+  std::vector<store::TempSeq_t>::const_iterator lOuterSeqIter = lVector.begin();
   std::vector<GroupingOuterVar> lOuterVars = theGroupByClause->theOuterVars;
   std::vector<GroupingOuterVar>::const_iterator lOuterVarsIter = lOuterVars.begin();
   while ( lOuterVarsIter != lOuterVars.end() )
   {
+    std::cout << "Number of vars" <<  lOuterVarsIter->theOuterVars.size() << std::endl;
     std::vector<LetVarIter_t>::const_iterator lOuterVarBindingIter = lOuterVarsIter->theOuterVars.begin();
     while ( lOuterVarBindingIter != lOuterVarsIter->theOuterVars.end() )
     {
@@ -651,7 +653,6 @@ void FLWORIterator::matResultAndGroupBy (
     while ( lOuterVarIter != lOuterVars.end() ){
       store::Iterator_t iterWrapper = new PlanIteratorWrapper ( lOuterVarIter->theInput, planState );
       store::TempSeq_t result = GENV_STORE.createTempSeq ( iterWrapper, false, false );
-      result->getIterator();
       lOuterSeq.push_back ( result );
       lOuterVarIter->theInput->reset ( planState );
       ++lOuterVarIter;
