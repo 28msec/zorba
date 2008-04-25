@@ -153,8 +153,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
               MODIFY (i = flwor->remove_forlet_clause (i));
             }
           else ++i;
-        } else {
-          MODIFY (i = flwor->remove_forlet_clause(i));
+        } else {  // uses == 0
+          if (cexpr->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL)
+            MODIFY (i = flwor->remove_forlet_clause(i));
+          else ++i;
         }
       }
     } else {
