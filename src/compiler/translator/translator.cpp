@@ -301,7 +301,8 @@ expr_t result ()
 ********************************************************************************/
 expr_t wrap_in_globalvar_assign(expr_t e)
 {
-  const function *ctxf = LOOKUP_OP2 ("ctxvar-assign");
+  const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
+  const function *ctx_get = LOOKUP_OP1 ("ctxvariable");
   checked_vector<expr_t> assigns;
 
   for (std::list<global_binding>::iterator i = theGlobalVars.begin ();
@@ -310,12 +311,18 @@ expr_t wrap_in_globalvar_assign(expr_t e)
   {
     global_binding b = *i;
     var_expr_t var = b.first;
+    xqtref_t var_type = var->get_type ();
     expr_t expr = b.second;
+    expr_t qname_expr = new const_expr (var->get_loc(), var->get_varname ());
 
     if (expr != NULL) {
-      expr_t qname_expr = new const_expr (var->get_loc(), var->get_varname ());
+      if (var_type != NULL)
+        expr = new treat_expr (expr->get_loc (), expr, var->get_type (), ZorbaError::XPTY0004);
       assigns.push_back (new fo_expr (var->get_loc(),
-                                      ctxf, qname_expr, expr));
+                                      ctx_set, qname_expr, expr));
+    } else if (var_type != NULL) {
+      expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr);
+      assigns.push_back (new treat_expr (var->get_loc (), get, var->get_type (), ZorbaError::XPTY0004));
     }
   }
 
@@ -1858,7 +1865,13 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   if (sctx_p->lookup_var (varname) != NULL)
     ZORBA_ERROR (ZorbaError::XQST0049);
 
-  var_expr_t ve = bind_var (v.get_location(), varname, var_expr::context_var);
+  // The declared type of a global or external is never tightened based on
+  // type inference because globals are mutable.
+  xqtref_t type;
+  if (v.get_typedecl () != NULL)
+    type = pop_tstack ();
+
+  var_expr_t ve = bind_var (v.get_location(), varname, var_expr::context_var, type);
   expr_t val = v.is_extern() ? expr_t(NULL) : pop_nodestack();
   theGlobalVars.push_back(global_binding(ve, val));
 }
