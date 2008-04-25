@@ -223,6 +223,7 @@ public:
   virtual bool equals(const Item*, RuntimeCB*, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const;
   
 protected:
   DateTimeItemNaive() { };
@@ -244,6 +245,7 @@ public:
   virtual bool equals(const Item*, RuntimeCB*, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const;
 };
 
 /*******************************************************************************
@@ -262,6 +264,7 @@ public:
   virtual bool equals(const Item*, RuntimeCB*, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const;
 };
 
 /*******************************************************************************
@@ -280,6 +283,7 @@ public:
   virtual bool equals(const Item*, RuntimeCB*, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
+  virtual uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const;
 };
 
 class DecimalItemNaive : public AtomicItem

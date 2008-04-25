@@ -19,6 +19,21 @@ namespace zorba
   class DateTime : public SimpleRCObject
   {
     public:
+      
+      /** Available facets for the DateTime class */
+      typedef enum {
+        DATETIME_FACET = 0,
+        DATE_FACET = 1,
+        TIME_FACET = 2,
+        GYEARMONTH_FACET = 3,
+        GYEAR_FACET = 4,
+        GMONTH_FACET = 5,
+        GMONTHDAY_FACET = 6,
+        GDAY_FACET = 7
+      } FACET_TYPE;
+      
+
+    public:
       virtual ~DateTime() { };
       
       /**
@@ -123,16 +138,22 @@ namespace zorba
        */
       static int
       createTime(int hours, int minutes, double seconds, TimeZone_t& tz, DateTime_t& dt_t);
+      
+      /**
+       *  Creates a new DateTime object from the given one, adjusting it to the newly 
+       *  given facet. Useful for casting. Will always return 0.
+       */
+      int 
+      createWithNewFacet(FACET_TYPE new_facet, DateTime_t& dt_t);
 
       /**
-       *  The function will use the absolute value for months.
+       *  The function will use the absolute value of the months parameter.
        *  Returns 0 on success
        */
       static int
       createGYearMonth(int years, int months, DateTime_t& dt_t);
 
       /**
-       *  The function will use the absolute values of all int parameters.
        *  Returns 0 on success
        */
       static int
@@ -211,6 +232,8 @@ namespace zorba
       TimeZone
       getTimezone() const;
       
+      uint32_t hash(int implicit_timezone_seconds) const;
+      
       /**
        *  Throws InvalidTimezoneException if the given timezone is not valid.
        */
@@ -227,17 +250,6 @@ namespace zorba
       DateTime_t adjustToTimeZone(const DurationBase_t& db_t) const;
       
     public:
-      typedef enum {
-        DATETIME_FACET = 0,
-        DATE_FACET = 1,
-        TIME_FACET = 2,
-        GYEARMONTH_FACET = 3,
-        GYEAR_FACET = 4,
-        GMONTH_FACET = 5,
-        GMONTHDAY_FACET = 6,
-        GDAY_FACET = 7        
-      } FACET_TYPE;
-
       // fractional seconds have 6 digits. 0.1 seconds are represented as 100000, 0.01 seconds as 10000, etc.
       static const int FRAC_SECONDS_UPPER_LIMIT; // = 1000000, maximum 6 digits
       

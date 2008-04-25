@@ -1221,10 +1221,7 @@ Item* DateTimeItemNaive::getType() const
   }
 }
 
-bool DateTimeItemNaive::equals(
-    const Item* aItem,
-    RuntimeCB* aRuntimeCB,
-    XQPCollator* coll ) const
+bool DateTimeItemNaive::equals(const Item* aItem, RuntimeCB* aRuntimeCB, XQPCollator* coll) const
 {
   try {
     return 0 == theValue->compare(*aItem->getDateTimeValue(), 
@@ -1233,6 +1230,11 @@ bool DateTimeItemNaive::equals(
     ZORBA_ERROR(ZorbaError::FODT0003);
     return false;
   }
+}
+
+uint32_t DateTimeItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue->hash(0);
 }
 
 Item_t DateTimeItemNaive::getEBV() const
@@ -1326,6 +1328,11 @@ xqp_string DurationItemNaive::show() const
   return theValue->toString().getStore();
 }
 
+uint32_t DurationItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
 /*******************************************************************************
  * class DayTimeDuration
  *******************************************************************************/
@@ -1363,6 +1370,12 @@ xqp_string DayTimeDurationItemNaive::show() const
   return theValue->toString();
 }
 
+uint32_t DayTimeDurationItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
+
 /*******************************************************************************
  * class YearMonthDuration
  *******************************************************************************/
@@ -1399,6 +1412,12 @@ xqp_string YearMonthDurationItemNaive::show() const
 {
   return theValue->toString();
 }
+
+uint32_t YearMonthDurationItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
 
 } // namespace store
 } // namespace zorba

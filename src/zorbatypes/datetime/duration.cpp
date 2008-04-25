@@ -249,6 +249,11 @@ bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym
   return true;
 }
 
+uint32_t YearMonthDuration::hash() const
+{
+  return 0;
+}
+
 /****************************************************************************
  *
  * DayTimeDuration
@@ -529,7 +534,7 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
   result = (result - result.floor()) * Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
   assert(NumConversions::doubleToLong(result.round(), frac_seconds));
   
-  DayTimeDuration* dt = new DayTimeDuration( 0, 0, seconds, frac_seconds);
+  DayTimeDuration* dt = new DayTimeDuration( 0, 0, 0, seconds, frac_seconds);
   return dt;
 }
 
@@ -786,6 +791,11 @@ bool DayTimeDuration::from_Timezone ( const TimeZone& t, DurationBase_t& dt )
     return false;
 }
 
+uint32_t DayTimeDuration::hash() const
+{
+  return 0;
+}
+
 /****************************************************************************
  *
  * Duration
@@ -976,6 +986,11 @@ bool Duration::parse_string(const xqpString& s, Duration_t& d_t)
   }
   
   return true;
+}
+
+uint32_t Duration::hash() const
+{
+  return 0;
 }
 
 }

@@ -65,6 +65,9 @@ namespace zorba
       
       virtual double
       getSeconds() const = 0;
+      
+      virtual uint32_t
+      hash() const = 0;
   }; /* class DurationBase */
 
 
@@ -133,6 +136,9 @@ namespace zorba
       
       bool
       isZero() const { return (months == 0); }
+      
+      virtual uint32_t
+      hash() const;
 
     protected:
       YearMonthDuration& 
@@ -230,6 +236,9 @@ namespace zorba
       
       bool
       isZero() const;
+      
+      virtual uint32_t
+      hash() const;
 
     protected:
       DayTimeDuration& 
@@ -332,6 +341,9 @@ namespace zorba
       
       bool 
       isZero() const;
+      
+      virtual uint32_t
+      hash() const;
 
     protected:
       YearMonthDuration yearMonthDuration;
