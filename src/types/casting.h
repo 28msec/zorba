@@ -88,6 +88,16 @@ public:
 
   bool castableToNCName(const xqpStringStore* str) const;
 
+  bool castableToNormalizedString(const xqpStringStore *str) const;
+
+  bool castableToToken(const xqpStringStore *str) const;
+
+  bool castableToLanguage(const xqpStringStore *str) const;
+
+  bool castableToNMToken(const xqpStringStore *str) const;
+
+  bool castableToName(const xqpStringStore *str) const;
+
   /**
    * Checks if the passed item would be castable to the passed target type.
    * @param aItem

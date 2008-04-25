@@ -379,18 +379,22 @@ return aFactory->createAnyURI(aItem->getStringValue());
 
 inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
 {
-  xqpStringStore *str = aItem->getStringValueP();
-  int32_t idx = str->indexOf(":");
-  int32_t lidx = str->lastIndexOf(":");
+  xqpString str(&*aItem->getStringValue());
+  int32_t idx = str.theStrStore->indexOf(":");
+  int32_t lidx = str.theStrStore->lastIndexOf(":");
   if (idx != lidx)
     return 0;
   
   if (idx < 0)
-    return aFactory->createQName(0,0,str);
+    return aFactory->createQName(0, 0, &*str.theStrStore);
 
-  // TODO
-  assert(false);
-  return 0;
+  xqpString prefix = str.substr(0, idx);
+  xqpString uri;
+  if (!nsCtx->findBinding(prefix, uri)) {
+    return 0;
+  }
+  xqpString local = str.substr(idx + 1);
+  return aFactory->createQName(&*uri.theStrStore, &*prefix.theStrStore, &*local.theStrStore);
 }
 
 inline store::Item_t str_NOT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
@@ -1049,28 +1053,56 @@ store::Item_t str_down(
                 store::ItemFactory* aFactory)
 {
   xqpStringStore_t lString = aItem->getStringValue();
+  xqpString str(lString);
   // TODO all
   assert(false);
   switch(aTargetAtomicType)
   {
   case TypeConstants::XS_NORMALIZED_STRING:
-    break;
+    if (!GenericCast::instance()->castableToNormalizedString(lString)) {
+      return 0;
+    }
+    return aFactory->createNormalizedString(str);
   case TypeConstants::XS_TOKEN:
-    break;
+    if (!GenericCast::instance()->castableToToken(lString)) {
+      return 0;
+    }
+    return aFactory->createToken(str);
   case TypeConstants::XS_LANGUAGE:
-    break;
+    if (!GenericCast::instance()->castableToLanguage(lString)) {
+      return 0;
+    }
+    return aFactory->createLanguage(str);
   case TypeConstants::XS_NMTOKEN:
-    break;
+    if (!GenericCast::instance()->castableToNMToken(lString)) {
+      return 0;
+    }
+    return aFactory->createNMTOKEN(str);
   case TypeConstants::XS_NAME:
-    break;
+    if (!GenericCast::instance()->castableToName(lString)) {
+      return 0;
+    }
+    return aFactory->createName(str);
   case TypeConstants::XS_NCNAME:
-    break;
+    if (!GenericCast::instance()->castableToNCName(lString)) {
+        return 0;
+    }
+    return aFactory->createNCName(lString);
   case TypeConstants::XS_ID:
-    break;
+    if (!GenericCast::instance()->castableToNCName(lString)) {
+        return 0;
+    }
+    return aFactory->createID(str);
   case TypeConstants::XS_IDREF:
-    break;
+    if (!GenericCast::instance()->castableToNCName(lString)) {
+        return 0;
+    }
+    return aFactory->createIDREF(str);
   case TypeConstants::XS_ENTITY:
-    break;
+    if (!GenericCast::instance()->castableToNCName(lString)) {
+        return 0;
+    }
+    return aFactory->createENTITY(str);
   default:
     assert(false);
   }
@@ -1378,6 +1410,163 @@ bool GenericCast::castableToNCName(const xqpStringStore* str) const
   return true;
 }
 
+bool GenericCast::castableToNormalizedString(const xqpStringStore *str) const
+{
+  uint32_t cp;
+  std::vector<uint32_t> cps = str->getCodepoints();
+  std::vector<uint32_t>::size_type i, sz = cps.size();
+
+  if (sz == 0) {
+    return false;
+  }
+
+  for(i = 0; i < sz; ++i) {
+    cp = cps[i];
+    /* do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9) characters */
+    if (cp == '\r' || cp == '\n' || cp == '\t') {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool GenericCast::castableToToken(const xqpStringStore *str) const
+{
+  uint32_t cp;
+  std::vector<uint32_t> cps = str->getCodepoints();
+  std::vector<uint32_t>::size_type i, sz = cps.size();
+
+  if (sz == 0) {
+    return false;
+  }
+
+  bool spaceSeen = false;
+  for(i = 0; i < sz; ++i) {
+    cp = cps[i];
+    /* do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9) characters */
+    if (cp == '\r' || cp == '\n' || cp == '\t') {
+      return false;
+    }
+    if (cp == ' ') {
+      /* two consecutive spaces not allowed. */
+      if (spaceSeen) {
+        return false;
+      }
+      /* no leading or trailing spaces */
+      if (i == 0 || i == sz - 1) {
+        return false;
+      }
+      spaceSeen = true;
+    } else {
+      spaceSeen = false;
+    }
+  }
+
+  return true;
+}
+
+bool GenericCast::castableToLanguage(const xqpStringStore *str) const
+{
+  uint32_t cp;
+  std::vector<uint32_t> cps = str->getCodepoints();
+  std::vector<uint32_t>::size_type i, sz = cps.size();
+
+  if (sz == 0) {
+    return false;
+  }
+
+  /* automaton for [a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})* */
+  bool firstBlock = true;
+  i = 0;
+  uint32_t blkIdx = 0;
+  while(i < sz) {
+    cp = cps[i];
+    if (cp == '-') {
+      if (blkIdx == 0) {
+        return false;
+      }
+      blkIdx = 0;
+      ++i;
+      continue;
+    }
+    if (blkIdx >= 8) {
+      return false;
+    }
+    if (!((cp >= 'A' && cp <= 'Z') || (cp >= 'a' && cp <= 'z'))) {
+      if (firstBlock) {
+        return false;
+      }
+      if (!(cp >= '0' && cp <= '9')) {
+        return false;
+      }
+    }
+    ++i;
+    ++blkIdx;
+  }
+  if (blkIdx == 0) {
+    return false;
+  }
+  return true;
+}
+
+bool GenericCast::castableToNMToken(const xqpStringStore *str) const
+{
+  uint32_t cp;
+  std::vector<uint32_t> cps = str->getCodepoints();
+  std::vector<uint32_t>::size_type i, sz = cps.size();
+
+  if (sz == 0) {
+    return false;
+  }
+
+  for(i = 0; i < sz; ++i) {
+    cp = cps[i];
+    if (!(GenericCast::instance()->isLetter(cp)
+      || GenericCast::instance()->isDigit(cp)
+      || GenericCast::instance()->isExtender(cp)
+      || GenericCast::instance()->isCombiningChar(cp)
+      || cp == '.'
+      || cp == '-'
+      || cp == '_'
+      || cp == ':')) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool GenericCast::castableToName(const xqpStringStore *str) const
+{
+  uint32_t cp;
+  std::vector<uint32_t> cps = str->getCodepoints();
+  std::vector<uint32_t>::size_type i, sz = cps.size();
+
+  if (sz == 0) {
+    return false;
+  }
+
+  for(i = 0; i < sz; ++i) {
+    cp = cps[i];
+    if (!(GenericCast::instance()->isLetter(cp)
+      || cp == '_'
+      || cp == ':')) {
+      if (i == 0) {
+        return false;
+      }
+      if (!(GenericCast::instance()->isDigit(cp)
+        || GenericCast::instance()->isExtender(cp)
+        || GenericCast::instance()->isCombiningChar(cp)
+        || cp == '.'
+        || cp == '-')) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
 
 /*******************************************************************************
 
