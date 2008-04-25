@@ -1885,7 +1885,16 @@ void ConstrElementNode::addAttribute(
   {
     isBaseUri = true;
     xqpStringStore_t baseUri = attr->getStringValue();
-    addBaseUriProperty(staticBaseUri, baseUri);
+
+    if (theParent != NULL)
+    {
+      xqpStringStore_t parentBaseUri = theParent->getBaseURI();
+      addBaseUriProperty(parentBaseUri, baseUri);
+    }
+    else
+    {
+      addBaseUriProperty(staticBaseUri, baseUri);
+    }
   }
 }
 
