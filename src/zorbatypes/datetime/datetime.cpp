@@ -177,6 +177,82 @@ int DateTime::createTime(int hours, int minutes, double seconds, TimeZone_t& tz_
   return 0;
 }
 
+int DateTime::createGYearMonth(int years, int months, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = GYEARMONTH_FACET;
+  dt_t->data[YEAR_DATA] = years;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = 0;
+  dt_t->data[HOUR_DATA] = 0;
+  dt_t->data[MINUTE_DATA] = 0;
+  dt_t->data[SECONDS_DATA] = 0;
+  dt_t->data[FRACSECONDS_DATA] = 0;
+
+  return 0;
+}
+
+int DateTime::createGYear(int years, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = GYEAR_FACET;
+  dt_t->data[YEAR_DATA] = years;
+  dt_t->data[MONTH_DATA] = 0;
+  dt_t->data[DAY_DATA] = 0;
+  dt_t->data[HOUR_DATA] = 0;
+  dt_t->data[MINUTE_DATA] = 0;
+  dt_t->data[SECONDS_DATA] = 0;
+  dt_t->data[FRACSECONDS_DATA] = 0;
+
+  return 0;
+}
+
+int DateTime::createGMonth(int months, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = GMONTH_FACET;
+  dt_t->data[YEAR_DATA] = 0;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = 0;
+  dt_t->data[HOUR_DATA] = 0;
+  dt_t->data[MINUTE_DATA] = 0;
+  dt_t->data[SECONDS_DATA] = 0;
+  dt_t->data[FRACSECONDS_DATA] = 0;
+
+  return 0;
+}
+
+int DateTime::createGMonthDay(int months, int days, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = GMONTHDAY_FACET;
+  dt_t->data[YEAR_DATA] = 0;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = abs<int>(days);
+  dt_t->data[HOUR_DATA] = 0;
+  dt_t->data[MINUTE_DATA] = 0;
+  dt_t->data[SECONDS_DATA] = 0;
+  dt_t->data[FRACSECONDS_DATA] = 0;
+
+  return 0;
+}
+
+
+int DateTime::createGDay(int days, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = GDAY_FACET;
+  dt_t->data[YEAR_DATA] = 0;
+  dt_t->data[MONTH_DATA] = 0;
+  dt_t->data[DAY_DATA] = abs<int>(days);
+  dt_t->data[HOUR_DATA] = 0;
+  dt_t->data[MINUTE_DATA] = 0;
+  dt_t->data[SECONDS_DATA] = 0;
+  dt_t->data[FRACSECONDS_DATA] = 0;
+
+  return 0;
+}
+
 // Returns 0 on success
 int DateTime::parse_date(std::string& ss, unsigned int& position, int& year, int& month, int& day)
 {

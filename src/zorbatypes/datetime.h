@@ -125,6 +125,41 @@ namespace zorba
       createTime(int hours, int minutes, double seconds, TimeZone_t& tz, DateTime_t& dt_t);
 
       /**
+       *  The function will use the absolute value for months.
+       *  Returns 0 on success
+       */
+      static int
+      createGYearMonth(int years, int months, DateTime_t& dt_t);
+
+      /**
+       *  The function will use the absolute values of all int parameters.
+       *  Returns 0 on success
+       */
+      static int
+      createGYear(int years, DateTime_t& dt_t);
+
+      /**
+       *  The function will use the absolute values of all int parameters.
+       *  Returns 0 on success
+       */
+      static int
+      createGMonth(int months, DateTime_t& dt_t);
+
+      /**
+       *  The function will use the absolute values of all int parameters.
+       *  Returns 0 on success
+       */
+      static int
+      createGMonthDay(int months, int days, DateTime_t& dt_t);
+
+      /**
+       *  The function will use the absolute values of all int parameters.
+       *  Returns 0 on success
+       */
+      static int
+      createGDay(int days, DateTime_t& dt_t);
+
+      /**
        *  Throws InvalidTimezoneException if the given timezone is not valid.
        */
       DurationBase_t
