@@ -153,20 +153,22 @@ namespace zorba {
   }
 
   RULE_REWRITE_POST(MarkImpureExprs) {
-    Annotation::key_t k = AnnotationKey::IMPURE_EXPR;
+    // TODO: constructors cannot be cloned; but currently we never clone anyway.
+
+    Annotation::key_t k = AnnotationKey::NONDISCARDABLE_EXPR;
     switch (node->get_expr_kind ()) {
-    case elem_expr_kind:
-    case attr_expr_kind:
-    case text_expr_kind:
-    case pi_expr_kind:
-    case doc_expr_kind:
-      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-      break;
-    case fo_expr_kind:
-      if (static_cast<fo_expr *> (node)->get_func () == LOOKUP_OP2 ("ctxvar-assign"))
+    // TODO: update exprs probably non-discardable as well
+    case fo_expr_kind: {
+      fo_expr *fo = static_cast<fo_expr *> (node);
+      const function *f = fo->get_func ();
+      if (f == LOOKUP_OP2 ("ctxvar-assign")
+          || dynamic_cast<const fn_error *> (f) != NULL)
         node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
-    default: break;
+    }
+    default:
+      if (dynamic_cast<cast_base_expr *> (node) != NULL)
+        node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
     }
 
     if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VAL)
@@ -280,11 +282,13 @@ namespace zorba {
     else if (f == LOOKUP_OP2 ("value-equal") || f == LOOKUP_OP2 ("equal"))
       return partial_eval_eq (rCtx, *fo);
     else if (f == LOOKUP_FN ("fn", "count", 1)) {
-      int type_cnt = TypeOps::type_cnt (*(*fo) [0]->return_type (rCtx.getStaticContext()));
-      if (type_cnt != -1)
-        return new const_expr (fo->get_loc (), Integer::parseInt (type_cnt));
-      else
-        return NULL;
+      expr_t arg = (*fo) [0];
+      if (arg->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) {
+        int type_cnt = TypeOps::type_cnt (*arg->return_type (rCtx.getStaticContext()));
+        if (type_cnt != -1)
+          return new const_expr (fo->get_loc (), Integer::parseInt (type_cnt));
+      }
+      return NULL;
     }
     return NULL;
   }
@@ -293,6 +297,8 @@ namespace zorba {
     castable_base_expr *cbe;
     if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) {
       expr_t arg = cbe->get_input();
+      if (arg->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR) == TSVAnnotationValue::TRUE_VAL)
+        return NULL;
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
       if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
         return new const_expr (LOC (node), true);
