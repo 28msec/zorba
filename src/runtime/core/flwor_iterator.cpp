@@ -579,7 +579,8 @@ void FLWORIterator::bindGroupBy ( FLWORIterator::group_map_t::iterator lGroupMap
                                   PlanState& planState ) const
 {
   //Bind grouping vars
-  std::vector<store::Item_t>::const_iterator lGroupKeyIter = ( *lGroupMapIter ).first->begin();
+  store::GroupKey* lGroupKey = ( *lGroupMapIter ).first;
+  std::vector<store::Item_t>::const_iterator lGroupKeyIter = lGroupKey->theKey.begin();
   std::vector<GroupingSpec> lgroupSpecs = theGroupByClause->theGroupingSpecs;
   std::vector<GroupingSpec>::const_iterator lSpecIter = lgroupSpecs.begin();
   while ( lSpecIter != lgroupSpecs.end() )
@@ -622,13 +623,36 @@ void FLWORIterator::matResultAndGroupBy (
 {
   ZORBA_ASSERT ( doGroupBy );
 
-  std::vector<store::Item_t>* lGroupKey = new  std::vector<store::Item_t>;
+  store::GroupKey* lGroupKey = new store::GroupKey();
+  std::vector<store::Item_t> lKey;
+  std::vector<store::Item_t> lTypedKey;
   std::vector<GroupingSpec> lgroupSpecs = theGroupByClause->theGroupingSpecs;
   std::vector<GroupingSpec>::iterator lSpecIter = lgroupSpecs.begin();
   while ( lSpecIter != lgroupSpecs.end() )
   {
+    
     store::Item_t lItem = consumeNext ( lSpecIter->theInput.getp(), planState );
-    lGroupKey->push_back ( lItem );
+    std::cout << "Key:" << lItem->show() << std::endl;
+    lKey.push_back ( lItem );
+    
+    //Getting the typed value
+    if(lItem == 0){
+      lTypedKey.push_back(lItem);
+    }else{
+      store::Iterator_t lTypedValue = lItem->getTypedValue();
+      lTypedValue->open();
+      lItem = lTypedValue->next();
+      lTypedKey.push_back(lItem);
+      if(lItem != 0){
+        lItem = lTypedValue->next();
+        if ( lItem != 0 )
+        {
+          ZORBA_ERROR_DESC ( ZorbaError::XPTY0004, "Expected a singleton (atomization has more than one value)" );
+        }
+      }
+    }
+    
+    //check for more values
     if ( lItem != 0 )
     {
       lItem = consumeNext ( lSpecIter->theInput.getp(), planState );
@@ -640,6 +664,9 @@ void FLWORIterator::matResultAndGroupBy (
     lSpecIter->theInput->reset ( planState );
     ++lSpecIter;
   }
+  lGroupKey->theKey = lKey;
+  lGroupKey->theTypedKey = lTypedKey;
+  
   FLWORIterator::group_map_t* lGroupMap = flworState->groupMap;
   std::vector<store::TempSeq_t>* lOuterSeq;
   std::vector<GroupingOuterVar> lOuterVars = theGroupByClause->theOuterVars;

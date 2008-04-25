@@ -11,6 +11,13 @@ namespace zorba
 {
   namespace store
   {
+    
+    //TODO Do this nice when refactoring the FLWOR
+    class GroupKey{
+      public:
+        std::vector<Item_t> theKey;
+        std::vector<Item_t> theTypedKey;    
+    };
 
     class GroupCompareParam
     {
@@ -39,7 +46,7 @@ namespace zorba
 
 
     template <class V>
-    class ItemValuesCollHandleHashMap : public HashMap<std::vector<Item_t>*, V,
+        class ItemValuesCollHandleHashMap : public HashMap<GroupKey*, V,
           ItemValuesCollHandleHashMap<V>,
           GroupCompareParam>
     {
@@ -48,17 +55,18 @@ namespace zorba
             GroupCompareParam* aCompareParam,
             long size = 1024 )
             :
-          HashMap<std::vector<Item_t>*, V, ItemValuesCollHandleHashMap, GroupCompareParam> ( aCompareParam, size )
+          HashMap<GroupKey*, V, ItemValuesCollHandleHashMap, GroupCompareParam> ( aCompareParam, size )
         {}
 
-        static bool equal ( const std::vector<Item_t>* t1, const std::vector<Item_t>* t2, GroupCompareParam* aCompareParam )
+        static bool equal ( const GroupKey* t1, const GroupKey* t2, GroupCompareParam* aCompareParam )
         {
-          assert(aCompareParam->theCollators.size() == t1->size());
-          assert(t2->size() == t1->size());
-          std::vector<Item_t>::const_iterator iter1 = t1->begin();
-          std::vector<Item_t>::const_iterator iter2 = t2->begin();
+          assert(aCompareParam->theCollators.size() == t1->theTypedKey.size());
+          assert(t2->theTypedKey.size() == t1->theTypedKey.size());
+          std::vector<Item_t>::const_iterator iter1 = t1->theTypedKey.begin();
+          std::vector<Item_t>::const_iterator iter2 = t2->theTypedKey.begin();
           std::vector<XQPCollator*>::iterator lCollIter = aCompareParam->theCollators.begin();
-          while(iter1 != t1->end()){
+          while(iter1 != t1->theTypedKey.end()){
+            std::cout << "Comparing: " << (*iter1)->show() << ":" << (*iter2)->show() << std::endl;
             if(CompareIterator::valueEqual ( aCompareParam->theRuntimeCB,
                *iter1, *iter2,
                ( *lCollIter ) ) != 0){
@@ -71,13 +79,13 @@ namespace zorba
           return true;
         }
 
-        static uint32_t hash (std::vector<Item_t>* t, GroupCompareParam* aCompareParam )
+        static uint32_t hash (GroupKey* t, GroupCompareParam* aCompareParam )
         {
           uint32_t hash=0;
-          assert(aCompareParam->theCollators.size() == t->size());
-          std::vector<Item_t>::iterator lItemIter = t->begin();
+          assert(aCompareParam->theCollators.size() == t->theTypedKey.size());
+          std::vector<Item_t>::iterator lItemIter = t->theTypedKey.begin();
           std::vector<XQPCollator*>::iterator lCollIter = aCompareParam->theCollators.begin();
-          while(lItemIter != t->end()){
+          while(lItemIter != t->theTypedKey.end()){
             hash += (*lItemIter)->hash ( aCompareParam->theRuntimeCB, *lCollIter );
             ++lCollIter;
             ++lItemIter;
