@@ -24,6 +24,7 @@ class var_iterator;
  * XQuery Data Model Instance: Logically, implements a "vector&lt;Item_t&gt;"
  * Used internally to materialize temporary query results
  */
+
 class TempSeq : public SimpleRCObject
 {  
 public:
@@ -37,6 +38,14 @@ public:
    * 
    */
   virtual Iterator_t getIterator() = 0;
+  
+    /**
+   * Appends the items from the iterator to the temp sequence
+   * 
+   * @return Iterator which iterates over the complete TempSeq
+   * 
+     */
+  virtual void append(Iterator_t iter, bool copy) = 0;
 		
   /**
    * Returns an iterator which reads just a part of the underlying TempSeq

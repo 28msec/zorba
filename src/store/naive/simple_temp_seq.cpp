@@ -46,6 +46,7 @@ SimpleTempSeq::~SimpleTempSeq()
 ********************************************************************************/
 Iterator_t SimpleTempSeq::getIterator()
 {
+  std::cout << "2" << std::endl;
   return new SimpleTempSeqIter(this);
 }
 
@@ -96,6 +97,24 @@ Iterator_t SimpleTempSeq::getIterator(
 Iterator_t SimpleTempSeq::getIterator(Iterator_t positions, bool streaming)
 {
   return Iterator_t(NULL);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleTempSeq::append(Iterator_t iter, bool copy)
+{
+  Item_t curItem = iter->next();
+  CopyMode lCopyMode;
+  while ( curItem != NULL )
+  {
+    if (copy && curItem->isNode()) {
+      curItem = curItem->copyXmlTree(lCopyMode);
+    }
+    theItems.push_back(curItem);
+    curItem = iter->next();
+  }
 }
 
 

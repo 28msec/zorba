@@ -49,7 +49,9 @@ public:
 
   HashEntry() : theItem(NULL), theNext(NULL) { }
 
-  ~HashEntry() { theItem = NULL; theNext = NULL; }
+  ~HashEntry() { 
+    theItem = NULL; 
+    theNext = NULL; }
 
   bool isFree() const { return theItem == NULL; }
 };

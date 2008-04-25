@@ -424,8 +424,9 @@ void end_visit(flwor_expr& v)
   reverse (orderSpecs.begin (), orderSpecs.end ());
 
   auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
-
-  vector<FLWORIterator::GroupClause> nonGroupBys;
+  
+  
+  vector<FLWORIterator::GroupingOuterVar> nonGroupBys;
   for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_rbegin();
       i != v.non_group_rend();
       ++i)
@@ -437,10 +438,10 @@ void end_visit(flwor_expr& v)
 
     PlanIter_t lInput = pop_itstack();
 
-    nonGroupBys.push_back(FLWORIterator::GroupClause(lInput, *lInnerVars));
+    nonGroupBys.push_back(FLWORIterator::GroupingOuterVar(lInput, *lInnerVars));
   }
 
-  vector<FLWORIterator::GroupClause> groupBys;
+  vector<FLWORIterator::GroupingSpec> groupBys;
   for(flwor_expr::group_list_t::reverse_iterator i = v.group_rbegin();
       i != v.group_rend();
       ++i)
@@ -453,8 +454,11 @@ void end_visit(flwor_expr& v)
     PlanIter_t lInput = pop_itstack();
 
     xqp_string lCollation = group->getCollation();
-    groupBys.push_back(FLWORIterator::GroupClause(lInput, *lInnerVars, lCollation));
+    
+    groupBys.push_back(FLWORIterator::GroupingSpec(lInput, *lInnerVars, lCollation));
   }
+  
+  auto_ptr<FLWORIterator::GroupByClause> groupby(groupBys.empty() ? NULL : new FLWORIterator::GroupByClause(groupBys,nonGroupBys));
 
   PlanIter_t where = NULL;
   if (v.get_where () != NULL)
@@ -503,8 +507,8 @@ void end_visit(flwor_expr& v)
   }
 
   FLWORIterator *iter = new FLWORIterator(
-    v.get_loc(), clauses, where, groupBys, nonGroupBys, 
-    orderby.release(), ret, v.isUpdating(), false);
+      v.get_loc(), clauses, where, groupby.release(), 
+      orderby.release(), ret, v.isUpdating(), false);
   itstack.push(iter);
 }
 
