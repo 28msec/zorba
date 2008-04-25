@@ -193,20 +193,30 @@ void FLWORIterator::GroupByClause::open ( PlanState& planState, uint32_t& offset
   }
 }
 
+uint32_t FLWORIterator::GroupingOuterVar::getStateSizeOfSubtree() const
+{
+  return theInput->getStateSizeOfSubtree();
+}
+
+uint32_t FLWORIterator::GroupingSpec::getStateSizeOfSubtree() const
+{
+  return theInput->getStateSizeOfSubtree();
+}
+
 uint32_t FLWORIterator::GroupByClause::getStateSizeOfSubtree() const
 {
   uint32_t size=0;
   std::vector<GroupingSpec>::const_iterator iter;
   for ( iter = theGroupingSpecs.begin() ; iter != theGroupingSpecs.end(); iter++ )
   {
-    size += iter->theInput->getStateSizeOfSubtree();
+    size += iter->getStateSizeOfSubtree();
   }
   
   
   std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
   for ( iterOuterVars = theOuterVars.begin() ; iterOuterVars != theOuterVars.end(); iterOuterVars++ )
   {
-    size += iterOuterVars->theInput->getStateSizeOfSubtree();
+    size += iterOuterVars->getStateSizeOfSubtree();
   }
   return size;
 }
@@ -639,7 +649,7 @@ void FLWORIterator::matResultAndGroupBy (
     std::vector<store::TempSeq_t>::iterator lOuterSeqIter = lOuterSeq->begin();
     while ( lOuterVarIter != lOuterVars.end() ){
       store::Iterator_t iterWrapper = new PlanIteratorWrapper ( lOuterVarIter->theInput, planState );
-      ( *lOuterSeqIter )->append ( iterWrapper, false );
+      ( *lOuterSeqIter )->append ( iterWrapper, true );
       lOuterVarIter->theInput->reset ( planState );
       ++lOuterSeqIter;
       ++lOuterVarIter;
@@ -649,7 +659,7 @@ void FLWORIterator::matResultAndGroupBy (
     lOuterSeq = new std::vector<store::TempSeq_t>();
     while ( lOuterVarIter != lOuterVars.end() ){
       store::Iterator_t iterWrapper = new PlanIteratorWrapper ( lOuterVarIter->theInput, planState );
-      store::TempSeq_t result = GENV_STORE.createTempSeq ( iterWrapper, false, false );
+      store::TempSeq_t result = GENV_STORE.createTempSeq ( iterWrapper, true, false );
       lOuterSeq->push_back ( result );
       lOuterVarIter->theInput->reset ( planState );
       ++lOuterVarIter;
