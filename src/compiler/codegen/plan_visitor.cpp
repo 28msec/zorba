@@ -599,13 +599,14 @@ void end_visit (eval_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   checked_vector<store::Item_t> varnames;
+  checked_vector<xqtref_t> vartypes;
   for (unsigned i = 0; i < v.var_count (); i++) {
     varnames.push_back (v.var_at (i).varname);
     argv.push_back (pop_itstack ());
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  itstack.push (new EvalIterator (v.get_loc (), varnames, argv));
+  itstack.push (new EvalIterator (v.get_loc (), varnames, vartypes, argv));
 }
 
 bool begin_visit(typeswitch_expr& /*v*/)

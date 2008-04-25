@@ -15,6 +15,8 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
+#include "types/typeimpl.h"
+
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
@@ -59,7 +61,7 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
-  static PlanIter_t compile (XQueryCompiler &compiler, xqp_string query, checked_vector<store::Item_t> varnames) {
+  static PlanIter_t compile (XQueryCompiler &compiler, xqp_string query, checked_vector<store::Item_t> varnames, checked_vector<xqtref_t> vartypes) {
     istringstream os (query);
     parsenode_t ast = compiler.parse (os);
     QueryLoc loc;
@@ -78,7 +80,9 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
     }
 
     for (int i = (int) varnames.size () - 1; i >= 0; i--)
-      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ().getp()), NULL, NULL));
+      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ().getp()),
+                                    NULL, NULL));
+    // TODO: give eval'ed code the types of the variables (for optimization)
 
     return compiler.compile (ast);
   }
@@ -95,7 +99,7 @@ store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
   state->ccb.reset (ccb);
   ccb->m_sctx = ccb->m_sctx->create_child_context ();
   item = CONSUME (0);
-  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames), ccb, dctx.get ()));
+  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames, vartypes), ccb, dctx.get ()));
 
   for (unsigned i = 0; i < theChildren.size () - 1; i++) {
     store::Iterator_t lIter = new PlanIteratorWrapper (theChildren [i + 1], planState);

@@ -458,9 +458,10 @@ public:
   class eval_var {
   public:
     store::Item_t varname;
+    xqtref_t type;
     expr_t val;
 
-    eval_var (store::Item_t varname_, expr_t val_) : varname (varname_), val (val_) {}
+    eval_var (store::Item_t varname_, xqtref_t type_, expr_t val_) : varname (varname_), type (type_), val (val_) {}
   };
 
 protected:
@@ -471,6 +472,8 @@ public:
   eval_expr (const QueryLoc &loc, expr_t expr_)
     : expr (loc), expr_h (expr_)
   {}
+
+  checked_vector<eval_var> &get_vars () { return vars; }
 
   const expr_t &get_expr () const { return expr_h; }
   expr_t get_expr () { return expr_h; }

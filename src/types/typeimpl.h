@@ -3,6 +3,7 @@
 
 #include "common/shared_types.h"
 #include "types/node_test.h"
+#include "types/typeconstants.h"
 
 
 namespace zorba {

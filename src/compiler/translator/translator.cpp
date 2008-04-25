@@ -4713,7 +4713,9 @@ void end_visit(const EvalExpr& v, void* visit_state)
   for (int i = 0; i < vgdl->size (); i++) {
     var_expr_t ve = pop_nodestack ().dyn_cast<var_expr> ();
     expr_t val = pop_nodestack ();
-    result->add_var (eval_expr::eval_var (ve->get_varname (), val));
+    if (ve->get_type () != NULL)
+      val = new treat_expr (val->get_loc (), val, ve->get_type (), ZorbaError::XPTY0004);
+    result->add_var (eval_expr::eval_var (ve->get_varname (), ve->get_type (), val));
   }
 
   nodestack.push (&*result);

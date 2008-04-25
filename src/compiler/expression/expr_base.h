@@ -84,6 +84,11 @@ public:
 protected:
   QueryLoc loc;
 
+  // Pitfall when using the cache -- AVOID THIS SCENARIO:
+  // (1) obtain a non-const ptr to a child expression (cache is invalidated)
+  // (2) call an operation P() that caches its result
+  // (3) modify the child expr (cache is NOT invalidated)
+  // (4) call P() again and get (possibly wrong) cached result
   struct {
     struct {
       bool valid;
@@ -92,6 +97,9 @@ protected:
     } type;
   } cache;
   void invalidate () { cache.type.valid = false; }
+  // Returns true if all modifiers, as well as all accessors that permit future
+  // modifications of child expressions, call invalidate(). Note that expr
+  // iterators are compliant.
   virtual bool cache_compliant () { return false; }
 
 protected:
