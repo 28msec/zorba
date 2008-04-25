@@ -75,6 +75,15 @@ namespace zorba {
     return NULL;
   }
 
+  void propagate_any_child_up (expr *node, Annotation::key_t k) {
+    for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
+      if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {
+        node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
+        break;
+      }
+    }
+  }
+
   RULE_REWRITE_POST(MarkExpensiveOps) {
     Annotation::key_t k = AnnotationKey::EXPENSIVE_OP;
     switch (node->get_expr_kind ()) {
@@ -83,12 +92,7 @@ namespace zorba {
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
     default:
-      for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
-        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {
-          node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-          break;
-        }
-      }
+      propagate_any_child_up (node, k);
     }
     return NULL;
   }
@@ -140,12 +144,7 @@ namespace zorba {
     }
 
     if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VAL)
-      for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
-        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {
-          node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-          break;
-        }
-      }
+      propagate_any_child_up (node, k);
     return NULL;
   }
 
@@ -170,14 +169,8 @@ namespace zorba {
     default: break;
     }
 
-    // TODO: count ((<a/>)) is pure
     if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VAL)
-      for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
-        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {
-          node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-          break;
-        }
-      }
+      propagate_any_child_up (node, k);
     return NULL;
   }
 

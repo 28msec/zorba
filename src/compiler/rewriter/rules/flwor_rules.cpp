@@ -58,16 +58,34 @@ namespace zorba {
 
 // is this variable used in the next FOR clause that executes more than once?
 bool used_upto_first_repeated_clause (var_expr *v, flwor_expr *flwor, static_context *sctx) {
-  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin (); i != flwor->clause_end (); i++) {
+  bool declared = false;
+  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin ();
+       i != flwor->clause_end (); i++) 
+  {
     flwor_expr::forletref_t ref = *i;
+    forlet_clause::varref_t vref = ref->get_var();
+    if (! declared) {
+      declared = v == vref.getp ();
+      continue;
+    }
     if (count_variable_uses(ref->get_expr (), v, 1) == 1)
       return true;
+    // never go past a FOR clause
     if (ref->get_type () == forlet_clause::for_clause
         && TypeOps::type_max_cnt (*ref->get_expr ()->return_type (sctx)) >= 2)
       return false;
   }
-  return false;
+  return true;
 }
+
+  bool is_trivial_expr (expr *e) {
+    switch (e->get_expr_kind ()) {
+    case const_expr_kind:
+    case var_expr_kind:
+      return true;
+    default: return false;
+    }
+  }
 
 #define WHERE flwor->get_where ()
 
@@ -128,8 +146,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         } else ++i;
       } else {  // uses == 1 or 0
         if (uses == 1) {
-          if (flwor->forlet_count () == 1 // TODO: if cardinality FLWOR result = 1...
-              || cexpr->get_annotation (AnnotationKey::IMPURE_EXPR) != TSVAnnotationValue::TRUE_VAL
+          if (is_trivial_expr (cexpr)
               || used_upto_first_repeated_clause (&*vref, flwor, sctx))
             {
               subst_vars (rCtx, node, vref, cexpr);

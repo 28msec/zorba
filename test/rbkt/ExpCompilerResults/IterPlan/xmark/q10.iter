@@ -46,279 +46,6 @@ Iterator tree for main query:
      </FnDataIterator>
     </FnDistinctValuesIterator>
    </ForVariable>
-   <LetVariable name="p" materialize="true">
-    <FLWORIterator>
-     <ForVariable name="t">
-      <NameTestIterator qname="xs:QName(,,person)">
-       <ChildAxisIterator>
-        <NameTestIterator qname="xs:QName(,,people)">
-         <ChildAxisIterator>
-          <NameTestIterator qname="xs:QName(,,site)">
-           <ChildAxisIterator>
-            <LetVarIterator varname="auction"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
-         </ChildAxisIterator>
-        </NameTestIterator>
-       </ChildAxisIterator>
-      </NameTestIterator>
-     </ForVariable>
-     <WhereClause>
-      <CompareIterator>
-       <FnDataIterator>
-        <NameTestIterator qname="xs:QName(,,category)">
-         <AttributeAxisIterator>
-          <NameTestIterator qname="xs:QName(,,interest)">
-           <ChildAxisIterator>
-            <NameTestIterator qname="xs:QName(,,profile)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="t"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
-           </ChildAxisIterator>
-          </NameTestIterator>
-         </AttributeAxisIterator>
-        </NameTestIterator>
-       </FnDataIterator>
-       <ForVarIterator varname="i"/>
-      </CompareIterator>
-     </WhereClause>
-     <ReturnClause>
-      <ElementIterator>
-       <SingletonIterator value="xs:QName(,,personne)"/>
-       <ElementContentIterator>
-        <FnConcatIterator>
-         <ElementIterator>
-          <SingletonIterator value="xs:QName(,,statistiques)"/>
-          <ElementContentIterator>
-           <FnConcatIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,sexe)"/>
-             <ElementContentIterator>
-              <EnclosedIterator attr_cont="false">
-               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator>
-                 <NameTestIterator qname="xs:QName(,,gender)">
-                  <ChildAxisIterator>
-                   <NameTestIterator qname="xs:QName(,,profile)">
-                    <ChildAxisIterator>
-                     <ForVarIterator varname="t"/>
-                    </ChildAxisIterator>
-                   </NameTestIterator>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </ChildAxisIterator>
-               </KindTestIterator>
-              </EnclosedIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,age)"/>
-             <ElementContentIterator>
-              <EnclosedIterator attr_cont="false">
-               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator>
-                 <NameTestIterator qname="xs:QName(,,age)">
-                  <ChildAxisIterator>
-                   <NameTestIterator qname="xs:QName(,,profile)">
-                    <ChildAxisIterator>
-                     <ForVarIterator varname="t"/>
-                    </ChildAxisIterator>
-                   </NameTestIterator>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </ChildAxisIterator>
-               </KindTestIterator>
-              </EnclosedIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,education)"/>
-             <ElementContentIterator>
-              <EnclosedIterator attr_cont="false">
-               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator>
-                 <NameTestIterator qname="xs:QName(,,education)">
-                  <ChildAxisIterator>
-                   <NameTestIterator qname="xs:QName(,,profile)">
-                    <ChildAxisIterator>
-                     <ForVarIterator varname="t"/>
-                    </ChildAxisIterator>
-                   </NameTestIterator>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </ChildAxisIterator>
-               </KindTestIterator>
-              </EnclosedIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,revenu)"/>
-             <ElementContentIterator>
-              <EnclosedIterator attr_cont="false">
-               <FnDataIterator>
-                <NodeSortIterator>
-                 <NameTestIterator qname="xs:QName(,,income)">
-                  <AttributeAxisIterator>
-                   <NameTestIterator qname="xs:QName(,,profile)">
-                    <ChildAxisIterator>
-                     <ForVarIterator varname="t"/>
-                    </ChildAxisIterator>
-                   </NameTestIterator>
-                  </AttributeAxisIterator>
-                 </NameTestIterator>
-                </NodeSortIterator>
-               </FnDataIterator>
-              </EnclosedIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-           </FnConcatIterator>
-          </ElementContentIterator>
-         </ElementIterator>
-         <ElementIterator>
-          <SingletonIterator value="xs:QName(,,coordonnees)"/>
-          <ElementContentIterator>
-           <FnConcatIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,nom)"/>
-             <ElementContentIterator>
-              <EnclosedIterator attr_cont="false">
-               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator>
-                 <NameTestIterator qname="xs:QName(,,name)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="t"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </ChildAxisIterator>
-               </KindTestIterator>
-              </EnclosedIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,rue)"/>
-             <ElementContentIterator>
-              <EnclosedIterator attr_cont="false">
-               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator>
-                 <NameTestIterator qname="xs:QName(,,street)">
-                  <ChildAxisIterator>
-                   <NameTestIterator qname="xs:QName(,,address)">
-                    <ChildAxisIterator>
-                     <ForVarIterator varname="t"/>
-                    </ChildAxisIterator>
-                   </NameTestIterator>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </ChildAxisIterator>
-               </KindTestIterator>
-              </EnclosedIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,ville)"/>
-             <ElementContentIterator>
-              <EnclosedIterator attr_cont="false">
-               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator>
-                 <NameTestIterator qname="xs:QName(,,city)">
-                  <ChildAxisIterator>
-                   <NameTestIterator qname="xs:QName(,,address)">
-                    <ChildAxisIterator>
-                     <ForVarIterator varname="t"/>
-                    </ChildAxisIterator>
-                   </NameTestIterator>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </ChildAxisIterator>
-               </KindTestIterator>
-              </EnclosedIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,pays)"/>
-             <ElementContentIterator>
-              <EnclosedIterator attr_cont="false">
-               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator>
-                 <NameTestIterator qname="xs:QName(,,country)">
-                  <ChildAxisIterator>
-                   <NameTestIterator qname="xs:QName(,,address)">
-                    <ChildAxisIterator>
-                     <ForVarIterator varname="t"/>
-                    </ChildAxisIterator>
-                   </NameTestIterator>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </ChildAxisIterator>
-               </KindTestIterator>
-              </EnclosedIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-            <ElementIterator>
-             <SingletonIterator value="xs:QName(,,reseau)"/>
-             <ElementContentIterator>
-              <FnConcatIterator>
-               <ElementIterator>
-                <SingletonIterator value="xs:QName(,,courrier)"/>
-                <ElementContentIterator>
-                 <EnclosedIterator attr_cont="false">
-                  <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                   <ChildAxisIterator>
-                    <NameTestIterator qname="xs:QName(,,emailaddress)">
-                     <ChildAxisIterator>
-                      <ForVarIterator varname="t"/>
-                     </ChildAxisIterator>
-                    </NameTestIterator>
-                   </ChildAxisIterator>
-                  </KindTestIterator>
-                 </EnclosedIterator>
-                </ElementContentIterator>
-               </ElementIterator>
-               <ElementIterator>
-                <SingletonIterator value="xs:QName(,,pagePerso)"/>
-                <ElementContentIterator>
-                 <EnclosedIterator attr_cont="false">
-                  <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                   <ChildAxisIterator>
-                    <NameTestIterator qname="xs:QName(,,homepage)">
-                     <ChildAxisIterator>
-                      <ForVarIterator varname="t"/>
-                     </ChildAxisIterator>
-                    </NameTestIterator>
-                   </ChildAxisIterator>
-                  </KindTestIterator>
-                 </EnclosedIterator>
-                </ElementContentIterator>
-               </ElementIterator>
-              </FnConcatIterator>
-             </ElementContentIterator>
-            </ElementIterator>
-           </FnConcatIterator>
-          </ElementContentIterator>
-         </ElementIterator>
-         <ElementIterator>
-          <SingletonIterator value="xs:QName(,,cartePaiement)"/>
-          <ElementContentIterator>
-           <EnclosedIterator attr_cont="false">
-            <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-             <ChildAxisIterator>
-              <NameTestIterator qname="xs:QName(,,creditcard)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="t"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-             </ChildAxisIterator>
-            </KindTestIterator>
-           </EnclosedIterator>
-          </ElementContentIterator>
-         </ElementIterator>
-        </FnConcatIterator>
-       </ElementContentIterator>
-      </ElementIterator>
-     </ReturnClause>
-    </FLWORIterator>
-   </LetVariable>
    <ReturnClause>
     <ElementIterator>
      <SingletonIterator value="xs:QName(,,categorie)"/>
@@ -333,7 +60,277 @@ Iterator tree for main query:
           </EnclosedIterator>
          </ElementContentIterator>
         </ElementIterator>
-        <LetVarIterator varname="p"/>
+        <FLWORIterator>
+         <ForVariable name="t">
+          <NameTestIterator qname="xs:QName(,,person)">
+           <ChildAxisIterator>
+            <NameTestIterator qname="xs:QName(,,people)">
+             <ChildAxisIterator>
+              <NameTestIterator qname="xs:QName(,,site)">
+               <ChildAxisIterator>
+                <LetVarIterator varname="auction"/>
+               </ChildAxisIterator>
+              </NameTestIterator>
+             </ChildAxisIterator>
+            </NameTestIterator>
+           </ChildAxisIterator>
+          </NameTestIterator>
+         </ForVariable>
+         <WhereClause>
+          <CompareIterator>
+           <FnDataIterator>
+            <NameTestIterator qname="xs:QName(,,category)">
+             <AttributeAxisIterator>
+              <NameTestIterator qname="xs:QName(,,interest)">
+               <ChildAxisIterator>
+                <NameTestIterator qname="xs:QName(,,profile)">
+                 <ChildAxisIterator>
+                  <ForVarIterator varname="t"/>
+                 </ChildAxisIterator>
+                </NameTestIterator>
+               </ChildAxisIterator>
+              </NameTestIterator>
+             </AttributeAxisIterator>
+            </NameTestIterator>
+           </FnDataIterator>
+           <ForVarIterator varname="i"/>
+          </CompareIterator>
+         </WhereClause>
+         <ReturnClause>
+          <ElementIterator>
+           <SingletonIterator value="xs:QName(,,personne)"/>
+           <ElementContentIterator>
+            <FnConcatIterator>
+             <ElementIterator>
+              <SingletonIterator value="xs:QName(,,statistiques)"/>
+              <ElementContentIterator>
+               <FnConcatIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,sexe)"/>
+                 <ElementContentIterator>
+                  <EnclosedIterator attr_cont="false">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator>
+                     <NameTestIterator qname="xs:QName(,,gender)">
+                      <ChildAxisIterator>
+                       <NameTestIterator qname="xs:QName(,,profile)">
+                        <ChildAxisIterator>
+                         <ForVarIterator varname="t"/>
+                        </ChildAxisIterator>
+                       </NameTestIterator>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </EnclosedIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,age)"/>
+                 <ElementContentIterator>
+                  <EnclosedIterator attr_cont="false">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator>
+                     <NameTestIterator qname="xs:QName(,,age)">
+                      <ChildAxisIterator>
+                       <NameTestIterator qname="xs:QName(,,profile)">
+                        <ChildAxisIterator>
+                         <ForVarIterator varname="t"/>
+                        </ChildAxisIterator>
+                       </NameTestIterator>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </EnclosedIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,education)"/>
+                 <ElementContentIterator>
+                  <EnclosedIterator attr_cont="false">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator>
+                     <NameTestIterator qname="xs:QName(,,education)">
+                      <ChildAxisIterator>
+                       <NameTestIterator qname="xs:QName(,,profile)">
+                        <ChildAxisIterator>
+                         <ForVarIterator varname="t"/>
+                        </ChildAxisIterator>
+                       </NameTestIterator>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </EnclosedIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,revenu)"/>
+                 <ElementContentIterator>
+                  <EnclosedIterator attr_cont="false">
+                   <FnDataIterator>
+                    <NodeSortIterator>
+                     <NameTestIterator qname="xs:QName(,,income)">
+                      <AttributeAxisIterator>
+                       <NameTestIterator qname="xs:QName(,,profile)">
+                        <ChildAxisIterator>
+                         <ForVarIterator varname="t"/>
+                        </ChildAxisIterator>
+                       </NameTestIterator>
+                      </AttributeAxisIterator>
+                     </NameTestIterator>
+                    </NodeSortIterator>
+                   </FnDataIterator>
+                  </EnclosedIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+               </FnConcatIterator>
+              </ElementContentIterator>
+             </ElementIterator>
+             <ElementIterator>
+              <SingletonIterator value="xs:QName(,,coordonnees)"/>
+              <ElementContentIterator>
+               <FnConcatIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,nom)"/>
+                 <ElementContentIterator>
+                  <EnclosedIterator attr_cont="false">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator>
+                     <NameTestIterator qname="xs:QName(,,name)">
+                      <ChildAxisIterator>
+                       <ForVarIterator varname="t"/>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </EnclosedIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,rue)"/>
+                 <ElementContentIterator>
+                  <EnclosedIterator attr_cont="false">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator>
+                     <NameTestIterator qname="xs:QName(,,street)">
+                      <ChildAxisIterator>
+                       <NameTestIterator qname="xs:QName(,,address)">
+                        <ChildAxisIterator>
+                         <ForVarIterator varname="t"/>
+                        </ChildAxisIterator>
+                       </NameTestIterator>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </EnclosedIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,ville)"/>
+                 <ElementContentIterator>
+                  <EnclosedIterator attr_cont="false">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator>
+                     <NameTestIterator qname="xs:QName(,,city)">
+                      <ChildAxisIterator>
+                       <NameTestIterator qname="xs:QName(,,address)">
+                        <ChildAxisIterator>
+                         <ForVarIterator varname="t"/>
+                        </ChildAxisIterator>
+                       </NameTestIterator>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </EnclosedIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,pays)"/>
+                 <ElementContentIterator>
+                  <EnclosedIterator attr_cont="false">
+                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator>
+                     <NameTestIterator qname="xs:QName(,,country)">
+                      <ChildAxisIterator>
+                       <NameTestIterator qname="xs:QName(,,address)">
+                        <ChildAxisIterator>
+                         <ForVarIterator varname="t"/>
+                        </ChildAxisIterator>
+                       </NameTestIterator>
+                      </ChildAxisIterator>
+                     </NameTestIterator>
+                    </ChildAxisIterator>
+                   </KindTestIterator>
+                  </EnclosedIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+                <ElementIterator>
+                 <SingletonIterator value="xs:QName(,,reseau)"/>
+                 <ElementContentIterator>
+                  <FnConcatIterator>
+                   <ElementIterator>
+                    <SingletonIterator value="xs:QName(,,courrier)"/>
+                    <ElementContentIterator>
+                     <EnclosedIterator attr_cont="false">
+                      <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                       <ChildAxisIterator>
+                        <NameTestIterator qname="xs:QName(,,emailaddress)">
+                         <ChildAxisIterator>
+                          <ForVarIterator varname="t"/>
+                         </ChildAxisIterator>
+                        </NameTestIterator>
+                       </ChildAxisIterator>
+                      </KindTestIterator>
+                     </EnclosedIterator>
+                    </ElementContentIterator>
+                   </ElementIterator>
+                   <ElementIterator>
+                    <SingletonIterator value="xs:QName(,,pagePerso)"/>
+                    <ElementContentIterator>
+                     <EnclosedIterator attr_cont="false">
+                      <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                       <ChildAxisIterator>
+                        <NameTestIterator qname="xs:QName(,,homepage)">
+                         <ChildAxisIterator>
+                          <ForVarIterator varname="t"/>
+                         </ChildAxisIterator>
+                        </NameTestIterator>
+                       </ChildAxisIterator>
+                      </KindTestIterator>
+                     </EnclosedIterator>
+                    </ElementContentIterator>
+                   </ElementIterator>
+                  </FnConcatIterator>
+                 </ElementContentIterator>
+                </ElementIterator>
+               </FnConcatIterator>
+              </ElementContentIterator>
+             </ElementIterator>
+             <ElementIterator>
+              <SingletonIterator value="xs:QName(,,cartePaiement)"/>
+              <ElementContentIterator>
+               <EnclosedIterator attr_cont="false">
+                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                 <ChildAxisIterator>
+                  <NameTestIterator qname="xs:QName(,,creditcard)">
+                   <ChildAxisIterator>
+                    <ForVarIterator varname="t"/>
+                   </ChildAxisIterator>
+                  </NameTestIterator>
+                 </ChildAxisIterator>
+                </KindTestIterator>
+               </EnclosedIterator>
+              </ElementContentIterator>
+             </ElementIterator>
+            </FnConcatIterator>
+           </ElementContentIterator>
+          </ElementIterator>
+         </ReturnClause>
+        </FLWORIterator>
        </FnConcatIterator>
       </EnclosedIterator>
      </ElementContentIterator>
