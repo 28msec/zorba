@@ -40,6 +40,7 @@ namespace zorba {
       long theStoreTraceLevel;
 #endif
       bool theCompileOnly;
+      int theTimezone;
       std::vector<std::string> theExternalVars;            
       /**
        * Constructor.
@@ -165,6 +166,9 @@ namespace zorba {
 
       bool
       compileOnly () { return theCompileOnly; }
+
+      int
+      timezone () { return theTimezone; }
 
 #ifndef NDEBUG
       bool

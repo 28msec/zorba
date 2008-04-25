@@ -41,7 +41,8 @@ namespace zorba
     theTraceCodegen(false),
     theStoreTraceLevel(0)
 #endif
-    ,theCompileOnly(false)
+  ,theCompileOnly(false)
+  ,theTimezone (0)
   {
   }
   
@@ -138,6 +139,7 @@ namespace zorba
       ("store-trace-level", po::value<long>(&theStoreTraceLevel), "store trace level (<= 0 : no tracing)")
 #endif
       ("compile-only", "only compile (don't execute)")
+      ("tz", po::value<int>(&theTimezone), "time zone")
       ("external-vars,x", po::value<std::vector<std::string> >(&theExternalVars), "external variables (e.g. -x x=file1.xml -x y:=strValue)")
     ;
   

@@ -94,6 +94,7 @@ int _tmain(int argc, _TCHAR* argv[])
   // set external variables
   vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
   DynamicContext* dctx = query->getDynamicContext ();
+  dctx->setImplicitTimezone (lProp->timezone ());
   for (vector<pair <string, string> >::const_iterator iter = ext_vars.begin ();
        iter != ext_vars.end (); iter++) {
     set_var (iter->first, iter->second, dctx);
