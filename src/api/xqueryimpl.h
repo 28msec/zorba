@@ -34,7 +34,7 @@ namespace zorba {
     serialize(std::ostream&, const XQuery::SerializerOptions_t& = XQuery::SerializerOptions());
 
     void 
-    applyUpdates(std::ostream& os);
+    applyUpdates();
 
     ResultIterator_t
     iterator();
@@ -105,6 +105,11 @@ namespace zorba {
     // if not, fire an error
     void
     checkCompiled() const;
+
+    // check whether the query has not been compiled
+    // if so, fire an error
+    void
+    checkNotCompiled() const;
 
     // static stuff
     xqpString              theFileName; // the filename of the query

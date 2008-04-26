@@ -207,6 +207,7 @@ namespace zorba {
   {
     ZORBA_TRY
       checkClosed();
+      checkNotCompiled();
       xqpString lQuery = Unmarshaller::getInternalString(aQuery);
       std::istringstream lQueryStream(lQuery);
       doCompile(lQueryStream, aHints);
@@ -218,6 +219,7 @@ namespace zorba {
   {
     ZORBA_TRY
       checkClosed();
+      checkNotCompiled();
       doCompile(aQuery, aHints);
     ZORBA_CATCH
   }
@@ -228,6 +230,7 @@ namespace zorba {
   {
     ZORBA_TRY
       checkClosed();
+      checkNotCompiled();
       theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
       xqpString lQuery = Unmarshaller::getInternalString(aQuery);
       std::istringstream lQueryStream(lQuery);
@@ -241,6 +244,7 @@ namespace zorba {
   {
     ZORBA_TRY
       checkClosed();
+      checkNotCompiled();
       theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
 
       doCompile(aQuery, aHints);
@@ -353,7 +357,7 @@ namespace zorba {
   }
 
   void 
-  XQueryImpl::applyUpdates(std::ostream& os)
+  XQueryImpl::applyUpdates()
   {
     ZORBA_TRY
       checkClosed();
@@ -461,6 +465,15 @@ namespace zorba {
     if ( ! thePlan ) {
       ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
           "Can't perform the operation because the query is not compiled");
+    }
+  }
+
+  void
+  XQueryImpl::checkNotCompiled() const
+  {
+    if ( thePlan ) {
+      ZORBA_ERROR_DESC(ZorbaError::API0004_XQUERY_ALREADY_COMPILED, 
+          "Can't perform the operation because the query has already been compiled");
     }
   }
 

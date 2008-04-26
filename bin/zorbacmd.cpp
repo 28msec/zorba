@@ -235,24 +235,32 @@ int _tmain(int argc, _TCHAR* argv[])
 
   try
   {
-    if (lTiming)
-      lStartFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
-
     zorba::XQuery::SerializerOptions lSerOptions;
     createSerializerOptions(lSerOptions, &lProperties); 
 
-    lQuery->serialize(*lOutputStream, lSerOptions);
+    if (lTiming)
+      lStartFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
+
+    if (lQuery->isUpdateQuery()) {
+      lQuery->applyUpdates();
+    } else  {
+      lQuery->serialize(*lOutputStream, lSerOptions);
+    }
 
     if (lTiming)
       lStopFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
 
-    lNumExecutions--;
+    --lNumExecutions;
 
     if (lTiming)
       lStartExecutionTime = boost::posix_time::microsec_clock::local_time();
 
     while (--lNumExecutions >= 0 ) {
-      lQuery->serialize(*lOutputStream, lSerOptions);
+      if (lQuery->isUpdateQuery()) {
+        lQuery->applyUpdates();
+      } else  {
+        lQuery->serialize(*lOutputStream, lSerOptions);
+      }
     }
 
     if (lTiming)

@@ -103,15 +103,6 @@ namespace zorba {
     return "";
   }
 
-
-  bool   
-  StaticContextImpl::deleteNamespace( const String& prefix )
-  {
-    assert(false);
-    return false;
-  }
-
-
   bool   
   StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
   {
@@ -161,54 +152,6 @@ namespace zorba {
       ZorbaImpl::notifyError(theErrorHandler, e.what());
     }
     return "";
-  }
-
-
-  bool   
-  StaticContextImpl::addExternalVariableType( const String& var_name, TypeIdentifier_t var_type)
-  {
-    ZORBA_TRY
-      assert(false);
-    ZORBA_CATCH;
-    return true;
-  }
-
-
-  TypeIdentifier_t 
-  StaticContextImpl::getExternalVariableType( const String& var_name )
-  {
-    try { 
-      assert(false);
-    } catch (error::ZorbaError& e) {
-      ZorbaImpl::notifyError(theErrorHandler, e);
-    } catch (std::exception& e) {
-      ZorbaImpl::notifyError(theErrorHandler, e.what());
-    }
-    return TypeIdentifier::createAnyNodeType();
-  }
-
-
-  bool   
-  StaticContextImpl::deleteExternalVariableType( const String& var_name )
-  {
-    assert(false);
-    return false;
-  }
-
-
-  bool   
-  StaticContextImpl::setContextItemType( TypeIdentifier_t type )
-  {
-    assert(false);
-    return false;
-  }
-
-
-  TypeIdentifier_t   
-  StaticContextImpl::getContextItemType( ) const
-  {
-    assert(false);
-    return TypeIdentifier::createAnyNodeType();
   }
 
   bool   
@@ -414,7 +357,7 @@ namespace zorba {
   }
 
 
-  bool   
+  void   
   StaticContextImpl::getCopyNamespacesMode( StaticContext::preserve_mode_t& preserve, 
                                             StaticContext::inherit_mode_t& inherit ) const
   {
@@ -423,9 +366,7 @@ namespace zorba {
                       StaticContext::preserve_ns:StaticContext::no_preserve_ns;
       inherit = theCtx->inherit_mode()==StaticContextConsts::inherit_ns?
                       StaticContext::inherit_ns:StaticContext::no_inherit_ns;
-      return true;
     ZORBA_CATCH
-    return false;
   }
 
 

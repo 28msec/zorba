@@ -256,8 +256,7 @@ main(int argc, char** argv)
       {
         if (lQueries.back()->isUpdateQuery()) 
         {
-          std::stringstream lStream;
-          lQueries.back()->applyUpdates(lStream);
+          lQueries.back()->applyUpdates();
           std::cout << "Updating Query -> no Result" << std::endl;
         }
         else

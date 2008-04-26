@@ -10,7 +10,6 @@ namespace zorba {
     public:
       virtual ~ErrorHandler() {}
 
-
       virtual void
       staticError ( const StaticException& aStaticError ) = 0;
 

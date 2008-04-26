@@ -39,8 +39,10 @@ namespace zorba {
   {
     ZORBA_TRY
       store::Item_t lItem;
-      if (!theIsOpened) 
-        return false; // todo throw error here
+      if (!theIsOpened)  {
+        ZORBA_ERROR_DESC(ZorbaError::API0010_XQUERY_EXECUTION_NOT_STARTED,
+          "ResultIterator has not been opened");
+       }
 
       lItem = thePlan->next();
 

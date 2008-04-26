@@ -107,7 +107,7 @@ int _tmain(int argc, _TCHAR* argv[])
     try {
       if (lProp->useSerializer()) {
         if (query->isUpdateQuery())
-          query->applyUpdates(*resultFile);
+          query->applyUpdates();
         else
           *resultFile << query;
       } else {

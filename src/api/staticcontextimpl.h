@@ -34,9 +34,6 @@ namespace zorba {
       getNamespaceURIByPrefix( const String& prefix ) const;
 
       virtual bool   
-      deleteNamespace( const String& prefix );
-
-      virtual bool   
       setDefaultElementAndTypeNamespace( const String& URI );
       
       virtual String   
@@ -47,21 +44,6 @@ namespace zorba {
       
       virtual String   
       getDefaultFunctionNamespace( ) const;
-
-      virtual bool   
-      addExternalVariableType( const String& var_name, TypeIdentifier_t var_type);
-
-      virtual TypeIdentifier_t 
-      getExternalVariableType( const String& var_name );
-
-      virtual bool   
-      deleteExternalVariableType( const String& var_name );
-
-      virtual bool   
-      setContextItemType( TypeIdentifier_t type );
-
-      virtual TypeIdentifier_t   
-      getContextItemType( ) const;
 
       virtual bool   
       addCollation( const String& URI );
@@ -107,7 +89,7 @@ namespace zorba {
       setCopyNamespacesMode( StaticContext::preserve_mode_t preserve, 
                              StaticContext::inherit_mode_t inherit );
 
-      virtual bool   
+      virtual void   
       getCopyNamespacesMode( StaticContext::preserve_mode_t& preserve, 
                              StaticContext::inherit_mode_t& inherit ) const;
 

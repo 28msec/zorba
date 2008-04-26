@@ -56,106 +56,253 @@ namespace zorba {
        */
       virtual ~StaticContext() {}
 
+      /** \brief Create a child static context, i.e. a context with the same information,
+       *         of the given static context.
+       *
+       * A child static context carries the same context as it's parent but
+       * can override any information. 
+       */
       virtual StaticContext_t
       createChildContext() const = 0;
       
+      /** \brief Add a pair (prefix, URI) to the statically known namespaces that
+       *         are available during query compilation.
+       *
+       *  See http://www.w3.org/TR/xquery/#static_context.
+       *
+       *  @param aPrefix the prefix String.
+       *  @param aURI the URI String.
+       *  @return true if the pair was added to the set of statically known namespaces,
+       *          false otherwise.
+       *  @throw ZorbaException if an error occures.
+       */
       virtual bool   
-      addNamespace( const String& prefix, const String& URI ) = 0;
+      addNamespace( const String& aPrefix, const String& aURI ) = 0;
       
+      /** \brief Get the namespace URI for a given prefix.
+       *
+       * @param aPrefix the prefix for which to retrieve the namespace URI.
+       * @return String the URI for the given prefix or an empty String if no URI
+       *         could be found for the given prefix and an ErrorHandler has been
+       *         registered.
+       * @throw ZorbaException if an error occured (e.g. no URI could be found for the given prefix).
+       */
       virtual String   
-      getNamespaceURIByPrefix( const String& prefix ) const = 0;
+      getNamespaceURIByPrefix( const String& aPrefix ) const = 0;
 
+      /** \brief Set the default element and type namespace 
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aURI of the default element and type namespace URI.
+       * @return true if the default element and type namespace URI has been set, false otherwise
+       *         if an ErrorHandler has been registered.
+       * @throw ZorbaException if an error occured.
+       */
       virtual bool   
-      deleteNamespace( const String& prefix ) = 0;
-
-      virtual bool   
-      setDefaultElementAndTypeNamespace( const String& URI ) = 0;
+      setDefaultElementAndTypeNamespace( const String& aURI ) = 0;
       
+      /** \brief Get the default element and type namespace URI.
+       *
+       * @return String the URI for the default element and type namespace.
+       * @throw ZorbaException if an error occured.
+       */
       virtual String   
       getDefaultElementAndTypeNamespace( ) const = 0;
 
+      /** \brief Set the default functionnamespace 
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aURI of the default function namespace.
+       * @return true if the default function namespace URI has been set, false otherwise
+       *         if an ErrorHandler has been registered.
+       * @throw ZorbaException if an error occured.
+       */
       virtual bool   
-      setDefaultFunctionNamespace( const String& URI ) = 0;
+      setDefaultFunctionNamespace( const String& aURI ) = 0;
       
+      /** \brief Get the default function namespace.
+       *
+       * @return String the URI of the default function namespace.
+       *         ErrorHandler has been registered.
+       * @throw ZorbaException if an error occured.
+       */
       virtual String   
       getDefaultFunctionNamespace( ) const = 0;
 
+      /** \brief Adds a collation URI.
+       *
+       * The URI specifies the locale and collation strength of the collation that is added.
+       * A valid collation URI must begin with http://www.flworfound.org/collations/.
+       * This prefix is followed by a collation strength (i.e. PRIMARY, SECONDARY, TERTIARY,
+       * QUATTERNARY, or IDENTICAL) followed by a '/'.
+       * After the strength a lower-case two- or three-letter ISO-639 language code must follow.
+       * The URI may end with an upper-case two-letter ISO-3166.
+       * For example, http://www.flworfound.org/collations/PRIMARY/en/US
+       * specifies an english language with US begin the country..
+       *
+       * Internally, ICU is used for comparing strings. For detailed description see
+       * http://www.icu-project.org/apiref/icu4c/classCollator.html
+       * and http://www.icu-project.org/apiref/icu4c/classLocale.html
+       * 
+       * @param aURI the URI of the collation.
+       * @return true if the collation was added, false otherwise (e.g. the URI was not
+       *         a valid collation URI).
+       * @throw ZorbaException if an error occured.
+       */
       virtual bool   
-      addExternalVariableType( const String& var_name, TypeIdentifier_t var_type) = 0;
+      addCollation( const String& aURI ) = 0;
 
-      virtual TypeIdentifier_t 
-      getExternalVariableType( const String& var_name ) = 0;
-
+      /** \brief Set the URI of the default collation.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param the URI of the default collation.
+       * @return true if the default collation URI has been set, false otherwise.
+       * @throw ZorbaException if an error occured.
+       */
       virtual bool   
-      deleteExternalVariableType( const String& var_name ) = 0;
+      setDefaultCollation( const String& aURI ) = 0;
 
-      virtual bool   
-      setContextItemType( TypeIdentifier_t type ) = 0;
-
-      virtual TypeIdentifier_t   
-      getContextItemType( ) const = 0;
-
-      virtual bool   
-      addCollation( const String& uri ) = 0;
-
-      virtual bool   
-      setDefaultCollation( const String& URI ) = 0;
-
+      /** \brief Get the URI of the default collation
+       *
+       * @return String the URI of the default collation.
+       */
       virtual String 
       getDefaultCollation() const = 0;
 
+      /** \brief Set the XPath 1.0 compatibility mode.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aMode the XPath 1.0 compatibility mode.
+       * @return true if the mode was set, false otherwise.
+       */
       virtual bool   
-      setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode ) = 0;
+      setXPath1_0CompatibMode( xpath1_0compatib_mode_t aMode ) = 0;
 
+      /** \brief Get the XPath 1.0 compatibility mode.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @return xpath1_0compatib_mode_t the XPath 1.0 compatibility mode.
+       */
       virtual xpath1_0compatib_mode_t  
       getXPath1_0CompatibMode( ) const = 0;
 
+      /** \brief Set the construction mode.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aMode the construction mode.
+       * @return true if the mode was set, false otherwise.
+       */
       virtual bool   
       setConstructionMode( construction_mode_t ) = 0;
 
+      /** \brief Get the construction mode.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @return construction_mode_t the construction mode.
+       */
       virtual construction_mode_t  
       getConstructionMode( ) const = 0;
 
+      /** \brief Set the ordering mode.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aMode the ordering mode.
+       * @return true if the mode was set, false otherwise.
+       */
       virtual bool   
       setOrderingMode( ordering_mode_t ) = 0;
 
+      /** \brief Get the ordering mode.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @return ordering_mode_t the ordering mode.
+       */
       virtual ordering_mode_t  
       getOrderingMode( ) const = 0;
 
+      /** \brief Set the default order for the empty sequence.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aMode the default order for the empty sequence.
+       * @return true if the mode was set, false otherwise.
+       */
       virtual bool   
       setDefaultOrderForEmptySequences( order_empty_mode_t ) = 0;
 
+      /** \brief Get the default order for the empty sequence.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @return order_empty_mode_t the ordering mode.
+       */
       virtual order_empty_mode_t   
       getDefaultOrderForEmptySequences( ) const = 0;
 
+      /** \brief Set the boundary space policy.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aMode the boundary space policy.
+       * @return true if the mode was set, false otherwise.
+       */
       virtual bool   
       setBoundarySpacePolicy( boundary_space_mode_t ) = 0;
 
+      /** \brief Get the boundary space policy.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @return boundary_space_mode_t the boundary space policy.
+       */
       virtual boundary_space_mode_t  
       getBoundarySpacePolicy( ) const = 0;
 
-
+      /** \brief Set the copy namespace mode.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aPreserve the preserve mode.
+       * @param aInherit the inherit mode.
+       * @return true if the mode was set, false otherwise.
+       */
       virtual bool   
-      setCopyNamespacesMode( preserve_mode_t preserve, 
-                             inherit_mode_t inherit ) = 0;
+      setCopyNamespacesMode( preserve_mode_t aPreserve, 
+                             inherit_mode_t aInherit ) = 0;
 
+      /** \brief Get the copy namespace mode.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @return aPreserve the preserve mode.
+       * @return aInherit the inherit mode.
+       */
+      virtual void   
+      getCopyNamespacesMode( preserve_mode_t& aPreserve, 
+                             inherit_mode_t& aInherit ) const = 0;
+
+      /** \brief Set the base URI.
+       *         (see http://www.w3.org/TR/xquery/#static_context)
+       *
+       * @param aBaseURI the base URI as String.
+       * @return true if the base URI has been set, false otherwise.
+       */
       virtual bool   
-      getCopyNamespacesMode( preserve_mode_t& preserve, 
-                              inherit_mode_t& inherit ) const = 0;
+      setBaseURI( const String& aBaseURI ) = 0;
 
-      virtual bool   
-      setBaseURI( const String& baseURI ) = 0;
-
+      /** \brief Get the base URI.
+       *
+       * @return String the base URI.
+       */
       virtual String   
       getBaseURI( ) const = 0;
 
 
-      /**
-       * functions that are used for registering external functions
+      /** \brief Register a stateless external function.
+       *
+       * Register an external function that can be called within a query.
+       * The caller keeps the ownership of the StatelessExternalFunction object passed
+       * to this function.
+       *
+       * @param aExternalFunction the stateless external function.
+       * @return true if the function has been set, false otherwise.
        */
       virtual bool 
       registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
-
 
   };
 

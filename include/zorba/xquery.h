@@ -9,8 +9,7 @@
 
 namespace zorba {
 
-  /** \brief This class is the representation for an %XQuery in the %Zorba
-   *         engine.
+  /** \brief This class is the representation of a %XQuery in the %Zorba engine.
    *
    * It is used for compiling and executing a query. An instance of
    * this class is not thread safe, i.e.\ on object can not be executed/serialized
@@ -208,17 +207,29 @@ namespace zorba {
       virtual bool
       isUpdateQuery() const = 0;
 
-      // xml serialization
-      // prepares the query with the default dynamic that belongs to this query
-      // it can be retrieved using getDynamicContext. 
+      /** \brief Serialize the result of the query as text to the given output stream.
+       *
+       * @param aOutStream the output stream on which the result is written.
+       * @param aSerOptions an optinal set of serialization options.
+       * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled)
+       */
       virtual void
-      serialize(std::ostream&, const SerializerOptions_t& = SerializerOptions()) = 0;
+      serialize(std::ostream& aOutStream, 
+                const SerializerOptions_t& aSerOptions = SerializerOptions()) = 0;
 
+      /** \brief Apply/execute the query if it is an updating query.
+       *
+       * @throw ZorbaException if an error occured, e.g. if the query has been closed, if the query
+       *        has not been compiled, or an error occures during execution.
+       */
       virtual void 
-      applyUpdates(std::ostream& os) = 0;
+      applyUpdates() = 0;
 
-      // get an result iterator
-      // prepares the query with the default dynamic context if non is set using prepare
+      /** \brief Get an iterator for the result of the query.
+        *
+        * @return ResultIterator iterator over the result sequence.
+        * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled).
+        */
       virtual ResultIterator_t
       iterator() = 0;
 
@@ -258,20 +269,60 @@ namespace zorba {
       virtual const StaticContext*
       getStaticContext() const = 0;
 
+      /** \brief Compile the give query String.
+       *
+       * @param aQuery the query String to compile.
+       * @throw ZorbaException if the query has been closed, is already compiled, or
+       *        an error occurs while compiling the query.
+       */
       virtual void
-      compile(const String&) = 0;
+      compile(const String& aQuery) = 0;
 
+      /** \brief Compile the give query String with the given compiler hints.
+       *
+       * @param aQuery the query String to compile.
+       * @param aHints hints passed to the query compiler.
+       * @throw ZorbaException if the query has been closed, is already compiled, or
+       *        an error occurs while compiling the query.
+       */
       virtual void 
-      compile(const String&, const XQuery::CompilerHints_t& aHints) = 0;
+      compile(const String& aQuery, const XQuery::CompilerHints_t& aHints) = 0;
       
+      /** \brief Compile the query given as an input stream with the given compiler hints.
+       *
+       * @param aQuery the query input stream.
+       * @param aHints hints passed to the query compiler.
+       * @throw ZorbaException if the query has been closed, is already compiled, or
+       *        an error occurs while compiling the query.
+       */
       virtual void 
-      compile(std::istream&, const XQuery::CompilerHints_t& aHints) = 0;
+      compile(std::istream& aQuery, const XQuery::CompilerHints_t& aHints) = 0;
       
+      /** \brief Compile the give query String with the given static context and the 
+       *         given compiler hints.
+       *
+       * @param aQuery the query String to compile.
+       * @param aStaticContext the static context.
+       * @param aHints hints passed to the query compiler.
+       * @throw ZorbaException if the query has been closed, is already compiled, or
+       *        an error occurs while compiling the query.
+       */
       virtual void 
-      compile(const String&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints) = 0;
+      compile(const String& aQuery, const StaticContext_t& aStaticContext, 
+              const XQuery::CompilerHints_t& aHints) = 0;
       
+      /** \brief Compile the query given as an input stream with the given static context and the 
+       *         given compiler hints.
+       *
+       * @param aQuery the query input stream.
+       * @param aStaticContext the static context.
+       * @param aHints hints passed to the query compiler.
+       * @throw ZorbaException if the query has been closed, is already compiled, or
+       *        an error occurs while compiling the query.
+       */
       virtual void 
-      compile(std::istream&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints) = 0;
+      compile(std::istream& aQuery, const StaticContext_t& aStaticContext, 
+              const XQuery::CompilerHints_t& aHints) = 0;
 
       //Set the fileName
       virtual void
