@@ -50,7 +50,7 @@ protected:
   std::stack<XmlNode*>             theNodeStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 
-  xqpStringStore                   theWarnings;
+  std::string                      theWarnings;
 
   char                             theBuffer[4096];
 

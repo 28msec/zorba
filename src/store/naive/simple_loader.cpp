@@ -530,8 +530,9 @@ void  XmlLoader::endElement(
         prevChild != NULL &&
         prevChild->getNodeKind() == StoreConsts::textNode)
     {
-      prevChild->getStringValueP()->str() = currChild->getStringValueP()->str() +
-                                            prevChild->getStringValueP()->str();
+      TextNode* textNode = reinterpret_cast<TextNode*>(prevChild);
+      textNode->theContent = new xqpStringStore(currChild->getStringValueP()->str() +
+                                                textNode->theContent->str());
       delete currChild;
     }
     else
@@ -757,9 +758,9 @@ void  XmlLoader::warning(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  if (loader.theWarnings.bytes() > 0)
-    loader.theWarnings.str() += "+ ";
-  loader.theWarnings.str() += buf;
+  if (loader.theWarnings.size() > 0)
+    loader.theWarnings += "+ ";
+  loader.theWarnings += buf;
 }
 
 #undef ZORBA_ERROR_DESC_CONTINUE

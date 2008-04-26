@@ -18,7 +18,7 @@ class CompilerCB;
 class xquery_driver
 {
 public:
-  xqpString theFilename;
+  std::string theFilename;
   symbol_table symtab;
   rchandle<parsenode> expr_p;
   bool rename_bit;

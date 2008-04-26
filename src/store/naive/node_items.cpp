@@ -880,6 +880,7 @@ void ConstrDocumentNode::constructSubtree(
     const CopyMode& copymode)
 {
   Item_t item = childrenIte->next();
+
   while (item != NULL)
   {
     ZORBA_FATAL(item->isNode(), "");
@@ -893,7 +894,7 @@ void ConstrDocumentNode::constructSubtree(
       if (cnode->getNodeKind() == StoreConsts::textNode)
       {
         TextNode* textNode = reinterpret_cast<TextNode*>(cnode);
-        if (textNode->theContent->str() == "")
+        if (textNode->theContent->empty())
         {
           item = childrenIte->next();
           continue;
@@ -904,7 +905,8 @@ void ConstrDocumentNode::constructSubtree(
 
         if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
         {
-          lsib->getStringValueP()->str() += textNode->getStringValueP()->str();
+          TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
+          textSibling->theContent = textSibling->theContent->append(textNode->theContent);
 
           item = childrenIte->next();
           continue;
@@ -1202,14 +1204,14 @@ void ElementNode::addBindingForQName(Item* qname)
     }
     else if (!ns2->byteEqual(*ns))
     {
-      std::auto_ptr<xqpStringStore> prefix(new xqpStringStore("XXX"));
-      while (findBinding(prefix.get()) != NULL)
-        prefix->str() += "X";
+      xqpStringStore_t prefix(new xqpStringStore("XXX"));
+
+      while (findBinding(prefix) != NULL)
+        prefix = prefix->append("X");
 
       QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(qname);
-      qn->thePrefix = prefix.get();
-      addLocalBinding(prefix.get(), ns);
-      prefix.release();
+      qn->thePrefix = prefix;
+      addLocalBinding(prefix, ns);
     }
   }
 }
@@ -1952,7 +1954,8 @@ void ConstrElementNode::addChild(
 
       if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
       {
-        lsib->getStringValueP()->str() += textNode->getStringValueP()->str();
+        TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
+        textSibling->theContent = textSibling->theContent->append(textNode->theContent);
         return;
       }
     }
@@ -2371,7 +2374,8 @@ XmlNode* TextNode::copy(
 
       if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
       {
-        lsib->getStringValueP()->str() += theContent->str();
+        TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
+        textSibling->theContent = textSibling->theContent->append(theContent);
         return lsib;
       }
 

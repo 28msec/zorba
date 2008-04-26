@@ -376,14 +376,23 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
     }
     else
     {
-      std::auto_ptr<xqpStringStore> stringValue(new xqpStringStore(""));
+      xqpStringStore_t stringValue;
 
       lWith = consumeNext(theChild1, aPlanState); 
-      while (lWith != 0)
+      if (lWith != 0)
       {
-        stringValue->str() += lWith->getStringValue()->c_str();
+        stringValue = lWith->getStringValue();
 
+        std::string buf;
         lWith = consumeNext(theChild1, aPlanState);
+        while (lWith != 0)
+        {
+          buf += lWith->getStringValue()->str();
+
+          lWith = consumeNext(theChild1, aPlanState);
+        }
+        if (!buf.empty())
+          stringValue = stringValue->append(buf);
       }
 
       if (lTargetKind == store::StoreConsts::commentNode &&
@@ -397,7 +406,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
         ZORBA_ERROR_LOC(ZorbaError::XQDY0026, loc);
       }
 
-      lPul->addReplaceValue(lTarget, stringValue.release());
+      lPul->addReplaceValue(lTarget, stringValue);
     }
   }
 
@@ -416,7 +425,8 @@ RenameIterator::RenameIterator (
     PlanIter_t name)
   :
   BinaryBaseIterator<RenameIterator, PlanIteratorState>(aLoc, target, name)
-{ }
+{ 
+}
 
 
 store::Item_t

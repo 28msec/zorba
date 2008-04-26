@@ -5,7 +5,7 @@
 
 namespace zorba { namespace store {
 
-NsBindingsContext::NsBindingsContext(unsigned long numBindings)
+NsBindingsContext::NsBindingsContext(ulong numBindings)
 {
   theBindings.resize(numBindings);
 #if 0
@@ -42,9 +42,9 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
   while (currentContext != NULL)
   {
     const NsBindings& bindings = currentContext->theBindings;
-    unsigned long numBindings = bindings.size();
+    ulong numBindings = bindings.size();
 
-    for (unsigned long i = 0; i < numBindings; i++)
+    for (ulong i = 0; i < numBindings; i++)
     {
       if (bindings[i].first.getStore()->byteEqual(*prefix))
         return bindings[i].second.getStore();
@@ -61,9 +61,9 @@ void NsBindingsContext::addBinding(
     xqpStringStore* prefix,
     xqpStringStore* ns)
 {
-  unsigned long numBindings = theBindings.size();
+  ulong numBindings = theBindings.size();
 
-  for (unsigned long i = 0; i < numBindings; i++)
+  for (ulong i = 0; i < numBindings; i++)
   {
     if (theBindings[i].first.getStore()->byteEqual(*prefix))
     {

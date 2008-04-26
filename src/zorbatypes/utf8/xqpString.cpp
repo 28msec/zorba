@@ -369,6 +369,27 @@ bool xqpStringStore::endsWith(const xqpStringStore* pattern, XQPCollator* coll) 
 /*******************************************************************************
 
 ********************************************************************************/
+xqpStringStore_t xqpStringStore::append(const xqpStringStore_t& suffix) const
+{
+  return new xqpStringStore(theString + suffix->str());
+}
+
+
+xqpStringStore_t xqpStringStore::append(const std::string& suffix) const
+{
+  return new xqpStringStore(theString + suffix);
+}
+
+
+xqpStringStore_t xqpStringStore::append(const char* suffix) const
+{
+  return new xqpStringStore(theString + suffix);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 xqpStringStore_t xqpStringStore::uppercase() const
 {
   uint32_t i;

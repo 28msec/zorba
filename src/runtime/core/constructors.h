@@ -281,14 +281,15 @@ public:
 class EnclosedIteratorState : public PlanIteratorState
 {
 public:
-  xqpStringStore  * theAttrContentString;
+  std::string     * theAttrValueString;
   xqpStringStore  * theElemContentString;
   store::Item_t     theContextItem;
-  store::Iterator_t        theDocChildren;
+  store::Iterator_t theDocChildren;
+
+  ~EnclosedIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
-  ~EnclosedIteratorState();
 };
 
 

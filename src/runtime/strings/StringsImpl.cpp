@@ -361,10 +361,12 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
  *_______________________________________________________________________*/
 /* begin class StringJoinIterator */
 store::Item_t
-StringJoinIterator::nextImpl(PlanState& planState) const {
+StringJoinIterator::nextImpl(PlanState& planState) const
+{
   store::Item_t item;
   store::Item_t resItem;
-  xqpStringStore_t resStr = new xqpStringStore("");
+  std::string buf;
+  xqpStringStore_t resStr;
   xqpStringStore_t separator;
   bool lFirst;
 
@@ -383,9 +385,11 @@ StringJoinIterator::nextImpl(PlanState& planState) const {
       if ( item != NULL )
       {
         item = item->getAtomizationValue();
-        resStr->str() += item->getStringValue()->str();
+        buf += item->getStringValue()->str();
       }
-      else{
+      else
+      {
+        resStr = new xqpStringStore(buf);
         resItem = GENV_ITEMFACTORY->createString(resStr);
         STACK_PUSH( resItem, state );
         break;
@@ -401,21 +405,26 @@ StringJoinIterator::nextImpl(PlanState& planState) const {
       if ( item != NULL )
       {
         item = item->getAtomizationValue();
-        if (!lFirst){
-          resStr->str() += separator->str();
-        } else {
+        if (!lFirst)
+        {
+          buf += separator->str();
+        }
+        else
+        {
           lFirst = false;
         }
-        resStr->str() += item->getStringValue()->str();
+        buf += item->getStringValue()->str();
       }
       else
       {
+        resStr = new xqpStringStore(buf);
         resItem = GENV_ITEMFACTORY->createString(resStr);
         STACK_PUSH( resItem, state );
         break;
       }
     }
   }
+
   STACK_END (state);
 }
 /* end class StringJoinIterator */
