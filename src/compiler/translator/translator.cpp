@@ -2300,9 +2300,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   // try constructor functions
   xqtref_t type = CTXTS->create_named_type(fn_qname, TypeConstants::QUANT_QUESTION);
 
-  xqpStringStore tmp("xs:anyAtomicType");
-
-  if (type != NULL && !fn_qname->getStringValue()->equals(&tmp))
+  if (type != NULL)
   {
     if (sz != 1)
       ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
@@ -2727,6 +2725,11 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
 /// Creates a cast_expr or castable_expr.
 expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast) {
+  if (TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE)
+      || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
+      || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)
+      || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+    ZORBA_ERROR_LOC (ZorbaError::XPST0080, loc);
   if (! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE)
       && ! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION)) {
     if (isCast)
