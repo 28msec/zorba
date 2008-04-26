@@ -904,7 +904,7 @@ DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
   // then the result is $arg with $timezone as the timezone component.
   if (the_time_zone.is_not_a_date_time())
   {
-    if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), context_tz_t->getSeconds(), tz_t))
+    if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), int(context_tz_t->getSeconds()), tz_t))
       assert(0);
     dt_t->the_time_zone = *tz_t;
   }
@@ -917,7 +917,7 @@ DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
 
     dtduration_t = *context_tz_t - *dtduration_t;
     dt_t = dt_t->addDuration(*dtduration_t->toDuration());
-    if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), context_tz_t->getSeconds(), tz_t))
+    if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), int(context_tz_t->getSeconds()), tz_t))
       assert(0);
     dt_t->the_time_zone = *tz_t;
   }
@@ -956,7 +956,7 @@ DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
     // then the result is $arg with $timezone as the timezone component.
     if (the_time_zone.is_not_a_date_time())
     {
-      if (TimeZone::createTimeZone(db_t->getHours(), db_t->getMinutes(), db_t->getSeconds(), tz_t))
+      if (TimeZone::createTimeZone(db_t->getHours(), db_t->getMinutes(), int(db_t->getSeconds()), tz_t))
         assert(0);
       dt_t->the_time_zone = *tz_t;
     }
@@ -973,7 +973,7 @@ DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
 
       dtduration_t = *context_tz_t - *dtduration_t;
       dt_t = dt_t->addDuration(*dtduration_t->toDuration());
-      if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), context_tz_t->getSeconds(), tz_t))
+      if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), int(context_tz_t->getSeconds()), tz_t))
         assert(0);
       dt_t->the_time_zone = *tz_t;
     }

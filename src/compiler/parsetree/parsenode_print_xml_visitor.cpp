@@ -115,7 +115,9 @@ void *begin_visit(const DefaultNamespaceDecl &n)
 {
     INDENT;
 
-    os << "<DefaultNamespaceDecl mode='" << n.get_mode () << "' uri='" << n.get_default_namespace () << "'" << IDS;
+    os << "<DefaultNamespaceDecl mode='" 
+       << (n.get_mode () == ParseConstants::ns_element_default ? "element" : "function") 
+       << "' uri='" << n.get_default_namespace () << "'" << IDS;
 
     os << "/>";
 

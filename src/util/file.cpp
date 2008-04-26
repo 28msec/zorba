@@ -59,12 +59,13 @@ static const uint64_t FS_TYPES[] = {
     0x012FF7B6, 0x00009fa2
   };
 
-static const char *FS_NAMES[] = {
-    "ext2", "adfs", "affs", "coda", "devfs", "efs", "ext2", "ext3", "hpfs", 
-		"isofs", "jffs2", "minix", "minix_30charnames", "minix2", "minix2_30charnames",
-		"msdos", "nfs", "openprom", "proc", "qnx4", "reiserfs", "xenix", "sysv4",
-		"sysv2", "coh", "usbdevice"
-  };
+// This variable is never used
+// static const char *FS_NAMES[] = {
+//    "ext2", "adfs", "affs", "coda", "devfs", "efs", "ext2", "ext3", "hpfs", 
+//		"isofs", "jffs2", "minix", "minix_30charnames", "minix2", "minix2_30charnames",
+//		"msdos", "nfs", "openprom", "proc", "qnx4", "reiserfs", "xenix", "sysv4",
+//		"sysv2", "coh", "usbdevice"
+//  };
 
 
 file::file(const std::string& _path)
