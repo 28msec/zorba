@@ -82,33 +82,34 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 	}
 }
 
+void dynamic_context::destroy_dctx_value (const dctx_value_t* val) {
+  switch (val->type) {
+  case dynamic_context::dctx_value_t::no_val:
+    break;
+  case dynamic_context::dctx_value_t::var_iterator_val:
+    RCHelper::removeReference (val->val.var_iterator);
+    break;
+  case dynamic_context::dctx_value_t::temp_seq_val:
+    RCHelper::removeReference (val->val.temp_seq);
+    break;
+  default:
+    assert (false);
+  }
+}
+
 dynamic_context::~dynamic_context()
 {
 	///free the pointers from ctx_value_t from keymap
 	checked_vector<hashmap<dctx_value_t>::entry>::const_iterator it;
 	const char		*keybuff;//[50];
-	const dctx_value_t* val;
 
 	for(it = keymap.begin(); it != keymap.end(); it++)
 	{
 		///it is an entry
-		//keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
 		keybuff = (*it).key.c_str();
-		if(!strncmp(keybuff, "var:", 4))
+		if(strncmp(keybuff, "var:", 4) == 0)
 		{
-			val = &(*it).val;
-      switch (val->type) {
-      case dynamic_context::dctx_value_t::no_val:
-        break;
-      case dynamic_context::dctx_value_t::var_iterator_val:
-        RCHelper::removeReference (val->val.var_iterator);
-        break;
-      case dynamic_context::dctx_value_t::temp_seq_val:
-        RCHelper::removeReference (val->val.temp_seq);
-        break;
-      default:
-        assert (false);
-      }
+			destroy_dctx_value (&(*it).val);
 		}
 	}
 }
@@ -205,9 +206,13 @@ void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_it
 {
   // TODO: lazy conversion to a temp sequence
   dctx_value_t v;
+  string key = "var:" + var_name;
+  if (keymap.get (key, v))
+    destroy_dctx_value (&v);
+
   v.type = dynamic_context::dctx_value_t::no_val;
   v.in_progress = true;
-  keymap.put ("var:" + var_name, v);
+  keymap.put (key, v);
 
   var_iterator->open ();
   store::TempSeq_t seq = GENV_STORE.createTempSeq (var_iterator.getp());
@@ -216,7 +221,7 @@ void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_it
   v.type = dynamic_context::dctx_value_t::temp_seq_val;
   v.in_progress = false;
   v.val.temp_seq = seq.getp();
-  keymap.put ("var:" + var_name, v);
+  keymap.put (key, v);
 }
 
 

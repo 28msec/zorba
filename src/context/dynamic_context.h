@@ -69,6 +69,8 @@ protected:
 	unsigned long		ctxt_position;
 	//+context size is determined by fn:last() at runtime
 
+  void destroy_dctx_value (const dctx_value_t *);
+
 public:
 	static void init();
 
