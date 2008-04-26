@@ -248,7 +248,10 @@ int32_t xqpStringStore::indexOf(const char* pattern) const
     return -1;
 
   size_t lRes = theString.find(pattern);
-  return (lRes == std::string::npos) ? -1 : lRes;
+  if (lRes == std::string::npos)
+    return -1;
+  else
+    return lRes;
 }
 
 
@@ -265,7 +268,10 @@ int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll
   if ( ! coll ) 
   {
     size_t lRes = theString.find(pattern->c_str());
-    return (lRes == std::string::npos) ? -1 : lRes;
+    if (lRes == std::string::npos)
+      return -1;
+    else
+      return lRes;
   }
 
   UErrorCode status = U_ZERO_ERROR;
@@ -302,7 +308,10 @@ int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll
 int32_t xqpStringStore::lastIndexOf(const char* pattern) const
 {
   size_t lRes = theString.rfind(pattern);
-  return (lRes == std::string::npos) ? -1 : lRes;
+  if (lRes == std::string::npos)
+    return -1;
+  else
+    return lRes;
 }
 
 
@@ -314,7 +323,10 @@ int32_t xqpStringStore::lastIndexOf(const xqpStringStore* pattern, XQPCollator* 
   if ( ! coll )
   {
     size_t lRes = theString.rfind(pattern->c_str());
-    return (lRes == std::string::npos) ? -1 : lRes;
+    if (lRes == std::string::npos)
+      return -1;
+    else
+      return lRes;
   }
 
   UErrorCode status = U_ZERO_ERROR;
