@@ -89,6 +89,7 @@ error_example_4(Zorba* aZorba)
 int 
 errors(int argc, char* argv[])
 {
+#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
 
   std::cout << "executing example 1" << std::endl;
@@ -106,6 +107,7 @@ errors(int argc, char* argv[])
   std::cout << "executing example 4" << std::endl;
 	assert(error_example_4(lZorba)); 
   std::cout << std::endl;
+#endif
   
   return 0;
 }

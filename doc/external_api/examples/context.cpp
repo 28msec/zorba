@@ -207,6 +207,7 @@ context_example_9(Zorba* aZorba)
 int 
 context(int argc, char* argv[])
 {
+#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
 
   std::cout << "executing example 1" << std::endl;
@@ -244,6 +245,7 @@ context(int argc, char* argv[])
   std::cout << "executing example_9" << std::endl;
 	assert(context_example_9(lZorba)); 
   std::cout << std::endl;
+#endif
 
   return 0;
 }

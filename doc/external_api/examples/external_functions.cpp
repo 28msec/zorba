@@ -163,6 +163,7 @@ func_example_4(Zorba* aZorba)
 int 
 external_functions(int argc, char* argv[])
 {
+#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
 
   std::cout << std::endl  << "executing simple external function test 1" << std::endl;
@@ -180,5 +181,7 @@ external_functions(int argc, char* argv[])
   std::cout << std::endl  << "executing simple external function test 4" << std::endl;
 	assert(func_example_4(lZorba)); 
   std::cout << std::endl;
+#endif
+
   return 0;
 }

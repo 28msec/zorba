@@ -74,6 +74,7 @@ chaining_example_2(Zorba* aZorba)
 int 
 chaining(int argc, char* argv[])
 {
+#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
 
   std::cout << "executing example 1" << std::endl;
@@ -83,7 +84,7 @@ chaining(int argc, char* argv[])
   std::cout << "executing example 2" << std::endl;
   assert(chaining_example_2(lZorba)); 
   std::cout << std::endl;
-
+#endif
   
   return 0;
 }

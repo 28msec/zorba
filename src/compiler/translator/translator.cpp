@@ -3673,8 +3673,8 @@ void *begin_visit(const PathExpr& pe)
 
   const QueryLoc& loc = pe.get_location();
   ParseConstants::pathtype_t pe_type = pe.get_type();
-  RelativePathExpr* rpe = pe.get_relpath_expr().dyn_cast<RelativePathExpr>().getp();
-  assert(rpe != NULL);
+
+  assert(pe.get_relpath_expr().dyn_cast<RelativePathExpr>().getp() != NULL);
 
   expr_t result;
   rchandle<relpath_expr> path_expr = NULL;

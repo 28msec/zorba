@@ -137,6 +137,7 @@ serialization_example_7(Zorba* aZorba)
 int 
 serialization(int argc, char* argv[])
 {
+#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
 
   std::cout << "executing serialization example 1" << std::endl;
@@ -166,6 +167,7 @@ serialization(int argc, char* argv[])
   std::cout << "executing serialization example 7" << std::endl;
 	assert(serialization_example_7(lZorba)); 
   std::cout << std::endl;
+#endif
 
   return 0;
 }

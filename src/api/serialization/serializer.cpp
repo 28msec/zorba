@@ -854,7 +854,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
     NsBindings local_nsBindings;
     store::Item_t      item_qname;
     std::vector< xqpString > aNSList; 
-    NsBindings::size_type ns_size;
+    NsBindings::size_type ns_size = 0;
     
 
     if(theSAX2ContentHandler)

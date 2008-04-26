@@ -507,8 +507,8 @@ DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 DurationBase_t DayTimeDuration::operator*(const Double value) const
 {
   Double result;
-  long seconds;
-  long frac_seconds;
+  long seconds = 0;
+  long frac_seconds = 0;
   
   result = Double::parseFloatType(getTotalSeconds()) * value;
   
@@ -524,8 +524,8 @@ DurationBase_t DayTimeDuration::operator*(const Double value) const
 DurationBase_t DayTimeDuration::operator/(const Double value) const
 {
   Double result;
-  long seconds;
-  long frac_seconds;
+  long seconds = 0;
+  long frac_seconds = 0;
   
   result = Double::parseFloatType(getTotalSeconds()) / value;
   
