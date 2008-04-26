@@ -27,7 +27,7 @@ class Collection
 
     /** \brief Adds a Node Item to the Collection
      *
-     * @param Item the Node Item to add.
+     * @param aItem the Node Item to add.
      * @return true if the Node Item was added to the Collection, false otherwise.
      */
     virtual bool
@@ -35,7 +35,7 @@ class Collection
 
     /** \brief Deletes the given Item from the Collection.
      *
-     * @param Item the Node Item to delete
+     * @param aItem the Node Item to delete
      * @return true if the given Node Item was deleted, false otherwise.
      */
     virtual bool
@@ -43,7 +43,7 @@ class Collection
 
     /** \brief Adds the Node Items retrieved from the given ResultIterator to the Collection.
      *
-     * @param ResultIterator the ResultIterator that produces the Node Items to add.
+     * @param aResultIterator the ResultIterator that produces the Node Items to add.
      * @return true if all the Node Items of the given ResultIterator were added to the Collection,
      *         false otherwise.
      */
@@ -52,12 +52,12 @@ class Collection
 
     /** \brief Adds the document retrieved from the given input stream to the Collection.
      *
-     * @param istream the input stream from which to parse the document.
+     * @param aInStream the input stream from which to parse the document.
      * @return true if the document was added to the collection (e.g. was a valid document), 
      *         false otherwise.
      */
     virtual bool
-    addDocument(std::istream& lInStream) = 0;
+    addDocument(std::istream& aInStream) = 0;
 
 }; /* class Collection */
 

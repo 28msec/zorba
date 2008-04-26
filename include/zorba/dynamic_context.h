@@ -107,7 +107,7 @@ namespace zorba {
        *         or dateTime value that does not have a timezone is used in a comparison or 
        *         arithmetic operation.
        *
-       * @param int the implicit timezone that should be used.
+       * @param aTimezone the implicit timezone as int that should be used.
        * @return true if the implicit timezone has been set successfully, false otherwise.
        * @throw ZorbaException if an error occured.
        */

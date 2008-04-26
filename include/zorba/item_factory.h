@@ -169,7 +169,7 @@ namespace zorba {
        * @return The Byte Item.
        */
       virtual Item
-      createByte ( char value ) = 0;
+      createByte ( char aByte ) = 0;
     
       /** \brief Creates a Date Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#date]
@@ -249,15 +249,15 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#duration]
        *
        * @param aYear short-valued representation of the years.
-       * @param aMonth short-valued representation of the months.
-       * @param aDay short-valued representation of the days.
-       * @param aHour short-valued representation of the hours.
-       * @param aMinute short-valued representation of the minutes.
-       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @param aMonths short-valued representation of the months.
+       * @param aDays short-valued representation of the days.
+       * @param aHours short-valued representation of the hours.
+       * @param aMinutes short-valued representation of the minutes.
+       * @param aSeconds double-valued representation of the seconds and fractional seconds.
        * @return The Duration Item.
        */
       virtual Item
-      createDuration ( short aYears, short aMonths, short aDays, 
+      createDuration ( short aYear, short aMonths, short aDays, 
                        short aHours, short aMinutes, double aSeconds ) = 0;
     
       /** \brief creates a float item 
@@ -340,7 +340,7 @@ namespace zorba {
        * @return The gYear Item.
        */
       virtual Item
-      createGYear ( const String& value ) = 0;
+      createGYear ( const String& aValue ) = 0;
     
       /** \brief Creates a gYear Item 
        *         see [http://www.w3.org/TR/xmlschema-2/#gYear]

@@ -48,7 +48,8 @@ namespace zorba {
         /** \brief The optimization level used for optimizing the query. */
         typedef enum {
           O0, /**< Don't use any optimization. */
-          O1  /**< Use basic optimizations (e.g.\ removing sorting, removing duplicate elimination, or constant folding). */
+          O1  /**< Use basic optimizations (e.g.\ removing sorting, removing duplicate elimination, 
+                   or constant folding). */
         } opt_level_t;
 
         /** \brief The optimization level that is used */
@@ -180,13 +181,13 @@ namespace zorba {
        *  the query using the Zorba object (i.e.\ createQuery or compileQuery), then subclasses 
        *  of the ZorbaException class are thrown to report errors.
        *
-       *  @param ErrorHandler to which errors are reported. The caller retains ownership
+       *  @param aErrorHandler ErrorHandler to which errors are reported. The caller retains ownership
        *         over the ErrorHandler passed as parameter.
        *  @throw SystemException if the query has been closed.
        *  @see close()
        */
       virtual void
-      registerErrorHandler(ErrorHandler*) = 0;
+      registerErrorHandler(ErrorHandler* aErrorHandler) = 0;
 
       /** \brief Reset the error handling mechanism to throwing exceptions, i.e.\ behave as if no
        *         ErrorHandler had been set.
@@ -327,11 +328,5 @@ namespace zorba {
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery); 
 
 } /* namespace zorba */
-
-/** \example simple.cpp
- *  This is a simple example that demonstrate how to use the Zorba XQuery Engine to
- *  compile and execute queries.
- *
- */
 
 #endif

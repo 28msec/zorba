@@ -195,7 +195,7 @@ namespace zorba {
        */
       virtual XQuery_t
       compileQuery(const String& aQuery, const StaticContext_t& aContext, 
-                   const XQuery::CompilerHints_t&,
+                   const XQuery::CompilerHints_t& aCompilerHints,
                    ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates and compiles an XQuery object using the given CompilerHints. 
@@ -238,7 +238,7 @@ namespace zorba {
        */
       virtual XQuery_t
       compileQuery(std::istream& aQuery, const StaticContext_t& aContext, 
-                   const XQuery::CompilerHints_t&,
+                   const XQuery::CompilerHints_t& aCompilerHints,
                    ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates a new StaticContext.
@@ -301,6 +301,18 @@ namespace zorba {
  * \example context.cpp
  *  This file demonstrates how the ItemFactory can be used to create new Items and 
  *  bind the Items to external variables in the dynamic context of a query.
+ *
+ * \example errors.cpp
+ *  This file demonstrates how error management and handling is done in Zorba. 
+ *
+ * \example serialization.cpp
+ * This file shows examples of how to serialize query results, for example as XML.
+ *
+ * \example sax2.cpp
+ * An example showing XML serialization that is performed using SAX2. 
+ *
+ * \example external_functions.cpp
+ * This file shows some simple examples of external functions.
  *
  */
 #endif /* XQP_ZORBA_API_H */
