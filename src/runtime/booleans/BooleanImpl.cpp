@@ -270,11 +270,11 @@ namespace zorba
     // all untyped Atomics to String
     if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      aItem0 = GenericCast::instance()->cast(aItem0, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     if  (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      aItem1 = GenericCast::instance()->cast(aItem1, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     
     return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
@@ -297,16 +297,16 @@ namespace zorba
     {
       if (TypeOps::is_numeric(*type1))
       {
-        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        aItem0 = GenericCast::instance()->cast(aItem0, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
       else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
                || TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+        aItem0 = GenericCast::instance()->cast(aItem0, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
       }
       else
       {
-        aItem0 = GenericCast::instance()->cast(aItem0, type1);
+        aItem0 = GenericCast::instance()->cast(aItem0, &*type1);
       }
     }
     
@@ -314,16 +314,16 @@ namespace zorba
     {
       if (TypeOps::is_numeric(*type0))
       {
-        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        aItem1 = GenericCast::instance()->cast(aItem1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
                || TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+        aItem1 = GenericCast::instance()->cast(aItem1, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
       }
       else
       {
-        aItem1 = GenericCast::instance()->cast(aItem1, type0);
+        aItem1 = GenericCast::instance()->cast(aItem1, &*type0);
       }
     }
     return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
@@ -382,11 +382,11 @@ CompareIterator::typePromotion(
   xqtref_t aType1 = aRuntimeCB->theStaticContext->get_typemanager()->
                     create_value_type (aItem1);
     
-  store::Item_t lResult = GenericCast::instance()->promote(aItem0, aType1); 
+  store::Item_t lResult = GenericCast::instance()->promote(aItem0, &*aType1); 
   if (lResult != 0) {
     aItem0 = lResult;
   }
-  lResult = GenericCast::instance()->promote(aItem1, aType0);
+  lResult = GenericCast::instance()->promote(aItem1, &*aType0);
   if (lResult != 0) {
     aItem1 = lResult;
   }

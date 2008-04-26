@@ -106,7 +106,7 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
     }
     else if(TypeOps::is_numeric(*type1))
     {
-      n1 = GenericCast::instance()->cast ( n1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+      n1 = GenericCast::instance()->cast ( n1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( aRuntimeCB, &aLoc, n0, n1 );
     }
     else if(TypeOps::is_equal(*type0, *type1))

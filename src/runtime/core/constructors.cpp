@@ -480,8 +480,6 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
     try
     {
       lRes = GenericCast::instance()->castToQName(lItem->getStringValue(),
-                                                  true,
-                                                  true,
                                                   &*theNCtx);
     }
     catch (...)
@@ -558,7 +556,14 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
-  lItem = consumeNext(theChild0, planState);
+  try {
+    lItem = consumeNext(theChild0, planState);
+  } catch (error::ZorbaError& e) {
+    if (e.theErrorCode == ZorbaError::FORG0001)
+      ZORBA_ERROR_LOC(ZorbaError::XQDY0041, loc);
+    else
+      throw e;
+  }
   if (lItem == 0)
     ZORBA_ERROR( ZorbaError::XPTY0004);
 

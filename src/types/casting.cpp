@@ -44,6 +44,8 @@ namespace zorba
 #define ATOMIC_TYPE(type) \
   GENV_TYPESYSTEM.create_atomic_type(TypeConstants::XS_##type, TypeConstants::QUANT_ONE)
 
+#define ATOMICTYPE_T \
+  TypeConstants::atomic_type_code_t
 
 typedef struct
 {
@@ -131,38 +133,27 @@ static const CodePointRange_t	extender_range[] =
   {0x0EC6,0x0EC6}, {0x3005,0x3005}, {0x3031,0x3035}, {0x309D,0x309E}, {0x30FC,0x30FE}
 };
 
-
-void checkBooleanToNumericCast(
-    xqpStringStore_t& lString,
-    const xqtref_t& aSourceType,
-    const xqtref_t& aTargetType)
+struct ErrorInfo
 {
-  if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND || 
-      aTargetType->type_kind() != XQType::ATOMIC_TYPE_KIND )
-    return;
+  const xqtref_t theSourceType, theTargetType;
+};
 
-  switch(TypeOps::get_atomic_type_code(*aSourceType))
-  {
-  case TypeConstants::XS_BOOLEAN:
-  {
-    if ( TypeOps::is_subtype(*aTargetType, *ATOMIC_TYPE(DECIMAL)) ||
-         TypeOps::is_subtype(*aTargetType, *ATOMIC_TYPE(FLOAT)) || 
-         TypeOps::is_subtype(*aTargetType, *ATOMIC_TYPE(DOUBLE)) )
-    {
-      if (lString->str() == "true")
-        lString = new xqpStringStore("1");
-      else if (lString->str() != "1")
-        lString = new xqpStringStore("0");
-    }
-    break;
-  }
-  default:
-    break;
-  }
-}
+inline void throwError(ZorbaError::ErrorCode aErrorCode, const ErrorInfo& aInfo)
+{
+  ZORBA_ERROR_DESC_OSS(aErrorCode, 
+                       "Passed item (of type " << TypeOps::toString(*aInfo.theSourceType)
+                       << ") is not castable to passed target type (" 
+                       << TypeOps::toString (*aInfo.theTargetType) << ").");
+
+};
+
+inline xqpStringStore_t doTrim(xqpStringStore_t aStr)
+{
+  return aStr->trim(" \t\r\n", 4);
+};
 
 #define SAME_S_AND_T(type)                                                     \
-  inline store::Item_t type##_##type(store::Item* aItem, store::ItemFactory*, namespace_context *nsCtx)  \
+  inline store::Item_t type##_##type(store::Item* aItem, store::ItemFactory*, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)  \
   {                                                                            \
     return aItem;                                                              \
   }                                                                            \
@@ -194,681 +185,724 @@ SAME_S_AND_T(NOT)
 #undef SAME_S_AND_T
 
 
-inline store::Item_t str_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-return aFactory->createUntypedAtomic(aItem->getStringValue());
+  return aFactory->createUntypedAtomic(aItem->getStringValue());
 }
 
-inline store::Item_t str_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_float n;
-  if (NumConversions::strToFloat(aItem->getStringValue().getp(), n))
+  if (NumConversions::strToFloat(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createFloat(n);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_double n;
-  if (NumConversions::strToDouble(aItem->getStringValue().getp(), n))
+  if (NumConversions::strToDouble(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createDouble(n);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_decimal n;
-  if (NumConversions::strToDecimal(aItem->getStringValue().getp(), n))
+  if (NumConversions::strToDecimal(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createDecimal(n);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_integer n;
-  if (NumConversions::strToInteger(aItem->getStringValue().getp(), n))
+  if (NumConversions::strToInteger(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createInteger(n);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   Duration_t d_t;
-  if (Duration::parse_string(aItem->getStringValue().getp(), d_t))
+  if (Duration::parse_string(doTrim(aItem->getStringValue()).getp(), d_t))
   {
     xqp_duration d = d_t;
     return aFactory->createDuration(d);
-  } else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+  }
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   YearMonthDuration_t ymd_t;
-  if (YearMonthDuration::parse_string(aItem->getStringValue().getp(), ymd_t))
+  if (YearMonthDuration::parse_string(doTrim(aItem->getStringValue()).getp(), ymd_t))
   {
     xqp_duration d = ymd_t;
     return aFactory->createDuration(d);
-  } else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+  }
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   DayTimeDuration_t dtd_t;
-  if (DayTimeDuration::parse_string(aItem->getStringValue().getp(), dtd_t))
+  if (DayTimeDuration::parse_string(doTrim(aItem->getStringValue()).getp(), dtd_t))
   {
     xqp_duration d = dtd_t;
     return aFactory->createDuration(d);
-  } else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+  }
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_dateTime dt;
-  if (0 == DateTime::parseDateTime(aItem->getStringValue().getp(), dt))
+  if (0 == DateTime::parseDateTime(doTrim(aItem->getStringValue()).getp(), dt))
     return aFactory->createDateTime(dt);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_time t;
-  if (0 == DateTime::parseTime(aItem->getStringValue().getp(), t))
+  if (0 == DateTime::parseTime(doTrim(aItem->getStringValue()).getp(), t))
     return aFactory->createTime(t);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_date d;
-  if (0 == DateTime::parseDate(aItem->getStringValue().getp(), d))
+  if (0 == DateTime::parseDate(doTrim(aItem->getStringValue()).getp(), d))
     return aFactory->createDate(d);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gYearMonth ym;
-  if (0 == DateTime::parseGYearMonth(aItem->getStringValue().getp(), ym))
+  if (0 == DateTime::parseGYearMonth(doTrim(aItem->getStringValue()).getp(), ym))
     return aFactory->createGYearMonth(ym);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gYear y;
-  if (0 == DateTime::parseGYear(aItem->getStringValue().getp(), y))
+  if (0 == DateTime::parseGYear(doTrim(aItem->getStringValue()).getp(), y))
     return aFactory->createGYear(y);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gMonthDay md;
-  if (0 == DateTime::parseGMonthDay(aItem->getStringValue().getp(), md))
+  if (0 == DateTime::parseGMonthDay(doTrim(aItem->getStringValue()).getp(), md))
     return aFactory->createGMonthDay(md);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gDay d;
-  if (0 == DateTime::parseGDay(aItem->getStringValue().getp(), d))
+  if (0 == DateTime::parseGDay(doTrim(aItem->getStringValue()).getp(), d))
     return aFactory->createGDay(d);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gMonth m;
-  if (0 == DateTime::parseGMonth(aItem->getStringValue().getp(), m))
+  if (0 == DateTime::parseGMonth(doTrim(aItem->getStringValue()).getp(), m))
     return aFactory->createGMonth(m);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-bool lRetValue = true;
-xqpStringStore_t lString = aItem->getStringValue()->trim();
+  bool lRetValue = true;
+  xqpStringStore_t lString = doTrim(aItem->getStringValue());
 
   if (lString->byteEqual("false", 5) || lString->byteEqual("0", 1))
     lRetValue = false;
   else if (!lString->byteEqual("true", 4) && !lString->byteEqual("1", 1))
-    ZORBA_ERROR(ZorbaError::FORG0001);
+    throwError(ZorbaError::FORG0001, aErrorInfo);
 
 return aFactory->createBoolean(lRetValue);
 }
 
-inline store::Item_t str_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_base64Binary n;
-  if (xqp_base64Binary::parseString(aItem->getStringValue().getp(), n))
+  if (xqp_base64Binary::parseString(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createBase64Binary(n);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_hexBinary n;
-  if (xqp_hexBinary::parseString(aItem->getStringValue().getp(), n))
+  if (xqp_hexBinary::parseString(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createHexBinary(n);
-  else
-    ZORBA_ERROR(ZorbaError::FORG0001);
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t str_aURI(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_aURI(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
 // TODO createAnyURI does not always succeed
-return aFactory->createAnyURI(aItem->getStringValue());
+return aFactory->createAnyURI(doTrim(aItem->getStringValue()));
 }
 
-inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  xqpString str(&*aItem->getStringValue());
+  assert(nsCtx != 0);
+
+  xqpString str(doTrim(aItem->getStringValue()));
   int32_t idx = str.theStrStore->indexOf(":");
   int32_t lidx = str.theStrStore->lastIndexOf(":");
   if (idx != lidx)
-    return 0;
+    throwError(ZorbaError::FORG0001, aErrorInfo);
+
+  xqpString lUri, lPrefix;
   
   if (idx < 0)
-    return aFactory->createQName(0, 0, &*str.theStrStore);
-
-  xqpString prefix = str.substr(0, idx);
-  xqpString uri;
-  if (!nsCtx->findBinding(prefix, uri)) {
-    return 0;
+  {
+    lPrefix = "";
+    nsCtx->findBinding(lPrefix, lUri);
+  } else {
+    lPrefix = str.substr(0, idx);
+    if (!GenericCast::instance()->castableToNCName(lPrefix.getStore()))
+      throwError(ZorbaError::FORG0001, aErrorInfo);
+    if (!nsCtx->findBinding(lPrefix, lUri))
+      throwError(ZorbaError::FONS0004, aErrorInfo);
   }
-  xqpString local = str.substr(idx + 1);
-  return aFactory->createQName(&*uri.theStrStore, &*prefix.theStrStore, &*local.theStrStore);
+
+  xqpString lLocal = str.substr(idx + 1);
+
+  if (!GenericCast::instance()->castableToNCName(lLocal.getStore()))
+    throwError(ZorbaError::FORG0001, aErrorInfo);
+
+
+  return aFactory->createQName(&*lUri.theStrStore, 
+                               &*lPrefix.theStrStore, 
+                               &*lLocal.theStrStore);
 }
 
-inline store::Item_t str_NOT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t str_NOT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return aFactory->createNOTATION(aItem->getStringValue().getp());
+  return aFactory->createNOTATION(doTrim(aItem->getStringValue()).getp());
 }
 
-inline store::Item_t uA_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createString(aItem->getStringValue());  
 }
 
-inline store::Item_t uA_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_flt(aItem, aFactory, nsCtx);
+  return str_flt(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_dbl(aItem, aFactory, nsCtx);
+  return str_dbl(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_dec(aItem, aFactory, nsCtx);
+  return str_dec(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_int(aItem, aFactory, nsCtx);
+  return str_int(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_dur(aItem, aFactory, nsCtx);
+  return str_dur(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_yMD(aItem, aFactory, nsCtx);
+  return str_yMD(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_dTD(aItem, aFactory, nsCtx);
+  return str_dTD(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_dT(aItem, aFactory, nsCtx);
+  return str_dT(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_tim(aItem, aFactory, nsCtx);
+  return str_tim(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_dat(aItem, aFactory, nsCtx);
+  return str_dat(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_gYM(aItem, aFactory, nsCtx);
+  return str_gYM(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_gYr(aItem, aFactory, nsCtx);
+  return str_gYr(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_gMD(aItem, aFactory, nsCtx);
+  return str_gMD(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_gDay(aItem, aFactory, nsCtx);
+  return str_gDay(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_gMon(aItem, aFactory, nsCtx);
+  return str_gMon(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_bool(aItem, aFactory, nsCtx);
+  return str_bool(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_b64(aItem, aFactory, nsCtx);
+  return str_b64(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_hxB(aItem, aFactory, nsCtx);
+  return str_hxB(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t uA_aURI(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t uA_aURI(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_aURI(aItem, aFactory, nsCtx);
+  return str_aURI(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t flt_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t flt_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t flt_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t flt_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t flt_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t flt_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createDouble(FloatCommons::parseFloat(aItem->getFloatValue()));
 }
 
-inline store::Item_t flt_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t flt_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_decimal n;
   if (xqp_decimal::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createDecimal(n);
-  ZORBA_ERROR(ZorbaError::FOCA0002);
+
+  throwError(ZorbaError::FOCA0002, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t flt_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t flt_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_integer n;
   if (xqp_integer::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createInteger(n);
-  ZORBA_ERROR(ZorbaError::FOCA0002);
+
+  throwError(ZorbaError::FOCA0002, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t flt_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t flt_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createBoolean(aItem->getEBV());
 }
 
-inline store::Item_t dbl_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dbl_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t dbl_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dbl_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t dbl_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dbl_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createFloat(FloatCommons::parseDouble(aItem->getDoubleValue()));
 }
 
-inline store::Item_t dbl_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dbl_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_decimal n;
   if (xqp_decimal::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createDecimal(n);
-  ZORBA_ERROR(ZorbaError::FOCA0002);
+
+  throwError(ZorbaError::FOCA0002, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t dbl_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dbl_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_integer n;
   if (xqp_integer::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createInteger(n);
-  ZORBA_ERROR(ZorbaError::FOCA0002);
+
+  throwError(ZorbaError::FOCA0002, aErrorInfo);
+  return 0;
 }
 
-inline store::Item_t dbl_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dbl_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createBoolean(aItem->getEBV());
 }
 
-inline store::Item_t dec_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dec_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t dec_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dec_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t dec_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dec_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createFloat(xqp_float::parseDecimal(aItem->getDecimalValue()));
 }
 
-inline store::Item_t dec_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dec_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createDouble(xqp_double::parseDecimal(aItem->getDecimalValue()));
 }
 
-inline store::Item_t dec_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dec_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createInteger(xqp_integer::parseDecimal(aItem->getDecimalValue()));
 }
 
-inline store::Item_t dec_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dec_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createBoolean(aItem->getEBV());
 }
 
-inline store::Item_t int_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t int_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t int_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t int_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t int_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t int_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createFloat(xqp_float::parseInteger(aItem->getIntegerValue()));
 }
 
-inline store::Item_t int_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t int_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createDouble(xqp_double::parseInteger(aItem->getIntegerValue()));
 }
 
-inline store::Item_t int_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t int_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createDecimal(xqp_decimal::parseInteger(aItem->getIntegerValue()));
 }
 
-inline store::Item_t int_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t int_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createBoolean(aItem->getEBV());
 }
 
-inline store::Item_t dur_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dur_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t dur_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dur_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t dur_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  assert(false);
-  return 0;
-}
-
-inline store::Item_t dur_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dur_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t yMD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return str_uA(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t yMD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return uA_str(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t yMD_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dur_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t yMD_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t yMD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t yMD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t yMD_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dTD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return str_uA(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t dTD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return uA_str(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t dTD_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t yMD_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dTD_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dTD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t dTD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t dTD_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return str_uA(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t dT_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return uA_str(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t dT_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dTD_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dT_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t dT_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t dT_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dT_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dT_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dT_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dT_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dT_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dT_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t tim_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return str_uA(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t tim_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return uA_str(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t dat_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return str_uA(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t dat_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
-{
-  return uA_str(aItem, aFactory, nsCtx);
-}
-
-inline store::Item_t dat_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dT_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t tim_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t tim_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t dat_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t dat_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t dat_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dat_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dat_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dat_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t dat_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dat_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   assert(false);
   return 0;
 }
 
-inline store::Item_t gYM_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t dat_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  assert(false);
+  return 0;
 }
 
-inline store::Item_t gYM_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gYM_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t gYr_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gYM_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t gYr_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gYr_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t gMD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gYr_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t gMD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gMD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t gDay_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gMD_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t gDay_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gDay_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t gMon_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gDay_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t gMon_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gMon_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t bool_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t gMon_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t bool_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t bool_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t bool_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t bool_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+{
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
+}
+
+inline store::Item_t bool_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   if (aItem->getBooleanValue())
     return aFactory->createFloat(xqp_float::parseInt(1));
@@ -876,7 +910,7 @@ inline store::Item_t bool_flt(store::Item* aItem, store::ItemFactory* aFactory, 
     return aFactory->createFloat(xqp_float::zero());
 }
 
-inline store::Item_t bool_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t bool_dbl(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   if (aItem->getBooleanValue())
     return aFactory->createDouble(xqp_double::parseInt(1));
@@ -884,7 +918,7 @@ inline store::Item_t bool_dbl(store::Item* aItem, store::ItemFactory* aFactory, 
     return aFactory->createDouble(xqp_double::zero());
 }
 
-inline store::Item_t bool_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t bool_dec(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   if (aItem->getBooleanValue())
     return aFactory->createDecimal(xqp_decimal::parseInt(1));
@@ -892,7 +926,7 @@ inline store::Item_t bool_dec(store::Item* aItem, store::ItemFactory* aFactory, 
     return aFactory->createDecimal(xqp_decimal::zero());
 }
 
-inline store::Item_t bool_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t bool_int(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   if (aItem->getBooleanValue())
     return aFactory->createInteger(xqp_integer::parseInt(1));
@@ -900,64 +934,64 @@ inline store::Item_t bool_int(store::Item* aItem, store::ItemFactory* aFactory, 
     return aFactory->createInteger(xqp_integer::zero());
 }
 
-inline store::Item_t b64_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t b64_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t b64_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t b64_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t b64_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t b64_hxB(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createHexBinary(xqp_hexBinary(aItem->getBase64BinaryValue()));
 }
 
-inline store::Item_t hxB_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t hxB_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t hxB_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t hxB_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t hxB_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t hxB_b64(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return aFactory->createBase64Binary(xqp_base64Binary(aItem->getHexBinaryValue()));
 }
 
-inline store::Item_t aURI_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t aURI_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t aURI_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t aURI_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t QN_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t QN_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t QN_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t QN_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t NOT_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t NOT_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return str_uA(aItem, aFactory, nsCtx);
+  return str_uA(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-inline store::Item_t NOT_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx)
+inline store::Item_t NOT_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return uA_str(aItem, aFactory, nsCtx);
+  return uA_str(aItem, aFactory, nsCtx, aErrorInfo);
 }
 
 const int GenericCast::theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] = {
@@ -1048,72 +1082,66 @@ const GenericCast::CastFunc GenericCast::theCastMatrix[23][23] = {
 
 store::Item_t str_down(
                 const store::Item* aItem, 
-                TypeConstants::atomic_type_code_t aTargetAtomicType,
                 RootTypeManager& aTS,
-                store::ItemFactory* aFactory)
+                ATOMICTYPE_T aTargetAtomicType,
+                store::ItemFactory* aFactory,
+                const ErrorInfo& aErrorInfo)
 {
   xqpStringStore_t lString = aItem->getStringValue();
   xqpString str(lString);
-  // TODO all
-  assert(false);
+
   switch(aTargetAtomicType)
   {
   case TypeConstants::XS_NORMALIZED_STRING:
-    if (!GenericCast::instance()->castableToNormalizedString(lString)) {
-      return 0;
-    }
-    return aFactory->createNormalizedString(str);
+    if (GenericCast::instance()->castableToNormalizedString(lString))
+      return aFactory->createNormalizedString(str);
+    break;
   case TypeConstants::XS_TOKEN:
-    if (!GenericCast::instance()->castableToToken(lString)) {
-      return 0;
-    }
-    return aFactory->createToken(str);
+    if (GenericCast::instance()->castableToToken(lString))
+      return aFactory->createToken(str);
+    break;
   case TypeConstants::XS_LANGUAGE:
-    if (!GenericCast::instance()->castableToLanguage(lString)) {
-      return 0;
-    }
-    return aFactory->createLanguage(str);
+    if (GenericCast::instance()->castableToLanguage(lString))
+      return aFactory->createLanguage(str);
+    break;
   case TypeConstants::XS_NMTOKEN:
-    if (!GenericCast::instance()->castableToNMToken(lString)) {
-      return 0;
-    }
-    return aFactory->createNMTOKEN(str);
+    if (GenericCast::instance()->castableToNMToken(lString))
+      return aFactory->createNMTOKEN(str);
+    break;
   case TypeConstants::XS_NAME:
-    if (!GenericCast::instance()->castableToName(lString)) {
-      return 0;
-    }
-    return aFactory->createName(str);
+    if (GenericCast::instance()->castableToName(lString))
+      return aFactory->createName(str);
+    break;
   case TypeConstants::XS_NCNAME:
-    if (!GenericCast::instance()->castableToNCName(lString)) {
-        return 0;
-    }
-    return aFactory->createNCName(lString);
+    if (GenericCast::instance()->castableToNCName(lString))
+      return aFactory->createNCName(lString);
+    break;
   case TypeConstants::XS_ID:
-    if (!GenericCast::instance()->castableToNCName(lString)) {
-        return 0;
-    }
-    return aFactory->createID(str);
+    if (GenericCast::instance()->castableToNCName(lString))
+      return aFactory->createID(str);
+    break;
   case TypeConstants::XS_IDREF:
-    if (!GenericCast::instance()->castableToNCName(lString)) {
-        return 0;
-    }
-    return aFactory->createIDREF(str);
+    if (GenericCast::instance()->castableToNCName(lString))
+      return aFactory->createIDREF(str);
+    break;
   case TypeConstants::XS_ENTITY:
-    if (!GenericCast::instance()->castableToNCName(lString)) {
-        return 0;
-    }
-    return aFactory->createENTITY(str);
+    if (GenericCast::instance()->castableToNCName(lString))
+      return aFactory->createENTITY(str);
+    break;
   default:
     assert(false);
   }
+
+  throwError(ZorbaError::FORG0001, aErrorInfo);
   return 0;
 }
 
 store::Item_t int_down(
                 const store::Item* aItem, 
-                TypeConstants::atomic_type_code_t aTargetAtomicType,
                 RootTypeManager& aTS,
-                store::ItemFactory* aFactory)
+                ATOMICTYPE_T aTargetAtomicType,
+                store::ItemFactory* aFactory,
+                const ErrorInfo& aErrorInfo)
 {
   xqp_integer lInteger = aItem->getIntegerValue();
   xqpStringStore_t lString = aItem->getStringValue();
@@ -1203,7 +1231,8 @@ store::Item_t int_down(
   default:
     assert(false);
   }
-  ZORBA_ERROR(ZorbaError::FORG0001);
+  throwError(ZorbaError::FORG0001, aErrorInfo);
+  return 0;
 }
 
 const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[23] = {
@@ -1222,41 +1251,10 @@ GenericCast* GenericCast::instance()
 /*******************************************************************************
 
 ********************************************************************************/
-#if 1
-store::Item_t GenericCast::cast(
-    store::Item*    aItem,
-    const xqtref_t& aTargetType) const
+store::Item_t GenericCast::cast(store::Item* aItem, 
+                                const XQType* aTargetType,
+                                namespace_context* aNCtx) const
 {
-  store::Item_t lResult;
-  RootTypeManager& ts = GENV_TYPESYSTEM;
-
-  xqtref_t lItemType = ts.create_named_type(aItem->getType(),
-                                            TypeConstants::QUANT_ONE);
-
-  if (TypeOps::is_subtype(*lItemType, *aTargetType)) 
-  {
-    return aItem;
-  }
-    
-  lResult = stringSimpleCast(aItem, lItemType, aTargetType);
-  if ( lResult == 0 ) 
-  {
-    ZORBA_ERROR_DESC_OSS(ZorbaError::FORG0001, 
-                         "Passed item (of type " << TypeOps::toString(*lItemType)
-                         << ") is not castable to passed target type (" 
-                         << TypeOps::toString (*aTargetType) << ").");
-  }
-
-  return lResult;
-}
-
-#else
-
-store::Item_t GenericCast::cast(store::Item* aItem, const xqtref_t& aTargetType) const
-{
-  if (!TypeOps::is_atomic(*aTargetType))
-    ZORBA_ERROR(ZorbaError::XPST0051);
-
   RootTypeManager& lTS = GENV_TYPESYSTEM;
   store::ItemFactory* lFactory = GENV_ITEMFACTORY;
 
@@ -1264,47 +1262,68 @@ store::Item_t GenericCast::cast(store::Item* aItem, const xqtref_t& aTargetType)
                                aItem->getType(), 
                                TypeConstants::QUANT_ONE);
 
-  xqtref_t lPrimitiveSourceType = TypeOps::cast_primitive_type(*lSourceType);
-  TypeConstants::atomic_type_code_t lPrimitiveSourceAtomicType 
+  ErrorInfo lErrorInfo = {lSourceType, aTargetType};
+
+  if (!TypeOps::is_atomic(*aTargetType))
+    throwError(ZorbaError::XPST0051, lErrorInfo);
+
+  store::Item_t lSourceItem;
+  xqtref_t lPrimitiveSourceType;
+  if (TypeOps::is_atomic(*lSourceType))
+  {
+    lPrimitiveSourceType = TypeOps::cast_primitive_type(*lSourceType);
+    lSourceItem = aItem;
+  } else {
+    lPrimitiveSourceType = lTS.STRING_TYPE_ONE;
+    lSourceItem = lFactory->createString(aItem->getStringValue());
+  }
+
+  ATOMICTYPE_T lPrimitiveSourceAtomicType 
     = TypeOps::get_atomic_type_code(*lPrimitiveSourceType);
   int lPrimitiveSourceMapping = theMapping[lPrimitiveSourceAtomicType];
 
   xqtref_t lPrimitiveTargetType = TypeOps::cast_primitive_type(*aTargetType);
-  TypeConstants::atomic_type_code_t lPrimitiveTargetAtomicType
+  ATOMICTYPE_T lPrimitiveTargetAtomicType
     = TypeOps::get_atomic_type_code(*lPrimitiveTargetType);
   int lPrimitiveTargetMapping = theMapping[lPrimitiveTargetAtomicType];
 
   if ( lPrimitiveSourceAtomicType == TypeConstants::XS_NOTATION 
     || lPrimitiveTargetAtomicType == TypeConstants::XS_NOTATION)
-    ZORBA_ERROR(ZorbaError::XPST0080);
+    throwError(ZorbaError::XPST0080, lErrorInfo);
 
   if ( lPrimitiveSourceAtomicType == TypeConstants::XS_ANY_ATOMIC
     || lPrimitiveTargetAtomicType == TypeConstants::XS_ANY_ATOMIC)
-    ZORBA_ERROR(ZorbaError::XPST0080);
+    throwError(ZorbaError::XPST0080, lErrorInfo);
 
   CastFunc lCastFunc = theCastMatrix[lPrimitiveSourceMapping][lPrimitiveTargetMapping];
 
   if (lCastFunc == 0)
-    ZORBA_ERROR(ZorbaError::XPTY0004);
+    throwError(ZorbaError::XPTY0004, lErrorInfo);
 
-  store::Item_t lResult = (*lCastFunc)(aItem, lFactory, NULL); 
+
+  store::Item_t lResult = (*lCastFunc)(lSourceItem, 
+                                       lFactory, 
+                                       aNCtx,
+                                       lErrorInfo);
 
   if (!TypeOps::is_equal(*aTargetType, *lPrimitiveTargetType))
   {
     DownCastFunc lDownCastFunc = theDownCastMatrix[lPrimitiveTargetMapping];
 
     if (lDownCastFunc == 0)
-      ZORBA_ERROR(ZorbaError::XPTY0004);
+      throwError(ZorbaError::XPTY0004, lErrorInfo);
 
-    TypeConstants::atomic_type_code_t lTargetAtomicType
+    ATOMICTYPE_T lTargetAtomicType
       = TypeOps::get_atomic_type_code(*aTargetType);
-    lResult = (*lDownCastFunc)(&*lResult, lTargetAtomicType, lTS, lFactory);
+    lResult = (*lDownCastFunc)(&*lResult, 
+                               lTS, 
+                               lTargetAtomicType, 
+                               lFactory,
+                               lErrorInfo);
   }
 
   return lResult;
 }
-
-#endif
 
 
 /*******************************************************************************
@@ -1312,10 +1331,11 @@ store::Item_t GenericCast::cast(store::Item* aItem, const xqtref_t& aTargetType)
 ********************************************************************************/
 store::Item_t GenericCast::cast(
     const xqpString& aStr,
-    const xqtref_t& aTargetType) const
+    const XQType* aTargetType,
+    namespace_context* aNCtx) const
 {
   store::Item_t lItem = GENV_ITEMFACTORY->createString(aStr.getStore());
-  store::Item_t lResult = cast(lItem, aTargetType);
+  store::Item_t lResult = cast(lItem, aTargetType, aNCtx);
   return lResult;
 }
 
@@ -1325,55 +1345,14 @@ store::Item_t GenericCast::cast(
   Raises Zorba errors.
   @param isExplicit true when called from the translator
   @param isCast true when this is a cast, false when this is a castable
-  TODO: return 0 instead of throwing an error code, let the caller decide on the error
 ********************************************************************************/
 store::Item_t GenericCast::castToQName (
     xqpStringStore_t qname,
-    bool isCast,
-    bool isExplicit,
     namespace_context* aNCtx) const
 {
-  store::ItemFactory* factory = GENV_ITEMFACTORY;
-
-  ZorbaError::ErrorCode code = (isExplicit ?
-                                (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003) :
-                                ZorbaError::XQDY0074);
-
-  xqpString lNamespace, lPrefix, lLocal;
-
-  // whitespace normalization for target type (xs:QName)
-  if (isExplicit && isCast)
-    qname = qname->trim ();
-
-  int32_t lIndex = qname->indexOf(":");
-  if (lIndex < 0) {
-    if (castableToNCName(qname)) {
-      aNCtx->findBinding ("", lNamespace);
-      lLocal = &*qname;
-    }
-    else ZORBA_ERROR(code);
-  } else if (lIndex == 0) {
-    ZORBA_ERROR (code);
-  } else {
-    lPrefix = qname->str().substr(0, lIndex);
-    lLocal = qname->str().substr(lIndex + 1);
-
-    if (!castableToNCName(lPrefix.getStore()) ||
-        !castableToNCName(lLocal.getStore()))
-      ZORBA_ERROR(code);
-    
-    // namespace resolution
-    // raise XPST0081 (isCast false) or FONS0004 (isCast true) if namespace unknown
-    assert (aNCtx != 0);
-    if (! aNCtx->findBinding(lPrefix, lNamespace))
-      ZORBA_ERROR (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0081);
-  }
-
-  return factory->createQName(lNamespace.getStore(),
-                              lPrefix.getStore(),
-                              lLocal.getStore());
+  store::Item_t lItem = GENV_ITEMFACTORY->createString(&*qname);
+  return cast(lItem, &*GENV_TYPESYSTEM.QNAME_TYPE_ONE, aNCtx);
 }
-  
 
 /*
 NCName				  ::=    NCNameStartChar NCNameChar* // An XML Name, minus the ":" 
@@ -1571,42 +1550,45 @@ bool GenericCast::castableToName(const xqpStringStore *str) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::isCastable(
-    store::Item_t aItem,
-    const xqtref_t& aTargetType) const
+bool GenericCast::isCastable(store::Item_t aItem, const XQType* aTargetType) const
 {
-  store::Item_t lItem;
-  RootTypeManager& ts = GENV_TYPESYSTEM;
-
-  xqtref_t lItemType = ts.create_named_type(aItem->getType(), TypeConstants::QUANT_ONE);
-
-  if (TypeOps::is_subtype(*lItemType, *aTargetType))
-  {
-    // Item is castable if target type is a supertype
-    return true;  
-  }
-
-  if (TypeOps::castability(*lItemType, *aTargetType) == TypeConstants::NOT_CASTABLE) {
-    return false;
-  }
   
-  // Most simple implementation: Check if string cast works
-  try {
-    lItem = stringSimpleCast(aItem, lItemType, aTargetType);
-  } catch (error::ZorbaError) {
+  RootTypeManager& lTS = GENV_TYPESYSTEM;
+
+  xqtref_t lSourceType = lTS.create_named_type(
+                               aItem->getType(), 
+                               TypeConstants::QUANT_ONE);
+
+  TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType, *aTargetType);
+  switch(lIsCastable)
+  {
+  case TypeConstants::NOT_CASTABLE:
     return false;
+    break;
+  case TypeConstants::CASTABLE:
+    return true;
+    break;
+  case TypeConstants::MAYBE_CASTABLE:
+  {
+    try {
+      cast(aItem, aTargetType);
+      return true;
+    } catch (error::ZorbaError& e) {
+      return false;
+    }
+  }
+    break;
   }
 
-  return lItem != 0;
+  return false;
 }
-
 
 /*******************************************************************************
 
 ********************************************************************************/
 bool GenericCast::isCastable(
     const xqpString& aStr,
-    const xqtref_t& aTargetType) const
+    const XQType* aTargetType) const
 {
   store::Item_t lItem = GENV_ITEMFACTORY->createString(aStr.getStore());
   return isCastable(lItem, aTargetType);
@@ -1618,7 +1600,7 @@ bool GenericCast::isCastable(
 ********************************************************************************/
 store::Item_t GenericCast::promote(
     store::Item_t aItem,
-    const xqtref_t& aTargetType) const
+    const XQType* aTargetType) const
 {
   xqtref_t lItemType = GENV_TYPESYSTEM.create_value_type(aItem);
 
@@ -1635,18 +1617,18 @@ store::Item_t GenericCast::promote(
   else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
     // Numeric Promotion to xs:float
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
-      lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.FLOAT_TYPE_ONE); 
+      lResult = GenericCast::instance()->cast(aItem, &*GENV_TYPESYSTEM.FLOAT_TYPE_ONE); 
     }
   } else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
     // Numeric Promotion to xs:double
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
      || TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
-      lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      lResult = GenericCast::instance()->cast(aItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
     }
   } else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
     // URI Promotion
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
-      lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      lResult = GenericCast::instance()->cast(aItem, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
   }
   return lResult;
@@ -1656,454 +1638,49 @@ store::Item_t GenericCast::promote(
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t GenericCast::stringSimpleCast(
-    const store::Item* aSourceItem,
-    const xqtref_t&    aSourceType,
-    const xqtref_t&    aTargetType) const
-{
-    switch (aTargetType->type_kind())
-    {
-    case XQType::ATOMIC_TYPE_KIND:
-    case XQType::ANY_SIMPLE_TYPE_KIND:
-    case XQType::ANY_TYPE_KIND:
-    case XQType::EMPTY_KIND:
-    case XQType::NODE_TYPE_KIND:
-    case XQType::ITEM_KIND:
-    case XQType::NONE_KIND:
-        return stringSimpleCastBuiltIn(aSourceItem, aSourceType, aTargetType);
 
-    case XQType::USER_DEFINED_KIND:
-        // TODO parsing of user defined types    
-        if (aSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
-            TypeOps::get_atomic_type_code(*aSourceType) == TypeConstants::XS_STRING &&
-            aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
-        {
-            //    store::Item_t result;
-            //    if ( delegatingTypeManager->getSchema()->parseUserAtomicTypes(textValue, aSourceType, aTargetType, result) )
-            //    {
-            //        return result;
-            //    }
-        }
-        return 0;
-    default:
-        ZORBA_ASSERT(false);
-    }
-    return 0;
-}
-
-store::Item_t GenericCast::stringSimpleCastBuiltIn(
-    const store::Item* aSourceItem,
-    const xqtref_t&    aSourceType, 
-    const xqtref_t& aTargetType) const
-{
-  if (aSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
-      aTargetType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
-      TypeOps::castability(*aSourceType, *aTargetType) == TypeConstants::NOT_CASTABLE )
-  {
-    // http://www.w3.org/TR/xpath-functions/#casting
-    ZORBA_ERROR_DESC_OSS(ZorbaError::XPTY0004,
-                         "Passed item (of type " << TypeOps::toString(*aSourceType) 
-                         << ") is not castable to passed target type ("  
-                         << TypeOps::toString (*aTargetType) << ").");
-    return 0;
-  }
-
-  RootTypeManager& ts = GENV_TYPESYSTEM;
-  store::ItemFactory* factory = GENV_ITEMFACTORY;
-
-  xqpStringStore_t lString = aSourceItem->getStringValue();
-
-  switch(TypeOps::get_atomic_type_code(*aTargetType))
-  {
-  case TypeConstants::XS_ANY_ATOMIC:
-  case TypeConstants::XS_STRING:
-  case TypeConstants::XS_NORMALIZED_STRING:
-  case TypeConstants::XS_UNTYPED_ATOMIC:
-    break;
-  default:
-    lString = lString->trim(" \n\r\t",4);
-    break;
-  }
-  
-  // check if boolean "true/false" to numeric types is required
-  checkBooleanToNumericCast(lString, aSourceType, aTargetType);
-
-  switch(TypeOps::get_atomic_type_code(*aTargetType))
-  {
-  case TypeConstants::XS_ANY_ATOMIC:
-    return factory->createUntypedAtomic(lString);
-
-  case TypeConstants::XS_STRING:
-    return factory->createString(lString);
-
-  case TypeConstants::XS_NORMALIZED_STRING:
-    return factory->createNormalizedString(lString.getp());
-
-  case TypeConstants::XS_TOKEN:
-    return factory->createToken(lString.getp());
-
-  case TypeConstants::XS_LANGUAGE:
-    return factory->createLanguage(lString.getp());
-
-  case TypeConstants::XS_NMTOKEN:
-    return factory->createNMTOKEN(lString.getp());
-
-  case TypeConstants::XS_NAME:
-    return factory->createName(lString.getp());
-
-  case TypeConstants::XS_ID:
-    return factory->createID(lString.getp());
-
-  case TypeConstants::XS_IDREF:
-    return factory->createIDREF(lString.getp());
-
-  case TypeConstants::XS_ENTITY:
-    return factory->createENTITY(lString.getp());
-
-  case TypeConstants::XS_UNTYPED_ATOMIC:
-    return factory->createUntypedAtomic(lString);
-
-  case TypeConstants::XS_DATETIME:
-  {
-    xqp_dateTime dt;
-    if (0 == DateTime::parseDateTime(lString.getp(), dt))
-      return factory->createDateTime(dt);
-    break;
-  }
-  case TypeConstants::XS_DATE:
-  {
-    xqp_date d;
-    if (0 == DateTime::parseDate(lString.getp(), d))
-      return factory->createDate(d);
-    break;
-  }
-  case TypeConstants::XS_TIME:
-  {
-    xqp_time t;
-    if (0 == DateTime::parseTime(lString.getp(), t))
-      return factory->createTime(t);
-    break;
-  }
-  case TypeConstants::XS_DURATION:
-  {
-    Duration_t d_t;
-    if (Duration::parse_string(lString.getp(), d_t))
-    {
-      xqp_duration d = d_t;
-      return factory->createDuration(d);
-    }
-    break;
-  }
-  case TypeConstants::XS_DT_DURATION:
-  {
-    DayTimeDuration_t dtd_t;
-    if (DayTimeDuration::parse_string(lString.getp(), dtd_t))
-    {
-      xqp_duration d = dtd_t;
-      return factory->createDuration(d);
-    }
-    break;
-  }
-  case TypeConstants::XS_YM_DURATION:
-  {
-    YearMonthDuration_t ymd_t;
-    if (YearMonthDuration::parse_string(lString.getp(), ymd_t))
-    {
-      xqp_duration d = ymd_t;
-      return factory->createDuration(d);
-    }
-    break;
-  }
-  case TypeConstants::XS_GYEAR_MONTH:
-  {
-    xqp_gYearMonth ym;
-    if (0 == DateTime::parseGYearMonth(lString.getp(), ym))
-      return factory->createGYearMonth(ym);
-    break;
-  }
-  case TypeConstants::XS_GYEAR:
-  {
-    xqp_gYear y;
-    if (0 == DateTime::parseGYear(lString.getp(), y))
-      return factory->createGYear(y);
-    break;
-  }
-  case TypeConstants::XS_GMONTH_DAY:
-  {
-    xqp_gMonthDay md;
-    if (0 == DateTime::parseGMonthDay(lString.getp(), md))
-      return factory->createGMonthDay(md);
-    break;
-  }
-  case TypeConstants::XS_GDAY:
-  {
-    xqp_gDay d;
-    if (0 == DateTime::parseGDay(lString.getp(), d))
-      return factory->createGDay(d);
-    break;
-  }
-  case TypeConstants::XS_GMONTH:
-  {
-    xqp_gMonth m;
-    if (0 == DateTime::parseGMonth(lString.getp(), m))
-      return factory->createGMonth(m);
-    break;
-  }
-  case TypeConstants::XS_FLOAT:
-  {
-    xqp_float n;
-    if (NumConversions::strToFloat(lString.getp(), n))
-      return factory->createFloat(n);
-    break;
-  }
-  case TypeConstants::XS_DOUBLE:
-  {
-    xqp_double n;
-    if (NumConversions::strToDouble(lString.getp(), n))
-      return factory->createDouble(n);
-    break;
-  }
-  case TypeConstants::XS_DECIMAL:
-  {
-    xqp_decimal n;
-    if (NumConversions::strToDecimal(lString.getp(), n))
-      return factory->createDecimal(n);
-    break;
-  }
-  case TypeConstants::XS_INTEGER:
-  {
-    xqp_integer n;
-    if (NumConversions::strToInteger(lString.getp(), n))
-      return factory->createInteger(n);
-    break;
-  }
-  case TypeConstants::XS_NON_POSITIVE_INTEGER:
-  {
-    xqp_integer n;
-    if (NumConversions::strToInteger(lString.getp(), n))
-      return factory->createNonPositiveInteger(n);
-    break;
-  }
-  case TypeConstants::XS_NEGATIVE_INTEGER:
-  {
-    xqp_integer n;
-    if (NumConversions::strToInteger(lString.getp(), n) && n < xqp_integer::parseInt(0))
-      return factory->createNegativeInteger(n);
-    break;
-  }
-  case TypeConstants::XS_LONG:
-  {
-    xqp_long n;
-    if (NumConversions::strToLongLong(lString.getp(), n))
-      return factory->createLong(n);
-    break;
-  }
-  case TypeConstants::XS_INT:
-  {
-    xqp_int n;
-    if (NumConversions::strToInt(lString.getp(), n))
-      return factory->createInt(n);
-    break;
-  }
-  case TypeConstants::XS_SHORT:
-  {
-    xqp_short n;
-    if (NumConversions::strToShort(lString.getp(), n))
-      return factory->createShort(n);
-    break;
-  }
-  case TypeConstants::XS_BYTE:
-  {
-    xqp_byte n;
-    if (NumConversions::strToByte(lString.getp(), n))
-      return factory->createByte(n);
-    break;
-  }
-  case TypeConstants::XS_NON_NEGATIVE_INTEGER:
-  {
-    xqp_uinteger n;
-    if (NumConversions::strToUInteger(lString.getp(), n))
-      return factory->createNonNegativeInteger(n);
-    break;
-  }
-  case TypeConstants::XS_UNSIGNED_LONG:
-  {
-    xqp_ulong n;
-    if (NumConversions::strToULongLong(lString.getp(), n))
-      return factory->createUnsignedLong(n);
-    break;
-  }
-  case TypeConstants::XS_UNSIGNED_INT:
-  {
-    xqp_uint n;
-    if (NumConversions::strToUInt(lString.getp(), n))
-      return factory->createUnsignedInt(n);
-    break;
-  }
-  case TypeConstants::XS_UNSIGNED_SHORT:
-  {
-    xqp_ushort n;
-    if (NumConversions::strToUShort(lString.getp(), n))
-      return factory->createUnsignedShort(n);
-    break;
-  }
-  case TypeConstants::XS_UNSIGNED_BYTE:
-  {
-    xqp_ubyte n;
-    if (NumConversions::strToUByte(lString.getp(), n))
-      return factory->createUnsignedByte(n);
-    break;
-  }
-  case TypeConstants::XS_POSITIVE_INTEGER:
-  {
-    xqp_integer n;
-    if (NumConversions::strToInteger(lString.getp(), n) && n > xqp_integer::parseInt(0))
-      return factory->createPositiveInteger(n);
-    break;
-  }
-  case TypeConstants::XS_BOOLEAN:
-  {
-    return castToBoolean(aSourceItem, aSourceType);
-  }
-  case TypeConstants::XS_BASE64BINARY:
-  {
-    if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(HEXBINARY)))
-      return factory->createBase64Binary(xqp_base64Binary(aSourceItem->getHexBinaryValue()));
-    else {
-      xqp_base64Binary n;
-      // This is a hack, but will be removed anyway
-      if (xqp_base64Binary::parseString(xqpString(&*lString),n))
-        return factory->createBase64Binary(n);
-    }
-    break;
-  }
-  case TypeConstants::XS_HEXBINARY:
-  {
-    if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(BASE64BINARY)))
-      return factory->createHexBinary(xqp_hexBinary(aSourceItem->getBase64BinaryValue()));
-    else {
-      xqp_hexBinary n;
-      // This is a hack, but will be removed anyway
-      if (xqp_hexBinary::parseString(xqpString(&*lString), n))
-        return factory->createHexBinary(n);
-    }
-    break;
-  }
-  case TypeConstants::XS_ANY_URI:
-    return factory->createAnyURI(lString);
-    
-  case TypeConstants::XS_NCNAME:
-  {
-    if (!TypeOps::is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
-        !TypeOps::is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
-    {
-      ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Cannot cast " + lString ->str()
-                  + " to an NCName because its type is " + aSourceType->toString());
-    }
-
-    if (castableToNCName(lString))
-    {
-      return factory->createNCName(lString);
-    }
-    else
-    {
-      ZORBA_ERROR_PARAM_OSS( ZorbaError::XQDY0041, "Cannot cast " << lString << " to an NCName", ""); 
-    }
-    break;
-  }
-  case TypeConstants::XS_QNAME:
-  {
-    if (! TypeOps::is_subtype(*aSourceType, *ts.QNAME_TYPE_ONE)
-        && ! TypeOps::is_subtype (*aSourceType, *ts.STRING_TYPE_ONE)
-        && ! TypeOps::is_subtype (*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
-      return NULL;
-    // Explicit XQuery casts and castable expressions are translated
-    // into treat and instance of expressions (or resolved in-place
-    // in the case of string literals), so they never arrive here.
-    return castToQName (lString, true, false);
-  }
-
-  case TypeConstants::XS_NOTATION:
-    return factory->createNOTATION(lString.getp());
-  
-  default:
-    return 0;
-  }
-  return 0;
-}
-
-store::Item_t GenericCast::castToBoolean(
-    const store::Item* aSourceItem,
-    const xqtref_t& aSourceType) const
-{
-  bool lRetValue = true;
-
-#ifndef NDEBUG
-  if (TypeOps::is_equal(*aSourceType, *ATOMIC_TYPE(BOOLEAN)))
-  {
-    assert(false); // is already handled by Generic::cast
-  }
-  else
-#endif
-  if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
-  {
-    return aSourceItem->getEBV();
-    //store::Item_t lFloatItem = GENV_ITEMFACTORY->createFloat(0);
-    //if (lFloatItem->equals(aSourceItem))
-    //  lRetValue = false;
-    // TODO check NaN
-    
-  }
-  else if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(DOUBLE)))
-  {
-    return aSourceItem->getEBV();
-    //store::Item_t lDoubleItem = GENV_ITEMFACTORY->createDouble(0);
-    //if (lDoubleItem->equals(aSourceItem))
-    //  lRetValue = false;
-    
-    // TODO check NaN
-  }
-  else if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(DECIMAL)))
-  {
-    return aSourceItem->getEBV();
-    //store::Item_t lDecimalItem = GENV_ITEMFACTORY->createDecimal(0);
-    //if (lDecimalItem->equals(aSourceItem))
-    //  lRetValue = false;
-    
-    // TODO check NaN
-    
-  }
-  else if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(INTEGER)))
-  {
-    return aSourceItem->getEBV();
-    //store::Item_t lIntegerItem = GENV_ITEMFACTORY->createInteger(0);
-    //if (lIntegerItem->equals(aSourceItem))
-    //  lRetValue = false;
-
-    // TODO check NAN
-  }
-  else if (TypeOps::is_equal(*aSourceType, *ATOMIC_TYPE(STRING))
-           || TypeOps::is_equal(*aSourceType, *ATOMIC_TYPE(UNTYPED_ATOMIC)))
-  {
-    xqpStringStore_t lString = aSourceItem->getStringValue()->trim();
-
-    if (lString->byteEqual("false", 5) || lString->byteEqual("0", 1))
-      lRetValue = false;
-    else if (!lString->byteEqual("true", 4) && !lString->byteEqual("1", 1))
-    {
-      ZORBA_ERROR_DESC( ZorbaError::FORG0001,  "String cannot be cast to boolean");
-    }
-    
-  }
-
-  return GENV_ITEMFACTORY->createBoolean(lRetValue);
-}
 #undef ATOMIC_TYPE
 
 
 /*
-Letter    ::=    BaseChar | Ideographic  
-BaseChar    ::=    [#x0041-#x005A] | [#x0061-#x007A] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x00FF] | [#x0100-#x0131] | [#x0134-#x013E] | [#x0141-#x0148] | [#x014A-#x017E] | [#x0180-#x01C3] | [#x01CD-#x01F0] | [#x01F4-#x01F5] | [#x01FA-#x0217] | [#x0250-#x02A8] | [#x02BB-#x02C1] | #x0386 | [#x0388-#x038A] | #x038C | [#x038E-#x03A1] | [#x03A3-#x03CE] | [#x03D0-#x03D6] | #x03DA | #x03DC | #x03DE | #x03E0 | [#x03E2-#x03F3] | [#x0401-#x040C] | [#x040E-#x044F] | [#x0451-#x045C] | [#x045E-#x0481] | [#x0490-#x04C4] | [#x04C7-#x04C8] | [#x04CB-#x04CC] | [#x04D0-#x04EB] | [#x04EE-#x04F5] | [#x04F8-#x04F9] | [#x0531-#x0556] | #x0559 | [#x0561-#x0586] | [#x05D0-#x05EA] | [#x05F0-#x05F2] | [#x0621-#x063A] | [#x0641-#x064A] | [#x0671-#x06B7] | [#x06BA-#x06BE] | [#x06C0-#x06CE] | [#x06D0-#x06D3] | #x06D5 | [#x06E5-#x06E6] | [#x0905-#x0939] | #x093D | [#x0958-#x0961] | [#x0985-#x098C] | [#x098F-#x0990] | [#x0993-#x09A8] | [#x09AA-#x09B0] | #x09B2 | [#x09B6-#x09B9] | [#x09DC-#x09DD] | [#x09DF-#x09E1] | [#x09F0-#x09F1] | [#x0A05-#x0A0A] | [#x0A0F-#x0A10] | [#x0A13-#x0A28] | [#x0A2A-#x0A30] | [#x0A32-#x0A33] | [#x0A35-#x0A36] | [#x0A38-#x0A39] | [#x0A59-#x0A5C] | #x0A5E | [#x0A72-#x0A74] | [#x0A85-#x0A8B] | #x0A8D | [#x0A8F-#x0A91] | [#x0A93-#x0AA8] | [#x0AAA-#x0AB0] | [#x0AB2-#x0AB3] | [#x0AB5-#x0AB9] | #x0ABD | #x0AE0 | [#x0B05-#x0B0C] | [#x0B0F-#x0B10] | [#x0B13-#x0B28] | [#x0B2A-#x0B30] | [#x0B32-#x0B33] | [#x0B36-#x0B39] | #x0B3D | [#x0B5C-#x0B5D] | [#x0B5F-#x0B61] | [#x0B85-#x0B8A] | [#x0B8E-#x0B90] | [#x0B92-#x0B95] | [#x0B99-#x0B9A] | #x0B9C | [#x0B9E-#x0B9F] | [#x0BA3-#x0BA4] | [#x0BA8-#x0BAA] | [#x0BAE-#x0BB5] | [#x0BB7-#x0BB9] | [#x0C05-#x0C0C] | [#x0C0E-#x0C10] | [#x0C12-#x0C28] | [#x0C2A-#x0C33] | [#x0C35-#x0C39] | [#x0C60-#x0C61] | [#x0C85-#x0C8C] | [#x0C8E-#x0C90] | [#x0C92-#x0CA8] | [#x0CAA-#x0CB3] | [#x0CB5-#x0CB9] | #x0CDE | [#x0CE0-#x0CE1] | [#x0D05-#x0D0C] | [#x0D0E-#x0D10] | [#x0D12-#x0D28] | [#x0D2A-#x0D39] | [#x0D60-#x0D61] | [#x0E01-#x0E2E] | #x0E30 | [#x0E32-#x0E33] | [#x0E40-#x0E45] | [#x0E81-#x0E82] | #x0E84 | [#x0E87-#x0E88] | #x0E8A | #x0E8D | [#x0E94-#x0E97] | [#x0E99-#x0E9F] | [#x0EA1-#x0EA3] | #x0EA5 | #x0EA7 | [#x0EAA-#x0EAB] | [#x0EAD-#x0EAE] | #x0EB0 | [#x0EB2-#x0EB3] | #x0EBD | [#x0EC0-#x0EC4] | [#x0F40-#x0F47] | [#x0F49-#x0F69] | [#x10A0-#x10C5] | [#x10D0-#x10F6] | #x1100 | [#x1102-#x1103] | [#x1105-#x1107] | #x1109 | [#x110B-#x110C] | [#x110E-#x1112] | #x113C | #x113E | #x1140 | #x114C | #x114E | #x1150 | [#x1154-#x1155] | #x1159 | [#x115F-#x1161] | #x1163 | #x1165 | #x1167 | #x1169 | [#x116D-#x116E] | [#x1172-#x1173] | #x1175 | #x119E | #x11A8 | #x11AB | [#x11AE-#x11AF] | [#x11B7-#x11B8] | #x11BA | [#x11BC-#x11C2] | #x11EB | #x11F0 | #x11F9 | [#x1E00-#x1E9B] | [#x1EA0-#x1EF9] | [#x1F00-#x1F15] | [#x1F18-#x1F1D] | [#x1F20-#x1F45] | [#x1F48-#x1F4D] | [#x1F50-#x1F57] | #x1F59 | #x1F5B | #x1F5D | [#x1F5F-#x1F7D] | [#x1F80-#x1FB4] | [#x1FB6-#x1FBC] | #x1FBE | [#x1FC2-#x1FC4] | [#x1FC6-#x1FCC] | [#x1FD0-#x1FD3] | [#x1FD6-#x1FDB] | [#x1FE0-#x1FEC] | [#x1FF2-#x1FF4] | [#x1FF6-#x1FFC] | #x2126 | [#x212A-#x212B] | #x212E | [#x2180-#x2182] | [#x3041-#x3094] | [#x30A1-#x30FA] | [#x3105-#x312C] | [#xAC00-#xD7A3]  
+Letter         ::=    BaseChar | Ideographic  
+BaseChar       ::=    [#x0041-#x005A] | [#x0061-#x007A] | [#x00C0-#x00D6] | [#x00D8-#x00F6] 
+  | [#x00F8-#x00FF] | [#x0100-#x0131] | [#x0134-#x013E] | [#x0141-#x0148] | [#x014A-#x017E] 
+  | [#x0180-#x01C3] | [#x01CD-#x01F0] | [#x01F4-#x01F5] | [#x01FA-#x0217] | [#x0250-#x02A8] 
+  | [#x02BB-#x02C1] | #x0386 | [#x0388-#x038A] | #x038C | [#x038E-#x03A1] | [#x03A3-#x03CE] 
+  | [#x03D0-#x03D6] | #x03DA | #x03DC | #x03DE | #x03E0 | [#x03E2-#x03F3] | [#x0401-#x040C] 
+  | [#x040E-#x044F] | [#x0451-#x045C] | [#x045E-#x0481] | [#x0490-#x04C4] | [#x04C7-#x04C8] 
+  | [#x04CB-#x04CC] | [#x04D0-#x04EB] | [#x04EE-#x04F5] | [#x04F8-#x04F9] | [#x0531-#x0556] 
+  | #x0559 | [#x0561-#x0586] | [#x05D0-#x05EA] | [#x05F0-#x05F2] | [#x0621-#x063A] 
+  | [#x0641-#x064A] | [#x0671-#x06B7] | [#x06BA-#x06BE] | [#x06C0-#x06CE] | [#x06D0-#x06D3] 
+  | #x06D5 | [#x06E5-#x06E6] | [#x0905-#x0939] | #x093D | [#x0958-#x0961] | [#x0985-#x098C] 
+  | [#x098F-#x0990] | [#x0993-#x09A8] | [#x09AA-#x09B0] | #x09B2 | [#x09B6-#x09B9] 
+  | [#x09DC-#x09DD] | [#x09DF-#x09E1] | [#x09F0-#x09F1] | [#x0A05-#x0A0A] | [#x0A0F-#x0A10] 
+  | [#x0A13-#x0A28] | [#x0A2A-#x0A30] | [#x0A32-#x0A33] | [#x0A35-#x0A36] | [#x0A38-#x0A39] 
+  | [#x0A59-#x0A5C] | #x0A5E | [#x0A72-#x0A74] | [#x0A85-#x0A8B] | #x0A8D | [#x0A8F-#x0A91] 
+  | [#x0A93-#x0AA8] | [#x0AAA-#x0AB0] | [#x0AB2-#x0AB3] | [#x0AB5-#x0AB9] | #x0ABD | #x0AE0 
+  | [#x0B05-#x0B0C] | [#x0B0F-#x0B10] | [#x0B13-#x0B28] | [#x0B2A-#x0B30] | [#x0B32-#x0B33] 
+  | [#x0B36-#x0B39] | #x0B3D | [#x0B5C-#x0B5D] | [#x0B5F-#x0B61] | [#x0B85-#x0B8A] 
+  | [#x0B8E-#x0B90] | [#x0B92-#x0B95] | [#x0B99-#x0B9A] | #x0B9C | [#x0B9E-#x0B9F] 
+  | [#x0BA3-#x0BA4] | [#x0BA8-#x0BAA] | [#x0BAE-#x0BB5] | [#x0BB7-#x0BB9] | [#x0C05-#x0C0C] 
+  | [#x0C0E-#x0C10] | [#x0C12-#x0C28] | [#x0C2A-#x0C33] | [#x0C35-#x0C39] | [#x0C60-#x0C61] 
+  | [#x0C85-#x0C8C] | [#x0C8E-#x0C90] | [#x0C92-#x0CA8] | [#x0CAA-#x0CB3] | [#x0CB5-#x0CB9] 
+  | #x0CDE | [#x0CE0-#x0CE1] | [#x0D05-#x0D0C] | [#x0D0E-#x0D10] | [#x0D12-#x0D28] 
+  | [#x0D2A-#x0D39] | [#x0D60-#x0D61] | [#x0E01-#x0E2E] | #x0E30 | [#x0E32-#x0E33] 
+  | [#x0E40-#x0E45] | [#x0E81-#x0E82] | #x0E84 | [#x0E87-#x0E88] | #x0E8A | #x0E8D 
+  | [#x0E94-#x0E97] | [#x0E99-#x0E9F] | [#x0EA1-#x0EA3] | #x0EA5 | #x0EA7 | [#x0EAA-#x0EAB] 
+  | [#x0EAD-#x0EAE] | #x0EB0 | [#x0EB2-#x0EB3] | #x0EBD | [#x0EC0-#x0EC4] | [#x0F40-#x0F47] 
+  | [#x0F49-#x0F69] | [#x10A0-#x10C5] | [#x10D0-#x10F6] | #x1100 | [#x1102-#x1103] 
+  | [#x1105-#x1107] | #x1109 | [#x110B-#x110C] | [#x110E-#x1112] | #x113C | #x113E | #x1140 
+  | #x114C | #x114E | #x1150 | [#x1154-#x1155] | #x1159 | [#x115F-#x1161] | #x1163 | #x1165 
+  | #x1167 | #x1169 | [#x116D-#x116E] | [#x1172-#x1173] | #x1175 | #x119E | #x11A8 | #x11AB 
+  | [#x11AE-#x11AF] | [#x11B7-#x11B8] | #x11BA | [#x11BC-#x11C2] | #x11EB | #x11F0 | #x11F9 
+  | [#x1E00-#x1E9B] | [#x1EA0-#x1EF9] | [#x1F00-#x1F15] | [#x1F18-#x1F1D] | [#x1F20-#x1F45] 
+  | [#x1F48-#x1F4D] | [#x1F50-#x1F57] | #x1F59 | #x1F5B | #x1F5D | [#x1F5F-#x1F7D] 
+  | [#x1F80-#x1FB4] | [#x1FB6-#x1FBC] | #x1FBE | [#x1FC2-#x1FC4] | [#x1FC6-#x1FCC] 
+  | [#x1FD0-#x1FD3] | [#x1FD6-#x1FDB] | [#x1FE0-#x1FEC] | [#x1FF2-#x1FF4] | [#x1FF6-#x1FFC] 
+  | #x2126 | [#x212A-#x212B] | #x212E | [#x2180-#x2182] | [#x3041-#x3094] | [#x30A1-#x30FA] 
+  | [#x3105-#x312C] | [#xAC00-#xD7A3]  
 Ideographic    ::=    [#x4E00-#x9FA5] | #x3007 | [#x3021-#x3029] 
 */
 bool GenericCast::isLetter(uint32_t cp) 

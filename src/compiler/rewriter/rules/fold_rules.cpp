@@ -265,7 +265,7 @@ namespace zorba {
       else if (ival == xqp_integer::parseInt (1))
         return fix_annotations (new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), (*count_expr) [0]));
       else {
-        expr_t dpos = new const_expr (LOC (val_expr), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        expr_t dpos = new const_expr (LOC (val_expr), GenericCast::instance ()->promote (val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
         expr_t subseq_expr = fix_annotations (new fo_expr (LOC (count_expr), LOOKUP_FN ("fn", "subsequence", 3), (*count_expr) [0], dpos, new const_expr (LOC (val_expr), xqp_double::parseInt (2))));
         return fix_annotations (new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), subseq_expr));
       }

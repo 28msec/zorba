@@ -972,7 +972,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
                               create_value_type (lRunningItem);
 
       if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
-        lRunningItem = GenericCast::instance()->cast(lRunningItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        lRunningItem = GenericCast::instance()->cast(lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
       }
 
@@ -991,9 +991,9 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
       }
       if (lMaxItem != 0) {
         // Type Promotion
-        store::Item_t lItemCur = GenericCast::instance()->promote(lRunningItem, lMaxType);
+        store::Item_t lItemCur = GenericCast::instance()->promote(lRunningItem, &*lMaxType);
         if (lItemCur == 0) {
-          lItemCur = GenericCast::instance()->promote(lMaxItem, lRunningType); 
+          lItemCur = GenericCast::instance()->promote(lMaxItem, &*lRunningType); 
           if (lItemCur != 0) {
             lMaxItem = lItemCur;
             lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->

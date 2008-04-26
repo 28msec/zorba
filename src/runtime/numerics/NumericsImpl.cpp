@@ -338,8 +338,8 @@ namespace zorba
     store::Item_t res;
     
     xqtref_t resultType = TypeOps::arithmetic_type ( *type0, *type1 );
-    store::Item_t n0 = GenericCast::instance()->cast ( item0, resultType );
-    store::Item_t n1 = GenericCast::instance()->cast ( item1, resultType );
+    store::Item_t n0 = GenericCast::instance()->cast ( item0, &*resultType );
+    store::Item_t n1 = GenericCast::instance()->cast ( item1, &*resultType );
 
     switch ( TypeOps::get_atomic_type_code ( *resultType ) )
     {
@@ -570,7 +570,7 @@ namespace zorba
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        item = GenericCast::instance()->cast ( item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
@@ -639,7 +639,7 @@ namespace zorba
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        item = GenericCast::instance()->cast ( item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
@@ -713,7 +713,7 @@ namespace zorba
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        item = GenericCast::instance()->cast ( item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
@@ -770,7 +770,7 @@ namespace zorba
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        item = GenericCast::instance()->cast ( item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
@@ -827,7 +827,7 @@ namespace zorba
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        item = GenericCast::instance()->cast ( item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 
@@ -891,7 +891,7 @@ namespace zorba
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        item = GenericCast::instance()->cast ( item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
       }
 

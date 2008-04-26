@@ -376,7 +376,7 @@ namespace zorba {
     try {
       xqpString lBaseURI = Unmarshaller::getInternalString(aBaseURI);
  
-      if(!GenericCast::instance()->isCastable(lBaseURI, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
+      if(!GenericCast::instance()->isCastable(lBaseURI, &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
           ZORBA_ERROR_DESC(ZorbaError::XQP0020_INVALID_URI, lBaseURI);
       }
       theCtx->set_baseuri(lBaseURI, false);

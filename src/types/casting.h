@@ -34,14 +34,23 @@ namespace zorba
 /**
  * Class which implements casting of items.
  */
+struct ErrorInfo;
+
 class GenericCast
 {
-  typedef store::Item_t (*CastFunc)(store::Item*, store::ItemFactory*, namespace_context *nsCtx);
+
+  typedef store::Item_t (*CastFunc)(
+                            store::Item*, 
+                            store::ItemFactory*, 
+                            namespace_context *nsCtx,
+                            const ErrorInfo& aErrorInfo
+                        );
   typedef store::Item_t (*DownCastFunc)(
                             const store::Item*, 
-                            TypeConstants::atomic_type_code_t aTargetAtomicType,
                             RootTypeManager& aTS,
-                            store::ItemFactory*
+                            TypeConstants::atomic_type_code_t aTargetAtomicType,
+                            store::ItemFactory*,
+                            const ErrorInfo& aErrorInfo
                         ); 
 private:
   static const int theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
@@ -60,31 +69,23 @@ public:
   /**
    * Executes the casting of the passed item. If the passed item has the same type or a subtype
    * of the passed targetType, the passed item is directly returned.
-   * @param aItem 
-   * @param aTargetType
-   * @return resutling item
    */
-  store::Item_t cast (store::Item* aItem, const xqtref_t& aTargetType) const;
+  store::Item_t cast (store::Item* aItem, 
+                      const XQType* aTargetType, 
+                      namespace_context* aNCtx = 0) const;
 
   /**
    * Executes the string casting of the passed string to an item of the passed target type.
-   * @param aStr 
-   * @param aTargetType
-   * @return resutling item
    */
-  store::Item_t cast (const xqpString& aStr, const xqtref_t& aTargetType) const;
+  store::Item_t cast (const xqpString& aStr, 
+                      const XQType* aTargetType,
+                      namespace_context* aNCtx = 0) const;
 
   /**
    * Casts the passed string to xs:QName if possible.
-   * @param str a pointer to a heap-allocated xqpStringStore
-   * @param isCast true if a cast is requested, false if this is a castable inquiry
-   * @return an item if the promotion is possible, otherwise raises an error
    */
-  store::Item_t castToQName(
-        xqpStringStore_t aStr,
-        bool isCast,
-        bool isExplicit,
-        namespace_context* aNCtx = 0) const;
+  store::Item_t castToQName(xqpStringStore_t aStr,
+                            namespace_context* aNCtx = 0) const;
 
   bool castableToNCName(const xqpStringStore* str) const;
 
@@ -104,7 +105,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable( store::Item_t aItem, const xqtref_t& aTargetType ) const; 
+  bool isCastable(store::Item_t aItem, const XQType* aTargetType) const; 
 
   /**
    * Checks if the passed string is castable to the passed target type.
@@ -112,7 +113,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable( const xqpString& aStr, const xqtref_t& aTargetType) const;
+  bool isCastable(const xqpString& aStr, const XQType* aTargetType) const;
 
   /**
    * Promotes the passed item to the passed target type.
@@ -122,7 +123,7 @@ public:
    *         if the item type is a subtype of the target type, then
    *         the passed item is returned
    */
-  store::Item_t promote(store::Item_t aItem, const xqtref_t& aTargetType) const;
+  store::Item_t promote(store::Item_t aItem, const XQType* aTargetType) const;
 
 public:
   static bool isLetter(uint32_t cp);
@@ -131,27 +132,6 @@ public:
   static bool isDigit(uint32_t cp);
   static bool isCombiningChar(uint32_t cp);
   static bool isExtender(uint32_t cp);
-
-private:
-  /**
-   * Tries to cast the passed string to an Item of the passed target type.
-   * @param aString 
-   * @param aTargateType
-   * @return Created Item or 0 if the parsing was not possible
-   */
-  store::Item_t stringSimpleCast(
-        const store::Item* aSourceItem,
-        const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType) const;
-
-  store::Item_t stringSimpleCastBuiltIn(
-    const store::Item* aSourceItem,
-    const xqtref_t&    aSourceType, 
-    const xqtref_t& aTargetType) const;
-
-  store::Item_t castToBoolean(
-        const store::Item* aSourceItem,
-        const xqtref_t& aSourceType) const;
   
 }; /* class GenericCast */
 

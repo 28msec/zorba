@@ -196,7 +196,7 @@ static bool refactor_index_pred (RewriterContext& rCtx, expr_t cond, forlet_clau
       if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_named_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)
           && val->getIntegerValue () >= xqp_integer::parseInt (1)) 
       {
-        pos_expr = new const_expr (LOC (pos_expr), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        pos_expr = new const_expr (LOC (pos_expr), GenericCast::instance ()->promote (val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
         return true;
       }
     }
