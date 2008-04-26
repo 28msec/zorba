@@ -784,6 +784,7 @@ Module :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.library]" << endl;
 #endif
+       dynamic_cast<LibraryModule *> ($2)->set_version_decl (static_cast<VersionDecl *> ($1));
        $$ = $2;
 		}
   ;

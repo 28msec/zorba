@@ -11,7 +11,8 @@ struct NodeTypeInfo
     :
     theTypeName(tname),
     theIsId(isId),
-    theIsIdRefs(isIdRefs)
+    theIsIdRefs(isIdRefs),
+    theIsNillable(false)
   {
   }
 

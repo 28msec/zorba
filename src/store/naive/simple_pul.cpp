@@ -146,7 +146,7 @@ void PULImpl::addInsertChildren(
 {
   XmlNode* n = BASE_NODE(target);
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdInsertChildren* upd = new UpdInsertChildren(kind, target, children,
@@ -204,7 +204,7 @@ void PULImpl::addInsertSiblings(
 {
   XmlNode* n = BASE_NODE(target);
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdInsertSiblings* upd = new UpdInsertSiblings(kind, target, siblings,
@@ -241,7 +241,7 @@ void PULImpl::addInsertAttributes(
     n->checkNamespaceConflict(attrs[i]->getNodeName(), ZorbaError::XUDY0023);
   }
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdInsertAttributes* upd = new UpdInsertAttributes(target, attrs, copy, copymode);
@@ -274,7 +274,7 @@ void PULImpl::addReplaceNode(
 
   Item_t parent = target->getParent();
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdatePrimitive* upd;

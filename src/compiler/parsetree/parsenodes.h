@@ -383,6 +383,7 @@ class LibraryModule : public parsenode
 protected:
 	rchandle<ModuleDecl> decl_h;
 	rchandle<Prolog> prolog_h;
+  rchandle<VersionDecl> version_decl_h;
 
 public:
 	LibraryModule(
@@ -394,6 +395,8 @@ public:
 public:
 	rchandle<ModuleDecl> get_decl() const { return decl_h; }
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
+
+  void set_version_decl(rchandle<VersionDecl> vd) { version_decl_h = vd; }
 
 public:
 	void accept(parsenode_visitor&) const;

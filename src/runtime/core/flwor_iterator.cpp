@@ -664,7 +664,7 @@ void FLWORIterator::matVarsAndGroupBy (
   lGroupKey->theTypedKey = lTypedKey;
   
   FLWORIterator::group_map_t* lGroupMap = flworState->groupMap;
-  std::vector<store::TempSeq_t>* lOuterSeq;
+  std::vector<store::TempSeq_t>* lOuterSeq = 0;
   std::vector<GroupingOuterVar> lOuterVars = theGroupByClause->theOuterVars;
   std::vector<GroupingOuterVar>::iterator lOuterVarIter = lOuterVars.begin();
   if ( lGroupMap->get ( lGroupKey, lOuterSeq ) ){
