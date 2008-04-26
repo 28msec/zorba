@@ -239,6 +239,9 @@ namespace zorba
       
       virtual uint32_t
       hash() const;
+      
+      virtual uint32_t
+      hash(uint32_t hval) const;
 
     protected:
       DayTimeDuration& 

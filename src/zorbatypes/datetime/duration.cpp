@@ -10,8 +10,8 @@
 #include "zorbatypes/datetime/parse.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime.h"
+#include <util/hashfun.h>
 
-using namespace std;
 
 namespace zorba
 {
@@ -257,7 +257,7 @@ bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym
 
 uint32_t YearMonthDuration::hash() const
 {
-  return 0;
+  return hashfun::h32<long>(months, 0);
 }
 
 /****************************************************************************
@@ -818,10 +818,20 @@ bool DayTimeDuration::from_Timezone ( const TimeZone& t, DurationBase_t& dt )
     return false;
 }
 
+uint32_t DayTimeDuration::hash(uint32_t hval) const
+{
+  hval = hashfun::h32<int>((int)is_negative, hval);
+  hval = hashfun::h32<int>(days, hval);
+  hval = hashfun::h32<boost::int64_t>(timeDuration.ticks(), hval);
+  
+  return hval;
+}
+
 uint32_t DayTimeDuration::hash() const
 {
-  return 0;
+  return hash(0);
 }
+
 
 /****************************************************************************
  *
@@ -1017,7 +1027,12 @@ bool Duration::parse_string(const xqpString& s, Duration_t& d_t)
 
 uint32_t Duration::hash() const
 {
-  return 0;
+  uint32_t hval = 0;
+  
+  hval = yearMonthDuration.hash();
+  hval = dayTimeDuration.hash(hval);
+  
+  return hval;
 }
 
 }

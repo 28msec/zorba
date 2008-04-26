@@ -180,14 +180,7 @@ long TimeZone::getFractionalSeconds() const
 
 uint32_t TimeZone::hash(int implicit_timezone_seconds) const
 {
-  uint32_t hval = 0;
-  
-  hval = hashfun::h32<long>(getHours(), hval);
-  hval = hashfun::h32<long>(getMinutes(), hval);
-  hval = hashfun::h32<long>(getSeconds(), hval);
-  hval = hashfun::h32<long>(getFractionalSeconds(), hval);
-
-  return hval;
+  return hashfun::h32<boost::int64_t>(is_not_a_date_time() ? -1 : the_time_zone.ticks(), 0);
 }
 
 
