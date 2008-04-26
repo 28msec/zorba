@@ -1,14 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- *
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/Strings.cpp
- *
- */
-
 #include <iostream>
 #include "system/globalenv.h"
 #include "functions/Strings.h"

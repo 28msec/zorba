@@ -1,8 +1,3 @@
-/*
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: David Graf
- */
-
 #ifndef ZORBA_CONSTRUCTOR_H
 #define ZORBA_CONSTRUCTOR_H
 

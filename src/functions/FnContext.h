@@ -1,8 +1,3 @@
-/*
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Tim Kraska
- */
-
 #ifndef ZORBA_FN_CONTEXT_H
 #define ZORBA_FN_CONTEXT_H
 

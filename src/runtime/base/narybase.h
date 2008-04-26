@@ -1,9 +1,3 @@
-/**
- * Copyright FLWOR Foundation
- *
- * Author: David Graf (david.graf@28msec.com)
- */
-
 #ifndef ZORBA_NARY_ITERATOR
 #define ZORBA_NARY_ITERATOR
 

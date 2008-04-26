@@ -1,6 +1,7 @@
 #include <zorba/zorbastring.h>
 #include "util/rchandle.h"
 #include "zorbatypes/xqpstring.h"
+#include "api/unmarshaller.h"
 
 namespace zorba {
 
@@ -110,7 +111,7 @@ String::operator!=(const String& str) const
 
 std::ostream& operator <<(std::ostream& os, const String& str)
 {
-  return os << *str.m_string;
+  return os << *Unmarshaller::getInternalString(str);
 }
 
 

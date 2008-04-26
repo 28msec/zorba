@@ -1,14 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- *
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/ContextFunctions.cpp
- *
- */
-
 #include "system/globalenv.h"
 #include "functions/ContextFunctions.h"
 #include "runtime/context/ContextImpl.h"

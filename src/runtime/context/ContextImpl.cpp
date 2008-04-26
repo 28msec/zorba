@@ -1,14 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- *
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file runtime/context/ContextImpl.cpp
- *
- */
- 
 #include "system/globalenv.h"
 #include "runtime/context/ContextImpl.h"
 #include "store/api/item_factory.h"

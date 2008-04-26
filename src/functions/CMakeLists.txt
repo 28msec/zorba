@@ -1,6 +1,6 @@
 SET(FUNCTIONS_SRCS
-    Accessors.cpp NOTATION.cpp Sequences.cpp Trace.cpp library.cpp
-    Binary.cpp  Constructor.cpp ContextFunctions.cpp Numerics.cpp anyURI.cpp
+    Accessors.cpp Sequences.cpp library.cpp
+    Constructor.cpp ContextFunctions.cpp Numerics.cpp 
     Boolean.cpp FnContext.cpp QNames.cpp  Strings.cpp signature.cpp
     DateTime.cpp Misc.cpp function.cpp arithmetic.cpp Nodes.cpp
     external_function_adapters.cpp)

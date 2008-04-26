@@ -1,12 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: signature.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
- *
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: John Cowan,Paul Pedersen
- *
- */
- 
 #ifndef ZORBA_SIGNATURE_H
 #define ZORBA_SIGNATURE_H
 

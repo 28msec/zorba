@@ -1,8 +1,3 @@
-/*
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Tim Kraska, David Graf
- */
-
 #include "system/globalenv.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "types/casting.h"

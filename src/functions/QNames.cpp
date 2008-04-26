@@ -1,14 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- *
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/QNames.cpp
- *
- */
-
 #include "system/globalenv.h"
 #include "functions/QNames.h"
 #include "runtime/qnames/QNamesImpl.h"

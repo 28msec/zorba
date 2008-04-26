@@ -1,12 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: expr_visitor.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
- *
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Author: John Cowan, Paul Pedersen
- *
- */
-
 #ifndef ZORBA_EXPR_VISITOR_H
 #define ZORBA_EXPR_VISITOR_H
 

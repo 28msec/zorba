@@ -1,14 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- * 
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/ContextFunctions.h
- *
- */
-
 #ifndef ZORBA_CONTEXT_FUNCTIONS_H
 #define ZORBA_CONTEXT_FUNCTIONS_H
 

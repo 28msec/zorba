@@ -1,14 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- *
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/Strings.h
- *
- */
-
 #ifndef ZORBA_STRINGS_H
 #define ZORBA_STRINGS_H
 

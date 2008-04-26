@@ -1,11 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: parsenodes.h,v 1.1.1.1 2006/11/06 08:42:18 Paul Pedersen Exp $
- *
- *  Copyright 2006-2007 FLWOR FOundation.
- *
- */
-
 #ifndef ZORBA_PARSENODES_H
 #define ZORBA_PARSENODES_H
 

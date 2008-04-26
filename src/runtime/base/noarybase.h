@@ -1,9 +1,3 @@
-/**
- * Copyright 2007 FLWOR Foundation
- *
- * Author: David Graf (david.graf@28msec.com)
- */
-
 #ifndef ZORBA_NOARYBASE_H
 #define ZORBA_NOARYBASE_H
 

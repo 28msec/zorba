@@ -1,8 +1,3 @@
-/*
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Nicolae Brinza, Sorin Nasoi
- */
-
 #ifndef ZORBA_FUNCTIONS_DATETIME_H
 #define ZORBA_FUNCTIONS_DATETIME_H
 

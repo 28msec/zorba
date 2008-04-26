@@ -1,10 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: symbol_table.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- */
-
 #ifndef ZORBA_SYMBOL_TABLE_H
 #define ZORBA_SYMBOL_TABLE_H
 

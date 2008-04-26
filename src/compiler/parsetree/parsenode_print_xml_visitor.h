@@ -3,12 +3,6 @@
 
 #include <iostream>
 #include <ostream>
-/*______________________________________________________________________
-|  
-|	 Design note: Visitor pattern.  See, for example:
-|	 "Modern C++ Design" by Andrei Alexandrescu, Addison Wesley (const 2001),
-|	 Chapter 10.
-|_______________________________________________________________________*/
 
 namespace zorba {
 

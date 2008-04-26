@@ -1,7 +1,6 @@
 #ifndef ZORBA_STRING_API_H
 #define ZORBA_STRING_API_H
 
-
 #include <string>
 
 namespace zorba {
@@ -46,9 +45,6 @@ public:
 
 private:
   friend class Unmarshaller;
-  friend std::ostream& operator <<(std::ostream& os, const String& str);
-  xqpStringStore* getInternalString() const { return m_string; }
-
   xqpStringStore *m_string;
 };
 

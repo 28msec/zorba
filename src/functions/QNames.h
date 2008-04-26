@@ -1,14 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- *
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/QNames.h
- *
- */
-
 #ifndef ZORBA_QNAMES_H
 #define ZORBA_QNAMES_H
 

@@ -1,8 +1,3 @@
-/*
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Nicolae Brinza, Sorin Nasoi
- */
-
 #include "functions/DateTime.h"
 #include "system/globalenv.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"

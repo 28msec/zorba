@@ -11,9 +11,9 @@ namespace zorba {
 
 class Unmarshaller {
   public:
-      static store::Item*        getInternalItem(const Item& aItem)        { return aItem.getInternalItem();     }
+      static store::Item*        getInternalItem(const Item& aItem)       { return aItem.m_item;     }
 
-      static xqpStringStore*     getInternalString(const String& aString)  { return aString.getInternalString(); }
+      static xqpStringStore*     getInternalString(const String& aString) { return aString.m_string; }
 
       static static_context*     getInternalStaticContext(const StaticContext_t& aContext);
 

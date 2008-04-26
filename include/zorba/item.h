@@ -79,10 +79,7 @@ public:
 
 private:
   friend class Unmarshaller;
-  friend class SAX2_XMLReaderNative;
   store::Item *m_item;
-
-  store::Item * getInternalItem() const { return m_item; }
 };
 
 } // namespace zorba

@@ -1,8 +1,3 @@
-/*
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Tim Kraska, David Graf
- */
-
 #ifndef ZORBA_BOOLEAN_H
 #define ZORBA_BOOLEAN_H
 

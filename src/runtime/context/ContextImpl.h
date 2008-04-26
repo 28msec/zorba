@@ -1,14 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- *
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file runtime/context/ContextImpl.h
- *
- */
-
 #ifndef ZORBA_CONTEXT_IMPL_H
 #define ZORBA_CONTEXT_IMPL_H
 

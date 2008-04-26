@@ -1,8 +1,3 @@
-/*
- *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Tim Kraska
- */
-
 #include "functions/FnContext.h"
 #include "system/globalenv.h"
 #include "runtime/fncontext/FnContextImpl.h"

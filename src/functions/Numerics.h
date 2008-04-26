@@ -1,15 +1,3 @@
-/**
- * @copyright
- * ========================================================================
- *  Copyright FLWOR Foundation
- * ========================================================================
- *
- * @author David Graff (david.graf@28msec.com)
- * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/numerics.h
- *
- */
-
 #ifndef ZORBA_NUMERICS_H
 #define ZORBA_NUMERICS_H
 

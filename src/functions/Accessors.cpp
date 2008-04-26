@@ -1,12 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: collection.h,v 1.1 2007/08/27 07:07:59 $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf
- *
- */
-
 #include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "functions/Accessors.h"
