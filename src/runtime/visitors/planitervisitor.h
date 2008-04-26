@@ -476,8 +476,14 @@ namespace zorba
     virtual void beginVisitFlworForVariable(const PlanIterator&, const xqpStringStore&) = 0;
     virtual void endVisitFlworForVariable(const PlanIterator&) = 0;
     
-    virtual void beginVisitFlworGroupBy(const PlanIterator&) = 0;
-    virtual void endVisitFlworGroupBy(const PlanIterator&) = 0;
+    virtual void beginVisitFlworGroupBy() = 0;
+    virtual void endVisitFlworGroupBy() = 0;
+    
+    virtual void beginVisitFlworGroupBySpec() = 0;
+    virtual void endVisitFlworGroupBySpec() = 0;
+    
+    virtual void beginVisitFlworGroupByOuterVar() = 0;
+    virtual void endVisitFlworGroupByOuterVar() = 0;
     
     virtual void beginVisitFlworOrderBy(const PlanIterator&) = 0;
     virtual void endVisitFlworOrderBy(const PlanIterator&) = 0;

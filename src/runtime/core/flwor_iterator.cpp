@@ -167,16 +167,22 @@ FLWORIterator::GroupByClause::GroupByClause (
 
 void FLWORIterator::GroupByClause::accept ( PlanIterVisitor& v ) const
 { 
+  v.beginVisitFlworGroupBy();
   std::vector<GroupingSpec>::const_iterator iter;
   for ( iter = theGroupingSpecs.begin() ; iter != theGroupingSpecs.end(); iter++ )
   {
-    iter->accept ( v );
+    v.beginVisitFlworGroupBySpec();
+    iter->accept(v);
+    v.endVisitFlworGroupBySpec();
   }
   std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
   for ( iterOuterVars = theOuterVars.begin() ; iterOuterVars != theOuterVars.end(); iterOuterVars++ )
   {
-    iterOuterVars->accept ( v );
+    v.beginVisitFlworGroupByOuterVar();
+    iterOuterVars->accept(v);
+    v.endVisitFlworGroupByOuterVar();
   }
+  v.endVisitFlworGroupBy();
 }
 
 void FLWORIterator::GroupByClause::open ( PlanState& planState, uint32_t& offset )
@@ -514,7 +520,7 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
       // In the case we not need to do ordering, we now returning the items
       // produced by the ReturnClause
       if(doGroupBy){
-        matResultAndGroupBy ( flworState, planState );
+        matVarsAndGroupBy ( flworState, planState );
       }else if (theIsUpdating)
       {
         curItem = consumeNext(returnClause, planState);
@@ -558,17 +564,8 @@ void FLWORIterator::groupAndOrder ( FlworState* flworState,
   FLWORIterator::group_map_t::iterator lGroupMapIter = lGroupMap->begin();
   while ( lGroupMapIter != lGroupMap->end() )
   {
-    bindGroupBy ( lGroupMapIter, flworState, planState );
-
-    store::Iterator_t iterWrapper = new PlanIteratorWrapper ( returnClause, planState );
-    store::TempSeq_t result = GENV_STORE.createTempSeq ( iterWrapper, false, false );
-    store::Iterator_t iter = result->getIterator();
-    iter->open();
-    store::Item_t orderKey = GENV_ITEMFACTORY->createInteger ( Integer::parseInt ( 1 ) );
-    std::vector<store::Item_t> orderKeys;
-    orderKeys.push_back ( orderKey );
-    flworState->orderMap->insert ( std::pair<std::vector<store::Item_t>, store::Iterator_t> ( orderKeys, iter ) );
-    returnClause->reset ( planState );
+    bindGroupBy ( lGroupMapIter, flworState, planState );    
+    matResultAndOrder(flworState, planState);
 
     ++lGroupMapIter;
   }
@@ -617,7 +614,7 @@ void FLWORIterator::bindGroupBy ( FLWORIterator::group_map_t::iterator lGroupMap
 }
 
 
-void FLWORIterator::matResultAndGroupBy (
+void FLWORIterator::matVarsAndGroupBy (
     FlworState* flworState,
     PlanState& planState ) const
 {
@@ -632,7 +629,6 @@ void FLWORIterator::matResultAndGroupBy (
   {
     
     store::Item_t lItem = consumeNext ( lSpecIter->theInput.getp(), planState );
-    std::cout << "Key:" << lItem->show() << std::endl;
     lKey.push_back ( lItem );
     
     //Getting the typed value
@@ -672,7 +668,7 @@ void FLWORIterator::matResultAndGroupBy (
   std::vector<GroupingOuterVar> lOuterVars = theGroupByClause->theOuterVars;
   std::vector<GroupingOuterVar>::iterator lOuterVarIter = lOuterVars.begin();
   if ( lGroupMap->get ( lGroupKey, lOuterSeq ) ){
-    assert(lOuterSeq > 0 && lOuterSeq->size()>0);
+    assert(lOuterSeq > 0);
     std::vector<store::TempSeq_t>::iterator lOuterSeqIter = lOuterSeq->begin();
     while ( lOuterVarIter != lOuterVars.end() ){
       store::Iterator_t iterWrapper = new PlanIteratorWrapper ( lOuterVarIter->theInput, planState );
@@ -1124,6 +1120,7 @@ FlworState::~FlworState()
          ++lGroupIter )
     {
       delete (*lGroupIter).first;
+      delete (*lGroupIter).second;
     }
     //groupMap->clear();
     delete groupMap;
@@ -1180,6 +1177,7 @@ void FlworState::reset(PlanState& planState)
          ++lGroupIter )
     {
       delete (*lGroupIter).first;
+      delete (*lGroupIter).second;
       //delete (*lGroupIter).second;
     }
     groupMap->clear();

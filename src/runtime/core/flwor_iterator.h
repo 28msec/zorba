@@ -288,7 +288,7 @@ namespace zorba
   /**
        * Materialized the result after binding the variables and do the grouping
    */
-      void matResultAndGroupBy(FlworState* flworState, PlanState& planState) const;
+      void matVarsAndGroupBy(FlworState* flworState, PlanState& planState) const;
       
       void groupAndOrder(FlworState* flworState, PlanState& planStat) const;
       

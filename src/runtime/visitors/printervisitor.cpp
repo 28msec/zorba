@@ -652,6 +652,36 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
 }
 
 
+  void beginVisitFlworGroupBy(){
+    thePrinter.startBeginVisit("GroupByClause", ++theId);
+    thePrinter.endBeginVisit(theId);
+  }
+  
+  void endVisitFlworGroupBy(){
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  
+  void beginVisitFlworGroupBySpec(){
+    thePrinter.startBeginVisit("Spec", ++theId);
+    thePrinter.endBeginVisit(theId);
+  }
+  
+  void endVisitFlworGroupBySpec(){
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  
+  void beginVisitFlworGroupByOuterVar(){
+    thePrinter.startBeginVisit("OuterVar", ++theId);
+    thePrinter.endBeginVisit(theId);
+  }
+  
+  void endVisitFlworGroupByOuterVar(){
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   void beginVisitFlworOrderBy(const PlanIterator& a){
     thePrinter.startBeginVisit("OrderByClause", ++theId);
     thePrinter.endBeginVisit(theId);

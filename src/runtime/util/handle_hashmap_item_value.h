@@ -66,7 +66,6 @@ namespace zorba
           std::vector<Item_t>::const_iterator iter2 = t2->theTypedKey.begin();
           std::vector<XQPCollator*>::iterator lCollIter = aCompareParam->theCollators.begin();
           while(iter1 != t1->theTypedKey.end()){
-            std::cout << "Comparing: " << (*iter1)->show() << ":" << (*iter2)->show() << std::endl;
             if(CompareIterator::valueEqual ( aCompareParam->theRuntimeCB,
                *iter1, *iter2,
                ( *lCollIter ) ) != 0){
