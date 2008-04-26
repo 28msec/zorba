@@ -43,22 +43,8 @@ namespace zorba {
       virtual bool
       setDefaultCollection( const Item& aCollectionUri ) = 0;
 
-
-#if 0
-      virtual bool
-      deleteVariable( xqp_string varname ) = 0;
-
-      virtual void
-      deleteAllVariables( ) = 0;
-#endif
   };
 
 } /* namespace zorba */
-#endif
 
-/* vim:set ts=2 sw=2: */
-/*
- * Local variables:
- * mode: c++
- * End:
- */
+#endif

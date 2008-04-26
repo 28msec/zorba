@@ -286,7 +286,8 @@ namespace zorba {
       version();
 
   }; /* class Zorba */
-} /* namespace xqp */
+
+} /* namespace zorba */
 
 /** 
  * \example simple.cpp

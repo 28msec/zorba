@@ -132,8 +132,7 @@ DurationBase_t YearMonthDuration::operator*(const Double value) const
 {
   xqp_double lDouble = xqp_double::parseInt(months) * value;
   xqp_long lLong;
-  bool b = NumConversions::doubleToLongLong(lDouble.round(), lLong);
-  assert(b);
+  assert(NumConversions::doubleToLongLong(lDouble.round(), lLong));
   YearMonthDuration* ym = new YearMonthDuration( lLong );
   return ym;
 }
@@ -142,8 +141,7 @@ DurationBase_t YearMonthDuration::operator/(const Double value) const
 {
   xqp_double lDouble = xqp_double::parseInt(months) / value;
   xqp_long lLong;
-  bool b = NumConversions::doubleToLongLong(lDouble.round(), lLong);
-  assert(b);
+  assert(NumConversions::doubleToLongLong(lDouble.round(), lLong));
   YearMonthDuration* ym = new YearMonthDuration(lLong);
   return ym;
 }
@@ -541,10 +539,12 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
 Decimal DayTimeDuration::operator/(const DurationBase& db) const
 {
   Decimal op1, op2;
+#ifndef NDEBUG
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
   
   assert(Decimal::parseNativeDouble(getTotalSeconds(), op1));
   assert(Decimal::parseNativeDouble(dtd.getTotalSeconds(), op2));
+#endif
   
   return op1/op2;
 }

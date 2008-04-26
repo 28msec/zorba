@@ -20,8 +20,11 @@ public:
   const char*
   c_str() const;
 
-  const String& operator =(const String& other);
-  const String& operator =(xqpStringStore *other);
+  const String& 
+  operator =(const String& other);
+
+  const String&
+  operator =(xqpStringStore *other);
 
   int
   compare(const String& string) const;
