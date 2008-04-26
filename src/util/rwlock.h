@@ -46,7 +46,7 @@ namespace zorba {
 class rwlock
 {
 protected:
-#if defined (WIN32)
+#if defined (WIN32) && !defined (CYGWIN)
   HANDLE    mutex;
   HANDLE    cond_read;
   HANDLE    cond_write;
