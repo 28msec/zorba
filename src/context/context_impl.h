@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#ifndef NDEBUG
+# define INSERT_CONTEXT_VALUE(name, value)                              \
+    bool found = context_value ("int:" #name, value);                   \
+    assert (found);                                                     
+#else 
+# define INSERT_CONTEXT_VALUE(name, value)                              \
+    context_value ("int:" #name, value); 
+#endif
+
 #define DECL_ENUM_PARAM( class, name )                                  \
   StaticContextConsts::name##_t class::name () const {                  \
     ctx_value_t val;                                                    \
-    bool found = context_value ("int:" #name, val);                     \
-    assert (found);                                                     \
+    INSERT_CONTEXT_VALUE(name, val);                                    \
     return (StaticContextConsts::name##_t) val.intValue;                \
   }                                                                     \
                                                                         \
@@ -31,8 +40,7 @@
 #define DECL_STR_PARAM( class, name, err )                     \
   xqp_string class::name () const {                            \
     xqp_string val;                                            \
-    bool found = context_value ("int:" #name, val);            \
-    assert (found);                                            \
+    INSERT_CONTEXT_VALUE (name, val);                  \
     return val;                                                \
   }                                                            \
                                                                \

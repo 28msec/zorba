@@ -222,7 +222,7 @@ store::Iterator_t	dynamic_context::get_variable(store::Item_t varname) {
 
 
 store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) { 
-  dctx_value_t val;
+    dctx_value_t val = {dctx_value_t::no_val, false, {0} };
 
   if(!keymap.get (key, val))
 	{
