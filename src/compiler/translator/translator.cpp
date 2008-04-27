@@ -2307,7 +2307,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   if (type != NULL)
   {
-    if (sz != 1)
+    if (sz != 1
+        || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
+        || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
       ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
   }
