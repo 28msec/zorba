@@ -18,6 +18,8 @@
 
 namespace zorba {
 
+  /** \brief Base class for all external function classes.
+   */
   class ExternalFunctionData 
   {
   };

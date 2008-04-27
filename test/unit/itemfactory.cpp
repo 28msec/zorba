@@ -57,13 +57,18 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "string") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "abc" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, isNaN() );
+
+    lItem.close();
+    assert (lItem.isNull());
 
     /** AnyURI */
     lItem = lFactory->createAnyURI("http://www.flworfound.org/");
     assert ( checkType(lItem.getType(), "anyURI") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "http://www.flworfound.org/");
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     /** QName */
     lItem = lFactory->createQName("http://www.flworfound.org", "flwor", "name");
@@ -71,6 +76,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "flwor:name" );
     assert ( lItem.getNamespace() == "http://www.flworfound.org" );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createQName("http://www.flworfound.org", "name");
     assert ( checkType(lItem.getType(), "QName") );
@@ -79,12 +85,14 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.getPrefix().length() == 0 );
     assert ( lItem.getPrefix().empty() );
     assert ( lItem.getNamespace() == "http://www.flworfound.org" );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     /** NCName */
     lItem = lFactory->createNCName("ncname");
     assert ( checkType(lItem.getType(), "NCName") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "ncname" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED (lItem, getPrefix());
     CHECK_NOT_IMPLEMENTED (lItem, getLocalName());
     CHECK_NOT_IMPLEMENTED (lItem, getNamespace());
@@ -96,12 +104,14 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "" );
     assert ( lItem.getStringValue().length() == 0 );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createBase64Binary("cmxjZ3R4c3JidnllcmVuZG91aWpsbXV5Z2NhamxpcmJkaWFhbmFob2VsYXVwZmJ1Z2dmanl2eHlzYmhheXFtZXR0anV2dG1q", 96);
     assert ( checkType(lItem.getType(), "base64Binary") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "cmxjZ3R4c3JidnllcmVuZG91aWpsbXV5Z2NhamxpcmJkaWFhbmFob2VsYXVwZmJ1Z2dmanl2eHlzYmhheXFtZXR0anV2dG1q" );
     assert ( lItem.getStringValue().length() == 96 );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED (lItem, getBooleanValue() );
 
     /** HexBinary */
@@ -110,12 +120,14 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "" );
     assert ( lItem.getStringValue().length() == 0 );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createHexBinary("d433abfb43281793214aac", 22);
     assert ( checkType(lItem.getType(), "hexBinary") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "D433ABFB43281793214AAC" );
     assert ( lItem.getStringValue().length() == 22 );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED (lItem, getBooleanValue() );
 
     /** Boolean */
@@ -125,12 +137,14 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.getStringValue() == "true" );
     assert ( lItem.getEBV().getStringValue() == "true" ); 
     assert ( lItem.getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createBoolean(false);
     assert ( checkType(lItem.getType(), "boolean") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "false" );
     assert ( lItem.getEBV().getStringValue() == "false" ); 
+    assert ( !lItem.getAtomizationValue().isNull() );
     assert ( ! lItem.getBooleanValue() );
 
     /** Decimal */
@@ -139,12 +153,14 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "12678967" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDecimalFromDouble(12678967.32342);
     assert ( checkType(lItem.getType(), "decimal") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "12678967.32342" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDecimal("NaN");
     assert ( lItem.isNull() );
@@ -156,6 +172,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.getStringValue() == "23424223" );
     assert ( lItem.getEBV().getBooleanValue() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
@@ -168,6 +185,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "23424223" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     assert ( !lItem.isNaN() );
     CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
@@ -179,6 +197,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.getStringValue() == "233" );
     assert ( lItem.getEBV().getBooleanValue() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
     
@@ -188,6 +207,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "97" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, isPosOrNegInf());
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
@@ -197,43 +217,53 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "213123" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     double x = 0;
     lItem = lFactory->createDouble(static_cast<double>(x)/static_cast<double>(x));
     assert ( checkType(lItem.getType(), "double") );
     assert ( lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDouble(std::numeric_limits<double>::infinity());
     assert ( checkType(lItem.getType(), "double") );
     assert ( lItem.isPosOrNegInf() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDouble("213123");
     assert ( lItem.getStringValue() == "213123" );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDouble("INF");
     assert ( lItem.isPosOrNegInf() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDouble("-INF");
     assert ( lItem.isPosOrNegInf() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDouble("-inf");
     assert ( lItem.isPosOrNegInf() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDouble("inf");
     assert ( lItem.isPosOrNegInf() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDouble("NAN");
     assert ( !lItem.isPosOrNegInf() );
     assert ( lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createDouble("nAn");
     assert ( !lItem.isPosOrNegInf() );
     assert ( lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     /* Float */
     lItem = lFactory->createFloat("23.42");
@@ -241,37 +271,45 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "23.42" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createFloat("INF");
     assert ( lItem.isPosOrNegInf() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createFloat("-INF");
     assert ( lItem.isPosOrNegInf() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createFloat("-inf");
     assert ( lItem.isPosOrNegInf() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createFloat("inf");
     assert ( lItem.isPosOrNegInf() );
     assert ( !lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createFloat("NAN");
     assert ( !lItem.isPosOrNegInf() );
     assert ( lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createFloat("nAn");
     assert ( !lItem.isPosOrNegInf() );
     assert ( lItem.isNaN() );
+    assert ( !lItem.getAtomizationValue().isNull() );
 
     lItem = lFactory->createFloat(23.42);
     assert ( checkType(lItem.getType(), "float") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "23.4200000762939" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /* NonNegativeInteger */
@@ -280,6 +318,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "32423423" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /* NegativeInteger */
@@ -288,6 +327,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "-32423423" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createNegativeInteger(1);
@@ -299,6 +339,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "-32423423" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createNonPositiveInteger(1);
@@ -310,6 +351,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "32423423" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /* Unsigned Byte */
@@ -318,6 +360,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "97" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
 
@@ -327,6 +370,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "10" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /* Unsigned Long */
@@ -335,6 +379,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "10" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /* Unsigned Int */
@@ -343,6 +388,7 @@ int itemfactory(int argc, char* argv[])
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "10" );
     assert ( lItem.getEBV().getBooleanValue() );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /** Date*/
@@ -350,12 +396,14 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "date") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "1999-05-31" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createDate(1999,05,31);
     assert ( checkType(lItem.getType(), "date") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "1999-05-31" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /** DateTime*/
@@ -363,12 +411,14 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "dateTime") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "1999-05-31T01:02:03.04-01:00" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createDateTime(1999, 05, 31, 01, 02, 3.04, -1);
     assert ( checkType(lItem.getType(), "dateTime") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "1999-05-31T01:02:03.04-01:00" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /** Time*/
@@ -376,18 +426,21 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "time") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "08:00:00+09:00" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createTime(8,9,10.123);
     assert ( checkType(lItem.getType(), "time") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "08:09:10.123" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createTime(17,0,0,-6);
     assert ( checkType(lItem.getType(), "time") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "17:00:00-06:00" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /** GYearMonth*/
@@ -395,12 +448,14 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "gYearMonth") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "1976-02" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createGYearMonth(1976,02);
     assert ( checkType(lItem.getType(), "gYearMonth") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "1976-02" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /** GYear*/
@@ -408,12 +463,14 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "gYear") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "1977" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createGYear(1977);
     assert ( checkType(lItem.getType(), "gYear") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "1977" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /** GMonth*/
@@ -421,12 +478,14 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "gMonth") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "--12Z" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createGMonth(11);
     assert ( checkType(lItem.getType(), "gMonth") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "--11" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
     
     /** GMonthDay*/
@@ -434,12 +493,14 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "gMonthDay") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "--12-25-14:00" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createGMonthDay(12, 25);
     assert ( checkType(lItem.getType(), "gMonthDay") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "--12-25" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     /** GDay*/
@@ -447,12 +508,14 @@ int itemfactory(int argc, char* argv[])
     assert ( checkType(lItem.getType(), "gDay") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "---25-14:00" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
     lItem = lFactory->createGDay(25);
     assert ( checkType(lItem.getType(), "gDay") );
     assert ( lItem.isAtomic() );
     assert ( lItem.getStringValue() == "---25" );
+    assert ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
   } catch (ZorbaException &e) {

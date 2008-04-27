@@ -17,10 +17,11 @@
 #define ZORBA_ITERATOR_API_H
 
 #include <zorba/api_shared_types.h>
+#include <zorba/item_sequence.h>
 
 namespace zorba {
 
-  class Iterator 
+  class Iterator : public ItemSequence
   {
     public:
 

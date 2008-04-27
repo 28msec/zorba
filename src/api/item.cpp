@@ -127,7 +127,8 @@ Item Item::getEBV() const
   return Item();
 }
 
-bool Item::isNode() const
+bool 
+Item::isNode() const
 {
   ITEM_TRY
     return m_item->isNode();
@@ -135,7 +136,8 @@ bool Item::isNode() const
   return false;
 }
 
-bool Item::isAtomic() const
+bool 
+Item::isAtomic() const
 {
   ITEM_TRY
     return m_item->isAtomic();
@@ -143,7 +145,17 @@ bool Item::isAtomic() const
   return false;
 }
 
-bool Item::isNull() const
+bool
+Item::isNumeric() const
+{
+  ITEM_TRY
+    return m_item->isNumeric();
+  ITEM_CATCH
+  return false;
+}
+
+bool 
+Item::isNull() const
 {
   ITEM_TRY
     return m_item == NULL;
@@ -156,6 +168,7 @@ Item::close()
 {
   if (!isNull()) {
     RCHelper::removeReference(m_item);
+    m_item = NULL;
   }
 }
 
