@@ -13,5 +13,8 @@
 # limitations under the License.
 ADD_SUBDIRECTORY(external_api)
 
+# workaround: a dir is already needed for the install command. the html directory, however, is generated with the make doc call
+FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external_api/html)
+
 INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external_api/html 
         DESTINATION share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
