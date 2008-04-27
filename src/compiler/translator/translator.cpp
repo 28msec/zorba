@@ -1686,6 +1686,14 @@ void *begin_visit(const GroupByClause& v)
         VarInDecl* lVD = &*(*lV)[j];
         lFVars.insert(lVD->get_varname());
       }
+    } else {
+      LetClause* lL = static_cast<LetClause*>(lFL);
+      VarGetsDeclList* lV = &*(lL->get_vardecl_list());
+      for (size_t j = 0; j < lV->size(); ++j)
+      {
+        VarGetsDecl* lVD = &*(*lV)[j];
+        lFVars.insert(lVD->get_varname());
+      }
     }
   }
 
@@ -4734,7 +4742,7 @@ void end_visit(const EvalExpr& v, void* visit_state)
 
   rchandle<VarGetsDeclList> vgdl = v.get_vars ();
   
-  for (int i = 0; i < vgdl->size (); i++) {
+  for (size_t i = 0; i < vgdl->size (); i++) {
     var_expr_t ve = pop_nodestack ().dyn_cast<var_expr> ();
     expr_t val = pop_nodestack ();
     if (ve->get_type () != NULL)

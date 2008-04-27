@@ -1503,7 +1503,7 @@ public:
 	void accept(parsenode_visitor&) const;
 
 public:
-  int size () const { return vardecl_hv.size (); }
+  size_t size () const { return vardecl_hv.size (); }
 };
 
 
