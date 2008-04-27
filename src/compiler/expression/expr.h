@@ -287,6 +287,7 @@ protected:  // state
   expr_t where_h;
   group_list_t group_v;
   group_list_t non_group_v;
+  expr_t group_where_h;
   expr_t retval_h;
 
 public: // ctor,dtor
@@ -366,6 +367,9 @@ public: // accessors
 
   expr_t get_where() const { return where_h; }
   void set_where(expr_t e_h) { where_h = e_h; }
+
+  expr_t get_group_where() const { return group_where_h; }
+  void set_group_where(expr_t e_h) { group_where_h = e_h; }
 
   expr_t get_retval() const { return retval_h; }
   void set_retval(expr_t e_h) { retval_h = e_h; }

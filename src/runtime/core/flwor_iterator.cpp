@@ -168,9 +168,12 @@ void FLWORIterator::GroupingSpec::open ( PlanState& planState, uint32_t& offset 
 }
 
 FLWORIterator::GroupByClause::GroupByClause (
-    std::vector<GroupingSpec> aGroupingSpecs,
-    std::vector<GroupingOuterVar> aOuterVars )
-    : theGroupingSpecs ( aGroupingSpecs ), theOuterVars ( aOuterVars )
+  std::vector<GroupingSpec> aGroupingSpecs,
+  std::vector<GroupingOuterVar> aOuterVars,
+  PlanIter_t aWhere)
+: theGroupingSpecs ( aGroupingSpecs ), 
+  theOuterVars ( aOuterVars ),
+  theWhere(aWhere)
 {}
 
 void FLWORIterator::GroupByClause::accept ( PlanIterVisitor& v ) const
@@ -205,6 +208,9 @@ void FLWORIterator::GroupByClause::open ( PlanState& planState, uint32_t& offset
   {
     iterOuterVars->open ( planState, offset  );
   }
+
+  if (theWhere != 0)
+    theWhere->open ( planState, offset );
 }
 
 uint32_t FLWORIterator::GroupingOuterVar::getStateSizeOfSubtree() const
@@ -232,6 +238,10 @@ uint32_t FLWORIterator::GroupByClause::getStateSizeOfSubtree() const
   {
     size += iterOuterVars->getStateSizeOfSubtree();
   }
+
+  if (theWhere != 0)
+    size += theWhere->getStateSizeOfSubtree();
+
   return size;
 }
 

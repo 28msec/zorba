@@ -1456,7 +1456,15 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   GroupByClause *lGroupBy = &*v.get_groupby();
   if (lGroupBy)
   {
-    // TODO let and where after group by
+    if (lGroupBy->get_where() != 0)
+    {
+      expr_t lClauseExpr = pop_nodestack();
+      if (lClauseExpr->isUpdating())
+        ZORBA_ERROR_LOC(ZorbaError::XUST0001, v.get_location());
+      flwor->set_group_where(lClauseExpr);
+    }
+
+    // TODO let after group by
 
     GroupSpecList *lGroupList = lGroupBy->get_spec_list();
     size_t lSize = lGroupList->size();

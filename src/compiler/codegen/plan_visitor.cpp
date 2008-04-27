@@ -440,6 +440,9 @@ void end_visit(flwor_expr& v)
 
   auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
   
+  PlanIter_t group_where = 0;
+  if (v.get_group_where() != 0)
+    group_where = pop_itstack();
   
   vector<FLWORIterator::GroupingOuterVar> nonGroupBys;
   for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_rbegin();
@@ -473,7 +476,10 @@ void end_visit(flwor_expr& v)
     groupBys.push_back(FLWORIterator::GroupingSpec(lInput, *lInnerVars, lCollation));
   }
   
-  auto_ptr<FLWORIterator::GroupByClause> groupby(groupBys.empty() ? NULL : new FLWORIterator::GroupByClause(groupBys,nonGroupBys));
+  auto_ptr<FLWORIterator::GroupByClause> groupby(
+    groupBys.empty() 
+  ? NULL 
+  : new FLWORIterator::GroupByClause(groupBys, nonGroupBys, group_where));
 
   PlanIter_t where = NULL;
   if (v.get_where () != NULL)

@@ -1144,7 +1144,7 @@ void GroupByClause::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   ACCEPT (spec_list_h);
 //  ACCEPT (let_h);
-//  ACCEPT (where_h);
+  ACCEPT (where_h);
   END_VISITOR ();
 }
 

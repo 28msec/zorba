@@ -141,9 +141,12 @@ namespace zorba
         private:
           std::vector<GroupingSpec> theGroupingSpecs;
           std::vector<GroupingOuterVar> theOuterVars;
+          PlanIter_t theWhere;
     
         public:
-          GroupByClause(std::vector<GroupingSpec> aGroupingSpecs, std::vector<GroupingOuterVar> aOuterVars);
+          GroupByClause(std::vector<GroupingSpec> aGroupingSpecs, 
+                        std::vector<GroupingOuterVar> aOuterVars,
+                        PlanIter_t aWhere);
           void accept ( PlanIterVisitor& ) const;
           void open ( PlanState& planState, uint32_t& offset );
           uint32_t getStateSizeOfSubtree() const; 

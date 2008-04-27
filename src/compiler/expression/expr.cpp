@@ -409,6 +409,8 @@ void flwor_expr::next_iter (expr_iterator_data& v) {
   ITER_FOR_EACH (non_group_iter, non_group_v.begin(), non_group_v.end(),
                  (*vv.non_group_iter)->theOuterVar);
 
+  ITER (group_where_h);
+
   ITER_FOR_EACH (order_mod_iter, orderspec_begin (), orderspec_end (),
                  (*vv.order_mod_iter).first);
 
