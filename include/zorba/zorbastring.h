@@ -37,19 +37,19 @@ public:
    *
    * This constructor is for internal use only.
    */
-  String(xqpStringStore *string);
+  String(xqpStringStore* aString);
 
   /** \brief Constructor to construct a String from a const char*.
    *
    * @param aString the const char* to construct the String from.
    */
-  String(const char* string aString);
+  String(const char* aString);
 
   /** \brief Constructor to construct a String from a std::string.
    *
    * @param aString the std::string to construct the String from.
    */
-  String(const std::string& string aString);
+  String(const std::string& aString);
 
   /** \brief Destructor
    */
