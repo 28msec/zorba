@@ -9,7 +9,7 @@ Iterator tree for main query:
        <NodeDistinctIterator>
         <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
          <DescendantSelfAxisIterator>
-          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
            <CtxVariableIterator>
             <SingletonIterator value="xs:QName(,,input-context)"/>
            </CtxVariableIterator>

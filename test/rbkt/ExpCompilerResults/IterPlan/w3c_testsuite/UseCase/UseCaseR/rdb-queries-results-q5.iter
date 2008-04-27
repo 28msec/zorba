@@ -8,7 +8,7 @@ Iterator tree for main query:
      <NodeDistinctIterator>
       <NameTestIterator qname="xs:QName(,,user_tuple)">
        <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
          <CtxVariableIterator>
           <SingletonIterator value="xs:QName(,,input-context2)"/>
          </CtxVariableIterator>
@@ -21,7 +21,7 @@ Iterator tree for main query:
      <NodeDistinctIterator>
       <NameTestIterator qname="xs:QName(,,user_tuple)">
        <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
          <CtxVariableIterator>
           <SingletonIterator value="xs:QName(,,input-context2)"/>
          </CtxVariableIterator>
@@ -34,7 +34,7 @@ Iterator tree for main query:
      <NodeDistinctIterator>
       <NameTestIterator qname="xs:QName(,,item_tuple)">
        <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
          <CtxVariableIterator>
           <SingletonIterator value="xs:QName(,,input-context1)"/>
          </CtxVariableIterator>
@@ -47,7 +47,7 @@ Iterator tree for main query:
      <NodeDistinctIterator>
       <NameTestIterator qname="xs:QName(,,bid_tuple)">
        <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
          <CtxVariableIterator>
           <SingletonIterator value="xs:QName(,,input-context3)"/>
          </CtxVariableIterator>
@@ -153,7 +153,7 @@ Iterator tree for main query:
              <NodeDistinctIterator>
               <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
                <DescendantSelfAxisIterator>
-                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                  <CtxVariableIterator>
                   <SingletonIterator value="xs:QName(,,input-context3)"/>
                  </CtxVariableIterator>

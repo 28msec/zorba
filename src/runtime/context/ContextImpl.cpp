@@ -118,7 +118,7 @@ FnCurrentTimeIterator::nextImpl(PlanState& planState) const
 store::Item_t
 FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
 {
-  long hours, mins, secs;
+  long secs;
   bool neg;
   xqp_dayTimeDuration dtd;
   DurationBase_t db;

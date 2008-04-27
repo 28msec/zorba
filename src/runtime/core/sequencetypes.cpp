@@ -251,7 +251,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& planState) const
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  
-      "Empty seq cannot be promoted to QUANT_ONE or QUANT_PULS type.");
+      "Empty seq cannot be promoted to QUANT_ONE or QUANT_PLUS type.");
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
@@ -300,7 +300,7 @@ store::Item_t TreatIterator::nextImpl(PlanState& planState) const
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  
-      "Empty seq cannot be treated as QUANT_ONE or QUANT_PULS type.");
+      "Empty seq cannot be treated as QUANT_ONE or QUANT_PLUS type.");
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {

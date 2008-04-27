@@ -7,7 +7,7 @@ Iterator tree for main query:
      <FnSubsequenceIterator>
       <NameTestIterator qname="xs:QName(,,Folder)">
        <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
          <CtxVariableIterator>
           <SingletonIterator value="xs:QName(,,input-context)"/>
          </CtxVariableIterator>
@@ -26,7 +26,7 @@ Iterator tree for main query:
    <NodeSortIterator>
     <NameTestIterator qname="xs:QName(,,FileName)">
      <DescendantAxisIterator>
-      <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+      <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
        <CtxVariableIterator>
         <SingletonIterator value="xs:QName(,,input-context)"/>
        </CtxVariableIterator>

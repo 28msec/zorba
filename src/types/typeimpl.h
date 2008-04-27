@@ -146,7 +146,7 @@ class EmptyXQType : public XQType {
       return EMPTY_KIND;
     }
 
-    EmptyXQType(const TypeManager *manager) : XQType(manager, TypeConstants::QUANT_ONE) { }
+    EmptyXQType(const TypeManager *manager) : XQType(manager, TypeConstants::QUANT_STAR) { }
 };
 
 class NoneXQType : public XQType {

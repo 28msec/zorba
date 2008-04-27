@@ -14,7 +14,7 @@ Iterator tree for main query:
             <FLWORIterator>
              <ForVariable name="$$dot">
               <NodeDistinctIterator>
-               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                 <CtxVariableIterator>
                  <SingletonIterator value="xs:QName(,,input-context1)"/>
                 </CtxVariableIterator>
@@ -74,7 +74,7 @@ Iterator tree for main query:
             <FLWORIterator>
              <ForVariable name="$$dot">
               <NodeDistinctIterator>
-               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                 <CtxVariableIterator>
                  <SingletonIterator value="xs:QName(,,input-context2)"/>
                 </CtxVariableIterator>
@@ -136,7 +136,7 @@ Iterator tree for main query:
             <FLWORIterator>
              <ForVariable name="$$dot">
               <NodeDistinctIterator>
-               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                 <CtxVariableIterator>
                  <SingletonIterator value="xs:QName(,,input-context1)"/>
                 </CtxVariableIterator>
@@ -196,7 +196,7 @@ Iterator tree for main query:
             <FLWORIterator>
              <ForVariable name="$$dot">
               <NodeDistinctIterator>
-               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                 <CtxVariableIterator>
                  <SingletonIterator value="xs:QName(,,input-context2)"/>
                 </CtxVariableIterator>
@@ -259,7 +259,7 @@ Iterator tree for main query:
            <FLWORIterator>
             <ForVariable name="$$dot">
              <NodeDistinctIterator>
-              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                <CtxVariableIterator>
                 <SingletonIterator value="xs:QName(,,input-context1)"/>
                </CtxVariableIterator>
@@ -319,7 +319,7 @@ Iterator tree for main query:
            <FLWORIterator>
             <ForVariable name="$$dot">
              <NodeDistinctIterator>
-              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                <CtxVariableIterator>
                 <SingletonIterator value="xs:QName(,,input-context2)"/>
                </CtxVariableIterator>
@@ -384,7 +384,7 @@ Iterator tree for main query:
             <FLWORIterator>
              <ForVariable name="$$dot">
               <NodeDistinctIterator>
-               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                 <CtxVariableIterator>
                  <SingletonIterator value="xs:QName(,,input-context1)"/>
                 </CtxVariableIterator>
@@ -444,7 +444,7 @@ Iterator tree for main query:
             <FLWORIterator>
              <ForVariable name="$$dot">
               <NodeDistinctIterator>
-               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                 <CtxVariableIterator>
                  <SingletonIterator value="xs:QName(,,input-context2)"/>
                 </CtxVariableIterator>
@@ -506,7 +506,7 @@ Iterator tree for main query:
             <FLWORIterator>
              <ForVariable name="$$dot">
               <NodeDistinctIterator>
-               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                 <CtxVariableIterator>
                  <SingletonIterator value="xs:QName(,,input-context1)"/>
                 </CtxVariableIterator>
@@ -566,7 +566,7 @@ Iterator tree for main query:
             <FLWORIterator>
              <ForVariable name="$$dot">
               <NodeDistinctIterator>
-               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+               <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                 <CtxVariableIterator>
                  <SingletonIterator value="xs:QName(,,input-context2)"/>
                 </CtxVariableIterator>
@@ -629,7 +629,7 @@ Iterator tree for main query:
            <FLWORIterator>
             <ForVariable name="$$dot">
              <NodeDistinctIterator>
-              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                <CtxVariableIterator>
                 <SingletonIterator value="xs:QName(,,input-context1)"/>
                </CtxVariableIterator>
@@ -689,7 +689,7 @@ Iterator tree for main query:
            <FLWORIterator>
             <ForVariable name="$$dot">
              <NodeDistinctIterator>
-              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND]]" quant="*">
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
                <CtxVariableIterator>
                 <SingletonIterator value="xs:QName(,,input-context2)"/>
                </CtxVariableIterator>
