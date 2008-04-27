@@ -12,3 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ADD_SUBDIRECTORY(external_api)
+
+INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external_api/html 
+        DESTINATION share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})

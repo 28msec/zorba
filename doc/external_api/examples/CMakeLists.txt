@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # create the testing file and list of tests
-CREATE_TEST_SOURCELIST(examples
-	examples.cpp
+SET (API_TESTS
 	simple.cpp
   sax2.cpp
   errors.cpp
@@ -21,7 +20,11 @@ CREATE_TEST_SOURCELIST(examples
   serialization.cpp
   chaining.cpp
   external_functions.cpp
-  datamanager.cpp
+  datamanager.cpp)
+
+CREATE_TEST_SOURCELIST(examples
+	examples.cpp
+  ${API_TESTS}
 )
  
 # add the executable
@@ -38,3 +41,7 @@ FOREACH (test ${TestsToRun})
 	MESSAGE(STATUS ${TName})
 	ADD_TEST(${TName} examples ${TName})
 ENDFOREACH(test)
+
+# install the examples
+INSTALL(FILES ${API_TESTS} ${CMAKE_CURRENT_BINARY_DIR}/examples.cpp 
+        DESTINATION share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/examples)

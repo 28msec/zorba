@@ -14,15 +14,12 @@
 #
 # Project name
 #
-PROJECT(Zorba)
+PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
 
 # custom ctest options
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake)
-
-# Uncomment the next line to output make commands
-# SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 # prohibit in-source-builds
 IF (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
