@@ -362,7 +362,7 @@ namespace zorba {
       try { 
         lPlan->open();
         lSerializer.serialize(&*lPlan, os);
-      } catch (error::ZorbaError& e) {
+      } catch (error::ZorbaError&) {
         lPlan->close();
         throw;
       }
@@ -395,7 +395,7 @@ namespace zorba {
           pul->applyUpdates();
         }
       }
-      catch (error::ZorbaError& e)
+      catch (error::ZorbaError&)
       {
         lPlan->close();
         throw;

@@ -170,7 +170,7 @@ namespace zorba {
       /** \brief Set the URI of the default collation.
        *         (see http://www.w3.org/TR/xquery/#static_context)
        *
-       * @param the URI of the default collation.
+       * @param aURI URI of the default collation.
        * @return true if the default collation URI has been set, false otherwise.
        * @throw ZorbaException if an error occured.
        */
@@ -208,7 +208,7 @@ namespace zorba {
        * @return true if the mode was set, false otherwise.
        */
       virtual bool   
-      setConstructionMode( construction_mode_t ) = 0;
+      setConstructionMode( construction_mode_t aMode ) = 0;
 
       /** \brief Get the construction mode.
        *         (see http://www.w3.org/TR/xquery/#static_context)
@@ -225,7 +225,7 @@ namespace zorba {
        * @return true if the mode was set, false otherwise.
        */
       virtual bool   
-      setOrderingMode( ordering_mode_t ) = 0;
+      setOrderingMode( ordering_mode_t aMode ) = 0;
 
       /** \brief Get the ordering mode.
        *         (see http://www.w3.org/TR/xquery/#static_context)
@@ -242,7 +242,7 @@ namespace zorba {
        * @return true if the mode was set, false otherwise.
        */
       virtual bool   
-      setDefaultOrderForEmptySequences( order_empty_mode_t ) = 0;
+      setDefaultOrderForEmptySequences( order_empty_mode_t aMode ) = 0;
 
       /** \brief Get the default order for the empty sequence.
        *         (see http://www.w3.org/TR/xquery/#static_context)
@@ -259,7 +259,7 @@ namespace zorba {
        * @return true if the mode was set, false otherwise.
        */
       virtual bool   
-      setBoundarySpacePolicy( boundary_space_mode_t ) = 0;
+      setBoundarySpacePolicy( boundary_space_mode_t aMode) = 0;
 
       /** \brief Get the boundary space policy.
        *         (see http://www.w3.org/TR/xquery/#static_context)

@@ -69,7 +69,7 @@ URI::error_t URI::resolve_relative (
       result = new xqpStringStore(raw_result);
       delete [] raw_result;
     }
-  } catch (MalformedURLException &e) {
+  } catch (MalformedURLException &) {
     return URI::RESOLUTION_ERROR;
   }
 

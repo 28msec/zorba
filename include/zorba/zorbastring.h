@@ -22,23 +22,53 @@ namespace zorba {
 
 class xqpStringStore;
 
+/** \brief The Zorba String class.
+ *
+ * This class is a unicode encoded string that is used in Zorba.
+ */
 class String 
 {
 public:
+  /** \brief Copy constructor
+   */
   String(const String& other);
+
+  /** \brief Constructor that is used to construct Items in the Zorba engine itself.
+   *
+   * This constructor is for internal use only.
+   */
   String(xqpStringStore *string);
-  String(const char* string);
-  String(const std::string& string);
+
+  /** \brief Constructor to construct a String from a const char*.
+   *
+   * @param aString the const char* to construct the String from.
+   */
+  String(const char* string aString);
+
+  /** \brief Constructor to construct a String from a std::string.
+   *
+   * @param aString the std::string to construct the String from.
+   */
+  String(const std::string& string aString);
+
+  /** \brief Destructor
+   */
   ~String();
 
-  const char*
-  c_str() const;
-
+  /** \brief Assignment operator
+   */
   const String& 
   operator =(const String& other);
 
+  /** \brief Assingment operator that is used in the Zorba engine itself.
+   *
+   * This operator is for internal use only.
+   */
   const String&
   operator =(xqpStringStore *other);
+
+  const char*
+  c_str() const;
 
   int
   compare(const String& string) const;
