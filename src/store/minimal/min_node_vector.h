@@ -1,3 +1,8 @@
+/*
+ *	Copyright 2006-2007 FLWOR Foundation.
+ *
+ *  Authors: 
+ */
 
 #ifndef ZORBA_MINIMAL_STORE_NODE_VECTOR
 #define ZORBA_MINIMAL_STORE_NODE_VECTOR

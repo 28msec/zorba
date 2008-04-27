@@ -1,3 +1,8 @@
+/*
+ *	Copyright 2006-2007 FLWOR Foundation.
+ *
+ *  Authors: 
+ */
 
 #include "util/Assert.h"
 

@@ -1,27 +1,18 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: xquery.l,v 1.4 2006/11/14 05:24:43 Paul Pedersen Exp $
- *
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
-/*______________________________________________________________________
- |
- |  An implementation of the w3c proposal:
- |
- |  "Building a Tokenizer for XPath or XQuery,
- |   W3C Working Draft 4 April 2005"
- |
- |  [http://www.w3.org/TR/xquery-xpath-parsing/]
- |
- |  Extensions including update, search, and XQueryP:
- |
- |  [http://www.w3.org/TR/xqupdate/]
- |  [http://www.w3.org/TR/xquery-full-text/]
- |  [http://www.ximep-2006.org/papers/Paper-Chamberlin-Carey.pdf]
- |
- |_______________________________________________________________________*/
-
-
 %{ /* _*_ C++ _*_ */
 
 #if defined (WIN32)
