@@ -20,9 +20,21 @@
 
 namespace zorba {
 
+  /** \brief Helper class that cannot be instantiated. Basically, it contains the definition
+   *         of all ErrorCodes.
+   */
   class ZorbaError 
   {
     public:
+      /** \brief The ErrorCode enum contains all error codes that can be reported by the
+       *         engine.
+       *
+       * Error codes are either the error codes defined by the %XQuery 1.0 or the
+       * XQuery 1.0 and XPath 2.0 Functions and Operators Specification or error codes
+       * specifically related to %Zorba.
+       * Error codes are reported by a ZorbaException that is either thrown or passed
+       * as parameter to an ErrorHandler.
+       */
       enum ErrorCode
       {
         //
@@ -737,7 +749,6 @@ namespace zorba {
         SEPM0016,
         // It is a an error if a parameter value is invalid for the defined domain.
 
-        // TODO comment all of the following error codes
         //
         // ZORBA errors
         //
@@ -796,10 +807,17 @@ namespace zorba {
         MAX_ZORBA_ERROR_CODE
       };
 
+      /** \brief Converts the given ErrorCode into a String
+       *
+       * @param aErrorCode the ErrorCode to convert into a String
+       * @return String the ErrorCode as String
+       */
       static String
-      getErrorCode(ZorbaError::ErrorCode);
+      getErrorCode(ZorbaError::ErrorCode aErrorCode);
 
     private:
+      /** \brief Private constructor to prevent from instantiation.
+       */
       ZorbaError();
   }; /* class ZorbaError */
 

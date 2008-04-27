@@ -23,9 +23,12 @@
 
 namespace zorba {
 
-  ZorbaException::ZorbaException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription)
+  ZorbaException::ZorbaException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
+                                 const String& aFileName, unsigned int aFileLineNumber)
     : theErrorCode(aErrorCode),
-      theDescription(aDescription) {}
+      theDescription(aDescription),
+      theFileName(aFileName),
+      theFileLineNumber(aFileLineNumber) {}
 
   ZorbaException::~ZorbaException() throw() { }
 
@@ -35,22 +38,21 @@ namespace zorba {
   String
   ZorbaException::getDescription() const { return theDescription; }
 
+  String
+  ZorbaException::getFileName() const { return theFileName; }
+
+  unsigned int
+  ZorbaException::getFileLineNumber() const { return theFileLineNumber; }
+
+
   QueryException::QueryException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
                                  const String& afilename, unsigned int afilelinenumber,
                                  unsigned int linebegin, unsigned int columnbegin)
-    : ZorbaException(aErrorCode, aDescription),
-      theFileName(afilename),
-      theFileLineNumber(afilelinenumber),
+    : ZorbaException(aErrorCode, aDescription, afilename, afilelinenumber),
       theLineBegin(linebegin),
       theColumnBegin(columnbegin) {}
 
   QueryException::~QueryException() throw() { }
-
-  String
-  QueryException::getFileName() const { return theFileName; }
-
-  unsigned int
-  QueryException::getFileLineNumber() const { return theFileLineNumber; }
 
   unsigned int
   QueryException::getLineBegin() const { return theLineBegin; }
@@ -83,8 +85,10 @@ namespace zorba {
 
   SerializationException::~SerializationException() throw() { }
 
-  SystemException::SystemException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription)
-    : ZorbaException(aErrorCode, aDescription) {}
+  SystemException::SystemException(const ZorbaError::ErrorCode& aErrorCode, 
+                                   const String& aDescription,
+                                   const String& aFilename, unsigned int afilelinenumber)
+    : ZorbaException(aErrorCode, aDescription, aFilename, afilelinenumber) {}
 
   SystemException::~SystemException() throw() {}
 
