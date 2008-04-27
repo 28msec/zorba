@@ -10,9 +10,12 @@
 
    This software contains code developed by Alexander Chemeris.
 
-   Regular expression support is provided by the PCRE library package,
-   which is open source software, written by Philip Hazel, and copyright
-   by the University of Cambridge, England. The original software is
-   available from
-      ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
+   MAPM
 
+   XERCES
+
+   LIBXML
+
+   ICU
+
+   BOOST
