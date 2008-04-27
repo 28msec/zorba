@@ -225,7 +225,6 @@ ostream& typeswitch_expr::put( ostream& os) const
 {
   os << INDENT << "typeswitch_expr" << expr_addr (this) << " [\n";
 
-  //d Assert<null_pointer>(switch_expr_h!=NULL);
   ZORBA_ASSERT(switch_expr_h!=NULL);
   switch_expr_h->put(os);
 
@@ -236,8 +235,7 @@ ostream& typeswitch_expr::put( ostream& os) const
     os << INDENT << "case: ";
     if (cc_h->var_h!=NULL) cc_h->var_h->put(os) << " as ";
     // TODO(VRB) os << sequence_type::describe(cc_h->type);
-        os << " return ";
-    //d Assert<null_pointer>(cc_h->case_expr_h!=NULL);
+    os << " return ";
     ZORBA_ASSERT(cc_h->case_expr_h!=NULL);
     cc_h->case_expr_h->put(os) << endl;
     UNDENT;
@@ -280,10 +278,8 @@ ostream& fo_expr::put( ostream& os) const
 ostream& ft_contains_expr::put( ostream& os) const
 {
   os << INDENT << "ft_contains_expr" << expr_addr (this) << " [\n";
-  //d Assert<null_pointer>(range_h!=NULL);
   ZORBA_ASSERT(range_h!=NULL);
   range_h->put(os) << endl;
-  //d Assert<null_pointer>(ft_select_h!=NULL);
   ZORBA_ASSERT(ft_select_h!=NULL);
   os << "ft_contains\n";
   ft_select_h->put(os) << endl;
@@ -351,7 +347,6 @@ ostream& validate_expr::put( ostream& os) const
   case ParseConstants::val_lax: os << "lax\n"; break;
   default: os << "??\n";
   }
-  //d Assert<null_pointer>(expr_h!=NULL);
   ZORBA_ASSERT(expr_h!=NULL);
   expr_h->put(os) << endl;
   os << DENT << "]\n"; UNDENT;
@@ -376,15 +371,12 @@ ostream& extension_expr::put( ostream& os) const
   */
 
   os << INDENT;
-  //d Assert<null_pointer>(pragma_h!=NULL);
   ZORBA_ASSERT(pragma_h!=NULL);
-  //d Assert<null_pointer>(pragma_h->name_h!=NULL);
   ZORBA_ASSERT(pragma_h->name_h!=NULL);
   os << "?"; put_qname (pragma_h->name_h, os);
   os << " " << pragma_h->content << endl;
   UNDENT;
 
-  //d Assert<null_pointer>(expr_h!=NULL);
   ZORBA_ASSERT(expr_h!=NULL);
   expr_h->put(os) << endl;
   os << DENT << "]\n"; UNDENT;
@@ -519,7 +511,6 @@ ostream& order_expr::put( ostream& os) const
   case unordered: os << "unordered\n"; break;
   default: os << "??\n";
   }
-  //d Assert<null_pointer>(expr_h!=NULL);
   ZORBA_ASSERT(expr_h!=NULL);
   expr_h->put(os) << endl;
   os << DENT << "]\n"; UNDENT;

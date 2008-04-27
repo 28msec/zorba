@@ -170,6 +170,7 @@ namespace zorba {
 
   RULE_REWRITE_POST(MarkImpureExprs) {
     // TODO: constructors cannot be cloned; but currently we never clone anyway.
+    // TODO: propagate non-discardable prop for FLWOR vars (see nodeid_rules.cpp)
 
     Annotation::key_t k = AnnotationKey::NONDISCARDABLE_EXPR;
     switch (node->get_expr_kind ()) {
