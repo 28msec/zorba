@@ -164,7 +164,8 @@ int _tmain(int argc, _TCHAR* argv[])
     std::cerr << "file " << fname << " not found not readable" << std::endl;
     return 3;
   } else if (*fname == '\0') {
-    std::cerr << "no query given" << std::endl;
+    std::cerr << "No query given" << std::endl;
+    lProperties.printHelp(std::cerr);
     return 3;
   }
 
