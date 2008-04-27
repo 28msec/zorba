@@ -29,6 +29,7 @@
 #include "context/namespace_context.h"
 #include "types/typeconstants.h"
 #include "util/Assert.h"
+#include "types/delegating_typemanager.h"
 
 namespace zorba
 {
@@ -127,7 +128,8 @@ static const CodePointRange_t	extender_range[] =
 
 struct ErrorInfo
 {
-  const xqtref_t theSourceType, theTargetType;
+  const XQType* theSourceType;
+  const XQType* theTargetType;
 };
 
 inline void throwError(ZorbaError::ErrorCode aErrorCode, const ErrorInfo& aInfo)
@@ -1239,6 +1241,33 @@ GenericCast* GenericCast::instance()
   return &aGenericCast;
 }
 
+#ifndef ZORBA_NO_XMLSCHEMA
+store::Item_t castUserDefinedType(store::Item* aItem,
+                                  const ErrorInfo& aErrorInfo)
+{
+  const DelegatingTypeManager* lDelegatingTypeManager 
+    = static_cast<const DelegatingTypeManager*>(aErrorInfo.theTargetType->get_manager()); 
+
+  if ( aErrorInfo.theSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND
+    && (TypeOps::get_atomic_type_code(*aErrorInfo.theSourceType) 
+        == TypeConstants::XS_STRING))
+  {
+    store::Item_t lResult;
+    if (lDelegatingTypeManager->getSchema()
+        ->parseUserAtomicTypes(xqpString(aItem->getStringValue()), 
+                               aErrorInfo.theSourceType,
+                               aErrorInfo.theTargetType,
+                               lResult))
+    {
+      return lResult;
+    }
+  }
+
+  throwError(ZorbaError::FORG0001, aErrorInfo); 
+  return 0;
+}
+#endif
+
 
 /*******************************************************************************
 
@@ -1254,7 +1283,12 @@ store::Item_t GenericCast::cast(store::Item* aItem,
                                aItem->getType(), 
                                TypeConstants::QUANT_ONE);
 
-  ErrorInfo lErrorInfo = {lSourceType, aTargetType};
+  ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
+
+#ifndef ZORBA_NO_XMLSCHEMA
+  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
+    return castUserDefinedType(aItem, lErrorInfo);
+#endif
 
   if (!TypeOps::is_atomic(*aTargetType))
     throwError(ZorbaError::XPST0051, lErrorInfo);
