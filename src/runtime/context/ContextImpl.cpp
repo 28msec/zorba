@@ -118,15 +118,18 @@ FnCurrentTimeIterator::nextImpl(PlanState& planState) const
 store::Item_t
 FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
 {
-  long tz;
+  long hours, mins, secs;
+  bool neg;
   xqp_dayTimeDuration dtd;
   DurationBase_t db;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  tz = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
-  db = new DayTimeDuration( tz < 0, 0, tz<0?-tz:tz, 0 , 0, 0);
+  secs = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
+  neg = secs < 0;
+  if (neg) secs = -secs;
+  db = new DayTimeDuration( neg, 0, 0, 0 , secs, 0);
   
   STACK_PUSH( GENV_ITEMFACTORY->createDuration(db), state );
 

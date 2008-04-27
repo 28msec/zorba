@@ -51,9 +51,11 @@ namespace zorba {
       virtual Item
       getCurrentDateTime( );
 
+      // In minutes
       virtual bool
-      setImplicitTimezone( int aTimezone );
+      setImplicitTimezone( int aTimezoneMinutes );
 
+      // In minutes
       virtual int
       getImplicitTimezone();
 

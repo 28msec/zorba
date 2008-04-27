@@ -159,10 +159,10 @@ namespace zorba {
   }
 
   bool
-  DynamicContextImpl::setImplicitTimezone( int aTimezone )
+  DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
   {
     ZORBA_TRY
-      theCtx->set_implicit_timezone(aTimezone);
+      theCtx->set_implicit_timezone(aTimezoneMinutes * 60);
       return true;
     ZORBA_CATCH
     return false;
@@ -172,7 +172,7 @@ namespace zorba {
   DynamicContextImpl::getImplicitTimezone()
   {
     ZORBA_TRY
-      return theCtx->get_implicit_timezone();
+      return theCtx->get_implicit_timezone() / 60;
     ZORBA_CATCH
     return 0;
   }
