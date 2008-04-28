@@ -117,6 +117,7 @@ namespace zorba
           GroupingSpec(PlanIter_t aInput, std::vector<ForVarIter_t> aInnerVars, xqpString aCollation );
           void accept ( PlanIterVisitor& ) const;
           void open ( PlanState& planState, uint32_t& offset );
+          void close ( PlanState& planState );
           uint32_t getStateSizeOfSubtree() const; 
       };
   
@@ -131,6 +132,7 @@ namespace zorba
           GroupingOuterVar(PlanIter_t aInput, std::vector<LetVarIter_t> aOuterVars);
           void accept ( PlanIterVisitor& ) const;
           void open ( PlanState& planState, uint32_t& offset );
+          void close ( PlanState& planState );
           uint32_t getStateSizeOfSubtree() const; 
       };
   

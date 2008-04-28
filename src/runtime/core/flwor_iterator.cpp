@@ -151,6 +151,10 @@ void FLWORIterator::GroupingOuterVar::open ( PlanState& planState, uint32_t& off
   theInput->open(planState, offset);
 }
 
+void FLWORIterator::GroupingOuterVar::close ( PlanState& planState )
+{
+  theInput->close(planState);
+}
 
 FLWORIterator::GroupingSpec::GroupingSpec(
   PlanIter_t aInput, std::vector<ForVarIter_t> aInnerVars, xqpString aCollation )
@@ -165,6 +169,11 @@ void FLWORIterator::GroupingSpec::accept ( PlanIterVisitor& v ) const
 void FLWORIterator::GroupingSpec::open ( PlanState& planState, uint32_t& offset )
 {
   theInput->open(planState, offset);
+}
+
+void FLWORIterator::GroupingSpec::close ( PlanState& planState )
+{
+  theInput->close(planState);
 }
 
 FLWORIterator::GroupByClause::GroupByClause (
@@ -215,19 +224,19 @@ void FLWORIterator::GroupByClause::open ( PlanState& planState, uint32_t& offset
 
 void FLWORIterator::GroupByClause::close ( PlanState& planState )
 {
-  std::vector<GroupingSpec>::const_iterator lGroupSpecIter;
+  std::vector<GroupingSpec>::iterator lGroupSpecIter;
   for ( lGroupSpecIter = theGroupingSpecs.begin();
           lGroupSpecIter != theGroupingSpecs.end();
           ++lGroupSpecIter )
   {
-    lGroupSpecIter->theInput->close ( planState );
+    lGroupSpecIter->close ( planState );
   }
-  std::vector<GroupingOuterVar>::const_iterator lOuterVarIter;
+  std::vector<GroupingOuterVar>::iterator lOuterVarIter;
   for ( lOuterVarIter = theOuterVars.begin();
           lOuterVarIter != theOuterVars.end();
           ++lOuterVarIter )
   {
-    lOuterVarIter->theInput->close ( planState );
+    lOuterVarIter->close ( planState );
   }
   if ( theWhere != 0 )
   {
