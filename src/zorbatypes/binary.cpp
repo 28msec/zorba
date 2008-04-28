@@ -64,18 +64,18 @@ bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
 
 void Base64::insertData(const char* aCharStar, size_t len)
 {
-  if (len % 4 != 0) {
-    ZORBA_ERROR_DESC(ZorbaError::FORG0001, "Base64 input must be a multiple of four characters");
-  }
-
   for (size_t i = 0; i < len; ++i)
   {
     char lChar = aCharStar[i];
-    if ((lChar >= 65 && lChar <= 90)  // A-Z
-     || (lChar >= 97 && lChar <= 122) // a-z
-     || (lChar >= 48 && lChar <= 57)  // 0-9
-     || (lChar == 43)                 // +
-     || (lChar == 47))                // /
+    if (lChar == ' ')
+    {
+      // do nothing
+    }
+    else if ((lChar >= 65 && lChar <= 90)  // A-Z
+         || (lChar >= 97 && lChar <= 122) // a-z
+         || (lChar >= 48 && lChar <= 57)  // 0-9
+         || (lChar == 43)                 // +
+         || (lChar == 47))                // /
     {
       theData.push_back(lChar);
     } else if (lChar == '=' && i > 0 && i == (len-2) && aCharStar[i+1] == '=' )
@@ -109,6 +109,10 @@ void Base64::insertData(const char* aCharStar, size_t len)
       ZORBA_ERROR_DESC(ZorbaError::FORG0001, lStream.str());
     }
   }
+  if (theData.size() % 4 != 0) {
+    ZORBA_ERROR_DESC(ZorbaError::FORG0001, "Base64 input must be a multiple of four characters");
+  }
+
 }
 
 bool Base64::equal(const Base64& aBase64) const
