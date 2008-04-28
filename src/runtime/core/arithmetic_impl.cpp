@@ -101,7 +101,16 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
   xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->
                    create_value_type (n1);
   
-  if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )
+  if (TypeOps::is_numeric(*type0)
+      &&
+      (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
+      ||
+      TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )))
+  {
+    n0 = GenericCast::instance()->cast(n0, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+    return Operation::template compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DURATION>(aRuntimeCB, &aLoc, n0, n1);
+  }
+  else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )
       &&
       TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
   {
@@ -342,6 +351,13 @@ store::Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstant
     d = *i0->getDurationValue() * (i1->getDoubleValue());
   
   return GENV_ITEMFACTORY->createDuration (d);
+}
+
+template<>
+store::Item_t MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DURATION>
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+{
+  return MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>(aRuntimeCB, loc, i1, i0);
 }
 /* end class MultiplyOperations */
 

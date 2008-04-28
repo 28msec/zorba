@@ -297,7 +297,6 @@ Item_t BasicItemFactory::createDuration (
     return Item_t ( NULL );
 }
 
-
 Item_t BasicItemFactory::createENTITIES ( const xqp_string& /*value*/ )
 { return Item_t ( NULL ); }
 

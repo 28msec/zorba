@@ -1,18 +1,9 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Copyright 2006-2007 FLWOR Foundation.
+ *
+ *  Authors: Nicolae Brinza, Sorin Nasoi
  */
+
 #include <string>
 
 #include <zorbatypes/duration.h>
@@ -119,10 +110,22 @@ Duration_t YearMonthDuration::toDuration() const
 
 Duration_t YearMonthDuration::toNegDuration() const
 {
-  Duration_t d_t = new Duration(*this, true);
+  DurationBase_t d_t = new Duration(*this, true);
   return d_t;
 }
 
+DurationBase_t YearMonthDuration::toYearMonthDuration() const
+{
+  DurationBase_t d_t = new YearMonthDuration(*this);
+  return d_t;
+}
+      
+DurationBase_t YearMonthDuration::toDayTimeDuration() const
+{
+  DurationBase_t d_t = new DayTimeDuration();
+  return d_t;
+}
+      
 DurationBase_t YearMonthDuration::operator+(const DurationBase& db) const
 {
   const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db);
@@ -141,11 +144,8 @@ DurationBase_t YearMonthDuration::operator*(const Double value) const
 {
   xqp_double lDouble = xqp_double::parseInt(months) * value;
   xqp_long lLong;
-#ifndef NDEBUG
-  assert(NumConversions::doubleToLongLong(lDouble.round(), lLong));
-#else
-  NumConversions::doubleToLongLong(lDouble.round(), lLong);
-#endif
+  bool b = NumConversions::doubleToLongLong(lDouble.round(), lLong);
+  assert(b);
   YearMonthDuration* ym = new YearMonthDuration( lLong );
   return ym;
 }
@@ -154,11 +154,8 @@ DurationBase_t YearMonthDuration::operator/(const Double value) const
 {
   xqp_double lDouble = xqp_double::parseInt(months) / value;
   xqp_long lLong;
-#ifndef NDEBUG
-  assert(NumConversions::doubleToLongLong(lDouble.round(), lLong));
-#else
-  NumConversions::doubleToLongLong(lDouble.round(), lLong);
-#endif
+  bool b = NumConversions::doubleToLongLong(lDouble.round(), lLong);
+  assert(b);
   YearMonthDuration* ym = new YearMonthDuration(lLong);
   return ym;
 }
@@ -274,11 +271,7 @@ uint32_t YearMonthDuration::hash() const
  * DayTimeDuration
  *
  ****************************************************************************/
-DayTimeDuration::DayTimeDuration() : is_negative(false), days(0), timeDuration(0, 0, 0, 0)
-{
-};
-
-DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long minutes, 
+DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long minutes,
                                  long seconds, long frac_seconds)
 {
   is_negative = negative;
@@ -482,6 +475,18 @@ Duration_t DayTimeDuration::toNegDuration() const
   return d_t;
 }
 
+DurationBase_t DayTimeDuration::toYearMonthDuration() const
+{
+  DurationBase_t d_t = new YearMonthDuration();
+  return d_t;
+}
+      
+DurationBase_t DayTimeDuration::toDayTimeDuration() const
+{
+  DurationBase_t d_t = new DayTimeDuration(*this);
+  return d_t;
+}
+
 DurationBase_t DayTimeDuration::add_or_subtract(const DurationBase& db, bool subtract) const
 {
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
@@ -522,23 +527,16 @@ DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 DurationBase_t DayTimeDuration::operator*(const Double value) const
 {
   Double result;
-  long seconds = 0;
-  long frac_seconds = 0;
+  long seconds;
+  long frac_seconds;
+  Double tps = Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
   
   result = Double::parseFloatType(getTotalSeconds()) * value;
-  
-#ifndef NDEBUG
+  result = (result * tps).round() / tps;
   assert(NumConversions::doubleToLong(result.floor(), seconds));
-#else
-  NumConversions::doubleToLong(result.floor(), seconds);
-#endif
   
-  result = (result - result.floor()) * Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
-#ifndef NDEBUG
+  result = (result - result.floor()) * tps;
   assert(NumConversions::doubleToLong(result.round(), frac_seconds));
-#else
-  NumConversions::doubleToLong(result.round(), frac_seconds);
-#endif
   
   DayTimeDuration* dt = new DayTimeDuration( 0, 0, 0, seconds, frac_seconds);
   return dt;
@@ -547,23 +545,16 @@ DurationBase_t DayTimeDuration::operator*(const Double value) const
 DurationBase_t DayTimeDuration::operator/(const Double value) const
 {
   Double result;
-  long seconds = 0;
-  long frac_seconds = 0;
+  long seconds;
+  long frac_seconds;
+  Double tps = Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
   
   result = Double::parseFloatType(getTotalSeconds()) / value;
-  
-#ifndef NDEBUG
+  result = (result * tps).round() / tps;
   assert(NumConversions::doubleToLong(result.floor(), seconds));
-#else
-  NumConversions::doubleToLong(result.floor(), seconds);
-#endif
   
-  result = (result - result.floor()) * Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
-#ifndef NDEBUG
+  result = (result - result.floor()) * tps;
   assert(NumConversions::doubleToLong(result.round(), frac_seconds));
-#else
-  NumConversions::doubleToLong(result.round(), frac_seconds);
-#endif
   
   DayTimeDuration* dt = new DayTimeDuration( 0, 0, 0, seconds, frac_seconds);
   return dt;
@@ -574,13 +565,8 @@ Decimal DayTimeDuration::operator/(const DurationBase& db) const
   Decimal op1, op2;
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
   
-#ifndef NDEBUG
   assert(Decimal::parseNativeDouble(getTotalSeconds(), op1));
   assert(Decimal::parseNativeDouble(dtd.getTotalSeconds(), op2));
-#else
-  Decimal::parseNativeDouble(getTotalSeconds(), op1);
-  Decimal::parseNativeDouble(dtd.getTotalSeconds(), op2);
-#endif
   
   return op1/op2;
 }
@@ -934,6 +920,16 @@ Duration_t Duration::toNegDuration() const
   else if (!d_t->dayTimeDuration.isZero())
     d_t->dayTimeDuration.is_negative = !d_t->dayTimeDuration.is_negative;
   return d_t;
+}
+
+DurationBase_t Duration::toYearMonthDuration() const
+{
+  return new YearMonthDuration(yearMonthDuration);
+}
+      
+DurationBase_t Duration::toDayTimeDuration() const
+{
+  return new DayTimeDuration(dayTimeDuration);
 }
 
 DurationBase_t Duration::operator+(const DurationBase& db) const

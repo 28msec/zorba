@@ -31,6 +31,7 @@
 #include "util/Assert.h"
 #include "types/delegating_typemanager.h"
 
+
 namespace zorba
 {
 
@@ -674,14 +675,14 @@ inline store::Item_t dur_str(store::Item* aItem, store::ItemFactory* aFactory, n
 
 inline store::Item_t dur_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  xqp_duration dur = aItem->getDurationValue()->toYearMonthDuration();
+  return aFactory->createDuration(dur);
 }
 
 inline store::Item_t dur_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  xqp_duration dur = aItem->getDurationValue()->toDayTimeDuration();
+  return aFactory->createDuration(dur);
 }
 
 inline store::Item_t yMD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -696,14 +697,14 @@ inline store::Item_t yMD_str(store::Item* aItem, store::ItemFactory* aFactory, n
 
 inline store::Item_t yMD_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  xqp_duration dur = aItem->getYearMonthDurationValue()->toDuration();
+  return aFactory->createDuration(dur);
 }
 
 inline store::Item_t yMD_dTD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  xqp_duration dur = aItem->getYearMonthDurationValue()->toDayTimeDuration();
+  return aFactory->createDuration(dur);
 }
 
 inline store::Item_t dTD_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -718,14 +719,14 @@ inline store::Item_t dTD_str(store::Item* aItem, store::ItemFactory* aFactory, n
 
 inline store::Item_t dTD_dur(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  xqp_duration dur = aItem->getDayTimeDurationValue()->toDuration();
+  return aFactory->createDuration(dur);
 }
 
 inline store::Item_t dTD_yMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  xqp_duration dur = aItem->getDayTimeDurationValue()->toYearMonthDuration();
+  return aFactory->createDuration(dur);
 }
 
 inline store::Item_t dT_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -740,44 +741,51 @@ inline store::Item_t dT_str(store::Item* aItem, store::ItemFactory* aFactory, na
 
 inline store::Item_t dT_tim(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::TIME_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dT_dat(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::DATE_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dT_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GYEARMONTH_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dT_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GYEAR_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dT_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GMONTHDAY_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dT_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GDAY_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dT_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GMONTH_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t tim_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -802,38 +810,44 @@ inline store::Item_t dat_str(store::Item* aItem, store::ItemFactory* aFactory, n
 
 inline store::Item_t dat_dT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateValue()->createWithNewFacet(DateTime::DATETIME_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dat_gYM(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GYEARMONTH_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dat_gYr(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GYEAR_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dat_gMD(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GMONTHDAY_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dat_gDay(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GDAY_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t dat_gMon(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(false);
-  return 0;
+  DateTime_t dt_t;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GMONTH_FACET, dt_t);
+  return aFactory->createTime(dt_t);
 }
 
 inline store::Item_t gYM_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)

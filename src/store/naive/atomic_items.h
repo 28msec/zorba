@@ -247,6 +247,8 @@ public:
   DurationItemNaive(xqp_duration& aValue) : theValue(aValue) { };
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_duration getDurationValue() const;
+  virtual xqp_yearMonthDuration getYearMonthDurationValue() const;
+  virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
   virtual Item* getType() const;
   virtual bool equals(const Item*, RuntimeCB*, XQPCollator* aCollation = 0) const;
   virtual Item_t getEBV( ) const;

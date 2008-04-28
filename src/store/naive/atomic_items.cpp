@@ -1297,6 +1297,24 @@ xqp_duration DurationItemNaive::getDurationValue() const
   return theValue;
 }
 
+xqp_yearMonthDuration DurationItemNaive::getYearMonthDurationValue() const
+{
+  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
+  if (ymd != NULL)
+    return theValue;
+  else
+    return AtomicItem::getYearMonthDurationValue();
+}
+
+xqp_dayTimeDuration DurationItemNaive::getDayTimeDurationValue() const
+{
+  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
+  if (dtd != NULL)
+    return theValue;
+  else
+    return AtomicItem::getDayTimeDurationValue();
+}
+
 xqpStringStore_t DurationItemNaive::getStringValue() const
 {
   return theValue->toString().getStore();
