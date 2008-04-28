@@ -110,7 +110,7 @@ Duration_t YearMonthDuration::toDuration() const
 
 Duration_t YearMonthDuration::toNegDuration() const
 {
-  DurationBase_t d_t = new Duration(*this, true);
+  Duration_t d_t = new Duration(*this, true);
   return d_t;
 }
 
