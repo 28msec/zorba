@@ -5,21 +5,22 @@
    The FLWOR Foundation (http://www.flworfound.org/).
 
    Portions of this software were developed at the Systems
-   Groups at the ETH Zurich, Switzerland.
+   Group of the ETH Zurich, Switzerland.
 
-   This software contains code developed by Alexander Chemeris.
+   This software contains code developed by Alexander Chemeris 
+   (src/common/config/stdint.h).
    
    Furthermore, this software depends/makes use of:
      * LIBXML2 2.2.16 or higher (http://xmlsoft.org/ ) 
-     * ICU 3.2 (http://www.icu-project.org/
-     * BOOST 1.34 (http://www.boost.org/)
+     * ICU 2.6 or higher (http://www.icu-project.org/)
+     * BOOST 1.32 or higher (http://www.boost.org/)
        * boost_program_options
        * boost_date_time
        * boost_filesystem
-       * boost_program_options
-     * XERCES 2.8.0 (http://xerces.apache.org/xerces-c/)
-     * CURL 7.16 (http://curl.haxx.se/)
-     * ICONV 1.12 (http://www.gnu.org/software/libiconv/)
-     * MAPM ???
+     * XERCES 2.7.0 or higher (http://xerces.apache.org/xerces-c/)
+     * ICONV 1.12 (used by LIBXML2; http://www.gnu.org/software/libiconv/)
+     * MAPM (by Michael C. Ring; http://www.tc.umn.edu/~ringx004/mapm-main.html)
      * Optional:
-        * FLEX 2.5.33 http://flex.sourceforge.net/
+        * FLEX 2.5.33 (http://flex.sourceforge.net/)
+        * BISON 2.3 (http://www.gnu.org/software/bison/)
+        * CURL 7.12 (http://curl.haxx.se/)
