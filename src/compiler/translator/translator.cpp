@@ -321,6 +321,9 @@ expr_t wrap_in_globalvar_assign(expr_t e)
     expr_t qname_expr = new const_expr (var->get_loc(), var->get_varname ());
 
     if (expr != NULL) {
+      if (expr->isUpdating())
+        ZORBA_ERROR_LOC(ZorbaError::XUST0001, e->get_loc());
+
       if (var_type != NULL)
         expr = new treat_expr (expr->get_loc (), expr, var->get_type (), ZorbaError::XPTY0004);
       assigns.push_back (new fo_expr (var->get_loc(),
