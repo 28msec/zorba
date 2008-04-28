@@ -149,6 +149,7 @@ namespace zorba
                         PlanIter_t aWhere);
           void accept ( PlanIterVisitor& ) const;
           void open ( PlanState& planState, uint32_t& offset );
+          void close( PlanState& planState);
           uint32_t getStateSizeOfSubtree() const; 
       };
 
@@ -259,8 +260,7 @@ namespace zorba
                     GroupByClause*              aGroupByClause,
                     OrderByClause*              orderByClause,
                     PlanIter_t&                 returnClause,
-                    bool                        aIsUpdating,
-                    bool                        whereClauseReturnsBooleanPlus = false );
+                    bool                        aIsUpdating );
     
       ~FLWORIterator();
 
@@ -287,9 +287,9 @@ namespace zorba
       bool bindVariable ( int varNb, FlworState* flworState, PlanState& planState ) const;
     
   /**
-       * Evaluates the where clause. If there doesn't exist a where clause it returns always true
+       * Evaluates the checkItere to the EBV. If the checkIter = NULL true is returned
    */
-      bool evalWhereClause( PlanState& planState ) const;
+      bool evalToBool(const PlanIter_t& checkIter, PlanState& planState ) const;
     
   /**
        * Materialized the result after binding the variables (needed for OrderBy)
@@ -315,7 +315,7 @@ namespace zorba
       bool                      doOrderBy; //just indicates if the FLWOR has an orderby
       bool                      doGroupBy;
       PlanIter_t                returnClause; 
-      bool                      whereClauseReturnsBooleanPlus;
+      //bool                      whereClauseReturnsBooleanPlus;
       bool                      theIsUpdating;
       const int                 theNumBindings; //Number of FORs and LETs (overall)  
   };

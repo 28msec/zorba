@@ -529,7 +529,7 @@ void end_visit(flwor_expr& v)
 
   FLWORIterator *iter = new FLWORIterator(
       v.get_loc(), clauses, where, groupby.release(), 
-      orderby.release(), ret, v.isUpdating(), false);
+      orderby.release(), ret, v.isUpdating());
   itstack.push(iter);
 }
 

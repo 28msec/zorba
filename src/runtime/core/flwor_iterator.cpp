@@ -213,6 +213,28 @@ void FLWORIterator::GroupByClause::open ( PlanState& planState, uint32_t& offset
     theWhere->open ( planState, offset );
 }
 
+void FLWORIterator::GroupByClause::close ( PlanState& planState )
+{
+  std::vector<GroupingSpec>::const_iterator lGroupSpecIter;
+  for ( lGroupSpecIter = theGroupingSpecs.begin();
+          lGroupSpecIter != theGroupingSpecs.end();
+          ++lGroupSpecIter )
+  {
+    lGroupSpecIter->theInput->close ( planState );
+  }
+  std::vector<GroupingOuterVar>::const_iterator lOuterVarIter;
+  for ( lOuterVarIter = theOuterVars.begin();
+          lOuterVarIter != theOuterVars.end();
+          ++lOuterVarIter )
+  {
+    lOuterVarIter->theInput->close ( planState );
+  }
+  if ( theWhere != 0 )
+  {
+    theWhere->close ( planState );
+  }
+}
+
 uint32_t FLWORIterator::GroupingOuterVar::getStateSizeOfSubtree() const
 {
   return theInput->getStateSizeOfSubtree();
@@ -408,8 +430,7 @@ FLWORIterator::FLWORIterator(
     FLWORIterator::GroupByClause* aGroupByClauses,
     FLWORIterator::OrderByClause* aOrderByClause,
     PlanIter_t& aReturnClause,
-    bool aIsUpdating,
-    bool aWhereClauseReturnsBooleanPlus)
+    bool aIsUpdating)
   :
   Batcher<FLWORIterator>(loc),
   forLetClauses(aForLetClauses),
@@ -417,7 +438,6 @@ FLWORIterator::FLWORIterator(
   theGroupByClause(aGroupByClauses),
   orderByClause(aOrderByClause),
   returnClause(aReturnClause),
-  whereClauseReturnsBooleanPlus(aWhereClauseReturnsBooleanPlus),
   theIsUpdating(aIsUpdating),
   theNumBindings(aForLetClauses.size())
 {
@@ -514,7 +534,11 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
             while ( flworState->curGroupPos != flworState->groupMap->end() )
             {
               bindGroupBy( flworState->curGroupPos, flworState, planState );
+              if(evalToBool(theGroupByClause->theWhere, planState)){
               curItem = consumeNext(returnClause, planState);
+              }else{
+                curItem =0;
+              }
               while (curItem != 0)
               {
                 STACK_PUSH ( curItem, flworState );
@@ -533,7 +557,8 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
 
     // After binding all variables, we check first the where clause
     // curVar = theNumBindings - 1 indicates that we have to do the next binding level
-    if ( evalWhereClause ( planState ) )
+   
+    if ( evalToBool( whereClause,  planState  ) )
     {
       // In the case we not need to do ordering, we now returning the items
       // produced by the ReturnClause
@@ -583,7 +608,9 @@ void FLWORIterator::groupAndOrder ( FlworState* flworState,
   while ( lGroupMapIter != lGroupMap->end() )
   {
     bindGroupBy ( lGroupMapIter, flworState, planState );    
-    matResultAndOrder(flworState, planState);
+    if(evalToBool(theGroupByClause->theWhere, planState)){
+      matResultAndOrder(flworState, planState);
+    }
 
     ++lGroupMapIter;
   }
@@ -747,27 +774,27 @@ void FLWORIterator::matResultAndOrder(
 }
 
 
-bool FLWORIterator::evalWhereClause ( PlanState& planState ) const
+bool FLWORIterator::evalToBool ( const PlanIter_t& checkIter, PlanState& planState ) const
 {
-  if ( whereClause == NULL )
+  if ( checkIter == NULL )
     return true;
 
-  if ( whereClauseReturnsBooleanPlus )
-  {
-    store::Item_t boolValue = consumeNext ( whereClause.getp(), planState );
-    if ( boolValue == NULL )
-      return false;
+  //if ( whereClauseReturnsBooleanPlus )
+  //{
+  store::Item_t boolValue = consumeNext ( checkIter.getp(), planState );
+  if ( boolValue == NULL )
+    return false;
 
-    bool value = boolValue->getBooleanValue();
-    whereClause->reset(planState);
-    return value;
-  }
+  bool value = boolValue->getBooleanValue();
+  checkIter->reset ( planState );
+  return value;
+  /*}
 
   store::Item_t item = FnBooleanIterator::effectiveBooleanValue(loc,
                                                          planState,
                                                          whereClause);
   whereClause->reset(planState);
-  return item->getBooleanValue();
+  return item->getBooleanValue();*/
 }
 
 
@@ -1003,10 +1030,10 @@ void FLWORIterator::closeImpl ( PlanState& planState )
 {
   returnClause->close(planState);
 
-  if (whereClause != NULL)
+  if (whereClause != 0)
     whereClause->close(planState);
 
-  if (orderByClause != NULL)
+  if (orderByClause != 0)
   {
     std::vector<FLWORIterator::OrderSpec>::iterator iter;
     for (iter = orderByClause->orderSpecs.begin();
@@ -1016,21 +1043,8 @@ void FLWORIterator::closeImpl ( PlanState& planState )
       iter->theOrderByIter->close(planState);
     }
   }
-  if(theGroupByClause != NULL){
-    std::vector<GroupingSpec>::const_iterator lGroupSpecIter;
-    for (lGroupSpecIter = theGroupByClause->theGroupingSpecs.begin();
-         lGroupSpecIter != theGroupByClause->theGroupingSpecs.end();
-         ++lGroupSpecIter )
-    {
-      lGroupSpecIter->theInput->close(planState);
-    }
-    std::vector<GroupingOuterVar>::const_iterator lOuterVarIter;
-    for (lOuterVarIter = theGroupByClause->theOuterVars.begin();
-         lOuterVarIter != theGroupByClause->theOuterVars.end();
-         ++lOuterVarIter )
-    {
-      lOuterVarIter->theInput->close(planState);
-    }
+  if(theGroupByClause != 0){
+    theGroupByClause->close(planState);
   }
 
   std::vector<FLWORIterator::ForLetClause>::iterator iter;
