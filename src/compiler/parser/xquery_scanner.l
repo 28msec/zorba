@@ -39,7 +39,23 @@ using namespace std;
 typedef zorba::xquery_parser::token token;
 typedef zorba::xquery_parser::token_type token_type;
 
-#define PUSH_BEGIN( pushed, new ) BEGIN new; yy_push_state (pushed);
+#define PUSH_STATE(state) \
+    do { \
+        yy_push_state(state); \
+        getDriver()->push_state_stack(); \
+    } while(0)
+
+#define POP_STATE() \
+    do { \
+        yy_pop_state(); \
+        getDriver()->pop_state_stack(); \
+    } while(0)
+
+#define PUSH_AND_BEGIN( pushed, new ) \
+    do { \
+        BEGIN new; \
+        PUSH_STATE(pushed); \
+    } while(0)
 
 #define TRY_SVAL_TOKEN( ttype, put )                                    \
   do {                                                                  \
@@ -306,12 +322,12 @@ typedef zorba::xquery_parser::token token;
   /* maintain INITIAL */
   /* ---------------- */
 "validate"{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::VALIDATE_LBRACE;
 }
 
 "validate"{SP}{ValidationMode} {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   TRY_SVAL_TOKEN (VALIDATE_MODE, put(yytext+9, yyleng-9));
 }
 
@@ -320,37 +336,37 @@ typedef zorba::xquery_parser::token token;
 }
 
 "eval"{S}"{" {
-  PUSH_BEGIN (INITIAL, INITIAL);
+  PUSH_AND_BEGIN (INITIAL, INITIAL);
   return token::EVAL_LBRACE;
 }
 
 "element"{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ELEMENT_LBRACE;
 }
 
 "attribute"{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ATTRIBUTE_LBRACE;
 }
 
 "attribute"{SP}{QName}{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   TRY_SVAL_TOKEN (ATTRIBUTE_QNAME_LBRACE, put_qname(yytext+10, yyleng-11, true, true));
 }
 
 "element"{SP}{QName}{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   TRY_SVAL_TOKEN (ELEMENT_QNAME_LBRACE, put_qname(yytext+8, yyleng-9, true, true));
 }
 
 "document"{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::DOCUMENT_LBRACE;
 }
 
 "text"{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::TEXT_LBRACE;
 }
 
@@ -370,7 +386,7 @@ typedef zorba::xquery_parser::token token;
 
 
 "comment"{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::COMMENT_LBRACE;
 }
 
@@ -383,17 +399,17 @@ typedef zorba::xquery_parser::token token;
 }
 
 "{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
 }
 
 "ordered"{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ORDERED_LBRACE;
 }
 
 "unordered"{S}"{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::UNORDERED_LBRACE;
 }
 
@@ -414,42 +430,42 @@ typedef zorba::xquery_parser::token token;
   /* transition to KINDTEST */
   /* ---------------------- */
 "element"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::ELEMENT_LPAR;
 }
 
 "attribute"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::ATTRIBUTE_LPAR;
 }
 
 "schema-element"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
 "schema-attribute"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 
 "comment"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::COMMENT_LPAR;
 }
 
 "text"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::TEXT_LPAR;
 }
 
 "node"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::NODE_LPAR;
 }
 
 "document-node"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::DOCUMENT_NODE_LPAR;
 }
 
@@ -457,7 +473,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to KINDTESTFORPI */
   /* --------------------------- */
 "processing-instruction"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTESTFORPI, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_KINDTESTFORPI, MODE_OPERATOR);
   return token::PI_LPAR;
 }
 
@@ -697,7 +713,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to XML_COMMENT */
   /* ------------------------- */
 "<!--" {
-  PUSH_BEGIN (MODE_XML_COMMENT, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_XML_COMMENT, MODE_OPERATOR);
   return token::XML_COMMENT_BEGIN;
 }
 
@@ -705,7 +721,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to PROCESSING_INSTRUCTION */
   /* ------------------------------------ */
 "<?" {
-  PUSH_BEGIN (MODE_PROCESSING_INSTRUCTION, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_PROCESSING_INSTRUCTION, MODE_OPERATOR);
   return token::PI_BEGIN;
 }
 
@@ -713,7 +729,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to CDATA_SECTION */
   /* --------------------------- */
 "<![CDATA[" {
-  PUSH_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
   return token::CDATA_BEGIN;
 }
 
@@ -724,7 +740,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to START_TAG */
   /* ----------------------- */
 "<" {
-  PUSH_BEGIN (MODE_START_TAG, MODE_OPERATOR);
+  PUSH_AND_BEGIN (MODE_START_TAG, MODE_OPERATOR);
   return token::START_TAG;
 }
 
@@ -740,7 +756,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
 
@@ -786,7 +802,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state */
   /* ------------------ */
 "}" {
-  yy_pop_state();
+  POP_STATE();
   return token::RBRACE;
 }
 
@@ -1086,7 +1102,7 @@ typedef zorba::xquery_parser::token token;
 <MODE_CATCH>{
 
 ")" {
-  yy_pop_state();
+  POP_STATE();
   return token::RPAR;
 }
 
@@ -1148,7 +1164,7 @@ typedef zorba::xquery_parser::token token;
 <MODE_PROCESSING_INSTRUCTION_CTOR>{
 
 "{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
 }
 
@@ -1290,12 +1306,12 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  yy_push_state(INITIAL);
+  PUSH_STATE(INITIAL);
   return token::LBRACE;
 }
 "(" {
   BEGIN INITIAL;
-  /* yy_push_state(INITIAL); */
+  /* PUSH_STATE(INITIAL); */
   return token::LPAR;
 }
 ";" {
@@ -1465,7 +1481,7 @@ typedef zorba::xquery_parser::token token;
   return token::RETURN;
 }
 "eval"{S}"{" {
-  PUSH_BEGIN (INITIAL, INITIAL);
+  PUSH_AND_BEGIN (INITIAL, INITIAL);
   return token::EVAL_LBRACE;
 }
 "satisfies"/{WordBreak} {
@@ -1538,6 +1554,17 @@ typedef zorba::xquery_parser::token token;
   BEGIN MODE_ITEMTYPE;
   return token::CASE;
 }
+
+"as"{SP}"first"{SP}"into"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::FIRST_INTO;
+}
+
+"as"{SP}"last"{SP}"into"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::LAST_INTO;
+}
+
 "as"/{WordBreak} {
   if (getDriver()->rename()) {
     getDriver()->set_rename(false);
@@ -1579,14 +1606,14 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
 
   /* transition to MODE_CATCH   */
   /* -------------------------- */
 "catch"{S}"(" {
-  yy_push_state(MODE_CATCH);
+  PUSH_STATE(MODE_CATCH);
   return token::CATCH_LPAR;
 }
 
@@ -1601,7 +1628,7 @@ typedef zorba::xquery_parser::token token;
   /* restore previous state on closing brace */
   /* --------------------------------------- */
 "}" {
-  yy_pop_state();
+  POP_STATE();
   return token::RBRACE;
 }
 
@@ -1918,7 +1945,7 @@ typedef zorba::xquery_parser::token token;
 <MODE_NAMESPACEDECL>{
 
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
 ";" {
@@ -2054,7 +2081,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
 
@@ -2135,7 +2162,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
 {CatchAll} {
@@ -2194,7 +2221,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
 {CatchAll} {
@@ -2247,15 +2274,6 @@ typedef zorba::xquery_parser::token token;
 
 <MODE_ITEMTYPE>{
 
-"first"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::FIRST_INTO;
-}
-"last"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::LAST_INTO;
-}
-
 
   /* transition to VARNAME */
   /* --------------------- */
@@ -2272,55 +2290,55 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
   /* transition to KINDTEST */
   /* ---------------------- */
 "element"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::ELEMENT_LPAR;
 }
 
 "attribute"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::ATTRIBUTE_LPAR;
 }
 
 "schema-element"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
 "schema-attribute"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 
 "comment"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::COMMENT_LPAR;
 }
 
 "text"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::TEXT_LPAR;
 }
 
 "node"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::NODE_LPAR;
 }
 
 "document-node"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::DOCUMENT_NODE_LPAR;
 }
 
   /* transition to KINDTESTFORPI */
   /* --------------------------- */
 "processing-instruction"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTESTFORPI, MODE_OCCURRENCE_INDICATOR);
+  PUSH_AND_BEGIN (MODE_KINDTESTFORPI, MODE_OCCURRENCE_INDICATOR);
   return token::PI_LPAR;
 }
 
@@ -2533,7 +2551,7 @@ typedef zorba::xquery_parser::token token;
 }
 
 "eval"{S}"{" {
-  PUSH_BEGIN (INITIAL, INITIAL);
+  PUSH_AND_BEGIN (INITIAL, INITIAL);
   return token::EVAL_LBRACE;
 }
 
@@ -2655,7 +2673,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
 }
 
@@ -2674,25 +2692,25 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
   /* pop previous state on close paren */
   /* --------------------------------- */
 ")" {
-  yy_pop_state();
+  POP_STATE();
   return token::RPAR;
 }
 
   /* maintain KINDTEST */
   /* ----------------- */
 "element"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
   return token::ELEMENT_LPAR;
 }
 
 "schema-element"{S}"(" {
-  PUSH_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
+  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
@@ -2750,7 +2768,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state on close paren */
   /* --------------------------------- */
 ")" {
-  yy_pop_state();
+  POP_STATE();
   return token::RPAR;
 }
 
@@ -2758,7 +2776,7 @@ typedef zorba::xquery_parser::token token;
   /* -------------------------- */
 
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
   /* maintain KINDTESTFORPI */
@@ -2814,7 +2832,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state */
   /* ------------------ */
 ")" {
-  yy_pop_state();
+  POP_STATE();
   return token::RPAR;
 }
 
@@ -2828,14 +2846,14 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
 }
 
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
   /* maintain CLOSE_KINDTEST */
@@ -2916,7 +2934,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
   /* anything else: push back, goto OPERATOR */
@@ -3154,7 +3172,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
 {CatchAll} {
@@ -3240,7 +3258,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 "/>" {
-  yy_pop_state();
+  POP_STATE();
   return token::EMPTY_TAG_END;
 }
 
@@ -3311,35 +3329,35 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  yy_push_state(INITIAL);
+  PUSH_STATE(INITIAL);
   return token::LBRACE;
 }
 
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "<!--" {
-  yy_push_state(MODE_XML_COMMENT);
+  PUSH_STATE(MODE_XML_COMMENT);
   return token::XML_COMMENT_BEGIN;
 }
 
   /* transition to PROCESSING_INSTRUCTION */
   /* ------------------------------------ */
 "<?" {
-  yy_push_state(MODE_PROCESSING_INSTRUCTION);
+  PUSH_STATE(MODE_PROCESSING_INSTRUCTION);
   return token::PI_BEGIN;
 }
 
   /* transition to CDATA_SECTION */
   /* --------------------------- */
 "<![CDATA[" {
-  yy_push_state(MODE_CDATA_SECTION);
+  PUSH_STATE(MODE_CDATA_SECTION);
   return token::CDATA_BEGIN;
 }
 
   /* transition to START_TAG */
   /* ----------------------- */
 "<" {
-  yy_push_state(MODE_START_TAG);
+  PUSH_STATE(MODE_START_TAG);
   return token::START_TAG;
 }
 
@@ -3415,7 +3433,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 ">" {
-  yy_pop_state();
+  POP_STATE();
   return token::TAG_END;
 }
 
@@ -3469,7 +3487,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 "-->" {
-  yy_pop_state();
+  POP_STATE();
   return token::XML_COMMENT_END;
 }
 
@@ -3526,13 +3544,13 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state */
   /* ------------------ */
 ":)" {
-  yy_pop_state();
+  POP_STATE();
 }
 
   /* maintain EXPR_COMMENT */
   /* --------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT);
+  PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
 . {
@@ -3594,7 +3612,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 "?>" {
-  yy_pop_state();
+  POP_STATE();
   return token::PI_END;
 }
 
@@ -3648,7 +3666,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 {PIChars}"?>" {
-  yy_pop_state();
+  POP_STATE();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
 }
 
@@ -3691,7 +3709,7 @@ typedef zorba::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 "]]>" {
-  yy_pop_state();
+  POP_STATE();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3));
 }
 
@@ -3758,7 +3776,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  yy_push_state(INITIAL);
+  PUSH_STATE(INITIAL);
   return token::LBRACE;
 }
 
@@ -3845,7 +3863,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  PUSH_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT);
+  PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT);
   return token::LBRACE;
 }
 

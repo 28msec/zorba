@@ -346,9 +346,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token RENAME                     "'<rename>'"                
 %token REPLACE                    "'<replace node>'"          
 %token REPLACE_VALUE_OF           "'<replace value of node>'" 
-%token FIRST_INTO                 "'<first into>'"               
+%token FIRST_INTO                 "'<as first into>'"               
 %token INTO												"'into'"
-%token LAST_INTO							  	"'<last into>'"
+%token LAST_INTO							  	"'<as last into>'"
 %token MODIFY 										"'modify'"
 %token COPY_DOLLAR          			"'<copy $>'"
 %token WITH												"'with'"
@@ -5661,23 +5661,23 @@ InsertExpr :
                   LOC (@$),
                   store::UpdateConsts::INTO, $2, $4);
 		}
-	|	INSERT_NODE  ExprSingle  AS  FIRST_INTO  ExprSingle
+	|	INSERT_NODE  ExprSingle  FIRST_INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.as_first]" << endl;
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AS_FIRST_INTO, $2, $5);
+                  store::UpdateConsts::AS_FIRST_INTO, $2, $4);
 		}
-	|	INSERT_NODE  ExprSingle  AS  LAST_INTO  ExprSingle
+	|	INSERT_NODE  ExprSingle  LAST_INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.as_last]" << endl;
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AS_LAST_INTO, $2, $5);
+                  store::UpdateConsts::AS_LAST_INTO, $2, $4);
 		}
 	| INSERT_NODE  ExprSingle  AFTER  ExprSingle
 		{
@@ -5707,23 +5707,23 @@ InsertExpr :
                   LOC (@$),
                   store::UpdateConsts::INTO, $2, $4);
 		}
-	|	INSERT_NODES  ExprSingle  AS  FIRST_INTO  ExprSingle
+	|	INSERT_NODES  ExprSingle  FIRST_INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.as_first]" << endl;
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AS_FIRST_INTO, $2, $5);
+                  store::UpdateConsts::AS_FIRST_INTO, $2, $4);
 		}
-	|	INSERT_NODES  ExprSingle  AS  LAST_INTO  ExprSingle
+	|	INSERT_NODES  ExprSingle  LAST_INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.as_last]" << endl;
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AS_LAST_INTO, $2, $5);
+                  store::UpdateConsts::AS_LAST_INTO, $2, $4);
 		}
 	| INSERT_NODES  ExprSingle  AFTER  ExprSingle
 		{
