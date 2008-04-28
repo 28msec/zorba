@@ -1,0 +1,17 @@
+# create a branch
+
+# configure
+mkdir dist
+cd dist
+cmake -D CMAKE_BUILD_TYPE=MinSizeRel -D ZORBA_BUILD_STATIC_LIBRARY=ON ..
+# build
+make
+make doc
+
+# test
+ctest
+
+# create binary packages
+cpack
+# create source package
+cpack -G TGZ --config CPackSourceConfig.cmake

@@ -18,6 +18,11 @@ PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
 
+# options that are used when typing make install
+# rpath handling
+# skip the full RPATH for the build tree
+SET(CMAKE_SKIP_BUILD_RPATH  TRUE)
+
 # custom ctest options
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake)
 
@@ -164,5 +169,16 @@ ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(bin)
 ADD_SUBDIRECTORY(doc)
 
-#Include CPack
-INCLUDE(CPack.txt)
+# add the uninstall support
+CONFIGURE_FILE(
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMakeUninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/CMakeUninstall.cmake"
+    @ONLY)
+ADD_CUSTOM_TARGET(uninstall
+    "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/CMakeUninstall.cmake")
+
+INCLUDE(InstallRequiredSystemLibraries)
+
+INCLUDE(CMakeCPack.cmake)
+#CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/CPackSourceConfig.cmake.in 
+#               ${CMAKE_BINARY_DIR}/CPackSourceConfig.cmake)

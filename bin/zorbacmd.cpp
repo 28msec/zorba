@@ -151,6 +151,7 @@ int _tmain(int argc, _TCHAR* argv[])
   }
   else if ( !lOutputStream->good() ) {
     std::cerr << "could not write to output file " << lProperties.getOutputFile() << std::endl;
+    lProperties.printHelp(std::cerr);
     return 2;
   }
 
@@ -161,10 +162,11 @@ int _tmain(int argc, _TCHAR* argv[])
                                      (std::istream*) new std::istringstream(fname));
 
   if ( !lProperties.inlineQuery() && !qfile->good() || qfile->eof() ) {
-    std::cerr << "file " << fname << " not found not readable" << std::endl;
+    std::cerr << "file " << fname << " not found or not readable" << std::endl;
+    lProperties.printHelp(std::cerr);
     return 3;
   } else if (*fname == '\0') {
-    std::cerr << "No query given" << std::endl;
+    std::cerr << "No query" << std::endl;
     lProperties.printHelp(std::cerr);
     return 3;
   }
@@ -195,6 +197,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // populate the static context with information passed as parameter
   if (! populateStaticContext(lStaticContext, &lProperties) ) {
+    lProperties.printHelp(std::cerr);
     return 3;
   }
 
@@ -224,6 +227,7 @@ int _tmain(int argc, _TCHAR* argv[])
   try {
     if ( ! populateDynamicContext(lDynamicContext, &lProperties) )
     {
+      lProperties.printHelp(std::cerr);
       return 4;
     }
   } catch (zorba::ZorbaException& e)
