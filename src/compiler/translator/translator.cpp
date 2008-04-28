@@ -3253,17 +3253,30 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
 
       switch (wildcard->getKind())
       {
-        case ParseConstants::wild_all:
-          matchExpr->setWildKind(match_all_wild);
-          break;
-        case ParseConstants::wild_elem:
-          matchExpr->setWildKind(match_name_wild);
-          matchExpr->setWildName(wildcard->getPrefix());
-          break;
-        case ParseConstants::wild_prefix:
-          matchExpr->setWildKind(match_prefix_wild);
-          matchExpr->setWildName(wildcard->getLocalName());
-          break;
+      case ParseConstants::wild_all:
+      {
+        matchExpr->setWildKind(match_all_wild);
+        break;
+      }
+      case ParseConstants::wild_elem:
+      {
+        matchExpr->setWildKind(match_name_wild);
+        matchExpr->setWildName(wildcard->getPrefix());
+
+        string qname = wildcard->getPrefix() + ":wildcard";
+
+        store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
+                              sctx_p->lookup_qname("", qname) :
+                              sctx_p->lookup_elem_qname(qname));
+        matchExpr->setQName(qn_h);
+        break;
+      }
+      case ParseConstants::wild_prefix:
+      {
+        matchExpr->setWildKind(match_prefix_wild);
+        matchExpr->setWildName(wildcard->getLocalName());
+        break;
+      }
       }
     }
 

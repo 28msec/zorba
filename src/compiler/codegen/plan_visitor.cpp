@@ -1168,9 +1168,7 @@ bool begin_visit(match_expr& v)
     }
     else if (wildKind == match_name_wild)
     {
-      qname = iFactory.createQName("", v.getWildName().c_str(), "wildcard");
-
-      matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
+      matchIte = new NameTestIterator(v.get_loc(), axisIte, v.getQName(), wildKind);
     }
     else
     {
