@@ -21,7 +21,7 @@ INCLUDE(CTest)
 # options that are used when typing make install
 # rpath handling
 # skip the full RPATH for the build tree
-SET(CMAKE_SKIP_BUILD_RPATH  TRUE)
+# SET(CMAKE_SKIP_BUILD_RPATH  TRUE)
 
 # custom ctest options
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake)
