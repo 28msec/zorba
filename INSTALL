@@ -15,8 +15,13 @@
    CURL 7.16 (http://curl.haxx.se/)
    ICONV 1.12 (http://www.gnu.org/software/libiconv/)
    MAPM ???
+   
    Optional:
    FLEX 2.5.33 http://flex.sourceforge.net/
+   
+   The version numbers indicate the version we used 
+   for testing. This does not imply that older versions
+   would not work. 
    
   Quick Start - Unix
   ------------------
