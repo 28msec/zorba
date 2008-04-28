@@ -4,18 +4,22 @@
    This product includes software developed at
    The FLWOR Foundation (http://www.flworfound.org/).
 
-   Portions of this software were developed at the National Center
-   for Supercomputing Applications (NCSA) at the University of
-   Illinois at Urbana-Champaign.
+   Portions of this software were developed at the Systems
+   Groups at the ETH Zurich, Switzerland.
 
    This software contains code developed by Alexander Chemeris.
-
-   MAPM
-
-   XERCES
-
-   LIBXML
-
-   ICU
-
-   BOOST
+   
+   Furthermore, this software depends/makes use of:
+     * LIBXML2 2.2.16 or higher (http://xmlsoft.org/ ) 
+     * ICU 3.2 (http://www.icu-project.org/
+     * BOOST 1.34 (http://www.boost.org/)
+       * boost_program_options
+       * boost_date_time
+       * boost_filesystem
+       * boost_program_options
+     * XERCES 2.8.0 (http://xerces.apache.org/xerces-c/)
+     * CURL 7.16 (http://curl.haxx.se/)
+     * ICONV 1.12 (http://www.gnu.org/software/libiconv/)
+     * MAPM ???
+     * Optional:
+        * FLEX 2.5.33 http://flex.sourceforge.net/

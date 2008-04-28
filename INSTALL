@@ -1,0 +1,30 @@
+
+  ZORBA INSTALLATION OVERVIEW
+
+  Required libraries
+  ------------------
+  
+   LIBXML2 2.2.16 or higher (http://xmlsoft.org/ ) 
+   ICU 3.2 (http://www.icu-project.org/
+   BOOST 1.34 (http://www.boost.org/)
+    -boost_program_options
+    -boost_date_time
+    -boost_filesystem
+    -boost_program_options
+   XERCES 2.8.0 (http://xerces.apache.org/xerces-c/)
+   CURL 7.16 (http://curl.haxx.se/)
+   ICONV 1.12 (http://www.gnu.org/software/libiconv/)
+   MAPM ???
+   Optional:
+   FLEX 2.5.33 http://flex.sourceforge.net/
+   
+  Quick Start - Unix
+  ------------------
+  
+  
+  
+  Quick Start - Windows
+  ---------------------
+  
+  
+  
