@@ -3,7 +3,7 @@
 # configure
 mkdir dist
 cd dist
-cmake -D CMAKE_BUILD_TYPE=MinSizeRel -D ZORBA_BUILD_STATIC_LIBRARY=ON ..
+cmake -D CMAKE_BUILD_TYPE=MinSizeRel -D ZORBA_BUILD_STATIC_LIBRARY=ON -D CMAKE_SKIP_BUILD_RPATH=TRUE ..
 # build
 make
 make doc

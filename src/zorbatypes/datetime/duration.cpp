@@ -144,8 +144,12 @@ DurationBase_t YearMonthDuration::operator*(const Double value) const
 {
   xqp_double lDouble = xqp_double::parseInt(months) * value;
   xqp_long lLong;
+#ifndef NDEBUG
   bool b = NumConversions::doubleToLongLong(lDouble.round(), lLong);
   assert(b);
+#else
+  NumConversions::doubleToLongLong(lDouble.round(), lLong);
+#endif
   YearMonthDuration* ym = new YearMonthDuration( lLong );
   return ym;
 }
@@ -154,8 +158,12 @@ DurationBase_t YearMonthDuration::operator/(const Double value) const
 {
   xqp_double lDouble = xqp_double::parseInt(months) / value;
   xqp_long lLong;
+#ifndef NDEBUG
   bool b = NumConversions::doubleToLongLong(lDouble.round(), lLong);
   assert(b);
+#else
+  NumConversions::doubleToLongLong(lDouble.round(), lLong);
+#endif
   YearMonthDuration* ym = new YearMonthDuration(lLong);
   return ym;
 }
@@ -533,10 +541,18 @@ DurationBase_t DayTimeDuration::operator*(const Double value) const
   
   result = Double::parseFloatType(getTotalSeconds()) * value;
   result = (result * tps).round() / tps;
+#ifndef NDEBUG
   assert(NumConversions::doubleToLong(result.floor(), seconds));
+#else
+  NumConversions::doubleToLong(result.floor(), seconds);
+#endif
   
   result = (result - result.floor()) * tps;
+#ifndef NDEBUG
   assert(NumConversions::doubleToLong(result.round(), frac_seconds));
+#else
+  NumConversions::doubleToLong(result.round(), frac_seconds);
+#endif
   
   DayTimeDuration* dt = new DayTimeDuration( 0, 0, 0, seconds, frac_seconds);
   return dt;
@@ -551,10 +567,18 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
   
   result = Double::parseFloatType(getTotalSeconds()) / value;
   result = (result * tps).round() / tps;
+#ifndef NDEBUG
   assert(NumConversions::doubleToLong(result.floor(), seconds));
+#else
+  NumConversions::doubleToLong(result.floor(), seconds);
+#endif
   
   result = (result - result.floor()) * tps;
+#ifndef NDEBUG
   assert(NumConversions::doubleToLong(result.round(), frac_seconds));
+#else
+  NumConversions::doubleToLong(result.round(), frac_seconds);
+#endif
   
   DayTimeDuration* dt = new DayTimeDuration( 0, 0, 0, seconds, frac_seconds);
   return dt;
@@ -565,8 +589,13 @@ Decimal DayTimeDuration::operator/(const DurationBase& db) const
   Decimal op1, op2;
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
   
+#ifndef NDEBUG
   assert(Decimal::parseNativeDouble(getTotalSeconds(), op1));
   assert(Decimal::parseNativeDouble(dtd.getTotalSeconds(), op2));
+#else
+  Decimal::parseNativeDouble(getTotalSeconds(), op1);
+  Decimal::parseNativeDouble(dtd.getTotalSeconds(), op2);
+#endif
   
   return op1/op2;
 }
