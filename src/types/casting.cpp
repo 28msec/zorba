@@ -560,7 +560,7 @@ inline store::Item_t flt_int(store::Item* aItem, store::ItemFactory* aFactory, n
 
 inline store::Item_t flt_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return aFactory->createBoolean(aItem->getEBV());
+  return aItem->getEBV();
 }
 
 inline store::Item_t dbl_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -600,7 +600,7 @@ inline store::Item_t dbl_int(store::Item* aItem, store::ItemFactory* aFactory, n
 
 inline store::Item_t dbl_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return aFactory->createBoolean(aItem->getEBV());
+  return aItem->getEBV();
 }
 
 inline store::Item_t dec_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -630,7 +630,7 @@ inline store::Item_t dec_int(store::Item* aItem, store::ItemFactory* aFactory, n
 
 inline store::Item_t dec_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return aFactory->createBoolean(aItem->getEBV());
+  return aItem->getEBV();
 }
 
 inline store::Item_t int_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -660,7 +660,7 @@ inline store::Item_t int_dec(store::Item* aItem, store::ItemFactory* aFactory, n
 
 inline store::Item_t int_bool(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return aFactory->createBoolean(aItem->getEBV());
+  return aItem->getEBV();
 }
 
 inline store::Item_t dur_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
