@@ -1,0 +1,5 @@
+Zorba - The XQuery Processor
+
+version 0.9.XXX (2008.04.30):
+  * Initial release supporting XQuery 1.0 and the XQuery Update Facility 1.0 
+    (W3C Candidate Recommendation 14 March 2008).
