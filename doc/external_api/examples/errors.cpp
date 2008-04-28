@@ -91,21 +91,26 @@ errors(int argc, char* argv[])
 {
 #ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
+  bool res = false;
 
   std::cout << "executing example 1" << std::endl;
-	assert(error_example_1(lZorba)); 
+  res = error_example_1(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 2" << std::endl;
-	assert(error_example_2(lZorba)); 
+  res = error_example_2(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 3" << std::endl;
-	assert(error_example_3(lZorba)); 
+  res = error_example_3(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 4" << std::endl;
-	assert(error_example_4(lZorba)); 
+  res = error_example_4(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 #endif
   

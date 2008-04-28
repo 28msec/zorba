@@ -7,6 +7,10 @@
 
 using namespace zorba;
 
+/**
+ * Example to show a quick way to serialize results of query execution using
+ * the << operator on ostreams
+ */
 bool
 serialization_example_1(Zorba* aZorba)
 {
@@ -22,6 +26,9 @@ serialization_example_1(Zorba* aZorba)
 	return true;
 }
 
+/**
+ * Example to invoke the serializer using the serialize() call on the query object.
+ */
 bool
 serialization_example_2(Zorba* aZorba)
 {
@@ -37,6 +44,9 @@ serialization_example_2(Zorba* aZorba)
 	return true;
 }
 
+/**
+ * Example that shows HTML serialization of the results.
+ */
 bool
 serialization_example_3(Zorba* aZorba)
 {
@@ -55,6 +65,9 @@ serialization_example_3(Zorba* aZorba)
 	return true;
 }
 
+/**
+ * Example to serialize the result of a query with indentation.
+ */
 bool
 serialization_example_4(Zorba* aZorba)
 {
@@ -139,33 +152,41 @@ serialization(int argc, char* argv[])
 {
 #ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
+  bool res = false;
 
   std::cout << "executing serialization example 1" << std::endl;
-	assert(serialization_example_1(lZorba)); 
+  res = serialization_example_1(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing serialization example 2" << std::endl;
-	assert(serialization_example_2(lZorba)); 
+  res = serialization_example_2(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
-//std::cout << "executing serialization example 3" << std::endl;
-//assert(serialization_example_3(lZorba)); 
-//std::cout << std::endl;
+  //std::cout << "executing serialization example 3" << std::endl;
+  //res = serialization_example_3(lZorba);
+  //if (!res) return 1; 
+  //std::cout << std::endl;
 
   std::cout << "executing serialization example 4" << std::endl;
-	assert(serialization_example_4(lZorba)); 
+  res = serialization_example_4(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing serialization example 5" << std::endl;
-	assert(serialization_example_5(lZorba)); 
+  res = serialization_example_5(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing serialization example 6" << std::endl;
-	assert(serialization_example_6(lZorba)); 
+  res = serialization_example_6(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing serialization example 7" << std::endl;
-	assert(serialization_example_7(lZorba)); 
+  res = serialization_example_7(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 #endif
 

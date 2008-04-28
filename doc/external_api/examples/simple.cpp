@@ -169,45 +169,56 @@ int
 simple(int argc, char* argv[])
 {
   Zorba* lZorba = Zorba::getInstance();
+  bool res = false;
 
   std::cout << "executing example 1" << std::endl;
-	assert(example_1(lZorba)); 
+  res = example_1(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 2" << std::endl;
-	assert(example_2(lZorba)); 
+  res = example_2(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 3" << std::endl;
-	assert(example_3(lZorba)); 
+  res = example_3(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 4" << std::endl;
-	assert(example_4(lZorba)); 
+  res = example_4(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 5" << std::endl;
-	assert(example_5(lZorba)); 
+  res = example_5(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 6" << std::endl;
-	assert(example_6(lZorba)); 
+  res = example_6(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
-  
+
   std::cout << "executing example 7" << std::endl;
-	assert(example_7()); 
+  res = example_7();
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << "executing example 8" << std::endl;
-  assert(example_8(lZorba));
+  res = example_8(lZorba);
+  if (!res) return 1;
   std::cout << std::endl;
 
   std::cout << "executing example 9" << std::endl;
-  assert(example_9(lZorba));
+  res = example_9(lZorba);
+  if (!res) return 1;
   std::cout << std::endl;
 
   std::cout << "executing example 10" << std::endl;
-  assert(example_10(lZorba));
+  res = example_10(lZorba);
+  if (!res) return 1;
   std::cout << std::endl;
 
   lZorba->shutdown();

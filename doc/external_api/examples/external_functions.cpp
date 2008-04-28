@@ -165,21 +165,26 @@ external_functions(int argc, char* argv[])
 {
 #ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
+  bool res = false;
 
   std::cout << std::endl  << "executing simple external function test 1" << std::endl;
-	assert(func_example_1(lZorba)); 
+  res = func_example_1(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << std::endl  << "executing simple external function test 2" << std::endl;
-	assert(func_example_2(lZorba)); 
+  res = func_example_2(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << std::endl  << "executing simple external function test 3" << std::endl;
-	assert(func_example_3(lZorba)); 
+  res = func_example_3(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 
   std::cout << std::endl  << "executing simple external function test 4" << std::endl;
-	assert(func_example_4(lZorba)); 
+  res = func_example_4(lZorba);
+  if (!res) return 1; 
   std::cout << std::endl;
 #endif
 
