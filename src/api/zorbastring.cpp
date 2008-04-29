@@ -137,7 +137,7 @@ String::byteEqual(const xqpStringStore& string) const
 }
 
 bool
-String::byteEqual(const char* aString, uint32_t aBytes) const
+String::byteEqual(const char* aString, unsigned int aBytes) const
 {
   return m_string->byteEqual( aString, aBytes );
 }

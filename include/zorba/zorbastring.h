@@ -131,7 +131,7 @@ public:
    *
    */  
   bool
-  byteEqual(const char* aString, uint32_t aBytes) const;
+  byteEqual(const char* aString, unsigned int aBytes) const;
 
   /** \brief Locate in "this" the first occurrence of the "pattern" substring.
    *

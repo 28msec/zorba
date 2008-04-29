@@ -779,7 +779,7 @@ xqpStringStore_t xqpStringStore::trim() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::formatAsXML(const char* src) const
+xqpStringStore_t xqpStringStore::formatAsXML() const
 {
   uint32_t i;
   uint32_t len = numChars();

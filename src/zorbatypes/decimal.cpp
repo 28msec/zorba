@@ -403,7 +403,7 @@ xqpString Decimal::decimalToString(MAPM theValue) {
   return lResult;
 #else
   char lBuffer[124];
-  sprintf(lBuffer, "%lf", theValue);
+  sprintf(lBuffer, "%G", theValue);
   return xqpString(lBuffer);
 #endif
 }

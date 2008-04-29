@@ -28,6 +28,8 @@ typedef unsigned long ulong;
 // typedef unsigned char			uint8_t;
 // typedef short int					int16_t;
 
+//typedef uint32_t  __int32;
+
 #ifdef _WIN32_WCE
 typedef long	off_t;
 #endif

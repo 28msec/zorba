@@ -206,9 +206,9 @@ bool FloatImplTraits<FloatType>::isNegInf(FloatType aMAPM)
 template <typename FloatType>
 FloatType FloatImplTraits<FloatType>::cutMantissa(FloatType aMAPM) 
 {
-  double intpart;
-  return modf(aMAPM, &intpart);
+  return aMAPM;
 }
+
 template <typename FloatType>
 uint32_t FloatImplTraits<FloatType>::hash(FloatCommons::NumType aType, FloatType aMAPM)
 {
@@ -1210,6 +1210,7 @@ xqpString FloatImpl<FloatType>::toString() const {
 }
 
 #else //ZORBA_NO_BIGNUMBERS
+/*
 template <>
 xqpString FloatImpl<float>::toString() const {
   switch(theType) {
@@ -1230,9 +1231,9 @@ xqpString FloatImpl<float>::toString() const {
   sprintf(lBuffer, "%f", theFloatImpl);
   return lBuffer;
 }
-
-template <>
-xqpString FloatImpl<double>::toString() const {
+*/
+template <typename FloatType>
+xqpString FloatImpl<FloatType>::toString() const {
   switch(theType) {
     case FloatCommons::NOT_A_NUM:
       return FloatCommons::NOT_A_NUM_STR;
@@ -1248,7 +1249,34 @@ xqpString FloatImpl<double>::toString() const {
   }
 
   char lBuffer[124];
-  sprintf(lBuffer, "%lf", theFloatImpl);
+  sprintf(lBuffer, "%#G", (double)theFloatImpl);
+
+  char  *lE = strchr(lBuffer, 'E');
+  char  *lZeros;
+
+  if(lE)
+    lZeros = lE-1;
+  else
+    lZeros = lBuffer + strlen(lBuffer) - 1;
+  while(*lZeros == '0') 
+    --lZeros; 
+  if (lE)
+  {
+    if(*lZeros == '.')
+      ++lZeros;
+    lE++;
+    if(*lE == '+')
+      lE ++;
+    lZeros[1] = 'E';
+    strcpy(lZeros+2, lE);
+  }
+  else
+  {
+    if(*lZeros == '.')
+      lZeros--;
+    lZeros[1] = 0;
+  }
+
   return lBuffer;
 }
 
