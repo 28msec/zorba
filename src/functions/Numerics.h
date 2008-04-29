@@ -31,6 +31,12 @@ class zorba;
    virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
  };
 
+ class binary_arith_func : public function {
+ public:
+   binary_arith_func (const signature &sig) : function (sig) {}
+   virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+ };
+
 /*______________________________________________________________________
 |  
 | 6.2 Operators on Numeric Values
@@ -39,7 +45,7 @@ class zorba;
 
 // 6.2.1 op:numeric-add
 // --------------------
-class op_numeric_add : public function
+class op_numeric_add : public binary_arith_func
 {
 public:
 	op_numeric_add(const signature&);
@@ -48,7 +54,7 @@ public:
 
 // 6.2.2 op:numeric-subtract
 // -------------------------
-class op_numeric_subtract : public function
+class op_numeric_subtract : public binary_arith_func
 {
 public:
 	op_numeric_subtract(const signature&);
@@ -58,7 +64,7 @@ public:
 
 // 6.2.3 op:numeric-multiply
 // -------------------------
-class op_numeric_multiply : public function
+class op_numeric_multiply : public binary_arith_func
 {
 public:
 	op_numeric_multiply(const signature&);
@@ -68,7 +74,7 @@ public:
 
 // 6.2.4 op:numeric-divide
 // -----------------------
-class op_numeric_divide : public function
+class op_numeric_divide : public binary_arith_func
 {
 public:
 	op_numeric_divide(const signature&);
@@ -77,7 +83,7 @@ public:
 
 // 6.2.5 op:numeric-integer-divide
 // -------------------------------
-class op_numeric_integer_divide : public function
+class op_numeric_integer_divide : public binary_arith_func
 {
 public:
 	op_numeric_integer_divide(const signature&);
@@ -86,7 +92,7 @@ public:
 
 // 6.2.6 op:numeric-mod
 // --------------------
-class op_numeric_mod : public function
+class op_numeric_mod : public binary_arith_func
 {
 public:
 	op_numeric_mod(const signature&);

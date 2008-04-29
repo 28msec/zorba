@@ -15,10 +15,14 @@
  */
 #include <vector>
 
-#include "system/globalenv.h"
 #include "functions/Numerics.h"
+
+#include "system/globalenv.h"
+
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
+
+#include "types/typeops.h"
 
 using namespace std;
 
@@ -29,6 +33,13 @@ xqtref_t single_numeric_func::return_type (const std::vector<xqtref_t> &arg_type
   return arg_types [0];
 }
 
+xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types) const {
+  if (TypeOps::is_empty (*arg_types [0]))
+    return arg_types [0];
+  if (TypeOps::is_empty (*arg_types [1]))
+    return arg_types [1];
+  return TypeOps::arithmetic_type (*arg_types [0], *arg_types [1]);
+}
 
 /*______________________________________________________________________
 |  
@@ -49,7 +60,7 @@ xqtref_t single_numeric_func::return_type (const std::vector<xqtref_t> &arg_type
 op_numeric_add::op_numeric_add(
 	const signature& sig)
 :
-	function(sig)
+	binary_arith_func(sig)
 {
 }
 
@@ -59,20 +70,6 @@ PlanIter_t op_numeric_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 }
 
 
-
-
-//op_numeric_add_int::op_numeric_add_int(
-//	const signature& sig)
-//:
-//	function(sig)
-//{
-//}
-//
-//PlanIter_t op_numeric_add_int::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-//{
-//	return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
-//}
-//
 
 
 
@@ -95,7 +92,7 @@ PlanIter_t op_numeric_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 op_numeric_subtract::op_numeric_subtract(
 	const signature& sig)
 :
-	function(sig)
+	binary_arith_func(sig)
 {
 }
 
@@ -126,7 +123,7 @@ PlanIter_t op_numeric_subtract::codegen (const QueryLoc& loc, std::vector<PlanIt
 op_numeric_multiply::op_numeric_multiply(
 	const signature& sig)
 :
-	function(sig)
+	binary_arith_func(sig)
 {
 }
 
@@ -167,7 +164,7 @@ PlanIter_t op_numeric_multiply::codegen (const QueryLoc& loc, std::vector<PlanIt
 op_numeric_divide::op_numeric_divide(
 	const signature& sig)
 :
-	function(sig)
+	binary_arith_func(sig)
 {
 }
 
@@ -210,7 +207,7 @@ PlanIter_t op_numeric_divide::codegen (const QueryLoc& loc, std::vector<PlanIter
 op_numeric_integer_divide::op_numeric_integer_divide(
 	const signature& sig)
 :
-	function(sig)
+	binary_arith_func(sig)
 {
 }
 
@@ -261,7 +258,7 @@ PlanIter_t op_numeric_integer_divide::codegen (const QueryLoc& loc, std::vector<
 op_numeric_mod::op_numeric_mod(
 	const signature& sig)
 :
-	function(sig)
+	binary_arith_func(sig)
 {
 }
 

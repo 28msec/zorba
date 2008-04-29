@@ -515,6 +515,9 @@ xqtref_t TypeOps::cast_primitive_type(const XQType& type)
 xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
 {
   CACHE_ROOT_TS (genv_ts);
+#define decimal_but_not_int( type1 )                  \
+  (is_subtype(type1, *genv_ts.DECIMAL_TYPE_ONE)       \
+   && !is_subtype(type1, *genv_ts.INTEGER_TYPE_ONE))
 
   if (is_subtype(type1, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)
       || is_subtype(type2, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)
@@ -526,16 +529,11 @@ xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
       || is_subtype(type2, *genv_ts.FLOAT_TYPE_ONE)) {
     return genv_ts.FLOAT_TYPE_ONE;
   }
-  bool b = is_subtype(type1, *genv_ts.DECIMAL_TYPE_ONE);
-  b = is_subtype(type1, *genv_ts.INTEGER_TYPE_ONE);
-  if ((is_subtype(type1, *genv_ts.DECIMAL_TYPE_ONE)
-       && !is_subtype(type1, *genv_ts.INTEGER_TYPE_ONE))
-       || (is_subtype(type2, *genv_ts.DECIMAL_TYPE_ONE))
-       && !is_subtype(type2, *genv_ts.INTEGER_TYPE_ONE)) {
+  if (decimal_but_not_int (type1) || decimal_but_not_int (type2))
     return genv_ts.DECIMAL_TYPE_ONE;
-  }
 
   return genv_ts.INTEGER_TYPE_ONE;
+#undef decimal_but_not_int
 }
 
 rchandle<NodeNameTest> TypeOps::get_nametest(const XQType& type)
