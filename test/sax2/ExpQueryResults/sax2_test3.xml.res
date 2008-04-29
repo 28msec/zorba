@@ -27,8 +27,6 @@ QName: test:text
 startElement()
 LocalName: b
 QName: b
-startCDATA()
-endCDATA()
 endPrefixMapping()
 Prefix: test
 
