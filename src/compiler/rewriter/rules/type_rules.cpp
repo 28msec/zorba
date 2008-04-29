@@ -76,7 +76,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     expr_t arg = pe->get_input();
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext()),
       target_type = pe->get_target_type();
-    if (TypeOps::is_subtype(*arg_type, *target_type))
+    if (TypeOps::is_equal(*arg_type, *target_type)
+        || (node->get_expr_kind () != cast_expr_kind
+            && TypeOps::is_subtype(*arg_type, *target_type)))
       return arg;
     if (node->get_expr_kind () == treat_expr_kind) {
       treat_expr *te = dynamic_cast<treat_expr *> (pe);

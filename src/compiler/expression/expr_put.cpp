@@ -32,6 +32,7 @@
 #include "util/tracer.h"
 #include "util/properties.h"
 
+#include "system/globalenv.h"
 
 using namespace std;
 namespace zorba {
@@ -494,7 +495,7 @@ ostream& match_expr::put(ostream& os) const
 
 ostream& const_expr::put( ostream& os) const
 {
-  os << INDENT << "const_expr" << expr_addr (this) << "[ ";
+  os << INDENT << "const_expr" << expr_addr (this) << " " << GENV_TYPESYSTEM.create_value_type (get_val ())->toString () << " [ ";
   os << val->getStringValue();
   os << " ]\n"; UNDENT;
   return os;
