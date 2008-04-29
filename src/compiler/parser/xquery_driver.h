@@ -75,7 +75,7 @@ public:
 	void set_ftcontains(bool b) { current_state.ftcontains_bit = b; }
 	bool ftcontains() const { return current_state.ftcontains_bit; }
 
-    void push_state_stack() { state_stack.push_back(current_state); ::bzero(&current_state, sizeof(current_state)); }
+    void push_state_stack() { state_stack.push_back(current_state); }
     void pop_state_stack() { current_state = state_stack.back(); state_stack.pop_back(); }
 
   QueryLoc createQueryLoc(const location& aLoc);

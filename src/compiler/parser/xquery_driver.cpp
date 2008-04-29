@@ -28,9 +28,7 @@ xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
     : symtab(initial_heapsize),
       expr_p (NULL),
       theCompilerCB(aCompilerCB)
-{
-  ::bzero(&current_state, sizeof(current_state));
-}
+{ }
 
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
