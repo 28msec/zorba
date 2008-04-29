@@ -91,7 +91,6 @@ chaining_example_2(Zorba* aZorba)
 int 
 chaining(int argc, char* argv[])
 {
-#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
   bool res = false;
 
@@ -104,7 +103,6 @@ chaining(int argc, char* argv[])
   res = chaining_example_2(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
-#endif
   
   return 0;
 }

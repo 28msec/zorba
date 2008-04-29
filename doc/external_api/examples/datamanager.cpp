@@ -116,7 +116,6 @@ datamanager_example_4(Zorba* aZorba, XmlDataManager* aDataManager)
 int 
 datamanager(int argc, char* argv[])
 {
-#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
   XmlDataManager* lDataManager = lZorba->getXmlDataManager();
   bool res = false;
@@ -140,7 +139,6 @@ datamanager(int argc, char* argv[])
   res = datamanager_example_4(lZorba, lDataManager);
   if (!res) return 1;
   std::cout << std::endl;
-#endif
 
     return 0;
 }

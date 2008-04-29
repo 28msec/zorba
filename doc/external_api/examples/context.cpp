@@ -251,7 +251,6 @@ context_example_9(Zorba* aZorba)
     int 
 context(int argc, char* argv[])
 {
-#ifndef NDEBUG
     Zorba* lZorba = Zorba::getInstance();
     bool res = false;
 
@@ -299,7 +298,6 @@ context(int argc, char* argv[])
     res = context_example_9(lZorba);
     if (!res) return 1; 
     std::cout << std::endl;
-#endif
 
   return 0;
 }

@@ -150,7 +150,6 @@ serialization_example_7(Zorba* aZorba)
 int 
 serialization(int argc, char* argv[])
 {
-#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
   bool res = false;
 
@@ -188,7 +187,6 @@ serialization(int argc, char* argv[])
   res = serialization_example_7(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
-#endif
 
   return 0;
 }

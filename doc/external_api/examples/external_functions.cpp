@@ -163,7 +163,6 @@ func_example_4(Zorba* aZorba)
 int 
 external_functions(int argc, char* argv[])
 {
-#ifndef NDEBUG
   Zorba* lZorba = Zorba::getInstance();
   bool res = false;
 
@@ -186,7 +185,6 @@ external_functions(int argc, char* argv[])
   res = func_example_4(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
-#endif
 
   return 0;
 }
