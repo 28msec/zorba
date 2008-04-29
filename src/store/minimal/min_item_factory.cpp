@@ -772,12 +772,15 @@ Item_t BasicItemFactory::createAttributeNode(
   {
     lexicalValue = valueItem->getStringValue();
 
+    std::string buf;
     valueItem = valueIter->next();
     while (valueItem != NULL)
     {
-      lexicalValue->str().append(valueItem->getStringValue()->c_str());
+      buf += valueItem->getStringValue()->str();
       valueItem = valueIter->next();
     }
+    if (!buf.empty())
+      lexicalValue = lexicalValue->append(buf);
   }
   else
   {
@@ -886,7 +889,8 @@ Item_t BasicItemFactory::createTextNode(
 
       if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
       {
-        lsib->getStringValueP()->str() += content->str();
+        TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
+        textSibling->theContent = textSibling->theContent->append(content.getp());
         return lsib;
       }
  
@@ -933,13 +937,17 @@ Item_t BasicItemFactory::createTextNode(
   {
     value = valueItem->getAtomizationValue()->getStringValue();
 
+    std::string buf;
     valueItem = valueIter->next();
     while (valueItem != NULL)
     {
-      value->str() += " ";
-      value->str() += valueItem->getAtomizationValue()->getStringValue()->str();
+      buf += " ";
+      buf += valueItem->getAtomizationValue()->getStringValue()->str();
+
       valueItem = valueIter->next();
     }
+    if (!buf.empty())
+      value = value->append(buf);
   }
   else
   {

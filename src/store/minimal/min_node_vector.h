@@ -17,8 +17,6 @@ namespace zorba {
 
 
 class XmlNode;
-class LoadedNodeVector;
-class ConstrNodeVector;
 
 
 /*******************************************************************************

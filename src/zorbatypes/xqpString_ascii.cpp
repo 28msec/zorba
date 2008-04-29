@@ -237,6 +237,20 @@ bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const
   return false;
 }
 
+bool xqpStringStore::byteEqual(const char* src) const
+{
+  const char  *mystr = c_str();
+  int   i = 0;
+
+  do
+  {
+    if(mystr[i] != src[i])
+      return false;
+  }while(mystr[i++]);
+
+  return true;
+}
+
 
 int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
 {
@@ -379,6 +393,26 @@ bool xqpStringStore::endsWith(const xqpStringStore* pattern, XQPCollator* coll) 
   return (lastIndexOf(pattern, coll) + pattern->numChars() == numChars());
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::append(const xqpStringStore_t& suffix) const
+{
+  return new xqpStringStore(theString + suffix->str());
+}
+
+
+xqpStringStore_t xqpStringStore::append(const std::string& suffix) const
+{
+  return new xqpStringStore(theString + suffix);
+}
+
+
+xqpStringStore_t xqpStringStore::append(const char* suffix) const
+{
+  return new xqpStringStore(theString + suffix);
+}
 
 /*******************************************************************************
 

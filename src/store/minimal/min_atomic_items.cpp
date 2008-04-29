@@ -1243,6 +1243,11 @@ Item* DateTimeItemNaive::getType() const
 //  }
 //}
 
+//uint32_t DateTimeItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+//{
+//  return theValue->hash(0);
+//}
+
 Item_t DateTimeItemNaive::getEBV() const
 {
   switch (theValue->getFacet())
@@ -1296,6 +1301,24 @@ xqp_duration DurationItemNaive::getDurationValue() const
   return theValue;
 }
 
+xqp_yearMonthDuration DurationItemNaive::getYearMonthDurationValue() const
+{
+  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
+  if (ymd != NULL)
+    return theValue;
+  else
+    return AtomicItem::getYearMonthDurationValue();
+}
+
+xqp_dayTimeDuration DurationItemNaive::getDayTimeDurationValue() const
+{
+  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
+  if (dtd != NULL)
+    return theValue;
+  else
+    return AtomicItem::getDayTimeDurationValue();
+}
+
 xqpStringStore_t DurationItemNaive::getStringValue() const
 {
   return theValue->toString().getStore();
@@ -1334,6 +1357,11 @@ xqp_string DurationItemNaive::show() const
   return theValue->toString().getStore();
 }
 
+//uint32_t DurationItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+//{
+//  return theValue->hash();
+//}
+
 /*******************************************************************************
  * class DayTimeDuration
  *******************************************************************************/
@@ -1371,6 +1399,11 @@ xqp_string DayTimeDurationItemNaive::show() const
   return theValue->toString();
 }
 
+//uint32_t DayTimeDurationItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+//{
+//  return theValue->hash();
+//}
+
 /*******************************************************************************
  * class YearMonthDuration
  *******************************************************************************/
@@ -1407,6 +1440,11 @@ xqp_string YearMonthDurationItemNaive::show() const
 {
   return theValue->toString();
 }
+
+//uint32_t YearMonthDurationItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+//{
+//  return theValue->hash();
+//}
 
 } // namespace store
 } // namespace zorba

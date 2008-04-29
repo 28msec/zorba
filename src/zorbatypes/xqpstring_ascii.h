@@ -114,6 +114,10 @@ public:
   byteEqual(const char* src, uint32_t srcLen) const;
 
   bool
+  byteEqual(const char* src) const;
+
+
+  bool
   equals(const xqpStringStore* src) const
   {
     return ((this == src) || (compare(src, 0) == 0));
@@ -139,6 +143,15 @@ public:
 
   bool
   endsWith(const xqpStringStore* pattern, XQPCollator* col) const;
+
+  xqpStringStore_t
+  append(const xqpStringStore_t& suffix) const;
+
+  xqpStringStore_t
+  append(const std::string& suffix) const;
+
+  xqpStringStore_t
+  append(const char* suffix) const;
 
   xqpStringStore_t
   uppercase() const;

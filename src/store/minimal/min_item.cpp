@@ -35,7 +35,7 @@ Item*
 Item::getType( ) const
 {
   ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
+                        __FUNCTION__, typeid(*this).name());
   return 0;
 }
 

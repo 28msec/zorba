@@ -133,7 +133,7 @@ public:
 
   void addReplaceValue(
         Item_t&              target,
-        xqpStringStore*      newValue);
+        xqpStringStore_t&    newValue);
 
   void addRename(
         Item_t&              target,
@@ -408,9 +408,9 @@ protected:
   xqpStringStore_t    theOldValue;
 
 public:
-  UpdReplaceAttrValue(Item_t& t, xqpStringStore* newValue) : UpdatePrimitive(t)
+  UpdReplaceAttrValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
-    theNewValue = newValue;
+    theNewValue.transfer(newValue);
   }
 
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_ATTR_VALUE; }
@@ -432,11 +432,9 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplaceTextValue(Item_t& t, xqpStringStore* newValue)
-    :
-    UpdatePrimitive(t)
+  UpdReplaceTextValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
-    theNewValue = newValue;
+    theNewValue.transfer(newValue);
   }
 
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_TEXT_VALUE; }
@@ -458,11 +456,9 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplacePiValue(Item_t& t, xqpStringStore* newValue)
-    :
-    UpdatePrimitive(t)
+  UpdReplacePiValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
-    theNewValue = newValue;
+    theNewValue.transfer(newValue);
   }
 
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_PI_VALUE; }
@@ -484,11 +480,9 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplaceCommentValue(Item_t& t, xqpStringStore* newValue)
-    :
-    UpdatePrimitive(t)
+  UpdReplaceCommentValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
-    theNewValue = newValue;
+    theNewValue.transfer(newValue);
   }
 
   UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_COMMENT_VALUE; }

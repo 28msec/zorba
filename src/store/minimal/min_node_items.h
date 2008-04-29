@@ -727,6 +727,8 @@ class TextNode : public XmlNode
   friend class XmlNode;
   friend class ConstrDocumentNode;
   friend class ConstrElementNode;
+  friend class BasicItemFactory;
+  friend class XmlLoader;
 
 protected:
   xqpStringStore_t theContent;
