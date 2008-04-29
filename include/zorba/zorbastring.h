@@ -24,7 +24,8 @@ class xqpStringStore;
 
 /** \brief The Zorba String class.
  *
- * This class is a unicode encoded string that is used in Zorba.
+ * This class is a has a similar interface with std::string, but contains Unicode characters encoded as UTF-8.
+ * UTF-8 FAQ @see [http://unicode.org/faq/utf_bom.html#2].
  */
 class String 
 {
