@@ -48,7 +48,7 @@ namespace zorba
 }
 
 /* First part of user declarations.  */
-#line 23 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
+#line 38 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -129,7 +129,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 95 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
+#line 110 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
