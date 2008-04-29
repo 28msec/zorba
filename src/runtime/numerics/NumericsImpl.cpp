@@ -665,14 +665,6 @@ namespace zorba
             res = GENV_ITEMFACTORY->createFloat ( item->getFloatValue() );
         else
           res = GENV_ITEMFACTORY->createFloat ( -item->getFloatValue() );
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-        if ( item->getDecimalValue() >= xqp_decimal::zero() )
-          if ( TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-            res = item;
-          else
-            res = GENV_ITEMFACTORY->createDecimal ( item->getDecimalValue() );
-        else
-          res = GENV_ITEMFACTORY->createDecimal ( -item->getDecimalValue() );
       else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
         if ( item->getIntegerValue() >= xqp_decimal::zero() )
           if ( TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
@@ -681,6 +673,14 @@ namespace zorba
             res = GENV_ITEMFACTORY->createInteger ( item->getIntegerValue() );
         else
           res = GENV_ITEMFACTORY->createInteger ( -item->getIntegerValue() );
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+        if ( item->getDecimalValue() >= xqp_decimal::zero() )
+          if ( TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+            res = item;
+          else
+            res = GENV_ITEMFACTORY->createDecimal ( item->getDecimalValue() );
+        else
+          res = GENV_ITEMFACTORY->createDecimal ( -item->getDecimalValue() );
       else
       {
         ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
@@ -731,13 +731,13 @@ namespace zorba
       else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat(item->getFloatValue().ceil());
 
-      //item type is subtype of DECIMAL
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().ceil());
-
       //item type is subtype of INTEGER 
       else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
         res = item;
+
+      //item type is subtype of DECIMAL
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+        res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().ceil());
 
       else
       {
@@ -788,13 +788,13 @@ namespace zorba
       else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat(item->getFloatValue().floor());
 
-      //item type is subtype of DECIMAL
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().floor());
-
       //item type is subtype of INTEGER 
       else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
         res = item;
+
+      //item type is subtype of DECIMAL
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+        res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().floor());
 
       else
       {
@@ -845,13 +845,13 @@ namespace zorba
       else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat(item->getFloatValue().round());
 
-      //item type is subtype of DECIMAL
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().round());
-
       //item type is subtype of INTEGER 
       else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
         res = item;
+
+      //item type is subtype of DECIMAL
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+        res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().round());
 
       else
       {
@@ -909,13 +909,13 @@ namespace zorba
       else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat(item->getFloatValue().roundHalfToEven(precision));
 
-      //item type is subtype of DECIMAL
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().roundHalfToEven(precision));
-
       //item type is subtype of INTEGER 
       else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
         res = item;
+
+      //item type is subtype of DECIMAL
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+        res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().roundHalfToEven(precision));
 
       else
       {

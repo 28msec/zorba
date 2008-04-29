@@ -24,6 +24,13 @@ namespace zorba {
 
 class zorba;
 
+
+ class single_numeric_func : public function {
+ public:
+   single_numeric_func (const signature &sig) : function (sig) {}
+   virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+ };
+
 /*______________________________________________________________________
 |  
 | 6.2 Operators on Numeric Values
@@ -36,20 +43,8 @@ class op_numeric_add : public function
 {
 public:
 	op_numeric_add(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
-
-//class op_numeric_add_int : public function
-//{
-//public:
-//	op_numeric_add_int(const signature&);
-//	//
-//public:
-//	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-////};
-
 
 // 6.2.2 op:numeric-subtract
 // -------------------------
@@ -57,8 +52,6 @@ class op_numeric_subtract : public function
 {
 public:
 	op_numeric_subtract(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
@@ -69,8 +62,6 @@ class op_numeric_multiply : public function
 {
 public:
 	op_numeric_multiply(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
@@ -81,8 +72,6 @@ class op_numeric_divide : public function
 {
 public:
 	op_numeric_divide(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
@@ -92,8 +81,6 @@ class op_numeric_integer_divide : public function
 {
 public:
 	op_numeric_integer_divide(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
@@ -103,44 +90,26 @@ class op_numeric_mod : public function
 {
 public:
 	op_numeric_mod(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.7 op:numeric-unary-plus
 // ---------------------------
-class op_numeric_unary_plus : public function
+class op_numeric_unary_plus : public single_numeric_func
 {
 public:
 	op_numeric_unary_plus(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------
-class op_numeric_unary_minus : public function
+class op_numeric_unary_minus : public single_numeric_func
 {
 public:
 	op_numeric_unary_minus(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
-
-
-
-/*______________________________________________________________________
-|  
-| 6.3 Comparison Operators on Numeric Values
-|_______________________________________________________________________*/
-
-// 6.3.1 op:numeric-equal
-//-----------------------
-// 6.3.2 op:numeric-less-than
-// 6.3.3 op:numeric-greater-than
 
 
 /*______________________________________________________________________
@@ -149,52 +118,47 @@ public:
 |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-class fn_abs : public function 
+class fn_abs : public single_numeric_func 
 {
 public:
 	fn_abs(const signature&);
-	
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.4.2 fn:ceiling
-class fn_ceiling : public function
+class fn_ceiling : public single_numeric_func
 {
   public:
     fn_ceiling(const signature&);
-
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.4.3 fn:floor
-class fn_floor : public function
+class fn_floor : public single_numeric_func
 {
   public:
     fn_floor(const signature&);
-
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.4.4 fn:round
-class fn_round : public function
+class fn_round : public single_numeric_func
 {
   public:
     fn_round(const signature&);
-     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.4.5 fn:round-half-to-even
-class fn_round_half_to_even : public function
+class fn_round_half_to_even : public single_numeric_func
 {
   public:
     fn_round_half_to_even(const signature&);
-     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // Zorba specific functions:
+
 /**
  * Function to produce a fixed amount of integer for testing purposes.
  */
@@ -202,10 +166,14 @@ class zor_numgen : public function
 {
 public:
 	zor_numgen(const signature&);
-		
-public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 }	/* namespace zorba */
 #endif	/* ZORBA_NUMERICS_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

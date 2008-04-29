@@ -24,6 +24,12 @@ using namespace std;
 
 namespace zorba {
 
+
+xqtref_t single_numeric_func::return_type (const std::vector<xqtref_t> &arg_types) const {
+  return arg_types [0];
+}
+
+
 /*______________________________________________________________________
 |  
 |	6.2.1 op:numeric-add
@@ -281,7 +287,7 @@ PlanIter_t op_numeric_mod::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 op_numeric_unary_plus::op_numeric_unary_plus(
 	const signature& sig)
 :
-	function(sig)
+	single_numeric_func(sig)
 {
 }
 
@@ -312,7 +318,7 @@ PlanIter_t op_numeric_unary_plus::codegen (const QueryLoc& loc, std::vector<Plan
 op_numeric_unary_minus::op_numeric_unary_minus(
 	const signature& sig)
 :
-	function(sig)
+	single_numeric_func(sig)
 {
 }
 
@@ -342,7 +348,7 @@ PlanIter_t op_numeric_unary_minus::codegen (const QueryLoc& loc, std::vector<Pla
 // 6.4.1 fn:abs
 fn_abs::fn_abs(const signature& sig)
 :
-	function(sig)
+	single_numeric_func(sig)
 {   	
 }
 
@@ -356,7 +362,7 @@ PlanIter_t fn_abs::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
 // 6.4.2 fn:ceiling
 fn_ceiling::fn_ceiling(const signature& sig)
 :
-function(sig)
+single_numeric_func(sig)
 {}
 
 PlanIter_t fn_ceiling::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -369,7 +375,7 @@ PlanIter_t fn_ceiling::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 // 6.4.3 fn:floor
 fn_floor::fn_floor(const signature& sig)
 :
-function(sig)
+single_numeric_func(sig)
 {}
 
 PlanIter_t fn_floor::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -381,7 +387,7 @@ PlanIter_t fn_floor::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 // 6.4.4 fn:round
 fn_round::fn_round(const signature& sig)
 :
-function(sig)
+single_numeric_func(sig)
 {}
 
 PlanIter_t fn_round::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -394,7 +400,7 @@ PlanIter_t fn_round::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 // 6.4.5 fn:round-half-to-even
 fn_round_half_to_even::fn_round_half_to_even(const signature& sig)
 :
-function(sig)
+single_numeric_func(sig)
 {}
 
 PlanIter_t
