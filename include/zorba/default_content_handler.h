@@ -19,6 +19,13 @@
 #include <zorba/sax2.h>
 
 namespace zorba{
+  
+  /** \brief A default content handler class implementing the SAX2_ContentHandler and
+   *         SAX2_LexicalHandler interfaces with all functions being implemented and doing
+   *         nothing.
+   *
+   * See SAX2_ContentHandler for a documentation.
+   */
 
   class DefaultContentHandler: public SAX2_ContentHandler,
                                public SAX2_LexicalHandler

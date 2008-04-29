@@ -16,7 +16,7 @@
       * GroupBy (as in the evolving W3C XQuery 1.1 recommendation)
     
   However, this release is not tuned for performance! Next versions
-  will especially include performance incresements. 
+  will especially focus on improving Zorba's overall performance.  
 
   The Latest Version
   ------------------

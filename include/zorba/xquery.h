@@ -339,19 +339,34 @@ namespace zorba {
       compile(std::istream& aQuery, const StaticContext_t& aStaticContext, 
               const XQuery::CompilerHints_t& aHints) = 0;
 
-      //Set the fileName
+      /** \brief Set the filename of a query.
+       *
+       * This is only needed if debugging a query and for better error reporting
+       */
       virtual void
       setFileName( const String& ) = 0;
 
-      //Register a SAX handler
+      /** \brief Register a SAX2_ContentHandler for retrieving the serialized 
+       *         query result as SAX events when executeSAX() is called.
+       *
+       * @param aContentHandler the content handler on which SAX callbacks are called.
+       */
       virtual void
-      registerSAXHandler( SAX2_ContentHandler * ) = 0;
+      registerSAXHandler( SAX2_ContentHandler* aContentHandler ) = 0;
 
-      //Execute the query with an handler given
+      /** \brief Register a SAX2_ContentHandler for retrieving the serialized 
+       *         query result as SAX.
+       * 
+       * @param aContentHandler the content handler on which SAX callbacks are called.
+       */
       virtual void
       executeSAX( SAX2_ContentHandler * ) = 0;
 
-      //Execute the query
+      /** \brief Serialize the query result as SAX events and call the callbacks
+       *         of the SAX2_ContentHandler that has been set using registerSAXHandler.
+       *
+       * @throw ZorbaException if an error occurs (e.g. no SAX2_ContentHandler has been registered).
+       */
       virtual void
       executeSAX() = 0;
 
