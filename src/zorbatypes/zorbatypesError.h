@@ -74,10 +74,10 @@ namespace zorba
 
   class zorbatypesException : public std::exception
   {
-    char*                       additionalInfo;
+    const char*                 additionalInfo;
     ZorbatypesError::ErrorCode  code;
     public:
-      zorbatypesException (char* errMsg, ZorbatypesError::ErrorCode errCode) : additionalInfo(errMsg), code(errCode) {}
+      zorbatypesException (const char* errMsg, ZorbatypesError::ErrorCode errCode) : additionalInfo(errMsg), code(errCode) {}
       virtual const char* what() const throw() { return additionalInfo; }
       ZorbatypesError::ErrorCode ErrorCode() const throw() { return code; }
   };
