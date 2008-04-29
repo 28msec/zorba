@@ -9,7 +9,7 @@
   In this first release of Zorba, following functionalities are 
   implemented:
       - XQuery 1.0 and XPath 2.0 (as in the W3C recommendation)
-      - XML Updates (as in the evolving W3C recommendation)
+      - XQuery Update Facility (as in the evolving W3C recommendation)
       - A In-Memory-Store
       - GroupBy (as in the evolving W3C XQuery 1.1 recommendation)
     
