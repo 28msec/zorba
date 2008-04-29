@@ -476,41 +476,42 @@ void serializer::emitter::emit_node(
 	}
 	else if (item->getNodeKind() == store::StoreConsts::elementNode)
 	{
-    if (ser->indent)
-			emit_indentation(depth);
-		tr << "<" << item->getNodeName()->getStringValue().getp();
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+      if (ser->indent)
+        emit_indentation(depth);
+      tr << "<" << item->getNodeName()->getStringValue().getp();
+      previous_item = PREVIOUS_ITEM_WAS_NODE;
 
-    bool should_remove_binding = emit_bindings(item);
-		int closed_parent_tag = emit_node_children(item, depth);
+      bool should_remove_binding = emit_bindings(item);
+      int closed_parent_tag = emit_node_children(item, depth);
 
-    if (should_remove_binding)
-      bindings.pop_back();
+      if (should_remove_binding)
+        bindings.pop_back();
 
-		if (closed_parent_tag)		
-			tr << "</" << item->getNodeName()->getStringValue().getp() << ">";
-		else
-			tr << " />";
+      if (closed_parent_tag)		
+        tr << "</" << item->getNodeName()->getStringValue().getp() << ">";
+      else
+        tr << " />";
 
-    if (ser->indent)
-			tr << ser->END_OF_LINE;
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+      if (ser->indent)
+        tr << ser->END_OF_LINE;
+      previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::attributeNode )
 	{
-		tr << " " << item->getNodeName()->getStringValue().getp() << "=\"";
-		emit_expanded_string(item->getStringValue(), true);
-		tr << "\"";
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+	  tr << " " << item->getNodeName()->getStringValue().getp() << "=\"";
+	  emit_expanded_string(item->getStringValue(), true);
+	  tr << "\"";
+	  previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
-    /* commented out
-    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+      /* commented out
+      if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
-    */
-		emit_expanded_string(item->getStringValue());
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+      */
+	  
+      emit_expanded_string(item->getStringValue());
+      previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
@@ -674,7 +675,11 @@ void serializer::html_emitter::emit_node(
     int depth,
     const store::Item* element_parent)
 {
-  if (item->getNodeKind() == store::StoreConsts::elementNode)
+  if( item->getNodeKind() == store::StoreConsts::documentNode )
+  {
+    emit_node_children(item, depth+1);
+  }
+  else if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
     unsigned closed_parent_tag = 0;
     
@@ -696,6 +701,7 @@ void serializer::html_emitter::emit_node(
     if (ser->indent)
       emit_indentation(depth);
     tr << "<" << item->getNodeName()->getStringValue().getp();
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
     
     /*
       If there is a head element, and the include-content-type parameter has the value yes, the 
@@ -748,28 +754,59 @@ void serializer::html_emitter::emit_node(
       tr << serializer::END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
+  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    tr << " " << item->getNodeName()->getStringValue().getp() << "=\"";
+    emit_expanded_string(item->getStringValue(), true);
+    tr << "\"";
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
+  }
   else if (item->getNodeKind() == store::StoreConsts::textNode)
   {
+    bool expand = true;
+    
     /*
       The HTML output method MUST NOT perform escaping for the content of the script and style elements.
     */
-    xqpString iname(item->getNodeName()->getStringValue());
-    iname = iname.lowercase();
-
-    if (iname == "script"
-        ||
-        iname == "style")
+    if (element_parent != NULL )
     {
-      if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
-        tr << " ";    
-      tr << item->getStringValue().getp();  // no character expansion
-      previous_item = PREVIOUS_ITEM_WAS_TEXT;
+      xqpString iname(element_parent->getNodeName()->getStringValue());
+      iname = iname.lowercase();
+
+      if (iname == "script" || iname == "style")
+        expand = false;
     }
+    
+    /* commented out
+      if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+        tr << " ";
+    */
+    if (expand)
+      emit_expanded_string(item->getStringValue());
     else
-      emitter::emit_node(item, depth);
+      tr << item->getStringValue().getp();  // no character expansion
+    
+    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+  }
+  else if (item->getNodeKind() == store::StoreConsts::commentNode)
+  {
+    if (ser->indent)
+      emit_indentation(depth);
+    tr << "<!--" << item->getStringValue().getp() << "-->";
+    if (ser->indent)
+      tr << ser->END_OF_LINE;
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
+  }
+  else if (item->getNodeKind() == store::StoreConsts::piNode )
+  {
+    tr << "<?" << item->getTarget() << " " << item->getStringValue().getp() << "?>";
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else
-    emitter::emit_node(item, depth);
+  {
+    tr << "node of type: " << item->getNodeKind();
+    assert(0);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
