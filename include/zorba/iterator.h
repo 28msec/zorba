@@ -21,18 +21,36 @@
 
 namespace zorba {
 
+  /** \brief Interface for an Iterator over an instance of the XML Data Model.
+   */
   class Iterator : public ItemSequence
   {
     public:
-
+      /** \brief Destructor
+       */
       virtual ~Iterator() {}
 
+      /** \brief Start iterating
+       *
+       * This function needs to be called before calling next.
+       * @throw ZorbaException if an error occurs.
+       */
       virtual void 
       open() = 0;
 
+      /** \brief Get the next Item of the sequence.
+       * @param aItem the next Item of the result sequence if true is returned by the function.
+       * @return true if the sequence is not exhausted, false otherwise.
+       * @throw ZorbaException if an error occurs during query execution or the Iterator has
+       *        not been opened.
+       */
       virtual bool
-      next(Item&) = 0;
+      next(Item& aItem) = 0;
 
+      /** \brief Stop iterating.
+       *
+       * In order to call Iterator::next, open has to been called.
+       */
       virtual void 
       close() = 0;
 

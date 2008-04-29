@@ -24,36 +24,40 @@ namespace zorba{
                                public SAX2_LexicalHandler
   {
     public:
-      /**
-       * SAX2 Content Handler
-       *
-       */
-      virtual ~DefaultContentHandler(){}
+      virtual 
+      ~DefaultContentHandler() {}
 
-      void startDocument(){}
+      void 
+      startDocument() {}
 
-      void endDocument(){}
+      void 
+      endDocument() {}
 
-      void startElement( const String &uri, const String &localname, const String &qname,
-                        const SAX2_Attributes &attrs, const SAX2_Namespaces &ns ){}
+      void 
+      startElement( const String &uri, const String &localname, const String &qname,
+                    const SAX2_Attributes& aAttrs, const SAX2_Namespaces& aNS ) {}
     
-      void endElement( const String &uri, const String &localname, const String &qname ){}
+      void
+      endElement( const String &uri, const String &localname, const String &qname ) {}
     
-      void characters( const String & text ){}
+      void
+      characters( const String & text ) {}
     
-      void processingInstruction( const String &target, const String &data ){}
+      void
+      processingInstruction( const String &target, const String &data ) {}
 
-      void ignorableWhitespace( const String & whitespace ){}
+      void
+      ignorableWhitespace( const String & whitespace ) {}
 
-      void startPrefixMapping( const String	& prefix, const String	& uri ){}
+      void
+      startPrefixMapping( const String	& prefix, const String	& uri ) {}
 
-      void endPrefixMapping( const String & prefix ){}
+      void 
+      endPrefixMapping( const String & prefix ) {}
 
-      void skippedEntity( const	String & name ){}
+      void 
+      skippedEntity( const	String & name ) {}
   
-      /**
-       * SAX2 Declaration handler
-       */
       void elementDecl ( const String & name, const String & model ) {}
 
       void attributeDecl ( const String & eName, const String & aName,
@@ -65,9 +69,6 @@ namespace zorba{
       void externalEntityDecl ( const String & name, const String & publicId,
                                 const String & systemId ) {}
 
-      /**
-       * SAX2 DTD handler
-       */
       void notationDecl ( const String & name, const String & publicId, const String & systemId ) {}
 
       void unparsedEntityDecl ( const String & name, const String & publicId,
@@ -75,9 +76,6 @@ namespace zorba{
 
       void resetDocType () {}
 
-      /**
-       * SAX2 Lexical handler
-       */
       void comment ( const String & chars ) {}
 
       void endCDATA () {}

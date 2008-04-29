@@ -37,7 +37,7 @@ namespace zorba {
        * @return true if the sequence is not exhausted, false otherwise.
        * @throw ZorbaException if an error occured.
        */
-      virtual bool next(Item& item) = 0;
+      virtual bool next(Item& aItem) = 0;
 
   }; /* class ItemSequence */
 

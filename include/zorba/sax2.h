@@ -64,37 +64,77 @@ class SAX2_ContentHandler
      * @param aLocalname thee local part of the element name.
      * @param aQName the QName of this element.
      * @param aAttrs the attributes attached to the element, if any.
+     * @param aNS the namespaces bindings for the element.
      */
     virtual void
     startElement( const String& aURI, const String& aLocalname, const String& aQName,
                   const SAX2_Attributes& aAttrs, const SAX2_Namespaces& aNS ) = 0;
 
+    /** \brief Receive notification of the end of an element.
+     *
+     * Zorba's serializerwill invoke this method at the end of every element in the serialized 
+     * query result document;  there will be a corresponding startElement() event for 
+     * every endElement() event (even when the element is empty).
+     *
+     * @param aURI the URI of the asscioated namespace for this element
+     * @param aLocalname the local part of the element name
+     * @param aQName the QName of this element
+     */
     virtual void
-    endElement( const String &uri, const String &localname, const String &qname ) = 0;
+    endElement( const String& aURI, const String& aLocalname, const String& aQName ) = 0;
     
+    /** \brief Receive notification of character data.
+     *
+     * The serializer will call this method to report each chunk of character data.
+     *
+     * @param aText the characters from the serialized result.
+     */
     virtual void
-    characters( const String & text ) = 0;
+    characters( const String& aText ) = 0;
     
+    /** \brief Receive notification of a processing instruction.
+     *
+     * The serializer will invoke this method once for each processing instruction found.
+     *
+     * @param aTarget the processing instruction target.
+     * @param aData the processing instruction data, or null if none was supplied.
+     */
     virtual void
-    processingInstruction( const String &target, const String &data ) = 0;
+    processingInstruction( const String& aTarget, const String& aData ) = 0;
 
+    /** \brief Receive notification of ignorable whitespace in element content.
+     *
+     * @param aText the characters from the serialized query result.
+     */
     virtual void
-    ignorableWhitespace( const String & text ) = 0;
+    ignorableWhitespace( const String& aText ) = 0;
 
+    /** \brief Receive notification of the start of an namespace prefix mapping.
+     *
+     * @param aPrefix the namespace prefix used
+     * @param aURI the namespace URI used.
+     */
     virtual void
-    startPrefixMapping( const String	& prefix, const String	& uri ) = 0;
+    startPrefixMapping( const String& aPrefix, const String& aURI ) = 0;
 
+    /** \brief Receive notification of the end of an namespace prefix mapping.
+     *
+     * @param aPrefix the namespace prefix used.
+     */
     virtual void
-    endPrefixMapping( const String & prefix ) = 0;
+    endPrefixMapping( const String& aPrefix ) = 0;
 
+    /** \brief Receive notification of a skipped entity. 
+     *
+     * @param aName the name of the skipped entity.
+     */
     virtual void
-    skippedEntity( const	String & name ) = 0;
+    skippedEntity( const	String& aName ) = 0;
 };
 
 class SAX2_Attributes
 {
   public:
-    
     virtual
     ~SAX2_Attributes() {}
     

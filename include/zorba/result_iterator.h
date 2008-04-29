@@ -36,6 +36,7 @@ namespace zorba {
       /** \brief Start iterating. 
        *
        * This function needs to be called before calling next.
+       * @throw ZorbaException if an error occurs.
        */
       virtual void 
       open() = 0;
