@@ -18,7 +18,7 @@
  There is also a <tt>make uninstall</tt> command available (also to be called from the build directory) to remove it again.
 
  Note that for setting the install prefix, you can use the CMAKE_INSTALL_PREFIX variable.
- For example,  in order to install Zorba in <tt>/opt</tt> use <tt>cmake -D CMAKE_INSTALL_PREFIX=/opt <zorba source directory></tt>.
+ For example,  in order to install Zorba in <tt>/opt</tt> use <tt>cmake -D CMAKE_INSTALL_PREFIX=/opt &lt;zorba source directory&gt; </tt>.
 
   Alternatively, you can use one of Zorba's binary distributions if it is available for your platform.
   For example, download and decompress the tar-ball for Mac OS X (e.g. zorba-{version}-Darwin-i386.tar.gz).

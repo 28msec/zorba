@@ -24,7 +24,8 @@ class xqpStringStore;
 
 /** \brief The Zorba String class.
  *
- * This class is a has a similar interface with std::string, but contains Unicode characters encoded as UTF-8.
+ * The interface of this class is similar to that of std::string. However, it contains Unicode 
+ * characters encoded as UTF-8.
  * UTF-8 FAQ @see [http://unicode.org/faq/utf_bom.html#2].
  */
 class String 
@@ -70,7 +71,8 @@ public:
 
   /** \brief Returns a non-modifiable standard C character array version of the string.
    *
-   * Returns a const pointer to a UTF-8 encoded C string, identical to the current string. The returned string is null-terminated.
+   * @return const char*  a const pointer to a UTF-8 encoded C string, identical to the current string. 
+   *         The returned string is null-terminated.
    */
   const char*
   c_str() const;
@@ -122,13 +124,6 @@ public:
 
   /** \brief Byte by byte comparison of two strings.
    *
-   * @see equals().
-   */  
-  bool
-  byteEqual(const xqpStringStore& string) const;
-
-  /** \brief Byte by byte comparison of two strings.
-   *
    */  
   bool
   byteEqual(const char* aString, unsigned int aBytes) const;
@@ -162,19 +157,24 @@ public:
 
   /** \brief Convert to uppercase.
    *
+   * @return String the String convert to uppercase.
    */  
   const String&
   uppercase();
 
   /** \brief Convert to lowercase.
    *
+   * @return String the String convert to lowercase.
    */  
   const String&
   lowercase();
 
-  /** \brief Returns the value of "this" with whitespace normalized by stripping leading and trailing whitespace and replacing sequences of one or more than one whitespace character with a single space, #x20.
+  /** \brief Returns the value of "this" with whitespace normalized by stripping leading 
+   *         and trailing whitespace and replacing sequences of one or more than one 
+   *         whitespace character with a single space, \#x20.
    *
-   * @note whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA).
+   * @note whitespace = " \t\r\n" meaning (\#x20) (\#x9) (\#xD) (\#xA).
+   * @return String the whitespace normalized String.
    */  
   const String&
   normalizeSpace();
@@ -182,14 +182,14 @@ public:
   /** \brief Removes leading and trailing whitespace.
    *
    * @note If called with trim(" \t\r\n", 4) it will strip leading and trailing whitespaces.
-   * Whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA).
+   * Whitespace = " \t\r\n" meaning (\#x20) (\#x9) (\#xD) (\#xA).
    */  
   const String&
   trim(const char* start, int len);
 
   /** \brief Removes leading and trailing whitespace.
    *
-   * @note Space = " " meaning (#x20).
+   * @note Space = " " meaning (\#x20).
    */  
   const String&
   trim();
@@ -200,7 +200,8 @@ public:
   const String&
   formatAsXML();
 
-  /** \brief Escape all characters except printable characters of the US-ASCII coded character set, specifically the octets ranging from 32 to 126 (decimal).
+  /** \brief Escape all characters except printable characters of the US-ASCII coded character set, 
+   *         specifically the octets ranging from 32 to 126 (decimal).
    *
    */
   const String&
@@ -213,7 +214,8 @@ public:
   const String&
   iriToUri();
 
-  /** \brief Encodes reserved characters in an String that is intended to be used in the path segment of a URI.
+  /** \brief Encodes reserved characters in an String that is intended to be used in the 
+   *         path segment of a URI.
    *         see Section 2 [http://www.ietf.org/rfc/rfc3986.txt]
    *
    */

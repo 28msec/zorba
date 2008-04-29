@@ -131,12 +131,6 @@ String::operator!=(const String& str) const
 }
 
 bool
-String::byteEqual(const xqpStringStore& string) const
-{
-  return m_string->byteEqual( string );
-}
-
-bool
 String::byteEqual(const char* aString, unsigned int aBytes) const
 {
   return m_string->byteEqual( aString, aBytes );
