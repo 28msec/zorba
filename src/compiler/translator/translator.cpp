@@ -4497,13 +4497,13 @@ void end_visit(const UnaryExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<expr> e1_h = pop_nodestack ();
-  fo_expr *fo_p = new fo_expr(v.get_location(),
-                              v.get_signlist()->get_sign()
-                              ? LOOKUP_OP1 ("unary-plus")
-                              : LOOKUP_OP1 ("unary-minus"));
-  fo_p->add(e1_h);
-  nodestack.push(fo_p);
+  if (! v.get_signlist()->get_sign()) {
+    rchandle<expr> e1_h = pop_nodestack ();
+    fo_expr *fo_p = new fo_expr(v.get_location(),
+                                LOOKUP_OP1 ("unary-minus"));
+    fo_p->add(e1_h);
+    nodestack.push(fo_p);
+  }
 }
 
 void *begin_visit(const UnionExpr& /*v*/)

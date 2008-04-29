@@ -269,34 +269,6 @@ PlanIter_t op_numeric_mod::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 
 
 
-
-
-/*______________________________________________________________________
-|  
-|	6.2.7 op:numeric-unary-plus
-|	op:numeric-unary-plus($arg as numeric) as numeric
-|	
-|	Summary: Backs up the unary "+" operator and returns its operand with 
-|	the sign unchanged: (+ $arg). Semantically, this operation performs no 
-|	operation.
-|_______________________________________________________________________*/
-
-op_numeric_unary_plus::op_numeric_unary_plus(
-	const signature& sig)
-:
-	single_numeric_func(sig)
-{
-}
-
-PlanIter_t op_numeric_unary_plus::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-	return new OpNumericUnaryIterator(loc, argv[0], true);
-}
-
-
-
-
-
 /*______________________________________________________________________
 |  
 |	6.2.8 op:numeric-unary-minus
