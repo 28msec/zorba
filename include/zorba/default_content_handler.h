@@ -41,8 +41,8 @@ namespace zorba{
       endDocument() {}
 
       void 
-      startElement( const String &uri, const String &localname, const String &qname,
-                    const SAX2_Attributes& aAttrs, const SAX2_Namespaces& aNS ) {}
+      startElement( const String &uri, const String &localname,
+                    const String &qname, const SAX2_Attributes& aAttrs ) {}
     
       void
       endElement( const String &uri, const String &localname, const String &qname ) {}

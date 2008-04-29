@@ -53,25 +53,6 @@ public:
 
   const String getValue(const String & qName) const;
 };
-
-class SAX2NamespacesImpl: public SAX2_Namespaces
-{
-  unsigned int nb_local;
-  unsigned int nb_parent;
-  //prefix/URI pairs
-  store::NsBindings *local_nsBindings;
-  store::NsBindings parent_nsBindings;
-
-public:
-  SAX2NamespacesImpl(store::NsBindings *local_nsBindings, store::Item *item);
-  virtual ~SAX2NamespacesImpl();
-  virtual unsigned int getLength() const;
-  virtual const String  getPrefix( unsigned int index ) const;
-  virtual const String  getURI( unsigned int index ) const;
-  virtual const String  getURI( String & prefix) const;
-
-};
-
 }//end of namespace
 #endif
 

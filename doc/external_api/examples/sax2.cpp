@@ -25,8 +25,8 @@ class XMLSerializer: public DefaultContentHandler
       theOStream << std::endl;
     }
 
-    void startElement( const String &uri, const String &localname, const String &qname,
-                       const SAX2_Attributes& attrs, const SAX2_Namespaces& aNS ) 
+    void startElement( const String &uri, const String &localname,
+                       const String &qname, const SAX2_Attributes& attrs ) 
     {
       theOStream << "<" << qname;
       for ( unsigned int i = 0; i < attrs.getLength(); i++ ) {

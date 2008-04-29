@@ -21,7 +21,6 @@
 namespace zorba{
 
 class SAX2_Attributes;
-class SAX2_Namespaces;
 
 /** \brief Receive notification of events that result from serializing
  *         a query result as XML.
@@ -67,8 +66,8 @@ class SAX2_ContentHandler
      * @param aNS the namespaces bindings for the element.
      */
     virtual void
-    startElement( const String& aURI, const String& aLocalname, const String& aQName,
-                  const SAX2_Attributes& aAttrs, const SAX2_Namespaces& aNS ) = 0;
+    startElement( const String& aURI, const String& aLocalname,
+                  const String& aQName, const SAX2_Attributes& aAttrs ) = 0;
 
     /** \brief Receive notification of the end of an element.
      *
@@ -173,25 +172,6 @@ class SAX2_Attributes
 
     virtual const
     String getValue( const String & qName ) const = 0;
-};
-
-class SAX2_Namespaces
-{
-  public:
-    virtual
-    ~SAX2_Namespaces() {}
-
-    virtual unsigned int
-    getLength() const = 0;
-  
-    virtual const String
-    getPrefix( unsigned int index ) const = 0;
-  
-    virtual const String
-    getURI( unsigned int index ) const = 0;
-
-    virtual const String
-    getURI( String &  prefix ) const = 0;
 };
 
 class SAX2_LexicalHandler

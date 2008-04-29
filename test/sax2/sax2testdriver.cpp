@@ -107,8 +107,7 @@ class TestContentHandler: public DefaultContentHandler
         const   String & uri,
         const   String & localname,
         const   String & qname,
-        const   SAX2_Attributes & attrs,
-        const   SAX2_Namespaces &ns )
+        const   SAX2_Attributes & attrs )
   {
     theOStream << "startElement()" << std::endl;
     theOStream << "LocalName: " << localname << std::endl;

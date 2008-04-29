@@ -851,7 +851,6 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
                                  store::StoreConsts::ONLY_LOCAL_NAMESPACES);//only local namespaces
 
       SAX2AttributesImpl attrs(item);
-      SAX2NamespacesImpl nss(&local_nsBindings, item);
       ns_size = local_nsBindings.size(); 
       std::vector< xqpString >::size_type ans_size = theNameSpaces.size();
       for ( unsigned long i = 0; i < ns_size; i++ )
@@ -882,7 +881,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
       String lNS( item_qname->getNamespace() );
       String lLocalName( item_qname->getLocalName() );
       String lStringValue( item_qname->getStringValue().getp() );
-      theSAX2ContentHandler->startElement( lNS, lLocalName, lStringValue, attrs, nss);
+      theSAX2ContentHandler->startElement( lNS, lLocalName, lStringValue, attrs );
     }
       
 		emit_node_children(item);
