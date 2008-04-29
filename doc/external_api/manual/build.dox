@@ -77,6 +77,7 @@ path_to_boost\bin;path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_
 -D Boost_INCLUDE_DIR="path_to_boost" 
 -D Boost_LIBRARY_DIRS="path_to_boost\lib" 
 -D XERCESC_INCLUDE="path_to_xerces\include" 
+-D XERCESC_LIBRARY="path_to_xerces\lib\xerces-c_2.lib"
 ..\
 \endcode
 -# Compile the engine with <tt>nmake</tt> in <tt>[ZORBA]/xquery/build</tt>.
@@ -100,6 +101,7 @@ path_to_boost\bin;path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_
 -D Boost_INCLUDE_DIR="path_to_boost" 
 -D Boost_LIBRARY_DIRS="path_to_boost\lib" 
 -D XERCESC_INCLUDE="path_to_xerces\include" 
+-D XERCESC_LIBRARY="path_to_xerces\lib\xerces-c_2.lib"
 ..\
 \endcode
 -# Compile the engine in Visual Studio
