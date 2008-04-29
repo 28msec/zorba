@@ -109,6 +109,7 @@ NARY_ITER(FnExistsIterator);
 //15.1.6 fn:distinct-values
 class FnDistinctValuesIteratorState : public PlanIteratorState {
 public:  
+  bool theHasNaN;
   store::ItemValueCollHandleHashSet* theAlreadySeenMap;
   store::ValueCollCompareParam* theValueCompareParam;
 

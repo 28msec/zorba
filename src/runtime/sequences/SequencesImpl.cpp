@@ -278,8 +278,13 @@ FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
   }
 
   while ( (lItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
-    // check if the item is alrady in the map
-    if ( ! state->theAlreadySeenMap->find(lItem) ) {
+    if (lItem->isNumeric () && lItem->isNaN ()) {
+      if (! state->theHasNaN) {
+        state->theHasNaN = true;
+        STACK_PUSH(lItem, state);
+      }
+    } else if ( ! state->theAlreadySeenMap->find(lItem) ) {
+      // check if the item is already in the map
       state->theAlreadySeenMap->insert(lItem);
       STACK_PUSH(lItem, state);
     }
@@ -297,11 +302,13 @@ FnDistinctValuesIteratorState::init(PlanState& planState)
 void
 FnDistinctValuesIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+  theHasNaN = false;
   theAlreadySeenMap->clear();
 }
 
 FnDistinctValuesIteratorState::FnDistinctValuesIteratorState()
-  : theAlreadySeenMap(0),
+  : theHasNaN (false),
+    theAlreadySeenMap(0),
     theValueCompareParam(0) {}
 
 FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() 
