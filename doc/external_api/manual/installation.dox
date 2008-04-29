@@ -1,7 +1,46 @@
 /** \page installation Installation
 \section installation Installation
 
-  Installation description here.
-*/
-~               
+\subsection SourceInstallation Installing the Source Distribution
 
+ The Zorba source is available as tar.gz and zip file. Starting with both, Zorba can be installed
+ by extracting the compressed files (e.g. tar xvfz zorba-{version}.tar.gz).
+ This creates a zorba-{version} directory in you current working directory.
+
+ After that, you probably need to build Zorba. Therefore, please follow the build instructions 
+ (see \ref build). 
+
+
+\subsection BinaryInstallation Installing the Binary Distribution
+
+ Once you have successfully build Zorba using the "Unix Makefile" generator (see \ref SourceInstallation) you
+ can call <tt>make install</tt> from within the build directory to install Zorba. 
+ There is also a <tt>make uninstall</tt> command available (also to be called from the build directory) to remove it again.
+
+ Note that for setting the install prefix, you can use the CMAKE_INSTALL_PREFIX variable.
+ For example,  in order to install Zorba in <tt>/opt</tt> use <tt>cmake -D CMAKE_INSTALL_PREFIX=/opt <zorba source directory></tt>.
+
+  Alternatively, you can use one of Zorba's binary distributions if it is available for your platform.
+  For example, download and decompress the tar-ball for Mac OS X (e.g. zorba-{version}-Darwin-i386.tar.gz).
+
+  For both installations, you will need to add Zorba's bin directory (e.g. CMAKE_INSTALL_PREFIX/bin or 
+  zorba-0.9.2541-Darwin-i386/bin) to your PATH environment variable. 
+
+  Additionally, you will need to add the accorording library search path (e.g. LD_LIBRARY_PATH on Linux,
+  DYLD_LIBRARY_PATH on Mac, and PATH on Windows) to point to the lib directory (e.g. CMAKE_INSTALL_PREFIX/lib or
+  zorba-{version}-Darwin-i386/lib).
+
+  After that, try typing <tt>%zorba -i '1+1'</tt> and you should see 
+  \code
+    <?xml version="1.0" encoding="UTF-8"?>
+    2
+  \endcode
+
+  as a result. Congratulations - your done and ready to use Zorba. Otherwise, please
+  consult the zorba-users mailing list for help.
+
+  For programming against the Zorba library, we refer to the API examples provided with
+  the source and binary distribution (see \link simple.cpp \endlink for an example).
+
+  In order to make this process easier, we also provide graphical installers for Windows and Mac OS X.
+*/

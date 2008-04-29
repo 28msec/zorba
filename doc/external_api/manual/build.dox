@@ -3,16 +3,16 @@
 \section requirements Requirements
 
 \subsection buildsystem Build System
-Zorba uses the Cross-Platform Make CMAKE 2.4 or higher to build (http://www.cmake.org/).
+In order to build Zorba, you need the Cross-Platform Make CMAKE 2.4 or higher. You can get it from  http://www.cmake.org/.
 
 \subsection compilers Compilers
 Zorba is tested with the following compilers:
-- C++ Compiler gcc 3.4.x (32Bit & 64Bit) and gcc 4.x (32Bit)
-- MS VC++ 2005 (32Bit)
+- GNU Compiler: g++ 3.4.x (32bit & 64bit)and g++ 4.x
+- Microsoft Compiler: MS VC++ 2005 and MS VC++ 2008
 
 
 \subsection packages Packages
-In order ot build Zorba, you need the following packages inclusive development headers installed:
+In order ot build Zorba, you need the following libraries and development headers to be installed:
 - Boost 1.32 or higher (http://www.boost.org/) 
   - boost_program_options
   - boost_date_time
@@ -22,12 +22,12 @@ In order ot build Zorba, you need the following packages inclusive development h
 - <em>Optional Packages used to modify Scanner and Parser</em>
   - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
   - Bison 2.3 or higher (http://www.gnu.org/software/bison/)
-- <em>Option Package used to enable REST and HTTP</em>
+- <em>Optional Package (used to enable REST and HTTP)</em>
   - CURL 7.12 (http://curl.haxx.se/)
 
 \subsection buildingzorba Building Zorba
 -# Unpack Zorba tarball. Let's call the path of the unpacked Zorba directory <tt>[ZORBA]</tt>.
--# Move into <tt>[ZORBA]/xquery</tt>, the root directory of Zorba.
+-# Change the working directory into <tt>[ZORBA]/xquery</tt>, the root directory of Zorba.
 -# Because CMake claims to make out-of-place builds, we propose to build an extra build directory. This directory can be made somewhere. Mostly, it is created directly into the root directory, e.g. <tt>[ZORBA]/xquery/build</tt>.
   - If the build directory is broken for any reason, it just can be removed and created newly, because source and build files are strictely seperated.
   - Several build directories can be used simultaneously.

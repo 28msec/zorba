@@ -360,7 +360,7 @@ namespace zorba {
        * @param aContentHandler the content handler on which SAX callbacks are called.
        */
       virtual void
-      executeSAX( SAX2_ContentHandler * ) = 0;
+      executeSAX( SAX2_ContentHandler* aContentHandler) = 0;
 
       /** \brief Serialize the query result as SAX events and call the callbacks
        *         of the SAX2_ContentHandler that has been set using registerSAXHandler.

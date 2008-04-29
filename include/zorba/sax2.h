@@ -63,7 +63,6 @@ class SAX2_ContentHandler
      * @param aLocalname thee local part of the element name.
      * @param aQName the QName of this element.
      * @param aAttrs the attributes attached to the element, if any.
-     * @param aNS the namespaces bindings for the element.
      */
     virtual void
     startElement( const String& aURI, const String& aLocalname,

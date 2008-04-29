@@ -164,10 +164,10 @@ serialization(int argc, char* argv[])
   if (!res) return 1; 
   std::cout << std::endl;
 
-  //std::cout << "executing serialization example 3" << std::endl;
-  //res = serialization_example_3(lZorba);
-  //if (!res) return 1; 
-  //std::cout << std::endl;
+  std::cout << "executing serialization example 3" << std::endl;
+  res = serialization_example_3(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
   std::cout << "executing serialization example 4" << std::endl;
   res = serialization_example_4(lZorba);
