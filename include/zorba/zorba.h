@@ -38,7 +38,10 @@
 namespace zorba {
 
   /**
-   *
+   * The Zorba class is the single point of access to the %Zorba engine.
+   * There exists one instance of the Zorba class per process.
+   * It can be used to (1) create and compile queries, (2) create static contexts, 
+   * (3) provides access to the XmlDataManager, and (4) provides access to the ItemFactory.
    */
   class Zorba 
   {

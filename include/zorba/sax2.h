@@ -20,29 +20,54 @@
 
 namespace zorba{
 
-class SAX2_Locator;
 class SAX2_Attributes;
 class SAX2_Namespaces;
 
+/** \brief Receive notification of events that result from serializing
+ *         a query result as XML.
+ *
+ * This is an interface that is used to receive notifications resulting
+ * from parsing a query result that was serialized as XML.
+ *
+ * Instances of classes that implement this interface can be registered for
+ * a query by calling the XQuery::registerSAXHandler or XQuery::executeSAX
+ * function.
+ */
 class SAX2_ContentHandler
 {
   public:
 
+    /** \brief Destructor
+     */
     virtual
     ~SAX2_ContentHandler() {}
 
-    virtual void
-    setDocumentLocator( const SAX2_Locator * const locator ) = 0;
-
+    /** \brief Receive notification of the beginning of a document.
+     */
     virtual void
     startDocument() = 0;
 
+    /** \brief Receive notification of the end of a document.
+     */
     virtual void
     endDocument() = 0;
 
+    /** \brief Receive notification of the beginning of an element.
+     *
+     * Zorba's serializer will invoke this method at the beginning of every element 
+     * of the serialized query result; there will be a corresponding endElement() 
+     * event for every startElement() event (even when the element is empty). 
+     * All of the element's content will be reported, in order, before the 
+     * corresponding endElement() event.
+     *
+     * @param aURI the URI of the associated namespace for this element.
+     * @param aLocalname thee local part of the element name.
+     * @param aQName the QName of this element.
+     * @param aAttrs the attributes attached to the element, if any.
+     */
     virtual void
-    startElement( const String &uri, const String &localname, const String &qname,
-                  const SAX2_Attributes &attrs, const SAX2_Namespaces &ns ) = 0;
+    startElement( const String& aURI, const String& aLocalname, const String& aQName,
+                  const SAX2_Attributes& aAttrs, const SAX2_Namespaces& aNS ) = 0;
 
     virtual void
     endElement( const String &uri, const String &localname, const String &qname ) = 0;
@@ -127,25 +152,6 @@ class SAX2_Namespaces
 
     virtual const String
     getURI( String &  prefix ) const = 0;
-};
-
-class SAX2_Locator
-{
-  public:
-    virtual
-    ~SAX2_Locator () {}
- 
-    virtual const String
-    getPublicId () const = 0;
-   
-    virtual const String
-    getSystemId () const = 0;
-   
-    virtual unsigned long
-    getLineNumber () const = 0;
-   
-    virtual unsigned long
-    getColumnNumber () const = 0;
 };
 
 class SAX2_LexicalHandler

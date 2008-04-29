@@ -17,7 +17,7 @@
 #define ZORBA_XQUERY_DRIVER_H
 
 #include <ostream>
-#include <strings.h>
+#include <string>
 #include "zorbatypes/xqpstring.h"
 
 #include "compiler/parser/symbol_table.h"

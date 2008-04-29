@@ -72,23 +72,6 @@ public:
 
 };
 
-class SAX2LocatorImpl: public SAX2_Locator
-{
-  protected:
-    xqp_string thePublicId;
-    xqp_string theSystemId;
-    unsigned long theLine;
-    unsigned long theColumn;
-
-  public:
-    SAX2LocatorImpl();
-    const String getPublicId() const;
-    const String getSystemId() const;
-    unsigned long getLineNumber() const;
-    unsigned long getColumnNumber() const;
-    void setPublicId(String & aPublicId);
-    void setSystemId(String & aSystemId);
-};
 }//end of namespace
 #endif
 

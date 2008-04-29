@@ -23,8 +23,14 @@
 
 namespace zorba {
 
+/** \brief Type identifiers
+ *
+ * The type identifiers are not used, yet.
+ */
 class TypeIdentifier {
   public:
+    /** \brief Destructor
+     */
     ~TypeIdentifier();
 
     static

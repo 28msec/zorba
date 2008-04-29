@@ -20,8 +20,6 @@ class XMLSerializer: public DefaultContentHandler
 
     virtual ~XMLSerializer(){}
 
-    void setDocumentLocator( const SAX2_Locator * const locator ){}
-
     void endDocument()
     {
       theOStream << std::endl;

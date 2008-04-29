@@ -835,8 +835,6 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 	{
     String lPublicID( item->getUnparsedEntityPublicId() );
     String lSystemID( item->getUnparsedEntitySystemId() );
-    theLocator.setPublicId( lPublicID );
-    theLocator.setSystemId( lSystemID );
 		emit_node_children(item);    
 	}
 	else if (item->getNodeKind() == store::StoreConsts::elementNode)

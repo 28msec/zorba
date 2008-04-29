@@ -98,11 +98,6 @@ class TestContentHandler: public DefaultContentHandler
 
   virtual ~TestContentHandler(){}
  
-  void setDocumentLocator(const SAX2_Locator* const locator)
-  {
-    //std::cerr << "setDocumentLocator()" << std::endl; 
-  }
-
   void startDocument()
   {
     theOStream << "startDocument()" << std::endl;

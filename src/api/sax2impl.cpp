@@ -236,39 +236,4 @@ const String  SAX2NamespacesImpl::getURI( String & prefix ) const
 
   return "";
 }
-
-
-/////////////////////////////////////////////////////////////////////////////////
-// SAX2 Locator
-SAX2LocatorImpl::SAX2LocatorImpl(){}
-
-const String SAX2LocatorImpl::getPublicId() const
-{
-  return &*thePublicId.theStrStore;
-}
-
-const String SAX2LocatorImpl::getSystemId() const
-{
-  return &*theSystemId.theStrStore;
-}
-
-unsigned long SAX2LocatorImpl::getLineNumber() const
-{
-  return theLine;
-}
-
-unsigned long SAX2LocatorImpl::getColumnNumber() const
-{
-  return theColumn;
-}
-
-void SAX2LocatorImpl::setPublicId( String & aPublicId )
-{
-  this->thePublicId = Unmarshaller::getInternalString( aPublicId );
-}
-
-void SAX2LocatorImpl::setSystemId( String & aSystemId )
-{
-  this->theSystemId = Unmarshaller::getInternalString( aSystemId );
-}
 }//end namespace zorba

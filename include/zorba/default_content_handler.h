@@ -30,8 +30,6 @@ namespace zorba{
        */
       virtual ~DefaultContentHandler(){}
 
-      void setDocumentLocator( const SAX2_Locator * const locator ){}
-
       void startDocument(){}
 
       void endDocument(){}

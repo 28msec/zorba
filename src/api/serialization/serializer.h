@@ -276,7 +276,6 @@ public:
     SAX2_ContentHandler * theSAX2ContentHandler;
     SAX2_LexicalHandler * theSAX2LexicalHandler;
 
-    SAX2LocatorImpl       theLocator;
     std::vector< xqpString > theNameSpaces;
 
   public:

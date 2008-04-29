@@ -16,6 +16,10 @@
 #ifndef ZORBA_EXTERNAL_FUNCTION_H
 #define ZORBA_EXTERNAL_FUNCTION_H
 
+/** 
+ * This file needs to be included for writing a user defined
+ * external function
+ */
 #include <zorba/external_function_data.h>
 #include <zorba/stateless_function.h>
 #include <zorba/item_sequence.h>

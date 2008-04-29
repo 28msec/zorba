@@ -20,6 +20,9 @@
 
 namespace zorba {
 
+  /**
+   * Provide access to the version of %Zorba that is used
+   */
   class Version
   { 
     protected:
@@ -28,21 +31,35 @@ namespace zorba {
       static int thePatchVersion;
 
     public:
+      /** \brief Get the major version
+       */
       static int 
       getMajorVersion();
 
+      /** \brief Get the minor version
+       */
       static int 
       getMinorVersion();
 
+      /** \brief Get the patch version
+       */
       static int 
       getPatchVersion();
 
+      /** \brief Get the %Zorba version as std::string
+       *
+       * Form: MajorVersion.MinorVersion.PatchVersion
+       */
       static std::string
       getVersion();
 
   };
 
-  std::ostream& operator<< (std::ostream& os, const Version& aVersion);
+  /** \brief Write the result of calling aVersiongetVersion() to the given
+   *         output stream.
+   */
+  std::ostream& 
+  operator<< (std::ostream& os, const Version& aVersion);
 
 
 } /* end namespace zorba */
