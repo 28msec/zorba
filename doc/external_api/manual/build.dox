@@ -3,26 +3,25 @@
 \section requirements Requirements
 
 \subsection buildsystem Build System
-Zorba users the Cross-Platform Make CMAKE 2.4 or higher to build (http://www.cmake.org/).
+Zorba uses the Cross-Platform Make CMAKE 2.4 or higher to build (http://www.cmake.org/).
 
 \subsection compilers Compilers
 Zorba is tested with the following compilers:
-- C++ Compiler gcc 3.4.x and gcc 4.x
-- MS VC++ 2005 and MS VC++ 2008
+- C++ Compiler gcc 3.4.x (32Bit & 64Bit) and gcc 4.x (32Bit)
+- MS VC++ 2005 (32Bit)
 
 
 \subsection packages Packages
 In order ot build Zorba, you need the following packages inclusive development headers installed:
-- BOOST 1.32 or higher (http://www.boost.org/) 
+- Boost 1.32 or higher (http://www.boost.org/) 
   - boost_program_options
   - boost_date_time
   - boost_filesystem
-- XERCES 2.7.0 or higher (http://www.boost.org/)
-- ICONV 1.12 (http://www.gnu.org/software/libiconv/)
+- Xerces 2.7.0 or higher (http://www.boost.org/)
+- Iconv 1.12 (http://www.gnu.org/software/libiconv/)
 - <em>Optional Packages used to modify Scanner and Parser</em>
-  - FLEX 2.5.33 or higher (http://flex.sourceforge.net/)
-  - BISON 2.3 or higher (http://www.gnu.org/software/bison/)
-  - CURL 7.12 (http://curl.haxx.se/)
+  - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
+  - Bison 2.3 or higher (http://www.gnu.org/software/bison/)
 - <em>Option Package used to enable REST and HTTP</em>
   - CURL 7.12 (http://curl.haxx.se/)
 
@@ -32,38 +31,38 @@ In order ot build Zorba, you need the following packages inclusive development h
 -# Because CMake claims to make out-of-place builds, we propose to build an extra build directory. This directory can be made somewhere. Mostly, it is created directly into the root directory, e.g. <tt>[ZORBA]/xquery/build</tt>.
   - If the build directory is broken for any reason, it just can be removed and created newly, because source and build files are strictely seperated.
   - Several build directories can be used simultaneously.
--# Move with Termial into the build directory and execute cmake with the Zorba root path as argument, e.g. <tt>cmake [ZORBA]/xquery</tt> or just <tt>cmake ..</tt> .
+-# Move with the termial into the build directory and execute CMake with the Zorba root path as argument, e.g. <tt>cmake [ZORBA]/xquery</tt> or just <tt>cmake ..</tt> .
 -# execute <tt>make</tt>.
 
 \subsection buildoptions Build Options
 - CMake is able to produce projects for several IDE's.
-  - E.g. to produce a KDevelop Project, the cmake command would be <tt>cmake .. -G KDevelop3</tt>
+  - E.g. to produce a KDevelop Project, the CMake command would be <tt>cmake .. -G KDevelop3</tt>
   - Read cmake help to see all available generators.
 - By default, Zorba is build in MinSizeRel-mode (minimal size release). To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you must execute cmake with an additial parameter, e.g. <tt>cmake .. -D CMAKE_BUILD_TYPE:STRING=Debug</tt> (cmake with additional parameters can also be execute over an existing build directory, it will just overwrite the options).
 
 
 \section mac Note for Mac OS Users
-The easiest way to install the required packages (like CMAKE, BOOST, etc.) is to use Darwin Ports (http://darwinports.com/). After installation, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successfull, you can simply install by typing e.g. <tt>sudo port install cmake</tt>.
+The easiest way to install the required packages (like CMake, Boost, etc.) is to use Darwin Ports (http://darwinports.com/). After installation, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successfull, you can simply install packages by typing e.g. <tt>sudo port install cmake</tt>.
 
 \section windows Notes for Windows Users
 \subsection Windows Requirements
 - Windows 32Bit
 - Visual Studio Installation
+  - Important: Always download the packages of the following required software that fits to your Visual Studio installation.
 - CMake Installation (http://www.cmake.org/)
-- BOOST (program_options, date_time, filesystem) Installation (http://www.boost-consulting.com/products/free/)  
+- Boost (program_options, date_time, filesystem) Installation (http://www.boost-consulting.com/products/free/)  
 - Libxml2 and Iconv (http://www.zlatkovic.com/pub/libxml/) 
 - ICU (http://download.icu-project.org/files/icu4c/)
-- Optional: Flex (http://gnuwin32.sourceforge.net/packages/flex.htm) and Bison (http://gnuwin32.sourceforge.net/packages/bison.htm)
-Note: Take care that you always download the version that fits to your Visual Studio installation!
-- To enable the execution of build zorba, all paths to the dll's of the installed libraries must be set to the <tt>%PATH%</tt> variable. This can be done by adding them to the environment variables, or to the path variable in the current command line window (works only for NMake build). The following paths must be added:
+- Optional: Flex (http://gnuwin32.sourceforge.net/packages/flex.htm) and Bison (http://gnuwin32.sourceforge.net/packages/bison.htm)\n
+- To enable the execution executables, all paths to the dll's of the installed libraries must be set to the <tt>PATH</tt> variable. This can be done by adding them to the environment variables, or to the <tt>PATH</tt> variable in the current command line window (works only for NMake build). The following paths must be added:
 \code
-  C:...
+path_to_boost\bin;path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_xerces\bin
 \endcode
 
 \subsection nmake Building NMake Project
 -# Start Visual Studio Command Line
--# Go into zorba root directory (<tt>[ZORBA]/xquery</tt>)
--# Executing CMAKE. Per default, CMAKE does not find out the paths to the used include files and libraries by itself. Thus, the paths must be passed to the CMAKE command over parameters: 
+-# Go into Zorba root directory (<tt>[ZORBA]/xquery</tt>)
+-# Execute CMake. Per default, CMake does not find out the paths to the used include files and libraries by itself. Thus, the paths must be passed to the CMake command over parameters: 
 \code
 "path_to_cmake\bin\cmake" 
 -G "NMake Makefiles"
@@ -80,13 +79,13 @@ Note: Take care that you always download the version that fits to your Visual St
 -D XERCESC_INCLUDE="path_to_xerces\include" 
 ..\
 \endcode
--# Compiling the engine with <tt>nmake</tt> in <tt>[ZORBA]/xquery/build</tt>.
--# Executing the engine
+-# Compile the engine with <tt>nmake</tt> in <tt>[ZORBA]/xquery/build</tt>.
+-# Execute the engine
 
 \subsection visualstuido Building Visual Studio Project
 -# Start Visual Studio Command Line
--# Go into zorba root directory (<tt>[ZORBA]/xquery</tt>)
--# Executing CMAKE. Per default, CMAKE does not find out the paths to the used include files and libraries by itself. Thus, the paths must be passed to the CMAKE command over parameters: 
+-# Go into Zorba root directory (<tt>[ZORBA]/xquery</tt>)
+-# Execute CMake. Per default, CMake does not find out the paths to the used include files and libraries by itself. Thus, the paths must be passed to the CMake command over parameters: 
 \code
 "path_to_cmake\bin\cmake" 
 -G "Visual Studio X 200Y"
@@ -103,6 +102,6 @@ Note: Take care that you always download the version that fits to your Visual St
 -D XERCESC_INCLUDE="path_to_xerces\include" 
 ..\
 \endcode
--# Compiling the engine in Visual Studio
--# Executing the engine in Visual Studio
+-# Compile the engine in Visual Studio
+-# Execute the engine in Visual Studio
 */
