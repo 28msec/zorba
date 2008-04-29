@@ -99,6 +99,16 @@ public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
+// 6.2.7 op:numeric-unary-plus
+// ---------------------------
+class op_numeric_unary_plus : public single_numeric_func
+{
+public:
+  op_numeric_unary_plus(const signature&);
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------
 class op_numeric_unary_minus : public single_numeric_func

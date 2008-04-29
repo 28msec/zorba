@@ -252,6 +252,11 @@ DECL(op_numeric_unary_minus,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
 
+DECL(op_numeric_unary_plus,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":unary-plus"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
+
 DECL(fn_abs,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "abs"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
