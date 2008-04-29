@@ -57,7 +57,7 @@ String::~String()
 
 const char *String::c_str() const
 {
-    return m_string->c_str();
+  return m_string->c_str();
 }
 
 const String& String::operator =(const String& rhs)
@@ -95,15 +95,21 @@ String::compare(const String& string) const
 }
 
 bool
-String::equals(const String& string) const
+String::equals(const String& aString) const
 {
-  return m_string->equals(string.m_string);
+  return m_string->equals(aString.m_string);
 }
 
 size_t
 String::length() const
 {
   return m_string->numChars();
+}
+
+size_t
+String::bytes() const
+{
+  return m_string->bytes();
 }
 
 bool
@@ -122,6 +128,196 @@ bool
 String::operator!=(const String& str) const
 {
   return !equals(str);
+}
+
+bool
+String::byteEqual(const xqpStringStore& string) const
+{
+  return m_string->byteEqual( string );
+}
+
+bool
+String::byteEqual(const char* aString, uint32_t aBytes) const
+{
+  return m_string->byteEqual( aString, aBytes );
+}
+
+int
+String::indexOf(const char* pattern) const
+{
+  return m_string->indexOf( pattern );
+}
+
+int
+String::lastIndexOf(const char* pattern) const
+{
+  return m_string->lastIndexOf( pattern );
+}
+
+bool
+String::endsWith(const char* pattern) const
+{
+  return m_string->endsWith( pattern );
+}
+
+const String&
+String::append(const char* suffix)
+{
+  xqpStringStore* res = m_string->append( suffix );
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::uppercase()
+{
+  xqpStringStore* res = m_string->uppercase();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::lowercase()
+{
+  xqpStringStore* res = m_string->lowercase();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::normalizeSpace()
+{
+  xqpStringStore* res = m_string->normalizeSpace();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::trim(const char* start, int len)
+{
+  xqpStringStore* res = m_string->trim(start, len);
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::trim()
+{
+  xqpStringStore* res = m_string->trim();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::formatAsXML()
+{
+  xqpStringStore* res = m_string->formatAsXML();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::escapeHtmlUri()
+{
+  xqpStringStore* res = m_string->escapeHtmlUri();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::iriToUri()
+{
+  xqpStringStore* res = m_string->iriToUri();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::encodeForUri()
+{
+  xqpStringStore* res = m_string->encodeForUri();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
 }
 
 std::ostream& operator <<(std::ostream& os, const String& str)

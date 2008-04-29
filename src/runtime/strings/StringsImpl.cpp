@@ -552,7 +552,7 @@ SubstringIterator::nextImpl(PlanState& planState) const
   } // non NULL string arg
 
   if (!resStr.empty())
-    resStr = resStr.formatAsXML(resStr.c_str());
+    resStr = resStr.formatAsXML();
 
   STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
 

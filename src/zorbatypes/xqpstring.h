@@ -112,7 +112,7 @@ public:
   byteEqual(const xqpStringStore& src) const;
       
   bool
-  byteEqual(const char* src, uint32_t srcLen) const;
+  byteEqual(const char* src, uint32_t srcBytes) const;
 
   bool
   byteEqual(const char* src) const
@@ -184,7 +184,7 @@ public:
   trim(const char* start, uint16_t len) const;
 
   xqpStringStore_t
-  formatAsXML(const char* src) const;
+  formatAsXML() const;
 
   xqpStringStore_t
   escapeHtmlUri() const;
@@ -408,9 +408,9 @@ public:
   substr(xqpStringStore::distance_type index) const;
   
   xqpString
-  formatAsXML(const char* src) const
+  formatAsXML() const
   {
-    return theStrStore->formatAsXML(src).getp();
+    return theStrStore->formatAsXML().getp();
   }
       
   const char*

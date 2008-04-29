@@ -67,26 +67,157 @@ public:
   const String&
   operator =(xqpStringStore *other);
 
+  /** \brief Returns a non-modifiable standard C character array version of the string.
+   *
+   * Returns a const pointer to a UTF-8 encoded C string, identical to the current string. The returned string is null-terminated.
+   */
   const char*
   c_str() const;
 
+  /** \brief Compares two strings.
+   *
+   * @return -1 if this \< aString, 0 if this == aString, 1 if this \> aString.
+   */
   int
-  compare(const String& string) const;
+  compare(const String& aString) const;
 
+  /** \brief Compares two strings.
+   *
+   * @return true if this == aString.
+   * @see byteEqual().
+   */
   bool
-  equals(const String& string) const;
+  equals(const String& aString) const;
 
+  /** \brief Returns the number of characters in the string, not including any null-termination.
+   *
+   * @return The number of UTF-8 characters.
+   * @see bytes(), empty().
+   */
   size_t
   length() const;
 
+  /** \brief Returns the number of bytes in the string, not including any null-termination.
+   *
+   * @return The number of bytes.
+   * @see length(), empty().
+   */
+  size_t
+  bytes() const;
+
+  /** \brief True if the string has no characters.
+   *
+   * @return True if the string has no elements, false otherwise.
+   * @see length(), bytes().
+   */
   bool
   empty() const;
 
-  bool 
+  bool
   operator==(const String& str) const;
 
-  bool 
+  bool
   operator!=(const String& str) const;
+
+  /** \brief Byte by byte comparison of two strings.
+   *
+   * @see equals().
+   */  
+  bool
+  byteEqual(const xqpStringStore& string) const;
+
+  /** \brief Byte by byte comparison of two strings.
+   *
+   */  
+  bool
+  byteEqual(const char* aString, uint32_t aBytes) const;
+
+  /** \brief Locate in "this" the first occurrence of the "pattern" substring.
+   *
+   * @return The offset into this of the start of "pattern", or -1 if not found.
+   */  
+  int
+  indexOf(const char* pattern) const;
+
+  /** \brief Locate in "this" the last occurrence of the "pattern" substring.
+   *
+   * @return The offset into this of the start of "pattern", or -1 if not found.
+   */  
+  int
+  lastIndexOf(const char* pattern) const;
+
+  /** \brief Determine if "pattern" is a suffix of "this".
+   *
+   * @return True if "this" ends with "pattern".
+   */  
+  bool
+  endsWith(const char* pattern) const;
+
+  /** \brief Append characters onto "this".
+   *
+   */  
+  const String&
+  append(const char* suffix);
+
+  /** \brief Convert to uppercase.
+   *
+   */  
+  const String&
+  uppercase();
+
+  /** \brief Convert to lowercase.
+   *
+   */  
+  const String&
+  lowercase();
+
+  /** \brief Returns the value of "this" with whitespace normalized by stripping leading and trailing whitespace and replacing sequences of one or more than one whitespace character with a single space, #x20.
+   *
+   * @note whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA).
+   */  
+  const String&
+  normalizeSpace();
+
+  /** \brief Removes leading and trailing whitespace.
+   *
+   * @note If called with trim(" \t\r\n", 4) it will strip leading and trailing whitespaces.
+   * Whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA).
+   */  
+  const String&
+  trim(const char* start, int len);
+
+  /** \brief Removes leading and trailing whitespace.
+   *
+   * @note Space = " " meaning (#x20).
+   */  
+  const String&
+  trim();
+
+  /** \brief Escape all characters except US-ASCII coded character set.
+   *
+   */
+  const String&
+  formatAsXML();
+
+  /** \brief Escape all characters except printable characters of the US-ASCII coded character set, specifically the octets ranging from 32 to 126 (decimal).
+   *
+   */
+  const String&
+  escapeHtmlUri();
+
+  /** \brief Converts an String containing an IRI into a URI.
+   *         see Section 3.1 [http://www.ietf.org/rfc/rfc3987.txt]
+   *
+   */
+  const String&
+  iriToUri();
+
+  /** \brief Encodes reserved characters in an String that is intended to be used in the path segment of a URI.
+   *         see Section 2 [http://www.ietf.org/rfc/rfc3986.txt]
+   *
+   */
+  const String&
+  encodeForUri();
 
 private:
   friend class Unmarshaller;

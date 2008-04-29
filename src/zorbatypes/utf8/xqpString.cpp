@@ -215,9 +215,9 @@ bool xqpStringStore::byteEqual(const xqpStringStore& src) const
 }
 
 
-bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const
+bool xqpStringStore::byteEqual(const char* src, uint32_t srcBytes) const
 {
-  if(bytes() == srclen && memcmp(c_str(), src, srclen) == 0)
+  if(bytes() == srcBytes && memcmp(c_str(), src, srcBytes) == 0)
     return true;
   
   return false;
@@ -666,7 +666,7 @@ xqpStringStore_t xqpStringStore::trim() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::formatAsXML(const char* src) const
+xqpStringStore_t xqpStringStore::formatAsXML() const
 {
   uint32_t i;
   uint32_t len = numChars();
