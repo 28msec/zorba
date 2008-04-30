@@ -176,9 +176,10 @@ Item *SimpleStore::getTypeQName(Item *item)
 
   checked_vector<Item_t>::const_iterator  i;
   const xqpStringStore  *ln = qname->getLocalName();
+  const xqpStringStore  *pref = qname->getPrefix();
   for(i=theSchemaTypeNames.begin(); i != theSchemaTypeNames.end(); i++)
   {
-    if((*i)->getLocalName()->byteEqual(*ln))
+    if(((*i)->getLocalName()->byteEqual(*ln)) && ((*i)->getPrefix()->byteEqual(*pref)))
       return &*(*i);
   }
 

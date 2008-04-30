@@ -140,14 +140,14 @@ public:
 
   Item* getParent() const           { return theParent; }
 
-  //bool equals(
-  //      const Item* other,
-  //      RuntimeCB* aRuntimeCB,
-  //      XQPCollator* aCollation = 0) const { return this == other; }
+  bool equals(
+        const Item* other,
+        RuntimeCB* aRuntimeCB,
+        XQPCollator* aCollation = 0) const { return this == other; }
 
-  //uint32_t hash(
-  //      RuntimeCB* aRuntimeCB,
-  //      XQPCollator* aCollation = 0) const;
+  uint32_t hash(
+        RuntimeCB* aRuntimeCB,
+        XQPCollator* aCollation = 0) const;
 
   xqpStringStore_t getBaseURI() const
   {

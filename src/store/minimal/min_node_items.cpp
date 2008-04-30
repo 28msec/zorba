@@ -213,12 +213,12 @@ void XmlNode::setTree(const XmlTree* t)
 /*******************************************************************************
   Return a hash value based on the id of the node.
 ********************************************************************************/
-//uint32_t XmlNode::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
-//{
-//  ulong tid = getTree()->getId();
-//
-//  return hashfun::h32((void*)(&tid), sizeof(ulong), theOrdPath.hash());
-//}
+uint32_t XmlNode::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  ulong tid = getTree()->getId();
+
+  return hashfun::h32((void*)(&tid), sizeof(ulong), theOrdPath.hash());
+}
 
 
 /*******************************************************************************
