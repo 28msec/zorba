@@ -42,12 +42,13 @@
 
   Please see the documentation on the web site or the doc/html folder
   of the package.
-  
+
   Bugs and errors
   ---------------
-  
-  Bug or error reports should be sent to http://XXXX
-  
+
+  Bug or error reports should be sent to
+  http://http://sourceforge.net/tracker/?group_id=226244&atid=1067586
+
 
   Licensing
   ---------
@@ -58,14 +59,14 @@
   Contacts
   --------
 
-     o If you want to be informed about new code releases, bug fixes
-       and general news and information about the Zorba XQuery engine
-       subscribe to the Zorba Users mailing list as described under
-       <XXXXXce>
+  o If you want to be informed about new code releases, bug fixes
+  and general news and information about the Zorba XQuery engine
+  subscribe to the Zorba Users mailing list as described under
+  <zorba-users@lists.sourceforge.net>
 
-     o If you have a concrete bug report for Zorba please go to the
-       Zorba's Bug Database and submit your report:
-       <http://XXXX>
+  o If you have a concrete bug report for Zorba please go to the
+  Zorba's Bug Database and submit your report:
+  <http://http://sourceforge.net/tracker/?group_id=226244&atid=1067586>
 
-     o If you want to participate in actively developing Zorba ort
-       support Zorba, please write a mail to: info@flworfound.org.
+  o If you want to participate in actively developing Zorba ort
+  support Zorba, please write a mail to: zorba@zorba-xquery.org

@@ -1,4 +1,4 @@
-/*! \mainpage Zorba Documentation
+/*! \mainpage Zorba API Documentation
   
   Welcome to Zorba! Zorba is a general purpose XQuery engine 
   written in C++. Zorba aims to run on a wide range of platforms 
@@ -22,6 +22,5 @@
      <li> \ref build
      <li> \ref installation
    </ul>
-   <li> \ref contributors
  </ul>
  */
