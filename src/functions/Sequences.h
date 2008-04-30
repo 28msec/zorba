@@ -54,12 +54,7 @@ namespace zorba {
   //15.1.3 fn:index-of
   //------------------
 
-  class fn_index_of : public function
-  {
-  public:
-    fn_index_of(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+  typedef function_impl<FnIndexOfIterator> fn_index_of;
 
 
   //15.1.4 fn:empty
@@ -122,9 +117,6 @@ namespace zorba {
     fn_subsequence(const signature&sig) : single_seq_function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
-
-  //15.1.11 fn:unordered
-  //--------------------
 
 
   /*______________________________________________________________________
@@ -249,20 +241,10 @@ namespace zorba {
   typedef function_impl<OpToIterator> op_to;
 
   //15.5.2 fn:id
-  class fn_id : public function
-  {
-  public:
-    fn_id(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+  typedef function_impl<FnIdIterator> fn_id;
 
   //15.5.3 fn:idref
-  class fn_id_ref : public function
-  {
-  public:
-    fn_id_ref(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+  typedef function_impl<FnIdRefIterator> fn_id_ref;
 
   //15.5.4 fn:doc
   class fn_doc_func : public function

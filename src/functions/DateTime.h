@@ -17,8 +17,12 @@
 #define ZORBA_FUNCTIONS_DATETIME_H
 
 #include <vector>
+
 #include "common/shared_types.h"
-#include "functions/function.h"
+
+#include "functions/function_impl.h"
+
+#include "runtime/dateTime/DurationsDatesTimes.h"
 
 namespace zorba
 {
@@ -34,217 +38,200 @@ namespace zorba
    *
    * 10.5 Component Extraction Functions on Durations, Dates and Times
    *_______________________________________________________________________*/
- 
+
+
   /*
    * 10.5.1 fn:years-from-duration
-   *-----------------------*/
-  class fn_years_from_duration : public function
-  {
-  public:
-    fn_years_from_duration(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_years_from_duration*/
+
+
+  typedef function_impl<FnYearsFromDurationIterator> fn_years_from_duration;
+  /*end class fn_years_from_duration*/
 
   /*
    * 10.5.2 fn:months-from-duration
-   *-----------------------*/
-  class fn_months_from_duration : public function
-  {
-  public:
-    fn_months_from_duration(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_months_from_duration*/
+
+
+  typedef function_impl<FnMonthsFromDurationIterator> fn_months_from_duration;
+  /*end class fn_months_from_duration*/
 
   /*
    * 10.5.3 fn:days-from-duration
-   *-----------------------*/
-  class fn_days_from_duration : public function
-  {
-  public:
-    fn_days_from_duration(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_days_from_duration*/
+
+
+  typedef function_impl<FnDaysFromDurationIterator> fn_days_from_duration;
+  /*end class fn_days_from_duration*/
 
   /*
    * 10.5.4 fn:hours-from-duration
-   *-----------------------*/
-  class fn_hours_from_duration : public function
-  {
-  public:
-    fn_hours_from_duration(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_hours_from_duration*/
+
+
+  typedef function_impl<FnHoursFromDurationIterator> fn_hours_from_duration;
+  /*end class fn_hours_from_duration*/
 
   /*
    * 10.5.5 fn:minutes-from-duration
-   *-----------------------*/
-  class fn_minutes_from_duration : public function
-  {
-  public:
-    fn_minutes_from_duration(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_minutes_from_duration*/
+
+
+  typedef function_impl<FnMinutesFromDurationIterator> fn_minutes_from_duration;
+  /*end class fn_minutes_from_duration*/
 
   /*
    * 10.5.6 fn:seconds-from-duration
-   *-----------------------*/
-  class fn_seconds_from_duration : public function
-  {
-  public:
-    fn_seconds_from_duration(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_seconds_from_duration*/
+
+
+  typedef function_impl<FnSecondsFromDurationIterator> fn_seconds_from_duration;
+  /*end class fn_seconds_from_duration*/
 
   /*
    * 10.5.7 fn:year-from-dateTime
-   *-----------------------*/
-  class fn_year_from_datetime : public function
-  {
-  public:
-    fn_year_from_datetime(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_year_from_datetime*/
+
+
+  typedef function_impl<FnYearFromDatetimeIterator> fn_year_from_datetime;
+  /*end class fn_seconds_from_duration*/
 
   /*
    * 10.5.8 fn:month-from-dateTime
-   *-----------------------*/
-  class fn_month_from_datetime : public function
-  {
-  public:
-    fn_month_from_datetime(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_month_from_datetime*/
+
+
+  typedef function_impl<FnMonthFromDatetimeIterator> fn_month_from_datetime;
+  /*end class fn_month_from_datetime*/
 
   /*
    * 10.5.9 fn:day-from-dateTime
-   *-----------------------*/
-  class fn_day_from_datetime : public function
-  {
-  public:
-    fn_day_from_datetime(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_day_from_datetime*/
+
+
+  typedef function_impl<FnDayFromDatetimeIterator> fn_day_from_datetime;
+  /*end class fn_day_from_datetime*/
 
   /*
    * 10.5.10 fn:hours-from-dateTime
-   *-----------------------*/
-  class fn_hours_from_datetime : public function
-  {
-  public:
-    fn_hours_from_datetime(const signature& sig) : function (sig) {}
-    bool requires_dyn_ctx () const { return true; }
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-  
+   * --------------------*/
+  /*begin class fn_hours_from_datetime*/
+
+
+  typedef function_impl<FnHoursFromDatetimeIterator> fn_hours_from_datetime;
+  /*end class fn_hours_from_datetime*/
+
   /*
    * 10.5.11 fn:minutes-from-dateTime
-   *-----------------------*/
-  class fn_minutes_from_datetime : public function
-  {
-  public:
-    fn_minutes_from_datetime(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_minutes_from_datetime*/
+
+
+  typedef function_impl<FnMinutesFromDatetimeIterator> fn_minutes_from_datetime;
+  /*end class fn_minutes_from_datetime*/
 
   /*
    * 10.5.12 fn:seconds-from-dateTime
-   *-----------------------*/
-  class fn_seconds_from_datetime : public function
-  {
-  public:
-    fn_seconds_from_datetime(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_seconds_from_datetime*/
+
+
+  typedef function_impl<FnSecondsFromDatetimeIterator> fn_seconds_from_datetime;
+  /*end class fn_seconds_from_datetime*/
+
 
   /*
    * 10.5.13 fn:timezone-from-dateTime
-   *-----------------------*/
-  class fn_timezone_from_datetime : public function
-  {
-  public:
-    fn_timezone_from_datetime(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_timezone_from_datetime*/
+
+
+  typedef function_impl<FnTimezoneFromDatetimeIterator> fn_timezone_from_datetime;
+  /*end class fn_timezone_from_datetime*/
 
   /*
    * 10.5.14 fn:year-from-date
-   *-----------------------*/
-  class fn_year_from_date : public function
-  {
-  public:
-    fn_year_from_date(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_year_from_date*/
+
+
+  typedef function_impl<FnYearFromDateIterator> fn_year_from_date;
+  /*end class fn_year_from_date*/
 
   /*
    * 10.5.15 fn:month-from-date
-   *-----------------------*/
-  class fn_month_from_date : public function
-  {
-  public:
-    fn_month_from_date(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_month_from_date*/
+
+
+  typedef function_impl<FnMonthFromDateIterator> fn_month_from_date;
+  /*end class fn_month_from_date*/
+
 
   /*
    * 10.5.16 fn:day-from-date
-   *-----------------------*/
-  class fn_day_from_date : public function
-  {
-  public:
-    fn_day_from_date(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_day_from_date*/
+
+
+  typedef function_impl<FnDayFromDateIterator> fn_day_from_date;
+  /*end class fn_day_from_date*/
 
   /*
    * 10.5.17 fn:timezone-from-date
-   *-----------------------*/
-  class fn_timezone_from_date : public function
-  {
-  public:
-    fn_timezone_from_date(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_timezone_from_date*/
+
+
+  typedef function_impl<FnTimezoneFromDateIterator> fn_timezone_from_date;
+  /*end class fn_timezone_from_date*/
 
   /*
    * 10.5.18 fn:hours-from-time
-   *-----------------------*/
-  class fn_hours_from_time : public function
-  {
-  public:
-    fn_hours_from_time(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_hours_from_time*/
+
+
+  typedef function_impl<FnHoursFromTimeIterator> fn_hours_from_time;
+  /*end class fn_hours_from_time*/
 
   /*
    * 10.5.19 fn:minutes-from-time
-   *-----------------------*/
-  class fn_minutes_from_time : public function
-  {
-  public:
-    fn_minutes_from_time(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_minutes_from_time*/
+
+
+  typedef function_impl<FnMinutesFromTimeIterator> fn_minutes_from_time;
+  /*end class fn_minutes_from_time*/
 
   /*
    * 10.5.20 fn:seconds-from-time
-   *-----------------------*/
-  class fn_seconds_from_time : public function
-  {
-  public:
-    fn_seconds_from_time(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_seconds_from_time*/
+
+
+  typedef function_impl<FnSecondsFromTimeIterator> fn_seconds_from_time;
+  /*end class fn_seconds_from_time*/
+
 
   /*
    * 10.5.21 fn:timezone-from-time
-   *-----------------------*/
-  class fn_timezone_from_time : public function
-  {
-  public:
-    fn_timezone_from_time(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+   * --------------------*/
+  /*begin class fn_timezone_from_time*/
+
+
+  typedef function_impl<FnTimezoneFromTimeIterator> fn_timezone_from_time;
+  /*end class fn_timezone_from_time*/
+ 
 
   /*
    * 10.6.1 op:add-yearMonthDurations

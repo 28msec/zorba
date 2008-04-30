@@ -86,41 +86,6 @@ void op_concatenate::compute_annotation (AnnotationHolder *parent, std::vector<A
   }
 }
 
-//15.1.3 fn:index-of
-/*_______________________________________________________________________
-|
-|	fn:index-of($seqParam as xs:anyAtomicType*,
-|							$srchParam as xs:anyAtomicType) as xs:integer*
-|	fn:index-of($seqParam as xs:anyAtomicType*,
-|							$srchParam as xs:anyAtomicType,
-|							$collation as xs:string) as xs:integer*
-|	
-|	Summary: Returns a sequence of positive integers giving the positions 
-|	within the sequence $seqParam of items that are equal to $srchParam. 
-|	
-|	The collation used by the invocation of this function is determined 
-|	according to the rules in 7.3.1 Collations. The collation is used when 
-|	string comparison is required. 
-|
-|	The items in the sequence $seqParam are compared with $srchParam under 
-|	the rules for the 'eq' operator. Values that cannot be compared, i.e. 
-|	the 'eq' operator is not defined for their types, are considered to be 
-|	distinct. If an item compares equal, then the position of that item in 
-|	the sequence $seqParam is included in the result. 
-|
-|	If the value of $seqParam is the empty sequence, or if no item in 
-|	$seqParam matches $srchParam, then the empty sequence is returned. 
-|
-|	The first item in a sequence is at position 1, not position 0.
-|	The result sequence is in ascending numeric order.
-|________________________________________________________________________*/
-
-PlanIter_t fn_index_of::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnIndexOfIterator(loc, argv);
-}
-
-
 
 //15.1.6 fn:distinct-values
 //-------------------------
@@ -267,22 +232,6 @@ PlanIter_t fn_min_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 | 15.5 Functions and Operators that Generate Sequences
 |_______________________________________________________________________*/
 
-
-//15.5.2 fn:id
-
-PlanIter_t
-fn_id::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnIdIterator(loc, argv);
-}
-
-//15.5.3 fn:idref
-
-PlanIter_t
-fn_id_ref::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnIdRefIterator(loc, argv);
-}
 
 //15.5.4 fn:doc
 //-------------
