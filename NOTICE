@@ -19,7 +19,7 @@
        * boost_filesystem
      * XERCES 2.7.0 or higher (http://xerces.apache.org/xerces-c/)
      * ICONV 1.12 (used by LIBXML2; http://www.gnu.org/software/libiconv/)
-     * MAPM (by Michael C. Ring; http://www.tc.umn.edu/~ringx004/mapm-main.html)
+     * MAPM 4.9.5 (by Michael C. Ring; http://www.tc.umn.edu/~ringx004/mapm-main.html)
      * Optional:
         * FLEX 2.5.33 (http://flex.sourceforge.net/)
         * BISON 2.3 (http://www.gnu.org/software/bison/)
