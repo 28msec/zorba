@@ -21,13 +21,6 @@
 namespace zorba
 {
   /* begin class op_enclosed_expr */
-  op_enclosed_expr::op_enclosed_expr (
-      const signature& sig )
-      :
-      function ( sig )
-  {
-  }
-
   PlanIter_t op_enclosed_expr::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     return new EnclosedIterator ( loc, argv[0] );

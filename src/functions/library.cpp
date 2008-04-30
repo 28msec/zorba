@@ -726,13 +726,13 @@ DECL(fn_string_to_codepoints,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
-DECL(fn_string_compare_2,
+DECL(fn_string_compare,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","compare"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
-DECL(fn_string_compare_3,
+DECL(fn_string_compare,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","compare"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
@@ -757,13 +757,13 @@ DECL(fn_string_join,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(fn_substring_2,
+DECL(fn_substring,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(fn_substring_3,
+DECL(fn_substring,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
@@ -780,12 +780,12 @@ DECL(fn_normalize_space,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(fn_normalize_unicode_1,
+DECL(fn_normalize_unicode,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","normalize-unicode"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(fn_normalize_unicode_2,
+DECL(fn_normalize_unicode,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","normalize-unicode"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -823,65 +823,65 @@ DECL(fn_escape_html_uri,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(fn_contains_2,
+DECL(fn_contains,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","contains"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
       
-DECL(fn_contains_3,
+DECL(fn_contains,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","contains"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(fn_starts_with_2,
+DECL(fn_starts_with,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","starts-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(fn_starts_with_3,
+DECL(fn_starts_with,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","starts-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(fn_ends_with_2,
+DECL(fn_ends_with,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","ends-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(fn_ends_with_3,
+DECL(fn_ends_with,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","ends-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(fn_substring_before_2,
+DECL(fn_substring_before,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-before"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(fn_substring_before_3,
+DECL(fn_substring_before,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-before"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(fn_substring_after_2,
+DECL(fn_substring_after,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-after"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(fn_substring_after_3,
+DECL(fn_substring_after,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-after"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,

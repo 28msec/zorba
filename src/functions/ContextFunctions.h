@@ -23,62 +23,68 @@
 namespace zorba
 {
 
-class zorba;
+  class zorba;
 
-// 16.3 fn:current-dateTime
-class fn_current_dateTime : public function
-{
+  // 16.3 fn:current-dateTime
+  class fn_current_dateTime : public function
+  {
   public:
-    fn_current_dateTime(const signature&);
+    fn_current_dateTime(const signature& sig) : function (sig) {}
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
-};
+  };
 
-// 16.4 fn:current-date
-class fn_current_date : public function
-{
+  // 16.4 fn:current-date
+  class fn_current_date : public function
+  {
   public:
-    fn_current_date(const signature&);
+    fn_current_date(const signature& sig) : function (sig) {}
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
-};
+  };
 
-// 16.5 fn:current-time
-class fn_current_time : public function
-{
+  // 16.5 fn:current-time
+  class fn_current_time : public function
+  {
   public:
-    fn_current_time(const signature&);
+    fn_current_time(const signature& sig) : function (sig) {}
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
-};
+  };
 
-// 16.6 fn:implicit-timezone
-class fn_implicit_timezone : public function
-{
+  // 16.6 fn:implicit-timezone
+  class fn_implicit_timezone : public function
+  {
   public:
-    fn_implicit_timezone(const signature&);
+    fn_implicit_timezone(const signature& sig) : function (sig) {}
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
-};
+  };
 
-// 16.7 fn:default-collation
-class fn_default_collation : public function
-{
+  // 16.7 fn:default-collation
+  class fn_default_collation : public function
+  {
   public:
-    fn_default_collation(const signature&);
+    fn_default_collation(const signature& sig) : function (sig) {}
      
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
-};
+  };
 
 } /* namespace zorba */
 #endif  /* ZORBA_CONTEXT_FUNCTIONS_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

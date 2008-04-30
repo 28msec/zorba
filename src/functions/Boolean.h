@@ -211,8 +211,6 @@ namespace zorba
   {
   public:
     fn_not ( const signature& );
-    
-  public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -222,8 +220,6 @@ namespace zorba
   {
     public:
       fn_boolean ( const signature& );
-
-    public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   }; /* class fn_false */
 }

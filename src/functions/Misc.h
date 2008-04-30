@@ -22,32 +22,31 @@
 
 namespace zorba {
   
-class fn_trace_func : public function {
+  class fn_trace_func : public function {
   public:
-    fn_trace_func(const signature&);
-    
+    fn_trace_func(const signature& sig) : function (sig) {}    
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
+  };
 
-class fn_error : public function {
+  class fn_error : public function {
   public:
-    fn_error(const signature& s);
+    fn_error(const signature& sig) : function (sig) {}
     
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     virtual expr_update_t getUpdateType() const { return VACUOUS_EXPR; }
-};
+  };
 
-class fn_resolve_uri : public function {
+  class fn_resolve_uri : public function {
   public:
-    fn_resolve_uri(const signature&);
-    
+    fn_resolve_uri(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
+  };
 
 }
 
 #endif /* ZORBA_MISC_H */
+
 /* vim:set ts=2 sw=2: */
 /*
  * Local variables:

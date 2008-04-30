@@ -23,12 +23,7 @@
  * 11.1.1 fn:resolve-QName
  * --------------------*/
 /*begin class fn_resolve_qname*/
-fn_resolve_qname::fn_resolve_qname(
-  const signature& sig)
-  :
-  function(sig)
-{
-}
+
 
 PlanIter_t
     fn_resolve_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -43,12 +38,7 @@ PlanIter_t
  * 11.1.2 fn:QName
  * --------------------*/
 /*begin class fn_qname*/
-fn_qname::fn_qname(
-    const signature& sig)
-     :
-    function(sig)
-{
-}
+
 
 PlanIter_t
     fn_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -63,12 +53,7 @@ PlanIter_t
  * 11.2.1 op:QName-equal
  * --------------------*/
 /*begin class op_qname_equal*/
-op_qname_equal::op_qname_equal(
-  const signature& sig)
-  :
-  function(sig)
-{
-}
+
 
 PlanIter_t
     op_qname_equal::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -83,12 +68,7 @@ PlanIter_t
  * 11.2.2 fn:prefix-from-QName
  * --------------------*/
 /*begin class fn_prefix_from_qname*/
-fn_prefix_from_qname::fn_prefix_from_qname(
-  const signature& sig)
-  :
-  function(sig)
-{
-}
+
 
 PlanIter_t
     fn_prefix_from_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -103,12 +83,7 @@ PlanIter_t
  * 11.2.3 fn:local-name-from-QName
  * --------------------*/
 /*begin class fn_local_name_from_qname*/
-fn_local_name_from_qname::fn_local_name_from_qname(
-  const signature& sig)
-  :
-  function(sig)
-{
-}
+
 
 PlanIter_t
     fn_local_name_from_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -123,12 +98,7 @@ PlanIter_t
  * 11.2.4 fn:namespace-uri-from-QName
  * --------------------*/
 /*begin class fn_namespace_uri_from_qname*/
-fn_namespace_uri_from_qname::fn_namespace_uri_from_qname(
-  const signature& sig)
-  :
-  function(sig)
-{
-}
+
 
 PlanIter_t
     fn_namespace_uri_from_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -143,12 +113,7 @@ PlanIter_t
  * 11.2.5 fn:namespace-uri-for-prefix
  * --------------------*/
 /*begin class fn_namespace_uri_for_prefix*/
-fn_namespace_uri_for_prefix::fn_namespace_uri_for_prefix(
-  const signature& sig)
-  :
-  function(sig)
-{
-}
+
 
 PlanIter_t
     fn_namespace_uri_for_prefix::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -163,12 +128,7 @@ PlanIter_t
  * 11.2.6 fn:in-scope-prefixes
  * --------------------*/
 /*begin class fn_in_scope_prefixes*/
-fn_in_scope_prefixes::fn_in_scope_prefixes(
-  const signature& sig)
-  :
-  function(sig)
-{
-}
+
 
 PlanIter_t
     fn_in_scope_prefixes::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
