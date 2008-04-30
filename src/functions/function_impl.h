@@ -1,3 +1,6 @@
+#ifndef ZORBA_FUNCTION_IMPL_H
+#define ZORBA_FUNCTION_IMPL_H
+
 #include "functions/function.h"
 
 namespace zorba {
@@ -11,6 +14,8 @@ namespace zorba {
   };
 
 }
+
+#endif
 
 /*
  * Local variables:

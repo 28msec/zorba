@@ -17,9 +17,13 @@
 #define ZORBA_SEQUENCES_H
 
 #include <vector>
+
 #include "common/shared_types.h"
-#include "functions/function.h"
-#include "functions/single_seq_func.h"
+
+#include "functions/function_impl.h"
+#include "functions/nodeid_internal.h"
+
+#include "runtime/sequences/SequencesImpl.h"
 
 namespace zorba {
 
@@ -40,7 +44,7 @@ namespace zorba {
   class op_concatenate : public function
   {
   public:
-    op_concatenate(const signature&);
+    op_concatenate(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
@@ -49,48 +53,34 @@ namespace zorba {
 
   //15.1.3 fn:index-of
   //------------------
+
   class fn_index_of : public function
   {
   public:
-    fn_index_of(const signature&);
+    fn_index_of(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 
   //15.1.4 fn:empty
   //---------------
-  class fn_empty : public function
-  {
-  public:
-    fn_empty(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+
+  typedef function_impl<FnEmptyIterator> fn_empty;
 
 
   //15.1.5 fn:exists
   //----------------
-  class fn_exists : public function
-  {
-  public:
-    fn_exists(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+
+  typedef function_impl<FnExistsIterator> fn_exists;
 
 
   //15.1.6 fn:distinct-values
   //-------------------------
-  class fn_distinct_values_1 : public single_seq_function
+  class fn_distinct_values : public single_seq_function
   {
   public:
-    fn_distinct_values_1(const signature& sig) : single_seq_function (sig) {}
+    fn_distinct_values(const signature& sig) : single_seq_function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-
-  class fn_distinct_values_2 : public fn_distinct_values_1
-  {
-  public:
-    fn_distinct_values_2(const signature& sig)
-      : fn_distinct_values_1(sig) { }
   };
 
 
@@ -99,7 +89,7 @@ namespace zorba {
   class fn_insert_before : public function
   {
   public:
-    fn_insert_before(const signature&);
+    fn_insert_before(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -126,22 +116,12 @@ namespace zorba {
 
   //15.1.10 fn:subsequence
   //----------------------
-  // subsequence with 2 arguments
-  class fn_subsequence_2 : public single_seq_function
+  class fn_subsequence : public single_seq_function
   {
   public:
-    fn_subsequence_2(const signature&sig) : single_seq_function (sig) {}
+    fn_subsequence(const signature&sig) : single_seq_function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
-
-  // subsequence with a third length argument
-  class fn_subsequence_3 : public fn_subsequence_2
-  {
-  public:
-    fn_subsequence_3(const signature& sig)
-      : fn_subsequence_2(sig) { }
-  };
-
 
   //15.1.11 fn:unordered
   //--------------------
@@ -153,26 +133,16 @@ namespace zorba {
     |_______________________________________________________________________*/
 
   //15.2.1 fn:zero-or-one
-  class fn_zero_or_one : public function
-  {
-  public:
-    fn_zero_or_one(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+  typedef function_impl<FnZeroOrOneIterator> fn_zero_or_one;
 
   //15.2.2 fn:one-or-more
-  class fn_one_or_more : public function
-  {
-  public:
-    fn_one_or_more(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+  typedef function_impl<FnOneOrMoreIterator> fn_one_or_more;
 
   //15.2.3 fn:exactly-one
   class fn_exactly_one_noraise : public function
   {
   public:
-    fn_exactly_one_noraise(const signature&);
+    fn_exactly_one_noraise(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   protected:
@@ -194,7 +164,7 @@ namespace zorba {
   class fn_deep_equal : public function
   {
   public:
-    fn_deep_equal(const signature&);
+    fn_deep_equal(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -203,7 +173,7 @@ namespace zorba {
   class fn_union : public function
   {
   public:
-    fn_union(const signature&);
+    fn_union(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -211,7 +181,7 @@ namespace zorba {
   class fn_intersect : public function
   {
   public:
-    fn_intersect(const signature&);
+    fn_intersect(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -219,7 +189,7 @@ namespace zorba {
   class fn_except: public function
   {
   public:
-    fn_except(const signature&);
+    fn_except(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -229,26 +199,16 @@ namespace zorba {
     |_______________________________________________________________________*/
 
   //15.4.1 fn:count
-  class fn_count: public function
-  {
-  public:
-    fn_count(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+  typedef function_impl<FnCountIterator> fn_count;
 
   //15.4.2 fn:avg
-  class fn_avg: public function
-  {
-  public:
-    fn_avg(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+  typedef function_impl<FnAvgIterator> fn_avg;
 
   //15.4.3 fn:max
   class fn_max_1 : public function
   {
   public:
-    fn_max_1(const signature&);
+    fn_max_1(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -265,7 +225,7 @@ namespace zorba {
   class fn_min_1 : public function
   {
   public:
-    fn_min_1(const signature&);
+    fn_min_1(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -277,19 +237,7 @@ namespace zorba {
   };
 
   //15.4.5 fn:sum
-  class fn_sum_1 : public function
-  {
-  public:
-    fn_sum_1(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-
-  class fn_sum_2 : public fn_sum_1
-  {
-  public:
-    fn_sum_2(const signature& sig)
-      : fn_sum_1(sig) { }
-  };
+  typedef function_impl<FnSumIterator> fn_sum;
 
 
   /*______________________________________________________________________
@@ -298,19 +246,13 @@ namespace zorba {
     |_______________________________________________________________________*/
 
   //15.5.1 op:to
-  class op_to : public function
-  {
-  public:
-    op_to(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-
+  typedef function_impl<OpToIterator> op_to;
 
   //15.5.2 fn:id
   class fn_id : public function
   {
   public:
-    fn_id(const signature&);
+    fn_id(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -318,7 +260,7 @@ namespace zorba {
   class fn_id_ref : public function
   {
   public:
-    fn_id_ref(const signature&);
+    fn_id_ref(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -326,7 +268,7 @@ namespace zorba {
   class fn_doc_func : public function
   {
   public:
-    fn_doc_func(const signature&);
+    fn_doc_func(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     virtual bool isSource() const { return true; }
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
@@ -337,169 +279,13 @@ namespace zorba {
   class fn_doc_available_func : public function
   {
   public:
-    fn_doc_available_func(const signature&);
+    fn_doc_available_func(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 
   //15.5.6 fn:collection
 
-
-  /*______________________________________________________________________
-    |
-    | Extensions
-    |_______________________________________________________________________*/
-
-  // internal distinct-nodes function
-
-  class op_node_sort_distinct : public single_seq_function {
-  public:
-    typedef enum { NODES, ATOMICS, MIXED } nodes_or_atomics_t;
-
-    op_node_sort_distinct(const signature& sig) : single_seq_function (sig) {}
-    // (sort?, atomics?, distinct?, ascending?)
-    virtual const bool *action () const = 0;
-    static const function *op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder *parent, const AnnotationHolder *child, nodes_or_atomics_t noa);
-    virtual const function *min_action (const static_context *sctx, const AnnotationHolder *self, const AnnotationHolder *child, nodes_or_atomics_t noa) const;
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
-  };
-
-  class op_either_nodes_or_atomics : public op_node_sort_distinct {
-  public:
-    op_either_nodes_or_atomics (const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { false, true, false, false };
-      return a;
-    }
-  };
-
-  class op_distinct_nodes : public op_node_sort_distinct
-  {
-  public:
-    op_distinct_nodes(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { false, false, true, false };
-      return a;
-    }
-  };
-
-  // internal distinct-nodes-or-atomics function
-  /**
-   * Similar to op-distinct, but it allows a sequences of atomic items as input 
-   * (but no mixture of atomic and node items). In this case, the result is
-   * equal to the input
-   */
-  class op_distinct_nodes_or_atomics : public op_node_sort_distinct {
-  public:
-    op_distinct_nodes_or_atomics(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { false, true, true, false };
-      return a;
-    }
-  };
-
-  // internal sort-nodes function sorting in document order
-  class op_sort_nodes_ascending : public op_node_sort_distinct
-  {
-  public:
-    op_sort_nodes_ascending(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { true, false, false, true };
-      return a;
-    }
-  };
-
-  // internal sort-nodes-asc-or-atomics function
-  /**
-   * Similar to op-sort-ascending, but it allows a sequences of atomic items as input 
-   * (but no mixture of atomic and node items). In this case, the result is
-   * equal to the input
-   */
-  class op_sort_nodes_asc_or_atomics : public op_node_sort_distinct {
-  public:
-    op_sort_nodes_asc_or_atomics(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { true, true, false, true };
-      return a;
-    }
-  };
-
-  // internal sort-nodes function sorting in reverse document order
-  class op_sort_nodes_descending : public op_node_sort_distinct
-  {
-  public:
-    op_sort_nodes_descending(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { true, false, false, false };
-      return a;
-    }
-  };
-
-  // internal sort-nodes-desc-or-atomics function
-  /**
-   * Similar to op-sort-descending, but it allows a sequences of atomic items as input 
-   * (but no mixture of atomic and node items). In this case, the result is
-   * equal to the input
-   */
-  class op_sort_nodes_desc_or_atomics : public op_node_sort_distinct
-  {
-  public:
-    op_sort_nodes_desc_or_atomics(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { true, true, false, false };
-      return a;
-    }
-  };
-
-
-
-  // internal function for sort-nodes in document order and doing distinct-nodes in one run
-  class op_sort_distinct_nodes_ascending : public op_node_sort_distinct
-  {
-  public:
-    op_sort_distinct_nodes_ascending(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { true, false, true, true };
-      return a;
-    }
-  };
-
-  // internal sort-distinct-nodes-asc-or-atomics
-  /**
-   * Similar to sort-distinct-nodes-ascending, but it allows a sequences of atomic items as input 
-   * (but no mixture of atomic and node items). In this case, the result is
-   * equal to the input
-   */
-  class op_sort_distinct_nodes_asc_or_atomics : public op_node_sort_distinct
-  {
-  public:
-    op_sort_distinct_nodes_asc_or_atomics(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { true, true, true, true };
-      return a;
-    }
-  };
-
-
-  // internal function for sort-nodes in reverse document order and doing distinct-nodes in one run
-  class op_sort_distinct_nodes_descending : public op_node_sort_distinct
-  {
-  public:
-    op_sort_distinct_nodes_descending(const signature& sig) : op_node_sort_distinct (sig) {}
-    const bool *action () const {
-      static const bool a [] = { true, false, true, false };
-      return a;
-    }
-  };
-
-  class fn_unordered : public single_seq_function 
-  {
-  public:
-    fn_unordered(const signature& sig) : single_seq_function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
-  };
 
 } /* namespace zorba */
 #endif /* ZORBA_SEQUENCES_H */

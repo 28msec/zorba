@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "compiler/rewriter/rules/ruleset.h"
 #include "context/static_context.h"
+
+#include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/expr.h"
+
 #include "types/typeops.h"
-#include "functions/Sequences.h"
+
+#include "functions/nodeid_internal.h"
 
 using namespace std;
 

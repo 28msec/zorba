@@ -51,13 +51,6 @@ namespace zorba {
 |	returned. 
 |________________________________________________________________________*/
 
-op_concatenate::op_concatenate(
-	const signature& sig)
-:
-	function(sig)
-{
-}
-
 PlanIter_t op_concatenate::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new FnConcatIterator(loc, argv, ann.isUpdating());
@@ -122,9 +115,6 @@ void op_concatenate::compute_annotation (AnnotationHolder *parent, std::vector<A
 |	The result sequence is in ascending numeric order.
 |________________________________________________________________________*/
 
-fn_index_of::fn_index_of(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_index_of::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnIndexOfIterator(loc, argv);
@@ -132,36 +122,9 @@ PlanIter_t fn_index_of::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 
 
 
-
-//15.1.4 fn:empty
-//---------------
-fn_empty::fn_empty(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_empty::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnEmptyIterator(loc, argv);
-}
-
-
-
-
-//15.1.5 fn:exists
-//----------------
-fn_exists::fn_exists(const signature& sig)
-  : function(sig) { }
-
-PlanIter_t fn_exists::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnExistsIterator(loc,argv);
-}
-
-
-
-
 //15.1.6 fn:distinct-values
 //-------------------------
-PlanIter_t fn_distinct_values_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_distinct_values::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDistinctValuesIterator(loc, argv);
 }
@@ -170,9 +133,6 @@ PlanIter_t fn_distinct_values_1::codegen (const QueryLoc& loc, std::vector<PlanI
 
 //15.1.7 fn:insert-before
 //-----------------------
-fn_insert_before::fn_insert_before(const signature& sig)
-  : function(sig) { }
-
 PlanIter_t fn_insert_before::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnInsertBeforeIterator(loc, argv);
@@ -201,7 +161,7 @@ PlanIter_t fn_reverse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 
 //15.1.10 fn:subsequence
 //----------------------
-PlanIter_t fn_subsequence_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_subsequence::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnSubsequenceIterator(loc, argv);
 }
@@ -218,39 +178,11 @@ PlanIter_t fn_subsequence_2::codegen (const QueryLoc& loc, std::vector<PlanIter_
 | 15.2 Functions That Test the Cardinality of Sequences
 |_______________________________________________________________________*/
 
-//15.2.1 fn:zero-or-one
-fn_zero_or_one::fn_zero_or_one(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_zero_or_one::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnZeroOrOneIterator(loc, argv);
-}
-
-
-
-//15.2.2 fn:one-or-more
-fn_one_or_more::fn_one_or_more(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_one_or_more::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnOneOrMoreIterator(loc, argv);
-}
-
-
-
 //15.2.3 fn:exactly-one
-fn_exactly_one_noraise::fn_exactly_one_noraise(const signature& sig)
-  : function(sig), raise_err (false) { }
-
 PlanIter_t fn_exactly_one_noraise::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnExactlyOneIterator(loc, argv, raise_err);
 }
-
-
-
 
 
 /*______________________________________________________________________
@@ -259,9 +191,6 @@ PlanIter_t fn_exactly_one_noraise::codegen (const QueryLoc& loc, std::vector<Pla
 |_______________________________________________________________________*/
 
 //15.3.1 fn:deep-equal
-fn_deep_equal::fn_deep_equal(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_deep_equal::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDeepEqualIterator(loc, argv);
@@ -270,9 +199,6 @@ PlanIter_t fn_deep_equal::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
 
 //15.3.2 op:union
 //ordered
-fn_union::fn_union(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnConcatIterator(loc, argv, false);
@@ -289,9 +215,6 @@ PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 // during optimization.
 
 //15.3.3 op:intersect
-fn_intersect::fn_intersect(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 #if 0  // we can't access PRODUCES_* from the inputs, must rethink
@@ -311,9 +234,6 @@ PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 
 
 //15.3.4 op:except
-fn_except::fn_except(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // TODO: use SortAntiJoinIterator when available (trac ticket 254)
@@ -326,32 +246,7 @@ PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
 | 15.4 Aggregate Functions
 |_______________________________________________________________________*/
 
-//15.4.1 fn:count
-fn_count::fn_count(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_count::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
- return new FnCountIterator(loc, argv);
-}
-
-
-
-//15.4.2 fn:avg
-fn_avg::fn_avg(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_avg::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnAvgIterator(loc, argv);
-}
-
-
-
 //15.4.3 fn:max
-fn_max_1::fn_max_1(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_max_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MAX);
@@ -360,26 +255,10 @@ PlanIter_t fn_max_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 
 
 //15.4.4 fn:min
-fn_min_1::fn_min_1(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_min_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MIN);
 }
-
-
-
-//15.4.5 fn:sum
-fn_sum_1::fn_sum_1(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_sum_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnSumIterator(loc, argv);
-}
-
-
 
 
 
@@ -388,24 +267,8 @@ PlanIter_t fn_sum_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 | 15.5 Functions and Operators that Generate Sequences
 |_______________________________________________________________________*/
 
-//15.5.1 op:to
-op_to::op_to(const signature& sig)
-: function(sig) { }
-
-PlanIter_t op_to::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new OpToIterator(loc, argv);
-}
-
-
 
 //15.5.2 fn:id
-fn_id::fn_id(
-  const signature& sig)
-:
-  function(sig)
-{
-}
 
 PlanIter_t
 fn_id::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -414,12 +277,6 @@ fn_id::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHo
 }
 
 //15.5.3 fn:idref
-fn_id_ref::fn_id_ref(
-  const signature& sig)
-:
-  function(sig)
-{
-}
 
 PlanIter_t
 fn_id_ref::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
@@ -429,13 +286,6 @@ fn_id_ref::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annotati
 
 //15.5.4 fn:doc
 //-------------
-fn_doc_func::fn_doc_func(
-	const signature& sig)
-:
-	function(sig)
-{
-}
-
 PlanIter_t fn_doc_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDocIterator(loc, argv[0]);
@@ -445,10 +295,6 @@ PlanIter_t fn_doc_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 
 //15.5.5 fn:doc-available
 /*begin class fn_doc_available_func*/
-fn_doc_available_func::fn_doc_available_func( const signature& sig ) : function(sig)
-{
-}
-
 PlanIter_t
 fn_doc_available_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
