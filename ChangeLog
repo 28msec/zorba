@@ -1,5 +1,9 @@
 Zorba - The XQuery Processor
 
 version 0.9.1 (2008.04.30):
-  * Initial release supporting XQuery 1.0 and the XQuery Update Facility 1.0 
-    (W3C Candidate Recommendation 14 March 2008).
+  * Initial release supporting 
+   * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) 
+     except modules and only limited support for schema validation
+   * XQuery Update Facility 1.0 (as in the evolving W3C recommendation)
+   * An In-Memory (replaceable) XML store 
+     (implements the XQuery Data Model (XDM) W3C recommendation)

@@ -1,8 +1,6 @@
-Zorba was originally created in late 2006 by the FLWOR Foundation (see http://www.flworfound.org)
-and supported by the Databases and Information Systems Group of ETH Zurich, Switzerland 
-(see http://www.dbis.ethz.ch/).
+Zorba is a joint effort between multiple authors and organizations.
 
-The primary authors and contributors are:
+The primary authors are:
 
   * Cezar Andrei
   * Vinayak Borkar
