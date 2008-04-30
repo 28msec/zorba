@@ -51,6 +51,10 @@ static int printdepth0 = -2;
 #define UNDENT    printdepth0 -= 2;
 #define INDENT    (printdepth0 += 2, DENT)
 
+#define BEGIN_EXPR( descr) os << INDENT << #descr << expr_addr (this) << " [\n"
+#define CLOSE_EXPR os << DENT << "]\n"; UNDENT; return os;
+#define PUT_SUB( descr, sub ) do { if ((sub) != NULL) { os << DENT << (descr) << "\n"; (sub)->put (os); } } while (0)
+
 static inline string expr_addr (const void *e) {
   if (Properties::instance ()->noTreeIds ())
     return "";
@@ -63,12 +67,11 @@ static inline string expr_addr (const void *e) {
 
 ostream& sequential_expr::put( ostream& os) const
 {
-  os << INDENT << "sequential_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (sequential_expr);
   for (checked_vector<expr_t>::const_iterator i = this->sequence.begin ();
        i != sequence.end (); i++)
     (*i)->put (os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& var_expr::put(ostream& os) const
@@ -80,8 +83,7 @@ ostream& var_expr::put(ostream& os) const
     put_qname (get_varname(), os);
   }
   if (type != NULL) {
-    os << " type=";
-    TypeOps::serialize (os, *type);
+    os << " type=" << type->toString ();
   }
   os << endl;
   UNDENT;
@@ -90,57 +92,39 @@ ostream& var_expr::put(ostream& os) const
 
 ostream & forlet_clause::put( ostream& os) const
 {
-  os << INDENT << "forlet" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (forlet);
 
-  ZORBA_ASSERT(var_h != NULL);
   var_h->put(os);
-  if (pos_var_h!=NULL) 
-  {
-    os << DENT << "AT \n";
-    pos_var_h->put(os);
-  }
-  if (score_var_h!=NULL) 
-  {
-    os << DENT << "SCORE \n";
-    score_var_h->put(os);
-  }
+  PUT_SUB ("AT", pos_var_h);
+  PUT_SUB ("SCORE", score_var_h);
 
-  ZORBA_ASSERT(expr_h != NULL);
-  os << DENT << (var_h->get_kind() == var_expr::for_var ? "IN" : ":=") << " \n";
-  expr_h->put(os);
+  PUT_SUB (var_h->get_kind() == var_expr::for_var ? "IN" : ":=", expr_h);
 
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& flwor_expr::put( ostream& os) const
 {
-  os << INDENT << "flwor_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (flwor_expr);
 
   vector<forletref_t>::const_iterator it = clause_begin();
   for (; it!=clause_end(); ++it)
   {
     forletref_t fl_h = *it;
-    ZORBA_ASSERT(fl_h != NULL);
     fl_h->put(os);
   }
 
-  if (where_h!=NULL) {
-    os << DENT << "WHERE\n";
-    where_h->put(os);
-  }
+  PUT_SUB ("WHERE", where_h);
 
   for (flwor_expr::group_list_t::const_iterator lIter = group_begin();
        lIter != group_end();
        ++lIter)
   {
     groupref_t lGroup = *lIter;
-    ZORBA_ASSERT(lGroup != 0);
     os << INDENT << "GROUP BY [\n";
     os << INDENT << "Outer:\n";
     lGroup->getOuterVar()->put(os);
-    os << DENT << "Inner:\n";
-    lGroup->getInnerVar()->put(os);
+    PUT_SUB ("Inner:", lGroup->getInnerVar());
     UNDENT;
     os << DENT << "]\n"; UNDENT;
   }
@@ -150,9 +134,7 @@ ostream& flwor_expr::put( ostream& os) const
   {
     orderspec_t spec = *ord_it;
     expr_t e_h = spec.first;
-    ZORBA_ASSERT(e_h != NULL);
     orderref_t ord_h = spec.second;
-    ZORBA_ASSERT(ord_h != NULL);
 
     os << DENT << "ORDER BY ";
     switch (ord_h->dir) 
@@ -178,26 +160,20 @@ ostream& flwor_expr::put( ostream& os) const
     retval_h->put(os);
   }
 
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& promote_expr::put(ostream& os) const
 {
-  os << INDENT << "promote_expr ";
-  TypeOps::serialize(os, *target_type); 
-  os << "" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(input_expr_h!=NULL);
+  os << INDENT << "promote_expr " << target_type->toString () << expr_addr (this) << " [\n";
   input_expr_h->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& trycatch_expr::put( ostream& os) const
 {
-  os << INDENT << "trycatch_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (trycatch_expr);
 
-  ZORBA_ASSERT(try_expr_h!=NULL);
   try_expr_h->put(os);
 
   for (vector<clauseref_t>::const_iterator it = catch_clause_hv.begin();
@@ -207,7 +183,6 @@ ostream& trycatch_expr::put( ostream& os) const
     os << DENT << "CATCH ";
     if (cc_h->var_h!=NULL) cc_h->var_h->put(os);
     os << "\n";
-    ZORBA_ASSERT(cc_h->catch_expr_h != NULL);
     cc_h->catch_expr_h->put(os);
   }
   os << DENT << "]\n";
@@ -216,17 +191,15 @@ ostream& trycatch_expr::put( ostream& os) const
 
 ostream& eval_expr::put( ostream& os) const
 {
-  os << INDENT << "eval_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (eval_expr);
   expr_h->put (os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& typeswitch_expr::put( ostream& os) const
 {
-  os << INDENT << "typeswitch_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (typeswitch_expr);
 
-  ZORBA_ASSERT(switch_expr_h!=NULL);
   switch_expr_h->put(os);
 
   for (vector<clauseref_t>::const_iterator it = case_clause_hv.begin();
@@ -237,172 +210,122 @@ ostream& typeswitch_expr::put( ostream& os) const
     if (cc_h->var_h!=NULL) cc_h->var_h->put(os) << " as ";
     // TODO(VRB) os << sequence_type::describe(cc_h->type);
     os << " return ";
-    ZORBA_ASSERT(cc_h->case_expr_h!=NULL);
     cc_h->case_expr_h->put(os) << endl;
     UNDENT;
   }
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& if_expr::put( ostream& os) const
 {
-  os << INDENT << "if_expr" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(cond_expr_h!=NULL);
+  BEGIN_EXPR (if_expr);
   cond_expr_h->put(os);
-  ZORBA_ASSERT(then_expr_h!=NULL);
-  os << DENT << "THEN\n";
-  then_expr_h->put(os);
-  ZORBA_ASSERT(else_expr_h!=NULL);
-  os << DENT << "ELSE\n";
-  else_expr_h->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  PUT_SUB ("THEN", then_expr_h);
+  PUT_SUB ("ELSE", else_expr_h);
+  CLOSE_EXPR;
 }
 
 ostream& fo_expr::put( ostream& os) const
 {
   store::Item_t qname = func->get_fname ();
-  os << INDENT << qname->getStringValue() << "/" << size () << "" << expr_addr (this) << " [\n";
+  os << INDENT << qname->getStringValue() << "/" << size () << expr_addr (this) << " [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();
        it != end(); ++it)
   {
     rchandle<expr> e_h = *it;
-    ZORBA_ASSERT(e_h!=NULL);
     e_h->put(os);
   }
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& ft_contains_expr::put( ostream& os) const
 {
-  os << INDENT << "ft_contains_expr" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(range_h!=NULL);
+  BEGIN_EXPR (ft_contains_expr);
   range_h->put(os) << endl;
-  ZORBA_ASSERT(ft_select_h!=NULL);
   os << "ft_contains\n";
   ft_select_h->put(os) << endl;
   if (ft_ignore_h!=NULL) ft_ignore_h->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& instanceof_expr::put( ostream& os) const
 {
-  os << INDENT << "instanceof_expr "; TypeOps::serialize (os, *target_type);
-  os << "" << expr_addr (this) << " [\n";
+  os << INDENT << "instanceof_expr " << target_type->toString () << expr_addr (this) << " [\n";
   input_expr_h->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& treat_expr::put( ostream& os) const
 {
-  os << INDENT << "treat_expr "; TypeOps::serialize (os, *target_type);
-  os << "" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(input_expr_h!=NULL);
+  os << INDENT << "treat_expr " << target_type->toString () << expr_addr (this) << " [\n";
   input_expr_h->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& castable_expr::put( ostream& os) const
 {
-  os << INDENT << "castable_expr ";
-  TypeOps::serialize (os, *target_type);
-  os << "" << expr_addr (this) << " [\n";
+  os << INDENT << "castable_expr " << target_type->toString () << expr_addr (this) << " [\n";
   input_expr_h->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& cast_expr::put( ostream& os) const
 {
-  os << INDENT << "cast_expr ";
-  TypeOps::serialize (os, *target_type);
-  os << "" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(input_expr_h!=NULL);
+  os << INDENT << "cast_expr " << target_type->toString () << expr_addr (this) << " [\n";
   input_expr_h->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& name_cast_expr::put( ostream& os) const
 {
-  os << INDENT << "name_cast_expr ";
-  os << "" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(input_expr_h!=NULL);
+  BEGIN_EXPR (name_cast_expr);
   input_expr_h->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& validate_expr::put( ostream& os) const
 {
-  os << INDENT << "validate_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (validate_expr);
 
   switch (valmode) {
   case ParseConstants::val_strict: os << "strict\n"; break;
   case ParseConstants::val_lax: os << "lax\n"; break;
   default: os << "??\n";
   }
-  ZORBA_ASSERT(expr_h!=NULL);
   expr_h->put(os) << endl;
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& extension_expr::put( ostream& os) const
 {
-  os << INDENT << "extension_expr" << expr_addr (this) << " [\n";
-
-  /*
-  vector<rchandle<pragma> >::const_iterator it = begin();
-  for (; it!=end(); ++it) {
-    os << INDENT;
-    rchandle<pragma> p_h = *it;
-    ZORBA_ASSERT<null_pointer>(p_h!=NULL);
-    ZORBA_ASSERT<null_pointer>(p_h->name_h!=NULL);
-    os << "?"; p_h->name_h->put(zorp,os);
-    os << " " << p_h->content << endl;
-    UNDENT;
-  }
-  */
+  BEGIN_EXPR (extension_expr);
 
   os << INDENT;
-  ZORBA_ASSERT(pragma_h!=NULL);
-  ZORBA_ASSERT(pragma_h->name_h!=NULL);
   os << "?"; put_qname (pragma_h->name_h, os);
   os << " " << pragma_h->content << endl;
   UNDENT;
 
-  ZORBA_ASSERT(expr_h!=NULL);
   expr_h->put(os) << endl;
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& relpath_expr::put( ostream& os) const
 {
-  os << INDENT << "relpath_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (relpath_expr);
 
   for (std::vector<expr_t>::const_iterator it = begin(); it != end(); ++it)
   {
     expr_t expr = *it;
-    ZORBA_ASSERT(expr != NULL);
     if (it != begin ())
-      os << DENT << "REL STEP\n";
-    expr->put(os);
+      PUT_SUB ("REL STEP", expr);
   }
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& axis_step_expr::put(ostream& os) const
 {
-  os << INDENT << "axis_step_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (axis_step_expr);
 
   os << INDENT;
   switch (theAxis)
@@ -430,8 +353,7 @@ ostream& axis_step_expr::put(ostream& os) const
     printdepth0 = saveIndent;
   }
   
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& match_expr::put(ostream& os) const
@@ -488,8 +410,7 @@ ostream& match_expr::put(ostream& os) const
     put_qname (theTypeName, os) << endl;
   }
 
-  os << ")";
-  os << "]\n"; UNDENT;
+  os << ")" << "]\n"; UNDENT;
   return os;
 }
 
@@ -512,15 +433,13 @@ ostream& order_expr::put( ostream& os) const
   case unordered: os << "unordered\n"; break;
   default: os << "??\n";
   }
-  ZORBA_ASSERT(expr_h!=NULL);
   expr_h->put(os) << endl;
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& elem_expr::put(ostream& os) const
 {
-  os << INDENT << "elem_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (elem_expr);
 
   if (theQNameExpr != NULL)
     theQNameExpr->put(os);
@@ -528,23 +447,20 @@ ostream& elem_expr::put(ostream& os) const
     theAttrs->put(os);
   if (theContent != NULL)
     theContent->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& doc_expr::put( ostream& os) const
 {
-  os << INDENT << "doc_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (doc_expr);
 
-  ZORBA_ASSERT(theContent != NULL);
   theContent->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& attr_expr::put( ostream& os) const
 {
-  os << INDENT << "attr_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (attr_expr);
 
   theQNameExpr->put (os);
   
@@ -553,115 +469,85 @@ ostream& attr_expr::put( ostream& os) const
     os << "=";
     theValueExpr->put(os);
   }
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& text_expr::put(ostream& os) const
 {
-  os << INDENT << "text_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (text_expr);
 
   text->put(os);
 
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& pi_expr::put( ostream& os) const
 {
-  os << INDENT << "pi_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (pi_expr);
 
-  os << DENT << "TARGET\n";
-  ZORBA_ASSERT(target_expr_h != NULL);
-  target_expr_h->put(os);
+  PUT_SUB ("TARGET", target_expr_h);
 
-  os << DENT << "CONTENT\n";
-  ZORBA_ASSERT(get_text () != NULL);
-  get_text ()->put(os);
+  PUT_SUB ("CONTENT", get_text ());
 
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
-  ostream& function_def_expr::put (ostream &os) const {
-    os << INDENT << "fn_def_expr" << expr_addr (this) << " [\n";
-    os << DENT << "]\n"; UNDENT;
-    return os;
-  }
+ostream& function_def_expr::put (ostream &os) const {
+  BEGIN_EXPR (fn_def_expr);
+  CLOSE_EXPR;
+}
 
 ostream& insert_expr::put( ostream& os) const
 {
-  os << INDENT << "insert_expr" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(theSourceExpr!=NULL);
+  BEGIN_EXPR (insert_expr);
   theSourceExpr->put(os);
-  os << DENT << ",\n";
-  ZORBA_ASSERT(theTargetExpr!=NULL);
-  theTargetExpr->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  PUT_SUB (",", theTargetExpr);
+  CLOSE_EXPR;
 }
 
 ostream& delete_expr::put( ostream& os) const
 {
-  os << INDENT << "delete_expr" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(theTargetExpr!=NULL);
+  BEGIN_EXPR (delete_expr);
   theTargetExpr->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& replace_expr::put( ostream& os) const
 {
-  os << INDENT << "replace_expr" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(theTargetExpr!=NULL);
+  BEGIN_EXPR (replace_expr);
   theTargetExpr->put(os);
-  os << DENT << ",\n";
-  ZORBA_ASSERT(theReplaceExpr!=NULL);
-  theReplaceExpr->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  PUT_SUB (",", theReplaceExpr);
+  CLOSE_EXPR;
 }
 
 ostream& rename_expr::put( ostream& os) const
 {
-  os << INDENT << "rename_expr" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(theTargetExpr!=NULL);
+  BEGIN_EXPR (rename_expr);
   theTargetExpr->put(os);
-  os << DENT << ",\n";
-  ZORBA_ASSERT(theNameExpr!=NULL);
-  theNameExpr->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  PUT_SUB (",", theNameExpr);
+  CLOSE_EXPR;
 }
 
 ostream& copy_clause::put( ostream& os) const
 {
-  os << INDENT << "copy" << expr_addr (this) << " [\n";
-  ZORBA_ASSERT(theVar != 0);
+  BEGIN_EXPR (copy);
   theVar->put(os);
-  ZORBA_ASSERT(theExpr != 0);
   theExpr->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  CLOSE_EXPR;
 }
 
 ostream& transform_expr::put( ostream& os) const
 {
-  os << INDENT << "transform_expr" << expr_addr (this) << " [\n";
+  BEGIN_EXPR (transform_expr);
   for (vector<rchandle<copy_clause> >::const_iterator it = theCopyClauses.begin();
        it != theCopyClauses.end(); ++it)
   {
     rchandle<copy_clause> e = *it;
-    ZORBA_ASSERT(e != NULL);
     e->put(os);
   }
-  ZORBA_ASSERT(theModifyExpr!=NULL);
   theModifyExpr->put(os);
-  os << DENT << ",\n";
-  ZORBA_ASSERT(theReturnExpr!=NULL);
-  theReturnExpr->put(os);
-  os << DENT << "]\n"; UNDENT;
-  return os;
+  PUT_SUB (",", theReturnExpr);
+  CLOSE_EXPR;
 }
 
-}
+}  // namespace zorba
