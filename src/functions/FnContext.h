@@ -51,3 +51,9 @@ public:
 
 
 #endif  /* ZORBA_FN_CONTEXT_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

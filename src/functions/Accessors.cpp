@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "functions/Accessors.h"
 #include "runtime/accessors/AccessorsImpl.h"
@@ -43,10 +42,6 @@ xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) cons
 /*******************************************************************************
   
 ********************************************************************************/
-fn_root_func::fn_root_func(const signature& sig) : function (sig)
-{
-}
-
 
 PlanIter_t fn_root_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -60,10 +55,6 @@ PlanIter_t fn_root_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 /*******************************************************************************
   
 ********************************************************************************/
-fn_nodename_func::fn_nodename_func(const signature& sig) : function (sig)
-{
-}
-
 
 PlanIter_t fn_nodename_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -77,10 +68,6 @@ PlanIter_t fn_nodename_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
 /*******************************************************************************
   2.2 fn:nilled
 ********************************************************************************/
-fn_nilled_func::fn_nilled_func(const signature& sig) : function (sig)
-{
-}
-
 
 PlanIter_t fn_nilled_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -94,10 +81,6 @@ PlanIter_t fn_nilled_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 /*******************************************************************************
   2.5 fn:base-uri
 ********************************************************************************/
-fn_base_uri_func::fn_base_uri_func(const signature& sig) : function (sig)
-{
-}
-
 PlanIter_t fn_base_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnBaseUriIterator(loc, argv);
@@ -108,10 +91,6 @@ PlanIter_t fn_base_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
 /*******************************************************************************
   2.6 fn:document-uri
 ********************************************************************************/
-fn_document_uri_func::fn_document_uri_func(const signature& sig) : function (sig)
-{
-}
-
 PlanIter_t fn_document_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDocumentUriIterator(loc, argv);
@@ -122,10 +101,6 @@ PlanIter_t fn_document_uri_func::codegen (const QueryLoc& loc, std::vector<PlanI
 /*******************************************************************************
   
 ********************************************************************************/
-fn_name_func::fn_name_func(const signature& sig) : function (sig)
-{
-}
-
 
 PlanIter_t fn_name_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
