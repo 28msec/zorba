@@ -104,15 +104,6 @@ namespace zorba {
   UNARY_ACCEPT(FollowingAxisIterator);
   UNARY_ACCEPT(FnBooleanIterator);
   UNARY_ACCEPT(InstanceOfIterator);
-  UNARY_ACCEPT(CodepointsToStringIterator);
-  UNARY_ACCEPT(StringToCodepointsIterator);
-  UNARY_ACCEPT(StringLengthIterator);
-  UNARY_ACCEPT(NormalizeSpaceIterator);
-  UNARY_ACCEPT(UpperCaseIterator);
-  UNARY_ACCEPT(LowerCaseIterator);
-  UNARY_ACCEPT(EncodeForUriIterator);
-  UNARY_ACCEPT(IriToUriIterator);
-  UNARY_ACCEPT(EscapeHtmlUriIterator);
   UNARY_ACCEPT(EnclosedIterator);
   UNARY_ACCEPT(FnDocIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
@@ -133,8 +124,6 @@ namespace zorba {
   UNARY_ACCEPT(FnDataIterator);
 
   // binary iterators
-  BINARY_ACCEPT(CodepointEqualIterator);
-  BINARY_ACCEPT(StringJoinIterator);
   BINARY_ACCEPT(LogicIterator);
   BINARY_ACCEPT(CompareIterator);
   BINARY_ACCEPT(FnDateTimeConstructorIterator);
@@ -150,16 +139,6 @@ namespace zorba {
   BINARY_ACCEPT(RenameIterator);
 
   // nary iterators
-  NARY_ACCEPT(NormalizeUnicodeIterator);
-  NARY_ACCEPT(CompareStrIterator);
-  NARY_ACCEPT(ConcatStrIterator);
-  NARY_ACCEPT(SubstringIterator);
-  NARY_ACCEPT(TranslateIterator);
-  NARY_ACCEPT(ContainsIterator);
-  NARY_ACCEPT(StartsWithIterator);
-  NARY_ACCEPT(EndsWithIterator);
-  NARY_ACCEPT(SubstringBeforeIterator);
-  NARY_ACCEPT(SubstringAfterIterator);
   NARY_ACCEPT(FnDistinctValuesIterator);
   NARY_ACCEPT(UDFunctionCallIterator);
   NARY_ACCEPT(StatelessExtFunctionCallIterator);

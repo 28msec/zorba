@@ -38,18 +38,7 @@ namespace zorba {
  * 7.2.1 fn:codepoints-to-string
  * -------------------- */
 /* begin class CodepointsToStringIterator */
-class CodepointsToStringIterator : public UnaryBaseIterator<CodepointsToStringIterator, PlanIteratorState>{
-public:
-    CodepointsToStringIterator ( const QueryLoc& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<CodepointsToStringIterator, PlanIteratorState>( loc, arg ){};
-
-    ~CodepointsToStringIterator(){};
-
-    store::Item_t nextImpl(PlanState& planState) const;
-    
-    virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (CodepointsToStringIterator);
 /* end class CodepointsToStringIterator */
 
 
@@ -75,20 +64,8 @@ public:
   uint32_t getIterator();
 };
 
-class StringToCodepointsIterator : public UnaryBaseIterator<StringToCodepointsIterator, 
-                                                            StringToCodepointsState>
-{
-public:
-  StringToCodepointsIterator ( const QueryLoc& loc, PlanIter_t& arg )
-  :
-  UnaryBaseIterator<StringToCodepointsIterator, StringToCodepointsState>( loc, arg ){}
 
-  ~StringToCodepointsIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER_STATE (StringToCodepointsIterator, StringToCodepointsState);
 /*end class StringToCodepointsIterator*/
 
 /*______________________________________________________________________
@@ -100,36 +77,14 @@ public:
  * 7.3.2 fn:compare
  * --------------------*/
 /* begin class CompareStrIterator */
-class CompareStrIterator: public NaryBaseIterator<CompareStrIterator, PlanIteratorState> {
-public:
-  CompareStrIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<CompareStrIterator, PlanIteratorState>( loc, args ){}
-
-  ~CompareStrIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (CompareStrIterator);
 /* end class CompareStrIterator */
 
 /*
  * 7.3.3 fn:codepoint-equal
  * --------------------*/
 /*begin class CodepointEqualIterator */
-class CodepointEqualIterator : public BinaryBaseIterator<CodepointEqualIterator, PlanIteratorState>{
-public:
-  CodepointEqualIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
-  :
-  BinaryBaseIterator<CodepointEqualIterator, PlanIteratorState>(loc, arg0, arg1){}
-
-  ~CodepointEqualIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (CodepointEqualIterator);
 /*end class CodepointEqualIterator */
 
 /*______________________________________________________________________
@@ -141,18 +96,7 @@ public:
  * 7.4.1 fn:concat
  * --------------------*/
 /*begin class ConcatStrIterator */
-class ConcatStrIterator: public NaryBaseIterator<ConcatStrIterator, PlanIteratorState> {
-public:
-  ConcatStrIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<ConcatStrIterator, PlanIteratorState>( loc, args ){}
-
-  ~ConcatStrIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (ConcatStrIterator);
 /*end class ConcatStrIterator */
 
 
@@ -160,198 +104,77 @@ public:
  * 7.4.2 fn:string-join
  * --------------------*/
 /*begin class StringJoinIterator*/
-class StringJoinIterator : public BinaryBaseIterator<StringJoinIterator, PlanIteratorState>{
-public:
-  StringJoinIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
-  :
-  BinaryBaseIterator<StringJoinIterator, PlanIteratorState>(loc, arg0, arg1){}
-
-  ~StringJoinIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (StringJoinIterator);
 /*end class StringJoinIterator*/
 
 /*
  * 7.4.3 fn:substring
  * --------------------*/
 /*begin class SubstringIterator*/
-class SubstringIterator : public NaryBaseIterator<SubstringIterator, PlanIteratorState>{
-public:
-  SubstringIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<SubstringIterator, PlanIteratorState>( loc, args ){}
-
-  ~SubstringIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (SubstringIterator);
 /*end class SubstringIterator*/
 
 /*
  * 7.4.4 fn:string-length
  * --------------------*/
 /*begin class StringLengthIterator*/
-class StringLengthIterator : public UnaryBaseIterator<StringLengthIterator, PlanIteratorState>{
-public:
-  StringLengthIterator(const QueryLoc& loc,  PlanIter_t& arg0)
-  :
-  UnaryBaseIterator<StringLengthIterator, PlanIteratorState>(loc, arg0){}
-
-  ~StringLengthIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (StringLengthIterator);
 /*end class StringLengthIterator*/
 
 /*
  * 7.4.5 fn:normalize-space
  * --------------------*/
 /*begin class NormalizeSpaceIterator*/
-class NormalizeSpaceIterator : public UnaryBaseIterator<NormalizeSpaceIterator, PlanIteratorState>{
-public:
-  NormalizeSpaceIterator(const QueryLoc& loc,  PlanIter_t& arg0)
-  :
-  UnaryBaseIterator<NormalizeSpaceIterator, PlanIteratorState>(loc, arg0){}
-
-  ~NormalizeSpaceIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (NormalizeSpaceIterator);
 /*end class NormalizeSpaceIterator*/
 
 /*
  * 7.4.6 fn:normalize-unicode
  * --------------------*/
 /*begin class NormalizeUnicodeIterator*/
-class NormalizeUnicodeIterator : public NaryBaseIterator<NormalizeUnicodeIterator, PlanIteratorState>{
-public:
-  NormalizeUnicodeIterator( const QueryLoc& loc,  std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<NormalizeUnicodeIterator, PlanIteratorState>(loc, args){}
-
-  ~NormalizeUnicodeIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (NormalizeUnicodeIterator);
 /*end class NormalizeUnicodeIterator*/
 
 /*
  * 7.4.7 fn:upper-case
  * --------------------*/
 /*begin class UpperCaseIterator*/
-class UpperCaseIterator : public UnaryBaseIterator<UpperCaseIterator, PlanIteratorState>{
-public:
-  UpperCaseIterator(const QueryLoc& loc,  PlanIter_t& arg0)
-  :
-  UnaryBaseIterator<UpperCaseIterator, PlanIteratorState>(loc, arg0){}
-
-  ~UpperCaseIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (UpperCaseIterator);
 /*end class UpperCaseIterator*/
 
 /*
  * 7.4.8 fn:lower-case
  * --------------------*/
 /*begin class LowerCaseIterator*/
-class LowerCaseIterator : public UnaryBaseIterator<LowerCaseIterator, PlanIteratorState>{
-public:
-  LowerCaseIterator(const QueryLoc& loc,  PlanIter_t& arg0)
-  :
-  UnaryBaseIterator<LowerCaseIterator, PlanIteratorState>(loc, arg0){}
-
-  ~LowerCaseIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (LowerCaseIterator);
 /*end class LowerCaseIterator*/
 
  /*
  * 7.4.9 fn:translate
  * -------------------- */
 /*begin class TranslateIterator*/
-class TranslateIterator: public NaryBaseIterator<TranslateIterator, PlanIteratorState> {
-public:
-  TranslateIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<TranslateIterator, PlanIteratorState>( loc, args ){}
-
-  ~TranslateIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (TranslateIterator);
 /*end class TranslateIterator*/
 
  /*
  * 7.4.10 fn:encode-for-uri
  * -------------------- */
 /*begin class EncodeForUriIterator*/
-class EncodeForUriIterator : public UnaryBaseIterator<EncodeForUriIterator, PlanIteratorState>{
-public:
-  EncodeForUriIterator(const QueryLoc& loc,  PlanIter_t& arg0)
-  :
-  UnaryBaseIterator<EncodeForUriIterator, PlanIteratorState>(loc, arg0){}
-
-  ~EncodeForUriIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (EncodeForUriIterator);
 /*end class EncodeForUriIterator*/
 
  /*
  * 7.4.11 fn:iri-to-uri
  * -------------------- */
 /*begin class IriToUriIterator*/
-class IriToUriIterator : public UnaryBaseIterator<IriToUriIterator, PlanIteratorState>{
-public:
-  IriToUriIterator(const QueryLoc& loc,  PlanIter_t& arg0)
-  :
-  UnaryBaseIterator<IriToUriIterator, PlanIteratorState>(loc, arg0){}
-
-  ~IriToUriIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (IriToUriIterator);
 /*end class IriToUriIterator*/
 
  /*
  * 7.4.12 fn:escape-html-uri
  * -------------------- */
 /*begin class EscapeHtmlUriIterator*/
-class EscapeHtmlUriIterator : public UnaryBaseIterator<EscapeHtmlUriIterator, PlanIteratorState>{
-public:
-  EscapeHtmlUriIterator(const QueryLoc& loc,  PlanIter_t& arg0)
-  :
-  UnaryBaseIterator<EscapeHtmlUriIterator, PlanIteratorState>(loc, arg0){}
-
-  ~EscapeHtmlUriIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (EscapeHtmlUriIterator);
 /*end class EscapeHtmlUriIterator*/
 
 /*______________________________________________________________________
@@ -363,90 +186,35 @@ public:
  * 7.5.1 fn:contains
  * -------------------- */
 /*begin class ContainsIterator*/
-class ContainsIterator: public NaryBaseIterator<ContainsIterator, PlanIteratorState> {
-public:
-  ContainsIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<ContainsIterator, PlanIteratorState>( loc, args ){}
-
-  ~ContainsIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (ContainsIterator);
 /*end class ContainsIterator*/
 
  /*
  * 7.5.2 fn:starts-with
  * -------------------- */
 /*begin class StartsWithIterator*/
-class StartsWithIterator: public NaryBaseIterator<StartsWithIterator, PlanIteratorState> {
-public:
-  StartsWithIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<StartsWithIterator, PlanIteratorState>( loc, args ){}
-
-  ~StartsWithIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (StartsWithIterator);
 /*end class StartsWithIterator*/
 
  /*
  * 7.5.3 fn:ends-with
  * -------------------- */
 /*begin class EndsWithIterator*/
-class EndsWithIterator: public NaryBaseIterator<EndsWithIterator, PlanIteratorState> {
-public:
-  EndsWithIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<EndsWithIterator, PlanIteratorState>( loc, args ){}
-
-  ~EndsWithIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (EndsWithIterator);
 /*end class EndsWithIterator*/
 
  /*
  * 7.5.4 fn:substring-before
  * -------------------- */
 /*begin class SubstringBeforeIterator*/
-class SubstringBeforeIterator: public NaryBaseIterator<SubstringBeforeIterator, PlanIteratorState> {
-public:
-  SubstringBeforeIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<SubstringBeforeIterator, PlanIteratorState>( loc, args ){}
-
-  ~SubstringBeforeIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (SubstringBeforeIterator);
 /*end class SubstringBeforeIterator*/
 
  /*
  * 7.5.5 fn:substring-after
  * -------------------- */
 /*begin class SubstringAfterIterator*/
-class SubstringAfterIterator: public NaryBaseIterator<SubstringAfterIterator, PlanIteratorState> {
-public:
-  SubstringAfterIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args )
-  :
-  NaryBaseIterator<SubstringAfterIterator, PlanIteratorState>( loc, args ){}
-
-  ~SubstringAfterIterator() {};
-public:
-  store::Item_t nextImpl(PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
+NARY_ITER (SubstringAfterIterator);
 /*end class SubstringAfterIterator*/
 
 // 7.6.2 fn:matches
@@ -469,3 +237,9 @@ NARY_ITER_STATE(FnTokenizeIterator, FnTokenizeIteratorState);
 
 }/*namespace zorba*/
 #endif /* ZORBA_STRINGS_IMPL_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

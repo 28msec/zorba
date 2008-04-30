@@ -62,7 +62,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const {
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   while(true){
-    item = consumeNext(theChild.getp(), planState );
+    item = consumeNext(theChildren [0].getp(), planState );
     if ( item != NULL ){
       item = item->getAtomizationValue();
       {
@@ -112,7 +112,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState) const {
   StringToCodepointsState* state;
   DEFAULT_STACK_INIT(StringToCodepointsState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState );
+  item = consumeNext(theChildren [0].getp(), planState );
   if ( item != NULL ){
     inputStr = item->getStringValue();
     if(!inputStr->empty())
@@ -277,9 +277,9 @@ CodepointEqualIterator::nextImpl(PlanState& planState) const {
     PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-    item0 = consumeNext(theChild0.getp(), planState );
+    item0 = consumeNext(theChildren [0].getp(), planState );
     if ( item0 != NULL )  {
-      item1 = consumeNext(theChild1.getp(), planState );
+      item1 = consumeNext(theChildren [1].getp(), planState );
       if ( item1 != NULL )  {
         item0 = item0->getAtomizationValue();
         item1 = item1->getAtomizationValue();
@@ -382,7 +382,7 @@ StringJoinIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild1.getp(), planState);
+  item = consumeNext(theChildren [1].getp(), planState);
 
   separator = item->getStringValue();
 
@@ -390,7 +390,7 @@ StringJoinIterator::nextImpl(PlanState& planState) const
   {
     while(true)
     {
-      item = consumeNext(theChild0.getp(), planState );
+      item = consumeNext(theChildren [0].getp(), planState );
       if ( item != NULL )
       {
         item = item->getAtomizationValue();
@@ -410,7 +410,7 @@ StringJoinIterator::nextImpl(PlanState& planState) const
     lFirst = true;
     while(true)
     {
-      item = consumeNext(theChild0.getp(), planState );
+      item = consumeNext(theChildren [0].getp(), planState );
       if ( item != NULL )
       {
         item = item->getAtomizationValue();
@@ -589,7 +589,7 @@ StringLengthIterator::nextImpl(PlanState& planState) const {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState);
+  item = consumeNext(theChildren [0].getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -629,7 +629,7 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState);
+  item = consumeNext(theChildren [0].getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -745,7 +745,7 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState);
+  item = consumeNext(theChildren [0].getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -787,7 +787,7 @@ LowerCaseIterator::nextImpl(PlanState& planState) const {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState);
+  item = consumeNext(theChildren [0].getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -892,7 +892,7 @@ EncodeForUriIterator::nextImpl(PlanState& planState) const {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState);
+  item = consumeNext(theChildren [0].getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -922,7 +922,7 @@ IriToUriIterator::nextImpl(PlanState& planState) const {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState);
+  item = consumeNext(theChildren [0].getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -952,7 +952,7 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState);
+  item = consumeNext(theChildren [0].getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();

@@ -2220,14 +2220,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       nodestack.push(sctx_p->lookup_var_nofail(DOT_POS_VARNAME));
       return;
-    }
-    else if (fn_local == "last" && sz == 0)
-    {
+    } else if (fn_local == "last" && sz == 0) {
       nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VARNAME));
       return;
-    }
-    else if (fn_local == "string")
-    {
+    } else if (fn_local == "string") {
       // TODO: casting to xs:string? is almost correct;
       // it fails, however, the following test:
       // 'fn:string (()) instance of xs:string'
@@ -2242,9 +2238,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       default:
         ZORBA_ERROR_PARAM( ZorbaError::XPST0017,  "fn:string", sz );
       }
-    }
-    else if (fn_local == "number") 
-    {
+    } else if (fn_local == "number") {
       switch (sz) 
       {
       case 0:
@@ -2289,9 +2283,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
               fn_local == "name"))
     {
       arguments.push_back (DOT_VAR);
-    }
-    else if (fn_local == "static-base-uri")
-    {
+    } else if (fn_local == "static-base-uri") {
       if (sz != 0)
         ZORBA_ERROR_PARAM( ZorbaError::XPST0017, "fn:static-base-uri", sz );
 
@@ -2308,17 +2300,19 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
              (fn_local == "lang" || fn_local == "id" || fn_local == "idref")) 
     {
       arguments.insert (arguments.begin (), DOT_VAR);
-    }
-    else if (sz == 1 && fn_local == "resolve-uri")
-    {
+    } else if (sz == 1 && fn_local == "resolve-uri") {
 #if 0  // even if the base-uri is not declared in the prolog, we have a default
       if (! hadBUriDecl)
         ZORBA_ERROR (ZorbaError::FONS0005);
       else
 #endif
         arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
+    } else if (fn_local == "concat") {
+      if (sz < 2)
+        ZORBA_ERROR_PARAM (ZorbaError::XPST0017, "fn_concat", to_string (sz));
     }
-  }
+  } 
+
   sz = arguments.size ();  // recompute size
 
   // try constructor functions
