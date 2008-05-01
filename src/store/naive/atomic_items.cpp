@@ -146,24 +146,28 @@ Item* NCNameItemImpl::getType() const
   return GET_STORE().theSchemaTypeNames[XS_NCNAME];
 }
 
+
 uint32_t NCNameItemImpl::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
   return theValue->hash();
 }
+
 
 bool NCNameItemImpl::equals(
     const Item* item,
     RuntimeCB* aRuntimeCB,
     XQPCollator* aCollation) const
 {
-  return item->getStringValue()->equals(theValue);
+  return item->getStringValueP()->equals(theValue);
 }
+
 
 Item_t NCNameItemImpl::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
   return CREATE_BOOLITEM(b);
 }
+
 
 xqp_string NCNameItemImpl::show() const
 {
@@ -205,7 +209,7 @@ bool AnyUriItemImpl::equals(
     RuntimeCB* aRuntimeCB,
     XQPCollator* aCollation) const
 {
-  return item->getStringValue()->equals(theValue.getp());
+  return item->getStringValueP()->equals(theValue.getp());
 }
 
 
@@ -230,24 +234,28 @@ Item* UntypedAtomicItemImpl::getType() const
   return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
 
+
 uint32_t UntypedAtomicItemImpl::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
   return theValue->hash();
 }
+
 
 bool UntypedAtomicItemImpl::equals(
     const Item* item,
     RuntimeCB* aRuntimeCB,
     XQPCollator* aCollation) const
 {
-  return item->getStringValue()->equals(theValue.getp());
+  return item->getStringValueP()->equals(theValue.getp());
 }
+
 
 Item_t UntypedAtomicItemImpl::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
   return CREATE_BOOLITEM(b);
 }
+
 
 xqp_string UntypedAtomicItemImpl::show() const
 {
@@ -263,24 +271,28 @@ Item* StringItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_STRING];
 }
 
+
 uint32_t StringItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
   return theValue->hash(aCollation);
 }
+
 
 bool StringItemNaive::equals(
     const Item* item,
     RuntimeCB* aRuntimeCB,
     XQPCollator* aCollation) const
 {
-  return item->getStringValue()->equals(theValue.getp());
+  return item->getStringValueP()->equals(theValue.getp());
 }
   
+
 Item_t StringItemNaive::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
   return CREATE_BOOLITEM(b);
 }
+
 
 xqp_string StringItemNaive::show() const
 {
@@ -382,6 +394,8 @@ IntItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
   return uint32_t(32767) + theValue;
 }
+
+
 /*******************************************************************************
   class IntegerItemNaive
 ********************************************************************************/
@@ -409,22 +423,22 @@ Item_t IntegerItemNaive::getEBV() const
   return CREATE_BOOLITEM( b );
 }
 
-  xqpStringStore_t IntegerItemNaive::getStringValue() const
-	{
-		return NumConversions::integerToStr(theValue).getStore();
-  }
+xqpStringStore_t IntegerItemNaive::getStringValue() const
+{
+  return NumConversions::integerToStr(theValue).getStore();
+}
 
-  xqp_string IntegerItemNaive::show() const
-	{
-		return "xs:integer(" + getStringValue()->str() + ")";
-	}
+xqp_string IntegerItemNaive::show() const
+{
+  return "xs:integer(" + getStringValue()->str() + ")";
+}
 
-  uint32_t
-  IntegerItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
-  {
-    return theValue.hash();
-  }
-	/* end class IntegerItem */
+uint32_t
+IntegerItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
+
 	
 	/* start class DoubleItem */
 Item* DoubleItemNaive::getType() const
@@ -848,7 +862,8 @@ Item_t NonNegativeIntegerItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqpStringStore_t NonNegativeIntegerItemNaive::getStringValue() const {
+xqpStringStore_t NonNegativeIntegerItemNaive::getStringValue() const 
+{
   return NumConversions::uintegerToStr(theValue).getStore();
 }
 
@@ -910,7 +925,8 @@ UnsignedLongItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) cons
 /*******************************************************************************
   class UnsignedIntItemNaive
 ********************************************************************************/
-xqp_integer UnsignedIntItemNaive::getIntegerValue() const {
+xqp_integer UnsignedIntItemNaive::getIntegerValue() const 
+{
   return Integer::parseInt(theValue);
 }
 

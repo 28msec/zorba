@@ -77,7 +77,7 @@ xqpStringStore_t Item::getStringValue() const
  * Helper method with is used to return a StringValue of an Item
  * by pointer instead of rchandle
  */
-xqpStringStore* Item::getStringValueP() 
+xqpStringStore* Item::getStringValueP() const 
 {
   ZORBA_ERROR_PARAM_OSS(::zorba::ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());

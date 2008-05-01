@@ -600,7 +600,8 @@ bool Schema::parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSo
 
     ZORBA_ASSERT( baseType_ptr->type_kind() == XQType::ATOMIC_TYPE_KIND );
 
-    result = GenericCast::instance()->cast(textValue, baseType_ptr);
+    xqpStringStore_t textval = textValue.getStore();
+    result = GenericCast::instance()->cast(textval, baseType_ptr);
 
     return true;
 }

@@ -723,20 +723,22 @@ Iterator_t DocumentNode::getChildren() const
 
 Iterator_t DocumentNode::getTypedValue() const
 {
-  Item_t item = new UntypedAtomicItemImpl(getStringValue());
+  xqpStringStore_t rch = getStringValue();
+  Item_t item = new UntypedAtomicItemImpl(rch);
   return new ItemIterator(item);
 }
 
 
 Item_t DocumentNode::getAtomizationValue() const
 {
-  return new UntypedAtomicItemImpl(getStringValue());
+  xqpStringStore_t rch = getStringValue();
+  return new UntypedAtomicItemImpl(rch);
 }
 
 
 xqpStringStore_t DocumentNode::getStringValue() const
 {
-  std::ostringstream oss;
+  std::string buf;
 
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
@@ -744,10 +746,10 @@ xqpStringStore_t DocumentNode::getStringValue() const
     StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
     if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
-      oss << getChild(i)->getStringValue()->str();
+      buf += getChild(i)->getStringValue()->str();
   }
 
-  return new xqpStringStore(oss.str());
+  return new xqpStringStore(buf);
 }
 
 
@@ -1033,7 +1035,8 @@ Iterator_t ElementNode::getTypedValue() const
 ********************************************************************************/
 Item_t ElementNode::getAtomizationValue() const
 {
-  return new UntypedAtomicItemImpl(getStringValue());
+  xqpStringStore_t rch = getStringValue();
+  return new UntypedAtomicItemImpl(rch);
 }
 
 
@@ -1042,7 +1045,7 @@ Item_t ElementNode::getAtomizationValue() const
 ********************************************************************************/
 xqpStringStore_t ElementNode::getStringValue() const
 {
-  std::ostringstream oss;
+  std::string buf;
 
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
@@ -1050,10 +1053,10 @@ xqpStringStore_t ElementNode::getStringValue() const
     StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
     if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
-      oss << getChild(i)->getStringValue()->str();
+      buf += getChild(i)->getStringValue()->str();
   }
 
-  return new xqpStringStore(oss.str());
+  return new xqpStringStore(buf);
 }
 
 
@@ -2192,9 +2195,14 @@ XmlNode* AttributeNode::copy(
     typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
     if (theTypedValue->getType() == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+    {
       typedValue = theTypedValue;
+    }
     else
-      typedValue = new UntypedAtomicItemImpl(getStringValue());
+    {
+      xqpStringStore_t rch = getStringValue();
+      typedValue = new UntypedAtomicItemImpl(rch);
+    }
   }
 
   try
@@ -2434,14 +2442,16 @@ Item* TextNode::getType() const
 
 Iterator_t TextNode::getTypedValue() const
 {
-  const Item_t& item = GET_FACTORY().createUntypedAtomic(theContent.getp());
+  xqpStringStore_t rch = theContent; 
+  const Item_t& item = new UntypedAtomicItemImpl(rch);
   return new ItemIterator(item);
 }
 
 
 Item_t TextNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(theContent.getp());
+  xqpStringStore_t rch = theContent; 
+  return new UntypedAtomicItemImpl(rch);
 }
 
 
@@ -2610,14 +2620,16 @@ Item* PiNode::getType() const
 
 Iterator_t PiNode::getTypedValue() const
 {
-  const Item_t& item = GET_FACTORY().createString(theContent.getp());
+  xqpStringStore_t rch = theContent; 
+  const Item_t& item = new StringItemNaive(rch);
   return new ItemIterator(item);
 }
 
 
 Item_t PiNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(theContent.getp());
+  xqpStringStore_t rch = theContent; 
+  return new StringItemNaive(rch);
 }
 
 
@@ -2780,14 +2792,16 @@ Item* CommentNode::getType() const
 
 Iterator_t CommentNode::getTypedValue() const
 {
-  const Item_t& item = GET_FACTORY().createString(theContent.getp());
+  xqpStringStore_t rch = theContent; 
+  const Item_t& item = new StringItemNaive(rch);
   return new ItemIterator(item);
 }
 
 
 Item_t CommentNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(theContent.getp());
+  xqpStringStore_t rch = theContent; 
+  return new StringItemNaive(rch);
 }
 
 

@@ -142,7 +142,7 @@ inline void throwError(ZorbaError::ErrorCode aErrorCode, const ErrorInfo& aInfo)
 
 };
 
-inline xqpStringStore_t doTrim(xqpStringStore_t aStr)
+inline xqpStringStore_t doTrim(const xqpStringStore* aStr)
 {
   return aStr->trim(" \t\r\n", 4);
 };
@@ -182,7 +182,8 @@ SAME_S_AND_T(NOT)
 
 inline store::Item_t str_uA(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return aFactory->createUntypedAtomic(aItem->getStringValue());
+  xqpStringStore_t strval = aItem->getStringValue();
+  return aFactory->createUntypedAtomic(strval);
 }
 
 inline store::Item_t str_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -380,7 +381,8 @@ inline store::Item_t str_hxB(store::Item* aItem, store::ItemFactory* aFactory, n
 inline store::Item_t str_aURI(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
 // TODO createAnyURI does not always succeed
-return aFactory->createAnyURI(doTrim(aItem->getStringValue()));
+  xqpStringStore_t strval = doTrim(aItem->getStringValue());
+  return aFactory->createAnyURI(strval);
 }
 
 inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -420,12 +422,14 @@ inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory, na
 
 inline store::Item_t str_NOT(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return aFactory->createNOTATION(doTrim(aItem->getStringValue()).getp());
+  xqpStringStore_t strval = doTrim(aItem->getStringValue());
+  return aFactory->createNOTATION(strval);
 }
 
 inline store::Item_t uA_str(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  return aFactory->createString(aItem->getStringValue());  
+  xqpStringStore_t strval = aItem->getStringValue();
+  return aFactory->createString(strval);  
 }
 
 inline store::Item_t uA_flt(store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -1088,37 +1092,37 @@ const GenericCast::CastFunc GenericCast::theCastMatrix[23][23] = {
           0,         0,         &NOT_NOT}
 };
 
+
 store::Item_t str_down(
-                const store::Item* aItem, 
-                RootTypeManager& aTS,
-                ATOMICTYPE_T aTargetAtomicType,
-                store::ItemFactory* aFactory,
-                const ErrorInfo& aErrorInfo)
+    const store::Item* aItem, 
+    RootTypeManager& aTS,
+    ATOMICTYPE_T aTargetAtomicType,
+    store::ItemFactory* aFactory,
+    const ErrorInfo& aErrorInfo)
 {
   xqpStringStore_t lString = aItem->getStringValue();
-  xqpString str(lString);
 
   switch(aTargetAtomicType)
   {
   case TypeConstants::XS_NORMALIZED_STRING:
     if (GenericCast::instance()->castableToNormalizedString(lString))
-      return aFactory->createNormalizedString(str);
+      return aFactory->createNormalizedString(lString);
     break;
   case TypeConstants::XS_TOKEN:
     if (GenericCast::instance()->castableToToken(lString))
-      return aFactory->createToken(str);
+      return aFactory->createToken(lString);
     break;
   case TypeConstants::XS_LANGUAGE:
     if (GenericCast::instance()->castableToLanguage(lString))
-      return aFactory->createLanguage(str);
+      return aFactory->createLanguage(lString);
     break;
   case TypeConstants::XS_NMTOKEN:
     if (GenericCast::instance()->castableToNMToken(lString))
-      return aFactory->createNMTOKEN(str);
+      return aFactory->createNMTOKEN(lString);
     break;
   case TypeConstants::XS_NAME:
     if (GenericCast::instance()->castableToName(lString))
-      return aFactory->createName(str);
+      return aFactory->createName(lString);
     break;
   case TypeConstants::XS_NCNAME:
     if (GenericCast::instance()->castableToNCName(lString))
@@ -1126,15 +1130,15 @@ store::Item_t str_down(
     break;
   case TypeConstants::XS_ID:
     if (GenericCast::instance()->castableToNCName(lString))
-      return aFactory->createID(str);
+      return aFactory->createID(lString);
     break;
   case TypeConstants::XS_IDREF:
     if (GenericCast::instance()->castableToNCName(lString))
-      return aFactory->createIDREF(str);
+      return aFactory->createIDREF(lString);
     break;
   case TypeConstants::XS_ENTITY:
     if (GenericCast::instance()->castableToNCName(lString))
-      return aFactory->createENTITY(str);
+      return aFactory->createENTITY(lString);
     break;
   default:
     assert(false);
@@ -1144,26 +1148,26 @@ store::Item_t str_down(
   return 0;
 }
 
-store::Item_t int_down(
-                const store::Item* aItem, 
-                RootTypeManager& aTS,
-                ATOMICTYPE_T aTargetAtomicType,
-                store::ItemFactory* aFactory,
-                const ErrorInfo& aErrorInfo)
-{
-  xqp_integer lInteger = aItem->getIntegerValue();
-  xqpStringStore_t lString = aItem->getStringValue();
 
+store::Item_t int_down(
+    const store::Item* aItem, 
+    RootTypeManager& aTS,
+    ATOMICTYPE_T aTargetAtomicType,
+    store::ItemFactory* aFactory,
+    const ErrorInfo& aErrorInfo)
+{
   switch(aTargetAtomicType)
   {
   case TypeConstants::XS_NON_POSITIVE_INTEGER:
   {
+    xqp_integer lInteger = aItem->getIntegerValue();
     if (lInteger <= xqp_integer::zero())
       return aFactory->createNonPositiveInteger(lInteger);
     break;
   }
   case TypeConstants::XS_NEGATIVE_INTEGER:
   {
+    xqp_integer lInteger = aItem->getIntegerValue();
     if (lInteger < xqp_integer::zero())
       return aFactory->createNegativeInteger(lInteger);
     break;
@@ -1171,6 +1175,7 @@ store::Item_t int_down(
   case TypeConstants::XS_LONG:
   {
     xqp_long n;
+    xqpStringStore_t lString = aItem->getStringValue();
     if (NumConversions::strToLongLong(lString.getp(), n))
       return aFactory->createLong(n);
     break;
@@ -1178,6 +1183,7 @@ store::Item_t int_down(
   case TypeConstants::XS_INT:
   {
     xqp_int n;
+    xqpStringStore_t lString = aItem->getStringValue();
     if (NumConversions::strToInt(lString.getp(), n))
       return aFactory->createInt(n);
     break;
@@ -1185,6 +1191,7 @@ store::Item_t int_down(
   case TypeConstants::XS_SHORT:
   {
     xqp_short n;
+    xqpStringStore_t lString = aItem->getStringValue();
     if (NumConversions::strToShort(lString.getp(), n))
       return aFactory->createShort(n);
     break;
@@ -1192,12 +1199,14 @@ store::Item_t int_down(
   case TypeConstants::XS_BYTE:
   {
     xqp_byte n;
+    xqpStringStore_t lString = aItem->getStringValue();
     if (NumConversions::strToByte(lString.getp(), n))
       return aFactory->createByte(n);
     break;
   }
   case TypeConstants::XS_NON_NEGATIVE_INTEGER:
   {
+    xqp_integer lInteger = aItem->getIntegerValue();
     if (lInteger >= xqp_integer::zero())
       return aFactory->createNonNegativeInteger(lInteger);
     break;
@@ -1205,6 +1214,7 @@ store::Item_t int_down(
   case TypeConstants::XS_UNSIGNED_LONG:
   {
     xqp_ulong n;
+    xqpStringStore_t lString = aItem->getStringValue();
     if (NumConversions::strToULongLong(lString.getp(), n))
       return aFactory->createUnsignedLong(n);
     break;
@@ -1212,6 +1222,7 @@ store::Item_t int_down(
   case TypeConstants::XS_UNSIGNED_INT:
   {
     xqp_uint n;
+    xqpStringStore_t lString = aItem->getStringValue();
     if (NumConversions::strToUInt(lString.getp(), n))
       return aFactory->createUnsignedInt(n);
     break;
@@ -1219,6 +1230,7 @@ store::Item_t int_down(
   case TypeConstants::XS_UNSIGNED_SHORT:
   {
     xqp_ushort n;
+    xqpStringStore_t lString = aItem->getStringValue();
     if (NumConversions::strToUShort(lString.getp(), n))
       return aFactory->createUnsignedShort(n);
     break;
@@ -1226,12 +1238,14 @@ store::Item_t int_down(
   case TypeConstants::XS_UNSIGNED_BYTE:
   {
     xqp_ubyte n;
+    xqpStringStore_t lString = aItem->getStringValue();
     if (NumConversions::strToUByte(lString.getp(), n))
       return aFactory->createUnsignedByte(n);
     break;
   }
   case TypeConstants::XS_POSITIVE_INTEGER:
   {
+    xqp_integer lInteger = aItem->getIntegerValue();
     if (lInteger > xqp_integer::zero())
       return aFactory->createPositiveInteger(lInteger);
     break;
@@ -1243,11 +1257,13 @@ store::Item_t int_down(
   return 0;
 }
 
+
 const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[23] = {
 /*uA*/  0, /*str*/ str_down, /*flt*/ 0, /*dbl*/ 0, /*dec*/ 0, /*int*/ int_down, /*dur*/ 0, 
 /*yMD*/ 0, /*dTD*/ 0, /*dT*/  0, /*tim*/ 0, /*dat*/ 0, /*gYM*/ 0, /*gYr*/ 0, /*gMD*/ 0,
 /*gDay*/0, /*gMon*/0, /*bool*/0, /*b64*/ 0, /*hxB*/ 0, /*aURI*/0, /*QN*/  0, /*NOT*/ 0
 };
+
 
 GenericCast* GenericCast::instance()
 {
@@ -1315,7 +1331,8 @@ store::Item_t GenericCast::cast(store::Item* aItem,
     lSourceItem = aItem;
   } else {
     lPrimitiveSourceType = lTS.STRING_TYPE_ONE;
-    lSourceItem = lFactory->createString(aItem->getStringValue());
+    xqpStringStore_t strval = aItem->getStringValue();
+    lSourceItem = lFactory->createString(strval);
   }
 
   ATOMICTYPE_T lPrimitiveSourceAtomicType 
@@ -1370,11 +1387,11 @@ store::Item_t GenericCast::cast(store::Item* aItem,
 
 ********************************************************************************/
 store::Item_t GenericCast::cast(
-    const xqpString& aStr,
+    xqpStringStore_t& aStr,
     const XQType* aTargetType,
     namespace_context* aNCtx) const
 {
-  store::Item_t lItem = GENV_ITEMFACTORY->createString(aStr.getStore());
+  store::Item_t lItem = GENV_ITEMFACTORY->createString(aStr);
   store::Item_t lResult = cast(lItem, aTargetType, aNCtx);
   return lResult;
 }
@@ -1382,24 +1399,23 @@ store::Item_t GenericCast::cast(
 
 /*******************************************************************************
   Casts a string to a qname.
-  Raises Zorba errors.
-  @param isExplicit true when called from the translator
-  @param isCast true when this is a cast, false when this is a castable
 ********************************************************************************/
 store::Item_t GenericCast::castToQName (
-    xqpStringStore_t qname,
+    xqpStringStore_t& qname,
     namespace_context* aNCtx) const
 {
-  store::Item_t lItem = GENV_ITEMFACTORY->createString(&*qname);
+  store::Item_t lItem = GENV_ITEMFACTORY->createString(qname);
   return cast(lItem, &*GENV_TYPESYSTEM.QNAME_TYPE_ONE, aNCtx);
 }
 
-/*
-NCName				  ::=    NCNameStartChar NCNameChar* // An XML Name, minus the ":" 
-NCNameChar      ::=    NameChar - ':' 
-NCNameStartChar ::=    Letter | '_' 
-NameChar			  ::=    Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Extender 
-*/
+
+/*******************************************************************************
+  NCName				  ::= NCNameStartChar NCNameChar* // An XML Name, minus the ":" 
+  NCNameChar      ::= NameChar - ':' 
+  NCNameStartChar ::= Letter | '_' 
+  NameChar			  ::= Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar |
+                      Extender 
+********************************************************************************/
 bool GenericCast::castableToNCName(const xqpStringStore* str) const
 {
 	uint32_t	cp;
@@ -1411,15 +1427,14 @@ bool GenericCast::castableToNCName(const xqpStringStore* str) const
 		return false;
 
 	cp = cps[0];
-	//NCNameStartChar  ::=    Letter | '_' 
+
 	if(!isLetter(cp) && (cp != '_'))
 		return false;
 
 	for(i=1;i<cps_size;i++)
 	{
 		cp = cps[i];
-		//NCNameChar ::=    NameChar - ':'
-		//NameChar	 ::=    Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Extender
+
 		if(!isLetter(cp) && !isDigit(cp) &&
 			(cp != '.') && (cp != '-') && (cp != '_') &&
 			!isCombiningChar(cp) && !isExtender(cp))
@@ -1428,6 +1443,7 @@ bool GenericCast::castableToNCName(const xqpStringStore* str) const
 
   return true;
 }
+
 
 bool GenericCast::castableToNormalizedString(const xqpStringStore *str) const
 {
@@ -1449,6 +1465,7 @@ bool GenericCast::castableToNormalizedString(const xqpStringStore *str) const
 
   return true;
 }
+
 
 bool GenericCast::castableToToken(const xqpStringStore *str) const
 {
@@ -1484,6 +1501,7 @@ bool GenericCast::castableToToken(const xqpStringStore *str) const
 
   return true;
 }
+
 
 bool GenericCast::castableToLanguage(const xqpStringStore *str) const
 {
@@ -1528,6 +1546,7 @@ bool GenericCast::castableToLanguage(const xqpStringStore *str) const
   }
   return true;
 }
+
 
 bool GenericCast::castableToNMToken(const xqpStringStore *str) const
 {
@@ -1590,16 +1609,15 @@ bool GenericCast::castableToName(const xqpStringStore *str) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::isCastable(store::Item_t aItem, const XQType* aTargetType) const
+bool GenericCast::isCastable(store::Item* aItem, const XQType* aTargetType) const
 {
-  
   RootTypeManager& lTS = GENV_TYPESYSTEM;
 
-  xqtref_t lSourceType = lTS.create_named_type(
-                               aItem->getType(), 
-                               TypeConstants::QUANT_ONE);
+  xqtref_t lSourceType = lTS.create_named_type(aItem->getType(), 
+                                               TypeConstants::QUANT_ONE);
 
-  TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType, *aTargetType);
+  TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
+                                                               *aTargetType);
   switch(lIsCastable)
   {
   case TypeConstants::NOT_CASTABLE:
@@ -1610,14 +1628,17 @@ bool GenericCast::isCastable(store::Item_t aItem, const XQType* aTargetType) con
     break;
   case TypeConstants::MAYBE_CASTABLE:
   {
-    try {
+    try 
+    {
       cast(aItem, aTargetType);
       return true;
-    } catch (error::ZorbaError& e) {
+    }
+    catch (error::ZorbaError& e)
+    {
       return false;
     }
   }
-    break;
+  break;
   }
 
   return false;
@@ -1627,10 +1648,10 @@ bool GenericCast::isCastable(store::Item_t aItem, const XQType* aTargetType) con
 
 ********************************************************************************/
 bool GenericCast::isCastable(
-    const xqpString& aStr,
+    xqpStringStore_t& aStr,
     const XQType* aTargetType) const
 {
-  store::Item_t lItem = GENV_ITEMFACTORY->createString(aStr.getStore());
+  store::Item_t lItem = GENV_ITEMFACTORY->createString(aStr);
   return isCastable(lItem, aTargetType);
 }
 

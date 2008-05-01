@@ -22,7 +22,7 @@
 #include "util/hashfun.h"
 #include "util/properties.h"
 
-#include "store/util/pointer_hashmap_string.h"
+#include "store/util/hashmap_stringp.h"
 
 #include "store/naive/string_pool.h"
 #include "store/naive/simple_store.h"
@@ -60,8 +60,8 @@ SimpleStore::SimpleStore()
   theNamespacePool(new StringPool(NAMESPACE_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
-  theDocuments(DEFAULT_COLLECTION_MAP_SIZE),
-  theCollections(DEFAULT_COLLECTION_MAP_SIZE),
+  theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
+  theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
   theQueryContextContainer(new QueryContextContainer)
 #ifndef NDEBUG
   ,theTraceLevel(0)
@@ -217,7 +217,7 @@ void SimpleStore::shutdown()
 ********************************************************************************/
 ulong SimpleStore::getTreeId()
 {
-  SYNC_CODE(AutoMutex lock(theTreeCounterMutex);)
+  SYNC_CODE(AutoMutex lock(&theTreeCounterMutex);)
   return theTreeCounter++;
 }
 
@@ -247,17 +247,6 @@ void SimpleStore::deleteQueryContext(ulong queryId)
 
 
 /*******************************************************************************
-  Possibility to change the Garbage Collection strategy of the store.
-
-  @param garbageCollectionStrategy
-********************************************************************************/
-void SimpleStore::setGarbageCollectionStrategy(xqpStringStore* strategy)
-{
-
-}
-
-
-/*******************************************************************************
   Create an internal URI and return an rchandle to it. 
 ********************************************************************************/
 Item_t SimpleStore::createUri()
@@ -274,13 +263,15 @@ Item_t SimpleStore::createUri()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
+Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
 {
   if (uri == NULL)
     return NULL;
 
+  const xqpStringStore* urip = uri.getp();
+
   XmlNode_t root;
-  bool found = theDocuments.get(uri, root);
+  bool found = theDocuments.get(urip, root);
 
   if (found)
     return root.getp();
@@ -295,7 +286,7 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
   }
 
   if (root != NULL)
-    theDocuments.insert(uri, root);
+    theDocuments.insert(urip, root);
 
   return root;
 }
@@ -304,7 +295,7 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
+Item_t SimpleStore::loadDocument(const xqpStringStore_t& uri, Item_t docItem)
 {
   if (uri == NULL || docItem == NULL)
     return NULL;
@@ -315,8 +306,9 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
 		return NULL;
   }
 
+  const xqpStringStore* urip = uri;
   XmlNode_t root = reinterpret_cast<XmlNode*>(docItem.getp());
-  bool inserted = theDocuments.insert(uri, root);
+  bool inserted = theDocuments.insert(urip, root);
 
   if (!inserted && docItem.getp() != root.getp())
   {
@@ -334,7 +326,7 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
   Return an rchandle to the root node of the document corresponding to the given
   URI, or NULL if there is no document with that URI.
 ********************************************************************************/
-Item_t SimpleStore::getDocument(xqpStringStore* uri)
+Item_t SimpleStore::getDocument(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
@@ -352,7 +344,7 @@ Item_t SimpleStore::getDocument(xqpStringStore* uri)
   Delete the document with the given URI. If there is no document with that
   URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteDocument(xqpStringStore* uri)
+void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return;
@@ -366,7 +358,7 @@ void SimpleStore::deleteDocument(xqpStringStore* uri)
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.
 ********************************************************************************/
-Collection_t SimpleStore::createCollection(xqpStringStore* uri)
+Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
@@ -375,7 +367,8 @@ Collection_t SimpleStore::createCollection(xqpStringStore* uri)
 
   Collection_t collection(new SimpleCollection(uriItem));
 
-  bool inserted = theCollections.insert(uri, collection);
+  const xqpStringStore* urip = uri;
+  bool inserted = theCollections.insert(urip, collection);
 
   if (!inserted)
   {
@@ -393,9 +386,11 @@ Collection_t SimpleStore::createCollection(xqpStringStore* uri)
 ********************************************************************************/
 Collection_t SimpleStore::createCollection()
 {
-  Item_t uri = createUri();
+  Item_t uriItem = createUri();
 
-  return createCollection(uri->getStringValueP());
+  xqpStringStore_t uriStr = uriItem->getStringValue();
+
+  return createCollection(uriStr);
 }
 
 
@@ -403,7 +398,7 @@ Collection_t SimpleStore::createCollection()
   Return an rchandle to the Collection object corresponding to the given URI,
   or NULL if there is no collection with that URI.
 ********************************************************************************/
-Collection_t SimpleStore::getCollection(xqpStringStore* uri)
+Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
@@ -420,7 +415,7 @@ Collection_t SimpleStore::getCollection(xqpStringStore* uri)
   Delete the collection with the given URI. If there is no collection with
   that URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteCollection(xqpStringStore* uri)
+void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return;
@@ -450,27 +445,6 @@ long SimpleStore::compareNodes(Item* node1, Item* node2) const
     return -1;
 
   return 1;
-}
-
-
-/*******************************************************************************
-  Check if two nodes are identical (i.e. have same node id)
-********************************************************************************/
-bool SimpleStore::equalNodes(const Item* node1, const Item* node2) const
-{
-  return node1 == node2;
-}
-
-
-/*******************************************************************************
-  Return a hash value based on the id of a given node.
-********************************************************************************/
-uint32_t SimpleStore::hashNode(const Item* node) const
-{
-  const XmlNode* n = reinterpret_cast<const XmlNode*>(node);
-  ulong tid = n->getTree()->getId();
-
-  return hashfun::h32((void*)(&tid), sizeof(ulong), n->getOrdPath().hash());
 }
 
 
@@ -518,25 +492,6 @@ Item_t SimpleStore::getReference(Item_t node)
 
 
 /*******************************************************************************
-  Returns a fixed reference of an item, dependent on a requester (defines branch)
-  and a timetravel (defines version)
-
-  @param Item 
-  @param requester
-  @param timetravel
-  @throws NotSupportedException Throws an exception if the store does not
-          support branching or versioning
-********************************************************************************/
-Item_t SimpleStore::getFixedReference(
-    Item_t,
-    Requester requester,
-    TimeTravel timetravel)
-{
-  return rchandle<Item> ( NULL );
-}
-
-
-/*******************************************************************************
   Returns Item which is identified by a reference
 
   @param uri Has to be an xs:URI item
@@ -545,53 +500,6 @@ Item_t SimpleStore::getFixedReference(
 Item_t SimpleStore::getNodeByReference(Item_t)
 {
   return rchandle<Item> ( NULL );
-}
-
-
-/*******************************************************************************
-  Returns Item wich is identified by a referenced, dependent on a requester
-  (defines branch) and a timetravel (defines version)
-
-  @param Item_t Has to be an xs:URI item (no correctness check is applied!!!)
-  @param requester
-  @param timetravel
-  @returns referenced item if it exists, otherwise NULL
-  @throws NotSupportedException Throws an exception if the store does not
-          support branching or versioning
-  @throws IllegalReferenceException Throws an exception if the reference is fixed.
-********************************************************************************/
-Item_t SimpleStore::getNodeByReference(
-    Item_t,
-    Requester requester,
-    TimeTravel timetravel)
-{
-  return rchandle<Item> ( NULL );
-}
-
-
-/*******************************************************************************
-  Applies a pending update list on this store
-
-  @param pendingUpdateList
-********************************************************************************/
-void SimpleStore::apply(PUL_t pendingUpdateList)
-{
-
-}
-
-
-/*******************************************************************************
-  Applies the pending update list on the specified branch. Potentially, 
-  creates a new branch if no branch for that requester exists yet.
-
-  @param pendingUpdateList
-  @param requester
-  @throws NotSupportedException Throws an exception if the store does not
-          support branching
-********************************************************************************/
-void SimpleStore::apply(PUL_t pendingUpdateList, Requester requester)
-{
-
 }
 
 

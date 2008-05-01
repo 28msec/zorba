@@ -58,25 +58,30 @@ public:
 public:
 
   /**
-   * Executes the casting of the passed item. If the passed item has the same type or a subtype
-   * of the passed targetType, the passed item is directly returned.
+   * Executes the casting of the passed item. If the passed item has the same
+   * type or a subtype of the passed targetType, the passed item is directly
+   * returned.
    */
-  store::Item_t cast (store::Item* aItem, 
-                      const XQType* aTargetType, 
-                      namespace_context* aNCtx = 0) const;
-
+  store::Item_t cast (
+        store::Item* aItem, 
+        const XQType* aTargetType, 
+        namespace_context* aNCtx = 0) const;
+  
   /**
-   * Executes the string casting of the passed string to an item of the passed target type.
+   * Executes the string casting of the passed string to an item of the passed
+   * target type.
    */
-  store::Item_t cast (const xqpString& aStr, 
-                      const XQType* aTargetType,
-                      namespace_context* aNCtx = 0) const;
+  store::Item_t cast (
+        xqpStringStore_t& aStr, 
+        const XQType* aTargetType,
+        namespace_context* aNCtx = 0) const;
 
   /**
    * Casts the passed string to xs:QName if possible.
    */
-  store::Item_t castToQName(xqpStringStore_t aStr,
-                            namespace_context* aNCtx = 0) const;
+  store::Item_t castToQName(
+        xqpStringStore_t& aStr,
+        namespace_context* aNCtx = 0) const;
 
   bool castableToNCName(const xqpStringStore* str) const;
 
@@ -96,7 +101,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable(store::Item_t aItem, const XQType* aTargetType) const; 
+  bool isCastable(store::Item* aItem, const XQType* aTargetType) const; 
 
   /**
    * Checks if the passed string is castable to the passed target type.
@@ -104,7 +109,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable(const xqpString& aStr, const XQType* aTargetType) const;
+  bool isCastable(xqpStringStore_t& aStr, const XQType* aTargetType) const;
 
   /**
    * Promotes the passed item to the passed target type.

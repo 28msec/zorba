@@ -31,11 +31,11 @@ namespace zorba
 class KindTestIterator : public UnaryBaseIterator<KindTestIterator, PlanIteratorState>
 {
 private:
-  store::Item_t       theQName;
-  store::Item_t       theTypeName;
-  match_test_t theTestKind;
-  match_test_t theDocTestKind;
-  bool         theNilledAllowed;
+  store::Item_t  theQName;
+  store::Item_t  theTypeName;
+  match_test_t   theTestKind;
+  match_test_t   theDocTestKind;
+  bool           theNilledAllowed;
 
 public:
   KindTestIterator(

@@ -45,7 +45,7 @@
 #include "errors/error_messages.h"
 
 #include "util/web/web.h"
-#include "store/util/handle_hashset_node.h"
+#include "store/util/hashset_node_handle.h"
 
 #include "runtime/booleans/compare_types.h"
 #include "runtime/util/handle_hashset_item_value.h"
@@ -60,7 +60,11 @@ namespace zorba {
 |_______________________________________________________________________*/
 
 static XQPCollator*
-getCollator(RuntimeCB* aRuntimeCB, const QueryLoc& loc, PlanState& planState, const PlanIterator* iter)
+getCollator(
+    RuntimeCB* aRuntimeCB,
+    const QueryLoc& loc,
+    PlanState& planState,
+    const PlanIterator* iter)
 {
   store::Item_t lCollationItem = PlanIterator::consumeNext(iter, planState);
 
@@ -1416,7 +1420,8 @@ FnDocIterator::~FnDocIterator()
 {
 }
 
-static store::Item_t get_doc (xqpStringStore *uriString, const char **err) 
+
+static store::Item_t get_doc(xqpStringStore_t& uriString, const char **err) 
 {
   store::Store& store = GENV.getStore();
 
@@ -1424,16 +1429,17 @@ static store::Item_t get_doc (xqpStringStore *uriString, const char **err)
     
   if (doc == NULL)
   {
-    xqp_string uriCopy = uriString;
-    if (uriCopy.lowercase().indexOf("http://") == 0)
+    xqpStringStore_t lowercaseUri = uriString->lowercase();
+    if (lowercaseUri->indexOf("http://") == 0)
     {
 #ifdef HAVE_CURL_H
       // retrieve web file
       xqp_string xmlString;
-      int result = http_get(uriCopy.c_str(), xmlString);
+      int result = http_get(lowercaseUri->c_str(), xmlString);
       if (result != 0)
       {
-        *err = "HTTP get failure."; return NULL;
+        *err = "HTTP get failure."; 
+        return NULL;
       }
 
       istringstream iss(xmlString.c_str());
@@ -1441,7 +1447,8 @@ static store::Item_t get_doc (xqpStringStore *uriString, const char **err)
       doc = store.loadDocument(uriString, iss);
       if (doc == NULL)
       {
-        *err = "Failed to parse document."; return NULL;
+        *err = "Failed to parse document.";
+        return NULL;
       }
 #else
       *err = "Can't perform HTTP request. Please build Zorba with libcurl."; 
@@ -1472,10 +1479,11 @@ static store::Item_t get_doc (xqpStringStore *uriString, const char **err)
 
 store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t   doc;
-  store::Item_t   uriItem;
-  xqpStringStore* uriString;
-  const char*     err = NULL;
+  store::Item_t    doc;
+  store::Item_t    uriItem;
+  xqpStringStore_t uriString;
+  xqpStringStore_t uriString2;
+  const char*      err = NULL;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1487,11 +1495,16 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
   uriString = uriItem->getStringValue();
 
   if(!URI::is_valid(uriString))
-    ZORBA_ERROR_PARAM(ZorbaError::FODC0005, xqp_string(uriString), "");
+    ZORBA_ERROR_PARAM(ZorbaError::FODC0005, uriString->c_str(), "");
 
-  doc = get_doc (uriString, &err);
+  uriString2 = uriString;
+
+  doc = get_doc(uriString, &err);
+
   if (doc == NULL)
-    ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc, uriString->c_str(), (err == NULL ? "" :  err));
+    ZORBA_ERROR_LOC_PARAM(ZorbaError::FODC0002, loc,
+                          uriString2->c_str(),
+                          (err == NULL ? "" :  err));
   STACK_PUSH(doc, state);
   STACK_END (state);
 }
@@ -1503,10 +1516,10 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
 |_______________________________________________________________________*/
 store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t   doc;
-  store::Item_t   uriItem;
-  xqpStringStore* uriString;
-  const char*     err = NULL;
+  store::Item_t    doc;
+  store::Item_t    uriItem;
+  xqpStringStore_t uriString;
+  const char*      err = NULL;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1520,7 +1533,7 @@ store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
   if(!URI::is_valid(uriString))
     ZORBA_ERROR_PARAM(ZorbaError::FODC0005, xqp_string(uriString), "");
 
-  doc = get_doc (uriString, &err);
+  doc = get_doc(uriString, &err);
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(doc != NULL), state);
   STACK_END (state);

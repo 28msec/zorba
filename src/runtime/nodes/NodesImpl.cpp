@@ -39,35 +39,48 @@ namespace zorba {
 store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t inNode;
-  xqp_string strRes = "";
+  xqpStringStore_t strRes;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0].getp(), planState);
+  inNode = consumeNext(theChildren[0], planState);
 
   if (inNode != NULL)
   {
     if(inNode->getNodeKind() == store::StoreConsts::documentNode ||
        inNode->getNodeKind() == store::StoreConsts::commentNode ||
        inNode->getNodeKind() == store::StoreConsts::textNode)
-      STACK_PUSH(GENV_ITEMFACTORY->createString(strRes.getStore()), state);
+    {
+      strRes = new xqpStringStore("");
+    }
     else if(inNode->getNodeKind() == store::StoreConsts::piNode)
-      STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getTarget()), state);
+    {
+      strRes = inNode->getTarget();
+    }
     else
-      STACK_PUSH(GENV_ITEMFACTORY->createString(inNode->getNodeName()->getLocalName()), state);
+    {
+      strRes = inNode->getNodeName()->getLocalName();
+    }
+
+    STACK_PUSH(GENV_ITEMFACTORY->createString(strRes), state);
   }
   else
-    STACK_PUSH(GENV_ITEMFACTORY->createString(strRes.getStore()), state);
-  
+  {
+    strRes = new xqpStringStore("");
+    STACK_PUSH(GENV_ITEMFACTORY->createString(strRes), state);
+  }
+
   STACK_END (state);
 }
+
 
 // 14.3 fn:namespace-uri
 //---------------------
 store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t inNode;
+  xqpStringStore_t uriStr;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -78,9 +91,15 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
   {
     if(inNode->getNodeKind() == store::StoreConsts::elementNode ||
        inNode->getNodeKind() == store::StoreConsts::attributeNode)
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getNodeName()->getNamespace()), state);
+    {
+      uriStr = inNode->getNodeName()->getNamespace();
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(uriStr), state);
+    }
     else
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(xqp_string().getStore()), state);
+    {
+      uriStr = new xqpStringStore("");
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(uriStr), state);
+    }
   }
 
   STACK_END (state);
@@ -90,11 +109,11 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 //---------------------
 store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t    item, node, attr;
-  store::Item*     attrName;
-  store::Iterator_t       theAttributes;
-  bool             found = false;
-  xqpStringStore_t reqLang;
+  store::Item_t     item, node, attr;
+  store::Item*      attrName;
+  store::Iterator_t theAttributes;
+  bool              found = false;
+  xqpStringStore_t  reqLang;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

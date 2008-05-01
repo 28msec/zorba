@@ -92,7 +92,6 @@ int main(int argc, const char * argv[])
   catch (zorba::error::ZorbaError& e)
   {
     std::cout << e.theDescription << std::endl;
-    return 1;
   }
 
 
@@ -110,10 +109,63 @@ int main(int argc, const char * argv[])
   std::iostream xmlStream(xmlFile.rdbuf());
   store::Item_t doc;
 
+#define RC_TIMMING
+
+#ifdef RC_TIMMING
+
+  ulong loop = 1000000;
+  char* data = "aaaaaaa0000000";
+  ulong datalen = strlen(data);
+
 #ifndef WIN32
 	Timer timer;
 	timer.start();
 #endif
+
+  for (ulong i = 0; i < loop; i++)
+  {
+    char* tmp = new char[datalen + 1];
+    memcpy(tmp, data, datalen);
+    delete [] tmp;
+  }
+
+#ifndef WIN32
+  timer.suspend();
+  std::cout << "char-pointer alloc time : " << timer.getTime() << std::endl;
+  timer.resume();
+#endif
+
+  for (ulong i = 0; i < loop; i++)
+  {
+    xqpStringStore* tmp = new xqpStringStore(data);
+    delete tmp;
+  }
+
+#ifndef WIN32
+  timer.suspend();
+  std::cout << "String-pointer alloc time : " << timer.getTime() << std::endl;
+  timer.resume();
+#endif
+
+  for (ulong i = 0; i < loop; i++)
+  {
+    xqpStringStore_t tmp = new xqpStringStore(data);
+  }
+
+#ifndef WIN32
+  timer.suspend();
+  std::cout << "String-handle alloc time : " << timer.getTime() << std::endl;
+  timer.resume();
+#endif
+
+#else
+
+#ifndef WIN32
+	Timer timer;
+	timer.start();
+#endif
+
+#endif // RC_TIMMING
 
   try
   {

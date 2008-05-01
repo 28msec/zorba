@@ -82,7 +82,7 @@ QNamePool::~QNamePool()
 ********************************************************************************/
 void QNamePool::remove(QNameItemImpl* qn)
 {
-  SYNC_CODE(AutoMutex lock(theHashSet.theMutex);)
+  SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
   if (qn->getRefCount() > 0)
     return;
@@ -134,7 +134,7 @@ Item_t QNamePool::insert(
 
   ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns)));
 
-  SYNC_CODE(AutoMutex lock(theHashSet.theMutex);)
+  SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
   QNHashEntry* entry = hashFind(pooledNs->c_str(), pre, ln,
                                 pooledNs->bytes(), strlen(pre), strlen(ln),
@@ -189,7 +189,7 @@ Item_t QNamePool::insert(
                             hashfun::h32(ln->c_str(),
                                          hashfun::h32(ns->c_str())));
 
-  SYNC_CODE(AutoMutex lock(theHashSet.theMutex);)
+  SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
   QNHashEntry* entry = hashFind(ns->c_str(), pre->c_str(), ln->c_str(),
                                 ns->bytes(), pre->bytes(), ln->bytes(),

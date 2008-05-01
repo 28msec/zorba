@@ -151,32 +151,8 @@ store::Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
-void
-ElementIteratorState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  static_context* sctx = planState.theRuntimeCB->theStaticContext;
-
-  theTypePreserve =
-    (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
-
-  theNsPreserve =
-    (sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
-
-  theNsInherit = 
-    (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
-}
-
-
-void
-ElementIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-}
-
-
 ElementIterator::ElementIterator (
-    const QueryLoc& loc,
+    const QueryLoc&     loc,
     PlanIter_t&         qnameIter,
     PlanIter_t&         attrsIter,
     PlanIter_t&         childrenIter,
@@ -195,12 +171,12 @@ ElementIterator::ElementIterator (
 
 void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<ElementIteratorState>::createState(planState,
-                                                     this->stateOffset,
-                                                     offset);
+  StateTraitsImpl<PlanIteratorState>::createState(planState,
+                                                  this->stateOffset,
+                                                  offset);
 
-  StateTraitsImpl<ElementIteratorState>::initState(planState,
-                                                   this->stateOffset);
+  StateTraitsImpl<PlanIteratorState>::initState(planState,
+                                                this->stateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);
@@ -212,7 +188,18 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
     theAttributesIter->open(planState, offset);
 
   if (theNamespacesIter != 0)
-    theNamespacesIter->open(planState, offset);  
+    theNamespacesIter->open(planState, offset);
+
+  static_context* sctx = planState.theRuntimeCB->theStaticContext;
+
+  theTypePreserve =
+    (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
+
+  theNsPreserve =
+    (sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+
+  theNsInherit = 
+    (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
 
@@ -226,8 +213,8 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   store::Item_t node;
   xqpStringStore_t baseUri;
   
-  ElementIteratorState* state;
-  DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
   if (baseUri->empty())
@@ -251,10 +238,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   if (theAttributesIter != 0)
     awrapper.reset(new PlanIteratorWrapper(theAttributesIter, planState));
 
-  copymode.set(true,
-               state->theTypePreserve,
-               state->theNsPreserve,
-               state->theNsInherit);
+  copymode.set(true, theTypePreserve, theNsPreserve, theNsInherit);
 
   node = GENV_ITEMFACTORY->
          createElementNode((ulong)&planState,
@@ -276,7 +260,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
 
 void ElementIterator::resetImpl(PlanState& planState) const
 {
-  StateTraitsImpl<ElementIteratorState>::reset(planState, this->stateOffset);
+  StateTraitsImpl<PlanIteratorState>::reset(planState, this->stateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->reset(planState);
@@ -307,7 +291,7 @@ void ElementIterator::closeImpl(PlanState& planState)
   if (theNamespacesIter != 0)
     theNamespacesIter->close(planState);
 
-  StateTraitsImpl<ElementIteratorState>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<PlanIteratorState>::destroyState(planState, this->stateOffset);
 }
 
   
@@ -460,9 +444,11 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
   store::Item_t lItem;
   store::Item_t lRes;
   xqtref_t lItemType;
+  xqpStringStore_t strval;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
   lItem = consumeNext(theChild.getp(), planState);
   if (lItem == 0)
   {
@@ -493,8 +479,8 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
   {
     try
     {
-      lRes = GenericCast::instance()->castToQName(lItem->getStringValue(),
-                                                  &*theNCtx);
+      strval = lItem->getStringValue();
+      lRes = GenericCast::instance()->castToQName(strval, &*theNCtx);
     }
     catch (...)
     {
@@ -805,54 +791,66 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
     {
       if (state->theDocChildren != 0)
       {
-        item = state->theDocChildren->next();
-        if (item == 0)
+        state->theContextItem = state->theDocChildren->next();
+        if (state->theContextItem == 0)
         {
           state->theDocChildren->close();
           state->theDocChildren = 0;
         }
         else
         {
-          STACK_PUSH(item, state);
+          STACK_PUSH(state->theContextItem, state);
         }
       }
       else
       {
-        item = consumeNext(theChild, planState);
-        if (item == NULL)
+        state->theContextItem = consumeNext(theChild, planState);
+
+        if (state->theContextItem == NULL)
           break;
 
-        if (item->isNode())
+        if (state->theContextItem->isNode())
         {
-          state->theElemContentString = NULL;
-
-          if (item->getNodeKind() == store::StoreConsts::documentNode)
+          if (state->theContextItem->getNodeKind() == store::StoreConsts::documentNode)
           {
-            state->theDocChildren = item->getChildren();
+            state->theDocChildren = state->theContextItem->getChildren();
             state->theDocChildren->open();
           }
           else
           {
-            STACK_PUSH(item, state);
+            STACK_PUSH(state->theContextItem, state);
           }
         }
         else
         {
-          strval = item->getStringValue();
+          strval = state->theContextItem->getStringValue();
 
-          if (state->theElemContentString != NULL)
-            strval = new xqpStringStore(" " + strval->str());
-          else
-            state->theElemContentString = strval;
+          {
+            std::string buf;
+            state->theContextItem = consumeNext(theChild, planState);
+            while (state->theContextItem != NULL &&
+                   state->theContextItem->isAtomic())
+            {
+              buf += " ";
+              buf += state->theContextItem->getStringValue()->str();
 
-          if (strval->empty())
-            continue;
+              state->theContextItem = consumeNext(theChild, planState);
+            }
 
-          item = factory->createTextNode((ulong)&planState,
-                                          strval,
-                                          false,
-                                          true);  // assingIds
-          STACK_PUSH(item, state);
+            if (!buf.empty())
+              strval = strval->append(buf);
+          }
+
+          if (!strval->empty())
+          {
+            item = factory->createTextNode((ulong)&planState,
+                                           strval,
+                                           false,
+                                           true);  // assingIds
+            STACK_PUSH(item, state);
+          }
+
+          STACK_PUSH(state->theContextItem, state);
         }
       }
     }

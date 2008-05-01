@@ -37,7 +37,7 @@ public:
 	{
   private:
     SimpleCollection_t            theCollection;
-    SYNC_CODE(AutoLatch                     theLatch;)
+    SYNC_CODE(AutoLatch           theLatch;)
     std::set<Item_t>::iterator    theIterator;
 
   public:
@@ -55,10 +55,11 @@ public:
 protected:
   Item_t               theUri;
   std::set<Item_t>     theXmlTrees;
-  SYNC_CODE(Latch                theLatch;)
+  SYNC_CODE(Latch      theLatch;)
 
 public:
-  SimpleCollection(Item* uri);
+  SimpleCollection(Item_t& uri);
+
   virtual ~SimpleCollection();
 
   Item_t getUri() { return theUri; }

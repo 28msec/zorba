@@ -169,7 +169,7 @@ public:
    * by pointer instead of rchandle
    */
   virtual xqpStringStore*
-  getStringValueP();
+  getStringValueP() const;
 
 
   /* -------------------  Methods for AtomicValues ------------------------------ */

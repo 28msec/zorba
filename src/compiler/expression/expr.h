@@ -1150,8 +1150,8 @@ protected:
   match_wild_t  theWildKind;
   xqp_string    theWildName;
 
-  store::Item_t        theQName;
-  store::Item_t        theTypeName;
+  store::Item_t theQName;
+  store::Item_t theTypeName;
   bool          theNilledAllowed;
 
 public:

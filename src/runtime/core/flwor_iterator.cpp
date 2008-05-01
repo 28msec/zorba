@@ -522,7 +522,9 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
           if (theIsUpdating)
           {
             STACK_PUSH(pul.release(), flworState);
-          }else if(doOrderBy){
+          }
+          else if(doOrderBy)
+          {
             if(doGroupBy){
               groupAndOrder(flworState, planState);
             }
@@ -538,7 +540,9 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
               }
               ++ ( flworState->curOrderPos );
             }
-          }else if(doGroupBy){
+          }
+          else if(doGroupBy)
+          {
             flworState->curGroupPos = flworState->groupMap->begin();
             while ( flworState->curGroupPos != flworState->groupMap->end() )
             {
@@ -571,9 +575,11 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
     {
       // In the case we not need to do ordering, we now returning the items
       // produced by the ReturnClause
-      if(doGroupBy){
+      if(doGroupBy)
+      {
         matVarsAndGroupBy ( flworState, planState );
-      }else if (theIsUpdating)
+      }
+      else if (theIsUpdating)
       {
         curItem = consumeNext(returnClause, planState);
         while (curItem != 0)

@@ -34,10 +34,17 @@ typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 class serializer : public SimpleRCObject
 {
 public:
+  class emitter;
+  class transcoder;
+
+public:
+  static int get_utf8_length(char ch);
+
+public:
 	serializer(error::ErrorManager*);
+
 	virtual ~serializer();
 
-public:	
   /**
    * Serializes the given sequence of items to the output stream.
    *
@@ -50,7 +57,10 @@ public:
    * Parse the given sequence with SAX2 interface
    *
    */
-   void serializeSAX2( PlanWrapper *result, std::ostream & os,  SAX2_ContentHandler * aSAX2ContentHandler );  
+   void serializeSAX2( 
+        PlanWrapper *result,
+        std::ostream & os,
+        SAX2_ContentHandler * aSAX2ContentHandler );  
 
   /**
    * Serializes the given item to the output stream.
@@ -69,8 +79,25 @@ public:
    */
   void set_parameter(xqp_string parameter_name, xqp_string value);
 
-
 protected:
+
+  typedef enum 
+  {
+    PARAMETER_VALUE_NO,
+    PARAMETER_VALUE_YES,
+    PARAMETER_VALUE_OMIT,
+		
+    PARAMETER_VALUE_XML,
+	  PARAMETER_VALUE_HTML,
+  
+    PARAMETER_VALUE_UTF_8
+#ifndef ZORBA_NO_UNICODE
+    ,PARAMETER_VALUE_UTF_16
+#endif
+
+  } PARAMETER_VALUE_TYPE;
+
+
   error::ErrorManager* theErrorManager;
 
   // Serialization parameters
@@ -90,43 +117,30 @@ protected:
   void* use_character_maps;          // TODO: list of pairs
   xqp_string version;                // "1.1"
   short int indent;                  // "yes" or "no", implemented
-	
-public:
-  static int get_utf8_length(char ch);
+
+  rchandle<emitter>    e;
+  rchandle<transcoder> tr;
+
+  static const char	END_OF_LINE;
+
 protected:
   void reset();
   void validate_parameters();
   bool setup(std::ostream& os);
-
-public:
-  class emitter;
-  class transcoder;
   
-protected:
-  rchandle<emitter> e;
-  rchandle<transcoder> tr;
-  static const xqp_string	END_OF_LINE;
-
-  typedef enum {
-    PARAMETER_VALUE_NO,
-    PARAMETER_VALUE_YES,
-    PARAMETER_VALUE_OMIT,
-		
-    PARAMETER_VALUE_XML,
-	  PARAMETER_VALUE_HTML,
-  
-    PARAMETER_VALUE_UTF_8
-#ifndef ZORBA_NO_UNICODE
-    ,PARAMETER_VALUE_UTF_16
-#endif
-
-  } PARAMETER_VALUE_TYPE;
-
 public:
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class transcoder                                     //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
+
   class transcoder : public SimpleRCObject
   {
   public:
     transcoder(std::ostream& output_stream);
+
     virtual ~transcoder() { } ;
 
     /**
@@ -136,8 +150,18 @@ public:
      */
     void verbatim(const char ch);
     
-    virtual transcoder& operator<<(const xqpString& s);
-    virtual transcoder& operator<<(const char ch);
+    virtual transcoder& operator<<(const char* str)
+    {
+      os << str;
+      return *this;
+    }
+
+    virtual transcoder& operator<<(const char ch)
+    {
+      os << ch;
+      return *this;
+    }
+
     
   protected:
     std::ostream& os;
@@ -148,9 +172,10 @@ public:
   {
     public:
       utf8_to_utf16_transcoder(std::ostream& output_stream);
+
       virtual ~utf8_to_utf16_transcoder();
       
-      virtual utf8_to_utf16_transcoder& operator<<(const xqpString& s);
+      virtual utf8_to_utf16_transcoder& operator<<(const char* str);
       virtual utf8_to_utf16_transcoder& operator<<(const char ch);
       
     protected:
@@ -161,6 +186,12 @@ public:
   };
 
 #endif//#ifndef ZORBA_NO_UNICODE
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class emitter                                        //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
 
   class emitter : public SimpleRCObject
   {
@@ -197,7 +228,7 @@ public:
      *  Serializes the given string, performing character expansion
      *  if necessary.
      */   
-    virtual void emit_expanded_string(xqpStringStore* str, bool emit_attribute_value);
+    virtual void emit_expanded_string(const xqpStringStore* str, bool emit_attribute_value);
     
     /**
      *  Serializes the children of the given node, without
@@ -237,11 +268,11 @@ public:
   protected:
     bool haveBinding(std::pair<xqpString,xqpString>& nsBinding) const;
     bool havePrefix(const xqpString& pre) const;
-    std::string expand_string( xqpStringStore * str, bool emit_attribute_value );
+    std::string expand_string(const xqpStringStore * str, bool emit_attribute_value );
 
-    serializer *ser;
-    transcoder& tr;
-    std::vector<NsBindings> bindings;
+    serializer              * ser;
+    transcoder              & tr;
+    std::vector<NsBindings>   bindings;
     
     enum {
       INVALID_ITEM,   
@@ -249,6 +280,13 @@ public:
       PREVIOUS_ITEM_WAS_NODE
     } previous_item;
   };
+
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class xml_emitter                                    //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
   
   class xml_emitter : public emitter
   {
@@ -256,6 +294,13 @@ public:
     xml_emitter(serializer* the_serializer, transcoder& the_transcoder);
     virtual void emit_declaration();    
   };
+
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class html_emitter                                   //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
 
   class html_emitter : public emitter
   {
@@ -269,6 +314,13 @@ public:
         int depth,
         const store::Item* element_parent = NULL);
   };
+
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class sax2_emitter                                   //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
 
   class sax2_emitter : public emitter
   {
@@ -297,7 +349,7 @@ public:
    
     void emit_node( store::Item * item );
 
-    virtual void emit_expanded_string( xqpStringStore * aStrStore, bool aEmitAttributeValue = false );
+    virtual void emit_expanded_string(const xqpStringStore * aStrStore, bool aEmitAttributeValue = false );
     
     virtual int emit_node_children(
         const store::Item* item,

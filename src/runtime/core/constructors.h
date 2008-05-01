@@ -105,18 +105,6 @@ public:
   theIsRoot         : Whether this is the root in a tree of constructor iterators.
                       
 ********************************************************************************/
-class ElementIteratorState : public PlanIteratorState
-{
-public:
-  bool theTypePreserve;
-  bool theNsPreserve;
-  bool theNsInherit;
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
 class ElementIterator : public Batcher<ElementIterator>
 {
   typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
@@ -130,6 +118,10 @@ private:
   NamespaceContext_t  theLocalBindings;
 
   bool                theIsRoot;
+
+  bool                theTypePreserve;
+  bool                theNsPreserve;
+  bool                theNsInherit;
 
 public:
   ElementIterator (
@@ -145,7 +137,7 @@ public:
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
-  uint32_t getStateSize() const { return sizeof(ElementIteratorState); }
+  uint32_t getStateSize() const { return sizeof(PlanIteratorState); }
   uint32_t getStateSizeOfSubtree() const;
   
   void accept(PlanIterVisitor&) const;

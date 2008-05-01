@@ -149,13 +149,14 @@ FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
 store::Item_t
 FnDefaultCollationIterator::nextImpl(PlanState& planState) const
 {
-  xqp_string strColUri;
+  xqpStringStore_t strColUri;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  strColUri = planState.theRuntimeCB->theStaticContext->default_collation_uri();
-  STACK_PUSH( GENV_ITEMFACTORY->createString(strColUri.getStore()), state );
+  strColUri = planState.theRuntimeCB->theStaticContext->default_collation_uri().getStore();
+
+  STACK_PUSH(GENV_ITEMFACTORY->createString(strColUri), state );
 
   STACK_END (state);
 }

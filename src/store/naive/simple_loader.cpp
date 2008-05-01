@@ -209,12 +209,12 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 /*******************************************************************************
 
 ********************************************************************************/
-XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
+XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
   long numChars;
 
-  theDocUri = uri;
+  theDocUri.transfer(uri);
 
   theTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
@@ -490,7 +490,7 @@ void XmlLoader::startElement(
       const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
       Item_t qname = qnpool.insert(uri, prefix, lname);
-      xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
+      xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
 
       Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
       Item_t typedValue = new UntypedAtomicItemImpl(value);
@@ -509,7 +509,7 @@ void XmlLoader::startElement(
       LOADER_TRACE1("Attribute: node = " << attrNode
                     << " name [" << (prefix != NULL ? prefix : "") << ":"
                     << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
-                    << " value = " << value->c_str() << std::endl
+                    << " value = " << typedValue->getStringValue()->c_str() << std::endl
                     << " ordpath = " << attrNode->getOrdPath().show() << std::endl);
     }
   }

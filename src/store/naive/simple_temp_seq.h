@@ -43,6 +43,16 @@ public:
 
   virtual ~SimpleTempSeq();
 
+  virtual bool empty();
+  
+  Item_t operator[](int32_t aIndex);
+  int32_t getSize();
+
+  virtual void append(Iterator_t iter, bool copy);
+
+  virtual Item_t getItem(int32_t position);
+  virtual bool containsItem(int32_t position);
+
   virtual Iterator_t getIterator();
 
   virtual Iterator_t getIterator(
@@ -64,19 +74,10 @@ public:
         Iterator_t positions,
         bool streaming = false);
   
-  virtual void append(Iterator_t iter, bool copy);
-
-  virtual Item_t getItem(int32_t position);
-  virtual bool containsItem(int32_t position);
-
   virtual void purge();
   virtual void purgeUpTo(int32_t upTo );
   virtual void purgeItem(const std::vector<int32_t>& positions );
   virtual void purgeItem(int32_t position );
-  virtual bool empty();
-  
-  Item_t operator[](int32_t aIndex);
-  int32_t getSize();
 
   class SimpleTempSeqIter : public Iterator
 	{

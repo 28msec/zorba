@@ -70,7 +70,7 @@ namespace zorba
             GroupCompareParam* aCompareParam,
             long size = 1024 )
             :
-          HashMap<GroupKey*, V, ItemValuesCollHandleHashMap, GroupCompareParam> ( aCompareParam, size )
+      HashMap<GroupKey*, V, ItemValuesCollHandleHashMap, GroupCompareParam> ( aCompareParam, size, false)
         {}
 
         static bool equal ( const GroupKey* t1, const GroupKey* t2, GroupCompareParam* aCompareParam )

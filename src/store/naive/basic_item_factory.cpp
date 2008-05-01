@@ -73,13 +73,13 @@ Item_t BasicItemFactory::createQName(
 }
 
 
-Item_t BasicItemFactory::createNCName(xqpStringStore* value)
+Item_t BasicItemFactory::createNCName(xqpStringStore_t& value)
 {
   return new NCNameItemImpl(value);
 }
 
 
-Item_t BasicItemFactory::createAnyURI(xqpStringStore* value)
+Item_t BasicItemFactory::createAnyURI(xqpStringStore_t& value)
 {
   xqpStringStore_t str = value;
   theUriPool->insert(str, str);
@@ -95,13 +95,13 @@ Item_t BasicItemFactory::createAnyURI(const char* value)
 }
 
 
-Item_t BasicItemFactory::createUntypedAtomic(xqpStringStore* value)
+Item_t BasicItemFactory::createUntypedAtomic(xqpStringStore_t& value)
 {
   return new UntypedAtomicItemImpl(value);
 }
 
 
-Item_t BasicItemFactory::createString(xqpStringStore* value)
+Item_t BasicItemFactory::createString(xqpStringStore_t& value)
 {
   return new StringItemNaive(value);
 }
@@ -297,12 +297,17 @@ Item_t BasicItemFactory::createDuration (
     return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createENTITIES ( const xqp_string& /*value*/ )
-{ return Item_t ( NULL ); }
+
+Item_t BasicItemFactory::createENTITIES(xqpStringStore_t& /*value*/)
+{ 
+  return Item_t ( NULL ); 
+}
 
 
-Item_t BasicItemFactory::createENTITY ( const xqp_string& /*value*/ )
-{ return Item_t ( NULL ); }
+Item_t BasicItemFactory::createENTITY(xqpStringStore_t& /*value*/ )
+{
+  return Item_t ( NULL );
+}
 
 
 Item_t BasicItemFactory::createFloat ( xqp_float value )
@@ -314,6 +319,7 @@ Item_t BasicItemFactory::createGDay (xqp_gDay& value )
 {
   return new DateTimeItemNaive(value);
 }
+
 
 Item_t BasicItemFactory::createGDay ( const xqp_string& value )
 {
@@ -438,44 +444,50 @@ Item_t BasicItemFactory::createGYearMonth ( short year, short month )
 
 
 Item_t BasicItemFactory::createHexBinary ( xqp_hexBinary value )
-{ return new HexBinaryItemNaive ( value ); }
+{
+  return new HexBinaryItemNaive ( value ); 
+}
 
 
-Item_t BasicItemFactory::createID ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createID(xqpStringStore_t& value)
+{
+  return new IDItemImpl(value);
+}
+
+
+Item_t BasicItemFactory::createIDREF(xqpStringStore_t& /*value*/ )
+{
+  return Item_t ( NULL ); 
+}
+
+
+Item_t BasicItemFactory::createIDREFS(xqpStringStore_t& /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createIDREF ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createLanguage(xqpStringStore_t& /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createIDREFS ( const xqp_string& /*value*/ )
-{ return Item_t ( NULL ); }
-
-
-Item_t BasicItemFactory::createLanguage ( const xqp_string& /*value*/ )
-{ return Item_t ( NULL ); }
-
-
-Item_t BasicItemFactory::createNMTOKEN ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createNMTOKEN(xqpStringStore_t& /*value*/ )
 {
   return Item_t ( NULL );
 }
 
 
-Item_t BasicItemFactory::createNMTOKENS ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createNMTOKENS(xqpStringStore_t& /*value*/ )
 {
   return Item_t ( NULL );
 }
 
 
-Item_t BasicItemFactory::createNOTATION ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createNOTATION(xqpStringStore_t& /*value*/ )
 {
   return Item_t ( NULL );
 }
 
 
-Item_t BasicItemFactory::createName ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createName(xqpStringStore_t& /*value*/ )
 {
   return Item_t ( NULL );
 }
@@ -501,7 +513,7 @@ Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value )
 }
 
 
-Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value )
+Item_t BasicItemFactory::createNormalizedString(xqpStringStore_t& value)
 {
   return Item_t ( NULL );
 }
@@ -556,7 +568,7 @@ Item_t BasicItemFactory::createTime(
     return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createToken ( const xqp_string& /*value*/ )
+Item_t BasicItemFactory::createToken(xqpStringStore_t& /*value*/ )
 {
   return Item_t ( NULL );
 }
@@ -933,14 +945,18 @@ Item_t BasicItemFactory::createTextNode(
   Item_t valueItem = valueIter->next();
   if (valueItem != 0)
   {
-    value = valueItem->getAtomizationValue()->getStringValue();
+    value = (valueItem->isAtomic() ?
+             valueItem->getStringValue() :
+             valueItem->getAtomizationValue()->getStringValue());
 
     std::string buf;
     valueItem = valueIter->next();
     while (valueItem != NULL)
     {
       buf += " ";
-      buf += valueItem->getAtomizationValue()->getStringValue()->str();
+      buf += (valueItem->isAtomic() ?
+              valueItem->getStringValue()->c_str() :
+              valueItem->getAtomizationValue()->getStringValue()->str());
 
       valueItem = valueIter->next();
     }

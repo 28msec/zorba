@@ -765,7 +765,7 @@ public:
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
-  xqpStringStore* getStringValueP()         { return theContent.getp(); }
+  xqpStringStore* getStringValueP() const   { return theContent.getp(); }
 			
   xqp_string show() const;
 
@@ -819,6 +819,7 @@ public:
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const    { return theContent; }
+  xqpStringStore* getStringValueP() const    { return theContent.getp(); }
 
   xqpStringStore* getTarget() const { return theTarget.getp(); }
 
@@ -872,7 +873,7 @@ public:
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
-  xqpStringStore* getStringValueP()   { return theContent.getp(); }
+  xqpStringStore* getStringValueP() const   { return theContent.getp(); }
 
   xqp_string show() const;
 

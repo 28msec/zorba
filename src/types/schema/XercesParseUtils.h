@@ -23,58 +23,58 @@ class XercesParseUtils;
 class XercesParseUtils
 {
 public:
-	static bool parseXSBoolean(xqpString textValue, store::Item_t &result);
+	static bool parseXSBoolean(const xqpStringStore_t& textValue, store::Item_t &result);
 
 	//numeric types
-	static bool parseXSInteger(xqpString textValue, store::Item_t &result);
-	static bool parseXSPositiveInteger(xqpString textValue, store::Item_t &result);
-	static bool parseXSNonPositiveInteger(xqpString textValue, store::Item_t &result);
-	static bool parseXSNegativeInteger(xqpString textValue, store::Item_t &result);
-	static bool parseXSNonNegativeInteger(xqpString textValue, store::Item_t &result);
-	static bool parseXSUnsignedByte(xqpString textValue, store::Item_t &result);
-	static bool parseXSUnsignedShort(xqpString textValue, store::Item_t &result);
-	static bool parseXSUnsignedInt(xqpString textValue, store::Item_t &result);
-	static bool parseXSUnsignedLong(xqpString textValue, store::Item_t &result);
-	static bool parseXSByte(xqpString textValue, store::Item_t &result);
-	static bool parseXSShort(xqpString textValue, store::Item_t &result);
-	static bool parseXSInt(xqpString textValue, store::Item_t &result);
-	static bool parseXSLong(xqpString textValue, store::Item_t &result);
-	static bool parseXSFloat(xqpString textValue, store::Item_t &result);
-	static bool parseXSDouble(xqpString textValue, store::Item_t &result);
-	static bool parseXSDecimal(xqpString textValue, store::Item_t &result);
+	static bool parseXSInteger(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSPositiveInteger(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSNonPositiveInteger(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSNegativeInteger(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSNonNegativeInteger(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSUnsignedByte(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSUnsignedShort(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSUnsignedInt(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSUnsignedLong(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSByte(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSShort(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSInt(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSLong(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSFloat(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSDouble(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSDecimal(const xqpStringStore_t& textValue, store::Item_t &result);
 
 	// string types
-	static bool parseXSString(xqpString textValue, store::Item_t &result);
-	static bool parseXSNormalizedString(xqpString textValue, store::Item_t &result);
-	static bool parseXSToken(xqpString textValue, store::Item_t &result);
-	static bool parseXSNMToken(xqpString textValue, store::Item_t &result);
-	static bool parseXSName(xqpString textValue, store::Item_t &result);
-	static bool parseXSNCName(xqpString textValue, store::Item_t &result);
-	static bool parseXSID(xqpString textValue, store::Item_t &result);
-	static bool parseXSIDRef(xqpString textValue, store::Item_t &result);
-	static bool parseXSEntity(xqpString textValue, store::Item_t &result);
-	static bool parseXSNotation(xqpString textValue, store::Item_t &result);
+	static bool parseXSString(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSNormalizedString(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSToken(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSNMToken(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSName(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSNCName(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSID(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSIDRef(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSEntity(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSNotation(const xqpStringStore_t& textValue, store::Item_t &result);
 
 	// date types
-	static bool parseXSDateTime(xqpString textValue, store::Item_t &result);
-	static bool parseXSDate(xqpString textValue, store::Item_t &result);
-	static bool parseXSTime(xqpString textValue, store::Item_t &result);
-	static bool parseXSGYearMonth(xqpString textValue, store::Item_t &result);
-	static bool parseXSGYear(xqpString textValue, store::Item_t &result);
-	static bool parseXSGMonthDay(xqpString textValue, store::Item_t &result);
-	static bool parseXSGDay(xqpString textValue, store::Item_t &result);
-	static bool parseXSGMonth(xqpString textValue, store::Item_t &result);
-	static bool parseXSDuration(xqpString textValue, store::Item_t &result);
-	static bool parseXSYearMonthDuration(xqpString textValue, store::Item_t &result);
-	static bool parseXSDayTimeDuration(xqpString textValue, store::Item_t &result);
+	static bool parseXSDateTime(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSDate(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSTime(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSGYearMonth(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSGYear(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSGMonthDay(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSGDay(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSGMonth(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSDuration(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSYearMonthDuration(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSDayTimeDuration(const xqpStringStore_t& textValue, store::Item_t &result);
 
 	// other types
-	static bool parseXSAnyAtomicType(xqpString textValue, store::Item_t &result);
-	static bool parseXSUntypedAtomic(xqpString textValue, store::Item_t &result);
-	static bool parseXSBase64Binary(xqpString textValue, store::Item_t &result);
-	static bool parseXSHexBinary(xqpString textValue, store::Item_t &result);
-	static bool parseXSAnyUri(xqpString textValue, store::Item_t &result);
-	static bool parseXSQName(xqpString textValue, store::Item_t &result);
+	static bool parseXSAnyAtomicType(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSUntypedAtomic(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSBase64Binary(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSHexBinary(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSAnyUri(const xqpStringStore_t& textValue, store::Item_t &result);
+	static bool parseXSQName(const xqpStringStore_t& textValue, store::Item_t &result);
 
     // for user defined types see schema.h
 };

@@ -39,12 +39,16 @@ class HashSet : public HashMap<T, DummyHashValue, E, C>
 {
 public:
 
-HashSet(ulong size) : HashMap<T, DummyHashValue, E, C>(size) 
+HashSet(ulong size, bool sync, bool useTransfer = false)
+  :
+  HashMap<T, DummyHashValue, E, C>(size, sync, useTransfer)
 {
 }
 
 
-HashSet(C* compParam, ulong size) :  HashMap<T, DummyHashValue, E, C>(compParam, size) 
+HashSet(C* compParam, ulong size, bool sync, bool useTransfer = false)
+  :
+  HashMap<T, DummyHashValue, E, C>(compParam, size, sync, useTransfer) 
 {
 }
 
@@ -52,6 +56,7 @@ HashSet(C* compParam, ulong size) :  HashMap<T, DummyHashValue, E, C>(compParam,
 virtual ~HashSet()
 {
 }
+
 
 /*******************************************************************************
 
@@ -80,7 +85,7 @@ bool insert(T& item)
 {
   bool found;
 
-  SYNC_CODE(AutoMutex lock(this->theMutex);)
+  SYNC_CODE(AutoMutex lock(this->theMutexp);)
 
   HashEntry<T, DummyHashValue>* entry;
   entry = hashInsert(item,
@@ -88,7 +93,12 @@ bool insert(T& item)
                      found);
 
   if (!found)
-    entry->theItem = (item);
+  {
+    if (this->theUseTransfer)
+      entry->theItem.transfer(item);
+    else
+      entry->theItem = item;
+  }
 
   return !found;
 }
@@ -103,7 +113,7 @@ bool insert(T& item,  T& outItem)
 {
   bool found;
 
-  SYNC_CODE(AutoMutex lock(this->theMutex);)
+  SYNC_CODE(AutoMutex lock(this->theMutexp);)
 
   HashEntry<T, DummyHashValue>* entry;
   entry = hashInsert(item,
@@ -111,7 +121,11 @@ bool insert(T& item,  T& outItem)
                      found);
   if (!found)
   {
-    entry->theItem = item;
+    if (this->theUseTransfer)
+      entry->theItem.transfer(item);
+    else
+      entry->theItem = item;
+
     outItem = entry->theItem;
     return true;
   }

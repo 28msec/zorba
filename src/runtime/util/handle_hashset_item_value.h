@@ -79,7 +79,9 @@ class ItemValueHandleHashSet : public HashSet<Item_t,
 public:
   ItemValueHandleHashSet(ValueCompareParam* lValueCompareParam, long size = 1024)
     :
-    HashSet<Item_t, ItemValueHandleHashSet, ValueCompareParam>(lValueCompareParam, size)
+    HashSet<Item_t, ItemValueHandleHashSet, ValueCompareParam>(lValueCompareParam,
+                                                               size,
+                                                               false) // no sync
   {}
 
   static bool equal(const Item_t& t1, const Item_t& t2, ValueCompareParam* aCompareParam)
@@ -103,7 +105,7 @@ public:
         ValueCollCompareParam* lValueCompareParamColl,
         long size = 1024)
   :
-  HashSet<Item_t, ItemValueCollHandleHashSet, ValueCollCompareParam>(lValueCompareParamColl, size)
+  HashSet<Item_t, ItemValueCollHandleHashSet, ValueCollCompareParam>(lValueCompareParamColl, size, false)
   {}
 
   static bool equal(const Item_t& t1, const Item_t& t2, ValueCollCompareParam* aCompareParam)

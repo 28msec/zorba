@@ -39,7 +39,12 @@ void skip_whitespace(std::string& s, unsigned int& position);
  * @return Returns 1 on an error, 0 on success
  */
 template <typename T>
-int parse_int(std::string& s, unsigned int& position, T& result, int min_digits = -1, int max_digits = -1)
+int parse_int(
+    std::string& s,
+    unsigned int& position,
+    T& result,
+    int min_digits = -1,
+    int max_digits = -1)
 {
   int digits = 0;
   if (s[position] < '0' || s[position] > '9')
@@ -61,6 +66,7 @@ int parse_int(std::string& s, unsigned int& position, T& result, int min_digits 
 
   return 0;
 }
+
 
 /**
  * Parses the fractional part of double number, not including the decimal dot.
@@ -85,6 +91,7 @@ inline double parse_frac(std::string& s, unsigned int& position, double& result)
   
   return 0;
 }
+
 
 inline std::string to_string(int value, int min_digits = 0)
 {
@@ -168,6 +175,7 @@ inline double frac(double value)
 }
 
 bool is_digit(char ch);
+
 bool are_digits(std::string& s, unsigned int& position, int count);
     
 // Returns the last day of the given year and month. E.g. for 1980 and 2 it

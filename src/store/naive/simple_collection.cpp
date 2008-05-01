@@ -28,10 +28,9 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::SimpleCollection(Item* uri)
-  :
-  theUri(uri)
+SimpleCollection::SimpleCollection(Item_t& uri)
 {
+  theUri.transfer(uri);
 }
 
 
@@ -68,10 +67,12 @@ Item_t SimpleCollection::addToCollection(std::istream& stream)
 {
   error::ErrorManager lErrorManager;
   std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
+  xqpStringStore_t docUri;
 
-  XmlNode* root = loader->loadXml(NULL, stream);
+  XmlNode* root = loader->loadXml(docUri, stream);
 
-  if (lErrorManager.hasErrors()) {
+  if (lErrorManager.hasErrors()) 
+  {
     throw lErrorManager.getErrors().front();
   }
 

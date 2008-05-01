@@ -442,6 +442,13 @@ public:
 		return *this;
   }
 
+  T* transfer()
+  {
+    T* tmp = p;
+    p = NULL;
+    return tmp;
+  }
+
 public:
 	std::string debug() const
   {

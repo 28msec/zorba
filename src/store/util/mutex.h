@@ -60,17 +60,19 @@ public:
 class AutoMutex
 {
 private:
-  Mutex & theMutex;
+  Mutex * theMutex;
 
 public:
-  AutoMutex(Mutex& mutex) : theMutex(mutex)
+  AutoMutex(Mutex* mutex) : theMutex(mutex)
   { 
-    theMutex.lock();   
+    if (theMutex)
+      theMutex->lock();   
   }
     
   ~AutoMutex()
   {
-    theMutex.unlock();
+    if (theMutex)
+      theMutex->unlock();
   }
 };
 

@@ -44,7 +44,7 @@ public:
   }
 
 public:
-  StringPool(ulong size) : HashSet<xqpStringStore_t, StringPool>(size) {};
+ StringPool(ulong size) : HashSet<xqpStringStore_t, StringPool>(size, true) {};
 
   ~StringPool();
 

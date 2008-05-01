@@ -28,37 +28,38 @@ using namespace std;
 
 namespace zorba {
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Default transcoder (transparent)
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Default transcoder (transparent)                                           //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 serializer::transcoder::transcoder(ostream& output_stream)
-  : os(output_stream)
+  :
+  os(output_stream)
 {
 }
 
-serializer::transcoder& serializer::transcoder::operator<<(const xqpString& s)
-{
-  os << s;
-  return *this;
-}
- 
-serializer::transcoder& serializer::transcoder::operator<<(const char ch)
+
+void
+serializer::transcoder::verbatim(const char ch)
 {
   os << ch;
-  return *this;
 }
 
-void serializer::transcoder::verbatim(const char ch)
-{
-  os << ch;
-}
 
 #ifndef ZORBA_NO_UNICODE
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// UTF-8 to UTF-16 transcoder
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  UTF-8 to UTF-16 transcoder                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 serializer::utf8_to_utf16_transcoder::utf8_to_utf16_transcoder(ostream& output_stream)
-  : transcoder(output_stream)
+  :
+  transcoder(output_stream)
 {
   UErrorCode status = U_ZERO_ERROR;
   conv = ucnv_open("utf-8", &status);
@@ -67,35 +68,41 @@ serializer::utf8_to_utf16_transcoder::utf8_to_utf16_transcoder(ostream& output_s
   chars_expected = 1;
 }
 
+
 serializer::utf8_to_utf16_transcoder::~utf8_to_utf16_transcoder()
 {
   ucnv_close(conv);
 }
 
-serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::operator<<(const xqpString& s)
+
+serializer::utf8_to_utf16_transcoder&
+serializer::utf8_to_utf16_transcoder::operator<<(const char* str)
 {
+  ulong len = strlen(str);
+
   UChar temp;
   UErrorCode status = U_ZERO_ERROR;
-  int target_size = ucnv_toUChars(conv, &temp, 1, s.c_str(), s.bytes(), &status);
+  int target_size = ucnv_toUChars(conv, &temp, 1, str, len, &status);
 
   status = U_ZERO_ERROR;
   UChar* target = new UChar[target_size+1];
   char* target2 = (char*)target;
-  target_size = ucnv_toUChars(conv, target, target_size, s.c_str(), s.bytes(), &status);
+  target_size = ucnv_toUChars(conv, target, target_size, str, len, &status);
 
   if (U_FAILURE(status))
   {
     ZORBA_ASSERT(0);
   }
   
-  
-  for (unsigned int i=0; i<target_size*sizeof(UChar); i++)
+  for (unsigned int i = 0; i < target_size*sizeof(UChar); i++)
     os << target2[i];
 
   return *this;
 }
  
-serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::operator<<(const char ch)
+
+serializer::utf8_to_utf16_transcoder&
+serializer::utf8_to_utf16_transcoder::operator<<(const char ch)
 {
   int done = 0;
   buffer[chars_in_buffer++] = ch;
@@ -136,12 +143,20 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
 
 #endif//#ifndef ZORBA_NO_UNICODE
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Default emitter
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Default emitter                                                            //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 serializer::emitter::emitter(serializer *the_serializer, transcoder& the_transcoder)
-  : ser(the_serializer), tr(the_transcoder), previous_item(INVALID_ITEM)
+  :
+  ser(the_serializer),
+  tr(the_transcoder),
+  previous_item(INVALID_ITEM)
 {  
 }
+
 
 void serializer::emitter::emit_declaration()
 {
@@ -162,27 +177,40 @@ void serializer::emitter::emit_declaration()
   }
 }
 
+
 void serializer::emitter::emit_declaration_end()
 {
 }
 
+
 xqpString toHexString(unsigned char ch)
 {
   static const char hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
   xqpString result;
-  if ((ch>>4) > 0)
+
+  if ((ch >> 4) > 0)
     result += hex[ch >> 4];
+
   result += hex[ch & 0xF];
+
   return result;
 }
 
-void serializer::emitter::emit_expanded_string( xqpStringStore * str, bool emit_attribute_value = false )
+
+void serializer::emitter::emit_expanded_string(
+    const xqpStringStore * str,
+    bool emit_attribute_value = false )
 {
-  tr << expand_string( str, emit_attribute_value );
+  tr << expand_string(str, emit_attribute_value).c_str();
 }
 
-// emit_attribute_value is set to true if the string expansion is performed on a value of an attribute
-std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_attribute_value = false)
+
+// emit_attribute_value is set to true if the string expansion is performed
+// on a value of an attribute
+std::string serializer::emitter::expand_string(
+    const xqpStringStore* str,
+    bool emit_attribute_value = false)
 {
   std::stringstream lStringStream;
   transcoder lTranscoder( lStringStream ); 
@@ -212,7 +240,8 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
         temp = chars;
-        lTranscoder << "&#" << NumConversions::longToStr(UTF8Decode(temp)) << ";";
+        lTranscoder << "&#" << NumConversions::longToStr(UTF8Decode(temp)).c_str()
+                    << ";";
         chars += (skip-1);
         skip = 0;
       }
@@ -231,25 +260,25 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
 #endif//ZORBA_NO_UNICODE
 
     /*
-      In addition, the non-whitespace control characters #x1 through #x1F and #x7F through #x9F in
-      text nodes and attribute nodes MUST be output as character references.
+      In addition, the non-whitespace control characters #x1 through #x1F and
+      #x7F through #x9F in text nodes and attribute nodes MUST be output as
+      character references.
     */
-    if ((*chars >= 0x1 && *chars <= 0x1F)
-          ||
-          (*chars >= 0x7F && *chars <= 0x9F))
+    if ((*chars >= 0x1 && *chars <= 0x1F) ||
+        (*chars >= 0x7F && *chars <= 0x9F))
     {
-      if ((!emit_attribute_value)
-             &&
-             (*chars == 0xA || *chars == 0x9))
+      if ((!emit_attribute_value) &&
+          (*chars == 0xA || *chars == 0x9))
         lTranscoder << *chars;
       else
-        lTranscoder << "&#x" << toHexString(*chars) << ";";
+        lTranscoder << "&#x" << toHexString(*chars).c_str() << ";";
     }
     else switch (*chars)
 		{
 		case '<':
       /*
-        The HTML output method MUST NOT escape "<" characters occurring in attribute values.
+        The HTML output method MUST NOT escape "<" characters occurring in
+        attribute values.
       */
       if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
         lTranscoder << *chars;
@@ -286,9 +315,9 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
       else
       { 
         int is_quote = 0;
-        for (int j=1; j < chars_end - chars; j++)
+        for (int j = 1; j < chars_end - chars; j++)
         {
-          if (j==1 && *(chars+j) != '#')
+          if (j == 1 && *(chars+j) != '#')
             break;
           
 				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'f')
@@ -328,47 +357,17 @@ std::string serializer::emitter::expand_string(xqpStringStore* str, bool emit_at
 			break;
 		}
 	}
+
   return lStringStream.str();
 }
 
+
 void serializer::emitter::emit_indentation(int depth)
 {
-	for (int i=0; i<depth; i++)
+	for (int i = 0; i < depth; i++)
 		tr << "  ";
 }
 
-bool serializer::emitter::haveBinding(std::pair<xqpString,xqpString>& nsBinding) const
-{
-  for (unsigned long i = 0; i < bindings.size(); i++)
-  {
-    NsBindings nsBindings = bindings[i];
-    
-    for (unsigned long j = 0; j < nsBindings.size(); j++)
-      if (nsBindings[j].first == nsBinding.first
-         &&
-         nsBindings[j].second == nsBinding.second)
-        return true;
-  }
-
-  return false;
-}
-
-
-bool serializer::emitter::havePrefix(const xqpString& pre) const
-{
-  for (unsigned long i = 0; i < bindings.size(); i++)
-  {
-    NsBindings nsBindings = bindings[i];
-    
-    for (unsigned long j = 0; j < nsBindings.size(); j++)
-    {
-      if (nsBindings[j].first == pre)
-        return true;
-    }
-  }
-
-  return false;
-}
 
 int serializer::emitter::emit_node_children(
     const store::Item* item,
@@ -387,7 +386,7 @@ int serializer::emitter::emit_node_children(
     child = it->next();
     while (child!= NULL)
     {		
-      emit_node(&*child, depth);
+      emit_node(child, depth);
       child = it->next();
     }
   }
@@ -402,15 +401,14 @@ int serializer::emitter::emit_node_children(
 	child = it->next();
 	while (child!= NULL)
 	{
-    if (child->getNodeKind() != store::StoreConsts::attributeNode)
-    {
-      if (closed_parent_tag == 0)
-		  {
-        tr << ">";
-        closed_parent_tag = 1;
-      }
-      emit_node(&*child, depth, item);
+    if (closed_parent_tag == 0)
+		{
+      tr << ">";
+      closed_parent_tag = 1;
     }
+
+    emit_node(child, depth, item);
+
     child = it->next();
   }
 
@@ -441,7 +439,7 @@ bool serializer::emitter::emit_bindings(const store::Item* item)
           {
             tr << " xmlns";
             if (nsBindings[i].first.size() > 0)
-              tr << ":" <<  nsBindings[i].first;
+              tr << ":" <<  nsBindings[i].first.c_str();
             tr << "=\"\"";
           }
         }
@@ -450,8 +448,8 @@ bool serializer::emitter::emit_bindings(const store::Item* item)
       {
         tr << " xmlns";
         if (nsBindings[i].first.size() > 0)
-          tr << ":" <<  nsBindings[i].first;
-        tr << "=\"" << nsBindings[i].second << "\"";
+          tr << ":" <<  nsBindings[i].first.c_str();
+        tr << "=\"" << nsBindings[i].second.c_str() << "\"";
       }
     }
   }
@@ -465,6 +463,43 @@ bool serializer::emitter::emit_bindings(const store::Item* item)
     return false;
 }
 
+
+bool serializer::emitter::haveBinding(std::pair<xqpString,xqpString>& nsBinding) const
+{
+  for (unsigned long i = 0; i < bindings.size(); i++)
+  {
+    NsBindings nsBindings = bindings[i];
+    
+    for (unsigned long j = 0; j < nsBindings.size(); j++)
+    {
+      if (nsBindings[j].first == nsBinding.first
+         &&
+         nsBindings[j].second == nsBinding.second)
+        return true;
+    }
+  }
+
+  return false;
+}
+
+
+bool serializer::emitter::havePrefix(const xqpString& pre) const
+{
+  for (unsigned long i = 0; i < bindings.size(); i++)
+  {
+    NsBindings nsBindings = bindings[i];
+    
+    for (unsigned long j = 0; j < nsBindings.size(); j++)
+    {
+      if (nsBindings[j].first == pre)
+        return true;
+    }
+  }
+
+  return false;
+}
+
+
 void serializer::emitter::emit_node(
     const store::Item* item,
     int depth,
@@ -476,55 +511,82 @@ void serializer::emitter::emit_node(
 	}
 	else if (item->getNodeKind() == store::StoreConsts::elementNode)
 	{
-      if (ser->indent)
-        emit_indentation(depth);
-      tr << "<" << item->getNodeName()->getStringValue().getp();
-      previous_item = PREVIOUS_ITEM_WAS_NODE;
+    if (ser->indent)
+      emit_indentation(depth);
 
-      bool should_remove_binding = emit_bindings(item);
-      int closed_parent_tag = emit_node_children(item, depth);
+    store::Item* qname = item->getNodeName();
+    xqpStringStore* prefix = qname->getPrefix();
 
-      if (should_remove_binding)
-        bindings.pop_back();
+    if (prefix->empty())
+      tr << "<" << qname->getLocalName()->c_str();
+    else
+      tr << "<" << prefix->c_str() << ":" << qname->getLocalName()->c_str();
 
-      if (closed_parent_tag)		
-        tr << "</" << item->getNodeName()->getStringValue().getp() << ">";
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    bool should_remove_binding = emit_bindings(item);
+
+    int closed_parent_tag = emit_node_children(item, depth);
+
+    if (should_remove_binding)
+      bindings.pop_back();
+
+    if (closed_parent_tag)
+    {		
+      if (prefix->empty())
+        tr << "</" << qname->getLocalName()->c_str() << ">";
       else
-        tr << " />";
+        tr << "</" << prefix->c_str() << ":" << qname->getLocalName()->c_str() << ">";
+    }
+    else
+    {
+      tr << " />";
+    }
 
-      if (ser->indent)
-        tr << ser->END_OF_LINE;
-      previous_item = PREVIOUS_ITEM_WAS_NODE;
+    if (ser->indent)
+      tr << ser->END_OF_LINE;
+
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::attributeNode )
 	{
-	  tr << " " << item->getNodeName()->getStringValue().getp() << "=\"";
+    store::Item* qname = item->getNodeName();
+    xqpStringStore* prefix = qname->getPrefix();
+
+    if (prefix->empty())
+      tr << " " << qname->getLocalName()->c_str() << "=\"";
+    else
+      tr << " " << prefix->c_str() << ":" << qname->getLocalName()->c_str() << "=\"";
+
 	  emit_expanded_string(item->getStringValue(), true);
+
 	  tr << "\"";
+
 	  previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
-      /* commented out
-      if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";
-      */
-	  
-      emit_expanded_string(item->getStringValue());
-      previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    emit_expanded_string(item->getStringValueP());
+
+    previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
     if (ser->indent)
       emit_indentation(depth);
-    tr << "<!--" << item->getStringValue().getp() << "-->";
+
+    tr << "<!--" << item->getStringValueP()->c_str() << "-->";
+
     if (ser->indent)
       tr << ser->END_OF_LINE;		
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::piNode )
 	{
-    tr << "<?" << item->getTarget() << " " << item->getStringValue().getp() << "?>";
+    tr << "<?" << item->getTarget()->c_str() << " "
+       << item->getStringValueP()->c_str() << "?>";
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else 
@@ -533,13 +595,16 @@ void serializer::emitter::emit_node(
 	}
 }
 
+
 void serializer::emitter::emit_item(const store::Item* item)
 {
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT )
       tr << " ";
+
     emit_expanded_string(item->getStringValue());
+
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
   else
@@ -551,10 +616,18 @@ void serializer::emitter::emit_item(const store::Item* item)
   }  
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// XML emitter
-serializer::xml_emitter::xml_emitter(serializer* the_serializer, transcoder& the_transcoder)
-  : emitter(the_serializer, the_transcoder)
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  XML Emitter                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+serializer::xml_emitter::xml_emitter(
+    serializer* the_serializer,
+    transcoder& the_transcoder)
+  :
+  emitter(the_serializer, the_transcoder)
 {   
 }
 
@@ -564,7 +637,7 @@ void serializer::xml_emitter::emit_declaration()
 
   if (ser->omit_xml_declaration == PARAMETER_VALUE_NO )
   {
-    tr << "<?xml version=\"" << ser->version << "\" encoding=\"";
+    tr << "<?xml version=\"" << ser->version.c_str() << "\" encoding=\"";
     if (ser->encoding == PARAMETER_VALUE_UTF_8)
       tr << "UTF-8";
 #ifndef ZORBA_NO_UNICODE
@@ -590,11 +663,18 @@ void serializer::xml_emitter::emit_declaration()
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// HTML emitter
 
-serializer::html_emitter::html_emitter(serializer* the_serializer, transcoder& the_transcoder)
-  : emitter(the_serializer, the_transcoder)
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  HTML Emitter                                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+serializer::html_emitter::html_emitter(
+    serializer* the_serializer,
+    transcoder& the_transcoder)
+  :
+  emitter(the_serializer, the_transcoder)
 {   
 }
 
@@ -700,7 +780,7 @@ void serializer::html_emitter::emit_node(
     
     if (ser->indent)
       emit_indentation(depth);
-    tr << "<" << item->getNodeName()->getStringValue().getp();
+    tr << "<" << item->getNodeName()->getStringValue()->c_str();
     previous_item = PREVIOUS_ITEM_WAS_NODE;
     
     /*
@@ -718,7 +798,7 @@ void serializer::html_emitter::emit_node(
       if (ser->indent)
         emit_indentation(depth+1);
 
-      tr << "<meta http-equiv=\"content-type\" content=\"" << ser->media_type << "; charset=";
+      tr << "<meta http-equiv=\"content-type\" content=\"" << ser->media_type.c_str() << "; charset=";
       if (ser->encoding == PARAMETER_VALUE_UTF_8)
         tr << "UTF-8";
 #ifndef ZORBA_NO_UNICODE
@@ -735,7 +815,7 @@ void serializer::html_emitter::emit_node(
     closed_parent_tag |= emit_node_children(item, depth);
         
     if (closed_parent_tag)   
-      tr << "</" << item->getNodeName()->getStringValue().getp() << ">";
+      tr << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
     else
     {
       /* 
@@ -752,13 +832,17 @@ void serializer::html_emitter::emit_node(
     
     if (ser->indent)
       tr << serializer::END_OF_LINE;
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    tr << " " << item->getNodeName()->getStringValue().getp() << "=\"";
+    tr << " " << item->getNodeName()->getStringValue()->c_str() << "=\"";
+
     emit_expanded_string(item->getStringValue(), true);
+
     tr << "\"";
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::textNode)
@@ -784,7 +868,7 @@ void serializer::html_emitter::emit_node(
     if (expand)
       emit_expanded_string(item->getStringValue());
     else
-      tr << item->getStringValue().getp();  // no character expansion
+      tr << item->getStringValue()->c_str();  // no character expansion
     
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
@@ -792,14 +876,19 @@ void serializer::html_emitter::emit_node(
   {
     if (ser->indent)
       emit_indentation(depth);
-    tr << "<!--" << item->getStringValue().getp() << "-->";
+
+    tr << "<!--" << item->getStringValue()->c_str() << "-->";
+
     if (ser->indent)
       tr << ser->END_OF_LINE;
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::piNode )
   {
-    tr << "<?" << item->getTarget() << " " << item->getStringValue().getp() << "?>";
+    tr << "<?" << item->getTarget()->c_str() << " "
+       << item->getStringValue()->c_str() << "?>";
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else
@@ -809,16 +898,25 @@ void serializer::html_emitter::emit_node(
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// SAX2 emitter
-serializer::sax2_emitter::sax2_emitter( serializer * the_serializer, transcoder & the_transcoder, SAX2_ContentHandler * aSAX2ContentHandler )
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  SAX2 Emitter                                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+serializer::sax2_emitter::sax2_emitter(
+    serializer * the_serializer,
+    transcoder & the_transcoder,
+    SAX2_ContentHandler * aSAX2ContentHandler )
   : 
-      emitter(the_serializer, the_transcoder),
-      theSAX2ContentHandler( aSAX2ContentHandler ),
-      theSAX2LexicalHandler( 0 )
-  {
-    theSAX2LexicalHandler = dynamic_cast< SAX2_LexicalHandler * >( aSAX2ContentHandler );
-  }
+  emitter(the_serializer, the_transcoder),
+  theSAX2ContentHandler( aSAX2ContentHandler ),
+  theSAX2LexicalHandler( 0 )
+{
+  theSAX2LexicalHandler = dynamic_cast< SAX2_LexicalHandler * >( aSAX2ContentHandler );
+}
+
 
 void serializer::sax2_emitter::emit_node_children( const store::Item* item )
 {
@@ -838,23 +936,29 @@ void serializer::sax2_emitter::emit_node_children( const store::Item* item )
   }
 }
 
+
 void serializer::sax2_emitter::emit_declaration()
 {
   theSAX2ContentHandler->startDocument();
 }
+
 
 void serializer::sax2_emitter::emit_declaration_end()
 {
   theSAX2ContentHandler->endDocument();
 }
 
+
 bool serializer::sax2_emitter::emit_bindings( const store::Item * item )
 {
-  
   return false;
 }
 
-void serializer::sax2_emitter::emit_node( const store::Item * item, int depth, const store::Item * element_parent )
+
+void serializer::sax2_emitter::emit_node(
+    const store::Item * item,
+    int depth,
+    const store::Item * element_parent )
 {
   emit_node( item, 0, 0 );
 }
@@ -863,7 +967,6 @@ int serializer::sax2_emitter::emit_node_children( const store::Item* item, int d
 {
   return emit_node_children( item, 0, false );
 }
-
 
 
 void serializer::sax2_emitter::emit_node( store::Item* item )
@@ -978,6 +1081,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 	//}
 }
 
+
 void serializer::sax2_emitter::emit_item(const store::Item* item)
 {
   if (item->isAtomic())
@@ -999,7 +1103,10 @@ void serializer::sax2_emitter::emit_item(const store::Item* item)
   }  
 }
 
-void serializer::sax2_emitter::emit_expanded_string( xqpStringStore * aStrStore, bool aEmitAttributeValue )
+
+void serializer::sax2_emitter::emit_expanded_string(
+    const xqpStringStore * aStrStore,
+    bool aEmitAttributeValue )
 {
   if ( theSAX2ContentHandler )
   {
@@ -1010,34 +1117,15 @@ void serializer::sax2_emitter::emit_expanded_string( xqpStringStore * aStrStore,
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Serializer
 
-const xqp_string serializer::END_OF_LINE = "\n";
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Serializer                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-void serializer::reset()
-{ 
-  version = "1.0";  
-  indent = PARAMETER_VALUE_NO;
-  standalone = PARAMETER_VALUE_OMIT;
-  omit_xml_declaration = PARAMETER_VALUE_NO;
-  byte_order_mark = PARAMETER_VALUE_NO;
-  undeclare_prefixes = PARAMETER_VALUE_NO;
-  method = PARAMETER_VALUE_XML;
-  include_content_type = PARAMETER_VALUE_NO;
-  media_type = "";  
-  encoding = PARAMETER_VALUE_UTF_8;
-}
+const char serializer::END_OF_LINE = '\n';
 
-serializer::serializer(error::ErrorManager* aErrorManager)
-  : theErrorManager(aErrorManager)
-{
-  reset();
-}
-
-serializer::~serializer()
-{
-}
 
 int serializer::get_utf8_length(char ch)
 {
@@ -1054,6 +1142,35 @@ int serializer::get_utf8_length(char ch)
   else
     return 0;
 }
+
+
+serializer::serializer(error::ErrorManager* aErrorManager)
+  :
+  theErrorManager(aErrorManager)
+{
+  reset();
+}
+
+
+serializer::~serializer()
+{
+}
+
+
+void serializer::reset()
+{ 
+  version = "1.0";  
+  indent = PARAMETER_VALUE_NO;
+  standalone = PARAMETER_VALUE_OMIT;
+  omit_xml_declaration = PARAMETER_VALUE_NO;
+  byte_order_mark = PARAMETER_VALUE_NO;
+  undeclare_prefixes = PARAMETER_VALUE_NO;
+  method = PARAMETER_VALUE_XML;
+  include_content_type = PARAMETER_VALUE_NO;
+  media_type = "";  
+  encoding = PARAMETER_VALUE_UTF_8;
+}
+
 
 void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 {
@@ -1160,6 +1277,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   }
 }
 
+
 void serializer::validate_parameters(void)
 {
   if (omit_xml_declaration == PARAMETER_VALUE_YES)
@@ -1173,13 +1291,18 @@ void serializer::validate_parameters(void)
   }
 }
 
+
 bool serializer::setup(ostream& os)
 {
   if (encoding == PARAMETER_VALUE_UTF_8)
+  {
     tr = new transcoder(os); // the strings are UTF_8, so we use the ``transparent'' transcoder
+  }
 #ifndef ZORBA_NO_UNICODE
   else if (encoding == PARAMETER_VALUE_UTF_16)
+  {
     tr = new utf8_to_utf16_transcoder(os);
+  }
 #endif
   else
   {
@@ -1199,6 +1322,7 @@ bool serializer::setup(ostream& os)
 
   return true;
 }
+
 
 void serializer::serialize(PlanWrapper *result, ostream& os)
 {
@@ -1221,10 +1345,12 @@ void serializer::serialize(PlanWrapper *result, ostream& os)
   e->emit_declaration_end();
 }
 
-void serializer::serializeSAX2( PlanWrapper * result, ostream & os,
-                                SAX2_ContentHandler * aSAX2ContentHandler )
+
+void serializer::serializeSAX2(
+    PlanWrapper * result,
+    ostream & os,
+    SAX2_ContentHandler * aSAX2ContentHandler )
 {
- 
   validate_parameters();
   if (!setup(os))
     return;
@@ -1243,6 +1369,7 @@ void serializer::serializeSAX2( PlanWrapper * result, ostream & os,
   }
   e->emit_declaration_end();
 }
+
 
 void serializer::serialize(const store::Item* item, ostream& os)
 {

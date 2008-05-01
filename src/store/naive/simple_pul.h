@@ -18,9 +18,10 @@
 
 #include <vector>
 
+#include "util/hashfun.h"
+
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
-#include "store/util/handle_hashset_item.h"
 #include "store/util/hashmap.h"
 #include "store/naive/node_vector.h"
 #include "store/naive/node_updates.h"
@@ -54,7 +55,7 @@ public:
   }
 
 
-  NodeToUpdatesMap() : HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8)
+ NodeToUpdatesMap() : HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8, false)
   {
   }
 

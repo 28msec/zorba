@@ -46,7 +46,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createString(const String& aString)
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString(aString);
+    xqpStringStore_t lString = Unmarshaller::getInternalString(aString);
 
     store::Item_t lItem;
     lItem = theItemFactory->createString(lString);
@@ -57,7 +57,7 @@ namespace zorba {
   Item
   ItemFactoryImpl::createAnyURI(const String& aURI)
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString(aURI);
+    xqpStringStore_t lString = Unmarshaller::getInternalString(aURI);
 
     store::Item_t lItem;
     lItem = theItemFactory->createAnyURI(lString);
@@ -115,7 +115,7 @@ namespace zorba {
   Item 
   ItemFactoryImpl::createNCName(const String& aValue)
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
+    xqpStringStore_t lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     lItem = theItemFactory->createNCName(lString);
     return &*lItem;

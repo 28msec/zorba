@@ -62,14 +62,17 @@ public:
   static bool
   is_ucscharCP(uint32_t cp);
 
-  bool
-  is_iprivateCP(uint32_t cp) const;
+  static bool
+  is_iprivateCP(uint32_t cp);
   
-  bool
-  is_printableASCII(uint32_t cp) const;
+  static bool
+  is_printableASCII(uint32_t cp);
   
-  bool
-  is_Invalid_in_IRI(uint32_t cp) const;
+  static bool
+  is_Invalid_in_IRI(uint32_t cp);
+
+  static xqpStringStore_t
+  getXqpString(UnicodeString source);
 
 public:
   xqpStringStore() { }
@@ -157,6 +160,9 @@ public:
   append(const char* suffix) const;
 
   xqpStringStore_t
+  substr(std::string::size_type index, std::string::size_type length) const;
+
+  xqpStringStore_t
   uppercase() const;
       
   xqpStringStore_t
@@ -194,6 +200,9 @@ public:
 
   xqpStringStore_t
   encodeForUri() const;
+
+  xqpStringStore_t
+  normalize(const xqpStringStore* normMode) const;
 
   UnicodeString
   getUnicodeString() const;
@@ -551,10 +560,6 @@ public:
   fromUTF16(const UChar* src, int32_t len);
   
 private:
-
-  /**  Return a xqpString (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
-   */
-  static xqpString getXqpString(UnicodeString source);
 
   /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
    */

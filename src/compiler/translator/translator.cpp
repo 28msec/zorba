@@ -2761,28 +2761,31 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
     if (ce != NULL
         && TypeOps::is_equal (*CTXTS->create_value_type (ce->get_val ()),
                               *GENV_TYPESYSTEM.STRING_TYPE_ONE))
+    {
+      store::Item_t castLiteral;
+      try 
       {
-        store::Item_t castLiteral;
-        try {
-          castLiteral = GenericCast::instance()->castToQName(ce->get_val()->getStringValue(), 
-                                                             ns_ctx);
-        } catch (error::ZorbaError& e) {
-          if (isCast)
-          {
-            throw e;
-          } else {
-            if (e.theErrorCode == ZorbaError::FORG0001)
-              ZORBA_ERROR(ZorbaError::XPST0003);
-            else
-              ZORBA_ERROR(ZorbaError::XPST0081);
-          }
-        }
-        assert (castLiteral != NULL || ! isCast);
+        xqpStringStore_t strval = ce->get_val()->getStringValue();
+        castLiteral = GenericCast::instance()->castToQName(strval, ns_ctx);
+      }
+      catch (error::ZorbaError& e)
+      {
         if (isCast)
-          return new const_expr (loc, castLiteral);
-        else
-          return new const_expr (loc, castLiteral != NULL);
-      } else {
+        {
+          throw e;
+        } else {
+          if (e.theErrorCode == ZorbaError::FORG0001)
+            ZORBA_ERROR(ZorbaError::XPST0003);
+          else
+            ZORBA_ERROR(ZorbaError::XPST0081);
+        }
+      }
+      assert (castLiteral != NULL || ! isCast);
+      if (isCast)
+        return new const_expr (loc, castLiteral);
+      else
+        return new const_expr (loc, castLiteral != NULL);
+    } else {
       if (isCast)
         return new treat_expr (loc, node, type, ZorbaError::XPTY0004);
       else
@@ -2790,6 +2793,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
     }
   }
 }
+
 
 void *begin_visit(const CastExpr& /*v*/)
 {
@@ -3226,7 +3230,8 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
   axis_step_expr *axisExpr = NULL;
   trycatch_expr *tce = NULL;
 
-  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL) {
+  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL)
+  {
     // Construct name-test match expr
     rchandle<match_expr> matchExpr = new match_expr(v.get_location());;
     matchExpr->setTestKind(match_name_test);
@@ -3234,10 +3239,9 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     if (v.getQName() != NULL)
     {
       string qname = v.getQName()->get_qname();
-      store::Item_t qn_h =
-        axisExpr->getAxis () == axis_kind_attribute
-        ? sctx_p->lookup_qname ("", qname)
-        : sctx_p->lookup_elem_qname (qname);
+      store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
+                            sctx_p->lookup_qname("", qname) :
+                            sctx_p->lookup_elem_qname(qname));
       matchExpr->setQName(qn_h);
     }
     else

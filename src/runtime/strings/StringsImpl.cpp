@@ -17,6 +17,7 @@
 
 #include "zorbatypes/zorbatypesError.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbatypes/utf8.h"
 
 #include "common/common.h"
 
@@ -51,44 +52,49 @@ namespace zorba {
  *If any of the code points in $arg is not a legal XML character,
  *an error is raised [err:FOCH0001] ("Code point not valid.").
  *_______________________________________________________________________*/
-/* begin class CodepointsToStringIterator */
 store::Item_t
-CodepointsToStringIterator::nextImpl(PlanState& planState) const {
+CodepointsToStringIterator::nextImpl(PlanState& planState) const 
+{
   store::Item_t item;
   store::Item_t resItem;
-  xqp_string resStr;
+  xqpStringStore_t resStr;
+  std::string buf;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while(true){
+  while(true)
+  {
     item = consumeNext(theChildren [0].getp(), planState );
-    if ( item != NULL ){
+    if ( item != NULL )
+    {
       item = item->getAtomizationValue();
       {
         xqp_string lUtf8Code = item->getIntegerValue().toString();
         uint32_t lCode;
-        if (NumConversions::strToUInt(lUtf8Code, lCode)) {
-          try{
-            resStr += lCode;
-            }
-            catch(zorbatypesException& ex){
-              ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, lUtf8Code);
-            }
+        if (NumConversions::strToUInt(lUtf8Code, lCode)) 
+        {
+          char seq[5] = {0,0,0,0,0};
+          UTF8Encode(lCode, seq);
+          buf += seq;
         }
         else
+        {
           ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0001, loc, lUtf8Code);
+        }
       }
     }
-    else{
-      resItem = GENV_ITEMFACTORY->createString(resStr.getStore());
+    else
+    {
+      resStr = new xqpStringStore(buf);
+      resItem = GENV_ITEMFACTORY->createString(resStr);
       STACK_PUSH( resItem, state );
       break;
     }
   }
   STACK_END (state);
 }
-/* end class CodepointsToStringIterator */
+
 
 /**
  *______________________________________________________________________
@@ -473,7 +479,7 @@ SubstringIterator::nextImpl(PlanState& planState) const
   store::Item_t startItem;
   store::Item_t lenItem;
   xqpString stringVal;
-  xqpString resStr;
+  xqpStringStore_t resStr;
   int32_t tmpStart;
   int32_t tmpLen;
 
@@ -489,7 +495,7 @@ SubstringIterator::nextImpl(PlanState& planState) const
     {
       stringVal = stringItem->getStringValue().getp();
 
-      startItem = consumeNext(theChildren[1].getp(), planState );
+      startItem = consumeNext(theChildren[1], planState );
 
       ZORBA_ASSERT(startItem != NULL);
 
@@ -515,7 +521,7 @@ SubstringIterator::nextImpl(PlanState& planState) const
         else
         {
           //theChildren.size() ==3
-          lenItem = consumeNext(theChildren[2].getp(), planState );
+          lenItem = consumeNext(theChildren[2], planState );
 
           ZORBA_ASSERT(startItem != NULL);
 
@@ -539,12 +545,12 @@ SubstringIterator::nextImpl(PlanState& planState) const
                 if(tmpStart <= 0)
                 {
                   if((tmpLen+tmpStart-1) >= 0)
-                    resStr = stringVal.substr(0,  tmpStart-1 + tmpLen);
+                    resStr = stringVal.substr(0,  tmpStart-1 + tmpLen).getStore();
                 //  else
                 //    ZORBA_ERROR_ALERT();
                 }
                 else
-                  resStr = stringVal.substr(tmpStart-1, tmpLen);
+                  resStr = stringVal.substr(tmpStart-1, tmpLen).getStore();
               }
               //else
               //  ZORBA_ERROR_ALERT();
@@ -555,10 +561,12 @@ SubstringIterator::nextImpl(PlanState& planState) const
     } // non empty string arg
   } // non NULL string arg
 
-  if (!resStr.empty())
-    resStr = resStr.formatAsXML();
+  if (resStr != NULL && !resStr->empty())
+    resStr = resStr->formatAsXML();
+  else
+    resStr = new xqpStringStore("");
 
-  STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
+  STACK_PUSH( GENV_ITEMFACTORY->createString(resStr), state );
 
   STACK_END (state);
 }
@@ -624,7 +632,7 @@ store::Item_t
 NormalizeSpaceIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t item;
-  xqpStringStore_t empty;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -633,13 +641,13 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState) const
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(item->getStringValue()->normalizeSpace()),
-               state);
+    resStr = item->getStringValue()->normalizeSpace();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   else
   {
-    empty = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
+    resStr = new xqpStringStore("");
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   STACK_END (state);
 }
@@ -668,19 +676,18 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState) const
   *Conforming implementations ·must· support normalization form "NFC" and ·may·
   *support normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED".
   *_______________________________________________________________________*/
-/* begin class NormalizeUnicodeIterator */
 store::Item_t
 NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t item0;
   store::Item_t item1;
   xqpStringStore_t tempStr = new xqpStringStore("NFC");
-  xqpString res;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item0 = consumeNext(theChildren[0].getp(), planState );
+  item0 = consumeNext(theChildren[0], planState );
   if(item0 != NULL)
   {
     if(theChildren.size() == 2)
@@ -694,14 +701,14 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
     }
 
     if(tempStr->empty() ||
-       tempStr->str() == "NFC" ||
-       tempStr->str() =="NFKC" ||
-       tempStr->str() =="NFD" ||
-       tempStr->str() == "NFKD")
+       tempStr->byteEqual("NFC", 3) ||
+       tempStr->byteEqual("NFKC", 4) ||
+       tempStr->byteEqual("NFD", 3) ||
+       tempStr->byteEqual("NFKD", 4))
     {
-      res = item0->getStringValue().getp();
-      res = res.normalize(tempStr.getp());
-      STACK_PUSH( GENV_ITEMFACTORY->createString(res.getStore()), state );
+      resStr = item0->getStringValue();
+      resStr = resStr->normalize(tempStr);
+      STACK_PUSH( GENV_ITEMFACTORY->createString(resStr), state );
     }
     else
     {
@@ -711,12 +718,12 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
   else
   {
     // must push empty string due to return type of function
-    STACK_PUSH( GENV_ITEMFACTORY->createString(res.getStore()), state);
+    resStr = new xqpStringStore("");
+    STACK_PUSH( GENV_ITEMFACTORY->createString(resStr), state);
   }
   
   STACK_END (state);
 }
-/* end class NormalizeUnicodeIterator */
 
   /**
   *______________________________________________________________________
@@ -740,7 +747,7 @@ store::Item_t
 UpperCaseIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t item;
-  xqpStringStore_t empty;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -749,13 +756,13 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(item->getStringValue()->uppercase()),
-               state);
+    resStr = item->getStringValue()->uppercase();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   else
   {
-    empty = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
+    resStr = new xqpStringStore("");
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   STACK_END (state);
 }
@@ -780,9 +787,10 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
   *_______________________________________________________________________*/
 /* begin class LowerCaseIterator */
 store::Item_t
-LowerCaseIterator::nextImpl(PlanState& planState) const {
+LowerCaseIterator::nextImpl(PlanState& planState) const 
+{
   store::Item_t item;
-  xqpStringStore_t empty;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -791,13 +799,13 @@ LowerCaseIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(item->getStringValue()->lowercase()),
-               state);
+    resStr = item->getStringValue()->lowercase();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   else
   {
-    empty = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
+    resStr = new xqpStringStore("");
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   STACK_END (state);
 }
@@ -838,7 +846,7 @@ TranslateIterator::nextImpl(PlanState& planState) const
   xqpString strvalarg;
   xqpString strval0;
   xqpString strval1;
-  xqpStringStore* empty;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -860,22 +868,22 @@ TranslateIterator::nextImpl(PlanState& planState) const
 
         strvalarg = itemArg->getStringValue().getp();
 
-        res = GENV_ITEMFACTORY->createString(
-                                 strvalarg.translate(strval0, strval1).getStore());
+        resStr = strvalarg.translate(strval0, strval1).getStore();
+        res = GENV_ITEMFACTORY->createString(resStr);
       }
     }
   }
   
   if (res == NULL)
   {
-    empty = new xqpStringStore("");
-    res = GENV_ITEMFACTORY->createString(empty);
+    resStr = new xqpStringStore("");
+    res = GENV_ITEMFACTORY->createString(resStr);
   }
 
   STACK_PUSH( res, state );
   STACK_END (state);
 }
-/* end class TranslateIterator */
+
 
  /**
  *______________________________________________________________________
@@ -883,11 +891,12 @@ TranslateIterator::nextImpl(PlanState& planState) const
  *  7.4.10 fn:encode-for-uri
  *
  *_______________________________________________________________________*/
-/* begin class EncodeForUriIterator */
+
 store::Item_t
-EncodeForUriIterator::nextImpl(PlanState& planState) const {
+EncodeForUriIterator::nextImpl(PlanState& planState) const 
+{
   store::Item_t item;
-  xqpStringStore_t empty;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -896,28 +905,29 @@ EncodeForUriIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(item->getStringValue()->encodeForUri()),
-               state);
+    resStr = item->getStringValue()->encodeForUri();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   else
   {
-    empty = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
+    resStr = new xqpStringStore("");
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   STACK_END (state);
 }
-/* end class EncodeForUriIterator */
+
   /**
  *______________________________________________________________________
  *
  *  7.4.11 fn:iri-to-uri
  *
  *_______________________________________________________________________*/
-/* begin class IriToUriIterator */
+
 store::Item_t
-IriToUriIterator::nextImpl(PlanState& planState) const {
+IriToUriIterator::nextImpl(PlanState& planState) const 
+{
   store::Item_t item;
-  xqpStringStore_t empty;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -926,28 +936,30 @@ IriToUriIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(item->getStringValue()->iriToUri()),
-               state);
+    resStr = item->getStringValue()->iriToUri();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   else
   {
-    empty = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
+    resStr = new xqpStringStore("");
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   STACK_END (state);
 }
-/* end class IriToUriIterator */
+
+
   /**
  *______________________________________________________________________
  *
  *  7.4.12 fn:escape-html-uri
  *
  *_______________________________________________________________________*/
-/* begin class EscapeHtmlUriIterator */
+
 store::Item_t
-EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
+EscapeHtmlUriIterator::nextImpl(PlanState& planState) const 
+{
   store::Item_t item;
-  xqpStringStore_t empty;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -956,17 +968,17 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(item->getStringValue()->escapeHtmlUri()),
-               state);
+    resStr = item->getStringValue()->escapeHtmlUri();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   else
   {
-    empty = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
+    resStr = new xqpStringStore("");
+    STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   }
   STACK_END (state);
 }
-/* end class EscapeHtmlUriIterator */
+
 
   /**
   *______________________________________________________________________
@@ -1295,7 +1307,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
   int32_t index = -1;
   xqpStringStore_t arg1;
   xqpStringStore_t arg2;
-  xqpStringStore* resStr;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1399,7 +1411,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
   int32_t startPos = -1;
   xqpStringStore_t arg1;
   xqpStringStore_t arg2;
-  xqpStringStore* resStr;
+  xqpStringStore_t resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1551,7 +1563,7 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
 {
 #ifndef ZORBA_NO_UNICODE
   xqp_string input, pattern, replacement, flags;
-  xqp_string res;
+  xqpStringStore_t resStr;
   store::Item_t item;
   bool tmp;
   
@@ -1576,10 +1588,12 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
     flags = item->getStringValue().getp();
   }
 
-  try {
+  try
+  {
     tmp = xqp_string().matches(pattern, flags);
   }
-  catch(zorbatypesException& ex){
+  catch(zorbatypesException& ex)
+  {
     ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
   }
   
@@ -1587,14 +1601,16 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
     ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
-  try{
-    res = input.replace(pattern, replacement, flags);
+  try
+  {
+    resStr = input.replace(pattern, replacement, flags).getStore();
   }
-  catch(zorbatypesException& ex){
+  catch(zorbatypesException& ex)
+  {
     ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
   }
   
-  STACK_PUSH(GENV_ITEMFACTORY->createString(res.getStore ()), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(resStr), state);
   
   STACK_END (state);
 #else
@@ -1637,10 +1653,9 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
 {
 #ifndef ZORBA_NO_UNICODE
   xqp_string remaining;
-  xqp_string token;
+  xqpStringStore_t token;
   store::Item_t item;
   bool tmp;
-  
   
   FnTokenizeIteratorState* state;
   DEFAULT_STACK_INIT(FnTokenizeIteratorState, state, planState);
@@ -1670,17 +1685,20 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
     ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
-  while (! state->theString.empty ()) {
-    try{
-      token = state->theString.tokenize(state->thePattern, state->theFlags, &remaining);
+  while (! state->theString.empty ()) 
+  {
+    try
+    {
+      token = state->theString.tokenize(state->thePattern, state->theFlags, &remaining).getStore();
     }
-    catch(zorbatypesException& ex){
+    catch(zorbatypesException& ex)
+    {
       ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
     }
     
     assert (remaining.length () < state->theString.length ());
     state->theString = remaining;
-    STACK_PUSH(GENV_ITEMFACTORY->createString(token.getStore()), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(token), state);
   }
 
   STACK_END(state);

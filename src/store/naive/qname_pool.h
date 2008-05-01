@@ -70,7 +70,11 @@ protected:
     }
 
   public:
-    QNamePoolHashSet(ulong size) : HashSet<QNameItemImpl*, QNamePoolHashSet>(size) {}
+    QNamePoolHashSet(ulong size) 
+      :
+      HashSet<QNameItemImpl*, QNamePoolHashSet>(size, true)
+    {
+    }
   };
 
 

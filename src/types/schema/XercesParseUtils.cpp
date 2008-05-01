@@ -27,7 +27,7 @@
 #include "types/typeimpl.h"
 #include "errors/error_manager.h"
 #include <zorbatypes/numconversions.h>
-#include "util/XmlWhitespace.h"
+//#include "util/XmlWhitespace.h"
 #include "system/globalenv.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
@@ -38,9 +38,11 @@ namespace zorba
 {
 
 // Parse Atomic Schema Types
-bool XercesParseUtils::parseXSBoolean(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSBoolean(
+    const xqpStringStore_t& textValue,
+    store::Item_t& result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_boolean;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -59,16 +61,18 @@ bool XercesParseUtils::parseXSBoolean(xqpString textValue, store::Item_t &result
   }
   else
   {
-    ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to boolean");
+    ZORBA_ERROR_DESC(ZorbaError::FORG0001, 
+                     "String '" + textValue->str() + "' cannot be cast to boolean");
     return false;
   }
 }
 
 //numeric types
-bool XercesParseUtils::parseXSInteger(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSInteger(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_integer;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -88,14 +92,17 @@ bool XercesParseUtils::parseXSInteger(xqpString textValue, store::Item_t &result
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to integer");
+                      "String '" + textValue->str() + "' cannot be cast to integer");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSPositiveInteger(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSPositiveInteger(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_positiveInteger;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -115,14 +122,17 @@ bool XercesParseUtils::parseXSPositiveInteger(xqpString textValue, store::Item_t
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to positiveInteger");
+                      "String '" + textValue->str() + "' cannot be cast to positiveInteger");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSNonPositiveInteger(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSNonPositiveInteger(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_nonPositiveInteger;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -142,14 +152,17 @@ bool XercesParseUtils::parseXSNonPositiveInteger(xqpString textValue, store::Ite
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to nonPositiveInteger");
+                      "String '" + textValue->str() + "' cannot be cast to nonPositiveInteger");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSNegativeInteger(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSNegativeInteger(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_negativeInteger;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -169,14 +182,16 @@ bool XercesParseUtils::parseXSNegativeInteger(xqpString textValue, store::Item_t
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to negativeInteger");
+                      "String '" + textValue->str() + "' cannot be cast to negativeInteger");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSNonNegativeInteger(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSNonNegativeInteger(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_nonNegativeInteger;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -196,14 +211,16 @@ bool XercesParseUtils::parseXSNonNegativeInteger(xqpString textValue, store::Ite
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to nonNegativeInteger");
+                      "String '" + textValue->str() + "' cannot be cast to nonNegativeInteger");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSUnsignedByte(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSUnsignedByte(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_unsignedByte;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -223,14 +240,16 @@ bool XercesParseUtils::parseXSUnsignedByte(xqpString textValue, store::Item_t &r
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to unsignedByte");
+                      "String '" + textValue->str() + "' cannot be cast to unsignedByte");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSUnsignedShort(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSUnsignedShort(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_unsignedShort;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -250,14 +269,16 @@ bool XercesParseUtils::parseXSUnsignedShort(xqpString textValue, store::Item_t &
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to unignedShort");
+                      "String '" + textValue->str() + "' cannot be cast to unignedShort");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSUnsignedInt(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSUnsignedInt(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_unsignedInt;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -277,14 +298,15 @@ bool XercesParseUtils::parseXSUnsignedInt(xqpString textValue, store::Item_t &re
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to unsignedInt");
+                      "String '" + textValue->str() + "' cannot be cast to unsignedInt");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSUnsignedLong(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSUnsignedLong(
+    const xqpStringStore_t& textValue, store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_unsignedLong;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -304,14 +326,16 @@ bool XercesParseUtils::parseXSUnsignedLong(xqpString textValue, store::Item_t &r
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to unsignedLong");
+                      "String '" + textValue->str() + "' cannot be cast to unsignedLong");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSByte(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSByte(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_byte;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -331,14 +355,16 @@ bool XercesParseUtils::parseXSByte(xqpString textValue, store::Item_t &result)
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to byte");
+                      "String '" + textValue->str() + "' cannot be cast to byte");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSShort(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSShort(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_short;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -358,14 +384,16 @@ bool XercesParseUtils::parseXSShort(xqpString textValue, store::Item_t &result)
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to short");
+                      "String '" + textValue->str() + "' cannot be cast to short");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSInt(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSInt(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_int;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -385,14 +413,16 @@ bool XercesParseUtils::parseXSInt(xqpString textValue, store::Item_t &result)
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to int");
+                      "String '" + textValue->str() + "' cannot be cast to int");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSLong(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSLong(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_long;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -412,14 +442,16 @@ bool XercesParseUtils::parseXSLong(xqpString textValue, store::Item_t &result)
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to long");
+                      "String '" + textValue->str() + "' cannot be cast to long");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSFloat(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSFloat(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_float;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -437,10 +469,10 @@ bool XercesParseUtils::parseXSFloat(xqpString textValue, store::Item_t &result)
 
     // remove following if xs:float will be represented by a C float
     //textValue = textValue.trim(" \n\r\t",4);
-    textValue = xmlWhitespaceCollapse(textValue);
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_float n;
-    if (NumConversions::strToFloat(textValue, n))
+    if (NumConversions::strToFloat(textValue2.getp(), n))
     {
       result = factory->createFloat(n);
       return true;  
@@ -451,13 +483,15 @@ bool XercesParseUtils::parseXSFloat(xqpString textValue, store::Item_t &result)
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to float");
+                    "String '" + textValue->str() + "' cannot be cast to float");
   return false;
 }
 
-bool XercesParseUtils::parseXSDouble(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSDouble(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_double;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -474,10 +508,10 @@ bool XercesParseUtils::parseXSDouble(xqpString textValue, store::Item_t &result)
 
     // remove following if xs:float will be represented by a C float
     //textValue = textValue.trim(" \n\r\t",4);
-    textValue = xmlWhitespaceCollapse(textValue);
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_double n;
-    if (NumConversions::strToDouble(textValue, n))
+    if (NumConversions::strToDouble(textValue2.getp(), n))
     {
       result = factory->createDouble(n);
       return true;    
@@ -488,13 +522,15 @@ bool XercesParseUtils::parseXSDouble(xqpString textValue, store::Item_t &result)
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to double");
+                    "String '" + textValue->str() + "' cannot be cast to double");
   return false;
 }
 
-bool XercesParseUtils::parseXSDecimal(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSDecimal(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_decimal;
   XSValue::Status status = XSValue::st_Init;;
 
@@ -515,18 +551,20 @@ bool XercesParseUtils::parseXSDecimal(xqpString textValue, store::Item_t &result
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to decimal");
+                      "String '" + textValue->str() + "' cannot be cast to decimal");
     return false;
   }
 }
 
 // string types
-bool XercesParseUtils::parseXSString(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSString(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
   // optimization posible since there is no pattern to be checked
-  textValue = xmlWhitespacePreserve(textValue);
+  xqpStringStore_t textValue2 = textValue->normalizeSpace();
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createString(textValue.getStore());
+  result = factory->createString(textValue2);
   return true;  
 
   //XMLCh* content = XMLString::transcode(textValue.c_str());    
@@ -552,16 +590,21 @@ bool XercesParseUtils::parseXSString(xqpString textValue, store::Item_t &result)
   //}
 }
 
-bool XercesParseUtils::parseXSNormalizedString(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSNormalizedString(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
   // optimization posible since there is no pattern to be checked
-  textValue = xmlWhitespaceReplace(textValue);
+  xqpStringStore_t textValue2 = textValue->normalizeSpace();
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  result = factory->createNormalizedString(textValue);
+  result = factory->createNormalizedString(textValue2);
   return true;  
 }
 
-bool XercesParseUtils::parseXSToken(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSToken(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
   // optimization posible since there is no pattern to be checked
   //textValue = xmlWhitespaceCollapse(textValue);
@@ -569,8 +612,8 @@ bool XercesParseUtils::parseXSToken(xqpString textValue, store::Item_t &result)
   //result = factory->createToken(textValue.getStore());
   //return true;  
 
-  textValue = xmlWhitespaceCollapse(textValue);
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  xqpStringStore_t textValue2 = textValue->normalizeSpace();
+  XMLCh* content = XMLString::transcode(textValue2->c_str());    
   XSValue::DataType datatype = XSValue::dt_token;
   XSValue::Status status = XSValue::st_Init;
 
@@ -581,22 +624,25 @@ bool XercesParseUtils::parseXSToken(xqpString textValue, store::Item_t &result)
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createToken(textValue);
+    result = factory->createToken(textValue2);
     return true;  
   }
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to NMToken");
+                      "String '" + textValue->str() + "' cannot be cast to NMToken");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSNMToken(xqpString textValue, store::Item_t &result)
-{
-  textValue = xmlWhitespaceCollapse(textValue);
 
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+bool XercesParseUtils::parseXSNMToken(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
+{
+  xqpStringStore_t textValue2 = textValue->normalizeSpace();
+
+  XMLCh* content = XMLString::transcode(textValue2->c_str());    
   XSValue::DataType datatype = XSValue::dt_NMTOKEN;
   XSValue::Status status = XSValue::st_Init;
 
@@ -607,20 +653,25 @@ bool XercesParseUtils::parseXSNMToken(xqpString textValue, store::Item_t &result
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createNMTOKEN(textValue.getStore());
+    result = factory->createNMTOKEN(textValue2);
     return true;  
   }
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to NMToken");
+                      "String '" + textValue->str() + "' cannot be cast to NMToken");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSName(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSName(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  xqpStringStore_t textValue2 = textValue;
+
+  XMLCh* content = XMLString::transcode(textValue2->c_str());    
   XSValue::DataType datatype = XSValue::dt_Name;
   XSValue::Status status = XSValue::st_Init;
 
@@ -631,20 +682,25 @@ bool XercesParseUtils::parseXSName(xqpString textValue, store::Item_t &result)
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createName(textValue.getStore());
+    result = factory->createName(textValue2);
     return true;  
   }
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to Name");
+                      "String '" + textValue->str() + "' cannot be cast to Name");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSNCName(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSNCName(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  xqpStringStore_t textValue2 = textValue;
+
+  XMLCh* content = XMLString::transcode(textValue2->c_str());    
   XSValue::DataType datatype = XSValue::dt_NCName;
   XSValue::Status status = XSValue::st_Init;
 
@@ -655,20 +711,25 @@ bool XercesParseUtils::parseXSNCName(xqpString textValue, store::Item_t &result)
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createNCName(textValue.getStore());
+    result = factory->createNCName(textValue2);
     return true;  
   }
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to NCName");
+                      "String '" + textValue->str() + "' cannot be cast to NCName");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSID(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSID(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  xqpStringStore_t textValue2 = textValue;
+
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_ID;
   XSValue::Status status = XSValue::st_Init;
 
@@ -679,20 +740,25 @@ bool XercesParseUtils::parseXSID(xqpString textValue, store::Item_t &result)
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createID(textValue.getStore());
+    result = factory->createID(textValue2);
     return true;  
   }
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to ID");
+      "String '" + textValue->str() + "' cannot be cast to ID");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSIDRef(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSIDRef(
+    const xqpStringStore_t& textValue, 
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  xqpStringStore_t textValue2 = textValue;
+
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_IDREF;
   XSValue::Status status = XSValue::st_Init;
 
@@ -703,20 +769,25 @@ bool XercesParseUtils::parseXSIDRef(xqpString textValue, store::Item_t &result)
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createIDREF(textValue.getStore());
+    result = factory->createIDREF(textValue2);
     return true;  
   }
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to IDREF");
+      "String '" + textValue->str() + "' cannot be cast to IDREF");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSEntity(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSEntity(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  xqpStringStore_t textValue2 = textValue;
+
+  XMLCh* content = XMLString::transcode(textValue2->c_str());    
   XSValue::DataType datatype = XSValue::dt_ENTITY;
   XSValue::Status status = XSValue::st_Init;
 
@@ -727,20 +798,25 @@ bool XercesParseUtils::parseXSEntity(xqpString textValue, store::Item_t &result)
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createENTITY(textValue.getStore());
+    result = factory->createENTITY(textValue2);
     return true;  
   }
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to ENTITY");
+      "String '" + textValue->str() + "' cannot be cast to ENTITY");
     return false;
   }
 }
 
-bool XercesParseUtils::parseXSNotation(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSNotation(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  xqpStringStore_t textValue2 = textValue;
+
+  XMLCh* content = XMLString::transcode(textValue2->c_str());    
   XSValue::DataType datatype = XSValue::dt_NOTATION;
   XSValue::Status status = XSValue::st_Init;
 
@@ -751,22 +827,24 @@ bool XercesParseUtils::parseXSNotation(xqpString textValue, store::Item_t &resul
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    result = factory->createNOTATION(textValue.getStore());
+    result = factory->createNOTATION(textValue2);
     return true;  
   }
   else
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to NOTATION");
+      "String '" + textValue->str() + "' cannot be cast to NOTATION");
     return false;
   }
 }
 
 // date types
-bool XercesParseUtils::parseXSDateTime(xqpString textValue, store::Item_t &result)
+bool XercesParseUtils::parseXSDateTime(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
   // Warning: timezones are automaticaly normalized to Z
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_dateTime;
   XSValue::Status status = XSValue::st_Init;
 
@@ -795,8 +873,8 @@ bool XercesParseUtils::parseXSDateTime(xqpString textValue, store::Item_t &resul
     //result = factory->createDateTime(tValue);
     //result = factory->createDateTime(year, month, day, hour, minute, sec);
     xqp_dateTime dt;
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (0 == DateTime::parseDateTime(textValue, dt))  // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    if (0 == DateTime::parseDateTime(textValue2.getp(), dt))  // Warning: parsing code is not using Xerces
     {
       result = factory->createDateTime(dt);
       return true;  
@@ -807,14 +885,17 @@ bool XercesParseUtils::parseXSDateTime(xqpString textValue, store::Item_t &resul
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to dateTime");
+    "String '" + textValue->str() + "' cannot be cast to dateTime");
   return false;
 }
 
-bool XercesParseUtils::parseXSDate(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSDate(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
   // Warning: timezones are automaticaly normalized to Z
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_date;
   XSValue::Status status = XSValue::st_Init;
 
@@ -834,8 +915,8 @@ bool XercesParseUtils::parseXSDate(xqpString textValue, store::Item_t &result)
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     //result = factory->createDate(tValue);
     xqp_date d;
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (0 == DateTime::parseDate(textValue, d))  // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    if (0 == DateTime::parseDate(textValue2.getp(), d))  // Warning: parsing code is not using Xerces
     {
       result = factory->createDate(d);
       return true;  
@@ -846,14 +927,17 @@ bool XercesParseUtils::parseXSDate(xqpString textValue, store::Item_t &result)
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to date");
+    "String '" + textValue->str() + "' cannot be cast to date");
   return false;
 }
 
-bool XercesParseUtils::parseXSTime(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSTime(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
   // Warning: timezones are automaticaly normalized to Z
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_time;
   XSValue::Status status = XSValue::st_Init;
 
@@ -878,8 +962,8 @@ bool XercesParseUtils::parseXSTime(xqpString textValue, store::Item_t &result)
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     //result = factory->createTime(tValue);
     xqp_time t;
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (0 == DateTime::parseTime(textValue, t))  // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    if (0 == DateTime::parseTime(textValue2.getp(), t))  // Warning: parsing code is not using Xerces
     {
       result = factory->createTime(t);
       return true;  
@@ -890,13 +974,16 @@ bool XercesParseUtils::parseXSTime(xqpString textValue, store::Item_t &result)
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to time");
+    "String '" + textValue->str() + "' cannot be cast to time");
   return false;
 }
 
-bool XercesParseUtils::parseXSGYearMonth(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSGYearMonth(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_gYearMonth;
   XSValue::Status status = XSValue::st_Init;
 
@@ -912,8 +999,8 @@ bool XercesParseUtils::parseXSGYearMonth(xqpString textValue, store::Item_t &res
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_gYearMonth tValue;
     
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (DateTime::parseGYearMonth(textValue, tValue)) // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    if (DateTime::parseGYearMonth(textValue2.getp(), tValue)) // Warning: parsing code is not using Xerces
     {
       result = factory->createGYearMonth(tValue);
       return true;  
@@ -924,13 +1011,16 @@ bool XercesParseUtils::parseXSGYearMonth(xqpString textValue, store::Item_t &res
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to gYearMonth");
+    "String '" + textValue->str() + "' cannot be cast to gYearMonth");
   return false;
 }
 
-bool XercesParseUtils::parseXSGYear(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSGYear(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_gYear;
   XSValue::Status status = XSValue::st_Init;
 
@@ -945,8 +1035,9 @@ bool XercesParseUtils::parseXSGYear(xqpString textValue, store::Item_t &result)
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_gYear tValue;
     
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (DateTime::parseGYear(textValue, tValue))    // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+
+    if (DateTime::parseGYear(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
     {
       result = factory->createGYear(tValue);
       return true;  
@@ -957,13 +1048,16 @@ bool XercesParseUtils::parseXSGYear(xqpString textValue, store::Item_t &result)
   }
   
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to gYear");
+    "String '" + textValue->str() + "' cannot be cast to gYear");
   return false;
 }
 
-bool XercesParseUtils::parseXSGMonthDay(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSGMonthDay(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_gMonthDay;
   XSValue::Status status = XSValue::st_Init;
 
@@ -978,8 +1072,8 @@ bool XercesParseUtils::parseXSGMonthDay(xqpString textValue, store::Item_t &resu
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_gMonthDay tValue;
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (DateTime::parseGMonthDay(textValue, tValue))    // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    if (DateTime::parseGMonthDay(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
     {
       result = factory->createGMonthDay(tValue);
       return true;  
@@ -990,13 +1084,16 @@ bool XercesParseUtils::parseXSGMonthDay(xqpString textValue, store::Item_t &resu
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to gMonthDay");
+    "String '" + textValue->str() + "' cannot be cast to gMonthDay");
   return false;
 }
 
-bool XercesParseUtils::parseXSGDay(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSGDay(
+   const xqpStringStore_t& textValue,
+   store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_gDay;
   XSValue::Status status = XSValue::st_Init;
 
@@ -1010,8 +1107,8 @@ bool XercesParseUtils::parseXSGDay(xqpString textValue, store::Item_t &result)
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_gDay tValue;
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (DateTime::parseGDay(textValue, tValue))   // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    if (DateTime::parseGDay(textValue2.getp(), tValue))   // Warning: parsing code is not using Xerces
     {
       result = factory->createGDay(tValue);
       return true;  
@@ -1022,13 +1119,16 @@ bool XercesParseUtils::parseXSGDay(xqpString textValue, store::Item_t &result)
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to gDay");
+    "String '" + textValue->str() + "' cannot be cast to gDay");
   return false;
 }
 
-bool XercesParseUtils::parseXSGMonth(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSGMonth(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_gMonth;
   XSValue::Status status = XSValue::st_Init;
 
@@ -1042,8 +1142,8 @@ bool XercesParseUtils::parseXSGMonth(xqpString textValue, store::Item_t &result)
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_gMonth tValue;
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (DateTime::parseGMonth(textValue, tValue))   // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    if (DateTime::parseGMonth(textValue2.getp(), tValue))   // Warning: parsing code is not using Xerces
     {
       result = factory->createGMonth(tValue);
       return true;  
@@ -1054,13 +1154,16 @@ bool XercesParseUtils::parseXSGMonth(xqpString textValue, store::Item_t &result)
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to gDay");
+    "String '" + textValue->str() + "' cannot be cast to gDay");
   return false;
 }
 
-bool XercesParseUtils::parseXSDuration(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSDuration(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_duration;
   XSValue::Status status = XSValue::st_Init;
 
@@ -1080,8 +1183,8 @@ bool XercesParseUtils::parseXSDuration(xqpString textValue, store::Item_t &resul
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     Duration_t tValue;
-    textValue = xmlWhitespaceCollapse(textValue);
-    if (Duration::parse_string(textValue, tValue))    // Warning: parsing code is not using Xerces
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    if (Duration::parse_string(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
     {
       xqp_duration tValue_duration = &*tValue;
       result = factory->createDuration(tValue_duration);
@@ -1090,15 +1193,18 @@ bool XercesParseUtils::parseXSDuration(xqpString textValue, store::Item_t &resul
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to duration");
+    "String '" + textValue->str() + "' cannot be cast to duration");
   return false;
 }
 
-bool XercesParseUtils::parseXSYearMonthDuration(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSYearMonthDuration(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
   YearMonthDuration_t ymd_t;
 
-  if (YearMonthDuration::parse_string(textValue, ymd_t))
+  if (YearMonthDuration::parse_string(textValue.getp(), ymd_t))
   {
     xqp_duration d = ymd_t;
     store::ItemFactory* factory = GENV_ITEMFACTORY;
@@ -1108,15 +1214,18 @@ bool XercesParseUtils::parseXSYearMonthDuration(xqpString textValue, store::Item
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to yearMonthDuration");
+    "String '" + textValue->str() + "' cannot be cast to yearMonthDuration");
   return false;
 }
 
-bool XercesParseUtils::parseXSDayTimeDuration(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSDayTimeDuration(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
   DayTimeDuration_t dtd_t;
 
-  if (DayTimeDuration::parse_string(textValue, dtd_t))
+  if (DayTimeDuration::parse_string(textValue.getp(), dtd_t))
   {
     xqp_duration d = dtd_t;
     store::ItemFactory* factory = GENV_ITEMFACTORY;
@@ -1126,27 +1235,38 @@ bool XercesParseUtils::parseXSDayTimeDuration(xqpString textValue, store::Item_t
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to dayTimeDuration");
+    "String '" + textValue->str() + "' cannot be cast to dayTimeDuration");
   return false;
 }
 
-bool XercesParseUtils::parseXSAnyAtomicType(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSAnyAtomicType(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
+  xqpStringStore_t textValue2 = textValue;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  result = factory->createUntypedAtomic(textValue.getStore());
+  result = factory->createUntypedAtomic(textValue2);
   return true;  
 }
 
-bool XercesParseUtils::parseXSUntypedAtomic(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSUntypedAtomic(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
+  xqpStringStore_t textValue2 = textValue;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  result = factory->createUntypedAtomic(textValue.getStore());
+  result = factory->createUntypedAtomic(textValue2);
   return true;  
 }
 
-bool XercesParseUtils::parseXSBase64Binary(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSBase64Binary(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_base64Binary;
   XSValue::Status status = XSValue::st_Init;
 
@@ -1170,13 +1290,16 @@ bool XercesParseUtils::parseXSBase64Binary(xqpString textValue, store::Item_t &r
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to base64Binary");
+    "String '" + textValue->str() + "' cannot be cast to base64Binary");
   return false;
 }
 
-bool XercesParseUtils::parseXSHexBinary(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSHexBinary(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_hexBinary;
   XSValue::Status status = XSValue::st_Init;
 
@@ -1190,7 +1313,6 @@ bool XercesParseUtils::parseXSHexBinary(xqpString textValue, store::Item_t &resu
     xqp_hexBinary tValue;// = static_cast<xqp_hexBinary>(textValue.c_str());
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    textValue = xmlWhitespaceCollapse(textValue);
     result = factory->createHexBinary(tValue);
     return true;  
   }
@@ -1199,13 +1321,16 @@ bool XercesParseUtils::parseXSHexBinary(xqpString textValue, store::Item_t &resu
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to hexBinary");
+    "String '" + textValue->str() + "' cannot be cast to hexBinary");
   return false;
 }
 
-bool XercesParseUtils::parseXSAnyUri(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSAnyUri(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_anyURI;
   XSValue::Status status = XSValue::st_Init;
 
@@ -1216,8 +1341,8 @@ bool XercesParseUtils::parseXSAnyUri(xqpString textValue, store::Item_t &result)
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    textValue = xmlWhitespaceCollapse(textValue);
-    result = factory->createAnyURI(textValue.getStore());
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    result = factory->createAnyURI(textValue2);
     return true;  
   }
   else
@@ -1225,13 +1350,16 @@ bool XercesParseUtils::parseXSAnyUri(xqpString textValue, store::Item_t &result)
   }
 
   ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to anyUri");
+    "String '" + textValue->str() + "' cannot be cast to anyUri");
   return false;
 }
 
-bool XercesParseUtils::parseXSQName(xqpString textValue, store::Item_t &result)
+
+bool XercesParseUtils::parseXSQName(
+    const xqpStringStore_t& textValue,
+    store::Item_t &result)
 {
-  XMLCh* content = XMLString::transcode(textValue.c_str());    
+  XMLCh* content = XMLString::transcode(textValue->c_str());    
   XSValue::DataType datatype = XSValue::dt_QName;
   XSValue::Status status = XSValue::st_Init;
 
@@ -1242,27 +1370,27 @@ bool XercesParseUtils::parseXSQName(xqpString textValue, store::Item_t &result)
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    textValue = xmlWhitespaceCollapse(textValue);
+    xqpStringStore_t textValue2 = textValue->normalizeSpace();
     
     // todo: get the right namespace from the current context
-    xqpString lNamespace = "";
-    xqpString lPrefix = "";
-    xqpString lLocal = textValue;
+    xqpStringStore_t lNamespace = new xqpStringStore("");
+    xqpStringStore_t lPrefix;
+    xqpStringStore_t lLocal;
 
-    int32_t lIndex = textValue.indexOf(":");
+    int32_t lIndex = textValue2->indexOf(":");
     
     if (lIndex == 0) 
     {
       ZORBA_ERROR_DESC( ZorbaError::XQDY0074, 
-        "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to QName");
+        "String '" + textValue->str() + "' cannot be cast to QName");
     }
-    else if ( lIndex>0 )
+    else if ( lIndex > 0 )
     {
-      lPrefix = textValue.substr(0, lIndex);
-      lLocal = textValue.substr(lIndex + 1);
+      lPrefix = textValue2->substr(0, lIndex);
+      lLocal = textValue2->substr(lIndex + 1, textValue2->bytes());
     } 
     
-    result = factory->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
+    result = factory->createQName(lNamespace, lPrefix, lLocal);
     return true;  
   }
   else
@@ -1270,7 +1398,7 @@ bool XercesParseUtils::parseXSQName(xqpString textValue, store::Item_t &result)
   }
 
   ZORBA_ERROR_DESC( ZorbaError::XQDY0074, 
-    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to QName");
+    "String '" + textValue->str() + "' cannot be cast to QName");
   return false;
 }
 

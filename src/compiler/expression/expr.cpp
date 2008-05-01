@@ -926,17 +926,16 @@ xqtref_t match_expr::return_type_impl(static_context *sctx) {
 
 // [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 
-const_expr::const_expr(const QueryLoc& loc,
-                           xqpString v)
+const_expr::const_expr(const QueryLoc& loc, xqpString v)
   :
-  expr(loc),
-  val (ITEM_FACTORY->createString (v.getStore()))
+  expr(loc)
 {
+  xqpStringStore_t tmp = v.getStore();
+  val = ITEM_FACTORY->createString(tmp); 
 }
 
-const_expr::const_expr(const QueryLoc& loc,
-                           xqp_integer v)
-:
+const_expr::const_expr(const QueryLoc& loc, xqp_integer v)
+  :
   expr(loc),
   val (ITEM_FACTORY->createInteger (v))
 {

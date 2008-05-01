@@ -54,30 +54,12 @@ public:
    *                   evaluated lazily. For XQueryP it might be necassary to set
    *                   this to false.
    */
-  virtual TempSeq_t createTempSeq(Iterator* iterator, bool copyNodes = false, bool lazy = true) = 0;
+  virtual TempSeq_t createTempSeq(
+        Iterator* iterator,
+        bool copyNodes = false,
+        bool lazy = true) = 0;
 
-  /**
-   * Possibility to change the Garbage Collection strategy of the store.
-   * @param garbageCollectionStrategy
-   */
-  virtual void setGarbageCollectionStrategy(xqpStringStore* strategy) = 0;
-		
-  /**
-   * Applies a pending update list on this store
-   * @param pendingUpdateList
-   */
-  virtual void apply(PUL_t pendingUpdateList) = 0;
-		
-  /**
-   * Applies the pending update list on the specified branch. Potentially, 
-   * creates a new branch if no branch for that requester exists yet.
-   *
-   * @param pendingUpdateList
-   * @param requester
-   * @throws NotSupportedException Throws an exception if the store does not support branching
-   */
-  virtual void apply(PUL_t pendingUpdateList, Requester requester) = 0;
-		
+
   /* -------------------------- Reference Management --------------------------*/
 		
   /** 
@@ -89,17 +71,6 @@ public:
   virtual Item_t getReference(Item_t) = 0;
 		
   /**
-   * Returns a fixed reference of an item, dependent on a requester
-   * (defines branch) and a timetravel (defines version)
-   * 
-   * @param Item 
-   * @param requester
-   * @param timetravel
-   * @throws NotSupportedException Throws an exception if the store does not support branching or versioning
-   */
-  virtual Item_t getFixedReference(Item_t, Requester requester, TimeTravel timetravel) = 0;
-		
-  /**
    * Returns Item which is identified by a reference
    *
    * @param uri Has to be an xs:URI item
@@ -107,19 +78,6 @@ public:
    */
   virtual Item_t getNodeByReference(Item_t) = 0;
 		
-  /** 
-   * Returns Item wich is identified by a referenced, dependent on a requester
-   * (defines branch) and a timetravel (defines version)
-   *
-   * @param Item_t Has to be an xs:URI item (no correctness check is applied!!!)
-   * @param requester
-   * @param timetravel
-   * @returns referenced item if it exists, otherwise NULL
-   * @throws NotSupportedException Throws an exception if the store does not support branching or versioning
-   * @throws IllegalReferenceException Throws an exception if the reference is fixed.
-   *
-   */
-  virtual Item_t getNodeByReference(Item_t, Requester requester, TimeTravel timetravel) = 0;
 		
   /* --------------------------- Node Id Management ---------------------------*/
 
@@ -133,22 +91,6 @@ public:
    */
   virtual long compareNodes(Item* node1, Item* node2) const = 0;
 		
-  /**
-   * Check if two nodes are identical (i.e. have same node id)
-   * @param node1
-   * @param node2
-   * @return 	true if nodes are identical, false otherwise.
-   */
-  virtual bool equalNodes(const Item* node1, const Item* node2) const = 0;
-
-  /**
-   * Return a hash value based on the id of a given node
-   * @param node
-   * @return the hash value
-   */
-  virtual uint32_t hashNode(const Item* node) const = 0;
-
-
   /**
    * Sorts the nodes produced by the passed iterator
    * @param iterator to sort
@@ -178,24 +120,25 @@ public:
    * @return rchandle to the newly created document or NULL if a document
    *         with the given uri exists already.
    */
-  virtual Item_t loadDocument(xqpStringStore* uri, std::istream& stream) = 0;
+  virtual Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream) = 0;
 
-  virtual Item_t loadDocument(xqpStringStore* uri, Item_t	 doc_item) = 0;
+  virtual Item_t loadDocument(const xqpStringStore_t& uri, Item_t	doc_item) = 0;
 
   /**
    * Get an rchandle to the root node of the document with the given uri.
    *
    * @param uri The uri of the document to access.
    */
-  virtual Item_t getDocument(xqpStringStore* uri) = 0;
+  virtual Item_t getDocument(const xqpStringStore_t& uri) = 0;
 
   /**
    * Delete the document with the given uri.
    *
    * @param uri The uri of the document to delete.
    */
-  virtual void deleteDocument(xqpStringStore* uri) = 0;
+  virtual void deleteDocument(const xqpStringStore_t& uri) = 0;
 		
+
   /* ------------------------ Collection Management ---------------------------*/
 
   /**
@@ -212,7 +155,7 @@ public:
    * @return rchandle to the newly created collection or NULL if a collection
    *         with the given uri exists already.
    */
-  virtual Collection_t createCollection(xqpStringStore* uri) = 0;
+  virtual Collection_t createCollection(xqpStringStore_t& uri) = 0;
 
   /** Creates a collection in the store (without given URI).
    * 
@@ -226,26 +169,16 @@ public:
    * @param URI of the colleciton
    * @return handle object of the collection. Returns NULL if the collection does not exist
    */
-  virtual Collection_t getCollection(xqpStringStore* uri) = 0;
+  virtual Collection_t getCollection(const xqpStringStore_t& uri) = 0;
 		
   /** Deletes a collection.
    *
    * @param URI to identify the collection to delete.
    */
-  virtual void deleteCollection(xqpStringStore* uri) = 0;
-	
+  virtual void deleteCollection(const xqpStringStore_t& uri) = 0;
 };
 
 
-class Requester
-{
-};
-
-class TimeTravel
-{
-};
-
-	
 } // namespace store
 } // namespace zorba
 

@@ -178,8 +178,10 @@ protected:
   double                            theLoadFactor;
   C*                                theCompareParam;
 
-  SYNC_CODE(Mutex                   theMutex;)
+  bool                              theUseTransfer;
 
+  SYNC_CODE(Mutex                   theMutex;)
+  SYNC_CODE(Mutex                 * theMutexp;)
 
 public:
 
@@ -187,29 +189,35 @@ public:
   Constructor: Allocates the hash table. Its initial size is the given size,
   plus an initial 32 free entries. These free entries are placed in a free list.
 ********************************************************************************/
-HashMap(ulong size) 
+HashMap(ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
   theHashTab(size + 32),
   theHashTabSize(size),
   theInitialSize(size),
   theLoadFactor(DEFAULT_LOAD_FACTOR),
-  theCompareParam(0)
+  theCompareParam(0),
+  theUseTransfer(useTransfer)
 {
   formatCollisionArea();
+
+  SYNC_CODE(theMutexp = (sync ? &theMutex : NULL);)
 }
 
 
-HashMap(C* aCompareParam, ulong size) 
+ HashMap(C* aCompareParam, ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
   theHashTab(size + 32),
   theHashTabSize(size),
   theInitialSize(size),
   theLoadFactor(DEFAULT_LOAD_FACTOR),
-  theCompareParam(aCompareParam)
+  theCompareParam(aCompareParam),
+  theUseTransfer(useTransfer)
 {
   formatCollisionArea();
+
+  SYNC_CODE(theMutexp = (sync ? &theMutex : NULL);)
 }
 
 
@@ -231,7 +239,7 @@ virtual ~HashMap()
 ********************************************************************************/
 void clear() 
 {
-  SYNC_CODE(AutoMutex lock(theMutex);)
+  SYNC_CODE(AutoMutex lock(theMutexp);)
 
   theNumEntries = 0;
 
@@ -269,7 +277,7 @@ bool find(const T& item)
 {
   ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
 
-  SYNC_CODE(AutoMutex lock(theMutex);)
+  SYNC_CODE(AutoMutex lock(theMutexp);)
 
   HashEntry<T, V>* entry = bucket(hval);
 
@@ -296,7 +304,7 @@ bool get(const T& item, V& value)
 {
   ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
 
-  SYNC_CODE(AutoMutex lock(theMutex);)
+  SYNC_CODE(AutoMutex lock(theMutexp);)
 
   HashEntry<T, V>* entry = bucket(hval);
 
@@ -329,7 +337,7 @@ bool insert(T& item, V& value)
   bool found;
   ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
 
-  SYNC_CODE(AutoMutex lock(theMutex);)
+  SYNC_CODE(AutoMutex lock(theMutexp);)
 
   HashEntry<T, V>* entry = hashInsert(item, hval, found);
 
@@ -355,7 +363,7 @@ bool remove(const T& item)
 {
   ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
 
-  SYNC_CODE(AutoMutex lock(theMutex);)
+  SYNC_CODE(AutoMutex lock(theMutexp);)
 
   return removeNoSync(item, hval);
 }

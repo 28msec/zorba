@@ -57,7 +57,11 @@ DateTime::DateTime()
     data[i] = 0;
 }
 
-int DateTime::createDateTime(const DateTime_t& date_t, const DateTime_t& time_t, DateTime_t& result_t)
+
+int DateTime::createDateTime(
+    const DateTime_t& date_t,
+    const DateTime_t& time_t,
+    DateTime_t& result_t)
 {
   if (!date_t->getTimezone().is_not_a_date_time()
        &&
@@ -66,8 +70,14 @@ int DateTime::createDateTime(const DateTime_t& date_t, const DateTime_t& time_t,
        !(date_t->getTimezone() == time_t->getTimezone()))
     return 2;
 
-  int res = createDateTime(date_t->getYear(), date_t->getMonth(), date_t->getDay(), time_t->getHours(), time_t->getMinutes(),
-                           floor<double>(time_t->getSeconds()), round(frac(time_t->getSeconds()) * FRAC_SECONDS_UPPER_LIMIT), result_t);
+  int res = createDateTime(date_t->getYear(),
+                           date_t->getMonth(),
+                           date_t->getDay(),
+                           time_t->getHours(),
+                           time_t->getMinutes(),
+                           floor<double>(time_t->getSeconds()),
+                           round(frac(time_t->getSeconds()) * FRAC_SECONDS_UPPER_LIMIT),
+                           result_t);
 
   if (res == 0)
   {
@@ -80,8 +90,16 @@ int DateTime::createDateTime(const DateTime_t& date_t, const DateTime_t& time_t,
   return res;
 }
 
-int DateTime::createDateTime(int years, int months, int days,
-                             int hours, int minutes, int seconds, int fractional_seconds, DateTime_t& dt_t)
+
+int DateTime::createDateTime(
+    int years,
+    int months,
+    int days,
+    int hours,
+    int minutes,
+    int seconds,
+    int fractional_seconds,
+    DateTime_t& dt_t)
 {
   dt_t = new DateTime();
   dt_t->facet = DATETIME_FACET;
@@ -95,8 +113,17 @@ int DateTime::createDateTime(int years, int months, int days,
   return 0;
 }
 
-int DateTime::createDateTime(int years, int months, int days,
-                             int hours, int minutes, int seconds, int fractional_seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
+
+int DateTime::createDateTime(
+    int years,
+    int months,
+    int days,
+    int hours,
+    int minutes,
+    int seconds,
+    int fractional_seconds,
+    const TimeZone_t& tz_t,
+    DateTime_t& dt_t)
 {
   dt_t = new DateTime();
   dt_t->facet = DATETIME_FACET;
@@ -114,8 +141,16 @@ int DateTime::createDateTime(int years, int months, int days,
   return 0;
 }
 
-int DateTime::createDateTime(int years, int months, int days, 
-                             int hours, int minutes, double seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
+
+int DateTime::createDateTime(
+    int years,
+    int months,
+    int days, 
+    int hours,
+    int minutes,
+    double seconds,
+    const TimeZone_t& tz_t,
+    DateTime_t& dt_t)
 {
   dt_t = new DateTime();
   dt_t->facet = DATETIME_FACET;
@@ -133,8 +168,16 @@ int DateTime::createDateTime(int years, int months, int days,
   return 0;
 }
 
-int DateTime::createDateTime(int years, int months, int days,
-                             int hours, int minutes, int seconds, int fractional_seconds, const TimeZone& tz, DateTime_t& dt_t)
+int DateTime::createDateTime(
+    int years,
+    int months,
+    int days,
+    int hours,
+    int minutes,
+    int seconds,
+    int fractional_seconds,
+    const TimeZone& tz,
+    DateTime_t& dt_t)
 {
   dt_t = new DateTime();
   dt_t->facet = DATETIME_FACET;
@@ -151,7 +194,13 @@ int DateTime::createDateTime(int years, int months, int days,
   return 0;
 }
 
-int DateTime::createDate(int years, int months, int days, TimeZone_t& tz_t, DateTime_t& dt_t)
+
+int DateTime::createDate(
+    int years,
+    int months,
+    int days,
+    const TimeZone_t& tz_t,
+    DateTime_t& dt_t)
 {
   dt_t = new DateTime();
   dt_t->facet = DATE_FACET;
@@ -169,7 +218,13 @@ int DateTime::createDate(int years, int months, int days, TimeZone_t& tz_t, Date
   return 0;
 }
 
-int DateTime::createTime(int hours, int minutes, double seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
+
+int DateTime::createTime(
+    int hours, 
+    int minutes, 
+    double seconds, 
+    const TimeZone_t& tz_t,
+    DateTime_t& dt_t)
 {
   dt_t = new DateTime();
   dt_t->facet = TIME_FACET;
@@ -187,6 +242,7 @@ int DateTime::createTime(int hours, int minutes, double seconds, TimeZone_t& tz_
   return 0;
 }
 
+
 int DateTime::createGYearMonth(int years, int months, DateTime_t& dt_t)
 {
   dt_t = new DateTime();
@@ -201,6 +257,7 @@ int DateTime::createGYearMonth(int years, int months, DateTime_t& dt_t)
 
   return 0;
 }
+
 
 int DateTime::createGYear(int years, DateTime_t& dt_t)
 {
@@ -217,6 +274,7 @@ int DateTime::createGYear(int years, DateTime_t& dt_t)
   return 0;
 }
 
+
 int DateTime::createGMonth(int months, DateTime_t& dt_t)
 {
   dt_t = new DateTime();
@@ -231,6 +289,7 @@ int DateTime::createGMonth(int months, DateTime_t& dt_t)
 
   return 0;
 }
+
 
 int DateTime::createGMonthDay(int months, int days, DateTime_t& dt_t)
 {
@@ -247,6 +306,7 @@ int DateTime::createGMonthDay(int months, int days, DateTime_t& dt_t)
   return 0;
 }
 
+
 int DateTime::createGDay(int days, DateTime_t& dt_t)
 {
   dt_t = new DateTime();
@@ -262,6 +322,7 @@ int DateTime::createGDay(int days, DateTime_t& dt_t)
   return 0;
 }
 
+
 int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime_t& dt_t)
 {
   dt_t = new DateTime();
@@ -269,6 +330,7 @@ int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime_t& dt_t)
   dt_t->setFacet(new_facet);
   return 0;
 }
+
 
 uint32_t DateTime::hash(int implicit_timezone_seconds) const
 {
@@ -289,8 +351,14 @@ uint32_t DateTime::hash(int implicit_timezone_seconds) const
   return hval;
 }
 
+
 // Returns 0 on success
-int DateTime::parse_date(std::string& ss, unsigned int& position, int& year, int& month, int& day)
+int DateTime::parse_date(
+    std::string& ss,
+    unsigned int& position,
+    int& year,
+    int& month,
+    int& day)
 {
   bool is_negative = false;
   unsigned int temp_position;
@@ -340,6 +408,7 @@ int DateTime::parse_date(std::string& ss, unsigned int& position, int& year, int
   
   return 0;
 }
+
 
 // Returns 0 on success
 int DateTime::parse_time(std::string& ss, unsigned int& position, int& hour, int& minute, int& seconds, int& frac_seconds)

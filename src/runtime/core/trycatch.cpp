@@ -138,13 +138,17 @@ TryCatchIterator::matchedCatch(error::ZorbaError& e, TryCatchIteratorState* stat
 }
 
 void
-TryCatchIterator::bindErrorVars(error::ZorbaError& e, const CatchClause* clause, PlanState& planState) const
+TryCatchIterator::bindErrorVars(
+    error::ZorbaError& e,
+    const CatchClause* clause,
+    PlanState& planState) const
 {
-  TryCatchIteratorState* state = StateTraitsImpl<TryCatchIteratorState>::getState(planState, this->stateOffset);
+  TryCatchIteratorState* state =
+    StateTraitsImpl<TryCatchIteratorState>::getState(planState, this->stateOffset);
 
   // bind the error code (always)
-  store::Item_t lErrorCodeItem = 
-    GENV_ITEMFACTORY->createString(xqpString(error::ZorbaError::toString(e.theErrorCode)).theStrStore);
+  xqpStringStore_t errCode = new xqpStringStore(error::ZorbaError::toString(e.theErrorCode));
+  store::Item_t lErrorCodeItem = GENV_ITEMFACTORY->createString(errCode);
 
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();
@@ -160,8 +164,9 @@ TryCatchIterator::bindErrorVars(error::ZorbaError& e, const CatchClause* clause,
   for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ ) {
     // bind the description or the empty sequence
     store::Iterator_t lErrorDescIter;
-    if (!e.theDescription.empty()) { 
-      lErrorDescIter = new store::ItemIterator(GENV_ITEMFACTORY->createString(xqpString(e.theDescription).theStrStore));
+    if (!e.theDescription.empty()) {
+      xqpStringStore_t errDescr = e.theDescription.getStore();
+      lErrorDescIter = new store::ItemIterator(GENV_ITEMFACTORY->createString(errDescr));
     } else {
       lErrorDescIter = new store::ItemIterator();
     }

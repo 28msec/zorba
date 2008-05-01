@@ -33,6 +33,8 @@ namespace zorba
   |
   | The mapping of basic schema types to C++ language types.
   |_______________________________________________________________________*/
+  typedef xqpString           xqp_QName;
+  typedef xqpString           xqp_NOTATION;
   typedef xqpString           xqp_anyURI;
   typedef xqpString           xqp_string;
   typedef xqpString           xqp_normalizedString;
@@ -48,16 +50,19 @@ namespace zorba
   typedef xqpString           xqp_NMTOKEN;
   typedef xqpString           xqp_NMTOKENS;
   typedef Integer             xqp_integer;
+  typedef Integer             xqp_uinteger;
   typedef int32_t             xqp_int;
+  typedef uint32_t            xqp_uint;
   typedef long long           xqp_long;
+  typedef unsigned long long  xqp_ulong;
   typedef short               xqp_short;
+  typedef unsigned short      xqp_ushort;
+  typedef char                xqp_byte;
+  typedef unsigned char       xqp_ubyte;
   typedef Decimal             xqp_decimal;
   typedef Float               xqp_float;
   typedef Double              xqp_double;
-  typedef char                xqp_byte;
   typedef bool                xqp_boolean;
-  typedef xqpString           xqp_QName;
-  typedef xqpString           xqp_NOTATION;
   typedef DateTime_t          xqp_dateTime;
   typedef DateTime_t          xqp_date;
   typedef DateTime_t          xqp_time;
@@ -69,11 +74,6 @@ namespace zorba
   typedef DurationBase_t      xqp_duration;
   typedef DayTimeDuration_t   xqp_dayTimeDuration;
   typedef YearMonthDuration_t xqp_yearMonthDuration;
-  typedef unsigned char       xqp_ubyte;
-  typedef uint32_t            xqp_uint;
-  typedef unsigned long long  xqp_ulong;
-  typedef unsigned short      xqp_ushort;
-  typedef Integer             xqp_uinteger;
   typedef Base64              xqp_base64Binary;
   typedef Base16              xqp_hexBinary;
 

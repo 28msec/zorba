@@ -19,7 +19,7 @@
 #include "store/api/iterator.h"
 #include "common/shared_types.h"
 #include "store/naive/ordpath.h"
-#include "store/util/handle_hashset_item.h"
+#include "store/util/hashset_item_handle.h"
 
 namespace zorba { namespace store {
 
@@ -91,7 +91,12 @@ protected:
   ItemHandleHashSet  theNodeSet;
 
 public:
-  StoreNodeDistinctIterator(Iterator* input) : theInput(input) { }
+  StoreNodeDistinctIterator(Iterator* input) 
+    :
+    theInput(input),
+    theNodeSet(1024, false)
+  {
+  }
 
   virtual ~StoreNodeDistinctIterator() { close(); }
 
@@ -154,7 +159,7 @@ protected:
   public:
     ComparisonFunction(bool asc = true) : theAscending(asc) { }
 
-    bool operator()(const XmlNode_t& n1, const XmlNode_t& n2) const
+    bool operator()(const XmlNode* n1, const XmlNode* n2) const
     {
       return (theAscending ?
               n1->getTreeId() < n2->getTreeId() ||
@@ -168,12 +173,12 @@ protected:
   };
 
 protected:
-  Iterator_t               theInput;
-  bool                     theAscendant;
-  bool                     theDistinct;
+  Iterator_t              theInput;
+  bool                    theAscendant;
+  bool                    theDistinct;
 
-  std::vector<XmlNode_t>  theNodes;
-  long                     theCurrentNode;
+  std::vector<XmlNode*>   theNodes;
+  long                    theCurrentNode;
 
 public:
   StoreNodeSortIterator(

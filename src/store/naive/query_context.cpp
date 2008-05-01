@@ -23,7 +23,7 @@ namespace zorba { namespace store {
 
 QueryContext& QueryContextContainer::getContext(ulong queryId)
 {
-  SYNC_CODE(AutoMutex lock(theMutex);)
+  SYNC_CODE(AutoMutex lock(&theMutex);)
     
   std::map<ulong, QueryContext>::iterator ctxi;
 
@@ -42,7 +42,7 @@ QueryContext& QueryContextContainer::getContext(ulong queryId)
 
 void QueryContextContainer::removeContext(ulong queryId)
 {
-  SYNC_CODE(AutoMutex lock(theMutex);)
+  SYNC_CODE(AutoMutex lock(&theMutex);)
 
   std::map<ulong, QueryContext>::iterator ctxi;
 

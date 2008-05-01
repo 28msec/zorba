@@ -61,7 +61,7 @@ namespace zorba {
   XmlDataManagerImpl::loadDocument(const String& uri, std::istream& stream, ErrorHandler* aErrorHandler)
   {
     ZORBA_TRY
-      xqpStringStore* lString = Unmarshaller::getInternalString(uri);
+      xqpStringStore_t lString = Unmarshaller::getInternalString(uri);
 
       if ( ! stream.good() ) {
         ZORBA_ERROR_DESC(ZorbaError::API0015_CANNOT_OPEN_FILE, "cannot read from stream");
@@ -89,7 +89,7 @@ namespace zorba {
   XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHandler)
   {
     ZORBA_TRY
-      xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+      xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
       return &*theStore->getDocument(lUri); 
     ZORBA_CATCH
     return Item();
@@ -99,7 +99,7 @@ namespace zorba {
   XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorHandler)
   {
     ZORBA_TRY
-      xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+      xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
       theStore->deleteDocument(lUri); 
       return true;
     ZORBA_CATCH
@@ -110,7 +110,7 @@ namespace zorba {
   XmlDataManagerImpl::createCollection(const String& uri, ErrorHandler* aErrorHandler)
   {
     ZORBA_TRY
-      xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
+      xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
       return Collection_t(new CollectionImpl(theStore->createCollection(lUri), 
                                              aErrorHandler!=0?aErrorHandler:theErrorHandler));
     ZORBA_CATCH

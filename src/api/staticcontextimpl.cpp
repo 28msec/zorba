@@ -389,16 +389,19 @@ namespace zorba {
   StaticContextImpl::setBaseURI( const String& aBaseURI )
   {
     try {
-      xqpString lBaseURI = Unmarshaller::getInternalString(aBaseURI);
- 
+      xqpStringStore_t lBaseURI = Unmarshaller::getInternalString(aBaseURI);
+      xqpStringStore_t lBaseURI2 = lBaseURI;
+
       if(!GenericCast::instance()->isCastable(lBaseURI, &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
-          ZORBA_ERROR_DESC(ZorbaError::XQP0020_INVALID_URI, lBaseURI);
+        ZORBA_ERROR_DESC(ZorbaError::XQP0020_INVALID_URI, lBaseURI);
       }
-      theCtx->set_baseuri(lBaseURI, false);
-    } catch (error::ZorbaError& e) {
+      theCtx->set_baseuri(lBaseURI2.getp(), false);
+    }
+    catch (error::ZorbaError& e) {
       ZorbaImpl::notifyError(theErrorHandler, e);
       return false;
-    } catch (std::exception& e) {
+    }
+    catch (std::exception& e) {
       ZorbaImpl::notifyError(theErrorHandler, e.what());
       return false;
     }

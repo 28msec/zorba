@@ -183,7 +183,7 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
 store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t inNode;
-  xqpStringStore* docuri;
+  xqpStringStore_t docuri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -206,20 +206,23 @@ store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
 store::Item_t FnStringIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t inVal;
-  xqpStringStore_t empty;
+  xqpStringStore_t strval;
 
   FnStringIteratorState *state;
   DEFAULT_STACK_INIT(FnStringIteratorState, state, planState);
 
-  while((inVal = consumeNext(theChildren[0].getp(), planState)) != NULL) {
+  while((inVal = consumeNext(theChildren[0], planState)) != NULL) 
+  {
     state->hasOutput = true;
-    STACK_PUSH(GENV_ITEMFACTORY->createString(inVal->getStringValue()), state);
+    strval = inVal->getStringValue();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(strval), state);
   }
 
-  if (!state->hasOutput && theEmptyStringOnNULL) {
+  if (!state->hasOutput && theEmptyStringOnNULL) 
+  {
     state->hasOutput = true;
-    empty = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
+    strval = new xqpStringStore("");
+    STACK_PUSH(GENV_ITEMFACTORY->createString(strval), state);
   }
 
   STACK_END (state);

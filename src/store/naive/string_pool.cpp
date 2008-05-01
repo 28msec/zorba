@@ -55,7 +55,7 @@ bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
   ulong hval = xqpStringStore::hash(str) % theHashTabSize;
 
   {
-    SYNC_CODE(AutoMutex lock(theMutex);)
+    SYNC_CODE(AutoMutex lock(&theMutex);)
 
     HashEntry<xqpStringStore_t, DummyHashValue>* entry = &theHashTab[hval];
 

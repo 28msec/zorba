@@ -25,11 +25,15 @@
 namespace zorba { namespace store {
 
 /*******************************************************************************
+
   A hash-based map container, mapping xqpStringStore pointers to values of type
-  V. String equality is based on string value. Class V must have a destructor.
+  V. String equality is based on string value, using byte-by-byte comparison.
+
+  It is used to map document/collection uris to docoment nodes/collection objs.
+ 
 ********************************************************************************/
 template <class V>
-class StringHashMap : public HashMap<xqpStringStore*, V, StringHashMap<V> >
+class StringHashMap : public HashMap<const xqpStringStore*, V, StringHashMap<V> >
 {
 public:
   static bool equal(const xqpStringStore* s1, const xqpStringStore* s2)
@@ -43,9 +47,9 @@ public:
   }
 
 public:
- StringHashMap(ulong size)
+ StringHashMap(ulong size, bool sync)
    :
-  HashMap<xqpStringStore*, V, StringHashMap>(size) {};
+  HashMap<const xqpStringStore*, V, StringHashMap>(size, sync) {};
 
   ~StringHashMap() { };
 };

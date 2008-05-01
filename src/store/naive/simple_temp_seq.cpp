@@ -26,14 +26,16 @@ namespace zorba { namespace store {
 ********************************************************************************/
 SimpleTempSeq::SimpleTempSeq(Iterator_t iter, bool copy, bool lazy)
 {
-  Item_t curItem = iter->next();
   CopyMode lCopyMode;
+  Item_t curItem = iter->next();
+
   while ( curItem != NULL )
 	{
-    if (copy && curItem->isNode()) {
+    if (copy && curItem->isNode()) 
       curItem = curItem->copyXmlTree(lCopyMode);
-    }
-    theItems.push_back(curItem);
+
+    theItems.push_back(curItem.transfer());
+
     curItem = iter->next();
   }
 }
@@ -44,6 +46,83 @@ SimpleTempSeq::SimpleTempSeq(Iterator_t iter, bool copy, bool lazy)
 ********************************************************************************/
 SimpleTempSeq::~SimpleTempSeq()
 {
+  ulong numItems = theItems.size();
+  for (ulong i = 0; i < numItems; i++)
+  {
+    Item* n = theItems[i];
+    n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool SimpleTempSeq::empty()
+{
+  return theItems.size() == 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Item_t SimpleTempSeq::operator[](int32_t aIndex) 
+{
+  return theItems[aIndex];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int32_t SimpleTempSeq::getSize() 
+{
+  return theItems.size();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Item_t SimpleTempSeq::getItem(int32_t position)
+{
+  if ( this->containsItem(position))
+	{
+    return theItems[position - 1];
+  }
+  else
+	{
+    return NULL;
+  }
+}
+	
+
+/*******************************************************************************
+
+********************************************************************************/
+bool SimpleTempSeq::containsItem(int32_t position)
+{
+  return int32_t ( theItems.size() ) >= position;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleTempSeq::append(Iterator_t iter, bool copy)
+{
+  Item_t curItem = iter->next();
+  CopyMode lCopyMode;
+  while ( curItem != NULL )
+  {
+    if (copy && curItem->isNode())
+      curItem = curItem->copyXmlTree(lCopyMode);
+
+    theItems.push_back(curItem.transfer());
+
+    curItem = iter->next();
+  }
 }
 
 
@@ -111,49 +190,6 @@ Iterator_t SimpleTempSeq::getIterator(Iterator_t positions, bool streaming)
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleTempSeq::append(Iterator_t iter, bool copy)
-{
-  Item_t curItem = iter->next();
-  CopyMode lCopyMode;
-  while ( curItem != NULL )
-  {
-    if (copy && curItem->isNode()) {
-      curItem = curItem->copyXmlTree(lCopyMode);
-    }
-    theItems.push_back(curItem);
-    curItem = iter->next();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-Item_t SimpleTempSeq::getItem(int32_t position)
-{
-  if ( this->containsItem(position))
-	{
-    return theItems[position - 1];
-  }
-  else
-	{
-    return NULL;
-  }
-}
-	
-
-/*******************************************************************************
-
-********************************************************************************/
-bool SimpleTempSeq::containsItem(int32_t position)
-{
-  return int32_t ( theItems.size() ) >= position;
-}
-  
-
-/*******************************************************************************
-
-********************************************************************************/
 void SimpleTempSeq::purge()
 {
 
@@ -184,20 +220,6 @@ void SimpleTempSeq::purgeItem(const std::vector<int32_t>& positions)
 void SimpleTempSeq::purgeItem(int32_t position)
 {
 
-}
-
-
-bool SimpleTempSeq::empty()
-{
-  return theItems.size() == 0;
-}
-
-Item_t SimpleTempSeq::operator[](int32_t aIndex) {
-  return theItems[aIndex];
-}
-
-int32_t SimpleTempSeq::getSize() {
-  return theItems.size();
 }
 
 
@@ -244,6 +266,7 @@ SimpleTempSeq::SimpleTempSeqIter::~SimpleTempSeqIter()
 {
 }
 
+
 void SimpleTempSeq::SimpleTempSeqIter::open()
 {
   switch (theBorderType)
@@ -257,6 +280,7 @@ void SimpleTempSeq::SimpleTempSeqIter::open()
     break;
   }
 }
+
 
 Item_t SimpleTempSeq::SimpleTempSeqIter::next()
 {

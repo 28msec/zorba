@@ -94,7 +94,7 @@ bool xqpStringStore::is_ucscharCP(uint32_t cp)
 /*******************************************************************************
   Return true is cp reprezents "iprivate" as defined by rfc3987
 ********************************************************************************/
-bool xqpStringStore::is_iprivateCP( uint32_t cp ) const
+bool xqpStringStore::is_iprivateCP( uint32_t cp )
 {
   bool ret = false;
   if((0xE000 <= cp && cp <=0xF8FF) ||
@@ -112,7 +112,7 @@ bool xqpStringStore::is_iprivateCP( uint32_t cp ) const
   Return true if cp is a printable characters of the US-ASCII coded character
   set meaning octets ranging from 32 to 126 (decimal).
 ********************************************************************************/
-bool xqpStringStore::is_printableASCII(uint32_t cp) const
+bool xqpStringStore::is_printableASCII(uint32_t cp)
 {
   bool ret = false;
   if(0x20 <= cp && cp <=0x7E)//32 to 126 (decimal)
@@ -127,7 +127,7 @@ bool xqpStringStore::is_printableASCII(uint32_t cp) const
   Return true for the following printable ASCII characters that are invalid in
   an IRI: "<", ">", " " " (double quote), space, "{", "}", "|", "\", "^", and "`".
 ********************************************************************************/
-bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp) const
+bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp)
 {
   bool ret = false;
   if(0x3C == cp || 0x3E == cp || 0x22 == cp ||
@@ -139,6 +139,49 @@ bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp) const
   }
   return ret;
 }
+
+
+/*******************************************************************************
+  Return a xqpStringStore (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
+********************************************************************************/
+xqpStringStore_t xqpStringStore::getXqpString(UnicodeString source)
+{
+  UErrorCode status = U_ZERO_ERROR;
+  
+  //open a convertor to UTF-8
+  UConverter* conv = ucnv_open("utf-8", &status);
+
+  if(U_FAILURE(status))
+  {
+    assert(false);
+    return new xqpStringStore("");
+  }
+
+  int32_t targetLen = source.getCapacity()*4 + 1;
+  char* target = new char[targetLen];
+
+  //Convert from UTF-16 to UTF-8
+  ucnv_fromUChars(conv, target, targetLen,
+                  source.getBuffer(source.length()),
+                  source.length(),
+                  &status);
+
+  //close the converter
+  ucnv_close(conv);
+
+  if(U_FAILURE(status))
+  {
+    assert(false);
+
+    delete[] target;
+    return new xqpStringStore("");
+  }
+
+  xqpStringStore_t result = new xqpStringStore(target, strlen(target));
+  delete[] target;
+  return result;
+}
+
 
 
 /*******************************************************************************
@@ -396,6 +439,17 @@ xqpStringStore_t xqpStringStore::append(const std::string& suffix) const
 xqpStringStore_t xqpStringStore::append(const char* suffix) const
 {
   return new xqpStringStore(theString + suffix);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::substr(
+    std::string::size_type index,
+    std::string::size_type length) const
+{
+  return new xqpStringStore(theString.substr(index, length));
 }
 
 
@@ -837,6 +891,44 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
+{
+  UnicodeString result;
+  UErrorCode status = U_ZERO_ERROR;
+
+  if (normMode->empty())
+  {
+    return const_cast<xqpStringStore*>(this);
+  }
+  else if(normMode->byteEqual("NFC", 3))
+  {
+    Normalizer::normalize(getUnicodeString(), UNORM_NFC , 0, result, status);
+  }
+  else if(normMode->byteEqual("NFKC", 4))
+  {
+    Normalizer::normalize(getUnicodeString(), UNORM_NFKC , 0, result, status);
+  }
+  else if(normMode->byteEqual("NFD", 3))
+  {
+    Normalizer::normalize(getUnicodeString(), UNORM_NFD , 0, result, status);
+  }
+  else if(normMode->byteEqual("NFKD", 4))
+  {
+    Normalizer::normalize(getUnicodeString(), UNORM_NFKD , 0, result, status);
+  }
+
+  if(U_FAILURE(status))
+  {
+    assert(false);
+  }
+    
+  return getXqpString( result ); 
+}
+
+
+/*******************************************************************************
   Return an UnicodeString (UTF-16 encoded) version of the string.
 ********************************************************************************/
 UnicodeString xqpStringStore::getUnicodeString() const
@@ -875,6 +967,7 @@ checked_vector<uint32_t> xqpStringStore::getCodepoints() const
   }
   return tt;
 }
+
 
 
 std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
@@ -1051,38 +1144,11 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     return theStrStore->c_str();
   }
   
-  //normalize
-  xqpString xqpString::normalize(xqpString normMode)
-  {
-    UnicodeString result;
-    UErrorCode status = U_ZERO_ERROR;
 
-    if (normMode.empty ())
-      return *this;
-    else if(normMode == "NFC")
-    {
-      Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFC , 0, result, status);
-    }
-    else if(normMode == "NFKC")
-    {
-      Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFKC , 0, result, status);
-    }
-    else if(normMode == "NFD")
-    {
-      Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFD , 0, result, status);
-    }
-    else if(normMode == "NFKD")
-    {
-      Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFKD , 0, result, status);
-    }
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-    }
-    
-    return getXqpString( result ); 
-  }
+xqpString xqpString::normalize(xqpString normMode)
+{
+  return theStrStore->normalize(normMode.getStore()).getp();
+}
 
 
   std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
@@ -1190,8 +1256,9 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   }
 
 
-  xqpString
-  xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) {
+xqpString
+xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) 
+{
     UErrorCode status = U_ZERO_ERROR;
     UnicodeString uspattern = pattern.getUnicodeString (),
       us = getUnicodeString ();
@@ -1214,8 +1281,9 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
       return "";
       // TODO: error
     }
-    return getXqpString (result);
-  }
+    return xqpStringStore::getXqpString(result).getp();
+}
+
 
   xqpString
   xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining)
@@ -1275,42 +1343,6 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     return ret;
   }
 
-  // Private methods
-  xqpString xqpString::getXqpString(UnicodeString source)
-  {
-    char* target;
-    int32_t targetLen = source.getCapacity()*4 + 1;
-    target = new char[targetLen];
-    UErrorCode status = U_ZERO_ERROR;
-
-    //open a convertor to UTF-8
-    UConverter *conv = ucnv_open("utf-8", &status);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-
-      delete[] target;
-      return "";
-    }
-
-    //Convert from UTF-16 to UTF-8
-    ucnv_fromUChars (conv, target, targetLen, source.getBuffer( source.length() ), source.length(), &status);
-    //close the converter
-    ucnv_close(conv);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-
-      delete[] target;
-      return "";
-    }
-
-    xqpString ret(&target[0]);
-    delete[] target;
-    return ret;
-}
 
   wchar_t * xqpString::getWCS(xqpString source) const
   {

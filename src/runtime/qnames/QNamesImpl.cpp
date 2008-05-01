@@ -255,16 +255,20 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t item;
   xqpStringStore* pre;
+  xqpStringStore_t preh;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
   item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
-    item = item->getAtomizationValue();
     pre = item->getPrefix();
     if(!pre->empty())
-      STACK_PUSH( GENV_ITEMFACTORY->createNCName(pre), state );
+    {
+      preh = pre;
+      STACK_PUSH( GENV_ITEMFACTORY->createNCName(preh), state );
+    }
   }
   STACK_END (state);
 }
@@ -286,14 +290,15 @@ store::Item_t
 LocalNameFromQNameIterator::nextImpl(PlanState& planState) const 
 {
   store::Item_t item;
+  xqpStringStore_t localName;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
-    item = item->getAtomizationValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createNCName(item->getLocalName()), state);
+    localName = item->getLocalName();
+    STACK_PUSH(GENV_ITEMFACTORY->createNCName(localName), state);
   }
   STACK_END (state);
 }
@@ -315,18 +320,19 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState) const
 store::Item_t
 NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const 
 {
-    store::Item_t item;
+  store::Item_t item;
+  xqpStringStore_t ns;
 
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
-    item = consumeNext(theChild.getp(), planState);
-    if ( item != NULL )
-    {
-      item = item->getAtomizationValue();
-      STACK_PUSH( GENV_ITEMFACTORY->createString(item->getNamespace()), state );
-    }
-    STACK_END (state);
+  item = consumeNext(theChild.getp(), planState);
+  if ( item != NULL )
+  {
+    ns = item->getNamespace();
+    STACK_PUSH( GENV_ITEMFACTORY->createString(ns), state );
+  }
+  STACK_END (state);
 }
 /* end class NamespaceUriFromQNameIterator */
 
@@ -336,7 +342,7 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const
  * 11.2.5 fn:namespace-uri-for-prefix
  *
  * fn:namespace-uri-for-prefix($prefix as xs:string?,
- *                                         $element as element()) as xs:anyURI?
+ *                             $element as element()) as xs:anyURI?
  *
  *Summary: Returns the namespace URI of one of the in-scope namespaces for
  *$element, identified by its namespace prefix.
@@ -353,20 +359,20 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t itemPrefix;
   store::Item_t itemElem;
-  xqp_string resNs;
+  xqpStringStore_t resNs;
   std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
   std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemPrefix = consumeNext(theChild0.getp(), planState );
+  itemPrefix = consumeNext(theChild0, planState );
   if( itemPrefix != NULL)
   {
     itemPrefix = itemPrefix->getAtomizationValue();
 
-    itemElem = consumeNext(theChild1.getp(), planState );
-    if( itemElem != NULL && !itemElem->getStringValue()->empty())
+    itemElem = consumeNext(theChild1, planState );
+    if( itemElem != NULL)
     {
       itemElem->getNamespaceBindings(NamespaceBindings);
       for (
@@ -377,18 +383,18 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
       {
         if( (*iter).first.getStore()->byteEqual(*itemPrefix->getStringValue()->trim()))
         {
-          resNs = (*iter).second;
+          resNs = (*iter).second.getStore();
           break;
         }
       }
     }
     else
     {
-      resNs = planState.theRuntimeCB->theStaticContext->default_elem_type_ns();
+      resNs = planState.theRuntimeCB->theStaticContext->default_elem_type_ns().getStore();
     }
 
-    if( !resNs.empty() )
-      STACK_PUSH( GENV_ITEMFACTORY->createString(resNs.getStore()), state );
+    if( resNs != NULL && !resNs->empty() )
+      STACK_PUSH( GENV_ITEMFACTORY->createString(resNs), state );
   }
   STACK_END (state);
 }
@@ -410,12 +416,12 @@ store::Item_t
 InScopePrefixesIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t itemElem;
-  xqpStringStore *xml = new xqpStringStore ("xml");
+  xqpStringStore_t ncname = new xqpStringStore ("xml");
 
   InScopePrefixesState* state;
   DEFAULT_STACK_INIT(InScopePrefixesState, state, planState);
 
-  STACK_PUSH(GENV_ITEMFACTORY->createNCName(xml), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createNCName(ncname), state);
 
   itemElem = consumeNext(theChild.getp(), planState );
   if( itemElem != NULL)
@@ -423,8 +429,8 @@ InScopePrefixesIterator::nextImpl(PlanState& planState) const
     itemElem->getNamespaceBindings(state->theBindings);
     while (state->theCurrentPos < state->theBindings.size())
     {
-      STACK_PUSH(GENV_ITEMFACTORY->
-                 createNCName(state->theBindings[state->theCurrentPos].first.getStore()), state);
+      ncname = state->theBindings[state->theCurrentPos].first.getStore();
+      STACK_PUSH(GENV_ITEMFACTORY->createNCName(ncname), state);
       state->theCurrentPos++;
     }
   }

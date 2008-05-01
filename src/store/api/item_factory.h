@@ -59,26 +59,26 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NCName]
    * @param value string representation of the value
    */
-  virtual Item_t createNCName(xqpStringStore* value) = 0;
+  virtual Item_t createNCName(xqpStringStore_t& value) = 0;
     
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
    * TODO where is the value parsed and checked?
    */
-  virtual Item_t createAnyURI(xqpStringStore* value) = 0;
+  virtual Item_t createAnyURI(xqpStringStore_t& value) = 0;
   virtual Item_t createAnyURI(const char* value) = 0;
 
   /**
    * @param value string value of the untyped atomic
    */
-  virtual Item_t createUntypedAtomic(xqpStringStore* value) = 0;
+  virtual Item_t createUntypedAtomic(xqpStringStore_t& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
    * @param value string representation of the value
    */
-  virtual Item_t createString(xqpStringStore* value) = 0;
+  virtual Item_t createString(xqpStringStore_t& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
@@ -211,19 +211,24 @@ public:
    * @param seconds
    */
   virtual Item_t createDuration (
-			    short years, short months, short days, short hours, short minutes, double seconds) = 0;
+			  short years,
+        short months,
+        short days,
+        short hours,
+        short minutes,
+        double seconds) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITIES]
    * @param value string representation of the value
    */
-  virtual Item_t createENTITIES ( const xqp_string& value ) = 0;
+  virtual Item_t createENTITIES(xqpStringStore_t& value) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITY]
    * @param value string representation of the value
    */
-  virtual Item_t createENTITY ( const xqp_string& value ) = 0;
+  virtual Item_t createENTITY(xqpStringStore_t& value) = 0;
 
   /**
    * @param value
@@ -307,49 +312,49 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#ID]
    * @param value string representation of the value
    */
-  virtual Item_t createID ( const xqp_string& value ) = 0;
+  virtual Item_t createID(xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#IDREF]
    * @param value string representation of the value
    */
-  virtual Item_t createIDREF ( const xqp_string& value ) = 0;
+  virtual Item_t createIDREF(xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#IDREFS]
    * @param value string representation of the value
    */
-  virtual Item_t createIDREFS ( const xqp_string& value ) = 0;
+  virtual Item_t createIDREFS(xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#language]
    * @param value string representation of the value
    */
-  virtual Item_t createLanguage ( const xqp_string& value ) = 0;
+  virtual Item_t createLanguage(xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKEN]
    * @param value string representation of the value
    */
-  virtual Item_t createNMTOKEN ( const xqp_string& value ) = 0;
+  virtual Item_t createNMTOKEN(xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKENS]
    * @param value string representation of the value
    */
-  virtual Item_t createNMTOKENS ( const xqp_string& value ) = 0;
+  virtual Item_t createNMTOKENS(xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NOTATION]
    * @param value string representation of the value
    */
-  virtual Item_t createNOTATION ( const xqp_string& value ) = 0;
+  virtual Item_t createNOTATION (xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#Name]
    * @param value string representation of the value
    */
-  virtual Item_t createName ( const xqp_string& value ) = 0;
+  virtual Item_t createName (xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
@@ -373,28 +378,28 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
    * @param value string representation of the value
    */
-  virtual Item_t createNormalizedString ( const xqp_string& value ) = 0;
+  virtual Item_t createNormalizedString (xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
    * @param value
    */
-  virtual Item_t createPositiveInteger ( xqp_uinteger value ) = 0;
+  virtual Item_t createPositiveInteger(xqp_uinteger value) = 0;
 
-  virtual Item_t createTime (xqp_time& value) = 0;
+  virtual Item_t createTime(xqp_time& value) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
    * @param value string representation of the value
    */
-  virtual Item_t createTime ( const xqp_string& value ) = 0;
+  virtual Item_t createTime(const xqp_string& value) = 0;
 
   /**
    * @param hour
    * @param minute
    * @param second
    */
-  virtual Item_t createTime ( short hour, short minute, double second ) = 0;
+  virtual Item_t createTime(short hour, short minute, double second) = 0;
 
   /**
    * @param hour
@@ -402,13 +407,13 @@ public:
    * @param second
    * @param timeZone_hours Difference in hours to UTC
    */
-  virtual Item_t createTime ( short hour, short minute, double second, short timeZone_hours ) = 0;
+  virtual Item_t createTime(short hour, short minute, double second, short timeZone_hours) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#token]
    * @param value string representation of the value
    */
-  virtual Item_t createToken( const xqp_string& value ) = 0;
+  virtual Item_t createToken(xqpStringStore_t& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
