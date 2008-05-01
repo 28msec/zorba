@@ -16,7 +16,7 @@
 
    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) except modules and only limited support for schema validation
    * XQuery Update Facility 1.0 (as in the evolving W3C recommendation)
-   * An in-memory replaceable XML store (implements the XQuery Data Model (XDM) W3C recommendation)
+   * An in-memory replaceable XML store implementing the XQuery Data Model (XDM) W3C recommendation.
 
   Zorba release 0.9 passes 97.6% of the W3C tests of XQuery 1.0 test suite
   and 99.4% of the XQuery Update Facility test suite. 
