@@ -3,20 +3,20 @@
   ----------------------------
 
   Welcome to Zorba! We are pleased to announce the first release (beta version 0.9) of the Zorba. 
-  Zorba is a general purpose C++ XQuery processor implementing the W3C family of specifications (it is not an XML database). 
-  The query processor has been designed to be embeddable in a variety of environments   
-  (e.g. other programming languages extended with XML processing capabilities, browsers, 
-  database servers, XML message dispatchers, smartphones).
-  Its architecture employes a modular design, which allows customizing the Zorba query processor to the environment’s needs.
-  In particular the architecture of the query processor allows a pluggable XML store
-  (e.g. main memory, DOM stores, persistent disk-based large stores, S3 stores). 
+  Zorba is a general purpose XQuery processor implementing in C++ the W3C family of specifications. 
+  It is not an XML database. The query processor has been designed to be embeddable in a variety of 
+  environments such as other programming languages extended with XML processing capabilities, 
+  browsers, database servers, XML message dispatchers, or smartphones. Its architecture employes a 
+  modular design, which allows customizing the Zorba query processor to the environment’s needs. 
+  In particular the architecture of the query processor allows a pluggable XML store 
+  (e.g. main memory, DOM stores, persistent disk-based large stores, S3 stores).
   Zorba runs on most platforms and is available under the Apache license v2.
 
   In this first release of Zorba, the following functionalities are implemented:
 
    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) except modules and only limited support for schema validation
    * XQuery Update Facility 1.0 (as in the evolving W3C recommendation)
-   * An In-Memory (replaceable) XML store (implements the XQuery Data Model (XDM) W3C recommendation)
+   * An in-memory replaceable XML store (implements the XQuery Data Model (XDM) W3C recommendation)
 
   Zorba release 0.9 passes 97.6% of the W3C tests of XQuery 1.0 test suite
   and 99.4% of the XQuery Update Facility test suite. 
