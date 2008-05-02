@@ -286,7 +286,7 @@ protected:
         break;
       }
     }
-    assert(false);
+    ZORBA_ASSERT(false);
     return SIMPLE_EXPR;
   }
   
@@ -3725,7 +3725,7 @@ void *begin_visit(const PathExpr& pe)
   const QueryLoc& loc = pe.get_location();
   ParseConstants::pathtype_t pe_type = pe.get_type();
 
-  assert(pe.get_relpath_expr().dyn_cast<RelativePathExpr>().getp() != NULL);
+  ZORBA_ASSERT (pe.get_relpath_expr().dyn_cast<RelativePathExpr>().getp() != NULL);
 
   expr_t result;
   rchandle<relpath_expr> path_expr = NULL;

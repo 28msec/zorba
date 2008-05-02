@@ -762,7 +762,7 @@ XmlNode* DocumentNode::copy(
     ulong           pos,
     const CopyMode& copymode) const
 {
-  assert(rootParent == NULL);
+  ZORBA_ASSERT(rootParent == NULL);
 
   XmlTree* tree = NULL;
   LoadedDocumentNode* copyNode = NULL;
