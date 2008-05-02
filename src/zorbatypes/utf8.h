@@ -20,7 +20,6 @@
 #include "zorbatypesError.h"
 #include <iterator>
 
-#ifndef ZORBA_NO_UNICODE
 
 namespace zorba {
   // Unicode constants
@@ -36,6 +35,7 @@ namespace zorba {
   // Maximum valid value for a Unicode code point
   const uint32_t CODE_POINT_MAX = 0x0010ffffu;
 
+#ifndef ZORBA_NO_UNICODE
   /**
    * The iterator class adapts the underlying octet iterator to iterate
    * over the sequence of code points, rather than raw octets.
@@ -327,6 +327,7 @@ namespace zorba {
     return OK;
   }
 
+#endif//#ifndef ZORBA_NO_UNICODE
 
   /**
    * Encodes a 32 bit code point as a UTF-8 sequence of octets
@@ -365,7 +366,8 @@ namespace zorba {
     return result;
   }
 
-    template <typename octet_iterator>
+#ifndef ZORBA_NO_UNICODE
+   template <typename octet_iterator>
       octet_iterator XMLEncode(uint32_t cp, octet_iterator result){
     if (!is_code_point_valid(cp))
     {
@@ -497,8 +499,8 @@ namespace zorba {
       return result;
   }
 
+#endif//#ifndef ZORBA_NO_UNICODE
 }/* namespace zorba */
 
-#endif//#ifndef ZORBA_NO_UNICODE
 
 #endif /* ZORBA_UTF8_H */

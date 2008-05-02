@@ -57,8 +57,8 @@ class XmlLoader
 protected:
 //  xmlSAXHandler                    theSaxHandler;
 
-  xqpStringStore                 * theBaseUri;
-  xqpStringStore                 * theDocUri;
+  xqpStringStore_t                 theBaseUri;
+  xqpStringStore_t                 theDocUri;
 
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
@@ -67,7 +67,7 @@ protected:
   std::stack<XmlNode*>             theNodeStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 
-  xqpStringStore                   theWarnings;
+  std::string                   theWarnings;
 
   char                             theBuffer[4096];
   int  buff_size;
@@ -106,7 +106,7 @@ public:
 
   ~XmlLoader();
 
-  XmlNode* loadXml(xqpStringStore* uri, std::istream& xmlStream);
+  XmlNode* loadXml(xqpStringStore_t& uri, std::istream& xmlStream);
 protected:
   int  read_char(std::istream &stream);
   void unread_char();

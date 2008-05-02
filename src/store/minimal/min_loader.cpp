@@ -774,10 +774,10 @@ bool XmlLoader::read_pi(std::istream &stream)
 /*******************************************************************************
 
 ********************************************************************************/
-XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
+XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
 {
   bool  end_document = false;
-  theDocUri = uri;
+  theDocUri.transfer(uri);
   theTree = new XmlTree(NULL, GET_STORE().getTreeId());
   prev_c = 0;
   current_c = 0;
@@ -1104,7 +1104,7 @@ void XmlLoader::startElement(
 
       //Item_t qname = qnpool.insert(uri, prefix, lname);
       Item_t  qname = new QNameItemImpl(uri, prefix, lname);
-      xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
+      xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
 
       Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
       Item_t typedValue = new UntypedAtomicItemImpl(value);
@@ -1384,9 +1384,9 @@ void  XmlLoader::warning(const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  if (theWarnings.bytes() > 0)
-    theWarnings.str() += "+ ";
-  theWarnings.str() += buf;
+  if (!theWarnings.empty())
+    theWarnings += "+ ";
+  theWarnings += buf;
 }
 
 #undef ZORBA_ERROR_DESC_CONTINUE

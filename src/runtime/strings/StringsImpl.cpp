@@ -715,7 +715,9 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
        tempStr->byteEqual("NFKD", 4))
     {
       resStr = item0->getStringValue();
+#ifndef ZORBA_NO_UNICODE
       resStr = resStr->normalize(tempStr);
+#endif//#ifndef ZORBA_NO_UNICODE
       STACK_PUSH( GENV_ITEMFACTORY->createString(resStr), state );
     }
     else

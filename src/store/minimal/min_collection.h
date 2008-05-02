@@ -23,8 +23,7 @@
 #include "store/api/collection.h"
 #include "store/util/latch.h"
 
-namespace zorba { 
-  namespace store {
+namespace zorba { namespace store {
 
 /*******************************************************************************
 
@@ -59,7 +58,7 @@ protected:
   SYNC_CODE(Latch                theLatch;)
 
 public:
-  SimpleCollection(Item* uri);
+  SimpleCollection(Item_t& uri);
   virtual ~SimpleCollection();
 
   Item_t getUri() { return theUri; }

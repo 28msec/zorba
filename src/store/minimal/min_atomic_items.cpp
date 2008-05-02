@@ -157,7 +157,7 @@ bool NCNameItemImpl::equals(
     RuntimeCB* aRuntimeCB,
     XQPCollator* aCollation) const
 {
-  return item->getStringValue()->equals(theValue);
+  return item->getStringValueP()->equals(theValue);
 }
 
 Item_t NCNameItemImpl::getEBV() const
@@ -206,7 +206,7 @@ bool AnyUriItemImpl::equals(
     RuntimeCB* aRuntimeCB,
     XQPCollator* aCollation) const
 {
-  return item->getStringValue()->equals(theValue.getp());
+  return item->getStringValueP()->equals(theValue.getp());
 }
 
 
@@ -241,7 +241,7 @@ bool UntypedAtomicItemImpl::equals(
     RuntimeCB* aRuntimeCB,
     XQPCollator* aCollation) const
 {
-  return item->getStringValue()->equals(theValue.getp());
+  return item->getStringValueP()->equals(theValue.getp());
 }
 
 Item_t UntypedAtomicItemImpl::getEBV() const
@@ -274,7 +274,7 @@ bool StringItemNaive::equals(
     RuntimeCB* aRuntimeCB,
     XQPCollator* aCollation) const
 {
-  return item->getStringValue()->equals(theValue.getp());
+  return item->getStringValueP()->equals(theValue.getp());
 }
   
 Item_t StringItemNaive::getEBV() const
@@ -425,7 +425,6 @@ Item_t IntegerItemNaive::getEBV() const
   {
     return theValue.hash();
   }
-	/* end class IntegerItem */
 	
 	/* start class DoubleItem */
 Item* DoubleItemNaive::getType() const
@@ -849,7 +848,8 @@ Item_t NonNegativeIntegerItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqpStringStore_t NonNegativeIntegerItemNaive::getStringValue() const {
+xqpStringStore_t NonNegativeIntegerItemNaive::getStringValue() const 
+{
   return NumConversions::uintegerToStr(theValue).getStore();
 }
 
@@ -911,7 +911,8 @@ UnsignedLongItemNaive::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) cons
 /*******************************************************************************
   class UnsignedIntItemNaive
 ********************************************************************************/
-xqp_integer UnsignedIntItemNaive::getIntegerValue() const {
+xqp_integer UnsignedIntItemNaive::getIntegerValue() const 
+{
   return Integer::parseInt(theValue);
 }
 
@@ -1229,10 +1230,7 @@ Item* DateTimeItemNaive::getType() const
   }
 }
 
-bool DateTimeItemNaive::equals(
-    const Item* aItem,
-    RuntimeCB* aRuntimeCB,
-    XQPCollator* coll ) const
+bool DateTimeItemNaive::equals(const Item* aItem, RuntimeCB* aRuntimeCB, XQPCollator* coll ) const
 {
   try {
     return 0 == theValue->compare(*aItem->getDateTimeValue(), 

@@ -18,17 +18,16 @@
 
 #include <vector>
 
+#include "util/hashfun.h"
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
-//#include "store/util/handle_hashset_item.h"
-#include "util/hashfun.h"
+//#include "store/util/hashset_item_handle.h"
 #include "store/util/hashmap.h"
 #include "store/minimal/min_node_vector.h"
 #include "store/minimal/min_node_updates.h"
 
 
-namespace zorba { 
-  namespace store {
+namespace zorba {  namespace store {
 
 class XmlNode;
 class UpdatePrimitive;
@@ -56,7 +55,7 @@ public:
   }
 
 
-  NodeToUpdatesMap() : HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8)
+  NodeToUpdatesMap() : HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8, false)
    {
    }
   ~NodeToUpdatesMap();

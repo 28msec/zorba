@@ -21,8 +21,7 @@
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 
-namespace zorba { 
-  namespace store {
+namespace zorba { namespace store {
 
 /**
  * Very simple implementation of Temp Sequence. It saves the resulting items
@@ -44,6 +43,16 @@ public:
 
   virtual ~SimpleTempSeq();
 
+  virtual bool empty();
+  
+  Item_t operator[](int32_t aIndex);
+  int32_t getSize();
+
+  virtual void append(Iterator_t iter, bool copy);
+
+  virtual Item_t getItem(int32_t position);
+  virtual bool containsItem(int32_t position);
+
   virtual Iterator_t getIterator();
 
   virtual Iterator_t getIterator(
@@ -64,20 +73,11 @@ public:
   virtual Iterator_t getIterator(
         Iterator_t positions,
         bool streaming = false);
-
-  virtual void append(Iterator_t iter, bool copy);
-
-  virtual Item_t getItem(int32_t position);
-  virtual bool containsItem(int32_t position);
-
+  
   virtual void purge();
   virtual void purgeUpTo(int32_t upTo );
   virtual void purgeItem(const std::vector<int32_t>& positions );
   virtual void purgeItem(int32_t position );
-  virtual bool empty();
-  
-  Item_t operator[](int32_t aIndex);
-  int32_t getSize();
 
   class SimpleTempSeqIter : public Iterator
 	{

@@ -20,7 +20,7 @@
 #include "common/shared_types.h"
 
 #include "store/api/store.h"
-#include "store/util/pointer_hashmap_string.h"
+#include "store/util/hashmap_stringp.h"
 #include "store/util/mutex.h"
 #include "store/api/collection.h"
 #include "store/minimal/min_node_items.h"
@@ -111,23 +111,19 @@ public:
   QueryContext& getQueryContext(ulong queryId);
   void deleteQueryContext(ulong queryId);
 
-  void setGarbageCollectionStrategy(xqpStringStore* strategy);
-
   store::Item_t createUri();
 
-  store::Item_t loadDocument(xqpStringStore* uri, std::istream& stream);
-  store::Item_t loadDocument(xqpStringStore* uri, store::Item_t	 doc_item);
-  store::Item_t getDocument(xqpStringStore* uri);
-  void deleteDocument(xqpStringStore* uri);
+  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
+  store::Item_t loadDocument(const xqpStringStore_t& uri, store::Item_t	 doc_item);
+  store::Item_t getDocument(const xqpStringStore_t& uri);
+  void deleteDocument(const xqpStringStore_t& uri);
 
-  Collection_t createCollection(xqpStringStore* uri);
+  Collection_t createCollection(xqpStringStore_t& uri);
   Collection_t createCollection();
-  Collection_t getCollection(xqpStringStore* uri);
-  void deleteCollection(xqpStringStore* uri);
+  Collection_t getCollection(const xqpStringStore_t& uri);
+  void deleteCollection(const xqpStringStore_t& uri);
 
   long compareNodes(Item* node1, Item* node2) const;
-  bool equalNodes(const Item* node1, const Item* node2) const;
-  uint32_t hashNode(const Item* node) const;
 
   Iterator_t sortNodes(
         Iterator* iterator,
@@ -142,20 +138,7 @@ public:
 
   store::Item_t getReference(store::Item_t);
 
-  store::Item_t getFixedReference(
-        store::Item_t,
-        Requester requester,
-        TimeTravel timetravel);
-
   store::Item_t getNodeByReference(store::Item_t);
-
-  store::Item_t getNodeByReference(
-        store::Item_t,
-        Requester requester,
-        TimeTravel timetravel);
-
-  void apply(PUL_t pendingUpdateList);
-  void apply(PUL_t pendingUpdateList, Requester requester);
 };
 
 

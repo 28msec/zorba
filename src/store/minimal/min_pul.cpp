@@ -34,8 +34,6 @@ namespace zorba { namespace store {
 ********************************************************************************/
 NodeToUpdatesMap::~NodeToUpdatesMap()
 {
-  SYNC_CODE(AutoMutex lock(this->theMutex);)
-
   ulong n = theHashTab.size();
 
   for (ulong i = 0; i < n; i++)

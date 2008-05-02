@@ -139,8 +139,9 @@ Item_t StoreNodeDistinctIterator::next()
 
     ZORBA_ASSERT(contextNode->isNode());
 
+    Item* tmp = contextNode;
     if (theNodeSet.insert(contextNode))
-      return contextNode;
+      return tmp;
   }
 }
 
@@ -198,8 +199,9 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
 
     while (true)
     {
+      Item* tmp = contextNode;
       if (theNodeSet.insert(contextNode))
-        return contextNode;
+        return tmp;
 
       contextNode = theInput->next();
       if (contextNode == NULL)
@@ -238,7 +240,7 @@ Item_t StoreNodeSortIterator::next()
 
       ZORBA_ASSERT(contextNode->isNode());
 
-      theNodes.push_back(BASE_NODE(contextNode));
+      theNodes.push_back(reinterpret_cast<XmlNode*>(contextNode.transfer()));
     }
 
     ComparisonFunction cmp;
@@ -250,7 +252,7 @@ Item_t StoreNodeSortIterator::next()
   {
     if (theDistinct)
     {
-      XmlNode_t result = theNodes[theCurrentNode++];
+      XmlNode* result = theNodes[theCurrentNode++];
 
       while (theCurrentNode < (long)theNodes.size() &&
              theNodes[theCurrentNode] == result)
@@ -258,16 +260,16 @@ Item_t StoreNodeSortIterator::next()
         theCurrentNode++;
       }
 
-      return result.getp();
+      return result;
     }
     else
     {
-      return theNodes[theCurrentNode++].getp();
+      return theNodes[theCurrentNode++];
     }
   }
   else
   {
-    theNodes.clear();
+    reset();
     return NULL;
   }
 }
@@ -278,6 +280,13 @@ void StoreNodeSortIterator::reset()
   // Do not reset the input. This is done by the runtime NodeSortIterator,
   // which wraps this store iterator.
 
+  ulong numNodes = theNodes.size();
+  for (ulong i = 0; i < numNodes; i++)
+  {
+    XmlNode* n = theNodes[i];
+    n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+  }
+
   theNodes.clear();
   theCurrentNode = -1;
 }
@@ -287,6 +296,13 @@ void StoreNodeSortIterator::close()
 {
   // Do not close the input. This is done by the runtime NodeSortIterator,
   // which wraps this store iterator.
+
+  ulong numNodes = theNodes.size();
+  for (ulong i = 0; i < numNodes; i++)
+  {
+    XmlNode* n = theNodes[i];
+    n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+  }
 
   theNodes.clear();
   theCurrentNode = -1;
@@ -306,7 +322,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
 
   if (theAtomicMode)
   {
-    Item_t contextNode = theInput->next();
+    contextNode = theInput->next();
     if (contextNode == 0)
       return NULL;
 
@@ -339,9 +355,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
         theNodeMode = true;
       }
 
-      ZORBA_ASSERT(contextNode->isNode());
-
-      theNodes.push_back(BASE_NODE(contextNode));
+      theNodes.push_back(reinterpret_cast<XmlNode*>(contextNode.transfer()));
     }
 
     ComparisonFunction cmp;
@@ -353,7 +367,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
   {
     if (theDistinct)
     {
-      XmlNode_t result = theNodes[theCurrentNode++];
+      XmlNode* result = theNodes[theCurrentNode++];
 
       while (theCurrentNode < (long)theNodes.size() &&
              theNodes[theCurrentNode] == result)
@@ -361,16 +375,16 @@ Item_t StoreNodeSortOrAtomicIterator::next()
         theCurrentNode++;
       }
 
-      return result.getp();
+      return result;
     }
     else
     {
-      return theNodes[theCurrentNode++].getp();
+      return theNodes[theCurrentNode++];
     }
   }
   else
   {
-    theNodes.clear();
+    reset();
     return NULL;
   }
  

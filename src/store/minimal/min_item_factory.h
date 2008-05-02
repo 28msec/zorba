@@ -50,22 +50,21 @@ public:
         xqpStringStore* ns,
         xqpStringStore* pre,
         xqpStringStore* local,
-        bool*           inserted = 0
-        );
+        bool*           inserted = 0 );
 
   Item_t createQName(
         const char* ns,
         const char* pre,
         const char* ln);
 
-  Item_t createNCName(xqpStringStore* value);
+  Item_t createNCName(xqpStringStore_t& value);
 
-  Item_t createAnyURI(xqpStringStore* value);
+  Item_t createAnyURI(xqpStringStore_t& value);
   Item_t createAnyURI(const char* value);
 
-  Item_t createUntypedAtomic(xqpStringStore* value);
+  Item_t createUntypedAtomic(xqpStringStore_t& value);
 
-  Item_t createString(xqpStringStore* value);
+  Item_t createString(xqpStringStore_t& value);
 
   Item_t createBase64Binary(xqp_base64Binary value);
 
@@ -107,9 +106,9 @@ public:
 
   Item_t createDuration(short years, short months, short days, short hours, short minutes, double seconds);
 
-  Item_t createENTITIES ( const xqp_string& value );
+  Item_t createENTITIES (xqpStringStore_t& value );
 
-  Item_t createENTITY ( const xqp_string& value );
+  Item_t createENTITY (xqpStringStore_t& value );
 
   Item_t createFloat ( xqp_float value );
 
@@ -145,21 +144,21 @@ public:
 
   Item_t createHexBinary ( xqp_hexBinary value );
 
-  Item_t createID ( const xqp_string& value );
+  Item_t createID (xqpStringStore_t& value );
 
-  Item_t createIDREF ( const xqp_string& value );
+  Item_t createIDREF ( xqpStringStore_t& value );
 
-  Item_t createIDREFS ( const xqp_string& value );
+  Item_t createIDREFS ( xqpStringStore_t& value );
 
-  Item_t createLanguage ( const xqp_string& value );
+  Item_t createLanguage ( xqpStringStore_t& value );
 
-  Item_t createNMTOKEN ( const xqp_string& value );
+  Item_t createNMTOKEN ( xqpStringStore_t& value );
 
-  Item_t createNMTOKENS ( const xqp_string& value );
+  Item_t createNMTOKENS ( xqpStringStore_t& value );
 
-  Item_t createNOTATION ( const xqp_string& value );
+  Item_t createNOTATION ( xqpStringStore_t& value );
 
-  Item_t createName ( const xqp_string& value );
+  Item_t createName ( xqpStringStore_t& value );
 
   Item_t createNegativeInteger ( xqp_integer value );
 
@@ -167,7 +166,7 @@ public:
 
   Item_t createNonPositiveInteger(xqp_integer value );
 
-  Item_t createNormalizedString(const xqp_string& value );
+  Item_t createNormalizedString(xqpStringStore_t& value );
 
   Item_t createPositiveInteger( xqp_uinteger value );
 
@@ -179,7 +178,7 @@ public:
 
   Item_t createTime(short hour, short minute, double second, short timeZone_hours);
 
-  Item_t createToken(const xqp_string& value);
+  Item_t createToken(xqpStringStore_t& value);
 
   Item_t createUnsignedByte(xqp_ubyte value);
 
