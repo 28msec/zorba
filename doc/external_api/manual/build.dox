@@ -20,7 +20,7 @@ In order ot build Zorba, you need the following libraries and development header
   - boost_program_options
   - boost_date_time
   - boost_filesystem
-- Xerces-C 2.7.0 or higher (http://www.boost.org/)
+- Xerces-C 2.7.0 or higher (http://xerces.apache.org/xerces-c/)
 - <em>Optional Packages</em>
   - CURL 7.12 (used to enable REST and HTTP; http://curl.haxx.se/)
 - <em>Optional Packages that are required if you want to build the scanner and parser</em>
