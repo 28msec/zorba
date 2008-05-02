@@ -50,7 +50,7 @@ public:
     void printXSDInfo(bool excludeBuiltIn = true);
 
     // user defined atomic type
-    bool parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSourceType,
+    bool parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aSourceType,
         const xqtref_t& aTargetType, store::Item_t &result);    
 
     /*
@@ -63,7 +63,7 @@ public:
         TypeConstants::quantifier_t quantifier);
 #endif//ZORBA_NO_XMLSCHEMA
 
-    store::Item_t parseAtomicValue(xqtref_t type, xqpString textValue);    
+    store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
 
 
 private:

@@ -15,48 +15,44 @@
  */
 #include "common/common.h"
 
+#include "zorba/api_shared_types.h"
+
 #include "schema.h"
 #include "StrX.h"
 #include "LoadSchemaErrorHandler.h"
 #include "PrintSchema.h"
 #include "XercesParseUtils.h"
 
-#include "zorba/api_shared_types.h"
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
-#include "util/Assert.h"
-#include "system/globalenv.h"
-#include "store/api/item_factory.h"
 #include "types/typeops.h"
 #include "types/casting.h"
 #include "types/delegating_typemanager.h"
-#include <string>
 
-//using namespace std;
-using namespace XERCES_CPP_NAMESPACE;
+#include "util/Assert.h"
+
+#include "system/globalenv.h"
+
+#include "store/api/item_factory.h"
+
+#include <zorbatypes/xerces_xmlcharray.h>
+
+#include "context/ns_consts.h"
 
 namespace zorba
 {
-const char* Schema::XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
+const char* Schema::XSD_NAMESPACE = XML_SCHEMA_NS;
 
 bool Schema::_isInitialized = false;
 
-XMLCh* transcode(xqp_string str);
-xqp_string transcode(XMLCh* str);
 xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, 
     XSTypeDefinition* xsTypeDef);
 
 
-XMLCh* transcode(xqp_string str)
-{
-    XMLCh* res = XMLString::transcode(str.c_str());
-    return res;
-}
-
 xqp_string transcode(const XMLCh *const str)
 {
     char* trStr = XMLString::transcode(str);
-    xqp_string res = xqp_string(trStr);
+    xqp_string res (trStr);
     delete trStr;
     return res;
 }
@@ -149,76 +145,76 @@ void Schema::registerXSD(const char* xsdFileName)
 void Schema::printXSDInfo(bool excludeBuiltIn)
 {
     PrintSchema::printInfo(excludeBuiltIn, _grammarPool);
-	
-	//xqpString val;
-	//store::Item_t res;
+  
+  //xqp_string val;
+  //store::Item_t res;
 
-	//val = "  \t\n  1 \t ";
-	//XercesParseUtils::parseXSBoolean(val, res);
-	//XercesParseUtils::parseXSInteger(val, res);
-	//XercesParseUtils::parseXSPositiveInteger(val, res);
-	//XercesParseUtils::parseXSNonPositiveInteger(val, res);
-	//XercesParseUtils::parseXSNegativeInteger(val, res);
-	//XercesParseUtils::parseXSNonNegativeInteger(val, res);
-	//XercesParseUtils::parseXSUnsignedByte(val, res);
-	//XercesParseUtils::parseXSUnsignedShort(val, res);
-	//XercesParseUtils::parseXSUnsignedInt(val, res);
-	//XercesParseUtils::parseXSUnsignedLong(val, res);
-	//XercesParseUtils::parseXSByte(val, res);
-	//XercesParseUtils::parseXSShort(val, res);
-	//XercesParseUtils::parseXSInt(val, res);
-	//XercesParseUtils::parseXSLong(val, res);
-	//val = "  \t\n  1.1 \t ";
-	//XercesParseUtils::parseXSFloat(val, res);
-	//XercesParseUtils::parseXSDouble(val, res);
-	//XercesParseUtils::parseXSDecimal(val, res);
-	
-	//XercesParseUtils::parseXSString(val, res);
-	//XercesParseUtils::parseXSNormalizedString(val, res);
-	//val = "  \t\n  ACBD \t ";
-	//XercesParseUtils::parseXSToken(val, res);
-	//XercesParseUtils::parseXSNMToken(val, res);
-	//XercesParseUtils::parseXSName(val, res);
-	//XercesParseUtils::parseXSNCName(val, res);
-	//XercesParseUtils::parseXSID(val, res);
-	//XercesParseUtils::parseXSIDRef(val, res);
-	//XercesParseUtils::parseXSEntity(val, res);
-	//XercesParseUtils::parseXSNotation(val, res);
+  //val = "  \t\n  1 \t ";
+  //XercesParseUtils::parseXSBoolean(val, res);
+  //XercesParseUtils::parseXSInteger(val, res);
+  //XercesParseUtils::parseXSPositiveInteger(val, res);
+  //XercesParseUtils::parseXSNonPositiveInteger(val, res);
+  //XercesParseUtils::parseXSNegativeInteger(val, res);
+  //XercesParseUtils::parseXSNonNegativeInteger(val, res);
+  //XercesParseUtils::parseXSUnsignedByte(val, res);
+  //XercesParseUtils::parseXSUnsignedShort(val, res);
+  //XercesParseUtils::parseXSUnsignedInt(val, res);
+  //XercesParseUtils::parseXSUnsignedLong(val, res);
+  //XercesParseUtils::parseXSByte(val, res);
+  //XercesParseUtils::parseXSShort(val, res);
+  //XercesParseUtils::parseXSInt(val, res);
+  //XercesParseUtils::parseXSLong(val, res);
+  //val = "  \t\n  1.1 \t ";
+  //XercesParseUtils::parseXSFloat(val, res);
+  //XercesParseUtils::parseXSDouble(val, res);
+  //XercesParseUtils::parseXSDecimal(val, res);
+  
+  //XercesParseUtils::parseXSString(val, res);
+  //XercesParseUtils::parseXSNormalizedString(val, res);
+  //val = "  \t\n  ACBD \t ";
+  //XercesParseUtils::parseXSToken(val, res);
+  //XercesParseUtils::parseXSNMToken(val, res);
+  //XercesParseUtils::parseXSName(val, res);
+  //XercesParseUtils::parseXSNCName(val, res);
+  //XercesParseUtils::parseXSID(val, res);
+  //XercesParseUtils::parseXSIDRef(val, res);
+  //XercesParseUtils::parseXSEntity(val, res);
+  //XercesParseUtils::parseXSNotation(val, res);
 
-	//val = "   2002-10-10T12:00:00  ";
-	//XercesParseUtils::parseXSDateTime(val, res);
-	//val = "   2002-10-11+12:00  ";
-	//XercesParseUtils::parseXSDate(val, res);
-	//val = "   13:20:00-05:00  ";
-	//XercesParseUtils::parseXSTime(val, res);
+  //val = "   2002-10-10T12:00:00  ";
+  //XercesParseUtils::parseXSDateTime(val, res);
+  //val = "   2002-10-11+12:00  ";
+  //XercesParseUtils::parseXSDate(val, res);
+  //val = "   13:20:00-05:00  ";
+  //XercesParseUtils::parseXSTime(val, res);
     //val = "   1999-04-05:00  ";
-	//XercesParseUtils::parseXSGYearMonth(val, res);
-	//val = "  1999-05:00  ";
-	//XercesParseUtils::parseXSGYear(val, res);
-	//val = "  --12-30-05:00  ";
-	//XercesParseUtils::parseXSGMonthDay(val, res);
-	//val = "  ---30-05:00  ";
-	//XercesParseUtils::parseXSGDay(val, res);
-	//val = "  --12-05:00  ";
-	//XercesParseUtils::parseXSGMonth(val, res);
-	//val = "  P1Y2M3DT10H30M12.123S  ";
-	//XercesParseUtils::parseXSDuration(val, res);
-	//val = "  P1Y2M ";
-	//XercesParseUtils::parseXSYearMonthDuration(val, res);
-	//val = "  P3DT10H30M12.123S  ";
-	//XercesParseUtils::parseXSDayTimeDuration(val, res);
-	//val = "  blah blah blah  ";
-	//XercesParseUtils::parseXSAnyAtomicType(val, res);
-	//XercesParseUtils::parseXSUntypedAtomic(val, res);
-	//val = "  SGVsbG8gV29ybGQ=  ";
-	//XercesParseUtils::parseXSBase64Binary(val, res);
-	//val = "  FF0099  ";
-	//XercesParseUtils::parseXSHexBinary(val, res);
-	//val = "  http://a.b.c/a/b/c.d  ";
-	//XercesParseUtils::parseXSAnyUri(val, res);
-	//val = "  p:local  ";
-	//XercesParseUtils::parseXSQName(val, res);
-	//std::cout << "Val: " << val << "\tResult: '" << res->getStringValue() << "'\n\n\n\n";
+  //XercesParseUtils::parseXSGYearMonth(val, res);
+  //val = "  1999-05:00  ";
+  //XercesParseUtils::parseXSGYear(val, res);
+  //val = "  --12-30-05:00  ";
+  //XercesParseUtils::parseXSGMonthDay(val, res);
+  //val = "  ---30-05:00  ";
+  //XercesParseUtils::parseXSGDay(val, res);
+  //val = "  --12-05:00  ";
+  //XercesParseUtils::parseXSGMonth(val, res);
+  //val = "  P1Y2M3DT10H30M12.123S  ";
+  //XercesParseUtils::parseXSDuration(val, res);
+  //val = "  P1Y2M ";
+  //XercesParseUtils::parseXSYearMonthDuration(val, res);
+  //val = "  P3DT10H30M12.123S  ";
+  //XercesParseUtils::parseXSDayTimeDuration(val, res);
+  //val = "  blah blah blah  ";
+  //XercesParseUtils::parseXSAnyAtomicType(val, res);
+  //XercesParseUtils::parseXSUntypedAtomic(val, res);
+  //val = "  SGVsbG8gV29ybGQ=  ";
+  //XercesParseUtils::parseXSBase64Binary(val, res);
+  //val = "  FF0099  ";
+  //XercesParseUtils::parseXSHexBinary(val, res);
+  //val = "  http://a.b.c/a/b/c.d  ";
+  //XercesParseUtils::parseXSAnyUri(val, res);
+  //val = "  p:local  ";
+  //XercesParseUtils::parseXSQName(val, res);
+  //std::cout << "Val: " << val << "\tResult: '" << res->getStringValue() << "'\n\n\n\n";
 
 
 
@@ -229,15 +225,15 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
 
     //store::ItemFactory* factory = GENV_ITEMFACTORY;
     //
-    //xqpString lNamespace("simple.xsd");
-    //xqpString lPrefix("");
-    //xqpString lLocal("HatSizeType");
+    //xqp_string lNamespace("simple.xsd");
+    //xqp_string lPrefix("");
+    //xqp_string lLocal("HatSizeType");
     //store::Item_t qname = factory->createQName(lNamespace.getStore(),
     //    lPrefix.getStore(), lLocal.getStore());;
 
     //xqtref_t type = createIfExists(typeManager, qname, TypeConstants::QUANT_ONE);
     //
-    //const xqpString textValue("17");
+    //const xqp_string textValue("17");
     //xqtref_t aSourceType = ts.STRING_TYPE_ONE;
     //xqtref_t aTargetType = type;
 
@@ -266,15 +262,11 @@ xqtref_t Schema::createIfExists( const TypeManager *typeManager, const store::It
         return res;
 
     // not found in cache, make a new one
-    const char* localCStr = qname->getLocalName()->c_str();
-    XMLCh* local = XMLString::transcode(localCStr);
-    XMLCh* uri = XMLString::transcode(uri_cstr);
+    XMLChArray local (qname->getLocalName()->c_str());
+    XMLChArray uri (uri_cstr);
 
     XSModel* xsModel = _grammarPool->getXSModel();
     XSTypeDefinition* xsTypeDef = xsModel->getTypeDefinition(local, uri);
-    XMLString::release(&local);
-    XMLString::release(&uri);
-
 
     if ( xsTypeDef==NULL )
         res = NULL;
@@ -303,9 +295,9 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
     {
         // first check if it is a built-in type
         const XMLCh* uri = xsTypeDef->getNamespace();
-	char* strUri = XMLString::transcode(uri);
+        xqp_string strUri = transcode(uri);
 
-        if ( XMLString::equals(strUri, Schema::XSD_NAMESPACE) )
+        if ( XMLString::equals(strUri.c_str (), Schema::XSD_NAMESPACE) )
         {
             const XMLCh* local = xsTypeDef->getName();
             // maybe there is a better way than comparing strings 
@@ -463,15 +455,15 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
                 result = GENV_TYPESYSTEM.ID_TYPE_ONE;
             }
             // SchemaSymbols::fgDT_NMTOKEN doesn't exist in Xerces
-            else if ( XMLString::equals(XMLString::transcode("NMTOKEN"), local) )
+            else if ( XMLString::equals(XMLChArray("NMTOKEN").get (), local) )
             {
                 result = GENV_TYPESYSTEM.NMTOKEN_TYPE_ONE;
             }
-            else if ( XMLString::equals(XMLString::transcode("IDREF"), local) )
+            else if ( XMLString::equals(XMLChArray("IDREF").get (), local) )
             {
                 result = GENV_TYPESYSTEM.IDREF_TYPE_ONE;
             }
-            else if ( XMLString::equals(XMLString::transcode("ENTITY"), local) )
+            else if ( XMLString::equals(XMLChArray("ENTITY").get (), local) )
             {
                 result = GENV_TYPESYSTEM.ID_TYPE_ONE;
             }
@@ -496,9 +488,9 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
 
             xqtref_t baseXQType = getXQTypeForXSTypeDefinition(typeManager, baseTypeDef);
 
-            xqpString lNamespace = xqpString(strUri);
-            xqpString lPrefix = xqpString("");
-            xqpString lLocal = transcode(xsTypeDef->getName());
+            xqp_string lNamespace (strUri);
+            xqp_string lPrefix;
+            xqp_string lLocal = transcode(xsTypeDef->getName());
 
             store::Item_t qname = GENV_ITEMFACTORY->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
 
@@ -506,19 +498,17 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
 
             result = xqType;
         }
-
-	delete strUri;
     }
     else
-        // not implemented for complex Types
-        result = NULL;
+      // not implemented for complex Types
+      result = NULL;
 
     return result;
 }
 
 #ifndef ZORBA_NO_XMLSCHEMA
 // user atomic types
-bool Schema::parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSourceType,
+bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aSourceType,
                                   const xqtref_t& aTargetType, store::Item_t &result)
 {
     //std::cout << "parseUserAtomicTypes: " << textValue;
@@ -531,15 +521,14 @@ bool Schema::parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSo
     ZORBA_ASSERT( udXQType.isAtomic() );
 
     store::Item_t typeQName = udXQType.getQName();
-    XMLCh* localPart = transcode(typeQName->getLocalName());
-    XMLCh* uriStr = transcode(typeQName->getNamespace());
+    XMLChArray localPart (typeQName->getLocalName());
+    XMLChArray uriStr (typeQName->getNamespace());
     bool wasError = false;
 
     try 
     {
         // Create grammar resolver and string pool that we pass to the scanner
-        GrammarResolver* fGrammarResolver;
-        fGrammarResolver = new GrammarResolver(_grammarPool);
+        std::auto_ptr<GrammarResolver> fGrammarResolver (new GrammarResolver(_grammarPool));
         fGrammarResolver->useCachedGrammarInParse(true);
 
         // retrieve Grammar for the uri
@@ -552,27 +541,22 @@ bool Schema::parseUserAtomicTypes(const xqpString textValue, const xqtref_t& aSo
             {
                 ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
                     "Type '" << TypeOps::toString (*aTargetType) << "' not found in current context.");
-		wasError = true;
+                wasError = true;
             }
 
-	    XMLCh* xchTextValue = transcode(textValue);
-            xsiTypeDV->validate( xchTextValue );
-	    XMLString::release(&xchTextValue);
+            XMLChArray xchTextValue (textValue.getStore ());
+            xsiTypeDV->validate(xchTextValue.get ());
         }
         else
         {
-            ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
-                "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
-	    wasError = true;
+          ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
+                                "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
+          wasError = true;
 
         }
 
-        XMLString::release(&localPart);
-	XMLString::release(&uriStr);
-	delete fGrammarResolver;
-
-	if (wasError)
-	  return false;
+        if (wasError)
+          return false;
     }
     catch (XMLException& idve)
     {

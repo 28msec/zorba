@@ -15,31 +15,15 @@
  */
 #include <xercesc/util/XMLUri.hpp>
 #include <xercesc/util/XMLURL.hpp>
-#include <xercesc/util/XMLString.hpp>
-
 #include "representations.h"
+
+#include <zorbatypes/xerces_xmlcharray.h>
 
 #include "URI.h"
 
 using namespace std;
-XERCES_CPP_NAMESPACE_USE
 
 namespace zorba {
-
-class XMLChArray 
-{
-  XMLCh *buf;
-    
-public:
-  XMLChArray (XMLCh *buf_) : buf (buf_) {}
-
-  XMLChArray (const char* str) : buf (XMLString::transcode (str)) {}
-
-  XMLCh *get () { return buf; }
-
-  ~XMLChArray () { XMLString::release (&buf); }
-};
-
 
 bool URI::is_valid (const xqpStringStore_t& uri, bool has_base_uri) {
   XMLChArray xuri(uri->c_str());
