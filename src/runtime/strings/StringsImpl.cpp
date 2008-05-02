@@ -75,7 +75,15 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const
         if (NumConversions::strToUInt(lUtf8Code, lCode)) 
         {
           char seq[5] = {0,0,0,0,0};
-          UTF8Encode(lCode, seq);
+          try
+          {
+            UTF8Encode(lCode, seq);
+          }
+          catch(zorbatypesException& ex)
+          {
+            ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()),
+                                 loc, lUtf8Code);
+          }
           buf += seq;
         }
         else
