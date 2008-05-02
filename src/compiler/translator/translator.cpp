@@ -2563,24 +2563,24 @@ void *begin_visit(const SchemaImport& v)
         sctx_p->bind_ns (sp->get_prefix (), v.get_uri ());
     }
 
-    std::string prefix = ((SchemaPrefix*)(v.get_prefix().getp()))->get_prefix();
-    std::string uri = v.get_uri();
-
-    // TODO: get_at_list() might return NULL
     rchandle<URILiteralList> atlist = v.get_at_list();
     if (atlist != NULL) 
     {
-        std::string at = (*atlist) [0];
-
-        //cout << "SchemaImport: " << prefix << " : " << uri
-        //     << " @ " << at << std::endl;
-        //cout << " Context: " << CTXTS << "\n";
-
-        ((DelegatingTypeManager*)CTXTS)->initializeSchema();
-        Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
-
-        schema_p->registerXSD(at.c_str());	
-        //schema_p->printXSDInfo();
+      std::string at = (*atlist) [0];
+     
+#if 0
+      std::string prefix = sp == NULL ? "" : sp->get_prefix();
+      std::string uri = v.get_uri();
+      cout << "SchemaImport: " << prefix << " : " << uri
+           << " @ " << at << std::endl;
+      cout << " Context: " << CTXTS << "\n";
+#endif
+      
+      ((DelegatingTypeManager*)CTXTS)->initializeSchema();
+      Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
+      
+      schema_p->registerXSD(at.c_str());	
+      //schema_p->printXSDInfo();
     }
 
     return no_state;
