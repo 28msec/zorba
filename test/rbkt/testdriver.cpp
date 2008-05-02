@@ -404,6 +404,7 @@ main(int argc, char** argv)
         {
           std::cerr << " " << *lIter;
         }
+        std::cerr << std::endl;
         return 6;
       }
     } else if ( lSpec.errorsSize() > 0 ) {
@@ -420,7 +421,7 @@ main(int argc, char** argv)
           std::cerr << " but got result:" << std::endl;
           printFile(std::cerr, lResultFile.native_file_string());
           std::cerr << "=== end of result ===" << std::endl;
-        } 
+        }
         return 7;
       }
     }
