@@ -114,7 +114,7 @@ int main(int argc, const char * argv[])
 #ifdef RC_TIMMING
 
   ulong loop = 1000000;
-  char* data = "aaaaaaa0000000";
+  const char* data = "aaaaaaa0000000";
   ulong datalen = strlen(data);
 
 #ifndef WIN32

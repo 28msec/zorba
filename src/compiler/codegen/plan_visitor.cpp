@@ -566,14 +566,14 @@ bool begin_visit(trycatch_expr& v)
   CODEGEN_TRACE_IN("");
   for(int i = v.clause_count() - 1; i >= 0; --i) {
     catch_clause *cc = &*v[i];
-    if (cc->errorcode_var_h != NULL) {
-      catchvar_iter_map.put((uint64_t)&*cc->errorcode_var_h, new vector<LetVarIter_t>());
+    if (cc->get_errorcode_var_h() != NULL) {
+      catchvar_iter_map.put((uint64_t)&*cc->get_errorcode_var_h(), new vector<LetVarIter_t>());
     }
-    if (cc->errordesc_var_h != NULL) {
-      catchvar_iter_map.put((uint64_t)&*cc->errordesc_var_h, new vector<LetVarIter_t>());
+    if (cc->get_errordesc_var_h() != NULL) {
+      catchvar_iter_map.put((uint64_t)&*cc->get_errordesc_var_h(), new vector<LetVarIter_t>());
     }
-    if (cc->errorobj_var_h != NULL) {
-      catchvar_iter_map.put((uint64_t)&*cc->errorobj_var_h, new vector<LetVarIter_t>());
+    if (cc->get_errorobj_var_h() != NULL) {
+      catchvar_iter_map.put((uint64_t)&*cc->get_errorobj_var_h(), new vector<LetVarIter_t>());
     }
   }
   return true;
@@ -587,20 +587,20 @@ void end_visit(trycatch_expr& v)
   for(int i = v.clause_count() - 1; i >= 0; --i) {
     catch_clause *cc = &*v[i];
     TryCatchIterator::CatchClause rcc;
-    rcc.node_name = cc->nametest_h;
+    rcc.node_name = cc->get_nametest_h();
     rcc.catch_expr = pop_itstack();
-    if (cc->errorcode_var_h != NULL) {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->errorcode_var_h, vec);
+    if (cc->get_errorcode_var_h() != NULL) {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_errorcode_var_h(), vec);
       ZORBA_ASSERT(bound);
       rcc.errorcode_var = *vec;
     }
-    if (cc->errordesc_var_h != NULL) {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->errordesc_var_h, vec);
+    if (cc->get_errordesc_var_h() != NULL) {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_errordesc_var_h(), vec);
       ZORBA_ASSERT(bound);
       rcc.errordesc_var = *vec;
     }
-    if (cc->errorobj_var_h != NULL) {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->errorobj_var_h, vec);
+    if (cc->get_errorobj_var_h() != NULL) {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_errorobj_var_h(), vec);
       ZORBA_ASSERT(bound);
       rcc.errorobj_var = *vec;
     }

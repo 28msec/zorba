@@ -114,7 +114,7 @@ bool begin_visit (flwor_expr& node)
 void end_visit (case_clause&) {}
 bool begin_visit (case_clause& node)
 {
-  checkNonUpdating(&*node.var_h);
+  checkNonUpdating(&*node.get_var_h());
   return true;
 }
 

@@ -240,20 +240,25 @@ public:
 };
 
 class group_clause : public SimpleRCObject {
-public:
-  rchandle<var_expr> theOuterVar;
-  rchandle<var_expr> theInnerVar;
-  std::string        theCollation;
+  friend class flwor_expr;
+protected:
+  expr_t      theOuterVar;
+  expr_t      theInnerVar;
+  std::string theCollation;
 
 public:
   group_clause(rchandle<var_expr> aOuterVar, rchandle<var_expr> aInnerVar) 
-  : theOuterVar(aOuterVar), theInnerVar(aInnerVar), theCollation("") {}
+  : theOuterVar(aOuterVar.getp()), theInnerVar(aInnerVar.getp()), theCollation("") {}
 
   group_clause(rchandle<var_expr> aOuterVar, rchandle<var_expr> aInnerVar, const std::string aCollation)
-  : theOuterVar(aOuterVar), theInnerVar(aInnerVar), theCollation(aCollation) {}
+  : theOuterVar(aOuterVar.getp()), theInnerVar(aInnerVar.getp()), theCollation(aCollation) {}
 
-  rchandle<var_expr> getOuterVar() const { return theOuterVar; }
-  rchandle<var_expr> getInnerVar() const { return theInnerVar; }
+  rchandle<var_expr> getOuterVar() const {
+    return rchandle<var_expr>(static_cast<var_expr*>(theOuterVar.getp())); 
+  }
+  rchandle<var_expr> getInnerVar() const { 
+    return rchandle<var_expr>(static_cast<var_expr*>(theInnerVar.getp())); 
+  }
 
   std::string getCollation() const { return theCollation; }
   
@@ -384,12 +389,13 @@ public:
 };
 
 class catch_clause : public SimpleRCObject {
+  friend class trycatch_expr;
   public:
     typedef rchandle<var_expr> varref_t;
 
-  public:
+  protected:
     rchandle<NodeNameTest> nametest_h;
-    varref_t var_h;
+    expr_t var_h;
     varref_t errorcode_var_h;
     varref_t errordesc_var_h;
     varref_t errorobj_var_h;
@@ -397,6 +403,25 @@ class catch_clause : public SimpleRCObject {
 
   public:
     catch_clause();
+
+    void set_nametest_h(rchandle<NodeNameTest> a) { nametest_h = a; }
+    rchandle<NodeNameTest> get_nametest_h() const { return nametest_h; }
+
+    varref_t get_var_h() const {
+      return varref_t(static_cast<var_expr*>(var_h.getp()));
+    }
+
+    void set_errorcode_var_h(varref_t a) { errorcode_var_h = a; }
+    varref_t get_errorcode_var_h() const { return errorcode_var_h; }
+
+    void set_errordesc_var_h(varref_t a) { errordesc_var_h = a; }
+    varref_t get_errordesc_var_h() const { return errordesc_var_h; }
+
+    void set_errorobj_var_h(varref_t a) { errorobj_var_h = a; }
+    varref_t get_errorobj_var_h() const { return errorobj_var_h; }
+
+    void set_catch_expr_h(expr_t a) { catch_expr_h = a; }
+    expr_t get_catch_expr_h() const { return catch_expr_h; }
 };
 
 class trycatch_expr : public expr {
@@ -492,17 +517,29 @@ public:
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 
 class case_clause : public SimpleRCObject {
+  friend class typeswitch_expr;
 public:
   typedef rchandle<expr> expr_t;
   typedef rchandle<var_expr> varref_t;
 
-public:
-  varref_t var_h;
+protected:
+  expr_t var_h;
   expr_t case_expr_h;
   xqtref_t type;
 
 public:
   case_clause();
+
+  void set_var_h(varref_t a) { var_h = a.getp(); }
+  varref_t get_var_h() const { 
+    return varref_t(static_cast<var_expr*>(var_h.getp())); 
+  }
+
+  void set_case_expr_h(expr_t a) { case_expr_h = a; }
+  expr_t get_case_expr_h() const { return case_expr_h; }
+
+  void set_type(xqtref_t a) { type = a; }
+  xqtref_t get_type() const { return type; }
 
 };
 
@@ -691,7 +728,7 @@ public:
 protected:
   expr_t switch_expr_h;
   std::vector<clauseref_t> case_clause_hv;
-  varref_t  default_var_h;
+  expr_t  default_var_h;
   expr_t default_clause_h;
 
 public:
@@ -704,9 +741,9 @@ public:
   { switch_expr_h = e_h; }
   
   varref_t get_default_varname() const
-  { return default_var_h; }
+  { return varref_t(static_cast<var_expr*>(default_var_h.getp())); }
   void set_default_varname(varref_t const& var_h)
-  { default_var_h = var_h; }
+  { default_var_h = var_h.getp(); }
 
   expr_t get_default_clause() const
   { return default_clause_h; }
@@ -1086,42 +1123,6 @@ public:
 ********************************************************************************/
 
 
-/*******************************************************************************
-
-  [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
-
-  AxisStep ::= Axis NodeTest Predicate*
-
-********************************************************************************/
-class axis_step_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () { return axis_step_expr_kind; }
-protected:
-  axis_kind_t          theAxis;
-  rchandle<match_expr> theNodeTest;
-  checked_vector<expr_t>  thePreds;
-
-public:
-  axis_step_expr(const QueryLoc&);
-
-public:
-  axis_kind_t getAxis() const          { return theAxis; }
-  void setAxis(axis_kind_t v)          { theAxis = v; }
-  bool is_reverse_axis () const        { return is_reverse_axis (getAxis ()); }
-
-  rchandle<match_expr> getTest() const { return theNodeTest; }
-  void setTest(rchandle<match_expr> v) { theNodeTest = v; }
-
-  expr_iterator_data *make_iter ();
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type_impl(static_context *sctx);
-
-public:
-  static bool is_reverse_axis (axis_kind_t kind);
-};
 
 
 /*******************************************************************************
@@ -1184,6 +1185,43 @@ public:
 };
 
 
+/*******************************************************************************
+
+  [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
+
+  AxisStep ::= Axis NodeTest Predicate*
+
+********************************************************************************/
+class axis_step_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return axis_step_expr_kind; }
+protected:
+  axis_kind_t          theAxis;
+  expr_t               theNodeTest;
+  checked_vector<expr_t>  thePreds;
+
+public:
+  axis_step_expr(const QueryLoc&);
+
+public:
+  axis_kind_t getAxis() const          { return theAxis; }
+  void setAxis(axis_kind_t v)          { theAxis = v; }
+  bool is_reverse_axis () const        { return is_reverse_axis (getAxis ()); }
+
+  rchandle<match_expr> getTest() const 
+  { return rchandle<match_expr>(static_cast<match_expr*>(theNodeTest.getp())); }
+  void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
+
+  expr_iterator_data *make_iter ();
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+  std::ostream& put(std::ostream&) const;
+
+  xqtref_t return_type_impl(static_context *sctx);
+
+public:
+  static bool is_reverse_axis (axis_kind_t kind);
+};
 
 // [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 /*______________________________________________________________________

@@ -3286,7 +3286,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     {
       string qname = v.getQName()->get_qname();
       store::Item_t qn_h = sctx_p->lookup_elem_qname (qname);
-      cc->nametest_h = new NodeNameTest(qn_h);
+      cc->set_nametest_h(new NodeNameTest(qn_h));
     }
     else
     {
@@ -3296,13 +3296,13 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
       switch (wildcard->getKind())
       {
         case ParseConstants::wild_all:
-          cc->nametest_h = new NodeNameTest(xqpString("*").theStrStore, xqpString("*").theStrStore);
+          cc->set_nametest_h(new NodeNameTest(xqpString("*").theStrStore, xqpString("*").theStrStore));
           break;
         case ParseConstants::wild_elem:
-          cc->nametest_h = new NodeNameTest(xqpString("*").theStrStore, wildcard->getPrefix().theStrStore);
+          cc->set_nametest_h(new NodeNameTest(xqpString("*").theStrStore, wildcard->getPrefix().theStrStore));
           break;
         case ParseConstants::wild_prefix:
-          cc->nametest_h = new NodeNameTest(wildcard->getLocalName().theStrStore, xqpString("*").theStrStore);
+          cc->set_nametest_h(new NodeNameTest(wildcard->getLocalName().theStrStore, xqpString("*").theStrStore));
           break;
       }
     }
@@ -4811,16 +4811,16 @@ void *begin_visit(const CatchExpr& v)
   tce->add_clause_in_front(cc);
   if (v.getVarname() != "") {
     push_scope();
-    cc->errorcode_var_h = tempvar(v.get_location(), var_expr::catch_var);
-    cc->errordesc_var_h = tempvar(v.get_location(), var_expr::catch_var);
-    cc->errorobj_var_h = tempvar(v.get_location(), var_expr::catch_var);
+    cc->set_errorcode_var_h(tempvar(v.get_location(), var_expr::catch_var));
+    cc->set_errordesc_var_h(tempvar(v.get_location(), var_expr::catch_var));
+    cc->set_errorobj_var_h(tempvar(v.get_location(), var_expr::catch_var));
     var_expr_t lv = bind_var(v.get_location(), v.getVarname(), var_expr::let_var, GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
 
     expr_t eName = new const_expr(v.get_location(), GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", "error"));
 
-    expr_t comp1 = cc_component(v.get_location(), cc->errorcode_var_h, "errorcode");
-    expr_t comp2 = cc_component(v.get_location(), cc->errordesc_var_h, "description");
-    expr_t comp3 = cc_component(v.get_location(), cc->errorobj_var_h, "error-obj");
+    expr_t comp1 = cc_component(v.get_location(), cc->get_errorcode_var_h(), "errorcode");
+    expr_t comp2 = cc_component(v.get_location(), cc->get_errordesc_var_h(), "description");
+    expr_t comp3 = cc_component(v.get_location(), cc->get_errorobj_var_h(), "error-obj");
     expr_t eContents = new fo_expr(v.get_location(), LOOKUP_OPN("concatenate"), comp1, comp2, comp3);
 
     push_elem_scope();
@@ -4830,7 +4830,7 @@ void *begin_visit(const CatchExpr& v)
     rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
     rchandle<forlet_clause> flc = new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, eVal);
     flwor->add(flc);
-    cc->catch_expr_h = &*flwor;
+    cc->set_catch_expr_h(flwor);
   }
   return no_state;
 }
@@ -4842,11 +4842,11 @@ void end_visit(const CatchExpr& v, void* visit_state)
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
   catch_clause *cc = &*(*tce)[0];
   if (v.getVarname() != "") {
-    flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*cc->catch_expr_h);
+    flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*cc->get_catch_expr_h());
     flwor->set_retval(ce);
     pop_scope();
   } else {
-    cc->catch_expr_h = ce;
+    cc->set_catch_expr_h(ce);
   }
 }
 
