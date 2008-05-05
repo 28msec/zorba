@@ -4809,12 +4809,12 @@ void *begin_visit(const CatchExpr& v)
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
   trycatch_expr::clauseref_t cc = new catch_clause();
   tce->add_clause_in_front(cc);
-  if (v.getVarname() != "") {
+  if (v.getVarErrorCode() != "") {
     push_scope();
     cc->set_errorcode_var_h(tempvar(v.get_location(), var_expr::catch_var));
     cc->set_errordesc_var_h(tempvar(v.get_location(), var_expr::catch_var));
     cc->set_errorobj_var_h(tempvar(v.get_location(), var_expr::catch_var));
-    var_expr_t lv = bind_var(v.get_location(), v.getVarname(), var_expr::let_var, GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
+    var_expr_t lv = bind_var(v.get_location(), v.getVarErrorCode(), var_expr::let_var, GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
 
     expr_t eName = new const_expr(v.get_location(), GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", "error"));
 
@@ -4841,7 +4841,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
   expr_t ce = pop_nodestack();
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
   catch_clause *cc = &*(*tce)[0];
-  if (v.getVarname() != "") {
+  if (v.getVarErrorCode() != "") {
     flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*cc->get_catch_expr_h());
     flwor->set_retval(ce);
     pop_scope();

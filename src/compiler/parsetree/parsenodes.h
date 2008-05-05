@@ -5101,7 +5101,9 @@ class CatchExpr : public exprnode
 {
 protected:
   rchandle<NameTest> theNameTest;
-  std::string theVarname;
+  std::string theVarErrorCode;
+  std::string theVarErrorDescr;
+  std::string theVarErrorVal;
   rchandle<parsenode> theExprSingle;
 
 public:
@@ -5111,25 +5113,62 @@ public:
     rchandle<parsenode> aExprSingle)
   : exprnode(aQueryLoc),
     theNameTest(aNameTest),
-    theVarname(""),
+    theVarErrorCode(""),
+    theVarErrorDescr(""),
+    theVarErrorVal(""),
     theExprSingle(aExprSingle)
   {}
 
   CatchExpr(
     const QueryLoc& aQueryLoc,
     rchandle<NameTest> aNameTest,
-    const std::string& aVarname,
+    const std::string& aVarErrorCode,
     rchandle<parsenode> aExprSingle)
   :
     exprnode(aQueryLoc),
     theNameTest(aNameTest),
-    theVarname(aVarname),
+    theVarErrorCode(aVarErrorCode),
+    theVarErrorDescr(""),
+    theVarErrorVal(""),
+    theExprSingle(aExprSingle)
+  {}
+
+  CatchExpr(
+    const QueryLoc& aQueryLoc,
+    rchandle<NameTest> aNameTest,
+    const std::string& aVarErrorCode,
+    const std::string& aVarErrorDescr,
+    rchandle<parsenode> aExprSingle)
+  :
+    exprnode(aQueryLoc),
+    theNameTest(aNameTest),
+    theVarErrorCode(aVarErrorCode),
+    theVarErrorDescr(aVarErrorDescr),
+    theVarErrorVal(""),
+    theExprSingle(aExprSingle)
+  {}
+
+  CatchExpr(
+    const QueryLoc& aQueryLoc,
+    rchandle<NameTest> aNameTest,
+    const std::string& aVarErrorCode,
+    const std::string& aVarErrorDescr,
+    const std::string& aVarErrorVal,
+    rchandle<parsenode> aExprSingle)
+  :
+    exprnode(aQueryLoc),
+    theNameTest(aNameTest),
+    theVarErrorCode(aVarErrorCode),
+    theVarErrorDescr(aVarErrorDescr),
+    theVarErrorVal(aVarErrorVal),
     theExprSingle(aExprSingle)
   {}
 
 public:
   rchandle<NameTest> getNameTest() const { return theNameTest; }
-  const std::string& getVarname() const { return theVarname; }
+  const std::string& getVarErrorCode() const { return theVarErrorCode; }
+  const std::string& getVarErrorDescr() const { return theVarErrorDescr; }
+  const std::string& getVarErrorVal() const { return theVarErrorVal; }
   rchandle<parsenode> getExprSingle() const { return theExprSingle; }
 
 public:

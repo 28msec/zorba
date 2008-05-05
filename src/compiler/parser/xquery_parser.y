@@ -5926,12 +5926,37 @@ CatchExpr :
     CATCH_LPAR NameTest COMMA DOLLAR VARNAME RPAR NonNodeEnclosedExpr
     {
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CatchExpr [NameTest,VarName]" << endl;
+			 cout << "CatchExpr [NameTest,VarErrorCode]" << endl;
 #endif
        $$ = new CatchExpr(LOC (@$),
                           static_cast<NameTest*>($2),
                           driver.symtab.get((off_t)$5),
                           $7);
+    }
+  |
+    CATCH_LPAR NameTest COMMA DOLLAR VARNAME COMMA DOLLAR VARNAME RPAR NonNodeEnclosedExpr
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CatchExpr [NameTest,VarErrorCode]" << endl;
+#endif
+       $$ = new CatchExpr(LOC (@$),
+                          static_cast<NameTest*>($2),
+                          driver.symtab.get((off_t)$5),
+                          driver.symtab.get((off_t)$8),
+                          $10);
+    }
+  |
+    CATCH_LPAR NameTest COMMA DOLLAR VARNAME COMMA DOLLAR VARNAME COMMA DOLLAR VARNAME RPAR NonNodeEnclosedExpr
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CatchExpr [NameTest,VarErrorCode]" << endl;
+#endif
+       $$ = new CatchExpr(LOC (@$),
+                          static_cast<NameTest*>($2),
+                          driver.symtab.get((off_t)$5),
+                          driver.symtab.get((off_t)$8),
+                          driver.symtab.get((off_t)$11),
+                          $13);
     }
   ;
 
