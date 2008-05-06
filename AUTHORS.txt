@@ -13,5 +13,6 @@ The primary authors are:
   * Tim Kraska
   * Dan Muresan
   * Sorin Nasoi
+  * Paul Pedersen
   * Daniel Turcanu
   * Markos Zaharioudakis
