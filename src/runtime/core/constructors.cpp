@@ -850,7 +850,16 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
             STACK_PUSH(item, state);
           }
 
-          STACK_PUSH(state->theContextItem, state);
+          if (state->theContextItem != NULL &&
+              state->theContextItem->getNodeKind() == store::StoreConsts::documentNode)
+          {
+            state->theDocChildren = state->theContextItem->getChildren();
+            state->theDocChildren->open();
+          }
+          else
+          {
+            STACK_PUSH(state->theContextItem, state);
+          }
         }
       }
     }
