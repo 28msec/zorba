@@ -34,9 +34,9 @@ fn_data_func::codegen(
 
 xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const {
   if (TypeOps::is_subtype (*arg_types [0], *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
-    return arg_types [0];
+    return arg_types [0];  // includes () case
   else
-    return sig.return_type ();
+    return GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_ANY_ATOMIC, TypeOps::quantifier (*arg_types [0]));
 }
 
 /*******************************************************************************
