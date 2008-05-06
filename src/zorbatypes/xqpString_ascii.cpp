@@ -23,7 +23,7 @@
 //#include "zorbatypes/utf8.h"
 #include "zorbatypes/numconversions.h"
 //#include "zorbatypes/collation_manager.h"
-#include "zorbatypeserror.h"
+#include "zorbatypesError.h"
 
 using namespace std;
 
