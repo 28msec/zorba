@@ -103,17 +103,15 @@ Iterator tree for main query:
            </FnDataIterator>
            <GenericArithIterator_MultiplyOperation>
             <SingletonIterator value="xs:integer(5000)"/>
-            <PromoteIterator type="[AtomicXQType XS_ANY_ATOMIC]">
-             <FnDataIterator>
-              <FnExactlyOneIterator>
-               <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="i"/>
-                </ChildAxisIterator>
-               </KindTestIterator>
-              </FnExactlyOneIterator>
-             </FnDataIterator>
-            </PromoteIterator>
+            <FnDataIterator>
+             <FnExactlyOneIterator>
+              <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+               <ChildAxisIterator>
+                <ForVarIterator varname="i"/>
+               </ChildAxisIterator>
+              </KindTestIterator>
+             </FnExactlyOneIterator>
+            </FnDataIterator>
            </GenericArithIterator_MultiplyOperation>
           </CompareIterator>
          </WhereClause>
