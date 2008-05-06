@@ -313,11 +313,13 @@ ostream& extension_expr::put( ostream& os) const
 ostream& relpath_expr::put( ostream& os) const
 {
   BEGIN_EXPR (relpath_expr);
-
+  
   for (std::vector<expr_t>::const_iterator it = begin(); it != end(); ++it)
   {
     expr_t expr = *it;
-    if (it != begin ())
+    if (it == begin ())
+      expr->put (os);
+    else
       PUT_SUB ("REL STEP", expr);
   }
   CLOSE_EXPR;
@@ -463,12 +465,7 @@ ostream& attr_expr::put( ostream& os) const
   BEGIN_EXPR (attr_expr);
 
   theQNameExpr->put (os);
-  
-  if (theValueExpr != NULL)
-  {
-    os << "=";
-    theValueExpr->put(os);
-  }
+  PUT_SUB ("=", theValueExpr);
   CLOSE_EXPR;
 }
 
