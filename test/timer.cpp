@@ -19,6 +19,12 @@
 
 //#define DEBUG
 
+Timer::Timer (bool verbose_, bool start_)
+  : verbose (verbose_)
+{
+  if (start_) start ();
+}
+
 void Timer::start()
 {
     startClock = clock();
@@ -26,13 +32,9 @@ void Timer::start()
     struct timeval stime;
     gettimeofday(&stime, NULL);
     startTime=(double)stime.tv_sec+(1.e-6)*stime.tv_usec;
-#ifdef DEBUG
-    printf("Start time: %lf\n",startTime);
-#endif
+    if (verbose) printf("Start time: %lf\n",startTime);
 #else//WIN32
-#ifdef DEBUG
-		printf("Start time: %lf\n",(double)startClock/CLOCKS_PER_SEC);
-#endif
+    if (verbose) printf("Start time: %lf\n",(double)startClock/CLOCKS_PER_SEC);
 #endif
 
     suspended = false;
@@ -46,13 +48,9 @@ void Timer::end()
     struct timeval etime;
     gettimeofday(&etime, NULL);
     endTime=(double)etime.tv_sec+(1.e-6)*etime.tv_usec;
-#ifdef DEBUG
-    printf("End time: %lf\n",endTime);
-#endif
+    if (verbose) printf("End time: %lf\n",endTime);
 #else///WIN32
-#ifdef DEBUG
-		printf("End time: %lf\n",(double)endClock/CLOCKS_PER_SEC);
-#endif
+    if (verbose) printf("End time: %lf\n",(double)endClock/CLOCKS_PER_SEC);
 #endif
     running = false;
 }
@@ -64,13 +62,9 @@ void Timer::suspend()
     struct timeval sustime;
     gettimeofday(&sustime,NULL);
     suspendTime = (double)sustime.tv_sec+(1.e-6)*sustime.tv_usec;
-#ifdef DEBUG
-    printf("Suspend time: %lf\n",suspendTime);
-#endif
+    if (verbose) printf("Suspend time: %lf\n",suspendTime);
 #else
-#ifdef DEBUG
-    printf("Suspend time: %lf\n",(double)suspendClock/CLOCKS_PER_SEC);
-#endif
+    if (verbose) printf("Suspend time: %lf\n",(double)suspendClock/CLOCKS_PER_SEC);
 #endif
 
     suspended = true;
@@ -78,23 +72,17 @@ void Timer::suspend()
 
 void Timer::resume()
 {
-		clock_t		resumeClock = clock();
+    clock_t   resumeClock = clock();
     startClock = startClock +(resumeClock-suspendClock);
 #ifndef WIN32
     struct timeval sustime;
     gettimeofday(&sustime,NULL);
     double resumeTime = (double)sustime.tv_sec+(1.e-6)*sustime.tv_usec;
-#ifdef DEBUG
-    printf("Resume time: %lf\n",resumeTime);
-#endif
+    if (verbose) printf("Resume time: %lf\n",resumeTime);
     startTime = startTime +(resumeTime-suspendTime);
-#ifdef DEBUG
-    printf("New start Time: %lf\n",startTime);
-#endif
+    if (verbose) printf("New start Time: %lf\n",startTime);
 #else//WIN32
-#ifdef DEBUG
-    printf("Resume time: %lf\n",(double)resumeClock/CLOCKS_PER_SEC);
-#endif
+    if (verbose) printf("Resume time: %lf\n",(double)resumeClock/CLOCKS_PER_SEC);
 #endif
 
     suspended = false;
@@ -121,9 +109,9 @@ double Timer::getTime()
 std::ostream& Timer::print(std::ostream& os)
 {
 #ifndef WIN32
-	os << "Duration (with System Time): " << getTime() << " s" << std::endl;
+  os << "Duration (with System Time): " << getTime() << " s" << std::endl;
 #endif
-	os << "Duration (with CPU Clocks): " << getClock() << " s" << std::endl;
+  os << "Duration (with CPU Clocks): " << getClock() << " s" << std::endl;
 
   return os;
 }

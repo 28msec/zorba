@@ -44,6 +44,7 @@ class Timer
 #endif
 		bool suspended;
     bool running;
+    bool verbose;
 
 public:
     // timer routines
@@ -59,6 +60,8 @@ public:
     // print all information
     std::ostream& print(std::ostream& os);
     bool isRunning();
+
+    Timer (bool verbose = true, bool start = true);
 };
 #endif
 

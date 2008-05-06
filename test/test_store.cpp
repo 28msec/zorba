@@ -119,7 +119,6 @@ int main(int argc, const char * argv[])
 
 #ifndef WIN32
 	Timer timer;
-	timer.start();
 #endif
 
   for (ulong i = 0; i < loop; i++)
@@ -162,7 +161,6 @@ int main(int argc, const char * argv[])
 
 #ifndef WIN32
 	Timer timer;
-	timer.start();
 #endif
 
 #endif // RC_TIMMING
