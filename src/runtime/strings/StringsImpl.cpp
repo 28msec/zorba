@@ -41,17 +41,12 @@ using namespace std;
 
 namespace zorba {
 /**
- *______________________________________________________________________
- *
- *  7.2.1 fn:codepoints-to-string
- *
- *  fn:codepoints-to-string($arg as xs:integer*) as xs:string
- *
- *  Summary:Creates an xs:string from a sequence of code points.
- *Returns the zero-length string if $arg is the empty sequence.
- *If any of the code points in $arg is not a legal XML character,
- *an error is raised [err:FOCH0001] ("Code point not valid.").
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.2.1 fn:codepoints-to-string
+  *
+  *  fn:codepoints-to-string($arg as xs:integer*) as xs:string
+  *_______________________________________________________________________*/
 store::Item_t
 CodepointsToStringIterator::nextImpl(PlanState& planState) const 
 {
@@ -105,16 +100,12 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const
 
 
 /**
- *______________________________________________________________________
- *
- *  7.2.2 fn:string-to-codepoints
- *
- *  fn:string-to-codepoints($arg as xs:string?) as xs:integer*
- *
- *  Summary: Returns the sequence of code points that constitute an xs:string.
- *If $arg is a zero-length string or the empty sequence,
- *the empty sequence is returned.
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.2.2 fn:string-to-codepoints
+  *
+  *  fn:string-to-codepoints($arg as xs:string?) as xs:integer*
+  *_______________________________________________________________________*/
 /* begin class StringToCodepointsIterator */
 store::Item_t
 StringToCodepointsIterator::nextImpl(PlanState& planState) const {
@@ -193,22 +184,16 @@ StringToCodepointsState::getVectSize()
 /* end class StringToCodepointsIterator */
 
 /**
- *______________________________________________________________________
- *  7.3.2 fn:compare
- * fn:compare($comparand1 as xs:string?,
- *                   $comparand2 as xs:string?) as xs:integer
- *
- * fn:compare(   $comparand1  as xs:string?,
- *                     $comparand2  as xs:string?,
- *                     $collation  as xs:string) as xs:integer?
- *
- * Summary: Returns -1, 0, or 1, depending on whether the value of
- * the $comparand1 is respectively less than, equal to, or greater
- * than the value of $comparand2, according to the rules of
- * the collation that is used.
- *
- * If either argument is the empty sequence, the result is the empty sequence.
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.3.2 fn:compare
+  *
+  * fn:compare($comparand1 as xs:string?,
+  *            $comparand2 as xs:string?) as xs:integer
+  * fn:compare($comparand1 as xs:string?,
+  *            $comparand2 as xs:string?,
+  *            $collation  as xs:string) as xs:integer?
+  *_______________________________________________________________________*/
 /* begin class CompareStrIterator */
 store::Item_t
 CompareStrIterator::nextImpl(PlanState& planState) const {
@@ -264,23 +249,13 @@ CompareStrIterator::nextImpl(PlanState& planState) const {
 /* end class CompareStrIterator */
 
 /**
- *______________________________________________________________________
- *
- *  7.3.3 fn:codepoint-equal
- *
- *  fn:codepoint-equal(   $comparand1    as xs:string?,
- *                                $comparand2    as xs:string?) as xs:boolean?
- *
- *  Summary: Returns true or false depending on whether the value
- * of $comparand1 is equal to the value of $comparand2, according to
- * the Unicode code point collation
- * (http://www.w3.org/2005/xpath-functions/collation/codepoint).
- *
- * If either argument is the empty sequence, the result is the empty sequence.
- * 
- * Note: This function allows xs:anyURI values to be compared
- * without having to specify the Unicode code point collation.
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.3.3 fn:codepoint-equal
+  *
+  *  fn:codepoint-equal($comparand1 as xs:string?,
+  *                     $comparand2 as xs:string?) as xs:boolean?
+  *_______________________________________________________________________*/
 /* begin class CodepointEqualIterator */
 store::Item_t
 CodepointEqualIterator::nextImpl(PlanState& planState) const {
@@ -307,29 +282,14 @@ CodepointEqualIterator::nextImpl(PlanState& planState) const {
 /* end class CodepointEqualIterator */
 
 /**
- *______________________________________________________________________
- *
- *  7.4.1 fn:concat
- *
- * fn:concat(   $arg1    as xs:anyAtomicType?,
- *                   $arg2    as xs:anyAtomicType?,
- *                   ...                                          ) as xs:string
- * 
- * Summary:
- * Accepts two or more xs:anyAtomicType arguments and casts them to xs:string.
- * Returns the xs:string that is the concatenation of the values of its
- * arguments after conversion.
- * If any of the arguments is the empty sequence, the argument is treated
- * as the zero-length string.
- *
- * The fn:concat function is specified to allow an two or more arguments
- * that are concatenated together.
- *
- * Note:
- * Unicode normalization is not automatically applied to the result
- * of fn:concat. If a normalized result is required, fn:normalize-unicode
- * can be applied to the xs:string returned by fn:concat.
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.4.1 fn:concat
+  *
+  * fn:concat($arg1 as xs:anyAtomicType?,
+  *           $arg2    as xs:anyAtomicType?,
+  *           ...                          ) as xs:string
+  *_______________________________________________________________________*/
 /* begin class ConcatStrIterator */
 store::Item_t
 ConcatStrIterator::nextImpl(PlanState& planState) const {
@@ -366,22 +326,13 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
 /* end class ConcatStrIterator */
 
 /**
- *______________________________________________________________________
- *
- *  7.4.2 fn:string-join
- *
- * fn:string-join($arg1 as xs:string*,
- *                     $arg2 as xs:string) as xs:string
- *
- * Summary: Returns a xs:string created by concatenating the members
- * of the $arg1 sequence using $arg2 as a separator.
- *
- * If the value of $arg2 is the zero-length string,
- * then the members of $arg1 are concatenated without a separator.
- *
- * If the value of $arg1 is the empty sequence,
- * the zero-length string is returned.
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.4.2 fn:string-join
+  *
+  * fn:string-join($arg1 as xs:string*,
+  *                $arg2 as xs:string) as xs:string
+  *_______________________________________________________________________*/
 /* begin class StringJoinIterator */
 store::Item_t
 StringJoinIterator::nextImpl(PlanState& planState) const
@@ -453,32 +404,16 @@ StringJoinIterator::nextImpl(PlanState& planState) const
 /* end class StringJoinIterator */
 
 /**
- *______________________________________________________________________
- *
- *  7.4.3 fn:substring
- *
- *fn:substring($sourceString   as xs:string?,
- *             $startingLoc    as xs:double) as xs:string
- *
- *fn:substring($sourceString as xs:string?,
- *             $startingLoc  as xs:double,
- *             $length       as xs:double) as xs:string
- *
- *Summary: Returns the portion of the value of $sourceString beginning
- *at the position indicated by the value of $startingLoc and continuing for
- *the number of characters indicated by the value of $length.
- *The characters returned do not extend beyond $sourceString.
- *If $startingLoc is zero or negative, only those characters in positions
- *greater than zero are returned.
- *
- *More specifically, the three argument version of the function returns
- *the characters in $sourceString whose position $p obeys:
- *fn:round($startingLoc) <= p \< fn:round($startingLoc) + fn:round($length)
- *If the value of $sourceString is the empty sequence, the zero-length string is returned.
- *
- *Note:
- *The first character of a string is located at position 1, not position 0.
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.4.3 fn:substring
+  *
+  *fn:substring($sourceString   as xs:string?,
+  *             $startingLoc    as xs:double) as xs:string
+  *fn:substring($sourceString as xs:string?,
+  *             $startingLoc  as xs:double,
+  *             $length       as xs:double)   as xs:string
+  *_______________________________________________________________________*/
 /* begin class SubstringIterator */
 store::Item_t
 SubstringIterator::nextImpl(PlanState& planState) const
@@ -580,22 +515,13 @@ SubstringIterator::nextImpl(PlanState& planState) const
 }
 /* end class SubstringIterator */
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.4.4 fn:string-length
   *
-  *fn:string-length() as xs:integer
+  *fn:string-length()                   as xs:integer
   *fn:string-length($arg as xs:string?) as xs:integer
-  *
-  *Summary: Returns an xs:integer equal to the length
-  *in characters of the value of $arg.
-  *
-  *If the value of $arg is the empty sequence, the xs:integer 0 is returned.
-  *If no argument is supplied, $arg defaults to the string value
-  *(calculated using fn:string()) of the context item (.).
-  *If no argument is supplied or if the argument is the context item and
-  *the context item is undefined an error is raised:[err:XPDY0002].
   *_______________________________________________________________________*/
 /* begin class StringLengthIterator */
 store::Item_t
@@ -623,17 +549,13 @@ StringLengthIterator::nextImpl(PlanState& planState) const {
 }
 /* end class StringLengthIterator */
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.4.5 fn:normalize-space
   *
-  *fn:normalize-space() as xs:string
+  *fn:normalize-space()                   as xs:string
   *fn:normalize-space($arg as xs:string?) as xs:string
-  *
-  *Summary: Returns the value of $arg with whitespace normalized by
-  *stripping leading and trailing whitespace and replacing sequences
-  *of one or more than one whitespace character with a single space, #x20.
   *_______________________________________________________________________*/
 /* begin class NormalizeSpaceIterator */
 store::Item_t
@@ -661,28 +583,14 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState) const
 }
 /* end class NormalizeSpaceIterator */
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.4.6 fn:normalize-unicode
   *
-  *fn:normalize-unicode(  $arg as xs:string?) as xs:string
-  *fn:normalize-unicode(   $arg    as xs:string?,
-  *                                  $normalizationForm    as xs:string) as xs:string
-  *
-  *Summary: Returns the value of $arg normalized according to the
-  *normalization criteria for a normalization form identified by the value
-  *of $normalizationForm. The effective value of the $normalizationForm
-  *is computed by removing leading and trailing blanks, if present,
-  *and converting to upper case.
-  *
-  *If the value of $arg is the empty sequence, returns the zero-length string.
-  *
-  *If the $normalizationForm is absent, as in the first format above,
-  *it shall be assumed to be "NFC"
-  *
-  *Conforming implementations ·must· support normalization form "NFC" and ·may·
-  *support normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED".
+  *fn:normalize-unicode($arg as xs:string?)              as xs:string
+  *fn:normalize-unicode($arg as xs:string?,
+  *                     $normalizationForm as xs:string) as xs:string
   *_______________________________________________________________________*/
 store::Item_t
 NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
@@ -735,22 +643,12 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.4.7 fn:upper-case
   *
   *fn:upper-case($arg as xs:string?) as xs:string
-  *
-  *Summary: Returns the value of $arg after translating every character
-  *to its upper-case correspondent as defined in the appropriate case
-  *mappings section in the Unicode standard.
-  *For versions of Unicode beginning with the 2.1.8 update,
-  *only locale-insensitive case mappings should be applied. Every lower-case
-  *character that does not have an upper-case correspondent, as well as every
-  *upper-case character, is included in the returned value in its original form.
-  *
-  *If the value of $arg is the empty sequence, the zero-length string is returned.
   *_______________________________________________________________________*/
 /* begin class UpperCaseIterator */
 store::Item_t
@@ -778,22 +676,12 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
 }
 /* end class UpperCaseIterator */
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.4.8 fn:lower-case
   *
   *fn:lower-case($arg as xs:string?) as xs:string
-  *
-  *Summary: Returns the value of $arg after translating every character
-  *to its lower-case correspondent as defined in the appropriate case
-  *mappings section in the Unicode standard.For versions of Unicode
-  *beginning with the 2.1.8 update, only locale-insensitive case mappings
-  *should be applied.
-  *Every upper-case character that does not have a lower-case correspondent,
-  *as well as every lower-case character, is included in the returned value in
-  *its original form.
-  *If the value of $arg is the empty sequence, the zero-length string is returned.
   *_______________________________________________________________________*/
 /* begin class LowerCaseIterator */
 store::Item_t
@@ -821,7 +709,7 @@ LowerCaseIterator::nextImpl(PlanState& planState) const
 }
 /* end class LowerCaseIterator */
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.4.9 fn:translate
@@ -829,23 +717,6 @@ LowerCaseIterator::nextImpl(PlanState& planState) const
   *fn:translate($arg          as xs:string?,
   *             $mapString    as xs:string,
   *             $transString  as xs:string) as xs:string
-  *
-  *Summary: Returns the value of $arg modified so that every character
-  *in the value of $arg that occurs at some position N in the value of
-  *$mapString has been replaced by the character that occurs at
-  *position N in the value of $transString.
-  *If the value of $arg is the empty sequence, the zero-length string is returned.
-  *Every character in the value of $arg that does not appear
-  *in the value of $mapString is unchanged.
-  *
-  *Every character in the value of $arg that appears at some position M
-  *in the value of $mapString, where the value of $transString is less
-  *than M characters in length, is omitted from the returned value.
-  *If $mapString is the zero-length string $arg is returned.
-  *
-  *If a character occurs more than once in $mapString, then the first occurrence
-  *determines the replacement character. If $transString is longer than $mapString,
-  *the excess characters are ignored.
   *_______________________________________________________________________*/
 /* begin class TranslateIterator */
 store::Item_t
@@ -895,12 +766,13 @@ TranslateIterator::nextImpl(PlanState& planState) const
 }
 
 
- /**
- *______________________________________________________________________
- *
- *  7.4.10 fn:encode-for-uri
- *
- *_______________________________________________________________________*/
+/**
+  *______________________________________________________________________
+  *
+  *  7.4.10 fn:encode-for-uri
+  *
+  *fn:encode-for-uri($uri-part as xs:string?) as xs:string
+  *_______________________________________________________________________*/
 
 store::Item_t
 EncodeForUriIterator::nextImpl(PlanState& planState) const 
@@ -926,12 +798,13 @@ EncodeForUriIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
-  /**
- *______________________________________________________________________
- *
- *  7.4.11 fn:iri-to-uri
- *
- *_______________________________________________________________________*/
+/**
+  *______________________________________________________________________
+  *
+  *  7.4.11 fn:iri-to-uri
+  *
+  *fn:iri-to-uri($iri as xs:string?) as xs:string
+  *_______________________________________________________________________*/
 
 store::Item_t
 IriToUriIterator::nextImpl(PlanState& planState) const 
@@ -958,12 +831,13 @@ IriToUriIterator::nextImpl(PlanState& planState) const
 }
 
 
-  /**
- *______________________________________________________________________
- *
- *  7.4.12 fn:escape-html-uri
- *
- *_______________________________________________________________________*/
+/**
+  *______________________________________________________________________
+  *
+  *  7.4.12 fn:escape-html-uri
+  *
+  *fn:escape-html-uri($uri as xs:string?) as xs:string
+  *_______________________________________________________________________*/
 
 store::Item_t
 EscapeHtmlUriIterator::nextImpl(PlanState& planState) const 
@@ -990,28 +864,16 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) const
 }
 
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.5.1 fn:contains
   *
-  *fn:contains(  $arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean
-  *fn:contains(   $arg1    as xs:string?,
-  *                    $arg2    as xs:string?,
-  *                    $collation    as xs:string) as xs:boolean
-  *
-  *Summary: Returns an xs:boolean indicating whether or not
-  *the value of $arg1 contains (at the beginning, at the end,
-  *or anywhere within) at least one sequence of collation units
-  *that provides a minimal match to the collation units in the
-  *value of $arg2, according to the collation that is used.
-  *
-  *Notes:If the value of $arg1 or $arg2 is the empty sequence,
-  *or contains only ignorable collation units, it is interpreted as the zero-length string.
-  *If the value of $arg2 is the zero-length string, then the function returns true.
-  *If the value of $arg1 is the zero-length string, the function returns false.
-  *If the specified collation does not support collation units
-  *an error ·may· be raised [err:FOCH0004].
+  *fn:contains( $arg1       as xs:string?,
+  *             $arg2       as xs:string?) as xs:boolean
+  *fn:contains( $arg1       as xs:string?,
+  *             $arg2       as xs:string?,
+  *             $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
 /* begin class ContainsIterator */
 store::Item_t
@@ -1088,28 +950,16 @@ ContainsIterator::nextImpl(PlanState& planState) const {
 }
 /*end class ContainsIterator*/
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.5.2 fn:starts-with
   *
-  *fn:starts-with(  $arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean
-  *fn:starts-with(   $arg1    as xs:string?,
-  *                      $arg2    as xs:string?,
-  *                      $collation    as xs:string) as xs:boolean
-  *
-  *Summary: Returns an xs:boolean indicating
-  *whether or not the value of $arg1 starts with a sequence
-  *of collation units that provides a minimal match to
-  *the collation units of $arg2 according to the collation that is used.
-  *
-  *Notes:If the value of $arg1 or $arg2 is the empty sequence,or contains
-  *only ignorable collation units, it is interpreted as the zero-length string.
-  *If the value of $arg2 is the zero-length string, then the function
-  *returns true. If the value of $arg1 is the zero-length string and the value
-  *of $arg2 is not the zero-length string, then the function returns false.
-  *If the specified collation does not support collation units
-  *an error ·may· be raised [err:FOCH0004].
+  *fn:starts-with($arg1       as xs:string?,
+  *               $arg2       as xs:string?) as xs:boolean
+  *fn:starts-with($arg1       as xs:string?,
+  *               $arg2       as xs:string?,
+  *               $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
 /*begin class StartsWithIterator*/
 store::Item_t
@@ -1185,29 +1035,16 @@ StartsWithIterator::nextImpl(PlanState& planState) const {
 }
 /*end class StartsWithIterator*/
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.5.3 fn:ends-with
   *
-  *fn:ends-with(  $arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean
-  *fn:ends-with(   $arg1    as xs:string?,
-  *                      $arg2    as xs:string?,
-  *                      $collation    as xs:string) as xs:boolean
-  *
-  *Summary: Returns an xs:boolean indicating whether or not
-  *the value of $arg1 ends with a sequence of collation units
-  *that provides a minimal match to the collation units of $arg2
-  *according to the collation that is used.
-  *
-  *Notes:If the value of $arg1 or $arg2 is the empty sequence,
-  *or contains only ignorable collation units, it is interpreted as
-  *the zero-length string.
-  *If the value of $arg2 is the zero-length string, then the function
-  *returns true. If the value of $arg1 is the zero-length string and
-  *the value of $arg2 is not the zero-length string, then the function returns false.
-  *If the specified collation does not support collation
-  *units an error ·may· be raised [err:FOCH0004].
+  *fn:ends-with($arg1       as xs:string?,
+  *             $arg2       as xs:string?)  as xs:boolean
+  *fn:ends-with($arg1       as xs:string?,
+  *             $arg2       as xs:string?,
+  *             $collation  as xs:string)   as xs:boolean
   *_______________________________________________________________________*/
 /*begin class EndsWithIterator*/
 store::Item_t
@@ -1283,30 +1120,16 @@ EndsWithIterator::nextImpl(PlanState& planState) const {
 }
 /*end class EndsWithIterator*/
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.5.4 fn:substring-before
   *
-  *fn:substring-before(  $arg1 as xs:string?, $arg2 as xs:string?) as xs:string
-  *fn:substring-before(   $arg1    as xs:string?,
-  *                                $arg2    as xs:string?,
-  *                                $collation    as xs:string) as xs:string
-  *
-  *Summary: Returns the substring of the value of
-  *$arg1 that precedes in the value of $arg1 the first occurrence
-  *of a sequence of collation units that provides a minimal match
-  *to the collation units of $arg2 according to the collation that is used.
-  *
-  *Notes:If the value of $arg1 or $arg2 is the empty sequence,
-  *or contains only ignorable collation units, it is interpreted
-  *as the zero-length string.
-  *If the value of $arg2 is the zero-length string, then the function
-  *returns the zero-length string.
-  *If the value of $arg1 does not contain a string that is equal to
-  *the value of $arg2, then the function returns the zero-length string.
-  *If the specified collation does not support collation units
-  *an error ·may· be raised [err:FOCH0004].
+  *fn:substring-before( $arg1       as xs:string?,
+  *                     $arg2       as xs:string?)  as xs:string
+  *fn:substring-before( $arg1       as xs:string?,
+  *                     $arg2       as xs:string?,
+  *                     $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
 /*begin class SubstringBeforeIterator*/
 store::Item_t
@@ -1387,30 +1210,16 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
 }
 /*end class SubstringBeforeIterator*/
 
-  /**
+/**
   *______________________________________________________________________
   *
   *  7.5.5 fn:substring-after
   *
-  *fn:substring-after(    $arg1 as xs:string?, $arg2 as xs:string?) as xs:string
-  *fn:substring-after(   $arg1    as xs:string?,
-  *                              $arg2    as xs:string?,
-  *                              $collation    as xs:string) as xs:string
-  *
-  *Summary: Returns the substring of the value of $arg1
-  *that follows in the value of $arg1 the first occurrence of a
-  *sequence of collation units that provides a minimal match to
-  *the collation units of $arg2 according to the collation that is used.
-  *
-  *Notes: If the value of $arg1 or $arg2 is the empty sequence,
-  *or contains only ignorable collation units, it is interpreted
-  *as the zero-length string.
-  *If the value of $arg2 is the zero-length string, then the function
-  *returns the value of $arg1.
-  *If the value of $arg1 does not contain a string that is equal to
-  *the value of $arg2, then the function returns the zero-length string.
-  *If the specified collation does not support collation units
-  *an error ·may· be raised [err:FOCH0004].
+  *fn:substring-after($arg1       as xs:string?,
+  *                   $arg2       as xs:string?)  as xs:string
+  *fn:substring-after($arg1       as xs:string?,
+  *                   $arg2       as xs:string?,
+  *                   $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
 /*begin class SubstringAfterIterator*/
 store::Item_t
@@ -1451,10 +1260,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
     }
 
     if( arg1->empty()  || arg2->empty())
-    {
-      resStr = new xqpStringStore("");
-      STACK_PUSH( GENV_ITEMFACTORY->createString(resStr), state );
-    }
+      STACK_PUSH( GENV_ITEMFACTORY->createString(arg1), state );
     else
     {
       if( theChildren.size() == 2 )
@@ -1497,17 +1303,16 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
 /*end class SubstringAfterIterator*/
 
 /**
- *______________________________________________________________________
- *
- *  7.6.2 fn:matches
- *
- *fn:matches($input   as xs:string?,
- *           $pattern as xs:string) as xs:boolean
- *
- *fn:matches($input   as xs:string?,
- *           $pattern as xs:string,
- *           $flags   as xs:string) as xs:boolean
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.6.2 fn:matches
+  *
+  *fn:matches($input   as xs:string?,
+  *           $pattern as xs:string) as xs:boolean
+  *fn:matches($input   as xs:string?,
+  *           $pattern as xs:string,
+  *           $flags   as xs:string) as xs:boolean
+  *_______________________________________________________________________*/
  /*begin class FnMatchesIterator*/
 store::Item_t
 FnMatchesIterator::nextImpl(PlanState& planState) const
@@ -1554,19 +1359,18 @@ FnMatchesIterator::nextImpl(PlanState& planState) const
 /*end class FnMatchesIterator*/
 
 /**
- *______________________________________________________________________
- *
- *  7.6.3 fn:replace
- *
- *fn:replace($input       as xs:string?,
- *           $pattern     as xs:string,
- *           $replacement as xs:string) as xs:string
- *
- *fn:replace($input       as xs:string?,
- *           $pattern     as xs:string,
- *           $replacement as xs:string,
- *           $flags       as xs:string) as xs:string
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.6.3 fn:replace
+  *
+  *fn:replace($input       as xs:string?,
+  *           $pattern     as xs:string,
+  *           $replacement as xs:string) as xs:string
+  *fn:replace($input       as xs:string?,
+  *           $pattern     as xs:string,
+  *           $replacement as xs:string,
+  *           $flags       as xs:string) as xs:string
+  *_______________________________________________________________________*/
  /*begin class FnReplaceIterator*/
 store::Item_t
 FnReplaceIterator::nextImpl(PlanState& planState) const
@@ -1631,17 +1435,16 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
 /*end class FnReplaceIterator*/
 
 /**
- *______________________________________________________________________
- *
- *  7.6.4 fn:tokenize
- *
- *fn:tokenize($input    as xs:string?,
- *            $pattern  as xs:string) as xs:string*
- *
- *fn:tokenize($input    as xs:string?,
- *            $pattern  as xs:string,
- *            $flags    as xs:string) as xs:string*
- *_______________________________________________________________________*/
+  *______________________________________________________________________
+  *
+  *  7.6.4 fn:tokenize
+  *
+  *fn:tokenize($input    as xs:string?,
+  *            $pattern  as xs:string) as xs:string*
+  *fn:tokenize($input    as xs:string?,
+  *            $pattern  as xs:string,
+  *            $flags    as xs:string) as xs:string*
+  *_______________________________________________________________________*/
  /*begin class FnTokenizeIterator*/
 void
 FnTokenizeIteratorState::init(PlanState& planState)
