@@ -110,6 +110,8 @@ public:
 
   static bool equal(const Item_t& t1, const Item_t& t2, ValueCollCompareParam* aCompareParam)
   {
+    assert (t1 != NULL);
+    assert (t2 != NULL);
     return CompareIterator::valueEqual(aCompareParam->theRuntimeCB,
                                        t1, t2,
                                        (aCompareParam->theCollator)) == 0; 
@@ -117,6 +119,7 @@ public:
 
   static uint32_t hash(const Item_t& t, ValueCollCompareParam* aCompareParam)
   {
+    assert (t != NULL);
     return t->hash(aCompareParam->theRuntimeCB, aCompareParam->theCollator);
   }
 };
