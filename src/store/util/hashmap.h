@@ -172,9 +172,9 @@ public:
 protected:
   ulong                             theNumEntries;
 
-  checked_vector<HashEntry<T, V> >  theHashTab;
   ulong                             theHashTabSize;
   ulong                             theInitialSize;
+  checked_vector<HashEntry<T, V> >  theHashTab;
   double                            theLoadFactor;
   C*                                theCompareParam;
 
@@ -183,18 +183,27 @@ protected:
   SYNC_CODE(Mutex                   theMutex;)
   SYNC_CODE(Mutex                 * theMutexp;)
 
+protected:
+
+ulong computeTabSize(ulong size)
+{
+  return size + 32 + theInitialSize / 10;
+}
+
+
 public:
 
 /*******************************************************************************
   Constructor: Allocates the hash table. Its initial size is the given size,
-  plus an initial 32 free entries. These free entries are placed in a free list.
+  plus an initial number of free entries (= 10% of the given size). These free
+  entries are placed in a free list.
 ********************************************************************************/
 HashMap(ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
-  theHashTab(size + 32),
   theHashTabSize(size),
   theInitialSize(size),
+  theHashTab(computeTabSize(size)),
   theLoadFactor(DEFAULT_LOAD_FACTOR),
   theCompareParam(0),
   theUseTransfer(useTransfer)
@@ -208,9 +217,9 @@ HashMap(ulong size, bool sync, bool useTransfer = false)
  HashMap(C* aCompareParam, ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
-  theHashTab(size + 32),
   theHashTabSize(size),
   theInitialSize(size),
+  theHashTab(computeTabSize(size)),
   theLoadFactor(DEFAULT_LOAD_FACTOR),
   theCompareParam(aCompareParam),
   theUseTransfer(useTransfer)
@@ -550,8 +559,11 @@ HashEntry<T, V>* hashInsert(
 void extendCollisionArea(HashEntry<T, V>*& lastentry) 
 {
   ulong oldSize = theHashTab.size();
+  ulong numCollisionEntries = oldSize - theHashTabSize;
 
-  checked_vector<HashEntry<T, V> > newTab(oldSize + 32);
+  //foo();  for setting a breakpoint
+
+  checked_vector<HashEntry<T, V> > newTab(theHashTabSize + 2 * numCollisionEntries);
 
   HashEntry<T, V>* oldbase = &theHashTab[0];
   HashEntry<T, V>* newbase = &newTab[0];
@@ -607,7 +619,7 @@ void resizeHashTab(ulong newSize)
 
   theHashTabSize = newSize;
   theHashTab.clear();
-  theHashTab.resize(newSize + 32);
+  theHashTab.resize(computeTabSize(newSize));
   formatCollisionArea();
  
   // Now rehash every entry

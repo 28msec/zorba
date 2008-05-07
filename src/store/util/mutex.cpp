@@ -24,6 +24,7 @@
 
 namespace zorba { namespace store {
 
+
 Mutex::Mutex()
 {
 #ifdef HAVE_PTHREAD_H
