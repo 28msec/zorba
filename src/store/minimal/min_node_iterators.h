@@ -36,7 +36,7 @@ class ChildrenIterator : public Iterator
 protected:
   XmlNode_t           theParentNode;
 
-  unsigned long       theNumChildren;
+  //unsigned long       theNumChildren;
   unsigned long       theCurrentPos;
 
 public:

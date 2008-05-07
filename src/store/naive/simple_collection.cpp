@@ -85,6 +85,14 @@ Item_t SimpleCollection::addToCollection(std::istream& stream)
   return root;
 }
 
+Item_t SimpleCollection::addToCollection(std::istream* stream)
+{
+  Item_t    docitem;
+  //do full loading for now
+  docitem = addToCollection(*stream);
+  delete stream;
+  return docitem;
+}
 
 /*******************************************************************************
   Insert the given node to the collection. If the node is in the collection

@@ -112,6 +112,7 @@ public:
   store::Item_t createUri();
 
   store::Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
+  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
   store::Item_t loadDocument(const xqpStringStore_t& uri, store::Item_t	 doc_item);
   store::Item_t getDocument(const xqpStringStore_t& uri);
   void deleteDocument(const xqpStringStore_t& uri);

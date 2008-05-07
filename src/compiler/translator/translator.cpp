@@ -4830,7 +4830,7 @@ void *begin_visit(const CatchExpr& v)
     rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
     rchandle<forlet_clause> flc = new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, eVal);
     flwor->add(flc);
-    cc->set_catch_expr_h(flwor);
+    cc->set_catch_expr_h(&*flwor);
   }
   return no_state;
 }

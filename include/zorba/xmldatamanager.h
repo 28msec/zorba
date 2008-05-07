@@ -50,6 +50,8 @@ namespace zorba {
        */
       virtual Item 
       loadDocument(const String& aURI, std::istream& aStream, ErrorHandler* aErrorHandler = 0) = 0;
+      virtual Item 
+      loadDocument(const String& aURI, std::istream* aStream, ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Load a document from a file.
        *

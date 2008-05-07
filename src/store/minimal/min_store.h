@@ -104,7 +104,7 @@ public:
   long getTraceLevel() const              { return theTraceLevel; }
 #endif
 
-  XmlLoader* getXmlLoader(error::ErrorManager*);
+//  XmlLoader* getXmlLoader(error::ErrorManager*);
 
   ulong getTreeId();
 
@@ -114,6 +114,7 @@ public:
   store::Item_t createUri();
 
   store::Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
+  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
   store::Item_t loadDocument(const xqpStringStore_t& uri, store::Item_t	 doc_item);
   store::Item_t getDocument(const xqpStringStore_t& uri);
   void deleteDocument(const xqpStringStore_t& uri);

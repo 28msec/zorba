@@ -250,10 +250,10 @@ ulong SimpleStore::getTreeId()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
-{
-  return new XmlLoader(aErrorManager);
-}
+//XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
+//{
+//  return new XmlLoader(aErrorManager);
+//}
 
 
 /*******************************************************************************
@@ -303,9 +303,42 @@ Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
     return root.getp();
 
   error::ErrorManager lErrorManager;
-  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
+  //std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
+  XmlLoader_t   loader = new XmlLoader(&lErrorManager);
 
   root = loader->loadXml(uri, stream);
+  if (lErrorManager.hasErrors()) 
+  {
+    throw lErrorManager.getErrors().front();
+  }
+
+  if (root != NULL)
+    theDocuments.insert(urip, root);
+
+  return root;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
+{
+  if (uri == NULL)
+    return NULL;
+
+  const xqpStringStore* urip = uri.getp();
+
+  XmlNode_t root;
+  bool found = theDocuments.get(urip, root);
+
+  if (found)
+    return root.getp();
+
+  error::ErrorManager lErrorManager;
+  //std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
+  XmlLoader_t   loader = new XmlLoader(&lErrorManager);
+
+  root = loader->startloadXml(uri, stream);
   if (lErrorManager.hasErrors()) 
   {
     throw lErrorManager.getErrors().front();

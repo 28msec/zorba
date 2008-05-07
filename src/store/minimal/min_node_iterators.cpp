@@ -27,7 +27,7 @@ ChildrenIterator::ChildrenIterator(XmlNode* parent)
   ZORBA_ASSERT(theParentNode->getNodeKind() == StoreConsts::documentNode ||
                theParentNode->getNodeKind() == StoreConsts::elementNode);
 
-  theNumChildren = parent->numChildren();
+  //theNumChildren = parent->numChildren();
 }
 
 void ChildrenIterator::open()
@@ -38,8 +38,20 @@ void ChildrenIterator::open()
 
 Item_t ChildrenIterator::next()
 {
-  if (theCurrentPos >= theNumChildren)
+  XmlLoader_t   xmlloader;
+  while((xmlloader=theParentNode->hasLoaderAttached()) != NULL)
+  {
+    if(theCurrentPos >= theParentNode->numChildren())
+    {
+      xmlloader->continueloadXml(XmlLoader::UNTIL_START_ELEMENT, theParentNode->getDepth()+1);
+    }
+    else
+      break;
+  }
+
+  if(theCurrentPos >= theParentNode->numChildren())
     return NULL;
+
 
   XmlNode* cnode = theParentNode->getChild(theCurrentPos);
 

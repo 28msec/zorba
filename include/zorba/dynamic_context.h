@@ -76,6 +76,9 @@ namespace zorba {
       virtual bool
       setVariableAsDocument ( const String& aQName, const String& aDocURI, 
                               std::istream& aDocStream) = 0;
+      virtual bool
+      setVariableAsDocument ( const String& aQName, const String& aDocURI, 
+                              std::istream* aDocStream) = 0;
 
       /** \brief Defines the context item.
        *
@@ -95,6 +98,8 @@ namespace zorba {
        */
       virtual bool
       setContextItemAsDocument ( const String& aDocURI, std::istream& aDocStream ) = 0;
+      virtual bool
+      setContextItemAsDocument ( const String& aDocURI, std::istream* aDocStream ) = 0;
 
       /** \brief Defines the value of the current date time that can be accessed by the
        *         fn:current-dateTime() function at the time the query is executed.

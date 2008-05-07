@@ -31,6 +31,7 @@
 #include "store/minimal/min_atomic_items.h"
 #include "store/minimal/min_node_items.h"
 #include "store/minimal/min_store_defs.h"
+#include "store/minimal/min_node_vector.h"
 //#include "store/minimal/min_qname_pool.h"
 #include "store/minimal/min_nsbindings.h"
 #include "store/api/collection.h"
@@ -66,7 +67,7 @@ int traceLevel = 0;
 
 #define ZORBA_LOADER_CHECK_ERROR(loader) \
   do { \
-    if (theErrorManager->hasErrors()) \
+    if (loader.theErrorManager && loader.theErrorManager->hasErrors()) \
       return; \
   } while (0);
 
@@ -98,6 +99,7 @@ XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
 
   buff_size = 0;
   buff_pos = 0;
+  stream = NULL;
 }
 
 
@@ -108,6 +110,8 @@ XmlLoader::~XmlLoader()
 {
   ///delete all remaining tags
   clear_tag_stack();
+
+  delete stream;
 }
 
 void XmlLoader::clear_tag_stack()
@@ -136,20 +140,20 @@ void XmlLoader::abort()
   theOrdPath.init();
   theRootNode = NULL;
 
-  while(!theNodeStack.empty())
-  {
-    XmlNode* node = theNodeStack.top();
-    theNodeStack.pop();
-    if (node != NULL)
-      node->deleteTree();
-  }
+  //while(!theNodeStack.empty())
+  //{
+  //  XmlNode* node = theNodeStack.top();
+  //  theNodeStack.pop();
+  //  if (node != NULL)
+  //    node->deleteTree();
+  //}
 
-  while(!theBindingsStack.empty())
-  {
-    NsBindingsContext* ctx = theBindingsStack.top();
-    theBindingsStack.pop();
-    delete ctx;
-  }
+  //while(!theBindingsStack.empty())
+  //{
+  //  NsBindingsContext* ctx = theBindingsStack.top();
+  //  theBindingsStack.pop();
+  //  delete ctx;
+  //}
 
   theWarnings.clear();
 
@@ -173,10 +177,10 @@ void XmlLoader::reset()
   theOrdPath.init();
   theRootNode = NULL;
 
-  theNodeStack.pop();
+  //theNodeStack.pop();
 
-  ZORBA_ASSERT(theNodeStack.empty());
-  ZORBA_ASSERT(theBindingsStack.empty());
+//  ZORBA_ASSERT(theNodeStack.empty());
+//  ZORBA_ASSERT(theBindingsStack.empty());
 
   theWarnings.clear();
 
@@ -232,19 +236,21 @@ void XmlLoader::setRoot(XmlNode* root)
 //  return -1;
 //}
 
-int XmlLoader::read_char(std::istream &stream)
+int XmlLoader::read_char()
 {
   if(buff_pos == buff_size)
   {
-    stream.read(theBuffer, sizeof(theBuffer));
-    buff_size = stream.gcount();
+    if(buff_size && (buff_size < sizeof(theBuffer)))
+      return 0;
+    stream->read(theBuffer, sizeof(theBuffer));
+    buff_size = stream->gcount();
     if(!buff_size)
       return 0;
     buff_pos = 0;
   }
-  prev_c = current_c;
   if(current_c)
   {
+    prev_c = current_c;
     current_c = 0;
     return prev_c;
   }
@@ -275,12 +281,12 @@ bool XmlLoader::isNameChar(int c)
     return true;
 }
 
-void XmlLoader::skip_whitespaces(std::istream &stream)
+void XmlLoader::skip_whitespaces()
 {
   int c;
   while(1)
   {
-    c = read_char(stream);
+    c = read_char();
     if(!isWhitespace(c))
     {
       unread_char();
@@ -291,10 +297,10 @@ void XmlLoader::skip_whitespaces(std::istream &stream)
 
 #define READ_ATTRIBUTE_QNAME   true
 
-bool XmlLoader::read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_attr)
+bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
 {
   int c;
-  c = read_char(stream);
+  c = read_char();
   if(c != ':')
   {
     if((c != '_') && !GenericCast::isLetter(c))
@@ -302,7 +308,7 @@ bool XmlLoader::read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_at
     qname.localname = c;
     while(1)
     {
-      c = read_char(stream);
+      c = read_char();
       if(c == ':')
       {
         unread_char();
@@ -324,7 +330,7 @@ bool XmlLoader::read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_at
   else
     unread_char();
 
-  c = read_char(stream);
+  c = read_char();
   if(c != ':')
   {
     unread_char();
@@ -333,13 +339,13 @@ bool XmlLoader::read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_at
 
   qname.prefix = qname.localname;
 
-  c = read_char(stream);
+  c = read_char();
   if((c != '_') && !GenericCast::isLetter(c))
     return false;
   qname.localname = c;
   while(1)
   {
-    c = read_char(stream);
+    c = read_char();
     if(isWhitespace(c) || (read_attr && (c == '=')) || 
                           (!read_attr && ((c == '>') || (c == '/'))))
     {
@@ -356,7 +362,7 @@ bool XmlLoader::read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_at
   return true;
 }
 
-bool XmlLoader::read_attributes(std::istream &stream, attr_list_t &all_attributes)
+bool XmlLoader::read_attributes(attr_list_t &all_attributes)
 {
   ATTR_ELEM   new_elem;
   int c;
@@ -366,37 +372,37 @@ bool XmlLoader::read_attributes(std::istream &stream, attr_list_t &all_attribute
     all_attributes.push_back(new_elem);
     ATTR_ELEM   &last_attr = all_attributes.back();
 
-    skip_whitespaces(stream);
+    skip_whitespaces();
 
-    c = read_char(stream);
+    c = read_char();
     unread_char();
     if(!c)
       return false;
-    if((c == '>') || (c == '/'))
+    if((c == '>') || (c == '/') || (reading_prolog && (c == '?')))
     {
       all_attributes.pop_back();
-      unread_char();
+    //  unread_char();
       return true;
     }
     
-    if(!read_qname(stream, last_attr.name, READ_ATTRIBUTE_QNAME))
+    if(!read_qname(last_attr.name, READ_ATTRIBUTE_QNAME))
       return false;
 
-    skip_whitespaces(stream);
+    skip_whitespaces();
 
-    c = read_char(stream);
+    c = read_char();
     if(c != '=')
       return false;
 
-    skip_whitespaces(stream);
-    c = read_char(stream);
+    skip_whitespaces();
+    c = read_char();
     if((c != '\'') && (c != '"'))
       return false;
 
     char  value_start = c;
     while(1)
     {
-      c = read_char(stream);
+      c = read_char();
       if(c == value_start)
         break;
       if(!c)
@@ -435,35 +441,35 @@ bool XmlLoader::compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2)
     return false;
 }
 
-bool XmlLoader::read_tag(std::istream& stream)
+bool XmlLoader::read_tag()
 {
   char  c;
-  bool is_end_tag = false;
+  is_end_tag = 0;
 
-  c = read_char(stream);
+  c = read_char();
   if(c != '<')
     return false;
-  c = read_char(stream);
+  c = read_char();
   if(c == '/')
-    is_end_tag = true;
+    is_end_tag = 1;
   else if(c == '!')
-    return read_comment(stream);
+    return read_comment();
   else if(c == '?')
-    return read_pi(stream);
+    return read_pi();
   else
     unread_char();
 
-  skip_whitespaces(stream);
+  skip_whitespaces();
 
   TAG_ELEM*    tag_elem = new TAG_ELEM;
 
-  if(!read_qname(stream, tag_elem->name, !READ_ATTRIBUTE_QNAME))
+  if(!read_qname(tag_elem->name, !READ_ATTRIBUTE_QNAME))
   {
     delete tag_elem;
     return false;
   }
 
-  skip_whitespaces(stream);
+  skip_whitespaces();
 
   if(is_end_tag)
   {
@@ -486,26 +492,26 @@ bool XmlLoader::read_tag(std::istream& stream)
 
     delete tag_elem;
 
-    skip_whitespaces(stream);
-    c = read_char(stream);
+    skip_whitespaces();
+    c = read_char();
     if(c != '>')
     {
       return false;
     }
 
     //notify as SAX event
-    endElement(last_tag->name.localname.c_str(), last_tag->name.prefix.c_str(), last_tag->name.uri.c_str());
+    endElement(this, last_tag->name.localname.c_str(), last_tag->name.prefix.c_str(), last_tag->name.uri.c_str());
 
     delete last_tag;
     tag_stack.pop_back();
     return true;
   }
 
-//  skip_whitespaces(stream);
+//  skip_whitespaces();
 
   //read all attributes and namespaces in this tag
   attr_list_t   all_attributes;
-  if(!read_attributes(stream, all_attributes))
+  if(!read_attributes(all_attributes))
   {
     delete tag_elem;
     return false;
@@ -604,7 +610,7 @@ bool XmlLoader::read_tag(std::istream& stream)
     }
   }
 
-  startElement(tag_elem->name.localname.c_str(),
+  startElement(this, tag_elem->name.localname.c_str(),
               tag_elem->name.prefix.c_str(),
               tag_elem->name.uri.c_str(),
               ns_size,
@@ -616,15 +622,16 @@ bool XmlLoader::read_tag(std::istream& stream)
   delete [] namespaces;
   delete [] attributes;
 
-  c = read_char(stream);
+  c = read_char();
   if(c == '/')
   {
-    c = read_char(stream);
+    c = read_char();
     if(c != '>')
       return false;
     ///end this tag
     //notify as SAX event
-    endElement(tag_elem->name.localname.c_str(), tag_elem->name.prefix.c_str(), tag_elem->name.uri.c_str());
+    is_end_tag = 2;
+    endElement(this, tag_elem->name.localname.c_str(), tag_elem->name.prefix.c_str(), tag_elem->name.uri.c_str());
 
     delete tag_elem;
     tag_stack.pop_back();
@@ -633,18 +640,18 @@ bool XmlLoader::read_tag(std::istream& stream)
   return true;
 }
 
-bool XmlLoader::read_characters(std::istream &stream, bool *end_document)
+bool XmlLoader::read_characters()
 {
   int c;
   std::string chars;
 
-  *end_document = false;
+  end_document = false;
   while(1)
   {
-    c = read_char(stream);
+    c = read_char();
     if(!c)
     {
-      *end_document = true;
+      end_document = true;
       if(!chars.empty())
       {
         for(int i=0; i < chars.length(); i++)
@@ -665,38 +672,39 @@ bool XmlLoader::read_characters(std::istream &stream, bool *end_document)
 
 
   //send characters as SAX event
-  characters(chars.c_str(), chars.length());
+  if(!chars.empty())
+    characters(this, chars.c_str(), chars.length());
 
   return true;
 }
 
-bool XmlLoader::read_comment(std::istream &stream)
+bool XmlLoader::read_comment()
 {
   int c;
   std::string comment_str;
 
-  c = read_char(stream);
+  c = read_char();
   if(c != '-')
     return false;
-  c = read_char(stream);
+  c = read_char();
   if(c != '-')
     return false;
 
   while(1)
   {
-    c = read_char(stream);
+    c = read_char();
     if(!c)
       return false;
     if(c == '-')
     {
-      c = read_char(stream);
+      c = read_char();
       if(c != '-')
       {
         comment_str += '-';
         comment_str += c;
         continue;
       }
-      c = read_char(stream);
+      c = read_char();
       if(c != '>')
         return false;
       break;
@@ -706,24 +714,24 @@ bool XmlLoader::read_comment(std::istream &stream)
 
 
   //send comment as SAX event
-  comment(comment_str.c_str());
+  comment(this, comment_str.c_str());
 
   return true;
 }
 
-bool XmlLoader::read_pi(std::istream &stream)
+bool XmlLoader::read_pi()
 {
   int c;
   std::string pitarget;
   std::string pidata;
 
-  c = read_char(stream);
+  c = read_char();
   if(!((c == '_') || (c == ':') || GenericCast::isLetter(c)))
     return false;
   pitarget = c;
   while(1)
   {
-    c = read_char(stream);
+    c = read_char();
     if(isWhitespace(c))
       break;
     if(c == '?')
@@ -737,20 +745,25 @@ bool XmlLoader::read_pi(std::istream &stream)
     (tolower(pitarget[0]) == 'x') &&
     (tolower(pitarget[1]) == 'm') &&
     (tolower(pitarget[2]) == 'l'))
-    return false;
+  {
+    if(!reading_prolog)
+      return false;
+    else
+      return read_xmlprolog();
+  }
 
   if(c != '?')
   {
     //read pi data
-    skip_whitespaces(stream);
+    skip_whitespaces();
     while(1)
     {
-      c = read_char(stream);
+      c = read_char();
       if(!c)
         return false;
       if(c == '?')
       {
-        c = read_char(stream);
+        c = read_char();
         if(c == '>')
           break;
         pidata += '?';
@@ -760,36 +773,100 @@ bool XmlLoader::read_pi(std::istream &stream)
   }
   else
   {
-    c = read_char(stream);
+    c = read_char();
     if(c != '>')
       return false;
   }
 
   //send Processing Instruction as SAX event
-  processingInstruction(pitarget.c_str(), pidata.c_str());
+  processingInstruction(this, pitarget.c_str(), pidata.c_str());
 
   return true;
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
+bool XmlLoader::read_xmlprolog()
 {
-  bool  end_document = false;
+  int c;
+
+  //c = read_char();
+  //if(c != '<')
+  //  return false;
+  //c = read_char();
+  //if(c != '?')
+  //  return false;
+  //c = read_char();
+  //if((c != 'x') && (c != 'X'))
+  //  return false;
+  //c = read_char();
+  //if((c != 'm') && (c != 'M'))
+  //  return false;
+  //c = read_char();
+  //if((c != 'l') && (c != 'L'))
+  //  return false;
+
+  attr_list_t   all_attributes;
+  if(!read_attributes(all_attributes))
+    return false;
+
+  c = read_char();
+  if(c != '?')
+    return false;
+  c = read_char();
+  if(c != '>')
+    return false;
+
+  attr_list_t::iterator   attr_it;
+  for(attr_it = all_attributes.begin(); attr_it != all_attributes.end(); attr_it++)
+  {
+    if((*attr_it).name.localname == "version")
+      this->xml_version = (*attr_it).attr_value;
+    if((*attr_it).name.localname == "encoding")
+      this->xml_encoding = (*attr_it).attr_value;
+  }
+  reading_prolog++;
+  return true;
+}
+
+XmlNode* XmlLoader::loadXml(
+                            xqpStringStore_t& uri, 
+                            std::istream& stream)
+{
+  XmlNode *root = startloadXml(uri, &stream);
+  if(!root)
+  {
+    this->stream = NULL;
+    return NULL;
+  }
+  if(!continueloadXml(UNTIL_END_ELEMENT, 0))//read all doc
+  {
+    this->stream = NULL;
+    return NULL;
+  }
+
+  this->stream = NULL;
+  return root;
+}
+
+XmlNode* XmlLoader::startloadXml(
+                            xqpStringStore_t& uri, 
+                            std::istream* stream)
+{
+  end_document = false;
+  this->stream = stream;
   theDocUri.transfer(uri);
   theTree = new XmlTree(NULL, GET_STORE().getTreeId());
   prev_c = 0;
   current_c = 0;
 
-  startDocument();
+  startDocument(this);
 
-  skip_whitespaces(stream);
-  while(!end_document)
+  reading_prolog = 1;
+  while(reading_prolog)
   {
-    if(!read_tag(stream))
+    skip_whitespaces();
+    if(!read_tag())
     {
-      endDocument();
+      endDocument(this);
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
                                      ZorbaError::XQP0017_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
@@ -797,120 +874,74 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
       abort();
       return NULL;
     }
-    if(!read_characters(stream, &end_document))
-    {
-       endDocument();
-      ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                                     "The document with URI " << *theDocUri
-                                     <<" is not well formed", "");
-      abort();
-      return NULL;
-    }
+    reading_prolog--;
   }
 
-  endDocument();
+  theErrorManager = NULL;
+  return theRootNode;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XmlLoader::continueloadXml(
+                           enum lazyloadType_t lazytype ,//for lazy loading, START_ELEMENT or END_ELEMENT
+                           unsigned int   depth)//for lazy loading, 1 based, when to stop loading;
+{
+  while(1)
+  {
+    if(!read_characters())
+    {
+      endDocument(this);
+      if(theErrorManager)
+      {
+        ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
+                                     ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                     "The document with URI " << *theDocUri
+                                     <<" is not well formed", "");
+      }
+      abort();
+      return false;
+    }
+    if(end_document)
+      break;
+    if(!read_tag())
+    {
+      endDocument(this);
+      if(theErrorManager)
+      {
+        ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
+                                     ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                     "The document with URI " << *theDocUri
+                                     <<" is not well formed", "");
+      }
+      abort();
+      return false;
+    }
+    if((lazytype == UNTIL_START_ELEMENT) && (is_end_tag != 1) && (depth >= tag_stack.size()))
+      return true;
+    if((lazytype == UNTIL_END_ELEMENT) && (is_end_tag == 1) && (depth > tag_stack.size()))
+      return true;
+  }
+
+  endDocument(this);
   if(!tag_stack.empty())
   {
-    ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
+    if(theErrorManager)
+    {
+      ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
                                    ZorbaError::XQP0017_LOADER_PARSING_ERROR,
                                    "The document with URI " << *theDocUri
                                    <<" is not well formed", "");
+    }
     abort();
-    return NULL;
+    return false;
   }
 
-/*  xmlParserCtxtPtr ctxt = NULL;
-  long numChars;
 
-  theDocUri = uri;
-
-  theTree = new XmlTree(NULL, GET_STORE().getTreeId());
-
-  try
-  {
-    numChars = readPacket(stream, theBuffer, 4096);
-
-    if (numChars < 0)
-    {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                                ZorbaError::XQP0016_LOADER_IO_ERROR,
-                                "Unknown I/O error");
-      abort();
-      return NULL;
-    }
-    else if (numChars == 0)
-    {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                                ZorbaError::XQP0016_LOADER_IO_ERROR,
-                                "No input data.");
-      abort();
-      return NULL;
-    }
-
-    ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, theBuffer, numChars, NULL);
-
-    if (ctxt == NULL)
-    {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZorbaError::XQP0017_LOADER_PARSING_ERROR, 
-                                "Failed to initialize parser");
-      abort();
-			return NULL;
-    }
-
-    while ((numChars = readPacket(stream, theBuffer, 4096)) > 0)
-    {
-      xmlParseChunk(ctxt, theBuffer, numChars, 0);
-    }
-
-    if (numChars < 0)
-    {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZorbaError::XQP0016_LOADER_IO_ERROR,
-                                "Unknown I/O error");
-      xmlFreeParserCtxt(ctxt);
-      abort();
-      return NULL;
-    }
-
-    xmlParseChunk(ctxt, theBuffer, 0, 1);
-  }
-  catch(...)
-  {
-    xmlFreeParserCtxt(ctxt);
-    abort();
-    return NULL;
-  }
-
-  bool ok = ctxt->wellFormed != 0;
-
-  xmlFreeParserCtxt(ctxt);
-
-  if (!ok)
-  {
-    if (theDocUri != NULL)
-    {
-      ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                                     "The document with URI " << *theDocUri
-                                     <<" is not well formed", "");
-    }
-    else
-    {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                                "Not well formed XML");
-    }
-
-    abort();
-    return NULL;
-  }
-*/
-
-  XmlNode* resultNode = theRootNode;
+//  XmlNode* resultNode = theRootNode;
   reset();
-  return resultNode;
+  return true;//resultNode;
 }
 
 
@@ -919,30 +950,31 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
 
   ctx: the user data (XML parser context)
 ********************************************************************************/
-void XmlLoader::startDocument()
+void XmlLoader::startDocument(void * ctx)
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
-  xqpStringStore_t docUri = theDocUri;
-  xqpStringStore_t baseUri = theBaseUri;
+  xqpStringStore_t docUri = loader.theDocUri;
+  xqpStringStore_t baseUri = loader.theBaseUri;
   if (docUri == NULL)
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    uristream << "zorba://internalDocumentURI-" << loader.theTree->getId();
 
     docUri = new xqpStringStore(uristream.str().c_str());
   }
 
   LoadedDocumentNode* docNode = new LoadedDocumentNode(baseUri, docUri);
 
-  setRoot(docNode);
-  theNodeStack.push(docNode);
-  theNodeStack.push(NULL);
+  loader.setRoot(docNode);
+  //loader.theNodeStack.push(docNode);
+  //loader.theNodeStack.push(NULL);
+  docNode->attachedloader = &loader;
 
-  SYNC_CODE(docNode->theRCLockPtr = &theTree->getRCLock();)
-  docNode->setId(theTree, &theOrdPath);
-  theOrdPath.pushChild();
+  SYNC_CODE(docNode->theRCLockPtr = &loader.theTree->getRCLock();)
+  docNode->setId(loader.theTree, &loader.theOrdPath);
+  loader.theOrdPath.pushChild();
 
   LOADER_TRACE1("Start Doc Node = " << docNode);
 }
@@ -953,42 +985,48 @@ void XmlLoader::startDocument()
 
   ctx: the user data (XML parser context)
 ********************************************************************************/
-void XmlLoader::endDocument()
+void XmlLoader::endDocument(void * ctx)
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   // This check is required because it is possible (in case of mal-formed doc)
   // that libXml calls endDocument() without having called startDocument().
-  if (theNodeStack.size() == 0 )
-    return;
+  //if (loader.theNodeStack.size() == 0 )
+  //  return;
   
-  std::vector<XmlNode*> revChildNodes;
+  //std::vector<XmlNode*> revChildNodes;
 
-  XmlNode* childNode = theNodeStack.top();
+  //XmlNode* childNode = loader.theNodeStack.top();
 
-  while (childNode != NULL)
+  //while (childNode != NULL)
+  //{
+  //  revChildNodes.push_back(childNode);
+  //  loader.theNodeStack.pop();
+  //  childNode = loader.theNodeStack.top();
+  //}
+  //loader.theNodeStack.pop();
+
+  //LoadedDocumentNode* docNode = dynamic_cast<LoadedDocumentNode*>(loader.theNodeStack.top());
+  //ZORBA_ASSERT(docNode != NULL);
+
+  //NodeVector& children = docNode->children();
+  //children.resize(revChildNodes.size());
+
+  //std::vector<XmlNode*>::const_reverse_iterator it;
+  //ulong i = 0;
+  //for (it = revChildNodes.rbegin();
+  //     it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
+  //     it++, i++)
+  //{
+  //  children.set(*it, i, false);
+  //  (*it)->setParent(docNode);
+  //}
+
+  LoadedDocumentNode*     docNode = dynamic_cast<LoadedDocumentNode*>(loader.theRootNode);
+  if(docNode)
   {
-    revChildNodes.push_back(childNode);
-    theNodeStack.pop();
-    childNode = theNodeStack.top();
-  }
-  theNodeStack.pop();
-
-  LoadedDocumentNode* docNode = dynamic_cast<LoadedDocumentNode*>(theNodeStack.top());
-  ZORBA_ASSERT(docNode != NULL);
-
-  NodeVector& children = docNode->children();
-  children.resize(revChildNodes.size());
-
-  std::vector<XmlNode*>::const_reverse_iterator it;
-  ulong i = 0;
-  for (it = revChildNodes.rbegin();
-       it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
-       it++, i++)
-  {
-    children.set(*it, i, false);
-    (*it)->setParent(docNode);
+    docNode->attachedloader = NULL;
   }
 
   LOADER_TRACE2("End Doc Node = " << docNode);
@@ -1013,24 +1051,35 @@ void XmlLoader::endDocument()
                  attribute values.
 ********************************************************************************/
 void XmlLoader::startElement(
-    const char * lname, 
-    const char * prefix, 
-    const char * uri,
+    void * ctx,
+    const xmlChar * lname, 
+    const xmlChar * prefix, 
+    const xmlChar * uri,
     int numNamespaces,
-    const char ** namespaces,
+    const xmlChar ** namespaces,
     int numAttrs, 
     int numDefaulted, 
-    const char ** attributes)
+    const xmlChar ** attributes)
 {
   SimpleStore& store = GET_STORE();
-//  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 //  QNamePool& qnpool = store.getQNamePool();
 
   ulong numAttributes = (ulong)numAttrs;
   ulong numBindings = (ulong)numNamespaces;
 
-  // Construct node name and type
+  std::list<TAG_ELEM*>::reverse_iterator      this_tag, parent_tag;
+  XmlNode   *parent_elem;
+  this_tag = loader.tag_stack.rbegin();
+  parent_tag = this_tag;
+  parent_tag++;
+  if(parent_tag == loader.tag_stack.rend())
+    parent_elem = loader.theRootNode;
+  else
+    parent_elem = (*parent_tag)->elem;
+
+// Construct node name and type
 //  Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
 //                               reinterpret_cast<const char*>(prefix),
 //                               reinterpret_cast<const char*>(lname));
@@ -1044,28 +1093,35 @@ void XmlLoader::startElement(
                                                       tname,
                                                       numBindings,
                                                       numAttributes);
-  if (theNodeStack.empty())
-    setRoot(elemNode);
+  //if (loader.theNodeStack.empty())
+  //  loader.setRoot(elemNode);
 
-  theNodeStack.push(elemNode);
-  theNodeStack.push(NULL);
+  //loader.theNodeStack.push(elemNode);
+  //loader.theNodeStack.push(NULL);
+  (*this_tag)->elem = elemNode;
+  elemNode->attachedloader = &loader;
+  elemNode->depth = loader.tag_stack.size();//has been already pushed into tag stack
+  elemNode->setParent(parent_elem);
+  parent_elem->children().push_back(elemNode, false);
 
   // Assign the current node id to this node, and compute the next node id.
-  elemNode->setId(theTree, &theOrdPath);
-  theOrdPath.pushChild();
+  elemNode->setId(loader.theTree, &loader.theOrdPath);
+  loader.theOrdPath.pushChild();
 
-  SYNC_CODE(elemNode->theRCLockPtr = &theTree->getRCLock();)
+  SYNC_CODE(elemNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
-                << (prefix != NULL ? prefix : (char*)"") << ":" << lname
-                << " (" << (uri != NULL ? uri : (char*)"NULL") << ")]"
+                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
+                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
                 << std::endl << " ordpath = " << elemNode->getOrdPath().show()
                 << std::endl);
 
   // Process namespace bindings
   if (numBindings > 0)
   {
-    NsBindings& bindings = elemNode->getNsContext()->getBindings();
+    NsBindingsContext*   newnscontext = new NsBindingsContext;
+    elemNode->setNsContext(newnscontext);
+    NsBindings& bindings = newnscontext->getBindings();
 
     for (ulong i = 0; i < numBindings; ++i)
     {
@@ -1085,7 +1141,13 @@ void XmlLoader::startElement(
       LOADER_TRACE1("namespace decl: [" << prefix  << ":" << nsuri << "]");
     }
 
-    theBindingsStack.push(elemNode->getNsContext());
+    //loader.theBindingsStack.push(elemNode->getNsContext());
+    //elemNode->setNsContext(loader.theBindingsStack.top());
+    newnscontext->setParent(parent_elem->getNsContext());
+  }
+  else 
+  {
+    elemNode->setNsContext(parent_elem->getNsContext());
   }
 
   // Process attributes
@@ -1111,19 +1173,19 @@ void XmlLoader::startElement(
 
       AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
       attrNode->theParent = elemNode;
-      attrNode->setId(theTree, &theOrdPath);
+      attrNode->setId(loader.theTree, &loader.theOrdPath);
       attrNode->theTypedValue.transfer(typedValue);
 
       attrNodes.set(attrNode, i, false);
 
-      theOrdPath.nextChild();
+      loader.theOrdPath.nextChild();
 
-      SYNC_CODE(attrNode->theRCLockPtr = &theTree->getRCLock();)
+      SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
       LOADER_TRACE1("Attribute: node = " << attrNode
                     << " name [" << (prefix != NULL ? prefix : "") << ":"
                     << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
-                    << " value = " << value->c_str() << std::endl
+                    << " value = " << typedValue->getStringValue()->c_str() << std::endl
                     << " ordpath = " << attrNode->getOrdPath().show() << std::endl);
     }
   }
@@ -1140,80 +1202,88 @@ void XmlLoader::startElement(
   URI:       the element namespace name if available
 ********************************************************************************/
 void  XmlLoader::endElement(
-    const char * localName, 
-    const char * prefix, 
-    const char * uri)
+    void * ctx, 
+    const xmlChar * localName, 
+    const xmlChar * prefix, 
+    const xmlChar * uri)
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   // Collect the children of this element node from the node stack
-  std::vector<XmlNode*> revChildNodes;
+  //std::vector<XmlNode*> revChildNodes;
 
-  XmlNode* prevChild = NULL;
-  XmlNode* currChild = theNodeStack.top();
-  while (currChild != NULL)
-  {
-    if (currChild->getNodeKind() == StoreConsts::textNode &&
-        prevChild != NULL &&
-        prevChild->getNodeKind() == StoreConsts::textNode)
-    {
-      prevChild->getStringValueP()->str() = currChild->getStringValueP()->str() +
-                                            prevChild->getStringValueP()->str();
-      delete currChild;
-    }
-    else
-    {
-      revChildNodes.push_back(currChild);
-      prevChild = currChild;
-    }
+  //XmlNode* prevChild = NULL;
+  //XmlNode* currChild = loader.theNodeStack.top();
+  //while (currChild != NULL)
+  //{
+  //  if (currChild->getNodeKind() == StoreConsts::textNode &&
+  //      prevChild != NULL &&
+  //      prevChild->getNodeKind() == StoreConsts::textNode)
+  //  {
+  //    TextNode* textNode = reinterpret_cast<TextNode*>(prevChild);
+  //    textNode->theContent = new xqpStringStore(currChild->getStringValueP()->str() +
+  //                                              textNode->theContent->str());
+  //    delete currChild;
+  //  }
+  //  else
+  //  {
+  //    revChildNodes.push_back(currChild);
+  //    prevChild = currChild;
+  //  }
 
-    theNodeStack.pop();
-    currChild = theNodeStack.top();
-  }
-  theNodeStack.pop();
+  //  loader.theNodeStack.pop();
+  //  currChild = loader.theNodeStack.top();
+  //}
+  //loader.theNodeStack.pop();
 
-  // The element node is now at the top of the stack
-  LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>(theNodeStack.top());
-  ZORBA_ASSERT(elemNode != NULL);
+  //// The element node is now at the top of the stack
+  //LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>(loader.theNodeStack.top());
+  //ZORBA_ASSERT(elemNode != NULL);
+  std::list<TAG_ELEM*>::reverse_iterator      this_tag;
+  //XmlNode   *elemNode;
+  this_tag = loader.tag_stack.rbegin();
+  LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>((*this_tag)->elem);
+
+  elemNode->attachedloader = NULL;//is loaded
 
   LOADER_TRACE2("End Element: node = " << elemNode << " name ["
-                << (prefix != NULL ? prefix : (char*)"") << ":" << localName
-                << " (" << (uri != NULL ? uri : (char*)"NULL") << ")]");
+                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
+                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
   // For each child, make this element node its parent and fix its namespace
   // bindings context. Note: the children were popped from the stack in reverse
   // order, so we copy them into the element node in the correct order.
-  NodeVector& children = elemNode->children();
-  children.resize(revChildNodes.size());
+  //NodeVector& children = elemNode->children();
+  //children.resize(revChildNodes.size());
 
-  std::vector<XmlNode*>::const_reverse_iterator it;
-  ulong i = 0;
-  for (it = revChildNodes.rbegin();
-       it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
-       it++, i++)
-  {
-    currChild = *it;
+  //std::vector<XmlNode*>::const_reverse_iterator it;
+  //ulong i = 0;
+  //for (it = revChildNodes.rbegin();
+  //     it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
+  //     it++, i++)
+  //{
+  //  currChild = *it;
 
-    children.set(currChild, i, false);
-    currChild->setParent(elemNode);
+  //  children.set(currChild, i, false);
+  //  currChild->setParent(elemNode);
 
-    if (currChild->getNodeKind() == StoreConsts::elementNode)
-    {
-      if (!theBindingsStack.empty())
-        currChild->setNsContext(theBindingsStack.top());
-      else
-        currChild->setNsContext(NULL);
-    }
-  }
+  //  if (currChild->getNodeKind() == StoreConsts::elementNode)
+  //  {
+  //    if (!loader.theBindingsStack.empty())
+  //      currChild->setNsContext(loader.theBindingsStack.top());
+  //    else
+  //      currChild->setNsContext(NULL);
+  //  }
+  //}
 
-  if (elemNode->getNsContext() != NULL)
-  {
-    theBindingsStack.pop();
-  }
+  //if (elemNode->getNsContext() != NULL)
+  //{
+  //  loader.theBindingsStack.pop();
+  //}
 
   // Adjust the dewey id
-  theOrdPath.popChild();
+  loader.theOrdPath.popChild();
 }
 
 
@@ -1221,28 +1291,50 @@ void  XmlLoader::endElement(
   SAX2 callback when xml text has been detected by the parser.
 
   ctx: the user data (XML parser context)
-  ch:  a char string
-  len: the number of char
+  ch:  a xmlChar string
+  len: the number of xmlChar
 ********************************************************************************/
-void XmlLoader::characters( const char * ch, int len)
+void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   const char* charp = reinterpret_cast<const char*>(ch);
   xqpStringStore_t content(new xqpStringStore(charp, len));
 
-  XmlNode* textNode = new TextNode(content);
+  TextNode* textNode = new TextNode(content);
 
-  if (theNodeStack.empty())
-    setRoot(textNode);
+  //if (loader.theNodeStack.empty())
+  //  loader.setRoot(textNode);
 
-  theNodeStack.push(textNode);
+  //loader.theNodeStack.push(textNode);
+  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+  parent_tag = loader.tag_stack.rbegin();
+  XmlNode *parent_elem;
+  if(parent_tag != loader.tag_stack.rend())
+    parent_elem = (*parent_tag)->elem;
+  else
+    parent_elem = loader.theRootNode;
+  if(parent_elem->numChildren())
+  {
+    XmlNode *&last_child = parent_elem->children().get_last();
+    if (last_child->getNodeKind() == StoreConsts::textNode)
+    {
+      TextNode* lasttextNode = reinterpret_cast<TextNode*>(last_child);
+      lasttextNode->theContent = new xqpStringStore(lasttextNode->getStringValueP()->str() +
+                                                textNode->theContent->str());
+      delete textNode;
+      return;
+    }
+  }
 
-  textNode->setId(theTree, &theOrdPath);
-  theOrdPath.nextChild();
+  parent_elem->children().push_back(textNode, false);
+  textNode->setParent(parent_elem);
 
-  SYNC_CODE(textNode->theRCLockPtr = &theTree->getRCLock();)
+  textNode->setId(loader.theTree, &loader.theOrdPath);
+  loader.theOrdPath.nextChild();
+
+  SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Text Node = " << textNode << " content = "
                 << std::string(charp, len) << std::endl << " ordpath = "
@@ -1254,28 +1346,50 @@ void XmlLoader::characters( const char * ch, int len)
   SAX2 callback when a CDATA block has been detected by the parser.
 
   ctx: the user data (XML parser context)
-  ch:  a char string
-  len: the number of char
+  ch:  a xmlChar string
+  len: the number of xmlChar
 ********************************************************************************/
-void XmlLoader::cdataBlock( const char * ch, int len)
+void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   const char* charp = reinterpret_cast<const char*>(ch);
   xqpStringStore_t content(new xqpStringStore(charp, len));
 
-  XmlNode* textNode = new TextNode(content);
+  TextNode* textNode = new TextNode(content);
 
-  if (theNodeStack.empty())
-    setRoot(textNode);
+  //if (loader.theNodeStack.empty())
+  //  loader.setRoot(textNode);
 
-  theNodeStack.push(textNode);
+  //loader.theNodeStack.push(textNode);
+  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+  parent_tag = loader.tag_stack.rbegin();
+  XmlNode *parent_elem;
+  if(parent_tag != loader.tag_stack.rend())
+    parent_elem = (*parent_tag)->elem;
+  else
+    parent_elem = loader.theRootNode;
+  if(parent_elem->numChildren())
+  {
+    XmlNode *&last_child = parent_elem->children().get_last();
+    if (last_child->getNodeKind() == StoreConsts::textNode)
+    {
+      TextNode* lasttextNode = reinterpret_cast<TextNode*>(last_child);
+      lasttextNode->theContent = new xqpStringStore(lasttextNode->getStringValueP()->str() +
+                                                textNode->theContent->str());
+      delete textNode;
+      return;
+    }
+  }
 
-  textNode->setId(theTree, &theOrdPath);
-  theOrdPath.nextChild();
+  parent_elem->children().push_back(textNode, false);
+  textNode->setParent(parent_elem);
 
-  SYNC_CODE(textNode->theRCLockPtr = &theTree->getRCLock();)
+  textNode->setId(loader.theTree, &loader.theOrdPath);
+  loader.theOrdPath.nextChild();
+
+  SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
  
   LOADER_TRACE1("Text Node = " << textNode << " content = "
                 << std::string(charp, len) << std::endl << " ordpath = "
@@ -1290,26 +1404,37 @@ void XmlLoader::cdataBlock( const char * ch, int len)
 
 ********************************************************************************/
 void XmlLoader::processingInstruction(
-    const char * targetp, 
-    const char * data)
+    void * ctx, 
+    const xmlChar * targetp, 
+    const xmlChar * data)
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
   xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
 
   XmlNode* piNode = new PiNode(target, content);
 
-  if (theNodeStack.empty())
-    setRoot(piNode);
+  //if (loader.theNodeStack.empty())
+  //  loader.setRoot(piNode);
 
-  theNodeStack.push(piNode);
+  //loader.theNodeStack.push(piNode);
+  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+  parent_tag = loader.tag_stack.rbegin();
+  XmlNode *parent_elem;
+  if(parent_tag != loader.tag_stack.rend())
+    parent_elem = (*parent_tag)->elem;
+  else
+    parent_elem = loader.theRootNode;
 
-  piNode->setId(theTree, &theOrdPath);
-  theOrdPath.nextChild();
+  parent_elem->children().push_back(piNode, false);
+  piNode->setParent(parent_elem);
 
-  SYNC_CODE(piNode->theRCLockPtr = &theTree->getRCLock();)
+  piNode->setId(loader.theTree, &loader.theOrdPath);
+  loader.theOrdPath.nextChild();
+
+  SYNC_CODE(piNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Pi Node = " << piNode << " target = "
                 << targetp << std::endl << " ordpath = "
@@ -1323,25 +1448,35 @@ void XmlLoader::processingInstruction(
   ctx: the user data (XML parser context)
   content:  the comment content
 ********************************************************************************/
-void XmlLoader::comment(const char * ch)
+void XmlLoader::comment(void * ctx, const xmlChar * ch)
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
 
   const char* charp = reinterpret_cast<const char*>(ch);
   xqpStringStore_t content(new xqpStringStore(charp));
 
   XmlNode* commentNode = new CommentNode(content);
 
-  if (theNodeStack.empty())
-    setRoot(commentNode);
+  //if (loader.theNodeStack.empty())
+  //  loader.setRoot(commentNode);
 
-  theNodeStack.push(commentNode);
+  //loader.theNodeStack.push(commentNode);
+  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+  parent_tag = loader.tag_stack.rbegin();
+  XmlNode *parent_elem;
+  if(parent_tag != loader.tag_stack.rend())
+    parent_elem = (*parent_tag)->elem;
+  else
+    parent_elem = loader.theRootNode;
 
-  commentNode->setId(theTree, &theOrdPath);
-  theOrdPath.nextChild();
+  parent_elem->children().push_back(commentNode, false);
+  commentNode->setParent(parent_elem);
 
-  SYNC_CODE(commentNode->theRCLockPtr = &theTree->getRCLock();)
+  commentNode->setId(loader.theTree, &loader.theOrdPath);
+  loader.theOrdPath.nextChild();
+
+  SYNC_CODE(commentNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Comment Node = " << commentNode << " content = "
                 << charp << std::endl << " ordpath = "
@@ -1356,16 +1491,19 @@ void XmlLoader::comment(const char * ch)
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
 ********************************************************************************/
-void  XmlLoader::error(const char * msg, ... )
+void  XmlLoader::error(void * ctx, const char * msg, ... )
 {
-//  XmlLoader* loader = (static_cast<XmlLoader *>(ctx));
+  XmlLoader* loader = (static_cast<XmlLoader *>(ctx));
   char buf[1024];
   va_list args;
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+  if(loader->theErrorManager)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
                             ZorbaError::XQP0017_LOADER_PARSING_ERROR, buf);
+  }
 }
 
 
@@ -1376,17 +1514,17 @@ void  XmlLoader::error(const char * msg, ... )
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
 ********************************************************************************/
-void  XmlLoader::warning(const char * msg, ... )
+void  XmlLoader::warning(void * ctx, const char * msg, ... )
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   char buf[1024];
   va_list args;
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  if (!theWarnings.empty())
-    theWarnings += "+ ";
-  theWarnings += buf;
+  if (loader.theWarnings.size() > 0)
+    loader.theWarnings += "+ ";
+  loader.theWarnings += buf;
 }
 
 #undef ZORBA_ERROR_DESC_CONTINUE

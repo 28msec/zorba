@@ -20,8 +20,8 @@
 
 #include "common/common.h"
 
-namespace zorba { 
-  namespace store {
+namespace zorba { namespace store {
+
 class OrdPathStack;
 
 
@@ -33,7 +33,14 @@ class OrdPath
   friend class OrdPathStack;
 
 protected:
-  static const ulong MAX_BYTE_LEN = 256;
+  static const ulong MAX_BYTE_LEN = 255;
+  static const ulong MAX_BIT_LEN = MAX_BYTE_LEN * 8;
+
+  static const ulong MAX_EMBEDDED_BYTE_LEN = 8;
+  static const ulong MAX_EMBEDDED_BIT_LEN = MAX_EMBEDDED_BYTE_LEN * 8 - 1;
+
+  static const ulong MAX_EMBEDDED_BYTE = MAX_EMBEDDED_BYTE_LEN - 1;
+
   static const ulong MAX_NUM_COMPS = MAX_BYTE_LEN * 4;
 
   // decompression
@@ -50,7 +57,8 @@ protected:
   static const uint16_t      theNegV2EVMap[DEFAULT_FAN_OUT];
 
 protected:
-  unsigned char  * theBuffer;
+  unsigned char  theBuffer[MAX_EMBEDDED_BYTE_LEN];
+
 
 public:
   static void insertBefore(
@@ -69,29 +77,64 @@ public:
         const OrdPath& sib2,
         OrdPath&       result);
 
+protected:
+  static bool pushComp(
+        unsigned char* buf,
+        ulong          maxBitSize,
+        long           value,
+        ulong&         bitSize);
+
+  static void bitsNeeded(
+        long      value, 
+        ulong&    bitsNeeded,
+        uint32_t& eval);
+
+  static void insertBeforeOrAfter(
+        bool           before,
+        const OrdPath& parent,
+        const OrdPath& sibling,
+        OrdPath&       result);
+
+  static void decodeByte(
+        unsigned char* data,
+        ulong&         bitSize,
+        ulong&         byteIndex,
+        ulong&         bitIndex,
+        unsigned char  byte,
+        long*          deweyid,
+        ulong*         compOffsets,
+        ulong&         numComps);
+
+  static void extractValue(
+        unsigned char* data,
+        ulong&         bitLen,
+        ulong&         byteIndex,
+        ulong&         bitIndex,
+        ulong          numBits,
+        long           baseValue,
+        long&          result);
+
+
 public:
-  OrdPath() : theBuffer(NULL) { }
+  OrdPath() 
+  {
+    memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
+    markLocal();
+  }
 
   ~OrdPath() 
   {
-    if (theBuffer != NULL)
-    {
-      delete [] theBuffer;
-      theBuffer = NULL;
-    }
+    if (!isLocal())
+      delete [] getRemoteBuffer();
   }
 
-  bool isValid() const { return theBuffer != NULL; }
+  bool isValid() const { return getByteLength() != 0; }
+  uint32_t hash() const;
 
   void setAsRoot();
 
   OrdPath& operator=(const OrdPath& other);
   OrdPath& operator=(const OrdPathStack& ops);
-
-  ulong getByteLength() const;
-  ulong getBitLength() const;
-
-  uint32_t hash() const;
 
   //bool operator==(const OrdPath& other) const;
   int operator<(const OrdPath& other) const;
@@ -104,18 +147,114 @@ public:
   std::string show() const;
 
 protected:
-  static void bitsNeeded(
-        long      value, 
-        ulong&    bitsNeeded,
-        uint32_t& eval);
 
-  static void insertBeforeOrAfter(
-        bool           before,
-        const OrdPath& parent,
-        const OrdPath& sibling,
-        OrdPath&       result);
+  bool isLocal() const   {  return theBuffer[MAX_EMBEDDED_BYTE] & 0x1; }
+  void markLocal()       { theBuffer[MAX_EMBEDDED_BYTE] |= 0x1; }
+  void markRemote()      { theBuffer[MAX_EMBEDDED_BYTE] &= 0xFE; }
 
-  void pushComp(long value, ulong& bitSize);
+  unsigned char* getRemoteBuffer() const 
+  {
+    return *(unsigned char**)(theBuffer); 
+  }
+
+  void setRemoteBuffer(unsigned char* b)
+  {
+    *(unsigned char**)(theBuffer) = b; 
+  }
+
+
+  void reset() 
+  {
+    if (!isLocal())
+      delete [] getRemoteBuffer();
+
+    memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
+    markLocal();
+  }
+
+
+  void initRemote(ulong byteLen)
+  {
+    if (!isLocal())
+      delete [] getRemoteBuffer();
+
+    memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
+
+    setRemoteBuffer(new unsigned char[byteLen + 1]);
+    memset(getRemoteBuffer(), 0, byteLen+1);
+    getRemoteBuffer()[0] = (unsigned char)byteLen;
+  }
+
+
+  unsigned char* getDataAndLength(ulong& len) const
+  {
+    if (isLocal())
+    {
+      len = getLocalByteLength();
+      return getLocalData();
+    }
+    else
+    {
+      len = getRemoteByteLength();
+      return getRemoteData();
+    }
+  }
+
+
+  unsigned char* getData() const
+  {
+    return (isLocal() ? getLocalData() : getRemoteData()); 
+  }
+
+
+  unsigned char* getLocalData() const
+  {
+    return const_cast<unsigned char*>(theBuffer);
+  }
+
+
+  unsigned char* getRemoteData() const
+  {
+    assert(!isLocal());
+    return &getRemoteBuffer()[1]; 
+  }
+
+
+  ulong getByteLength() const
+  {
+    return (isLocal() ? getLocalByteLength() : getRemoteByteLength());
+  }
+
+
+  ulong getLocalByteLength() const
+  {
+    for (ulong i = 0; i < MAX_EMBEDDED_BYTE; i++)
+    {
+      if (theBuffer[i] == 0)
+        return i;
+    }
+
+    return MAX_EMBEDDED_BYTE_LEN;
+  }
+
+
+  ulong getRemoteByteLength() const
+  {
+    return getRemoteBuffer()[0];
+  }
+
+
+  ulong getBitLength() const
+  {
+    return (isLocal() ? getLocalBitLength() : getRemoteBitLength());
+  }
+
+  ulong getLocalBitLength() const;
+
+  ulong getRemoteBitLength() const;
+
+  bool compressLocal(const std::vector<long>& dewey);
+  void compressRemote(const std::vector<long>& dewey);
 
   void decompress(
         ulong   startOffset,
@@ -123,23 +262,6 @@ protected:
         ulong*  compOffsets,
         ulong&  numComps,
         ulong&  bitSize) const;
-
-  void extractValue(
-        ulong& bitSize,
-        ulong& byteIndex,
-        ulong& bitIndex,
-        ulong  numBits,
-        long   baseValue,
-        long&  result) const;
-
-  void decodeByte(
-        long*          deweyid,
-        ulong*         compOffsets,
-        ulong&         numComps,
-        ulong&         bitSize,
-        ulong&         byteIndex,
-        ulong&         bitIndex,
-        unsigned char  byte) const;
 };
 
 
@@ -150,7 +272,7 @@ protected:
   theCompLens      : Array containing the bit-length of each component.
 
   theBuffer        : Buffer containing the current, compressed ordpath.
-  theByteIndex     :
+  theByteIndex     : Position of the last byte of the ordpath within theBuffer.
   theBitsAvailable : The number of unsed bits in the last byte of the compressed
                      ordpath. Can range between 0 and 7.
 ********************************************************************************/

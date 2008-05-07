@@ -54,6 +54,17 @@ public:
   virtual Item_t addToCollection(std::istream& stream) = 0;
 
   /**
+   * Inserts into the collection an xml document or fragment given as text via
+   * an input stream.
+   * The document is lazy loaded. The stream will be freed by Zorba when finished.
+   *
+   * @param stream The stream providing the data to insert (e.g. from a file). 
+   * Is allocated by user and freed by Zorba
+   * @return The root node of the xml document or fragment.
+   */
+  virtual Item_t addToCollection(std::istream* stream) = 0;
+
+  /**
    * Inserts a node to the collection.
    *
    * @param node The node to insert

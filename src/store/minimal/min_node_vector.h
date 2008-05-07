@@ -45,6 +45,7 @@ public:
 
   XmlNode* get(ulong pos) const { return theNodes[pos]; } 
   ulong find(XmlNode* n);
+  XmlNode*&  get_last() {return theNodes.back();}
 
   virtual void set(XmlNode* n, ulong pos, bool shared) = 0;
   virtual void push_back(XmlNode* n, bool shared) = 0;

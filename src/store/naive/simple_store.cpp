@@ -291,7 +291,17 @@ Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
   return root;
 }
 
-
+/*******************************************************************************
+For lazy loading...
+********************************************************************************/
+Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
+{
+  Item_t    docitem;
+  //do full loading for now
+  docitem = loadDocument(uri, *stream);
+  delete stream;
+  return docitem;
+}
 /*******************************************************************************
 
 ********************************************************************************/

@@ -67,10 +67,38 @@ Iterator_t SimpleCollection::getIterator(bool idsNeeded)
 Item_t SimpleCollection::addToCollection(std::istream& stream)
 {
   error::ErrorManager lErrorManager;
-  std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
+  //std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
+  XmlLoader_t     loader = new XmlLoader(&lErrorManager);
   xqpStringStore_t docUri;
 
   XmlNode* root = loader->loadXml(docUri, stream);
+
+  if (lErrorManager.hasErrors()) 
+  {
+    throw lErrorManager.getErrors().front();
+  }
+
+  if (root != NULL)
+  {
+    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+    theXmlTrees.insert(root);
+  }
+
+  return root;
+}
+
+/*******************************************************************************
+  Insert into the collection an xml document or fragment given as text via an
+  input stream. Return the root node of the new xml document or fragment.
+********************************************************************************/
+Item_t SimpleCollection::addToCollection(std::istream* stream)
+{
+  error::ErrorManager lErrorManager;
+  //std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
+  XmlLoader_t     loader = new XmlLoader(&lErrorManager);
+  xqpStringStore_t docUri;
+
+  XmlNode* root = loader->startloadXml(docUri, stream);
 
   if (lErrorManager.hasErrors()) 
   {

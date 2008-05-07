@@ -40,10 +40,16 @@ namespace zorba {
       setVariableAsDocument( const String& aQName, const String& aDocURI, std::istream& aStream );;
 
       virtual bool
+      setVariableAsDocument( const String& aQName, const String& aDocURI, std::istream* aStream );;
+
+      virtual bool
       setContextItem ( const Item& aItem );
 
       virtual bool
       setContextItemAsDocument ( const String& aDocURI, std::istream& aInStream );
+
+      virtual bool
+      setContextItemAsDocument ( const String& aDocURI, std::istream* aInStream );
 
       virtual bool
       setCurrentDateTime( const Item& aDateTimeItem );

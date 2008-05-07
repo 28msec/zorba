@@ -17,6 +17,7 @@
 #define ZORBA_MINIMAL_STORE_LOADER_H
 
 #include <stack>
+#include "util/rchandle.h"
 //#include <libxml/parser.h>
 //#include <libxml/xmlstring.h>
 
@@ -36,6 +37,7 @@ class XmlTree;
 class XmlNode;
 class NsBindingsContext;
 
+typedef char    xmlChar;
 
 /*******************************************************************************
 
@@ -51,8 +53,10 @@ class NsBindingsContext;
 
   theBuffer    : A buffer to read chunks of the source stream in.
 
+  For lazy loading, the XmlLoader is specific for each document
+
 ********************************************************************************/
-class XmlLoader
+class XmlLoader : public SimpleRCObject
 {
 protected:
 //  xmlSAXHandler                    theSaxHandler;
@@ -64,8 +68,8 @@ protected:
   OrdPathStack                     theOrdPath;
 
   XmlNode                        * theRootNode;
-  std::stack<XmlNode*>             theNodeStack;
-  std::stack<NsBindingsContext*>   theBindingsStack;
+  //std::stack<XmlNode*>             theNodeStack;
+  //std::stack<NsBindingsContext*>   theBindingsStack;
 
   std::string                   theWarnings;
 
@@ -87,6 +91,8 @@ protected:
   {
     QNAME_ELEM    name;
     NsBindings    ns_bindings;
+
+    XmlNode       *elem;
   }TAG_ELEM;
   std::list<TAG_ELEM*>      tag_stack;
 
@@ -100,27 +106,51 @@ protected:
 
 
   error::ErrorManager            * theErrorManager;
+  bool  end_document;
+  int   is_end_tag;
+  std::istream *stream;
+
+  int        reading_prolog;
+  std::string   xml_version;
+  std::string   xml_encoding;
+
+public:
+  enum lazyloadType_t 
+  {
+    UNTIL_START_ELEMENT,
+    UNTIL_END_ELEMENT
+  };
 
 public:
   XmlLoader(error::ErrorManager*);
 
   ~XmlLoader();
 
-  XmlNode* loadXml(xqpStringStore_t& uri, std::istream& xmlStream);
+  //load all doc
+  XmlNode* loadXml(xqpStringStore_t& uri, 
+                   std::istream& stream);
+  //or start lazy load
+  XmlNode* startloadXml(
+                   xqpStringStore_t& uri, 
+                   std::istream* xmlStream);
+  bool continueloadXml(
+                   enum lazyloadType_t,//for lazy loading, UNTIL_START_ELEMENT or UNTIL_END_ELEMENT
+                   unsigned int   depth);//for lazy loading, 1 based, when to stop loading;
 protected:
-  int  read_char(std::istream &stream);
+  int  read_char();
   void unread_char();
   bool isWhitespace(int c);
   bool isNameChar(int c);
-  void skip_whitespaces(std::istream &stream);
-  bool read_qname(std::istream &stream, QNAME_ELEM &qname, bool read_attr);
-  bool read_attributes(std::istream &stream, attr_list_t &all_attributes);
+  void skip_whitespaces();
+  bool read_qname(QNAME_ELEM &qname, bool read_attr);
+  bool read_attributes( attr_list_t &all_attributes);
   bool fill_in_uri(std::string &prefix, std::string &result_uri);
   bool compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2);
-  bool read_tag(std::istream& stream);
-  bool read_characters(std::istream &stream, bool *end_document);
-  bool read_comment(std::istream &stream);
-  bool read_pi(std::istream &stream);
+  bool read_tag();
+  bool read_characters();
+  bool read_comment();
+  bool read_pi();
+  bool read_xmlprolog();
 protected:
   void abort();
   void reset();
@@ -130,44 +160,52 @@ protected:
   void setRoot(XmlNode* root);
 
 public:
-  void	startDocument();
+  static void	startDocument(void * ctx);
 
-  void endDocument();
+  static void endDocument(void * ctx);
 
-  void startElement(
-        const char * localname, 
-        const char * prefix, 
-        const char * URI, 
+  static void startElement(
+        void * ctx, 
+        const xmlChar * localname, 
+        const xmlChar * prefix, 
+        const xmlChar * URI, 
         int nb_namespaces, 
-        const char ** namespaces, 
+        const xmlChar ** namespaces, 
         int nb_attributes, 
         int nb_defaulted, 
-        const char ** attributes);
+        const xmlChar ** attributes);
   
-  void endElement(
-        const char * localname, 
-        const char * prefix, 
-        const char * URI);
+  static void endElement(
+        void * ctx, 
+        const xmlChar * localname, 
+        const xmlChar * prefix, 
+        const xmlChar * URI);
 
-  void characters(
-        const char * ch,
+  static void characters(
+        void * ctx,
+        const xmlChar * ch,
         int len);
 
-  void	cdataBlock(
-        const char * value, 
+  static void	cdataBlock(
+        void * ctx, 
+        const xmlChar * value, 
         int len);
 
-  void comment(
-        const char * value);
+  static void comment(
+        void * ctx, 
+        const xmlChar * value);
 
-  void	processingInstruction(
-        const char * target, 
-        const char * data);
+  static void	processingInstruction(
+        void * ctx, 
+        const xmlChar * target, 
+        const xmlChar * data);
 
-  void error(const char * msg, ... );
+  static void error(void * ctx, const char * msg, ... );
 
-  void warning(const char * msg, ... );
+  static void warning(void * ctx, const char * msg, ... );
 };
+
+typedef rchandle<XmlLoader>   XmlLoader_t;
 
 } // namespace store
 } // namespace zorba

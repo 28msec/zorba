@@ -73,6 +73,21 @@ namespace zorba {
   }
 
   Item
+  XmlDataManagerImpl::loadDocument(const String& uri, std::istream* stream, ErrorHandler* aErrorHandler)
+  {
+    ZORBA_TRY
+      xqpStringStore_t lString = Unmarshaller::getInternalString(uri);
+
+      if ( ! stream->good() ) {
+        ZORBA_ERROR_DESC(ZorbaError::API0015_CANNOT_OPEN_FILE, "cannot read from stream");
+      }
+
+      return &*theStore->loadDocument(lString, stream); 
+    ZORBA_CATCH
+    return Item(); 
+  }
+
+  Item
   XmlDataManagerImpl::loadDocument(const String& local_file_uri, ErrorHandler* aErrorHandler)
   {
     ZORBA_TRY

@@ -39,6 +39,8 @@ namespace zorba {
 
       Item 
       loadDocument(const String& uri, std::istream& stream, ErrorHandler* aErrorHandler = 0);
+      Item 
+      loadDocument(const String& uri, std::istream* stream, ErrorHandler* aErrorHandler = 0);
 
       Item
       loadDocument(const String& local_file_uri, ErrorHandler* aErrorHandler = 0);

@@ -159,7 +159,10 @@ XmlNode::XmlNode(XmlNode* parent, StoreConsts::NodeKind nodeKind)
     if (parent->theOrdPath.isValid()) 
     {
       theOrdPath = parent->theOrdPath;
-      theOrdPath.appendComp(2 * (parent->numAttributes() + parent->numChildren()) + 1);
+      if(parent->hasLoaderAttached() == NULL)
+        theOrdPath.appendComp(2 * (parent->numAttributes() + parent->numChildren()) + 1);
+      else//the number of children is not known, assume 5000
+        theOrdPath.appendComp(2 * (parent->numAttributes() + 5000) + 1);
     }
 
     parent->children().push_back(this, false);
@@ -273,7 +276,11 @@ void XmlNode::setOrdPath(
   if (!parent->theOrdPath.isValid())
     return;
 
-  ulong numChildren = parent->numChildren();
+  ulong numChildren;
+//  if(parent->hasLoaderAttached() == NULL)
+    numChildren = parent->numChildren();
+//  else
+//    numChildren = 5000;//assume 5000 children
   ulong numAttrs = parent->numAttributes();
 
   if (nodeKind == StoreConsts::attributeNode)
@@ -571,10 +578,15 @@ void XmlNode::switchTree(
         }
       }
 
-      ulong numChildren = n->numChildren();
-      for (ulong i = 0; i < numChildren; i++)
+      //ulong numChildren = n->numChildren();
+      //for (ulong i = 0; i < numChildren; i++)
+      ulong i = 0;
+      Iterator_t    child_iter = n->getChildren();
+      child_iter->open();
+      store::Item*  child_item;
+      while((child_item=&*child_iter->next()))
       {
-        XmlNode* child = n->getChild(i);
+        XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
         refcount += child->theRefCount;
         child->setTree(newTree);
         if (assignIds)
@@ -584,6 +596,7 @@ void XmlNode::switchTree(
         }
 
         nodes.push(child);
+        i++;
       }
     } // done traversing tree
 
@@ -633,6 +646,12 @@ void XmlNode::deleteTree() throw()
   for (ulong i = 0; i < numChildren; i++)
   {
     XmlNode* child = getChild(i);
+//  Iterator_t    child_iter = this->getChildren();
+//  child_iter->open();
+//  Item*  child_item;
+//  while((child_item=&*child_iter->next()))
+//  {
+//    XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
     if (child->theParent == this)
     {
       child->theParent = NULL; 
@@ -717,8 +736,6 @@ Iterator_t DocumentNode::getChildren() const
   return (new ChildrenIterator((XmlNode*)this));
 }
 
-
-
 Iterator_t DocumentNode::getTypedValue() const
 {
   xqpStringStore_t rch = getStringValue();
@@ -738,13 +755,20 @@ xqpStringStore_t DocumentNode::getStringValue() const
 {
   std::string buf;
 
-  ulong numChildren = this->numChildren();
-  for (ulong i = 0; i < numChildren; i++)
+//  ulong numChildren = this->numChildren();
+//  for (ulong i = 0; i < numChildren; i++)
+//  {
+    //StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
+  Iterator_t    child_iter = this->getChildren();
+  child_iter->open();
+  Item*  child_item;
+  while((child_item=&*child_iter->next()))
   {
-    StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
+    XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+    StoreConsts::NodeKind kind = child->getNodeKind();
 
     if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
-      buf += getChild(i)->getStringValue()->str();
+      buf += child->getStringValue()->str();
   }
 
   return new xqpStringStore(buf);
@@ -760,7 +784,7 @@ XmlNode* DocumentNode::copy(
     ulong           pos,
     const CopyMode& copymode) const
 {
-  assert(rootParent == NULL);
+  ZORBA_ASSERT(rootParent == NULL);
 
   XmlTree* tree = NULL;
   LoadedDocumentNode* copyNode = NULL;
@@ -774,11 +798,19 @@ XmlNode* DocumentNode::copy(
 
     copyNode = new LoadedDocumentNode(tree, copymode.theAssignIds, baseuri, docuri);
 
-    ulong numChildren = this->numChildren();
-    for (ulong i = 0; i < numChildren; i++)
-    {
-      getChild(i)->copy(rootParent, copyNode, 0, copymode);
-    }
+//    ulong numChildren = this->numChildren();
+//    for (ulong i = 0; i < numChildren; i++)
+//    {
+//      getChild(i)->copy(rootParent, copyNode, 0, copymode);
+//    }
+      Iterator_t    child_iter = this->getChildren();
+      child_iter->open();
+      Item*  child_item;
+      while((child_item=&*child_iter->next()))
+      {
+        XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+        child->copy(rootParent, copyNode, 0, copymode);
+      }
   }
   catch (...)
   {
@@ -837,7 +869,8 @@ LoadedDocumentNode::LoadedDocumentNode(
     xqpStringStore_t& baseUri,
     xqpStringStore_t& docUri)
   :
-  DocumentNode(baseUri, docUri)
+  DocumentNode(baseUri, docUri),
+  attachedloader(NULL)
 {
   NODE_TRACE1("Loaded doc node " << this << " base uri = "
               << (theBaseUri != 0 ? theBaseUri->c_str() : "NULL")
@@ -854,7 +887,8 @@ LoadedDocumentNode::LoadedDocumentNode(
     xqpStringStore_t& baseUri,
     xqpStringStore_t& docUri)
   :
-  DocumentNode(tree, assignIds, baseUri, docUri)
+  DocumentNode(tree, assignIds, baseUri, docUri),
+  attachedloader(NULL)
 {
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
@@ -1045,13 +1079,20 @@ xqpStringStore_t ElementNode::getStringValue() const
 {
   std::string buf;
 
-  ulong numChildren = this->numChildren();
-  for (ulong i = 0; i < numChildren; i++)
+//  ulong numChildren = this->numChildren();
+//  for (ulong i = 0; i < numChildren; i++)
+//  {
+//    StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
+  Iterator_t    child_iter = this->getChildren();
+  child_iter->open();
+  Item*  child_item;
+  while((child_item=&*child_iter->next()))
   {
-    StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
+    XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+    StoreConsts::NodeKind kind = child->getNodeKind();
 
     if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
-      buf += getChild(i)->getStringValue()->str();
+      buf += child->getStringValue()->str();
   }
 
   return new xqpStringStore(buf);
@@ -1067,11 +1108,17 @@ Item_t ElementNode::getNilled() const
     return new BooleanItemNaive(false);
 
   bool nilled = true;
-  ulong numChildren = this->numChildren();
-  for (ulong i = 0; i < numChildren; i++)
+//  ulong numChildren = this->numChildren();
+//  for (ulong i = 0; i < numChildren; i++)
+//  {
+  Iterator_t    child_iter = this->getChildren();
+  child_iter->open();
+  Item*  child_item;
+  while((child_item=&*child_iter->next()))
   {
-    if (getChild(i)->getNodeKind() == StoreConsts::elementNode ||
-        getChild(i)->getNodeKind() == StoreConsts::textNode)
+    XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+    if (child->getNodeKind() == StoreConsts::elementNode ||
+        child->getNodeKind() == StoreConsts::textNode)
     {
       nilled = false;
       break;
@@ -1488,10 +1535,16 @@ XmlNode* ElementNode::copy(
     }
 
     // Copy the children of this node
-    ulong numChildren = this->numChildren();
-    for (ulong i = 0; i < numChildren; i++)
+//    ulong numChildren = this->numChildren();
+//    for (ulong i = 0; i < numChildren; i++)
+//    {
+    Iterator_t    child_iter = this->getChildren();
+    child_iter->open();
+    Item*  child_item;
+    while((child_item=&*child_iter->next()))
     {
-      getChild(i)->copy(rootParent, copyNode, 0, copymode);
+      XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+      child->copy(rootParent, copyNode, 0, copymode);
     }
   }
   catch (...)
@@ -1649,7 +1702,8 @@ LoadedElementNode::LoadedElementNode(
     ulong   numBindings,
     ulong   numAttributes)
   :
-  ElementNode(nodeName, typeName)
+  ElementNode(nodeName, typeName),
+  attachedloader(NULL)
 {
   if (numBindings > 0)
   {
@@ -1675,7 +1729,8 @@ LoadedElementNode::LoadedElementNode(
     Item_t&   nodeName,
     Item_t&   typeName)
   :
-  ElementNode(tree, assignIds, nodeName, typeName)
+  ElementNode(tree, assignIds, nodeName, typeName),
+  attachedloader(NULL)
 {
   NODE_TRACE1("{\nConstructing root element node " << this
               << " tree = " << tree->getId() << ":" << tree
@@ -1692,7 +1747,8 @@ LoadedElementNode::LoadedElementNode(
     Item_t&   nodeName,
     Item_t&   typeName)
   :
-  ElementNode(parent, pos, nodeName, typeName)
+  ElementNode(parent, pos, nodeName, typeName),
+  attachedloader(NULL)
 {
   NODE_TRACE1("{\nConstructing element node " << this << " parent = "
               << parent << " pos = " << pos
@@ -1710,7 +1766,8 @@ LoadedElementNode::LoadedElementNode(
     Item_t&   nodeName,
     Item_t&   typeName)
   :
-  ElementNode(parent, nodeName, typeName)
+  ElementNode(parent, nodeName, typeName),
+  attachedloader(NULL)
 {
   NODE_TRACE1("{\nConstructing element node " << this << " parent = " << parent 
               << " tree = " << getTree()->getId() << ":" << getTree()

@@ -24,6 +24,7 @@
 #include "store/minimal/min_ordpath.h"
 #include "store/minimal/min_node_vector.h"
 #include "store/minimal/min_node_updates.h"
+#include "store/minimal/min_loader.h"
 
 namespace zorba { 
   namespace store {
@@ -253,6 +254,8 @@ public:
 
   virtual bool isConstructed() const     { NODE_STOP; return false; }
 
+  virtual XmlLoader_t hasLoaderAttached()                {return NULL;}
+  virtual unsigned int        getDepth()         {return 0;}//depth is usefull only for loaded element nodes
 protected:
   virtual xqpStringStore_t getBaseURIInternal(bool& local) const;
 
@@ -330,6 +333,8 @@ class LoadedDocumentNode : public DocumentNode
 {
 private:
   LoadedNodeVector theChildren;
+public:
+  XmlLoader_t   attachedloader;//for documents and elements might be false. Means it is full loaded
 
 public:
   LoadedDocumentNode(
@@ -348,6 +353,7 @@ public:
   XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
 
   bool isConstructed() const         { return false; }
+  virtual XmlLoader_t hasLoaderAttached()                {return attachedloader;}
 };
 
 
@@ -520,6 +526,9 @@ protected:
   LoadedNodeVector  theAttributes;
 
 public:
+  XmlLoader_t   attachedloader;//for documents and elements might be false. Means it is full loaded
+  unsigned int           depth;
+public:
   LoadedElementNode(
         Item_t& nodeName,
         Item_t& typeName,
@@ -558,6 +567,8 @@ public:
   XmlNode* getChild(ulong i) const     { return theChildren.get(i); }
 
   bool isConstructed() const           { return false; }
+  virtual XmlLoader_t hasLoaderAttached()              {return attachedloader;}
+  virtual unsigned int        getDepth()         {return depth;}
 
 protected:
   xqpStringStore_t getBaseURIInternal(bool& local) const;

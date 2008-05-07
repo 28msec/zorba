@@ -101,6 +101,20 @@ namespace zorba {
   }
 
   bool
+  DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& aDocURI, 
+                                             std::istream* aStream )
+  {
+    ZORBA_TRY
+      XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+
+      Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
+      setVariable ( aQName, lDocItem );
+      return true;
+    ZORBA_CATCH
+    return false;
+  }
+
+  bool
   DynamicContextImpl::setContextItem ( const Item& aItem )
   {
     ZORBA_TRY
@@ -114,6 +128,19 @@ namespace zorba {
   
   bool
   DynamicContextImpl::setContextItemAsDocument ( const String& aDocURI, std::istream& aInStream )
+  {
+    ZORBA_TRY
+      XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+
+      Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
+      setContextItem ( lDocItem );
+      return true;
+    ZORBA_CATCH
+    return false;
+  }
+
+  bool
+  DynamicContextImpl::setContextItemAsDocument ( const String& aDocURI, std::istream* aInStream )
   {
     ZORBA_TRY
       XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
