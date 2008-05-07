@@ -549,7 +549,9 @@ HashEntry<T, V>* hashInsert(
 ********************************************************************************/
 void extendCollisionArea(HashEntry<T, V>*& lastentry) 
 {
-  checked_vector<HashEntry<T, V> > newTab(theHashTab.size() + 32);
+  ulong oldSize = theHashTab.size();
+
+  checked_vector<HashEntry<T, V> > newTab(oldSize + 32);
 
   HashEntry<T, V>* oldbase = &theHashTab[0];
   HashEntry<T, V>* newbase = &newTab[0];
@@ -557,7 +559,7 @@ void extendCollisionArea(HashEntry<T, V>*& lastentry)
 
   lastentry += delta;
 
-  for (ulong i = 0; i < theHashTab.size(); i++)
+  for (ulong i = 0; i < oldSize; i++)
   {
     HashEntry<T, V>* e = oldbase + i;
     if (!e->isFree()) 
@@ -569,17 +571,22 @@ void extendCollisionArea(HashEntry<T, V>*& lastentry)
   }
   newTab.swap(theHashTab);
 
-  formatCollisionArea();
+  freelist()->theNext = &theHashTab[oldSize];
+
+  formatCollisionArea(freelist()->theNext);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void formatCollisionArea() 
+void formatCollisionArea(HashEntry<T, V>* firstentry = NULL) 
 {
+  if (firstentry == NULL)
+    firstentry = freelist();
+
   HashEntry<T, V>* lastentry = &theHashTab[theHashTab.size() - 1];
-  for (HashEntry<T, V>* entry = freelist(); entry < lastentry; entry++)
+  for (HashEntry<T, V>* entry = firstentry; entry < lastentry; entry++)
     entry->theNext = entry + 1;
 
   lastentry->theNext = NULL;
@@ -625,8 +632,8 @@ void resizeHashTab(ulong newSize)
       if (freelist()->theNext == 0)
         extendCollisionArea(lastentry);
 
-      entry = freelist ()->theNext;
-      freelist ()->theNext = entry->theNext;
+      entry = freelist()->theNext;
+      freelist()->theNext = entry->theNext;
       lastentry->theNext = entry;
     }
 

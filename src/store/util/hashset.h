@@ -87,6 +87,8 @@ bool insert(T& item)
 
   SYNC_CODE(AutoMutex lock(this->theMutexp);)
 
+  //assert(item != 0);
+
   HashEntry<T, DummyHashValue>* entry;
   entry = hashInsert(item,
                      Externals<T,E,C>::hash(item, this->theCompareParam),
@@ -114,6 +116,8 @@ bool insert(T& item,  T& outItem)
   bool found;
 
   SYNC_CODE(AutoMutex lock(this->theMutexp);)
+
+  //assert(item != 0);
 
   HashEntry<T, DummyHashValue>* entry;
   entry = hashInsert(item,
