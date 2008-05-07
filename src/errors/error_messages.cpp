@@ -15,10 +15,8 @@
  */
 #include <string>
 
-#include "zorbatypes/Unicode_util.h"
 #include "util/Assert.h"
 
-#include <zorba/error.h>
 #include "errors/error_messages.h"
 
 using namespace std;
@@ -29,45 +27,9 @@ namespace zorba { namespace error {
 /*******************************************************************************
 
 ********************************************************************************/
-void AlertMessages::applyParams(
-    string*       errorMsg,
-    const string* param1,
-    const string* param2)
-{
-  string::size_type off = applyParam(errorMsg, param1, 0);
-  applyParam(errorMsg, param2, off);
-}
-
-
-/*******************************************************************************
-  Finds next place for param in err_decoded, and puts the param in that place.
-  A place for param looks like "/s".
-********************************************************************************/
-string::size_type AlertMessages::applyParam(
-    string*           errorMsg,
-    const string*     param1,
-    string::size_type start)
-{
-  string::size_type off;
-  const static string empty;
-
-  off = errorMsg->find ("/s", start);
-
-  if (off == string::npos)
-    return errorMsg->length ();
-
-  if (param1 == NULL) param1 = &empty;
-
-  errorMsg->replace (off, 2, *param1);
-  return off + param1->length ();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 
 static const char *canonical_err_names[::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE + 1];
+
 static const char *err_msg[::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE + 1];
 
 
@@ -75,9 +37,12 @@ static struct err_msg_initializer
 {
   err_msg_initializer () 
   {
-#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ::zorba::ZorbaError::code ] = strdup(#name); err_msg [::zorba::ZorbaError::code] = strdup(msg);
+#define DEF_ERR_CODE( code, name, msg )                              \
+  canonical_err_names [ ::zorba::ZorbaError::code ] = strdup(#name); \
+  err_msg [::zorba::ZorbaError::code] = strdup(msg);
 
-    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
+    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; i++) 
+    {
       canonical_err_names [i] = NULL;
       err_msg [i] = NULL;
     }
@@ -462,59 +427,75 @@ DEF_ERR_CODE(XUDY0029, XUDY0029, "In an insert expression where before or after 
 
 DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression specifies the insertion of an attribute node before or after a child of a document node.")
 
-
 #undef DEF_ERR_CODE
 
-  for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; ++i) {
-    if (canonical_err_names [i] == NULL)
-      canonical_err_names [i] = strdup("?");
-    if (err_msg [i] == NULL)
-      err_msg [i] = strdup (string ("<Unknown errcode " + to_string (i) + "> /s /s").c_str ());
-  }
+    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; ++i) 
+    {
+      if (canonical_err_names [i] == NULL)
+        canonical_err_names [i] = strdup("?");
 
-
+      if (err_msg [i] == NULL)
+      {
+        std::ostringstream stream;
+        stream << "<Unknown errcode " << i << ">";
+        err_msg[i] = strdup(stream.str().c_str());
+      }
+    }
   }
 
   ~err_msg_initializer()
   {
-    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; ++i) {
-      if (canonical_err_names [i] != NULL) {
-        free(const_cast<char *>(canonical_err_names [i]));
-      }
-      if (err_msg [i] != NULL) {
+    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; ++i) 
+    {
+      if (canonical_err_names[i] != NULL)
+        free(const_cast<char *>(canonical_err_names[i]));
+
+      if (err_msg [i] != NULL)
         free(const_cast<char *>(err_msg [i]));
-      }
     }
   }
 } err_msg_initializer_obj;
 
-::zorba::ZorbaError::ErrorCode 
-ZorbaError::err_name_to_code (string name) {
-  // TODO: use a map or hashmap
-  for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; i++)
-    if (name == canonical_err_names [i])
-      return (enum ::zorba::ZorbaError::ErrorCode) i;
-  return ::zorba::ZorbaError::XQP0019_INTERNAL_ERROR;
-}
 
-string ZorbaError::toString(::zorba::ZorbaError::ErrorCode& code) {
-  ZORBA_ASSERT (code < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE);
-  return canonical_err_names [code];
-}
-
-
-string AlertMessagesEnglish::error_decode(::zorba::ZorbaError::ErrorCode& e) {
+std::string
+ErrorMessages::getMessageForErrorCode(::zorba::ZorbaError::ErrorCode& e) 
+{
   ZORBA_ASSERT (e < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE);
   return err_msg [e];
 } 
 
 
-string AlertMessagesEnglish::warning_decode(ZorbaWarning::WarningCode& code)
+std::string
+ErrorMessages::getMessageForWarningCode(ZorbaWarning::WarningCode& code)
 {
   return "?";
 }
 
-::zorba::ZorbaError::ErrorCode DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
+
+std::string
+ErrorMessages::getNameForErrorCode(::zorba::ZorbaError::ErrorCode& code)
+{
+  ZORBA_ASSERT (code < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE);
+  return canonical_err_names [code];
+}
+
+
+::zorba::ZorbaError::ErrorCode 
+ErrorMessages::getErrorCodeForName(const std::string& name) 
+{
+  // TODO: use a map or hashmap
+  for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; i++)
+  {
+    if (name == canonical_err_names[i])
+      return (enum ::zorba::ZorbaError::ErrorCode) i;
+  }
+  return ::zorba::ZorbaError::XQP0019_INTERNAL_ERROR;
+}
+
+
+
+::zorba::ZorbaError::ErrorCode
+DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
 {
   switch( code )
   {

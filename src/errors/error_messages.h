@@ -13,55 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_ERROR_MESSAGES_H
-#define XQP_ERROR_MESSAGES_H
+#ifndef ZORBA_ERRORS_ERROR_MESSAGES_H
+#define ZORBA_ERRORS_ERROR_MESSAGES_H
 
 #include <string>
-#include "errors/errors.h"
+#include <zorba/error.h>
 #include "zorbatypes/zorbatypesError.h"
 
 namespace zorba {  namespace error {
 
-::zorba::ZorbaError::ErrorCode DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code);
+::zorba::ZorbaError::ErrorCode 
+DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code);
 
-class AlertMessages
+
+/*******************************************************************************
+
+********************************************************************************/
+class ErrorMessages
 {
  public:
-   virtual ~AlertMessages() { }
+  virtual ~ErrorMessages() { }
 
-   virtual std::string error_decode(::zorba::ZorbaError::ErrorCode&) = 0;
-   virtual std::string warning_decode(ZorbaWarning::WarningCode&) = 0;
+  static ::zorba::ZorbaError::ErrorCode getErrorCodeForName(const std::string& name); 
 
-   void applyParams(
-       std::string* errorMsg,
-       const std::string* param1,
-       const std::string* param2);
+  static std::string getNameForErrorCode(::zorba::ZorbaError::ErrorCode&);
 
-   std::string::size_type applyParam(
-       std::string* errorMsg,
-       const std::string* param1,
-       std::string::size_type);
-  
-  };
-
-
-  /*******************************************************************************
-
-   ********************************************************************************/
-  class AlertMessagesEnglish : public AlertMessages
-  {
-    public:
-      std::string error_decode(::zorba::ZorbaError::ErrorCode&);
-      std::string warning_decode(ZorbaWarning::WarningCode&);
-  };
+  static std::string getMessageForErrorCode(::zorba::ZorbaError::ErrorCode&);
+  static std::string getMessageForWarningCode(ZorbaWarning::WarningCode&);
+};
 
 
 } /* namespace error */
 } /* namespace zorba */
 #endif
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */
