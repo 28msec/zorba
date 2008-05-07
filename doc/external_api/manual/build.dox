@@ -36,7 +36,7 @@ In order ot build Zorba, you need the following libraries and development header
 -# If CMake was executed successfully, you should be able to run <tt>make</tt>. Running make will take some time. If make finished successfully, you're ready to install and run Zorba (see \ref installation).
 
 \subsection buildoptions Build Options
-- CMake is a meta build system, meaning it is able to generate native makefiles (e.g. GNU Make or NMake) and workspaces (e.g. KDevelop or Visual Studio Projekts). For example, you can create
+- CMake is a meta build system, meaning it is able to generate native makefiles (e.g. GNU Make or NMake) and workspaces (e.g. KDevelop or Visual Studio Projects). For example, you can create
   a KDevelop Project by executing the following command in the <tt>[ZORBA]</tt> directory: <tt>cmake -G KDevelop3 [ZORBABUILD]</tt>.
 - CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake [ZORBA] -D CMAKE_BUILD_TYPE=Debug</tt>.
 
