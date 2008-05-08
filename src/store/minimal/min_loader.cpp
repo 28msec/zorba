@@ -1119,9 +1119,12 @@ void XmlLoader::startElement(
   // Process namespace bindings
   if (numBindings > 0)
   {
-    NsBindingsContext*   newnscontext = new NsBindingsContext;
-    elemNode->setNsContext(newnscontext);
-    NsBindings& bindings = newnscontext->getBindings();
+  //  NsBindingsContext*   newnscontext = new NsBindingsContext;
+  //  elemNode->setNsContext(newnscontext);
+  //  NsBindings& bindings = newnscontext->getBindings();
+  //  bindings.reserve(numBindings);
+      NsBindingsContext   *nscontext = elemNode->getNsContext();
+      NsBindings& bindings = nscontext->getBindings();
 
     for (ulong i = 0; i < numBindings; ++i)
     {
@@ -1143,7 +1146,7 @@ void XmlLoader::startElement(
 
     //loader.theBindingsStack.push(elemNode->getNsContext());
     //elemNode->setNsContext(loader.theBindingsStack.top());
-    newnscontext->setParent(parent_elem->getNsContext());
+    nscontext->setParent(parent_elem->getNsContext());
   }
   else 
   {
