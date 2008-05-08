@@ -1321,14 +1321,15 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
 
 
   xqpString
-  xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) {
+  xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
+  {
     //UErrorCode status = U_ZERO_ERROR;
     //UnicodeString uspattern = pattern.getUnicodeString (),
     //  us = getUnicodeString ();
 
     //RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     //if (U_FAILURE(status)) {
-      throw zorbatypesException("", ZorbatypesError::FORX0002);
+    //  throw zorbatypesException("", ZorbatypesError::FORX0002);
     //  return "";
     //}
 
@@ -1345,7 +1346,21 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     //  // TODO: error
     //}
     //return getXqpString (result);
-    return *this;
+    
+    xqpString   newstr;
+    const char  *start_str = c_str();
+    const char  *temp = start_str;
+
+    while((temp=strstr(temp, pattern.c_str())))
+    {
+      newstr += xqpString(new xqpStringStore(start_str , temp));
+      newstr += replacement;
+      start_str = temp;
+      temp += replacement.size();
+    }
+    newstr += start_str;
+
+    return newstr;
   }
 
   xqpString

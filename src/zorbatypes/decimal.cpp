@@ -384,6 +384,10 @@ xqpString Decimal::decimalToString(MAPM theValue) {
 #ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
   theValue.toFixPtString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
+#else
+  char lBuffer[124];
+  sprintf(lBuffer, "%.7lf", theValue);
+#endif
 
   // Note in the canonical representation the decimal point is required
   // and there must be at least one digit to the right and one digit to 
@@ -401,11 +405,6 @@ xqpString Decimal::decimalToString(MAPM theValue) {
     
   xqpString lResult = lBuffer;
   return lResult;
-#else
-  char lBuffer[124];
-  sprintf(lBuffer, "%G", theValue);
-  return xqpString(lBuffer);
-#endif
 }
 
 xqpString Decimal::toString() const {
