@@ -12,6 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-INSTALL(DIRECTORY zorba DESTINATION include/zorba
-	PATTERN "*.svn" EXCLUDE
-	PATTERN "*.txt" EXCLUDE)
+ADD_SUBDIRECTORY(zorba)
+ADD_SUBDIRECTORY(zorbac)
