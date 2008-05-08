@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_XQUERY_API_H
-#define XQP_XQUERY_API_H
+#ifndef ZORBA_XQUERY_API_H
+#define ZORBA_XQUERY_API_H
 
 #include <ostream>
 

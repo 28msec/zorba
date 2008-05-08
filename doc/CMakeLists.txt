@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ADD_SUBDIRECTORY(external_api)
+ADD_SUBDIRECTORY(external_capi)
 
 # workaround: a dir is already needed for the install command. the html directory, however, is generated with the make doc call
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external_api/html)
