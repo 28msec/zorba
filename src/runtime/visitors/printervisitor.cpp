@@ -41,6 +41,9 @@
 #ifdef ZORBA_WITH_REST
 #include "runtime/rest/rest.h"
 #endif
+#ifdef ZORBA_DEBUGGER
+#include "runtime/debug/zorba_debugger_iterators.hpp"
+#endif
 #include "types/root_typemanager.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
@@ -800,6 +803,10 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(TransformIterator);
 
   PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator);
+
+#ifdef ZORBA_DEBUGGER
+  PRINTER_VISITOR_DEFINITION(FnDebugIterator);
+#endif
 
 #ifdef ZORBA_WITH_REST
   PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);

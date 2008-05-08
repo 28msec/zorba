@@ -18,6 +18,10 @@ CREATE_TEST_SOURCELIST(UnitTests
   itemfactory.cpp
 )
 
+IF(ZORBA_DEBUGGER)
+  ADD_SUBDIRECTORY(debugger)
+ENDIF(ZORBA_DEBUGGER)
+
 # add the executable
 ADD_EXECUTABLE(UnitTests ${UnitTests})
 TARGET_LINK_LIBRARIES(UnitTests zorba)

@@ -47,4 +47,43 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
   return aOstr;
 }
 
+#ifdef ZORBA_DEBUGGER
+ xqpString QueryLoc::toJSON() const
+ {
+  std::stringstream lJSONString;
+  lJSONString << "{";
+  lJSONString << "\"fileName\":\"" << theFilenameBegin << "\",";
+  lJSONString << "\"lineBegin\":" << theLineBegin << ",";
+  lJSONString << "\"columnBegin\":" << theColumnBegin << ",";
+  lJSONString << "\"lineEnd\":" << theLineEnd << ",";
+  lJSONString << "\"columnEnd\":" << theColumnEnd;
+  lJSONString << "}";
+  return lJSONString.str();
+ }
+
+ void QueryLoc::fromJSON( const json::object &obj )
+ {
+      for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
+      {
+        std::string attrName = (*it).first;
+        if ( attrName == "fileName" )
+        {
+          std::string filename = boost::any_cast< std::string >( (*it).second );
+          setFilenameBegin( &filename );
+        } else if ( attrName == "lineBegin" ) {
+          int lineBegin = boost::any_cast< int >( (*it).second );
+          setLineBegin( lineBegin );
+        } else if ( attrName == "columnBegin" ) {
+          int columnBegin = boost::any_cast< int >( (*it).second );
+          setColumnBegin( columnBegin );
+        } else if ( attrName == "lineEnd" ) {
+          int lineEnd = boost::any_cast< int >( (*it).second );
+          setLineEnd( lineEnd );
+        } else if ( attrName == "columnEnd" ) {
+          int columnEnd = boost::any_cast< int >( (*it).second );
+          setColumnEnd( columnEnd );
+        }
+      }
+ }
+#endif
 } // namespace zorba

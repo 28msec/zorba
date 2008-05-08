@@ -206,6 +206,10 @@ namespace zorba
   class FnCollectionIterator;
   class FnDeepEqualIterator;
 
+#ifdef ZORBA_DEBUGGER
+  class FnDebugIterator;
+#endif
+
 #ifdef ZORBA_WITH_REST
   class ZorbaRestGetIterator;
 #endif
@@ -595,6 +599,10 @@ namespace zorba
     PLAN_ITER_VISITOR(TransformIterator);
 
     PLAN_ITER_VISITOR(FnDeepEqualIterator);
+
+#ifdef ZORBA_DEBUGGER
+    PLAN_ITER_VISITOR ( FnDebugIterator );  
+#endif
 
 #ifdef ZORBA_WITH_REST
     PLAN_ITER_VISITOR(ZorbaRestGetIterator);

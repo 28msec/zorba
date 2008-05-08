@@ -18,7 +18,9 @@
 
 #include <string>
 #include "zorbatypes/xqpstring.h"
-
+#ifdef ZORBA_DEBUGGER
+#include "tiny_json/json.hpp"
+#endif
 namespace zorba {
 
 /**
@@ -59,6 +61,12 @@ public:
   void setFilenameEnd   ( std::string* aFilenameEnd )   { theFilenameEnd = *aFilenameEnd; }
   void setLineEnd       ( unsigned int aLineEnd )       { theLineEnd = aLineEnd; }
   void setColumnEnd     ( unsigned int aColumnEnd )     { theColumnEnd = aColumnEnd; }
+#ifdef ZORBA_DEBUGGER
+  xqpString getFilename() const { return getFilenameBegin(); }
+  unsigned int getLineno() const { return getLineBegin(); }
+  xqpString toJSON() const;
+  void fromJSON( const json::object &obj );
+#endif
 };
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc);

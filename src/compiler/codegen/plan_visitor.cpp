@@ -53,6 +53,11 @@
 #include "util/stl_extra.h"
 #include "util/hashmap.h"
 
+#ifdef ZORBA_DEBUGGER
+#include <zorba/debugger_server.hpp>
+#include "runtime/debug/zorba_debugger_iterators.hpp"
+#endif
+
 #include "types/typeops.h"
 
 #include "store/api/store.h"
@@ -114,7 +119,8 @@ struct vector_destroyer {
 class plan_visitor : public expr_visitor
 {
 public:
-	typedef rchandle<expr> expr_h_t;
+
+  typedef rchandle<expr> expr_h_t;
   typedef rchandle<ForVarIterator> ForVarIter_t;
   typedef rchandle<LetVarIterator> LetVarIter_t;
 
@@ -144,6 +150,19 @@ protected:
 #define LOOKUP_OP1( local ) static_cast<function *> (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
 
 public:
+
+#ifdef ZORBA_DEBUGGER
+          PlanIter_t debugIterator(PlanIter_t aStoppableIterator){
+            if ( ZorbaDebugger::getInstance()->isEnabled() )
+            {
+              std::vector<PlanIter_t> lChildren;
+              lChildren.push_back(aStoppableIterator);
+              return new FnDebugIterator(aStoppableIterator->loc, lChildren);
+            }
+            return aStoppableIterator;
+          }
+#endif
+
 	plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *param_var_map = NULL)
     :
     depth (0),
@@ -232,7 +251,11 @@ void end_visit(var_expr& v)
             loc,
             (void *) &v);
     map->push_back (v_p);
-    itstack.push(v_p);
+#ifdef ZORBA_DEBUGGER
+                  itstack.push(debugIterator(v_p));
+#else
+                  itstack.push(v_p);
+#endif
     break;
   }
 
