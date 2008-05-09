@@ -21,13 +21,15 @@ int example_1(XQUERY_CAPI* aAPI)
 {
 
   XQUERY_ERROR lError = XQUERY_SUCCESS;
+  char lString[3];
+  XQUERY_STREAM lStream;
+  XQUERY lXQuery;
 
-  XQUERY lXQuery = aAPI->compile("(1+2,3+4, 'This is a Test')", &lError);
+  lXQuery = aAPI->compile("(1+2,3+4, 'This is a Test')", &lError);
   if (lError != XQUERY_SUCCESS) return 0;
 
-  char lString[3];
   lString[2] = '\0';
-  XQUERY_STREAM lStream = aAPI->init_stream(lXQuery, &lError); 
+  lStream = aAPI->init_stream(lXQuery, &lError); 
   if (lError != XQUERY_SUCCESS) return 0;
 
   while (aAPI->stream_next(lStream, lString, 2, &lError) > 0)
@@ -49,11 +51,13 @@ example_2(XQUERY_CAPI* aAPI)
   XQUERY_ERROR lError = XQUERY_SUCCESS;
   XQUERY_ITEM lItem = aAPI->init_item();
   XQUERY_STRING lString = aAPI->init_string();
+  XQUERY lXQuery;
+  XQUERY_RESULT lResult;
 
-  XQUERY lXQuery = aAPI->compile("(1+2,3+4)", &lError);
+  lXQuery = aAPI->compile("(1+2,3+4)", &lError);
   if (lError != XQUERY_SUCCESS) return 0;
 
-  XQUERY_RESULT lResult = aAPI->init_iterator(lXQuery, &lError);
+  lResult = aAPI->init_iterator(lXQuery, &lError);
   if (lError != XQUERY_SUCCESS) return 0;
 
   while (aAPI->iterator_next(lResult, lItem, &lError))
