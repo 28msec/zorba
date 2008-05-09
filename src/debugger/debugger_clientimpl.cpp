@@ -8,8 +8,6 @@
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp> 
 
-#include "arpa/inet.h"
-
 #include <zorba/api_shared_types.h>
 
 #include "api/unmarshaller.h"

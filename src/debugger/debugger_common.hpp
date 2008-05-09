@@ -4,8 +4,8 @@
 #include "common/common.h"
 
 /* Type definitions */
-typedef uint8_t StepCommand;
-typedef uint8_t ExecutionStatus;
+typedef unsigned char StepCommand;
+typedef unsigned char ExecutionStatus;
 typedef unsigned short SuspensionCause;
 
 /* Kind of step command */

@@ -20,6 +20,8 @@
 #include "debugger/debugger_protocol.hpp"
 
 
+namespace zorba{
+
 bool is_little_endian()
 {
   short int word = 0x0001;
@@ -27,26 +29,26 @@ bool is_little_endian()
   return(byte[0] ? true : false);
 }
 
-uint16_t uint_swap( uint16_t i )
+unsigned short uint_swap( unsigned short i )
 {
   if ( ! is_little_endian() )
   {
     return i;
   } else {
-    uint8_t b1, b2;
+    unsigned char b1, b2;
     b1 = i & 255;
     b2 = ( i >> 8 ) + 255;
     return ( b1 << 8 ) + b2;
   }
 }
 
-uint32_t uint_swap( uint32_t i )
+unsigned int uint_swap( unsigned int i )
 {
   if ( ! is_little_endian() )
   {
     return i;
   } else {
-    uint8_t b1, b2, b3, b4;
+    unsigned char b1, b2, b3, b4;
     b1 = i & 255;
     b2 = ( i >> 8 ) & 255;
     b3 = ( i >> 16 ) & 255;
@@ -54,8 +56,6 @@ uint32_t uint_swap( uint32_t i )
     return ( b1 << 24 ) + ( b2 << 16 ) + ( b3 << 8 ) + b4;
   }
 }
-
-namespace zorba{
 
 std::ostream& operator << ( std::ostream &os, const AbstractMessage * message )
 {

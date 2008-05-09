@@ -13,14 +13,16 @@
 
 #include "debugger/debugger_common.hpp"
 
+namespace zorba{
+
 /* Type definition of fields */
-typedef uint8_t  Byte;
-typedef uint32_t Length;
-typedef uint32_t Id;
-typedef uint8_t  Flags;
-typedef uint16_t ErrorCode;
-typedef uint8_t  CommandSet;
-typedef uint8_t  Command;
+typedef unsigned char  Byte;
+typedef unsigned int   Length;
+typedef unsigned int   Id;
+typedef unsigned char  Flags;
+typedef unsigned short ErrorCode;
+typedef unsigned char  CommandSet;
+typedef unsigned char  Command;
 
 /* sizeof(HeaderContent) == 12 because of the padding */
 const int SIZE_OF_HEADER_CONTENT = 9;
@@ -79,11 +81,11 @@ const ErrorCode DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT  = 0x06;
  * The header of the packet (containning the length of the whole packet) 
  * is set in 4 bytes
  */
-const uint8_t MESSAGE_HEADER_SIZE = 4;
+const unsigned char MESSAGE_HEADER_SIZE = 4;
 /* The minimum packet size is 7 bytes (+ 4 bytes of the header) */
-const uint8_t MESSAGE_BODY_SIZE = 7;
+const unsigned char MESSAGE_BODY_SIZE = 7;
 /* The size of a message without data */
-const uint8_t MESSAGE_SIZE = MESSAGE_HEADER_SIZE + MESSAGE_BODY_SIZE;
+const unsigned char MESSAGE_SIZE = MESSAGE_HEADER_SIZE + MESSAGE_BODY_SIZE;
 /* The packet id is set in 4 bytes */
 const unsigned short MESSAGE_ID = 4;
 
@@ -98,10 +100,9 @@ const unsigned short MESSAGE_DATA = 7;
 
 /* deals with endianness */
 bool is_little_endian();
-uint16_t uint_swap( uint16_t i );
-uint32_t uint_swap( uint32_t i );
+unsigned short uint_swap( unsigned short i );
+unsigned int uint_swap( unsigned int i );
 
-namespace zorba{
 
 /**
  *   Signals a problem with the debugging protocol.
