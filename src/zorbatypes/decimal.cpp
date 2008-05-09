@@ -386,6 +386,8 @@ xqpString Decimal::decimalToString(MAPM theValue) {
   theValue.toFixPtString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
 #else
   char lBuffer[124];
+//  char  lflags[20];
+//  sprintf(lflags, "%%.%dlf", ZORBA_FLOAT_POINT_PRECISION);
   sprintf(lBuffer, "%.7lf", theValue);
 #endif
 
