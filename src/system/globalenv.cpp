@@ -43,6 +43,10 @@
 #endif//#ifndef ZORBA_NO_UNICODE
 #include "store/api/collection.h"
 
+#ifdef ZORBA_XBROWSER
+#include "DOMStoreSingelton.h"
+#endif
+
 using namespace zorba;
 
 GlobalEnvironment *GlobalEnvironment::m_globalEnv = 0;
@@ -106,8 +110,13 @@ void GlobalEnvironment::init()
   }
 #endif//ifndef ZORBA_NO_UNICODE
   
+#ifndef ZORBA_XBROWSER
   m_globalEnv->m_store.reset(new store::SimpleStore());
   static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
+#else
+  m_globalEnv->m_store.reset(xqp::DOMStoreSingelton::getInstance()->getStore());
+  static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
+#endif
   root_static_context *rctx = new root_static_context();
   m_globalEnv->m_rootStaticContext.reset(rctx);
   rctx->init();
