@@ -238,6 +238,12 @@ void XmlLoader::setRoot(XmlNode* root)
 
 int XmlLoader::read_char()
 {
+  if(current_c)
+  {
+    prev_c = current_c;
+    current_c = 0;
+    return prev_c;
+  }
   if(buff_pos == buff_size)
   {
     if(buff_size && (buff_size < sizeof(theBuffer)))
@@ -247,12 +253,6 @@ int XmlLoader::read_char()
     if(!buff_size)
       return 0;
     buff_pos = 0;
-  }
-  if(current_c)
-  {
-    prev_c = current_c;
-    current_c = 0;
-    return prev_c;
   }
   prev_c = theBuffer[buff_pos++];
   return prev_c;
@@ -831,12 +831,15 @@ XmlNode* XmlLoader::loadXml(
                             xqpStringStore_t& uri, 
                             std::istream& stream)
 {
+  error::ErrorManager     *ourErrorManager = theErrorManager;
+
   XmlNode *root = startloadXml(uri, &stream);
   if(!root)
   {
     this->stream = NULL;
     return NULL;
   }
+  theErrorManager = ourErrorManager;
   if(!continueloadXml(UNTIL_END_ELEMENT, 0))//read all doc
   {
     this->stream = NULL;

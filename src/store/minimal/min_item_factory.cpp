@@ -231,7 +231,8 @@ Item_t BasicItemFactory::createDateTime(
 Item_t BasicItemFactory::createDateTime ( const xqp_string& value )
 {
   DateTime_t dt_t;
-  if (DateTime::parseDateTime(value, dt_t) == 0)
+  
+  if ( DateTime::parseDateTime(value, dt_t) == 0 )
     return new DateTimeItemNaive(dt_t);
   else
     return Item_t(NULL);
@@ -267,11 +268,11 @@ Item_t BasicItemFactory::createDuration ( const xqp_string& value )
   YearMonthDuration_t ymd_t;
   DayTimeDuration_t   dtd_t;
   
-  if (YearMonthDuration::parse_string(value, ymd_t)){
+  if( YearMonthDuration::parse_string(value, ymd_t) ){
     xqp_duration d = ymd_t;
     return new DurationItemNaive(d);
   }
-  else if(DayTimeDuration::parse_string(value, dtd_t)){
+  else if( DayTimeDuration::parse_string(value, dtd_t) ){
     xqp_duration d = ymd_t;
     return new DurationItemNaive(d);
   }
@@ -301,6 +302,7 @@ Item_t BasicItemFactory::createDuration (
     return Item_t ( NULL );
 }
 
+
 Item_t BasicItemFactory::createENTITIES(xqpStringStore_t& /*value*/)
 { 
   return Item_t ( NULL ); 
@@ -322,6 +324,7 @@ Item_t BasicItemFactory::createGDay (xqp_gDay& value )
 {
   return new DateTimeItemNaive(value);
 }
+
 
 Item_t BasicItemFactory::createGDay ( const xqp_string& value )
 {
@@ -639,8 +642,11 @@ Item_t BasicItemFactory::createDocumentNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
 
     throw;
@@ -720,8 +726,11 @@ Item_t BasicItemFactory::createElementNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
@@ -834,8 +843,11 @@ Item_t BasicItemFactory::createAttributeNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
@@ -913,8 +925,11 @@ Item_t BasicItemFactory::createTextNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
@@ -1020,8 +1035,11 @@ Item_t BasicItemFactory::createPiNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
@@ -1085,8 +1103,11 @@ Item_t BasicItemFactory::createCommentNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
