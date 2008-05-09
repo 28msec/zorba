@@ -637,8 +637,11 @@ Item_t BasicItemFactory::createDocumentNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
 
     throw;
@@ -718,8 +721,11 @@ Item_t BasicItemFactory::createElementNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
@@ -832,8 +838,11 @@ Item_t BasicItemFactory::createAttributeNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
@@ -911,8 +920,11 @@ Item_t BasicItemFactory::createTextNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
@@ -1018,8 +1030,11 @@ Item_t BasicItemFactory::createPiNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
@@ -1083,8 +1098,11 @@ Item_t BasicItemFactory::createCommentNode(
     {
       xmlTree->removeReference();
       xmlTree->free();
-      ctx.clear();
-      GET_STORE().deleteQueryContext(qid);
+      if (topRoot)
+      {
+        ctx.clear();
+        GET_STORE().deleteQueryContext(qid);
+      }
     }
     throw;
   }
