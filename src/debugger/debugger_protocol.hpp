@@ -8,6 +8,7 @@
 #include <ostream>
 #include <istream>
 
+#include "common/common.h"
 #include "compiler/parser/query_loc.h"
 
 #include "debugger/debugger_common.hpp"
@@ -67,12 +68,12 @@ const Command COLLECTIONS = 0x06;
 const Command COLLECTION  = 0x07;
 
 /* Error codes */
-const ErrorCode NO_ERROR                      = 0x01;
-const ErrorCode ERROR_EMPTY                   = 0x02;
-const ErrorCode ERROR_UNKNOWN                 = 0x03;
-const ErrorCode ERROR_INVALID_COMMAND         = 0x04;
-const ErrorCode ERROR_COMMAND_NOT_IMPLEMENTED = 0x05;
-const ErrorCode ERROR_INVALID_MESSAGE_FORMAT  = 0x06;
+const ErrorCode DEBUGGER_NO_ERROR                      = 0x01;
+const ErrorCode DEBUGGER_ERROR_EMPTY                   = 0x02;
+const ErrorCode DEBUGGER_ERROR_UNKNOWN                 = 0x03;
+const ErrorCode DEBUGGER_ERROR_INVALID_COMMAND         = 0x04;
+const ErrorCode DEBUGGER_ERROR_COMMAND_NOT_IMPLEMENTED = 0x05;
+const ErrorCode DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT  = 0x06;
 
 /**
  * The header of the packet (containning the length of the whole packet) 
@@ -227,15 +228,15 @@ class ReplyMessage: public AbstractMessage
     {
       switch ( getErrorCode() )
       {
-        case NO_ERROR:
+        case DEBUGGER_NO_ERROR:
           return "No error";
-        case ERROR_EMPTY:
+        case DEBUGGER_ERROR_EMPTY:
           return "Error empy";
-        case ERROR_INVALID_COMMAND:
+        case DEBUGGER_ERROR_INVALID_COMMAND:
           return "Invalid Command";
-        case ERROR_COMMAND_NOT_IMPLEMENTED:
+        case DEBUGGER_ERROR_COMMAND_NOT_IMPLEMENTED:
           return "Command not implemented";
-        case ERROR_INVALID_MESSAGE_FORMAT:
+        case DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT:
           return "Invalid message format";
         default:
           return "Unknown error";
@@ -298,7 +299,7 @@ class AbstractCommandMessage: public AbstractMessage
 
     const Command getCommand() const { return theCommandContent->theCommand; }
 
-    ReplyMessage * getReplyMessage() { return new ReplyMessage( getId(), NO_ERROR ); }
+    ReplyMessage * getReplyMessage() { return new ReplyMessage( getId(), DEBUGGER_NO_ERROR ); }
 
     Byte * serialize( Length & aLength ) const;
 };

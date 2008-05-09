@@ -1,3 +1,7 @@
+#include "common/common.h"
+
+#ifdef ZORBA_DEBUGGER
+
 #include <iostream>
 #include <memory>
 
@@ -205,3 +209,5 @@ namespace zorba{
     send( &lMessage );
   }
 }//end of namespace
+
+#endif

@@ -1,3 +1,7 @@
+#include "common/common.h"
+
+#ifdef ZORBA_DEBUGGER
+
 #include <zorba/debugger_client.hpp>
 
 #include "debugger/debugger_clientimpl.hpp"
@@ -10,3 +14,5 @@ ZorbaDebuggerClient * ZorbaDebuggerClient::createClient( unsigned short aRequest
 }
 
 }//end of namespace
+
+#endif

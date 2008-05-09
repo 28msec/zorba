@@ -1,5 +1,8 @@
 #ifndef XQP_DEBUGGER_COMMON_H
 #define XQP_DEBUGGER_COMMON_H
+
+#include "common/common.h"
+
 /* Type definitions */
 typedef uint8_t StepCommand;
 typedef uint8_t ExecutionStatus;

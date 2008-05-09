@@ -1,3 +1,7 @@
+#include "common/common.h"
+
+#ifdef ZORBA_DEBUGGER
+
 #include <iostream>
 
 #include "debugger/debugger_serverimpl.hpp"
@@ -63,3 +67,5 @@ namespace zorba {
 } /* namespace zorba */
 
 /* vim:set ts=2 sw=2: */
+
+#endif

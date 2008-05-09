@@ -115,7 +115,7 @@ class MessageFactory
           //unsigned int command = (unsigned int)aMessage[10];
           //std::cerr << "CommandSet:" << commandset << std::endl;
           //std::cerr << "Command:" << command << std::endl;
-          return new ReplyMessage( 0, ERROR_INVALID_MESSAGE_FORMAT );
+          return new ReplyMessage( 0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT );
         }
       }
     }

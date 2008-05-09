@@ -1,3 +1,7 @@
+#include "common/common.h"
+
+#ifdef ZORBA_DEBUGGER
+
 #include <stdio.h>
 #include <errno.h>
 
@@ -563,3 +567,4 @@ VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
 VariableMessage::~VariableMessage(){}
 }//end of namespace
 
+#endif
