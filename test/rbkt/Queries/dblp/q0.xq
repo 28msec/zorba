@@ -10,9 +10,9 @@ return
        </total>
        <conferences>{
          for $conference  in ("EDBT", "ICDT", "ICDE", "PODS", "VLDB", "SIGMOD Conference")
-         let $authorCount := count(distinct-values(doc("dblp_conf.xml")/dblp/
+         let $authorCount := count(distinct-values($doc/dblp/
                              inproceedings[booktitle = $conference]/author))
-         let $paperCount  := count(doc("dblp_conf.xml")/dblp/
+         let $paperCount  := count($doc/dblp/
                              inproceedings[booktitle = $conference])
          return
            <conference><name>{$conference}</name>
