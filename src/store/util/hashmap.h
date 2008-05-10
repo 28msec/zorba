@@ -60,15 +60,27 @@ class HashEntry
 public:
   T            theItem;
   V            theValue;
-  HashEntry*   theNext;
+  long         theNext;  // offset from "this" to the next entry.
 
-  HashEntry() : theItem(NULL), theNext(NULL) { }
+  HashEntry() : theItem(NULL), theNext(0) { }
 
-  ~HashEntry() { 
+  ~HashEntry() 
+  { 
     theItem = NULL; 
-    theNext = NULL; }
+    theNext = 0;
+  }
 
-  bool isFree() const { return theItem == NULL; }
+  bool isFree() const  { return theItem == NULL; }
+
+  void setNext(HashEntry* nextEntry) 
+  {
+    theNext = (nextEntry == NULL ? 0 : nextEntry - this); 
+  }
+
+  HashEntry* getNext()       
+  {
+    return (theNext == 0 ? NULL : this + theNext);
+  }
 };
 
 
@@ -195,8 +207,8 @@ public:
 
 /*******************************************************************************
   Constructor: Allocates the hash table. Its initial size is the given size,
-  plus an initial number of free entries (= 10% of the given size). These free
-  entries are placed in a free list.
+  plus an initial number of free entries (= 32 + 10% of the given size). These
+  free entries are placed in a free list.
 ********************************************************************************/
 HashMap(ulong size, bool sync, bool useTransfer = false) 
   :
@@ -298,7 +310,7 @@ bool find(const T& item)
     if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
       return true;
 
-    entry = entry->theNext;
+    entry = entry->getNext();
   }
 
   return false;
@@ -328,7 +340,7 @@ bool get(const T& item, V& value)
       return true;
     }
 
-    entry = entry->theNext;
+    entry = entry->getNext();
   }
 
   return false;
@@ -385,19 +397,23 @@ bool removeNoSync(const T& item, ulong hval)
   if (entry->isFree())
     return false;
 
+  // If the item to remove is in the 1st entry of a bucket, then if the
+  // bucket has no other entries, just call the destructor on that entry,
+  // else copy the 2nd entry to the 1st entry and freeup the 2nd entry.
   if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
   {
-    if (entry->theNext == NULL)
+    if (entry->theNext == 0)
     {
       entry->~HashEntry<T, V>();
     }
     else
     {
-      HashEntry<T, V>* nextEntry = entry->theNext;
+      HashEntry<T, V>* nextEntry = entry->getNext();
       *entry = *nextEntry;
+      entry->setNext(nextEntry->getNext());
       nextEntry->~HashEntry<T, V>();
-      nextEntry->theNext = freelist()->theNext;
-      freelist()->theNext = nextEntry;
+      nextEntry->setNext(freelist()->getNext());
+      freelist()->setNext(nextEntry);
     }
 
     theNumEntries--;
@@ -411,17 +427,19 @@ bool removeNoSync(const T& item, ulong hval)
     return true;
   }
 
+  // The item to remove is not in the 1st entry of a bucket.
+
   HashEntry<T, V>* preventry = entry;
-  entry = entry->theNext;
+  entry = entry->getNext();
 
   while (entry != NULL)
   {
     if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
     {
-      preventry->theNext = entry->theNext;
+      preventry->setNext(entry->getNext());
       entry->~HashEntry<T, V>();
-      entry->theNext = freelist()->theNext;
-      freelist()->theNext = entry;
+      entry->setNext(freelist()->getNext());
+      freelist()->setNext(entry);
 
       theNumEntries--;
 
@@ -435,7 +453,7 @@ bool removeNoSync(const T& item, ulong hval)
     }
 
     preventry = entry;
-    entry = entry->theNext;
+    entry = entry->getNext();
   }
 
   return false;
@@ -464,7 +482,7 @@ HashEntry<T, V>* gotoLast(HashEntry<T, V>* entry)
   for (;;) 
   {
     theHashTab[entry - &theHashTab[0]];  // assertion
-    HashEntry<T, V>* next = entry->theNext;
+    HashEntry<T, V>* next = entry->getNext();
     if (next == NULL)
       return entry;
     else
@@ -505,7 +523,7 @@ HashEntry<T, V>* hashInsert(
     }
 
     lastentry = entry;
-    entry = entry->theNext;
+    entry = entry->getNext();
   }
 
   // The item was not found.
@@ -541,13 +559,17 @@ HashEntry<T, V>* hashInsert(
 
   // Get an entry from the free list in the overflow section of the hash teble
   // If no free entry exists, a new entry is appended into the hash table.
-  if (freelist()->theNext == 0)
-    extendCollisionArea(lastentry);
+  if (freelist()->getNext() == 0)
+  {
+    long lastOffset = lastentry - &theHashTab[0];
+    extendCollisionArea();
+    lastentry = &theHashTab[0] + lastOffset;
+  }
 
-  entry = freelist()->theNext;
-  freelist()->theNext = entry->theNext;
-  lastentry->theNext = entry;
-  entry->theNext = NULL;
+  entry = freelist()->getNext();
+  freelist()->setNext(entry->getNext());
+  lastentry->setNext(entry);
+  entry->setNext(NULL);
 
   return entry;
 }
@@ -556,36 +578,19 @@ HashEntry<T, V>* hashInsert(
 /*******************************************************************************
 
 ********************************************************************************/
-void extendCollisionArea(HashEntry<T, V>*& lastentry) 
+void extendCollisionArea() 
 {
   ulong oldSize = theHashTab.size();
   ulong numCollisionEntries = oldSize - theHashTabSize;
+  ulong newSize = theHashTabSize + 2 * numCollisionEntries;
 
   //foo();  for setting a breakpoint
 
-  checked_vector<HashEntry<T, V> > newTab(theHashTabSize + 2 * numCollisionEntries);
+  theHashTab.resize(newSize);
 
-  HashEntry<T, V>* oldbase = &theHashTab[0];
-  HashEntry<T, V>* newbase = &newTab[0];
-  long delta = (newbase - oldbase);
+  freelist()->setNext(&theHashTab[oldSize]);
 
-  lastentry += delta;
-
-  for (ulong i = 0; i < oldSize; i++)
-  {
-    HashEntry<T, V>* e = oldbase + i;
-    if (!e->isFree()) 
-    {
-      newbase[i] = *e;
-      if (e->theNext != NULL)
-        newbase[i].theNext += delta;
-    }
-  }
-  newTab.swap(theHashTab);
-
-  freelist()->theNext = &theHashTab[oldSize];
-
-  formatCollisionArea(freelist()->theNext);
+  formatCollisionArea(freelist()->getNext());
 }
 
 
@@ -599,9 +604,9 @@ void formatCollisionArea(HashEntry<T, V>* firstentry = NULL)
 
   HashEntry<T, V>* lastentry = &theHashTab[theHashTab.size() - 1];
   for (HashEntry<T, V>* entry = firstentry; entry < lastentry; entry++)
-    entry->theNext = entry + 1;
+    entry->theNext = 1;
 
-  lastentry->theNext = NULL;
+  lastentry->theNext = 0;
 }
 
 
@@ -630,7 +635,7 @@ void resizeHashTab(ulong newSize)
     if (oldentry->isFree())
       continue;
 
-    oldentry->theNext = NULL;
+    oldentry->theNext = 0;
 
     entry = bucket (Externals<T,E,C>::hash(oldentry->theItem, theCompareParam));
 
@@ -641,12 +646,16 @@ void resizeHashTab(ulong newSize)
 
       // Get an entry from the free list in the collision section of the hash
       // table. If no free entry exists, a new entry is appended into the table.
-      if (freelist()->theNext == 0)
-        extendCollisionArea(lastentry);
+      if (freelist()->getNext() == NULL)
+      {
+        long lastOffset = lastentry - &theHashTab[0];
+        extendCollisionArea();
+        lastentry = &theHashTab[0] + lastOffset;
+      }
 
-      entry = freelist()->theNext;
-      freelist()->theNext = entry->theNext;
-      lastentry->theNext = entry;
+      entry = freelist()->getNext();
+      freelist()->setNext(entry->getNext());
+      lastentry->setNext(entry);
     }
 
     *entry = *oldentry;
