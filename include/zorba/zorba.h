@@ -49,9 +49,9 @@ namespace zorba {
 
       /** \brief Gets the singleton instance of the Zorba object.
        *
-       * The Zorba object provides factory methods creating and/or compiling XQuery
-       * objects, creating StaticContext objects, and accessing components as, for example,
-       * the ItemFactory or the XmlDataManager.
+       * The Zorba object provides factory methods for creating and/or compiling
+       * XQuery objects, creating StaticContext objects, and accessing components
+       * as, for example, the ItemFactory or the XmlDataManager.
        *
        * The first time this function is called, the %Zorba Engine is initialized.
        * Thereby, it initializes all the libraries that are used in the system, i.e.
@@ -65,12 +65,15 @@ namespace zorba {
 
       /** \brief Releases all resources aquired by the Zorba %XQuery Engine.
        *
-       * also release resources aquired by the libraries used (i.e. icu, libxml2, xerces, libcurl)
-       * before calling shutdown, all xquery objects, items, contexts, ... have to be closed or
-       * out of scope
-       * otherwise this call may fails
-       * after shutdown has been called, any call to zorba are invalid. 
-       * getInstance may used to reinitialize the engine
+       * Also releases resources aquired by the libraries used (i.e. icu,
+       * libxml2, xerces, libcurl).
+       *
+       * Before calling shutdown, all xquery objects, items, contexts, ... have
+       * to be closed or gone out of scope; otherwise this call may fail.
+       *
+       * After shutdown has been called, any calls to zorba are invalid.
+       *
+       * getInstance may used to reinitialize the engine.
        * 
        */
       virtual void 
@@ -78,20 +81,20 @@ namespace zorba {
 
       /** \brief Destructor.
        *
-       * The destructor is called during static deinitialization if getInstance has been
-       * called at least once before.
+       * The destructor is called during static deinitialization if getInstance
+       * has been called at least once before.
        */
       virtual ~Zorba();
 
       /** \brief Creates an XQuery object.
        *
-       * This methods creates an XQuery object without implicitliy assigning it a query.
-       * A object returned by this method can be compiled (see compileQuery).
+       * This methods creates an XQuery object without implicitliy assigning it
+       * a query. An object returned by this method can be compiled (see compileQuery).
        *
        * Optionally, this method takes an ErrorHandler as parameter. In the case
        * an ErrorHandler is passed as parameter, each error that occurs during
        * compiling or executing the query, is reported to the passed error handler.
-       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+       * If no ErrorHandler is given, exceptions are thrown for each of these errors.
        *
        * @param aErrorHandler the ErrorHandler to which errors should be reported.
        * @return XQuery the newly created XQuery object.
@@ -102,7 +105,8 @@ namespace zorba {
 
       /** \brief Creates and compiles an XQuery object.
        *
-       * This methods creates an XQuery object and compiles the query string passed to this method.
+       * This methods creates an XQuery object and compiles the query string
+       * passed to this method.
        *
        * Optionally, this method takes an ErrorHandler as parameter. In the case
        * an ErrorHandler is passed as parameter, each error that occurs during
@@ -118,9 +122,9 @@ namespace zorba {
 
       /** \brief Creates and compiles an XQuery object using a StaticContext.
        *
-       * This methods creates an XQuery object and compiles the query string passed to this method.
-       * Compilation is done using the information contained in the StaticContext that
-       * is passed as parameter.
+       * This methods creates an XQuery object and compiles the query string
+       * passed to this method. Compilation is done using the information
+       * contained in the StaticContext that is passed as parameter.
        *
        * Optionally, this method takes an ErrorHandler as parameter. In the case
        * an ErrorHandler is passed as parameter, each error that occurs during
@@ -136,48 +140,11 @@ namespace zorba {
       compileQuery(const String& aQuery, const StaticContext_t& aContext, 
                    ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Creates and compiles an XQuery object.
-       *
-       * This methods creates an XQuery object and compiles the query that is passed to this method
-       * as an input stream.
-       *
-       * Optionally, this method takes an ErrorHandler as parameter. In the case
-       * an ErrorHandler is passed as parameter, each error that occurs during
-       * compiling or executing the query, is reported to the passed error handler.
-       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-       * 
-       * @param aQuery the input stream providing the query.
-       * @param aErrorHandler the ErrorHandler to which errors should be reported.
-       * @return XQuery the newly created and compiled XQuery object.
-       */
-      virtual XQuery_t
-      compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
-
-      /** \brief Creates and compiles an XQuery object using a StaticContext.
-       *
-       * This methods creates an XQuery object and compiles the query that is passed to this method
-       * as an input stream.
-       * Compilation is done using the information contained in the StaticContext that
-       * is passed as parameter.
-       *
-       * Optionally, this method takes an ErrorHandler as parameter. In the case
-       * an ErrorHandler is passed as parameter, each error that occurs during
-       * compiling or executing the query, is reported to the passed error handler.
-       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-       * 
-       * @param aQuery the input stream providing the query.
-       * @param aContext the StaticContext that contains information used for compiling the query.
-       * @param aErrorHandler the ErrorHandler to which errors should be reported.
-       * @return XQuery the newly created and compiled XQuery object.
-       */
-      virtual XQuery_t
-      compileQuery(std::istream& aQuery, const StaticContext_t& aContext, 
-                   ErrorHandler* aErrorHandler = 0) = 0;
-
       /** \brief Creates and compiles an XQuery object using the given CompilerHints.
        *
-       * This methods creates an XQuery object and compiles the query string passed to this method.
-       * Compilation and optimization is done with respect to the given CompilerHints.
+       * This methods creates an XQuery object and compiles the query string
+       * passed to this method. Compilation and optimization is done with respect
+       * to the given CompilerHints.
        *
        * Optionally, this method takes an ErrorHandler as parameter. In the case
        * an ErrorHandler is passed as parameter, each error that occurs during
@@ -193,12 +160,13 @@ namespace zorba {
       compileQuery(const String& aQuery, const XQuery::CompilerHints_t& aCompilerHints, 
                    ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Creates and compiles an XQuery object using the given CompilerHints. Moreover,
-       *         the information from the StaticContext is used to compile the query.
+      /** \brief Creates and compiles an XQuery object using the given
+       * CompilerHints and StaticContext.
        *
-       * This methods creates an XQuery object and compiles the query string passed to this method.
-       * Compilation and optimization is done with respect to the given CompilerHints.
-       * Moreover, compilation is done using the information contained in the StaticContext.
+       * This methods creates an XQuery object and compiles the query string
+       * passed to this method. Compilation and optimization is done with respect
+       * to the given CompilerHints. Moreover, compilation is done using the
+       * information contained in the StaticContext.
        *
        * Optionally, this method takes an ErrorHandler as parameter. In the case
        * an ErrorHandler is passed as parameter, each error that occurs during
@@ -216,11 +184,49 @@ namespace zorba {
                    const XQuery::CompilerHints_t& aCompilerHints,
                    ErrorHandler* aErrorHandler = 0) = 0;
 
+      /** \brief Creates and compiles an XQuery object.
+       *
+       * This methods creates an XQuery object and compiles the query that is
+       * passed to this method as an input stream.
+       *
+       * Optionally, this method takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+       * 
+       * @param aQuery the input stream providing the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
+       * @return XQuery the newly created and compiled XQuery object.
+       */
+      virtual XQuery_t
+      compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
+
+      /** \brief Creates and compiles an XQuery object using a StaticContext.
+       *
+       * This methods creates an XQuery object and compiles the query that is
+       * passed to this method as an input stream. Compilation is done using
+       * the information contained in the StaticContext that is passed as
+       * parameter.
+       *
+       * Optionally, this method takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+       * 
+       * @param aQuery the input stream providing the query.
+       * @param aContext the StaticContext that contains information used for compiling the query.
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
+       * @return XQuery the newly created and compiled XQuery object.
+       */
+      virtual XQuery_t
+      compileQuery(std::istream& aQuery, const StaticContext_t& aContext, 
+                   ErrorHandler* aErrorHandler = 0) = 0;
+
       /** \brief Creates and compiles an XQuery object using the given CompilerHints. 
        *
-       * This methods creates an XQuery object and compiles the query that is passed to this method
-       * as an input stream.
-       * Compilation and optimization is done with respect to the given CompilerHints.
+       * This methods creates an XQuery object and compiles the query that is
+       * passed to this method as an input stream. Compilation and optimization
+       * is done with respect to the given CompilerHints.
        *
        * Optionally, this method takes an ErrorHandler as parameter. In the case
        * an ErrorHandler is passed as parameter, each error that occurs during
@@ -236,12 +242,13 @@ namespace zorba {
       compileQuery(std::istream& aQuery, const XQuery::CompilerHints_t& aCompilerHints, 
                    ErrorHandler* aErrorHandler = 0) = 0;
 
-      /** \brief Creates and compiles an XQuery object using the given CompilerHints. 
+      /** \brief Creates and compiles an XQuery object using the given
+       * CompilerHints and StaticContext. 
        *
-       * This methods creates an XQuery object and compiles the query that is passed to this method
-       * as an input stream.
-       * Compilation and optimization is done with respect to the given CompilerHints.
-       * Moreover, compilation is done using the information contained in the StaticContext.
+       * This methods creates an XQuery object and compiles the query that is
+       * passed to this method as an input stream. Compilation and optimization
+       * is done with respect to the given CompilerHints. Moreover, compilation
+       * is done using the information contained in the StaticContext.
        *
        * Optionally, this method takes an ErrorHandler as parameter. In the case
        * an ErrorHandler is passed as parameter, each error that occurs during

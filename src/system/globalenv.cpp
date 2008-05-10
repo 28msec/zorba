@@ -49,15 +49,19 @@
 
 using namespace zorba;
 
-GlobalEnvironment *GlobalEnvironment::m_globalEnv = 0;
+GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
+
 
 GlobalEnvironment& GlobalEnvironment::getInstance()
 {
+  assert(m_globalEnv);
+
   if (!m_globalEnv) {
     GlobalEnvironment::init();
   }
   return *m_globalEnv;
 }
+
 
 void GlobalEnvironment::init()
 {
@@ -117,6 +121,7 @@ void GlobalEnvironment::init()
   m_globalEnv->m_store.reset(xqp::DOMStoreSingelton::getInstance()->getStore());
   static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
 #endif
+
   root_static_context *rctx = new root_static_context();
   m_globalEnv->m_rootStaticContext.reset(rctx);
   rctx->init();
@@ -131,12 +136,10 @@ void GlobalEnvironment::init()
   // initialize mapm for bignum handling
   m_globalEnv->m_mapm = m_apm_init();
 #endif
-  // This initializes the libxml2 library and checks 
-  // potential ABI mismatches between
-  // the version it was compiled for and the actual 
-  // shared library used.
-  // calling its init is done here because we also want to
-  // free it at the end, i.e. when zorba is shutdown
+  // This initializes the libxml2 library and checks potential ABI mismatches
+  // between the version it was compiled for and the actual  shared library used.
+  // Calling its init is done here because we also want to free it at the end,
+  // i.e. when zorba is shutdown
 #ifndef ZORBA_MINIMAL_STORE
   LIBXML_TEST_VERSION
 #endif
@@ -147,6 +150,7 @@ void GlobalEnvironment::init()
 
   m_globalEnv->m_compilerSubSys = XQueryCompilerSubsystem::create();
 }
+
 
 void GlobalEnvironment::destroy()
 {
@@ -175,6 +179,7 @@ void GlobalEnvironment::destroy()
 #endif
 
   m_globalEnv->m_rootStaticContext.reset(NULL);
+
   m_globalEnv->m_store.reset(NULL);
 
   // we shutdown icu
@@ -184,7 +189,7 @@ void GlobalEnvironment::destroy()
   // valgrind from reporting those problems at the end
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
 #ifndef ZORBA_NO_UNICODE
-{
+  {
     u_cleanup();
 #if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
     delete[] m_globalEnv->icu_appdata;
@@ -200,25 +205,30 @@ GlobalEnvironment::GlobalEnvironment()
 {
 }
 
+
 static_context& GlobalEnvironment::getRootStaticContext()
 {
   return *m_rootStaticContext;
 }
+
 
 RootTypeManager& GlobalEnvironment::getRootTypeManager()
 {
   return *(static_cast<RootTypeManager *>(m_rootStaticContext->get_typemanager()));
 }
 
+
 store::Store& GlobalEnvironment::getStore()
 {
   return *m_store;
 }
 
+
 store::ItemFactory* GlobalEnvironment::getItemFactory()
 {
   return m_store->getItemFactory();
 }
+
 
 XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 {

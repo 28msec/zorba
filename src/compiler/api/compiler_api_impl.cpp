@@ -19,13 +19,16 @@
 namespace zorba {
 
 XQueryCompilerSubsystemImpl::XQueryCompilerSubsystemImpl()
-  : m_defaultOptimizer(new DefaultOptimizer())
+  :
+  m_defaultOptimizer(new DefaultOptimizer())
 {
 }
+
 
 XQueryCompilerSubsystemImpl::~XQueryCompilerSubsystemImpl() throw ()
 {
 }
+
 
 Rewriter *XQueryCompilerSubsystemImpl::getDefaultOptimizingRewriter()
 {

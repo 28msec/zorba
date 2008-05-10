@@ -31,130 +31,177 @@ namespace zorba {
   class DynamicContextImpl;
   class StaticContextImpl;
 
-	class XQueryImpl : public XQuery 
-	{
-  public:
-    virtual ~XQueryImpl();
+/*******************************************************************************
 
-    void
-    registerErrorHandler(ErrorHandler*);
+  - theFileName :
+  The filename of the query
 
-    void
-    resetErrorHandler();
+  - theCompilerCB :
 
-    bool
-    isUpdateQuery() const;
+  - thePlan :
 
-    void
-    serialize(std::ostream&, const XQuery::SerializerOptions_t& = XQuery::SerializerOptions());
+  - theIsClosed :
+  Set to true when the query has been closed. Used to check that after closing
+  a query, no operations can be performed on that query anymore.
 
-    void 
-    applyUpdates();
+  - theStaticContext : 
+  Pointer to the static context for this xquery. This sctx is a child of the
+  zorba root sctx, or a child of an sctx that was created by the application.
+  In both cases, the sctx of the query is owned by the query, and is deleted
+  during the desctruction of the query. Note: after a query is compiled, its
+  sctx cannot be changed.
 
-    ResultIterator_t
-    iterator();
+  - theStaticContextWrapper :
+  Pointer to a StaticContextImpl obj that wraps theStaticContext and which is
+  created when the application asks for the static context of the query (see
+  getStaticContext() method). The pointer is cached, so that it is returned
+  if the application askes for the static context again.
 
-    DynamicContext*
-    getDynamicContext() const;
+  - theDynamicContext :
+  The dynamic context for this query. Always belongs to the query.
 
-    const StaticContext*
-    getStaticContext() const;
+  - theDynamicContextWrapper :
 
-    void
-    compile(const String&);
+  - theErrorHandler :
+  Normally, this is an object provided by the application to handle errors in
+  some specific way. If the application does not provide an error handler, a
+  default zorba error handler is created for the query (the default error
+  handler just throws a ZorbaException).
 
-    void 
-    compile(const String&, const XQuery::CompilerHints_t& aHints);
-      
-    void 
-    compile(std::istream&, const XQuery::CompilerHints_t& aHints);
-      
-    void 
-    compile(const String&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
-      
-    void 
-    compile(std::istream&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
+  - theUserErrorHandler :
+  True if the error handler was provided by the application (in which case it
+  is not owned by the query). Also true if this is a cloned query, in which
+  case, theErrorHandler points to the same error handler obj as the orignal
+  query. False otherwise (in which case the error handler is owned by the
+  query).
 
-    void
-    setFileName( const String& );
+  - theErrorManager :
+  Currently, it always belongs to the query. See note in the constructor.
 
-    void
-    registerSAXHandler( SAX2_ContentHandler *  aSAXHandler );
+  - theSAX2Handler :
+  sax content handler that provide event-based xml parser
+ 
+********************************************************************************/
+class XQueryImpl : public XQuery 
+{
+ protected:
+
+  // static stuff
+  xqpString                     theFileName;
+
+  CompilerCB                  * theCompilerCB;
+  PlanIter_t                    thePlan; 
+
+  static_context              * theStaticContext;
+  
+  // dynamic stuff
+  dynamic_context             * theDynamicContext;
+
+  mutable DynamicContextImpl  * theDynamicContextWrapper;
+  mutable StaticContextImpl   * theStaticContextWrapper;
+
+  // utility stuff
+  bool                          theUserErrorHandler; 
+  ErrorHandler                * theErrorHandler; 
     
-    void
-    executeSAX( SAX2_ContentHandler *  aSAXHandler );
+  error::ErrorManager         * theErrorManager; 
 
-    void executeSAX();
-
-    void
-    close();
-
-    XQuery_t
-    clone() const;
-
-		// only allow ZorbaImpl to create us
-		friend class ZorbaImpl;
-
-  protected:
+  SAX2_ContentHandler         * theSAX2Handler; 
     
-    XQueryImpl();
+  bool                          theIsClosed;
+
+ public:
+  virtual ~XQueryImpl();
+
+  void
+  registerErrorHandler(ErrorHandler*);
+
+  void
+  resetErrorHandler();
+
+  bool
+  isUpdateQuery() const;
+
+  void
+  serialize(std::ostream&, const XQuery::SerializerOptions_t& = XQuery::SerializerOptions());
+
+  void 
+  applyUpdates();
+
+  ResultIterator_t
+  iterator();
+
+  DynamicContext*
+  getDynamicContext() const;
+
+  const StaticContext*
+  getStaticContext() const;
+
+  void
+  compile(const String&);
+
+  void 
+  compile(const String&, const XQuery::CompilerHints_t& aHints);
       
-    void
-    doCompile(std::istream&, const XQuery::CompilerHints_t& aHints);
-
-    CompilerCB::config_t
-    getCompilerConfig(const XQuery::CompilerHints_t&);
-
-    void
-    setSerializationParameters(serializer*, const XQuery::SerializerOptions&);
-
-    PlanWrapper_t
-    generateWrapper();
-
-    // check whether the query has already been closed
-    // if so, fire an error
-    void
-    checkClosed() const;
-
-    // check whether the query has been compiled (successfully)
-    // if not, fire an error
-    void
-    checkCompiled() const;
-
-    // check whether the query has not been compiled
-    // if so, fire an error
-    void
-    checkNotCompiled() const;
-
-    // static stuff
-    xqpString              theFileName; // the filename of the query
-
-    CompilerCB*            theCompilerCB;
-    PlanIterator*          thePlan; 
-
-    // static context is either generated by ourselves or given by the user 
-    // (hence, the boolean flag in order to capture ownership).
-    static_context       * theStaticContext;
-
-    // dynamic stuff
-    // one dynamic context that always belongs to a query
-    dynamic_context      * theDynamicContext;
-
-    // Caching and holding on to the api context wrappers
-    mutable DynamicContextImpl*    theDynamicContextWrapper;
-    mutable StaticContextImpl*     theStaticContextWrapper;
-
-    // utility stuff
-    bool                   theUserErrorHandler; // who has ownership of the error handler
-    ErrorHandler         * theErrorHandler; // provided by user or default one throwing exceptions
+  void 
+  compile(const String&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
+  
+  void 
+  compile(std::istream&, const XQuery::CompilerHints_t& aHints);
     
-    error::ErrorManager  * theErrorManager; // see note in the constructor
+  void 
+  compile(std::istream&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
 
-    SAX2_ContentHandler     * theSAX2Handler; // sax content handler that provide event-based xml parser 
+  void
+  setFileName( const String& );
+
+  void
+  registerSAXHandler( SAX2_ContentHandler *  aSAXHandler );
     
-    bool                   theIsClosed; // remember whether the query has been closed
+  void
+  executeSAX( SAX2_ContentHandler *  aSAXHandler );
 
-	}; /* class XQueryImpl */
+  void executeSAX();
+
+  void
+  close();
+
+  XQuery_t
+  clone() const;
+
+  // only allow ZorbaImpl to create us
+  friend class ZorbaImpl;
+
+ protected:
+    
+  XQueryImpl();
+      
+  void
+  doCompile(std::istream&, const XQuery::CompilerHints_t& aHints);
+
+  CompilerCB::config_t
+  getCompilerConfig(const XQuery::CompilerHints_t&);
+
+  void
+  setSerializationParameters(serializer*, const XQuery::SerializerOptions&);
+
+  PlanWrapper_t
+  generateWrapper();
+
+  // check whether the query is open, and if not, fire an error
+  void
+  checkNotClosed() const;
+
+  // check whether the query has been compiled (successfully), and
+  // if not, fire an error
+  void
+  checkCompiled() const;
+
+  // check whether the query has not been compiled, and if not, fire an error
+  void
+  checkNotCompiled() const;
+
+}; /* class XQueryImpl */
 
 
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery);

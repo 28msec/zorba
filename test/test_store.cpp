@@ -70,6 +70,11 @@ int main(int argc, const char * argv[])
   std::string fileName(argv[1]);
 
   //
+  // Zorba initialization
+  //
+  Zorba* lZorba = Zorba::getInstance();
+
+  //
   // Store initialization
   //
   zorba::store::SimpleStore* store = static_cast<zorba::store::SimpleStore*>(&zorba::GENV.getStore());
@@ -94,6 +99,20 @@ int main(int argc, const char * argv[])
     std::cout << e.theDescription << std::endl;
   }
 
+  //
+  // Test boost::shared_ptr
+  //
+#if 0
+  zorba::store::OrdPath* ordp = new zorba::store::OrdPath();
+
+  boost::shared_ptr<zorba::store::OrdPath> p1(ordp);
+  boost::shared_ptr<zorba::store::OrdPath> p2(ordp);
+
+  std::cout << "p1 count = " << p1.use_count()
+            << " p2 count = " << p2.use_count() << std::endl;
+
+  p2 = p1;
+#endif
 
   //
   // Load an xml doc from a file to a collection

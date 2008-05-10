@@ -73,6 +73,7 @@ protected:
   unsigned int          theFileLineNumber;          
 };
 
+
 /** \brief QueryException is the base class for all errors that occur during query processing
  *         and have a direct connection to the query, i.e. information about the location
  *         where the error occured in the query is available.
@@ -230,6 +231,7 @@ protected:
         unsigned int columnbegin);
 
 };
+
 
 /** \brief SystemException represents an error that occurs in the %Zorba system.
  */

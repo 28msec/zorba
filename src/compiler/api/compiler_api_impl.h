@@ -20,17 +20,20 @@
 
 namespace zorba {
 
-class XQueryCompilerSubsystemImpl : public XQueryCompilerSubsystem {
-  public:
-    ~XQueryCompilerSubsystemImpl() throw ();
+class XQueryCompilerSubsystemImpl : public XQueryCompilerSubsystem 
+{
+ friend class XQueryCompilerSubsystem;
 
-    Rewriter *getDefaultOptimizingRewriter();
+ private:
+  std::auto_ptr<Rewriter> m_defaultOptimizer;
 
-  private:
-    std::auto_ptr<Rewriter> m_defaultOptimizer;
+ public:
+  ~XQueryCompilerSubsystemImpl() throw ();
 
-    friend class XQueryCompilerSubsystem;
-    XQueryCompilerSubsystemImpl();
+  Rewriter *getDefaultOptimizingRewriter();
+
+ private:
+  XQueryCompilerSubsystemImpl();
 };
 
 } /* namespace zorba */

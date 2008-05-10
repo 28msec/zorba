@@ -25,8 +25,9 @@ namespace zorba {
    *
    * Specifically, they can be registered with an XQuery object. This way, all 
    * errors that would have been reported by throwing an exception are reported 
-   * by calling the according function of this interface. Subclasses of the ZorbaException class
-   * that would have been thrown are passed as parameter to the callback function.
+   * by calling the according function of this interface. Subclasses of the 
+   * ZorbaException class that would have been thrown are passed as parameter
+   * to the callback function.
    */
   class ErrorHandler 
   {

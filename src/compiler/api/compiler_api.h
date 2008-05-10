@@ -23,36 +23,43 @@
 
 namespace zorba {
 
-  class XQueryCompiler {
-  public:
-    XQueryCompiler(CompilerCB*  aCompilerCB);
-    
-    virtual ~XQueryCompiler();
-    
-    parsenode_t parse(std::istream& aXQuery, const xqpString & aFileName = "");
-    
-    PlanIter_t compile(std::istream& aXQuery, const xqpString & aFileName = "");
-    PlanIter_t compile(parsenode_t);
-    
-  protected:
-    expr_t normalize(parsenode_t);
-    
-    expr_t optimize(expr_t lExpr);
-    
-    CompilerCB* theCompilerCB;
-  };
+class XQueryCompiler 
+{
+ public:
 
-  class XQueryCompilerSubsystem {
-    public:
-      XQueryCompilerSubsystem();
-      virtual ~XQueryCompilerSubsystem() throw ();
+  CompilerCB* theCompilerCB;
 
-      virtual Rewriter *getDefaultOptimizingRewriter() = 0;
+ public:
+  XQueryCompiler(CompilerCB*  aCompilerCB);
+    
+  virtual ~XQueryCompiler();
+    
+  parsenode_t parse(std::istream& aXQuery, const xqpString & aFileName = "");
+    
+  PlanIter_t compile(std::istream& aXQuery, const xqpString & aFileName = "");
+  PlanIter_t compile(parsenode_t);
+    
+ protected:
+  expr_t normalize(parsenode_t);
+    
+  expr_t optimize(expr_t lExpr);
+};
 
-    private:
-      static std::auto_ptr<XQueryCompilerSubsystem> create();
-      friend class GlobalEnvironment;
-  };
+
+class XQueryCompilerSubsystem 
+{
+  friend class GlobalEnvironment;
+
+ public:
+  XQueryCompilerSubsystem();
+
+  virtual ~XQueryCompilerSubsystem() throw ();
+
+  virtual Rewriter *getDefaultOptimizingRewriter() = 0;
+
+ private:
+  static std::auto_ptr<XQueryCompilerSubsystem> create();
+};
 
 } /* namespace zorba */
 #endif /* ZORBA_COMPILER_API_H */

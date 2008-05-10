@@ -27,37 +27,36 @@ namespace zorba {
 
 class RootTypeManager;
 class static_context;
-//namespace store {
-//  class ItemFactory;
-//}
 
-class GlobalEnvironment {
-  public:
-    static void init();
-    static void destroy();
-    static GlobalEnvironment& getInstance();
 
-    RootTypeManager& getRootTypeManager();
-    static_context& getRootStaticContext();
-    XQueryCompilerSubsystem& getCompilerSubsystem();
-    store::Store& getStore();
-    store::ItemFactory* getItemFactory();
+class GlobalEnvironment 
+{
+ public:
+  static void init();
+  static void destroy();
+  static GlobalEnvironment& getInstance();
 
-  private:
-    GlobalEnvironment();
+  RootTypeManager& getRootTypeManager();
+  static_context& getRootStaticContext();
+  XQueryCompilerSubsystem& getCompilerSubsystem();
+  store::Store& getStore();
+  store::ItemFactory* getItemFactory();
 
-    std::auto_ptr<store::Store> m_store;
-    std::auto_ptr<static_context> m_rootStaticContext;
+ private:
+  GlobalEnvironment();
+
+  std::auto_ptr<store::Store>            m_store;
+  std::auto_ptr<static_context>          m_rootStaticContext;
 #ifndef ZORBA_NO_UNICODE
-    M_APM                     m_mapm; // this is a pointer type
+  M_APM                                  m_mapm; // this is a pointer type
 #endif
-    std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
+  std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
 
 //#if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
-    unsigned char*    icu_appdata;
+  unsigned char                        * icu_appdata;
 //#endif
 
-    static GlobalEnvironment *m_globalEnv;
+  static GlobalEnvironment             * m_globalEnv;
 };
 
 #define GENV GlobalEnvironment::getInstance()

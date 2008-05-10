@@ -28,104 +28,113 @@ namespace zorba {
   class ErrorHandler;
   class static_context;
 
-  class StaticContextImpl : public StaticContext
-  {
-    private:
-      StaticContextImpl(const StaticContextImpl&);
+/*******************************************************************************
 
-    public:
-      StaticContextImpl(ErrorHandler*);
-      StaticContextImpl(static_context*, ErrorHandler*);
+  theCtx               : Pointer to the internal static_context obj that is
+                         wrapped by "this".
+  theUserStaticContext : If true, "this" does not own the static_context obj
+                         that is pointed to by theCtx, and so, during destruction,
+                         "this" should not delete theCtx. If false, "this" owns
+                         theCtx, and should delete it during destruction.
 
-      virtual ~StaticContextImpl();
+********************************************************************************/
+class StaticContextImpl : public StaticContext
+{
+  friend class Unmarshaller; // needs to get the context out of this class
 
-      virtual StaticContext_t
-      createChildContext() const;
+ protected:
+  static_context*  theCtx;
+  bool             theUserStaticContext;
+
+  ErrorHandler*    theErrorHandler;
+  bool             theUserErrorHandler;
+
+ private:
+  StaticContextImpl(const StaticContextImpl&);
+
+ public:
+  StaticContextImpl(ErrorHandler*);
+  StaticContextImpl(static_context*, ErrorHandler*);
+
+  virtual ~StaticContextImpl();
+
+  virtual StaticContext_t
+  createChildContext() const;
       
-      virtual bool   
-      addNamespace( const String& prefix, const String& URI );
+  virtual bool   
+  addNamespace( const String& prefix, const String& URI );
       
-      virtual String   
-      getNamespaceURIByPrefix( const String& prefix ) const;
+  virtual String   
+  getNamespaceURIByPrefix( const String& prefix ) const;
 
-      virtual bool   
-      setDefaultElementAndTypeNamespace( const String& URI );
+  virtual bool   
+  setDefaultElementAndTypeNamespace( const String& URI );
       
-      virtual String   
-      getDefaultElementAndTypeNamespace( ) const;
+  virtual String   
+  getDefaultElementAndTypeNamespace( ) const;
 
-      virtual bool   
-      setDefaultFunctionNamespace( const String& URI );
+  virtual bool   
+  setDefaultFunctionNamespace( const String& URI );
       
-      virtual String   
-      getDefaultFunctionNamespace( ) const;
+  virtual String   
+  getDefaultFunctionNamespace( ) const;
 
-      virtual bool   
-      addCollation( const String& URI );
+  virtual bool   
+  addCollation( const String& URI );
 
-      virtual bool   
-      setDefaultCollation( const String& URI );
+  virtual bool   
+  setDefaultCollation( const String& URI );
 
-      virtual String 
-      getDefaultCollation() const;
+  virtual String 
+  getDefaultCollation() const;
 
-      virtual bool   
-      setXPath1_0CompatibMode( StaticContext::xpath1_0compatib_mode_t mode );
+  virtual bool   
+  setXPath1_0CompatibMode( StaticContext::xpath1_0compatib_mode_t mode );
 
-      virtual StaticContext::xpath1_0compatib_mode_t  
-      getXPath1_0CompatibMode( ) const;
+  virtual StaticContext::xpath1_0compatib_mode_t  
+  getXPath1_0CompatibMode( ) const;
 
-      virtual bool   
-      setConstructionMode( StaticContext::construction_mode_t );
+  virtual bool   
+  setConstructionMode( StaticContext::construction_mode_t );
 
-      virtual StaticContext::construction_mode_t  
-      getConstructionMode( ) const;
+  virtual StaticContext::construction_mode_t  
+  getConstructionMode( ) const;
 
-      virtual bool   
-      setOrderingMode( StaticContext::ordering_mode_t );
+  virtual bool   
+  setOrderingMode( StaticContext::ordering_mode_t );
 
-      virtual StaticContext::ordering_mode_t  
-      getOrderingMode( ) const;
+  virtual StaticContext::ordering_mode_t  
+  getOrderingMode( ) const;
 
-      virtual bool   
-      setDefaultOrderForEmptySequences( StaticContext::order_empty_mode_t );
+  virtual bool   
+  setDefaultOrderForEmptySequences( StaticContext::order_empty_mode_t );
 
-      virtual StaticContext::order_empty_mode_t   
-      getDefaultOrderForEmptySequences( ) const;
+  virtual StaticContext::order_empty_mode_t   
+  getDefaultOrderForEmptySequences( ) const;
 
-      virtual bool   
-      setBoundarySpacePolicy( StaticContext::boundary_space_mode_t );
+  virtual bool   
+  setBoundarySpacePolicy( StaticContext::boundary_space_mode_t );
 
-      virtual StaticContext::boundary_space_mode_t  
-      getBoundarySpacePolicy( ) const;
+  virtual StaticContext::boundary_space_mode_t  
+  getBoundarySpacePolicy( ) const;
 
+  virtual bool   
+  setCopyNamespacesMode( StaticContext::preserve_mode_t preserve, 
+                         StaticContext::inherit_mode_t inherit );
 
-      virtual bool   
-      setCopyNamespacesMode( StaticContext::preserve_mode_t preserve, 
-                             StaticContext::inherit_mode_t inherit );
+  virtual void   
+  getCopyNamespacesMode( StaticContext::preserve_mode_t& preserve, 
+                         StaticContext::inherit_mode_t& inherit ) const;
 
-      virtual void   
-      getCopyNamespacesMode( StaticContext::preserve_mode_t& preserve, 
-                             StaticContext::inherit_mode_t& inherit ) const;
+  virtual bool
+  setBaseURI( const String& baseURI );
 
-      virtual bool
-      setBaseURI( const String& baseURI );
+  virtual String   
+  getBaseURI( ) const;
 
-      virtual String   
-      getBaseURI( ) const;
-
-      virtual bool 
-      registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction);
-
-      friend class Unmarshaller; // needs to get the context out of this class
-    protected:
-      static_context*  theCtx;
-      bool             theUserStaticContext;
-
-      ErrorHandler*    theErrorHandler;
-      bool             theUserErrorHandler;
-
-  };
+  virtual bool 
+  registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction);
+};
 
 } /* namespace zorba */
 #endif

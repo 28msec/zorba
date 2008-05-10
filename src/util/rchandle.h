@@ -172,22 +172,6 @@ public:
 
 #endif
 
-namespace RCHelper {
-  template<class T>
-  static void addReference(T *t)
-  {
-    t->addReference(t->getSharedRefCounter()
-                    SYNC_PARAM2(t->getRCLock()));
-  }
-  
-  template<class T>
-  static void removeReference(T *t)
-  {
-    t->removeReference(t->getSharedRefCounter()
-                       SYNC_PARAM2(t->getRCLock()));
-  }
-};
-
 
 /*******************************************************************************
   
@@ -484,7 +468,22 @@ public:
 };
 
 
-namespace RCHelper {
+namespace RCHelper 
+{
+  template<class T>
+  static void addReference(T *t)
+  {
+    t->addReference(t->getSharedRefCounter()
+                    SYNC_PARAM2(t->getRCLock()));
+  }
+
+  template<class T>
+  static void removeReference(T *t)
+  {
+    t->removeReference(t->getSharedRefCounter()
+                       SYNC_PARAM2(t->getRCLock()));
+  }
+
   template<class T>
   static void addReference(rchandle<T> &t)
   {

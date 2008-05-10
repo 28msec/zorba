@@ -61,7 +61,8 @@ namespace zorba {
     // we created it
     delete theStateBlock->theRuntimeCB; 
 
-    delete theStateBlock; theStateBlock = NULL;
+    delete theStateBlock; 
+    theStateBlock = NULL;
   }
 
   void
