@@ -393,6 +393,10 @@ namespace zorba {
        * Moreover, this function also clones the StaticContext and DynamicContext of 
        * the XQuery object. In the DynamicContext of the cloned query different variable
        * values can be used, e.g. set different external variable values.
+       * However, please note that if an ErrorHandler has been provided by the user (see registerErrorHandler())
+       * this ErrorHandler is also used in the cloned query. If a new ErrorHandler should
+       * be used in the cloned query, it has to be set using registerErrorHandler again.
+       * Alternatively, the cloned query can also be reset to throw exception by calling resetErrorHandler.
        *
        * For an example of cloning a query and setting different values in the dynamic context
        * see example_10 in file \link simple.cpp \endlink.
