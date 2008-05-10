@@ -68,7 +68,7 @@ bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
           found = true;
           break;
         }
-        entry = entry->theNext;
+        entry = entry->getNext();
       }
     }
 
@@ -105,14 +105,14 @@ void StringPool::garbageCollect()
     // If the current hash bucket is empty, move to the next one
     if (entry->theItem == NULL)
     {
-      ZORBA_FATAL(entry->theNext == NULL, "");
+      ZORBA_FATAL(entry->theNext == 0, "");
       continue;
     }
 
     // Handle the 1st hash entry of the current hash bucket
     while(entry->theItem->getRefCount() == 1)
     {
-      if (entry->theNext == NULL)
+      if (entry->theNext == 0)
       {
         entry->theItem = NULL;
         theNumEntries--;
@@ -120,10 +120,11 @@ void StringPool::garbageCollect()
       }
       else
       {
-        HashEntry<xqpStringStore_t, DummyHashValue>* nextEntry = entry->theNext;
+        HashEntry<xqpStringStore_t, DummyHashValue>* nextEntry = entry->getNext();
         *entry = *nextEntry;
+        entry->setNext(nextEntry->getNext());
         nextEntry->theItem = NULL;
-        nextEntry->theNext = freeList;
+        nextEntry->setNext(freeList);
         freeList = nextEntry;
         theNumEntries--;
       }
@@ -131,32 +132,32 @@ void StringPool::garbageCollect()
 
     // Handle the overflow entries of the current hash bucket.
     HashEntry<xqpStringStore_t, DummyHashValue>* prevEntry = entry;
-    entry = entry->theNext;
+    entry = entry->getNext();
 
     while (entry != NULL)
     {
       if (entry->theItem->getRefCount() == 1)
       {
-        prevEntry->theNext = entry->theNext;
+        prevEntry->setNext(entry->getNext());
         entry->theItem = NULL;
-        entry->theNext = freeList;
+        entry->setNext(freeList);
         freeList = entry;
         theNumEntries--;
       }
 
       prevEntry = entry;
-      entry = entry->theNext;
+      entry = entry->getNext();
     }
   }
 
   if (freeList != NULL)
   {
     entry = freeList;
-    while (entry->theNext != NULL)
-      entry = entry->theNext;
+    while (entry->theNext != 0)
+      entry = entry->getNext();
 
-    entry->theNext = theHashTab[theHashTabSize].theNext;
-    theHashTab[theHashTabSize].theNext = freeList;
+    entry->setNext(theHashTab[theHashTabSize].getNext());
+    theHashTab[theHashTabSize].setNext(freeList);
   }
 }
 

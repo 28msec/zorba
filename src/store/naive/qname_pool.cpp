@@ -305,7 +305,7 @@ HashEntry<QNameItemImpl*, DummyHashValue>* QNamePool::hashFind(
         qn->thePrefix->byteEqual(pre, prelen))
       return entry;
 
-    entry = entry->theNext;
+    entry = entry->getNext();
   }
 
   return NULL;
