@@ -22,8 +22,7 @@
 
 namespace zorba { namespace store {
 
-class Requester;
-class TimeTravel;
+class Latch;
 
 
 /**
@@ -31,9 +30,6 @@ class TimeTravel;
  */
 class Store
 {
-public:
-  static Store& getInstance();
-
 public:
   virtual ~Store() { }
 
@@ -43,6 +39,8 @@ public:
    *  Get the item factory used by this store.
    */
   virtual ItemFactory* getItemFactory() const = 0;
+
+  virtual Latch& getGlobalLock() = 0;
 
   /**
    * Creates a new TempSeq. The instance can be used, e.g. for variable bindings.
