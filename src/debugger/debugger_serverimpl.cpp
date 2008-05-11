@@ -1,7 +1,3 @@
-#include "common/common.h"
-
-#ifdef ZORBA_DEBUGGER
-
 #include <iostream>
 #include <memory>
 
@@ -389,4 +385,3 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
 };
 }//end of namespace
 
-#endif //#ifdef ZORBA_DEBUGGER

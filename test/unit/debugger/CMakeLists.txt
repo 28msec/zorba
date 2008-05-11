@@ -12,7 +12,7 @@ SET (TestsToRun ${DebuggerTests})
 REMOVE (TestsToRun DebuggerTests.cpp)
 
 # add all the ADD_TEST for each testing
-FOREACH (test ${DebuggerTests})
+FOREACH (test ${TestToRun})
 	GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
 	MESSAGE(STATUS ${TName})
 	ADD_TEST(${TName} DebuggerTests ${TName})

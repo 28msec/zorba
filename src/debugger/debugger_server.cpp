@@ -1,7 +1,3 @@
-#include "common/common.h"
-
-#ifdef ZORBA_DEBUGGER
-
 #include <zorba/debugger_server.hpp>
 
 #include "debugger/debugger_serverimpl.hpp"
@@ -18,4 +14,3 @@ namespace zorba {
   ZorbaDebugger::~ZorbaDebugger(){}
 }
 
-#endif

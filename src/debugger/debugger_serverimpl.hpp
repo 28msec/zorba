@@ -64,6 +64,8 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     theFileName("")
     {}
     
+    bool theDebugMode;
+    
     TCPServerSocket * theRequestServerSocket;
 
     TCPSocket * theEventSocket;
@@ -75,8 +77,6 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     std::istream * theQuery;
 
     String theFileName;
-
-    bool theDebugMode;
 
     QueryLoc theLocation;
 

@@ -31,4 +31,5 @@ class ZorbaDebugger
     isEnabled() const = 0;
 };
 }//end of namespace xqp
+
 #endif
