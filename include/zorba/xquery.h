@@ -388,18 +388,21 @@ namespace zorba {
 
       /** \brief Clone this query object for executing it in another thread.
        *
-       * A query object is not thread safe, i.e. it can't be executed in several threads.
-       * In order to execute it in another thread it needs to be cloned with this function.
-       * Moreover, this function also clones the StaticContext and DynamicContext of 
-       * the XQuery object. In the DynamicContext of the cloned query different variable
-       * values can be used, e.g. set different external variable values.
-       * However, please note that if an ErrorHandler has been provided by the user (see registerErrorHandler())
-       * this ErrorHandler is also used in the cloned query. If a new ErrorHandler should
-       * be used in the cloned query, it has to be set using registerErrorHandler again.
-       * Alternatively, the cloned query can also be reset to throw exception by calling resetErrorHandler.
+       * A query object is not thread safe, i.e. it can't be executed in several
+       * threads. In order to execute it in another thread it needs to be cloned
+       * with this function. However, please note that if an ErrorHandler has
+       * been provided by the user (see registerErrorHandler()), this ErrorHandler
+       * will also be used in the cloned query, and as a result, the user should
+       * provide a thread-safe ErrorHandler. Alternatively, a new ErrorHandler
+       * can be registered in the cloned query by using registerErrorHandler 
+       * again. Or, the cloned query can be reset to use the default ErrorHandler
+       * (which just throws exceptions) by calling resetErrorHandler.
        *
-       * For an example of cloning a query and setting different values in the dynamic context
-       * see example_10 in file \link simple.cpp \endlink.
+       * This function also clones the StaticContext and DynamicContext of the
+       * XQuery object. In the DynamicContext of the cloned query different 
+       * variable values can be used, e.g. set different external variable
+       * values. For an example of cloning a query and setting different values
+       * in the dynamic context see example_10 in file \link simple.cpp \endlink.
        *
        * @return The cloned XQuery object.
        * @throw SystemException if the query has not been compiled or is closed.

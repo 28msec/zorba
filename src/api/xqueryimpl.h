@@ -25,7 +25,6 @@
 #include "common/shared_types.h" 
 #include "compiler/api/compilercb.h"
 
-
 namespace zorba {
 
   class DynamicContextImpl;
@@ -39,6 +38,12 @@ namespace zorba {
   - theCompilerCB :
 
   - thePlan :
+  Provides access to the root iterator of the plan iterator tree.
+  Note: The root iterator is made accessible via a PlanProxy obj. This is for
+  thread safe operation, because the plan is shared among cloned queries. If a
+  direct rchandle to the root iterator was used, then PlanIterator would have
+  to be made a synchronized RCObject, which is too much overhead given that
+  we only need the synchronization during cloning and closing of a query.
 
   - theIsClosed :
   Set to true when the query has been closed. Used to check that after closing
@@ -86,11 +91,32 @@ class XQueryImpl : public XQuery
 {
  protected:
 
+  class PlanProxy : public RCObject
+  {
+  public:
+    PlanIter_t                theRootIter;
+
+    SYNC_CODE(mutable RCLock  theRCLock;)
+
+  public:
+    long*
+    getSharedRefCounter() const { return NULL; }  
+
+    SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+
+    PlanProxy(PlanIter_t& root);
+  };
+
+  typedef rchandle<PlanProxy> PlanProxy_t;
+
+ protected:
+
   // static stuff
   xqpString                     theFileName;
 
   CompilerCB                  * theCompilerCB;
-  PlanIter_t                    thePlan; 
+
+  PlanProxy_t                   thePlan; 
 
   static_context              * theStaticContext;
   

@@ -50,6 +50,14 @@
 
 namespace zorba {
 
+
+XQueryImpl::PlanProxy::PlanProxy(PlanIter_t& root)
+  :
+  theRootIter(root)
+{
+}
+
+
 XQueryImpl::XQueryImpl()
   :
   thePlan(0),
@@ -240,7 +248,7 @@ XQueryImpl::isUpdateQuery() const
   ZORBA_TRY
     checkNotClosed();
     checkCompiled();
-    return thePlan->isUpdating();
+    return thePlan->theRootIter->isUpdating();
   ZORBA_CATCH
   return false;
 }
@@ -401,7 +409,9 @@ XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
   XQueryCompiler lCompiler(theCompilerCB);
 
   // let's compile
-  thePlan = lCompiler.compile(aQuery, theFileName); 
+  PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName); 
+
+  thePlan = new PlanProxy(planRoot);
 }
 
 
@@ -490,7 +500,9 @@ XQueryImpl::iterator()
 PlanWrapper_t
 XQueryImpl::generateWrapper()
 {
-  PlanWrapper_t lPlan(new PlanWrapper(thePlan, theCompilerCB, theDynamicContext));
+  PlanWrapper_t lPlan(new PlanWrapper(thePlan->theRootIter,
+                                      theCompilerCB,
+                                      theDynamicContext));
   return lPlan;
 }
 
