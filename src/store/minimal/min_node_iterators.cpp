@@ -27,7 +27,7 @@ ChildrenIterator::ChildrenIterator(XmlNode* parent)
   ZORBA_ASSERT(theParentNode->getNodeKind() == StoreConsts::documentNode ||
                theParentNode->getNodeKind() == StoreConsts::elementNode);
 
-  //theNumChildren = parent->numChildren();
+  theNumChildren = parent->numChildren();
 }
 
 void ChildrenIterator::open()
@@ -37,6 +37,54 @@ void ChildrenIterator::open()
 
 
 Item_t ChildrenIterator::next()
+{
+  if (theCurrentPos >= theNumChildren)
+    return NULL;
+
+  XmlNode* cnode = theParentNode->getChild(theCurrentPos);
+
+  theCurrentPos++;
+
+  return cnode;
+}
+
+
+void ChildrenIterator::reset()
+{
+  theCurrentPos = 0;
+}
+
+
+void ChildrenIterator::close()
+{
+  theCurrentPos = 0;
+  theParentNode = NULL;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class ChildrenIteratorLazy                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+ChildrenIteratorLazy::ChildrenIteratorLazy(XmlNode* parent)
+  :
+  theParentNode(parent),
+  theCurrentPos(0)
+{
+  ZORBA_ASSERT(theParentNode->getNodeKind() == StoreConsts::documentNode ||
+               theParentNode->getNodeKind() == StoreConsts::elementNode);
+
+  //theNumChildren = parent->numChildren();
+}
+
+void ChildrenIteratorLazy::open()
+{
+  theCurrentPos = 0;
+}
+
+
+Item_t ChildrenIteratorLazy::next()
 {
   XmlLoader_t   xmlloader;
   while((xmlloader=theParentNode->hasLoaderAttached()) != NULL)
@@ -61,13 +109,13 @@ Item_t ChildrenIterator::next()
 }
 
 
-void ChildrenIterator::reset()
+void ChildrenIteratorLazy::reset()
 {
   theCurrentPos = 0;
 }
 
 
-void ChildrenIterator::close()
+void ChildrenIteratorLazy::close()
 {
   theCurrentPos = 0;
   theParentNode = NULL;

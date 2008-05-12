@@ -87,6 +87,7 @@ public:
 #else
 class Latch
 {
+public:
   void rlock() {}
   void wlock() {}
 

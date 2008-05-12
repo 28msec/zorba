@@ -180,7 +180,7 @@ protected:
   xqpStringStore_t theValue;
 
 public:
-  AnyUriItemImpl(xqpStringStore_t& value){ theValue.transfer(value); }
+  AnyUriItemImpl(xqpStringStore_t value){ theValue = value; }
 
   Item* getType( ) const;
   uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;

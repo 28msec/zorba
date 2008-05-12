@@ -36,7 +36,7 @@ class ChildrenIterator : public Iterator
 protected:
   XmlNode_t           theParentNode;
 
-  //unsigned long       theNumChildren;
+  unsigned long       theNumChildren;
   unsigned long       theCurrentPos;
 
 public:
@@ -48,6 +48,22 @@ public:
   void close();
 };
 
+class ChildrenIteratorLazy : public Iterator
+{
+protected:
+  XmlNode_t           theParentNode;
+
+  //unsigned long       theNumChildren;
+  unsigned long       theCurrentPos;
+
+public:
+  ChildrenIteratorLazy(XmlNode* parent);
+
+  void open();
+  Item_t next();
+  void reset();
+  void close();
+};
 
 /*******************************************************************************
   This iterator is used during the getAttributes() method to set the parent

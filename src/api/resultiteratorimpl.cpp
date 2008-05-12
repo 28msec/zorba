@@ -49,9 +49,9 @@ catch (std::exception& e)                             \
   SYNC_CODE(                                          \
   if (theHaveLock)                                    \
   {                                                   \
-    GENV_STORE.getGlobalLock().unlock();)             \
+    GENV_STORE.getGlobalLock().unlock();              \
     theHaveLock = false;                              \
-  }                                                   \
+  })                                                  \
                                                       \
   ZorbaImpl::notifyError(theErrorHandler, e.what());  \
 }                                                     \

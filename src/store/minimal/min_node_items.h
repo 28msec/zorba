@@ -254,7 +254,7 @@ public:
 
   virtual bool isConstructed() const     { NODE_STOP; return false; }
 
-  virtual XmlLoader_t hasLoaderAttached()                {return NULL;}
+  virtual XmlLoader_t hasLoaderAttached() const         {return NULL;}
   virtual unsigned int        getDepth()         {return 0;}//depth is usefull only for loaded element nodes
 protected:
   virtual xqpStringStore_t getBaseURIInternal(bool& local) const;
@@ -353,7 +353,7 @@ public:
   XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
 
   bool isConstructed() const         { return false; }
-  virtual XmlLoader_t hasLoaderAttached()                {return attachedloader;}
+  virtual XmlLoader_t hasLoaderAttached() const          {return attachedloader;}
 };
 
 
@@ -567,7 +567,7 @@ public:
   XmlNode* getChild(ulong i) const     { return theChildren.get(i); }
 
   bool isConstructed() const           { return false; }
-  virtual XmlLoader_t hasLoaderAttached()              {return attachedloader;}
+  virtual XmlLoader_t hasLoaderAttached() const        {return attachedloader;}
   virtual unsigned int        getDepth()         {return depth;}
 
 protected:

@@ -172,6 +172,8 @@ bool FloatImplTraits<FloatType>::isPosInf(FloatType aMAPM)
 template <typename FloatType>
 bool FloatImplTraits<FloatType>::isZero(FloatType aMAPM)
 {
+  return false;
+/*
 #if defined WIN32 || defined WIN_CE
   int fclass;
   fclass = _fpclass(aMAPM);
@@ -185,6 +187,7 @@ bool FloatImplTraits<FloatType>::isZero(FloatType aMAPM)
   else
     return false;
 #endif
+*/
 }
 template <typename FloatType>
 bool FloatImplTraits<FloatType>::isNegInf(FloatType aMAPM)
@@ -1210,28 +1213,6 @@ xqpString FloatImpl<FloatType>::toString() const {
 }
 
 #else //ZORBA_NO_BIGNUMBERS
-/*
-template <>
-xqpString FloatImpl<float>::toString() const {
-  switch(theType) {
-    case FloatCommons::NOT_A_NUM:
-      return FloatCommons::NOT_A_NUM_STR;
-    case FloatCommons::INF_POS:
-      return FloatCommons::INF_POS_STR;
-    case FloatCommons::INF_NEG:
-      return FloatCommons::INF_NEG_STR;
-    case FloatCommons::NORMAL_NEG:
-      if (theFloatImpl == 0)
-        return "-0";
-    default: 
-      break;
-  }
-
-  char lBuffer[124];
-  sprintf(lBuffer, "%f", theFloatImpl);
-  return lBuffer;
-}
-*/
 template <typename FloatType>
 xqpString FloatImpl<FloatType>::toString() const {
   switch(theType) {

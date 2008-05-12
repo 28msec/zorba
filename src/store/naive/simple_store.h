@@ -81,7 +81,7 @@ protected:
 
   QueryContextContainer  * theQueryContextContainer; 
 
-  SYNC_CODE(Latch          theGlobalLock;)
+  Latch          theGlobalLock;
 
 #ifndef NDEBUG
   long                     theTraceLevel;

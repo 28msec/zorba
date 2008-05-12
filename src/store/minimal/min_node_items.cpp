@@ -733,7 +733,10 @@ xqpStringStore_t DocumentNode::getBaseURIInternal(bool& local) const
 
 Iterator_t DocumentNode::getChildren() const
 {
-  return (new ChildrenIterator((XmlNode*)this));
+  if(this->hasLoaderAttached())
+    return (new ChildrenIteratorLazy((XmlNode*)this));
+  else
+    return (new ChildrenIterator((XmlNode*)this));
 }
 
 Iterator_t DocumentNode::getTypedValue() const
@@ -1163,7 +1166,10 @@ Iterator_t ElementNode::getAttributes() const
 ********************************************************************************/
 Iterator_t ElementNode::getChildren() const
 {
-  return (new ChildrenIterator((XmlNode*)this));
+  if(this->hasLoaderAttached())
+    return (new ChildrenIteratorLazy((XmlNode*)this));
+  else
+    return (new ChildrenIterator((XmlNode*)this));
 }
 
 
