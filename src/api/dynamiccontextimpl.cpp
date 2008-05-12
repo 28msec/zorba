@@ -34,62 +34,75 @@
 
 namespace zorba {
 
-  DynamicContextImpl::DynamicContextImpl(dynamic_context* aDctx, static_context* aSctx, ErrorHandler* aErrorHandler) 
-    : theCtx(aDctx),
-      theStaticContext(aSctx),
-      theErrorHandler(aErrorHandler)
-  {
-  }
-
-  DynamicContextImpl::~DynamicContextImpl() 
-  {
-  }
-
-  bool
-  DynamicContextImpl::setVariable( const String& aQName, const Item& aItem )
-  {
-    ZORBA_TRY
-      // unmarshall the string and the item
-      store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
-      ZorbaImpl::checkItem(lItem);
-      xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
-
-      // create an item iterator to store in the dyn context
-      store::ItemIterator_t lIterator = new store::ItemIterator(lItem);
-
-      xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
-
-      // add it to the internal context
-      theCtx->add_variable(lExpandedName, &*lIterator);
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+DynamicContextImpl::DynamicContextImpl(
+    dynamic_context* aDctx,
+    static_context* aSctx,
+    ErrorHandler* aErrorHandler) 
+  :
+  theCtx(aDctx),
+  theStaticContext(aSctx),
+  theErrorHandler(aErrorHandler)
+{
+}
 
 
-  bool
-  DynamicContextImpl::setVariable( const String& aQName, const ResultIterator_t& aResultIterator )
-  {
-    ZORBA_TRY
-      ResultIterator* lIter = &*aResultIterator;
-      if (!lIter)
-        ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT, "Invalid ResultIterator given");
+DynamicContextImpl::~DynamicContextImpl() 
+{
+}
+
+
+bool
+DynamicContextImpl::setVariable( const String& aQName, const Item& aItem )
+{
+  ZORBA_TRY
+    // unmarshall the string and the item
+    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
+    ZorbaImpl::checkItem(lItem);
+    xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
+
+    // create an item iterator to store in the dyn context
+    store::ItemIterator_t lIterator = new store::ItemIterator(lItem);
+
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+
+    // add it to the internal context
+    theCtx->add_variable(lExpandedName, &*lIterator);
+    return true;
+  ZORBA_CATCH
+  return false;
+}
+
+
+bool
+DynamicContextImpl::setVariable(
+    const String& aQName,
+    const ResultIterator_t& aResultIterator )
+{
+  ZORBA_TRY
+    ResultIterator* lIter = &*aResultIterator;
+    if (!lIter)
+      ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT,
+                       "Invalid ResultIterator given");
         
-      store::Iterator_t lRes = new store::ResultIteratorChainer(&*aResultIterator);
-      xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
+    store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
 
-      xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+    xqpString lString = xqpString(Unmarshaller::getInternalString(aQName));
 
-      theCtx->add_variable(lExpandedName, &*lRes);
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
-  bool
-  DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& aDocURI, 
-                                             std::istream& aStream )
-  {
+    theCtx->add_variable(lExpandedName, &*lRes);
+    return true;
+  ZORBA_CATCH
+  return false;
+}
+
+
+bool
+DynamicContextImpl::setVariableAsDocument(
+    const String& aQName,
+    const String& aDocURI, 
+    std::istream& aStream )
+{
     ZORBA_TRY
       XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
 

@@ -53,7 +53,7 @@ namespace zorba {
 
       /** \brief Stop iterating.
        *
-       * In order to call ResultIterator::next, open has to been called.
+       * In order to call ResultIterator::next, open has to been called again.
        */
       virtual void 
       close() = 0;

@@ -115,19 +115,16 @@ int main(int argc, const char * argv[])
 #endif
 
   //
-  // Load an xml doc from a file to a collection
+  // Re-acquirable latch
   //
+  store->getGlobalLock().rlock();
+  store->getGlobalLock().rlock();
+  store->getGlobalLock().unlock();
+  store->getGlobalLock().unlock();
 
-  std::ifstream xmlFile(fileName.c_str());
-  if(!xmlFile)
-  {
-    std::cerr << "Error while opening: " << fileName << std::endl;
-    abort();
-  }
-
-  std::iostream xmlStream(xmlFile.rdbuf());
-  store::Item_t doc;
-
+  //
+  // RC_TIMMING
+  //
 #define RC_TIMMING
 
 #ifdef RC_TIMMING
@@ -184,6 +181,20 @@ int main(int argc, const char * argv[])
 
 #endif // RC_TIMMING
 
+  //
+  // Load an xml doc from a file to a collection
+  //
+
+  std::ifstream xmlFile(fileName.c_str());
+  if(!xmlFile)
+  {
+    std::cerr << "Error while opening: " << fileName << std::endl;
+    abort();
+  }
+
+  std::iostream xmlStream(xmlFile.rdbuf());
+  store::Item_t doc;
+
   try
   {
     doc = coll1->addToCollection(xmlStream);
@@ -221,6 +232,7 @@ int main(int argc, const char * argv[])
 
   doc = 0;
 
+  lZorba->shutdown();
   return 0;
 }
 

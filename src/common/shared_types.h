@@ -69,8 +69,8 @@ namespace zorba {
     class ConstrNodeVector;
     class NsBindingsContext;
     typedef rchandle<NsBindingsContext> NsBindingsContext_t;
-    class ResultIteratorChainer;
-    typedef rchandle<ResultIteratorChainer> ResultIteratorChainer_t;
+    //class ResultIteratorChainer;
+    //typedef rchandle<ResultIteratorChainer> ResultIteratorChainer_t;
     class Iterator;
     typedef rchandle<Iterator> Iterator_t;
   }

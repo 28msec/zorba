@@ -23,31 +23,35 @@
 
 namespace zorba {
 
-  class ErrorHandler;
+class ErrorHandler;
 
-  class ResultIteratorImpl  : public ResultIterator 
-  {
-    public:
-      ResultIteratorImpl(const PlanWrapper_t&, error::ErrorManager*, ErrorHandler*);
-      virtual ~ResultIteratorImpl();
+class ResultIteratorImpl  : public ResultIterator 
+{
+ public:
+  ResultIteratorImpl(const PlanWrapper_t&, error::ErrorManager*, ErrorHandler*);
 
-      virtual void 
-      open();
+  virtual ~ResultIteratorImpl();
 
-      virtual bool
-      next(Item&);
+  virtual void 
+  open();
 
-      virtual void 
-      close();
+  virtual bool
+  next(Item&);
 
-      friend class Unmarshaller;
-    protected:
-      PlanWrapper_t        thePlan;         
-      bool                 theIsOpened;     
-      error::ErrorManager* theErrorManager; 
-      ErrorHandler*        theErrorHandler; 
+  virtual void 
+  close();
 
-  };
+  friend class Unmarshaller;
+
+ protected:
+  PlanWrapper_t          thePlan;         
+  bool                   theIsOpened;     
+  error::ErrorManager  * theErrorManager; 
+  ErrorHandler         * theErrorHandler; 
+  bool                   theHaveLock;
+};
+
+
 }
 
 #endif

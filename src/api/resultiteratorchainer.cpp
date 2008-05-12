@@ -23,19 +23,23 @@
 namespace zorba { namespace store {
 
 ResultIteratorChainer::ResultIteratorChainer(ResultIterator* aResIter) 
-  : theResult(aResIter)
-{}
+  :
+  theResult(aResIter)
+{
+}
 
 
 ResultIteratorChainer::~ResultIteratorChainer() 
 {
 }
 
+
 void
 ResultIteratorChainer::open() 
 {
   theResult->open();
 }
+
 
 Item_t
 ResultIteratorChainer::next() 
@@ -50,11 +54,13 @@ ResultIteratorChainer::next()
   return NULL;
 }
 
+
 void
 ResultIteratorChainer::reset() 
 {
   theResult->close();
 }
+
 
 void
 ResultIteratorChainer::close() 

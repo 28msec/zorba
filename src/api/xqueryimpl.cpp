@@ -47,6 +47,8 @@
 #include "util/properties.h"
 
 #include "store/api/item.h"
+#include "store/api/store.h"
+#include "store/util/latch.h"
 
 namespace zorba {
 
@@ -430,6 +432,8 @@ XQueryImpl::serialize(std::ostream& os, const XQuery::SerializerOptions_t& opt)
     serializer lSerializer(theErrorManager);
     setSerializationParameters(&lSerializer, opt);
     
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
     try 
     {
       lPlan->open();
@@ -454,7 +458,8 @@ XQueryImpl::applyUpdates()
     checkCompiled();
 
     PlanWrapper_t lPlan = generateWrapper();
-    serializer lSerializer(theErrorManager);
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
 
     try 
     { 

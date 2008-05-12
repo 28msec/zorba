@@ -22,12 +22,16 @@
 
 namespace zorba { 
   
-  class ResultIterator;
+class ResultIterator;
 
-  namespace store {
+namespace store {
 
-// wrap the outside result iterator for query chaining
-// we need to do this because only the result iterator know which error handler he needs to report to
+/*******************************************************************************
+  This class wraps the result iterator of the c+ api in order to convert is
+  interface to the interface of the internal zorba iterators. This is needed
+  for query chaining where an external variabe of query Q2 is bound to the
+  result iterator of query Q1 (see DynamicContextImpl::setVariable).
+********************************************************************************/
 class ResultIteratorChainer : public Iterator
 {
 private:
@@ -35,6 +39,7 @@ private:
 
 public:
   ResultIteratorChainer(ResultIterator*);
+
   virtual ~ResultIteratorChainer();
 
   virtual void open();
