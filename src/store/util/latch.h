@@ -84,6 +84,17 @@ public:
   }
 };
 
+#else
+class Latch
+{
+  void rlock() {}
+  void wlock() {}
+
+  void unlock() {}
+};
+class AutoLatch
+{
+};
 #endif // ZORBA_FOR_ONE_THREAD_ONLY
 
 } // namespace store
