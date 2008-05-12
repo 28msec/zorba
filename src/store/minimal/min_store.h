@@ -22,6 +22,7 @@
 #include "store/api/store.h"
 #include "store/util/hashmap_stringp.h"
 #include "store/util/mutex.h"
+#include "store/util/latch.h"
 #include "store/api/collection.h"
 #include "store/minimal/min_node_items.h"
 
@@ -80,6 +81,8 @@ protected:
 
   QueryContextContainer  * theQueryContextContainer; 
 
+  Latch                   theGlobalLock;
+
 #ifndef NDEBUG
   long                     theTraceLevel;
 #endif
@@ -100,6 +103,7 @@ public:
 
 //  StringPool& getNamespacePool() const    { return *theNamespacePool; }
 //  QNamePool& getQNamePool() const         { return *theQNamePool; }
+  Latch&    getGlobalLock()                 { return theGlobalLock; }
 #ifndef NDEBUG
   long getTraceLevel() const              { return theTraceLevel; }
 #endif
