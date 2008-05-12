@@ -1833,7 +1833,8 @@ void ConstrElementNode::constructSubtree(
   if (!haveBaseUri && isRoot)
   {
     xqpStringStore_t nulluri;
-    addBaseUriProperty(staticBaseUri, nulluri);
+    xqpStringStore_t tmpuri = staticBaseUri;
+    addBaseUriProperty(tmpuri, nulluri);
     haveBaseUri = true;
   }
 
