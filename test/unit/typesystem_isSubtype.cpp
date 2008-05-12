@@ -15,6 +15,7 @@
  */
 #include <cassert>
 
+#include <zorba/zorba.h>
 
 #include "store/api/item.h"
 #include "common/common.h"
@@ -26,24 +27,24 @@
 
 using namespace zorba;
 
-int typesystem_isSubtype(int argc, char* argv[]) {
-  {
-    store::Store& store = GENV.getStore();
-    store::Item_t lInteger = store.getItemFactory()->createInteger(Integer::parseInt((int32_t)1));
-    store::Item_t lInt = store.getItemFactory()->createInt(1);
-    store::Item_t lDecimal = store.getItemFactory()->createDecimal(Decimal::parseInt((int32_t)1));
+int typesystem_isSubtype(int argc, char* argv[]) 
+{
+  Zorba* lZorba = Zorba::getInstance();
 
-    xqtref_t lIntegerType = GENV_TYPESYSTEM.create_named_type(lInteger->getType(), TypeConstants::QUANT_ONE);
-    xqtref_t lIntType = GENV_TYPESYSTEM.create_named_type(lInt->getType(), TypeConstants::QUANT_ONE);
-    xqtref_t lDecimalType = GENV_TYPESYSTEM.create_named_type(lDecimal->getType(), TypeConstants::QUANT_ONE);
+  store::Store& store = GENV.getStore();
+  store::Item_t lInteger = store.getItemFactory()->createInteger(Integer::parseInt((int32_t)1));
+  store::Item_t lInt = store.getItemFactory()->createInt(1);
+  store::Item_t lDecimal = store.getItemFactory()->createDecimal(Decimal::parseInt((int32_t)1));
 
-    assert(TypeOps::is_atomic(*lIntType));
-    assert(TypeOps::is_subtype(*lIntType, *lIntegerType));
-    assert(TypeOps::is_subtype(*lIntType, *lDecimalType));
-    assert(TypeOps::is_subtype(*lIntegerType, *lDecimalType));
-  }
+  xqtref_t lIntegerType = GENV_TYPESYSTEM.create_named_type(lInteger->getType(), TypeConstants::QUANT_ONE);
+  xqtref_t lIntType = GENV_TYPESYSTEM.create_named_type(lInt->getType(), TypeConstants::QUANT_ONE);
+  xqtref_t lDecimalType = GENV_TYPESYSTEM.create_named_type(lDecimal->getType(), TypeConstants::QUANT_ONE);
 
-  GlobalEnvironment::destroy();
-  
+  assert(TypeOps::is_atomic(*lIntType));
+  assert(TypeOps::is_subtype(*lIntType, *lIntegerType));
+  assert(TypeOps::is_subtype(*lIntType, *lDecimalType));
+  assert(TypeOps::is_subtype(*lIntegerType, *lDecimalType));
+
+  lZorba->shutdown();
   return 0;
 }
