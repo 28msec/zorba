@@ -13,6 +13,8 @@
 # limitations under the License.
 ADD_SUBDIRECTORY(cxx_api)
 ADD_SUBDIRECTORY(c_api)
+ADD_SUBDIRECTORY(python_api)
+ADD_SUBDIRECTORY(ruby_api)
 
 # workaround: a dir is already needed for the install command. the html directory, however, is generated with the make doc call
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cxx_api/html)

@@ -1,0 +1,40 @@
+# Copyright 2006-2008 The FLWOR Foundation.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import sys
+sys.path.append('@pythonPath@')
+import zorba_api
+
+lAPI = zorba_api.new_apip()
+zorba_api.zorba_init(lAPI)
+
+lErr = zorba_api.new_errorp()
+lItem = zorba_api.item_init(lAPI)
+lString = zorba_api.string_init(lAPI)
+
+lXQuery = zorba_api.query_compile(lAPI, 'for $x in (1+2,3+4, "this is a test", 9) return $x', lErr)
+lResult = zorba_api.sequence_init(lXQuery, lErr)
+
+while 0 < zorba_api.sequence_next(lResult, lItem, lErr):
+  zorba_api.item_stringvalue(lItem, lString, lErr)
+  print zorba_api.string_to_char(lString)
+
+zorba_api.sequence_close(lResult)
+zorba_api.query_release(lXQuery)
+
+zorba_api.string_release(lString)
+zorba_api.item_release(lItem)
+zorba_api.delete_errorp(lErr)
+zorba_api.zorba_release()
+zorba_api.delete_apip(lAPI)
