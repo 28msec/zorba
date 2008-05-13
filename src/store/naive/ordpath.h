@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "common/common.h"
+#include "errors/fatal.h"
 
 namespace zorba { namespace store {
 
@@ -229,13 +230,16 @@ protected:
 
   ulong getLocalByteLength() const
   {
-    for (ulong i = 0; i < MAX_EMBEDDED_BYTE; i++)
+    if (theBuffer[MAX_EMBEDDED_BYTE] != 1)
+      return MAX_EMBEDDED_BYTE_LEN;
+
+    for (long i = MAX_EMBEDDED_BYTE-1; i >= 0; i--)
     {
-      if (theBuffer[i] == 0)
-        return i;
+      if (theBuffer[i] != 0)
+        return i+1;
     }
 
-    return MAX_EMBEDDED_BYTE_LEN;
+    ZORBA_FATAL(0, "");
   }
 
 
