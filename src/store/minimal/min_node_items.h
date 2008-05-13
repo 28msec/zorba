@@ -468,7 +468,7 @@ public:
 
   void checkNamespaceConflict(
         const Item*           qname,
-        ErrorCode ecode) const;
+        XQUERY_ERROR ecode) const;
 
   void checkUniqueAttr(const Item* attrName) const;
 

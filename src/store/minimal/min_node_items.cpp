@@ -1310,7 +1310,7 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
 ********************************************************************************/
 void ElementNode::checkNamespaceConflict(
     const Item*           qname,
-    ErrorCode ecode) const
+    XQUERY_ERROR ecode) const
 {
   const QNameItemImpl* qn = reinterpret_cast<const QNameItemImpl*>(qname);
 

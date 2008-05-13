@@ -34,7 +34,7 @@ namespace zorba { namespace store {
 Item*
 Item::getType( ) const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, typeid(*this).name());
   return 0;
 }
@@ -42,7 +42,7 @@ Item::getType( ) const
 
 bool Item::equals(const Item*, RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -50,7 +50,7 @@ bool Item::equals(const Item*, RuntimeCB* aRuntimeCB, XQPCollator* aCollation) c
 
 Item_t Item::getEBV() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -58,7 +58,7 @@ Item_t Item::getEBV() const
 
 Item_t Item::getAtomizationValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -66,7 +66,7 @@ Item_t Item::getAtomizationValue() const
 
 xqpStringStore_t Item::getStringValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -78,7 +78,7 @@ xqpStringStore_t Item::getStringValue() const
  */
 xqpStringStore* Item::getStringValueP() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -91,7 +91,7 @@ xqpStringStore* Item::getStringValueP() const
  */
 uint32_t Item::hash(RuntimeCB* aRuntimeCB, XQPCollator* coll) const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 };
@@ -113,7 +113,7 @@ uint32_t Item::hash(RuntimeCB* aRuntimeCB, XQPCollator* coll) const
  */
 xqp_base64Binary Item::getBase64BinaryValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_base64Binary();
 }
@@ -122,7 +122,7 @@ xqp_base64Binary Item::getBase64BinaryValue() const
  */
 bool Item::getBooleanValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -132,7 +132,7 @@ bool Item::getBooleanValue() const
  */
 xqp_decimal Item::getDecimalValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return Decimal::parseInt(0);
 }
@@ -141,7 +141,7 @@ xqp_decimal Item::getDecimalValue() const
  */
 xqp_int Item::getIntValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -151,7 +151,7 @@ xqp_int Item::getIntValue() const
  */
 xqp_integer Item::getIntegerValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return Integer::parseInt((int32_t)0);
 }
@@ -160,7 +160,7 @@ xqp_integer Item::getIntegerValue() const
  */
 xqp_long Item::getLongValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -169,7 +169,7 @@ xqp_long Item::getLongValue() const
  */
 xqp_short Item::getShortValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -178,7 +178,7 @@ xqp_short Item::getShortValue() const
  */
 xqp_uinteger Item::getUnsignedIntegerValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return Integer::parseInt(0);
 }
@@ -187,14 +187,14 @@ xqp_uinteger Item::getUnsignedIntegerValue() const
  */
 xqp_ubyte Item::getUnsignedByteValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
 
 xqp_byte Item::getByteValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -203,7 +203,7 @@ xqp_byte Item::getByteValue() const
  */
 xqp_date Item::getDateValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_date();
 }
@@ -212,7 +212,7 @@ xqp_date Item::getDateValue() const
  */
 xqp_dateTime Item::getDateTimeValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_dateTime();
 }
@@ -221,7 +221,7 @@ xqp_dateTime Item::getDateTimeValue() const
  */
 xqp_double Item::getDoubleValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_double::parseInt(0);
 }
@@ -230,7 +230,7 @@ xqp_double Item::getDoubleValue() const
  */
 xqp_duration Item::getDurationValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_duration();
 }
@@ -239,7 +239,7 @@ xqp_duration Item::getDurationValue() const
   */
 xqp_dayTimeDuration Item::getDayTimeDurationValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_dayTimeDuration();
 }
@@ -248,7 +248,7 @@ xqp_dayTimeDuration Item::getDayTimeDurationValue() const
   */
 YearMonthDuration_t Item::getYearMonthDurationValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_yearMonthDuration();
 }
@@ -257,7 +257,7 @@ YearMonthDuration_t Item::getYearMonthDurationValue() const
  */
 std::vector<xqp_string> Item::getStringVectorValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return std::vector<xqp_string>();
 }
@@ -266,7 +266,7 @@ std::vector<xqp_string> Item::getStringVectorValue() const
  */
 xqp_float Item::getFloatValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_float::parseInt(0);
 }
@@ -275,7 +275,7 @@ xqp_float Item::getFloatValue() const
  */
 xqp_gDay Item::getGDayValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_gDay();
 }
@@ -284,7 +284,7 @@ xqp_gDay Item::getGDayValue() const
  */
 xqp_gMonth Item::getGMonthValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_gMonth();
 }
@@ -293,7 +293,7 @@ xqp_gMonth Item::getGMonthValue() const
  */
 xqp_gMonthDay Item::getGMonthDayValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_gMonthDay();
 }
@@ -302,7 +302,7 @@ xqp_gMonthDay Item::getGMonthDayValue() const
  */
 xqp_gYear Item::getGYearValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_gYear();
 }
@@ -311,7 +311,7 @@ xqp_gYear Item::getGYearValue() const
  */
 xqp_gYearMonth Item::getGYearMonthValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_gYearMonth();
 }
@@ -320,7 +320,7 @@ xqp_gYearMonth Item::getGYearMonthValue() const
  */
 xqp_hexBinary Item::getHexBinaryValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_hexBinary();
 }
@@ -329,7 +329,7 @@ xqp_hexBinary Item::getHexBinaryValue() const
  */
 xqp_uint Item::getUnsignedIntValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -338,7 +338,7 @@ xqp_uint Item::getUnsignedIntValue() const
  */
 xqp_time Item::getTimeValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return xqp_time();
 }
@@ -347,7 +347,7 @@ xqp_time Item::getTimeValue() const
  */
 xqp_ulong Item::getUnsignedLongValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -356,7 +356,7 @@ xqp_ulong Item::getUnsignedLongValue() const
  */
 xqp_ushort Item::getUnsignedShortValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -367,7 +367,7 @@ xqp_ushort Item::getUnsignedShortValue() const
  */
 bool Item::isNaN() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -378,7 +378,7 @@ bool Item::isNaN() const
  */
 bool Item::isPosOrNegInf() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -399,7 +399,7 @@ bool Item::isPosOrNegInf() const
 
 xqpStringStore* Item::getDocumentURI() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -407,7 +407,7 @@ xqpStringStore* Item::getDocumentURI() const
 
 xqpStringStore_t Item::getBaseURI() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -415,7 +415,7 @@ xqpStringStore_t Item::getBaseURI() const
 
 Iterator_t Item::getAttributes() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
@@ -423,7 +423,7 @@ Iterator_t Item::getAttributes() const
 
 Iterator_t Item::getChildren() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -431,7 +431,7 @@ Iterator_t Item::getChildren() const
 
 bool Item::isId() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -441,7 +441,7 @@ bool Item::isId() const
  */
 bool Item::isIdRefs() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -453,7 +453,7 @@ void Item::getNamespaceBindings(
     NsBindings& bindings,
     StoreConsts::NsScoping ns_scoping) const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
@@ -463,7 +463,7 @@ void Item::getNamespaceBindings(
  */
 store::Item_t Item::getNilled() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -474,7 +474,7 @@ store::Item_t Item::getNilled() const
  */
 NodeKind Item::getNodeKind() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return StoreConsts::elementNode;
 }
@@ -484,7 +484,7 @@ NodeKind Item::getNodeKind() const
  */
 store::Item* Item::getNodeName() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
@@ -495,7 +495,7 @@ store::Item* Item::getNodeName() const
  */
 store::Item* Item::getParent() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
@@ -507,7 +507,7 @@ store::Item* Item::getParent() const
  */
 Iterator_t Item::getTypedValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
@@ -517,7 +517,7 @@ Iterator_t Item::getTypedValue() const
  */
 xqpStringStore* Item::getNamespace() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -527,7 +527,7 @@ xqpStringStore* Item::getNamespace() const
  */
 xqpStringStore* Item::getPrefix() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -537,7 +537,7 @@ xqpStringStore* Item::getPrefix() const
  */
 xqpStringStore* Item::getLocalName() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -547,7 +547,7 @@ xqpStringStore* Item::getLocalName() const
  */
 xqpStringStore* Item::getUnparsedEntityPublicId() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -557,7 +557,7 @@ xqpStringStore* Item::getUnparsedEntityPublicId() const
  */
 xqpStringStore* Item::getUnparsedEntitySystemId() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -568,7 +568,7 @@ xqpStringStore* Item::getUnparsedEntitySystemId() const
  */
 xqpStringStore* Item::getTarget() const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -591,7 +591,7 @@ xqp_string Item::show() const
 ********************************************************************************/
 Item* Item::copyXmlTree(const CopyMode& copymode) const
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
@@ -604,7 +604,7 @@ void Item::serializeXML(serializer& ser, std::ostream& os) const
 
 void Item::applyUpdates()
 {
-  ZORBA_ERROR_PARAM_OSS(::zorba::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
