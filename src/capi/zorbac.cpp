@@ -55,6 +55,32 @@ zorba_query_release(XQUERY aQuery)
   delete lQuery; 
 }
 
+void
+zorba_query_execute(XQUERY aQuery, FILE* aFile, XQUERY_ERROR* aError)
+{
+  SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aQuery);
+  std::stringstream lStream;
+  char lBuf[1024];
+
+  try {
+    lStream << lQuery->theObject;
+    lStream.seekg(0);
+
+    int lRes = 0;
+    while ( (lRes = lStream.readsome(lBuf, 1023)) > 0 ) {
+      lBuf[lRes] = 0;
+      fprintf (aFile, "%s", lBuf);
+    }
+
+    *aError = XQ_SUCCESS;
+  } catch (ZorbaException& e) {
+    *aError = e.getErrorCode();
+  } catch (...) {
+    *aError = XQP0019_INTERNAL_ERROR;
+  }
+}
+
+
 XQUERY_STREAM 
 zorba_stream_init(XQUERY aQuery, XQUERY_ERROR* aError)
 {
@@ -64,6 +90,8 @@ zorba_stream_init(XQUERY aQuery, XQUERY_ERROR* aError)
     *lStream << lQuery->theObject;
     lStream->seekg(0);
     *aError = XQ_SUCCESS;
+  } catch (ZorbaException& e) {
+    *aError = e.getErrorCode();
   } catch (...) {
     *aError = XQP0019_INTERNAL_ERROR;
   }
@@ -183,11 +211,34 @@ zorba_string_to_char(XQUERY_STRING aString)
   return lString->c_str();
 }
 
-void zorba_create_capi(XQUERY_CAPI* aAPI)
+XQUERY_DYNAMIC_CONTEXT
+zorba_dynamic_context(XQUERY aXQuery, XQUERY_ERROR* aError)
 {
+  SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aXQuery);
+  XQUERY_DYNAMIC_CONTEXT lContext = 0;
+  try {
+    lContext = lQuery->theObject->getDynamicContext();
+    *aError = XQ_SUCCESS;
+  } catch (ZorbaException& e) {
+    *aError = e.getErrorCode();
+  } catch (...) {
+    *aError = XQP0019_INTERNAL_ERROR;
+  }
+  return lContext;
+}
+
+void 
+zorba_init(XQUERY_API* aAPI)
+{
+  Zorba::getInstance();
+
   // query functions
   aAPI->query_compile       = zorba_query_compile;
   aAPI->query_release       = zorba_query_release;
+  aAPI->query_execute       = zorba_query_execute;
+
+  // dynamic context
+  aAPI->dynamic_context     = zorba_dynamic_context;
 
   // stream functions
   aAPI->stream_init         = zorba_stream_init;
@@ -207,4 +258,9 @@ void zorba_create_capi(XQUERY_CAPI* aAPI)
   aAPI->string_init         = zorba_string_init;
   aAPI->string_release      = zorba_string_release;
   aAPI->string_to_char      = zorba_string_to_char;
+}
+
+void zorba_release()
+{
+  Zorba::getInstance()->shutdown();
 }

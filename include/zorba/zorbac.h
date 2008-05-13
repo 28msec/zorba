@@ -23,6 +23,7 @@ typedef void* XQUERY_STREAM;
 typedef void* XQUERY_SEQUENCE;
 typedef void* XQUERY_ITEM;
 typedef void* XQUERY_STRING;
+typedef void* XQUERY_DYNAMIC_CONTEXT;
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,6 +35,20 @@ extern "C" {
 typedef XQUERY        (*xquery_query_compile)(const char*, XQUERY_ERROR*); 
 
 typedef void          (*xquery_query_release)(XQUERY);
+
+typedef void          (*xquery_query_execute)(XQUERY, FILE*, XQUERY_ERROR*);
+
+/**
+ * dynamic context related functions
+ */
+typedef XQUERY_DYNAMIC_CONTEXT (*xquery_dynamic_context)(XQUERY, XQUERY_ERROR*);
+
+#if 0
+typedef void                   (*xquery_dc_setvar(XQUERY_DYNAMIC_CONTEXT, 
+                                                  XQUERY_VAR_TYPE,
+                                                  XQUERY_STRING,
+                                                  void*));
+#endif
 
 /**
  * stream related functions
@@ -69,6 +84,10 @@ typedef struct {
   // functions related to queries
   xquery_query_compile       query_compile;
   xquery_query_release       query_release;
+  xquery_query_execute       query_execute;
+
+  // dynamic context
+  xquery_dynamic_context     dynamic_context;
   
   // functions related to streams
   xquery_stream_init         stream_init;
@@ -89,9 +108,13 @@ typedef struct {
   xquery_string_init         string_init;
   xquery_string_release      string_release;
   xquery_string_to_char      string_to_char;
-} XQUERY_CAPI;
+} XQUERY_API;
 
-void zorba_create_capi(XQUERY_CAPI*);
+void
+zorba_init(XQUERY_API*);
+
+void 
+zorba_release();
 
 
 

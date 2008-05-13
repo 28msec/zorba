@@ -19,24 +19,12 @@
 #include <string.h>
 #include <zorba/zorbac.h>
 
-#if 0
-int
-checkError(XQUERY aQuery, XQUERY_ERROR* aError)
-{
-  if (*aError == XQUERY_SUCCESS)
-    return 0;
-
-  return 1;
-  // TODO print error message
-}
-#endif
-
 /**
  * A simple C API example
  * Compile a query and print the result.  No error checking is done.
  */
 int
-example_1(XQUERY_CAPI* aAPI)
+example_1(XQUERY_API* aAPI)
 {
   char          lBuffer[256];
   XQUERY_ERROR  lError = XQ_SUCCESS;
@@ -68,7 +56,7 @@ example_1(XQUERY_CAPI* aAPI)
  * No error checking is done.
  */ 
 int
-example_2(XQUERY_CAPI* aAPI) 
+example_2(XQUERY_API* aAPI) 
 {
   XQUERY_ERROR    lError  = XQ_SUCCESS;
   XQUERY_ITEM     lItem   = aAPI->item_init();
@@ -95,12 +83,32 @@ example_2(XQUERY_CAPI* aAPI)
   return 1;
 }
 
+/**
+ * A simple C API example
+ * Compile a query and write the output to stream.
+ * No error checking is done.
+ */ 
+int
+example_3(XQUERY_API* aAPI) 
+{
+  XQUERY_ERROR    lError  = XQ_SUCCESS;
+  XQUERY          lXQuery;
+  FILE*           lFile = stdout;
+
+  lXQuery = aAPI->query_compile("(1+2,3+4)", &lError);
+
+  aAPI->query_execute(lXQuery, lFile, &lError);
+
+  aAPI->query_release(lXQuery);
+
+  return 1;
+}
 int
 csimple(int argc, char** argv)
 {
   int res = 0; 
-  XQUERY_CAPI lAPI;
-  zorba_create_capi(&lAPI);
+  XQUERY_API lAPI;
+  zorba_init(&lAPI);
 
   printf("executing C example 1\n");
   res = example_1(&lAPI);
@@ -112,5 +120,9 @@ csimple(int argc, char** argv)
   if (!res) return 1;
   printf("\n");
 
+  printf("executing C example 3\n");
+  res = example_3(&lAPI);
+  if (!res) return 1;
+  printf("\n");
   return 0;
 }

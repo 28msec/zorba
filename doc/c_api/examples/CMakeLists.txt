@@ -4,6 +4,7 @@ SET (CAPI_EXAMPLES
 
 CREATE_TEST_SOURCELIST(cexamples
 	cexamples.c
+  ccontext.c
   ${CAPI_EXAMPLES}
 )
  
