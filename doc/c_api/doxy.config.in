@@ -17,7 +17,7 @@
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
 # by quotes) that should identify the project.
 
-PROJECT_NAME           = "@PROJECT_NAME@"
+PROJECT_NAME           = "@PROJECT_NAME@" C-API
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. 
 # This could be handy for archiving the generated documentation or 
@@ -177,7 +177,7 @@ ALIASES                =
 # For instance, some of the names that are used will be different. The list 
 # of all members will be omitted, etc.
 
-OPTIMIZE_OUTPUT_FOR_C  = NO
+OPTIMIZE_OUTPUT_FOR_C  = YES
 
 # Set the OPTIMIZE_OUTPUT_JAVA tag to YES if your project consists of Java 
 # sources only. Doxygen will then generate output that is more tailored for Java. 
@@ -450,7 +450,7 @@ WARN_LOGFILE           = Doc/doxy.log
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @CMAKE_SOURCE_DIR@/include @CMAKE_CURRENT_SOURCE_DIR@/manual
+INPUT                  = @CMAKE_SOURCE_DIR@/include
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -459,12 +459,7 @@ INPUT                  = @CMAKE_SOURCE_DIR@/include @CMAKE_CURRENT_SOURCE_DIR@/m
 # *.c *.cc *.cxx *.cpp *.c++ *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx 
 # *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.py
 
-FILE_PATTERNS          = *.cpp \
-                         *.cc \
-                         *.h \
-                         *.hh \
-                         *.hpp \
-                         *.dox
+FILE_PATTERNS          = zorbac.h error.h
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -504,11 +499,7 @@ EXAMPLE_PATH           = @CMAKE_CURRENT_SOURCE_DIR@/examples
 # and *.h) to filter out the source-files in the directories. If left 
 # blank all files are included.
 
-EXAMPLE_PATTERNS       = *.cpp \
-                         *.cc \
-                         *.h \
-                         *.hh \
-                         INSTALL DEPENDENCIES CHANGELOG LICENSE LGPL
+EXAMPLE_PATTERNS       = *.c
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be 
 # searched for input files to be used with the \include or \dontinclude 
@@ -644,14 +635,14 @@ HTML_FILE_EXTENSION    = .html
 # The HTML_HEADER tag can be used to specify a personal HTML header for 
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard header.
-HTML_HEADER            = @CMAKE_CURRENT_SOURCE_DIR@/style/header.html
+HTML_HEADER            = @CMAKE_CURRENT_SOURCE_DIR@/../cxx_api/style/header.html
 
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for 
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard footer.
 
-HTML_FOOTER            = @CMAKE_CURRENT_SOURCE_DIR@/style/footer.html
+HTML_FOOTER            = @CMAKE_CURRENT_SOURCE_DIR@/../cxx_api/style/footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading 
 # style sheet that is used by each HTML page. It can be used to 
@@ -660,7 +651,7 @@ HTML_FOOTER            = @CMAKE_CURRENT_SOURCE_DIR@/style/footer.html
 # the style sheet file to the HTML output directory, so don't put your own 
 # stylesheet in the HTML output directory as well, or it will be erased!
 
-HTML_STYLESHEET        = @CMAKE_CURRENT_SOURCE_DIR@/style/stylesheet.css
+HTML_STYLESHEET        = @CMAKE_CURRENT_SOURCE_DIR@/../cxx_api/style/stylesheet.css
 
 # If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, 
 # files or namespaces will be aligned in HTML using tables. If set to 

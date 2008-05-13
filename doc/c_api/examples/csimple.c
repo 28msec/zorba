@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <zorbac/zorbac.h>
+#include <zorba/zorbac.h>
 
 #if 0
 int

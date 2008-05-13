@@ -16,7 +16,7 @@
 
 #include <sstream>
 #include <zorba/api_shared_types.h>
-#include <zorbac/zorbac.h> 
+#include <zorba/zorbac.h> 
 #include <zorba/zorba.h>
 #include "api/unmarshaller.h"
 #include "store/api/item.h"
