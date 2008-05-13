@@ -13,4 +13,3 @@
 # limitations under the License.
 
 ADD_SUBDIRECTORY(zorba)
-ADD_SUBDIRECTORY(zorbac)
