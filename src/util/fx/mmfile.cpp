@@ -48,14 +48,14 @@ namespace zorba {
 	{ \
 		ostringstream oerr; \
 		oerr << s << " [" << strerror(errno) << ']'; \
-		ZORBA_ERROR_DESC( ZorbaError::XQP0013_SYSTEM_MMFILE_IOEXCEPTION, oerr.str());\
+		ZORBA_ERROR_DESC( XQP0013_SYSTEM_MMFILE_IOEXCEPTION, oerr.str());\
 	}
 #else
 #define IOEXCEPTION(s) \
 	{ \
 		ostringstream oerr; \
 		oerr << s << " [" << GetLastError() << ']'; \
-		ZORBA_ERROR_DESC( ZorbaError::XQP0013_SYSTEM_MMFILE_IOEXCEPTION, oerr.str());\
+		ZORBA_ERROR_DESC( XQP0013_SYSTEM_MMFILE_IOEXCEPTION, oerr.str());\
 	}
 #endif
 

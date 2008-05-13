@@ -133,7 +133,7 @@ struct ErrorInfo
   const XQType* theTargetType;
 };
 
-inline void throwError(ZorbaError::ErrorCode aErrorCode, const ErrorInfo& aInfo)
+inline void throwError(XQUERY_ERROR aErrorCode, const ErrorInfo& aInfo)
 {
   ZORBA_ERROR_DESC_OSS(aErrorCode, 
                        "Passed item (of type " << TypeOps::toString(*aInfo.theSourceType)
@@ -192,7 +192,7 @@ inline store::Item_t str_flt(store::Item* aItem, store::ItemFactory* aFactory, n
   if (NumConversions::strToFloat(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createFloat(n);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -202,7 +202,7 @@ inline store::Item_t str_dbl(store::Item* aItem, store::ItemFactory* aFactory, n
   if (NumConversions::strToDouble(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createDouble(n);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -212,7 +212,7 @@ inline store::Item_t str_dec(store::Item* aItem, store::ItemFactory* aFactory, n
   if (NumConversions::strToDecimal(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createDecimal(n);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -222,7 +222,7 @@ inline store::Item_t str_int(store::Item* aItem, store::ItemFactory* aFactory, n
   if (NumConversions::strToInteger(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createInteger(n);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -235,7 +235,7 @@ inline store::Item_t str_dur(store::Item* aItem, store::ItemFactory* aFactory, n
     return aFactory->createDuration(d);
   }
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -248,7 +248,7 @@ inline store::Item_t str_yMD(store::Item* aItem, store::ItemFactory* aFactory, n
     return aFactory->createDuration(d);
   }
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -261,7 +261,7 @@ inline store::Item_t str_dTD(store::Item* aItem, store::ItemFactory* aFactory, n
     return aFactory->createDuration(d);
   }
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -271,7 +271,7 @@ inline store::Item_t str_dT(store::Item* aItem, store::ItemFactory* aFactory, na
   if (0 == DateTime::parseDateTime(doTrim(aItem->getStringValue()).getp(), dt))
     return aFactory->createDateTime(dt);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -281,7 +281,7 @@ inline store::Item_t str_tim(store::Item* aItem, store::ItemFactory* aFactory, n
   if (0 == DateTime::parseTime(doTrim(aItem->getStringValue()).getp(), t))
     return aFactory->createTime(t);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -291,7 +291,7 @@ inline store::Item_t str_dat(store::Item* aItem, store::ItemFactory* aFactory, n
   if (0 == DateTime::parseDate(doTrim(aItem->getStringValue()).getp(), d))
     return aFactory->createDate(d);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -301,7 +301,7 @@ inline store::Item_t str_gYM(store::Item* aItem, store::ItemFactory* aFactory, n
   if (0 == DateTime::parseGYearMonth(doTrim(aItem->getStringValue()).getp(), ym))
     return aFactory->createGYearMonth(ym);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -311,7 +311,7 @@ inline store::Item_t str_gYr(store::Item* aItem, store::ItemFactory* aFactory, n
   if (0 == DateTime::parseGYear(doTrim(aItem->getStringValue()).getp(), y))
     return aFactory->createGYear(y);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -321,7 +321,7 @@ inline store::Item_t str_gMD(store::Item* aItem, store::ItemFactory* aFactory, n
   if (0 == DateTime::parseGMonthDay(doTrim(aItem->getStringValue()).getp(), md))
     return aFactory->createGMonthDay(md);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -331,7 +331,7 @@ inline store::Item_t str_gDay(store::Item* aItem, store::ItemFactory* aFactory, 
   if (0 == DateTime::parseGDay(doTrim(aItem->getStringValue()).getp(), d))
     return aFactory->createGDay(d);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -341,7 +341,7 @@ inline store::Item_t str_gMon(store::Item* aItem, store::ItemFactory* aFactory, 
   if (0 == DateTime::parseGMonth(doTrim(aItem->getStringValue()).getp(), m))
     return aFactory->createGMonth(m);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -353,7 +353,7 @@ inline store::Item_t str_bool(store::Item* aItem, store::ItemFactory* aFactory, 
   if (lString->byteEqual("false", 5) || lString->byteEqual("0", 1))
     lRetValue = false;
   else if (!lString->byteEqual("true", 4) && !lString->byteEqual("1", 1))
-    throwError(ZorbaError::FORG0001, aErrorInfo);
+    throwError(FORG0001, aErrorInfo);
 
 return aFactory->createBoolean(lRetValue);
 }
@@ -364,7 +364,7 @@ inline store::Item_t str_b64(store::Item* aItem, store::ItemFactory* aFactory, n
   if (xqp_base64Binary::parseString(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createBase64Binary(n);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -374,7 +374,7 @@ inline store::Item_t str_hxB(store::Item* aItem, store::ItemFactory* aFactory, n
   if (xqp_hexBinary::parseString(doTrim(aItem->getStringValue()).getp(), n))
     return aFactory->createHexBinary(n);
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -393,7 +393,7 @@ inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory, na
   int32_t idx = str.theStrStore->indexOf(":");
   int32_t lidx = str.theStrStore->lastIndexOf(":");
   if (idx != lidx)
-    throwError(ZorbaError::FORG0001, aErrorInfo);
+    throwError(FORG0001, aErrorInfo);
 
   xqpString lUri, lPrefix;
   
@@ -404,15 +404,15 @@ inline store::Item_t str_QN(store::Item* aItem, store::ItemFactory* aFactory, na
   } else {
     lPrefix = str.substr(0, idx);
     if (!GenericCast::instance()->castableToNCName(lPrefix.getStore()))
-      throwError(ZorbaError::FORG0001, aErrorInfo);
+      throwError(FORG0001, aErrorInfo);
     if (!nsCtx->findBinding(lPrefix, lUri))
-      throwError(ZorbaError::FONS0004, aErrorInfo);
+      throwError(FONS0004, aErrorInfo);
   }
 
   xqpString lLocal = str.substr(idx + 1);
 
   if (!GenericCast::instance()->castableToNCName(lLocal.getStore()))
-    throwError(ZorbaError::FORG0001, aErrorInfo);
+    throwError(FORG0001, aErrorInfo);
 
 
   return aFactory->createQName(&*lUri.theStrStore, 
@@ -548,7 +548,7 @@ inline store::Item_t flt_dec(store::Item* aItem, store::ItemFactory* aFactory, n
   if (xqp_decimal::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createDecimal(n);
 
-  throwError(ZorbaError::FOCA0002, aErrorInfo);
+  throwError(FOCA0002, aErrorInfo);
   return 0;
 }
 
@@ -558,7 +558,7 @@ inline store::Item_t flt_int(store::Item* aItem, store::ItemFactory* aFactory, n
   if (xqp_integer::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createInteger(n);
 
-  throwError(ZorbaError::FOCA0002, aErrorInfo);
+  throwError(FOCA0002, aErrorInfo);
   return 0;
 }
 
@@ -588,7 +588,7 @@ inline store::Item_t dbl_dec(store::Item* aItem, store::ItemFactory* aFactory, n
   if (xqp_decimal::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createDecimal(n);
 
-  throwError(ZorbaError::FOCA0002, aErrorInfo);
+  throwError(FOCA0002, aErrorInfo);
   return 0;
 }
 
@@ -598,7 +598,7 @@ inline store::Item_t dbl_int(store::Item* aItem, store::ItemFactory* aFactory, n
   if (xqp_integer::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createInteger(n);
 
-  throwError(ZorbaError::FOCA0002, aErrorInfo);
+  throwError(FOCA0002, aErrorInfo);
   return 0;
 }
 
@@ -1144,7 +1144,7 @@ store::Item_t str_down(
     assert(false);
   }
 
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -1253,7 +1253,7 @@ store::Item_t int_down(
   default:
     assert(false);
   }
-  throwError(ZorbaError::FORG0001, aErrorInfo);
+  throwError(FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -1293,7 +1293,7 @@ store::Item_t castUserDefinedType(store::Item* aItem,
     }
   }
 
-  throwError(ZorbaError::FORG0001, aErrorInfo); 
+  throwError(FORG0001, aErrorInfo); 
   return 0;
 }
 #endif
@@ -1321,7 +1321,7 @@ store::Item_t GenericCast::cast(store::Item* aItem,
 #endif
 
   if (!TypeOps::is_atomic(*aTargetType))
-    throwError(ZorbaError::XPST0051, lErrorInfo);
+    throwError(XPST0051, lErrorInfo);
 
   store::Item_t lSourceItem;
   xqtref_t lPrimitiveSourceType;
@@ -1346,16 +1346,16 @@ store::Item_t GenericCast::cast(store::Item* aItem,
 
   if ( lPrimitiveSourceAtomicType == TypeConstants::XS_NOTATION 
     || lPrimitiveTargetAtomicType == TypeConstants::XS_NOTATION)
-    throwError(ZorbaError::XPST0080, lErrorInfo);
+    throwError(XPST0080, lErrorInfo);
 
   if ( lPrimitiveSourceAtomicType == TypeConstants::XS_ANY_ATOMIC
     || lPrimitiveTargetAtomicType == TypeConstants::XS_ANY_ATOMIC)
-    throwError(ZorbaError::XPST0080, lErrorInfo);
+    throwError(XPST0080, lErrorInfo);
 
   CastFunc lCastFunc = theCastMatrix[lPrimitiveSourceMapping][lPrimitiveTargetMapping];
 
   if (lCastFunc == 0)
-    throwError(ZorbaError::XPTY0004, lErrorInfo);
+    throwError(XPTY0004, lErrorInfo);
 
 
   store::Item_t lResult = (*lCastFunc)(lSourceItem, 
@@ -1368,7 +1368,7 @@ store::Item_t GenericCast::cast(store::Item* aItem,
     DownCastFunc lDownCastFunc = theDownCastMatrix[lPrimitiveTargetMapping];
 
     if (lDownCastFunc == 0)
-      throwError(ZorbaError::XPTY0004, lErrorInfo);
+      throwError(XPTY0004, lErrorInfo);
 
     ATOMICTYPE_T lTargetAtomicType
       = TypeOps::get_atomic_type_code(*aTargetType);

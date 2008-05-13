@@ -102,7 +102,7 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
 
   expr_t lExpr = translate (*aParsenode, theCompilerCB);
   if ( lExpr == NULL ) { // TODO: can this happen?
-    ZORBA_ERROR( ZorbaError::API0002_COMPILE_FAILED);
+    ZORBA_ERROR( API0002_COMPILE_FAILED);
     return NULL;
   }
 

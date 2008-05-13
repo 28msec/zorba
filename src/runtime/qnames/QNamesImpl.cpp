@@ -81,7 +81,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
 
       // must check for FOCA0002 first
       if (!GENV_GCAST.castableToNCName (resPre) || ! GENV_GCAST.castableToNCName (resLocal))
-        ZORBA_ERROR (ZorbaError::FOCA0002);
+        ZORBA_ERROR (FOCA0002);
       
       itemElem = consumeNext(theChild1, planState );
       if( itemElem != NULL ) {
@@ -96,14 +96,14 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
           }
           }
         if (resNs == NULL)
-          ZORBA_ERROR (ZorbaError::FONS0004);
+          ZORBA_ERROR (FONS0004);
       }
     } else {
       resNs = new xqpStringStore("");
       resPre = new xqpStringStore("");
       resLocal = qname;
       if (! GENV_GCAST.castableToNCName (resLocal))
-        ZORBA_ERROR (ZorbaError::FOCA0002);
+        ZORBA_ERROR (FOCA0002);
     }
 
     res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
@@ -165,7 +165,7 @@ QNameIterator::nextImpl(PlanState& planState) const
 
   if( -1 != index ) {
     if (resNs->empty ())
-      ZORBA_ERROR (ZorbaError::FOCA0002);
+      ZORBA_ERROR (FOCA0002);
 
     resPre = new xqpStringStore(qname->str().substr(0, index));
     resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
@@ -176,7 +176,7 @@ QNameIterator::nextImpl(PlanState& planState) const
   
   if ((index != -1 && ! GENV_GCAST.castableToNCName (resPre))
       || ! GENV_GCAST.castableToNCName (resLocal))
-    ZORBA_ERROR (ZorbaError::FOCA0002);
+    ZORBA_ERROR (FOCA0002);
 
   res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
   STACK_PUSH( res, state );

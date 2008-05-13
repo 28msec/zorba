@@ -44,7 +44,7 @@ static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_
 
 static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t type)
 {
-  return new treat_expr (e->get_loc (), e, type, ZorbaError::XPTY0004);
+  return new treat_expr (e->get_loc (), e, type, XPTY0004);
 }
 
 static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type)
@@ -57,7 +57,7 @@ static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type
 static inline void checkNonUpdating(const expr* lExpr)
 {
   if (lExpr != 0 && lExpr->isUpdating())
-    ZORBA_ERROR_LOC(ZorbaError::XUST0001, lExpr->get_loc());
+    ZORBA_ERROR_LOC(XUST0001, lExpr->get_loc());
 }
 
 class normalizer : public expr_visitor {
@@ -102,10 +102,10 @@ bool begin_visit (flwor_expr& node)
     if (vartype != NULL) {
       bool is_for = clause->get_type () == forlet_clause::for_clause;
       if (is_for && TypeOps::is_empty (*vartype))
-        ZORBA_ERROR_LOC (ZorbaError::XPTY0004, loc);
+        ZORBA_ERROR_LOC (XPTY0004, loc);
       xqtref_t promote_type = is_for ? m_sctx->get_typemanager()->create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
       expr_t e = clause->get_expr ();
-      clause->set_expr (new treat_expr (e->get_loc (), e, promote_type, ZorbaError::XPTY0004));
+      clause->set_expr (new treat_expr (e->get_loc (), e, promote_type, XPTY0004));
     }
   }
   return true;
@@ -212,7 +212,7 @@ bool begin_visit (relpath_expr& node)
 {
   if (node.size() > 0) {
     expr_t ie = node[0];
-    expr_t pe = new treat_expr(ie->get_loc(), ie, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, ZorbaError::XPTY0019);
+    expr_t pe = new treat_expr(ie->get_loc(), ie, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, XPTY0019);
     node[0] = pe;
   }
   return true;

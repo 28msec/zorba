@@ -53,7 +53,7 @@ void fxcharheap::ioexception(
   oss << msg;
 #endif
   //throw xqp_exception(location, oss.str());
-  ZORBA_ERROR_DESC(  ZorbaError::XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION, oss.str());
+  ZORBA_ERROR_DESC(  XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION, oss.str());
 }
 
 

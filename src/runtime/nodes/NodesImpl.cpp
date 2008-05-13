@@ -174,14 +174,14 @@ store::Item_t FnCollectionIterator::nextImpl(PlanState& planState) const
   {
     uri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
     if(uri.empty())
-      ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0002, loc,
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
                            "Default collection is undefined in the dynamic context.");
   }
 
   theColl = GENV_STORE.getCollection(uri.getStore());
 
   if(theColl == NULL)
-    ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0004, loc, "Invalid argument to fn:collection.");
+    ZORBA_ERROR_LOC_DESC(FODC0004, loc, "Invalid argument to fn:collection.");
 
   state->theIterator = theColl->getIterator(false);
   ZORBA_ASSERT(state->theIterator!=NULL);

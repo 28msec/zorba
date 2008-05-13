@@ -92,10 +92,10 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
     switch (err) 
     {
     case URI::INVALID_URI:
-      ZORBA_ERROR (ZorbaError::FORG0002);
+      ZORBA_ERROR (FORG0002);
       break;
     case URI::RESOLUTION_ERROR:
-      ZORBA_ERROR (ZorbaError::FORG0009);
+      ZORBA_ERROR (FORG0009);
       break;
     case URI::MAX_ERROR_CODE:
       break;

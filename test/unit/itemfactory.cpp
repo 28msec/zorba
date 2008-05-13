@@ -39,7 +39,7 @@ checkType(const Item& aItem, const String& aLocalname)
     object.member;\
     assert(false); \
   } catch (SystemException &e) { \
-    assert (e.getErrorCode() == ZorbaError::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE); \
+    assert (e.getErrorCode() == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE); \
   }
 
 

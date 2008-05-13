@@ -120,10 +120,11 @@ private:
   xqtref_t theTreatType;
   TypeConstants::quantifier_t theQuantifier;
   bool check_prime;
-  ZorbaError::ErrorCode theErrorCode;
+  XQUERY_ERROR theErrorCode;
 
 public:
-  TreatIterator(const QueryLoc&, std::vector<PlanIter_t>&, const xqtref_t& aTreatType, bool check_prime, enum ZorbaError::ErrorCode);
+  TreatIterator(const QueryLoc&, std::vector<PlanIter_t>&, const xqtref_t& aTreatType,
+                bool check_prime, XQUERY_ERROR);
   
   NARY_ITER_METHODS
 };

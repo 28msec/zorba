@@ -583,7 +583,7 @@ template<class V>
 inline uint32_t hash32map<V>::size() 
 {
   SYNC_CODE( if (rwl.readlock()!=0) {
-    ZORBA_ERROR( ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
+    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
   })
   uint32_t z = v.size();
   SYNC_CODE(rwl.readunlock();)
@@ -640,7 +640,7 @@ inline bool hash32map<V>::find(
 {
   SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
+    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
   })
   bool b = find_unsync(key, index);
   SYNC_CODE(rwl.readunlock();)
@@ -666,7 +666,7 @@ inline bool hash32map<V>::get(
 {
   SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
+    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
   })
   bool b = get_unsync(key, result);
   SYNC_CODE(rwl.readunlock();)
@@ -697,7 +697,7 @@ inline bool hash32map<V>::put(
 {
   SYNC_CODE(if (rwl.writelock()!=0) {
     //throw xqp_exception(__FUNCTION__,"write lock failed");
-    ZORBA_ERROR( ZorbaError::XQP0009_SYSTEM_WRITE_LOCK_FAILED);
+    ZORBA_ERROR( XQP0009_SYSTEM_WRITE_LOCK_FAILED);
   })
   bool b = put_unsync(key, val);
   SYNC_CODE(rwl.writeunlock();)
@@ -771,7 +771,7 @@ inline uint32_t hash64map<V>::size()
 {
   SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
+    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
   })
   uint32_t z = v.size();
   SYNC_CODE(rwl.readunlock();)
@@ -830,7 +830,7 @@ inline bool hash64map<V>::find(
 {
   SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
+    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
   })
   bool b = find_unsync(key, index);
   SYNC_CODE(rwl.readunlock();)
@@ -874,7 +874,7 @@ inline bool hash64map<V>::get(
 {
   SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
+    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
   })
   bool b = get_unsync(key, result);
   SYNC_CODE(rwl.readunlock();)
@@ -907,7 +907,7 @@ inline bool hash64map<V>::put(
   int rwl_status;
   SYNC_CODE(if ((rwl_status=rwl.writelock())!=0) {
     //throw xqp_exception(__FUNCTION__,"write lock failed");
-    ZORBA_ERROR( ZorbaError::XQP0009_SYSTEM_WRITE_LOCK_FAILED);
+    ZORBA_ERROR( XQP0009_SYSTEM_WRITE_LOCK_FAILED);
   })
   bool b = put_unsync(key, val);
   SYNC_CODE(rwl.writeunlock();)

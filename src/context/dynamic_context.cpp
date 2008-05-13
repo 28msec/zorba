@@ -114,7 +114,7 @@ xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qnam
     return rqname.second + ":";
   if(!sctx) {
     ///actually the whole static context is missing
-    ZORBA_ERROR_PARAM( ZorbaError::XPST0001, "entire static context", "");
+    ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
 			return (const char*)NULL;
   }
   return rqname.second + ":" + sctx->lookup_ns(rqname.first);	
@@ -232,7 +232,7 @@ store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) {
       return NULL;///variable not found
 	}
   if (val.in_progress)
-    ZORBA_ERROR (ZorbaError::XQST0054);
+    ZORBA_ERROR (XQST0054);
   assert (val.type == dynamic_context::dctx_value_t::temp_seq_val);
   return val.val.temp_seq->getIterator ();
 }

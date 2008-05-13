@@ -271,7 +271,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
 void
 ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDesc)
 {
-  SystemException lSystemException(ZorbaError::XQP0019_INTERNAL_ERROR, 
+  SystemException lSystemException(XQP0019_INTERNAL_ERROR, 
                                    String(aDesc), "", 0);
   aErrorHandler->systemError(lSystemException);
 }
@@ -280,7 +280,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDesc)
 void
 ZorbaImpl::notifyError(ErrorHandler* aErrorHandler)
 {
-  SystemException lSystemException(ZorbaError::XQP0019_INTERNAL_ERROR, 
+  SystemException lSystemException(XQP0019_INTERNAL_ERROR, 
                                    "An internal error occured.", "", 0);
   aErrorHandler->systemError(lSystemException);
 }
@@ -290,7 +290,7 @@ void
 ZorbaImpl::checkItem(const store::Item_t& aItem)
 {
   if (aItem == NULL)
-    ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT, "Invalid item given");
+    ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid item given");
 }
 
 } /* namespace zorba */

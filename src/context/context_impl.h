@@ -45,7 +45,7 @@
   }                                                            \
                                                                \
   void class::set_##name (xqp_string val) {                    \
-    bind_str ("int:" #name, val, ZorbaError::err);             \
+    bind_str ("int:" #name, val, err);             \
   }
 
 /*

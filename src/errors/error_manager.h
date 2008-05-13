@@ -37,13 +37,13 @@ public:
 
   static ZorbaError
   createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
+        XQUERY_ERROR aErrorCode,
         const std::string&             aFileName,
         int                            aLineNumber);
 
   static ZorbaError
   createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
+        XQUERY_ERROR aErrorCode,
         const std::string&             aFileName,
         int                            aLineNumber, 
         const QueryLoc&                aLocation);
@@ -51,7 +51,7 @@ public:
 
   static ZorbaError
   createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
+        XQUERY_ERROR aErrorCode,
         const std::string&             aParam1,
         const std::string&             aParam2,
         const std::string&             aFileName,
@@ -61,14 +61,14 @@ public:
 
   static ZorbaError
   createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
+        XQUERY_ERROR aErrorCode,
         const std::string&             aDescription, 
         const std::string&             aFileName,
         int                            aLineNumber);
 
   static ZorbaError
   createException(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
+        XQUERY_ERROR aErrorCode,
         const xqpString&               aDescription,
         const std::string&             aFileName,
         int                            aLineNumber,
@@ -104,7 +104,7 @@ public:
 
   void
   addError(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
+        XQUERY_ERROR aErrorCode,
         const xqpString&               aDescription,
         const std::string&             aFileName,
         int                            aLineNumber,
@@ -112,7 +112,7 @@ public:
 
   void
   addError(
-        ::zorba::ZorbaError::ErrorCode aErrorCode, 
+        XQUERY_ERROR aErrorCode, 
         const std::string&             aParam1,
         const std::string&             aParam2,
         const std::string&             aFileName,
@@ -295,14 +295,14 @@ public:
 #define ZORBA_NOT_IMPLEMENTED( what )                                 \
   do                                                                  \
   {                                                                   \
-    ZORBA_ERROR_DESC(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, what); \
+    ZORBA_ERROR_DESC(XQP0004_SYSTEM_NOT_SUPPORTED, what); \
   } while (0) 
  
 
 #define ZORBA_NOT_SUPPORTED( what )                                   \
   do                                                                  \
   {                                                                   \
-    ZORBA_ERROR_DESC(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, what); \
+    ZORBA_ERROR_DESC(XQP0004_SYSTEM_NOT_SUPPORTED, what); \
   } while (0) 
 
 

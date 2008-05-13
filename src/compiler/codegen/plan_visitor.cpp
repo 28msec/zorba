@@ -707,9 +707,9 @@ bool begin_visit(insert_expr& v)
       return true;
 
     if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-      ZORBA_ERROR_LOC(ZorbaError::XUDY0027, v.get_loc());
+      ZORBA_ERROR_LOC(XUDY0027, v.get_loc());
     else
-      ZORBA_ERROR_LOC(ZorbaError::XUTY0006, v.get_loc());
+      ZORBA_ERROR_LOC(XUTY0006, v.get_loc());
   }
   else
   {
@@ -721,9 +721,9 @@ bool begin_visit(insert_expr& v)
       return true;
 
     if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-      ZORBA_ERROR_LOC(ZorbaError::XUDY0027, v.get_loc());
+      ZORBA_ERROR_LOC(XUDY0027, v.get_loc());
     else
-      ZORBA_ERROR_LOC(ZorbaError::XUTY0005, v.get_loc());
+      ZORBA_ERROR_LOC(XUTY0005, v.get_loc());
   }
 
   return true;
@@ -750,7 +750,7 @@ bool begin_visit(delete_expr& v)
       TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR))
     return true;
 
-  ZORBA_ERROR_LOC(ZorbaError::XUTY0007, v.get_loc());
+  ZORBA_ERROR_LOC(XUTY0007, v.get_loc());
 
   return true;
 }
@@ -776,9 +776,9 @@ bool begin_visit(replace_expr& v)
     return true;
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    ZORBA_ERROR_LOC(ZorbaError::XUDY0027, v.get_loc());
+    ZORBA_ERROR_LOC(XUDY0027, v.get_loc());
   else
-    ZORBA_ERROR_LOC(ZorbaError::XUTY0008, v.get_loc());
+    ZORBA_ERROR_LOC(XUTY0008, v.get_loc());
 
   return true;
 }
@@ -812,9 +812,9 @@ bool begin_visit(rename_expr& v)
     return true;
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    ZORBA_ERROR_LOC(ZorbaError::XUDY0027, v.get_loc());
+    ZORBA_ERROR_LOC(XUDY0027, v.get_loc());
   else
-    ZORBA_ERROR_LOC(ZorbaError::XUTY0012, v.get_loc());
+    ZORBA_ERROR_LOC(XUTY0012, v.get_loc());
 
   return true;
 }
@@ -917,7 +917,7 @@ void end_visit(fo_expr& v)
   }
   else 
   {
-    ZORBA_ERROR_LOC_PARAM(ZorbaError::XPST0017, loc,
+    ZORBA_ERROR_LOC_PARAM(XPST0017, loc,
                           func->get_signature().get_name()->getStringValue(),
                           argv.size());
   }
@@ -1006,7 +1006,7 @@ bool begin_visit(name_cast_expr& v)
       TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     return true;
 
-  ZORBA_ERROR_LOC(ZorbaError::XPTY0004, v.get_loc());
+  ZORBA_ERROR_LOC(XPTY0004, v.get_loc());
 
   return true;
 }

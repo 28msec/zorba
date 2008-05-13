@@ -276,7 +276,7 @@ volatile void file::error(
 	string const& location,
 	string const& msg)
 {
-	ZORBA_ERROR_DESC( ZorbaError::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, msg);
+	ZORBA_ERROR_DESC( XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, msg);
 }
 
 

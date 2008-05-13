@@ -81,7 +81,7 @@ DynamicContextImpl::setVariable(
   ZORBA_TRY
     ResultIterator* lIter = &*aResultIterator;
     if (!lIter)
-      ZORBA_ERROR_DESC(ZorbaError::API0014_INVALID_ARGUMENT,
+      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
                        "Invalid ResultIterator given");
         
     store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
@@ -178,7 +178,7 @@ DynamicContextImpl::setVariableAsDocument(
                                              TypeConstants::QUANT_ONE);
 
       if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)) {
-        ZORBA_ERROR_DESC_OSS(ZorbaError::API0014_INVALID_ARGUMENT, "Given item of type [" << lItemType->toString() 
+        ZORBA_ERROR_DESC_OSS(API0014_INVALID_ARGUMENT, "Given item of type [" << lItemType->toString() 
                                                                    << "] is not a subtype of [" 
                                                                    << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
       }

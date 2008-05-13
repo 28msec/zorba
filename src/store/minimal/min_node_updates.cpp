@@ -390,7 +390,7 @@ void ElementNode::insertAttributes(
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(attrs[i].getp());
 
-    checkNamespaceConflict(attr->theName, ZorbaError::XUDY0024);
+    checkNamespaceConflict(attr->theName, XUDY0024);
     checkUniqueAttr(attr->theName);
 
     if (copy)
@@ -420,7 +420,7 @@ void ElementNode::replaceAttribute(
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(newAttrs[i].getp());
 
-    checkNamespaceConflict(attr->theName, ZorbaError::XUDY0024);
+    checkNamespaceConflict(attr->theName, XUDY0024);
     checkUniqueAttr(attr->theName);
 
     if (copy)
@@ -512,7 +512,7 @@ void ElementNode::rename(Item_t& newName, Item_t& oldName)
 {
   QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
 
-  checkNamespaceConflict(newName, ZorbaError::XUDY0024);
+  checkNamespaceConflict(newName, XUDY0024);
 
   oldName.transfer(theName);
   theName.transfer(newName);
@@ -528,7 +528,7 @@ void AttributeNode::rename(Item_t& newName, Item_t& oldName)
     ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
 
     QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
-    parent->checkNamespaceConflict(newName, ZorbaError::XUDY0024);
+    parent->checkNamespaceConflict(newName, XUDY0024);
     parent->addLocalBinding(qn->getPrefix(), qn->getNamespace());
   }
 

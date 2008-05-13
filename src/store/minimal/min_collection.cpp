@@ -123,7 +123,7 @@ void SimpleCollection::addToCollection(const Item* node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR( ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+    ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
@@ -153,7 +153,7 @@ void SimpleCollection::removeFromCollection(const Item* node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR( ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+    ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)

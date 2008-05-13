@@ -70,7 +70,7 @@ bool isErrorExpected(zorba::ZorbaException& e, State* aState) {
   if ( aState->hasErrors) {
     std::vector<std::string>::const_iterator lIter = aState->theErrors.begin();
     std::vector<std::string>::const_iterator lEnd  = aState->theErrors.end();
-    zorba::String lError = zorba::ZorbaError::getErrorCode(e.getErrorCode());
+    zorba::String lError = zorba::ZorbaException::getErrorCodeAsString(e.getErrorCode());
     for(;lIter!=lEnd;++lIter)
     {
       zorba::String lSpecError = *lIter;

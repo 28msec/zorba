@@ -22,7 +22,7 @@
 
 namespace zorba {  namespace error {
 
-::zorba::ZorbaError::ErrorCode 
+XQUERY_ERROR
 DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code);
 
 
@@ -34,11 +34,11 @@ class ErrorMessages
  public:
   virtual ~ErrorMessages() { }
 
-  static ::zorba::ZorbaError::ErrorCode getErrorCodeForName(const std::string& name); 
+  static XQUERY_ERROR getErrorCodeForName(const std::string& name); 
 
-  static std::string getNameForErrorCode(::zorba::ZorbaError::ErrorCode&);
+  static std::string getNameForErrorCode(const XQUERY_ERROR&);
 
-  static std::string getMessageForErrorCode(::zorba::ZorbaError::ErrorCode&);
+  static std::string getMessageForErrorCode(const XQUERY_ERROR&);
   static std::string getMessageForWarningCode(ZorbaWarning::WarningCode&);
 };
 

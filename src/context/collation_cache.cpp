@@ -52,7 +52,7 @@ namespace zorba {
     xqpString lTmpURI(aURI); 
     if (!theStaticContext->has_collation_uri(lTmpURI))
     {
-      ZORBA_ERROR_DESC_OSS(ZorbaError::FOCH0002, "Collation " << *aURI << " not found in static context.");
+      ZORBA_ERROR_DESC_OSS(FOCH0002, "Collation " << *aURI << " not found in static context.");
     } else {
       CacheMap_t::iterator lFind = theMap.find(lTmpURI);
       if ( lFind != theMap.end() )
@@ -63,7 +63,7 @@ namespace zorba {
       {
         XQPCollator* lCollator = CollationFactory::createCollator(lTmpURI);
         if ( ! lCollator )
-          ZORBA_ERROR_DESC_OSS(ZorbaError::FOCH0002, "Collation " << *aURI << " not supported.");
+          ZORBA_ERROR_DESC_OSS(FOCH0002, "Collation " << *aURI << " not supported.");
         theMap[lTmpURI] = lCollator;
         return lCollator;
       } 

@@ -215,7 +215,7 @@ void XmlLoader::setRoot(XmlNode* root)
 //    if (stream.bad())
 //    {
 //      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-//                                ZorbaError::XQP0016_LOADER_IO_ERROR,
+//                                XQP0016_LOADER_IO_ERROR,
 //                                "Input stream in bad state");
 //    }
 //
@@ -224,12 +224,12 @@ void XmlLoader::setRoot(XmlNode* root)
 //  catch (std::iostream::failure e)
 //  {
 //    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-//                              ZorbaError::XQP0016_LOADER_IO_ERROR, e.what());
+//                              XQP0016_LOADER_IO_ERROR, e.what());
 //  }
 //  catch (...)
 //  {
 //    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-//                              ZorbaError::XQP0016_LOADER_IO_ERROR,
+//                              XQP0016_LOADER_IO_ERROR,
 //                              "Unknown exception");
 //  }
 //
@@ -871,7 +871,7 @@ XmlNode* XmlLoader::startloadXml(
     {
       endDocument(this);
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                     XQP0017_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
       abort();
@@ -899,7 +899,7 @@ bool XmlLoader::continueloadXml(
       if(theErrorManager)
       {
         ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                     XQP0017_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
       }
@@ -914,7 +914,7 @@ bool XmlLoader::continueloadXml(
       if(theErrorManager)
       {
         ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                     XQP0017_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
       }
@@ -933,7 +933,7 @@ bool XmlLoader::continueloadXml(
     if(theErrorManager)
     {
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                   ZorbaError::XQP0017_LOADER_PARSING_ERROR,
+                                   XQP0017_LOADER_PARSING_ERROR,
                                    "The document with URI " << *theDocUri
                                    <<" is not well formed", "");
     }
@@ -1508,7 +1508,7 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
   if(loader->theErrorManager)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
-                            ZorbaError::XQP0017_LOADER_PARSING_ERROR, buf);
+                            XQP0017_LOADER_PARSING_ERROR, buf);
   }
 }
 

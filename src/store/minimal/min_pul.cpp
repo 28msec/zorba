@@ -249,7 +249,7 @@ void PULImpl::addInsertAttributes(
   ulong numAttrs = attrs.size();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    n->checkNamespaceConflict(attrs[i]->getNodeName(), ZorbaError::XUDY0023);
+    n->checkNamespaceConflict(attrs[i]->getNodeName(), XUDY0023);
   }
 
   NodeUpdates* updates = 0;
@@ -318,7 +318,7 @@ void PULImpl::addReplaceNode(
       if ((*updates)[i]->getKind() == kind)
       {
         delete upd;
-        ZORBA_ERROR(ZorbaError::XUDY0016);
+        ZORBA_ERROR(XUDY0016);
       }
     }
 
@@ -356,7 +356,7 @@ void PULImpl::addReplaceContent(
     for (ulong i = 0; i < numUpdates; i++)
     {
       if ((*updates)[i]->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
-        ZORBA_ERROR(ZorbaError::XUDY0017);
+        ZORBA_ERROR(XUDY0017);
     }
 
     UpdatePrimitive* upd = new UpdReplaceContent(target, newChild, copy, copymode);
@@ -412,7 +412,7 @@ void PULImpl::addReplaceValue(Item_t& target, xqpStringStore_t& newValue)
       if (UpdateConsts::isReplaceValue((*updates)[i]->getKind()))
       {
         delete upd;
-        ZORBA_ERROR(ZorbaError::XUDY0017);
+        ZORBA_ERROR(XUDY0017);
       }
     }
 
@@ -472,7 +472,7 @@ void PULImpl::addRename(Item_t& target, Item_t& newName)
       if (UpdateConsts::isRename((*updates)[i]->getKind()))
       {
         delete upd;
-        ZORBA_ERROR(ZorbaError::XUDY0015);
+        ZORBA_ERROR(XUDY0015);
       }
     }
 
@@ -554,7 +554,7 @@ void PULImpl::mergeUpdateList(
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
           if (UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
-            ZORBA_ERROR(ZorbaError::XUDY0015);
+            ZORBA_ERROR(XUDY0015);
         }
       }
       else if (checkReplaceValue && UpdateConsts::isReplaceValue(updKind))
@@ -563,7 +563,7 @@ void PULImpl::mergeUpdateList(
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
           if (UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
-            ZORBA_ERROR(ZorbaError::XUDY0017);
+            ZORBA_ERROR(XUDY0017);
         }
       }
       else if (checkReplaceNode && UpdateConsts::isReplaceNode(updKind))
@@ -572,7 +572,7 @@ void PULImpl::mergeUpdateList(
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
           if (UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
-            ZORBA_ERROR(ZorbaError::XUDY0016);
+            ZORBA_ERROR(XUDY0016);
         }
       }
       else if (checkReplaceContent && upd->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
@@ -581,7 +581,7 @@ void PULImpl::mergeUpdateList(
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
           if ((*targetUpdates)[j]->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
-            ZORBA_ERROR(ZorbaError::XUDY0017);
+            ZORBA_ERROR(XUDY0017);
         }
       }
       else if (checkDelete && upd->getKind() == UpdateConsts::UP_DELETE)
@@ -632,7 +632,7 @@ void PULImpl::checkTransformUpdates(const std::vector<Item*>& rootNodes) const
     }
 
     if (!found)
-      ZORBA_ERROR(ZorbaError::XUDY0014);
+      ZORBA_ERROR(XUDY0014);
   }
 }
 

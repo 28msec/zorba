@@ -811,7 +811,7 @@ store::Item_t FnAdjustToTimeZoneIterator_1::nextImpl(PlanState& planState) const
       dt_t = item0->getDateTimeValue()->adjustToTimeZone(
         planState.theRuntimeCB->theDynamicContext->get_implicit_timezone());
     } catch (InvalidTimezoneException) {
-      ZORBA_ERROR(ZorbaError::FODT0003);
+      ZORBA_ERROR(FODT0003);
     }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(dt_t), state);
   }
@@ -838,7 +838,7 @@ store::Item_t FnAdjustToTimeZoneIterator_2::nextImpl(PlanState& planState) const
     try {
       dt_t = item0->getDateTimeValue()->adjustToTimeZone(item1.isNull()? NULL : item1->getDurationValue());
     } catch (InvalidTimezoneException) {
-      ZORBA_ERROR(ZorbaError::FODT0003);
+      ZORBA_ERROR(FODT0003);
     }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(dt_t), state);
   }

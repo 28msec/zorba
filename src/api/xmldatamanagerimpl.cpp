@@ -64,7 +64,7 @@ namespace zorba {
       xqpStringStore_t lString = Unmarshaller::getInternalString(uri);
 
       if ( ! stream.good() ) {
-        ZORBA_ERROR_DESC(ZorbaError::API0015_CANNOT_OPEN_FILE, "cannot read from stream");
+        ZORBA_ERROR_DESC(API0015_CANNOT_OPEN_FILE, "cannot read from stream");
       }
 
       return &*theStore->loadDocument(lString, stream); 
@@ -79,7 +79,7 @@ namespace zorba {
       xqpStringStore_t lString = Unmarshaller::getInternalString(uri);
 
       if ( ! stream->good() ) {
-        ZORBA_ERROR_DESC(ZorbaError::API0015_CANNOT_OPEN_FILE, "cannot read from stream");
+        ZORBA_ERROR_DESC(API0015_CANNOT_OPEN_FILE, "cannot read from stream");
       }
 
       return &*theStore->loadDocument(lString, stream); 

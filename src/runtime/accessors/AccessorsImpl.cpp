@@ -150,7 +150,7 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
     if (inNode->isNode()) 
       STACK_PUSH(inNode->getNilled(), state);
     else
-      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc,
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                            "The argument of the fn:nilled function is not a node");
   }
   

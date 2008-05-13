@@ -91,7 +91,7 @@ protected:
   void bind_func (xqp_string key, function *f) {
     ctx_value_t v;
     if (lookup_func (key) != NULL)
-      ZORBA_ERROR (ZorbaError::XQST0034);
+      ZORBA_ERROR (XQST0034);
     v.functionValue = f;
     keymap.put (key, v);
   }
@@ -105,9 +105,9 @@ protected:
     return true;
   }
 
-  void bind_str (xqp_string key, xqp_string v, enum ZorbaError::ErrorCode err = ZorbaError::XQP0019_INTERNAL_ERROR) {
+  void bind_str (xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR) {
     xqp_string old;
-    if (err != ZorbaError::MAX_ZORBA_ERROR_CODE && lookup_once (key, old))
+    if (err != MAX_ZORBA_ERROR_CODE && lookup_once (key, old))
       ZORBA_ERROR(err);
     str_keymap.put (key, v);
   }

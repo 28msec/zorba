@@ -539,7 +539,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aS
 
             if (!xsiTypeDV) 
             {
-                ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
+                ZORBA_ERROR_DESC_OSS( FORG0001, 
                     "Type '" << TypeOps::toString (*aTargetType) << "' not found in current context.");
                 wasError = true;
             }
@@ -549,7 +549,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aS
         }
         else
         {
-          ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
+          ZORBA_ERROR_DESC_OSS( FORG0001, 
                                 "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
           wasError = true;
 
@@ -560,7 +560,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aS
     }
     catch (XMLException& idve)
     {
-        ZORBA_ERROR_DESC_OSS( ZorbaError::FORG0001, 
+        ZORBA_ERROR_DESC_OSS( FORG0001, 
             "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to '" << 
             TypeOps::toString( *aTargetType ) << "' : " << transcode(idve.getMessage()));
         return false;

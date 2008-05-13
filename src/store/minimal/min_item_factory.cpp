@@ -247,7 +247,7 @@ Item_t BasicItemFactory::createDateTime (const Item_t& date, const Item_t& time)
     Item_t item;
     
     if (2 == DateTimeItemNaive::createFromDateAndTime(date->getDateValue(), time->getTimeValue(), item))
-      ZORBA_ERROR(ZorbaError::FORG0008);
+      ZORBA_ERROR(FORG0008);
     
     return item;
   }
@@ -774,7 +774,7 @@ Item_t BasicItemFactory::createAttributeNode(
 
   if (name->getLocalName()->empty())
   {
-    ZORBA_ERROR_DESC(ZorbaError::XQDY0074,
+    ZORBA_ERROR_DESC(XQDY0074,
                      "Attribute name must not have an empty local part.");
   }
   
@@ -782,7 +782,7 @@ Item_t BasicItemFactory::createAttributeNode(
       (name->getNamespace()->empty() &&
        name->getLocalName()->byteEqual("xmlns", 5)))
   {
-    ZORBA_ERROR(ZorbaError::XQDY0044);
+    ZORBA_ERROR(XQDY0044);
   }
 
   // Compute the attribute value.

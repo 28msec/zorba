@@ -32,8 +32,9 @@ class ZorbaException
 
   /** \brief Get the ErrorCode of the error that is reported by this exception.
    */
-  virtual ZorbaError::ErrorCode
+  virtual XQUERY_ERROR
   getErrorCode() const;
+
 
   /** \brief Get the descriptionof the error that is reported by this exception.
    */
@@ -59,18 +60,26 @@ class ZorbaException
   getFileLineNumber() const;
 
 
+  /** \brief Static function to convert an XQUERY_ERROR to a String
+   *
+   * @param  aErrorCode the XQUERY_ERROR to convert to a String.
+   * @return String the String representation of the XQUERY_ERROR.
+   */
+  static std::string
+  getErrorCodeAsString(const XQUERY_ERROR& aErrorCode);
+
 protected:
   friend class ZorbaImpl;
   /** \brief Proctected constructor - only the %Zorba engine can construct and throw
    *         exceptions.
    */
-  ZorbaException(const ZorbaError::ErrorCode&, const String& aDescription,
+  ZorbaException(const XQUERY_ERROR&, const String& aDescription,
                  const String& aFileName, unsigned int aFileLineNumber);
 
-  ZorbaError::ErrorCode theErrorCode;
-  String                theDescription;
-  String                theFileName;
-  unsigned int          theFileLineNumber;          
+  XQUERY_ERROR   theErrorCode;
+  String         theDescription;
+  String         theFileName;
+  unsigned int   theFileLineNumber;          
 };
 
 
@@ -107,7 +116,7 @@ protected:
    *         exceptions.
    */
   QueryException(
-        const ZorbaError::ErrorCode&,
+        const XQUERY_ERROR&,
         const String& aDescription, 
         const String& afilename,
         unsigned int afilelinenumber,
@@ -138,7 +147,7 @@ protected:
    *         exceptions.
    */
   DynamicException(
-        const ZorbaError::ErrorCode&,
+        const XQUERY_ERROR&,
         const String&,
         const String& afilename,
         unsigned int afilelinenumber,
@@ -166,7 +175,7 @@ protected:
    *         exceptions.
    */
   StaticException(
-        const ZorbaError::ErrorCode&,
+        const XQUERY_ERROR&,
         const String&,
         const String& afilename,
         unsigned int afilelinenumber,
@@ -194,7 +203,7 @@ protected:
    *         exceptions.
    */
   TypeException(
-        const ZorbaError::ErrorCode&,
+        const XQUERY_ERROR&,
         const String&,
         const String& afilename,
         unsigned int afilelinenumber,
@@ -223,7 +232,7 @@ protected:
    *         exceptions.
    */
   SerializationException(
-        const ZorbaError::ErrorCode&,
+        const XQUERY_ERROR&,
         const String& aDescription,
         const String& afilename,
         unsigned int afilelinenumber,
@@ -250,7 +259,7 @@ protected:
   /** \brief Proctected constructor - only the %Zorba engine can construct and throw
    *         exceptions.
    */
-  SystemException(const ZorbaError::ErrorCode&, const String& aDescription,
+  SystemException(const XQUERY_ERROR&, const String& aDescription,
                   const String& afilename, unsigned int afilelinenumber);
 
 };

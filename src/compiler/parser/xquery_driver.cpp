@@ -60,13 +60,13 @@ void xquery_driver::error(
 	string const& m)
 {
   QueryLoc lLoc = createQueryLoc(l);
-  ZORBA_ERROR_LOC_DESC( ZorbaError::XPST0003, lLoc, m);
+  ZORBA_ERROR_LOC_DESC( XPST0003, lLoc, m);
 }
      
 void xquery_driver::error(
 	string const& m)
 {
-  ZORBA_ERROR_DESC( ZorbaError::XPST0003, m); 
+  ZORBA_ERROR_DESC( XPST0003, m); 
 }
 
 QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc) 

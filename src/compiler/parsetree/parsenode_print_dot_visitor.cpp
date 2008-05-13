@@ -918,7 +918,7 @@ void *ParseNodePrintDOTVisitor::begin_visit(const SchemaImport &n)
     NL;
     return no_state;
 #else
-  ZORBA_ERROR(ZorbaError::XQST0009);//xml schema not supported
+  ZORBA_ERROR(XQST0009);//xml schema not supported
   return no_state;
 #endif
 }

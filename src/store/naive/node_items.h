@@ -462,7 +462,7 @@ public:
 
   void checkNamespaceConflict(
         const Item*           qname,
-        ZorbaError::ErrorCode ecode) const;
+        XQUERY_ERROR ecode) const;
 
   void checkUniqueAttr(const Item* attrName) const;
 

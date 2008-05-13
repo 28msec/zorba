@@ -90,7 +90,7 @@ void Base64::insertData(const char* aCharStar, size_t len)
         theData.push_back('=');
         ++i;
       } else {
-        ZORBA_ERROR_DESC(ZorbaError::FORG0001,"In Base 64, '==' must be at the end and must be succeed by [AQgw]");
+        ZORBA_ERROR_DESC(FORG0001,"In Base 64, '==' must be at the end and must be succeed by [AQgw]");
       }
     } else if (lChar == '=' && i > 0 && i == (len-1))
     {
@@ -101,16 +101,16 @@ void Base64::insertData(const char* aCharStar, size_t len)
         theData.push_back('=');
         break;
       default:
-        ZORBA_ERROR_DESC(ZorbaError::FORG0001,"In Base 64, '=' must be at the end and must be succeed by [AEIMQUYcgkosw048]");
+        ZORBA_ERROR_DESC(FORG0001,"In Base 64, '=' must be at the end and must be succeed by [AEIMQUYcgkosw048]");
       }
     } else {
       std::stringstream lStream;
       lStream << "invalid character '" << aCharStar[i] << "' in Base64 value";
-      ZORBA_ERROR_DESC(ZorbaError::FORG0001, lStream.str());
+      ZORBA_ERROR_DESC(FORG0001, lStream.str());
     }
   }
   if (theData.size() % 4 != 0) {
-    ZORBA_ERROR_DESC(ZorbaError::FORG0001, "Base64 input must be a multiple of four characters");
+    ZORBA_ERROR_DESC(FORG0001, "Base64 input must be a multiple of four characters");
   }
 
 }
@@ -328,7 +328,7 @@ void Base16::insertData(const char* aCharStar, size_t len)
 {
 
   if (len % 2 != 0) {
-    ZORBA_ERROR_DESC(ZorbaError::FORG0001, "A hexBinary value must contain an even number of characters");
+    ZORBA_ERROR_DESC(FORG0001, "A hexBinary value must contain an even number of characters");
   }
 
   for (size_t i = 0; i < len; ++i)
@@ -344,7 +344,7 @@ void Base16::insertData(const char* aCharStar, size_t len)
     } else {
       std::stringstream lStream;
       lStream << "Invalid hexadecimal digit";
-      ZORBA_ERROR_DESC(ZorbaError::FORG0001, lStream.str());
+      ZORBA_ERROR_DESC(FORG0001, lStream.str());
     }
   }
 }

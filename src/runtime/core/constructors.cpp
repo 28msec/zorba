@@ -138,7 +138,7 @@ store::Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
 
     if (lItem->isNode() && lItem->getNodeKind() == store::StoreConsts::attributeNode)
     {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "A Document Node must not contain attribute nodes!");
+        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "A Document Node must not contain attribute nodes!");
     }
 
     STACK_PUSH(lItem, state);
@@ -219,7 +219,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
   if (baseUri->empty())
   {
-    ZORBA_ERROR_LOC(ZorbaError::XPST0001, loc);
+    ZORBA_ERROR_LOC(XPST0001, loc);
   }
 
   qnameItem = consumeNext(theQNameIter, planState);
@@ -228,7 +228,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   // the compiler wraps an xs:qname cast around the expression
   if (qnameItem->getLocalName()->empty())
   {
-    ZORBA_ERROR_LOC_DESC(ZorbaError::XQDY0074, loc,
+    ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
                      "Element name must not have an empty local part.");
   }
 
@@ -353,7 +353,7 @@ store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
     if (item->isNode() && item->getNodeKind() == store::StoreConsts::attributeNode) 
     {
       if (state->theNoAttrAllowed)
-        ZORBA_ERROR_LOC(ZorbaError::XQTY0024, loc); 
+        ZORBA_ERROR_LOC(XQTY0024, loc); 
     }
     else
     {
@@ -452,13 +452,13 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
   lItem = consumeNext(theChild.getp(), planState);
   if (lItem == 0)
   {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
+    ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
                           "Empty sequences cannot be cased to QName.");
   }
 
   if (consumeNext(theChild, planState) != 0)
   {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
+    ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
                           "Non single sequences cannot be cased to QName.");
   }
 
@@ -472,7 +472,7 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
   else if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
            !TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, 
+    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
                          "Item cannot be casted to QName.");
   }
   else
@@ -485,7 +485,7 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
     catch (...)
     {
       // the returned error codes are wrong for name casting => they must be changed
-      ZORBA_ERROR_LOC_DESC( ZorbaError::XQDY0074, loc, 
+      ZORBA_ERROR_LOC_DESC( XQDY0074, loc, 
                             "Item cannot be casted to QName.");
     }
   }
@@ -559,24 +559,24 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
   try {
     lItem = consumeNext(theChild0, planState);
   } catch (error::ZorbaError& e) {
-    if (e.theErrorCode == ZorbaError::FORG0001)
-      ZORBA_ERROR_LOC(ZorbaError::XQDY0041, loc);
+    if (e.theErrorCode == FORG0001)
+      ZORBA_ERROR_LOC(XQDY0041, loc);
     else
       throw e;
   }
   if (lItem == 0)
-    ZORBA_ERROR( ZorbaError::XPTY0004);
+    ZORBA_ERROR( XPTY0004);
 
   if (consumeNext(theChild0, planState) != 0)
-    ZORBA_ERROR( ZorbaError::XPTY0004);
+    ZORBA_ERROR( XPTY0004);
 
   // TODO: check if lItem is string, raise XPTY0004 if not
   target = lItem->getStringValue();
 
   if (target->empty())
-    ZORBA_ERROR( ZorbaError::XQDY0041);
+    ZORBA_ERROR( XQDY0041);
   else if (target->uppercase()->byteEqual("XML", 3)) 
-    ZORBA_ERROR( ZorbaError::XQDY0064);
+    ZORBA_ERROR( XQDY0064);
   
   for (lFirst = true;
        0 != (lItem = consumeNext (theChild1.getp(), planState));
@@ -587,7 +587,7 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
     xqpStringStore_t strvalue = lItem->getStringValue();
     if (strvalue->indexOf("?>") >= 0)
     {
-      ZORBA_ERROR( ZorbaError::XQDY0026);
+      ZORBA_ERROR( XQDY0026);
     }
     buf += strvalue->str();
   }
@@ -650,12 +650,12 @@ store::Item_t CommentIterator::nextImpl(PlanState& planState) const
   {
     if (content->indexOf("-") == (long)(content->bytes()-1))
     {
-      ZORBA_ERROR( ZorbaError::XQDY0072);
+      ZORBA_ERROR( XQDY0072);
     }
 
     if (content->indexOf("--") >= 0)
     {
-      ZORBA_ERROR( ZorbaError::XQDY0072);
+      ZORBA_ERROR( XQDY0072);
     }
   }
 

@@ -202,12 +202,12 @@ store::Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState) c
     {
       if (!lSequenceItem->isPul())
       {
-        ZORBA_ERROR_LOC(ZorbaError::XUDY0019, loc);
+        ZORBA_ERROR_LOC(XUDY0019, loc);
       }
     } else {
       if (lSequenceItem->isPul())
       {
-        ZORBA_ERROR_LOC(ZorbaError::XUDY0018, loc); 
+        ZORBA_ERROR_LOC(XUDY0018, loc); 
       }
     }
     STACK_PUSH(lSequenceItem, state);

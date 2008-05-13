@@ -95,7 +95,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
       }
       else if(tempuri.indexOf(".") == 0) {
         if((tempuri.indexOf("/") != 1) && (tempuri.indexOf("\\") != 1)) {
-          ZORBA_ERROR_PARAM_OSS( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
+          ZORBA_ERROR_PARAM_OSS( XQP0020_INVALID_URI, base_uri << " + " << uri, "");
           return "";
         }
         xqp_string    tempabs;
@@ -108,7 +108,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
           last_slash = last_backslash;
         
         if(last_slash < 0) {
-          ZORBA_ERROR_PARAM_OSS( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
+          ZORBA_ERROR_PARAM_OSS( XQP0020_INVALID_URI, base_uri << " + " << uri, "");
           return "";
         }
         abs_uri = abs_uri.substr(0, last_slash+1);
@@ -135,7 +135,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
   }
 
 	if(!GenericCast::instance()->isCastable(abs_uri, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
-    ZORBA_ERROR_PARAM_OSS( ZorbaError::XQP0020_INVALID_URI,  base_uri << " + " << uri, "");
+    ZORBA_ERROR_PARAM_OSS( XQP0020_INVALID_URI,  base_uri << " + " << uri, "");
     return "";
   }
 

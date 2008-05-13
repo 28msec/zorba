@@ -15,65 +15,82 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <zorbac/zorbac.h>
 
-int example_1(XQUERY_CAPI* aAPI)
+#if 0
+int
+checkError(XQUERY aQuery, XQUERY_ERROR* aError)
 {
+  if (*aError == XQUERY_SUCCESS)
+    return 0;
 
-  XQUERY_ERROR lError = XQUERY_SUCCESS;
-  char lString[3];
+  return 1;
+  // TODO print error message
+}
+#endif
+
+/**
+ * A simple C API example
+ * Compile a query and print the result.  No error checking is done.
+ */
+int
+example_1(XQUERY_CAPI* aAPI)
+{
+  char          lBuffer[256];
+  XQUERY_ERROR  lError = XQ_SUCCESS;
   XQUERY_STREAM lStream;
-  XQUERY lXQuery;
+  XQUERY        lXQuery;
 
-  lXQuery = aAPI->compile("(1+2,3+4, 'This is a Test')", &lError);
-  if (lError != XQUERY_SUCCESS) return 0;
+  // initialize the buffer
+  memset(lBuffer, 0, 256);
 
-  lString[2] = '\0';
-  lStream = aAPI->init_stream(lXQuery, &lError); 
-  if (lError != XQUERY_SUCCESS) return 0;
+  // compile the query
+  lXQuery = aAPI->query_compile("(1+2, 'testsdfadsfsd')", &lError);
 
-  while (aAPI->stream_next(lStream, lString, 2, &lError) > 0)
-  {
-    if (lError != XQUERY_SUCCESS) return 0;
-    printf("%s", lString);
+  // get the result as a stream
+  lStream = aAPI->stream_init(lXQuery, &lError);
+
+  while (aAPI->stream_next(lStream, lBuffer, 255, &lError) > 0) {
+    printf("%s", lBuffer);
   }
-  printf("\n");
-
-  aAPI->release_stream(lStream);
-  aAPI->release_query(lXQuery);
-
+  
+  // release resources
+  aAPI->stream_release(lStream);
+  aAPI->query_release(lXQuery);
   return 1;
 }
 
+/**
+ * A simple C API example
+ * Compile a query, iterate over the item sequence, and print the string value for each item.
+ * No error checking is done.
+ */ 
 int
 example_2(XQUERY_CAPI* aAPI) 
 {
-  XQUERY_ERROR lError = XQUERY_SUCCESS;
-  XQUERY_ITEM lItem = aAPI->init_item();
-  XQUERY_STRING lString = aAPI->init_string();
-  XQUERY lXQuery;
-  XQUERY_RESULT lResult;
+  XQUERY_ERROR    lError  = XQ_SUCCESS;
+  XQUERY_ITEM     lItem   = aAPI->item_init();
+  XQUERY_STRING   lString = aAPI->string_init();
+  XQUERY          lXQuery;
+  XQUERY_SEQUENCE lResult;
 
-  lXQuery = aAPI->compile("(1+2,3+4)", &lError);
-  if (lError != XQUERY_SUCCESS) return 0;
+  lXQuery = aAPI->query_compile("(1+2,3+4)", &lError);
 
-  lResult = aAPI->init_iterator(lXQuery, &lError);
-  if (lError != XQUERY_SUCCESS) return 0;
+  lResult = aAPI->sequence_init(lXQuery, &lError);
 
-  while (aAPI->iterator_next(lResult, lItem, &lError))
-  {
-    if (lError != XQUERY_SUCCESS) return 0;
+  while (aAPI->sequence_next(lResult, lItem, &lError)) {
 
     aAPI->item_stringvalue(lItem, lString, &lError);
-    if (lError != XQUERY_SUCCESS) return 0;
 
-    printf("%s\n", aAPI->stringvalue_to_char(lString));
+    printf("%s\n", aAPI->string_to_char(lString));
   }
 
-  aAPI->close_iterator(lResult);
-  aAPI->release_string(lString);
-  aAPI->release_item(lItem);
-  aAPI->release_query(lXQuery);
+  aAPI->sequence_close(lResult);
+  aAPI->string_release(lString);
+  aAPI->item_release(lItem);
+  aAPI->query_release(lXQuery);
 
   return 1;
 }

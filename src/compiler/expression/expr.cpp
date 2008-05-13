@@ -673,7 +673,7 @@ treat_expr::treat_expr(
   const QueryLoc& loc,
   expr_t _expr_h,
   xqtref_t _type,
-  enum ZorbaError::ErrorCode err_,
+  XQUERY_ERROR err_,
   bool check_prime_)
 :
   cast_base_expr (loc, _expr_h, _type),

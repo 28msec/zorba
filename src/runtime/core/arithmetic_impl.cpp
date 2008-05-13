@@ -50,7 +50,7 @@ void ArithOperationsCommons::createError(
   lStream << " and ";
   aRuntimeCB->theStaticContext->get_typemanager()->create_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << ".";
-  ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, *aLoc, lStream.str());
+  ZORBA_ERROR_LOC_DESC( XPTY0004, *aLoc, lStream.str());
 }
 
 /* begin class GenericArithIterator */
@@ -80,7 +80,7 @@ store::Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState )
     
       if ( consumeNext(this->theChild0.getp(), planState ) != NULL
            || consumeNext(this->theChild1.getp(), planState ) != NULL )
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, this->loc, 
+        ZORBA_ERROR_LOC_DESC( XPTY0004, this->loc, 
                     "An input to the Arithmetic operation has a sequences that is greater than one.");
       STACK_PUSH ( res, state );
     }
@@ -165,7 +165,7 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
     return NumArithIterator<Operation>::computeAtomic( aRuntimeCB, aLoc, n0, type0, n1, type1);
   }
   
-  ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, aLoc,
+  ZORBA_ERROR_LOC_DESC(XPTY0004, aLoc,
                        "Arithmetic operation not defined between the given types("
                        + type0->toString() + " and " + type1->toString() + ").");
   
@@ -288,7 +288,7 @@ store::Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstant
       aRuntimeCB->theDynamicContext->get_implicit_timezone());
   }
   catch (InvalidTimezoneException) {
-    ZORBA_ERROR(ZorbaError::FODT0003);
+    ZORBA_ERROR(FODT0003);
   }
   return GENV_ITEMFACTORY->createDuration (d);
 }
@@ -303,7 +303,7 @@ store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::X
                          aRuntimeCB->theDynamicContext->get_implicit_timezone());
   }
   catch (InvalidTimezoneException) {
-    ZORBA_ERROR(ZorbaError::FODT0003);
+    ZORBA_ERROR(FODT0003);
   }
   return GENV_ITEMFACTORY->createDuration (d);
 }
@@ -318,7 +318,7 @@ store::Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::X
                          aRuntimeCB->theDynamicContext->get_implicit_timezone());
   }
   catch (InvalidTimezoneException) {
-    ZORBA_ERROR(ZorbaError::FODT0003);
+    ZORBA_ERROR(FODT0003);
   }
   return GENV_ITEMFACTORY->createDuration (d);
 }
@@ -344,9 +344,9 @@ store::Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstant
     return GENV_ITEMFACTORY->createDuration(d);
   }
   else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    ZORBA_ERROR_DESC( ZorbaError::FODT0002,  "Overflow/underflow in duration operation.");
+    ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
   else if (  i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_DESC( ZorbaError::FOCA0005,  "NaN supplied as float/double value");
+    ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
   else
     d = *i0->getDurationValue() * (i1->getDoubleValue());
   
@@ -381,9 +381,9 @@ store::Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants:
     return GENV_ITEMFACTORY->createDuration(d);
   }
   else if ( i1->getDoubleValue().isZero() )
-    ZORBA_ERROR_DESC( ZorbaError::FODT0002,  "Overflow/underflow in duration operation.");
+    ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
   else if ( i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_DESC( ZorbaError::FOCA0005,  "NaN supplied as float/double value");
+    ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
   else
     d= *i0->getDurationValue() / i1->getDoubleValue();
 

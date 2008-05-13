@@ -20,10 +20,11 @@
 #include <zorba/exception.h>
 #include <zorba/error.h>
 #include <zorba/zorbastring.h>
+#include "errors/errors.h"
 
 namespace zorba {
 
-  ZorbaException::ZorbaException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
+  ZorbaException::ZorbaException(const XQUERY_ERROR& aErrorCode, const String& aDescription,
                                  const String& aFileName, unsigned int aFileLineNumber)
     : theErrorCode(aErrorCode),
       theDescription(aDescription),
@@ -32,7 +33,7 @@ namespace zorba {
 
   ZorbaException::~ZorbaException() throw() { }
 
-  ZorbaError::ErrorCode
+  XQUERY_ERROR
   ZorbaException::getErrorCode() const { return theErrorCode; }
 
   String
@@ -44,8 +45,13 @@ namespace zorba {
   unsigned int
   ZorbaException::getFileLineNumber() const { return theFileLineNumber; }
 
+  std::string
+  ZorbaException::getErrorCodeAsString(const XQUERY_ERROR& code)
+  {
+    return error::ZorbaError::toString(code);
+  }
 
-  QueryException::QueryException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
+  QueryException::QueryException(const XQUERY_ERROR& aErrorCode, const String& aDescription,
                                  const String& afilename, unsigned int afilelinenumber,
                                  unsigned int linebegin, unsigned int columnbegin)
     : ZorbaException(aErrorCode, aDescription, afilename, afilelinenumber),
@@ -60,32 +66,32 @@ namespace zorba {
   unsigned int
   QueryException::getColumnBegin() const { return theColumnBegin; }
 
-  DynamicException::DynamicException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
+  DynamicException::DynamicException(const XQUERY_ERROR& aErrorCode, const String& aDescription,
                       const String& afilename, unsigned int afilelinenumber, unsigned int linebegin, unsigned int columnbegin)
     : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, linebegin, columnbegin) {}
 
   DynamicException::~DynamicException() throw()  { }
 
-  StaticException::StaticException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
+  StaticException::StaticException(const XQUERY_ERROR& aErrorCode, const String& aDescription,
                       const String& afilename, unsigned int afilelinenumber, unsigned int linebegin, unsigned int columnbegin)
     : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, linebegin, columnbegin) {}
 
   StaticException::~StaticException() throw() { }
 
 
-  TypeException::TypeException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
+  TypeException::TypeException(const XQUERY_ERROR& aErrorCode, const String& aDescription,
                       const String& afilename, unsigned int afilelinenumber, unsigned int linebegin, unsigned int columnbegin)
     : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, linebegin, columnbegin) {}
 
   TypeException::~TypeException() throw() { }
 
-  SerializationException::SerializationException(const ZorbaError::ErrorCode& aErrorCode, const String& aDescription,
+  SerializationException::SerializationException(const XQUERY_ERROR& aErrorCode, const String& aDescription,
                       const String& afilename, unsigned int afilelinenumber, unsigned int linebegin, unsigned int columnbegin)
     : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, linebegin, columnbegin) {}
 
   SerializationException::~SerializationException() throw() { }
 
-  SystemException::SystemException(const ZorbaError::ErrorCode& aErrorCode, 
+  SystemException::SystemException(const XQUERY_ERROR& aErrorCode, 
                                    const String& aDescription,
                                    const String& aFilename, unsigned int afilelinenumber)
     : ZorbaException(aErrorCode, aDescription, aFilename, afilelinenumber) {}
@@ -94,7 +100,7 @@ namespace zorba {
 
   std::ostream& operator<< (std::ostream& os, const ZorbaException& aException)
   {
-    return os << "[" << ZorbaError::getErrorCode(aException.getErrorCode()) << "] "
+    return os << "[" << ZorbaException::getErrorCodeAsString(aException.getErrorCode()) << "] "
               << aException.getDescription();
   }
 

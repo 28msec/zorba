@@ -35,16 +35,16 @@ namespace zorba { namespace error {
 class ZorbaError
 {
 public:
-  store::Item_t                  theQName;
-  ::zorba::ZorbaError::ErrorCode theErrorCode;
-  xqpString                      theDescription;
-  QueryLoc                       theQueryLocation;
-  std::string                    theFileName; // source file
-  int                            theLineNumber; // line number in the source file
+  store::Item_t  theQName;
+  XQUERY_ERROR   theErrorCode;
+  xqpString      theDescription;
+  QueryLoc       theQueryLocation;
+  std::string    theFileName; // source file
+  int            theLineNumber; // line number in the source file
 
 public:
   ZorbaError(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
+        XQUERY_ERROR&                  aErrorCode,
         const xqpString&               aDescription,
         const QueryLoc&                aLocation,
         const std::string&             aFileName,
@@ -64,80 +64,80 @@ public:
   virtual bool 
   isXPathStaticError() const
   {
-    return (::zorba::ZorbaError::XPST0001 <= theErrorCode && 
-            theErrorCode <= ::zorba::ZorbaError::XPST0083);
+    return (XPST0001 <= theErrorCode && 
+            theErrorCode <= XPST0083);
   }
       
   virtual bool 
   isXPathDynamicError() const
   {
-    return (::zorba::ZorbaError::XPDY0002 <= theErrorCode && 
-            theErrorCode <= ::zorba::ZorbaError::XPDY0050);
+    return (XPDY0002 <= theErrorCode && 
+            theErrorCode <= XPDY0050);
   }
       
   virtual bool 
   isXPathTypeError() const 
   {
-    return ::zorba::ZorbaError::XPTY0004 <= theErrorCode && 
-      theErrorCode <= ::zorba::ZorbaError::XPTY0020;
+    return XPTY0004 <= theErrorCode && 
+      theErrorCode <= XPTY0020;
   }
       
   virtual bool
   isXQueryDynamicError() const
   {
-    return ((::zorba::ZorbaError::XQDY0025 <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::XQDY0092) ||
-            ::zorba::ZorbaError::XUDY0009 == theErrorCode ||
-            (::zorba::ZorbaError::XUDY0014 <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::XUDY0021) ||
-            (::zorba::ZorbaError::XUDY0023 <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::XUDY0025) ||
-            theErrorCode == ::zorba::ZorbaError::XUDY0027 ||
-            theErrorCode == ::zorba::ZorbaError::XUDY0029 ||
-            theErrorCode == ::zorba::ZorbaError::XUDY0030);
+    return ((XQDY0025 <= theErrorCode && 
+             theErrorCode <= XQDY0092) ||
+            XUDY0009 == theErrorCode ||
+            (XUDY0014 <= theErrorCode && 
+             theErrorCode <= XUDY0021) ||
+            (XUDY0023 <= theErrorCode && 
+             theErrorCode <= XUDY0025) ||
+            theErrorCode == XUDY0027 ||
+            theErrorCode == XUDY0029 ||
+            theErrorCode == XUDY0030);
   }
   
   virtual bool 
   isXQueryStaticError() const
   {
-    return ((::zorba::ZorbaError::XQST0009 <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::XQST0093) ||
-            (::zorba::ZorbaError::XUST0001 <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::XUST0003) ||
-            theErrorCode == ::zorba::ZorbaError::XUST0028);
+    return ((XQST0009 <= theErrorCode && 
+             theErrorCode <= XQST0093) ||
+            (XUST0001 <= theErrorCode && 
+             theErrorCode <= XUST0003) ||
+            theErrorCode == XUST0028);
   }
   
   virtual bool 
   isXQueryTypeError() const
   {
-    return ((::zorba::ZorbaError::XQTY0023 <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::XQTY0086) ||
-            (::zorba::ZorbaError::XUTY0004 <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::XUTY0008) ||
-            (::zorba::ZorbaError::XUTY0010 <= theErrorCode && 
-             theErrorCode <= ::zorba::ZorbaError::XUTY0013) ||
-            theErrorCode == ::zorba::ZorbaError::XUTY0022);
+    return ((XQTY0023 <= theErrorCode && 
+             theErrorCode <= XQTY0086) ||
+            (XUTY0004 <= theErrorCode && 
+             theErrorCode <= XUTY0008) ||
+            (XUTY0010 <= theErrorCode && 
+             theErrorCode <= XUTY0013) ||
+            theErrorCode == XUTY0022);
   }
   
   virtual bool 
   isFunctionError() const
   {
-    return ::zorba::ZorbaError::FOER0000 <= theErrorCode && 
-      theErrorCode <= ::zorba::ZorbaError::FOTY0012;
+    return FOER0000 <= theErrorCode && 
+      theErrorCode <= FOTY0012;
   }
   
   virtual bool
   isSerializationError() const
   {
-    return ::zorba::ZorbaError::SENR0001 <= theErrorCode && 
-      theErrorCode <= ::zorba::ZorbaError::SEPM0016;
+    return SENR0001 <= theErrorCode && 
+      theErrorCode <= SEPM0016;
   }
   
   virtual bool 
   isInternalError() const
   {
-    return ::zorba::ZorbaError::XQP0000_DYNAMIC_RUNTIME_ERROR <= theErrorCode && 
-      theErrorCode <= ::zorba::ZorbaError::API0021_ITEM_TO_LOAD_IS_NOT_NODE; 
+    return XQP0000_DYNAMIC_RUNTIME_ERROR <= theErrorCode && 
+      theErrorCode <= API0021_ITEM_TO_LOAD_IS_NOT_NODE; 
   }
   
   virtual bool
@@ -162,7 +162,7 @@ public:
   isUserError() const          { return false; }
 
   static std::string
-  toString(::zorba::ZorbaError::ErrorCode& code);
+  toString(const XQUERY_ERROR& code);
 };
 
 
@@ -176,7 +176,7 @@ public:
 
 public:
   ZorbaUserError(
-        ::zorba::ZorbaError::ErrorCode aErrorCode,
+        XQUERY_ERROR& aErrorCode,
         const xqpString& aDescription,
         const QueryLoc& aLocation,
         const std::string& aFileName,

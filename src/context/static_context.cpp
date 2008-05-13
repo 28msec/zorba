@@ -213,7 +213,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
                                          prefix,
                                          local));
     if (f == NULL)
-      ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, local, to_string (arity));
+      ZORBA_ERROR_PARAM ( XPST0017, local, to_string (arity));
     return f;
   }
 }
@@ -222,10 +222,10 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
     return context_value ("ns:" + prefix, ns) && ! ns.empty();    
   }
 
-  xqp_string static_context::lookup_ns (xqp_string prefix, enum ZorbaError::ErrorCode err) const {
+  xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const {
     xqp_string ns;
 		if (! lookup_ns (prefix, ns)) {
-      if (err != ZorbaError::MAX_ZORBA_ERROR_CODE)
+      if (err != MAX_ZORBA_ERROR_CODE)
         ZORBA_ERROR(err);
 		}
     return ns;
@@ -255,7 +255,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
       return true;
   }
 
-  void static_context::bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCode err)
+  void static_context::bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err)
   {
     bind_str ("ns:" + prefix, ns, err);
   }
@@ -367,7 +367,7 @@ static_context::add_collation(const xqp_string& aURI)
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
-		ZORBA_ERROR_DESC( ZorbaError::XQST0038, "invalid collation uri");
+		ZORBA_ERROR_DESC( XQST0038, "invalid collation uri");
   }
   else
   {
@@ -418,7 +418,7 @@ static_context::set_default_collation_uri(const xqp_string& aURI)
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
-		ZORBA_ERROR_DESC_OSS( ZorbaError::XQST0038, "invalid collation uri " << lURI);
+		ZORBA_ERROR_DESC_OSS( XQST0038, "invalid collation uri " << lURI);
   }
   else
   {
@@ -442,7 +442,7 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
 {
 	if (from_prolog)
     // throw XQST0032 if from_prolog_baseuri is already defined
-    bind_str ("int:" "from_prolog_baseuri", val, ZorbaError::XQST0032);
+    bind_str ("int:" "from_prolog_baseuri", val, XQST0032);
   else
     // overwite existing value of baseuri, if any
     str_keymap.put ("int:" "baseuri", val);
@@ -506,7 +506,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
   case URI::MAX_ERROR_CODE:
     return result.getp();
   default:
-    ZORBA_ERROR (ZorbaError::XQST0046);
+    ZORBA_ERROR (XQST0046);
   }
 }
 
@@ -521,7 +521,7 @@ xqp_string static_context::final_baseuri () {
 
   // won't happen -- we default to a non-empty URI
 	if(abs_base_uri.empty()) {
-		ZORBA_ERROR_DESC( ZorbaError::XPST0001, "empty base URI");
+		ZORBA_ERROR_DESC( XPST0001, "empty base URI");
 		return "";
 	}
   

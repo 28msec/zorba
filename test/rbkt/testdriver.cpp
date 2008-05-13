@@ -129,7 +129,7 @@ class TestErrorHandler : public zorba::ErrorHandler {
 
     void registerError(const zorba::ZorbaException& e)
     {
-      m_errors.push_back(zorba::ZorbaError::getErrorCode(e.getErrorCode()).c_str());
+      m_errors.push_back(zorba::ZorbaException::getErrorCodeAsString(e.getErrorCode()).c_str());
       m_desc.push_back(e.getDescription());
     }
 };

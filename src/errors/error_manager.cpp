@@ -33,7 +33,7 @@ ErrorManager::~ErrorManager()
 
 ZorbaError
 ErrorManager::createException(
-    ::zorba::ZorbaError::ErrorCode aErrorCode, 
+    XQUERY_ERROR aErrorCode, 
     const std::string&             aFileName,
     int                            aLineNumber)
 {
@@ -48,7 +48,7 @@ ErrorManager::createException(
 
 ZorbaError
 ErrorManager::createException(
-    ::zorba::ZorbaError::ErrorCode aErrorCode,
+    XQUERY_ERROR aErrorCode,
     const std::string&             aFileName,
     int                            aLineNumber,
     const QueryLoc&                aLocation)
@@ -63,7 +63,7 @@ ErrorManager::createException(
 
 ZorbaError
 ErrorManager::createException(
-    ::zorba::ZorbaError::ErrorCode aErrorCode, 
+    XQUERY_ERROR aErrorCode, 
     const std::string&             aParam1,
     const std::string&             aParam2,
     const std::string&             aFileName,
@@ -80,7 +80,7 @@ ErrorManager::createException(
 
 ZorbaError
 ErrorManager::createException(
-    ::zorba::ZorbaError::ErrorCode aErrorCode,
+    XQUERY_ERROR aErrorCode,
     const std::string&             aDesc, 
     const std::string&             aFileName,
     int                            aLineNumber)
@@ -93,7 +93,7 @@ ErrorManager::createException(
 
 ZorbaError
 ErrorManager::createException(
-    ::zorba::ZorbaError::ErrorCode aErrorCode,
+    XQUERY_ERROR aErrorCode,
     const xqpString&               aDescription,
     const std::string&             aFileName,
     int                            aLineNumber,
@@ -122,7 +122,7 @@ ErrorManager::createUserException(
 
 void
 ErrorManager::addError(
-    ::zorba::ZorbaError::ErrorCode aErrorCode,
+    XQUERY_ERROR aErrorCode,
     const xqpString&               aDescription,
     const std::string&             aFileName,
     int                            aLineNumber,
@@ -135,7 +135,7 @@ ErrorManager::addError(
 
 void
 ErrorManager::addError(
-    ::zorba::ZorbaError::ErrorCode aErrorCode, 
+    XQUERY_ERROR aErrorCode, 
     const std::string&             aParam1,
     const std::string&             aParam2,
     const std::string&             aFileName,

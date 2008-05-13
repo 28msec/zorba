@@ -69,10 +69,10 @@ getCollator(
   store::Item_t lCollationItem = PlanIterator::consumeNext(iter, planState);
 
   if (lCollationItem == NULL)
-      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, "An empty-sequence is not allowed as collation parameter");
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "An empty-sequence is not allowed as collation parameter");
 
   if (PlanIterator::consumeNext(iter, planState) != NULL)
-      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc, "A sequence of more then one item is not allowed as collation parameter");
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "A sequence of more then one item is not allowed as collation parameter");
     
   xqtref_t lCollationItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
                                 create_value_type (lCollationItem);
@@ -152,7 +152,7 @@ FnIndexOfIterator::nextImpl(PlanState& planState) const {
   state->theSearchItem = consumeNext(theChildren[1].getp(), planState);
   if ( state->theSearchItem == NULL ) 
   {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc, 
+    ZORBA_ERROR_LOC_DESC( FORG0006, loc, 
          "An empty sequence is not allowed as search item of fn:index-of");    
   }
 
@@ -400,7 +400,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) const {
   lPositionItem = consumeNext(theChildren[1].getp(), planState);
   if ( lPositionItem == NULL ) 
   {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006,
+    ZORBA_ERROR_LOC_DESC( FORG0006,
          loc, "An empty sequence is not allowed as second argument to of fn:remove.");
   }
   state->thePosition = lPositionItem->getIntegerValue();
@@ -551,7 +551,7 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) const {
     lNextSequenceItem = consumeNext(theChildren[0].getp(), planState);
     if (lNextSequenceItem != NULL)
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0003, 
+      ZORBA_ERROR_LOC_DESC( FORG0003, 
         loc,  "fn:zero-or-one called with a sequence containing more than one item."); 
 
     }
@@ -573,7 +573,7 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) const {
   lSequenceItem = consumeNext(theChildren[0].getp(), planState);
   if (lSequenceItem == NULL)
   {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0004,
+    ZORBA_ERROR_LOC_DESC( FORG0004,
         loc,  "fn:one-or-more called with a sequence containing no items.");
   }
   do
@@ -602,7 +602,7 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) const {
                 state);
   else {
     if (raise_err)
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0005,
+      ZORBA_ERROR_LOC_DESC( FORG0005,
                             loc, "fn:exactly-one called with a sequence containing zero or more than one item.");
     else
       STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( false ), state);
@@ -912,35 +912,35 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
     if (TypeOps::is_numeric (*lRunningType) || TypeOps::is_equal (*lRunningType, *lUntypedAtomic)) {
       lHitNumeric = true;
       if ( lHitYearMonth )
-        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
                                                         + " for function fn:avg. Expected type " 
                                                         + lYearMonthDuration->toString() +".");
       if ( lHitDayTime ) 
-        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
                                                         + " for function fn:avg. Expected type " 
                                                         + lDayTimeDuration->toString() +".");
 
     } else if (TypeOps::is_equal (*lRunningType, *lYearMonthDuration)) {
       lHitYearMonth = true;
       if ( lHitNumeric )
-        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
                                                         + " for function fn:avg. Expected a numeric type.");
       if ( lHitDayTime ) 
-        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
                                                         + " for function fn:avg. Expected type " 
                                                         + lDayTimeDuration->toString() +".");
 
     } else if (TypeOps::is_equal (*lRunningType, *lDayTimeDuration)) {
       lHitDayTime = true;
       if ( lHitNumeric )
-        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
                                                         + " for function fn:avg. Expected a numeric type.");
       if ( lHitYearMonth )
-        ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
                                                         + " for function fn:avg. Expected type " 
                                                         + lYearMonthDuration->toString() +".");
     } else {
-      ZORBA_ERROR_LOC_DESC(ZorbaError::FORG0006, loc, "The fn:avg function only accepts numeric or duration types.");
+      ZORBA_ERROR_LOC_DESC(FORG0006, loc, "The fn:avg function only accepts numeric or duration types.");
     }
     if ( lCount++ == 0 ) {
       lSumItem = lRunningItem;
@@ -1019,7 +1019,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
             lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->
                        create_value_type (lMaxItem);
           } else {
-            ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc,  "Promote not possible");
+            ZORBA_ERROR_LOC_DESC( FORG0006, loc,  "Promote not possible");
           }
         } else {
           lRunningItem = lItemCur;
@@ -1176,7 +1176,7 @@ FnIdIterator::nextImpl(PlanState& planState) const
       rootNode = rootNode->getParent();
 
     if (rootNode->getNodeKind() != store::StoreConsts::documentNode)
-      ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0001, loc,
+      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
                            "No target document for fn:id function");
 
     state->inNode = rootNode;
@@ -1305,7 +1305,7 @@ FnIdRefIterator::nextImpl(PlanState& planState) const {
       rootNode = rootNode->getParent();
 
     if (rootNode->getNodeKind() != store::StoreConsts::documentNode)
-      ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0001, loc,
+      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
                            "No target document for fn:idref function");
 
     state->inNode = rootNode;
@@ -1495,14 +1495,14 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
   uriString = uriItem->getStringValue();
 
   if(!URI::is_valid(uriString))
-    ZORBA_ERROR_PARAM(ZorbaError::FODC0005, uriString->c_str(), "");
+    ZORBA_ERROR_PARAM(FODC0005, uriString->c_str(), "");
 
   uriString2 = uriString;
 
   doc = get_doc(uriString, &err);
 
   if (doc == NULL)
-    ZORBA_ERROR_LOC_PARAM(ZorbaError::FODC0002, loc,
+    ZORBA_ERROR_LOC_PARAM(FODC0002, loc,
                           uriString2->c_str(),
                           (err == NULL ? "" :  err));
   STACK_PUSH(doc, state);
@@ -1531,7 +1531,7 @@ store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
   uriString = uriItem->getStringValue();
 
   if(!URI::is_valid(uriString))
-    ZORBA_ERROR_PARAM(ZorbaError::FODC0005, xqp_string(uriString), "");
+    ZORBA_ERROR_PARAM(FODC0005, xqp_string(uriString), "");
 
   doc = get_doc(uriString, &err);
 

@@ -72,9 +72,9 @@ public:
   void set_default_elem_type_ns (xqp_string);
 
   bool lookup_ns (xqp_string prefix, xqp_string &ns) const;
-  xqp_string lookup_ns (xqp_string prefix, enum ZorbaError::ErrorCode err = ZorbaError::XPST0081) const;
+  xqp_string lookup_ns (xqp_string prefix, const XQUERY_ERROR& err = XPST0081) const;
   xqp_string lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const;
-  void bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCode err = ZorbaError::XQST0033);
+  void bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err = XQST0033);
 
   static xqp_string qname_internal_key (const store::Item *qname);
 
@@ -118,7 +118,7 @@ public:
   }
   void bind_default_collation(const xqp_string& aCollURI)
   {
-    bind_str("coll:default:", aCollURI, ZorbaError::XQST0038);
+    bind_str("coll:default:", aCollURI, XQST0038);
   }
   bool lookup_default_collation(xqp_string& aCollURI) const
   {

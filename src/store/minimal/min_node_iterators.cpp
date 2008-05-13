@@ -236,7 +236,7 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
       return NULL;
 
     if (!contextNode->isAtomic())
-      ZORBA_ERROR (ZorbaError::XPTY0018);
+      ZORBA_ERROR (XPTY0018);
 
     return contextNode;
   }
@@ -248,7 +248,7 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
   if (contextNode->isAtomic())
   {
     if (theNodeMode)
-      ZORBA_ERROR (ZorbaError::XPTY0018);
+      ZORBA_ERROR (XPTY0018);
 
     theAtomicMode = true;
     return contextNode;
@@ -268,7 +268,7 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
         return NULL;
 
       if (contextNode->isAtomic())
-        ZORBA_ERROR (ZorbaError::XPTY0018);
+        ZORBA_ERROR (XPTY0018);
     }
   }
 }
@@ -387,7 +387,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
       return NULL;
 
     if (!contextNode->isAtomic())
-      ZORBA_ERROR (ZorbaError::XPTY0018);
+      ZORBA_ERROR (XPTY0018);
 
     return contextNode;
   }
@@ -405,7 +405,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
       if (contextNode->isAtomic())
       {
         if (theNodeMode)
-          ZORBA_ERROR (ZorbaError::XPTY0018);
+          ZORBA_ERROR (XPTY0018);
 
         theAtomicMode = true;
         return contextNode;

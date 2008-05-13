@@ -46,7 +46,7 @@ namespace zorba {
         result.push_back (item);
       return NULL;
     } catch (error::ZorbaError& e) {
-      ZorbaError::ErrorCode lErrorCode = (ZorbaError::ErrorCode) e.theErrorCode;
+      XQUERY_ERROR lErrorCode = e.theErrorCode;
       QueryLoc loc = e.theQueryLocation;
       expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 2),
                                      new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ())),

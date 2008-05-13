@@ -312,7 +312,7 @@ Item_t SimpleStore::loadDocument(const xqpStringStore_t& uri, Item_t docItem)
 
 	if(!docItem->isNode())
   {
-    ZORBA_ERROR_PARAM( ZorbaError::API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
+    ZORBA_ERROR_PARAM( API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
 		return NULL;
   }
 
@@ -322,7 +322,7 @@ Item_t SimpleStore::loadDocument(const xqpStringStore_t& uri, Item_t docItem)
 
   if (!inserted && docItem.getp() != root.getp())
   {
-    ZORBA_ERROR_PARAM(ZorbaError::API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
+    ZORBA_ERROR_PARAM(API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
     return NULL; 
   }
 
@@ -382,7 +382,7 @@ Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM(ZorbaError::API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
     return NULL;
   }
 

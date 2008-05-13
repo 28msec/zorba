@@ -79,7 +79,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 
   if (target == NULL)
   {
-    ZORBA_ERROR_LOC(ZorbaError::XUDY0027, loc);
+    ZORBA_ERROR_LOC(XUDY0027, loc);
   }
 
   if (theType == store::UpdateConsts::BEFORE ||
@@ -88,13 +88,13 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
     if (!target->isNode() ||
         target->getNodeKind() == store::StoreConsts::attributeNode ||
         target->getNodeKind() == store::StoreConsts::documentNode)
-      ZORBA_ERROR_LOC(ZorbaError::XUTY0006, loc);
+      ZORBA_ERROR_LOC(XUTY0006, loc);
 
     if (consumeNext(theChild1, aPlanState) != NULL)
-      ZORBA_ERROR_LOC(ZorbaError::XUTY0006, loc);
+      ZORBA_ERROR_LOC(XUTY0006, loc);
 
     if (target->getParent() == NULL)
-      ZORBA_ERROR_LOC(ZorbaError::XUDY0029, loc);
+      ZORBA_ERROR_LOC(XUDY0029, loc);
 
     parent = target->getParent();
 
@@ -109,10 +109,10 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
         if (numNodes > 0)
-          ZORBA_ERROR_LOC(ZorbaError::XUTY0004, loc);
+          ZORBA_ERROR_LOC(XUTY0004, loc);
 
         if (!elemParent)
-          ZORBA_ERROR_LOC(ZorbaError::XUDY0030, loc);
+          ZORBA_ERROR_LOC(XUDY0030, loc);
 
         attrs[numAttrs++].transfer(source);
         if (numAttrs == attrs.size())
@@ -151,16 +151,16 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
   else
   {
     if (!target->isNode())
-      ZORBA_ERROR_LOC(ZorbaError::XUTY0005, loc);
+      ZORBA_ERROR_LOC(XUTY0005, loc);
 
     targetKind = target->getNodeKind();
 
     if (targetKind != store::StoreConsts::documentNode &&
         targetKind != store::StoreConsts::elementNode)
-      ZORBA_ERROR_LOC(ZorbaError::XUTY0005, loc);
+      ZORBA_ERROR_LOC(XUTY0005, loc);
 
     if (consumeNext(theChild1, aPlanState) != NULL)
-      ZORBA_ERROR_LOC(ZorbaError::XUTY0005, loc);
+      ZORBA_ERROR_LOC(XUTY0005, loc);
 
     elemTarget = (targetKind == store::StoreConsts::elementNode);
 
@@ -173,10 +173,10 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
         if (numNodes > 0)
-          ZORBA_ERROR_LOC(ZorbaError::XUTY0004, loc);
+          ZORBA_ERROR_LOC(XUTY0004, loc);
 
         if (!elemTarget)
-          ZORBA_ERROR_LOC(ZorbaError::XUTY0022, loc);
+          ZORBA_ERROR_LOC(XUTY0022, loc);
 
         attrs[numAttrs++].transfer(source);
         if (numAttrs == attrs.size())
@@ -243,7 +243,7 @@ DeleteIterator::nextImpl(PlanState& aPlanState) const
   while (target != NULL)
   {
     if (!target->isNode())
-      ZORBA_ERROR_LOC(ZorbaError::XUTY0007, loc);
+      ZORBA_ERROR_LOC(XUTY0007, loc);
 
     pul->addDelete(target);
 
@@ -296,13 +296,13 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
 
   lTarget = consumeNext(theChild0, aPlanState);
   if (lTarget == 0)
-    ZORBA_ERROR_LOC(ZorbaError::XUDY0027, loc);
+    ZORBA_ERROR_LOC(XUDY0027, loc);
 
   if (consumeNext(theChild0, aPlanState) != 0)
-    ZORBA_ERROR_LOC(ZorbaError::XUTY0008, loc);
+    ZORBA_ERROR_LOC(XUTY0008, loc);
 
   if (!lTarget->isNode())
-     ZORBA_ERROR_LOC(ZorbaError::XUTY0008, loc);
+     ZORBA_ERROR_LOC(XUTY0008, loc);
 
   lTargetKind = lTarget->getNodeKind();
 
@@ -312,14 +312,14 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
          lTargetKind == store::StoreConsts::commentNode ||
          lTargetKind == store::StoreConsts::piNode))
   {
-    ZORBA_ERROR_LOC(ZorbaError::XUTY0008, loc);
+    ZORBA_ERROR_LOC(XUTY0008, loc);
   }
 
   if (theType == store::UpdateConsts::NODE) 
   {
     if (lTarget->getParent() == 0)
     {
-      ZORBA_ERROR_LOC(ZorbaError::XUDY0009, loc);
+      ZORBA_ERROR_LOC(XUDY0009, loc);
     }
 
     lParent = lTarget->getParent();
@@ -332,7 +332,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
         if (!lWith->isNode() ||
             lWith->getNodeKind() != store::StoreConsts::attributeNode)
         {
-          ZORBA_ERROR_LOC(ZorbaError::XUTY0011, loc);
+          ZORBA_ERROR_LOC(XUTY0011, loc);
         }
 
         lNodes[lNumNodes++].transfer(lWith);
@@ -348,7 +348,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
       while (lWith != 0)
       {
         if (!lWith->isNode())
-          ZORBA_ERROR_LOC(ZorbaError::XUTY0010, loc);
+          ZORBA_ERROR_LOC(XUTY0010, loc);
 
         lWithKind = lWith->getNodeKind();
 
@@ -357,7 +357,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
               || lWithKind == store::StoreConsts::commentNode
               || lWithKind == store::StoreConsts::piNode))
         {
-          ZORBA_ERROR_LOC(ZorbaError::XUTY0010, loc);
+          ZORBA_ERROR_LOC(XUTY0010, loc);
         }
 
         lNodes[lNumNodes++].transfer(lWith);
@@ -412,12 +412,12 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
       if (lTargetKind == store::StoreConsts::commentNode &&
           (stringValue->indexOf("--") >= 0 || stringValue->endsWith("-")))
       {
-        ZORBA_ERROR_LOC(ZorbaError::XQDY0072, loc);
+        ZORBA_ERROR_LOC(XQDY0072, loc);
       }
       else if (lTargetKind == store::StoreConsts::piNode &&
                stringValue->indexOf("?>") >= 0)
       {
-        ZORBA_ERROR_LOC(ZorbaError::XQDY0026, loc);
+        ZORBA_ERROR_LOC(XQDY0026, loc);
       }
 
       lPul->addReplaceValue(lTarget, stringValue);
@@ -457,11 +457,11 @@ RenameIterator::nextImpl(PlanState& aPlanState) const
   lTarget = consumeNext(theChild0, aPlanState);
   if (lTarget == NULL)
   {
-    ZORBA_ERROR_LOC(ZorbaError::XUDY0027, loc);
+    ZORBA_ERROR_LOC(XUDY0027, loc);
   }
   
   if (!lTarget->isNode())
-    ZORBA_ERROR_LOC(ZorbaError::XUTY0012, loc);
+    ZORBA_ERROR_LOC(XUTY0012, loc);
 
   lTargetKind = lTarget->getNodeKind();
 
@@ -469,12 +469,12 @@ RenameIterator::nextImpl(PlanState& aPlanState) const
         lTargetKind == store::StoreConsts::attributeNode ||
         lTargetKind == store::StoreConsts::piNode))
   {
-    ZORBA_ERROR_LOC(ZorbaError::XUTY0012, loc);
+    ZORBA_ERROR_LOC(XUTY0012, loc);
   }
 
   if (consumeNext(theChild0, aPlanState) != 0)
   {
-    ZORBA_ERROR_LOC(ZorbaError::XUTY0012, loc);
+    ZORBA_ERROR_LOC(XUTY0012, loc);
   }
 
   // because of codegen, it can be assumed that newname is already a qname 
@@ -536,14 +536,14 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
       store::Item_t lCopyNode = consumeNext(copyClause.theInput, aPlanState);
       if (lCopyNode == 0 || !lCopyNode->isNode())
       {
-        ZORBA_ERROR_LOC(ZorbaError::XUTY0013, loc);
+        ZORBA_ERROR_LOC(XUTY0013, loc);
       }
 
       copyNodes[i] = lCopyNode->copyXmlTree(lCopyMode);
 
       if (consumeNext(copyClause.theInput, aPlanState))
       {
-        ZORBA_ERROR_LOC(ZorbaError::XUTY0013, loc);
+        ZORBA_ERROR_LOC(XUTY0013, loc);
       }
 
       lVarRefIter = copyClause.theCopyVars.begin();

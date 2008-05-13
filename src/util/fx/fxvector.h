@@ -264,7 +264,7 @@ protected:
 
 			ostr1 << n;
 			ostr2 << size();
-			ZORBA_ERROR_OSS( ZorbaError::XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
+			ZORBA_ERROR_OSS( XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
                        ostr1.str(), ostr2.str()///param1 and param2 for error message
                         );
 		}

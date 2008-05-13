@@ -147,7 +147,7 @@ store::Item_t CastIterator::nextImpl(PlanState& planState) const
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
+      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
         "Empty sequences cannot be casted to a type with quantifier ONE or PLUS!"
       );
     }
@@ -157,7 +157,7 @@ store::Item_t CastIterator::nextImpl(PlanState& planState) const
   {
     if (consumeNext(theChild.getp(), planState) != NULL)
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
+      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
                         "Sequence with more than one item cannot be casted to a type with quantifier ONE or QUESTION!");
     }
 
@@ -250,18 +250,18 @@ store::Item_t PromoteIterator::nextImpl(PlanState& planState) const
   
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
-      ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  
+      ZORBA_ERROR_LOC_DESC(  XPTY0004, loc,  
       "Empty seq cannot be promoted to QUANT_ONE or QUANT_PLUS type.");
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
     if(consumeNext(theChild.getp(), planState) != 0) {
-      ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  
+      ZORBA_ERROR_LOC_DESC(  XPTY0004, loc,  
       "Seq with 2 or more items cannot be promotioned to a QUANT_QUESTION or QUANT_ONE type.");
     }
     lResult = GenericCast::instance()->promote(lItem, thePromoteType);
     if (lResult == 0) {
-      ZORBA_ERROR_LOC_DESC(ZorbaError::XPTY0004, loc,
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                            "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
     } else {
       STACK_PUSH(lResult, lState);
@@ -270,7 +270,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& planState) const
     do {
       lResult = GenericCast::instance()->promote(lItem, thePromoteType);
       if (lResult == 0) {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
+        ZORBA_ERROR_LOC_DESC( XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
       } else{
         STACK_PUSH(lResult, lState);
       }
@@ -280,7 +280,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& planState) const
   STACK_END (lState);
 }
 
-TreatIterator::TreatIterator(const QueryLoc& aLoc, std::vector<PlanIter_t>& aChildren, const xqtref_t& aTreatType, bool check_prime_, ZorbaError::ErrorCode aErrorCode)
+TreatIterator::TreatIterator(const QueryLoc& aLoc, std::vector<PlanIter_t>& aChildren, const xqtref_t& aTreatType, bool check_prime_, XQUERY_ERROR aErrorCode)
   : NaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChildren),
     check_prime (check_prime_), theErrorCode (aErrorCode)
 {
@@ -338,7 +338,7 @@ store::Item_t EitherNodesOrAtomicsIterator::nextImpl (PlanState& planState) cons
     
     while (NULL != (item = CONSUME (0))) {
       if (lState->atomics != item->isAtomic ())
-        ZORBA_ERROR (ZorbaError::XPTY0018);
+        ZORBA_ERROR (XPTY0018);
       STACK_PUSH (item, lState);
     }
   }

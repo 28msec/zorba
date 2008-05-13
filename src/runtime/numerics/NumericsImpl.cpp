@@ -141,7 +141,7 @@ namespace zorba
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == Integer::parseInt(0) )
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0001, *loc, "Division by zero (decimals)");
+      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
     }
     return GENV_ITEMFACTORY->createDecimal ( ld0 / ld1 );
   }
@@ -154,7 +154,7 @@ namespace zorba
     xqp_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
     if ( ll1 == Integer::parseInt(0) )
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0001, *loc, "Division by zero (decimals)");
+      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
     }
     return GENV_ITEMFACTORY->createDecimal ( ll0 / ll1 );
   }
@@ -166,10 +166,10 @@ namespace zorba
   ( RuntimeCB* /* aRuntimeCB */, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     if (i0->isNaN() || i1->isNaN()) {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0002, *loc, "Division with doubles must not be done with NaNs");
+      ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division with doubles must not be done with NaNs");
     }
     if (i0->isPosOrNegInf()) {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0002, *loc, "Division must not be done with a +-INF dividend");
+      ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division must not be done with a +-INF dividend");
     }
     if (i0->isPosOrNegInf()) {
       // idiv with +-INF divisor has 0 as result
@@ -180,7 +180,7 @@ namespace zorba
     xqp_double d1 = i1->getDoubleValue();
     if ( d1 == Double::parseInt(0) )
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0001, *loc, "Division by zero (decimals)");
+      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
     }
 
     xqp_integer lInteger;
@@ -194,10 +194,10 @@ namespace zorba
   ( RuntimeCB* /* aRuntimeCB */, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     if (i0->isNaN() || i1->isNaN() ) {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0002, *loc, "Integer Division with floats must not be done with NaNs");
+      ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Integer Division with floats must not be done with NaNs");
     }
     if (i0->isPosOrNegInf()) {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0002, *loc, "Integer division must not be done with a +-INF dividend");
+      ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Integer division must not be done with a +-INF dividend");
     }
     if (i0->isPosOrNegInf()) {
       // idiv with +-INF divisor has 0 as result
@@ -208,7 +208,7 @@ namespace zorba
     xqp_float f1 = i1->getFloatValue();
     if ( f1 == xqp_float::parseInt(0) )
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0001, *loc, "Division by zero (decimals)");
+      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
     }
     xqp_integer lInteger;
     bool lBool = Integer::parseFloat( f0 / f1, lInteger);
@@ -224,7 +224,7 @@ namespace zorba
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == Decimal::parseInt(0) )
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0001, *loc, "Division by zero (decimals)");
+      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
     }
     return GENV_ITEMFACTORY->createInteger (
                Integer::parseDecimal ( ld0 / ld1 )
@@ -239,7 +239,7 @@ namespace zorba
     xqp_integer ll1 = i1->getIntegerValue();
     if ( ll1 == Integer::parseInt(0) )
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0001, *loc, "Division by zero (decimals)");
+      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
     }
     return GENV_ITEMFACTORY->createInteger (
                ll0 / ll1
@@ -270,7 +270,7 @@ namespace zorba
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == Decimal::parseInt(0) )
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0001,
+      ZORBA_ERROR_LOC_DESC( FOAR0001,
          *loc, "Modulo by zero (decimals)");
     }
     return GENV_ITEMFACTORY->createDecimal ( ld0 % ld1  );
@@ -284,7 +284,7 @@ namespace zorba
     xqp_integer ll1 = i1->getIntegerValue();
     if ( ll1 == Integer::parseInt(0) )
     {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::FOAR0001, *loc, "Modulo by zero (decimals)");
+      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Modulo by zero (decimals)");
     }
     return GENV_ITEMFACTORY->createInteger ( ll0 % ll1 );
   }
@@ -317,7 +317,7 @@ namespace zorba
       
         if ( consumeNext(this->theChild0.getp(), planState ) != NULL 
              || consumeNext(this->theChild1.getp(), planState ) != NULL )
-          ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Arithmetic operation has a sequences greater than one as an operator.");
+          ZORBA_ERROR_DESC( XPTY0004, "Arithmetic operation has a sequences greater than one as an operator.");
         STACK_PUSH ( res, state );
       }
     }
@@ -599,12 +599,12 @@ namespace zorba
         );
       else
       {
-          ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+          ZORBA_ERROR_LOC_DESC( XPTY0004,
               loc, "Wrong operator type for an unary arithmetic operation.");
       }
 
       if ( consumeNext(theChild.getp(), planState ) != NULL )
-          ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+          ZORBA_ERROR_LOC_DESC( XPTY0004,
               loc, "Arithmetic operation has a sequences greater than one as an operator.");
       STACK_PUSH ( res, state );
     }
@@ -683,13 +683,13 @@ namespace zorba
           res = GENV_ITEMFACTORY->createDecimal ( -item->getDecimalValue() );
       else
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Wrong operator type for an abs operation.");
       }
 
       if ( consumeNext(theChildren[0].getp(), planState ) != NULL )
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Abs operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -741,13 +741,13 @@ namespace zorba
 
       else
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Wrong operator type for a ceiling operation.");
       }
 
       if ( consumeNext(theChildren[0].getp(), planState ) != NULL )
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Ceiling operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -798,13 +798,13 @@ namespace zorba
 
       else
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Wrong operator type for a floor operation.");
       }
 
       if ( consumeNext(theChildren[0].getp(), planState ) != NULL )
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Floor operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -855,13 +855,13 @@ namespace zorba
 
       else
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Wrong operator type for a round operation.");
       }
 
       if ( consumeNext(theChildren[0].getp(), planState ) != NULL )
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Round operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -919,13 +919,13 @@ namespace zorba
 
       else
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
             loc, "Wrong operator type for a round-half-to-even operation.");
       }
 
       if ( consumeNext(theChildren [0].getp(), planState ) != NULL )
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004,
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
            loc, "Round-half-to-even operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );

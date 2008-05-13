@@ -1259,7 +1259,7 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
 ********************************************************************************/
 void ElementNode::checkNamespaceConflict(
     const Item*           qname,
-    ZorbaError::ErrorCode ecode) const
+    XQUERY_ERROR ecode) const
 {
   const QNameItemImpl* qn = reinterpret_cast<const QNameItemImpl*>(qname);
 
@@ -1291,7 +1291,7 @@ void ElementNode::checkUniqueAttr(const Item* attrName) const
   {
     if (getAttr(i)->getNodeName()->equals(attrName, NULL))
     {
-      ZORBA_ERROR_PARAM_OSS(ZorbaError::XQDY0025,
+      ZORBA_ERROR_PARAM_OSS(XQDY0025,
                             "Attribute name " << *attrName->getStringValue() 
                             << " is not unique", "");
     }
@@ -1385,7 +1385,7 @@ XmlNode* ElementNode::copy(
           (theTypeName == GET_STORE().theSchemaTypeNames[XS_QNAME] ||
            theTypeName == GET_STORE().theSchemaTypeNames[XS_NOTATION]))
       {
-        ZORBA_ERROR(ZorbaError::XQTY0086);
+        ZORBA_ERROR(XQTY0086);
       }
 
       xqpStringStore* prefix;
@@ -1907,7 +1907,7 @@ void ConstrElementNode::addAttribute(
     {
       try
       {
-        checkNamespaceConflict(attr->theName, ZorbaError::XQDY0025);
+        checkNamespaceConflict(attr->theName, XQDY0025);
       }
       catch(ZorbaException& e)
       {

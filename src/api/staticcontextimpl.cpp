@@ -414,7 +414,7 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
     xqpStringStore_t lBaseURI2 = lBaseURI;
     
     if(!GenericCast::instance()->isCastable(lBaseURI, &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
-      ZORBA_ERROR_DESC(ZorbaError::XQP0020_INVALID_URI, lBaseURI);
+      ZORBA_ERROR_DESC(XQP0020_INVALID_URI, lBaseURI);
     }
     theCtx->set_baseuri(lBaseURI2.getp(), false);
   }
@@ -453,7 +453,7 @@ StaticContextImpl::registerStatelessExternalFunction(StatelessExternalFunction* 
       xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
       xqpString lMsg = lLocalName +" is already registered";
 
-      ZORBA_ERROR_DESC(ZorbaError::API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
+      ZORBA_ERROR_DESC(API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
     }
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);

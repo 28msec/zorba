@@ -34,7 +34,7 @@ ZorbaError::~ZorbaError()
 
 
 ZorbaError::ZorbaError(
-    ::zorba::ZorbaError::ErrorCode aErrorCode,
+    XQUERY_ERROR& aErrorCode,
     const xqpString&               aDescription,
     const QueryLoc&                aLocation,
     const std::string&             aFileName,
@@ -42,7 +42,7 @@ ZorbaError::ZorbaError(
   :
   theQName(GENV_ITEMFACTORY->createQName(XQUERY_ERR_NS,
                                          "err",
-                                         ZorbaError::toString(aErrorCode).c_str())),
+                                         toString(aErrorCode).c_str())),
   theErrorCode(aErrorCode),
   theDescription(aDescription),
   theQueryLocation(aLocation),
@@ -69,7 +69,7 @@ ZorbaError::ZorbaError(
   if (theQName->getNamespace()->byteEqual(XQUERY_ERR_NS))
     theErrorCode = ErrorMessages::getErrorCodeForName(theQName->getLocalName()->str());
   else
-    theErrorCode = ::zorba::ZorbaError::XQP0021_USER_ERROR;
+    theErrorCode = XQP0021_USER_ERROR;
 }
 
 
@@ -85,7 +85,8 @@ ZorbaError::ZorbaError(const ZorbaError& other)
 }
 
 
-std::string ZorbaError::toString(::zorba::ZorbaError::ErrorCode& code) 
+std::string 
+ZorbaError::toString(const XQUERY_ERROR& code) 
 {
   return ErrorMessages::getNameForErrorCode(code);
 }
@@ -108,7 +109,7 @@ ZorbaWarning::ZorbaWarning(
 
 
 ZorbaUserError::ZorbaUserError(
-    ::zorba::ZorbaError::ErrorCode       aErrorCode, 
+    XQUERY_ERROR&       aErrorCode, 
     const xqpString&                     aDescription,
     const QueryLoc&                      aLocation,
     const std::string&                   aFileName,

@@ -83,7 +83,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const
         }
         else
         {
-          ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0001, loc, lUtf8Code);
+          ZORBA_ERROR_LOC_DESC(FOCH0001, loc, lUtf8Code);
         }
       }
     }
@@ -311,7 +311,7 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
 
       if  ( ( lItem = consumeNext(*iter, planState) ) != NULL )
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,
+        ZORBA_ERROR_LOC_DESC( XPTY0004, loc,
           "A sequence with more than one item is not allowed as argument to fn:concat");
           break;
       }
@@ -630,7 +630,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0003, loc, "Unsupported normalization form.");
+      ZORBA_ERROR_LOC_DESC(FOCH0003, loc, "Unsupported normalization form.");
     }
   }
   else
@@ -1352,7 +1352,7 @@ FnMatchesIterator::nextImpl(PlanState& planState) const
   
   STACK_END (state);
 #else
-  ZORBA_ERROR(ZorbaError::FORX0002);///invalid regular expression (no reg exp supported)
+  ZORBA_ERROR(FORX0002);///invalid regular expression (no reg exp supported)
   return NULL;
 #endif
 }
@@ -1412,7 +1412,7 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
   }
   
   if(tmp)
-    ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
+    ZORBA_ERROR_LOC_DESC(FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
   try
@@ -1428,7 +1428,7 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
   
   STACK_END (state);
 #else
-  ZORBA_ERROR(ZorbaError::FORX0002);///invalid regular expression (no reg exp supported)
+  ZORBA_ERROR(FORX0002);///invalid regular expression (no reg exp supported)
   return NULL;
 #endif
 }
@@ -1495,7 +1495,7 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
   }
   
   if(tmp)
-    ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
+    ZORBA_ERROR_LOC_DESC(FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
   while (! state->theString.empty ()) 
@@ -1516,7 +1516,7 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
 
   STACK_END(state);
 #else
-  ZORBA_ERROR(ZorbaError::FORX0002);///invalid regular expression (no reg exp supported)
+  ZORBA_ERROR(FORX0002);///invalid regular expression (no reg exp supported)
   return NULL;
 #endif
 }

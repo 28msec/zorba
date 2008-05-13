@@ -470,7 +470,7 @@ XQueryImpl::applyUpdates()
       if (pul != 0)
       {
         if (!pul->isPul())
-          ZORBA_ERROR_DESC(ZorbaError::XQP0019_INTERNAL_ERROR,
+          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
                            "Query does not return a pending update list");
         pul->applyUpdates();
       }
@@ -581,7 +581,7 @@ void
 XQueryImpl::checkNotClosed() const
 {
   if (theIsClosed) {
-    ZORBA_ERROR_DESC(ZorbaError::API0022_QUERY_ALREADY_CLOSED,
+    ZORBA_ERROR_DESC(API0022_QUERY_ALREADY_CLOSED,
                      "Can't perform the operation because the query is already closed");
   }
 }
@@ -591,7 +591,7 @@ void
 XQueryImpl::checkCompiled() const
 {
   if ( ! thePlan ) {
-    ZORBA_ERROR_DESC(ZorbaError::API0003_XQUERY_NOT_COMPILED, 
+    ZORBA_ERROR_DESC(API0003_XQUERY_NOT_COMPILED, 
                      "Can't perform the operation because the query is not compiled");
   }
 }
@@ -601,7 +601,7 @@ void
 XQueryImpl::checkNotCompiled() const
 {
   if ( thePlan ) {
-    ZORBA_ERROR_DESC(ZorbaError::API0004_XQUERY_ALREADY_COMPILED, 
+    ZORBA_ERROR_DESC(API0004_XQUERY_ALREADY_COMPILED, 
                      "Can't perform the operation because the query has already been compiled");
   }
 }

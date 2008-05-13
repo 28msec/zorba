@@ -84,7 +84,7 @@ namespace zorba
       }
       else
       {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc,  
+        ZORBA_ERROR_LOC_DESC( FORG0006, loc,  
           "Wrong arguments in fn:boolean function.");
       }
     }
@@ -197,14 +197,14 @@ namespace zorba
         if ( consumeNext ( theChild0.getp(), planState ) != NULL 
              || consumeNext ( theChild1.getp(), planState ) != NULL )
         {
-          ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc, 
+          ZORBA_ERROR_LOC_DESC(  XPTY0004, loc, 
                              "Value comparions must not be made with sequences with length greater 1.");
         }
       }
     } /* if value comparison */
     else if ( this->isNodeComparison() )
     {
-      ZORBA_ERROR_LOC_DESC(  ZorbaError::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+      ZORBA_ERROR_LOC_DESC(  XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
                             loc,  "Node comparison is not yet implemented.");
     } /* if node comparison */
   
@@ -381,7 +381,7 @@ bool CompareIterator::boolResult (
         break;
     }
 
-    ZORBA_ERROR_DESC(  ZorbaError::XPTY0004, "Dynamic type of a value does not match a required type.");
+    ZORBA_ERROR_DESC(  XPTY0004, "Dynamic type of a value does not match a required type.");
   return false;
 }
   
@@ -704,7 +704,7 @@ CompareIterator::compare(
   } 
   catch (InvalidTimezoneException)
   {
-    ZORBA_ERROR(ZorbaError::FODT0003);
+    ZORBA_ERROR(FODT0003);
   }
   
   // TODO comparisons for all types
@@ -746,7 +746,7 @@ CompareIterator::compare(
       lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
-           ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
+           ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 0); 
         STACK_PUSH ( 
@@ -772,7 +772,7 @@ CompareIterator::compare(
       lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
-           ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
+           ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == -1); 
         STACK_PUSH ( 
@@ -798,7 +798,7 @@ CompareIterator::compare(
       lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
-           ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
+           ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 1); 
         STACK_PUSH ( 

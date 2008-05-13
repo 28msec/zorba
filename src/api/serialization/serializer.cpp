@@ -23,6 +23,7 @@
 #include "errors/error_manager.h"
 #include "util/Assert.h"
 #include "zorbatypes/utf8.h"
+#include <zorba/zorbastring.h>
 
 using namespace std;
 
@@ -610,7 +611,7 @@ void serializer::emitter::emit_item(const store::Item* item)
   else
   {
     if (item->getNodeKind() == store::StoreConsts::attributeNode)
-      ZORBA_ERROR(ZorbaError::SENR0001);
+      ZORBA_ERROR(SENR0001);
     else        
       emit_node(item, 0);
   }  
@@ -1183,7 +1184,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       indent = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016);
+      ZORBA_ERROR( SEPM0016);
     }
   }
   else if (parameter_name == "standalone")
@@ -1196,7 +1197,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       standalone = PARAMETER_VALUE_OMIT;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016);
+      ZORBA_ERROR( SEPM0016);
     }
   }
   else if (parameter_name == "omit-xml-declaration")
@@ -1207,7 +1208,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       omit_xml_declaration = PARAMETER_VALUE_NO;    
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016);
+      ZORBA_ERROR( SEPM0016);
     }
   }
   else if (parameter_name == "byte-order-mark")
@@ -1218,7 +1219,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       byte_order_mark = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016);
+      ZORBA_ERROR( SEPM0016);
     }
   }
   else if (parameter_name == "undeclare-prefixes")
@@ -1229,7 +1230,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016);
+      ZORBA_ERROR( SEPM0016);
     }
   }
   else if (parameter_name == "method")
@@ -1240,7 +1241,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       method = PARAMETER_VALUE_HTML;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016);
+      ZORBA_ERROR( SEPM0016);
     }
   }
   else if (parameter_name == "include-content-type")
@@ -1251,7 +1252,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       include_content_type = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016);
+      ZORBA_ERROR( SEPM0016);
     }
   }
   else if (parameter_name == "encoding")
@@ -1264,7 +1265,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 #endif
     else
     {
-      ZORBA_ERROR( ZorbaError::SEPM0016);
+      ZORBA_ERROR( SEPM0016);
     }
   }
   else if (parameter_name == "media-type")
@@ -1273,7 +1274,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   }
   else
   {
-    ZORBA_ERROR( ZorbaError::SEPM0016);
+    ZORBA_ERROR( SEPM0016);
   }
 }
 
@@ -1336,7 +1337,7 @@ void serializer::serialize(PlanWrapper *result, ostream& os)
   while (item != NULL )
   {
     if (item->isPul())
-      ZORBA_ERROR(ZorbaError::API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
+      ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
 
     e->emit_item(&*item);
     item = result->next();
@@ -1362,7 +1363,7 @@ void serializer::serializeSAX2(
   while (item != NULL )
   {
     if (item->isPul())
-      ZORBA_ERROR(ZorbaError::API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
+      ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
 
     e->emit_item(&*item);
     item = result->next();

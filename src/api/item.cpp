@@ -84,9 +84,9 @@ Item Item::getType() const
 #define ITEM_CATCH } catch (::zorba::error::ZorbaError &e) {  \
   throw SystemException(e.theErrorCode, String(e.theDescription.theStrStore), "", 0); \
   } catch (std::exception& e) { \
-    throw SystemException(ZorbaError::XQP0019_INTERNAL_ERROR, e.what(), "", 0); \
+    throw SystemException(XQP0019_INTERNAL_ERROR, e.what(), "", 0); \
   } catch (...) { \
-    throw SystemException(ZorbaError::XQP0019_INTERNAL_ERROR, "Internal error", "", 0); \
+    throw SystemException(XQP0019_INTERNAL_ERROR, "Internal error", "", 0); \
   } 
 
 

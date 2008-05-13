@@ -125,7 +125,7 @@ ResultIteratorImpl::next(Item& aItem)
 
     if (!theIsOpened)  
     {
-      ZORBA_ERROR_DESC(ZorbaError::API0010_XQUERY_EXECUTION_NOT_STARTED,
+      ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
                        "ResultIterator has not been opened");
     }
 
@@ -142,7 +142,7 @@ ResultIteratorImpl::next(Item& aItem)
       return false;
     
     if (lItem->isPul())
-      ZORBA_ERROR(ZorbaError::API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY);
+      ZORBA_ERROR(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY);
 
     aItem = &*lItem;
     return true;

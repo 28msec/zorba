@@ -375,7 +375,7 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
     // That's why empty_item is needed.
     int8_t result = CompareIterator::valueCompare ( aRuntimeCB, s1 , s2, collator );
     if (result > 1 || result < -1) {
-      ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Non-comparable types found while sorting" );
+      ZORBA_ERROR_DESC( XPTY0004, "Non-comparable types found while sorting" );
       
     }
     return descAsc (result , desc );
@@ -703,7 +703,7 @@ void FLWORIterator::matVarsAndGroupBy (
         lItem = lTypedValue->next();
         if ( lItem != 0 )
         {
-          ZORBA_ERROR_DESC ( ZorbaError::XPTY0004, "Expected a singleton (atomization has more than one value)" );
+          ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton (atomization has more than one value)" );
         }
       }
     }
@@ -714,7 +714,7 @@ void FLWORIterator::matVarsAndGroupBy (
       lItem = consumeNext ( lSpecIter->theInput.getp(), planState );
       if ( lItem != 0 )
       {
-        ZORBA_ERROR_DESC ( ZorbaError::XPTY0004, "Expected a singleton" );
+        ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton" );
       }
     }
     lSpecIter->theInput->reset ( planState );
@@ -772,7 +772,7 @@ void FLWORIterator::matResultAndOrder(
       lItem = consumeNext ( lSpecIter->theOrderByIter.getp(), planState );
       if ( lItem != 0 )
       {
-        ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Expected a singleton" );
+        ZORBA_ERROR_DESC( XPTY0004, "Expected a singleton" );
       }
     }
     lSpecIter->theOrderByIter->reset(planState);

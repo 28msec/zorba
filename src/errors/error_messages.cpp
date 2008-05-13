@@ -28,9 +28,9 @@ namespace zorba { namespace error {
 
 ********************************************************************************/
 
-static const char *canonical_err_names[::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE + 1];
+static const char *canonical_err_names[MAX_ZORBA_ERROR_CODE + 1];
 
-static const char *err_msg[::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE + 1];
+static const char *err_msg[MAX_ZORBA_ERROR_CODE + 1];
 
 
 static struct err_msg_initializer 
@@ -38,10 +38,10 @@ static struct err_msg_initializer
   err_msg_initializer () 
   {
 #define DEF_ERR_CODE( code, name, msg )                              \
-  canonical_err_names [ ::zorba::ZorbaError::code ] = strdup(#name); \
-  err_msg [::zorba::ZorbaError::code] = strdup(msg);
+  canonical_err_names [ code ] = strdup(#name); \
+  err_msg [code] = strdup(msg);
 
-    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; i++) 
+    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; i++) 
     {
       canonical_err_names [i] = NULL;
       err_msg [i] = NULL;
@@ -429,7 +429,7 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
 
 #undef DEF_ERR_CODE
 
-    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; ++i) 
+    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i) 
     {
       if (canonical_err_names [i] == NULL)
         canonical_err_names [i] = strdup("?");
@@ -445,7 +445,7 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
 
   ~err_msg_initializer()
   {
-    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; ++i) 
+    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i) 
     {
       if (canonical_err_names[i] != NULL)
         free(const_cast<char *>(canonical_err_names[i]));
@@ -458,9 +458,9 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
 
 
 std::string
-ErrorMessages::getMessageForErrorCode(::zorba::ZorbaError::ErrorCode& e) 
+ErrorMessages::getMessageForErrorCode(const XQUERY_ERROR& e) 
 {
-  ZORBA_ASSERT (e < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE);
+  ZORBA_ASSERT (e < MAX_ZORBA_ERROR_CODE);
   return err_msg [e];
 } 
 
@@ -473,155 +473,155 @@ ErrorMessages::getMessageForWarningCode(ZorbaWarning::WarningCode& code)
 
 
 std::string
-ErrorMessages::getNameForErrorCode(::zorba::ZorbaError::ErrorCode& code)
+ErrorMessages::getNameForErrorCode(const XQUERY_ERROR& code)
 {
-  ZORBA_ASSERT (code < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE);
+  ZORBA_ASSERT (code < MAX_ZORBA_ERROR_CODE);
   return canonical_err_names [code];
 }
 
 
-::zorba::ZorbaError::ErrorCode 
+XQUERY_ERROR
 ErrorMessages::getErrorCodeForName(const std::string& name) 
 {
   // TODO: use a map or hashmap
-  for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; i++)
+  for (int i = 0; i < MAX_ZORBA_ERROR_CODE; i++)
   {
     if (name == canonical_err_names[i])
-      return (enum ::zorba::ZorbaError::ErrorCode) i;
+      return (XQUERY_ERROR) i;
   }
-  return ::zorba::ZorbaError::XQP0019_INTERNAL_ERROR;
+  return XQP0019_INTERNAL_ERROR;
 }
 
 
 
-::zorba::ZorbaError::ErrorCode
+XQUERY_ERROR
 DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
 {
   switch( code )
   {
     case  ::zorba::ZorbatypesError::FOER0000:
-      return ::zorba::ZorbaError::FOER0000;
+      return FOER0000;
       break;
     case  ::zorba::ZorbatypesError::FOAR0001:
-      return ::zorba::ZorbaError::FOAR0001;
+      return FOAR0001;
       break;
     case  ::zorba::ZorbatypesError::FOAR0002:
-      return ::zorba::ZorbaError::FOAR0002;
+      return FOAR0002;
       break;
     case ::zorba::ZorbatypesError::FOCA0001:
-      return ::zorba::ZorbaError::FOCA0001;
+      return FOCA0001;
       break;
     case ::zorba::ZorbatypesError::FOCA0002:
-      return ::zorba::ZorbaError::FOCA0002;
+      return FOCA0002;
       break;
     case ::zorba::ZorbatypesError::FOCA0003:
-      return ::zorba::ZorbaError::FOCA0003;
+      return FOCA0003;
       break;
     case ::zorba::ZorbatypesError::FOCA0005:
-      return ::zorba::ZorbaError::FOCA0005;
+      return FOCA0005;
       break;
     case ::zorba::ZorbatypesError::FOCA0006:
-      return ::zorba::ZorbaError::FOCA0006;
+      return FOCA0006;
       break;
     case ::zorba::ZorbatypesError::FOCH0001:
-      return ::zorba::ZorbaError::FOCH0001;
+      return FOCH0001;
       break;
     case ::zorba::ZorbatypesError::FOCH0002:
-      return ::zorba::ZorbaError::FOCH0002;
+      return FOCH0002;
       break;
       
       
     case ::zorba::ZorbatypesError::FOCH0003:
-      return ::zorba::ZorbaError::FOCH0003;
+      return FOCH0003;
       break;
     case ::zorba::ZorbatypesError::FOCH0004:
-      return ::zorba::ZorbaError::FOCH0004;
+      return FOCH0004;
       break;
     case ::zorba::ZorbatypesError::FODC0001:
-      return ::zorba::ZorbaError::FODC0001;
+      return FODC0001;
       break;
     case ::zorba::ZorbatypesError::FODC0002:
-      return ::zorba::ZorbaError::FODC0002;
+      return FODC0002;
       break;
     case ::zorba::ZorbatypesError::FODC0003:
-      return ::zorba::ZorbaError::FODC0003;
+      return FODC0003;
       break;
     case ::zorba::ZorbatypesError::FODC0004:
-      return ::zorba::ZorbaError::FODC0004;
+      return FODC0004;
       break;
     case ::zorba::ZorbatypesError::FODC0005:
-      return ::zorba::ZorbaError::FODC0005;
+      return FODC0005;
       break;
     case ::zorba::ZorbatypesError::FODT0001:
-      return ::zorba::ZorbaError::FODT0001;
+      return FODT0001;
       break;
     case ::zorba::ZorbatypesError::FODT0002:
-      return ::zorba::ZorbaError::FODT0002;
+      return FODT0002;
       break;
     case ::zorba::ZorbatypesError::FODT0003:
-      return ::zorba::ZorbaError::FODT0003;
+      return FODT0003;
       break;
 
       
     case ::zorba::ZorbatypesError::FONS0004:
-      return ::zorba::ZorbaError::FONS0004;
+      return FONS0004;
       break;
     case ::zorba::ZorbatypesError::FONS0005:
-      return ::zorba::ZorbaError::FONS0005;
+      return FONS0005;
       break;
     case ::zorba::ZorbatypesError::FORG0001:
-      return ::zorba::ZorbaError::FORG0001;
+      return FORG0001;
       break;
     case ::zorba::ZorbatypesError::FORG0002:
-      return ::zorba::ZorbaError::FORG0002;
+      return FORG0002;
       break;
     case ::zorba::ZorbatypesError::FORG0003:
-      return ::zorba::ZorbaError::FORG0003;
+      return FORG0003;
       break;
     case ::zorba::ZorbatypesError::FORG0004:
-      return ::zorba::ZorbaError::FORG0004;
+      return FORG0004;
       break;
     case ::zorba::ZorbatypesError::FORG0005:
-      return ::zorba::ZorbaError::FORG0005;
+      return FORG0005;
       break;
     case ::zorba::ZorbatypesError::FORG0006:
-      return ::zorba::ZorbaError::FORG0006;
+      return FORG0006;
       break;
     case ::zorba::ZorbatypesError::FORG0008:
-      return ::zorba::ZorbaError::FORG0008;
+      return FORG0008;
       break;
     case ::zorba::ZorbatypesError::FORG0009:
-      return ::zorba::ZorbaError::FORG0009;
+      return FORG0009;
       break;
 
       
     case ::zorba::ZorbatypesError::FORX0001:
-      return ::zorba::ZorbaError::FORX0001;
+      return FORX0001;
       break;
     case ::zorba::ZorbatypesError::FORX0002:
-      return ::zorba::ZorbaError::FORX0002;
+      return FORX0002;
       break;
     case ::zorba::ZorbatypesError::FORX0003:
-      return ::zorba::ZorbaError::FORX0003;
+      return FORX0003;
       break;
     case ::zorba::ZorbatypesError::FORX0004:
-      return ::zorba::ZorbaError::FORX0004;
+      return FORX0004;
       break;
     case ::zorba::ZorbatypesError::FOTY0012:
-      return ::zorba::ZorbaError::FOTY0012;
+      return FOTY0012;
       break;
     case ::zorba::ZorbatypesError::FOUP0001:
-      return ::zorba::ZorbaError::FOUP0001;
+      return FOUP0001;
       break;
     case ::zorba::ZorbatypesError::FOUP0002:
-      return ::zorba::ZorbaError::FOUP0002;
+      return FOUP0002;
       break;
 
     default:
-      return ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE;
+      return MAX_ZORBA_ERROR_CODE;
       break;
   }
-  return ::zorba::ZorbaError::FORX0001;
+  return FORX0001;
 }
 
 } /* namespace error */
