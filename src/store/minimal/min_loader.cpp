@@ -37,6 +37,8 @@
 #include "store/api/collection.h"
 #include "zorbatypes/datetime.h"
 
+#include "context/static_context.h"
+
 #include "types/casting.h"
 #include "context/namespace_context.h"
 #include <string>
@@ -428,6 +430,13 @@ bool XmlLoader::fill_in_uri(std::string &prefix, std::string &result_uri)
         return true;
       }
     }
+  }
+  ///look into default namespaces
+  xqp_string    nsuri;
+  if(GENV.getRootStaticContext().lookup_ns(prefix, nsuri))
+  {
+    result_uri = (std::string)nsuri;
+    return true;
   }
   return false;
 }
