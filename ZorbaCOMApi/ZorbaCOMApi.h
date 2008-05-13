@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 6.00.0366 */
-/* at Mon Mar 10 11:21:40 2008
+/* at Thu Mar 27 16:19:51 2008
  */
 /* Compiler settings for .\ZorbaCOMApi.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
@@ -895,23 +895,10 @@ EXTERN_C const IID IID_IDynamicQueryContext;
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE getInternalDynamicQueryContextPtr( 
             /* [retval][out] */ VARIANT *internal_ptr) = 0;
         
-        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE setVariableAsInt( 
-            /* [in] */ BSTR varname,
-            /* [in] */ int int_value) = 0;
-        
-        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE setVariableAsString( 
-            /* [in] */ BSTR varname,
-            /* [in] */ BSTR str_value) = 0;
-        
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE setVariableAsDocumentFromFile( 
             /* [in] */ BSTR varname,
             /* [in] */ BSTR file_path,
             /* [in] */ BSTR storeUri) = 0;
-        
-        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE deleteVariable( 
-            /* [in] */ BSTR varname) = 0;
-        
-        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE deleteAllVariables( void) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE setContextItemAsDocumentFromFile( 
             /* [in] */ BSTR file_path,
@@ -969,28 +956,11 @@ EXTERN_C const IID IID_IDynamicQueryContext;
             IDynamicQueryContext * This,
             /* [retval][out] */ VARIANT *internal_ptr);
         
-        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *setVariableAsInt )( 
-            IDynamicQueryContext * This,
-            /* [in] */ BSTR varname,
-            /* [in] */ int int_value);
-        
-        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *setVariableAsString )( 
-            IDynamicQueryContext * This,
-            /* [in] */ BSTR varname,
-            /* [in] */ BSTR str_value);
-        
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *setVariableAsDocumentFromFile )( 
             IDynamicQueryContext * This,
             /* [in] */ BSTR varname,
             /* [in] */ BSTR file_path,
             /* [in] */ BSTR storeUri);
-        
-        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *deleteVariable )( 
-            IDynamicQueryContext * This,
-            /* [in] */ BSTR varname);
-        
-        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *deleteAllVariables )( 
-            IDynamicQueryContext * This);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *setContextItemAsDocumentFromFile )( 
             IDynamicQueryContext * This,
@@ -1036,20 +1006,8 @@ EXTERN_C const IID IID_IDynamicQueryContext;
 #define IDynamicQueryContext_getInternalDynamicQueryContextPtr(This,internal_ptr)	\
     (This)->lpVtbl -> getInternalDynamicQueryContextPtr(This,internal_ptr)
 
-#define IDynamicQueryContext_setVariableAsInt(This,varname,int_value)	\
-    (This)->lpVtbl -> setVariableAsInt(This,varname,int_value)
-
-#define IDynamicQueryContext_setVariableAsString(This,varname,str_value)	\
-    (This)->lpVtbl -> setVariableAsString(This,varname,str_value)
-
 #define IDynamicQueryContext_setVariableAsDocumentFromFile(This,varname,file_path,storeUri)	\
     (This)->lpVtbl -> setVariableAsDocumentFromFile(This,varname,file_path,storeUri)
-
-#define IDynamicQueryContext_deleteVariable(This,varname)	\
-    (This)->lpVtbl -> deleteVariable(This,varname)
-
-#define IDynamicQueryContext_deleteAllVariables(This)	\
-    (This)->lpVtbl -> deleteAllVariables(This)
 
 #define IDynamicQueryContext_setContextItemAsDocumentFromFile(This,file_path,storeUri)	\
     (This)->lpVtbl -> setContextItemAsDocumentFromFile(This,file_path,storeUri)
@@ -1073,32 +1031,6 @@ void __RPC_STUB IDynamicQueryContext_getInternalDynamicQueryContextPtr_Stub(
     DWORD *_pdwStubPhase);
 
 
-/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IDynamicQueryContext_setVariableAsInt_Proxy( 
-    IDynamicQueryContext * This,
-    /* [in] */ BSTR varname,
-    /* [in] */ int int_value);
-
-
-void __RPC_STUB IDynamicQueryContext_setVariableAsInt_Stub(
-    IRpcStubBuffer *This,
-    IRpcChannelBuffer *_pRpcChannelBuffer,
-    PRPC_MESSAGE _pRpcMessage,
-    DWORD *_pdwStubPhase);
-
-
-/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IDynamicQueryContext_setVariableAsString_Proxy( 
-    IDynamicQueryContext * This,
-    /* [in] */ BSTR varname,
-    /* [in] */ BSTR str_value);
-
-
-void __RPC_STUB IDynamicQueryContext_setVariableAsString_Stub(
-    IRpcStubBuffer *This,
-    IRpcChannelBuffer *_pRpcChannelBuffer,
-    PRPC_MESSAGE _pRpcMessage,
-    DWORD *_pdwStubPhase);
-
-
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IDynamicQueryContext_setVariableAsDocumentFromFile_Proxy( 
     IDynamicQueryContext * This,
     /* [in] */ BSTR varname,
@@ -1107,29 +1039,6 @@ void __RPC_STUB IDynamicQueryContext_setVariableAsString_Stub(
 
 
 void __RPC_STUB IDynamicQueryContext_setVariableAsDocumentFromFile_Stub(
-    IRpcStubBuffer *This,
-    IRpcChannelBuffer *_pRpcChannelBuffer,
-    PRPC_MESSAGE _pRpcMessage,
-    DWORD *_pdwStubPhase);
-
-
-/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IDynamicQueryContext_deleteVariable_Proxy( 
-    IDynamicQueryContext * This,
-    /* [in] */ BSTR varname);
-
-
-void __RPC_STUB IDynamicQueryContext_deleteVariable_Stub(
-    IRpcStubBuffer *This,
-    IRpcChannelBuffer *_pRpcChannelBuffer,
-    PRPC_MESSAGE _pRpcMessage,
-    DWORD *_pdwStubPhase);
-
-
-/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IDynamicQueryContext_deleteAllVariables_Proxy( 
-    IDynamicQueryContext * This);
-
-
-void __RPC_STUB IDynamicQueryContext_deleteAllVariables_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,

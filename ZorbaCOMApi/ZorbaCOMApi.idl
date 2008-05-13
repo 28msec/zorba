@@ -1,3 +1,18 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or  implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 // ZorbaCOMApi.idl : IDL source for ZorbaCOMApi
 //
 
@@ -10,56 +25,34 @@ import "wtypes.idl"; ///for BSTR
 //import "msxml.idl";//for MSXML DOM
 
 interface IXQuery;
-interface IStaticQueryContext;
-interface IDynamicQueryContext;
-interface IXQueryTreePlans;
+interface IStaticContext;
+interface IDynamicContext;
 //interface IXMLDOMDocument;
 
 [
 	uuid(B633B682-F020-4486-A8BE-ED827450485B),
 	dual,
 //	nonextensible,
-	helpstring("IZorbaBaseEngine Interface"),
+	helpstring("IZorba Interface"),
 	pointer_default(unique)
 ]
-interface IZorbaBaseEngine : IDispatch{
-  [id(1), helpstring("method createQuery")] HRESULT createQuery([in] BSTR aQueryString, [in] IStaticQueryContext* sctx, [in] BSTR xquery_source_uri, [in] VARIANT_BOOL routing_mode, [in] IXQueryTreePlans* tree_plans, [out,retval] IXQuery** xquery);
-  [id(2), helpstring("method createDynamicQueryContext")] HRESULT createDynamicQueryContext([out,retval] IDynamicQueryContext** dctx);
+interface IZorba : IDispatch{
+  [id(1), helpstring("method createQuery")] HRESULT createQuery([in] BSTR aQueryString, [in] IStaticQueryContext* sctx, [in] BSTR xquery_source_uri, [in] VARIANT_BOOL routing_mode, [out,retval] IXQuery** xquery);
+  [id(2), helpstring("method createStaticContext")] HRESULT createStaticContext([out,retval] IStaticContext** dctx);
 };
 
-[
-	object,
-	uuid(200D051F-428D-4E59-9B69-FCB31BB4D517),
-	dual,
-	nonextensible,
-	helpstring("IZorbaSingleThread Interface"),
-	pointer_default(unique)
-]
-interface IZorbaSingleThread : IZorbaBaseEngine{
-};
 [
 	uuid(D0BAB563-EBB6-4AD4-9B49-4C68A120E0BC),
 	dual,
 	nonextensible,
-	helpstring("IStaticQueryContext Interface"),
+	helpstring("IStaticContext Interface"),
 	pointer_default(unique)
 ]
-interface IStaticQueryContext : IDispatch{
-  [id(1), helpstring("get internal zorba::StaticQueryContext pointer")] 
-  HRESULT getInternalStaticQueryContextPtr([out, retval]VARIANT* internal_ptr);
+interface IStaticContext : IDispatch{
+  [id(1), helpstring("get internal zorba::StaticContext pointer")] 
+  HRESULT getInternalStaticContextPtr([out, retval]VARIANT* internal_ptr);
 };
 
-[
-	uuid(1F90F747-2AB3-43e6-BBFA-D22AA3EE65C0),
-	dual,
-	nonextensible,
-	helpstring("IXQueryTreePlans Interface"),
-	pointer_default(unique)
-]
-interface IXQueryTreePlans : IDispatch{
-  [id(1), helpstring("get internal zorba::XQueryTreePlans pointer")] 
-  HRESULT getInternalXQueryTreePlansPtr([out, retval]VARIANT* internal_ptr);
-};
 
 [
 	uuid(84757724-30DE-4190-8615-45FB3064039D),
@@ -72,11 +65,8 @@ interface IXQuery : IDispatch{
   [id(1), helpstring("get internal zorba::XQuery pointer")] 
   HRESULT getInternalXQueryPtr([out, retval]VARIANT* internal_ptr);
 
-  [id(2), helpstring("init execution")] 
-  HRESULT initExecution([in]IDynamicQueryContext *dctx);
-
-  [id(3), helpstring("serializeXMLtoBuffer")] 
-  HRESULT serializeXMLtoBuffer([out, retval]BSTR *result);
+  [id(3), helpstring("serialize")] 
+  HRESULT serialize([out, retval]BSTR *result);
 
   [id(4), helpstring("getResultsAsDOM")] 
   HRESULT getResultsAsDOM([out, retval]IXMLDOMDocument **dom_result);
@@ -90,9 +80,9 @@ interface IXQuery : IDispatch{
 	helpstring("IDynamicQueryContext Interface"),
 	pointer_default(unique)
 ]
-interface IDynamicQueryContext : IDispatch{
-  [id(1), helpstring("get internal zorba::DynamicQueryContext pointer")] 
-  HRESULT getInternalDynamicQueryContextPtr([out, retval]VARIANT* internal_ptr);
+interface IDynamicContext : IDispatch{
+  [id(1), helpstring("get internal zorba::DynamicContext pointer")] 
+  HRESULT getInternalDynamicContextPtr([out, retval]VARIANT* internal_ptr);
 
   //virtual void
   //setCurrentDateTime( struct ::tm datetime, long timezone_seconds ) = 0;
@@ -117,8 +107,8 @@ interface IDynamicQueryContext : IDispatch{
   //virtual bool
   //setVariableAsULong( xqp_string varname, xqp_ulong ulong_value) = 0;
 
-  [id(9), helpstring("setVariableAsInt")] 
-  HRESULT setVariableAsInt( [in] BSTR varname, [in] int int_value);
+//  [id(9), helpstring("setVariableAsInt")] 
+//  HRESULT setVariableAsInt( [in] BSTR varname, [in] int int_value);
 
   //virtual bool
   //setVariableAsUInt( xqp_string varname, xqp_uint uint_value) = 0;
@@ -135,8 +125,8 @@ interface IDynamicQueryContext : IDispatch{
   //virtual bool
   //setVariableAsUByte( xqp_string varname, xqp_ubyte ubyte_value) = 0;
 
-  [id(15), helpstring("setVariableAsString")] 
-  HRESULT setVariableAsString( [in] BSTR varname, [in] BSTR str_value);
+//  [id(15), helpstring("setVariableAsString")] 
+//  HRESULT setVariableAsString( [in] BSTR varname, [in] BSTR str_value);
 
   //virtual bool
   //setVariableAsNormalizedString( xqp_string varname, xqp_string str_value) = 0;
@@ -262,11 +252,11 @@ interface IDynamicQueryContext : IDispatch{
   //virtual bool
   //setVariableAsBase64Binary( xqp_string varname, xqp_base64Binary base64_value) = 0;
 
-  [id(56), helpstring("deleteVariable")] 
-  HRESULT deleteVariable( [in] BSTR varname );
+//  [id(56), helpstring("deleteVariable")] 
+//  HRESULT deleteVariable( [in] BSTR varname );
 
-  [id(57), helpstring("deleteAllVariables")] 
-  HRESULT deleteAllVariables( );
+//  [id(57), helpstring("deleteAllVariables")] 
+//  HRESULT deleteAllVariables( );
 
   ////set context item into dynamic context
   //virtual bool

@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="Windows Mobile 6 Professional SDK (ARMV4I)"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -78,9 +81,9 @@
 				Name="VCLinkerTool"
 				RegisterOutput="true"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="oleaut32.lib iconv.lib libxml2.lib zlib.lib icudt.lib icuin.lib icuio.lib icule.lib iculx.lib icutu.lib icuuc.lib libcurl_imp.lib xerces-c_2D.lib zorbatypes.lib zorba.lib"
+				AdditionalDependencies="oleaut32.lib win_iconv.lib win_libxml2.lib icudt.lib icuin.lib icuio.lib icule.lib iculx.lib icutu.lib icuuc.lib libcurl_imp.lib xerces-c_2D.lib zorbatypes.lib zorba.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\boost_1_34_1\lib, ..\..\libcurl_7_15_1_win,..\..\libicu\lib,..\..\libxml_win\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\debug"
+				AdditionalLibraryDirectories="..\..\boost_1_34_1\lib, ..\..\libcurl_7_15_1_win,..\..\libicu\lib,..\..\libxml2-2.6.31\win_libxml2\Debug,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\debug,..\..\win_iconv\win_iconv\Debug"
 				ModuleDefinitionFile=".\ZorbaCOMApi.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -109,6 +112,99 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfATL="2"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="false"
+				TargetEnvironment="1"
+				GenerateStublessProxies="true"
+				TypeLibraryName="$(IntDir)/ZorbaCOMApi.tlb"
+				HeaderFileName="ZorbaCOMApi.h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="ZorbaCOMApi_i.c"
+				ProxyFileName="ZorbaCOMApi_p.c"
+				ValidateParameters="false"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\include,..\debug\include,..\..\libicu\include,..\..\boost_1_34_1"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL"
+				MinimalRebuild="true"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="true"
+				IgnoreImportLibrary="true"
+				AdditionalDependencies="oleaut32.lib win_iconv.lib win_libxml2.lib icudt.lib icuin.lib icuio.lib icule.lib iculx.lib icutu.lib icuuc.lib libcurl_imp.lib xerces-c_2D.lib zorbatypes.lib zorba.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\boost_1_34_1\lib, ..\..\libcurl_7_15_1_win,..\..\libicu\lib,..\..\libxml2-2.6.31\win_libxml2\Debug,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\debug,..\..\win_iconv\win_iconv\Debug"
+				ModuleDefinitionFile=".\ZorbaCOMApi.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
 			/>
 		</Configuration>
 		<Configuration
@@ -172,7 +268,7 @@
 				Name="VCLinkerTool"
 				RegisterOutput="true"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="oleaut32.lib iconv.lib libxml2.lib zlib.lib icudt.lib icuin.lib icuio.lib icule.lib iculx.lib icutu.lib icuuc.lib libcurl_imp.lib xerces-c_2D.lib zorbatypes.lib zorba.lib"
+				AdditionalDependencies="oleaut32.lib win_iconv.lib win_libxml2.lib icudt.lib icuin.lib icuio.lib icule.lib iculx.lib icutu.lib icuuc.lib libcurl_imp.lib xerces-c_2D.lib zorbatypes.lib zorba.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\boost_1_34_1\lib, ..\..\libcurl_7_15_1_win,..\..\libicu\lib,..\..\libxml_win\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\release"
 				ModuleDefinitionFile=".\ZorbaCOMApi.def"
@@ -207,6 +303,101 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfATL="2"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="false"
+				TargetEnvironment="1"
+				GenerateStublessProxies="true"
+				TypeLibraryName="$(IntDir)/ZorbaCOMApi.tlb"
+				HeaderFileName="ZorbaCOMApi.h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="ZorbaCOMApi_i.c"
+				ProxyFileName="ZorbaCOMApi_p.c"
+				ValidateParameters="false"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="2"
+				AdditionalIncludeDirectories="..\include,..\release\include,..\..\libicu\include,..\..\boost_1_34_1"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="true"
+				IgnoreImportLibrary="true"
+				AdditionalDependencies="oleaut32.lib win_iconv.lib win_libxml2.lib icudt.lib icuin.lib icuio.lib icule.lib iculx.lib icutu.lib icuuc.lib libcurl_imp.lib xerces-c_2D.lib zorbatypes.lib zorba.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\boost_1_34_1\lib, ..\..\libcurl_7_15_1_win,..\..\libicu\lib,..\..\libxml_win\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\release"
+				ModuleDefinitionFile=".\ZorbaCOMApi.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -236,7 +427,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -250,10 +457,6 @@
 			</File>
 			<File
 				RelativePath=".\XQueryCOM.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\XQueryTreePlan.cpp"
 				>
 			</File>
 			<File
@@ -303,10 +506,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\XQueryTreePlan.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ZorbaSingleThread.h"
 				>
 			</File>
@@ -349,7 +548,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

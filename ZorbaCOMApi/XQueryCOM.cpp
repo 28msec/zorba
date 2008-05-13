@@ -1,12 +1,28 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or  implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 // XQueryCOM.cpp : Implementation of CXQueryCOM
 
 #include "stdafx.h"
 #include "XQueryCOM.h"
-#include "zorba/compiled_xquery.h"
+#include "zorba/xquery.h"
 #include "zorba/dynamic_context.h"
+#include "zorba/exception.h"
 
 #include <string>
-#include <ostream>
+#include <sstream>
 
 
 // CXQueryCOM
@@ -22,22 +38,22 @@ HRESULT STDMETHODCALLTYPE CXQueryCOM::getInternalXQueryPtr(
 }
 
 /* [helpstring][id] */ 
-HRESULT STDMETHODCALLTYPE CXQueryCOM::initExecution( 
-    /* [in] */ IDynamicQueryContext *dctx)
-{
-  zorba::DynamicQueryContext  *dctx_interface = NULL;
-
-  if(dctx)
-  {
-    VARIANT   wrapped_interf;
-    dctx->getInternalDynamicQueryContextPtr(&wrapped_interf);
-    dctx_interface = reinterpret_cast<zorba::DynamicQueryContext*>(wrapped_interf.pintVal);
-  }
-  if(!wrapped_interface->initExecution(dctx_interface))
-    return E_FAIL;
-
-  return S_OK;
-}
+//HRESULT STDMETHODCALLTYPE CXQueryCOM::initExecution( 
+//    /* [in] */ IDynamicQueryContext *dctx)
+//{
+//  zorba::DynamicContext  *dctx_interface = NULL;
+//
+//  if(dctx)
+//  {
+//    VARIANT   wrapped_interf;
+//    dctx->getInternalDynamicQueryContextPtr(&wrapped_interf);
+//    dctx_interface = reinterpret_cast<zorba::DynamicContext*>(wrapped_interf.pintVal);
+//  }
+//  if(!wrapped_interface->initExecution(dctx_interface))
+//    return E_FAIL;
+//
+//  return S_OK;
+//}
 
 /* [helpstring][id] */ 
 HRESULT STDMETHODCALLTYPE CXQueryCOM::serializeXMLtoBuffer( 
@@ -48,8 +64,12 @@ HRESULT STDMETHODCALLTYPE CXQueryCOM::serializeXMLtoBuffer(
   if(!result)
     return E_INVALIDARG;
 
-  if(!wrapped_interface->serializeXML(oss))
+  try{
+  oss << wrapped_interface;
+  }catch(zorba::ZorbaException &)
+  {
     return E_FAIL;
+  }
 
   std::string   stross;
 
@@ -77,7 +97,10 @@ HRESULT STDMETHODCALLTYPE CXQueryCOM::getResultsAsDOM(/*[out, retval]*/ IXMLDOMD
   //serialize all the result in a memory ostream
   std::ostringstream   oss;
 
-  if(!wrapped_interface->serializeXML(oss))
+  try{
+    oss << wrapped_interface;
+  }
+  catch(zorba::ZorbaException &)
   {
     (*dom_result)->Release();
     return E_FAIL;
