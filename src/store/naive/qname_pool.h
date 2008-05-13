@@ -91,8 +91,10 @@ protected:
 
   QNamePoolHashSet    theHashSet;
 
+  StringPool        * theNamespacePool;
+
 public:
-  QNamePool(ulong size);
+  QNamePool(ulong size, StringPool* nspool);
 
   ~QNamePool();
 

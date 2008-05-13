@@ -32,13 +32,14 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
-QNamePool::QNamePool(ulong size) 
+QNamePool::QNamePool(ulong size, StringPool* nspool) 
   :
   theCache(new QNameItemImpl[size]),
   theCacheSize(size),
   theFirstFree(1),
   theNumFree(size - 1),
-  theHashSet(2 * size)
+  theHashSet(2 * size),
+  theNamespacePool(nspool)
 {
   // Put all the preallocated slots in the free list of the cahce.
   QNameItemImpl* qn = &theCache[1];
@@ -123,14 +124,12 @@ Item_t QNamePool::insert(
 {
   QNameItemImpl* qn;
 
-  SimpleStore& store = GET_STORE();
-
   if (ns == NULL) ns = "";
   if (pre == NULL) pre = "";
   ZORBA_ASSERT(ln != NULL && *ln != '\0');
 
   xqpStringStore_t pooledNs;
-  store.getNamespacePool().insertc(ns, pooledNs);
+  theNamespacePool->insertc(ns, pooledNs);
 
   ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns)));
 

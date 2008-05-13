@@ -58,7 +58,7 @@ SimpleStore::SimpleStore()
   theUriCounter(0),
   theTreeCounter(1),
   theNamespacePool(new StringPool(NAMESPACE_POOL_SIZE)),
-  theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
+  theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE, theNamespacePool)),
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
