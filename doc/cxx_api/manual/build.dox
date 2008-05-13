@@ -69,8 +69,7 @@ The easiest way to install the required packages (like CMake, Boost, etc.) is to
 -D ICONV_LIBRARY="path_to_iconv\lib\iconv.lib" 
 -D LIBXML2_INCLUDE_DIR="path_to_libxml2\include" 
 -D LIBXML2_LIBRARIES="path_to_libxml2\lib\libxml2.lib" 
--D Boost_INCLUDE_DIR="path_to_boost" 
--D Boost_LIBRARY_DIRS="path_to_boost\lib" 
+-D BOOST_ROOT="path_to_boost" 
 -D XERCESC_INCLUDE="path_to_xerces\include" 
 -D XERCESC_LIBRARY="path_to_xerces\lib\xerces-c_2.lib"
 ..\
