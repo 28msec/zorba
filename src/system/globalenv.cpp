@@ -116,7 +116,7 @@ void GlobalEnvironment::init()
   
 #ifndef ZORBA_XBROWSER
   m_globalEnv->m_store.reset(new store::SimpleStore());
-  //static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
+  static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
 #else
   m_globalEnv->m_store.reset(xqp::DOMStoreSingelton::getInstance()->getStore());
   static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
