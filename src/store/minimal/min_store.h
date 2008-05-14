@@ -108,7 +108,7 @@ public:
   long getTraceLevel() const              { return theTraceLevel; }
 #endif
 
-//  XmlLoader* getXmlLoader(error::ErrorManager*);
+  XmlLoader* getXmlLoader(error::ErrorManager*);
 
   ulong getTreeId();
 

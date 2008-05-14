@@ -250,10 +250,10 @@ ulong SimpleStore::getTreeId()
 /*******************************************************************************
 
 ********************************************************************************/
-//XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
-//{
-//  return new XmlLoader(aErrorManager);
-//}
+XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
+{
+  return new XmlLoader(aErrorManager);
+}
 
 
 /*******************************************************************************
