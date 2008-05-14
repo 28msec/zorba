@@ -197,6 +197,7 @@ public:
 
   checked_vector<uint32_t>
   getCodepoints() const;
+
 };
 
 
@@ -549,10 +550,7 @@ public:
 
     private:
 
-      /**  Return a xqpString (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
-       */
-//      static xqpString getXqpString(UnicodeString source);
-
+  
       /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
        */
 //      wchar_t * 

@@ -16,6 +16,7 @@
 #ifndef XQP_ZORBATYPES_COLLATION_MANAGER_H
 #define XQP_ZORBATYPES_COLLATION_MANAGER_H
 
+#include "common/common.h"
 #include <string>
 #include <map>
 #ifndef ZORBA_NO_UNICODE

@@ -17,11 +17,21 @@ SET(ZORBATYPES_SRCS
   integer.cpp
   numconversions.cpp
   binary.cpp
-  utf8/xqpString.cpp
-  xqpString_ascii.cpp
   URI.cpp
   utf8/Unicode_util.cpp
   collation_manager.cpp)
   
+IF(ZORBA_NO_UNICODE)
+LIST(APPEND ZORBATYPES_SRCS 
+  xqpString_ascii.cpp
+  regex_ascii.cpp
+  )
+ELSE(ZORBA_NO_UNICODE)
+LIST(APPEND ZORBATYPES_SRCS 
+  utf8/xqpString.cpp
+  )
+ENDIF(ZORBA_NO_UNICODE)
+
+
 ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS mapm     MAPM_SRCS)
 ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS datetime DATETIME_SRCS)

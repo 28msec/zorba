@@ -25,11 +25,15 @@
 //#include "zorbatypes/collation_manager.h"
 #include "zorbatypesError.h"
 
+#include "regex_ascii.h"
+
 using namespace std;
 
 
 namespace zorba
 {
+
+//UnicodeString getUnicodeString(xqpStringStore *strstore);
 
 
 /*******************************************************************************
@@ -169,7 +173,7 @@ uint32_t xqpStringStore::hash(XQPCollator* coll) const
 //    CollationKey collKey;
 //    UErrorCode status = U_ZERO_ERROR;
     
-//    coll->theCollator->getCollationKey(this->getUnicodeString(), collKey, status);
+//    coll->theCollator->getCollationKey(getUnicodeString(this), collKey, status);
 
 //    if(U_FAILURE(status))
 //    {
@@ -259,7 +263,7 @@ int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
 
 //  Collator::EComparisonResult result = ::Collator::EQUAL;
 //
-//  result = coll->theCollator->compare(this->getUnicodeString(),
+//  result = coll->theCollator->compare(getUnicodeString(this),
 //                                      src->getUnicodeString());
 //
 //  return result;
@@ -956,14 +960,14 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
 /*******************************************************************************
   Return an UnicodeString (UTF-16 encoded) version of the string.
 ********************************************************************************/
-//UnicodeString xqpStringStore::getUnicodeString() const
+//UnicodeString getUnicodeString(xqpStringStore *strstore)
 //{
 //  UnicodeString ret;
 //  UErrorCode status = U_ZERO_ERROR;
-//  int32_t len = bytes();
+//  int32_t len = strstore->bytes();
 //  UChar* buffer = ret.getBuffer(len);
 //
-//  u_strFromUTF8(buffer, ret.getCapacity(), &len, c_str(), len, &status);
+//  u_strFromUTF8(buffer, ret.getCapacity(), &len, strstore->c_str(), len, &status);
 //
 //  if(U_FAILURE(status))
 //  {
@@ -1289,10 +1293,10 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     uint32_t flags = 0;
     for (const char *p = flag_cstr; *p != '\0'; p++) {
       switch (*p) {
-      //case 'i': flags |= UREGEX_CASE_INSENSITIVE; break;
-      //case 's': flags |= UREGEX_DOTALL; break;
-      //case 'm': flags |= UREGEX_MULTILINE; break;
-      //case 'x': flags |= UREGEX_COMMENTS; break;
+      case 'i': flags |= REGEX_ASCII_CASE_INSENSITIVE; break;
+      case 's': flags |= REGEX_ASCII_DOTALL; break;
+      case 'm': flags |= REGEX_ASCII_MULTILINE; break;
+      case 'x': flags |= REGEX_ASCII_COMMENTS; break;
       default:
         throw zorbatypesException("", ZorbatypesError::FORX0001);
         break;
@@ -1304,85 +1308,80 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   bool
     xqpString::matches(xqpString pattern, xqpString flags)
   {
-    //UErrorCode status = U_ZERO_ERROR;
-    //UnicodeString uspattern = pattern.getUnicodeString (),
-    //  us = getUnicodeString ();
-
-    //RegexMatcher matcher (uspattern, parse_regex_flags (flags.c_str ()), status);
-    //if (U_FAILURE(status)) {
+    regex_ascii::CRegexAscii_parser    regex_parser;
+    regex_ascii::CRegexAscii_regex     *regex;
+    regex = regex_parser.parse(pattern.c_str());//should be moved out of here for performance
+    if(!regex)
       throw zorbatypesException("", ZorbatypesError::FORX0002);
-    //  return false;
-    //}
 
-    //matcher.reset (us);
-    //return matcher.find ();
-    return false;
+    bool  retval;
+    int   match_pos;
+    int   matched_len;
+    retval = regex->match_anywhere(c_str(), parse_regex_flags(flags.c_str()), &match_pos, &matched_len);
+    delete regex;
+    return retval;
   }
 
 
   xqpString
   xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
   {
-    //UErrorCode status = U_ZERO_ERROR;
-    //UnicodeString uspattern = pattern.getUnicodeString (),
-    //  us = getUnicodeString ();
+    regex_ascii::CRegexAscii_parser    regex_parser;
+    regex_ascii::CRegexAscii_regex     *regex;
+    regex = regex_parser.parse(pattern.c_str());//should be moved out of here for performance
+    if(!regex)
+      throw zorbatypesException("", ZorbatypesError::FORX0002);
 
-    //RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
-    //if (U_FAILURE(status)) {
-    //  throw zorbatypesException("", ZorbatypesError::FORX0002);
-    //  return "";
-    //}
-
-    //if((replacement.indexOf("$") != -1 && !replacement.matches("\\$[0-9]",""))||
-    //    (replacement.indexOf("\\") != -1 && !replacement.matches("\\$[0-9]","")))
-    //{
-    //  throw zorbatypesException("", ZorbatypesError::FORX0004);
-    //  return "";
-    //}
-    //
-    //UnicodeString result = matcher.replaceAll (replacement.getUnicodeString(), status);
-    //if (U_FAILURE(status)) {
-    //  return "";
-    //  // TODO: error
-    //}
-    //return getXqpString (result);
+    int   match_pos;
+    int   matched_len;
     
     xqpString   newstr;
     const char  *start_str = c_str();
-    const char  *temp = start_str;
 
-    while((temp=strstr(temp, pattern.c_str())))
+    while(regex->match_anywhere(start_str, parse_regex_flags(flags.c_str()), &match_pos, &matched_len))
     {
-      newstr += xqpString(new xqpStringStore(start_str , temp));
+      if(match_pos)
+        newstr += xqpString(new xqpStringStore(start_str , start_str+match_pos));
       newstr += replacement;
-      start_str = temp;
-      temp += replacement.size();
+      start_str += match_pos + matched_len;
     }
     newstr += start_str;
 
+    delete regex;
     return newstr;
+
   }
 
   xqpString
   xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining)
   {
-    //UErrorCode status = U_ZERO_ERROR;
-    //UnicodeString uspattern = pattern.getUnicodeString (),
-    //  us = getUnicodeString ();
-    //RegexMatcher m (uspattern, us, parse_regex_flags (flags.c_str ()), status);
-    //if (U_FAILURE(status)) {
+    regex_ascii::CRegexAscii_parser    regex_parser;
+    regex_ascii::CRegexAscii_regex     *regex;
+    regex = regex_parser.parse(pattern.c_str());//should be moved out of here for performance
+    if(!regex)
       throw zorbatypesException("", ZorbatypesError::FORX0002);
-    //  return "";
-    //}
-    //if (m.find ()) {
-    //  int32_t start = m.start (status), end = m.end (status);
-    //  *remaining = substr (end, length () - end);
-    //  return substr (0, start);
-    //} else {
-    //  *remaining = xqpString ();
-    //  return substr (0, length ());
-    //}
-    return *this;
+
+    int   match_pos;
+    int   matched_len;
+    bool  ismatch;
+    xqpString   leftstr;
+    const char  *start_str = c_str();
+
+    ismatch = regex->match_anywhere(start_str, parse_regex_flags(flags.c_str()), &match_pos, &matched_len);
+    delete regex;
+    if(ismatch)
+    {
+      *remaining = xqpString(start_str + match_pos + matched_len);
+      if(match_pos)
+        leftstr = substr(0, match_pos);
+    }
+    else
+    {
+      leftstr = substr (0, length ());
+      *remaining = xqpString();
+    }
+
+    return leftstr;
   }
 
 
@@ -1423,40 +1422,42 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   //}
 
   // Private methods
-//  xqpString xqpString::getXqpString(UnicodeString source)
+//xqpStringStore_t getXqpString(UnicodeString source)
+//{
+//  UErrorCode status = U_ZERO_ERROR;
+//  
+//  //open a convertor to UTF-8
+//  UConverter* conv = ucnv_open("utf-8", &status);
+//
+//  if(U_FAILURE(status))
 //  {
-//    char* target;
-//    int32_t targetLen = source.getCapacity()*4 + 1;
-//    target = new char[targetLen];
-//    UErrorCode status = U_ZERO_ERROR;
+//    assert(false);
+//    return new xqpStringStore("");
+//  }
 //
-//    //open a convertor to UTF-8
-//    UConverter *conv = ucnv_open("utf-8", &status);
+//  int32_t targetLen = source.getCapacity()*4 + 1;
+//  char* target = new char[targetLen];
 //
-//    if(U_FAILURE(status))
-//    {
-//      assert(false);
+//  //Convert from UTF-16 to UTF-8
+//  ucnv_fromUChars(conv, target, targetLen,
+//                  source.getBuffer(source.length()),
+//                  source.length(),
+//                  &status);
 //
-//      delete[] target;
-//      return "";
-//    }
+//  //close the converter
+//  ucnv_close(conv);
 //
-//    //Convert from UTF-16 to UTF-8
-//    ucnv_fromUChars (conv, target, targetLen, source.getBuffer( source.length() ), source.length(), &status);
-//    //close the converter
-//    ucnv_close(conv);
+//  if(U_FAILURE(status))
+//  {
+//    assert(false);
 //
-//    if(U_FAILURE(status))
-//    {
-//      assert(false);
-//
-//      delete[] target;
-//      return "";
-//    }
-//
-//    xqpString ret(&target[0]);
 //    delete[] target;
-//    return ret;
+//    return new xqpStringStore("");
+//  }
+//
+//  xqpStringStore_t result = new xqpStringStore(target, strlen(target));
+//  delete[] target;
+//  return result;
 //}
 
   //wchar_t * xqpString::getWCS(xqpString source) const
