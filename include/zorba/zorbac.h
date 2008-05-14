@@ -39,6 +39,8 @@ extern "C" {
 
 typedef XQUERY_ERROR  (*xquery_query_compile)(const char*, XQUERY_REF); 
 
+typedef XQUERY_ERROR  (*xquery_query_compile_file)(FILE*, XQUERY_REF);
+
 typedef XQUERY_ERROR  (*xquery_query_execute)(XQUERY, FILE*);
 
 typedef void          (*xquery_query_release)(XQUERY);
@@ -76,6 +78,7 @@ typedef const char*   (*xquery_string_to_char)(XQUERY_STRING);
 typedef struct {
   // functions related to queries
   xquery_query_compile       query_compile;
+  xquery_query_compile_file  query_compile_file;
   xquery_query_release       query_release;
   xquery_query_execute       query_execute;
 

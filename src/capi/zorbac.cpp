@@ -18,6 +18,7 @@
 #include <zorba/api_shared_types.h>
 #include <zorba/zorbac.h> 
 #include <zorba/zorba.h>
+#include <errno.h>
 #include "api/unmarshaller.h"
 #include "store/api/item.h"
 #include "zorbatypes/xqpstring.h"
@@ -40,6 +41,31 @@ zorba_query_compile(const char* aChar, XQUERY_REF aQuery)
   SharedWrapper<XQuery>* lQueryWrapper = 0;
   try {
     XQuery_t lQuerySmart = Zorba::getInstance()->compileQuery(aChar);
+    lQueryWrapper        = new SharedWrapper<XQuery>(lQuerySmart);
+    *aQuery = static_cast<XQUERY>(lQueryWrapper);
+
+    return XQ_SUCCESS;
+  } catch (ZorbaException& e) {
+    return e.getErrorCode(); 
+  } catch (...) {
+    return XQP0019_INTERNAL_ERROR; 
+  }
+}
+
+XQUERY_ERROR 
+zorba_query_compile_file(FILE* aFile, XQUERY_REF aQuery)
+{
+  SharedWrapper<XQuery>* lQueryWrapper = 0;
+  try {
+    std::stringstream lStream;
+    char lBuf[1024];
+    size_t lSize;
+
+    while ((lSize = fread(lBuf, 1, 1024, aFile)) > 0) {
+        lStream.write(lBuf, lSize);
+    }
+
+    XQuery_t lQuerySmart = Zorba::getInstance()->compileQuery(lStream);
     lQueryWrapper        = new SharedWrapper<XQuery>(lQuerySmart);
     *aQuery = static_cast<XQUERY>(lQueryWrapper);
 
@@ -281,6 +307,8 @@ zorba_init()
 
   // query functions
   lAPI->query_compile       = zorba_query_compile;
+  lAPI->query_compile_file  = zorba_query_compile_file;
+
   lAPI->query_release       = zorba_query_release;
   lAPI->query_execute       = zorba_query_execute;
 

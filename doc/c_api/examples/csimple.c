@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <zorba/zorbac.h>
 
 /**
@@ -105,6 +106,39 @@ example_3(XQUERY_API* aAPI)
   return 1;
 }
 
+/**
+ * A simple C API example
+ * Compile a query and write the output to stream.
+ * No error checking is done.
+ */ 
+int
+example_4(XQUERY_API* aAPI) 
+{
+  XQUERY lXQuery;
+  FILE*  lFile = stdout;
+  char   lFileName[128];
+  FILE*  lInFile;
+  char *fName;
+
+  strcpy(lFileName, "cexample.XXXX");
+  fName = mktemp(lFileName);
+  lInFile =  fopen(fName, "a+");
+  fprintf (lInFile, "%s\n", "1+1");
+  fclose(lInFile);
+
+  lInFile = fopen(lFileName, "r");
+
+  aAPI->query_compile_file(lInFile, &lXQuery);
+
+  aAPI->query_execute(lXQuery, lFile);
+
+  aAPI->query_release(lXQuery);
+
+  fclose(lInFile);
+
+  return 1;
+}
+
 int
 csimple(int argc, char** argv)
 {
@@ -123,6 +157,11 @@ csimple(int argc, char** argv)
 
   printf("executing C example 3\n");
   res = example_3(lAPI);
+  if (!res) { zorba_release(lAPI); return 1; };
+  printf("\n");
+
+  printf("executing C example 4\n");
+  res = example_4(lAPI);
   if (!res) { zorba_release(lAPI); return 1; };
   printf("\n");
 
