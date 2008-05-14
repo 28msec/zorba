@@ -118,7 +118,7 @@ void GlobalEnvironment::init()
   m_globalEnv->m_store.reset(xqp::DOMStoreSingelton::getInstance()->getStore());
   //static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
 #else
-  m_globalEnv->m_store.reset(xqp::DOMStoreSingelton::getInstance());
+  m_globalEnv->m_store.reset(new SimpleStore());
   static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
 #endif
 
