@@ -206,6 +206,10 @@ zorba_string_init(XQUERY_STRING_REF aString)
 {
   String* lString = 0;
   try {
+    // we create an empty wrapper here
+    // this is a one time thing
+    // later the actual string stores will be put
+    // in that wrapper
     lString = new String("");
     *aString = static_cast<XQUERY_STRING>(lString);
     return XQ_SUCCESS;
@@ -219,15 +223,17 @@ zorba_string_init(XQUERY_STRING_REF aString)
 }
 
 XQUERY_ERROR 
-zorba_item_stringvalue(XQUERY_ITEM aItem, XQUERY_STRING_REF aString)
+zorba_item_stringvalue(XQUERY_ITEM aItem, XQUERY_STRING aString)
 {
   const Item* lItem = static_cast<const Item*>(aItem);
-  xqpStringStore* lString = 0;
 
   try {
-    lString = Unmarshaller::getInternalString(lItem->getStringValue());
-    //RCHelper::addReference(lString);
-    *aString = static_cast<XQUERY_STRING>(lString);
+    String* lStringWrapper = static_cast<String*>(aString);
+    // assign the String to the new one
+    // the assignment operator does the correct handling
+    // of transfering the stringstores and handling
+    // the reference counts
+    *lStringWrapper = lItem->getStringValue();
     return XQ_SUCCESS;
   } catch (ZorbaException& e) {
     return e.getErrorCode();
@@ -239,21 +245,20 @@ zorba_item_stringvalue(XQUERY_ITEM aItem, XQUERY_STRING_REF aString)
 void 
 zorba_string_release(XQUERY_STRING aString)
 {
-  xqpStringStore* lString = static_cast<xqpStringStore*>(aString);
-  //RCHelper::removeReference(lString);
+  delete static_cast<String*>(aString);
 }
 
 const char* 
 zorba_string_to_char(XQUERY_STRING aString)
 {
-  xqpStringStore* lString = static_cast<xqpStringStore*>(aString);
+  String* lString = static_cast<String*>(aString);
   return lString->c_str();
 }
 
 XQUERY_ERROR
 zorba_dynamic_context(XQUERY aXQuery, XQUERY_DC_REF aContext)
 {
-  const SharedWrapper<XQuery>* lQuery = static_cast<const SharedWrapper<XQuery>* >(aXQuery);
+  SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aXQuery);
 
   try {
     DynamicContext* lContext = lQuery->theObject->getDynamicContext();

@@ -58,7 +58,7 @@ typedef XQUERY_ERROR  (*xquery_item_init)(XQUERY_ITEM_REF);
 
 typedef void          (*xquery_item_release)(XQUERY_ITEM);
 
-typedef XQUERY_ERROR  (*xquery_item_stringvalue)(XQUERY_ITEM, XQUERY_STRING_REF);
+typedef XQUERY_ERROR  (*xquery_item_stringvalue)(XQUERY_ITEM, XQUERY_STRING);
 
 typedef XQUERY_ERROR  (*xquery_sequence_init)(XQUERY, XQUERY_SEQUENCE_REF);
 

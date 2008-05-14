@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <zorba/zorbac.h>
-#if 0
+
 /**
  * A C API example that shows how to use the static and dynamic context.
  * No error checking is done.
@@ -33,14 +33,13 @@ context_example_1(XQUERY_API* aAPI)
   // compile the query
   aAPI->query_compile("declare variable $var external; $var + $var", &lXQuery);
 
-  aAPI->dynamic_context(lXQuery, lContext);
+  aAPI->dynamic_context(lXQuery, &lContext);
 
   aAPI->query_execute(lXQuery, lFile);
 
   aAPI->query_release(lXQuery);
   return 1;
 }
-#endif
 
 int
 ccontext(int argc, char** argv)
@@ -48,12 +47,10 @@ ccontext(int argc, char** argv)
   int res = 0; 
   XQUERY_API* lAPI = zorba_init();
 
-#if 0
   printf("executing C context example 1\n");
   res = context_example_1(lAPI);
   if (!res) { zorba_release(lAPI); return 1; };
   printf("\n");
-#endif
 
   zorba_release(lAPI);
 
