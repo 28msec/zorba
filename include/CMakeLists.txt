@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h)
+MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake -->${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h")
+
 INSTALL(DIRECTORY zorba DESTINATION include
  PATTERN "*.svn" EXCLUDE
  PATTERN "*.txt" EXCLUDE)

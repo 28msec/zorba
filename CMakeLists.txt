@@ -173,6 +173,7 @@ MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
 
 # add the include dir (i.e. the library) to the include path
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 # add cmake configuration (zorba options, etc.)
 INCLUDE(CMakeConfiguration.txt)
