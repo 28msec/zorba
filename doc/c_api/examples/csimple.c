@@ -26,19 +26,19 @@
 int
 example_1(XQUERY_API* aAPI)
 {
-  char          lBuffer[256];
-  XQUERY_ERROR  lError = XQ_SUCCESS;
-  XQUERY_STREAM lStream;
-  XQUERY        lXQuery;
+  char           lBuffer[256];
+  XQUERY_ERROR   lError = XQ_SUCCESS;
+  XQUERY_STREAM  lStream;
+  XQUERY         lXQuery;
 
   // initialize the buffer
   memset(lBuffer, 0, 256);
 
   // compile the query
-  lXQuery = aAPI->query_compile("(1+2, 'testsdfadsfsd')", &lError);
+  lError = aAPI->query_compile("(1+2, 'testsdfadsfsd')", &lXQuery);
 
   // get the result as a stream
-  lStream = aAPI->stream_init(lXQuery, &lError);
+  lError = aAPI->stream_init(lXQuery, &lStream);
 
   while (aAPI->stream_next(lStream, lBuffer, 255, &lError) > 0) {
     printf("%s", lBuffer);
@@ -58,27 +58,29 @@ example_1(XQUERY_API* aAPI)
 int
 example_2(XQUERY_API* aAPI) 
 {
-  XQUERY_ERROR    lError  = XQ_SUCCESS;
-  XQUERY_ITEM     lItem   = aAPI->item_init();
-  XQUERY_STRING   lString = aAPI->string_init();
-  XQUERY          lXQuery;
-  XQUERY_SEQUENCE lResult;
+  XQUERY_ITEM      lItem;
+  XQUERY_STRING    lString;
+  XQUERY           lXQuery;
+  XQUERY_SEQUENCE  lResult;
+  
+  aAPI->item_init(&lItem);
+  aAPI->string_init(&lString);
+  
+  aAPI->query_compile("(1+2,3+4)", &lXQuery);
 
-  lXQuery = aAPI->query_compile("(1+2,3+4)", &lError);
+  aAPI->sequence_init(lXQuery, &lResult);
 
-  lResult = aAPI->sequence_init(lXQuery, &lError);
+  while (aAPI->sequence_next(lResult, lItem) == XQ_SUCCESS) {
 
-  while (aAPI->sequence_next(lResult, lItem, &lError)) {
-
-    aAPI->item_stringvalue(lItem, lString, &lError);
+    aAPI->item_stringvalue(lItem, lString);
 
     printf("%s\n", aAPI->string_to_char(lString));
   }
 
-  aAPI->sequence_close(lResult);
+  aAPI->sequence_release(lResult);
+  aAPI->query_release(lXQuery);
   aAPI->string_release(lString);
   aAPI->item_release(lItem);
-  aAPI->query_release(lXQuery);
 
   return 1;
 }
@@ -91,38 +93,39 @@ example_2(XQUERY_API* aAPI)
 int
 example_3(XQUERY_API* aAPI) 
 {
-  XQUERY_ERROR    lError  = XQ_SUCCESS;
   XQUERY          lXQuery;
   FILE*           lFile = stdout;
 
-  lXQuery = aAPI->query_compile("(1+2,3+4)", &lError);
+  aAPI->query_compile("(1+2,3+4)", &lXQuery);
 
-  aAPI->query_execute(lXQuery, lFile, &lError);
+  aAPI->query_execute(lXQuery, lFile);
 
   aAPI->query_release(lXQuery);
 
   return 1;
 }
+
 int
 csimple(int argc, char** argv)
 {
   int res = 0; 
-  XQUERY_API lAPI;
-  zorba_init(&lAPI);
+  XQUERY_API* lAPI = zorba_init();
 
   printf("executing C example 1\n");
-  res = example_1(&lAPI);
-  if (!res) return 1;
+  res = example_1(lAPI);
+  if (!res) { zorba_release(lAPI); return 1; };
   printf("\n");
 
   printf("executing C example 2\n");
-  res = example_2(&lAPI);
-  if (!res) return 1;
+  res = example_2(lAPI);
+  if (!res) { zorba_release(lAPI); return 1; };
   printf("\n");
 
   printf("executing C example 3\n");
-  res = example_3(&lAPI);
-  if (!res) return 1;
+  res = example_3(lAPI);
+  if (!res) { zorba_release(lAPI); return 1; };
   printf("\n");
+
+  zorba_release(lAPI);
   return 0;
 }

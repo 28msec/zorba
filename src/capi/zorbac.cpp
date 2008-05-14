@@ -20,6 +20,8 @@
 #include <zorba/zorba.h>
 #include "api/unmarshaller.h"
 #include "store/api/item.h"
+#include "zorbatypes/xqpstring.h"
+#include "util/rchandle.h"
 
 using namespace zorba;
 
@@ -29,41 +31,44 @@ class SharedWrapper
 public:
   boost::shared_ptr<T> theObject;
 
-  SharedWrapper(boost::shared_ptr<T> a) : theObject(a) {}
+  SharedWrapper(boost::shared_ptr<T> a) throw() : theObject(a) {}
 };
 
-XQUERY 
-zorba_query_compile(const char* aChar, XQUERY_ERROR* aError)
+XQUERY_ERROR 
+zorba_query_compile(const char* aChar, XQUERY_REF aQuery)
 {
-  SharedWrapper<XQuery>* lQuery = 0;
+  SharedWrapper<XQuery>* lQueryWrapper = 0;
   try {
     XQuery_t lQuerySmart = Zorba::getInstance()->compileQuery(aChar);
-    lQuery = new SharedWrapper<XQuery>(lQuerySmart);
-    return lQuery;
+    lQueryWrapper        = new SharedWrapper<XQuery>(lQuerySmart);
+    *aQuery = static_cast<XQUERY>(lQueryWrapper);
+
+    return XQ_SUCCESS;
   } catch (ZorbaException& e) {
-    *aError = e.getErrorCode(); 
+    return e.getErrorCode(); 
   } catch (...) {
-    *aError = XQP0019_INTERNAL_ERROR; 
+    return XQP0019_INTERNAL_ERROR; 
   }
-  return 0;
 }
 
 void 
 zorba_query_release(XQUERY aQuery)
 {
-  SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aQuery);
-  delete lQuery; 
+  SharedWrapper<XQuery>* lQueryWrapper = static_cast<SharedWrapper<XQuery>* >(aQuery);
+  delete lQueryWrapper; 
 }
 
-void
-zorba_query_execute(XQUERY aQuery, FILE* aFile, XQUERY_ERROR* aError)
+XQUERY_ERROR
+zorba_query_execute(XQUERY aQuery, FILE* aFile)
 {
   SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aQuery);
+
   std::stringstream lStream;
   char lBuf[1024];
 
   try {
-    lStream << lQuery->theObject;
+    // TODO this is eager at the moment, we need a pull serializer
+    lStream << lQuery->theObject; 
     lStream.seekg(0);
 
     int lRes = 0;
@@ -71,46 +76,54 @@ zorba_query_execute(XQUERY aQuery, FILE* aFile, XQUERY_ERROR* aError)
       lBuf[lRes] = 0;
       fprintf (aFile, "%s", lBuf);
     }
-
-    *aError = XQ_SUCCESS;
+    return XQ_SUCCESS;
   } catch (ZorbaException& e) {
-    *aError = e.getErrorCode();
+    return e.getErrorCode();
   } catch (...) {
-    *aError = XQP0019_INTERNAL_ERROR;
+    return XQP0019_INTERNAL_ERROR;
   }
 }
 
 
-XQUERY_STREAM 
-zorba_stream_init(XQUERY aQuery, XQUERY_ERROR* aError)
+XQUERY_ERROR 
+zorba_stream_init(XQUERY aQuery, XQUERY_STREAM_REF aStream)
 {
   SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aQuery);
-  std::stringstream* lStream = new std::stringstream();
+
   try {
+    std::stringstream* lStream = new std::stringstream();
+    *aStream = (XQUERY_STREAM) lStream;
+
+    // TODO this is eager at the moment, we need a pull serializer
     *lStream << lQuery->theObject;
     lStream->seekg(0);
-    *aError = XQ_SUCCESS;
+
+    return XQ_SUCCESS;
   } catch (ZorbaException& e) {
-    *aError = e.getErrorCode();
+    return e.getErrorCode();
   } catch (...) {
-    *aError = XQP0019_INTERNAL_ERROR;
+    return XQP0019_INTERNAL_ERROR;
   }
-  return lStream;
 }
 
 int 
-zorba_stream_next(XQUERY_STREAM aStream, char* aChar, int aLen, XQUERY_ERROR* aError)
+zorba_stream_next(XQUERY_STREAM aStream, char* aChar, int aLen, XQUERY_ERROR_REF aError)
 {
   std::stringstream* lStream = static_cast<std::stringstream*>(aStream);
+
   int lReturn = -1; 
   try {
     lReturn = lStream->readsome(aChar, aLen);
+
     *aError = XQ_SUCCESS;
+
+    return lReturn;
+  } catch (ZorbaException& e) { // can't occur at the moment because init is eager
+    *aError = e.getErrorCode();
   } catch (...) {
     *aError = XQP0019_INTERNAL_ERROR;
   }
-
-  return lReturn;
+  return -1;
 }
 
 void 
@@ -121,52 +134,63 @@ zorba_stream_release(XQUERY_STREAM aStream)
 }
 
 
-XQUERY_SEQUENCE
-zorba_sequence_init(XQUERY aQuery, XQUERY_ERROR* aError)
+XQUERY_ERROR
+zorba_sequence_init(XQUERY aQuery, XQUERY_SEQUENCE_REF aSeq)
 {
-  SharedWrapper<ResultIterator>* lResult = 0;
+  SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aQuery);
+  SharedWrapper<ResultIterator>* lSeq = 0;
+
   try {
-    SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aQuery);
     ResultIterator_t lResultSmart = lQuery->theObject->iterator();
     lResultSmart->open();
-    lResult = new SharedWrapper<ResultIterator>(lResultSmart);
-    *aError = XQ_SUCCESS;
+    lSeq = new SharedWrapper<ResultIterator>(lResultSmart);
+    *aSeq = static_cast<XQUERY_SEQUENCE>(lSeq);
+
+    return XQ_SUCCESS;
   } catch (ZorbaException& e) {
-    *aError = e.getErrorCode();
+    return e.getErrorCode();
+  } catch (...) {
+    return XQP0019_INTERNAL_ERROR; 
   }
-  return lResult;
 }
 
-int
-zorba_sequence_next(XQUERY_SEQUENCE aResult, XQUERY_ITEM aItem, XQUERY_ERROR* aError)
+XQUERY_ERROR
+zorba_sequence_next(XQUERY_SEQUENCE aResult, XQUERY_ITEM aItem)
 {
   SharedWrapper<ResultIterator>* lResult = static_cast<SharedWrapper<ResultIterator>*>(aResult);
   Item* lItem = static_cast<Item*>(aItem);
-  int lReturn = 0; 
 
   try {
     if (lResult->theObject->next(*lItem)) {
-      lReturn = 1;
+      return XQ_SUCCESS;
     }
-    *aError = XQ_SUCCESS;
+    return API0025_END_OF_SEQUENCE;
   } catch (ZorbaException& e) {
-    *aError = e.getErrorCode();
+    return e.getErrorCode();
+  } catch (...) {
+    return XQP0019_INTERNAL_ERROR;
   }
-
-  return lReturn;
 }
 
 void 
-zorba_sequence_close(XQUERY_SEQUENCE aResult)
+zorba_sequence_release(XQUERY_SEQUENCE aResult)
 {
   SharedWrapper<ResultIterator>* lResult = static_cast<SharedWrapper<ResultIterator>*>(aResult);
   delete lResult;
 }
 
-XQUERY_ITEM 
-zorba_item_init()
+XQUERY_ERROR
+zorba_item_init(XQUERY_ITEM_REF aItem)
 {
-  return new Item();
+  Item* lItem = 0;
+  try {
+    lItem = new Item();
+    *aItem = static_cast<XQUERY_ITEM>(lItem);
+    return XQ_SUCCESS;
+  } catch (...) {
+    delete lItem;
+    return XQP0019_INTERNAL_ERROR;
+  }
 }
 
 
@@ -177,90 +201,112 @@ zorba_item_release(XQUERY_ITEM aItem)
   delete lItem;
 }
 
-XQUERY_STRING 
-zorba_string_init()
+XQUERY_ERROR
+zorba_string_init(XQUERY_STRING_REF aString)
 {
-  return new String("");
+  String* lString = 0;
+  try {
+    lString = new String("");
+    *aString = static_cast<XQUERY_STRING>(lString);
+    return XQ_SUCCESS;
+  } catch (ZorbaException& e) {
+    delete lString;
+    return e.getErrorCode();
+  } catch (...) {
+    delete lString;
+    return XQP0019_INTERNAL_ERROR;
+  }
 }
 
-void 
-zorba_item_stringvalue(XQUERY_ITEM aItem, XQUERY_STRING aString, XQUERY_ERROR* aError)
+XQUERY_ERROR 
+zorba_item_stringvalue(XQUERY_ITEM aItem, XQUERY_STRING_REF aString)
 {
-  String* lString = static_cast<String*>(aString);
-  Item* lItem = static_cast<Item*>(aItem);
+  const Item* lItem = static_cast<const Item*>(aItem);
+  xqpStringStore* lString = 0;
 
   try {
-    *lString = Unmarshaller::getInternalString(lItem->getStringValue());
-    *aError = XQ_SUCCESS;
+    lString = Unmarshaller::getInternalString(lItem->getStringValue());
+    //RCHelper::addReference(lString);
+    *aString = static_cast<XQUERY_STRING>(lString);
+    return XQ_SUCCESS;
   } catch (ZorbaException& e) {
-    *aError = e.getErrorCode();
+    return e.getErrorCode();
+  } catch (...) {
+    return XQP0019_INTERNAL_ERROR;
   }
 }
 
 void 
 zorba_string_release(XQUERY_STRING aString)
 {
-  String* lString = static_cast<String*>(aString);
-  delete lString;
+  xqpStringStore* lString = static_cast<xqpStringStore*>(aString);
+  //RCHelper::removeReference(lString);
 }
 
 const char* 
 zorba_string_to_char(XQUERY_STRING aString)
 {
-  String* lString = static_cast<String*>(aString);
+  xqpStringStore* lString = static_cast<xqpStringStore*>(aString);
   return lString->c_str();
 }
 
-XQUERY_DYNAMIC_CONTEXT
-zorba_dynamic_context(XQUERY aXQuery, XQUERY_ERROR* aError)
+XQUERY_ERROR
+zorba_dynamic_context(XQUERY aXQuery, XQUERY_DC_REF aContext)
 {
-  SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aXQuery);
-  XQUERY_DYNAMIC_CONTEXT lContext = 0;
+  const SharedWrapper<XQuery>* lQuery = static_cast<const SharedWrapper<XQuery>* >(aXQuery);
+
   try {
-    lContext = lQuery->theObject->getDynamicContext();
-    *aError = XQ_SUCCESS;
+    DynamicContext* lContext = lQuery->theObject->getDynamicContext();
+    *aContext = static_cast<XQUERY_DC>(lContext);
+    return XQ_SUCCESS;
   } catch (ZorbaException& e) {
-    *aError = e.getErrorCode();
+    return e.getErrorCode();
   } catch (...) {
-    *aError = XQP0019_INTERNAL_ERROR;
+    return XQP0019_INTERNAL_ERROR;
   }
-  return lContext;
 }
 
-void 
-zorba_init(XQUERY_API* aAPI)
+XQUERY_API* 
+zorba_init()
 {
+  XQUERY_API* lAPI = new XQUERY_API();
+
+  // init zorba
   Zorba::getInstance();
 
   // query functions
-  aAPI->query_compile       = zorba_query_compile;
-  aAPI->query_release       = zorba_query_release;
-  aAPI->query_execute       = zorba_query_execute;
+  lAPI->query_compile       = zorba_query_compile;
+  lAPI->query_release       = zorba_query_release;
+  lAPI->query_execute       = zorba_query_execute;
 
   // dynamic context
-  aAPI->dynamic_context     = zorba_dynamic_context;
+  lAPI->dynamic_context     = zorba_dynamic_context;
 
   // stream functions
-  aAPI->stream_init         = zorba_stream_init;
-  aAPI->stream_next         = zorba_stream_next;
-  aAPI->stream_release      = zorba_stream_release;
+  lAPI->stream_init         = zorba_stream_init;
+  lAPI->stream_next         = zorba_stream_next;
+  lAPI->stream_release      = zorba_stream_release;
 
   // sequence functions
-  aAPI->sequence_init       = zorba_sequence_init;
-  aAPI->sequence_close      = zorba_sequence_close;
-  aAPI->sequence_next       = zorba_sequence_next;
+  lAPI->sequence_init       = zorba_sequence_init;
+  lAPI->sequence_release    = zorba_sequence_release;
+  lAPI->sequence_next       = zorba_sequence_next;
 
   // item functions
-  aAPI->item_init           = zorba_item_init;
-  aAPI->item_release        = zorba_item_release;
-  aAPI->item_stringvalue    = zorba_item_stringvalue;
+  lAPI->item_init           = zorba_item_init;
+  lAPI->item_release        = zorba_item_release;
+  lAPI->item_stringvalue    = zorba_item_stringvalue;
 
-  aAPI->string_init         = zorba_string_init;
-  aAPI->string_release      = zorba_string_release;
-  aAPI->string_to_char      = zorba_string_to_char;
+  lAPI->string_init         = zorba_string_init;
+  lAPI->string_release      = zorba_string_release;
+  lAPI->string_to_char      = zorba_string_to_char;
+
+  return lAPI;
 }
 
-void zorba_release()
+void 
+zorba_release(XQUERY_API* aAPI)
 {
   Zorba::getInstance()->shutdown();
+  delete aAPI;
 }

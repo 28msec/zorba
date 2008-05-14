@@ -23,61 +23,54 @@ typedef void* XQUERY_STREAM;
 typedef void* XQUERY_SEQUENCE;
 typedef void* XQUERY_ITEM;
 typedef void* XQUERY_STRING;
-typedef void* XQUERY_DYNAMIC_CONTEXT;
+typedef void* XQUERY_DC;
+
+typedef XQUERY*           XQUERY_REF;
+typedef XQUERY_STREAM*    XQUERY_STREAM_REF;
+typedef XQUERY_SEQUENCE*  XQUERY_SEQUENCE_REF;
+typedef XQUERY_ITEM*      XQUERY_ITEM_REF;
+typedef XQUERY_STRING*    XQUERY_STRING_REF;
+typedef XQUERY_DC*        XQUERY_DC_REF;
+typedef XQUERY_ERROR*     XQUERY_ERROR_REF;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- * query related functions
- */
-typedef XQUERY        (*xquery_query_compile)(const char*, XQUERY_ERROR*); 
+typedef XQUERY_ERROR  (*xquery_query_compile)(const char*, XQUERY_REF); 
+
+typedef XQUERY_ERROR  (*xquery_query_execute)(XQUERY, FILE*);
 
 typedef void          (*xquery_query_release)(XQUERY);
 
-typedef void          (*xquery_query_execute)(XQUERY, FILE*, XQUERY_ERROR*);
+// dynamic context is only valid as long as the XQUERY
+typedef XQUERY_ERROR  (*xquery_dynamic_context)(XQUERY, XQUERY_DC_REF);
 
-/**
- * dynamic context related functions
- */
-typedef XQUERY_DYNAMIC_CONTEXT (*xquery_dynamic_context)(XQUERY, XQUERY_ERROR*);
+typedef XQUERY_ERROR  (*xquery_stream_init)(XQUERY, XQUERY_STREAM_REF);
 
-#if 0
-typedef void                   (*xquery_dc_setvar(XQUERY_DYNAMIC_CONTEXT, 
-                                                  XQUERY_VAR_TYPE,
-                                                  XQUERY_STRING,
-                                                  void*));
-#endif
-
-/**
- * stream related functions
- */
-typedef XQUERY_STREAM (*xquery_stream_init)(XQUERY, XQUERY_ERROR*);
-
-typedef int           (*xquery_stream_next)(XQUERY_STREAM, char*, int, XQUERY_ERROR*);
+// return -1 if XQUERY_ERROR is not XQ_SUCCESS
+typedef int           (*xquery_stream_next)(XQUERY_STREAM stream, char* buffer, 
+                                            int buffer_size, XQUERY_ERROR_REF);
 
 typedef void          (*xquery_stream_release)(XQUERY_STREAM);
 
-/** 
- * iterator related functions
- */
-typedef XQUERY_SEQUENCE (*xquery_sequence_init) (XQUERY, XQUERY_ERROR*);
-typedef int             (*xquery_sequence_next) (XQUERY_SEQUENCE, XQUERY_ITEM, XQUERY_ERROR*);
-typedef void            (*xquery_sequence_close)(XQUERY_SEQUENCE);
+typedef XQUERY_ERROR  (*xquery_item_init)(XQUERY_ITEM_REF); 
 
-/**
- * item related functions
- */
-typedef XQUERY_ITEM   (*xquery_item_init)(); 
 typedef void          (*xquery_item_release)(XQUERY_ITEM);
-typedef void          (*xquery_item_stringvalue)(XQUERY_ITEM, XQUERY_STRING, XQUERY_ERROR*);
 
-/**
- * string related functions
- */
-typedef XQUERY_STRING (*xquery_string_init)();
+typedef XQUERY_ERROR  (*xquery_item_stringvalue)(XQUERY_ITEM, XQUERY_STRING_REF);
+
+typedef XQUERY_ERROR  (*xquery_sequence_init)(XQUERY, XQUERY_SEQUENCE_REF);
+
+typedef XQUERY_ERROR  (*xquery_sequence_next)(XQUERY_SEQUENCE, XQUERY_ITEM);
+
+typedef void          (*xquery_sequence_release)(XQUERY_SEQUENCE);
+
+typedef XQUERY_ERROR  (*xquery_string_init)(XQUERY_STRING_REF);
+
 typedef void          (*xquery_string_release)(XQUERY_STRING);
+
+// const char* is only valid as long as the XQUERY_STRING
 typedef const char*   (*xquery_string_to_char)(XQUERY_STRING);
 
 typedef struct {
@@ -97,7 +90,7 @@ typedef struct {
   // function related to result iterators
   xquery_sequence_init       sequence_init;
   xquery_sequence_next       sequence_next;
-  xquery_sequence_close      sequence_close;
+  xquery_sequence_release    sequence_release;
 
   // item functions
   xquery_item_init           item_init;
@@ -110,11 +103,11 @@ typedef struct {
   xquery_string_to_char      string_to_char;
 } XQUERY_API;
 
-void
-zorba_init(XQUERY_API*);
+XQUERY_API*
+zorba_init();
 
 void 
-zorba_release();
+zorba_release(XQUERY_API*);
 
 
 
