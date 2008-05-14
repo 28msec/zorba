@@ -42,7 +42,7 @@
 #include "runtime/rest/rest.h"
 #endif
 #ifdef ZORBA_DEBUGGER
-#include "runtime/debug/zorba_debugger_iterators.hpp"
+#include "runtime/debug/zorba_debugger_iterators.h"
 #endif
 #include "types/root_typemanager.h"
 #include "runtime/visitors/iterprinter.h"

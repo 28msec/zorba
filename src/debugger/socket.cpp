@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "debugger/socket.hpp"
+#include "debugger/socket.h"
 
 #ifdef WIN32
   #include <winsock.h>         // For socket(), connect(), send(), and recv()

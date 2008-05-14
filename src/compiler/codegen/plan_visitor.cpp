@@ -54,8 +54,8 @@
 #include "util/hashmap.h"
 
 #ifdef ZORBA_DEBUGGER
-#include <zorba/debugger_server.hpp>
-#include "runtime/debug/zorba_debugger_iterators.hpp"
+#include <zorba/debugger_server.h>
+#include "runtime/debug/zorba_debugger_iterators.h"
 #endif
 
 #include "types/typeops.h"

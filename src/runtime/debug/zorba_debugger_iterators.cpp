@@ -16,11 +16,11 @@
 
 #include <iostream>
 
-#include "debugger/debugger_serverimpl.hpp"
+#include "debugger/debugger_serverimpl.h"
 
 #include "runtime/debug/debug_iterators.h"
 
-#include "runtime/debug/zorba_debugger_iterators.hpp"
+#include "runtime/debug/zorba_debugger_iterators.h"
 
 
 using namespace std;

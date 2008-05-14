@@ -22,13 +22,13 @@
 
 #include  <zorba/zorba.h>
 
-#include  "debugger/debugger_serverimpl.hpp"
+#include  "debugger/debugger_serverimpl.h"
 
 #include "api/unmarshaller.h"
 #include "zorbatypes/xqpstring.h"
 
-#include "debugger/socket.hpp"
-#include "debugger/message_factory.hpp"
+#include "debugger/socket.h"
+#include "debugger/message_factory.h"
 
 #include "zorbatypes/numconversions.h"
 

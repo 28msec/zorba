@@ -21,7 +21,7 @@
 
 #include <string>
 #include <iostream>
-#include "common/config/config.h"
+#include <zorba/config.h>
 
 #ifdef HAVE_EXECINFO_H
 #include <execinfo.h>

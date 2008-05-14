@@ -26,11 +26,11 @@
 
 #include "api/unmarshaller.h"
 #include "zorbatypes/xqpstring.h"
-#include "debugger/debugger_clientimpl.hpp"
+#include "debugger/debugger_clientimpl.h"
 
-#include "debugger/socket.hpp"
-#include "debugger/debugger_protocol.hpp"
-#include "debugger/message_factory.hpp"
+#include "debugger/socket.h"
+#include "debugger/debugger_protocol.h"
+#include "debugger/message_factory.h"
 
 namespace zorba{
 

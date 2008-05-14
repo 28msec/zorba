@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "test_debugger_protocol.hpp"
+#include "test_debugger_protocol.h"
 
 int test_debugger_protocol( int argc, char* argv[] )
 {

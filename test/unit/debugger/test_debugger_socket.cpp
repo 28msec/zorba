@@ -19,7 +19,7 @@
 
 #include <boost/thread/thread.hpp>
 
-#include "debugger/socket.hpp"
+#include "debugger/socket.h"
 
 using namespace zorba;
 using namespace std;

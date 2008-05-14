@@ -19,8 +19,8 @@
 
 #include <iostream>
 
-#include "debugger/socket.hpp"
-#include "debugger/debugger_protocol.hpp"
+#include "debugger/socket.h"
+#include "debugger/debugger_protocol.h"
 
 namespace zorba
 {

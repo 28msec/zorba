@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include <zorba/debugger_server.hpp>
+#include <zorba/debugger_server.h>
 
-#include "debugger/debugger_serverimpl.hpp"
+#include "debugger/debugger_serverimpl.h"
 
 namespace zorba {
 

@@ -27,7 +27,7 @@
 #include "common/common.h"
 #include "compiler/parser/query_loc.h"
 
-#include "debugger/debugger_common.hpp"
+#include "debugger/debugger_common.h"
 
 namespace zorba{
 

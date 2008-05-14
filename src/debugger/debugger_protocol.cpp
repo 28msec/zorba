@@ -29,7 +29,7 @@
 
 #include "zorbatypes/numconversions.h"
 
-#include "debugger/debugger_protocol.hpp"
+#include "debugger/debugger_protocol.h"
 
 
 namespace zorba{

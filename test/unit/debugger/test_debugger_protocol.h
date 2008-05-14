@@ -19,7 +19,7 @@
 #include <cassert>
 #include <string>
 
-#include "debugger/message_factory.hpp"
+#include "debugger/message_factory.h"
 
 namespace zorba
 {

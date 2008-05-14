@@ -24,10 +24,10 @@
 #include <boost/thread/condition.hpp>
 
 #include <zorba/zorba.h>
-#include <zorba/debugger_server.hpp>
+#include <zorba/debugger_server.h>
 
-#include "debugger/debugger_common.hpp"
-#include "runtime/debug/zorba_debugger_iterators.hpp"
+#include "debugger/debugger_common.h"
+#include "runtime/debug/zorba_debugger_iterators.h"
 
 namespace zorba{
 /**

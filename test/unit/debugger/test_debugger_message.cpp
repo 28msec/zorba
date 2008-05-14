@@ -19,7 +19,7 @@
 #include <vector>
 #include <string>
 
-#include "debugger/message_factory.hpp"
+#include "debugger/message_factory.h"
 
 using namespace zorba;
 

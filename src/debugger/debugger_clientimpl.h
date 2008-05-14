@@ -23,9 +23,9 @@
 #include <boost/thread.hpp>
 
 #include <zorba/api_shared_types.h>
-#include <zorba/debugger_client.hpp>
+#include <zorba/debugger_client.h>
 
-#include "debugger/debugger_common.hpp"
+#include "debugger/debugger_common.h"
 
 namespace zorba{
 
