@@ -100,6 +100,9 @@ void
 XQueryImpl::close()
 {
   ZORBA_TRY
+
+    SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+
     checkNotClosed();
 
     thePlan = 0;
@@ -135,6 +138,9 @@ XQuery_t
 XQueryImpl::clone() const
 {
   ZORBA_TRY
+
+    SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+
     checkNotClosed();
     checkCompiled();
 
@@ -154,7 +160,8 @@ XQueryImpl::clone() const
     lImpl->theDynamicContext = new dynamic_context(theDynamicContext);
 
     return lXQuery;
-    ZORBA_CATCH
+
+  ZORBA_CATCH
   return XQuery_t();
 }
 
@@ -166,6 +173,9 @@ void
 XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
 {
   ZORBA_TRY
+
+    SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+
     checkNotClosed();
         
     assert (theErrorHandler);
@@ -174,6 +184,7 @@ XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
     }
     theErrorHandler = aErrorHandler;
     theUserErrorHandler = true;
+
   ZORBA_CATCH
 }
 
@@ -182,6 +193,9 @@ void
 XQueryImpl::resetErrorHandler()
 {
   ZORBA_TRY
+
+    SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+
     checkNotClosed();
 
     assert (theErrorHandler);
@@ -190,6 +204,7 @@ XQueryImpl::resetErrorHandler()
 
     theErrorHandler = new DefaultErrorHandler();
     theUserErrorHandler = false;
+
   ZORBA_CATCH
 }
 
@@ -212,6 +227,7 @@ const StaticContext*
 XQueryImpl::getStaticContext() const
 {
   ZORBA_TRY
+
     checkNotClosed();
     checkCompiled();
 
@@ -220,6 +236,7 @@ XQueryImpl::getStaticContext() const
                                                       theErrorHandler);
 
     return theStaticContextWrapper;
+
   ZORBA_CATCH
   return 0;
 }
@@ -229,13 +246,15 @@ DynamicContext*
 XQueryImpl::getDynamicContext() const
 {
   ZORBA_TRY
+
     checkNotClosed();
     checkCompiled();
 
     if (!theDynamicContextWrapper)
       theDynamicContextWrapper = new DynamicContextImpl(theDynamicContext,
                                                         theStaticContext, 
-                                                        theErrorHandler);
+                                                        theErrorHandler
+                                                        SYNC_PARAM2(&theCloningMutex));
 
     return theDynamicContextWrapper;
         
@@ -412,6 +431,8 @@ XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
 
   // let's compile
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName); 
+
+  SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
 
   thePlan = new PlanProxy(planRoot);
 }

@@ -26,18 +26,19 @@ namespace zorba {
 
   /** \brief This class is the representation of a %XQuery in the %Zorba engine.
    *
-   * It is used for compiling and executing a query. An instance of
-   * this class is not thread safe, i.e.\ on object can not be executed/serialized
-   * in multiple threads. To execute on query in several threads
-   * the function clone() creates a clone of the same query that
-   * can be executed in another thread.
+   * It is used for compiling and executing a query. An instance of this class
+   * is not thread safe, i.e.\ an object can not be executed/serialized in
+   * multiple threads. To execute on query in several threads the function
+   * clone() creates a clone of the same query that can be executed in another
+   * thread.
    *
    * An instance of this class can only be created using either the createQuery
    * or compileQuery functions of the Zorba class. Objects are returned as
    * a boost smart pointer (see http://www.boost.org/doc/libs/1_35_0/libs/smart_ptr/smart_ptr.htm),
-   * i.e. objects of type XQuery_t are reference counted boost smart pointers to an dynamically
-   * allocated XQuery object. Hence, each object can have multiple owners. The object is deleted
-   * if nobody holds on to an XQuery_t object anymore.
+   * i.e. objects of type XQuery_t are reference counted boost smart pointers
+   * to an dynamically allocated XQuery object. Hence, each object can have
+   * multiple owners. The object is deleted if nobody holds on to an XQuery_t
+   * object anymore.
    *
    * The file \link simple.cpp \endlink contains some basic examples the demonstrate
    * the use of this class.

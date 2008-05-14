@@ -37,11 +37,13 @@ namespace zorba {
 DynamicContextImpl::DynamicContextImpl(
     dynamic_context* aDctx,
     static_context* aSctx,
-    ErrorHandler* aErrorHandler) 
+    ErrorHandler* aErrorHandler
+    SYNC_PARAM2(store::Mutex* mutex)) 
   :
   theCtx(aDctx),
   theStaticContext(aSctx),
   theErrorHandler(aErrorHandler)
+  SYNC_PARAM2(theCloningMutexp(mutex))
 {
 }
 
@@ -52,13 +54,15 @@ DynamicContextImpl::~DynamicContextImpl()
 
 
 bool
-DynamicContextImpl::setVariable( const String& aQName, const Item& aItem )
+DynamicContextImpl::setVariable(
+    const String& aQName,
+    const Item& aItem )
 {
   ZORBA_TRY
     // unmarshall the string and the item
     store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
     ZorbaImpl::checkItem(lItem);
-    xqpString     lString = xqpString(Unmarshaller::getInternalString(aQName));
+    xqpString lString = xqpString(Unmarshaller::getInternalString(aQName));
 
     // create an item iterator to store in the dyn context
     store::ItemIterator_t lIterator = new store::ItemIterator(lItem);
@@ -67,7 +71,9 @@ DynamicContextImpl::setVariable( const String& aQName, const Item& aItem )
 
     // add it to the internal context
     theCtx->add_variable(lExpandedName, &*lIterator);
+
     return true;
+
   ZORBA_CATCH
   return false;
 }
@@ -91,7 +97,9 @@ DynamicContextImpl::setVariable(
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
     theCtx->add_variable(lExpandedName, &*lRes);
+
     return true;
+
   ZORBA_CATCH
   return false;
 }
@@ -103,133 +111,173 @@ DynamicContextImpl::setVariableAsDocument(
     const String& aDocURI, 
     std::istream& aStream )
 {
-    ZORBA_TRY
-      XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+  ZORBA_TRY
+    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
 
-      Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
-      setVariable ( aQName, lDocItem );
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+    Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
+    setVariable ( aQName, lDocItem );
 
-  bool
-  DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& aDocURI, 
-                                             std::istream* aStream )
-  {
-    ZORBA_TRY
-      XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+    return true;
 
-      Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
-      setVariable ( aQName, lDocItem );
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+  ZORBA_CATCH
+  return false;
+}
 
-  bool
-  DynamicContextImpl::setContextItem ( const Item& aItem )
-  {
-    ZORBA_TRY
-      store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
-      ZorbaImpl::checkItem(lItem);
-      theCtx->set_context_item(lItem, 0);
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+
+bool
+DynamicContextImpl::setVariableAsDocument(
+    const String& aQName,
+    const String& aDocURI, 
+    std::istream* aStream )
+{
+  ZORBA_TRY
+    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+
+    Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
+    setVariable ( aQName, lDocItem );
+
+    return true;
+
+  ZORBA_CATCH
+  return false;
+}
+
+
+bool
+DynamicContextImpl::setContextItem ( const Item& aItem )
+{
+  ZORBA_TRY
+    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
+    ZorbaImpl::checkItem(lItem);
+
+    SYNC_CODE(store::AutoMutex lock(theCloningMutexp);)
+
+    theCtx->set_context_item(lItem, 0);
+
+    return true;
+
+  ZORBA_CATCH
+  return false;
+}
+
   
-  bool
-  DynamicContextImpl::setContextItemAsDocument ( const String& aDocURI, std::istream& aInStream )
-  {
-    ZORBA_TRY
-      XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+bool
+DynamicContextImpl::setContextItemAsDocument (
+    const String& aDocURI,
+    std::istream& aInStream )
+{
+  ZORBA_TRY
+    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
 
-      Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
-      setContextItem ( lDocItem );
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+    Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
 
-  bool
-  DynamicContextImpl::setContextItemAsDocument ( const String& aDocURI, std::istream* aInStream )
-  {
-    ZORBA_TRY
-      XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+    setContextItem ( lDocItem );
+    return true;
 
-      Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
-      setContextItem ( lDocItem );
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+  ZORBA_CATCH
+  return false;
+}
 
-  bool
-  DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
-  {
-    ZORBA_TRY
-      store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
+
+bool
+DynamicContextImpl::setContextItemAsDocument (
+    const String& aDocURI,
+    std::istream* aInStream )
+{
+  ZORBA_TRY
+    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+
+    Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
+
+    setContextItem ( lDocItem );
+    return true;
+
+  ZORBA_CATCH
+  return false;
+}
+
+
+bool
+DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
+{
+  ZORBA_TRY
+    store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
     
-      ZorbaImpl::checkItem(lItem);
+    ZorbaImpl::checkItem(lItem);
 
-      xqtref_t lItemType = theStaticContext->get_typemanager()->
-                           create_named_type(lItem->getType(),
-                                             TypeConstants::QUANT_ONE);
+    xqtref_t lItemType = theStaticContext->get_typemanager()->
+                         create_named_type(lItem->getType(),
+                                           TypeConstants::QUANT_ONE);
 
-      if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)) {
-        ZORBA_ERROR_DESC_OSS(API0014_INVALID_ARGUMENT, "Given item of type [" << lItemType->toString() 
-                                                                   << "] is not a subtype of [" 
-                                                                   << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
-      }
+    if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)) 
+    {
+      ZORBA_ERROR_DESC_OSS(API0014_INVALID_ARGUMENT,
+                           "Given item of type [" << lItemType->toString() 
+                           << "] is not a subtype of [" 
+                           << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
+    }
 
-      theCtx->set_current_date_time(lItem);
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+    SYNC_CODE(store::AutoMutex lock(theCloningMutexp);)
+
+    theCtx->set_current_date_time(lItem);
+    return true;
+
+  ZORBA_CATCH
+  return false;
+}
+
   
-  Item
-  DynamicContextImpl::getCurrentDateTime( )
-  {
-    ZORBA_TRY
-      return &*theCtx->get_current_date_time();
-    ZORBA_CATCH
-    return Item();
-  }
+Item
+DynamicContextImpl::getCurrentDateTime( )
+{
+  ZORBA_TRY
+    return &*theCtx->get_current_date_time();
+  ZORBA_CATCH
+  return Item();
+}
 
-  bool
-  DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
-  {
-    ZORBA_TRY
-      theCtx->set_implicit_timezone(aTimezoneMinutes * 60);
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
 
-  int
-  DynamicContextImpl::getImplicitTimezone()
-  {
-    ZORBA_TRY
-      return theCtx->get_implicit_timezone() / 60;
-    ZORBA_CATCH
-    return 0;
-  }
+bool
+DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
+{
+  ZORBA_TRY
 
-  bool
-  DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
-  {
-    ZORBA_TRY
-      store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
-      ZorbaImpl::checkItem(lItem);
-      xqpString     lString(lItem->getStringValue());
-      theCtx->set_default_collection(lString);
-      return true;
-    ZORBA_CATCH
-    return false;
-  }
+    SYNC_CODE(store::AutoMutex lock(theCloningMutexp);)
 
+    theCtx->set_implicit_timezone(aTimezoneMinutes * 60);
+    return true;
+
+  ZORBA_CATCH
+  return false;
+}
+
+
+int
+DynamicContextImpl::getImplicitTimezone()
+{
+  ZORBA_TRY
+    return theCtx->get_implicit_timezone() / 60;
+  ZORBA_CATCH
+  return 0;
+}
+
+
+bool
+DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
+{
+  ZORBA_TRY
+    store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
+    ZorbaImpl::checkItem(lItem);
+    xqpString     lString(lItem->getStringValue());
+
+    SYNC_CODE(store::AutoMutex lock(theCloningMutexp);)
+
+    theCtx->set_default_collection(lString);
+    return true;
+
+  ZORBA_CATCH
+  return false;
+}
 
 
 } /* namespace zorba */
