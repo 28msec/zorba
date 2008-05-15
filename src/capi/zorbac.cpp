@@ -297,6 +297,21 @@ zorba_dynamic_context(XQUERY aXQuery, XQUERY_DC_REF aContext)
   }
 }
 
+XQUERY_ERROR
+zorba_item_create_string(XQUERY_STRING aString, XQUERY_ITEM_REF aItem)
+{
+  String* lStringWrapper = static_cast<String*>(aString);
+  try {
+    Item lItem = Zorba::getInstance()->getItemFactory()->createString(*lStringWrapper);
+    *aItem = static_cast<XQUERY_ITEM>(new Item(lItem));
+    return XQ_SUCCESS;
+  } catch (ZorbaException &e) {
+    return e.getErrorCode();
+  } catch (...) {
+    return XQP0019_INTERNAL_ERROR;
+  }
+}
+
 XQUERY_API* 
 zorba_init()
 {

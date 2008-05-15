@@ -75,6 +75,9 @@ typedef void          (*xquery_string_release)(XQUERY_STRING);
 // const char* is only valid as long as the XQUERY_STRING
 typedef const char*   (*xquery_string_to_char)(XQUERY_STRING);
 
+// functions to create items
+typedef XQUERY_ERROR  (*xquery_item_create_string)(XQUERY_STRING, XQUERY_ITEM_REF);
+
 typedef struct {
   // functions related to queries
   xquery_query_compile       query_compile;
@@ -104,6 +107,9 @@ typedef struct {
   xquery_string_init         string_init;
   xquery_string_release      string_release;
   xquery_string_to_char      string_to_char;
+
+  // functions to create items
+  xquery_item_create_string  item_create_string;
 } XQUERY_API;
 
 XQUERY_API*
