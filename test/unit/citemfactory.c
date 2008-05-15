@@ -31,20 +31,37 @@ citemfactory(int argc, char* argv[])
   XQUERY_API*   lAPI = zorba_init();
   XQUERY_ITEM   lItem;
   XQUERY_STRING lString;
+  XQUERY_STRING lURI;
+  XQUERY_STRING lPrefix;
 
   // create some types
   UNIT_ASSERT ( lAPI->string_create("1", &lString) == XQ_SUCCESS );
+  UNIT_ASSERT ( lAPI->string_create("http://www.zorba-xquery.com/", &lURI) == XQ_SUCCESS );
+  UNIT_ASSERT ( lAPI->string_create("1", &lString) == XQ_SUCCESS );
+  UNIT_ASSERT ( lAPI->string_create("zorba", &lPrefix) == XQ_SUCCESS );
 
   /* String */
   UNIT_ASSERT ( lAPI->item_create_string(lString, &lItem) == XQ_SUCCESS );
   lAPI->item_release(lItem);
 
-
   /* AnyURI */
   UNIT_ASSERT ( lAPI->item_create_anyuri(lString, &lItem) == XQ_SUCCESS );
   lAPI->item_release(lItem);
-  
 
+  /* QName */
+  UNIT_ASSERT ( lAPI->item_create_qname2(lURI, lString, &lItem) == XQ_SUCCESS );
+  lAPI->item_release(lItem);
+  
+  UNIT_ASSERT ( lAPI->item_create_qname3(lURI, lString, lPrefix, &lItem) == XQ_SUCCESS );
+  lAPI->item_release(lItem);
+
+  /* Boolean */
+  UNIT_ASSERT ( lAPI->item_create_boolean(1, &lItem) == XQ_SUCCESS );
+  lAPI->item_release(lItem);
+
+
+  lAPI->string_release(lPrefix);
+  lAPI->string_release(lURI);
   lAPI->string_release(lString);
 
   zorba_release(lAPI);

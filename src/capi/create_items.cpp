@@ -40,7 +40,11 @@ zorba_item_create_anyuri(XQUERY_STRING aString, XQUERY_ITEM_REF aItem)
 XQUERY_ERROR
 zorba_item_create_qname2(XQUERY_STRING aNamespace, XQUERY_STRING aLocalname, XQUERY_ITEM_REF aItem)
 {
+  String* lNamespace = static_cast<String*>(aNamespace);
+  String* lLocalname = static_cast<String*>(aLocalname);
   TRY
+    Item lItem = FF->createQName(*lNamespace, *lLocalname);
+    *aItem = static_cast<XQUERY_ITEM>(new Item(lItem));
   CATCH
 }
 
@@ -48,7 +52,12 @@ XQUERY_ERROR
 zorba_item_create_qname3(XQUERY_STRING aNamespace, XQUERY_STRING aPrefix, 
                          XQUERY_STRING aLocalname, XQUERY_ITEM_REF aItem)
 {
+  String* lNamespace = static_cast<String*>(aNamespace);
+  String* lPrefix = static_cast<String*>(aPrefix);
+  String* lLocalname = static_cast<String*>(aLocalname);
   TRY
+    Item lItem = FF->createQName(*lNamespace, *lPrefix, *lLocalname);
+    *aItem = static_cast<XQUERY_ITEM>(new Item(lItem));
   CATCH
 }
 
@@ -56,5 +65,7 @@ XQUERY_ERROR
 zorba_item_create_boolean(int aBool, XQUERY_ITEM_REF aItem)
 {
   TRY
+    Item lItem = FF->createBoolean((bool) aBool);
+    *aItem = static_cast<XQUERY_ITEM>(new Item(lItem));
   CATCH
 }
