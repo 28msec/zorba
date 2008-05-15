@@ -18,6 +18,7 @@
 
 #include "store/minimal/min_node_vector.h"
 #include "store/minimal/min_node_items.h"
+#include "store/minimal/shared_types.h"
 
 namespace zorba { namespace store {
 

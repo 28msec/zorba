@@ -19,6 +19,7 @@
 #include "store/api/iterator.h"
 #include "common/shared_types.h"
 #include "store/minimal/min_ordpath.h"
+#include "store/minimal/shared_types.h"
 #include "store/util/hashset_item_handle.h"
 
 namespace zorba { namespace store {
