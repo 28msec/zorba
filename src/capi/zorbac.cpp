@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include <sstream>
 #include <zorba/api_shared_types.h>
 #include <zorba/zorbac.h> 
 #include <zorba/zorba.h>
 #include <errno.h>
-#include "api/unmarshaller.h"
+#include "capi/shared_wrapper.h"
 #include "store/api/item.h"
-#include "zorbatypes/xqpstring.h"
-#include "util/rchandle.h"
 
 using namespace zorba;
 
-template<typename T>
-class SharedWrapper
-{
-public:
-  boost::shared_ptr<T> theObject;
-
-  SharedWrapper(boost::shared_ptr<T> a) throw() : theObject(a) {}
-};
 
 XQUERY_ERROR 
 zorba_query_compile(const char* aChar, XQUERY_REF aQuery)
@@ -332,19 +321,19 @@ zorba_string_create(const char* aString, XQUERY_STRING_REF aRes)
 }
 
 XQUERY_ERROR
-zorba_item_create_string(XQUERY_STRING aString, XQUERY_ITEM_REF aItem)
-{
-  String* lStringWrapper = static_cast<String*>(aString);
-  try {
-    Item lItem = Zorba::getInstance()->getItemFactory()->createString(*lStringWrapper);
-    *aItem = static_cast<XQUERY_ITEM>(new Item(lItem));
-    return XQ_SUCCESS;
-  } catch (ZorbaException &e) {
-    return e.getErrorCode();
-  } catch (...) {
-    return XQP0019_INTERNAL_ERROR;
-  }
-}
+zorba_item_create_string(XQUERY_STRING aString, XQUERY_ITEM_REF aItem);
+
+XQUERY_ERROR
+zorba_item_create_anyuri(XQUERY_STRING, XQUERY_ITEM_REF);
+
+XQUERY_ERROR
+zorba_item_create_qname2(XQUERY_STRING, XQUERY_STRING, XQUERY_ITEM_REF);
+
+XQUERY_ERROR
+zorba_item_create_qname3(XQUERY_STRING, XQUERY_STRING, XQUERY_STRING, XQUERY_ITEM_REF);
+
+XQUERY_ERROR
+zorba_item_create_boolean(int, XQUERY_ITEM_REF);
 
 XQUERY_API* 
 zorba_init()
@@ -386,6 +375,10 @@ zorba_init()
   lAPI->string_create       = zorba_string_create;
 
   lAPI->item_create_string  = zorba_item_create_string;
+  lAPI->item_create_anyuri  = zorba_item_create_anyuri;
+  lAPI->item_create_qname2  = zorba_item_create_qname2;
+  lAPI->item_create_qname3  = zorba_item_create_qname3;
+  lAPI->item_create_boolean = zorba_item_create_boolean;
 
   return lAPI;
 }

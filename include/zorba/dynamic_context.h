@@ -144,7 +144,7 @@ namespace zorba {
       virtual int
       getImplicitTimezone() = 0;
 
-      /** \brief Defines the value of the default collection that is when calling the
+      /** \brief Defines the value of the default collection that is used when calling the
        *         fn:collection function without a parameter.
        *
        * @param aCollectionUri the URI of the collection used by the fn:collection function.

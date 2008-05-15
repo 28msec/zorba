@@ -16,6 +16,7 @@
 #ifndef ZORBA_ZORBAC_API_H
 #define ZORBA_ZORBAC_API_H
 
+#include <stdio.h>
 #include <zorba/error.h>
 
 typedef void* XQUERY;
@@ -81,6 +82,11 @@ typedef const char*   (*xquery_string_to_char)(XQUERY_STRING);
 
 // functions to create items
 typedef XQUERY_ERROR  (*xquery_item_create_string)(XQUERY_STRING, XQUERY_ITEM_REF);
+typedef XQUERY_ERROR  (*xquery_item_create_anyuri)(XQUERY_STRING, XQUERY_ITEM_REF);
+typedef XQUERY_ERROR  (*xquery_item_create_qname2)(XQUERY_STRING, XQUERY_STRING, XQUERY_ITEM_REF);
+typedef XQUERY_ERROR  (*xquery_item_create_qname3)(XQUERY_STRING, XQUERY_STRING, 
+                                                   XQUERY_STRING, XQUERY_ITEM_REF);
+typedef XQUERY_ERROR  (*xquery_item_create_boolean)(int, XQUERY_ITEM_REF);
 
 typedef struct {
   // functions related to queries
@@ -115,7 +121,11 @@ typedef struct {
   xquery_string_create       string_create;
 
   // functions to create items
-  xquery_item_create_string  item_create_string;
+  xquery_item_create_string   item_create_string;
+  xquery_item_create_anyuri   item_create_anyuri;
+  xquery_item_create_qname2   item_create_qname2;
+  xquery_item_create_qname3   item_create_qname3;
+  xquery_item_create_boolean  item_create_boolean;
 } XQUERY_API;
 
 XQUERY_API*
