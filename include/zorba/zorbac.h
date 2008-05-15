@@ -48,6 +48,8 @@ typedef void          (*xquery_query_release)(XQUERY);
 // dynamic context is only valid as long as the XQUERY
 typedef XQUERY_ERROR  (*xquery_dynamic_context)(XQUERY, XQUERY_DC_REF);
 
+typedef XQUERY_ERROR  (*xquery_dc_set_context_item)(XQUERY_DC, XQUERY_ITEM);
+
 typedef XQUERY_ERROR  (*xquery_stream_init)(XQUERY, XQUERY_STREAM_REF);
 
 // return -1 if XQUERY_ERROR is not XQ_SUCCESS
@@ -72,6 +74,8 @@ typedef XQUERY_ERROR  (*xquery_string_init)(XQUERY_STRING_REF);
 
 typedef void          (*xquery_string_release)(XQUERY_STRING);
 
+typedef XQUERY_ERROR  (*xquery_string_create)(const char*, XQUERY_STRING_REF);
+
 // const char* is only valid as long as the XQUERY_STRING
 typedef const char*   (*xquery_string_to_char)(XQUERY_STRING);
 
@@ -87,6 +91,7 @@ typedef struct {
 
   // dynamic context
   xquery_dynamic_context     dynamic_context;
+  xquery_dc_set_context_item dc_set_context_item;
   
   // functions related to streams
   xquery_stream_init         stream_init;
@@ -107,6 +112,7 @@ typedef struct {
   xquery_string_init         string_init;
   xquery_string_release      string_release;
   xquery_string_to_char      string_to_char;
+  xquery_string_create       string_create;
 
   // functions to create items
   xquery_item_create_string  item_create_string;

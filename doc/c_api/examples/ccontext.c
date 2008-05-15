@@ -26,17 +26,25 @@
 int
 context_example_1(XQUERY_API* aAPI)
 {
-  XQUERY    lXQuery;
-  XQUERY_DC lContext;
-  FILE*     lFile = stdout;
+  XQUERY        lXQuery;
+  XQUERY_DC     lContext;
+  FILE*         lFile = stdout;
+  XQUERY_ITEM   lItem;
+  XQUERY_STRING lString;
 
   // compile the query
-  aAPI->query_compile("declare variable $var external; $var + $var", &lXQuery);
+  aAPI->query_compile("(., ., .)", &lXQuery);
 
+  // get the querie's dynamic context and set an item as the context item
   aAPI->dynamic_context(lXQuery, &lContext);
+  aAPI->string_create("1", &lString);
+  aAPI->item_create_string(lString, &lItem);
+  aAPI->dc_set_context_item(lContext, lItem);
 
   aAPI->query_execute(lXQuery, lFile);
 
+  aAPI->item_release(lItem);
+  aAPI->string_release(lString);
   aAPI->query_release(lXQuery);
   return 1;
 }

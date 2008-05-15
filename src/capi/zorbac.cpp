@@ -251,7 +251,7 @@ zorba_string_init(XQUERY_STRING_REF aString)
 XQUERY_ERROR 
 zorba_item_stringvalue(XQUERY_ITEM aItem, XQUERY_STRING aString)
 {
-  const Item* lItem = static_cast<const Item*>(aItem);
+  Item* lItem = static_cast<Item*>(aItem);
 
   try {
     String* lStringWrapper = static_cast<String*>(aString);
@@ -298,6 +298,40 @@ zorba_dynamic_context(XQUERY aXQuery, XQUERY_DC_REF aContext)
 }
 
 XQUERY_ERROR
+zorba_dc_set_context_item(XQUERY_DC aCtx, XQUERY_ITEM aItem)
+{
+  DynamicContext* lContext = static_cast<DynamicContext*>(aCtx); 
+  Item* lItem = static_cast<Item*>(aItem);
+  
+  try {
+    lContext->setContextItem(*lItem);
+    return XQ_SUCCESS;
+  } catch (ZorbaException &e) {
+    return e.getErrorCode();
+  } catch (...) {
+    return XQP0019_INTERNAL_ERROR;
+  }
+
+}
+
+XQUERY_ERROR
+zorba_string_create(const char* aString, XQUERY_STRING_REF aRes)
+{
+  String* lString = 0;
+  try {
+    lString = new String(aString);
+    *aRes = static_cast<XQUERY_STRING>(lString);
+    return XQ_SUCCESS;
+  } catch (ZorbaException &e) {
+    delete lString;
+    return e.getErrorCode();
+  } catch (...) {
+    delete lString;
+    return XQP0019_INTERNAL_ERROR;
+  }
+}
+
+XQUERY_ERROR
 zorba_item_create_string(XQUERY_STRING aString, XQUERY_ITEM_REF aItem)
 {
   String* lStringWrapper = static_cast<String*>(aString);
@@ -329,6 +363,7 @@ zorba_init()
 
   // dynamic context
   lAPI->dynamic_context     = zorba_dynamic_context;
+  lAPI->dc_set_context_item = zorba_dc_set_context_item;
 
   // stream functions
   lAPI->stream_init         = zorba_stream_init;
@@ -348,6 +383,9 @@ zorba_init()
   lAPI->string_init         = zorba_string_init;
   lAPI->string_release      = zorba_string_release;
   lAPI->string_to_char      = zorba_string_to_char;
+  lAPI->string_create       = zorba_string_create;
+
+  lAPI->item_create_string  = zorba_item_create_string;
 
   return lAPI;
 }
