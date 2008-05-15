@@ -25,7 +25,6 @@
 #include "system/globalenv.h"
 #include "util/Assert.h"
 
-//#include "store/naive/string_pool.h"
 #include "store/minimal/min_store.h"
 #include "store/minimal/min_loader.h"
 #include "store/minimal/min_atomic_items.h"

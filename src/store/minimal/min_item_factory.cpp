@@ -30,9 +30,7 @@
 #include "store/minimal/min_node_items.h"
 #include "store/minimal/min_temp_seq.h"
 #include "store/minimal/min_pul.h"
-//#include "store/naive/qname_pool.h"
 #include "store/api/collection.h"
-//#include "store/naive/string_pool.h"
 #include "zorbatypes/datetime.h"
 
 

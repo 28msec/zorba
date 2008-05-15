@@ -24,11 +24,9 @@
 
 #include "store/util/hashmap_stringp.h"
 
-//#include "store/naive/string_pool.h"
 #include "store/minimal/min_store.h"
 #include "store/minimal/min_temp_seq.h"
 #include "store/minimal/min_collection.h"
-//#include "store/naive/qname_pool.h"
 #include "store/minimal/min_loader.h"
 #include "store/minimal/min_store_defs.h"
 #include "store/minimal/min_node_items.h"

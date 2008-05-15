@@ -29,7 +29,6 @@
 #include "store/minimal/min_node_iterators.h"
 #include "store/minimal/min_store.h"
 #include "store/minimal/min_item_factory.h"
-//#include "store/naive/qname_pool.h"
 #include "store/minimal/min_store_defs.h"
 #include "store/minimal/min_nsbindings.h"
 #include "store/api/temp_seq.h"

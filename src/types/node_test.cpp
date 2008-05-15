@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include "common/common.h"
-#include "store/current_store_headers.h"
 #include "node_test.h"
 #include "zorbatypes/datetime.h"
 

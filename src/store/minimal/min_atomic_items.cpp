@@ -28,7 +28,6 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/collection.h"
-//#include "store/naive/qname_pool.h"
 #include "store/minimal/min_store.h"
 #include "store/minimal/min_item_factory.h"
 #include "store/minimal/min_store_defs.h"
