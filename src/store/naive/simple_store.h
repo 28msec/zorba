@@ -20,10 +20,13 @@
 #include "common/shared_types.h"
 
 #include "store/api/store.h"
+#include "store/api/collection.h"
+
 #include "store/util/hashmap_stringp.h"
 #include "store/util/mutex.h"
 #include "store/util/latch.h"
-#include "store/api/collection.h"
+
+#include "store/naive/shared_types.h"
 #include "store/naive/node_items.h"
 
 

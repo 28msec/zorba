@@ -21,6 +21,7 @@ namespace zorba {
 
 namespace store {
 
+
 #ifdef ZORBA_XBROWSER
 #define GET_STORE() \
 	(*(static_cast<xqp::DOMStore*>(&GENV.getStore())))

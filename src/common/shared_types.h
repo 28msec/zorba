@@ -47,10 +47,6 @@ namespace zorba {
     typedef rchandle<SimpleCollection> SimpleCollection_t;
     class AnyUriItem;
     typedef rchandle<AnyUriItem> AnyUriItem_t;
-    class XmlTree;
-    typedef rchandle<XmlTree> XmlTree_t;
-    class XmlNode;
-    typedef rchandle<class XmlNode> XmlNode_t;
     class Store;
     class Timetravel;
     class Requester;
