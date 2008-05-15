@@ -21,18 +21,17 @@
 
 namespace zorba {
 
-  /** \brief A ResultIterator can be used to iterator over the result sequence of a query.
+  /** \brief A ResultIterator can be used to compute and retrieve the result of
+   * an XQuery in a one-item-at-a-time fashion. 
    *
-   * A ResultIterator is created by calling XQuery::iterator() on a compiled XQuery.
+   * For each XQuery there can be at most one result iterator obj: it is created
+   * by calling XQuery::iterator() on a compiled XQuery, and is destroyed when
+   * the query is closed.
+   *
    */
   class ResultIterator  : public Iterator
   {
     public:
-
-      /** \brief Destructor
-       */
-      virtual ~ResultIterator() {}
-
       /** \brief Start iterating. 
        *
        * This function needs to be called before calling next.
@@ -58,6 +57,10 @@ namespace zorba {
       virtual void 
       close() = 0;
 
+    protected:
+      /** \brief Destructor
+       */
+      virtual ~ResultIterator() {}
   };
 
 } /* namespace zorba */

@@ -126,7 +126,7 @@ int _tmain(int argc, _TCHAR* argv[])
         else
           *resultFile << query;
       } else {
-        ResultIterator_t result = query->iterator();
+        ResultIterator* result = query->iterator();
         result->open();
         Item lItem;
         while (result->next(lItem)) {

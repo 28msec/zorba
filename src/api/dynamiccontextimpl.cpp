@@ -82,15 +82,15 @@ DynamicContextImpl::setVariable(
 bool
 DynamicContextImpl::setVariable(
     const String& aQName,
-    const ResultIterator_t& aResultIterator )
+    ResultIterator* aResultIterator )
 {
   ZORBA_TRY
-    ResultIterator* lIter = &*aResultIterator;
-    if (!lIter)
+
+    if (!aResultIterator)
       ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
                        "Invalid ResultIterator given");
         
-    store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
+    store::Iterator_t lRes = new store::ResultIteratorChainer(aResultIterator);
 
     xqpString lString = xqpString(Unmarshaller::getInternalString(aQName));
 

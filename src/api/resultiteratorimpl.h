@@ -24,14 +24,31 @@
 namespace zorba {
 
 class ErrorHandler;
+class XQueryImpl;
 
+/*******************************************************************************
+  Iterator used for computing and retrieving the result of a query in a 
+  one-item-at-a-time fashion. For each XQuery there can be at most 1 result
+  iterator obj: it is created during the 1st invocation of the XQuery::iterator()
+  method and destroyed when the query is closed.
+********************************************************************************/
 class ResultIteratorImpl  : public ResultIterator 
 {
- public:
-  ResultIteratorImpl(const PlanWrapper_t&, error::ErrorManager*, ErrorHandler*);
+  friend class XQueryImpl;
+  friend class Unmarshaller;
+
+ protected:
+  const XQueryImpl     * theQuery; 
+  PlanWrapper_t          thePlan;         
+  bool                   theIsOpened;     
+  bool                   theHaveLock;
+
+ protected:
+  ResultIteratorImpl(const XQueryImpl*, const PlanWrapper_t&);
 
   virtual ~ResultIteratorImpl();
 
+ public:
   virtual void 
   open();
 
@@ -40,15 +57,6 @@ class ResultIteratorImpl  : public ResultIterator
 
   virtual void 
   close();
-
-  friend class Unmarshaller;
-
- protected:
-  PlanWrapper_t          thePlan;         
-  bool                   theIsOpened;     
-  error::ErrorManager  * theErrorManager; 
-  ErrorHandler         * theErrorHandler; 
-  bool                   theHaveLock;
 };
 
 

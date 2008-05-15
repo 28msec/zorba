@@ -36,11 +36,6 @@ namespace zorba {
   class DynamicContext 
   {
     public:
-      /** \brief Destructor
-       *
-       */
-      virtual ~DynamicContext( ) {};
-
       /** \brief Defines the external variable identified by aQName and assigns it the value of
        *         aItem.
        *
@@ -62,7 +57,7 @@ namespace zorba {
        * @throw ZorbaException if an error occured (e.g. the given ResultIterator is not valid).
        */
       virtual bool
-      setVariable( const String& aQName, const ResultIterator_t& aResultIterator ) = 0;
+      setVariable( const String& aQName, ResultIterator* aResultIterator ) = 0;
 
       /** \brief Defines the external variable identifies by aQName and assigns it the 
        *         the document that results from reading and parsing the given istream.
@@ -154,6 +149,11 @@ namespace zorba {
       virtual bool
       setDefaultCollection( const Item& aCollectionUri ) = 0;
 
+    protected:
+      /** \brief Destructor
+       *
+       */
+      virtual ~DynamicContext( ) {};
   };
 
 } /* namespace zorba */

@@ -31,6 +31,7 @@ namespace zorba {
 
   class DynamicContextImpl;
   class StaticContextImpl;
+  class ResultIteratorImpl;
 
 /*******************************************************************************
 
@@ -69,6 +70,12 @@ namespace zorba {
 
   - theDynamicContextWrapper :
 
+  - theResultIterator :
+  Pointer to an iterator used for computing and retrieving the result of a
+  query in a one-item-at-a-time fashion. For each query there can be at most 1
+  result iterator obj: it is created during the 1st invocation of the iterator()
+  method and destroyed when the query is closed.
+ 
   - theErrorHandler :
   Normally, this is an object provided by the application to handle errors in
   some specific way. If the application does not provide an error handler, a
@@ -111,6 +118,12 @@ class XQueryImpl : public XQuery
 
   typedef rchandle<PlanProxy> PlanProxy_t;
 
+ public:
+  friend class ResultIteratorImpl;
+
+  // only allow ZorbaImpl to create us
+  friend class ZorbaImpl;
+
  protected:
 
   // static stuff
@@ -127,6 +140,8 @@ class XQueryImpl : public XQuery
 
   mutable DynamicContextImpl   * theDynamicContextWrapper;
   mutable StaticContextImpl    * theStaticContextWrapper;
+
+  ResultIteratorImpl           * theResultIterator;
 
   // utility stuff
   bool                           theUserErrorHandler; 
@@ -159,7 +174,7 @@ class XQueryImpl : public XQuery
   void 
   applyUpdates();
 
-  ResultIterator_t
+  ResultIterator*
   iterator();
 
   DynamicContext*
@@ -199,9 +214,6 @@ class XQueryImpl : public XQuery
 
   XQuery_t
   clone() const;
-
-  // only allow ZorbaImpl to create us
-  friend class ZorbaImpl;
 
  protected:
     

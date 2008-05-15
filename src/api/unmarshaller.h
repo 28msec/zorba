@@ -34,7 +34,7 @@ class Unmarshaller {
 
       static dynamic_context*    getInternalDynamicContext(const DynamicContext* aContext);
 
-      static PlanWrapper_t       getInternalPlan(const ResultIterator_t& aResultIter);
+      static PlanWrapper_t       getInternalPlan(const ResultIterator* aResultIter);
 
       static store::Collection_t getInternalCollection(const Collection_t& aCollection);
 };

@@ -38,9 +38,9 @@ namespace zorba {
   }
 
   PlanWrapper_t
-  Unmarshaller::getInternalPlan(const ResultIterator_t& aResultIter)
+  Unmarshaller::getInternalPlan(const ResultIterator* aResultIter)
   {
-    return static_cast<ResultIteratorImpl*>(aResultIter.get())->thePlan;
+    return static_cast<const ResultIteratorImpl*>(aResultIter)->thePlan;
   }
 
   store::Collection_t

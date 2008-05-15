@@ -67,6 +67,7 @@ XQueryImpl::XQueryImpl()
   theDynamicContext(0),
   theDynamicContextWrapper(0),
   theStaticContextWrapper(0),
+  theResultIterator(0),
   theUserErrorHandler(false),
   theSAX2Handler(0),
   theIsClosed(false)
@@ -104,6 +105,9 @@ XQueryImpl::close()
     SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
 
     checkNotClosed();
+
+    if (theResultIterator)
+      delete theResultIterator;
 
     thePlan = 0;
 
@@ -507,19 +511,22 @@ XQueryImpl::applyUpdates()
 }
 
 
-ResultIterator_t
+ResultIterator*
 XQueryImpl::iterator()
 {
   ZORBA_TRY
     checkNotClosed();
     checkCompiled();
 
+    if (theResultIterator != NULL)
+      return theResultIterator;
+
     PlanWrapper_t lPlan = generateWrapper();
-    return ResultIterator_t(new ResultIteratorImpl(lPlan,
-                                                   theErrorManager,
-                                                   theErrorHandler));
+    theResultIterator = new ResultIteratorImpl(this, lPlan);
+    return theResultIterator;
+
   ZORBA_CATCH
-  return ResultIterator_t();
+  return 0;
 }
 
 

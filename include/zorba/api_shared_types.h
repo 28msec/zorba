@@ -38,7 +38,6 @@ namespace zorba {
   // smart pointers
   typedef boost::shared_ptr<XQuery>                     XQuery_t;
   typedef boost::shared_ptr<StaticContext>              StaticContext_t;
-  typedef boost::shared_ptr<ResultIterator>             ResultIterator_t;
   typedef boost::shared_ptr<Iterator>                   Iterator_t;
   typedef boost::shared_ptr<TypeIdentifier>             TypeIdentifier_t;
   typedef boost::shared_ptr<Collection>                 Collection_t;

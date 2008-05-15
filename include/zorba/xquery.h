@@ -246,7 +246,7 @@ namespace zorba {
         * @return ResultIterator iterator over the result sequence.
         * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled).
         */
-      virtual ResultIterator_t
+      virtual ResultIterator*
       iterator() = 0;
 
       /** \brief Get the dynamic context of this query.

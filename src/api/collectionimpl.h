@@ -37,7 +37,7 @@ namespace zorba {
       deleteItem(const Item& aItem);
 
       bool
-      addItems(const ResultIterator_t& aResultIterator);
+      addItems(const ResultIterator* aResultIterator);
 
       bool
       addDocument(std::istream& lInStream);

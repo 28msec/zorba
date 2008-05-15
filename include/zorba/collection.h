@@ -63,7 +63,7 @@ class Collection
      *         false otherwise.
      */
     virtual bool
-    addItems(const ResultIterator_t& aResultIterator) = 0;
+    addItems(const ResultIterator* aResultIterator) = 0;
 
     /** \brief Adds the document retrieved from the given input stream to the Collection.
      *

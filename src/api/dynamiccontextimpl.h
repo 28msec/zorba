@@ -53,6 +53,9 @@ class ErrorHandler;
 ********************************************************************************/
 class DynamicContextImpl : public DynamicContext
 {
+  friend class Unmarshaller; // needs to get the context out of this class
+  friend class XQueryImpl;
+
 protected:
   dynamic_context           * theCtx;
 
@@ -62,7 +65,7 @@ protected:
 
   SYNC_CODE(store::Mutex    * theCloningMutexp;)
 
-public:
+protected:
   DynamicContextImpl(
         dynamic_context* dctx,
         static_context* sctx,
@@ -71,6 +74,7 @@ public:
 
   virtual ~DynamicContextImpl();
 
+public:
   virtual bool
   setVariable(
         const String& aQName,
@@ -79,7 +83,7 @@ public:
   virtual bool
   setVariable(
         const String& aQName,
-        const ResultIterator_t& aResultIterator );
+        ResultIterator* aResultIterator );
 
   virtual bool
   setVariableAsDocument(
@@ -118,8 +122,6 @@ public:
 
   virtual bool
   setDefaultCollection( const Item& aCollectionUri );
-
-  friend class Unmarshaller; // needs to get the context out of this class
 };
 
 } /* namespace zorba */

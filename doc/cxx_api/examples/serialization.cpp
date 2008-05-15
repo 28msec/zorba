@@ -140,7 +140,7 @@ serialization_example_7(Zorba* aZorba)
 {
   XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
-  ResultIterator_t lIterator = lQuery->iterator();
+  ResultIterator* lIterator = lQuery->iterator();
 
   try {
     lIterator->open();
