@@ -57,7 +57,7 @@ class CRegexAscii_regex : public IRegexAtom
 {
   friend class CRegexAscii_parser;
 public:
-  CRegexAscii_regex();
+  CRegexAscii_regex(CRegexAscii_regex *);
   virtual ~CRegexAscii_regex();
 
   bool match_anywhere(const char *source, int flags, int *match_pos, int *matched_len);
@@ -176,8 +176,8 @@ protected:
   CRegexAscii_regex* parse_regexp(const char *pattern, int *regex_len);
   CRegexAscii_branch* parse_branch(const char *pattern, int *branch_len);
   CRegexAscii_piece* parse_piece(const char *pattern, int *piece_len);
-  char ishex(char c);
-  bool isdigit(char c);
+  char myishex(char c);
+  bool myisdigit(char c);
   char readChar(const char *pattern, int *char_len, bool *is_multichar);
   IRegexAtom* read_atom(const char *pattern, int *atom_len);
   CRegexAscii_chargroup* readchargroup(const char *pattern, int *chargroup_len);

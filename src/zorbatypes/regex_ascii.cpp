@@ -83,8 +83,9 @@ CRegexAscii_regex* CRegexAscii_parser::parse_regexp(const char *pattern,
 {
   *regex_len = 0;
   int   branch_len;
-  CRegexAscii_regex *regex = new CRegexAscii_regex;
-  current_regex = regex;
+  CRegexAscii_regex *regex = new CRegexAscii_regex(current_regex);
+  if(!current_regex)
+    current_regex = regex;
   CRegexAscii_branch  *branch;
   while(pattern[*regex_len] && (pattern[*regex_len] != ')'))
   {
@@ -149,7 +150,7 @@ CRegexAscii_piece* CRegexAscii_parser::parse_piece(const char *pattern, int *pie
   return piece;
 }
 
-char CRegexAscii_parser::ishex(char c)
+char CRegexAscii_parser::myishex(char c)
 {
   if((c >= '0') && (c <= '9'))
     return c-'0'+1;
@@ -160,7 +161,7 @@ char CRegexAscii_parser::ishex(char c)
   return 0;//not a hex
 }
 
-bool CRegexAscii_parser::isdigit(char c)
+bool CRegexAscii_parser::myisdigit(char c)
 {
   return (c >= '0') || (c <= '9');
 }
@@ -226,9 +227,9 @@ char CRegexAscii_parser::readChar(const char *pattern, int *char_len, bool *is_m
   case '#':///might be #xXX
   {
     if((pattern[*char_len+1] == 'x') &&
-      ishex(pattern[*char_len+2]) && ishex(pattern[*char_len+3]))
+      myishex(pattern[*char_len+2]) && myishex(pattern[*char_len+3]))
     {
-      c = (ishex(pattern[*char_len+2])-1)<<4 | (ishex(pattern[*char_len+3])-1);
+      c = (myishex(pattern[*char_len+2])-1)<<4 | (myishex(pattern[*char_len+3])-1);
       *char_len += 3;
       break;
     }
@@ -395,7 +396,7 @@ void CRegexAscii_parser::read_quantifier(CRegexAscii_piece *piece,
     int min = 0, max = 0;
     (*quantif_len)++;
     while(pattern[*quantif_len] && (pattern[*quantif_len] != ',') &&
-      isdigit(pattern[*quantif_len]) && (pattern[*quantif_len] != '}'))
+      myisdigit(pattern[*quantif_len]) && (pattern[*quantif_len] != '}'))
     {
       min = min*10 + pattern[*quantif_len] - '0';
       (*quantif_len)++;
@@ -447,7 +448,7 @@ void CRegexAscii_parser::read_quantifier(CRegexAscii_piece *piece,
 ///Constructors and destructors and internal functions
 ////////////////////////////
 
-CRegexAscii_regex::CRegexAscii_regex() : IRegexAtom(this)
+CRegexAscii_regex::CRegexAscii_regex(CRegexAscii_regex *topregex) : IRegexAtom(topregex?topregex:this)
 {
 }
 
@@ -590,6 +591,7 @@ CRegexAscii_wildchar::~CRegexAscii_wildchar()
 
 CRegexAscii_parser::CRegexAscii_parser()
 {
+  current_regex = NULL;
 }
 
 CRegexAscii_parser::~CRegexAscii_parser()
