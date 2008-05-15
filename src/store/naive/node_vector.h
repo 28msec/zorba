@@ -22,8 +22,6 @@
 #include "common/common.h"
 #include "errors/fatal.h"
 
-#include "store/naive/shared_types.h"
-
 namespace zorba { namespace store {
 
 

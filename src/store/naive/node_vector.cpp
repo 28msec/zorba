@@ -20,6 +20,8 @@
 #include "store/naive/node_vector.h"
 #include "store/naive/node_items.h"
 
+#include "store/naive/shared_types.h"
+
 namespace zorba { namespace store {
 
 
