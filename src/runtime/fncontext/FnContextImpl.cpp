@@ -106,8 +106,10 @@ store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
   EvalIteratorState* state;
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
+  // set up eval state's ccb
   state->ccb.reset (ccb);
   ccb->m_sctx = ccb->m_sctx->create_child_context ();
+  // set up eval state's iterator plan (compile the query string)
   item = CONSUME (0);
   state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames, vartypes), ccb, dctx.get ()));
 
@@ -120,9 +122,10 @@ store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
                         lIter);
   }
 
-  while (NULL != (item = state->eval_plan->next ())) {
+  while (NULL != (item = state->eval_plan->next ()))
     STACK_PUSH (item, state);
-  }
+
+  state->eval_plan.reset (NULL);
 
   STACK_END (state);
 }

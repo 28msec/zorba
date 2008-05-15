@@ -34,8 +34,11 @@ public:
   }
   
   void reset (PlanWrapper *pw_) {
+    if (pw.get () != NULL)
+      pw->close ();
     pw.reset (pw_);
-    pw->open ();
+    if (pw_ != NULL)
+      pw->open ();
   }
   PlanWrapper *get () { return pw.get (); }
   PlanWrapper *operator-> () { return pw.get(); }
