@@ -21,8 +21,13 @@ namespace zorba {
 
 namespace store {
 
+#ifdef ZORBA_XBROWSER
+#define GET_STORE() \
+	(*(static_cast<xqp::DOMStore*>(&GENV.getStore())))
+#else
 #define GET_STORE() \
         (*(static_cast<SimpleStore*>(&GENV.getStore())))
+#endif // ZORBA_XBROWSER
 
 #define GET_FACTORY() \
         (*(reinterpret_cast<BasicItemFactory*>(GET_STORE().getItemFactory())))
