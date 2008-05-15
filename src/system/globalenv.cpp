@@ -134,7 +134,7 @@ void GlobalEnvironment::init()
 #endif // ifndef ZORBA_XBROWSER
 #endif
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_BIGNUMBERS
   // initialize mapm for bignum handling
   m_globalEnv->m_mapm = m_apm_init();
 #endif
@@ -171,7 +171,7 @@ void GlobalEnvironment::destroy()
   curl_global_cleanup();
 #endif
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_BIGNUMBERS
   // release resources aquired by the mapm library
   // this will force zorba users to reinit mapm
   // if they shutdown zorba but want to use mapm beyond
