@@ -36,7 +36,7 @@ protected:
 
 #ifdef HAVE_PTHREAD_H
   pthread_mutex_t  theMutex;
-#elif WIN32
+#elif defined WIN32
   HANDLE           theMutex;
 #endif
 

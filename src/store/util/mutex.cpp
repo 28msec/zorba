@@ -42,9 +42,9 @@ Mutex::Mutex()
 
   pthread_mutexattr_destroy(&attr);
 
-#elif WIN32
+#elif defined WIN32
   //threads can acquire same mutex multiple times
-  theMutex = CreateMutex(NULL, FALSE, "");
+  theMutex = CreateMutex(NULL, FALSE, _T(""));
 #endif
 }
 
@@ -54,7 +54,7 @@ Mutex::~Mutex()
 {
 #ifdef HAVE_PTHREAD_H
   pthread_mutex_destroy(&theMutex);
-#elif WIN32
+#elif defined WIN32
   CloseHandle(theMutex);
 #endif
 }
@@ -65,7 +65,7 @@ void Mutex::lock()
 #ifdef HAVE_PTHREAD_H
   int ret= pthread_mutex_lock(&theMutex);
   ZORBA_FATAL(!ret, "Failed to acquire mutex. Error code = " << ret);
-#elif WIN32
+#elif defined WIN32
   WaitForSingleObject(theMutex, INFINITE);
 #endif
 }
@@ -76,7 +76,7 @@ void Mutex::unlock()
 #ifdef HAVE_PTHREAD_H
   int ret= pthread_mutex_unlock(&theMutex);
   ZORBA_FATAL(!ret, "Failed to release mutex. Error code = " << ret);
-#elif WIN32
+#elif defined WIN32
   ReleaseMutex(theMutex);
 #endif
 }

@@ -79,7 +79,7 @@ public:
   XmlNode* loadXml(xqpStringStore_t& uri, std::istream& xmlStream);
 
 protected:
-  void abort();
+  void abortload();
   void reset();
   long readPacket(std::istream& stream, char* buf, long size);
 

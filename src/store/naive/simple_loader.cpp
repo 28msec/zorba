@@ -106,7 +106,7 @@ XmlLoader::~XmlLoader()
 /*******************************************************************************
   Method called to do cleanup in case of errors.
 ********************************************************************************/
-void XmlLoader::abort()
+void XmlLoader::abortload()
 {
   theBaseUri = NULL;
   theDocUri = NULL;
@@ -227,7 +227,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
                                 XQP0016_LOADER_IO_ERROR,
                                 "Unknown I/O error");
-      abort();
+      abortload();
       return NULL;
     }
     else if (numChars == 0)
@@ -235,7 +235,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
                                 XQP0016_LOADER_IO_ERROR,
                                 "No input data.");
-      abort();
+      abortload();
       return NULL;
     }
 
@@ -246,7 +246,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
                                 XQP0017_LOADER_PARSING_ERROR, 
                                 "Failed to initialize parser");
-      abort();
+      abortload();
 			return NULL;
     }
 
@@ -261,7 +261,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
                                 XQP0016_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       xmlFreeParserCtxt(ctxt);
-      abort();
+      abortload();
       return NULL;
     }
 
@@ -270,7 +270,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
   catch(...)
   {
     xmlFreeParserCtxt(ctxt);
-    abort();
+    abortload();
     return NULL;
   }
 
@@ -294,7 +294,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
                                 "Not well formed XML");
     }
 
-    abort();
+    abortload();
     return NULL;
   }
 

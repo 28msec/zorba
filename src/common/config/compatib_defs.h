@@ -21,6 +21,11 @@
 
 #include "common/config/stdint.h"
 
+#ifdef WINCE
+#include "strport.h"
+#include "sys/timeb.h"
+#endif
+
 typedef unsigned long ulong;
 // typedef __int64		int64_t;
 // typedef unsigned __int64	uint64_t;

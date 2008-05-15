@@ -152,7 +152,7 @@ protected:
   bool read_pi();
   bool read_xmlprolog();
 protected:
-  void abort();
+  void abortload();
   void reset();
   void clear_tag_stack();
   long readPacket(std::istream& stream, char* buf, long size);

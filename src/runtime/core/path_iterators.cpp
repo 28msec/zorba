@@ -591,8 +591,10 @@ store::Item_t LSiblingAxisIterator::nextImpl(PlanState& planState) const
       if (theNodeKind == store::StoreConsts::anyNode ||
           sibling->getNodeKind() == theNodeKind)
       {
+#ifndef WIN32
 #ifdef DEBUG
         theLSibling = sibling;
+#endif
 #endif
         STACK_PUSH(sibling, state);
       }

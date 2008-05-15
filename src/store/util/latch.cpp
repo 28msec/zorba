@@ -44,7 +44,7 @@ Latch::Latch()
 
   pthread_rwlockattr_destroy(&attr);
 
-#elif WIN32
+#elif defined WIN32
   rlocked = false;
   wlocked = false;
 #endif
@@ -56,7 +56,7 @@ Latch::~Latch()
 {
 #ifdef HAVE_PTHREAD_H
   pthread_rwlock_destroy(&theLatch);
-#elif WIN32
+#elif defined WIN32
 #endif
 }
 
@@ -66,7 +66,7 @@ void Latch::rlock()
 #ifdef HAVE_PTHREAD_H
   int ret= pthread_rwlock_rdlock(&theLatch); 
   ZORBA_FATAL(!ret, "Failed to acquire latch. Error code = " << ret);
-#elif WIN32
+#elif defined WIN32
   theLatch.readlock();
   rlocked = true;
 #endif
@@ -78,7 +78,7 @@ void Latch::wlock()
 #ifdef HAVE_PTHREAD_H
   int ret = pthread_rwlock_wrlock(&theLatch); 
   ZORBA_FATAL(!ret, "Failed to acquire latch. Error code = " << ret);
-#elif WIN32
+#elif defined WIN32
   theLatch.writelock();
   wlocked = true;
 #endif
@@ -90,7 +90,7 @@ void Latch::unlock()
 #ifdef HAVE_PTHREAD_H
   int ret= pthread_rwlock_unlock(&theLatch);
   ZORBA_FATAL(!ret, "Failed to release latch. Error code = " << ret);
-#elif WIN32
+#elif defined WIN32
   if(wlocked)
     theLatch.writeunlock();
   if(rlocked)

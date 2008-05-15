@@ -79,18 +79,19 @@ void GlobalEnvironment::init()
   {
 #if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
     {
-      char    self_path[1024];
+      TCHAR    self_path[1024];
       GetModuleFileName(NULL, self_path, sizeof(self_path));
       //PathRemoveFileSpec(self_path);
-      char  *filename;
-      filename = strrchr(self_path, '\\');
+      TCHAR  *filename;
+      filename = _tcsrchr(self_path, _T('\\'));
       if(filename)
         filename[1] = 0;
       else
         self_path[0] = 0;
       //strcat(self_path, "\\");
-      strcat(self_path, U_ICUDATA_NAME);//icudt39l.dat");
-      strcat(self_path, ".dat");
+      //_tcscat(self_path, _T(U_ICUDATA_NAME));//icudt39l.dat");
+      _tcscat(self_path, _T("icudt") _T(U_ICU_VERSION_SHORT) _T(U_ICUDATA_TYPE_LETTER));//icudt39l.dat");
+      _tcscat(self_path, _T(".dat"));
       //unsigned char *icu_data;
       HANDLE    hfile;
       hfile = CreateFile(self_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);

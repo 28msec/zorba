@@ -16,10 +16,10 @@
 #ifndef ZORBA_MINIMAL_STORE_NODE_ITERATORS
 #define ZORBA_MINIMAL_STORE_NODE_ITERATORS
 
-#include "store/api/iterator.h"
 #include "common/shared_types.h"
-#include "store/minimal/min_ordpath.h"
+#include "store/api/iterator.h"
 #include "store/minimal/shared_types.h"
+#include "store/minimal/min_ordpath.h"
 #include "store/util/hashset_item_handle.h"
 
 namespace zorba { namespace store {

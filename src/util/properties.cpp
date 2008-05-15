@@ -66,13 +66,13 @@ namespace zorba
     
 #ifdef __unix__
     pValue = getenv("HOME"); 
-#else
-# ifdef __win32__
+#elif defined WINCE
+    pValue = NULL;
+#elif defined WIN32
     size_t len;
     _dupenv_s( &pValue, &len, "APPDATA" );
-# else
+#else
     pValue = getenv( "APPDATA" );
-# endif
 #endif
     if (pValue == 0)
       return false;

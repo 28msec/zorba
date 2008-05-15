@@ -128,7 +128,7 @@ void XmlLoader::clear_tag_stack()
 /*******************************************************************************
   Method called to do cleanup in case of errors.
 ********************************************************************************/
-void XmlLoader::abort()
+void XmlLoader::abortload()
 {
   theBaseUri = NULL;
   theDocUri = NULL;
@@ -883,7 +883,7 @@ XmlNode* XmlLoader::startloadXml(
                                      XQP0017_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
-      abort();
+      abortload();
       return NULL;
     }
     reading_prolog--;
@@ -912,7 +912,7 @@ bool XmlLoader::continueloadXml(
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
       }
-      abort();
+      abortload();
       return false;
     }
     if(end_document)
@@ -927,7 +927,7 @@ bool XmlLoader::continueloadXml(
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
       }
-      abort();
+      abortload();
       return false;
     }
     if((lazytype == UNTIL_START_ELEMENT) && (is_end_tag != 1) && (depth >= tag_stack.size()))
@@ -946,7 +946,7 @@ bool XmlLoader::continueloadXml(
                                    "The document with URI " << *theDocUri
                                    <<" is not well formed", "");
     }
-    abort();
+    abortload();
     return false;
   }
 

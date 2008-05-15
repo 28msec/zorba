@@ -39,7 +39,7 @@ protected:
 
 #ifdef HAVE_PTHREAD_H
   pthread_rwlock_t  theLatch;
-#elif WIN32
+#elif defined WIN32
   rwlock  theLatch;
   bool    rlocked;
   bool    wlocked;

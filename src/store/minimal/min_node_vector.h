@@ -21,8 +21,9 @@
 #include "common/common.h"
 #include "errors/fatal.h"
 
-namespace zorba { 
-  namespace store {
+#include "store/minimal/shared_types.h"
+
+namespace zorba {  namespace store {
 
 
 class XmlNode;
