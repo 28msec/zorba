@@ -19,7 +19,7 @@
 #include <zorba/dynamic_context.h>
 
 #include "common/shared_types.h"
-
+#include "api/xqueryimpl.h"
 #include "store/util/mutex.h"
 
 namespace zorba {
@@ -57,20 +57,16 @@ class DynamicContextImpl : public DynamicContext
   friend class XQueryImpl;
 
 protected:
+  const XQueryImpl          * theQuery;
+
   dynamic_context           * theCtx;
 
-  static_context            *  theStaticContext;
-
-  ErrorHandler              * theErrorHandler;
+  static_context            * theStaticContext;
 
   SYNC_CODE(store::Mutex    * theCloningMutexp;)
 
 protected:
-  DynamicContextImpl(
-        dynamic_context* dctx,
-        static_context* sctx,
-        ErrorHandler* aErrorHandler
-        SYNC_PARAM2(store::Mutex* mutex));
+  DynamicContextImpl(const XQueryImpl* aQuery);
 
   virtual ~DynamicContextImpl();
 
@@ -122,6 +118,9 @@ public:
 
   virtual bool
   setDefaultCollection( const Item& aCollectionUri );
+
+protected:
+  void checkNoIterators();
 };
 
 } /* namespace zorba */

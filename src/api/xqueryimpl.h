@@ -102,6 +102,7 @@ class XQueryImpl : public XQuery
 {
   friend class ResultIteratorImpl;
   friend class ZorbaImpl; // only ZorbaImpl is allowed to create us
+  friend class DynamicContextImpl;
 
  protected:
 
@@ -126,34 +127,34 @@ class XQueryImpl : public XQuery
  protected:
 
   // static stuff
-  xqpString                      theFileName;
+  xqpString                        theFileName;
 
-  CompilerCB                   * theCompilerCB;
+  CompilerCB                     * theCompilerCB;
 
-  PlanProxy_t                    thePlan; 
+  PlanProxy_t                      thePlan; 
 
-  static_context               * theStaticContext;
+  static_context                 * theStaticContext;
   
   // dynamic stuff
-  dynamic_context              * theDynamicContext;
+  dynamic_context                * theDynamicContext;
 
-  mutable DynamicContextImpl   * theDynamicContextWrapper;
-  mutable StaticContextImpl    * theStaticContextWrapper;
+  mutable DynamicContextImpl     * theDynamicContextWrapper;
+  mutable StaticContextImpl      * theStaticContextWrapper;
 
-  std::vector<ResultIterator*>   theResultIterators;
+  std::vector<ResultIteratorImpl*> theResultIterators;
 
   // utility stuff
-  bool                           theUserErrorHandler; 
-  ErrorHandler                 * theErrorHandler; 
+  bool                             theUserErrorHandler; 
+  ErrorHandler                   * theErrorHandler; 
     
-  error::ErrorManager          * theErrorManager; 
+  error::ErrorManager            * theErrorManager; 
 
-  SAX2_ContentHandler          * theSAX2Handler; 
+  SAX2_ContentHandler            * theSAX2Handler; 
     
-  bool                           theIsClosed;
+  bool                             theIsClosed;
 
 
-  SYNC_CODE(mutable store::Mutex theCloningMutex;)
+  SYNC_CODE(mutable store::Mutex   theCloningMutex;)
 
  public:
   virtual ~XQueryImpl();

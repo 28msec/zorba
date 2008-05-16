@@ -46,7 +46,7 @@ class Collection
      * @return true if the Node Item was added to the Collection, false otherwise.
      */
     virtual bool
-    addItem(const Item& aItem) = 0;
+    addNode(const Item& aNode) = 0;
 
     /** \brief Deletes the given Item from the Collection.
      *
@@ -54,7 +54,7 @@ class Collection
      * @return true if the given Node Item was deleted, false otherwise.
      */
     virtual bool
-    deleteItem(const Item& aItem) = 0;
+    deleteNode(const Item& aNode) = 0;
 
     /** \brief Adds the Node Items retrieved from the given ResultIterator to the Collection.
      *
@@ -63,7 +63,7 @@ class Collection
      *         false otherwise.
      */
     virtual bool
-    addItems(const ResultIterator* aResultIterator) = 0;
+    addNodes(const ResultIterator* aResultIterator) = 0;
 
     /** \brief Adds the document retrieved from the given input stream to the Collection.
      *

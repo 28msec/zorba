@@ -57,10 +57,10 @@ CollectionImpl::getUri()
 
  
 bool
-CollectionImpl::addItem(const Item& aItem) 
+CollectionImpl::addNode(const Item& aNode) 
 {
   ZORBA_TRY
-    store::Item* lItem = Unmarshaller::getInternalItem(aItem);
+    store::Item* lItem = Unmarshaller::getInternalItem(aNode);
     theCollection->addToCollection(lItem);
     return true;
   ZORBA_CATCH
@@ -69,7 +69,7 @@ CollectionImpl::addItem(const Item& aItem)
 
  
 bool
-CollectionImpl::addItems(const ResultIterator* aResultIterator) 
+CollectionImpl::addNodes(const ResultIterator* aResultIterator) 
 {
   ZORBA_TRY
     PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
@@ -92,10 +92,10 @@ CollectionImpl::addDocument(std::istream& lInStream)
 
 
 bool
-CollectionImpl::deleteItem(const Item& aItem) 
+CollectionImpl::deleteNode(const Item& aNode) 
 {
   ZORBA_TRY
-    store::Item* lItem = Unmarshaller::getInternalItem(aItem);
+    store::Item* lItem = Unmarshaller::getInternalItem(aNode);
     theCollection->removeFromCollection(lItem);
     return true;
   ZORBA_CATCH

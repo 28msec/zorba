@@ -149,7 +149,10 @@ DEF_ERR_CODE(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY, API0024, "Cannot iterate 
 
 DEF_ERR_CODE (API0025_END_OF_SEQUENCE, API0025_END_OF_SEQUENCE, "Reached the end of the sequence")
 
-DEF_ERR_CODE(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS, API0026, "Query cannot be closed because there still exist result iterators on it")
+DEF_ERR_CODE(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS, API0026, "Query cannot be closed because there are result iterators on it")
+
+DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, "The query dynamic context cannot be updated because there are result iterators on the query")
+
 
 //
 // ZORBA-specific errors

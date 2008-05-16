@@ -32,13 +32,13 @@ class CollectionImpl : public Collection
   getUri();
 
   bool
-  addItem(const Item& aItem);
+  addNode(const Item& aNode);
 
   bool
-  deleteItem(const Item& aItem);
+  deleteNode(const Item& aNode);
 
   bool
-  addItems(const ResultIterator* aResultIterator);
+  addNodes(const ResultIterator* aResultIterator);
 
   bool
   addDocument(std::istream& lInStream);

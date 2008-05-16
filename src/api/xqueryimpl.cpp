@@ -255,10 +255,7 @@ XQueryImpl::getDynamicContext() const
     checkCompiled();
 
     if (!theDynamicContextWrapper)
-      theDynamicContextWrapper = new DynamicContextImpl(theDynamicContext,
-                                                        theStaticContext, 
-                                                        theErrorHandler
-                                                        SYNC_PARAM2(&theCloningMutex));
+      theDynamicContextWrapper = new DynamicContextImpl(this);
 
     return theDynamicContextWrapper;
         
@@ -520,9 +517,9 @@ XQueryImpl::iterator()
 
     PlanWrapper_t lPlan = generateWrapper();
 
-    std::auto_ptr<ResultIterator> lIter(new ResultIteratorImpl(this, lPlan));
-    theResultIterators.push_back(lIter.get());
-    return ResultIterator_t(lIter.release());
+    ulong numIters = theResultIterators.size();
+    theResultIterators.push_back(new ResultIteratorImpl(this, lPlan));
+    return ResultIterator_t(theResultIterators[numIters]);
 
   ZORBA_CATCH
   return ResultIterator_t();;
@@ -532,9 +529,11 @@ XQueryImpl::iterator()
 void
 XQueryImpl::removeResultIterator(const ResultIterator* iter)
 {
-  std::vector<ResultIterator*>::iterator it = std::find(theResultIterators.begin(),
-                                                        theResultIterators.end(),
-                                                        iter);
+  std::vector<ResultIteratorImpl*>::iterator it =
+    std::find(theResultIterators.begin(),
+              theResultIterators.end(),
+              iter);
+
   ZORBA_ASSERT(it != theResultIterators.end());
   theResultIterators.erase(it);
 }

@@ -57,6 +57,8 @@ class ResultIteratorImpl  : public ResultIterator
 
   virtual void 
   close();
+
+  bool isActive() const { return theHaveLock; }
 };
 
 
