@@ -302,6 +302,8 @@ Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
   delete stream;
   return docitem;
 }
+
+
 /*******************************************************************************
 
 ********************************************************************************/
