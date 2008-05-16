@@ -154,7 +154,7 @@ void ZorbaDebuggerImpl::terminatedEvent()
 void ZorbaDebuggerImpl::run( std::istream * aQuery )
 {
   setStatus( QUERY_RUNNING );
-  ResultIterator_t lIterator;
+  ResultIterator * lIterator;
   try
   {
     Zorba * lZorba = Zorba::getInstance();

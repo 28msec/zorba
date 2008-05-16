@@ -18,6 +18,8 @@
 
 #include <boost/program_options/options_description.hpp>
 
+#include <zorba/config.h>
+
 class ZorbaCMDProperties 
 {
 private:
@@ -36,6 +38,14 @@ private:
 
   // optimization level (i.e. O0, O1)
   std::string theOptLevel;
+
+#ifdef ZORBA_DEBUGGER
+  // debug mode
+  bool theDebugMode;
+  std::string thePorts;
+  unsigned int theRequestPort;
+  unsigned int theEventPort;
+#endif
 
 public:
   struct ExternalVariable {
@@ -128,6 +138,17 @@ public:
 
   ExternalVars_t::const_iterator
   externalVarsEnd()     { return theExternalVars.end(); }
+
+#ifdef ZORBA_DEBUGGER
+  bool
+  debugMode() { return theDebugMode; }
+
+  unsigned int
+  requestPort() { return theRequestPort; }
+
+  unsigned int
+  eventPort() { return theEventPort; }
+#endif
 
   void 
   printHelp(std::ostream& os) 

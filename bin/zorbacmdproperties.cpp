@@ -84,6 +84,10 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
     ("optimization-level", boost::program_options::value<std::string>(&theOptLevel)->default_value("O1"),
      "Optimization level for compiling the query (i.e. O0, O1)")
+#ifdef ZORBA_DEBUGGER
+    ("debug-mode,d", boost::program_options::value< std::string >(&thePorts),
+      "Launch the query on the debugger server. Provide request and event port number: requestNo:eventNo")
+#endif
     ;
 
   boost::program_options::options_description lHiddenOptions ("Hidden Options" );
@@ -176,6 +180,15 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
   theTiming             = (lVarMap.count("timing") != 0);
   theMultipleExecutions = ((lVarMap.count("multiple")!=0)?lVarMap["multiple"].as<int>():1);
   theInlineQuery        = (lVarMap.count("inline") != 0);
+#ifdef ZORBA_DEBUGGER
+  theDebugMode          = (lVarMap.count("debug-mode") != 0);
+  if ( theDebugMode )
+  {
+    unsigned int lSemiColon = thePorts.find(":");
+    theRequestPort = atoi( thePorts.substr(0, lSemiColon).c_str() );
+    theEventPort = atoi( thePorts.substr( lSemiColon + 1, thePorts.length() ).c_str() );
+  }
+#endif
 
   // output
   theSerializeAsHTML    = (lVarMap.count("serialize-html") != 0);

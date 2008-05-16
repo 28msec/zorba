@@ -20,9 +20,13 @@
 #include <vector>
 #include <string>
 
-#include <zorba/zorba.h>
-
 #include "zorbacmdproperties.h"
+
+#include <zorba/zorba.h>
+#ifdef ZORBA_DEBUGGER
+#include <zorba/debugger_server.h>
+#endif
+
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -197,6 +201,18 @@ int _tmain(int argc, _TCHAR* argv[])
     *lOutputStream << std::endl;
     qfile->seekg(0); // go back to the beginning
   }
+
+#ifdef ZORBA_DEBUGGER
+  // debug mode
+  if ( lProperties.debugMode() )
+  {
+    zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
+    lDebugger->start( qfile.get(), "",
+                      lProperties.requestPort(),
+                      lProperties.eventPort() );
+    return 0;
+  }
+#endif
 
   // time compilation and execution
   bool lTiming = lProperties.useTiming();
