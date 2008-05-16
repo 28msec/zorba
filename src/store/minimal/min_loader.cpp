@@ -72,6 +72,7 @@ int traceLevel = 0;
       return; \
   } while (0);
 
+xqpString   g_empty_string;
 /*******************************************************************************
 
 ********************************************************************************/
@@ -81,7 +82,9 @@ XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
   theDocUri(NULL),
   theTree(NULL),
   theRootNode(NULL),
-  theErrorManager(aErrorManager)
+  theErrorManager(aErrorManager),
+  store(GET_STORE())
+
 {
   theOrdPath.init();
 
@@ -301,12 +304,14 @@ void XmlLoader::skip_whitespaces()
 bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
 {
   int c;
+  qname.uri = g_empty_string.theStrStore;
   c = read_char();
   if(c != ':')
   {
     if((c != '_') && !GenericCast::isLetter(c))
       return false;
-    qname.localname = c;
+    qname.localname = new xqpStringStore;
+    qname.localname->append_in_place(c);
     while(1)
     {
       c = read_char();
@@ -325,7 +330,7 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
         !GenericCast::isLetter(c) && !GenericCast::isDigit(c) &&
         !GenericCast::isCombiningChar(c) && !GenericCast::isExtender(c))
         return false;
-      qname.localname += c;
+      qname.localname->append_in_place(c);
     }
   }
   else
@@ -334,6 +339,7 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
   c = read_char();
   if(c != ':')
   {
+    qname.prefix = g_empty_string.theStrStore;
     unread_char();
     return true;
   }
@@ -343,7 +349,8 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
   c = read_char();
   if((c != '_') && !GenericCast::isLetter(c))
     return false;
-  qname.localname = c;
+  qname.localname = new xqpStringStore;
+  qname.localname->append_in_place(c);
   while(1)
   {
     c = read_char();
@@ -357,21 +364,23 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
       !GenericCast::isLetter(c) && !GenericCast::isDigit(c) &&
       !GenericCast::isCombiningChar(c) && !GenericCast::isExtender(c))
       return false;
-    qname.localname += c;
+    qname.localname->append_in_place(c);
   }
 
   return true;
 }
 
-bool XmlLoader::read_attributes(attr_list_t &all_attributes)
+bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
+                              NodeVector &attrNodes)
 {
-  ATTR_ELEM   new_elem;
+//  NsBindingsContext_t nscontext;
+  QNAME_ELEM  name;
+  xqpStringStore_t   attr_value;
+  std::pair<xqpString, xqpString>   nsbind;
   int c;
   while(1)
   {
-    //for each attribute
-    all_attributes.push_back(new_elem);
-    ATTR_ELEM   &last_attr = all_attributes.back();
+    //for each attribute and namespace
 
     skip_whitespaces();
 
@@ -381,12 +390,10 @@ bool XmlLoader::read_attributes(attr_list_t &all_attributes)
       return false;
     if((c == '>') || (c == '/') || (reading_prolog && (c == '?')))
     {
-      all_attributes.pop_back();
-    //  unread_char();
-      return true;
+      break;
     }
     
-    if(!read_qname(last_attr.name, READ_ATTRIBUTE_QNAME))
+    if(!read_qname(name, READ_ATTRIBUTE_QNAME))
       return false;
 
     skip_whitespaces();
@@ -400,6 +407,7 @@ bool XmlLoader::read_attributes(attr_list_t &all_attributes)
     if((c != '\'') && (c != '"'))
       return false;
 
+    attr_value = new xqpStringStore;
     char  value_start = c;
     while(1)
     {
@@ -408,15 +416,74 @@ bool XmlLoader::read_attributes(attr_list_t &all_attributes)
         break;
       if(!c)
         return false;
-      last_attr.attr_value += c;
+      attr_value->append_in_place(c);
     }
+
+
+    //pick up the namespaces
+    if(name.localname->byteEqual("xmlns"))
+    {
+      if(!name.prefix->empty())
+        return false;///"xmlns" is the default namespace
+    //  nsbind.first = "";
+    //  nsbind.second = attr_value.getp();
+    //  if(nscontext == NULL)
+    //    nscontext = new NsBindingsContext;
+    //  NsBindings& bindings = nscontext->getBindings();
+    //  bindings.push_back(nsbind);
+      if(elemNode)
+        elemNode->addLocalBinding(g_empty_string.theStrStore.getp(), attr_value.getp());
+    }
+    else if((name.prefix != NULL) && name.prefix->byteEqual("xmlns"))
+    {
+      if((name.localname->byteEqual("xml")) && (!attr_value->byteEqual(XML_NS)))
+        return false;
+      if((name.localname->byteEqual("xs")) && (!attr_value->byteEqual(XML_SCHEMA_NS)))
+        return false;
+      if((name.localname->byteEqual("xsi")) && (!attr_value->byteEqual(XSI_NS)))
+        return false;
+      if(name.localname->byteEqual("xmlns"))
+        return false;
+
+    //  nsbind.first =  name.localname.getp();
+    //  nsbind.second = attr_value.getp();
+    //  if(nscontext == NULL)
+    //    nscontext = new NsBindingsContext;
+    //  NsBindings& bindings = nscontext->getBindings();
+    //  bindings.push_back(nsbind);
+      if(elemNode)
+        elemNode->addLocalBinding(name.localname.getp(), attr_value.getp());
+    }
+    else
+    {
+      //it is an attribute
+      Item_t  qname = new QNameItemImpl(g_empty_string.theStrStore, name.prefix.getp(), name.localname.getp());
+
+      Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+      Item_t typedValue = new UntypedAtomicItemImpl(attr_value);
+
+      AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
+      attrNode->theParent = elemNode;
+      attrNode->setId(theTree, &theOrdPath);
+      attrNode->theTypedValue.transfer(typedValue);
+
+      attrNodes.push_back(attrNode, false);
+
+      theOrdPath.nextChild();
+
+      SYNC_CODE(attrNode->theRCLockPtr = &theTree->getRCLock();)
+    }
+
   }
+//  if(elemNode)
+//    elemNode->setNsContext(nscontext);
   return true;
 }
 
-bool XmlLoader::fill_in_uri(std::string &prefix, std::string &result_uri)
+bool XmlLoader::fill_in_uri(LoadedElementNode *elemNode,
+                            xqpStringStore_t prefix, xqpStringStore_t &result_uri)
 {
-  std::list<TAG_ELEM*>::reverse_iterator    tag_it;
+/*  std::list<TAG_ELEM*>::reverse_iterator    tag_it;
   NsBindings::iterator      ns_it;
 
   for(tag_it = tag_stack.rbegin(); tag_it != tag_stack.rend();tag_it++)
@@ -430,11 +497,17 @@ bool XmlLoader::fill_in_uri(std::string &prefix, std::string &result_uri)
       }
     }
   }
+*/
+  result_uri = elemNode->findBinding(&*prefix);
+  if(result_uri != NULL)
+    return true;
+
+
   ///look into default namespaces
   xqp_string    nsuri;
-  if(GENV.getRootStaticContext().lookup_ns(prefix, nsuri))
+  if(GENV.getRootStaticContext().lookup_ns(&*prefix, nsuri))
   {
-    result_uri = (std::string)nsuri;
+    result_uri = nsuri.theStrStore;
     return true;
   }
   return false;
@@ -442,8 +515,8 @@ bool XmlLoader::fill_in_uri(std::string &prefix, std::string &result_uri)
 
 bool XmlLoader::compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2)
 {
-  if((name1.localname == name2.localname) &&
-    (name1.uri == name2.uri))
+  if((name1.localname->byteEqual(*name2.localname)) &&
+    (name1.uri->byteEqual(*name2.uri)))
     return true;
   else
     return false;
@@ -486,12 +559,12 @@ bool XmlLoader::read_tag()
       delete tag_elem;
       return false;///no tags to close
     }
-    if(!fill_in_uri(tag_elem->name.prefix, tag_elem->name.uri) && !tag_elem->name.prefix.empty())
+    TAG_ELEM    *&last_tag = tag_stack.back();
+    if(!fill_in_uri(last_tag->elemNode, tag_elem->name.prefix, tag_elem->name.uri) && !tag_elem->name.prefix->empty())
     {
       delete tag_elem;
       return false;
     }
-    TAG_ELEM    *&last_tag = tag_stack.back();
     if(!compareQNames(last_tag->name, tag_elem->name))
     {
       delete tag_elem;
@@ -508,7 +581,7 @@ bool XmlLoader::read_tag()
     }
 
     //notify as SAX event
-    endElement(this, last_tag->name.localname.c_str(), last_tag->name.prefix.c_str(), last_tag->name.uri.c_str());
+    endElement();//this, last_tag->name.localname.c_str(), last_tag->name.prefix.c_str(), last_tag->name.uri.c_str());
 
     delete last_tag;
     tag_stack.pop_back();
@@ -516,10 +589,20 @@ bool XmlLoader::read_tag()
   }
 
 //  skip_whitespaces();
+  QNameItemImpl*  qname = new QNameItemImpl(g_empty_string.theStrStore,//reinterpret_cast<const char*>(uri),
+                                   tag_elem->name.prefix,//reinterpret_cast<const char*>(prefix),
+                                   tag_elem->name.localname);//reinterpret_cast<const char*>(lname));
+  Item_t    qname_item(qname);
+  Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
+  // Create the element node and push it to the node stack
+  tag_elem->elemNode = new LoadedElementNode(qname_item,
+                                              tname,
+                                              0,//numBindings,
+                                              0);//numAttributes);
 
+  NodeVector  &elem_attrs = tag_elem->elemNode->attributes();
   //read all attributes and namespaces in this tag
-  attr_list_t   all_attributes;
-  if(!read_attributes(all_attributes))
+  if(!read_attributes(tag_elem->elemNode, elem_attrs))
   {
     delete tag_elem;
     return false;
@@ -527,62 +610,58 @@ bool XmlLoader::read_tag()
 
   tag_stack.push_back(tag_elem);
 
-  //pick up the namespaces
-  attr_list_t::iterator   attr_it, temp_it;
-  std::pair<std::string, std::string> nsbind;
-  for(attr_it = all_attributes.begin(); attr_it != all_attributes.end();)
+  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+  XmlNode   *parent_elem;
+  parent_tag = tag_stack.rbegin();
+  parent_tag++;
+  if(parent_tag == tag_stack.rend())
+    parent_elem = theRootNode;
+  else
+    parent_elem = (*parent_tag)->elemNode;
+
+  tag_elem->elemNode->attachedloader = this;
+  tag_elem->elemNode->depth = tag_stack.size();//has been already pushed into tag stack
+  tag_elem->elemNode->setParent(parent_elem);
+  parent_elem->children().push_back(tag_elem->elemNode, false);
+
+  // Assign the current node id to this node, and compute the next node id.
+  tag_elem->elemNode->setId(theTree, &theOrdPath);
+  theOrdPath.pushChild();
+
+  SYNC_CODE(tag_elem->elemNode->theRCLockPtr = &theTree->getRCLock();)
+
+  NsBindingsContext   *nscontext = tag_elem->elemNode->getNsContext();
+  if(nscontext && nscontext->getBindings().size())
   {
-    if((*attr_it).name.localname == "xmlns")
-    {
-      if(!(*attr_it).name.prefix.empty())
-        return false;///"xmlns" is the default namespace
-      nsbind.first = "";
-      nsbind.second = (*attr_it).attr_value;
-      tag_elem->ns_bindings.push_back(nsbind);
-
-      temp_it = attr_it;
-      temp_it++;
-      all_attributes.erase(attr_it);
-      attr_it = temp_it;
-      continue;
-    }
-    else if((*attr_it).name.prefix == "xmlns")
-    {
-      if(((*attr_it).name.localname == "xml") && ((*attr_it).attr_value != XML_NS))
-        return false;
-      if(((*attr_it).name.localname == "xs") && ((*attr_it).attr_value != XML_SCHEMA_NS))
-        return false;
-      if(((*attr_it).name.localname == "xsi") && ((*attr_it).attr_value != XSI_NS))
-        return false;
-      if((*attr_it).name.localname == "xmlns")
-        return false;
-
-      nsbind.first =  (*attr_it).name.localname;
-      nsbind.second = (*attr_it).attr_value;
-      tag_elem->ns_bindings.push_back(nsbind);
-
-      temp_it = attr_it;
-      temp_it++;
-      all_attributes.erase(attr_it);
-      attr_it = temp_it;
-      continue;
-    }
-    attr_it++;
+    nscontext->setParent(parent_elem->getNsContext());
+  }
+  else 
+  {
+    tag_elem->elemNode->setNsContext(parent_elem->getNsContext());
   }
 
   //fill in the uri part of tag elem and attributes
-  if(!fill_in_uri(tag_elem->name.prefix, tag_elem->name.uri) && !tag_elem->name.prefix.empty())
-    return false;
-
-  //fill in the uri part of attributes, if they have prefix
-  for(attr_it = all_attributes.begin(); attr_it != all_attributes.end(); attr_it++)
+  if(!fill_in_uri(tag_elem->elemNode, tag_elem->name.prefix, qname->theNamespace))
   {
-    if(!(*attr_it).name.prefix.empty() &&
-        !fill_in_uri((*attr_it).name.prefix, (*attr_it).name.uri))
+    if(!tag_elem->name.prefix->empty())
       return false;
   }
+  tag_elem->name.uri = qname->theNamespace;
 
-  //send start_element SAX notification
+  int   attr_size = elem_attrs.size();
+  //fill in the uri part of attributes, if they have prefix
+  for(int i=0;i<attr_size; i++)
+  {
+    AttributeNode *attr_node = reinterpret_cast<AttributeNode*>(elem_attrs.get(i));
+    QNameItemImpl *attr_qname = reinterpret_cast<QNameItemImpl*>(attr_node->getNodeName());
+    if(!attr_qname->thePrefix->empty())
+    {
+      if(!fill_in_uri(tag_elem->elemNode, attr_qname->thePrefix, attr_qname->theNamespace))
+        return false;
+    }
+  }
+
+/*  //send start_element SAX notification
   const char  **namespaces = NULL;
   int   ns_size;
   const char  **attributes = NULL;
@@ -626,9 +705,11 @@ bool XmlLoader::read_tag()
               attr_size,
               0,
               attributes);
+*/
+  //startElement(tag_elem->elemNode);
 
-  delete [] namespaces;
-  delete [] attributes;
+//  delete [] namespaces;
+//  delete [] attributes;
 
   c = read_char();
   if(c == '/')
@@ -639,7 +720,7 @@ bool XmlLoader::read_tag()
     ///end this tag
     //notify as SAX event
     is_end_tag = 2;
-    endElement(this, tag_elem->name.localname.c_str(), tag_elem->name.prefix.c_str(), tag_elem->name.uri.c_str());
+    endElement();//this, tag_elem->name.localname.c_str(), tag_elem->name.prefix.c_str(), tag_elem->name.uri.c_str());
 
     delete tag_elem;
     tag_stack.pop_back();
@@ -812,8 +893,8 @@ bool XmlLoader::read_xmlprolog()
   //if((c != 'l') && (c != 'L'))
   //  return false;
 
-  attr_list_t   all_attributes;
-  if(!read_attributes(all_attributes))
+  LoadedNodeVector  prolog_attrs;
+  if(!read_attributes(NULL, prolog_attrs))
     return false;
 
   c = read_char();
@@ -823,13 +904,15 @@ bool XmlLoader::read_xmlprolog()
   if(c != '>')
     return false;
 
-  attr_list_t::iterator   attr_it;
-  for(attr_it = all_attributes.begin(); attr_it != all_attributes.end(); attr_it++)
+  int attr_size = prolog_attrs.size();
+  for(int i=0;i<attr_size;i++)
   {
-    if((*attr_it).name.localname == "version")
-      this->xml_version = (*attr_it).attr_value;
-    if((*attr_it).name.localname == "encoding")
-      this->xml_encoding = (*attr_it).attr_value;
+    AttributeNode *attr_node = reinterpret_cast<AttributeNode*>(prolog_attrs.get(i));
+    QNameItemImpl *attr_qname = reinterpret_cast<QNameItemImpl*>(attr_node->getNodeName());
+    if(attr_qname->theLocal->byteEqual("version"))
+      this->xml_version = attr_node->theTypedValue->getStringValue();
+    if(attr_qname->theLocal->byteEqual("encoding"))
+      this->xml_encoding = attr_node->theTypedValue->getStringValue();
   }
   reading_prolog++;
   return true;
@@ -1061,80 +1144,70 @@ void XmlLoader::endDocument(void * ctx)
  attributes:     pointer to the array of (localname/prefix/URI/value/end)
                  attribute values.
 ********************************************************************************/
+/*
 void XmlLoader::startElement(
-    void * ctx,
-    const xmlChar * lname, 
-    const xmlChar * prefix, 
-    const xmlChar * uri,
-    int numNamespaces,
-    const xmlChar ** namespaces,
-    int numAttrs, 
-    int numDefaulted, 
-    const xmlChar ** attributes)
+  LoadedElementNode* elemNode
+//    void * ctx,
+//    const xmlChar * lname, 
+//    const xmlChar * prefix, 
+//    const xmlChar * uri,
+//    int numNamespaces
+//    const xmlChar ** namespaces,
+//    int numAttrs, 
+//    int numDefaulted, 
+//    const xmlChar ** attributes)
+    )
 {
-  SimpleStore& store = GET_STORE();
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-  ZORBA_LOADER_CHECK_ERROR(loader);
+//  SimpleStore& store = GET_STORE();
+//  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+//  ZORBA_LOADER_CHECK_ERROR(loader);
 //  QNamePool& qnpool = store.getQNamePool();
 
-  ulong numAttributes = (ulong)numAttrs;
-  ulong numBindings = (ulong)numNamespaces;
+//  ulong numAttributes = (ulong)numAttrs;
+//  ulong numBindings = (ulong)numNamespaces;
 
   std::list<TAG_ELEM*>::reverse_iterator      this_tag, parent_tag;
   XmlNode   *parent_elem;
-  this_tag = loader.tag_stack.rbegin();
+  this_tag = tag_stack.rbegin();
   parent_tag = this_tag;
   parent_tag++;
-  if(parent_tag == loader.tag_stack.rend())
-    parent_elem = loader.theRootNode;
+  if(parent_tag == tag_stack.rend())
+    parent_elem = theRootNode;
   else
-    parent_elem = (*parent_tag)->elem;
+    parent_elem = (*parent_tag)->elemNode;
 
-// Construct node name and type
-//  Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
-//                               reinterpret_cast<const char*>(prefix),
-//                               reinterpret_cast<const char*>(lname));
-  Item_t  qname = new QNameItemImpl(reinterpret_cast<const char*>(uri),
-                                   reinterpret_cast<const char*>(prefix),
-                                   reinterpret_cast<const char*>(lname));
-  Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
-
-  // Create the element node and push it to the node stack
-  LoadedElementNode* elemNode = new LoadedElementNode(qname,
-                                                      tname,
-                                                      numBindings,
-                                                      numAttributes);
   //if (loader.theNodeStack.empty())
   //  loader.setRoot(elemNode);
 
   //loader.theNodeStack.push(elemNode);
   //loader.theNodeStack.push(NULL);
-  (*this_tag)->elem = elemNode;
-  elemNode->attachedloader = &loader;
-  elemNode->depth = loader.tag_stack.size();//has been already pushed into tag stack
+  (*this_tag)->elemNode = elemNode;
+  elemNode->attachedloader = this;
+  elemNode->depth = tag_stack.size();//has been already pushed into tag stack
   elemNode->setParent(parent_elem);
   parent_elem->children().push_back(elemNode, false);
 
   // Assign the current node id to this node, and compute the next node id.
-  elemNode->setId(loader.theTree, &loader.theOrdPath);
-  loader.theOrdPath.pushChild();
+  elemNode->setId(theTree, &theOrdPath);
+  theOrdPath.pushChild();
 
-  SYNC_CODE(elemNode->theRCLockPtr = &loader.theTree->getRCLock();)
+  SYNC_CODE(elemNode->theRCLockPtr = &theTree->getRCLock();)
 
-  LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
-                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
-                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
-                << std::endl << " ordpath = " << elemNode->getOrdPath().show()
-                << std::endl);
+//  LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
+//                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
+//                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
+//                << std::endl << " ordpath = " << elemNode->getOrdPath().show()
+//                << std::endl);
 
   // Process namespace bindings
-  if (numBindings > 0)
-  {
+  //if (numNamespaces > 0)
+//  NsBindingsContext   *nscontext = elemNode->getNsContext();
+//  if(nscontext && nscontext->getBindings().size())
+//  {
   //  NsBindingsContext*   newnscontext = new NsBindingsContext;
   //  elemNode->setNsContext(newnscontext);
   //  NsBindings& bindings = newnscontext->getBindings();
   //  bindings.reserve(numBindings);
-      NsBindingsContext   *nscontext = elemNode->getNsContext();
       NsBindings& bindings = nscontext->getBindings();
 
     for (ulong i = 0; i < numBindings; ++i)
@@ -1157,54 +1230,56 @@ void XmlLoader::startElement(
 
     //loader.theBindingsStack.push(elemNode->getNsContext());
     //elemNode->setNsContext(loader.theBindingsStack.top());
-    nscontext->setParent(parent_elem->getNsContext());
-  }
-  else 
-  {
-    elemNode->setNsContext(parent_elem->getNsContext());
-  }
 
-  // Process attributes
-  if (numAttributes > 0)
-  {
-    NodeVector& attrNodes = elemNode->attributes();
+//    nscontext->setParent(parent_elem->getNsContext());
+//  }
+//  else 
+//  {
+//    elemNode->setNsContext(parent_elem->getNsContext());
+//  }
 
-    ulong index = 0;
-    for (ulong i = 0; i < numAttributes; ++i, index += 5)
-    {
-      const char* lname = reinterpret_cast<const char*>(attributes[index]);
-      const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
-      const char* uri = reinterpret_cast<const char*>(attributes[index+2]);
-      const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
-      const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
+//  // Process attributes
+//  if (numAttributes > 0)
+//  {
+//    NodeVector& attrNodes = elemNode->attributes();
 
-      //Item_t qname = qnpool.insert(uri, prefix, lname);
-      Item_t  qname = new QNameItemImpl(uri, prefix, lname);
-      xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
+  //  ulong index = 0;
+  //  for (ulong i = 0; i < numAttributes; ++i, index += 5)
+  //  {
+  //    const char* lname = reinterpret_cast<const char*>(attributes[index]);
+  //    const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
+  //    const char* uri = reinterpret_cast<const char*>(attributes[index+2]);
+  //    const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
+  //    const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
-      Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-      Item_t typedValue = new UntypedAtomicItemImpl(value);
+  //    //Item_t qname = qnpool.insert(uri, prefix, lname);
+  //    Item_t  qname = new QNameItemImpl(uri, prefix, lname);
+  //    xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
 
-      AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
-      attrNode->theParent = elemNode;
-      attrNode->setId(loader.theTree, &loader.theOrdPath);
-      attrNode->theTypedValue.transfer(typedValue);
+  //    Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+  //    Item_t typedValue = new UntypedAtomicItemImpl(value);
 
-      attrNodes.set(attrNode, i, false);
+  //    AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
+  //    attrNode->theParent = elemNode;
+  //    attrNode->setId(loader.theTree, &loader.theOrdPath);
+  //    attrNode->theTypedValue.transfer(typedValue);
 
-      loader.theOrdPath.nextChild();
+  //    attrNodes.set(attrNode, i, false);
 
-      SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
+  //    loader.theOrdPath.nextChild();
 
-      LOADER_TRACE1("Attribute: node = " << attrNode
-                    << " name [" << (prefix != NULL ? prefix : "") << ":"
-                    << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
-                    << " value = " << typedValue->getStringValue()->c_str() << std::endl
-                    << " ordpath = " << attrNode->getOrdPath().show() << std::endl);
-    }
-  }
+  //    SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
+
+  //    LOADER_TRACE1("Attribute: node = " << attrNode
+  //                  << " name [" << (prefix != NULL ? prefix : "") << ":"
+  //                  << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
+  //                  << " value = " << typedValue->getStringValue()->c_str() << std::endl
+  //                  << " ordpath = " << attrNode->getOrdPath().show() << std::endl);
+  //  }
+  //}
+  
 }
-
+*/
   
 /*******************************************************************************
   SAX2 callback when an element end has been detected by the parser. It
@@ -1215,14 +1290,14 @@ void XmlLoader::startElement(
   prefix:    the element namespace prefix if available
   URI:       the element namespace name if available
 ********************************************************************************/
-void  XmlLoader::endElement(
-    void * ctx, 
-    const xmlChar * localName, 
-    const xmlChar * prefix, 
-    const xmlChar * uri)
+void  XmlLoader::endElement()
+//    void * ctx, 
+//    const xmlChar * localName, 
+//    const xmlChar * prefix, 
+//    const xmlChar * uri)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-  ZORBA_LOADER_CHECK_ERROR(loader);
+//  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+//  ZORBA_LOADER_CHECK_ERROR(loader);
 
   // Collect the children of this element node from the node stack
   //std::vector<XmlNode*> revChildNodes;
@@ -1256,14 +1331,14 @@ void  XmlLoader::endElement(
   //ZORBA_ASSERT(elemNode != NULL);
   std::list<TAG_ELEM*>::reverse_iterator      this_tag;
   //XmlNode   *elemNode;
-  this_tag = loader.tag_stack.rbegin();
-  LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>((*this_tag)->elem);
+  this_tag = tag_stack.rbegin();
+  //LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>((*this_tag)->elem);
 
-  elemNode->attachedloader = NULL;//is loaded
+  (*this_tag)->elemNode->attachedloader = NULL;//is loaded
 
-  LOADER_TRACE2("End Element: node = " << elemNode << " name ["
-                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
-                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
+//  LOADER_TRACE2("End Element: node = " << elemNode << " name ["
+//                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
+//                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
   // For each child, make this element node its parent and fix its namespace
   // bindings context. Note: the children were popped from the stack in reverse
@@ -1297,7 +1372,7 @@ void  XmlLoader::endElement(
   //}
 
   // Adjust the dewey id
-  loader.theOrdPath.popChild();
+  theOrdPath.popChild();
 }
 
 
@@ -1326,7 +1401,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   parent_tag = loader.tag_stack.rbegin();
   XmlNode *parent_elem;
   if(parent_tag != loader.tag_stack.rend())
-    parent_elem = (*parent_tag)->elem;
+    parent_elem = (*parent_tag)->elemNode;
   else
     parent_elem = loader.theRootNode;
   if(parent_elem->numChildren())
@@ -1381,7 +1456,7 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   parent_tag = loader.tag_stack.rbegin();
   XmlNode *parent_elem;
   if(parent_tag != loader.tag_stack.rend())
-    parent_elem = (*parent_tag)->elem;
+    parent_elem = (*parent_tag)->elemNode;
   else
     parent_elem = loader.theRootNode;
   if(parent_elem->numChildren())
@@ -1438,7 +1513,7 @@ void XmlLoader::processingInstruction(
   parent_tag = loader.tag_stack.rbegin();
   XmlNode *parent_elem;
   if(parent_tag != loader.tag_stack.rend())
-    parent_elem = (*parent_tag)->elem;
+    parent_elem = (*parent_tag)->elemNode;
   else
     parent_elem = loader.theRootNode;
 
@@ -1480,7 +1555,7 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
   parent_tag = loader.tag_stack.rbegin();
   XmlNode *parent_elem;
   if(parent_tag != loader.tag_stack.rend())
-    parent_elem = (*parent_tag)->elem;
+    parent_elem = (*parent_tag)->elemNode;
   else
     parent_elem = loader.theRootNode;
 

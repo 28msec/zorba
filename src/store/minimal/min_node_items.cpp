@@ -1221,7 +1221,11 @@ void ElementNode::getNamespaceBindings(
 void ElementNode::setNsContext(NsBindingsContext* parentCtx)
 {
   if (theNsContext == NULL)
+  {
+  //  if(parentCtx)
+  //    theFlags |= XmlNode::HaveLocalBindings;
     theNsContext = parentCtx;
+  }
   else if (theNsContext.getp() != parentCtx)
     theNsContext->setParent(parentCtx);
 }

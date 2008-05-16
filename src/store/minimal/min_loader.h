@@ -36,6 +36,9 @@ namespace zorba {
 class XmlTree;
 class XmlNode;
 class NsBindingsContext;
+class LoadedElementNode;
+class NodeVector;
+class SimpleStore;
 
 typedef char    xmlChar;
 
@@ -79,30 +82,31 @@ protected:
 
   int  current_c;
   int  prev_c;
+  SimpleStore& store;
 
   typedef struct
   {
-    std::string   localname;
-    std::string   prefix;
-    std::string   uri;
+    xqpStringStore_t   localname;
+    xqpStringStore_t   prefix;
+    xqpStringStore_t   uri;
   }QNAME_ELEM;
 
   typedef struct
   {
     QNAME_ELEM    name;
-    NsBindings    ns_bindings;
+    NsBindingsContext_t    ns_bindings_context;
 
-    XmlNode       *elem;
+    LoadedElementNode       *elemNode;
   }TAG_ELEM;
   std::list<TAG_ELEM*>      tag_stack;
 
-  typedef struct
-  {
-    QNAME_ELEM    name;
+  //typedef struct
+  //{
+  //  QNAME_ELEM    name;
 
-    std::string   attr_value;
-  }ATTR_ELEM;
-  typedef std::list<ATTR_ELEM>    attr_list_t;
+  //  std::string   attr_value;
+  //}ATTR_ELEM;
+  //typedef std::list<ATTR_ELEM>    attr_list_t;
 
 
   error::ErrorManager            * theErrorManager;
@@ -111,8 +115,8 @@ protected:
   std::istream *stream;
 
   int        reading_prolog;
-  std::string   xml_version;
-  std::string   xml_encoding;
+  xqpStringStore_t   xml_version;
+  xqpStringStore_t   xml_encoding;
 
 public:
   enum lazyloadType_t 
@@ -143,8 +147,8 @@ protected:
   bool isNameChar(int c);
   void skip_whitespaces();
   bool read_qname(QNAME_ELEM &qname, bool read_attr);
-  bool read_attributes( attr_list_t &all_attributes);
-  bool fill_in_uri(std::string &prefix, std::string &result_uri);
+  bool read_attributes(LoadedElementNode *elemNode, NodeVector &attrNodes);
+  bool fill_in_uri(LoadedElementNode *elemNode, xqpStringStore_t prefix, xqpStringStore_t &result_uri);
   bool compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2);
   bool read_tag();
   bool read_characters();
@@ -164,22 +168,23 @@ public:
 
   static void endDocument(void * ctx);
 
-  static void startElement(
-        void * ctx, 
-        const xmlChar * localname, 
-        const xmlChar * prefix, 
-        const xmlChar * URI, 
-        int nb_namespaces, 
-        const xmlChar ** namespaces, 
-        int nb_attributes, 
-        int nb_defaulted, 
-        const xmlChar ** attributes);
+//  void startElement(
+//        LoadedElementNode* elemNode);
+//        void * ctx, 
+//        const xmlChar * localname, 
+//        const xmlChar * prefix, 
+//        const xmlChar * URI, 
+//       int nb_namespaces, 
+//       const xmlChar ** namespaces, 
+//        int nb_attributes, 
+//        int nb_defaulted, 
+//        const xmlChar ** attributes);
   
-  static void endElement(
-        void * ctx, 
-        const xmlChar * localname, 
-        const xmlChar * prefix, 
-        const xmlChar * URI);
+  void endElement();
+//        void * ctx, 
+//        const xmlChar * localname, 
+//        const xmlChar * prefix, 
+//        const xmlChar * URI);
 
   static void characters(
         void * ctx,

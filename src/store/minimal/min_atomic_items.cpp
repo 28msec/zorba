@@ -104,7 +104,7 @@ Item_t QNameItemImpl::getEBV( ) const
 
 xqpStringStore_t QNameItemImpl::getStringValue( ) const
 {
-  if (thePrefix->empty())
+  if ((thePrefix == NULL) || thePrefix->empty())
     return theLocal;
   else
     return new xqpStringStore(thePrefix->str() + ":" + theLocal->str());
@@ -113,7 +113,7 @@ xqpStringStore_t QNameItemImpl::getStringValue( ) const
 
 bool QNameItemImpl::isId() const
 {
-  if (thePrefix->byteEqual("xml", 3) &&
+  if ((thePrefix != NULL) && thePrefix->byteEqual("xml", 3) &&
       theLocal->byteEqual("id", 2))
     return true;
 
@@ -123,7 +123,7 @@ bool QNameItemImpl::isId() const
 
 bool QNameItemImpl::isBaseUri() const
 {
-  if (thePrefix->byteEqual("xml", 3) &&
+  if ((thePrefix!= NULL) && thePrefix->byteEqual("xml", 3) &&
       theLocal->byteEqual("base", 4))
     return true;
 
