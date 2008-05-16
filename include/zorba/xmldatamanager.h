@@ -23,102 +23,113 @@ namespace zorba {
   
   /** \brief Using the XmlDataManager one can manage documents and collections.
    * 
-   * The XmlDataManager is a singelton instance. The Zorba object is reponsible for 
-   * maintaining it's lifetime. The instance can be accessed by calling getXmlDataManager()
-   * on the Zorba object. It may not be accessed anymore after Zorba::shutdown() has been called.
+   * The XmlDataManager is a singelton instance. The Zorba object is reponsible
+   * for maintaining it's lifetime. The instance can be accessed by calling 
+   * getXmlDataManager() on the Zorba object. It may not be accessed anymore
+   * after Zorba::shutdown() has been called.
+   *
+   * XmlDataManager is a thread-safe class.
    */
   class XmlDataManager 
   {
     public:
-      /** \brief Destructor
+
+      /** \brief Register an ErrorHandler to which errors occuring during the 
+       * management of documents and collections are reported.
+       *
+       * If no ErrorHandler has been set using this function then subclasses of
+       * the ZorbaException class are thrown to report errors.
+       *
+       *  @param aErrorHandler ErrorHandler to which errors are reported. The
+       *         caller retains ownership over the ErrorHandler passed as
+       *         parameter.
        */
-      virtual ~XmlDataManager() {}
+      void
+      registerErrorHandler(ErrorHandler* aErrorHandler);
+
 
       /** \brief Load a document from an input stream.
        *
        * This function loads a document from an input stream. The document
-       * is identified and accessable by the given URI. Errors are either reported
-       * by throwing an exception or calling a callback in an ErrorHandler if one has been
-       * passed as parameter.
+       * is identified by the given URI.
        *
        * @param aURI the URI of the document as String.
        * @param aStream the document given in an input stream.
-       * @param aErrorHandler an optional ErrorHandler whose callbacks are called if an error occurs.
        * @return Item the document as an Item.
        * @throws ZorbaException if an error occurs.
        *
        */
       virtual Item 
-      loadDocument(const String& aURI, std::istream& aStream, ErrorHandler* aErrorHandler = 0) = 0;
+      loadDocument(const String& aURI, std::istream& aStream) = 0;
+
       virtual Item 
-      loadDocument(const String& aURI, std::istream* aStream, ErrorHandler* aErrorHandler = 0) = 0;
+      loadDocument(const String& aURI, std::istream* aStream) = 0;
 
       /** \brief Load a document from a file.
        *
-       * This function loads a document from a file. The document
-       * is identified and accessable by the given URI. Errors are either reported
-       * by throwing an exception or calling a callback in an ErrorHandler if one has been
-       * passed as parameter.
+       * This function loads a document from a file. The file name is used as
+       * the URI of the document. 
        *
        * @param aLocalFile the filename of the document as String.
-       * @param aErrorHandler an optional ErrorHandler whose callbacks are called if an error occurs.
        * @return Item the document as an Item.
        * @throws ZorbaException if an error occurs.
        *
        */
       virtual Item
-      loadDocument(const String& aLocalFile, ErrorHandler* aErrorHandler = 0) = 0;
+      loadDocument(const String& aLocalFile) = 0;
 
       /** \brief Get the document identified by the given URI.
        *
        * @param aURI the URI of the document to get.
-       * @param aErrorHandler an optional ErrorHandler whose callbacks are called if an error occurs.
-       * @return Item the document as an Item.
+       * @return Item the document as an Item (NULL if the document was not found).
        * @throws ZorbaException if an error occurs.
        */
       virtual Item
-      getDocument(const String& aURI, ErrorHandler* aErrorHandler = 0) = 0;
+      getDocument(const String& aURI) = 0;
 
-      /** \brief Delete the document identified by the given URI.
+      /** \brief Delete the document identified by the given URI, if the document
+       * has been loaded before.
        *
        * @param aURI the URI of the document to delete.
-       * @param aErrorHandler an optional ErrorHandler whose callbacks are called if an error occurs.
-       * @return true if the document was deleted, false otherwise.
+       * @return true if the document was found, false otherwise.
        * @throws ZorbaException if an error occurs.
        */
       virtual bool
-      deleteDocument(const String& aURI, ErrorHandler* aErrorHandler = 0) = 0;
+      deleteDocument(const String& aURI) = 0;
 
       /** \brief Create a collection.
        *
        * @param aURI the URI of the collection to create.
-       * @param aErrorHandler an optional ErrorHandler whose callbacks are called if an error occurs.
        * @return Collection_t the collection that was created.
        * @throws ZorbaException if an error occurs.
        */
       virtual Collection_t
-      createCollection(const String& aURI, ErrorHandler* aErrorHandler = 0) = 0;
+      createCollection(const String& aURI) = 0;
 
       /** \brief Get a collection.
        *
        * @param aURI the URI of the collection to get.
-       * @param aErrorHandler an optional ErrorHandler whose callbacks are called if an error occurs.
-       * @return Collection_t the collection identified by the given URI. 
+       * @return Collection_t the collection identified by the given URI
+                 (NULL if the collection was not found). 
        * @throws ZorbaException if an error occurs.
        */
       virtual Collection_t
-      getCollection(const String& aURI, ErrorHandler* aErrorHandler = 0) = 0;
+      getCollection(const String& aURI) = 0;
 
 
-      /** \brief Delete a collection.
+      /** \brief Delete a collection, if the colection has been created before.
        *
        * @param aURI the URI of the collection to delete.
-       * @param aErrorHandler an optional ErrorHandler whose callbacks are called if an error occurs.
-       * @return true if the collection was deleted, false otherwise.
+       * @return true if the collection was found, false otherwise.
        * @throws ZorbaException if an error occurs.
        */
       virtual bool
-      deleteCollection(const String& aURI, ErrorHandler* aErrorHandler = 0) = 0;
+      deleteCollection(const String& aURI) = 0;
+
+    protected:
+      /** \brief Destructor
+       */
+      virtual ~XmlDataManager() {}
 
   }; /* class XmlDataManager */
 
