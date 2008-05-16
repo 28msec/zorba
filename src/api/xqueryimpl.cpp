@@ -67,7 +67,6 @@ XQueryImpl::XQueryImpl()
   theDynamicContext(0),
   theDynamicContextWrapper(0),
   theStaticContextWrapper(0),
-  theResultIterator(0),
   theUserErrorHandler(false),
   theSAX2Handler(0),
   theIsClosed(false)
@@ -106,8 +105,8 @@ XQueryImpl::close()
 
     checkNotClosed();
 
-    if (theResultIterator)
-      delete theResultIterator;
+    if (!theResultIterators.empty())
+      ZORBA_ERROR(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS);
 
     thePlan = 0;
 
@@ -129,12 +128,13 @@ XQueryImpl::close()
     delete theCompilerCB;
 
     theIsClosed = true;
+
   ZORBA_CATCH
 }
 
 
 /*******************************************************************************
-  A clone query shares its error handler and plan iterator with the original
+  A clone query shares its error handler and plan iterator tree with the original
   query. The static and dynamic context of a clone query is a child of a static
   and dynamic context of the orginal query.
 ********************************************************************************/
@@ -511,22 +511,32 @@ XQueryImpl::applyUpdates()
 }
 
 
-ResultIterator*
+ResultIterator_t
 XQueryImpl::iterator()
 {
   ZORBA_TRY
     checkNotClosed();
     checkCompiled();
 
-    if (theResultIterator != NULL)
-      return theResultIterator;
-
     PlanWrapper_t lPlan = generateWrapper();
-    theResultIterator = new ResultIteratorImpl(this, lPlan);
-    return theResultIterator;
+
+    std::auto_ptr<ResultIterator> lIter(new ResultIteratorImpl(this, lPlan));
+    theResultIterators.push_back(lIter.get());
+    return ResultIterator_t(lIter.release());
 
   ZORBA_CATCH
-  return 0;
+  return ResultIterator_t();;
+}
+
+
+void
+XQueryImpl::removeResultIterator(const ResultIterator* iter)
+{
+  std::vector<ResultIterator*>::iterator it = std::find(theResultIterators.begin(),
+                                                        theResultIterators.end(),
+                                                        iter);
+  ZORBA_ASSERT(it != theResultIterators.end());
+  theResultIterators.erase(it);
 }
 
 

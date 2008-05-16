@@ -16,7 +16,6 @@
 #include "api/dynamiccontextimpl.h"
 
 #include <zorba/default_error_handler.h>
-#include <zorba/xmldatamanager.h>
 #include <zorba/zorba.h>
 
 #include "context/dynamic_context.h"
@@ -30,9 +29,14 @@
 #include "types/root_typemanager.h"
 #include "api/zorbaimpl.h"
 #include "api/resultiteratorchainer.h"
+#include "api/xmldatamanagerimpl.h"
 #include "runtime/api/plan_wrapper.h"
 
 namespace zorba {
+
+#define GET_DATA_MANAGER() \
+  reinterpret_cast<XmlDataManagerImpl*>(Zorba::getInstance()->getXmlDataManager());
+
 
 DynamicContextImpl::DynamicContextImpl(
     dynamic_context* aDctx,
@@ -82,15 +86,16 @@ DynamicContextImpl::setVariable(
 bool
 DynamicContextImpl::setVariable(
     const String& aQName,
-    ResultIterator* aResultIterator )
+    const ResultIterator_t& aResultIterator )
 {
   ZORBA_TRY
 
-    if (!aResultIterator)
+    ResultIterator* lIter = &*aResultIterator;
+    if (!lIter)
       ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
                        "Invalid ResultIterator given");
         
-    store::Iterator_t lRes = new store::ResultIteratorChainer(aResultIterator);
+    store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
 
     xqpString lString = xqpString(Unmarshaller::getInternalString(aQName));
 
@@ -112,7 +117,8 @@ DynamicContextImpl::setVariableAsDocument(
     std::istream& aStream )
 {
   ZORBA_TRY
-    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+
+    XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER(); 
 
     Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
     setVariable ( aQName, lDocItem );
@@ -131,7 +137,7 @@ DynamicContextImpl::setVariableAsDocument(
     std::istream* aStream )
 {
   ZORBA_TRY
-    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+    XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER();
 
     Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theErrorHandler);
     setVariable ( aQName, lDocItem );
@@ -167,7 +173,8 @@ DynamicContextImpl::setContextItemAsDocument (
     std::istream& aInStream )
 {
   ZORBA_TRY
-    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+
+    XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER();
 
     Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
 
@@ -185,7 +192,8 @@ DynamicContextImpl::setContextItemAsDocument (
     std::istream* aInStream )
 {
   ZORBA_TRY
-    XmlDataManager* lDataManager = Zorba::getInstance()->getXmlDataManager();
+
+    XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER();
 
     Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theErrorHandler);
 

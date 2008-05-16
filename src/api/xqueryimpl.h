@@ -70,12 +70,14 @@ namespace zorba {
 
   - theDynamicContextWrapper :
 
-  - theResultIterator :
-  Pointer to an iterator used for computing and retrieving the result of a
-  query in a one-item-at-a-time fashion. For each query there can be at most 1
-  result iterator obj: it is created during the 1st invocation of the iterator()
-  method and destroyed when the query is closed.
- 
+  - theResultIterators :
+  There is an N:1 relationship between ResultIterator and XQuery objs. This
+  relationship is implemented by (a) theResultIterators vector, which contains
+  a ptr to each ResultIterator that has been created by the XQuery::iterator()
+  method, and (b) a ptr in each ResultIterator pointing back to the associated
+  XQuery. This way we can guarantee that no ResultIterator objs can exists when
+  their associated XQuery is closed (see ~ResultIterator() and XQuery::close()).
+
   - theErrorHandler :
   Normally, this is an object provided by the application to handle errors in
   some specific way. If the application does not provide an error handler, a
@@ -98,6 +100,9 @@ namespace zorba {
 ********************************************************************************/
 class XQueryImpl : public XQuery 
 {
+  friend class ResultIteratorImpl;
+  friend class ZorbaImpl; // only ZorbaImpl is allowed to create us
+
  protected:
 
   class PlanProxy : public RCObject
@@ -118,12 +123,6 @@ class XQueryImpl : public XQuery
 
   typedef rchandle<PlanProxy> PlanProxy_t;
 
- public:
-  friend class ResultIteratorImpl;
-
-  // only allow ZorbaImpl to create us
-  friend class ZorbaImpl;
-
  protected:
 
   // static stuff
@@ -141,7 +140,7 @@ class XQueryImpl : public XQuery
   mutable DynamicContextImpl   * theDynamicContextWrapper;
   mutable StaticContextImpl    * theStaticContextWrapper;
 
-  ResultIteratorImpl           * theResultIterator;
+  std::vector<ResultIterator*>   theResultIterators;
 
   // utility stuff
   bool                           theUserErrorHandler; 
@@ -174,7 +173,7 @@ class XQueryImpl : public XQuery
   void 
   applyUpdates();
 
-  ResultIterator*
+  ResultIterator_t
   iterator();
 
   DynamicContext*
@@ -230,6 +229,9 @@ class XQueryImpl : public XQuery
 
   PlanWrapper_t
   generateWrapper();
+
+  void
+  removeResultIterator(const ResultIterator* iter);
 
   // check whether the query is open, and if not, fire an error
   void

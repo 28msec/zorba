@@ -24,21 +24,25 @@
 
 namespace zorba {
 
-  /** \brief This class is the representation of a %XQuery in the %Zorba engine.
+  /** \brief This class is the representation of an %XQuery in the %Zorba engine.
    *
-   * It is used for compiling and executing a query. An instance of this class
-   * is not thread safe, i.e.\ an object can not be executed/serialized in
-   * multiple threads. To execute on query in several threads the function
-   * clone() creates a clone of the same query that can be executed in another
-   * thread.
+   * To compile and execute an XQuery, an instance of this class must be created. 
+   * This is done by using either the createQuery or compileQuery methods of the
+   * Zorba class. These methods return an instance of XQuery_t, which is a 
+   * reference counted boost smart pointer (see http://www.boost.org/doc/libs/1_35_0/libs/smart_ptr/smart_ptr.htm) to a dynamically allocated XQuery object. After receiving
+   * an XQuery_t from zorba, an application can make multiple copies of it.
+   * Hence, each XQuery object can have multiple owners, potentially in different
+   * threads. The XQuery object is deleted when all XQuery_t objects that point 
+   * to it are destroyed or explicitly reset to 0.
    *
-   * An instance of this class can only be created using either the createQuery
-   * or compileQuery functions of the Zorba class. Objects are returned as
-   * a boost smart pointer (see http://www.boost.org/doc/libs/1_35_0/libs/smart_ptr/smart_ptr.htm),
-   * i.e. objects of type XQuery_t are reference counted boost smart pointers
-   * to an dynamically allocated XQuery object. Hence, each object can have
-   * multiple owners. The object is deleted if nobody holds on to an XQuery_t
-   * object anymore.
+   * Although an XQuery instance may be accessible from multiple threads, the
+   * instance is not thread safe, i.e.\ its methods should not be invoked in 
+   * parallel by multiple threads. The only exception to this rule is the clone()
+   * method. Cloning is the way to execute the same query from multiple threads.
+   * Cloning can be done only after the query has been compiled. The clone() 
+   * method creates and returns a new XQuery object that shares the same 
+   * execution plan as the original XQuery object. After clone() returns, the
+   * calling thread can invoke the various execution methods on the XQuery clone. 
    *
    * The file \link simple.cpp \endlink contains some basic examples the demonstrate
    * the use of this class.
@@ -184,28 +188,29 @@ namespace zorba {
     public:
       /** \brief Destructor that destroys this XQuery object. 
        * 
-       * The destructor is called if there are no references to an 
-       * XQuery_t object hold anymore.
+       * The destructor is called automatically when there are no more XQuery_t
+       * smart pointers pointing to this XQuery instance.
        */
       virtual ~XQuery() {}
 
       /** \brief Register an ErrorHandler to which errors during compilation or
        *         execution/serialization are reported.
        *
-       *  If not ErrorHandler has been set using this function or when creating/compiling
-       *  the query using the Zorba object (i.e.\ createQuery or compileQuery), then subclasses 
-       *  of the ZorbaException class are thrown to report errors.
+       * If no ErrorHandler has been set using this function or when creating/compiling
+       * the query using the Zorba object (i.e.\ createQuery or compileQuery),
+       * then subclasses of the ZorbaException class are thrown to report errors.
        *
-       *  @param aErrorHandler ErrorHandler to which errors are reported. The caller retains ownership
-       *         over the ErrorHandler passed as parameter.
+       *  @param aErrorHandler ErrorHandler to which errors are reported. The
+       *         caller retains ownership over the ErrorHandler passed as
+       *         parameter.
        *  @throw SystemException if the query has been closed.
        *  @see close()
        */
       virtual void
       registerErrorHandler(ErrorHandler* aErrorHandler) = 0;
 
-      /** \brief Reset the error handling mechanism to throwing exceptions, i.e.\ behave as if no
-       *         ErrorHandler had been set.
+      /** \brief Reset the error handling mechanism to throwing exceptions,
+       * i.e.\ behave as if no ErrorHandler had been set.
        *   
        *  @throw SystemException if the query has been closed already.
        *  @see registerErrorHandler(ErrorHandler*)
@@ -246,7 +251,7 @@ namespace zorba {
         * @return ResultIterator iterator over the result sequence.
         * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled).
         */
-      virtual ResultIterator*
+      virtual ResultIterator_t
       iterator() = 0;
 
       /** \brief Get the dynamic context of this query.

@@ -83,7 +83,7 @@ public:
   virtual bool
   setVariable(
         const String& aQName,
-        ResultIterator* aResultIterator );
+        const ResultIterator_t& aResultIterator );
 
   virtual bool
   setVariableAsDocument(

@@ -153,11 +153,12 @@ XQUERY_ERROR
 zorba_sequence_init(XQUERY aQuery, XQUERY_SEQUENCE_REF aSeq)
 {
   SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(aQuery);
-  ResultIterator* lSeq = 0;
+  SharedWrapper<ResultIterator>* lSeq = 0;
 
   try {
-    lSeq = lQuery->theObject->iterator();
-    lSeq->open();
+    ResultIterator_t lResultSmart = lQuery->theObject->iterator();
+    lResultSmart->open();
+    lSeq = new SharedWrapper<ResultIterator>(lResultSmart);
     *aSeq = static_cast<XQUERY_SEQUENCE>(lSeq);
 
     return XQ_SUCCESS;
@@ -171,11 +172,12 @@ zorba_sequence_init(XQUERY aQuery, XQUERY_SEQUENCE_REF aSeq)
 XQUERY_ERROR
 zorba_sequence_next(XQUERY_SEQUENCE aResult, XQUERY_ITEM aItem)
 {
-  ResultIterator* lResult = static_cast<ResultIterator*>(aResult);
+  SharedWrapper<ResultIterator>* lResult = 
+    static_cast<SharedWrapper<ResultIterator>*>(aResult);
   Item* lItem = static_cast<Item*>(aItem);
 
   try {
-    if (lResult->next(*lItem)) {
+    if (lResult->theObject->next(*lItem)) {
       return XQ_SUCCESS;
     }
     return API0025_END_OF_SEQUENCE;
@@ -189,8 +191,9 @@ zorba_sequence_next(XQUERY_SEQUENCE aResult, XQUERY_ITEM aItem)
 void 
 zorba_sequence_release(XQUERY_SEQUENCE aResult)
 {
-  ResultIterator* lResult = static_cast<ResultIterator*>(aResult);
-  lResult->close();
+  SharedWrapper<ResultIterator>* lResult = 
+    static_cast<SharedWrapper<ResultIterator>*>(aResult);
+  delete lResult;
 }
 
 XQUERY_ERROR

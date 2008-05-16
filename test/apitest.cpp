@@ -126,14 +126,14 @@ int _tmain(int argc, _TCHAR* argv[])
         else
           *resultFile << query;
       } else {
-        ResultIterator* result = query->iterator();
+        ResultIterator_t result = query->iterator();
         result->open();
         Item lItem;
         while (result->next(lItem)) {
           // unmarshall the store item from the api item
           store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
           *resultFile << lStoreItem->show() << endl;
-      }
+        }
         result->close();
       }
     } catch (QueryException &e) {

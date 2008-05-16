@@ -71,7 +71,7 @@ catch (...)                                                    \
 
 
 ResultIteratorImpl::ResultIteratorImpl(
-    const XQueryImpl* aQuery,
+    XQueryImpl* aQuery,
     const PlanWrapper_t& aPlanWrapper)
   :
   theQuery(aQuery),
@@ -90,6 +90,8 @@ ResultIteratorImpl::~ResultIteratorImpl()
   SYNC_CODE(
   if (theHaveLock)
     GENV_STORE.getGlobalLock().unlock();)
+
+  theQuery->removeResultIterator(this);
 }
  
 

@@ -38,17 +38,17 @@ class ResultIteratorImpl  : public ResultIterator
   friend class Unmarshaller;
 
  protected:
-  const XQueryImpl     * theQuery; 
-  PlanWrapper_t          thePlan;         
-  bool                   theIsOpened;     
-  bool                   theHaveLock;
+  XQueryImpl     * theQuery; 
+  PlanWrapper_t    thePlan;         
+  bool             theIsOpened;     
+  bool             theHaveLock;
 
  protected:
-  ResultIteratorImpl(const XQueryImpl*, const PlanWrapper_t&);
-
-  virtual ~ResultIteratorImpl();
+  ResultIteratorImpl(XQueryImpl*, const PlanWrapper_t&);
 
  public:
+  virtual ~ResultIteratorImpl();
+
   virtual void 
   open();
 
