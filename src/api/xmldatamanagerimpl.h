@@ -21,53 +21,89 @@
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 
+#include "store/util/latch.h"
+
+
 namespace zorba {
 
-  class ErrorHandler;
+class ErrorHandler;
 
-  namespace store {
+namespace store {
     class Store;
-  }
+}
   
-  class XmlDataManagerImpl : public XmlDataManager
-  {
-    public:
-      virtual ~XmlDataManagerImpl();
 
-      static XmlDataManagerImpl*
-      getInstance();
+class XmlDataManagerImpl : public XmlDataManager
+{
+ public:
+  virtual ~XmlDataManagerImpl();
 
-      Item 
-      loadDocument(const String& uri, std::istream& stream, ErrorHandler* aErrorHandler = 0);
-      Item 
-      loadDocument(const String& uri, std::istream* stream, ErrorHandler* aErrorHandler = 0);
+  static XmlDataManagerImpl* 
+  getInstance();
 
-      Item
-      loadDocument(const String& local_file_uri, ErrorHandler* aErrorHandler = 0);
+  void
+  registerErrorHandler(ErrorHandler* aErrorHandler);
 
-      Item
-      getDocument(const String& uri, ErrorHandler* aErrorHandler = 0);
+  Item 
+  loadDocument(const String& uri, std::istream& stream);
 
-      bool
-      deleteDocument(const String& uri, ErrorHandler* aErrorHandler = 0);
+  Item 
+  loadDocument(const String& uri, std::istream& stream, ErrorHandler* aErrorHandler);
 
-      Collection_t
-      createCollection(const String& uri, ErrorHandler* aErrorHandler = 0);
+  Item 
+  loadDocument(const String& uri, std::istream* stream);
 
-      Collection_t
-      getCollection(const String& uri, ErrorHandler* aErrorHandler = 0);
+  Item 
+  loadDocument(const String& uri, std::istream* stream, ErrorHandler* aErrorHandler);
 
-      bool
-      deleteCollection(const String& uri, ErrorHandler* aErrorHandler = 0);
+  Item
+  loadDocument(const String& local_file_uri);
 
-    protected:
-      XmlDataManagerImpl();
+  Item
+  loadDocument(const String& local_file_uri, ErrorHandler* aErrorHandler);
 
-      store::Store* theStore;
+  Item
+  getDocument(const String& uri);
 
-      ErrorHandler* theErrorHandler;
+  Item
+  getDocument(const String& uri, ErrorHandler* aErrorHandler);
 
-  }; /* class XmlDataManagerImpl */
+  bool
+  deleteDocument(const String& uri);
+
+  bool
+  deleteDocument(const String& uri, ErrorHandler* aErrorHandler);
+
+  Collection_t
+  createCollection(const String& uri);
+
+  Collection_t
+  createCollection(const String& uri, ErrorHandler* aErrorHandler);
+
+  Collection_t
+  getCollection(const String& uri);
+
+  Collection_t
+  getCollection(const String& uri, ErrorHandler* aErrorHandler);
+
+  bool
+  deleteCollection(const String& uri);
+
+  bool
+  deleteCollection(const String& uri, ErrorHandler* aErrorHandler);
+
+ protected:
+  XmlDataManagerImpl();
+
+  store::Store           * theStore;
+  
+  ErrorHandler           * theErrorHandler;
+  
+  bool                     theUserErrorHandler;
+
+  SYNC_CODE(store::Latch   theLatch;)
+
+}; /* class XmlDataManagerImpl */
 
 } /* namespace zorba */
 #endif
