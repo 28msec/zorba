@@ -149,6 +149,11 @@ DEF_ERR_CODE(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY, API0024, "Cannot iterate 
 
 DEF_ERR_CODE (API0025_END_OF_SEQUENCE, API0025_END_OF_SEQUENCE, "Reached the end of the sequence")
 
+DEF_ERR_CODE(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS, API0026, "Query cannot be closed because there still exist result iterators on it")
+
+//
+// ZORBA-specific errors
+//
 
 DEF_ERR_CODE (XQP0001_DYNAMIC_ITERATOR_OVERRUN, XQP0001, "XQP0001_DYNAMIC_ITERATOR_OVERRUN")
 
@@ -177,7 +182,6 @@ DEF_ERR_CODE (XQP0022_GET_RESULTS_AS_DOM_FAILED, XQP0022, "Couldn't get result a
 DEF_ERR_CODE (XQP0023_GET_RESULTS_AS_SAX_FAILED, XQP0023, "Couldn't get result as SAX")
 
 DEF_ERR_CODE (XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, XQP0024, "The function called (/s) is not available for the given item type (/s).")
-
 
 
 //

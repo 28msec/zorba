@@ -33,9 +33,9 @@ ErrorManager::~ErrorManager()
 
 ZorbaError
 ErrorManager::createException(
-    XQUERY_ERROR aErrorCode, 
-    const std::string&             aFileName,
-    int                            aLineNumber)
+    XQUERY_ERROR        aErrorCode, 
+    const std::string&  aFileName,
+    int                 aLineNumber)
 {
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
 
@@ -48,10 +48,10 @@ ErrorManager::createException(
 
 ZorbaError
 ErrorManager::createException(
-    XQUERY_ERROR aErrorCode,
-    const std::string&             aFileName,
-    int                            aLineNumber,
-    const QueryLoc&                aLocation)
+    XQUERY_ERROR        aErrorCode,
+    const std::string&  aFileName,
+    int                 aLineNumber,
+    const QueryLoc&     aLocation)
 {
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
 
@@ -63,12 +63,12 @@ ErrorManager::createException(
 
 ZorbaError
 ErrorManager::createException(
-    XQUERY_ERROR aErrorCode, 
-    const std::string&             aParam1,
-    const std::string&             aParam2,
-    const std::string&             aFileName,
-    int                            aLineNumber,
-    const QueryLoc&                aLocation)
+    XQUERY_ERROR        aErrorCode, 
+    const std::string&  aParam1,
+    const std::string&  aParam2,
+    const std::string&  aFileName,
+    int                 aLineNumber,
+    const QueryLoc&     aLocation)
 {
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
   applyParams(&lDesc, &aParam1, &aParam2);
@@ -80,10 +80,10 @@ ErrorManager::createException(
 
 ZorbaError
 ErrorManager::createException(
-    XQUERY_ERROR aErrorCode,
-    const std::string&             aDesc, 
-    const std::string&             aFileName,
-    int                            aLineNumber)
+    XQUERY_ERROR        aErrorCode,
+    const std::string&  aDesc, 
+    const std::string&  aFileName,
+    int                 aLineNumber)
 {
   ZorbaError lError(aErrorCode, aDesc, QueryLoc::null, aFileName, aLineNumber);
 
@@ -93,11 +93,11 @@ ErrorManager::createException(
 
 ZorbaError
 ErrorManager::createException(
-    XQUERY_ERROR aErrorCode,
-    const xqpString&               aDescription,
-    const std::string&             aFileName,
-    int                            aLineNumber,
-    const QueryLoc&                aLocation)
+    XQUERY_ERROR        aErrorCode,
+    const xqpString&    aDescription,
+    const std::string&  aFileName,
+    int                 aLineNumber,
+    const QueryLoc&     aLocation)
 {
   ZorbaError lError(aErrorCode, aDescription, aLocation, aFileName, aLineNumber);
 
@@ -122,11 +122,11 @@ ErrorManager::createUserException(
 
 void
 ErrorManager::addError(
-    XQUERY_ERROR aErrorCode,
-    const xqpString&               aDescription,
-    const std::string&             aFileName,
-    int                            aLineNumber,
-    const QueryLoc&                aLocation)
+    XQUERY_ERROR        aErrorCode,
+    const xqpString&    aDescription,
+    const std::string&  aFileName,
+    int                 aLineNumber,
+    const QueryLoc&     aLocation)
 {
   ZorbaError lError(aErrorCode, aDescription, aLocation, aFileName, aLineNumber);
   theErrors.push_back(lError);
@@ -135,12 +135,12 @@ ErrorManager::addError(
 
 void
 ErrorManager::addError(
-    XQUERY_ERROR aErrorCode, 
-    const std::string&             aParam1,
-    const std::string&             aParam2,
-    const std::string&             aFileName,
-    int                            aLineNumber,
-    const QueryLoc&                aLocation)
+    XQUERY_ERROR        aErrorCode, 
+    const std::string&  aParam1,
+    const std::string&  aParam2,
+    const std::string&  aFileName,
+    int                 aLineNumber,
+    const QueryLoc&     aLocation)
 {
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
   applyParams(&lDesc, &aParam1, &aParam2);
