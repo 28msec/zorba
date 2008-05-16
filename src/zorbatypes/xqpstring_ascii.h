@@ -59,14 +59,17 @@ public:
   static bool
   is_ucscharCP(uint32_t cp);
 
-  bool
-  is_iprivateCP(uint32_t cp) const;
+  static bool
+  is_iprivateCP(uint32_t cp);
   
-  bool
-  is_printableASCII(uint32_t cp) const;
+  static bool
+  is_printableASCII(uint32_t cp);
   
-  bool
-  is_Invalid_in_IRI(uint32_t cp) const;
+  static bool
+  is_Invalid_in_IRI(uint32_t cp);
+
+//  static xqpStringStore_t
+//  getXqpString(UnicodeString source);
 
 public:
   xqpStringStore() { }
@@ -153,6 +156,11 @@ public:
   xqpStringStore_t
   append(const char* suffix) const;
 
+  void append_in_place(const char c);
+
+  xqpStringStore_t
+  substr(std::string::size_type index, std::string::size_type length) const;
+
   xqpStringStore_t
   uppercase() const;
       
@@ -191,6 +199,9 @@ public:
 
   xqpStringStore_t
   encodeForUri() const;
+
+  xqpStringStore_t
+  normalize(const xqpStringStore* normMode) const;
 
 //  UnicodeString
 //  getUnicodeString() const;
@@ -272,6 +283,8 @@ public:
       
     xqpString&
     operator+=(char c);
+
+    void append_in_place(const char c);
 
     bool
     operator==(xqpString src) const
@@ -609,6 +622,7 @@ public:
     tmp += rsrc;
     return tmp;
   }
+
 
 } /* namespace zorba */
 

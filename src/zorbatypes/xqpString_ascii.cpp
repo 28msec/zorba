@@ -100,7 +100,7 @@ bool xqpStringStore::is_ucscharCP(uint32_t cp)
 /*******************************************************************************
   Return true is cp reprezents "iprivate" as defined by rfc3987
 ********************************************************************************/
-bool xqpStringStore::is_iprivateCP( uint32_t cp ) const
+bool xqpStringStore::is_iprivateCP( uint32_t cp )
 {
   bool ret = false;
   if((0xE000 <= cp && cp <=0xF8FF) ||
@@ -118,7 +118,7 @@ bool xqpStringStore::is_iprivateCP( uint32_t cp ) const
   Return true if cp is a printable characters of the US-ASCII coded character
   set meaning octets ranging from 32 to 126 (decimal).
 ********************************************************************************/
-bool xqpStringStore::is_printableASCII(uint32_t cp) const
+bool xqpStringStore::is_printableASCII(uint32_t cp)
 {
   bool ret = false;
   if(0x20 <= cp && cp <=0x7E)//32 to 126 (decimal)
@@ -133,7 +133,7 @@ bool xqpStringStore::is_printableASCII(uint32_t cp) const
   Return true for the following printable ASCII characters that are invalid in
   an IRI: "<", ">", " " " (double quote), space, "{", "}", "|", "\", "^", and "`".
 ********************************************************************************/
-bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp) const
+bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp)
 {
   bool ret = false;
   if(0x3C == cp || 0x3E == cp || 0x22 == cp ||
@@ -416,6 +416,21 @@ xqpStringStore_t xqpStringStore::append(const std::string& suffix) const
 xqpStringStore_t xqpStringStore::append(const char* suffix) const
 {
   return new xqpStringStore(theString + suffix);
+}
+
+void xqpStringStore::append_in_place(const char c)
+{
+  theString += c;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::substr(
+    std::string::size_type index,
+    std::string::size_type length) const
+{
+  return new xqpStringStore(theString.substr(index, length));
 }
 
 /*******************************************************************************
@@ -956,6 +971,14 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
   return newStr.release();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
+{
+  xqpStringStore_t  newstr = new xqpStringStore(this->str());
+  return newstr;
+}
 
 /*******************************************************************************
   Return an UnicodeString (UTF-16 encoded) version of the string.
@@ -1180,37 +1203,9 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     return theStrStore->c_str();
   }
   
-  //normalize
   xqpString xqpString::normalize(xqpString normMode)
   {
-    //UnicodeString result;
-    //UErrorCode status = U_ZERO_ERROR;
-
-    //if (normMode.empty ())
-      return *this;
-    //else if(normMode == "NFC")
-    //{
-    //  Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFC , 0, result, status);
-    //}
-    //else if(normMode == "NFKC")
-    //{
-    //  Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFKC , 0, result, status);
-    //}
-    //else if(normMode == "NFD")
-    //{
-    //  Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFD , 0, result, status);
-    //}
-    //else if(normMode == "NFKD")
-    //{
-    //  Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFKD , 0, result, status);
-    //}
-
-    //if(U_FAILURE(status))
-    //{
-    //  assert(false);
-    //}
-    //
-    //return getXqpString( result ); 
+    return theStrStore->normalize(normMode.getStore()).getp();
   }
 
 
@@ -1481,6 +1476,11 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
 
   //  return ret;
   //}
+
+void xqpString::append_in_place(const char c)
+{
+  theStrStore->append_in_place(c);
+}
 }/* namespace zorba */
 
 #endif//#ifdef ZORBA_NO_UNICODE
