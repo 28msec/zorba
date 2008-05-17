@@ -125,7 +125,7 @@ public:
   virtual ~expr();
 
 public:
-  QueryLoc get_loc() const { return loc; }
+  const QueryLoc &get_loc() const { return loc; }
   void set_loc(const QueryLoc& aLoc) { loc = aLoc; }
 
 public:
