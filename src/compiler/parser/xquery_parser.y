@@ -2378,6 +2378,7 @@ VarGetsDecl :
 EvalVarDecl :
 		VarGetsDecl
 		{
+      static_cast<VarGetsDecl *> ($1)->set_kind (VarGetsDecl::eval_var);
       $$ = $1;
     }
   | VARNAME
@@ -2385,7 +2386,8 @@ EvalVarDecl :
       std::string name = driver.symtab.get ((off_t)$1);
       $$ = new VarGetsDecl(LOC (@$),
                            name, NULL, NULL,
-                           new VarRef (LOC (@$), name));
+                           new VarRef (LOC (@$), name),
+                           VarGetsDecl::eval_var);
                            
     }
     ;

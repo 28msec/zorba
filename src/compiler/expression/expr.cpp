@@ -306,6 +306,7 @@ string var_expr::decode_var_kind(
   case catch_var: return "CATCH"; break;
   case copy_var: return "COPY"; break;
   case groupby_var: return "GROUPBY"; break;
+  case param_var: return "PARAM"; break;
   default: return "???";
   }
 }

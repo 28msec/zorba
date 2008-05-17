@@ -1055,21 +1055,6 @@ void VarGetsDeclList::accept(parsenode_visitor& v) const
 
 // [36b] VarGetsDecl
 // ------------------
-VarGetsDecl::VarGetsDecl(
-  const QueryLoc& _loc,
-  std::string _varname,
-  rchandle<TypeDeclaration> _typedecl_h,
-  rchandle<FTScoreVar> _ftscorevar_h,
-  rchandle<exprnode> _valexpr_h)
-:
-  parsenode(_loc),
-  varname(_varname),
-  typedecl_h(_typedecl_h),
-  ftscorevar_h(_ftscorevar_h),
-  valexpr_h(_valexpr_h)
-{
-}
-
 
 //-VarGetsDecl::
 

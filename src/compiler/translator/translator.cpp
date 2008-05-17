@@ -183,12 +183,18 @@ protected:
     return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
   }
 
-  var_expr_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  var_expr_t create_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
     store::Item_t qname = sctx_p->lookup_qname ("", varname);
     var_expr_t e = new var_expr (loc, kind, qname);
     e->set_type (type);
-    sctx_p->bind_var (qname, e.getp ());
+    return e;
+  }
+
+  var_expr_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  {
+    var_expr_t e = create_var (loc, varname, kind, type);
+    sctx_p->bind_var (e->get_varname (), e.getp ());
     return e;
   }
 
@@ -1612,7 +1618,11 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
-  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::let_var, v.get_typedecl () == NULL ? NULL : pop_tstack ());
+  xqtref_t type = v.get_typedecl () == NULL ? NULL : pop_tstack ();
+  if (v.get_kind () == VarGetsDecl::let_var)
+    bind_var_and_push (v.get_location (), v.get_varname (), var_expr::let_var, type);
+  else
+    nodestack.push (&*create_var (v.get_location (), v.get_varname (), var_expr::let_var, type));
 }
 
 
@@ -4760,12 +4770,16 @@ void *begin_visit (const EvalExpr& v)
 void end_visit(const EvalExpr& v, void* visit_state)
 {
   TRACE_VISIT_OUT ();
-  rchandle<eval_expr> result = new eval_expr(v.get_location(), pop_nodestack ());
+
+  const QueryLoc& loc = v.get_location ();
+  rchandle<eval_expr> result =
+    new eval_expr(loc, create_cast_expr (loc, pop_nodestack (), GENV_TYPESYSTEM.STRING_TYPE_ONE, true));
 
   rchandle<VarGetsDeclList> vgdl = v.get_vars ();
   
   for (size_t i = 0; i < vgdl->size (); i++) {
     var_expr_t ve = pop_nodestack ().dyn_cast<var_expr> ();
+    ve->set_kind (var_expr::eval_var);
     expr_t val = pop_nodestack ();
     if (ve->get_type () != NULL)
       val = new treat_expr (val->get_loc (), val, ve->get_type (), XPTY0004);

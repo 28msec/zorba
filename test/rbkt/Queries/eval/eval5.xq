@@ -3,6 +3,6 @@ declare function local:eval($query as xs:string, $someparam as xs:integer) {
   eval { $query  }
 };
 
-for $y in 1 to 10
+for $y in 1 to 6
 return 
-  local:eval("for $i in 1 to $x where $i < 5 return $i", $y)
+  local:eval("for $i in 1 to $x where $i < 4 return $i", $y)

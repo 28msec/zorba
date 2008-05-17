@@ -38,7 +38,7 @@
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
-#line 753 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 753 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_scanner.h"
@@ -47,7 +47,7 @@
 
 
 /* Line 317 of lalr1.cc.  */
-#line 51 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 51 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -205,859 +205,859 @@ namespace zorba
     switch (yytype)
       {
         case 53: /* "\"'DECIMAL'\"" */
-#line 653 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 653 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (*yyvaluep).decval; };
-#line 211 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 211 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 80: /* "\"'DOUBLE'\"" */
-#line 652 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 652 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (*yyvaluep).dval; };
-#line 216 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 216 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 111: /* "\"'INTEGER'\"" */
-#line 651 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 651 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (*yyvaluep).ival; };
-#line 221 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 221 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 286: /* "VersionDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 226 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 226 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 287: /* "MainModule" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 231 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 231 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 288: /* "LibraryModule" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 236 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 236 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 289: /* "ModuleDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 241 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 241 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 290: /* "Prolog" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 246 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 246 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 291: /* "SIND_DeclList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 251 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 251 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 292: /* "VFO_DeclList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 256 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 256 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 293: /* "SIND_Decl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 261 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 261 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 294: /* "VFO_Decl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 266 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 266 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 295: /* "Setter" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 271 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 271 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 296: /* "Import" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 276 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 276 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 297: /* "NamespaceDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 281 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 281 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 298: /* "BoundarySpaceDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 286 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 286 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 299: /* "DefaultNamespaceDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 291 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 291 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 300: /* "OptionDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 296 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 296 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 302: /* "OrderingModeDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 301 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 301 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 303: /* "EmptyOrderDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 306 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 306 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 304: /* "CopyNamespacesDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 311 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 311 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 305: /* "DefaultCollationDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 316 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 316 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 306: /* "BaseURIDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 321 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 321 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 307: /* "SchemaImport" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 326 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 326 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 308: /* "URILiteralList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 331 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 331 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 309: /* "SchemaPrefix" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 336 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 336 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 310: /* "ModuleImport" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 341 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 341 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 311: /* "VarDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 346 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 346 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 312: /* "ConstructionDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 351 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 351 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 313: /* "FunctionDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 356 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 356 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 314: /* "ParamList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 361 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 361 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 315: /* "Param" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 366 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 366 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 316: /* "EnclosedExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 371 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 371 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 317: /* "NonNodeEnclosedExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 376 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 376 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 318: /* "QueryBody" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 381 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 381 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 319: /* "Expr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 386 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 386 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 320: /* "ExprSingle" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 391 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 391 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 321: /* "FLWORExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 396 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 396 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 322: /* "ForLetClauseList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 401 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 401 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 323: /* "ForLetClause" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 406 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 406 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 324: /* "ForClause" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 411 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 411 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 325: /* "VarInDeclList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 416 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 416 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 326: /* "VarInDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 421 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 421 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 327: /* "PositionalVar" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 426 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 426 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 329: /* "LetClause" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 431 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 431 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 330: /* "VarGetsDeclList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 436 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 436 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 331: /* "EvalVarDeclList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 441 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 441 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 332: /* "VarGetsDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 446 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 446 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 333: /* "EvalVarDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 451 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 451 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 334: /* "WhereClause" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 456 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 456 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 335: /* "GroupByClause" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 461 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 461 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 336: /* "GroupSpecList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 466 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 466 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 337: /* "GroupSpec" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 471 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 471 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 338: /* "GroupCollationSpec" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 476 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 476 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 339: /* "LetClauseList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 481 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 481 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 340: /* "OrderByClause" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 486 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 486 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 341: /* "OrderSpecList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 491 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 491 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 342: /* "OrderSpec" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 496 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 496 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 343: /* "OrderModifier" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 501 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 501 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 344: /* "OrderDirSpec" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 506 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 506 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 345: /* "OrderEmptySpec" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 511 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 511 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 346: /* "OrderCollationSpec" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 516 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 516 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 347: /* "QuantifiedExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 521 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 521 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 348: /* "QVarInDeclList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 526 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 526 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 349: /* "QVarInDecl" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 531 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 531 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 350: /* "TypeswitchExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 536 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 536 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 351: /* "CaseClauseList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 541 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 541 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 352: /* "CaseClause" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 546 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 546 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 353: /* "IfExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 551 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 551 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 354: /* "OrExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 556 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 556 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 355: /* "AndExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 561 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 561 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 356: /* "ComparisonExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 566 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 566 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 358: /* "RangeExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 571 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 571 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 359: /* "AdditiveExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 576 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 576 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 360: /* "MultiplicativeExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 581 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 581 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 361: /* "UnionExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 586 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 586 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 362: /* "IntersectExceptExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 591 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 591 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 363: /* "InstanceofExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 596 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 596 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 364: /* "TreatExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 601 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 601 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 365: /* "CastableExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 606 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 606 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 366: /* "CastExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 611 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 611 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 367: /* "UnaryExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 616 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 616 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 368: /* "SignList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 621 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 621 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 369: /* "ValueExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 626 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 626 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 370: /* "GeneralComp" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 631 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 631 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 371: /* "ValueComp" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 636 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 636 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 372: /* "NodeComp" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 641 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 641 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 373: /* "ValidateExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 646 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 646 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 374: /* "ExtensionExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 651 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 651 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 375: /* "PragmaList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 656 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 656 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 376: /* "Pragma" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 661 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 661 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 377: /* "PathExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 666 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 666 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 378: /* "RelativePathExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 671 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 671 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 379: /* "StepExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 676 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 676 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 380: /* "AxisStep" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 681 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 681 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 381: /* "ForwardStep" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 686 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 686 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 382: /* "ForwardAxis" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 691 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 691 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 383: /* "AbbrevForwardStep" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 696 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 696 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 384: /* "ReverseStep" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 701 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 701 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 385: /* "ReverseAxis" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 706 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 706 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 386: /* "NodeTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 711 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 711 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 387: /* "NameTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 716 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 716 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 388: /* "Wildcard" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 721 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 721 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 389: /* "FilterExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 726 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 726 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 390: /* "PredicateList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 731 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 731 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 391: /* "Predicate" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 736 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 736 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 392: /* "PrimaryExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 741 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 741 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 393: /* "Literal" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 746 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 746 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 394: /* "NumericLiteral" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 751 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 751 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 395: /* "VarRef" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 756 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 756 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 396: /* "ParenthesizedExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 761 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 761 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 397: /* "ContextItemExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 766 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 766 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 398: /* "OrderedExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 771 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 771 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 399: /* "UnorderedExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 776 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 776 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 400: /* "FunctionCall" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 781 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 781 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 401: /* "ArgList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 786 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 786 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 402: /* "Constructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 791 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 791 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 403: /* "DirectConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 796 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 796 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 404: /* "DirElemConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 801 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 801 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 405: /* "DirElemContentList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 806 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 806 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 406: /* "DirAttributeList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 811 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 811 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 407: /* "DirAttr" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 816 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 816 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 408: /* "DirAttributeValue" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 821 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 821 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 409: /* "Opt_QuoteAttrContentList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 826 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 826 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 410: /* "QuoteAttrContentList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 831 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 831 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 411: /* "Opt_AposAttrContentList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 836 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 836 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 412: /* "AposAttrContentList" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 841 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 841 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 413: /* "QuoteAttrValueContent" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 846 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 846 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 414: /* "AposAttrValueContent" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 851 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 851 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 415: /* "DirElemContent" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 856 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 856 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 416: /* "CommonContent" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 861 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 861 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 417: /* "DirCommentConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 866 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 866 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 418: /* "DirPIConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 871 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 871 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 419: /* "CDataSection" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 876 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 876 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 420: /* "ComputedConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 881 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 881 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 421: /* "CompDocConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 886 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 886 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 422: /* "CompElemConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 891 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 891 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 423: /* "CompAttrConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 896 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 896 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 424: /* "CompTextConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 901 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 901 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 425: /* "CompCommentConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 906 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 906 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 426: /* "CompPIConstructor" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 911 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 911 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 427: /* "SingleType" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 916 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 916 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 428: /* "TypeDeclaration" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 921 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 921 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 429: /* "SequenceType" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 926 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 926 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 430: /* "OccurrenceIndicator" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 931 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 931 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 431: /* "ItemType" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 936 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 936 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 432: /* "AtomicType" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 941 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 941 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 433: /* "KindTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 946 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 946 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 434: /* "AnyKindTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 951 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 951 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 435: /* "DocumentTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 956 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 956 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 436: /* "TextTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 961 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 961 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 437: /* "CommentTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 966 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 966 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 438: /* "PITest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 971 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 971 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 439: /* "AttributeTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 976 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 976 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 440: /* "SchemaAttributeTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 981 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 981 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 441: /* "ElementTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 986 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 986 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 442: /* "SchemaElementTest" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 991 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 991 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 443: /* "TypeName" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 996 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 996 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 444: /* "TypeName_WITH_HOOK" */
-#line 657 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->node)); };
-#line 1001 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1001 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 445: /* "StringLiteral" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1006 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1006 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 447: /* "InsertExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1011 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1011 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 448: /* "DeleteExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1016 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1016 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 449: /* "ReplaceExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1021 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1021 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 450: /* "RenameExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1026 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1026 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 451: /* "TransformExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1031 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1031 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 452: /* "VarNameList" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1036 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1036 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 453: /* "VarNameDecl" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1041 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1041 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 454: /* "TryExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1046 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1046 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 455: /* "CatchListExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1051 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1051 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 456: /* "CatchExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1056 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1056 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 457: /* "EvalExpr" */
-#line 658 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1061 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1061 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
 
 	default:
@@ -1133,12 +1133,12 @@ namespace zorba
 
 
     /* User initialization code.  */
-    #line 84 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+    #line 84 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 {
   yylloc.begin.filename = yylloc.end.filename = &(driver.theFilename);
 }
   /* Line 547 of yacc.c.  */
-#line 1142 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 1142 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
@@ -1254,7 +1254,7 @@ namespace zorba
     switch (yyn)
       {
 	  case 2:
-#line 774 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 774 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [main]" << endl;
@@ -1265,7 +1265,7 @@ namespace zorba
     break;
 
   case 3:
-#line 782 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 782 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<MainModule *> ((yysemantic_stack_[(2) - (2)].node))->set_version_decl (static_cast<VersionDecl *> ((yysemantic_stack_[(2) - (1)].node)));
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -1277,7 +1277,7 @@ namespace zorba
     break;
 
   case 4:
-#line 791 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [library]" << endl;
@@ -1287,7 +1287,7 @@ namespace zorba
     break;
 
   case 5:
-#line 798 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 798 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.library]" << endl;
@@ -1298,7 +1298,7 @@ namespace zorba
     break;
 
   case 6:
-#line 812 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 812 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version]" << endl;
@@ -1309,7 +1309,7 @@ namespace zorba
     break;
 
   case 7:
-#line 820 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 820 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version.encoding]" << endl;
@@ -1319,7 +1319,7 @@ namespace zorba
     break;
 
   case 8:
-#line 833 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 833 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [prolog.querybody]" << endl;
@@ -1331,7 +1331,7 @@ namespace zorba
     break;
 
   case 9:
-#line 843 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 843 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [querybody]" << endl;
@@ -1343,7 +1343,7 @@ namespace zorba
     break;
 
   case 10:
-#line 858 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 858 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LibraryModule [ ]" << endl;
@@ -1355,7 +1355,7 @@ namespace zorba
     break;
 
   case 11:
-#line 873 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 873 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleDecl [ ]" << endl;
@@ -1367,7 +1367,7 @@ namespace zorba
     break;
 
   case 12:
-#line 888 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 888 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind]" << endl;
@@ -1379,7 +1379,7 @@ namespace zorba
     break;
 
   case 13:
-#line 897 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 897 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [vfo]" << endl;
@@ -1391,7 +1391,7 @@ namespace zorba
     break;
 
   case 14:
-#line 906 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 906 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind.vfo]" << endl;
@@ -1403,7 +1403,7 @@ namespace zorba
     break;
 
   case 15:
-#line 921 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 921 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [single]" << endl;
@@ -1415,7 +1415,7 @@ namespace zorba
     break;
 
   case 16:
-#line 930 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 930 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [list]" << endl;
@@ -1429,7 +1429,7 @@ namespace zorba
     break;
 
   case 17:
-#line 947 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 947 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [single]" << endl;
@@ -1441,7 +1441,7 @@ namespace zorba
     break;
 
   case 18:
-#line 956 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 956 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [list]" << endl;
@@ -1455,7 +1455,7 @@ namespace zorba
     break;
 
   case 19:
-#line 973 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 973 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [setter]" << endl;
@@ -1465,7 +1465,7 @@ namespace zorba
     break;
 
   case 20:
-#line 980 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 980 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [import]" << endl;
@@ -1475,7 +1475,7 @@ namespace zorba
     break;
 
   case 21:
-#line 987 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 987 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [namespace]" << endl;
@@ -1485,7 +1485,7 @@ namespace zorba
     break;
 
   case 22:
-#line 994 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 994 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [default namespace]" << endl;
@@ -1495,7 +1495,7 @@ namespace zorba
     break;
 
   case 23:
-#line 1006 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1006 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [var]" << endl;
@@ -1505,7 +1505,7 @@ namespace zorba
     break;
 
   case 24:
-#line 1013 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1013 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [function]" << endl;
@@ -1515,7 +1515,7 @@ namespace zorba
     break;
 
   case 25:
-#line 1020 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1020 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [option]" << endl;
@@ -1525,7 +1525,7 @@ namespace zorba
     break;
 
   case 26:
-#line 1029 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1029 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [ftoption]" << endl;
@@ -1535,7 +1535,7 @@ namespace zorba
     break;
 
   case 27:
-#line 1042 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1042 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [boundary space]" << endl;
@@ -1545,7 +1545,7 @@ namespace zorba
     break;
 
   case 28:
-#line 1049 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1049 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [default collation]" << endl;
@@ -1555,7 +1555,7 @@ namespace zorba
     break;
 
   case 29:
-#line 1056 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1056 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [base uri]" << endl;
@@ -1565,7 +1565,7 @@ namespace zorba
     break;
 
   case 30:
-#line 1063 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1063 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [construction]" << endl;
@@ -1575,7 +1575,7 @@ namespace zorba
     break;
 
   case 31:
-#line 1070 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1070 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [ordering mode]" << endl;
@@ -1585,7 +1585,7 @@ namespace zorba
     break;
 
   case 32:
-#line 1077 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1077 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [empty order]" << endl;
@@ -1595,7 +1595,7 @@ namespace zorba
     break;
 
   case 33:
-#line 1084 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1084 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [copy namespaces]" << endl;
@@ -1605,7 +1605,7 @@ namespace zorba
     break;
 
   case 34:
-#line 1093 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1093 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [revalidation]" << endl;
@@ -1615,7 +1615,7 @@ namespace zorba
     break;
 
   case 35:
-#line 1106 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1106 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [schema]" << endl;
@@ -1625,7 +1625,7 @@ namespace zorba
     break;
 
   case 36:
-#line 1113 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1113 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [module]" << endl;
@@ -1635,7 +1635,7 @@ namespace zorba
     break;
 
   case 37:
-#line 1131 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1131 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NamespaceDecl [ ]" << endl;
@@ -1647,7 +1647,7 @@ namespace zorba
     break;
 
   case 38:
-#line 1146 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1146 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [preserve]" << endl;
@@ -1658,7 +1658,7 @@ namespace zorba
     break;
 
   case 39:
-#line 1154 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1154 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [strip]" << endl;
@@ -1669,7 +1669,7 @@ namespace zorba
     break;
 
   case 40:
-#line 1168 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1168 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [element]" << endl;
@@ -1681,7 +1681,7 @@ namespace zorba
     break;
 
   case 41:
-#line 1177 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1177 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [function]" << endl;
@@ -1693,7 +1693,7 @@ namespace zorba
     break;
 
   case 42:
-#line 1192 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1192 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OptionDecl [ ]" << endl;
@@ -1705,7 +1705,7 @@ namespace zorba
     break;
 
   case 43:
-#line 1208 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1208 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOptionDecl [ ]" << endl;
@@ -1716,7 +1716,7 @@ namespace zorba
     break;
 
   case 44:
-#line 1222 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1222 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [ordered]" << endl;
@@ -1727,7 +1727,7 @@ namespace zorba
     break;
 
   case 45:
-#line 1230 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1230 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [unordered]" << endl;
@@ -1738,7 +1738,7 @@ namespace zorba
     break;
 
   case 46:
-#line 1245 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1245 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty greatest]" << endl;
@@ -1749,7 +1749,7 @@ namespace zorba
     break;
 
   case 47:
-#line 1253 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1253 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty least]" << endl;
@@ -1760,7 +1760,7 @@ namespace zorba
     break;
 
   case 48:
-#line 1267 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1267 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
@@ -1772,7 +1772,7 @@ namespace zorba
     break;
 
   case 49:
-#line 1276 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1276 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
@@ -1784,7 +1784,7 @@ namespace zorba
     break;
 
   case 50:
-#line 1285 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1285 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
@@ -1796,7 +1796,7 @@ namespace zorba
     break;
 
   case 51:
-#line 1294 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1294 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
@@ -1808,7 +1808,7 @@ namespace zorba
     break;
 
   case 52:
-#line 1316 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1316 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultCollationMode [ ]" << endl;
@@ -1819,7 +1819,7 @@ namespace zorba
     break;
 
   case 53:
-#line 1330 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1330 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BaseURIDecl [ ]" << endl;
@@ -1830,7 +1830,7 @@ namespace zorba
     break;
 
   case 54:
-#line 1344 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1344 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri]" << endl;
@@ -1843,7 +1843,7 @@ namespace zorba
     break;
 
   case 55:
-#line 1354 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1354 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri]" << endl;
@@ -1856,7 +1856,7 @@ namespace zorba
     break;
 
   case 56:
-#line 1364 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1364 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri.urilist]" << endl;
@@ -1869,7 +1869,7 @@ namespace zorba
     break;
 
   case 57:
-#line 1374 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1374 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri.aturi]" << endl;
@@ -1882,7 +1882,7 @@ namespace zorba
     break;
 
   case 58:
-#line 1390 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1390 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [single]" << endl;
@@ -1894,7 +1894,7 @@ namespace zorba
     break;
 
   case 59:
-#line 1399 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1399 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [list]" << endl;
@@ -1908,7 +1908,7 @@ namespace zorba
     break;
 
   case 60:
-#line 1417 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1417 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [namespace]" << endl;
@@ -1918,7 +1918,7 @@ namespace zorba
     break;
 
   case 61:
-#line 1424 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1424 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [default element]" << endl;
@@ -1928,7 +1928,7 @@ namespace zorba
     break;
 
   case 62:
-#line 1437 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1437 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri]" << endl;
@@ -1940,7 +1940,7 @@ namespace zorba
     break;
 
   case 63:
-#line 1446 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1446 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri]" << endl;
@@ -1953,7 +1953,7 @@ namespace zorba
     break;
 
   case 64:
-#line 1456 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1456 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri.at_uri.list]" << endl;
@@ -1965,7 +1965,7 @@ namespace zorba
     break;
 
   case 65:
-#line 1465 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1465 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri.at_uri.list]" << endl;
@@ -1978,7 +1978,7 @@ namespace zorba
     break;
 
   case 66:
-#line 1482 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1482 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [expr]" << endl;
@@ -1991,7 +1991,7 @@ namespace zorba
     break;
 
   case 67:
-#line 1492 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [external]" << endl;
@@ -2004,7 +2004,7 @@ namespace zorba
     break;
 
   case 68:
-#line 1502 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1502 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.expr]" << endl;
@@ -2017,7 +2017,7 @@ namespace zorba
     break;
 
   case 69:
-#line 1512 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1512 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.external]" << endl;
@@ -2030,7 +2030,7 @@ namespace zorba
     break;
 
   case 70:
-#line 1528 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1528 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [preserve]" << endl;
@@ -2041,7 +2041,7 @@ namespace zorba
     break;
 
   case 71:
-#line 1536 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1536 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [strip]" << endl;
@@ -2052,7 +2052,7 @@ namespace zorba
     break;
 
   case 72:
-#line 1550 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1550 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [external]" << endl;
@@ -2065,7 +2065,7 @@ namespace zorba
     break;
 
   case 73:
-#line 1560 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1560 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]" << endl;
@@ -2079,7 +2079,7 @@ namespace zorba
     break;
 
   case 74:
-#line 1571 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1571 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.external]" << endl;
@@ -2093,7 +2093,7 @@ namespace zorba
     break;
 
   case 75:
-#line 1582 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1582 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]" << endl;
@@ -2108,7 +2108,7 @@ namespace zorba
     break;
 
   case 76:
-#line 1594 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1594 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.external]" << endl;
@@ -2123,7 +2123,7 @@ namespace zorba
     break;
 
   case 77:
-#line 1606 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1606 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]" << endl;
@@ -2138,7 +2138,7 @@ namespace zorba
     break;
 
   case 78:
-#line 1618 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1618 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.external]" << endl;
@@ -2153,7 +2153,7 @@ namespace zorba
     break;
 
   case 79:
-#line 1630 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1630 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]" << endl;
@@ -2168,7 +2168,7 @@ namespace zorba
     break;
 
   case 80:
-#line 1642 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1642 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) external]" << endl;
@@ -2181,7 +2181,7 @@ namespace zorba
     break;
 
   case 81:
-#line 1652 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1652 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]" << endl;
@@ -2195,7 +2195,7 @@ namespace zorba
     break;
 
   case 82:
-#line 1663 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1663 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.external]" << endl;
@@ -2209,7 +2209,7 @@ namespace zorba
     break;
 
   case 83:
-#line 1674 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1674 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]" << endl;
@@ -2224,7 +2224,7 @@ namespace zorba
     break;
 
   case 84:
-#line 1686 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1686 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.external]" << endl;
@@ -2239,7 +2239,7 @@ namespace zorba
     break;
 
   case 85:
-#line 1698 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1698 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]" << endl;
@@ -2254,7 +2254,7 @@ namespace zorba
     break;
 
   case 86:
-#line 1710 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1710 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.external]" << endl;
@@ -2269,7 +2269,7 @@ namespace zorba
     break;
 
   case 87:
-#line 1722 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1722 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]" << endl;
@@ -2284,7 +2284,7 @@ namespace zorba
     break;
 
   case 88:
-#line 1740 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1740 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [single]" << endl;
@@ -2298,7 +2298,7 @@ namespace zorba
     break;
 
   case 89:
-#line 1751 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1751 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [list]" << endl;
@@ -2312,7 +2312,7 @@ namespace zorba
     break;
 
   case 90:
-#line 1768 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1768 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname]" << endl;
@@ -2324,7 +2324,7 @@ namespace zorba
     break;
 
   case 91:
-#line 1777 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1777 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname.type]" << endl;
@@ -2336,7 +2336,7 @@ namespace zorba
     break;
 
   case 92:
-#line 1792 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1792 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EnclosedExpr [ ]" << endl;
@@ -2347,7 +2347,7 @@ namespace zorba
     break;
 
   case 93:
-#line 1803 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1803 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NonNodeEnclosedExpr [ ]" << endl;
@@ -2357,7 +2357,7 @@ namespace zorba
     break;
 
   case 94:
-#line 1817 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1817 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QueryBody [expr]" << endl;
@@ -2368,7 +2368,7 @@ namespace zorba
     break;
 
   case 95:
-#line 1831 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1831 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [single]" << endl;
@@ -2380,7 +2380,7 @@ namespace zorba
     break;
 
   case 96:
-#line 1840 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1840 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [expr.single]" << endl;
@@ -2392,7 +2392,7 @@ namespace zorba
     break;
 
   case 97:
-#line 1855 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1855 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [FLWORExpr]" << endl;
@@ -2402,7 +2402,7 @@ namespace zorba
     break;
 
   case 98:
-#line 1862 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1862 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [QuantifiedExpr]" << endl;
@@ -2412,7 +2412,7 @@ namespace zorba
     break;
 
   case 99:
-#line 1869 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TypeswitchExpr]" << endl;
@@ -2422,7 +2422,7 @@ namespace zorba
     break;
 
   case 100:
-#line 1876 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1876 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [IfExpr]" << endl;
@@ -2432,7 +2432,7 @@ namespace zorba
     break;
 
   case 101:
-#line 1883 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1883 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [OrExpr]" << endl;
@@ -2442,7 +2442,7 @@ namespace zorba
     break;
 
   case 102:
-#line 1892 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1892 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [InsertExpr]" << endl;
@@ -2452,7 +2452,7 @@ namespace zorba
     break;
 
   case 103:
-#line 1899 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1899 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [DeleteExpr]" << endl;
@@ -2462,7 +2462,7 @@ namespace zorba
     break;
 
   case 104:
-#line 1906 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1906 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [RenameExpr]" << endl;
@@ -2472,7 +2472,7 @@ namespace zorba
     break;
 
   case 105:
-#line 1913 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1913 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [ReplaceExpr]" << endl;
@@ -2482,7 +2482,7 @@ namespace zorba
     break;
 
   case 106:
-#line 1920 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1920 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TransformExpr]" << endl;
@@ -2492,7 +2492,7 @@ namespace zorba
     break;
 
   case 107:
-#line 1927 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1927 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
       cout << "ExprSingle [TryExpr]" << endl;
@@ -2502,14 +2502,14 @@ namespace zorba
     break;
 
   case 108:
-#line 1934 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1934 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 109:
-#line 1944 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1944 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [return]" << endl;
@@ -2522,7 +2522,7 @@ namespace zorba
     break;
 
   case 110:
-#line 1954 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1954 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.return]" << endl;
@@ -2536,7 +2536,7 @@ namespace zorba
     break;
 
   case 111:
-#line 1965 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1965 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [orderby.return]" << endl;
@@ -2550,7 +2550,7 @@ namespace zorba
     break;
 
   case 112:
-#line 1976 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1976 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.orderby.return]" << endl;
@@ -2565,7 +2565,7 @@ namespace zorba
     break;
 
   case 113:
-#line 1988 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 1988 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [groupby.return]" << endl;
@@ -2583,7 +2583,7 @@ namespace zorba
     break;
 
   case 114:
-#line 2003 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2003 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.groupby.return]" << endl;
@@ -2601,7 +2601,7 @@ namespace zorba
     break;
 
   case 115:
-#line 2018 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2018 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [groupby.orderby.return]" << endl;
@@ -2619,7 +2619,7 @@ namespace zorba
     break;
 
   case 116:
-#line 2033 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2033 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.groupby.orderby.return]" << endl;
@@ -2637,7 +2637,7 @@ namespace zorba
     break;
 
   case 117:
-#line 2054 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2054 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [single]" << endl;
@@ -2649,7 +2649,7 @@ namespace zorba
     break;
 
   case 118:
-#line 2063 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2063 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [list]" << endl;
@@ -2661,7 +2661,7 @@ namespace zorba
     break;
 
   case 119:
-#line 2078 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2078 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [for]" << endl;
@@ -2671,7 +2671,7 @@ namespace zorba
     break;
 
   case 120:
-#line 2085 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2085 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [let]" << endl;
@@ -2681,7 +2681,7 @@ namespace zorba
     break;
 
   case 121:
-#line 2098 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2098 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForClause [ ]" << endl;
@@ -2692,7 +2692,7 @@ namespace zorba
     break;
 
   case 122:
-#line 2112 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [single]" << endl;
@@ -2704,7 +2704,7 @@ namespace zorba
     break;
 
   case 123:
-#line 2121 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [list]" << endl;
@@ -2718,7 +2718,7 @@ namespace zorba
     break;
 
   case 124:
-#line 2138 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2138 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [in]" << endl;
@@ -2731,7 +2731,7 @@ namespace zorba
     break;
 
   case 125:
-#line 2148 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2148 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.in]" << endl;
@@ -2745,7 +2745,7 @@ namespace zorba
     break;
 
   case 126:
-#line 2159 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2159 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.in]" << endl;
@@ -2760,7 +2760,7 @@ namespace zorba
     break;
 
   case 127:
-#line 2171 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2171 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.in]" << endl;
@@ -2775,7 +2775,7 @@ namespace zorba
     break;
 
   case 128:
-#line 2184 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2184 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [scorevar.in]" << endl;
@@ -2789,7 +2789,7 @@ namespace zorba
     break;
 
   case 129:
-#line 2195 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2195 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.scorevar.in]" << endl;
@@ -2804,7 +2804,7 @@ namespace zorba
     break;
 
   case 130:
-#line 2207 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.scorevar.in]" << endl;
@@ -2819,7 +2819,7 @@ namespace zorba
     break;
 
   case 131:
-#line 2219 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2219 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.scorevar.in]" << endl;
@@ -2834,7 +2834,7 @@ namespace zorba
     break;
 
   case 132:
-#line 2237 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2237 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PositionalVar [ ]" << endl;
@@ -2845,7 +2845,7 @@ namespace zorba
     break;
 
   case 133:
-#line 2252 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2252 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTScoreVar [ ]" << endl;
@@ -2856,7 +2856,7 @@ namespace zorba
     break;
 
   case 134:
-#line 2266 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2266 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClause [ ]" << endl;
@@ -2868,7 +2868,7 @@ namespace zorba
     break;
 
   case 135:
-#line 2281 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2281 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [single]" << endl;
@@ -2880,7 +2880,7 @@ namespace zorba
     break;
 
   case 136:
-#line 2290 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2290 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [list.single]" << endl;
@@ -2894,7 +2894,7 @@ namespace zorba
     break;
 
   case 137:
-#line 2305 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2305 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [single]" << endl;
@@ -2906,7 +2906,7 @@ namespace zorba
     break;
 
   case 138:
-#line 2314 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2314 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [list.single]" << endl;
@@ -2920,7 +2920,7 @@ namespace zorba
     break;
 
   case 139:
-#line 2331 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2331 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [gets]" << endl;
@@ -2934,7 +2934,7 @@ namespace zorba
     break;
 
   case 140:
-#line 2342 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2342 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.gets]" << endl;
@@ -2948,7 +2948,7 @@ namespace zorba
     break;
 
   case 141:
-#line 2354 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2354 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [scorevar.gets]" << endl;
@@ -2962,7 +2962,7 @@ namespace zorba
     break;
 
   case 142:
-#line 2365 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2365 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.scorevar.gets]" << endl;
@@ -2976,25 +2976,27 @@ namespace zorba
     break;
 
   case 143:
-#line 2380 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2380 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+      static_cast<VarGetsDecl *> ((yysemantic_stack_[(1) - (1)].node))->set_kind (VarGetsDecl::eval_var);
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
   case 144:
-#line 2384 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2385 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       std::string name = driver.symtab.get ((off_t)(yysemantic_stack_[(1) - (1)].sval));
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            name, NULL, NULL,
-                           new VarRef (LOC ((yyloc)), name));
+                           new VarRef (LOC ((yyloc)), name),
+                           VarGetsDecl::eval_var);
                            
     ;}
     break;
 
   case 145:
-#line 2398 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2400 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "WhereClause [ ]" << endl;
@@ -3005,7 +3007,7 @@ namespace zorba
     break;
 
   case 146:
-#line 2409 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2411 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupByClause [groupspec]" << endl;
@@ -3018,7 +3020,7 @@ namespace zorba
     break;
 
   case 147:
-#line 2419 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2421 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupByClause [groupspec.let]" << endl;
@@ -3031,7 +3033,7 @@ namespace zorba
     break;
 
   case 148:
-#line 2429 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2431 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupByClause [groupspec.where]" << endl;
@@ -3044,7 +3046,7 @@ namespace zorba
     break;
 
   case 149:
-#line 2439 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2441 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupByClause [groupspec.let.where]" << endl;
@@ -3057,7 +3059,7 @@ namespace zorba
     break;
 
   case 150:
-#line 2452 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2454 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupSpecList [single]" << endl;
@@ -3069,7 +3071,7 @@ namespace zorba
     break;
 
   case 151:
-#line 2461 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2463 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupSpecList [list]" << endl;
@@ -3083,7 +3085,7 @@ namespace zorba
     break;
 
   case 152:
-#line 2475 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2477 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupSpec []" << endl;
@@ -3095,7 +3097,7 @@ namespace zorba
     break;
 
   case 153:
-#line 2484 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2486 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupSpec [collation]" << endl;
@@ -3107,7 +3109,7 @@ namespace zorba
     break;
 
   case 154:
-#line 2496 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2498 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GroupCollationSpec [ ]" << endl;
@@ -3117,7 +3119,7 @@ namespace zorba
     break;
 
   case 155:
-#line 2506 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClauseList [single]" << endl;
@@ -3129,7 +3131,7 @@ namespace zorba
     break;
 
   case 156:
-#line 2516 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2518 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClauseList [list]" << endl;
@@ -3141,7 +3143,7 @@ namespace zorba
     break;
 
   case 157:
-#line 2531 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2533 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [ ]" << endl;
@@ -3152,7 +3154,7 @@ namespace zorba
     break;
 
   case 158:
-#line 2539 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2541 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [stable]" << endl;
@@ -3164,7 +3166,7 @@ namespace zorba
     break;
 
   case 159:
-#line 2554 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2556 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [single]" << endl;
@@ -3176,7 +3178,7 @@ namespace zorba
     break;
 
   case 160:
-#line 2563 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2565 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [list]" << endl;
@@ -3190,7 +3192,7 @@ namespace zorba
     break;
 
   case 161:
-#line 2580 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2582 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single]" << endl;
@@ -3202,7 +3204,7 @@ namespace zorba
     break;
 
   case 162:
-#line 2589 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2591 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single.modifier]" << endl;
@@ -3214,7 +3216,7 @@ namespace zorba
     break;
 
   case 163:
-#line 2604 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2606 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir]" << endl;
@@ -3227,7 +3229,7 @@ namespace zorba
     break;
 
   case 164:
-#line 2614 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2616 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty]" << endl;
@@ -3240,7 +3242,7 @@ namespace zorba
     break;
 
   case 165:
-#line 2624 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2626 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [collation]" << endl;
@@ -3253,7 +3255,7 @@ namespace zorba
     break;
 
   case 166:
-#line 2634 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2636 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty]" << endl;
@@ -3266,7 +3268,7 @@ namespace zorba
     break;
 
   case 167:
-#line 2644 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.collation]" << endl;
@@ -3279,7 +3281,7 @@ namespace zorba
     break;
 
   case 168:
-#line 2654 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2656 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty.collation]" << endl;
@@ -3292,7 +3294,7 @@ namespace zorba
     break;
 
   case 169:
-#line 2664 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty.collation]" << endl;
@@ -3305,7 +3307,7 @@ namespace zorba
     break;
 
   case 170:
-#line 2680 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2682 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [ascending]" << endl;
@@ -3315,7 +3317,7 @@ namespace zorba
     break;
 
   case 171:
-#line 2687 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2689 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [descending]" << endl;
@@ -3325,7 +3327,7 @@ namespace zorba
     break;
 
   case 172:
-#line 2700 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2702 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [greatest]" << endl;
@@ -3336,7 +3338,7 @@ namespace zorba
     break;
 
   case 173:
-#line 2708 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2710 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [least]" << endl;
@@ -3347,7 +3349,7 @@ namespace zorba
     break;
 
   case 174:
-#line 2722 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2724 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderCollationSpec [ ]" << endl;
@@ -3358,7 +3360,7 @@ namespace zorba
     break;
 
   case 175:
-#line 2736 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2738 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [some]" << endl;
@@ -3371,7 +3373,7 @@ namespace zorba
     break;
 
   case 176:
-#line 2746 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2748 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [every]" << endl;
@@ -3384,7 +3386,7 @@ namespace zorba
     break;
 
   case 177:
-#line 2762 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2764 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [single]" << endl;
@@ -3397,7 +3399,7 @@ namespace zorba
     break;
 
   case 178:
-#line 2772 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2774 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [list]" << endl;
@@ -3409,7 +3411,7 @@ namespace zorba
     break;
 
   case 179:
-#line 2787 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2789 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [in]" << endl;
@@ -3421,7 +3423,7 @@ namespace zorba
     break;
 
   case 180:
-#line 2796 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2798 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [type.in]" << endl;
@@ -3434,7 +3436,7 @@ namespace zorba
     break;
 
   case 181:
-#line 2812 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2814 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.return]" << endl;
@@ -3447,7 +3449,7 @@ namespace zorba
     break;
 
   case 182:
-#line 2822 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2824 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.varname.return]" << endl;
@@ -3461,7 +3463,7 @@ namespace zorba
     break;
 
   case 183:
-#line 2839 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2841 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [single]" << endl;
@@ -3473,7 +3475,7 @@ namespace zorba
     break;
 
   case 184:
-#line 2848 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2850 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [list]" << endl;
@@ -3485,7 +3487,7 @@ namespace zorba
     break;
 
   case 185:
-#line 2863 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2865 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.return]" << endl;
@@ -3497,7 +3499,7 @@ namespace zorba
     break;
 
   case 186:
-#line 2872 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2874 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.as.return]" << endl;
@@ -3510,7 +3512,7 @@ namespace zorba
     break;
 
   case 187:
-#line 2888 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2890 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IfExpr [ ]" << endl;
@@ -3521,7 +3523,7 @@ namespace zorba
     break;
 
   case 188:
-#line 2902 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2904 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [and]" << endl;
@@ -3531,7 +3533,7 @@ namespace zorba
     break;
 
   case 189:
-#line 2909 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2911 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [or.and]" << endl;
@@ -3542,7 +3544,7 @@ namespace zorba
     break;
 
   case 190:
-#line 2923 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2925 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [comp]" << endl;
@@ -3552,7 +3554,7 @@ namespace zorba
     break;
 
   case 191:
-#line 2930 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2932 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [and.comp]" << endl;
@@ -3563,7 +3565,7 @@ namespace zorba
     break;
 
   case 192:
-#line 2952 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2954 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains]" << endl;
@@ -3573,7 +3575,7 @@ namespace zorba
     break;
 
   case 193:
-#line 2959 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2961 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -3587,7 +3589,7 @@ namespace zorba
     break;
 
   case 194:
-#line 2970 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2972 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -3601,7 +3603,7 @@ namespace zorba
     break;
 
   case 195:
-#line 2981 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 2983 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "is" | "<<" | ">>" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -3615,7 +3617,7 @@ namespace zorba
     break;
 
   case 196:
-#line 2998 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3000 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range]" << endl;
@@ -3625,7 +3627,7 @@ namespace zorba
     break;
 
   case 197:
-#line 3005 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3007 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect]" << endl;
@@ -3638,7 +3640,7 @@ namespace zorba
     break;
 
   case 198:
-#line 3015 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3017 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect.ftignore]" << endl;
@@ -3651,7 +3653,7 @@ namespace zorba
     break;
 
   case 199:
-#line 3031 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3033 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add]" << endl;
@@ -3661,7 +3663,7 @@ namespace zorba
     break;
 
   case 200:
-#line 3038 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3040 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add.to.add]" << endl;
@@ -3672,7 +3674,7 @@ namespace zorba
     break;
 
   case 201:
-#line 3052 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3054 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult]" << endl;
@@ -3682,7 +3684,7 @@ namespace zorba
     break;
 
   case 202:
-#line 3059 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3061 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult+mult]" << endl;
@@ -3692,7 +3694,7 @@ namespace zorba
     break;
 
   case 203:
-#line 3066 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3068 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult-mult]" << endl;
@@ -3702,7 +3704,7 @@ namespace zorba
     break;
 
   case 204:
-#line 3079 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3081 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [union]" << endl;
@@ -3712,7 +3714,7 @@ namespace zorba
     break;
 
   case 205:
-#line 3086 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3088 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult*union]" << endl;
@@ -3722,7 +3724,7 @@ namespace zorba
     break;
 
   case 206:
-#line 3093 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3095 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.div.union]" << endl;
@@ -3732,7 +3734,7 @@ namespace zorba
     break;
 
   case 207:
-#line 3100 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3102 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.idiv.union]" << endl;
@@ -3742,7 +3744,7 @@ namespace zorba
     break;
 
   case 208:
-#line 3107 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3109 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.mod.union]" << endl;
@@ -3752,7 +3754,7 @@ namespace zorba
     break;
 
   case 209:
-#line 3120 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3122 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [interexcept]" << endl;
@@ -3762,7 +3764,7 @@ namespace zorba
     break;
 
   case 210:
-#line 3127 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union.union.interexcept]" << endl;
@@ -3773,7 +3775,7 @@ namespace zorba
     break;
 
   case 211:
-#line 3135 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3137 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union|interexcept]" << endl;
@@ -3784,7 +3786,7 @@ namespace zorba
     break;
 
   case 212:
-#line 3149 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3151 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [instanceof]" << endl;
@@ -3794,7 +3796,7 @@ namespace zorba
     break;
 
   case 213:
-#line 3156 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3158 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]" << endl;
@@ -3804,7 +3806,7 @@ namespace zorba
     break;
 
   case 214:
-#line 3163 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3165 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.except.instanceof]" << endl;
@@ -3814,7 +3816,7 @@ namespace zorba
     break;
 
   case 215:
-#line 3176 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3178 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat]" << endl;
@@ -3824,7 +3826,7 @@ namespace zorba
     break;
 
   case 216:
-#line 3183 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3185 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat.seqtype]" << endl;
@@ -3836,7 +3838,7 @@ namespace zorba
     break;
 
   case 217:
-#line 3198 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3200 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable]" << endl;
@@ -3846,7 +3848,7 @@ namespace zorba
     break;
 
   case 218:
-#line 3205 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable.seqtype]" << endl;
@@ -3858,7 +3860,7 @@ namespace zorba
     break;
 
   case 219:
-#line 3220 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3222 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast]" << endl;
@@ -3868,7 +3870,7 @@ namespace zorba
     break;
 
   case 220:
-#line 3227 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3229 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast.singletype]" << endl;
@@ -3880,7 +3882,7 @@ namespace zorba
     break;
 
   case 221:
-#line 3242 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3244 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary]" << endl;
@@ -3890,7 +3892,7 @@ namespace zorba
     break;
 
   case 222:
-#line 3249 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3251 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary.singletype]" << endl;
@@ -3902,7 +3904,7 @@ namespace zorba
     break;
 
   case 223:
-#line 3264 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3266 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [value]" << endl;
@@ -3912,7 +3914,7 @@ namespace zorba
     break;
 
   case 224:
-#line 3271 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3273 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [signlist.value]" << endl;
@@ -3924,7 +3926,7 @@ namespace zorba
     break;
 
   case 225:
-#line 3286 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3288 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [+]" << endl;
@@ -3934,7 +3936,7 @@ namespace zorba
     break;
 
   case 226:
-#line 3293 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3295 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [-]" << endl;
@@ -3944,7 +3946,7 @@ namespace zorba
     break;
 
   case 227:
-#line 3300 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3302 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.+]" << endl;
@@ -3954,7 +3956,7 @@ namespace zorba
     break;
 
   case 228:
-#line 3307 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3309 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.-]" << endl;
@@ -3966,7 +3968,7 @@ namespace zorba
     break;
 
   case 229:
-#line 3322 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3324 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [validate]" << endl;
@@ -3976,7 +3978,7 @@ namespace zorba
     break;
 
   case 230:
-#line 3329 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3331 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [path]" << endl;
@@ -3986,7 +3988,7 @@ namespace zorba
     break;
 
   case 231:
-#line 3336 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3338 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [extension]" << endl;
@@ -3996,7 +3998,7 @@ namespace zorba
     break;
 
   case 232:
-#line 3350 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3352 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [=]" << endl;
@@ -4006,7 +4008,7 @@ namespace zorba
     break;
 
   case 233:
-#line 3357 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3359 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [!=]" << endl;
@@ -4016,7 +4018,7 @@ namespace zorba
     break;
 
   case 234:
-#line 3364 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3366 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<]" << endl;
@@ -4026,7 +4028,7 @@ namespace zorba
     break;
 
   case 235:
-#line 3371 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3373 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<=]" << endl;
@@ -4036,7 +4038,7 @@ namespace zorba
     break;
 
   case 236:
-#line 3378 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3380 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>]" << endl;
@@ -4046,7 +4048,7 @@ namespace zorba
     break;
 
   case 237:
-#line 3385 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3387 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>=]" << endl;
@@ -4056,7 +4058,7 @@ namespace zorba
     break;
 
   case 238:
-#line 3398 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3400 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [eq]" << endl;
@@ -4066,7 +4068,7 @@ namespace zorba
     break;
 
   case 239:
-#line 3405 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3407 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ne]" << endl;
@@ -4076,7 +4078,7 @@ namespace zorba
     break;
 
   case 240:
-#line 3412 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3414 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [lt]" << endl;
@@ -4086,7 +4088,7 @@ namespace zorba
     break;
 
   case 241:
-#line 3419 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3421 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [le]" << endl;
@@ -4096,7 +4098,7 @@ namespace zorba
     break;
 
   case 242:
-#line 3426 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3428 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [gt]" << endl;
@@ -4106,7 +4108,7 @@ namespace zorba
     break;
 
   case 243:
-#line 3433 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3435 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ge]" << endl;
@@ -4116,7 +4118,7 @@ namespace zorba
     break;
 
   case 244:
-#line 3446 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3448 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [is]" << endl;
@@ -4126,7 +4128,7 @@ namespace zorba
     break;
 
   case 245:
-#line 3453 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3455 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [<<]" << endl;
@@ -4136,7 +4138,7 @@ namespace zorba
     break;
 
   case 246:
-#line 3460 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3462 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [>>]" << endl;
@@ -4146,7 +4148,7 @@ namespace zorba
     break;
 
   case 247:
-#line 3474 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3476 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [expr]" << endl;
@@ -4156,7 +4158,7 @@ namespace zorba
     break;
 
   case 248:
-#line 3481 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3483 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [mode.expr]" << endl;
@@ -4168,7 +4170,7 @@ namespace zorba
     break;
 
   case 249:
-#line 3496 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3498 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist]" << endl;
@@ -4180,7 +4182,7 @@ namespace zorba
     break;
 
   case 250:
-#line 3505 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3507 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist.expr]" << endl;
@@ -4192,7 +4194,7 @@ namespace zorba
     break;
 
   case 251:
-#line 3520 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3522 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [single]" << endl;
@@ -4204,7 +4206,7 @@ namespace zorba
     break;
 
   case 252:
-#line 3529 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3531 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [list]" << endl;
@@ -4218,7 +4220,7 @@ namespace zorba
     break;
 
   case 253:
-#line 3546 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3548 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]" << endl;
@@ -4231,7 +4233,7 @@ namespace zorba
     break;
 
   case 254:
-#line 3554 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3556 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval))),
@@ -4240,7 +4242,7 @@ namespace zorba
     break;
 
   case 255:
-#line 3597 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3599 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/]" << endl;
@@ -4250,7 +4252,7 @@ namespace zorba
     break;
 
   case 256:
-#line 3604 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3606 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/relative]" << endl;
@@ -4260,7 +4262,7 @@ namespace zorba
     break;
 
   case 257:
-#line 3611 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3613 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [//relative]" << endl;
@@ -4270,7 +4272,7 @@ namespace zorba
     break;
 
   case 258:
-#line 3618 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3620 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [relative]" << endl;
@@ -4283,7 +4285,7 @@ namespace zorba
     break;
 
   case 259:
-#line 3634 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3636 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step]" << endl;
@@ -4299,7 +4301,7 @@ namespace zorba
     break;
 
   case 260:
-#line 3648 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3650 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step/relative]" << endl;
@@ -4309,7 +4311,7 @@ namespace zorba
     break;
 
   case 261:
-#line 3656 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step//relative]" << endl;
@@ -4319,7 +4321,7 @@ namespace zorba
     break;
 
   case 262:
-#line 3669 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3671 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [axis]" << endl;
@@ -4329,7 +4331,7 @@ namespace zorba
     break;
 
   case 263:
-#line 3676 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3678 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [filter]" << endl;
@@ -4339,7 +4341,7 @@ namespace zorba
     break;
 
   case 264:
-#line 3689 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3691 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward]" << endl;
@@ -4351,7 +4353,7 @@ namespace zorba
     break;
 
   case 265:
-#line 3698 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3700 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward.predlist]" << endl;
@@ -4363,7 +4365,7 @@ namespace zorba
     break;
 
   case 266:
-#line 3707 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3709 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse]" << endl;
@@ -4375,7 +4377,7 @@ namespace zorba
     break;
 
   case 267:
-#line 3716 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3718 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse.predlist]" << endl;
@@ -4387,7 +4389,7 @@ namespace zorba
     break;
 
   case 268:
-#line 3731 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3733 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [nodetest]" << endl;
@@ -4399,7 +4401,7 @@ namespace zorba
     break;
 
   case 269:
-#line 3740 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3742 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [abbrev]" << endl;
@@ -4410,7 +4412,7 @@ namespace zorba
     break;
 
   case 270:
-#line 3754 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3756 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [child]" << endl;
@@ -4420,7 +4422,7 @@ namespace zorba
     break;
 
   case 271:
-#line 3761 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3763 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant]" << endl;
@@ -4430,7 +4432,7 @@ namespace zorba
     break;
 
   case 272:
-#line 3768 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3770 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [attribute]" << endl;
@@ -4440,7 +4442,7 @@ namespace zorba
     break;
 
   case 273:
-#line 3775 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3777 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [self]" << endl;
@@ -4450,7 +4452,7 @@ namespace zorba
     break;
 
   case 274:
-#line 3782 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3784 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant_or_self]" << endl;
@@ -4460,7 +4462,7 @@ namespace zorba
     break;
 
   case 275:
-#line 3789 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following_sibling]" << endl;
@@ -4470,7 +4472,7 @@ namespace zorba
     break;
 
   case 276:
-#line 3796 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3798 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following]" << endl;
@@ -4480,7 +4482,7 @@ namespace zorba
     break;
 
   case 277:
-#line 3809 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3811 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [nodetest]" << endl;
@@ -4490,7 +4492,7 @@ namespace zorba
     break;
 
   case 278:
-#line 3816 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3818 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [@ nodetest]" << endl;
@@ -4500,7 +4502,7 @@ namespace zorba
     break;
 
   case 279:
-#line 3829 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3831 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [nodetest]" << endl;
@@ -4512,7 +4514,7 @@ namespace zorba
     break;
 
   case 280:
-#line 3838 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3840 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [..]" << endl;
@@ -4524,7 +4526,7 @@ namespace zorba
     break;
 
   case 281:
-#line 3853 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3855 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [parent]" << endl;
@@ -4534,7 +4536,7 @@ namespace zorba
     break;
 
   case 282:
-#line 3860 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3862 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor]" << endl;
@@ -4544,7 +4546,7 @@ namespace zorba
     break;
 
   case 283:
-#line 3867 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding_sibling]" << endl;
@@ -4554,7 +4556,7 @@ namespace zorba
     break;
 
   case 284:
-#line 3874 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3876 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding]" << endl;
@@ -4564,7 +4566,7 @@ namespace zorba
     break;
 
   case 285:
-#line 3881 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3883 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor_or_self]" << endl;
@@ -4574,7 +4576,7 @@ namespace zorba
     break;
 
   case 286:
-#line 3899 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3901 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [kindtest]" << endl;
@@ -4584,7 +4586,7 @@ namespace zorba
     break;
 
   case 287:
-#line 3906 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3908 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [nametest]" << endl;
@@ -4594,7 +4596,7 @@ namespace zorba
     break;
 
   case 288:
-#line 3919 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3921 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [qname]" << endl;
@@ -4604,7 +4606,7 @@ namespace zorba
     break;
 
   case 289:
-#line 3926 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3928 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [wildcard]" << endl;
@@ -4614,7 +4616,7 @@ namespace zorba
     break;
 
   case 290:
-#line 3939 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3941 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*]" << endl;
@@ -4627,7 +4629,7 @@ namespace zorba
     break;
 
   case 291:
-#line 3949 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3951 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [pref:*]" << endl;
@@ -4640,7 +4642,7 @@ namespace zorba
     break;
 
   case 292:
-#line 3959 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3961 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*:qname]" << endl;
@@ -4653,7 +4655,7 @@ namespace zorba
     break;
 
   case 293:
-#line 3975 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3977 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary]" << endl;
@@ -4663,7 +4665,7 @@ namespace zorba
     break;
 
   case 294:
-#line 3982 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3984 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary.predlist]" << endl;
@@ -4675,7 +4677,7 @@ namespace zorba
     break;
 
   case 295:
-#line 3997 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 3999 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [single]" << endl;
@@ -4687,7 +4689,7 @@ namespace zorba
     break;
 
   case 296:
-#line 4006 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4008 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [list]" << endl;
@@ -4701,7 +4703,7 @@ namespace zorba
     break;
 
   case 297:
-#line 4023 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4025 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Predicate [ ]" << endl;
@@ -4711,7 +4713,7 @@ namespace zorba
     break;
 
   case 298:
-#line 4037 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4039 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [literal]" << endl;
@@ -4721,7 +4723,7 @@ namespace zorba
     break;
 
   case 299:
-#line 4044 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4046 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [varref]" << endl;
@@ -4731,7 +4733,7 @@ namespace zorba
     break;
 
   case 300:
-#line 4051 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4053 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [paren]" << endl;
@@ -4741,7 +4743,7 @@ namespace zorba
     break;
 
   case 301:
-#line 4058 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4060 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [context_item]" << endl;
@@ -4751,7 +4753,7 @@ namespace zorba
     break;
 
   case 302:
-#line 4065 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4067 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [funcall]" << endl;
@@ -4761,7 +4763,7 @@ namespace zorba
     break;
 
   case 303:
-#line 4072 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4074 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [cons]" << endl;
@@ -4771,7 +4773,7 @@ namespace zorba
     break;
 
   case 304:
-#line 4079 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4081 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [ordered]" << endl;
@@ -4781,7 +4783,7 @@ namespace zorba
     break;
 
   case 305:
-#line 4086 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4088 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [unordered]" << endl;
@@ -4791,7 +4793,7 @@ namespace zorba
     break;
 
   case 306:
-#line 4099 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4101 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [numeric]" << endl;
@@ -4801,7 +4803,7 @@ namespace zorba
     break;
 
   case 307:
-#line 4106 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4108 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [string]" << endl;
@@ -4811,7 +4813,7 @@ namespace zorba
     break;
 
   case 308:
-#line 4119 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [decimal]" << endl;
@@ -4822,7 +4824,7 @@ namespace zorba
     break;
 
   case 309:
-#line 4127 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [int]" << endl;
@@ -4833,7 +4835,7 @@ namespace zorba
     break;
 
   case 310:
-#line 4135 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4137 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [double]" << endl;
@@ -4844,7 +4846,7 @@ namespace zorba
     break;
 
   case 311:
-#line 4149 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4151 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarRef [ ]" << endl;
@@ -4854,7 +4856,7 @@ namespace zorba
     break;
 
   case 312:
-#line 4162 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4164 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [()]" << endl;
@@ -4864,7 +4866,7 @@ namespace zorba
     break;
 
   case 313:
-#line 4169 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4171 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [(expr)]" << endl;
@@ -4875,7 +4877,7 @@ namespace zorba
     break;
 
   case 314:
-#line 4183 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4185 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ContextItemExpr [.]" << endl;
@@ -4885,7 +4887,7 @@ namespace zorba
     break;
 
   case 315:
-#line 4196 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4198 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderedExpr [expr]" << endl;
@@ -4896,7 +4898,7 @@ namespace zorba
     break;
 
   case 316:
-#line 4210 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4212 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnorderedExpr [expr]" << endl;
@@ -4907,7 +4909,7 @@ namespace zorba
     break;
 
   case 317:
-#line 4269 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4271 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [ ]" << endl;
@@ -4919,7 +4921,7 @@ namespace zorba
     break;
 
   case 318:
-#line 4278 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4280 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [arglist]" << endl;
@@ -4931,7 +4933,7 @@ namespace zorba
     break;
 
   case 319:
-#line 4293 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4295 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [single]" << endl;
@@ -4943,7 +4945,7 @@ namespace zorba
     break;
 
   case 320:
-#line 4302 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4304 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [list]" << endl;
@@ -4955,7 +4957,7 @@ namespace zorba
     break;
 
   case 321:
-#line 4317 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4319 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [direct]" << endl;
@@ -4965,7 +4967,7 @@ namespace zorba
     break;
 
   case 322:
-#line 4324 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4326 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [computed]" << endl;
@@ -4975,7 +4977,7 @@ namespace zorba
     break;
 
   case 323:
-#line 4337 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4339 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [element]" << endl;
@@ -4985,7 +4987,7 @@ namespace zorba
     break;
 
   case 324:
-#line 4344 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4346 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [comment]" << endl;
@@ -4995,7 +4997,7 @@ namespace zorba
     break;
 
   case 325:
-#line 4351 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4353 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [pi]" << endl;
@@ -5005,7 +5007,7 @@ namespace zorba
     break;
 
   case 326:
-#line 4364 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4366 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname/> ]" << endl;
@@ -5019,7 +5021,7 @@ namespace zorba
     break;
 
   case 327:
-#line 4375 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4377 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist/> ]" << endl;
@@ -5033,7 +5035,7 @@ namespace zorba
     break;
 
   case 328:
-#line 4386 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4388 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname></qname>]" << endl;
@@ -5047,7 +5049,7 @@ namespace zorba
     break;
 
   case 329:
-#line 4397 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4399 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname>content</qname>]" << endl;
@@ -5061,7 +5063,7 @@ namespace zorba
     break;
 
   case 330:
-#line 4408 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4410 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist></qname>]" << endl;
@@ -5075,7 +5077,7 @@ namespace zorba
     break;
 
   case 331:
-#line 4419 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4421 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist>content</qname>]" << endl;
@@ -5089,7 +5091,7 @@ namespace zorba
     break;
 
   case 332:
-#line 4437 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4439 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [single]" << endl;
@@ -5101,7 +5103,7 @@ namespace zorba
     break;
 
   case 333:
-#line 4446 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4448 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [list]" << endl;
@@ -5113,7 +5115,7 @@ namespace zorba
     break;
 
   case 334:
-#line 4461 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4463 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [single]" << endl;
@@ -5125,7 +5127,7 @@ namespace zorba
     break;
 
   case 335:
-#line 4470 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4472 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [list]" << endl;
@@ -5139,7 +5141,7 @@ namespace zorba
     break;
 
   case 336:
-#line 4487 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4489 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttr [ ]" << endl;
@@ -5151,7 +5153,7 @@ namespace zorba
     break;
 
   case 337:
-#line 4502 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4504 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [quote]" << endl;
@@ -5162,7 +5164,7 @@ namespace zorba
     break;
 
   case 338:
-#line 4510 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4512 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [apos]" << endl;
@@ -5173,7 +5175,7 @@ namespace zorba
     break;
 
   case 339:
-#line 4524 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4526 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList[empty]" << endl;
@@ -5183,14 +5185,14 @@ namespace zorba
     break;
 
   case 340:
-#line 4531 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4533 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 341:
-#line 4538 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4540 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [""]" << endl;
@@ -5202,7 +5204,7 @@ namespace zorba
     break;
 
   case 342:
-#line 4547 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4549 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [single]" << endl;
@@ -5214,7 +5216,7 @@ namespace zorba
     break;
 
   case 343:
-#line 4556 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4558 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list ""]" << endl;
@@ -5228,7 +5230,7 @@ namespace zorba
     break;
 
   case 344:
-#line 4567 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4569 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list]" << endl;
@@ -5242,7 +5244,7 @@ namespace zorba
     break;
 
   case 345:
-#line 4584 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4586 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']" << endl;
@@ -5252,14 +5254,14 @@ namespace zorba
     break;
 
   case 346:
-#line 4591 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4593 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 347:
-#line 4598 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']" << endl;
@@ -5271,7 +5273,7 @@ namespace zorba
     break;
 
   case 348:
-#line 4607 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4609 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [single]" << endl;
@@ -5283,7 +5285,7 @@ namespace zorba
     break;
 
   case 349:
-#line 4616 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4618 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.'']" << endl;
@@ -5297,7 +5299,7 @@ namespace zorba
     break;
 
   case 350:
-#line 4627 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4629 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.single]" << endl;
@@ -5311,7 +5313,7 @@ namespace zorba
     break;
 
   case 351:
-#line 4644 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [quote_attr_content]" << endl;
@@ -5322,7 +5324,7 @@ namespace zorba
     break;
 
   case 352:
-#line 4652 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4654 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [common_content]" << endl;
@@ -5333,7 +5335,7 @@ namespace zorba
     break;
 
   case 353:
-#line 4666 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4668 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [apos_attr_content]" << endl;
@@ -5344,7 +5346,7 @@ namespace zorba
     break;
 
   case 354:
-#line 4674 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4676 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [common_content]" << endl;
@@ -5355,7 +5357,7 @@ namespace zorba
     break;
 
   case 355:
-#line 4688 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4690 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cons]" << endl;
@@ -5366,7 +5368,7 @@ namespace zorba
     break;
 
   case 356:
-#line 4696 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4698 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [elem_content]" << endl;
@@ -5377,7 +5379,7 @@ namespace zorba
     break;
 
   case 357:
-#line 4704 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4706 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cdata]" << endl;
@@ -5389,7 +5391,7 @@ namespace zorba
     break;
 
   case 358:
-#line 4713 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4715 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [common_content]" << endl;
@@ -5401,7 +5403,7 @@ namespace zorba
     break;
 
   case 359:
-#line 4728 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4730 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [char_ref]\n";
@@ -5413,7 +5415,7 @@ namespace zorba
     break;
 
   case 360:
-#line 4737 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4739 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [{{]" << endl;
@@ -5424,7 +5426,7 @@ namespace zorba
     break;
 
   case 361:
-#line 4745 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4747 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [}}]" << endl;
@@ -5435,7 +5437,7 @@ namespace zorba
     break;
 
   case 362:
-#line 4753 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [expr]" << endl;
@@ -5446,7 +5448,7 @@ namespace zorba
     break;
 
   case 363:
-#line 4767 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4769 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirCommentConstructor [ ]" << endl;
@@ -5457,7 +5459,7 @@ namespace zorba
     break;
 
   case 364:
-#line 4775 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4777 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
        cout << "DirCommentConstructor [ ]" << endl;
@@ -5467,7 +5469,7 @@ namespace zorba
     break;
 
   case 365:
-#line 4793 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4795 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target]" << endl;
@@ -5478,7 +5480,7 @@ namespace zorba
     break;
 
   case 366:
-#line 4801 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4803 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]" << endl;
@@ -5490,7 +5492,7 @@ namespace zorba
     break;
 
   case 367:
-#line 4821 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4823 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CDataSection [ ]" << endl;
@@ -5500,7 +5502,7 @@ namespace zorba
     break;
 
   case 368:
-#line 4839 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4841 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [doc]" << endl;
@@ -5510,7 +5512,7 @@ namespace zorba
     break;
 
   case 369:
-#line 4846 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4848 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [elem]" << endl;
@@ -5520,7 +5522,7 @@ namespace zorba
     break;
 
   case 370:
-#line 4853 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4855 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [attr]" << endl;
@@ -5530,7 +5532,7 @@ namespace zorba
     break;
 
   case 371:
-#line 4860 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4862 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [text]" << endl;
@@ -5540,7 +5542,7 @@ namespace zorba
     break;
 
   case 372:
-#line 4867 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [comment]" << endl;
@@ -5550,7 +5552,7 @@ namespace zorba
     break;
 
   case 373:
-#line 4874 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4876 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [pi]" << endl;
@@ -5560,7 +5562,7 @@ namespace zorba
     break;
 
   case 374:
-#line 4887 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4889 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompDocConstructor [ ]" << endl;
@@ -5571,7 +5573,7 @@ namespace zorba
     break;
 
   case 375:
-#line 4901 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4903 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [ ]" << endl;
@@ -5583,7 +5585,7 @@ namespace zorba
     break;
 
   case 376:
-#line 4910 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4912 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [content]" << endl;
@@ -5595,7 +5597,7 @@ namespace zorba
     break;
 
   case 377:
-#line 4919 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4921 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name]" << endl;
@@ -5606,7 +5608,7 @@ namespace zorba
     break;
 
   case 378:
-#line 4927 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4929 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name.content]" << endl;
@@ -5617,7 +5619,7 @@ namespace zorba
     break;
 
   case 379:
-#line 4955 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4957 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [ ]" << endl;
@@ -5629,7 +5631,7 @@ namespace zorba
     break;
 
   case 380:
-#line 4964 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4966 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [val]" << endl;
@@ -5641,7 +5643,7 @@ namespace zorba
     break;
 
   case 381:
-#line 4973 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4975 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name]" << endl;
@@ -5652,7 +5654,7 @@ namespace zorba
     break;
 
   case 382:
-#line 4981 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4983 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name.val]" << endl;
@@ -5663,7 +5665,7 @@ namespace zorba
     break;
 
   case 383:
-#line 4995 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 4997 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompTextConstructor [content]" << endl;
@@ -5674,7 +5676,7 @@ namespace zorba
     break;
 
   case 384:
-#line 5009 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5011 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompCommentConstructor [content]" << endl;
@@ -5685,7 +5687,7 @@ namespace zorba
     break;
 
   case 385:
-#line 5023 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5025 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [ ]" << endl;
@@ -5697,7 +5699,7 @@ namespace zorba
     break;
 
   case 386:
-#line 5032 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5034 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [content]" << endl;
@@ -5709,7 +5711,7 @@ namespace zorba
     break;
 
   case 387:
-#line 5041 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5043 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]" << endl;
@@ -5720,7 +5722,7 @@ namespace zorba
     break;
 
   case 388:
-#line 5049 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5051 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]" << endl;
@@ -5731,7 +5733,7 @@ namespace zorba
     break;
 
   case 389:
-#line 5063 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5065 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic]" << endl;
@@ -5743,7 +5745,7 @@ namespace zorba
     break;
 
   case 390:
-#line 5072 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5074 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic ?]" << endl;
@@ -5755,7 +5757,7 @@ namespace zorba
     break;
 
   case 391:
-#line 5087 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5089 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeDeclaration [as seqtype]" << endl;
@@ -5766,7 +5768,7 @@ namespace zorba
     break;
 
   case 392:
-#line 5101 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5103 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type]" << endl;
@@ -5778,7 +5780,7 @@ namespace zorba
     break;
 
   case 393:
-#line 5110 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type.occurs]" << endl;
@@ -5790,7 +5792,7 @@ namespace zorba
     break;
 
   case 394:
-#line 5119 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [void]" << endl;
@@ -5800,7 +5802,7 @@ namespace zorba
     break;
 
   case 395:
-#line 5159 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5161 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [?]" << endl;
@@ -5811,7 +5813,7 @@ namespace zorba
     break;
 
   case 396:
-#line 5167 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5169 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [*]" << endl;
@@ -5822,7 +5824,7 @@ namespace zorba
     break;
 
   case 397:
-#line 5175 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5177 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [+]" << endl;
@@ -5833,7 +5835,7 @@ namespace zorba
     break;
 
   case 398:
-#line 5189 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5191 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [atomic]" << endl;
@@ -5843,7 +5845,7 @@ namespace zorba
     break;
 
   case 399:
-#line 5196 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5198 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [kind]" << endl;
@@ -5853,7 +5855,7 @@ namespace zorba
     break;
 
   case 400:
-#line 5203 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5205 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [item]" << endl;
@@ -5863,7 +5865,7 @@ namespace zorba
     break;
 
   case 401:
-#line 5216 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5218 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AtomicType [qname]" << endl;
@@ -5874,7 +5876,7 @@ namespace zorba
     break;
 
   case 402:
-#line 5230 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5232 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [doc]" << endl;
@@ -5884,7 +5886,7 @@ namespace zorba
     break;
 
   case 403:
-#line 5237 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5239 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [elem]" << endl;
@@ -5894,7 +5896,7 @@ namespace zorba
     break;
 
   case 404:
-#line 5244 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5246 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [attr]" << endl;
@@ -5904,7 +5906,7 @@ namespace zorba
     break;
 
   case 405:
-#line 5251 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5253 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_elem]" << endl;
@@ -5914,7 +5916,7 @@ namespace zorba
     break;
 
   case 406:
-#line 5258 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5260 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_attr]" << endl;
@@ -5924,7 +5926,7 @@ namespace zorba
     break;
 
   case 407:
-#line 5265 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5267 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [pi]" << endl;
@@ -5934,7 +5936,7 @@ namespace zorba
     break;
 
   case 408:
-#line 5272 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5274 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [comment]" << endl;
@@ -5944,7 +5946,7 @@ namespace zorba
     break;
 
   case 409:
-#line 5279 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5281 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [text]" << endl;
@@ -5954,7 +5956,7 @@ namespace zorba
     break;
 
   case 410:
-#line 5286 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5288 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [any]" << endl;
@@ -5964,7 +5966,7 @@ namespace zorba
     break;
 
   case 411:
-#line 5299 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5301 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AnyKindTest [ ]" << endl;
@@ -5974,7 +5976,7 @@ namespace zorba
     break;
 
   case 412:
-#line 5312 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5314 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [ ]" << endl;
@@ -5984,7 +5986,7 @@ namespace zorba
     break;
 
   case 413:
-#line 5319 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5321 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [elem]" << endl;
@@ -5995,7 +5997,7 @@ namespace zorba
     break;
 
   case 414:
-#line 5327 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5329 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [schema_elem]" << endl;
@@ -6006,7 +6008,7 @@ namespace zorba
     break;
 
   case 415:
-#line 5341 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5343 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TextTest [ ]" << endl;
@@ -6016,7 +6018,7 @@ namespace zorba
     break;
 
   case 416:
-#line 5354 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5356 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommentTest [ ]" << endl;
@@ -6026,7 +6028,7 @@ namespace zorba
     break;
 
   case 417:
-#line 5367 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5369 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ ]" << endl;
@@ -6036,7 +6038,7 @@ namespace zorba
     break;
 
   case 418:
-#line 5374 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5376 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ncname]" << endl;
@@ -6046,7 +6048,7 @@ namespace zorba
     break;
 
   case 419:
-#line 5381 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5383 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [stringlit]" << endl;
@@ -6056,7 +6058,7 @@ namespace zorba
     break;
 
   case 420:
-#line 5394 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5396 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [ ]" << endl;
@@ -6068,7 +6070,7 @@ namespace zorba
     break;
 
   case 421:
-#line 5403 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5405 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name]" << endl;
@@ -6080,7 +6082,7 @@ namespace zorba
     break;
 
   case 422:
-#line 5412 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5414 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name.type]" << endl;
@@ -6092,7 +6094,7 @@ namespace zorba
     break;
 
   case 423:
-#line 5421 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5423 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*]" << endl;
@@ -6104,7 +6106,7 @@ namespace zorba
     break;
 
   case 424:
-#line 5430 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5432 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*.type]" << endl;
@@ -6116,7 +6118,7 @@ namespace zorba
     break;
 
   case 425:
-#line 5445 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5447 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaAttributeTest [ ]" << endl;
@@ -6127,7 +6129,7 @@ namespace zorba
     break;
 
   case 426:
-#line 5459 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5461 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [ ]" << endl;
@@ -6139,7 +6141,7 @@ namespace zorba
     break;
 
   case 427:
-#line 5468 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5470 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name]" << endl;
@@ -6151,7 +6153,7 @@ namespace zorba
     break;
 
   case 428:
-#line 5477 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5479 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]" << endl;
@@ -6163,7 +6165,7 @@ namespace zorba
     break;
 
   case 429:
-#line 5486 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]" << endl;
@@ -6175,7 +6177,7 @@ namespace zorba
     break;
 
   case 430:
-#line 5495 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5497 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*]" << endl;
@@ -6188,7 +6190,7 @@ namespace zorba
     break;
 
   case 431:
-#line 5505 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5507 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]" << endl;
@@ -6201,7 +6203,7 @@ namespace zorba
     break;
 
   case 432:
-#line 5515 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5517 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]" << endl;
@@ -6214,7 +6216,7 @@ namespace zorba
     break;
 
   case 433:
-#line 5531 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5533 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaElementTest [ ]" << endl;
@@ -6225,7 +6227,7 @@ namespace zorba
     break;
 
   case 434:
-#line 5555 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5557 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name]" << endl;
@@ -6236,7 +6238,7 @@ namespace zorba
     break;
 
   case 435:
-#line 5565 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5567 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name?]" << endl;
@@ -6248,7 +6250,7 @@ namespace zorba
     break;
 
   case 436:
-#line 5588 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5590 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StringLiteral [ ]" << endl;
@@ -6258,7 +6260,7 @@ namespace zorba
     break;
 
   case 437:
-#line 5631 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5633 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [strict]" << endl;
@@ -6269,7 +6271,7 @@ namespace zorba
     break;
 
   case 438:
-#line 5639 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5641 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [lax]" << endl;
@@ -6278,7 +6280,7 @@ namespace zorba
     break;
 
   case 439:
-#line 5645 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5647 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [skip]" << endl;
@@ -6287,7 +6289,7 @@ namespace zorba
     break;
 
   case 440:
-#line 5656 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr]" << endl;
@@ -6299,7 +6301,7 @@ namespace zorba
     break;
 
   case 441:
-#line 5665 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5667 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.as_first]" << endl;
@@ -6311,7 +6313,7 @@ namespace zorba
     break;
 
   case 442:
-#line 5674 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5676 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.as_last]" << endl;
@@ -6323,7 +6325,7 @@ namespace zorba
     break;
 
   case 443:
-#line 5683 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5685 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.after]" << endl;
@@ -6335,7 +6337,7 @@ namespace zorba
     break;
 
   case 444:
-#line 5692 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5694 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.before]" << endl;
@@ -6347,7 +6349,7 @@ namespace zorba
     break;
 
   case 445:
-#line 5702 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5704 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr]" << endl;
@@ -6359,7 +6361,7 @@ namespace zorba
     break;
 
   case 446:
-#line 5711 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5713 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.as_first]" << endl;
@@ -6371,7 +6373,7 @@ namespace zorba
     break;
 
   case 447:
-#line 5720 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5722 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.as_last]" << endl;
@@ -6383,7 +6385,7 @@ namespace zorba
     break;
 
   case 448:
-#line 5729 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5731 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.after]" << endl;
@@ -6395,7 +6397,7 @@ namespace zorba
     break;
 
   case 449:
-#line 5738 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5740 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.before]" << endl;
@@ -6407,7 +6409,7 @@ namespace zorba
     break;
 
   case 450:
-#line 5753 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteNodeExpr [expr]" << endl;
@@ -6417,7 +6419,7 @@ namespace zorba
     break;
 
   case 451:
-#line 5761 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5763 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteNodesExpr [expr]" << endl;
@@ -6427,7 +6429,7 @@ namespace zorba
     break;
 
   case 452:
-#line 5774 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5776 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [expr.expr]" << endl;
@@ -6439,7 +6441,7 @@ namespace zorba
     break;
 
   case 453:
-#line 5783 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceValueOfExpr [value.expr]" << endl;
@@ -6451,7 +6453,7 @@ namespace zorba
     break;
 
   case 454:
-#line 5798 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5800 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RenameExpr [expr.expr]" << endl;
@@ -6462,7 +6464,7 @@ namespace zorba
     break;
 
   case 455:
-#line 5827 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5829 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TransformExpr [ ]" << endl;
@@ -6473,7 +6475,7 @@ namespace zorba
     break;
 
   case 456:
-#line 5841 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5843 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]" << endl;
@@ -6485,7 +6487,7 @@ namespace zorba
     break;
 
   case 457:
-#line 5850 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5852 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [list]" << endl;
@@ -6498,7 +6500,7 @@ namespace zorba
     break;
 
   case 458:
-#line 5866 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5868 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
        cout << "VarNameDecl [" << driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)) << "]" << endl;
@@ -6508,7 +6510,7 @@ namespace zorba
     break;
 
   case 459:
-#line 5883 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5885 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TryExpr []" << endl;
@@ -6519,7 +6521,7 @@ namespace zorba
     break;
 
   case 460:
-#line 5893 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5895 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchList [single]" << endl;
@@ -6531,7 +6533,7 @@ namespace zorba
     break;
 
   case 461:
-#line 5903 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5905 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchList [list]" << endl;
@@ -6545,7 +6547,7 @@ namespace zorba
     break;
 
   case 462:
-#line 5917 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5919 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest]" << endl;
@@ -6557,7 +6559,7 @@ namespace zorba
     break;
 
   case 463:
-#line 5927 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5929 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest,VarErrorCode]" << endl;
@@ -6570,7 +6572,7 @@ namespace zorba
     break;
 
   case 464:
-#line 5938 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5940 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest,VarErrorCode]" << endl;
@@ -6584,7 +6586,7 @@ namespace zorba
     break;
 
   case 465:
-#line 5950 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5952 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest,VarErrorCode]" << endl;
@@ -6599,7 +6601,7 @@ namespace zorba
     break;
 
   case 466:
-#line 5972 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5974 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new EvalExpr (LOC ((yyloc)),
                           dynamic_cast<VarGetsDeclList *> ((yysemantic_stack_[(5) - (2)].node)),
@@ -6608,14 +6610,14 @@ namespace zorba
     break;
 
   case 467:
-#line 5978 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5980 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new EvalExpr (LOC ((yyloc)), new VarGetsDeclList (LOC ((yyloc))), (yysemantic_stack_[(3) - (2)].expr));
     ;}
     break;
 
   case 468:
-#line 5995 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 5997 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or]" << endl;
@@ -6624,7 +6626,7 @@ namespace zorba
     break;
 
   case 469:
-#line 6001 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6003 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity]" << endl;
@@ -6633,7 +6635,7 @@ namespace zorba
     break;
 
   case 470:
-#line 6007 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6009 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.weight_range]" << endl;
@@ -6642,7 +6644,7 @@ namespace zorba
     break;
 
   case 471:
-#line 6013 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6015 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity.weight_range]" << endl;
@@ -6651,7 +6653,7 @@ namespace zorba
     break;
 
   case 472:
-#line 6025 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6027 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_single]" << endl;
@@ -6660,7 +6662,7 @@ namespace zorba
     break;
 
   case 473:
-#line 6031 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6033 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_single]" << endl;
@@ -6669,7 +6671,7 @@ namespace zorba
     break;
 
   case 474:
-#line 6037 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6039 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_list]" << endl;
@@ -6678,7 +6680,7 @@ namespace zorba
     break;
 
   case 475:
-#line 6043 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6045 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_list]" << endl;
@@ -6687,7 +6689,7 @@ namespace zorba
     break;
 
   case 476:
-#line 6055 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6057 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [and]" << endl;
@@ -6696,7 +6698,7 @@ namespace zorba
     break;
 
   case 477:
-#line 6061 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6063 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [or.and]" << endl;
@@ -6705,7 +6707,7 @@ namespace zorba
     break;
 
   case 478:
-#line 6073 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6075 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [mild_not]" << endl;
@@ -6714,7 +6716,7 @@ namespace zorba
     break;
 
   case 479:
-#line 6079 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6081 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [and.mild_not]" << endl;
@@ -6723,7 +6725,7 @@ namespace zorba
     break;
 
   case 480:
-#line 6091 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6093 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [unary_not]" << endl;
@@ -6732,7 +6734,7 @@ namespace zorba
     break;
 
   case 481:
-#line 6097 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6099 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [mild_not.unary_not]" << endl;
@@ -6741,7 +6743,7 @@ namespace zorba
     break;
 
   case 482:
-#line 6109 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6111 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [words]" << endl;
@@ -6750,7 +6752,7 @@ namespace zorba
     break;
 
   case 483:
-#line 6115 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6117 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [not.words]" << endl;
@@ -6759,7 +6761,7 @@ namespace zorba
     break;
 
   case 484:
-#line 6127 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words]" << endl;
@@ -6768,7 +6770,7 @@ namespace zorba
     break;
 
   case 485:
-#line 6133 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6135 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words.times]" << endl;
@@ -6777,7 +6779,7 @@ namespace zorba
     break;
 
   case 486:
-#line 6139 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6141 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [selection]" << endl;
@@ -6786,7 +6788,7 @@ namespace zorba
     break;
 
   case 487:
-#line 6151 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6153 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value]" << endl;
@@ -6795,7 +6797,7 @@ namespace zorba
     break;
 
   case 488:
-#line 6157 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6159 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value.any_all_option]" << endl;
@@ -6804,7 +6806,7 @@ namespace zorba
     break;
 
   case 489:
-#line 6169 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6171 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [literal]" << endl;
@@ -6813,7 +6815,7 @@ namespace zorba
     break;
 
   case 490:
-#line 6175 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6177 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [expr]" << endl;
@@ -6822,7 +6824,7 @@ namespace zorba
     break;
 
   case 491:
-#line 6187 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6189 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [order]" << endl;
@@ -6831,7 +6833,7 @@ namespace zorba
     break;
 
   case 492:
-#line 6193 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6195 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [window]" << endl;
@@ -6840,7 +6842,7 @@ namespace zorba
     break;
 
   case 493:
-#line 6199 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6201 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [distance]" << endl;
@@ -6849,7 +6851,7 @@ namespace zorba
     break;
 
   case 494:
-#line 6205 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [scope]" << endl;
@@ -6858,7 +6860,7 @@ namespace zorba
     break;
 
   case 495:
-#line 6211 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6213 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [content]" << endl;
@@ -6867,7 +6869,7 @@ namespace zorba
     break;
 
   case 496:
-#line 6223 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6225 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOrderedIndicator [ ]" << endl;
@@ -6876,7 +6878,7 @@ namespace zorba
     break;
 
   case 497:
-#line 6235 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6237 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [case]" << endl;
@@ -6886,7 +6888,7 @@ namespace zorba
     break;
 
   case 498:
-#line 6242 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6244 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [diacritics]" << endl;
@@ -6896,7 +6898,7 @@ namespace zorba
     break;
 
   case 499:
-#line 6249 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6251 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stem]" << endl;
@@ -6906,7 +6908,7 @@ namespace zorba
     break;
 
   case 500:
-#line 6256 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6258 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [thesaurus]" << endl;
@@ -6916,7 +6918,7 @@ namespace zorba
     break;
 
   case 501:
-#line 6263 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6265 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stopword]" << endl;
@@ -6926,7 +6928,7 @@ namespace zorba
     break;
 
   case 502:
-#line 6270 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6272 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [language]" << endl;
@@ -6936,7 +6938,7 @@ namespace zorba
     break;
 
   case 503:
-#line 6277 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6279 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [wildcard]" << endl;
@@ -6946,7 +6948,7 @@ namespace zorba
     break;
 
   case 504:
-#line 6290 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6292 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [lower]" << endl;
@@ -6955,7 +6957,7 @@ namespace zorba
     break;
 
   case 505:
-#line 6296 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6298 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [upper]" << endl;
@@ -6964,7 +6966,7 @@ namespace zorba
     break;
 
   case 506:
-#line 6302 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6304 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [sensitive]" << endl;
@@ -6973,7 +6975,7 @@ namespace zorba
     break;
 
   case 507:
-#line 6308 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6310 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [insensitive]" << endl;
@@ -6982,7 +6984,7 @@ namespace zorba
     break;
 
   case 508:
-#line 6320 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6322 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [with]" << endl;
@@ -6991,7 +6993,7 @@ namespace zorba
     break;
 
   case 509:
-#line 6326 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6328 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [without]" << endl;
@@ -7000,7 +7002,7 @@ namespace zorba
     break;
 
   case 510:
-#line 6332 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6334 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [sensitive]" << endl;
@@ -7009,7 +7011,7 @@ namespace zorba
     break;
 
   case 511:
-#line 6338 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6340 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [insensitive]" << endl;
@@ -7018,7 +7020,7 @@ namespace zorba
     break;
 
   case 512:
-#line 6350 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6352 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [with]" << endl;
@@ -7027,7 +7029,7 @@ namespace zorba
     break;
 
   case 513:
-#line 6356 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6358 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [without]" << endl;
@@ -7036,7 +7038,7 @@ namespace zorba
     break;
 
   case 514:
-#line 6368 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6370 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [id]" << endl;
@@ -7045,7 +7047,7 @@ namespace zorba
     break;
 
   case 515:
-#line 6374 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6376 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [default]" << endl;
@@ -7054,7 +7056,7 @@ namespace zorba
     break;
 
   case 516:
-#line 6380 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6382 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id)]" << endl;
@@ -7063,7 +7065,7 @@ namespace zorba
     break;
 
   case 517:
-#line 6386 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6388 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id,id,..)]" << endl;
@@ -7072,7 +7074,7 @@ namespace zorba
     break;
 
   case 518:
-#line 6392 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6394 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default)]" << endl;
@@ -7081,7 +7083,7 @@ namespace zorba
     break;
 
   case 519:
-#line 6398 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6400 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default,id,id,..)]" << endl;
@@ -7090,7 +7092,7 @@ namespace zorba
     break;
 
   case 520:
-#line 6404 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6406 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [without]" << endl;
@@ -7099,7 +7101,7 @@ namespace zorba
     break;
 
   case 521:
-#line 6416 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6418 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [single]" << endl;
@@ -7108,7 +7110,7 @@ namespace zorba
     break;
 
   case 522:
-#line 6422 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6424 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [list]" << endl;
@@ -7117,7 +7119,7 @@ namespace zorba
     break;
 
   case 523:
-#line 6434 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6436 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name]" << endl;
@@ -7126,7 +7128,7 @@ namespace zorba
     break;
 
   case 524:
-#line 6440 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6442 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel]" << endl;
@@ -7135,7 +7137,7 @@ namespace zorba
     break;
 
   case 525:
-#line 6446 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6448 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.range]" << endl;
@@ -7144,7 +7146,7 @@ namespace zorba
     break;
 
   case 526:
-#line 6452 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6454 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel.range]" << endl;
@@ -7153,7 +7155,7 @@ namespace zorba
     break;
 
   case 527:
-#line 6464 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6466 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list]" << endl;
@@ -7162,7 +7164,7 @@ namespace zorba
     break;
 
   case 528:
-#line 6470 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6472 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list.incl_excl]" << endl;
@@ -7171,7 +7173,7 @@ namespace zorba
     break;
 
   case 529:
-#line 6476 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6478 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default]" << endl;
@@ -7180,7 +7182,7 @@ namespace zorba
     break;
 
   case 530:
-#line 6482 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6484 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default.incl_excl]" << endl;
@@ -7189,7 +7191,7 @@ namespace zorba
     break;
 
   case 531:
-#line 6488 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6490 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [without]" << endl;
@@ -7198,7 +7200,7 @@ namespace zorba
     break;
 
   case 532:
-#line 6500 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6502 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [.]" << endl;
@@ -7207,7 +7209,7 @@ namespace zorba
     break;
 
   case 533:
-#line 6506 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [*]" << endl;
@@ -7216,7 +7218,7 @@ namespace zorba
     break;
 
   case 534:
-#line 6518 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6520 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [.]" << endl;
@@ -7225,7 +7227,7 @@ namespace zorba
     break;
 
   case 535:
-#line 6524 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6526 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [(*)]" << endl;
@@ -7234,7 +7236,7 @@ namespace zorba
     break;
 
   case 536:
-#line 6536 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6538 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [.]" << endl;
@@ -7243,7 +7245,7 @@ namespace zorba
     break;
 
   case 537:
-#line 6542 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6544 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [*]" << endl;
@@ -7252,7 +7254,7 @@ namespace zorba
     break;
 
   case 538:
-#line 6554 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6556 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [union]" << endl;
@@ -7261,7 +7263,7 @@ namespace zorba
     break;
 
   case 539:
-#line 6560 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6562 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [except]" << endl;
@@ -7270,7 +7272,7 @@ namespace zorba
     break;
 
   case 540:
-#line 6572 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6574 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTLanguageOption [ ]" << endl;
@@ -7279,7 +7281,7 @@ namespace zorba
     break;
 
   case 541:
-#line 6584 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6586 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [with]" << endl;
@@ -7288,7 +7290,7 @@ namespace zorba
     break;
 
   case 542:
-#line 6590 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6592 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [without]" << endl;
@@ -7297,7 +7299,7 @@ namespace zorba
     break;
 
   case 543:
-#line 6602 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6604 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [start]" << endl;
@@ -7306,7 +7308,7 @@ namespace zorba
     break;
 
   case 544:
-#line 6608 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6610 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [end]" << endl;
@@ -7315,7 +7317,7 @@ namespace zorba
     break;
 
   case 545:
-#line 6614 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6616 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [entire]" << endl;
@@ -7324,7 +7326,7 @@ namespace zorba
     break;
 
   case 546:
-#line 6626 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6628 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any]" << endl;
@@ -7333,7 +7335,7 @@ namespace zorba
     break;
 
   case 547:
-#line 6632 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6634 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any_word]" << endl;
@@ -7342,7 +7344,7 @@ namespace zorba
     break;
 
   case 548:
-#line 6638 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6640 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all]" << endl;
@@ -7351,7 +7353,7 @@ namespace zorba
     break;
 
   case 549:
-#line 6644 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all_words]" << endl;
@@ -7360,7 +7362,7 @@ namespace zorba
     break;
 
   case 550:
-#line 6650 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6652 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [phrase]" << endl;
@@ -7369,7 +7371,7 @@ namespace zorba
     break;
 
   case 551:
-#line 6662 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6664 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [exactly]" << endl;
@@ -7379,7 +7381,7 @@ namespace zorba
     break;
 
   case 552:
-#line 6669 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6671 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_least]" << endl;
@@ -7389,7 +7391,7 @@ namespace zorba
     break;
 
   case 553:
-#line 6676 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6678 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_most]" << endl;
@@ -7399,7 +7401,7 @@ namespace zorba
     break;
 
   case 554:
-#line 6683 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6685 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [range]" << endl;
@@ -7409,7 +7411,7 @@ namespace zorba
     break;
 
   case 555:
-#line 6696 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6698 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDistance [ ]" << endl;
@@ -7418,7 +7420,7 @@ namespace zorba
     break;
 
   case 556:
-#line 6708 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6710 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWindow [ ]" << endl;
@@ -7427,7 +7429,7 @@ namespace zorba
     break;
 
   case 557:
-#line 6720 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6722 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [ ]" << endl;
@@ -7436,7 +7438,7 @@ namespace zorba
     break;
 
   case 558:
-#line 6732 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6734 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [same]" << endl;
@@ -7445,7 +7447,7 @@ namespace zorba
     break;
 
   case 559:
-#line 6738 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6740 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [different]" << endl;
@@ -7454,7 +7456,7 @@ namespace zorba
     break;
 
   case 560:
-#line 6750 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6752 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [words]" << endl;
@@ -7463,7 +7465,7 @@ namespace zorba
     break;
 
   case 561:
-#line 6756 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6758 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [sentences]" << endl;
@@ -7472,7 +7474,7 @@ namespace zorba
     break;
 
   case 562:
-#line 6762 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6764 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [paragraph]" << endl;
@@ -7481,7 +7483,7 @@ namespace zorba
     break;
 
   case 563:
-#line 6774 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6776 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [sentence]" << endl;
@@ -7490,7 +7492,7 @@ namespace zorba
     break;
 
   case 564:
-#line 6780 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6782 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [paragraph]" << endl;
@@ -7499,7 +7501,7 @@ namespace zorba
     break;
 
   case 565:
-#line 6792 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6794 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTIgnoreOption [ ]" << endl;
@@ -7509,7 +7511,7 @@ namespace zorba
 
 
     /* Line 675 of lalr1.cc.  */
-#line 7513 "/home/dagraf/Work/28msec/zorba2/build/src/compiler/parser/xquery_parser.cpp"
+#line 7515 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -9496,49 +9498,49 @@ namespace zorba
     1953,  1964,  1975,  1987,  2002,  2017,  2032,  2053,  2062,  2077,
     2084,  2097,  2111,  2120,  2137,  2147,  2158,  2170,  2183,  2194,
     2206,  2218,  2236,  2251,  2265,  2280,  2289,  2304,  2313,  2330,
-    2341,  2353,  2364,  2379,  2383,  2397,  2408,  2418,  2428,  2438,
-    2451,  2460,  2474,  2483,  2495,  2505,  2515,  2530,  2538,  2553,
-    2562,  2579,  2588,  2603,  2613,  2623,  2633,  2643,  2653,  2663,
-    2679,  2686,  2699,  2707,  2721,  2735,  2745,  2761,  2771,  2786,
-    2795,  2811,  2821,  2838,  2847,  2862,  2871,  2887,  2901,  2908,
-    2922,  2929,  2951,  2958,  2969,  2980,  2997,  3004,  3014,  3030,
-    3037,  3051,  3058,  3065,  3078,  3085,  3092,  3099,  3106,  3119,
-    3126,  3134,  3148,  3155,  3162,  3175,  3182,  3197,  3204,  3219,
-    3226,  3241,  3248,  3263,  3270,  3285,  3292,  3299,  3306,  3321,
-    3328,  3335,  3349,  3356,  3363,  3370,  3377,  3384,  3397,  3404,
-    3411,  3418,  3425,  3432,  3445,  3452,  3459,  3473,  3480,  3495,
-    3504,  3519,  3528,  3545,  3554,  3596,  3603,  3610,  3617,  3633,
-    3647,  3655,  3668,  3675,  3688,  3697,  3706,  3715,  3730,  3739,
-    3753,  3760,  3767,  3774,  3781,  3788,  3795,  3808,  3815,  3828,
-    3837,  3852,  3859,  3866,  3873,  3880,  3898,  3905,  3918,  3925,
-    3938,  3948,  3958,  3974,  3981,  3996,  4005,  4022,  4036,  4043,
-    4050,  4057,  4064,  4071,  4078,  4085,  4098,  4105,  4118,  4126,
-    4134,  4148,  4161,  4168,  4182,  4195,  4209,  4268,  4277,  4292,
-    4301,  4316,  4323,  4336,  4343,  4350,  4363,  4374,  4385,  4396,
-    4407,  4418,  4436,  4445,  4460,  4469,  4486,  4501,  4509,  4524,
-    4530,  4537,  4546,  4555,  4566,  4584,  4590,  4597,  4606,  4615,
-    4626,  4643,  4651,  4665,  4673,  4687,  4695,  4703,  4712,  4727,
-    4736,  4744,  4752,  4766,  4774,  4792,  4800,  4820,  4838,  4845,
-    4852,  4859,  4866,  4873,  4886,  4900,  4909,  4918,  4926,  4954,
-    4963,  4972,  4980,  4994,  5008,  5022,  5031,  5040,  5048,  5062,
-    5071,  5086,  5100,  5109,  5118,  5158,  5166,  5174,  5188,  5195,
-    5202,  5215,  5229,  5236,  5243,  5250,  5257,  5264,  5271,  5278,
-    5285,  5298,  5311,  5318,  5326,  5340,  5353,  5366,  5373,  5380,
-    5393,  5402,  5411,  5420,  5429,  5444,  5458,  5467,  5476,  5485,
-    5494,  5504,  5514,  5530,  5554,  5564,  5587,  5630,  5638,  5644,
-    5655,  5664,  5673,  5682,  5691,  5701,  5710,  5719,  5728,  5737,
-    5752,  5760,  5773,  5782,  5797,  5826,  5840,  5849,  5865,  5882,
-    5892,  5902,  5916,  5926,  5937,  5949,  5971,  5977,  5994,  6000,
-    6006,  6012,  6024,  6030,  6036,  6042,  6054,  6060,  6072,  6078,
-    6090,  6096,  6108,  6114,  6126,  6132,  6138,  6150,  6156,  6168,
-    6174,  6186,  6192,  6198,  6204,  6210,  6222,  6234,  6241,  6248,
-    6255,  6262,  6269,  6276,  6289,  6295,  6301,  6307,  6319,  6325,
-    6331,  6337,  6349,  6355,  6367,  6373,  6379,  6385,  6391,  6397,
-    6403,  6415,  6421,  6433,  6439,  6445,  6451,  6463,  6469,  6475,
-    6481,  6487,  6499,  6505,  6517,  6523,  6535,  6541,  6553,  6559,
-    6571,  6583,  6589,  6601,  6607,  6613,  6625,  6631,  6637,  6643,
-    6649,  6661,  6668,  6675,  6682,  6695,  6707,  6719,  6731,  6737,
-    6749,  6755,  6761,  6773,  6779,  6791
+    2341,  2353,  2364,  2379,  2384,  2399,  2410,  2420,  2430,  2440,
+    2453,  2462,  2476,  2485,  2497,  2507,  2517,  2532,  2540,  2555,
+    2564,  2581,  2590,  2605,  2615,  2625,  2635,  2645,  2655,  2665,
+    2681,  2688,  2701,  2709,  2723,  2737,  2747,  2763,  2773,  2788,
+    2797,  2813,  2823,  2840,  2849,  2864,  2873,  2889,  2903,  2910,
+    2924,  2931,  2953,  2960,  2971,  2982,  2999,  3006,  3016,  3032,
+    3039,  3053,  3060,  3067,  3080,  3087,  3094,  3101,  3108,  3121,
+    3128,  3136,  3150,  3157,  3164,  3177,  3184,  3199,  3206,  3221,
+    3228,  3243,  3250,  3265,  3272,  3287,  3294,  3301,  3308,  3323,
+    3330,  3337,  3351,  3358,  3365,  3372,  3379,  3386,  3399,  3406,
+    3413,  3420,  3427,  3434,  3447,  3454,  3461,  3475,  3482,  3497,
+    3506,  3521,  3530,  3547,  3556,  3598,  3605,  3612,  3619,  3635,
+    3649,  3657,  3670,  3677,  3690,  3699,  3708,  3717,  3732,  3741,
+    3755,  3762,  3769,  3776,  3783,  3790,  3797,  3810,  3817,  3830,
+    3839,  3854,  3861,  3868,  3875,  3882,  3900,  3907,  3920,  3927,
+    3940,  3950,  3960,  3976,  3983,  3998,  4007,  4024,  4038,  4045,
+    4052,  4059,  4066,  4073,  4080,  4087,  4100,  4107,  4120,  4128,
+    4136,  4150,  4163,  4170,  4184,  4197,  4211,  4270,  4279,  4294,
+    4303,  4318,  4325,  4338,  4345,  4352,  4365,  4376,  4387,  4398,
+    4409,  4420,  4438,  4447,  4462,  4471,  4488,  4503,  4511,  4526,
+    4532,  4539,  4548,  4557,  4568,  4586,  4592,  4599,  4608,  4617,
+    4628,  4645,  4653,  4667,  4675,  4689,  4697,  4705,  4714,  4729,
+    4738,  4746,  4754,  4768,  4776,  4794,  4802,  4822,  4840,  4847,
+    4854,  4861,  4868,  4875,  4888,  4902,  4911,  4920,  4928,  4956,
+    4965,  4974,  4982,  4996,  5010,  5024,  5033,  5042,  5050,  5064,
+    5073,  5088,  5102,  5111,  5120,  5160,  5168,  5176,  5190,  5197,
+    5204,  5217,  5231,  5238,  5245,  5252,  5259,  5266,  5273,  5280,
+    5287,  5300,  5313,  5320,  5328,  5342,  5355,  5368,  5375,  5382,
+    5395,  5404,  5413,  5422,  5431,  5446,  5460,  5469,  5478,  5487,
+    5496,  5506,  5516,  5532,  5556,  5566,  5589,  5632,  5640,  5646,
+    5657,  5666,  5675,  5684,  5693,  5703,  5712,  5721,  5730,  5739,
+    5754,  5762,  5775,  5784,  5799,  5828,  5842,  5851,  5867,  5884,
+    5894,  5904,  5918,  5928,  5939,  5951,  5973,  5979,  5996,  6002,
+    6008,  6014,  6026,  6032,  6038,  6044,  6056,  6062,  6074,  6080,
+    6092,  6098,  6110,  6116,  6128,  6134,  6140,  6152,  6158,  6170,
+    6176,  6188,  6194,  6200,  6206,  6212,  6224,  6236,  6243,  6250,
+    6257,  6264,  6271,  6278,  6291,  6297,  6303,  6309,  6321,  6327,
+    6333,  6339,  6351,  6357,  6369,  6375,  6381,  6387,  6393,  6399,
+    6405,  6417,  6423,  6435,  6441,  6447,  6453,  6465,  6471,  6477,
+    6483,  6489,  6501,  6507,  6519,  6525,  6537,  6543,  6555,  6561,
+    6573,  6585,  6591,  6603,  6609,  6615,  6627,  6633,  6639,  6645,
+    6651,  6663,  6670,  6677,  6684,  6697,  6709,  6721,  6733,  6739,
+    6751,  6757,  6763,  6775,  6781,  6793
   };
 
   // Print the state stack on the debug stream.
@@ -9653,7 +9655,7 @@ namespace zorba
 
 } // namespace zorba
 
-#line 6801 "/home/dagraf/Work/28msec/zorba2/src/compiler/parser/xquery_parser.y"
+#line 6803 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 
 

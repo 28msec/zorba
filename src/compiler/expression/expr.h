@@ -109,6 +109,7 @@ public:
   expr_kind_t get_expr_kind () { return var_expr_kind; }
 
   enum var_kind {
+    eval_var,
     for_var,
     let_var,
     pos_var,

@@ -1519,29 +1519,37 @@ class VarGetsDecl : public parsenode
 |			| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 |_______________________________________________________________________*/
 {
+public:
+  enum var_kind {
+    let_var, eval_var
+  };
+
 protected:
 	std::string varname;
 	rchandle<TypeDeclaration> typedecl_h;
-	rchandle<FTScoreVar> ftscorevar_h;
 	rchandle<exprnode> valexpr_h;
+	rchandle<FTScoreVar> ftscorevar_h;
+  enum var_kind kind;
 
 public:
-	VarGetsDecl(
-		const QueryLoc&,
-		std::string varname,
-		rchandle<TypeDeclaration>,
-		rchandle<FTScoreVar>,
-		rchandle<exprnode>);
+	VarGetsDecl(const QueryLoc& loc_,
+              std::string varname_,
+              rchandle<TypeDeclaration> typedecl_h_,
+              rchandle<FTScoreVar> ftscorevar_h_,
+              rchandle<exprnode> valexpr_h_,
+              enum var_kind kind_ = let_var)
+    : parsenode(loc_), varname(varname_),
+      typedecl_h(typedecl_h_), valexpr_h(valexpr_h_), ftscorevar_h(ftscorevar_h_),
+      kind (kind_)
+  {}
 
-public:
 	std::string get_varname() const { return varname; }
 	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
 	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
 	rchandle<exprnode> get_valexpr() const { return valexpr_h; }
-
-public:
+  enum var_kind get_kind () const { return kind; }
+  void set_kind (enum var_kind kind_) { kind = kind_; }
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -6305,3 +6313,9 @@ public:
 
 }	/* namespace zorba */
 #endif	/*  ZORBA_PARSENODES_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
