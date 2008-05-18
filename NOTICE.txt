@@ -1,5 +1,7 @@
-   Zorba XQuery Processor
-   Copyright 2006-2008 The FLWOR Foundation
+Zorba XQuery Processor
+Copyright 2006-2008 The FLWOR Foundation
+
+   See LICENSE.txt for license information.
 
    This product includes software developed at
    The FLWOR Foundation (http://www.flworfound.org/).
@@ -7,20 +9,78 @@
    Portions of this software were developed at the Systems
    Group of the ETH Zurich, Switzerland.
 
-   This software contains code developed by Alexander Chemeris 
-   (src/common/config/stdint.h).
+The file src/zorbatypes/m_apm.h and the directory src/zorbatypes/mapm/
+are copyright 1999-2007 Michael C. Ring. The original distribution
+contains the following notice:
+
+   This software is Freeware.                                              
+                                                                           
+   Permission to use, copy, and distribute this software and its           
+   documentation for any purpose with or without fee is hereby granted,    
+   provided that the above copyright notice appear in all copies and       
+   that both that copyright notice and this permission notice appear       
+   in supporting documentation.                                            
+                                                                           
+   Permission to modify the software is granted. Permission to distribute  
+   the modified code is granted. Modifications are to be distributed by    
+   using the file 'license.txt' as a template to modify the file header.   
+   'license.txt' is available in the official MAPM distribution.           
+                                                                           
+   To distribute modified source code, insert the file 'license.txt'       
+   at the top of all modified source code files and edit accordingly.      
+                                                                           
+   This software is provided "as is" without express or implied warranty.  
+
+
+The file src/common/config/stdint.h is copyright 2006 Alexander Chemeris and
+contains the following notice:
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
    
-   Furthermore, this software depends/makes use of:
+     1. Redistributions of source code must retain the above copyright notice,
+        this list of conditions and the following disclaimer.
+   
+     2. Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+   
+     3. The name of the author may be used to endorse or promote products
+        derived from this software without specific prior written permission.
+   
+   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+   WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+   MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+   EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+   OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+   OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Furthermore, this software depends / makes use of:
+
      * LIBXML2 2.2.16 or higher (http://xmlsoft.org/ ) 
+
      * ICU 2.6 or higher (http://www.icu-project.org/)
+
      * BOOST 1.32 or higher (http://www.boost.org/)
        * boost_program_options
        * boost_date_time
        * boost_filesystem
+
      * XERCES 2.7.0 or higher (http://xerces.apache.org/xerces-c/)
+
      * ICONV 1.12 (used by LIBXML2; http://www.gnu.org/software/libiconv/)
+
      * MAPM 4.9.5 (by Michael C. Ring; http://www.tc.umn.edu/~ringx004/mapm-main.html)
-     * Optional:
-        * FLEX 2.5.33 (http://flex.sourceforge.net/)
-        * BISON 2.3 (http://www.gnu.org/software/bison/)
-        * CURL 7.12 (http://curl.haxx.se/)
+
+Optional:
+
+     * FLEX 2.5.33 (http://flex.sourceforge.net/)
+
+     * BISON 2.3 (http://www.gnu.org/software/bison/)
+
+     * CURL 7.12 (http://curl.haxx.se/)
