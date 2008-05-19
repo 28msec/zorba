@@ -1,0 +1,71 @@
+#!/bin/bash
+# Copyright 2006-2008 The FLWOR Foundation.                                                             
+#  
+# Licensed under the Apache License, Version 2.0 (the "License");                                       
+# you may not use this file except in compliance with the License.                                      
+# You may obtain a copy of the License at
+#  
+# http://www.apache.org/licenses/LICENSE-2.0                                                            
+#  
+# Unless required by applicable law or agreed to in writing, software                                   
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                              
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+TITLE=$1; test "$TITLE" || TITLE="Zorbatest reports"
+NOW=`date --iso-8601=seconds`
+
+cd snapshots
+
+cat >index.html <<EOF
+<html>
+<head><title>$TITLE</title></head>
+<body><h1>$TITLE</h1>
+<table summary=""><tr><th>Revision</th><th>Snapshot</th></tr>
+EOF
+
+cat >atom.xml <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title>$TITLE feed</title> 
+  <link href="http://example.org/"/>
+  <updated>$NOW</updated>
+
+  <author> 
+    <name>Zorbatest</name>
+  </author>
+EOF
+
+i=0
+for f in `ls -rd 200*`; do
+  REV=`cat $f/rev`
+  echo '<tr><td>' $REV '</td><td>' '<a href="'$f'">'$f'</a></td></tr>'
+
+  if test $i -lt 20; then
+    let i=$i+1
+    ISOTSTAMP=`echo $f | perl -pe 's/_/:/g;s/(.*)-(.*):/$1T$2:/'`+0200
+    NREG=`cat $f/regressions.xml | fgrep '<regress>' | wc -l`
+    if test $NREG -eq 0; then REG=""; else REG=" ($NREG regressions)"; fi
+
+cat >>atom.xml <<EOF
+<entry>
+<title>$TITLE: r${REV}${REG}</title>
+<link href="https://fifthelement.inf.ethz.ch/zorba-test/snapshots/$f/"></link>
+<id>https://fifthelement.inf.ethz.ch/zorba-test/snapshots/$f/</id>
+<updated>$ISOTSTAMP</updated>
+</entry>
+EOF
+
+  fi
+
+done >>index.html
+
+cat >>index.html <<EOF
+</table></body></html>
+EOF
+
+cat >>atom.xml <<EOF
+</feed>
+EOF
