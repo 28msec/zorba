@@ -18,6 +18,7 @@
 
 #include <iostream>
 //#include <io.h>
+#include <tchar.h>
 
 #include "common/config/stdint.h"
 
