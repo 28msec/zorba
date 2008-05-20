@@ -37,13 +37,13 @@ public:
 	{
   private:
     SimpleCollection_t            theCollection;
-    SYNC_CODE(AutoLatch           theLatch;)
     std::set<Item_t>::iterator    theIterator;
+    bool                          theHaveLock;
 
   public:
     CollectionIter(SimpleCollection* collection);
 
-    virtual ~CollectionIter() { }
+    ~CollectionIter();
 
     void open();
     Item_t next();

@@ -146,9 +146,19 @@ void SimpleCollection::removeFromCollection(const Item* node)
 SimpleCollection::CollectionIter::CollectionIter(
     SimpleCollection* collection)
   :
-  theCollection(collection)
-  SYNC_PARAM2(theLatch(collection->theLatch, Latch::READ))
+  theCollection(collection),
+  theHaveLock(false)
 {
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+SimpleCollection::CollectionIter::~CollectionIter() 
+{
+  if (theHaveLock)
+    theCollection->theLatch.unlock();
 }
 
 
@@ -157,6 +167,9 @@ SimpleCollection::CollectionIter::CollectionIter(
 ********************************************************************************/
 void SimpleCollection::CollectionIter::open()
 {
+  SYNC_CODE(theCollection->theLatch.rlock();)
+  theHaveLock = true;
+
   theIterator = theCollection->theXmlTrees.begin();
 }
 
@@ -166,7 +179,6 @@ void SimpleCollection::CollectionIter::open()
 ********************************************************************************/
 Item_t SimpleCollection::CollectionIter::next()
 {
-
   if (theIterator == theCollection->theXmlTrees.end())
     return NULL;
 
@@ -191,7 +203,11 @@ void SimpleCollection::CollectionIter::reset()
 ********************************************************************************/
 void SimpleCollection::CollectionIter::close() 
 {
+  theHaveLock = false;
+  SYNC_CODE(theCollection->theLatch.unlock();)
 }
+
+
 } // namespace store
 } // namespace zorba
 

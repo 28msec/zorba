@@ -1879,9 +1879,6 @@ void ConstrElementNode::constructSubtree(
     addBaseUriProperty(staticBaseUri, nulluri);
   }
 
-  theChildren.resize(numChildren());
-  theAttributes.resize(numAttributes());
-
   NODE_TRACE1("Constructed elem node " << this << ":" << *theName->getStringValue()
               << " baseuri = " << *getBaseURI());
   NODE_TRACE1("}");

@@ -24,10 +24,15 @@
 #include "errors/error_manager.h"
 #include "api/unmarshaller.h"
 
+#include "system/globalenv.h"
+
 #include "runtime/api/plan_wrapper.h"
 
+#include "store/util/latch.h"
 #include "store/api/collection.h"
 #include "store/api/item.h"
+#include "store/api/store.h"
+
 
 namespace zorba {
 
@@ -60,9 +65,14 @@ bool
 CollectionImpl::addNode(const Item& aNode) 
 {
   ZORBA_TRY
+
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
+
     theCollection->addToCollection(lItem);
     return true;
+
   ZORBA_CATCH
   return false;
 }
@@ -72,9 +82,14 @@ bool
 CollectionImpl::addNodes(const ResultIterator* aResultIterator) 
 {
   ZORBA_TRY
+
     PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
+
     theCollection->addToCollection(&*lPlan);
     return true;
+
   ZORBA_CATCH
   return false;
 }
@@ -96,6 +111,9 @@ CollectionImpl::deleteNode(const Item& aNode)
 {
   ZORBA_TRY
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
+
     theCollection->removeFromCollection(lItem);
     return true;
   ZORBA_CATCH
