@@ -34,7 +34,9 @@ LIST(APPEND STORE_SRCS
     minimal/min_ordpath.cpp
     minimal/min_nsbindings.cpp
     minimal/min_item_iterator.cpp
-    minimal/min_query_context.cpp)
+    minimal/min_query_context.cpp
+    minimal/qname_pool.cpp
+    minimal/string_pool.cpp)
 HEADER_GROUP_SUBFOLDER(STORE_SRCS minimal)
 ELSE(ZORBA_MINIMAL_STORE)
 LIST(APPEND STORE_SRCS 
