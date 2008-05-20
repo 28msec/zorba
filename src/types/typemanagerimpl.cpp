@@ -33,6 +33,10 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 
+#ifdef ZORBA_XBROWSER
+#include "DOMQName.h"
+#endif
+
 
 using namespace zorba;
 
@@ -226,11 +230,29 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   qname = static_cast<store::SimpleStore *>(&GENV_STORE)->getTypeQName(qname);
 #endif
 
-  RootTypeManager::qnametype_map_t::const_iterator i =
-    GENV_TYPESYSTEM.m_atomic_qnametype_map.find(qname);
+  zorba::RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
 
-  return (i == GENV_TYPESYSTEM.m_atomic_qnametype_map.end() ? 
-          xqtref_t (NULL) : create_atomic_type(i->second, quantifier));
+  RootTypeManager::qnametype_map_t::const_iterator i =
+	  myMap.find(qname);
+
+  bool found = (i != myMap.end());
+  if(found)
+  {
+	  return create_atomic_type(i->second, quantifier);
+  } else {
+#ifdef ZORBA_XBROWSER
+	  RootTypeManager::qnametype_map_t::const_iterator i;
+	  for(i = myMap.begin();i!=myMap.end();i++) {
+		  xqp::DOMQName *q = static_cast<xqp::DOMQName*>(i->first);
+		  if(q->getNamespace()->equals(qname->getNamespace())
+			  && q->getLocalName()->equals(qname->getLocalName())
+			  && q->getPrefix()->equals(qname->getPrefix())) {
+				  return create_atomic_type(i->second, quantifier);
+		  }
+	  }
+#endif
+	  return xqtref_t (NULL);
+  }
 }
 
 
