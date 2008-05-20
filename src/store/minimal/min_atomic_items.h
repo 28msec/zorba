@@ -23,8 +23,7 @@
 #include "store/api/item.h"
 
 
-namespace zorba { 
-  namespace store {
+namespace zorba { namespace store {
 
 /*******************************************************************************
 
@@ -60,39 +59,34 @@ public:
 ********************************************************************************/
 class QNameItemImpl : public AtomicItem
 {
-//  friend class QNamePool;
-//  friend class QNamePoolHashSet;
-//  friend class ElementNode;
+  friend class QNamePool;
+  friend class QNamePoolHashSet;
+  friend class ElementNode;
 
 public:
   xqpStringStore_t  theNamespace;
   xqpStringStore_t  thePrefix;
   xqpStringStore_t  theLocal;
 
-//  uint16_t          thePosition;
-//  uint16_t          theNextFree;
-//  uint16_t          thePrevFree;
+  uint16_t          thePosition;
+  uint16_t          theNextFree;
+  uint16_t          thePrevFree;
 public:
-//  QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
-  QNameItemImpl(xqpStringStore  *ns, 
-                xqpStringStore  *pre,
-                xqpStringStore  *local) : 
-      theNamespace(ns), thePrefix(pre), theLocal(local) {}
-  QNameItemImpl(const char  *ns, 
-                const char  *pre,
-                const char  *local) : 
-      theNamespace(new xqpStringStore(ns)), 
-      thePrefix(new xqpStringStore(pre)), 
-      theLocal(new xqpStringStore(local)) {}
-
+  QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
+  //QNameItemImpl(xqpStringStore  *ns, 
+  //              xqpStringStore  *pre,
+  //              xqpStringStore  *local);
+  //QNameItemImpl(const char  *ns, 
+  //              const char  *pre,
+  //              const char  *local);
 
   virtual ~QNameItemImpl() { }
 
 private:
-//  void free();
+  void free();
 
-//  bool isInCache() const               { return thePosition != 0; }
-//  bool isOverflow() const              { return thePosition == 0; }
+  bool isInCache() const               { return thePosition != 0; }
+  bool isOverflow() const              { return thePosition == 0; }
 
  public:
   xqpStringStore* getNamespace() const { return theNamespace.getp(); }

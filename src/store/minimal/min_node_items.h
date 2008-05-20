@@ -394,16 +394,16 @@ class ElementNode : public XmlNode
   friend class XmlNode;
   friend class LoadedElementNode;
   friend class AttributeNode;
-
-protected:
+public:
   Item_t                theName;
+protected:
   Item_t                theTypeName;
   NsBindingsContext_t   theNsContext;
   uint32_t              theFlags;
 
 public:
   ElementNode(
-        Item_t& nodeName,
+        Item_t nodeName,
         Item_t& typeName);
 
   ElementNode(
@@ -530,7 +530,7 @@ public:
   unsigned int           depth;
 public:
   LoadedElementNode(
-        Item_t& nodeName,
+        Item_t nodeName,
         Item_t& typeName,
         ulong   numBindings,
         ulong   numAttributes);

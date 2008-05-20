@@ -29,6 +29,7 @@
 #include "store/minimal/min_node_iterators.h"
 #include "store/minimal/min_store.h"
 #include "store/minimal/min_item_factory.h"
+#include "store/minimal/qname_pool.h"
 #include "store/minimal/min_store_defs.h"
 #include "store/minimal/min_nsbindings.h"
 #include "store/api/temp_seq.h"
@@ -993,7 +994,7 @@ void ConstrDocumentNode::constructSubtree(
 /*******************************************************************************
 
 ********************************************************************************/
-ElementNode::ElementNode(Item_t&  nodeName, Item_t& typeName)
+ElementNode::ElementNode(Item_t  nodeName, Item_t& typeName)
   :
   XmlNode(),
   theFlags(0)
@@ -1600,8 +1601,8 @@ void ElementNode::addBaseUriProperty(
 
   const SimpleStore& store = GET_STORE();
 
-//  Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
-  Item_t  qname = new QNameItemImpl(store.XML_URI, "xml", "base");
+  Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
+//  Item_t  qname = new QNameItemImpl(store.XML_URI, "xml", "base");
   Item_t tname = store.theSchemaTypeNames[XS_ANY_URI];
 
   Item_t typedValue;
@@ -1706,7 +1707,7 @@ xqp_string ElementNode::show() const
   Node constructor used during loading of an xml doc
 ********************************************************************************/
 LoadedElementNode::LoadedElementNode(
-    Item_t& nodeName,
+    Item_t nodeName,
     Item_t& typeName,
     ulong   numBindings,
     ulong   numAttributes)
@@ -1898,7 +1899,8 @@ void ConstrElementNode::constructSubtree(
   if (!haveBaseUri && isRoot)
   {
     xqpStringStore_t nulluri;
-    addBaseUriProperty(staticBaseUri, nulluri);
+    xqpStringStore_t tmpuri = staticBaseUri;
+    addBaseUriProperty(tmpuri, nulluri);
     haveBaseUri = true;
   }
 
@@ -1942,9 +1944,6 @@ void ConstrElementNode::constructSubtree(
     xqpStringStore_t nulluri;
     addBaseUriProperty(staticBaseUri, nulluri);
   }
-
-  theChildren.resize(numChildren());
-  theAttributes.resize(numAttributes());
 
   NODE_TRACE1("Constructed elem node " << this << ":" << *theName->getStringValue()
               << " baseuri = " << *getBaseURI());

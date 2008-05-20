@@ -25,24 +25,22 @@
 #include "store/api/item_factory.h"
 
 
-namespace zorba { 
-  namespace store {
+namespace zorba { namespace store {
 
 class CopyMode;
   class PUL;
 
-//typedef StringPool UriPool;
+typedef StringPool UriPool;
 
 
 class BasicItemFactory : public ItemFactory
 {
 protected:
-//  UriPool    * theUriPool;
-//  QNamePool  * theQNamePool;
+  UriPool    * theUriPool;
+  QNamePool  * theQNamePool;
 
 public:
-//  BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
-  BasicItemFactory();
+  BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
 
   virtual ~BasicItemFactory();
 

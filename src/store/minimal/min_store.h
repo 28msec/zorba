@@ -28,7 +28,7 @@
 
 #include "store/minimal/shared_types.h"
 #include "store/minimal/min_node_items.h"
-
+//#include "store/minimal/strtree_pool.h"
 
 namespace zorba { 
 
@@ -74,8 +74,8 @@ protected:
   ulong                    theTreeCounter;
   SYNC_CODE(Mutex          theTreeCounterMutex;)
 
-//  StringPool             * theNamespacePool;
-//  QNamePool              * theQNamePool;
+  StringPool             * theNamespacePool;
+  QNamePool              * theQNamePool;
 
   ItemFactory            * theItemFactory;
 
@@ -104,8 +104,8 @@ public:
 
   store::ItemFactory* getItemFactory() const     { return theItemFactory; }
 
-//  StringPool& getNamespacePool() const    { return *theNamespacePool; }
-//  QNamePool& getQNamePool() const         { return *theQNamePool; }
+  StringPool& getNamespacePool() const    { return *theNamespacePool; }
+  QNamePool& getQNamePool() const         { return *theQNamePool; }
   Latch&    getGlobalLock()                 { return theGlobalLock; }
 #ifndef NDEBUG
   long getTraceLevel() const              { return theTraceLevel; }

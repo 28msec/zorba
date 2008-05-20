@@ -34,6 +34,8 @@
 #include "store/minimal/min_node_iterators.h"
 #include "store/minimal/min_item_factory.h"
 #include "store/minimal/min_query_context.h"
+#include "store/minimal/qname_pool.h"
+#include "store/minimal/string_pool.h"
 
 #include "store/api/pul.h"
 
@@ -59,9 +61,9 @@ SimpleStore::SimpleStore()
   theIsInitialized(0),
   theUriCounter(0),
   theTreeCounter(1),
-//  theNamespacePool(new StringPool(NAMESPACE_POOL_SIZE)),
-//  theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
-  theItemFactory(new BasicItemFactory),
+  theNamespacePool(new StringPool(NAMESPACE_POOL_SIZE)),
+  theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE, theNamespacePool)),
+  theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
   theQueryContextContainer(new QueryContextContainer)
@@ -82,8 +84,8 @@ void SimpleStore::init()
     theUriCounter = 0;
     theTreeCounter = 1;
 
-//    theNamespacePool->insertc("", theEmptyNs);
-//    theNamespacePool->insertc(XS_URI, theXmlSchemaNs);
+    theNamespacePool->insertc("", theEmptyNs);
+    theNamespacePool->insertc(XS_URI, theXmlSchemaNs);
 
     //initTypeNames();
 
@@ -214,24 +216,24 @@ void SimpleStore::shutdown()
     theItemFactory = NULL;
   }
 
-//  if (theQNamePool != NULL)
-//  {
-//    ulong numTypes = theSchemaTypeNames.size();
-//    for (ulong i = 0; i < numTypes; i++)
-//      theSchemaTypeNames[i] = NULL;
-//
-//    delete theQNamePool;
-//    theQNamePool = NULL;
-//  }
-//
-//  if (theNamespacePool != NULL)
-//  {
-//    theEmptyNs = NULL;
-//    theXmlSchemaNs = NULL;
-//
-//    delete theNamespacePool;
-//    theNamespacePool = NULL;
-//  }
+  if (theQNamePool != NULL)
+  {
+    ulong numTypes = theSchemaTypeNames.size();
+    for (ulong i = 0; i < numTypes; i++)
+      theSchemaTypeNames[i] = NULL;
+
+    delete theQNamePool;
+    theQNamePool = NULL;
+  }
+
+  if (theNamespacePool != NULL)
+  {
+    theEmptyNs = NULL;
+    theXmlSchemaNs = NULL;
+
+    delete theNamespacePool;
+    theNamespacePool = NULL;
+  }
 }
 
 

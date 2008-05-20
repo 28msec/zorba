@@ -24,6 +24,8 @@
 #include "store/minimal/min_ordpath.h"
 #include <list>
 #include "store/api/item.h"
+#include "store/minimal/qname_pool.h"
+#include "store/minimal/string_pool.h"
 
 namespace zorba { 
   
@@ -83,11 +85,16 @@ protected:
   int  current_c;
   int  prev_c;
   SimpleStore& store;
+  QNamePool& qnpool;
+  StringPool& namespacePool;
 
   typedef struct
   {
-    xqpStringStore_t   localname;
-    xqpStringStore_t   prefix;
+  //  xqpStringStore_t   localname;
+  //  xqpStringStore_t   prefix;
+  //  xqpStringStore_t   uri;
+    char    localname[100];
+    char    prefix[100];
     xqpStringStore_t   uri;
   }QNAME_ELEM;
 
@@ -100,13 +107,13 @@ protected:
   }TAG_ELEM;
   std::list<TAG_ELEM*>      tag_stack;
 
-  //typedef struct
-  //{
-  //  QNAME_ELEM    name;
+  typedef struct
+  {
+    QNAME_ELEM    name;
 
-  //  std::string   attr_value;
-  //}ATTR_ELEM;
-  //typedef std::list<ATTR_ELEM>    attr_list_t;
+    xqpStringStore_t   value;
+  }ATTR_ELEM;
+  typedef std::list<ATTR_ELEM>    attr_list_t;
 
 
   error::ErrorManager            * theErrorManager;
@@ -147,8 +154,8 @@ protected:
   bool isNameChar(int c);
   void skip_whitespaces();
   bool read_qname(QNAME_ELEM &qname, bool read_attr);
-  bool read_attributes(LoadedElementNode *elemNode, NodeVector &attrNodes);
-  bool fill_in_uri(LoadedElementNode *elemNode, xqpStringStore_t prefix, xqpStringStore_t &result_uri);
+  bool read_attributes(LoadedElementNode *elemNode, attr_list_t& attrs);
+  bool fill_in_uri(LoadedElementNode *elemNode, char* prefix, xqpStringStore_t &result_uri);
   bool compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2);
   bool read_tag();
   bool read_characters();
@@ -188,8 +195,9 @@ public:
 
   static void characters(
         void * ctx,
-        const xmlChar * ch,
-        int len);
+        xqpStringStore_t content);
+        //const xmlChar * ch,
+        //int len);
 
   static void	cdataBlock(
         void * ctx, 

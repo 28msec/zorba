@@ -30,24 +30,26 @@
 #include "store/minimal/min_node_items.h"
 #include "store/minimal/min_temp_seq.h"
 #include "store/minimal/min_pul.h"
+#include "store/minimal/qname_pool.h"
+#include "store/minimal/string_pool.h"
 #include "store/api/collection.h"
 #include "zorbatypes/datetime.h"
 
 
 namespace zorba { namespace store {
 
-BasicItemFactory::BasicItemFactory()//UriPool* uriPool, QNamePool* qnPool)
-//  :
-//  theUriPool(uriPool),
-//  theQNamePool(qnPool)
+BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
+  :
+  theUriPool(uriPool),
+  theQNamePool(qnPool)
 {
 }
 
 
 BasicItemFactory::~BasicItemFactory()
 {
-//  theQNamePool = NULL;
-//  theUriPool = NULL;
+  theQNamePool = NULL;
+  theUriPool = NULL;
 }
 
 
@@ -55,13 +57,12 @@ Item_t BasicItemFactory::createQName(
     xqpStringStore* ns,
     xqpStringStore* pre,
     xqpStringStore* local,
-    bool*           inserted
-    )
+    bool*           inserted)
 {
-//  return theQNamePool->insert(ns, pre, local, inserted);
-  if(inserted)
-    *inserted = true;
-  return new QNameItemImpl(ns, pre, local);
+  return theQNamePool->insert(ns, pre, local, inserted);
+//  if(inserted)
+//    *inserted = true;
+//  return new QNameItemImpl(ns, pre, local);
 }
 
 
@@ -70,8 +71,8 @@ Item_t BasicItemFactory::createQName(
     const char* pre,
     const char* ln)
 {
-//  return theQNamePool->insert(ns, pre, ln);
-  return new QNameItemImpl(ns, pre, ln);
+  return theQNamePool->insert(ns, pre, ln);
+//  return new QNameItemImpl(ns, pre, ln);
 }
 
 
@@ -83,17 +84,20 @@ Item_t BasicItemFactory::createNCName(xqpStringStore_t& value)
 
 Item_t BasicItemFactory::createAnyURI(xqpStringStore_t& value)
 {
-//  xqpStringStore_t str = value;
-//  theUriPool->insert(str, str);
-  return new AnyUriItemImpl(value);
+////  xqpStringStore_t str = value;
+////  theUriPool->insert(str, str);
+//  return new AnyUriItemImpl(value);
+  xqpStringStore_t str = value;
+  theUriPool->insert(str, str);
+  return new AnyUriItemImpl(str);
 }
 
 
 Item_t BasicItemFactory::createAnyURI(const char* value)
 {
   xqpStringStore_t str;
-//  theUriPool->insertc(value, str);
-  return new AnyUriItemImpl(str=new xqpStringStore(value));
+  theUriPool->insertc(value, str);
+  return new AnyUriItemImpl(str);
 }
 
 

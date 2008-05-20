@@ -41,8 +41,7 @@
 #define CREATE_BOOLITEM(aValue) \
   GET_STORE().getItemFactory()->createBoolean(aValue)
 
-namespace zorba { 
-  namespace store {
+namespace zorba { namespace store {
 
 
 /*******************************************************************************
@@ -65,10 +64,36 @@ Iterator_t AtomicItem::getTypedValue() const
   class QNameItemImpl
 ********************************************************************************/
 
-//void QNameItemImpl::free()
+//QNameItemImpl::QNameItemImpl(xqpStringStore  *ns, 
+//              xqpStringStore  *pre,
+//              xqpStringStore  *local)
 //{
-//  GET_STORE().getQNamePool().remove(this);
+////  SimpleStore& store = GET_STORE();
+////  theNamespace = store.uri_pool.getPooledStr(ns);
+////  thePrefix = store.prefix_pool.getPooledStr(pre);
+////  theLocal = store.localname_pool.getPooledStr(local);
+//  theNamespace = ns;
+//  thePrefix = pre;
+//  theLocal = local;
 //}
+//
+//QNameItemImpl::QNameItemImpl(const char  *ns, 
+//              const char  *pre,
+//              const char  *local)
+//{
+//  SimpleStore& store = GET_STORE();
+////  theNamespace = store.uri_pool.getPooledStrByCharp(ns); 
+////  thePrefix = store.prefix_pool.getPooledStrByCharp(pre); 
+////  theLocal = store.localname_pool.getPooledStrByCharp(local);
+//  theNamespace = new xqpStringStore(ns);
+//  thePrefix = new xqpStringStore(pre);
+//  theLocal = new xqpStringStore(local);
+//}
+
+void QNameItemImpl::free()
+{
+  GET_STORE().getQNamePool().remove(this);
+}
 
 
 Item* QNameItemImpl::getType() const

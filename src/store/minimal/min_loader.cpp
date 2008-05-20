@@ -31,7 +31,8 @@
 #include "store/minimal/min_node_items.h"
 #include "store/minimal/min_store_defs.h"
 #include "store/minimal/min_node_vector.h"
-//#include "store/minimal/min_qname_pool.h"
+#include "store/minimal/qname_pool.h"
+#include "store/minimal/string_pool.h"
 #include "store/minimal/min_nsbindings.h"
 #include "store/api/collection.h"
 #include "zorbatypes/datetime.h"
@@ -83,8 +84,9 @@ XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
   theTree(NULL),
   theRootNode(NULL),
   theErrorManager(aErrorManager),
-  store(GET_STORE())
-
+  store(GET_STORE()),
+  qnpool(store.getQNamePool()),
+  namespacePool(store.getNamespacePool())
 {
   theOrdPath.init();
 
@@ -304,14 +306,16 @@ void XmlLoader::skip_whitespaces()
 bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
 {
   int c;
+  int localpos = 0;
   qname.uri = g_empty_string.theStrStore;
   c = read_char();
   if(c != ':')
   {
     if((c != '_') && !GenericCast::isLetter(c))
       return false;
-    qname.localname = new xqpStringStore;
-    qname.localname->append_in_place(c);
+    //qname.localname = new xqpStringStore;
+    //qname.localname->append_in_place(c);
+    qname.localname[localpos++] = c;
     while(1)
     {
       c = read_char();
@@ -330,27 +334,33 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
         !GenericCast::isLetter(c) && !GenericCast::isDigit(c) &&
         !GenericCast::isCombiningChar(c) && !GenericCast::isExtender(c))
         return false;
-      qname.localname->append_in_place(c);
+      //qname.localname->append_in_place(c);
+      qname.localname[localpos++] = c;
     }
   }
   else
     unread_char();
 
+  qname.localname[localpos] = 0;
   c = read_char();
   if(c != ':')
   {
-    qname.prefix = g_empty_string.theStrStore;
+    //qname.prefix = g_empty_string.theStrStore;
+    qname.prefix[0] = 0;
     unread_char();
     return true;
   }
 
-  qname.prefix = qname.localname;
+  //qname.prefix = new xqpStringStore(qname.localname);
+  strcpy(qname.prefix, qname.localname);
+  localpos = 0;
 
   c = read_char();
   if((c != '_') && !GenericCast::isLetter(c))
     return false;
-  qname.localname = new xqpStringStore;
-  qname.localname->append_in_place(c);
+  //qname.localname = new xqpStringStore;
+  //qname.localname->append_in_place(c);
+  qname.localname[localpos++] = c;
   while(1)
   {
     c = read_char();
@@ -364,18 +374,21 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
       !GenericCast::isLetter(c) && !GenericCast::isDigit(c) &&
       !GenericCast::isCombiningChar(c) && !GenericCast::isExtender(c))
       return false;
-    qname.localname->append_in_place(c);
+    //qname.localname->append_in_place(c);
+    qname.localname[localpos++] = c;
   }
+  qname.localname[localpos] = 0;
 
   return true;
 }
 
 bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
-                              NodeVector &attrNodes)
+                              attr_list_t& attrs)
 {
 //  NsBindingsContext_t nscontext;
-  QNAME_ELEM  name;
-  xqpStringStore_t   attr_value;
+//  QNAME_ELEM  name;
+//  xqpStringStore_t   attr_value;
+  ATTR_ELEM   attr;
   std::pair<xqpString, xqpString>   nsbind;
   int c;
   while(1)
@@ -393,7 +406,7 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
       break;
     }
     
-    if(!read_qname(name, READ_ATTRIBUTE_QNAME))
+    if(!read_qname(attr.name, READ_ATTRIBUTE_QNAME))
       return false;
 
     skip_whitespaces();
@@ -407,7 +420,7 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
     if((c != '\'') && (c != '"'))
       return false;
 
-    attr_value = new xqpStringStore;
+    attr.value = new xqpStringStore;
     char  value_start = c;
     while(1)
     {
@@ -416,14 +429,15 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
         break;
       if(!c)
         return false;
-      attr_value->append_in_place(c);
+      attr.value->append_in_place(c);
     }
 
 
     //pick up the namespaces
-    if(name.localname->byteEqual("xmlns"))
+    if(!strcmp(attr.name.localname, "xmlns"))
     {
-      if(!name.prefix->empty())
+      //if(!attr.name.prefix->empty())
+      if(attr.name.prefix[0])
         return false;///"xmlns" is the default namespace
     //  nsbind.first = "";
     //  nsbind.second = attr_value.getp();
@@ -432,17 +446,23 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
     //  NsBindings& bindings = nscontext->getBindings();
     //  bindings.push_back(nsbind);
       if(elemNode)
-        elemNode->addLocalBinding(g_empty_string.theStrStore.getp(), attr_value.getp());
+      {
+        xqpStringStore_t pooledNs;
+        namespacePool.insertc(attr.value.getp(), pooledNs);
+        elemNode->addLocalBinding(g_empty_string.getStore(), 
+                                  pooledNs.getp());
+      }
     }
-    else if((name.prefix != NULL) && name.prefix->byteEqual("xmlns"))
+    //else if((attr.name.prefix != NULL) && attr.name.prefix->byteEqual("xmlns"))
+    else if(!strcmp(attr.name.prefix, "xmlns"))
     {
-      if((name.localname->byteEqual("xml")) && (!attr_value->byteEqual(XML_NS)))
+      if((!strcmp(attr.name.localname, "xml")) && (!attr.value->byteEqual(XML_NS)))
         return false;
-      if((name.localname->byteEqual("xs")) && (!attr_value->byteEqual(XML_SCHEMA_NS)))
+      if((!strcmp(attr.name.localname, "xs")) && (!attr.value->byteEqual(XML_SCHEMA_NS)))
         return false;
-      if((name.localname->byteEqual("xsi")) && (!attr_value->byteEqual(XSI_NS)))
+      if((!strcmp(attr.name.localname, "xsi")) && (!attr.value->byteEqual(XSI_NS)))
         return false;
-      if(name.localname->byteEqual("xmlns"))
+      if(!strcmp(attr.name.localname, "xmlns"))
         return false;
 
     //  nsbind.first =  name.localname.getp();
@@ -452,12 +472,17 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
     //  NsBindings& bindings = nscontext->getBindings();
     //  bindings.push_back(nsbind);
       if(elemNode)
-        elemNode->addLocalBinding(name.localname.getp(), attr_value.getp());
+      {
+        xqpStringStore_t pooledNs;
+        namespacePool.insertc(attr.value.getp(), pooledNs);
+        elemNode->addLocalBinding(new xqpStringStore(attr.name.localname),
+                                  pooledNs.getp());
+      }
     }
     else
     {
       //it is an attribute
-      Item_t  qname = new QNameItemImpl(g_empty_string.theStrStore, name.prefix.getp(), name.localname.getp());
+/*      Item_t  qname = new QNameItemImpl(store.uri_pool.getPooledStr(NULL), name.prefix.getp(), name.localname.getp());
 
       Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
       Item_t typedValue = new UntypedAtomicItemImpl(attr_value);
@@ -472,6 +497,8 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
       theOrdPath.nextChild();
 
       SYNC_CODE(attrNode->theRCLockPtr = &theTree->getRCLock();)
+*/
+      attrs.push_back(attr);
     }
 
   }
@@ -481,7 +508,7 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
 }
 
 bool XmlLoader::fill_in_uri(LoadedElementNode *elemNode,
-                            xqpStringStore_t prefix, xqpStringStore_t &result_uri)
+                            char *prefix, xqpStringStore_t &result_uri)
 {
 /*  std::list<TAG_ELEM*>::reverse_iterator    tag_it;
   NsBindings::iterator      ns_it;
@@ -498,7 +525,27 @@ bool XmlLoader::fill_in_uri(LoadedElementNode *elemNode,
     }
   }
 */
-  result_uri = elemNode->findBinding(&*prefix);
+  //result_uri = elemNode->findBinding(prefix);
+  result_uri = NULL;
+  const NsBindingsContext* currentContext = elemNode->getNsContext();
+
+  while (currentContext != NULL)
+  {
+    const NsBindings& bindings = currentContext->getBindings();
+    ulong numBindings = bindings.size();
+
+    for (ulong i = 0; i < numBindings; i++)
+    {
+      if (bindings[i].first.getStore()->byteEqual(prefix))
+      {
+        result_uri = bindings[i].second.getStore();
+        break;
+      }
+    }
+
+    currentContext = currentContext->getParent();
+  }
+
   if(result_uri != NULL)
     return true;
 
@@ -510,12 +557,13 @@ bool XmlLoader::fill_in_uri(LoadedElementNode *elemNode,
     result_uri = nsuri.theStrStore;
     return true;
   }
+  result_uri = g_empty_string.theStrStore;
   return false;
 }
 
 bool XmlLoader::compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2)
 {
-  if((name1.localname->byteEqual(*name2.localname)) &&
+  if((!strcmp(name1.localname, name2.localname)) &&
     (name1.uri->byteEqual(*name2.uri)))
     return true;
   else
@@ -560,7 +608,7 @@ bool XmlLoader::read_tag()
       return false;///no tags to close
     }
     TAG_ELEM    *&last_tag = tag_stack.back();
-    if(!fill_in_uri(last_tag->elemNode, tag_elem->name.prefix, tag_elem->name.uri) && !tag_elem->name.prefix->empty())
+    if(!fill_in_uri(last_tag->elemNode, tag_elem->name.prefix, tag_elem->name.uri) && tag_elem->name.prefix[0])
     {
       delete tag_elem;
       return false;
@@ -589,18 +637,19 @@ bool XmlLoader::read_tag()
   }
 
 //  skip_whitespaces();
-  QNameItemImpl*  qname = new QNameItemImpl(g_empty_string.theStrStore,//reinterpret_cast<const char*>(uri),
-                                   tag_elem->name.prefix,//reinterpret_cast<const char*>(prefix),
-                                   tag_elem->name.localname);//reinterpret_cast<const char*>(lname));
-  Item_t    qname_item(qname);
+//  QNameItemImpl*  qname = new QNameItemImpl(g_empty_string.theStrStore,//reinterpret_cast<const char*>(uri),
+//                                   tag_elem->name.prefix,//reinterpret_cast<const char*>(prefix),
+//                                   tag_elem->name.localname);//reinterpret_cast<const char*>(lname));
+//  Item_t    qname_item(qname);
   Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
   // Create the element node and push it to the node stack
-  tag_elem->elemNode = new LoadedElementNode(qname_item,
+  tag_elem->elemNode = new LoadedElementNode(NULL,//qname_item,
                                               tname,
                                               0,//numBindings,
                                               0);//numAttributes);
 
-  NodeVector  &elem_attrs = tag_elem->elemNode->attributes();
+  //NodeVector  &elem_attrs = tag_elem->elemNode->attributes();
+  attr_list_t elem_attrs;
   //read all attributes and namespaces in this tag
   if(!read_attributes(tag_elem->elemNode, elem_attrs))
   {
@@ -641,24 +690,57 @@ bool XmlLoader::read_tag()
   }
 
   //fill in the uri part of tag elem and attributes
-  if(!fill_in_uri(tag_elem->elemNode, tag_elem->name.prefix, qname->theNamespace))
+  if(!fill_in_uri(tag_elem->elemNode, tag_elem->name.prefix, tag_elem->name.uri))
   {
-    if(!tag_elem->name.prefix->empty())
+    //if(!tag_elem->name.prefix->empty())
+    if(tag_elem->name.prefix[0])
       return false;
   }
-  tag_elem->name.uri = qname->theNamespace;
+//  bool  inserted;
+  tag_elem->elemNode->theName = qnpool.insert(tag_elem->name.uri->c_str(), 
+                                              tag_elem->name.prefix, 
+                                              tag_elem->name.localname);
 
-  int   attr_size = elem_attrs.size();
+  //int   attr_size = elem_attrs.size();
   //fill in the uri part of attributes, if they have prefix
-  for(int i=0;i<attr_size; i++)
+  //for(int i=0;i<attr_size; i++)
+  attr_list_t::iterator   attr_it;
+  NodeVector& attrNodes = tag_elem->elemNode->attributes();
+  for(attr_it=elem_attrs.begin(); attr_it!=elem_attrs.end(); attr_it++)
   {
-    AttributeNode *attr_node = reinterpret_cast<AttributeNode*>(elem_attrs.get(i));
+/*    AttributeNode *attr_node = reinterpret_cast<AttributeNode*>(elem_attrs.get(i));
     QNameItemImpl *attr_qname = reinterpret_cast<QNameItemImpl*>(attr_node->getNodeName());
     if(!attr_qname->thePrefix->empty())
     {
       if(!fill_in_uri(tag_elem->elemNode, attr_qname->thePrefix, attr_qname->theNamespace))
         return false;
     }
+*/
+    //if(!(*attr_it).name.prefix->empty())
+    if((*attr_it).name.prefix[0])
+    {
+      if(!fill_in_uri(tag_elem->elemNode, (*attr_it).name.prefix, (*attr_it).name.uri))
+        return false;
+    }
+//    bool  inserted;
+    //Item_t  qname = new QNameItemImpl(store.uri_pool.getPooledStr(NULL), name.prefix.getp(), name.localname.getp());
+    Item_t qname = qnpool.insert((*attr_it).name.uri->c_str(), 
+                                (*attr_it).name.prefix, 
+                                (*attr_it).name.localname);
+
+    Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+    Item_t typedValue = new UntypedAtomicItemImpl((*attr_it).value);
+
+    AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
+    attrNode->theParent = tag_elem->elemNode;
+    attrNode->setId(theTree, &theOrdPath);
+    attrNode->theTypedValue.transfer(typedValue);
+
+    attrNodes.push_back(attrNode, false);
+
+    theOrdPath.nextChild();
+
+    SYNC_CODE(attrNode->theRCLockPtr = &theTree->getRCLock();)
   }
 
 /*  //send start_element SAX notification
@@ -732,7 +814,8 @@ bool XmlLoader::read_tag()
 bool XmlLoader::read_characters()
 {
   int c;
-  std::string chars;
+  //std::string chars;
+  xqpStringStore_t    content = new xqpStringStore;
 
   end_document = false;
   while(1)
@@ -741,11 +824,15 @@ bool XmlLoader::read_characters()
     if(!c)
     {
       end_document = true;
-      if(!chars.empty())
+      if(!content->empty())
       {
-        for(int i=0; i < chars.length(); i++)
-          if(!isWhitespace(chars[i]))
+        const char  *chars = content->c_str();
+        while(*chars)
+        {
+          if(!isWhitespace(*chars))
             return false;
+          chars++;
+        }
         return true;
       }
       else
@@ -756,13 +843,14 @@ bool XmlLoader::read_characters()
       unread_char();
       break;
     }
-    chars += c;
+    //chars += c;
+    content->append_in_place(c);
   }
 
 
   //send characters as SAX event
-  if(!chars.empty())
-    characters(this, chars.c_str(), chars.length());
+  if(!content->empty())
+    characters(this, content);//chars.c_str(), chars.length());
 
   return true;
 }
@@ -893,7 +981,8 @@ bool XmlLoader::read_xmlprolog()
   //if((c != 'l') && (c != 'L'))
   //  return false;
 
-  LoadedNodeVector  prolog_attrs;
+  //LoadedNodeVector  prolog_attrs;
+  attr_list_t   prolog_attrs;
   if(!read_attributes(NULL, prolog_attrs))
     return false;
 
@@ -904,15 +993,17 @@ bool XmlLoader::read_xmlprolog()
   if(c != '>')
     return false;
 
-  int attr_size = prolog_attrs.size();
-  for(int i=0;i<attr_size;i++)
+//  int attr_size = prolog_attrs.size();
+//  for(int i=0;i<attr_size;i++)
+  attr_list_t::iterator   attr_it;
+  for(attr_it=prolog_attrs.begin(); attr_it!=prolog_attrs.end(); attr_it++)
   {
-    AttributeNode *attr_node = reinterpret_cast<AttributeNode*>(prolog_attrs.get(i));
-    QNameItemImpl *attr_qname = reinterpret_cast<QNameItemImpl*>(attr_node->getNodeName());
-    if(attr_qname->theLocal->byteEqual("version"))
-      this->xml_version = attr_node->theTypedValue->getStringValue();
-    if(attr_qname->theLocal->byteEqual("encoding"))
-      this->xml_encoding = attr_node->theTypedValue->getStringValue();
+//    AttributeNode *attr_node = reinterpret_cast<AttributeNode*>(prolog_attrs.get(i));
+//    QNameItemImpl *attr_qname = reinterpret_cast<QNameItemImpl*>(attr_node->getNodeName());
+    if(!strcmp((*attr_it).name.localname, "version"))
+      this->xml_version = (*attr_it).value;
+    if(!strcmp((*attr_it).name.localname, "encoding"))
+      this->xml_encoding = (*attr_it).value;
   }
   reading_prolog++;
   return true;
@@ -1383,13 +1474,13 @@ void  XmlLoader::endElement()
   ch:  a xmlChar string
   len: the number of xmlChar
 ********************************************************************************/
-void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
+void XmlLoader::characters(void * ctx, xqpStringStore_t content)//const xmlChar * ch, int len)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  const char* charp = reinterpret_cast<const char*>(ch);
-  xqpStringStore_t content(new xqpStringStore(charp, len));
+//  const char* charp = reinterpret_cast<const char*>(ch);
+//  xqpStringStore_t content(new xqpStringStore(charp, len));
 
   TextNode* textNode = new TextNode(content);
 
@@ -1410,8 +1501,9 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     if (last_child->getNodeKind() == StoreConsts::textNode)
     {
       TextNode* lasttextNode = reinterpret_cast<TextNode*>(last_child);
-      lasttextNode->theContent = new xqpStringStore(lasttextNode->getStringValueP()->str() +
-                                                textNode->theContent->str());
+      //lasttextNode->theContent = new xqpStringStore(lasttextNode->getStringValueP()->str() +
+      //                                          textNode->theContent->str());
+      lasttextNode->getStringValueP()->append_in_place(content.getp());
       delete textNode;
       return;
     }
@@ -1426,7 +1518,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Text Node = " << textNode << " content = "
-                << std::string(charp, len) << std::endl << " ordpath = "
+                << *content << std::endl << " ordpath = "
                 << textNode->getOrdPath().show() << std::endl);
 }
 
