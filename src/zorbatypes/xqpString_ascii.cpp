@@ -423,6 +423,11 @@ void xqpStringStore::append_in_place(const char c)
   theString += c;
 }
 
+void xqpStringStore::append_in_place(xqpStringStore* suffix)
+{
+  theString += suffix->theString;
+}
+
 /*******************************************************************************
 
 ********************************************************************************/

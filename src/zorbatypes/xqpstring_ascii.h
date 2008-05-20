@@ -158,6 +158,8 @@ public:
 
   void append_in_place(const char c);
 
+  void append_in_place(xqpStringStore *suffix);
+
   xqpStringStore_t
   substr(std::string::size_type index, std::string::size_type length) const;
 
