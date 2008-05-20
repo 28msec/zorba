@@ -157,8 +157,8 @@ SimpleCollection::CollectionIter::CollectionIter(
 ********************************************************************************/
 SimpleCollection::CollectionIter::~CollectionIter() 
 {
-  if (theHaveLock)
-    theCollection->theLatch.unlock();
+  SYNC_CODE(if (theHaveLock) \
+    theCollection->theLatch.unlock();)
 }
 
 
