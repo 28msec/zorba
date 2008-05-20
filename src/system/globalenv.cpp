@@ -95,7 +95,7 @@ void GlobalEnvironment::init()
       //unsigned char *icu_data;
       HANDLE    hfile;
       hfile = CreateFile(self_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-      assert(hfile != INVALID_HANDLE_VALUE);
+      ZORBA_ASSERT(hfile != INVALID_HANDLE_VALUE);
       DWORD   icusize;
       icusize = GetFileSize(hfile, NULL);
       m_globalEnv->icu_appdata = new unsigned char[icusize];
@@ -104,14 +104,14 @@ void GlobalEnvironment::init()
       CloseHandle(hfile);
       UErrorCode    data_err = U_ZERO_ERROR;
       udata_setCommonData(m_globalEnv->icu_appdata, &data_err);
-      assert(data_err == U_ZERO_ERROR);
+      ZORBA_ASSERT(data_err == U_ZERO_ERROR);
 
     //  u_setDataDirectory(self_path);
     }
 #endif
     UErrorCode lICUInitStatus = U_ZERO_ERROR;
     u_init(&lICUInitStatus);
-    assert(lICUInitStatus == U_ZERO_ERROR);
+    ZORBA_ASSERT(lICUInitStatus == U_ZERO_ERROR);
   }
 #endif//ifndef ZORBA_NO_UNICODE
   
