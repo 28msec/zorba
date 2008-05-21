@@ -1,10 +1,10 @@
 SET (CAPI_EXAMPLES
 	csimple.c
+#  ccontext.c
 )
 
 CREATE_TEST_SOURCELIST(cexamples
 	cexamples.c
-  ccontext.c
   ${CAPI_EXAMPLES}
 )
  

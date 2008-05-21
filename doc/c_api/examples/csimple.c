@@ -25,29 +25,21 @@
  * Compile a query and print the result.  No error checking is done.
  */
 int
-example_1(XQUERY_API* aAPI)
+example_1(XQC_Implementation impl)
 {
-  char           lBuffer[256];
   XQUERY_ERROR   lError = XQ_SUCCESS;
-  XQUERY_STREAM  lStream;
-  XQUERY         lXQuery;
-
-  // initialize the buffer
-  memset(lBuffer, 0, 256);
+  XQC_Query      lXQuery;
+  FILE*          lOutFile = stdout;
 
   // compile the query
-  lError = aAPI->query_compile("(1+2, 'testsdfadsfsd')", &lXQuery);
+  lError = impl->compile(impl, "(1+2, 3, 4)", 0, &lXQuery);
 
-  // get the result as a stream
-  lError = aAPI->stream_init(lXQuery, &lStream);
+  // execute it and print the result on standard out
+  lXQuery->execute(lXQuery, lOutFile);
 
-  while (aAPI->stream_next(lStream, lBuffer, 255, &lError) > 0) {
-    printf("%s", lBuffer);
-  }
-  
-  // release resources
-  aAPI->stream_release(lStream);
-  aAPI->query_release(lXQuery);
+  // release the query
+  lXQuery->free(lXQuery);
+
   return 1;
 }
 
@@ -57,76 +49,67 @@ example_1(XQUERY_API* aAPI)
  * No error checking is done.
  */ 
 int
-example_2(XQUERY_API* aAPI) 
+example_2(XQC_Implementation impl) 
 {
-  XQUERY_ITEM      lItem;
-  XQUERY_STRING    lString;
-  XQUERY           lXQuery;
-  XQUERY_SEQUENCE  lResult;
-  
-  aAPI->item_init(&lItem);
-  aAPI->string_init(&lString);
-  
-  aAPI->query_compile("(1+2,3+4)", &lXQuery);
+  XQUERY_ERROR   lError = XQ_SUCCESS;
+  XQC_Query      lXQuery;
+  XQC_Item       lItem;
+  XQC_String     lString;
+  const char*          lStringValue;
+  XQC_Sequence   lResult;
+  FILE*          lOutFile = stdout;
 
-  aAPI->sequence_init(lXQuery, &lResult);
+  // compile the query
+  lError = impl->compile(impl, "for $i in 1 to 10 return $i", 0, &lXQuery);
 
-  while (aAPI->sequence_next(lResult, lItem) == XQ_SUCCESS) {
+  lXQuery->sequence(lXQuery, &lResult);
 
-    aAPI->item_stringvalue(lItem, lString);
+  // create a Item and String holder
+  impl->create_item(impl, &lItem);
+  impl->create_string(impl, 0, &lString);
 
-    printf("%s\n", aAPI->string_to_char(lString));
+  while ( lResult->next(lResult, lItem) != API0025_END_OF_SEQUENCE ) {
+    lItem->string_value(lItem, lString);
+    lString->to_char(lString, &lStringValue);
+    printf("%s ", lStringValue);
   }
 
-  aAPI->sequence_release(lResult);
-  aAPI->query_release(lXQuery);
-  aAPI->string_release(lString);
-  aAPI->item_release(lItem);
+  lString->free(lString);
+
+  // release the item
+  lItem->free(lItem);
+
+  // release the result sequence
+  lResult->free(lResult);
+
+  // release the query
+  lXQuery->free(lXQuery);
 
   return 1;
 }
 
-/**
- * A simple C API example
- * Compile a query and write the output to stream.
- * No error checking is done.
- */ 
-int
-example_3(XQUERY_API* aAPI) 
-{
-  XQUERY          lXQuery;
-  FILE*           lFile = stdout;
-
-  aAPI->query_compile("(1+2,3+4)", &lXQuery);
-
-  aAPI->query_execute(lXQuery, lFile);
-
-  aAPI->query_release(lXQuery);
-
-  return 1;
-}
 
 int
 csimple(int argc, char** argv)
 {
   int res = 0; 
-  XQUERY_API* lAPI = zorba_init();
+  XQC_Implementation impl;
+
+  if ( zorba_implementation(&impl) != XQ_SUCCESS )
+      return 1;
 
   printf("executing C example 1\n");
-  res = example_1(lAPI);
-  if (!res) { zorba_release(lAPI); return 1; };
+  res = example_1(impl);
+  if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
   printf("executing C example 2\n");
-  res = example_2(lAPI);
-  if (!res) { zorba_release(lAPI); return 1; };
+  res = example_2(impl);
+  if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
-  printf("executing C example 3\n");
-  res = example_3(lAPI);
-  if (!res) { zorba_release(lAPI); return 1; };
-  printf("\n");
 
-  zorba_release(lAPI);
+  impl->free(impl);
+   
   return 0;
 }

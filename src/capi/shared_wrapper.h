@@ -18,7 +18,7 @@
 
 #include <boost/smart_ptr.hpp>
 
-namespace zorba {
+namespace zorbac {
 
 template<typename T>
 class SharedWrapper
@@ -29,5 +29,5 @@ public:
   SharedWrapper(boost::shared_ptr<T> a) throw() : theObject(a) {}
 };
 
-} /* namespace zorba */
+} /* namespace zorbac */
 #endif

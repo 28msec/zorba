@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <sstream>
-#include <zorba/api_shared_types.h>
-#include <zorba/zorbac.h> 
+
 #include <zorba/zorba.h>
-#include <errno.h>
-#include "capi/shared_wrapper.h"
-#include "store/api/item.h"
+#include <zorba/zorbac.h> 
 
-using namespace zorba;
+#include "capi/implementation.h"
+#if 0
+#include "capi/dynamic_context.h"
+#include "capi/static_context.h"
+#include "capi/string.h"
+#include "capi/item.h"
+#include "capi/item_factory.h"
+#include "capi/sequence.h"
+#endif
 
+
+
+
+#if 0
 
 XQUERY_ERROR 
 zorba_query_compile(const char* aChar, XQUERY_REF aQuery)
@@ -336,58 +344,32 @@ zorba_item_create_qname3(XQUERY_STRING, XQUERY_STRING, XQUERY_STRING, XQUERY_ITE
 
 XQUERY_ERROR
 zorba_item_create_boolean(int, XQUERY_ITEM_REF);
+#endif
 
-XQUERY_API* 
-zorba_init()
+XQUERY_ERROR
+zorba_implementation(XQC_Implementation_Ref impl)
 {
-  XQUERY_API* lAPI = new XQUERY_API();
+  *impl = 0;
+  try {
+    // init zorba
+    zorba::Zorba* lZorba = zorba::Zorba::getInstance();
 
-  // init zorba
-  Zorba::getInstance();
+    *impl = new XQC_Implementation_s();
 
-  // query functions
-  lAPI->query_compile       = zorba_query_compile;
-  lAPI->query_compile_file  = zorba_query_compile_file;
-
-  lAPI->query_release       = zorba_query_release;
-  lAPI->query_execute       = zorba_query_execute;
-
-  // dynamic context
-  lAPI->dynamic_context     = zorba_dynamic_context;
-  lAPI->dc_set_context_item = zorba_dc_set_context_item;
-
-  // stream functions
-  lAPI->stream_init         = zorba_stream_init;
-  lAPI->stream_next         = zorba_stream_next;
-  lAPI->stream_release      = zorba_stream_release;
-
-  // sequence functions
-  lAPI->sequence_init       = zorba_sequence_init;
-  lAPI->sequence_release    = zorba_sequence_release;
-  lAPI->sequence_next       = zorba_sequence_next;
-
-  // item functions
-  lAPI->item_init           = zorba_item_init;
-  lAPI->item_release        = zorba_item_release;
-  lAPI->item_stringvalue    = zorba_item_stringvalue;
-
-  lAPI->string_init         = zorba_string_init;
-  lAPI->string_release      = zorba_string_release;
-  lAPI->string_to_char      = zorba_string_to_char;
-  lAPI->string_create       = zorba_string_create;
-
-  lAPI->item_create_string  = zorba_item_create_string;
-  lAPI->item_create_anyuri  = zorba_item_create_anyuri;
-  lAPI->item_create_qname2  = zorba_item_create_qname2;
-  lAPI->item_create_qname3  = zorba_item_create_qname3;
-  lAPI->item_create_boolean = zorba_item_create_boolean;
-
-  return lAPI;
+    (*impl)->data =  lZorba;
+    (*impl)->create_context = zorbac::Implementation::create_context;
+    (*impl)->compile        = zorbac::Implementation::compile;
+    (*impl)->compile_file   = zorbac::Implementation::compile_file;
+    (*impl)->free           = zorbac::Implementation::free;
+    (*impl)->create_item    = zorbac::Implementation::create_item;
+    (*impl)->create_string  = zorbac::Implementation::create_string;
+    (*impl)->item_factory   = zorbac::Implementation::item_factory;
+    return XQ_SUCCESS;
+  } catch (zorba::ZorbaException &e) {
+    return e.getErrorCode();
+  } catch (...) {
+    delete *impl;
+    return XQP0019_INTERNAL_ERROR;
+  }
 }
 
-void 
-zorba_release(XQUERY_API* aAPI)
-{
-  Zorba::getInstance()->shutdown();
-  delete aAPI;
-}

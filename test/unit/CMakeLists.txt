@@ -33,25 +33,25 @@ FOREACH (test ${TestsToRun})
   ADD_TEST(${TName} UnitTests ${TName})
 ENDFOREACH(test)
 
-CREATE_TEST_SOURCELIST(CUnitTests
-  CUnitTests.c
-  citemfactory.c
-)
-
-# add the executable
-ADD_EXECUTABLE(CUnitTests ${CUnitTests})
-TARGET_LINK_LIBRARIES(CUnitTests zorba)
-
-# remove the test driver source file
-SET (CTestsToRun ${CUnitTests})
-REMOVE (CTestsToRun CUnitTests.cpp)
-
-# add all the ADD_TEST for each testing
-FOREACH (test ${CTestsToRun})
-  GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
-  MESSAGE(STATUS ${TName})
-  ADD_TEST(${TName} CUnitTests ${TName})
-ENDFOREACH(test)
+# CREATE_TEST_SOURCELIST(CUnitTests
+#   CUnitTests.c
+#   citemfactory.c
+# )
+# 
+# # add the executable
+# ADD_EXECUTABLE(CAPIUnitTests ${CUnitTests})
+# TARGET_LINK_LIBRARIES(CAPIUnitTests zorba)
+# 
+# # remove the test driver source file
+# SET (CTestsToRun ${CUnitTests})
+# REMOVE (CTestsToRun CUnitTests.cpp)
+# 
+# # add all the ADD_TEST for each testing
+# FOREACH (test ${CTestsToRun})
+#   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
+#   MESSAGE(STATUS ${TName})
+#   ADD_TEST(${TName} CAPIUnitTests ${TName})
+# ENDFOREACH(test)
 
 IF(ZORBA_DEBUGGER)
   ADD_SUBDIRECTORY(debugger)

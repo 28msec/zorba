@@ -19,121 +19,175 @@
 #include <stdio.h>
 #include <zorba/error.h>
 
-typedef void* XQUERY;
-typedef void* XQUERY_STREAM;
-typedef void* XQUERY_SEQUENCE;
-typedef void* XQUERY_ITEM;
-typedef void* XQUERY_STRING;
-typedef void* XQUERY_DC;
+typedef struct XQC_Implementation_s* XQC_Implementation;
+typedef XQC_Implementation* XQC_Implementation_Ref;
 
-typedef XQUERY*           XQUERY_REF;
-typedef XQUERY_STREAM*    XQUERY_STREAM_REF;
-typedef XQUERY_SEQUENCE*  XQUERY_SEQUENCE_REF;
-typedef XQUERY_ITEM*      XQUERY_ITEM_REF;
-typedef XQUERY_STRING*    XQUERY_STRING_REF;
-typedef XQUERY_DC*        XQUERY_DC_REF;
+typedef struct XQC_Query_s* XQC_Query;
+typedef XQC_Query* XQC_Query_Ref;
+
+typedef struct XQC_StaticContext_s* XQC_StaticContext;
+typedef XQC_StaticContext*  XQC_StaticContext_Ref;
+
+typedef struct XQC_DynamicContext_s* XQC_DynamicContext;
+typedef XQC_DynamicContext* XQC_DynamicContext_Ref;
+
+typedef struct XQC_Sequence_s* XQC_Sequence;
+typedef XQC_Sequence* XQC_Sequence_Ref;
+
+typedef struct XQC_Item_s* XQC_Item;
+typedef XQC_Item* XQC_Item_Ref;
+
+typedef struct XQC_String_s* XQC_String;
+typedef XQC_String* XQC_String_Ref;
+
+typedef struct XQC_ItemFactory_s*  XQC_ItemFactory;
+typedef XQC_ItemFactory* XQC_ItemFactory_Ref;
+
+typedef struct XQC_OutputStream_s* XQC_OutputStream;
+
 typedef XQUERY_ERROR*     XQUERY_ERROR_REF;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef XQUERY_ERROR  (*xquery_query_compile)(const char*, XQUERY_REF); 
+XQUERY_ERROR
+zorba_implementation(XQC_Implementation_Ref impl);
 
-typedef XQUERY_ERROR  (*xquery_query_compile_file)(FILE*, XQUERY_REF);
+struct XQC_Implementation_s 
+{
+	XQUERY_ERROR 
+  (*create_context)(XQC_Implementation impl, XQC_StaticContext_Ref context);
 
-typedef XQUERY_ERROR  (*xquery_query_execute)(XQUERY, FILE*);
+	XQUERY_ERROR 
+  (*compile)(XQC_Implementation implementation, const char *query_string,
+		         XQC_StaticContext context, XQC_Query_Ref query);
 
-typedef void          (*xquery_query_release)(XQUERY);
+	XQUERY_ERROR 
+  (*compile_file)(XQC_Implementation implementation, FILE *query_file,
+		              XQC_StaticContext context, XQC_Query_Ref query);
 
-// dynamic context is only valid as long as the XQUERY
-typedef XQUERY_ERROR  (*xquery_dynamic_context)(XQUERY, XQUERY_DC_REF);
+	XQUERY_ERROR 
+  (*free)(XQC_Implementation implementation);
 
-typedef XQUERY_ERROR  (*xquery_dc_set_context_item)(XQUERY_DC, XQUERY_ITEM);
+  XQUERY_ERROR
+  (*create_item)(XQC_Implementation implementation, XQC_Item_Ref item);
 
-typedef XQUERY_ERROR  (*xquery_stream_init)(XQUERY, XQUERY_STREAM_REF);
+  XQUERY_ERROR
+  (*create_string)(XQC_Implementation implementation, const char* str, XQC_String_Ref res);
 
-// return -1 if XQUERY_ERROR is not XQ_SUCCESS
-typedef int           (*xquery_stream_next)(XQUERY_STREAM stream, char* buffer, 
-                                            int buffer_size, XQUERY_ERROR_REF);
+  XQUERY_ERROR
+  (*item_factory)(XQC_Implementation implementation, XQC_ItemFactory_Ref factory);  
 
-typedef void          (*xquery_stream_release)(XQUERY_STREAM);
+  void* data;
+};
 
-typedef XQUERY_ERROR  (*xquery_item_init)(XQUERY_ITEM_REF); 
+struct XQC_Query_s 
+{
+	XQUERY_ERROR
+  (*get_dynamic_context)(XQC_Query query, XQC_DynamicContext_Ref context);
 
-typedef void          (*xquery_item_release)(XQUERY_ITEM);
+	XQUERY_ERROR 
+  (*execute)(XQC_Query query, FILE*);
 
-typedef XQUERY_ERROR  (*xquery_item_stringvalue)(XQUERY_ITEM, XQUERY_STRING);
+	XQUERY_ERROR 
+  (*sequence)(XQC_Query query, XQC_Sequence_Ref sequence);
 
-typedef XQUERY_ERROR  (*xquery_sequence_init)(XQUERY, XQUERY_SEQUENCE_REF);
+	XQUERY_ERROR 
+  (*free)(XQC_Query query);
 
-typedef XQUERY_ERROR  (*xquery_sequence_next)(XQUERY_SEQUENCE, XQUERY_ITEM);
+  void* data;
+};
 
-typedef void          (*xquery_sequence_release)(XQUERY_SEQUENCE);
+struct XQC_StaticContext_s 
+{
+  void* data;
+};
 
-typedef XQUERY_ERROR  (*xquery_string_init)(XQUERY_STRING_REF);
+struct XQC_DynamicContext_s 
+{
 
-typedef void          (*xquery_string_release)(XQUERY_STRING);
+	XQUERY_ERROR 
+  (*set_context_item) (XQC_DynamicContext context, XQC_Item value);
 
-typedef XQUERY_ERROR  (*xquery_string_create)(const char*, XQUERY_STRING_REF);
+	XQUERY_ERROR 
+  (*set_context_sequence)(XQC_DynamicContext context, XQC_Sequence value);
 
-// const char* is only valid as long as the XQUERY_STRING
-typedef const char*   (*xquery_string_to_char)(XQUERY_STRING);
+  void* data;
+};
 
-// functions to create items
-typedef XQUERY_ERROR  (*xquery_item_create_string)(XQUERY_STRING, XQUERY_ITEM_REF);
-typedef XQUERY_ERROR  (*xquery_item_create_anyuri)(XQUERY_STRING, XQUERY_ITEM_REF);
-typedef XQUERY_ERROR  (*xquery_item_create_qname2)(XQUERY_STRING, XQUERY_STRING, XQUERY_ITEM_REF);
-typedef XQUERY_ERROR  (*xquery_item_create_qname3)(XQUERY_STRING, XQUERY_STRING, 
-                                                   XQUERY_STRING, XQUERY_ITEM_REF);
-typedef XQUERY_ERROR  (*xquery_item_create_boolean)(int, XQUERY_ITEM_REF);
+struct XQC_String_s 
+{
+  XQUERY_ERROR
+  (*create)(XQC_String_Ref str);
 
-typedef struct {
-  // functions related to queries
-  xquery_query_compile       query_compile;
-  xquery_query_compile_file  query_compile_file;
-  xquery_query_release       query_release;
-  xquery_query_execute       query_execute;
+  XQUERY_ERROR
+  (*to_char)(XQC_String str, const char** res);
 
-  // dynamic context
-  xquery_dynamic_context     dynamic_context;
-  xquery_dc_set_context_item dc_set_context_item;
+  void
+  (*free)(XQC_String str);
+
+  void* data;
+};
+
+struct XQC_Item_s 
+{
+  XQUERY_ERROR
+  (*create)(XQC_Item_Ref item);
+
+  XQUERY_ERROR
+  (*string_value)(XQC_Item item, XQC_String);
+
+  void
+  (*free)(XQC_Item item);
+
+  void* data;
+};
+
+struct XQC_OutputStream_s 
+{
+  void* user_data;
+
+  unsigned int
+  (*callback)(XQC_OutputStream stream, void* buffer, unsigned int size);
+
+  void* data;
+};
+
+struct XQC_ItemFactory_s
+{
+  XQUERY_ERROR
+  (*create_string)(XQC_ItemFactory factory, XQC_String str, XQC_Item_Ref item); 
+
+  XQUERY_ERROR
+  (*create_anyuri)(XQC_ItemFactory factory, XQC_String str, XQC_Item_Ref item); 
+
+  XQUERY_ERROR
+  (*create_qname2)(XQC_ItemFactory factory, XQC_String uri, XQC_String localname, XQC_Item_Ref item); 
   
-  // functions related to streams
-  xquery_stream_init         stream_init;
-  xquery_stream_next         stream_next;
-  xquery_stream_release      stream_release;
+  XQUERY_ERROR
+  (*create_qname3)(XQC_ItemFactory factory, XQC_String uri, XQC_String prefix,
+                   XQC_String localname, XQC_Item_Ref item); 
 
-  // function related to result iterators
-  xquery_sequence_init       sequence_init;
-  xquery_sequence_next       sequence_next;
-  xquery_sequence_release    sequence_release;
+  XQUERY_ERROR
+  (*create_boolean)(XQC_ItemFactory factory, int boolean, XQC_Item_Ref item); 
 
-  // item functions
-  xquery_item_init           item_init;
-  xquery_item_release        item_release;
-  xquery_item_stringvalue    item_stringvalue;
+  void
+  (*free)(XQC_ItemFactory factory);
 
-  // string functions
-  xquery_string_init         string_init;
-  xquery_string_release      string_release;
-  xquery_string_to_char      string_to_char;
-  xquery_string_create       string_create;
+  void* data;
+};
 
-  // functions to create items
-  xquery_item_create_string   item_create_string;
-  xquery_item_create_anyuri   item_create_anyuri;
-  xquery_item_create_qname2   item_create_qname2;
-  xquery_item_create_qname3   item_create_qname3;
-  xquery_item_create_boolean  item_create_boolean;
-} XQUERY_API;
+struct XQC_Sequence_s 
+{
+  XQUERY_ERROR
+  (*next)(XQC_Sequence sequence, XQC_Item item);
 
-XQUERY_API*
-zorba_init();
+	XQUERY_ERROR 
+  (*free)(XQC_Sequence sequence);
 
-void 
-zorba_release(XQUERY_API*);
-
+  void* data;
+};
 
 
 #ifdef __cplusplus

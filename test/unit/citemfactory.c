@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <assert.h>
+#include <string.h>
 #include <stdlib.h>
 #include <zorba/zorbac.h>
 
@@ -28,43 +29,58 @@
 int 
 citemfactory(int argc, char* argv[])
 {
-  XQUERY_API*   lAPI = zorba_init();
-  XQUERY_ITEM   lItem;
-  XQUERY_STRING lString;
-  XQUERY_STRING lURI;
-  XQUERY_STRING lPrefix;
+  XQC_Implementation impl;
+  XQC_Item           lItem = 0;
+  XQC_String         lString = 0;
+  XQC_String         lURI = 0;
+  XQC_String         lPrefix = 0;
+  XQC_ItemFactory    lFactory = 0;
+  const char*        lStringValue = 0;
 
-  // create some types
-  UNIT_ASSERT ( lAPI->string_create("1", &lString) == XQ_SUCCESS );
-  UNIT_ASSERT ( lAPI->string_create("http://www.zorba-xquery.com/", &lURI) == XQ_SUCCESS );
-  UNIT_ASSERT ( lAPI->string_create("1", &lString) == XQ_SUCCESS );
-  UNIT_ASSERT ( lAPI->string_create("zorba", &lPrefix) == XQ_SUCCESS );
+
+  if ( zorba_implementation(&impl) != XQ_SUCCESS )
+      return 1;
+
+  impl->item_factory(impl, &lFactory);
+
+  impl->create_string(impl, "1", &lString);
+  impl->create_string(impl, "http://www.zorba-xquery.com/", &lURI);
+  impl->create_string(impl, "zorba", &lPrefix);
 
   /* String */
-  UNIT_ASSERT ( lAPI->item_create_string(lString, &lItem) == XQ_SUCCESS );
-  lAPI->item_release(lItem);
+  UNIT_ASSERT ( lFactory->create_string(lFactory, lString, &lItem) == XQ_SUCCESS );
+  lItem->string_value(lItem, lString);
+  lString->to_char(lString, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
+  lItem->free(lItem);
 
   /* AnyURI */
-  UNIT_ASSERT ( lAPI->item_create_anyuri(lString, &lItem) == XQ_SUCCESS );
-  lAPI->item_release(lItem);
+  UNIT_ASSERT ( lFactory->create_anyuri(lFactory, lURI, &lItem) == XQ_SUCCESS );
+//lItem->string_value(lItem, lURI);
+//lURI->to_char(lURI, &lStringValue);
+//  UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
+  lItem->free(lItem);
 
+#if 0
   /* QName */
-  UNIT_ASSERT ( lAPI->item_create_qname2(lURI, lString, &lItem) == XQ_SUCCESS );
-  lAPI->item_release(lItem);
+  UNIT_ASSERT ( lFactory->create_qname2(lFactory, lURI, lString, &lItem) == XQ_SUCCESS );
+  lItem->free(lItem);
   
-  UNIT_ASSERT ( lAPI->item_create_qname3(lURI, lString, lPrefix, &lItem) == XQ_SUCCESS );
-  lAPI->item_release(lItem);
+  UNIT_ASSERT ( lFactory->create_qname3(lFactory, lURI, lString, lPrefix, &lItem) == XQ_SUCCESS );
+  lItem->free(lItem);
 
   /* Boolean */
-  UNIT_ASSERT ( lAPI->item_create_boolean(1, &lItem) == XQ_SUCCESS );
-  lAPI->item_release(lItem);
+  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 1, &lItem) == XQ_SUCCESS );
+  lItem->free(lItem);
+#endif
 
+  lPrefix->free(lPrefix);
+  lURI->free(lURI);
+  lString->free(lString);
 
-  lAPI->string_release(lPrefix);
-  lAPI->string_release(lURI);
-  lAPI->string_release(lString);
-
-  zorba_release(lAPI);
+  lFactory->free(lFactory);
+    
+  impl->free(impl);
 
   return 0;
 }
