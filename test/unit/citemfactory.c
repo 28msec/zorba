@@ -36,6 +36,7 @@ citemfactory(int argc, char* argv[])
   XQC_String         lURI = 0;
   XQC_String         lPrefix = 0;
   XQC_String         lTmpString = 0;
+  int                lTmpInt = 0;
   const char*        lStringValue = 0;
 
 
@@ -68,20 +69,45 @@ citemfactory(int argc, char* argv[])
   lItem->string_value(lItem, lTmpString);
   lTmpString->to_char(lTmpString, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
+  lItem->ns(lItem, lTmpString);
+  lTmpString->to_char(lTmpString, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
+  lItem->localname(lItem, lTmpString);
+  lTmpString->to_char(lTmpString, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->free(lItem);
   
-  UNIT_ASSERT ( lFactory->create_qname3(lFactory, lURI, lString, lPrefix, &lItem) == XQ_SUCCESS );
+  UNIT_ASSERT ( lFactory->create_qname3(lFactory, lURI, lPrefix, lString, &lItem) == XQ_SUCCESS );
   lItem->string_value(lItem, lTmpString);
   lTmpString->to_char(lTmpString, &lStringValue);
-  printf("%s\n", lStringValue);
-  UNIT_ASSERT ( strcmp(lStringValue, "1:zorba") == 0 );
+  UNIT_ASSERT ( strcmp(lStringValue, "zorba:1") == 0 );
+  lItem->ns(lItem, lTmpString);
+  lTmpString->to_char(lTmpString, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
+  lItem->localname(lItem, lTmpString);
+  lTmpString->to_char(lTmpString, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
+  lItem->prefix(lItem, lTmpString);
+  lTmpString->to_char(lTmpString, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "zorba") == 0 );
   lItem->free(lItem);
 
-#if 0
   /* Boolean */
   UNIT_ASSERT ( lFactory->create_boolean(lFactory, 1, &lItem) == XQ_SUCCESS );
+  lItem->string_value(lItem, lTmpString);
+  lTmpString->to_char(lTmpString, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "true") == 0 );
+  lItem->boolean_value(lItem, &lTmpInt);
+  UNIT_ASSERT ( lTmpInt  == 1 );
   lItem->free(lItem);
-#endif
+
+  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 0, &lItem) == XQ_SUCCESS );
+  lItem->string_value(lItem, lTmpString);
+  lTmpString->to_char(lTmpString, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "false") == 0 );
+  lItem->boolean_value(lItem, &lTmpInt);
+  UNIT_ASSERT ( lTmpInt  == 0 );
+  lItem->free(lItem);
 
   lPrefix->free(lPrefix);
   lURI->free(lURI);

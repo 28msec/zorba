@@ -59,14 +59,14 @@ example_2(XQC_Implementation impl)
   XQC_Sequence   lResult;
   FILE*          lOutFile = stdout;
 
-  // compile the query
+  // create an Item and a String holder
+  impl->create_item(impl, &lItem);
+  impl->create_string(impl, 0, &lString);
+
+  // compile the query and get the result as a sequence
   lError = impl->compile(impl, "for $i in 1 to 10 return $i", 0, &lXQuery);
 
   lXQuery->sequence(lXQuery, &lResult);
-
-  // create a Item and String holder
-  impl->create_item(impl, &lItem);
-  impl->create_string(impl, 0, &lString);
 
   while ( lResult->next(lResult, lItem) != API0025_END_OF_SEQUENCE ) {
     lItem->string_value(lItem, lString);
@@ -74,15 +74,10 @@ example_2(XQC_Implementation impl)
     printf("%s ", lStringValue);
   }
 
+  // release all aquired resources
   lString->free(lString);
-
-  // release the item
   lItem->free(lItem);
-
-  // release the result sequence
   lResult->free(lResult);
-
-  // release the query
   lXQuery->free(lXQuery);
 
   return 1;

@@ -133,10 +133,25 @@ struct XQC_String_s
 struct XQC_Item_s 
 {
   XQUERY_ERROR
-  (*create)(XQC_Item_Ref item);
+  (*string_value)(XQC_Item item, XQC_String);
 
   XQUERY_ERROR
-  (*string_value)(XQC_Item item, XQC_String);
+  (*prefix)(XQC_Item item, XQC_String);
+
+  XQUERY_ERROR
+  (*ns)(XQC_Item item, XQC_String);
+
+  XQUERY_ERROR
+  (*localname)(XQC_Item item, XQC_String);
+
+  XQUERY_ERROR
+  (*boolean_value)(XQC_Item item, int*);
+
+  XQUERY_ERROR
+  (*nan)(XQC_Item item, int*);
+
+  XQUERY_ERROR
+  (*pos_or_neg_inf)(XQC_Item item, int*);
 
   void
   (*free)(XQC_Item item);

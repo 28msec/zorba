@@ -13,6 +13,24 @@ namespace zorbac {
       static XQUERY_ERROR
       string_value(XQC_Item item, XQC_String);
 
+      static XQUERY_ERROR
+      prefix(XQC_Item item, XQC_String);
+
+      static XQUERY_ERROR
+      ns(XQC_Item item, XQC_String);
+
+      static XQUERY_ERROR
+      localname(XQC_Item item, XQC_String);
+
+      static XQUERY_ERROR
+      boolean_value(XQC_Item item, int*);
+
+      static XQUERY_ERROR
+      nan(XQC_Item item, int*);
+
+      static XQUERY_ERROR
+      pos_or_neg_inf(XQC_Item item, int*);
+
       static void
       free(XQC_Item item);
 

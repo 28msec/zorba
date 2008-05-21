@@ -17,8 +17,13 @@ using namespace zorba;
 
 #define ASSIGN_FUNCTIONS \
  (*item)->string_value = zorbac::Item::string_value;  \
+ (*item)->prefix = zorbac::Item::prefix;  \
+ (*item)->ns = zorbac::Item::ns;  \
+ (*item)->localname = zorbac::Item::localname;  \
+ (*item)->boolean_value = zorbac::Item::boolean_value;  \
+ (*item)->nan = zorbac::Item::nan;  \
+ (*item)->pos_or_neg_inf = zorbac::Item::pos_or_neg_inf;  \
  (*item)->free         = zorbac::Item::free;
-    
 
 namespace zorbac {
 
@@ -87,6 +92,13 @@ namespace zorbac {
   XQUERY_ERROR
   ItemFactory::create_boolean(XQC_ItemFactory factory, int boolean, XQC_Item_Ref item) 
   {
+    TRY
+      zorba::Item lItem = FF->createBoolean(boolean != 0);
+      *item = new XQC_Item_s();
+      (*item)->data = new zorba::Item(lItem);
+
+      ASSIGN_FUNCTIONS
+    CATCH
   }
 
   void
