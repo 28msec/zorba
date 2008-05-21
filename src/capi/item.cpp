@@ -89,7 +89,6 @@ namespace zorbac {
     ITEM_CATCH
   }
 
-
   void
   Item::free(XQC_Item item)
   {
