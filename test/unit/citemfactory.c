@@ -56,9 +56,9 @@ citemfactory(int argc, char* argv[])
 
   /* AnyURI */
   UNIT_ASSERT ( lFactory->create_anyuri(lFactory, lURI, &lItem) == XQ_SUCCESS );
-//lItem->string_value(lItem, lURI);
-//lURI->to_char(lURI, &lStringValue);
-//  UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
+  lItem->string_value(lItem, lURI);
+  lURI->to_char(lURI, &lStringValue);
+  UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
   lItem->free(lItem);
 
 #if 0

@@ -24,7 +24,7 @@ namespace zorbac {
   String::free(XQC_String str)
   {
     try {
-      String* lInnerString = static_cast<String*>(str->data);
+      zorba::String* lInnerString = static_cast<zorba::String*>(str->data);
       delete lInnerString;
       delete str;
     } catch (ZorbaException &e) {
