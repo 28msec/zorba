@@ -54,6 +54,15 @@ namespace zorbac {
                              XQC_String localname, 
                              XQC_Item_Ref item)
   {
+    String* lUriWrapper = static_cast<String*>(uri->data);
+    String* lLocalnameWrapper = static_cast<String*>(localname->data);
+    TRY
+      zorba::Item lItem = FF->createQName(*lUriWrapper, *lLocalnameWrapper);
+      *item = new XQC_Item_s();
+      (*item)->data = new zorba::Item(lItem);
+
+      ASSIGN_FUNCTIONS
+    CATCH
   }
   
   XQUERY_ERROR
@@ -63,6 +72,16 @@ namespace zorbac {
                              XQC_String localname, 
                              XQC_Item_Ref item)
   {
+    String* lUriWrapper = static_cast<String*>(uri->data);
+    String* lPrefixWrapper = static_cast<String*>(prefix->data);
+    String* lLocalnameWrapper = static_cast<String*>(localname->data);
+    TRY
+      zorba::Item lItem = FF->createQName(*lUriWrapper, *lPrefixWrapper, *lLocalnameWrapper);
+      *item = new XQC_Item_s();
+      (*item)->data = new zorba::Item(lItem);
+
+      ASSIGN_FUNCTIONS
+    CATCH
   }
  
   XQUERY_ERROR
