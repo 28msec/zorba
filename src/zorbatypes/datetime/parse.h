@@ -67,6 +67,18 @@ int parse_int(
   return 0;
 }
 
+template <typename T>
+int parse_int_const_position(
+    std::string& s,
+    int position,
+    T& result,
+    int min_digits = -1,
+    int max_digits = -1)
+{
+  unsigned int pos = position;
+  return parse_int<T>(s, pos, result, min_digits, max_digits);
+}
+
 
 /**
  * Parses the fractional part of double number, not including the decimal dot.

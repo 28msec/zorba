@@ -1840,6 +1840,7 @@ void ConstrElementNode::constructSubtree(
 
   if (childrenIte != 0)
   {
+    childrenIte->open();
     item = childrenIte->next();
     while (item != 0)
     {
@@ -1872,6 +1873,8 @@ void ConstrElementNode::constructSubtree(
       
       item = childrenIte->next();
     }
+    
+    childrenIte->close();
   }
   else if (!haveBaseUri && isRoot)
   {

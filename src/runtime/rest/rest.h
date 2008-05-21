@@ -16,27 +16,150 @@
 #ifndef ZORBA_RUNTIME_REST_H
 #define ZORBA_RUNTIME_REST_H
 
+#include <istream>
+#include <streambuf>
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
-
-typedef void CURL;
+#include "runtime/base/noarybase.h"
 
 namespace zorba {
 
-class ZorbaRestGetIteratorState : public PlanIteratorState
+  
+typedef void CURL;
+typedef void CURLM;
+
+class CurlStreamBuffer : public std::streambuf
 {
-  public:
-    ZorbaRestGetIteratorState();
-    ~ZorbaRestGetIteratorState();
+public:
+  CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle);
+  virtual ~CurlStreamBuffer();
 
-    void init(PlanState&);
-    void reset(PlanState&);
+  virtual int overflow(int c);
+  virtual int underflow();
+  int multi_perform();
 
-    CURL* theCurlHandle;
-    char*       theCurlErrorBuffer;
+protected:
+  char* CurlErrorBuffer;
+  CURLM* MultiHandle;
+  CURL* EasyHandle;
+
+  // callback called by curl
+  static size_t
+  write_callback(char *buffer, size_t size, size_t nitems, void *userp);
+  
+  static const int INITIAL_BUFFER_SIZE = 1024;
 };
 
-NARY_ITER_STATE(ZorbaRestGetIterator, ZorbaRestGetIteratorState);
+/****************************************************************************
+ *
+ * ChildrenIterator - will return one by one the Items that it was 
+ * initialized with. 
+ *
+ ****************************************************************************/
+
+class ChildrenIteratorState : public PlanIteratorState
+{
+public:
+  ChildrenIteratorState() : index(0) { };
+  
+  void init(PlanState&);
+  void reset(PlanState&);
+
+  unsigned int index;
+};
+
+class ChildrenIterator : public NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >
+{
+public:
+  ChildrenIterator(const QueryLoc& loc, store::Item_t child) 
+    : NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >(loc)
+  { 
+    children.push_back(child);
+  }
+  
+  ChildrenIterator(const QueryLoc& loc, store::Item_t child1, store::Item_t child2) 
+    : NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >(loc)
+  {
+    children.push_back(child1);
+    children.push_back(child2);
+  }
+    
+  store::Item_t
+  nextImpl(PlanState& aPlanState) const;
+    
+  virtual void
+  accept(PlanIterVisitor& v) const
+  {
+    v.beginVisit(*this);
+    v.endVisit(*this);
+  }
+  
+protected:
+  std::vector<store::Item_t> children;
+};
+
+typedef rchandle<ChildrenIterator> ChildrenIterator_t;
+
+
+/****************************************************************************
+ *
+ * rest-get Iterator state
+ *
+ ****************************************************************************/
+
+class ZorbaRestGetIteratorState : public PlanIteratorState
+{
+public:
+  ZorbaRestGetIteratorState();
+  ~ZorbaRestGetIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+
+  CURLM* MultiHandle;
+  CURL* EasyHandle;
+  CurlStreamBuffer* theStreamBuffer;
+  std::vector<std::string>* headers;
+};
+
+/****************************************************************************
+ *
+ * rest-get Iterator 
+ *
+ ****************************************************************************/
+
+class ZorbaRestGetIterator : public NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState > 
+{
+public:                                                                  
+  ZorbaRestGetIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) 
+    : NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  { } 
+
+  store::Item_t
+  nextImpl(PlanState& aPlanState) const;
+                                                                         
+  virtual void 
+  accept(PlanIterVisitor& v) const
+  {
+    v.beginVisit(*this);
+    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
+    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
+    for ( ; iter != lEnd; ++iter ) {
+      ( *iter )->accept ( v );
+    }
+    v.endVisit(*this);
+  }
+
+  static size_t
+  getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState);
+  
+protected:
+  store::Item_t createResultNode(PlanState& planState, xqpString name, ChildrenIterator_t children = NULL) const;
+  store::Item_t createResultNode(PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child) const;
+  store::Item_t createResultNode(PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child1, store::Item_t child2) const;
+  
+};
+
 
 } /* namespace zorba */
 

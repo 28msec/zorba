@@ -18,28 +18,163 @@
 #include <curl/curl.h>
 
 #include "runtime/util/iterator_impl.h"
+#include "runtime/api/runtimecb.h"
+#include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+
+#include "store/api/iterator.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/naive/node_items.h"
+#include "store/api/copymode.h"
+#include "types/root_typemanager.h"
+#include "context/static_context.h"
+#include "context/namespace_context.h"
+
+#include "zorbatypes/numconversions.h"
+#include "zorbatypes/datetime/parse.h"
+#include "system/globalenv.h"
 #include "errors/error_manager.h"
+
 
 namespace zorba {
 
-ZorbaRestGetIteratorState::ZorbaRestGetIteratorState() 
-  : theCurlHandle(0),
-    theCurlErrorBuffer(0)
+/****************************************************************************
+ *
+ * CurlStreamBuffer
+ *
+ ****************************************************************************/
+                   
+CurlStreamBuffer::CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle)
+  : std::streambuf(), MultiHandle(aMultiHandle), EasyHandle(aEasyHandle)
 {
-  theCurlHandle = curl_easy_init();
+  CurlErrorBuffer = new char[CURLOPT_ERRORBUFFER];
+  CurlErrorBuffer[0] = 0;
+  
+  curl_easy_setopt(EasyHandle, CURLOPT_ERRORBUFFER, CurlErrorBuffer);
+  curl_easy_setopt(EasyHandle, CURLOPT_WRITEDATA, this);
+  curl_easy_setopt(EasyHandle, CURLOPT_WRITEFUNCTION, CurlStreamBuffer::write_callback);
+  curl_easy_setopt(EasyHandle, CURLOPT_BUFFERSIZE, INITIAL_BUFFER_SIZE);
+}
 
-  theCurlErrorBuffer = new char[CURLOPT_ERRORBUFFER];
-  curl_easy_setopt(theCurlHandle, CURLOPT_ERRORBUFFER, theCurlErrorBuffer);
+int CurlStreamBuffer::multi_perform()
+{
+  CURLMsg* msg;
+  int MsgsInQueue;
+  int StillRunning = 0;
+  bool done = false;
+  int error = 0;
 
-  curl_easy_setopt(theCurlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-  curl_easy_setopt(theCurlHandle, CURLOPT_HTTPGET, 1);
+  while (!done)
+  {
+    while (CURLM_CALL_MULTI_PERFORM == curl_multi_perform(MultiHandle, &StillRunning))
+      ;
+
+    while ((msg = curl_multi_info_read(MultiHandle, &MsgsInQueue)))
+      if (msg->msg == CURLMSG_DONE)
+      {
+        error = msg->data.result;
+        done = true;
+      }
+  }
+
+  // TODO: return message, too ?
+  //if (error)
+  //  std::cout << "error: [" << CurlErrorBuffer << "]" << std::endl;
+  
+  return error;
+}
+
+CurlStreamBuffer::~CurlStreamBuffer()
+{
+  delete[] CurlErrorBuffer; 
+  CurlErrorBuffer = NULL;
+  free(_M_out_beg);
+  _M_out_beg = NULL;
+}
+
+size_t CurlStreamBuffer::write_callback(char* buffer, size_t size, size_t nitems, void* userp)
+{
+  size_t result = ((CurlStreamBuffer*)userp)->sputn(buffer, size*nitems);
+  ((CurlStreamBuffer*)userp)->_M_in_end = ((CurlStreamBuffer*)userp)->_M_out_cur;
+  return result;
+}
+
+int CurlStreamBuffer::overflow(int c)
+{
+  int new_size = 2 * (_M_out_end-_M_out_beg);
+  if (new_size == 0)
+    new_size = INITIAL_BUFFER_SIZE;
+  
+  char* new_buffer = (char*)realloc(_M_out_beg, new_size);
+  
+  if (new_buffer != _M_out_beg)
+  {
+    _M_out_cur = new_buffer + (_M_out_cur - _M_out_beg);
+    _M_out_beg = new_buffer;
+    _M_in_cur = new_buffer + (_M_in_cur - _M_in_beg);
+    _M_in_beg = new_buffer;
+  }
+  *_M_out_cur = (char)c;
+  _M_out_cur++;
+  _M_out_end = _M_out_beg + new_size;
+  _M_in_end = _M_out_cur;
+  
+  return 0;
+}
+
+int CurlStreamBuffer::underflow()
+{
+  // TODO: place a call to multi_perform() ?
+  return EOF;
+}
+
+/****************************************************************************
+ *
+ * ChildrenIterator
+ *
+ ****************************************************************************/
+ 
+void ChildrenIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+}
+
+void ChildrenIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+}
+
+store::Item_t
+ChildrenIterator::nextImpl(PlanState& planState) const
+{
+  ChildrenIteratorState* state;
+  DEFAULT_STACK_INIT(ChildrenIteratorState, state, planState);
+  
+  state->index = 0;
+  while(state->index < children.size())
+  {
+    STACK_PUSH(children[state->index], state);
+    state->index++;
+  }
+  
+  STACK_PUSH(NULL, state);
+  STACK_END (state);
+}
+
+
+/****************************************************************************
+ *
+ * rest-get Iterator
+ *
+ ****************************************************************************/
+
+ZorbaRestGetIteratorState::ZorbaRestGetIteratorState() 
+{
 }
 
 ZorbaRestGetIteratorState::~ZorbaRestGetIteratorState()
 {
-  delete[] theCurlErrorBuffer; theCurlErrorBuffer = 0;
-
-  curl_easy_cleanup(theCurlHandle);
 }
 
 void
@@ -54,35 +189,154 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
 }
 
+store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpString name, ChildrenIterator_t children) const
+{
+  xqpString ns = "http://www.flworfound.org/rest";
+  xqpString pre = "zorba-rest";
+  store::Item_t qname = GENV_ITEMFACTORY->createQName(ns.getStore(), pre.getStore(), name.getStore());
+  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
+  store::NsBindings bindings;
+  store::CopyMode copymode;
+  
+  std::auto_ptr<store::Iterator> cwrapper;
+  if (children != NULL)
+    cwrapper.reset(new PlanWrapper(children, planState.theCompilerCB, planState.dctx()));
+  
+  store::Item_t item = GENV_ITEMFACTORY->createElementNode((ulong)&planState,
+    qname,
+    GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
+    cwrapper.get(),
+    NULL,
+    NULL,
+    bindings,
+    baseUri,
+    true,
+    true,
+    false,
+    copymode);
+    
+  return item;
+}
+
+store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child) const
+{
+  ChildrenIterator_t childIterator;
+  childIterator = new ChildrenIterator(loc, child); 
+  return createResultNode(planState, name, childIterator);
+}
+
+store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child1, store::Item_t child2) const
+{
+  ChildrenIterator_t childIterator;
+  childIterator = new ChildrenIterator(loc, child1, child2);
+  return createResultNode(planState, name, childIterator);
+}
+
+
 store::Item_t
 ZorbaRestGetIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t   lUri;
-  xqpStringStore* lUriString;
-  int             lCurlResultCode;
-
+  store::Item_t lUri;
+  xqpStringStore_t lUriString;
+  int code;
+  store::Item_t result = NULL;
+  store::Item_t doc;
+  store::Store& store = GENV.getStore();
+  
   ZorbaRestGetIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
+  
+  /********* Initialization ***********************/
+  curl_global_init(CURL_GLOBAL_ALL); // TODO: once per application, needs to be moved somewhere else
+  state->MultiHandle = curl_multi_init(); // TODO check error
+  state->EasyHandle = curl_easy_init();
+  state->theStreamBuffer = NULL;
+  state->headers = NULL;
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPGET, 1);
+  curl_easy_setopt(state->EasyHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HEADERFUNCTION, ZorbaRestGetIterator::getHeaderData);
+  curl_easy_setopt(state->EasyHandle, CURLOPT_WRITEHEADER, state);
+  curl_multi_add_handle(state->MultiHandle, state->EasyHandle);
 
-  std::cout << "test" << std::endl;
-
-  if ( (lUri = CONSUME(0) ) == NULL ) {
-    // todo raise an error
+  if ( (lUri = CONSUME(0) ) == NULL ) 
+  {
+    //TODO: raise an error
   }
 
   lUriString = lUri->getStringValue();
-  std::cout << *lUriString << std::endl;
+  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, lUriString->c_str());
 
-  curl_easy_setopt(state->theCurlHandle, CURLOPT_URL, lUriString->c_str());
-
-  lCurlResultCode = curl_easy_perform(state->theCurlHandle);
-
-  if ( lCurlResultCode != 0 ) {
-    std::cout << state->theCurlErrorBuffer << std::endl;
+  if (state->theStreamBuffer == 0) 
+  {
+    state->theStreamBuffer = new CurlStreamBuffer(state->MultiHandle, state->EasyHandle);
+    state->headers = new std::vector<std::string>();
   }
+  
+  code = state->theStreamBuffer->multi_perform(); 
+  
+  /********* Process the reply **********************/
+  {
+    int result_code;
+    if (state->headers->size() == 0)
+    {
+      result_code = code; // TODO change cURL's error code to something else?
+    }
+    else if (parse_int_const_position<int>(state->headers->operator[](0), 9, result_code, 1))
+    {
+      result_code = -1; // TODO change this code
+    }
+    
+    xqpString temp = NumConversions::intToStr(result_code);
+    store::Item_t text_code = GENV_ITEMFACTORY->createTextNode((ulong)&planState, temp.theStrStore, false, true);
+    store::Item_t status_code = createResultNode(planState, "status_code", loc, text_code);
+    
+    std::istream is(state->theStreamBuffer);
+    try
+    {
+      doc = store.loadDocument(lUriString, is);
+    }
+    catch (...)
+    {
+      doc = NULL;
+    }
+    
+    if (doc != NULL)
+    {
+      store::Iterator_t children = doc->getChildren();
+      children->open();
+      store::Item_t payload = createResultNode(planState, "payload", loc, children->next()); // TODO: check NULL
+    
+      result = createResultNode(planState, "result", loc, status_code, payload);
+    }
+    else
+    {
+      result = createResultNode(planState, "result", loc, status_code);
+    }
+  }
+  
+  STACK_PUSH(result, state);
+  
+  /********* Deinitialization ***********************/
+  curl_multi_remove_handle(state->MultiHandle, state->EasyHandle);
+  curl_easy_cleanup(state->EasyHandle);
+  curl_multi_cleanup(state->MultiHandle);
+  curl_global_cleanup();
+  delete state->theStreamBuffer;
+  delete state->headers;
+  
+  STACK_END (state);
+}
 
-
-  STACK_END (state)
+size_t
+ZorbaRestGetIterator::getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState)
+{
+  ZorbaRestGetIteratorState* state = static_cast<ZorbaRestGetIteratorState*>(aState);
+  
+  std::string temp(static_cast<char*>(ptr), size*nmemb-1);
+  state->headers->push_back(temp);
+  // std::cout << "header: " << temp << std::endl;
+  
+  return size * nmemb;
 }
 
 } /* namespace zorba */
