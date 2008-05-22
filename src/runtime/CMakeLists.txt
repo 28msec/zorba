@@ -36,6 +36,7 @@ SET(RUNTIME_SRCS
     qnames/QNamesImpl.cpp
     sequences/SequencesImpl.cpp
     strings/StringsImpl.cpp
+    validate/validate.cpp
     visitors/accept.cpp
     visitors/iterprinter.cpp
     visitors/printervisitor.cpp
@@ -67,3 +68,4 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS visitors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS fncontext)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS nodes)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS validate)
