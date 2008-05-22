@@ -15,6 +15,7 @@ namespace zorbac {
   XQUERY_ERROR
   Implementation::create_context(XQC_Implementation impl, XQC_StaticContext_Ref context)
   {
+    return XQ_SUCCESS;
   }
 
   XQUERY_ERROR 

@@ -1,5 +1,6 @@
 #include "capi/query.h"
 
+#include <cassert>
 #include <sstream>
 #include <zorba/zorba.h>
 #include "capi/shared_wrapper.h"
@@ -12,6 +13,7 @@ namespace zorbac {
   XQUERY_ERROR
   Query::get_dynamic_context(XQC_Query query, XQC_DynamicContext_Ref context)
   {
+    return XQ_SUCCESS;
   }
 
   XQUERY_ERROR 
@@ -64,7 +66,7 @@ namespace zorbac {
     }
   }
 
-  XQUERY_ERROR 
+  void
   Query::free(XQC_Query query)
   {
     try {
@@ -72,9 +74,9 @@ namespace zorbac {
       delete lQuery;
       delete query;
     } catch (ZorbaException& e) {
-      return e.getErrorCode();
+      assert(false);
     } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
+      assert(false);
     }
   }
 

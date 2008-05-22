@@ -1,5 +1,6 @@
 #include "capi/sequence.h"
 
+#include <cassert>
 #include <zorba/zorba.h>
 #include "capi/shared_wrapper.h"
 
@@ -25,7 +26,7 @@ namespace zorbac {
     }
  }
 
- XQUERY_ERROR 
+ void
  Sequence::free(XQC_Sequence seq)
  {
     try {
@@ -33,9 +34,9 @@ namespace zorbac {
       delete lIter;
       delete seq;
     } catch (ZorbaException& e) {
-      return e.getErrorCode();
+      assert(false);
     } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
+      assert(false);
     }
  }
 

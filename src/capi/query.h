@@ -17,7 +17,7 @@ namespace zorbac {
 	    static XQUERY_ERROR 
       sequence(XQC_Query query, XQC_Sequence_Ref sequence);
 
-	    static XQUERY_ERROR 
+	    static void 
       free(XQC_Query query);
   };
 

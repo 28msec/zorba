@@ -99,7 +99,7 @@ citemfactory(int argc, char* argv[])
   UNIT_ASSERT ( strcmp(lStringValue, "true") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
   UNIT_ASSERT ( lTmpInt  == 1 );
-  UNIT_ASSERT (lItem->nan(lItem, lTmpInt) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
+  UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
   UNIT_ASSERT (lItem->ns(lItem, lTmpString) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
   UNIT_ASSERT (lItem->localname(lItem, lTmpString) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
   UNIT_ASSERT (lItem->prefix(lItem, lTmpString) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );

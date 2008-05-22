@@ -93,7 +93,7 @@ struct XQC_Query_s
 	XQUERY_ERROR 
   (*sequence)(XQC_Query query, XQC_Sequence_Ref sequence);
 
-	XQUERY_ERROR 
+  void
   (*free)(XQC_Query query);
 
   void* data;
@@ -198,7 +198,7 @@ struct XQC_Sequence_s
   XQUERY_ERROR
   (*next)(XQC_Sequence sequence, XQC_Item item);
 
-	XQUERY_ERROR 
+  void
   (*free)(XQC_Sequence sequence);
 
   void* data;
