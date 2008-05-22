@@ -29,6 +29,7 @@
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/core/trycatch.h"
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/validate/validate.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/accessors/AccessorsImpl.h"
@@ -103,6 +104,7 @@ namespace zorba {
   UNARY_ACCEPT(PrecedingAxisIterator);
   UNARY_ACCEPT(FollowingAxisIterator);
   UNARY_ACCEPT(FnBooleanIterator);
+  UNARY_ACCEPT(ValidateIterator);
   UNARY_ACCEPT(InstanceOfIterator);
   UNARY_ACCEPT(EnclosedIterator);
   UNARY_ACCEPT(FnDocIterator);

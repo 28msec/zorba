@@ -28,6 +28,7 @@
 #include "runtime/core/sequencetypes.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/validate/validate.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
 #include "runtime/core/nodeid_iterators.h"
@@ -139,6 +140,8 @@ public:
   PRINTER_VISITOR_DEFINITION (FnCollectionIterator)
 
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
+
+  PRINTER_VISITOR_DEFINITION (ValidateIterator)
 
   PRINTER_VISITOR_DEFINITION (LogicIterator)
 
