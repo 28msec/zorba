@@ -24,28 +24,38 @@
  * No error checking is done.
  */
 int
-context_example_1(XQUERY_API* aAPI)
+ccontext_example_1(XQC_Implementation impl)
 {
-  XQUERY        lXQuery;
-  XQUERY_DC     lContext;
-  FILE*         lFile = stdout;
-  XQUERY_ITEM   lItem;
-  XQUERY_STRING lString;
+  XQC_Query          lXQuery;
+  XQC_DynamicContext lContext;
+  XQC_ItemFactory    lFactory;
+  FILE*              lOutFile = stdout;
+  XQC_Item           lItem;
+  XQC_String         lString = 0;
 
-  // compile the query
-  aAPI->query_compile("(., ., .)", &lXQuery);
+  // create string
+  impl->create_string(impl, "Zorba", &lString);
 
-  // get the querie's dynamic context and set an item as the context item
-  aAPI->dynamic_context(lXQuery, &lContext);
-  aAPI->string_create("1", &lString);
-  aAPI->item_create_string(lString, &lItem);
-  aAPI->dc_set_context_item(lContext, lItem);
+  // get the ItemFactory and create a string item
+  impl->item_factory(impl, &lFactory);
+  lFactory->create_string(lFactory, lString, &lItem);
 
-  aAPI->query_execute(lXQuery, lFile);
+  impl->compile(impl, "(., ., .)", 0, &lXQuery);
 
-  aAPI->item_release(lItem);
-  aAPI->string_release(lString);
-  aAPI->query_release(lXQuery);
+  // get the dynmamic context and set the context item
+  lXQuery->get_dynamic_context(lXQuery, &lContext);
+
+  lContext->set_context_item(lContext, lItem);
+
+  // execute the query
+  lXQuery->execute(lXQuery, lOutFile);
+
+  // free all resources
+  // note that there is no need to free the dynamic context
+  lItem->free(lItem);
+  lString->free(lString);
+  lXQuery->free(lXQuery);
+
   return 1;
 }
 
@@ -53,14 +63,17 @@ int
 ccontext(int argc, char** argv)
 {
   int res = 0; 
-  XQUERY_API* lAPI = zorba_init();
+  XQC_Implementation impl;
 
-  printf("executing C context example 1\n");
-  res = context_example_1(lAPI);
-  if (!res) { zorba_release(lAPI); return 1; };
+  if ( zorba_implementation(&impl) != XQ_SUCCESS )
+      return 1;
+
+  printf("executing C example 1\n");
+  res = ccontext_example_1(impl);
+  if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
-  zorba_release(lAPI);
+  impl->free(impl);
 
   return 0;
 }

@@ -119,6 +119,7 @@ example_4(XQC_Implementation impl)
   return lError == FOAR0001?1:0;
 
 }
+
 int
 csimple(int argc, char** argv)
 {

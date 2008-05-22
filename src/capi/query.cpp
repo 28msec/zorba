@@ -1,9 +1,11 @@
 #include "capi/query.h"
 
+#include <memory>
 #include <cassert>
 #include <sstream>
 #include <zorba/zorba.h>
 #include "capi/shared_wrapper.h"
+#include "capi/dynamic_context.h"
 #include "capi/sequence.h"
 
 using namespace zorba;
@@ -13,7 +15,23 @@ namespace zorbac {
   XQUERY_ERROR
   Query::get_dynamic_context(XQC_Query query, XQC_DynamicContext_Ref context)
   {
-    return XQ_SUCCESS;
+    try {
+      SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(query->data);
+      std::auto_ptr<XQC_DynamicContext_s> lContext(new XQC_DynamicContext_s());
+
+      lContext->data = lQuery->theObject->getDynamicContext();
+
+      lContext->set_context_item = DynamicContext::set_context_item;
+      lContext->set_context_sequence = DynamicContext::set_context_sequence;
+
+      (*context) = lContext.release();
+
+      return XQ_SUCCESS;
+    } catch (ZorbaException& e) {
+      return e.getErrorCode();
+    } catch (...) {
+      return XQP0019_INTERNAL_ERROR;
+    }
   }
 
   XQUERY_ERROR 

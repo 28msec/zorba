@@ -1,11 +1,26 @@
 #include "capi/dynamic_context.h"
 
+#include <zorba/zorba.h>
+
+using namespace zorba;
+
 namespace zorbac {
 
   XQUERY_ERROR 
   DynamicContext::set_context_item (XQC_DynamicContext context, XQC_Item value)
   {
-    return XQ_SUCCESS;
+    try {
+      zorba::DynamicContext* lContext = static_cast<zorba::DynamicContext*>(context->data); 
+      zorba::Item* lItem = static_cast<zorba::Item*>(value->data);
+
+      lContext->setContextItem(*lItem);
+
+      return XQ_SUCCESS;
+    } catch (ZorbaException& e) {
+      return e.getErrorCode();
+    } catch (...) {
+      return XQP0019_INTERNAL_ERROR; 
+    }
   }
 
   XQUERY_ERROR 
