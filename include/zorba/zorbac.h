@@ -67,7 +67,7 @@ struct XQC_Implementation_s
   (*compile_file)(XQC_Implementation implementation, FILE *query_file,
 		              XQC_StaticContext context, XQC_Query_Ref query);
 
-	XQUERY_ERROR 
+  void
   (*free)(XQC_Implementation implementation);
 
   XQUERY_ERROR

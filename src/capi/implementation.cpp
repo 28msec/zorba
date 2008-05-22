@@ -1,6 +1,7 @@
 #include "capi/implementation.h"
 
 #include <sstream>
+#include <memory>
 #include <zorba/zorba.h>
 #include "capi/shared_wrapper.h"
 #include "capi/query.h"
@@ -25,17 +26,20 @@ namespace zorbac {
     Zorba* lZorba = static_cast<Zorba*>(impl->data);
       // TODO static context
 
+    std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
+    std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
+
     try {
       XQuery_t lQuerySmart = lZorba->compileQuery(query_string);
+      lWrapper->theObject = lQuerySmart;
 
-      XQC_Query lQuery              = new XQC_Query_s();
-      *query                        = static_cast<XQC_Query>(lQuery);
-      (*query)->data                = new SharedWrapper<XQuery>(lQuerySmart);
-      (*query)->get_dynamic_context = Query::get_dynamic_context;
-      (*query)->execute             = Query::execute;
-      (*query)->sequence            = Query::sequence;
-      (*query)->free                = Query::free;
+      lQuery->get_dynamic_context = Query::get_dynamic_context;
+      lQuery->execute             = Query::execute;
+      lQuery->sequence            = Query::sequence;
+      lQuery->free                = Query::free;
 
+      (*query)   = lQuery.release();
+      (*query)->data = lWrapper.release();
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
@@ -49,6 +53,9 @@ namespace zorbac {
                                XQC_StaticContext context, XQC_Query_Ref query)
   {
     Zorba* lZorba = static_cast<Zorba*>(impl->data);
+
+    std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
+    std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
     try {
       std::stringstream lStream;
       char lBuf[1024];
@@ -61,14 +68,15 @@ namespace zorbac {
           lStream.write(lBuf, lSize);
       }
       XQuery_t lQuerySmart = lZorba->compileQuery(lStream);
+      lWrapper->theObject = lQuerySmart;
 
-      XQC_Query lQuery              = new XQC_Query_s();
-      *query                        = static_cast<XQC_Query>(lQuery);
-      (*query)->data                = new SharedWrapper<XQuery>(lQuerySmart);
       (*query)->get_dynamic_context = Query::get_dynamic_context;
       (*query)->execute             = Query::execute;
       (*query)->sequence            = Query::sequence;
       (*query)->free                = Query::free;
+
+      *query   = static_cast<XQC_Query>(lQuery.release());
+      (*query)->data = lWrapper.release();
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
@@ -77,7 +85,7 @@ namespace zorbac {
     }
   }
 
-  XQUERY_ERROR 
+  void
   Implementation::free(XQC_Implementation impl)
   {
     try {
@@ -85,31 +93,28 @@ namespace zorbac {
       lZorba->shutdown();
 
       delete impl;
-      return XQ_SUCCESS;
     } catch (ZorbaException &e) {
-      return e.getErrorCode();
+      assert(false);
     } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
+      assert(false);
     }
   }
 
   XQUERY_ERROR
   Implementation::create_item(XQC_Implementation impl, XQC_Item_Ref item)
   {
-    zorba::Item* lInnerItem = 0;
-    *item = 0;
     try {
-      lInnerItem = new zorba::Item();
-      *item = new XQC_Item_s();
-      (*item)->data = lInnerItem;
+      std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+      std::auto_ptr<zorba::Item> lInnerItem(new zorba::Item());
 
-      (*item)->string_value = zorbac::Item::string_value;
-      (*item)->free         = zorbac::Item::free;
+      lItem->string_value = zorbac::Item::string_value;
+      lItem->free         = zorbac::Item::free;
+
+      (*item) = lItem.release();
+      (*item)->data = lInnerItem.release();
 
       return XQ_SUCCESS;
     } catch (...) {
-      delete lInnerItem;
-      delete item;
       return XQP0019_INTERNAL_ERROR;
     }
   }
@@ -117,23 +122,18 @@ namespace zorbac {
   XQUERY_ERROR
   Implementation::create_string(XQC_Implementation impl, const char* str, XQC_String_Ref res)
   {
-    zorba::String* lInnerString = 0;
-    *res = 0;
     try {
-      if (!str)
-        lInnerString = new zorba::String("");
-      else
-        lInnerString = new zorba::String(str);
-      *res = new XQC_String_s();
-      (*res)->data = lInnerString;
+      std::auto_ptr<XQC_String_s>  lString(new XQC_String_s());
+      std::auto_ptr<zorba::String> lInnerString(str?new zorba::String(str):new zorba::String(""));
 
-      (*res)->to_char      = zorbac::String::to_char;
-      (*res)->free         = zorbac::String::free;
+      lString->to_char      = zorbac::String::to_char;
+      lString->free         = zorbac::String::free;
+
+      (*res) = lString.release();
+      (*res)->data = lInnerString.release();
 
       return XQ_SUCCESS;
     } catch (...) {
-      delete lInnerString;
-      delete res;
       return XQP0019_INTERNAL_ERROR;
     }
   }
@@ -142,10 +142,10 @@ namespace zorbac {
   XQUERY_ERROR
   Implementation::item_factory(XQC_Implementation impl, XQC_ItemFactory_Ref factory)
   {
-    XQC_ItemFactory lFactory  = new XQC_ItemFactory_s();
     try {
+      std::auto_ptr<XQC_ItemFactory_s> lFactory(new XQC_ItemFactory_s());
+
       zorba::Zorba* lZorba = static_cast<zorba::Zorba*>(impl->data);
-      lFactory->data = lZorba->getItemFactory();
       
       lFactory->create_string    = zorbac::ItemFactory::create_string;
       lFactory->create_anyuri    = zorbac::ItemFactory::create_anyuri;
@@ -154,14 +154,13 @@ namespace zorbac {
       lFactory->create_boolean   = zorbac::ItemFactory::create_boolean;
       lFactory->free             = zorbac::ItemFactory::free;
 
-      *factory = lFactory;
+      (*factory) = lFactory.release();
+      (*factory)->data = lZorba->getItemFactory();
 
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
-      delete lFactory;
       return e.getErrorCode(); 
     } catch (...) {
-      delete lFactory;
       return XQP0019_INTERNAL_ERROR; 
     }
     

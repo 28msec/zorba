@@ -1,11 +1,12 @@
 #include "capi/item_factory.h"
 #include "capi/item.h"
 #include <zorba/zorba.h>
+#include "errors/error_manager.h"
 
 using namespace zorba;
 
-#define TRY try {
-#define CATCH \
+#define ITEMFACTORY_TRY try {
+#define ITEMFACTORY_CATCH \
     return XQ_SUCCESS;              \
   } catch (ZorbaException &e) {     \
     return e.getErrorCode();        \
@@ -16,41 +17,51 @@ using namespace zorba;
 #define FF static_cast<zorba::ItemFactory*>(factory->data)
 
 #define ASSIGN_FUNCTIONS \
- (*item)->string_value = zorbac::Item::string_value;  \
- (*item)->prefix = zorbac::Item::prefix;  \
- (*item)->ns = zorbac::Item::ns;  \
- (*item)->localname = zorbac::Item::localname;  \
- (*item)->boolean_value = zorbac::Item::boolean_value;  \
- (*item)->nan = zorbac::Item::nan;  \
- (*item)->pos_or_neg_inf = zorbac::Item::pos_or_neg_inf;  \
- (*item)->free         = zorbac::Item::free;
+ lItem->string_value = zorbac::Item::string_value;  \
+ lItem->prefix = zorbac::Item::prefix;  \
+ lItem->ns = zorbac::Item::ns;  \
+ lItem->localname = zorbac::Item::localname;  \
+ lItem->boolean_value = zorbac::Item::boolean_value;  \
+ lItem->nan = zorbac::Item::nan;  \
+ lItem->pos_or_neg_inf = zorbac::Item::pos_or_neg_inf;  \
+ lItem->free         = zorbac::Item::free;
 
 namespace zorbac {
 
   XQUERY_ERROR
   ItemFactory::create_string(XQC_ItemFactory factory, XQC_String str, XQC_Item_Ref item)
   {
-    String* lStringWrapper = static_cast<String*>(str->data);
-    TRY
-      zorba::Item lItem = FF->createString(*lStringWrapper);
-      *item = new XQC_Item_s();
-      (*item)->data = new zorba::Item(lItem);
+    ITEMFACTORY_TRY
+      std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+
+      String* lStringWrapper = static_cast<String*>(str->data);
+      zorba::Item lInnerItem = FF->createString(*lStringWrapper);
+      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       ASSIGN_FUNCTIONS
-    CATCH
+
+      (*item) = lItem.release();
+      (*item)->data = new zorba::Item(lInnerItem);
+
+    ITEMFACTORY_CATCH
   }
  
   XQUERY_ERROR
   ItemFactory::create_anyuri(XQC_ItemFactory factory, XQC_String str, XQC_Item_Ref item)
   {
-    String* lStringWrapper = static_cast<String*>(str->data);
-    TRY
-      zorba::Item lItem = FF->createAnyURI(*lStringWrapper);
-      *item = new XQC_Item_s();
-      (*item)->data = new zorba::Item(lItem);
+    ITEMFACTORY_TRY
+      std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+
+      String* lStringWrapper = static_cast<String*>(str->data);
+      zorba::Item lInnerItem = FF->createAnyURI(*lStringWrapper);
+      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       ASSIGN_FUNCTIONS
-    CATCH
+
+      (*item) = lItem.release();
+      (*item)->data = new zorba::Item(lInnerItem);
+
+    ITEMFACTORY_CATCH
   }
  
   XQUERY_ERROR
@@ -59,15 +70,21 @@ namespace zorbac {
                              XQC_String localname, 
                              XQC_Item_Ref item)
   {
-    String* lUriWrapper = static_cast<String*>(uri->data);
-    String* lLocalnameWrapper = static_cast<String*>(localname->data);
-    TRY
-      zorba::Item lItem = FF->createQName(*lUriWrapper, *lLocalnameWrapper);
-      *item = new XQC_Item_s();
-      (*item)->data = new zorba::Item(lItem);
+    ITEMFACTORY_TRY
+      std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+
+      String* lUriWrapper = static_cast<String*>(uri->data);
+      String* lLocalnameWrapper = static_cast<String*>(localname->data);
+
+      zorba::Item lInnerItem = FF->createQName(*lUriWrapper, *lLocalnameWrapper);
+      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       ASSIGN_FUNCTIONS
-    CATCH
+
+      (*item) = lItem.release();
+      (*item)->data = new zorba::Item(lInnerItem);
+
+    ITEMFACTORY_CATCH
   }
   
   XQUERY_ERROR
@@ -77,28 +94,38 @@ namespace zorbac {
                              XQC_String localname, 
                              XQC_Item_Ref item)
   {
-    String* lUriWrapper = static_cast<String*>(uri->data);
-    String* lPrefixWrapper = static_cast<String*>(prefix->data);
-    String* lLocalnameWrapper = static_cast<String*>(localname->data);
-    TRY
-      zorba::Item lItem = FF->createQName(*lUriWrapper, *lPrefixWrapper, *lLocalnameWrapper);
-      *item = new XQC_Item_s();
-      (*item)->data = new zorba::Item(lItem);
+    ITEMFACTORY_TRY
+      std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+
+      String* lUriWrapper = static_cast<String*>(uri->data);
+      String* lPrefixWrapper = static_cast<String*>(prefix->data);
+      String* lLocalnameWrapper = static_cast<String*>(localname->data);
+
+      zorba::Item lInnerItem = FF->createQName(*lUriWrapper, *lPrefixWrapper, *lLocalnameWrapper);
+      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       ASSIGN_FUNCTIONS
-    CATCH
+
+      (*item) = lItem.release();
+      (*item)->data = new zorba::Item(lInnerItem);
+
+    ITEMFACTORY_CATCH
   }
  
   XQUERY_ERROR
   ItemFactory::create_boolean(XQC_ItemFactory factory, int boolean, XQC_Item_Ref item) 
   {
-    TRY
-      zorba::Item lItem = FF->createBoolean(boolean != 0);
-      *item = new XQC_Item_s();
-      (*item)->data = new zorba::Item(lItem);
+    ITEMFACTORY_TRY
+      std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+      zorba::Item lInnerItem = FF->createBoolean(boolean != 0);
+      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       ASSIGN_FUNCTIONS
-    CATCH
+
+      (*item) = lItem.release();
+      (*item)->data = new zorba::Item(lInnerItem);
+
+    ITEMFACTORY_CATCH
   }
 
   void

@@ -26,6 +26,7 @@ class SharedWrapper
 public:
   boost::shared_ptr<T> theObject;
 
+  SharedWrapper() {}
   SharedWrapper(boost::shared_ptr<T> a) throw() : theObject(a) {}
 };
 

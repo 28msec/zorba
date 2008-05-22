@@ -47,16 +47,20 @@ namespace zorbac {
   {
     SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(query->data);
 
+    std::auto_ptr<XQC_Sequence_s> lSeq(new XQC_Sequence_s());
+
     try {
       ResultIterator_t lResultSmart = lQuery->theObject->iterator();
       lResultSmart->open();
 
-      XQC_Sequence lSeq = new XQC_Sequence_s();
-      *sequence = static_cast<XQC_Sequence>(lSeq);
+      std::auto_ptr<SharedWrapper<ResultIterator> > 
+        lResult(new SharedWrapper<ResultIterator>(lResultSmart));
 
-      (*sequence)->data = new SharedWrapper<ResultIterator>(lResultSmart);
-      (*sequence)->next = Sequence::next;
-      (*sequence)->free = Sequence::free;
+
+      lSeq->next = Sequence::next;
+      lSeq->free = Sequence::free;
+      (*sequence) = lSeq.release();
+      (*sequence)->data = lResult.release();
 
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {

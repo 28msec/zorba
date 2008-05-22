@@ -19,7 +19,7 @@ namespace zorbac {
       compile_file(XQC_Implementation implementation, FILE *query_file,
 	    	           XQC_StaticContext context, XQC_Query_Ref query);
 
-	    static XQUERY_ERROR 
+	    static void 
       free(XQC_Implementation implementation);
 
       static XQUERY_ERROR
