@@ -55,9 +55,8 @@ example_2(XQC_Implementation impl)
   XQC_Query      lXQuery;
   XQC_Item       lItem;
   XQC_String     lString;
-  const char*          lStringValue;
+  const char*    lStringValue;
   XQC_Sequence   lResult;
-  FILE*          lOutFile = stdout;
 
   // create an Item and a String holder
   impl->create_item(impl, &lItem);
