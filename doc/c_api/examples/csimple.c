@@ -82,7 +82,43 @@ example_2(XQC_Implementation impl)
   return 1;
 }
 
+/**
+ * Compile a syntactically wrong query and check the expected error
+ */
+int
+example_3(XQC_Implementation impl)
+{
+  XQUERY_ERROR   lError = XQ_SUCCESS;
+  XQC_Query      lXQuery;
 
+  // compile the query
+  lError = impl->compile(impl, "for $x in (1, 2, 3, 4)", 0, &lXQuery);
+
+  return lError == XPST0003?1:0;
+}
+
+/**
+ * Compile a query which does division by 0 and check the expected error
+ */
+int
+example_4(XQC_Implementation impl)
+{
+  XQUERY_ERROR   lError = XQ_SUCCESS;
+  XQC_Query      lXQuery;
+  FILE*          lOutFile = stdout;
+
+  // compile the query
+  impl->compile(impl, "1 div 0", 0, &lXQuery);
+
+  // execute it and print the result on standard out
+  lError = lXQuery->execute(lXQuery, lOutFile);
+
+  // release the query
+  lXQuery->free(lXQuery);
+
+  return lError == FOAR0001?1:0;
+
+}
 int
 csimple(int argc, char** argv)
 {
@@ -102,6 +138,15 @@ csimple(int argc, char** argv)
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
+  printf("executing C example 3\n");
+  res = example_3(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
+
+  printf("executing C example 4\n");
+  res = example_4(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
 
   impl->free(impl);
    
