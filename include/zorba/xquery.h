@@ -347,7 +347,8 @@ namespace zorba {
 
       /** \brief Set the filename of a query.
        *
-       * This is only needed if debugging a query and for better error reporting
+       * This (after URI-encoding) becomes the encapsulating entity's
+       * retrieval URI (in RFC 3986 terms).
        */
       virtual void
       setFileName( const String& ) = 0;

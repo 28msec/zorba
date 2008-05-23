@@ -27,8 +27,14 @@
 #include <zorba/debugger_server.h>
 #endif
 
-
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/convenience.hpp>
+
+namespace fs = boost::filesystem;
+
 
 bool
 populateStaticContext(zorba::StaticContext_t& aStaticContext, ZorbaCMDProperties* aProperties)
@@ -176,9 +182,15 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // input file (either from a file or given as parameter)
   const char* fname = lProperties.getQueryOrFile().c_str();
-  std::auto_ptr<std::istream> qfile(!lProperties.inlineQuery() && *fname!='\0' ?
-                                     (std::istream*) new std::ifstream(fname) :
-                                     (std::istream*) new std::istringstream(fname));
+  fs::path path;
+  std::auto_ptr<std::istream> qfile;
+
+  if (! lProperties.inlineQuery()) {
+    path = fs::system_complete (fname);
+    qfile.reset (new std::ifstream (path.native_file_string ().c_str ()));
+  } else {
+    qfile.reset (new std::istringstream(fname));
+  }
 
   if ( !lProperties.inlineQuery() && !qfile->good() || qfile->eof() ) {
     std::cerr << "file " << fname << " not found or not readable" << std::endl;
@@ -242,7 +254,10 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lTiming)
       lStartCompileTime = boost::posix_time::microsec_clock::local_time();
 
-    lQuery = lZorbaInstance->compileQuery(*qfile, lStaticContext, lHints);
+    lQuery = lZorbaInstance->createQuery ();
+    if (! lProperties.inlineQuery())
+      lQuery->setFileName (path.string ());
+    lQuery->compile (*qfile, lStaticContext, lHints);
 
     if (lTiming)
       lStopCompileTime = boost::posix_time::microsec_clock::local_time();

@@ -218,7 +218,7 @@ DEF_ERR_CODE (XPST0051, XPST0051, "A QName that is used as an AtomicType in a Se
 
 DEF_ERR_CODE (XPST0080, XPST0080, "The target type of a cast or castable expression is xs:NOTATION or xs:anyAtomicType.")
 
-DEF_ERR_CODE (XPST0081, XPST0081, "A QName used in a query contains a namespace prefix that cannot be expanded into a namespace URI by using the statically known namespaces.")
+DEF_ERR_CODE (XPST0081, XPST0081, "A QName used in a query contains namespace prefix /s that cannot be expanded into a namespace URI by using the statically known namespaces")
 
 
 //
@@ -299,7 +299,7 @@ DEF_ERR_CODE (XQST0047, XQST0047, "Multiple module imports in the same Prolog sp
 
 DEF_ERR_CODE (XQST0048, XQST0048, "A function or variable declared in a library module is not in the target namespace of the library module.")
 
-DEF_ERR_CODE (XQST0049, XQST0049, "Two or more variables declared or imported by a module have equal expanded QNames (as defined by the eq operator.)")
+DEF_ERR_CODE (XQST0049, XQST0049, "Two or more variables declared or imported by a module have equal expanded QNames /s (as defined by the eq operator.)")
 
 DEF_ERR_CODE (XQST0054, XQST0054, "A variable depends on itself.")
 

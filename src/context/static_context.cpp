@@ -21,6 +21,7 @@
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 #include "context/collation_cache.h"
+#include "context/context_impl.h"
 
 #include "compiler/expression/expr_base.h"
 
@@ -46,9 +47,9 @@
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
-#define THROW_XQP_EXCEPTION		throw(xqp_exception)
+#define THROW_XQP_EXCEPTION   throw(xqp_exception)
 #else
-#define THROW_XQP_EXCEPTION		
+#define THROW_XQP_EXCEPTION   
 #endif
 
 using namespace std;
@@ -79,12 +80,12 @@ static_context::~static_context()
   //end debug
 
   ///free the pointers from ctx_value_t from keymap
-  checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
-  const char		*keybuff;
+  checked_vector<hashmap<ctx_value_t>::entry>::const_iterator   it;
+  const char    *keybuff;
   
   //keybuff[sizeof(keybuff)-1] = 0;
   for(it = keymap.begin();it!=keymap.end();it++)
-	{
+  {
     ///it is an entry
     //keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
     keybuff = (*it).key.c_str();
@@ -233,18 +234,18 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
 
   xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const {
     xqp_string ns;
-		if (! lookup_ns (prefix, ns)) {
+    if (! lookup_ns (prefix, ns)) {
       if (err != MAX_ZORBA_ERROR_CODE)
-        ZORBA_ERROR(err);
-		}
+        ZORBA_ERROR_PARAM(err, prefix, "");
+    }
     return ns;
   }
 
   xqp_string static_context::lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const {
     xqp_string ns;
-		if (! lookup_ns (prefix, ns)) {
+    if (! lookup_ns (prefix, ns)) {
       return default_ns;
-		}
+    }
     return ns;
   }
 
@@ -277,93 +278,93 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
     return f;
   }
 
-	xqtref_t static_context::lookup_type( xqp_string key)
-	{
+  xqtref_t static_context::lookup_type( xqp_string key)
+  {
     ctx_value_t val;
     ZORBA_ASSERT (context_value (key, val));
     return val.typeValue;
-	}
+  }
 
-	void	static_context::bind_type(xqp_string key, xqtref_t t)
-	{
-		ctx_value_t v;
+  void  static_context::bind_type(xqp_string key, xqtref_t t)
+  {
+    ctx_value_t v;
     v.typeValue = &*t;
     keymap.put (key, v);
     RCHelper::addReference (const_cast<XQType *> (t.getp ()));
-	}
+  }
 
-	void static_context::add_variable_type(
-		const xqp_string var_name, 
-		xqtref_t var_type)
-	{
-		bind_type("type:var:" + qname_internal_key("", var_name), var_type);
-	}
+  void static_context::add_variable_type(
+    const xqp_string var_name, 
+    xqtref_t var_type)
+  {
+    bind_type("type:var:" + qname_internal_key("", var_name), var_type);
+  }
 
-	xqtref_t	static_context::get_variable_type(
-		store::Item *var_name)
-	{
-		return lookup_type( "type:var:" + qname_internal_key("",
+  xqtref_t  static_context::get_variable_type(
+    store::Item *var_name)
+  {
+    return lookup_type( "type:var:" + qname_internal_key("",
                                                          var_name->getPrefix(),
                                                          var_name->getLocalName()));
-	}
+  }
 
-	void static_context::set_context_item_static_type(xqtref_t t)
-	{
-		bind_type("type:context:", t);
-	}
+  void static_context::set_context_item_static_type(xqtref_t t)
+  {
+    bind_type("type:context:", t);
+  }
 
-	xqtref_t		static_context::context_item_static_type()
-	{
-		return lookup_type("type:context:");
-	}
+  xqtref_t    static_context::context_item_static_type()
+  {
+    return lookup_type("type:context:");
+  }
 
-	void static_context::set_default_collection_type(xqtref_t t)
-	{
-		bind_type("type:defcollection:", t);
-	}
+  void static_context::set_default_collection_type(xqtref_t t)
+  {
+    bind_type("type:defcollection:", t);
+  }
 
-	xqtref_t		static_context::default_collection_type()
-	{
-		return lookup_type("type:defcollection:");
-	}
+  xqtref_t    static_context::default_collection_type()
+  {
+    return lookup_type("type:defcollection:");
+  }
 
 void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 {
-	bind_type("type:fun:"+qname_internal_key( default_function_namespace(),
+  bind_type("type:fun:"+qname_internal_key( default_function_namespace(),
                                             qname->getPrefix(),
                                             qname->getLocalName()),
             t);
 }
 
 xqtref_t static_context::get_function_type(
-	const store::Item_t qname) 
+  const store::Item_t qname) 
 {
-	return lookup_type("type:fun:" + qname_internal_key(default_function_namespace(),
+  return lookup_type("type:fun:" + qname_internal_key(default_function_namespace(),
                                                       qname->getPrefix(),
                                                       qname->getLocalName()));
 }
 
 void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 {
-	bind_type("type:doc:"+docURI, t);
+  bind_type("type:doc:"+docURI, t);
 }
 
 xqtref_t static_context::get_document_type(
-	const xqp_string docURI) 
+  const xqp_string docURI) 
 {
-	return lookup_type("type:doc:" + docURI);
+  return lookup_type("type:doc:" + docURI);
 
 }
 
 void static_context::set_collection_type(xqp_string collURI, xqtref_t t)
 {
-	bind_type("type:collection:"+collURI, t);
+  bind_type("type:collection:"+collURI, t);
 }
 
 xqtref_t static_context::get_collection_type(
-	const xqp_string collURI) 
+  const xqp_string collURI) 
 {
-	return lookup_type("type:collection:" + collURI);
+  return lookup_type("type:collection:" + collURI);
 }
 
 /**
@@ -376,7 +377,7 @@ static_context::add_collation(const xqp_string& aURI)
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
-		ZORBA_ERROR_DESC( XQST0038, "invalid collation uri");
+    ZORBA_ERROR_DESC( XQST0038, "invalid collation uri");
   }
   else
   {
@@ -427,7 +428,7 @@ static_context::set_default_collation_uri(const xqp_string& aURI)
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
-		ZORBA_ERROR_DESC_OSS( XQST0038, "invalid collation uri " << lURI);
+    ZORBA_ERROR_DESC_OSS( XQST0038, "invalid collation uri " << lURI);
   }
   else
   {
@@ -449,7 +450,7 @@ xqp_string static_context::baseuri () const
 
 void static_context::set_baseuri (xqp_string val, bool from_prolog) 
 {
-	if (from_prolog)
+  if (from_prolog)
     // throw XQST0032 if from_prolog_baseuri is already defined
     bind_str ("int:" "from_prolog_baseuri", val, XQST0032);
   else
@@ -461,49 +462,52 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
 
 void static_context::compute_current_absolute_baseuri()
 {
-	//if base Uri is present, compute absolute base Uri
-	//else if encapsulating_entity_baseuri is present, use that
-	//else if entity_file_uri is present, use that
-	//else do not set the absolute baseuri (and hope there are no relative uris)
+  //if base Uri is present, compute absolute base Uri
+  //else if encapsulating_entity_baseuri is present, use that
+  //else if entity_file_uri is present, use that
+  //else do not set the absolute baseuri (and hope there are no relative uris)
 
-	xqp_string		prolog_baseuri;
-	xqp_string		ee_baseuri;
-	xqp_string		loaded_uri;
+  xqp_string    prolog_baseuri;
+  xqp_string    ee_baseuri;
+  xqp_string    loaded_uri;
 
-	prolog_baseuri = baseuri();
+  prolog_baseuri = baseuri();
 
-	if (!prolog_baseuri.empty() &&
+  if (!prolog_baseuri.empty() &&
       URI::is_valid (prolog_baseuri.getStore (), false)) {
-		// is already absolute baseuri
-		set_current_absolute_baseuri(prolog_baseuri);
-		return;
-	} else if (!prolog_baseuri.empty()) {
-		/// is relative, needs to be resolved
-		ee_baseuri = encapsulating_entity_baseuri();
-		if(!ee_baseuri.empty()) {
-			set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
-			return;
-		}
-		loaded_uri = entity_file_uri();
-		if(!loaded_uri.empty()) {
-			set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
-			return;
-		}
-
+    // is already absolute baseuri
+    set_current_absolute_baseuri(prolog_baseuri);
+    return;
+  }
+  if (!prolog_baseuri.empty()) {
+    /// is relative, needs to be resolved
+    ee_baseuri = encapsulating_entity_baseuri();
+    if(!ee_baseuri.empty()) {
+      set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
+      return;
+    }
+    loaded_uri = entity_file_uri();
+    if(!loaded_uri.empty()) {
+      set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
+      return;
+    }
+    
     set_current_absolute_baseuri (make_absolute_uri(prolog_baseuri, implementation_baseuri()));
-		return;
-	}
+    return;
+  }
 
-	ee_baseuri = encapsulating_entity_baseuri();
-	if(!ee_baseuri.empty()) {
-		set_current_absolute_baseuri(ee_baseuri);
-		return;
-	}
-	loaded_uri = entity_file_uri();
-	if(!loaded_uri.empty()) {
-		set_current_absolute_baseuri(loaded_uri);
-		return;
-	}
+  ee_baseuri = encapsulating_entity_baseuri();
+  if(!ee_baseuri.empty()) {
+    set_current_absolute_baseuri(ee_baseuri);
+    return;
+  }
+  loaded_uri = entity_file_uri();
+  if(!loaded_uri.empty()) {
+    set_current_absolute_baseuri(loaded_uri);
+    return;
+  }
+  set_current_absolute_baseuri (implementation_baseuri());
+  return;
 }
 
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri) {
@@ -523,16 +527,16 @@ xqp_string static_context::final_baseuri () {
   // cached value
   string abs_base_uri = current_absolute_baseuri();
 
-	if(abs_base_uri.empty()) {
-		compute_current_absolute_baseuri();
+  if(abs_base_uri.empty()) {
+    compute_current_absolute_baseuri();
     abs_base_uri = current_absolute_baseuri();
   }
 
   // won't happen -- we default to a non-empty URI
-	if(abs_base_uri.empty()) {
-		ZORBA_ERROR_DESC( XPST0001, "empty base URI");
-		return "";
-	}
+  if(abs_base_uri.empty()) {
+    ZORBA_ERROR_DESC( XPST0001, "empty base URI");
+    return "";
+  }
   
   return abs_base_uri;
 }
@@ -542,8 +546,8 @@ xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_
 }
 
 void static_context::import_module (const static_context *module) {
-  checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
-  const char		*keybuff;
+  checked_vector<hashmap<ctx_value_t>::entry>::const_iterator   it;
+  const char    *keybuff;
   
   for(it = module->keymap.begin();it!=module->keymap.end();it++) {
     keybuff = (*it).key.c_str();
@@ -573,5 +577,5 @@ static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_strin
     qname_internal_key(default_function_namespace(), aPrefix, aLocalName)); 
 }
 
-}	/* namespace zorba */
+} /* namespace zorba */
 

@@ -21,6 +21,7 @@
 #include <set>
 
 #include "zorbatypes/Unicode_util.h"
+#include "zorbatypes/URI.h"
 
 #include "common/common.h"
 #include "util/properties.h"
@@ -115,7 +116,7 @@ namespace zorba {
 class TranslatorImpl : public parsenode_visitor
 {
 public:
-  friend TranslatorImpl *make_translator (CompilerCB*);
+  friend expr_t translate (const parsenode &, CompilerCB* aCompilerCB, static_context *export_sctx);
 
 protected:
   uint32_t depth;
@@ -123,6 +124,7 @@ protected:
 
   CompilerCB                           * compilerCB;
   static_context                       * sctx_p;
+  static_context                       * export_sctx;
   vector<rchandle<static_context> >    & sctx_list;
   std::stack<expr_t>                     nodestack;
   std::stack<xqtref_t>                   tstack;  // types stack
@@ -145,11 +147,12 @@ protected:
 
   var_expr_t theDotVar, theDotPosVar, theLastVar;
 
-  TranslatorImpl (CompilerCB* aCompilerCB)
+  TranslatorImpl (CompilerCB* aCompilerCB, static_context *export_sctx_ = NULL)
     :
     depth (0),
     compilerCB(aCompilerCB),
     sctx_p (aCompilerCB->m_sctx),
+    export_sctx (export_sctx_),
     sctx_list (aCompilerCB->m_sctx_list),
     tempvar_counter (1),
     ns_ctx(new namespace_context(sctx_p)),
@@ -204,6 +207,12 @@ protected:
     var_expr_t e = bind_var (loc, varname, kind, type);
     nodestack.push (&*e);
     return e;
+  }
+
+  void bind_udf (store::Item_t qname, function *f, int nargs) {
+    sctx_p->bind_fn (qname, f, nargs);
+    if (export_sctx != NULL)
+      export_sctx->bind_fn (qname, f, nargs);
   }
 
   fo_expr *create_seq (const QueryLoc& loc) {
@@ -1886,8 +1895,9 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   xqp_string varname = v.get_varname();
+  store::Item_t var_qname = sctx_p->lookup_qname ("", varname);
   if (sctx_p->lookup_var (varname) != NULL)
-    ZORBA_ERROR (XQST0049);
+    ZORBA_ERROR_LOC_PARAM (XQST0049, v.get_location (), var_qname->getStringValue (), "");
 
   // The declared type of a global or external is never tightened based on
   // type inference because globals are mutable.
@@ -1896,6 +1906,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     type = pop_tstack ();
 
   var_expr_t ve = bind_var (v.get_location(), varname, var_expr::context_var, type);
+  if (export_sctx != NULL && ! v.is_extern ())
+    export_sctx->bind_var (ve->get_varname (), &*ve);
   expr_t val = v.is_extern() ? expr_t(NULL) : pop_nodestack();
   theGlobalVars.push_back(global_binding(ve, val));
 }
@@ -1998,16 +2010,16 @@ void *begin_visit(const VFO_DeclList& v)
     }
     case ParseConstants::fn_read:
     {
-      sctx_p->bind_fn(qname,
-                      new user_function(n->get_location(), sig, NULL, false),
-                      nargs);
+      bind_udf(qname,
+               new user_function(n->get_location(), sig, NULL, false),
+               nargs);
       break;
     }
     case ParseConstants::fn_update:
     {
-      sctx_p->bind_fn(qname,
-                      new user_function (n->get_location(), sig, NULL, true),
-                      nargs);
+      bind_udf(qname,
+               new user_function (n->get_location(), sig, NULL, true),
+               nargs);
       break;
     }
     default:
@@ -2432,8 +2444,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (ats == NULL || ats->size () == 0)
     ZORBA_ERROR_LOC (XQST0059, loc);
   for (int i = 0; i < ats->size (); i++) {
-    string aturi = (*ats) [i];
-    ifstream modfile (aturi.c_str ());
+    string aturi = sctx_p->resolve_relative_uri ((*ats) [i]);
+    ifstream modfile (URI::decode_file_URI (xqp_string (aturi).getStore ())->c_str ());
     if (! modfile)
       ZORBA_ERROR_LOC (XQST0059, loc);
     CompilerCB mod_ccb (*compilerCB);
@@ -2445,8 +2457,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0059, loc);
     if (mod_ast->get_decl ()->get_target_namespace () != target_ns)
       ZORBA_ERROR_LOC (XQST0059, loc);
-    init_exprs.push_back (translate (*ast, &mod_ccb));
-    compilerCB->m_sctx->import_module (mod_ccb.m_sctx);
+    init_exprs.push_back (translate (*ast, &mod_ccb, sctx_p));
   }
 }
 
@@ -2597,7 +2608,7 @@ void *begin_visit(const SchemaImport& v)
     rchandle<URILiteralList> atlist = v.get_at_list();
     if (atlist != NULL) 
     {
-      std::string at = (*atlist) [0];
+      std::string at = sctx_p->resolve_relative_uri ((*atlist) [0]);
      
 #if 0
       std::string prefix = sp == NULL ? "" : sp->get_prefix();
@@ -2610,8 +2621,10 @@ void *begin_visit(const SchemaImport& v)
       ((DelegatingTypeManager*)CTXTS)->initializeSchema();
       Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
       
-      schema_p->registerXSD(at.c_str());  
-      //schema_p->printXSDInfo();
+      schema_p->registerXSD (URI::decode_file_URI (xqp_string (at).getStore ())->c_str ());
+#if 0
+      schema_p->printXSDInfo();
+#endif
     }
 
     return no_state;
@@ -5379,12 +5392,8 @@ void end_visit(const VarGetsDeclList& /*v*/, void* /*visit_state*/)
 };
 
 
-TranslatorImpl *make_translator (CompilerCB* aCompilerCB)  {
-  return new TranslatorImpl (aCompilerCB);
-}
-
-rchandle<expr> translate (const parsenode &root, CompilerCB* aCompilerCB) {
-  auto_ptr<TranslatorImpl> t (make_translator (aCompilerCB));
+rchandle<expr> translate (const parsenode &root, CompilerCB* aCompilerCB, static_context *export_sctx) {
+  auto_ptr<TranslatorImpl> t (new TranslatorImpl (aCompilerCB, export_sctx));
   root.accept (*t);
   rchandle<expr> result = t->result ();
   if (aCompilerCB->m_config.print_translated) {

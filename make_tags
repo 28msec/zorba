@@ -1,7 +1,6 @@
 #!/bin/sh
-set -o noglob
 
-files=`for dir in src include; do find $dir -name '*.cpp'; find $dir -name '*.h'; done`
+files=`for dir in src include; do find $dir -name '*.cpp'; find $dir -name '*.h'; done; for dir in test test/rbkt; do echo $dir/*.cpp $dir/*.h; done `
 
 for prog in ctags etags; do
   $prog $files

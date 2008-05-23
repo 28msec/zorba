@@ -45,7 +45,6 @@ void root_static_context::init()
 {
   // must be initialized or there be assertions
   set_current_absolute_baseuri ("");
-  set_baseuri(implementation_baseuri());
 
   set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
   const char **p = default_ns_initializers;

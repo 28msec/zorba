@@ -123,6 +123,16 @@ public:
     return byteEqual(src, strlen(src));
   }
 
+  // Three-way lexicographical comparison of s and a substring of *this
+  int byteCompare (std::string::size_type pos, std::string::size_type n, std::string s) {
+    return theString.compare (pos, n, s);
+  }
+
+  // Three-way lexicographical comparison of a substring of s and a substring of *this
+  int byteCompare (std::string::size_type pos, std::string::size_type n, std::string s, std::string::size_type pos1, std::string::size_type n1) {
+    return theString.compare (pos, n, s, pos1, n1);
+  }
+
   bool
   equals(const xqpStringStore* src) const
   {

@@ -21,7 +21,6 @@
 #include "store/api/item.h" // TODO remove by moving all functions into the cpp file
 
 #include "context/context.h"
-#include "context/context_impl.h"
 #include "context/static_context_consts.h"
 #include "util/Assert.h"
 

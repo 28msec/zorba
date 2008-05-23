@@ -1,4 +1,4 @@
-import schema namespace s = "simple.xsd" at 
-   "$RBKT_SRC_DIR/Queries/schemas/simple.xsd";
+import schema namespace s = "simple.xsd" at
+  "simple.xsd";
 
 s:HatSizeType("10")

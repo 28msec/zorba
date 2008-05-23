@@ -32,6 +32,8 @@
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
 
+#include <zorbatypes/URI.h>
+
 namespace fs = boost::filesystem;
 
 void
@@ -173,7 +175,7 @@ printErrors(TestErrorHandler& errHandler, const char *msg)
 }
 
 // set a variable in the dynamic context
-// inlineFile specifies whether the given parameter is a file and it's value should
+// inlineFile specifies whether the given parameter is a file and its value should
 // be inlined or not
 void
 set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
@@ -181,16 +183,15 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance()->getItemFactory();
 
+  boost::replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
   if (!inlineFile) {
-    boost::replace_all(val, "$RBKT_SRC_DIR", "file://" + zorba::RBKT_SRC_DIR);
-    boost::replace_all(val, " ", "%20");
+    val = zorba::URI::encode_file_URI (val)->str ();
     zorba::Item lItem = lFactory->createString(val);
 		if(name != ".")
 			dctx->setVariable (name, lItem);
 		else
 			dctx->setContextItem (lItem);
   } else {
-    boost::replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
     const char *val_fname = val.c_str ();
     std::ifstream is (val_fname);
     if (! is) {
@@ -262,9 +263,6 @@ isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
 void 
 slurp_file (const char *fname, std::string &result) {
   std::ifstream qfile(fname, std::ios::binary | std::ios_base::in); assert (qfile);
-  std::string rbkt_src_uri = zorba::RBKT_SRC_DIR;
-  boost::replace_all(rbkt_src_uri, " ", "%20");
-  rbkt_src_uri = "file://" + rbkt_src_uri;
 
   qfile.seekg (0, std::ios::end);
   size_t len = qfile.tellg ();
@@ -272,8 +270,9 @@ slurp_file (const char *fname, std::string &result) {
   char *str = new char [len];
   qfile.read (str, len);
   len = qfile.gcount();
-  
   std::string sstr (str, len);
+
+  std::string rbkt_src_uri = zorba::URI::encode_file_URI (zorba::RBKT_SRC_DIR)->str ();
   boost::replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
   result.swap (sstr);
   delete [] str;
@@ -353,7 +352,9 @@ main(int argc, char** argv)
   // create and compile the query
   std::string lQueryString;
   slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
-  zorba::XQuery_t lQuery = engine->compileQuery(lQueryString.c_str(), getCompilerHints(), &errHandler);
+  zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
+  lQuery->setFileName (lQueryFile.string());
+  lQuery->compile (lQueryString.c_str(), getCompilerHints());
 
   if (errHandler.errors())
   {

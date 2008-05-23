@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <xercesc/util/XMLUri.hpp>
 #include <xercesc/util/XMLURL.hpp>
 #include "representations.h"
@@ -62,13 +63,18 @@ URI::error_t URI::resolve_relative (
 
 xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
 {
-  if(uri->indexOf("file://") == 0)
-  {
+  if (uri->byteCompare(0, 8, "file:///") == 0) {
     xqp_string res(uri->c_str() + 7);
     return res.replace("%20"," ","").getStore();
   }
   else
     return uri;
+}
+
+xqpStringStore_t  URI::encode_file_URI(const xqpStringStore_t& uri)
+{
+  xqpString result = xqpString ("file:///") + xqpString (&*uri);
+  return result.replace(" ","%20","").getStore();
 }
 
 #if 0  // old relative URI resolution code -- might be useful for low footprint

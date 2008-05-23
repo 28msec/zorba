@@ -39,6 +39,12 @@ class URI
         xqpStringStore_t&       result);
 
   static xqpStringStore_t  decode_file_URI(const xqpStringStore_t& uri);
+  static xqpStringStore_t  encode_file_URI(const xqpStringStore_t& uri);
+  static xqpStringStore_t encode_file_URI(const std::string& uri) {
+    xqpStringStore_t ssuri = new xqpStringStore (uri);
+    return encode_file_URI (ssuri);
+  }
+
   };
 }
 /*

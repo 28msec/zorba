@@ -24,6 +24,8 @@
 #include <zorba/exception.h>
 #include <zorba/sax2.h>
 
+#include <zorbatypes/URI.h>
+
 #include "errors/errors.h"
 #include "errors/error_manager.h"
 
@@ -422,6 +424,9 @@ XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
     // otherwise create a child and we have ownership over that one
     theStaticContext = theStaticContext->create_child_context();
   }
+
+  theStaticContext->set_current_absolute_baseuri ("");
+  theStaticContext->set_entity_file_uri (xqp_string (&*URI::encode_file_URI (theFileName)));
 
   theCompilerCB->m_sctx = theStaticContext;
   

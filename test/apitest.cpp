@@ -20,6 +20,10 @@
 #include <iomanip>
 #include <sstream>
 
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/convenience.hpp>
+
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
 #include "store/api/item.h"
@@ -28,6 +32,9 @@
 
 using namespace zorba;
 using namespace std;
+
+namespace fs = boost::filesystem;
+
 
 void set_var (string name, string val, DynamicContext* dctx)
 {
@@ -77,9 +84,16 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // input file (either from a file or given as parameter)
   const char* fname = lProp->getQuery().c_str();
-  auto_ptr<istream> qfile(!lProp->inlineQuery()&&*fname!='\0' ?
-                               (istream*) new ifstream(fname) :
-                               (istream*) new istringstream(fname));
+
+  auto_ptr<istream> qfile;
+  fs::path path;
+
+  if (! lProp->inlineQuery()) {
+    path = fs::system_complete (fname);
+    qfile.reset (new ifstream (path.native_file_string ().c_str ()));
+  } else {
+    qfile.reset (new istringstream(fname));
+  }
   if (!qfile->good() || qfile->eof()) {
     cerr << "no query given or not readable " << fname  << endl;
     return 3;
@@ -97,9 +111,12 @@ int _tmain(int argc, _TCHAR* argv[])
   Zorba* zengine = Zorba::getInstance();
 
   // start parsing the query
-  XQuery_t query;
+  XQuery_t query = zengine->createQuery ();
+  if (! lProp->inlineQuery())
+    query->setFileName (path.string ());
+  
   try {
-    query = zengine->compileQuery(*qfile, chints);
+    query->compile(*qfile, chints);
   } catch (QueryException &e) {
     // no need to close because the object is not valid
     cerr << "Compilation error: " << e << endl;
