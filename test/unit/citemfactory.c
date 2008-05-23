@@ -116,7 +116,7 @@ citemfactory(int argc, char* argv[])
   lPrefix->free(lPrefix);
   lURI->free(lURI);
   lString->free(lString);
-  lString->free(lTmpString);
+  lTmpString->free(lTmpString);
 
   lFactory->free(lFactory);
     
