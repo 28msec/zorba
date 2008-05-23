@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_PARSENODE_VISITOR_H
 #define ZORBA_PARSENODE_VISITOR_H
 
@@ -20,6 +21,13 @@
 
 namespace zorba 
 {
+
+/*______________________________________________________________________
+|  
+|	 Design note: Visitor pattern.  See, for example:
+|	 "Modern C++ Design" by Andrei Alexandrescu, Addison Wesley (2001),
+|	 Chapter 10.
+|_______________________________________________________________________*/
 
 class parsenode_visitor
 {

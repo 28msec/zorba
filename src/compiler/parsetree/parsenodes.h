@@ -908,6 +908,7 @@ public:
 public:
 	void push_back(std::string const& uri) { uri_v.push_back(uri); }
 	std::string operator[](int i) const { return uri_v[i]; }
+  int size () { return uri_v.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1371,7 +1372,7 @@ public:
 public:
 	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
 	rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
-	size_t size() const { return vardecl_hv.size();}
+	size_t size () const { return vardecl_hv.size ();}
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1951,7 +1952,7 @@ public:
 public:
 	void push_back(rchandle<QVarInDecl> decl_h) { qvar_decl_hv.push_back(decl_h); }
 	rchandle<QVarInDecl> operator[](int i) const { return qvar_decl_hv[i]; }
-	int size() { return qvar_decl_hv.size();}
+	int size () { return qvar_decl_hv.size ();}
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -2068,8 +2069,8 @@ public:
   { return clause_hv.rbegin(); }
 	std::vector<rchandle<CaseClause> >::const_reverse_iterator rend() const
   { return clause_hv.rend(); }
-	uint32_t size() const
-  { return clause_hv.size(); }
+	uint32_t size () const
+  { return clause_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -3275,7 +3276,7 @@ public:
 public:
 	void push_back(rchandle<exprnode> pred_h) { pred_hv.push_back(pred_h); }
 	rchandle<exprnode> operator[](int i) { return pred_hv[i]; }
-    int size() { return pred_hv.size(); }
+  int size () { return pred_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;

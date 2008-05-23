@@ -95,7 +95,7 @@ static_context::~static_context()
     } else if (0 == strncmp(keybuff, "var:", 4)) {
       RCHelper::removeReference (const_cast<expr *> (val->exprValue));
     } else if (0 == strncmp(keybuff, "fn:", 3)) {
-      delete val->functionValue;
+      RCHelper::removeReference (const_cast<function *> (val->functionValue));
     }
   }
 }
@@ -103,6 +103,15 @@ static_context::~static_context()
 void context::bind_expr (xqp_string key, expr *e) {
   ctx_value_t v = { e };
   RCHelper::addReference (e);
+  keymap.put (key, v);
+}
+
+void context::bind_func (xqp_string key, function *f) {
+  ctx_value_t v;
+  if (lookup_func (key) != NULL)
+    ZORBA_ERROR (XQST0034);
+  v.functionValue = f;
+  RCHelper::addReference (f);
   keymap.put (key, v);
 }
 
@@ -531,6 +540,23 @@ xqp_string static_context::final_baseuri () {
 xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_base_uri) {
   return make_absolute_uri (uri, abs_base_uri.empty () ? final_baseuri () : abs_base_uri);
 }
+
+void static_context::import_module (const static_context *module) {
+  checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
+  const char		*keybuff;
+  
+  for(it = module->keymap.begin();it!=module->keymap.end();it++) {
+    keybuff = (*it).key.c_str();
+    const ctx_value_t *val = &(*it).val;
+
+    if (0 == strncmp(keybuff, "var:", 4) && 0 != strncmp(keybuff, "var:$$", 6)) {
+      bind_expr (keybuff, val->exprValue);
+    } else if (0 == strncmp(keybuff, "fn:", 3)) {
+      bind_func (keybuff, val->functionValue);
+    }
+  }
+}
+
 
 bool
 static_context::bind_stateless_external_function(StatelessExternalFunction* aExternalFunction) {

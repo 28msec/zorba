@@ -119,6 +119,7 @@ public:
 
 protected:
   uint32_t depth;
+  checked_vector<expr_t> init_exprs;
 
   CompilerCB                           * compilerCB;
   static_context                       * sctx_p;
@@ -306,15 +307,10 @@ expr_t result ()
 }
 
 
-/*******************************************************************************
-  Create a flwor expr with one LET clause for each global var and a return 
-  clause consisting of the given expr e.
-********************************************************************************/
 expr_t wrap_in_globalvar_assign(expr_t e)
 {
   const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
   const function *ctx_get = LOOKUP_OP1 ("ctxvariable");
-  checked_vector<expr_t> assigns;
 
   for (std::list<global_binding>::iterator i = theGlobalVars.begin ();
       i != theGlobalVars.end ();
@@ -332,18 +328,18 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 
       if (var_type != NULL)
         expr = new treat_expr (expr->get_loc (), expr, var->get_type (), XPTY0004);
-      assigns.push_back (new fo_expr (var->get_loc(),
-                                      ctx_set, qname_expr, expr));
+      init_exprs.push_back (new fo_expr (var->get_loc(),
+                                         ctx_set, qname_expr, expr));
     } else if (var_type != NULL) {
       expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr);
-      assigns.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
+      init_exprs.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
     }
   }
 
-  if (! assigns.empty ())
+  if (! init_exprs.empty ())
   {
     expr_update_t lUpdateType = e->getUpdateType();
-    e = new sequential_expr (e->get_loc(), assigns, e);
+    e = new sequential_expr (e->get_loc(), init_exprs, e);
     e->setUpdateType(lUpdateType);
   }
 
@@ -566,7 +562,7 @@ void *begin_visit(const CaseClause& /*v*/)
 
 void end_visit(const CaseClause& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -578,7 +574,7 @@ void *begin_visit(const CaseClauseList& /*v*/)
 
 void end_visit(const CaseClauseList& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -592,7 +588,7 @@ void *begin_visit(const ConstructionDecl& v)
 
 void end_visit(const ConstructionDecl& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -605,7 +601,7 @@ void *begin_visit(const CopyNamespacesDecl& /*v*/)
 
 void end_visit(const CopyNamespacesDecl& v, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
  sctx_p->set_inherit_mode  (v.get_inherit_mode ());
  sctx_p->set_preserve_mode (v.get_preserve_mode ());
 }
@@ -621,7 +617,7 @@ void *begin_visit(DefaultCollationDecl const& v)
 
 void end_visit(const DefaultCollationDecl& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -641,7 +637,7 @@ void *begin_visit(DefaultNamespaceDecl const& v)
 
 void end_visit(const DefaultNamespaceDecl& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -655,7 +651,7 @@ void *begin_visit(const EmptyOrderDecl& v)
 
 void end_visit(const EmptyOrderDecl& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -871,15 +867,12 @@ void end_visit(const DirElemContent& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  if (v.get_direct_cons() != NULL)
-  {
+  if (v.get_direct_cons() != NULL) {
     // nothing to be done, the content expression is already on the stack
   }
-  else if (v.get_cdata() != NULL)
-  {
+  else if (v.get_cdata() != NULL) {
   }
-  else if (v.get_common_content() != NULL)
-  {
+  else if (v.get_common_content() != NULL) {
   }
   else
   {
@@ -942,11 +935,8 @@ void *begin_visit(const DirAttributeList& v)
   }
 
   if (attributes.size() == 1)
-  {
     nodestack.push(attributes[0].getp());
-  }
-  else
-  {
+  else {
     fo_expr* expr_list = create_seq(v.get_location());
 
     for (std::vector<rchandle<attr_expr> >::reverse_iterator it = attributes.rbegin();
@@ -1820,7 +1810,7 @@ void *begin_visit(const OrderSpecList& /*v*/)
 
 void end_visit(const OrderSpecList& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 void *begin_visit(const OrderSpec& /*v*/)
@@ -2376,9 +2366,10 @@ void *begin_visit(const LibraryModule& /*v*/)
   return no_state;
 }
 
-void end_visit(const LibraryModule& /*v*/, void* /*visit_state*/)
+void end_visit(const LibraryModule& v, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
+  nodestack.push (wrap_in_globalvar_assign (new fo_expr (v.get_location (), LOOKUP_OPN ("concatenate"))));
 }
 
 
@@ -2390,7 +2381,7 @@ void *begin_visit(const MainModule & /*v*/)
 
 void end_visit(const MainModule & /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -2402,7 +2393,7 @@ void *begin_visit(const Module& /*v*/)
 
 void end_visit(const Module& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -2412,9 +2403,10 @@ void *begin_visit(const ModuleDecl& /*v*/)
   return no_state;
 }
 
-void end_visit(const ModuleDecl& /*v*/, void* /*visit_state*/)
+void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  sctx_p->bind_ns(v.get_prefix (), v.get_target_namespace ());
 }
 
 
@@ -2424,9 +2416,38 @@ void *begin_visit(const ModuleImport& /*v*/)
   return no_state;
 }
 
-void end_visit(const ModuleImport& /*v*/, void* /*visit_state*/)
+void end_visit(const ModuleImport& v, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
+  const QueryLoc& loc = v.get_location ();
+  std::string pfx = v.get_prefix (), target_ns = v.get_uri ();
+  if (target_ns.empty ())
+    ZORBA_ERROR_LOC (XQST0088, loc);
+
+  // TODO: check that no other module import uses same target.
+  // TODO: allow redeclaration of prefix if module decl uses same target.
+  if (! pfx.empty ())
+    sctx_p->bind_ns(pfx, target_ns, XQST0033);
+  rchandle<URILiteralList> ats = v.get_uri_list ();
+  if (ats == NULL || ats->size () == 0)
+    ZORBA_ERROR_LOC (XQST0059, loc);
+  for (int i = 0; i < ats->size (); i++) {
+    string aturi = (*ats) [i];
+    ifstream modfile (aturi.c_str ());
+    if (! modfile)
+      ZORBA_ERROR_LOC (XQST0059, loc);
+    CompilerCB mod_ccb (*compilerCB);
+    compilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = mod_ccb.m_sctx->create_child_context ());
+    XQueryCompiler xqc (&mod_ccb);
+    rchandle<parsenode> ast = xqc.parse (modfile);
+    LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
+    if (mod_ast == NULL)
+      ZORBA_ERROR_LOC (XQST0059, loc);
+    if (mod_ast->get_decl ()->get_target_namespace () != target_ns)
+      ZORBA_ERROR_LOC (XQST0059, loc);
+    init_exprs.push_back (translate (*ast, &mod_ccb));
+    compilerCB->m_sctx->import_module (mod_ccb.m_sctx);
+  }
 }
 
 
@@ -2442,7 +2463,7 @@ void *begin_visit(const NamespaceDecl& v)
 
 void end_visit(const NamespaceDecl& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 void *begin_visit(const NodeComp& /*v*/)
@@ -2453,7 +2474,7 @@ void *begin_visit(const NodeComp& /*v*/)
 
 void end_visit(const NodeComp& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -2465,7 +2486,7 @@ void *begin_visit(const OptionDecl& /*v*/)
 
 void end_visit(const OptionDecl& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -2480,7 +2501,7 @@ void *begin_visit(const OrderingModeDecl& v)
 
 void end_visit(const OrderingModeDecl& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -2492,7 +2513,7 @@ void *begin_visit(const Pragma& /*v*/)
 
 void end_visit(const Pragma& v, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
  // may raise XPST0081
  sctx_p->lookup_ns (v.get_name ()->get_prefix ());
 }
@@ -3177,7 +3198,7 @@ void *begin_visit(const OccurrenceIndicator& v)
 
 void end_visit(const OccurrenceIndicator& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -3625,7 +3646,7 @@ void *begin_visit(const PITest& /*v*/)
 
 void end_visit(const PITest& v, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL) {
     string target = v.get_target();
@@ -3681,10 +3702,14 @@ void end_visit(const SchemaElementTest& /*v*/, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
+xqpString tempname () {
+  return "$$temp" + to_string(tempvar_counter++);
+}
+
 var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 {
   xqpString empty;
-  xqpString lname("$$temp" + to_string(tempvar_counter++));
+  xqpString lname (tempname ());
 
   return new var_expr(loc, kind,
                       ITEM_FACTORY->createQName(empty.getStore(),

@@ -793,6 +793,7 @@ Module :
 			 cout << "Module [library]" << endl;
 #endif
        $$ = $1;
+       driver.set_expr ($$);
 		}
   | VersionDecl LibraryModule 
 		{
@@ -801,6 +802,7 @@ Module :
 #endif
        dynamic_cast<LibraryModule *> ($2)->set_version_decl (static_cast<VersionDecl *> ($1));
        $$ = $2;
+       driver.set_expr ($$);
 		}
   ;
 

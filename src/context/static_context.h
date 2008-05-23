@@ -225,6 +225,7 @@ public:
 
   xqp_string resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri = xqp_string() );
 
+  void import_module (const static_context *module);
 };
 
 std::pair<xqp_string, xqp_string> parse_qname (xqp_string qname);

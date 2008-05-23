@@ -87,14 +87,7 @@ protected:
 
   // defined in in static_context.cpp
   void bind_expr (xqp_string key, expr *e);
-
-  void bind_func (xqp_string key, function *f) {
-    ctx_value_t v;
-    if (lookup_func (key) != NULL)
-      ZORBA_ERROR (XQST0034);
-    v.functionValue = f;
-    keymap.put (key, v);
-  }
+  void bind_func (xqp_string key, function *f);
 
   bool bind_stateless_function(xqp_string key, StatelessExternalFunction* f) {
     ctx_value_t v;

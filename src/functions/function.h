@@ -48,7 +48,7 @@ public:
 };
 
 
-class function
+class function : public SimpleRCObject
 {
 protected:
 	signature sig;
