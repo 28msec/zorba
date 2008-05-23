@@ -16,8 +16,7 @@
 #ifndef ZORBA_EXPR_VISITOR_H
 #define ZORBA_EXPR_VISITOR_H
 
-#include "common/shared_types.h"
-
+#include "compiler/expression/expr_classes.h"
 
 namespace zorba 
 {

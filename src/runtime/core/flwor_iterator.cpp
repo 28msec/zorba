@@ -30,7 +30,6 @@
 #include "store/api/store.h"
 #include "store/api/pul.h"
 #include "store/api/item_factory.h"
-#include "context/static_context.h"
 #include "context/collation_cache.h"
 
 

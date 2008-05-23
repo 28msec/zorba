@@ -22,8 +22,6 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
-#include "context/static_context.h"
-
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
 
