@@ -63,15 +63,37 @@ ccontext_example_1(XQC_Implementation impl)
 int
 ccontext_example_2(XQC_Implementation impl)
 {
-  //XQC_Query          lXQuery;
+  XQC_Query          lXQuery;
   XQC_StaticContext  lContext;
-  //FILE*              lOutFile = stdout;
-  //XQC_String         lBaseURI;
-  //XQC_String         lCollation;
+  FILE*              lOutFile = stdout;
+  XQC_String         lBaseURI;
+  XQC_String         lCollation;
+  XQC_String         lTmpString;
+  const char*        lStringValue;
+
+  impl->create_string(impl, "http://www.flworfound.org/", &lBaseURI);
+  impl->create_string(impl, "http://www.flworfound.org/collations/PRIMARY/de/DE", &lCollation);
 
   impl->create_context(impl, &lContext);
 
+  lContext->set_base_uri(lContext, lBaseURI);
+
+  lContext->get_base_uri(lContext, &lTmpString);
+  lTmpString->to_char(lTmpString, &lStringValue);
+  if ( strcmp (lStringValue, "http://www.flworfound.org/") != 0) return 0;
+  printf("%s\n", lStringValue);
+
+  impl->compile(impl, 
+                "fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')",
+                lContext, &lXQuery);
+
+  lXQuery->execute(lXQuery, lOutFile);
+
+  lTmpString->free(lTmpString);
+  lCollation->free(lCollation);
+  lBaseURI->free(lBaseURI);
   lContext->free(lContext);
+  lXQuery->free(lXQuery);
   return 1;
 }
 
