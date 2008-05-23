@@ -61,6 +61,21 @@ ccontext_example_1(XQC_Implementation impl)
 }
 
 int
+ccontext_example_2(XQC_Implementation impl)
+{
+  //XQC_Query          lXQuery;
+  XQC_StaticContext  lContext;
+  //FILE*              lOutFile = stdout;
+  //XQC_String         lBaseURI;
+  //XQC_String         lCollation;
+
+  impl->create_context(impl, &lContext);
+
+  lContext->free(lContext);
+  return 1;
+}
+
+int
 ccontext(int argc, char** argv)
 {
   int res = 0; 
@@ -71,6 +86,11 @@ ccontext(int argc, char** argv)
 
   printf("executing C example 1\n");
   res = ccontext_example_1(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
+
+  printf("executing C example 2\n");
+  res = ccontext_example_2(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 

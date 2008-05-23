@@ -8,6 +8,7 @@
 #include "capi/item.h"
 #include "capi/string.h"
 #include "capi/item_factory.h"
+#include "capi/static_context.h"
 
 using namespace zorba;
 
@@ -16,20 +17,64 @@ namespace zorbac {
   XQUERY_ERROR
   Implementation::create_context(XQC_Implementation impl, XQC_StaticContext_Ref context)
   {
-    return XQ_SUCCESS;
+    try {
+      Zorba* lZorba = static_cast<Zorba*>(impl->data);
+
+      std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
+      std::auto_ptr<SharedWrapper<zorba::StaticContext> > 
+        lWrapper(new SharedWrapper<zorba::StaticContext>());
+
+      zorba::StaticContext_t lInnerContext = lZorba->createStaticContext();
+      lWrapper->theObject = lInnerContext;
+
+      lContext->create_child_context = StaticContext::create_child_context;
+      lContext->add_namespace = StaticContext::add_namespace;
+      lContext->get_namespace_by_prefix = StaticContext::get_namespace_by_prefix;
+      lContext->set_default_element_and_type_ns = StaticContext::set_default_element_and_type_ns;
+      lContext->get_default_element_and_type_ns = StaticContext::get_default_element_and_type_ns;
+      lContext->set_default_function_ns = StaticContext::set_default_function_ns;
+      lContext->get_default_function_ns = StaticContext::get_default_function_ns;
+      lContext->add_collation = StaticContext::add_collation;
+      lContext->set_default_collation = StaticContext::set_default_collation;
+      lContext->get_default_collation = StaticContext::get_default_collation;
+      lContext->set_xpath1_0_mode = StaticContext::set_xpath1_0_mode;
+      lContext->get_xpath1_0_mode = StaticContext::get_xpath1_0_mode;
+      lContext->set_construction_mode = StaticContext::set_construction_mode;
+      lContext->get_construction_mode = StaticContext::get_construction_mode;
+      lContext->set_ordering_mode = StaticContext::set_ordering_mode;
+      lContext->get_ordering_mode = StaticContext::get_ordering_mode;
+      lContext->set_default_order_empty_sequences = StaticContext::set_default_order_empty_sequences;
+      lContext->get_default_order_empty_sequences = StaticContext::get_default_order_empty_sequences;
+      lContext->set_boundary_space_policy = StaticContext::set_boundary_space_policy;
+      lContext->get_boundary_space_policy = StaticContext::get_boundary_space_policy;
+      lContext->set_copy_namespaces_mode = StaticContext::set_copy_namespaces_mode;
+      lContext->get_copy_namespaces_mode = StaticContext::get_copy_namespaces_mode;
+      lContext->set_base_uri = StaticContext::set_base_uri;
+      lContext->get_base_uri = StaticContext::get_base_uri;
+      lContext->free = StaticContext::free;
+
+      (*context) = lContext.release();
+      (*context)->data = lWrapper.release();
+
+      return XQ_SUCCESS;
+    } catch (ZorbaException& e) {
+      return e.getErrorCode(); 
+    } catch (...) {
+      return XQP0019_INTERNAL_ERROR; 
+    }
   }
 
   XQUERY_ERROR 
   Implementation::compile(XQC_Implementation impl, const char *query_string,
                           XQC_StaticContext context, XQC_Query_Ref query)
   {
-    Zorba* lZorba = static_cast<Zorba*>(impl->data);
-      // TODO static context
-
-    std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
-    std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
-
     try {
+      Zorba* lZorba = static_cast<Zorba*>(impl->data);
+        // TODO static context
+
+      std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
+      std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
+
       XQuery_t lQuerySmart = lZorba->compileQuery(query_string);
       lWrapper->theObject = lQuerySmart;
 
@@ -52,11 +97,11 @@ namespace zorbac {
   Implementation::compile_file(XQC_Implementation impl, FILE *query_file,
                                XQC_StaticContext context, XQC_Query_Ref query)
   {
-    Zorba* lZorba = static_cast<Zorba*>(impl->data);
-
-    std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
-    std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
     try {
+      Zorba* lZorba = static_cast<Zorba*>(impl->data);
+
+      std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
+      std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
       std::stringstream lStream;
       char lBuf[1024];
       size_t lSize;

@@ -19,33 +19,33 @@
 /** \brief XPath 1.0 compatibility mode as defined in 
  *         http://www.w3.org/TR/xquery/#static_context 
  */
-enum xpath1_0compatib_mode_t { xpath2_0, xpath1_0          };
+typedef enum { xpath2_0, xpath1_0 } xpath1_0compatib_mode_t;
 
 /** \brief Ordering mode as defined in http://www.w3.org/TR/xquery/#static_context.
  */
-enum ordering_mode_t         { ordered, unordered          };
+typedef enum { ordered, unordered } ordering_mode_t;
 
 /** \brief Default order for empty sequences as defined in 
  *         http://www.w3.org/TR/xquery/#static_context.
  */
-enum order_empty_mode_t      { empty_greatest, empty_least };
+typedef enum { empty_greatest, empty_least } order_empty_mode_t;
 
 /** \brief Inherit part of the Copy-namespace mode as defined in 
  *         http://www.w3.org/TR/xquery/#static_context.
  */
-enum inherit_mode_t          { inherit_ns, no_inherit_ns   };
+typedef enum  { inherit_ns, no_inherit_ns } inherit_mode_t;
 
 /** \brief Preserve part of the Copy-namespace mode as defined in 
  *         http://www.w3.org/TR/xquery/#static_context.
  */
-enum preserve_mode_t         { preserve_ns, no_preserve_ns };
+typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
 
 /** \brief Boundary-space policy as defined in http://www.w3.org/TR/xquery/#static_context.
  */
-enum boundary_space_mode_t   { preserve_space, strip_space };
+typedef enum { preserve_space, strip_space } boundary_space_mode_t;
 
 /** \brief Construction mode as defined in http://www.w3.org/TR/xquery/#static_context.
  */
-enum construction_mode_t     { preserve_cons, strip_cons   };
+typedef enum { preserve_cons, strip_cons } construction_mode_t;
 
 #endif
