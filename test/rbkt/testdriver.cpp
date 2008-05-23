@@ -262,6 +262,9 @@ isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
 void 
 slurp_file (const char *fname, std::string &result) {
   std::ifstream qfile(fname, std::ios::binary | std::ios_base::in); assert (qfile);
+  std::string rbkt_src_uri = zorba::RBKT_SRC_DIR;
+  boost::replace_all(rbkt_src_uri, " ", "%20");
+  rbkt_src_uri = "file://" + rbkt_src_uri;
 
   qfile.seekg (0, std::ios::end);
   size_t len = qfile.tellg ();
@@ -271,6 +274,7 @@ slurp_file (const char *fname, std::string &result) {
   len = qfile.gcount();
   
   std::string sstr (str, len);
+  boost::replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
   result.swap (sstr);
   delete [] str;
 }
