@@ -63,6 +63,7 @@ ccontext_example_1(XQC_Implementation impl)
 int
 ccontext_example_2(XQC_Implementation impl)
 {
+  XQUERY_ERROR       lError = XQ_SUCCESS;
   XQC_Query          lXQuery;
   XQC_StaticContext  lContext;
   FILE*              lOutFile = stdout;
@@ -77,6 +78,7 @@ ccontext_example_2(XQC_Implementation impl)
   impl->create_context(impl, &lContext);
 
   lContext->set_base_uri(lContext, lBaseURI);
+  lContext->add_collation(lContext, lCollation);
 
   lContext->get_base_uri(lContext, &lTmpString);
   lTmpString->to_char(lTmpString, &lStringValue);
@@ -87,7 +89,7 @@ ccontext_example_2(XQC_Implementation impl)
                 "fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')",
                 lContext, &lXQuery);
 
-  lXQuery->execute(lXQuery, lOutFile);
+  lError = lXQuery->execute(lXQuery, lOutFile);
 
   lTmpString->free(lTmpString);
   lCollation->free(lCollation);

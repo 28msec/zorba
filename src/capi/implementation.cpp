@@ -70,12 +70,19 @@ namespace zorbac {
   {
     try {
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
-        // TODO static context
 
       std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
       std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
 
-      XQuery_t lQuerySmart = lZorba->compileQuery(query_string);
+      XQuery_t lQuerySmart;
+      if (context) {
+        SharedWrapper<zorba::StaticContext>* lContext
+          = static_cast<SharedWrapper<zorba::StaticContext>* >(context->data);
+        lQuerySmart = lZorba->compileQuery(query_string, lContext->theObject);
+      } else {
+        lQuerySmart = lZorba->compileQuery(query_string);
+      }
+
       lWrapper->theObject = lQuerySmart;
 
       lQuery->get_dynamic_context = Query::get_dynamic_context;
@@ -106,13 +113,20 @@ namespace zorbac {
       char lBuf[1024];
       size_t lSize;
 
-      // TODO static context
-
       // TODO error checking
       while ((lSize = fread(lBuf, 1, 1024, query_file)) > 0) {
           lStream.write(lBuf, lSize);
       }
-      XQuery_t lQuerySmart = lZorba->compileQuery(lStream);
+
+      XQuery_t lQuerySmart;
+      if (context) {
+        SharedWrapper<zorba::StaticContext>* lContext
+          = static_cast<SharedWrapper<zorba::StaticContext>* >(context->data);
+        lQuerySmart = lZorba->compileQuery(lStream, lContext->theObject);
+      } else {
+        lQuerySmart = lZorba->compileQuery(lStream);
+      }
+
       lWrapper->theObject = lQuerySmart;
 
       (*query)->get_dynamic_context = Query::get_dynamic_context;
