@@ -51,10 +51,11 @@ ccontext_example_1(XQC_Implementation impl)
   lXQuery->execute(lXQuery, lOutFile);
 
   // free all resources
-  // note that there is no need to free the dynamic context
   lItem->free(lItem);
   lString->free(lString);
+  lContext->free(lContext);
   lXQuery->free(lXQuery);
+  lFactory->free(lFactory);
 
   return 1;
 }

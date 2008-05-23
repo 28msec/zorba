@@ -13,6 +13,9 @@ namespace zorbac {
 	    static XQUERY_ERROR 
       set_context_sequence(XQC_DynamicContext context, XQC_Sequence value);
 
+      static void
+      free(XQC_DynamicContext context);
+
   }; /* class DynamicContext */
 
 } /* namespace zorbac */

@@ -23,6 +23,7 @@ namespace zorbac {
 
       lContext->set_context_item = DynamicContext::set_context_item;
       lContext->set_context_sequence = DynamicContext::set_context_sequence;
+      lContext->free = DynamicContext::free;
 
       (*context) = lContext.release();
 

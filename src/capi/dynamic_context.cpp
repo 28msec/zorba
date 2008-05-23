@@ -29,4 +29,16 @@ namespace zorbac {
     return XQ_SUCCESS;
   }
 
+  void
+  DynamicContext::free(XQC_DynamicContext context)
+  {
+    try {
+      delete context;
+    } catch (ZorbaException& e) {
+      assert(false);
+    } catch (...) {
+      assert(false);
+    }
+  }
+
 } /* namespace zorbac */

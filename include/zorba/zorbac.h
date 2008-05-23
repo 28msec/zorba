@@ -113,6 +113,9 @@ struct XQC_DynamicContext_s
 	XQUERY_ERROR 
   (*set_context_sequence)(XQC_DynamicContext context, XQC_Sequence value);
 
+  void
+  (*free)(XQC_DynamicContext context);
+
   void* data;
 };
 
