@@ -18,7 +18,6 @@
 
 namespace zorba {
 
-  // TODO move into src/context
   class StaticContextConsts 
   {
     public:

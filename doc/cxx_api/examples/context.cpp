@@ -227,14 +227,14 @@ context_example_8(Zorba* aZorba)
   const StaticContext* lStaticContext1 = lQuery1->getStaticContext();
   
   /* Programmatically the effect can be observed in the context */
-  if (lStaticContext1->getOrderingMode() != StaticContext::ordered)
+  if (lStaticContext1->getOrderingMode() != ordered)
     return false;
 
   XQuery_t lQuery2 = aZorba->compileQuery("declare ordering unordered; 1"); 
 
   const StaticContext* lStaticContext2 = lQuery2->getStaticContext();
   
-  return (lStaticContext2->getOrderingMode() == StaticContext::unordered);
+  return (lStaticContext2->getOrderingMode() == unordered);
 }
 
 /**

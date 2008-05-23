@@ -36,22 +36,22 @@ populateStaticContext(zorba::StaticContext_t& aStaticContext, ZorbaCMDProperties
   if (aProperties->getBoundarySpace().size() != 0 )
   {
     aStaticContext->setBoundarySpacePolicy( aProperties->getBoundarySpace().compare("preserve") == 0 
-                                            ? zorba::StaticContext::preserve_space 
-                                            : zorba::StaticContext::strip_space );
+                                            ? preserve_space 
+                                            : strip_space );
   }
 
   if (aProperties->getConstructionMode().size() != 0 )
   {
     aStaticContext->setConstructionMode( aProperties->getBoundarySpace().compare("preserve") == 0 
-                                         ? zorba::StaticContext::preserve_cons 
-                                         : zorba::StaticContext::strip_cons );
+                                         ? preserve_cons 
+                                         : strip_cons );
   }
 
   if (aProperties->getOrderingMode().size() != 0 )
   {
     aStaticContext->setOrderingMode( aProperties->getBoundarySpace().compare("ordered") == 0 
-                                     ? zorba::StaticContext::ordered 
-                                     : zorba::StaticContext::unordered );
+                                     ? ordered 
+                                     : unordered );
   }
 
   if (aProperties->getBaseUri().size() != 0 )

@@ -89,42 +89,42 @@ class StaticContextImpl : public StaticContext
   getDefaultCollation() const;
 
   virtual bool   
-  setXPath1_0CompatibMode( StaticContext::xpath1_0compatib_mode_t mode );
+  setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode );
 
-  virtual StaticContext::xpath1_0compatib_mode_t  
+  virtual xpath1_0compatib_mode_t  
   getXPath1_0CompatibMode( ) const;
 
   virtual bool   
-  setConstructionMode( StaticContext::construction_mode_t );
+  setConstructionMode( construction_mode_t );
 
-  virtual StaticContext::construction_mode_t  
+  virtual construction_mode_t  
   getConstructionMode( ) const;
 
   virtual bool   
-  setOrderingMode( StaticContext::ordering_mode_t );
+  setOrderingMode( ordering_mode_t );
 
-  virtual StaticContext::ordering_mode_t  
+  virtual ordering_mode_t  
   getOrderingMode( ) const;
 
   virtual bool   
-  setDefaultOrderForEmptySequences( StaticContext::order_empty_mode_t );
+  setDefaultOrderForEmptySequences( order_empty_mode_t );
 
-  virtual StaticContext::order_empty_mode_t   
+  virtual order_empty_mode_t   
   getDefaultOrderForEmptySequences( ) const;
 
   virtual bool   
-  setBoundarySpacePolicy( StaticContext::boundary_space_mode_t );
+  setBoundarySpacePolicy( boundary_space_mode_t );
 
-  virtual StaticContext::boundary_space_mode_t  
+  virtual boundary_space_mode_t  
   getBoundarySpacePolicy( ) const;
 
   virtual bool   
-  setCopyNamespacesMode( StaticContext::preserve_mode_t preserve, 
-                         StaticContext::inherit_mode_t inherit );
+  setCopyNamespacesMode( preserve_mode_t preserve, 
+                         inherit_mode_t inherit );
 
   virtual void   
-  getCopyNamespacesMode( StaticContext::preserve_mode_t& preserve, 
-                         StaticContext::inherit_mode_t& inherit ) const;
+  getCopyNamespacesMode( preserve_mode_t& preserve, 
+                         inherit_mode_t& inherit ) const;
 
   virtual bool
   setBaseURI( const String& baseURI );

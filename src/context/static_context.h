@@ -22,6 +22,7 @@
 
 #include "context/context.h"
 #include "context/context_impl.h"
+#include "context/static_context_consts.h"
 #include "util/Assert.h"
 
 #include <zorba/api_shared_types.h>

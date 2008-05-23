@@ -22,6 +22,7 @@
 #include "zorbatypes/xqpstring.h"
 #include "api/unmarshaller.h"
 #include "context/static_context.h"
+#include "context/static_context_consts.h"
 #include "system/globalenv.h"
 #include <zorba/typeident.h>
 #include "errors/error_manager.h"
@@ -229,10 +230,10 @@ StaticContextImpl::getDefaultCollation() const
 
 
 bool   
-StaticContextImpl::setXPath1_0CompatibMode( StaticContext::xpath1_0compatib_mode_t mode )
+StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
 {
   ZORBA_TRY
-      if ( mode == StaticContext::xpath1_0)
+      if ( mode == xpath1_0)
         theCtx->set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0_only);
       else
         theCtx->set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
@@ -242,26 +243,26 @@ StaticContextImpl::setXPath1_0CompatibMode( StaticContext::xpath1_0compatib_mode
 }
 
 
-StaticContext::xpath1_0compatib_mode_t  
+xpath1_0compatib_mode_t  
 StaticContextImpl::getXPath1_0CompatibMode( ) const
 {
   try {
     return theCtx->xpath1_0compatib_mode()==StaticContextConsts::xpath1_0_only?
-      StaticContext::xpath1_0:StaticContext::xpath2_0;
+      xpath1_0:xpath2_0;
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   } catch (std::exception& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
-  return StaticContext::xpath2_0;
+  return xpath2_0;
 }
 
 
 bool   
-StaticContextImpl::setConstructionMode( StaticContext::construction_mode_t mode )
+StaticContextImpl::setConstructionMode( construction_mode_t mode )
 {
   ZORBA_TRY
-      if ( mode == StaticContext::preserve_cons)
+      if ( mode == preserve_cons)
         theCtx->set_construction_mode(StaticContextConsts::cons_preserve);
       else
         theCtx->set_construction_mode(StaticContextConsts::cons_strip);
@@ -271,26 +272,26 @@ StaticContextImpl::setConstructionMode( StaticContext::construction_mode_t mode 
 }
 
 
-StaticContext::construction_mode_t  
+construction_mode_t  
 StaticContextImpl::getConstructionMode( ) const
 {
   try {
     return theCtx->construction_mode()==StaticContextConsts::cons_preserve?
-      StaticContext::preserve_cons:StaticContext::strip_cons;
+      preserve_cons:strip_cons;
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   } catch (std::exception& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
-  return StaticContext::preserve_cons;
+  return preserve_cons;
 }
 
 
 bool   
-StaticContextImpl::setOrderingMode( StaticContext::ordering_mode_t mode )
+StaticContextImpl::setOrderingMode( ordering_mode_t mode )
 {
   ZORBA_TRY
-    if ( mode == StaticContext::ordered)
+    if ( mode == ordered)
       theCtx->set_ordering_mode(StaticContextConsts::ordered);
     else
       theCtx->set_ordering_mode(StaticContextConsts::unordered);
@@ -300,26 +301,26 @@ StaticContextImpl::setOrderingMode( StaticContext::ordering_mode_t mode )
 }
 
 
-StaticContext::ordering_mode_t  
+ordering_mode_t  
 StaticContextImpl::getOrderingMode( ) const
 {
   try {
     return theCtx->ordering_mode()==StaticContextConsts::ordered?
-      StaticContext::ordered:StaticContext::unordered;
+      ordered:unordered;
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   } catch (std::exception& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
-  return StaticContext::ordered;
+  return ordered;
 }
 
 
 bool   
-StaticContextImpl::setDefaultOrderForEmptySequences( StaticContext::order_empty_mode_t mode )
+StaticContextImpl::setDefaultOrderForEmptySequences( order_empty_mode_t mode )
 {
   ZORBA_TRY
-      if ( mode == StaticContext::empty_greatest)
+      if ( mode == empty_greatest)
         theCtx->set_order_empty_mode(StaticContextConsts::empty_greatest);
       else
         theCtx->set_order_empty_mode(StaticContextConsts::empty_least);
@@ -329,26 +330,26 @@ StaticContextImpl::setDefaultOrderForEmptySequences( StaticContext::order_empty_
 }
 
 
-StaticContext::order_empty_mode_t   
+order_empty_mode_t   
 StaticContextImpl::getDefaultOrderForEmptySequences( ) const
 {
   try {
     return theCtx->order_empty_mode()==StaticContextConsts::empty_greatest?
-      StaticContext::empty_greatest:StaticContext::empty_least;
+      empty_greatest:empty_least;
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   } catch (std::exception& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
-  return StaticContext::empty_greatest;
+  return empty_greatest;
 }
 
 
 bool   
-StaticContextImpl::setBoundarySpacePolicy( StaticContext::boundary_space_mode_t mode )
+StaticContextImpl::setBoundarySpacePolicy( boundary_space_mode_t mode )
 {
   ZORBA_TRY
-      if ( mode == StaticContext::preserve_space)
+      if ( mode == preserve_space)
         theCtx->set_boundary_space_mode(StaticContextConsts::preserve_space);
       else
         theCtx->set_boundary_space_mode(StaticContextConsts::strip_space);
@@ -358,32 +359,32 @@ StaticContextImpl::setBoundarySpacePolicy( StaticContext::boundary_space_mode_t 
 }
 
 
-StaticContext::boundary_space_mode_t  
+boundary_space_mode_t  
 StaticContextImpl::getBoundarySpacePolicy( ) const
 {
   try {
     return theCtx->boundary_space_mode()==StaticContextConsts::preserve_space?
-      StaticContext::preserve_space:StaticContext::strip_space;
+      preserve_space:strip_space;
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   } catch (std::exception& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
-  return StaticContext::preserve_space;
+  return preserve_space;
 }
   
 
 bool   
-StaticContextImpl::setCopyNamespacesMode( StaticContext::preserve_mode_t preserve, 
-                                          StaticContext::inherit_mode_t inherit )
+StaticContextImpl::setCopyNamespacesMode( preserve_mode_t preserve, 
+                                          inherit_mode_t inherit )
 {
   ZORBA_TRY
-      if ( preserve == StaticContext::preserve_ns )
+      if ( preserve == preserve_ns )
         theCtx->set_preserve_mode(StaticContextConsts::preserve_ns);
       else
         theCtx->set_preserve_mode(StaticContextConsts::no_preserve_ns);
 
-      if ( inherit == StaticContext::inherit_ns )
+      if ( inherit == inherit_ns )
         theCtx->set_inherit_mode(StaticContextConsts::inherit_ns);
       else
         theCtx->set_inherit_mode(StaticContextConsts::no_inherit_ns);
@@ -394,14 +395,14 @@ StaticContextImpl::setCopyNamespacesMode( StaticContext::preserve_mode_t preserv
 
 
 void   
-StaticContextImpl::getCopyNamespacesMode( StaticContext::preserve_mode_t& preserve, 
-                                          StaticContext::inherit_mode_t& inherit ) const
+StaticContextImpl::getCopyNamespacesMode( preserve_mode_t& preserve, 
+                                          inherit_mode_t& inherit ) const
 {
   ZORBA_TRY
       preserve = theCtx->preserve_mode()==StaticContextConsts::preserve_ns?
-                      StaticContext::preserve_ns:StaticContext::no_preserve_ns;
+                      preserve_ns:no_preserve_ns;
       inherit = theCtx->inherit_mode()==StaticContextConsts::inherit_ns?
-                      StaticContext::inherit_ns:StaticContext::no_inherit_ns;
+                      inherit_ns:no_inherit_ns;
   ZORBA_CATCH
 }
 

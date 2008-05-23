@@ -18,6 +18,7 @@
 
 #include <zorba/zorbastring.h>
 #include <zorba/typeident.h> 
+#include <zorba/static_context_consts.h>
 
 namespace zorba {
 
@@ -35,38 +36,6 @@ namespace zorba {
   class StaticContext
   {
     public:
-      /** \brief XPath 1.0 compatibility mode as defined in 
-       *         http://www.w3.org/TR/xquery/#static_context 
-       */
-      enum xpath1_0compatib_mode_t { xpath2_0, xpath1_0          };
-
-      /** \brief Ordering mode as defined in http://www.w3.org/TR/xquery/#static_context.
-       */
-      enum ordering_mode_t         { ordered, unordered          };
-
-      /** \brief Default order for empty sequences as defined in 
-       *         http://www.w3.org/TR/xquery/#static_context.
-       */
-      enum order_empty_mode_t      { empty_greatest, empty_least };
-
-      /** \brief Inherit part of the Copy-namespace mode as defined in 
-       *         http://www.w3.org/TR/xquery/#static_context.
-       */
-      enum inherit_mode_t          { inherit_ns, no_inherit_ns   };
-
-      /** \brief Preserve part of the Copy-namespace mode as defined in 
-       *         http://www.w3.org/TR/xquery/#static_context.
-       */
-      enum preserve_mode_t         { preserve_ns, no_preserve_ns };
-
-      /** \brief Boundary-space policy as defined in http://www.w3.org/TR/xquery/#static_context.
-       */
-      enum boundary_space_mode_t   { preserve_space, strip_space };
-
-      /** \brief Construction mode as defined in http://www.w3.org/TR/xquery/#static_context.
-       */
-      enum construction_mode_t     { preserve_cons, strip_cons   };
-
       /** \brief Destructor
        */
       virtual ~StaticContext() {}
