@@ -89,36 +89,38 @@ CurlStreamBuffer::~CurlStreamBuffer()
 {
   delete[] CurlErrorBuffer; 
   CurlErrorBuffer = NULL;
-  free(_M_out_beg);
-  _M_out_beg = NULL;
+  free(eback());
 }
 
 size_t CurlStreamBuffer::write_callback(char* buffer, size_t size, size_t nitems, void* userp)
 {
-  size_t result = ((CurlStreamBuffer*)userp)->sputn(buffer, size*nitems);
-  ((CurlStreamBuffer*)userp)->_M_in_end = ((CurlStreamBuffer*)userp)->_M_out_cur;
+  CurlStreamBuffer* sbuffer = static_cast<CurlStreamBuffer*>(userp);
+  size_t result = sbuffer->sputn(buffer, size*nitems);
+  sbuffer->setg(sbuffer->eback(), sbuffer->gptr(), sbuffer->pptr());
   return result;
 }
 
 int CurlStreamBuffer::overflow(int c)
 {
-  int new_size = 2 * (_M_out_end-_M_out_beg);
+  char* _out_cur = pptr();
+  char* _in_cur = gptr();
+  char* _in_beg = eback();
+  
+  int new_size = 2 * (epptr() - _in_beg);
   if (new_size == 0)
     new_size = INITIAL_BUFFER_SIZE;
   
-  char* new_buffer = (char*)realloc(_M_out_beg, new_size);
+  char* new_buffer = (char*)realloc(_in_beg, new_size);
   
-  if (new_buffer != _M_out_beg)
+  if (new_buffer != _in_beg)
   {
-    _M_out_cur = new_buffer + (_M_out_cur - _M_out_beg);
-    _M_out_beg = new_buffer;
-    _M_in_cur = new_buffer + (_M_in_cur - _M_in_beg);
-    _M_in_beg = new_buffer;
+    _out_cur = new_buffer + (pptr() - pbase());
+    _in_cur = new_buffer + (_in_cur - _in_beg);
+    _in_beg = new_buffer;
   }
-  *_M_out_cur = (char)c;
-  _M_out_cur++;
-  _M_out_end = _M_out_beg + new_size;
-  _M_in_end = _M_out_cur;
+  setp(_out_cur, new_buffer + new_size);
+  sputc(c);
+  setg(_in_beg, _in_cur, pptr());
   
   return 0;
 }
@@ -240,7 +242,7 @@ ZorbaRestGetIterator::nextImpl(PlanState& planState) const
   xqpStringStore_t lUriString;
   int code;
   store::Item_t result = NULL;
-  store::Item_t doc;
+  store::Item_t doc = NULL;
   store::Store& store = GENV.getStore();
   
   ZorbaRestGetIteratorState* state;
@@ -291,12 +293,10 @@ ZorbaRestGetIterator::nextImpl(PlanState& planState) const
     store::Item_t status_code = createResultNode(planState, "status_code", loc, text_code);
     
     std::istream is(state->theStreamBuffer);
-    try
-    {
+    try {
       doc = store.loadDocument(lUriString, is);
     }
-    catch (...)
-    {
+    catch (...) {
       doc = NULL;
     }
     
