@@ -93,9 +93,6 @@ public:
     return lookup_qname (default_function_namespace (), pfx, local);
   }
 
-  expr *lookup_var (xqp_string prefix, xqp_string local) const {
-    return lookup_expr ("var:" + qname_internal_key ("", prefix, local));
-  }
   expr *lookup_var (xqp_string varname) const {
     return lookup_expr ("var:" + qname_internal_key ("", varname));
   }

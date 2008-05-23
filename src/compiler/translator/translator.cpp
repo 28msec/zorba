@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <string>
 #include <stack>
 #include <sstream>
@@ -109,7 +110,6 @@ namespace zorba {
   Global vars are the ones declared in the prolog (both external and non-external
   vars). theGlobalVars vector contains one entry per global var V. The entry maps
   the var_expr for V to the expr E that defines V (E is NULL for external vars)
-  Note: global vars are treated like LET vars.
 
 ********************************************************************************/
 class TranslatorImpl : public parsenode_visitor
@@ -2396,7 +2396,7 @@ void end_visit(const MainModule & /*v*/, void* /*visit_state*/)
 
 void *begin_visit(const Module& /*v*/)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
@@ -2408,19 +2408,19 @@ void end_visit(const Module& /*v*/, void* /*visit_state*/)
 
 void *begin_visit(const ModuleDecl& /*v*/)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void end_visit(const ModuleDecl& /*v*/, void* /*visit_state*/)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
 void *begin_visit(const ModuleImport& /*v*/)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
@@ -2447,7 +2447,7 @@ void end_visit(const NamespaceDecl& /*v*/, void* /*visit_state*/)
 
 void *begin_visit(const NodeComp& /*v*/)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
@@ -2459,7 +2459,7 @@ void end_visit(const NodeComp& /*v*/, void* /*visit_state*/)
 
 void *begin_visit(const OptionDecl& /*v*/)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
@@ -2589,7 +2589,7 @@ void *begin_visit(const SchemaImport& v)
       ((DelegatingTypeManager*)CTXTS)->initializeSchema();
       Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
       
-      schema_p->registerXSD(at.c_str());	
+      schema_p->registerXSD(at.c_str());  
       //schema_p->printXSDInfo();
     }
 
@@ -2884,7 +2884,7 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
 
 void *begin_visit(const ContextItemExpr& /*v*/)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
@@ -2945,14 +2945,14 @@ void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
 
 void *begin_visit(const IfExpr& /*v*/)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   // nothing to do here
   return no_state;
 }
 
 void end_visit(const IfExpr& v, void* /*visit_state*/)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
   expr_t e_h = pop_nodestack ();
   expr_t t_h = pop_nodestack ();
   expr_t c_h = pop_nodestack ();
@@ -3049,13 +3049,13 @@ void end_visit(const MultiplicativeExpr& v, void* /*visit_state*/)
 
 void *begin_visit(const NumericLiteral& /*v*/)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void end_visit(const NumericLiteral& v, void* /*visit_state*/)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
   switch (v.get_type()) {
   case ParseConstants::num_integer: {
     nodestack.push(new const_expr(v.get_location(), (xqp_integer) v.get_int()));

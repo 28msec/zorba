@@ -13,6 +13,7 @@
 # limitations under the License.
 SET(EXPRESSION_SRCS
     expr.cpp
+    expr_static_type.cpp
     expr_put.cpp
     ft_expr.cpp
     expr_consts.cpp

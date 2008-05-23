@@ -1556,7 +1556,6 @@ public:
     store::UpdateConsts::InsertType,
 		expr_t,
 		expr_t);
-	virtual ~insert_expr();
 
 public:
   store::UpdateConsts::InsertType getType() const { return theType; }
@@ -1586,7 +1585,6 @@ public:
 	delete_expr(
 		const QueryLoc&,
 		expr_t);
-	virtual ~delete_expr();
 
 public:
 	expr_t getTargetExpr() const { return theTargetExpr; }
@@ -1617,7 +1615,6 @@ public:
     store::UpdateConsts::ReplaceType aType,
 		expr_t,
 		expr_t);
-	virtual ~replace_expr();
 
 public:
   store::UpdateConsts::ReplaceType getType() const { return theType; }
@@ -1648,7 +1645,6 @@ public:
 		const QueryLoc&,
 		expr_t,
 		expr_t);
-	virtual ~rename_expr();
 
 public:
 	expr_t getTargetExpr() const { return theTargetExpr; }
@@ -1698,7 +1694,6 @@ public:
 		const QueryLoc&,
 		expr_t aModifyExpr,
 		expr_t aReturnExpr);
-	~transform_expr() {}
 
 public:
 	expr_t getModifyExpr() const { return theModifyExpr; }

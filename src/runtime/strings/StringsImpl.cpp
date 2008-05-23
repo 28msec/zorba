@@ -31,7 +31,6 @@
 
 #include "util/Assert.h"
 
-#include "context/static_context.h"
 #include "context/collation_cache.h"
 
 #include "errors/error_messages.h"
