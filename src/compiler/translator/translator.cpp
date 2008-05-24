@@ -2417,7 +2417,10 @@ void *begin_visit(const ModuleDecl& /*v*/)
 void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  sctx_p->bind_ns(v.get_prefix (), v.get_target_namespace ());
+  std::string pfx = v.get_prefix ();
+  if (pfx == "xml" || pfx == "xmlns")
+    ZORBA_ERROR_LOC (XQST0070, v.get_location ());
+  sctx_p->bind_ns(pfx, v.get_target_namespace ());
 }
 
 
@@ -2432,6 +2435,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   const QueryLoc& loc = v.get_location ();
   std::string pfx = v.get_prefix (), target_ns = v.get_uri ();
+  if (pfx == "xml" || pfx == "xmlns")
+    ZORBA_ERROR_LOC (XQST0070, loc);
   if (target_ns.empty ())
     ZORBA_ERROR_LOC (XQST0088, loc);
 
