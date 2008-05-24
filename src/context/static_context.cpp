@@ -131,8 +131,8 @@ DECL_ENUM_PARAM (static_context, ordering_mode)
 DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
 DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
 DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
-DECL_STR_PARAM (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE)
-DECL_STR_PARAM (static_context, entity_file_uri, MAX_ZORBA_ERROR_CODE)
+DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
+DECL_STR_PARAM_TRIGGER (static_context, entity_file_uri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
 
 TypeManager *static_context::get_typemanager ()
 {

@@ -2450,6 +2450,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0059, loc);
     CompilerCB mod_ccb (*compilerCB);
     compilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = mod_ccb.m_sctx->create_child_context ());
+    mod_ccb.m_sctx->set_entity_file_uri (aturi);
     XQueryCompiler xqc (&mod_ccb);
     rchandle<parsenode> ast = xqc.parse (modfile);
     LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
