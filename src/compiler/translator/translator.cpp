@@ -120,6 +120,7 @@ public:
 protected:
   uint32_t depth;
   checked_vector<expr_t> init_exprs;
+  set<string> mod_import_ns_set;
 
   CompilerCB                           * compilerCB;
   static_context                       * sctx_p;
@@ -2439,8 +2440,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC (XQST0070, loc);
   if (target_ns.empty ())
     ZORBA_ERROR_LOC (XQST0088, loc);
+  if (! mod_import_ns_set.insert (target_ns).second)
+    ZORBA_ERROR_LOC (XQST0047, loc);
 
-  // TODO: check that no other module import uses same target.
   // TODO: allow redeclaration of prefix if module decl uses same target.
   if (! pfx.empty ())
     sctx_p->bind_ns(pfx, target_ns, XQST0033);
@@ -2464,6 +2466,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0088, loc);
     if (mod_ast->get_decl ()->get_target_namespace () != target_ns)
       ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
+    cout << "Importing " << target_ns << " @ " << aturi << endl;
     init_exprs.push_back (translate (*ast, &mod_ccb, sctx_p));
   }
 }

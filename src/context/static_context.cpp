@@ -110,7 +110,7 @@ void context::bind_expr (xqp_string key, expr *e) {
 void context::bind_func (xqp_string key, function *f) {
   ctx_value_t v;
   if (lookup_func (key) != NULL)
-    ZORBA_ERROR (XQST0034);
+    ZORBA_ERROR_PARAM (XQST0034, key, "");
   v.functionValue = f;
   RCHelper::addReference (f);
   keymap.put (key, v);
