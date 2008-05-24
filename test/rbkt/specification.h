@@ -78,34 +78,34 @@ private:
 
 public:
   std::vector<Variable>::const_iterator
-  variablesBegin() { return theVariables.begin(); }
+  variablesBegin() const { return theVariables.begin(); }
   std::vector<Variable>::const_iterator
-  variablesEnd()   { return theVariables.end(); }
+  variablesEnd() const { return theVariables.end(); }
 
   std::vector<std::string>::const_iterator
-  errorsBegin() { return theErrors.begin(); }
+  errorsBegin() const { return theErrors.begin(); }
   std::vector<std::string>::const_iterator
-  errorsEnd()    { return theErrors.end(); }
+  errorsEnd() const { return theErrors.end(); }
 
   size_t
-  variablesSize() { return theVariables.size(); }
+  variablesSize() const { return theVariables.size(); }
 
   size_t
-  errorsSize() { return theErrors.size(); }
+  errorsSize() const { return theErrors.size(); }
 
-  bool hasDateSet() {
+  bool hasDateSet() const {
     return theDate.size() != 0;
   }
 
-  bool hasTimezoneSet() {
+  bool hasTimezoneSet() const {
     return theTimezone.size() != 0;
   }
 
-  std::string getDate() {
+  std::string getDate() const {
     return theDate;
   }
 
-  std::string getTimezone() {
+  std::string getTimezone() const {
     return theTimezone;
   }
 

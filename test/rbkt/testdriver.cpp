@@ -111,16 +111,16 @@ class TestErrorHandler : public zorba::ErrorHandler {
       registerError(aSystemError);
     }
 
-    bool errors()
+    bool errors() const
     {
       return !m_errors.empty();
     }
 
-    const std::vector<std::string>& getErrorList()
+    const std::vector<std::string>& getErrorList() const
     {
       return m_errors;
     }
-    const std::vector<zorba::String>& getErrorDescs()
+    const std::vector<zorba::String>& getErrorDescs() const
     {
       return m_desc;
     }
@@ -139,14 +139,13 @@ class TestErrorHandler : public zorba::ErrorHandler {
 // check of an error that was repored was expected 
 // by the given specification object
 bool
-isErrorExpected(TestErrorHandler& errHandler, Specification* aSpec)
+isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec)
 {
   const std::vector<std::string>& errors = errHandler.getErrorList();
   for(std::vector<std::string>::const_iterator i = errors.begin(); i != errors.end(); ++i) {
     for(std::vector<std::string>::const_iterator j = aSpec->errorsBegin(); j != aSpec->errorsEnd(); ++j) {
-      if (i->compare(*j) == 0) {
+      if (i->compare(*j) == 0)
         return true;
-      }
     }
   }
   return false;
@@ -154,7 +153,7 @@ isErrorExpected(TestErrorHandler& errHandler, Specification* aSpec)
 
 // print all errors that were raised
 void
-printErrors(TestErrorHandler& errHandler, const char *msg)
+printErrors (const TestErrorHandler& errHandler, const char *msg)
 {
   if (!errHandler.errors()) {
     return;
@@ -172,6 +171,23 @@ printErrors(TestErrorHandler& errHandler, const char *msg)
       std::cerr << *codeIter << ": " << *descIter << std::endl;
   }
   return;
+}
+
+int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler) {
+  if (isErrorExpected(errHandler, &lSpec)) {
+    printErrors(errHandler, "The following execution error occurred as expected");
+    return 0;
+  } else {
+    printErrors(errHandler, "Unexpected error executing query");
+    std::cerr << "Expected error(s)";
+    for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
+         lIter != lSpec.errorsEnd(); ++lIter)
+      {
+        std::cerr << " " << *lIter;
+      }
+    std::cerr << std::endl;
+    return 6;
+  }
 }
 
 // set a variable in the dynamic context
@@ -357,19 +373,7 @@ main(int argc, char** argv)
   lQuery->compile (lQueryString.c_str(), getCompilerHints());
 
   if (errHandler.errors())
-  {
-    if (isErrorExpected(errHandler, &lSpec)) 
-    {
-      printErrors(errHandler, "The following execution error occurred as expected");
-      return 0; 
-    } 
-    else 
-    {
-      printErrors(errHandler, "Error compiling query");
-      return 4;
-    }
-  }
-
+    return analyzeError (lSpec, errHandler);
 
   // set the variables in the dynamic context
   zorba::DynamicContext* lDynCtxt = lQuery->getDynamicContext();
@@ -397,22 +401,9 @@ main(int argc, char** argv)
 
     lResFileStream << lQuery;
 
-    if (errHandler.errors()) {
-      if (isErrorExpected(errHandler, &lSpec)) { 
-        printErrors(errHandler, "The following execution error occurred as expected");
-        return 0;
-      } else {
-        printErrors(errHandler, "Unexpected error executing query");
-        std::cerr << "Expected error(s)";
-        for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
-            lIter != lSpec.errorsEnd(); ++lIter)
-        {
-          std::cerr << " " << *lIter;
-        }
-        std::cerr << std::endl;
-        return 6;
-      }
-    } else if ( lSpec.errorsSize() > 0 ) {
+    if (errHandler.errors())
+      return analyzeError (lSpec, errHandler);
+    else if ( lSpec.errorsSize() > 0 ) {
       if ( ! fs::exists(lRefFile) ) {
         std::cerr << "Expected error(s)";
         for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
