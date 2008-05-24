@@ -25,7 +25,6 @@
 
 #include "common/common.h"
 #include "util/properties.h"
-#include "context/static_context_consts.h"
 
 #include "compiler/translator/translator.h"
 #include "compiler/api/compilercb.h"
@@ -2442,12 +2441,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     sctx_p->bind_ns(pfx, target_ns, XQST0033);
   rchandle<URILiteralList> ats = v.get_uri_list ();
   if (ats == NULL || ats->size () == 0)
-    ZORBA_ERROR_LOC (XQST0059, loc);
+    ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
   for (int i = 0; i < ats->size (); i++) {
     string aturi = sctx_p->resolve_relative_uri ((*ats) [i]);
     ifstream modfile (URI::decode_file_URI (xqp_string (aturi).getStore ())->c_str ());
     if (! modfile)
-      ZORBA_ERROR_LOC (XQST0059, loc);
+      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
     CompilerCB mod_ccb (*compilerCB);
     compilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = mod_ccb.m_sctx->create_child_context ());
     mod_ccb.m_sctx->set_entity_file_uri (aturi);
@@ -2455,9 +2454,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     rchandle<parsenode> ast = xqc.parse (modfile);
     LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
     if (mod_ast == NULL)
-      ZORBA_ERROR_LOC (XQST0059, loc);
+      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
+    if (mod_ast->get_decl ()->get_target_namespace ().empty ())
+      ZORBA_ERROR_LOC (XQST0088, loc);
     if (mod_ast->get_decl ()->get_target_namespace () != target_ns)
-      ZORBA_ERROR_LOC (XQST0059, loc);
+      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
     init_exprs.push_back (translate (*ast, &mod_ccb, sctx_p));
   }
 }

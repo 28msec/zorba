@@ -309,7 +309,7 @@ DEF_ERR_CODE (XQST0057, XQST0057, "A schema import binds a namespace prefix but 
 
 DEF_ERR_CODE (XQST0058, XQST0058, "Multiple schema imports specify the same target namespace.")
 
-DEF_ERR_CODE (XQST0059, XQST0059, "Unable to process a schema or module import by finding a schema or module with the specified target namespace.")
+DEF_ERR_CODE (XQST0059, XQST0059, "Unable to process a schema or module import by finding a schema or module /s with the specified target namespace /s")
 
 DEF_ERR_CODE (XQST0060, XQST0060, "The name of a function in a function declaration is not in a namespace (expanded QName has a null namespace URI).")
 

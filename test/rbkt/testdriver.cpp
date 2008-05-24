@@ -359,12 +359,12 @@ main(int argc, char** argv)
   if (errHandler.errors())
   {
     if (isErrorExpected(errHandler, &lSpec)) 
-    { 
-      // done, we expected an error during compile
+    {
+      printErrors(errHandler, "The following execution error occurred as expected");
       return 0; 
     } 
     else 
-    { 
+    {
       printErrors(errHandler, "Error compiling query");
       return 4;
     }
