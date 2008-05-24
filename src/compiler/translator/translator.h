@@ -16,11 +16,19 @@
 #ifndef ZORBA_NORMALIZE_VISITOR_H
 #define ZORBA_NORMALIZE_VISITOR_H
 
+#include <set>
+
 #include "common/shared_types.h"
 
 namespace zorba {
 
-  expr_t translate (const parsenode &, CompilerCB* aCompilerCB, static_context *export_sctx = NULL);
+  expr_t translate (const parsenode &, CompilerCB* aCompilerCB, static_context *export_sctx = NULL, std::set<std::string> mod_stack = std::set<std::string> ());
   
 } /* namespace zorba */
 #endif /* ZORBA_NORMALIZE_VISITOR_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

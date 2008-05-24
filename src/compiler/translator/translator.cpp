@@ -115,12 +115,13 @@ namespace zorba {
 class TranslatorImpl : public parsenode_visitor
 {
 public:
-  friend expr_t translate (const parsenode &, CompilerCB* aCompilerCB, static_context *export_sctx);
+  friend expr_t translate (const parsenode &, CompilerCB* aCompilerCB, static_context *export_sctx, set<string> mod_stack);
 
 protected:
   uint32_t depth;
   checked_vector<expr_t> init_exprs;
   set<string> mod_import_ns_set;
+  set<string> mod_stack;
 
   CompilerCB                           * compilerCB;
   static_context                       * sctx_p;
@@ -147,9 +148,10 @@ protected:
 
   var_expr_t theDotVar, theDotPosVar, theLastVar;
 
-  TranslatorImpl (CompilerCB* aCompilerCB, static_context *export_sctx_ = NULL)
+  TranslatorImpl (CompilerCB* aCompilerCB, static_context *export_sctx_ = NULL, set<string> mod_stack_ = set<string> ())
     :
     depth (0),
+    mod_stack (mod_stack_),
     compilerCB(aCompilerCB),
     sctx_p (aCompilerCB->m_sctx),
     export_sctx (export_sctx_),
@@ -2451,6 +2453,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
   for (int i = 0; i < ats->size (); i++) {
     string aturi = sctx_p->resolve_relative_uri ((*ats) [i]);
+    set<string> mod_stk1 = mod_stack;
+    if (! mod_stk1.insert (aturi).second)
+      ZORBA_ERROR_LOC (XQST0073, loc);
     ifstream modfile (URI::decode_file_URI (xqp_string (aturi).getStore ())->c_str ());
     if (! modfile)
       ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
@@ -2466,8 +2471,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0088, loc);
     if (mod_ast->get_decl ()->get_target_namespace () != target_ns)
       ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
-    cout << "Importing " << target_ns << " @ " << aturi << endl;
-    init_exprs.push_back (translate (*ast, &mod_ccb, sctx_p));
+    init_exprs.push_back (translate (*ast, &mod_ccb, sctx_p, mod_stk1));
   }
 }
 
@@ -5402,8 +5406,8 @@ void end_visit(const VarGetsDeclList& /*v*/, void* /*visit_state*/)
 };
 
 
-rchandle<expr> translate (const parsenode &root, CompilerCB* aCompilerCB, static_context *export_sctx) {
-  auto_ptr<TranslatorImpl> t (new TranslatorImpl (aCompilerCB, export_sctx));
+rchandle<expr> translate (const parsenode &root, CompilerCB* aCompilerCB, static_context *export_sctx, set<string> mod_stack) {
+  auto_ptr<TranslatorImpl> t (new TranslatorImpl (aCompilerCB, export_sctx, mod_stack));
   root.accept (*t);
   rchandle<expr> result = t->result ();
   if (aCompilerCB->m_config.print_translated) {
