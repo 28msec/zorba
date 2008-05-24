@@ -71,8 +71,8 @@ namespace zorba {
 
 #define CHK_ONE_DECL( state, err ) do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #ifndef NDEBUG
-# define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++depth, ' ') << TRACE << endl;
-# define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(depth--, ' ') << TRACE << endl
+# define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++print_depth, ' ') << TRACE << endl;
+# define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(print_depth--, ' ') << TRACE << endl
 #else
 # define TRACE_VISIT()
 # define TRACE_VISIT_OUT()
@@ -118,10 +118,7 @@ public:
   friend expr_t translate (const parsenode &, CompilerCB* aCompilerCB, static_context *export_sctx, set<string> mod_stack);
 
 protected:
-  uint32_t depth;
-  checked_vector<expr_t> init_exprs;
-  set<string> mod_import_ns_set;
-  set<string> mod_stack;
+  uint32_t print_depth;
 
   CompilerCB                           * compilerCB;
   static_context                       * sctx_p;
@@ -129,9 +126,13 @@ protected:
   vector<rchandle<static_context> >    & sctx_list;
   std::stack<expr_t>                     nodestack;
   std::stack<xqtref_t>                   tstack;  // types stack
+  set<string> mod_import_ns_set;
+  set<string> mod_stack;
   int                                    tempvar_counter;
   std::list<global_binding>              theGlobalVars;
+  checked_vector<expr_t> init_exprs;
   rchandle<namespace_context>            ns_ctx;
+  string                                 mod_ns;
 
   // FOR WHITESPACE CHECKING OF DirElemContent (stack is need because of nested elements)
   /**
@@ -150,12 +151,12 @@ protected:
 
   TranslatorImpl (CompilerCB* aCompilerCB, static_context *export_sctx_ = NULL, set<string> mod_stack_ = set<string> ())
     :
-    depth (0),
-    mod_stack (mod_stack_),
+    print_depth (0),
     compilerCB(aCompilerCB),
     sctx_p (aCompilerCB->m_sctx),
     export_sctx (export_sctx_),
     sctx_list (aCompilerCB->m_sctx_list),
+    mod_stack (mod_stack_),
     tempvar_counter (1),
     ns_ctx(new namespace_context(sctx_p)),
     hadBSpaceDecl (false),
@@ -1908,6 +1909,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     type = pop_tstack ();
 
   var_expr_t ve = bind_var (v.get_location(), varname, var_expr::context_var, type);
+  if (! mod_ns.empty () && xqp_string (ve->get_varname ()->getNamespace ()) != mod_ns)
+    ZORBA_ERROR_LOC (XQST0048, v.get_location ());
   if (export_sctx != NULL && ! v.is_extern ())
     export_sctx->bind_var (ve->get_varname (), &*ve);
   expr_t val = v.is_extern() ? expr_t(NULL) : pop_nodestack();
@@ -1981,6 +1984,8 @@ void *begin_visit(const VFO_DeclList& v)
         ZORBA_ERROR_LOC_PARAM (XQST0045,
                                n->get_location (),
                                qname->getLocalName()->str(), "");
+      if (! mod_ns.empty () && ns != mod_ns)
+        ZORBA_ERROR_LOC (XQST0048, v.get_location ());
     }
 
     signature sig(qname, arg_types, return_type);
@@ -2421,9 +2426,10 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   std::string pfx = v.get_prefix ();
+  mod_ns = v.get_target_namespace ();
   if (pfx == "xml" || pfx == "xmlns")
     ZORBA_ERROR_LOC (XQST0070, v.get_location ());
-  sctx_p->bind_ns(pfx, v.get_target_namespace ());
+  sctx_p->bind_ns(pfx, mod_ns);
 }
 
 
