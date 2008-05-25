@@ -2618,7 +2618,8 @@ void *begin_visit(const SchemaImport& v)
     }
 
     rchandle<URILiteralList> atlist = v.get_at_list();
-    if (atlist != NULL) 
+    if (atlist == NULL || atlist->size () == 0)
+      ZORBA_ERROR_LOC (XQST0059, loc);
     {
       std::string at = sctx_p->resolve_relative_uri ((*atlist) [0]);
      
@@ -2641,7 +2642,7 @@ void *begin_visit(const SchemaImport& v)
     return no_state;
 #else
     ZORBA_ERROR_LOC (XQST0009, loc);
-  return no_state;
+    return no_state;
 #endif
 }
 
