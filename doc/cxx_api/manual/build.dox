@@ -38,7 +38,7 @@ In order ot build Zorba, you need the following libraries and development header
 \subsection buildoptions Build Options
 - CMake is a meta build system, meaning it is able to generate native makefiles (e.g. GNU Make or NMake) and workspaces (e.g. KDevelop or Visual Studio Projects). For example, you can create
   a KDevelop Project by executing the following command in the <tt>[ZORBA]</tt> directory: <tt>cmake -G KDevelop3 [ZORBABUILD]</tt>.
-- CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake [ZORBA] -D CMAKE_BUILD_TYPE=Debug</tt>.
+- CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
 
 \section mac Note for Mac OS Users
 The easiest way to install the required packages (like CMake, Boost, etc.) is to use Darwin Ports (http://darwinports.com/). After installating Darwin Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successfull, you can simply install packages by typing e.g. <tt>sudo port install cmake</tt>.
