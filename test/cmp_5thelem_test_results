@@ -34,6 +34,6 @@ EOF
 f1=`mktemp /tmp/ctr.XXXXXX`
 
 wget "$URL""$1" -O - | sed -e's/\&nbsp;/ /g;s/\&/\&amp;/g' | tidy -q -asxml 2>/dev/null | $SAXON -s - $q | sort | cut -f6- -d'.' | cut -f1 -d'&' >$f1
-wget "$URL""$2" -O - | sed -e's/\&nbsp;/ /g;s/\&/\&amp;/g' | tidy -q -asxml 2>/dev/null | $SAXON -s - $q | sort | cut -f6- -d'.' | cut -f1 -d'&' | diff -U0 $f1 - | tail -n +3 | egrep -v '^@'
+wget "$URL""$2" -O - | sed -e's/\&nbsp;/ /g;s/\&/\&amp;/g' | tidy -q -asxml 2>/dev/null | $SAXON -s - $q | sort | cut -f6- -d'.' | cut -f1 -d'&' | diff -U0 $f1 - | tail -n +3 | egrep -v '^@' | perl -pe 's#[.]#/#g'
 
 rm -f $f1 $q
