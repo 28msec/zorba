@@ -2619,7 +2619,7 @@ void *begin_visit(const SchemaImport& v)
 
     rchandle<URILiteralList> atlist = v.get_at_list();
     if (atlist == NULL || atlist->size () == 0)
-      ZORBA_ERROR_LOC (XQST0059, loc);
+      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
     {
       std::string at = sctx_p->resolve_relative_uri ((*atlist) [0]);
      
