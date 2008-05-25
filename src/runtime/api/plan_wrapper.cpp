@@ -25,7 +25,7 @@ namespace zorba {
     class PlanWraper
    ********************************************************************************/
   PlanWrapper::PlanWrapper(const PlanIter_t& aIter, CompilerCB* aCompilerCB, 
-                           dynamic_context* aDynamicContext)
+                           dynamic_context* aDynamicContext, uint32_t aStackDepth)
     : theIterator(aIter)
 #ifndef NDEBUG
       , theIsOpened(false)
@@ -34,7 +34,7 @@ namespace zorba {
     assert (aCompilerCB);
 
     uint32_t lStateSize = theIterator->getStateSizeOfSubtree();
-    theStateBlock = new PlanState(lStateSize);
+    theStateBlock = new PlanState(lStateSize, aStackDepth);
 
     // set the compiler cb in the state
     theStateBlock->theCompilerCB = aCompilerCB;
@@ -107,5 +107,8 @@ namespace zorba {
     theIsOpened = false;
 #endif
   }
+
+  void PlanWrapper::checkDepth (const QueryLoc &loc)
+  { theStateBlock->checkDepth (loc); }
 
 } /* namespace zorba */

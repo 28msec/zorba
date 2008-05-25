@@ -42,7 +42,7 @@ namespace zorba {
 #endif
 
     public:
-      PlanWrapper(const PlanIter_t& iter, CompilerCB*, dynamic_context* aDynamicContext);
+      PlanWrapper(const PlanIter_t& iter, CompilerCB*, dynamic_context* aDynamicContext, uint32_t aStackDepth = 0);
 
       virtual ~PlanWrapper();
 
@@ -57,6 +57,9 @@ namespace zorba {
 
       virtual void
       close() throw ();
+
+      virtual void checkDepth (const QueryLoc &loc);
+
   };
 
 } /* namespace zorba */

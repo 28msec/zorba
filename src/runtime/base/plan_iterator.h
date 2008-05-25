@@ -93,6 +93,8 @@ public:
   int8_t*      theBlock;
 
   uint32_t     theBlockSize;
+
+  uint32_t     theStackDepth;
   
   // TODO this guy should become const because nothing can change anymore during runtime
   //      we need to make all accessor in the control block and static context (see also shortcut below)
@@ -111,9 +113,11 @@ public:
   collationCache();
 
 public:
-  PlanState(uint32_t blockSize);
+  PlanState(uint32_t blockSize, uint32_t aStackDepth = 0);
 
   ~PlanState();
+
+  void checkDepth (const QueryLoc &loc);
 };
 
 

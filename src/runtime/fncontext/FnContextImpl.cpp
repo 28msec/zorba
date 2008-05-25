@@ -111,7 +111,8 @@ store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
   ccb->m_sctx = ccb->m_sctx->create_child_context ();
   // set up eval state's iterator plan (compile the query string)
   item = CONSUME (0);
-  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames, vartypes), ccb, dctx.get ()));
+  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames, vartypes), ccb, dctx.get (), planState.theStackDepth + 1));
+  state->eval_plan->checkDepth (loc);
 
   for (unsigned i = 0; i < theChildren.size () - 1; i++) {
     store::Iterator_t lIter = new PlanIteratorWrapper (theChildren [i + 1], planState);
