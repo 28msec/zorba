@@ -356,7 +356,7 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
           assert( lMessage );
           processMessage( lMessage );
 #else
-          processMessage( static_cast<StepMessage *> ( aMessage );
+          processMessage( static_cast<StepMessage *> ( aMessage ));
 #endif
           break;
         }
