@@ -1,6 +1,7 @@
 declare function local:eval($query as xs:string, $someparam as xs:integer) {
-  using $x := $someparam, $query := $query
-  eval { $query  }
+  
+  let $x := $someparam return
+  using $x, $query eval { $query  }
 };
 
 for $y in 1 to 6

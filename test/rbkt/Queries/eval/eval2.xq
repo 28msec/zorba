@@ -9,7 +9,8 @@ declare function local:f() {
 };
 
 for $y in 1 to 10
+let $x := $var
 where $y mod 2 eq 0
 return 
-  using $x := $var, $y 
+  using $x, $y 
   eval { local:getQuery() }
