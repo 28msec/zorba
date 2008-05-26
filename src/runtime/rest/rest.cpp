@@ -202,7 +202,7 @@ store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpSt
   
   std::auto_ptr<store::Iterator> cwrapper;
   if (children != NULL)
-    cwrapper.reset(new PlanWrapper(children, planState.theCompilerCB, planState.dctx()));
+    cwrapper.reset(new PlanWrapper(children.getp(), planState.theCompilerCB, planState.dctx()));
   
   store::Item_t item = GENV_ITEMFACTORY->createElementNode((ulong)&planState,
     qname,
