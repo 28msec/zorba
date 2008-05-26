@@ -102,7 +102,7 @@ bool begin_visit (flwor_expr& node)
     if (vartype != NULL) {
       bool is_for = clause->get_type () == forlet_clause::for_clause;
       if (is_for && TypeOps::is_empty (*vartype))
-        ZORBA_ERROR_LOC (XPTY0004, loc);
+        ZORBA_ERROR_LOC_PARAM (XPTY0004, loc, "empty-sequence()", "");
       xqtref_t promote_type = is_for ? m_sctx->get_typemanager()->create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
       expr_t e = clause->get_expr ();
       clause->set_expr (new treat_expr (e->get_loc (), e, promote_type, XPTY0004));

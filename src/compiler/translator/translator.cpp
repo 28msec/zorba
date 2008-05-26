@@ -134,7 +134,7 @@ protected:
   std::list<global_binding>              theGlobalVars;
   checked_vector<expr_t> init_exprs;
   rchandle<namespace_context>            ns_ctx;
-  string                                 mod_ns;
+  string                                 mod_ns, mod_pfx;
 
   // FOR WHITESPACE CHECKING OF DirElemContent (stack is need because of nested elements)
   /**
@@ -1974,6 +1974,7 @@ void *begin_visit(const VFO_DeclList& v)
         ZORBA_ERROR_LOC_PARAM (XQST0045,
                                n->get_location (),
                                qname->getLocalName()->str(), "");
+      // In a module, all exports must be inside to target ns
       if (! mod_ns.empty () && ns != mod_ns)
         ZORBA_ERROR_LOC (XQST0048, v.get_location ());
     }
@@ -2413,11 +2414,11 @@ void *begin_visit(const ModuleDecl& v)
 void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  std::string pfx = v.get_prefix ();
+  mod_pfx = v.get_prefix ();
   mod_ns = v.get_target_namespace ();
-  if (pfx == "xml" || pfx == "xmlns")
+  if (mod_pfx == "xml" || mod_pfx == "xmlns")
     ZORBA_ERROR_LOC (XQST0070, v.get_location ());
-  sctx_p->bind_ns(pfx, mod_ns);
+  sctx_p->bind_ns (mod_pfx, mod_ns);
 }
 
 
@@ -2438,8 +2439,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (! mod_import_ns_set.insert (target_ns).second)
     ZORBA_ERROR_LOC (XQST0047, loc);
 
-  // TODO: allow redeclaration of prefix if module decl uses same target.
-  if (! pfx.empty ())
+  if (! (pfx.empty () || (pfx == mod_pfx && target_ns == mod_ns)))
     sctx_p->bind_ns(pfx, target_ns, XQST0033);
   rchandle<URILiteralList> ats = v.get_uri_list ();
   if (ats == NULL || ats->size () == 0)
