@@ -19,6 +19,7 @@
 #include <zorba/zorbastring.h>
 #include <zorba/typeident.h> 
 #include <zorba/static_context_consts.h>
+#include <zorba/smart_ptr.h>
 
 namespace zorba {
 
@@ -33,7 +34,7 @@ namespace zorba {
    * If no static context has been passed to any of these functions, a default static context
    * is used. It can be accessed by calling XQuery::getStaticContext on a compiled XQuery object.
    */
-  class StaticContext
+  class StaticContext : public SmartObject
   {
     public:
       /** \brief Destructor

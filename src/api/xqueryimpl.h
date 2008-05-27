@@ -251,6 +251,7 @@ class XQueryImpl : public XQuery
 
 
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery);
+  std::ostream& operator<< (std::ostream& os, XQuery* aQuery);
 
 
 } /* namespace zorba */

@@ -23,7 +23,7 @@ namespace zorba {
 
   /** \brief Interface for an Iterator over an instance of the XML Data Model.
    */
-  class Iterator : public ItemSequence
+  class Iterator : public ItemSequence, public SmartObject
   {
     public:
       /** \brief Destructor

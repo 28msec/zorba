@@ -1,14 +1,30 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */ 
 #include "capi/implementation.h"
 
 #include <sstream>
 #include <memory>
 #include <zorba/zorba.h>
-#include "capi/shared_wrapper.h"
 #include "capi/query.h"
 #include "capi/item.h"
 #include "capi/string.h"
 #include "capi/item_factory.h"
 #include "capi/static_context.h"
+#include "api/staticcontextimpl.h"
+#include "api/xqueryimpl.h"
 
 using namespace zorba;
 
@@ -21,40 +37,14 @@ namespace zorbac {
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
 
       std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
-      std::auto_ptr<SharedWrapper<zorba::StaticContext> > 
-        lWrapper(new SharedWrapper<zorba::StaticContext>());
 
       zorba::StaticContext_t lInnerContext = lZorba->createStaticContext();
-      lWrapper->theObject = lInnerContext;
 
-      lContext->create_child_context              = StaticContext::create_child_context;
-      lContext->add_namespace                     = StaticContext::add_namespace;
-      lContext->get_namespace_by_prefix           = StaticContext::get_namespace_by_prefix;
-      lContext->set_default_element_and_type_ns   = StaticContext::set_default_element_and_type_ns;
-      lContext->get_default_element_and_type_ns   = StaticContext::get_default_element_and_type_ns;
-      lContext->set_default_function_ns           = StaticContext::set_default_function_ns;
-      lContext->get_default_function_ns           = StaticContext::get_default_function_ns;
-      lContext->add_collation                     = StaticContext::add_collation;
-      lContext->set_default_collation             = StaticContext::set_default_collation;
-      lContext->get_default_collation             = StaticContext::get_default_collation;
-      lContext->set_xpath1_0_mode                 = StaticContext::set_xpath1_0_mode;
-      lContext->get_xpath1_0_mode                 = StaticContext::get_xpath1_0_mode;
-      lContext->set_construction_mode             = StaticContext::set_construction_mode;
-      lContext->get_construction_mode             = StaticContext::get_construction_mode;
-      lContext->set_ordering_mode                 = StaticContext::set_ordering_mode;
-      lContext->get_ordering_mode                 = StaticContext::get_ordering_mode;
-      lContext->set_default_order_empty_sequences = StaticContext::set_default_order_empty_sequences;
-      lContext->get_default_order_empty_sequences = StaticContext::get_default_order_empty_sequences;
-      lContext->set_boundary_space_policy         = StaticContext::set_boundary_space_policy;
-      lContext->get_boundary_space_policy         = StaticContext::get_boundary_space_policy;
-      lContext->set_copy_namespaces_mode          = StaticContext::set_copy_namespaces_mode;
-      lContext->get_copy_namespaces_mode          = StaticContext::get_copy_namespaces_mode;
-      lContext->set_base_uri                      = StaticContext::set_base_uri;
-      lContext->get_base_uri                      = StaticContext::get_base_uri;
-      lContext->free                              = StaticContext::free;
+      zorbac::StaticContext::assign_functions(lContext.get());
 
       (*context) = lContext.release();
-      (*context)->data = lWrapper.release();
+      (*context)->data = lInnerContext.get();
+      lInnerContext->addReference();
 
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
@@ -72,26 +62,23 @@ namespace zorbac {
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
 
       std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
-      std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
 
       XQuery_t lQuerySmart;
       if (context) {
-        SharedWrapper<zorba::StaticContext>* lContext
-          = static_cast<SharedWrapper<zorba::StaticContext>* >(context->data);
-        lQuerySmart = lZorba->compileQuery(query_string, lContext->theObject);
+        zorba::StaticContext* lContext = static_cast<zorba::StaticContext*> (context->data);
+
+        // reference counting in the smartptr takes care of garbage collection
+        lQuerySmart = lZorba->compileQuery(query_string, lContext);
       } else {
         lQuerySmart = lZorba->compileQuery(query_string);
       }
 
-      lWrapper->theObject = lQuerySmart;
-
-      lQuery->get_dynamic_context = Query::get_dynamic_context;
-      lQuery->execute             = Query::execute;
-      lQuery->sequence            = Query::sequence;
-      lQuery->free                = Query::free;
+      Query::assign_functions(lQuery.get());
 
       (*query)   = lQuery.release();
-      (*query)->data = lWrapper.release();
+      // get and reset never throw
+      (*query)->data = lQuerySmart.get(); 
+      lQuerySmart->addReference();
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
@@ -108,7 +95,6 @@ namespace zorbac {
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
 
       std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
-      std::auto_ptr<SharedWrapper<XQuery> > lWrapper(new SharedWrapper<XQuery>());
       std::stringstream lStream;
       char lBuf[1024];
       size_t lSize;
@@ -120,22 +106,18 @@ namespace zorbac {
 
       XQuery_t lQuerySmart;
       if (context) {
-        SharedWrapper<zorba::StaticContext>* lContext
-          = static_cast<SharedWrapper<zorba::StaticContext>* >(context->data);
-        lQuerySmart = lZorba->compileQuery(lStream, lContext->theObject);
+        zorba::StaticContext* lContext = static_cast<zorba::StaticContext*>(context->data);
+        zorba::StaticContext_t lContextCopy = lContext->createChildContext();
+        lQuerySmart = lZorba->compileQuery(lStream, lContextCopy);
       } else {
         lQuerySmart = lZorba->compileQuery(lStream);
       }
 
-      lWrapper->theObject = lQuerySmart;
+      Query::assign_functions(lQuery.get());
 
-      (*query)->get_dynamic_context = Query::get_dynamic_context;
-      (*query)->execute             = Query::execute;
-      (*query)->sequence            = Query::sequence;
-      (*query)->free                = Query::free;
-
-      *query   = static_cast<XQC_Query>(lQuery.release());
-      (*query)->data = lWrapper.release();
+      *query   = lQuery.release();
+      (*query)->data = lQuerySmart.get();
+      lQuerySmart->addReference();
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
@@ -166,8 +148,7 @@ namespace zorbac {
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
       std::auto_ptr<zorba::Item> lInnerItem(new zorba::Item());
 
-      lItem->string_value = zorbac::Item::string_value;
-      lItem->free         = zorbac::Item::free;
+      Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
       (*item)->data = lInnerItem.release();
@@ -185,8 +166,7 @@ namespace zorbac {
       std::auto_ptr<XQC_String_s>  lString(new XQC_String_s());
       std::auto_ptr<zorba::String> lInnerString(str?new zorba::String(str):new zorba::String(""));
 
-      lString->to_char      = zorbac::String::to_char;
-      lString->free         = zorbac::String::free;
+      String::assign_functions(lString.get());
 
       (*res) = lString.release();
       (*res)->data = lInnerString.release();
@@ -206,12 +186,7 @@ namespace zorbac {
 
       zorba::Zorba* lZorba = static_cast<zorba::Zorba*>(impl->data);
       
-      lFactory->create_string    = zorbac::ItemFactory::create_string;
-      lFactory->create_anyuri    = zorbac::ItemFactory::create_anyuri;
-      lFactory->create_qname2    = zorbac::ItemFactory::create_qname2;
-      lFactory->create_qname3    = zorbac::ItemFactory::create_qname3;
-      lFactory->create_boolean   = zorbac::ItemFactory::create_boolean;
-      lFactory->free             = zorbac::ItemFactory::free;
+      ItemFactory::assign_functions(lFactory.get());
 
       (*factory) = lFactory.release();
       (*factory)->data = lZorba->getItemFactory();
@@ -223,6 +198,18 @@ namespace zorbac {
       return XQP0019_INTERNAL_ERROR; 
     }
     
+  }
+
+  void
+  Implementation::assign_functions(XQC_Implementation impl)
+  {
+    impl->create_context = Implementation::create_context;
+    impl->compile        = Implementation::compile;
+    impl->compile_file   = Implementation::compile_file;
+    impl->free           = Implementation::free;
+    impl->create_item    = Implementation::create_item;
+    impl->create_string  = Implementation::create_string;
+    impl->item_factory   = Implementation::item_factory;
   }
 
 } /* namespace zorbac */

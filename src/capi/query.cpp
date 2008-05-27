@@ -1,11 +1,26 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */ 
 #include "capi/query.h"
 
 #include <memory>
 #include <cassert>
 #include <sstream>
 #include <zorba/zorba.h>
-#include "capi/shared_wrapper.h"
 #include "capi/dynamic_context.h"
+#include "capi/static_context.h"
 #include "capi/sequence.h"
 
 using namespace zorba;
@@ -16,16 +31,37 @@ namespace zorbac {
   Query::get_dynamic_context(XQC_Query query, XQC_DynamicContext_Ref context)
   {
     try {
-      SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(query->data);
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
       std::auto_ptr<XQC_DynamicContext_s> lContext(new XQC_DynamicContext_s());
 
-      lContext->data = lQuery->theObject->getDynamicContext();
+      lContext->data = lQuery->getDynamicContext();
 
-      lContext->set_context_item = DynamicContext::set_context_item;
-      lContext->set_context_sequence = DynamicContext::set_context_sequence;
-      lContext->free = DynamicContext::free;
+      DynamicContext::assign_functions(lContext.get());
 
       (*context) = lContext.release();
+
+      return XQ_SUCCESS;
+    } catch (ZorbaException& e) {
+      return e.getErrorCode();
+    } catch (...) {
+      return XQP0019_INTERNAL_ERROR;
+    }
+  }
+
+
+  XQUERY_ERROR
+  Query::get_static_context(XQC_Query query, XQC_StaticContext_Ref context)
+  {
+    try {
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
+
+      const zorba::StaticContext* lInnerContext = lQuery->getStaticContext();
+
+      zorbac::StaticContext::assign_functions(lContext.get());
+
+      (*context) = lContext.release();
+      (*context)->data = const_cast<void*>(static_cast<const void*>(lInnerContext));
 
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
@@ -38,14 +74,14 @@ namespace zorbac {
   XQUERY_ERROR 
   Query::execute(XQC_Query query, FILE* file)
   {
-    SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(query->data);
+    XQuery* lQuery = static_cast<XQuery*>(query->data);
 
     std::stringstream lStream;
     char lBuf[1024];
 
     try {
       // TODO this is eager at the moment, we need a pull serializer
-      lStream << lQuery->theObject; 
+      lStream << lQuery; 
       lStream.seekg(0);
 
       int lRes = 0;
@@ -64,22 +100,19 @@ namespace zorbac {
   XQUERY_ERROR 
   Query::sequence(XQC_Query query, XQC_Sequence_Ref sequence)
   {
-    SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(query->data);
+    XQuery* lQuery = static_cast<XQuery*>(query->data);
 
     std::auto_ptr<XQC_Sequence_s> lSeq(new XQC_Sequence_s());
 
     try {
-      ResultIterator_t lResultSmart = lQuery->theObject->iterator();
+      ResultIterator_t lResultSmart = lQuery->iterator();
       lResultSmart->open();
 
-      std::auto_ptr<SharedWrapper<ResultIterator> > 
-        lResult(new SharedWrapper<ResultIterator>(lResultSmart));
+      Sequence::assign_functions(lSeq.get());
 
-
-      lSeq->next = Sequence::next;
-      lSeq->free = Sequence::free;
       (*sequence) = lSeq.release();
-      (*sequence)->data = lResult.release();
+      (*sequence)->data = lResultSmart.get();
+      lResultSmart->addReference();
 
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
@@ -93,14 +126,24 @@ namespace zorbac {
   Query::free(XQC_Query query)
   {
     try {
-      SharedWrapper<XQuery>* lQuery = static_cast<SharedWrapper<XQuery>* >(query->data);
-      delete lQuery;
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      lQuery->removeReference();
       delete query;
     } catch (ZorbaException& e) {
       assert(false);
     } catch (...) {
       assert(false);
     }
+  }
+
+  void
+  Query::assign_functions(XQC_Query query)
+  {
+    query->get_dynamic_context   = Query::get_dynamic_context;
+    query->get_static_context    = Query::get_static_context;
+    query->execute               = Query::execute;
+    query->sequence              = Query::sequence;
+    query->free                  = Query::free;
   }
 
 } /* namespace zorbac */

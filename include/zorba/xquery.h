@@ -47,7 +47,7 @@ namespace zorba {
    * The file \link simple.cpp \endlink contains some basic examples the demonstrate
    * the use of this class.
    */
-  class XQuery 
+  class XQuery : public SmartObject
   {
     public:
 
@@ -421,6 +421,7 @@ namespace zorba {
 
   // xml serialization of the query (equiv to calling serialize(os) 
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery); 
+  std::ostream& operator<< (std::ostream& os, XQuery* aQuery); 
 
 } /* namespace zorba */
 

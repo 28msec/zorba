@@ -1,3 +1,18 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */ 
 #include "capi/dynamic_context.h"
 
 #include <zorba/zorba.h>
@@ -30,15 +45,10 @@ namespace zorbac {
   }
 
   void
-  DynamicContext::free(XQC_DynamicContext context)
+  DynamicContext::assign_functions(XQC_DynamicContext context)
   {
-    try {
-      delete context;
-    } catch (ZorbaException& e) {
-      assert(false);
-    } catch (...) {
-      assert(false);
-    }
+    context->set_context_item = DynamicContext::set_context_item;
+    context->set_context_sequence = DynamicContext::set_context_sequence;
   }
 
 } /* namespace zorbac */

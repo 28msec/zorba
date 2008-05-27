@@ -21,11 +21,10 @@
 #include "types/typeconstants.h"
 #include "zorba/typeident.h"
 
-#include <boost/smart_ptr.hpp>
 
 namespace zorba {
 
-typedef boost::shared_ptr<TypeIdentifier> type_ident_ref_t;
+typedef TypeIdentifier_t type_ident_ref_t;
 
 class TypeOps {
 public:

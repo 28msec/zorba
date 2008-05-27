@@ -27,13 +27,7 @@ zorba_implementation(XQC_Implementation_Ref impl)
 
     zorba::Zorba* lZorba = zorba::Zorba::getInstance();
 
-    lImpl->create_context = zorbac::Implementation::create_context;
-    lImpl->compile        = zorbac::Implementation::compile;
-    lImpl->compile_file   = zorbac::Implementation::compile_file;
-    lImpl->free           = zorbac::Implementation::free;
-    lImpl->create_item    = zorbac::Implementation::create_item;
-    lImpl->create_string  = zorbac::Implementation::create_string;
-    lImpl->item_factory   = zorbac::Implementation::item_factory;
+    zorbac::Implementation::assign_functions(lImpl.get());
 
     (*impl) = lImpl.release();
     (*impl)->data =  lZorba;

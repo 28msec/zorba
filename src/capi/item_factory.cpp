@@ -1,3 +1,18 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */ 
 #include "capi/item_factory.h"
 #include "capi/item.h"
 #include <zorba/zorba.h>
@@ -16,16 +31,6 @@ using namespace zorba;
  
 #define FF static_cast<zorba::ItemFactory*>(factory->data)
 
-#define ASSIGN_FUNCTIONS \
- lItem->string_value = zorbac::Item::string_value;  \
- lItem->prefix = zorbac::Item::prefix;  \
- lItem->ns = zorbac::Item::ns;  \
- lItem->localname = zorbac::Item::localname;  \
- lItem->boolean_value = zorbac::Item::boolean_value;  \
- lItem->nan = zorbac::Item::nan;  \
- lItem->pos_or_neg_inf = zorbac::Item::pos_or_neg_inf;  \
- lItem->free         = zorbac::Item::free;
-
 namespace zorbac {
 
   XQUERY_ERROR
@@ -38,7 +43,7 @@ namespace zorbac {
       zorba::Item lInnerItem = FF->createString(*lStringWrapper);
       if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
-      ASSIGN_FUNCTIONS
+      Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
       (*item)->data = new zorba::Item(lInnerItem);
@@ -56,7 +61,7 @@ namespace zorbac {
       zorba::Item lInnerItem = FF->createAnyURI(*lStringWrapper);
       if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
-      ASSIGN_FUNCTIONS
+      Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
       (*item)->data = new zorba::Item(lInnerItem);
@@ -79,7 +84,7 @@ namespace zorbac {
       zorba::Item lInnerItem = FF->createQName(*lUriWrapper, *lLocalnameWrapper);
       if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
-      ASSIGN_FUNCTIONS
+      Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
       (*item)->data = new zorba::Item(lInnerItem);
@@ -104,7 +109,7 @@ namespace zorbac {
       zorba::Item lInnerItem = FF->createQName(*lUriWrapper, *lPrefixWrapper, *lLocalnameWrapper);
       if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
-      ASSIGN_FUNCTIONS
+      Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
       (*item)->data = new zorba::Item(lInnerItem);
@@ -120,7 +125,7 @@ namespace zorbac {
       zorba::Item lInnerItem = FF->createBoolean(boolean != 0);
       if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
-      ASSIGN_FUNCTIONS
+      Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
       (*item)->data = new zorba::Item(lInnerItem);
@@ -133,5 +138,17 @@ namespace zorbac {
   {
     delete factory;
   }
+
+  void
+  ItemFactory::assign_functions(XQC_ItemFactory factory)
+  {
+    factory->create_string    = zorbac::ItemFactory::create_string;
+    factory->create_anyuri    = zorbac::ItemFactory::create_anyuri;
+    factory->create_qname2    = zorbac::ItemFactory::create_qname2;
+    factory->create_qname3    = zorbac::ItemFactory::create_qname3;
+    factory->create_boolean   = zorbac::ItemFactory::create_boolean;
+    factory->free             = zorbac::ItemFactory::free;
+  }
+
 
 } /* namespace zorbac */

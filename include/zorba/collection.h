@@ -26,7 +26,7 @@ namespace zorba {
  * Each Collection is created by the XmlDataManager and referenced by a URI.
  * The URI can be accessed in a query's fn:collection function.
  */
-class Collection
+class Collection : public SmartObject
 {
   public:
     /** \brief Destructor

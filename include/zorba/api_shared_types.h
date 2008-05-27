@@ -18,6 +18,7 @@
 
 #include <memory>
 
+#include <zorba/smart_ptr.h>
 #include <boost/smart_ptr.hpp>
 
 namespace zorba {
@@ -36,12 +37,12 @@ namespace zorba {
   class ErrorHandler;
 
   // smart pointers
-  typedef boost::shared_ptr<XQuery>                     XQuery_t;
-  typedef boost::shared_ptr<StaticContext>              StaticContext_t;
-  typedef boost::shared_ptr<ResultIterator>             ResultIterator_t;
-  typedef boost::shared_ptr<Iterator>                   Iterator_t;
-  typedef boost::shared_ptr<TypeIdentifier>             TypeIdentifier_t;
-  typedef boost::shared_ptr<Collection>                 Collection_t;
+  typedef zorba::SmartPtr<XQuery>                     XQuery_t;
+  typedef zorba::SmartPtr<StaticContext>              StaticContext_t;
+  typedef zorba::SmartPtr<ResultIterator>             ResultIterator_t;
+  typedef zorba::SmartPtr<Iterator>                   Iterator_t;
+  typedef zorba::SmartPtr<TypeIdentifier>             TypeIdentifier_t;
+  typedef zorba::SmartPtr<Collection>                 Collection_t;
 
   // auto pointer (used for transfering ownership of the return type of external functions)
   typedef std::auto_ptr<ItemSequence>                   ItemSequence_t;

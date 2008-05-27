@@ -16,7 +16,6 @@
 #ifndef ZORBA_TYPES_TYPEIDENT_H
 #define ZORBA_TYPES_TYPEIDENT_H
 
-#include <boost/shared_ptr.hpp>
 #include <zorba/api_shared_types.h>
 #include <zorba/identtypes.h>
 #include <zorba/zorbastring.h>
@@ -27,14 +26,14 @@ namespace zorba {
  *
  * The type identifiers are not used, yet.
  */
-class TypeIdentifier {
+class TypeIdentifier : public SmartObject {
   public:
     /** \brief Destructor
      */
     ~TypeIdentifier();
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createNamedType(
         const String& uri,
         const String& localName,
@@ -42,66 +41,66 @@ class TypeIdentifier {
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createElementType(
         const String& uri,
         bool uriWildcard,
         const String& localName,
         bool localNameWildcard,
-        boost::shared_ptr<TypeIdentifier> contentType,
+        TypeIdentifier_t contentType,
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createAttributeType(
         const String& uri,
         bool uriWildcard,
         const String& localNameName,
         bool localNameWildcard,
-        boost::shared_ptr<TypeIdentifier> contentType,
+        TypeIdentifier_t contentType,
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createDocumentType(
-        boost::shared_ptr<TypeIdentifier> contentType,
+        TypeIdentifier_t contentType,
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createPIType(
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createTextType(
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createCommentType(
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createAnyNodeType(
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createItemType(
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
 
     static
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     createEmptyType();
 
     IdentTypes::kind_t
@@ -122,7 +121,7 @@ class TypeIdentifier {
     bool
     isLocalNameWildcard() const;
 
-    boost::shared_ptr<TypeIdentifier>
+    TypeIdentifier_t
     getContentType() const;
 
   private:
@@ -134,7 +133,7 @@ class TypeIdentifier {
     bool m_uriWildcard;
     String m_localName;
     bool m_localNameWildcard;
-    boost::shared_ptr<TypeIdentifier> m_contentType;
+    TypeIdentifier_t m_contentType;
 };
 
 } /* namespace zorba */

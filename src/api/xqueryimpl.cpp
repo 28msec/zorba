@@ -655,4 +655,16 @@ std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)
   return os;
 }
 
+std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
+{
+#ifndef NDEBUG
+  XQueryImpl* lQuery = static_cast<XQueryImpl*>(aQuery);
+  assert(lQuery);
+  lQuery->serialize(os); 
+#else
+  dynamic_cast<XQueryImpl*>(aQuery)->serialize(os); 
+#endif
+  return os;
+}
+
 } /* namespace zorba */

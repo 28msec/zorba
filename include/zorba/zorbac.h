@@ -88,6 +88,9 @@ struct XQC_Query_s
 	XQUERY_ERROR
   (*get_dynamic_context)(XQC_Query query, XQC_DynamicContext_Ref context);
 
+  XQUERY_ERROR
+  (*get_static_context)(XQC_Query, XQC_StaticContext_Ref context);
+
 	XQUERY_ERROR 
   (*execute)(XQC_Query query, FILE*);
 
@@ -169,7 +172,7 @@ struct XQC_StaticContext_s
 
   XQUERY_ERROR
   (*get_copy_namespaces_mode)(XQC_StaticContext context,
-                              preserve_mode_t* aPreserve, 
+                              preserve_mode_t* aPreserve,
                               inherit_mode_t* aInherit );
 
   XQUERY_ERROR
@@ -192,9 +195,6 @@ struct XQC_DynamicContext_s
 
 	XQUERY_ERROR 
   (*set_context_sequence)(XQC_DynamicContext context, XQC_Sequence value);
-
-  void
-  (*free)(XQC_DynamicContext context);
 
   void* data;
 };

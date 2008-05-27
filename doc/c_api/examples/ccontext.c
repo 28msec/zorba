@@ -53,7 +53,6 @@ ccontext_example_1(XQC_Implementation impl)
   // free all resources
   lItem->free(lItem);
   lString->free(lString);
-  lContext->free(lContext);
   lXQuery->free(lXQuery);
   lFactory->free(lFactory);
 
@@ -83,7 +82,6 @@ ccontext_example_2(XQC_Implementation impl)
   lContext->get_base_uri(lContext, &lTmpString);
   lTmpString->to_char(lTmpString, &lStringValue);
   if ( strcmp (lStringValue, "http://www.flworfound.org/") != 0) return 0;
-  printf("%s\n", lStringValue);
 
   impl->compile(impl, 
                 "fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')",
@@ -100,6 +98,24 @@ ccontext_example_2(XQC_Implementation impl)
 }
 
 int
+ccontext_example_3(XQC_Implementation impl)
+{
+  XQUERY_ERROR       lError = XQ_SUCCESS;
+  XQC_Query          lXQuery;
+  XQC_StaticContext  lContext;
+  FILE*              lOutFile = stdout;
+
+  impl->compile(impl, "declare ordering unordered; 1", 0, &lXQuery);
+
+  lXQuery->get_static_context(lXQuery, &lContext);
+
+  lError = lXQuery->execute(lXQuery, lOutFile);
+
+  lContext->free(lContext);
+  lXQuery->free(lXQuery);
+  return 1;
+}
+int
 ccontext(int argc, char** argv)
 {
   int res = 0; 
@@ -115,6 +131,11 @@ ccontext(int argc, char** argv)
 
   printf("executing C example 2\n");
   res = ccontext_example_2(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
+
+  printf("executing C example 3\n");
+  res = ccontext_example_3(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
