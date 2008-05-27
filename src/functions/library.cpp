@@ -1277,15 +1277,27 @@ DECL(fn_trace_func,
 
 
 // begin zorba functions
+
 DECL(zor_numgen,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+
+DECL(node_reference,
+     (ITEM_FACTORY.createQName(XQUERY_ZORBA_FN_NS, "fn-zorba", "node-reference"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
+
+DECL(node_by_reference,
+     (ITEM_FACTORY.createQName(XQUERY_ZORBA_FN_NS, "fn-zorba", "node-by-reference"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
+
 // end zorba functions
 
 #ifdef ZORBA_WITH_REST
 // zorba-rest functions
 DECL(rest_get_1,
-     (ITEM_FACTORY.createQName("http://www.flworfound.org/", "zorba-rest", "get"),
+     (ITEM_FACTORY.createQName(XQUERY_ZORBA_FN_NS, "zorba-rest", "get"),
      GENV_TYPESYSTEM.STRING_TYPE_ONE, // need to make this an ANY_URI_TYPE_ONE
      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 

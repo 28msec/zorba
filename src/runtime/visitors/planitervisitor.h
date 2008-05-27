@@ -201,6 +201,8 @@ namespace zorba
   class ReplaceIterator;
   class RenameIterator;
   class TransformIterator;
+  class NodeReferenceIterator;
+  class NodeByReferenceIterator;
   class FnLocalNameIterator;
   class FnNamespaceUriIterator;
   class FnLangIterator;
@@ -229,6 +231,10 @@ namespace zorba
   public:
     virtual ~PlanIterVisitor() {}
 
+    PLAN_ITER_VISITOR(NodeReferenceIterator);
+
+    PLAN_ITER_VISITOR(NodeByReferenceIterator);
+    
     PLAN_ITER_VISITOR (SequentialIterator);
 
     PLAN_ITER_VISITOR (FnDataIterator);

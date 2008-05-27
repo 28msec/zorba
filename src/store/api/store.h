@@ -66,7 +66,7 @@ public:
    * @param item XDM item
    * @return Returns an item of type xs:uri 
    */
-  virtual Item_t getReference(Item_t) = 0;
+  virtual Item_t getReference(const Item* node) = 0;
 		
   /**
    * Returns Item which is identified by a reference
@@ -74,7 +74,7 @@ public:
    * @param uri Has to be an xs:URI item
    * @returns referenced item if it exists, otherwise NULL
    */
-  virtual Item_t getNodeByReference(Item_t) = 0;
+  virtual Item_t getNodeByReference(const Item* uri) = 0;
 		
 		
   /* --------------------------- Node Id Management ---------------------------*/
@@ -130,7 +130,7 @@ public:
    */
   virtual Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream) = 0;
 
-  virtual Item_t loadDocument(const xqpStringStore_t& uri, Item_t	doc_item) = 0;
+  virtual void addNode(const xqpStringStore* uri, const Item_t& node) = 0;
 
   /**
    * Get an rchandle to the root node of the document with the given uri.

@@ -34,10 +34,22 @@ class OrdPath
 {
   friend class OrdPathStack;
 
-protected:
+public:
+  typedef enum
+  {
+    PRECEDING,
+    ANCESTOR,
+    SELF,
+    DESCENDANT,
+    FOLLOWING
+  }
+  RelativePosition;
+
+public:
   static const ulong MAX_BYTE_LEN = 255;
   static const ulong MAX_BIT_LEN = MAX_BYTE_LEN * 8;
 
+protected:
   static const ulong MAX_EMBEDDED_BYTE_LEN = 8;
   static const ulong MAX_EMBEDDED_BIT_LEN = MAX_EMBEDDED_BYTE_LEN * 8 - 1;
 
@@ -124,6 +136,8 @@ public:
     markLocal();
   }
 
+  OrdPath(const unsigned char* buf, ulong byteLen);
+
   ~OrdPath() 
   {
     if (!isLocal())
@@ -138,14 +152,17 @@ public:
   OrdPath& operator=(const OrdPath& other);
   OrdPath& operator=(const OrdPathStack& ops);
 
-  //bool operator==(const OrdPath& other) const;
+  bool operator==(const OrdPath& other) const;
   int operator<(const OrdPath& other) const;
   int operator>(const OrdPath& other) const;
+
+  RelativePosition getRelativePosition(const OrdPath& other) const;
 
   void compress(const std::vector<long>& dewey);
 
   void appendComp(long value);
 
+  std::string serialize() const;
   std::string show() const;
 
 protected:

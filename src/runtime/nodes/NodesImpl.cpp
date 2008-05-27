@@ -34,6 +34,36 @@ using namespace std;
 
 namespace zorba {
 
+store::Item_t NodeReferenceIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t inNode;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  inNode = consumeNext(theChildren[0], planState);
+  assert(inNode != NULL);
+
+  STACK_PUSH(GENV_STORE.getReference(inNode), state);
+  STACK_END(state);
+}
+
+
+store::Item_t NodeByReferenceIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t inUri;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  inUri = consumeNext(theChildren[0], planState);
+  assert(inUri != NULL);
+
+  STACK_PUSH(GENV_STORE.getNodeByReference(inUri), state);
+  STACK_END (state);
+}
+
+
 // 14.2 fn:local-name
 //---------------------
 store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const

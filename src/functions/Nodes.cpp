@@ -24,12 +24,55 @@ using namespace std;
 
 namespace zorba {
 
+
+/*******************************************************************************
+  zorba:node-reference
+********************************************************************************/
+node_reference::node_reference(const signature& sig)
+  :
+  function(sig)
+{
+}
+
+
+PlanIter_t node_reference::codegen(
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann) const
+{
+  return new NodeReferenceIterator(loc, argv);
+}
+
+
+/*******************************************************************************
+  zorba:node-by-reference
+********************************************************************************/
+node_by_reference::node_by_reference(const signature& sig)
+  :
+  function(sig)
+{
+}
+
+
+PlanIter_t node_by_reference::codegen(
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann) const
+{
+  return new NodeByReferenceIterator(loc, argv);
+}
+
+
 /*******************************************************************************
   14.2 fn:local-name
 ********************************************************************************/
 
-  fn_local_name::fn_local_name(const signature& sig)
-  : function(sig) { }
+fn_local_name::fn_local_name(const signature& sig)
+  :
+  function(sig)
+{
+}
+
 
 PlanIter_t fn_local_name::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {

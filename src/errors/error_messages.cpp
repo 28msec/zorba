@@ -153,6 +153,7 @@ DEF_ERR_CODE(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS, API0026, "Query cannot b
 
 DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, "The query dynamic context cannot be updated because there are result iterators on the query")
 
+DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, "The uri /s is not a valid node reference")
 
 //
 // ZORBA-specific errors

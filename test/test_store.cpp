@@ -22,7 +22,9 @@
 
 #include "errors/errors.h"
 #include "system/globalenv.h"
+#include "store/naive/store_defs.h"
 #include "store/naive/atomic_items.h"
+#include "store/naive/node_items.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/qname_pool.h"
@@ -33,6 +35,8 @@
 
 
 using namespace zorba;
+
+using namespace zorba::store;
 
 
 void readXmlFile(const char* fileName, std::string& xmlString)
@@ -80,26 +84,6 @@ int main(int argc, const char * argv[])
   zorba::store::SimpleStore* store = static_cast<zorba::store::SimpleStore*>(&zorba::GENV.getStore());
 
   //
-  // Create collections
-  //
-  zorba::store::Collection_t coll1;
-  zorba::store::Collection_t coll2;
-
-  try
-  {
-    xqpStringStore_t uri(new xqpStringStore("http://MyCollection1"));
-    coll1 = store->createCollection(uri);
-
-    std::cout << coll1->getUri()->show() << std::endl;
-
-    coll2 = store->createCollection(uri);
-  }
-  catch (zorba::error::ZorbaError& e)
-  {
-    std::cout << e.theDescription << std::endl;
-  }
-
-  //
   // Test boost::shared_ptr
   //
 #if 0
@@ -125,7 +109,7 @@ int main(int argc, const char * argv[])
   //
   // RC_TIMMING
   //
-#define RC_TIMMING
+  //#define RC_TIMMING
 
 #ifdef RC_TIMMING
 
@@ -182,6 +166,26 @@ int main(int argc, const char * argv[])
 #endif // RC_TIMMING
 
   //
+  // Create collections
+  //
+  store::Collection_t coll1;
+  store::Collection_t coll2;
+
+  try
+  {
+    xqpStringStore_t uri(new xqpStringStore("http://MyCollection1"));
+    coll1 = store->createCollection(uri);
+
+    std::cout << coll1->getUri()->show() << std::endl;
+
+    coll2 = store->createCollection(uri);
+  }
+  catch (error::ZorbaError& e)
+  {
+    std::cout << e.theDescription << std::endl;
+  }
+
+  //
   // Load an xml doc from a file to a collection
   //
 
@@ -213,9 +217,15 @@ int main(int argc, const char * argv[])
 
   xmlFile.close();
 
+  //
+  // Destroy collection
+  //
   store->deleteCollection(coll1->getUri()->getStringValue());
   coll1 = 0;
 
+  //
+  // Print out loaded document
+  //
   fileName += ".res";
   std::ofstream outXmlFile(fileName.c_str());
   if(!outXmlFile)
@@ -230,7 +240,84 @@ int main(int argc, const char * argv[])
     return 1;
 
 
+  //
+  // Test node references
+  //
+  store::Item_t uri = store->getReference(doc);
+  std::cout << "Reference URI for node: " << doc.getp() << " is: "
+            << uri->getStringValue()->c_str() << std::endl;
+
+  try
+  {
+    xqpStringStore_t uri(new xqpStringStore("http://MyCollection1"));
+    coll1 = store->createCollection(uri);
+
+    std::cout << coll1->getUri()->show() << std::endl;
+
+    coll1->addToCollection(doc);
+  }
+  catch (error::ZorbaError& e)
+  {
+    std::cout << e.theDescription << std::endl;
+  }
+
+  store::Item_t doc2 = store->getNodeByReference(uri);
+
+  if (doc != doc2)
+    std::cout << "ERROR" << std::endl;
+
+  for (ulong i = 0; i < 3; i++)
+  {
+    zorba::store::XmlNode* parent = BASE_NODE(doc);
+
+    double factor;
+    if (i == 0) factor = 0.5;
+    else if (i == 1) factor = 0.66;
+    else if (i == 2) factor = 0.90;
+
+    while (1)
+    {
+      ulong numChildren = parent->numChildren();
+      if (numChildren == 0)
+        break;
+
+      ulong childPos = (ulong)(numChildren * factor);
+      store::XmlNode* child = parent->getChild(childPos);
+
+      while (child->getNodeKind() != StoreConsts::elementNode)
+      {
+        childPos++;
+        if (childPos == numChildren)
+          break;
+
+        child = parent->getChild(childPos);
+      }
+
+      if (childPos == numChildren)
+        break;
+
+      uri = store->getReference(child);
+      std::cout << "Reference URI for node " << child << ":" 
+                << child->getNodeName()->getStringValue()->c_str()
+                << " at position " << childPos 
+                << " is: " << uri->getStringValue()->c_str() << std::endl;
+
+      Item_t child2 = store->getNodeByReference(uri);
+
+      if (child != child2.getp())
+        std::cout << "ERROR" << std::endl;
+
+      parent = child;
+    }
+  }
+
+  //
+  // Shutdown
+  //
+  store->deleteCollection(coll1->getUri()->getStringValue());
+  coll1 = 0;
   doc = 0;
+  doc2 = 0;
 
   lZorba->shutdown();
   return 0;

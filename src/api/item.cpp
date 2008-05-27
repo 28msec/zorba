@@ -17,39 +17,74 @@
 #include <zorba/zorbastring.h>
 #include <zorba/exception.h>
 #include <zorba/default_error_handler.h>
-#include "api/serialization/serializer.h"
+
+#include "system/globalenv.h"
+
 #include "errors/error_manager.h"
 #include "errors/errors.h"
 #include "util/rchandle.h"
 #include "api/zorbaimpl.h"
+#include "api/serialization/serializer.h"
+
+#include "store/util/latch.h"
 #include "store/api/item.h"
+#include "store/api/store.h"
+
 
 namespace zorba {
 
+#define ITEM_TRY try {
+#define ITEM_CATCH } catch (::zorba::error::ZorbaError &e) {  \
+  throw SystemException(e.theErrorCode, String(e.theDescription.theStrStore), "", 0); \
+  } catch (std::exception& e) { \
+    throw SystemException(XQP0019_INTERNAL_ERROR, e.what(), "", 0); \
+  } catch (...) { \
+    throw SystemException(XQP0019_INTERNAL_ERROR, "Internal error", "", 0); \
+  } 
+
+
 Item::Item(store::Item *other)
-  : m_item(other)
+  :
+  m_item(other)
 {
   if (!isNull()) {
     RCHelper::addReference(m_item);
   }
 }
 
+
 Item::Item()
-  : m_item(NULL) { }
+  :
+  m_item(NULL)
+{
+}
 
 
 Item::Item(const Item& other)
-  : m_item(other.m_item)
+  :
+  m_item(other.m_item)
 {
   if (!isNull()) {
     RCHelper::addReference(m_item);
   }
 }
+
 
 Item::~Item()
 {
   close();
 }
+
+
+void
+Item::close()
+{
+  if (!isNull()) {
+    RCHelper::removeReference(m_item);
+    m_item = NULL;
+  }
+}
+
 
 const Item& Item::operator =(const Item& rhs)
 {
@@ -63,6 +98,7 @@ const Item& Item::operator =(const Item& rhs)
   return *this;
 }
 
+
 const Item& Item::operator =(store::Item *rhs)
 {
   if (m_item != rhs) {
@@ -75,57 +111,6 @@ const Item& Item::operator =(store::Item *rhs)
   return *this;
 }
 
-Item Item::getType() const
-{
-  return &*m_item->getType();
-}
-
-#define ITEM_TRY try {
-#define ITEM_CATCH } catch (::zorba::error::ZorbaError &e) {  \
-  throw SystemException(e.theErrorCode, String(e.theDescription.theStrStore), "", 0); \
-  } catch (std::exception& e) { \
-    throw SystemException(XQP0019_INTERNAL_ERROR, e.what(), "", 0); \
-  } catch (...) { \
-    throw SystemException(XQP0019_INTERNAL_ERROR, "Internal error", "", 0); \
-  } 
-
-
-Item Item::getAtomizationValue() const
-{
-  return &*m_item->getAtomizationValue();
-}
-
-String Item::getStringValue() const
-{
-  return m_item->getStringValue().getp();
-}
-
-void Item::serialize(std::ostream& os) const
-{
-  try {
-    error::ErrorManager lErrorManger;
-    serializer lSerializer(&lErrorManger);
-    lSerializer.set_parameter("omit-xml-declaration", "yes");
-    m_item->serializeXML(lSerializer, os);
-  } catch (::zorba::error::ZorbaError& e) {
-    DefaultErrorHandler lErrorHandler;
-    ZorbaImpl::notifyError(&lErrorHandler, e);
-  } catch (std::exception& e) {
-    DefaultErrorHandler lErrorHandler;
-    ZorbaImpl::notifyError(&lErrorHandler, e.what());
-  } catch (...) {
-    DefaultErrorHandler lErrorHandler;
-    ZorbaImpl::notifyError(&lErrorHandler, "Internal error");
-  }
-}
-
-Item Item::getEBV() const
-{
-  ITEM_TRY
-    return &*m_item->getEBV();
-  ITEM_CATCH
-  return Item();
-}
 
 bool 
 Item::isNode() const
@@ -136,6 +121,7 @@ Item::isNode() const
   return false;
 }
 
+
 bool 
 Item::isAtomic() const
 {
@@ -144,6 +130,7 @@ Item::isAtomic() const
   ITEM_CATCH
   return false;
 }
+
 
 bool
 Item::isNumeric() const
@@ -154,6 +141,7 @@ Item::isNumeric() const
   return false;
 }
 
+
 bool 
 Item::isNull() const
 {
@@ -163,36 +151,119 @@ Item::isNull() const
   return false;
 }
 
-void
-Item::close()
+
+Item Item::getType() const
 {
-  if (!isNull()) {
-    RCHelper::removeReference(m_item);
-    m_item = NULL;
+  ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
+    return &*m_item->getType();
+
+  ITEM_CATCH
+  return Item();
+}
+
+
+Item Item::getAtomizationValue() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
+    return &*m_item->getAtomizationValue();
+
+  ITEM_CATCH
+  return Item();
+}
+
+
+String Item::getStringValue() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
+    return m_item->getStringValue().getp();
+
+  ITEM_CATCH
+  return String((const char*)0);
+}
+
+
+void Item::serialize(std::ostream& os) const
+{
+  SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
+  try {
+    error::ErrorManager lErrorManger;
+    serializer lSerializer(&lErrorManger);
+    lSerializer.set_parameter("omit-xml-declaration", "yes");
+    m_item->serializeXML(lSerializer, os);
+  }
+  catch (::zorba::error::ZorbaError& e) {
+    DefaultErrorHandler lErrorHandler;
+    ZorbaImpl::notifyError(&lErrorHandler, e);
+  }
+  catch (std::exception& e) {
+    DefaultErrorHandler lErrorHandler;
+    ZorbaImpl::notifyError(&lErrorHandler, e.what());
+  }
+  catch (...) {
+    DefaultErrorHandler lErrorHandler;
+    ZorbaImpl::notifyError(&lErrorHandler, "Internal error");
   }
 }
+
+
+Item Item::getEBV() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
+    return &*m_item->getEBV();
+
+  ITEM_CATCH
+  return Item();
+}
+
 
 /** QName Item */
 String Item::getPrefix() const
 {
   ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
     return m_item->getPrefix();
+
   ITEM_CATCH
   return "";
 }
+
 
 String Item::getLocalName() const
 {
   ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
     return m_item->getLocalName();
+
   ITEM_CATCH
   return "";
 }
 
+
 String Item::getNamespace() const
 {
   ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
     return m_item->getNamespace();
+
   ITEM_CATCH
   return "";
 }
@@ -202,26 +273,40 @@ String Item::getNamespace() const
 bool Item::isNaN() const
 {
   ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
     return m_item->isNaN();
+
   ITEM_CATCH
   return false;
 }
+
 
 // @return true, if containing numbers represents -INF or +INF
 bool Item::isPosOrNegInf() const
 {
   ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
     return m_item->isPosOrNegInf();
+
   ITEM_CATCH
   return false;
 }
+
 
 /** Boolean Items */
 bool
 Item::getBooleanValue() const
 {
   ITEM_TRY
+
+    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+
     return m_item->getBooleanValue();
+
   ITEM_CATCH
   return false;
 }

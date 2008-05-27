@@ -107,6 +107,10 @@ public:
     }
   }
 
+  PRINTER_VISITOR_DEFINITION(NodeReferenceIterator)
+
+  PRINTER_VISITOR_DEFINITION(NodeByReferenceIterator)
+
   PRINTER_VISITOR_DEFINITION (FnDataIterator)
 
   PRINTER_VISITOR_DEFINITION (SequentialIterator)

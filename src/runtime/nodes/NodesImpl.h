@@ -21,6 +21,13 @@
 
 namespace zorba {
 
+// zorba:node-reference
+NARY_ITER(NodeReferenceIterator);
+
+// zorba:node-by-reference
+NARY_ITER(NodeByReferenceIterator);
+
+
 // 14.2 fn:local-name
 NARY_ITER(FnLocalNameIterator);
 

@@ -84,7 +84,7 @@ protected:
 
   QueryContextContainer  * theQueryContextContainer; 
 
-  Latch          theGlobalLock;
+  SYNC_CODE(Latch          theGlobalLock;)
 
 #ifndef NDEBUG
   long                     theTraceLevel;
@@ -118,18 +118,18 @@ public:
   QueryContext& getQueryContext(ulong queryId);
   void deleteQueryContext(ulong queryId);
 
-  store::Item_t createUri();
-
-  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
-  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
-  store::Item_t loadDocument(const xqpStringStore_t& uri, store::Item_t	 doc_item);
-  store::Item_t getDocument(const xqpStringStore_t& uri);
-  void deleteDocument(const xqpStringStore_t& uri);
+  Item_t createUri();
 
   Collection_t createCollection(xqpStringStore_t& uri);
   Collection_t createCollection();
   Collection_t getCollection(const xqpStringStore_t& uri);
   void deleteCollection(const xqpStringStore_t& uri);
+
+  Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
+  Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
+  void addNode(const xqpStringStore* uri, const Item_t& node);
+  Item_t getDocument(const xqpStringStore_t& uri);
+  void deleteDocument(const xqpStringStore_t& uri);
 
   long compareNodes(Item* node1, Item* node2) const;
 
@@ -141,12 +141,11 @@ public:
 
   Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false);
 
+  Item_t getReference(const Item* node);
+  Item_t getNodeByReference(const Item* uri);
+
   TempSeq_t createTempSeq();
   TempSeq_t createTempSeq(Iterator* iterator, bool copyNodes = false, bool lazy = true);
-
-  store::Item_t getReference(store::Item_t);
-
-  store::Item_t getNodeByReference(store::Item_t);
 };
 
 

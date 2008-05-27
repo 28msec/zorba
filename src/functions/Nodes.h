@@ -22,6 +22,30 @@
 
 namespace zorba {
 
+class node_reference : public function
+{
+public:
+  node_reference(const signature&); 
+
+  PlanIter_t codegen(
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const;
+};
+
+
+class node_by_reference : public function
+{
+public:
+  node_by_reference(const signature&);    
+
+  PlanIter_t codegen(
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const;
+};
+
+
   class fn_local_name : public function {
   public:
     fn_local_name(const signature&);    

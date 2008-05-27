@@ -21,6 +21,7 @@
 #include "errors/fatal.h"
 #include "util/hashfun.h"
 #include "util/properties.h"
+#include "util/Assert.h"
 
 #include "store/util/hashmap_stringp.h"
 
@@ -261,111 +262,6 @@ Item_t SimpleStore::createUri()
 
 
 /*******************************************************************************
-
-********************************************************************************/
-Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
-{
-  if (uri == NULL)
-    return NULL;
-
-  const xqpStringStore* urip = uri.getp();
-
-  XmlNode_t root;
-  bool found = theDocuments.get(urip, root);
-
-  if (found)
-    return root.getp();
-
-  error::ErrorManager lErrorManager;
-  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
-
-  root = loader->loadXml(uri, stream);
-  if (lErrorManager.hasErrors()) 
-  {
-    throw lErrorManager.getErrors().front();
-  }
-
-  if (root != NULL)
-    theDocuments.insert(urip, root);
-
-  return root;
-}
-
-/*******************************************************************************
-For lazy loading...
-********************************************************************************/
-Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
-{
-  Item_t    docitem;
-  //do full loading for now
-  docitem = loadDocument(uri, *stream);
-  delete stream;
-  return docitem;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-Item_t SimpleStore::loadDocument(const xqpStringStore_t& uri, Item_t docItem)
-{
-  if (uri == NULL || docItem == NULL)
-    return NULL;
-
-	if(!docItem->isNode())
-  {
-    ZORBA_ERROR_PARAM( API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
-		return NULL;
-  }
-
-  const xqpStringStore* urip = uri;
-  XmlNode_t root = reinterpret_cast<XmlNode*>(docItem.getp());
-  bool inserted = theDocuments.insert(urip, root);
-
-  if (!inserted && docItem.getp() != root.getp())
-  {
-    ZORBA_ERROR_PARAM(API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
-    return NULL; 
-  }
-
-  ZORBA_FATAL(docItem.getp() == root.getp(), "");
-
-	return root;
-}
-
-
-/*******************************************************************************
-  Return an rchandle to the root node of the document corresponding to the given
-  URI, or NULL if there is no document with that URI.
-********************************************************************************/
-Item_t SimpleStore::getDocument(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return NULL;
-
-  XmlNode_t root;
-  bool found = theDocuments.get(uri, root);
-  if (found)
-    return root.getp();
-
-  return NULL;
-}
-
-
-/*******************************************************************************
-  Delete the document with the given URI. If there is no document with that
-  URI, this method is a NOOP.
-********************************************************************************/
-void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return;
-
-  theDocuments.remove(uri);
-}
-
-
-/*******************************************************************************
   Create a collection with a given URI and return an rchandle to the new
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.
@@ -437,6 +333,108 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 
 
 /*******************************************************************************
+
+********************************************************************************/
+Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
+{
+  if (uri == NULL)
+    return NULL;
+
+  const xqpStringStore* urip = uri.getp();
+
+  XmlNode_t root;
+  bool found = theDocuments.get(urip, root);
+
+  if (found)
+    return root.getp();
+
+  error::ErrorManager lErrorManager;
+  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
+
+  root = loader->loadXml(uri, stream);
+  if (lErrorManager.hasErrors()) 
+  {
+    throw lErrorManager.getErrors().front();
+  }
+
+  if (root != NULL)
+    theDocuments.insert(urip, root);
+
+  return root;
+}
+
+/*******************************************************************************
+For lazy loading...
+********************************************************************************/
+Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
+{
+  Item_t    docitem;
+  //do full loading for now
+  docitem = loadDocument(uri, *stream);
+  delete stream;
+  return docitem;
+}
+
+
+/*******************************************************************************
+  Add the given node with the given uri to the store. Essentially, this method
+  establishes an association between a uri and a node. If the given uri is 
+  already associated to another node, the method raises an error. If the given
+  uri is already associated to the given node, this method is a noop.
+********************************************************************************/
+void SimpleStore::addNode(const xqpStringStore* uri, const Item_t& node)
+{
+  ZORBA_ASSERT(uri != NULL);
+
+	if(node == NULL || !node->isNode())
+  {
+    ZORBA_ERROR_PARAM( API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
+  }
+
+  XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());
+  bool inserted = theDocuments.insert(uri, root);
+
+  if (!inserted && node.getp() != root.getp())
+  {
+    ZORBA_ERROR_PARAM(API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
+  }
+
+  ZORBA_FATAL(node.getp() == root.getp(), "");
+}
+
+
+/*******************************************************************************
+  Return an rchandle to the root node of the document corresponding to the given
+  URI, or NULL if there is no document with that URI.
+********************************************************************************/
+Item_t SimpleStore::getDocument(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  XmlNode_t root;
+  bool found = theDocuments.get(uri, root);
+  if (found)
+    return root.getp();
+
+  return NULL;
+}
+
+
+/*******************************************************************************
+  Delete the document with the given URI. If there is no document with that
+  URI, this method is a NOOP.
+********************************************************************************/
+void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return;
+
+  theDocuments.remove(uri);
+}
+
+
+/*******************************************************************************
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if
   node1 == node2, or 1 if node1 > node2.
 ********************************************************************************/
@@ -477,7 +475,7 @@ Iterator_t SimpleStore::sortNodes(
   if (aAllowAtomics)
     return new StoreNodeSortOrAtomicIterator(input, ascendent, duplicateElemination);
   else
-    return  new StoreNodeSortIterator(input, ascendent, duplicateElemination);
+    return new StoreNodeSortIterator(input, ascendent, duplicateElemination);
 }
 
 
@@ -497,9 +495,26 @@ Iterator_t SimpleStore::distinctNodes(Iterator* input, bool aAllowAtomics)
 /*******************************************************************************
   Computes the URI for the given node.
 ********************************************************************************/
-Item_t SimpleStore::getReference(Item_t node)
+Item_t SimpleStore::getReference(const Item* node)
 {
-  return rchandle<Item>(NULL);
+  std::ostringstream stream;
+
+  const XmlNode* n = reinterpret_cast<const XmlNode*>(node);
+
+  if (n->getNodeKind() == StoreConsts::attributeNode)
+  {
+    stream << "zorba://node_reference/" << n->getTreeId() << "/a/"
+           << n->getOrdPath().serialize();
+  }
+  else
+  {
+    stream << "zorba://node_reference/" << n->getTreeId() << "/c/"
+           << n->getOrdPath().serialize();
+  }
+
+  xqpStringStore_t str(new xqpStringStore(stream.str()));
+
+  return new AnyUriItemImpl(str);
 }
 
 
@@ -509,9 +524,169 @@ Item_t SimpleStore::getReference(Item_t node)
   @param uri Has to be an xs:URI item
   @returns referenced item if it exists, otherwise NULL
 ********************************************************************************/
-Item_t SimpleStore::getNodeByReference(Item_t)
+Item_t SimpleStore::getNodeByReference(const Item* uri)
 {
-  return rchandle<Item> ( NULL );
+  xqpStringStore* str = uri->getStringValueP();
+
+  ulong prefixlen = strlen("zorba://node_reference/");
+
+  if (strncmp(str->c_str(), "zorba://node_reference/", prefixlen))
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  //
+  // Decode tree id
+  //
+  const char* start = str->c_str() + prefixlen;
+  char* next = const_cast<char*>(start);
+
+  long tmp = 0;
+  tmp = strtol(start, &next, 10);
+
+  if (tmp <= 0 || tmp == LONG_MAX)
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  start = next;
+
+  if (*start != '/')
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  ulong treeid = (ulong)tmp;
+
+  //
+  // Check if the uri specifies attribute node or not
+  //
+  bool attributeNode;
+
+  start++;
+  if (*start == 'a')
+    attributeNode = true;
+  else if (*start == 'c')
+    attributeNode = false;
+  else
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  start++;
+  if (*start != '/')
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  start++;
+
+  //
+  // Search for the tree
+  //
+  XmlNode* rootNode = NULL;
+  DocumentSet::iterator it = theDocuments.begin();
+  DocumentSet::iterator end = theDocuments.end();
+
+  for (; it != end; ++it)
+  {
+    rootNode = (*it).second.getp();
+
+    if (rootNode->getTreeId() == treeid)
+      break;
+  }
+
+  if (rootNode == NULL)
+  {
+    CollectionSet::iterator it = theCollections.begin();
+    CollectionSet::iterator end = theCollections.end();
+
+    for (; it != end; ++it)
+    {
+      Collection_t col = (*it).second.getp();
+
+      Iterator_t colIter = col->getIterator(true);
+
+      colIter->open();
+
+      Item_t rootItem = colIter->next();
+      while (rootItem != NULL)
+      {
+        rootNode = BASE_NODE(rootItem);
+        if (rootNode->getTreeId() == treeid)
+          break;
+      }
+
+      colIter->close();
+
+      if (rootNode != NULL)
+        break;
+    }
+
+    if (rootNode == NULL)
+      return NULL;
+  }
+
+  //
+  // Search for node in the tree
+  //
+  
+  OrdPath op((unsigned char*)start, strlen(start));
+
+  if (rootNode->getOrdPath() == op)
+    return rootNode;
+
+  XmlNode* parent = rootNode;
+
+  while (1)
+  {
+    ulong i;
+
+    if (attributeNode)
+    {
+      ulong numAttrs = parent->numAttributes();
+      for (i = 0; i < numAttrs; i++)
+      {
+        XmlNode* child = parent->getAttr(i);
+
+        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
+
+        if (pos == OrdPath::SELF)
+        {
+          return child;
+        }
+        else if (pos == OrdPath::DESCENDANT)
+        {
+          parent = child;
+          break;
+        }
+        else if (pos !=  OrdPath::FOLLOWING)
+        {
+          return NULL;
+        }
+      }
+
+      if (i == numAttrs)
+        return NULL;
+    }
+    else
+    {
+      ulong numChildren = parent->numChildren();
+      for (i = 0; i < numChildren; i++)
+      {
+        XmlNode* child = parent->getChild(i);
+
+        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
+
+        if (pos == OrdPath::SELF)
+        {
+          return child;
+        }
+        else if (pos == OrdPath::DESCENDANT)
+        {
+          parent = child;
+          break;
+        }
+        else if (pos !=  OrdPath::FOLLOWING)
+        {
+          return NULL;
+        }
+      }
+
+      if (i == numChildren)
+        return NULL;
+    }
+  }
 }
 
 

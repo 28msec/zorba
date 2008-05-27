@@ -86,6 +86,10 @@ int main(int argc, char * argv[])
      boost::program_options::value<std::vector<std::string> >(&deweyStrVector)->multitoken(),
      "provide 2 dewey ids as strings of numbers separated by spaces"
     )
+    ("compare,r",
+     boost::program_options::value<std::vector<std::string> >(&deweyStrVector)->multitoken(),
+     "provide 2 dewey ids as strings of numbers separated by spaces"
+    )
     ;
 
   boost::program_options::variables_map varMap;
@@ -147,6 +151,40 @@ int main(int argc, char * argv[])
     {
       std::cout << e.theDescription << std::endl;
       return 1;
+    }
+  }
+
+  if (varMap.count("compare") != 0)
+  {
+    parseDeweyString(deweyStrVector[0], dewey1);
+    parseDeweyString(deweyStrVector[1], dewey2);
+
+    zorba::store::OrdPath path1;
+    zorba::store::OrdPath path2;
+
+    path1.compress(dewey1);
+    path2.compress(dewey2);
+
+    if (verbose)
+    {
+      std::cout << "ordpath1 = " << path1.show() << std::endl;
+      std::cout << "ordpath2 = " << path2.show() << std::endl;
+    }
+
+    zorba::store::OrdPath::RelativePosition pos;
+    pos = path1.getRelativePosition(path2);
+    switch (pos)
+    {
+    case zorba::store::OrdPath::SELF:
+      std::cout << "SELF" << std::endl; break;
+    case zorba::store::OrdPath::DESCENDANT:
+      std::cout << "DESCENDANT" << std::endl; break;
+    case zorba::store::OrdPath::ANCESTOR:
+      std::cout << "ANCESTOR" << std::endl; break;
+    case zorba::store::OrdPath::FOLLOWING:
+      std::cout << "FOLLOWING" << std::endl; break;
+    case zorba::store::OrdPath::PRECEDING:
+      std::cout << "PRECEDING" << std::endl; break;
     }
   }
 
