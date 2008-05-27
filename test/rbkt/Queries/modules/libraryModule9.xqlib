@@ -1,0 +1,14 @@
+(:*******************************************************:)
+(: Test: libraryModule9.xqlib                            :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose: Simple library module                        :)
+(:*******************************************************:)
+
+module namespace lm9ns = "http://www.w3.org/TestModules/lm9ns";
+
+declare function lm9ns:moduleNamespace()
+{
+"lm9ns"
+};
+

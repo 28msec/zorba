@@ -1,0 +1,15 @@
+(:*******************************************************:)
+(: Test: libraryModule2.xqlib                            :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose: Simple library module                        :)
+(:*******************************************************:)
+
+module namespace lmns = "http://www.w3.org/TestModules/lmns";
+
+declare variable $lmns:flag2 as xs:integer := 11;
+
+declare function lmns:text ()
+{
+"libraryModule2.xqlib"
+}; 

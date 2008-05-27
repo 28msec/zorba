@@ -1,0 +1,15 @@
+(:*******************************************************:)
+(: Test: libraryModule3.xqlib                            :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose: Simple library module                        :)
+(:*******************************************************:)
+
+module namespace lmns = "http://www.w3.org/TestModules/lmns";
+
+import module "http://www.w3.org/TestModules/lmns" at "libraryModule5.xqlib";
+
+declare function lmns:moduleType()
+{
+lmns:text()
+};

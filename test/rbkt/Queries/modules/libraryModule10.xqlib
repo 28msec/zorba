@@ -1,0 +1,14 @@
+(:*******************************************************:)
+(: Test: libraryModule10.xqlib                           :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose: Simple library module                        :)
+(:*******************************************************:)
+
+module namespace lm10ns = "http://www.w3.org/TestModules/lm10ns";
+
+declare function lm10ns:moduleNamespace()
+{
+"lm10ns"
+};
+

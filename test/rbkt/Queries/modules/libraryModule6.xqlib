@@ -1,0 +1,12 @@
+(:*******************************************************:)
+(: Test: libraryModule6.xqlib                            :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose: Library module with a variable declaration   :)
+(:*******************************************************:)
+
+module namespace lmns = "http://www.w3.org/TestModules/lmns";
+
+import module "http://www.w3.org/TestModules/lmns" at "libraryModule5.xqlib";
+
+declare variable $lmns:var6 := $lmns:var5 + 1;

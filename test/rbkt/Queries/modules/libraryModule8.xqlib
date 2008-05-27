@@ -1,0 +1,15 @@
+(:*******************************************************:)
+(: Test: libraryModule8.xqlib                            :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose: Simple library module                        :)
+(:*******************************************************:)
+
+module namespace lm8ns = "http://www.w3.org/TestModules/lm8ns";
+
+import module "http://www.w3.org/TestModules/lmns" at "libraryModule5.xqlib";
+
+declare function lm8ns:moduleNamespace()
+{
+"lm8ns"
+};
