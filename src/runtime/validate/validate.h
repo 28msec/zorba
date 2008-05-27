@@ -41,8 +41,11 @@ namespace zorba
     |_______________________________________________________________________*/
     class ValidateIterator : public UnaryBaseIterator<ValidateIterator, PlanIteratorState>
     {
+    private:
+        bool _isLax;
+
     public:
-        ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter );
+        ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool isLax );
         virtual ~ValidateIterator();
 
         static store::Item_t effectiveValidationValue ( const QueryLoc& loc, PlanState& planState, 

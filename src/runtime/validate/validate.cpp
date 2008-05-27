@@ -46,9 +46,9 @@ namespace zorba
     | the operand node. In some cases, default values may also be generated 
     | by the validation process.
     |_______________________________________________________________________*/
-    ValidateIterator::ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter )
+    ValidateIterator::ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool isLax )
         :
-    UnaryBaseIterator<ValidateIterator, PlanIteratorState> ( loc, aIter ) 
+    UnaryBaseIterator<ValidateIterator, PlanIteratorState> ( loc, aIter ) , _isLax(isLax)
     {}
 
     ValidateIterator::~ValidateIterator() 
