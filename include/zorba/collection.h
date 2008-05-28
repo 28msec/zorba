@@ -42,7 +42,7 @@ class Collection : public SmartObject
 
     /** \brief Adds a Node Item to the Collection
      *
-     * @param aItem the Node Item to add.
+     * @param aNode the Node Item to add.
      * @return true if the Node Item was added to the Collection, false otherwise.
      */
     virtual bool
@@ -50,7 +50,7 @@ class Collection : public SmartObject
 
     /** \brief Deletes the given Item from the Collection.
      *
-     * @param aItem the Node Item to delete
+     * @param aNode the Node Item to delete
      * @return true if the given Node Item was deleted, false otherwise.
      */
     virtual bool
