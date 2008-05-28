@@ -18,7 +18,8 @@
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/xquery_scanner.h"
-// #include "compiler/api/compilercb.h" // not yet needed, maybe for warnings later
+#include "compiler/api/compilercb.h"
+#include "context/static_context.h"
 #include "errors/error_manager.h"
 
 using namespace std;
@@ -67,6 +68,12 @@ void xquery_driver::error(
 	string const& m)
 {
   ZORBA_ERROR_DESC( XPST0003, m); 
+}
+
+void xquery_driver::set_expr(parsenode* e_p) {
+  if (theCompilerCB->m_config.parse_cb != NULL)
+    theCompilerCB->m_config.parse_cb (e_p, theCompilerCB->m_sctx->entity_retrieval_url ());
+  expr_p = e_p;
 }
 
 QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc) 

@@ -207,17 +207,18 @@ public:
 
 protected:
   xqp_string current_absolute_baseuri() const;
-  xqp_string encapsulating_entity_baseuri() const;
-  xqp_string entity_file_uri() const;
 	void compute_current_absolute_baseuri();
+
 public:
+  xqp_string encapsulating_entity_baseuri() const;
+  xqp_string entity_retrieval_url() const;
+  void set_encapsulating_entity_baseuri(xqp_string);
+  void set_entity_retrieval_url(xqp_string);
   xqp_string implementation_baseuri () const { return "http://www.flworfound.org/"; }
   xqp_string final_baseuri ();
   xqp_string baseuri() const;
   void set_baseuri(xqp_string, bool from_prolog = true);
   void set_current_absolute_baseuri(xqp_string);
-  void set_encapsulating_entity_baseuri(xqp_string);
-  void set_entity_file_uri(xqp_string);
 
   // TODO: move this method to URI class in zorbatypes
   static xqp_string make_absolute_uri(xqp_string uri, xqp_string base_uri);

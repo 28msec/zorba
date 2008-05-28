@@ -69,6 +69,8 @@ namespace zorba {
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
+#define CACHED( cache, val ) ((cache == NULL) ? (cache = val) : cache)
+
 #define CHK_SINGLE_DECL( state, err ) do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #define QLOCDECL const QueryLoc &loc = v.get_location(); (void) loc
 #ifndef NDEBUG
@@ -105,6 +107,22 @@ namespace zorba {
   }
 
 
+  class ModulesInfo {
+  public:
+    auto_ptr<static_context> globals;
+    hashmap<static_context *> mod_sctx_map;
+    hashmap<string> mod_ns_map;
+    checked_vector<expr_t> init_exprs;
+    CompilerCB *topCompilerCB;
+
+    ModulesInfo (static_context *sctx, CompilerCB *topCompilerCB_)
+      : globals (static_cast<static_context *> (sctx->get_parent ())->create_child_context ()),
+        topCompilerCB (topCompilerCB_)
+    {}
+  };
+
+  expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInfo *minfo, set<string> mod_stack);
+
 /*******************************************************************************
 
   theGlobalVars:
@@ -116,51 +134,60 @@ namespace zorba {
 class TranslatorImpl : public parsenode_visitor
 {
 public:
-  friend expr_t translate (const parsenode &, CompilerCB* aCompilerCB, static_context *export_sctx, set<string> mod_stack);
+  friend expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInfo *minfo, set<string> mod_stack);
 
 protected:
+
   uint32_t print_depth;
 
   CompilerCB                           * compilerCB;
   static_context                       * sctx_p;
-  static_context                       * export_sctx;
+  ModulesInfo                          * minfo;
   vector<rchandle<static_context> >    & sctx_list;
   std::stack<expr_t>                     nodestack;
   std::stack<xqtref_t>                   tstack;  // types stack
+
   set<string> mod_import_ns_set;
   set<string> mod_stack;
   set<string> schema_import_ns_set;
-  int                                    tempvar_counter;
-  std::list<global_binding>              theGlobalVars;
-  checked_vector<expr_t> init_exprs;
-  rchandle<namespace_context>            ns_ctx;
-  string                                 mod_ns, mod_pfx;
+  int tempvar_counter;
+  std::list<global_binding> theGlobalVars;
+  rchandle<namespace_context> ns_ctx;
+  /// Current module's namespace and prefix
+  string mod_ns, mod_pfx;
+  static_context *export_sctx;
 
   // FOR WHITESPACE CHECKING OF DirElemContent (stack is need because of nested elements)
   /**
    * Saves true if the previous DirElemContent is a boundary (DirElemConstructor or EnclosedExpr).
    */
-  std::stack<bool>                theIsWSBoundaryStack;
+  std::stack<bool> theIsWSBoundaryStack;
   /**
    * Saves the previous DirElemContent if it might be boundary whitespace (its previous item is a boundary
    * and it contains whitespace). It must be checked if the next item (the current item) is a boundary.
    */
-  std::stack<const DirElemContent*>     thePossibleWSContentStack;
+  std::stack<const DirElemContent*> thePossibleWSContentStack;
 
   bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
 
   var_expr_t theDotVar, theDotPosVar, theLastVar;
 
-  TranslatorImpl (CompilerCB* aCompilerCB, static_context *export_sctx_ = NULL, set<string> mod_stack_ = set<string> ())
+  // TODO: should be static
+  // functions accepting . as default arg
+  std::set<string> xquery_fns_def_dot;
+  const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data;
+
+  TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
     :
     print_depth (0),
     compilerCB(aCompilerCB),
     sctx_p (aCompilerCB->m_sctx),
-    export_sctx (export_sctx_),
+    minfo (minfo_),
     sctx_list (aCompilerCB->m_sctx_list),
     mod_stack (mod_stack_),
     tempvar_counter (1),
     ns_ctx(new namespace_context(sctx_p)),
+    export_sctx (NULL),
     hadBSpaceDecl (false),
     hadBUriDecl (false),
     hadConstrDecl (false),
@@ -168,9 +195,15 @@ protected:
     hadEmptyOrdDecl (false),
     hadOrdModeDecl (false)
   {
-    theDotVar = bind_var(QueryLoc::null, DOT_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-    theDotPosVar = bind_var(QueryLoc::null, DOT_POS_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
-    theLastVar = bind_var (QueryLoc::null, LAST_IDX_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
+    xquery_fns_def_dot.insert ("string-length");
+    xquery_fns_def_dot.insert ("normalize-space");
+    xquery_fns_def_dot.insert ("root");
+    xquery_fns_def_dot.insert ("base-uri");
+    xquery_fns_def_dot.insert ("namespace-uri");
+    xquery_fns_def_dot.insert ("local-name");
+    xquery_fns_def_dot.insert ("name");
+
+    op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
   }
 
   expr_t pop_nodestack (int n = 1)
@@ -216,12 +249,13 @@ protected:
 
   void bind_udf (store::Item_t qname, function *f, int nargs) {
     sctx_p->bind_fn (qname, f, nargs);
+    minfo->globals->bind_fn (qname, f, nargs);
     if (export_sctx != NULL)
       export_sctx->bind_fn (qname, f, nargs);
   }
 
   fo_expr *create_seq (const QueryLoc& loc) {
-    return new fo_expr (loc, LOOKUP_OPN ("concatenate"));
+    return new fo_expr (loc, CACHED (op_concatenate, LOOKUP_OPN ("concatenate")));
   }
 
   void push_scope ()
@@ -320,6 +354,9 @@ expr_t result ()
   return pop_nodestack ();
 }
 
+expr_t wrap_in_atomization (expr_t e) {
+  return new fo_expr (e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
+}
 
 expr_t wrap_in_globalvar_assign(expr_t e)
 {
@@ -342,18 +379,18 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 
       if (var_type != NULL)
         expr = new treat_expr (expr->get_loc (), expr, var->get_type (), XPTY0004);
-      init_exprs.push_back (new fo_expr (var->get_loc(),
+      minfo->init_exprs.push_back (new fo_expr (var->get_loc(),
                                          ctx_set, qname_expr, expr));
     } else if (var_type != NULL) {
       expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr);
-      init_exprs.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
+      minfo->init_exprs.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
     }
   }
 
-  if (! init_exprs.empty ())
+  if (! minfo->init_exprs.empty ())
   {
     expr_update_t lUpdateType = e->getUpdateType();
-    e = new sequential_expr (e->get_loc(), init_exprs, e);
+    e = new sequential_expr (e->get_loc(), minfo->init_exprs, e);
     e->setUpdateType(lUpdateType);
   }
 
@@ -686,7 +723,7 @@ void end_visit(const EnclosedExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   expr_t lContent = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(v.get_location(), LOOKUP_OP1 ("enclosed-expr"));
+  fo_expr *fo_h = new fo_expr(v.get_location(), CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   fo_h->add(lContent);
   nodestack.push(fo_h);
 }
@@ -1209,7 +1246,7 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
 
   expr_t lContent = pop_nodestack();
 
-  fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+  fo_expr *lEnclosed = new fo_expr(v.get_location(), CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   lEnclosed->add(lContent);
 
   nodestack.push (new doc_expr (v.get_location (), lEnclosed ));
@@ -1231,7 +1268,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   if (v.get_content_expr() != 0) {
     contentExpr = pop_nodestack();
 
-    fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1 ("enclosed-expr"));
+    fo_expr *lEnclosed = new fo_expr(v.get_location(), CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     lEnclosed->add(contentExpr);
     contentExpr = lEnclosed;
   }
@@ -1244,10 +1281,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   } else {
     nameExpr = pop_nodestack();
 
-    rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(),
-                                             LOOKUP_FN("fn", "data", 1));
-    atomExpr->add(nameExpr);
-
+    rchandle<fo_expr> atomExpr = wrap_in_atomization (nameExpr);
     nameExpr = new name_cast_expr(v.get_location(), atomExpr.getp(), ns_ctx);
   }
 
@@ -1273,7 +1307,7 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
   {
     valueExpr = pop_nodestack();
 
-    fo_expr* enclosedExpr = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+    fo_expr* enclosedExpr = new fo_expr(v.get_location(), CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     enclosedExpr->add(valueExpr);
 
     valueExpr = enclosedExpr;
@@ -1290,9 +1324,7 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
   {
     nameExpr = pop_nodestack();
 
-    rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(),
-                                             LOOKUP_FN("fn", "data", 1));
-    atomExpr->add(nameExpr);
+    rchandle<fo_expr> atomExpr = wrap_in_atomization (nameExpr);
 
     expr_t castExpr = new name_cast_expr(v.get_location(),
                                          atomExpr.getp(),
@@ -1319,7 +1351,7 @@ void end_visit(const CompCommentConstructor& v, void* /*visit_state*/)
   expr_t inputExpr = pop_nodestack();
 
   rchandle<fo_expr> enclosedExpr = new fo_expr(v.get_location(),
-                                               LOOKUP_OP1("enclosed-expr"));
+                                               CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   enclosedExpr->add(inputExpr);
 
   expr_t textExpr = new text_expr(v.get_location(),
@@ -1351,7 +1383,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     content = pop_nodestack();
 
-    rchandle<fo_expr> enclosedExpr = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"));
+    rchandle<fo_expr> enclosedExpr = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     enclosedExpr->add(content);
 
     content = enclosedExpr;
@@ -1361,14 +1393,13 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     target = pop_nodestack();
 
-    rchandle<fo_expr> atomExpr = new fo_expr(loc, LOOKUP_FN("fn", "data", 1));
-    atomExpr->add(target);
+    rchandle<fo_expr> atomExpr = wrap_in_atomization (target);
 
     rchandle<cast_expr> castExpr =
       new cast_expr(loc, atomExpr.getp(),
                     GENV_TYPESYSTEM.NCNAME_TYPE_ONE);
 
-    rchandle<fo_expr> enclosedExpr = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"));
+    rchandle<fo_expr> enclosedExpr = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     enclosedExpr->add(castExpr.getp());
 
     target = enclosedExpr;
@@ -1395,7 +1426,7 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
   expr_t inputExpr = pop_nodestack();
 
   rchandle<fo_expr> enclosedExpr = new fo_expr(v.get_location(),
-                                               LOOKUP_OP1("enclosed-expr"));
+                                               CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   enclosedExpr->add(inputExpr);
 
   expr_t textExpr = new text_expr(v.get_location(),
@@ -1901,8 +1932,11 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   var_expr_t ve = bind_var (v.get_location(), varname, var_expr::context_var, type);
   if (! mod_ns.empty () && xqp_string (ve->get_varname ()->getNamespace ()) != mod_ns)
     ZORBA_ERROR_LOC (XQST0048, v.get_location ());
-  if (export_sctx != NULL && ! v.is_extern ())
-    export_sctx->bind_var (ve->get_varname (), &*ve);
+  if (! v.is_extern ()) {
+    minfo->globals->bind_var (ve->get_varname (), &*ve);
+    if (export_sctx != NULL)
+      export_sctx->bind_var (ve->get_varname (), &*ve);
+  }
   expr_t val = v.is_extern() ? expr_t(NULL) : pop_nodestack();
   theGlobalVars.push_back(global_binding(ve, val));
 }
@@ -2109,12 +2143,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
                                    nargs));
     ZORBA_ASSERT (udf != NULL);
     
-    if (compilerCB->m_config.print_translated) 
-    {
-      cout << "Expression tree for " << v.get_name ()->get_qname ()
-           << " after translation:" << endl;
-      body->put(cout) << endl;
-    }
+    if (compilerCB->m_config.translate_cb != NULL)
+      compilerCB->m_config.translate_cb (&*body, v.get_name ()->get_qname ());
 
     normalize_expr_tree(v.get_name ()->get_qname().c_str(), compilerCB, body);
 
@@ -2123,11 +2153,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       RewriterContext rCtx(compilerCB, body);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       body = rCtx.getRoot();
-      if (Properties::instance ()->printOptimizedExpressions()) 
-      {
-        cout << "Optimized expression tree for " << v.get_name()->get_qname() << endl;
-        body->put (cout) << endl;
-      }
+      if (compilerCB->m_config.optimize_cb != NULL)
+        compilerCB->m_config.optimize_cb (&*body, v.get_name ()->get_qname ());
     }
 
     udf->set_body(body);
@@ -2271,7 +2298,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                                GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
                                 nan_expr);
 
-      expr_t data_expr = new fo_expr (loc, LOOKUP_FN("fn", "data", 1), arguments [0]);
+      expr_t data_expr = wrap_in_atomization (arguments [0]);
 
       nodestack.push(&*wrap_in_let_flwor(new treat_expr(loc,
                                                         data_expr,
@@ -2281,14 +2308,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                          ret));
       return;
     }
-    else if (sz == 0 &&
-             (fn_local == "string-length" ||
-              fn_local == "normalize-space" ||
-              fn_local == "root" ||
-              fn_local == "base-uri" ||
-              fn_local == "namespace-uri" ||
-              fn_local == "local-name" ||
-              fn_local == "name"))
+    else if (sz == 0 && xquery_fns_def_dot.find (fn_local) != xquery_fns_def_dot.end ())
     {
       arguments.push_back (DOT_VAR);
     } else if (fn_local == "static-base-uri") {
@@ -2317,7 +2337,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
     } else if (fn_local == "concat") {
       if (sz < 2)
-        ZORBA_ERROR_PARAM (XPST0017, "fn_concat", to_string (sz));
+        ZORBA_ERROR_PARAM (XPST0017, "concat", to_string (sz));
     }
   } 
 
@@ -2377,13 +2397,18 @@ void *begin_visit(const LibraryModule& v)
 void end_visit(const LibraryModule& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (wrap_in_globalvar_assign (new fo_expr (v.get_location (), LOOKUP_OPN ("concatenate"))));
+  nodestack.push (wrap_in_globalvar_assign (new fo_expr (v.get_location (), CACHED (op_concatenate, LOOKUP_OPN ("concatenate")))));
 }
 
 
 void *begin_visit(const MainModule & v)
 {
   TRACE_VISIT ();
+
+  theDotVar = bind_var(QueryLoc::null, DOT_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+  theDotPosVar = bind_var(QueryLoc::null, DOT_POS_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
+  theLastVar = bind_var (QueryLoc::null, LAST_IDX_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
+  
   return no_state;
 }
 
@@ -2416,9 +2441,13 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   mod_pfx = v.get_prefix ();
   mod_ns = v.get_target_namespace ();
+  if (mod_ns.empty ())
+    ZORBA_ERROR_LOC (XQST0088, loc);
   if (mod_pfx == "xml" || mod_pfx == "xmlns")
     ZORBA_ERROR_LOC (XQST0070, v.get_location ());
   sctx_p->bind_ns (mod_pfx, mod_ns);
+  bool found = minfo->mod_sctx_map.get (sctx_p->entity_retrieval_url (), export_sctx);
+  assert (found);
 }
 
 
@@ -2449,22 +2478,35 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     set<string> mod_stk1 = mod_stack;
     if (! mod_stk1.insert (aturi).second)
       ZORBA_ERROR_LOC (XQST0073, loc);
-    ifstream modfile (URI::decode_file_URI (xqp_string (aturi).getStore ())->c_str ());
-    if (! modfile)
+    
+    string imported_ns;
+    static_context *imported_sctx;
+    if (minfo->mod_ns_map.get (aturi, imported_ns)) {
+      bool found = minfo->mod_sctx_map.get (aturi, imported_sctx);
+      assert (found);
+    } else {
+      ifstream modfile (URI::decode_file_URI (xqp_string (aturi).getStore ())->c_str ());
+      if (! modfile)
+        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
+      CompilerCB mod_ccb (*compilerCB);
+      static_context *independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
+      compilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = independent_sctx->create_child_context ());
+      mod_ccb.m_sctx->set_entity_retrieval_url (aturi);
+      minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx = independent_sctx->create_child_context ());
+      minfo->mod_sctx_map.put (aturi, imported_sctx);
+      XQueryCompiler xqc (&mod_ccb);
+      rchandle<parsenode> ast = xqc.parse (modfile);
+      LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
+      if (mod_ast == NULL)
+        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
+      imported_ns = mod_ast->get_decl ()->get_target_namespace ();
+      minfo->init_exprs.push_back (translate_aux (*ast, &mod_ccb, minfo, mod_stk1));
+      minfo->mod_ns_map.put (aturi, imported_ns);
+    }
+
+    if (imported_ns != target_ns)
       ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
-    CompilerCB mod_ccb (*compilerCB);
-    compilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = mod_ccb.m_sctx->create_child_context ());
-    mod_ccb.m_sctx->set_entity_file_uri (aturi);
-    XQueryCompiler xqc (&mod_ccb);
-    rchandle<parsenode> ast = xqc.parse (modfile);
-    LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
-    if (mod_ast == NULL)
-      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
-    if (mod_ast->get_decl ()->get_target_namespace ().empty ())
-      ZORBA_ERROR_LOC (XQST0088, loc);
-    if (mod_ast->get_decl ()->get_target_namespace () != target_ns)
-      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
-    init_exprs.push_back (translate (*ast, &mod_ccb, sctx_p, mod_stk1));
+    sctx_p->import_module (imported_sctx);
   }
 }
 
@@ -3129,7 +3171,7 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
   rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_p = new fo_expr(v.get_location(), LOOKUP_OPN ("or"));
+  fo_expr *fo_p = new fo_expr(v.get_location(), CACHED (op_or, LOOKUP_OPN ("or")));
   fo_p->add(e2_h);
   fo_p->add(e1_h);
   nodestack.push (fo_p);
@@ -4210,10 +4252,10 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   expr_t dotvar = DOT_VAR;
 
   // Check if the pred expr returns a numeric result
-  rchandle<fo_expr> cond = new fo_expr(loc, LOOKUP_OPN("or"));
+  rchandle<fo_expr> cond = new fo_expr(loc, CACHED (op_or, LOOKUP_OPN ("or")));
   cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
   cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-  cond = new fo_expr(loc, LOOKUP_OPN("or"), &*cond);
+  cond = new fo_expr(loc, CACHED (op_or, LOOKUP_OPN ("or")), &*cond);
   cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
 
   // If so: return $dot if the value of the pred expr is equal to the value
@@ -4661,7 +4703,7 @@ void end_visit(const InsertExpr& v, void* /*visit_state*/)
   {
     ZORBA_ERROR_LOC(XUST0001, v.get_location());
   }
-  fo_expr* lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+  fo_expr* lEnclosed = new fo_expr(v.get_location(), CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   lEnclosed->add(lSource);
   lSource = lEnclosed;
 
@@ -4688,9 +4730,7 @@ void end_visit(const RenameExpr& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC(XUST0001, v.get_location());
   }
 
-  rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(),
-                                             LOOKUP_FN("fn", "data", 1));
-  atomExpr->add(nameExpr);
+  rchandle<fo_expr> atomExpr = wrap_in_atomization (nameExpr);
   nameExpr = new name_cast_expr(v.get_location(), atomExpr.getp(), ns_ctx);
 
   expr_t renameExpr = new rename_expr(v.get_location(), targetExpr, nameExpr);
@@ -4716,7 +4756,7 @@ void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
 
   if (v.getType() == store::UpdateConsts::NODE)
   {
-    fo_expr* lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+    fo_expr* lEnclosed = new fo_expr(v.get_location(), CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     lEnclosed->add(lReplacement);
     lReplacement = lEnclosed;
   }
@@ -4859,9 +4899,9 @@ void end_visit(const CatchListExpr& v, void* visit_state)
 expr_t cc_component(const QueryLoc& loc, var_expr_t var, const char *local)
 {
   expr_t exists = new fo_expr(loc, LOOKUP_FN("fn", "exists", 1), &*var);
-  expr_t emptyseq = new fo_expr(loc, LOOKUP_OPN("concatenate"));
+  expr_t emptyseq = create_seq (loc);
   expr_t eName = new const_expr(loc, GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", local));
-  expr_t eContents = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"), &*var);
+  expr_t eContents = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")), &*var);
   push_elem_scope();
   expr_t eVal = new elem_expr(loc, eName, NULL, eContents, ns_ctx);
   pop_elem_scope();
@@ -4888,7 +4928,7 @@ void *begin_visit(const CatchExpr& v)
     expr_t comp1 = cc_component(v.get_location(), cc->get_errorcode_var_h(), "errorcode");
     expr_t comp2 = cc_component(v.get_location(), cc->get_errordesc_var_h(), "description");
     expr_t comp3 = cc_component(v.get_location(), cc->get_errorobj_var_h(), "error-obj");
-    expr_t eContents = new fo_expr(v.get_location(), LOOKUP_OPN("concatenate"), comp1, comp2, comp3);
+    expr_t eContents = new fo_expr(v.get_location(), CACHED (op_concatenate, LOOKUP_OPN ("concatenate")), comp1, comp2, comp3);
 
     push_elem_scope();
     expr_t eVal = new elem_expr(v.get_location(), eName, NULL, eContents, ns_ctx);
@@ -5406,16 +5446,19 @@ void end_visit(const VarGetsDeclList& v, void* /*visit_state*/)
 
 };
 
-
-rchandle<expr> translate (const parsenode &root, CompilerCB* aCompilerCB, static_context *export_sctx, set<string> mod_stack) {
-  auto_ptr<TranslatorImpl> t (new TranslatorImpl (aCompilerCB, export_sctx, mod_stack));
+expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInfo *minfo, set<string> mod_stack) {
+  auto_ptr<TranslatorImpl> t (new TranslatorImpl (aCompilerCB, minfo, mod_stack));
   root.accept (*t);
   rchandle<expr> result = t->result ();
-  if (aCompilerCB->m_config.print_translated) {
-    cout << "Expression tree for query after translation:\n";
-    result->put(cout) << endl;
-  }
+  if (aCompilerCB->m_config.translate_cb != NULL)
+    aCompilerCB->m_config.translate_cb (&*result, "XQuery program");
   return result;
+}
+
+expr_t translate (const parsenode &root, CompilerCB* aCompilerCB) {
+  std::set<std::string> mod_stack = std::set<std::string> ();
+  ModulesInfo minfo (aCompilerCB->m_sctx, aCompilerCB);
+  return translate_aux (root, aCompilerCB, &minfo, mod_stack);
 }
 
 

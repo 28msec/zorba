@@ -302,10 +302,8 @@ DEF_VISIT_METHODS (ft_contains_expr)
 void normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_t root) {
   normalizer n (aCompilerCB);
   root->accept(n);
-  if (aCompilerCB->m_config.print_normalized) {
-    std::cout << "Expression tree for " << norm_descr << " after normalization:\n";
-    root->put(std::cout) << std::endl;
-  }
+  if (aCompilerCB->m_config.normalize_cb)
+    aCompilerCB->m_config.normalize_cb (&*root, norm_descr);
 }
 
 }

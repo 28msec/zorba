@@ -62,7 +62,7 @@ static_context::static_context()
   context(NULL)
 {
   set_encapsulating_entity_baseuri ("");
-  set_entity_file_uri ("");
+  set_entity_retrieval_url ("");
 }
 
   
@@ -132,7 +132,7 @@ DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
 DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
 DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
 DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
-DECL_STR_PARAM_TRIGGER (static_context, entity_file_uri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
+DECL_STR_PARAM_TRIGGER (static_context, entity_retrieval_url, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
 
 TypeManager *static_context::get_typemanager ()
 {
@@ -223,7 +223,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
                                          prefix,
                                          local));
     if (f == NULL)
-      ZORBA_ERROR_PARAM ( XPST0017, local, to_string (arity));
+      ZORBA_ERROR_PARAM (XPST0017, (prefix.empty () ? prefix : (prefix + ":")) + local, to_string (arity));
     return f;
   }
 }
@@ -464,7 +464,7 @@ void static_context::compute_current_absolute_baseuri()
 {
   //if base Uri is present, compute absolute base Uri
   //else if encapsulating_entity_baseuri is present, use that
-  //else if entity_file_uri is present, use that
+  //else if entity_retrieval_url is present, use that
   //else do not set the absolute baseuri (and hope there are no relative uris)
 
   xqp_string    prolog_baseuri;
@@ -486,7 +486,7 @@ void static_context::compute_current_absolute_baseuri()
       set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
       return;
     }
-    loaded_uri = entity_file_uri();
+    loaded_uri = entity_retrieval_url();
     if(!loaded_uri.empty()) {
       set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
       return;
@@ -501,7 +501,7 @@ void static_context::compute_current_absolute_baseuri()
     set_current_absolute_baseuri(ee_baseuri);
     return;
   }
-  loaded_uri = entity_file_uri();
+  loaded_uri = entity_retrieval_url();
   if(!loaded_uri.empty()) {
     set_current_absolute_baseuri(loaded_uri);
     return;

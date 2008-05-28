@@ -60,7 +60,7 @@ public:
 
   void error(const std::string& m);
 
-	void set_expr(parsenode* e_p) { expr_p = e_p; }
+	void set_expr(parsenode* e_p);
 	parsenode* get_expr() { return expr_p; }
 
 	/**

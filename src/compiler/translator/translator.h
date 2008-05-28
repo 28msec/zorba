@@ -22,7 +22,7 @@
 
 namespace zorba {
 
-  expr_t translate (const parsenode &, CompilerCB* aCompilerCB, static_context *export_sctx = NULL, std::set<std::string> mod_stack = std::set<std::string> ());
+  expr_t translate (const parsenode &, CompilerCB* aCompilerCB);
   
 } /* namespace zorba */
 #endif /* ZORBA_NORMALIZE_VISITOR_H */

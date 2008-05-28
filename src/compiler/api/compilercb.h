@@ -23,28 +23,29 @@ namespace zorba {
   
   class CompilerCB 
   {
-    public:
+  public:
       typedef struct __config_t {
         typedef enum {
           O0,
           O1
         } opt_level_t;
 
+        typedef void (* expr_callback) (const expr *, std::string name);
+        typedef void (* ast_callback) (const parsenode *, std::string name);
+
         opt_level_t opt_level;
-        bool print_translated, print_normalized, print_optimized;
+        ast_callback parse_cb;
+        expr_callback translate_cb, normalize_cb, optimize_cb;
         bool print_item_flow;  // TODO: move to RuntimeCB
 
-        __config_t() 
-        { 
-          opt_level        = O1;    
-          print_translated = false; 
-          print_normalized = false; 
-          print_optimized  = false; 
-          print_item_flow  = false; 
+        __config_t()
+        : opt_level (O1), parse_cb (NULL), print_item_flow (false)
+        {
+          translate_cb = normalize_cb = optimize_cb = NULL;
         }
       } config_t;
       
-      ~CompilerCB();
+      ~CompilerCB ();
       static_context*               m_sctx;          
       std::vector<static_context_t> m_sctx_list;     
       error::ErrorManager*          m_error_manager;

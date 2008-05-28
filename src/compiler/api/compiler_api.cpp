@@ -57,6 +57,24 @@ XQueryCompiler::~XQueryCompiler()
 {
 }
 
+static void print_ast_tree (const parsenode *n, std::string name) {
+  std::cout << "AST for " << name << "\n";
+  print_parsetree_xml (std::cout, n);
+  std::cout << std::endl;
+}
+
+#define DEF_PRINT_EXPR_TREE( phase )                                    \
+  static void print_expr_tree_##phase (const expr *e, std::string name) \
+  {                                                                     \
+    std::cout << "Expression tree after " << #phase                     \
+              << " for " << name << "\n";                               \
+    e->put (std::cout) << std::endl;                                    \
+  }
+
+  DEF_PRINT_EXPR_TREE (translation)
+  DEF_PRINT_EXPR_TREE (normalization)
+  DEF_PRINT_EXPR_TREE (optimization)
+
 
 PlanIter_t XQueryCompiler::compile(parsenode_t ast) 
 {
@@ -83,21 +101,25 @@ XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
 parsenode_t
 XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 {
+  // TODO: move these out
+  if (Properties::instance()->printAST())
+    theCompilerCB->m_config.parse_cb = print_ast_tree;
+  
   xquery_driver lDriver(&*theCompilerCB);
   lDriver.parse_stream(aXQuery, aFileName);
-
-  if (Properties::instance()->printAST())
-    print_parsetree_xml (std::cout, &*lDriver.get_expr());
   return lDriver.get_expr();
 }
-
 
 expr_t
 XQueryCompiler::normalize(parsenode_t aParsenode)
 {
   // TODO: move these out
-  theCompilerCB->m_config.print_translated = Properties::instance()->printTranslatedExpressions();
-  theCompilerCB->m_config.print_normalized = Properties::instance()->printNormalizedExpressions();
+  if (Properties::instance()->printTranslatedExpressions())
+    theCompilerCB->m_config.translate_cb = print_expr_tree_translation;
+  if (Properties::instance()->printNormalizedExpressions())
+    theCompilerCB->m_config.normalize_cb = print_expr_tree_normalization;
+  if (Properties::instance()->printOptimizedExpressions())
+    theCompilerCB->m_config.optimize_cb = print_expr_tree_optimization;
   theCompilerCB->m_config.print_item_flow = Properties::instance()->printItemFlow();
 
   expr_t lExpr = translate (*aParsenode, theCompilerCB);
@@ -120,10 +142,8 @@ XQueryCompiler::optimize(expr_t lExpr)
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     lExpr = rCtx.getRoot();
     
-    if (Properties::instance()->printOptimizedExpressions()) {
-      std::cout << "Optimized expression tree for query:\n";
-      lExpr->put(std::cout) << std::endl;
-    }
+    if (theCompilerCB->m_config.optimize_cb != NULL)
+      theCompilerCB->m_config.optimize_cb (&*lExpr, "query");
   }
 
   return lExpr;
