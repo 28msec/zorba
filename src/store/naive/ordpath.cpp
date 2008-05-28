@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 #include <cassert>
+
+#include "zorbautils/hashfun.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
-#include "util/hashfun.h"
 
 #include "store/naive/ordpath.h"
 #include "store/naive/store_defs.h"

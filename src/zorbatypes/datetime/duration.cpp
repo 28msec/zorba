@@ -15,11 +15,11 @@
  */
 #include <string>
 
+#include "zorbautils/hashfun.h"
 #include <zorbatypes/duration.h>
 #include "zorbatypes/datetime/parse.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime.h"
-#include <util/hashfun.h>
 
 
 namespace zorba

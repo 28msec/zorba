@@ -16,9 +16,8 @@
 #ifndef ZORBA_STORE_UTIL_ITEM_HANDLE_HASHSET
 #define ZORBA_STORE_UTIL_ITEM_HANDLE_HASHSET
 
-#include "util/hashfun.h"
-
-#include "store/util/hashset.h"
+#include "zorbautils/hashfun.h"
+#include "zorbautils/hashset.h"
 
 
 namespace zorba { namespace store {

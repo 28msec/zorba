@@ -18,11 +18,11 @@
 
 #include <vector>
 
-#include "util/hashfun.h"
+#include "zorbautils/hashfun.h"
+#include "zorbautils/hashmap.h"
 
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
-#include "store/util/hashmap.h"
 #include "store/naive/node_vector.h"
 #include "store/naive/node_updates.h"
 

@@ -17,7 +17,7 @@
 #define ZORBA_STORE_UTIL_NODE_HANDLE_HASHSET
 
 #include "common/common.h"
-#include "store/util/hashset.h"
+#include "zorbautils/hashset.h"
 
 namespace zorba { namespace store {
 

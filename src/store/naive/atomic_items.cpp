@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "zorbautils/hashfun.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
+
 #include "store/api/item.h"
 #include "store/naive/node_items.h"
 
-#include "zorbaerrors/Assert.h"
-#include "zorbaerrors/error_manager.h"
 #include "compiler/parser/query_loc.h"
-#include "util/hashfun.h"
 #include "runtime/api/runtimecb.h"
 #include "system/globalenv.h"
 

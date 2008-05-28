@@ -34,7 +34,7 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime/parse.h"
 #include "system/globalenv.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 
 namespace zorba {

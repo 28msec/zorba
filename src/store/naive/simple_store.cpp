@@ -15,13 +15,13 @@
  */
 #include <iostream>
 
+#include "zorbautils/hashfun.h"
 #include "zorbatypes/rchandle.h"
-
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/fatal.h"
-#include "util/hashfun.h"
-#include "util/properties.h"
 #include "zorbaerrors/Assert.h"
+
+#include "util/properties.h"
 
 #include "store/util/hashmap_stringp.h"
 

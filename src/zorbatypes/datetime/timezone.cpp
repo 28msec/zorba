@@ -18,7 +18,7 @@
 
 #include <zorbatypes/timezone.h>
 #include "zorbatypes/datetime/parse.h"
-#include <util/hashfun.h>
+#include "zorbautils/hashfun.h"
 
 #define RETURN_FALSE_ON_EXCEPTION(sequence)     \
   try                                           \

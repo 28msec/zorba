@@ -19,7 +19,7 @@
 #include "common/common.h"
 #include "zorbatypes/xqpstring.h"
 
-#include "store/util/hashmap.h"
+#include "zorbautils/hashmap.h"
 
 
 namespace zorba { namespace store {

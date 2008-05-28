@@ -21,7 +21,7 @@
 #include "common/shared_types.h"
 
 #include "store/util/mutex.h"
-#include "store/util/hashmap.h"
+#include "zorbautils/hashmap.h"
 
 namespace zorba { namespace store {
 

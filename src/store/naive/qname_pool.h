@@ -17,10 +17,13 @@
 #define ZORBA_SIMPLE_STORE_QNAME_POOL
 
 #include <vector>
+
+#include "zorbautils/hashfun.h"
+#include "zorbautils/hashset.h"
+
 #include "common/shared_types.h"
 #include "common/common.h"
-#include "util/hashfun.h"
-#include "store/util/hashset.h"
+
 #include "store/naive/atomic_items.h"
 
 namespace zorba { namespace store {
