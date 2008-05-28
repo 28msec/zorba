@@ -44,7 +44,7 @@ ParseNodePrintXMLVisitor(std::ostream &aStream)
 }
 
 
-void print(parsenode* p)
+void print(const parsenode* p)
 {
     os << "<?xml version='1.0'>" << std::endl;
     os << "<ParseNodeTree>" << std::endl;
@@ -237,18 +237,29 @@ BEGIN_TAG (Module)
 
 void *begin_visit(const ModuleDecl &n)
 {
-    INDENT;
-
-    os << "<ModuleDecl" << IDS;
-    os << " prefix='" << n.get_prefix() << "' "
-       << "target_namespace='" << n.get_target_namespace() << "' ptr='" << &n << "'";
-    os << ">";
-
-    INDENT_INC; NL;
-    return no_state;
+  INDENT;
+  
+  os << "<ModuleDecl" << IDS;
+  os << " prefix='" << n.get_prefix() << "' "
+     << "target_namespace='" << n.get_target_namespace() << "'";
+  os << ">";
+  
+  INDENT_INC; NL;
+  return no_state;
 }
 
-BEGIN_TAG (ModuleImport)
+void *begin_visit(const ModuleImport &n)
+{
+  INDENT;
+  
+  os << "<ModuleImport" << IDS;
+  os << " prefix='" << n.get_prefix() << "' "
+     << "target_namespace='" << n.get_uri() << "'";
+  os << ">";
+  
+  INDENT_INC; NL;
+  return no_state;
+}
 
 void *begin_visit(const NameTest &n)
 {
@@ -453,7 +464,23 @@ BEGIN_TAG (TypeDeclaration)
 
 BEGIN_TAG (TypeName)
 
-BEGIN_TAG (URILiteralList)
+void *begin_visit (const URILiteralList &n)
+{
+    INDENT;
+
+    os << "<URILiteralList" << IDS;
+
+    os << ">";
+
+    INDENT_INC; NL;
+    
+    for (int i = 0; i < n.size (); i++) {
+      INDENT;
+      os << "<URI>" << n [i] << "</URI>" << "\n";
+    }
+
+    return no_state;
+}
 
 void *begin_visit(const ValueComp &n)
 {
@@ -1213,7 +1240,7 @@ END_TAG (FTWordsValue)
 
 };
 
-void print_parsetree_xml (ostream &os, parsenode *p) {
+void print_parsetree_xml (ostream &os, const parsenode *p) {
   ParseNodePrintXMLVisitor v (os);
   v.print (p);
 }

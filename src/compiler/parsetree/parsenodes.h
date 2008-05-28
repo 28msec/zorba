@@ -908,7 +908,7 @@ public:
 public:
 	void push_back(std::string const& uri) { uri_v.push_back(uri); }
 	std::string operator[](int i) const { return uri_v[i]; }
-  int size () { return uri_v.size (); }
+  int size () const { return uri_v.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1640,7 +1640,7 @@ public:
 public:
 	void push_back(rchandle<GroupSpec> spec_h) { spec_hv.push_back(spec_h); }
 	GroupSpec* operator[](int i) const { return &*spec_hv[i]; }
-  size_t size () { return spec_hv.size (); }
+  size_t size () const { return spec_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1749,7 +1749,7 @@ public:
 public:
 	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
 	rchandle<OrderSpec> operator[](int i) const { return spec_hv[i]; }
-  size_t size () { return spec_hv.size (); }
+  size_t size () const { return spec_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1952,7 +1952,7 @@ public:
 public:
 	void push_back(rchandle<QVarInDecl> decl_h) { qvar_decl_hv.push_back(decl_h); }
 	rchandle<QVarInDecl> operator[](int i) const { return qvar_decl_hv[i]; }
-	int size () { return qvar_decl_hv.size ();}
+	int size () const { return qvar_decl_hv.size ();}
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -3276,7 +3276,7 @@ public:
 public:
 	void push_back(rchandle<exprnode> pred_h) { pred_hv.push_back(pred_h); }
 	rchandle<exprnode> operator[](int i) { return pred_hv[i]; }
-  int size () { return pred_hv.size (); }
+  int size () const { return pred_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -3533,7 +3533,7 @@ public:
 public:
 	void push_back(rchandle<exprnode> arg_h) { arg_hv.push_back(arg_h); }
 	rchandle<exprnode> operator[](int i) const { return arg_hv[i]; }
-  int size () { return arg_hv.size (); }
+  int size () const { return arg_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5003,7 +5003,7 @@ public:
   { varbinding_hv.push_back(varbinding_h); }
 	rchandle<VarBinding> operator[](int i) const
   { return varbinding_hv[i]; }
-  size_t size () { return varbinding_hv.size (); }
+  size_t size () const { return varbinding_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;

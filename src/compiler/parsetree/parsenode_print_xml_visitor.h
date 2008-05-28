@@ -21,7 +21,7 @@
 
 namespace zorba {
 
-  void print_parsetree_xml (std::ostream &, parsenode *p);
+  void print_parsetree_xml (std::ostream &, const parsenode *p);
 
 } // namespace
 
