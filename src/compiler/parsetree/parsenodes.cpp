@@ -598,10 +598,11 @@ void SchemaPrefix::accept(parsenode_visitor& v) const
 // -----------------
 ModuleImport::ModuleImport(
   const QueryLoc& _loc,
-  std::string const& uri,
+  std::string const& _uri,
   rchandle<URILiteralList> _uri_list_h)
 :
   parsenode(_loc),
+  uri (_uri),
   uri_list_h(_uri_list_h)
 {
 }
