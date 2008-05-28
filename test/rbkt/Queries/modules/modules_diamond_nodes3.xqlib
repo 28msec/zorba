@@ -1,0 +1,5 @@
+module namespace modns = "http://myns";
+
+declare variable $modns:x := 42;
+declare variable $modns:n := <a/>;
+declare function modns:gx () { 2  + $modns:x };

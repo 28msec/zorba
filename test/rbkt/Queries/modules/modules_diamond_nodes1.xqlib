@@ -1,0 +1,6 @@
+module namespace modns = "http://modns1";
+import module namespace myns = "http://myns" at "modules_diamond_nodes3.xqlib";
+
+declare variable $modns:x := 42;
+declare variable $modns:n := $myns:n;
+declare function modns:g () { 1  + $modns:x };
