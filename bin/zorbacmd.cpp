@@ -261,12 +261,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
     if (lTiming)
       lStopCompileTime = boost::posix_time::microsec_clock::local_time();
-  }
-  catch (zorba::ZorbaException& e) // catch parse errors and exit the program
-  {
-    std::cerr << e << std::endl;
-    return 3;
-  }
+  } catch (zorba::QueryException& qe) {
+    std::cerr << qe << std::endl;
+    return 5;
+  } catch (zorba::ZorbaException& ze) {
+    std::cerr << ze << std::endl;
+    return 6;
+  } 
 
   // populat the dynamic context
   zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
@@ -276,11 +277,13 @@ int _tmain(int argc, _TCHAR* argv[])
       lProperties.printHelp(std::cerr);
       return 4;
     }
-  } catch (zorba::ZorbaException& e)
-  {
-    std::cerr << e << std::endl;
+  } catch (zorba::QueryException& qe) {
+    std::cerr << qe << std::endl;
+    return 5;
+  } catch (zorba::ZorbaException& ze) {
+    std::cerr << ze << std::endl;
     return 6;
-  }
+  } 
 
   int lNumExecutions = lProperties.getNoOfExecutions();
 
@@ -317,11 +320,12 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lTiming)
       lStopExecutionTime = boost::posix_time::microsec_clock::local_time();
 
-  }
-  catch (zorba::ZorbaException& e)
-  {
-    std::cerr << e << std::endl;
+  } catch (zorba::QueryException& qe) {
+    std::cerr << qe << std::endl;
     return 5;
+  } catch (zorba::ZorbaException& ze) {
+    std::cerr << ze << std::endl;
+    return 6;
   } 
   
   if (lTiming) {

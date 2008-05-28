@@ -106,12 +106,19 @@ namespace zorba {
 
   std::ostream& operator<< (std::ostream& os, const QueryException& aException)
   {
+#ifndef NDEBUG
     return os << "Generated from " << aException.getFileName()
         << ":"  << aException.getFileLineNumber() 
         << " Error on line " << aException.getLineBegin() 
         << " column " << aException.getColumnBegin() + 1
         << ": " 
         << (ZorbaException)aException;
+#else
+    return os << " Error on line " << aException.getLineBegin() 
+              << " column " << aException.getColumnBegin() + 1
+              << ": " 
+              << (ZorbaException)aException;
+#endif
   }
 
   std::ostream& operator<< (std::ostream& os, const DynamicException& aException)
