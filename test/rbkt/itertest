@@ -6,9 +6,10 @@ OUT=$BINDIR/test/rbkt/CompilerResults/IterPlan/$TEST
 EXPECTED=$SRCDIR/test/rbkt/ExpCompilerResults/IterPlan/$TEST.iter
 mkdir -p `dirname $OUT`
 QUERY=$SRCDIR/test/rbkt/Queries/$TEST.xq
+test -e $QUERY || exit 0
 $BINDIR/test/apitest -i --compile-only --no-tree-ids $QUERY >$OUT.iter
 # -w ignores all whitespace -- a bit too lax
-diff -bu $EXPECTED $OUT.iter >$OUT.iter.diff
+diff -dbu $EXPECTED $OUT.iter >$OUT.iter.diff
 STATUS=$?
 if test $STATUS -ne 0; then
    echo 'Iterator plan changed for ' $QUERY ' changed. Query:'
