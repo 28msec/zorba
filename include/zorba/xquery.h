@@ -29,11 +29,11 @@ namespace zorba {
    * To compile and execute an XQuery, an instance of this class must be created. 
    * This is done by using either the createQuery or compileQuery methods of the
    * Zorba class. These methods return an instance of XQuery_t, which is a 
-   * reference counted boost smart pointer (see http://www.boost.org/doc/libs/1_35_0/libs/smart_ptr/smart_ptr.htm) to a dynamically allocated XQuery object. After receiving
-   * an XQuery_t from zorba, an application can make multiple copies of it.
+   * reference counted smart pointer to a dynamically allocated XQuery object. After receiving
+   * an XQuery_t, an application can make multiple copies of it.
    * Hence, each XQuery object can have multiple owners, potentially in different
    * threads. The XQuery object is deleted when all XQuery_t objects that point 
-   * to it are destroyed or explicitly reset to 0.
+   * to it are destroyed.
    *
    * Although an XQuery instance may be accessible from multiple threads, the
    * instance is not thread safe, i.e.\ its methods should not be invoked in 
@@ -383,8 +383,7 @@ namespace zorba {
        * Before Zorba can be safely shutdown, all ressources must be released.
        * For queries this can be done by calling close. However, if close is not
        * called explicitly, it will be automatically called by the XQuery objects
-       * destructor, i.e. if the last boost smart pointer holding on to this XQuery object
-       * is destroyed.
+       * destructor, i.e. if the last smart pointer holding this XQuery object is destroyed.
        *
        * Note that calling close explicitly is usually not necessary. 
        *

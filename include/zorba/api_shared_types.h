@@ -19,7 +19,6 @@
 #include <memory>
 
 #include <zorba/smart_ptr.h>
-#include <boost/smart_ptr.hpp>
 
 namespace zorba {
 

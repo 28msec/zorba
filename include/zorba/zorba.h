@@ -270,9 +270,8 @@ namespace zorba {
        * 
        * The method returns a StaticContext object that can be used
        * for compiling a query. Instances of the StaticContext class are
-       * returned as a boost smart pointer 
-       * (see http://www.boost.org/doc/libs/1_35_0/libs/smart_ptr/smart_ptr.htm),
-       * i.e. objects of type StaticContext_t are reference counted boost smart pointers 
+       * returned as a smart pointer.
+       * That is, objects of type StaticContext_t are reference counted object
        * to an dynamically allocated StaticContext object. Hence, each object can h
        * have multiple owners. The object is deleted if nobody holds on to an StaticContext_t 
        * object anymore.
