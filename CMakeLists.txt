@@ -49,15 +49,6 @@ INCLUDE(CMakeCompiler.txt)
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-#####################################################  ICU
-INCLUDE(cmake_modules/FindICU.cmake)
-IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
-ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-    SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
-    INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
-ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-
 #####################################################  LibXml2
 FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
