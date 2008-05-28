@@ -19,7 +19,7 @@
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 
 
 namespace zorba {

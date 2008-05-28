@@ -17,7 +17,7 @@
 #include "zorbatypes/utf8.h"
 #include "compiler/parser/util.h"
 #include "compiler/parser/query_loc.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 using namespace std;
 namespace zorba {

@@ -25,7 +25,7 @@
 
 
 #include "common/common.h"
-#include "util/rchandle.h"
+#include "zorbatypes/rchandle.h"
 
 
 namespace zorba {

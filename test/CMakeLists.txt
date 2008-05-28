@@ -37,7 +37,7 @@ SET(TEST_STORE_SRCS
     test_store.cpp)
 
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
-TARGET_LINK_LIBRARIES(test_store zorba)
+TARGET_LINK_LIBRARIES(test_store zorbatypes zorbaerrors zorba)
 
 
 SET(TEST_ORDPATH_SRCS

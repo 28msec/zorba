@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 
 #include "store/util/mutex.h"
 #include <iostream>

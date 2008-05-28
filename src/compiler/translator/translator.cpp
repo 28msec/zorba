@@ -29,8 +29,8 @@
 #include "compiler/translator/translator.h"
 #include "compiler/api/compilercb.h"
 
-#include "errors/error_manager.h"
-#include "errors/fatal.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/fatal.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"

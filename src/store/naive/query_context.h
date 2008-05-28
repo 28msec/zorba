@@ -21,7 +21,7 @@
 #include <vector>
 
 #include "common/shared_types.h"
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "store/util/mutex.h"
 
 namespace zorba { namespace store {

@@ -19,7 +19,7 @@
 #include "types/delegating_typemanager.h"
 #include "types/typeops.h"
 #include "runtime/api/runtimecb.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
 #include "runtime/api/plan_iterator_wrapper.h"

@@ -21,7 +21,7 @@
 #include "common/common.h"
 #include "store/api/item.h"
 #include "common/shared_types.h"
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/node_vector.h"
 #include "store/naive/node_updates.h"

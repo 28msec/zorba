@@ -20,7 +20,6 @@
 #include <string>
 #include <vector>
 
-#include "util/rchandle.h"
 #include "common/common.h"
 
 namespace zorba {

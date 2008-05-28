@@ -24,10 +24,13 @@ ADD_SUBDIRECTORY(common)
 ADD_SUBDIRECTORY(zorbatypes)
 SET(requiredlibs ${requiredlibs} zorbatypes)
 
+ADD_SUBDIRECTORY(zorbaerrors)
+SET(requiredlibs ${requiredlibs} zorbaerrors)
+
 # generate the zorba library
 SET(ZORBA_SRCS)
 
-############################################################ Add files compiled into the library
+######################################### Add files compiled into the library
 ADD_SRC_SUBFOLDER(ZORBA_SRCS api API_SRCS )
 FOREACH (SRCS ${API_BUILD_SRCS})
   LIST(APPEND ZORBA_SRCS ${SRCS})

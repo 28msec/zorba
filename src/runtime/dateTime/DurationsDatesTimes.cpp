@@ -15,7 +15,7 @@
  */
 #include "store/api/item.h"
 
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 
 #include "types/casting.h"
 #include "context/dynamic_context.h"
@@ -23,7 +23,7 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/api/runtimecb.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"

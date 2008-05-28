@@ -20,8 +20,8 @@
 #include "store/api/item.h"
 #include "api/serialization/serializer.h"
 #include "zorbatypes/numconversions.h"
-#include "errors/error_manager.h"
-#include "util/Assert.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
 #include "zorbatypes/utf8.h"
 #include <zorba/zorbastring.h>
 

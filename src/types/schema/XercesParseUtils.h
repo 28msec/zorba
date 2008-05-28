@@ -19,7 +19,6 @@
 #include "xercesIncludes.h"
 
 #include <zorba/api_shared_types.h>
-#include "util/rchandle.h"
 #include <zorba/item.h>
 #include "common/shared_types.h"
 #include "types/typeconstants.h"

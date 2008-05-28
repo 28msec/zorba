@@ -17,9 +17,9 @@
 #include "common/common.h"
 
 #include "store/api/iterator.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 
 #include "store/api/temp_seq.h"
 #include "store/api/copymode.h"

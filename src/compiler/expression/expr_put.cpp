@@ -28,7 +28,7 @@
 
 #include "types/typeops.h"
 
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "util/tracer.h"
 #include "util/properties.h"
 

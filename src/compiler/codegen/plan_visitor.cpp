@@ -27,7 +27,7 @@
 #include "compiler/parser/parse_constants.h"
 
 #include "system/globalenv.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 
 #include "context/namespace_context.h"
 #include "context/static_context.h"

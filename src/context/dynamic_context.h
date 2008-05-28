@@ -18,8 +18,6 @@
 
 #include "zorbatypes/representations.h"
 
-#include "util/rchandle.h"
-
 #include "util/hashmap.h"
 #include "common/shared_types.h"
 

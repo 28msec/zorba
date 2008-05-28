@@ -29,7 +29,7 @@
 #include "types/casting.h"
 #include "types/delegating_typemanager.h"
 
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 
 #include "system/globalenv.h"
 
@@ -37,7 +37,7 @@
 
 #include <zorbatypes/xerces_xmlcharray.h>
 
-#include "context/ns_consts.h"
+#include "zorbamisc/ns_consts.h"
 
 namespace zorba
 {

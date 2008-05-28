@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "store/util/latch.h"
 #include <iostream>
 

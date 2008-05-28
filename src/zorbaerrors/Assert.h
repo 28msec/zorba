@@ -28,8 +28,8 @@
 #include <stdlib.h>
 #endif
 
-#include "errors/errors.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 
 namespace zorba {
 

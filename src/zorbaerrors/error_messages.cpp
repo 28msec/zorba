@@ -15,9 +15,8 @@
  */
 #include <string>
 
-#include "util/Assert.h"
-
-#include "errors/error_messages.h"
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_messages.h"
 
 using namespace std;
 

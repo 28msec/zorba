@@ -16,7 +16,7 @@
 #include "runtime/core/sequencetypes.h"
 #include "runtime/util/iterator_impl.h"
 #include "system/globalenv.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "types/casting.h"
 #include "types/typeops.h"
 #include "store/api/item_factory.h"

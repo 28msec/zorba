@@ -15,8 +15,8 @@
  */
 #include "runtime/core/trycatch.h"
 
-#include "errors/errors.h"
-#include "util/Assert.h"
+#include "zorbaerrors/errors.h"
+#include "zorbaerrors/Assert.h"
 
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planitervisitor.h"
@@ -120,7 +120,10 @@ TryCatchIterator::getStateSizeOfSubtree() const
 
 // check if/which catch matches and bind the state's catch iterator to the matching catch clause
 bool
-TryCatchIterator::matchedCatch(error::ZorbaError& e, TryCatchIteratorState* state, PlanState& planState) const
+TryCatchIterator::matchedCatch(
+    error::ZorbaError& e,
+    TryCatchIteratorState* state,
+    PlanState& planState) const
 {
   std::vector<CatchClause>::const_iterator lIter = theCatchClauses.begin(); 
   std::vector<CatchClause>::const_iterator lEnd = theCatchClauses.end();
@@ -128,7 +131,9 @@ TryCatchIterator::matchedCatch(error::ZorbaError& e, TryCatchIteratorState* stat
   {
     const CatchClause& cc = *lIter;
     const NodeNameTest& nt = *cc.node_name;
-    if (nt.matches(&*e.theQName)) {
+
+    if (nt.matches(e.theLocalName.getStore(), e.theNamespace.getStore()))
+    {
       state->theCatchIterator = cc.catch_expr;
       bindErrorVars(e, &cc, planState);
       return true;

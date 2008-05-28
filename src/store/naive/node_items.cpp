@@ -20,8 +20,8 @@
 
 #include "system/globalenv.h"
 #include "compiler/parser/query_loc.h"
-#include "errors/error_manager.h"
-#include "util/Assert.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
 #include "zorbatypes/URI.h"
 
 #include "store/api/copymode.h"

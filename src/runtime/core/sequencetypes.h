@@ -16,7 +16,7 @@
 #ifndef ZORBA_SEQUENCETYPES_H
 #define ZORBA_SEQUENCETYPES_H
 
-#include "errors/errors.h"
+#include "zorbaerrors/errors.h"
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"

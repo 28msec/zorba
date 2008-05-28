@@ -16,7 +16,7 @@
 #include "capi/item_factory.h"
 #include "capi/item.h"
 #include <zorba/zorba.h>
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 using namespace zorba;
 

@@ -19,8 +19,6 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 
-#include "util/rchandle.h"
-
 #include "util/hashmap.h"
 
 namespace zorba {

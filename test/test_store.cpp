@@ -20,7 +20,7 @@
 
 #include <zorba/zorba.h>
 
-#include "errors/errors.h"
+#include "zorbaerrors/errors.h"
 #include "system/globalenv.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/atomic_items.h"

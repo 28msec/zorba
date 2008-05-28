@@ -15,7 +15,7 @@
  */
 
 #include <zorba/error.h>
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/datetime.h"
 
 #include "store/api/item.h"

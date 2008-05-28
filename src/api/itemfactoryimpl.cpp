@@ -15,7 +15,7 @@
  */
 #include <zorba/item.h>
 #include <boost/cast.hpp>
-#include "errors/errors.h"
+#include "zorbaerrors/errors.h"
 #include "api/itemfactoryimpl.h"
 
 #include "zorbatypes/duration.h"

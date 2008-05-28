@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "common/common.h"
-#include "util/rchandle.h"
 #include "common/shared_types.h"
 
 namespace zorba { 

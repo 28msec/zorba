@@ -17,7 +17,8 @@
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
 
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
+#include "errors/user_error.h"
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
@@ -57,7 +58,11 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
       lErrorObject.push_back(lTmpErrorObject);
   }
   
-  ZORBA_USER_ERROR(err_qname, description, loc, lErrorObject);
+  {
+    error::ZorbaUserError lError(err_qname, description, loc, 
+                                 __FILE__, __LINE__, lErrorObject);
+    throw lError;
+  }
 
   STACK_END (state);
 }

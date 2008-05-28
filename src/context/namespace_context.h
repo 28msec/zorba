@@ -20,10 +20,9 @@
 #include <vector>
 
 #include "zorbatypes/representations.h"
+#include "zorbatypes/rchandle.h"
 
-#include "util/rchandle.h"
-
-#include "context/ns_consts.h"
+#include "zorbamisc/ns_consts.h"
 
 namespace zorba {
 

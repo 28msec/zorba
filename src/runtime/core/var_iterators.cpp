@@ -15,7 +15,7 @@
  */
 #include "store/api/iterator.h"
 #include "store/api/item.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"
 

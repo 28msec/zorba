@@ -80,11 +80,22 @@ bool NodeNameTest::operator ==(const NodeNameTest& other) const
   return other.m_uri->byteEqual(*m_uri) && other.m_local->byteEqual(*m_local);
 }
 
+
 bool NodeNameTest::matches(store::Item *qname) const
 {
   return ((m_uri->str() == "*" || m_uri->byteEqual(*qname->getNamespace()))
           &&
           (m_local->str() == "*" || m_local->byteEqual(*qname->getLocalName())));
+}
+
+
+bool NodeNameTest::matches(
+    const xqpStringStore* lname,
+    const xqpStringStore* ns) const
+{
+  return ((m_uri->str() == "*" || m_uri->byteEqual(*ns))
+          &&
+          (m_local->str() == "*" || m_local->byteEqual(*lname)));
 }
 
 

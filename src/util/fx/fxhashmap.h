@@ -41,7 +41,7 @@
 #include "util/fx/fxarray.h"
 #include "util/fx/fxvector.h"
 #include "util/hashfun.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 namespace zorba {
 

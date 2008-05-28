@@ -21,7 +21,7 @@
 #include "system/globalenv.h"
 #include "store/api/item.h"
 #include "types/root_typemanager.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "types/delegating_typemanager.h"
 
 namespace zorba {

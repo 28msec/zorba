@@ -25,7 +25,7 @@
 #include "context/static_context_consts.h"
 #include "system/globalenv.h"
 #include <zorba/typeident.h>
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "api/zorbaimpl.h"
 #include "types/casting.h"
 

@@ -29,11 +29,11 @@
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/api/runtimecb.h"
 
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 
 #include "context/collation_cache.h"
 
-#include "errors/error_messages.h"
+#include "zorbaerrors/error_messages.h"
 
 
 using namespace std;

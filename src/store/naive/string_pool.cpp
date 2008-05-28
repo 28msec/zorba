@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "store/naive/string_pool.h"
 
 namespace zorba { namespace store {

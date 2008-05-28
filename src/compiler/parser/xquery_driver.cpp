@@ -20,7 +20,7 @@
 #include "compiler/parser/xquery_scanner.h"
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 using namespace std;
 namespace zorba {

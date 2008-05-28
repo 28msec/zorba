@@ -16,10 +16,10 @@
 #include "store/api/item.h"
 
 #include "store/api/iterator.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/visitors/planitervisitor.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 #define MYTRACE(msg) \
 {\

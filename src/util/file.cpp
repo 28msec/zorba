@@ -49,7 +49,7 @@
 #include <sstream>
 #include <string>
 
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 
 using namespace std;

@@ -21,7 +21,7 @@
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/positional_options.hpp>
 
-#include  "errors/errors.h"
+#include  "zorbaerrors/errors.h"
 #include  "store/naive/ordpath.h"
 
 

@@ -16,14 +16,15 @@
 #include <sstream>
 
 #include "runtime/core/arithmetic_impl.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
+#include "compiler/parser/query_loc.h"
 #include "types/root_typemanager.h"
 #include "types/casting.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "store/api/item_factory.h"
 #include "context/dynamic_context.h"
 #include "runtime/api/runtimecb.h"

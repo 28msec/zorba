@@ -26,8 +26,8 @@
 
 #include <zorbatypes/URI.h>
 
-#include "errors/errors.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "system/globalenv.h"
 #include "api/staticcontextimpl.h"

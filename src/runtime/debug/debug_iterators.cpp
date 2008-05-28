@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <iostream>
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "runtime/debug/debug_iterators.h"
 #include "store/api/item.h"
 

@@ -19,7 +19,7 @@
 #include <ostream>
 #include <boost/shared_ptr.hpp>
 #include <zorba/typeident.h>
-#include "util/rchandle.h"
+#include "zorbatypes/rchandle.h"
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
 

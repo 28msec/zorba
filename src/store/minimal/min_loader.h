@@ -17,7 +17,6 @@
 #define ZORBA_MINIMAL_STORE_LOADER_H
 
 #include <stack>
-#include "util/rchandle.h"
 //#include <libxml/parser.h>
 //#include <libxml/xmlstring.h>
 

@@ -15,7 +15,7 @@
  */
 
 #include "common/shared_types.h"
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 
 #include "store/naive/node_vector.h"
 #include "store/naive/node_items.h"

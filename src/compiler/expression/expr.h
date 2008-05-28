@@ -25,7 +25,7 @@
 
 #include "zorbatypes/representations.h"
 
-#include "errors/errors.h"
+#include "zorbaerrors/errors.h"
 
 #include "compiler/expression/expr_base.h"
 

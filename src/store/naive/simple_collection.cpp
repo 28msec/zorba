@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "util/rchandle.h"
 
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_loader.h"

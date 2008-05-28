@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "common/shared_types.h"
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
 #include "runtime/api/runtimecb.h"

@@ -16,7 +16,7 @@
 #include <cassert>
 #include <zorba/error.h>
 #include "zorbatypes/binary.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 namespace zorba {
 

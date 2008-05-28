@@ -12,7 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(ERRORS_SRCS
-   user_error.cpp)
+SET(ZORBAERRORS_SRCS
+   errors.cpp
+   error_manager.cpp
+   error_messages.cpp)
 
 
+ADD_LIBRARY(zorbaerrors ${ZORBAERRORS_SRCS})

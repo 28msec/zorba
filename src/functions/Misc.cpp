@@ -15,8 +15,6 @@
  */
 #include "functions/Misc.h"
 
-#include "system/globalenv.h"
-#include "errors/error_manager.h"
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/misc/MiscImpl.h"
 

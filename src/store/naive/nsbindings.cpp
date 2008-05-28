@@ -15,7 +15,7 @@
  */
 
 #include "zorbatypes/xqpstring.h"
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "store/naive/nsbindings.h"
 
 namespace zorba { namespace store {

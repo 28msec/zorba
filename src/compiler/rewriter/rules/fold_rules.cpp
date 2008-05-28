@@ -30,32 +30,42 @@
 #include "functions/Boolean.h"
 #include "functions/arithmetic.h"
 
-#include "errors/error_messages.h"
-#include "errors/errors.h"
+#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/errors.h"
 
 using namespace std;
 
 namespace zorba {
 
-  static expr_t execute (CompilerCB* compilercb, expr_t node, vector<store::Item_t> &result) {
-    PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
-    QueryLoc loc = LOC (node);
-    store::Item_t item;
-    try {
-      for (PlanWrapperHolder pw  (new PlanWrapper (plan, compilercb, NULL)); (item = pw->next ()) != NULL; )
-        result.push_back (item);
-      return NULL;
-    } catch (error::ZorbaError& e) {
-      XQUERY_ERROR lErrorCode = e.theErrorCode;
-      QueryLoc loc = e.theQueryLocation;
-      expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 2),
-                                     new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ())),
-                                     new const_expr (loc, e.theDescription));
-      err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
-      err_expr->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
-      return err_expr;
-    }
+static expr_t execute(
+    CompilerCB* compilercb,
+    expr_t node,
+    vector<store::Item_t> &result)
+{
+  PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
+  QueryLoc loc = LOC (node);
+  store::Item_t item;
+  try 
+  {
+    for (PlanWrapperHolder pw  (new PlanWrapper (plan, compilercb, NULL)); (item = pw->next ()) != NULL; )
+      result.push_back (item);
+    return NULL;
+  } 
+  catch (error::ZorbaError& e) 
+  {
+    XQUERY_ERROR lErrorCode = e.theErrorCode;
+    QueryLoc loc;
+    loc.setLineBegin(e.theQueryLine);
+    loc.setColumnBegin(e.theQueryColumn);
+    
+    expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 2),
+                                   new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ())),
+                                   new const_expr (loc, e.theDescription));
+    err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
+    err_expr->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
+    return err_expr;
   }
+}
 
   RULE_REWRITE_PRE(MarkFreeVars) {
     return NULL;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <zorba/zorbastring.h>
-#include "util/rchandle.h"
+
 #include "zorbatypes/xqpstring.h"
 #include "api/unmarshaller.h"
 

@@ -17,8 +17,8 @@
 #include <stack>
 
 #include "system/globalenv.h"
-#include "errors/error_manager.h"
-#include "util/Assert.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
 
 #include "store/api/copymode.h"
 #include "store/naive/store_defs.h"

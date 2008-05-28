@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "util/rchandle.h"
+
 #include "store/api/item.h"
 
 // TODO check the include
@@ -33,8 +33,8 @@
 
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "util/tracer.h"
-#include "util/Assert.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
 #include "types/typemanager.h"
 
 

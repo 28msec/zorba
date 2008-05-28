@@ -25,7 +25,7 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "types/typeimpl.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include <zorbatypes/numconversions.h>
 //#include "util/XmlWhitespace.h"
 #include "system/globalenv.h"

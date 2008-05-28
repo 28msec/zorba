@@ -20,9 +20,9 @@
 
 #include "system/globalenv.h"
 
-#include "errors/error_manager.h"
-#include "errors/errors.h"
-#include "util/rchandle.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/errors.h"
+
 #include "api/zorbaimpl.h"
 #include "api/serialization/serializer.h"
 

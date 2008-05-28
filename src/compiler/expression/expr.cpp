@@ -31,10 +31,10 @@
 #include "system/globalenv.h"
 #include "functions/function.h"
 
-#include "util/Assert.h"
 #include "util/tracer.h"
 
-#include "errors/error_manager.h"
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "types/root_typemanager.h"
 

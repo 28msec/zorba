@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_UTIL_HASHMAP
 #define ZORBA_STORE_UTIL_HASHMAP
 
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "util/checked_vector.h"
 
 #include "common/shared_types.h"

@@ -15,7 +15,7 @@
  */
 #include <vector>
 
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "system/globalenv.h"
 #include "runtime/nodes/NodesImpl.h"
 #include "store/api/item_factory.h"

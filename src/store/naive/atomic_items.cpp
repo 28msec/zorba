@@ -17,8 +17,8 @@
 #include "store/api/item.h"
 #include "store/naive/node_items.h"
 
-#include "util/Assert.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
 #include "compiler/parser/query_loc.h"
 #include "util/hashfun.h"
 #include "runtime/api/runtimecb.h"

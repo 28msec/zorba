@@ -16,10 +16,10 @@
  
 #include "store/api/item.h"
 #include "store/api/iterator.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "runtime/accessors/AccessorsImpl.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "store/api/item_factory.h"
 #include "context/namespace_context.h"
 

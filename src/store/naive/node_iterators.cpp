@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"

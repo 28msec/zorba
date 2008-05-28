@@ -18,7 +18,7 @@
 #include <vector>
 #include <sstream>
 
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -39,10 +39,10 @@
 #include "context/static_context.h"
 #include "context/collation_cache.h"
 
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypesError.h"
 #include "zorbatypes/URI.h"
-#include "errors/error_messages.h"
+#include "zorbaerrors/error_messages.h"
 
 #include "util/web/web.h"
 #include "store/util/hashset_node_handle.h"

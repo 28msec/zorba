@@ -24,8 +24,8 @@
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"
 #include "api/collectionimpl.h"
-#include "errors/errors.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "store/api/collection.h"
 #include "store/api/item.h"

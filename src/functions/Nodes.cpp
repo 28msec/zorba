@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 #include "functions/Nodes.h"
-#include "errors/error_manager.h"
-#include "system/globalenv.h"
+
 #include "runtime/nodes/NodesImpl.h"
 
 #include "store/api/iterator.h"

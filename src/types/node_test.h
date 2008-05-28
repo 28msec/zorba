@@ -16,10 +16,11 @@
 #ifndef ZORBA_NODE_TEST_H
 #define ZORBA_NODE_TEST_H
 
+#include <zorba/store_consts.h>
+
+#include "zorbatypes/rchandle.h"
 #include "zorbatypes/xqpstring.h"
 
-#include "util/rchandle.h"
-#include <zorba/store_consts.h>
 #include "store/api/item.h"
 
 namespace zorba {
@@ -41,8 +42,14 @@ class NodeNameTest : virtual public SimpleRCObject
   rchandle<xqpStringStore> get_local() const;
   
   bool operator==(const NodeNameTest& other) const;
+
   bool is_subname_of(const NodeNameTest& other) const;
+
   bool matches(store::Item *qname) const;
+
+  bool matches(
+        const xqpStringStore* lname,
+        const xqpStringStore* ns) const;
 
  private:
   kind_t                   m_kind;

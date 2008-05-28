@@ -17,15 +17,15 @@
 
 #include <istream>
 
-#include "errors/fatal.h"
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
 #include "api/itemfactoryimpl.h"
 #include "api/unmarshaller.h"
 #include "api/xmldatamanagerimpl.h"
 
-#include "errors/errors.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/fatal.h"
+#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 
 namespace zorba {
@@ -219,8 +219,8 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                      String(aError.theDescription.theStrStore),
                                      String(aError.theFileName),
                                      aError.theLineNumber,
-                                     aError.theQueryLocation.getLineBegin(),
-                                     aError.theQueryLocation.getColumnBegin());
+                                     aError.theQueryLine,
+                                     aError.theQueryColumn);
     aErrorHandler->staticError(lStaticException);
   }
   else if (aError.isDynamicError())
@@ -229,8 +229,8 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                        String(aError.theDescription.theStrStore),
                                        String(aError.theFileName),
                                        aError.theLineNumber,
-                                       aError.theQueryLocation.getLineBegin(),
-                                       aError.theQueryLocation.getColumnBegin());
+                                       aError.theQueryLine,
+                                       aError.theQueryColumn);
     aErrorHandler->dynamicError(lDynamicException);
   }
   else if (aError.isTypeError()) 
@@ -239,8 +239,8 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                  String(aError.theDescription.theStrStore),
                                  String(aError.theFileName),
                                  aError.theLineNumber,
-                                 aError.theQueryLocation.getLineBegin(),
-                                 aError.theQueryLocation.getColumnBegin());
+                                 aError.theQueryLine,
+                                 aError.theQueryColumn);
     aErrorHandler->typeError(lTypeException);
   }
   else if (aError.isSerializationError()) 
@@ -249,8 +249,8 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                          String(aError.theDescription.theStrStore),
                                          String(aError.theFileName),
                                          aError.theLineNumber,
-                                         aError.theQueryLocation.getLineBegin(),
-                                         aError.theQueryLocation.getColumnBegin());
+                                         aError.theQueryLine,
+                                         aError.theQueryColumn);
     aErrorHandler->serializationError(lSerException);
   }
   else if (aError.isInternalError()) 

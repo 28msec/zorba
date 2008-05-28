@@ -27,7 +27,6 @@
 #include <map>
 
 #include "zorbatypes/zorbatypes_decl.h"
-#include "util/rchandle.h"
 #include "util/checked_vector.h"
 
 namespace zorba {

@@ -18,7 +18,7 @@
 #include <zorba/item_sequence.h>
 #include <zorba/stateless_function.h>
 
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/fncall_iterator.h"
 #include "functions/function.h"

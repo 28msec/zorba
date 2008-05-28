@@ -28,7 +28,7 @@
 #include "types/typemanagerimpl.h"
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "zorbatypes/representations.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"

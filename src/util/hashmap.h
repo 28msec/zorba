@@ -28,12 +28,12 @@
 #include <string>
 #include <iostream>
 
-#include "util/rchandle.h"
+//#include "util/rchandle.h"
 
 #include "util/hashfun.h"
 #include "util/checked_vector.h"
 #include "util/rwlock.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 
 namespace zorba {

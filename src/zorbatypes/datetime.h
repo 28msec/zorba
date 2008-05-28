@@ -18,7 +18,7 @@
 
 #include "zorbatypes/timezone.h"
 #include "zorbatypes/duration.h"
-#include "util/rchandle.h"
+#include "zorbatypes/rchandle.h"
 
 namespace zorba
 {

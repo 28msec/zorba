@@ -22,13 +22,13 @@
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "types/typeops.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 #include "context/namespace_context.h"
 #include "types/typeconstants.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "types/delegating_typemanager.h"
 
 

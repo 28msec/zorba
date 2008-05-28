@@ -16,7 +16,6 @@
 #ifndef XQP_FXCHARHEAP_H
 #define XQP_FXCHARHEAP_H
 
-#include "util/rchandle.h"
 #include "common/common.h"
 
 #include "util/fx/fxarray.h"

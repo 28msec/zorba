@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "runtime/core/item_iterator.h"
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "store/api/temp_seq.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planitervisitor.h"

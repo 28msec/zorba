@@ -26,9 +26,9 @@
 #include <boost/variant.hpp>
 
 #include "store/api/item.h"
-#include "util/rchandle.h"
-#include "context/static_context_consts.h"
+#include "zorbatypes/rchandle.h"
 #include "zorbatypes/representations.h"
+#include "context/static_context_consts.h"
 
 #include "compiler/parser/parse_constants.h"
 #include "store/api/update_consts.h"

@@ -18,7 +18,7 @@
 #include "context/collation_cache.h"
 #include "context/static_context.h"
 
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 namespace zorba {
 

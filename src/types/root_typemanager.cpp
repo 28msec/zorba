@@ -24,7 +24,6 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "types/root_typemanager.h"
-#include "util/Assert.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 

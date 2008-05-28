@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "util/web/web.h"
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 
 namespace zorba
 {
