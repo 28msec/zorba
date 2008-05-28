@@ -20,6 +20,7 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) # must be removed if pt
 # only platform headers and configuration stuff is in there
 ADD_SUBDIRECTORY(common)
 
+# build the zorba types library and add it to the requiredlibs
 ADD_SUBDIRECTORY(zorbatypes)
 SET(requiredlibs ${requiredlibs} zorbatypes)
 
@@ -36,7 +37,6 @@ ADD_SRC_SUBFOLDER(ZORBA_SRCS compiler COMPILER_SRCS)
 FOREACH (SRCS ${COMPILER_BUILD_SRCS})
   LIST(APPEND ZORBA_SRCS ${SRCS})
 ENDFOREACH (SRCS)
-#ADD_SRC_SUBFOLDER(ZORBA_SRCS zorbatypes ZORBATYPES_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS system SYSTEM_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS context CONTEXT_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS errors	ERRORS_SRCS)
