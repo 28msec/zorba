@@ -40,18 +40,16 @@ ResultIteratorChainer::open()
   theResult->open();
 }
 
-
-Item_t
-ResultIteratorChainer::next() 
+bool
+ResultIteratorChainer::next(Item_t& result) 
 {
-  Item_t lStoreItem;
-
   ::zorba::Item lItem;
   while ( theResult->next(lItem) ) {
-    return Unmarshaller::getInternalItem(lItem); 
+    result = Unmarshaller::getInternalItem(lItem);
+    return true;
   }
-
-  return NULL;
+  result = NULL;
+  return false;
 }
 
 

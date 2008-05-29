@@ -26,16 +26,13 @@ namespace zorba { namespace store {
 SimpleTempSeq::SimpleTempSeq(Iterator_t iter, bool copy, bool lazy)
 {
   CopyMode lCopyMode;
-  Item_t curItem = iter->next();
+  Item_t curItem;
 
-  while ( curItem != NULL )
-	{
+  while ( iter->next(curItem) ) {
     if (copy && curItem->isNode()) 
       curItem = curItem->copyXmlTree(lCopyMode);
 
     theItems.push_back(curItem.transfer());
-
-    curItem = iter->next();
   }
 }
 
@@ -111,16 +108,14 @@ bool SimpleTempSeq::containsItem(int32_t position)
 ********************************************************************************/
 void SimpleTempSeq::append(Iterator_t iter, bool copy)
 {
-  Item_t curItem = iter->next();
+  Item_t curItem;
   CopyMode lCopyMode;
-  while ( curItem != NULL )
+  while ( iter->next(curItem) )
   {
     if (copy && curItem->isNode())
       curItem = curItem->copyXmlTree(lCopyMode);
 
     theItems.push_back(curItem.transfer());
-
-    curItem = iter->next();
   }
 }
 
@@ -281,26 +276,32 @@ void SimpleTempSeq::SimpleTempSeqIter::open()
 }
 
 
-Item_t SimpleTempSeq::SimpleTempSeqIter::next()
+bool SimpleTempSeq::SimpleTempSeqIter::next(Item_t& result)
 {
   theCurPos++;
   switch (theBorderType)
 	{
   case none:
     if ( theCurPos < theTempSeq->getSize() ) {
-      return (*theTempSeq)[theCurPos];
+      result = (*theTempSeq)[theCurPos];
+      return true;
     }
     break;
   case startEnd:
-    if ( theCurPos < theEndPos )
-      return  (*theTempSeq)[theCurPos];
+    if ( theCurPos < theEndPos ) {
+      result = (*theTempSeq)[theCurPos];
+      return true;
+    }
     break;
   case specificPositions:
-    if ( theCurPos < int32_t ( thePositions.size() ) )
-      return  (*theTempSeq)[thePositions[theCurPos]];
+    if ( theCurPos < int32_t ( thePositions.size() ) ) {
+      result =  (*theTempSeq)[thePositions[theCurPos]];
+      return true;
+    }
     break;
   }
-  return NULL;
+  result = NULL;
+  return false;
 }
   
 

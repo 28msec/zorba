@@ -42,7 +42,7 @@ public:
 
   virtual ~FnDataIterator() { }
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -94,7 +94,7 @@ class FnStringIterator : public NaryBaseIterator<FnStringIterator, FnStringItera
 
     virtual ~FnStringIterator() { }
 
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor& v) const;
 

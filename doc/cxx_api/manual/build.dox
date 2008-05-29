@@ -31,7 +31,7 @@ In order ot build Zorba, you need the following libraries and development header
 -# Install the Zorba source distribution (see \ref installation). The directory in which the Zorba
            sources are installed is refered to as <tt>[ZORBA]</tt> in the following.
 -# Change the working directory into <tt>[ZORBA]</tt>.
--# The recommended way to build software with CMake is by doing an <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">out-of-source build</a>. In order to build Zorba, this is the only allowed way. Hence, create the directory <tt>[ZORBA]/build</tt> to which we will refer as <tt>[ZORBABUILD]</tt> in the following.
+-# The recommended way to build Zorba is by creating and <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">out-of-source build</a>. We suggest to create the directory <tt>[ZORBA]/build</tt> and refer to this directory as <tt>[ZORBABUILD]</tt> in the following.
 -# Change the working directory into the <tt>[ZORBABUILD]</tt> directory and execute cmake as follows: <tt>cmake [ZORBA]</tt>. In case the <tt>[ZORBABUILD]</tt> is located directly within the <tt>[ZORBA]</tt> directory just type <tt>cmake ..</tt> . This command should configure Zorba and prepare for the build. CMake will tell you if your installation is missing some of the required libraries or development headers.
 -# If CMake was executed successfully, you should be able to run <tt>make</tt>. Running make will take some time. If make finished successfully, you're ready to install and run Zorba (see \ref installation).
 

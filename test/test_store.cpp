@@ -243,7 +243,8 @@ int main(int argc, const char * argv[])
   //
   // Test node references
   //
-  store::Item_t uri = store->getReference(doc);
+  store::Item_t uri;
+  store->getReference(uri, doc);
   std::cout << "Reference URI for node: " << doc.getp() << " is: "
             << uri->getStringValue()->c_str() << std::endl;
 
@@ -261,7 +262,10 @@ int main(int argc, const char * argv[])
     std::cout << e.theDescription << std::endl;
   }
 
-  store::Item_t doc2 = store->getNodeByReference(uri);
+  store::Item_t doc2;
+  if (!store->getNodeByReference(doc2, uri)) {
+    doc2 = NULL;
+  }
 
   if (doc != doc2)
     std::cout << "ERROR" << std::endl;
@@ -296,13 +300,16 @@ int main(int argc, const char * argv[])
       if (childPos == numChildren)
         break;
 
-      uri = store->getReference(child);
+      store->getReference(uri, child);
       std::cout << "Reference URI for node " << child << ":" 
                 << child->getNodeName()->getStringValue()->c_str()
                 << " at position " << childPos 
                 << " is: " << uri->getStringValue()->c_str() << std::endl;
 
-      Item_t child2 = store->getNodeByReference(uri);
+      Item_t child2;
+      if (!store->getNodeByReference(child2, uri)) {
+        child2 = NULL;
+      }
 
       if (child != child2.getp())
         std::cout << "ERROR" << std::endl;

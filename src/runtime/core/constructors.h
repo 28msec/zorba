@@ -59,7 +59,7 @@ public:
     : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 };
@@ -81,7 +81,7 @@ public:
     : UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent)
   {}
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 };
@@ -133,7 +133,7 @@ public:
       bool                isRoot);
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
@@ -186,7 +186,7 @@ public:
         PlanIter_t& aValueIter,
         bool isRoot);
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -207,7 +207,7 @@ public:
 
   virtual ~NameCastIterator();
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -230,7 +230,7 @@ public:
         PlanIter_t& aComment,
         bool isRoot);
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -253,7 +253,7 @@ public:
         PlanIter_t& aContent,
         bool isRoot);
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -275,7 +275,7 @@ protected:
 public:
   TextIterator( const QueryLoc& loc, PlanIter_t& aChild, bool isRoot);
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -311,7 +311,7 @@ public:
         const QueryLoc& loc,
         PlanIter_t& childIter);
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 

@@ -32,17 +32,15 @@ namespace zorba
  *_______________________________________________________________________*/
 
 /*begin class FnCurrentDateTimeIterator */
-store::Item_t
-FnCurrentDateTimeIterator::nextImpl(PlanState& planState) const
+bool
+FnCurrentDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t itemRes;
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
-  if( NULL != itemRes )
-    STACK_PUSH( itemRes, state );
+  result = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
+  if (result != NULL)
+    STACK_PUSH(true, state );
 
   STACK_END (state);
 }
@@ -57,8 +55,8 @@ FnCurrentDateTimeIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
 /*begin class FnCurrentDateIterator */
-store::Item_t
-FnCurrentDateIterator::nextImpl(PlanState& planState) const
+bool
+FnCurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
   xqp_date d;
@@ -70,7 +68,7 @@ FnCurrentDateIterator::nextImpl(PlanState& planState) const
   if( NULL != itemRes )
   {
     d = itemRes->getDateTimeValue()->getDate();
-    STACK_PUSH( GENV_ITEMFACTORY->createDate(d), state );
+    STACK_PUSH( GENV_ITEMFACTORY->createDate(result, d), state );
   }
 
   STACK_END (state);
@@ -86,8 +84,8 @@ FnCurrentDateIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
 /*begin class FnCurrentTimeIterator */
-store::Item_t
-FnCurrentTimeIterator::nextImpl(PlanState& planState) const
+bool
+FnCurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
   xqp_time t;
@@ -99,7 +97,7 @@ FnCurrentTimeIterator::nextImpl(PlanState& planState) const
   if( NULL != itemRes )
   {
     t = itemRes->getDateTimeValue()->getTime();
-    STACK_PUSH( GENV_ITEMFACTORY->createTime(t), state );
+    STACK_PUSH( GENV_ITEMFACTORY->createTime(result, t), state );
   }
 
   STACK_END (state);
@@ -115,8 +113,8 @@ FnCurrentTimeIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
 /*begin class FnImplicitTimezoneIterator */
-store::Item_t
-FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
+bool
+FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   long secs;
   bool neg;
@@ -131,7 +129,7 @@ FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
   if (neg) secs = -secs;
   db = new DayTimeDuration( neg, 0, 0, 0 , secs, 0);
   
-  STACK_PUSH( GENV_ITEMFACTORY->createDuration(db), state );
+  STACK_PUSH( GENV_ITEMFACTORY->createDuration(result, db), state );
 
   STACK_END (state);
 }
@@ -146,8 +144,8 @@ FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
 /*begin class FnDefaultCollationIterator */
-store::Item_t
-FnDefaultCollationIterator::nextImpl(PlanState& planState) const
+bool
+FnDefaultCollationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   xqpStringStore_t strColUri;
 
@@ -156,7 +154,7 @@ FnDefaultCollationIterator::nextImpl(PlanState& planState) const
 
   strColUri = planState.theRuntimeCB->theStaticContext->default_collation_uri().getStore();
 
-  STACK_PUSH(GENV_ITEMFACTORY->createString(strColUri), state );
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, strColUri), state );
 
   STACK_END (state);
 }

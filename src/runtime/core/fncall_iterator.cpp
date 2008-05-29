@@ -109,9 +109,8 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
   state->resetChildIters();
 }
 
-store::Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
+bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lSequenceItem;
   UDFunctionCallIteratorState *state;
 
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
@@ -130,8 +129,8 @@ store::Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  while ((lSequenceItem = consumeNext(state->thePlan, *state->theFnBodyStateBlock)) != NULL) {
-    STACK_PUSH(lSequenceItem, state);
+  while (consumeNext(result, state->thePlan, *state->theFnBodyStateBlock)) {
+    STACK_PUSH(true, state);
   }
 
   STACK_END (state);
@@ -147,8 +146,10 @@ class ExtFuncArgItemSequence : public ItemSequence {
 
     bool next(Item& item) 
     {
-      item = m_child->consumeNext(m_child.getp(), m_stateBlock);
-      return !item.isNull();
+      store::Item_t result;
+      bool status = m_child->consumeNext(result, m_child.getp(), m_stateBlock);
+      item = status ? result : NULL;
+      return status;
     }
 
   private:
@@ -189,29 +190,28 @@ void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& 
   }
 }
 
-store::Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState) const
+bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   StatelessExtFunctionCallIteratorState *state;
-  store::Item_t lSequenceItem;
   Item lOutsideItem;
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
   state->m_result = m_function->evaluate(state->m_extArgs);
   while (state->m_result->next(lOutsideItem)) {
-    lSequenceItem = Unmarshaller::getInternalItem(lOutsideItem);
+    result = Unmarshaller::getInternalItem(lOutsideItem);
     if (theIsUpdating)
     {
-      if (!lSequenceItem->isPul())
+      if (!result->isPul())
       {
         ZORBA_ERROR_LOC(XUDY0019, loc);
       }
     } else {
-      if (lSequenceItem->isPul())
+      if (result->isPul())
       {
         ZORBA_ERROR_LOC(XUDY0018, loc); 
       }
     }
-    STACK_PUSH(lSequenceItem, state);
+    STACK_PUSH(true, state);
   }
 
   STACK_END (state);

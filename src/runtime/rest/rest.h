@@ -84,8 +84,8 @@ public:
     children.push_back(child2);
   }
     
-  store::Item_t
-  nextImpl(PlanState& aPlanState) const;
+  bool
+  nextImpl(store::Item_t& result, PlanState& aPlanState) const;
     
   virtual void
   accept(PlanIterVisitor& v) const
@@ -135,8 +135,8 @@ public:
     : NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(loc, aChildren)
   { } 
 
-  store::Item_t
-  nextImpl(PlanState& aPlanState) const;
+  bool
+  nextImpl(store::Item_t& result, PlanState& aPlanState) const;
                                                                          
   virtual void 
   accept(PlanIterVisitor& v) const
@@ -154,9 +154,9 @@ public:
   getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState);
   
 protected:
-  store::Item_t createResultNode(PlanState& planState, xqpString name, ChildrenIterator_t children = NULL) const;
-  store::Item_t createResultNode(PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child) const;
-  store::Item_t createResultNode(PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child1, store::Item_t child2) const;
+  bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, ChildrenIterator_t children = NULL) const;
+  bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child) const;
+  bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child1, store::Item_t child2) const;
   
 };
 

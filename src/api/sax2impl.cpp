@@ -30,7 +30,8 @@ SAX2AttributesImpl::SAX2AttributesImpl(store::Item *item)
   if(attr_it == NULL)
     return;
   attr_it->open();
-  store::Item_t   child = attr_it->next();
+  store::Item_t child;
+  attr_it->next(child);
   while (child!= NULL)
   {		
     //emit_node(&*child, depth);
@@ -42,7 +43,7 @@ SAX2AttributesImpl::SAX2AttributesImpl(store::Item *item)
     a.type = child->getType()->getStringValue().getp();
     attrs.push_back(a);
 
-    child = attr_it->next();
+    attr_it->next(child);
   }
 
   attr_it->close();

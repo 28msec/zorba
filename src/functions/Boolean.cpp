@@ -229,7 +229,9 @@ namespace zorba
   PlanIter_t
   fn_true::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
-    return new SingletonIterator ( loc, GENV_ITEMFACTORY->createBoolean(true) );
+    store::Item_t res;
+    GENV_ITEMFACTORY->createBoolean(res, true);
+    return new SingletonIterator ( loc, res );
   }
 
 
@@ -241,7 +243,9 @@ namespace zorba
   PlanIter_t
   fn_false::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
-    return new SingletonIterator ( loc, GENV_ITEMFACTORY->createBoolean(false) );
+    store::Item_t res;
+    GENV_ITEMFACTORY->createBoolean(res, false);
+    return new SingletonIterator ( loc, res);
   }
 
 

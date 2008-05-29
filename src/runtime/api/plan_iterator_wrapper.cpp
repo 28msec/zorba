@@ -37,10 +37,10 @@ namespace zorba {
   {
   }
 
-  store::Item_t
-  PlanIteratorWrapper::next()
+  bool
+  PlanIteratorWrapper::next(store::Item_t& result)
   {
-    return PlanIterator::consumeNext(theIterator, *theStateBlock);
+    return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
   }
 
   void

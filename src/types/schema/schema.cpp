@@ -492,7 +492,8 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
             xqp_string lPrefix;
             xqp_string lLocal = transcode(xsTypeDef->getName());
 
-            store::Item_t qname = GENV_ITEMFACTORY->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
+            store::Item_t qname;
+            GENV_ITEMFACTORY->createQName(qname, lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
 
             xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager, qname, baseXQType, TypeConstants::QUANT_ONE));
 
@@ -585,9 +586,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aS
     ZORBA_ASSERT( baseType_ptr->type_kind() == XQType::ATOMIC_TYPE_KIND );
 
     xqpStringStore_t textval = textValue.getStore();
-    result = GenericCast::instance()->cast(textval, baseType_ptr);
-
-    return true;
+    return GenericCast::instance()->cast(result, textval, baseType_ptr);
 }
 #endif//ZORBA_NO_XMLSCHEMA
 

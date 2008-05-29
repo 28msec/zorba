@@ -35,7 +35,7 @@ public:
   virtual ~ItemIterator(){}
 
   virtual void open();
-  virtual Item_t next();
+  virtual bool next(Item_t&);
   virtual void reset();
   virtual void close();
 };

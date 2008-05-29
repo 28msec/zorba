@@ -49,8 +49,8 @@ namespace zorba {
       virtual void 
       open();
 
-      virtual store::Item_t 
-      next();
+      virtual bool
+      next(store::Item_t&);
 
       virtual void 
       reset();

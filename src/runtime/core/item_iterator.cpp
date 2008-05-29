@@ -25,11 +25,12 @@ namespace zorba
 
 
 /* start class SingletonIterator */
-store::Item_t SingletonIterator::nextImpl ( PlanState& planState ) const
+bool SingletonIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  STACK_PUSH ( theValue, state );
+  result = theValue;
+  STACK_PUSH ( result != NULL, state );
   STACK_END (state);
 }
 
@@ -52,28 +53,24 @@ IfThenElseIterator::IfThenElseIterator(
 { }
 
 
-store::Item_t IfThenElseIterator::nextImpl ( PlanState& planState ) const
+bool IfThenElseIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
 {
-  store::Item_t condResult;
-
   IfThenElseIteratorState* state;
   DEFAULT_STACK_INIT ( IfThenElseIteratorState, state, planState );
 
-  if ( theIsBooleanIter )
-    condResult = consumeNext ( theCondIter.getp(), planState );
-  else
-    condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc,
+  if ( theIsBooleanIter ) {
+    store::Item_t condResult;
+    consumeNext ( condResult, theCondIter.getp(), planState );
+    state->theThenUsed = condResult->getBooleanValue();
+  } else {
+    state->theThenUsed = FnBooleanIterator::effectiveBooleanValue ( this->loc,
                  planState, theCondIter );
-
-  if ( condResult->getBooleanValue() )
-    state->theThenUsed = true;
-  else
-    state->theThenUsed = false;
+  }
 
   while ( true )
   {
     STACK_PUSH (
-      consumeNext ( (state->theThenUsed ? theThenIter.getp() : theElseIter.getp()), planState ), 
+      consumeNext ( result, (state->theThenUsed ? theThenIter.getp() : theElseIter.getp()), planState ), 
       state 
     );
   }

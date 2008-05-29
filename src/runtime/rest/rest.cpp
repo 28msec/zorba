@@ -147,8 +147,8 @@ void ChildrenIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
 }
 
-store::Item_t
-ChildrenIterator::nextImpl(PlanState& planState) const
+bool
+ChildrenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   ChildrenIteratorState* state;
   DEFAULT_STACK_INIT(ChildrenIteratorState, state, planState);
@@ -156,11 +156,11 @@ ChildrenIterator::nextImpl(PlanState& planState) const
   state->index = 0;
   while(state->index < children.size())
   {
-    STACK_PUSH(children[state->index], state);
+    result = children[state->index];
+    STACK_PUSH(true, state);
     state->index++;
   }
   
-  STACK_PUSH(NULL, state);
   STACK_END (state);
 }
 
@@ -191,11 +191,13 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
 }
 
-store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpString name, ChildrenIterator_t children) const
+bool ZorbaRestGetIterator::createResultNode(store::Item_t& result, PlanState& planState, xqpString name, ChildrenIterator_t children) const
 {
   xqpString ns = "http://www.flworfound.org/rest";
   xqpString pre = "zorba-rest";
-  store::Item_t qname = GENV_ITEMFACTORY->createQName(ns.getStore(), pre.getStore(), name.getStore());
+  store::Item_t qname;
+  
+  GENV_ITEMFACTORY->createQName(qname, ns.getStore(), pre.getStore(), name.getStore());
   xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
   store::NsBindings bindings;
   store::CopyMode copymode;
@@ -204,7 +206,7 @@ store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpSt
   if (children != NULL)
     cwrapper.reset(new PlanWrapper(children.getp(), planState.theCompilerCB, planState.dctx()));
   
-  store::Item_t item = GENV_ITEMFACTORY->createElementNode((ulong)&planState,
+  return GENV_ITEMFACTORY->createElementNode(result, (ulong)&planState,
     qname,
     GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
     cwrapper.get(),
@@ -216,36 +218,34 @@ store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpSt
     true,
     false,
     copymode);
-    
-  return item;
 }
 
-store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child) const
+bool ZorbaRestGetIterator::createResultNode(store::Item_t& result, PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child) const
 {
   ChildrenIterator_t childIterator;
   childIterator = new ChildrenIterator(loc, child); 
-  return createResultNode(planState, name, childIterator);
+  return createResultNode(result, planState, name, childIterator);
 }
 
-store::Item_t ZorbaRestGetIterator::createResultNode(PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child1, store::Item_t child2) const
+bool ZorbaRestGetIterator::createResultNode(store::Item_t& result, PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child1, store::Item_t child2) const
 {
   ChildrenIterator_t childIterator;
   childIterator = new ChildrenIterator(loc, child1, child2);
-  return createResultNode(planState, name, childIterator);
+  return createResultNode(result, planState, name, childIterator);
 }
 
 
-store::Item_t
-ZorbaRestGetIterator::nextImpl(PlanState& planState) const
+bool
+ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lUri;
   xqpStringStore_t lUriString;
   int code;
-  store::Item_t result = NULL;
   store::Item_t doc = NULL;
   store::Store& store = GENV.getStore();
   
   ZorbaRestGetIteratorState* state;
+  bool valid = false;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
   
   /********* Initialization ***********************/
@@ -260,9 +260,8 @@ ZorbaRestGetIterator::nextImpl(PlanState& planState) const
   curl_easy_setopt(state->EasyHandle, CURLOPT_WRITEHEADER, state);
   curl_multi_add_handle(state->MultiHandle, state->EasyHandle);
 
-  if ( (lUri = CONSUME(0) ) == NULL ) 
-  {
-    //TODO: raise an error
+  if (!CONSUME(lUri, 0)) {
+    // todo raise an error
   }
 
   lUriString = lUri->getStringValue();
@@ -289,8 +288,10 @@ ZorbaRestGetIterator::nextImpl(PlanState& planState) const
     }
     
     xqpString temp = NumConversions::intToStr(result_code);
-    store::Item_t text_code = GENV_ITEMFACTORY->createTextNode((ulong)&planState, temp.theStrStore, false, true);
-    store::Item_t status_code = createResultNode(planState, "status_code", loc, text_code);
+    store::Item_t text_code;
+    GENV_ITEMFACTORY->createTextNode(text_code, (ulong)&planState, temp.theStrStore, false, true);
+    store::Item_t status_code;
+    createResultNode(status_code, planState, "status_code", loc, text_code);
     
     std::istream is(state->theStreamBuffer);
     try {
@@ -304,17 +305,20 @@ ZorbaRestGetIterator::nextImpl(PlanState& planState) const
     {
       store::Iterator_t children = doc->getChildren();
       children->open();
-      store::Item_t payload = createResultNode(planState, "payload", loc, children->next()); // TODO: check NULL
+      store::Item_t child;
+      children->next(child);
+      store::Item_t payload;
+      createResultNode(payload, planState, "payload", loc, child); // TODO: check NULL
     
-      result = createResultNode(planState, "result", loc, status_code, payload);
+      valid = createResultNode(result, planState, "result", loc, status_code, payload);
     }
     else
     {
-      result = createResultNode(planState, "result", loc, status_code);
+      valid = createResultNode(result, planState, "result", loc, status_code);
     }
   }
   
-  STACK_PUSH(result, state);
+  STACK_PUSH(valid, state);
   
   /********* Deinitialization ***********************/
   curl_multi_remove_handle(state->MultiHandle, state->EasyHandle);

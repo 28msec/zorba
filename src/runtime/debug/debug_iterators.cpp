@@ -36,23 +36,21 @@ FnTraceIteratorState::reset(PlanState& planState)
   theTagItem = NULL;
 }
 
-store::Item_t 
-FnTraceIterator::nextImpl(PlanState& planState) const
+bool
+FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lSequenceItem;
-
   FnTraceIteratorState *state;
   DEFAULT_STACK_INIT(FnTraceIteratorState, state, planState);
 
-  if ( (state->theTagItem = consumeNext(theChildren[1], planState)) == NULL ) {
+  if (!consumeNext(state->theTagItem, theChildren[1], planState)) {
     ZORBA_ERROR_LOC_DESC( FORG0006, loc,
         "An empty sequence is not allowed as as second argument to fn:trace");
   }
 
-  while ((lSequenceItem = consumeNext(theChildren[0], planState)) != NULL) {
+  while (consumeNext(result, theChildren[0], planState)) {
     // FIXME: check the standard how to return this
-    cerr << state->theTagItem->getStringValue() << lSequenceItem->getStringValue() << endl;
-    STACK_PUSH(lSequenceItem, state);
+    cerr << state->theTagItem->getStringValue() << result->getStringValue() << endl;
+    STACK_PUSH(true, state);
   }
 
   STACK_END (state);

@@ -38,7 +38,7 @@ class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, Pla
 
     ~ResolveQNameIterator() {};
   public:
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -58,7 +58,7 @@ class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState
 
     ~QNameIterator() {};
   public:
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -78,7 +78,7 @@ class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIte
 
     ~QNameEqualIterator() {};
   public:
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -97,7 +97,7 @@ class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator
   
     ~PrefixFromQNameIterator(){};
   public:
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -116,7 +116,7 @@ class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIt
   
     ~LocalNameFromQNameIterator(){};
   public:
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -135,7 +135,7 @@ class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQ
   
     ~NamespaceUriFromQNameIterator(){};
   public:
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -155,7 +155,7 @@ class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriFor
 
     ~NamespaceUriForPrefixlIterator() {};
   public:
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -190,7 +190,7 @@ public:
   ~InScopePrefixesIterator() {};
 
 public:
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };

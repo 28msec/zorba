@@ -48,8 +48,8 @@ InsertIterator::InsertIterator (
 { }
 
 
-store::Item_t
-InsertIterator::nextImpl (PlanState& aPlanState) const
+bool
+InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   store::StoreConsts::NodeKind targetKind;
   bool elemParent;
@@ -62,6 +62,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
   ulong numAttrs = 0;
   ulong numNodes = 0;
   std::auto_ptr<store::PUL> pul;
+  store::Item_t temp;
 
   static_context* sctx;
   store::CopyMode lCopyMode;
@@ -75,9 +76,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
     sctx->preserve_mode(),
     sctx->inherit_mode());
 
-  target = consumeNext(theChild1, aPlanState);
-
-  if (target == NULL)
+  if (!consumeNext(target, theChild1, aPlanState))
   {
     ZORBA_ERROR_LOC(XUDY0027, loc);
   }
@@ -90,7 +89,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         target->getNodeKind() == store::StoreConsts::documentNode)
       ZORBA_ERROR_LOC(XUTY0006, loc);
 
-    if (consumeNext(theChild1, aPlanState) != NULL)
+    if (consumeNext(temp, theChild1, aPlanState))
       ZORBA_ERROR_LOC(XUTY0006, loc);
 
     if (target->getParent() == NULL)
@@ -100,9 +99,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 
     elemParent = (parent->getNodeKind() == store::StoreConsts::elementNode);
 
-    source = consumeNext(theChild0, aPlanState);
-
-    while (source != NULL)
+    while (consumeNext(source, theChild0, aPlanState))
     {
       ZORBA_FATAL(source->isNode(), "");
 
@@ -124,8 +121,6 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         if (numNodes == nodes.size())
           nodes.resize(2 * numNodes);
       }
-
-      source = consumeNext(theChild0, aPlanState);
     }
 
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
@@ -146,7 +141,8 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         pul->addInsertAfter(target, nodes, theDoCopy, lCopyMode);
     }
 
-    STACK_PUSH(pul.release(), state);
+    result = pul.release();
+    STACK_PUSH(result != NULL, state);
   }
   else
   {
@@ -159,14 +155,12 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         targetKind != store::StoreConsts::elementNode)
       ZORBA_ERROR_LOC(XUTY0005, loc);
 
-    if (consumeNext(theChild1, aPlanState) != NULL)
+    if (consumeNext(temp, theChild1, aPlanState))
       ZORBA_ERROR_LOC(XUTY0005, loc);
 
     elemTarget = (targetKind == store::StoreConsts::elementNode);
 
-    source = consumeNext(theChild0, aPlanState);
-
-    while (source != NULL)
+    while (consumeNext(source, theChild0, aPlanState))
     {
       ZORBA_FATAL(source->isNode(), "");
 
@@ -188,8 +182,6 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         if (numNodes == nodes.size())
           nodes.resize(2 * numNodes);
       }
-
-      source = consumeNext(theChild0, aPlanState);
     }
 
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
@@ -211,7 +203,8 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
         pul->addInsertLast(target, nodes, theDoCopy, lCopyMode);
     }
 
-    STACK_PUSH(pul.release(), state);
+    result = pul.release();
+    STACK_PUSH(result != NULL, state);
   }
 
   STACK_END (state);
@@ -227,8 +220,8 @@ DeleteIterator::DeleteIterator(const QueryLoc& aLoc, PlanIter_t target)
 { }
 
 
-store::Item_t
-DeleteIterator::nextImpl(PlanState& aPlanState) const
+bool
+DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 { 
   store::Item_t target;
   std::auto_ptr<store::PUL> pul;
@@ -238,18 +231,16 @@ DeleteIterator::nextImpl(PlanState& aPlanState) const
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  target = consumeNext(theChild, aPlanState);
-
-  while (target != NULL)
+  while (consumeNext(target, theChild, aPlanState))
   {
     if (!target->isNode())
       ZORBA_ERROR_LOC(XUTY0007, loc);
 
     pul->addDelete(target);
 
-    target = consumeNext(theChild, aPlanState);
   }
-  STACK_PUSH(pul.release(), state);
+  result = pul.release();
+  STACK_PUSH(true, state);
   STACK_END(state);
 }
 
@@ -269,8 +260,8 @@ ReplaceIterator::ReplaceIterator (
 { }
 
 
-store::Item_t
-ReplaceIterator::nextImpl (PlanState& aPlanState) const
+bool
+ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   store::StoreConsts::NodeKind lTargetKind;
   store::StoreConsts::NodeKind lWithKind;
@@ -278,6 +269,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
   store::Item_t lWith;
   store::Item_t lTarget;
   store::Item_t lParent;
+  store::Item_t temp;
   std::vector<store::Item_t> lNodes(16);
   ulong lNumNodes = 0;
   std::auto_ptr<store::PUL> lPul;
@@ -294,11 +286,10 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
     sctx->preserve_mode(),
     sctx->inherit_mode());
 
-  lTarget = consumeNext(theChild0, aPlanState);
-  if (lTarget == 0)
+  if (!consumeNext(lTarget, theChild0, aPlanState))
     ZORBA_ERROR_LOC(XUDY0027, loc);
 
-  if (consumeNext(theChild0, aPlanState) != 0)
+  if (consumeNext(temp, theChild0, aPlanState))
     ZORBA_ERROR_LOC(XUTY0008, loc);
 
   if (!lTarget->isNode())
@@ -326,8 +317,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
     
     if ( lTargetKind == store::StoreConsts::attributeNode)
     {
-      lWith = consumeNext(theChild1, aPlanState);
-      while (lWith != 0) 
+      while (consumeNext(lWith, theChild1, aPlanState)) 
       {
         if (!lWith->isNode() ||
             lWith->getNodeKind() != store::StoreConsts::attributeNode)
@@ -338,14 +328,11 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
         lNodes[lNumNodes++].transfer(lWith);
         if (lNumNodes == lNodes.size())
           lNodes.resize(2 * lNumNodes);
-
-        lWith = consumeNext(theChild1, aPlanState);
       }
     }
     else
     {
-      lWith = consumeNext(theChild1, aPlanState);
-      while (lWith != 0)
+      while (consumeNext(lWith, theChild1, aPlanState))
       {
         if (!lWith->isNode())
           ZORBA_ERROR_LOC(XUTY0010, loc);
@@ -363,8 +350,6 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
         lNodes[lNumNodes++].transfer(lWith);
         if (lNumNodes == lNodes.size())
           lNodes.resize(2 * lNumNodes);
-
-        lWith = consumeNext(theChild1, aPlanState);
       }
     }
 
@@ -381,7 +366,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
     {
       withWrapper = new PlanIteratorWrapper(theChild1, aPlanState);
 
-      lWith = GENV_ITEMFACTORY->createTextNode((ulong)&aPlanState,
+      GENV_ITEMFACTORY->createTextNode(lWith, (ulong)&aPlanState,
                                                withWrapper,
                                                false,
                                                true);
@@ -392,18 +377,14 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
     {
       xqpStringStore_t stringValue;
 
-      lWith = consumeNext(theChild1, aPlanState); 
-      if (lWith != 0)
+      if (consumeNext(lWith, theChild1, aPlanState))
       {
         stringValue = lWith->getStringValue();
 
         std::string buf;
-        lWith = consumeNext(theChild1, aPlanState);
-        while (lWith != 0)
+        while (consumeNext(lWith, theChild1, aPlanState))
         {
           buf += lWith->getStringValue()->str();
-
-          lWith = consumeNext(theChild1, aPlanState);
         }
         if (!buf.empty())
           stringValue = stringValue->append(buf);
@@ -424,7 +405,8 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
     }
   }
 
-  STACK_PUSH(lPul.release(), lState);
+  result = lPul.release();
+  STACK_PUSH(true, lState);
 
   STACK_END (lState);
 }
@@ -443,19 +425,19 @@ RenameIterator::RenameIterator (
 }
 
 
-store::Item_t
-RenameIterator::nextImpl(PlanState& aPlanState) const
+bool
+RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   store::StoreConsts::NodeKind lTargetKind;
   store::Item_t lTarget;
   store::Item_t lNewname;
+  store::Item_t temp;
   std::auto_ptr<store::PUL> lPul;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
-  lTarget = consumeNext(theChild0, aPlanState);
-  if (lTarget == NULL)
+  if (!consumeNext(lTarget, theChild0, aPlanState))
   {
     ZORBA_ERROR_LOC(XUDY0027, loc);
   }
@@ -472,18 +454,19 @@ RenameIterator::nextImpl(PlanState& aPlanState) const
     ZORBA_ERROR_LOC(XUTY0012, loc);
   }
 
-  if (consumeNext(theChild0, aPlanState) != 0)
+  if (consumeNext(temp, theChild0, aPlanState))
   {
     ZORBA_ERROR_LOC(XUTY0012, loc);
   }
 
   // because of codegen, it can be assumed that newname is already a qname 
-  lNewname = consumeNext(theChild1, aPlanState);
+  consumeNext(lNewname, theChild1, aPlanState);
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
   lPul->addRename(lTarget, lNewname);
 
-  STACK_PUSH(lPul.release(), lState);
+  result = lPul.release();
+  STACK_PUSH(true, lState);
 
   STACK_END (lState);
 }
@@ -511,14 +494,16 @@ TransformIterator::~TransformIterator()
 }
 
 
-store::Item_t
-TransformIterator::nextImpl(PlanState& aPlanState) const
+bool
+TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   std::vector<ForVarIter_t>::const_iterator lVarRefIter; 
   std::vector<ForVarIter_t>::const_iterator lVarRefEnd;
   rchandle<store::PUL> lPul;
   store::CopyMode lCopyMode;
+  store::Item_t temp;
   store::Item_t lItem;
+  store::Item_t lCopyNode;
 
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
@@ -533,15 +518,14 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
     {
       const CopyClause& copyClause = theCopyClauses[i];
 
-      store::Item_t lCopyNode = consumeNext(copyClause.theInput, aPlanState);
-      if (lCopyNode == 0 || !lCopyNode->isNode())
+      if (!consumeNext(lCopyNode, copyClause.theInput, aPlanState)|| !lCopyNode->isNode())
       {
         ZORBA_ERROR_LOC(XUTY0013, loc);
       }
 
       copyNodes[i] = lCopyNode->copyXmlTree(lCopyMode);
 
-      if (consumeNext(copyClause.theInput, aPlanState))
+      if (consumeNext(temp, copyClause.theInput, aPlanState))
       {
         ZORBA_ERROR_LOC(XUTY0013, loc);
       }
@@ -557,11 +541,11 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
     // generate the PUL for the modify clause. Assumption: Codegen did the
     // check if theModifyIter is an updating expr, empty seq producion expr
     // or an error expr
-    lPul = consumeNext(theModifyIter, aPlanState);
-
-    if (lPul != 0)
+    if (consumeNext(lItem, theModifyIter, aPlanState))
     {
-      ZORBA_FATAL(lPul->isPul(), "");
+      ZORBA_FATAL(lItem->isPul(), "");
+
+      lPul = static_cast<store::PUL *>(lItem.getp());
 
       lPul->checkTransformUpdates(copyNodes);
 
@@ -570,11 +554,9 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
   }
 
   // Compute and return the results
-  lItem = consumeNext(theReturnIter, aPlanState);
-  while (lItem != 0)
+  while (consumeNext(result, theReturnIter, aPlanState))
   {
-    STACK_PUSH(lItem, aState); 
-    lItem = consumeNext(theReturnIter, aPlanState);
+    STACK_PUSH(true, aState); 
   }
 
   STACK_END (aState);

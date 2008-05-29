@@ -257,7 +257,9 @@ Item_t SimpleStore::createUri()
   uristream << "zorba://internalURI-" << SimpleStore::theUriCounter++;
   SYNC_CODE(theUriCounterMutex.unlock();)
 
-  return theItemFactory->createAnyURI(uristream.str().c_str()).getp();
+  Item_t val;
+  theItemFactory->createAnyURI(val, uristream.str().c_str());
+  return val;
 }
 
 
@@ -271,7 +273,8 @@ Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
   if (uri == NULL)
     return NULL;
 
-  Item_t uriItem = theItemFactory->createAnyURI(uri);
+  Item_t uriItem;
+  theItemFactory->createAnyURI(uriItem, uri);
 
   Collection_t collection(new SimpleCollection(uriItem));
 
@@ -495,7 +498,7 @@ Iterator_t SimpleStore::distinctNodes(Iterator* input, bool aAllowAtomics)
 /*******************************************************************************
   Computes the URI for the given node.
 ********************************************************************************/
-Item_t SimpleStore::getReference(const Item* node)
+bool SimpleStore::getReference(Item_t& result, const Item* node)
 {
   std::ostringstream stream;
 
@@ -514,7 +517,8 @@ Item_t SimpleStore::getReference(const Item* node)
 
   xqpStringStore_t str(new xqpStringStore(stream.str()));
 
-  return new AnyUriItemImpl(str);
+  result = new AnyUriItemImpl(str);
+  return true;
 }
 
 
@@ -524,7 +528,7 @@ Item_t SimpleStore::getReference(const Item* node)
   @param uri Has to be an xs:URI item
   @returns referenced item if it exists, otherwise NULL
 ********************************************************************************/
-Item_t SimpleStore::getNodeByReference(const Item* uri)
+bool SimpleStore::getNodeByReference(Item_t& result, const Item* uri)
 {
   xqpStringStore* str = uri->getStringValueP();
 
@@ -599,7 +603,10 @@ Item_t SimpleStore::getNodeByReference(const Item* uri)
 
       colIter->open();
 
-      Item_t rootItem = colIter->next();
+      Item_t rootItem;
+      if (!colIter->next(rootItem)) {
+        rootItem = NULL;
+      }
       while (rootItem != NULL)
       {
         rootNode = BASE_NODE(rootItem);
@@ -613,8 +620,10 @@ Item_t SimpleStore::getNodeByReference(const Item* uri)
         break;
     }
 
-    if (rootNode == NULL)
-      return NULL;
+    if (rootNode == NULL) {
+      result = NULL;
+      return false;
+    }
   }
 
   //
@@ -623,8 +632,10 @@ Item_t SimpleStore::getNodeByReference(const Item* uri)
   
   OrdPath op((unsigned char*)start, strlen(start));
 
-  if (rootNode->getOrdPath() == op)
-    return rootNode;
+  if (rootNode->getOrdPath() == op) {
+    result = rootNode;
+    return true;
+  }
 
   XmlNode* parent = rootNode;
 
@@ -652,12 +663,15 @@ Item_t SimpleStore::getNodeByReference(const Item* uri)
         }
         else if (pos !=  OrdPath::FOLLOWING)
         {
-          return NULL;
+          result = NULL;
+          return false;
         }
       }
 
-      if (i == numAttrs)
-        return NULL;
+      if (i == numAttrs) {
+        result = NULL;
+        return false;
+      }
     }
     else
     {
@@ -670,7 +684,8 @@ Item_t SimpleStore::getNodeByReference(const Item* uri)
 
         if (pos == OrdPath::SELF)
         {
-          return child;
+          result = child;
+          return result != NULL;
         }
         else if (pos == OrdPath::DESCENDANT)
         {
@@ -679,12 +694,14 @@ Item_t SimpleStore::getNodeByReference(const Item* uri)
         }
         else if (pos !=  OrdPath::FOLLOWING)
         {
-          return NULL;
+          result = NULL;
+          return false;
         }
       }
 
       if (i == numChildren)
-        return NULL;
+        result = NULL;
+        return false;
     }
   }
 }

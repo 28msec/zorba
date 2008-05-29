@@ -114,12 +114,10 @@ void SimpleCollection::addToCollection(const Item* node)
 ********************************************************************************/
 void SimpleCollection::addToCollection(Iterator* nodeIter)
 {
-  Item_t node = nodeIter->next();
-
-  while (node != NULL)
+  Item_t node;
+  while (nodeIter->next(node))
   {
     addToCollection(node);
-    node = nodeIter->next();
   }
 }
 
@@ -176,15 +174,17 @@ void SimpleCollection::CollectionIter::open()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SimpleCollection::CollectionIter::next()
+bool SimpleCollection::CollectionIter::next(Item_t& result)
 {
-  if (theIterator == theCollection->theXmlTrees.end())
-    return NULL;
+  if (theIterator == theCollection->theXmlTrees.end()) {
+    result = NULL;
+    return false;
+  }
 
-  Item* node = (*theIterator).getp();
+  result = (*theIterator).getp();
   theIterator++;
 
-  return node;
+  return true;
 }
 
 

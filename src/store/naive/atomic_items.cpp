@@ -40,8 +40,8 @@
 #define CREATE_XS_TYPE(aType) \
   GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
 
-#define CREATE_BOOLITEM(aValue) \
-  GET_STORE().getItemFactory()->createBoolean(aValue)
+#define CREATE_BOOLITEM(item, aValue) \
+  GET_STORE().getItemFactory()->createBoolean(item, aValue)
 
 namespace zorba { namespace store {
 
@@ -166,7 +166,9 @@ bool NCNameItemImpl::equals(
 Item_t NCNameItemImpl::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 
@@ -217,7 +219,9 @@ bool AnyUriItemImpl::equals(
 Item_t AnyUriItemImpl::getEBV() const
 {
   bool b = ! (theValue->str() == "");
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 
@@ -254,7 +258,9 @@ bool UntypedAtomicItemImpl::equals(
 Item_t UntypedAtomicItemImpl::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 
@@ -291,7 +297,9 @@ bool StringItemNaive::equals(
 Item_t StringItemNaive::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 
@@ -320,7 +328,9 @@ bool DecimalItemNaive::equals(
 Item_t DecimalItemNaive::getEBV() const
 {
   bool b = ( theValue != xqp_decimal::parseInt(0) );
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t DecimalItemNaive::getStringValue() const
@@ -377,7 +387,9 @@ bool IntItemNaive::equals (
 Item_t IntItemNaive::getEBV() const
 {
   bool b = ( theValue != (int32_t)0 );
-  return CREATE_BOOLITEM( b );
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t IntItemNaive::getStringValue() const
@@ -421,7 +433,9 @@ bool IntegerItemNaive::equals (
 Item_t IntegerItemNaive::getEBV() const
 {
   bool b = ( theValue != xqp_integer::parseInt(0) );
-  return CREATE_BOOLITEM( b );
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t IntegerItemNaive::getStringValue() const
@@ -463,7 +477,9 @@ Item_t DoubleItemNaive::getEBV() const
   } else {
     b = !theValue.isZero();
   }
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t DoubleItemNaive::getStringValue() const
@@ -514,7 +530,9 @@ Item_t FloatItemNaive::getEBV() const
   } else {
     b = !theValue.isZero();
   }
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t FloatItemNaive::getStringValue() const
@@ -604,7 +622,9 @@ bool NonPositiveIntegerItemNaive::equals(
 Item_t NonPositiveIntegerItemNaive::getEBV() const 
 {
   bool b = (theValue != xqp_integer::parseInt(0));
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t NonPositiveIntegerItemNaive::getStringValue() const 
@@ -647,7 +667,9 @@ bool NegativeIntegerItemNaive::equals(
 Item_t NegativeIntegerItemNaive::getEBV() const 
 {
   bool b = (theValue != xqp_integer::parseInt(0));
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t NegativeIntegerItemNaive::getStringValue() const 
@@ -695,7 +717,9 @@ bool LongItemNaive::equals(
 Item_t LongItemNaive::getEBV() const 
 {
   bool b = (theValue != 0);
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t LongItemNaive::getStringValue() const 
@@ -753,7 +777,9 @@ bool ShortItemNaive::equals(
 Item_t ShortItemNaive::getEBV() const 
 {
   bool b = (theValue != 0);
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t ShortItemNaive::getStringValue() const 
@@ -815,7 +841,9 @@ bool ByteItemNaive::equals(
 Item_t ByteItemNaive::getEBV() const 
 {
   bool b = (theValue != 0);
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t ByteItemNaive::getStringValue() const 
@@ -860,7 +888,9 @@ bool NonNegativeIntegerItemNaive::equals(
 
 Item_t NonNegativeIntegerItemNaive::getEBV() const {
   bool b = (theValue != xqp_integer::parseInt(0));
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t NonNegativeIntegerItemNaive::getStringValue() const 
@@ -906,7 +936,9 @@ bool UnsignedLongItemNaive::equals(
 
 Item_t UnsignedLongItemNaive::getEBV() const {
   bool b = (theValue != 0);
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t UnsignedLongItemNaive::getStringValue() const {
@@ -956,7 +988,9 @@ bool UnsignedIntItemNaive::equals(
 
 Item_t UnsignedIntItemNaive::getEBV() const {
   bool b = (theValue != 0);
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t UnsignedIntItemNaive::getStringValue() const {
@@ -1010,7 +1044,9 @@ bool UnsignedShortItemNaive::equals(
 
 Item_t UnsignedShortItemNaive::getEBV() const {
   bool b = (theValue != 0);
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t UnsignedShortItemNaive::getStringValue() const {
@@ -1067,7 +1103,9 @@ bool UnsignedByteItemNaive::equals(
 
 Item_t UnsignedByteItemNaive::getEBV() const {
   bool b = (theValue != 0);
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t UnsignedByteItemNaive::getStringValue() const {
@@ -1113,7 +1151,9 @@ bool PositiveIntegerItemNaive::equals(
 Item_t PositiveIntegerItemNaive::getEBV() const 
 {
   bool b = (theValue != xqp_integer::parseInt(0));
-  return CREATE_BOOLITEM(b);
+  Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
 }
 
 xqpStringStore_t PositiveIntegerItemNaive::getStringValue() const 

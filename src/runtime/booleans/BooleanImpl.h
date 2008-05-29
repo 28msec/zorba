@@ -55,9 +55,9 @@ namespace zorba
        * @param negate optinal parameter which negates the effective boolean value (default == false)
        * @return effective boolean value
        */
-      static store::Item_t effectiveBooleanValue ( const QueryLoc& loc, PlanState& planState, const PlanIterator* , bool negate = false);
+      static bool effectiveBooleanValue ( const QueryLoc& loc, PlanState& planState, const PlanIterator* , bool negate = false);
 
-      store::Item_t nextImpl(PlanState& planState) const;
+      bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
       virtual void accept(PlanIterVisitor&) const;
   };
@@ -76,7 +76,7 @@ namespace zorba
       LogicIterator ( const QueryLoc& loc, PlanIter_t aChild0, PlanIter_t aChild1, LogicType aLogicType);
       virtual ~LogicIterator();
       
-      store::Item_t nextImpl(PlanState& planState) const;
+      bool nextImpl(store::Item_t& result, PlanState& planState) const;
       
       virtual void accept(PlanIterVisitor&) const;
   }; /* class LogicIterator */
@@ -90,7 +90,7 @@ namespace zorba
       CompareIterator ( const QueryLoc& loc, PlanIter_t theChild0, PlanIter_t theChild1, CompareConsts::CompareType aCompType );
       virtual ~CompareIterator();
 
-      store::Item_t nextImpl(PlanState& planState) const;
+      bool nextImpl(store::Item_t& result, PlanState& planState) const;
       
       bool isValueComparison() const;
       bool isGeneralComparison() const;

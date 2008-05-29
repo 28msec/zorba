@@ -121,16 +121,16 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
   {
   case IdentTypes::NAMED_TYPE:
   {
-    return create_named_type(GENV_ITEMFACTORY->
-                             createQName(ident.getUri().c_str(),
-                                         NULL,
-                                         ident.getLocalName().c_str()),
-                             q);
+    store::Item_t i;
+    GENV_ITEMFACTORY->createQName(i, ident.getUri().c_str(), NULL, ident.getLocalName().c_str());
+    return create_named_type(i, q);
   }
 
   case IdentTypes::ELEMENT_TYPE:
   {
-    rchandle<NodeNameTest> nnt(new NodeNameTest(GENV_ITEMFACTORY->createQName(ident.getUri().c_str(), NULL, ident.getLocalName().c_str())));
+    store::Item_t i;
+    GENV_ITEMFACTORY->createQName(i, ident.getUri().c_str(), NULL, ident.getLocalName().c_str());
+    rchandle<NodeNameTest> nnt(new NodeNameTest(i));
     rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::elementNode, nnt));
     type_ident_ref_t ci = ident.getContentType();
     xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
@@ -139,7 +139,9 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   case IdentTypes::ATTRIBUTE_TYPE:
   {
-    rchandle<NodeNameTest> nnt(new NodeNameTest(GENV_ITEMFACTORY->createQName(ident.getUri().c_str(), NULL, ident.getLocalName().c_str())));
+    store::Item_t i;
+    GENV_ITEMFACTORY->createQName(i, ident.getUri().c_str(), NULL, ident.getLocalName().c_str());
+    rchandle<NodeNameTest> nnt(new NodeNameTest(i));
     rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::attributeNode, nnt));
     type_ident_ref_t ci = ident.getContentType();
     xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));

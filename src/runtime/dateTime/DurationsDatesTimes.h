@@ -36,7 +36,7 @@ public:
   virtual ~FnDateTimeConstructorIterator() {};
 
 public:
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 /*
@@ -64,7 +64,7 @@ public:
   virtual ~OpDurationEqualIterator() {};
   
 public:
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -187,7 +187,7 @@ public:
   virtual ~FnAdjustToTimeZoneIterator_1() {};
 
 public:
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -202,7 +202,7 @@ public:
   virtual ~FnAdjustToTimeZoneIterator_2() {};
 
 public:
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 

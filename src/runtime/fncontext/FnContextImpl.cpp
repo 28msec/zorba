@@ -38,21 +38,21 @@ using namespace std;
 namespace zorba
 {
 
-store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
+bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t item, varName;
+  store::Item_t varName;
   xqpStringStore dot (".");
   
   CtxVariableIteratorState* state;
   DEFAULT_STACK_INIT(CtxVariableIteratorState, state, planState);
 
-  varName = CONSUME (0);
+  CONSUME (varName, 0);
 
 	if(varName->getStringValue ()->equals (&dot)) {  // looking for context item?
-    item = planState.theRuntimeCB->theDynamicContext->context_item();
-		if(item == NULL)
+      result = planState.theRuntimeCB->theDynamicContext->context_item();
+		if(result == NULL)
 			ZORBA_ERROR_LOC_PARAM( XPDY0002, loc, "context item", "");
-		STACK_PUSH( item, state);
+		STACK_PUSH(true, state);
 	} else {
     state->theIter = planState.theRuntimeCB->theDynamicContext->
                      get_variable(varName);
@@ -62,8 +62,8 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 
     state->theIter->open();
 
-    while ( (item = state->theIter->next()) != NULL )
-			STACK_PUSH (item, state);
+    while (state->theIter->next(result))
+			STACK_PUSH (true, state);
 
     state->theIter->close();
 	}
@@ -97,7 +97,7 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
     return compiler.compile (ast);
   }
 
-store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
+bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item;
   CompilerCB *ccb = new CompilerCB (*planState.theCompilerCB);
   XQueryCompiler compiler (ccb);
@@ -109,8 +109,7 @@ store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
   // set up eval state's ccb
   state->ccb.reset (ccb);
   ccb->m_sctx = ccb->m_sctx->create_child_context ();
-  // set up eval state's iterator plan (compile the query string)
-  item = CONSUME (0);
+  CONSUME (item, 0);
   state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames, vartypes), ccb, dctx.get (), planState.theStackDepth + 1));
   state->eval_plan->checkDepth (loc);
 
@@ -123,22 +122,23 @@ store::Item_t EvalIterator::nextImpl(PlanState& planState) const {
                         lIter);
   }
 
-  while (NULL != (item = state->eval_plan->next ()))
-    STACK_PUSH (item, state);
+  while (state->eval_plan->next (result)) {
+    STACK_PUSH (true, state);
+  }
 
   state->eval_plan.reset (NULL);
 
   STACK_END (state);
 }
 
-store::Item_t CtxVarAssignIterator::nextImpl(PlanState& planState) const
+bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t varName;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  varName = CONSUME (0);
+  CONSUME (varName, 0);
 
   planState.theRuntimeCB->theDynamicContext->add_variable (static_context::qname_internal_key (varName),
                                                            new PlanIteratorWrapper (theChildren [1], planState));

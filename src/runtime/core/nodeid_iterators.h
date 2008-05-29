@@ -55,7 +55,7 @@ public:
   ~NodeDistinctIterator() { }
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
@@ -106,7 +106,7 @@ public:
   ~NodeSortIterator() { }
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 

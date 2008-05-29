@@ -37,7 +37,7 @@ namespace zorba
       NumArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
       virtual ~NumArithIterator(){}
 
-      store::Item_t nextImpl(PlanState&) const;
+      bool nextImpl(store::Item_t& result, PlanState&) const;
       
       virtual void accept(PlanIterVisitor&) const;
 
@@ -48,8 +48,8 @@ namespace zorba
        * @param item0
        * @param item1
        */
-      static store::Item_t
-      compute(RuntimeCB* aRuntimeCB, const QueryLoc& loc, store::Item_t item0, store::Item_t item1);
+      static bool
+      compute(store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc& loc, store::Item *item0, store::Item *item1);
       
       /**
        * Computes Operation on passed items.
@@ -60,9 +60,9 @@ namespace zorba
        * @param item1 Atomized Item
        * @param type1 Type of item1
        */
-      static store::Item_t
+      static bool
       computeAtomic
-        (RuntimeCB* aRuntimeCB, const QueryLoc&, store::Item_t item0, xqtref_t type0, store::Item_t item1, xqtref_t type1);
+        (store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc&, store::Item *item0, xqtref_t type0, store::Item *item1, xqtref_t type1);
 
   }; /* class NumArithIterator */
 
@@ -112,7 +112,7 @@ namespace zorba
       virtual ~OpNumericUnaryIterator();
 
     public: // iterator interface
-      store::Item_t nextImpl(PlanState& planState) const;
+      bool nextImpl(store::Item_t& result, PlanState& planState) const;
       
       virtual void accept(PlanIterVisitor&) const;
   };
@@ -173,7 +173,7 @@ namespace zorba
     ZorNumGen ( const QueryLoc& loc);
     ~ZorNumGen();
 
-    store::Item_t nextImpl(PlanState& planState) const;
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor&) const;
   };

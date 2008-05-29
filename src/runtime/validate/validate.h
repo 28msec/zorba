@@ -48,10 +48,10 @@ namespace zorba
         ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool isLax );
         virtual ~ValidateIterator();
 
-        static store::Item_t effectiveValidationValue ( const QueryLoc& loc, PlanState& planState, 
+        static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, PlanState& planState, 
             const PlanIterator* iter);
 
-        store::Item_t nextImpl(PlanState& planState) const;
+        bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
         virtual void accept(PlanIterVisitor&) const;
     };

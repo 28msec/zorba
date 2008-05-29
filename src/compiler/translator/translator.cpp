@@ -2864,7 +2864,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
       try 
       {
         xqpStringStore_t strval = ce->get_val()->getStringValue();
-        castLiteral = GenericCast::instance()->castToQName(strval, ns_ctx);
+        GenericCast::instance()->castToQName(castLiteral, strval, ns_ctx);
       }
       catch (error::ZorbaError& e)
       {
@@ -3778,10 +3778,13 @@ var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
   xqpString empty;
   xqpString lname (tempname ());
 
-  return new var_expr(loc, kind,
-                      ITEM_FACTORY->createQName(empty.getStore(),
-                                                empty.getStore(),
-                                                lname.getStore()));
+  store::Item_t varName;
+
+  ITEM_FACTORY->createQName(varName,
+                            empty.getStore(),
+                            empty.getStore(),
+                            lname.getStore());
+  return new var_expr(loc, kind, varName);
 }
 
 
@@ -4900,7 +4903,9 @@ expr_t cc_component(const QueryLoc& loc, var_expr_t var, const char *local)
 {
   expr_t exists = new fo_expr(loc, LOOKUP_FN("fn", "exists", 1), &*var);
   expr_t emptyseq = create_seq (loc);
-  expr_t eName = new const_expr(loc, GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", local));
+  store::Item_t qname;
+  GENV_ITEMFACTORY->createQName(qname, XQUERY_FN_NS, "fn", local);
+  expr_t eName = new const_expr(loc, qname);
   expr_t eContents = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")), &*var);
   push_elem_scope();
   expr_t eVal = new elem_expr(loc, eName, NULL, eContents, ns_ctx);
@@ -4922,8 +4927,9 @@ void *begin_visit(const CatchExpr& v)
     cc->set_errordesc_var_h(tempvar(v.get_location(), var_expr::catch_var));
     cc->set_errorobj_var_h(tempvar(v.get_location(), var_expr::catch_var));
     var_expr_t lv = bind_var(v.get_location(), v.getVarErrorCode(), var_expr::let_var, GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
-
-    expr_t eName = new const_expr(v.get_location(), GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", "error"));
+    store::Item_t qname;
+    GENV_ITEMFACTORY->createQName(qname, XQUERY_FN_NS, "fn", "error");
+    expr_t eName = new const_expr(v.get_location(), qname);
 
     expr_t comp1 = cc_component(v.get_location(), cc->get_errorcode_var_h(), "errorcode");
     expr_t comp2 = cc_component(v.get_location(), cc->get_errordesc_var_h(), "description");

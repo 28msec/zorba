@@ -138,7 +138,7 @@ public:
 
 #define NARY_ITER_METHODS                                                \
 public:                                                                  \
-  store::Item_t nextImpl(PlanState& aPlanState) const;                   \
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;     \
                                                                          \
   virtual void accept(PlanIterVisitor& v) const                          \
   {                                                                      \

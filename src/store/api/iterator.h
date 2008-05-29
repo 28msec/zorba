@@ -37,8 +37,8 @@ namespace zorba { namespace store {
       virtual void
       open() = 0;
 
-      virtual store::Item_t
-      next() = 0;
+      virtual bool
+      next(store::Item_t&) = 0;
 
       virtual void
       reset() = 0;

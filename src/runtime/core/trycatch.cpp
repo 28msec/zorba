@@ -153,7 +153,8 @@ TryCatchIterator::bindErrorVars(
 
   // bind the error code (always)
   xqpStringStore_t errCode = new xqpStringStore(error::ZorbaError::toString(e.theErrorCode));
-  store::Item_t lErrorCodeItem = GENV_ITEMFACTORY->createString(errCode);
+  store::Item_t lErrorCodeItem;
+  GENV_ITEMFACTORY->createString(lErrorCodeItem, errCode);
 
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();
@@ -171,7 +172,9 @@ TryCatchIterator::bindErrorVars(
     store::Iterator_t lErrorDescIter;
     if (!e.theDescription.empty()) {
       xqpStringStore_t errDescr = e.theDescription.getStore();
-      lErrorDescIter = new store::ItemIterator(GENV_ITEMFACTORY->createString(errDescr));
+      store::Item_t errDescItem;
+      GENV_ITEMFACTORY->createString(errDescItem, errDescr);
+      lErrorDescIter = new store::ItemIterator(errDescItem);
     } else {
       lErrorDescIter = new store::ItemIterator();
     }
@@ -192,8 +195,8 @@ TryCatchIterator::bindErrorVars(
 
 }
 
-store::Item_t
-TryCatchIterator::nextImpl(PlanState& planState) const 
+bool
+TryCatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
 
   store::Item_t item; // each item that will be returned 
@@ -219,16 +222,13 @@ TryCatchIterator::nextImpl(PlanState& planState) const
 
   if (state->theTempIterator != NULL) {
     ZORBA_ASSERT(state->theCatchIterator == NULL);
-    while (true) {
-      item = state->theTempIterator->next();
-      if ( item == NULL )
-        break;
-      STACK_PUSH( item, state );
+    while (state->theTempIterator->next(result)) {
+      STACK_PUSH( true, state );
     } 
   } else if (state->theCatchIterator != NULL) {
     ZORBA_ASSERT(state->theTempIterator == NULL);
-    while((item = consumeNext(state->theCatchIterator.getp(), planState)) != NULL) {
-      STACK_PUSH(item, state);
+    while(consumeNext(result, state->theCatchIterator.getp(), planState)) {
+      STACK_PUSH(true, state);
     }
   } else {
     ZORBA_ASSERT(false);

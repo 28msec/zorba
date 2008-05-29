@@ -42,11 +42,12 @@ ForVarIterator::ForVarIterator(
 }
 
 
-store::Item_t ForVarIterator::nextImpl(PlanState& planState) const
+bool ForVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   ForVarState* state;
   DEFAULT_STACK_INIT(ForVarState, state, planState);
-  STACK_PUSH(state->theValue, state);
+  if ((result = state->theValue) != NULL)
+    STACK_PUSH(true, state);
   STACK_END (state);
 }
 
@@ -95,13 +96,13 @@ LetVarIterator::LetVarIterator(xqpString vn, const QueryLoc& loc, const void* or
 }
 
 
-store::Item_t LetVarIterator::nextImpl(PlanState& planState) const
+bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   LetVarState* state;
   state = StateTraitsImpl<LetVarState>::getState(planState, this->stateOffset);
 
   ZORBA_ASSERT (state->theSourceIter != NULL);
-  return state->theSourceIter->next();
+  return state->theSourceIter->next(result);
 }
 
 

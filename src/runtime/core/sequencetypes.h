@@ -45,7 +45,7 @@ public:
  
   ~InstanceOfIterator();
   
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -67,7 +67,7 @@ public:
                const xqtref_t& aCastType);
   ~CastIterator();
   
-  store::Item_t nextImpl(PlanState& aPlanState) const;
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -89,7 +89,7 @@ public:
                    const xqtref_t& aCastType);
   virtual ~CastableIterator();
 
-  store::Item_t nextImpl(PlanState& aPlanState) const;
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -106,7 +106,7 @@ private:
 public:
   PromoteIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aPromoteType);
   virtual ~PromoteIterator();
-  store::Item_t nextImpl(PlanState& aPlanState) const;
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 

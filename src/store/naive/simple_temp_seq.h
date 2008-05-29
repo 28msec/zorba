@@ -104,7 +104,7 @@ public:
     virtual ~SimpleTempSeqIter();
 
     void open();
-    Item_t next();
+    bool next(Item_t& result);
     void reset();
     void close();
   };

@@ -55,7 +55,7 @@ public:
 
   ~ForVarIterator() { }
   
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
   
@@ -100,7 +100,7 @@ public:
 
   ~LetVarIterator() {}
   
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 

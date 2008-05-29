@@ -56,7 +56,7 @@ namespace zorba
     virtual ~TryCatchIterator();
   
     void openImpl(PlanState& planState, uint32_t& offset);
-    store::Item_t nextImpl(PlanState& aPlanState) const;
+    bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
     void resetImpl(PlanState& planState) const;
     void closeImpl(PlanState& planState);
 

@@ -175,9 +175,8 @@ RootTypeManager::RootTypeManager()
 #define XS_PREFIX "xs"
 
 #define XSQNDECL(var, local)                         \
-        var =                    \
-            GENV.getStore().getItemFactory()->   \
-            createQName(XS_URI, XS_PREFIX, local)
+        GENV.getStore().getItemFactory()->   \
+            createQName(var, XS_URI, XS_PREFIX, local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");

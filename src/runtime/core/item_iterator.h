@@ -39,7 +39,7 @@ public:
   virtual ~EmptyIterator() {}
   
 public:
-  store::Item_t nextImpl(PlanState& planState) const { return NULL; }
+  bool nextImpl(store::Item_t& result, PlanState& planState) const { return false; }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -62,7 +62,7 @@ public:
   virtual ~SingletonIterator() {}
   
 public:
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   const store::Item_t& getValue() const { return theValue; }
   
@@ -111,7 +111,7 @@ public:
 
   virtual bool isUpdating() const { return theIsUpdating; }
   void openImpl(PlanState& planState, uint32_t& offset);
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState) const;
   

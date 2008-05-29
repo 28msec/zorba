@@ -66,7 +66,7 @@ public:
    * @param item XDM item
    * @return Returns an item of type xs:uri 
    */
-  virtual Item_t getReference(const Item* node) = 0;
+  virtual bool getReference(Item_t& result, const Item* node) = 0;
 		
   /**
    * Returns Item which is identified by a reference
@@ -74,7 +74,7 @@ public:
    * @param uri Has to be an xs:URI item
    * @returns referenced item if it exists, otherwise NULL
    */
-  virtual Item_t getNodeByReference(const Item* uri) = 0;
+  virtual bool getNodeByReference(Item_t& result, const Item* uri) = 0;
 		
 		
   /* --------------------------- Node Id Management ---------------------------*/

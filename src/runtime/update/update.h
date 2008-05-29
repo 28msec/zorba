@@ -44,7 +44,7 @@ public:
   virtual ~InsertIterator() {}
 
   virtual bool isUpdating() const { return true; }
-  store::Item_t nextImpl(PlanState&) const;
+  bool nextImpl(store::Item_t&, PlanState&) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -61,7 +61,7 @@ class DeleteIterator : public UnaryBaseIterator<DeleteIterator, PlanIteratorStat
   virtual ~DeleteIterator() {}
 
   virtual bool isUpdating() const { return true; }
-  store::Item_t nextImpl(PlanState&) const;
+  bool nextImpl(store::Item_t&, PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -85,7 +85,7 @@ public:
   virtual ~ReplaceIterator() {}
 
   virtual bool isUpdating() const { return true; }
-  store::Item_t nextImpl(PlanState&) const;
+  bool nextImpl(store::Item_t&, PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -104,7 +104,7 @@ public:
   virtual ~RenameIterator() {}
 
   virtual bool isUpdating() const { return true; }
-  store::Item_t nextImpl(PlanState&) const;
+  bool nextImpl(store::Item_t&, PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -150,7 +150,7 @@ public:
   virtual ~TransformIterator();
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t&, PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState) const;
       

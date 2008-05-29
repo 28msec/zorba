@@ -30,13 +30,15 @@ struct ErrorInfo;
 class GenericCast
 {
 
-  typedef store::Item_t (*CastFunc)(
+  typedef bool (*CastFunc)(
+                            store::Item_t&,
                             store::Item*, 
                             store::ItemFactory*, 
                             namespace_context *nsCtx,
                             const ErrorInfo& aErrorInfo
                         );
-  typedef store::Item_t (*DownCastFunc)(
+  typedef bool (*DownCastFunc)(
+                            store::Item_t&,
                             const store::Item*, 
                             RootTypeManager& aTS,
                             TypeConstants::atomic_type_code_t aTargetAtomicType,
@@ -62,7 +64,8 @@ public:
    * type or a subtype of the passed targetType, the passed item is directly
    * returned.
    */
-  store::Item_t cast (
+  bool cast (
+        store::Item_t& result,
         store::Item* aItem, 
         const XQType* aTargetType, 
         namespace_context* aNCtx = 0) const;
@@ -71,7 +74,8 @@ public:
    * Executes the string casting of the passed string to an item of the passed
    * target type.
    */
-  store::Item_t cast (
+  bool cast (
+        store::Item_t& result,
         xqpStringStore_t& aStr, 
         const XQType* aTargetType,
         namespace_context* aNCtx = 0) const;
@@ -79,7 +83,8 @@ public:
   /**
    * Casts the passed string to xs:QName if possible.
    */
-  store::Item_t castToQName(
+  bool castToQName(
+        store::Item_t& result,
         xqpStringStore_t& aStr,
         namespace_context* aNCtx = 0) const;
 
@@ -119,7 +124,7 @@ public:
    *         if the item type is a subtype of the target type, then
    *         the passed item is returned
    */
-  store::Item_t promote(store::Item_t aItem, const XQType* aTargetType) const;
+  bool promote(store::Item_t& result, store::Item_t aItem, const XQType* aTargetType) const;
 
 public:
   static bool isLetter(uint32_t cp);

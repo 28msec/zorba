@@ -49,7 +49,7 @@ namespace zorba {
     xqpStringStore_t lString = Unmarshaller::getInternalString(aString);
 
     store::Item_t lItem;
-    lItem = theItemFactory->createString(lString);
+    theItemFactory->createString(lItem, lString);
 
     return &*lItem;
   }
@@ -60,7 +60,7 @@ namespace zorba {
     xqpStringStore_t lString = Unmarshaller::getInternalString(aURI);
 
     store::Item_t lItem;
-    lItem = theItemFactory->createAnyURI(lString);
+    theItemFactory->createAnyURI(lItem, lString);
 
     return &*lItem;
   }
@@ -71,7 +71,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aDateValue );
 
     store::Item_t lItem;
-    lItem = theItemFactory->createDate( lString );
+    theItemFactory->createDate(lItem,  lString );
 
     return &*lItem;
   }
@@ -83,7 +83,7 @@ namespace zorba {
       short aDay )
   {
     store::Item_t lItem;
-    lItem = theItemFactory->createDate( aYear, aMonth, aDay );
+    theItemFactory->createDate(lItem,  aYear, aMonth, aDay );
 
     return &*lItem;
   }
@@ -97,7 +97,7 @@ namespace zorba {
     xqpStringStore* lLocalname = Unmarshaller::getInternalString( aLocalname );
 
     store::Item_t lItem;
-    lItem = theItemFactory->createQName(lNamespace, lPrefix, lLocalname);
+    theItemFactory->createQName(lItem, lNamespace, lPrefix, lLocalname);
     return &*lItem;
   }
 
@@ -108,7 +108,7 @@ namespace zorba {
     xqpString lPrefix("");
     xqpStringStore* lLocalname = Unmarshaller::getInternalString( aLocalname );
     store::Item_t lItem;
-    lItem = theItemFactory->createQName(lNamespace, &*lPrefix.theStrStore, lLocalname);
+    theItemFactory->createQName(lItem, lNamespace, &*lPrefix.theStrStore, lLocalname);
     return &*lItem;
   }
 
@@ -117,7 +117,7 @@ namespace zorba {
   {
     xqpStringStore_t lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
-    lItem = theItemFactory->createNCName(lString);
+    theItemFactory->createNCName(lItem, lString);
     return &*lItem;
   }
     
@@ -127,7 +127,7 @@ namespace zorba {
     store::Item_t lItem;
     xqp_base64Binary n;
     if (xqp_base64Binary::parseString(aBinData, aLength, n))
-      lItem = theItemFactory->createBase64Binary(n);
+      theItemFactory->createBase64Binary(lItem, n);
     
     return &*lItem;
   }
@@ -136,7 +136,7 @@ namespace zorba {
   ItemFactoryImpl::createBoolean(bool aValue)
   {
     store::Item_t lItem;
-    lItem = theItemFactory->createBoolean(aValue);
+    theItemFactory->createBoolean(lItem, aValue);
     return &*lItem;
   }
     
@@ -147,7 +147,7 @@ namespace zorba {
 
     // no error possible
     Decimal lDecimal = Decimal::parseULong(aValue);
-    lItem = theItemFactory->createDecimal(lDecimal);
+    theItemFactory->createDecimal(lItem, lDecimal);
     return &*lItem;
   }
     
@@ -157,7 +157,7 @@ namespace zorba {
     store::Item_t lItem;
     Decimal lDecimal;
     if (Decimal::parseNativeDouble(aValue, lDecimal)) {
-      lItem = theItemFactory->createDecimal(lDecimal);
+      theItemFactory->createDecimal(lItem, lDecimal);
       return &*lItem;
     }
 
@@ -171,7 +171,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     Decimal lDecimal;
     if (Decimal::parseString(lString->c_str(), lDecimal)) {
-      lItem = theItemFactory->createDecimal(lDecimal);
+      theItemFactory->createDecimal(lItem, lDecimal);
       return &*lItem;
     }
 
@@ -183,7 +183,7 @@ namespace zorba {
   {
     store::Item_t lItem;
     Integer lInteger = Integer::parseLongLong(aInteger);
-    lItem = theItemFactory->createInteger(lInteger);
+    theItemFactory->createInteger(lItem, lInteger);
     return &*lItem;
   }
 
@@ -194,7 +194,7 @@ namespace zorba {
     store::Item_t lItem;
     Integer lInteger;
     if (Integer::parseString(lString->c_str(), lInteger)) {
-      lItem = theItemFactory->createInteger(lInteger);
+      theItemFactory->createInteger(lItem, lInteger);
       return &*lItem;
     }
     return &*lItem;
@@ -205,7 +205,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createLong(aLong);
+    theItemFactory->createLong(lItem, aLong);
     return &*lItem;
   }
     
@@ -216,7 +216,7 @@ namespace zorba {
 
     try {
       int32_t lInteger = boost::numeric_cast<int32_t>(aInt);
-      lItem = theItemFactory->createInt(lInteger);
+      theItemFactory->createInt(lItem, lInteger);
     } catch (boost::bad_numeric_cast e) {
       return &*lItem;
     }
@@ -229,7 +229,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createShort(aShort);
+    theItemFactory->createShort(lItem, aShort);
 
     return &*lItem;
   }
@@ -239,7 +239,7 @@ namespace zorba {
   {
     store::Item_t lItem;
   
-    lItem = theItemFactory->createByte(aValue);
+    theItemFactory->createByte(lItem, aValue);
 
     return &*lItem;
   }
@@ -250,7 +250,7 @@ namespace zorba {
                                   short aTimezone_hours)
   {
     store::Item_t lItem;
-    lItem = theItemFactory->createDateTime(aYear, aMonth, aDay, aHour, aMinute, aSecond, aTimezone_hours);
+    theItemFactory->createDateTime(lItem, aYear, aMonth, aDay, aHour, aMinute, aSecond, aTimezone_hours);
 
     return &*lItem;
   }
@@ -261,7 +261,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aDateTimeValue );
 
     store::Item_t lItem;
-    lItem = theItemFactory->createDateTime( lString );
+    theItemFactory->createDateTime(lItem,  lString );
 
     return &*lItem;
   }
@@ -271,7 +271,7 @@ namespace zorba {
   {
     store::Item_t lItem;
     Double lDouble = Double::parseFloatType(aValue);
-    lItem = theItemFactory->createDouble(lDouble);
+    theItemFactory->createDouble(lItem, lDouble);
     return &*lItem;
   }
 
@@ -283,7 +283,7 @@ namespace zorba {
     store::Item_t lItem;
     Double lDouble;
     if (Double::parseString(lString->c_str(), lDouble)) {
-      lItem = theItemFactory->createDouble(lDouble);
+      theItemFactory->createDouble(lItem, lDouble);
     } 
     return &*lItem;
   }
@@ -295,7 +295,7 @@ namespace zorba {
     const xqpString s(lString);
     store::Item_t   lItem;
 
-    lItem = theItemFactory->createDuration(s);
+    theItemFactory->createDuration(lItem, s);
 
     return &*lItem;
   }
@@ -306,7 +306,7 @@ namespace zorba {
   {
     store::Item_t lItem;
     
-    lItem = theItemFactory->createDuration(aYears, aMonths, aDays, aHours, aMinutes, aSeconds);
+    theItemFactory->createDuration(lItem, aYears, aMonths, aDays, aHours, aMinutes, aSeconds);
     
     return &*lItem;
   }
@@ -318,7 +318,7 @@ namespace zorba {
     store::Item_t lItem;
     Float lFloat;
     if (Float::parseString(lString->c_str(), lFloat)) {
-      lItem = theItemFactory->createFloat(lFloat);
+      theItemFactory->createFloat(lItem, lFloat);
     } 
     return &*lItem;
   }
@@ -328,7 +328,7 @@ namespace zorba {
   {
     store::Item_t lItem;
     Float lFloat = Float::parseFloatType(aValue);
-    lItem = theItemFactory->createFloat(lFloat);
+    theItemFactory->createFloat(lItem, lFloat);
     return &*lItem;
   }
 
@@ -338,7 +338,7 @@ namespace zorba {
     store::Item_t lItem;
     xqp_hexBinary n;
     if (xqp_hexBinary::parseString(aHexData, aSize, n))
-      lItem = theItemFactory->createHexBinary(n);
+      theItemFactory->createHexBinary(lItem, n);
     
     return &*lItem;
   }
@@ -350,7 +350,7 @@ namespace zorba {
     if (aValue < 0) {
       Integer lInteger;
       lInteger = Integer::parseLongLong(aValue);
-      lItem = theItemFactory->createNegativeInteger(lInteger);
+      theItemFactory->createNegativeInteger(lItem, lInteger);
     }
     return &*lItem;
   }
@@ -361,7 +361,7 @@ namespace zorba {
     store::Item_t lItem;
     Integer lInteger;
     lInteger = Integer::parseULongLong(aValue);
-    lItem = theItemFactory->createNonNegativeInteger(lInteger);
+    theItemFactory->createNonNegativeInteger(lItem, lInteger);
     return &*lItem;
   }
 
@@ -372,7 +372,7 @@ namespace zorba {
     if (aValue < 0) {
       Integer lInteger;
       lInteger = Integer::parseLongLong(aValue);
-      lItem = theItemFactory->createNonPositiveInteger(lInteger);
+      theItemFactory->createNonPositiveInteger(lItem, lInteger);
     }
     return &*lItem;
   }
@@ -383,7 +383,7 @@ namespace zorba {
     store::Item_t lItem;
     Integer lInteger;
     lInteger = Integer::parseLongLong(aValue);
-    lItem = theItemFactory->createPositiveInteger(lInteger);
+    theItemFactory->createPositiveInteger(lItem, lInteger);
     return &*lItem;
   }
 
@@ -393,7 +393,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
 
-    lItem = theItemFactory->createGDay( lString );
+    theItemFactory->createGDay(lItem,  lString );
     
     return &*lItem;
   }
@@ -403,7 +403,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createGDay( aDay );
+    theItemFactory->createGDay(lItem,  aDay );
     
     return &*lItem;
   }
@@ -413,7 +413,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createGMonth( aMonth );
+    theItemFactory->createGMonth(lItem,  aMonth );
     
     return &*lItem;
   }
@@ -424,7 +424,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     
-    lItem = theItemFactory->createGMonth( lString );
+    theItemFactory->createGMonth(lItem,  lString );
     
     return &*lItem;
   }
@@ -435,7 +435,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
 
-    lItem = theItemFactory->createGMonthDay( lString );
+    theItemFactory->createGMonthDay(lItem,  lString );
     
     return &*lItem;
   }
@@ -445,7 +445,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createGMonthDay( aMonth, aDay );
+    theItemFactory->createGMonthDay(lItem,  aMonth, aDay );
     
     return &*lItem;
   }
@@ -456,7 +456,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
 
-    lItem = theItemFactory->createGYear( lString );
+    theItemFactory->createGYear(lItem,  lString );
     
     return &*lItem;
   }
@@ -466,7 +466,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createGYear( aYear );
+    theItemFactory->createGYear(lItem,  aYear );
     
     return &*lItem;
   }
@@ -477,7 +477,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
     
-    lItem = theItemFactory->createGYearMonth( lString );
+    theItemFactory->createGYearMonth(lItem,  lString );
     
     return &*lItem;
   }
@@ -487,7 +487,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createGYearMonth( aYear, aMonth );
+    theItemFactory->createGYearMonth(lItem,  aYear, aMonth );
     
     return &*lItem;
   }
@@ -498,7 +498,7 @@ namespace zorba {
     xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
     store::Item_t lItem;
 
-    lItem = theItemFactory->createTime( lString );
+    theItemFactory->createTime(lItem,  lString );
     
     return &*lItem;
   }
@@ -508,7 +508,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createTime( aHour, aMinute, aSecond );
+    theItemFactory->createTime(lItem,  aHour, aMinute, aSecond );
     
     return &*lItem;
   }
@@ -518,7 +518,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    lItem = theItemFactory->createTime( aHour, aMinute, aSecond, aTimezone_hours );
+    theItemFactory->createTime(lItem,  aHour, aMinute, aSecond, aTimezone_hours );
     
     return &*lItem;
   }
@@ -527,7 +527,7 @@ namespace zorba {
   ItemFactoryImpl::createUnsignedByte(const unsigned char aValue)
   {
     store::Item_t lItem;
-    lItem = theItemFactory->createUnsignedByte(aValue);
+    theItemFactory->createUnsignedByte(lItem, aValue);
     return &*lItem;
   }
     
@@ -538,7 +538,7 @@ namespace zorba {
     
     try {
       uint32_t lInteger = boost::numeric_cast<uint32_t>(aValue);
-      lItem = theItemFactory->createUnsignedInt(lInteger);
+      theItemFactory->createUnsignedInt(lItem, lInteger);
     } catch (boost::bad_numeric_cast e) {
       return &*lItem;
     }
@@ -550,7 +550,7 @@ namespace zorba {
   ItemFactoryImpl::createUnsignedLong(unsigned long long aValue)
   {
     store::Item_t lItem;
-    lItem = theItemFactory->createUnsignedLong(aValue);
+    theItemFactory->createUnsignedLong(lItem, aValue);
     return &*lItem;
   }
     
@@ -558,7 +558,7 @@ namespace zorba {
   ItemFactoryImpl::createUnsignedShort(unsigned short aValue)
   {
     store::Item_t lItem;
-    lItem = theItemFactory->createUnsignedShort(aValue);
+    theItemFactory->createUnsignedShort(lItem, aValue);
     return &*lItem;
   }
 } /* namespace zorba */

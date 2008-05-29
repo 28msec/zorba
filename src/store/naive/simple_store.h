@@ -141,8 +141,8 @@ public:
 
   Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false);
 
-  Item_t getReference(const Item* node);
-  Item_t getNodeByReference(const Item* uri);
+  bool getReference(Item_t& result, const Item* node);
+  bool getNodeByReference(Item_t& result, const Item* uri);
 
   TempSeq_t createTempSeq();
   TempSeq_t createTempSeq(Iterator* iterator, bool copyNodes = false, bool lazy = true);

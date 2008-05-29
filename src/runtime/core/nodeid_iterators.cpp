@@ -38,12 +38,12 @@ NodeDistinctState::reset(PlanState& planState)
   theStoreIterator->reset();
 }
 
-store::Item_t NodeDistinctIterator::nextImpl(PlanState& planState) const
+bool NodeDistinctIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   NodeDistinctState* state;
   state = StateTraitsImpl<NodeDistinctState>::getState(planState, this->stateOffset);
 
-  return state->theStoreIterator->next();
+  return state->theStoreIterator->next(result);
 }
 
 void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
@@ -111,12 +111,12 @@ void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
   state->theStoreIterator->open();
 }
 
-store::Item_t NodeSortIterator::nextImpl(PlanState& planState) const
+bool NodeSortIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   NodeSortState* state;
   state = StateTraitsImpl<NodeSortState>::getState(planState, this->stateOffset);
 
-  return state->theStoreIterator->next();
+  return state->theStoreIterator->next(result);
 }
 
 

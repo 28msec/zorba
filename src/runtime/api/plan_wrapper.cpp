@@ -79,14 +79,14 @@ namespace zorba {
 #endif
   }
 
-  store::Item_t
-  PlanWrapper::next()
+  bool
+  PlanWrapper::next(store::Item_t& result)
   {
 #ifndef NDEBUG
     assert(theIsOpened);
 #endif
 
-    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
+    return PlanIterator::consumeNext(result, theIterator.getp(), *theStateBlock);
   }
 
   void

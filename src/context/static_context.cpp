@@ -170,11 +170,13 @@ store::Item_t static_context::lookup_qname(
     xqp_string prefix,
     xqp_string local) const
 {
+  store::Item_t qname;
   // Note: lookup_ns throws exception if there is no binding for the prefix.
-  return ITEM_FACTORY->createQName((prefix.empty() ? default_ns.getStore() :
+  ITEM_FACTORY->createQName(qname, (prefix.empty() ? default_ns.getStore() :
                                                      lookup_ns(prefix).getStore()),
                                    prefix.getStore(),
                                    local.getStore());
+  return qname;
 }
 
 

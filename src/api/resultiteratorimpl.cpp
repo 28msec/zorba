@@ -122,8 +122,6 @@ ResultIteratorImpl::next(Item& aItem)
 {
   RESULT_ITER_TRY
   {
-    store::Item_t lItem;
-
     if (!theIsOpened)  
     {
       ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
@@ -137,9 +135,9 @@ ResultIteratorImpl::next(Item& aItem)
       theHaveLock = true;
     })
 
-    lItem = thePlan->next();
+    store::Item_t lItem;
 
-    if (lItem == NULL)
+    if (!thePlan->next(lItem))
       return false;
     
     if (lItem->isPul())

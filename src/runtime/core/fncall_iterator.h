@@ -61,7 +61,7 @@ public:
     
   bool isUpdating() const;
   void openImpl(PlanState& planState, uint32_t& offset);
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
@@ -98,7 +98,7 @@ class StatelessExtFunctionCallIterator :
   void openImpl(PlanState& planState, uint32_t& offset);
 
   virtual bool isUpdating() const { return theIsUpdating; }
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor& v) const;

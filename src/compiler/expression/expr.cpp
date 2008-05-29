@@ -866,41 +866,41 @@ const_expr::const_expr(const QueryLoc& loc, xqpString v)
   expr(loc)
 {
   xqpStringStore_t tmp = v.getStore();
-  val = ITEM_FACTORY->createString(tmp); 
+  ITEM_FACTORY->createString(val, tmp); 
 }
 
 const_expr::const_expr(const QueryLoc& loc, xqp_integer v)
   :
-  expr(loc),
-  val (ITEM_FACTORY->createInteger (v))
+  expr(loc)
 {
+  ITEM_FACTORY->createInteger (val, v);
 }
 
 const_expr::const_expr(
   const QueryLoc& loc,
   xqp_decimal v)
 :
-  expr(loc),
-  val (ITEM_FACTORY->createDecimal (v))
+  expr(loc)
 {
+  ITEM_FACTORY->createDecimal (val, v);
 }
 
 const_expr::const_expr(
   const QueryLoc& loc,
   xqp_double v)
 :
-  expr(loc),
-  val (ITEM_FACTORY->createDouble (v))
+  expr(loc)
 {
+  ITEM_FACTORY->createDouble (val, v);
 }
 
 const_expr::const_expr(
   const QueryLoc& loc,
   xqp_boolean v)
 :
-  expr(loc),
-  val (ITEM_FACTORY->createBoolean (v))
+  expr(loc)
 {
+  ITEM_FACTORY->createBoolean (val, v);
 }
 
 const_expr::const_expr(
@@ -918,9 +918,9 @@ const_expr::const_expr(
   const char* aPrefix, 
   const char* aLocal)
 :
-  expr(aLoc),
-  val ((store::Item*)&*ITEM_FACTORY->createQName(aNamespace, aPrefix, aLocal))
+  expr(aLoc)
 {
+  ITEM_FACTORY->createQName(val, aNamespace, aPrefix, aLocal);
 }
 
 

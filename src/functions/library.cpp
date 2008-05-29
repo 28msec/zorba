@@ -76,57 +76,64 @@ do                                                             \
 
 #define ITEM_FACTORY (*(GENV.getStore().getItemFactory()))
 
+static store::Item_t createQName(const char *ns, const char *pre, const char *local)
+{
+  store::Item_t res;
+  ITEM_FACTORY.createQName(res, ns, pre, local);
+  return res;
+}
+
 void BuiltinFunctionLibrary::populateContext(static_context *sctx)
 {
 
 // Accessors
 DECL(fn_data_func,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS, "fn", "data"),
+     (createQName (XQUERY_FN_NS, "fn", "data"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 DECL(fn_root_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "root"),
+     (createQName(XQUERY_FN_NS, "fn", "root"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 
 DECL(fn_nodename_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "node-name"),
+     (createQName(XQUERY_FN_NS, "fn", "node-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
 
 DECL(fn_nilled_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "nilled"),
+     (createQName(XQUERY_FN_NS, "fn", "nilled"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 DECL(fn_base_uri_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "base-uri"),
+     (createQName(XQUERY_FN_NS, "fn", "base-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 DECL(fn_document_uri_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "document-uri"),
+     (createQName(XQUERY_FN_NS, "fn", "document-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 DECL(fn_name_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "name"),
+     (createQName(XQUERY_FN_NS, "fn", "name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end Accessors
 
 //begin Error function
 DECL(fn_error,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
+     (createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.NONE_TYPE));
 
 DECL(fn_error,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
+     (createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
 DECL(fn_error,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
+     (createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
 DECL(fn_error,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
+     (createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR ,
@@ -135,27 +142,27 @@ DECL(fn_error,
 
 //begin functions on nodes
 DECL(fn_local_name,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "local-name"),
+     (createQName(XQUERY_FN_NS, "fn", "local-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_namespace_uri,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "namespace-uri"),
+     (createQName(XQUERY_FN_NS, "fn", "namespace-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
 
 DECL(fn_lang,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "lang"),
+     (createQName(XQUERY_FN_NS, "fn", "lang"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_collection,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "collection"),
+     (createQName(XQUERY_FN_NS, "fn", "collection"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(fn_collection,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "collection"),
+     (createQName(XQUERY_FN_NS, "fn", "collection"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 //end functions on nodes
@@ -166,7 +173,7 @@ DECL(fn_collection,
 // resolve-uri / 1 handled by translator
 
  DECL(fn_resolve_uri,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "resolve-uri"),
+     (createQName(XQUERY_FN_NS, "fn", "resolve-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
@@ -175,116 +182,116 @@ DECL(fn_collection,
 
 // Generic Arithmetics
 DECL(op_add,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":add"),
+     (createQName (XQUERY_OP_NS,"fn", ":add"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_subtract,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":subtract"),
+     (createQName (XQUERY_OP_NS,"fn", ":subtract"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_multiply,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":multiply"),
+     (createQName (XQUERY_OP_NS,"fn", ":multiply"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_divide,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":divide"),
+     (createQName (XQUERY_OP_NS,"fn", ":divide"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_integer_divide,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":integer-divide"),
+     (createQName (XQUERY_OP_NS,"fn", ":integer-divide"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_mod,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":mod"),
+     (createQName (XQUERY_OP_NS,"fn", ":mod"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 // Numerics
 DECL(op_numeric_add,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-add"),
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-add"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_numeric_subtract,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-subtract"),
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-subtract"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_numeric_multiply,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-multiply"),
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_numeric_divide,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-divide"),
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-divide"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_numeric_integer_divide,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-integer-divide"),
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-integer-divide"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_numeric_mod,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-mod"),
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-mod"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_numeric_unary_minus,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":unary-minus"),
+     (createQName (XQUERY_OP_NS,"fn", ":unary-minus"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
 
 DECL(op_numeric_unary_plus,
-     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":unary-plus"),
+     (createQName (XQUERY_OP_NS,"fn", ":unary-plus"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
 
 DECL(fn_abs,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "abs"),
+     (createQName(XQUERY_FN_NS, "fn", "abs"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_ceiling,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "ceiling"),
+     (createQName(XQUERY_FN_NS, "fn", "ceiling"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_floor,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "floor"),
+     (createQName(XQUERY_FN_NS, "fn", "floor"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_round,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "round"),
+     (createQName(XQUERY_FN_NS, "fn", "round"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_round_half_to_even,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
+     (createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_round_half_to_even,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
+     (createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 // end Numerics
@@ -293,23 +300,23 @@ DECL(fn_round_half_to_even,
 // begin context functions
 //position(), last() and static-base-uri() are implemented in the context
 DECL(fn_current_dateTime,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","current-dateTime"),
+     (createQName(XQUERY_FN_NS,"fn","current-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
 DECL(fn_current_date,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","current-date"),
+     (createQName(XQUERY_FN_NS,"fn","current-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
 DECL(fn_current_time,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","current-time"),
+     (createQName(XQUERY_FN_NS,"fn","current-time"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
 
 DECL(fn_implicit_timezone,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","implicit-timezone"),
+     (createQName(XQUERY_FN_NS,"fn","implicit-timezone"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(fn_default_collation,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","default-collation"),
+     (createQName(XQUERY_FN_NS,"fn","default-collation"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end context functions
 
@@ -319,297 +326,297 @@ DECL(fn_default_collation,
 // nodeTest = new NodeTest(store::StoreConsts::elementNode);
 
 DECL(fn_resolve_qname,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn",  "resolve-QName"),
+     (createQName(XQUERY_FN_NS, "fn",  "resolve-QName"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
       
 DECL(fn_qname,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "QName"),
+     (createQName(XQUERY_FN_NS, "fn", "QName"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE));
 
 DECL(op_qname_equal,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","QName-equal"),
+     (createQName(XQUERY_FN_NS,"fn","QName-equal"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_prefix_from_qname,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","prefix-from-QName"),
+     (createQName(XQUERY_FN_NS,"fn","prefix-from-QName"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION));
 
 DECL(fn_local_name_from_qname,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","local-name-from-QName"),
+     (createQName(XQUERY_FN_NS,"fn","local-name-from-QName"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION));
 
 DECL(fn_namespace_uri_from_qname,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","namespace-uri-from-QName"),
+     (createQName(XQUERY_FN_NS,"fn","namespace-uri-from-QName"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 DECL(fn_namespace_uri_for_prefix,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","namespace-uri-for-prefix"),
+     (createQName(XQUERY_FN_NS,"fn","namespace-uri-for-prefix"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 DECL(fn_in_scope_prefixes,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","in-scope-prefixes"),
+     (createQName(XQUERY_FN_NS,"fn","in-scope-prefixes"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 // end QNames
 
 // Sequences
 DECL(fn_doc_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","doc"),
+     (createQName(XQUERY_FN_NS,"fn","doc"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
 
 DECL(fn_doc_available_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","doc-available"),
+     (createQName(XQUERY_FN_NS,"fn","doc-available"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_concatenate,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":concatenate"),
+     (createQName(XQUERY_FN_NS,"fn",":concatenate"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       true, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(fn_exists,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","exists"),
+    (createQName(XQUERY_FN_NS,"fn","exists"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_empty,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","empty"),
+    (createQName(XQUERY_FN_NS,"fn","empty"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_index_of,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","index-of"),
+    (createQName(XQUERY_FN_NS,"fn","index-of"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.ITEM_TYPE_ONE,
     GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
 DECL(fn_index_of,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","index-of"),
+    (createQName(XQUERY_FN_NS,"fn","index-of"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.ITEM_TYPE_ONE,
     GENV_TYPESYSTEM.STRING_TYPE_ONE,
     GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
 DECL(fn_remove,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","remove"),
+    (createQName(XQUERY_FN_NS,"fn","remove"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(fn_reverse,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","reverse"),
+    (createQName(XQUERY_FN_NS,"fn","reverse"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(fn_distinct_values,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","distinct-values"),
+    (createQName(XQUERY_FN_NS,"fn","distinct-values"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 DECL(fn_distinct_values,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","distinct-values"),
+    (createQName(XQUERY_FN_NS,"fn","distinct-values"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.STRING_TYPE_ONE,
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 DECL(fn_insert_before,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","insert-before"),
+    (createQName(XQUERY_FN_NS,"fn","insert-before"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.INTEGER_TYPE_ONE,    
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(fn_subsequence,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","subsequence"),
+    (createQName(XQUERY_FN_NS,"fn","subsequence"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,    
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(fn_subsequence,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","subsequence"),
+    (createQName(XQUERY_FN_NS,"fn","subsequence"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
     GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(fn_zero_or_one,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","zero-or-one"),
+    (createQName(XQUERY_FN_NS,"fn","zero-or-one"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
     GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
 
 DECL(fn_one_or_more,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","one-or-more"),
+    (createQName(XQUERY_FN_NS,"fn","one-or-more"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
     GENV_TYPESYSTEM.ITEM_TYPE_PLUS));
 
 DECL(fn_exactly_one,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","exactly-one"),
+    (createQName(XQUERY_FN_NS,"fn","exactly-one"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
     GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
 DECL(fn_exactly_one_noraise,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":exactly-one-noraise"),
+    (createQName(XQUERY_FN_NS,"fn",":exactly-one-noraise"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
     GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_count,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","count"),
+    (createQName(XQUERY_FN_NS,"fn","count"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
     GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
 DECL(fn_avg,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","avg"),
+    (createQName(XQUERY_FN_NS,"fn","avg"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_max_1,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","max"),
+    (createQName(XQUERY_FN_NS,"fn","max"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_max_2,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","max"),
+    (createQName(XQUERY_FN_NS,"fn","max"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.STRING_TYPE_ONE, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_min_1,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","min"),
+    (createQName(XQUERY_FN_NS,"fn","min"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_min_2,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","min"),
+    (createQName(XQUERY_FN_NS,"fn","min"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.STRING_TYPE_ONE, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_sum,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","sum"),
+    (createQName(XQUERY_FN_NS,"fn","sum"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(fn_sum,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","sum"),
+    (createQName(XQUERY_FN_NS,"fn","sum"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(op_to,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":to"),
+    (createQName(XQUERY_FN_NS,"fn",":to"),
     GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
     GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
     GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
 DECL(fn_id,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","id"),
+     (createQName(XQUERY_FN_NS,"fn","id"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)
     );
 
 DECL(fn_id_ref,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","idref"),
+     (createQName(XQUERY_FN_NS,"fn","idref"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(fn_unordered,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","unordered"),
+  (createQName(XQUERY_FN_NS,"fn","unordered"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(op_either_nodes_or_atomics,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":either-nodes-or-atomics"),
+  (createQName(XQUERY_FN_NS,"fn",":either-nodes-or-atomics"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(op_distinct_nodes,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":distinct-nodes"),
+  (createQName(XQUERY_FN_NS,"fn",":distinct-nodes"),
   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(op_distinct_nodes_or_atomics,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":distinct-nodes-or-atomics"),
+  (createQName(XQUERY_FN_NS,"fn",":distinct-nodes-or-atomics"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(op_sort_nodes_ascending,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-ascending"),
+  (createQName(XQUERY_FN_NS,"fn",":sort-nodes-ascending"),
   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(op_sort_nodes_asc_or_atomics,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-asc-or-atomics"),
+  (createQName(XQUERY_FN_NS,"fn",":sort-nodes-asc-or-atomics"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(op_sort_nodes_descending,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-descending"),
+  (createQName(XQUERY_FN_NS,"fn",":sort-nodes-descending"),
   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(op_sort_nodes_desc_or_atomics,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-desc-or-atomics"),
+  (createQName(XQUERY_FN_NS,"fn",":sort-nodes-desc-or-atomics"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(op_sort_distinct_nodes_ascending,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-ascending"),
+  (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-ascending"),
   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 DECL(op_sort_distinct_nodes_asc_or_atomics,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-asc-or-atomics"),
+  (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-asc-or-atomics"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(op_sort_distinct_nodes_descending,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-descending"),
+  (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-descending"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 // TODO: separate function
 DECL(op_sort_distinct_nodes_descending,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-desc-or-atomics"),
+  (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-desc-or-atomics"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(fn_union,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":union"),
+  (createQName(XQUERY_FN_NS,"fn",":union"),
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(fn_intersect,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":intersect"),
+  (createQName(XQUERY_FN_NS,"fn",":intersect"),
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(fn_except,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":except"),
+  (createQName(XQUERY_FN_NS,"fn",":except"),
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
   
 DECL(fn_deep_equal,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "deep-equal"),
+  (createQName(XQUERY_FN_NS, "fn", "deep-equal"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_deep_equal,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "deep-equal"),
+  (createQName(XQUERY_FN_NS, "fn", "deep-equal"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -620,37 +627,37 @@ DECL(fn_deep_equal,
 
 // Generic Comparison;
 DECL(op_equal,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":equal"),
+     (createQName(XQUERY_OP_NS,"fn", ":equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_not_equal,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":not-equal"),
+     (createQName(XQUERY_OP_NS,"fn", ":not-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_greater,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":greater"),
+     (createQName(XQUERY_OP_NS,"fn", ":greater"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_greater_equal,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":greater-equal"),
+     (createQName(XQUERY_OP_NS,"fn", ":greater-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_less,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":less"),
+     (createQName(XQUERY_OP_NS,"fn", ":less"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_less_equal,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":less-equal"),
+     (createQName(XQUERY_OP_NS,"fn", ":less-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
@@ -658,37 +665,37 @@ DECL(op_less_equal,
 
 // Value Comparison
 DECL(op_value_equal,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-equal"),
+     (createQName(XQUERY_FN_NS,"fn", ":value-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 DECL(op_value_not_equal,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-not-equal"),
+     (createQName(XQUERY_FN_NS,"fn", ":value-not-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 DECL(op_value_greater,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-greater"),
+     (createQName(XQUERY_FN_NS,"fn", ":value-greater"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 DECL(op_value_greater_equal,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-greater-equal"),
+     (createQName(XQUERY_FN_NS,"fn", ":value-greater-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 DECL(op_value_less,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-less"),
+     (createQName(XQUERY_FN_NS,"fn", ":value-less"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 DECL(op_value_less_equal,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-less-equal"),
+     (createQName(XQUERY_FN_NS,"fn", ":value-less-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
@@ -696,19 +703,19 @@ DECL(op_value_less_equal,
 
 // Node Comparison
 DECL(op_is_same_node,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":is-same-node"),
+     (createQName(XQUERY_FN_NS,"fn", ":is-same-node"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 DECL(op_node_before,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":node-before"),
+     (createQName(XQUERY_FN_NS,"fn", ":node-before"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 DECL(op_node_after,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":node-after"),
+     (createQName(XQUERY_FN_NS,"fn", ":node-after"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
@@ -717,199 +724,199 @@ DECL(op_node_after,
 
 // Strings
 DECL(fn_codepoints_to_string,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","codepoints-to-string"),
+     (createQName(XQUERY_FN_NS,"fn","codepoints-to-string"),
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_string_to_codepoints,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","string-to-codepoints"),
+     (createQName(XQUERY_FN_NS,"fn","string-to-codepoints"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
 DECL(fn_string_compare,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","compare"),
+     (createQName(XQUERY_FN_NS,"fn","compare"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_string_compare,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","compare"),
+     (createQName(XQUERY_FN_NS,"fn","compare"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_codepoint_equal,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","codepoint-equal"),
+     (createQName(XQUERY_FN_NS,"fn","codepoint-equal"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 // the string concat function, not the sequence op:concat
 DECL(fn_concat,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","concat"),
+     (createQName(XQUERY_FN_NS,"fn","concat"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       true, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_string_join,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","string-join"),
+     (createQName(XQUERY_FN_NS,"fn","string-join"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_substring,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring"),
+     (createQName(XQUERY_FN_NS,"fn","substring"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_substring,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring"),
+     (createQName(XQUERY_FN_NS,"fn","substring"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_string_length,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","string-length"),
+     (createQName(XQUERY_FN_NS,"fn","string-length"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
 DECL(fn_normalize_space,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","normalize-space"),
+     (createQName(XQUERY_FN_NS,"fn","normalize-space"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_normalize_unicode,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","normalize-unicode"),
+     (createQName(XQUERY_FN_NS,"fn","normalize-unicode"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_normalize_unicode,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","normalize-unicode"),
+     (createQName(XQUERY_FN_NS,"fn","normalize-unicode"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_upper_case,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","upper-case"),
+     (createQName(XQUERY_FN_NS,"fn","upper-case"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_lower_case,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","lower-case"),
+     (createQName(XQUERY_FN_NS,"fn","lower-case"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_translate,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","translate"),
+     (createQName(XQUERY_FN_NS,"fn","translate"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_encode_for_uri,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","encode-for-uri"),
+     (createQName(XQUERY_FN_NS,"fn","encode-for-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_iri_to_uri,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","iri-to-uri"),
+     (createQName(XQUERY_FN_NS,"fn","iri-to-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_escape_html_uri,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","escape-html-uri"),
+     (createQName(XQUERY_FN_NS,"fn","escape-html-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_contains,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","contains"),
+     (createQName(XQUERY_FN_NS,"fn","contains"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
       
 DECL(fn_contains,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","contains"),
+     (createQName(XQUERY_FN_NS,"fn","contains"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_starts_with,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","starts-with"),
+     (createQName(XQUERY_FN_NS,"fn","starts-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_starts_with,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","starts-with"),
+     (createQName(XQUERY_FN_NS,"fn","starts-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_ends_with,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","ends-with"),
+     (createQName(XQUERY_FN_NS,"fn","ends-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_ends_with,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","ends-with"),
+     (createQName(XQUERY_FN_NS,"fn","ends-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_substring_before,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-before"),
+     (createQName(XQUERY_FN_NS,"fn","substring-before"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_substring_before,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-before"),
+     (createQName(XQUERY_FN_NS,"fn","substring-before"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_substring_after,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-after"),
+     (createQName(XQUERY_FN_NS,"fn","substring-after"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_substring_after,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-after"),
+     (createQName(XQUERY_FN_NS,"fn","substring-after"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_matches,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","matches"),
+     (createQName(XQUERY_FN_NS,"fn","matches"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_matches,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","matches"),
+     (createQName(XQUERY_FN_NS,"fn","matches"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_replace,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","replace"),
+     (createQName(XQUERY_FN_NS,"fn","replace"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_replace,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","replace"),
+     (createQName(XQUERY_FN_NS,"fn","replace"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -917,13 +924,13 @@ DECL(fn_replace,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 DECL(fn_tokenize,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","tokenize"),
+     (createQName(XQUERY_FN_NS,"fn","tokenize"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
 DECL(fn_tokenize,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","tokenize"),
+     (createQName(XQUERY_FN_NS,"fn","tokenize"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -932,335 +939,335 @@ DECL(fn_tokenize,
 
 // start Boolean
 DECL(fn_true,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","true"),
+     (createQName(XQUERY_FN_NS,"fn","true"),
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_false,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","false"),
+     (createQName(XQUERY_FN_NS,"fn","false"),
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_boolean,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","boolean"),
+     (createQName(XQUERY_FN_NS,"fn","boolean"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(fn_not,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","not"),
+     (createQName(XQUERY_FN_NS,"fn","not"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 // end Boolean
 
 // start Logic
 DECL(op_and,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":and"),
+     (createQName(XQUERY_OP_NS,"fn", ":and"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_or,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":or"),
+     (createQName(XQUERY_OP_NS,"fn", ":or"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 // end Logic
 
 // begin constructors
 DECL(op_enclosed_expr,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":enclosed-expr"),
+     (createQName(XQUERY_OP_NS,"fn", ":enclosed-expr"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 // end constructors
 
 // begin date time
 DECL(fn_datetime_ctor,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", "dateTime"),
+     (createQName(XQUERY_OP_NS,"fn", "dateTime"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 DECL(fn_years_from_duration,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "years-from-duration"),
+     (createQName(XQUERY_FN_NS,"fn", "years-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_months_from_duration,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "months-from-duration"),
+     (createQName(XQUERY_FN_NS,"fn", "months-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_days_from_duration,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "days-from-duration"),
+     (createQName(XQUERY_FN_NS,"fn", "days-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_hours_from_duration,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "hours-from-duration"),
+     (createQName(XQUERY_FN_NS,"fn", "hours-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_minutes_from_duration,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "minutes-from-duration"),
+     (createQName(XQUERY_FN_NS,"fn", "minutes-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_seconds_from_duration,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "seconds-from-duration"),
+     (createQName(XQUERY_FN_NS,"fn", "seconds-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
 
 DECL(fn_year_from_datetime,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "year-from-dateTime"),
+     (createQName(XQUERY_FN_NS,"fn", "year-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_month_from_datetime,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "month-from-dateTime"),
+     (createQName(XQUERY_FN_NS,"fn", "month-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_day_from_datetime,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "day-from-dateTime"),
+     (createQName(XQUERY_FN_NS,"fn", "day-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_hours_from_datetime,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "hours-from-dateTime"),
+     (createQName(XQUERY_FN_NS,"fn", "hours-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_minutes_from_datetime,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "minutes-from-dateTime"),
+     (createQName(XQUERY_FN_NS,"fn", "minutes-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_seconds_from_datetime,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "seconds-from-dateTime"),
+     (createQName(XQUERY_FN_NS,"fn", "seconds-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
 
 DECL(fn_timezone_from_datetime,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "timezone-from-dateTime"),
+     (createQName(XQUERY_FN_NS,"fn", "timezone-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
 
 DECL(fn_year_from_date,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "year-from-date"),
+     (createQName(XQUERY_FN_NS,"fn", "year-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_month_from_date,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "month-from-date"),
+     (createQName(XQUERY_FN_NS,"fn", "month-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_day_from_date,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "day-from-date"),
+     (createQName(XQUERY_FN_NS,"fn", "day-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_timezone_from_date,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "timezone-from-date"),
+     (createQName(XQUERY_FN_NS,"fn", "timezone-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
 
 DECL(fn_hours_from_time,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "hours-from-time"),
+     (createQName(XQUERY_FN_NS,"fn", "hours-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_minutes_from_time,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "minutes-from-time"),
+     (createQName(XQUERY_FN_NS,"fn", "minutes-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(fn_seconds_from_time,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "seconds-from-time"),
+     (createQName(XQUERY_FN_NS,"fn", "seconds-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
 
 DECL(fn_timezone_from_time,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "timezone-from-time"),
+     (createQName(XQUERY_FN_NS,"fn", "timezone-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
 
 DECL(op_ym_durations_add,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-yearMonthDurations"),
+     (createQName (XQUERY_FN_NS,"fn", "add-yearMonthDurations"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE));
 
 DECL(op_dt_durations_add,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-dayTimeDurations"),
+     (createQName (XQUERY_FN_NS,"fn", "add-dayTimeDurations"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(op_ym_durations_subtract,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDurations"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDurations"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE));
 
 DECL(op_dt_durations_subtract,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDurations"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDurations"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(op_ym_durations_multiply,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "multiply-yearMonthDuration"),
+     (createQName (XQUERY_FN_NS,"fn", "multiply-yearMonthDuration"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE));
 
 DECL(op_dt_durations_multiply,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "multiply-dayTimeDuration"),
+     (createQName (XQUERY_FN_NS,"fn", "multiply-dayTimeDuration"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(op_ym_durations_divide,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-yearMonthDuration"),
+     (createQName (XQUERY_FN_NS,"fn", "divide-yearMonthDuration"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE));
 
 DECL(op_dt_durations_divide,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration"),
+     (createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(op_divide_ymd_by_ymd,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-yearMonthDuration-by-yearMonthDuration"),
+     (createQName (XQUERY_FN_NS,"fn", "divide-yearMonthDuration-by-yearMonthDuration"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 DECL(op_divide_dtd_by_dtd,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration-by-dayTimeDuration"),
+     (createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration-by-dayTimeDuration"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
  //TODO change the returned type to DT_DURATION_TYPE_QUESTION
 DECL(op_sub_dt,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dateTimes"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-dateTimes"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
 
  //TODO change the returned type to DT_DURATION_TYPE_QUESTION
 DECL(op_sub_d,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dates"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-dates"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
 
  //TODO change the returned type to DT_DURATION_TYPE_QUESTION
 DECL(op_sub_t,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-times"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-times"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
 
  //TODO change the type of the second arg to YM_DURATION_TYPE_ONE
 DECL(op_add_ymd_to_dt,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-yearMonthDuration-to-dateTime"),
+     (createQName (XQUERY_FN_NS,"fn", "add-yearMonthDuration-to-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
  //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
 DECL(op_add_dtd_to_dt,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-dateTime"),
+     (createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
  //TODO change the type of the second arg to YM_DURATION_TYPE_ONE
 DECL(op_sub_ymd_from_dt,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDuration-from-dateTime"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDuration-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
  //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
 DECL(op_sub_dtd_from_dt,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-dateTime"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
  //TODO change the type of the second arg to YM_DURATION_TYPE_ONE
 DECL(op_add_ymd_to_d,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-yearMonthDuration-to-date"),
+     (createQName (XQUERY_FN_NS,"fn", "add-yearMonthDuration-to-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
  //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
 DECL(op_add_dtd_to_d,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-date"),
+     (createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
  //TODO change the type of the second arg to YM_DURATION_TYPE_ONE
 DECL(op_sub_ymd_from_d,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDuration-from-date"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDuration-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
  //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
 DECL(op_sub_dtd_from_d,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-date"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
  //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
 DECL(op_add_dtd_to_t,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-time"),
+     (createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-time"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
 
  //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
 DECL(op_sub_dtd_from_t,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-time"),
+     (createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
 
 DECL(fn_adjust_dt_to_tz_1,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-dateTime-to-timezone"),
+     (createQName (XQUERY_FN_NS,"fn", "adjust-dateTime-to-timezone"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 DECL(fn_adjust_dt_to_tz_2,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-dateTime-to-timezone"),
+     (createQName (XQUERY_FN_NS,"fn", "adjust-dateTime-to-timezone"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 DECL(fn_adjust_d_to_tz_1,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-date-to-timezone"),
+     (createQName (XQUERY_FN_NS,"fn", "adjust-date-to-timezone"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION));
 
 DECL(fn_adjust_d_to_tz_2,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-date-to-timezone"),
+     (createQName (XQUERY_FN_NS,"fn", "adjust-date-to-timezone"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION));
 
 DECL(fn_adjust_t_to_tz_1,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-time-to-timezone"),
+     (createQName (XQUERY_FN_NS,"fn", "adjust-time-to-timezone"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION));
 
 DECL(fn_adjust_t_to_tz_2,
-     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-time-to-timezone"),
+     (createQName (XQUERY_FN_NS,"fn", "adjust-time-to-timezone"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION));
@@ -1269,7 +1276,7 @@ DECL(fn_adjust_t_to_tz_2,
 
 // begin debug functions
 DECL(fn_trace_func,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","trace"),
+     (createQName(XQUERY_FN_NS,"fn","trace"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
@@ -1279,16 +1286,16 @@ DECL(fn_trace_func,
 // begin zorba functions
 
 DECL(zor_numgen,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
+     (createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 DECL(node_reference,
-     (ITEM_FACTORY.createQName(XQUERY_ZORBA_FN_NS, "fn-zorba", "node-reference"),
+     (createQName(XQUERY_ZORBA_FN_NS, "fn-zorba", "node-reference"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
 
 DECL(node_by_reference,
-     (ITEM_FACTORY.createQName(XQUERY_ZORBA_FN_NS, "fn-zorba", "node-by-reference"),
+     (createQName(XQUERY_ZORBA_FN_NS, "fn-zorba", "node-by-reference"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 
@@ -1297,22 +1304,22 @@ DECL(node_by_reference,
 #ifdef ZORBA_WITH_REST
 // zorba-rest functions
 DECL(rest_get_1,
-     (ITEM_FACTORY.createQName(XQUERY_ZORBA_FN_NS, "zorba-rest", "get"),
+     (createQName("http://www.flworfound.org/", "zorba-rest", "get"),
      GENV_TYPESYSTEM.STRING_TYPE_ONE, // need to make this an ANY_URI_TYPE_ONE
      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 // DECL(rest_get_2,
-//      (ITEM_FACTORY.createQName("http://www.flworfound.org/", "zorba-rest", "get"),
+//      (createQName("http://www.flworfound.org/", "zorba-rest", "get"),
 //      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 #endif
 
 // begin context functions
 DECL(ctx_variable,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":ctxvariable"),
+     (createQName(XQUERY_FN_NS,"fn", ":ctxvariable"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 DECL(ctx_var_assign,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":ctxvar-assign"),
+     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-assign"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));

@@ -52,28 +52,25 @@ FnDataIterator::FnDataIterator (
 {
 }
 
-store::Item_t
-FnDataIterator::nextImpl(PlanState& planState) const
+bool
+FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t item;
   PlanIter_t iter;
   
   FnDataIteratorState* state;
   DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
   
   while (true) {
-    item = consumeNext( theChild, planState );
-    if (item == NULL)
+    if (!consumeNext( result, theChild, planState ))
       break;
-    state->theTypedValue = item->getTypedValue();
+    state->theTypedValue = result->getTypedValue();
     state->theTypedValue->open();
       
     while (true) {
-      item = state->theTypedValue->next();
-      if (item == NULL)
+      if (!state->theTypedValue->next(result))
         break;
-      ZORBA_ASSERT(!item->isNode());
-      STACK_PUSH( item, state );
+      ZORBA_ASSERT(!result->isNode());
+      STACK_PUSH(true, state );
     }
   }
   state->theTypedValue = 0; // TODO remove???
@@ -83,7 +80,7 @@ FnDataIterator::nextImpl(PlanState& planState) const
 
 // 14.9 fn:root
 //---------------------
-store::Item_t FnRootIterator::nextImpl(PlanState& planState) const
+bool FnRootIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t contextNode;
   store::Item_t parentNode;
@@ -91,65 +88,60 @@ store::Item_t FnRootIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  contextNode = consumeNext(theChildren[0].getp(), planState);
+  if (!consumeNext(result, theChildren[0].getp(), planState))
+    return false;
 
-  if (contextNode == NULL)
-    return NULL;
-
-  parentNode = contextNode->getParent();
+  parentNode = result->getParent();
 
   while (parentNode != NULL)
   {
-    contextNode = parentNode;
+    result = parentNode;
     parentNode = parentNode->getParent();
   }
 
-  STACK_PUSH(contextNode, state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
 // 14.9 fn:node-name
 //---------------------
-store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
+bool FnNodeNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t inNode;
-
   PlanIteratorState *state;
+  store::Item_t inNode;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0].getp(), planState);
-
-  if (inNode != NULL)
+  if (consumeNext(inNode, theChildren[0].getp(), planState))
   {
     if( inNode->getNodeKind() == store::StoreConsts::elementNode ||
-        inNode->getNodeKind() == store::StoreConsts::attributeNode)
-      STACK_PUSH(inNode->getNodeName(), state);
-    else if(inNode->getNodeKind() == store::StoreConsts::piNode)
-      STACK_PUSH(
-          GENV_ITEMFACTORY->createQName(xqp_string().getStore(),
-                                        xqp_string().getStore(),
-                                        inNode->getTarget()),
-          state);
+        inNode->getNodeKind() == store::StoreConsts::attributeNode) {
+      result = inNode->getNodeName();
+      STACK_PUSH(true, state);
+    } else if(inNode->getNodeKind() == store::StoreConsts::piNode) {
+      GENV_ITEMFACTORY->createQName(result, xqp_string().getStore(),
+          xqp_string().getStore(),
+          inNode->getTarget());
+      STACK_PUSH(true, state);
+    }
   }
   STACK_END (state);
 }
 
 // 2.2 fn:nilled
 //---------------------
-store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
+bool FnNilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
   
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0].getp(), planState);
-
-  if (inNode != NULL)
+  if (consumeNext(inNode, theChildren[0].getp(), planState))
   {
-    if (inNode->isNode()) 
-      STACK_PUSH(inNode->getNilled(), state);
-    else
+    if (inNode->isNode()) {
+      result = inNode->getNilled();
+      STACK_PUSH(result != NULL, state);
+    } else
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                            "The argument of the fn:nilled function is not a node");
   }
@@ -159,7 +151,7 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
 
 // 2.5 fn:base-uri
 //---------------------
-store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
+bool FnBaseUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
   xqpStringStore_t baseuri;
@@ -167,13 +159,13 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0].getp(), planState);
-
-  if (inNode != NULL)
+  if (consumeNext(inNode, theChildren[0].getp(), planState))
   {
     baseuri = inNode->getBaseURI();
-    if (baseuri != NULL)
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(baseuri), state);
+    if (baseuri != NULL) {
+      GENV_ITEMFACTORY->createAnyURI(result, baseuri);
+      STACK_PUSH(true, state);
+    }
   }
   
   STACK_END (state);
@@ -181,21 +173,19 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
 
 // 2.6 fn:document-uri
 //---------------------
-store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
+bool FnDocumentUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t inNode;
   xqpStringStore_t docuri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0].getp(), planState);
-
-  if (inNode != NULL)
+  if (consumeNext(result, theChildren[0].getp(), planState))
   {
-    docuri = inNode->getDocumentURI();
-    if (docuri != NULL)
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(docuri), state);
+    docuri = result->getDocumentURI();
+    if (docuri != NULL) {
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, docuri), state);
+    }
   }
   
   STACK_END (state);
@@ -204,7 +194,7 @@ store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
 
 // 2.3 fn:string
 //---------------------
-store::Item_t FnStringIterator::nextImpl(PlanState& planState) const
+bool FnStringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inVal;
   xqpStringStore_t strval;
@@ -212,18 +202,20 @@ store::Item_t FnStringIterator::nextImpl(PlanState& planState) const
   FnStringIteratorState *state;
   DEFAULT_STACK_INIT(FnStringIteratorState, state, planState);
 
-  while((inVal = consumeNext(theChildren[0], planState)) != NULL) 
+  while(consumeNext(inVal, theChildren[0], planState)) 
   {
     state->hasOutput = true;
     strval = inVal->getStringValue();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(strval), state);
+    GENV_ITEMFACTORY->createString(result, strval);
+    STACK_PUSH(true, state);
   }
 
   if (!state->hasOutput && theEmptyStringOnNULL) 
   {
     state->hasOutput = true;
     strval = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(strval), state);
+    GENV_ITEMFACTORY->createString(result, strval);
+    STACK_PUSH(true, state);
   }
 
   STACK_END (state);

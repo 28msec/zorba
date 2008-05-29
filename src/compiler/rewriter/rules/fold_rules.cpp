@@ -37,35 +37,33 @@ using namespace std;
 
 namespace zorba {
 
-static expr_t execute(
-    CompilerCB* compilercb,
-    expr_t node,
-    vector<store::Item_t> &result)
-{
-  PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
-  QueryLoc loc = LOC (node);
-  store::Item_t item;
-  try 
-  {
-    for (PlanWrapperHolder pw  (new PlanWrapper (plan, compilercb, NULL)); (item = pw->next ()) != NULL; )
-      result.push_back (item);
-    return NULL;
-  } 
-  catch (error::ZorbaError& e) 
-  {
-    XQUERY_ERROR lErrorCode = e.theErrorCode;
-    QueryLoc loc;
-    loc.setLineBegin(e.theQueryLine);
-    loc.setColumnBegin(e.theQueryColumn);
-    
-    expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 2),
-                                   new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ())),
-                                   new const_expr (loc, e.theDescription));
-    err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
-    err_expr->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
-    return err_expr;
+  static expr_t execute (CompilerCB* compilercb, expr_t node, vector<store::Item_t> &result) {
+    PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
+    QueryLoc loc = LOC (node);
+    store::Item_t item;
+    try {
+      for (PlanWrapperHolder pw  (new PlanWrapper (plan, compilercb, NULL)); ; ) {
+        if (!pw->next(item)) {
+          break;
+        }
+        result.push_back (item);
+      }
+      return NULL;
+    } catch (error::ZorbaError& e) {
+      XQUERY_ERROR lErrorCode = e.theErrorCode;
+      QueryLoc loc;
+      loc.setLineBegin(e.theQueryLine);
+      loc.setColumnBegin(e.theQueryColumn);
+      store::Item_t qname;
+      ITEM_FACTORY->createQName (qname, "http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ());
+      expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 2),
+                                     new const_expr (loc, qname),
+                                     new const_expr (loc, e.theDescription));
+      err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
+      err_expr->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
+      return err_expr;
+    }
   }
-}
 
   RULE_REWRITE_PRE(MarkFreeVars) {
     return NULL;
@@ -291,7 +289,9 @@ static expr_t execute(
       else if (ival == xqp_integer::parseInt (1))
         return fix_annotations (new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), (*count_expr) [0]));
       else {
-        expr_t dpos = new const_expr (LOC (val_expr), GenericCast::instance ()->promote (val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        store::Item_t pVal;
+        GenericCast::instance ()->promote (pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        expr_t dpos = new const_expr (LOC (val_expr), pVal);
         expr_t subseq_expr = fix_annotations (new fo_expr (LOC (count_expr), LOOKUP_FN ("fn", "subsequence", 3), (*count_expr) [0], dpos, new const_expr (LOC (val_expr), xqp_double::parseInt (2))));
         return fix_annotations (new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), subseq_expr));
       }

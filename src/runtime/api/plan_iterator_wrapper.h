@@ -43,7 +43,7 @@ namespace zorba {
       virtual ~PlanIteratorWrapper();
 
       void open();
-      store::Item_t next();
+      bool next(store::Item_t&);
       void reset();
       void close() throw();
   };

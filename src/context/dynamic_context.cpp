@@ -58,7 +58,7 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 
 		implicit_timezone = 0;
 
-    current_date_time_item = GENV_ITEMFACTORY->createDateTime(gmtm.tm_year, gmtm.tm_mon, gmtm.tm_mday, 
+    GENV_ITEMFACTORY->createDateTime(current_date_time_item, gmtm.tm_year, gmtm.tm_mon, gmtm.tm_mday, 
                                                               gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec, implicit_timezone);
     
 		ctxt_position = 0;

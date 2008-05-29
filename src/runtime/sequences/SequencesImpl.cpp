@@ -66,12 +66,13 @@ getCollator(
     PlanState& planState,
     const PlanIterator* iter)
 {
-  store::Item_t lCollationItem = PlanIterator::consumeNext(iter, planState);
+  store::Item_t lCollationItem;
+  store::Item_t temp;
 
-  if (lCollationItem == NULL)
+  if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "An empty-sequence is not allowed as collation parameter");
 
-  if (PlanIterator::consumeNext(iter, planState) != NULL)
+  if (PlanIterator::consumeNext(temp, iter, planState))
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "A sequence of more then one item is not allowed as collation parameter");
     
   xqtref_t lCollationItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
@@ -100,10 +101,9 @@ FnConcatIteratorState::reset(PlanState& planState)
 }
 
 
-store::Item_t
-FnConcatIterator::nextImpl(PlanState& planState) const 
+bool
+FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
-  store::Item_t item;
   std::auto_ptr<store::PUL> pul;
 
   FnConcatIteratorState* state;
@@ -114,33 +114,32 @@ FnConcatIterator::nextImpl(PlanState& planState) const
 
   for (; state->theCurIter < theChildren.size(); ++state->theCurIter) 
   {
-    item = consumeNext(theChildren[state->theCurIter].getp(), planState);
-    while (item != NULL) 
+    while(consumeNext(result, theChildren[state->theCurIter].getp(), planState))
     {
       if (theIsUpdating)
       {
-        ZORBA_FATAL(item->isPul(), "");
+        ZORBA_FATAL(result->isPul(), "");
 
-        pul->mergeUpdates(item);
+        pul->mergeUpdates(result);
       }
       else
       {
-        STACK_PUSH (item, state);
+        STACK_PUSH (true, state);
       }
-
-      item = consumeNext(theChildren[state->theCurIter].getp(), planState);
     }
   }
   
-  if (theIsUpdating)
-    STACK_PUSH(pul.release(), state);
+  if (theIsUpdating) {
+    result = pul.release();
+    STACK_PUSH(result != NULL, state);
+  }
 
   STACK_END (state);
 }
 
 //15.1.3 fn:index-of
-store::Item_t 
-FnIndexOfIterator::nextImpl(PlanState& planState) const {
+bool 
+FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
   store::Item_t lCollationItem;
   xqtref_t      lCollationItemType;
@@ -149,8 +148,7 @@ FnIndexOfIterator::nextImpl(PlanState& planState) const {
   FnIndexOfIteratorState* state;
   DEFAULT_STACK_INIT(FnIndexOfIteratorState, state, planState);
   
-  state->theSearchItem = consumeNext(theChildren[1].getp(), planState);
-  if ( state->theSearchItem == NULL ) 
+  if (!consumeNext(state->theSearchItem, theChildren[1].getp(), planState))
   {
     ZORBA_ERROR_LOC_DESC( FORG0006, loc, 
          "An empty sequence is not allowed as search item of fn:index-of");    
@@ -159,15 +157,16 @@ FnIndexOfIterator::nextImpl(PlanState& planState) const {
   if ( theChildren.size() == 3 )
     state->theCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
 
-  while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
+  while ( consumeNext(lSequenceItem, theChildren[0].getp(), planState))
   {
     // inc the position in the sequence; do it at the beginning of the loop because index-of starts with one
-    ++state->theCurrentPos; 
+    ++state->theCurrentPos;
     
     lCmpRes = CompareIterator::valueCompare(planState.theRuntimeCB, 
                                             lSequenceItem, state->theSearchItem, state->theCollator);
     if ( lCmpRes == 0 ) 
       STACK_PUSH(GENV_ITEMFACTORY->createInteger(
+        result,
         Integer::parseInt(state->theCurrentPos)), 
         state
       );
@@ -199,20 +198,20 @@ FnIndexOfIteratorState::reset(PlanState& planState) {
  * If the value of $arg is the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-store::Item_t 
-FnEmptyIterator::nextImpl(PlanState& planState) const {
+bool 
+FnEmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if ( ( lSequenceItem = consumeNext(theChildren[0].getp(), planState) ) == NULL ) 
+  if ( !consumeNext(lSequenceItem, theChildren[0].getp(), planState))
   {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( true ), state);
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, true ), state);
   }
   else
   {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( false ), state);   
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, false ), state);   
   }
 
   STACK_END (state);
@@ -223,20 +222,20 @@ FnEmptyIterator::nextImpl(PlanState& planState) const {
  * If the value of $arg is not the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-store::Item_t 
-FnExistsIterator::nextImpl(PlanState& planState) const {
+bool 
+FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
-  if ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState) ) != NULL) 
+  if ( consumeNext(lSequenceItem, theChildren[0].getp(), planState) ) 
   {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( true ), state);
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, true ), state);
   }
   else
   {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( false ), state);   
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, false ), state);   
   }
 
   STACK_END (state);
@@ -259,8 +258,8 @@ FnDistinctValuesIterator::~FnDistinctValuesIterator()
 {
 }
 
-store::Item_t 
-FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
+bool 
+FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lItem;
   xqtref_t lItemType;
   XQPCollator* lCollator;
@@ -281,16 +280,16 @@ FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
     state->theAlreadySeenMap = new store::ItemValueCollHandleHashSet(state->theValueCompareParam);
   }
 
-  while ( (lItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
-    if (lItem->isNumeric () && lItem->isNaN ()) {
+  while (consumeNext(result, theChildren[0].getp(), planState)) {
+    if (result->isNumeric () && result->isNaN ()) {
       if (! state->theHasNaN) {
         state->theHasNaN = true;
-        STACK_PUSH(lItem, state);
+        STACK_PUSH(true, state);
       }
-    } else if ( ! state->theAlreadySeenMap->find(lItem) ) {
+    } else if ( ! state->theAlreadySeenMap->find(result) ) {
       // check if the item is already in the map
-      state->theAlreadySeenMap->insert(lItem);
-      STACK_PUSH(lItem, state);
+      state->theAlreadySeenMap->insert(result);
+      STACK_PUSH(true, state);
     }
   }
     
@@ -326,16 +325,15 @@ FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState()
 
 
 //15.1.7 fn:insert-before
-store::Item_t 
-FnInsertBeforeIterator::nextImpl(PlanState& planState) const {
+bool 
+FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
  store::Item_t lInsertItem;
  store::Item_t lPositionItem;
  
  FnInsertBeforeIteratorState* state;
  DEFAULT_STACK_INIT(FnInsertBeforeIteratorState, state, planState);
  
- lPositionItem = consumeNext(theChildren[1].getp(), planState);
- if ( lPositionItem == NULL )
+ if (!consumeNext(lPositionItem, theChildren[1].getp(), planState))
  {
    // raise error
  }
@@ -345,24 +343,26 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) const {
    state->thePosition = xqp_integer::parseInt(1);
    
   
- while ( (state->theTargetItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) 
+ while (consumeNext(result, theChildren[0].getp(), planState))
  {
     if ( state->theCurrentPos == state->thePosition-xqp_integer::parseInt(1) ) // position found => insert sequence
     {
-      while ( (lInsertItem = consumeNext(theChildren[2].getp(), planState)) != NULL)
+      state->theTargetItem = result;
+      while ( consumeNext(result, theChildren[2].getp(), planState))
       {
-        STACK_PUSH (lInsertItem, state);
+        STACK_PUSH (true, state);
       }
+      result = state->theTargetItem;
     }
     ++state->theCurrentPos;
-    STACK_PUSH (state->theTargetItem, state);
+    STACK_PUSH (true, state);
   }
   
   if (state->theCurrentPos < state->thePosition) // append to the end
   {
-    while ( (lInsertItem = consumeNext(theChildren[2].getp(), planState)) != NULL)
+    while (consumeNext(result, theChildren[2].getp(), planState))
     {
-      STACK_PUSH (lInsertItem, state);
+      STACK_PUSH (true, state);
     }    
   }
  
@@ -387,8 +387,8 @@ FnInsertBeforeIteratorState::reset(PlanState& planState) {
 
 
 //15.1.8 fn:remove
-store::Item_t 
-FnRemoveIterator::nextImpl(PlanState& planState) const {
+bool 
+FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
   store::Item_t lPositionItem;
   store::Item_t lCollationItem;
@@ -397,8 +397,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) const {
   FnRemoveIteratorState* state;
   DEFAULT_STACK_INIT(FnRemoveIteratorState, state, planState);
   
-  lPositionItem = consumeNext(theChildren[1].getp(), planState);
-  if ( lPositionItem == NULL ) 
+  if (!consumeNext(lPositionItem, theChildren[1].getp(), planState))
   {
     ZORBA_ERROR_LOC_DESC( FORG0006,
          loc, "An empty sequence is not allowed as second argument to of fn:remove.");
@@ -408,7 +407,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) const {
   if ( theChildren.size() == 3 )
     state->theCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
 
-  while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
+  while (consumeNext(result, theChildren[0].getp(), planState))
   {
     // inc the position in the sequence; do it at the beginning of the loop because fn:remove starts with one
     ++state->theCurrentPos; 
@@ -416,7 +415,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) const {
     if (state->theCurrentPos == state->thePosition)
       continue;
   
-    STACK_PUSH (lSequenceItem, state);
+    STACK_PUSH (true, state);
   }
 
   STACK_END (state);
@@ -441,21 +440,21 @@ FnRemoveIteratorState::reset(PlanState& planState) {
 
 
 //15.1.9 fn:reverse
-store::Item_t FnReverseIterator::nextImpl(PlanState& planState) const
+bool FnReverseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t iVal;
 
   FnReverseIteratorState *state;
   DEFAULT_STACK_INIT(FnReverseIteratorState, state, planState);
 
-  while((iVal = consumeNext(theChildren[0].getp(), planState)) != NULL) {
+  while(consumeNext(iVal, theChildren[0].getp(), planState)) {
     state->theStack.push(iVal);
   }
 
   while(!state->theStack.empty()) {
-    iVal = state->theStack.top();
+    result = state->theStack.top();
     state->theStack.pop();
-    STACK_PUSH(iVal, state);
+    STACK_PUSH(true, state);
   }
 
   STACK_END (state);
@@ -474,21 +473,24 @@ void FnReverseIteratorState::reset(PlanState& planState)
 }
 
 //15.1.10 fn:subsequence
-store::Item_t 
-FnSubsequenceIterator::nextImpl(PlanState& planState) const {
-  store::Item_t item;
+bool 
+FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+  store::Item_t temp;
   xqp_integer lSkip;
   xqp_integer zero = xqp_integer::parseInt (0), minus_one = xqp_integer::parseInt (-1);
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
   
-  xqp_integer::parseDouble (CONSUME (1)->getDoubleValue ().round (), lSkip);
+  CONSUME(temp, 1);
+  xqp_integer::parseDouble (temp->getDoubleValue ().round (), lSkip);
   lSkip += minus_one;
   
-  if (theChildren.size() == 3)
-    xqp_integer::parseDouble (CONSUME (2)->getDoubleValue ().round (),
+  if (theChildren.size() == 3) {
+    CONSUME(temp, 2);
+    xqp_integer::parseDouble (temp->getDoubleValue ().round (),
                               state->theRemaining);
+  }
 
   if (lSkip < zero) {
     if (theChildren.size () >= 3)
@@ -500,15 +502,15 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) const {
     goto done;
 
   for (; lSkip > zero; --lSkip)
-    if (NULL == (item = CONSUME (0)))
+    if (!CONSUME (result, 0))
       goto done;
   
   while (((theChildren.size () < 3) || (state->theRemaining > xqp_integer::parseInt (0)))
-         && (NULL != (item = CONSUME (0))))
+         && CONSUME (result, 0))
   {
     if (theChildren.size () >= 3)
       state->theRemaining--;
-      STACK_PUSH (item, state);
+      STACK_PUSH (true, state);
   }
 
 done:
@@ -537,25 +539,23 @@ FnSubsequenceIteratorState::reset(PlanState& planState)
 |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
-store::Item_t 
-FnZeroOrOneIterator::nextImpl(PlanState& planState) const {
+bool 
+FnZeroOrOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lFirstSequenceItem;
   store::Item_t lNextSequenceItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lFirstSequenceItem = consumeNext(theChildren[0].getp(), planState);
-  if (lFirstSequenceItem != NULL)
+  if (consumeNext(result, theChildren[0].getp(), planState))
   {
-    lNextSequenceItem = consumeNext(theChildren[0].getp(), planState);
-    if (lNextSequenceItem != NULL)
+    if (consumeNext(lNextSequenceItem, theChildren[0].getp(), planState))
     {
       ZORBA_ERROR_LOC_DESC( FORG0003, 
         loc,  "fn:zero-or-one called with a sequence containing more than one item."); 
 
     }
-    STACK_PUSH(lFirstSequenceItem, state);
+    STACK_PUSH(true, state);
   }
   STACK_END (state);
 }
@@ -563,50 +563,49 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) const {
 
 
 //15.2.2 fn:one-or-more
-store::Item_t 
-FnOneOrMoreIterator::nextImpl(PlanState& planState) const {
-  store::Item_t lSequenceItem;
-
+bool 
+FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSequenceItem = consumeNext(theChildren[0].getp(), planState);
-  if (lSequenceItem == NULL)
+  if (!consumeNext(result, theChildren[0].getp(), planState))
   {
     ZORBA_ERROR_LOC_DESC( FORG0004,
         loc,  "fn:one-or-more called with a sequence containing no items.");
   }
   do
   {
-    STACK_PUSH(lSequenceItem, state);
-  } while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL );
+    STACK_PUSH(true, state);
+  } while (consumeNext(result, theChildren[0].getp(), planState));
 
   STACK_END (state);
 }
 
 //15.2.3 fn:exactly-one
-store::Item_t 
-FnExactlyOneIterator::nextImpl(PlanState& planState) const {
-  store::Item_t lFirstItem;
+bool 
+FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lNextItem;
+  bool firstPresent = false;
+  bool nextPresent = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lFirstItem = consumeNext(theChildren[0].getp(), planState);
-  if (lFirstItem != NULL)
-    lNextItem = consumeNext(theChildren[0].getp(), planState);
+  if (firstPresent = consumeNext(result, theChildren[0].getp(), planState))
+    nextPresent = consumeNext(lNextItem, theChildren[0].getp(), planState);
 
-  if (lFirstItem != NULL && lNextItem == NULL)
-    STACK_PUSH (raise_err ? lFirstItem : GENV_ITEMFACTORY->createBoolean (true),
-                state);
-  else {
+  if (firstPresent && !nextPresent) {
+    if (!raise_err) {
+      GENV_ITEMFACTORY->createBoolean (result, true);
+    }
+  } else {
     if (raise_err)
       ZORBA_ERROR_LOC_DESC( FORG0005,
                             loc, "fn:exactly-one called with a sequence containing zero or more than one item.");
     else
-      STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( false ), state);
+      GENV_ITEMFACTORY->createBoolean (result, false );
   }
+  STACK_PUSH(true, state);
 
   STACK_END (state);
 }
@@ -624,22 +623,22 @@ bool DeepEqual(store::Item_t& item1, store::Item_t& item2, XQPCollator* collator
 bool DeepEqual(store::Iterator_t it1, store::Iterator_t it2, XQPCollator* collator, RuntimeCB* theRuntimeCB)
 {
   store::Item_t child1, child2;
+  bool c1Valid, c2Valid;
   
   it1->open();
   it2->open();
-  child1 = it1->next();
-  child2 = it2->next();
+
   while (1)
   {
-    if (child1 == NULL && child2 == NULL)
+    c1Valid = it1->next(child1);
+    c2Valid = it2->next(child2);
+
+    if (!c1Valid && !c2Valid)
       return true;
-    else if (child1 == NULL || child2 == NULL)
+    else if (!c1Valid || !c2Valid)
       return false;
     else if (!DeepEqual(child1, child2, collator, theRuntimeCB))
       return false;
-      
-    child1 = it1->next();
-    child2 = it2->next();
   }
     
   return true;
@@ -730,8 +729,8 @@ bool DeepEqual(store::Item_t& item1, store::Item_t& item2, XQPCollator* collator
   }
 }
 
-store::Item_t 
-FnDeepEqualIterator::nextImpl(PlanState& planState) const
+bool 
+FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   store::Item_t arg1, arg2;
@@ -747,12 +746,12 @@ FnDeepEqualIterator::nextImpl(PlanState& planState) const
 
   while (1)
   {
-    arg1 = consumeNext(theChildren[0].getp(), planState);
-    arg2 = consumeNext(theChildren[1].getp(), planState);
+    bool a1 = consumeNext(arg1, theChildren[0].getp(), planState);
+    bool a2 = consumeNext(arg2, theChildren[1].getp(), planState);
 
-    if (arg1 == NULL && arg2 == NULL)
+    if (!a1 && !a2)
       break;
-    else if (arg1 == NULL || arg2 == NULL)
+    else if (!a1 || !a2)
     {
       equal = false;
       break;
@@ -761,7 +760,7 @@ FnDeepEqualIterator::nextImpl(PlanState& planState) const
     equal = equal && DeepEqual(arg1, arg2, collator, planState.theRuntimeCB);
   }
   
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(equal), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, equal), state);
 
   STACK_END (state);
 }
@@ -800,8 +799,8 @@ HashSemiJoinIterator::HashSemiJoinIterator(const QueryLoc& loc,
 
 HashSemiJoinIterator::~HashSemiJoinIterator() {}
 
-store::Item_t 
-HashSemiJoinIterator::nextImpl(PlanState& planState) const {
+bool 
+HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lItem;
   bool not_found;
 
@@ -809,15 +808,15 @@ HashSemiJoinIterator::nextImpl(PlanState& planState) const {
   DEFAULT_STACK_INIT(HashSemiJoinIteratorState, state, planState);
 
   // eat the complete right-hand side and hash it
-  while ( (lItem = consumeNext(theChildren[1].getp(), planState)) != NULL ) {
+  while ( consumeNext(lItem, theChildren[1].getp(), planState)) {
     state->theRightInput->insert(lItem);
   }
   
 
-  while ( ( lItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
-    not_found = ! state->theRightInput->find(lItem);
+  while (consumeNext(result, theChildren[0].getp(), planState)) {
+    not_found = ! state->theRightInput->find(result);
     if (not_found == theAntijoin)
-      STACK_PUSH(lItem, state);
+      STACK_PUSH(true, state);
   }
 
   STACK_END (state);
@@ -832,8 +831,8 @@ SortSemiJoinIterator::SortSemiJoinIterator(const QueryLoc& loc,
 
 SortSemiJoinIterator::~SortSemiJoinIterator() {}
 
-store::Item_t 
-SortSemiJoinIterator::nextImpl(PlanState& planState) const {
+bool 
+SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item [2];
   bool order;
   int i;
@@ -847,18 +846,20 @@ SortSemiJoinIterator::nextImpl(PlanState& planState) const {
     // load items
     for (i = 0; i < 2; i++) {
       if (item [i] == NULL) {
-        if ((item [i] = CONSUME (i)) == NULL)
+        if (!CONSUME (item[i], i)) {
+          item[i] = NULL;
           goto done;
+        }
       }
     }
 
     // advance, output
     order = GENV_STORE.compareNodes (item [0].getp(), item [1].getp());
     if (!order) {
-      STACK_PUSH (item [0], state);
-      item [0] = item [1] = NULL;
+      result = item[0];
+      STACK_PUSH (true, state);
     }
-    else item [order? 0 : 1] = NULL;
+    else item [(order < 0) ? 0 : 1] = NULL;
 
   }
 
@@ -872,30 +873,31 @@ done:
 |_______________________________________________________________________*/
 
 //15.4.1 fn:count
-store::Item_t 
-FnCountIterator::nextImpl(PlanState& planState) const {
+bool 
+FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
   xqp_integer lCount = Integer::parseInt(0);
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
+  while (consumeNext(lSequenceItem, theChildren[0].getp(), planState))
   {
     ++lCount;
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(lCount), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lCount), state);
 
   STACK_END (state);
 }
 
 //15.4.2 fn:avg
-store::Item_t 
-FnAvgIterator::nextImpl(PlanState& planState) const {
+bool 
+FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSumItem;
   store::Item_t lRunningItem;
   xqtref_t      lRunningType;
+  store::Item_t countItem;
   int lCount = 0;
   bool lHitNumeric = false, lHitYearMonth = false, lHitDayTime = false;
   xqtref_t lUntypedAtomic     = GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE; 
@@ -905,7 +907,7 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while ((lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL) {
+  while (consumeNext(lRunningItem, theChildren[0].getp(), planState)) {
     
     lRunningType = GENV_TYPESYSTEM.create_value_type (lRunningItem);
 
@@ -947,13 +949,15 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
     } else {
       // DO NOT short-circuit for INF and NaN!
       // Must check all items in case FORG0006 is needed
-      lSumItem = GenericArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem);
+      GenericArithIterator<AddOperation>::compute(lSumItem, planState.theRuntimeCB, loc, lSumItem, lRunningItem);
     }
   }
 
-  if (lCount > 0)
-    STACK_PUSH(GenericArithIterator<DivideOperation>::compute(planState.theRuntimeCB, loc, lSumItem,
-                                                          GENV_ITEMFACTORY->createInteger(Integer::parseInt (lCount))), state);
+  if (lCount > 0) {
+    GENV_ITEMFACTORY->createInteger(countItem, Integer::parseInt (lCount));
+    GenericArithIterator<DivideOperation>::compute(result, planState.theRuntimeCB, loc, lSumItem, countItem);
+    STACK_PUSH(true, state);
+  }
   // else return empty sequence
 
   STACK_END (state);
@@ -970,21 +974,20 @@ FnMinMaxIterator::FnMinMaxIterator
        : CompareConsts::VALUE_GREATER)) 
 { }
 
-store::Item_t 
-FnMinMaxIterator::nextImpl(PlanState& planState) const {
-  store::Item_t lMaxItem = NULL;
+bool 
+FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
   XQPCollator*  lCollator = 0;
 
+  result = NULL;
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() == 3)
     lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
 
-  lRunningItem = consumeNext(theChildren[0].getp(), planState);
-  if ( lRunningItem != NULL )
+  if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
     do {
       // casting of untyped atomic
@@ -992,7 +995,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
                               create_value_type (lRunningItem);
 
       if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
-        lRunningItem = GenericCast::instance()->cast(lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        GenericCast::instance()->cast(lRunningItem, lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
       }
 
@@ -1002,22 +1005,21 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
          * xs:double("NaN") [xs:double("NaN") is returned] or 
          * only xs:float("NaN")'s [xs:float("NaN") is returned]'.
          */
-        lMaxItem = lRunningItem;
+        result = lRunningItem;
         if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
           break;
 
         lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->
-                   create_value_type (lMaxItem);
+                   create_value_type (result);
       }
-      if (lMaxItem != 0) {
+      if (result != 0) {
         // Type Promotion
-        store::Item_t lItemCur = GenericCast::instance()->promote(lRunningItem, &*lMaxType);
-        if (lItemCur == 0) {
-          lItemCur = GenericCast::instance()->promote(lMaxItem, &*lRunningType); 
-          if (lItemCur != 0) {
-            lMaxItem = lItemCur;
+        store::Item_t lItemCur;
+        if (!GenericCast::instance()->promote(lItemCur, lRunningItem, &*lMaxType)) {
+          if (GenericCast::instance()->promote(lItemCur, result, &*lRunningType)) {
+            result = lItemCur;
             lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->
-                       create_value_type (lMaxItem);
+                       create_value_type (result);
           } else {
             ZORBA_ERROR_LOC_DESC( FORG0006, loc,  "Promote not possible");
           }
@@ -1027,16 +1029,16 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
                          create_value_type (lRunningItem);
         }
 
-        if (CompareIterator::valueComparison(planState.theRuntimeCB, lRunningItem, lMaxItem, theCompareType, lCollator) ) {
+        if (CompareIterator::valueComparison(planState.theRuntimeCB, lRunningItem, result, theCompareType, lCollator) ) {
           lMaxType = lRunningType;
-          lMaxItem = lRunningItem;
+          result = lRunningItem;
         }
       } else {
         lMaxType = lRunningType;
-        lMaxItem = lRunningItem;
+        result = lRunningItem;
       }
-    } while ((lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL);
-    STACK_PUSH(lMaxItem, state);
+    } while (consumeNext(lRunningItem, theChildren[0].getp(), planState));
+    STACK_PUSH(result != NULL, state);
   }
 
   STACK_END (state);
@@ -1044,32 +1046,29 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
 
 
 //15.4.5 fn:sum
-store::Item_t 
-FnSumIterator::nextImpl(PlanState& planState) const {
-  store::Item_t lSumItem;
+bool 
+FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lRunningItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSumItem = consumeNext(theChildren[0].getp(), planState);
-  if (lSumItem != NULL) { // return 0 or given value if empty sequence
-    while ( (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
-      lSumItem = GenericArithIterator<AddOperation>::compute(planState.theRuntimeCB, loc, lSumItem, lRunningItem); 
+  if (consumeNext(result, theChildren[0].getp(), planState)) {
+    while (consumeNext(lRunningItem, theChildren[0].getp(), planState)) {
+      GenericArithIterator<AddOperation>::compute(result, planState.theRuntimeCB, loc, result, lRunningItem); 
     }
 
-    STACK_PUSH(lSumItem, state);
+    STACK_PUSH(true, state);
   } else {
     if (theChildren.size() == 2)
     {
-      lSumItem = consumeNext(theChildren[1].getp(), planState);
-      if (lSumItem != NULL)
+      if (consumeNext(result, theChildren[1].getp(), planState))
       {
-        STACK_PUSH(lSumItem, state);
+        STACK_PUSH(true, state);
       }
       // return the empty sequence otherwise
     } else {
-      STACK_PUSH(GENV_ITEMFACTORY->createInteger(Integer::parseInt((int32_t)0)), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0)), state);
     }
   }
 
@@ -1083,20 +1082,17 @@ FnSumIterator::nextImpl(PlanState& planState) const {
 |_______________________________________________________________________*/
 
 //15.5.1 op:to
-store::Item_t 
-OpToIterator::nextImpl(PlanState& planState) const {
+bool 
+OpToIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lItem;
-  
   OpToIteratorState* state;
   DEFAULT_STACK_INIT(OpToIteratorState, state, planState);
 
-  lItem = consumeNext(theChildren[0].getp(), planState);
-  if (lItem != NULL)
+  if (consumeNext(lItem, theChildren[0].getp(), planState))
   {
     state->theFirstVal = lItem->getIntegerValue();
 
-    lItem = consumeNext(theChildren[1].getp(), planState);
-    if (lItem != NULL)
+    if (consumeNext(lItem, theChildren[1].getp(), planState))
     {
       state->theLastVal = lItem->getIntegerValue();
 
@@ -1106,7 +1102,7 @@ OpToIterator::nextImpl(PlanState& planState) const {
         state->theCurInt = state->theFirstVal;
         while ( state->theCurInt <= state->theLastVal )
         {
-          STACK_PUSH(GENV_ITEMFACTORY->createInteger(state->theCurInt), state);
+          STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, state->theCurInt), state);
           ++state->theCurInt;
         }
 
@@ -1154,13 +1150,11 @@ FnIdIteratorState::reset(PlanState& planState)
   inArg = NULL;
 }
 
-store::Item_t 
-FnIdIterator::nextImpl(PlanState& planState) const 
+bool 
+FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
-  store::Item_t     itemEl;
   store::Item_t     item;
   store::Iterator_t theAttributes;
-  store::Item_t     res;
   bool              push;
   xqp_string        strArg;
   bool              tmp;
@@ -1169,7 +1163,7 @@ FnIdIterator::nextImpl(PlanState& planState) const
   FnIdIteratorState *state;
   DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
 
-  if((state->inNode = consumeNext(theChildren[1], planState)) != NULL)
+  if(consumeNext(state->inNode, theChildren[1], planState))
   {
     rootNode = state->inNode.getp();
     while (rootNode->getParent() != NULL)
@@ -1182,23 +1176,22 @@ FnIdIterator::nextImpl(PlanState& planState) const
     state->inNode = rootNode;
     state->theIterator = state->inNode->getChildren();
 
-    while ((state->inArg = consumeNext(theChildren[0], planState)) != NULL)
+    while (consumeNext(state->inArg, theChildren[0], planState))
     {
       state->theIterator->open();
 
-      while((itemEl = state->theIterator->next()) != NULL )
+      while(state->theIterator->next(result))
       {
-        if(itemEl->getNodeKind() == store::StoreConsts::elementNode)
+        if(result->getNodeKind() == store::StoreConsts::elementNode)
         {
-          if(itemEl->isId())
+          if(result->isId())
           {
-            state->theTypedValue = itemEl->getTypedValue();
+            state->theTypedValue = result->getTypedValue();
             state->theTypedValue->open();
     
             while (true)
             {
-              item = state->theTypedValue->next();
-              if (item == NULL)
+              if (!state->theTypedValue->next(item))
                 break;
 
               strArg = state->inArg->getStringValue().getp();
@@ -1211,30 +1204,28 @@ FnIdIterator::nextImpl(PlanState& planState) const
               }
                 
               if(tmp)
-                STACK_PUSH( itemEl, state );
+                STACK_PUSH(true, state );
             }
           }
           else
           {
             push = false;
-            theAttributes = itemEl->getAttributes();
+            theAttributes = result->getAttributes();
             theAttributes->open();
             
             while (!push)
             {
-              item = theAttributes->next();
-              if (item == NULL)
+              if (!theAttributes->next(result))
                 break;
     
-              if(item->isId())
+              if(result->isId())
               {
-                state->theTypedValue = item->getTypedValue();
+                state->theTypedValue = result->getTypedValue();
                 state->theTypedValue->open();
     
                 while (!push)
                 {
-                  item = state->theTypedValue->next();
-                  if (item == NULL)
+                  if (!state->theTypedValue->next(item))
                     break;
 
                   strArg = state->inArg->getStringValue().getp();
@@ -1248,7 +1239,7 @@ FnIdIterator::nextImpl(PlanState& planState) const
               }
             }
             if(push)
-              STACK_PUSH( itemEl, state );
+              STACK_PUSH(true, state );
           }
         }
       }
@@ -1284,9 +1275,8 @@ FnIdRefIteratorState::reset(PlanState& planState)
  * @param planState 
  * @return 
  */
-store::Item_t
-FnIdRefIterator::nextImpl(PlanState& planState) const {
-  store::Item_t     itemNode;
+bool
+FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t     item;
   store::Iterator_t theAttributes;
   store::Item_t     res;
@@ -1298,7 +1288,7 @@ FnIdRefIterator::nextImpl(PlanState& planState) const {
   FnIdIteratorState *state;
   DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
 
-  if((state->inNode = consumeNext(theChildren[1], planState)) != NULL)
+  if(consumeNext(state->inNode, theChildren[1], planState))
   {
     rootNode = state->inNode.getp();
     while (rootNode->getParent() != NULL)
@@ -1311,24 +1301,23 @@ FnIdRefIterator::nextImpl(PlanState& planState) const {
     state->inNode = rootNode;
     state->theIterator = state->inNode->getChildren();
 
-    while ((state->inArg = consumeNext(theChildren[0], planState)) != NULL)
+    while (consumeNext(state->inArg, theChildren[0], planState))
     {
       state->theIterator->open();
 
-      while((itemNode = state->theIterator->next()) != NULL )
+      while(state->theIterator->next(result))
       {
-        if(itemNode->getNodeKind() == store::StoreConsts::elementNode ||
-           itemNode->getNodeKind() == store::StoreConsts::attributeNode)
+        if(result->getNodeKind() == store::StoreConsts::elementNode ||
+           result->getNodeKind() == store::StoreConsts::attributeNode)
         {
-          if(itemNode->isIdRefs())
+          if(result->isIdRefs())
           {
-            state->theTypedValue = itemNode->getTypedValue();
+            state->theTypedValue = result->getTypedValue();
             state->theTypedValue->open();
     
             while (true)
             {
-              item = state->theTypedValue->next();
-              if (item == NULL)
+              if (!state->theTypedValue->next(item))
                 break;
 
               strArg = state->inArg->getStringValue().getp();
@@ -1341,19 +1330,18 @@ FnIdRefIterator::nextImpl(PlanState& planState) const {
               }
                 
               if(tmp)
-                STACK_PUSH( itemNode, state );
+                STACK_PUSH(true, state );
             }
           }
           else
           {
             push = false;
-            theAttributes = itemNode->getAttributes();
+            theAttributes = result->getAttributes();
             theAttributes->open();
             
             while (!push)
             {
-              item = theAttributes->next();
-              if (item == NULL)
+              if (!theAttributes->next(item))
                 break;
     
               if(item->isId())
@@ -1363,8 +1351,7 @@ FnIdRefIterator::nextImpl(PlanState& planState) const {
     
                 while (!push)
                 {
-                  item = state->theTypedValue->next();
-                  if (item == NULL)
+                  if (!state->theTypedValue->next(item))
                     break;
 
                   strArg = state->inArg->getStringValue().getp();
@@ -1378,7 +1365,7 @@ FnIdRefIterator::nextImpl(PlanState& planState) const {
               }
             }
             if(push)
-              STACK_PUSH( itemNode, state );
+              STACK_PUSH(true, state );
           }
         }
       }
@@ -1477,9 +1464,8 @@ static store::Item_t get_doc(xqpStringStore_t& uriString, const char **err)
   return doc;
 }
 
-store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
+bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t    doc;
   store::Item_t    uriItem;
   xqpStringStore_t uriString;
   xqpStringStore_t uriString2;
@@ -1488,24 +1474,24 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  uriItem = consumeNext(theChild.getp(), planState);
-  if (uriItem == NULL)
-    return NULL;
+  if (consumeNext(uriItem, theChild.getp(), planState)) {
+    uriString = uriItem->getStringValue();
 
-  uriString = uriItem->getStringValue();
+    if(!URI::is_valid(uriString))
+      ZORBA_ERROR_PARAM(FODC0005, uriString->c_str(), "");
 
+    uriString2 = uriString;
   if(!URI::is_valid(uriString))
     ZORBA_ERROR_PARAM(FODC0005, uriString->c_str(), "");
 
-  uriString2 = uriString;
+    result = get_doc(uriString, &err);
 
-  doc = get_doc(uriString, &err);
-
-  if (doc == NULL)
-    ZORBA_ERROR_LOC_PARAM(FODC0002, loc,
-                          uriString2->c_str(),
-                          (err == NULL ? "" :  err));
-  STACK_PUSH(doc, state);
+    if (result == NULL)
+      ZORBA_ERROR_LOC_PARAM(FODC0002, loc,
+          uriString2->c_str(),
+          (err == NULL ? "" :  err));
+    STACK_PUSH(true, state);
+  }
   STACK_END (state);
 }
 
@@ -1514,7 +1500,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
 |
 |   fn:doc-available($uri as xs:string?) as xs:boolean
 |_______________________________________________________________________*/
-store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
+bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    doc;
   store::Item_t    uriItem;
@@ -1524,18 +1510,18 @@ store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  uriItem = consumeNext(theChildren[0].getp(), planState);
-  if (uriItem == NULL)
-    return NULL;
+  if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
+    uriString = uriItem->getStringValue();
 
-  uriString = uriItem->getStringValue();
+    if(!URI::is_valid(uriString))
+      ZORBA_ERROR_PARAM(FODC0005, xqp_string(uriString), "");
 
-  if(!URI::is_valid(uriString))
-    ZORBA_ERROR_PARAM(FODC0005, xqp_string(uriString), "");
+    doc = get_doc(uriString, &err);
+    if(!URI::is_valid(uriString))
+      ZORBA_ERROR_PARAM(FODC0005, xqp_string(uriString), "");
 
-  doc = get_doc(uriString, &err);
-
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(doc != NULL), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, doc != NULL), state);
+  }
   STACK_END (state);
 }
 } /* namespace zorba */

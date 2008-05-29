@@ -480,7 +480,7 @@ FLWORIterator::~FLWORIterator()
 
 
 
-store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
+bool FLWORIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
 {
   //Needed variables
   int curVar = 0;
@@ -520,7 +520,8 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
         {
           if (theIsUpdating)
           {
-            STACK_PUSH(pul.release(), flworState);
+            result = pul.release();
+            STACK_PUSH(true, flworState);
           }
           else if(doOrderBy)
           {
@@ -533,9 +534,9 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
             {
               flworState->curOrderResultSeq = flworState->curOrderPos->second;
 
-              while ( ( curItem = flworState->curOrderResultSeq->next() ) != 0 )
+              while ( flworState->curOrderResultSeq->next(result) )
               {
-                STACK_PUSH ( curItem, flworState );
+                STACK_PUSH ( true, flworState );
               }
               ++ ( flworState->curOrderPos );
             }
@@ -547,15 +548,9 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
             {
               bindGroupBy( flworState->curGroupPos, flworState, planState );
               if(evalToBool(theGroupByClause->theWhere, planState)){
-              curItem = consumeNext(returnClause, planState);
-              }else{
-                curItem =0;
-              }
-              while (curItem != 0)
-              {
-                STACK_PUSH ( curItem, flworState );
-
-                curItem = consumeNext(returnClause, planState);
+                while(consumeNext(result, returnClause, planState)) {
+                  STACK_PUSH ( true, flworState );
+                }
               }
               returnClause->reset(planState);
               ++flworState->curGroupPos;
@@ -580,22 +575,18 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
       }
       else if (theIsUpdating)
       {
-        curItem = consumeNext(returnClause, planState);
-        while (curItem != 0)
-        {
+        while(consumeNext(curItem, returnClause, planState)) {
           ZORBA_FATAL(curItem->isPul(), "");
 
           pul->mergeUpdates(curItem);
-
-          curItem = consumeNext(returnClause, planState);
         }
         returnClause->reset(planState);
       }
       else if ( !doOrderBy )
       {
-        while ( (curItem = consumeNext(returnClause, planState)) != 0  )
+        while ( consumeNext(result, returnClause, planState) )
         {
-          STACK_PUSH ( curItem, flworState );
+          STACK_PUSH ( true, flworState );
         }
         returnClause->reset(planState);
         //In the case we have to order we are materializing the result
@@ -686,21 +677,21 @@ void FLWORIterator::matVarsAndGroupBy (
   std::vector<GroupingSpec>::iterator lSpecIter = lgroupSpecs.begin();
   while ( lSpecIter != lgroupSpecs.end() )
   {
-    
-    store::Item_t lItem = consumeNext ( lSpecIter->theInput.getp(), planState );
-    lKey.push_back ( lItem );
+    lKey.push_back(NULL);
+    store::Item_t& location = lKey.back();
+    bool status = consumeNext ( location, lSpecIter->theInput.getp(), planState );
     
     //Getting the typed value
-    if(lItem == 0){
-      lTypedKey.push_back(lItem);
+    if(!status){
+      lTypedKey.push_back(NULL);
     }else{
-      store::Iterator_t lTypedValue = lItem->getTypedValue();
+      store::Item_t temp;
+      store::Iterator_t lTypedValue = location->getTypedValue();
       lTypedValue->open();
-      lItem = lTypedValue->next();
-      lTypedKey.push_back(lItem);
-      if(lItem != 0){
-        lItem = lTypedValue->next();
-        if ( lItem != 0 )
+      lTypedKey.push_back(NULL);
+      store::Item_t& typedItem = lTypedKey.back();
+      if(lTypedValue->next(typedItem)){
+        if (lTypedValue->next(temp))
         {
           ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton (atomization has more than one value)" );
         }
@@ -708,10 +699,10 @@ void FLWORIterator::matVarsAndGroupBy (
     }
     
     //check for more values
-    if ( lItem != 0 )
+    if (status)
     {
-      lItem = consumeNext ( lSpecIter->theInput.getp(), planState );
-      if ( lItem != 0 )
+      store::Item_t temp;
+      if (consumeNext ( temp, lSpecIter->theInput.getp(), planState ))
       {
         ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton" );
       }
@@ -763,13 +754,12 @@ void FLWORIterator::matResultAndOrder(
 
   while ( lSpecIter != lOrderSpecs.end() )
   {
-    store::Item_t lItem = consumeNext ( lSpecIter->theOrderByIter.getp(), planState );
-    orderKey.push_back ( lItem );
-    //Test for singleton
-    if ( lItem != 0 )
+    orderKey.push_back(NULL);
+    store::Item_t& location = orderKey.back();
+    if (consumeNext ( location, lSpecIter->theOrderByIter.getp(), planState ))
     {
-      lItem = consumeNext ( lSpecIter->theOrderByIter.getp(), planState );
-      if ( lItem != 0 )
+      store::Item_t temp;
+      if (consumeNext ( temp, lSpecIter->theOrderByIter.getp(), planState ))
       {
         ZORBA_ERROR_DESC( XPTY0004, "Expected a singleton" );
       }
@@ -795,8 +785,8 @@ bool FLWORIterator::evalToBool ( const PlanIter_t& checkIter, PlanState& planSta
 
   //if ( whereClauseReturnsBooleanPlus )
   //{
-  store::Item_t boolValue = consumeNext ( checkIter.getp(), planState );
-  if ( boolValue == NULL )
+  store::Item_t boolValue;
+  if (!consumeNext ( boolValue, checkIter.getp(), planState ))
     return false;
 
   bool value = boolValue->getBooleanValue();
@@ -836,8 +826,8 @@ bool FLWORIterator::bindVariable (
   // it to all the variable references
   case ForLetClause::FOR :
   {
-    store::Item_t lItem = consumeNext ( lForLetClause.theInput.getp(), planState );
-    if ( lItem == NULL )
+    store::Item_t lItem;
+    if (!consumeNext ( lItem, lForLetClause.theInput.getp(), planState ))
     {
       return false;
     }
@@ -856,8 +846,9 @@ bool FLWORIterator::bindVariable (
 
     if ( !lForLetClause.thePosVars.empty() )
     {
-      store::Item_t posItem = GENV_ITEMFACTORY->
-                       createInteger(Integer::parseInt(flworState->varBindingState[varNb]));
+      store::Item_t posItem;
+      GENV_ITEMFACTORY->
+                       createInteger(posItem, Integer::parseInt(flworState->varBindingState[varNb]));
 
       std::vector<ForVarIter_t>::const_iterator posIter;
       for (posIter = lForLetClause.thePosVars.begin();

@@ -70,7 +70,7 @@ public:
   virtual ~FnConcatIterator() { }                                               
 
   virtual bool isUpdating() const { return theIsUpdating; }
-  store::Item_t nextImpl(PlanState& aPlanState) const;
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
   virtual void accept(PlanIterVisitor& v) const;
 };
@@ -157,8 +157,8 @@ public:
  
   ~FnDistinctValuesIterator();
 
-  store::Item_t 
-  nextImpl(PlanState& planState) const;
+  bool
+  nextImpl(store::Item_t& result, PlanState& planState) const;
  
   virtual void 
   accept(PlanIterVisitor&) const;
@@ -248,7 +248,7 @@ public:
     : NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState> (loc, args), raise_err (raise_err_)
   {}
  
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
  
   virtual void accept(PlanIterVisitor& v) const
   {
@@ -315,8 +315,8 @@ public:
  
   ~HashSemiJoinIterator();
 
-  store::Item_t 
-  nextImpl(PlanState& planState) const;
+  bool
+  nextImpl(store::Item_t& result, PlanState& planState) const;
  
   virtual void 
   accept(PlanIterVisitor&) const;
@@ -345,8 +345,8 @@ public:
  
   ~SortSemiJoinIterator();
 
-  store::Item_t 
-  nextImpl(PlanState& planState) const;
+  bool
+  nextImpl(store::Item_t& result, PlanState& planState) const;
  
   virtual void 
   accept(PlanIterVisitor&) const;
@@ -377,7 +377,7 @@ private:
 
 public:
     FnMinMaxIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
-    store::Item_t nextImpl(PlanState& aPlanState) const;
+    bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
     virtual void accept(PlanIterVisitor& v) const;
     Type getType() const { return theType; }
 };
@@ -439,7 +439,7 @@ public:
   FnDocIterator(const QueryLoc& loc, PlanIter_t& arg);
   virtual ~FnDocIterator();
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };

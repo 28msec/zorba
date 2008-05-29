@@ -51,10 +51,9 @@ namespace zorba {
  *_______________________________________________________________________*/
 
  /* begin class ResolveQNameIterator */
-store::Item_t
-ResolveQNameIterator::nextImpl(PlanState& planState) const
+bool
+ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t res;
   store::Item_t itemQName;
   store::Item_t itemElem;
   xqpStringStore_t qname;
@@ -68,8 +67,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemQName = consumeNext(theChild0.getp(), planState );
-  if( itemQName != NULL) {
+  if (consumeNext(itemQName, theChild0.getp(), planState )) {
     itemQName = itemQName->getAtomizationValue();
 
     qname = itemQName->getStringValue()->trim();
@@ -83,8 +81,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
       if (!GENV_GCAST.castableToNCName (resPre) || ! GENV_GCAST.castableToNCName (resLocal))
         ZORBA_ERROR (FOCA0002);
       
-      itemElem = consumeNext(theChild1, planState );
-      if( itemElem != NULL ) {
+      if (consumeNext(itemElem, theChild1, planState )) {
         itemElem->getNamespaceBindings(NamespaceBindings);
         for (iter = NamespaceBindings.begin();
              iter != NamespaceBindings.end();
@@ -106,9 +103,9 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
         ZORBA_ERROR (FOCA0002);
     }
 
-    res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
+    GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
 
-    STACK_PUSH( res, state );
+    STACK_PUSH(true, state );
   }
   STACK_END (state);
 }
@@ -134,12 +131,11 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class QNameIterator */
-store::Item_t
-QNameIterator::nextImpl(PlanState& planState) const
+bool
+QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemURI;
   store::Item_t itemQName;
-  store::Item_t res;
   xqpStringStore_t qname;
   xqpStringStore_t resNs;
   xqpStringStore_t resPre;
@@ -149,15 +145,14 @@ QNameIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemURI = consumeNext(theChild0.getp(), planState );
-  if  ( itemURI != NULL ) {
+  if (consumeNext(itemURI, theChild0.getp(), planState )) {
     itemURI = itemURI->getAtomizationValue();
     resNs = itemURI->getStringValue()->trim();
   } else {
     resNs = new xqpStringStore("");
   }
 
-  itemQName = consumeNext(theChild1.getp(), planState );
+  consumeNext(itemQName, theChild1.getp(), planState );
   itemQName = itemQName->getAtomizationValue();
   qname = itemQName->getStringValue()->trim();
   
@@ -178,8 +173,8 @@ QNameIterator::nextImpl(PlanState& planState) const
       || ! GENV_GCAST.castableToNCName (resLocal))
     ZORBA_ERROR (FOCA0002);
 
-  res = GENV_ITEMFACTORY->createQName(resNs, resPre, resLocal);
-  STACK_PUSH( res, state );
+  GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
+  STACK_PUSH(true, state );
   STACK_END (state);
 }
 /* end class QNameIterator */
@@ -200,21 +195,18 @@ QNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class QNameEqualIterator */
-store::Item_t
-QNameEqualIterator::nextImpl(PlanState& planState) const
+bool
+QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t arg1;
   store::Item_t arg2;
-  store::Item_t res;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  arg1 = consumeNext(theChild0.getp(), planState );
-  if ( arg1 != NULL )
+  if (consumeNext(arg1, theChild0.getp(), planState ))
   {
-    arg2 = consumeNext(theChild1.getp(), planState );
-    if ( arg2 != NULL )
+    if (consumeNext(arg2, theChild1.getp(), planState ))
     {
       arg1 = arg1->getAtomizationValue();
       arg2 = arg2->getAtomizationValue();
@@ -223,14 +215,14 @@ QNameEqualIterator::nextImpl(PlanState& planState) const
       {
         if((arg1->getNamespace()->empty() && arg2->getNamespace()->empty()) ||
            (arg1->getNamespace()->equals(arg2->getNamespace())))
-          res = GENV_ITEMFACTORY->createBoolean(true);
+          GENV_ITEMFACTORY->createBoolean(result, true);
         else
-          res = GENV_ITEMFACTORY->createBoolean(false);
+          GENV_ITEMFACTORY->createBoolean(result, false);
       }
       else
-        res = GENV_ITEMFACTORY->createBoolean(false);
+        GENV_ITEMFACTORY->createBoolean(result, false);
 
-      STACK_PUSH( res, state );
+      STACK_PUSH(true, state );
     }
   }
   STACK_END (state);
@@ -250,8 +242,8 @@ QNameEqualIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class PrefixFromQNameIterator */
-store::Item_t
-PrefixFromQNameIterator::nextImpl(PlanState& planState) const
+bool
+PrefixFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   xqpStringStore* pre;
@@ -260,14 +252,13 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild.getp(), planState);
-  if ( item != NULL )
+  if (consumeNext(item, theChild.getp(), planState))
   {
     pre = item->getPrefix();
     if(!pre->empty())
     {
       preh = pre;
-      STACK_PUSH( GENV_ITEMFACTORY->createNCName(preh), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createNCName(result, preh), state );
     }
   }
   STACK_END (state);
@@ -286,19 +277,18 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class LocalNameFromQNameIterator */
-store::Item_t
-LocalNameFromQNameIterator::nextImpl(PlanState& planState) const 
+bool
+LocalNameFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;
   xqpStringStore_t localName;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  item = consumeNext(theChild.getp(), planState);
-  if ( item != NULL )
+  if (consumeNext(item, theChild.getp(), planState))
   {
     localName = item->getLocalName();
-    STACK_PUSH(GENV_ITEMFACTORY->createNCName(localName), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createNCName(result, localName), state);
   }
   STACK_END (state);
 }
@@ -317,8 +307,8 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class NamespaceUriFromQNameIterator */
-store::Item_t
-NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const 
+bool
+NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;
   xqpStringStore_t ns;
@@ -326,11 +316,10 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
-  item = consumeNext(theChild.getp(), planState);
-  if ( item != NULL )
+  if (consumeNext(item, theChild.getp(), planState))
   {
     ns = item->getNamespace();
-    STACK_PUSH( GENV_ITEMFACTORY->createString(ns), state );
+    STACK_PUSH( GENV_ITEMFACTORY->createString(result, ns), state );
   }
   STACK_END (state);
 }
@@ -354,8 +343,8 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class NamespaceUriForPrefixlIterator */
-store::Item_t
-NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
+bool
+NamespaceUriForPrefixlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemPrefix;
   store::Item_t itemElem;
@@ -366,13 +355,11 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemPrefix = consumeNext(theChild0, planState );
-  if( itemPrefix != NULL)
+  if (consumeNext(itemPrefix, theChild0, planState ))
   {
     itemPrefix = itemPrefix->getAtomizationValue();
 
-    itemElem = consumeNext(theChild1, planState );
-    if( itemElem != NULL)
+    if (consumeNext(itemElem, theChild1, planState ))
     {
       itemElem->getNamespaceBindings(NamespaceBindings);
       for (
@@ -394,7 +381,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
     }
 
     if( resNs != NULL && !resNs->empty() )
-      STACK_PUSH( GENV_ITEMFACTORY->createString(resNs), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createString(result, resNs), state );
   }
   STACK_END (state);
 }
@@ -412,8 +399,8 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
  *For the default namespace, which has no prefix, it returns the zero-length string.
  *_______________________________________________________________________*/
 
-store::Item_t
-InScopePrefixesIterator::nextImpl(PlanState& planState) const
+bool
+InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemElem;
   xqpStringStore_t ncname = new xqpStringStore ("xml");
@@ -421,16 +408,15 @@ InScopePrefixesIterator::nextImpl(PlanState& planState) const
   InScopePrefixesState* state;
   DEFAULT_STACK_INIT(InScopePrefixesState, state, planState);
 
-  STACK_PUSH(GENV_ITEMFACTORY->createNCName(ncname), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createNCName(result, ncname), state);
 
-  itemElem = consumeNext(theChild.getp(), planState );
-  if( itemElem != NULL)
+  if (consumeNext(itemElem, theChild.getp(), planState ))
   {
     itemElem->getNamespaceBindings(state->theBindings);
     while (state->theCurrentPos < state->theBindings.size())
     {
       ncname = state->theBindings[state->theCurrentPos].first.getStore();
-      STACK_PUSH(GENV_ITEMFACTORY->createNCName(ncname), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createNCName(result, ncname), state);
       state->theCurrentPos++;
     }
   }

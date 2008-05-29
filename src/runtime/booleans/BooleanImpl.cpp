@@ -47,29 +47,28 @@ namespace zorba
     
   FnBooleanIterator::~FnBooleanIterator() {}
 
-  store::Item_t
+  bool
   FnBooleanIterator::effectiveBooleanValue ( const QueryLoc& loc, PlanState& planState, const PlanIterator* iter, bool negate )
   {
     store::Item_t item;
     xqtref_t type;
-    store::Item_t result;
+    store::Item_t temp;
+    bool result;
 
-    item = consumeNext(iter, planState);
-
-    if ( item == NULL )
+    if (!consumeNext(item, iter, planState))
     {
       // empty sequence => false
-      result = GENV_ITEMFACTORY->createBoolean ( negate ^ false );
+      result = negate ^ false;
     }
     else if ( item->isNode() )
     {
       // node => true
-      result = GENV_ITEMFACTORY->createBoolean ( negate ^ true );
+      result = negate ^ true;
     }
     else
     {
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type(item);
-      if (( consumeNext(iter, planState) == NULL )
+      if (( !consumeNext(temp, iter, planState))
           && (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
               || TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE )
               || TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE )
@@ -78,9 +77,8 @@ namespace zorba
       {
         // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
         // => effective boolean value is defined in the items
-        result = item->getEBV();
-        if (negate)
-          result = GENV_ITEMFACTORY->createBoolean ( negate ^ result->getBooleanValue() );
+        temp = item->getEBV();
+        result = negate ? (negate ^ temp->getBooleanValue()) : temp->getBooleanValue();
       }
       else
       {
@@ -92,15 +90,13 @@ namespace zorba
     return result;
   }
 
-  store::Item_t
-  FnBooleanIterator::nextImpl(PlanState& planState) const
+  bool
+  FnBooleanIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   { 
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
-    STACK_PUSH ( 
-      FnBooleanIterator::effectiveBooleanValue ( this->loc, planState, theChild, theNegate ),
-      aState
-    );
+    GENV_ITEMFACTORY->createBoolean(result, FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild, theNegate));
+    STACK_PUSH (true, aState);
     STACK_END (aState);
   }
   /* end class FnBooleanIterator */
@@ -112,8 +108,8 @@ namespace zorba
   
   LogicIterator::~LogicIterator(){}
       
-  store::Item_t 
-  LogicIterator::nextImpl(PlanState& planState) const
+  bool
+  LogicIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     bool bRes = false;
     
@@ -123,15 +119,15 @@ namespace zorba
     switch(theLogicType)
     {
     case AND:
-      bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)->getBooleanValue() 
-              && FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1)->getBooleanValue();
+      bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)
+              && FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
       break;
     case OR:
-      bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)->getBooleanValue() 
-              || FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1)->getBooleanValue();;
+      bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)
+              || FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
       break;
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(bRes), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, bRes), state);
     STACK_END (state);
   }
   /* end class LogicIterator */
@@ -146,8 +142,8 @@ namespace zorba
   CompareIterator::~CompareIterator()
   { }
   
-  store::Item_t
-  CompareIterator::nextImpl ( PlanState& planState ) const
+  bool
+  CompareIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
   {
     store::Item_t lItem0;
     store::Item_t lItem1;
@@ -186,16 +182,16 @@ namespace zorba
         i0++;
       }
   
-      STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( found ), state );
+      STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, found ), state );
     } /* if general comparison */
     else if ( this->isValueComparison() )
     {
-      if ( ( ( lItem0 = consumeNext ( theChild0.getp(), planState ) ) != NULL )
-              && ( ( lItem1 = consumeNext ( theChild1.getp(), planState ) ) !=NULL ) )
+      if ( consumeNext ( lItem0, theChild0.getp(), planState )
+              && consumeNext ( lItem1, theChild1.getp(), planState ) )
       {
-        STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( CompareIterator::valueComparison ( planState.theRuntimeCB, lItem0, lItem1, theCompType ) ), state );
-        if ( consumeNext ( theChild0.getp(), planState ) != NULL 
-             || consumeNext ( theChild1.getp(), planState ) != NULL )
+        STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, CompareIterator::valueComparison ( planState.theRuntimeCB, lItem0, lItem1, theCompType ) ), state );
+        if ( consumeNext ( lItem0, theChild0.getp(), planState )
+             || consumeNext ( lItem1, theChild1.getp(), planState ) )
         {
           ZORBA_ERROR_LOC_DESC(  XPTY0004, loc, 
                              "Value comparions must not be made with sequences with length greater 1.");
@@ -285,11 +281,11 @@ namespace zorba
     // all untyped Atomics to String
     if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      aItem0 = GenericCast::instance()->cast(aItem0, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      GenericCast::instance()->cast(aItem0, aItem0, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     if  (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      aItem1 = GenericCast::instance()->cast(aItem1, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      GenericCast::instance()->cast(aItem1, aItem1, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     
     return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
@@ -312,16 +308,16 @@ namespace zorba
     {
       if (TypeOps::is_numeric(*type1))
       {
-        aItem0 = GenericCast::instance()->cast(aItem0, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        GenericCast::instance()->cast(aItem0, aItem0, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
       else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
                || TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        aItem0 = GenericCast::instance()->cast(aItem0, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+        GenericCast::instance()->cast(aItem0, aItem0, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
       }
       else
       {
-        aItem0 = GenericCast::instance()->cast(aItem0, &*type1);
+        GenericCast::instance()->cast(aItem0, aItem0, &*type1);
       }
     }
     
@@ -329,16 +325,16 @@ namespace zorba
     {
       if (TypeOps::is_numeric(*type0))
       {
-        aItem1 = GenericCast::instance()->cast(aItem1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        GenericCast::instance()->cast(aItem1, aItem1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
                || TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        aItem1 = GenericCast::instance()->cast(aItem1, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+        GenericCast::instance()->cast(aItem1, aItem1, &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
       }
       else
       {
-        aItem1 = GenericCast::instance()->cast(aItem1, &*type0);
+        GenericCast::instance()->cast(aItem1, aItem1, &*type0);
       }
     }
     return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
@@ -397,15 +393,10 @@ CompareIterator::typePromotion(
   xqtref_t aType1 = aRuntimeCB->theStaticContext->get_typemanager()->
                     create_value_type (aItem1);
     
-  store::Item_t lResult = GenericCast::instance()->promote(aItem0, &*aType1); 
-  if (lResult != 0) {
-    aItem0 = lResult;
-  }
-  lResult = GenericCast::instance()->promote(aItem1, &*aType0);
-  if (lResult != 0) {
-    aItem1 = lResult;
-  }
-    
+  store::Item_t lResult;
+  GenericCast::instance()->promote(aItem0, aItem0, &*aType1);
+  GenericCast::instance()->promote(aItem1, aItem1, &*aType0);
+
   return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
 }
   
@@ -732,8 +723,8 @@ CompareIterator::compare(
   }
   /* end class ComparisonIterator */
 
-  store::Item_t
-  OpIsSameNodeIterator::nextImpl(PlanState& aPlanState) const
+  bool
+  OpIsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   { 
     bool lBool;
     store::Item_t lItem0, lItem1;
@@ -741,16 +732,14 @@ CompareIterator::compare(
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-    lItem0 = consumeNext(theChildren[0].getp(), aPlanState);
-    if (lItem0 != 0) {
-      lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
-      if (lItem1 != 0) {
+    if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
+      if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 0); 
         STACK_PUSH ( 
-          GENV_ITEMFACTORY->createBoolean(lBool),
+          GENV_ITEMFACTORY->createBoolean(result, lBool),
           aState
         );
       }
@@ -758,8 +747,8 @@ CompareIterator::compare(
     STACK_END (aState);
   }
 
-  store::Item_t
-  OpNodeBeforeIterator::nextImpl(PlanState& aPlanState) const
+  bool
+  OpNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   { 
     bool lBool;
     store::Item_t lItem0, lItem1;
@@ -767,16 +756,14 @@ CompareIterator::compare(
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-    lItem0 = consumeNext(theChildren[0].getp(), aPlanState);
-    if (lItem0 != 0) {
-      lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
-      if (lItem1 != 0) {
+    if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
+      if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == -1); 
         STACK_PUSH ( 
-          GENV_ITEMFACTORY->createBoolean(lBool),
+          GENV_ITEMFACTORY->createBoolean(result, lBool),
           aState
         );
       }
@@ -784,8 +771,8 @@ CompareIterator::compare(
     STACK_END (aState);
   }
 
-  store::Item_t
-  OpNodeAfterIterator::nextImpl(PlanState& aPlanState) const
+  bool
+  OpNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   { 
     bool lBool;
     store::Item_t lItem0, lItem1;
@@ -793,16 +780,14 @@ CompareIterator::compare(
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-    lItem0 = consumeNext(theChildren[0].getp(), aPlanState);
-    if (lItem0 != 0) {
-      lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
-      if (lItem1 != 0) {
+    if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
+      if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 1); 
         STACK_PUSH ( 
-          GENV_ITEMFACTORY->createBoolean(lBool),
+          GENV_ITEMFACTORY->createBoolean(result, lBool),
           aState
         );
       }

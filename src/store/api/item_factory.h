@@ -44,13 +44,15 @@ public:
    * @param prefix prefix of the qname
    * @param localName local name of the qname
    */
-  virtual Item_t createQName(
+  virtual bool createQName(
+        Item_t& result,
         xqpStringStore* nameSpace,
         xqpStringStore* prefix,
         xqpStringStore* localName,
         bool*           inserted = 0) = 0;
 
-  virtual Item_t createQName(
+  virtual bool createQName(
+        Item_t& result,
         const char* ns,
         const char* pre,
         const char* ln) = 0;
@@ -59,92 +61,92 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NCName]
    * @param value string representation of the value
    */
-  virtual Item_t createNCName(xqpStringStore_t& value) = 0;
+  virtual bool createNCName(Item_t& result, xqpStringStore_t& value) = 0;
     
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
    * TODO where is the value parsed and checked?
    */
-  virtual Item_t createAnyURI(xqpStringStore_t& value) = 0;
-  virtual Item_t createAnyURI(const char* value) = 0;
+  virtual bool createAnyURI(Item_t& result, xqpStringStore_t& value) = 0;
+  virtual bool createAnyURI(Item_t& result, const char* value) = 0;
 
   /**
    * @param value string value of the untyped atomic
    */
-  virtual Item_t createUntypedAtomic(xqpStringStore_t& value) = 0;
+  virtual bool createUntypedAtomic(Item_t& result, xqpStringStore_t& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
    * @param value string representation of the value
    */
-  virtual Item_t createString(xqpStringStore_t& value) = 0;
+  virtual bool createString(Item_t& result, xqpStringStore_t& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
    * @param value)?
    */
-  virtual Item_t createBase64Binary(xqp_base64Binary value) = 0;
+  virtual bool createBase64Binary(Item_t& result, xqp_base64Binary value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]
    * @param value
    */
-  virtual Item_t createBoolean(xqp_boolean value) = 0;
+  virtual bool createBoolean(Item_t& result, xqp_boolean value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#decimal]
    * @param value
    */
-  virtual Item_t createDecimal ( xqp_decimal value) = 0;
+  virtual bool createDecimal ( Item_t& result, xqp_decimal value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#integer]
    * @param value
    */
-  virtual Item_t createInteger ( xqp_integer value ) = 0;
+  virtual bool createInteger ( Item_t& result, xqp_integer value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#long]
    * @param value
    */
-  virtual Item_t createLong ( xqp_long value ) = 0;
+  virtual bool createLong ( Item_t& result, xqp_long value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#int]
    * @param value
    */
-  virtual Item_t createInt ( xqp_int value ) = 0;
+  virtual bool createInt ( Item_t& result, xqp_int value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#short]
    * @param value
    */
-  virtual Item_t createShort ( xqp_short value ) = 0;
+  virtual bool createShort ( Item_t& result, xqp_short value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#byte]
    * @param value
    */
-  virtual Item_t createByte ( xqp_byte value ) = 0;
+  virtual bool createByte ( Item_t& result, xqp_byte value ) = 0;
 
 
-  virtual Item_t createDate ( xqp_date& value ) = 0;
+  virtual bool createDate ( Item_t& result, xqp_date& value ) = 0;
   
   /**
    * @param year
    * @param month
    * @param day
    */
-  virtual Item_t createDate ( short year, short month, short day ) = 0;
+  virtual bool createDate ( Item_t& result, short year, short month, short day ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#date]
    * @param value string representation of the value
    */
-  virtual Item_t createDate ( const xqp_string& value ) = 0;
+  virtual bool createDate ( Item_t& result, const xqp_string& value ) = 0;
 
-  virtual Item_t createDateTime(xqp_dateTime& value) = 0;
+  virtual bool createDateTime(Item_t& result, xqp_dateTime& value) = 0;
             
   /**
    * @param year
@@ -154,7 +156,7 @@ public:
    * @param minute
    * @param second
    */
-  virtual Item_t createDateTime ( 
+  virtual bool createDateTime (Item_t& result,  
         short year,
         short month,
         short day,
@@ -171,7 +173,7 @@ public:
    * @param second
    * @param timeZone_hours Difference in hours to UTC
    */
-  virtual Item_t createDateTime ( 
+  virtual bool createDateTime (Item_t& result,  
       short year , short month, short day,
       short hour, short minute, double second, short timeZone_hours) = 0;
 
@@ -179,7 +181,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#dateTime]
    * @param value string representation of the value
    */
-  virtual Item_t createDateTime ( const xqp_string& value ) = 0;
+  virtual bool createDateTime ( Item_t& result, const xqp_string& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xpath-functions/] Section 5.2
@@ -187,20 +189,20 @@ public:
    * @param xs:date Item (might be NULL)
    * @param xs:time Item (might be NULL)
    */
-  virtual Item_t createDateTime ( const Item_t&, const Item_t& ) = 0;
+  virtual bool createDateTime ( Item_t& result, const Item_t&, const Item_t& ) = 0;
 
   /**
    * @param value double value
    */
-  virtual Item_t createDouble ( xqp_double value ) = 0;
+  virtual bool createDouble ( Item_t& result, xqp_double value ) = 0;
 
-  virtual Item_t createDuration(xqp_duration& value ) = 0;
+  virtual bool createDuration(Item_t& result, xqp_duration& value ) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#duration]
    * @param value string representation of the value
    */
-  virtual Item_t createDuration ( const xqp_string& value ) = 0;
+  virtual bool createDuration ( Item_t& result, const xqp_string& value ) = 0;
 
   /**
    * @param years
@@ -210,8 +212,8 @@ public:
    * @param minutes
    * @param seconds
    */
-  virtual Item_t createDuration (
-			  short years,
+  virtual bool createDuration (
+			  Item_t& result, short years,
         short months,
         short days,
         short hours,
@@ -222,184 +224,184 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITIES]
    * @param value string representation of the value
    */
-  virtual Item_t createENTITIES(xqpStringStore_t& value) = 0;
+  virtual bool createENTITIES(Item_t& result, xqpStringStore_t& value) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITY]
    * @param value string representation of the value
    */
-  virtual Item_t createENTITY(xqpStringStore_t& value) = 0;
+  virtual bool createENTITY(Item_t& result, xqpStringStore_t& value) = 0;
 
   /**
    * @param value
    */
-  virtual Item_t createFloat ( xqp_float value ) = 0;
+  virtual bool createFloat ( Item_t& result, xqp_float value ) = 0;
 
-  virtual Item_t createGDay ( xqp_gDay& value ) = 0;
+  virtual bool createGDay ( Item_t& result, xqp_gDay& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gDay]
    * @param value string representation of the value
    */
-  virtual Item_t createGDay ( const xqp_string& value ) = 0;
+  virtual bool createGDay ( Item_t& result, const xqp_string& value ) = 0;
 
   /**
    * @param day
    */
-  virtual Item_t createGDay ( short day ) = 0;
+  virtual bool createGDay ( Item_t& result, short day ) = 0;
 
-  virtual Item_t createGMonth ( xqp_gMonth& value ) = 0;
+  virtual bool createGMonth ( Item_t& result, xqp_gMonth& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonth]
    * @param value string representation of the value
    */
-  virtual Item_t createGMonth ( const xqp_string& value ) = 0;
+  virtual bool createGMonth ( Item_t& result, const xqp_string& value ) = 0;
 
   /**
    * @param month
    */
-  virtual Item_t createGMonth ( short month ) = 0;
+  virtual bool createGMonth ( Item_t& result, short month ) = 0;
 
-  virtual Item_t createGMonthDay ( xqp_gMonthDay& value ) = 0;
+  virtual bool createGMonthDay ( Item_t& result, xqp_gMonthDay& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonthDay]
    * @param value string representation of the value
    */
-  virtual Item_t createGMonthDay ( const xqp_string& value ) = 0;
+  virtual bool createGMonthDay ( Item_t& result, const xqp_string& value ) = 0;
 
   /**
    * @param month
    * @param day
    */
-  virtual Item_t createGMonthDay ( short month, short day ) = 0;
+  virtual bool createGMonthDay ( Item_t& result, short month, short day ) = 0;
 
-  virtual Item_t createGYear ( xqp_gYear& value ) = 0;
+  virtual bool createGYear ( Item_t& result, xqp_gYear& value ) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gYear]
    * @param value string representation of the value
    */
-  virtual Item_t createGYear ( const xqp_string& value ) = 0;
+  virtual bool createGYear ( Item_t& result, const xqp_string& value ) = 0;
 
   /**
    * @param year
    */
-  virtual Item_t createGYear ( short year ) = 0;
+  virtual bool createGYear ( Item_t& result, short year ) = 0;
 
-  virtual Item_t createGYearMonth ( xqp_gYearMonth& value ) = 0;
+  virtual bool createGYearMonth ( Item_t& result, xqp_gYearMonth& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
    * @param value string representation of the value
    */
-  virtual Item_t createGYearMonth ( const xqp_string& value ) = 0;
+  virtual bool createGYearMonth ( Item_t& result, const xqp_string& value ) = 0;
 
   /**
    * @param year
    * @param month
    */
-  virtual Item_t createGYearMonth ( short year, short month ) = 0;
+  virtual bool createGYearMonth ( Item_t& result, short year, short month ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
    * @param value
    */
-  virtual Item_t createHexBinary ( xqp_hexBinary value ) = 0;
+  virtual bool createHexBinary ( Item_t& result, xqp_hexBinary value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#ID]
    * @param value string representation of the value
    */
-  virtual Item_t createID(xqpStringStore_t& value ) = 0;
+  virtual bool createID(Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#IDREF]
    * @param value string representation of the value
    */
-  virtual Item_t createIDREF(xqpStringStore_t& value ) = 0;
+  virtual bool createIDREF(Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#IDREFS]
    * @param value string representation of the value
    */
-  virtual Item_t createIDREFS(xqpStringStore_t& value ) = 0;
+  virtual bool createIDREFS(Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#language]
    * @param value string representation of the value
    */
-  virtual Item_t createLanguage(xqpStringStore_t& value ) = 0;
+  virtual bool createLanguage(Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKEN]
    * @param value string representation of the value
    */
-  virtual Item_t createNMTOKEN(xqpStringStore_t& value ) = 0;
+  virtual bool createNMTOKEN(Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKENS]
    * @param value string representation of the value
    */
-  virtual Item_t createNMTOKENS(xqpStringStore_t& value ) = 0;
+  virtual bool createNMTOKENS(Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NOTATION]
    * @param value string representation of the value
    */
-  virtual Item_t createNOTATION (xqpStringStore_t& value ) = 0;
+  virtual bool createNOTATION (Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#Name]
    * @param value string representation of the value
    */
-  virtual Item_t createName (xqpStringStore_t& value ) = 0;
+  virtual bool createName (Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
    * @param value
    */
-  virtual Item_t createNegativeInteger ( xqp_integer value ) = 0;
+  virtual bool createNegativeInteger ( Item_t& result, xqp_integer value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
    * @param value
    */
-  virtual Item_t createNonNegativeInteger ( xqp_uinteger value ) = 0;
+  virtual bool createNonNegativeInteger ( Item_t& result, xqp_uinteger value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
    * @param value
    */
-  virtual Item_t createNonPositiveInteger ( xqp_integer value ) = 0;
+  virtual bool createNonPositiveInteger ( Item_t& result, xqp_integer value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
    * @param value string representation of the value
    */
-  virtual Item_t createNormalizedString (xqpStringStore_t& value ) = 0;
+  virtual bool createNormalizedString (Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
    * @param value
    */
-  virtual Item_t createPositiveInteger(xqp_uinteger value) = 0;
+  virtual bool createPositiveInteger(Item_t& result, xqp_uinteger value) = 0;
 
-  virtual Item_t createTime(xqp_time& value) = 0;
+  virtual bool createTime(Item_t& result, xqp_time& value) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
    * @param value string representation of the value
    */
-  virtual Item_t createTime(const xqp_string& value) = 0;
+  virtual bool createTime(Item_t& result, const xqp_string& value) = 0;
 
   /**
    * @param hour
    * @param minute
    * @param second
    */
-  virtual Item_t createTime(short hour, short minute, double second) = 0;
+  virtual bool createTime(Item_t& result, short hour, short minute, double second) = 0;
 
   /**
    * @param hour
@@ -407,37 +409,37 @@ public:
    * @param second
    * @param timeZone_hours Difference in hours to UTC
    */
-  virtual Item_t createTime(short hour, short minute, double second, short timeZone_hours) = 0;
+  virtual bool createTime(Item_t& result, short hour, short minute, double second, short timeZone_hours) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#token]
    * @param value string representation of the value
    */
-  virtual Item_t createToken(xqpStringStore_t& value) = 0;
+  virtual bool createToken(Item_t& result, xqpStringStore_t& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
    * @param value
    */
-  virtual Item_t createUnsignedByte(xqp_ubyte value) = 0;
+  virtual bool createUnsignedByte(Item_t& result, xqp_ubyte value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
    * @param value
    */
-  virtual Item_t createUnsignedInt(xqp_uint value) = 0;
+  virtual bool createUnsignedInt(Item_t& result, xqp_uint value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
    * @param value
    */
-  virtual Item_t createUnsignedLong(xqp_ulong value) = 0;
+  virtual bool createUnsignedLong(Item_t& result, xqp_ulong value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
    * @param value
    */
-  virtual Item_t createUnsignedShort(xqp_ushort value) = 0;
+  virtual bool createUnsignedShort(Item_t& result, xqp_ushort value) = 0;
 
   /**
    * @param baseUri The base URI of the document.
@@ -446,8 +448,8 @@ public:
    * 								The item factory does not check if the parameter contains exactly one root element!
    * @param createId Does the created item need an ID?
    */
-  virtual Item_t createDocumentNode(
-        unsigned long     qid,
+  virtual bool createDocumentNode(
+        Item_t& result, unsigned long     qid,
         xqpStringStore_t& baseURI,
         Iterator*         children,
         bool              isRoot,
@@ -465,8 +467,8 @@ public:
    * @param newTypes Have the children to be checked agains the type of the parent?
    * @param createId Does the created item need an ID?
    */
-  virtual Item_t createElementNode (
-        unsigned long     qid,
+  virtual bool createElementNode (
+        Item_t& result, unsigned long     qid,
         Item_t&           qname,
         Item_t&           typeName,
         Iterator*         childrenIte,
@@ -488,8 +490,8 @@ public:
    *
    * Implementations might only store the typed value.
    */
-  virtual Item_t createAttributeNode(
-        unsigned long qid,
+  virtual bool createAttributeNode(
+        Item_t& result, unsigned long qid,
         Iterator*     nameIter,
         Item_t&       typeName,
         Iterator*     valueIter,
@@ -500,14 +502,14 @@ public:
    * @param value text
    * @param createId Does the created item need an ID (default == false)?
    */
-  virtual Item_t createTextNode(
-        unsigned long   qid,
+  virtual bool createTextNode(
+        Item_t& result, unsigned long   qid,
         Iterator*       valueIter,
         bool            isRoot,
         bool            assignIds) = 0;
 
-  virtual Item_t createTextNode(
-        unsigned long     qid,
+  virtual bool createTextNode(
+        Item_t& result, unsigned long     qid,
         xqpStringStore_t& value,
         bool              isRoot,
         bool              assignIds) = 0;
@@ -517,8 +519,8 @@ public:
    * @param data The content of the processing instruction.
    * @param createId Does the created item need an ID?
    */
-  virtual Item_t createPiNode(
-        unsigned long     qid,
+  virtual bool createPiNode(
+        Item_t& result, unsigned long     qid,
         xqpStringStore_t& target,
         xqpStringStore_t& content,
         bool              isRoot,
@@ -528,8 +530,8 @@ public:
    * @param comment
    * @param createId Does the created item need an ID (default == false)?
    */
-  virtual Item_t createCommentNode(
-        unsigned long     qid,
+  virtual bool createCommentNode(
+        Item_t& result, unsigned long     qid,
         xqpStringStore_t& content,
         bool              isRoot,
         bool              assignIds) = 0;

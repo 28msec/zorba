@@ -19,7 +19,6 @@
 #include "types/delegating_typemanager.h"
 #include "types/typeops.h"
 #include "runtime/api/runtimecb.h"
-#include "zorbaerrors/error_manager.h"
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -30,6 +29,8 @@
 #include "context/collation_cache.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/datetime.h"
+#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/errors.h"
 
 
 namespace zorba
@@ -54,16 +55,15 @@ namespace zorba
     ValidateIterator::~ValidateIterator() 
     {}
 
-    store::Item_t ValidateIterator::effectiveValidationValue ( const QueryLoc& loc, PlanState& planState, 
+    bool ValidateIterator::effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, PlanState& planState, 
         const PlanIterator* iter)
     {
         store::Item_t item;
         xqtref_t type;
-        store::Item_t result;
 
-        item = consumeNext(iter, planState);
+        bool valid = consumeNext(item, iter, planState);
 
-        if ( item == NULL )
+        if ( !valid )
         {
              ZORBA_ERROR_LOC_DESC( XQDY0061, loc, "Wrong arguments in validate expression.");
         }
@@ -92,16 +92,17 @@ namespace zorba
             ZORBA_ERROR_LOC_DESC( XQDY0061, loc, "Argument in validate expression not a document node.");
         }
 
-        return result;
+        result = NULL;
+        return false;
     }
 
-    store::Item_t
-        ValidateIterator::nextImpl(PlanState& planState) const
+    bool
+        ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
         PlanIteratorState* aState;
         DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
         STACK_PUSH (
-            ValidateIterator::effectiveValidationValue ( this->loc, planState, theChild ),
+            ValidateIterator::effectiveValidationValue ( result, this->loc, planState, theChild ),
             aState
             );
         STACK_END (aState);

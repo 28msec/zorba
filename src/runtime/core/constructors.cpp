@@ -70,7 +70,7 @@ void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
-store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
+bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   // Note: baseUri has to be rchandles because if createDocumentNode throws
   // an exception, we don't know if the exception was thrown before or after
@@ -89,15 +89,16 @@ store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
                state->theNsPreserve,
                state->theNsInherit);
 
-  node = GENV_ITEMFACTORY->
-         createDocumentNode((ulong)&planState,
+  GENV_ITEMFACTORY->
+         createDocumentNode(result,
+                            (ulong)&planState,
                             baseUri,
                             state->childWrapper,
                             true, // is root
                             true, // assign ids
                             true, // copy children
                             copymode);
-  STACK_PUSH(node, state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
@@ -123,25 +124,22 @@ DocumentIteratorState::init(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
+bool DocumentContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
-  
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   while (true)
   {
-    lItem = consumeNext(theChild.getp(), planState);
-    if (lItem == 0)
+    if (!consumeNext(result, theChild.getp(), planState))
       break;
 
-    if (lItem->isNode() && lItem->getNodeKind() == store::StoreConsts::attributeNode)
+    if (result->isNode() && result->getNodeKind() == store::StoreConsts::attributeNode)
     {
         ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "A Document Node must not contain attribute nodes!");
     }
 
-    STACK_PUSH(lItem, state);
+    STACK_PUSH(true, state);
   }
 
   STACK_END (state);
@@ -203,14 +201,13 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
-store::Item_t ElementIterator::nextImpl(PlanState& planState) const
+bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   std::auto_ptr<store::Iterator> cwrapper;
   std::auto_ptr<store::Iterator> awrapper;
   store::CopyMode copymode;
   store::Item_t qnameItem;
   store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  store::Item_t node;
   xqpStringStore_t baseUri;
   
   PlanIteratorState* state;
@@ -222,7 +219,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
     ZORBA_ERROR_LOC(XPST0001, loc);
   }
 
-  qnameItem = consumeNext(theQNameIter, planState);
+  consumeNext(qnameItem, theQNameIter, planState);
 
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
@@ -240,8 +237,9 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
 
   copymode.set(true, theTypePreserve, theNsPreserve, theNsInherit);
 
-  node = GENV_ITEMFACTORY->
-         createElementNode((ulong)&planState,
+  GENV_ITEMFACTORY->
+         createElementNode(result,
+                           (ulong)&planState,
                            qnameItem,
                            typeName,
                            cwrapper.get(),
@@ -253,7 +251,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
                            true, // assignIds
                            true, // copy
                            copymode);
-  STACK_PUSH(node, state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
@@ -332,25 +330,25 @@ void ElementContentState::reset(PlanState& planState)
 }
 
 
-store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
+bool ElementContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  store::Item_t item;
   store::Item_t textNode;
   xqpStringStore_t content;
 
   ElementContentState* state;
+  bool valid;
   DEFAULT_STACK_INIT(ElementContentState, state, planState);
   
   while (true)
   {
-    item = consumeNext(theChildren[0].getp(), planState );
-    if (item == NULL)
+    if (!consumeNext(result, theChildren[0].getp(), planState ))
       break;
+    valid = true;
 
     // Check to find out if the content contains an attribute child which is
     // located after a non attribute child.
-    if (item->isNode() && item->getNodeKind() == store::StoreConsts::attributeNode) 
+    if (result->isNode() && result->getNodeKind() == store::StoreConsts::attributeNode) 
     {
       if (state->theNoAttrAllowed)
         ZORBA_ERROR_LOC(XQTY0024, loc); 
@@ -360,19 +358,16 @@ store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
       state->theNoAttrAllowed = true;
     }
     
-    if (item->isNode())
+    if (!result->isNode())
     {
-      STACK_PUSH(item, state);
-    }
-    else 
-    {
-      content = item->getStringValue();
-      textNode = factory->createTextNode((ulong)&planState,
+      content = result->getStringValue();
+      valid = factory->createTextNode(result,
+                                         (ulong)&planState,
                                          content,
                                          false, // not root
                                          true); // assignIds
-      STACK_PUSH(textNode, state);
     }
+    STACK_PUSH(valid, state);
   }
 
   STACK_END (state);
@@ -394,9 +389,8 @@ AttributeIterator::AttributeIterator(
 }
 
 
-store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
+bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t node;
   store::Iterator_t nameWrapper;
   store::Iterator_t valueWrapper;
   store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
@@ -407,15 +401,15 @@ store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
   nameWrapper = new PlanIteratorWrapper(theChild0, planState);
   valueWrapper = new PlanIteratorWrapper(theChild1, planState);
   
-  node = GENV_ITEMFACTORY->
-         createAttributeNode((ulong)&planState,
+  GENV_ITEMFACTORY->
+         createAttributeNode(result, (ulong)&planState,
                              nameWrapper,
                              typeName,
                              valueWrapper,
                              theIsRoot,
                              true);  // assignIds
 
-  STACK_PUSH(node, state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
@@ -439,35 +433,35 @@ NameCastIterator::~NameCastIterator()
 }
 
 
-store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
+bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
-  store::Item_t lRes;
   xqtref_t lItemType;
   xqpStringStore_t strval;
+  store::Item_t temp;
+  bool valid = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lItem = consumeNext(theChild.getp(), planState);
-  if (lItem == 0)
+  if (!consumeNext(result, theChild.getp(), planState))
   {
     ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
                           "Empty sequences cannot be cased to QName.");
   }
+  valid = true;
 
-  if (consumeNext(theChild, planState) != 0)
+  if (consumeNext(temp, theChild, planState))
   {
     ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
                           "Non single sequences cannot be cased to QName.");
   }
 
   lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
-              create_value_type(lItem);
+              create_value_type(result);
 
   if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
   {
-    lRes.transfer(lItem);
+    /* do nothing */
   }
   else if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
            !TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
@@ -479,8 +473,8 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
   {
     try
     {
-      strval = lItem->getStringValue();
-      lRes = GenericCast::instance()->castToQName(strval, &*theNCtx);
+      strval = result->getStringValue();
+      valid = GenericCast::instance()->castToQName(result, strval, &*theNCtx);
     }
     catch (...)
     {
@@ -490,7 +484,7 @@ store::Item_t NameCastIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_PUSH(lRes, state);
+  STACK_PUSH(valid, state);
   STACK_END(state);
 }
 
@@ -509,9 +503,8 @@ TextIterator::TextIterator(
 }
 
 
-store::Item_t TextIterator::nextImpl(PlanState& planState) const
+bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t node;
   store::Iterator_t valueWrapper;
 
   PlanIteratorState* state;
@@ -519,12 +512,11 @@ store::Item_t TextIterator::nextImpl(PlanState& planState) const
 
   valueWrapper = new PlanIteratorWrapper(theChild, planState);
       
-  node = GENV_ITEMFACTORY->createTextNode((ulong)&planState,
+  STACK_PUSH(GENV_ITEMFACTORY->createTextNode(result,
+                                          (ulong)&planState,
                                           valueWrapper,
                                           theIsRoot,
-                                          true); // assignIds
-
-  STACK_PUSH(node, state);
+                                          true), state);
     
   STACK_END (state);
 }
@@ -545,29 +537,29 @@ PiIterator::PiIterator (
 }
 
 
-store::Item_t PiIterator::nextImpl(PlanState& planState) const
+bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItem;
   std::string buf;
   xqpStringStore_t content;
   xqpStringStore_t target;
+  store::Item_t temp;
   bool lFirst;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
   try {
-    lItem = consumeNext(theChild0, planState);
+    if (!consumeNext(lItem, theChild0, planState))
+      ZORBA_ERROR(XPTY0004);
   } catch (error::ZorbaError& e) {
     if (e.theErrorCode == FORG0001)
       ZORBA_ERROR_LOC(XQDY0041, loc);
     else
       throw e;
   }
-  if (lItem == 0)
-    ZORBA_ERROR( XPTY0004);
 
-  if (consumeNext(theChild0, planState) != 0)
+  if (consumeNext(temp, theChild0, planState))
     ZORBA_ERROR( XPTY0004);
 
   // TODO: check if lItem is string, raise XPTY0004 if not
@@ -579,7 +571,7 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
     ZORBA_ERROR( XQDY0064);
   
   for (lFirst = true;
-       0 != (lItem = consumeNext (theChild1.getp(), planState));
+       consumeNext (lItem, theChild1.getp(), planState);
        lFirst = false)
   {
     if (! lFirst) buf += " ";
@@ -595,12 +587,13 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
   content = new xqpStringStore(buf); 
   content = content->trimL(" \n\r\t", 4);
 
-  lItem = GENV_ITEMFACTORY->createPiNode((ulong)&planState,
+  GENV_ITEMFACTORY->createPiNode(result,
+                                        (ulong)&planState,
                                          target,
                                          content,
                                          theIsRoot,
                                          true);  // assingIds
-  STACK_PUSH(lItem, state);
+  STACK_PUSH(true, state);
   
   STACK_END (state);
 }
@@ -620,7 +613,7 @@ CommentIterator::CommentIterator(
 }
 
 
-store::Item_t CommentIterator::nextImpl(PlanState& planState) const
+bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItem;
   std::string buf;
@@ -633,8 +626,7 @@ store::Item_t CommentIterator::nextImpl(PlanState& planState) const
   lFirst = true;
   while (true)
   {
-    lItem = consumeNext(theChild.getp(), planState);
-    if (lItem == 0)
+    if (!consumeNext(lItem, theChild.getp(), planState))
       break;
     
     if (!lFirst)
@@ -659,12 +651,12 @@ store::Item_t CommentIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  lItem = GENV_ITEMFACTORY->createCommentNode((ulong)&planState,
+  GENV_ITEMFACTORY->createCommentNode(result, (ulong)&planState,
                                               content,
                                               theIsRoot,
                                               true); // assingIds
     
-  STACK_PUSH(lItem, state);
+  STACK_PUSH(true, state);
     
   STACK_END (state);
 }
@@ -736,9 +728,8 @@ void EnclosedIterator::setAttrContent()
 }
 
 
-store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
+bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t item;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   xqpStringStore_t strval;
 
@@ -749,39 +740,41 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
   {
     while ( true )
     {
-      state->theContextItem = consumeNext(theChild, planState);
+      if (!consumeNext(result, theChild, planState))
+        break;
 
-      if (state->theContextItem == NULL)
-        return NULL;
-
-      if (state->theContextItem->isNode())
+      if (result->isNode())
       {
-        STACK_PUSH(state->theContextItem, state);
+        STACK_PUSH(true, state);
       }
       else
       {
-        strval = state->theContextItem->getStringValue();
+        strval = result->getStringValue();
 
         {
           std::string buf;
-          state->theContextItem = consumeNext(theChild, planState);
-          while (state->theContextItem != NULL &&
-                 state->theContextItem->isAtomic())
-          {
+          while(true) {
+            bool status = consumeNext(state->theContextItem, theChild, planState);
+            if (!status) {
+              state->theContextItem = NULL;
+              break;
+            }
+            if (!state->theContextItem->isAtomic()) {
+              break;
+            }
             buf += " ";
             buf += state->theContextItem->getStringValue()->str();
-
-            state->theContextItem = consumeNext(theChild, planState);
           }
 
           if (!buf.empty())
             strval = strval->append(buf);
         }
 
-        item = factory->createString(strval);
-        STACK_PUSH(item, state);
+        factory->createString(result, strval);
+        STACK_PUSH(true, state);
 
-        STACK_PUSH(state->theContextItem, state);
+        result.transfer(state->theContextItem);
+        STACK_PUSH(result != NULL, state);
       }
     }
   }
@@ -791,50 +784,50 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
     {
       if (state->theDocChildren != 0)
       {
-        state->theContextItem = state->theDocChildren->next();
-        if (state->theContextItem == 0)
+        if (!state->theDocChildren->next(result))
         {
           state->theDocChildren->close();
           state->theDocChildren = 0;
         }
         else
         {
-          STACK_PUSH(state->theContextItem, state);
+          STACK_PUSH(true, state);
         }
       }
       else
       {
-        state->theContextItem = consumeNext(theChild, planState);
-
-        if (state->theContextItem == NULL)
+        if (!consumeNext(result, theChild, planState))
           break;
 
-        if (state->theContextItem->isNode())
+        if (result->isNode())
         {
-          if (state->theContextItem->getNodeKind() == store::StoreConsts::documentNode)
+          if (result->getNodeKind() == store::StoreConsts::documentNode)
           {
-            state->theDocChildren = state->theContextItem->getChildren();
+            state->theDocChildren = result->getChildren();
             state->theDocChildren->open();
           }
           else
           {
-            STACK_PUSH(state->theContextItem, state);
+            STACK_PUSH(true, state);
           }
         }
         else
         {
-          strval = state->theContextItem->getStringValue();
+          strval = result->getStringValue();
 
           {
             std::string buf;
-            state->theContextItem = consumeNext(theChild, planState);
-            while (state->theContextItem != NULL &&
-                   state->theContextItem->isAtomic())
-            {
+            while(true) {
+              bool status = consumeNext(state->theContextItem, theChild, planState);
+              if (!status) {
+                state->theContextItem = NULL;
+                break;
+              }
+              if (!state->theContextItem->isAtomic()) {
+                break;
+              }
               buf += " ";
               buf += state->theContextItem->getStringValue()->str();
-
-              state->theContextItem = consumeNext(theChild, planState);
             }
 
             if (!buf.empty())
@@ -843,11 +836,7 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 
           if (!strval->empty())
           {
-            item = factory->createTextNode((ulong)&planState,
-                                           strval,
-                                           false,
-                                           true);  // assingIds
-            STACK_PUSH(item, state);
+            STACK_PUSH(factory->createTextNode(result, (ulong)&planState, strval, false, true), state);
           }
 
           if (state->theContextItem != NULL &&
@@ -858,7 +847,8 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
           }
           else
           {
-            STACK_PUSH(state->theContextItem, state);
+            result.transfer(state->theContextItem);
+            STACK_PUSH(result != NULL, state);
           }
         }
       }

@@ -30,33 +30,31 @@ namespace zorba {
 
 // 3 The Error Function
 //---------------------
-store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
+bool FnErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   static const char *err_ns = "http://www.w3.org/2005/xqt-errors";
-  store::Item_t err_qname = GENV_ITEMFACTORY->createQName (err_ns, "err", "FOER0000");
+  store::Item_t err_qname;
+  GENV_ITEMFACTORY->createQName (err_qname, err_ns, "err", "FOER0000");
   store::Item_t lTmpQName;
   store::Item_t lTmpErrorObject;
+  store::Item_t lTmpDescr;
+  xqp_string ns;
   xqp_string description;
   std::vector<store::Item_t> lErrorObject; 
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (theChildren.size() >= 1) 
-  {
-    lTmpQName = consumeNext(theChildren[0], planState);
-    if (lTmpQName != NULL)
+  if (theChildren.size () >= 1) {
+    if (consumeNext(lTmpQName, theChildren[0].getp(), planState))
       err_qname = lTmpQName;
   }
-
-  if (theChildren.size () >= 2)
-    description = consumeNext(theChildren[1], planState)->getStringValue().getp();
-
-  if (theChildren.size() == 3)
-  {
-    while ( (lTmpErrorObject = consumeNext(theChildren[2], planState)) != NULL)
+  if (theChildren.size () >= 2) {
+    consumeNext(lTmpDescr, theChildren[1].getp(), planState);
+    description = lTmpDescr->getStringValue ().getp();
+  } else if (theChildren.size() == 3)
+    while (consumeNext(lTmpErrorObject, theChildren[2].getp(), planState))
       lErrorObject.push_back(lTmpErrorObject);
-  }
   
   {
     error::ZorbaUserError lError(err_qname, description, loc, 
@@ -70,7 +68,7 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
 
 // 8.1 fn:resolve-uri
 //---------------------
-store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
+bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   xqpStringStore_t strRelative;
@@ -82,12 +80,11 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   //TODO:check if both relative and base uri's are valid. If not raise err:FORG0002.
-  item = consumeNext(theChildren[0], planState );
-  if ( item != NULL )
+  if (consumeNext(item, theChildren[0], planState ))
   {
     strRelative = item->getStringValue();
 
-    item = consumeNext(theChildren[1], planState );
+    consumeNext(item, theChildren[1], planState );
     strBase = item->getStringValue();
 
     err = URI::resolve_relative (strBase, strRelative, strResult);
@@ -104,7 +101,7 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
       break;
     }
 
-    STACK_PUSH(GENV_ITEMFACTORY->createString(strResult), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, strResult), state);
   }
 
   //TODO fix the implementation
@@ -112,18 +109,16 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
-store::Item_t SequentialIterator::nextImpl(PlanState& planState) const {
-  store::Item_t item;
-
+bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   for (unsigned i = 0; i < theChildren.size () - 1; i++) {
-    while (NULL != CONSUME (i));
+    while (CONSUME (result, i));
   }
 
-  while (NULL != (item = CONSUME (theChildren.size () - 1)))
-    STACK_PUSH (item, state);
+  while (CONSUME (result, theChildren.size () - 1))
+    STACK_PUSH (true, state);
 
   STACK_END (state);
 }

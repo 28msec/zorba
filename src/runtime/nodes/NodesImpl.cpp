@@ -34,39 +34,40 @@ using namespace std;
 
 namespace zorba {
 
-store::Item_t NodeReferenceIterator::nextImpl(PlanState& planState) const
+bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t inNode;
-
   PlanIteratorState *state;
+  bool valid;
+  store::Item_t inNode;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0], planState);
-  assert(inNode != NULL);
+  valid = consumeNext(inNode, theChildren[0], planState);
+  assert(valid);
 
-  STACK_PUSH(GENV_STORE.getReference(inNode), state);
+  STACK_PUSH(GENV_STORE.getReference(result, inNode), state);
   STACK_END(state);
 }
 
 
-store::Item_t NodeByReferenceIterator::nextImpl(PlanState& planState) const
+bool NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inUri;
+  bool valid;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inUri = consumeNext(theChildren[0], planState);
-  assert(inUri != NULL);
+  valid = consumeNext(inUri, theChildren[0], planState);
+  assert(valid);
 
-  STACK_PUSH(GENV_STORE.getNodeByReference(inUri), state);
+  STACK_PUSH(GENV_STORE.getNodeByReference(result, inUri), state);
   STACK_END (state);
 }
 
 
 // 14.2 fn:local-name
 //---------------------
-store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
+bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
   xqpStringStore_t strRes;
@@ -74,9 +75,7 @@ store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0], planState);
-
-  if (inNode != NULL)
+  if (consumeNext(inNode, theChildren[0], planState))
   {
     if(inNode->getNodeKind() == store::StoreConsts::documentNode ||
        inNode->getNodeKind() == store::StoreConsts::commentNode ||
@@ -93,12 +92,12 @@ store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
       strRes = inNode->getNodeName()->getLocalName();
     }
 
-    STACK_PUSH(GENV_ITEMFACTORY->createString(strRes), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, strRes), state);
   }
   else
   {
     strRes = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(strRes), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, strRes), state);
   }
 
   STACK_END (state);
@@ -107,7 +106,7 @@ store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
 
 // 14.3 fn:namespace-uri
 //---------------------
-store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
+bool FnNamespaceUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
   xqpStringStore_t uriStr;
@@ -115,20 +114,17 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0].getp(), planState);
-
-  if (inNode != NULL)
+  if (consumeNext(inNode, theChildren[0].getp(), planState))
   {
     if(inNode->getNodeKind() == store::StoreConsts::elementNode ||
        inNode->getNodeKind() == store::StoreConsts::attributeNode)
     {
       uriStr = inNode->getNodeName()->getNamespace();
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(uriStr), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, uriStr), state);
     }
     else
     {
-      uriStr = new xqpStringStore("");
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(uriStr), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, ""), state);
     }
   }
 
@@ -137,7 +133,7 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
 
 // 14.5 fn:lang
 //---------------------
-store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
+bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     item, node, attr;
   store::Item*      attrName;
@@ -148,26 +144,28 @@ store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(NULL != (item = CONSUME(0)))
+  if(CONSUME(item, 0))
   {
     reqLang = item->getStringValue().getp();
     
-    for(node = CONSUME(1);
+    if (CONSUME(node, 1)) {
+      for(;
         NULL != node && node->getNodeKind () == store::StoreConsts::elementNode && ! found;
         node = node->getParent())
-    {
-      for ((theAttributes = node->getAttributes())->open ();
-           ! found && NULL != (attr = theAttributes->next()); )
       {
-        attrName = attr->getNodeName();
-        found = (attrName->getLocalName()->byteEqual("lang", 4) &&
-                 attrName->getNamespace()->byteEqual(XML_NS, strlen(XML_NS)) &&
-                 xqp_string(attr->getStringValue()).matches(xqp_string("^" + reqLang->str() + "(-|$)"), "i"));
+        for ((theAttributes = node->getAttributes())->open ();
+             ! found && theAttributes->next(attr); )
+        {
+          attrName = attr->getNodeName();
+          found = (attrName->getLocalName()->byteEqual("lang", 4) &&
+                   attrName->getNamespace()->byteEqual(XML_NS, strlen(XML_NS)) &&
+                   xqp_string(attr->getStringValue()).matches(xqp_string("^" + reqLang->str() + "(-|$)"), "i"));
+        }
       }
     }
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(found), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, found), state);
   
   STACK_END (state);
 }
@@ -188,17 +186,16 @@ FnCollectionIteratorState::reset(PlanState& planState)
   theIterator = NULL;
 }
 
-store::Item_t FnCollectionIterator::nextImpl(PlanState& planState) const
+bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t       itemArg;
-  store::Item_t       itemColl;
   xqp_string          uri;
   store::Collection_t theColl;
   
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
 
-  if (theChildren.size() == 1 && (itemArg = consumeNext(theChildren[0].getp(), planState)) != NULL) 
+  if (theChildren.size() == 1 && consumeNext(itemArg, theChildren[0].getp(), planState)) 
     uri = itemArg->getStringValue().getp();
   else
   {
@@ -217,8 +214,8 @@ store::Item_t FnCollectionIterator::nextImpl(PlanState& planState) const
   ZORBA_ASSERT(state->theIterator!=NULL);
   state->theIterator->open();
   
-  while((itemColl = state->theIterator->next()) != NULL )
-    STACK_PUSH (itemColl, state);
+  while(state->theIterator->next(result))
+    STACK_PUSH (true, state);
 
   STACK_END (state);
 }

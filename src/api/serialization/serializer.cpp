@@ -384,11 +384,9 @@ int serializer::emitter::emit_node_children(
     // emit attributes 
     it = item->getAttributes();
     it->open();
-    child = it->next();
-    while (child!= NULL)
+    while (it->next(child))
     {		
       emit_node(child, depth);
-      child = it->next();
     }
   }
   else if (item->getNodeKind() == store::StoreConsts::documentNode)
@@ -399,8 +397,7 @@ int serializer::emitter::emit_node_children(
 	// output all the other nodes
 	it = item->getChildren();
   it->open();
-	child = it->next();
-	while (child!= NULL)
+	while (it->next(child))
 	{
     if (closed_parent_tag == 0)
 		{
@@ -409,8 +406,6 @@ int serializer::emitter::emit_node_children(
     }
 
     emit_node(child, depth, item);
-
-    child = it->next();
   }
 
   return closed_parent_tag;
@@ -711,8 +706,8 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
     // iterate through attributes
     store::Iterator_t it = item->getAttributes();
     it->open();
-    store::Item_t child = it->next();
-    while (child!= NULL)
+    store::Item_t child;
+    while (it->next(child))
     { 
       xqpString cname(child->getNodeName()->getStringValue());
       xqpString cvalue(child->getStringValue());
@@ -720,8 +715,6 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
           &&
           cvalue.lowercase() == "content-type")
         return 1;        
-      
-      child = it->next();
     }    
   }
   
@@ -926,14 +919,12 @@ void serializer::sax2_emitter::emit_node_children( const store::Item* item )
 	// output all the other nodes
 	it = item->getChildren();
   it->open();
-	child = it->next();
-	while (child!= NULL)
+	while (it->next(child))
 	{
     if (child->getNodeKind() != store::StoreConsts::attributeNode)
     {
       emit_node(&*child);
     }
-    child = it->next();
   }
 }
 
@@ -1333,14 +1324,13 @@ void serializer::serialize(PlanWrapper *result, ostream& os)
   
   e->emit_declaration();
 
-  store::Item_t item = result->next();
-  while (item != NULL )
+  store::Item_t item;
+  while (result->next(item))
   {
     if (item->isPul())
       ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
 
     e->emit_item(&*item);
-    item = result->next();
   }
   
   e->emit_declaration_end();
@@ -1359,14 +1349,13 @@ void serializer::serializeSAX2(
   e = new sax2_emitter( this, *tr, aSAX2ContentHandler ); 
   e->emit_declaration();
 
-  store::Item_t item = result->next();
-  while (item != NULL )
+  store::Item_t item;
+  while (result->next(item))
   {
     if (item->isPul())
       ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
 
     e->emit_item(&*item);
-    item = result->next();
   }
   e->emit_declaration_end();
 }

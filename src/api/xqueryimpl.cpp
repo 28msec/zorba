@@ -487,13 +487,13 @@ XQueryImpl::applyUpdates()
 
     SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
 
+    store::Item_t pul;
     try 
     { 
       lPlan->open();
-      store::Item_t pul = lPlan->next();
 
       // updating expression might not return a pul because of vacuous expressions
-      if (pul != 0)
+      if (lPlan->next(pul))
       {
         if (!pul->isPul())
           ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,

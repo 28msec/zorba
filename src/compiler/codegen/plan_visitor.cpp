@@ -301,15 +301,21 @@ void end_visit(var_expr& v)
     xqpString varname = v.get_varname()->getStringValue().getp();
     if (varname == DOT_VAR) {
       vector<PlanIter_t> ctx_args;
-      ctx_args.push_back (new SingletonIterator (loc, ITEM_FACTORY->createQName ("", "", ".")));
+      store::Item_t qname;
+      ITEM_FACTORY->createQName (qname, "", "", ".");
+      ctx_args.push_back (new SingletonIterator (loc, qname));
       itstack.push (new CtxVariableIterator (loc, ctx_args));
     } else if (varname == DOT_POS_VAR) {
+      store::Item_t i;
+      ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
       itstack.push (new SingletonIterator (
-        loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
+        loc, i
       ));
     } else if (varname == LAST_IDX_VAR) {
+      store::Item_t i;
+      ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
       itstack.push (new SingletonIterator (
-        loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
+        loc, i
       ));
     } else {
       expr_t lookup_expr = new fo_expr (v.get_loc (), LOOKUP_OP1 ("ctxvariable"), new const_expr (v.get_loc (), v.get_varname ()));
@@ -1185,7 +1191,7 @@ bool begin_visit(match_expr& v)
     }
     else if (wildKind == match_prefix_wild)
     {
-      qname = iFactory.createQName("", "wildcard", v.getWildName().c_str());
+      iFactory.createQName(qname, "", "wildcard", v.getWildName().c_str());
 
       matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
