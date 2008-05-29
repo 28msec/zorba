@@ -110,9 +110,7 @@ DynamicContextImpl::setVariable(
         
     store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
 
-    xqpStringStore* lInternalString = Unmarshaller::getInternalString(aQName);
-
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lInternalString);
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, Unmarshaller::getInternalString(aQName));
 
     theCtx->add_variable(lExpandedName, &*lRes);
 

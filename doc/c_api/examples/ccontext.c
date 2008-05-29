@@ -191,12 +191,10 @@ ccontext(int argc, char** argv)
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
-#if 0
   printf("executing C example 4\n");
   res = ccontext_example_4(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
-#endif
 
   impl->free(impl);
   return 0;

@@ -72,12 +72,12 @@ namespace zorbac {
   }
   
   XQUERY_ERROR
-  DynamicContext::set_variable_sequence(XQC_DynamicContext context, XQC_String qname, XQC_Sequence value)
+  DynamicContext::set_variable_sequence(XQC_DynamicContext context, XQC_String qname, XQC_Sequence seq)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
-      zorba::String* lQName = static_cast<zorba::String*>(value->data);
-      zorba::ResultIterator* lIter = static_cast<zorba::ResultIterator*>(value->data);
+      zorba::String* lQName = static_cast<zorba::String*>(qname->data);
+      zorba::ResultIterator* lIter = static_cast<zorba::ResultIterator*>(seq->data);
 
       lContext->setVariable(*lQName, lIter);
     DC_CATCH

@@ -120,12 +120,14 @@ protected:
         const String& aDescription, 
         const String& afilename,
         unsigned int afilelinenumber,
+        const String& queryuri,
         unsigned int linebegin,
         unsigned int columnbegin);
 
 protected:
   unsigned int          theLineBegin;
   unsigned int          theColumnBegin;
+  String                theQueryURI;
 };
 
 
@@ -151,6 +153,7 @@ protected:
         const String&,
         const String& afilename,
         unsigned int afilelinenumber,
+        const String& queryuri,
         unsigned int linebegin,
         unsigned int columnbegin);
 };
@@ -179,6 +182,7 @@ protected:
         const String&,
         const String& afilename,
         unsigned int afilelinenumber,
+        const String& queryuri,
         unsigned int linebegin,
         unsigned int columnbegin);
 };
@@ -207,6 +211,7 @@ protected:
         const String&,
         const String& afilename,
         unsigned int afilelinenumber,
+        const String& queryuri,
         unsigned int linebegin,
         unsigned int columnbegin);
 
@@ -236,6 +241,7 @@ protected:
         const String& aDescription,
         const String& afilename,
         unsigned int afilelinenumber,
+        const String& queryuri,
         unsigned int linebegin,
         unsigned int columnbegin);
 

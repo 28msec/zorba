@@ -223,9 +223,6 @@ struct XQC_DynamicContext_s
 struct XQC_String_s 
 {
   XQUERY_ERROR
-  (*create)(XQC_String_Ref str);
-
-  XQUERY_ERROR
   (*to_char)(XQC_String str, const char** res);
 
   void

@@ -71,12 +71,14 @@ QueryException::QueryException(
     const String& aDescription,
     const String& afilename,
     unsigned int afilelinenumber,
+    const String& queryuri,
     unsigned int linebegin,
     unsigned int columnbegin)
   :
   ZorbaException(aErrorCode, aDescription, afilename, afilelinenumber),
   theLineBegin(linebegin),
-  theColumnBegin(columnbegin)
+  theColumnBegin(columnbegin),
+  theQueryURI(queryuri)
 {
 }
 
@@ -105,9 +107,10 @@ DynamicException::DynamicException(
     const String& aDescription,
     const String& afilename,
     unsigned int afilelinenumber,
+    const String& queryuri,
     unsigned int linebegin,
     unsigned int columnbegin)
-  : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, linebegin, columnbegin)
+  : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin)
 {
 }
 
@@ -122,10 +125,11 @@ StaticException::StaticException(
     const String& aDescription,
     const String& afilename,
     unsigned int afilelinenumber,
+    const String& queryuri,
     unsigned int linebegin,
     unsigned int columnbegin)
   :
-  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, linebegin, columnbegin)
+  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin)
 {
 }
 
@@ -135,9 +139,15 @@ StaticException::~StaticException() throw()
 }
 
 
-TypeException::TypeException(const XQUERY_ERROR& aErrorCode, const String& aDescription,
-                      const String& afilename, unsigned int afilelinenumber, unsigned int linebegin, unsigned int columnbegin)
-    : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, linebegin, columnbegin) {}
+TypeException::TypeException(
+    const XQUERY_ERROR& aErrorCode, 
+    const String& aDescription,
+    const String& afilename, 
+    unsigned int afilelinenumber, 
+    const String& queryuri,
+    unsigned int linebegin,
+    unsigned int columnbegin)
+    : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin) {}
 
 TypeException::~TypeException() throw() 
 {
@@ -149,10 +159,11 @@ SerializationException::SerializationException(
     const String& aDescription,
     const String& afilename,
     unsigned int afilelinenumber,
+    const String& queryuri,
     unsigned int linebegin,
     unsigned int columnbegin)
   :
-  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, linebegin, columnbegin)
+  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin)
 {
 }
 

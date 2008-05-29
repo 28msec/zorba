@@ -219,6 +219,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                      String(aError.theDescription.theStrStore),
                                      String(aError.theFileName),
                                      aError.theLineNumber,
+                                     "",
                                      aError.theQueryLine,
                                      aError.theQueryColumn);
     aErrorHandler->staticError(lStaticException);
@@ -229,6 +230,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                        String(aError.theDescription.theStrStore),
                                        String(aError.theFileName),
                                        aError.theLineNumber,
+                                       "",
                                        aError.theQueryLine,
                                        aError.theQueryColumn);
     aErrorHandler->dynamicError(lDynamicException);
@@ -239,6 +241,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                  String(aError.theDescription.theStrStore),
                                  String(aError.theFileName),
                                  aError.theLineNumber,
+                                 "",
                                  aError.theQueryLine,
                                  aError.theQueryColumn);
     aErrorHandler->typeError(lTypeException);
@@ -249,6 +252,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                          String(aError.theDescription.theStrStore),
                                          String(aError.theFileName),
                                          aError.theLineNumber,
+                                         "",
                                          aError.theQueryLine,
                                          aError.theQueryColumn);
     aErrorHandler->serializationError(lSerException);
