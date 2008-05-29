@@ -888,7 +888,7 @@ void end_visit(const DirElemContentList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  fo_expr *expr_list = create_seq (v.get_location ());
+  fo_expr *expr_list = create_seq (loc);
   while (true)
   {
     expr_t e_h = pop_nodestack();
@@ -929,7 +929,7 @@ void end_visit(const DirElemContent& v, void* /*visit_state*/)
   else
   {
     if (!v.isStripped()) {
-      expr_t content = new const_expr (v.get_location (), v.get_elem_content());
+      expr_t content = new const_expr (loc, v.get_elem_content());
       nodestack.push (new text_expr(v.get_location(),
                                     text_expr::text_constructor,
                                     content));
@@ -947,8 +947,8 @@ void *begin_visit(const CDataSection& v)
 void end_visit(const CDataSection& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  expr_t content = new const_expr (v.get_location (), v.get_cdata_content ());
-  nodestack.push (new text_expr (v.get_location (), text_expr::text_constructor, content));
+  expr_t content = new const_expr (loc, v.get_cdata_content ());
+  nodestack.push (new text_expr (loc, text_expr::text_constructor, content));
 }
 
 
@@ -1110,7 +1110,7 @@ void *begin_visit(const QuoteAttrContentList& v)
 void end_visit(const QuoteAttrContentList& v, void* visit_state)
 {
   TRACE_VISIT_OUT ();
-  attr_content_list(v.get_location (), visit_state);
+  attr_content_list(loc, visit_state);
 }
 
 
@@ -1125,7 +1125,7 @@ void *begin_visit(const AposAttrContentList& v)
 void end_visit(const AposAttrContentList& v, void* visit_state)
 {
   TRACE_VISIT_OUT ();
-  attr_content_list (v.get_location (), visit_state);
+  attr_content_list (loc, visit_state);
 }
 
 
@@ -1252,7 +1252,7 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
   fo_expr *lEnclosed = new fo_expr(v.get_location(), CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   lEnclosed->add(lContent);
 
-  nodestack.push (new doc_expr (v.get_location (), lEnclosed ));
+  nodestack.push (new doc_expr (loc, lEnclosed ));
 }
 
 
@@ -1458,7 +1458,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   int i, j;
 
   expr_t lReturnExpr = pop_nodestack();
-  rchandle<flwor_expr> flwor = new flwor_expr (v.get_location ());
+  rchandle<flwor_expr> flwor = new flwor_expr (loc);
   flwor->setUpdateType(lReturnExpr->getUpdateType());
   flwor->set_retval (lReturnExpr);
   OrderByClause *orderby = &*v.get_orderby ();
@@ -1648,9 +1648,9 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
   push_scope ();
   xqtref_t type = v.get_typedecl () == NULL ? NULL : pop_tstack ();
   if (v.get_kind () == VarGetsDecl::let_var)
-    bind_var_and_push (v.get_location (), v.get_varname (), var_expr::let_var, type);
+    bind_var_and_push (loc, v.get_varname (), var_expr::let_var, type);
   else
-    nodestack.push (&*create_var (v.get_location (), v.get_varname (), var_expr::let_var, type));
+    nodestack.push (&*create_var (loc, v.get_varname (), var_expr::let_var, type));
 }
 
 
@@ -1924,7 +1924,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   xqp_string varname = v.get_varname();
   store::Item_t var_qname = sctx_p->lookup_qname ("", varname);
   if (sctx_p->lookup_var (varname) != NULL)
-    ZORBA_ERROR_LOC_PARAM (XQST0049, v.get_location (), var_qname->getStringValue (), "");
+    ZORBA_ERROR_LOC_PARAM (XQST0049, loc, var_qname->getStringValue (), "");
 
   // The declared type of a global or external is never tightened based on
   // type inference because globals are mutable.
@@ -1934,7 +1934,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
   var_expr_t ve = bind_var (v.get_location(), varname, var_expr::context_var, type);
   if (! mod_ns.empty () && xqp_string (ve->get_varname ()->getNamespace ()) != mod_ns)
-    ZORBA_ERROR_LOC (XQST0048, v.get_location ());
+    ZORBA_ERROR_LOC (XQST0048, loc);
   if (! v.is_extern ()) {
     minfo->globals->bind_var (ve->get_varname (), &*ve);
     if (export_sctx != NULL)
@@ -2013,7 +2013,7 @@ void *begin_visit(const VFO_DeclList& v)
                                qname->getLocalName()->str(), "");
       // In a module, all exports must be inside to target ns
       if (! mod_ns.empty () && ns != mod_ns)
-        ZORBA_ERROR_LOC (XQST0048, v.get_location ());
+        ZORBA_ERROR_LOC (XQST0048, loc);
     }
 
     signature sig(qname, arg_types, return_type);
@@ -2400,7 +2400,7 @@ void *begin_visit(const LibraryModule& v)
 void end_visit(const LibraryModule& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (wrap_in_globalvar_assign (new fo_expr (v.get_location (), CACHED (op_concatenate, LOOKUP_OPN ("concatenate")))));
+  nodestack.push (wrap_in_globalvar_assign (new fo_expr (loc, CACHED (op_concatenate, LOOKUP_OPN ("concatenate")))));
 }
 
 
@@ -2447,7 +2447,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   if (mod_ns.empty ())
     ZORBA_ERROR_LOC (XQST0088, loc);
   if (mod_pfx == "xml" || mod_pfx == "xmlns")
-    ZORBA_ERROR_LOC (XQST0070, v.get_location ());
+    ZORBA_ERROR_LOC (XQST0070, loc);
   sctx_p->bind_ns (mod_pfx, mod_ns);
   bool found = minfo->mod_sctx_map.get (sctx_p->entity_retrieval_url (), export_sctx);
   assert (found);
@@ -2519,7 +2519,7 @@ void *begin_visit(const NamespaceDecl& v)
   TRACE_VISIT ();
   xqp_string pre = v.get_prefix (), uri = v.get_uri ();
   if (pre == "xml" || pre == "xmlns" || uri == XML_NS)
-    ZORBA_ERROR_LOC (XQST0070, v.get_location ());
+    ZORBA_ERROR_LOC (XQST0070, loc);
   sctx_p->bind_ns (pre, uri);
   return NULL;
 }
@@ -2618,7 +2618,7 @@ void end_visit(const QVarInDecl& v, void* /*visit_state*/)
   xqtref_t type;
   if (v.get_typedecl () != NULL)
     type = pop_tstack ();
-  bind_var_and_push (v.get_location (), v.get_name (), var_expr::for_var, type);
+  bind_var_and_push (loc, v.get_name (), var_expr::for_var, type);
 }
 
 
@@ -2658,7 +2658,7 @@ void *begin_visit(const SchemaImport& v)
     if (sp != NULL) {
       string pfx = sp->get_prefix ();
       if (pfx == "xml" || pfx == "xmlns")
-        ZORBA_ERROR_LOC (XQST0070, v.get_location ());
+        ZORBA_ERROR_LOC (XQST0070, loc);
       sctx_p->bind_ns (pfx, target_ns, XQST0033);
     }
 
@@ -2786,9 +2786,9 @@ void *begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT ();
   if (v.get_version () != "1.0")
-    ZORBA_ERROR_LOC (XQST0031, v.get_location ());
+    ZORBA_ERROR_LOC (XQST0031, loc);
   if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
-    ZORBA_ERROR_LOC (XQST0087, v.get_location ());
+    ZORBA_ERROR_LOC (XQST0087, loc);
   return no_state;
 }
 
@@ -2905,7 +2905,7 @@ void *begin_visit(const CastExpr& v)
 void end_visit(const CastExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (create_cast_expr (v.get_location (), pop_nodestack (), pop_tstack (), true));
+  nodestack.push (create_cast_expr (loc, pop_nodestack (), pop_tstack (), true));
 }
 
 void *begin_visit(const CastableExpr& v)
@@ -2917,7 +2917,7 @@ void *begin_visit(const CastableExpr& v)
 void end_visit(const CastableExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (create_cast_expr (v.get_location (), pop_nodestack (), pop_tstack (), false));
+  nodestack.push (create_cast_expr (loc, pop_nodestack (), pop_tstack (), false));
 }
 
 
@@ -3103,7 +3103,7 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
 
   fo_h->add(e2_h);
   fo_h->add(e1_h);
-  nodestack.push(new fo_expr (v.get_location (), LOOKUP_OP1 ("sort-distinct-nodes-ascending"), fo_h));
+  nodestack.push(new fo_expr (loc, LOOKUP_OP1 ("sort-distinct-nodes-ascending"), fo_h));
 }
 
 void *begin_visit(const MultiplicativeExpr& v)
@@ -3189,7 +3189,7 @@ void *begin_visit(const OrderedExpr& v)
 void end_visit(const OrderedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new order_expr (v.get_location (), order_expr::ordered,
+  nodestack.push (new order_expr (loc, order_expr::ordered,
                                   pop_nodestack ()));
 }
 
@@ -3209,7 +3209,7 @@ void end_visit(const ParenthesizedExpr& v, void* /*visit_state*/)
     pop_nodestack();
     nodestack.push(expr);
   } else {
-    fo_expr* lSeq = create_seq (v.get_location ());
+    fo_expr* lSeq = create_seq (loc);
     lSeq->setUpdateType(VACUOUS_EXPR);
     nodestack.push(lSeq);
   }
@@ -4515,7 +4515,7 @@ void *begin_visit(const TreatExpr& v)
 void end_visit(const TreatExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new treat_expr (v.get_location (), pop_nodestack (), pop_tstack (), XPDY0050));
+  nodestack.push (new treat_expr (loc, pop_nodestack (), pop_tstack (), XPDY0050));
 }
 
 void *begin_visit(const TypeswitchExpr& v)
@@ -4631,7 +4631,7 @@ void end_visit(const UnionExpr& v, void* /*visit_state*/)
   fo_expr *fo_h = new fo_expr(v.get_location(), LOOKUP_OP2 ("union"));
   fo_h->add(e2_h);
   fo_h->add(e1_h);
-  nodestack.push(new fo_expr (v.get_location (), LOOKUP_OP1 ("sort-distinct-nodes-ascending"), fo_h));
+  nodestack.push(new fo_expr (loc, LOOKUP_OP1 ("sort-distinct-nodes-ascending"), fo_h));
 }
 
 void *begin_visit(const UnorderedExpr& v)
@@ -4643,20 +4643,20 @@ void *begin_visit(const UnorderedExpr& v)
 void end_visit(const UnorderedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new order_expr (v.get_location (), order_expr::unordered,
+  nodestack.push (new order_expr (loc, order_expr::unordered,
                                   pop_nodestack ()));
 }
 
 void *begin_visit(const ValidateExpr& v)
 {
   TRACE_VISIT ();
-  ZORBA_NOT_IMPLEMENTED ("validation");
   return no_state;
 }
 
 void end_visit(const ValidateExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  nodestack.push (new validate_expr (loc, v.get_valmode (), pop_nodestack ()));
 }
 
 void *begin_visit(const VarRef& v)
@@ -4839,7 +4839,7 @@ void *begin_visit(const VarBinding& v)
 {
   TRACE_VISIT ();
   push_scope ();
-  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::copy_var);
+  bind_var_and_push (loc, v.get_varname (), var_expr::copy_var);
   return no_state;
 }
 
