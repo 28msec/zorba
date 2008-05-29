@@ -302,6 +302,9 @@ struct XQC_Sequence_s
   XQUERY_ERROR
   (*next)(XQC_Sequence sequence, XQC_Item item);
 
+  XQUERY_ERROR
+  (*reset)(XQC_Sequence sequence);
+
   void
   (*free)(XQC_Sequence sequence);
 
