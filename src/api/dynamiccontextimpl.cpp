@@ -77,7 +77,7 @@ DynamicContextImpl::setVariable(
     // unmarshall the string and the item
     store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
     ZorbaImpl::checkItem(lItem);
-    xqpString lString = xqpString(Unmarshaller::getInternalString(aQName));
+    xqpString lString (Unmarshaller::getInternalString(aQName));
 
     // create an item iterator to store in the dyn context
     store::ItemIterator_t lIterator = new store::ItemIterator(lItem);
