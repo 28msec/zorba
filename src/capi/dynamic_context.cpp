@@ -16,6 +16,7 @@
 #include "capi/dynamic_context.h"
 
 #include <cassert>
+#include <sstream>
 #include <zorba/zorba.h>
 
 using namespace zorba;
@@ -50,21 +51,33 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  DynamicContext::set_context_document(XQC_DynamicContext context, FILE* document)
+  DynamicContext::set_context_document(XQC_DynamicContext context, XQC_String doc_uri, FILE* document)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
+      zorba::String* lDocURI = static_cast<zorba::String*>(doc_uri->data);
+
+      std::stringstream lStream;
+      char lBuf[1024];
+      size_t lSize;
+
+      // TODO error checking
+      while ((lSize = fread(lBuf, 1, 1024, document)) > 0) {
+          lStream.write(lBuf, lSize);
+      }
+
+      lContext->setContextItemAsDocument(*lDocURI, lStream);
     DC_CATCH
   }
   
 
   XQUERY_ERROR
-  DynamicContext::set_variable_item(XQC_DynamicContext context, XQC_String qname, XQC_Item value)
+  DynamicContext::set_variable_item(XQC_DynamicContext context, XQC_String qname, XQC_Item item)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
-      zorba::String* lQName = static_cast<zorba::String*>(value->data);
-      zorba::Item* lItem = static_cast<zorba::Item*>(value->data);
+      zorba::String* lQName = static_cast<zorba::String*>(qname->data);
+      zorba::Item* lItem = static_cast<zorba::Item*>(item->data);
 
       lContext->setVariable(*lQName, *lItem);
 
@@ -84,10 +97,26 @@ namespace zorbac {
   }
   
   XQUERY_ERROR
-  DynamicContext::set_variable_document(XQC_DynamicContext context, XQC_String qname, FILE* document)
+  DynamicContext::set_variable_document(XQC_DynamicContext context, 
+                                        XQC_String var_qname,
+                                        XQC_String doc_uri, 
+                                        FILE* document)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
+      zorba::String* lVarQName = static_cast<zorba::String*>(var_qname->data);
+      zorba::String* lDocURI = static_cast<zorba::String*>(doc_uri->data);
+
+      std::stringstream lStream;
+      char lBuf[1024];
+      size_t lSize;
+
+      // TODO error checking
+      while ((lSize = fread(lBuf, 1, 1024, document)) > 0) {
+          lStream.write(lBuf, lSize);
+      }
+
+      lContext->setVariableAsDocument(*lVarQName, *lDocURI, lStream);
     DC_CATCH
   }
   
@@ -117,7 +146,7 @@ namespace zorbac {
   DynamicContext::free(XQC_DynamicContext context)
   {
     try {
-      zorba::DynamicContext* lContext = getDynamicContext(context);
+      //zorba::DynamicContext* lContext = getDynamicContext(context);
       delete context;
     } catch (ZorbaException &e) { 
       assert(false);
