@@ -133,35 +133,61 @@ ccontext_example_4(XQC_Implementation impl)
 {
   XQC_Query          lXQuery1;
   XQC_Query          lXQuery2;
-  FILE*              lOutFile = stdout;
 
   XQC_DynamicContext lContext;
-  XQC_Sequence       lSequence;
+  XQC_Sequence       lSequence1;
   XQC_String         lVarName;
+
+  XQC_Sequence       lSequence2;
+  XQC_Item           lItem;
+  XQC_String         lString;
+  const char*        lStringValue;
 
   // compile the first query and get its result sequence
   impl->compile(impl, "for $i in (1, 2, 3) return $i", 0, &lXQuery1);
 
-  lXQuery1->sequence(lXQuery1, &lSequence);
+  lXQuery1->sequence(lXQuery1, &lSequence1);
 
   // compile the sequence query
-  impl->compile(impl, "declare variable $var external; $var * $var", 0, &lXQuery2);
+  impl->compile(impl, "declare variable $var external; ($var, $var)", 0, &lXQuery2);
 
   // get the dynmamic context and set the context item
   lXQuery2->get_dynamic_context(lXQuery2, &lContext);
 
   impl->create_string(impl, "var", &lVarName);
-  lContext->set_variable_sequence(lContext, lVarName, lSequence);
+  lContext->set_variable_sequence(lContext, lVarName, lSequence1);
 
-  // execute the query
-  lXQuery2->execute(lXQuery2, lOutFile);
+  lXQuery2->sequence(lXQuery2, &lSequence2);
+
+  // create an Item and a String holder
+  impl->create_item(impl, &lItem);
+  impl->create_string(impl, 0, &lString);
+
+  // iterate over the result two times
+  while ( lSequence2->next(lSequence2, lItem) != API0025_END_OF_SEQUENCE ) {
+    lItem->string_value(lItem, lString);
+    lString->to_char(lString, &lStringValue);
+    printf("%s ", lStringValue);
+  }
+
+  lSequence2->reset(lSequence2);
+
+  while ( lSequence2->next(lSequence2, lItem) != API0025_END_OF_SEQUENCE ) {
+    lItem->string_value(lItem, lString);
+    lString->to_char(lString, &lStringValue);
+    printf("%s ", lStringValue);
+  }
 
   // free all resources
+  lString->free(lString);
+  lItem->free(lItem);
+
+  lSequence2->free(lSequence2);
   lXQuery2->free(lXQuery2);
   lContext->free(lContext);
   lVarName->free(lVarName);
 
-  lSequence->free(lSequence);
+  lSequence1->free(lSequence1);
   lXQuery1->free(lXQuery1);
 
   return 1;
