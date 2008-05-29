@@ -245,7 +245,7 @@ public:
 
 #if ZORBA_BATCHING_TYPE == 1
 
-#error "Batching not implemented with the new iterator contract.
+#error "Batching not implemented with the new iterator contract."
 
 #endif
 
