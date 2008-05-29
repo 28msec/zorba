@@ -13,55 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-#ifndef ZORBAC_ITEM_H
-#define ZORBAC_ITEM_H
+#ifndef ZORBAC_DATA_MANAGER_H
+#define ZORBAC_DATA_MANAGER_H
 
 #include <zorba/zorbac.h>
-#include <zorba/zorbastring.h>
-#include <zorba/item.h>
-#include <vector>
 
 namespace zorbac {
 
-  class Item {
+  class DataManager {
     public:
       static XQUERY_ERROR
-      create(XQC_Item_Ref item);
+      load_document(XQC_DataManager data_manager, const char* doc_uri, FILE* document);
 
       static XQUERY_ERROR
-      string_value(XQC_Item item, const char** str);
+      load_document_uri(XQC_DataManager data_manager, const char* location);
 
       static XQUERY_ERROR
-      prefix(XQC_Item item, const char** prefix);
+      get_document(XQC_DataManager data_manager, const char* document_uri, XQC_Item_Ref doc);
 
       static XQUERY_ERROR
-      ns(XQC_Item item, const char** ns);
+      delete_document(XQC_DataManager data_manager, const char* document_uri);
 
       static XQUERY_ERROR
-      localname(XQC_Item item, const char** localname);
+      create_collection(XQC_DataManager data_manager, const char* collection_uri, 
+                        XQC_Collection_Ref col);
 
       static XQUERY_ERROR
-      boolean_value(XQC_Item item, int*);
+      get_collection(XQC_DataManager data_manager, const char* collection_uri, XQC_Collection_Ref collection);
 
       static XQUERY_ERROR
-      nan(XQC_Item item, int*);
-
-      static XQUERY_ERROR
-      pos_or_neg_inf(XQC_Item item, int*);
+      delete_collection(XQC_DataManager data_manager, const char* collection_uri);
 
       static void
-      free(XQC_Item item);
+      free(XQC_DataManager data_manager);
 
       static void
-      assign_functions(XQC_Item item);
+      assign_functions(XQC_DataManager data_manager);
 
-      // buffer to store strings that we return
-      // they are valid until the item is destroyed
-      std::vector<zorba::String> theStrings;
-      zorba::Item                theItem;
-
-  }; /* class Item */
+  }; /* class DataManager */
 
 } /* namespace zorbac */
-
 #endif
+

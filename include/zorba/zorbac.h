@@ -38,11 +38,14 @@ typedef XQC_Sequence* XQC_Sequence_Ref;
 typedef struct XQC_Item_s* XQC_Item;
 typedef XQC_Item* XQC_Item_Ref;
 
-typedef struct XQC_String_s* XQC_String;
-typedef XQC_String* XQC_String_Ref;
-
 typedef struct XQC_ItemFactory_s*  XQC_ItemFactory;
 typedef XQC_ItemFactory* XQC_ItemFactory_Ref;
+
+typedef struct XQC_Collection_s*  XQC_Collection;
+typedef XQC_Collection* XQC_Collection_Ref;
+
+typedef struct XQC_DataManager_s*  XQC_DataManager;
+typedef XQC_DataManager* XQC_DataManager_Ref;
 
 typedef struct XQC_OutputStream_s* XQC_OutputStream;
 
@@ -68,17 +71,17 @@ struct XQC_Implementation_s
   (*compile_file)(XQC_Implementation implementation, FILE *query_file,
 		              XQC_StaticContext context, XQC_Query_Ref query);
 
-  void
-  (*free)(XQC_Implementation implementation);
-
   XQUERY_ERROR
   (*create_item)(XQC_Implementation implementation, XQC_Item_Ref item);
 
   XQUERY_ERROR
-  (*create_string)(XQC_Implementation implementation, const char* str, XQC_String_Ref res);
+  (*item_factory)(XQC_Implementation implementation, XQC_ItemFactory_Ref factory);  
 
   XQUERY_ERROR
-  (*item_factory)(XQC_Implementation implementation, XQC_ItemFactory_Ref factory);  
+  (*data_manager)(XQC_Implementation implementation, XQC_DataManager_Ref data_manager);
+
+  void
+  (*free)(XQC_Implementation implementation);
 
   void* data;
 };
@@ -112,31 +115,31 @@ struct XQC_StaticContext_s
   (*create_child_context)(XQC_StaticContext context, XQC_StaticContext_Ref child_context);
 
   XQUERY_ERROR
-  (*add_namespace)(XQC_StaticContext context, XQC_String prefix, XQC_String uri);
+  (*add_namespace)(XQC_StaticContext context, const char* prefix, const char* uri);
 
   XQUERY_ERROR
-  (*get_namespace_by_prefix)(XQC_StaticContext context, XQC_String prefix, XQC_String_Ref result_ns);
+  (*get_namespace_by_prefix)(XQC_StaticContext context, const char* prefix, const char** result_ns);
 
   XQUERY_ERROR
-  (*set_default_element_and_type_ns)(XQC_StaticContext context, XQC_String uri);
+  (*set_default_element_and_type_ns)(XQC_StaticContext context, const char* uri);
 
   XQUERY_ERROR
-  (*get_default_element_and_type_ns)(XQC_StaticContext context, XQC_String_Ref uri);
+  (*get_default_element_and_type_ns)(XQC_StaticContext context, const char** uri);
 
   XQUERY_ERROR
-  (*set_default_function_ns)(XQC_StaticContext context, XQC_String uri);
+  (*set_default_function_ns)(XQC_StaticContext context, const char* uri);
 
   XQUERY_ERROR
-  (*get_default_function_ns)(XQC_StaticContext context, XQC_String_Ref uri);
+  (*get_default_function_ns)(XQC_StaticContext context, const char** uri);
 
   XQUERY_ERROR
-  (*add_collation)(XQC_StaticContext context, XQC_String uri);
+  (*add_collation)(XQC_StaticContext context, const char* uri);
 
   XQUERY_ERROR
-  (*set_default_collation)(XQC_StaticContext context, XQC_String uri);
+  (*set_default_collation)(XQC_StaticContext context, const char* uri);
 
   XQUERY_ERROR
-  (*get_default_collation)(XQC_StaticContext context, XQC_String_Ref uri);
+  (*get_default_collation)(XQC_StaticContext context, const char** uri);
 
   XQUERY_ERROR
   (*set_xpath1_0_mode)(XQC_StaticContext context, xpath1_0compatib_mode_t mode );
@@ -179,10 +182,10 @@ struct XQC_StaticContext_s
                               inherit_mode_t* aInherit );
 
   XQUERY_ERROR
-  (*set_base_uri)(XQC_StaticContext context, XQC_String base_uri );
+  (*set_base_uri)(XQC_StaticContext context, const char* base_uri );
 
   XQUERY_ERROR
-  (*get_base_uri)(XQC_StaticContext context, XQC_String_Ref base_uri);
+  (*get_base_uri)(XQC_StaticContext context, const char** base_uri);
 
   void
   (*free)(XQC_StaticContext context);
@@ -196,16 +199,16 @@ struct XQC_DynamicContext_s
   (*set_context_item) (XQC_DynamicContext context, XQC_Item value);
 
   XQUERY_ERROR
-  (*set_context_document)(XQC_DynamicContext context, XQC_String doc_uri, FILE* document);
+  (*set_context_document)(XQC_DynamicContext context, const char* doc_uri, FILE* document);
 
   XQUERY_ERROR
-  (*set_variable_item)(XQC_DynamicContext context, XQC_String qname, XQC_Item value);
+  (*set_variable_item)(XQC_DynamicContext context, const char* qname, XQC_Item value);
 
   XQUERY_ERROR
-  (*set_variable_sequence)(XQC_DynamicContext context, XQC_String qname, XQC_Sequence value);
+  (*set_variable_sequence)(XQC_DynamicContext context, const char* qname, XQC_Sequence value);
 
   XQUERY_ERROR
-  (*set_variable_document)(XQC_DynamicContext context, XQC_String var_qname, XQC_String doc_uri, FILE* document);
+  (*set_variable_document)(XQC_DynamicContext context, const char* var_qname, const char* doc_uri, FILE* document);
 
   XQUERY_ERROR 
   (*set_implicit_timezone)(XQC_DynamicContext context, int timezone);
@@ -219,30 +222,19 @@ struct XQC_DynamicContext_s
   void* data;
 };
 
-struct XQC_String_s 
-{
-  XQUERY_ERROR
-  (*to_char)(XQC_String str, const char** res);
-
-  void
-  (*free)(XQC_String str);
-
-  void* data;
-};
-
 struct XQC_Item_s 
 {
   XQUERY_ERROR
-  (*string_value)(XQC_Item item, XQC_String);
+  (*string_value)(XQC_Item item, const char**);
 
   XQUERY_ERROR
-  (*prefix)(XQC_Item item, XQC_String);
+  (*prefix)(XQC_Item item, const char**);
 
   XQUERY_ERROR
-  (*ns)(XQC_Item item, XQC_String);
+  (*ns)(XQC_Item item, const char**);
 
   XQUERY_ERROR
-  (*localname)(XQC_Item item, XQC_String);
+  (*localname)(XQC_Item item, const char**);
 
   XQUERY_ERROR
   (*boolean_value)(XQC_Item item, int*);
@@ -272,17 +264,17 @@ struct XQC_OutputStream_s
 struct XQC_ItemFactory_s
 {
   XQUERY_ERROR
-  (*create_string)(XQC_ItemFactory factory, XQC_String str, XQC_Item_Ref item); 
+  (*create_string)(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item); 
 
   XQUERY_ERROR
-  (*create_anyuri)(XQC_ItemFactory factory, XQC_String str, XQC_Item_Ref item); 
+  (*create_anyuri)(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item); 
 
   XQUERY_ERROR
-  (*create_qname2)(XQC_ItemFactory factory, XQC_String uri, XQC_String localname, XQC_Item_Ref item); 
+  (*create_qname2)(XQC_ItemFactory factory, const char* uri, const char* localname, XQC_Item_Ref item); 
   
   XQUERY_ERROR
-  (*create_qname3)(XQC_ItemFactory factory, XQC_String uri, XQC_String prefix,
-                   XQC_String localname, XQC_Item_Ref item); 
+  (*create_qname3)(XQC_ItemFactory factory, const char* uri, const char* prefix,
+                   const char* localname, XQC_Item_Ref item); 
 
   XQUERY_ERROR
   (*create_boolean)(XQC_ItemFactory factory, int boolean, XQC_Item_Ref item); 
@@ -307,6 +299,57 @@ struct XQC_Sequence_s
   void* data;
 };
 
+struct XQC_Collection_s
+{
+  XQUERY_ERROR
+  (*get_uri)(XQC_Collection collection, XQC_Item_Ref uri_item);
+
+  XQUERY_ERROR
+  (*add_node)(XQC_Collection collection, XQC_Item node);
+
+  XQUERY_ERROR
+  (*delete_node)(XQC_Collection collection, XQC_Item node);
+
+  XQUERY_ERROR
+  (*add_sequence)(XQC_Collection collection, XQC_Sequence sequence);
+
+  XQUERY_ERROR
+  (*add_document)(XQC_Collection collection, FILE* doc);
+
+  void
+  (*free)(XQC_Collection collection);
+
+  void* data;
+};
+
+struct XQC_DataManager_s
+{
+  XQUERY_ERROR
+  (*load_document)(XQC_DataManager data_manager, const char* doc_uri, FILE* document);
+
+  XQUERY_ERROR
+  (*load_document_uri)(XQC_DataManager data_manager, const char* location);
+
+  XQUERY_ERROR
+  (*get_document)(XQC_DataManager data_manager, const char* document_uri, XQC_Item_Ref doc);
+
+  XQUERY_ERROR
+  (*delete_document)(XQC_DataManager data_manager, const char* document_uri);
+
+  XQUERY_ERROR
+  (*create_collection)(XQC_DataManager data_manager, const char* collection_uri, XQC_Collection_Ref col);
+
+  XQUERY_ERROR
+  (*get_collection)(XQC_DataManager data_manager, const char* collection_uri, XQC_Collection_Ref collection);
+
+  XQUERY_ERROR
+  (*delete_collection)(XQC_DataManager data_manager, const char* collection_uri);
+
+  void
+  (*free)(XQC_DataManager data_manager);
+
+  void* data;
+};
 
 #ifdef __cplusplus
 }

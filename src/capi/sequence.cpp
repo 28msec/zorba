@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <zorba/zorba.h>
+#include "capi/item.h"
 
 using namespace zorba;
 
@@ -27,9 +28,10 @@ namespace zorbac {
   {
      try {
        ResultIterator* lIter = static_cast<ResultIterator*>(seq->data);
-       Item* lInnerItem = static_cast<Item*>(item->data);
+       zorbac::Item* lInnerItem = static_cast<zorbac::Item*>(item->data);
+       lInnerItem->theStrings.clear();
  
-       if ( lIter->next(*lInnerItem) )
+       if ( lIter->next(lInnerItem->theItem) )
          return XQ_SUCCESS;
  
        return API0025_END_OF_SEQUENCE;

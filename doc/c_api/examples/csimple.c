@@ -54,13 +54,10 @@ example_2(XQC_Implementation impl)
   XQUERY_ERROR   lError = XQ_SUCCESS;
   XQC_Query      lXQuery;
   XQC_Item       lItem;
-  XQC_String     lString;
   const char*    lStringValue;
   XQC_Sequence   lResult;
 
-  // create an Item and a String holder
   impl->create_item(impl, &lItem);
-  impl->create_string(impl, 0, &lString);
 
   // compile the query and get the result as a sequence
   lError = impl->compile(impl, "for $i in 1 to 10 return $i", 0, &lXQuery);
@@ -68,13 +65,11 @@ example_2(XQC_Implementation impl)
   lXQuery->sequence(lXQuery, &lResult);
 
   while ( lResult->next(lResult, lItem) != API0025_END_OF_SEQUENCE ) {
-    lItem->string_value(lItem, lString);
-    lString->to_char(lString, &lStringValue);
+    lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);
   }
 
   // release all aquired resources
-  lString->free(lString);
   lItem->free(lItem);
   lResult->free(lResult);
   lXQuery->free(lXQuery);

@@ -59,17 +59,15 @@ namespace zorbac {
     ZORBA_XQUERY_TRY
       XQuery* lQuery = static_cast<XQuery*>(query->data);
       std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
+      std::auto_ptr<zorbac::StaticContext> lNewContext(new zorbac::StaticContext());
 
       const zorba::StaticContext* lInnerContext = lQuery->getStaticContext();
-      zorba::StaticContext_t lChildContext = lInnerContext->createChildContext();
+      lNewContext->theContext = lInnerContext->createChildContext();
 
       zorbac::StaticContext::assign_functions(lContext.get());
 
       (*context) = lContext.release();
-
-      zorba::StaticContext* lChildContextPtr = lChildContext.get();
-      lChildContextPtr->addReference();
-      (*context)->data = lChildContextPtr;
+      (*context)->data = lNewContext.release();;
 
     ZORBA_XQUERY_CATCH
   }

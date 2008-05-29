@@ -41,10 +41,10 @@ namespace zorbac {
       create_item(XQC_Implementation implementation, XQC_Item_Ref item);
 
       static XQUERY_ERROR
-      create_string(XQC_Implementation implementation, const char* str, XQC_String_Ref res);
+      item_factory(XQC_Implementation implementation, XQC_ItemFactory_Ref factory);  
 
       static XQUERY_ERROR
-      item_factory(XQC_Implementation implementation, XQC_ItemFactory_Ref factory);  
+      data_manager(XQC_Implementation implementation, XQC_DataManager_Ref data_manager);
 
       static void
       assign_functions(XQC_Implementation implementation);

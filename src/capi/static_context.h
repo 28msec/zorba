@@ -16,7 +16,11 @@
 #ifndef ZORBAC_STATIC_CONTEXT_H
 #define ZORBAC_STATIC_CONTEXT_H
 
+#include <vector>
 #include <zorba/zorbac.h>
+#include <zorba/api_shared_types.h>
+#include <zorba/zorbastring.h>
+#include <zorba/static_context.h>
 
 namespace zorbac {
 
@@ -27,31 +31,31 @@ namespace zorbac {
       create_child_context(XQC_StaticContext context, XQC_StaticContext_Ref child_context);
 
       static XQUERY_ERROR
-      add_namespace(XQC_StaticContext context, XQC_String prefix, XQC_String uri);
+      add_namespace(XQC_StaticContext context, const char* prefix, const char* uri);
 
       static XQUERY_ERROR
-      get_namespace_by_prefix(XQC_StaticContext context, XQC_String prefix, XQC_String_Ref result_ns);
+      get_namespace_by_prefix(XQC_StaticContext context, const char* prefix, const char** result_ns);
 
       static XQUERY_ERROR
-      set_default_element_and_type_ns(XQC_StaticContext context, XQC_String uri);
+      set_default_element_and_type_ns(XQC_StaticContext context, const char* uri);
 
       static XQUERY_ERROR
-      get_default_element_and_type_ns(XQC_StaticContext context, XQC_String_Ref uri);
+      get_default_element_and_type_ns(XQC_StaticContext context, const char** uri);
 
       static XQUERY_ERROR
-      set_default_function_ns(XQC_StaticContext context, XQC_String uri);
+      set_default_function_ns(XQC_StaticContext context, const char* uri);
 
       static XQUERY_ERROR
-      get_default_function_ns(XQC_StaticContext context, XQC_String_Ref uri);
+      get_default_function_ns(XQC_StaticContext context, const char** uri);
 
       static XQUERY_ERROR
-      add_collation(XQC_StaticContext context, XQC_String uri);
+      add_collation(XQC_StaticContext context, const char* uri);
 
       static XQUERY_ERROR
-      set_default_collation(XQC_StaticContext context, XQC_String uri);
+      set_default_collation(XQC_StaticContext context, const char* uri);
 
       static XQUERY_ERROR
-      get_default_collation(XQC_StaticContext context, XQC_String_Ref uri);
+      get_default_collation(XQC_StaticContext context, const char** uri);
 
       static XQUERY_ERROR
       set_xpath1_0_mode(XQC_StaticContext context, xpath1_0compatib_mode_t mode );
@@ -94,10 +98,10 @@ namespace zorbac {
                                inherit_mode_t* aInherit );
 
       static XQUERY_ERROR
-      set_base_uri(XQC_StaticContext context, XQC_String base_uri );
+      set_base_uri(XQC_StaticContext context, const char* base_uri );
 
       static XQUERY_ERROR
-      get_base_uri(XQC_StaticContext context, XQC_String_Ref base_uri);
+      get_base_uri(XQC_StaticContext context, const char** base_uri);
 
       static void
       free(XQC_StaticContext context);
@@ -105,6 +109,9 @@ namespace zorbac {
       // private use
       static void
       assign_functions(XQC_StaticContext context);
+
+      std::vector<zorba::String> theStrings;
+      zorba::StaticContext_t     theContext;
   }; /* class StaticContext */
 
 } /* namespace zorbac */

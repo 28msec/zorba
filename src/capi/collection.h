@@ -13,30 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-#ifndef ZORBAC_STRING_H
-#define ZORBAC_STRING_H
+#ifndef ZORBAC_COLLECTION_H
+#define ZORBAC_COLLECTION_H
 
 #include <zorba/zorbac.h>
 
 namespace zorbac {
 
-  class String {
+  class Collection {
+
     public:
       static XQUERY_ERROR
-      create(XQC_String_Ref str);
-
+      get_uri(XQC_Collection collection, XQC_Item_Ref uri_item);
+  
       static XQUERY_ERROR
-      to_char(XQC_String str, const char** res);
+      add_node(XQC_Collection collection, XQC_Item node);
+  
+      static XQUERY_ERROR
+      delete_node(XQC_Collection collection, XQC_Item node);
+  
+      static XQUERY_ERROR
+      add_sequence(XQC_Collection collection, XQC_Sequence sequence);
+  
+      static XQUERY_ERROR
+      add_document(XQC_Collection collection, FILE* doc);
 
       static void
-      free(XQC_String str);
+      free(XQC_Collection);
 
       static void
-      assign_functions(XQC_String str);
+      assign_functions(XQC_Collection);
 
-  }; /* class String */
+  }; /* class Collection */
 
 } /* namespace zorbac */
-
 #endif
-

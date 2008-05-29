@@ -31,14 +31,9 @@ ccontext_example_1(XQC_Implementation impl)
   XQC_ItemFactory    lFactory;
   FILE*              lOutFile = stdout;
   XQC_Item           lItem;
-  XQC_String         lString = 0;
 
-  // create string
-  impl->create_string(impl, "Zorba", &lString);
-
-  // get the ItemFactory and create a string item
   impl->item_factory(impl, &lFactory);
-  lFactory->create_string(lFactory, lString, &lItem);
+  lFactory->create_string(lFactory, "Zorba", &lItem);
 
   impl->compile(impl, "(., ., .)", 0, &lXQuery);
 
@@ -52,7 +47,6 @@ ccontext_example_1(XQC_Implementation impl)
 
   // free all resources
   lItem->free(lItem);
-  lString->free(lString);
   lXQuery->free(lXQuery);
   lFactory->free(lFactory);
 
@@ -66,21 +60,14 @@ ccontext_example_2(XQC_Implementation impl)
   XQC_Query          lXQuery;
   XQC_StaticContext  lContext;
   FILE*              lOutFile = stdout;
-  XQC_String         lBaseURI;
-  XQC_String         lCollation;
-  XQC_String         lTmpString;
   const char*        lStringValue;
-
-  impl->create_string(impl, "http://www.flworfound.org/", &lBaseURI);
-  impl->create_string(impl, "http://www.flworfound.org/collations/PRIMARY/de/DE", &lCollation);
 
   impl->create_context(impl, &lContext);
 
-  lContext->set_base_uri(lContext, lBaseURI);
-  lContext->add_collation(lContext, lCollation);
+  lContext->set_base_uri(lContext, "http://www.flworfound.org/");
+  lContext->add_collation(lContext, "http://www.flworfound.org/collations/PRIMARY/de/DE");
 
-  lContext->get_base_uri(lContext, &lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lContext->get_base_uri(lContext, &lStringValue);
   if ( strcmp (lStringValue, "http://www.flworfound.org/") != 0) return 0;
 
   impl->compile(impl, 
@@ -89,9 +76,6 @@ ccontext_example_2(XQC_Implementation impl)
 
   lError = lXQuery->execute(lXQuery, lOutFile);
 
-  lTmpString->free(lTmpString);
-  lCollation->free(lCollation);
-  lBaseURI->free(lBaseURI);
   lContext->free(lContext);
   lXQuery->free(lXQuery);
   return 1;
@@ -136,11 +120,9 @@ ccontext_example_4(XQC_Implementation impl)
 
   XQC_DynamicContext lContext;
   XQC_Sequence       lSequence1;
-  XQC_String         lVarName;
 
   XQC_Sequence       lSequence2;
   XQC_Item           lItem;
-  XQC_String         lString;
   const char*        lStringValue;
 
   // compile the first query and get its result sequence
@@ -154,38 +136,32 @@ ccontext_example_4(XQC_Implementation impl)
   // get the dynmamic context and set the context item
   lXQuery2->get_dynamic_context(lXQuery2, &lContext);
 
-  impl->create_string(impl, "var", &lVarName);
-  lContext->set_variable_sequence(lContext, lVarName, lSequence1);
+  lContext->set_variable_sequence(lContext, "var", lSequence1);
 
   lXQuery2->sequence(lXQuery2, &lSequence2);
 
   // create an Item and a String holder
   impl->create_item(impl, &lItem);
-  impl->create_string(impl, 0, &lString);
 
   // iterate over the result two times
   while ( lSequence2->next(lSequence2, lItem) != API0025_END_OF_SEQUENCE ) {
-    lItem->string_value(lItem, lString);
-    lString->to_char(lString, &lStringValue);
+    lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);
   }
 
   lSequence2->reset(lSequence2);
 
   while ( lSequence2->next(lSequence2, lItem) != API0025_END_OF_SEQUENCE ) {
-    lItem->string_value(lItem, lString);
-    lString->to_char(lString, &lStringValue);
+    lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);
   }
 
   // free all resources
-  lString->free(lString);
   lItem->free(lItem);
 
   lSequence2->free(lSequence2);
   lXQuery2->free(lXQuery2);
   lContext->free(lContext);
-  lVarName->free(lVarName);
 
   lSequence1->free(lSequence1);
   lXQuery1->free(lXQuery1);

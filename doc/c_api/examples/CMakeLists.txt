@@ -1,6 +1,7 @@
 SET (CAPI_EXAMPLES
 	csimple.c
   ccontext.c
+  cdatamanager.c
 )
 
 CREATE_TEST_SOURCELIST(cexamples

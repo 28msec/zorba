@@ -3,9 +3,10 @@ SET(CAPI_SRCS
     query.cpp
     dynamic_context.cpp
     static_context.cpp
-    string.cpp
     item.cpp
     item_factory.cpp
     sequence.cpp
     implementation.cpp
+    collection.cpp
+    data_manager.cpp
    )

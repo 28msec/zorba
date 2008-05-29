@@ -20,9 +20,10 @@
 #include <zorba/zorba.h>
 #include "capi/query.h"
 #include "capi/item.h"
-#include "capi/string.h"
 #include "capi/item_factory.h"
 #include "capi/static_context.h"
+#include "capi/data_manager.h"
+#include "capi/capi_util.h"
 #include "api/staticcontextimpl.h"
 #include "api/xqueryimpl.h"
 
@@ -37,14 +38,14 @@ namespace zorbac {
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
 
       std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
+      std::auto_ptr<zorbac::StaticContext> lInnerContext(new zorbac::StaticContext());
 
-      zorba::StaticContext_t lInnerContext = lZorba->createStaticContext();
+      lInnerContext->theContext = lZorba->createStaticContext();
 
       zorbac::StaticContext::assign_functions(lContext.get());
 
       (*context) = lContext.release();
-      (*context)->data = lInnerContext.get();
-      lInnerContext->addReference();
+      (*context)->data = lInnerContext.release();
 
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
@@ -65,7 +66,8 @@ namespace zorbac {
 
       XQuery_t lQuerySmart;
       if (context) {
-        zorba::StaticContext* lContext = static_cast<zorba::StaticContext*> (context->data);
+        zorba::StaticContext_t lContext = 
+              (static_cast<zorbac::StaticContext*> (context->data))->theContext;
 
         // reference counting in the smartptr takes care of garbage collection
         lQuerySmart = lZorba->compileQuery(query_string, lContext);
@@ -96,20 +98,15 @@ namespace zorbac {
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
 
       std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
-      std::stringstream lStream;
-      char lBuf[1024];
-      size_t lSize;
 
-      // TODO error checking
-      while ((lSize = fread(lBuf, 1, 1024, query_file)) > 0) {
-          lStream.write(lBuf, lSize);
-      }
+      std::stringstream lStream;
+      CAPIUtil::getIStream(query_file, lStream);
 
       XQuery_t lQuerySmart;
       if (context) {
-        zorba::StaticContext* lContext = static_cast<zorba::StaticContext*>(context->data);
-        zorba::StaticContext_t lContextCopy = lContext->createChildContext();
-        lQuerySmart = lZorba->compileQuery(lStream, lContextCopy);
+        zorba::StaticContext_t lContext = 
+              (static_cast<zorbac::StaticContext*> (context->data))->theContext;
+        lQuerySmart = lZorba->compileQuery(lStream, lContext);
       } else {
         lQuerySmart = lZorba->compileQuery(lStream);
       }
@@ -147,30 +144,12 @@ namespace zorbac {
   {
     try {
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
-      std::auto_ptr<zorba::Item> lInnerItem(new zorba::Item());
+      std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
 
       Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
       (*item)->data = lInnerItem.release();
-
-      return XQ_SUCCESS;
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
-    }
-  }
-
-  XQUERY_ERROR
-  Implementation::create_string(XQC_Implementation impl, const char* str, XQC_String_Ref res)
-  {
-    try {
-      std::auto_ptr<XQC_String_s>  lString(new XQC_String_s());
-      std::auto_ptr<zorba::String> lInnerString(str?new zorba::String(str):new zorba::String(""));
-
-      String::assign_functions(lString.get());
-
-      (*res) = lString.release();
-      (*res)->data = lInnerString.release();
 
       return XQ_SUCCESS;
     } catch (...) {
@@ -201,6 +180,27 @@ namespace zorbac {
     
   }
 
+  XQUERY_ERROR
+  Implementation::data_manager(XQC_Implementation impl, XQC_DataManager_Ref data_manager)
+  {
+    try {
+      std::auto_ptr<XQC_DataManager_s> lDataManager(new XQC_DataManager_s());
+
+      zorba::Zorba* lZorba = static_cast<zorba::Zorba*>(impl->data);
+      
+      DataManager::assign_functions(lDataManager.get());
+
+      (*data_manager) = lDataManager.release();
+      (*data_manager)->data = lZorba->getXmlDataManager();
+
+      return XQ_SUCCESS;
+    } catch (ZorbaException& e) {
+      return e.getErrorCode(); 
+    } catch (...) {
+      return XQP0019_INTERNAL_ERROR; 
+    }
+  }
+
   void
   Implementation::assign_functions(XQC_Implementation impl)
   {
@@ -209,8 +209,8 @@ namespace zorbac {
     impl->compile_file   = Implementation::compile_file;
     impl->free           = Implementation::free;
     impl->create_item    = Implementation::create_item;
-    impl->create_string  = Implementation::create_string;
     impl->item_factory   = Implementation::item_factory;
+    impl->data_manager   = Implementation::data_manager;
   }
 
 } /* namespace zorbac */

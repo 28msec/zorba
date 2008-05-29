@@ -34,85 +34,80 @@ using namespace zorba;
 namespace zorbac {
 
   XQUERY_ERROR
-  ItemFactory::create_string(XQC_ItemFactory factory, XQC_String str, XQC_Item_Ref item)
+  ItemFactory::create_string(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item)
   {
     ITEMFACTORY_TRY
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+      std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
 
-      String* lStringWrapper = static_cast<String*>(str->data);
-      zorba::Item lInnerItem = FF->createString(*lStringWrapper);
-      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
+      lInnerItem->theItem = FF->createString(str);
+      if (lInnerItem->theItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
-      (*item)->data = new zorba::Item(lInnerItem);
+      (*item)->data = lInnerItem.release();
 
     ITEMFACTORY_CATCH
   }
  
   XQUERY_ERROR
-  ItemFactory::create_anyuri(XQC_ItemFactory factory, XQC_String str, XQC_Item_Ref item)
+  ItemFactory::create_anyuri(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item)
   {
     ITEMFACTORY_TRY
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+      std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
 
-      String* lStringWrapper = static_cast<String*>(str->data);
-      zorba::Item lInnerItem = FF->createAnyURI(*lStringWrapper);
-      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
+      lInnerItem->theItem = FF->createAnyURI(str);
+      if (lInnerItem->theItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
-      (*item)->data = new zorba::Item(lInnerItem);
+      (*item)->data = lInnerItem.release();
 
     ITEMFACTORY_CATCH
   }
  
   XQUERY_ERROR
   ItemFactory::create_qname2(XQC_ItemFactory factory, 
-                             XQC_String uri, 
-                             XQC_String localname, 
+                             const char* uri, 
+                             const char* localname, 
                              XQC_Item_Ref item)
   {
     ITEMFACTORY_TRY
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+      std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
 
-      String* lUriWrapper = static_cast<String*>(uri->data);
-      String* lLocalnameWrapper = static_cast<String*>(localname->data);
-
-      zorba::Item lInnerItem = FF->createQName(*lUriWrapper, *lLocalnameWrapper);
-      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
+      lInnerItem->theItem = FF->createQName(uri, localname);
+      if (lInnerItem->theItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
-      (*item)->data = new zorba::Item(lInnerItem);
+      (*item)->data = lInnerItem.release();
 
     ITEMFACTORY_CATCH
   }
   
   XQUERY_ERROR
   ItemFactory::create_qname3(XQC_ItemFactory factory,
-                             XQC_String uri, 
-                             XQC_String prefix, 
-                             XQC_String localname, 
+                             const char* uri, 
+                             const char* prefix, 
+                             const char* localname, 
                              XQC_Item_Ref item)
   {
     ITEMFACTORY_TRY
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+      std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
 
-      String* lUriWrapper = static_cast<String*>(uri->data);
-      String* lPrefixWrapper = static_cast<String*>(prefix->data);
-      String* lLocalnameWrapper = static_cast<String*>(localname->data);
-
-      zorba::Item lInnerItem = FF->createQName(*lUriWrapper, *lPrefixWrapper, *lLocalnameWrapper);
-      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
+      lInnerItem->theItem = FF->createQName(uri, prefix, localname);
+      if (lInnerItem->theItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
-      (*item)->data = new zorba::Item(lInnerItem);
+      (*item)->data = lInnerItem.release();
 
     ITEMFACTORY_CATCH
   }
@@ -122,13 +117,15 @@ namespace zorbac {
   {
     ITEMFACTORY_TRY
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
-      zorba::Item lInnerItem = FF->createBoolean(boolean != 0);
-      if (lInnerItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
+      std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
+
+      lInnerItem->theItem = FF->createBoolean(boolean != 0);
+      if (lInnerItem->theItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
       Item::assign_functions(lItem.get());
 
       (*item) = lItem.release();
-      (*item)->data = new zorba::Item(lInnerItem);
+      (*item)->data = lInnerItem.release();
 
     ITEMFACTORY_CATCH
   }

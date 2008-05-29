@@ -17,7 +17,6 @@
 
 #include <cassert>
 #include <zorba/zorba.h>
-#include "capi/string.h"
 
 using namespace zorba;
 
@@ -35,163 +34,133 @@ namespace zorbac {
   zorba::StaticContext*
   getStaticContext(XQC_StaticContext context)
   {
-    return static_cast<zorba::StaticContext*>(context->data);
+    return (static_cast<zorbac::StaticContext*>(context->data))->theContext.get();
   }
 
   XQUERY_ERROR
   StaticContext::create_child_context(XQC_StaticContext context, XQC_StaticContext_Ref child_context)
   {
     SC_TRY
-      zorba::StaticContext* lOldContext = getStaticContext(context);
-
       std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
+      std::auto_ptr<zorbac::StaticContext> lInnerContext(new zorbac::StaticContext());
 
-      zorba::StaticContext_t lChildContext = lOldContext->createChildContext();
+      zorba::StaticContext* lOldContext = getStaticContext(context);
+      lInnerContext->theContext = lOldContext->createChildContext();
 
       zorbac::StaticContext::assign_functions(lContext.get());
       
       (*child_context) = lContext.release();
-      lChildContext->addReference();
-      (*child_context)->data = lChildContext.get();
+      (*child_context)->data = lInnerContext.release();
 
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::add_namespace(XQC_StaticContext context, XQC_String prefix, XQC_String uri)
+  StaticContext::add_namespace(XQC_StaticContext context, const char* prefix, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
 
-      zorba::String* lPrefix = static_cast<zorba::String*>(prefix->data);
-      zorba::String* lURI = static_cast<zorba::String*>(uri->data);
-
-      lContext->addNamespace(*lPrefix, *lURI);
+      lContext->addNamespace(prefix, uri);
 
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::get_namespace_by_prefix(XQC_StaticContext context, XQC_String prefix, 
-                                         XQC_String_Ref result_ns)
+  StaticContext::get_namespace_by_prefix(XQC_StaticContext context, const char* prefix, 
+                                         const char** result_ns)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
+      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
 
-      zorba::String* lPrefix = static_cast<zorba::String*>(prefix->data);
+      zorba::String lNS = lContext->getNamespaceURIByPrefix(prefix);
+      lWrapper->theStrings.push_back(lNS);
 
-      zorba::String lNS = lContext->getNamespaceURIByPrefix(*lPrefix);
-
-      std::auto_ptr<XQC_String_s>  lString(new XQC_String_s());
-      std::auto_ptr<zorba::String> lInnerString(new zorba::String(lNS));
-
-      String::assign_functions(lString.get());
-
-      (*result_ns) = lString.release();
-      (*result_ns)->data = lInnerString.release();
+      (*result_ns) = lNS.c_str();
 
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::set_default_element_and_type_ns(XQC_StaticContext context, XQC_String uri)
+  StaticContext::set_default_element_and_type_ns(XQC_StaticContext context, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
 
-      zorba::String* lURI = static_cast<zorba::String*>(uri->data);
-
-      lContext->setDefaultElementAndTypeNamespace(*lURI);
+      lContext->setDefaultElementAndTypeNamespace(uri);
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::get_default_element_and_type_ns(XQC_StaticContext context, XQC_String_Ref uri)
+  StaticContext::get_default_element_and_type_ns(XQC_StaticContext context, const char** uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
+      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
 
       zorba::String lURI = lContext->getDefaultElementAndTypeNamespace();
+      lWrapper->theStrings.push_back(lURI);
 
-      std::auto_ptr<XQC_String_s>  lString(new XQC_String_s());
-      std::auto_ptr<zorba::String> lInnerString(new zorba::String(lURI));
-
-      String::assign_functions(lString.get());
-
-      (*uri) = lString.release();
-      (*uri)->data = lInnerString.release();
+      (*uri) = lURI.c_str();
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::set_default_function_ns(XQC_StaticContext context, XQC_String uri)
+  StaticContext::set_default_function_ns(XQC_StaticContext context, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
 
-      zorba::String* lURI = static_cast<zorba::String*>(uri->data);
-
-      lContext->setDefaultFunctionNamespace(*lURI);
+      lContext->setDefaultFunctionNamespace(uri);
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::get_default_function_ns(XQC_StaticContext context, XQC_String_Ref uri)
+  StaticContext::get_default_function_ns(XQC_StaticContext context, const char** uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
+      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
 
       zorba::String lURI = lContext->getDefaultFunctionNamespace();
+      lWrapper->theStrings.push_back(lURI);
 
-      std::auto_ptr<XQC_String_s>  lString(new XQC_String_s());
-      std::auto_ptr<zorba::String> lInnerString(new zorba::String(lURI));
-
-      String::assign_functions(lString.get());
-
-      (*uri) = lString.release();
-      (*uri)->data = lInnerString.release();
+      (*uri) = lURI.c_str();
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::add_collation(XQC_StaticContext context, XQC_String uri)
+  StaticContext::add_collation(XQC_StaticContext context, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
 
-      zorba::String* lURI = static_cast<zorba::String*>(uri->data);
-
-      lContext->addCollation(*lURI);
+      lContext->addCollation(uri);
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::set_default_collation(XQC_StaticContext context, XQC_String uri)
+  StaticContext::set_default_collation(XQC_StaticContext context, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
 
-      zorba::String* lURI = static_cast<zorba::String*>(uri->data);
-
-      lContext->setDefaultCollation(*lURI);
+      lContext->setDefaultCollation(uri);
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::get_default_collation(XQC_StaticContext context, XQC_String_Ref uri)
+  StaticContext::get_default_collation(XQC_StaticContext context, const char** uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
+      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
 
       zorba::String lURI = lContext->getDefaultCollation();
+      lWrapper->theStrings.push_back(lURI);
 
-      std::auto_ptr<XQC_String_s>  lString(new XQC_String_s());
-      std::auto_ptr<zorba::String> lInnerString(new zorba::String(lURI));
-
-      String::assign_functions(lString.get());
-
-      (*uri) = lString.release();
-      (*uri)->data = lInnerString.release();
+      (*uri) = lURI.c_str();
     SC_CATCH
   }
 
@@ -322,32 +291,26 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_base_uri(XQC_StaticContext context, XQC_String base_uri )
+  StaticContext::set_base_uri(XQC_StaticContext context, const char* base_uri )
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
 
-      zorba::String* lBaseURI = static_cast<zorba::String*>(base_uri->data);
-
-      lContext->setBaseURI(*lBaseURI);
+      lContext->setBaseURI(base_uri);
     SC_CATCH
   }
 
   XQUERY_ERROR
-  StaticContext::get_base_uri(XQC_StaticContext context, XQC_String_Ref base_uri)
+  StaticContext::get_base_uri(XQC_StaticContext context, const char** base_uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
+      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
 
       zorba::String lBaseURI = lContext->getBaseURI();
+      lWrapper->theStrings.push_back(lBaseURI);
 
-      std::auto_ptr<XQC_String_s>  lString(new XQC_String_s());
-      std::auto_ptr<zorba::String> lInnerString(new zorba::String(lBaseURI));
-
-      String::assign_functions(lString.get());
-
-      (*base_uri) = lString.release();
-      (*base_uri)->data = lInnerString.release();
+      (*base_uri) = lBaseURI.c_str();
     SC_CATCH
   }
 
@@ -355,10 +318,9 @@ namespace zorbac {
   StaticContext::free(XQC_StaticContext context)
   {
     try {
-      zorba::StaticContext* lContext = getStaticContext(context);
-      lContext->removeReference();
+      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
+      delete lWrapper;
       delete context;
-
     } catch (ZorbaException &e) { 
       assert(false);
     } catch (...) { 

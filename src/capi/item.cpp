@@ -33,46 +33,55 @@ using namespace zorba;
 namespace zorbac {
 
   XQUERY_ERROR
-  Item::string_value(XQC_Item item, XQC_String str)
+  Item::string_value(XQC_Item item, const char** str)
   {
     ITEM_TRY
-      zorba::Item* lInnerItem = static_cast<zorba::Item*>(item->data);
-      String* lInnerString = static_cast<String*>(str->data);
+      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
 
-      *lInnerString = lInnerItem->getStringValue();
+      zorba::String lString = lItem->theItem.getStringValue();
+      lItem->theStrings.push_back(lString);
+
+      (*str) = lString.c_str();
+
     ITEM_CATCH
   }
 
   XQUERY_ERROR
-  Item::prefix(XQC_Item item, XQC_String str)
+  Item::prefix(XQC_Item item, const char** str)
   {
     ITEM_TRY
-      zorba::Item* lInnerItem = static_cast<zorba::Item*>(item->data);
-      String* lInnerString = static_cast<String*>(str->data);
+      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
 
-      *lInnerString = lInnerItem->getPrefix();
+      zorba::String lString = lItem->theItem.getPrefix();
+      lItem->theStrings.push_back(lString);
+
+      (*str) = lString.c_str();
     ITEM_CATCH
   }
 
   XQUERY_ERROR
-  Item::ns(XQC_Item item, XQC_String str)
+  Item::ns(XQC_Item item, const char** str)
   {
     ITEM_TRY
-      zorba::Item* lInnerItem = static_cast<zorba::Item*>(item->data);
-      String* lInnerString = static_cast<String*>(str->data);
+      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
 
-      *lInnerString = lInnerItem->getNamespace();
+      zorba::String lString = lItem->theItem.getNamespace();
+      lItem->theStrings.push_back(lString);
+
+      (*str) = lString.c_str();
     ITEM_CATCH
   }
 
   XQUERY_ERROR
-  Item::localname(XQC_Item item, XQC_String str)
+  Item::localname(XQC_Item item, const char** str)
   {
     ITEM_TRY
-      zorba::Item* lInnerItem = static_cast<zorba::Item*>(item->data);
-      String* lInnerString = static_cast<String*>(str->data);
+      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
 
-      *lInnerString = lInnerItem->getLocalName();
+      zorba::String lString = lItem->theItem.getLocalName();
+      lItem->theStrings.push_back(lString);
+
+      (*str) = lString.c_str();
     ITEM_CATCH
   }
 
@@ -80,9 +89,9 @@ namespace zorbac {
   Item::boolean_value(XQC_Item item, int* res)
   {
     ITEM_TRY
-      zorba::Item* lInnerItem = static_cast<zorba::Item*>(item->data);
+      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
 
-      (*res) = lInnerItem->getBooleanValue()?1:0;
+      (*res) = lItem->theItem.getBooleanValue()?1:0;
     ITEM_CATCH
   }
 
@@ -90,8 +99,8 @@ namespace zorbac {
   Item::nan(XQC_Item item, int* res)
   {
     ITEM_TRY
-      zorba::Item* lInnerItem = static_cast<zorba::Item*>(item->data);
-      (*res) = lInnerItem->isNaN()?1:0;
+      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
+      (*res) = lItem->theItem.isNaN()?1:0;
     ITEM_CATCH
   }
 
@@ -99,8 +108,8 @@ namespace zorbac {
   Item::pos_or_neg_inf(XQC_Item item, int* res)
   {
     ITEM_TRY
-      zorba::Item* lInnerItem = static_cast<zorba::Item*>(item->data);
-      (*res) = lInnerItem->isPosOrNegInf()?1:0;
+      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
+      (*res) = lItem->theItem.isPosOrNegInf()?1:0;
     ITEM_CATCH
   }
 
@@ -108,8 +117,8 @@ namespace zorbac {
   Item::free(XQC_Item item)
   {
     try {
-      zorba::Item* lInnerItem = static_cast<zorba::Item*>(item->data);
-      delete lInnerItem;
+      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
+      delete lItem;
       delete item;
     } catch (ZorbaException &e) {
       assert(false);
