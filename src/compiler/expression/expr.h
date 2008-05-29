@@ -928,6 +928,8 @@ public:
 
 
 class ft_select_expr : public expr {
+public:
+  ft_select_expr (const QueryLoc &loc) : expr (loc) {}
 };
 
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
