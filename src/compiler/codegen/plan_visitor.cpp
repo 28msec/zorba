@@ -41,6 +41,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
+#include "runtime/validate/validate.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/update/update.h"
@@ -1006,6 +1007,8 @@ bool begin_visit(validate_expr& v)
 void end_visit(validate_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+  PlanIter_t lChild = pop_itstack();
+  itstack.push (new ValidateIterator (qloc, lChild, v.get_valmode () == ParseConstants::val_lax));
 }
 
 bool begin_visit(extension_expr& v)
