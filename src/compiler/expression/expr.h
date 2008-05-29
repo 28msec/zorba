@@ -927,11 +927,10 @@ public:
 };
 
 
-
-
+class ft_select_expr : public expr {
+};
 
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
-class ft_select_expr;
 
 /*______________________________________________________________________
 | ::= RangeExpr ("ftcontains" FTSelection FTIgnoreOption?)?

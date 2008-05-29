@@ -35,9 +35,7 @@ public:
   EXPR_VISITOR_METHODS (expr);
   EXPR_VISITOR_METHODS (sequential_expr);
   EXPR_VISITOR_METHODS (var_expr);
-  EXPR_VISITOR_METHODS (order_modifier);
   EXPR_VISITOR_METHODS (flwor_expr);
-  EXPR_VISITOR_METHODS (case_clause);
   EXPR_VISITOR_METHODS (promote_expr);
   EXPR_VISITOR_METHODS (trycatch_expr);
   EXPR_VISITOR_METHODS (eval_expr);

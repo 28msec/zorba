@@ -25,6 +25,8 @@
 
 #include "common/common.h"
 #include "util/properties.h"
+#include "util/stl_extra.h"
+#include "util/tracer.h"
 
 #include "compiler/translator/translator.h"
 #include "compiler/api/compilercb.h"
@@ -46,11 +48,12 @@
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/parser/util.h"
-#include "util/tracer.h"
+
 #include "system/globalenv.h"
+
 #include "functions/signature.h"
 #include "functions/external_function_adapters.h"
-#include "util/stl_extra.h"
+
 #include "types/delegating_typemanager.h"
 #include "types/schema/schema.h"
 
@@ -4245,7 +4248,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   flwor_expr* flworExpr = f.dyn_cast<flwor_expr>();
   ZORBA_ASSERT(flworExpr != NULL);
 
-  QueryLoc loc = predExpr->get_loc();
+  const QueryLoc& loc = predExpr->get_loc();
 
   rchandle<forlet_clause> lcPred = wrap_in_letclause(predExpr);
   var_expr* predvar = lcPred->get_var().getp();
@@ -4544,7 +4547,7 @@ void *begin_visit(const TypeswitchExpr& v)
        it!=clauses->rend(); ++it)
   {
     const CaseClause *e_p = &**it;
-    QueryLoc loc = e_p->get_location ();
+    const QueryLoc &loc = e_p->get_location ();
     string name = e_p->get_varname ();
     var_expr_t var;
     if (! name.empty ()) {
