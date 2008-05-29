@@ -651,31 +651,31 @@ namespace zorba
       }
 
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        if ( result->getDoubleValue().isPos() )
+        if ( result->getDoubleValue().isPos() ) {
           if ( !TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
             GENV_ITEMFACTORY->createDouble (result, result->getDoubleValue() );
-          else ;
+        }
         else
           GENV_ITEMFACTORY->createDouble (result, -result->getDoubleValue() );
       else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        if ( result->getFloatValue().isPos() )
+        if ( result->getFloatValue().isPos() ) {
           if ( !TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
             GENV_ITEMFACTORY->createFloat (result, result->getFloatValue() );
-          else ;
+        }
         else
           GENV_ITEMFACTORY->createFloat (result, -result->getFloatValue() );
       else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
-        if ( result->getIntegerValue() >= xqp_decimal::zero() )
+        if ( result->getIntegerValue() >= xqp_decimal::zero() ) {
           if ( !TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
             GENV_ITEMFACTORY->createInteger (result, result->getIntegerValue() );
-          else ;
+        }
         else
           GENV_ITEMFACTORY->createInteger (result, -result->getIntegerValue() );
       else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-        if ( result->getDecimalValue() >= xqp_decimal::zero() )
+        if ( result->getDecimalValue() >= xqp_decimal::zero() ) {
           if ( !TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
             GENV_ITEMFACTORY->createDecimal (result, result->getDecimalValue() );
-          else ;
+        }
         else
           GENV_ITEMFACTORY->createDecimal (result, -result->getDecimalValue() );
       else
