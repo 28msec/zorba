@@ -18,6 +18,7 @@
 
 #include "capi/string.h"
 
+#include <cassert>
 #include <zorba/zorba.h>
 
 using namespace zorba;

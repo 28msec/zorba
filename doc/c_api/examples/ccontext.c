@@ -102,19 +102,71 @@ ccontext_example_3(XQC_Implementation impl)
 {
   XQUERY_ERROR       lError = XQ_SUCCESS;
   XQC_Query          lXQuery;
-  XQC_StaticContext  lContext;
+  XQC_StaticContext  lProvidedContext;
+  XQC_StaticContext  lQueryContext;
   FILE*              lOutFile = stdout;
+  ordering_mode_t    lOrderingMode;
 
-  impl->compile(impl, "declare ordering unordered; 1", 0, &lXQuery);
+  impl->create_context(impl, &lProvidedContext);
 
-  lXQuery->get_static_context(lXQuery, &lContext);
-
+  // get the ordering mode and print it
+  lProvidedContext->get_ordering_mode(lProvidedContext, &lOrderingMode);
+  printf("%s %i", "ordering mode ", lOrderingMode);
+  
+  // compile and execute the query and get the new static context after executing the query
+  impl->compile(impl, "declare ordering unordered; 1", lProvidedContext, &lXQuery);
   lError = lXQuery->execute(lXQuery, lOutFile);
+  lXQuery->get_static_context(lXQuery, &lQueryContext);
 
-  lContext->free(lContext);
+  // get the ordering mode and print it
+  lProvidedContext->get_ordering_mode(lQueryContext, &lOrderingMode);
+  printf("%s %i", "ordering mode ", lOrderingMode);
+
+  lProvidedContext->free(lProvidedContext);
+  lQueryContext->free(lQueryContext);
   lXQuery->free(lXQuery);
   return 1;
 }
+
+int
+ccontext_example_4(XQC_Implementation impl)
+{
+  XQC_Query          lXQuery1;
+  XQC_Query          lXQuery2;
+  FILE*              lOutFile = stdout;
+
+  XQC_DynamicContext lContext;
+  XQC_Sequence       lSequence;
+  XQC_String         lVarName;
+
+  // compile the first query and get its result sequence
+  impl->compile(impl, "for $i in (1, 2, 3) return $i", 0, &lXQuery1);
+
+  lXQuery1->sequence(lXQuery1, &lSequence);
+
+  // compile the sequence query
+  impl->compile(impl, "declare variable $var external; $var * $var", 0, &lXQuery2);
+
+  // get the dynmamic context and set the context item
+  lXQuery2->get_dynamic_context(lXQuery2, &lContext);
+
+  impl->create_string(impl, "var", &lVarName);
+  lContext->set_variable_sequence(lContext, lVarName, lSequence);
+
+  // execute the query
+  lXQuery2->execute(lXQuery2, lOutFile);
+
+  // free all resources
+  lXQuery2->free(lXQuery2);
+  lContext->free(lContext);
+  lVarName->free(lVarName);
+
+  lSequence->free(lSequence);
+  lXQuery1->free(lXQuery1);
+
+  return 1;
+}
+
 int
 ccontext(int argc, char** argv)
 {
@@ -139,7 +191,13 @@ ccontext(int argc, char** argv)
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
-  impl->free(impl);
+#if 0
+  printf("executing C example 4\n");
+  res = ccontext_example_4(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
+#endif
 
+  impl->free(impl);
   return 0;
 }

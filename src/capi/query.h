@@ -33,6 +33,9 @@ namespace zorbac {
       execute(XQC_Query query, FILE*);
 
 	    static XQUERY_ERROR 
+      apply_updates(XQC_Query query);
+
+	    static XQUERY_ERROR 
       sequence(XQC_Query query, XQC_Sequence_Ref sequence);
 
 	    static void 

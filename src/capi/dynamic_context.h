@@ -25,8 +25,23 @@ namespace zorbac {
 	    static XQUERY_ERROR 
       set_context_item (XQC_DynamicContext context, XQC_Item value);
 
-	    static XQUERY_ERROR 
-      set_context_sequence(XQC_DynamicContext context, XQC_Sequence value);
+      static XQUERY_ERROR
+      set_context_document(XQC_DynamicContext context, FILE* document);
+
+      static XQUERY_ERROR
+      set_variable_item(XQC_DynamicContext context, XQC_String qname, XQC_Item value);
+      
+      static XQUERY_ERROR
+      set_variable_sequence(XQC_DynamicContext context, XQC_String qname, XQC_Sequence value);
+      
+      static XQUERY_ERROR
+      set_variable_document(XQC_DynamicContext context, XQC_String qname, FILE* document);
+      
+      static XQUERY_ERROR 
+      set_implicit_timezone(XQC_DynamicContext context, int timezone);
+      
+      static XQUERY_ERROR
+      set_default_collection(XQC_DynamicContext context, XQC_Item collection_uri);
 
       static void
       free(XQC_DynamicContext context);

@@ -33,17 +33,9 @@ using namespace zorba;
 namespace zorbac {
 
   zorba::StaticContext*
-  getWriteableStaticContext(XQC_StaticContext context)
-  {
-    zorba::StaticContext* lCtx = static_cast<zorba::StaticContext*>(context->data);
-    return lCtx;
-  }
-
-  zorba::StaticContext*
   getStaticContext(XQC_StaticContext context)
   {
-    zorba::StaticContext* lCtx = static_cast<zorba::StaticContext*>(context->data);
-    return lCtx;
+    return static_cast<zorba::StaticContext*>(context->data);
   }
 
   XQUERY_ERROR
@@ -69,7 +61,7 @@ namespace zorbac {
   StaticContext::add_namespace(XQC_StaticContext context, XQC_String prefix, XQC_String uri)
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       zorba::String* lPrefix = static_cast<zorba::String*>(prefix->data);
       zorba::String* lURI = static_cast<zorba::String*>(uri->data);
@@ -105,7 +97,7 @@ namespace zorbac {
   StaticContext::set_default_element_and_type_ns(XQC_StaticContext context, XQC_String uri)
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       zorba::String* lURI = static_cast<zorba::String*>(uri->data);
 
@@ -135,7 +127,7 @@ namespace zorbac {
   StaticContext::set_default_function_ns(XQC_StaticContext context, XQC_String uri)
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       zorba::String* lURI = static_cast<zorba::String*>(uri->data);
 
@@ -165,7 +157,7 @@ namespace zorbac {
   StaticContext::add_collation(XQC_StaticContext context, XQC_String uri)
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       zorba::String* lURI = static_cast<zorba::String*>(uri->data);
 
@@ -177,7 +169,7 @@ namespace zorbac {
   StaticContext::set_default_collation(XQC_StaticContext context, XQC_String uri)
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       zorba::String* lURI = static_cast<zorba::String*>(uri->data);
 
@@ -207,7 +199,7 @@ namespace zorbac {
   StaticContext::set_xpath1_0_mode(XQC_StaticContext context, xpath1_0compatib_mode_t mode )
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       lContext->setXPath1_0CompatibMode(mode);
     SC_CATCH
@@ -227,7 +219,7 @@ namespace zorbac {
   StaticContext::set_construction_mode(XQC_StaticContext context, construction_mode_t mode )
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       lContext->setConstructionMode(mode);
     SC_CATCH
@@ -247,7 +239,7 @@ namespace zorbac {
   StaticContext::set_ordering_mode(XQC_StaticContext context, ordering_mode_t mode )
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       lContext->setOrderingMode(mode);
     SC_CATCH
@@ -268,7 +260,7 @@ namespace zorbac {
                                                    order_empty_mode_t mode )
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       lContext->setDefaultOrderForEmptySequences(mode);
     SC_CATCH
@@ -289,7 +281,7 @@ namespace zorbac {
   StaticContext::set_boundary_space_policy(XQC_StaticContext context, boundary_space_mode_t mode)
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       lContext->setBoundarySpacePolicy(mode);
     SC_CATCH
@@ -311,7 +303,7 @@ namespace zorbac {
                                           inherit_mode_t inherit )
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       lContext->setCopyNamespacesMode(preserve, inherit);
     SC_CATCH
@@ -333,7 +325,7 @@ namespace zorbac {
   StaticContext::set_base_uri(XQC_StaticContext context, XQC_String base_uri )
   {
     SC_TRY
-      zorba::StaticContext* lContext = getWriteableStaticContext(context);
+      zorba::StaticContext* lContext = getStaticContext(context);
 
       zorba::String* lBaseURI = static_cast<zorba::String*>(base_uri->data);
 

@@ -57,11 +57,15 @@ namespace zorbac {
       std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
 
       const zorba::StaticContext* lInnerContext = lQuery->getStaticContext();
+      zorba::StaticContext_t lChildContext = lInnerContext->createChildContext();
 
       zorbac::StaticContext::assign_functions(lContext.get());
 
       (*context) = lContext.release();
-      (*context)->data = const_cast<void*>(static_cast<const void*>(lInnerContext));
+
+      zorba::StaticContext* lChildContextPtr = lChildContext.get();
+      lChildContextPtr->addReference();
+      (*context)->data = lChildContextPtr;
 
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
@@ -97,6 +101,22 @@ namespace zorbac {
     }
   }
 
+	XQUERY_ERROR 
+  Query::apply_updates(XQC_Query query)
+  {
+    try {
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
+
+      lQuery->applyUpdates();
+
+      return XQ_SUCCESS;
+    } catch (ZorbaException& e) {
+      return e.getErrorCode();
+    } catch (...) {
+      return XQP0019_INTERNAL_ERROR;
+    }
+  }
+
   XQUERY_ERROR 
   Query::sequence(XQC_Query query, XQC_Sequence_Ref sequence)
   {
@@ -111,8 +131,9 @@ namespace zorbac {
       Sequence::assign_functions(lSeq.get());
 
       (*sequence) = lSeq.release();
-      (*sequence)->data = lResultSmart.get();
-      lResultSmart->addReference();
+      zorba::ResultIterator* lIter = lResultSmart.get();
+      lIter->addReference();
+      (*sequence)->data = lIter;
 
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
@@ -142,6 +163,7 @@ namespace zorbac {
     query->get_dynamic_context   = Query::get_dynamic_context;
     query->get_static_context    = Query::get_static_context;
     query->execute               = Query::execute;
+    query->apply_updates         = Query::apply_updates;
     query->sequence              = Query::sequence;
     query->free                  = Query::free;
   }

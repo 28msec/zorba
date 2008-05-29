@@ -95,6 +95,9 @@ struct XQC_Query_s
   (*execute)(XQC_Query query, FILE*);
 
 	XQUERY_ERROR 
+  (*apply_updates)(XQC_Query query);
+
+	XQUERY_ERROR 
   (*sequence)(XQC_Query query, XQC_Sequence_Ref sequence);
 
   void
@@ -193,8 +196,26 @@ struct XQC_DynamicContext_s
 	XQUERY_ERROR 
   (*set_context_item) (XQC_DynamicContext context, XQC_Item value);
 
-	XQUERY_ERROR 
-  (*set_context_sequence)(XQC_DynamicContext context, XQC_Sequence value);
+  XQUERY_ERROR
+  (*set_context_document)(XQC_DynamicContext context, FILE* document);
+
+  XQUERY_ERROR
+  (*set_variable_item)(XQC_DynamicContext context, XQC_String qname, XQC_Item value);
+
+  XQUERY_ERROR
+  (*set_variable_sequence)(XQC_DynamicContext context, XQC_String qname, XQC_Sequence value);
+
+  XQUERY_ERROR
+  (*set_variable_document)(XQC_DynamicContext context, XQC_String qname, FILE* document);
+
+  XQUERY_ERROR 
+  (*set_implicit_timezone)(XQC_DynamicContext context, int timezone);
+
+  XQUERY_ERROR
+  (*set_default_collection)(XQC_DynamicContext context, XQC_Item collection_uri);
+
+  void
+  (*free)(XQC_DynamicContext context);
 
   void* data;
 };
