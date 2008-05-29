@@ -77,7 +77,8 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
     QueryLoc loc;
 
     rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
-    assert (mm != NULL);
+    if (mm == NULL)
+      ZORBA_ERROR (XPST0003);
     rchandle<Prolog> prolog = mm->get_prolog ();
     if (prolog == NULL) {
       prolog = new Prolog (loc, NULL, NULL);
