@@ -20,7 +20,7 @@
 
 namespace zorbac {
 
-  class Query : public XQC_Query_s
+  class Query
   {
     public:
 	    static XQUERY_ERROR

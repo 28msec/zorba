@@ -25,12 +25,22 @@
 
 using namespace zorba;
 
+#define ZORBA_XQUERY_TRY try {
+
+#define ZORBA_XQUERY_CATCH      \
+     return XQ_SUCCESS;             \
+   } catch (ZorbaException& e) {  \
+     return e.getErrorCode();       \
+   } catch (...) {                \
+     return XQP0019_INTERNAL_ERROR; \
+   }
+
 namespace zorbac {
       
   XQUERY_ERROR
   Query::get_dynamic_context(XQC_Query query, XQC_DynamicContext_Ref context)
   {
-    try {
+    ZORBA_XQUERY_TRY
       XQuery* lQuery = static_cast<XQuery*>(query->data);
       std::auto_ptr<XQC_DynamicContext_s> lContext(new XQC_DynamicContext_s());
 
@@ -39,20 +49,14 @@ namespace zorbac {
       DynamicContext::assign_functions(lContext.get());
 
       (*context) = lContext.release();
-
-      return XQ_SUCCESS;
-    } catch (ZorbaException& e) {
-      return e.getErrorCode();
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
-    }
+    ZORBA_XQUERY_CATCH
   }
 
 
   XQUERY_ERROR
   Query::get_static_context(XQC_Query query, XQC_StaticContext_Ref context)
   {
-    try {
+    ZORBA_XQUERY_TRY
       XQuery* lQuery = static_cast<XQuery*>(query->data);
       std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
 
@@ -67,23 +71,18 @@ namespace zorbac {
       lChildContextPtr->addReference();
       (*context)->data = lChildContextPtr;
 
-      return XQ_SUCCESS;
-    } catch (ZorbaException& e) {
-      return e.getErrorCode();
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
-    }
+    ZORBA_XQUERY_CATCH
   }
 
   XQUERY_ERROR 
   Query::execute(XQC_Query query, FILE* file)
   {
-    XQuery* lQuery = static_cast<XQuery*>(query->data);
+    ZORBA_XQUERY_TRY
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
 
-    std::stringstream lStream;
-    char lBuf[1024];
+      std::stringstream lStream;
+      char lBuf[1024];
 
-    try {
       // TODO this is eager at the moment, we need a pull serializer
       lStream << lQuery; 
       lStream.seekg(0);
@@ -93,38 +92,28 @@ namespace zorbac {
         lBuf[lRes] = 0;
         fprintf (file, "%s", lBuf);
       }
-      return XQ_SUCCESS;
-    } catch (ZorbaException& e) {
-      return e.getErrorCode();
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
-    }
+    ZORBA_XQUERY_CATCH
   }
 
 	XQUERY_ERROR 
   Query::apply_updates(XQC_Query query)
   {
-    try {
+    ZORBA_XQUERY_TRY
       XQuery* lQuery = static_cast<XQuery*>(query->data);
 
       lQuery->applyUpdates();
 
-      return XQ_SUCCESS;
-    } catch (ZorbaException& e) {
-      return e.getErrorCode();
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
-    }
+    ZORBA_XQUERY_CATCH
   }
 
   XQUERY_ERROR 
   Query::sequence(XQC_Query query, XQC_Sequence_Ref sequence)
   {
-    XQuery* lQuery = static_cast<XQuery*>(query->data);
+    ZORBA_XQUERY_TRY
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
 
-    std::auto_ptr<XQC_Sequence_s> lSeq(new XQC_Sequence_s());
+      std::auto_ptr<XQC_Sequence_s> lSeq(new XQC_Sequence_s());
 
-    try {
       ResultIterator_t lResultSmart = lQuery->iterator();
       lResultSmart->open();
 
@@ -135,12 +124,7 @@ namespace zorbac {
       lIter->addReference();
       (*sequence)->data = lIter;
 
-      return XQ_SUCCESS;
-    } catch (ZorbaException& e) {
-      return e.getErrorCode();
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR; 
-    }
+    ZORBA_XQUERY_CATCH
   }
 
   void

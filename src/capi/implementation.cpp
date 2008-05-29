@@ -78,7 +78,8 @@ namespace zorbac {
       (*query)   = lQuery.release();
       // get and reset never throw
       (*query)->data = lQuerySmart.get(); 
-      lQuerySmart->addReference();
+      lQuerySmart->addReference(); 
+
       return XQ_SUCCESS;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
