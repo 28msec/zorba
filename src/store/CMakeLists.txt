@@ -13,9 +13,8 @@
 # limitations under the License.
 SET(STORE_SRCS
     api/store_consts.cpp
-    api/update_consts.cpp
-    util/mutex.cpp
-    util/latch.cpp)
+    api/update_consts.cpp)
+
 
 IF(ZORBA_MINIMAL_STORE)
 LIST(APPEND STORE_SRCS 

@@ -15,6 +15,9 @@
  */
 #include <zorba/item.h>
 
+#include "zorbaerrors/error_manager.h"
+#include "zorbautils/latch.h"
+
 #include "system/globalenv.h"
 
 #include "api/resultiteratorimpl.h"
@@ -23,10 +26,9 @@
 
 #include "store/api/item.h"
 #include "store/api/store.h"
-#include "store/util/latch.h"
 
 #include "runtime/api/plan_wrapper.h"
-#include "zorbaerrors/error_manager.h"
+
 
 namespace zorba {
 

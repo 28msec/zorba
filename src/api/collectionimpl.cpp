@@ -20,15 +20,17 @@
 #include "api/zorbaimpl.h"
 
 #include <zorba/exception.h>
+
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbautils/latch.h"
+
 #include "api/unmarshaller.h"
 
 #include "system/globalenv.h"
 
 #include "runtime/api/plan_wrapper.h"
 
-#include "store/util/latch.h"
 #include "store/api/collection.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
@@ -68,7 +70,7 @@ CollectionImpl::addNode(const Item& aNode)
 
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
+    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
 
     theCollection->addToCollection(lItem);
     return true;
@@ -85,7 +87,7 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
     PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
 
-    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
+    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
 
     theCollection->addToCollection(&*lPlan);
     return true;
@@ -112,7 +114,7 @@ CollectionImpl::deleteNode(const Item& aNode)
   ZORBA_TRY
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
+    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
 
     theCollection->removeFromCollection(lItem);
     return true;

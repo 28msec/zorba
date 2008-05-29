@@ -18,9 +18,11 @@
 
 #include <zorba/dynamic_context.h>
 
+#include "zorbautils/mutex.h"
+
 #include "common/shared_types.h"
 #include "api/xqueryimpl.h"
-#include "store/util/mutex.h"
+
 
 namespace zorba {
 
@@ -63,7 +65,7 @@ protected:
 
   static_context            * theStaticContext;
 
-  SYNC_CODE(store::Mutex    * theCloningMutexp;)
+  SYNC_CODE(Mutex           * theCloningMutexp;)
 
 protected:
   DynamicContextImpl(const XQueryImpl* aQuery);

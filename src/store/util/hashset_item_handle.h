@@ -46,9 +46,9 @@ public:
   }
 
 public:
- ItemHandleHashSet(ulong size, bool sync) 
+  ItemHandleHashSet(ulong size, bool sync) 
     :
-  HashSet<rchandle<Item>, ItemHandleHashSet>(size, sync, false)
+    HashSet<rchandle<Item>, ItemHandleHashSet>(size, sync, false)
   {
   }
 };

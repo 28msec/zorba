@@ -17,14 +17,13 @@
 #define ZORBA_STORE_UTIL_HASHMAP
 
 #include "zorbaerrors/fatal.h"
-#include "util/checked_vector.h"
+#include "zorbautils/checked_vector.h"
+#include "zorbautils/mutex.h"
 
-#include "common/shared_types.h"
-
-#include "store/util/mutex.h"
+#include "common/config/platform.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { 
 
 
 class DummyCompareParam
@@ -677,7 +676,7 @@ template <class T, class E, class C, class V>
 const double HashMap<T, E, C, V>::DEFAULT_LOAD_FACTOR = 0.6;
 
 
-} // namespace store
+
 } // namespace zorba
 
 #endif

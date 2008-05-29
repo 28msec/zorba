@@ -26,6 +26,7 @@
 
 #include <zorbatypes/URI.h>
 
+#include "zorbautils/latch.h"
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 
@@ -50,7 +51,7 @@
 
 #include "store/api/item.h"
 #include "store/api/store.h"
-#include "store/util/latch.h"
+
 
 namespace zorba {
 
@@ -103,7 +104,7 @@ XQueryImpl::close()
 {
   ZORBA_TRY
 
-    SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
 
     checkNotClosed();
 
@@ -145,7 +146,7 @@ XQueryImpl::clone() const
 {
   ZORBA_TRY
 
-    SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
 
     checkNotClosed();
     checkCompiled();
@@ -180,7 +181,7 @@ XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
 {
   ZORBA_TRY
 
-    SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
 
     checkNotClosed();
         
@@ -200,7 +201,7 @@ XQueryImpl::resetErrorHandler()
 {
   ZORBA_TRY
 
-    SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
 
     checkNotClosed();
 
@@ -437,7 +438,7 @@ XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
   // let's compile
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName); 
 
-  SYNC_CODE(store::AutoMutex lock(&theCloningMutex);)
+  SYNC_CODE(AutoMutex lock(&theCloningMutex);)
 
   thePlan = new PlanProxy(planRoot);
 }
@@ -458,7 +459,7 @@ XQueryImpl::serialize(std::ostream& os, const XQuery::SerializerOptions_t& opt)
     serializer lSerializer(theErrorManager);
     setSerializationParameters(&lSerializer, opt);
     
-    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::READ);)
+    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
 
     try 
     {
@@ -485,7 +486,7 @@ XQueryImpl::applyUpdates()
 
     PlanWrapper_t lPlan = generateWrapper();
 
-    SYNC_CODE(store::AutoLatch(GENV_STORE.getGlobalLock(), store::Latch::WRITE);)
+    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
 
     store::Item_t pul;
     try 

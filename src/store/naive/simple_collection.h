@@ -17,11 +17,14 @@
 #define ZORBA_STORE_SIMPLE_COLLECTION
 
 #include <set>
+
+#include "zorbautils/latch.h"
+
 #include "common/common.h"
 
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
-#include "store/util/latch.h"
+
 
 namespace zorba { namespace store {
 

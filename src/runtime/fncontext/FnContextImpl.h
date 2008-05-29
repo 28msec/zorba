@@ -62,8 +62,11 @@ class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState> {
   checked_vector<xqtref_t> vartypes;
 
 public:
-  EvalIterator(const QueryLoc& loc, checked_vector<store::Item_t> varnames_, checked_vector<xqtref_t> vartypes_,
-               std::vector<PlanIter_t>& aChildren) :
+  EvalIterator(const QueryLoc& loc,
+               checked_vector<store::Item_t> varnames_,
+               checked_vector<xqtref_t> vartypes_,
+               std::vector<PlanIter_t>& aChildren)
+    :
     NaryBaseIterator<EvalIterator, EvalIteratorState> (loc, aChildren),
     varnames (varnames_), vartypes (vartypes_)
   {}

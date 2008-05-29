@@ -71,7 +71,11 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
-  static PlanIter_t compile (XQueryCompiler &compiler, xqp_string query, checked_vector<store::Item_t> varnames, checked_vector<xqtref_t> vartypes) {
+
+static PlanIter_t compile (
+    XQueryCompiler &compiler, xqp_string query, 
+    checked_vector<store::Item_t> varnames,
+    checked_vector<xqtref_t> vartypes) {
     istringstream os (query);
     parsenode_t ast = compiler.parse (os);
     QueryLoc loc;

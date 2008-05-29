@@ -20,10 +20,12 @@
 
 #include "common/shared_types.h"
 
-namespace zorba { namespace store {
+namespace zorba { 
 
 class Latch;
 
+namespace store 
+{
 
 /**
  * Manages XDM Instances 

@@ -29,8 +29,8 @@
 #include <iostream>
 
 #include "zorbautils/hashfun.h"
-#include "util/checked_vector.h"
-#include "util/rwlock.h"
+#include "zorbautils/checked_vector.h"
+#include "zorbautils/latch.h"
 #include "zorbaerrors/error_manager.h"
 
 
@@ -139,10 +139,10 @@ private:
   uint32_t sz;                // count of hashed entries
   uint32_t dsz;               // tab (directory) allocated size
   float ld;                   // maximum load factor, default = .6
-  checked_vector<entry> v;       // hash entries
-  checked_vector<int> tab;            // hash directory, indexes 'v', -1 = EMPTY
+  checked_vector<entry> v;  // hash entries
+  checked_vector<int> tab;  // hash directory, indexes 'v', -1 = EMPTY
   uint32_t depth;             // = lg(sz)
-  SYNC_CODE(rwlock rwl;)                 // readers-writers synchronization
+  SYNC_CODE(Latch rwl;)                 // readers-writers synchronization
 
 public: // ctor,dtor
   hash32map(uint32_t sz, float ld);
@@ -196,10 +196,10 @@ private:
   uint32_t sz;                // count of hashed entries
   uint32_t dsz;               // tab (directory) allocated size
   float ld;                   // maximum load factor, default = .6
-  checked_vector<entry> v;       // hash entries
-  checked_vector<int> tab;            // hash directory, indexes 'v', -1 = EMPTY
+  checked_vector<entry> v;  // hash entries
+  checked_vector<int> tab;  // hash directory, indexes 'v', -1 = EMPTY
   uint32_t depth;             // = lg(sz)
-  SYNC_CODE(rwlock rwl;)                 // readers-writers synchronization
+  SYNC_CODE(Latch rwl;)                 // readers-writers synchronization
 
 public: // ctor,dtor
   hash64map(uint32_t sz, float ld);
@@ -580,11 +580,9 @@ inline uint32_t hash32map<V>::size_unsync()
 template<class V>
 inline uint32_t hash32map<V>::size() 
 {
-  SYNC_CODE( if (rwl.readlock()!=0) {
-    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
-  })
+  SYNC_CODE(rwl.rlock();)
   uint32_t z = v.size();
-  SYNC_CODE(rwl.readunlock();)
+  SYNC_CODE(rwl.unlock();)
   return z;
 }
 
@@ -636,12 +634,9 @@ template<class V>
 inline bool hash32map<V>::find(
   uint32_t key, uint32_t& index) 
 {
-  SYNC_CODE(if (rwl.readlock()!=0) {
-    //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
-  })
+  SYNC_CODE(rwl.rlock();)
   bool b = find_unsync(key, index);
-  SYNC_CODE(rwl.readunlock();)
+  SYNC_CODE(rwl.unlock();)
   return b;
 }
 
@@ -662,12 +657,9 @@ template<class V>
 inline bool hash32map<V>::get(
   uint32_t key, V& result) 
 {
-  SYNC_CODE(if (rwl.readlock()!=0) {
-    //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
-  })
+  SYNC_CODE(rwl.rlock();)
   bool b = get_unsync(key, result);
-  SYNC_CODE(rwl.readunlock();)
+  SYNC_CODE(rwl.unlock();)
   return b;
 }
 
@@ -693,12 +685,9 @@ template<class V>
 inline bool hash32map<V>::put(
   uint32_t key, V val)
 {
-  SYNC_CODE(if (rwl.writelock()!=0) {
-    //throw xqp_exception(__FUNCTION__,"write lock failed");
-    ZORBA_ERROR( XQP0009_SYSTEM_WRITE_LOCK_FAILED);
-  })
+  SYNC_CODE(rwl.wlock();)
   bool b = put_unsync(key, val);
-  SYNC_CODE(rwl.writeunlock();)
+  SYNC_CODE(rwl.unlock();)
   return b;
 }
 
@@ -767,12 +756,9 @@ inline uint32_t hash64map<V>::size_unsync()
 template<class V>
 inline uint32_t hash64map<V>::size() 
 {
-  SYNC_CODE(if (rwl.readlock()!=0) {
-    //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
-  })
+  SYNC_CODE(rwl.rlock();)
   uint32_t z = v.size();
-  SYNC_CODE(rwl.readunlock();)
+  SYNC_CODE(rwl.unlock();)
   return z;
 }
 
@@ -826,12 +812,9 @@ template<class V>
 inline bool hash64map<V>::find(
   uint64_t key, uint32_t& index) 
 {
-  SYNC_CODE(if (rwl.readlock()!=0) {
-    //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
-  })
+  SYNC_CODE(rwl.rlock();)
   bool b = find_unsync(key, index);
-  SYNC_CODE(rwl.readunlock();)
+  SYNC_CODE(rwl.unlock();)
   return b;
 }
 
@@ -870,12 +853,9 @@ template<class V>
 inline bool hash64map<V>::get(
   uint64_t key, V& result) 
 {
-  SYNC_CODE(if (rwl.readlock()!=0) {
-    //throw xqp_exception(__FUNCTION__,"read lock failed");
-    ZORBA_ERROR( XQP0008_SYSTEM_READ_LOCK_FAILED);
-  })
+  SYNC_CODE(rwl.rlock();)
   bool b = get_unsync(key, result);
-  SYNC_CODE(rwl.readunlock();)
+  SYNC_CODE(rwl.unlock();)
   return b;
 }
 
@@ -902,13 +882,9 @@ template<class V>
 inline bool hash64map<V>::put(
   uint64_t key, V val)
 {
-  int rwl_status;
-  SYNC_CODE(if ((rwl_status=rwl.writelock())!=0) {
-    //throw xqp_exception(__FUNCTION__,"write lock failed");
-    ZORBA_ERROR( XQP0009_SYSTEM_WRITE_LOCK_FAILED);
-  })
+  SYNC_CODE(rwl.wlock();)
   bool b = put_unsync(key, val);
-  SYNC_CODE(rwl.writeunlock();)
+  SYNC_CODE(rwl.unlock();)
   return b;
 }
 

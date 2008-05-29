@@ -17,8 +17,8 @@
 #define ZORBA_STORE_UTIL_STRING_POINTER_HASHMAP
 
 #include "common/common.h"
-#include "zorbatypes/xqpstring.h"
 
+#include "zorbatypes/xqpstring.h"
 #include "zorbautils/hashmap.h"
 
 
@@ -33,7 +33,9 @@ namespace zorba { namespace store {
  
 ********************************************************************************/
 template <class V>
-class StringHashMap : public HashMap<const xqpStringStore*, V, StringHashMap<V> >
+class StringHashMap : public HashMap<const xqpStringStore*,
+                                     V,
+                                     StringHashMap<V> >
 {
 public:
   static bool equal(const xqpStringStore* s1, const xqpStringStore* s2)
@@ -49,7 +51,7 @@ public:
 public:
  StringHashMap(ulong size, bool sync)
    :
-  HashMap<const xqpStringStore*, V, StringHashMap>(size, sync) {};
+   HashMap<const xqpStringStore*, V, StringHashMap>(size, sync) {};
 
   ~StringHashMap() { };
 };

@@ -41,7 +41,11 @@ public:
   }
 
 public:
- NodeHashSet(ulong size = 1024) : HashSet<rchandle<Item>, NodeHashSet>(size, false) {}
+  NodeHashSet(ulong size = 1024) 
+    :
+    HashSet<rchandle<Item>, NodeHashSet>(size, false) 
+  {
+  }
 };
 
 } // namespace store

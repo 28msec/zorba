@@ -175,7 +175,7 @@ DynamicContextImpl::setContextItem ( const Item& aItem )
     store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
     ZorbaImpl::checkItem(lItem);
 
-    SYNC_CODE(store::AutoMutex lock(theCloningMutexp);)
+    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
 
     theCtx->set_context_item(lItem, 0);
 
@@ -251,7 +251,7 @@ DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
                            << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
     }
 
-    SYNC_CODE(store::AutoMutex lock(theCloningMutexp);)
+    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
 
     theCtx->set_current_date_time(lItem);
     return true;
@@ -280,7 +280,7 @@ DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
   {
     checkNoIterators();
 
-    SYNC_CODE(store::AutoMutex lock(theCloningMutexp);)
+    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
 
     theCtx->set_implicit_timezone(aTimezoneMinutes * 60);
     return true;
@@ -313,7 +313,7 @@ DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
     ZorbaImpl::checkItem(lItem);
     xqpString     lString(lItem->getStringValue());
 
-    SYNC_CODE(store::AutoMutex lock(theCloningMutexp);)
+    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
 
     theCtx->set_default_collection(lString);
     return true;

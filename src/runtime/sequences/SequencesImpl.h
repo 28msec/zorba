@@ -30,10 +30,8 @@
 
 namespace zorba
 {
-  namespace store {
-    class ItemValueCollHandleHashSet;
-    class ValueCollCompareParam;
-  }
+class ItemValueCollHandleHashSet;
+class ValueCollCompareParam;
 
   /*______________________________________________________________________
   |
@@ -137,8 +135,8 @@ NARY_ITER(FnExistsIterator);
 class FnDistinctValuesIteratorState : public PlanIteratorState {
 public:  
   bool theHasNaN;
-  store::ItemValueCollHandleHashSet* theAlreadySeenMap;
-  store::ValueCollCompareParam* theValueCompareParam;
+  ItemValueCollHandleHashSet* theAlreadySeenMap;
+  ValueCollCompareParam* theValueCompareParam;
 
   FnDistinctValuesIteratorState();
   ~FnDistinctValuesIteratorState();

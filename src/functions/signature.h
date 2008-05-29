@@ -16,8 +16,10 @@
 #ifndef ZORBA_SIGNATURE_H
 #define ZORBA_SIGNATURE_H
 
+#include "zorbautils/checked_vector.h"
+
 #include "common/shared_types.h"
-#include "util/checked_vector.h"
+
 #include "types/root_typemanager.h"
 #include "store/api/item.h"
 
@@ -45,7 +47,7 @@ namespace zorba {
 class signature : public signature_base
 {
 public:
-  store::Item_t qname_p;
+  store::Item_t            qname_p;
   checked_vector<xqtref_t> argv;
 
 public:

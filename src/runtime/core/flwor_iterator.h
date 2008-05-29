@@ -16,8 +16,10 @@
 #ifndef ZORBA_RUNTIME_FLWOR_ITERATOR
 #define ZORBA_RUNTIME_FLWOR_ITERATOR
 
+#include "zorbautils/checked_vector.h"
+
 #include "common/shared_types.h"
-#include "util/checked_vector.h"
+
 #include "runtime/base/plan_iterator.h"
 #include "runtime/util/handle_hashmap_item_value.h"
 
@@ -46,7 +48,7 @@ namespace zorba
       class OrderKeyCmp;
   
       typedef std::multimap<std::vector<store::Item_t>, store::Iterator_t, OrderKeyCmp> order_map_t;
-      typedef store::ItemValuesCollHandleHashMap<std::vector<store::TempSeq_t>* > group_map_t;
+      typedef ItemValuesCollHandleHashMap<std::vector<store::TempSeq_t>* > group_map_t;
       
   /**
       Wrappes a FOR or LET clause. 
@@ -340,13 +342,13 @@ namespace zorba
   class FlworState : public PlanIteratorState
   {
     public:
-      checked_vector<uint32_t>                    varBindingState;
+    checked_vector<uint32_t>                    varBindingState;
           
   //When returning the result, this indicates, which return sequence we are
   // touching at the moment and the curOrderPos indicates 
       FLWORIterator::order_map_t                * orderMap; 
       FLWORIterator::group_map_t                * groupMap; 
-      store::GroupCompareParam                  * valueCompareParam;
+      GroupCompareParam                         * valueCompareParam;
       store::Iterator_t                           curOrderResultSeq; 
       FLWORIterator::order_map_t::const_iterator  curOrderPos; 
       FLWORIterator::group_map_t::iterator        curGroupPos;

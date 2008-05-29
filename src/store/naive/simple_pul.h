@@ -40,7 +40,9 @@ typedef std::vector<UpdatePrimitive*> NodeUpdates;
 /*******************************************************************************
 
 ********************************************************************************/
-class NodeToUpdatesMap : public HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>
+class NodeToUpdatesMap : public HashMap<XmlNode*,
+                                        NodeUpdates*,
+                                        NodeToUpdatesMap>
 {
 public:
 
@@ -55,7 +57,9 @@ public:
   }
 
 
- NodeToUpdatesMap() : HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8, false)
+ NodeToUpdatesMap() 
+   :
+   HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8, false)
   {
   }
 

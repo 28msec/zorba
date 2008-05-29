@@ -19,10 +19,9 @@
 #include <string>
 #include <map>
 
-#include "util/checked_vector.h"
+#include "zorbautils/checked_vector.h"
 
 #include "zorbatypes/xqpstring.h"
-
 #include "zorbatypes/representations.h"
 
 #include "zorbaerrors/errors.h"
@@ -42,7 +41,8 @@ class var_expr;
 class NodeNameTest;
 
 // imperative construct: do this, then that
-class sequential_expr : public expr {
+class sequential_expr : public expr
+{
   checked_vector<expr_t> sequence;
 
 public:
@@ -55,8 +55,12 @@ public:
     sequence.push_back (second);
   }
 
-  sequential_expr (const QueryLoc& loc, checked_vector<expr_t> sequence_, expr_t result)
-    : expr (loc), sequence (sequence_)
+  sequential_expr(
+        const QueryLoc& loc,
+        checked_vector<expr_t> sequence_,
+        expr_t result)
+    :
+    expr (loc), sequence (sequence_)
   {
     sequence.push_back (result);
   }
@@ -866,12 +870,13 @@ public:
 // [48] [http://www.w3.org/TR/xquery/#prod-xquery-ComparisonExpr]
 
 
-class fo_expr : public expr {
+class fo_expr : public expr 
+{
 public:
   expr_kind_t get_expr_kind () { return fo_expr_kind; }
 protected:
-  checked_vector<expr_t> argv;
-  const function* func;
+  checked_vector<expr_t>   argv;
+  const function                * func;
 
 public:
   fo_expr (const QueryLoc& loc, const function *f)
@@ -1198,8 +1203,8 @@ class axis_step_expr : public expr {
 public:
   expr_kind_t get_expr_kind () { return axis_step_expr_kind; }
 protected:
-  axis_kind_t          theAxis;
-  expr_t               theNodeTest;
+  axis_kind_t             theAxis;
+  expr_t                  theNodeTest;
   checked_vector<expr_t>  thePreds;
 
 public:

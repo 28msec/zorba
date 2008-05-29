@@ -13,33 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_HANDLE_HAHSET_ITEM_VALUE_H
-#define ZORBA_STORE_HANDLE_HAHSET_ITEM_VALUE_H
+#ifndef ZORBA_RUNTIME_HANDLE_HAHSET_ITEM_VALUE_H
+#define ZORBA_RUNTIME_HANDLE_HAHSET_ITEM_VALUE_H
 
 #include "zorbautils/hashset.h"
 #include "runtime/booleans/BooleanImpl.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { 
 
 class ValueCompareParam
 {
 public:
   ValueCompareParam(RuntimeCB* aRuntimeCB)
-    : theRuntimeCB(aRuntimeCB) {}
-  RuntimeCB* theRuntimeCB;
+    :
+    theRuntimeCB(aRuntimeCB) {}
+
+  RuntimeCB * theRuntimeCB;
 };
+
 
 class ValueCollCompareParam
 {
 public:
   ValueCollCompareParam(RuntimeCB* aRuntimeCB)
-    : theRuntimeCB(aRuntimeCB),
-      theCollator(0) {}
+    :
+    theRuntimeCB(aRuntimeCB),
+    theCollator(0) {}
 
-  RuntimeCB* theRuntimeCB;
-  XQPCollator* theCollator;
+  RuntimeCB   * theRuntimeCB;
+  XQPCollator * theCollator;
 };
+
 
 template <class T, class E>
 class Externals<T, E, ValueCompareParam>
@@ -49,11 +54,13 @@ public:
   {
     return E::equal(t1, t2, aCompareParam);
   }
+
   static uint32_t hash(const T& t1, ValueCompareParam* aCompareParam)
   {
     return E::hash(t1, aCompareParam);
   }
 };
+
 
 template <class T, class E>
 class Externals<T, E, ValueCollCompareParam>
@@ -63,6 +70,7 @@ public:
   {
     return E::equal(t1, t2, aCompareParam);
   }
+
   static uint32_t hash(const T& t1, ValueCollCompareParam* aCompareParam)
   {
     return E::hash(t1, aCompareParam);
@@ -70,31 +78,37 @@ public:
 };
 
 
-class ItemValueHandleHashSet : public HashSet<Item_t,
+class ItemValueHandleHashSet : public HashSet<store::Item_t,
                                               ItemValueHandleHashSet,
                                               ValueCompareParam>
 {
 public:
   ItemValueHandleHashSet(ValueCompareParam* lValueCompareParam, long size = 1024)
     :
-    HashSet<Item_t, ItemValueHandleHashSet, ValueCompareParam>(lValueCompareParam,
-                                                               size,
-                                                               false) // no sync
-  {}
+    HashSet<store::Item_t,
+            ItemValueHandleHashSet,
+            ValueCompareParam>(lValueCompareParam, size, false) // no sync
+  {
+  }
 
-  static bool equal(const Item_t& t1, const Item_t& t2, ValueCompareParam* aCompareParam)
+  static bool equal(
+        const store::Item_t& t1,
+        const store::Item_t& t2,
+        ValueCompareParam* aCompareParam)
   {
     return CompareIterator::valueEqual(aCompareParam->theRuntimeCB, t1, t2) == 0; 
   }
 
-  static uint32_t hash(const Item_t& t, ValueCompareParam* aCompareParam)
+  static uint32_t hash(
+        const store::Item_t& t,
+        ValueCompareParam* aCompareParam)
   {
     return t->hash(NULL);
   }
 };
 
 
-class ItemValueCollHandleHashSet : public HashSet<Item_t,
+class ItemValueCollHandleHashSet : public HashSet<store::Item_t,
                                                   ItemValueCollHandleHashSet,
                                                   ValueCollCompareParam>
 {
@@ -103,10 +117,16 @@ public:
         ValueCollCompareParam* lValueCompareParamColl,
         long size = 1024)
   :
-  HashSet<Item_t, ItemValueCollHandleHashSet, ValueCollCompareParam>(lValueCompareParamColl, size, false)
-  {}
+  HashSet<store::Item_t,
+          ItemValueCollHandleHashSet,
+          ValueCollCompareParam>(lValueCompareParamColl, size, false)
+  {
+  }
 
-  static bool equal(const Item_t& t1, const Item_t& t2, ValueCollCompareParam* aCompareParam)
+  static bool equal(
+        const store::Item_t& t1,
+        const store::Item_t& t2,
+        ValueCollCompareParam* aCompareParam)
   {
     assert (t1 != NULL);
     assert (t2 != NULL);
@@ -115,13 +135,16 @@ public:
                                        (aCompareParam->theCollator)) == 0; 
   }
 
-  static uint32_t hash(const Item_t& t, ValueCollCompareParam* aCompareParam)
+  static uint32_t hash(
+        const store::Item_t& t,
+        ValueCollCompareParam* aCompareParam)
   {
     assert (t != NULL);
     return t->hash(aCompareParam->theRuntimeCB, aCompareParam->theCollator);
   }
 };
-} // namespace store
+
+
 } // namespace zorba
 
 #endif

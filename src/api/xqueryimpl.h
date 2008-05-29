@@ -21,11 +21,13 @@
 #include <zorba/sax2.h>
 
 #include <zorba/api_shared_types.h>
+
+#include "zorbautils/mutex.h"
 #include "zorbatypes/xqpstring.h"
+
 #include "common/shared_types.h" 
 #include "compiler/api/compilercb.h"
 
-#include "store/util/mutex.h"
 
 namespace zorba {
 
@@ -154,7 +156,7 @@ class XQueryImpl : public XQuery
   bool                             theIsClosed;
 
 
-  SYNC_CODE(mutable store::Mutex   theCloningMutex;)
+  SYNC_CODE(mutable Mutex          theCloningMutex;)
 
  public:
   virtual ~XQueryImpl();

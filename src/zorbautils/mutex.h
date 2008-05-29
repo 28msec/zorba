@@ -13,92 +13,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_LATCH_H
-#define ZORBA_STORE_LATCH_H
+#ifndef ZORBA_STORE_UTIL_MUTEX
+#define ZORBA_STORE_UTIL_MUTEX
 
-#include "common/common.h"
+#include "common/config/platform.h"
 
-#ifdef WIN32
-#include "util/rwlock.h"
+#ifdef HAVE_PTHREAD_H
+#  include <pthread.h>
 #endif
 
-namespace zorba { namespace store {
+namespace zorba { 
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-class Latch
+class Mutex
 {
-public:
-
-  enum Mode { READ, WRITE };
-
 protected:
 
 #ifdef HAVE_PTHREAD_H
-  pthread_rwlock_t  theLatch;
+  pthread_mutex_t  theMutex;
 #elif defined WIN32
-  rwlock  theLatch;
-  bool    rlocked;
-  bool    wlocked;
+  HANDLE           theMutex;
 #endif
 
 public:
-  Latch();
+  Mutex();
 
-  ~Latch();
+  ~Mutex();
     
-  void rlock();
-  void wlock();
-
+  void lock();
+    
   void unlock();
 
  private:
-  Latch(const Latch &);
-  void operator=(const Latch &);
+  Mutex(const Mutex &);
+  void operator=(const Mutex &);
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class AutoLatch
+class AutoMutex
 {
 private:
-  Latch & theLatch;
+  Mutex * theMutex;
 
 public:
-  AutoLatch(Latch& l, Latch::Mode m) : theLatch(l)
-  {
-    if (m == Latch::READ)
-      theLatch.rlock();
-    else
-      theLatch.wlock();
+  AutoMutex(Mutex* mutex) : theMutex(mutex)
+  { 
+    if (theMutex)
+      theMutex->lock();   
   }
     
-  ~AutoLatch()
+  ~AutoMutex()
   {
-    theLatch.unlock();
+    if (theMutex)
+      theMutex->unlock();
   }
 };
 
-#else
-class Latch
-{
-public:
-  void rlock() {}
-  void wlock() {}
-
-  void unlock() {}
-};
-class AutoLatch
-{
-};
 #endif // ZORBA_FOR_ONE_THREAD_ONLY
 
-} // namespace store
+
 } // namespace zorba
 
 

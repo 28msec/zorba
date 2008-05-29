@@ -16,14 +16,14 @@
 #ifndef ZORBA_STRINGS_IMPL_H
 #define ZORBA_STRINGS_IMPL_H
 
+#include "zorbautils/checked_vector.h"
+
 #include "common/common.h"
 #include "common/shared_types.h"
 
 #include "runtime/base/binarybase.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
-
-#include "util/checked_vector.h"
 
 
 namespace zorba {

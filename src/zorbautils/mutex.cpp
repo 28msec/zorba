@@ -15,14 +15,12 @@
  */
 
 #include "zorbaerrors/fatal.h"
-
-#include "store/util/mutex.h"
-#include <iostream>
+#include "zorbautils/mutex.h"
 
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
-namespace zorba { namespace store {
+namespace zorba { 
 
 
 Mutex::Mutex()
@@ -81,7 +79,7 @@ void Mutex::unlock()
 #endif
 }
 
-} // namespace store
+
 } // namespace zorba
 
 #endif

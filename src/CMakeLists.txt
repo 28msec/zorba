@@ -27,6 +27,9 @@ SET(requiredlibs ${requiredlibs} zorbatypes)
 ADD_SUBDIRECTORY(zorbaerrors)
 SET(requiredlibs ${requiredlibs} zorbaerrors)
 
+ADD_SUBDIRECTORY(zorbautils)
+SET(requiredlibs ${requiredlibs} zorbautils)
+
 # generate the zorba library
 SET(ZORBA_SRCS)
 

@@ -19,9 +19,10 @@
 #include <zorba/xmldatamanager.h>
 
 #include <zorba/api_shared_types.h>
-#include "common/shared_types.h"
 
-#include "store/util/latch.h"
+#include "zorbautils/latch.h"
+
+#include "common/shared_types.h"
 
 
 namespace zorba {
@@ -101,7 +102,7 @@ class XmlDataManagerImpl : public XmlDataManager
   
   bool                     theUserErrorHandler;
 
-  SYNC_CODE(store::Latch   theLatch;)
+  SYNC_CODE(Latch          theLatch;)
 
 }; /* class XmlDataManagerImpl */
 

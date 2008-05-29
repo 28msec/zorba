@@ -626,7 +626,7 @@ void FLWORIterator::bindGroupBy ( FLWORIterator::group_map_t::iterator lGroupMap
                                   PlanState& planState ) const
 {
   //Bind grouping vars
-  store::GroupKey* lGroupKey = ( *lGroupMapIter ).first;
+  GroupKey* lGroupKey = ( *lGroupMapIter ).first;
   std::vector<store::Item_t>::const_iterator lGroupKeyIter = lGroupKey->theKey.begin();
   std::vector<GroupingSpec> lgroupSpecs = theGroupByClause->theGroupingSpecs;
   std::vector<GroupingSpec>::const_iterator lSpecIter = lgroupSpecs.begin();
@@ -670,7 +670,7 @@ void FLWORIterator::matVarsAndGroupBy (
 {
   ZORBA_ASSERT ( doGroupBy );
 
-  store::GroupKey* lGroupKey = new store::GroupKey();
+  GroupKey* lGroupKey = new GroupKey();
   std::vector<store::Item_t> lKey;
   std::vector<store::Item_t> lTypedKey;
   std::vector<GroupingSpec> lgroupSpecs = theGroupByClause->theGroupingSpecs;
@@ -1189,7 +1189,7 @@ void FlworState::init(
   }
   
   if(groupingCollators!=0){
-    valueCompareParam = new store::GroupCompareParam(planState.theRuntimeCB, *groupingCollators);
+    valueCompareParam = new GroupCompareParam(planState.theRuntimeCB, *groupingCollators);
     groupMap = new FLWORIterator::group_map_t(valueCompareParam);
   }
 }

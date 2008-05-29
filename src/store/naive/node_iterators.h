@@ -17,6 +17,7 @@
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
 #include "common/shared_types.h"
+
 #include "store/api/iterator.h"
 #include "store/naive/shared_types.h"
 #include "store/naive/ordpath.h"

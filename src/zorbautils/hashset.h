@@ -16,14 +16,14 @@
 #ifndef ZORBA_STORE_UTIL_HASHSET
 #define ZORBA_STORE_UTIL_HASHSET
 
-#include "util/checked_vector.h"
-
-#include "common/shared_types.h"
-
-#include "store/util/mutex.h"
+#include "zorbautils/checked_vector.h"
 #include "zorbautils/hashmap.h"
+#include "zorbautils/mutex.h"
 
-namespace zorba { namespace store {
+#include "common/config/platform.h"
+
+
+namespace zorba { 
 
 
 class DummyHashValue
@@ -153,7 +153,7 @@ bool remove(const T& item)
 };
 
 
-} // namespace store
+
 } // namespace zorba
 
 #endif

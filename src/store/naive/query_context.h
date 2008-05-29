@@ -20,9 +20,11 @@
 #include <map>
 #include <vector>
 
-#include "common/shared_types.h"
+#include "zorbautils/mutex.h"
 #include "zorbaerrors/fatal.h"
-#include "store/util/mutex.h"
+
+#include "common/shared_types.h"
+
 
 namespace zorba { namespace store {
 
