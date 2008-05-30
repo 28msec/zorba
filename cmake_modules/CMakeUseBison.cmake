@@ -9,6 +9,7 @@
 #  BISON_GENERATE_DEFINES - Set to true to make BISON_FILE output the matching
 #                           .h file for a .c file. You want this if you're using
 #                           flex.
+#  BISON_VERSION          - Returns the Bison version
 #  BISON_MAJOR_VERSION    - Returns the Bison major version
 #  BISON_MINOR_VERSION    - Returns the Bison minor version 
 #
@@ -33,10 +34,11 @@ IF(NOT BISON_EXECUTABLE)
 
 		# Extract major and minor versions
         STRING (REGEX REPLACE "[^0-9]*([0-9]+)..*" "\\1" BISON_MAJOR_VERSION_TMP ${BISON_VERSION})
-		STRING (REGEX REPLACE "[^0-9]*[0-9]+\\.([0-9]+).*" "\\1" BISON_MINOR_VERSION_TMP ${BISON_VERSION})
+		    STRING (REGEX REPLACE "[^0-9]*[0-9]+\\.([0-9]+).*" "\\1" BISON_MINOR_VERSION_TMP ${BISON_VERSION})
         MESSAGE(STATUS "Found bison -- ${BISON_EXECUTABLE}, version: " ${BISON_MAJOR_VERSION_TMP} "." ${BISON_MINOR_VERSION_TMP})
         SET (BISON_MAJOR_VERSION ${BISON_MAJOR_VERSION_TMP} CACHE STRING "The Bison major version")
         SET (BISON_MINOR_VERSION ${BISON_MINOR_VERSION_TMP} CACHE STRING "The Bison minor version")
+        SET (BISON_VERSION_FULL ${BISON_MAJOR_VERSION}.${BISON_MINOR_VERSION} CACHE STRING "The Bison version")
   ELSE (BISON_EXECUTABLE)
   	SET (BISON_MAJOR_VERSION "0")
 	SET (BISON_MINOR_VERSION "0")

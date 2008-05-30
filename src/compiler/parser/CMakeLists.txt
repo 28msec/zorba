@@ -37,6 +37,27 @@ SET (FLEX_REQUIRED_REVISION "33")
 # Bison checks 
 SET (GENERATE_BISON_FILES TRUE)
 
+
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
+
+# a and b need to be passed in by value
+MACRO(COMPARE_VERSION a b)
+  COMPARE_VERSION_STRINGS(${a} ${b} result)
+    IF(result LESS 0)
+        MESSAGE("${a} <  ${b}")
+     ELSE(result LESS 0)
+       IF(result GREATER 0)
+         MESSAGE("${a} >  ${b}")
+       ELSE(result GREATER 0)
+          MESSAGE("${a} == ${b}")
+       ENDIF(result GREATER 0)
+     ENDIF(result LESS 0)
+ENDMACRO(COMPARE_VERSION)
+
+MESSAGE(STATUS "bison ${BISON_VERSION_FULL}")
+
+COMPARE_VERSION(${BISON_VERSION_FULL} "2.3")
+
 IF (BISON_MAJOR_VERSION LESS ${BISON_REQUIRED_MAJOR})
 	SET (GENERATE_BISON_FILES FALSE)
 ELSE (BISON_MAJOR_VERSION LESS ${BISON_REQUIRED_MAJOR})
