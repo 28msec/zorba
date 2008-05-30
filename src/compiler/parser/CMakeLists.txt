@@ -13,6 +13,7 @@
 # limitations under the License.
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseBison.cmake)
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseFlex.cmake)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 
 SET(PARSER_SRCS
     symbol_table.cpp
@@ -23,25 +24,10 @@ SET(PARSER_SRCS
 SET(PARSER_BUILD_SRCS)
 
 ###################################################################
-# Flex and Bison requirements
-
-SET (BISON_REQUIRED_MAJOR "2")
-SET (BISON_REQUIRED_MINOR "3")
-
-SET (FLEX_REQUIRED_MAJOR "2")
-SET (FLEX_REQUIRED_MINOR "5")
-SET (FLEX_REQUIRED_REVISION "33")
-
-
-###################################################################
 # Bison checks 
 SET (GENERATE_BISON_FILES TRUE)
 
-
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
-
-# a and b need to be passed in by value
-MACRO(COMPARE_VERSION a b)
+MACRO(COMPARE_BISON_VERSION a b)
   COMPARE_VERSION_STRINGS(${a} ${b} result)
     IF(result LESS 0)
 	    SET (GENERATE_BISON_FILES FALSE)
@@ -53,15 +39,9 @@ MACRO(COMPARE_VERSION a b)
           MESSAGE(STATUS "Bison: ${a} == ${b}")
        ENDIF(result GREATER 0)
      ENDIF(result LESS 0)
-ENDMACRO(COMPARE_VERSION)
+ENDMACRO(COMPARE_BISON_VERSION)
 
-COMPARE_VERSION(${BISON_VERSION_FULL} "2.3")
-
-
-IF (NOT BISON_EXECUTABLE)
-	SET (GENERATE_BISON_FILES FALSE)
-ENDIF (NOT BISON_EXECUTABLE)
-
+COMPARE_BISON_VERSION(${BISON_VERSION_FULL} "2.3")
 
 # Bison setup for the parser
 IF (GENERATE_BISON_FILES)
@@ -84,29 +64,21 @@ ENDIF (GENERATE_BISON_FILES)
 
 SET (GENERATE_FLEX_FILES TRUE)
 
-IF (FLEX_MAJOR_VERSION LESS ${FLEX_REQUIRED_MAJOR}) # major is smaller
-	SET (GENERATE_FLEX_FILES FALSE)
-ELSE (FLEX_MAJOR_VERSION LESS ${FLEX_REQUIRED_MAJOR})  # major is big enough
-	IF (FLEX_MAJOR_VERSION EQUAL ${FLEX_REQUIRED_MAJOR})  # major is equal
-		IF (FLEX_MINOR_VERSION LESS ${FLEX_REQUIRED_MINOR}) # minor too small
-			SET (GENERATE_FLEX_FILES FALSE)
-		ELSE (FLEX_MINOR_VERSION LESS ${FLEX_REQUIRED_MINOR}) # minor is at least equal
-			IF (FLEX_MINOR_VERSION EQUAL ${FLEX_REQUIRED_MINOR})
-				IF (FLEX_REVISION_VERSION LESS ${FLEX_REQUIRED_REVISION})
-					SET (GENERATE_FLEX_FILES FALSE)
-				ELSE (FLEX_REVISION_VERSION LESS ${FLEX_REQUIRED_REVISION}) # revision is at least equal
-					SET (GENERATE_FLEX_FILES TRUE)
-				ENDIF (FLEX_REVISION_VERSION LESS ${FLEX_REQUIRED_REVISION})
-			ENDIF (FLEX_MINOR_VERSION EQUAL ${FLEX_REQUIRED_MINOR}) # minor is greater
-		ENDIF (FLEX_MINOR_VERSION LESS ${FLEX_REQUIRED_MINOR})
-	ELSE (FLEX_MAJOR_VERSION EQUAL ${FLEX_REQUIRED_MAJOR})  # major is bigger
-  SET (GENERATE_FLEX_FILES TRUE)
-	ENDIF (FLEX_MAJOR_VERSION EQUAL ${FLEX_REQUIRED_MAJOR})
-ENDIF (FLEX_MAJOR_VERSION LESS ${FLEX_REQUIRED_MAJOR})
+MACRO(COMPARE_FLEX_VERSION a b)
+  COMPARE_VERSION_STRINGS(${a} ${b} result)
+    IF(result LESS 0)
+	    SET (GENERATE_BISON_FILES FALSE)
+        MESSAGE(STATUS "Flex: ${a} <  ${b}")
+     ELSE(result LESS 0)
+       IF(result GREATER 0)
+         MESSAGE(STATUS "Flex: ${a} >  ${b}")
+       ELSE(result GREATER 0)
+          MESSAGE(STATUS "Flex: ${a} == ${b}")
+       ENDIF(result GREATER 0)
+     ENDIF(result LESS 0)
+ENDMACRO(COMPARE_FLEX_VERSION)
 
-IF (NOT FLEX_EXECUTABLE)
-	SET (GENERATE_FLEX_FILES FALSE)
-ENDIF (NOT FLEX_EXECUTABLE)
+COMPARE_FLEX_VERSION(${FLEX_VERSION_FULL} "2.5.33")
 
 # Flex setup for the scanner
 IF (GENERATE_FLEX_FILES)
@@ -125,5 +97,8 @@ ELSE (GENERATE_FLEX_FILES)
 	INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/src)
 ENDIF (GENERATE_FLEX_FILES)
 
+# generate a script that copies the generated parser and scanner files from the build
+# directory into the source directory
+# this script should be used before commiting if one modified the parser/scanner
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake ${CMAKE_BINARY_DIR}/copyparser.sh)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake -->${CMAKE_BINARY_DIR}/copyparser.sh")
