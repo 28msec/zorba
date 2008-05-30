@@ -417,6 +417,7 @@ int Latch::writeunlock()
 
 #endif
 
-} // namespace zorba
 
 #endif
+
+} // namespace zorba

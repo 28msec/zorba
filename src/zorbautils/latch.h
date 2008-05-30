@@ -18,9 +18,6 @@
 
 #include "common/config/platform.h"
 
-#ifdef WIN32
-#include "util/rwlock.h"
-#endif
 
 namespace zorba { 
 
