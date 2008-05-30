@@ -89,6 +89,10 @@ IF (ZORBA_DEBUGGER)
   SET(requiredlibs ${requiredlibs} json)
 ENDIF (ZORBA_DEBUGGER)
 
+SET(BOOST_CHECK_LIBRARIES ON CACHE BOOL "enable or disable automatic search of boost libraries")
+MESSAGE(STATUS "BOOST_CHECK_LIBRARIES:     " ${BOOST_CHECK_LIBRARIES})
+IF (BOOST_CHECK_LIBRARIES)
+
 #####################################################  Boost
 INCLUDE(cmake_modules/FindBoost.cmake)
 SET (REQUIRED_BOOST_PACKAGES date_time filesystem program_options)
@@ -148,9 +152,12 @@ ELSE (NOT Boost_FOUND)
   ENDIF (NOT WIN32)
 ENDIF (NOT Boost_FOUND)
 
+ENDIF (BOOST_CHECK_LIBRARIES)
+
 IF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
   SET(requiredlibs ${requiredlibs} pthread)
 ENDIF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
+
 ################################################################################
 # Custom user-defined settings
 
@@ -210,3 +217,4 @@ INCLUDE(InstallRequiredSystemLibraries)
 INCLUDE(CMakeCPack.cmake)
 #CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/CPackSourceConfig.cmake.in 
 #               ${CMAKE_BINARY_DIR}/CPackSourceConfig.cmake)
+
