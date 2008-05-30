@@ -20,12 +20,11 @@
 #include <map>
 #include <vector>
 
+#include "zorbautils/mutex.h"
+#include "zorbaerrors/fatal.h"
 #include "common/shared_types.h"
-#include "errors/fatal.h"
-#include "store/util/mutex.h"
 
-namespace zorba { 
-  namespace store {
+namespace zorba { namespace store {
 
 class XmlNode;
 

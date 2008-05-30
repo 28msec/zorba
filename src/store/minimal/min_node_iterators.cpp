@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 
 #include "store/minimal/min_node_items.h"
 #include "store/minimal/min_node_iterators.h"
@@ -46,17 +46,20 @@ void ChildrenIterator::open()
 }
 
 
-Item_t ChildrenIterator::next()
+bool ChildrenIterator::next(Item_t& result)
 {
-  if (theCurrentPos >= theNumChildren)
-    return NULL;
+  if (theCurrentPos >= theNumChildren) {
+    result = NULL;
+    return false;
+  }
 
-  XmlNode* cnode = theParentNode->getChild(theCurrentPos);
+  result = theParentNode->getChild(theCurrentPos);
 
   theCurrentPos++;
 
-  return cnode;
+  return true;
 }
+
 
 
 void ChildrenIterator::reset()
@@ -94,7 +97,7 @@ void ChildrenIteratorLazy::open()
 }
 
 
-Item_t ChildrenIteratorLazy::next()
+bool ChildrenIteratorLazy::next(Item_t& result)
 {
   XmlLoader_t   xmlloader;
   while((xmlloader=theParentNode->hasLoaderAttached()) != NULL)
@@ -108,14 +111,17 @@ Item_t ChildrenIteratorLazy::next()
   }
 
   if(theCurrentPos >= theParentNode->numChildren())
-    return NULL;
+  {
+    result = NULL;
+    return false;
+  }
 
 
-  XmlNode* cnode = theParentNode->getChild(theCurrentPos);
+  result = theParentNode->getChild(theCurrentPos);
 
   theCurrentPos++;
 
-  return cnode;
+  return true;
 }
 
 
@@ -151,10 +157,12 @@ void AttributesIterator::open()
   theCurrentPos = 0;
 }
 
-Item_t AttributesIterator::next()
+bool AttributesIterator::next(Item_t& result)
 {
-  if (theCurrentPos >= theNumAttributes)
-    return NULL;
+  if (theCurrentPos >= theNumAttributes) {
+    result = NULL;
+    return false;
+  }
 
   AttributeNode* cnode =
     reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
@@ -163,15 +171,18 @@ Item_t AttributesIterator::next()
   {
     theCurrentPos++;
 
-    if (theCurrentPos >= theNumAttributes)
-      return NULL;
+    if (theCurrentPos >= theNumAttributes) {
+      result = NULL;
+      return false;
+    }
 
     cnode = reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
   }
 
   theCurrentPos++;
 
-  return cnode;
+  result = cnode;
+  return true;
 }
 
 
@@ -199,19 +210,17 @@ void StoreNodeDistinctIterator::open()
 }
 
 
-Item_t StoreNodeDistinctIterator::next()
+bool StoreNodeDistinctIterator::next(Item_t& result)
 {
   while (true)
   {
-    Item_t contextNode = theInput->next();
-    if (contextNode == NULL)
-      return NULL;
+    if (!theInput->next(result))
+      return false;
 
-    ZORBA_ASSERT(contextNode->isNode());
+    ZORBA_ASSERT(result->isNode());
 
-    Item* tmp = contextNode;
-    if (theNodeSet.insert(contextNode))
-      return tmp;
+    if (theNodeSet.insert(result))
+      return true;
   }
 }
 
@@ -235,33 +244,31 @@ void StoreNodeDistinctIterator::close()
 }
 
 
-Item_t StoreNodeDistinctOrAtomicIterator::next()
+bool StoreNodeDistinctOrAtomicIterator::next(Item_t& result)
 {
   Item_t contextNode;
 
   if (theAtomicMode) 
   {
-    contextNode = theInput->next();
-    if (contextNode == 0)
-      return NULL;
+    if (!theInput->next(result))
+      return false;
 
-    if (!contextNode->isAtomic())
+    if (!result->isAtomic())
       ZORBA_ERROR (XPTY0018);
 
-    return contextNode;
+    return true;
   }
 
-  contextNode = theInput->next();
-  if (contextNode == 0)
-    return NULL;
+  if (!theInput->next(result))
+    return false;
 
-  if (contextNode->isAtomic())
+  if (result->isAtomic())
   {
     if (theNodeMode)
       ZORBA_ERROR (XPTY0018);
 
     theAtomicMode = true;
-    return contextNode;
+    return true;
   }
   else
   {
@@ -269,15 +276,13 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
 
     while (true)
     {
-      Item* tmp = contextNode;
-      if (theNodeSet.insert(contextNode))
-        return tmp;
+      if (theNodeSet.insert(result))
+        return true;
 
-      contextNode = theInput->next();
-      if (contextNode == NULL)
-        return NULL;
+      if (!theInput->next(result))
+        return false;
 
-      if (contextNode->isAtomic())
+      if (result->isAtomic())
         ZORBA_ERROR (XPTY0018);
     }
   }
@@ -296,7 +301,7 @@ void StoreNodeSortIterator::open()
 }
 
 
-Item_t StoreNodeSortIterator::next()
+bool StoreNodeSortIterator::next(Item_t& result)
 {
   if (theCurrentNode < 0)
   {
@@ -304,8 +309,8 @@ Item_t StoreNodeSortIterator::next()
 
     while (true)
     {
-      Item_t contextNode = theInput->next();
-      if (contextNode == NULL)
+      Item_t contextNode;
+      if (!theInput->next(contextNode))
         break;
 
       ZORBA_ASSERT(contextNode->isNode());
@@ -322,7 +327,7 @@ Item_t StoreNodeSortIterator::next()
   {
     if (theDistinct)
     {
-      XmlNode* result = theNodes[theCurrentNode++];
+      result = theNodes[theCurrentNode++];
 
       while (theCurrentNode < (long)theNodes.size() &&
              theNodes[theCurrentNode] == result)
@@ -330,17 +335,19 @@ Item_t StoreNodeSortIterator::next()
         theCurrentNode++;
       }
 
-      return result;
+      return true;
     }
     else
     {
-      return theNodes[theCurrentNode++];
+      result = theNodes[theCurrentNode++];
+      return true;
     }
   }
   else
   {
     reset();
-    return NULL;
+    result = NULL;
+    return false;
   }
 }
 
@@ -386,20 +393,17 @@ void StoreNodeSortIterator::close()
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-Item_t StoreNodeSortOrAtomicIterator::next()
+bool StoreNodeSortOrAtomicIterator::next(Item_t& result)
 {
-  Item_t contextNode;
-
   if (theAtomicMode)
   {
-    contextNode = theInput->next();
-    if (contextNode == 0)
-      return NULL;
+    if (!theInput->next(result))
+      return false;
 
-    if (!contextNode->isAtomic())
+    if (!result->isAtomic())
       ZORBA_ERROR (XPTY0018);
 
-    return contextNode;
+    return true;
   }
 
   if (theCurrentNode < 0)
@@ -408,24 +412,23 @@ Item_t StoreNodeSortOrAtomicIterator::next()
 
     while (true)
     {
-      contextNode = theInput->next();
-      if (contextNode == NULL)
+      if (!theInput->next(result))
         break;
 
-      if (contextNode->isAtomic())
+      if (result->isAtomic())
       {
         if (theNodeMode)
           ZORBA_ERROR (XPTY0018);
 
         theAtomicMode = true;
-        return contextNode;
+        return true;
       }
       else
       {
         theNodeMode = true;
       }
 
-      theNodes.push_back(reinterpret_cast<XmlNode*>(contextNode.transfer()));
+      theNodes.push_back(reinterpret_cast<XmlNode*>(result.transfer()));
     }
 
     ComparisonFunction cmp;
@@ -437,7 +440,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
   {
     if (theDistinct)
     {
-      XmlNode* result = theNodes[theCurrentNode++];
+      result = theNodes[theCurrentNode++];
 
       while (theCurrentNode < (long)theNodes.size() &&
              theNodes[theCurrentNode] == result)
@@ -445,17 +448,19 @@ Item_t StoreNodeSortOrAtomicIterator::next()
         theCurrentNode++;
       }
 
-      return result;
+      return true;
     }
     else
     {
-      return theNodes[theCurrentNode++];
+      result = theNodes[theCurrentNode++];
+      return true;
     }
   }
   else
   {
     reset();
-    return NULL;
+    result = NULL;
+    return false;
   }
  
 }

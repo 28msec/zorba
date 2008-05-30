@@ -19,8 +19,8 @@
 
 #include "system/globalenv.h"
 #include "compiler/parser/query_loc.h"
-#include "errors/error_manager.h"
-#include "util/Assert.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
 #include "zorbatypes/URI.h"
 
 #include "store/api/copymode.h"
@@ -239,7 +239,9 @@ xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
 ********************************************************************************/
 Item_t XmlNode::getEBV() const
 {
-  return GET_FACTORY().createBoolean(true);
+  Item_t bVal;
+  GET_FACTORY().createBoolean(bVal, true);
+  return bVal;
 }
 
 
@@ -583,10 +585,10 @@ void XmlNode::switchTree(
       ulong i = 0;
       Iterator_t    child_iter = n->getChildren();
       child_iter->open();
-      store::Item*  child_item;
-      while((child_item=&*child_iter->next()))
+      store::Item_t  child_item;
+      while(child_iter->next(child_item))
       {
-        XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+        XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
         refcount += child->theRefCount;
         child->setTree(newTree);
         if (assignIds)
@@ -646,12 +648,6 @@ void XmlNode::deleteTree() throw()
   for (ulong i = 0; i < numChildren; i++)
   {
     XmlNode* child = getChild(i);
-//  Iterator_t    child_iter = this->getChildren();
-//  child_iter->open();
-//  Item*  child_item;
-//  while((child_item=&*child_iter->next()))
-//  {
-//    XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
     if (child->theParent == this)
     {
       child->theParent = NULL; 
@@ -764,10 +760,10 @@ xqpStringStore_t DocumentNode::getStringValue() const
     //StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
   Iterator_t    child_iter = this->getChildren();
   child_iter->open();
-  Item*  child_item;
-  while((child_item=&*child_iter->next()))
+  Item_t  child_item;
+  while(child_iter->next(child_item))
   {
-    XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+    XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
     StoreConsts::NodeKind kind = child->getNodeKind();
 
     if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
@@ -808,10 +804,10 @@ XmlNode* DocumentNode::copy(
 //    }
       Iterator_t    child_iter = this->getChildren();
       child_iter->open();
-      Item*  child_item;
-      while((child_item=&*child_iter->next()))
+      Item_t  child_item;
+      while(child_iter->next(child_item))
       {
-        XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+        XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
         child->copy(rootParent, copyNode, 0, copymode);
       }
   }
@@ -845,11 +841,10 @@ xqp_string DocumentNode::show() const
   strStream << "\">" << std::endl;
 
   Iterator_t iter = getChildren();
-  Item_t item = iter->next();
-  while (item != NULL)
+  Item_t item;
+  while (iter->next(item))
   {
     strStream << item->show();
-    item = iter->next();
   }
   
   strStream << std::endl << "</document>";
@@ -931,9 +926,9 @@ void ConstrDocumentNode::constructSubtree(
     bool            copy,
     const CopyMode& copymode)
 {
-  Item_t item = childrenIte->next();
+  Item_t item;
 
-  while (item != NULL)
+  while (childrenIte->next(item))
   {
     ZORBA_FATAL(item->isNode(), "");
     ZORBA_FATAL(item->getNodeKind() != StoreConsts::attributeNode, "");
@@ -948,7 +943,6 @@ void ConstrDocumentNode::constructSubtree(
         TextNode* textNode = reinterpret_cast<TextNode*>(cnode);
         if (textNode->theContent->empty())
         {
-          item = childrenIte->next();
           continue;
         }
 
@@ -960,7 +954,6 @@ void ConstrDocumentNode::constructSubtree(
           TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
           textSibling->theContent = textSibling->theContent->append(textNode->theContent);
 
-          item = childrenIte->next();
           continue;
         }
       }
@@ -975,7 +968,6 @@ void ConstrDocumentNode::constructSubtree(
       }
     }
 
-    item = childrenIte->next();
   }
 
   theChildren.resize(numChildren());
@@ -1088,10 +1080,10 @@ xqpStringStore_t ElementNode::getStringValue() const
 //    StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
   Iterator_t    child_iter = this->getChildren();
   child_iter->open();
-  Item*  child_item;
-  while((child_item=&*child_iter->next()))
+  Item_t  child_item;
+  while(child_iter->next(child_item))
   {
-    XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+    XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
     StoreConsts::NodeKind kind = child->getNodeKind();
 
     if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
@@ -1116,10 +1108,10 @@ Item_t ElementNode::getNilled() const
 //  {
   Iterator_t    child_iter = this->getChildren();
   child_iter->open();
-  Item*  child_item;
-  while((child_item=&*child_iter->next()))
+  Item_t  child_item;
+  while(child_iter->next(child_item))
   {
-    XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+    XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
     if (child->getNodeKind() == StoreConsts::elementNode ||
         child->getNodeKind() == StoreConsts::textNode)
     {
@@ -1222,11 +1214,7 @@ void ElementNode::getNamespaceBindings(
 void ElementNode::setNsContext(NsBindingsContext* parentCtx)
 {
   if (theNsContext == NULL)
-  {
-  //  if(parentCtx)
-  //    theFlags |= XmlNode::HaveLocalBindings;
     theNsContext = parentCtx;
-  }
   else if (theNsContext.getp() != parentCtx)
     theNsContext->setParent(parentCtx);
 }
@@ -1550,10 +1538,10 @@ XmlNode* ElementNode::copy(
 //    {
     Iterator_t    child_iter = this->getChildren();
     child_iter->open();
-    Item*  child_item;
-    while((child_item=&*child_iter->next()))
+    Item_t  child_item;
+    while(child_iter->next(child_item))
     {
-      XmlNode* child = reinterpret_cast<XmlNode*>(child_item);
+      XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
       child->copy(rootParent, copyNode, 0, copymode);
     }
   }
@@ -1602,7 +1590,6 @@ void ElementNode::addBaseUriProperty(
   const SimpleStore& store = GET_STORE();
 
   Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
-//  Item_t  qname = new QNameItemImpl(store.XML_URI, "xml", "base");
   Item_t tname = store.theSchemaTypeNames[XS_ANY_URI];
 
   Item_t typedValue;
@@ -1673,22 +1660,19 @@ xqp_string ElementNode::show() const
   }
 
   Iterator_t iter = getAttributes();
-  Item_t item = iter->next();
-  while (item != NULL)
+  Item_t item;
+  while (iter->next(item))
   {
     str << " " << item->show();
-    item = iter->next();
   }
 
   str << ">";
 
   iter = getChildren();
   iter->open();
-  item = iter->next();
-  while (item != NULL)
+  while (iter->next(item))
   {
     str << item->show();
-    item = iter->next();
   }
 
   str << "</" << *theName->getStringValue() << "-elem>";
@@ -1878,15 +1862,12 @@ void ConstrElementNode::constructSubtree(
 
   if (attributesIte != 0)
   {
-    item = attributesIte->next();
-    while (item != 0)
+    while (attributesIte->next(item))
     {
       ZORBA_FATAL(item->isNode(), "");
       ZORBA_FATAL(item->getNodeKind() == StoreConsts::attributeNode, "");
 
       addAttribute(ATTR_NODE(item), copy, copymode, staticBaseUri, haveBaseUri);
-
-      item = attributesIte->next();
     }
   }
   
@@ -1904,10 +1885,12 @@ void ConstrElementNode::constructSubtree(
     haveBaseUri = true;
   }
 
+  bool valid = false;
+
   if (childrenIte != 0)
   {
-    item = childrenIte->next();
-    while (item != 0)
+    childrenIte->open();
+    while (valid = childrenIte->next(item))
     {
       ZORBA_FATAL(item->isNode(), "");
       ZORBA_FATAL(item->getNodeKind() != StoreConsts::documentNode, "");
@@ -1916,8 +1899,6 @@ void ConstrElementNode::constructSubtree(
         break;
 
       addAttribute(ATTR_NODE(item), copy, copymode, staticBaseUri, haveBaseUri);
-
-      item = childrenIte->next();
     }
 
     if (!haveBaseUri && isRoot)
@@ -1926,7 +1907,7 @@ void ConstrElementNode::constructSubtree(
       addBaseUriProperty(staticBaseUri, nulluri);
     }
 
-    while (item != 0)
+    while (valid)
     {
       ZORBA_FATAL(item->isNode(), "");
       ZORBA_FATAL(item->getNodeKind() != StoreConsts::documentNode, "");
@@ -1936,8 +1917,10 @@ void ConstrElementNode::constructSubtree(
       if (cnode->theParent != this)
         addChild(cnode, copy, copymode);
       
-      item = childrenIte->next();
+      valid = childrenIte->next(item);
     }
+    
+    childrenIte->close();
   }
   else if (!haveBaseUri && isRoot)
   {

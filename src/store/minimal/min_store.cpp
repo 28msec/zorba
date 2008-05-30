@@ -15,11 +15,12 @@
  */
 #include <iostream>
 
-#include "util/rchandle.h"
+#include "zorbautils/hashfun.h"
+#include "zorbatypes/rchandle.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/fatal.h"
+#include "zorbaerrors/Assert.h"
 
-#include "errors/error_manager.h"
-#include "errors/fatal.h"
-#include "util/hashfun.h"
 #include "util/properties.h"
 
 #include "store/util/hashmap_stringp.h"
@@ -46,7 +47,7 @@ namespace zorba { namespace store {
 
 typedef rchandle<TempSeq> TempSeq_t;
 
-const ulong SimpleStore::NAMESPACE_POOL_SIZE = 128;
+const ulong SimpleStore::NAMESPACE_POOL_SIZE = 32;//128;
 const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
@@ -282,7 +283,81 @@ Item_t SimpleStore::createUri()
   uristream << "zorba://internalURI-" << SimpleStore::theUriCounter++;
   SYNC_CODE(theUriCounterMutex.unlock();)
 
-  return theItemFactory->createAnyURI(uristream.str().c_str()).getp();
+  Item_t val;
+  theItemFactory->createAnyURI(val, uristream.str().c_str());
+  return val;
+}
+
+
+/*******************************************************************************
+  Create a collection with a given URI and return an rchandle to the new
+  collection object. If a collection with the given URI exists already, return
+  NULL and register an error.
+********************************************************************************/
+Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  Item_t uriItem;
+  theItemFactory->createAnyURI(uriItem, uri);
+
+  Collection_t collection(new SimpleCollection(uriItem));
+
+  const xqpStringStore* urip = uri;
+  bool inserted = theCollections.insert(urip, collection);
+
+  if (!inserted)
+  {
+    ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
+    return NULL;
+  }
+
+  return collection;
+}
+
+
+/*******************************************************************************
+  Create a collection in the store. The collection will be assigned an internal
+  URI by the store.
+********************************************************************************/
+Collection_t SimpleStore::createCollection()
+{
+  Item_t uriItem = createUri();
+
+  xqpStringStore_t uriStr = uriItem->getStringValue();
+
+  return createCollection(uriStr);
+}
+
+
+/*******************************************************************************
+  Return an rchandle to the Collection object corresponding to the given URI,
+  or NULL if there is no collection with that URI.
+********************************************************************************/
+Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  Collection_t collection;
+  if (theCollections.get(uri, collection) )
+    return collection.getp();
+  else
+    return NULL;
+}
+
+
+/*******************************************************************************
+  Delete the collection with the given URI. If there is no collection with
+  that URI, this method is a NOOP.
+********************************************************************************/
+void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return;
+
+  theCollections.remove(uri);
 }
 
 
@@ -351,32 +426,29 @@ Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
 }
 
 /*******************************************************************************
-
+  Add the given node with the given uri to the store. Essentially, this method
+  establishes an association between a uri and a node. If the given uri is 
+  already associated to another node, the method raises an error. If the given
+  uri is already associated to the given node, this method is a noop.
 ********************************************************************************/
-Item_t SimpleStore::loadDocument(const xqpStringStore_t& uri, Item_t docItem)
+void SimpleStore::addNode(const xqpStringStore* uri, const Item_t& node)
 {
-  if (uri == NULL || docItem == NULL)
-    return NULL;
+  ZORBA_ASSERT(uri != NULL);
 
-	if(!docItem->isNode())
+	if(node == NULL || !node->isNode())
   {
     ZORBA_ERROR_PARAM( API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
-		return NULL;
   }
 
-  const xqpStringStore* urip = uri;
-  XmlNode_t root = reinterpret_cast<XmlNode*>(docItem.getp());
-  bool inserted = theDocuments.insert(urip, root);
+  XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());
+  bool inserted = theDocuments.insert(uri, root);
 
-  if (!inserted && docItem.getp() != root.getp())
+  if (!inserted && node.getp() != root.getp())
   {
     ZORBA_ERROR_PARAM(API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
-    return NULL; 
   }
 
-  ZORBA_FATAL(docItem.getp() == root.getp(), "");
-
-	return root;
+  ZORBA_FATAL(node.getp() == root.getp(), "");
 }
 
 
@@ -410,76 +482,6 @@ void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
   theDocuments.remove(uri);
 }
 
-
-/*******************************************************************************
-  Create a collection with a given URI and return an rchandle to the new
-  collection object. If a collection with the given URI exists already, return
-  NULL and register an error.
-********************************************************************************/
-Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return NULL;
-
-  Item_t uriItem = theItemFactory->createAnyURI(uri);
-
-  Collection_t collection(new SimpleCollection(uriItem));
-
-  const xqpStringStore* urip = uri;
-  bool inserted = theCollections.insert(urip, collection);
-
-  if (!inserted)
-  {
-    ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
-    return NULL;
-  }
-
-  return collection;
-}
-
-
-/*******************************************************************************
-  Create a collection in the store. The collection will be assigned an internal
-  URI by the store.
-********************************************************************************/
-Collection_t SimpleStore::createCollection()
-{
-  Item_t uriItem = createUri();
-
-  xqpStringStore_t uriStr = uriItem->getStringValue();
-
-  return createCollection(uriStr);
-}
-
-
-/*******************************************************************************
-  Return an rchandle to the Collection object corresponding to the given URI,
-  or NULL if there is no collection with that URI.
-********************************************************************************/
-Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return NULL;
-
-  Collection_t collection;
-  if (theCollections.get(uri, collection) )
-    return collection.getp();
-  else
-    return NULL;
-}
-
-
-/*******************************************************************************
-  Delete the collection with the given URI. If there is no collection with
-  that URI, this method is a NOOP.
-********************************************************************************/
-void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return;
-
-  theCollections.remove(uri);
-}
 
 
 /*******************************************************************************
@@ -543,9 +545,27 @@ Iterator_t SimpleStore::distinctNodes(Iterator* input, bool aAllowAtomics)
 /*******************************************************************************
   Computes the URI for the given node.
 ********************************************************************************/
-Item_t SimpleStore::getReference(Item_t node)
+bool SimpleStore::getReference(Item_t& result, const Item* node)
 {
-  return rchandle<Item>(NULL);
+  std::ostringstream stream;
+
+  const XmlNode* n = reinterpret_cast<const XmlNode*>(node);
+
+  if (n->getNodeKind() == StoreConsts::attributeNode)
+  {
+    stream << "zorba://node_reference/" << n->getTreeId() << "/a/"
+           << n->getOrdPath().serialize();
+  }
+  else
+  {
+    stream << "zorba://node_reference/" << n->getTreeId() << "/c/"
+           << n->getOrdPath().serialize();
+  }
+
+  xqpStringStore_t str(new xqpStringStore(stream.str()));
+
+  result = new AnyUriItemImpl(str);
+  return true;
 }
 
 
@@ -555,9 +575,182 @@ Item_t SimpleStore::getReference(Item_t node)
   @param uri Has to be an xs:URI item
   @returns referenced item if it exists, otherwise NULL
 ********************************************************************************/
-Item_t SimpleStore::getNodeByReference(Item_t)
+bool SimpleStore::getNodeByReference(Item_t& result, const Item* uri)
 {
-  return rchandle<Item> ( NULL );
+  xqpStringStore* str = uri->getStringValueP();
+
+  ulong prefixlen = strlen("zorba://node_reference/");
+
+  if (strncmp(str->c_str(), "zorba://node_reference/", prefixlen))
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  //
+  // Decode tree id
+  //
+  const char* start = str->c_str() + prefixlen;
+  char* next = const_cast<char*>(start);
+
+  long tmp = 0;
+  tmp = strtol(start, &next, 10);
+
+  if (tmp <= 0 || tmp == LONG_MAX)
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  start = next;
+
+  if (*start != '/')
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  ulong treeid = (ulong)tmp;
+
+  //
+  // Check if the uri specifies attribute node or not
+  //
+  bool attributeNode;
+
+  start++;
+  if (*start == 'a')
+    attributeNode = true;
+  else if (*start == 'c')
+    attributeNode = false;
+  else
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  start++;
+  if (*start != '/')
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  start++;
+
+  //
+  // Search for the tree
+  //
+  XmlNode* rootNode = NULL;
+  DocumentSet::iterator it = theDocuments.begin();
+  DocumentSet::iterator end = theDocuments.end();
+
+  for (; it != end; ++it)
+  {
+    rootNode = (*it).second.getp();
+
+    if (rootNode->getTreeId() == treeid)
+      break;
+  }
+
+  if (rootNode == NULL)
+  {
+    CollectionSet::iterator it = theCollections.begin();
+    CollectionSet::iterator end = theCollections.end();
+
+    for (; it != end; ++it)
+    {
+      Collection_t col = (*it).second.getp();
+
+      Iterator_t colIter = col->getIterator(true);
+
+      colIter->open();
+
+      Item_t rootItem;
+      if (!colIter->next(rootItem)) {
+        rootItem = NULL;
+      }
+      while (rootItem != NULL)
+      {
+        rootNode = BASE_NODE(rootItem);
+        if (rootNode->getTreeId() == treeid)
+          break;
+      }
+
+      colIter->close();
+
+      if (rootNode != NULL)
+        break;
+    }
+
+    if (rootNode == NULL) {
+      result = NULL;
+      return false;
+    }
+  }
+
+  //
+  // Search for node in the tree
+  //
+  
+  OrdPath op((unsigned char*)start, strlen(start));
+
+  if (rootNode->getOrdPath() == op) {
+    result = rootNode;
+    return true;
+  }
+
+  XmlNode* parent = rootNode;
+
+  while (1)
+  {
+    ulong i;
+
+    if (attributeNode)
+    {
+      ulong numAttrs = parent->numAttributes();
+      for (i = 0; i < numAttrs; i++)
+      {
+        XmlNode* child = parent->getAttr(i);
+
+        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
+
+        if (pos == OrdPath::SELF)
+        {
+          return child;
+        }
+        else if (pos == OrdPath::DESCENDANT)
+        {
+          parent = child;
+          break;
+        }
+        else if (pos !=  OrdPath::FOLLOWING)
+        {
+          result = NULL;
+          return false;
+        }
+      }
+
+      if (i == numAttrs) {
+        result = NULL;
+        return false;
+      }
+    }
+    else
+    {
+      ulong numChildren = parent->numChildren();
+      for (i = 0; i < numChildren; i++)
+      {
+        XmlNode* child = parent->getChild(i);
+
+        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
+
+        if (pos == OrdPath::SELF)
+        {
+          result = child;
+          return result != NULL;
+        }
+        else if (pos == OrdPath::DESCENDANT)
+        {
+          parent = child;
+          break;
+        }
+        else if (pos !=  OrdPath::FOLLOWING)
+        {
+          result = NULL;
+          return false;
+        }
+      }
+
+      if (i == numChildren)
+        result = NULL;
+        return false;
+    }
+  }
 }
 
 

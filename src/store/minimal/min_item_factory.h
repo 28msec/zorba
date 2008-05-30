@@ -28,7 +28,7 @@
 namespace zorba { namespace store {
 
 class CopyMode;
-  class PUL;
+class PUL;
 
 typedef StringPool UriPool;
 
@@ -44,151 +44,155 @@ public:
 
   virtual ~BasicItemFactory();
 
-  Item_t createQName(
+  bool createQName(
+        Item_t& result,
         xqpStringStore* ns,
         xqpStringStore* pre,
         xqpStringStore* local,
-        bool*           inserted = 0 );
+        bool*           inserted = 0);
 
-  Item_t createQName(
+  bool createQName(
+        Item_t& result,
         const char* ns,
         const char* pre,
         const char* ln);
 
-  Item_t createNCName(xqpStringStore_t& value);
+  bool createNCName(Item_t& result, xqpStringStore_t& value);
+        
 
-  Item_t createAnyURI(xqpStringStore_t& value);
-  Item_t createAnyURI(const char* value);
+  bool createAnyURI(Item_t& result, xqpStringStore_t& value);
+  bool createAnyURI(Item_t& result, const char* value);
 
-  Item_t createUntypedAtomic(xqpStringStore_t& value);
+  bool createUntypedAtomic(Item_t& result, xqpStringStore_t& value);
 
-  Item_t createString(xqpStringStore_t& value);
+  bool createString(Item_t& result, xqpStringStore_t& value);
 
-  Item_t createBase64Binary(xqp_base64Binary value);
+  bool createBase64Binary(Item_t& result, xqp_base64Binary value);
 
-  Item_t createBoolean(xqp_boolean value);
+  bool createBoolean(Item_t& result, xqp_boolean value);
 
-  Item_t createDecimal(xqp_decimal value);
+  bool createDecimal(Item_t& result, xqp_decimal value);
 
-  Item_t createInteger(xqp_integer value);
+  bool createInteger(Item_t& result, xqp_integer value);
 
-  Item_t createLong(xqp_long value);
+  bool createLong(Item_t& result, xqp_long value);
 
-  Item_t createInt(xqp_int value);
+  bool createInt(Item_t& result, xqp_int value);
 
-  Item_t createShort(xqp_short value);
+  bool createShort(Item_t& result, xqp_short value);
 
-  Item_t createByte(xqp_byte value);
+  bool createByte(Item_t& result, xqp_byte value);
 
-  Item_t createDate(xqp_date& value);
+  bool createDate(Item_t& result, xqp_date& value);
   
-  Item_t createDate(short year, short month, short day);
+  bool createDate(Item_t& result, short year, short month, short day);
 
-  Item_t createDate(const xqp_string& value);
+  bool createDate(Item_t& result, const xqp_string& value);
 
-  Item_t createDateTime(xqp_dateTime& value);
+  bool createDateTime(Item_t& result, xqp_dateTime& value);
  
-  Item_t createDateTime(short year, short month, short day, short hour, short minute, double second);
+  bool createDateTime(Item_t& result, short year, short month, short day, short hour, short minute, double second);
 
-  Item_t createDateTime(short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
+  bool createDateTime(Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
 
-  Item_t createDateTime(const xqp_string& value);
+  bool createDateTime(Item_t& result, const xqp_string& value);
   
-  Item_t createDateTime(const Item_t&, const Item_t&);
+  bool createDateTime(Item_t& result, const Item_t&, const Item_t&);
 
-  Item_t createDouble(xqp_double value);
+  bool createDouble(Item_t& result, xqp_double value);
 
-  Item_t createDuration(xqp_duration& value);
+  bool createDuration(Item_t& result, xqp_duration& value);
   
-  Item_t createDuration(const xqp_string& value);
+  bool createDuration(Item_t& result, const xqp_string& value);
 
-  Item_t createDuration(short years, short months, short days, short hours, short minutes, double seconds);
+  bool createDuration(Item_t& result, short years, short months, short days, short hours, short minutes, double seconds);
 
-  Item_t createENTITIES (xqpStringStore_t& value );
+  bool createENTITIES(Item_t& result, xqpStringStore_t& value);
 
-  Item_t createENTITY (xqpStringStore_t& value );
+  bool createENTITY(Item_t& result, xqpStringStore_t& value);
 
-  Item_t createFloat ( xqp_float value );
+  bool createFloat(Item_t& result, xqp_float value);
 
-  Item_t createGDay (xqp_gDay& value );
+  bool createGDay(Item_t& result, xqp_gDay& value);
 
-  Item_t createGDay ( const xqp_string& value );
+  bool createGDay(Item_t& result, const xqp_string& value);
 
-  Item_t createGDay ( short day );
+  bool createGDay(Item_t& result, short day);
 
-  Item_t createGMonth (xqp_gMonth& value);
+  bool createGMonth(Item_t& result, xqp_gMonth& value);
 
-  Item_t createGMonth ( const xqp_string& value );
+  bool createGMonth(Item_t& result, const xqp_string& value);
 
-  Item_t createGMonth ( short month );
+  bool createGMonth(Item_t& result, short month);
 
-  Item_t createGMonthDay (xqp_gMonthDay& value);
+  bool createGMonthDay (Item_t& result, xqp_gMonthDay& value);
 
-  Item_t createGMonthDay ( const xqp_string& value );
+  bool createGMonthDay (Item_t& result,  const xqp_string& value );
 
-  Item_t createGMonthDay ( short month, short day );
+  bool createGMonthDay (Item_t& result,  short month, short day );
 
-  Item_t createGYear (xqp_gYear& value);
+  bool createGYear (Item_t& result, xqp_gYear& value);
   
-  Item_t createGYear ( const xqp_string& value );
+  bool createGYear (Item_t& result,  const xqp_string& value );
 
-  Item_t createGYear ( short year );
+  bool createGYear (Item_t& result,  short year );
 
-  Item_t createGYearMonth (xqp_gYearMonth& value);
+  bool createGYearMonth (Item_t& result, xqp_gYearMonth& value);
 
-  Item_t createGYearMonth ( const xqp_string& value );
+  bool createGYearMonth (Item_t& result,  const xqp_string& value );
 
-  Item_t createGYearMonth ( short year, short month );
+  bool createGYearMonth (Item_t& result,  short year, short month );
 
-  Item_t createHexBinary ( xqp_hexBinary value );
+  bool createHexBinary (Item_t& result,  xqp_hexBinary value );
 
-  Item_t createID (xqpStringStore_t& value );
+  bool createID (Item_t& result, xqpStringStore_t& value );
 
-  Item_t createIDREF ( xqpStringStore_t& value );
+  bool createIDREF (Item_t& result,  xqpStringStore_t& value );
 
-  Item_t createIDREFS ( xqpStringStore_t& value );
+  bool createIDREFS (Item_t& result,  xqpStringStore_t& value );
 
-  Item_t createLanguage ( xqpStringStore_t& value );
+  bool createLanguage (Item_t& result,  xqpStringStore_t& value );
 
-  Item_t createNMTOKEN ( xqpStringStore_t& value );
+  bool createNMTOKEN (Item_t& result,  xqpStringStore_t& value );
 
-  Item_t createNMTOKENS ( xqpStringStore_t& value );
+  bool createNMTOKENS (Item_t& result,  xqpStringStore_t& value );
 
-  Item_t createNOTATION ( xqpStringStore_t& value );
+  bool createNOTATION (Item_t& result,  xqpStringStore_t& value );
 
-  Item_t createName ( xqpStringStore_t& value );
+  bool createName (Item_t& result,  xqpStringStore_t& value );
 
-  Item_t createNegativeInteger ( xqp_integer value );
+  bool createNegativeInteger (Item_t& result,  xqp_integer value );
 
-  Item_t createNonNegativeInteger(xqp_uinteger value );
+  bool createNonNegativeInteger(Item_t& result, xqp_uinteger value );
 
-  Item_t createNonPositiveInteger(xqp_integer value );
+  bool createNonPositiveInteger(Item_t& result, xqp_integer value );
 
-  Item_t createNormalizedString(xqpStringStore_t& value );
+  bool createNormalizedString(Item_t& result, xqpStringStore_t& value );
 
-  Item_t createPositiveInteger( xqp_uinteger value );
+  bool createPositiveInteger(Item_t& result,  xqp_uinteger value );
 
-  Item_t createTime(xqp_time& value);
+  bool createTime(Item_t& result, xqp_time& value);
   
-  Item_t createTime(const xqp_string& value );
+  bool createTime(Item_t& result, const xqp_string& value );
 
-  Item_t createTime(short hour, short minute, double second );
+  bool createTime(Item_t& result, short hour, short minute, double second );
 
-  Item_t createTime(short hour, short minute, double second, short timeZone_hours);
+  bool createTime(Item_t& result, short hour, short minute, double second, short timeZone_hours);
 
-  Item_t createToken(xqpStringStore_t& value);
+  bool createToken(Item_t& result, xqpStringStore_t& value);
 
-  Item_t createUnsignedByte(xqp_ubyte value);
+  bool createUnsignedByte(Item_t& result, xqp_ubyte value);
 
-  Item_t createUnsignedInt(xqp_uint value);
+  bool createUnsignedInt(Item_t& result, xqp_uint value);
 
-  Item_t createUnsignedLong(xqp_ulong value);
+  bool createUnsignedLong(Item_t& result, xqp_ulong value);
 
-  Item_t createUnsignedShort(xqp_ushort value);
+  bool createUnsignedShort(Item_t& result, xqp_ushort value);
 
 
 
-  Item_t createDocumentNode(
+  bool createDocumentNode(
+        Item_t& result,
         ulong             qid,
         xqpStringStore_t& baseURI,
         Iterator*         children,
@@ -197,7 +201,8 @@ public:
         bool              copy,
         const CopyMode&   copymode);
 
-  Item_t createElementNode(
+  bool createElementNode(
+        Item_t& result,
         ulong             qid,
         Item_t&           name,
         Item_t&           type,
@@ -211,7 +216,8 @@ public:
         bool              copy,
         const CopyMode&   copymode);
 
-  Item_t createAttributeNode(
+  bool createAttributeNode(
+        Item_t& result,
         ulong     qid,
         Iterator* nameIter,
         Item_t&   typeName,
@@ -219,26 +225,30 @@ public:
         bool      isRoot,
         bool      assignIds);
 
-  Item_t createTextNode(
+  bool createTextNode(
+        Item_t& result,
         ulong           qid,
         Iterator*       valueIter,
         bool            isRoot,
         bool            assignIds);
 
-  Item_t createTextNode(
+  bool createTextNode(
+        Item_t& result,
         ulong             qid,
         xqpStringStore_t& content,
         bool              isRoot,
         bool              assignIds);
 
-  Item_t createPiNode (
+  bool createPiNode (
+        Item_t& result,
         ulong             qid,
         xqpStringStore_t& target,
         xqpStringStore_t& content,
         bool              isRoot,
         bool              assignIds);
 
-  Item_t createCommentNode (
+  bool createCommentNode (
+        Item_t& result,
         ulong             qid,
         xqpStringStore_t& content,
         bool              isRoot,

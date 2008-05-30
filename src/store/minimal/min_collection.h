@@ -17,11 +17,11 @@
 #define ZORBA_STORE_MINIMAL_COLLECTION
 
 #include <set>
+#include "zorbautils/latch.h"
 #include "common/common.h"
 
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
-#include "store/util/latch.h"
 
 namespace zorba { namespace store {
 
@@ -46,7 +46,7 @@ public:
     ~CollectionIter();
 
     void open();
-    Item_t next();
+    bool next(Item_t& result);
     void reset();
     void close();
   };

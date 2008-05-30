@@ -16,6 +16,8 @@
 #ifndef ZORBA_MINIMAL_STORE___
 #define ZORBA_MINIMAL_STORE___
 
+#include "zorbautils/mutex.h"
+#include "zorbautils/latch.h"
 
 #include "common/shared_types.h"
 
@@ -23,8 +25,6 @@
 #include "store/api/collection.h"
 
 #include "store/util/hashmap_stringp.h"
-#include "store/util/mutex.h"
-#include "store/util/latch.h"
 
 #include "store/minimal/shared_types.h"
 #include "store/minimal/min_node_items.h"
@@ -49,7 +49,7 @@ typedef StringHashMap<XmlNode_t> DocumentSet;
 ********************************************************************************/
 class SimpleStore : public Store
 {
-  friend class zorba::GlobalEnvironment;
+  friend class GlobalEnvironment;
  
 public:
   static const char* XS_URI;
@@ -118,18 +118,18 @@ public:
   QueryContext& getQueryContext(ulong queryId);
   void deleteQueryContext(ulong queryId);
 
-  store::Item_t createUri();
-
-  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
-  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
-  store::Item_t loadDocument(const xqpStringStore_t& uri, store::Item_t	 doc_item);
-  store::Item_t getDocument(const xqpStringStore_t& uri);
-  void deleteDocument(const xqpStringStore_t& uri);
+  Item_t createUri();
 
   Collection_t createCollection(xqpStringStore_t& uri);
   Collection_t createCollection();
   Collection_t getCollection(const xqpStringStore_t& uri);
   void deleteCollection(const xqpStringStore_t& uri);
+
+  Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
+  Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
+  void addNode(const xqpStringStore* uri, const Item_t&	 node);
+  Item_t getDocument(const xqpStringStore_t& uri);
+  void deleteDocument(const xqpStringStore_t& uri);
 
   long compareNodes(Item* node1, Item* node2) const;
 
@@ -141,12 +141,12 @@ public:
 
   Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false);
 
+  bool getReference(Item_t& result, const Item* node);
+  bool getNodeByReference(Item_t& result, const Item* uri);
+
   TempSeq_t createTempSeq();
   TempSeq_t createTempSeq(Iterator* iterator, bool copyNodes = false, bool lazy = true);
 
-  store::Item_t getReference(store::Item_t);
-
-  store::Item_t getNodeByReference(store::Item_t);
 };
 
 

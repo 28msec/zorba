@@ -44,7 +44,7 @@ public:
   ChildrenIterator(XmlNode* parent);
 
   void open();
-  Item_t next();
+  bool next(Item_t& result);
   void reset();
   void close();
 };
@@ -61,7 +61,7 @@ public:
   ChildrenIteratorLazy(XmlNode* parent);
 
   void open();
-  Item_t next();
+  bool next(Item_t& result);
   void reset();
   void close();
 };
@@ -86,7 +86,7 @@ public:
   AttributesIterator(ElementNode* parent);
 
   void open();
-  Item_t next();
+  bool next(Item_t& result);
   void reset();
   void close();
 };
@@ -118,7 +118,7 @@ public:
   virtual ~StoreNodeDistinctIterator() { close(); }
 
   void open();
-  Item_t next();
+  bool next(Item_t& result);
   void reset();
   void close();
 };
@@ -146,7 +146,7 @@ public:
   {
   }
 
-  Item_t next(); 
+  bool next(Item_t& result); 
 
   void reset() 
   {
@@ -213,7 +213,7 @@ public:
   virtual ~StoreNodeSortIterator() { close(); }
 
   void open();
-  Item_t next();
+  bool next(Item_t& result);
   void reset();
   void close();
 };
@@ -241,7 +241,7 @@ public:
   {
   }
 
-  Item_t next();
+  bool next(Item_t& result);
 
   void reset() 
   {

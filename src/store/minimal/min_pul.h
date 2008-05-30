@@ -18,11 +18,10 @@
 
 #include <vector>
 
-#include "util/hashfun.h"
+#include "zorbautils/hashfun.h"
+#include "zorbautils/hashmap.h"
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
-//#include "store/util/hashset_item_handle.h"
-#include "store/util/hashmap.h"
 #include "store/minimal/min_node_vector.h"
 #include "store/minimal/min_node_updates.h"
 
@@ -40,7 +39,9 @@ typedef std::vector<UpdatePrimitive*> NodeUpdates;
 /*******************************************************************************
 
 ********************************************************************************/
-class NodeToUpdatesMap : public HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>
+class NodeToUpdatesMap : public HashMap<XmlNode*, 
+                                        NodeUpdates*, 
+                                        NodeToUpdatesMap>
 {
 public:
 
@@ -55,7 +56,9 @@ public:
   }
 
 
-  NodeToUpdatesMap() : HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8, false)
+  NodeToUpdatesMap() 
+    : 
+    HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8, false)
    {
    }
   ~NodeToUpdatesMap();

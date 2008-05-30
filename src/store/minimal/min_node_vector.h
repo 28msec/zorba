@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "common/common.h"
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 
 #include "store/minimal/shared_types.h"
 

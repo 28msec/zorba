@@ -35,13 +35,15 @@ ItemIterator::open()
   theIterator = theItems.begin();
 }
 
-Item_t
-ItemIterator::next() 
+bool
+ItemIterator::next(Item_t& result) 
 {
   if (theIterator == theItems.end()) {
-    return 0;
+    result = NULL;
+    return false;
   } else {
-    return *(theIterator++);
+    result = *(theIterator++);
+    return true;
   }
 }
 

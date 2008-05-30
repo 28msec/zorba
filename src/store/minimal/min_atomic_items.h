@@ -63,7 +63,7 @@ class QNameItemImpl : public AtomicItem
   friend class QNamePoolHashSet;
   friend class ElementNode;
 
-public:
+private:
   xqpStringStore_t  theNamespace;
   xqpStringStore_t  thePrefix;
   xqpStringStore_t  theLocal;
@@ -71,18 +71,12 @@ public:
   uint16_t          thePosition;
   uint16_t          theNextFree;
   uint16_t          thePrevFree;
-public:
-  QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
-  //QNameItemImpl(xqpStringStore  *ns, 
-  //              xqpStringStore  *pre,
-  //              xqpStringStore  *local);
-  //QNameItemImpl(const char  *ns, 
-  //              const char  *pre,
-  //              const char  *local);
-
-  virtual ~QNameItemImpl() { }
 
 private:
+  QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
+ 
+  virtual ~QNameItemImpl() { }
+
   void free();
 
   bool isInCache() const               { return thePosition != 0; }
@@ -124,6 +118,7 @@ public:
   virtual xqpStringStore* getStringValueP() const { return theValue.getp(); }
   virtual xqp_string show() const;
 };
+
 
 /*******************************************************************************
   class NCNameItem
@@ -174,14 +169,14 @@ protected:
   xqpStringStore_t theValue;
 
 public:
-  AnyUriItemImpl(xqpStringStore_t value){ theValue = value; }
+  AnyUriItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
   Item* getType( ) const;
   uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;
   bool equals(const Item*, RuntimeCB*, XQPCollator* aCollation = 0) const;
   Item_t getEBV( ) const;
   xqpStringStore_t getStringValue( ) const { return theValue.getp(); }
-  xqpStringStore* getStringValueP() const { return theValue.getp(); }
+  xqpStringStore* getStringValueP() const  { return theValue.getp(); }
   xqp_string show() const;
 };
 
@@ -195,7 +190,7 @@ private:
   xqpStringStore_t theValue;
 
 public:
-  UntypedAtomicItemImpl(xqpStringStore_t& value){ theValue.transfer(value);}
+  UntypedAtomicItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
   Item* getType( ) const;
   uint32_t hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation = 0) const;

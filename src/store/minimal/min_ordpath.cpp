@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 #include <cassert>
-#include "errors/error_manager.h"
-#include "util/Assert.h"
-#include "util/hashfun.h"
+#include "zorbautils/hashfun.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
 
 #include "store/minimal/min_ordpath.h"
 #include "store/minimal/min_store_defs.h"
@@ -183,6 +183,80 @@ const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
 
 
 /*******************************************************************************
+  Create a binary ordpath out of a strigified one.
+********************************************************************************/
+OrdPath::OrdPath(const unsigned char* str, ulong strLen)
+{
+  unsigned char* buf;
+  bool isLocal;
+
+  ulong byteLen = (strLen + 1) / 2;
+
+  if (byteLen > MAX_BYTE_LEN)
+  {
+    ZORBA_ERROR_PARAM_OSS(XQP0018_NODEID_ERROR,
+                          "A nodeid requires more than " << MAX_BYTE_LEN
+                          << " bytes", "");
+  }
+
+  memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
+
+  if (byteLen < MAX_EMBEDDED_BYTE_LEN ||
+      byteLen == MAX_EMBEDDED_BYTE_LEN && (str[MAX_EMBEDDED_BYTE] & 0x1 == 0))
+  {
+    buf = theBuffer;
+    isLocal = true;
+  } 
+  else
+  {
+    setRemoteBuffer(new unsigned char[byteLen + 1]);
+    memset(getRemoteBuffer(), 0, byteLen+1);
+    getRemoteBuffer()[0] = (unsigned char)byteLen;
+    buf = &getRemoteBuffer()[1];
+    isLocal = false;
+  }
+
+  const unsigned char* start = str;
+  ulong i = 0;
+
+  while (1)
+  {
+    char ch = *start;
+
+    if (ch >= '0' && ch <= '9')
+      buf[i] = ch - 48;
+    else if (ch >= 'a' && ch <= 'f')
+      buf[i] = ch - 87;
+    else if (ch == '\0')
+      break;
+    else
+      ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+
+    buf[i] <<= 4;
+    start++;
+    ch = *start;
+
+    if (ch >= '0' && ch <= '9')
+      buf[i] |= ch - 48;
+    else if (ch >= 'a' && ch <= 'f')
+      buf[i] |= ch - 87;
+    else if (ch == '\0')
+      break;
+    else
+      ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+
+    start++;
+    i++;
+  }
+
+  if (isLocal)
+    markLocal();
+
+  ZORBA_FATAL(i == byteLen, "");
+}
+
+
+/*******************************************************************************
   Set the value of "this" to 1 (i.e. the id of a root node).
 ********************************************************************************/
 void OrdPath::setAsRoot()
@@ -306,7 +380,6 @@ uint32_t OrdPath::hash() const
 }
 
 
-#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -317,9 +390,8 @@ bool OrdPath::operator==(const OrdPath& other) const
   if (len != other.getByteLength())
     return false;
 
-  return !memcmp(theBuffer, other.theBuffer, len);
+  return !memcmp(getData(), other.getData(), len);
 }
-#endif
 
 
 /*******************************************************************************
@@ -412,6 +484,106 @@ int OrdPath::operator>(const OrdPath& other) const
     }
 
     return 1;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+OrdPath::RelativePosition OrdPath::getRelativePosition(const OrdPath& other) const
+{
+  ulong len1;
+  ulong len2;
+  unsigned char* data1 = getDataAndLength(len1);
+  unsigned char* data2 = other.getDataAndLength(len2);
+
+  unsigned char* end1 = data1 + len1;
+  unsigned char* end2 = data2 + len2;
+
+  if (len1 < len2)
+  {
+    while (data1 != end1)
+    {
+      if (*data1 < *data2)
+      {
+        if (data1 == end1-1)
+        {
+          unsigned char ch = 0x1;
+          while ((*data1 & ch) == 0)
+          {
+            ch <<= 1;
+            ch++;
+          }
+          ch >>= 1;
+
+          if (*data1 == (*data2 & ~ch)) 
+            return DESCENDANT;
+        }
+
+        return FOLLOWING;
+      }
+      else if (*data1 > *data2)
+      {
+        return PRECEDING;
+      }
+
+      data1++;
+      data2++;
+    }
+
+    return DESCENDANT;
+  }
+
+  else
+  {
+    while (data2 != end2)
+    {
+      if (*data1 < *data2)
+      {
+        if (data2 == end2-1 && len1 == len2)
+        {
+          unsigned char ch = 0x1;
+          while ((*data1 & ch) == 0)
+          {
+            ch <<= 1;
+            ch++;
+          }
+          ch >>= 1;
+
+          if (*data1 == (*data2 & ~ch)) 
+            return DESCENDANT;
+        }
+
+        return FOLLOWING;
+      }
+      else if (*data1 > *data2)
+      {
+        if (data2 == end2-1)
+        {
+          unsigned char ch = 0x1;
+          while ((*data2 & ch) == 0)
+          {
+            ch <<= 1;
+            ch++;
+          }
+          ch >>= 1;
+
+          if ((*data1 & ~ch) == *data2) 
+            return ANCESTOR;
+        }
+
+        return PRECEDING;
+      }
+
+      data1++;
+      data2++;
+    }
+
+    if (len1 == len2)
+      return SELF;
+    else
+      return ANCESTOR;
   }
 }
 
@@ -738,10 +910,10 @@ bool OrdPath::pushComp(
   OrdPath::bitsNeeded(value, bitsNeeded, eval);
 
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
-  if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
+  if (bytesNeeded > MAX_BYTE_LEN)
   {
     ZORBA_ERROR_PARAM_OSS(XQP0018_NODEID_ERROR,
-                          "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
+                          "A nodeid requires more than " << MAX_BYTE_LEN
                           << " bytes", "");
   }
 
@@ -976,6 +1148,36 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
       return;
     }
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string OrdPath::serialize() const
+{
+  std::stringstream str;
+
+  str << "";
+
+  ulong len;
+  unsigned char* buf = getDataAndLength(len);
+
+  if (len == 0)
+    return str.str().c_str();
+
+  if (isLocal() && len == MAX_EMBEDDED_BYTE_LEN)
+    buf[MAX_EMBEDDED_BYTE] &= 0xFE;
+
+  for (ulong i = 0; i < len; i++)
+  {
+    str << std::hex << (unsigned short)buf[i];
+  }
+
+  if (isLocal() && len == MAX_EMBEDDED_BYTE_LEN)
+    buf[MAX_EMBEDDED_BYTE] |= 0x1;
+
+  return str.str().c_str();
 }
 
 

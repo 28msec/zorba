@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "util/rchandle.h"
-
-#include "errors/error_manager.h"
+#include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "store/minimal/min_collection.h"
 #include "store/minimal/min_loader.h"
@@ -136,12 +134,11 @@ void SimpleCollection::addToCollection(const Item* node)
 ********************************************************************************/
 void SimpleCollection::addToCollection(Iterator* nodeIter)
 {
-  Item_t node = nodeIter->next();
+  Item_t node;
 
-  while (node != NULL)
+  while (nodeIter->next(node))
   {
     addToCollection(node);
-    node = nodeIter->next();
   }
 }
 
@@ -198,16 +195,17 @@ void SimpleCollection::CollectionIter::open()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SimpleCollection::CollectionIter::next()
+bool SimpleCollection::CollectionIter::next(Item_t& result)
 {
+  if (theIterator == theCollection->theXmlTrees.end()) {
+    result = NULL;
+    return false;
+  }
 
-  if (theIterator == theCollection->theXmlTrees.end())
-    return NULL;
-
-  Item* node = (*theIterator).getp();
+  result = (*theIterator).getp();
   theIterator++;
 
-  return node;
+  return true;
 }
 
 

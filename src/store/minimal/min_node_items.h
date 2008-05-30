@@ -20,14 +20,13 @@
 #include "common/common.h"
 #include "store/api/item.h"
 #include "common/shared_types.h"
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "store/minimal/min_ordpath.h"
 #include "store/minimal/min_node_vector.h"
 #include "store/minimal/min_node_updates.h"
 #include "store/minimal/min_loader.h"
 
-namespace zorba { 
-  namespace store {
+namespace zorba {  namespace store {
 
 class CopyMode;
 
