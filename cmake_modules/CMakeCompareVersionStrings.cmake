@@ -15,8 +15,8 @@
 MACRO(COMPARE_VERSION_STRINGS a_in b_in result_out)
   # Since SEPARATE_ARGUMENTS using ' ' as the separation token,
   # replace '.' with ' ' to allow easy tokenization of the string.
-  STRING(REPLACE "." " " a ${a_in})
-  STRING(REPLACE "." " " b ${b_in})
+  STRING(REPLACE "." " " a "${a_in}")
+  STRING(REPLACE "." " " b "${b_in}")
   SEPARATE_ARGUMENTS(a)
   SEPARATE_ARGUMENTS(b)
 
