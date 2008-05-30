@@ -38,6 +38,8 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/XMLUni.hpp>
+#include <xercesc/util/XMLUri.hpp>
+#include <xercesc/util/XMLURL.hpp>
 
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
 #ifdef CYGWIN
