@@ -106,6 +106,21 @@ namespace zorbac {
     ZORBAC_COLLECTION_CATCH
   }
 
+  XQUERY_ERROR
+  Collection::add_document_char(XQC_Collection collection, const char* doc)
+  {
+    ZORBAC_COLLECTION_TRY
+      zorba::Collection* lCollection = getCollection(collection);
+
+      std::stringstream lStream;
+      lStream << doc;
+
+      lCollection->addDocument(lStream);
+
+    ZORBAC_COLLECTION_CATCH
+  }
+
+
   void
   Collection::free(XQC_Collection collection)
   {
@@ -123,12 +138,13 @@ namespace zorbac {
   void
   Collection::assign_functions(XQC_Collection collection)
   {
-    collection->get_uri      = Collection::get_uri;
-    collection->add_node     = Collection::add_node;
-    collection->delete_node  = Collection::delete_node;
-    collection->add_sequence = Collection::add_sequence;
-    collection->add_document = Collection::add_document;
-    collection->free         = Collection::free;
+    collection->get_uri           = Collection::get_uri;
+    collection->add_node          = Collection::add_node;
+    collection->delete_node       = Collection::delete_node;
+    collection->add_sequence      = Collection::add_sequence;
+    collection->add_document      = Collection::add_document;
+    collection->add_document_char = Collection::add_document_char;
+    collection->free              = Collection::free;
   }
 
 } /* namespace zorbac */

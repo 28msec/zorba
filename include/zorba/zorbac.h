@@ -316,6 +316,9 @@ struct XQC_Collection_s
   XQUERY_ERROR
   (*add_document)(XQC_Collection collection, FILE* doc);
 
+  XQUERY_ERROR
+  (*add_document_char)(XQC_Collection collection, const char* doc);
+
   void
   (*free)(XQC_Collection collection);
 

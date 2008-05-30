@@ -38,6 +38,9 @@ namespace zorbac {
       static XQUERY_ERROR
       add_document(XQC_Collection collection, FILE* doc);
 
+      static XQUERY_ERROR
+      add_document_char(XQC_Collection collection, const char* doc);
+
       static void
       free(XQC_Collection);
 

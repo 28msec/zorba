@@ -24,9 +24,13 @@
 int
 cdatamanager_example_1(XQC_Implementation impl, XQC_DataManager mgr)
 {
-  XQC_Collection   lCollection;
-  XQC_Item         lURIItem;
-  const char*      lStringBuffer;
+  XQC_Collection     lCollection;
+  XQC_Item           lURIItem;
+  XQC_Query          lXQuery;
+  XQC_DynamicContext lDynContext;
+  const char*        lStringBuffer;
+  FILE*              lOutput = stdout;
+  int                i;
   
   // create a new collection
   mgr->create_collection(mgr, "http://www.zorba-xquery.com/collections/mybooks", &lCollection);
@@ -35,9 +39,23 @@ cdatamanager_example_1(XQC_Implementation impl, XQC_DataManager mgr)
 
   lURIItem->string_value(lURIItem, &lStringBuffer);
 
-  printf("Collection URI %s", lStringBuffer);
+  printf("Collection URI %s\n", lStringBuffer);
+
+  for (i = 0; i < 10 ; ++i)
+    lCollection->add_document_char(lCollection, 
+                                   "<books><book>Book 1</book><book>Book 2</book></books>");
+
+  impl->compile(impl, "for $i in fn:collection()[3] return $i//book", 0, &lXQuery);
+
+  lXQuery->get_dynamic_context(lXQuery, &lDynContext);
+
+  lDynContext->set_default_collection(lDynContext, lURIItem);
+
+  lXQuery->execute(lXQuery, lOutput);
 
   // free all resources
+  lDynContext->free(lDynContext);
+  lXQuery->free(lXQuery);
   lURIItem->free(lURIItem);
   lCollection->free(lCollection);
 
