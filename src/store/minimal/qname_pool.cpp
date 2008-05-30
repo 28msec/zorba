@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "util/Assert.h"
+#include "zorbaerrors/Assert.h"
 #include "system/globalenv.h"
 
 #include "store/minimal/string_pool.h"
@@ -126,17 +126,18 @@ Item_t QNamePool::insert(
 
   if (ns == NULL) ns = "";
   if (pre == NULL) pre = "";
-  ZORBA_ASSERT(ln != NULL && *ln != '\0');
+  ZORBA_ASSERT(((ln != NULL) && (*ln != '\0')));
 
   xqpStringStore_t pooledNs;
   theNamespacePool->insertc(ns, pooledNs);
 
-  ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns)));
+  ulong hval = hashfun::h32(pre, hashfun::h32(ln, (uint32_t)pooledNs.getp()));
+                                              //hashfun::h32(ns)));
 
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
-  QNHashEntry* entry = hashFind(pooledNs->c_str(), pre, ln,
-                                pooledNs->bytes(), strlen(pre), strlen(ln),
+  QNHashEntry* entry = hashFind(pooledNs.getp(), pre, ln,
+                                //pooledNs->bytes(), strlen(pre), strlen(ln),
                                 hval);
 
   if (entry == 0)
@@ -176,7 +177,7 @@ Item_t QNamePool::insert(
   caller is resposnible for freeing the objects.
 ********************************************************************************/
 Item_t QNamePool::insert(
-    xqpStringStore* ns,
+    xqpStringStore_t ns,
     xqpStringStore* pre,
     xqpStringStore* ln,
     bool*           inserted)
@@ -184,20 +185,23 @@ Item_t QNamePool::insert(
   QNameItemImpl* qn;
   bool found;
 
+  xqpStringStore_t pooledNs;
+  theNamespacePool->insertc(ns.getp(), pooledNs);
+
   ulong hval = hashfun::h32(pre->c_str(),
-                            hashfun::h32(ln->c_str(),
-                                         hashfun::h32(ns->c_str())));
+                            hashfun::h32(ln->c_str(), (uint32_t)pooledNs.getp()));
+                                         //hashfun::h32(ns->c_str())));
 
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
-  QNHashEntry* entry = hashFind(ns->c_str(), pre->c_str(), ln->c_str(),
-                                ns->bytes(), pre->bytes(), ln->bytes(),
+  QNHashEntry* entry = hashFind(pooledNs.getp(), pre, ln,
+                                //ns->bytes(), pre->bytes(), ln->bytes(),
                                 hval);
   if (entry == 0)
   {
     qn = cacheInsert(hval);
 
-    qn->theNamespace = ns;
+    qn->theNamespace = pooledNs;//ns;
     qn->thePrefix = pre;
     qn->theLocal = ln;
 
@@ -254,6 +258,7 @@ QNameItemImpl* QNamePool::cacheInsert(ulong hval)
   If the given qname slot is in the free list of the cache, remove it from that
   list.
 ********************************************************************************/
+
 void QNamePool::cachePin(QNameItemImpl* qn)
 {
   ZORBA_FATAL(qn != NULL, "");
@@ -281,13 +286,14 @@ void QNamePool::cachePin(QNameItemImpl* qn)
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<QNameItemImpl*, DummyHashValue>* QNamePool::hashFind(
-    const char* ns,
+
+QNamePool::QNHashEntry* QNamePool::hashFind(
+    const xqpStringStore* ns,
     const char* pre,
     const char* ln,
-    ulong       nslen,
-    ulong       prelen,
-    ulong       lnlen,
+//    ulong       nslen,
+//    ulong       prelen,
+//    ulong       lnlen,
     ulong       hval)
 {
   QNHashEntry* entry = theHashSet.bucket(hval);
@@ -299,9 +305,40 @@ HashEntry<QNameItemImpl*, DummyHashValue>* QNamePool::hashFind(
   {
     QNameItemImpl* qn = entry->theItem;
 
-    if (qn->theLocal->byteEqual(ln, lnlen) &&
-        qn->theNamespace->byteEqual(ns, nslen) &&
-        qn->thePrefix->byteEqual(pre, prelen))
+    if (qn->theLocal->byteEqual(ln) &&
+        qn->thePrefix->byteEqual(pre) &&
+        qn->theNamespace->byteEqual(*ns)
+        )
+      return entry;
+
+    entry = entry->getNext();
+  }
+
+  return NULL;
+}
+
+QNamePool::QNHashEntry* QNamePool::hashFind(
+    const xqpStringStore* ns,
+    const xqpStringStore* pre,
+    const xqpStringStore* ln,
+//    ulong       nslen,
+//    ulong       prelen,
+//    ulong       lnlen,
+    ulong       hval)
+{
+  QNHashEntry* entry = theHashSet.bucket(hval);
+
+  if (entry->isFree())
+    return NULL;
+
+  while (entry != NULL)
+  {
+    QNameItemImpl* qn = entry->theItem;
+
+    if (qn->theLocal->byteEqual(*ln) &&
+        qn->thePrefix->byteEqual(*pre) &&
+        qn->theNamespace->byteEqual(*ns)
+        )
       return entry;
 
     entry = entry->getNext();

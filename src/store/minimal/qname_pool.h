@@ -17,10 +17,10 @@
 #define ZORBA_SIMPLE_STORE_QNAME_POOL
 
 #include <vector>
+#include "zorbautils/hashfun.h"
+#include "zorbautils/hashset.h"
 #include "common/shared_types.h"
 #include "common/common.h"
-#include "util/hashfun.h"
-#include "store/util/hashset.h"
 #include "store/minimal/min_atomic_items.h"
 
 namespace zorba { namespace store {
@@ -81,7 +81,7 @@ protected:
  typedef HashEntry<QNameItemImpl*, DummyHashValue> QNHashEntry;
 
 public:
-  static const ulong MAX_CACHE_SIZE = 65536;
+  static const ulong MAX_CACHE_SIZE = 256;//65536;
 
 protected:
   QNameItemImpl     * theCache;
@@ -104,7 +104,7 @@ public:
         const char* ln);
 
   Item_t insert(
-        xqpStringStore* ns,
+        xqpStringStore_t ns,
         xqpStringStore* pre,
         xqpStringStore* ln,
         bool*           inserted);
@@ -117,13 +117,15 @@ protected:
   void cachePin(QNameItemImpl* qn);
 
   QNHashEntry* hashFind(
-        const char* ns,
+        const xqpStringStore* ns,
         const char* pre,
         const char* ln,
-        ulong       nslen,
-        ulong       prelen,
-        ulong       lnlen,
         ulong       hval);
+  QNHashEntry* hashFind(
+      const xqpStringStore* ns,
+      const xqpStringStore* pre,
+      const xqpStringStore* ln,
+      ulong       hval);
 };
 
 

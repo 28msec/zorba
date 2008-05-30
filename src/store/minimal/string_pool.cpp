@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "errors/fatal.h"
+#include "zorbaerrors/fatal.h"
 #include "store/minimal/string_pool.h"
 
 namespace zorba { namespace store {
@@ -136,6 +136,7 @@ bool StringPool::insertc(xqpStringStore* str, xqpStringStore_t& outStr)
 ********************************************************************************/
 void StringPool::garbageCollect()
 {
+/*+debug this implem looks fishy
   HashEntry<xqpStringStore_t, DummyHashValue>* entry;
 
   HashEntry<xqpStringStore_t, DummyHashValue>* freeList = NULL;
@@ -203,6 +204,7 @@ void StringPool::garbageCollect()
     entry->setNext(theHashTab[theHashTabSize].getNext());
     theHashTab[theHashTabSize].setNext(freeList);
   }
+  */
 }
 
 } // namespace store
