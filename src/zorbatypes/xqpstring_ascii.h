@@ -24,8 +24,8 @@
 #include <map>
 
 #include "zorbatypes/zorbatypes_decl.h"
-#include "util/rchandle.h"
-#include "util/checked_vector.h"
+#include "zorbatypes/rchandle.h"
+#include "zorbautils/checked_vector.h"
 
 namespace zorba {
 
@@ -97,8 +97,6 @@ public:
 
   const std::string& str() const { return theString; }
 
-  std::string& str() { return theString; }
-
   const char* c_str() const { return theString.c_str(); }
 
   bool empty() const { return theString.empty(); }
@@ -114,11 +112,21 @@ public:
   byteEqual(const xqpStringStore& src) const;
       
   bool
-  byteEqual(const char* src, uint32_t srcLen) const;
+  byteEqual(const char* src, uint32_t srcBytes) const;
 
   bool
   byteEqual(const char* src) const;
 
+
+  // Three-way lexicographical comparison of s and a substring of *this
+  int byteCompare (std::string::size_type pos, std::string::size_type n, std::string s) {
+    return theString.compare (pos, n, s);
+  }
+
+  // Three-way lexicographical comparison of a substring of s and a substring of *this
+  int byteCompare (std::string::size_type pos, std::string::size_type n, std::string s, std::string::size_type pos1, std::string::size_type n1) {
+    return theString.compare (pos, n, s, pos1, n1);
+  }
 
   bool
   equals(const xqpStringStore* src) const
