@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <sstream>
+#include <algorithm>
 #include "zorbatypes/representations.h"
 
 #include <zorba/default_error_handler.h>
