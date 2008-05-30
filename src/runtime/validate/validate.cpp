@@ -32,6 +32,7 @@
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
 
+#ifndef ZORBA_NO_XMLSCHEMA
 
 namespace zorba
 {
@@ -109,3 +110,6 @@ namespace zorba
     }
     /* end class ValidateIterator */
 }
+
+
+#endif//#ifndef ZORBA_NO_XMLSCHEMA
