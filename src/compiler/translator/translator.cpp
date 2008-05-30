@@ -1284,7 +1284,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   } else {
     nameExpr = pop_nodestack();
 
-    rchandle<fo_expr> atomExpr = wrap_in_atomization (nameExpr);
+    rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (nameExpr).getp();
     nameExpr = new name_cast_expr(v.get_location(), atomExpr.getp(), ns_ctx);
   }
 
@@ -1327,7 +1327,7 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
   {
     nameExpr = pop_nodestack();
 
-    rchandle<fo_expr> atomExpr = wrap_in_atomization (nameExpr);
+    rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (nameExpr).getp();
 
     expr_t castExpr = new name_cast_expr(v.get_location(),
                                          atomExpr.getp(),
@@ -1396,7 +1396,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     target = pop_nodestack();
 
-    rchandle<fo_expr> atomExpr = wrap_in_atomization (target);
+    rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (target).getp();
 
     rchandle<cast_expr> castExpr =
       new cast_expr(loc, atomExpr.getp(),
@@ -4736,7 +4736,7 @@ void end_visit(const RenameExpr& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC(XUST0001, v.get_location());
   }
 
-  rchandle<fo_expr> atomExpr = wrap_in_atomization (nameExpr);
+  rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (nameExpr).getp();
   nameExpr = new name_cast_expr(v.get_location(), atomExpr.getp(), ns_ctx);
 
   expr_t renameExpr = new rename_expr(v.get_location(), targetExpr, nameExpr);
