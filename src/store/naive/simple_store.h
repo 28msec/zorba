@@ -49,7 +49,7 @@ typedef StringHashMap<XmlNode_t> DocumentSet;
 ********************************************************************************/
 class SimpleStore : public Store
 {
-  friend class GlobalEnvironment;
+  friend class zorba::GlobalEnvironment;
  
 public:
   static const char* XS_URI;
