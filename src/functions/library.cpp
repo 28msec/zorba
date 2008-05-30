@@ -85,7 +85,25 @@ static store::Item_t createQName(const char *ns, const char *pre, const char *lo
 
 void BuiltinFunctionLibrary::populateContext(static_context *sctx)
 {
+  populateContext_Accesors(sctx);
+  populateContext_Error(sctx);
+  populateContext_Nodes(sctx);
+  populateContext_AnyURI(sctx);
+  populateContext_Arithmetics(sctx);
+  populateContext_Context(sctx);
+  populateContext_QNames(sctx);
+  populateContext_Sequences(sctx);
+  populateContext_Comparison(sctx);
+  populateContext_Strings(sctx);
+  populateContext_Boolean(sctx);
+  populateContext_Constructors(sctx);
+  populateContext_Datetime(sctx);
+  populateContext_Debug(sctx);
+  populateContext_Zorba(sctx);
+}
 
+void BuiltinFunctionLibrary::populateContext_Accesors(static_context *sctx)
+{
 // Accessors
 DECL(fn_data_func,
      (createQName (XQUERY_FN_NS, "fn", "data"),
@@ -116,6 +134,9 @@ DECL(fn_name_func,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end Accessors
 
+}
+void BuiltinFunctionLibrary::populateContext_Error(static_context *sctx)
+{
 //begin Error function
 DECL(fn_error,
      (createQName(XQUERY_FN_NS, "fn", "error"),
@@ -140,6 +161,9 @@ DECL(fn_error,
       GENV_TYPESYSTEM.NONE_TYPE));
 //end Errror function
 
+}
+void BuiltinFunctionLibrary::populateContext_Nodes(static_context *sctx)
+{
 //begin functions on nodes
 DECL(fn_local_name,
      (createQName(XQUERY_FN_NS, "fn", "local-name"),
@@ -168,6 +192,9 @@ DECL(fn_collection,
 //end functions on nodes
 
 
+}
+void BuiltinFunctionLibrary::populateContext_AnyURI(static_context *sctx)
+{
 //begin functions on AnyURI
 
 // resolve-uri / 1 handled by translator
@@ -180,6 +207,9 @@ DECL(fn_collection,
 //end functions on Any URI
 
 
+}
+void BuiltinFunctionLibrary::populateContext_Arithmetics(static_context *sctx)
+{
 // Generic Arithmetics
 DECL(op_add,
      (createQName (XQUERY_OP_NS,"fn", ":add"),
@@ -297,6 +327,9 @@ DECL(fn_round_half_to_even,
 // end Numerics
 
 
+}
+void BuiltinFunctionLibrary::populateContext_Context(static_context *sctx)
+{
 // begin context functions
 //position(), last() and static-base-uri() are implemented in the context
 DECL(fn_current_dateTime,
@@ -321,6 +354,9 @@ DECL(fn_default_collation,
 // end context functions
 
 
+}
+void BuiltinFunctionLibrary::populateContext_QNames(static_context *sctx)
+{
 //QNames
 // rchandle<NodeTest> nodeTest;
 // nodeTest = new NodeTest(store::StoreConsts::elementNode);
@@ -370,6 +406,9 @@ DECL(fn_in_scope_prefixes,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 // end QNames
 
+}
+void BuiltinFunctionLibrary::populateContext_Sequences(static_context *sctx)
+{
 // Sequences
 DECL(fn_doc_func,
      (createQName(XQUERY_FN_NS,"fn","doc"),
@@ -625,6 +664,9 @@ DECL(fn_deep_equal,
 
 // end Sequences
 
+}
+void BuiltinFunctionLibrary::populateContext_Comparison(static_context *sctx)
+{
 // Generic Comparison;
 DECL(op_equal,
      (createQName(XQUERY_OP_NS,"fn", ":equal"),
@@ -722,6 +764,9 @@ DECL(op_node_after,
 
 // end Node Comparson
 
+}
+void BuiltinFunctionLibrary::populateContext_Strings(static_context *sctx)
+{
 // Strings
 DECL(fn_codepoints_to_string,
      (createQName(XQUERY_FN_NS,"fn","codepoints-to-string"),
@@ -937,6 +982,9 @@ DECL(fn_tokenize,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 // end Strings
 
+}
+void BuiltinFunctionLibrary::populateContext_Boolean(static_context *sctx)
+{
 // start Boolean
 DECL(fn_true,
      (createQName(XQUERY_FN_NS,"fn","true"),
@@ -969,6 +1017,9 @@ DECL(op_or,
       true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 // end Logic
 
+}
+void BuiltinFunctionLibrary::populateContext_Constructors(static_context *sctx)
+{
 // begin constructors
 DECL(op_enclosed_expr,
      (createQName(XQUERY_OP_NS,"fn", ":enclosed-expr"),
@@ -976,6 +1027,9 @@ DECL(op_enclosed_expr,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 // end constructors
 
+}
+void BuiltinFunctionLibrary::populateContext_Datetime(static_context *sctx)
+{
 // begin date time
 DECL(fn_datetime_ctor,
      (createQName(XQUERY_OP_NS,"fn", "dateTime"),
@@ -1274,6 +1328,9 @@ DECL(fn_adjust_t_to_tz_2,
   
 // end date time
 
+}
+void BuiltinFunctionLibrary::populateContext_Debug(static_context *sctx)
+{
 // begin debug functions
 DECL(fn_trace_func,
      (createQName(XQUERY_FN_NS,"fn","trace"),
@@ -1283,6 +1340,9 @@ DECL(fn_trace_func,
 // end debug functions
 
 
+}
+void BuiltinFunctionLibrary::populateContext_Zorba(static_context *sctx)
+{
 // begin zorba functions
 
 DECL(zor_numgen,

@@ -27,8 +27,23 @@ class BuiltinFunctionLibrary {
     private:
         static void populateContext(static_context *sctx);
         friend class GlobalEnvironment;
-};
 
+        static void populateContext_Accesors(static_context *sctx);
+        static void populateContext_Error(static_context *sctx);
+        static void populateContext_Nodes(static_context *sctx);
+        static void populateContext_AnyURI(static_context *sctx);
+        static void populateContext_Arithmetics(static_context *sctx);
+        static void populateContext_Context(static_context *sctx);
+        static void populateContext_QNames(static_context *sctx);
+        static void populateContext_Sequences(static_context *sctx);
+        static void populateContext_Comparison(static_context *sctx);
+        static void populateContext_Strings(static_context *sctx);
+        static void populateContext_Boolean(static_context *sctx);
+        static void populateContext_Constructors(static_context *sctx);
+        static void populateContext_Datetime(static_context *sctx);
+        static void populateContext_Debug(static_context *sctx);
+        static void populateContext_Zorba(static_context *sctx);
+};
 
 } /* namespace zorba */
 #endif /* ZORBA_LIBRARY_H */
