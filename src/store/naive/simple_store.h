@@ -49,7 +49,7 @@ typedef StringHashMap<XmlNode_t> DocumentSet;
 ********************************************************************************/
 class SimpleStore : public Store
 {
-  friend class zorba::GlobalEnvironment;
+  friend class GlobalEnvironment;
  
 public:
   static const char* XS_URI;
@@ -84,7 +84,7 @@ protected:
 
   QueryContextContainer  * theQueryContextContainer; 
 
-  SYNC_CODE(Latch          theGlobalLock;)
+  Latch          theGlobalLock;
 
 #ifndef NDEBUG
   long                     theTraceLevel;
