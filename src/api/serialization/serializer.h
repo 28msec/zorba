@@ -25,6 +25,7 @@
 #include "common/shared_types.h"
 #include "api/sax2impl.h"
 
+#include "common/libicu.h"
 
 namespace zorba
 {

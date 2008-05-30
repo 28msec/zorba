@@ -20,7 +20,7 @@
 
 #ifndef ZORBA_NO_UNICODE
 
-#include "common/libicu.h"
+// #include "common/libicu.h"
 
 #include <stdlib.h>
 #include <iostream>
@@ -70,8 +70,8 @@ public:
   static bool
   is_Invalid_in_IRI(uint32_t cp);
 
-  static xqpStringStore_t
-  getXqpString(UnicodeString source);
+//   static xqpStringStore_t
+//   getXqpString(UnicodeString source);
 
 public:
   xqpStringStore() { }
@@ -213,8 +213,8 @@ public:
   xqpStringStore_t
   normalize(const xqpStringStore* normMode) const;
 
-  UnicodeString
-  getUnicodeString() const;
+//   UnicodeString
+//   getUnicodeString() const;
 
   checked_vector<uint32_t>
   getCodepoints() const;
@@ -439,11 +439,11 @@ public:
     return theStrStore->theString;
   }
 
-  UnicodeString
-  getUnicodeString() const
-  {
-    return theStrStore->getUnicodeString();
-  }
+//   UnicodeString
+//   getUnicodeString() const
+//   {
+//     return theStrStore->getUnicodeString();
+//   }
 
   checked_vector<uint32_t>
   getCodepoints() const
@@ -561,12 +561,6 @@ public:
 
   // Removes the leading and trailing whitespace (one of the " \t\r\n")
   // TODO: xqpString trim_whitespace() const;
-  
-  /**
-   * Create and return an xqpString from an UTF-16 encoded string
-   */
-  static xqpString
-  fromUTF16(const UChar* src, int32_t len);
   
 private:
 

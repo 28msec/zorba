@@ -22,6 +22,7 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/collation_manager.h"
 
+#include "common/libicu.h"
 
 using namespace std;
 
@@ -144,7 +145,7 @@ bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp)
 /*******************************************************************************
   Return a xqpStringStore (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::getXqpString(UnicodeString source)
+static xqpStringStore_t getXqpString(UnicodeString source)
 {
   UErrorCode status = U_ZERO_ERROR;
   
@@ -183,6 +184,28 @@ xqpStringStore_t xqpStringStore::getXqpString(UnicodeString source)
 }
 
 
+/*******************************************************************************
+  Return an UnicodeString (UTF-16 encoded) version of the string.
+********************************************************************************/
+static UnicodeString getUnicodeString(const xqpStringStore* src)
+{
+  UnicodeString ret;
+  UErrorCode status = U_ZERO_ERROR;
+  int32_t len = src->bytes();
+  UChar* buffer = ret.getBuffer(len);
+
+  u_strFromUTF8(buffer, ret.getCapacity(), &len, src->c_str(), len, &status);
+
+  if(U_FAILURE(status))
+  {
+    assert(false);
+  }
+
+  ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
+
+  return ret;
+}
+
 
 /*******************************************************************************
 
@@ -211,7 +234,7 @@ uint32_t xqpStringStore::hash(XQPCollator* coll) const
     CollationKey collKey;
     UErrorCode status = U_ZERO_ERROR;
     
-    coll->theCollator->getCollationKey(this->getUnicodeString(), collKey, status);
+    coll->theCollator->getCollationKey(getUnicodeString(this), collKey, status);
 
     if(U_FAILURE(status))
     {
@@ -274,8 +297,8 @@ int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
 
   Collator::EComparisonResult result = ::Collator::EQUAL;
 
-  result = coll->theCollator->compare(this->getUnicodeString(),
-                                      src->getUnicodeString());
+  result = coll->theCollator->compare(getUnicodeString(this),
+                                      getUnicodeString(src));
 
   return result;
 }
@@ -319,8 +342,8 @@ int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll
 
   UErrorCode status = U_ZERO_ERROR;
 
-  StringSearch search(pattern->getUnicodeString(),
-                      getUnicodeString(), 
+  StringSearch search(getUnicodeString(pattern),
+                      getUnicodeString(this), 
                       (RuleBasedCollator*)coll->theCollator, NULL, status);
 
   if(U_FAILURE(status))
@@ -374,8 +397,8 @@ int32_t xqpStringStore::lastIndexOf(const xqpStringStore* pattern, XQPCollator* 
 
   UErrorCode status = U_ZERO_ERROR;
 
-  StringSearch search(pattern->getUnicodeString(),
-                      getUnicodeString(), 
+  StringSearch search(getUnicodeString(pattern),
+                      getUnicodeString(this), 
                       (RuleBasedCollator *)coll->theCollator, NULL, status);
 
   if(U_FAILURE(status))
@@ -904,19 +927,19 @@ xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
   }
   else if(normMode->byteEqual("NFC", 3))
   {
-    Normalizer::normalize(getUnicodeString(), UNORM_NFC , 0, result, status);
+    Normalizer::normalize(getUnicodeString(this), UNORM_NFC , 0, result, status);
   }
   else if(normMode->byteEqual("NFKC", 4))
   {
-    Normalizer::normalize(getUnicodeString(), UNORM_NFKC , 0, result, status);
+    Normalizer::normalize(getUnicodeString(this), UNORM_NFKC , 0, result, status);
   }
   else if(normMode->byteEqual("NFD", 3))
   {
-    Normalizer::normalize(getUnicodeString(), UNORM_NFD , 0, result, status);
+    Normalizer::normalize(getUnicodeString(this), UNORM_NFD , 0, result, status);
   }
   else if(normMode->byteEqual("NFKD", 4))
   {
-    Normalizer::normalize(getUnicodeString(), UNORM_NFKD , 0, result, status);
+    Normalizer::normalize(getUnicodeString(this), UNORM_NFKD , 0, result, status);
   }
 
   if(U_FAILURE(status))
@@ -925,29 +948,6 @@ xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
   }
     
   return getXqpString( result ); 
-}
-
-
-/*******************************************************************************
-  Return an UnicodeString (UTF-16 encoded) version of the string.
-********************************************************************************/
-UnicodeString xqpStringStore::getUnicodeString() const
-{
-  UnicodeString ret;
-  UErrorCode status = U_ZERO_ERROR;
-  int32_t len = bytes();
-  UChar* buffer = ret.getBuffer(len);
-
-  u_strFromUTF8(buffer, ret.getCapacity(), &len, c_str(), len, &status);
-
-  if(U_FAILURE(status))
-  {
-    assert(false);
-  }
-
-  ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
-
-  return ret;
 }
 
 
@@ -1107,7 +1107,7 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     char* target;
     int32_t size =  length*4 + 1;
     target = new char[size]; //will hold UTF-8 encoded characters
-    UnicodeString str = theStrStore->getUnicodeString();
+    UnicodeString str = getUnicodeString(theStrStore);
 
     int32_t targetsize = str.extract(index, length, target, size, "UTF-8");
     target[targetsize] = 0; /* NULL termination */
@@ -1239,11 +1239,11 @@ xqpString xqpString::normalize(xqpString normMode)
   }
 
   bool
-    xqpString::matches(xqpString pattern, xqpString flags)
+  xqpString::matches(xqpString pattern, xqpString flags)
   {
-    UErrorCode status = U_ZERO_ERROR;
-    UnicodeString uspattern = pattern.getUnicodeString (),
-      us = getUnicodeString ();
+    UErrorCode    status = U_ZERO_ERROR;
+    UnicodeString uspattern = getUnicodeString (pattern.getStore()),
+                  us = getUnicodeString (this->getStore());
 
     RegexMatcher matcher (uspattern, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
@@ -1260,8 +1260,8 @@ xqpString
 xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) 
 {
     UErrorCode status = U_ZERO_ERROR;
-    UnicodeString uspattern = pattern.getUnicodeString (),
-      us = getUnicodeString ();
+    UnicodeString uspattern = getUnicodeString (pattern.getStore()),
+    us = getUnicodeString (this->getStore()); 
 
     RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
@@ -1276,12 +1276,12 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
       return "";
     }
     
-    UnicodeString result = matcher.replaceAll (replacement.getUnicodeString(), status);
+    UnicodeString result = matcher.replaceAll (getUnicodeString(replacement.getStore()), status);
     if (U_FAILURE(status)) {
       return "";
       // TODO: error
     }
-    return xqpStringStore::getXqpString(result).getp();
+    return getXqpString(result).getp();
 }
 
 
@@ -1289,8 +1289,8 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
   xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining)
   {
     UErrorCode status = U_ZERO_ERROR;
-    UnicodeString uspattern = pattern.getUnicodeString (),
-      us = getUnicodeString ();
+    UnicodeString uspattern = getUnicodeString (pattern.getStore()),
+    us = getUnicodeString (this->getStore());
     RegexMatcher m (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
       throw zorbatypesException("", ZorbatypesError::FORX0002);
@@ -1306,44 +1306,6 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
     }
   }
 
-
-  xqpString xqpString::fromUTF16(const UChar* src, int32_t len)
-  {
-    char* target;
-    int32_t targetLen = len*4 + 1;
-    target = new char[targetLen];
-    UErrorCode status = U_ZERO_ERROR;
-
-    //open a convertor to UTF-8
-    UConverter *conv = ucnv_open("utf-8", &status);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-
-      delete[] target;
-      return "";
-    }
-
-    //Convert from UTF-16 to UTF-8
-    ucnv_fromUChars (conv, target, targetLen, (const UChar*)src, len, &status);
-    //close the converter
-    ucnv_close(conv);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-
-      delete[] target;
-      return "";
-    }
-
-    xqpString ret(&target[0]);
-    delete[] target;
-    return ret;
-  }
-
-
   wchar_t * xqpString::getWCS(xqpString source) const
   {
     int32_t destCapacity =  source.length()*2 + 1;
@@ -1351,7 +1313,7 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
     destWCS = new wchar_t[destCapacity];
     int32_t destLen;
 
-    UnicodeString unicodeStr = source.theStrStore->getUnicodeString();
+    UnicodeString unicodeStr = getUnicodeString(source.getStore());
     int32_t srcLen = unicodeStr.length();
     UChar* srcBuf = unicodeStr.getBuffer(srcLen);
     UErrorCode status = U_ZERO_ERROR;
