@@ -93,7 +93,7 @@
 # this module required CMake 2.5 for the Boost_FIND_VERSION stuff
 # CMAKE_MINIMUM_REQUIRED(VERSION "2.6" FATAL_ERROR) #todo
 
-# MESSAGE(STATUS "Finding Boost libraries.... ")
+#MESSAGE(STATUS "Finding Boost libraries.... ")
 
 OPTION(Boost_USE_MULTITHREADED "Use the multithreaded versions of the boost libraries" ON)
 
@@ -113,9 +113,10 @@ SET( _boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS} "1.35.0" "1.35" "1.34.1" 
 
 MACRO (_Boost_ADJUST_LIB_VARS basename)
   IF (Boost_INCLUDE_DIR )
-    #MESSAGE(STATUS "Adjusting ${basename} ")
+    MESSAGE(STATUS "Adjusting ${basename} ")
 
     IF (Boost_${basename}_LIBRARY_DEBUG AND Boost_${basename}_LIBRARY_RELEASE)
+      MESSAGE(STATUS "found both release and debug version")
       # if the generator supports configuration types then set
       # optimized and debug libraries, or if the CMAKE_BUILD_TYPE has a value
       IF (CMAKE_CONFIGURATION_TYPES OR CMAKE_BUILD_TYPE)
@@ -130,6 +131,7 @@ MACRO (_Boost_ADJUST_LIB_VARS basename)
 
     # if only the release version was found, set the debug variable also to the release version
     IF (Boost_${basename}_LIBRARY_RELEASE AND NOT Boost_${basename}_LIBRARY_DEBUG)
+      MESSAGE(STATUS "only release version found")
       SET(Boost_${basename}_LIBRARY_DEBUG ${Boost_${basename}_LIBRARY_RELEASE})
       SET(Boost_${basename}_LIBRARY       ${Boost_${basename}_LIBRARY_RELEASE})
       SET(Boost_${basename}_LIBRARIES     ${Boost_${basename}_LIBRARY_RELEASE})
@@ -137,6 +139,7 @@ MACRO (_Boost_ADJUST_LIB_VARS basename)
 
     # if only the debug version was found, set the release variable also to the debug version
     IF (Boost_${basename}_LIBRARY_DEBUG AND NOT Boost_${basename}_LIBRARY_RELEASE)
+      MESSAGE(STATUS "only debug version found")
       SET(Boost_${basename}_LIBRARY_RELEASE ${Boost_${basename}_LIBRARY_DEBUG})
       SET(Boost_${basename}_LIBRARY         ${Boost_${basename}_LIBRARY_DEBUG})
       SET(Boost_${basename}_LIBRARIES       ${Boost_${basename}_LIBRARY_DEBUG})
@@ -146,6 +149,7 @@ MACRO (_Boost_ADJUST_LIB_VARS basename)
       SET(Boost_${basename}_LIBRARY ${Boost_${basename}_LIBRARY} CACHE FILEPATH "The Boost ${basename} library")
       GET_FILENAME_COMPONENT(Boost_LIBRARY_DIRS "${Boost_${basename}_LIBRARY}" PATH)
       SET(Boost_${basename}_FOUND ON CACHE BOOL "Was the boost boost ${basename} library found")
+      MESSAGE(STATUS "Boost component library found ${basename}")
     ENDIF (Boost_${basename}_LIBRARY)
 
   ENDIF (Boost_INCLUDE_DIR )
@@ -236,13 +240,13 @@ ELSE (_boost_IN_CACHE)
   ENDIF( NOT $ENV{BOOST_LIBRARYDIR} STREQUAL "" )
 
   IF( BOOST_ROOT )
-    IF (WIN32)
+    IF (WIN32 OR CYGWIN)
       SET(_boost_INCLUDE_SEARCH_DIRS ${BOOST_ROOT} ${_boost_INCLUDE_SEARCH_DIRS})
       SET(_boost_LIBRARIES_SEARCH_DIRS ${BOOST_ROOT}/lib ${_boost_LIBRARIES_SEARCH_DIRS})
-    ELSE (WIN32)
+    ELSE (WIN32 OR CYGWIN)
       SET(_boost_INCLUDE_SEARCH_DIRS ${BOOST_ROOT}/include ${_boost_INCLUDE_SEARCH_DIRS})
       SET(_boost_LIBRARIES_SEARCH_DIRS ${BOOST_ROOT}/lib ${_boost_LIBRARIES_SEARCH_DIRS})
-    ENDIF (WIN32)
+    ENDIF (WIN32 OR CYGWIN)
   ENDIF( BOOST_ROOT )
 
   IF( BOOST_INCLUDEDIR )
@@ -261,6 +265,7 @@ ELSE (_boost_IN_CACHE)
     ENDIF (WIN32)
   ENDIF( BOOST_LIBRARYDIR )
 
+  MESSAGE(STATUS "Boost_INCLUDE_DIR = ${Boost_INCLUDE_DIR}" )
   #Try first in our own include search paths (e.g. BOOST_ROOT)
   FOREACH(_boost_VER ${_boost_TEST_VERSIONS})
     IF( NOT Boost_INCLUDE_DIR )
@@ -271,6 +276,7 @@ ELSE (_boost_IN_CACHE)
       SET(_boost_PATH_SUFFIX
         boost-${_boost_VER}
       )
+      MESSAGE(STATUS "try _boost_PATH_SUFFIX ${_boost_PATH_SUFFIX}" )
 
       IF(_boost_PATH_SUFFIX MATCHES "[0-9]+\\.[0-9]+\\.[0-9]+")
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1_\\2_\\3" _boost_PATH_SUFFIX ${_boost_PATH_SUFFIX})
@@ -333,14 +339,20 @@ ELSE (_boost_IN_CACHE)
       MATH(EXPR Boost_SUBMINOR_VERSION "${Boost_VERSION} % 100")
   
     ENDIF(NOT "${Boost_VERSION}" STREQUAL "0")
+    
+    MESSAGE(STATUS "Found one boost ${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION} " )
   ENDIF(Boost_INCLUDE_DIR)
 
+  #MESSAGE(STATUS "Boost_FIND_VERSION_MAJOR=${Boost_FIND_VERSION_MAJOR}")
+  #MESSAGE(STATUS "required Boost_VERSION_MAJOR=${Boost_VERSION_MAJOR}")
+  #MESSAGE(STATUS "Boost_FIND_VERSION_MINOR=${Boost_FIND_VERSION_MINOR} ")
+  #MESSAGE(STATUS "required Boost_VERSION_MINOR=${Boost_VERSION_MINOR}")
 
   #Setting some more suffixes for the library
   SET (Boost_LIB_PREFIX "")
-  IF ( WIN32 )
+  IF ( WIN32 AND NOT CYGWIN)
     SET (Boost_LIB_PREFIX "lib")
-  ENDIF ( WIN32 )
+  ENDIF ( WIN32 AND NOT CYGWIN )
   SET (_boost_COMPILER "-gcc")
   IF (MSVC71)
     SET (_boost_COMPILER "-vc71")
@@ -365,6 +377,7 @@ ELSE (_boost_IN_CACHE)
         # This is for the intel compiler
         SET (_boost_COMPILER "-il")
       ELSE (NOT CMAKE_COMPILER_IS_GNUCC)
+        IF (NOT CYGWIN)
         #find out the version of gcc being used.
         EXEC_PROGRAM(${CMAKE_CXX_COMPILER}
             ARGS --version
@@ -372,7 +385,8 @@ ELSE (_boost_IN_CACHE)
         )
         STRING(REGEX REPLACE ".* ([0-9])\\.([0-9])\\.[0-9] .*" "\\1\\2"
                _boost_COMPILER_VERSION ${_boost_COMPILER_VERSION})
-        SET (_boost_COMPILER "-gcc${_boost_COMPILER_VERSION}")
+          SET (_boost_COMPILER "-gcc${_boost_COMPILER_VERSION}")
+        ENDIF (NOT CYGWIN)
       ENDIF (NOT CMAKE_COMPILER_IS_GNUCC)
     ENDIF (APPLE)
   ENDIF(UNIX)
@@ -394,6 +408,7 @@ ELSE (_boost_IN_CACHE)
   #  Begin finding boost libraries
   # ------------------------------------------------------------------------
   FOREACH(COMPONENT ${Boost_FIND_COMPONENTS})
+    MESSAGE(STATUS "look for component ${COMPONENT}")
     STRING(TOUPPER ${COMPONENT} UPPERCOMPONENT)
     SET( Boost_${UPPERCOMPONENT}_LIBRARY "Boost_${UPPERCOMPONENT}_LIBRARY-NOTFOUND" )
     SET( Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE "Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE-NOTFOUND" )
@@ -408,7 +423,15 @@ ELSE (_boost_IN_CACHE)
         SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
       ENDIF(WIN32)
     ENDIF( Boost_USE_STATIC_LIBS )
-
+    
+#    MESSAGE(STATUS "look for sufixes ${CMAKE_FIND_LIBRARY_SUFFIXES}")
+#    MESSAGE(STATUS "NAMES ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_COMPILER}${_boost_MULTITHREADED}-${Boost_LIB_VERSION}")
+#    MESSAGE(STATUS "NAMES ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_COMPILER}${_boost_MULTITHREADED}${_boost_STATIC_TAG}-${Boost_LIB_VERSION}")
+#    MESSAGE(STATUS "NAMES ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_MULTITHREADED}")
+#    MESSAGE(STATUS "NAMES ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_MULTITHREADED}${_boost_STATIC_TAG}")
+#    MESSAGE(STATUS "NAMES ${Boost_LIB_PREFIX}boost_${COMPONENT}")
+#    MESSAGE(STATUS "PATHS ${_boost_LIBRARIES_SEARCH_DIRS}")
+  
     FIND_LIBRARY(Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE
         NAMES  ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_COMPILER}${_boost_MULTITHREADED}-${Boost_LIB_VERSION}
                ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_COMPILER}${_boost_MULTITHREADED}${_boost_STATIC_TAG}-${Boost_LIB_VERSION}
@@ -416,10 +439,16 @@ ELSE (_boost_IN_CACHE)
                ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_MULTITHREADED}${_boost_STATIC_TAG}
                ${Boost_LIB_PREFIX}boost_${COMPONENT}
         PATHS  ${_boost_LIBRARIES_SEARCH_DIRS}
-	NO_DEFAULT_PATH
+    	  NO_DEFAULT_PATH
     )
+    MESSAGE(STATUS "found ? ${Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE}")
 
     IF( NOT ${Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE} )
+#      MESSAGE(STATUS "NAMES  ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_COMPILER}${_boost_MULTITHREADED}-${Boost_LIB_VERSION}")
+#      MESSAGE(STATUS "NAMES  ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_COMPILER}${_boost_MULTITHREADED}${_boost_STATIC_TAG}-${Boost_LIB_VERSION}")
+#      MESSAGE(STATUS "NAMES  ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_MULTITHREADED}")
+#      MESSAGE(STATUS "NAMES  ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_MULTITHREADED}${_boost_STATIC_TAG}")
+#      MESSAGE(STATUS "NAMES  ${Boost_LIB_PREFIX}boost_${COMPONENT}")
       FIND_LIBRARY(Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE
           NAMES  ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_COMPILER}${_boost_MULTITHREADED}-${Boost_LIB_VERSION}
                  ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_COMPILER}${_boost_MULTITHREADED}${_boost_STATIC_TAG}-${Boost_LIB_VERSION}
@@ -427,6 +456,7 @@ ELSE (_boost_IN_CACHE)
                  ${Boost_LIB_PREFIX}boost_${COMPONENT}${_boost_MULTITHREADED}${_boost_STATIC_TAG}
                  ${Boost_LIB_PREFIX}boost_${COMPONENT}
       )
+#      MESSAGE(STATUS "found ? ${Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE}")
     ENDIF( NOT ${Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE} )
 
     FIND_LIBRARY(Boost_${UPPERCOMPONENT}_LIBRARY_DEBUG
@@ -461,19 +491,22 @@ ELSE (_boost_IN_CACHE)
     ${Boost_INCLUDE_DIR}
   )
 
-  # MESSAGE(STATUS "Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
-  # MESSAGE(STATUS "Boost_LIBRARIES: ${Boost_LIBRARIES}")
+  MESSAGE(STATUS "Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
+  MESSAGE(STATUS "Boost_LIBRARIES: ${Boost_LIBRARIES}")
 
   SET(Boost_FOUND FALSE)
   IF(Boost_INCLUDE_DIR)
     SET( Boost_FOUND TRUE )
     IF( Boost_FIND_VERSION_MAJOR AND Boost_VERSION_MAJOR LESS "${Boost_FIND_VERSION_MAJOR}" )
+      MESSAGE(STATUS "Boost major version less than required")
       SET( Boost_FOUND FALSE )
     ELSE( Boost_FIND_VERSION_MAJOR AND Boost_VERSION_MAJOR LESS "${Boost_FIND_VERSION_MAJOR}" )
       IF( Boost_FIND_VERSION_MINOR AND Boost_VERSION_MINOR LESS "${Boost_FIND_VERSION_MINOR}" )
+        MESSAGE(STATUS "Boost minor version less than required")
         SET( Boost_FOUND FALSE )
       ELSE( Boost_FIND_VERSION_MINOR AND Boost_VERSION_MINOR LESS "${Boost_FIND_VERSION_MINOR}" )
         IF( Boost_FIND_VERSION_PATCH AND Boost_VERSION_SUBMINOR LESS "${Boost_FIND_VERSION_PATCH}" )
+          MESSAGE(STATUS "Boost patch version less than required")
           SET( Boost_FOUND FALSE )
         ENDIF( Boost_FIND_VERSION_PATCH AND Boost_VERSION_SUBMINOR LESS "${Boost_FIND_VERSION_PATCH}" )
       ENDIF( Boost_FIND_VERSION_MINOR AND Boost_VERSION_MINOR LESS "${Boost_FIND_VERSION_MINOR}" )
@@ -483,6 +516,7 @@ ELSE (_boost_IN_CACHE)
       STRING(TOUPPER ${COMPONENT} COMPONENT)
       set(_boost_CHECKED_COMPONENT TRUE)
       IF(NOT Boost_${COMPONENT}_FOUND)
+        MESSAGE(STATUS "Boost component not found ${COMPONENT}")
         SET( Boost_FOUND FALSE)
       ENDIF(NOT Boost_${COMPONENT}_FOUND)
     ENDFOREACH(COMPONENT)
@@ -538,7 +572,7 @@ ELSE (_boost_IN_CACHE)
   ELSE (Boost_FOUND)
       IF (Boost_FIND_REQUIRED)
         MESSAGE(STATUS "Boost Version required: ${Boost_FIND_VERSION}. Found: ${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
-        MESSAGE(FATAL_ERROR "Couldn't find the Boost libraries and/or include irectory, or the version found is too old. Please install the Boost libraries AND development packages. You can set BOOST_ROOT, BOOST_INCLUDEDIR and BOOST_LIBRARYDIR to help find Boost.")
+        MESSAGE(FATAL_ERROR "Couldn't find the Boost libraries and/or include directory, or the version found is too old. Please install the Boost libraries AND development packages. You can set BOOST_ROOT, BOOST_INCLUDEDIR and BOOST_LIBRARYDIR to help find Boost.")
       ENDIF(Boost_FIND_REQUIRED)
   ENDIF(Boost_FOUND)
 
