@@ -104,7 +104,9 @@ namespace zorba {
   UNARY_ACCEPT(PrecedingAxisIterator);
   UNARY_ACCEPT(FollowingAxisIterator);
   UNARY_ACCEPT(FnBooleanIterator);
+#ifndef ZORBA_NO_XMLSCHEMA
   UNARY_ACCEPT(ValidateIterator);
+#endif
   UNARY_ACCEPT(InstanceOfIterator);
   UNARY_ACCEPT(EnclosedIterator);
   UNARY_ACCEPT(FnDocIterator);

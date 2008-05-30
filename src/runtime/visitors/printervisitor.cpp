@@ -145,7 +145,9 @@ public:
 
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
 
+#ifndef ZORBA_NO_XMLSCHEMA
   PRINTER_VISITOR_DEFINITION (ValidateIterator)
+#endif
 
   PRINTER_VISITOR_DEFINITION (LogicIterator)
 

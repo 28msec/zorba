@@ -34,7 +34,9 @@ namespace zorba
   class FnResolveUriIterator;
   class FnStringIterator;
   class FnBooleanIterator;
+#ifndef ZORBA_NO_XMLSCHEMA
   class ValidateIterator;
+#endif
   class LogicIterator;
   class CompareIterator;
   class UDFunctionCallIterator;
@@ -265,7 +267,9 @@ namespace zorba
        
     PLAN_ITER_VISITOR (FnBooleanIterator);
 
+#ifndef ZORBA_NO_XMLSCHEMA
     PLAN_ITER_VISITOR (ValidateIterator);
+#endif
        
     PLAN_ITER_VISITOR (LogicIterator);
        
