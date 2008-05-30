@@ -16,7 +16,7 @@
 #include "common/common.h"
 
 #ifndef ZORBA_NO_UNICODE
-#include "common/libicu.h"
+#include "zorbatypes/libicu.h"
 #endif
 
 //#include <boost/algorithm/string/split.hpp>

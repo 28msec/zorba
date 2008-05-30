@@ -20,7 +20,7 @@
 #include <string>
 #include <map>
 #ifndef ZORBA_NO_UNICODE
-#include "common/libicu.h"
+#include "zorbatypes/libicu.h"
 #endif//#ifndef ZORBA_NO_UNICODE
 
 namespace zorba {

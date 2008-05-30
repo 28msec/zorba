@@ -22,7 +22,7 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/collation_manager.h"
 
-#include "common/libicu.h"
+#include "zorbatypes/libicu.h"
 
 using namespace std;
 

@@ -20,8 +20,6 @@
 
 #ifndef ZORBA_NO_UNICODE
 
-// #include "common/libicu.h"
-
 #include <stdlib.h>
 #include <iostream>
 #include <map>
