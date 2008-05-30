@@ -46,6 +46,7 @@ ccontext_example_1(XQC_Implementation impl)
   lXQuery->execute(lXQuery, lOutFile);
 
   // free all resources
+  lContext->free(lContext);
   lItem->free(lItem);
   lXQuery->free(lXQuery);
   lFactory->free(lFactory);
