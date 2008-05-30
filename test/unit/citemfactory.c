@@ -32,10 +32,6 @@ citemfactory(int argc, char* argv[])
   XQC_Implementation impl = 0;
   XQC_ItemFactory    lFactory = 0;
   XQC_Item           lItem = 0;
-  XQC_String         lString = 0;
-  XQC_String         lURI = 0;
-  XQC_String         lPrefix = 0;
-  XQC_String         lTmpString = 0;
   int                lTmpInt = 0;
   const char*        lStringValue = 0;
 
@@ -45,78 +41,61 @@ citemfactory(int argc, char* argv[])
 
   impl->item_factory(impl, &lFactory);
 
-  impl->create_string(impl, "1", &lString);
-  impl->create_string(impl, "http://www.zorba-xquery.com/", &lURI);
-  impl->create_string(impl, "zorba", &lPrefix);
-  impl->create_string(impl, 0, &lTmpString);
+  const char* lURI = "http://www.zorba-xquery.com/";
+  const char* lPrefix = "zorba";
+  const char* lString = "1";
 
   /* String */
   UNIT_ASSERT ( lFactory->create_string(lFactory, lString, &lItem) == XQ_SUCCESS );
-  lItem->string_value(lItem, lString);
-  lString->to_char(lString, &lStringValue);
+  lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->free(lItem);
 
   /* AnyURI */
   UNIT_ASSERT ( lFactory->create_anyuri(lFactory, lURI, &lItem) == XQ_SUCCESS );
-  lItem->string_value(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
   lItem->free(lItem);
 
   /* QName */
   UNIT_ASSERT ( lFactory->create_qname2(lFactory, lURI, lString, &lItem) == XQ_SUCCESS );
-  lItem->string_value(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
-  lItem->ns(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->ns(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
-  lItem->localname(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->localname(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->free(lItem);
   
   UNIT_ASSERT ( lFactory->create_qname3(lFactory, lURI, lPrefix, lString, &lItem) == XQ_SUCCESS );
-  lItem->string_value(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "zorba:1") == 0 );
-  lItem->ns(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->ns(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
-  lItem->localname(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->localname(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
-  lItem->prefix(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->prefix(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "zorba") == 0 );
   lItem->free(lItem);
 
   /* Boolean */
   UNIT_ASSERT ( lFactory->create_boolean(lFactory, 1, &lItem) == XQ_SUCCESS );
-  lItem->string_value(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "true") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
   UNIT_ASSERT ( lTmpInt  == 1 );
   UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
-  UNIT_ASSERT (lItem->ns(lItem, lTmpString) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
-  UNIT_ASSERT (lItem->localname(lItem, lTmpString) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
-  UNIT_ASSERT (lItem->prefix(lItem, lTmpString) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
+  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
+  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
+  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
   lItem->free(lItem);
 
   UNIT_ASSERT ( lFactory->create_boolean(lFactory, 0, &lItem) == XQ_SUCCESS );
-  lItem->string_value(lItem, lTmpString);
-  lTmpString->to_char(lTmpString, &lStringValue);
+  lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "false") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
   UNIT_ASSERT ( lTmpInt  == 0 );
   lItem->free(lItem);
-
-  lPrefix->free(lPrefix);
-  lURI->free(lURI);
-  lString->free(lString);
-  lTmpString->free(lTmpString);
 
   lFactory->free(lFactory);
     

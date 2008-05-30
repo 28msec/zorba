@@ -1,12 +1,12 @@
 SET(CAPI_SRCS
-    zorbac.cpp
-    query.cpp
-    dynamic_context.cpp
-    static_context.cpp
-    item.cpp
-    item_factory.cpp
-    sequence.cpp
-    implementation.cpp
     collection.cpp
     data_manager.cpp
+    dynamic_context.cpp
+    implementation.cpp
+    item.cpp
+    item_factory.cpp
+    query.cpp
+    sequence.cpp
+    static_context.cpp
+    zorbac.cpp
    )

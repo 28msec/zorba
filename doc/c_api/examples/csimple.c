@@ -27,12 +27,11 @@
 int
 example_1(XQC_Implementation impl)
 {
-  XQUERY_ERROR   lError = XQ_SUCCESS;
   XQC_Query      lXQuery;
   FILE*          lOutFile = stdout;
 
   // compile the query
-  lError = impl->compile(impl, "(1+2, 3, 4)", 0, &lXQuery);
+  impl->compile(impl, "(1+2, 3, 4)", 0, &lXQuery);
 
   // execute it and print the result on standard out
   lXQuery->execute(lXQuery, lOutFile);
