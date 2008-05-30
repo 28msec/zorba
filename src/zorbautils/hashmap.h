@@ -194,6 +194,8 @@ protected:
   SYNC_CODE(Mutex                   theMutex;)
   SYNC_CODE(Mutex                 * theMutexp;)
 
+  int                               numCollisions;
+
 protected:
 
 ulong computeTabSize(ulong size)
@@ -217,7 +219,8 @@ HashMap(ulong size, bool sync, bool useTransfer = false)
   theHashTab(computeTabSize(size)),
   theLoadFactor(DEFAULT_LOAD_FACTOR),
   theCompareParam(0),
-  theUseTransfer(useTransfer)
+  theUseTransfer(useTransfer),
+  numCollisions(0)
 {
   formatCollisionArea();
 
@@ -233,7 +236,8 @@ HashMap(ulong size, bool sync, bool useTransfer = false)
   theHashTab(computeTabSize(size)),
   theLoadFactor(DEFAULT_LOAD_FACTOR),
   theCompareParam(aCompareParam),
-  theUseTransfer(useTransfer)
+  theUseTransfer(useTransfer),
+  numCollisions(0)
 {
   formatCollisionArea();
 
@@ -527,6 +531,7 @@ HashEntry<T, V>* hashInsert(
 
   // The item was not found.
   theNumEntries++;
+  numCollisions++;
 
   // Do garbage collection if the hash table is more than 60% full.
   // Note: gc does NOT resize theHashTab.
