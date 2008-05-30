@@ -1007,8 +1007,13 @@ bool begin_visit(validate_expr& v)
 void end_visit(validate_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+#ifndef ZORBA_NO_XMLSCHEMA
   PlanIter_t lChild = pop_itstack();
   itstack.push (new ValidateIterator (qloc, lChild, v.get_valmode () == ParseConstants::val_lax));
+#else
+  //no schema support
+  ZORBA_ERROR_LOC(XQST0009, qloc);
+#endif
 }
 
 bool begin_visit(extension_expr& v)
