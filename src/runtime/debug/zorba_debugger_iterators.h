@@ -39,7 +39,7 @@ public:
 
   virtual ~FnDebugIterator();
 
-  store::Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl( store::Item_t& result, PlanState& planState ) const;
 
   void accept(PlanIterVisitor& v) const;
 

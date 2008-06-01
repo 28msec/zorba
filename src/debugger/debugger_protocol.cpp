@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
-#include <errno.h>
-
-#include <exception>
-#include <string>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <iostream>
 #include <iomanip>
+#include <zorba/zorba.h>
 
+#include "api/unmarshaller.h"
 #include "tiny_json/json.hpp"
-
 #include "zorbatypes/numconversions.h"
-
 #include "debugger/debugger_protocol.h"
 
 
@@ -567,15 +558,122 @@ ResumedEvent::~ResumedEvent(){}
 /**
  * Variable Message
  */
-VariableMessage::VariableMessage():
-  AbstractCommandMessage( DYNAMIC, VARIABLES )
+VariableMessage::VariableMessage( String aQName, Item aItem ):
+  AbstractCommandMessage( DYNAMIC, VARIABLES ),
+  theQName( Unmarshaller::getInternalString( aQName ) ),
+  theType( Unmarshaller::getInternalString ( aItem.getType().getStringValue() ) ),
+  theValue( Unmarshaller::getInternalString( aItem.getStringValue() ) )
 {
+  //theQName = Unmarshaller::getInternalString( aQName
+  unsigned int l = MESSAGE_SIZE + getData().length();
+  setLength( l );
   checkIntegrity();
 }
 
 VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+  AbstractCommandMessage( aMessage, aLength )
+{
+
+  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
+  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
+  
+  if ( lData.type() == typeid( json::object ) )
+  {
+    json::object const & obj = boost::any_cast< json::object >( lData );
+    for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
+    {
+      std::string attrName = (*it).first;
+      if ( attrName == "qname" ) {
+        xqpString lQName = boost::any_cast< std::string >( (*it).second );
+        theQName = lQName;
+      } else if ( attrName == "item" ) {
+        xqpString lValue = boost::any_cast< std::string >( (*it).second );
+        theValue = lValue;
+      } else if ( attrName == "type" ) {
+        xqpString lType = boost::any_cast< std::string >( (*it).second );
+        theType = lType;
+      }
+    }
+   } else {
+    throw MessageFormatException("Invalid JSON format for Variable message.");
+  }
+
+  checkIntegrity();
+} 
 
 VariableMessage::~VariableMessage(){}
+
+xqpString VariableMessage::getData() const
+{
+  std::stringstream lJSONString;
+  lJSONString << "{";
+  lJSONString << "\"qname\":\"" << theQName << "\",";
+  lJSONString << "\"type\":\"" << theType << "\",";
+  lJSONString << "\"item\":\"" << theValue << "\"";
+  lJSONString << "}";
+  xqpString lReturnString( lJSONString.str() );
+  return lReturnString;
+}
+
+Byte * VariableMessage::serialize( Length & aLength ) const
+{
+  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  xqpString lJSONString = getData();
+  Byte * lMsg = new Byte[ getLength() ];
+  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  const char * s = lJSONString.c_str();
+  unsigned int l = lJSONString.length();
+  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  delete[] lHeader;
+  aLength = getLength();
+  return lMsg; 
+}
+
+Item VariableMessage::getItem() const
+{
+  ItemFactory * lFactory = Zorba::getInstance()->getItemFactory();
+  Item lExternalItem;
+  if ( theType == "xs:integer" ) {
+    lExternalItem = lFactory->createInteger( String( theValue ) );
+  } else if ( theType == "xs:boolean" ){
+    if ( theValue == "true" || theValue == "1" ) {
+      lExternalItem = lFactory->createBoolean( true );
+    } else {
+      lExternalItem = lFactory->createBoolean( false );
+    }
+  } else if ( theType == "xs:byte" ) {
+    lExternalItem = lFactory->createByte( theValue.c_str()[0] );
+  } else if ( theType == "xs:date" ) {
+    lExternalItem = lFactory->createDate( String( theValue ) );
+  } else if ( theType == "xs:dateTime" ) {
+    lExternalItem = lFactory->createDateTime( String( theValue ) );
+  } else if ( theType == "xs:decimal" ) {
+    lExternalItem = lFactory->createDecimal( String( theValue ) );
+  } else if ( theType == "xs:double" ) {
+    lExternalItem = lFactory->createDouble( String( theValue ) );
+  } else if ( theType == "xs:duration" ) {
+    lExternalItem = lFactory->createDuration( String( theValue ) );
+  } else if ( theType == "xs:float" ) {
+    lExternalItem = lFactory->createFloat( String( theValue ) );
+  } else if ( theType == "xs:gDay" ) {
+    lExternalItem = lFactory->createGDay( String( theValue ) );
+  } else if ( theType == "xs:gMonth" ) {
+    lExternalItem = lFactory->createGMonth( String( theValue ) );
+  } else if ( theType == "xs:gMonthDay" ) {
+    lExternalItem = lFactory->createGMonthDay( String( theValue ) );
+  } else if ( theType == "xs:gYear" ) {
+    lExternalItem = lFactory->createGYear( String( theValue ) );
+  } else if ( theType == "xs:gYearMonth" ) {
+    lExternalItem = lFactory->createGYearMonth( String( theValue ) );
+  } else if ( theType == "xs:NCName" ) {
+    lExternalItem = lFactory->createNCName( String( theValue ) );
+  } else if ( theType == "xs:time" ) {
+    lExternalItem = lFactory->createTime( String( theValue ) );
+  } else {
+    throw MessageFormatException("Invalid Item type"); 
+  }
+  return lExternalItem;
+}
+
 }//end of namespace
 

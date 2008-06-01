@@ -27,6 +27,7 @@
 #include "common/common.h"
 #include "compiler/parser/query_loc.h"
 
+#include "api/serialization/serializer.h"
 #include "debugger/debugger_common.h"
 
 namespace zorba{
@@ -318,7 +319,7 @@ class AbstractCommandMessage: public AbstractMessage
 
     ReplyMessage * getReplyMessage() { return new ReplyMessage( getId(), DEBUGGER_NO_ERROR ); }
 
-    Byte * serialize( Length & aLength ) const;
+    virtual Byte * serialize( Length & aLength ) const;
 };
 
 /**
@@ -393,7 +394,7 @@ class StepMessage: public AbstractCommandMessage
 
     const StepCommand getStepKind() const;
 
-    Byte * serialize( Length &aLength ) const;
+    virtual Byte * serialize( Length &aLength ) const;
 };
 
 /**
@@ -426,7 +427,7 @@ class SetMessage: public AbstractCommandMessage
 
     virtual ~SetMessage();
 
-    Byte * serialize( Length & aLength ) const;
+    virtual Byte * serialize( Length & aLength ) const;
 };
 
 /**
@@ -453,7 +454,7 @@ class ClearMessage: public AbstractCommandMessage
  
     virtual ~ClearMessage();
 
-    Byte * serialize( Length & aLength ) const;
+    virtual Byte * serialize( Length & aLength ) const;
 };
 
 /**
@@ -501,7 +502,7 @@ class SuspendedEvent: public AbstractCommandMessage
    
     virtual ~SuspendedEvent();
 
-    Byte * serialize( Length & aLength ) const;
+    virtual Byte * serialize( Length & aLength ) const;
 
 };
 
@@ -523,14 +524,25 @@ class ResumedEvent: public AbstractCommandMessage
  */
 class VariableMessage: public AbstractCommandMessage
 {
+  protected:
+    xqpString theQName;
+
+    xqpString theType;
+
+    xqpString theValue;
+
+    xqpString getData() const;
+
   public:
-    VariableMessage();
+    VariableMessage( String aQName, Item aItem );
 
     VariableMessage( Byte * aMessage, const unsigned int aLength );
 
     virtual ~VariableMessage();
 
-    //Byte * serialize( Length & aLength ) const;
+    virtual Byte * serialize( Length & aLength ) const;
+
+    Item getItem() const;
 };
 }//end of namespace
 #endif

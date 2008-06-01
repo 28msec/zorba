@@ -54,6 +54,8 @@ namespace zorba
       void testClearMessage();
 
       void testSetMessage();
+
+      void testVariableMessage();
   };
 }
 #endif

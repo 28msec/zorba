@@ -18,4 +18,5 @@ SET(DEBUGGER_SRCS
     debugger_serverimpl.cpp
     debugger_clientimpl.cpp
     socket.cpp
-    debugger_protocol.cpp)
+    debugger_protocol.cpp
+    remote_dynamic_context.cpp)

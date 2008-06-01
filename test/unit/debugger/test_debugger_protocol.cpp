@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <zorba/zorba.h>
+
 #include "test_debugger_protocol.h"
 
 int test_debugger_protocol( int argc, char* argv[] )
@@ -32,6 +34,7 @@ int test_debugger_protocol( int argc, char* argv[] )
   test->testResumedEvent();
   test->testClearMessage();
   test->testSetMessage();
+  test->testVariableMessage();
   delete test;
   return 0;
 }
@@ -245,6 +248,16 @@ void test_packet( AbstractCommandMessage * aMessage )
     SetMessage msg;
     msg.addLocation( loc );
     test_packet< SetMessage >( &msg );
+  }
+
+  void TestDebuggerSerialization::testVariableMessage()
+  {
+    Zorba * lZorba = Zorba::getInstance();
+    ItemFactory * lFactory = lZorba->getItemFactory();
+    /* The item that is to be bound to the external variable */
+    Item lItem = lFactory->createInteger(4);
+    VariableMessage msg( String("var"), lItem );
+    test_packet< VariableMessage >( &msg );
   }
 }
 

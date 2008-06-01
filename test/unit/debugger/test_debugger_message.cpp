@@ -54,7 +54,7 @@ int test_debugger_message( int argc, char* argv[] )
     std::cerr << e.what() << std::endl;
     assert( false );
   }
-//TODO: test endianness
+  //TODO: test endianness
   assert( test_binary_message( "\xb\0\0\0\1\0\0\0\0\xf7\1" , 11, ERROR_INVALID_MESSAGE_FORMAT ) );
   assert( test_binary_message( "\xb\0\0\0\1\0\0\0\0\xf1\x8" , 11 , ERROR_INVALID_MESSAGE_FORMAT ) );
   assert( test_binary_message( "\xb\0\0\0\1\0\0\0\0\1\1", 11, ERROR_INVALID_MESSAGE_FORMAT ) );

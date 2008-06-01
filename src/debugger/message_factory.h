@@ -122,7 +122,11 @@ class MessageFactory
         }
         case DYNAMIC:
         {
-
+          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          {
+            case VARIABLES:
+              return new VariableMessage( aMessage, aLength );
+          }
         }
         default:
         {

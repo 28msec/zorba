@@ -36,7 +36,7 @@ namespace zorba {
   {
   }
 
-  store::Item_t FnDebugIterator::nextImpl(PlanState& planState) const
+  store::Item_t FnDebugIterator::nextImpl( store::Item_t& result, PlanState& planState) const
   {
 
     store::Item_t lSequenceItem;
@@ -47,7 +47,7 @@ namespace zorba {
     
     theDebugger->theLocation = loc;
     
-    while ( ( lSequenceItem = consumeNext(theChildren[0], planState ) ) != NULL ) {
+    while ( consumeNext( lSequenceItem, theChildren[0], planState ) ) {
       
       if ( theDebugger->hasToSuspend() )
       {
