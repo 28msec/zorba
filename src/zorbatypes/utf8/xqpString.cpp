@@ -234,7 +234,7 @@ uint32_t xqpStringStore::hash(XQPCollator* coll) const
     CollationKey collKey;
     UErrorCode status = U_ZERO_ERROR;
     
-    coll->theCollator->getCollationKey(getUnicodeString(this), collKey, status);
+    ((Collator*)coll->theCollator)->getCollationKey(getUnicodeString(this), collKey, status);
 
     if(U_FAILURE(status))
     {
@@ -297,7 +297,7 @@ int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
 
   Collator::EComparisonResult result = ::Collator::EQUAL;
 
-  result = coll->theCollator->compare(getUnicodeString(this),
+  result = ((Collator*)coll->theCollator)->compare(getUnicodeString(this),
                                       getUnicodeString(src));
 
   return result;

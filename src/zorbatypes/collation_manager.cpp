@@ -33,12 +33,12 @@ namespace zorba {
 #define strtok_s    strtok_r
 #endif
 
-  XQPCollator::XQPCollator(Collator* aCollator)
-    : theCollator(aCollator) {}
+  XQPCollator::XQPCollator(void* aCollator)
+  : theCollator((Collator*)aCollator) {}
 
   XQPCollator::~XQPCollator()
   {
-    delete theCollator;
+    delete (Collator*)theCollator;
   }
 
   XQPCollator*

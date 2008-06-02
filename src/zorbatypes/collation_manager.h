@@ -19,9 +19,6 @@
 #include "common/common.h"
 #include <string>
 #include <map>
-#ifndef ZORBA_NO_UNICODE
-#include "zorbatypes/libicu.h"
-#endif//#ifndef ZORBA_NO_UNICODE
 
 namespace zorba {
 
@@ -38,13 +35,13 @@ class Collator
     friend class xqpStringStore;
 
     private:
-      XQPCollator(Collator*);
+      XQPCollator(void* Collator);
 
     public:
       virtual ~XQPCollator();
 
     protected:
-      Collator* theCollator;
+      void* theCollator;
   };
 
   class CollationFactory 
