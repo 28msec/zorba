@@ -600,6 +600,13 @@ void ChildAxisState::reset(PlanState& planState)
     theChildren->reset(); 
 }
 
+static bool isElementOrDocumentNode(store::Item *node)
+{
+  assert(node->isNode());
+  store::StoreConsts::NodeKind kind = node->getNodeKind();
+  return kind == store::StoreConsts::elementNode
+    || kind == store::StoreConsts::documentNode;
+}
 
 bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -620,8 +627,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
         ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() != store::StoreConsts::elementNode &&
-           state->theContextNode->getNodeKind() != store::StoreConsts::documentNode);
+    while (!isElementOrDocumentNode(state->theContextNode.getp()));
 
     state->theChildren = state->theContextNode->getChildren();
     assert (state->theChildren != NULL);
