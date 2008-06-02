@@ -109,7 +109,7 @@ NodeXQType::NodeXQType(
     xqtref_t content_type,
     TypeConstants::quantifier_t quantifier)
   :
-  XQType(manager, quantifier), m_nodetest(nodetest), m_content_type(content_type)
+  XQType(manager, NODE_TYPE_KIND, quantifier), m_nodetest(nodetest), m_content_type(content_type)
 {
 }
 
@@ -130,7 +130,7 @@ std::ostream& NodeXQType::serialize(std::ostream& os) const
 }
     
 UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
-    XQType(manager, quantifier), _qname(qname), _baseType(baseType)
+    XQType(manager, USER_DEFINED_KIND, quantifier), _qname(qname), _baseType(baseType)
 {
     ZORBA_ASSERT(baseType!=NULL);
 

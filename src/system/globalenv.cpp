@@ -51,18 +51,6 @@ using namespace zorba;
 
 GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 
-
-GlobalEnvironment& GlobalEnvironment::getInstance()
-{
-  assert(m_globalEnv);
-
-  if (!m_globalEnv) {
-    GlobalEnvironment::init();
-  }
-  return *m_globalEnv;
-}
-
-
 void GlobalEnvironment::init()
 {
   // initialize Xerces-C lib
@@ -213,7 +201,6 @@ static_context& GlobalEnvironment::getRootStaticContext()
 {
   return *m_rootStaticContext;
 }
-
 
 RootTypeManager& GlobalEnvironment::getRootTypeManager()
 {

@@ -63,7 +63,15 @@ protected:
 public:
   virtual ~static_context();
   static_context *create_child_context() { return new static_context(this); }
-  TypeManager *get_typemanager ();
+  TypeManager *get_typemanager ()
+  {
+    TypeManager *tm = typemgr.get();
+    if (tm != NULL) {
+      return tm;
+    }
+    return dynamic_cast<static_context *>(parent)->get_typemanager();
+  }
+
   void set_typemanager(std::auto_ptr<TypeManager> _typemgr);
   
   xqp_string default_function_namespace() const;

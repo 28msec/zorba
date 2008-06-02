@@ -134,16 +134,6 @@ DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
 DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
 DECL_STR_PARAM_TRIGGER (static_context, entity_retrieval_url, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
 
-TypeManager *static_context::get_typemanager ()
-{
-  TypeManager *tm = typemgr.get();
-  if (tm != NULL) {
-    return tm;
-  }
-  return dynamic_cast<static_context *>(parent)->get_typemanager();
-}
-
-
 void static_context::set_typemanager(std::auto_ptr<TypeManager> _typemgr)
 {
   typemgr = _typemgr;

@@ -34,7 +34,12 @@ class GlobalEnvironment
  public:
   static void init();
   static void destroy();
-  static GlobalEnvironment& getInstance();
+  static GlobalEnvironment& getInstance()
+  {
+    assert(m_globalEnv);
+    return *m_globalEnv;
+  }
+
 
   RootTypeManager& getRootTypeManager();
   static_context& getRootStaticContext();
