@@ -11,11 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-SET(STORE_SRCS
-    api/store_consts.cpp
-    api/update_consts.cpp)
-
-
 IF(ZORBA_MINIMAL_STORE)
 LIST(APPEND STORE_SRCS 
     minimal/min_item_factory.cpp

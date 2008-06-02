@@ -81,11 +81,96 @@ public:
     UP_RENAME_PI
   };
 
-  static bool isRename(UpdPrimKind k);
-  static bool isReplaceValue(UpdPrimKind k);
-  static bool isReplaceNode(UpdPrimKind k);
-  static std::string toString(UpdateKind k);
-  static std::string toString(UpdPrimKind k);
+  static bool isRename(UpdPrimKind k)
+  {
+    return (k == UP_RENAME_ELEM || k == UP_RENAME_ATTR || k == UP_RENAME_PI);
+  }
+
+  static bool isReplaceValue(UpdPrimKind k)
+  {
+    return (k == UP_REPLACE_ATTR_VALUE ||
+          k == UP_REPLACE_TEXT_VALUE ||
+          k == UP_REPLACE_PI_VALUE ||
+          k == UP_REPLACE_COMMENT_VALUE);
+  }
+
+  static bool isReplaceNode(UpdPrimKind k)
+  {
+    return (k == UP_REPLACE_CHILD ||
+          k == UP_REPLACE_ATTRIBUTE);
+  }
+
+  static std::string toString(UpdateKind k)
+  {
+    switch(k) {
+      case INSERT_BEFORE:
+        return "insert_before";
+      case INSERT_AFTER:
+        return "insert_after";
+      case INSERT_INTO:
+        return "insert_into";
+      case INSERT_INTO_FIRST:
+        return "insert_into_first";
+      case INSERT_INTO_LAST:
+        return "insert_into_last";
+      case INSERT_ATTRIBUTES:
+        return "insert_attributes";
+      case REMOVE:
+        return "delete";
+      case REPLACE_NODE:
+        return "replace_node";
+      case REPLACE_CONTENT:
+        return "replace_content";
+      case REPLACE_VALUE:
+        return "replace_value";
+      case RENAME:
+        return "rename";
+      default:
+        return "<unknown UpdateKind>";
+    }
+  }
+
+  static std::string toString(UpdPrimKind k)
+  {
+    switch(k) {
+      case UP_DELETE:
+        return "delete";
+      case UP_INSERT_INTO:
+        return "insert_into";
+      case UP_INSERT_INTO_FIRST:
+        return "insert_into_first";
+      case UP_INSERT_INTO_LAST:
+        return "insert_into_last";
+      case UP_INSERT_BEFORE:
+        return "insert_before";
+      case UP_INSERT_AFTER:
+        return "insert_after";
+      case UP_INSERT_ATTRIBUTES:
+        return "insert_attributes";
+      case UP_REPLACE_CHILD:
+        return "replace_child";
+      case UP_REPLACE_ATTRIBUTE:
+        return "replace_attribute";
+      case UP_REPLACE_CONTENT:
+        return "replace_content";
+      case UP_REPLACE_ATTR_VALUE:
+        return "replace_attr_value";
+      case UP_REPLACE_TEXT_VALUE:
+        return "replace_text_value";
+      case UP_REPLACE_PI_VALUE:
+        return "replace_pi_value";
+      case UP_REPLACE_COMMENT_VALUE:
+        return "replace_comment_value";
+      case UP_RENAME_ELEM:
+        return "rename_elem";
+      case UP_RENAME_ATTR:
+        return "rename_attr";
+      case UP_RENAME_PI:
+        return "rename_pi";
+      default:
+        return "<unknown UpdPrimKind>";
+    }
+  }
 };
 
 

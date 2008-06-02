@@ -42,7 +42,34 @@ class StoreConsts
     ONLY_PARENT_NAMESPACES
   };
 
-  static std::string toString(NodeKind k);
+  static std::string toString(NodeKind k)
+  {
+    switch(k) {
+      case anyNode:
+        return "anyNode";
+
+      case documentNode:
+        return "documentNode";
+
+      case elementNode:
+        return "elementNode";
+
+      case attributeNode:
+        return "attributeNode";
+
+      case textNode:
+        return "textNode";
+
+      case piNode:
+        return "piNode";
+
+      case commentNode:
+        return "commentNode";
+
+      default:
+        return "<unknown NodeKind>";
+    }
+  }
 };
 
 } // namespace store
