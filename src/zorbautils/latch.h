@@ -65,6 +65,9 @@ public:
 
 class Latch
 {
+public:
+  enum Mode { READ, WRITE };
+
 protected:
   HANDLE  mutex;
   HANDLE  cond_read;
