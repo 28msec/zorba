@@ -315,8 +315,7 @@ namespace zorba {
 
 /** 
  * \example simple.cpp
- *  This is a simple example that demonstrate how to use the Zorba XQuery Engine to
- *  create, compile, and execute queries.
+ *  This is a simple example that demonstrate how to create, compile, and execute queries.
  *
  * \example datamanager.cpp
  *  This file contains some examples that demonstrate how the XmlDataManager can be used

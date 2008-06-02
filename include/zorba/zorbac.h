@@ -47,13 +47,20 @@ typedef XQC_Collection* XQC_Collection_Ref;
 typedef struct XQC_DataManager_s*  XQC_DataManager;
 typedef XQC_DataManager* XQC_DataManager_Ref;
 
-
-typedef XQUERY_ERROR*     XQUERY_ERROR_REF;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/**
+ * The zorba_implementation function creates a new ::XQC_Implementation object.
+ * Thereby, the Zorba processor is initialized.
+ * The user is responsible for freeing the object by calling the free() function
+ * of the XQC_Implementation struct.
+ * \param[out] impl The newly created XQC_Implementation object.
+ *
+ * \retval ::XQC_NO_ERROR
+ * \retval ::XQP0019_INTERNAL_ERROR
+ */
 XQUERY_ERROR
 zorba_implementation(XQC_Implementation_Ref impl);
 
@@ -87,9 +94,9 @@ struct XQC_Implementation_s
   (*create_context)(XQC_Implementation impl, XQC_StaticContext_Ref context);
 
  /**
-  * Prepares a query from a string, returning an ::XQC_Expression object. 
-  * The user is responsible for freeing the ::XQC_Expression object
-  * returned by calling XQC_Expression::free().
+  * Prepares a query from a string, returning an ::XQC_Query object. 
+  * The user is responsible for freeing the ::XQC_Query object
+  * returned by calling XQC_Query::free().
   *
   * \param implementation The XQC_Implementation that this function pointer is a member of.
   * \param string The query to prepare as a string.
@@ -106,10 +113,10 @@ struct XQC_Implementation_s
 		         XQC_StaticContext context, XQC_Query_Ref query);
 
   /**
-   * Prepares a query from a FILE pointer, returning an ::XQC_Expression object.
+   * Prepares a query from a FILE pointer, returning an ::XQC_Query object.
    * The user remains responsible for closing the file after parsing. 
-   * The user is responsible for freeing the ::XQC_Expression object returned by
-   * calling XQC_Expression::free().
+   * The user is responsible for freeing the ::XQC_Query object returned by
+   * calling XQC_Query::free().
    *
    * \param implementation The XQC_Implementation that this function pointer is a member of.
    * \param file The file containing the query to prepare.
@@ -146,6 +153,17 @@ struct XQC_Implementation_s
   void* data;
 };
 
+/**
+ * The ::XQC_Expression struct represents a pre-parsed query, and allows the user to execute 
+ * that query any number of times. An ::XQC_Expression object is thread-safe and 
+ * can be used by multiple threads of execution at the same time.
+ *
+ * ::XQC_Expression objects are created by calling the XQC_Implementation::prepare() or 
+ * XQC_Implementation::prepare_file() functions. 
+ * Once created, the user is responsible for freeing the object by calling the free() function. 
+ * The ::XQC_Expression object should be freed before the ::XQC_Implementation object
+ * that created it.
+ */
 struct XQC_Query_s 
 {
 	XQUERY_ERROR
@@ -154,15 +172,47 @@ struct XQC_Query_s
   XQUERY_ERROR
   (*get_static_context)(XQC_Query, XQC_StaticContext_Ref context);
 
+ /**
+  * Executes the query represented by the XQC_Query object and prints the serialized XML
+  * output to the given FILE pointer. The user remains responsible for closing
+  * the file.
+  *
+  * \param query The XQC_Query that this function pointer is a member of.
+  * \param file The FILE pointer to print the serialized result to.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQP0019_INTERNAL_ERROR
+  * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
+  * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
+  */
 	XQUERY_ERROR 
-  (*execute)(XQC_Query query, FILE*);
+  (*execute)(XQC_Query query, FILE* file);
 
 	XQUERY_ERROR 
   (*apply_updates)(XQC_Query query);
 
+ /**
+  * Executes the query represented by the XQC_Query object.
+  * An ::XQC_Sequence object is returned which can be used to examine the results 
+  * of the query execution. The user is responsible for freeing the
+  * ::XQC_Sequence object returned by calling XQC_Sequence::free().
+  *
+  * \param query The XQC_Query that this function pointer is a member of.
+  * \param[out] sequence The newly created XQC_Sequence object.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQP0019_INTERNAL_ERROR
+  * \retval ::API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY
+  * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
+  */
 	XQUERY_ERROR 
   (*sequence)(XQC_Query query, XQC_Sequence_Ref sequence);
 
+ /**
+  * Called to free the resources associated with the XQC_Query.
+  * 
+  * \param query The XQC_Query that this function pointer is a member of.
+  */
   void
   (*free)(XQC_Query query);
 
@@ -355,39 +405,124 @@ struct XQC_StaticContext_s
   XQUERY_ERROR
   (*get_ordering_mode)(XQC_StaticContext context, ordering_mode_t* mode );
 
+ /**
+  * Sets the default order mode for empty sequences to either empty_least or
+  * empty_greatest
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param mode The order_empty_mode_t to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*set_default_order_empty_sequences)(XQC_StaticContext context, order_empty_mode_t mode );
 
+ /**
+  * Returns the default order mode for empty sequences that is set in the given
+  * static context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] mode The order_empty_mode_t that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*get_default_order_empty_sequences)(XQC_StaticContext context, order_empty_mode_t* mode );
 
+ /**
+  * Sets the boundary space policy to either preserve_space or strip_space.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param mode The boundary_space_mode_t to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR  
   (*set_boundary_space_policy)(XQC_StaticContext context, boundary_space_mode_t mode);
 
+ /**
+  * Returns the boundary space policy that is set in the given static context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] mode The boundary_space_mode_t that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*get_boundary_space_policy)(XQC_StaticContext context, boundary_space_mode_t* mode );
 
+ /**
+  * Sets the copy namespace mode which consists of the preserve and the inherit mode.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param preserve The preserve_mode_t to set in the given context.
+  * \param inherit The inherit_mode_t to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR 
   (*set_copy_ns_mode)(XQC_StaticContext context,  
                       preserve_mode_t preserve,
                       inherit_mode_t inherit );
 
+ /**
+  * Returns the copy namespace mode as a pair consisting of the preserve and the inherit
+  * mode.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] preserve The preserve_mode_t that is set in the given context.
+  * \param[out] inherit The inherit_mode_t that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*get_copy_ns_mode)(XQC_StaticContext context,
                       preserve_mode_t* aPreserve,
                       inherit_mode_t* aInherit );
 
+ /**
+  * Sets the base uri in the given static context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param base_uri The base uri to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*set_base_uri)(XQC_StaticContext context, const char* base_uri );
 
+ /**
+  * Returns the base uri that is set in the given static context.
+  * The returned base uri is only valid as long as the corresponding static context
+  * is valid.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] base_uri The base uri that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*get_base_uri)(XQC_StaticContext context, const char** base_uri);
 
+ /**
+  * Called to free the resources associated with the XQC_StaticContext.
+  * 
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  */
   void
   (*free)(XQC_StaticContext context);
 
   void* data;
 };
+
 
 struct XQC_DynamicContext_s 
 {
@@ -540,6 +675,19 @@ struct XQC_DataManager_s
   void* data;
 };
 
+/** 
+ * \example csimple.c
+ *  This is a simple example that demonstrate how to use the Zorba XQuery Engine to
+ *  create, compile, and execute queries.
+ *
+ * \example cdatamanager.cpp
+ *  This file contains some examples that demonstrate how the data manger can be used
+ *  to load files, create collection, etc.
+ *
+ * \example ccontext.cpp
+ *  This file demonstrates how the item factory can be used to create new items and 
+ *  bind the items to external variables in the dynamic context before executing a query.
+ */
 
 #ifdef __cplusplus
 }

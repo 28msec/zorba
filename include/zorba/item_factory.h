@@ -25,8 +25,8 @@ namespace zorba {
    * An instance of this class can be obtained by calling getItemFactory on the Zorba object.
    *
    * Each createXXX function of this class creates an Item of an XML Schema item.
-   * If an isNull() call on an Item created by this function returns true the
-   * given Item could not be created.
+   * If an isNull() call on an Item created by one of these functions returns true the
+   * Item could not be created.
    */
   class ItemFactory 
   {
