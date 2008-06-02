@@ -31,7 +31,7 @@ zorba_implementation(XQC_Implementation_Ref impl)
 
     (*impl) = lImpl.release();
     (*impl)->data =  lZorba;
-    return XQ_SUCCESS;
+    return XQ_NO_ERROR;
   } catch (zorba::ZorbaException &e) {
     return e.getErrorCode();
   } catch (...) {

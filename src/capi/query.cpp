@@ -28,7 +28,7 @@ using namespace zorba;
 #define ZORBA_XQUERY_TRY try {
 
 #define ZORBA_XQUERY_CATCH      \
-     return XQ_SUCCESS;             \
+     return XQ_NO_ERROR;             \
    } catch (ZorbaException& e) {  \
      return e.getErrorCode();       \
    } catch (...) {                \

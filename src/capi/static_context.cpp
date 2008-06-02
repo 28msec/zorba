@@ -22,7 +22,7 @@ using namespace zorba;
 
 #define SC_TRY try {
 #define SC_CATCH \
-    return XQ_SUCCESS;              \
+    return XQ_NO_ERROR;              \
   } catch (ZorbaException &e) {     \
     return e.getErrorCode();        \
   } catch (...) {                   \
@@ -56,7 +56,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::add_namespace(XQC_StaticContext context, const char* prefix, const char* uri)
+  StaticContext::declare_ns(XQC_StaticContext context, const char* prefix, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -67,7 +67,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_namespace_by_prefix(XQC_StaticContext context, const char* prefix, 
+  StaticContext::get_ns_by_prefix(XQC_StaticContext context, const char* prefix, 
                                          const char** result_ns)
   {
     SC_TRY
@@ -267,7 +267,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  StaticContext::set_copy_namespaces_mode(XQC_StaticContext context,  
+  StaticContext::set_copy_ns_mode(XQC_StaticContext context,  
                                           preserve_mode_t preserve,
                                           inherit_mode_t inherit )
   {
@@ -279,7 +279,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_copy_namespaces_mode(XQC_StaticContext context,
+  StaticContext::get_copy_ns_mode(XQC_StaticContext context,
                                           preserve_mode_t* aPreserve, 
                                           inherit_mode_t* aInherit )
   {
@@ -332,8 +332,8 @@ namespace zorbac {
   StaticContext::assign_functions(XQC_StaticContext context)
   {
     context->create_child_context              = StaticContext::create_child_context;
-    context->add_namespace                     = StaticContext::add_namespace;
-    context->get_namespace_by_prefix           = StaticContext::get_namespace_by_prefix;
+    context->declare_ns                        = StaticContext::declare_ns;
+    context->get_ns_by_prefix                  = StaticContext::get_ns_by_prefix;
     context->set_default_element_and_type_ns   = StaticContext::set_default_element_and_type_ns;
     context->get_default_element_and_type_ns   = StaticContext::get_default_element_and_type_ns;
     context->set_default_function_ns           = StaticContext::set_default_function_ns;
@@ -351,8 +351,8 @@ namespace zorbac {
     context->get_default_order_empty_sequences = StaticContext::get_default_order_empty_sequences;
     context->set_boundary_space_policy         = StaticContext::set_boundary_space_policy;
     context->get_boundary_space_policy         = StaticContext::get_boundary_space_policy;
-    context->set_copy_namespaces_mode          = StaticContext::set_copy_namespaces_mode;
-    context->get_copy_namespaces_mode          = StaticContext::get_copy_namespaces_mode;
+    context->set_copy_ns_mode                  = StaticContext::set_copy_ns_mode;
+    context->get_copy_ns_mode                  = StaticContext::get_copy_ns_mode;
     context->set_base_uri                      = StaticContext::set_base_uri;
     context->get_base_uri                      = StaticContext::get_base_uri;
     context->free                              = StaticContext::free;

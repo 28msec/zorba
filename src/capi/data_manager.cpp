@@ -25,7 +25,7 @@ using namespace zorba;
 
 #define ZORBAC_DATAMANAGER_TRY try {
 #define ZORBAC_DATAMANAGER_CATCH \
-    return XQ_SUCCESS;              \
+    return XQ_NO_ERROR;          \
   } catch (ZorbaException &e) {     \
     return e.getErrorCode();        \
   } catch (...) {                   \

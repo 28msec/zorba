@@ -47,7 +47,7 @@ namespace zorbac {
       (*context) = lContext.release();
       (*context)->data = lInnerContext.release();
 
-      return XQ_SUCCESS;
+      return XQ_NO_ERROR;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
     } catch (...) {
@@ -82,7 +82,7 @@ namespace zorbac {
       (*query)->data = lQuerySmart.get(); 
       lQuerySmart->addReference(); 
 
-      return XQ_SUCCESS;
+      return XQ_NO_ERROR;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
     } catch (...) {
@@ -116,7 +116,7 @@ namespace zorbac {
       *query   = lQuery.release();
       (*query)->data = lQuerySmart.get();
       lQuerySmart->addReference();
-      return XQ_SUCCESS;
+      return XQ_NO_ERROR;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
     } catch (...) {
@@ -151,7 +151,7 @@ namespace zorbac {
       (*item) = lItem.release();
       (*item)->data = lInnerItem.release();
 
-      return XQ_SUCCESS;
+      return XQ_NO_ERROR;
     } catch (...) {
       return XQP0019_INTERNAL_ERROR;
     }
@@ -171,7 +171,7 @@ namespace zorbac {
       (*factory) = lFactory.release();
       (*factory)->data = lZorba->getItemFactory();
 
-      return XQ_SUCCESS;
+      return XQ_NO_ERROR;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
     } catch (...) {
@@ -193,7 +193,7 @@ namespace zorbac {
       (*data_manager) = lDataManager.release();
       (*data_manager)->data = lZorba->getXmlDataManager();
 
-      return XQ_SUCCESS;
+      return XQ_NO_ERROR;
     } catch (ZorbaException& e) {
       return e.getErrorCode(); 
     } catch (...) {

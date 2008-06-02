@@ -25,7 +25,7 @@ using namespace zorba;
 
 #define DC_TRY try {
 #define DC_CATCH \
-    return XQ_SUCCESS;              \
+    return XQ_NO_ERROR;              \
   } catch (ZorbaException &e) {     \
     return e.getErrorCode();        \
   } catch (...) {                   \

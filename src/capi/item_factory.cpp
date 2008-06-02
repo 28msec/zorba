@@ -22,7 +22,7 @@ using namespace zorba;
 
 #define ITEMFACTORY_TRY try {
 #define ITEMFACTORY_CATCH \
-    return XQ_SUCCESS;              \
+    return XQ_NO_ERROR;              \
   } catch (ZorbaException &e) {     \
     return e.getErrorCode();        \
   } catch (...) {                   \

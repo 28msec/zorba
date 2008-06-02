@@ -32,7 +32,7 @@ namespace zorbac {
        lInnerItem->theStrings.clear();
  
        if ( lIter->next(lInnerItem->theItem) )
-         return XQ_SUCCESS;
+         return XQ_NO_ERROR;
  
        return API0025_END_OF_SEQUENCE;
      } catch (ZorbaException& e) {
@@ -51,7 +51,7 @@ namespace zorbac {
        lIter->close();
        lIter->open();
  
-       return XQ_SUCCESS;
+       return XQ_NO_ERROR;
      } catch (ZorbaException& e) {
        return e.getErrorCode();
      } catch (...) {

@@ -23,7 +23,7 @@ using namespace zorba;
 #define ITEM_TRY  try {
 
 #define ITEM_CATCH  \
-      return XQ_SUCCESS; \
+      return XQ_NO_ERROR; \
     } catch (ZorbaException &e) { \
       return e.getErrorCode(); \
     } catch (...) { \

@@ -31,10 +31,10 @@ namespace zorbac {
       create_child_context(XQC_StaticContext context, XQC_StaticContext_Ref child_context);
 
       static XQUERY_ERROR
-      add_namespace(XQC_StaticContext context, const char* prefix, const char* uri);
+      declare_ns(XQC_StaticContext context, const char* prefix, const char* uri);
 
       static XQUERY_ERROR
-      get_namespace_by_prefix(XQC_StaticContext context, const char* prefix, const char** result_ns);
+      get_ns_by_prefix(XQC_StaticContext context, const char* prefix, const char** result_ns);
 
       static XQUERY_ERROR
       set_default_element_and_type_ns(XQC_StaticContext context, const char* uri);
@@ -88,12 +88,12 @@ namespace zorbac {
       get_boundary_space_policy(XQC_StaticContext context, boundary_space_mode_t* mode );
 
       static XQUERY_ERROR 
-      set_copy_namespaces_mode(XQC_StaticContext context,  
+      set_copy_ns_mode(XQC_StaticContext context,  
                                preserve_mode_t preserve,
                                inherit_mode_t inherit );
 
       static XQUERY_ERROR
-      get_copy_namespaces_mode(XQC_StaticContext context,
+      get_copy_ns_mode(XQC_StaticContext context,
                                preserve_mode_t* aPreserve, 
                                inherit_mode_t* aInherit );
 

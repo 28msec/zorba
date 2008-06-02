@@ -31,7 +31,7 @@ example_1(XQC_Implementation impl)
   FILE*          lOutFile = stdout;
 
   // compile the query
-  impl->compile(impl, "(1+2, 3, 4)", 0, &lXQuery);
+  impl->prepare(impl, "(1+2, 3, 4)", 0, &lXQuery);
 
   // execute it and print the result on standard out
   lXQuery->execute(lXQuery, lOutFile);
@@ -50,7 +50,7 @@ example_1(XQC_Implementation impl)
 int
 example_2(XQC_Implementation impl) 
 {
-  XQUERY_ERROR   lError = XQ_SUCCESS;
+  XQUERY_ERROR   lError = XQ_NO_ERROR;
   XQC_Query      lXQuery;
   XQC_Item       lItem;
   const char*    lStringValue;
@@ -59,7 +59,7 @@ example_2(XQC_Implementation impl)
   impl->create_item(impl, &lItem);
 
   // compile the query and get the result as a sequence
-  lError = impl->compile(impl, "for $i in 1 to 10 return $i", 0, &lXQuery);
+  lError = impl->prepare(impl, "for $i in 1 to 10 return $i", 0, &lXQuery);
 
   lXQuery->sequence(lXQuery, &lResult);
 
@@ -82,11 +82,11 @@ example_2(XQC_Implementation impl)
 int
 example_3(XQC_Implementation impl)
 {
-  XQUERY_ERROR   lError = XQ_SUCCESS;
+  XQUERY_ERROR   lError = XQ_NO_ERROR;
   XQC_Query      lXQuery;
 
   // compile the query
-  lError = impl->compile(impl, "for $x in (1, 2, 3, 4)", 0, &lXQuery);
+  lError = impl->prepare(impl, "for $x in (1, 2, 3, 4)", 0, &lXQuery);
 
   return lError == XPST0003?1:0;
 }
@@ -97,12 +97,12 @@ example_3(XQC_Implementation impl)
 int
 example_4(XQC_Implementation impl)
 {
-  XQUERY_ERROR   lError = XQ_SUCCESS;
+  XQUERY_ERROR   lError = XQ_NO_ERROR;
   XQC_Query      lXQuery;
   FILE*          lOutFile = stdout;
 
   // compile the query
-  impl->compile(impl, "1 div 0", 0, &lXQuery);
+  impl->prepare(impl, "1 div 0", 0, &lXQuery);
 
   // execute it and print the result on standard out
   lError = lXQuery->execute(lXQuery, lOutFile);
@@ -120,7 +120,7 @@ csimple(int argc, char** argv)
   int res = 0; 
   XQC_Implementation impl;
 
-  if ( zorba_implementation(&impl) != XQ_SUCCESS )
+  if ( zorba_implementation(&impl) != XQ_NO_ERROR )
       return 1;
 
   printf("executing C example 1\n");

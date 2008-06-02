@@ -57,15 +57,70 @@ extern "C" {
 XQUERY_ERROR
 zorba_implementation(XQC_Implementation_Ref impl);
 
+
+/**
+ * The ::XQC_Implementation struct provides factory functions for parsing queries. 
+ * An XQC_Implementation object is thread-safe and can be used by multiple threads 
+ * of execution at the same time.
+ *
+ * Creating an XQC_Implementation object can be done using the zorba_implementation function.
+ * Once created, the user is responsible for freeing the object by calling
+ * the free() function. 
+ * The XQC_Implementation object should not be freed before all objects created using it's
+ * functions have been freed - doing so causes undefined behaviour.
+ */
 struct XQC_Implementation_s 
 {
+
+ /**
+  * Creates a static context suitable for use in the parse() and parse_file()
+  * functions. The user is responsible for freeing the ::XQC_StaticContext object returned by calling
+  * XQC_StaticContext::free().
+  *
+  * \param implementation The XQC_Implementation that this function pointer is a member of
+  * \param[out] context The newly created XQC_StaticContext object.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQP0019_INTERNAL_ERROR
+  */
 	XQUERY_ERROR 
   (*create_context)(XQC_Implementation impl, XQC_StaticContext_Ref context);
 
+ /**
+  * Prepares a query from a string, returning an ::XQC_Expression object. 
+  * The user is responsible for freeing the ::XQC_Expression object
+  * returned by calling XQC_Expression::free().
+  *
+  * \param implementation The XQC_Implementation that this function pointer is a member of.
+  * \param string The query to prepare as a string.
+  * \param context The initial static context for this query, or null to use the default 
+  *        static context.
+  * \param[out] expression The resulting prepared expression.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQP0019_INTERNAL_ERROR
+  * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
+  */
 	XQUERY_ERROR 
   (*prepare)(XQC_Implementation implementation, const char *query_string,
 		         XQC_StaticContext context, XQC_Query_Ref query);
 
+  /**
+   * Prepares a query from a FILE pointer, returning an ::XQC_Expression object.
+   * The user remains responsible for closing the file after parsing. 
+   * The user is responsible for freeing the ::XQC_Expression object returned by
+   * calling XQC_Expression::free().
+   *
+   * \param implementation The XQC_Implementation that this function pointer is a member of.
+   * \param file The file containing the query to prepare.
+   * \param context The initial static context for this query, or null to use the default 
+   *        static context.
+   * \param[out] expression The resulting prepared expression.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
+   */
 	XQUERY_ERROR 
   (*prepare_file)(XQC_Implementation implementation, FILE *query_file,
 		              XQC_StaticContext context, XQC_Query_Ref query);
@@ -79,6 +134,12 @@ struct XQC_Implementation_s
   XQUERY_ERROR
   (*data_manager)(XQC_Implementation implementation, XQC_DataManager_Ref data_manager);
 
+
+  /**
+   * Called to free the resources associated with the XQC_Implementation.
+   * 
+   * \param implementation The XQC_Implementation that this function pointer is a member of
+   */
   void
   (*free)(XQC_Implementation implementation);
 
@@ -108,26 +169,108 @@ struct XQC_Query_s
   void* data;
 };
 
+/**
+ * The ::XQC_StaticContext struct provides a way to specify values for the static context of 
+ * the query to be prepared. An ::XQC_StaticContext object is not thread-safe - threads should 
+ * each use their own instance of a ::XQC_StaticContext object (see create_child_context).
+ *
+ * ::XQC_StaticContext objects are created by calling the XQC_Implementation::create_context() 
+ * function. Once created, the user is responsible for freeing the object by calling
+ * the free() function. 
+ * The ::XQC_StaticContext object should be freed before the ::XQC_Implementation object that
+ * created it.
+ */
 struct XQC_StaticContext_s 
 {
+ /**
+  * Creates a child context of the given static context.
+  * A child context contains the same information as it's parent context but
+  * it allows the user to override and add information.
+  * The user is responsible for freeing the ::XQC_StaticContext object returned by calling
+  * XQC_StaticContext::free().
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] child_context The newly created XQC_StaticContext object which is
+  *             a child of the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQP0019_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*create_child_context)(XQC_StaticContext context, XQC_StaticContext_Ref child_context);
 
+ /**
+  * Adds a (prefix, uri) pair to the set of statically known namespaces of
+  * the given context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of.
+  * \param prefix The prefix of the namespace to add to the given XQC_StaticContext.
+  * \param uri    The uri of the namespace to add to the given XQC_StaticContext.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
-  (*add_namespace)(XQC_StaticContext context, const char* prefix, const char* uri);
+  (*declare_ns)(XQC_StaticContext context, const char* prefix, const char* uri);
 
+ /**
+  * Returns the namespace uri that belongs to the given prefix.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param prefix The prefix of the namespace to add to the given XQC_StaticContext.
+  * \param[out] result_ns The namespace uri of the namespace registered with the given prefix.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
-  (*get_namespace_by_prefix)(XQC_StaticContext context, const char* prefix, const char** result_ns);
+  (*get_ns_by_prefix)(XQC_StaticContext context, const char* prefix, const char** result_ns);
 
+  /**
+   * Sets the value of the default namespace for elements and types.
+   *
+	 * \param context The XQC_StaticContext that this function pointer is a member of
+   * \param uri The uri of the default element and type namespace to set in the given context.
+   *
+	 * \retval ::XQC_NO_ERROR
+	 * \retval ::XQC_INTERNAL_ERROR
+   */
   XQUERY_ERROR
   (*set_default_element_and_type_ns)(XQC_StaticContext context, const char* uri);
 
+ /**
+  * Returns the default namespace for elements and types.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] uri The uri of the default element and type namespace that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*get_default_element_and_type_ns)(XQC_StaticContext context, const char** uri);
 
+ /**
+  * Sets the default namespace for functions.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param uri The uri of the default function namespace to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*set_default_function_ns)(XQC_StaticContext context, const char* uri);
 
+ /**
+  * Returns the default namespace for functions set in this static context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] uri The uri of the default function namespace that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*get_default_function_ns)(XQC_StaticContext context, const char** uri);
 
@@ -140,21 +283,75 @@ struct XQC_StaticContext_s
   XQUERY_ERROR
   (*get_default_collation)(XQC_StaticContext context, const char** uri);
 
+ /**
+  * Sets the XPath 1.0 compatibility mode to either xpath1_0 or xpath2_0.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param mode The xpath1_0compatib_mode_t to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*set_xpath1_0_mode)(XQC_StaticContext context, xpath1_0compatib_mode_t mode );
 
+ /**
+  * Returns the XPath 1.0 compatibility that is set in the given static context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] mode The xpath1_0compatib_mode_t that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR 
   (*get_xpath1_0_mode)(XQC_StaticContext context, xpath1_0compatib_mode_t* mode);
 
+ /**
+  * Sets the construction mode to either preserve_cons or strip_cons.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param mode The construction_mode_t to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*set_construction_mode)(XQC_StaticContext context, construction_mode_t mode );
 
+ /**
+  * Returns the construction mode that is set in the given static context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] mode The construction_mode_t that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*get_construction_mode)(XQC_StaticContext context, construction_mode_t* mode);
 
+ /**
+  * Sets the ordering mode to either order or unordered.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param mode The ordering_mode_t to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*set_ordering_mode)(XQC_StaticContext context, ordering_mode_t mode );
 
+ /**
+  * Returns the ordering mode that is set in the given static context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] mode The ordering_mode_t that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
   XQUERY_ERROR
   (*get_ordering_mode)(XQC_StaticContext context, ordering_mode_t* mode );
 
@@ -171,14 +368,14 @@ struct XQC_StaticContext_s
   (*get_boundary_space_policy)(XQC_StaticContext context, boundary_space_mode_t* mode );
 
   XQUERY_ERROR 
-  (*set_copy_namespaces_mode)(XQC_StaticContext context,  
-                              preserve_mode_t preserve,
-                              inherit_mode_t inherit );
+  (*set_copy_ns_mode)(XQC_StaticContext context,  
+                      preserve_mode_t preserve,
+                      inherit_mode_t inherit );
 
   XQUERY_ERROR
-  (*get_copy_namespaces_mode)(XQC_StaticContext context,
-                              preserve_mode_t* aPreserve,
-                              inherit_mode_t* aInherit );
+  (*get_copy_ns_mode)(XQC_StaticContext context,
+                      preserve_mode_t* aPreserve,
+                      inherit_mode_t* aInherit );
 
   XQUERY_ERROR
   (*set_base_uri)(XQC_StaticContext context, const char* base_uri );

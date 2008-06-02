@@ -26,7 +26,7 @@
 typedef enum
 {
   // no error
-  XQ_SUCCESS = 0,
+  XQ_NO_ERROR = 0,
 
   //
   // XPath dynamic errors
