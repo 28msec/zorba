@@ -36,7 +36,7 @@ citemfactory(int argc, char* argv[])
   const char*        lStringValue = 0;
 
 
-  if ( zorba_implementation(&impl) != XQ_SUCCESS )
+  if ( zorba_implementation(&impl) != XQ_NO_ERROR )
       return 1;
 
   impl->item_factory(impl, &lFactory);
@@ -46,19 +46,19 @@ citemfactory(int argc, char* argv[])
   const char* lString = "1";
 
   /* String */
-  UNIT_ASSERT ( lFactory->create_string(lFactory, lString, &lItem) == XQ_SUCCESS );
+  UNIT_ASSERT ( lFactory->create_string(lFactory, lString, &lItem) == XQ_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->free(lItem);
 
   /* AnyURI */
-  UNIT_ASSERT ( lFactory->create_anyuri(lFactory, lURI, &lItem) == XQ_SUCCESS );
+  UNIT_ASSERT ( lFactory->create_anyuri(lFactory, lURI, &lItem) == XQ_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
   lItem->free(lItem);
 
   /* QName */
-  UNIT_ASSERT ( lFactory->create_qname2(lFactory, lURI, lString, &lItem) == XQ_SUCCESS );
+  UNIT_ASSERT ( lFactory->create_qname2(lFactory, lURI, lString, &lItem) == XQ_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->ns(lItem, &lStringValue);
@@ -67,7 +67,7 @@ citemfactory(int argc, char* argv[])
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->free(lItem);
   
-  UNIT_ASSERT ( lFactory->create_qname3(lFactory, lURI, lPrefix, lString, &lItem) == XQ_SUCCESS );
+  UNIT_ASSERT ( lFactory->create_qname3(lFactory, lURI, lPrefix, lString, &lItem) == XQ_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "zorba:1") == 0 );
   lItem->ns(lItem, &lStringValue);
@@ -79,7 +79,7 @@ citemfactory(int argc, char* argv[])
   lItem->free(lItem);
 
   /* Boolean */
-  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 1, &lItem) == XQ_SUCCESS );
+  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 1, &lItem) == XQ_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "true") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
@@ -90,7 +90,7 @@ citemfactory(int argc, char* argv[])
   UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
   lItem->free(lItem);
 
-  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 0, &lItem) == XQ_SUCCESS );
+  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 0, &lItem) == XQ_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "false") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
