@@ -27,11 +27,11 @@ namespace zorbac {
       create_context(XQC_Implementation impl, XQC_StaticContext_Ref context);
 
 	    static XQUERY_ERROR 
-      compile(XQC_Implementation implementation, const char *query_string,
+      prepare(XQC_Implementation implementation, const char *query_string,
 	    	      XQC_StaticContext context, XQC_Query_Ref query);
 
 	    static XQUERY_ERROR 
-      compile_file(XQC_Implementation implementation, FILE *query_file,
+      prepare_file(XQC_Implementation implementation, FILE *query_file,
 	    	           XQC_StaticContext context, XQC_Query_Ref query);
 
 	    static void 

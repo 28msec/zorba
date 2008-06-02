@@ -47,7 +47,6 @@ typedef XQC_Collection* XQC_Collection_Ref;
 typedef struct XQC_DataManager_s*  XQC_DataManager;
 typedef XQC_DataManager* XQC_DataManager_Ref;
 
-typedef struct XQC_OutputStream_s* XQC_OutputStream;
 
 typedef XQUERY_ERROR*     XQUERY_ERROR_REF;
 
@@ -64,13 +63,13 @@ struct XQC_Implementation_s
   (*create_context)(XQC_Implementation impl, XQC_StaticContext_Ref context);
 
 	XQUERY_ERROR 
-  (*compile)(XQC_Implementation implementation, const char *query_string,
+  (*prepare)(XQC_Implementation implementation, const char *query_string,
 		         XQC_StaticContext context, XQC_Query_Ref query);
 
 	XQUERY_ERROR 
-  (*compile_file)(XQC_Implementation implementation, FILE *query_file,
+  (*prepare_file)(XQC_Implementation implementation, FILE *query_file,
 		              XQC_StaticContext context, XQC_Query_Ref query);
-
+ 
   XQUERY_ERROR
   (*create_item)(XQC_Implementation implementation, XQC_Item_Ref item);
 
@@ -251,16 +250,6 @@ struct XQC_Item_s
   void* data;
 };
 
-struct XQC_OutputStream_s 
-{
-  void* user_data;
-
-  unsigned int
-  (*callback)(XQC_OutputStream stream, void* buffer, unsigned int size);
-
-  void* data;
-};
-
 struct XQC_ItemFactory_s
 {
   XQUERY_ERROR
@@ -353,6 +342,7 @@ struct XQC_DataManager_s
 
   void* data;
 };
+
 
 #ifdef __cplusplus
 }

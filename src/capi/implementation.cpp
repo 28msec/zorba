@@ -56,7 +56,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Implementation::compile(XQC_Implementation impl, const char *query_string,
+  Implementation::prepare(XQC_Implementation impl, const char *query_string,
                           XQC_StaticContext context, XQC_Query_Ref query)
   {
     try {
@@ -91,7 +91,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Implementation::compile_file(XQC_Implementation impl, FILE *query_file,
+  Implementation::prepare_file(XQC_Implementation impl, FILE *query_file,
                                XQC_StaticContext context, XQC_Query_Ref query)
   {
     try {
@@ -205,8 +205,8 @@ namespace zorbac {
   Implementation::assign_functions(XQC_Implementation impl)
   {
     impl->create_context = Implementation::create_context;
-    impl->compile        = Implementation::compile;
-    impl->compile_file   = Implementation::compile_file;
+    impl->prepare        = Implementation::prepare;
+    impl->prepare_file   = Implementation::prepare_file;
     impl->free           = Implementation::free;
     impl->create_item    = Implementation::create_item;
     impl->item_factory   = Implementation::item_factory;
