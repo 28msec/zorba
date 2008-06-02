@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "common/common.h"
 #include "zorbaerrors/fatal.h"
 #include "zorbautils/latch.h"
 
@@ -91,6 +92,7 @@ void Latch::unlock()
 
 
 #elif defined WIN32
+#include <errno.h>
 
 Latch::Latch()
   :
@@ -121,7 +123,7 @@ Latch::Latch()
     return;
   }
 
-	valid = RWLOCK_VALID;
+	valid = LATCH_VALID;
 }
 
 
@@ -130,28 +132,25 @@ Latch::~Latch()
   destroy();
 }
 
-
 void Latch::rlock()
 { 
-  theLatch.readlock();
+  readlock();
   rlocked = true;
 }
 
-
 void Latch::wlock()
 { 
-  theLatch.writelock();
+  writelock();
   wlocked = true;
 }
-
 
 void Latch::unlock()
 { 
   if(wlocked)
-    theLatch.writeunlock();
+    writeunlock();
 
   if(rlocked)
-    theLatch.readunlock();
+    readunlock();
 
   rlocked = false;
   wlocked = false;
@@ -229,7 +228,7 @@ int Latch::destroy()
 {
 	int status;
 
-	if (valid!=RWLOCK_VALID) return EINVAL;
+	if (valid!=LATCH_VALID) return EINVAL;
 	status = lock_mutex();
 	if (status!=0) return status;
 	
@@ -245,7 +244,7 @@ int Latch::destroy()
 		return EBUSY;
 	}
 
-	valid = RWLOCK_INVALID;
+	valid = LATCH_INVALID;
 	status = unlock_mutex();
 	if (status!=0) return status;
 
@@ -299,7 +298,7 @@ int Latch::readtrylock()
 {
 	int status, status2;
 
-	if (valid!=RWLOCK_VALID) return EINVAL;
+	if (valid!=LATCH_VALID) return EINVAL;
 
 	if ( (status = lock_mutex()) != 0) return status;
 
@@ -323,7 +322,7 @@ int Latch::readunlock()
 {
 	int status, status2;
 	
-	if (valid != RWLOCK_VALID) return EINVAL;
+	if (valid != LATCH_VALID) return EINVAL;
 
 	if ( (status = lock_mutex()) != 0) return status;
 
@@ -343,7 +342,7 @@ int Latch::writelock()
 {
 	int status;
 
-	if (valid!=RWLOCK_VALID) return EINVAL;
+	if (valid!=LATCH_VALID) return EINVAL;
 
 	if ( (status = lock_mutex()) != 0) return status;
 
@@ -370,7 +369,7 @@ int Latch::writetrylock()
 {
 	int status, status2;
 
-	if (valid!=RWLOCK_VALID) return EINVAL;
+	if (valid!=LATCH_VALID) return EINVAL;
 
 	if ( (status = lock_mutex()) != 0) return status;
 
@@ -389,7 +388,7 @@ int Latch::writeunlock()
 {
 	int status;
 
-	if (valid!=RWLOCK_VALID) return EINVAL;
+	if (valid!=LATCH_VALID) return EINVAL;
 	if ( (status = lock_mutex()) != 0) return status;
 
 	w_active = 0;
