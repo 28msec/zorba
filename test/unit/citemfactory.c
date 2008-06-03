@@ -35,15 +35,14 @@ citemfactory(int argc, char* argv[])
   int                lTmpInt = 0;
   const char*        lStringValue = 0;
 
+  const char* lURI = "http://www.zorba-xquery.com/";
+  const char* lPrefix = "zorba";
+  const char* lString = "1";
 
   if ( zorba_implementation(&impl) != XQ_NO_ERROR )
       return 1;
 
   impl->item_factory(impl, &lFactory);
-
-  const char* lURI = "http://www.zorba-xquery.com/";
-  const char* lPrefix = "zorba";
-  const char* lString = "1";
 
   /* String */
   UNIT_ASSERT ( lFactory->create_string(lFactory, lString, &lItem) == XQ_NO_ERROR );
