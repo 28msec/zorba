@@ -25,6 +25,7 @@
 #include "store/api/item.h"
 #include "zorbatypes/xqpstring.h"
 #include "util/hashmap.h"
+#include "types/schema/SchemaValidator.h"
 
 namespace zorba
 {
@@ -61,10 +62,11 @@ public:
         const TypeManager *manager,
         const store::Item* qname,
         TypeConstants::quantifier_t quantifier);
+
+    SchemaValidator* getSchemaValidator();
 #endif//ZORBA_NO_XMLSCHEMA
 
     store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
-
 
 private:
     static bool _isInitialized;

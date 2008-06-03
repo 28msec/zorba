@@ -517,6 +517,15 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
     return result;
 }
 
+/**
+*   User must dealocate the returned SchemaValidator*
+*/
+SchemaValidator* Schema::getSchemaValidator()
+{
+    return new SchemaValidator(_grammarPool);
+}
+
+
 #ifndef ZORBA_NO_XMLSCHEMA
 // user atomic types
 bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aSourceType,

@@ -11,10 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 SET(SCHEMA_SRCS
     schema.cpp
     StrX.cpp
     LoadSchemaErrorHandler.cpp
     PrintSchema.cpp
     XercesParseUtils.cpp
+    SchemaValidator.cpp
+    SchemaValidatorFilter.cpp
     )

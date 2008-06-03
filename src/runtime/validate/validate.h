@@ -21,6 +21,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/booleans/compare_types.h"
+#include "types/schema/SchemaValidator.h"
 
 namespace zorba
 {
@@ -48,12 +49,15 @@ namespace zorba
         ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool isLax );
         virtual ~ValidateIterator();
 
-        static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, PlanState& planState, 
-            const PlanIterator* iter);
-
         bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
         virtual void accept(PlanIterVisitor&) const;
+
+        static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
+            PlanState& planState, const PlanIterator* iter);
+
+        static store::Iterator_t processChildren ( PlanState& planState, const QueryLoc& loc,
+            SchemaValidator *schemaValidator, store::Iterator_t children);
     };
 
 }

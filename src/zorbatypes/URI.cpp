@@ -52,7 +52,8 @@ URI::error_t URI::resolve_relative (
       XMLUri resuri (&baseuri, xrel.get ());
       char *raw_result = XMLString::transcode (resuri.getUriText ());
       result = new xqpStringStore(raw_result);
-      delete [] raw_result;
+      //delete [] raw_result;
+      XMLString::release(&raw_result);
     }
   } catch (MalformedURLException &) {
     return URI::RESOLUTION_ERROR;
