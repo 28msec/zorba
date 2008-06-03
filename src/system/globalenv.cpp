@@ -16,9 +16,7 @@
 #include <libxml/parser.h>
 #include "common/common.h"
 
-#ifndef ZORBA_NO_UNICODE
 #include "zorbatypes/icu_init.h"
-#endif//#ifndef ZORBA_NO_UNICODE
 
 #ifdef ZORBA_WITH_REST
 #include <curl/curl.h>
@@ -53,9 +51,7 @@ void GlobalEnvironment::init()
 
   m_globalEnv = new GlobalEnvironment();
 
-  #ifndef ZORBA_NO_UNICODE
-  zorbatypes_global_init();
-  #endif//#ifndef ZORBA_NO_UNICODE
+  m_globalEnv->m_icu->zorbatypes_global_init();
 
 #ifdef ZORBA_XBROWSER
   m_globalEnv->m_store.reset(xqp::DOMStoreSingelton::getInstance()->getStore());
@@ -133,14 +129,7 @@ void GlobalEnvironment::destroy()
   // releases statically initialized memory and prevents
   // valgrind from reporting those problems at the end
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
-#ifndef ZORBA_NO_UNICODE
-  {
-    zorbatypes_global_cleanup();
-#if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
-    delete[] m_globalEnv->icu_appdata;
-#endif
-  }
-#endif//ifndef ZORBA_NO_UNICODE
+  m_globalEnv->m_icu->zorbatypes_global_cleanup();
 
   delete m_globalEnv;
 	m_globalEnv = NULL;

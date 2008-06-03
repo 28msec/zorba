@@ -27,6 +27,7 @@ namespace zorba {
 
 class RootTypeManager;
 class static_context;
+class icu_init;
 
 
 class GlobalEnvironment 
@@ -57,11 +58,8 @@ class GlobalEnvironment
 #endif
   std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
 
-//#if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
-  unsigned char                        * icu_appdata;
-//#endif
-
   static GlobalEnvironment             * m_globalEnv;
+  icu_init                             * m_icu;
 };
 
 #define GENV GlobalEnvironment::getInstance()

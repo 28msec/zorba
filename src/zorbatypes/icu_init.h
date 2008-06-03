@@ -15,6 +15,13 @@
  */
 
 namespace zorba {
-  void zorbatypes_global_init();
-  void zorbatypes_global_cleanup();
+
+class icu_init {
+  public:
+    void zorbatypes_global_init();
+    void zorbatypes_global_cleanup();
+
+  private:
+    unsigned char * icu_appdata;
+};
 }

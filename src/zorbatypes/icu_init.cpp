@@ -25,13 +25,13 @@
 namespace zorba
 {
 
-void zorbatypes_global_init()
+void icu_init::zorbatypes_global_init()
 {
-    // initialize the icu library
-    // we do this here because we are sure that is used
-    // from one thread only
-    // see http://www.icu-project.org/userguide/design.html#Init_and_Termination
-    // and http://www.icu-project.org/apiref/icu4c/uclean_8h.html
+  // initialize the icu library
+  // we do this here because we are sure that is used
+  // from one thread only
+  // see http://www.icu-project.org/userguide/design.html#Init_and_Termination
+  // and http://www.icu-project.org/apiref/icu4c/uclean_8h.html
   #ifndef ZORBA_NO_UNICODE
   {
   #if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
@@ -55,12 +55,12 @@ void zorbatypes_global_init()
     ZORBA_ASSERT(hfile != INVALID_HANDLE_VALUE);
     DWORD   icusize;
     icusize = GetFileSize(hfile, NULL);
-    m_globalEnv->icu_appdata = new unsigned char[icusize];
+    icu_appdata = new unsigned char[icusize];
     DWORD   nr_read;
-    ReadFile(hfile, m_globalEnv->icu_appdata, icusize, &nr_read, NULL);
+    ReadFile(hfile, icu_appdata, icusize, &nr_read, NULL);
     CloseHandle(hfile);
     UErrorCode    data_err = U_ZERO_ERROR;
-    udata_setCommonData(m_globalEnv->icu_appdata, &data_err);
+    udata_setCommonData(icu_appdata, &data_err);
     ZORBA_ASSERT(data_err == U_ZERO_ERROR);
   
       //  u_setDataDirectory(self_path);
@@ -73,7 +73,7 @@ void zorbatypes_global_init()
   #endif//ifndef ZORBA_NO_UNICODE
 }
 
-void zorbatypes_global_cleanup()
+void icu_init::zorbatypes_global_cleanup()
 {
   // we shutdown icu
   // again it is important to mention this in the documentation
@@ -81,9 +81,14 @@ void zorbatypes_global_cleanup()
   // releases statically initialized memory and prevents
   // valgrind from reporting those problems at the end
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
-  #ifndef ZORBA_NO_UNICODE
-    u_cleanup();
-  #endif
+#ifndef ZORBA_NO_UNICODE
+{
+  u_cleanup();
+#if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
+  delete[] icu_appdata;
+#endif
+}
+#endif//ifndef ZORBA_NO_UNICODE
 }
 
 }
