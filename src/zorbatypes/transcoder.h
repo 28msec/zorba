@@ -19,7 +19,9 @@
 #include <ostream>
 
 #include "zorbatypes/rchandle.h"
-#include "zorbatypes/libicu.h"
+
+struct UConverter;
+typedef struct UConverter UConverter;
 
 namespace zorba
 {

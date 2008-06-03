@@ -11,6 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+SET(requiredlibs-zorbatypes)                                                                                                       
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindICU.cmake)                                                                           
+IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)                                                                     
+  MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")                                                      
+ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)                                                                   
+  SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})           
+  INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})                                                                                       
+ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)                                                                  
+
 SET(ZORBATYPES_SRCS 
   decimal.cpp
   floatimpl.cpp
@@ -39,13 +49,5 @@ ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS datetime DATETIME_SRCS)
 
 ADD_LIBRARY(zorbatypes ${ZORBATYPES_SRCS})
 
-SET(requiredlibs-zorbatypes)                                                                                                       
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindICU.cmake)                                                                           
-IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)                                                                     
-  MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")                                                      
-ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)                                                                   
-  SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})           
-  INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})                                                                                       
-ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)                                                                  
 
 TARGET_LINK_LIBRARIES(zorbatypes ${requiredlibs-zorbatypes})
