@@ -16,16 +16,14 @@
 #ifndef ZORBA_SERIALIZER_H
 #define ZORBA_SERIALIZER_H
 
-#include <ostream>
 #include <vector>
 
 #include <zorba/sax2.h>
 
 #include "zorbatypes/representations.h"
+#include "zorbatypes/transcoder.h"
 #include "common/shared_types.h"
 #include "api/sax2impl.h"
-
-#include "zorbatypes/libicu.h"
 
 namespace zorba
 {
@@ -34,9 +32,8 @@ typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
 class serializer : public SimpleRCObject
 {
-public:
+protected:
   class emitter;
-  class transcoder;
 
 public:
   static int get_utf8_length(char ch);
@@ -129,64 +126,6 @@ protected:
   void validate_parameters();
   bool setup(std::ostream& os);
   
-public:
-
-  ///////////////////////////////////////////////////////////
-  //                                                       //
-  //  class transcoder                                     //
-  //                                                       //
-  ///////////////////////////////////////////////////////////
-
-  class transcoder : public SimpleRCObject
-  {
-  public:
-    transcoder(std::ostream& output_stream);
-
-    virtual ~transcoder() { } ;
-
-    /**
-     * Output a byte to the stream without transcoding it.
-     *
-     * @param ch the byte to be output
-     */
-    void verbatim(const char ch);
-    
-    virtual transcoder& operator<<(const char* str)
-    {
-      os << str;
-      return *this;
-    }
-
-    virtual transcoder& operator<<(const char ch)
-    {
-      os << ch;
-      return *this;
-    }
-
-    
-  protected:
-    std::ostream& os;
-  };
-  
-#ifndef ZORBA_NO_UNICODE
-  class utf8_to_utf16_transcoder : public transcoder
-  {
-    public:
-      utf8_to_utf16_transcoder(std::ostream& output_stream);
-
-      virtual ~utf8_to_utf16_transcoder();
-      
-      virtual utf8_to_utf16_transcoder& operator<<(const char* str);
-      virtual utf8_to_utf16_transcoder& operator<<(const char ch);
-      
-    protected:
-      UConverter *conv;
-      char buffer[10];
-      int chars_in_buffer;
-      int chars_expected;
-  };
-
-#endif//#ifndef ZORBA_NO_UNICODE
 
   ///////////////////////////////////////////////////////////
   //                                                       //
@@ -282,7 +221,7 @@ public:
     } previous_item;
   };
 
-
+  
   ///////////////////////////////////////////////////////////
   //                                                       //
   //  class xml_emitter                                    //

@@ -867,8 +867,8 @@ bool BasicItemFactory::createAttributeNode(
   // Compute the attribute name. Note: we don't have to check that itemQName
   // is indeed a valid qname, because the compiler wraps an xs:qname cast
   // around thIteme expression.
+  nameIter->open();
   nameIter->next(name);
-
   if (name->getLocalName()->empty())
   {
     ZORBA_ERROR_DESC(XQDY0074,
@@ -881,8 +881,10 @@ bool BasicItemFactory::createAttributeNode(
   {
     ZORBA_ERROR(XQDY0044);
   }
+  nameIter->close();
 
   // Compute the attribute value.
+  valueIter->open();
   if (valueIter->next(valueItem))
   {
     lexicalValue = valueItem->getStringValue();
@@ -899,6 +901,7 @@ bool BasicItemFactory::createAttributeNode(
   {
     lexicalValue = new xqpStringStore("");
   }
+  valueIter->close();
   
   typedValue = new UntypedAtomicItemImpl(lexicalValue);
 
