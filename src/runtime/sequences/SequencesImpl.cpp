@@ -1416,7 +1416,7 @@ static store::Item_t get_doc(xqpStringStore_t& uriString, const char **err)
   if (doc == NULL)
   {
     xqpStringStore_t lowercaseUri = uriString->lowercase();
-    if (lowercaseUri->byteStartsWith ("http://") == 0)
+    if (lowercaseUri->byteStartsWith ("http://"))
     {
 #ifdef HAVE_CURL_H
       // retrieve web file
