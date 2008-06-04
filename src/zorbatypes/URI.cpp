@@ -52,7 +52,6 @@ URI::error_t URI::resolve_relative (
       XMLUri resuri (&baseuri, xrel.get ());
       char *raw_result = XMLString::transcode (resuri.getUriText ());
       result = new xqpStringStore(raw_result);
-      //delete [] raw_result;
       XMLString::release(&raw_result);
     }
   } catch (MalformedURLException &) {
@@ -62,19 +61,32 @@ URI::error_t URI::resolve_relative (
   return URI::MAX_ERROR_CODE;
 }
 
+// encode / decode URI are hacks. Doing it properly would require
+// boost-filesystem (or equivalent code).
+
 xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
 {
+  // TODO: file://localhost/
   if (uri->byteCompare(0, 8, "file:///") == 0) {
-    xqp_string res(uri->c_str() + 7);
+    xqp_string res(uri->c_str() + 8);
+#if defined(UNIX)
+    res = xqp_string ("/") + res;
+#endif
     return res.replace("%20"," ","").getStore();
   }
   else
     return uri;
 }
 
+// Assumes input is absolute path.
 xqpStringStore_t  URI::encode_file_URI(const xqpStringStore_t& uri)
 {
-  xqpString result = xqpString ("file:///") + xqpString (&*uri);
+  xqpString result (&*uri);
+
+#if !defined(UNIX)
+  result = xqpString ("/") + result;
+#endif
+  result = xqpString ("file://") + result;
   return result.replace(" ","%20","").getStore();
 }
 

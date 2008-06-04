@@ -25,6 +25,8 @@
 #include <xercesc/framework/psvi/XSModelGroup.hpp>
 #include <xercesc/framework/psvi/XSValue.hpp>
 
+#include <xercesc/framework/URLInputSource.hpp>
+
 #include <xercesc/internal/XMLGrammarPoolImpl.hpp>
 
 #include <xercesc/sax2/DefaultHandler.hpp>

@@ -49,6 +49,7 @@ void xerces_uri()
   xuri2.getUriText ();
 }
 
+using namespace std;
 namespace zorba
 {
 const char* Schema::XSD_NAMESPACE = XML_SCHEMA_NS;
@@ -110,12 +111,12 @@ Schema::~Schema()
     delete _udTypesCache;
 }
 
-void Schema::registerXSD(const char* xsdFileName)
+void Schema::registerXSD(const char* xsdURL)
 {
     std::auto_ptr<SAX2XMLReader> parser;
     
     try
-    {
+    {    
         parser.reset (XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager, _grammarPool));
         parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);
         parser->setFeature(XMLUni::fgXercesSchema, true);
@@ -128,8 +129,11 @@ void Schema::registerXSD(const char* xsdFileName)
         LoadSchemaErrorHandler handler;    
         parser->setErrorHandler(&handler);
 
-        //cout << "==Parsing== " << xsdFileName << endl;
-        parser->loadGrammar(xsdFileName, Grammar::SchemaGrammarType, true);
+        cout << "== Parsing == " << xsdURL << endl;
+        XMLChArray xerces_xsdURL (xsdURL);
+        XMLURL url (xerces_xsdURL.get ());
+        URLInputSource input_src (url);
+        parser->loadGrammar(input_src, Grammar::SchemaGrammarType, true);
         
         if (handler.getSawErrors())
         {
@@ -138,17 +142,17 @@ void Schema::registerXSD(const char* xsdFileName)
     }
     catch (const OutOfMemoryException&)
     {
-        std::cerr << "OutOfMemoryException during parsing: '" << xsdFileName << "'\n" << std::endl;
+        std::cerr << "OutOfMemoryException during parsing: '" << xsdURL << "'\n" << std::endl;
     }
     catch (const XMLException& e)
     {
-        std::cerr << "\nError during parsing: '" << xsdFileName << "'\n"
+        std::cerr << "\nError during parsing: '" << xsdURL << "'\n"
         << "Exception message is:  \n"
         << StrX(e.getMessage()) << std::endl;
     }
     catch (...)
     {
-        std::cerr << "\nUnexpected exception during parsing: '" << xsdFileName << "'\n" << std::endl;
+        std::cerr << "\nUnexpected exception during parsing: '" << xsdURL << "'\n" << std::endl;
     }
 }
 

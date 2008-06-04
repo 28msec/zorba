@@ -2677,7 +2677,7 @@ void *begin_visit(const SchemaImport& v)
       ((DelegatingTypeManager*)CTXTS)->initializeSchema();
       Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
       
-      schema_p->registerXSD (URI::decode_file_URI (xqp_string (at).getStore ())->c_str ());
+      schema_p->registerXSD (at.c_str ());
 #if 0
       schema_p->printXSDInfo();
 #endif
