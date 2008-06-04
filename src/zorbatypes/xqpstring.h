@@ -105,6 +105,8 @@ public:
 
   std::string::size_type numChars() const;
 
+  char byteAt (std::string::size_type i) const { return str () [i]; }
+
   uint32_t 
   hash(XQPCollator* = 0) const;
 

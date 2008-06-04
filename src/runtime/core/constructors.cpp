@@ -640,15 +640,9 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (!content->empty())
   {
-    if (content->indexOf("-") == (long)(content->bytes()-1))
-    {
+    if (content->byteAt (content->bytes()-1) == '-'
+        || content->indexOf("--") >= 0)
       ZORBA_ERROR( XQDY0072);
-    }
-
-    if (content->indexOf("--") >= 0)
-    {
-      ZORBA_ERROR( XQDY0072);
-    }
   }
 
   GENV_ITEMFACTORY->createCommentNode(result, (ulong)&planState,
