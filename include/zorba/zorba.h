@@ -34,6 +34,7 @@
 #include <zorba/xmldatamanager.h>
 #include <zorba/default_error_handler.h>
 #include <zorba/collection.h>
+#include <zorba/options.h>
 
 namespace zorba {
 
@@ -157,7 +158,7 @@ namespace zorba {
        * @return XQuery the newly created and compiled XQuery object.
        */
       virtual XQuery_t
-      compileQuery(const String& aQuery, const XQuery::CompilerHints_t& aCompilerHints, 
+      compileQuery(const String& aQuery, const Zorba_CompilerHints_t& aCompilerHints, 
                    ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates and compiles an XQuery object using the given
@@ -181,7 +182,7 @@ namespace zorba {
        */
       virtual XQuery_t
       compileQuery(const String& aQuery, const StaticContext_t& aContext, 
-                   const XQuery::CompilerHints_t& aCompilerHints,
+                   const Zorba_CompilerHints_t& aCompilerHints,
                    ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates and compiles an XQuery object.
@@ -239,7 +240,7 @@ namespace zorba {
        * @return XQuery the newly created and compiled XQuery object.
        */
       virtual XQuery_t
-      compileQuery(std::istream& aQuery, const XQuery::CompilerHints_t& aCompilerHints, 
+      compileQuery(std::istream& aQuery, const Zorba_CompilerHints_t& aCompilerHints, 
                    ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates and compiles an XQuery object using the given
@@ -263,7 +264,7 @@ namespace zorba {
        */
       virtual XQuery_t
       compileQuery(std::istream& aQuery, const StaticContext_t& aContext, 
-                   const XQuery::CompilerHints_t& aCompilerHints,
+                   const Zorba_CompilerHints_t& aCompilerHints,
                    ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates a new StaticContext.

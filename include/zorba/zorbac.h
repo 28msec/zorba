@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <zorba/error.h>
 #include <zorba/static_context_consts.h>
+#include <zorba/options.h>
 
 typedef struct XQC_Implementation_s* XQC_Implementation;
 typedef XQC_Implementation* XQC_Implementation_Ref;
@@ -188,6 +189,43 @@ struct XQC_Query_s
 	XQUERY_ERROR 
   (*execute)(XQC_Query query, FILE* file);
 
+ /**
+  * Executes the query represented by the XQC_Query object and prints the serialized
+  * output to the given FILE pointer. The target format of the serialization is 
+  * specified by the passed serializer options.
+  *
+  * \param query The XQC_Query that this function pointer is a member of.
+  * \param options The Zorba_SerializerOptions_t that specifies serializer options.
+  * \param file The FILE pointer to print the serialized result to.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQP0019_INTERNAL_ERROR
+  * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
+  * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
+  */
+  XQUERY_ERROR
+  (*serialize)(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file); 
+
+ /** 
+  * Checks if query represented by the XQC_Query object is an updating query..
+  *
+  * \param query The XQC_Query that this function pionter is a member of.
+  *
+  * \retval 1 if query is updating query, else 0
+  */
+  int
+  (*is_update_query)(XQC_Query query);
+
+ /**
+  * Applies the updates declared in the query represented by the XQC_Query object.
+  *
+  * \param query The XQC_Query that this function pointer is a member of.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQP0019_INTERNAL_ERROR
+  * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
+  * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
+  */
 	XQUERY_ERROR 
   (*apply_updates)(XQC_Query query);
 

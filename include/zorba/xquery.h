@@ -20,6 +20,7 @@
 
 #include <zorba/sax2.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/options.h>
 
 
 namespace zorba {
@@ -49,142 +50,6 @@ namespace zorba {
    */
   class XQuery : public SmartObject
   {
-    public:
-
-      /** \brief Set of hints that can be passed to the query compiler.
-       *
-       * An instance of this class can be passed to the compileQuery function
-       * of the Zorba class or the compile function of this class.
-       * The members of this class represent hints that are passed to the
-       * query compiler. For example, whether optimization of the query
-       * should be done (O1) or not (O0).
-       *
-       * example_6 in file \link simple.cpp \endlink shows an example
-       * how CompilerHints can be used.
-       */
-      typedef struct CompilerHints {
-
-        /** \brief The optimization level used for optimizing the query. */
-        typedef enum {
-          O0, /**< Don't use any optimization. */
-          O1  /**< Use basic optimizations (e.g.\ removing sorting, removing duplicate elimination, 
-                   or constant folding). */
-        } opt_level_t;
-
-        /** \brief The optimization level that is used */
-        opt_level_t opt_level;
-
-        /** \brief Default constructor for CompilerHints which assigns default values to all hints.
-         *
-         * Default values:
-         *   - optimization level: O1 
-         */
-        CompilerHints() { opt_level = O1; }
-      } CompilerHints_t;
-
-      /** \brief Options that configure the serialization process of a query result.
-       *         See http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/.
-       *
-       * This struct defines options that can be passed to the serialization process of a query
-       * result. An instance of this class can be passed to the serialize function.
-       *
-       * File \link serialization.cpp \endlink contains examples that show how to use
-       * the SerializerOptions.
-       */
-      typedef struct SerializerOptions {
-
-        typedef struct serialization_method {
-          typedef enum {
-            XML, 
-            HTML
-          } serialization_method_t;
-        };
-
-        typedef struct byte_order_mark {
-          typedef enum {
-            YES, 
-            NO
-          } byte_order_mark_t;
-        };
-
-        typedef struct escape_uri_attributes {
-          typedef enum {
-            YES, NO
-          } escape_uri_attributes_t;
-        };
-
-        typedef struct include_content_type {
-          typedef enum {
-            YES, NO
-          } include_content_type_t;
-        };
-
-        typedef struct indent  {
-          typedef enum {
-            YES, NO
-          } indent_t;
-        }; 
-
-        typedef struct normalization_form {
-          typedef enum {
-            NFC, NFD, NFKC, NFKD, fully_normalized, none
-          } normalization_form_t;
-        };
-
-        typedef struct omit_xml_declaration {
-          typedef enum {
-            YES, NO
-          } omit_xml_declaration_t;
-        };
-
-        typedef struct standalone {
-          typedef enum {
-            YES, NO, OMIT
-          } standalone_t;
-        };
-
-        typedef struct undeclare_prefixes {
-          typedef enum {
-            YES, NO
-          } undeclare_prefixes_t;
-        };
-
-        serialization_method::serialization_method_t    ser_method;
-        byte_order_mark::byte_order_mark_t              byte_order_mark;
-        escape_uri_attributes::escape_uri_attributes_t  escape_uri_attributes;
-        include_content_type::include_content_type_t    include_content_type;
-        indent::indent_t                                indent;
-        normalization_form::normalization_form_t        normalization_form;
-        omit_xml_declaration::omit_xml_declaration_t    omit_xml_declaration;
-        standalone::standalone_t                        standalone; 
-        undeclare_prefixes::undeclare_prefixes_t        undeclare_prefixes;
-
-        /** \brief Default constructor for SerializerOptions which assigns default values to all 
-         *         options.
-         *
-         * Default values:
-         *   - serialization method: XML
-         *   - byte-order-mark: NO
-         *   - esacpe-uri-attributes: NO
-         *   - include-content-type: NO
-         *   - indent: NO
-         *   - normalization-form: none
-         *   - omit-xml-declaration: NO
-         *   - standalone: omit
-         *   - undeclare-prefixes: NO
-         */
-        SerializerOptions() 
-          : ser_method(serialization_method::XML),
-            byte_order_mark(byte_order_mark::NO),
-            escape_uri_attributes(escape_uri_attributes::NO),
-            include_content_type(include_content_type::NO),
-            indent(indent::NO),
-            normalization_form(normalization_form::none),
-            omit_xml_declaration(omit_xml_declaration::NO),
-            standalone(standalone::OMIT),
-            undeclare_prefixes(undeclare_prefixes::NO) {}
-      } SerializerOptions_t;
-
     public:
       /** \brief Destructor that destroys this XQuery object. 
        * 
@@ -236,7 +101,7 @@ namespace zorba {
        */
       virtual void
       serialize(std::ostream& aOutStream, 
-                const SerializerOptions_t& aSerOptions = SerializerOptions()) = 0;
+                const Zorba_SerializerOptions_t& aSerOptions = Zorba_SerializerOptions_default()) = 0;
 
       /** \brief Apply/execute the query if it is an updating query.
        *
@@ -307,7 +172,7 @@ namespace zorba {
        *        an error occurs while compiling the query.
        */
       virtual void 
-      compile(const String& aQuery, const XQuery::CompilerHints_t& aHints) = 0;
+      compile(const String& aQuery, const Zorba_CompilerHints_t& aHints) = 0;
       
       /** \brief Compile the query given as an input stream with the given compiler hints.
        *
@@ -317,7 +182,7 @@ namespace zorba {
        *        an error occurs while compiling the query.
        */
       virtual void 
-      compile(std::istream& aQuery, const XQuery::CompilerHints_t& aHints) = 0;
+      compile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints) = 0;
       
       /** \brief Compile the give query String with the given static context and the 
        *         given compiler hints.
@@ -330,7 +195,7 @@ namespace zorba {
        */
       virtual void 
       compile(const String& aQuery, const StaticContext_t& aStaticContext, 
-              const XQuery::CompilerHints_t& aHints) = 0;
+              const Zorba_CompilerHints_t& aHints) = 0;
       
       /** \brief Compile the query given as an input stream with the given static context and the 
        *         given compiler hints.
@@ -343,7 +208,7 @@ namespace zorba {
        */
       virtual void 
       compile(std::istream& aQuery, const StaticContext_t& aStaticContext, 
-              const XQuery::CompilerHints_t& aHints) = 0;
+              const Zorba_CompilerHints_t& aHints) = 0;
 
       /** \brief Set the filename of a query.
        *

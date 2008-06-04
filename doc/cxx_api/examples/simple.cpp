@@ -104,8 +104,8 @@ bool
 example_6(Zorba* aZorba)
 {
   // set compiler hint => don't optimize
-  XQuery::CompilerHints lHints;
-  lHints.opt_level = XQuery::CompilerHints::O0;
+  Zorba_CompilerHints lHints;
+  lHints.opt_level = ZORBA_OPT_LEVEL_O0;
 
   XQuery_t lQuery = aZorba->compileQuery("1+1", lHints);
 

@@ -171,7 +171,7 @@ class XQueryImpl : public XQuery
   isUpdateQuery() const;
 
   void
-  serialize(std::ostream&, const XQuery::SerializerOptions_t& = XQuery::SerializerOptions());
+  serialize(std::ostream&, const Zorba_SerializerOptions_t& = Zorba_SerializerOptions_default());
 
   void 
   applyUpdates();
@@ -189,16 +189,16 @@ class XQueryImpl : public XQuery
   compile(const String&);
 
   void 
-  compile(const String&, const XQuery::CompilerHints_t& aHints);
+  compile(const String&, const Zorba_CompilerHints_t& aHints);
       
   void 
-  compile(const String&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
+  compile(const String&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
   
   void 
-  compile(std::istream&, const XQuery::CompilerHints_t& aHints);
+  compile(std::istream&, const Zorba_CompilerHints_t& aHints);
     
   void 
-  compile(std::istream&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
+  compile(std::istream&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
 
   void
   setFileName( const String& );
@@ -222,13 +222,13 @@ class XQueryImpl : public XQuery
   XQueryImpl();
       
   void
-  doCompile(std::istream&, const XQuery::CompilerHints_t& aHints);
+  doCompile(std::istream&, const Zorba_CompilerHints_t& aHints);
 
   CompilerCB::config_t
-  getCompilerConfig(const XQuery::CompilerHints_t&);
+  getCompilerConfig(const Zorba_CompilerHints_t&);
 
   void
-  setSerializationParameters(serializer*, const XQuery::SerializerOptions&);
+  setSerializationParameters(serializer*, const Zorba_SerializerOptions&);
 
   PlanWrapper_t
   generateWrapper();

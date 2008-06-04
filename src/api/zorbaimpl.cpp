@@ -87,7 +87,7 @@ ZorbaImpl::compileQuery(
     const String& aQuery,
     ErrorHandler* aErrorHandler)
 {
-  return compileQuery(aQuery, XQuery::CompilerHints(), aErrorHandler);
+  return compileQuery(aQuery, Zorba_CompilerHints_default(), aErrorHandler);
 }
 
 
@@ -97,14 +97,14 @@ ZorbaImpl::compileQuery(
     const StaticContext_t& aStaticContext, 
     ErrorHandler* aErrorHandler)
 {
-  return compileQuery(aQuery, aStaticContext, XQuery::CompilerHints(), aErrorHandler);
+  return compileQuery(aQuery, aStaticContext, Zorba_CompilerHints_default(), aErrorHandler);
 }
 
 
 XQuery_t
 ZorbaImpl::compileQuery(
     const String& aQuery,
-    const XQuery::CompilerHints_t& aHints, 
+    const Zorba_CompilerHints_t& aHints, 
     ErrorHandler* aErrorHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
@@ -119,7 +119,7 @@ XQuery_t
 ZorbaImpl::compileQuery(
     const String& aQuery,
     const StaticContext_t& aStaticContext, 
-    const XQuery::CompilerHints_t& aHints, 
+    const Zorba_CompilerHints_t& aHints, 
     ErrorHandler* aErrorHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
@@ -133,7 +133,7 @@ ZorbaImpl::compileQuery(
 XQuery_t
 ZorbaImpl::compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler)
 {
-  return compileQuery(aQuery, XQuery::CompilerHints(), aErrorHandler);
+  return compileQuery(aQuery, Zorba_CompilerHints_default(), aErrorHandler);
 }
 
 
@@ -143,14 +143,14 @@ ZorbaImpl::compileQuery(
     const StaticContext_t& aStaticContext,
     ErrorHandler* aErrorHandler)
 {
-  return compileQuery(aQuery, aStaticContext, XQuery::CompilerHints(), aErrorHandler);
+  return compileQuery(aQuery, aStaticContext, Zorba_CompilerHints_default(), aErrorHandler);
 }
 
 
 XQuery_t
 ZorbaImpl::compileQuery(
     std::istream& aQuery,
-    const XQuery::CompilerHints_t& aHints, 
+    const Zorba_CompilerHints_t& aHints, 
     ErrorHandler* aErrorHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
@@ -165,7 +165,7 @@ XQuery_t
 ZorbaImpl::compileQuery(
     std::istream& aQuery,
     const StaticContext_t& aStaticContext, 
-    const XQuery::CompilerHints_t& aHints,
+    const Zorba_CompilerHints_t& aHints,
     ErrorHandler* aErrorHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());

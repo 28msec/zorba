@@ -72,10 +72,10 @@ int _tmain(int argc, _TCHAR* argv[])
     return 4;  
 
   Properties* lProp = Properties::instance();
-  zorba::XQuery::CompilerHints chints;
+  Zorba_CompilerHints chints;
   chints.opt_level = (lProp->useOptimizer () ?
-                      XQuery::CompilerHints::O1 :
-                      XQuery::CompilerHints::O0);
+                      ZORBA_OPT_LEVEL_O1:
+                      ZORBA_OPT_LEVEL_O0);
 
   // output file (either a file or the standard out if no file is specified)
   auto_ptr<ostream> outputFile (lProp->useResultFile() ?

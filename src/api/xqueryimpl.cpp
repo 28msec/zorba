@@ -281,13 +281,13 @@ XQueryImpl::isUpdateQuery() const
 
 
 CompilerCB::config_t
-XQueryImpl::getCompilerConfig(const XQuery::CompilerHints_t& aHints)
+XQueryImpl::getCompilerConfig(const Zorba_CompilerHints_t& aHints)
 {
   checkNotClosed();
   CompilerCB::config_t lConfig;
 
   // set the optimization level
-  lConfig.opt_level = (aHints.opt_level == XQuery::CompilerHints::O0 ?
+  lConfig.opt_level = (aHints.opt_level == ZORBA_OPT_LEVEL_O0 ?
                        CompilerCB::config_t::O0 :
                        CompilerCB::config_t::O1);
   return lConfig;
@@ -326,7 +326,7 @@ XQueryImpl::executeSAX()
 
   PlanWrapper_t lPlan = generateWrapper();
   serializer lSerializer(theErrorManager);
-  XQuery::SerializerOptions opt;
+  Zorba_SerializerOptions opt;
   setSerializationParameters(&lSerializer, opt);
 
   try { 
@@ -352,12 +352,12 @@ XQueryImpl::executeSAX()
 void
 XQueryImpl::compile(const String& aQuery)
 {
-  return compile( aQuery, XQuery::CompilerHints() ); 
+  return compile( aQuery, Zorba_CompilerHints_default() ); 
 }
 
 
 void
-XQueryImpl::compile(const String& aQuery, const CompilerHints_t& aHints)
+XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -373,7 +373,7 @@ void
 XQueryImpl::compile(
     const String& aQuery,
     const StaticContext_t& aStaticContext, 
-    const CompilerHints_t& aHints)
+    const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -387,7 +387,7 @@ XQueryImpl::compile(
 
 
 void
-XQueryImpl::compile(std::istream& aQuery, const CompilerHints_t& aHints)
+XQueryImpl::compile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -401,7 +401,7 @@ void
 XQueryImpl::compile(
     std::istream& aQuery,
     const StaticContext_t& aStaticContext, 
-    const CompilerHints_t& aHints)
+    const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -414,7 +414,7 @@ XQueryImpl::compile(
 
 
 void
-XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
+XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
 {
   checkNotClosed();
   checkNotCompiled();
@@ -450,7 +450,7 @@ XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
  */
 
 void
-XQueryImpl::serialize(std::ostream& os, const XQuery::SerializerOptions_t& opt)
+XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t& opt)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -558,63 +558,63 @@ XQueryImpl::generateWrapper()
 void
 XQueryImpl::setSerializationParameters(
     serializer* ser,
-    const XQuery::SerializerOptions_t& opt)
+    const Zorba_SerializerOptions_t& opt)
 {
   switch (opt.ser_method) 
   {
-  case XQuery::SerializerOptions::serialization_method::XML:
+  case ZORBA_SERIALIZATION_METHOD_XML:
     ser->set_parameter("method", "xml"); break;
-  case XQuery::SerializerOptions::serialization_method::HTML:
+  case ZORBA_SERIALIZATION_METHOD_HTML:
     ser->set_parameter("method", "html"); break;
   }
 
   switch (opt.byte_order_mark) 
   {
-  case XQuery::SerializerOptions::byte_order_mark::YES:
+  case ZORBA_BYTE_ORDER_MARK_YES:
     ser->set_parameter("byte-order-mark", "yes"); break;
-  case XQuery::SerializerOptions::byte_order_mark::NO:
+  case ZORBA_BYTE_ORDER_MARK_NO:
     ser->set_parameter("byte-order-mark", "no"); break;
   }
 
   switch (opt.include_content_type)
   {
-  case XQuery::SerializerOptions::include_content_type::YES:
+  case ZORBA_INCLUDE_CONTENT_TYPE_YES:
     ser->set_parameter("include-content-type", "yes"); break;
-  case XQuery::SerializerOptions::include_content_type::NO:
+  case ZORBA_INCLUDE_CONTENT_TYPE_NO:
     ser->set_parameter("include-content-type", "no"); break;
   }
 
   switch (opt.indent) 
   {
-  case XQuery::SerializerOptions::indent::YES:
+  case ZORBA_INDENT_YES:
     ser->set_parameter("indent", "yes"); break;
-  case XQuery::SerializerOptions::indent::NO:
+  case ZORBA_INDENT_NO:
     ser->set_parameter("indent", "no"); break;
   }
 
   switch (opt.omit_xml_declaration)
   {
-  case XQuery::SerializerOptions::omit_xml_declaration::YES:
+  case ZORBA_OMIT_XML_DECLARATION_YES:
     ser->set_parameter("omit-xml-declaration", "yes"); break;
-  case XQuery::SerializerOptions::omit_xml_declaration::NO:
+  case ZORBA_OMIT_XML_DECLARATION_NO:
     ser->set_parameter("omit-xml-declaration", "no"); break;
   }
 
   switch (opt.standalone)
   {
-  case XQuery::SerializerOptions::standalone::YES:
+  case ZORBA_STANDALONE_YES:
     ser->set_parameter("standalone", "yes"); break;
-  case XQuery::SerializerOptions::standalone::NO:
+  case ZORBA_STANDALONE_NO:
     ser->set_parameter("standalone", "no"); break;
-  case XQuery::SerializerOptions::standalone::OMIT:
+  case ZORBA_STANDALONE_OMIT:
     ser->set_parameter("standalone", "omit"); break;
   }
 
   switch (opt.undeclare_prefixes)
   {
-  case XQuery::SerializerOptions::undeclare_prefixes::YES:
+  case ZORBA_UNDECLARE_PREFIXES_YES:
     ser->set_parameter("undeclare-prefixes", "yes"); break;
-  case XQuery::SerializerOptions::undeclare_prefixes::NO:
+  case ZORBA_UNDECLARE_PREFIXES_NO:
     ser->set_parameter("undeclare-prefixes", "no"); break;
   }    
 }

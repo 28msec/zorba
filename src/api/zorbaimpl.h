@@ -92,14 +92,14 @@ class ZorbaImpl : public Zorba
   XQuery_t
   compileQuery(
         const String& aQuery,
-        const XQuery::CompilerHints_t& aHints,
+        const Zorba_CompilerHints_t& aHints,
         ErrorHandler* aErrorHandler = 0);
 
   XQuery_t
   compileQuery(
         const String& aQuery,
         const StaticContext_t& aContext,
-        const XQuery::CompilerHints_t& aHints, 
+        const Zorba_CompilerHints_t& aHints, 
         ErrorHandler* aErrorHandler = 0);
 
   XQuery_t
@@ -116,14 +116,14 @@ class ZorbaImpl : public Zorba
   XQuery_t
   compileQuery(
         std::istream& aQuery,
-        const XQuery::CompilerHints_t& aHints,
+        const Zorba_CompilerHints_t& aHints,
         ErrorHandler* aErrorHandler = 0);
 
   XQuery_t
   compileQuery(
         std::istream& aQuery,
         const StaticContext_t& aContext,
-        const XQuery::CompilerHints_t& aHints, 
+        const Zorba_CompilerHints_t& aHints, 
         ErrorHandler* aErrorHandler = 0);
 
   StaticContext_t

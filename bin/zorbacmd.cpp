@@ -103,27 +103,27 @@ populateDynamicContext(zorba::DynamicContext* aDynamicContext, ZorbaCMDPropertie
 }
 
 bool
-createSerializerOptions(zorba::XQuery::SerializerOptions& lSerOptions, ZorbaCMDProperties* aProperties)
+createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties* aProperties)
 {
   if ( aProperties->indent() )
-    lSerOptions.indent = zorba::XQuery::SerializerOptions::indent::YES;
+    lSerOptions.indent = ZORBA_INDENT_YES;
   else
-    lSerOptions.indent = zorba::XQuery::SerializerOptions::indent::NO;
+    lSerOptions.indent = ZORBA_INDENT_NO;
 
   if ( aProperties->omitXMLDeclaration() )
-    lSerOptions.omit_xml_declaration = zorba::XQuery::SerializerOptions::omit_xml_declaration::YES;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
   else
-    lSerOptions.omit_xml_declaration = zorba::XQuery::SerializerOptions::omit_xml_declaration::NO;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
   if ( aProperties->byteOrderMark() )
-    lSerOptions.byte_order_mark = zorba::XQuery::SerializerOptions::byte_order_mark::YES;
+    lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES;
   else
-    lSerOptions.byte_order_mark = zorba::XQuery::SerializerOptions::byte_order_mark::NO;
+    lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_NO;
 
   if ( aProperties->serializeHTML() )
-    lSerOptions.ser_method = zorba::XQuery::SerializerOptions::serialization_method::HTML;
+    lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
   else  
-    lSerOptions.ser_method = zorba::XQuery::SerializerOptions::serialization_method::XML;
+    lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
 
   return true;
 }
@@ -248,11 +248,11 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   try {
-    zorba::XQuery::CompilerHints lHints;
+    Zorba_CompilerHints lHints;
 
     // default is O1
     if (lProperties.getOptLevel() == "O0")
-      lHints.opt_level = zorba::XQuery::CompilerHints::O0;
+      lHints.opt_level = ZORBA_OPT_LEVEL_O0;
 
     if (lTiming)
       lStartCompileTime = boost::posix_time::microsec_clock::local_time();
@@ -292,7 +292,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   try
   {
-    zorba::XQuery::SerializerOptions lSerOptions;
+    Zorba_SerializerOptions lSerOptions;
     createSerializerOptions(lSerOptions, &lProperties); 
 
     if (lTiming)

@@ -30,7 +30,13 @@ namespace zorbac {
       get_static_context(XQC_Query, XQC_StaticContext_Ref context);
 
 	    static XQUERY_ERROR 
-      execute(XQC_Query query, FILE*);
+      execute(XQC_Query query, FILE* file);
+
+      static XQUERY_ERROR
+      serialize(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file);
+
+      static int
+      is_update_query(XQC_Query query);
 
 	    static XQUERY_ERROR 
       apply_updates(XQC_Query query);

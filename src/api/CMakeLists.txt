@@ -33,6 +33,7 @@ SET(API_SRCS
     xmldatamanagerimpl.cpp
     resultiteratorchainer.cpp
     collectionimpl.cpp
+    options.cpp
     )
 
 SET(API_BUILD_SRCS

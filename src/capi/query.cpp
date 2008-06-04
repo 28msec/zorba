@@ -93,6 +93,38 @@ namespace zorbac {
     ZORBA_XQUERY_CATCH
   }
 
+  XQUERY_ERROR 
+  Query::serialize(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file)
+  {
+    ZORBA_XQUERY_TRY
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
+
+      std::stringstream lStream;
+      char lBuf[1024];
+
+      // TODO this is eager at the moment, we need a pull serializer
+      lQuery->serialize(lStream, *options);
+      lStream.seekg(0);
+
+      int lRes = 0;
+      while ( (lRes = lStream.readsome(lBuf, 1023)) > 0 ) {
+        lBuf[lRes] = 0;
+        fprintf (file, "%s", lBuf);
+      }
+    ZORBA_XQUERY_CATCH
+  }
+
+  int
+  Query::is_update_query(XQC_Query query)
+  {
+    ZORBA_XQUERY_TRY
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
+
+      lQuery->isUpdateQuery();
+
+    ZORBA_XQUERY_CATCH
+  }
+
 	XQUERY_ERROR 
   Query::apply_updates(XQC_Query query)
   {
@@ -145,6 +177,8 @@ namespace zorbac {
     query->get_dynamic_context   = Query::get_dynamic_context;
     query->get_static_context    = Query::get_static_context;
     query->execute               = Query::execute;
+    query->serialize             = Query::serialize;
+    query->is_update_query       = Query::is_update_query;
     query->apply_updates         = Query::apply_updates;
     query->sequence              = Query::sequence;
     query->free                  = Query::free;
