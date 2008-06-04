@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 #include <string>
+
+#include <zorba/zorba.h>
+
+#include "store/naive/simple_store.h"
+
 #include "compiler/parsetree/parsenodes.h"
 #include "parsertestdriverconfig.h" // SRC and BIN dir definitions
 #include "compiler/parser/xquery_driver.h"
-#include "system/globalenv.h"
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 
@@ -31,10 +35,15 @@ main(int argc, char** argv)
 #endif
 {
   int status = 0;
-  GlobalEnvironment::init(); 
+
+  store::SimpleStore* store = store::SimpleStore::getInstance();
+
+  Zorba* lZorba = Zorba::getInstance(store);
+
   std::string lQueryFileString;
   CompilerCB aCompilerCB;
   xquery_driver lDriver(&aCompilerCB);
+
   // do initial stuff
   if ( argc == 2 )
   {
@@ -65,6 +74,7 @@ main(int argc, char** argv)
       status = 3;
     } 
   }
-  GlobalEnvironment::destroy();
+
+  lZorba->shutdown();
   return status;
 }

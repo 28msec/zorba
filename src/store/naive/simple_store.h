@@ -84,11 +84,14 @@ protected:
 
   QueryContextContainer  * theQueryContextContainer; 
 
-  Latch          theGlobalLock;
+  Latch                    theGlobalLock;
 
 #ifndef NDEBUG
   long                     theTraceLevel;
 #endif
+
+public:
+  static SimpleStore* getInstance();
 
 private:
   SimpleStore();
@@ -97,9 +100,10 @@ private:
 
   void init();
   void initTypeNames();
-  void shutdown();
 
 public:
+  void shutdown();
+
   store::ItemFactory* getItemFactory() const { return theItemFactory; }
 
   StringPool& getNamespacePool() const    { return *theNamespacePool; }

@@ -36,7 +36,7 @@
 namespace zorba {
 
 #define GET_DATA_MANAGER() \
-  reinterpret_cast<XmlDataManagerImpl*>(Zorba::getInstance()->getXmlDataManager());
+  reinterpret_cast<XmlDataManagerImpl*>(Zorba::getInstance(NULL)->getXmlDataManager());
 
 #define ZORBA_DCTX_TRY try 
  

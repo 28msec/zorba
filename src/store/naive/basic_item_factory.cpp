@@ -763,7 +763,7 @@ bool BasicItemFactory::createDocumentNode(
 
 ********************************************************************************/
 bool BasicItemFactory::createElementNode(
-    Item_t& result,
+    Item_t&           result,
     unsigned long     qid,
     Item_t&           name,
     Item_t&           typeName,
@@ -848,7 +848,7 @@ bool BasicItemFactory::createElementNode(
 
 ********************************************************************************/
 bool BasicItemFactory::createAttributeNode(
-    Item_t& result,
+    Item_t&         result,
     ulong           qid,
     Iterator*       nameIter,
     Item_t&         typeName,
@@ -1094,7 +1094,7 @@ bool BasicItemFactory::createTextNode(
 
 ********************************************************************************/
 bool BasicItemFactory::createPiNode(
-    Item_t& result,
+    Item_t&           result,
     unsigned long     qid,
     xqpStringStore_t& target,
     xqpStringStore_t& content,
@@ -1165,7 +1165,7 @@ bool BasicItemFactory::createPiNode(
 
 ********************************************************************************/
 bool BasicItemFactory::createCommentNode(
-    Item_t& result,
+    Item_t&           result,
     unsigned long     qid,
     xqpStringStore_t& content,
     bool              isRoot,

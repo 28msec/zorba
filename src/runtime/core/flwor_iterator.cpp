@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "zorbaerrors/fatal.h"
+#include "zorbautils/fatal.h"
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
+
 #include "compiler/expression/expr.h"
 #include "runtime/core/flwor_iterator.h"
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/api/runtimecb.h"
-#include "zorbaerrors/error_manager.h"
 #include "store/api/temp_seq.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
-#include "zorbaerrors/Assert.h"
 #include "system/globalenv.h"
 #include "store/api/store.h"
 #include "store/api/pul.h"
@@ -39,7 +40,7 @@ namespace zorba
   // Utility function -- is this item null or a NaN?
 static bool empty_item (RuntimeCB* aRuntimeCB, store::Item_t s)
 {
-  return (s == 0) || (s->isNumeric () && s->isNaN());
+  return (s == 0) || (s->isNaN());
 }
 
 

@@ -20,7 +20,7 @@
 #include "zorbautils/hashmap.h"
 #include "zorbautils/mutex.h"
 
-#include "common/config/platform.h"
+#include "zorbamisc/config/platform.h"
 
 
 namespace zorba { 

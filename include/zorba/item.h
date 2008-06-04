@@ -155,8 +155,8 @@ public:
    *
    * @return true if the Item is a numeric Item, false otherwise
    */
-  bool
-  isNumeric() const;
+  //bool
+  //isNumeric() const;
 
   /** \brief Check if the Item is null.
    *

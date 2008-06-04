@@ -15,16 +15,17 @@
  */
 #include <iostream>
 
+#include <libxml/parser.h>
+
 #include "zorbautils/hashfun.h"
+#include "zorbautils/fatal.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/fatal.h"
 #include "zorbaerrors/Assert.h"
-
-#include "util/properties.h"
 
 #include "store/util/hashmap_stringp.h"
 
+#include "store/naive/properties.h"
 #include "store/naive/string_pool.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_temp_seq.h"
@@ -53,20 +54,34 @@ const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 /*******************************************************************************
 
 ********************************************************************************/
+SimpleStore*
+SimpleStore::getInstance()
+{
+  static SimpleStore lInstance;
+
+  if ( ! lInstance.theIsInitialized )
+    lInstance.init();
+
+  return &lInstance;
+}
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
 SimpleStore::SimpleStore()
   :
   theIsInitialized(false),
   theUriCounter(0),
   theTreeCounter(1),
-  theNamespacePool(new StringPool(NAMESPACE_POOL_SIZE)),
-  theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE, theNamespacePool)),
-  theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
+  theNamespacePool(NULL),
+  theQNamePool(NULL),
+  theItemFactory(NULL),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
-  theQueryContextContainer(new QueryContextContainer)
-#ifndef NDEBUG
-  ,theTraceLevel(0)
-#endif
+  theQueryContextContainer(NULL),
+  theTraceLevel(0)
 {
 }
 
@@ -78,19 +93,31 @@ void SimpleStore::init()
 {
   if (!theIsInitialized)
   {
-    theIsInitialized = true;
+    // This initializes the libxml2 library and checks potential ABI mismatches
+    // between the version it was compiled for and the actual  shared library used.
+    // Calling its init is done here because we also want to free it at the end,
+    // i.e. when the store is shutdown
+    LIBXML_TEST_VERSION
 
     theUriCounter = 0;
     theTreeCounter = 1;
 
+    theNamespacePool = new StringPool(NAMESPACE_POOL_SIZE);
+
     theNamespacePool->insertc("", theEmptyNs);
     theNamespacePool->insertc(XS_URI, theXmlSchemaNs);
 
+    theQNamePool = new QNamePool(QNamePool::MAX_CACHE_SIZE, theNamespacePool);
+
     initTypeNames();
 
-#ifndef NDEBUG
-    theTraceLevel = Properties::instance()->storeTraceLevel();
-#endif
+    theItemFactory = new BasicItemFactory(theNamespacePool, theQNamePool);
+
+    theTraceLevel = store::Properties::instance()->storeTraceLevel();
+
+    theQueryContextContainer = new QueryContextContainer;
+
+    theIsInitialized = true;
   }
 }
 
@@ -210,6 +237,14 @@ void SimpleStore::shutdown()
     delete theNamespacePool;
     theNamespacePool = NULL;
   }
+
+  // do cleanup of the libxml2 library
+  // however, after that, a user will have to call 
+  // LIBXML_TEST_VERSION if he wants to use libxml2
+  // beyond the lifecycle of zorba
+  xmlCleanupParser(); 
+
+  theIsInitialized = false;
 }
 
 
@@ -278,7 +313,7 @@ Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
 
   Collection_t collection(new SimpleCollection(uriItem));
 
-  const xqpStringStore* urip = uri;
+  const xqpStringStore* urip = collection->getUri()->getStringValueP();
   bool inserted = theCollections.insert(urip, collection);
 
   if (!inserted)
@@ -700,8 +735,10 @@ bool SimpleStore::getNodeByReference(Item_t& result, const Item* uri)
       }
 
       if (i == numChildren)
+      {
         result = NULL;
         return false;
+      }
     }
   }
 }

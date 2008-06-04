@@ -16,11 +16,10 @@
 #ifndef ZORBA_STORE_UTIL_HASHMAP
 #define ZORBA_STORE_UTIL_HASHMAP
 
-#include "zorbaerrors/fatal.h"
+#include "zorbamisc/config/platform.h"
+#include "zorbautils/fatal.h"
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/mutex.h"
-
-#include "common/config/platform.h"
 
 
 namespace zorba { 

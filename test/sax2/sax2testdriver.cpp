@@ -34,6 +34,8 @@
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
 
+#include "store/naive/simple_store.h"
+
 using namespace zorba;
 namespace fs = boost::filesystem;
 
@@ -271,7 +273,7 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 {
   boost::replace_all(val, "$SAX2_SRC_DIR", zorba::SAX2_SRC_DIR);
 
-  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance()->getItemFactory();
+  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
 
   if (!inlineFile) {
     zorba::Item lItem = lFactory->createString(val);
@@ -427,7 +429,9 @@ main(int argc, char** argv)
   printFile(std::cout, lQueryFile.native_file_string());
   std::cout << std::endl;
 
-  zorba::Zorba *engine = zorba::Zorba::getInstance();
+  store::SimpleStore* store = store::SimpleStore::getInstance();
+
+  zorba::Zorba *engine = zorba::Zorba::getInstance(store);
 
   TestErrorHandler errHandler;
   std::stringstream lResult;

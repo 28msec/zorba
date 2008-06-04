@@ -20,8 +20,10 @@
 #include <list>
 #include <set>
 
+#include "zorbautils/fatal.h"
 #include "zorbatypes/Unicode_util.h"
 #include "zorbatypes/URI.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "common/common.h"
 #include "util/properties.h"
@@ -30,9 +32,6 @@
 
 #include "compiler/translator/translator.h"
 #include "compiler/api/compilercb.h"
-
-#include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/fatal.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -978,7 +977,7 @@ void *begin_visit(const DirAttributeList& v)
     attr_expr* attrExpr = expr.dyn_cast<attr_expr> ().getp();
 
     for (unsigned long i = 0; i < numAttrs; i++) {
-      if (attributes[i]->getQName()->equals(attrExpr->getQName(), NULL))
+      if (attributes[i]->getQName()->equals(attrExpr->getQName()))
          ZORBA_ERROR_LOC( XQST0040, v.get_location());
     }
 

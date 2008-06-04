@@ -19,6 +19,8 @@
 
 #include <zorba/zorba.h>
 #include <zorba/external_function.h>
+#include <store/naive/simple_store.h>
+
 
 using namespace zorba;
 
@@ -179,7 +181,8 @@ func_example_4(Zorba* aZorba)
 int 
 external_functions(int argc, char* argv[])
 {
-  Zorba* lZorba = Zorba::getInstance();
+  store::SimpleStore* lStore = store::SimpleStore::getInstance();
+  Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
   std::cout << std::endl  << "executing simple external function test 1" << std::endl;
@@ -202,5 +205,7 @@ external_functions(int argc, char* argv[])
   if (!res) return 1; 
   std::cout << std::endl;
 
+  lZorba->shutdown();
+  lStore->shutdown();
   return 0;
 }

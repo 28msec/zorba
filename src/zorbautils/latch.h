@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_LATCH_H
 #define ZORBA_STORE_LATCH_H
 
-#include "common/config/platform.h"
+#include "zorbamisc/config/platform.h"
 
 
 namespace zorba { 

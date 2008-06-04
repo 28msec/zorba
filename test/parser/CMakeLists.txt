@@ -15,7 +15,7 @@
 CONFIGURE_FILE(parsertestdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/parsertestdriverconfig.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(parsertestdriver parsertestdriver.cpp)
-TARGET_LINK_LIBRARIES(parsertestdriver ${requiredlibs} zorba)
+TARGET_LINK_LIBRARIES(parsertestdriver ${requiredlibs} zorba simplestore)
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)

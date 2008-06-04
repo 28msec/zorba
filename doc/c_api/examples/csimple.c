@@ -18,7 +18,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+
 #include <zorba/zorbac.h>
+#include <store/naive/simple_storec.h>
+
 
 /**
  * A simple C API example
@@ -120,8 +123,10 @@ csimple(int argc, char** argv)
   int res = 0; 
   XQC_Implementation impl;
 
-  if ( zorba_implementation(&impl) != XQ_NO_ERROR )
-      return 1;
+  void* store = create_simple_store();
+
+  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
+    return 1;
 
   printf("executing C example 1\n");
   res = example_1(impl);

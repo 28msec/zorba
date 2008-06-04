@@ -29,7 +29,7 @@ public:
    * Returns the URI of the collection
    * @return URI
    */
-  virtual Item_t getUri() = 0;
+  virtual Item* getUri() = 0;
 
   /**
    * Reads the whole Collection from beginning to end; it is allowed to have

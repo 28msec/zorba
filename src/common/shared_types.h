@@ -16,24 +16,26 @@
 #ifndef ZORBA_SHARED_TYPES_H
 #define ZORBA_SHARED_TYPES_H
 
-#include "common/config/platform.h"
+#include "zorbamisc/config/platform.h"
 
 #include "zorbatypes/rchandle.h"
 
-namespace zorba {
-  namespace error {
+namespace zorba 
+{
+
+  namespace error 
+  {
     class ErrorManager;
     class ZorbaError;
   }
   
-  namespace store {
+  namespace store 
+  {
     class CopyMode;
     class Item;
     typedef rchandle<Item> Item_t;
     class ItemIterator;
     typedef rchandle<ItemIterator> ItemIterator_t;
-    class NodeItem;
-    typedef rchandle<NodeItem> NodeItem_t;
     class TempSeq;
     typedef rchandle<TempSeq> TempSeq_t;
     class PUL;
@@ -48,8 +50,6 @@ namespace zorba {
     class AnyUriItem;
     typedef rchandle<AnyUriItem> AnyUriItem_t;
     class Store;
-    class Timetravel;
-    class Requester;
     class XmlLoader;
     class QueryContextContainer;
     class QueryContext;
@@ -65,13 +65,12 @@ namespace zorba {
     class ConstrNodeVector;
     class NsBindingsContext;
     typedef rchandle<NsBindingsContext> NsBindingsContext_t;
-    //class ResultIteratorChainer;
-    //typedef rchandle<ResultIteratorChainer> ResultIteratorChainer_t;
     class Iterator;
     typedef rchandle<Iterator> Iterator_t;
   }
 
-  namespace types {
+  namespace types 
+  {
     class TypeIdentifier; 
   };
 

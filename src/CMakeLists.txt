@@ -11,51 +11,78 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/AddSrcSubfolder.cmake)
 
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) # must be removed if pthread.h is removed from util/rwlock.h/cpp
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) 
 
 # only platform headers and configuration stuff is in there
 ADD_SUBDIRECTORY(common)
 
-# build the zorba types library and add it to the requiredlibs
+#
+# build the libraries required by both the query processor and the store:
+# zorbatypes, zorbaerrors, and zorbautils. Add these libraries to the requiredlibs
+#
+ADD_SUBDIRECTORY(zorbautils)
+SET(requiredlibs ${requiredlibs} zorbautils)
+SET(storeRequiredLibs ${requiredlibs} zorbautils)
+
 ADD_SUBDIRECTORY(zorbatypes)
 SET(requiredlibs ${requiredlibs} zorbatypes)
+SET(storeRequiredLibs ${requiredlibs} zorbatypes)
 
 ADD_SUBDIRECTORY(zorbaerrors)
 SET(requiredlibs ${requiredlibs} zorbaerrors)
+SET(storeRequiredLibs ${requiredlibs} zorbaerrors)
 
-ADD_SUBDIRECTORY(zorbautils)
-SET(requiredlibs ${requiredlibs} zorbautils)
 
-# generate the zorba library
+#
+# Build the store library (or libraries)
+#
+ADD_SUBDIRECTORY(store)
+
+
+#################################################################
+#                                                               #
+# Build the zorba library                                       #
+#                                                               #
+#################################################################
+
+#
+# First, add the files to be compiled into the library
+#
 SET(ZORBA_SRCS)
 
-######################################### Add files compiled into the library
 ADD_SRC_SUBFOLDER(ZORBA_SRCS api API_SRCS )
+
 FOREACH (SRCS ${API_BUILD_SRCS})
   LIST(APPEND ZORBA_SRCS ${SRCS})
 ENDFOREACH (SRCS)
+
 ADD_SRC_SUBFOLDER(ZORBA_SRCS capi CAPI_SRCS )
 ADD_SRC_SUBFOLDER(ZORBA_SRCS compiler COMPILER_SRCS)
+
 FOREACH (SRCS ${COMPILER_BUILD_SRCS})
   LIST(APPEND ZORBA_SRCS ${SRCS})
 ENDFOREACH (SRCS)
+
 ADD_SRC_SUBFOLDER(ZORBA_SRCS system SYSTEM_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS context CONTEXT_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS errors	ERRORS_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS functions FUNCTIONS_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS runtime RUNTIME_SRCS)
-ADD_SRC_SUBFOLDER(ZORBA_SRCS store STORE_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS types TYPES_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS util UTIL_SRCS)
+
 IF (ZORBA_DEBUGGER)
   ADD_SRC_SUBFOLDER(ZORBA_SRCS debugger DEBUGGER_SRCS)
 ENDIF (ZORBA_DEBUGGER)
 
-############################################################ Zorba library
+#
+# Build the Zorba library
+#
 IF (MSVC)
   ADD_LIBRARY(zorba ${ZORBA_SRCS})
 ELSE (MSVC)
@@ -63,21 +90,33 @@ ELSE (MSVC)
 ENDIF (MSVC)
 
 TARGET_LINK_LIBRARIES(zorba ${requiredlibs})
+
 SET_TARGET_PROPERTIES(zorba PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
+
 SET_TARGET_PROPERTIES(zorba PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
 SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba)
 
-
-############################################################ Zorba STATIC library
+#
+# Build the Zorba STATIC library
+#
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_LIBRARY(zorba_static STATIC ${ZORBA_SRCS})
+
   TARGET_LINK_LIBRARIES(zorba_static ${requiredlibs})
+
   SET_TARGET_PROPERTIES(zorba_static PROPERTIES OUTPUT_NAME "zorba")  
+
   SET_TARGET_PROPERTIES(zorba_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
+
   SET_TARGET_PROPERTIES(zorba_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)  
+
   SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba_static)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
+#
+#
+#
 INSTALL(TARGETS ${ZORBA_LIBRARY_INSTALL_LIST}
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib

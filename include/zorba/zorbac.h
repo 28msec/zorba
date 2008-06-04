@@ -62,7 +62,7 @@ extern "C" {
  * \retval ::XQP0019_INTERNAL_ERROR
  */
 XQUERY_ERROR
-zorba_implementation(XQC_Implementation_Ref impl);
+zorba_implementation(XQC_Implementation_Ref impl, void* store);
 
 
 /**

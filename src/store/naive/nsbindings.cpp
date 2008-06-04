@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "zorbautils/fatal.h"
 #include "zorbatypes/xqpstring.h"
-#include "zorbaerrors/fatal.h"
 #include "store/naive/nsbindings.h"
 
 namespace zorba { namespace store {

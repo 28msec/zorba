@@ -61,7 +61,7 @@ namespace zorba {
        *
        */
       static Zorba* 
-      getInstance();
+      getInstance(void* store);
 
       /** \brief Releases all resources aquired by the Zorba %XQuery Engine.
        *

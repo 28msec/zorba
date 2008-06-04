@@ -1,3 +1,7 @@
+
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
+
+
 SET (CAPI_EXAMPLES
 	csimple.c
   ccontext.c
@@ -11,7 +15,7 @@ CREATE_TEST_SOURCELIST(cexamples
  
 # add the executable
 ADD_EXECUTABLE(cexamples ${cexamples})
-TARGET_LINK_LIBRARIES(cexamples zorba)
+TARGET_LINK_LIBRARIES(cexamples zorba simplestore)
 
 # remove the test driver source file
 SET (TestsToRun ${cexamples})

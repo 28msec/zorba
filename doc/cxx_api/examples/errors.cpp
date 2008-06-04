@@ -18,6 +18,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/default_error_handler.h>
+#include <store/naive/simple_store.h>
 
 using namespace zorba;
 
@@ -102,7 +103,8 @@ error_example_4(Zorba* aZorba)
 int 
 errors(int argc, char* argv[])
 {
-  Zorba* lZorba = Zorba::getInstance();
+  store::SimpleStore* lStore = store::SimpleStore::getInstance();
+  Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
   std::cout << "executing example 1" << std::endl;
@@ -124,6 +126,8 @@ errors(int argc, char* argv[])
   res = error_example_4(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
-  
+
+  lZorba->shutdown();
+  lStore->shutdown();  
   return 0;
 }

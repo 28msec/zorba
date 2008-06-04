@@ -22,6 +22,7 @@
 #include <boost/program_options/positional_options.hpp>
 
 #include  "zorbaerrors/errors.h"
+#include  "store/naive/simple_store.h"
 #include  "store/naive/ordpath.h"
 
 

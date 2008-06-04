@@ -18,6 +18,8 @@
 
 #include "zorbautils/hashmap.h"
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/api/runtimecb.h"
+#include "context/dynamic_context.h"
 
 
 namespace zorba
@@ -112,7 +114,8 @@ class ItemValuesCollHandleHashMap : public HashMap<GroupKey*,
     std::vector<store::Item_t>::iterator lItemIter = t->theTypedKey.begin();
     std::vector<XQPCollator*>::iterator lCollIter = aCompareParam->theCollators.begin();
     while(lItemIter != t->theTypedKey.end()){
-      hash += (*lItemIter)->hash ( aCompareParam->theRuntimeCB, *lCollIter );
+      hash += (*lItemIter)->hash(aCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(),
+                                  *lCollIter );
       ++lCollIter;
       ++lItemIter;
     }

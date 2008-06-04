@@ -18,6 +18,8 @@
 
 #include <zorba/zorba.h>
 #include <zorba/default_content_handler.h>
+#include <store/naive/simple_store.h>
+
 
 using namespace zorba;
 
@@ -76,11 +78,13 @@ int sax2( int argc, char * argv[] )
   // create a SAX content handler that prints all events to standard out
   XMLSerializer lContentHandler( std::cout );
 
+  store::SimpleStore* lStore = store::SimpleStore::getInstance();
+
   // initialize the Zorba engine and get a pointer to it
-  Zorba* lZorba = Zorba::getInstance();
+  Zorba* lZorba = Zorba::getInstance(lStore);
 
-  try {
-
+  try 
+  {
     // compile a query
     XQuery_t lQuery = lZorba->compileQuery("<a xmlns:f=\"foo\" xmlns=\"http://flworfound.org/defaultns\"> text a text a <b xmlns:ns1=\"http://flworfound.org/usecase1\" attr1=\"value1\" attr2=\"value2\"> text b </b><f:bar>foo</f:bar><foo /><bar /><b><![CDATA[ foo ]]></b></a>");
 
@@ -90,10 +94,14 @@ int sax2( int argc, char * argv[] )
     // execute the query and call according SAX callbacks 
     // i.e. equivalent to serializing to xml and parsing using SAX).
     lQuery->executeSAX();
-
-  } catch ( ZorbaException &e ) {
+  }
+  catch ( ZorbaException &e ) 
+  {
     std::cerr << e << std::endl;
   }
+
+  lZorba->shutdown();
+  lStore->shutdown();
   return 0;
 }
 

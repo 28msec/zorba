@@ -34,6 +34,8 @@
 
 #include <zorbatypes/URI.h>
 
+#include "store/naive/simple_store.h"
+
 namespace fs = boost::filesystem;
 
 void
@@ -197,7 +199,7 @@ void
 set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
 
-  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance()->getItemFactory();
+  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
 
   boost::replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
   if (!inlineFile) {
@@ -361,7 +363,11 @@ main(int argc, char** argv)
   printFile(std::cout, lQueryFile.native_file_string());
   std::cout << std::endl;
 
-  zorba::Zorba *engine = zorba::Zorba::getInstance();
+  // Instantiate the simple store
+  zorba::store::SimpleStore* store = zorba::store::SimpleStore::getInstance();
+
+  // Instantiate zorba query processor
+  zorba::Zorba *engine = zorba::Zorba::getInstance(store);
 
   TestErrorHandler errHandler;
 

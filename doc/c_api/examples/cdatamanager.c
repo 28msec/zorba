@@ -17,7 +17,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <zorba/zorbac.h>
+#include <store/naive/simple_storec.h>
 
 /**
  */
@@ -69,8 +71,10 @@ cdatamanager(int argc, char** argv)
   XQC_Implementation impl;
   XQC_DataManager mgr;
 
-  if ( zorba_implementation(&impl) != XQ_NO_ERROR )
-      return 1;
+  void* store = create_simple_store();
+
+  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
+    return 1;
  
   impl->data_manager(impl, &mgr);
 

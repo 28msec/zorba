@@ -26,9 +26,11 @@
 
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
-#include "store/api/item.h"
 #include "zorbatypes/xqpstring.h"
 #include "util/properties.h"
+
+#include "store/api/item.h"
+#include "store/naive/simple_store.h"
 
 using namespace zorba;
 using namespace std;
@@ -40,7 +42,7 @@ void set_var (string name, string val, DynamicContext* dctx)
 {
   if (name [name.size () - 1] == ':') 
   {
-    Item lItem = Zorba::getInstance()->getItemFactory()->createString(val);
+    Item lItem = Zorba::getInstance(NULL)->getItemFactory()->createString(val);
 		if(name != ".") {
 			dctx->setVariable(name.substr (0, name.size () - 1), lItem);
 		} else
@@ -65,13 +67,15 @@ int main(int argc, char* argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-
   // read the command file properties
   if (! Properties::load(argc,argv))
     return 4;  
+
   Properties* lProp = Properties::instance();
   zorba::XQuery::CompilerHints chints;
-  chints.opt_level = lProp->useOptimizer () ? XQuery::CompilerHints::O1 : XQuery::CompilerHints::O0;
+  chints.opt_level = (lProp->useOptimizer () ?
+                      XQuery::CompilerHints::O1 :
+                      XQuery::CompilerHints::O0);
 
   // output file (either a file or the standard out if no file is specified)
   auto_ptr<ostream> outputFile (lProp->useResultFile() ?
@@ -107,8 +111,11 @@ int _tmain(int argc, _TCHAR* argv[])
     qfile->seekg(0); // go back to the beginning
   }
 
+  // Instantiate the simple store
+  store::SimpleStore* store = store::SimpleStore::getInstance();
+
   // start processing
-  Zorba* zengine = Zorba::getInstance();
+  Zorba* zengine = Zorba::getInstance(store);
 
   // start parsing the query
   XQuery_t query = zengine->createQuery ();
@@ -156,11 +163,13 @@ int _tmain(int argc, _TCHAR* argv[])
     } catch (QueryException &e) {
       query->close();
       zengine->shutdown();
+      store->shutdown();
       cerr << "Execution error: " << e << endl;
       return 2;
     } catch (ZorbaException &e) {
       query->close();
       zengine->shutdown();
+      store->shutdown();
       cerr << "Execution error: " << e << endl;
       return 2;
     }
@@ -168,5 +177,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
   query->close();
   zengine->shutdown();
+  store->shutdown();
   return 0;
 }

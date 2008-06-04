@@ -20,7 +20,6 @@
 #include <vector>
 
 #include "common/common.h"
-#include "zorbaerrors/fatal.h"
 
 namespace zorba { namespace store {
 

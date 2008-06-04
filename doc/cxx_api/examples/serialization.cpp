@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include <zorba/zorba.h>
+#include <store/naive/simple_store.h>
 
 using namespace zorba;
 
@@ -163,7 +164,8 @@ serialization_example_7(Zorba* aZorba)
 int 
 serialization(int argc, char* argv[])
 {
-  Zorba* lZorba = Zorba::getInstance();
+  store::SimpleStore* lStore = store::SimpleStore::getInstance();
+  Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
   std::cout << "executing serialization example 1" << std::endl;
@@ -201,5 +203,7 @@ serialization(int argc, char* argv[])
   if (!res) return 1; 
   std::cout << std::endl;
 
+  lZorba->shutdown();
+  lStore->shutdown();
   return 0;
 }

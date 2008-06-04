@@ -57,7 +57,7 @@ Item
 CollectionImpl::getUri() 
 {
   ZORBA_TRY
-    return &*theCollection->getUri();
+    return theCollection->getUri();
   ZORBA_CATCH
   return Item();
 }

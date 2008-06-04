@@ -145,7 +145,7 @@ public:
 
   void applyUpdates();
 
-  void serializeUpdates(serializer& ser, std::ostream& os);
+  //void serializeUpdates(serializer& ser, std::ostream& os);
 
   void mergeUpdates(Item* other);
 

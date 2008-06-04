@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#include "common/common.h"
-#include "zorbaerrors/fatal.h"
+#include "zorbautils/fatal.h"
 #include "zorbautils/latch.h"
 
 #ifdef HAVE_PTHREAD_H
@@ -228,7 +227,8 @@ int Latch::destroy()
 {
 	int status;
 
-	if (valid!=LATCH_VALID) return EINVAL;
+	if (valid != LATCH_VALID) return EINVAL;
+
 	status = lock_mutex();
 	if (status!=0) return status;
 	
@@ -298,7 +298,7 @@ int Latch::readtrylock()
 {
 	int status, status2;
 
-	if (valid!=LATCH_VALID) return EINVAL;
+	if (valid != LATCH_VALID) return EINVAL;
 
 	if ( (status = lock_mutex()) != 0) return status;
 
@@ -342,7 +342,7 @@ int Latch::writelock()
 {
 	int status;
 
-	if (valid!=LATCH_VALID) return EINVAL;
+	if (valid != LATCH_VALID) return EINVAL;
 
 	if ( (status = lock_mutex()) != 0) return status;
 
@@ -369,7 +369,7 @@ int Latch::writetrylock()
 {
 	int status, status2;
 
-	if (valid!=LATCH_VALID) return EINVAL;
+	if (valid != LATCH_VALID) return EINVAL;
 
 	if ( (status = lock_mutex()) != 0) return status;
 
@@ -388,7 +388,8 @@ int Latch::writeunlock()
 {
 	int status;
 
-	if (valid!=LATCH_VALID) return EINVAL;
+	if (valid != LATCH_VALID) return EINVAL;
+
 	if ( (status = lock_mutex()) != 0) return status;
 
 	w_active = 0;

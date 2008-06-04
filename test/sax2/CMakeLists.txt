@@ -20,7 +20,7 @@ ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 CONFIGURE_FILE(sax2testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/sax2testdriverconfig.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(sax2testdriver sax2testdriver.cpp)
-TARGET_LINK_LIBRARIES(sax2testdriver ${requiredlibs} zorba)
+TARGET_LINK_LIBRARIES(sax2testdriver ${requiredlibs} zorba simplestore)
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)

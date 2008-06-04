@@ -11,8 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 IF(ZORBA_MINIMAL_STORE)
-LIST(APPEND STORE_SRCS 
+
+SET(STORE_SRCS
     minimal/min_item_factory.cpp
     minimal/min_collection.cpp
     minimal/min_temp_seq.cpp
@@ -31,31 +33,17 @@ LIST(APPEND STORE_SRCS
     minimal/min_query_context.cpp
     minimal/qname_pool.cpp
     minimal/string_pool.cpp)
-HEADER_GROUP_SUBFOLDER(STORE_SRCS minimal)
-ELSE(ZORBA_MINIMAL_STORE)
-LIST(APPEND STORE_SRCS 
-    naive/basic_item_factory.cpp
-    naive/simple_collection.cpp
-    naive/simple_temp_seq.cpp
-    naive/atomic_items.cpp
-    naive/item.cpp
-    naive/node_items.cpp
-    naive/node_vector.cpp
-    naive/node_updates.cpp
-    naive/node_iterators.cpp
-    naive/qname_pool.cpp
-    naive/simple_store.cpp
-    naive/simple_loader.cpp
-    naive/simple_pul.cpp
-    naive/ordpath.cpp
-    naive/nsbindings.cpp
-    naive/item_iterator.cpp
-    naive/query_context.cpp
-    naive/string_pool.cpp
-    )
-HEADER_GROUP_SUBFOLDER(STORE_SRCS naive)
-ENDIF(ZORBA_MINIMAL_STORE)
 
 HEADER_GROUP_SUBFOLDER(STORE_SRCS api)
 HEADER_GROUP_SUBFOLDER(STORE_SRCS util)
 HEADER_GROUP_SUBFOLDER(STORE_SRCS update)
+
+HEADER_GROUP_SUBFOLDER(STORE_SRCS minimal)
+
+
+ELSE(ZORBA_MINIMAL_STORE)
+
+ADD_SUBDIRECTORY(naive)
+
+ENDIF(ZORBA_MINIMAL_STORE)
+

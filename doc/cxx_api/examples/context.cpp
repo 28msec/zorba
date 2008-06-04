@@ -19,6 +19,8 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
+#include <store/naive/simple_store.h>
+
 
 using namespace zorba;
 
@@ -261,11 +263,13 @@ context_example_9(Zorba* aZorba)
 }
 
 
-    int 
+int 
 context(int argc, char* argv[])
 {
-    Zorba* lZorba = Zorba::getInstance();
-    bool res = false;
+  store::SimpleStore* lStore = store::SimpleStore::getInstance();
+
+  Zorba* lZorba = Zorba::getInstance(lStore);
+  bool res = false;
 
     std::cout << "executing example 1" << std::endl;
     res = context_example_1(lZorba);
@@ -312,5 +316,7 @@ context(int argc, char* argv[])
     if (!res) return 1; 
     std::cout << std::endl;
 
+  lZorba->shutdown();
+  lStore->shutdown();
   return 0;
 }

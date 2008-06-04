@@ -19,13 +19,17 @@
 
 #include "capi/implementation.h"
 
+#include "store/api/store.h"
+
+
 XQUERY_ERROR
-zorba_implementation(XQC_Implementation_Ref impl)
+zorba_implementation(XQC_Implementation_Ref impl, void* store)
 {
   try {
     std::auto_ptr<XQC_Implementation_s> lImpl(new XQC_Implementation_s());
 
-    zorba::Zorba* lZorba = zorba::Zorba::getInstance();
+    zorba::Zorba* lZorba = 
+      zorba::Zorba::getInstance(static_cast<zorba::store::Store*>(store));
 
     zorbac::Implementation::assign_functions(lImpl.get());
 

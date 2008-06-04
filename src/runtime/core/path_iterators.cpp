@@ -106,7 +106,7 @@ bool KindTestIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
 doctest1:
       if (theQName != NULL &&
-          !theQName->equals(result->getNodeName(), planState.theRuntimeCB))
+          !theQName->equals(result->getNodeName()))
       {
         skip = true;
         break;
@@ -134,7 +134,7 @@ doctest1:
       }
 
       if (theQName != NULL &&
-          !theQName->equals(result->getNodeName(), planState.theRuntimeCB))
+          !theQName->equals(result->getNodeName()))
       {
         skip = true;
         break;
@@ -229,7 +229,7 @@ bool NameTestIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     {
     case match_no_wild:
     {
-      if (theQName->equals(result->getNodeName(), planState.theRuntimeCB))
+      if (theQName->equals(result->getNodeName()))
         return true;
 
       break;

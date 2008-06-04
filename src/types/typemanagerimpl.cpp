@@ -20,11 +20,10 @@
 #include <zorba/item.h>
 #include "zorbatypes/xqpstring.h"
 #include "system/globalenv.h"
-#include "store/current_store_headers.h"
 #include "types/node_test.h"
 #include "types/typeops.h"
 #include "store/api/item_factory.h"
-#include "store/api/store.h"
+//#include "store/api/store.h"
 #include "types/typemanagerimpl.h"
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"

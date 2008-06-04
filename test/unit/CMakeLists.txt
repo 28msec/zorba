@@ -20,7 +20,7 @@ CREATE_TEST_SOURCELIST(UnitTests
 
 # add the executable
 ADD_EXECUTABLE(UnitTests ${UnitTests})
-TARGET_LINK_LIBRARIES(UnitTests zorba)
+TARGET_LINK_LIBRARIES(UnitTests zorba simplestore)
 
 # remove the test driver source file
 SET (TestsToRun ${UnitTests})
@@ -42,7 +42,7 @@ CREATE_TEST_SOURCELIST(CAPIUnitTests
  
  # add the executable
  ADD_EXECUTABLE(CAPIUnitTests ${CAPIUnitTests})
- TARGET_LINK_LIBRARIES(CAPIUnitTests zorba)
+ TARGET_LINK_LIBRARIES(CAPIUnitTests zorba simplestore)
  
  # remove the test driver source file
  SET (CAPITestsToRun ${CAPIUnitTests})

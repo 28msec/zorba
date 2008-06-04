@@ -131,7 +131,7 @@ Item::isAtomic() const
   return false;
 }
 
-
+#if 0
 bool
 Item::isNumeric() const
 {
@@ -140,7 +140,7 @@ Item::isNumeric() const
   ITEM_CATCH
   return false;
 }
-
+#endif
 
 bool 
 Item::isNull() const
@@ -195,21 +195,25 @@ void Item::serialize(std::ostream& os) const
 {
   SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
 
-  try {
+  try 
+  {
     error::ErrorManager lErrorManger;
     serializer lSerializer(&lErrorManger);
     lSerializer.set_parameter("omit-xml-declaration", "yes");
-    m_item->serializeXML(lSerializer, os);
+    lSerializer.serialize(m_item, os);
   }
-  catch (::zorba::error::ZorbaError& e) {
+  catch (::zorba::error::ZorbaError& e) 
+  {
     DefaultErrorHandler lErrorHandler;
     ZorbaImpl::notifyError(&lErrorHandler, e);
   }
-  catch (std::exception& e) {
+  catch (std::exception& e) 
+  {
     DefaultErrorHandler lErrorHandler;
     ZorbaImpl::notifyError(&lErrorHandler, e.what());
   }
-  catch (...) {
+  catch (...) 
+  {
     DefaultErrorHandler lErrorHandler;
     ZorbaImpl::notifyError(&lErrorHandler, "Internal error");
   }

@@ -24,9 +24,13 @@
 
 namespace zorba {
 
-  namespace error {
-    class ZorbaError;
-  }
+namespace error {
+  class ZorbaError;
+}
+
+namespace store {
+  class Store;
+}
 
 
 #define ZORBA_TRY try { 
@@ -135,7 +139,7 @@ class ZorbaImpl : public Zorba
   ZorbaImpl();
 
   void
-  init();
+  init(store::Store* store);
   
 }; /* class ZorbaImpl */
 

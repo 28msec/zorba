@@ -33,6 +33,9 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
+#include "store/naive/simple_store.h"
+
+
 namespace fs = boost::filesystem;
 
 
@@ -92,7 +95,7 @@ populateDynamicContext(zorba::DynamicContext* aDynamicContext, ZorbaCMDPropertie
       std::ifstream lInStream((*lIter).var_value.c_str());
       aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value, lInStream);
     } else {
-      zorba::Item lItem = zorba::Zorba::getInstance()->getItemFactory()->createString((*lIter).var_value);
+      zorba::Item lItem = zorba::Zorba::getInstance(NULL)->getItemFactory()->createString((*lIter).var_value);
       aDynamicContext->setVariable((*lIter).var_name, lItem);
     }
     
@@ -133,7 +136,9 @@ int main(int argc, char* argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance();
+  zorba::store::SimpleStore* store = zorba::store::SimpleStore::getInstance();
+
+  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
@@ -201,8 +206,6 @@ int _tmain(int argc, _TCHAR* argv[])
     lProperties.printHelp(std::cerr);
     return 3;
   }
-
-
 
   // print the query if requested
   if ( lProperties.printQuery() )

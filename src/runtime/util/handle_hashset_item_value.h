@@ -18,7 +18,8 @@
 
 #include "zorbautils/hashset.h"
 #include "runtime/booleans/BooleanImpl.h"
-
+#include "runtime/api/runtimecb.h"
+#include "context/dynamic_context.h"
 
 namespace zorba { 
 
@@ -103,7 +104,7 @@ public:
         const store::Item_t& t,
         ValueCompareParam* aCompareParam)
   {
-    return t->hash(NULL);
+    return t->hash();
   }
 };
 
@@ -140,7 +141,7 @@ public:
         ValueCollCompareParam* aCompareParam)
   {
     assert (t != NULL);
-    return t->hash(aCompareParam->theRuntimeCB, aCompareParam->theCollator);
+    return t->hash(aCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(), aCompareParam->theCollator);
   }
 };
 

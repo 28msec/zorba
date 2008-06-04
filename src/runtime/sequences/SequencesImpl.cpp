@@ -18,7 +18,11 @@
 #include <vector>
 #include <sstream>
 
-#include "zorbaerrors/fatal.h"
+#include "zorbautils/fatal.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbatypes/zorbatypesError.h"
+#include "zorbatypes/URI.h"
+#include "zorbaerrors/error_messages.h"
 
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -38,11 +42,6 @@
 
 #include "context/static_context.h"
 #include "context/collation_cache.h"
-
-#include "zorbaerrors/error_manager.h"
-#include "zorbatypes/zorbatypesError.h"
-#include "zorbatypes/URI.h"
-#include "zorbaerrors/error_messages.h"
 
 #include "util/web/web.h"
 #include "store/util/hashset_node_handle.h"
@@ -281,7 +280,7 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   }
 
   while (consumeNext(result, theChildren[0].getp(), planState)) {
-    if (result->isNumeric () && result->isNaN ()) {
+    if (result->isNaN ()) {
       if (! state->theHasNaN) {
         state->theHasNaN = true;
         STACK_PUSH(true, state);
@@ -1000,7 +999,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
       }
 
       // implementation dependent: return the first occurence)
-      if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
+      if (lRunningItem->isNaN()) {
         /** It must be checked if the sequence contains any 
          * xs:double("NaN") [xs:double("NaN") is returned] or 
          * only xs:float("NaN")'s [xs:float("NaN") is returned]'.

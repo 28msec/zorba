@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "zorbautils/fatal.h"
 #include "common/shared_types.h"
-#include "zorbaerrors/fatal.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
 #include "runtime/api/runtimecb.h"

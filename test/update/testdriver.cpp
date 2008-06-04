@@ -33,6 +33,9 @@
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
 
+#include "store/naive/simple_store.h"
+
+
 namespace fs = boost::filesystem;
 
 void
@@ -108,7 +111,7 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 {
   boost::replace_all(val, "$UPDATE_SRC_DIR", zorba::UPDATE_SRC_DIR);
 
-  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance()->getItemFactory();
+  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
 
   if (!inlineFile) {
     zorba::Item lItem = lFactory->createString(val);
@@ -210,7 +213,9 @@ main(int argc, char** argv)
   // read the xargs and errors if the spec file exists
   lSpec.parseFile(lSpecFile.native_file_string()); 
 
-  zorba::Zorba *engine = zorba::Zorba::getInstance();
+  zorba::store::SimpleStore* store = zorba::store::SimpleStore::getInstance();
+
+  zorba::Zorba* engine = zorba::Zorba::getInstance(store);
 
   std::vector<zorba::XQuery_t> lQueries;
   zorba::XQuery::SerializerOptions lSerOptions;

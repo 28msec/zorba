@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <libxml/parser.h>
-#include "common/common.h"
 
 #include "zorbatypes/icu_init.h"
 
@@ -22,29 +20,34 @@
 #include <curl/curl.h>
 #endif
 
+#include "common/common.h"
+
 #ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
 #endif
 
+#include "zorbautils/fatal.h"
+
 #include "globalenv.h"
 #include "types/root_typemanager.h"
+#include "types/schema/schema.h"
 #include "context/root_static_context.h"
 #include "functions/library.h"
-#include "store/current_store_headers.h"
 #include "compiler/api/compiler_api.h"
+
 #include "types/schema/schema.h"
 
 #include "store/api/collection.h"
 
-#ifdef ZORBA_XBROWSER
-#include "DOMStoreSingelton.h"
-#endif
+#include "store/api/store.h"
+
 
 using namespace zorba;
 
 GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 
-void GlobalEnvironment::init()
+
+void GlobalEnvironment::init(store::Store* store)
 {
   // initialize Xerces-C lib
   Schema::initialize();
@@ -53,15 +56,11 @@ void GlobalEnvironment::init()
 
   m_globalEnv->m_icu->zorbatypes_global_init();
 
-#ifdef ZORBA_XBROWSER
-  m_globalEnv->m_store.reset(xqp::DOMStoreSingelton::getInstance()->getStore());
-  //static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
-#else
-  m_globalEnv->m_store.reset(new store::SimpleStore());
-  static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
-#endif
+  ZORBA_FATAL(store != NULL, "Must provide store during zorba initialization");
 
-  root_static_context *rctx = new root_static_context();
+  m_globalEnv->m_store = store;
+
+  root_static_context* rctx = new root_static_context();
   m_globalEnv->m_rootStaticContext.reset(rctx);
   rctx->init();
   BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext.get());
@@ -77,13 +76,7 @@ void GlobalEnvironment::init()
   // initialize mapm for bignum handling
   m_globalEnv->m_mapm = m_apm_init();
 #endif
-  // This initializes the libxml2 library and checks potential ABI mismatches
-  // between the version it was compiled for and the actual  shared library used.
-  // Calling its init is done here because we also want to free it at the end,
-  // i.e. when zorba is shutdown
-#ifndef ZORBA_MINIMAL_STORE
-  LIBXML_TEST_VERSION
-#endif
+
 
 #ifdef ZORBA_WITH_REST
   curl_global_init(CURL_GLOBAL_ALL);
@@ -97,14 +90,6 @@ void GlobalEnvironment::destroy()
 {
   // terminate Xerces-C lib
   Schema::terminate();
-
-  // do cleanup of the libxml2 library
-  // however, after that, a user will have to call 
-  // LIBXML_TEST_VERSION if he wants to use libxml2
-  // beyond the lifecycle of zorba
-#ifndef ZORBA_MINIMAL_STORE
-  xmlCleanupParser(); 
-#endif
 
 #ifdef ZORBA_WITH_REST
   curl_global_cleanup();
@@ -121,7 +106,7 @@ void GlobalEnvironment::destroy()
 
   m_globalEnv->m_rootStaticContext.reset(NULL);
 
-  m_globalEnv->m_store.reset(NULL);
+  m_globalEnv->m_store = NULL;
 
   // we shutdown icu
   // again it is important to mention this in the documentation
@@ -135,6 +120,7 @@ void GlobalEnvironment::destroy()
 	m_globalEnv = NULL;
 }
 
+
 GlobalEnvironment::GlobalEnvironment()
 {
 }
@@ -144,6 +130,7 @@ static_context& GlobalEnvironment::getRootStaticContext()
 {
   return *m_rootStaticContext;
 }
+
 
 RootTypeManager& GlobalEnvironment::getRootTypeManager()
 {

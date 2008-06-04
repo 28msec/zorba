@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_UTIL_MUTEX
 #define ZORBA_STORE_UTIL_MUTEX
 
-#include "common/config/platform.h"
+#include "zorbamisc/config/platform.h"
 
 #ifdef HAVE_PTHREAD_H
 #  include <pthread.h>

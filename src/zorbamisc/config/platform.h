@@ -13,5 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cassert>
-#include "zorbamisc/config/platform.h"
+#ifndef ZORBA_PLATFORM_H
+#define ZORBA_PLATFORM_H
+
+#include <zorba/config.h>
+
+#if (defined (WIN32) || defined (WINCE)) && ! defined (CYGWIN)
+# include "zorbamisc/config/win32.h"
+#endif
+
+#if defined (APPLE)
+# include "zorbamisc/config/apple.h"
+#endif
+
+#if defined (__FreeBSD__)
+# include "zorbamisc/config/freebsd.h"
+#endif
+
+#if defined (UNIX)
+# include "zorbamisc/config/unix.h"
+#endif
+
+#if defined (CYGWIN)
+# include "zorbamisc/config/cygwin.h"
+#endif
+
+
+#endif

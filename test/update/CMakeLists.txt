@@ -20,7 +20,7 @@ ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfig.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(testdriver testdriver.cpp)
-TARGET_LINK_LIBRARIES(testdriver ${requiredlibs} zorba)
+TARGET_LINK_LIBRARIES(testdriver ${requiredlibs} zorba simplestore)
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.spec)

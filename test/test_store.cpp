@@ -21,7 +21,6 @@
 #include <zorba/zorba.h>
 
 #include "zorbaerrors/errors.h"
-#include "system/globalenv.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
@@ -74,14 +73,9 @@ int main(int argc, const char * argv[])
   std::string fileName(argv[1]);
 
   //
-  // Zorba initialization
-  //
-  Zorba* lZorba = Zorba::getInstance();
-
-  //
   // Store initialization
   //
-  zorba::store::SimpleStore* store = static_cast<zorba::store::SimpleStore*>(&zorba::GENV.getStore());
+  SimpleStore* lStore = SimpleStore::getInstance();
 
   //
   // Test boost::shared_ptr
@@ -101,10 +95,10 @@ int main(int argc, const char * argv[])
   //
   // Re-acquirable latch
   //
-  store->getGlobalLock().rlock();
-  store->getGlobalLock().rlock();
-  store->getGlobalLock().unlock();
-  store->getGlobalLock().unlock();
+  lStore->getGlobalLock().rlock();
+  lStore->getGlobalLock().rlock();
+  lStore->getGlobalLock().unlock();
+  lStore->getGlobalLock().unlock();
 
   //
   // RC_TIMMING
@@ -174,11 +168,11 @@ int main(int argc, const char * argv[])
   try
   {
     xqpStringStore_t uri(new xqpStringStore("http://MyCollection1"));
-    coll1 = store->createCollection(uri);
+    coll1 = lStore->createCollection(uri);
 
     std::cout << coll1->getUri()->show() << std::endl;
 
-    coll2 = store->createCollection(uri);
+    coll2 = lStore->createCollection(uri);
   }
   catch (error::ZorbaError& e)
   {
@@ -220,7 +214,7 @@ int main(int argc, const char * argv[])
   //
   // Destroy collection
   //
-  store->deleteCollection(coll1->getUri()->getStringValue());
+  lStore->deleteCollection(coll1->getUri()->getStringValue());
   coll1 = 0;
 
   //
@@ -244,14 +238,14 @@ int main(int argc, const char * argv[])
   // Test node references
   //
   store::Item_t uri;
-  store->getReference(uri, doc);
+  lStore->getReference(uri, doc);
   std::cout << "Reference URI for node: " << doc.getp() << " is: "
             << uri->getStringValue()->c_str() << std::endl;
 
   try
   {
     xqpStringStore_t uri(new xqpStringStore("http://MyCollection1"));
-    coll1 = store->createCollection(uri);
+    coll1 = lStore->createCollection(uri);
 
     std::cout << coll1->getUri()->show() << std::endl;
 
@@ -263,7 +257,7 @@ int main(int argc, const char * argv[])
   }
 
   store::Item_t doc2;
-  if (!store->getNodeByReference(doc2, uri)) {
+  if (!lStore->getNodeByReference(doc2, uri)) {
     doc2 = NULL;
   }
 
@@ -286,7 +280,7 @@ int main(int argc, const char * argv[])
         break;
 
       ulong childPos = (ulong)(numChildren * factor);
-      store::XmlNode* child = parent->getChild(childPos);
+      XmlNode* child = parent->getChild(childPos);
 
       while (child->getNodeKind() != StoreConsts::elementNode)
       {
@@ -300,14 +294,14 @@ int main(int argc, const char * argv[])
       if (childPos == numChildren)
         break;
 
-      store->getReference(uri, child);
+      lStore->getReference(uri, child);
       std::cout << "Reference URI for node " << child << ":" 
                 << child->getNodeName()->getStringValue()->c_str()
                 << " at position " << childPos 
                 << " is: " << uri->getStringValue()->c_str() << std::endl;
 
       Item_t child2;
-      if (!store->getNodeByReference(child2, uri)) {
+      if (!lStore->getNodeByReference(child2, uri)) {
         child2 = NULL;
       }
 
@@ -321,12 +315,12 @@ int main(int argc, const char * argv[])
   //
   // Shutdown
   //
-  store->deleteCollection(coll1->getUri()->getStringValue());
+  lStore->deleteCollection(coll1->getUri()->getStringValue());
   coll1 = 0;
   doc = 0;
   doc2 = 0;
 
-  lZorba->shutdown();
+  lStore->shutdown();
   return 0;
 }
 

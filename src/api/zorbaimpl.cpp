@@ -23,7 +23,7 @@
 #include "api/unmarshaller.h"
 #include "api/xmldatamanagerimpl.h"
 
-#include "zorbaerrors/fatal.h"
+#include "zorbautils/fatal.h"
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
@@ -65,9 +65,9 @@ ZorbaImpl::shutdown()
  * when calling getInstance after a former shutdown.
  */
 void
-ZorbaImpl::init() 
+ZorbaImpl::init(store::Store* store) 
 {
-  GlobalEnvironment::init();
+  GlobalEnvironment::init(store);
   theIsInitialized = true;
 }
 

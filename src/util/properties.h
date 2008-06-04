@@ -52,7 +52,6 @@ namespace zorba {
 #ifndef NDEBUG
       bool theTraceTranslator;
       bool theTraceCodegen;
-      long theStoreTraceLevel;
 #endif
       bool theCompileOnly;
       int theTimezone;
@@ -191,9 +190,6 @@ namespace zorba {
       
       bool
       traceTranslator() { return theTraceTranslator; }
-
-      long
-      storeTraceLevel() { return theStoreTraceLevel; }
 #endif
 
       std::vector<std::pair<std::string,std::string> > getExternalVars();

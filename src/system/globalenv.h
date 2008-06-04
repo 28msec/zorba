@@ -29,11 +29,15 @@ class RootTypeManager;
 class static_context;
 class icu_init;
 
+namespace store {
+class Store;
+}
+
 
 class GlobalEnvironment 
 {
  public:
-  static void init();
+  static void init(store::Store* store);
   static void destroy();
   static GlobalEnvironment& getInstance()
   {
@@ -51,7 +55,7 @@ class GlobalEnvironment
  private:
   GlobalEnvironment();
 
-  std::auto_ptr<store::Store>            m_store;
+  store::Store*                          m_store;
   std::auto_ptr<static_context>          m_rootStaticContext;
 #ifndef ZORBA_NO_UNICODE
   M_APM                                  m_mapm; // this is a pointer type

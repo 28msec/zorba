@@ -23,10 +23,10 @@ namespace store {
 
 
 #define GET_STORE() \
-        (*(static_cast<store::SimpleStore*>(&GENV.getStore())))
+  (*SimpleStore::getInstance())
 
 #define GET_FACTORY() \
-        (*(reinterpret_cast<store::BasicItemFactory*>(GET_STORE().getItemFactory())))
+  (*(reinterpret_cast<store::BasicItemFactory*>(GET_STORE().getItemFactory())))
 
 
 #define BASE_NODE(item) (static_cast<store::XmlNode*>((item).getp()))

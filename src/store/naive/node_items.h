@@ -21,7 +21,7 @@
 #include "common/common.h"
 #include "store/api/item.h"
 #include "common/shared_types.h"
-#include "zorbaerrors/fatal.h"
+#include "zorbautils/fatal.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/node_vector.h"
 #include "store/naive/node_updates.h"
@@ -142,11 +142,11 @@ public:
 
   bool equals(
         const Item* other,
-        RuntimeCB* aRuntimeCB,
+        long timezone = 0,
         XQPCollator* aCollation = 0) const { return this == other; }
 
   uint32_t hash(
-        RuntimeCB* aRuntimeCB,
+        long timezone = 0,
         XQPCollator* aCollation = 0) const;
 
   xqpStringStore_t getBaseURI() const

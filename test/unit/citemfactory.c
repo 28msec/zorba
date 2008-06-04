@@ -18,6 +18,9 @@
 #include <stdlib.h>
 #include <zorba/zorbac.h>
 
+#include "store/naive/simple_storec.h"
+
+
 #define UNIT_ASSERT(x) \
   do { \
     if (! (x)) { \
@@ -35,11 +38,13 @@ citemfactory(int argc, char* argv[])
   int                lTmpInt = 0;
   const char*        lStringValue = 0;
 
+  void* store = create_simple_store();
+
   const char* lURI = "http://www.zorba-xquery.com/";
   const char* lPrefix = "zorba";
   const char* lString = "1";
 
-  if ( zorba_implementation(&impl) != XQ_NO_ERROR )
+  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
       return 1;
 
   impl->item_factory(impl, &lFactory);

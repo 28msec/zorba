@@ -18,8 +18,6 @@
 
 #include "zorbaerrors/error_manager.h"
 
-#include "system/globalenv.h"
-
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_pul.h"
@@ -638,7 +636,7 @@ void PULImpl::checkTransformUpdates(const std::vector<Item*>& rootNodes) const
   }
 }
 
-
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -654,7 +652,7 @@ void PULImpl::serializeUpdates(serializer& ser, std::ostream& os)
     os << std::endl << "******************" << std::endl;
   }
 }
-
+#endif
 
 /*******************************************************************************
 
@@ -686,11 +684,11 @@ void PULImpl::applyUpdates()
     for (i = 0; i < numUpdates; i++)
       theDeleteList[i]->apply();
   }
-  catch (ZorbaException& e)
+  catch (error::ZorbaError& e)
   {
 #ifndef NDEBUG
     std::cerr << "Exception thrown during pul::applyUpdates: "
-              << std::endl <<  e << std::endl;
+              << std::endl <<  e.theDescription << std::endl;
 #endif
     undoUpdates();
     throw e;

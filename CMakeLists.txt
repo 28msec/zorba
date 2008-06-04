@@ -49,16 +49,6 @@ INCLUDE(CMakeCompiler.txt)
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-#####################################################  LibXml2
-FIND_PACKAGE(LibXml2)
-IF(LIBXML2_FOUND)
-    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
-    SET(requiredlibs ${requiredlibs} ${LIBXML2_LIBRARIES})
-    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
-ELSE(LIBXML2_FOUND)
-    MESSAGE(FATAL_ERROR "The libxml2 library is required in order to build Zorba.")
-ENDIF(LIBXML2_FOUND)
-
 #####################################################  cURL    
 FIND_PACKAGE(CURL)
 IF(CURL_FOUND)
@@ -112,7 +102,7 @@ ELSE (NOT Boost_FOUND)
   MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
 
   INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+  #LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
   IF (NOT WIN32)
       IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
           SET(requiredlibs ${requiredlibs} boost_program_options-mt)

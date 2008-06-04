@@ -21,7 +21,7 @@
 #include <vector>
 
 #include "zorbautils/mutex.h"
-#include "zorbaerrors/fatal.h"
+#include "zorbautils/fatal.h"
 
 #include "common/shared_types.h"
 

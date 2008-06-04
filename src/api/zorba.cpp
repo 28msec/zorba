@@ -17,15 +17,17 @@
 #include <zorba/version.h>
 #include "api/zorbaimpl.h"
 
+#include "store/api/store.h"
+
 namespace zorba {
   
   Zorba*
-  Zorba::getInstance()
+  Zorba::getInstance(void* store)
   {
     static ZorbaImpl lInstance;
 
     if ( ! lInstance.theIsInitialized )
-      lInstance.init();
+      lInstance.init(static_cast<store::Store*>(store));
 
     return &lInstance;
   }

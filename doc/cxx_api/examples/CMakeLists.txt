@@ -13,6 +13,9 @@
 # limitations under the License.
 # create the testing file and list of tests
 
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
+
+
 SET (API_EXAMPLES
 	simple.cpp
   sax2.cpp
@@ -30,7 +33,7 @@ CREATE_TEST_SOURCELIST(examples
  
 # add the executable
 ADD_EXECUTABLE(examples ${examples})
-TARGET_LINK_LIBRARIES(examples zorba)
+TARGET_LINK_LIBRARIES(examples zorba simplestore)
 
 # remove the test driver source file
 SET (TestsToRun ${examples})

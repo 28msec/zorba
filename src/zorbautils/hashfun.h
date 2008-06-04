@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "common/config/platform.h"
+#include "zorbamisc/config/platform.h"
 
 namespace zorba { 
 

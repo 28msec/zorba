@@ -52,12 +52,11 @@ namespace zorba
     theStableIteratorIds(false),
     theNoTreeIds (false)
 #ifndef NDEBUG
-    ,theTraceTranslator(false),
-    theTraceCodegen(false),
-    theStoreTraceLevel(0)
+   ,theTraceTranslator(false)
+   ,theTraceCodegen(false)
 #endif
-  ,theCompileOnly(false)
-  ,theTimezone (0)
+   ,theCompileOnly(false)
+   ,theTimezone (0)
   {
   }
   
@@ -151,7 +150,6 @@ namespace zorba
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")
-      ("store-trace-level", po::value<long>(&theStoreTraceLevel), "store trace level (<= 0 : no tracing)")
 #endif
       ("compile-only", "only compile (don't execute)")
       ("tz", po::value<int>(&theTimezone), "implicit time zone (in minutes)")

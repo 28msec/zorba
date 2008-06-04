@@ -19,6 +19,9 @@
 
 #include <zorba/zorba.h>
 
+#include "store/naive/simple_store.h"
+
+
 using namespace zorba;
 
 #define UNIT_ASSERT(x) \
@@ -56,7 +59,9 @@ checkType(const Item& aItem, const String& aLocalname)
 
 int itemfactory(int argc, char* argv[]) 
 {
-  Zorba* lZorba = Zorba::getInstance();
+  store::SimpleStore* store = store::SimpleStore::getInstance();
+
+  Zorba* lZorba = Zorba::getInstance(store);
 
   ItemFactory* lFactory = lZorba->getItemFactory();
 

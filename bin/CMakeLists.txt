@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
+
 SET(ZORBA_CMD_SRCS zorbacmd.cpp zorbacmdproperties.cpp)
 
 ADD_EXECUTABLE(zorbacmd ${ZORBA_CMD_SRCS})
-TARGET_LINK_LIBRARIES(zorbacmd zorba)
+TARGET_LINK_LIBRARIES(zorbacmd zorba simplestore)
 SET_TARGET_PROPERTIES(zorbacmd PROPERTIES OUTPUT_NAME "zorba") # cmake way to rename the file
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
