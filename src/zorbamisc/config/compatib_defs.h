@@ -20,7 +20,7 @@
 //#include <io.h>
 #include <tchar.h>
 
-#include "common/config/stdint.h"
+#include "zorbamisc/config/stdint.h"
 
 #ifdef WINCE
 #include "strport.h"

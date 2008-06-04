@@ -22,7 +22,7 @@
 //#include <io.h> // needed for _isatty in the parser
 
 #ifndef HAVE_STDINT_H
-#include "common/config/stdint.h"
+#include "zorbamisc/config/stdint.h"
 #endif
 
-#include "common/config/compatib_defs.h"
+#include "zorbamisc/config/compatib_defs.h"
