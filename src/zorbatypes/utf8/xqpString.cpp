@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <unicode/regex.h>
+#include <memory>
 #include "zorbatypes/xqpstring.h"
 
 #ifndef ZORBA_NO_UNICODE

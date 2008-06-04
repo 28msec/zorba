@@ -18,6 +18,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <cstdlib>
 
 #include "common/common.h"
 

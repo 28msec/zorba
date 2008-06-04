@@ -16,10 +16,6 @@
 
 #include "zorbatypes/icu_init.h"
 
-#ifdef ZORBA_WITH_REST
-#include <curl/curl.h>
-#endif
-
 #include "common/common.h"
 
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -40,6 +36,10 @@
 #include "store/api/collection.h"
 
 #include "store/api/store.h"
+
+#ifdef ZORBA_WITH_REST
+#include <curl/curl.h>
+#endif
 
 
 using namespace zorba;

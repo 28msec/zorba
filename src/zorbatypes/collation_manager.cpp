@@ -25,6 +25,8 @@
 #include <iostream>
 #include <memory>
 #include <assert.h>
+#include <cstring>
+#include <cstdlib>
 #include "zorbatypes/collation_manager.h"
 
 namespace zorba {

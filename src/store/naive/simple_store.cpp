@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <iostream>
+#include <climits>
 
 #include <libxml/parser.h>
 

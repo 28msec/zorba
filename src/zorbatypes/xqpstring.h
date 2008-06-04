@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <map>
+#include <cstring>
 
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbautils/checked_vector.h"
@@ -119,7 +120,7 @@ public:
   bool
   byteEqual(const char* src) const
   {
-    return byteEqual(src, strlen(src));
+    return byteEqual(src, ::strlen(src));
   }
 
   // Three-way lexicographical comparison of s and a substring of *this

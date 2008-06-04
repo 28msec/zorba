@@ -16,6 +16,7 @@
 #ifndef ZORBA_PLAN_ITERATOR_H
 #define ZORBA_PLAN_ITERATOR_H
 
+#include <typeinfo>
 #include "zorbaerrors/Assert.h"
 #include "store/api/item.h"
 #include "common/shared_types.h"
