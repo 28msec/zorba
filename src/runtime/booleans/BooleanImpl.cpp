@@ -513,7 +513,7 @@ CompareIterator::equal(
   else if(TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE) &&
           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE))
   {
-    if (aItem0->equals(aItem1, aRuntimeCB->theDynamicContext->get_implicit_timezone()))
+    if (aItem0->equals(aItem1))
       equal = 1;
     else
       equal = 0;
@@ -522,7 +522,7 @@ CompareIterator::equal(
   else if(TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE) &&
           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE))
   {
-    if (aItem0->equals(aItem1, aRuntimeCB->theDynamicContext->get_implicit_timezone()))
+    if (aItem0->equals(aItem1))
       equal = 1;
     else
       equal = 0;
