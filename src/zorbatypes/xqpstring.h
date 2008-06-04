@@ -124,12 +124,16 @@ public:
   }
 
   // Three-way lexicographical comparison of s and a substring of *this
-  int byteCompare (std::string::size_type pos, std::string::size_type n, std::string s) {
+  int byteCompare (std::string::size_type pos, std::string::size_type n, const std::string &s) {
     return theString.compare (pos, n, s);
   }
 
+  bool byteStartsWith (const std::string &s) {
+    return byteCompare (0, s.size (), s) == 0;
+  }
+
   // Three-way lexicographical comparison of a substring of s and a substring of *this
-  int byteCompare (std::string::size_type pos, std::string::size_type n, std::string s, std::string::size_type pos1, std::string::size_type n1) {
+  int byteCompare (std::string::size_type pos, std::string::size_type n, const std::string &s, std::string::size_type pos1, std::string::size_type n1) {
     return theString.compare (pos, n, s, pos1, n1);
   }
 
