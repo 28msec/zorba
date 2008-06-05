@@ -29,7 +29,7 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/store_defs.h"
-#include "store/api/item_iterator.h"
+#include "store/naive/item_iterator.h"
 
 
 #define CREATE_XS_TYPE(aType) \
@@ -93,7 +93,7 @@ bool QNameItemImpl::equals(
 
 Item_t QNameItemImpl::getEBV( ) const
 {
-  ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for QName!");
+  ZORBA_ERROR_DESC(FORG0006, "Effective Boolean Value is not defined for QName!");
   return NULL;
 }
 
@@ -1349,6 +1349,7 @@ xqp_duration DurationItemNaive::getDurationValue() const
   return theValue;
 }
 
+
 xqp_yearMonthDuration DurationItemNaive::getYearMonthDurationValue() const
 {
   YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
@@ -1357,6 +1358,7 @@ xqp_yearMonthDuration DurationItemNaive::getYearMonthDurationValue() const
   else
     return AtomicItem::getYearMonthDurationValue();
 }
+
 
 xqp_dayTimeDuration DurationItemNaive::getDayTimeDurationValue() const
 {
@@ -1367,11 +1369,13 @@ xqp_dayTimeDuration DurationItemNaive::getDayTimeDurationValue() const
     return AtomicItem::getDayTimeDurationValue();
 }
 
+
 xqpStringStore_t DurationItemNaive::getStringValue() const
 {
   return theValue->toString().getStore();
 }
   
+
 Item* DurationItemNaive::getType() const
 {
   // get the effective type or subtype
@@ -1385,6 +1389,7 @@ Item* DurationItemNaive::getType() const
   
   return GET_STORE().theSchemaTypeNames[XS_DURATION];
 }
+
 
 bool DurationItemNaive::equals(
     const Item* aItem,

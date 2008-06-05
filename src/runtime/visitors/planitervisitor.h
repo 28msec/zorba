@@ -57,8 +57,6 @@ namespace zorba
   class TryCatchIterator;
   class NodeDistinctIterator;
   class NodeSortIterator;
-  class KindTestIterator;
-  class NameTestIterator;
   template <class Object, class State> class AxisIterator;
   class SelfAxisIterator;
   class AttributeAxisIterator;
@@ -313,10 +311,6 @@ namespace zorba
 
     PLAN_ITER_VISITOR (NodeSortIterator);
 
-    PLAN_ITER_VISITOR (KindTestIterator);
-       
-    PLAN_ITER_VISITOR (NameTestIterator);
-       
     PLAN_ITER_VISITOR (SelfAxisIterator);
        
     PLAN_ITER_VISITOR (AttributeAxisIterator);

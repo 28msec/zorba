@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 #include "store/api/item.h"
-#include "store/api/item_iterator.h"
+#include "store/naive/item_iterator.h"
 
 namespace zorba { namespace store {
 
-ItemIterator::ItemIterator(std::vector<Item_t> aItems) 
-: theItems(aItems)
-{}
+ItemIterator::ItemIterator(std::vector<store::Item_t> aItems) 
+  :
+  theItems(aItems)
+{
+}
 
-ItemIterator::ItemIterator(Item_t aItem) 
+
+ItemIterator::ItemIterator(store::Item_t aItem) 
 {
   theItems.push_back(aItem);
 }
 
-ItemIterator::ItemIterator() {}
+
+ItemIterator::ItemIterator() 
+{
+}
+
 
 void
 ItemIterator::open() 
@@ -35,8 +42,9 @@ ItemIterator::open()
   theIterator = theItems.begin();
 }
 
+
 bool
-ItemIterator::next(Item_t& result) 
+ItemIterator::next(store::Item_t& result) 
 {
   if (theIterator == theItems.end()) {
     result = NULL;
@@ -47,15 +55,18 @@ ItemIterator::next(Item_t& result)
   }
 }
 
+
 void
 ItemIterator::reset() 
 {
   theIterator = theItems.begin();
 }
 
+
 void
 ItemIterator::close() 
-{}
+{
+}
 
 } // namespace store
 } // namespace zorba

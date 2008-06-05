@@ -18,6 +18,7 @@
 
 #include <stack>
 #include <zorba/store_consts.h>
+#include "zorbautils/fatal.h"
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h" 
 #include "compiler/expression/expr_consts.h"
@@ -25,99 +26,52 @@
 namespace zorba 
 {
 
-/*******************************************************************************
-
-********************************************************************************/
-class KindTestIterator : public UnaryBaseIterator<KindTestIterator, PlanIteratorState>
-{
-private:
-  store::Item_t  theQName;
-  store::Item_t  theTypeName;
-  match_test_t   theTestKind;
-  match_test_t   theDocTestKind;
-  bool           theNilledAllowed;
-
-public:
-  KindTestIterator(
-        const QueryLoc& loc,
-        PlanIter_t input,
-        store::Item_t qname,
-        store::Item_t tname,
-        match_test_t kind,
-        match_test_t docTestKind,
-        bool nilled = false)
-    :
-    UnaryBaseIterator<KindTestIterator, PlanIteratorState>(loc, input),
-    theQName(qname),
-    theTypeName(tname),
-    theTestKind(kind),
-    theDocTestKind(docTestKind),
-    theNilledAllowed(nilled)
-  {
-  }
-
-  ~KindTestIterator() {}
-  
-  const store::Item_t& getQName() const { return theQName; }
-  const store::Item_t& getTypeName() const { return theTypeName; }
-  const match_test_t& getTestKind() const { return theTestKind; }
-  const match_test_t& getDocTestKind() const { return theDocTestKind; }
-  bool nilledAllowed() const { return theNilledAllowed; }
-
-public:
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  virtual void accept(PlanIterVisitor&) const;
-};
-
 
 /*******************************************************************************
-
-********************************************************************************/
-class NameTestIterator : public UnaryBaseIterator<NameTestIterator, PlanIteratorState>
-{
-private:
-  store::Item_t       theQName;
-  match_wild_t theWildKind;
-
-public:
-  NameTestIterator(
-        const QueryLoc& loc,
-        PlanIter_t input,
-        store::Item_t qname,
-        match_wild_t kind)
-    :
-    UnaryBaseIterator<NameTestIterator, PlanIteratorState>(loc, input),
-    theQName(qname),
-    theWildKind(kind)
-  {
-  }
-
-  ~NameTestIterator() {}
-  
-  const store::Item_t& getQName() const { return theQName; }
-
-public:
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  virtual void accept(PlanIterVisitor&) const;
-};
-
-
-/*******************************************************************************
-
+  A non-template class used to store some data that is common to all axis
+  iterators.
 ********************************************************************************/
 class AxisIteratorHelper
 {
 protected:
+  match_test_t                 theTestKind;
+  match_test_t                 theDocTestKind;
   store::StoreConsts::NodeKind theNodeKind;
+  store::Item_t                theQName;
+  match_wild_t                 theWildKind;
+  store::Item_t                theTypeName;
+  bool                         theNilledAllowed;
 
 public:
-  AxisIteratorHelper() : theNodeKind(store::StoreConsts::anyNode) { }
+  AxisIteratorHelper() 
+    :
+    theTestKind(match_anykind_test),
+    theDocTestKind(match_no_test),
+    theNodeKind(store::StoreConsts::anyNode),
+    theQName(NULL),
+    theWildKind(match_no_wild),
+    theTypeName(NULL),
+    theNilledAllowed(false)
+  {
+  }
 
   virtual ~AxisIteratorHelper() {}
 
+  void setTestKind(match_test_t k)                 { theTestKind = k; }
+  void setDocTestKind(match_test_t k)              { theDocTestKind = k; }
   void setNodeKind(store::StoreConsts::NodeKind k) { theNodeKind = k; }
+  void setQName(const store::Item_t& qn)           { theQName = qn; }
+  void setWildKind(match_wild_t k)                 { theWildKind = k; }
+  void setTypeName(const store::Item_t& qn)        { theTypeName = qn; }
+  void setNilledAllowed(bool v)                    { theNilledAllowed = v; }
+
+  const match_test_t& getTestKind() const { return theTestKind; }
+  const match_test_t& getDocTestKind() const { return theDocTestKind; }
+  const store::Item_t& getQName() const { return theQName; }
+  const store::Item_t& getTypeName() const { return theTypeName; }
+  bool nilledAllowed() const { return theNilledAllowed; }
+
+  inline bool nameOrKindTest(const store::Item* node) const;
 };
 
 
@@ -132,6 +86,7 @@ public:
   void init(PlanState& planState) { PlanIteratorState::init( planState ); }
   void reset(PlanState& planState) { PlanIteratorState::reset( planState ); }
 };
+
 
 template <class AxisIter, class State>
 class AxisIterator : public UnaryBaseIterator<AxisIter, State>,
@@ -157,6 +112,7 @@ class SelfAxisState : public AxisState
 {
 };
 
+
 class SelfAxisIterator : public AxisIterator<SelfAxisIterator, SelfAxisState>
 {
 protected:
@@ -171,11 +127,7 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-  // Manually instantiated here, as MSVC does not do it
-  // void closeImpl(PlanState& planState); 
-
   virtual void accept(PlanIterVisitor&) const;
-
 };
 
 
@@ -192,7 +144,9 @@ public:
   void reset(PlanState&);
 };
 
-class AttributeAxisIterator : public AxisIterator<AttributeAxisIterator, AttributeAxisState>
+
+class AttributeAxisIterator : public AxisIterator<AttributeAxisIterator,
+                                                  AttributeAxisState>
 {
 protected:
 
@@ -373,10 +327,9 @@ public:
   void reset(PlanState&);
 };
 
+
 class ChildAxisIterator : public AxisIterator<ChildAxisIterator, ChildAxisState>
 {
-protected:
-
 public:
   ChildAxisIterator(const QueryLoc& loc, PlanIter_t input)
     :
@@ -515,6 +468,175 @@ public:
   
   virtual void accept(PlanIterVisitor&) const;
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AxisIteratorHelper::nameOrKindTest(const store::Item* node) const
+{
+  switch (theTestKind)
+  {
+  case match_name_test:
+  {
+    if (node->getNodeKind() != theNodeKind)
+      return false;
+
+    switch (theWildKind)
+    {
+    case match_no_wild:
+    {
+      if (theQName->equals(node->getNodeName()))
+        return true;
+      
+      return false;
+    }
+    case match_all_wild:
+    {
+      return true;
+    }
+    case match_prefix_wild:
+    {
+      if (theQName->getLocalName()->equals(node->getNodeName()->getLocalName()))
+        return true;
+    
+      return false;
+    }
+    case match_name_wild:
+    {
+      if (theQName->getNamespace()->equals(node->getNodeName()->getNamespace()))
+        return true;
+
+      return false;
+    }
+    default:
+      ZORBA_ASSERT(false && "Unknown name test kind");
+    }
+  }
+  case match_doc_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::documentNode)
+      return false;
+
+    if (theDocTestKind == match_no_test)
+      return true;
+
+    store::Iterator_t children = node->getChildren();
+    children->open();
+    store::Item_t child;
+    match_test_t elemTest = match_no_test;
+    while(children->next(child))
+    {
+      if (child->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        // return false if doc node has more than 1 element child
+        if (elemTest != match_no_test)
+          return false;
+        else
+          elemTest = theDocTestKind;
+      }
+    }
+
+    if (elemTest == match_elem_test)
+      goto doctest1;
+    else if (elemTest == match_xs_elem_test)
+      goto doctest2;
+    else
+      ZORBA_FATAL(0, "");
+  }
+  case match_elem_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::elementNode)
+      return false;
+
+doctest1:
+    if (theQName != NULL && !theQName->equals(node->getNodeName()))
+      return false;
+
+      /*
+      if (theTypeName != NULL)
+      {
+        TypeCode etype = Zorba::getSequenceTypeManager()->
+                         getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
+        TypeCode atype = contextNode->getType();
+
+        if ((atype != etype && !sequence_type::derives_from(atype, etype)) ||
+            (theNilledAllowed == false && contextNode->getNilled() == true))
+          skip = true;
+      }
+      */
+    return true;
+  }
+  case match_attr_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::attributeNode)
+      return false;
+
+    if (theQName != NULL &&
+        !theQName->equals(node->getNodeName()))
+      return false;
+
+    /*
+    if (theTypeName != NULL)
+    {
+      TypeCode etype = Zorba::getSequenceTypeManager()->
+                         getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
+      TypeCode atype = contextNode->getType();
+
+      if (atype != etype && !sequence_type::derives_from(atype, etype))
+        skip = true;
+    }
+    */
+    return true;
+  }
+  case match_xs_elem_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::elementNode)
+      return false;
+
+doctest2:
+    return true;
+  }
+  case match_xs_attr_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::attributeNode)
+      return false;
+
+    return true;
+  }
+  case match_pi_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::piNode)
+      return false;
+
+    if (theQName != NULL &&
+        !theQName->getLocalName()->equals(node->getTarget()))
+      return false;
+    
+    return true;
+  }
+  case match_comment_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::commentNode)
+      return false;
+
+    return true;
+  }
+  case match_text_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::textNode)
+      return false;
+
+    return true;
+  }
+  case match_anykind_test:
+  {
+    return true;
+  }
+  default:
+    ZORBA_ASSERT(false && "Unknown kind test kind");
+  }
+}
 
 
 } /* namespace zorba */

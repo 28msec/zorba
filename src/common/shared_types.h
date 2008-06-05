@@ -82,6 +82,7 @@ class XQType;
 class namespace_context;
 class function;
 class user_function;
+class ItemIterator;
 class PlanIterator;
 class PlanState;
 class XQueryCompiler;
@@ -116,7 +117,8 @@ typedef rchandle<NodeNameTest> NodeNameTest_t;
 typedef rchandle<static_context> static_context_t;
 typedef rchandle<CompilerCB> CompilerCB_t;
 typedef rchandle<PlanWrapper> PlanWrapper_t;
-
+typedef rchandle<PlanIterator> PlanIterator_t;
+typedef rchandle<ItemIterator> ItemIterator_t;
 
 /* datetime stuff */
 class DateTime;

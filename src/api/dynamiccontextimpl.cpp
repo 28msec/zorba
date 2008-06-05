@@ -20,18 +20,20 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "store/api/item.h"
-#include "store/api/item_iterator.h"
-#include "api/unmarshaller.h"
+
 #include "system/globalenv.h"
 #include "types/typeops.h"
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
+#include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 #include "api/resultiteratorimpl.h"
 #include "api/resultiteratorchainer.h"
 #include "api/xmldatamanagerimpl.h"
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/util/item_iterator.h"
+#include "store/api/item.h"
+
 
 namespace zorba {
 
@@ -80,7 +82,7 @@ DynamicContextImpl::setVariable(
     xqpString lString (Unmarshaller::getInternalString(aQName));
 
     // create an item iterator to store in the dyn context
-    store::ItemIterator_t lIterator = new store::ItemIterator(lItem);
+    ItemIterator_t lIterator = new ItemIterator(lItem);
 
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 

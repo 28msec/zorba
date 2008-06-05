@@ -25,19 +25,38 @@
 #include <boost/spirit.hpp>
 #include <boost/bind.hpp>
 
-class Variable {
+class Variable 
+{
 public:
-  bool theInline;
-  std::string theName, theValue;
+  bool        theInline;
+  std::string theName;
+  std::string theValue;
 
   Variable() : theInline(false) {}
 };
 
 
-class State {
+/*******************************************************************************
+  A State object stores the result of parsing a "State" declaration in a .spec
+  file. A State declaration corresponds to one query and specifies the query
+  name, its external variables, and its possible expected results. 
+
+  For example, the /UseCases/PartsUpdates/parts-q1.spec file looks like this:
+
+  State: parts-q1
+  Args: -x part-tree=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/TestSources/part-tree.xml -d 2006-08-05
+  State: parts-q1-test
+  Args: -x part-tree=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/TestSources/part-tree.xml -d 2007-02-01
+  Compare: parts-q1-results.xml Fragment
+
+  Parsing this file will produce 2 State objects.
+********************************************************************************/
+class State 
+{
 public:
   enum CompareType {
-    TEXT, FRAGMENT
+    TEXT,
+    FRAGMENT
   };
 
   static std::string compareTypeStr(CompareType aType) {
@@ -63,7 +82,8 @@ public:
   State() : hasDate(false), hasCompare(false), hasErrors(false)
   {}
 
-  ~State() {
+  ~State() 
+  {
     std::vector<Variable*>::iterator lIter = theVars.begin();
     std::vector<Variable*>::iterator lEnd =  theVars.end();
     for (;lIter != lEnd; ++lIter)
@@ -93,6 +113,10 @@ public:
 };
 
 
+/*******************************************************************************
+  A Specification object stores the result of parsing a .spec file. It consists
+  of a vector of State objs.
+********************************************************************************/
 class Specification
 {
   typedef char char_t;
@@ -104,6 +128,7 @@ public:
   std::vector<State*> theStates;
 
 private:
+  // Transient data members used during the parsing of the associated .spec file
   State     * theCurState;
   Variable  * theCurVar;
 

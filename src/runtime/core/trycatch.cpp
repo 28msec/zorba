@@ -21,10 +21,10 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/core/var_iterators.h"
+#include "runtime/util/item_iterator.h"
 #include "store/api/store.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
-#include "store/api/item_iterator.h"
 #include "system/globalenv.h"
 #include "types/node_test.h"
 
@@ -159,7 +159,7 @@ TryCatchIterator::bindErrorVars(
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();
   for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ ) {
-    store::Iterator_t lErrorCodeIter = new store::ItemIterator(lErrorCodeItem);
+    store::Iterator_t lErrorCodeIter = new ItemIterator(lErrorCodeItem);
     lErrorCodeIter->open();
     state->theErrorIters.push_back(lErrorCodeIter);
     (*lErrorCodeVarIter)->bind(lErrorCodeIter, planState);
@@ -174,9 +174,9 @@ TryCatchIterator::bindErrorVars(
       xqpStringStore_t errDescr = e.theDescription.getStore();
       store::Item_t errDescItem;
       GENV_ITEMFACTORY->createString(errDescItem, errDescr);
-      lErrorDescIter = new store::ItemIterator(errDescItem);
+      lErrorDescIter = new ItemIterator(errDescItem);
     } else {
-      lErrorDescIter = new store::ItemIterator();
+      lErrorDescIter = new ItemIterator();
     }
     lErrorDescIter->open();
     state->theErrorIters.push_back(lErrorDescIter);
@@ -187,7 +187,7 @@ TryCatchIterator::bindErrorVars(
   std::vector<LetVarIter_t>::const_iterator lErrorObjVarIter = clause->errorobj_var.begin();
   std::vector<LetVarIter_t>::const_iterator lErrorObjVarIterEnd = clause->errorobj_var.end();
   for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ ) {
-    store::Iterator_t lErrorObjIter = new store::ItemIterator();
+    store::Iterator_t lErrorObjIter = new ItemIterator();
     lErrorObjIter->open();
     state->theErrorIters.push_back(lErrorObjIter);
     (*lErrorObjVarIter)->bind(lErrorObjIter, planState);

@@ -23,30 +23,30 @@ namespace zorba {
 
   class PlanState;
 
-  /*******************************************************************************
-    This is a "helper" wrapper that is used when we need to pass a plan iterator
-    to the store. The wrapper wraps the plan iterator in order to provide a
-    simpler interface that the store can use.
+/*******************************************************************************
+  This is a "helper" wrapper that is used when we need to pass a plan iterator
+  to the store. The wrapper wraps the plan iterator in order to provide a
+  simpler interface that the store can use.
 
-    The wrapper does not allocate a new state block, but it points to the same 
-    block that contains the state of the wrapped plan iterator.
-   ********************************************************************************/
-  class PlanIteratorWrapper : public store::Iterator
-  {
-    private:
-      const PlanIterator*   theIterator;
-      PlanState*            theStateBlock;
+  The wrapper does not allocate a new state block, but it points to the same 
+  block that contains the state of the wrapped plan iterator.
+********************************************************************************/
+class PlanIteratorWrapper : public store::Iterator
+{
+ private:
+  const PlanIterator*   theIterator;
+  PlanState*            theStateBlock;
 
-    public:
-      PlanIteratorWrapper(const PlanIterator* iter, PlanState& planState);
+ public:
+  PlanIteratorWrapper(const PlanIterator* iter, PlanState& planState);
 
-      virtual ~PlanIteratorWrapper();
+  virtual ~PlanIteratorWrapper();
 
-      void open();
-      bool next(store::Item_t&);
-      void reset();
-      void close() throw();
-  };
+  void open();
+  bool next(store::Item_t&);
+  void reset();
+  void close() throw();
+};
 
 } /* namespace zorba */
 #endif

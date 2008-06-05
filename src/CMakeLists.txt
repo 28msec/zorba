@@ -21,6 +21,10 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external)
 # only platform headers and configuration stuff is in there
 ADD_SUBDIRECTORY(common)
 
+
+SET(ZORBA_LIBRARY_INSTALL_LIST)
+
+
 #
 # build the libraries required by both the query processor and the store:
 # zorbatypes, zorbaerrors, and zorbautils. Add these libraries to the requiredlibs

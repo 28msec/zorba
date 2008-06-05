@@ -14,20 +14,23 @@
 * limitations under the License.
 */
 #include "system/globalenv.h"
-#include "runtime/validate/validate.h"
+
 #include "types/casting.h"
 #include "types/delegating_typemanager.h"
 #include "types/typeops.h"
 #include "types/schema/SchemaValidatorFilter.h"
+
+#include "runtime/validate/validate.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/accessors/AccessorsImpl.h"
-#include "store/api/temp_seq.h"
 #include "runtime/api/plan_iterator_wrapper.h"
-//#include "runtime/core/item_iterator.h"
+#include "runtime/util/item_iterator.h"
+
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
 #include "store/api/store.h"
-#include "store/api/item_iterator.h"
+#include "store/api/temp_seq.h"
+
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/collation_cache.h"
@@ -224,7 +227,7 @@ namespace zorba
 
                         std::vector<store::Item_t> attNameVector;
                         attNameVector.push_back(attName);
-                        store::Iterator_t attNameIterator = new store::ItemIterator(attNameVector);
+                        store::Iterator_t attNameIterator = new ItemIterator(attNameVector);
                         //new SingletonIterator(loc, attName); 
                         
                         //GENV_ITEMFACTORY->createAttributeNode(result, (ulong)&planState, attNameIterator,
@@ -247,7 +250,7 @@ namespace zorba
 
                         store::Item_t stringItem;
                         //GENV_ITEMFACTORY->createString(stringItem, child->getStringValue());
-                        store::Iterator_t stringIterator = new store::ItemIterator(stringItem);
+                        store::Iterator_t stringIterator = new ItemIterator(stringItem);
                         stringIterator->open();
 
                         //GENV_ITEMFACTORY->createTextNode(result, (ulong)&planState, stringIterator,
@@ -281,7 +284,7 @@ namespace zorba
             processedChildren.push_back(result);
         }
        
-        //store::Iterator_t resultIterator = new store::ItemIterator(processedChildren);       
+        //store::Iterator_t resultIterator = new ItemIterator(processedChildren);       
         
         //return resultIterator;
         return children;

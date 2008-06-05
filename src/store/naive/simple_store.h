@@ -86,9 +86,7 @@ protected:
 
   Latch                    theGlobalLock;
 
-#ifndef NDEBUG
   long                     theTraceLevel;
-#endif
 
 public:
   static SimpleStore* getInstance();

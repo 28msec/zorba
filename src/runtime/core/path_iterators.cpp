@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "store/api/item.h"
 
-#include "store/api/iterator.h"
-#include "zorbaerrors/Assert.h"
-#include "runtime/core/path_iterators.h"
-#include "runtime/visitors/planitervisitor.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
+
+#include "store/api/item.h"
+#include "store/api/iterator.h"
+
+#include "runtime/core/path_iterators.h"
+//#include "runtime/visitors/planitervisitor.h"
+
 
 #define MYTRACE(msg) \
 {\
@@ -31,233 +34,26 @@
 namespace zorba
 {
 
-  template <typename T> void checked_pop (std::stack<T> &stk) {
-    ZORBA_ASSERT (! stk.empty ());
-    stk.pop ();
-  }
-
-  template <typename T> const T& checked_top (std::stack<T> &stk) {
-    ZORBA_ASSERT (! stk.empty ());
-    return stk.top ();
-  }
-
-/*******************************************************************************
-
-********************************************************************************/
-bool KindTestIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+template <typename T> void checked_pop(std::stack<T> &stk) 
 {
-  bool skip = false;
-
-  do
-  {
-    if (!consumeNext(result, theChild.getp(), planState))
-      return false;
-
-    if (!result->isNode())
-    {
-      skip = true;
-      continue;
-    }
-
-    switch (theTestKind)
-    {
-    case match_doc_test:
-    {
-      if (result->getNodeKind() != store::StoreConsts::documentNode)
-      {
-        skip = true;
-        break;
-      }
-
-      store::Iterator_t children = result->getChildren();
-      children->open();
-      store::Item_t child;
-      match_test_t elemTest = match_no_test;
-      while(children->next(child))
-      {
-        if (child->getNodeKind() == store::StoreConsts::elementNode)
-        {
-          if (elemTest != match_no_test)
-          {
-            skip = true;
-            break;
-          }
-          else
-          {
-            elemTest = theDocTestKind;
-          }
-        }
-      }
-
-      if (elemTest == match_elem_test)
-        goto doctest1;
-      else if (elemTest == match_xs_elem_test)
-        goto doctest2;
-
-      break;
-    }
-    case match_elem_test:
-    {
-      if (result->getNodeKind() != store::StoreConsts::elementNode)
-      {
-        skip = true;
-        break;
-      }
-
-doctest1:
-      if (theQName != NULL &&
-          !theQName->equals(result->getNodeName()))
-      {
-        skip = true;
-        break;
-      }
-      /*
-      if (theTypeName != NULL)
-      {
-        TypeCode etype = Zorba::getSequenceTypeManager()->
-                         getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
-        TypeCode atype = contextNode->getType();
-
-        if ((atype != etype && !sequence_type::derives_from(atype, etype)) ||
-            (theNilledAllowed == false && contextNode->getNilled() == true))
-          skip = true;
-      }
-      */
-      break;
-    }
-    case match_attr_test:
-    {
-      if (result->getNodeKind() != store::StoreConsts::attributeNode)
-      {
-        skip = true;
-        break;
-      }
-
-      if (theQName != NULL &&
-          !theQName->equals(result->getNodeName()))
-      {
-        skip = true;
-        break;
-      }
-      /*
-      if (theTypeName != NULL)
-      {
-        TypeCode etype = Zorba::getSequenceTypeManager()->
-                         getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
-        TypeCode atype = contextNode->getType();
-
-        if (atype != etype && !sequence_type::derives_from(atype, etype))
-          skip = true;
-      }
-      */
-      break;
-    }
-    case match_xs_elem_test:
-    {
-      if (result->getNodeKind() != store::StoreConsts::elementNode)
-      {
-        skip = true;
-        break;
-      }
-
-doctest2:
-      break;
-    }
-    case match_xs_attr_test:
-    {
-      if (result->getNodeKind() != store::StoreConsts::attributeNode)
-      {
-        skip = true;
-        break;
-      }
-
-      break;
-    }
-    case match_pi_test:
-    {
-      if (result->getNodeKind() != store::StoreConsts::piNode)
-      {
-        skip = true;
-        break;
-      }
-
-      if (theQName != NULL &&
-          !theQName->getLocalName()->equals(result->getTarget()))
-        skip = true;
-
-      break;
-    }
-    case match_comment_test:
-    {
-      if (result->getNodeKind() != store::StoreConsts::commentNode)
-        skip = true;
-
-      break;
-    }
-    case match_text_test:
-    {
-      if (result->getNodeKind() != store::StoreConsts::textNode)
-        skip = true;
-
-      break;
-    }
-    case match_anykind_test:
-    {
-      break;
-    }
-    default:
-      ZORBA_ASSERT (false && "Unknown kind test kind");
-    }
-  }
-  while (skip);
-
-  return true;
+  ZORBA_ASSERT (! stk.empty ());
+  stk.pop ();
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-bool NameTestIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+template <typename T> const T& checked_top(std::stack<T> &stk) 
 {
-  while (true)
-  {
-    if (!consumeNext(result, theChild.getp(), planState))
-      return false;
+  ZORBA_ASSERT (! stk.empty ());
+  return stk.top ();
+}
 
-    switch (theWildKind)
-    {
-    case match_no_wild:
-    {
-      if (theQName->equals(result->getNodeName()))
-        return true;
 
-      break;
-    }
-    case match_all_wild:
-    {
-      return true;
-    }
-    case match_prefix_wild:
-    {
-      if (theQName->getLocalName()->equals(result->getNodeName()->getLocalName()))
-        return true;
-
-      break;
-    }
-    case match_name_wild:
-    {
-      if (theQName->getNamespace()->equals(result->getNodeName()->getNamespace()))
-        return true;
-
-      break;
-    }
-    default:
-      ZORBA_ASSERT (false && "Unknown name test kind");
-    }
-  }
-
-  return false;
+static inline bool isElementOrDocumentNode(const store::Item* node)
+{
+  assert(node->isNode());
+  store::StoreConsts::NodeKind kind = node->getNodeKind();
+  return (kind == store::StoreConsts::elementNode ||
+          kind == store::StoreConsts::documentNode);
 }
 
 
@@ -271,17 +67,16 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   do
   {
-    if (!consumeNext(state->theContextNode, theChild.getp(), planState))
+    if (!consumeNext(result, theChild.getp(), planState))
       return false;
 
-    if (!state->theContextNode->isNode())
+    if (!result->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(  XPTY0020, loc,  "The context item of an axis step is not a node");
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node");
     }
   }
-  while (theNodeKind != store::StoreConsts::anyNode &&
-         state->theContextNode->getNodeKind() != theNodeKind);
-  result = state->theContextNode;
+  while (!nameOrKindTest(result));
 
   return true;
 }
@@ -290,14 +85,22 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 /*******************************************************************************
 
 ********************************************************************************/
-AttributeAxisState::AttributeAxisState(){}
-AttributeAxisState::~AttributeAxisState(){}
+AttributeAxisState::AttributeAxisState()
+{
+}
+
+
+AttributeAxisState::~AttributeAxisState()
+{
+}
+
 
 void
 AttributeAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
+
 
 void
 AttributeAxisState::reset(PlanState& planState)
@@ -306,6 +109,7 @@ AttributeAxisState::reset(PlanState& planState)
   if (theAttributes != NULL)
     theAttributes->reset();
 }
+
 
 bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -321,7 +125,8 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
+        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                             "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() != store::StoreConsts::elementNode);
@@ -331,8 +136,11 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     while (state->theAttributes->next(result))
     {
-      STACK_PUSH(true, state);
+      if (nameOrKindTest(result))
+        STACK_PUSH(true, state);
     }
+
+    state->theAttributes->close();
   }
 
   STACK_END (state);
@@ -359,10 +167,7 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     result = state->theContextNode->getParent();
 
-
-    if (result != NULL &&
-        (theNodeKind == store::StoreConsts::anyNode ||
-         result->getNodeKind() == theNodeKind))
+    if (result != NULL && nameOrKindTest(result))
     {
       STACK_PUSH(true, state);
     }
@@ -387,15 +192,15 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node");
     }
 
     state->theCurrentAnc = state->theContextNode->getParent();
 
     while (state->theCurrentAnc != NULL)
     {
-      if (theNodeKind == store::StoreConsts::anyNode ||
-          state->theCurrentAnc->getNodeKind() == theNodeKind)
+      if (nameOrKindTest(state->theCurrentAnc))
       {
         result = state->theCurrentAnc;
         STACK_PUSH(true, state);
@@ -407,6 +212,7 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
 
@@ -423,15 +229,15 @@ bool AncestorSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0020, loc, "The context item of an axis step is not a node");
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node");
     }
 
     state->theCurrentAnc = state->theContextNode;
 
     while (state->theCurrentAnc != NULL)
     {
-      if (theNodeKind == store::StoreConsts::anyNode ||
-          state->theCurrentAnc->getNodeKind() == theNodeKind)
+      if (nameOrKindTest(state->theCurrentAnc))
       {
         result = state->theCurrentAnc;
         STACK_PUSH(true, state);
@@ -448,14 +254,22 @@ bool AncestorSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planSt
 /*******************************************************************************
 
 ********************************************************************************/
-RSiblingAxisState::RSiblingAxisState(){}
-RSiblingAxisState::~RSiblingAxisState(){}
+RSiblingAxisState::RSiblingAxisState()
+{
+}
+
+
+RSiblingAxisState::~RSiblingAxisState()
+{
+}
+
 
 void
 RSiblingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
+
 
 void
 RSiblingAxisState::reset(PlanState& planState)
@@ -464,6 +278,7 @@ RSiblingAxisState::reset(PlanState& planState)
   if (theChildren != NULL)
     theChildren->reset(); 
 }
+
 
 bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -482,7 +297,8 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
+        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                             "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
@@ -499,12 +315,13 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     while (state->theChildren->next(result))
     {
-      if (theNodeKind == store::StoreConsts::anyNode ||
-          result->getNodeKind() == theNodeKind)
+      if (nameOrKindTest(result))
       {
         STACK_PUSH(true, state);
       }
     }
+
+    state->theChildren->close();    
   }
 
   STACK_END (state);
@@ -514,14 +331,22 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-LSiblingAxisState::LSiblingAxisState(){}
-LSiblingAxisState::~LSiblingAxisState(){}
+LSiblingAxisState::LSiblingAxisState()
+{
+}
+
+
+LSiblingAxisState::~LSiblingAxisState()
+{
+}
+
 
 void
 LSiblingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
+
 
 void
 LSiblingAxisState::reset(PlanState& planState)
@@ -530,6 +355,7 @@ LSiblingAxisState::reset(PlanState& planState)
   if (theChildren != NULL)
     theChildren->reset(); 
 }
+
 
 bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -562,14 +388,8 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     while (state->theChildren->next(result) && result != state->theContextNode)
     {
-      if (theNodeKind == store::StoreConsts::anyNode ||
-          result->getNodeKind() == theNodeKind)
+      if (nameOrKindTest(result))
       {
-#ifndef WIN32
-#ifdef DEBUG
-        theLSibling = result;
-#endif
-#endif
         STACK_PUSH(true, state);
       }
     }
@@ -582,9 +402,15 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 ********************************************************************************/
 
-ChildAxisState::ChildAxisState() {}
+ChildAxisState::ChildAxisState() 
+{
+}
 
-ChildAxisState::~ChildAxisState() {}
+
+ChildAxisState::~ChildAxisState() 
+{
+}
+
 
 void
 ChildAxisState::init(PlanState& planState)
@@ -600,13 +426,6 @@ void ChildAxisState::reset(PlanState& planState)
     theChildren->reset(); 
 }
 
-static bool isElementOrDocumentNode(store::Item *node)
-{
-  assert(node->isNode());
-  store::StoreConsts::NodeKind kind = node->getNodeKind();
-  return kind == store::StoreConsts::elementNode
-    || kind == store::StoreConsts::documentNode;
-}
 
 bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -635,8 +454,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     while (state->theChildren->next(result))
     {
-      if (theNodeKind == store::StoreConsts::anyNode ||
-          result->getNodeKind() == theNodeKind)
+      if (nameOrKindTest(result))
       {
         STACK_PUSH(true, state);
       }
@@ -704,11 +522,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
         ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() != store::StoreConsts::elementNode &&
-           state->theContextNode->getNodeKind() != store::StoreConsts::documentNode);
-
-    //MYTRACE("iter = " << this << " ctxNode = [" << &*state->theContextNode
-    //        << " " << state->theContextNode->getNodeName()->show() << "]");
+    while (!isElementOrDocumentNode(state->theContextNode.getp()));
 
     children = state->theContextNode->getChildren();
     children->open();
@@ -718,19 +532,16 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
     
     if (state->theCurrentPath.top().second->next(result))
     {
-      while(true) {
+      while(true) 
+      {
         if (result->getNodeKind() == store::StoreConsts::elementNode)
         {
           state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
                                   (result, result->getChildren()));
         }
 
-        if (theNodeKind == store::StoreConsts::anyNode ||
-            result->getNodeKind() == theNodeKind)
+        if (nameOrKindTest(result))
         {
-          //MYTRACE("iter = " << this << " desc = [" << &*desc << " "
-          //        << desc->getNodeName()->show() << "]");
-
           STACK_PUSH(true, state);
         }
 
@@ -738,9 +549,8 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
         // at the top of the path stack. If N has no children or all of its
         // children have been processed already, N is removed from the stack
         // and the process is repeated.
-        ;
 
-        while (!checked_top (state->theCurrentPath).second->next(result))
+        while (!checked_top(state->theCurrentPath).second->next(result))
         {
           checked_pop (state->theCurrentPath);
           if (state->theCurrentPath.empty())
@@ -760,7 +570,11 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 /*******************************************************************************
 
 ********************************************************************************/
-DescendantSelfAxisState::DescendantSelfAxisState(){}
+DescendantSelfAxisState::DescendantSelfAxisState()
+{
+}
+
+
 DescendantSelfAxisState::~DescendantSelfAxisState()
 {
   while (!theCurrentPath.empty())
@@ -776,6 +590,7 @@ DescendantSelfAxisState::init(PlanState& planState)
   AxisState::init(planState);
 }
 
+
 void
 DescendantSelfAxisState::reset(PlanState& planState)
 {
@@ -787,9 +602,6 @@ DescendantSelfAxisState::reset(PlanState& planState)
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
 bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   DescendantSelfAxisState* state;
@@ -808,16 +620,15 @@ bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& plan
         ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() != store::StoreConsts::elementNode &&
-           state->theContextNode->getNodeKind() != store::StoreConsts::documentNode);
+    while (!isElementOrDocumentNode(state->theContextNode.getp()));
 
     result = state->theContextNode;
     first = true;
 
-    while(first || !state->theCurrentPath.empty()) {
+    while(first || !state->theCurrentPath.empty()) 
+    {
       first = false;
-      if (result->getNodeKind() == store::StoreConsts::elementNode ||
-          result->getNodeKind() == store::StoreConsts::documentNode)
+      if (isElementOrDocumentNode(result))
       {
         store::Iterator_t children = result->getChildren();
         children->open();
@@ -825,8 +636,7 @@ bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& plan
                                   (result, children));
       }
 
-      if (theNodeKind == store::StoreConsts::anyNode ||
-          result->getNodeKind() == theNodeKind)
+      if (nameOrKindTest(result))
       {
         STACK_PUSH(true, state);
       }
@@ -847,10 +657,15 @@ bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& plan
   STACK_END (state);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-PrecedingAxisState::PrecedingAxisState(){}
+PrecedingAxisState::PrecedingAxisState()
+{
+}
+
+
 PrecedingAxisState::~PrecedingAxisState()
 {
   while (!theCurrentPath.empty())
@@ -869,6 +684,7 @@ PrecedingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
+
 
 void
 PrecedingAxisState::reset(PlanState& planState)
@@ -903,7 +719,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0020, loc, "The context item of an axis step is not a node");
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc, "The context item of an axis step is not a node");
     }
 
     // Collect the context node and its ancestors
@@ -929,9 +745,8 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
       state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>(ancestor, children));
     
-      if (!children->next(result)) {
+      if (!children->next(result))
         result = NULL;
-      }
 
       while (result != state->theAncestorPath.top())
       {
@@ -943,8 +758,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
                                     (result, children));
         }
 
-        if (theNodeKind == store::StoreConsts::anyNode ||
-            result->getNodeKind() == theNodeKind)
+        if (nameOrKindTest(result))
         {
           STACK_PUSH(true, state);
           result = NULL;
@@ -968,7 +782,11 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 /*******************************************************************************
 
 ********************************************************************************/
-FollowingAxisState::FollowingAxisState(){}
+FollowingAxisState::FollowingAxisState()
+{
+}
+
+
 FollowingAxisState::~FollowingAxisState()
 {
   while (!theCurrentPath.empty())
@@ -988,6 +806,7 @@ FollowingAxisState::init(PlanState& planState)
   AxisState::init(planState);
 }
 
+
 void
 FollowingAxisState::reset(PlanState& planState)
 {
@@ -1002,6 +821,7 @@ FollowingAxisState::reset(PlanState& planState)
   }
   theContextNode = NULL;
 }
+
 
 bool FollowingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1064,24 +884,22 @@ bool FollowingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
                                     (result, children));
         }
 
-        if (theNodeKind == store::StoreConsts::anyNode ||
-            result->getNodeKind() == theNodeKind)
+        if (nameOrKindTest(result))
         {
           STACK_PUSH(true, state);
         }
 
-        if (!checked_top (state->theCurrentPath).second->next(result)) {
+        if (!checked_top (state->theCurrentPath).second->next(result))
           result = NULL;
-        }
 
         while (result == NULL)
         {
           checked_pop (state->theCurrentPath);
           if (state->theCurrentPath.empty())
             break;
-          if (!state->theCurrentPath.top().second->next(result)) {
+
+          if (!state->theCurrentPath.top().second->next(result))
             result = NULL;
-          }
         }
       }
     }

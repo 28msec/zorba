@@ -69,12 +69,26 @@ namespace zorba {
   }
 
 
+#define PRINTER_VISITOR_AXIS_DEFINITION(class)           \
+  void beginVisit ( const class& a )  {                  \
+    thePrinter.startBeginVisit(#class, ++theId);         \
+    printCommons(&a, theId);                             \
+    printNameOrKindTest(&a);                             \
+    thePrinter.endBeginVisit( theId);                    \
+  }                                                      \
+  void endVisit ( const class& ) {                       \
+    thePrinter.startEndVisit();                          \
+    thePrinter.endEndVisit();                            \
+  }
+
+
+
 class PrinterVisitor : public PlanIterVisitor
 {
 private:
-  IterPrinter& thePrinter;
-  PlanIterator* theIterator;
-  int      theId;
+  IterPrinter  & thePrinter;
+  PlanIterator * theIterator;
+  int            theId;
 
 public:
   PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter)
@@ -104,6 +118,30 @@ public:
           lStream << aIter;
         thePrinter.addAttribute("id", lStream.str());
       }
+    }
+  }
+
+  void printNameOrKindTest(const AxisIteratorHelper* a) 
+  {
+    thePrinter.addAttribute("test kind", toString(a->getTestKind()));
+
+    if (a->getDocTestKind() != match_no_test)
+      thePrinter.addAttribute("doc test kind", toString(a->getDocTestKind()));
+
+    if (a->getQName() != 0)
+      thePrinter.addAttribute("qname", a->getQName()->show());
+    else
+      thePrinter.addAttribute("qname","*");
+
+    if (a->getTypeName() != 0)
+      thePrinter.addAttribute("typename", a->getTypeName()->show());
+    else
+      thePrinter.addAttribute("typename","*");
+
+    {
+      std::stringstream lStream;
+      lStream << a->nilledAllowed();
+      thePrinter.addAttribute("nill allowed", lStream.str());
     }
   }
 
@@ -215,82 +253,42 @@ public:
 
   PRINTER_VISITOR_DEFINITION (IfThenElseIterator)
 
-
-
   PRINTER_VISITOR_DEFINITION (NodeDistinctIterator)
 
   PRINTER_VISITOR_DEFINITION (NodeSortIterator)
 
-  void beginVisit ( const KindTestIterator& a ) {
-    thePrinter.startBeginVisit("KindTestIterator", ++theId);
-    thePrinter.addAttribute("test kind", toString(a.getTestKind()));
-    if (a.getQName() != 0)
-      thePrinter.addAttribute("qname",a.getQName()->show());
-    else
-      thePrinter.addAttribute("qname","*");
-    if (a.getTypeName() != 0)
-      thePrinter.addAttribute("typename",a.getTypeName()->show());
-    else
-      thePrinter.addAttribute("typename","*");
-    {
-      std::stringstream lStream;
-      lStream << a.nilledAllowed();
-      thePrinter.addAttribute("nill allowed",lStream.str());
-    }
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-  void endVisit ( const KindTestIterator& /*a*/) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void beginVisit ( const NameTestIterator& a ) {
-    thePrinter.startBeginVisit("NameTestIterator", ++theId);
-    if (a.getQName() != NULL)
-      thePrinter.addAttribute("qname", a.getQName()->show());
-    else
-      thePrinter.addAttribute("qname", "*");
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-  void endVisit ( const NameTestIterator& /*a*/) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
   void beginVisit ( const SelfAxisIterator& a ) {
     thePrinter.startBeginVisit("SelfAxisIterator", ++theId);
     printCommons( &a, theId );
+    printNameOrKindTest(&a);
     thePrinter.endBeginVisit(theId);
-
   }
-  void endVisit ( const SelfAxisIterator& /*a*/) {
+  void endVisit(const SelfAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
 
-  PRINTER_VISITOR_DEFINITION (AttributeAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (AttributeAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (ParentAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (ParentAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (AncestorAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (AncestorAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (AncestorSelfAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (AncestorSelfAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (RSiblingAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (RSiblingAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (LSiblingAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (LSiblingAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (ChildAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (ChildAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (DescendantAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (DescendantAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (DescendantSelfAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (DescendantSelfAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (PrecedingAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (PrecedingAxisIterator)
 
-  PRINTER_VISITOR_DEFINITION (FollowingAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (FollowingAxisIterator)
 
   PRINTER_VISITOR_DEFINITION (InstanceOfIterator)
 

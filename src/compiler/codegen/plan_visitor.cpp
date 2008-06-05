@@ -1153,55 +1153,52 @@ bool begin_visit(match_expr& v)
   CODEGEN_TRACE_IN ("");
 
   PlanIter_t axisIte = pop_itstack();
-  AxisIteratorHelper* axisItep = dynamic_cast<AxisIteratorHelper*>(&*axisIte);
+  AxisIteratorHelper* axisItep = dynamic_cast<AxisIteratorHelper*>(axisIte.getp());
   ZORBA_ASSERT(axisItep != NULL);
 
-  PlanIter_t matchIte;
   store::Item_t qname;
-  store::Item_t tname;
 
   store::ItemFactory& iFactory = *(GENV.getStore().getItemFactory());
 
   if (v.getTestKind() == match_name_test)
   {
-    // Note: the attribute axis iterator does not do any filtering based on
-    // the node kind, so it is ok to set the principal node kind to elementNode
-    // in all cases.
-    axisItep->setNodeKind(store::StoreConsts::elementNode);
-
     match_wild_t wildKind = v.getWildKind();
+
+   axisItep->setTestKind(match_name_test);
+ 
+   if (dynamic_cast<AttributeAxisIterator*>(axisIte.getp()) != NULL)
+      axisItep->setNodeKind(store::StoreConsts::attributeNode);
+    else
+      axisItep->setNodeKind(store::StoreConsts::elementNode);
+
+    axisItep->setWildKind(wildKind);
 
     if (wildKind == match_no_wild)
     {
-      matchIte = new NameTestIterator(qloc, axisIte, v.getQName(), wildKind);
+      axisItep->setQName(v.getQName());
     }
     else if (wildKind == match_prefix_wild)
     {
       iFactory.createQName(qname, "", "wildcard", v.getWildName().c_str());
 
-      matchIte = new NameTestIterator(qloc, axisIte, qname, wildKind);
+      axisItep->setQName(qname);
     }
     else if (wildKind == match_name_wild)
     {
-      matchIte = new NameTestIterator(qloc, axisIte, v.getQName(), wildKind);
-    }
-    else
-    {
-      matchIte = axisIte;
+      axisItep->setQName(v.getQName());
     }
   }
   else
   {
+    axisItep->setTestKind(v.getTestKind());
+    axisItep->setDocTestKind(v.getDocTestKind());
     axisItep->setNodeKind(v.getNodeKind());
-
-    matchIte = new KindTestIterator(qloc, axisIte,
-                                    v.getQName(), v.getTypeName(),
-                                    v.getTestKind(), v.getDocTestKind(),
-                                    v.getNilledAllowed());
+    axisItep->setQName(v.getQName());
+    axisItep->setTypeName(v.getTypeName());
+    axisItep->setNilledAllowed(v.getNilledAllowed());
   }
 
-  itstack.push(matchIte);
-
+  itstack.push(axisIte);
   return true;
 }
 

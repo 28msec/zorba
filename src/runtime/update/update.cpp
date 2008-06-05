@@ -29,7 +29,7 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/temp_seq.h"
 #include "store/api/copymode.h"
-#include "store/api/item_iterator.h"
+
 
 namespace zorba 
 {

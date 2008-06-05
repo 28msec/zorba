@@ -43,6 +43,7 @@ SET(RUNTIME_SRCS
     update/update.cpp
     misc/MiscImpl.cpp
     nodes/NodesImpl.cpp
+    util/item_iterator.cpp
 )
 
 IF (ZORBA_DEBUGGER)

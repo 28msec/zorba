@@ -19,7 +19,6 @@
 #include "xercesIncludes.h"
 #include "types/schema/SchemaValidatorFilter.h"
 #include "store/api/item.h"
-#include "store/api/item_iterator.h"
 #include "common/shared_types.h"
 
 namespace zorba
