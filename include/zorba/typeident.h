@@ -134,7 +134,9 @@ class ZORBA_EXTERN_DECL TypeIdentifier : public SmartObject {
     bool m_uriWildcard;
     String m_localName;
     bool m_localNameWildcard;
+#ifdef WIN32
   template class ZORBA_EXTERN_DECL  zorba::SmartPtr<TypeIdentifier>;
+#endif
     TypeIdentifier_t m_contentType;
 };
 
