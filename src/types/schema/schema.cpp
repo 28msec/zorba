@@ -39,16 +39,6 @@
 
 #include "zorbamisc/ns_consts.h"
 
-//workaround to compile on cygwin
-void xerces_uri()
-{
-  XMLCh   tempstr[2];
-  XMLUri::isValidURI (true, tempstr);
-  XMLUri    xuri(tempstr);
-  XMLUri    xuri2 (&xuri, tempstr);
-  xuri2.getUriText ();
-}
-
 using namespace std;
 namespace zorba
 {
