@@ -5,7 +5,7 @@ Iterator tree for main query:
    <FLWORIterator>
     <ForVariable name="f">
      <NodeDistinctIterator>
-      <DescendantAxisIterator>
+      <DescendantAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
         <CtxVariableIterator>
          <SingletonIterator value="xs:QName(,,input-context)"/>
@@ -16,20 +16,16 @@ Iterator tree for main query:
     </ForVariable>
     <WhereClause>
      <FnBooleanIterator>
-      <NameTestIterator qname="xs:QName(,,File)">
-       <ChildAxisIterator>
-        <ForVarIterator varname="f"/>
-       </ChildAxisIterator>
-      </NameTestIterator>
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill allowed="0">
+       <ForVarIterator varname="f"/>
+      </ChildAxisIterator>
      </FnBooleanIterator>
     </WhereClause>
     <ReturnClause>
      <FnSubsequenceIterator>
-      <NameTestIterator qname="xs:QName(,,File)">
-       <ChildAxisIterator>
-        <ForVarIterator varname="f"/>
-       </ChildAxisIterator>
-      </NameTestIterator>
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill allowed="0">
+       <ForVarIterator varname="f"/>
+      </ChildAxisIterator>
       <SingletonIterator value="xs:double(1)"/>
       <SingletonIterator value="xs:double(1)"/>
      </FnSubsequenceIterator>
@@ -41,24 +37,20 @@ Iterator tree for main query:
     <FLWORIterator>
      <ForVariable name="$$dot">
       <NodeDistinctIterator>
-       <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-        <DescendantSelfAxisIterator>
-         <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
-          <CtxVariableIterator>
-           <SingletonIterator value="xs:QName(,,input-context)"/>
-          </CtxVariableIterator>
-         </TreatIterator>
-        </DescendantSelfAxisIterator>
-       </KindTestIterator>
+       <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
+         <CtxVariableIterator>
+          <SingletonIterator value="xs:QName(,,input-context)"/>
+         </CtxVariableIterator>
+        </TreatIterator>
+       </DescendantSelfAxisIterator>
       </NodeDistinctIterator>
      </ForVariable>
      <ReturnClause>
       <FnSubsequenceIterator>
-       <NameTestIterator qname="xs:QName(,,File)">
-        <ChildAxisIterator>
-         <ForVarIterator varname="$$dot"/>
-        </ChildAxisIterator>
-       </NameTestIterator>
+       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill allowed="0">
+        <ForVarIterator varname="$$dot"/>
+       </ChildAxisIterator>
        <SingletonIterator value="xs:double(1)"/>
        <SingletonIterator value="xs:double(1)"/>
       </FnSubsequenceIterator>

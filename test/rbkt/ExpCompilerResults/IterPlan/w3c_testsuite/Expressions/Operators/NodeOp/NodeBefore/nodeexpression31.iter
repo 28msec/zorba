@@ -23,11 +23,9 @@ Iterator tree for main query:
              </ForVariable>
              <ReturnClause>
               <FnSubsequenceIterator>
-               <NameTestIterator qname="xs:QName(,,works)">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="$$dot"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
+               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
                <SingletonIterator value="xs:double(1)"/>
                <SingletonIterator value="xs:double(1)"/>
               </FnSubsequenceIterator>
@@ -37,11 +35,9 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
            <FnSubsequenceIterator>
-            <NameTestIterator qname="xs:QName(,,employee)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
             <SingletonIterator value="xs:double(1)"/>
             <SingletonIterator value="xs:double(1)"/>
            </FnSubsequenceIterator>
@@ -51,11 +47,9 @@ Iterator tree for main query:
        </ForVariable>
        <ReturnClause>
         <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,empnum)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
          <SingletonIterator value="xs:double(1)"/>
          <SingletonIterator value="xs:double(1)"/>
         </FnSubsequenceIterator>
@@ -83,11 +77,9 @@ Iterator tree for main query:
              </ForVariable>
              <ReturnClause>
               <FnSubsequenceIterator>
-               <NameTestIterator qname="xs:QName(,,staff)">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="$$dot"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
+               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
                <SingletonIterator value="xs:double(1)"/>
                <SingletonIterator value="xs:double(1)"/>
               </FnSubsequenceIterator>
@@ -97,11 +89,9 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
            <FnSubsequenceIterator>
-            <NameTestIterator qname="xs:QName(,,employee)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
             <SingletonIterator value="xs:double(1)"/>
             <SingletonIterator value="xs:double(1)"/>
            </FnSubsequenceIterator>
@@ -111,11 +101,9 @@ Iterator tree for main query:
        </ForVariable>
        <ReturnClause>
         <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,empnum)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
          <SingletonIterator value="xs:double(1)"/>
          <SingletonIterator value="xs:double(1)"/>
         </FnSubsequenceIterator>
@@ -145,11 +133,9 @@ Iterator tree for main query:
              </ForVariable>
              <ReturnClause>
               <FnSubsequenceIterator>
-               <NameTestIterator qname="xs:QName(,,works)">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="$$dot"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
+               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
                <SingletonIterator value="xs:double(1)"/>
                <SingletonIterator value="xs:double(1)"/>
               </FnSubsequenceIterator>
@@ -159,11 +145,9 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
            <FnSubsequenceIterator>
-            <NameTestIterator qname="xs:QName(,,employee)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
             <SingletonIterator value="xs:double(1)"/>
             <SingletonIterator value="xs:double(1)"/>
            </FnSubsequenceIterator>
@@ -173,11 +157,9 @@ Iterator tree for main query:
        </ForVariable>
        <ReturnClause>
         <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,empnum)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
          <SingletonIterator value="xs:double(1)"/>
          <SingletonIterator value="xs:double(1)"/>
         </FnSubsequenceIterator>
@@ -205,11 +187,9 @@ Iterator tree for main query:
              </ForVariable>
              <ReturnClause>
               <FnSubsequenceIterator>
-               <NameTestIterator qname="xs:QName(,,staff)">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="$$dot"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
+               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
                <SingletonIterator value="xs:double(1)"/>
                <SingletonIterator value="xs:double(1)"/>
               </FnSubsequenceIterator>
@@ -219,11 +199,9 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
            <FnSubsequenceIterator>
-            <NameTestIterator qname="xs:QName(,,employee)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
             <SingletonIterator value="xs:double(2)"/>
             <SingletonIterator value="xs:double(1)"/>
            </FnSubsequenceIterator>
@@ -233,11 +211,9 @@ Iterator tree for main query:
        </ForVariable>
        <ReturnClause>
         <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,empnum)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
          <SingletonIterator value="xs:double(1)"/>
          <SingletonIterator value="xs:double(1)"/>
         </FnSubsequenceIterator>
@@ -268,11 +244,9 @@ Iterator tree for main query:
             </ForVariable>
             <ReturnClause>
              <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,works)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$dot"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0">
+               <ForVarIterator varname="$$dot"/>
+              </ChildAxisIterator>
               <SingletonIterator value="xs:double(1)"/>
               <SingletonIterator value="xs:double(1)"/>
              </FnSubsequenceIterator>
@@ -282,11 +256,9 @@ Iterator tree for main query:
          </ForVariable>
          <ReturnClause>
           <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,employee)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$dot"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$dot"/>
+           </ChildAxisIterator>
            <SingletonIterator value="xs:double(1)"/>
            <SingletonIterator value="xs:double(1)"/>
           </FnSubsequenceIterator>
@@ -296,11 +268,9 @@ Iterator tree for main query:
       </ForVariable>
       <ReturnClause>
        <FnSubsequenceIterator>
-        <NameTestIterator qname="xs:QName(,,empnum)">
-         <ChildAxisIterator>
-          <ForVarIterator varname="$$dot"/>
-         </ChildAxisIterator>
-        </NameTestIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+         <ForVarIterator varname="$$dot"/>
+        </ChildAxisIterator>
         <SingletonIterator value="xs:double(1)"/>
         <SingletonIterator value="xs:double(1)"/>
        </FnSubsequenceIterator>
@@ -328,11 +298,9 @@ Iterator tree for main query:
             </ForVariable>
             <ReturnClause>
              <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,staff)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$dot"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0">
+               <ForVarIterator varname="$$dot"/>
+              </ChildAxisIterator>
               <SingletonIterator value="xs:double(1)"/>
               <SingletonIterator value="xs:double(1)"/>
              </FnSubsequenceIterator>
@@ -342,11 +310,9 @@ Iterator tree for main query:
          </ForVariable>
          <ReturnClause>
           <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,employee)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$dot"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$dot"/>
+           </ChildAxisIterator>
            <SingletonIterator value="xs:double(3)"/>
            <SingletonIterator value="xs:double(1)"/>
           </FnSubsequenceIterator>
@@ -356,11 +322,9 @@ Iterator tree for main query:
       </ForVariable>
       <ReturnClause>
        <FnSubsequenceIterator>
-        <NameTestIterator qname="xs:QName(,,empnum)">
-         <ChildAxisIterator>
-          <ForVarIterator varname="$$dot"/>
-         </ChildAxisIterator>
-        </NameTestIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+         <ForVarIterator varname="$$dot"/>
+        </ChildAxisIterator>
         <SingletonIterator value="xs:double(1)"/>
         <SingletonIterator value="xs:double(1)"/>
        </FnSubsequenceIterator>
@@ -393,11 +357,9 @@ Iterator tree for main query:
              </ForVariable>
              <ReturnClause>
               <FnSubsequenceIterator>
-               <NameTestIterator qname="xs:QName(,,works)">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="$$dot"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
+               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
                <SingletonIterator value="xs:double(1)"/>
                <SingletonIterator value="xs:double(1)"/>
               </FnSubsequenceIterator>
@@ -407,11 +369,9 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
            <FnSubsequenceIterator>
-            <NameTestIterator qname="xs:QName(,,employee)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
             <SingletonIterator value="xs:double(1)"/>
             <SingletonIterator value="xs:double(1)"/>
            </FnSubsequenceIterator>
@@ -421,11 +381,9 @@ Iterator tree for main query:
        </ForVariable>
        <ReturnClause>
         <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,empnum)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
          <SingletonIterator value="xs:double(1)"/>
          <SingletonIterator value="xs:double(1)"/>
         </FnSubsequenceIterator>
@@ -453,11 +411,9 @@ Iterator tree for main query:
              </ForVariable>
              <ReturnClause>
               <FnSubsequenceIterator>
-               <NameTestIterator qname="xs:QName(,,staff)">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="$$dot"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
+               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
                <SingletonIterator value="xs:double(1)"/>
                <SingletonIterator value="xs:double(1)"/>
               </FnSubsequenceIterator>
@@ -467,11 +423,9 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
            <FnSubsequenceIterator>
-            <NameTestIterator qname="xs:QName(,,employee)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
             <SingletonIterator value="xs:double(1)"/>
             <SingletonIterator value="xs:double(1)"/>
            </FnSubsequenceIterator>
@@ -481,11 +435,9 @@ Iterator tree for main query:
        </ForVariable>
        <ReturnClause>
         <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,empnum)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
          <SingletonIterator value="xs:double(1)"/>
          <SingletonIterator value="xs:double(1)"/>
         </FnSubsequenceIterator>
@@ -515,11 +467,9 @@ Iterator tree for main query:
              </ForVariable>
              <ReturnClause>
               <FnSubsequenceIterator>
-               <NameTestIterator qname="xs:QName(,,works)">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="$$dot"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
+               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
                <SingletonIterator value="xs:double(1)"/>
                <SingletonIterator value="xs:double(1)"/>
               </FnSubsequenceIterator>
@@ -529,11 +479,9 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
            <FnSubsequenceIterator>
-            <NameTestIterator qname="xs:QName(,,employee)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
             <SingletonIterator value="xs:double(1)"/>
             <SingletonIterator value="xs:double(1)"/>
            </FnSubsequenceIterator>
@@ -543,11 +491,9 @@ Iterator tree for main query:
        </ForVariable>
        <ReturnClause>
         <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,empnum)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
          <SingletonIterator value="xs:double(1)"/>
          <SingletonIterator value="xs:double(1)"/>
         </FnSubsequenceIterator>
@@ -575,11 +521,9 @@ Iterator tree for main query:
              </ForVariable>
              <ReturnClause>
               <FnSubsequenceIterator>
-               <NameTestIterator qname="xs:QName(,,staff)">
-                <ChildAxisIterator>
-                 <ForVarIterator varname="$$dot"/>
-                </ChildAxisIterator>
-               </NameTestIterator>
+               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+               </ChildAxisIterator>
                <SingletonIterator value="xs:double(1)"/>
                <SingletonIterator value="xs:double(1)"/>
               </FnSubsequenceIterator>
@@ -589,11 +533,9 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
            <FnSubsequenceIterator>
-            <NameTestIterator qname="xs:QName(,,employee)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
             <SingletonIterator value="xs:double(2)"/>
             <SingletonIterator value="xs:double(1)"/>
            </FnSubsequenceIterator>
@@ -603,11 +545,9 @@ Iterator tree for main query:
        </ForVariable>
        <ReturnClause>
         <FnSubsequenceIterator>
-         <NameTestIterator qname="xs:QName(,,empnum)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+         </ChildAxisIterator>
          <SingletonIterator value="xs:double(1)"/>
          <SingletonIterator value="xs:double(1)"/>
         </FnSubsequenceIterator>
@@ -638,11 +578,9 @@ Iterator tree for main query:
             </ForVariable>
             <ReturnClause>
              <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,works)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$dot"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0">
+               <ForVarIterator varname="$$dot"/>
+              </ChildAxisIterator>
               <SingletonIterator value="xs:double(1)"/>
               <SingletonIterator value="xs:double(1)"/>
              </FnSubsequenceIterator>
@@ -652,11 +590,9 @@ Iterator tree for main query:
          </ForVariable>
          <ReturnClause>
           <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,employee)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$dot"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$dot"/>
+           </ChildAxisIterator>
            <SingletonIterator value="xs:double(1)"/>
            <SingletonIterator value="xs:double(1)"/>
           </FnSubsequenceIterator>
@@ -666,11 +602,9 @@ Iterator tree for main query:
       </ForVariable>
       <ReturnClause>
        <FnSubsequenceIterator>
-        <NameTestIterator qname="xs:QName(,,empnum)">
-         <ChildAxisIterator>
-          <ForVarIterator varname="$$dot"/>
-         </ChildAxisIterator>
-        </NameTestIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+         <ForVarIterator varname="$$dot"/>
+        </ChildAxisIterator>
         <SingletonIterator value="xs:double(1)"/>
         <SingletonIterator value="xs:double(1)"/>
        </FnSubsequenceIterator>
@@ -698,11 +632,9 @@ Iterator tree for main query:
             </ForVariable>
             <ReturnClause>
              <FnSubsequenceIterator>
-              <NameTestIterator qname="xs:QName(,,staff)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="$$dot"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0">
+               <ForVarIterator varname="$$dot"/>
+              </ChildAxisIterator>
               <SingletonIterator value="xs:double(1)"/>
               <SingletonIterator value="xs:double(1)"/>
              </FnSubsequenceIterator>
@@ -712,11 +644,9 @@ Iterator tree for main query:
          </ForVariable>
          <ReturnClause>
           <FnSubsequenceIterator>
-           <NameTestIterator qname="xs:QName(,,employee)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="$$dot"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$dot"/>
+           </ChildAxisIterator>
            <SingletonIterator value="xs:double(3)"/>
            <SingletonIterator value="xs:double(1)"/>
           </FnSubsequenceIterator>
@@ -726,11 +656,9 @@ Iterator tree for main query:
       </ForVariable>
       <ReturnClause>
        <FnSubsequenceIterator>
-        <NameTestIterator qname="xs:QName(,,empnum)">
-         <ChildAxisIterator>
-          <ForVarIterator varname="$$dot"/>
-         </ChildAxisIterator>
-        </NameTestIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0">
+         <ForVarIterator varname="$$dot"/>
+        </ChildAxisIterator>
         <SingletonIterator value="xs:double(1)"/>
         <SingletonIterator value="xs:double(1)"/>
        </FnSubsequenceIterator>

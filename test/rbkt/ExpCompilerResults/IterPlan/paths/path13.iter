@@ -2,58 +2,54 @@ Iterator tree for main query:
 <NodeSortIterator>
  <FLWORIterator>
   <ForVariable name="$$dot">
-   <NameTestIterator qname="xs:QName(,,b)">
-    <ChildAxisIterator>
-     <ElementIterator>
-      <SingletonIterator value="xs:QName(,,a)"/>
-      <ElementContentIterator>
-       <FnConcatIterator>
-        <ElementIterator>
-         <SingletonIterator value="xs:QName(,,b)"/>
-         <ElementContentIterator>
-          <ElementIterator>
-           <SingletonIterator value="xs:QName(,,c)"/>
-           <ElementContentIterator>
-            <TextIterator>
-             <SingletonIterator value="xs:string(5)"/>
-            </TextIterator>
-           </ElementContentIterator>
-          </ElementIterator>
-         </ElementContentIterator>
-        </ElementIterator>
-        <ElementIterator>
-         <SingletonIterator value="xs:QName(,,b)"/>
-         <ElementContentIterator>
-          <ElementIterator>
-           <SingletonIterator value="xs:QName(,,c)"/>
-           <ElementContentIterator>
-            <TextIterator>
-             <SingletonIterator value="xs:string(6)"/>
-            </TextIterator>
-           </ElementContentIterator>
-          </ElementIterator>
-         </ElementContentIterator>
-        </ElementIterator>
-        <ElementIterator>
-         <SingletonIterator value="xs:QName(,,b)"/>
-         <ElementContentIterator>
-          <ElementIterator>
-           <SingletonIterator value="xs:QName(,,d)"/>
-          </ElementIterator>
-         </ElementContentIterator>
-        </ElementIterator>
-       </FnConcatIterator>
-      </ElementContentIterator>
-     </ElementIterator>
-    </ChildAxisIterator>
-   </NameTestIterator>
+   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
+    <ElementIterator>
+     <SingletonIterator value="xs:QName(,,a)"/>
+     <ElementContentIterator>
+      <FnConcatIterator>
+       <ElementIterator>
+        <SingletonIterator value="xs:QName(,,b)"/>
+        <ElementContentIterator>
+         <ElementIterator>
+          <SingletonIterator value="xs:QName(,,c)"/>
+          <ElementContentIterator>
+           <TextIterator>
+            <SingletonIterator value="xs:string(5)"/>
+           </TextIterator>
+          </ElementContentIterator>
+         </ElementIterator>
+        </ElementContentIterator>
+       </ElementIterator>
+       <ElementIterator>
+        <SingletonIterator value="xs:QName(,,b)"/>
+        <ElementContentIterator>
+         <ElementIterator>
+          <SingletonIterator value="xs:QName(,,c)"/>
+          <ElementContentIterator>
+           <TextIterator>
+            <SingletonIterator value="xs:string(6)"/>
+           </TextIterator>
+          </ElementContentIterator>
+         </ElementIterator>
+        </ElementContentIterator>
+       </ElementIterator>
+       <ElementIterator>
+        <SingletonIterator value="xs:QName(,,b)"/>
+        <ElementContentIterator>
+         <ElementIterator>
+          <SingletonIterator value="xs:QName(,,d)"/>
+         </ElementIterator>
+        </ElementContentIterator>
+       </ElementIterator>
+      </FnConcatIterator>
+     </ElementContentIterator>
+    </ElementIterator>
+   </ChildAxisIterator>
   </ForVariable>
   <LetVariable name="$$temp3" materialize="true">
-   <NameTestIterator qname="xs:QName(,,c)">
-    <ChildAxisIterator>
-     <ForVarIterator varname="$$dot"/>
-    </ChildAxisIterator>
-   </NameTestIterator>
+   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill allowed="0">
+    <ForVarIterator varname="$$dot"/>
+   </ChildAxisIterator>
   </LetVariable>
   <ReturnClause>
    <IfThenElseIterator>

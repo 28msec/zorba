@@ -2,51 +2,43 @@ Iterator tree for main query:
 <CommentIterator>
  <EnclosedIterator attr_cont="true">
   <NodeSortIterator>
-   <NameTestIterator qname="xs:QName(,wildcard,description)">
-    <ChildAxisIterator>
-     <FLWORIterator>
-      <ForVariable name="$$dot">
-       <NodeDistinctIterator>
-        <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-         <DescendantSelfAxisIterator>
-          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
-           <CtxVariableIterator>
-            <SingletonIterator value="xs:QName(,,input-context)"/>
-           </CtxVariableIterator>
-          </TreatIterator>
-         </DescendantSelfAxisIterator>
-        </KindTestIterator>
-       </NodeDistinctIterator>
-      </ForVariable>
-      <ReturnClause>
-       <FLWORIterator>
-        <ForVariable name="$$dot">
-         <NameTestIterator qname="xs:QName(,wildcard,test-case)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="$$dot"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
-        </ForVariable>
-        <WhereClause>
-         <CompareIterator>
-          <FnDataIterator>
-           <NameTestIterator qname="xs:QName(,,name)">
-            <AttributeAxisIterator>
-             <ForVarIterator varname="$$dot"/>
-            </AttributeAxisIterator>
-           </NameTestIterator>
-          </FnDataIterator>
-          <SingletonIterator value="xs:string(Constr-compcomment-doubledash-4)"/>
-         </CompareIterator>
-        </WhereClause>
-        <ReturnClause>
+   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,wildcard,description)" typename="*" nill allowed="0">
+    <FLWORIterator>
+     <ForVariable name="$$dot">
+      <NodeDistinctIterator>
+       <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
+         <CtxVariableIterator>
+          <SingletonIterator value="xs:QName(,,input-context)"/>
+         </CtxVariableIterator>
+        </TreatIterator>
+       </DescendantSelfAxisIterator>
+      </NodeDistinctIterator>
+     </ForVariable>
+     <ReturnClause>
+      <FLWORIterator>
+       <ForVariable name="$$dot">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,wildcard,test-case)" typename="*" nill allowed="0">
          <ForVarIterator varname="$$dot"/>
-        </ReturnClause>
-       </FLWORIterator>
-      </ReturnClause>
-     </FLWORIterator>
-    </ChildAxisIterator>
-   </NameTestIterator>
+        </ChildAxisIterator>
+       </ForVariable>
+       <WhereClause>
+        <CompareIterator>
+         <FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+           <ForVarIterator varname="$$dot"/>
+          </AttributeAxisIterator>
+         </FnDataIterator>
+         <SingletonIterator value="xs:string(Constr-compcomment-doubledash-4)"/>
+        </CompareIterator>
+       </WhereClause>
+       <ReturnClause>
+        <ForVarIterator varname="$$dot"/>
+       </ReturnClause>
+      </FLWORIterator>
+     </ReturnClause>
+    </FLWORIterator>
+   </ChildAxisIterator>
   </NodeSortIterator>
  </EnclosedIterator>
 </CommentIterator>

@@ -14,19 +14,13 @@ Iterator tree for main query:
  <ReturnClause>
   <FLWORIterator>
    <ForVariable name="p">
-    <NameTestIterator qname="xs:QName(,,person)">
-     <ChildAxisIterator>
-      <NameTestIterator qname="xs:QName(,,people)">
-       <ChildAxisIterator>
-        <NameTestIterator qname="xs:QName(,,site)">
-         <ChildAxisIterator>
-          <LetVarIterator varname="auction"/>
-         </ChildAxisIterator>
-        </NameTestIterator>
-       </ChildAxisIterator>
-      </NameTestIterator>
+    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+       <LetVarIterator varname="auction"/>
+      </ChildAxisIterator>
      </ChildAxisIterator>
-    </NameTestIterator>
+    </ChildAxisIterator>
    </ForVariable>
    <ReturnClause>
     <ElementIterator>
@@ -35,15 +29,11 @@ Iterator tree for main query:
       <SingletonIterator value="xs:QName(,,person)"/>
       <EnclosedIterator attr_cont="true">
        <FnDataIterator>
-        <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-         <ChildAxisIterator>
-          <NameTestIterator qname="xs:QName(,,name)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="p"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
+        <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+          <ForVarIterator varname="p"/>
          </ChildAxisIterator>
-        </KindTestIterator>
+        </ChildAxisIterator>
        </FnDataIterator>
       </EnclosedIterator>
      </AttributeIterator>
@@ -52,39 +42,27 @@ Iterator tree for main query:
        <FnCountIterator>
         <FLWORIterator>
          <ForVariable name="t">
-          <NameTestIterator qname="xs:QName(,,closed_auction)">
-           <ChildAxisIterator>
-            <NameTestIterator qname="xs:QName(,,closed_auctions)">
-             <ChildAxisIterator>
-              <NameTestIterator qname="xs:QName(,,site)">
-               <ChildAxisIterator>
-                <LetVarIterator varname="auction"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-             </ChildAxisIterator>
-            </NameTestIterator>
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+             <LetVarIterator varname="auction"/>
+            </ChildAxisIterator>
            </ChildAxisIterator>
-          </NameTestIterator>
+          </ChildAxisIterator>
          </ForVariable>
          <WhereClause>
           <CompareIterator>
            <FnDataIterator>
-            <NameTestIterator qname="xs:QName(,,person)">
-             <AttributeAxisIterator>
-              <NameTestIterator qname="xs:QName(,,buyer)">
-               <ChildAxisIterator>
-                <ForVarIterator varname="t"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-             </AttributeAxisIterator>
-            </NameTestIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,buyer)" typename="*" nill allowed="0">
+              <ForVarIterator varname="t"/>
+             </ChildAxisIterator>
+            </AttributeAxisIterator>
            </FnDataIterator>
            <FnDataIterator>
-            <NameTestIterator qname="xs:QName(,,id)">
-             <AttributeAxisIterator>
-              <ForVarIterator varname="p"/>
-             </AttributeAxisIterator>
-            </NameTestIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+             <ForVarIterator varname="p"/>
+            </AttributeAxisIterator>
            </FnDataIterator>
           </CompareIterator>
          </WhereClause>

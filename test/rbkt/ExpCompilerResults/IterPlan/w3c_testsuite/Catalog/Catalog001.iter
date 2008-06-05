@@ -9,42 +9,34 @@ Iterator tree for main query:
       <FLWORIterator>
        <ForVariable name="$$dot">
         <NodeDistinctIterator>
-         <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-          <DescendantSelfAxisIterator>
-           <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
-            <CtxVariableIterator>
-             <SingletonIterator value="xs:QName(,,input-context)"/>
-            </CtxVariableIterator>
-           </TreatIterator>
-          </DescendantSelfAxisIterator>
-         </KindTestIterator>
+         <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
+           <CtxVariableIterator>
+            <SingletonIterator value="xs:QName(,,input-context)"/>
+           </CtxVariableIterator>
+          </TreatIterator>
+         </DescendantSelfAxisIterator>
         </NodeDistinctIterator>
        </ForVariable>
        <ReturnClause>
         <FLWORIterator>
          <ForVariable name="$$dot">
-          <NameTestIterator qname="xs:QName(,wildcard,input-file)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="$$dot"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,wildcard,input-file)" typename="*" nill allowed="0">
+           <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
          </ForVariable>
          <WhereClause>
           <LogicIterator>
            <FnEmptyIterator>
-            <NameTestIterator qname="xs:QName(,,variable)">
-             <AttributeAxisIterator>
-              <ForVarIterator varname="$$dot"/>
-             </AttributeAxisIterator>
-            </NameTestIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,variable)" typename="*" nill allowed="0">
+             <ForVarIterator varname="$$dot"/>
+            </AttributeAxisIterator>
            </FnEmptyIterator>
            <CompareIterator>
             <FnDataIterator>
-             <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-              <ChildAxisIterator>
-               <ForVarIterator varname="$$dot"/>
-              </ChildAxisIterator>
-             </KindTestIterator>
+             <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+              <ForVarIterator varname="$$dot"/>
+             </ChildAxisIterator>
             </FnDataIterator>
             <SingletonIterator value="xs:string(emptydoc)"/>
            </CompareIterator>
@@ -61,13 +53,11 @@ Iterator tree for main query:
     <ReturnClause>
      <CastIterator type="[AtomicXQType XS_STRING]">
       <NodeDistinctIterator>
-       <NameTestIterator qname="xs:QName(,,name)">
-        <AttributeAxisIterator>
-         <ParentAxisIterator>
-          <ForVarIterator varname="x"/>
-         </ParentAxisIterator>
-        </AttributeAxisIterator>
-       </NameTestIterator>
+       <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+        <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+         <ForVarIterator varname="x"/>
+        </ParentAxisIterator>
+       </AttributeAxisIterator>
       </NodeDistinctIterator>
      </CastIterator>
     </ReturnClause>

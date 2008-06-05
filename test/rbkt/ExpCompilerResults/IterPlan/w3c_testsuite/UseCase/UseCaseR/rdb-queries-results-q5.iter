@@ -6,54 +6,46 @@ Iterator tree for main query:
    <FLWORIterator>
     <ForVariable name="seller">
      <NodeDistinctIterator>
-      <NameTestIterator qname="xs:QName(,,user_tuple)">
-       <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
-         <CtxVariableIterator>
-          <SingletonIterator value="xs:QName(,,input-context2)"/>
-         </CtxVariableIterator>
-        </TreatIterator>
-       </DescendantAxisIterator>
-      </NameTestIterator>
+      <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,user_tuple)" typename="*" nill allowed="0">
+       <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
+        <CtxVariableIterator>
+         <SingletonIterator value="xs:QName(,,input-context2)"/>
+        </CtxVariableIterator>
+       </TreatIterator>
+      </DescendantAxisIterator>
      </NodeDistinctIterator>
     </ForVariable>
     <ForVariable name="buyer">
      <NodeDistinctIterator>
-      <NameTestIterator qname="xs:QName(,,user_tuple)">
-       <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
-         <CtxVariableIterator>
-          <SingletonIterator value="xs:QName(,,input-context2)"/>
-         </CtxVariableIterator>
-        </TreatIterator>
-       </DescendantAxisIterator>
-      </NameTestIterator>
+      <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,user_tuple)" typename="*" nill allowed="0">
+       <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
+        <CtxVariableIterator>
+         <SingletonIterator value="xs:QName(,,input-context2)"/>
+        </CtxVariableIterator>
+       </TreatIterator>
+      </DescendantAxisIterator>
      </NodeDistinctIterator>
     </ForVariable>
     <ForVariable name="item">
      <NodeDistinctIterator>
-      <NameTestIterator qname="xs:QName(,,item_tuple)">
-       <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
-         <CtxVariableIterator>
-          <SingletonIterator value="xs:QName(,,input-context1)"/>
-         </CtxVariableIterator>
-        </TreatIterator>
-       </DescendantAxisIterator>
-      </NameTestIterator>
+      <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,item_tuple)" typename="*" nill allowed="0">
+       <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
+        <CtxVariableIterator>
+         <SingletonIterator value="xs:QName(,,input-context1)"/>
+        </CtxVariableIterator>
+       </TreatIterator>
+      </DescendantAxisIterator>
      </NodeDistinctIterator>
     </ForVariable>
     <ForVariable name="highbid">
      <NodeDistinctIterator>
-      <NameTestIterator qname="xs:QName(,,bid_tuple)">
-       <DescendantAxisIterator>
-        <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
-         <CtxVariableIterator>
-          <SingletonIterator value="xs:QName(,,input-context3)"/>
-         </CtxVariableIterator>
-        </TreatIterator>
-       </DescendantAxisIterator>
-      </NameTestIterator>
+      <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,bid_tuple)" typename="*" nill allowed="0">
+       <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
+        <CtxVariableIterator>
+         <SingletonIterator value="xs:QName(,,input-context3)"/>
+        </CtxVariableIterator>
+       </TreatIterator>
+      </DescendantAxisIterator>
      </NodeDistinctIterator>
     </ForVariable>
     <WhereClause>
@@ -64,39 +56,31 @@ Iterator tree for main query:
          <LogicIterator>
           <CompareIterator>
            <FnDataIterator>
-            <NameTestIterator qname="xs:QName(,,name)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="seller"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+             <ForVarIterator varname="seller"/>
+            </ChildAxisIterator>
            </FnDataIterator>
            <SingletonIterator value="xs:string(Tom Jones)"/>
           </CompareIterator>
           <CompareIterator>
            <FnDataIterator>
-            <NameTestIterator qname="xs:QName(,,userid)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="seller"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill allowed="0">
+             <ForVarIterator varname="seller"/>
+            </ChildAxisIterator>
            </FnDataIterator>
            <FnDataIterator>
-            <NameTestIterator qname="xs:QName(,,offered_by)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="item"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,offered_by)" typename="*" nill allowed="0">
+             <ForVarIterator varname="item"/>
+            </ChildAxisIterator>
            </FnDataIterator>
           </CompareIterator>
          </LogicIterator>
          <ContainsIterator>
           <PromoteIterator type="[AtomicXQType XS_STRING]">
            <FnDataIterator>
-            <NameTestIterator qname="xs:QName(,,description)">
-             <ChildAxisIterator>
-              <ForVarIterator varname="item"/>
-             </ChildAxisIterator>
-            </NameTestIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill allowed="0">
+             <ForVarIterator varname="item"/>
+            </ChildAxisIterator>
            </FnDataIterator>
           </PromoteIterator>
           <SingletonIterator value="xs:string(Bicycle)"/>
@@ -104,99 +88,79 @@ Iterator tree for main query:
         </LogicIterator>
         <CompareIterator>
          <FnDataIterator>
-          <NameTestIterator qname="xs:QName(,,itemno)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="item"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill allowed="0">
+           <ForVarIterator varname="item"/>
+          </ChildAxisIterator>
          </FnDataIterator>
          <FnDataIterator>
-          <NameTestIterator qname="xs:QName(,,itemno)">
-           <ChildAxisIterator>
-            <ForVarIterator varname="highbid"/>
-           </ChildAxisIterator>
-          </NameTestIterator>
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill allowed="0">
+           <ForVarIterator varname="highbid"/>
+          </ChildAxisIterator>
          </FnDataIterator>
         </CompareIterator>
        </LogicIterator>
        <CompareIterator>
         <FnDataIterator>
-         <NameTestIterator qname="xs:QName(,,userid)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="highbid"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill allowed="0">
+          <ForVarIterator varname="highbid"/>
+         </ChildAxisIterator>
         </FnDataIterator>
         <FnDataIterator>
-         <NameTestIterator qname="xs:QName(,,userid)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="buyer"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill allowed="0">
+          <ForVarIterator varname="buyer"/>
+         </ChildAxisIterator>
         </FnDataIterator>
        </CompareIterator>
       </LogicIterator>
       <CompareIterator>
        <FnDataIterator>
-        <NameTestIterator qname="xs:QName(,,bid)">
-         <ChildAxisIterator>
-          <ForVarIterator varname="highbid"/>
-         </ChildAxisIterator>
-        </NameTestIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill allowed="0">
+         <ForVarIterator varname="highbid"/>
+        </ChildAxisIterator>
        </FnDataIterator>
        <FnMinMaxIterator type="max">
         <FnDataIterator>
-         <NameTestIterator qname="xs:QName(,,bid)">
-          <ChildAxisIterator>
-           <FLWORIterator>
-            <ForVariable name="$$dot">
-             <NodeDistinctIterator>
-              <KindTestIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-               <DescendantSelfAxisIterator>
-                <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
-                 <CtxVariableIterator>
-                  <SingletonIterator value="xs:QName(,,input-context3)"/>
-                 </CtxVariableIterator>
-                </TreatIterator>
-               </DescendantSelfAxisIterator>
-              </KindTestIterator>
-             </NodeDistinctIterator>
-            </ForVariable>
-            <ReturnClause>
-             <FLWORIterator>
-              <ForVariable name="$$dot">
-               <NameTestIterator qname="xs:QName(,,bid_tuple)">
-                <ChildAxisIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill allowed="0">
+          <FLWORIterator>
+           <ForVariable name="$$dot">
+            <NodeDistinctIterator>
+             <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+              <TreatIterator type="[NodeXQType anyNode content=[XQType EMPTY_KIND*]]" quant="*">
+               <CtxVariableIterator>
+                <SingletonIterator value="xs:QName(,,input-context3)"/>
+               </CtxVariableIterator>
+              </TreatIterator>
+             </DescendantSelfAxisIterator>
+            </NodeDistinctIterator>
+           </ForVariable>
+           <ReturnClause>
+            <FLWORIterator>
+             <ForVariable name="$$dot">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bid_tuple)" typename="*" nill allowed="0">
+               <ForVarIterator varname="$$dot"/>
+              </ChildAxisIterator>
+             </ForVariable>
+             <WhereClause>
+              <CompareIterator>
+               <FnDataIterator>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill allowed="0">
                  <ForVarIterator varname="$$dot"/>
                 </ChildAxisIterator>
-               </NameTestIterator>
-              </ForVariable>
-              <WhereClause>
-               <CompareIterator>
-                <FnDataIterator>
-                 <NameTestIterator qname="xs:QName(,,itemno)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="$$dot"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </FnDataIterator>
-                <FnDataIterator>
-                 <NameTestIterator qname="xs:QName(,,itemno)">
-                  <ChildAxisIterator>
-                   <ForVarIterator varname="item"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </FnDataIterator>
-               </CompareIterator>
-              </WhereClause>
-              <ReturnClause>
-               <ForVarIterator varname="$$dot"/>
-              </ReturnClause>
-             </FLWORIterator>
-            </ReturnClause>
-           </FLWORIterator>
-          </ChildAxisIterator>
-         </NameTestIterator>
+               </FnDataIterator>
+               <FnDataIterator>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill allowed="0">
+                 <ForVarIterator varname="item"/>
+                </ChildAxisIterator>
+               </FnDataIterator>
+              </CompareIterator>
+             </WhereClause>
+             <ReturnClause>
+              <ForVarIterator varname="$$dot"/>
+             </ReturnClause>
+            </FLWORIterator>
+           </ReturnClause>
+          </FLWORIterator>
+         </ChildAxisIterator>
         </FnDataIterator>
        </FnMinMaxIterator>
       </CompareIterator>
@@ -208,28 +172,22 @@ Iterator tree for main query:
       <ElementContentIterator>
        <FnConcatIterator>
         <EnclosedIterator attr_cont="false">
-         <NameTestIterator qname="xs:QName(,,itemno)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="item"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill allowed="0">
+          <ForVarIterator varname="item"/>
+         </ChildAxisIterator>
         </EnclosedIterator>
         <EnclosedIterator attr_cont="false">
-         <NameTestIterator qname="xs:QName(,,description)">
-          <ChildAxisIterator>
-           <ForVarIterator varname="item"/>
-          </ChildAxisIterator>
-         </NameTestIterator>
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill allowed="0">
+          <ForVarIterator varname="item"/>
+         </ChildAxisIterator>
         </EnclosedIterator>
         <ElementIterator>
          <SingletonIterator value="xs:QName(,,high_bid)"/>
          <ElementContentIterator>
           <EnclosedIterator attr_cont="false">
-           <NameTestIterator qname="xs:QName(,,bid)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="highbid"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill allowed="0">
+            <ForVarIterator varname="highbid"/>
+           </ChildAxisIterator>
           </EnclosedIterator>
          </ElementContentIterator>
         </ElementIterator>
@@ -237,11 +195,9 @@ Iterator tree for main query:
          <SingletonIterator value="xs:QName(,,high_bidder)"/>
          <ElementContentIterator>
           <EnclosedIterator attr_cont="false">
-           <NameTestIterator qname="xs:QName(,,name)">
-            <ChildAxisIterator>
-             <ForVarIterator varname="buyer"/>
-            </ChildAxisIterator>
-           </NameTestIterator>
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+            <ForVarIterator varname="buyer"/>
+           </ChildAxisIterator>
           </EnclosedIterator>
          </ElementContentIterator>
         </ElementIterator>

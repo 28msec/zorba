@@ -17,31 +17,19 @@ Iterator tree for main query:
     <FnDistinctValuesIterator>
      <FnDataIterator>
       <NodeSortIterator>
-       <NameTestIterator qname="xs:QName(,,category)">
-        <AttributeAxisIterator>
-         <NameTestIterator qname="xs:QName(,,interest)">
-          <ChildAxisIterator>
-           <NameTestIterator qname="xs:QName(,,profile)">
-            <ChildAxisIterator>
-             <NameTestIterator qname="xs:QName(,,person)">
-              <ChildAxisIterator>
-               <NameTestIterator qname="xs:QName(,,people)">
-                <ChildAxisIterator>
-                 <NameTestIterator qname="xs:QName(,,site)">
-                  <ChildAxisIterator>
-                   <LetVarIterator varname="auction"/>
-                  </ChildAxisIterator>
-                 </NameTestIterator>
-                </ChildAxisIterator>
-               </NameTestIterator>
-              </ChildAxisIterator>
-             </NameTestIterator>
+       <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,category)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,interest)" typename="*" nill allowed="0">
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+             <LetVarIterator varname="auction"/>
             </ChildAxisIterator>
-           </NameTestIterator>
+           </ChildAxisIterator>
           </ChildAxisIterator>
-         </NameTestIterator>
-        </AttributeAxisIterator>
-       </NameTestIterator>
+         </ChildAxisIterator>
+        </ChildAxisIterator>
+       </AttributeAxisIterator>
       </NodeSortIterator>
      </FnDataIterator>
     </FnDistinctValuesIterator>
@@ -62,36 +50,24 @@ Iterator tree for main query:
         </ElementIterator>
         <FLWORIterator>
          <ForVariable name="t">
-          <NameTestIterator qname="xs:QName(,,person)">
-           <ChildAxisIterator>
-            <NameTestIterator qname="xs:QName(,,people)">
-             <ChildAxisIterator>
-              <NameTestIterator qname="xs:QName(,,site)">
-               <ChildAxisIterator>
-                <LetVarIterator varname="auction"/>
-               </ChildAxisIterator>
-              </NameTestIterator>
-             </ChildAxisIterator>
-            </NameTestIterator>
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+             <LetVarIterator varname="auction"/>
+            </ChildAxisIterator>
            </ChildAxisIterator>
-          </NameTestIterator>
+          </ChildAxisIterator>
          </ForVariable>
          <WhereClause>
           <CompareIterator>
            <FnDataIterator>
-            <NameTestIterator qname="xs:QName(,,category)">
-             <AttributeAxisIterator>
-              <NameTestIterator qname="xs:QName(,,interest)">
-               <ChildAxisIterator>
-                <NameTestIterator qname="xs:QName(,,profile)">
-                 <ChildAxisIterator>
-                  <ForVarIterator varname="t"/>
-                 </ChildAxisIterator>
-                </NameTestIterator>
-               </ChildAxisIterator>
-              </NameTestIterator>
-             </AttributeAxisIterator>
-            </NameTestIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,category)" typename="*" nill allowed="0">
+             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,interest)" typename="*" nill allowed="0">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+               <ForVarIterator varname="t"/>
+              </ChildAxisIterator>
+             </ChildAxisIterator>
+            </AttributeAxisIterator>
            </FnDataIterator>
            <ForVarIterator varname="i"/>
           </CompareIterator>
@@ -109,19 +85,13 @@ Iterator tree for main query:
                  <SingletonIterator value="xs:QName(,,sexe)"/>
                  <ElementContentIterator>
                   <EnclosedIterator attr_cont="false">
-                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <ChildAxisIterator>
-                     <NameTestIterator qname="xs:QName(,,gender)">
-                      <ChildAxisIterator>
-                       <NameTestIterator qname="xs:QName(,,profile)">
-                        <ChildAxisIterator>
-                         <ForVarIterator varname="t"/>
-                        </ChildAxisIterator>
-                       </NameTestIterator>
-                      </ChildAxisIterator>
-                     </NameTestIterator>
+                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,gender)" typename="*" nill allowed="0">
+                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="t"/>
+                     </ChildAxisIterator>
                     </ChildAxisIterator>
-                   </KindTestIterator>
+                   </ChildAxisIterator>
                   </EnclosedIterator>
                  </ElementContentIterator>
                 </ElementIterator>
@@ -129,19 +99,13 @@ Iterator tree for main query:
                  <SingletonIterator value="xs:QName(,,age)"/>
                  <ElementContentIterator>
                   <EnclosedIterator attr_cont="false">
-                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <ChildAxisIterator>
-                     <NameTestIterator qname="xs:QName(,,age)">
-                      <ChildAxisIterator>
-                       <NameTestIterator qname="xs:QName(,,profile)">
-                        <ChildAxisIterator>
-                         <ForVarIterator varname="t"/>
-                        </ChildAxisIterator>
-                       </NameTestIterator>
-                      </ChildAxisIterator>
-                     </NameTestIterator>
+                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,age)" typename="*" nill allowed="0">
+                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="t"/>
+                     </ChildAxisIterator>
                     </ChildAxisIterator>
-                   </KindTestIterator>
+                   </ChildAxisIterator>
                   </EnclosedIterator>
                  </ElementContentIterator>
                 </ElementIterator>
@@ -149,19 +113,13 @@ Iterator tree for main query:
                  <SingletonIterator value="xs:QName(,,education)"/>
                  <ElementContentIterator>
                   <EnclosedIterator attr_cont="false">
-                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <ChildAxisIterator>
-                     <NameTestIterator qname="xs:QName(,,education)">
-                      <ChildAxisIterator>
-                       <NameTestIterator qname="xs:QName(,,profile)">
-                        <ChildAxisIterator>
-                         <ForVarIterator varname="t"/>
-                        </ChildAxisIterator>
-                       </NameTestIterator>
-                      </ChildAxisIterator>
-                     </NameTestIterator>
+                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,education)" typename="*" nill allowed="0">
+                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="t"/>
+                     </ChildAxisIterator>
                     </ChildAxisIterator>
-                   </KindTestIterator>
+                   </ChildAxisIterator>
                   </EnclosedIterator>
                  </ElementContentIterator>
                 </ElementIterator>
@@ -171,15 +129,11 @@ Iterator tree for main query:
                   <EnclosedIterator attr_cont="false">
                    <FnDataIterator>
                     <NodeSortIterator>
-                     <NameTestIterator qname="xs:QName(,,income)">
-                      <AttributeAxisIterator>
-                       <NameTestIterator qname="xs:QName(,,profile)">
-                        <ChildAxisIterator>
-                         <ForVarIterator varname="t"/>
-                        </ChildAxisIterator>
-                       </NameTestIterator>
-                      </AttributeAxisIterator>
-                     </NameTestIterator>
+                     <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+                       <ForVarIterator varname="t"/>
+                      </ChildAxisIterator>
+                     </AttributeAxisIterator>
                     </NodeSortIterator>
                    </FnDataIterator>
                   </EnclosedIterator>
@@ -196,15 +150,11 @@ Iterator tree for main query:
                  <SingletonIterator value="xs:QName(,,nom)"/>
                  <ElementContentIterator>
                   <EnclosedIterator attr_cont="false">
-                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <ChildAxisIterator>
-                     <NameTestIterator qname="xs:QName(,,name)">
-                      <ChildAxisIterator>
-                       <ForVarIterator varname="t"/>
-                      </ChildAxisIterator>
-                     </NameTestIterator>
+                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                     <ForVarIterator varname="t"/>
                     </ChildAxisIterator>
-                   </KindTestIterator>
+                   </ChildAxisIterator>
                   </EnclosedIterator>
                  </ElementContentIterator>
                 </ElementIterator>
@@ -212,19 +162,13 @@ Iterator tree for main query:
                  <SingletonIterator value="xs:QName(,,rue)"/>
                  <ElementContentIterator>
                   <EnclosedIterator attr_cont="false">
-                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <ChildAxisIterator>
-                     <NameTestIterator qname="xs:QName(,,street)">
-                      <ChildAxisIterator>
-                       <NameTestIterator qname="xs:QName(,,address)">
-                        <ChildAxisIterator>
-                         <ForVarIterator varname="t"/>
-                        </ChildAxisIterator>
-                       </NameTestIterator>
-                      </ChildAxisIterator>
-                     </NameTestIterator>
+                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,street)" typename="*" nill allowed="0">
+                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,address)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="t"/>
+                     </ChildAxisIterator>
                     </ChildAxisIterator>
-                   </KindTestIterator>
+                   </ChildAxisIterator>
                   </EnclosedIterator>
                  </ElementContentIterator>
                 </ElementIterator>
@@ -232,19 +176,13 @@ Iterator tree for main query:
                  <SingletonIterator value="xs:QName(,,ville)"/>
                  <ElementContentIterator>
                   <EnclosedIterator attr_cont="false">
-                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <ChildAxisIterator>
-                     <NameTestIterator qname="xs:QName(,,city)">
-                      <ChildAxisIterator>
-                       <NameTestIterator qname="xs:QName(,,address)">
-                        <ChildAxisIterator>
-                         <ForVarIterator varname="t"/>
-                        </ChildAxisIterator>
-                       </NameTestIterator>
-                      </ChildAxisIterator>
-                     </NameTestIterator>
+                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,city)" typename="*" nill allowed="0">
+                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,address)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="t"/>
+                     </ChildAxisIterator>
                     </ChildAxisIterator>
-                   </KindTestIterator>
+                   </ChildAxisIterator>
                   </EnclosedIterator>
                  </ElementContentIterator>
                 </ElementIterator>
@@ -252,19 +190,13 @@ Iterator tree for main query:
                  <SingletonIterator value="xs:QName(,,pays)"/>
                  <ElementContentIterator>
                   <EnclosedIterator attr_cont="false">
-                   <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <ChildAxisIterator>
-                     <NameTestIterator qname="xs:QName(,,country)">
-                      <ChildAxisIterator>
-                       <NameTestIterator qname="xs:QName(,,address)">
-                        <ChildAxisIterator>
-                         <ForVarIterator varname="t"/>
-                        </ChildAxisIterator>
-                       </NameTestIterator>
-                      </ChildAxisIterator>
-                     </NameTestIterator>
+                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,country)" typename="*" nill allowed="0">
+                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,address)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="t"/>
+                     </ChildAxisIterator>
                     </ChildAxisIterator>
-                   </KindTestIterator>
+                   </ChildAxisIterator>
                   </EnclosedIterator>
                  </ElementContentIterator>
                 </ElementIterator>
@@ -276,15 +208,11 @@ Iterator tree for main query:
                     <SingletonIterator value="xs:QName(,,courrier)"/>
                     <ElementContentIterator>
                      <EnclosedIterator attr_cont="false">
-                      <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                       <ChildAxisIterator>
-                        <NameTestIterator qname="xs:QName(,,emailaddress)">
-                         <ChildAxisIterator>
-                          <ForVarIterator varname="t"/>
-                         </ChildAxisIterator>
-                        </NameTestIterator>
+                      <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,emailaddress)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="t"/>
                        </ChildAxisIterator>
-                      </KindTestIterator>
+                      </ChildAxisIterator>
                      </EnclosedIterator>
                     </ElementContentIterator>
                    </ElementIterator>
@@ -292,15 +220,11 @@ Iterator tree for main query:
                     <SingletonIterator value="xs:QName(,,pagePerso)"/>
                     <ElementContentIterator>
                      <EnclosedIterator attr_cont="false">
-                      <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                       <ChildAxisIterator>
-                        <NameTestIterator qname="xs:QName(,,homepage)">
-                         <ChildAxisIterator>
-                          <ForVarIterator varname="t"/>
-                         </ChildAxisIterator>
-                        </NameTestIterator>
+                      <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,homepage)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="t"/>
                        </ChildAxisIterator>
-                      </KindTestIterator>
+                      </ChildAxisIterator>
                      </EnclosedIterator>
                     </ElementContentIterator>
                    </ElementIterator>
@@ -314,15 +238,11 @@ Iterator tree for main query:
               <SingletonIterator value="xs:QName(,,cartePaiement)"/>
               <ElementContentIterator>
                <EnclosedIterator attr_cont="false">
-                <KindTestIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                 <ChildAxisIterator>
-                  <NameTestIterator qname="xs:QName(,,creditcard)">
-                   <ChildAxisIterator>
-                    <ForVarIterator varname="t"/>
-                   </ChildAxisIterator>
-                  </NameTestIterator>
+                <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,creditcard)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="t"/>
                  </ChildAxisIterator>
-                </KindTestIterator>
+                </ChildAxisIterator>
                </EnclosedIterator>
               </ElementContentIterator>
              </ElementIterator>
