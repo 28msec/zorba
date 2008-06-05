@@ -21,6 +21,13 @@
    <ul>
      <li> \ref build
      <li> \ref installation
+     <li> \ref features
+     <ul>
+       <li> \ref groupby
+       <li> \ref try-catch
+       <li> \ref eval
+       <li> \ref REST
+     </ul>
    </ul>
  </ul>
  */

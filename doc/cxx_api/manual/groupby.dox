@@ -1,0 +1,25 @@
+/** \page groupby Group By - XQuery 1.1
+
+\section groupbygrammar Group By Grammar
+
+<table border="0">
+<tr>
+<td>FLWORExpr</td>
+<td>::=</td>
+<td>(ForClause | LetClause)+ | WhereClause? ( GroupByClause LetClause* WhereClause?)?  OrderByClause?  ReturnClause</td>
+</tr>
+<tr>
+<td>GroupByClause</td>    <td>::=</td>   <td> "group" "by" GroupingSpecList</td>
+</tr>
+<tr>
+<td>GroupingSpecList</td>    <td> ::=</td>   <td> GroupingSpec ("," GroupingSpec)*</td>
+</tr>
+</tr>
+<tr>
+<td>GroupingSpec</td>    <td> ::=</td>   <td> "$" VarName ("collation" URILiteral)?</td>
+</tr>
+</table>
+
+\section groupbyexamples Group By Examples
+
+*/
