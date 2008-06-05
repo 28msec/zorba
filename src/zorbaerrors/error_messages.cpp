@@ -27,14 +27,16 @@ namespace zorba { namespace error {
 
 ********************************************************************************/
 
-static const char *canonical_err_names[MAX_ZORBA_ERROR_CODE + 1];
 
-static const char *err_msg[MAX_ZORBA_ERROR_CODE + 1];
-
-
-static struct err_msg_initializer 
+struct err_msg_wrapper
 {
-  err_msg_initializer () 
+  private:
+    const char *canonical_err_names[MAX_ZORBA_ERROR_CODE + 1];
+
+    const char *err_msg[MAX_ZORBA_ERROR_CODE + 1];
+
+  public:
+  err_msg_wrapper () 
   {
 #define DEF_ERR_CODE( code, name, msg )                              \
   canonical_err_names [ code ] = strdup(#name); \
@@ -455,31 +457,46 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
     }
   }
 
-  ~err_msg_initializer()
+  ~err_msg_wrapper()
   {
     for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i) 
     {
       if (canonical_err_names[i] != NULL)
       {
         free(const_cast<char *>(canonical_err_names[i]));
-        canonical_err_names[i] = NULL;
       }
 
       if (err_msg [i] != NULL)
       {
         free(const_cast<char *>(err_msg [i]));
-        err_msg[i] = NULL;
       }
     }
   }
-} err_msg_initializer_obj;
+
+  const char *get_canonical_err_name(const XQUERY_ERROR& code) const
+  {
+    return canonical_err_names[code];
+  }
+
+  const char *get_err_msg(const XQUERY_ERROR& code) const
+  {
+    return err_msg[code];
+  }
+};
+
+static const struct err_msg_wrapper& get_err_msg_wrapper()
+{
+  static struct err_msg_wrapper wrapper;
+
+  return wrapper;
+}
 
 
 std::string
 ErrorMessages::getMessageForErrorCode(const XQUERY_ERROR& e) 
 {
   ZORBA_ASSERT (e < MAX_ZORBA_ERROR_CODE);
-  return err_msg [e];
+  return get_err_msg_wrapper().get_err_msg(e);
 } 
 
 
@@ -494,17 +511,18 @@ std::string
 ErrorMessages::getNameForErrorCode(const XQUERY_ERROR& code)
 {
   ZORBA_ASSERT (code < MAX_ZORBA_ERROR_CODE);
-  return canonical_err_names [code];
+  return get_err_msg_wrapper().get_canonical_err_name(code);
 }
 
 
 XQUERY_ERROR
 ErrorMessages::getErrorCodeForName(const std::string& name) 
 {
+  const err_msg_wrapper& err_wrapper = get_err_msg_wrapper();
   // TODO: use a map or hashmap
   for (int i = 0; i < MAX_ZORBA_ERROR_CODE; i++)
   {
-    if (name == canonical_err_names[i])
+    if (name == err_wrapper.get_canonical_err_name((XQUERY_ERROR)i))
       return (XQUERY_ERROR) i;
   }
   return XQP0019_INTERNAL_ERROR;
