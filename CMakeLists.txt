@@ -102,7 +102,7 @@ ELSE (NOT Boost_FOUND)
   MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
 
   INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-  #LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
   IF (NOT WIN32)
       IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
           SET(requiredlibs ${requiredlibs} boost_program_options-mt)
