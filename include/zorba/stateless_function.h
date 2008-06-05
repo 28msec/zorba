@@ -16,6 +16,7 @@
 #ifndef ZORBA_STATELESS_EXTERNAL_FUNCTION_H
 #define ZORBA_STATELESS_EXTERNAL_FUNCTION_H
 
+#include <zorba/config.h>
 #include <vector>
 #include <zorba/api_shared_types.h> 
 
@@ -23,7 +24,7 @@
 
 namespace zorba {
 
-  class StatelessExternalFunction : public ExternalFunctionData 
+  class ZORBA_EXTERN_DECL StatelessExternalFunction : public ExternalFunctionData 
   {
     public:
       typedef std::vector<ItemSequence*> Arguments_t;

@@ -18,6 +18,7 @@
 
 #include <istream>
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
 #include <zorba/version.h>
@@ -44,7 +45,7 @@ namespace zorba {
    * It can be used to (1) create and compile queries, (2) create static contexts, 
    * (3) provides access to the XmlDataManager, and (4) provides access to the ItemFactory.
    */
-  class Zorba 
+  class ZORBA_EXTERN_DECL Zorba 
   {
     public:
 

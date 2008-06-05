@@ -16,6 +16,7 @@
 #ifndef XQP_STATIC_CONTEXT_API_H
 #define XQP_STATIC_CONTEXT_API_H
 
+#include <zorba/config.h>
 #include <zorba/zorbastring.h>
 #include <zorba/typeident.h> 
 #include <zorba/static_context_consts.h>
@@ -34,7 +35,7 @@ namespace zorba {
    * If no static context has been passed to any of these functions, a default static context
    * is used. It can be accessed by calling XQuery::getStaticContext on a compiled XQuery object.
    */
-  class StaticContext : public SmartObject
+  class ZORBA_EXTERN_DECL StaticContext : public SmartObject
   {
     public:
       /** \brief Destructor
@@ -290,6 +291,7 @@ namespace zorba {
       registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
 
   };
+  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<StaticContext>;
 
 } /* namespace zorba */
 #endif

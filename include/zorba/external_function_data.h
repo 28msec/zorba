@@ -16,11 +16,13 @@
 #ifndef ZORBA_EXTERNAL_FUNCTION_DATA_H
 #define ZORBA_EXTERNAL_FUNCTION_DATA_H
 
+#include <zorba/config.h>
+
 namespace zorba {
 
   /** \brief Base class for all external function classes.
    */
-  class ExternalFunctionData 
+  class ZORBA_EXTERN_DECL ExternalFunctionData 
   {
   };
 

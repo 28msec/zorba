@@ -16,6 +16,7 @@
 #ifndef ZORBA_DEFAULT_CONTENT_HANDLER_API_H
 #define ZORBA_DEFAULT_CONTENT_HANDLER_API_H
 
+#include <zorba/config.h>
 #include <zorba/sax2.h>
 
 namespace zorba{
@@ -27,7 +28,7 @@ namespace zorba{
    * See SAX2_ContentHandler for a documentation.
    */
 
-  class DefaultContentHandler: public SAX2_ContentHandler,
+  class ZORBA_EXTERN_DECL DefaultContentHandler: public SAX2_ContentHandler,
                                public SAX2_LexicalHandler
   {
     public:

@@ -16,6 +16,7 @@
 #ifndef ZORBA_TYPES_TYPEIDENT_H
 #define ZORBA_TYPES_TYPEIDENT_H
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/identtypes.h>
 #include <zorba/zorbastring.h>
@@ -26,7 +27,7 @@ namespace zorba {
  *
  * The type identifiers are not used, yet.
  */
-class TypeIdentifier : public SmartObject {
+class ZORBA_EXTERN_DECL TypeIdentifier : public SmartObject {
   public:
     /** \brief Destructor
      */
@@ -133,6 +134,7 @@ class TypeIdentifier : public SmartObject {
     bool m_uriWildcard;
     String m_localName;
     bool m_localNameWildcard;
+  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<TypeIdentifier>;
     TypeIdentifier_t m_contentType;
 };
 

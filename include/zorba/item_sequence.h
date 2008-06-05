@@ -16,6 +16,7 @@
 #ifndef ZORBA_ITEM_SEQUENCE_API_H
 #define ZORBA_ITEM_SEQUENCE_API_H
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
 namespace zorba { 
@@ -24,7 +25,7 @@ namespace zorba {
    *
    * See http://www.w3.org/TR/xpath-datamodel/.
    */
-  class ItemSequence
+  class ZORBA_EXTERN_DECL ItemSequence
   {
     public:
       /** \brief Destructor
@@ -40,6 +41,7 @@ namespace zorba {
       virtual bool next(Item& aItem) = 0;
 
   }; /* class ItemSequence */
+  template class ZORBA_EXTERN_DECL   std::auto_ptr<ItemSequence>;
 
 } // namespace zorba
 #endif

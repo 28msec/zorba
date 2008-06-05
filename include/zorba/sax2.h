@@ -16,6 +16,7 @@
 #ifndef ZORBA_SAX2_API_H
 #define ZORBA_SAX2_API_H
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
 namespace zorba{
@@ -32,7 +33,7 @@ class SAX2_Attributes;
  * a query by calling the XQuery::registerSAXHandler or XQuery::executeSAX
  * function.
  */
-class SAX2_ContentHandler
+class ZORBA_EXTERN_DECL SAX2_ContentHandler
 {
   public:
 
@@ -130,7 +131,7 @@ class SAX2_ContentHandler
     skippedEntity( const	String& aName ) = 0;
 };
 
-class SAX2_Attributes
+class ZORBA_EXTERN_DECL SAX2_Attributes
 {
   public:
     virtual
@@ -173,7 +174,7 @@ class SAX2_Attributes
     String getValue( const String & qName ) const = 0;
 };
 
-class SAX2_LexicalHandler
+class ZORBA_EXTERN_DECL SAX2_LexicalHandler
 {
   public:
     virtual

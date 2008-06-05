@@ -16,11 +16,12 @@
 #ifndef ZORBA_DEFAULT_ERROR_HANDLER_API_H
 #define ZORBA_DEFAULT_ERROR_HANDLER_API_H
 
+#include <zorba/config.h>
 #include <zorba/error_handler.h>
 
 namespace zorba {
 
-  class DefaultErrorHandler : public ErrorHandler
+  class ZORBA_EXTERN_DECL DefaultErrorHandler : public ErrorHandler
   {
     public:
       virtual ~DefaultErrorHandler() {}

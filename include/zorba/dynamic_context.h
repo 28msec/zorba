@@ -19,6 +19,7 @@
 #include <time.h>
 #include <istream>
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
 namespace zorba {
@@ -33,7 +34,7 @@ namespace zorba {
    * calling getDynamicContext on a compiled query (see XQuery::getDynamicContext()).
    *
    */
-  class DynamicContext 
+  class ZORBA_EXTERN_DECL DynamicContext 
   {
     public:
       /** \brief Defines the external variable identified by aQName and assigns it the value of

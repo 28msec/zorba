@@ -16,6 +16,7 @@
 #ifndef ZORBA_RESULT_ITERATOR_API_H
 #define ZORBA_RESULT_ITERATOR_API_H
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/iterator.h>
 
@@ -28,7 +29,7 @@ namespace zorba {
    * However, given that the XQuery class is not thread-safe, the ResultIterators
    * should not be operated upon by multiple threads.
    */
-  class ResultIterator  : public Iterator
+  class ZORBA_EXTERN_DECL ResultIterator  : public Iterator
   {
     public:
       /** \brief Destructor
@@ -60,6 +61,7 @@ namespace zorba {
       virtual void 
       close() = 0;
   };
+  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<ResultIterator>;
 
 } /* namespace zorba */
 #endif

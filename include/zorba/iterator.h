@@ -16,6 +16,7 @@
 #ifndef ZORBA_ITERATOR_API_H
 #define ZORBA_ITERATOR_API_H
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/item_sequence.h>
 
@@ -23,7 +24,7 @@ namespace zorba {
 
   /** \brief Interface for an Iterator over an instance of the XML Data Model.
    */
-  class Iterator : public ItemSequence, public SmartObject
+  class ZORBA_EXTERN_DECL Iterator : public ItemSequence, public SmartObject
   {
     public:
       /** \brief Destructor
@@ -55,6 +56,7 @@ namespace zorba {
       close() = 0;
 
   };
+  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<Iterator>;
 
 } /* namespace zorba */
 #endif

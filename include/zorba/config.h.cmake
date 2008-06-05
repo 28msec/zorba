@@ -81,7 +81,20 @@
 /* Configure Zorba features*/
 #cmakedefine ZORBA_NO_UNICODE
 #cmakedefine ZORBA_NO_XMLSCHEMA
-#cmakedefine ZORBA_MINIMAL_STORE
+//#cmakedefine ZORBA_MINIMAL_STORE
 #cmakedefine ZORBA_NO_BIGNUMBERS
+
+/* Windows MSVC DLL */
+#define    ZORBA_EXTERN_DECL
+#cmakedefine ZORBA_WIN_DLL
+#ifdef ZORBA_WIN_DLL
+  #undef    ZORBA_EXTERN_DECL
+#ifdef ZORBA_INTERNAL
+  #define   ZORBA_EXTERN_DECL    __declspec(dllexport) 
+#else
+  #define   ZORBA_EXTERN_DECL    __declspec(dllimport)
+#endif
+
+#endif
 
 #endif

@@ -18,6 +18,7 @@
 
 #include <ostream>
 
+#include <zorba/config.h>
 #include <zorba/sax2.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/options.h>
@@ -48,7 +49,7 @@ namespace zorba {
    * The file \link simple.cpp \endlink contains some basic examples the demonstrate
    * the use of this class.
    */
-  class XQuery : public SmartObject
+  class ZORBA_EXTERN_DECL XQuery : public SmartObject
   {
     public:
       /** \brief Destructor that destroys this XQuery object. 
@@ -282,10 +283,14 @@ namespace zorba {
       clone() const = 0;
 
   };
+  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<XQuery>;
 
   // xml serialization of the query (equiv to calling serialize(os) 
+  ZORBA_EXTERN_DECL
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery); 
+  ZORBA_EXTERN_DECL
   std::ostream& operator<< (std::ostream& os, XQuery* aQuery); 
+
 
 } /* namespace zorba */
 

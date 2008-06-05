@@ -35,6 +35,7 @@ namespace zorba {
 
   class ErrorHandler;
 
+
   // smart pointers
   typedef zorba::SmartPtr<XQuery>                     XQuery_t;
   typedef zorba::SmartPtr<StaticContext>              StaticContext_t;

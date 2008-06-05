@@ -18,6 +18,8 @@
 
 #include <string>
 
+#include <zorba/config.h>
+
 namespace zorba {
 
 class xqpStringStore;
@@ -28,7 +30,7 @@ class xqpStringStore;
  * characters encoded as UTF-8.
  * UTF-8 FAQ @see [http://unicode.org/faq/utf_bom.html#2].
  */
-class String 
+class ZORBA_EXTERN_DECL String 
 {
 public:
   /** \brief Copy constructor
@@ -227,6 +229,7 @@ private:
   xqpStringStore *m_string;
 };
 
+ZORBA_EXTERN_DECL
 std::ostream& operator <<(std::ostream& os, const String& str);
 
 } // namespace zorba

@@ -16,6 +16,7 @@
 #ifndef ZORBA_COLLECTION_API_H
 #define ZORBA_COLLECTION_API_H
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/item.h>
 
@@ -26,7 +27,7 @@ namespace zorba {
  * Each Collection is created by the XmlDataManager and referenced by a URI.
  * The URI can be accessed in a query's fn:collection function.
  */
-class Collection : public SmartObject
+class ZORBA_EXTERN_DECL Collection : public SmartObject
 {
   public:
     /** \brief Destructor
@@ -75,6 +76,7 @@ class Collection : public SmartObject
     addDocument(std::istream& aInStream) = 0;
 
 }; /* class Collection */
+  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<Collection>;
 
 } /* namespace zorba */
 

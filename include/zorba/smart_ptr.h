@@ -16,9 +16,11 @@
 #ifndef ZORBA_SMARTPTR_API_H
 #define ZORBA_SMARTPTR_API_H
 
+#include <zorba/config.h>
+
 namespace zorba {
 
-class SmartObject
+class ZORBA_EXTERN_DECL SmartObject
 {
 protected:
   mutable unsigned int  theRefCount;

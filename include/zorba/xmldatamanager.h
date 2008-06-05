@@ -17,6 +17,7 @@
 #define ZORBA_XMLDATAMANAGER_API_H
 
 #include <istream>
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
 namespace zorba {
@@ -30,7 +31,7 @@ namespace zorba {
    *
    * XmlDataManager is a thread-safe class.
    */
-  class XmlDataManager 
+  class ZORBA_EXTERN_DECL XmlDataManager 
   {
     public:
 

@@ -17,6 +17,7 @@
 #define ZORBA_ITEM_API_H
 
 #include <ostream>
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
 namespace zorba {
@@ -42,7 +43,7 @@ namespace store { class Item; }
  * A new atomic Item can be created using the ItemFactory. A new node Item should be created
  * by the result of a query.
  */
-class Item
+class ZORBA_EXTERN_DECL Item
 {
 public:
   /** \brief Default constructor

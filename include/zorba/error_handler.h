@@ -16,6 +16,7 @@
 #ifndef ZORBA_ERROR_HANDLER_API_H
 #define ZORBA_ERROR_HANDLER_API_H
 
+#include <zorba/config.h>
 #include <zorba/exception.h>
 
 namespace zorba {
@@ -29,7 +30,7 @@ namespace zorba {
    * ZorbaException class that would have been thrown are passed as parameter
    * to the callback function.
    */
-  class ErrorHandler 
+  class ZORBA_EXTERN_DECL ErrorHandler 
   {
     public:
       /** \brief Destructor
