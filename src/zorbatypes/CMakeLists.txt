@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(requiredlibs-zorbatypes)                                                                                                       
+SET(requiredlibs-zorbatypes ${XERCESC_LIBRARY})                                                                                                       
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindICU.cmake)                                                                           
 IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)                                                                     
   MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")                                                      
