@@ -1,0 +1,19 @@
+#!/bin/sh
+
+cd `dirname $0`/..
+SRC=`pwd`
+
+REV=$1
+test "$REV" || REV="HEAD"
+svn update -r"$REV" || { echo "Couldn't update source"; exit 1; }
+echo '$'"Rev: $REV "'$' >svn_rev.txt
+
+BUILD_DIR="$2"
+test "$BUILD_DIR" || BUILD_DIR="$SRC/build_$REV"
+rm -rf "$BUILD_DIR"
+mkdir -p "$BUILD_DIR"
+cd "$BUILD_DIR"
+echo "Sources at $SRC, building in $BUILD_DIR"
+
+shift 2
+cmake "$SRC" && make -j2 && echo "Your build directory is $BUILD_DIR"
