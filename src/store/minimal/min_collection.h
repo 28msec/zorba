@@ -61,7 +61,7 @@ public:
   SimpleCollection(Item_t& uri);
   virtual ~SimpleCollection();
 
-  Item_t getUri() { return theUri; }
+  Item* getUri() { return theUri; }
 
   ulong size() const { return theXmlTrees.size(); }
 

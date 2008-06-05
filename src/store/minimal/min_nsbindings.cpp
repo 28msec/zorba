@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "zorbautils/fatal.h"
 #include "zorbatypes/xqpstring.h"
-#include "zorbaerrors/fatal.h"
 #include "store/minimal/min_nsbindings.h"
 
 namespace zorba { namespace store {

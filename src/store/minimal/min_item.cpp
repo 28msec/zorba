@@ -21,13 +21,6 @@
 #include "store/api/iterator.h"
 #include "store/minimal/min_store_defs.h"
 
-#include "system/globalenv.h"
-
-#include "api/serialization/serializer.h"
-
-#include "types/root_typemanager.h"
-#include "types/typeops.h"
-
 namespace zorba { namespace store {
 
 
@@ -40,7 +33,7 @@ Item::getType( ) const
 }
 
 
-bool Item::equals(const Item*, RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+bool Item::equals(const Item*, long timezone, XQPCollator* aCollation) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -89,7 +82,7 @@ xqpStringStore* Item::getStringValueP() const
  *
  * @return The hash value
  */
-uint32_t Item::hash(RuntimeCB* aRuntimeCB, XQPCollator* coll) const
+uint32_t Item::hash(long timezone, XQPCollator* coll) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -367,8 +360,6 @@ xqp_ushort Item::getUnsignedShortValue() const
  */
 bool Item::isNaN() const
 {
-  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
   return false;
 }
 
@@ -573,12 +564,13 @@ xqpStringStore* Item::getTarget() const
   return 0;
 }
 
+#if 0
 bool Item::isNumeric() const 
 {
   xqtref_t type = GENV_TYPESYSTEM.create_named_type(getType(), TypeConstants::QUANT_ONE);
   return TypeOps::is_numeric(*type);
 }
-
+#endif
 
 xqp_string Item::show() const
 {
@@ -595,12 +587,12 @@ Item* Item::copyXmlTree(const CopyMode& copymode) const
                         __FUNCTION__, getType()->getStringValue());
 }
 
-
+#if 0
 void Item::serializeXML(serializer& ser, std::ostream& os) const
 {
   ser.serialize(this, os);
 }
-
+#endif
 
 void Item::applyUpdates()
 {

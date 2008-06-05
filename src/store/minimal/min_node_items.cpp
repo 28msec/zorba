@@ -15,10 +15,6 @@
  */
 #include <stack>
 
-#include <zorba/exception.h>
-
-#include "system/globalenv.h"
-#include "compiler/parser/query_loc.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbatypes/URI.h"
@@ -33,7 +29,7 @@
 #include "store/minimal/min_store_defs.h"
 #include "store/minimal/min_nsbindings.h"
 #include "store/api/temp_seq.h"
-#include "store/api/item_iterator.h"
+#include "store/minimal/min_item_iterator.h"
 #include "store/api/collection.h"
 #include "zorbatypes/datetime.h"
 
@@ -216,7 +212,7 @@ void XmlNode::setTree(const XmlTree* t)
 /*******************************************************************************
   Return a hash value based on the id of the node.
 ********************************************************************************/
-uint32_t XmlNode::hash(RuntimeCB* aRuntimeCB, XQPCollator* aCollation) const
+uint32_t XmlNode::hash(long timezone, XQPCollator* aCollation) const
 {
   ulong tid = getTree()->getId();
 
@@ -1332,7 +1328,7 @@ void ElementNode::checkUniqueAttr(const Item* attrName) const
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    if (getAttr(i)->getNodeName()->equals(attrName, NULL))
+    if (getAttr(i)->getNodeName()->equals(attrName))
     {
       ZORBA_ERROR_PARAM_OSS(XQDY0025,
                             "Attribute name " << *attrName->getStringValue() 
@@ -1955,7 +1951,7 @@ void ConstrElementNode::addAttribute(
       {
         checkNamespaceConflict(attr->theName, XQDY0025);
       }
-      catch(ZorbaException& e)
+      catch(error::ZorbaError& e)
       {
         attr->copy(this, this, numAttributes(), copymode);
         return;

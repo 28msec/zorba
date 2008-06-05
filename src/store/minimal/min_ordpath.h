@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "common/common.h"
-#include "zorbaerrors/fatal.h"
+#include "zorbautils/fatal.h"
 
 namespace zorba { namespace store {
 

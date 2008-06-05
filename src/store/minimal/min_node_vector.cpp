@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "common/shared_types.h"
-#include "zorbaerrors/fatal.h"
+#include "zorbautils/fatal.h"
 
 #include "store/minimal/min_node_vector.h"
 #include "store/minimal/min_node_items.h"

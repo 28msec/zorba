@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "common/common.h"
-#include "zorbaerrors/fatal.h"
 
 #include "store/minimal/shared_types.h"
 

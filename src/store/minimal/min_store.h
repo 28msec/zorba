@@ -16,6 +16,8 @@
 #ifndef ZORBA_MINIMAL_STORE___
 #define ZORBA_MINIMAL_STORE___
 
+#include <zorba/config.h>
+
 #include "zorbautils/mutex.h"
 #include "zorbautils/latch.h"
 
@@ -28,7 +30,7 @@
 
 #include "store/minimal/shared_types.h"
 #include "store/minimal/min_node_items.h"
-//#include "store/minimal/strtree_pool.h"
+
 
 namespace zorba { 
 
@@ -49,7 +51,7 @@ typedef StringHashMap<XmlNode_t> DocumentSet;
 ********************************************************************************/
 class SimpleStore : public Store
 {
-  friend class GlobalEnvironment;
+  friend class zorba::GlobalEnvironment;
  
 public:
   static const char* XS_URI;
@@ -66,7 +68,7 @@ public:
   checked_vector<Item_t>   theSchemaTypeNames;
 
 protected:
-  int                      theIsInitialized;
+  bool                     theIsInitialized;
 
   ulong                    theUriCounter;
   SYNC_CODE(Mutex          theUriCounterMutex;)
@@ -86,10 +88,9 @@ protected:
 
   Latch                   theGlobalLock;
 
-#ifndef NDEBUG
   long                     theTraceLevel;
-#endif
-
+public:
+  static ZORBA_EXTERN_DECL SimpleStore*      getInstance();
 private:
   SimpleStore();
 
@@ -97,10 +98,10 @@ private:
 
   void init();
   void initTypeNames();
+public:
   void shutdown();
 
-public:
-  Item *getTypeQName(Item *item);
+//  Item *getTypeQName(Item *item);
 
   store::ItemFactory* getItemFactory() const     { return theItemFactory; }
 

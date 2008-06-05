@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "common/common.h"
 
 #include "store/api/iterator.h"
@@ -31,8 +32,8 @@
 #include "store/minimal/min_temp_seq.h"
 #include "store/minimal/min_pul.h"
 #include "store/minimal/qname_pool.h"
-#include "store/minimal/string_pool.h"
 #include "store/api/collection.h"
+#include "store/minimal/string_pool.h"
 #include "zorbatypes/datetime.h"
 
 
@@ -866,6 +867,7 @@ bool BasicItemFactory::createAttributeNode(
   // Compute the attribute name. Note: we don't have to check that itemQName
   // is indeed a valid qname, because the compiler wraps an xs:qname cast
   // around thIteme expression.
+  nameIter->open();
   nameIter->next(name);
 
   if (name->getLocalName()->empty())
@@ -880,8 +882,10 @@ bool BasicItemFactory::createAttributeNode(
   {
     ZORBA_ERROR(XQDY0044);
   }
+  nameIter->close();
 
   // Compute the attribute value.
+  valueIter->open();
   if (valueIter->next(valueItem))
   {
     lexicalValue = valueItem->getStringValue();
@@ -898,6 +902,7 @@ bool BasicItemFactory::createAttributeNode(
   {
     lexicalValue = new xqpStringStore("");
   }
+  valueIter->close();
   
   typedValue = new UntypedAtomicItemImpl(lexicalValue);
 
