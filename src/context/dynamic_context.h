@@ -47,16 +47,16 @@ protected:
 	int			                implicit_timezone;
 	xqp_string		          default_collection_uri;  //default URI for fn:collection()
 
+  store::Item_t		        ctxt_item;
+	unsigned long		        ctxt_position;
+	//+context size is determined by fn:last() at runtime
+
 protected:
   xqp_string qname_internal_key (store::Item_t qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
 
   store::Iterator_t lookup_var_iter (xqp_string key);
-
-  store::Item_t		ctxt_item;
-	unsigned long		ctxt_position;
-	//+context size is determined by fn:last() at runtime
 
   void destroy_dctx_value (const dctx_value_t *);
 
@@ -91,13 +91,13 @@ public:
 //daniel: get the function directly from library object
 //	const function* get_function(qnamekey_t key) { return lib->get(key); }
 
-	void		set_current_date_time( const store::Item_t& );
+	void set_current_date_time( const store::Item_t& );
   store::Item_t	get_current_date_time();
 
-	void		set_implicit_timezone( int tzone_seconds );
-	int  		get_implicit_timezone();
+	void set_implicit_timezone( int tzone_seconds );
+	int get_implicit_timezone();
 
-	void				add_variable(xqp_string varname, store::Iterator_t var_iterator);
+	void add_variable(xqp_string varname, store::Iterator_t var_iterator);
   store::Iterator_t	get_variable(store::Item_t);
 
 	xqp_string get_default_collection();

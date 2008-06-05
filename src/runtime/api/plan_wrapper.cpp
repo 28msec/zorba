@@ -18,6 +18,7 @@
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/runtimecb.h"
 #include "context/static_context.h"
+#include "context/dynamic_context.h"
 
 namespace zorba {
 
@@ -31,6 +32,7 @@ PlanWrapper::PlanWrapper(
     uint32_t aStackDepth)
   :
   theIterator(aIter)
+  ,theDynamicContext(NULL)
 #ifndef NDEBUG
   , theIsOpened(false)
 #endif
@@ -42,6 +44,11 @@ PlanWrapper::PlanWrapper(
 
   // set the compiler cb in the state
   theStateBlock->theCompilerCB = aCompilerCB;
+
+  if (aDynamicContext == NULL)
+  {
+    theDynamicContext = aDynamicContext = new dynamic_context();
+  }
 
   // for the moment, let's keep the runtime cb here
   theStateBlock->theRuntimeCB = new RuntimeCB();
@@ -67,6 +74,12 @@ PlanWrapper::~PlanWrapper()
 
   delete theStateBlock; 
   theStateBlock = NULL;
+
+  if (theDynamicContext != NULL)
+  {
+    delete theDynamicContext;
+    theDynamicContext = NULL;
+  }
 }
 
 

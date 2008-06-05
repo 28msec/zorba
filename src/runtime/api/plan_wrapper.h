@@ -35,10 +35,11 @@ namespace zorba {
   class PlanWrapper : public store::Iterator
   {
     protected:
-      PlanIter_t   theIterator;
-      PlanState*   theStateBlock;
+      PlanIter_t         theIterator;
+      PlanState        * theStateBlock;
+      dynamic_context  * theDynamicContext;
 #ifndef NDEBUG
-      bool		     theIsOpened;
+      bool		           theIsOpened;
 #endif
 
     public:
