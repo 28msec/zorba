@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+SET(storeRequiredLibs ${storeRequiredLibs} ${BOOST_PROGRAM_OPTIONS})
 #####################################################  LibXml2
 FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
