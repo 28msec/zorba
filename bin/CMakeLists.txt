@@ -22,7 +22,7 @@ SET_TARGET_PROPERTIES(zorbacmd PROPERTIES OUTPUT_NAME "zorba") # cmake way to re
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(zorbacmd_static ${ZORBA_CMD_SRCS})
-  TARGET_LINK_LIBRARIES(zorbacmd_static zorba_static)
+  TARGET_LINK_LIBRARIES(zorbacmd_static zorba_static simplestore)
   SET_TARGET_PROPERTIES(zorbacmd_static PROPERTIES OUTPUT_NAME "zorba_static") # cmake way to rename the file
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 

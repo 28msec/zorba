@@ -33,7 +33,7 @@ TARGET_LINK_LIBRARIES(apitest zorba simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(apitest_static ${API_TEST_SRCS})
-  TARGET_LINK_LIBRARIES(apitest_static zorba_static)
+  TARGET_LINK_LIBRARIES(apitest_static zorba_static simplestore)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 #
