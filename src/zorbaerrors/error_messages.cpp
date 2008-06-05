@@ -460,10 +460,16 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
     for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i) 
     {
       if (canonical_err_names[i] != NULL)
+      {
         free(const_cast<char *>(canonical_err_names[i]));
+        canonical_err_names[i] = NULL;
+      }
 
       if (err_msg [i] != NULL)
+      {
         free(const_cast<char *>(err_msg [i]));
+        err_msg[i] = NULL;
+      }
     }
   }
 } err_msg_initializer_obj;
