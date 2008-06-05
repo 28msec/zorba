@@ -65,13 +65,6 @@ void GlobalEnvironment::init(store::Store* store)
   rctx->init();
   BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext.get());
 
-#ifdef ZORBA_MINIMAL_STORE
-  //for minimal store init types is based on root type manager
-#ifndef ZORBA_XBROWSER
-  static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
-#endif // ifndef ZORBA_XBROWSER
-#endif
-
 #ifndef ZORBA_NO_BIGNUMBERS
   // initialize mapm for bignum handling
   m_globalEnv->m_mapm = m_apm_init();
