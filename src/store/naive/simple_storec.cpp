@@ -24,3 +24,11 @@ void* create_simple_store()
 
   return store;
 }
+
+
+void free_simple_store(void* store)
+{
+  zorba::store::SimpleStore* lstore = reinterpret_cast<zorba::store::SimpleStore*>(store);
+
+  lstore->shutdown();
+}

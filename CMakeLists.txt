@@ -37,119 +37,21 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 ################################################################################
 # Variables
-SET(requiredlibs)
+
 SET(DEFINITIONS)
 
-##################################################### Setup Compiler Options
+
+################################################################################
+# Setup Compiler Options
+
 INCLUDE(CMakeCompiler.txt)
 
 
 ################################################################################
-# Used libraries
+# Various cmake macros
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-#####################################################  cURL    
-FIND_PACKAGE(CURL)
-IF(CURL_FOUND)
-  MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
-  SET(requiredlibs ${requiredlibs} ${CURL_LIBRARIES})  
-  INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIRS})
-ELSE(CURL_FOUND)
-  MESSAGE(STATUS "The cURL library was not found.")
-ENDIF(CURL_FOUND)
-
-#####################################################  Iconv
-INCLUDE(cmake_modules/FindIconv.cmake)
-FIND_PACKAGE(Iconv)
-IF (Iconv_FOUND)
-    INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
-    SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
-ENDIF (Iconv_FOUND)
-
-#####################################################  Xerces-C
-INCLUDE(cmake_modules/FindXercesC.cmake)
-IF (XERCESC_FOUND)
-	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
-	SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
-ENDIF (XERCESC_FOUND)
-
-##################################################### Json
-IF (ZORBA_DEBUGGER)
-  SET(requiredlibs ${requiredlibs} json)
-ENDIF (ZORBA_DEBUGGER)
-
-SET(BOOST_CHECK_LIBRARIES ON CACHE BOOL "enable or disable automatic search of boost libraries")
-MESSAGE(STATUS "BOOST_CHECK_LIBRARIES:     " ${BOOST_CHECK_LIBRARIES})
-IF (BOOST_CHECK_LIBRARIES)
-
-#####################################################  Boost
-INCLUDE(cmake_modules/FindBoost.cmake)
-SET (REQUIRED_BOOST_PACKAGES date_time filesystem program_options)
-IF (ZORBA_DEBUGGER)
-  SET(REQUIRED_BOOST_PACKAGES ${REQUIRED_BOOST_PACKAGES} boost_thread)
-ENDIF (ZORBA_DEBUGGER)
-
-FIND_PACKAGE(Boost REQUIRED COMPONENTS
-  date_time
-  filesystem
-  program_options)
-
-IF (NOT Boost_FOUND)
-  MESSAGE(FATAL "Boost not found")
-ELSE (NOT Boost_FOUND)
-  MESSAGE(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
-  MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
-
-  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-  IF (NOT WIN32)
-      IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-          SET(BOOST_PROGRAM_OPTIONS   boost_program_options-mt)
-          SET(requiredlibs ${requiredlibs} boost_program_options-mt)
-          SET(requiredlibs ${requiredlibs} boost_date_time-mt)
-          SET(requiredlibs ${requiredlibs} boost_filesystem-mt)
-          IF (34 LESS ${Boost_MINOR_VERSION})
-            MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(requiredlibs ${requiredlibs} boost_system-mt)
-          ENDIF (34 LESS ${Boost_MINOR_VERSION})
-      ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-          SET(BOOST_PROGRAM_OPTIONS   boost_program_options)
-          SET(requiredlibs ${requiredlibs} boost_program_options)
-          SET(requiredlibs ${requiredlibs} boost_date_time)
-          SET(requiredlibs ${requiredlibs} boost_filesystem)
-          IF (34 LESS ${Boost_MINOR_VERSION})
-            MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(requiredlibs ${requiredlibs} boost_system)
-          ENDIF (34 LESS ${Boost_MINOR_VERSION})
-          IF(ZORBA_DEBUGGER)
-            SET(requiredlibs ${requiredlibs} boost_thread)
-          ENDIF(ZORBA_DEBUGGER)
-      ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  ELSE (NOT WIN32)
-      IF (CYGWIN)
-          SET(CMAKE_INCLUDE_PATH)            
-          SET(BOOST_PROGRAM_OPTIONS   boost_program_options-gcc-mt)
-          SET(requiredlibs ${requiredlibs} boost_program_options-gcc-mt)
-          SET(requiredlibs ${requiredlibs} boost_date_time-gcc-mt)
-          SET(requiredlibs ${requiredlibs} boost_filesystem-gcc-mt)
-          IF (34 LESS ${Boost_MINOR_VERSION})
-            MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(requiredlibs ${requiredlibs} boost_system-gcc-mt)
-          ENDIF (34 LESS ${Boost_MINOR_VERSION})
-      ELSE (CYGWIN)
-          IF(ZORBA_DEBUGGER)
-	          SET(requiredlibs ${requiredlibs} WSock32)
-          ENDIF(ZORBA_DEBUGGER)
-  	  ENDIF (CYGWIN)
-  ENDIF (NOT WIN32)
-ENDIF (NOT Boost_FOUND)
-
-ENDIF (BOOST_CHECK_LIBRARIES)
-
-IF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
-  SET(requiredlibs ${requiredlibs} pthread)
-ENDIF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
 
 ################################################################################
 # Custom user-defined settings

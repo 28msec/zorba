@@ -50,6 +50,27 @@ _FPCLASS_NN:// Negative normalized non-zero
 
 namespace zorba {
 
+const xqpString& FloatCommons::get_INF_POS_STR()
+{
+   static const xqpString INF_POS_STR = "INF";
+   return INF_POS_STR;
+}
+
+
+const xqpString& FloatCommons::get_INF_NEG_STR()
+{
+   static const xqpString INF_NEG_STR = "-INF";
+   return INF_NEG_STR;
+}
+
+
+const xqpString& FloatCommons::get_NOT_A_NUM_STR()
+{
+   static const xqpString NOT_A_NUM_STR = "NaN";
+   return NOT_A_NUM_STR;
+}
+
+
 Double FloatCommons::parseFloat(const Float& aFloat) {
   Double lDouble(aFloat.getType(), aFloat.getNumber());
   return lDouble;
@@ -128,10 +149,12 @@ bool FloatImplTraits<float>::isNegInf(MAPM aMAPM) {
   }
 }
 
+
 // FIXME this is not yet correct! Just a very simple temporary solution.
 MAPM FloatImplTraits<float>::cutMantissa(MAPM aMAPM) {
   return Decimal::round(aMAPM, 7-aMAPM.exponent());
 }
+
 
 uint32_t FloatImplTraits<float>::hash(FloatCommons::NumType aType, MAPM aMAPM) {
   if (aType == FloatCommons::INF_POS 
@@ -152,6 +175,7 @@ uint32_t FloatImplTraits<float>::hash(FloatCommons::NumType aType, MAPM aMAPM) {
 }
 
 #else
+
 template <typename FloatType>
 bool FloatImplTraits<FloatType>::isPosInf(FloatType aMAPM)
 {
@@ -169,6 +193,8 @@ bool FloatImplTraits<FloatType>::isPosInf(FloatType aMAPM)
     return false;
 #endif
 }
+
+
 template <typename FloatType>
 bool FloatImplTraits<FloatType>::isZero(FloatType aMAPM)
 {
@@ -189,6 +215,8 @@ bool FloatImplTraits<FloatType>::isZero(FloatType aMAPM)
 #endif
 */
 }
+
+
 template <typename FloatType>
 bool FloatImplTraits<FloatType>::isNegInf(FloatType aMAPM)
 {
@@ -206,11 +234,14 @@ bool FloatImplTraits<FloatType>::isNegInf(FloatType aMAPM)
     return false;
 #endif
 }
+
+
 template <typename FloatType>
 FloatType FloatImplTraits<FloatType>::cutMantissa(FloatType aMAPM) 
 {
   return aMAPM;
 }
+
 
 template <typename FloatType>
 uint32_t FloatImplTraits<FloatType>::hash(FloatCommons::NumType aType, FloatType aMAPM)
@@ -227,9 +258,6 @@ uint32_t FloatImplTraits<FloatType>::hash(FloatCommons::NumType aType, FloatType
 
 #endif
 
-const xqpString FloatCommons::INF_POS_STR = "INF";
-const xqpString FloatCommons::INF_NEG_STR = "-INF";
-const xqpString FloatCommons::NOT_A_NUM_STR = "NaN";
 
 template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::zero() {
@@ -1142,11 +1170,11 @@ template <typename FloatType>
 xqpString FloatImpl<FloatType>::toIntegerString() const {
   switch(theType) {
     case FloatCommons::NOT_A_NUM:
-      return FloatCommons::NOT_A_NUM_STR;
+      return FloatCommons::get_NOT_A_NUM_STR();
     case FloatCommons::INF_POS:
-      return FloatCommons::INF_POS_STR;
+      return FloatCommons::get_INF_POS_STR();
     case FloatCommons::INF_NEG:
-      return FloatCommons::INF_NEG_STR;
+      return FloatCommons::get_INF_NEG_STR();
     case FloatCommons::NORMAL_NEG:
       if (theFloatImpl == 0)
         return "-0";
@@ -1170,11 +1198,11 @@ template <typename FloatType>
 xqpString FloatImpl<FloatType>::toString() const {
   switch(theType) {
     case FloatCommons::NOT_A_NUM:
-      return FloatCommons::NOT_A_NUM_STR;
+      return FloatCommons::get_NOT_A_NUM_STR();
     case FloatCommons::INF_POS:
-      return FloatCommons::INF_POS_STR;
+      return FloatCommons::get_INF_POS_STR();
     case FloatCommons::INF_NEG:
-      return FloatCommons::INF_NEG_STR;
+      return FloatCommons::get_INF_NEG_STR();
     case FloatCommons::NORMAL_NEG:
       if (theFloatImpl == 0)
         return "-0";

@@ -31,32 +31,35 @@ namespace zorba {
 typedef double    MAPM;
 #endif
 
-  class FloatCommons {
-    public:
-      enum NumType {
-        NORMAL = 0,
-        NORMAL_NEG,
-        INF_POS,
-        INF_NEG,
-        NOT_A_NUM
-   };
-
-   static const xqpString INF_POS_STR;
-   static const xqpString INF_NEG_STR;
-   static const xqpString NOT_A_NUM_STR;
-
-   static Double
-   parseFloat(const Float&);
-   
-   static Float 
-   parseDouble(const Double&);
+class FloatCommons 
+{
+ public:
+  enum NumType {
+    NORMAL = 0,
+    NORMAL_NEG,
+    INF_POS,
+    INF_NEG,
+    NOT_A_NUM
   };
 
-  /**
-   * Class to implement isPosInf, isZero und isNegInf for every different Template
-   * Parameter of FloatImpl
-   */
-  template <typename FloatType> class FloatImplTraits;
+  static const xqpString& get_INF_POS_STR();
+  static const xqpString& get_INF_NEG_STR();
+  static const xqpString& get_NOT_A_NUM_STR();
+
+  static Double
+  parseFloat(const Float&);
+   
+  static Float 
+  parseDouble(const Double&);
+};
+
+
+/**
+ * Class to implement isPosInf, isZero und isNegInf for every different Template
+ * Parameter of FloatImpl
+ */
+template <typename FloatType> class FloatImplTraits;
+
 
 #ifndef ZORBA_NO_BIGNUMBERS
   /**

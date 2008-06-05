@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+#
+# First, collect all the libraries that simplestore lib depends on
+#
+
 #
 #  LibXml2
 #
@@ -19,7 +24,7 @@ FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
     MESSAGE(STATUS "Found  LIBXML2 library -- " ${LIBXML2_LIBRARIES})
     INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
-    SET(storeRequiredLibs ${storeRequiredLibs} ${LIBXML2_LIBRARIES})
+    SET(requiredlibs-simplestore ${requiredlibs-simplestore} ${LIBXML2_LIBRARIES})
     SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
 ELSE(LIBXML2_FOUND)
     MESSAGE(FATAL_ERROR "The libxml2 library is required in order to build simple store.")
@@ -29,7 +34,9 @@ ENDIF(LIBXML2_FOUND)
 #
 # Boost
 #
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindBoost.cmake)
+IF (BOOST_CHECK_LIBRARIES)
+
+INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
 SET (REQUIRED_BOOST_PACKAGES program_options)
 
 FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
@@ -44,29 +51,39 @@ ELSE (NOT Boost_FOUND)
   LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
   IF (NOT WIN32)
       IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-          SET(storeRequiredLibs ${storeRequiredLibs} boost_program_options-mt)
+          SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options-mt)
           IF (34 LESS ${Boost_MINOR_VERSION})
             MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(storeRequiredLibs ${storeRequiredLibs} boost_system-mt)
+            SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_system-mt)
           ENDIF (34 LESS ${Boost_MINOR_VERSION})
       ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-          SET(storeRequiredLibs ${storeRequiredLibs} boost_program_options)
+          SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options)
           IF (34 LESS ${Boost_MINOR_VERSION})
             MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(storeRequiredLibs ${storeRequiredLibs} boost_system)
+            SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_system)
           ENDIF (34 LESS ${Boost_MINOR_VERSION})
       ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   ELSE (NOT WIN32)
       IF (CYGWIN)
           SET(CMAKE_INCLUDE_PATH)            
-          SET(storeRequiredLibs ${storeRequiredLibs} boost_program_options-gcc-mt)
+          SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options-gcc-mt)
           IF (34 LESS ${Boost_MINOR_VERSION})
             MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(storeRequiredLibs ${storeRequiredLibs} boost_system-gcc-mt)
+            SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_system-gcc-mt)
           ENDIF (34 LESS ${Boost_MINOR_VERSION})
   	  ENDIF (CYGWIN)
   ENDIF (NOT WIN32)
 ENDIF (NOT Boost_FOUND)
+
+ENDIF (BOOST_CHECK_LIBRARIES)
+
+
+#
+# Internal common libraries
+#
+SET(requiredlibs-simplestore ${requiredlibs-simplestore} zorbautils)
+SET(requiredlibs-simplestore ${requiredlibs-simplestore} zorbatypes)
+SET(requiredlibs-simplestore ${requiredlibs-simplestore} zorbaerrors)
 
 
 #
@@ -98,12 +115,16 @@ SET(SIMPLE_STORE_SRCS
 SET(SIMPLESTORE_INSTALL_LIST)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
+
   ADD_LIBRARY(simplestore_static ${SIMPLE_STORE_SRCS})
-  TARGET_LINK_LIBRARIES(simplestore_static ${storeRequiredLibs})
+  TARGET_LINK_LIBRARIES(simplestore_static ${requiredlibs-simplestore})
+
   SET_TARGET_PROPERTIES(simplestore_static PROPERTIES OUTPUT_NAME "simplestore")  
   SET_TARGET_PROPERTIES(simplestore_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
-  SET_TARGET_PROPERTIES(simplestore_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)  
+  SET_TARGET_PROPERTIES(simplestore_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
   SET(SIMPLESTORE_INSTALL_LIST ${SIMPLESTORE_INSTALL_LIST} simplestore_static)
+
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 
@@ -113,7 +134,7 @@ ELSE (MSVC)
   ADD_LIBRARY(simplestore SHARED ${SIMPLE_STORE_SRCS})
 ENDIF (MSVC)
 
-TARGET_LINK_LIBRARIES(simplestore ${storeRequiredLibs})
+TARGET_LINK_LIBRARIES(simplestore ${requiredlibs-simplestore})
 
 SET_TARGET_PROPERTIES(simplestore PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
