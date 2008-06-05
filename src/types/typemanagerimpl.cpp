@@ -227,9 +227,6 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
     store::Item* qname,
     TypeConstants::quantifier_t quantifier) const
 {
-#ifdef ZORBA_MINIMAL_STORE//workaround
-  qname = static_cast<store::SimpleStore *>(&GENV_STORE)->getTypeQName(qname);
-#endif
 
   zorba::RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
 
