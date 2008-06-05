@@ -521,6 +521,7 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
     return result;
 }
 
+#ifndef ZORBA_NO_XMLSCHEMA
 /**
 *   User must dealocate the returned SchemaValidator*
 */
@@ -528,6 +529,7 @@ SchemaValidator* Schema::getSchemaValidator()
 {
     return new SchemaValidator(_grammarPool);
 }
+#endif//ZORBA_NO_XMLSCHEMA
 
 
 #ifndef ZORBA_NO_XMLSCHEMA
