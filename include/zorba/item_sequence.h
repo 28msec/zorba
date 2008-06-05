@@ -41,7 +41,6 @@ namespace zorba {
       virtual bool next(Item& aItem) = 0;
 
   }; /* class ItemSequence */
-  template class ZORBA_EXTERN_DECL   std::auto_ptr<ItemSequence>;
 
 } // namespace zorba
 #endif

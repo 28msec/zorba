@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(storeRequiredLibs ${storeRequiredLibs} ${BOOST_PROGRAM_OPTIONS})
-#####################################################  LibXml2
+#
+#  LibXml2
+#
 FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
     MESSAGE(STATUS "Found  LIBXML2 library -- " ${LIBXML2_LIBRARIES})
@@ -25,6 +26,52 @@ ELSE(LIBXML2_FOUND)
 ENDIF(LIBXML2_FOUND)
 
 
+#
+# Boost
+#
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindBoost.cmake)
+SET (REQUIRED_BOOST_PACKAGES program_options)
+
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
+
+IF (NOT Boost_FOUND)
+  MESSAGE(FATAL "Boost not found")
+ELSE (NOT Boost_FOUND)
+  MESSAGE(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
+  MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
+
+  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+  IF (NOT WIN32)
+      IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+          SET(storeRequiredLibs ${storeRequiredLibs} boost_program_options-mt)
+          IF (34 LESS ${Boost_MINOR_VERSION})
+            MESSAGE(STATUS "Boost minor version is greater than 34")
+            SET(storeRequiredLibs ${storeRequiredLibs} boost_system-mt)
+          ENDIF (34 LESS ${Boost_MINOR_VERSION})
+      ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+          SET(storeRequiredLibs ${storeRequiredLibs} boost_program_options)
+          IF (34 LESS ${Boost_MINOR_VERSION})
+            MESSAGE(STATUS "Boost minor version is greater than 34")
+            SET(storeRequiredLibs ${storeRequiredLibs} boost_system)
+          ENDIF (34 LESS ${Boost_MINOR_VERSION})
+      ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  ELSE (NOT WIN32)
+      IF (CYGWIN)
+          SET(CMAKE_INCLUDE_PATH)            
+          SET(storeRequiredLibs ${storeRequiredLibs} boost_program_options-gcc-mt)
+          IF (34 LESS ${Boost_MINOR_VERSION})
+            MESSAGE(STATUS "Boost minor version is greater than 34")
+            SET(storeRequiredLibs ${storeRequiredLibs} boost_system-gcc-mt)
+          ENDIF (34 LESS ${Boost_MINOR_VERSION})
+  	  ENDIF (CYGWIN)
+  ENDIF (NOT WIN32)
+ENDIF (NOT Boost_FOUND)
+
+
+#
+# Source Files
+#
 SET(SIMPLE_STORE_SRCS
     basic_item_factory.cpp
     simple_collection.cpp

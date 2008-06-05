@@ -31,15 +31,15 @@ SET(ZORBA_LIBRARY_INSTALL_LIST)
 #
 ADD_SUBDIRECTORY(zorbautils)
 SET(requiredlibs ${requiredlibs} zorbautils)
-SET(storeRequiredLibs ${requiredlibs} zorbautils)
+SET(storeRequiredLibs ${storeRequiredLibs} zorbautils)
 
 ADD_SUBDIRECTORY(zorbatypes)
 SET(requiredlibs ${requiredlibs} zorbatypes)
-SET(storeRequiredLibs ${requiredlibs} zorbatypes)
+SET(storeRequiredLibs ${storeRequiredLibs} zorbatypes)
 
 ADD_SUBDIRECTORY(zorbaerrors)
 SET(requiredlibs ${requiredlibs} zorbaerrors)
-SET(storeRequiredLibs ${requiredlibs} zorbaerrors)
+SET(storeRequiredLibs ${storeRequiredLibs} zorbaerrors)
 
 
 #

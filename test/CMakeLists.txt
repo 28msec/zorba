@@ -36,6 +36,17 @@ IF (ZORBA_BUILD_STATIC_LIBRARY)
   TARGET_LINK_LIBRARIES(apitest_static zorba_static simplestore)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
+
+#
+# For now, xerces is needed by zorbatypes, but is not included in the $requiredlibs-zorbatypes
+# (because this dependency is going to be removed). So, we have to explictly include it in any
+# executable that does not link with libzorba
+#
+IF (XERCESC_FOUND)
+	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
+ENDIF (XERCESC_FOUND)
+
+
 #
 # test_store
 #
@@ -44,7 +55,7 @@ SET(TEST_STORE_SRCS
     test_store.cpp)
 
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
-TARGET_LINK_LIBRARIES(test_store simplestore)
+TARGET_LINK_LIBRARIES(test_store simplestore ${XERCESC_LIBRARY})
 
 #
 # test_ordpath
@@ -53,4 +64,4 @@ SET(TEST_ORDPATH_SRCS
     test_ordpath.cpp)
 
 ADD_EXECUTABLE(test_ordpath ${TEST_ORDPATH_SRCS})
-TARGET_LINK_LIBRARIES(test_ordpath simplestore)
+TARGET_LINK_LIBRARIES(test_ordpath simplestore ${XERCESC_LIBRARY})
