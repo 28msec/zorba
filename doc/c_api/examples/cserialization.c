@@ -31,11 +31,11 @@ cserialization_example_1(XQC_Implementation impl)
 {
   XQC_Query      lXQuery;
   FILE*          lOutFile = stdout;
+  Zorba_SerializerOptions_t lSerOptions = Zorba_SerializerOptions_default();
 
   // compile the query
   impl->prepare(impl, "(1+2, 3, 4)", 0, &lXQuery);
 
-  Zorba_SerializerOptions_t lSerOptions = Zorba_SerializerOptions_default();
   lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
 
   // execute it and print the result on standard out
@@ -52,11 +52,11 @@ cserialization_example_2(XQC_Implementation impl)
 {
   XQC_Query      lXQuery;
   FILE*          lOutFile = stdout;
+  Zorba_SerializerOptions_t lSerOptions = Zorba_SerializerOptions_default();
 
   // compile the query
   impl->prepare(impl, "(1+2, 3, 4)", 0, &lXQuery);
 
-  Zorba_SerializerOptions_t lSerOptions = Zorba_SerializerOptions_default();
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
   // execute it and print the result on standard out
