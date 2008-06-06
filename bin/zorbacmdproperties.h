@@ -55,11 +55,12 @@ public:
   };
   // execution options
   typedef std::vector<ExternalVariable> ExternalVars_t;
-
+  typedef std::vector<std::string>      QueriesOrFiles_t;
+  
 private:
   bool                     theTiming, theInlineQuery;
   int                      theMultipleExecutions;
-  std::string              theQueryOrFile;
+  QueriesOrFiles_t         theQueriesOrFiles;
   std::string              theContextItem;
 
   std::vector<std::string> theExternalVarsString;
@@ -94,9 +95,6 @@ public:
   inlineQuery()         { return theInlineQuery; }
 
   const std::string&
-  getQueryOrFile()      { return theQueryOrFile; }
-
-  const std::string& 
   getBoundarySpace()    { return theBoundarySpace; }
 
   const std::string& 
@@ -126,7 +124,6 @@ public:
   bool
   omitXMLDeclaration()  { return theOmitXMLDeclaration; }
 
-  
   const std::string&
   getContextItem()      { return theContextItem; }
 
@@ -139,6 +136,12 @@ public:
   ExternalVars_t::const_iterator
   externalVarsEnd()     { return theExternalVars.end(); }
 
+  QueriesOrFiles_t::const_iterator
+  queriesOrFilesBegin() { return theQueriesOrFiles.begin(); }
+
+  QueriesOrFiles_t::const_iterator
+  queriesOrFilesEnd()   { return theQueriesOrFiles.end(); }
+  
 #ifdef ZORBA_DEBUGGER
   bool
   debugMode() { return theDebugMode; }
@@ -154,7 +157,7 @@ public:
   printHelp(std::ostream& os) 
   {
     os << "Zorba XQuery Engine" << std::endl;
-    os << "Usage: zorba [options]  [(-i Query) | QueryFile ]" << std::endl;
+    os << "Usage: zorba [options]  [-i Query ...] | [-f QueryFile ... ]" << std::endl;
     os << theVisibleOptions << std::endl; 
   }
 };

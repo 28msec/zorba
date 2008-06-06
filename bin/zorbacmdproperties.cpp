@@ -27,23 +27,23 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 {
   boost::program_options::options_description lGenericOptions ( "Generic Options" );
   lGenericOptions.add_options()
-    ( "version", "Print program version")
+    ( "version", "Print program version.")
 
-    ( "help,h", "Print the help list")
+    ( "help,h", "Print the help list.")
     ;
 
   boost::program_options::options_description lOutputOptions ( "Output Options" );
   lOutputOptions.add_options()
-    ("timing,t", "Print timing information")
+    ("timing,t", "Print timing information. In case of multiple queries the timing information if provided per each query")
 
     ("output-file,o", boost::program_options::value<std::string>(&theOutputFile), 
-     "Write the result to the given file")
+     "Write the result to the given file.")
 
-    ("serialize-html", "Serialize the result as HTML")
+    ("serialize-html", "Serialize the result as HTML.")
 
-    ("indent", "Indent output")
+    ("indent", "Indent output.")
 
-    ("print-query", "Print the query")
+    ("print-query", "Print the queries.")
 
     ("byte-order-mark", "Set the byte-order-mark for the serializer.")
 
@@ -73,27 +73,26 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
   boost::program_options::options_description lExecutionOptions ( "Execution Options" );
   lExecutionOptions.add_options()
     ("multiple,m", boost::program_options::value<int>(&theMultipleExecutions), 
-     "Execute the given query multiple times")
+     "Execute the given queries multiple times.")
 
-    ("inline,i", "Inline the query, i.e. do not treat the last argument as file")
+    ("inline,i", boost::program_options::value<std::vector<std::string> >(&theQueriesOrFiles),
+     "Inline the queries. All file options (-f) that are provided will be ignored.")
+
+    ("file,f", boost::program_options::value<std::vector<std::string> >(&theQueriesOrFiles),
+     "Treat the arguments as files. In case inline option (-i) is provided, the file option is ignored.")
+      
     ("external-variable,e", boost::program_options::value<std::vector<std::string> >(&theExternalVarsString), 
      "Provide the value for a variable given a file (name=file) or a value (name:=value)")
 
     ("context-item", boost::program_options::value<std::string> (&theContextItem), 
-     "Provide the context item given an XML document in a file")
+     "Provide the context item given an XML document in a file.")
 
     ("optimization-level", boost::program_options::value<std::string>(&theOptLevel)->default_value("O1"),
      "Optimization level for compiling the query (i.e. O0, O1)")
 #ifdef ZORBA_DEBUGGER
     ("debug-mode,d", boost::program_options::value< std::string >(&thePorts),
-      "Launch the query on the debugger server. Provide request and event port number: requestNo:eventNo")
+      "Launch the queries on the debugger server. Provide request and event port number: requestNo:eventNo")
 #endif
-    ;
-
-  boost::program_options::options_description lHiddenOptions ("Hidden Options" );
-  lHiddenOptions.add_options()
-    ("query,q", boost::program_options::value<std::string>(&theQueryOrFile), 
-     "the query inline or in a file")
     ;
 
   boost::program_options::positional_options_description lPositionalOptions;
@@ -101,7 +100,7 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
   boost::program_options::options_description lAllOptions;
   lAllOptions.add(lGenericOptions).add(lOutputOptions).add(lExecutionOptions)
-             .add(lStaticContextOptions).add(lHiddenOptions);
+             .add(lStaticContextOptions);
 
   theVisibleOptions.add(lGenericOptions).add(lOutputOptions).add(lStaticContextOptions)
                    .add(lExecutionOptions);
