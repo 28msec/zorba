@@ -24,6 +24,7 @@
 #include <xercesc/validators/schema/identity/IdentityConstraintHandler.hpp>
 #include <xercesc/internal/XMLScanner.hpp>
 #include <xercesc/util/RefHash3KeysIdPool.hpp>
+#include "common/shared_types.h"
 
 
 namespace zorba
@@ -47,7 +48,8 @@ class SchemaValidatorFilter : ///public EventFilter,
 public:
     SchemaValidatorFilter(bool strictValidation, ///EventHandler *next,
         XERCES_CPP_NAMESPACE_QUALIFIER GrammarResolver *grammarResolver,
-        XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager *mm, const LocationInfo *info);
+        XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager *mm, const LocationInfo *info, 
+        const QueryLoc& loc);
     virtual ~SchemaValidatorFilter();
 
     void reset();
@@ -123,6 +125,7 @@ private:
         bool laxThisOne);
 
     const LocationInfo *info_;
+    const QueryLoc& _loc;
 
     XERCES_CPP_NAMESPACE_QUALIFIER SchemaValidator *fSchemaValidator;
     XERCES_CPP_NAMESPACE_QUALIFIER SchemaGrammar *fSchemaGrammar;

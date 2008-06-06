@@ -63,7 +63,7 @@ public:
         const store::Item* qname,
         TypeConstants::quantifier_t quantifier);
 
-    SchemaValidator* getSchemaValidator();
+    XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool();
 #endif//ZORBA_NO_XMLSCHEMA
 
     store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    

@@ -34,7 +34,8 @@ private:
     XERCES_CPP_NAMESPACE::GrammarResolver       *_grammarResolver;
 
 public:
-    SchemaValidator(XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool);
+    SchemaValidator(XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax, 
+        const QueryLoc& loc);
     virtual ~SchemaValidator();
 
     void startDoc();

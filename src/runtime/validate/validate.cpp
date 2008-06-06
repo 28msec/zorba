@@ -68,14 +68,14 @@ namespace zorba
         PlanIteratorState* aState;
         DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
         STACK_PUSH (
-            ValidateIterator::effectiveValidationValue ( result, this->loc, planState, theChild ),
+            ValidateIterator::effectiveValidationValue ( result, this->loc, planState, theChild, _isLax ),
             aState
             );
         STACK_END (aState);
     }
 
     bool ValidateIterator::effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
-        PlanState& planState, const PlanIterator* iter)
+        PlanState& planState, const PlanIterator* iter, bool isLax)
     {
         bool returnVal = false;
         store::Item_t item;
@@ -107,7 +107,7 @@ namespace zorba
                 final_baseuri().getStore();
             store::CopyMode copymode;
 
-            SchemaValidator* schemaValidator = schema->getSchemaValidator();
+            SchemaValidator schemaValidator = SchemaValidator(schema->getGrammarPool(), isLax, loc);
             
 
             switch ( item->getNodeKind() )
@@ -116,7 +116,7 @@ namespace zorba
             {
                 std::cout << "Validate document" << "\n"; std::cout.flush();
 
-                schemaValidator->startDoc();
+                schemaValidator.startDoc();
                 store::Iterator_t atts = processChildren( planState, loc, schemaValidator,
                     item->getAttributes() );
                 store::Iterator_t children = processChildren( planState, loc, schemaValidator,
@@ -125,7 +125,7 @@ namespace zorba
                 GENV_ITEMFACTORY->createDocumentNode(result, (ulong)&planState, baseUri, children, 
                     true /* isroot */, true /* assign ids */, true /* copy children */, copymode );
 
-                schemaValidator->endDoc();
+                schemaValidator.endDoc();
                 std::cout << "End Validate" << "\n"; std::cout.flush();
                 break;
             }
@@ -137,8 +137,8 @@ namespace zorba
                 store::Item_t typeName = item->getType();
                 store::Item_t nodeName = item->getNodeName();
                 
-                schemaValidator->startDoc();
-                schemaValidator->startElem(nodeName);
+                schemaValidator.startDoc();
+                schemaValidator.startElem(nodeName);
 
                 store::Iterator_t attributesIterator = processChildren(planState, loc, schemaValidator, 
                     item->getAttributes());
@@ -149,8 +149,8 @@ namespace zorba
                 //   childrenIterator, attributesIterator, NULL, bindings, baseUri, true, true, false, 
                 //    copymode);
 
-                schemaValidator->endElem(nodeName);
-                schemaValidator->endDoc();
+                schemaValidator.endElem(nodeName);
+                schemaValidator.endDoc();
                 
                 std::cout << "End Validate" << "\n"; std::cout.flush();
                 //return true;
@@ -160,8 +160,6 @@ namespace zorba
                 ZORBA_ERROR_LOC_DESC( XQDY0061, loc, 
                     "Argument in validate expression not a document or element node.");
             }
-
-            delete schemaValidator;
         }
         else
         {
@@ -174,7 +172,7 @@ namespace zorba
 
 
     store::Iterator_t ValidateIterator::processChildren ( PlanState& planState, const QueryLoc& loc,
-        SchemaValidator *schemaValidator, store::Iterator_t children)
+        SchemaValidator& schemaValidator, store::Iterator_t children)
     {
         store::Item_t child;
         std::vector<store::Item_t> processedChildren;
@@ -201,7 +199,7 @@ namespace zorba
                         store::Item_t nodeName = child->getNodeName();
                         std::cout << "     - elem: " << child->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
 
-                        schemaValidator->startElem(nodeName);
+                        schemaValidator.startElem(nodeName);
 
                         store::Iterator_t attributesIterator = processChildren(planState, loc, 
                             schemaValidator, child->getAttributes());
@@ -213,7 +211,7 @@ namespace zorba
                         //    false, copymode);
                         //result = child;
 
-                        schemaValidator->endElem(nodeName);
+                        schemaValidator.endElem(nodeName);
                     }
                     break;
                     
@@ -223,7 +221,7 @@ namespace zorba
                         std::cout << "     - attr: " << child->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
                         
                         store::Item_t attName = child->getNodeName();
-                        schemaValidator->attr(attName, child->getStringValue());
+                        schemaValidator.attr(attName, child->getStringValue());
 
                         std::vector<store::Item_t> attNameVector;
                         attNameVector.push_back(attName);
@@ -246,7 +244,7 @@ namespace zorba
                     {
                         std::cout << "     - text: " << child->getStringValue() << "\n"; std::cout.flush();
                     
-                        schemaValidator->text(child->getStringValue());
+                        schemaValidator.text(child->getStringValue());
 
                         store::Item_t stringItem;
                         //GENV_ITEMFACTORY->createString(stringItem, child->getStringValue());

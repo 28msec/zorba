@@ -511,18 +511,15 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
     return result;
 }
 
+
 #ifndef ZORBA_NO_XMLSCHEMA
-/**
-*   User must dealocate the returned SchemaValidator*
-*/
-SchemaValidator* Schema::getSchemaValidator()
+
+XERCES_CPP_NAMESPACE::XMLGrammarPool* Schema::getGrammarPool()
 {
-    return new SchemaValidator(_grammarPool);
+    return _grammarPool;
 }
-#endif//ZORBA_NO_XMLSCHEMA
 
 
-#ifndef ZORBA_NO_XMLSCHEMA
 // user atomic types
 bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aSourceType,
                                   const xqtref_t& aTargetType, store::Item_t &result)

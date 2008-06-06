@@ -22,14 +22,15 @@ XERCES_CPP_NAMESPACE_USE;
 namespace zorba
 {
 
-SchemaValidator::SchemaValidator(XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool)
+SchemaValidator::SchemaValidator(XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax, 
+    const QueryLoc& loc)
 {
     XERCES_CPP_NAMESPACE::MemoryManager* memoryManager = XERCES_CPP_NAMESPACE::XMLPlatformUtils::fgMemoryManager;
 
     _grammarResolver = new (memoryManager) XERCES_CPP_NAMESPACE::GrammarResolver(grammarPool, memoryManager);
     _grammarResolver->useCachedGrammarInParse(true);
 
-    _schemaValidatorFilter = new SchemaValidatorFilter(false, _grammarResolver, memoryManager, NULL);
+    _schemaValidatorFilter = new SchemaValidatorFilter(!isLax, _grammarResolver, memoryManager, NULL, loc);
 }
 
 SchemaValidator::~SchemaValidator()

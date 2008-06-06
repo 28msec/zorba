@@ -54,10 +54,10 @@ namespace zorba
         virtual void accept(PlanIterVisitor&) const;
 
         static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
-            PlanState& planState, const PlanIterator* iter);
+            PlanState& planState, const PlanIterator* iter, bool isLax);
 
         static store::Iterator_t processChildren ( PlanState& planState, const QueryLoc& loc,
-            SchemaValidator *schemaValidator, store::Iterator_t children);
+            SchemaValidator& schemaValidator, store::Iterator_t children);
     };
 
 }
