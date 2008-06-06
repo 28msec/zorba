@@ -1,0 +1,15 @@
+(:*******************************************************:)
+(: Test: libraryModule11.xqlib                           :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose:XQST0048 the functions namespace prefix has to:)
+(: be the same as the namespace prefix specified in the  :)
+(: module declaration                                    :)
+(:*******************************************************:)
+
+module namespace lm10ns = "http://www.w3.org/TestModules/lm10ns";
+
+declare function lm11ns:moduleNamespace()
+{
+"lm11ns"
+};
