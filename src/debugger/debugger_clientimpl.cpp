@@ -91,7 +91,8 @@ namespace zorba{
     while( ! isQueryTerminated() )
     { 
       AbstractMessage * lMessage = MessageFactory::buildMessage( lSocket );
-      if ( dynamic_cast< SuspendedEvent * > ( lMessage ) )
+      SuspendedEvent * lSuspendedMsg;
+      if ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage ) )
       {
         theExecutionStatus = QUERY_SUSPENDED;
       } else if ( dynamic_cast< StartedEvent * > ( lMessage ) ) {
@@ -206,5 +207,25 @@ namespace zorba{
     SetMessage lMessage;
     lMessage.addLocation( loc );
     send( &lMessage );
+  }
+
+  void ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineNo )
+  {
+    QueryLoc loc;
+    loc.setLineBegin( aLineNo );
+    
+    SetMessage lMessage;
+    lMessage.addLocation( loc );
+    send( &lMessage );
+  }
+  
+  String ZorbaDebuggerClientImpl::getFileName() const
+  {
+    return String( theRemoteFileName );
+  }
+
+  unsigned int ZorbaDebuggerClientImpl::getLineNo() const
+  {
+    return theRemoteLineNo;
   }
 }//end of namespace

@@ -19,9 +19,26 @@
 
 #include "debugcmd_client.h"
 
-bool isCommand( std::string & aLine, std::string aCommand )
+std::vector<std::string> get_args( const std::string& str )
 {
-  return aLine.substr( 0, aCommand.length() ) == aCommand;
+  // Skip delims at beginning, find start of first token
+  std::string::size_type lastPos = str.find_first_not_of(' ', 0);
+  // Find next delimiter @ end of token
+  std::string::size_type pos     = str.find_first_of(' ', lastPos);
+  // output vector
+  std::vector<std::string> tokens;
+
+  while (std::string::npos != pos || std::string::npos != lastPos)
+  {
+    // Found a token, add it to the vector.
+    tokens.push_back(str.substr(lastPos, pos - lastPos));
+    // Skip delims.  Note the "not_of". this is beginning of token
+    lastPos = str.find_first_not_of(' ', pos);
+    // Find next delimiter at end of token.
+    pos     = str.find_first_of(' ', lastPos);
+   }
+   
+   return tokens;
 }
 
 void debugcmd_client( std::istream & anInput,
@@ -48,26 +65,48 @@ void debugcmd_client( std::istream & anInput,
     std::string lLine;
     
     std::getline( anInput, lLine );
+    std::vector<std::string> lArgs = get_args( lLine );
+    std::string lCommand = lArgs.at( 0 ); 
     
-    if ( isCommand( lLine, "q" ) || isCommand( lLine, "quit" ) )
+    if ( lCommand == "q" || lCommand == "quit" )
     {
+      
       lDebuggerClient->terminate();
       while( ! lDebuggerClient->isQueryTerminated() )
       {
-        usleep(10);
+        if ( lDebuggerClient->isQuerySuspended() )
+        {
+          usleep(10 );
+        }
       }
       exit(7);
-    } else if  ( isCommand( lLine, "b" ) || isCommand( lLine, "break" ) ) {
-      unsigned int lLineNo;
-      std::cerr << "Line: " << lLineNo << std::endl;
-    } else if ( isCommand( lLine, "r" ) || isCommand( lLine, "run" ) ) {
-      lDebuggerClient->run();
-      while( lDebuggerClient->isQueryRunning() )
+    
+    } else if  ( lCommand == "b" || lCommand == "break" ) {
+     
+      if ( lArgs.size() < 2 )
       {
-        std::cout.flush();     
+        anOutput << "Invalid syntax." << std::endl;
+        anOutput << "(b|break) <line number>" << std::endl;
       }
+      unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
+      lDebuggerClient->addBreakpoint( lLineNo );
+      anOutput << "Set breakpoint at line " << lLineNo << std::endl;
+    
+    } else if ( lCommand ==  "r" || lCommand == "run" ) {
+      
+      lDebuggerClient->run();
+      
+      while( ! lDebuggerClient->isQueryTerminated() )
+      {
+        if ( lDebuggerClient->isQuerySuspended() )
+        {
+          anOutput << "Suspended at line " << lDebuggerClient->getLineNo() << std::endl; 
+        }
+      }
+      
       sleep( 1 );
-    } else if ( isCommand( lLine, "s" ) || isCommand( lLine, "stop" ) ) {
+    
+    } else if ( lCommand == "s" || lCommand ==  "stop" ) {
       if( lDebuggerClient->isQueryIdle() || lDebuggerClient->isQueryTerminated() )
       {
         anOutput << "There is no query running." << std::endl;
@@ -75,7 +114,7 @@ void debugcmd_client( std::istream & anInput,
         lDebuggerClient->terminate();
         anOutput << "Query execution terminated" << std::endl;
       }
-    }else if ( isCommand( lLine, "h" ) || isCommand( lLine, "help" ) ) {
+    }else if ( lCommand == "h" || lCommand == "help" ) {
       //TODO: Full documentation of each command
       anOutput << "List of available commands:" << std::endl;
       anOutput << "run   -- Run the query." << std::endl;

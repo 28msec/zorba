@@ -532,6 +532,11 @@ Byte * SuspendedEvent::serialize( Length & aLength ) const
   return lMsg; 
 }
 
+QueryLoc SuspendedEvent::getLocation() const
+{
+  return theLocation;
+}
+
 std::string SuspendedEvent::getData() const
 {
   std::stringstream lJSONString;

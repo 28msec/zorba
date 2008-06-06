@@ -69,10 +69,19 @@ namespace zorba{
 
       void addBreakpoint( const String & aFileName, const unsigned int aLineNo );
 
+      void addBreakpoint( const unsigned int aLineNo );
+      
       void clearBreakpoint( const String & aFileName, const unsigned int aLineNo );
-    
+
+      String getFileName() const;
+
+      unsigned int getLineNo() const;
     protected:
- 
+
+      std::string theRemoteFileName;
+
+      unsigned int theRemoteLineNo;
+
       TCPSocket * theRequestSocket;
       
       TCPServerSocket * theEventServerSocket;

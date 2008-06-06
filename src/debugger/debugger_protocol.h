@@ -504,6 +504,8 @@ class SuspendedEvent: public AbstractCommandMessage
 
     virtual Byte * serialize( Length & aLength ) const;
 
+    QueryLoc getLocation() const;
+
 };
 
 /**

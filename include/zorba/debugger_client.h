@@ -66,7 +66,16 @@ namespace zorba{
       addBreakpoint( const String & aFileName, const unsigned int aLineNo ) = 0;
 
       virtual void
+      addBreakpoint( const unsigned int aLineNo ) = 0;
+
+      virtual void
       clearBreakpoint( const String & aFileName, const unsigned int aLineNo ) = 0;
+
+      virtual String
+      getFileName() const = 0;
+
+      virtual unsigned int
+      getLineNo() const = 0;
   };
 
 
