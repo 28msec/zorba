@@ -38,8 +38,8 @@ namespace zorba{
   :
     theRequestSocket(0), theEventServerSocket(0), theExecutionStatus( QUERY_IDLE ) 
   {
-    try
-    { 
+    //try
+    //{ 
       //Start the Event Server Socket
       theEventServerSocket = new TCPServerSocket( aEventPortno );
       //Connect the Request Client Socket
@@ -49,9 +49,13 @@ namespace zorba{
       //Start the event listener thread
       boost::thread theEventListener (
         boost::bind( &ZorbaDebuggerClientImpl::listenEvents,  this ) );
-    } catch ( std::exception &e ) {
-      std::cerr << e.what() << std::endl;
-    }
+    //} catch ( SocketException &e ) {
+      //std::cerr << e.what() << std::endl;
+      //std::cerr << "Host: localhost" << std::endl;
+      //std::cerr << "Request port: " << aRequestPortno << std::endl;
+      //std::cerr << "Event port: " << aEventPortno << std::endl;
+    //}
+    //delete theRequestSocket;
   }
 
   ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
@@ -76,10 +80,7 @@ namespace zorba{
     delete[] msg;
     if( !result )
     {
-      std::cerr << "Received Handshake:" << msg << std::endl;
       throw MessageException( "Handshake failed" ); 
-    } else {
-      std::cerr << "Handshake is sucessful" << std::endl;
     }
   }
 
@@ -99,12 +100,10 @@ namespace zorba{
         theExecutionStatus = QUERY_RESUMED;
       } else if ( dynamic_cast< TerminatedEvent * > ( lMessage ) ) {
         theExecutionStatus = QUERY_TERMINATED;
-      } else {
-        std::cerr << "Received an invalid event" << std::endl;
       }
       delete lMessage;
     }
-    delete lSocket;
+    //delete lSocket;
   }
 
   bool ZorbaDebuggerClientImpl::isQueryRunning() const
@@ -131,7 +130,7 @@ namespace zorba{
   {
     //Connect the client
     Length length;
-    Byte * lMessage = aMessage->serialize( length);
+    Byte * lMessage = aMessage->serialize( length );
     try
     {
       theRequestSocket->send( lMessage, length );
@@ -143,36 +142,24 @@ namespace zorba{
 
   void ZorbaDebuggerClientImpl::run()
   {
-#ifndef NDEBUG
-    std::cerr << "Send a run message" << std::endl;
-#endif
     RunMessage lMessage;
     send( &lMessage );
   }
 
   void ZorbaDebuggerClientImpl::suspend()
   {
-#ifndef NDEBUG
-    std::cerr << "Send a suspend message" << std::endl;
-#endif
     SuspendMessage lMessage;
     send( &lMessage );
   }
 
   void ZorbaDebuggerClientImpl::resume()
   {
-#ifndef NDEBUG
-    std::cerr << "Send a resume message" << std::endl;
-#endif
     ResumeMessage lMessage;
     send( &lMessage );
   }
 
   void ZorbaDebuggerClientImpl::terminate()
   {
-#ifndef NDEBUG
-    std::cerr << "Send a terminate message" << std::endl;
-#endif
     TerminateMessage lMessage;
     send( &lMessage );
   }

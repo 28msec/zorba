@@ -15,8 +15,11 @@
  */
 
 #include <zorba/zorba.h>
+#include <store/naive/simple_store.h>
 
 #include "test_debugger_protocol.h"
+
+using namespace zorba;
 
 int test_debugger_protocol( int argc, char* argv[] )
 {
@@ -60,9 +63,10 @@ void test_packet( AbstractCommandMessage * aMessage )
   delete lAbstractMessage;
 }
 
-  bool msgcmp( Byte * aMsg1, char * aMsg2, unsigned int aLength )
+  bool msgcmp( Byte * aMsg1, const char * aMsg2, unsigned int aLength )
   {
-    Byte * lMsg2 = reinterpret_cast<Byte *>( aMsg2 );
+    
+    Byte * lMsg2 = reinterpret_cast<Byte *>( const_cast< char * >( aMsg2 ) );
     return memcmp( aMsg1, lMsg2, aLength ) == 0;
   }
 
@@ -71,7 +75,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test run message" << std::endl;
     RunMessage msg;
     test_packet<RunMessage>( &msg );
-    char * lBinary =  "\0\0\0\xb\0\0\0\1\0\xf1\1";
+    const char * lBinary =  "\0\0\0\xb\0\0\0\1\0\xf1\1";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length ) );
@@ -83,7 +87,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test suspend message" << std::endl;
     SuspendMessage msg;
     test_packet<SuspendMessage>( &msg );
-    char * lBinary =  "\0\0\0\xb\0\0\0\2\0\xf1\2"; 
+    const char * lBinary =  "\0\0\0\xb\0\0\0\2\0\xf1\2"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -95,7 +99,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test resume message" << std::endl;
     ResumeMessage msg;
     test_packet<ResumeMessage>( &msg );
-    char * lBinary =  "\0\0\0\xb\0\0\0\3\0\xf1\3"; 
+    const char * lBinary =  "\0\0\0\xb\0\0\0\3\0\xf1\3"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -107,7 +111,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test terminate message" << std::endl;
     TerminateMessage msg;
     test_packet<TerminateMessage>( &msg );
-    char * lBinary =  "\0\0\0\xb\0\0\0\4\0\xf1\4"; 
+    const char * lBinary =  "\0\0\0\xb\0\0\0\4\0\xf1\4"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -119,7 +123,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test step into message" << std::endl;
     StepMessage msg( STEP_INTO );
     test_packet<StepMessage>( &msg );
-    char * lBinary =  "\0\0\0\xc\0\0\0\5\0\xf1\5\1"; 
+    const char * lBinary =  "\0\0\0\xc\0\0\0\5\0\xf1\5\1"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -131,7 +135,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test step out message" << std::endl;
     StepMessage msg( STEP_OUT );
     test_packet<StepMessage>( &msg );
-    char * lBinary =  "\0\0\0\xc\0\0\0\6\0\xf1\5\2"; 
+    const char * lBinary =  "\0\0\0\xc\0\0\0\6\0\xf1\5\2"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -143,7 +147,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test step over message" << std::endl;
     StepMessage msg( STEP_OVER );
     test_packet<StepMessage>( &msg );
-    char * lBinary =  "\0\0\0\xc\0\0\0\7\0\xf1\5\3"; 
+    const char * lBinary =  "\0\0\0\xc\0\0\0\7\0\xf1\5\3"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -155,7 +159,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test started event message" << std::endl;
     StartedEvent msg;
     test_packet< StartedEvent >( &msg );
-    char * lBinary = "\0\0\0\xb\0\0\0\x8\0\xf8\1";
+    const char * lBinary = "\0\0\0\xb\0\0\0\x8\0\xf8\1";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -167,7 +171,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test terminated event message" << std::endl;
     TerminatedEvent msg;
     test_packet< TerminatedEvent >( &msg );
-    char * lBinary = "\0\0\0\xb\0\0\0\x9\0\xf8\2";
+    const char * lBinary = "\0\0\0\xb\0\0\0\x9\0\xf8\2";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -209,7 +213,7 @@ void test_packet( AbstractCommandMessage * aMessage )
     std::cerr << "Test resumed event message" << std::endl;
     ResumedEvent msg;
     test_packet< ResumedEvent >( &msg );
-    char * lBinary = "\0\0\0\xb\0\0\0\xb\0\xf8\4";
+    const char * lBinary = "\0\0\0\xb\0\0\0\xb\0\xf8\4";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     assert( msgcmp( lBmsg, lBinary, length) );
@@ -252,7 +256,8 @@ void test_packet( AbstractCommandMessage * aMessage )
 
   void TestDebuggerSerialization::testVariableMessage()
   {
-    Zorba * lZorba = Zorba::getInstance();
+    store::SimpleStore* lStore = store::SimpleStore::getInstance();
+    Zorba * lZorba = Zorba::getInstance( lStore );
     ItemFactory * lFactory = lZorba->getItemFactory();
     /* The item that is to be bound to the external variable */
     Item lItem = lFactory->createInteger(4);

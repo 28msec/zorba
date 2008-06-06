@@ -23,7 +23,6 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "store/api/item.h"
-#include "store/api/item_iterator.h"
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "debugger/socket.h"
-
+#include <sstream>
 #if defined WIN32 || defined WINCE
 #include <winsock2.h>
   typedef int socklen_t;
@@ -135,7 +135,9 @@ void Socket::setLocalPort(unsigned short localPort) throw(SocketException) {
   localAddr.sin_port = htons(localPort);
 
   if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) {
-    throw SocketException("Set of local port failed (bind())", true);
+    stringstream lMsg;
+    lMsg << "Set of local port failed: " << localPort;
+    throw SocketException(lMsg.str(), true);
   }
 }
 
@@ -185,7 +187,9 @@ void CommunicatingSocket::connect(const string &foreignAddress,
 
   // Try to connect to the given port
   if (::connect(sockDesc, (sockaddr *) &destAddr, sizeof(destAddr)) < 0) {
-    throw SocketException("Connect failed (connect())", true);
+    stringstream lMsg;
+    lMsg << "Connection @" << foreignAddress << ":" << foreignPort << " failed.";
+    throw SocketException( lMsg.str(), true);
   }
 }
 

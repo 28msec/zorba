@@ -20,7 +20,7 @@ CREATE_TEST_SOURCELIST(DebuggerTests
 )
  
 ADD_EXECUTABLE(DebuggerTests ${DebuggerTests})
-TARGET_LINK_LIBRARIES(DebuggerTests zorba)
+TARGET_LINK_LIBRARIES(DebuggerTests zorba simplestore)
 
 SET (TestsToRun ${DebuggerTests})
 REMOVE (TestsToRun DebuggerTests.cpp)

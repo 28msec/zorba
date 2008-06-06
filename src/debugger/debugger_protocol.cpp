@@ -16,6 +16,7 @@
 
 #include <iomanip>
 #include <zorba/zorba.h>
+#include <store/naive/simple_store.h>
 
 #include "api/unmarshaller.h"
 #include "tiny_json/json.hpp"
@@ -631,7 +632,9 @@ Byte * VariableMessage::serialize( Length & aLength ) const
 
 Item VariableMessage::getItem() const
 {
-  ItemFactory * lFactory = Zorba::getInstance()->getItemFactory();
+  
+  store::SimpleStore * lStore = store::SimpleStore::getInstance();
+  ItemFactory * lFactory = Zorba::getInstance( lStore )->getItemFactory();
   Item lExternalItem;
   if ( theType == "xs:integer" ) {
     lExternalItem = lFactory->createInteger( String( theValue ) );

@@ -16,6 +16,10 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 
 SET(ZORBA_CMD_SRCS zorbacmd.cpp zorbacmdproperties.cpp)
 
+IF(ZORBA_DEBUGGER)
+ SET(ZORBA_CMD_SRCS ${ZORBA_CMD_SRCS} debugcmd_client.cpp) 
+ENDIF(ZORBA_DEBUGGER)
+
 ADD_EXECUTABLE(zorbacmd ${ZORBA_CMD_SRCS})
 TARGET_LINK_LIBRARIES(zorbacmd zorba simplestore)
 SET_TARGET_PROPERTIES(zorbacmd PROPERTIES OUTPUT_NAME "zorba") # cmake way to rename the file

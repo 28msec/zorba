@@ -23,8 +23,12 @@
 #include "zorbacmdproperties.h"
 
 #include <zorba/zorba.h>
+
 #ifdef ZORBA_DEBUGGER
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp> 
 #include <zorba/debugger_server.h>
+#include "debugcmd_client.h"
 #endif
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -38,7 +42,22 @@
 
 namespace fs = boost::filesystem;
 
-
+#ifdef ZORBA_DEBUGGER
+void server( std::istream * aQuery,
+            const char * aFileName,
+            unsigned short aRequestPort,
+            unsigned short aEventPort)
+{
+  zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
+  try
+  {
+    lDebugger->start( aQuery, aFileName, aRequestPort, aEventPort );
+  } catch( std::exception &e ) {
+    std::cout << e.what() << std::endl;
+    exit(7);
+  }
+}
+#endif
 bool
 populateStaticContext(zorba::StaticContext_t& aStaticContext, ZorbaCMDProperties* aProperties)
 {
@@ -204,7 +223,7 @@ int _tmain(int argc, _TCHAR* argv[])
     const char* fname = (*lIter).c_str();
     fs::path path;
     std::auto_ptr<std::istream> qfile;
-
+    
     if (! lProperties.inlineQuery()) {
       path = fs::system_complete (fname);
       qfile.reset (new std::ifstream (path.native_file_string ().c_str ()));
@@ -212,6 +231,25 @@ int _tmain(int argc, _TCHAR* argv[])
     else {
       qfile.reset (new std::istringstream(fname));
     }
+#ifdef ZORBA_DEBUGGER
+  // debug mode
+  if ( lProperties.debugMode() )
+  {
+    std::cout << "Zorba XQuery debugger." << std::endl;
+    std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
+    std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
+
+    boost::thread lServerThread ( boost::bind(&server, qfile.get(),
+                                  fname,
+                                  lProperties.requestPort(),
+                                  lProperties.eventPort())
+                                   );
+
+    debugcmd_client( std::cin, std::cout, lProperties.requestPort(), lProperties.eventPort() );
+    lServerThread.join(); 
+    return 0;
+  }
+#endif
 
     if ( !lProperties.inlineQuery() && !qfile->good() || qfile->eof() ) {
       std::cerr << "file " << fname << " not found or not readable" << std::endl;

@@ -21,6 +21,7 @@
 #include <boost/bind.hpp>
 
 #include  <zorba/zorba.h>
+#include <store/naive/simple_store.h>
 
 #include  "debugger/debugger_serverimpl.h"
 
@@ -45,8 +46,8 @@ ZorbaDebuggerImpl::~ZorbaDebuggerImpl()
 void ZorbaDebuggerImpl::start( std::istream * aQuery, const String & aFileName, unsigned short aRequestPortno, unsigned short aEventPortno)
 {
   TCPSocket * lSock;
-  try
-  {
+  //try
+  //{
     //Set the query to process
     theQuery = aQuery;
     //Set the fileName
@@ -74,9 +75,9 @@ void ZorbaDebuggerImpl::start( std::istream * aQuery, const String & aFileName, 
       handleTcpClient( lSock );
       //delete lSock;
     }
-  } catch( std::exception &e ) {
-    std::cerr << e.what() << std::endl;
-  }
+  //} catch( std::exception &e ) {
+  //  std::cerr << e.what() << std::endl;
+  //}
   delete lSock;
   //exit( 0 );
 }
@@ -116,27 +117,18 @@ void ZorbaDebuggerImpl::sendEvent( AbstractCommandMessage * aMessage )
 
 void ZorbaDebuggerImpl::startedEvent()
 {
-#ifndef NDEBUG
-    std::cerr << "Send a started event" << std::endl;
-#endif
     StartedEvent lMessage;
     sendEvent( &lMessage );
 }
 
 void ZorbaDebuggerImpl::suspendedEvent( QueryLoc &aLocation, SuspensionCause aCause )
 {
-#ifndef NDEBUG
-    std::cerr << "Send a suspended event" << std::endl;
-#endif
     SuspendedEvent lMessage( aLocation, aCause );
     sendEvent( &lMessage );
 }
 
 void ZorbaDebuggerImpl::resumedEvent()
 {
-#ifndef NDEBUG
-    std::cerr << "Send a resumed event" << std::endl;
-#endif
     ResumedEvent * lMessage = new ResumedEvent();
     sendEvent( lMessage );
     delete lMessage;
@@ -144,9 +136,6 @@ void ZorbaDebuggerImpl::resumedEvent()
 
 void ZorbaDebuggerImpl::terminatedEvent()
 {
-#ifndef NDEBUG
-    std::cerr << "Send a terminated event" << std::endl;
-#endif
     TerminatedEvent lMessage;
     sendEvent( &lMessage );
 }
@@ -154,29 +143,29 @@ void ZorbaDebuggerImpl::terminatedEvent()
 void ZorbaDebuggerImpl::run( std::istream * aQuery )
 {
   setStatus( QUERY_RUNNING );
-  ResultIterator_t lIterator;
   try
   {
-    Zorba * lZorba = Zorba::getInstance();
-    XQuery::CompilerHints lCompilerHints;
-    lCompilerHints.opt_level = XQuery::CompilerHints::O0;
-    XQuery_t lQuery =  lZorba->createQuery();
+    store::SimpleStore * lStore = store::SimpleStore::getInstance();
+    XQuery_t lQuery = Zorba::getInstance( lStore )->createQuery();
     lQuery->setFileName( theFileName );
-    lQuery->compile( *aQuery, lCompilerHints ); 
-    lIterator = lQuery->iterator();
+    Zorba_CompilerHints lCompilerHints;
+    lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
+    lQuery->compile( * aQuery, lCompilerHints);
+    ResultIterator_t lIterator = lQuery->iterator();
     lIterator->open();
+
     Item lItem;
-    while ( lIterator->next( lItem ) )
-    {
+    while ( lIterator->next(lItem) ) {
       std::cout << lItem.getStringValue() << std::endl;
     }
-    lZorba->shutdown();
+
+    lIterator->close();
   } catch ( StaticException& se ) {
     std::cerr << se << std::endl;
   } catch ( DynamicException& de ) {
     std::cerr << de << std::endl;
-  } 
-  lIterator->close();
+  }
+
   setStatus( QUERY_TERMINATED );
 }
 
@@ -194,8 +183,9 @@ bool ZorbaDebuggerImpl::hasToSuspend()
 
   for( unsigned int i = 0; i < theBreakpoints.size(); i++ )
   {
-    if( theLocation.getFilename() == theBreakpoints.at( i ).getFilename()
-        && theLocation.getLineno() == theBreakpoints.at( i ).getLineno() )
+//    if( theLocation.getFilename() == theBreakpoints.at( i ).getFilename()
+//        && theLocation.getLineno() == theBreakpoints.at( i ).getLineno() )
+    if ( theLocation.getLineno() == theBreakpoints.at( i ).getLineno() )
     {
       setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
       return true;
@@ -239,9 +229,6 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
     
     if ( lCommandMessage )
     {
-#ifndef NDEBUG
-      std::cerr << "Received a command" << std::endl;
-#endif
       //Send the reply message
       lReplyMessage = lCommandMessage->getReplyMessage();
       lByteMessage = lReplyMessage->serialize( length );
@@ -263,7 +250,7 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
       }
     }    
   } catch ( std::exception &e ) {
-    std::cerr << e.what() << std::endl;
+    std::cerr <<  e.what() << std::endl;
   }
   delete[] lByteMessage;
   delete lMessage;
@@ -272,26 +259,17 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
 
 void ZorbaDebuggerImpl::run()
 {
-#ifndef NDEBUG
-  std::cout << "Status is now running" << std::endl;
-#endif
   boost::thread theRuntimeThread (
       boost::bind( &ZorbaDebuggerImpl::run, this, theQuery ) );
 }
 
 void ZorbaDebuggerImpl::suspend()
 {
-#ifndef NDEBUG
-  std::cout << "Status is now suspended" << std::endl; 
-#endif
   setStatus( QUERY_SUSPENDED );
 }
 
 void ZorbaDebuggerImpl::resume()
 {
-#ifndef NDEBUG
-  std::cout << "Status is now running" << std::endl;
-#endif
 // boost::mutex::scoped_lock lock(theRuntimeMutex);
   setStatus( QUERY_RUNNING );
   theRuntimeSuspendedCV.notify_one();
@@ -299,9 +277,6 @@ void ZorbaDebuggerImpl::resume()
 
 void ZorbaDebuggerImpl::terminate()
 {
-#ifndef NDEBUG
-  std::cout << "Status is now terminated" << std::endl;
-#endif
   setStatus( QUERY_TERMINATED );
 }
 
