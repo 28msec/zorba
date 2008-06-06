@@ -26,37 +26,10 @@
 #include <cstring>
 #include <cstdlib>
 #include "zorbatypes/collation_manager.h"
+#include "util/string_utils.h"
 
 namespace zorba {
 
-  /**
-   * Method splits the passed string into tokes. Delimiters are all characters
-   * passed in the variable delims.
-   */
-  std::vector<std::string> tokenize_str(const std::string& str,
-      const std::string& delims)
-  {
-    // Skip delims at beginning, find start of first token
-    std::string::size_type lastPos = str.find_first_not_of(delims, 0);
-    // Find next delimiter @ end of token
-    std::string::size_type pos     = str.find_first_of(delims, lastPos);
-
-    // output vector
-    std::vector<std::string> tokens;
-
-    while (std::string::npos != pos || std::string::npos != lastPos)
-    {
-      // Found a token, add it to the vector.
-      tokens.push_back(str.substr(lastPos, pos - lastPos));
-      // Skip delims.  Note the "not_of". this is beginning of token
-      lastPos = str.find_first_not_of(delims, pos);
-      // Find next delimiter at end of token.
-      pos     = str.find_first_of(delims, lastPos);
-    }
-
-    return tokens;
-  }
-                                          
 
   XQPCollator::XQPCollator(void* aCollator)
   : theCollator((Collator*)aCollator) {}
@@ -93,7 +66,7 @@ namespace zorba {
     // e.g. PRIMARY/en/US
     std::string lCollationIdentifier = aCollationURI.substr(37, aCollationURI.size() - 37);
 
-    std::vector<std::string> lTokens = tokenize_str(lCollationIdentifier, "/");
+    std::vector<std::string> lTokens = std_string_tokenize(lCollationIdentifier, "/");
     if(lTokens.size() < 2)
     {
       return 0;
