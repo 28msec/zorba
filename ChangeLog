@@ -1,5 +1,11 @@
 Zorba - The XQuery Processor
 
+version 0.9.2 (2008.04.15):
+  * Module support (as in the XQuery 1.0 W3C recommendation)
+  * Removed boost shared pointers from the API
+  * Performance improvements and bug fixes
+  * C API (zorbac.h)
+
 version 0.9.1 (2008.04.30):
   * Initial release supporting 
    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) 

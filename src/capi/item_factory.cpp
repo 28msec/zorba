@@ -37,16 +37,21 @@ namespace zorbac {
   ItemFactory::create_string(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item)
   {
     ITEMFACTORY_TRY
-      std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
-      std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
+      if (!*item) {
+        std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
+        std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
 
-      lInnerItem->theItem = FF->createString(str);
-      if (lInnerItem->theItem.isNull()) ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
+        lInnerItem->theItem = FF->createString(str);
 
-      Item::assign_functions(lItem.get());
+        Item::assign_functions(lItem.get());
 
-      (*item) = lItem.release();
-      (*item)->data = lInnerItem.release();
+        (*item) = lItem.release();
+        (*item)->data = lInnerItem.release();
+      } else {
+        static_cast<zorbac::Item*>((*item)->data)->theItem = FF->createString(str);
+      }
+      if (static_cast<zorbac::Item*>((*item)->data)->theItem.isNull()) 
+        ZORBA_ERROR(XQP0025_COULD_NOT_CREATE_ITEM);
 
     ITEMFACTORY_CATCH
   }

@@ -2,6 +2,7 @@ SET(CAPI_SRCS
     collection.cpp
     data_manager.cpp
     dynamic_context.cpp
+    external_function.cpp
     implementation.cpp
     item.cpp
     item_factory.cpp

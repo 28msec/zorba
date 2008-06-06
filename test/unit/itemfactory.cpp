@@ -27,7 +27,7 @@ using namespace zorba;
 #define UNIT_ASSERT(x) \
   do { \
     if (! (x)) { \
-      std::cerr << "assertion in file __FILE__ in line __LINE__ failed" << std::endl; \
+      std::cerr << "assertion in file" __FILE__ << " in line " << __LINE__ << " failed" << std::endl; \
       exit(1); \
     } \
   } while (0)

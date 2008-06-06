@@ -25,9 +25,6 @@ namespace zorbac {
       static XQUERY_ERROR
       next(XQC_Sequence sequence, XQC_Item item);
 
-      static XQUERY_ERROR
-      reset(XQC_Sequence sequence);
-
       static void
       free(XQC_Sequence sequence);
 

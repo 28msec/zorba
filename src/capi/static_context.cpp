@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <zorba/zorba.h>
+#include "capi/external_function.h"
 
 using namespace zorba;
 
@@ -314,6 +315,31 @@ namespace zorbac {
     SC_CATCH
   }
 
+  XQUERY_ERROR
+  StaticContext::register_external_function(XQC_StaticContext context, 
+                                            const char* uri,
+                                            const char* localname,
+                                            external_function_init init,
+                                            external_function_next next,
+                                            external_function_release release,
+                                            void* global_user_data)
+  {
+    SC_TRY
+      zorba::StaticContext* lContext = getStaticContext(context);
+      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
+
+      ExternalFunctionWrapper* lFunc = new ExternalFunctionWrapper(uri, localname, 
+                                                                   init, next, release, 
+                                                                   global_user_data);
+
+      lContext->registerStatelessExternalFunction(lFunc);
+
+      // deletion is done when releasing the static context
+      lWrapper->theFunctions.push_back(lFunc);
+
+    SC_CATCH
+  }
+
   void
   StaticContext::free(XQC_StaticContext context)
   {
@@ -355,7 +381,17 @@ namespace zorbac {
     context->get_copy_ns_mode                  = StaticContext::get_copy_ns_mode;
     context->set_base_uri                      = StaticContext::set_base_uri;
     context->get_base_uri                      = StaticContext::get_base_uri;
+    context->register_external_function        = StaticContext::register_external_function;
     context->free                              = StaticContext::free;
+  }
+
+  StaticContext::~StaticContext()
+  {
+    for (std::vector<ExternalFunctionWrapper*>::iterator lIter = theFunctions.begin();
+         lIter != theFunctions.end();
+         ++lIter) {
+      delete *lIter;
+    }
   }
 
 } /* namespace zorbac */

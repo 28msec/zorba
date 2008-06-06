@@ -42,23 +42,6 @@ namespace zorbac {
      }
   }
 
-  XQUERY_ERROR
-  Sequence::reset(XQC_Sequence seq)
-  {
-     try {
-       ResultIterator* lIter = static_cast<ResultIterator*>(seq->data);
-
-       lIter->close();
-       lIter->open();
- 
-       return XQ_NO_ERROR;
-     } catch (ZorbaException& e) {
-       return e.getErrorCode();
-     } catch (...) {
-       return XQP0019_INTERNAL_ERROR;
-     }
-  }
- 
   void
   Sequence::free(XQC_Sequence seq)
   {
@@ -78,7 +61,6 @@ namespace zorbac {
   Sequence::assign_functions(XQC_Sequence seq)
   {
     seq->next = Sequence::next;
-    seq->reset = Sequence::reset;
     seq->free = Sequence::free;
   }
 

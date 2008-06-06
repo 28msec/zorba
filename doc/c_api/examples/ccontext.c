@@ -33,7 +33,7 @@ ccontext_example_1(XQC_Implementation impl)
   XQC_DynamicContext lContext;
   XQC_ItemFactory    lFactory;
   FILE*              lOutFile = stdout;
-  XQC_Item           lItem;
+  XQC_Item           lItem = 0;
 
   impl->item_factory(impl, &lFactory);
   lFactory->create_string(lFactory, "Zorba", &lItem);
@@ -60,7 +60,6 @@ ccontext_example_1(XQC_Implementation impl)
 int
 ccontext_example_2(XQC_Implementation impl)
 {
-  XQUERY_ERROR       lError = XQ_NO_ERROR;
   XQC_Query          lXQuery;
   XQC_StaticContext  lContext;
   FILE*              lOutFile = stdout;
@@ -78,7 +77,7 @@ ccontext_example_2(XQC_Implementation impl)
                 "fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')",
                 lContext, &lXQuery);
 
-  lError = lXQuery->execute(lXQuery, lOutFile);
+  lXQuery->execute(lXQuery, lOutFile);
 
   lContext->free(lContext);
   lXQuery->free(lXQuery);
@@ -126,7 +125,7 @@ ccontext_example_4(XQC_Implementation impl)
   XQC_Sequence       lSequence1;
 
   XQC_Sequence       lSequence2;
-  XQC_Item           lItem;
+  XQC_Item           lItem = 0;
   const char*        lStringValue;
 
   // compile the first query and get its result sequence
@@ -148,13 +147,6 @@ ccontext_example_4(XQC_Implementation impl)
   impl->create_item(impl, &lItem);
 
   // iterate over the result two times
-  while ( lSequence2->next(lSequence2, lItem) != API0025_END_OF_SEQUENCE ) {
-    lItem->string_value(lItem, &lStringValue);
-    printf("%s ", lStringValue);
-  }
-
-  lSequence2->reset(lSequence2);
-
   while ( lSequence2->next(lSequence2, lItem) != API0025_END_OF_SEQUENCE ) {
     lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);

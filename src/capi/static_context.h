@@ -22,7 +22,10 @@
 #include <zorba/zorbastring.h>
 #include <zorba/static_context.h>
 
+
 namespace zorbac {
+
+  class ExternalFunctionWrapper;
 
   class StaticContext {
 
@@ -103,6 +106,15 @@ namespace zorbac {
       static XQUERY_ERROR
       get_base_uri(XQC_StaticContext context, const char** base_uri);
 
+      static XQUERY_ERROR
+      register_external_function(XQC_StaticContext context, 
+                                const char* uri,
+                                const char* localname,
+                                external_function_init init,
+                                external_function_next next,
+                                external_function_release release,
+                                void* global_user_data);
+
       static void
       free(XQC_StaticContext context);
 
@@ -110,8 +122,11 @@ namespace zorbac {
       static void
       assign_functions(XQC_StaticContext context);
 
-      std::vector<zorba::String> theStrings;
-      zorba::StaticContext_t     theContext;
+      ~StaticContext();
+
+      std::vector<zorba::String>              theStrings;
+      zorba::StaticContext_t                  theContext;
+      std::vector<zorbac::ExternalFunctionWrapper*> theFunctions;
   }; /* class StaticContext */
 
 } /* namespace zorbac */

@@ -48,6 +48,18 @@ typedef XQC_Collection* XQC_Collection_Ref;
 typedef struct XQC_DataManager_s*  XQC_DataManager;
 typedef XQC_DataManager* XQC_DataManager_Ref;
 
+// external functions
+typedef void (*external_function_init)(void** user_data, void* global_user_data);
+
+typedef XQUERY_ERROR (*external_function_next) (XQC_Sequence args,
+                                                int argc,
+                                                XQC_Item_Ref result,
+                                                void* user_data,
+                                                void* global_user_data);
+
+typedef void (*external_function_release)(void* user_data, void* global_user_data);
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -207,7 +219,7 @@ struct XQC_Query_s
   (*serialize)(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file); 
 
  /** 
-  * Checks if query represented by the XQC_Query object is an updating query..
+  * Checks if the query is an updating query.
   *
   * \param query The XQC_Query that this function pionter is a member of.
   *
@@ -550,6 +562,15 @@ struct XQC_StaticContext_s
   XQUERY_ERROR
   (*get_base_uri)(XQC_StaticContext context, const char** base_uri);
 
+  XQUERY_ERROR
+  (*register_external_function)(XQC_StaticContext context, 
+                                const char* uri,
+                                const char* localname,
+                                external_function_init init,
+                                external_function_next next,
+                                external_function_release release,
+                                void* global_user_data);
+
  /**
   * Called to free the resources associated with the XQC_StaticContext.
   * 
@@ -648,9 +669,6 @@ struct XQC_Sequence_s
 {
   XQUERY_ERROR
   (*next)(XQC_Sequence sequence, XQC_Item item);
-
-  XQUERY_ERROR
-  (*reset)(XQC_Sequence sequence);
 
   void
   (*free)(XQC_Sequence sequence);
