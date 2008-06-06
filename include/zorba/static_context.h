@@ -291,7 +291,6 @@ namespace zorba {
       registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
 
   };
-  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<StaticContext>;
 
 } /* namespace zorba */
 #endif

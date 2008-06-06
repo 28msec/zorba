@@ -283,7 +283,6 @@ namespace zorba {
       clone() const = 0;
 
   };
-  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<XQuery>;
 
   // xml serialization of the query (equiv to calling serialize(os) 
   ZORBA_EXTERN_DECL

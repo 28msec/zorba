@@ -76,7 +76,6 @@ class ZORBA_EXTERN_DECL Collection : public SmartObject
     addDocument(std::istream& aInStream) = 0;
 
 }; /* class Collection */
-  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<Collection>;
 
 } /* namespace zorba */
 

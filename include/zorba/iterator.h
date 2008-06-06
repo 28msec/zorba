@@ -56,7 +56,6 @@ namespace zorba {
       close() = 0;
 
   };
-  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<Iterator>;
 
 } /* namespace zorba */
 #endif

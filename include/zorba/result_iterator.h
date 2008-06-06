@@ -61,7 +61,6 @@ namespace zorba {
       virtual void 
       close() = 0;
   };
-  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<ResultIterator>;
 
 } /* namespace zorba */
 #endif

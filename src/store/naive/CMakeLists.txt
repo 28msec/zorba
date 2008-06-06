@@ -30,6 +30,10 @@ ELSE(LIBXML2_FOUND)
     MESSAGE(FATAL_ERROR "The libxml2 library is required in order to build simple store.")
 ENDIF(LIBXML2_FOUND)
 
+IF (XERCESC_FOUND)
+	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
+	SET(requiredlibs-simplestore ${requiredlibs-simplestore} ${XERCESC_LIBRARY})
+ENDIF (XERCESC_FOUND)
 
 #
 # Boost
