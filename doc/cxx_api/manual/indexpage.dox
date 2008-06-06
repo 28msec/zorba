@@ -28,6 +28,7 @@
        <li> \ref eval
        <li> \ref REST
      </ul>
+     <li> \ref commandline
    </ul>
  </ul>
  */
