@@ -135,10 +135,6 @@ protected:
   stack<expr*>                           theConstructorsStack;
   stack<bool>                            theAttrContentStack;
 
-  namespace_context                    * theLastNSCtx;
-  stack<namespace_context *>             theNSCtxStack;
-  stack<namespace_context::bindings_t>   theFlatBindingsStack;
-
   hash64map<vector<ForVarIter_t> *>      fvar_iter_map;
   hash64map<vector<ForVarIter_t> *>      pvar_iter_map;
   hash64map<vector<LetVarIter_t> *>      lvar_iter_map;
@@ -169,7 +165,6 @@ public:
 	plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *param_var_map = NULL)
     :
     depth (0),
-    theLastNSCtx(NULL), 
     param_var_iter_map(param_var_map),
     ccb (ccb_)
   {
@@ -1245,15 +1240,6 @@ bool begin_visit(elem_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
-  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
-  {
-    if (theConstructorsStack.empty())
-      theLastNSCtx = v.getNSCtx()->get_parent().getp();
-
-    theNSCtxStack.push(theLastNSCtx);
-    theLastNSCtx = v.getNSCtx().getp();
-  }
-
   theConstructorsStack.push(&v);
   theAttrContentStack.push(false);
 
@@ -1289,8 +1275,6 @@ void end_visit(elem_expr& v)
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
     isRoot = true;
-    theLastNSCtx = theNSCtxStack.top();
-    theNSCtxStack.pop();
   }
 
 	PlanIter_t iter = new ElementIterator(qloc,
