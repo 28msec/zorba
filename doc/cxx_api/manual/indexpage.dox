@@ -8,12 +8,17 @@
   allows a pluggable XML store (e.g. main memory, DOM stores, persistent disk-based large stores, S3 stores). 
   Zorba runs on most platforms and is available under the Apache license v2.
   
-  In this first release of Zorba, the following functionalities are implemented:
+  The following functionalities are implemented:
 
   <ul>
-   <li> XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) except modules and only limited support for schema validation.
+   <li> XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) with only limited support for schema validation.
    <li> XQuery Update Facility 1.0 (as in the evolving W3C recommendation).
    <li> An in-memory replaceable XML store implementing the XQuery Data Model (XDM) W3C recommendation.
+   <li> Group By (as in the evolving W3C XQuery 1.1 recommendation).
+   <li> Try-Catch (as in the evolving W3C recommendation).
+   <li> REST functions in order to make HTTP calls from a query.
+   <li> Eval Facility to dynamically evaluate a string and execute it as a query.
+   <li> APIs in various programming languages (i.e. C++, C, TODO)
   </ul>
 
  <ul>
@@ -21,12 +26,13 @@
    <ul>
      <li> \ref build
      <li> \ref installation
-     <li> \ref features
+     <li> Features Description
      <ul>
        <li> \ref groupby
-       <li> \ref try-catch
+       <li> \ref trycatch
        <li> \ref eval
-       <li> \ref REST
+       <li> \ref rest
+       <li> \ref deref
      </ul>
      <li> \ref commandline
    </ul>
