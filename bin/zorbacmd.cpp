@@ -132,7 +132,7 @@ createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties
   if ( aProperties->omitXMLDeclaration() )
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
   else
-    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_NO;
 
   if ( aProperties->byteOrderMark() )
     lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES;
