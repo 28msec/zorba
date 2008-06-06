@@ -1418,7 +1418,7 @@ static store::Item_t get_doc(xqpStringStore_t& uriString, const char **err)
     xqpStringStore_t lowercaseUri = uriString->lowercase();
     if (lowercaseUri->byteStartsWith ("http://"))
     {
-#ifdef HAVE_CURL_H
+#ifdef ZORBA_HAVE_CURL_H
       // retrieve web file
       xqp_string xmlString;
       int result = http_get(lowercaseUri->c_str(), xmlString);

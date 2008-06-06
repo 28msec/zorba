@@ -11,14 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-IF(HAVE_CURL_H)
+IF(ZORBA_HAVE_CURL_H)
 
   SET(WEB_SRCS
     web_curl.cpp)
 
-ELSE(HAVE_CURL_H)
+ELSE(ZORBA_HAVE_CURL_H)
 
   SET(WEB_SRCS
     web_none.cpp)
 
-ENDIF(HAVE_CURL_H)
+ENDIF(ZORBA_HAVE_CURL_H)

@@ -18,7 +18,7 @@
 
 #include "zorbamisc/config/platform.h"
 
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
 #  include <pthread.h>
 #endif
 
@@ -34,7 +34,7 @@ class Mutex
 {
 protected:
 
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
   pthread_mutex_t  theMutex;
 #elif defined WIN32
   HANDLE           theMutex;

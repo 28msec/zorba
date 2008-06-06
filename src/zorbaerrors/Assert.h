@@ -23,7 +23,7 @@
 #include <iostream>
 #include <zorba/config.h>
 
-#ifdef HAVE_EXECINFO_H
+#ifdef ZORBA_HAVE_EXECINFO_H
 #include <execinfo.h>
 #include <stdlib.h>
 #endif
@@ -37,7 +37,7 @@ class StackTracePrinter {
 public:
   StackTracePrinter(std::ostream *is)
   {
-#ifdef HAVE_EXECINFO_H
+#ifdef ZORBA_HAVE_EXECINFO_H
 #define TRACE_SIZE 25
     void *trace[TRACE_SIZE];
     int sz = backtrace(trace, TRACE_SIZE);

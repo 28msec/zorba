@@ -17,7 +17,7 @@
 #include "zorbautils/fatal.h"
 #include "zorbautils/latch.h"
 
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
 #  include <pthread.h>
 #endif
 
@@ -34,7 +34,7 @@ namespace zorba {
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
 
 
 Latch::Latch()

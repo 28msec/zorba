@@ -25,7 +25,7 @@ namespace zorba {
 
 Mutex::Mutex()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
   pthread_mutexattr_t attr;
   pthread_mutexattr_init(&attr);
   pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
@@ -50,7 +50,7 @@ Mutex::Mutex()
 
 Mutex::~Mutex()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
   pthread_mutex_destroy(&theMutex);
 #elif defined WIN32
   CloseHandle(theMutex);
@@ -60,7 +60,7 @@ Mutex::~Mutex()
 
 void Mutex::lock()
 { 
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
   int ret= pthread_mutex_lock(&theMutex);
   ZORBA_FATAL(!ret, "Failed to acquire mutex. Error code = " << ret);
 #elif defined WIN32
@@ -71,7 +71,7 @@ void Mutex::lock()
 
 void Mutex::unlock()
 { 
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
   int ret= pthread_mutex_unlock(&theMutex);
   ZORBA_FATAL(!ret, "Failed to release mutex. Error code = " << ret);
 #elif defined WIN32

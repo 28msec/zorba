@@ -31,9 +31,9 @@ namespace zorba {
 
 ********************************************************************************/
 
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
 
-#if defined HAVE_PTHREAD_SPINLOCK
+#if defined ZORBA_HAVE_PTHREAD_SPINLOCK
 
 class RCLock
 {
@@ -78,7 +78,7 @@ public:
   }
 };
 
-#elif defined HAVE_PTHREAD_MUTEX
+#elif defined ZORBA_HAVE_PTHREAD_MUTEX
 
 class RCLock
 {
@@ -131,7 +131,7 @@ public:
 #else
   #error must have pthread mutex or phread spinlock
 
-#endif // HAVE_PTHREAD_SPINLOCK or HAVE_PTHREAD_MUTEX
+#endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_MUTEX
 
 #elif defined WIN32 || defined WINCE
 
@@ -160,7 +160,7 @@ public:
     ::SetEvent(mutex);
   }
 };
-#endif // HAVE_PTHREAD_H or WIN32
+#endif // ZORBA_HAVE_PTHREAD_H or WIN32
 
 //use this macro to activate or deactivate use of sync code
 #define SYNC_CODE(x)    x

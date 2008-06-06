@@ -21,7 +21,7 @@
 #endif
 //#include <io.h> // needed for _isatty in the parser
 
-#ifndef HAVE_STDINT_H
+#ifndef ZORBA_HAVE_STDINT_H
 #include "zorbamisc/config/stdint.h"
 #endif
 

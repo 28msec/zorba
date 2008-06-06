@@ -33,7 +33,7 @@
 # undef yyFlexLexer
 # define yyFlexLexer ZorbaFlexLexer
 
-# if defined(HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
+# if defined(ZORBA_HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
 #   include <FlexLexer.h>
 # else
 #   include "compiler/parser/FlexLexer.h"

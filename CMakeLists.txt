@@ -201,9 +201,9 @@ ENDIF (BOOST_CHECK_LIBRARIES)
 #
 # Pthreads
 #
-IF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
+IF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
   SET(requiredlibs-zorba ${requiredlibs-zorba} pthread)
-ENDIF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
+ENDIF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
 
 
 ################################################################################

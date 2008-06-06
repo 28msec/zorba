@@ -27,7 +27,7 @@ namespace zorba {
 
 ********************************************************************************/
 
-#ifdef HAVE_PTHREAD_H
+#ifdef ZORBA_HAVE_PTHREAD_H
 
 class Latch
 {
