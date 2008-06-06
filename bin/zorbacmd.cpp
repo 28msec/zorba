@@ -215,6 +215,13 @@ int _tmain(int argc, _TCHAR* argv[])
     return 2;
   }
 
+  if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd())
+  {
+    std::cerr << "No query" << std::endl;
+    lProperties.printHelp(std::cerr);
+    return 3;
+  }
+
   int queryNo = 1;
   for (ZorbaCMDProperties::QueriesOrFiles_t::const_iterator lIter = lProperties.queriesOrFilesBegin();
        lIter != lProperties.queriesOrFilesEnd(); ++lIter)

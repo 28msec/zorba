@@ -95,12 +95,18 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 #endif
     ;
 
+  boost::program_options::options_description lHiddenOptions ("Hidden Options" );
+  lHiddenOptions.add_options()
+    ("query,q", boost::program_options::value<std::vector<std::string> >(&theQueriesOrFiles),
+     "the queries inline or in files")
+    ;
+
   boost::program_options::positional_options_description lPositionalOptions;
   lPositionalOptions.add ( "query", -1 );
 
   boost::program_options::options_description lAllOptions;
   lAllOptions.add(lGenericOptions).add(lOutputOptions).add(lExecutionOptions)
-             .add(lStaticContextOptions);
+             .add(lStaticContextOptions).add(lHiddenOptions);
 
   theVisibleOptions.add(lGenericOptions).add(lOutputOptions).add(lStaticContextOptions)
                    .add(lExecutionOptions);
