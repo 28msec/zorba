@@ -31,10 +31,11 @@ void
 my_ext_fct_init(void** user_data, void* global_user_data)
 {
   XQC_Implementation impl = (XQC_Implementation) global_user_data;
+  my_ext_data* data;
 
   *user_data = malloc(sizeof(my_ext_data));
 
-  my_ext_data* data = (my_ext_data*)(*user_data);
+  data = (my_ext_data*)(*user_data);
   data->i = 0;
 
   impl->item_factory(impl, &(data->factory));  
