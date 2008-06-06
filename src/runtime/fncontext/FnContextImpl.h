@@ -49,13 +49,22 @@ public:
 
 NARY_ITER_STATE (CtxVariableIterator, CtxVariableIteratorState);
 
+
+/*******************************************************************************
+
+********************************************************************************/
 NARY_ITER (CtxVarAssignIterator);
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class EvalIteratorState : public PlanIteratorState {
 public:
   PlanWrapperHolder eval_plan;
   std::auto_ptr<CompilerCB> ccb;
 };
+
 
 class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState> {
   checked_vector<store::Item_t> varnames;
@@ -71,7 +80,7 @@ public:
     varnames (varnames_), vartypes (vartypes_)
   {}
 
-  NARY_ITER_METHODS
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
 }

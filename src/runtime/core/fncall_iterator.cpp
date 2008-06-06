@@ -28,14 +28,19 @@
 namespace zorba {
 
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
-  : theFnBodyStateBlock(NULL),
-    thePlan(NULL),
-    thePlanStateSize(0),
-    thePlanOpen(false) { }
+  :
+  theFnBodyStateBlock(NULL),
+  thePlan(NULL),
+  thePlanStateSize(0),
+  thePlanOpen(false) 
+{ 
+}
+
 
 UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
 }
+
 
 void UDFunctionCallIteratorState::openPlan()
 {
@@ -46,6 +51,7 @@ void UDFunctionCallIteratorState::openPlan()
   thePlanOpen = true;
 }
 
+
 void UDFunctionCallIteratorState::closePlan()
 {
   if (thePlanOpen) {
@@ -53,6 +59,7 @@ void UDFunctionCallIteratorState::closePlan()
   }
   thePlanOpen = false;
 }
+
 
 void UDFunctionCallIteratorState::resetPlan()
 {
@@ -71,14 +78,17 @@ void UDFunctionCallIteratorState::resetChildIters()
   theChildIterators.clear();
 }
 
+
 bool UDFunctionCallIterator::isUpdating() const 
 { 
   return theUDF->isUpdating(); 
 }
 
+
 void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::openImpl(planState, offset);
+
   UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
 
   state->thePlan = theUDF->get_plan(planState.theCompilerCB).getp();
@@ -88,6 +98,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   state->theFnBodyStateBlock->theRuntimeCB = planState.theRuntimeCB;
   state->theFnBodyStateBlock->theCompilerCB = planState.theCompilerCB;
 }
+
 
 void UDFunctionCallIterator::closeImpl(PlanState& planState)
 {
@@ -99,6 +110,7 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 
   NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::closeImpl(planState);
 }
+
 
 void UDFunctionCallIterator::resetImpl(PlanState& planState) const
 {
@@ -119,9 +131,11 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     // Bind the args.
     state->openPlan();
     std::vector<LetVarIter_t>& iters = theUDF->get_param_iters();
-    for (uint32_t i = 0; i < iters.size (); ++i) {
+    for (uint32_t i = 0; i < iters.size (); ++i) 
+    {
       LetVarIter_t& ref = iters[i];
-      if ( ref != NULL) {
+      if ( ref != NULL) 
+      {
         state->theChildIterators.push_back(new PlanIteratorWrapper(theChildren[i], planState));
         state->theChildIterators.back()->open();
         ref->bind(state->theChildIterators.back(), *state->theFnBodyStateBlock);
@@ -129,7 +143,8 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
   }
 
-  while (consumeNext(result, state->thePlan, *state->theFnBodyStateBlock)) {
+  while (consumeNext(result, state->thePlan, *state->theFnBodyStateBlock)) 
+  {
     STACK_PUSH(true, state);
   }
 
@@ -138,7 +153,8 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
 
 // external functions
-class ExtFuncArgItemSequence : public ItemSequence {
+class ExtFuncArgItemSequence : public ItemSequence 
+{
   public:
     ExtFuncArgItemSequence(PlanIter_t child, PlanState& stateBlock)
       : m_child(child),
@@ -157,9 +173,12 @@ class ExtFuncArgItemSequence : public ItemSequence {
     PlanState& m_stateBlock;
 };
 
+
 StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState() { }
 
+
 StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState() { }
+
 
 void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 {
@@ -167,13 +186,19 @@ void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
   m_result.reset();
 }
 
+
 StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
     const StatelessExternalFunction *function,
     bool aIsUpdating)
-  : NaryBaseIterator<StatelessExtFunctionCallIterator, 
-                     StatelessExtFunctionCallIteratorState>(loc, args),
-    m_function(function), theIsUpdating(aIsUpdating) { }
+  :
+  NaryBaseIterator<StatelessExtFunctionCallIterator, 
+                   StatelessExtFunctionCallIteratorState>(loc, args),
+  m_function(function),
+  theIsUpdating(aIsUpdating) 
+{ 
+}
+
 
 void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
@@ -185,10 +210,12 @@ void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& 
                                                                               this->stateOffset);
   int n = theChildren.size();
   state->m_extArgs.resize(n);
-  for(int i = 0; i < n; ++i) {
+  for(int i = 0; i < n; ++i) 
+  {
     state->m_extArgs[i] = new ExtFuncArgItemSequence(theChildren[i], planState);
   }
 }
+
 
 bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -197,7 +224,8 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
   state->m_result = m_function->evaluate(state->m_extArgs);
-  while (state->m_result->next(lOutsideItem)) {
+  while (state->m_result->next(lOutsideItem)) 
+  {
     result = Unmarshaller::getInternalItem(lOutsideItem);
     if (theIsUpdating)
     {
@@ -205,7 +233,9 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
       {
         ZORBA_ERROR_LOC(XUDY0019, loc);
       }
-    } else {
+    }
+    else 
+    {
       if (result->isPul())
       {
         ZORBA_ERROR_LOC(XUDY0018, loc); 
@@ -216,6 +246,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
 
   STACK_END (state);
 }
+
 
 void StatelessExtFunctionCallIterator::closeImpl(PlanState& planState)
 {

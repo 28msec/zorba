@@ -123,7 +123,7 @@ public:
 
 
 /*******************************************************************************
-  Root object of all iterator state o bjects
+  Root object of all iterator state objects
 ********************************************************************************/
 class PlanIteratorState
 {
@@ -136,11 +136,11 @@ private:
 public:
 #if ZORBA_BATCHING_TYPE == 1
 public:
-  uint32_t theCurrItem;
+  uint32_t        theCurrItem;
   store::Item_t   theBatch[ZORBA_BATCHING_BATCHSIZE];
 #endif
 #ifndef NDEBUG
-  bool     theIsOpened;
+  bool            theIsOpened;
 #endif
 
 public:
@@ -209,10 +209,16 @@ class StateTraitsImpl
 {
 private:
   StateTraitsImpl() {} // prevent instantiation
+
 public:
   static uint32_t getStateSize() 
   { 
     return sizeof(T); 
+  }
+
+  static T* getState(PlanState& planState, uint32_t stateOffset)
+  {
+    return reinterpret_cast<T*>(planState.theBlock + stateOffset);
   }
 
   static void createState(PlanState& planState, uint32_t& stateOffset, uint32_t& offset)
@@ -222,19 +228,9 @@ public:
     new (planState.theBlock + stateOffset)T();
   }
 
-  static T* getState(PlanState& planState, uint32_t stateOffset)
-  {
-    return reinterpret_cast<T*>(planState.theBlock + stateOffset);
-  }
-
   static void initState(PlanState& planState, uint32_t& stateOffset)
   {
     getState(planState, stateOffset)->init(planState); 
-  }
-
-  static void destroyState(PlanState& planState, uint32_t stateOffset) 
-  { 
-    (reinterpret_cast<T*>(planState.theBlock + stateOffset))->~T(); 
   }
 
   static void reset(PlanState& planState, uint32_t stateOffset)
@@ -242,6 +238,10 @@ public:
     (reinterpret_cast<T*>(planState.theBlock+ stateOffset))->reset(planState);
   }
 
+  static void destroyState(PlanState& planState, uint32_t stateOffset) 
+  { 
+    (reinterpret_cast<T*>(planState.theBlock + stateOffset))->~T(); 
+  }
 };
 
 #if ZORBA_BATCHING_TYPE == 1

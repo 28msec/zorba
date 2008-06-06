@@ -126,7 +126,7 @@ public:
   TreatIterator(const QueryLoc&, std::vector<PlanIter_t>&, const xqtref_t& aTreatType,
                 bool check_prime, XQUERY_ERROR);
   
-  NARY_ITER_METHODS
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
 class EitherNodesOrAtomicsIteratorState : public PlanIteratorState {

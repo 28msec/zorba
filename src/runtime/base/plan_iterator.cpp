@@ -24,24 +24,39 @@ namespace zorba
   class PlanState
 ********************************************************************************/
 PlanState::PlanState(uint32_t blockSize, uint32_t aStackDepth)
-  : theBlockSize (blockSize), theStackDepth (aStackDepth), theRuntimeCB(0)
+  :
+  theBlockSize (blockSize),
+  theStackDepth (aStackDepth),
+  theRuntimeCB(0)
 {
   theBlock = new int8_t[theBlockSize];
 }
 
+
 static_context*
 PlanState::sctx() { return theCompilerCB->m_sctx; }
 
+
 dynamic_context*
-PlanState::dctx() { return theRuntimeCB->theDynamicContext; }
+PlanState::dctx() 
+{
+  return theRuntimeCB->theDynamicContext; 
+}
+
 
 CollationCache*
-PlanState::collationCache() { return sctx()->get_collation_cache(); }
+PlanState::collationCache() 
+{
+  return sctx()->get_collation_cache(); 
+}
 
-void PlanState::checkDepth (const QueryLoc &loc) {
+
+void PlanState::checkDepth (const QueryLoc &loc) 
+{
   if (theStackDepth > 256)
     ZORBA_ERROR_LOC_PARAM (XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
 }
+
 
 PlanState::~PlanState()
 {
