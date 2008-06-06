@@ -25,37 +25,8 @@ ADD_SUBDIRECTORY(common)
 ADD_SUBDIRECTORY(zorbamisc)
 
 
-################################################################################
-#                                                                              #
-# Build the common libraries, i.e., the ones required by both the query        #
-# processor and the store: zorbatypes, zorbaerrors, and zorbautils.            #
-#                                                                              #
-################################################################################
-
-ADD_SUBDIRECTORY(zorbautils)
-
-ADD_SUBDIRECTORY(zorbatypes)
-
-ADD_SUBDIRECTORY(zorbaerrors)
-
-
-################################################################################
-#                                                                              #
-# Build the store library (or libraries)                                       #
-#                                                                              #
-################################################################################
-
-ADD_SUBDIRECTORY(store)
-
-
-################################################################################
-#                                                                              #
-# Build the zorba library                                                      #
-#                                                                              #
-################################################################################
-
 #
-# First, collect all the libraries that zorba lib depends on
+# Collect all the external libraries that zorba lib depends on
 #
 
 SET(requiredlibs-zorba)
@@ -176,6 +147,35 @@ IF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
   SET(requiredlibs-zorba ${requiredlibs-zorba} pthread)
 ENDIF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
 
+
+################################################################################
+#                                                                              #
+# Build the common libraries, i.e., the ones required by both the query        #
+# processor and the store: zorbatypes, zorbaerrors, and zorbautils.            #
+#                                                                              #
+################################################################################
+
+ADD_SUBDIRECTORY(zorbautils)
+
+ADD_SUBDIRECTORY(zorbatypes)
+
+ADD_SUBDIRECTORY(zorbaerrors)
+
+
+################################################################################
+#                                                                              #
+# Build the store library (or libraries)                                       #
+#                                                                              #
+################################################################################
+
+ADD_SUBDIRECTORY(store)
+
+
+################################################################################
+#                                                                              #
+# Build the zorba library                                                      #
+#                                                                              #
+################################################################################
 
 #
 # Internal common libraries
