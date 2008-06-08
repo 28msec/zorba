@@ -36,6 +36,9 @@
 #include "system/globalenv.h"
 #include "zorbaerrors/error_manager.h"
 
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 namespace zorba {
 
@@ -102,25 +105,25 @@ size_t CurlStreamBuffer::write_callback(char* buffer, size_t size, size_t nitems
 
 int CurlStreamBuffer::overflow(int c)
 {
-  char* _out_cur = pptr();
-  char* _in_cur = gptr();
-  char* _in_beg = eback();
+  char* _pptr = pptr();
+  char* _gptr = gptr();
+  char* _eback = eback();
   
-  int new_size = 2 * (epptr() - _in_beg);
+  int new_size = 2 * (epptr() - _eback);
   if (new_size == 0)
     new_size = INITIAL_BUFFER_SIZE;
   
-  char* new_buffer = (char*)realloc(_in_beg, new_size);
+  char* new_buffer = (char*)realloc(_eback, new_size);
   
-  if (new_buffer != _in_beg)
+  if (new_buffer != _eback)
   {
-    _out_cur = new_buffer + (pptr() - pbase());
-    _in_cur = new_buffer + (_in_cur - _in_beg);
-    _in_beg = new_buffer;
+    _pptr = new_buffer + (_pptr - _eback);
+    _gptr = new_buffer + (_gptr - _eback);
+    _eback = new_buffer;
   }
-  setp(_out_cur, new_buffer + new_size);
+  setp(_pptr, new_buffer + new_size);
   sputc(c);
-  setg(_in_beg, _in_cur, pptr());
+  setg(_eback, _gptr, pptr());
   
   return 0;
 }
@@ -300,7 +303,7 @@ ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     catch (...) {
       doc = NULL;
     }
-    
+
     if (doc != NULL)
     {
       store::Iterator_t children = doc->getChildren();
