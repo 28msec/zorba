@@ -15,129 +15,190 @@
  */
 
 %module zorba_api
-%include cpointer.i
+%include "std_string.i"
+
 %{
-#include <zorba/zorbac.h>
+#include <zorba/zorba.h>
+#include <string>
+#include <sstream>
+#include <iostream>
 
-typedef struct {
-  XQUERY_API* theAPI;
-  XQUERY theXQuery;
-} XQuery_s;
+#define S_ZORBA_TRY try {
+#define S_ZORBA_CATCH } \
+  catch (zorba::DynamicException& e) { \
+    S_DynamicException newE(e); \
+    throw newE; \
+  } \
+  catch (zorba::StaticException& e) { \
+    S_StaticException newE(e); \
+    throw newE; \
+  } \
+  catch (zorba::TypeException& e) { \
+    S_TypeException newE(e); \
+    throw newE; \
+  } \
+  catch (zorba::SerializationException& e) { \
+    S_SerializationException newE(e); \
+    throw newE; \
+  } \
+  catch (zorba::SystemException& e) { \
+    S_SystemException newE(e); \
+    throw newE; \
+  } \
 
-typedef struct {
-  XQUERY_API* theAPI;
-  XQUERY_SEQUENCE theSequence;
-} XQuerySequence_s;
+class S_Item {
+  friend class S_ResultIterator;
+private:
+  zorba::Item theItem;
+public:
+  S_Item() {}
+  S_Item(const S_Item& aItem) : theItem(aItem.theItem) {}
+  static S_Item createEmptyItem() { S_Item lItem; return lItem; }
+  std::string getStringValue() const { return std::string(theItem.getStringValue().c_str()); }
+}; // class S_Item
 
-typedef struct {
-  XQUERY_API* theAPI;
-  XQUERY_ITEM theItem;
-} XQueryItem_s;
+class S_ResultIterator {
+private:
+  zorba::ResultIterator_t theResultIterator;
+public:
+  S_ResultIterator() {}
+  S_ResultIterator(const S_ResultIterator& aResultIterator) 
+  : theResultIterator(aResultIterator.theResultIterator) 
+  {}
+  S_ResultIterator(zorba::ResultIterator_t aResultIterator) : theResultIterator(aResultIterator) {}
+  void open() { theResultIterator->open(); }
+  bool next(S_Item& aItem) { return theResultIterator->next(aItem.theItem); }
+  void close() { theResultIterator->close(); }
+  void destroy() { theResultIterator = 0; }
 
-typedef struct {
-  XQUERY_API* theAPI;
-  XQUERY_STRING theString;
-} XQueryString_s;
+}; // class S_ResultIterator
 
-XQuery_s* query_compile(XQUERY_API* aAPI, const char* aChar, XQUERY_ERROR* aError)
-{
-  XQuery_s* l = new XQuery_s(); 
-  l->theAPI = aAPI;
-  l->theXQuery = aAPI->query_compile(aChar, aError);   
-  return l;
-}
+class S_QueryException {
+protected:
+  std::string theMsg;
+public:
+  S_QueryException() {}
+  S_QueryException(const S_QueryException* aException) : theMsg(aException->theMsg) {}
+  S_QueryException(const zorba::QueryException* aException)
+  {
+    std::stringstream lStream;
+    lStream << *aException;
+    theMsg = lStream.str();
+  }
+  S_QueryException(const zorba::SystemException* aException)
+  {
+    std::stringstream lStream;
+    lStream << *aException;
+    theMsg = lStream.str();
+  }
+  const std::string& getMsg() const { return theMsg; }
+}; // class S_QueryException
 
-void query_release(XQuery_s* aQuery)
-{
-  aQuery->theAPI->query_release(aQuery->theXQuery);
-  delete aQuery;
-}
+class S_DynamicException : public S_QueryException {
+public:
+  S_DynamicException() {}
+  S_DynamicException(const S_DynamicException& aException) : S_QueryException(&aException) {}
+  S_DynamicException(const zorba::DynamicException& aException) : S_QueryException(&aException) {}
+};
+class S_StaticException : public S_QueryException {
+public:
+  S_StaticException() {}
+  S_StaticException(const S_StaticException& aException) : S_QueryException(&aException) {}
+  S_StaticException(const zorba::StaticException& aException) : S_QueryException(&aException) {}
+};
+class S_TypeException : public S_QueryException {
+public:
+  S_TypeException() {}
+  S_TypeException(const S_TypeException& aException) : S_QueryException(&aException) {}
+  S_TypeException(const zorba::TypeException& aException) : S_QueryException(&aException) {}
+};
+class S_SerializationException : public S_QueryException {
+public:
+  S_SerializationException() {}
+  S_SerializationException(const S_SerializationException& aException) : S_QueryException(&aException) {}
+  S_SerializationException(const zorba::SerializationException& aException) : S_QueryException(&aException) {}
+};
+class S_SystemException : public S_QueryException {
+public:
+  S_SystemException() {}
+  S_SystemException(const S_SystemException& aException) : S_QueryException(&aException) {}
+  S_SystemException(const zorba::SystemException& aException) : S_QueryException(&aException) {}
+};
 
-XQuerySequence_s* sequence_init(XQuery_s* aQuery, XQUERY_ERROR* aError)
-{
-  XQuerySequence_s* l = new XQuerySequence_s(); 
-  l->theAPI = aQuery->theAPI;
-  l->theSequence = aQuery->theAPI->sequence_init(aQuery->theXQuery, aError);
-  return l;
-}
+class S_XQuery {
+private:
+  zorba::XQuery_t theQuery;
+public:
+  S_XQuery() {}
+  S_XQuery(const S_XQuery& aXQuery) : theQuery(aXQuery.theQuery) {}
+  S_XQuery(zorba::XQuery_t aQuery) : theQuery(aQuery) {}
+  std::string execute() {
+    std::stringstream lStream;
+    S_ZORBA_TRY
+      lStream << theQuery;
+    S_ZORBA_CATCH
+    return lStream.str();
+  }
+  S_ResultIterator iterator() { return S_ResultIterator(theQuery->iterator()); }
+}; // class S_XQuery
 
-int sequence_next(XQuerySequence_s* aResult, XQueryItem_s* aItem, XQUERY_ERROR* aError)
-{
-  return aResult->theAPI->sequence_next(aResult->theSequence, aItem->theItem, aError);
-}
+class S_Zorba {
+private:
+  zorba::Zorba* theZorba;
+  S_Zorba(zorba::Zorba* aZorba):theZorba(aZorba){}
+public:
+  S_Zorba():theZorba(0){}
+  static S_Zorba* getInstance()
+  {
+    static S_Zorba lSZorba(zorba::Zorba::getInstance());
+    return & lSZorba;
+  }
+  S_XQuery compileQuery(const std::string& aStr) 
+  {
+    return S_XQuery(theZorba->compileQuery(aStr));
+  }
+  void shutdown() { theZorba->shutdown(); }
+}; // class S_Zorba
 
-void sequence_close(XQuerySequence_s* aResult)
-{
-  aResult->theAPI->sequence_close(aResult->theSequence);
-  delete aResult;
-}
-
-XQueryItem_s* item_init(XQUERY_API* aAPI)
-{
-  XQueryItem_s* l = new XQueryItem_s(); 
-  l->theAPI = aAPI;
-  l->theItem = aAPI->item_init();
-  return l;
-}
-
-void item_release(XQueryItem_s* aItem)
-{
-  aItem->theAPI->item_release(aItem->theItem);
-  delete aItem;
-}
-
-void item_stringvalue(XQueryItem_s* aItem, XQueryString_s* aString, XQUERY_ERROR* aError)
-{
-  aItem->theAPI->item_stringvalue(aItem->theItem, aString->theString, aError);
-}
-
-XQueryString_s* string_init(XQUERY_API* aAPI)
-{
-  XQueryString_s* l = new XQueryString_s();
-  l->theAPI = aAPI;
-  l->theString = aAPI->string_init();
-  return l;
-}
-
-void string_release(XQueryString_s* aString)
-{
-  aString->theAPI->string_release(aString->theString);
-  delete aString;
-}
-
-const char* string_to_char(XQueryString_s* aString)
-{
-  return aString->theAPI->string_to_char(aString->theString);
-}
 %}
 
-%pointer_functions(XQUERY_ERROR, errorp);
-%pointer_functions(XQUERY_API, apip);
+class S_Item {
+public: 
+  static S_Item createEmptyItem();
+  std::string getStringValue() const;
+};
 
-void zorba_init(XQUERY_API*);
-void zorba_release();
+class S_ResultIterator {
+public:
+  void open();
+  bool next(S_Item&);
+  void close();
+  void destroy();
+};
 
-%newobject query_compile;
-XQuery_s* query_compile(XQUERY_API*, const char* aChar, XQUERY_ERROR* aError);
-%delobject query_release;
-void query_release(XQuery_s* aQuery);
+class S_QueryException {
+public:
+  const std::string& getMsg() const;
+};
+class S_DynamicException : public S_QueryException {};
+class S_StaticException : public S_QueryException {};
+class S_TypeException : public S_QueryException {};
+class S_SerializationException : public S_QueryException {};
+class S_SystemException : public S_QueryException {};
 
-%newobject sequence_init;
-XQuerySequence_s* sequence_init(XQuery_s* aQuery, XQUERY_ERROR* aError);
-int sequence_next(XQuerySequence_s* aResult, XQueryItem_s* aItem, XQUERY_ERROR* aError);
-%delobject sequence_close;
-void sequence_close(XQuerySequence_s* aResult);
+%catches(S_DynamicException) S_XQuery::execute();
+class S_XQuery {
+public:
+  std::string execute(); 
+  S_ResultIterator iterator();
+};
 
-%newobject item_init;
-XQueryItem_s* item_init(XQUERY_API*);
-%delobject item_release;
-void item_release(XQueryItem_s* aItem);
-void item_stringvalue(XQueryItem_s* aItem, XQueryString_s* aString, XQUERY_ERROR* aError);
+class S_Zorba {
+public:
+  static S_Zorba* getInstance();
+  S_XQuery compileQuery(const std::string& aStr);
+  void shutdown();
+};
 
-%newobject string_init;
-XQueryString_s* string_init(XQUERY_API*);
-%delobject string_release;
-void string_release(XQueryString_s* aString);
-const char* string_to_char(XQueryString_s* aString);
 
 

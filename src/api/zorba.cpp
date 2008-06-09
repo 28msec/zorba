@@ -16,6 +16,8 @@
 #include <zorba/zorba.h>
 #include <zorba/version.h>
 #include "api/zorbaimpl.h"
+// TODELETE
+#include "store/naive/simple_store.h"
 
 #include "store/api/store.h"
 
@@ -30,6 +32,13 @@ namespace zorba {
       lInstance.init(static_cast<store::Store*>(store));
 
     return &lInstance;
+  }
+
+  // TODELETE
+  Zorba*
+  Zorba::getInstance()
+  {
+    return Zorba::getInstance(store::SimpleStore::getInstance());
   }
 
 

@@ -16,25 +16,42 @@ import sys
 sys.path.append('@pythonPath@')
 import zorba_api
 
-lAPI = zorba_api.new_apip()
-zorba_api.zorba_init(lAPI)
+def example1(zorba):
+  xquery = zorba.compileQuery('1+2')
+  print xquery.execute()
+  return
 
-lErr = zorba_api.new_errorp()
-lItem = zorba_api.item_init(lAPI)
-lString = zorba_api.string_init(lAPI)
+def example2(zorba):
+  xquery = zorba.compileQuery('(1,2,3,4,5)')
+  iter = xquery.iterator()
+  iter.open()
+  item = zorba_api.S_Item_createEmptyItem()
+  while iter.next(item):
+    print item.getStringValue()
+  iter.close()
+  iter.destroy()
+  return
 
-lXQuery = zorba_api.query_compile(lAPI, 'for $x in (1+2,3+4, "this is a test", 9) return $x', lErr)
-lResult = zorba_api.sequence_init(lXQuery, lErr)
+def example3(zorba):
+  try:
+    xquery = zorba.compileQuery('1 div 0')
+    print xquery.execute()
+  except zorba_api.S_DynamicException, a:
+    print a.getMsg()
+  return
 
-while 0 < zorba_api.sequence_next(lResult, lItem, lErr):
-  zorba_api.item_stringvalue(lItem, lString, lErr)
-  print zorba_api.string_to_char(lString)
+zorba = zorba_api.S_Zorba_getInstance()
 
-zorba_api.sequence_close(lResult)
-zorba_api.query_release(lXQuery)
+print 'Example1:'
+example1(zorba)
+print ''
 
-zorba_api.string_release(lString)
-zorba_api.item_release(lItem)
-zorba_api.delete_errorp(lErr)
-zorba_api.zorba_release()
-zorba_api.delete_apip(lAPI)
+print 'Example2:'
+example2(zorba)
+print ''
+
+print 'Example3:'
+example3(zorba)
+print ''
+
+zorba.shutdown()

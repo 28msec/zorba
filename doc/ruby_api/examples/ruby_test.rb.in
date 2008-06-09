@@ -14,27 +14,29 @@
 
 require '@rubyPath@/zorba_api'
 
-lCAPI = Zorba_api.new_apip()
-Zorba_api.zorba_init(lCAPI)
+print Zorba_api.bla()
 
-lErr = Zorba_api.new_errorp()
-lItem = Zorba_api.item_init(lCAPI)
-lString = Zorba_api.string_init(lCAPI)
-
-lXQuery = Zorba_api.query_compile(lCAPI, 'for $x in (1+2,3+4, "this is a test", 9) return $x', lErr)
-lResult = Zorba_api.sequence_init(lXQuery, lErr)
-
-while 0 < Zorba_api.sequence_next(lResult, lItem, lErr)
-  Zorba_api.item_stringvalue(lItem, lString, lErr)
-  print Zorba_api.string_to_char(lString)
-  print "\n"
-end
-
-Zorba_api.sequence_close(lResult)
-Zorba_api.query_release(lXQuery)
-
-Zorba_api.string_release(lString)
-Zorba_api.item_release(lItem)
-Zorba_api.delete_errorp(lErr)
-Zorba_api.zorba_release()
-Zorba_api.delete_apip(lCAPI)
+#lCAPI = Zorba_api.new_apip()
+#Zorba_api.zorba_init(lCAPI)
+#
+#lErr = Zorba_api.new_errorp()
+#lItem = Zorba_api.item_init(lCAPI)
+#lString = Zorba_api.string_init(lCAPI)
+#
+#lXQuery = Zorba_api.query_compile(lCAPI, 'for $x in (1+2,3+4, "this is a test", 9) return $x', lErr)
+#lResult = Zorba_api.sequence_init(lXQuery, lErr)
+#
+#while 0 < Zorba_api.sequence_next(lResult, lItem, lErr)
+#  Zorba_api.item_stringvalue(lItem, lString, lErr)
+#  print Zorba_api.string_to_char(lString)
+#  print "\n"
+#end
+#
+#Zorba_api.sequence_close(lResult)
+#Zorba_api.query_release(lXQuery)
+#
+#Zorba_api.string_release(lString)
+#Zorba_api.item_release(lItem)
+#Zorba_api.delete_errorp(lErr)
+#Zorba_api.zorba_release()
+#Zorba_api.delete_apip(lCAPI)
