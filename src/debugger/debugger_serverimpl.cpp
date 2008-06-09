@@ -180,7 +180,7 @@ bool ZorbaDebuggerImpl::hasToSuspend()
   {
     return true;
   }
-
+  
   for( unsigned int i = 0; i < theBreakpoints.size(); i++ )
   {
 //    if( theLocation.getFilename() == theBreakpoints.at( i ).getFilename()

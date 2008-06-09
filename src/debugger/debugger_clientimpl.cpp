@@ -92,9 +92,11 @@ namespace zorba{
     { 
       AbstractMessage * lMessage = MessageFactory::buildMessage( lSocket );
       SuspendedEvent * lSuspendedMsg;
-      if ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage ) )
+      if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage ) ) )
       {
         theExecutionStatus = QUERY_SUSPENDED;
+        theRemoteLineNo   = lSuspendedMsg->getLocation().getLineno();
+        theRemoteFileName = lSuspendedMsg->getLocation().getFilename();
       } else if ( dynamic_cast< StartedEvent * > ( lMessage ) ) {
         theExecutionStatus = QUERY_RUNNING;
       } else if ( dynamic_cast< ResumedEvent * > ( lMessage ) ) {
