@@ -115,7 +115,8 @@ bool
 context_example_4(Zorba* aZorba)
 {
 
-  std::stringstream lDocStream("<books><book>Book 1</book><book>Book 2</book></books>");
+  std::auto_ptr<std::istream> lDocStream( 
+    new std::stringstream("<books><book>Book 1</book><book>Book 2</book></books>"));
 
   XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; $var//book");
 
@@ -123,6 +124,7 @@ context_example_4(Zorba* aZorba)
 
   /* Parses the input stream and internally creates a datamodel instance
    * that can be bound to the variable
+   * Note that ownership of the stream is transfered to the system using an auto_ptr.
    */
   lCtx->setVariableAsDocument("var", "books.xml", lDocStream);
 
@@ -143,7 +145,8 @@ bool
 context_example_5(Zorba* aZorba)
 {
 
-  std::stringstream lDocStream("<books><book>Book 1</book><book>Book 2</book></books>");
+  std::auto_ptr<std::istream> lDocStream(
+    new std::stringstream("<books><book>Book 1</book><book>Book 2</book></books>"));
 
   XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; .//book");
 

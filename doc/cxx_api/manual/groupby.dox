@@ -22,4 +22,84 @@
 
 \section groupbyexamples Group By Examples
 
+\subsection example1 Example 1
+
+\verbatim
+<sales-qty-by-product>{
+  for $sales in doc("sales-records.xml")/*/record
+  let $pname := $sales/product-name
+  group by $pname
+  order by $pname
+  return <product name="{$pname}">{
+                  sum($sales/qty)
+          }</product>
+}</sales-qty-by-product> 
+\endverbatim
+
+\subsection example2 Example 2
+
+\verbatim
+<result>{   
+  for $sales in doc("sales-records.xml")/*/record
+  let $state := doc("stores.xml")/*/store[store-number = $sales/store-number]/state
+  let $category := doc("products.xml")/*/product[name = $sales/product-name]/category
+  group by $state, $category
+  order by $state, $category
+  return
+    <group>
+       {$state, $category}
+       <total-qty>{sum($sales/qty)}</total-qty>
+    </group>
+ }</result>
+\endcode
+\endverbatim
+
+\subsection example3 Example 3
+
+\verbatim
+ <result>{
+   for $sales in doc("sales-records.xml")/*/record
+   let $state := doc("stores.xml")/*/store[store-number = $sales/store-number]/state,
+       $product := doc("products.xml")/*/product[name = $sales/product-name],
+       $category := $product/category,
+       $revenue := $sales/qty * $product/price
+    group by $state, $category
+    order by $state, $category
+    return
+      <group>
+         {$state, $category}
+         <total-revenue>{sum($revenue)}</total-revenue>
+      </group> 
+}</result>
+\endcode
+\endverbatim
+
+\subsection example4 Example 4
+
+\verbatim
+<result>{
+  for $store in doc("stores.xml")/*/store
+  let $state := $store/state
+  group by $state
+  order by $state
+  return
+    <state name="{$state}">{
+      for $product in doc("products.xml")/*/product
+      let $category := $product/category
+      group by $category
+      order by $category
+      return
+        <category name="{$category}">{
+          for $sales in doc("sales-records.xml")/*/record[store-number = $store/store-number
+                                                          and product-name = $product/name]
+          let $pname := $sales/product-name
+          group by $pname
+          order by $pname
+          return
+          <product name="{$pname}" total-qty="{sum($sales/qty)}" />
+     }</category>
+  }</state> 
+}</result>
+\endverbatim
+
 */
