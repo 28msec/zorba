@@ -148,7 +148,14 @@ public:
   S_ResultIterator iterator() { return S_ResultIterator(theQuery->iterator()); }
 }; // class S_XQuery
 
-class S_InMemoryStore {
+class S_Store {
+public:
+  virtual zorba::store::SimpleStore* getStore() const { return 0; }
+  // TODO the above line must be replace by the following line!!
+  // virtual zorba::store::Store* getStore() const { return 0; }
+};
+
+class S_InMemoryStore : public S_Store {
 private:
   zorba::store::SimpleStore* theStore;
 public:
@@ -175,7 +182,7 @@ private:
   S_Zorba(zorba::Zorba* aZorba):theZorba(aZorba){}
 public:
   S_Zorba():theZorba(0){}
-  static S_Zorba* getInstance(S_InMemoryStore* aStore)
+  static S_Zorba* getInstance(S_Store* aStore)
   {
     static S_Zorba lSZorba(zorba::Zorba::getInstance(aStore->getStore()));
     return & lSZorba;
@@ -223,7 +230,9 @@ public:
   S_ResultIterator iterator();
 };
 
-class S_InMemoryStore {
+class S_Store {};
+
+class S_InMemoryStore : public S_Store {
 public:
   static S_InMemoryStore* getInstance();
   static void shutdown(S_InMemoryStore*);
@@ -232,7 +241,7 @@ public:
 %catches(S_StaticException, S_TypeException, S_SystemException) S_XQuery::compileQuery();
 class S_Zorba {
 public:
-  static S_Zorba* getInstance(S_InMemoryStore*);
+  static S_Zorba* getInstance(S_Store*);
   S_XQuery compileQuery(const std::string& aStr);
   void shutdown();
 };
