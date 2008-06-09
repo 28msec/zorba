@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result><author-list names="Alan Simon"><title>Strategic Database Technology</title></author-list><author-list names="Jim Melton"><title>Advanced SQL:1999</title></author-list><author-list names="Jim Melton, Alan Simon"><title>SQL:1999</title></author-list><author-list names="Jim Melton, Andrew Eisenberg"><title>Understanding SQL and Java Together</title></author-list><author-list names="Jim Melton, Stephen Buxton"><title>Querying XML</title></author-list></result>

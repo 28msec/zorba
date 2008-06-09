@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result><store number="1"><product name="socks" qty="500" /><product name="broiler" qty="20" /></store><store number="2"><product name="toaster" qty="100" /><product name="toaster" qty="50" /><product name="socks" qty="10" /></store><store number="3"><product name="blender" qty="150" /><product name="blender" qty="100" /><product name="toaster" qty="50" /><product name="shirt" qty="10" /></store></result>
