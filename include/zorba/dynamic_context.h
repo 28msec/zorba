@@ -18,6 +18,7 @@
 
 #include <time.h>
 #include <istream>
+#include <memory>
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
@@ -66,15 +67,13 @@ namespace zorba {
        * @param aQName the QName that identifies the external variable.
        * @param aDocURI the URI that is used to reference the document in the XmlDataManager.
        * @param aDocStream the istream used to read the document from.
+       *        Ownership of the input stream is transfered to the processor using an auto_ptr.
        * @return true if the variable has been set successfully, false otherwise.
        * @throw ZorbaException if an error occured (e.g. the given ResultIterator is not valid).
        */
       virtual bool
       setVariableAsDocument ( const String& aQName, const String& aDocURI, 
-                              std::istream& aDocStream) = 0;
-      virtual bool
-      setVariableAsDocument ( const String& aQName, const String& aDocURI, 
-                              std::istream* aDocStream) = 0;
+                              std::auto_ptr<std::istream> aDocStream) = 0;
 
       /** \brief Defines the context item.
        *
@@ -90,12 +89,12 @@ namespace zorba {
        *
        * @param aDocURI the URI that is used to reference the document in the XmlDataManager.
        * @param aDocStream the istream used to read the document from.
+       *        Ownership of the input stream is transfered to the processor using an auto_ptr.
        * @throw ZorbaException if an error occured (e.g. the input document could not be parsed).
        */
       virtual bool
-      setContextItemAsDocument ( const String& aDocURI, std::istream& aDocStream ) = 0;
-      virtual bool
-      setContextItemAsDocument ( const String& aDocURI, std::istream* aDocStream ) = 0;
+      setContextItemAsDocument ( const String& aDocURI, 
+                                 std::auto_ptr<std::istream> aDocStream ) = 0;
 
       /** \brief Defines the value of the current date time that can be accessed by the
        *         fn:current-dateTime() function at the time the query is executed.

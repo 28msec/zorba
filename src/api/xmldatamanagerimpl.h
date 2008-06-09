@@ -51,12 +51,6 @@ class XmlDataManagerImpl : public XmlDataManager
   Item 
   loadDocument(const String& uri, std::istream& stream, ErrorHandler* aErrorHandler);
 
-  Item 
-  loadDocument(const String& uri, std::istream* stream);
-
-  Item 
-  loadDocument(const String& uri, std::istream* stream, ErrorHandler* aErrorHandler);
-
   Item
   loadDocument(const String& local_file_uri);
 

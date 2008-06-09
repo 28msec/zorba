@@ -129,37 +129,6 @@ XmlDataManagerImpl::loadDocument(
 
 
 Item
-XmlDataManagerImpl::loadDocument(
-    const String& uri,
-    std::istream* stream)
-{
-  return loadDocument(uri, stream, 0);
-}
-
-Item
-XmlDataManagerImpl::loadDocument(
-    const String& uri,
-    std::istream* stream,
-    ErrorHandler* aErrorHandler)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    xqpStringStore_t lString = Unmarshaller::getInternalString(uri);
-
-    if ( ! stream->good() ) {
-      ZORBA_ERROR_DESC(API0015_CANNOT_OPEN_FILE, "cannot read from stream");
-    }
-
-    return &*theStore->loadDocument(lString, stream); 
-  }
-  ZORBA_DM_CATCH
-  return Item(); 
-}
-
-
-Item
 XmlDataManagerImpl::loadDocument(const String& local_file_uri)
 {
   return loadDocument(local_file_uri, (ErrorHandler*)NULL);

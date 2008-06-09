@@ -63,9 +63,6 @@ namespace zorba {
       virtual Item 
       loadDocument(const String& aURI, std::istream& aStream) = 0;
 
-      virtual Item 
-      loadDocument(const String& aURI, std::istream* aStream) = 0;
-
       /** \brief Load a document from a file.
        *
        * This function loads a document from a file. The file name is used as

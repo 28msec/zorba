@@ -104,17 +104,20 @@ bool
 populateDynamicContext(zorba::DynamicContext* aDynamicContext, ZorbaCMDProperties* aProperties)
 {
   if ( aProperties->getContextItem().size() != 0 ) {
-    std::ifstream lInStream(aProperties->getContextItem().c_str());
-    aDynamicContext->setContextItemAsDocument(aProperties->getContextItem(), lInStream);
+    std::ifstream* lInStream = new std::ifstream(aProperties->getContextItem().c_str());
+    aDynamicContext->setContextItemAsDocument(aProperties->getContextItem(), 
+                                              std::auto_ptr<std::istream>(lInStream));
   }
 
   for (ZorbaCMDProperties::ExternalVars_t::const_iterator lIter = aProperties->externalVarsBegin();
       lIter != aProperties->externalVarsEnd(); ++lIter)
     if ((*lIter).inline_file) {
-      std::ifstream lInStream((*lIter).var_value.c_str());
-      aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value, lInStream);
+      std::ifstream* lInStream = new std::ifstream((*lIter).var_value.c_str());
+      aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value, 
+                                             std::auto_ptr<std::istream>(lInStream));
     } else {
-      zorba::Item lItem = zorba::Zorba::getInstance(NULL)->getItemFactory()->createString((*lIter).var_value);
+      zorba::Item lItem = zorba::Zorba::getInstance(NULL)
+                            ->getItemFactory()->createString((*lIter).var_value);
       aDynamicContext->setVariable((*lIter).var_name, lItem);
     }
     

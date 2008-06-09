@@ -58,10 +58,10 @@ namespace zorbac {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
 
-      std::stringstream lStream;
-      CAPIUtil::getIStream(document, lStream);
+      std::stringstream* lStream = new std::stringstream();
+      CAPIUtil::getIStream(document, *lStream); // must not throw
 
-      lContext->setContextItemAsDocument(doc_uri, lStream);
+      lContext->setContextItemAsDocument(doc_uri, std::auto_ptr<std::istream>(lStream));
     DC_CATCH
   }
   
@@ -98,10 +98,11 @@ namespace zorbac {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
 
-      std::stringstream lStream;
-      CAPIUtil::getIStream(document, lStream);
+      std::stringstream* lStream = new std::stringstream();
+      CAPIUtil::getIStream(document, *lStream); // must not throw
 
-      lContext->setVariableAsDocument(var_qname, doc_uri, lStream);
+      lContext->setVariableAsDocument(var_qname, doc_uri, 
+                                      std::auto_ptr<std::istream>(lStream)); // transfer ownership here
     DC_CATCH
   }
   

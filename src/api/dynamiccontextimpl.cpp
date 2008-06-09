@@ -127,7 +127,7 @@ bool
 DynamicContextImpl::setVariableAsDocument(
     const String& aQName,
     const String& aDocURI, 
-    std::istream& aStream )
+    std::auto_ptr<std::istream> aStream )
 {
   ZORBA_DCTX_TRY
   {
@@ -135,29 +135,7 @@ DynamicContextImpl::setVariableAsDocument(
 
     XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER(); 
 
-    Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theQuery->theErrorHandler);
-    setVariable ( aQName, lDocItem );
-
-    return true;
-  }
-  ZORBA_DCTX_CATCH
-  return false;
-}
-
-
-bool
-DynamicContextImpl::setVariableAsDocument(
-    const String& aQName,
-    const String& aDocURI, 
-    std::istream* aStream )
-{
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER();
-
-    Item lDocItem = lDataManager->loadDocument(aDocURI, aStream, theQuery->theErrorHandler);
+    Item lDocItem = lDataManager->loadDocument(aDocURI, *(aStream.get()), theQuery->theErrorHandler);
     setVariable ( aQName, lDocItem );
 
     return true;
@@ -191,7 +169,7 @@ DynamicContextImpl::setContextItem ( const Item& aItem )
 bool
 DynamicContextImpl::setContextItemAsDocument (
     const String& aDocURI,
-    std::istream& aInStream )
+    std::auto_ptr<std::istream> aInStream )
 {
   ZORBA_DCTX_TRY
   {
@@ -199,28 +177,7 @@ DynamicContextImpl::setContextItemAsDocument (
 
     XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER();
 
-    Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theQuery->theErrorHandler);
-
-    setContextItem ( lDocItem );
-    return true;
-  }
-  ZORBA_DCTX_CATCH
-  return false;
-}
-
-
-bool
-DynamicContextImpl::setContextItemAsDocument (
-    const String& aDocURI,
-    std::istream* aInStream )
-{
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER();
-
-    Item lDocItem = lDataManager->loadDocument(aDocURI, aInStream, theQuery->theErrorHandler);
+    Item lDocItem = lDataManager->loadDocument(aDocURI, *(aInStream.get()), theQuery->theErrorHandler);
 
     setContextItem ( lDocItem );
     return true;

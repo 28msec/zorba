@@ -43,6 +43,11 @@ CREATE_TEST_SOURCELIST(CAPIUnitTests
  # add the executable
  ADD_EXECUTABLE(CAPIUnitTests ${CAPIUnitTests})
  TARGET_LINK_LIBRARIES(CAPIUnitTests zorba simplestore)
+
+IF (ZORBA_BUILD_STATIC_LIBRARY)                                                                         
+  ADD_EXECUTABLE(CAPIUnitTests_static ${CAPIUnitTests})                                                 
+  TARGET_LINK_LIBRARIES(CAPIUnitTests_static zorba_static simplestore_static)                           
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)           
  
  # remove the test driver source file
  SET (CAPITestsToRun ${CAPIUnitTests})

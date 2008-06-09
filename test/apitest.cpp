@@ -20,6 +20,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <memory>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -51,12 +52,12 @@ void set_var (string name, string val, DynamicContext* dctx)
   }
   else if (name[name.size () - 1] != ':')
   {
-    ifstream is (val.c_str ());
-    assert (is);
+    ifstream* is = new ifstream(val.c_str ());
+    assert (*is);
 		if(name != ".")
-			dctx->setVariableAsDocument(name, val.c_str(), is);
+			dctx->setVariableAsDocument(name, val.c_str(), std::auto_ptr<std::istream>(is));
 		else
-			dctx->setContextItemAsDocument(val.c_str(), is);
+			dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is));
   }
 }
 

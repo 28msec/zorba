@@ -8,8 +8,8 @@ namespace zorbac {
   class CAPIUtil {
     public:
 
-      static void
-      getIStream(FILE* input, std::iostream& aStream) 
+      static void 
+      getIStream(FILE* input, std::iostream& aStream) throw()
       {
         char lBuf[1024];
         size_t lSize;
