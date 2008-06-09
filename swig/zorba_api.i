@@ -150,6 +150,7 @@ public:
 
 class S_Store {
 public:
+  virtual ~S_Store() {}
   virtual zorba::store::SimpleStore* getStore() const { return 0; }
   // TODO the above line must be replace by the following line!!
   // virtual zorba::store::Store* getStore() const { return 0; }
@@ -159,6 +160,7 @@ class S_InMemoryStore : public S_Store {
 private:
   zorba::store::SimpleStore* theStore;
 public:
+  virtual ~S_InMemoryStore() {}
   S_InMemoryStore() : theStore(0) {}
   S_InMemoryStore(zorba::store::SimpleStore* aStore) : theStore(aStore) {}
   static S_InMemoryStore* getInstance()
