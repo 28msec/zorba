@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <zorba/zorbac.h>
-#include <store/naive/simple_storec.h>
+#include <inmemorystore/inmemorystorec.h>
 
 typedef struct
 {
@@ -106,7 +106,7 @@ cexternal_functions(int argc, char** argv)
   int res = 0; 
   XQC_Implementation impl;
 
-  void* store = create_simple_store();
+  void* store = create_inmemory_store();
 
   if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
       return 1;
@@ -117,6 +117,7 @@ cexternal_functions(int argc, char** argv)
   printf("\n");
 
   impl->free(impl);
+  shutdown_inmemory_store(store);
 
   return 0;
 }

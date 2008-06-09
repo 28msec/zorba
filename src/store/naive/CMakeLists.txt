@@ -105,7 +105,6 @@ SET(SIMPLE_STORE_SRCS
     node_iterators.cpp
     qname_pool.cpp
     simple_store.cpp
-    simple_storec.cpp
     simple_loader.cpp
     simple_pul.cpp
     ordpath.cpp
@@ -114,6 +113,8 @@ SET(SIMPLE_STORE_SRCS
     query_context.cpp
     string_pool.cpp
     properties.cpp
+    inmemorystore.cpp
+    inmemorystorec.cpp
     )
 
 SET(SIMPLESTORE_INSTALL_LIST)

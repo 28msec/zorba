@@ -16,6 +16,7 @@
 #include <cassert>
 
 #include <zorba/zorba.h>
+#include <inmemorystore/inmemorystore.h>
 
 #include "store/api/item.h"
 #include "common/common.h"
@@ -31,8 +32,7 @@ using namespace zorba;
 
 int typesystem_isSubtype(int argc, char* argv[])
 {
-  store::SimpleStore* store = store::SimpleStore::getInstance();
-
+  store::SimpleStore* store = inmemorystore::InMemoryStore::getInstance();
   Zorba* lZorba = Zorba::getInstance(store);
 
   store::Item_t lInteger;

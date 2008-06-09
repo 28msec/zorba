@@ -52,21 +52,6 @@ const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 
 
-/*******************************************************************************
-
-********************************************************************************/
-SimpleStore*
-SimpleStore::getInstance()
-{
-  static SimpleStore lInstance;
-
-  if ( ! lInstance.theIsInitialized )
-    lInstance.init();
-
-  return &lInstance;
-}
-
-
 
 /*******************************************************************************
 

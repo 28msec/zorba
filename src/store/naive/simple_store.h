@@ -38,6 +38,10 @@ namespace error {
   class ErrorManager;
 }
 
+namespace inmemorystore {
+  class InMemoryStore;
+}
+
 namespace store {
 
 typedef StringHashMap<Collection_t> CollectionSet;
@@ -50,6 +54,7 @@ typedef StringHashMap<XmlNode_t> DocumentSet;
 class SimpleStore : public Store
 {
   friend class zorba::GlobalEnvironment;
+  friend class inmemorystore::InMemoryStore;
  
 public:
   static const char* XS_URI;
@@ -88,9 +93,6 @@ protected:
 
   long                     theTraceLevel;
 
-public:
-  static SimpleStore* getInstance();
-
 private:
   SimpleStore();
 
@@ -101,7 +103,6 @@ private:
 
 public:
   void shutdown();
-
   store::ItemFactory* getItemFactory() const { return theItemFactory; }
 
   StringPool& getNamespacePool() const    { return *theNamespacePool; }

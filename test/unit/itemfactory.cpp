@@ -18,8 +18,8 @@
 #include <limits>
 
 #include <zorba/zorba.h>
+#include <inmemorystore/inmemorystore.h>
 
-#include "store/naive/simple_store.h"
 
 
 using namespace zorba;
@@ -59,9 +59,7 @@ checkType(const Item& aItem, const String& aLocalname)
 
 int itemfactory(int argc, char* argv[]) 
 {
-  store::SimpleStore* store = store::SimpleStore::getInstance();
-
-  Zorba* lZorba = Zorba::getInstance(store);
+  Zorba* lZorba = Zorba::getInstance(inmemorystore::InMemoryStore::getInstance());
 
   ItemFactory* lFactory = lZorba->getItemFactory();
 

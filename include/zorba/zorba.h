@@ -65,13 +65,6 @@ namespace zorba {
       static Zorba* 
       getInstance(void* store);
 
-      // TODELETE
-      /* This function is used by SWIG till the includes for SimpleStore are correctly configured.
-       * @return Zorba singleton with SimpleStore as Store
-       */
-      static Zorba*
-      getInstance();
-
       /** \brief Releases all resources aquired by the Zorba %XQuery Engine.
        *
        * Also releases resources aquired by the libraries used (i.e. icu,

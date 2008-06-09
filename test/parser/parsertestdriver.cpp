@@ -16,8 +16,7 @@
 #include <string>
 
 #include <zorba/zorba.h>
-
-#include "store/naive/simple_store.h"
+#include <inmemorystore/inmemorystore.h>
 
 #include "compiler/parsetree/parsenodes.h"
 #include "parsertestdriverconfig.h" // SRC and BIN dir definitions
@@ -36,9 +35,7 @@ main(int argc, char** argv)
 {
   int status = 0;
 
-  store::SimpleStore* store = store::SimpleStore::getInstance();
-
-  Zorba* lZorba = Zorba::getInstance(store);
+  Zorba* lZorba = Zorba::getInstance(inmemorystore::InMemoryStore::getInstance());
 
   std::string lQueryFileString;
   CompilerCB aCompilerCB;

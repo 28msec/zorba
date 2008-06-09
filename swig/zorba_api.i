@@ -19,6 +19,7 @@
 
 %{
 #include <zorba/zorba.h>
+#include <inmemorystore/inmemorystore.h>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -147,15 +148,36 @@ public:
   S_ResultIterator iterator() { return S_ResultIterator(theQuery->iterator()); }
 }; // class S_XQuery
 
+class S_InMemoryStore {
+private:
+  zorba::store::SimpleStore* theStore;
+public:
+  S_InMemoryStore() : theStore(0) {}
+  S_InMemoryStore(zorba::store::SimpleStore* aStore) : theStore(aStore) {}
+  static S_InMemoryStore* getInstance()
+  {
+    static S_InMemoryStore lStore(zorba::inmemorystore::InMemoryStore::getInstance());
+    return &lStore;
+  }
+  static void shutdown(S_InMemoryStore* aStore)
+  {
+    zorba::inmemorystore::InMemoryStore::shutdown(aStore->theStore);
+  }
+  virtual zorba::store::SimpleStore* getStore() const
+  {
+    return theStore;
+  }
+};
+
 class S_Zorba {
 private:
   zorba::Zorba* theZorba;
   S_Zorba(zorba::Zorba* aZorba):theZorba(aZorba){}
 public:
   S_Zorba():theZorba(0){}
-  static S_Zorba* getInstance()
+  static S_Zorba* getInstance(S_InMemoryStore* aStore)
   {
-    static S_Zorba lSZorba(zorba::Zorba::getInstance());
+    static S_Zorba lSZorba(zorba::Zorba::getInstance(aStore->getStore()));
     return & lSZorba;
   }
   S_XQuery compileQuery(const std::string& aStr) 
@@ -201,13 +223,17 @@ public:
   S_ResultIterator iterator();
 };
 
+class S_InMemoryStore {
+public:
+  static S_InMemoryStore* getInstance();
+  static void shutdown(S_InMemoryStore*);
+};
+
 %catches(S_StaticException, S_TypeException, S_SystemException) S_XQuery::compileQuery();
 class S_Zorba {
 public:
-  static S_Zorba* getInstance();
+  static S_Zorba* getInstance(S_InMemoryStore*);
   S_XQuery compileQuery(const std::string& aStr);
   void shutdown();
 };
-
-
 

@@ -23,6 +23,7 @@
 #include "zorbacmdproperties.h"
 
 #include <zorba/zorba.h>
+#include <inmemorystore/inmemorystore.h>
 
 #ifdef ZORBA_DEBUGGER
 #include <boost/thread/thread.hpp>
@@ -37,7 +38,6 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include "store/naive/simple_store.h"
 
 
 namespace fs = boost::filesystem;
@@ -155,9 +155,7 @@ int main(int argc, char* argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-  zorba::store::SimpleStore* store = zorba::store::SimpleStore::getInstance();
-
-  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
+  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(zorba::inmemorystore::InMemoryStore::getInstance());
 
   // time compilation and execution per each query
   boost::posix_time::ptime lStartCompileTime, lStopCompileTime;

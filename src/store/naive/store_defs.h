@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_STORE_DEFS_H
 #define ZORBA_STORE_STORE_DEFS_H
 
+#include <inmemorystore/inmemorystore.h>
 
 namespace zorba { 
 
@@ -23,7 +24,7 @@ namespace store {
 
 
 #define GET_STORE() \
-  (*SimpleStore::getInstance())
+  (*inmemorystore::InMemoryStore::getInstance())
 
 #define GET_FACTORY() \
   (*(reinterpret_cast<store::BasicItemFactory*>(GET_STORE().getItemFactory())))

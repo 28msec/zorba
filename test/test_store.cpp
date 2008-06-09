@@ -19,6 +19,7 @@
 #include "timer.h"
 
 #include <zorba/zorba.h>
+#include <inmemorystore/inmemorystore.h>
 
 #include "zorbaerrors/errors.h"
 #include "store/naive/store_defs.h"
@@ -75,7 +76,7 @@ int main(int argc, const char * argv[])
   //
   // Store initialization
   //
-  SimpleStore* lStore = SimpleStore::getInstance();
+  SimpleStore* lStore = inmemorystore::InMemoryStore::getInstance();
 
   //
   // Test boost::shared_ptr

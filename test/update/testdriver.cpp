@@ -32,8 +32,7 @@
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
-
-#include "store/naive/simple_store.h"
+#include <inmemorystore/inmemorystore.h>
 
 
 namespace fs = boost::filesystem;
@@ -213,9 +212,7 @@ main(int argc, char** argv)
   // read the xargs and errors if the spec file exists
   lSpec.parseFile(lSpecFile.native_file_string()); 
 
-  zorba::store::SimpleStore* store = zorba::store::SimpleStore::getInstance();
-
-  zorba::Zorba* engine = zorba::Zorba::getInstance(store);
+  zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::inmemorystore::InMemoryStore::getInstance());
 
   std::vector<zorba::XQuery_t> lQueries;
   Zorba_SerializerOptions lSerOptions;

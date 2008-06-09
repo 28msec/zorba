@@ -40,7 +40,8 @@ def example3(zorba):
     print a.getMsg()
   return
 
-zorba = zorba_api.S_Zorba_getInstance()
+store = zorba_api.S_InMemoryStore_getInstance()
+zorba = zorba_api.S_Zorba_getInstance(store)
 
 print 'Example1:'
 example1(zorba)
@@ -55,3 +56,4 @@ example3(zorba)
 print ''
 
 zorba.shutdown()
+zorba_api.S_InMemoryStore_shutdown(store)

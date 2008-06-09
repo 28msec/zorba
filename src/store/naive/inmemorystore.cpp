@@ -13,36 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <zorba/zorba.h>
-#include <zorba/version.h>
-#include "api/zorbaimpl.h"
-#include "store/api/store.h"
 
-namespace zorba {
-  
-  Zorba*
-  Zorba::getInstance(void* store)
-  {
-    static ZorbaImpl lInstance;
+#include <inmemorystore/inmemorystore.h>
+#include "store/naive/simple_store.h"
 
-    if ( ! lInstance.theIsInitialized )
-      lInstance.init(static_cast<store::Store*>(store));
+namespace zorba { namespace inmemorystore {
 
-    return &lInstance;
-  }
+store::SimpleStore*
+InMemoryStore::getInstance()
+{
+  static store::SimpleStore lInstance;
 
+  if ( ! lInstance.theIsInitialized )
+    lInstance.init();
 
-  Zorba::~Zorba() 
-  {
-  }
+  return &lInstance;
+}
 
+void
+InMemoryStore::shutdown(store::SimpleStore* aStore)
+{
+  aStore->shutdown();
+}
 
-  const Version&
-  Zorba::version()
-  {
-    static Version theVersion;
-
-    return theVersion;
-  }
-} /* namespace zorba */
-
+}}
