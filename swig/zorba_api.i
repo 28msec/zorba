@@ -46,33 +46,6 @@
     throw newE; \
   } \
 
-class S_Item {
-  friend class S_ResultIterator;
-private:
-  zorba::Item theItem;
-public:
-  S_Item() {}
-  S_Item(const S_Item& aItem) : theItem(aItem.theItem) {}
-  static S_Item createEmptyItem() { S_Item lItem; return lItem; }
-  std::string getStringValue() const { return std::string(theItem.getStringValue().c_str()); }
-}; // class S_Item
-
-class S_ResultIterator {
-private:
-  zorba::ResultIterator_t theResultIterator;
-public:
-  S_ResultIterator() {}
-  S_ResultIterator(const S_ResultIterator& aResultIterator) 
-  : theResultIterator(aResultIterator.theResultIterator) 
-  {}
-  S_ResultIterator(zorba::ResultIterator_t aResultIterator) : theResultIterator(aResultIterator) {}
-  void open() { theResultIterator->open(); }
-  bool next(S_Item& aItem) { return theResultIterator->next(aItem.theItem); }
-  void close() { theResultIterator->close(); }
-  void destroy() { theResultIterator = 0; }
-
-}; // class S_ResultIterator
-
 class S_QueryException {
 protected:
   std::string theMsg;
@@ -125,6 +98,38 @@ public:
   S_SystemException(const zorba::SystemException& aException) : S_QueryException(&aException) {}
 };
 
+class S_Item {
+  friend class S_ResultIterator;
+private:
+  zorba::Item theItem;
+public:
+  S_Item() {}
+  S_Item(const S_Item& aItem) : theItem(aItem.theItem) {}
+  static S_Item createEmptyItem() { S_Item lItem; return lItem; }
+  std::string getStringValue() const { return std::string(theItem.getStringValue().c_str()); }
+}; // class S_Item
+
+class S_ResultIterator {
+private:
+  zorba::ResultIterator_t theResultIterator;
+public:
+  S_ResultIterator() {}
+  S_ResultIterator(const S_ResultIterator& aResultIterator) 
+  : theResultIterator(aResultIterator.theResultIterator) 
+  {}
+  S_ResultIterator(zorba::ResultIterator_t aResultIterator) : theResultIterator(aResultIterator) {}
+  void open() { theResultIterator->open(); }
+  bool next(S_Item& aItem) 
+  { 
+    S_ZORBA_TRY
+      return theResultIterator->next(aItem.theItem); 
+    S_ZORBA_CATCH
+  }
+  void close() { theResultIterator->close(); }
+  void destroy() { theResultIterator = 0; }
+
+}; // class S_ResultIterator
+
 class S_XQuery {
 private:
   zorba::XQuery_t theQuery;
@@ -155,26 +160,14 @@ public:
   }
   S_XQuery compileQuery(const std::string& aStr) 
   {
-    return S_XQuery(theZorba->compileQuery(aStr));
+    S_ZORBA_TRY
+      return S_XQuery(theZorba->compileQuery(aStr));
+    S_ZORBA_CATCH
   }
   void shutdown() { theZorba->shutdown(); }
 }; // class S_Zorba
 
 %}
-
-class S_Item {
-public: 
-  static S_Item createEmptyItem();
-  std::string getStringValue() const;
-};
-
-class S_ResultIterator {
-public:
-  void open();
-  bool next(S_Item&);
-  void close();
-  void destroy();
-};
 
 class S_QueryException {
 public:
@@ -186,13 +179,29 @@ class S_TypeException : public S_QueryException {};
 class S_SerializationException : public S_QueryException {};
 class S_SystemException : public S_QueryException {};
 
-%catches(S_DynamicException) S_XQuery::execute();
+class S_Item {
+public: 
+  static S_Item createEmptyItem();
+  std::string getStringValue() const;
+};
+
+%catches(S_DynamicException, S_TypeException, S_SerializationException, S_SystemException) S_ResultIterator::next();
+class S_ResultIterator {
+public:
+  void open();
+  bool next(S_Item&);
+  void close();
+  void destroy();
+};
+
+%catches(S_DynamicException, S_TypeException, S_SerializationException, S_SystemException) S_XQuery::execute();
 class S_XQuery {
 public:
   std::string execute(); 
   S_ResultIterator iterator();
 };
 
+%catches(S_StaticException, S_TypeException, S_SystemException) S_XQuery::compileQuery();
 class S_Zorba {
 public:
   static S_Zorba* getInstance();
