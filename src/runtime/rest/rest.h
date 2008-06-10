@@ -28,7 +28,12 @@ namespace zorba {
 typedef void CURL;
 typedef void CURLM;
 
-class CurlStreamBuffer : public std::streambuf
+
+class CurlStreamBuffer;
+typedef rchandle<CurlStreamBuffer> CurlStreamBuffer_t;
+
+
+class CurlStreamBuffer : public std::streambuf, public SimpleRCObject
 {
 public:
   CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle);
@@ -39,7 +44,7 @@ public:
   int multi_perform();
 
 protected:
-  char* CurlErrorBuffer;
+  std::auto_ptr<char> CurlErrorBuffer;
   CURLM* MultiHandle;
   CURL* EasyHandle;
 
@@ -49,6 +54,8 @@ protected:
   
   static const int INITIAL_BUFFER_SIZE = 1024;
 };
+
+
 
 /****************************************************************************
  *
@@ -118,8 +125,8 @@ public:
 
   CURLM* MultiHandle;
   CURL* EasyHandle;
-  CurlStreamBuffer* theStreamBuffer;
-  std::vector<std::string>* headers;
+  CurlStreamBuffer_t theStreamBuffer;
+  std::auto_ptr<std::vector<std::string> > headers;
 };
 
 /****************************************************************************

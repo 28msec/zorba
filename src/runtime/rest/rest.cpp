@@ -51,10 +51,10 @@ namespace zorba {
 CurlStreamBuffer::CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle)
   : std::streambuf(), MultiHandle(aMultiHandle), EasyHandle(aEasyHandle)
 {
-  CurlErrorBuffer = new char[CURLOPT_ERRORBUFFER];
-  CurlErrorBuffer[0] = 0;
+  CurlErrorBuffer = std::auto_ptr<char>(new char[CURLOPT_ERRORBUFFER]);
+  CurlErrorBuffer.get()[0] = 0;
   
-  curl_easy_setopt(EasyHandle, CURLOPT_ERRORBUFFER, CurlErrorBuffer);
+  curl_easy_setopt(EasyHandle, CURLOPT_ERRORBUFFER, CurlErrorBuffer.get());
   curl_easy_setopt(EasyHandle, CURLOPT_WRITEDATA, this);
   curl_easy_setopt(EasyHandle, CURLOPT_WRITEFUNCTION, CurlStreamBuffer::write_callback);
   curl_easy_setopt(EasyHandle, CURLOPT_BUFFERSIZE, INITIAL_BUFFER_SIZE);
@@ -90,9 +90,7 @@ int CurlStreamBuffer::multi_perform()
 
 CurlStreamBuffer::~CurlStreamBuffer()
 {
-  delete[] CurlErrorBuffer; 
-  CurlErrorBuffer = NULL;
-  free(eback());
+  ::free(eback());
 }
 
 size_t CurlStreamBuffer::write_callback(char* buffer, size_t size, size_t nitems, void* userp)
@@ -256,7 +254,6 @@ ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   state->MultiHandle = curl_multi_init(); // TODO check error
   state->EasyHandle = curl_easy_init();
   state->theStreamBuffer = NULL;
-  state->headers = NULL;
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPGET, 1);
   curl_easy_setopt(state->EasyHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
   curl_easy_setopt(state->EasyHandle, CURLOPT_HEADERFUNCTION, ZorbaRestGetIterator::getHeaderData);
@@ -270,11 +267,8 @@ ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   lUriString = lUri->getStringValue();
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, lUriString->c_str());
 
-  if (state->theStreamBuffer == 0) 
-  {
-    state->theStreamBuffer = new CurlStreamBuffer(state->MultiHandle, state->EasyHandle);
-    state->headers = new std::vector<std::string>();
-  }
+  state->headers = std::auto_ptr<std::vector<std::string> >(new std::vector<std::string>);
+  state->theStreamBuffer = new CurlStreamBuffer(state->MultiHandle, state->EasyHandle);
   
   code = state->theStreamBuffer->multi_perform(); 
   
@@ -328,8 +322,12 @@ ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   curl_easy_cleanup(state->EasyHandle);
   curl_multi_cleanup(state->MultiHandle);
   curl_global_cleanup();
-  delete state->theStreamBuffer;
-  delete state->headers;
+  state->theStreamBuffer = NULL;
+  state->headers.reset();
+  /*
+  delete *state->headers;
+  state->headers = NULL;
+  */
   
   STACK_END (state);
 }
