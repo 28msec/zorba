@@ -1101,27 +1101,27 @@ typedef zorba::xquery_parser::token token;
 
 <MODE_CATCH>{
 
-")" {
+{S}")" {
   POP_STATE();
   return token::RPAR;
 }
 
-{QName}  {
+{S}{QName}  {
   BEGIN INITIAL;
   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
 }
 
-"*" {
+{S}"*" {
   BEGIN INITIAL;
   return token::STAR;
 }
 
-{NCName}":*" {
+{S}{NCName}":*" {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
 }
 
-"*:"{NCName} {
+{S}"*:"{NCName} {
   BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
 }
@@ -3983,6 +3983,7 @@ std::string start_state(int state)
     case MODE_XMLSPACE_DECL: return "MODE_XMLSPACE_DECL";
     case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
     case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
+    case MODE_CATCH: return "MODE_CATCH";
     default: return "Something's drastically wrong here, unrecognized start state!\n";
   }
 }

@@ -4923,29 +4923,20 @@ void *begin_visit(const CatchExpr& v)
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
   trycatch_expr::clauseref_t cc = new catch_clause();
   tce->add_clause_in_front(cc);
+  push_scope();
   if (v.getVarErrorCode() != "") {
-    push_scope();
-    cc->set_errorcode_var_h(tempvar(v.get_location(), var_expr::catch_var));
-    cc->set_errordesc_var_h(tempvar(v.get_location(), var_expr::catch_var));
-    cc->set_errorobj_var_h(tempvar(v.get_location(), var_expr::catch_var));
-    var_expr_t lv = bind_var(v.get_location(), v.getVarErrorCode(), var_expr::let_var, GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
-    store::Item_t qname;
-    GENV_ITEMFACTORY->createQName(qname, XQUERY_FN_NS, "fn", "error");
-    expr_t eName = new const_expr(v.get_location(), qname);
+    var_expr_t ev = bind_var(v.get_location(), v.getVarErrorCode(), var_expr::catch_var, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
+    cc->set_errorcode_var_h(ev);
 
-    expr_t comp1 = cc_component(v.get_location(), cc->get_errorcode_var_h(), "errorcode");
-    expr_t comp2 = cc_component(v.get_location(), cc->get_errordesc_var_h(), "description");
-    expr_t comp3 = cc_component(v.get_location(), cc->get_errorobj_var_h(), "error-obj");
-    expr_t eContents = new fo_expr(v.get_location(), CACHED (op_concatenate, LOOKUP_OPN ("concatenate")), comp1, comp2, comp3);
+    if (v.getVarErrorDescr() != "") {
+      var_expr_t dv = bind_var(v.get_location(), v.getVarErrorDescr(), var_expr::catch_var, GENV_TYPESYSTEM.STRING_TYPE_QUESTION);
+      cc->set_errordesc_var_h(dv);
 
-    push_elem_scope();
-    expr_t eVal = new elem_expr(v.get_location(), eName, NULL, eContents, ns_ctx);
-    pop_elem_scope();
-
-    rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
-    rchandle<forlet_clause> flc = new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, eVal);
-    flwor->add(flc);
-    cc->set_catch_expr_h(&*flwor);
+      if (v.getVarErrorVal() != "") {
+        var_expr_t vv = bind_var(v.get_location(), v.getVarErrorVal(), var_expr::catch_var, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION);
+        cc->set_errorobj_var_h(vv);
+      }
+    }
   }
   return no_state;
 }
@@ -4956,13 +4947,8 @@ void end_visit(const CatchExpr& v, void* visit_state)
   expr_t ce = pop_nodestack();
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
   catch_clause *cc = &*(*tce)[0];
-  if (v.getVarErrorCode() != "") {
-    flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*cc->get_catch_expr_h());
-    flwor->set_retval(ce);
-    pop_scope();
-  } else {
-    cc->set_catch_expr_h(ce);
-  }
+  cc->set_catch_expr_h(ce);
+  pop_scope();
 }
 
 
