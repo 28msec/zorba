@@ -33,7 +33,10 @@ namespace zorbac {
       execute(XQC_Query query, FILE* file);
 
       static XQUERY_ERROR
-      serialize(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file);
+      serialize_file(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file);
+
+      static XQUERY_ERROR
+      serialize_stream(XQC_Query query, const Zorba_SerializerOptions_t* options, XQC_OutputStream stream);
 
       static int
       is_update_query(XQC_Query query);

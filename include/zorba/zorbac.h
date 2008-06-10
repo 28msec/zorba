@@ -48,6 +48,9 @@ typedef XQC_Collection* XQC_Collection_Ref;
 typedef struct XQC_DataManager_s*  XQC_DataManager;
 typedef XQC_DataManager* XQC_DataManager_Ref;
 
+typedef struct XQC_OutputStream_s* XQC_OutputStream;
+typedef XQC_OutputStream* XQC_OutputStream_Ref;
+
 // external functions
 typedef void (*external_function_init)(void** user_data, void* global_user_data);
 
@@ -216,7 +219,24 @@ struct XQC_Query_s
   * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
   */
   XQUERY_ERROR
-  (*serialize)(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file); 
+  (*serialize_file)(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file); 
+
+ /**
+  * Executes the query represented by the XQC_Query object and writes the serialized
+  * output to the given ::XQC_OutputStream. The target format of the serialization is 
+  * specified by the passed serializer options.
+  *
+  * \param query The XQC_Query that this function pointer is a member of.
+  * \param options The Zorba_SerializerOptions_t that specifies serializer options.
+  * \param file The XQC_OutputStream to print the serialized result to.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQP0019_INTERNAL_ERROR
+  * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
+  * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
+  */
+  XQUERY_ERROR
+  (*serialize_stream)(XQC_Query query, const Zorba_SerializerOptions_t* options, XQC_OutputStream stream); 
 
  /** 
   * Checks if the query is an updating query.
@@ -729,6 +749,17 @@ struct XQC_DataManager_s
   (*free)(XQC_DataManager data_manager);
 
   void* data;
+};
+
+struct XQC_OutputStream_s
+{
+  void
+  (*write)(XQC_OutputStream stream, const char* buf, unsigned int length);
+
+  void 
+  (*free)(XQC_OutputStream stream);
+
+  void* user_data;
 };
 
 /** 

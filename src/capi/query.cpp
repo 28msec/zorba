@@ -94,7 +94,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Query::serialize(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file)
+  Query::serialize_file(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file)
   {
     ZORBA_XQUERY_TRY
       XQuery* lQuery = static_cast<XQuery*>(query->data);
@@ -103,7 +103,10 @@ namespace zorbac {
       char lBuf[1024];
 
       // TODO this is eager at the moment, we need a pull serializer
-      lQuery->serialize(lStream, *options);
+      if (options)
+        lQuery->serialize(lStream, *options);
+      else
+        lQuery->serialize(lStream);
       lStream.seekg(0);
 
       int lRes = 0;
@@ -111,6 +114,31 @@ namespace zorbac {
         lBuf[lRes] = 0;
         fprintf (file, "%s", lBuf);
       }
+    ZORBA_XQUERY_CATCH
+  }
+
+  XQUERY_ERROR 
+  Query::serialize_stream(XQC_Query query, const Zorba_SerializerOptions_t* options, XQC_OutputStream stream)
+  {
+    ZORBA_XQUERY_TRY
+      XQuery* lQuery = static_cast<XQuery*>(query->data);
+
+      std::stringstream lStream;
+      char lBuf[1024];
+
+      // TODO this is eager at the moment, we need a pull serializer
+      if (options)
+        lQuery->serialize(lStream, *options);
+      else
+        lQuery->serialize(lStream);
+      lStream.seekg(0);
+
+      int lRes = 0;
+      while ( (lRes = lStream.readsome(lBuf, 1023)) > 0 ) {
+        lBuf[lRes] = 0;
+        stream->write(stream, lBuf, lRes);
+      }
+      stream->free(stream);
     ZORBA_XQUERY_CATCH
   }
 
@@ -177,7 +205,8 @@ namespace zorbac {
     query->get_dynamic_context   = Query::get_dynamic_context;
     query->get_static_context    = Query::get_static_context;
     query->execute               = Query::execute;
-    query->serialize             = Query::serialize;
+    query->serialize_file        = Query::serialize_file;
+    query->serialize_stream      = Query::serialize_stream;
     query->is_update_query       = Query::is_update_query;
     query->apply_updates         = Query::apply_updates;
     query->sequence              = Query::sequence;
