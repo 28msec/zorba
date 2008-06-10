@@ -47,7 +47,7 @@ cdatamanager_example_1(XQC_Implementation impl, XQC_DataManager mgr)
     lCollection->add_document_char(lCollection, 
                                    "<books><book>Book 1</book><book>Book 2</book></books>");
 
-  impl->prepare(impl, "for $i in fn:collection()[3] return $i//book", 0, &lXQuery);
+  impl->prepare(impl, "for $i in fn:collection()[3] return $i//book", 0, 0, &lXQuery);
 
   lXQuery->get_dynamic_context(lXQuery, &lDynContext);
 

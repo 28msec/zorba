@@ -109,6 +109,13 @@ class ZORBA_EXTERN_DECL QueryException : public ZorbaException
   virtual unsigned int
   getColumnBegin() const;
 
+  /** \brief Get the uri of the query where the error occured.
+   *
+   * @return String the uri of the query
+   */
+  virtual String
+  getQueryURI() const;
+
 protected:
   friend ZORBA_EXTERN_DECL std::ostream& operator<<(std::ostream&, const QueryException&);
   friend class ZorbaImpl;

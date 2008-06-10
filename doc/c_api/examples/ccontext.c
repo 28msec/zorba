@@ -38,7 +38,7 @@ ccontext_example_1(XQC_Implementation impl)
   impl->item_factory(impl, &lFactory);
   lFactory->create_string(lFactory, "Zorba", &lItem);
 
-  impl->prepare(impl, "(., ., .)", 0, &lXQuery);
+  impl->prepare(impl, "(., ., .)", 0, 0, &lXQuery);
 
   // get the dynmamic context and set the context item
   lXQuery->get_dynamic_context(lXQuery, &lContext);
@@ -75,7 +75,7 @@ ccontext_example_2(XQC_Implementation impl)
 
   impl->prepare(impl, 
                 "fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')",
-                lContext, &lXQuery);
+                lContext, 0, &lXQuery);
 
   lXQuery->execute(lXQuery, lOutFile);
 
@@ -101,7 +101,7 @@ ccontext_example_3(XQC_Implementation impl)
   printf("%s %i", "ordering mode ", lOrderingMode);
   
   // compile and execute the query and get the new static context after executing the query
-  impl->prepare(impl, "declare ordering unordered; 1", lProvidedContext, &lXQuery);
+  impl->prepare(impl, "declare ordering unordered; 1", lProvidedContext, 0, &lXQuery);
   lError = lXQuery->execute(lXQuery, lOutFile);
   lXQuery->get_static_context(lXQuery, &lQueryContext);
 
@@ -129,12 +129,12 @@ ccontext_example_4(XQC_Implementation impl)
   const char*        lStringValue;
 
   // compile the first query and get its result sequence
-  impl->prepare(impl, "for $i in (1, 2, 3) return $i", 0, &lXQuery1);
+  impl->prepare(impl, "for $i in (1, 2, 3) return $i", 0, 0, &lXQuery1);
 
   lXQuery1->sequence(lXQuery1, &lSequence1);
 
   // compile the sequence query
-  impl->prepare(impl, "declare variable $var external; ($var, $var)", 0, &lXQuery2);
+  impl->prepare(impl, "declare variable $var external; ($var, $var)", 0, 0, &lXQuery2);
 
   // get the dynmamic context and set the context item
   lXQuery2->get_dynamic_context(lXQuery2, &lContext);

@@ -88,7 +88,7 @@ external_function_example_1(XQC_Implementation impl)
                                        my_ext_fct_release,
                                        impl);
 
-  impl->prepare(impl, "declare namespace foo=\"urn:foo\"; declare function foo:bar($x, $y, $z) external; foo:bar((1, 2, 3), 1, 2)", lContext, &lXQuery);
+  impl->prepare(impl, "declare namespace foo=\"urn:foo\"; declare function foo:bar($x, $y, $z) external; foo:bar((1, 2, 3), 1, 2)", lContext, 0, &lXQuery);
 
   // execute it and print the result on standard out
   lXQuery->execute(lXQuery, stdout);

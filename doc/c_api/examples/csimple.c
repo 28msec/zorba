@@ -33,7 +33,7 @@ example_1(XQC_Implementation impl)
   FILE*          lOutFile = stdout;
 
   // compile the query
-  impl->prepare(impl, "(1+2, 3, 4)", 0, &lXQuery);
+  impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
 
   // execute it and print the result on standard out
   lXQuery->execute(lXQuery, lOutFile);
@@ -61,7 +61,7 @@ example_2(XQC_Implementation impl)
   impl->create_item(impl, &lItem);
 
   // compile the query and get the result as a sequence
-  lError = impl->prepare(impl, "for $i in 1 to 10 return $i", 0, &lXQuery);
+  lError = impl->prepare(impl, "for $i in 1 to 10 return $i", 0, 0, &lXQuery);
 
   lXQuery->sequence(lXQuery, &lResult);
 
@@ -88,7 +88,7 @@ example_3(XQC_Implementation impl)
   XQC_Query      lXQuery;
 
   // compile the query
-  lError = impl->prepare(impl, "for $x in (1, 2, 3, 4)", 0, &lXQuery);
+  lError = impl->prepare(impl, "for $x in (1, 2, 3, 4)", 0, 0, &lXQuery);
 
   return lError == XPST0003?1:0;
 }
@@ -104,7 +104,7 @@ example_4(XQC_Implementation impl)
   FILE*          lOutFile = stdout;
 
   // compile the query
-  impl->prepare(impl, "1 div 0", 0, &lXQuery);
+  impl->prepare(impl, "1 div 0", 0, 0, &lXQuery);
 
   // execute it and print the result on standard out
   lError = lXQuery->execute(lXQuery, lOutFile);
@@ -145,7 +145,7 @@ example_5(XQC_Implementation impl)
   lStream->user_data = (void*) 0;
 
   // compile the query
-  impl->prepare_stream(impl, lStream, 0, &lXQuery);
+  impl->prepare_stream(impl, lStream, 0, 0, &lXQuery);
 
   // execute it and print the result on standard out
   lXQuery->execute(lXQuery, lOutFile);

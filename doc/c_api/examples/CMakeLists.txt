@@ -5,6 +5,7 @@ SET (CAPI_EXAMPLES
 	csimple.c
   ccontext.c
   cdatamanager.c
+  cerror.c
   cexternal_functions.c 
   cserialization.c
 )

@@ -50,6 +50,8 @@ typedef XQC_DataManager* XQC_DataManager_Ref;
 
 typedef struct XQC_OutputStream_s* XQC_OutputStream;
 typedef struct XQC_InputStream_s* XQC_InputStream;
+typedef struct XQC_ErrorHandler_s* XQC_ErrorHandler;
+
 
 // external functions
 typedef void (*external_function_init)(void** user_data, void* global_user_data);
@@ -118,6 +120,8 @@ struct XQC_Implementation_s
   * \param string The query to prepare as a string.
   * \param context The initial static context for this query, or null to use the default 
   *        static context.
+  * \param handler An optional error handler whose <code>error</code> function is called
+  *                if preparing the query fails.
   * \param[out] expression The resulting prepared expression.
   *
   * \retval ::XQC_NO_ERROR
@@ -125,8 +129,11 @@ struct XQC_Implementation_s
   * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
   */
 	XQUERY_ERROR 
-  (*prepare)(XQC_Implementation implementation, const char *query_string,
-		         XQC_StaticContext context, XQC_Query_Ref query);
+  (*prepare)(XQC_Implementation implementation, 
+             const char *query_string,
+		         XQC_StaticContext context, 
+             XQC_ErrorHandler handler, 
+             XQC_Query_Ref query);
 
   /**
    * Prepares a query from a FILE pointer, returning an ::XQC_Query object.
@@ -138,6 +145,8 @@ struct XQC_Implementation_s
    * \param file The file containing the query to prepare.
    * \param context The initial static context for this query, or null to use the default 
    *        static context.
+   * \param handler An optional error handler whose <code>error</code> function is called
+   *                if preparing the query fails.
    * \param[out] expression The resulting prepared expression.
    *
    * \retval ::XQC_NO_ERROR
@@ -145,8 +154,11 @@ struct XQC_Implementation_s
    * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
    */
 	XQUERY_ERROR 
-  (*prepare_file)(XQC_Implementation implementation, FILE *query_file,
-		              XQC_StaticContext context, XQC_Query_Ref query);
+  (*prepare_file)(XQC_Implementation implementation, 
+                  FILE *query_file,
+		              XQC_StaticContext context, 
+                  XQC_ErrorHandler handler,
+                  XQC_Query_Ref query);
 
   /**
    * Prepares a query from a ::XQC_InputStream, returning an ::XQC_Query object.
@@ -158,6 +170,8 @@ struct XQC_Implementation_s
    *               free will be called on the XQC_InputStream after the query has been read.
    * \param context The initial static context for this query, or null to use the default 
    *        static context.
+   * \param handler An optional error handler whose <code>error</code> function is called
+   *                if preparing the query fails.
    * \param[out] expression The resulting prepared expression.
    *
    * \retval ::XQC_NO_ERROR
@@ -165,8 +179,11 @@ struct XQC_Implementation_s
    * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
    */
   XQUERY_ERROR
-  (*prepare_stream)(XQC_Implementation implementation, XQC_InputStream stream,
-                    XQC_StaticContext context, XQC_Query_Ref query);
+  (*prepare_stream)(XQC_Implementation implementation, 
+                    XQC_InputStream stream,
+                    XQC_StaticContext context, 
+                    XQC_ErrorHandler handler,
+                    XQC_Query_Ref query);
  
   XQUERY_ERROR
   (*create_item)(XQC_Implementation implementation, XQC_Item_Ref item);
@@ -300,6 +317,9 @@ struct XQC_Query_s
   */
 	XQUERY_ERROR 
   (*sequence)(XQC_Query query, XQC_Sequence_Ref sequence);
+
+  void
+  (*set_error_handler)(XQC_Query query, XQC_ErrorHandler handler);
 
  /**
   * Called to free the resources associated with the XQC_Query.
@@ -819,6 +839,41 @@ struct XQC_InputStream_s
 
   void* user_data;
 };
+
+/**
+ * The ::XQC_ErrorHandler struct is designed to be populated by users for the purpose
+ * of collecting more detailed error messages from an XQC implementation. An XQC_ErrorHandler
+ * can be set for a query using the XQC_Query::set_error_handler() function.
+ *
+ * The XQC_ErrorHandler struct has no free() function pointer because the user remains 
+ * responsible for freeing the resources associated with this struct.
+ */
+struct XQC_ErrorHandler_s {
+
+    /**
+     * Can be used for user specific purposes.
+     */
+    void *user_data;
+
+    /**
+     * The function called when an error occurs. The function receives the components of the
+     * error as arguments. When this function returns, the implementation will exit query parsing or
+     * execution with the error enumeration value passed as an argument.
+     *
+     * \param handler The XQC_ErrorHandler that this function pointer is a member of
+     *
+     * TODO
+     */
+    void (*error)(XQC_ErrorHandler handler, 
+                  XQUERY_ERROR error,
+                  const char   *local_name,
+                  const char   *description,
+                  const char   *query_uri,
+                  unsigned int line,
+                  unsigned int column);
+
+};
+
 
 /** 
  * \example csimple.c

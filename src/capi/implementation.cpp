@@ -29,6 +29,26 @@
 
 using namespace zorba;
 
+#define ZORBA_IMPLEMENTATION_TRY try {
+
+#define ZORBA_IMPLEMENTATION_CATCH_NOTIFY \
+    return XQ_NO_ERROR; \
+    } catch (QueryException& qe) { \
+      if (handler) { \
+        handler->error(handler, qe.getErrorCode(), \
+                       ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
+                       qe.getDescription().c_str(), \
+                       qe.getQueryURI().c_str(), \
+                       qe.getLineBegin(), \
+                       qe.getColumnBegin()); \
+      } \
+      return qe.getErrorCode(); \
+    } catch (ZorbaException &ze) { \
+      return ze.getErrorCode(); \
+    } catch (...) { \
+      return XQP0019_INTERNAL_ERROR; \
+    }
+
 namespace zorbac {
 
   XQUERY_ERROR
@@ -56,82 +76,86 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Implementation::prepare(XQC_Implementation impl, const char *query_string,
-                          XQC_StaticContext context, XQC_Query_Ref query)
+  Implementation::prepare(XQC_Implementation impl, 
+                          const char *query_string,
+                          XQC_StaticContext context, 
+                          XQC_ErrorHandler handler,
+                          XQC_Query_Ref query)
   {
-    try {
+    ZORBA_IMPLEMENTATION_TRY
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
 
-      std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
+      std::auto_ptr<XQC_Query_s>   lQuery(new XQC_Query_s());
+      std::auto_ptr<zorbac::Query> lInnerQuery(new zorbac::Query());
+      if (handler)
+        lInnerQuery->theErrorHandler = handler;
 
-      XQuery_t lQuerySmart;
       if (context) {
         zorba::StaticContext_t lContext = 
               (static_cast<zorbac::StaticContext*> (context->data))->theContext;
 
         // reference counting in the smartptr takes care of garbage collection
-        lQuerySmart = lZorba->compileQuery(query_string, lContext);
+        lInnerQuery->theQuery = lZorba->compileQuery(query_string, lContext);
       } else {
-        lQuerySmart = lZorba->compileQuery(query_string);
+        lInnerQuery->theQuery = lZorba->compileQuery(query_string);
       }
 
       Query::assign_functions(lQuery.get());
 
       (*query)   = lQuery.release();
-      // get and reset never throw
-      (*query)->data = lQuerySmart.get(); 
-      lQuerySmart->addReference(); 
-
-      return XQ_NO_ERROR;
-    } catch (ZorbaException& e) {
-      return e.getErrorCode(); 
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR; 
-    }
+      (*query)->data = lInnerQuery.release(); 
+    ZORBA_IMPLEMENTATION_CATCH_NOTIFY
   }
 
   XQUERY_ERROR 
-  Implementation::prepare_file(XQC_Implementation impl, FILE *query_file,
-                               XQC_StaticContext context, XQC_Query_Ref query)
+  Implementation::prepare_file(XQC_Implementation impl, 
+                               FILE *query_file,
+                               XQC_StaticContext context, 
+                               XQC_ErrorHandler handler,
+                               XQC_Query_Ref query)
   {
-    try {
+    ZORBA_IMPLEMENTATION_TRY 
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
 
-      std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
+      std::auto_ptr<XQC_Query_s>   lQuery(new XQC_Query_s());
+      std::auto_ptr<zorbac::Query> lInnerQuery(new zorbac::Query());
+      if (handler)
+        lInnerQuery->theErrorHandler = handler;
 
       std::stringstream lStream;
       CAPIUtil::getIStream(query_file, lStream);
 
-      XQuery_t lQuerySmart;
       if (context) {
         zorba::StaticContext_t lContext = 
               (static_cast<zorbac::StaticContext*> (context->data))->theContext;
-        lQuerySmart = lZorba->compileQuery(lStream, lContext);
+        lInnerQuery->theQuery = lZorba->compileQuery(lStream, lContext);
       } else {
-        lQuerySmart = lZorba->compileQuery(lStream);
+        lInnerQuery->theQuery = lZorba->compileQuery(lStream);
       }
 
       Query::assign_functions(lQuery.get());
 
       *query   = lQuery.release();
-      (*query)->data = lQuerySmart.get();
-      lQuerySmart->addReference();
+      (*query)->data = lInnerQuery.release();
+
       return XQ_NO_ERROR;
-    } catch (ZorbaException& e) {
-      return e.getErrorCode(); 
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR; 
-    }
+    ZORBA_IMPLEMENTATION_CATCH_NOTIFY
   }
 
   XQUERY_ERROR
-  Implementation::prepare_stream(XQC_Implementation impl, XQC_InputStream stream,
-                                 XQC_StaticContext context, XQC_Query_Ref query)
+  Implementation::prepare_stream(XQC_Implementation impl, 
+                                 XQC_InputStream stream,
+                                 XQC_StaticContext context, 
+                                 XQC_ErrorHandler handler,
+                                 XQC_Query_Ref query)
   {
-    try {
+    ZORBA_IMPLEMENTATION_TRY 
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
 
       std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
+      std::auto_ptr<zorbac::Query> lInnerQuery(new zorbac::Query());
+      if (handler)
+        lInnerQuery->theErrorHandler = handler;
 
       std::stringstream lStream;
       char lBuf[1024];
@@ -145,26 +169,20 @@ namespace zorbac {
         return API0002_COMPILE_FAILED; 
       }
 
-      XQuery_t lQuerySmart;
       if (context) {
         zorba::StaticContext_t lContext = 
               (static_cast<zorbac::StaticContext*> (context->data))->theContext;
-        lQuerySmart = lZorba->compileQuery(lStream, lContext);
+        lInnerQuery->theQuery = lZorba->compileQuery(lStream, lContext);
       } else {
-        lQuerySmart = lZorba->compileQuery(lStream);
+        lInnerQuery->theQuery = lZorba->compileQuery(lStream);
       }
 
       Query::assign_functions(lQuery.get());
 
       *query   = lQuery.release();
-      (*query)->data = lQuerySmart.get();
-      lQuerySmart->addReference();
-      return XQ_NO_ERROR;
-    } catch (ZorbaException& e) {
-      return e.getErrorCode(); 
-    } catch (...) {
-      return XQP0019_INTERNAL_ERROR; 
-    }
+      (*query)->data = lInnerQuery.release();
+
+    ZORBA_IMPLEMENTATION_CATCH_NOTIFY 
   }
 
   void

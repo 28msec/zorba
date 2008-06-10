@@ -34,7 +34,7 @@ cserialization_example_1(XQC_Implementation impl)
   Zorba_SerializerOptions_t lSerOptions = Zorba_SerializerOptions_default();
 
   // compile the query
-  impl->prepare(impl, "(1+2, 3, 4)", 0, &lXQuery);
+  impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
 
   lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
 
@@ -55,7 +55,7 @@ cserialization_example_2(XQC_Implementation impl)
   Zorba_SerializerOptions_t lSerOptions = Zorba_SerializerOptions_default();
 
   // compile the query
-  impl->prepare(impl, "(1+2, 3, 4)", 0, &lXQuery);
+  impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
 
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
@@ -90,7 +90,7 @@ cserialization_example_3(XQC_Implementation impl)
   lStream->free   = free_writer;
 
   // compile the query
-  impl->prepare(impl, "(1+2, 3, 4)", 0, &lXQuery);
+  impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
 
   // execute it and print the result on standard out
   lXQuery->serialize_stream(lXQuery, 0, lStream);

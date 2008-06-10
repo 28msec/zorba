@@ -17,6 +17,7 @@
 #define ZORBA_QUERY_H
 
 #include <zorba/zorbac.h>
+#include <zorba/xquery.h>
 
 namespace zorbac {
 
@@ -33,10 +34,14 @@ namespace zorbac {
       execute(XQC_Query query, FILE* file);
 
       static XQUERY_ERROR
-      serialize_file(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file);
+      serialize_file(XQC_Query query, 
+                     const Zorba_SerializerOptions_t* options, 
+                     FILE* file);
 
       static XQUERY_ERROR
-      serialize_stream(XQC_Query query, const Zorba_SerializerOptions_t* options, XQC_OutputStream stream);
+      serialize_stream(XQC_Query query, 
+                       const Zorba_SerializerOptions_t* options, 
+                       XQC_OutputStream stream);
 
       static int
       is_update_query(XQC_Query query);
@@ -47,12 +52,20 @@ namespace zorbac {
 	    static XQUERY_ERROR 
       sequence(XQC_Query query, XQC_Sequence_Ref sequence);
 
+      static void
+      set_error_handler(XQC_Query query, XQC_ErrorHandler handler);
+
 	    static void 
       free(XQC_Query query);
 
       // private use
       static void
       assign_functions(XQC_Query query);
+
+      Query();
+
+      zorba::XQuery_t   theQuery;
+      XQC_ErrorHandler  theErrorHandler;
 
   };
 

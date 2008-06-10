@@ -23,11 +23,18 @@ using namespace zorba;
 
 namespace zorbac {
 
+  zorba::ResultIterator*
+  getResultIterator(XQC_Sequence sequence)
+  {
+    return (static_cast<zorbac::Sequence*>(sequence->data))->theSequence.get();
+  }
+
   XQUERY_ERROR
   Sequence::next(XQC_Sequence seq, XQC_Item item)
   {
+     ResultIterator* lIter = 0;
      try {
-       ResultIterator* lIter = static_cast<ResultIterator*>(seq->data);
+       lIter = getResultIterator(seq);
        zorbac::Item* lInnerItem = static_cast<zorbac::Item*>(item->data);
        lInnerItem->theStrings.clear();
  
@@ -35,20 +42,30 @@ namespace zorbac {
          return XQ_NO_ERROR;
  
        return API0025_END_OF_SEQUENCE;
-     } catch (ZorbaException& e) {
-       return e.getErrorCode();
-     } catch (...) {
-       return XQP0019_INTERNAL_ERROR;
-     }
+    } catch (QueryException& qe) {
+      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
+      if (lSeq->theErrorHandler) {\
+        lSeq->theErrorHandler->error(lSeq->theErrorHandler, qe.getErrorCode(),
+                                 ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),
+                                 qe.getDescription().c_str(),
+                                 qe.getQueryURI().c_str(),
+                                 qe.getLineBegin(),
+                                 qe.getColumnBegin());
+      }
+      return qe.getErrorCode();
+    } catch (ZorbaException &ze) {
+      return ze.getErrorCode();
+    } catch (...) {
+      return XQP0019_INTERNAL_ERROR;
+    }
   }
 
   void
   Sequence::free(XQC_Sequence seq)
   {
      try {
-       ResultIterator* lIter = static_cast<ResultIterator*>(seq->data);
+       ResultIterator* lIter = getResultIterator(seq);
        lIter->close();
-       lIter->removeReference();
        delete seq;
      } catch (ZorbaException& e) {
        assert(false);

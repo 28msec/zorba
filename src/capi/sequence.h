@@ -17,6 +17,7 @@
 #define ZORBAC_SEQUENCE_H
 
 #include <zorba/zorbac.h>
+#include <zorba/result_iterator.h>
 
 namespace zorbac {
 
@@ -31,6 +32,8 @@ namespace zorbac {
       static void
       assign_functions(XQC_Sequence sequence);
 
+      zorba::ResultIterator_t theSequence;
+      XQC_ErrorHandler        theErrorHandler;
   }; /* class Sequence */
 
 } /* namespace zorbac */

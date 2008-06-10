@@ -101,6 +101,11 @@ QueryException::getColumnBegin() const
   return theColumnBegin; 
 }
 
+String
+QueryException::getQueryURI() const
+{
+  return theQueryURI;
+}
 
 DynamicException::DynamicException(
     const XQUERY_ERROR& aErrorCode,

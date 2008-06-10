@@ -1,6 +1,7 @@
 /** \page groupby Group By - XQuery 1.1
 
 \section groupbygrammar Group By Grammar
+Zorba implements 
 
 <table border="0">
 <tr>
@@ -21,6 +22,8 @@
 </table>
 
 \section groupbyexamples Group By Examples
+In the following section, we present some example queries in order to demonstrate the "group by" functionality. All
+of the queries are part of the XQuery 1.1 Use Cases document (see http://www.w3.org/TR/xquery-11-use-cases/#dataproducts).
 
 \subsection example1 Example 1
 

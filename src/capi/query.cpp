@@ -22,6 +22,7 @@
 #include "capi/dynamic_context.h"
 #include "capi/static_context.h"
 #include "capi/sequence.h"
+#include "zorbaerrors/errors.h"
 
 using namespace zorba;
 
@@ -35,13 +36,38 @@ using namespace zorba;
      return XQP0019_INTERNAL_ERROR; \
    }
 
+#define ZORBA_XQUERY_CATCH_NOTIFY \
+    return XQ_NO_ERROR; \
+    } catch (QueryException& qe) { \
+      zorbac::Query* lInnerQuery = static_cast<zorbac::Query*>(query->data); \
+      if (lInnerQuery->theErrorHandler) { \
+        lInnerQuery->theErrorHandler->error(lInnerQuery->theErrorHandler, qe.getErrorCode(), \
+                                 ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
+                                 qe.getDescription().c_str(), \
+                                 qe.getQueryURI().c_str(), \
+                                 qe.getLineBegin(), \
+                                 qe.getColumnBegin()); \
+      } \
+      return qe.getErrorCode(); \
+    } catch (ZorbaException &ze) { \
+      return ze.getErrorCode(); \
+    } catch (...) { \
+      return XQP0019_INTERNAL_ERROR; \
+    }
+
 namespace zorbac {
+
+  zorba::XQuery*
+  getXQuery(XQC_Query query)
+  {
+    return (static_cast<zorbac::Query*>(query->data))->theQuery.get();
+  }
       
   XQUERY_ERROR
   Query::get_dynamic_context(XQC_Query query, XQC_DynamicContext_Ref context)
   {
     ZORBA_XQUERY_TRY
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      XQuery* lQuery = getXQuery(query);
       std::auto_ptr<XQC_DynamicContext_s> lContext(new XQC_DynamicContext_s());
 
       lContext->data = lQuery->getDynamicContext();
@@ -57,7 +83,7 @@ namespace zorbac {
   Query::get_static_context(XQC_Query query, XQC_StaticContext_Ref context)
   {
     ZORBA_XQUERY_TRY
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      XQuery* lQuery = getXQuery(query);
       std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
       std::auto_ptr<zorbac::StaticContext> lNewContext(new zorbac::StaticContext());
 
@@ -68,15 +94,15 @@ namespace zorbac {
 
       (*context) = lContext.release();
       (*context)->data = lNewContext.release();;
-
     ZORBA_XQUERY_CATCH
   }
 
   XQUERY_ERROR 
   Query::execute(XQC_Query query, FILE* file)
   {
+    XQuery* lQuery = 0;
     ZORBA_XQUERY_TRY
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      lQuery = getXQuery(query); 
 
       std::stringstream lStream;
       char lBuf[1024];
@@ -90,14 +116,15 @@ namespace zorbac {
         lBuf[lRes] = 0;
         fprintf (file, "%s", lBuf);
       }
-    ZORBA_XQUERY_CATCH
+    ZORBA_XQUERY_CATCH_NOTIFY
   }
 
   XQUERY_ERROR 
   Query::serialize_file(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file)
   {
+    XQuery* lQuery = 0;
     ZORBA_XQUERY_TRY
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      lQuery = getXQuery(query);
 
       std::stringstream lStream;
       char lBuf[1024];
@@ -114,14 +141,17 @@ namespace zorbac {
         lBuf[lRes] = 0;
         fprintf (file, "%s", lBuf);
       }
-    ZORBA_XQUERY_CATCH
+    ZORBA_XQUERY_CATCH_NOTIFY
   }
 
   XQUERY_ERROR 
-  Query::serialize_stream(XQC_Query query, const Zorba_SerializerOptions_t* options, XQC_OutputStream stream)
+  Query::serialize_stream(XQC_Query query, 
+                          const Zorba_SerializerOptions_t* options, 
+                          XQC_OutputStream stream)
   {
+    XQuery* lQuery = 0; 
     ZORBA_XQUERY_TRY
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      lQuery = getXQuery(query);
 
       std::stringstream lStream;
       char lBuf[1024];
@@ -139,14 +169,14 @@ namespace zorbac {
         stream->write(stream, lBuf, lRes);
       }
       stream->free(stream);
-    ZORBA_XQUERY_CATCH
+    ZORBA_XQUERY_CATCH_NOTIFY
   }
 
   int
   Query::is_update_query(XQC_Query query)
   {
     ZORBA_XQUERY_TRY
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      XQuery* lQuery = getXQuery(query);
 
       lQuery->isUpdateQuery();
 
@@ -156,41 +186,48 @@ namespace zorbac {
 	XQUERY_ERROR 
   Query::apply_updates(XQC_Query query)
   {
+    XQuery* lQuery = 0;
     ZORBA_XQUERY_TRY
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      lQuery = getXQuery(query);
 
       lQuery->applyUpdates();
 
-    ZORBA_XQUERY_CATCH
+    ZORBA_XQUERY_CATCH_NOTIFY;
   }
 
   XQUERY_ERROR 
   Query::sequence(XQC_Query query, XQC_Sequence_Ref sequence)
   {
+    XQuery* lQuery = 0;
     ZORBA_XQUERY_TRY
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
+      lQuery = getXQuery(query);
 
       std::auto_ptr<XQC_Sequence_s> lSeq(new XQC_Sequence_s());
+      std::auto_ptr<zorbac::Sequence> lInnerSequence(new zorbac::Sequence());
 
-      ResultIterator_t lResultSmart = lQuery->iterator();
-      lResultSmart->open();
+      lInnerSequence->theSequence = lQuery->iterator();
+      lInnerSequence->theSequence->open();
+
+      lInnerSequence->theErrorHandler = static_cast<zorbac::Query*>(query->data)->theErrorHandler;
 
       Sequence::assign_functions(lSeq.get());
 
       (*sequence) = lSeq.release();
-      zorba::ResultIterator* lIter = lResultSmart.get();
-      lIter->addReference();
-      (*sequence)->data = lIter;
+      (*sequence)->data = lInnerSequence.release();;
 
-    ZORBA_XQUERY_CATCH
+    ZORBA_XQUERY_CATCH_NOTIFY
+  }
+
+  void
+  Query::set_error_handler(XQC_Query query, XQC_ErrorHandler handler)
+  {
+    (static_cast<zorbac::Query*>(query->data))->theErrorHandler = handler;
   }
 
   void
   Query::free(XQC_Query query)
   {
     try {
-      XQuery* lQuery = static_cast<XQuery*>(query->data);
-      lQuery->removeReference();
       delete query;
     } catch (ZorbaException& e) {
       assert(false);
@@ -210,7 +247,13 @@ namespace zorbac {
     query->is_update_query       = Query::is_update_query;
     query->apply_updates         = Query::apply_updates;
     query->sequence              = Query::sequence;
+    query->set_error_handler     = Query::set_error_handler;
     query->free                  = Query::free;
   }
+
+  Query::Query()
+    : theErrorHandler(0)
+  { }
+
 
 } /* namespace zorbac */
