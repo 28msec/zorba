@@ -57,18 +57,12 @@ namespace zorba {
 void library_init()
 {}
 
-static string get_qname(const function &f)
-{
-  store::Item_t name = f.get_fname();
-  return name->getPrefix()->str() + ":" + name->getLocalName()->str();
-}
-
 #define DECL(type, sig)                                        \
 do                                                             \
 {                                                              \
   std::auto_ptr<function> type##_ptr(new type(signature sig)); \
                                                                \
-  sctx->bind_fn(get_qname(*type##_ptr),                        \
+  sctx->bind_fn(type##_ptr->get_fname (),                      \
                 type##_ptr.get(),                              \
                 type##_ptr->get_signature().arg_count());      \
   type##_ptr.release();                                        \
@@ -1350,12 +1344,12 @@ DECL(zor_numgen,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 DECL(node_reference,
-     (createQName(XQUERY_ZORBA_FN_NS, "fn-zorba", "node-reference"),
+     (createQName(ZORBA_FN_NS, "fn-zorba", "node-reference"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
 
 DECL(node_by_reference,
-     (createQName(XQUERY_ZORBA_FN_NS, "fn-zorba", "node-by-reference"),
+     (createQName(ZORBA_FN_NS, "fn-zorba", "node-by-reference"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 
@@ -1364,7 +1358,7 @@ DECL(node_by_reference,
 #ifdef ZORBA_WITH_REST
 // zorba-rest functions
 DECL(rest_get_1,
-     (createQName("http://www.flworfound.org/", "zorba-rest", "get"),
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
      GENV_TYPESYSTEM.STRING_TYPE_ONE, // need to make this an ANY_URI_TYPE_ONE
      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 

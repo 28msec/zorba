@@ -1,3 +1,4 @@
+declare namespace fn-zorba = "http://www.flworfound.org/zorba-xquery-functions";
 declare variable $input-context external;
 
 let $persons := doc($input-context)/site/people

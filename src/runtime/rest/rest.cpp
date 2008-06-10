@@ -27,14 +27,20 @@
 #include "store/api/store.h"
 #include "store/naive/node_items.h"
 #include "store/api/copymode.h"
+
 #include "types/root_typemanager.h"
+
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime/parse.h"
+
 #include "system/globalenv.h"
+
 #include "zorbaerrors/error_manager.h"
+
+#include "functions/Rest.h"  // for namespace
 
 #include <iostream>
 #include <fstream>
@@ -194,7 +200,7 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
 
 bool ZorbaRestGetIterator::createResultNode(store::Item_t& result, PlanState& planState, xqpString name, ChildrenIterator_t children) const
 {
-  xqpString ns = "http://www.flworfound.org/rest";
+  xqpString ns = ZORBA_REST_FN_NS;
   xqpString pre = "zorba-rest";
   store::Item_t qname;
   
