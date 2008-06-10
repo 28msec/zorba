@@ -34,6 +34,10 @@ namespace zorbac {
       prepare_file(XQC_Implementation implementation, FILE *query_file,
 	    	           XQC_StaticContext context, XQC_Query_Ref query);
 
+      static XQUERY_ERROR
+      prepare_stream(XQC_Implementation implementation, XQC_InputStream stream,
+                     XQC_StaticContext context, XQC_Query_Ref query);
+
 	    static void 
       free(XQC_Implementation implementation);
 

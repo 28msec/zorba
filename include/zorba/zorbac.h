@@ -49,7 +49,7 @@ typedef struct XQC_DataManager_s*  XQC_DataManager;
 typedef XQC_DataManager* XQC_DataManager_Ref;
 
 typedef struct XQC_OutputStream_s* XQC_OutputStream;
-typedef XQC_OutputStream* XQC_OutputStream_Ref;
+typedef struct XQC_InputStream_s* XQC_InputStream;
 
 // external functions
 typedef void (*external_function_init)(void** user_data, void* global_user_data);
@@ -147,6 +147,26 @@ struct XQC_Implementation_s
 	XQUERY_ERROR 
   (*prepare_file)(XQC_Implementation implementation, FILE *query_file,
 		              XQC_StaticContext context, XQC_Query_Ref query);
+
+  /**
+   * Prepares a query from a ::XQC_InputStream, returning an ::XQC_Query object.
+   * The user is responsible for freeing the ::XQC_Query object returned by
+   * calling XQC_Query::free().
+   *
+   * \param implementation The XQC_Implementation that this function pointer is a member of.
+   * \param stream The input stream returning the query to prepare.
+   *               free will be called on the XQC_InputStream after the query has been read.
+   * \param context The initial static context for this query, or null to use the default 
+   *        static context.
+   * \param[out] expression The resulting prepared expression.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
+   */
+  XQUERY_ERROR
+  (*prepare_stream)(XQC_Implementation implementation, XQC_InputStream stream,
+                    XQC_StaticContext context, XQC_Query_Ref query);
  
   XQUERY_ERROR
   (*create_item)(XQC_Implementation implementation, XQC_Item_Ref item);
@@ -758,6 +778,17 @@ struct XQC_OutputStream_s
 
   void 
   (*free)(XQC_OutputStream stream);
+
+  void* user_data;
+};
+
+struct XQC_InputStream_s
+{
+  int
+  (*read)(XQC_InputStream stream, char* buf, unsigned int length);
+
+  void 
+  (*free)(XQC_InputStream stream);
 
   void* user_data;
 };

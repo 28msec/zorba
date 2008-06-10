@@ -117,6 +117,46 @@ example_4(XQC_Implementation impl)
 }
 
 int
+read_stream(XQC_InputStream stream, char* buf, unsigned int length) 
+{
+  if (((int)stream->user_data) == 0) {
+    strcpy(buf, "for $i in (1 to 10) return $i");
+    stream->user_data = (void*) 1;
+    return 29;
+  } 
+  return 0;
+}
+
+void
+free_stream(XQC_InputStream stream) 
+{
+  free(stream);
+}
+
+
+int
+example_5(XQC_Implementation impl)
+{
+  XQC_Query       lXQuery;
+  FILE*           lOutFile = stdout;
+  XQC_InputStream lStream = (XQC_InputStream) malloc(sizeof(struct XQC_InputStream_s));
+  lStream->read = read_stream;
+  lStream->free = free_stream;
+  lStream->user_data = (void*) 0;
+
+  // compile the query
+  impl->prepare_stream(impl, lStream, 0, &lXQuery);
+
+  // execute it and print the result on standard out
+  lXQuery->execute(lXQuery, lOutFile);
+
+  // release the query
+  lXQuery->free(lXQuery);
+
+  return 1;
+}
+
+int
 csimple(int argc, char** argv)
 {
   int res = 0; 
@@ -144,6 +184,11 @@ csimple(int argc, char** argv)
 
   printf("executing C example 4\n");
   res = example_4(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
+
+  printf("executing C example 5\n");
+  res = example_5(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 

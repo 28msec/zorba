@@ -124,6 +124,49 @@ namespace zorbac {
     }
   }
 
+  XQUERY_ERROR
+  Implementation::prepare_stream(XQC_Implementation impl, XQC_InputStream stream,
+                                 XQC_StaticContext context, XQC_Query_Ref query)
+  {
+    try {
+      Zorba* lZorba = static_cast<Zorba*>(impl->data);
+
+      std::auto_ptr<XQC_Query_s> lQuery(new XQC_Query_s());
+
+      std::stringstream lStream;
+      char lBuf[1024];
+      memset(lBuf, 0, 1024);
+      int  lRead;
+      while ( (lRead = stream->read(stream, lBuf, 1024)) > 0) {
+        lStream.write(lBuf, lRead);
+      }
+      stream->free(stream);
+      if (lRead == -1) {
+        return API0002_COMPILE_FAILED; 
+      }
+
+      XQuery_t lQuerySmart;
+      if (context) {
+        zorba::StaticContext_t lContext = 
+              (static_cast<zorbac::StaticContext*> (context->data))->theContext;
+        lQuerySmart = lZorba->compileQuery(lStream, lContext);
+      } else {
+        lQuerySmart = lZorba->compileQuery(lStream);
+      }
+
+      Query::assign_functions(lQuery.get());
+
+      *query   = lQuery.release();
+      (*query)->data = lQuerySmart.get();
+      lQuerySmart->addReference();
+      return XQ_NO_ERROR;
+    } catch (ZorbaException& e) {
+      return e.getErrorCode(); 
+    } catch (...) {
+      return XQP0019_INTERNAL_ERROR; 
+    }
+  }
+
   void
   Implementation::free(XQC_Implementation impl)
   {
@@ -207,6 +250,7 @@ namespace zorbac {
     impl->create_context = Implementation::create_context;
     impl->prepare        = Implementation::prepare;
     impl->prepare_file   = Implementation::prepare_file;
+    impl->prepare_stream = Implementation::prepare_stream;
     impl->free           = Implementation::free;
     impl->create_item    = Implementation::create_item;
     impl->item_factory   = Implementation::item_factory;
