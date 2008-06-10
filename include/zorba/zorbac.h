@@ -186,6 +186,9 @@ struct XQC_Implementation_s
   void
   (*free)(XQC_Implementation implementation);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
@@ -306,6 +309,9 @@ struct XQC_Query_s
   void
   (*free)(XQC_Query query);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
@@ -619,6 +625,9 @@ struct XQC_StaticContext_s
   void
   (*free)(XQC_StaticContext context);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
@@ -649,6 +658,9 @@ struct XQC_DynamicContext_s
   void
   (*free)(XQC_DynamicContext context);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
@@ -678,6 +690,9 @@ struct XQC_Item_s
   void
   (*free)(XQC_Item item);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
@@ -702,6 +717,9 @@ struct XQC_ItemFactory_s
   void
   (*free)(XQC_ItemFactory factory);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
@@ -713,6 +731,9 @@ struct XQC_Sequence_s
   void
   (*free)(XQC_Sequence sequence);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
@@ -739,6 +760,9 @@ struct XQC_Collection_s
   void
   (*free)(XQC_Collection collection);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
@@ -768,6 +792,9 @@ struct XQC_DataManager_s
   void
   (*free)(XQC_DataManager data_manager);
 
+  /**
+   * for internal use only
+   */
   void* data;
 };
 
