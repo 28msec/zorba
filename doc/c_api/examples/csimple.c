@@ -65,7 +65,7 @@ example_2(XQC_Implementation impl)
 
   lXQuery->sequence(lXQuery, &lResult);
 
-  while ( lResult->next(lResult, lItem) != API0025_END_OF_SEQUENCE ) {
+  while ( lResult->next(lResult, lItem) == XQ_NO_ERROR ) {
     lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);
   }
