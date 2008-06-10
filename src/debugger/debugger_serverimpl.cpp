@@ -21,7 +21,7 @@
 #include <boost/bind.hpp>
 
 #include  <zorba/zorba.h>
-#include <store/naive/simple_store.h>
+#include <inmemorystore/inmemorystore.h>
 
 #include  "debugger/debugger_serverimpl.h"
 
@@ -145,7 +145,7 @@ void ZorbaDebuggerImpl::run( std::istream * aQuery )
   setStatus( QUERY_RUNNING );
   try
   {
-    store::SimpleStore * lStore = store::SimpleStore::getInstance();
+    store::SimpleStore * lStore = inmemorystore::InMemoryStore::getInstance();
     XQuery_t lQuery = Zorba::getInstance( lStore )->createQuery();
     lQuery->setFileName( theFileName );
     Zorba_CompilerHints lCompilerHints;
