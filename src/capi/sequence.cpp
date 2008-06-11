@@ -66,6 +66,7 @@ namespace zorbac {
      try {
        ResultIterator* lIter = getResultIterator(seq);
        lIter->close();
+       delete static_cast<zorbac::Sequence*>(seq->data);
        delete seq;
      } catch (ZorbaException& e) {
        assert(false);

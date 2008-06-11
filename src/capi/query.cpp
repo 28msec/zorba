@@ -228,6 +228,7 @@ namespace zorbac {
   Query::free(XQC_Query query)
   {
     try {
+      delete static_cast<zorbac::Query*>(query->data);
       delete query;
     } catch (ZorbaException& e) {
       assert(false);
