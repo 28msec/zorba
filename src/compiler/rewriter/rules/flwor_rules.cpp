@@ -71,9 +71,50 @@ namespace zorba {
     }
   }
 
-// is this variable used in the next FOR clause that executes more than once?
-bool used_upto_first_repeated_clause (var_expr *v, flwor_expr *flwor, static_context *sctx) {
+// Cannot throw exception that can be caught by a try block
+static bool is_trivial_expr (expr *e) {
+    switch (e->get_expr_kind ()) {
+    case const_expr_kind:
+    case var_expr_kind:
+      return true;
+    default: return false;
+    }
+  }
+
+static bool var_in_try_block(var_expr *v, expr *e, bool in_try_block)
+{
+  if (e->get_expr_kind() == trycatch_expr_kind) {
+    trycatch_expr *tce = dynamic_cast<trycatch_expr *>(e);
+    if (var_in_try_block(v, &*tce->get_try_expr(), true)) {
+      return true;
+    }
+    std::vector<trycatch_expr::clauseref_t>::iterator i = tce->begin();
+    std::vector<trycatch_expr::clauseref_t>::iterator end = tce->end();
+    while(i != end) {
+      if (var_in_try_block(v, &*(*i)->get_catch_expr_h(), in_try_block)) {
+        return true;
+      }
+    }
+    return false;
+  } else if (e == v) {
+    return in_try_block;
+  }
+
+  // Or else navigate down all children
+  expr_iterator ei = e->expr_begin();
+  while(!ei.done()) {
+    if (var_in_try_block(v, &*(*ei), in_try_block)) {
+      return true;
+    }
+    ++ei;
+  }
+  return false;
+}
+
+static bool safe_to_fold_single_use(var_expr *v, flwor_expr *flwor, static_context *sctx)
+{
   bool declared = false;
+  expr_t containing_expr = NULL;
   for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin ();
        i != flwor->clause_end (); i++) 
   {
@@ -83,24 +124,21 @@ bool used_upto_first_repeated_clause (var_expr *v, flwor_expr *flwor, static_con
       declared = v == vref.getp ();
       continue;
     }
-    if (count_variable_uses(ref->get_expr (), v, 1) == 1)
-      return true;
+    if (count_variable_uses(ref->get_expr (), v, 1) == 1) {
+      containing_expr = ref->get_expr();
+      break;
+    }
     // never go past a FOR clause
     if (ref->get_type () == forlet_clause::for_clause
         && TypeOps::type_max_cnt (*ref->get_expr ()->return_type (sctx)) >= 2)
       return false;
   }
-  return true;
-}
-
-  bool is_trivial_expr (expr *e) {
-    switch (e->get_expr_kind ()) {
-    case const_expr_kind:
-    case var_expr_kind:
-      return true;
-    default: return false;
-    }
+  if (containing_expr == NULL) {
+    containing_expr = flwor->get_retval();
   }
+
+  return !var_in_try_block(v, &*containing_expr, false);
+}
 
 #define WHERE flwor->get_where ()
 
@@ -161,8 +199,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         } else ++i;
       } else {  // uses == 1 or 0
         if (uses == 1) {
-          if (is_trivial_expr (cexpr)
-              || used_upto_first_repeated_clause (&*vref, flwor, sctx))
+          if (is_trivial_expr(cexpr) || safe_to_fold_single_use(&*vref, flwor, sctx))
             {
               subst_vars (rCtx, node, vref, cexpr);
               MODIFY (i = flwor->remove_forlet_clause (i));
