@@ -20,8 +20,6 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-#define ZORBA_REST_FN_NS "http://www.flworfound.org/zorba-rest"
-
 namespace zorba {
 
 class rest_get_1 : public function

@@ -24,7 +24,9 @@
 #define XSI_NS "http://www.w3.org/2001/XMLSchema-instance"
 #define XQUERY_LOCAL_FN_NS "http://www.w3.org/2005/xquery-local-functions"
 #define XQUERY_ERR_NS  "http://www.w3.org/2005/xqt-errors"
-#define ZORBA_FN_NS  "http://www.flworfound.org/zorba-xquery-functions"
+
+#define ZORBA_FN_NS  "http://www.flworfound.org/zorba/internal-functions"
+#define ZORBA_REST_FN_NS "http://www.flworfound.org/zorba/rest-functions"
 
 #endif
 /*

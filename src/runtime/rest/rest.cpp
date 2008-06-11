@@ -40,8 +40,6 @@
 
 #include "zorbaerrors/error_manager.h"
 
-#include "functions/Rest.h"  // for namespace
-
 #include <iostream>
 #include <fstream>
 using namespace std;

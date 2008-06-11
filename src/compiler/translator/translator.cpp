@@ -2473,6 +2473,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (! (pfx.empty () || (pfx == mod_pfx && target_ns == mod_ns)))
     sctx_p->bind_ns(pfx, target_ns, XQST0033);
   rchandle<URILiteralList> ats = v.get_uri_list ();
+  // Handle pre-defined modules
+  if (ats == NULL && (target_ns == ZORBA_FN_NS || target_ns == ZORBA_REST_FN_NS))
+    return;
+
   if (ats == NULL || ats->size () == 0)
     ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
   for (int i = 0; i < ats->size (); i++) {
