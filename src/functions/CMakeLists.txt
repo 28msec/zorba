@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(FUNCTIONS_SRCS
-    Accessors.cpp Sequences.cpp library.cpp
+    Accessors.cpp Sequences.cpp Strings.cpp library.cpp
     Constructor.cpp ContextFunctions.cpp Numerics.cpp 
     Boolean.cpp FnContext.cpp QNames.cpp signature.cpp
     DateTime.cpp Misc.cpp function.cpp arithmetic.cpp Nodes.cpp

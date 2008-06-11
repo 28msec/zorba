@@ -1070,6 +1070,49 @@ FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
 #endif
 }
 
+#define PASSTHRU( fn )                                    \
+  template <typename FloatType>                           \
+  FloatImpl<FloatType> FloatImpl<FloatType>::fn() const   \
+  { return FloatImpl (getType (), theFloatImpl.fn ()); }
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::log() const
+{
+  if (*this < zero())
+    return nan();
+#ifndef ZORBA_NO_BIGNUMBERS
+  return FloatImpl (getType (), theFloatImpl.log());
+#else
+  return FloatImpl (getType (), ::log(theFloatImpl));
+#endif
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::log10() const
+{
+  if (*this < zero())
+    return nan();
+#ifndef ZORBA_NO_BIGNUMBERS
+  return FloatImpl (getType (), theFloatImpl.log10());
+#else
+  return FloatImpl (getType (), ::log10(theFloatImpl));
+#endif
+}
+
+PASSTHRU (exp)
+PASSTHRU (sin)
+PASSTHRU (cos)
+PASSTHRU (tan)
+PASSTHRU (asin)
+PASSTHRU (acos)
+PASSTHRU (atan)
+PASSTHRU (sinh)
+PASSTHRU (cosh)
+PASSTHRU (tanh)
+PASSTHRU (asinh)
+PASSTHRU (acosh)
+PASSTHRU (atanh)
+
 template <typename FloatType>
 bool FloatImpl<FloatType>::operator!=(const FloatImpl& aFloatImpl) const{
   if(isNaN() || aFloatImpl.isNaN())

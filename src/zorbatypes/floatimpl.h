@@ -311,8 +311,22 @@ template <typename FloatType> class FloatImplTraits;
       FloatImpl<FloatType> 
       roundHalfToEven(Integer aPrecision) const;
 
-      FloatImpl<FloatType> 
-      sqrt() const;
+      FloatImpl<FloatType> sqrt() const;
+      FloatImpl<FloatType> exp() const;
+      FloatImpl<FloatType> log() const;
+      FloatImpl<FloatType> log10() const;
+      FloatImpl<FloatType> sin() const;
+      FloatImpl<FloatType> cos() const;
+      FloatImpl<FloatType> tan() const;
+      FloatImpl<FloatType> asin() const;
+      FloatImpl<FloatType> acos() const;
+      FloatImpl<FloatType> atan() const;
+      FloatImpl<FloatType> sinh() const;
+      FloatImpl<FloatType> cosh() const;
+      FloatImpl<FloatType> tanh() const;
+      FloatImpl<FloatType> asinh() const;
+      FloatImpl<FloatType> acosh() const;
+      FloatImpl<FloatType> atanh() const;
 
       bool 
       isNaN() const { return theType == FloatCommons::NOT_A_NUM; }

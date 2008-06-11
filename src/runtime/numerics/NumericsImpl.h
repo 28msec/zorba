@@ -180,6 +180,11 @@ namespace zorba
 
   NARY_ITER (FnSQRTIterator);
 
+  NARY_ITER (FnExpIterator);
+  NARY_ITER (FnLogIterator);
+  NARY_ITER (FnSinIterator);
+  NARY_ITER (FnCosIterator);
+
 } /* namespace zorba */
 #endif  /* ZORBA_NUMERICS_H */
 

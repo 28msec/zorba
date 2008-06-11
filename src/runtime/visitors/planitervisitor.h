@@ -98,6 +98,10 @@ namespace zorba
   class FnRoundIterator;
   class FnRoundHalfToEvenIterator;
   class FnSQRTIterator;
+  class FnExpIterator;
+  class FnLogIterator;
+  class FnSinIterator;
+  class FnCosIterator;
   class FnConcatIterator;
   class FnEmptyIterator;
   class FnExistsIterator;
@@ -380,6 +384,11 @@ namespace zorba
     PLAN_ITER_VISITOR (FnRoundHalfToEvenIterator);
       
     PLAN_ITER_VISITOR (FnSQRTIterator);
+
+    PLAN_ITER_VISITOR (FnExpIterator);
+    PLAN_ITER_VISITOR (FnLogIterator);
+    PLAN_ITER_VISITOR (FnSinIterator);
+    PLAN_ITER_VISITOR (FnCosIterator);
 
     PLAN_ITER_VISITOR (FnConcatIterator);
 

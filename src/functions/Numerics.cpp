@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "functions/Numerics.h"
+#include "functions/function_impl.h"
 
 #include "system/globalenv.h"
 
@@ -24,9 +25,150 @@
 
 #include "types/typeops.h"
 
+#include "context/namespace_context.h"
+
 using namespace std;
 
 namespace zorba {
+
+  class single_numeric_func : public function {
+  public:
+    single_numeric_func (const signature &sig) : function (sig) {}
+    virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  };
+
+  class binary_arith_func : public function {
+  public:
+    binary_arith_func (const signature &sig) : function (sig) {}
+    virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  };
+
+/*______________________________________________________________________
+|  
+| 6.2 Operators on Numeric Values
+|_______________________________________________________________________*/
+
+
+// 6.2.1 op:numeric-add
+// --------------------
+class op_numeric_add : public binary_arith_func
+{
+public:
+	op_numeric_add(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+// 6.2.2 op:numeric-subtract
+// -------------------------
+class op_numeric_subtract : public binary_arith_func
+{
+public:
+	op_numeric_subtract(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+
+// 6.2.3 op:numeric-multiply
+// -------------------------
+class op_numeric_multiply : public binary_arith_func
+{
+public:
+	op_numeric_multiply(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+
+// 6.2.4 op:numeric-divide
+// -----------------------
+class op_numeric_divide : public binary_arith_func
+{
+public:
+	op_numeric_divide(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+// 6.2.5 op:numeric-integer-divide
+// -------------------------------
+class op_numeric_integer_divide : public binary_arith_func
+{
+public:
+	op_numeric_integer_divide(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+// 6.2.6 op:numeric-mod
+// --------------------
+class op_numeric_mod : public binary_arith_func
+{
+public:
+	op_numeric_mod(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+// 6.2.7 op:numeric-unary-plus
+// ---------------------------
+class op_numeric_unary_plus : public single_numeric_func
+{
+public:
+  op_numeric_unary_plus(const signature&);
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+
+// 6.2.8 op:numeric-unary-minus
+// ----------------------------
+class op_numeric_unary_minus : public single_numeric_func
+{
+public:
+	op_numeric_unary_minus(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+
+/*______________________________________________________________________
+|  
+| 6.4 Functions on Numeric Values
+|_______________________________________________________________________*/
+
+// 6.4.1 fn:abs
+class fn_abs : public single_numeric_func 
+{
+public:
+	fn_abs(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+// 6.4.2 fn:ceiling
+class fn_ceiling : public single_numeric_func
+{
+  public:
+    fn_ceiling(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+// 6.4.3 fn:floor
+class fn_floor : public single_numeric_func
+{
+  public:
+    fn_floor(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+// 6.4.4 fn:round
+class fn_round : public single_numeric_func
+{
+  public:
+    fn_round(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+// 6.4.5 fn:round-half-to-even
+class fn_round_half_to_even : public single_numeric_func
+{
+  public:
+    fn_round_half_to_even(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
 
 
 xqtref_t single_numeric_func::return_type (const std::vector<xqtref_t> &arg_types) const {
@@ -408,11 +550,125 @@ PlanIter_t zor_numgen::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 	return new ZorNumGen(loc);
 }
 
-PlanIter_t fn_sqrt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class fn_sqrt : public single_numeric_func
 {
-	return new FnSQRTIterator(loc, argv);
+public:
+	fn_sqrt(const signature& sig) : single_numeric_func (sig) {}
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+    return new FnSQRTIterator(loc, argv);
+  }
+};
+
+#define DECL_DOUBLE_MATH_FUN( name, iter )                              \
+  class fn_##name : public function_impl<Fn##iter##Iterator> {          \
+  public:                                                               \
+  fn_##name (const signature &sig) : function_impl<Fn##iter##Iterator> (sig) {} \
+  }
+
+DECL_DOUBLE_MATH_FUN (exp, Exp);
+DECL_DOUBLE_MATH_FUN (log, Log);
+DECL_DOUBLE_MATH_FUN (sin, Sin);
+DECL_DOUBLE_MATH_FUN (cos, Cos);
+
+#define REGISTER_DOUBLE_MATH_FUN( name )                        \
+  DECL(sctx, fn_##name,                                         \
+       (createQName(ZORBA_MATH_FN_NS, "fn-zorba-math", #name),  \
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,                        \
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+
+void populateContext_Math (static_context *sctx) {
+  DECL(sctx, fn_sqrt,
+       (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "sqrt"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  
+  REGISTER_DOUBLE_MATH_FUN (exp);
+  REGISTER_DOUBLE_MATH_FUN (log);
+  REGISTER_DOUBLE_MATH_FUN (sin);
+  REGISTER_DOUBLE_MATH_FUN (cos);
 }
 
+void populateContext_Numerics(static_context *sctx) {
+// Numerics
+DECL(sctx, op_numeric_add,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-add"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_subtract,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-subtract"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_multiply,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_divide,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-divide"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_integer_divide,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-integer-divide"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_mod,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-mod"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_unary_minus,
+     (createQName (XQUERY_OP_NS,"fn", ":unary-minus"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
+
+DECL(sctx, op_numeric_unary_plus,
+     (createQName (XQUERY_OP_NS,"fn", ":unary-plus"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
+
+DECL(sctx, fn_abs,
+     (createQName(XQUERY_FN_NS, "fn", "abs"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, fn_ceiling,
+     (createQName(XQUERY_FN_NS, "fn", "ceiling"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, fn_floor,
+     (createQName(XQUERY_FN_NS, "fn", "floor"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, fn_round,
+     (createQName(XQUERY_FN_NS, "fn", "round"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, fn_round_half_to_even,
+     (createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, fn_round_half_to_even,
+     (createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+// end Numerics
+
+}
   
 } /* namespace zorba */
 

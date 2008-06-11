@@ -16,9 +16,38 @@
 #ifndef ZORBA_FUNCTION_IMPL_H
 #define ZORBA_FUNCTION_IMPL_H
 
+#include "system/globalenv.h"
+
 #include "functions/function.h"
 
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
+
+#include "context/static_context.h"
+
+#define ITEM_FACTORY (*(GENV.getStore().getItemFactory()))
+
+#define DECL(sctx, type, sig)                                  \
+do                                                             \
+{                                                              \
+  std::auto_ptr<function> type##_ptr(new type(signature sig)); \
+                                                               \
+  sctx->bind_fn(type##_ptr->get_fname (),                      \
+                type##_ptr.get(),                              \
+                type##_ptr->get_signature().arg_count());      \
+  type##_ptr.release();                                        \
+} while(0)
+
+
 namespace zorba {
+
+  static inline store::Item_t createQName(const char *ns, const char *pre, const char *local)
+  {
+    store::Item_t res;
+    ITEM_FACTORY.createQName(res, ns, pre, local);
+    return res;
+  }
+
 
   template <class Iter> class function_impl : public function {
   public:

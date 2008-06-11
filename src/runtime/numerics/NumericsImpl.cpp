@@ -962,9 +962,53 @@ namespace zorba
 
       STACK_PUSH (true, state);
     }
-    STACK_END (state);    
+    STACK_END (state);
   }
 
+
+  bool FnExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+  {
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+    if (consumeNext(result, theChildren[0].getp(), planState )) {
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().exp());
+      STACK_PUSH (true, state);
+    }
+    STACK_END (state);
+  }
+
+  bool FnLogIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+  {
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+    if (consumeNext(result, theChildren[0].getp(), planState )) {
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log());
+      STACK_PUSH (true, state);
+    }
+    STACK_END (state);
+  }
+
+  bool FnSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+  {
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+    if (consumeNext(result, theChildren[0].getp(), planState )) {
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sin());
+      STACK_PUSH (true, state);
+    }
+    STACK_END (state);
+  }
+
+  bool FnCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+  {
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+    if (consumeNext(result, theChildren[0].getp(), planState )) {
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().cos());
+      STACK_PUSH (true, state);
+    }
+    STACK_END (state);
+  }
 
   ZorNumGen::ZorNumGen ( const QueryLoc& loc ) 
     : NoaryBaseIterator<ZorNumGen, ZorNumGenState>(loc) {}

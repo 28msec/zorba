@@ -17,11 +17,61 @@
 
 #include "system/globalenv.h"
 #include "functions/arithmetic.h"
+#include "functions/function_impl.h"
 #include "runtime/core/arithmetic_impl.h"
 
 using namespace std;
 
 namespace zorba {
+
+  // 6.2.1 op:add
+  // --------------------
+  class op_add : public function
+  {
+  public:
+	op_add(const signature& sig) : function (sig) {}
+	
+  public:
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  };
+
+  // 6.2.3 op:numeric-multiply
+  // -------------------------
+  class op_multiply : public function
+  {
+  public:
+	op_multiply(const signature& sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  };
+
+
+  // 6.2.4 op:numeric-divide
+  // -----------------------
+  class op_divide : public function
+  {
+  public:
+	op_divide(const signature& sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  };
+
+  // 6.2.5 op:numeric-integer-divide
+  // -------------------------------
+  class op_integer_divide : public function
+  {
+  public:
+	op_integer_divide(const signature& sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  };
+
+  // 6.2.6 op:numeric-mod
+  // --------------------
+  class op_mod : public function
+  {
+  public:
+	op_mod(const signature& sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  };
+
 
 PlanIter_t op_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -64,6 +114,44 @@ PlanIter_t op_mod::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
 }
 
 
+void populateContext_Arithmetics(static_context *sctx) {
+// Generic Arithmetics
+DECL(sctx, op_add,
+     (createQName (XQUERY_OP_NS,"fn", ":add"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
+DECL(sctx, op_subtract,
+     (createQName (XQUERY_OP_NS,"fn", ":subtract"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_multiply,
+     (createQName (XQUERY_OP_NS,"fn", ":multiply"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_divide,
+     (createQName (XQUERY_OP_NS,"fn", ":divide"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_integer_divide,
+     (createQName (XQUERY_OP_NS,"fn", ":integer-divide"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_mod,
+     (createQName (XQUERY_OP_NS,"fn", ":mod"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+}
 
 }
