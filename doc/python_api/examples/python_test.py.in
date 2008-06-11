@@ -17,12 +17,12 @@ sys.path.append('@pythonPath@')
 import zorba_api
 
 def example1(zorba):
-  xquery = zorba.compileQuery('1+2')
+  xquery = zorba.compileQuery("1+2")
   print xquery.execute()
   return
 
 def example2(zorba):
-  xquery = zorba.compileQuery('(1,2,3,4,5)')
+  xquery = zorba.compileQuery("(1,2,3,4,5)")
   iter = xquery.iterator()
   iter.open()
   item = zorba_api.S_Item_createEmptyItem()
@@ -34,26 +34,37 @@ def example2(zorba):
 
 def example3(zorba):
   try:
-    xquery = zorba.compileQuery('1 div 0')
+    xquery = zorba.compileQuery("1 div 0")
     print xquery.execute()
   except RuntimeError, e:
     print e
   return
 
+def example4(zorba):
+  dataManager = zorba.getXmlDataManager()
+  dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
+  xquery = zorba.compileQuery("doc('books.xml')//book")
+  print xquery.execute()
+  return
+
 store = zorba_api.S_InMemoryStore_getInstance()
 zorba = zorba_api.S_Zorba_getInstance(store)
 
-print 'Example1:'
+print "Example1:"
 example1(zorba)
-print ''
+print ""
 
-print 'Example2:'
+print "Example2:"
 example2(zorba)
-print ''
+print ""
 
-print 'Example3:'
+print "Example3:"
 example3(zorba)
-print ''
+print ""
+
+print "Example4:"
+example4(zorba)
+print ""
 
 zorba.shutdown()
 zorba_api.S_InMemoryStore_shutdown(store)

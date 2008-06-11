@@ -41,6 +41,13 @@ def example3(zorba)
   end
 end
 
+def example4(zorba)
+  dataManager = zorba.getXmlDataManager()
+  dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
+  xquery = zorba.compileQuery("doc('books.xml')//book")
+  print xquery.execute()
+end
+
 store = Zorba_api::S_InMemoryStore.getInstance()
 zorba = Zorba_api::S_Zorba.getInstance(store)
 
@@ -54,6 +61,10 @@ print "\n"
 
 print "Example3:\n"
 example3(zorba)
+print "\n\n"
+
+print "Example4:\n"
+example4(zorba)
 print "\n\n"
 
 zorba.shutdown()

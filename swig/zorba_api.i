@@ -98,8 +98,8 @@ class S_InMemoryStore : public S_Store {
 private:
   zorba::store::SimpleStore* theStore;
 public:
-  virtual ~S_InMemoryStore() {}
   S_InMemoryStore() : theStore(0) {}
+  virtual ~S_InMemoryStore() {}
   S_InMemoryStore(zorba::store::SimpleStore* aStore) : theStore(aStore) {}
   static S_InMemoryStore* getInstance()
   {
@@ -113,6 +113,20 @@ public:
   virtual zorba::store::SimpleStore* getStore() const
   {
     return theStore;
+  }
+};
+
+class S_XmlDataManager {
+private:
+  zorba::XmlDataManager* theManager;
+public:
+  S_XmlDataManager() : theManager(0) {}
+  S_XmlDataManager(const S_XmlDataManager& aManager) : theManager(aManager.theManager) {} 
+  S_XmlDataManager(zorba::XmlDataManager* aManager) : theManager(aManager) {}
+  void loadDocument(const std::string& aName, const std::string& aContent)
+  {
+    std::stringstream lStream(aContent);
+    theManager->loadDocument(aName, lStream);
   }
 };
 
@@ -130,6 +144,10 @@ public:
   S_XQuery* compileQuery(const std::string& aStr) 
   {
       return new S_XQuery(theZorba->compileQuery(aStr));
+  }
+  S_XmlDataManager* getXmlDataManager()
+  {
+    return new S_XmlDataManager(theZorba->getXmlDataManager());
   }
   void shutdown() { theZorba->shutdown(); }
 }; // class S_Zorba
@@ -163,9 +181,15 @@ public:
   static void shutdown(S_InMemoryStore*);
 };
 
+class S_XmlDataManager {
+public:
+  void loadDocument(const std::string& aStream, const std::string& aContent);
+};
+
 class S_Zorba {
 public:
   static S_Zorba* getInstance(S_Store*);
   S_XQuery* compileQuery(const std::string& aStr);
+  S_XmlDataManager* getXmlDataManager();
   void shutdown();
 };
