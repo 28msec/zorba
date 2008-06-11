@@ -36,8 +36,8 @@ def example3(zorba):
   try:
     xquery = zorba.compileQuery('1 div 0')
     print xquery.execute()
-  except zorba_api.S_DynamicException, a:
-    print a.getMsg()
+  except RuntimeError, e:
+    print e
   return
 
 store = zorba_api.S_InMemoryStore_getInstance()

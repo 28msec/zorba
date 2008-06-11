@@ -14,29 +14,47 @@
 
 require '@rubyPath@/zorba_api'
 
-print Zorba_api.bla()
+def example1(zorba)
+  xquery = zorba.compileQuery("1+2")
+  print xquery.execute()
+end
 
-#lCAPI = Zorba_api.new_apip()
-#Zorba_api.zorba_init(lCAPI)
-#
-#lErr = Zorba_api.new_errorp()
-#lItem = Zorba_api.item_init(lCAPI)
-#lString = Zorba_api.string_init(lCAPI)
-#
-#lXQuery = Zorba_api.query_compile(lCAPI, 'for $x in (1+2,3+4, "this is a test", 9) return $x', lErr)
-#lResult = Zorba_api.sequence_init(lXQuery, lErr)
-#
-#while 0 < Zorba_api.sequence_next(lResult, lItem, lErr)
-#  Zorba_api.item_stringvalue(lItem, lString, lErr)
-#  print Zorba_api.string_to_char(lString)
-#  print "\n"
-#end
-#
-#Zorba_api.sequence_close(lResult)
-#Zorba_api.query_release(lXQuery)
-#
-#Zorba_api.string_release(lString)
-#Zorba_api.item_release(lItem)
-#Zorba_api.delete_errorp(lErr)
-#Zorba_api.zorba_release()
-#Zorba_api.delete_apip(lCAPI)
+def example2(zorba)
+  xquery = zorba.compileQuery("(1,2,3,4,5)")
+  iter = xquery.iterator()
+  iter.open()
+  item = Zorba_api::S_Item::createEmptyItem()
+  while iter.next(item) do
+    print item.getStringValue()
+    print "\n"
+  end
+  iter.close()
+  iter.destroy()
+end
+
+def example3(zorba)
+  begin
+    xquery = zorba.compileQuery("1 div 0")
+    print xquery.execute()
+  rescue RuntimeError => e
+    print e 
+  end
+end
+
+store = Zorba_api::S_InMemoryStore.getInstance()
+zorba = Zorba_api::S_Zorba.getInstance(store)
+
+print "Example1:\n"
+example1(zorba)
+print "\n\n"
+
+print "Example2:\n"
+example2(zorba)
+print "\n"
+
+print "Example3:\n"
+example3(zorba)
+print "\n\n"
+
+zorba.shutdown()
+Zorba_api::S_InMemoryStore.shutdown(store)
