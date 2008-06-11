@@ -20,6 +20,7 @@
 #include <zorba/zorba.h>
 #include "capi/capi_util.h"
 #include "capi/item.h"
+#include "capi/sequence.h"
 
 using namespace zorba;
 
@@ -83,7 +84,7 @@ namespace zorbac {
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
-      zorba::ResultIterator* lIter = static_cast<zorba::ResultIterator*>(seq->data);
+      zorba::ResultIterator* lIter = static_cast<zorbac::Sequence*>(seq->data)->theSequence.get();
 
       lContext->setVariable(qname, lIter);
     DC_CATCH
