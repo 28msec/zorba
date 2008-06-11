@@ -26,6 +26,7 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/item_iterator.h"
 
+#include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
 #include "store/api/store.h"
@@ -114,7 +115,7 @@ namespace zorba
             {
             case store::StoreConsts::documentNode:
             {
-                std::cout << "Validate document" << "\n"; std::cout.flush();
+                //std::cout << "Validate document" << "\n"; std::cout.flush();
 
                 schemaValidator.startDoc();
                 store::Iterator_t atts = processChildren( planState, loc, schemaValidator,
@@ -126,20 +127,24 @@ namespace zorba
                     true /* isroot */, true /* assign ids */, true /* copy children */, copymode );
 
                 schemaValidator.endDoc();
-                std::cout << "End Validate" << "\n"; std::cout.flush();
-                break;
+
+                //std::cout << "End Validate" << "\n"; std::cout.flush();
+                //break;
+                result = item;
+                return true;
             }
             case store::StoreConsts::elementNode: 
             {
-                std::cout << "Validate element" << "\n"; std::cout.flush();
+                //std::cout << "Validate element" << "\n"; std::cout.flush();
 
-                store::NsBindings bindings;
                 store::Item_t typeName = item->getType();
                 store::Item_t nodeName = item->getNodeName();
                 
                 schemaValidator.startDoc();
                 schemaValidator.startElem(nodeName);
 
+
+                processNamespaces( schemaValidator, item);
                 store::Iterator_t attributesIterator = processChildren(planState, loc, schemaValidator, 
                     item->getAttributes());
                 store::Iterator_t childrenIterator = processChildren(planState, loc, schemaValidator, 
@@ -152,9 +157,10 @@ namespace zorba
                 schemaValidator.endElem(nodeName);
                 schemaValidator.endDoc();
                 
-                std::cout << "End Validate" << "\n"; std::cout.flush();
-                //return true;
-                break;
+                //std::cout << "End Validate" << "\n"; std::cout.flush();
+                //break;
+                result = item;
+                return true;
             }
             default:
                 ZORBA_ERROR_LOC_DESC( XQDY0061, loc, 
@@ -188,8 +194,8 @@ namespace zorba
 
             if ( child->isNode() )
             {
-                std::cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n";
-                std::cout.flush();
+                //std::cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n";
+                //std::cout.flush();
                 
                 switch ( child->getNodeKind() )
                 { 
@@ -197,9 +203,11 @@ namespace zorba
                     {
                         typeName = child->getType();
                         store::Item_t nodeName = child->getNodeName();
-                        std::cout << "     - elem: " << child->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
+                        //std::cout << "     - elem: " << child->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
 
                         schemaValidator.startElem(nodeName);
+
+                        processNamespaces(schemaValidator, child);
 
                         store::Iterator_t attributesIterator = processChildren(planState, loc, 
                             schemaValidator, child->getAttributes());
@@ -218,7 +226,7 @@ namespace zorba
                 case store::StoreConsts::attributeNode:
                     {
                         typeName = child->getType();
-                        std::cout << "     - attr: " << child->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
+                        //std::cout << "     - attr: " << child->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
                         
                         store::Item_t attName = child->getNodeName();
                         schemaValidator.attr(attName, child->getStringValue());
@@ -242,7 +250,7 @@ namespace zorba
                 
                 case store::StoreConsts::textNode:
                     {
-                        std::cout << "     - text: " << child->getStringValue() << "\n"; std::cout.flush();
+                        //std::cout << "     - text: " << child->getStringValue() << "\n"; std::cout.flush();
                     
                         schemaValidator.text(child->getStringValue());
 
@@ -260,17 +268,17 @@ namespace zorba
                     break;
                 
                 case store::StoreConsts::piNode:
-                    std::cout << "     - pi: " << child->getStringValue() << "\n"; std::cout.flush();
+                    //std::cout << "     - pi: " << child->getStringValue() << "\n"; std::cout.flush();
                     result = child;
                     break;
                 
                 case store::StoreConsts::commentNode:
-                    std::cout << "     - comment: " << child->getStringValue() << "\n"; std::cout.flush();
+                    //std::cout << "     - comment: " << child->getStringValue() << "\n"; std::cout.flush();
                     result = child;
                     break;
                 
                 case store::StoreConsts::anyNode:
-                    std::cout << "     - any: " << child->getStringValue() << "\n"; std::cout.flush();
+                    //std::cout << "     - any: " << child->getStringValue() << "\n"; std::cout.flush();
                     result = child;
                     break;
                                     
@@ -286,6 +294,17 @@ namespace zorba
         
         //return resultIterator;
         return children;
+    }
+
+    void ValidateIterator::processNamespaces ( SchemaValidator& schemaValidator, store::Item_t item)
+    {
+        store::NsBindings bindings;
+        item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+
+        for (unsigned long i = 0; i < bindings.size(); i++)
+        {
+            schemaValidator.ns( bindings[i].first.getStore(), bindings[i].second.getStore() );
+        }
     }
 
     /* end class ValidateIterator */

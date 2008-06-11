@@ -41,19 +41,22 @@ SchemaValidator::~SchemaValidator()
 
 void SchemaValidator::startDoc()
 {
-    cout << "   SDoc \n";
+    //cout << "   SDoc \n";
+
     _schemaValidatorFilter->startDocumentEvent(NULL, NULL);
 }
 
 void SchemaValidator::endDoc()
 {
-    cout << "   EDoc \n";
+    //cout << "   EDoc \n";
+    
     _schemaValidatorFilter->endDocumentEvent();
 }
 
 void SchemaValidator::startElem(store::Item_t elemName)
 {   
-    cout << "   SElem: " << elemName->getLocalName()->c_str() << "\n";
+    //cout << "   SElem: " << elemName->getLocalName()->c_str() << "\n";
+
     const XMLCh *prefix = XMLString::transcode(elemName->getPrefix()->c_str()); 
     const XMLCh *uri = XMLString::transcode(elemName->getNamespace()->c_str());
     const XMLCh *localname = XMLString::transcode(elemName->getLocalName()->c_str()); 
@@ -62,7 +65,8 @@ void SchemaValidator::startElem(store::Item_t elemName)
 
 void SchemaValidator::endElem(store::Item_t elemName)
 {
-    cout << "   EElem: " << elemName->getLocalName()->c_str() << "\n";
+    //cout << "   EElem: " << elemName->getLocalName()->c_str() << "\n";
+
     const XMLCh *prefix = XMLString::transcode(elemName->getPrefix()->c_str()); 
     const XMLCh *uri = XMLString::transcode(elemName->getNamespace()->c_str());
     const XMLCh *localname = XMLString::transcode(elemName->getLocalName()->c_str()); 
@@ -73,7 +77,9 @@ void SchemaValidator::endElem(store::Item_t elemName)
 
 void SchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
 {
-    cout << "     Attr: " << attrName->getLocalName()->c_str() << "\n";
+    //cout << "     Attr: " << attrName->getPrefix()->c_str() << ":" << 
+    //    attrName->getLocalName()->c_str() << " = '" << textValue->c_str() << "'\n";
+
     const XMLCh *prefix = XMLString::transcode(attrName->getPrefix()->c_str()); 
     const XMLCh *uri = XMLString::transcode(attrName->getNamespace()->c_str());
     const XMLCh *localname = XMLString::transcode(attrName->getLocalName()->c_str()); 
@@ -85,9 +91,20 @@ void SchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
 
 void SchemaValidator::text(xqpStringStore_t textValue)
 {
-    cout << "     Text: " << textValue->c_str() << "\n";
+    //cout << "     Text: " << textValue->c_str() << "\n";
+
     const XMLCh *value = XMLString::transcode(textValue->c_str());
     _schemaValidatorFilter->textEvent(value);
 }
 
-} // namespace zorba
+void SchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)
+{
+    //cout << "     Ns  : " << prefix->c_str() << " = '" << uri->c_str() << "'\n";
+
+    const XMLCh *prefixVal = XMLString::transcode(prefix->c_str());
+    const XMLCh *uriVal    = XMLString::transcode(uri->c_str());
+    _schemaValidatorFilter->namespaceEvent(prefixVal, uriVal);
+}
+
+
+}// namespace zorba

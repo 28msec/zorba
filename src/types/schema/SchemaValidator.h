@@ -46,6 +46,7 @@ public:
 
     void attr(store::Item_t attrName, xqpStringStore_t textValue);
     void text(xqpStringStore_t textValue);
+    void ns(xqpStringStore_t prefix, xqpStringStore_t uri);
 };
 
 } // namespace zorba

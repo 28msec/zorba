@@ -58,6 +58,9 @@ namespace zorba
 
         static store::Iterator_t processChildren ( PlanState& planState, const QueryLoc& loc,
             SchemaValidator& schemaValidator, store::Iterator_t children);
+
+        static void processNamespaces ( SchemaValidator& schemaValidator, 
+            store::Item_t item);
     };
 
 }

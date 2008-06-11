@@ -605,16 +605,20 @@ void SchemaValidatorFilter::attributeEvent(const XMLCh *prefix, const XMLCh *uri
     }
     ++attrCount_;
 
-    ///if(XPath2Utils::equals(uri, SchemaSymbols::fgURI_XSI)) {
-    //  // Ignore schema location hints
-    //  if(XPath2Utils::equals(localname, SchemaSymbols::fgXSI_TYPE)) {
-    //    xsiType_ = curAttr->getValue();
-    //  }
-    //  else if(XPath2Utils::equals(localname, SchemaSymbols::fgATT_NILL) &&
-    //          XPath2Utils::equals(value, SchemaSymbols::fgATTVAL_TRUE)) {
-    //    ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setNillable(true);
-    //  }
-    //}
+    if(XMLString::equals(uri, SchemaSymbols::fgURI_XSI)) 
+    {
+        // Ignore schema location hints
+        if(XMLString::equals(localname, SchemaSymbols::fgXSI_TYPE)) 
+        {
+            xsiType_ = curAttr->getValue();
+        }
+        else if(XMLString::equals(localname, SchemaSymbols::fgATT_NILL) &&
+                XMLString::equals(value, SchemaSymbols::fgATTVAL_TRUE)) 
+        {
+            ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setNillable(true);
+        }
+        --attrCount_;
+    }
 }
 
 void SchemaValidatorFilter::namespaceEvent(const XMLCh *prefix, const XMLCh *uri)
@@ -714,24 +718,27 @@ unsigned int SchemaValidatorFilter::resolveQName(const XMLCh *const qName, XMLBu
     else {
         prefixBuf.set(qName, prefixColonPos);
 
-        ///if(XPath2Utils::equals(prefixBuf.getRawBuffer(), XMLUni::fgXMLNSString)) {
-        //  if(mode == ElemStack::Mode_Element)
-        //    emitError(XMLErrs::NoXMLNSAsElementPrefix, qName);
+        if( XMLString::equals(prefixBuf.getRawBuffer(), XMLUni::fgXMLNSString)) 
+        {
+            if(mode == ElemStack::Mode_Element)
+                emitError(XMLErrs::NoXMLNSAsElementPrefix, qName);
 
-          return fXMLNSNamespaceId;
-        //}
-        //else if(XPath2Utils::equals(prefixBuf.getRawBuffer(), XMLUni::fgXMLString)) {
-        //  return  fXMLNamespaceId;
-        //}
-        //else {
-        //  bool unknown = false;
-        //  unsigned int uriId = fElemStack.mapPrefixToURI(prefixBuf.getRawBuffer(), (ElemStack::MapModes) mode, unknown);
+            return fXMLNSNamespaceId;
+        }
+        else if( XMLString::equals(prefixBuf.getRawBuffer(), XMLUni::fgXMLString)) 
+        {
+            return  fXMLNamespaceId;
+        }
+        else 
+        {
+            bool unknown = false;
+            unsigned int uriId = fElemStack.mapPrefixToURI(prefixBuf.getRawBuffer(), (ElemStack::MapModes) mode, unknown);
 
-        //  if(unknown)
-        //    emitError(XMLErrs::UnknownPrefix, prefixBuf.getRawBuffer());
+            if(unknown)
+                emitError(XMLErrs::UnknownPrefix, prefixBuf.getRawBuffer());
 
-        //  return uriId;
-        //}
+            return uriId;
+        }
     }
 }
 
