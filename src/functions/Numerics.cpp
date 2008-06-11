@@ -403,17 +403,15 @@ fn_round_half_to_even::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 
 
 
-zor_numgen::zor_numgen(const signature& sig)
-:
-	function(sig)
-{   	
-}
-
 PlanIter_t zor_numgen::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new ZorNumGen(loc);
 }
 
+PlanIter_t fn_sqrt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+	return new FnSQRTIterator(loc, argv);
+}
 
   
 } /* namespace zorba */

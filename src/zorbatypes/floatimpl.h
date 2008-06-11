@@ -311,6 +311,9 @@ template <typename FloatType> class FloatImplTraits;
       FloatImpl<FloatType> 
       roundHalfToEven(Integer aPrecision) const;
 
+      FloatImpl<FloatType> 
+      sqrt() const;
+
       bool 
       isNaN() const { return theType == FloatCommons::NOT_A_NUM; }
 
@@ -401,3 +404,8 @@ template <typename FloatType> class FloatImplTraits;
 
 #endif // ZORBA_DOUBLE_H
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

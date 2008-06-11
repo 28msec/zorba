@@ -179,6 +179,8 @@ protected:
   std::set<string> xquery_fns_def_dot;
   const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data;
 
+  std::set<string> zorba_predef_mod_ns;
+
   TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
     :
     print_depth (0),
@@ -206,6 +208,10 @@ protected:
     xquery_fns_def_dot.insert ("name");
 
     op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
+
+    zorba_predef_mod_ns.insert (ZORBA_FN_NS);
+    zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
+    zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
   }
 
   expr_t pop_nodestack (int n = 1)
@@ -2474,7 +2480,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     sctx_p->bind_ns(pfx, target_ns, XQST0033);
   rchandle<URILiteralList> ats = v.get_uri_list ();
   // Handle pre-defined modules
-  if (ats == NULL && (target_ns == ZORBA_FN_NS || target_ns == ZORBA_REST_FN_NS))
+  if (ats == NULL && zorba_predef_mod_ns.find (target_ns) != zorba_predef_mod_ns.end ())
     return;
 
   if (ats == NULL || ats->size () == 0)

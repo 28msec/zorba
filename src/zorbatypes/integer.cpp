@@ -343,6 +343,10 @@ Integer Integer::roundHalfToEven(Integer aPrecision) const {
   return Integer(Decimal::roundHalfToEven(theInteger, aPrecision.theInteger));
 }
 
+Integer Integer::sqrt () const {
+  return Integer (theInteger.sqrt ());
+}
+
 bool Integer::operator==(const Decimal& aDecimal) const {
   return theInteger == aDecimal.theDecimal;
 }

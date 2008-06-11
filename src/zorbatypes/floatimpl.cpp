@@ -34,11 +34,11 @@
 
 #define _FPCLASS_SNAN      FP_NAN  // Signaling NaN
 #define _FPCLASS_QNAN      -1      // Quiet NaN
-#define _FPCLASS_NINF      FP_INFINITE // Negative infinity ( –INF)
+#define _FPCLASS_NINF      FP_INFINITE // Negative infinity (-INF)
 _FPCLASS_NN:// Negative normalized non-zero
     case _FPCLASS_ND:// Negative denormalized
       return FloatCommons::NORMAL_NEG;
-    case _FPCLASS_NZ:// Negative zero ( – 0)
+    case _FPCLASS_NZ:// Negative zero (-0)
     case _FPCLASS_PZ:// Positive 0 (+0)
     case _FPCLASS_PD:// Positive denormalized
     case _FPCLASS_PN:// Positive normalized non-zero
@@ -1056,6 +1056,18 @@ bool FloatImpl<FloatType>::operator==(const FloatImpl& aFloatImpl) const{
     }
   }
   return false;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
+{
+  if (*this < zero())
+    return nan();
+#ifndef ZORBA_NO_BIGNUMBERS
+  return FloatImpl (getType (), theFloatImpl.sqrt());
+#else
+  return FloatImpl (getType (), ::sqrt(theFloatImpl));
+#endif
 }
 
 template <typename FloatType>

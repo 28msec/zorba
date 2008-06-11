@@ -27,6 +27,7 @@
 
 #define ZORBA_FN_NS  "http://www.flworfound.org/zorba/internal-functions"
 #define ZORBA_REST_FN_NS "http://www.flworfound.org/zorba/rest-functions"
+#define ZORBA_MATH_FN_NS "http://www.flworfound.org/zorba/math-functions"
 
 #endif
 /*

@@ -97,6 +97,7 @@ namespace zorba
   class FnFloorIterator;
   class FnRoundIterator;
   class FnRoundHalfToEvenIterator;
+  class FnSQRTIterator;
   class FnConcatIterator;
   class FnEmptyIterator;
   class FnExistsIterator;
@@ -378,6 +379,8 @@ namespace zorba
 
     PLAN_ITER_VISITOR (FnRoundHalfToEvenIterator);
       
+    PLAN_ITER_VISITOR (FnSQRTIterator);
+
     PLAN_ITER_VISITOR (FnConcatIterator);
 
     PLAN_ITER_VISITOR (FnEmptyIterator);

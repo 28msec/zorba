@@ -851,7 +851,7 @@ namespace zorba
       if ( consumeNext(item, theChildren[0].getp(), planState ))
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Round operation has a sequences greater than one as an operator.");
+            loc, "Round operation has a sequence longer than one as an operator.");
       }
       STACK_PUSH (true, state );
     }
@@ -920,7 +920,52 @@ namespace zorba
     STACK_END (state);
   }
 
-  
+
+  bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
+    store::Item_t item;
+    xqtref_t type;
+    
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+    if (consumeNext(result, theChildren[0].getp(), planState ))
+    {
+      result = result->getAtomizationValue();
+
+      //get the value and the type of the item
+      result = result->getAtomizationValue();
+      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
+
+      //Parameters of type xs:untypedAtomic are always promoted to xs:double
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      {
+        GenericCast::instance()->cast ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
+      }
+
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+        GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());        
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+        GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().sqrt());
+      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+        GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().sqrt());
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+        GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
+      else
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
+            loc, "Wrong operator type for a sqrt operation.");
+
+      if ( consumeNext(item, theChildren[0].getp(), planState ))
+      {
+        ZORBA_ERROR_LOC_DESC( XPTY0004,
+            loc, "sqrt operation has a sequence longer than one as an operator.");
+      }
+
+      STACK_PUSH (true, state);
+    }
+    STACK_END (state);    
+  }
+
+
   ZorNumGen::ZorNumGen ( const QueryLoc& loc ) 
     : NoaryBaseIterator<ZorNumGen, ZorNumGenState>(loc) {}
 

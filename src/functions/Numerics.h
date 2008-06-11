@@ -172,7 +172,14 @@ class fn_round_half_to_even : public single_numeric_func
 class zor_numgen : public function
 {
 public:
-	zor_numgen(const signature&);
+	zor_numgen(const signature& sig) : function (sig) {}
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+class fn_sqrt : public function
+{
+public:
+	fn_sqrt(const signature& sig) : function (sig) {}
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 

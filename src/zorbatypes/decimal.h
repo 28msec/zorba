@@ -115,6 +115,8 @@ public:
   Decimal round(Integer aPrecision) const; 
   Decimal roundHalfToEven(Integer aPrecision) const;
 
+  Decimal sqrt () const;
+
   bool operator==(const Integer&) const;
   bool operator==(const Decimal& aDecimal) const { return theDecimal == aDecimal.theDecimal; }
 

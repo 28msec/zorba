@@ -199,6 +199,8 @@ namespace zorba {
       Integer 
       roundHalfToEven(Integer aPrecision) const;
 
+      Integer sqrt() const;
+
       bool
       operator==(const Integer& aInteger) const { return theInteger == aInteger.theInteger; } 
       

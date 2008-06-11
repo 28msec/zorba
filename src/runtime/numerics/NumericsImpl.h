@@ -178,5 +178,13 @@ namespace zorba
     virtual void accept(PlanIterVisitor&) const;
   };
 
+  NARY_ITER (FnSQRTIterator);
+
 } /* namespace zorba */
 #endif  /* ZORBA_NUMERICS_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

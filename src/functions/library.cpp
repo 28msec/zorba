@@ -1378,6 +1378,11 @@ DECL(ctx_var_assign,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 // end context functions
+
+DECL(fn_sqrt,
+     (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "sqrt"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 }
 
 } /* namespace zorba */
