@@ -1340,6 +1340,10 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
 
     while(regex->match_anywhere(start_str, parse_regex_flags(flags.c_str()), &match_pos, &matched_len))
     {
+      if(matched_len == 0)
+      {//Regular expression matches zero-length string.
+        throw zorbatypesException("", ZorbatypesError::FORX0003);
+      }
       if(match_pos)
         newstr += xqpString(new xqpStringStore(start_str , start_str+match_pos));
       newstr += replacement;
