@@ -900,29 +900,133 @@ struct XQC_DynamicContext_s
   void* data;
 };
 
+/**
+ * This struct is Zorba's representation of an Item as defined in the
+ * XQuery 1.0 and XPath 2.0 Data Model (XDM); see http://www.w3.org/TR/xpath-datamodel/. 
+ * 
+ * Instances of the XDM are a sequence, i.e. an ordered collection of zero or more items.
+ * In the Zorba API, a sequence is represented by the XQC_Sequence struct.
+ *
+ * The Item class is the union of all XQuery node and atomic types.
+ * The class provides functions to access the information of an Item. Note that not
+ * all functions are defined on every Item kind. If a function is called on an Item that
+ * does not provide the function called, an XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE error
+ * is raised.
+ *
+ * A new atomic Item can be created using the ItemFactory. A new node Item should be created
+ * by the result of a query.
+ */
 struct XQC_Item_s 
 {
+  /**
+   * The string value is the string that is extracted by calling the fn:string function
+   * on the Item (see http://www.w3.org/TR/xpath-functions/#func-string).
+   * Note that this function is available for all types of Items.
+   *
+   * \param item The XQC_Item that this function pointer is a member of
+   * \param[out] string_value The string-value of the given item.
+   *             This string is valid as long as the given item is valid.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
+   */
   XQUERY_ERROR
-  (*string_value)(XQC_Item item, const char**);
+  (*string_value)(XQC_Item item, const char** string_value);
 
+  /**
+   * Get the (optional) value of a QName's prefix.
+   * Note that this function is only available for Items of type QName.
+   *
+   * \param item The XQC_Item that this function pointer is a member of
+   * \param[out] prefix The prefix of the given QName item.
+   *             This string is valid as long as the given item is valid.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
+   */
   XQUERY_ERROR
-  (*prefix)(XQC_Item item, const char**);
+  (*prefix)(XQC_Item item, const char** prefix);
 
+  /**
+   * Get the (optional) value of a QName's namespace.
+   * Note that this function is only available for Items of type QName.
+   *
+   * \param item The XQC_Item that this function pointer is a member of
+   * \param[out] namespace The namespace of the given QName item.
+   *             This string is valid as long as the given item is valid.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
+   */
   XQUERY_ERROR
-  (*ns)(XQC_Item item, const char**);
+  (*ns)(XQC_Item item, const char** namespace);
 
+  /**
+   * Get the value of a QName's localname.
+   * Note that this function is only available for Items of type QName.
+   *
+   * \param item The XQC_Item that this function pointer is a member of
+   * \param[out] localname The localname of the given QName item.
+   *             This string is valid as long as the given item is valid.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
+   */
   XQUERY_ERROR
-  (*localname)(XQC_Item item, const char**);
+  (*localname)(XQC_Item item, const char** local_name);
 
+  /** 
+   * Get the bool value of the boolean Item.
+   * Note that this function is only available for Items of type boolean.
+   *
+   * \param item The XQC_Item that this function pointer is a member of
+   * \param[out] bool_value 1 if the boolean value of the given item is true, 0 otherwise.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
+   */
   XQUERY_ERROR
-  (*boolean_value)(XQC_Item item, int*);
+  (*boolean_value)(XQC_Item item, int* bool_value);
 
+  /**
+   * Check if the value of the Item is not a number (NaN).
+   * Note that this function is implemented for all item types but may only return
+   * 1 for a numeric item (e.g. Double or Float).
+   *
+   * \param item The XQC_Item that this function pointer is a member of
+   * \param[out] is_nan 1 if the given item is not a number, 0 otherwise.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
+   */
   XQUERY_ERROR
-  (*nan)(XQC_Item item, int*);
+  (*nan)(XQC_Item item, int* is_nan);
 
+  /**
+    Check if the value of the Item is positive or negative infinity.
+   * Note that this function is only available for numeric items (e.g. Double or Float).
+   *
+   * \param item The XQC_Item that this function pointer is a member of
+   * \param[out] inf 1 if the given item is +/-INF, 0 otherwise.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
+   */
   XQUERY_ERROR
-  (*pos_or_neg_inf)(XQC_Item item, int*);
+  (*pos_or_neg_inf)(XQC_Item item, int* inf);
 
+  /**
+   * Called to free the resources associated with the XQC_Item.
+   * 
+   * \param item The XQC_Item that this function pointer is a member of
+   */
   void
   (*free)(XQC_Item item);
 
@@ -943,19 +1047,88 @@ struct XQC_Item_s
  */
 struct XQC_ItemFactory_s
 {
+  /** 
+   * Creates a String Item see [http://www.w3.org/TR/xmlschema-2/#string].
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param str The string as a char pointer.
+   * \pram[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
   XQUERY_ERROR
   (*create_string)(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item); 
 
+  /** 
+   * Creates an AnyURI Item see [http://www.w3.org/TR/xmlschema-2/#anyURI]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param str The uri as a char pointer.
+   * \pram[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
   XQUERY_ERROR
   (*create_anyuri)(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item); 
 
+  /**
+   * Creates a QName Item see [http://www.w3.org/TR/xmlschema-2/#QName]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param str The uri as a char pointer.
+   * \param localname The localname as a char pointer.
+   * \pram[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
   XQUERY_ERROR
-  (*create_qname2)(XQC_ItemFactory factory, const char* uri, const char* localname, XQC_Item_Ref item); 
+  (*create_qname2)(XQC_ItemFactory factory, 
+                   const char* uri,
+                   const char* localname,
+                   XQC_Item_Ref item); 
   
+  /**
+   * Creates a QName Item see [http://www.w3.org/TR/xmlschema-2/#QName]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param str The uri as a char pointer.
+   * \param prefix The prefix as a char pointer.
+   * \param localname The localname as a char pointer.
+   * \pram[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
   XQUERY_ERROR
-  (*create_qname3)(XQC_ItemFactory factory, const char* uri, const char* prefix,
-                   const char* localname, XQC_Item_Ref item); 
+  (*create_qname3)(XQC_ItemFactory factory, 
+                   const char* uri,
+                   const char* prefix,
+                   const char* localname,
+                   XQC_Item_Ref item); 
 
+  /** 
+   * Creates a Boolean Item see [http://www.w3.org/TR/xmlschema-2/#bool]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param boolean 0 for a boolean <code>false</code> boolean item, 1 otherwise.
+   * \pram[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
   XQUERY_ERROR
   (*create_boolean)(XQC_ItemFactory factory, int boolean, XQC_Item_Ref item); 
 
@@ -973,11 +1146,32 @@ struct XQC_ItemFactory_s
   void* data;
 };
 
+/** 
+ * This struct represents an instance of the XQuery 1.0 and XPath 2.0 Data Model (XDM).
+ *
+ * See http://www.w3.org/TR/xpath-datamodel/.
+ */
 struct XQC_Sequence_s 
 {
+
+  /** 
+   * Get the next item of the sequence.
+   *
+   * \param sequence The XQC_Sequence_s that this function pointer is a member of
+   * \param[out] item The item wrapper that should contain the next item if XQ_NO_ERROR is returned
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval any XQuery type or dynamic error
+   */
   XQUERY_ERROR
   (*next)(XQC_Sequence sequence, XQC_Item item);
 
+  /**
+   * Called to free the resources associated with the XQC_ItemFactory.
+   * 
+   * \param factory The XQC_Sequence that this function pointer is a member of
+   */
   void
   (*free)(XQC_Sequence sequence);
 
