@@ -48,6 +48,33 @@ _FPCLASS_NN:// Negative normalized non-zero
 #endif
 */
 
+#ifdef ZORBA_NO_BIGNUMBERS
+float acosh( float z)
+{//formula from www.mathworks.com
+  return ::log(z + ::sqrt(z*z-1));
+}
+double acosh( double z)
+{
+  return ::log(z + ::sqrt(z*z-1));
+}
+float asinh( float z)
+{//formula from www.mathworks.com
+  return ::log(z + ::sqrt(z*z+1));
+}
+double asinh( double z)
+{
+  return ::log(z + ::sqrt(z*z+1));
+}
+float atanh( float z)
+{//formula from www.mathworks.com
+  return 1.0/2*::log((1+z)/(1-z));
+}
+double atanh( double z)
+{
+  return 1.0/2*::log((1+z)/(1-z));
+}
+#endif
+
 namespace zorba {
 
 const xqpString& FloatCommons::get_INF_POS_STR()
@@ -1070,10 +1097,18 @@ FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
 #endif
 }
 
+#ifndef ZORBA_NO_BIGNUMBERS
 #define PASSTHRU( fn )                                    \
   template <typename FloatType>                           \
   FloatImpl<FloatType> FloatImpl<FloatType>::fn() const   \
   { return FloatImpl (getType (), theFloatImpl.fn ()); }
+#else
+
+#define PASSTHRU( fn )                                    \
+  template <typename FloatType>                           \
+  FloatImpl<FloatType> FloatImpl<FloatType>::fn() const   \
+{ return FloatImpl (getType (), ::fn(theFloatImpl)); }
+#endif
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::log() const
@@ -1300,11 +1335,11 @@ template <typename FloatType>
 xqpString FloatImpl<FloatType>::toString() const {
   switch(theType) {
     case FloatCommons::NOT_A_NUM:
-      return FloatCommons::NOT_A_NUM_STR;
+      return FloatCommons::get_NOT_A_NUM_STR();
     case FloatCommons::INF_POS:
-      return FloatCommons::INF_POS_STR;
+      return FloatCommons::get_INF_POS_STR();
     case FloatCommons::INF_NEG:
-      return FloatCommons::INF_NEG_STR;
+      return FloatCommons::get_INF_NEG_STR();
     case FloatCommons::NORMAL_NEG:
       if (theFloatImpl == 0)
         return "-0";
@@ -1328,10 +1363,18 @@ xqpString FloatImpl<FloatType>::toString() const {
   {
     if(*lZeros == '.')
       ++lZeros;
+    lZeros[1] = 'E';
     lE++;
     if(*lE == '+')
-      lE ++;
-    lZeros[1] = 'E';
+      lE++;
+    else if(*lE == '-')
+    {
+      lZeros++;
+      lZeros[1] = '-';
+      lE++;
+    }
+    while(*lE == '0')
+      lE++;
     strcpy(lZeros+2, lE);
   }
   else

@@ -344,7 +344,11 @@ Integer Integer::roundHalfToEven(Integer aPrecision) const {
 }
 
 Integer Integer::sqrt () const {
+#ifndef ZORBA_NO_BIGNUMBERS
   return Integer (theInteger.sqrt ());
+#else
+  return Integer(::sqrt((double)theInteger));
+#endif
 }
 
 bool Integer::operator==(const Decimal& aDecimal) const {

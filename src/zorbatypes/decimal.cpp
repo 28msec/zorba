@@ -357,7 +357,11 @@ Decimal Decimal::roundHalfToEven(Integer aPrecision) const {
 }
 
 Decimal Decimal::sqrt() const {
+#ifndef ZORBA_NO_BIGNUMBERS
   return Decimal (theDecimal.sqrt ());
+#else
+  return ::sqrt(theDecimal);
+#endif
 }
 
 bool Decimal::operator==(const Integer& aInteger) const { 
