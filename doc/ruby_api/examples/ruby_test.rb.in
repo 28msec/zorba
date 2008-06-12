@@ -17,6 +17,7 @@ require '@rubyPath@/zorba_api'
 def example1(zorba)
   xquery = zorba.compileQuery("1+2")
   print xquery.execute()
+  xquery.destroy()
 end
 
 def example2(zorba)
@@ -30,6 +31,7 @@ def example2(zorba)
   end
   iter.close()
   iter.destroy()
+  xquery.destroy()
 end
 
 def example3(zorba)
@@ -38,14 +40,30 @@ def example3(zorba)
     print xquery.execute()
   rescue RuntimeError => e
     print e 
+  ensure
+    xquery.destroy()
   end
 end
 
 def example4(zorba)
+  begin
+    xquery = zorba.compileQuery("for $i in (1,2,")
+    print xquery.execute()
+  rescue RuntimeError => e
+    print e 
+  ensure
+    if not xquery.nil? then
+      xquery.destroy()
+    end
+  end
+end
+
+def example5(zorba)
   dataManager = zorba.getXmlDataManager()
   dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
   xquery = zorba.compileQuery("doc('books.xml')//book")
   print xquery.execute()
+  xquery.destroy()
 end
 
 store = Zorba_api::S_InMemoryStore.getInstance()
@@ -65,6 +83,10 @@ print "\n\n"
 
 print "Example4:\n"
 example4(zorba)
+print "\n\n"
+
+print "Example5:\n"
+example5(zorba)
 print "\n\n"
 
 zorba.shutdown()
