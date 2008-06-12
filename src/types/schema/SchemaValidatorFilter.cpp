@@ -299,7 +299,7 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
         const XMLCh *value = attr->getValue();
 
         unsigned int uriId = attr->getURIId();
-        const XMLCh *uri = getURIText(uriId);
+        //const XMLCh *uri = getURIText(uriId);
 
         bool attrValid = true;
         DatatypeValidator *attrValidator = 0;
@@ -449,9 +449,9 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
             for(index = 0; index < attrCount_; ++index) 
             {
                 const XMLAttr *attr = fAttrList->elementAt(index);
-                ///if(attr->getURIId() == curUriId &&
-                //   XPath2Utils::equals(attr->getName(), curName))
-                //  break;
+                if(attr->getURIId() == curUriId &&
+                   XMLString::equals(attr->getName(), curName))
+                   break;
             }
 
             if(index < attrCount_) 
@@ -761,7 +761,7 @@ bool SchemaValidatorFilter::laxElementValidation(QName* element, ContentLeafName
 {
     bool skipThisOne = false;
     bool laxThisOne = false;
-    unsigned int elementURI = element->getURI();
+    ///unsigned int elementURI = element->getURI();
 
     // We commandeer fCurrentURI to keep the element state in
     unsigned int currState = parentStack_->fCurrentURI;
@@ -773,9 +773,9 @@ bool SchemaValidatorFilter::laxElementValidation(QName* element, ContentLeafName
 
     SubstitutionGroupComparator comparator(fGrammarResolver, fURIStringPool);
 
-    if(cv) 
-    {
-        unsigned int i = 0;
+    ///if(cv) 
+    //{
+        ///unsigned int i = 0;
         ///unsigned int leafCount = cv->getLeafCount();
 
         //for(; i < leafCount; ++i) {
@@ -841,7 +841,7 @@ bool SchemaValidatorFilter::laxElementValidation(QName* element, ContentLeafName
         //  return laxThisOne;
         //}
 
-    }
+    //}
 
     if (skipThisOne) 
     {
