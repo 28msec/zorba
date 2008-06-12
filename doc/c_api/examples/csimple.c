@@ -116,7 +116,7 @@ example_4(XQC_Implementation impl)
 
 }
 
-int
+unsigned int
 read_stream(XQC_InputStream stream, char* buf, unsigned int length) 
 {
   if (((int)stream->user_data) == 0) {
