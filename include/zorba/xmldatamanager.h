@@ -85,8 +85,7 @@ namespace zorba {
       virtual Item
       getDocument(const String& aURI) = 0;
 
-      /** \brief Delete the document identified by the given URI, if the document
-       * has been loaded before.
+      /** \brief Delete the document identified by the given URI.
        *
        * @param aURI the URI of the document to delete.
        * @return true if the document was found, false otherwise.
