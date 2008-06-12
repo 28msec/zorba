@@ -1168,9 +1168,9 @@ struct XQC_Sequence_s
   (*next)(XQC_Sequence sequence, XQC_Item item);
 
   /**
-   * Called to free the resources associated with the XQC_ItemFactory.
+   * called to free the resources associated with the xqc_itemfactory.
    * 
-   * \param factory The XQC_Sequence that this function pointer is a member of
+   * \param sequence the XQC_Sequence that this function pointer is a member of
    */
   void
   (*free)(XQC_Sequence sequence);
@@ -1181,26 +1181,99 @@ struct XQC_Sequence_s
   void* data;
 };
 
+/** 
+ * A Collection is a sequence of Node Items.
+ *
+ * Each Collection is created by the XmlDataManager and referenced by a URI.
+ * The URI can be accessed in a query's fn:collection function.
+ */
 struct XQC_Collection_s
 {
+  /** 
+   * Get the URI of a collection as an anyURI Item.
+   *
+   * \param collection the XQC_Collection_s that this function pointer is a member of
+   * \param[out] uri_item The uri item of the given collection. The user is responsible 
+   *             for freeing the object by calling the XQC_Item::free() function.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   */
   XQUERY_ERROR
   (*get_uri)(XQC_Collection collection, XQC_Item_Ref uri_item);
 
+  /** 
+   * Adds a Node Item to the Collection
+   *
+   * \param collection the XQC_Collection_s that this function pointer is a member of
+   * \param node The node item to add to the given collection.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::API0007_COLLECTION_ITEM_MUST_BE_A_NODE
+   */
   XQUERY_ERROR
   (*add_node)(XQC_Collection collection, XQC_Item node);
 
+  /** 
+   * Deletes a Node Item from the given Collection
+   *
+   * \param collection the XQC_Collection_s that this function pointer is a member of
+   * \param node The node item to delete from the given collection.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::API0007_COLLECTION_ITEM_MUST_BE_A_NODE
+   */
   XQUERY_ERROR
   (*delete_node)(XQC_Collection collection, XQC_Item node);
 
+  /** 
+   * Adds a sequence of Node Items to the Collection
+   *
+   * \param collection the XQC_Collection_s that this function pointer is a member of
+   * \param sequence The sequence of node items to add to the given collection.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::API0007_COLLECTION_ITEM_MUST_BE_A_NODE
+   */
   XQUERY_ERROR
   (*add_sequence)(XQC_Collection collection, XQC_Sequence sequence);
 
+	/**
+	 * Adds a document given by the FILE pointer to this collection.
+	 *
+   * \param collection the XQC_Collection_s that this function pointer is a member of
+   * \param doc The document to add as a FILE pointer.
+	 *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0016_LOADER_IO_ERROR,
+   * \retval ::XQP0017_LOADER_PARSING_ERROR, 
+   * \retval ::XQC_INTERNAL_ERROR
+	 */
   XQUERY_ERROR
   (*add_document)(XQC_Collection collection, FILE* doc);
 
+	/**
+	 * Adds a document given by the char pointer to this collection.
+	 *
+   * \param collection the XQC_Collection_s that this function pointer is a member of
+   * \param doc The document to add as a char pointer.
+	 *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0016_LOADER_IO_ERROR,
+   * \retval ::XQP0017_LOADER_PARSING_ERROR, 
+   * \retval ::XQC_INTERNAL_ERROR
+	 */
   XQUERY_ERROR
   (*add_document_char)(XQC_Collection collection, const char* doc);
 
+  /**
+   * called to free the resources associated with the xqc_itemfactory.
+   * 
+   * \param collection the XQC_Collection that this function pointer is a member of
+   */
   void
   (*free)(XQC_Collection collection);
 
@@ -1210,29 +1283,120 @@ struct XQC_Collection_s
   void* data;
 };
 
+/** 
+ * Using the XmlDataManager one can manage documents and collections.
+ * 
+ * The XmlDataManager is a singelton instance. The instance can be accessed by calling 
+ * XQC_Implementation::data_manager. The XmlDataManager is thread-safe.
+ */
 struct XQC_DataManager_s
 {
+  /** 
+   * This function loads a document from the given FILE pointer. The document
+   * is identified by the given URI.
+   *
+   * \param data_manager The XQC_DataManager that this function pointer is a member of
+   * \param doc_uri The URI of the document to load.
+   * \param document The document to load as a FILE pointer.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0016_LOADER_IO_ERROR,
+   * \retval ::XQP0017_LOADER_PARSING_ERROR, 
+   * \retval ::XQC_INTERNAL_ERROR
+   */
   XQUERY_ERROR
   (*load_document)(XQC_DataManager data_manager, const char* doc_uri, FILE* document);
 
+  /** 
+   * This function loads a document that is retrieved from the given URI location. The document
+   * is identified by the given URI.
+   *
+   * \param data_manager The XQC_DataManager that this function pointer is a member of
+   * \param location The URI of the document to load.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0016_LOADER_IO_ERROR,
+   * \retval ::XQP0017_LOADER_PARSING_ERROR, 
+   * \retval ::XQC_INTERNAL_ERROR
+   */
   XQUERY_ERROR
   (*load_document_uri)(XQC_DataManager data_manager, const char* location);
 
+  /** 
+   * Get the document identified by the given URI.
+   *
+   * \param data_manager The XQC_DataManager that this function pointer is a member of
+   * \param document_uri The URI of the document to retrieve.
+   * \param[out] doc The Item of the document to get.  The user is responsible 
+   *                 for freeing the object by calling the XQC_Item::free() function.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQC_INTERNAL_ERROR
+   */
   XQUERY_ERROR
   (*get_document)(XQC_DataManager data_manager, const char* document_uri, XQC_Item_Ref doc);
 
+  /*
+   * Delete the document identified by the given URI.
+   *
+   * \param data_manager The XQC_DataManager that this function pointer is a member of
+   * \param document_uri The URI of the document to delete.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQC_INTERNAL_ERROR
+   */
   XQUERY_ERROR
   (*delete_document)(XQC_DataManager data_manager, const char* document_uri);
 
+  /**
+   * Create a new collection that is identified by the given URI.
+   *
+   * \param data_manager The XQC_DataManager that this function pointer is a member of
+   * \param document_uri The URI of the collection to create.
+   * \param[out] col The collection to create. The user is responsible 
+   *                 for freeing the object by calling the XQC_Item::free() function.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQC_INTERNAL_ERROR
+   */
   XQUERY_ERROR
-  (*create_collection)(XQC_DataManager data_manager, const char* collection_uri, XQC_Collection_Ref col);
+  (*create_collection)(XQC_DataManager data_manager,
+                       const char* collection_uri,
+                       XQC_Collection_Ref col);
 
+  /**
+   * Get the collection that is identified by the given URI.
+   *
+   * \param data_manager The XQC_DataManager that this function pointer is a member of
+   * \param document_uri The URI of the collection to retrieve.
+   * \param[out] col The collection to retrieve. The user is responsible 
+   *                 for freeing the object by calling the XQC_Item::free() function.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQC_INTERNAL_ERROR
+   */
   XQUERY_ERROR
-  (*get_collection)(XQC_DataManager data_manager, const char* collection_uri, XQC_Collection_Ref collection);
+  (*get_collection)(XQC_DataManager data_manager,
+                    const char* collection_uri, 
+                    XQC_Collection_Ref collection);
 
+  /**
+   * Delete the collection that is identified by the given URI.
+   *
+   * \param data_manager The XQC_DataManager that this function pointer is a member of
+   * \param document_uri The URI of the collection to delete.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQC_INTERNAL_ERROR
+   */
   XQUERY_ERROR
   (*delete_collection)(XQC_DataManager data_manager, const char* collection_uri);
 
+  /**
+   * Called to free the resources associated with the XQC_DataManager.
+   * 
+   * \param context The XQC_DataManager that this function pointer is a member of
+   */
   void
   (*free)(XQC_DataManager data_manager);
 
