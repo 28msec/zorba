@@ -199,7 +199,7 @@ protected:
 
 ulong computeTabSize(ulong size)
 {
-  return size + 32 + theInitialSize / 10;
+  return size + 32 + size/5; //theInitialSize / 10;
 }
 
 
@@ -265,6 +265,7 @@ void clear()
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
   theNumEntries = 0;
+  numCollisions = 0;
 
   ulong n = theHashTab.size();
 
@@ -444,6 +445,7 @@ bool removeNoSync(const T& item, ulong hval)
       freelist()->setNext(entry);
 
       theNumEntries--;
+      numCollisions--;
 
       if (theHashTabSize > theInitialSize &&
           theNumEntries < (theHashTabSize / 2) * theLoadFactor)
@@ -478,7 +480,7 @@ HashEntry<T, V>* bucket(ulong hvalue)
   return &theHashTab[hvalue % theHashTabSize];
 }
 
-
+/*
 HashEntry<T, V>* gotoLast(HashEntry<T, V>* entry)
 {
   for (;;) 
@@ -491,7 +493,7 @@ HashEntry<T, V>* gotoLast(HashEntry<T, V>* entry)
       entry = next;
   }
 }
-
+*/
 
 /*******************************************************************************
 
@@ -501,6 +503,7 @@ HashEntry<T, V>* hashInsert(
     ulong      hvalue,
     bool&      found)
 {
+doHashInsert:
   HashEntry<T, V>* lastentry = NULL;
 
   found = false;
@@ -515,6 +518,10 @@ HashEntry<T, V>* hashInsert(
     return entry;
   }
 
+//debug
+//  int   nr_colisions = 0;
+//end debug
+
   // Search the hash bucket looking for the given item.
   while (entry != NULL)
   {
@@ -524,9 +531,18 @@ HashEntry<T, V>* hashInsert(
       return entry;
     }
 
+    //nr_colisions++;
     lastentry = entry;
     entry = entry->getNext();
   }
+//+debug
+  //std::cout << "Entry collision " << std::hex << hvalue << " " << Externals<T,E,C>::hash(lastentry->theItem, theCompareParam) 
+  //          << std::dec
+  //          << " nr colisions " << nr_colisions 
+  //          << " (" << numCollisions << "/" << theNumEntries << ")"
+  //          << std::endl;
+//end debug
+
 
   // The item was not found.
   theNumEntries++;
@@ -543,7 +559,8 @@ HashEntry<T, V>* hashInsert(
     {
       entry = bucket(hvalue);
 
-      lastentry = gotoLast(entry);
+      //daniel: why go to the last item?
+      lastentry = entry;//gotoLast(entry);
     }
   }
 
@@ -552,12 +569,15 @@ HashEntry<T, V>* hashInsert(
   {
     resizeHashTab(theHashTabSize * 2);
 
-    entry = bucket(hvalue);
-
-    if (entry->theItem == NULL)
-      return entry;
-
-    lastentry = gotoLast(entry);
+    theNumEntries--;
+    numCollisions--;
+    goto doHashInsert;//look again if the item is in the collision list
+//    entry = bucket(hvalue);
+//
+//    if (entry->theItem == NULL)
+//      return entry;
+//
+//    lastentry = gotoLast(entry);
   }
 
   // Get an entry from the free list in the overflow section of the hash teble
@@ -571,8 +591,9 @@ HashEntry<T, V>* hashInsert(
 
   entry = freelist()->getNext();
   freelist()->setNext(entry->getNext());
+  entry->setNext(lastentry->getNext());
   lastentry->setNext(entry);
-  entry->setNext(NULL);
+  //entry->setNext(NULL);
 
   return entry;
 }
@@ -621,15 +642,17 @@ void resizeHashTab(ulong newSize)
   HashEntry<T, V>* entry;
   HashEntry<T, V>* oldentry;
 
-  // Make a copy of theHashTab, and then resize it to the given new size.
-  checked_vector<HashEntry<T, V> > oldTab = theHashTab;
-  ulong oldsize = oldTab.size();
+  // Allocate a new vector of new size and fill it with old items
+  checked_vector<HashEntry<T, V> > oldTab(computeTabSize(newSize));// = theHashTab;
+  theHashTab.swap(oldTab);
 
+  ulong oldsize = oldTab.size();
   theHashTabSize = newSize;
-  theHashTab.clear();
-  theHashTab.resize(computeTabSize(newSize));
+  //theHashTab.clear();
+  //theHashTab.resize(computeTabSize(newSize));
   formatCollisionArea();
  
+  numCollisions = 0;
   // Now rehash every entry
   for (ulong i = 0; i < oldsize; i++)
   {
@@ -645,7 +668,8 @@ void resizeHashTab(ulong newSize)
     if (!entry->isFree())
     {
       // Go to the last entry of the current bucket
-      HashEntry<T, V>* lastentry = gotoLast(entry);
+      //daniel: why go to last? better insert after the first entry
+      HashEntry<T, V>* lastentry = entry;//gotoLast(entry);
 
       // Get an entry from the free list in the collision section of the hash
       // table. If no free entry exists, a new entry is appended into the table.
@@ -658,10 +682,14 @@ void resizeHashTab(ulong newSize)
 
       entry = freelist()->getNext();
       freelist()->setNext(entry->getNext());
+      entry->setNext(lastentry->getNext());
       lastentry->setNext(entry);
+      numCollisions++;
     }
 
-    *entry = *oldentry;
+    //*entry = *oldentry;
+    entry->theItem = oldentry->theItem;
+    entry->theValue = oldentry->theValue;
   }
 }
 
