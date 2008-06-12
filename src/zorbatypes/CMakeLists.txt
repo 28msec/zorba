@@ -15,6 +15,9 @@
 INCLUDE(${CMAKE_MODULE_PATH}/FindICU.cmake)
 
 SET(requiredlibs-zorbatypes)
+IF (CYGWIN)
+  SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${XERCESC_LIBRARY})
+ENDIF(CYGWIN)
                
 IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
   MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
