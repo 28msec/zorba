@@ -94,6 +94,9 @@ void QNamePool::remove(QNameItemImpl* qn)
     theCache[theFirstFree].thePrevFree = qn->thePosition;
     theFirstFree = qn->thePosition;
     theNumFree++;
+
+    //+
+    theHashSet.remove(qn);
   }
   else
   {
@@ -131,8 +134,7 @@ Item_t QNamePool::insert(
   xqpStringStore_t pooledNs;
   theNamespacePool->insertc(ns, pooledNs);
 
-  ulong hval = hashfun::h32(pre, hashfun::h32(ln, (uint32_t)pooledNs.getp()));
-                                              //hashfun::h32(ns)));
+  ulong hval = QNamePoolHashSet::compute_hash(pre, ln, (uint32_t)pooledNs.getp());
 
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
@@ -142,7 +144,7 @@ Item_t QNamePool::insert(
 
   if (entry == 0)
   {
-    qn = cacheInsert(hval);
+    qn = cacheInsert();//hval);
 
     qn->theNamespace.transfer(pooledNs);
     qn->thePrefix = new xqpStringStore(pre);
@@ -188,9 +190,7 @@ Item_t QNamePool::insert(
   xqpStringStore_t pooledNs;
   theNamespacePool->insertc(ns.getp(), pooledNs);
 
-  ulong hval = hashfun::h32(pre->c_str(),
-                            hashfun::h32(ln->c_str(), (uint32_t)pooledNs.getp()));
-                                         //hashfun::h32(ns->c_str())));
+  ulong hval = QNamePoolHashSet::compute_hash(pre->c_str(), ln->c_str(), (uint32_t)pooledNs.getp());
 
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
@@ -199,7 +199,7 @@ Item_t QNamePool::insert(
                                 hval);
   if (entry == 0)
   {
-    qn = cacheInsert(hval);
+    qn = cacheInsert();//hval);
 
     qn->theNamespace = pooledNs;//ns;
     qn->thePrefix = pre;
@@ -229,7 +229,7 @@ Item_t QNamePool::insert(
   slot (if any) is removed from the pool. If the cache free list is empty a new
   QNameItem is allocated from the heap.
 ********************************************************************************/
-QNameItemImpl* QNamePool::cacheInsert(ulong hval)
+QNameItemImpl* QNamePool::cacheInsert()//ulong hval)
 {
   QNameItemImpl* qn;
 
@@ -240,8 +240,8 @@ QNameItemImpl* QNamePool::cacheInsert(ulong hval)
     theFirstFree = qn->theNextFree;
     theCache[theFirstFree].thePrevFree = 0;
 
-    if (qn->theLocal != NULL)
-      theHashSet.removeNoSync(qn, hval);
+  //  if (qn->theLocal != NULL)
+  //    theHashSet.removeNoSync(qn, hval);
 
     qn->theNextFree = qn->thePrevFree = 0;
 
@@ -257,6 +257,7 @@ QNameItemImpl* QNamePool::cacheInsert(ulong hval)
 /*******************************************************************************
   If the given qname slot is in the free list of the cache, remove it from that
   list.
+  daniel: why would it be in the free list??
 ********************************************************************************/
 
 void QNamePool::cachePin(QNameItemImpl* qn)

@@ -58,15 +58,23 @@ protected:
     static bool equal(const QNameItemImpl* t1, const QNameItemImpl* t2)
     {
       return (t1->getLocalName()->byteEqual(*t2->getLocalName()) &&
-              t1->getNamespace()->byteEqual(*t2->getNamespace()) &&
-              t1->getPrefix()->byteEqual(*t2->getPrefix()));
+              t1->getPrefix()->byteEqual(*t2->getPrefix()) &&
+              t1->getNamespace()->byteEqual(*t2->getNamespace()));
     }
 
     static uint32_t hash(const QNameItemImpl* t)
     {
-      return  hashfun::h32(t->getPrefix()->c_str(),
-                           hashfun::h32(t->getNamespace()->c_str(),
-                                        hashfun::h32(t->getLocalName()->c_str())));
+    //  return  hashfun::h32(t->getPrefix()->c_str(),
+    //                       hashfun::h32(t->getNamespace()->c_str(),
+    //                               hashfun::h32(t->getLocalName()->c_str())));
+        return compute_hash(t->getPrefix()->c_str(),
+                            t->getLocalName()->c_str(), 
+                            (uint32_t)t->getNamespace());
+    }
+
+    static uint32_t compute_hash(const char *pre, const char *ln, uint32_t ns)
+    {
+      return hashfun::h32(pre, hashfun::h32(ln, ns));
     }
 
   public:
@@ -112,7 +120,7 @@ public:
   void remove(QNameItemImpl* qn);
 
 protected:
-  QNameItemImpl* cacheInsert(ulong hval);
+  QNameItemImpl* cacheInsert();//ulong hval);
 
   void cachePin(QNameItemImpl* qn);
 
