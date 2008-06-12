@@ -158,15 +158,22 @@ namespace zorbac {
         lInnerQuery->theErrorHandler = handler;
 
       std::stringstream lStream;
-      char lBuf[1024];
-      memset(lBuf, 0, 1024);
-      int  lRead;
-      while ( (lRead = stream->read(stream, lBuf, 1024)) > 0) {
-        lStream.write(lBuf, lRead);
-      }
-      stream->free(stream);
-      if (lRead == -1) {
-        return API0002_COMPILE_FAILED; 
+      {
+        char lBuf[1024];
+        memset(lBuf, 0, 1024);
+        int lRead = 0;
+        while ( (lRead = stream->read(stream, lBuf, 1024)) >= 1024 ) {
+          lStream.write(lBuf, lRead);
+        }
+        if (lRead > 0) {
+          assert (lRead < 1024);
+          lStream.write(lBuf, lRead);
+        }
+
+        stream->free(stream);
+        if (lRead == -1) {
+          return API0002_COMPILE_FAILED; 
+        }
       }
 
       if (context) {

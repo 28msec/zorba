@@ -116,15 +116,11 @@ example_4(XQC_Implementation impl)
 
 }
 
-unsigned int
+int
 read_stream(XQC_InputStream stream, char* buf, unsigned int length) 
 {
-  if (((int)stream->user_data) == 0) {
-    strcpy(buf, "for $i in (1 to 10) return $i");
-    stream->user_data = (void*) 1;
-    return 29;
-  } 
-  return 0;
+  strcpy(buf, "for $i in (1 to 10) return $i");
+  return 29;
 }
 
 void
@@ -142,7 +138,6 @@ example_5(XQC_Implementation impl)
   XQC_InputStream lStream = (XQC_InputStream) malloc(sizeof(struct XQC_InputStream_s));
   lStream->read = read_stream;
   lStream->free = free_stream;
-  lStream->user_data = (void*) 0;
 
   // compile the query
   impl->prepare_stream(impl, lStream, 0, 0, &lXQuery);

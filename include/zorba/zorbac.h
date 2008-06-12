@@ -1097,9 +1097,10 @@ struct XQC_InputStream_s
 	 * \param length The length of the buffer
 	 *
 	 * \return The number of bytes read - this will be less than length if the end of the input is reached
+   *         or -1 if an error occured
 	 *
 	 */
-  unsigned int
+  int
   (*read)(XQC_InputStream stream, char* buf, unsigned int length);
 
 	/**
