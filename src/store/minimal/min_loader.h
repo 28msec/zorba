@@ -159,6 +159,7 @@ protected:
   bool read_tag();
   bool read_characters();
   bool read_comment();
+  bool read_cdata();
   bool read_pi();
   bool read_xmlprolog();
 protected:

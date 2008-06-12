@@ -861,7 +861,9 @@ bool XmlLoader::read_comment()
   std::string comment_str;
 
   c = read_char();
-  if(c != '-')
+  if(c == '[')
+    return read_cdata();
+  else if(c != '-')
     return false;
   c = read_char();
   if(c != '-')
@@ -893,6 +895,65 @@ bool XmlLoader::read_comment()
   //send comment as SAX event
   comment(this, comment_str.c_str());
 
+  return true;
+}
+
+bool XmlLoader::read_cdata()
+{
+  //<![CDATA[ <!-- --> </<<< &&&& CDATA CONTENT &&&& >>>/> <-- <!-- ]]>
+  //read from CDATA..
+  int c;
+  std::string cdata_str;
+
+  c = read_char();
+  if(c != 'C')
+    return false;
+  c = read_char();
+  if(c != 'D')
+    return false;
+  c = read_char();
+  if(c != 'A')
+    return false;
+  c = read_char();
+  if(c != 'T')
+    return false;
+  c = read_char();
+  if(c != 'A')
+    return false;
+  c = read_char();
+  if(c != '[')
+    return false;
+
+  //now read everything until ]]>
+
+  while(1)
+  {
+    c=read_char();
+    if(!c)
+      return false;
+    if(c == ']')
+    {
+      c = read_char();
+      if(!c)
+        return false;
+      if(c == ']')
+      {
+        c = read_char();
+        if(!c)
+          return false;
+        if(c == '>')
+          break;
+        else
+          cdata_str += "]]";
+      }
+      else
+        cdata_str += "]";
+    }
+
+    cdata_str += c;
+  }
+
+  cdataBlock(this, cdata_str.c_str(), cdata_str.length());
   return true;
 }
 
@@ -1503,7 +1564,7 @@ void XmlLoader::characters(void * ctx, xqpStringStore_t content)//const xmlChar 
       TextNode* lasttextNode = reinterpret_cast<TextNode*>(last_child);
       //lasttextNode->theContent = new xqpStringStore(lasttextNode->getStringValueP()->str() +
       //                                          textNode->theContent->str());
-      lasttextNode->getStringValueP()->append_in_place(content.getp());
+      lasttextNode->getStringValueP()->append_in_place(textNode->getStringValueP());
       delete textNode;
       return;
     }
