@@ -180,6 +180,7 @@ protected:
   const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data;
 
   std::set<string> zorba_predef_mod_ns;
+  std::set<string> toplevel_vars;
 
   TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
     :
@@ -1928,7 +1929,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
   xqp_string varname = v.get_varname();
   store::Item_t var_qname = sctx_p->lookup_qname ("", varname);
-  if (sctx_p->lookup_var (varname) != NULL)
+  string expanded_qname = sctx_p->qname_internal_key (var_qname);
+  if (! toplevel_vars.insert (expanded_qname).second)
     ZORBA_ERROR_LOC_PARAM (XQST0049, loc, var_qname->getStringValue (), "");
 
   // The declared type of a global or external is never tightened based on
