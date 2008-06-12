@@ -1,8 +1,244 @@
 /** \page commandline The Zorba Command Line Utility
 
-\section commandlinehelp Help
+\section commandLineUsage Usage
+zorba [options]  [-i Query ...] | [-f QueryFile ... ]
 
+\section commandLineHelp Help
 
-\section commandlineexamples Example
+\subsection cmdGenericOptions Generic options:
+
+<table border="0">
+ <tr>
+  <td>  --version</td>
+  <td>Print program version.</td>
+ </tr>
+ <tr>
+  <td>  -h [ --help ]</td>
+  <td>Print the help list.</td>
+ </tr>
+</table>
+
+\subsection cmdOutputOptions Output options:
+
+<table border="0">
+ <tr>
+  <td>  -t [ --timing ]</td>
+  <td>Print timing information. In case of multiple queries the timing information if provided per each query.</td>
+ </tr>
+ <tr>
+  <td>  -o [ --output-file ] arg</td>
+  <td>Write the result to the given file.</td>
+ </tr>
+ <tr>
+  <td>  --serialize-html</td>
+  <td>Serialize the result as HTML.</td>
+ </tr>
+ <tr>
+  <td>  --indent</td>
+  <td>Indent output.</td>
+ </tr>
+ <tr>
+  <td>  --print-query</td>
+  <td>Print the queries.</td>
+ </tr>
+ <tr>
+  <td>  --byte-order-mark</td>
+  <td>Set the byte-order-mark for the serializer.</td>
+ </tr>
+ <tr>
+  <td>  --omit-xml-declaration </td>
+  <td>Omit the XML declaration.</td>
+ </tr>
+</table>
+
+\subsection cmdStaticContextOptions Static context options:
+
+<table border="0">
+ <tr>
+  <td>  --base-uri arg</td>
+  <td>Specify the base URI property of the static context.</td>
+ </tr>
+ <tr>
+  <td>  --boundary-space arg</td>
+  <td>Sets the boundary-space policy in the static context. Values allowed are strip or preserve.</td>
+ </tr>
+ <tr>
+  <td>  --default-collation arg</td>
+  <td>Add the given collation and set the value of the default collation in the static context to the given collation.</td>
+ </tr>
+ <tr>
+  <td>  --construction-mode arg</td>
+  <td>Set the construction mode in the static context. Values allowed are strip or preserve.</td>
+ </tr>
+ <tr>
+  <td>  --ordering-mode arg</td>
+  <td>Set the ordering mode in the static context. Values allowed are ordered or unordered.</td>
+ </tr>
+</table>
+
+\subsection cmdExecuteOptions Execute options:
+<table border="0">
+ <tr>
+  <td>  -m [ --multiple ] arg</td>
+  <td>Execute the given queries multiple times.</td>
+ </tr>
+ <tr>
+  <td>  -i [ --inline ] arg</td>
+  <td>Inline the queries. All file options (-f) that are provided will be ignored.</td>
+ </tr>
+ <tr>
+  <td>  -f [ --file ] arg</td>
+  <td>Treat the arguments as files. In case inline option (-i) is provided, the file option is ignored.</td>
+ </tr>
+ <tr>
+  <td>  -e [ --external-variable ] arg</td>
+  <td>Provide the value for a variable given a file (name=file) or a value (name:=value).</td>
+ </tr>
+ <tr>
+  <td>  --context-item arg</td>
+  <td>Provide the context item given an XML document in a file.</td>
+ </tr>
+ <tr>
+  <td>  --optimization-level arg</td>
+  <td>Optimization level for compiling the query. Values allowed are O0, O1.</td>
+ </tr>
+</table>
+
+\section commandlineexamples Examples
+
+\subsection cmdlineExample1 Execute multiple queries:
+<table border="0">
+ <tr>
+  <td>Zorba command:</td>
+  <td><tt>zorba -e input-context=works-mod.xml -f id-typeswitch-expr-04.xq -f id-typeswitch-expr-04-test.xq</tt></td>
+ </tr>
+ <tr>
+  <td>These are the files used in this example and their meaning:</td>
+  <td><br></td>
+ </tr>
+ <tr>
+  <td>  works-mod.xml</td>
+  <td>File that will be used as external variable.</td>
+ </tr>
+ <tr>
+  <td>  id-typeswitch-expr-04.xq</td>
+  <td>Update query. For details please see below.</td>
+ </tr>
+ <tr>
+  <td>  id-typeswitch-expr-04-test.xq</td>
+  <td>Query used to see the results of the update query. For details please see below.</td>
+ </tr>
+</table>
+
+\Note Make sure you give the correct path to the works-mod.xml, id-typeswitch-expr-04.xq and id-typeswitch-expr-04-test.xq files.
+
+works-mod.xml :
+\verbatim
+<?xml version="1.0"?>
+ <works>
+  <employee name="Jane Doe 1" gender="female">
+   <empnum>E1</empnum>
+   <pnum>P1</pnum>
+   <hours>40</hours>
+  </employee>
+  <employee name = "John Doe 2" gender="male">
+   <empnum>E1</empnum>
+   <pnum>P2</pnum>
+   <hours>70</hours>
+   <hours>20</hours>Text data from Employee[2]
+  </employee>
+  <employee name = "Jane Doe 3" gender="female">
+   <empnum>E1</empnum>
+   <pnum>P3</pnum>
+   <hours>80</hours>
+  </employee>
+  <employee name= "John Doe 4" gender="male">
+   <empnum>E1</empnum>
+   <pnum>P4</pnum>
+   <hours>20</hours>
+   <hours>40</hours>
+  </employee>
+  <employee name= "Jane Doe 5" gender="female">
+   <empnum>E1</empnum>
+   <pnum>P5</pnum>
+   <hours>20</hours>
+   <hours>30</hours>   
+  </employee>
+  <employee name= "John Doe 6" gender="male">
+   <empnum>E1</empnum>
+   <pnum>P6</pnum>
+   <hours>12</hours>
+  </employee>
+  <employee name= "Jane Doe 7" gender="female">
+   <empnum>E2</empnum>
+   <pnum>P1</pnum>
+   <hours>40</hours>
+  </employee>
+  <employee name= "John Doe 8" gender="male">
+   <empnum>E2</empnum>
+   <pnum>P2</pnum>
+   <hours>80</hours>
+  </employee>
+  <employee name= "Jane Doe 9" gender="female">
+   <empnum>E3</empnum>
+   <pnum>P2</pnum>
+   <hours>20</hours>
+  </employee>
+  <employee name= "John Doe 10" gender="male">
+   <empnum>E3</empnum>
+   <pnum>P2</pnum>
+   <hours>20</hours>
+  </employee>
+  <employee name= "Jane Doe 11" gender="female">
+   <empnum>E4</empnum>
+   <pnum>P2</pnum>
+   <hours>20</hours>
+  </employee>
+  <employee name= "John Doe 12" gender="male">
+   <empnum>E4</empnum>
+   <pnum>P4</pnum>
+   <hours>40</hours>
+   <overtime>
+     <day>Monday</day>
+     <day>Tuesday</day>
+   </overtime>
+  </employee>
+  <employee name= "Jane Doe 13" gender="female" type="FT">
+   <empnum>E4</empnum>
+   <pnum>P5</pnum>
+   <hours>80</hours>
+   <status>active</status>
+   <!-- A Comment on Employee # 13 -->
+   <?PI value="PIValue"?>
+  </employee>
+ </works>
+\endverbatim
+
+id-typeswitch-expr-04.xq :
+\verbatim
+(: Description: Evaluation of insert expression used with typeswitch expression where branch (a "case") is an updating expression. :)
+(: All other branches return "fn:error()". :)
+
+(: insert-start :)
+declare variable $input-context external;
+(: insert-end :)
+
+typeswitch(xs:int(1))
+ case $i as xs:int
+    return (insert node <hours>30</hours> into $input-context/works[1]/employee[1])
+ case $i as xs:double
+    return fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000'))
+ default
+    return fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000'))
+\endverbatim
+
+id-typeswitch-expr-04-test.xq :
+\verbatim
+(: insert-start :)
+declare variable $input-context external;
+(: insert-end :)
+
+$input-context/works[1]/employee[1]
+\endverbatim
 
 */
