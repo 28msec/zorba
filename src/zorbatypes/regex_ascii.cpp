@@ -688,11 +688,12 @@ bool CRegexAscii_branch::match_piece_iter_reluctant(
     if((max > 0) && (i>max))
       break;
    int piecelen = 0;
-   if((*piece_it)->match_piece_times(source+pieceslen, &piecelen, pieceslen ? i : 1, NULL))
+   if((*piece_it)->match_piece_times(source+pieceslen, &piecelen, i /*pieceslen ? i : 1*/, NULL))
    {
       pieceslen += piecelen;
       int   otherpieces = 0;
-      if(((*next_it)->get_is_reluctant() && match_piece_iter_reluctant(next_it, source+pieceslen, &otherpieces)) ||
+      if((next_it == piece_list.end()) ||
+        ((*next_it)->get_is_reluctant() && match_piece_iter_reluctant(next_it, source+pieceslen, &otherpieces)) ||
         (!(*next_it)->get_is_reluctant() && match_piece_iter_normal(next_it, source+pieceslen, &otherpieces)))
       {
         *matched_len = pieceslen + otherpieces;
