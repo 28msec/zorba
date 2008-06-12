@@ -278,18 +278,18 @@ Integer& Integer::operator*=(const Integer& aInteger) {
 }
 
 Integer Integer::operator/(const Integer& aInteger) const {
-  MAPM lRes = theInteger / aInteger.theInteger;
+  MAPM lRes = (MAPM)theInteger / aInteger.theInteger;
   lRes = floatingToInteger(lRes);
   return Integer(lRes);
 }
 
 Decimal Integer::operator/(const Decimal& aDecimal) const {
-  MAPM lRes = theInteger / aDecimal.theDecimal;
+  MAPM lRes = (MAPM)theInteger / aDecimal.theDecimal;
   return Decimal(lRes);
 }
 
 Integer& Integer::operator/=(const Integer& aInteger) {
-  theInteger /= aInteger.theInteger;
+  theInteger /= (MAPM)aInteger.theInteger;
   theInteger = floatingToInteger(theInteger);
   return *this;
 }
