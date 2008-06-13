@@ -62,4 +62,6 @@ In the following subsection, we present some examples in order to demonstrate th
 \subsection example5 Example 5
 \include trycatch_doc_example_05.xq
 
+\subsection example5 Example 6
+\include trycatch_doc_example_06.xq
 */
