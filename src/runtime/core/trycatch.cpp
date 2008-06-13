@@ -17,6 +17,7 @@
 
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/Assert.h"
+#include "errors/user_error.h"
 
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planitervisitor.h"
@@ -186,8 +187,13 @@ TryCatchIterator::bindErrorVars(
   // TODO bind the error objects
   std::vector<LetVarIter_t>::const_iterator lErrorObjVarIter = clause->errorobj_var.begin();
   std::vector<LetVarIter_t>::const_iterator lErrorObjVarIterEnd = clause->errorobj_var.end();
+  error::ZorbaUserError *ue = dynamic_cast<error::ZorbaUserError *>(&e);
+  std::vector<store::Item_t> *eObjs = NULL;
+  if (ue != NULL && !ue->theErrorObject.empty()) {
+    eObjs = &ue->theErrorObject;
+  }
   for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ ) {
-    store::Iterator_t lErrorObjIter = new ItemIterator();
+    store::Iterator_t lErrorObjIter = eObjs == NULL ? new ItemIterator() : new ItemIterator(*eObjs);
     lErrorObjIter->open();
     state->theErrorIters.push_back(lErrorObjIter);
     (*lErrorObjVarIter)->bind(lErrorObjIter, planState);

@@ -52,9 +52,12 @@ bool FnErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (theChildren.size () >= 2) {
     consumeNext(lTmpDescr, theChildren[1].getp(), planState);
     description = lTmpDescr->getStringValue ().getp();
-  } else if (theChildren.size() == 3)
-    while (consumeNext(lTmpErrorObject, theChildren[2].getp(), planState))
+  }
+  if (theChildren.size() == 3) {
+    while (consumeNext(lTmpErrorObject, theChildren[2].getp(), planState)) {
       lErrorObject.push_back(lTmpErrorObject);
+    }
+  }
   
   {
     error::ZorbaUserError lError(err_qname, description, loc, 
