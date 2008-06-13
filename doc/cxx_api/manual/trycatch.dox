@@ -1,7 +1,54 @@
 /** \page trycatch Try-Catch 
 
 \section trycatchgrammar Try-Catch Grammar
+<table border="0">
+<tr>
+<td>TryCatchExpr</td>
+<td>::=</td>
+<td>CatchClause+</td>
+</tr>
+<tr>
+<td>TryClause</td>
+<td>::=</td>
+<td>"try" "{" TargetExpr "}"</td>
+</tr>
+<tr>
+<td>CatchClause</td>
+<td>::=</td>
+<td>"catch" "(" NameTest ( "," ErrorCode ( "," ErrorDescr ( "," ErrorVal)?)? )? ")" "{" Expr "}"</td>
+</tr>
+<tr>
+<td>ErrorCode</td>
+<td>::=</td>
+<td>"$" VarName</td>
+</tr>
+<tr>
+<td>ErrorDescr</td>
+<td>::=</td>
+<td>"$" VarName</td>
+</tr>
+<tr>
+<td>ErrorVal</td>
+<td>::=</td>
+<td>"$" VarName</td>
+</tr>
+</table>
 
 \section trycatchexamples Try-Catch Examples
+
+\subsection example1 Example1
+\include trycatch_doc_example_01.xq
+
+\subsection example2 Example2
+\include trycatch_doc_example_02.xq
+
+\subsection example3 Example3
+\include trycatch_doc_example_03.xq
+
+\subsection example4 Example4
+\include trycatch_doc_example_04.xq
+
+\subsection example5 Example5
+\include trycatch_doc_example_05.xq
 
 */
