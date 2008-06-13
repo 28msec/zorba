@@ -35,6 +35,17 @@
 </table>
 
 \section trycatchexamples Try-Catch Examples
+A try-catch expression catches errors in expressions that are lexically contained within the try-clause. 
+If the target expression does not raise an error, the result of the try-catch expression is the result of the target expression.
+If the target expression raises an error, the result of the try-catch expression is obtained by evaluating 
+the first first catch clause that "matches" the error value, as described below. 
+An error matches a catch clause if the error's error code matches the clause's NameTest as defined in XQuery 1.0 (see http://www.w3.org/TR/xquery/#node-tests).
+If an error is matched, the optional variables in the catch clause are bound, in order, to the error's code, description, and value.
+These variables are then in scope in the catch clause.
+If no catch clause matches an error, the error is not caught, and propogates upward.
+If an error is raised in a catch clause, the error is not caught, and propogates upward.
+
+In the following subsection, we present some examples in order to demonstrate the try-catch functionality.
 
 \subsection example1 Example1
 \include trycatch_doc_example_01.xq
