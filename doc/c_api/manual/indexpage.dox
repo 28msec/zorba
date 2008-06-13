@@ -1,0 +1,45 @@
+/*! \mainpage Zorba C API Documentation
+
+  Zorba implements the <a href="https://sourceforge.net/projects/xqc">XQC (XQuery C) API</a> which was designed 
+  with the goal to create a standardized C API for interfacing with XQuery processors.
+  XQC provides mechanisms to compile and execute XQueries, manage contexts, and provide a basic 
+  interface for the XQuery Data Model (XDM).
+  The project is available under the BSD License and is hosted on <a href="http://www.sourceforge.net">http://www.sourceforge.net</a>.
+  It is a joint effort between <a href="http://xqilla.sourceforge.net/">XQilla</a> and the 
+  <a href="http://www.zorba-xquery.org/">FLWOR Foundation's Zorba Group</a> with the goal to make these two 
+  XQuery processor easily exchangable.
+  However, XQC is still in it's early stages. Zorba in it's version 0.9.2 implements most of the things 
+  that are specified in XQC but also deviates from and enhances the XQC specification to some degree.
+  For instance, the following list contains the differences between the current implmentation of Zorba's C API and XQC.
+
+  <ul>
+    <li>Zorba's error codes and its error handler differ from the XQC specification.
+    <li>A Zorba XQC_Query object is clonable in order to be executed in multiple threads (instead of a XQC_DynamicContext
+        being provided for each execution.
+    <li>Zorba provides an XQC_Item struct to represent items instead of XQC only having an XQC_Sequence struct which provides
+        the accessors for the XDM.  Moreover, Zorba provides an item factory to create XQC_Item objects.
+    <li>Zorba makes management facilities available for collections and documents in a Zorba store.
+    <li>Zorba's C API provides an interface and a registration function to write and register external XQuery functions
+        written in C.
+  </ul>
+
+  <ul>
+    <li>The User Guide
+    <ul>
+      <li><a href="../../cxx_api/html/build.html">Build Instructions</a>
+      <li><a href="../../cxx_api/html/installation.html">Installation Instructions</a>
+      <li>Feature Description
+      <ul>
+        <li><a href="../../cxx_api/html/groupby.html">Group By - XQuery 1.1</a>
+        <li><a href="../../cxx_api/html/trycatch.html">Try-Catch</a>
+        <li><a href="../../cxx_api/html/eval.html">Eval</a>
+        <li><a href="../../cxx_api/html/rest.html">REST</a>
+        <li><a href="../../cxx_api/html/deref.html">node-reference() and node-by-reference()</a>
+      </ul>
+      <li><a href="../../cxx_api/html/commandline.html">The Zorba Command Line Utility</a>
+      <li><a href="examples.html">C API Examples</a>
+     <li><a href="../../cxx_api/html/index.html">Zorba's C++ API</a>
+    </ul>
+  </ul>
+ */
+

@@ -1,4 +1,4 @@
-/*! \mainpage Zorba API Documentation
+/*! \mainpage Zorba C++ API Documentation
 
   Zorba is a general purpose XQuery processor implementing in C++ the W3C family of specifications. It is 
   not an XML database. The query processor has been designed to be embeddable in a variety of environments 
@@ -26,7 +26,7 @@
    <ul>
      <li> \ref build
      <li> \ref installation
-     <li> Features Description
+     <li> Feature Description
      <ul>
        <li> \ref groupby
        <li> \ref trycatch
@@ -35,6 +35,8 @@
        <li> \ref deref
      </ul>
      <li> \ref commandline
+     <li><a href="examples.html">C++ API Examples</a>
+     <li><a href="../../c_api/html/index.html">Zorba's C API</a>
    </ul>
  </ul>
  */
