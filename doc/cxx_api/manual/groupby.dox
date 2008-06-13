@@ -1,7 +1,6 @@
 /** \page groupby Group By - XQuery 1.1
 
 \section groupbygrammar Group By Grammar
-Zorba implements 
 
 <table border="0">
 <tr>
@@ -21,88 +20,36 @@ Zorba implements
 </tr>
 </table>
 
+The following description is part of the XQuery 1.1 W3C recommendation which is currently under development.
+
+A FLWOR expression may optionally have a group by clause that operates on the tuple stream, replacing the original tuples by new tuples that represent groups. We will refer to the tuples before the action of the group by clause as pre-grouping tuples, and the tuples after the action of the group by clause as post-grouping tuples.
+
+The post-grouping tuples have exactly the same variable-names as the pre-grouping tuples. The number of post-grouping tuples is less than or equal to the number of pre-grouping tuples. The group by clause assigns each pre-grouping tuple to a group, and generates one post-grouping tuple for each group. After the action of the group by clause, the pre-grouping tuples are no longer accessible. Subsequent clauses in the FLWOR expression operate on the post-grouping tuples, each of which represents a group.
+
+\Note Unfortunately, it's currently not possible to have a <code>LetClause</code> after the <code>GroupByClause</code>.
+      However, future Zorba releases will add this functionality.
+     
+
 \section groupbyexamples Group By Examples
-In the following section, we present some example queries in order to demonstrate the "group by" functionality. All
-of the queries are part of the XQuery 1.1 Use Cases document (see http://www.w3.org/TR/xquery-11-use-cases/#dataproducts).
+
+In the following section, we present some example queries in order to demonstrate the "group by" functionality. 
+All of the queries are part of the XQuery 1.1 Use Cases document.
+The document is available at <a href="http://www.w3.org/TR/xquery-11-use-cases/#dataproducts">http://www.w3.org/TR/xquery-11-use-cases/#dataproducts</a>.
+It also presents some example documents and the result of executing the queries below on these documents.
 
 \subsection example1 Example 1
-
-\verbatim
-<sales-qty-by-product>{
-  for $sales in doc("sales-records.xml")/*/record
-  let $pname := $sales/product-name
-  group by $pname
-  order by $pname
-  return <product name="{$pname}">{
-                  sum($sales/qty)
-          }</product>
-}</sales-qty-by-product> 
-\endverbatim
+\include groupby13.xq
 
 \subsection example2 Example 2
-
-\verbatim
-<result>{   
-  for $sales in doc("sales-records.xml")/*/record
-  let $state := doc("stores.xml")/*/store[store-number = $sales/store-number]/state
-  let $category := doc("products.xml")/*/product[name = $sales/product-name]/category
-  group by $state, $category
-  order by $state, $category
-  return
-    <group>
-       {$state, $category}
-       <total-qty>{sum($sales/qty)}</total-qty>
-    </group>
- }</result>
-\endcode
-\endverbatim
+\include groupby14.xq
 
 \subsection example3 Example 3
-
-\verbatim
- <result>{
-   for $sales in doc("sales-records.xml")/*/record
-   let $state := doc("stores.xml")/*/store[store-number = $sales/store-number]/state,
-       $product := doc("products.xml")/*/product[name = $sales/product-name],
-       $category := $product/category,
-       $revenue := $sales/qty * $product/price
-    group by $state, $category
-    order by $state, $category
-    return
-      <group>
-         {$state, $category}
-         <total-revenue>{sum($revenue)}</total-revenue>
-      </group> 
-}</result>
-\endcode
-\endverbatim
+\include groupby15.xq
 
 \subsection example4 Example 4
+\include groupby16.xq
 
-\verbatim
-<result>{
-  for $store in doc("stores.xml")/*/store
-  let $state := $store/state
-  group by $state
-  order by $state
-  return
-    <state name="{$state}">{
-      for $product in doc("products.xml")/*/product
-      let $category := $product/category
-      group by $category
-      order by $category
-      return
-        <category name="{$category}">{
-          for $sales in doc("sales-records.xml")/*/record[store-number = $store/store-number
-                                                          and product-name = $product/name]
-          let $pname := $sales/product-name
-          group by $pname
-          order by $pname
-          return
-          <product name="{$pname}" total-qty="{sum($sales/qty)}" />
-     }</category>
-  }</state> 
-}</result>
-\endverbatim
+\subsection example4 Example 5
+\include groupby17.xq
 
 */
