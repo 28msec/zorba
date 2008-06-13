@@ -15,6 +15,7 @@
  */
 #include <algorithm>
 #include <functional>
+#include <cassert>
 
 namespace zorba {
 

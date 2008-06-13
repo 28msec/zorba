@@ -380,7 +380,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
     var_expr_t var = b.first;
     xqtref_t var_type = var->get_type ();
     expr_t expr = b.second;
-    expr_t qname_expr = new const_expr (var->get_loc(), var->get_varname ());
+    expr_t qname_expr = new const_expr (var->get_loc(), dynamic_context::var_key (&*var));
 
     if (expr != NULL) {
       if (expr->isUpdating())
@@ -4893,7 +4893,7 @@ void end_visit(const EvalExpr& v, void* visit_state)
     expr_t val = pop_nodestack ();
     if (ve->get_type () != NULL)
       val = new treat_expr (val->get_loc (), val, ve->get_type (), XPTY0004);
-    result->add_var (eval_expr::eval_var (ve->get_varname (), ve->get_type (), val));
+    result->add_var (eval_expr::eval_var (&*ve, val));
   }
 
   nodestack.push (&*result);

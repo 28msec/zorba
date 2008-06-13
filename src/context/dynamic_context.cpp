@@ -23,10 +23,15 @@
 #include "store/api/store.h"
 
 #include "system/globalenv.h"
+
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+
 #include "types/root_typemanager.h"
+
 #include "runtime/api/plan_wrapper.h"
+
+#include "zorbatypes/Unicode_util.h"
 
 using namespace std;
 namespace zorba {
@@ -107,18 +112,19 @@ dynamic_context::~dynamic_context()
 }
 
 
+string dynamic_context::var_key (void *var) {
+  return to_string (var);
+}
+
 xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qname) const
 {
-  // TODO: use static_context::qname_internal_key()
-  pair<xqp_string, xqp_string> rqname = parse_qname (qname);
-  if (rqname.first.empty ())
-    return rqname.second + ":";
   if(!sctx) {
     ///actually the whole static context is missing
     ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
 			return (const char*)NULL;
   }
-  return rqname.second + ":" + sctx->lookup_ns(rqname.first);	
+  void *var = static_cast<void *> (sctx->lookup_var (qname));
+  return var_key (var);
 }
 
 
@@ -218,7 +224,7 @@ void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_it
 
 
 store::Iterator_t	dynamic_context::get_variable(store::Item_t varname) {
-	return lookup_var_iter("var:" + static_context::qname_internal_key (varname));
+	return lookup_var_iter("var:" + xqp_string (&*varname->getStringValue ()));
 }
 
 

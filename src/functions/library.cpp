@@ -711,11 +711,11 @@ DECL(sctx, rest_get_2,
 // begin context functions
 DECL(sctx, ctx_variable,
      (createQName(XQUERY_FN_NS,"fn", ":ctxvariable"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 DECL(sctx, ctx_var_assign,
      (createQName(XQUERY_FN_NS,"fn", ":ctxvar-assign"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 // end context functions

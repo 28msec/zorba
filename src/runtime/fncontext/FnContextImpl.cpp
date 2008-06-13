@@ -95,8 +95,7 @@ static PlanIter_t compile (
     }
 
     for (int i = (int) varnames.size () - 1; i >= 0; i--)
-      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ().getp()),
-                                    NULL, NULL));
+      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ()), NULL, NULL));
     // TODO: give eval'ed code the types of the variables (for optimization)
 
     return compiler.compile (ast);
@@ -115,7 +114,8 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   state->ccb.reset (ccb);
   ccb->m_sctx = ccb->m_sctx->create_child_context ();
   CONSUME (item, 0);
-  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames, vartypes), ccb, dctx.get (), planState.theStackDepth + 1));
+  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames, vartypes),
+                                           ccb, dctx.get (), planState.theStackDepth + 1));
   state->eval_plan->checkDepth (loc);
 
   for (unsigned i = 0; i < theChildren.size () - 1; i++) {
@@ -123,8 +123,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     // TODO: is saving an open iterator efficient?
     // Then again if we close theChildren [1] here,
     // we won't be able to re-open it later via the PlanIteratorWrapper
-    dctx->add_variable (ccb->m_sctx->qname_internal_key (varnames [i]),
-                        lIter);
+    dctx->add_variable (dynamic_context::var_key (ccb->m_sctx->lookup_var (varnames [i])), lIter);
   }
 
   while (state->eval_plan->next (result)) {
@@ -145,7 +144,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   CONSUME (varName, 0);
 
-  planState.theRuntimeCB->theDynamicContext->add_variable (static_context::qname_internal_key (varName),
+  planState.theRuntimeCB->theDynamicContext->add_variable (xqp_string (varName->getStringValue ()),
                                                            new PlanIteratorWrapper (theChildren [1], planState));
 
   STACK_END (state);

@@ -486,10 +486,11 @@ public:
   class eval_var {
   public:
     store::Item_t varname;
+    std::string var_key;
     xqtref_t type;
     expr_t val;
 
-    eval_var (store::Item_t varname_, xqtref_t type_, expr_t val_) : varname (varname_), type (type_), val (val_) {}
+    eval_var (var_expr *ve, expr_t val);
   };
 
 protected:

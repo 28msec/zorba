@@ -19,7 +19,10 @@
 #include <stack>
 
 #include "util/properties.h"
-#include "context/static_context_consts.h"
+#include "util/tracer.h"
+#include "util/stl_extra.h"
+#include "util/hashmap.h"
+#include "zorbatypes/Unicode_util.h"
 
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
@@ -27,10 +30,12 @@
 #include "compiler/parser/parse_constants.h"
 
 #include "system/globalenv.h"
+
 #include "zorbaerrors/Assert.h"
 
 #include "context/namespace_context.h"
 #include "context/static_context.h"
+#include "context/static_context_consts.h"
 
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/sequencetypes.h"
@@ -49,10 +54,6 @@
 #include "runtime/visitors/iterprinter.h"
 
 #include "functions/function.h"
-
-#include "util/tracer.h"
-#include "util/stl_extra.h"
-#include "util/hashmap.h"
 
 #ifdef ZORBA_DEBUGGER
 #include <zorba/debugger_server.h>
@@ -300,7 +301,8 @@ void end_visit(var_expr& v)
     if (varname == DOT_VAR) {
       vector<PlanIter_t> ctx_args;
       store::Item_t qname;
-      ITEM_FACTORY->createQName (qname, "", "", ".");
+      xqpStringStore_t dot = new xqpStringStore (".");
+      ITEM_FACTORY->createString (qname, dot);
       ctx_args.push_back (new SingletonIterator (loc, qname));
       itstack.push (new CtxVariableIterator (loc, ctx_args));
     } else if (varname == DOT_POS_VAR) {
@@ -312,7 +314,9 @@ void end_visit(var_expr& v)
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
       itstack.push (new SingletonIterator (loc, i));
     } else {
-      expr_t lookup_expr = new fo_expr (qloc, LOOKUP_OP1 ("ctxvariable"), new const_expr (qloc, v.get_varname ()));
+      expr_t lookup_expr =
+        new fo_expr (qloc, LOOKUP_OP1 ("ctxvariable"),
+                     new const_expr (qloc, dynamic_context::var_key (&v)));
       lookup_expr->accept (*this);
     }
  
@@ -618,14 +622,16 @@ void end_visit (eval_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   checked_vector<store::Item_t> varnames;
+  checked_vector<std::string> var_keys;
   checked_vector<xqtref_t> vartypes;
   for (unsigned i = 0; i < v.var_count (); i++) {
     varnames.push_back (v.var_at (i).varname);
+    var_keys.push_back (v.var_at (i).var_key);
     argv.push_back (pop_itstack ());
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  itstack.push (new EvalIterator (qloc, varnames, vartypes, argv));
+  itstack.push (new EvalIterator (qloc, varnames, var_keys, vartypes, argv));
 }
 
 bool begin_visit(typeswitch_expr& v)

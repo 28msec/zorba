@@ -103,6 +103,9 @@ public:
   expr *lookup_var (xqp_string varname) const {
     return lookup_expr ("var:" + qname_internal_key ("", varname));
   }
+  expr *lookup_var (store::Item_t varname) {
+    return lookup_expr ("var:" + qname_internal_key (varname));
+  }
   expr *lookup_var_nofail (xqp_string varname) const {
     expr *e = lookup_var (varname);
     ZORBA_ASSERT (e != NULL);

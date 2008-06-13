@@ -22,6 +22,7 @@
 
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
+#include "context/dynamic_context.h"
 
 #include "compiler/expression/expr.h"
 #include "compiler/parser/parse_constants.h"
@@ -460,6 +461,12 @@ void eval_expr::next_iter (expr_iterator_data& v) {
   ITER_FOR_EACH (var_iter, vars.begin (), vars.end (), vv.var_iter->val);
   END_EXPR_ITER ();
 }
+
+  eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
+    : varname (ve->get_varname ()),
+      var_key (dynamic_context::var_key (ve)), val (val_)
+  {
+  }
 
 cast_or_castable_base_expr::cast_or_castable_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
   : expr (loc), input_expr_h (input), target_type (type)
