@@ -87,7 +87,7 @@ citemfactory(int argc, char* argv[])
   UNIT_ASSERT ( strcmp(lStringValue, "true") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
   UNIT_ASSERT ( lTmpInt  == 1 );
-  UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
+//  UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
   UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
   UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
   UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
@@ -98,6 +98,16 @@ citemfactory(int argc, char* argv[])
   UNIT_ASSERT ( strcmp(lStringValue, "false") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
   UNIT_ASSERT ( lTmpInt  == 0 );
+  lItem->free(lItem);
+
+  /* Decimal */                                                                                                                    
+  UNIT_ASSERT ( lFactory->create_decimal(lFactory, 1, &lItem) == XQ_NO_ERROR );                                                    
+  lItem->string_value(lItem, &lStringValue);                                                                                       
+  UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );                                                                                  
+  UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == 0 );                                                                                 
+  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );                                 
+  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );                          
+  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );                             
   lItem->free(lItem);
 
   lFactory->free(lFactory);
