@@ -962,7 +962,7 @@ struct XQC_Item_s
    * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
    */
   XQUERY_ERROR
-  (*ns)(XQC_Item item, const char** namespace);
+  (*ns)(XQC_Item item, const char** ns);
 
   /**
    * Get the value of a QName's localname.
