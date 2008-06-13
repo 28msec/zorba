@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!-- Test xml for Zorba samples -->
+<library address="here">
+  <books>
+    <book>
+      <author name="Juice Bottle"/>
+      <title>Spinning hot hat</title>
+      <chapters has_before_word="true">
+        <chapter id="1" title="Read me"/>
+        <chapter id="2" title="Read more"/>
+        <chapter id="3" title="Just read more"/>
+      </chapters>
+      This books has really a lot to say.
+    </book>
+    <book>
+      <author name="Captain Piccard"/>
+      <title>Around the sun</title>
+      <chapters has_before_word="false" is_it_for_real="no">
+        <chapter id="1" title="Mercury"/>
+        <chapter id="2" title="Venus"/>
+        <chapter id="3" title="America"/>
+        <chapter id="4" title="Mars"/>
+        <chapter id="5" title="Jupiter"/>
+        <chapter id="6" title="Saturn"/>
+        <chapter id="7" title="Uranus"/>
+        <chapter id="8" title="Neptun"/>
+        <chapter id="9" title="Pluto"/>
+        <chapter id="10" title="And the other daughters"/>
+      </chapters>
+       Most sold book in the solar family.
+    </book>
+  </books>
+  <!-- Library contains some other things also-->
+  <maps>
+    <map view_over="Antarctica">
+      A hash ice table with polar bears and fishes.
+    </map>
+    <map view_over="Globe of America">
+      Some people really believe this.
+    </map>
+  </maps>
+</library>
