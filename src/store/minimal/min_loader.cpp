@@ -36,6 +36,7 @@
 #include "store/minimal/min_nsbindings.h"
 #include "store/api/collection.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/chartype.h"
 
 #include "context/static_context.h"
 
@@ -280,8 +281,8 @@ bool XmlLoader::isWhitespace(int c)
 bool XmlLoader::isNameChar(int c)
 {
   if((c != '.') && (c != '-') && (c != '_') && (c != ':') &&
-    !GenericCast::isLetter(c) && !GenericCast::isDigit(c) &&
-    !GenericCast::isCombiningChar(c) && !GenericCast::isExtender(c))
+    !XQCharType::isLetter(c) && !XQCharType::isDigit(c) &&
+    !XQCharType::isCombiningChar(c) && !XQCharType::isExtender(c))
     return false;
   else
     return true;
@@ -311,7 +312,7 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
   c = read_char();
   if(c != ':')
   {
-    if((c != '_') && !GenericCast::isLetter(c))
+    if((c != '_') && !XQCharType::isLetter(c))
       return false;
     //qname.localname = new xqpStringStore;
     //qname.localname->append_in_place(c);
@@ -331,8 +332,8 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
         break;
       }
       if((c != '.') && (c != '-') && (c != '_') &&
-        !GenericCast::isLetter(c) && !GenericCast::isDigit(c) &&
-        !GenericCast::isCombiningChar(c) && !GenericCast::isExtender(c))
+        !XQCharType::isLetter(c) && !XQCharType::isDigit(c) &&
+        !XQCharType::isCombiningChar(c) && !XQCharType::isExtender(c))
         return false;
       //qname.localname->append_in_place(c);
       qname.localname[localpos++] = c;
@@ -356,7 +357,7 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
   localpos = 0;
 
   c = read_char();
-  if((c != '_') && !GenericCast::isLetter(c))
+  if((c != '_') && !XQCharType::isLetter(c))
     return false;
   //qname.localname = new xqpStringStore;
   //qname.localname->append_in_place(c);
@@ -371,8 +372,8 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
       break;
     }
     if((c != '.') && (c != '-') && (c != '_') &&
-      !GenericCast::isLetter(c) && !GenericCast::isDigit(c) &&
-      !GenericCast::isCombiningChar(c) && !GenericCast::isExtender(c))
+      !XQCharType::isLetter(c) && !XQCharType::isDigit(c) &&
+      !XQCharType::isCombiningChar(c) && !XQCharType::isExtender(c))
       return false;
     //qname.localname->append_in_place(c);
     qname.localname[localpos++] = c;
@@ -964,7 +965,7 @@ bool XmlLoader::read_pi()
   std::string pidata;
 
   c = read_char();
-  if(!((c == '_') || (c == ':') || GenericCast::isLetter(c)))
+  if(!((c == '_') || (c == ':') || XQCharType::isLetter(c)))
     return false;
   pitarget = c;
   while(1)
