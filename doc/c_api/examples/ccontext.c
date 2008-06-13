@@ -23,7 +23,7 @@
 
 
 /**
- * A C API example that shows how to use the static and dynamic context.
+ * An example that shows how to use the static and dynamic context.
  * No error checking is done.
  */
 int
@@ -57,6 +57,10 @@ ccontext_example_1(XQC_Implementation impl)
   return 1;
 }
 
+/**
+ * An example that shows how to use the static context with a new collation.
+ * No error checking is done.
+ */
 int
 ccontext_example_2(XQC_Implementation impl)
 {
@@ -84,6 +88,11 @@ ccontext_example_2(XQC_Implementation impl)
   return 1;
 }
 
+/**
+ * Compile a query with a static context supplied, modify the context in the query and check
+ * if the context was modified after the query has been prepared.
+ * No error checking is done.
+ */
 int
 ccontext_example_3(XQC_Implementation impl)
 {
@@ -115,6 +124,10 @@ ccontext_example_3(XQC_Implementation impl)
   return 1;
 }
 
+/**
+ * Chain two queries, i.e. pipe the result of executing query one into a variable used in query 2.
+ * No error checking is done.
+ */
 int
 ccontext_example_4(XQC_Implementation impl)
 {

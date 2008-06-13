@@ -116,6 +116,7 @@ example_4(XQC_Implementation impl)
 
 }
 
+// define the callback functions fot the input stream
 int
 read_stream(XQC_InputStream stream, char* buf, unsigned int length) 
 {
@@ -147,6 +148,8 @@ example_5(XQC_Implementation impl)
 
   // release the query
   lXQuery->free(lXQuery);
+
+  // the stream is freed by calling the free_stream function after the query has been prepared
 
   return 1;
 }

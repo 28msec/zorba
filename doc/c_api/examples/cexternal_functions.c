@@ -19,6 +19,10 @@
 #include <zorba/zorbac.h>
 #include <inmemorystore/inmemorystorec.h>
 
+// user define data struct
+// created in my_ext_fct_init
+// passed to my_ext_fct_next
+// released in my_ext_fct_release
 typedef struct
 {
   XQC_Item        item;
@@ -27,6 +31,11 @@ typedef struct
   int             i;
 } my_ext_data;
 
+// callback function called once when initializing the external function
+// The user_data parameter can be created in this function and is available
+// during the execution.
+// The global_user_data parameter can be supplied as a parameter to the
+// XQC_StaticContext::register_external_function function
 void
 my_ext_fct_init(void** user_data, void* global_user_data)
 {
@@ -42,15 +51,17 @@ my_ext_fct_init(void** user_data, void* global_user_data)
   impl->create_item(impl, &(data->item));
 }
 
+// callback function called for each invocation of the external function in the query
 XQUERY_ERROR
-my_ext_fct_next(XQC_Sequence args,
-                int argc,
+my_ext_fct_next(XQC_Sequence args, // arguments
+                int argc, // number of arguments two this function
                 XQC_Item_Ref result,
                 void* user_data,
                 void* global_user_data)
 {
   my_ext_data* data = (my_ext_data*)(user_data);
 
+  // concat the input sequence
   while ( data->i < argc ) {
     if ( args[data->i].next(&(args[data->i]), data->item) != API0025_END_OF_SEQUENCE ) {
       *result = data->item;
@@ -64,6 +75,8 @@ my_ext_fct_next(XQC_Sequence args,
 
 }
 
+// called after the execution of the query has finished
+// cleanup of the user_data should be done here
 void
 my_ext_fct_release(void* user_data,
                    void* global_user_data)
@@ -74,6 +87,9 @@ my_ext_fct_release(void* user_data,
   free(user_data);
 }
 
+/**
+ * register an external function in the static context and execute a query with it
+ */
 int
 external_function_example_1(XQC_Implementation impl)
 {

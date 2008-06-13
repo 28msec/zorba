@@ -21,6 +21,8 @@
 #include <zorba/zorbac.h>
 #include <inmemorystore/inmemorystorec.h>
 
+// define a callback function that is called if an error occurs
+// during preparing or executing the query
 void
 error_handler(XQC_ErrorHandler handler,
               XQUERY_ERROR error,
@@ -36,6 +38,7 @@ error_handler(XQC_ErrorHandler handler,
 
 
 /**
+ * Use an error handler and test it by preparing a syntactically wrong query.
  */
 int
 cerror_example_1(XQC_Implementation impl)
@@ -49,12 +52,14 @@ cerror_example_1(XQC_Implementation impl)
   lError = impl->prepare(impl, "for $i in 1, 2, 3", 0, lErrorHandler, &lXQuery);
 
   // no need to free the query
+  // because it was not successfully created
   free(lErrorHandler);
 
   return lError == XPST0003?1:0;
 }
 
 /**
+ * Use an error handler and test it by executing a query that raises an error.
  */
 int
 cerror_example_2(XQC_Implementation impl)
@@ -100,6 +105,8 @@ cerror_example_3(XQC_Implementation impl)
 
   lXQuery->sequence(lXQuery, &lResult);
 
+  // an error is reported during the last for iteration
+  // the error callback function is called and the loop terminates
   while ( lResult->next(lResult, lItem) == XQ_NO_ERROR ) {
     lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);

@@ -47,6 +47,10 @@ cserialization_example_1(XQC_Implementation impl)
   return 1;
 }
 
+/**
+ * Example that shows how the serializer options can be used to
+ * omit the xml declaration when serializing the query result.
+ */
 int
 cserialization_example_2(XQC_Implementation impl)
 {
@@ -68,12 +72,14 @@ cserialization_example_2(XQC_Implementation impl)
   return 1;
 }
 
+// callback function used by the XQC_OutputStream
 void
 stream_writer(XQC_OutputStream stream, const char* buf, unsigned int length)
 {
   printf("%s", buf);
 }
 
+// callback function called after the query result has been completely serialized
 void
 free_writer(XQC_OutputStream stream)
 {
@@ -92,7 +98,7 @@ cserialization_example_3(XQC_Implementation impl)
   // compile the query
   impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
 
-  // execute it and print the result on standard out
+  // execute it and stream the result to the supplied XQC_OutputStream
   lXQuery->serialize_stream(lXQuery, 0, lStream);
 
   // release the query
