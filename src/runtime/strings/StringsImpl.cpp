@@ -1400,6 +1400,7 @@ void
 FnTokenizeIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
+  hasmatched = false;
 }
 
 void
@@ -1407,6 +1408,7 @@ FnTokenizeIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theString = xqp_string();
+  hasmatched = false;
   thePattern = xqp_string();
   theFlags = xqp_string();
 }
@@ -1450,7 +1452,7 @@ FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     try
     {
-      token = state->theString.tokenize(state->thePattern, state->theFlags, &remaining).getStore();
+      token = state->theString.tokenize(state->thePattern, state->theFlags, &remaining, &state->hasmatched).getStore();
     }
     catch(zorbatypesException& ex)
     {
@@ -1461,7 +1463,12 @@ FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->theString = remaining;
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, token), state);
   }
-
+  if(state->hasmatched)
+  {
+    //the last token is empty (is after the last match)
+    token = new xqpStringStore;
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, token), state);
+  }
   STACK_END(state);
 }
 /*end class FnTokenizeIterator*/
