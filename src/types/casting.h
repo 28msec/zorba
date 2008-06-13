@@ -126,13 +126,6 @@ public:
    */
   bool promote(store::Item_t& result, store::Item_t aItem, const XQType* aTargetType) const;
 
-public:
-  static bool isLetter(uint32_t cp);
-  static bool isBaseChar(uint32_t cp);
-  static bool isIdeographic(uint32_t cp);
-  static bool isDigit(uint32_t cp);
-  static bool isCombiningChar(uint32_t cp);
-  static bool isExtender(uint32_t cp);
   
 }; /* class GenericCast */
 
