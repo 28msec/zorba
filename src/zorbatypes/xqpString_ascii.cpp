@@ -428,6 +428,17 @@ void xqpStringStore::append_in_place(xqpStringStore* suffix)
   theString += suffix->theString;
 }
 
+void xqpStringStore::append_in_place(const char *str)
+{
+  theString += str;
+}
+
+void xqpStringStore::append_in_place(const char *str, int len)
+{
+  theString.append(str, len);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1334,22 +1345,69 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
 
     int   match_pos;
     int   matched_len;
+ //+   if(regex->match_anywhere("", parse_regex_flags(flags.c_str()), &match_pos, &matched_len))
+ //+   {//Regular expression matches zero-length string.
+ //+     throw zorbatypesException("", ZorbatypesError::FORX0003);
+ //+   }
     
     xqpString   newstr;
     const char  *start_str = c_str();
+    int   subregex_count = regex->get_indexed_regex_count();
 
     while(regex->match_anywhere(start_str, parse_regex_flags(flags.c_str()), &match_pos, &matched_len))
     {
-      if(matched_len == 0)
-      {//Regular expression matches zero-length string.
-        throw zorbatypesException("", ZorbatypesError::FORX0003);
-      }
       if(match_pos)
-        newstr += xqpString(new xqpStringStore(start_str , start_str+match_pos));
-      newstr += replacement;
+        newstr.append_in_place(start_str , match_pos);
+      const char *temprepl = replacement.c_str();
+      const char *submatched_source;
+      int   submatched_len;
+      int index;
+      while(*temprepl)
+      {
+        //look for dollars
+        if(*temprepl == '\\')
+        {
+          temprepl++;
+          if(!*temprepl || (*temprepl != '\\') || (*temprepl != '$'))//Invalid replacement string.
+            throw zorbatypesException("", ZorbatypesError::FORX0004);
+          newstr.append_in_place(*temprepl);
+          temprepl++;
+          continue;
+        }
+        if(*temprepl == '$')
+        {
+          temprepl++;
+          index = 0;
+          int   nr_digits = 0;
+          while(isdigit(*temprepl))
+          {
+            if(nr_digits && ((index*10 + (*temprepl)-'0') > subregex_count))
+              break;
+            index = index*10 + (*temprepl)-'0';
+            temprepl++;
+            nr_digits++;
+          }
+          if(!nr_digits)//Invalid replacement string.
+            throw zorbatypesException("", ZorbatypesError::FORX0004);
+          else if(!index)
+          {
+            newstr.append_in_place(start_str+match_pos, matched_len);
+          }
+          else if(regex->get_indexed_match(index, &submatched_source, &submatched_len))
+          {
+            if(submatched_source && submatched_len)
+              newstr.append_in_place(submatched_source, submatched_len);
+          }
+        }
+        else
+        {
+          newstr.append_in_place(*temprepl);
+          temprepl++;
+        }
+      }
       start_str += match_pos + matched_len;
     }
-    newstr += start_str;
+    newstr.append_in_place(start_str);
 
     delete regex;
     return newstr;
@@ -1357,7 +1415,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   }
 
   xqpString
-  xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining)
+  xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining, bool *hasmatched)
   {
     regex_ascii::CRegexAscii_parser    regex_parser;
     regex_ascii::CRegexAscii_regex     *regex;
@@ -1367,13 +1425,17 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
 
     int   match_pos;
     int   matched_len;
-    bool  ismatch;
+  //+  if(regex->match_anywhere("", parse_regex_flags(flags.c_str()), &match_pos, &matched_len))
+  //+  {//Regular expression matches zero-length string.
+  //+    throw zorbatypesException("", ZorbatypesError::FORX0003);
+  //+  }
+    //bool  ismatch;
     xqpString   leftstr;
     const char  *start_str = c_str();
 
-    ismatch = regex->match_anywhere(start_str, parse_regex_flags(flags.c_str()), &match_pos, &matched_len);
+    *hasmatched = regex->match_anywhere(start_str, parse_regex_flags(flags.c_str()), &match_pos, &matched_len);
     delete regex;
-    if(ismatch)
+    if(*hasmatched)
     {
       *remaining = xqpString(start_str + match_pos + matched_len);
       if(match_pos)
@@ -1490,6 +1552,17 @@ void xqpString::append_in_place(const char c)
 {
   theStrStore->append_in_place(c);
 }
+
+void xqpString::append_in_place(const char *str)
+{
+  theStrStore->append_in_place(str);
+}
+
+void xqpString::append_in_place(const char *str, int len)
+{
+  theStrStore->append_in_place(str, len);
+}
+
 }/* namespace zorba */
 
 #endif//#ifdef ZORBA_NO_UNICODE

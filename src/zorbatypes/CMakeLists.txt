@@ -39,7 +39,8 @@ SET(ZORBATYPES_SRCS
   transcoder.cpp
   utf8/Unicode_util.cpp
   collation_manager.cpp
-  icu_init.cpp)
+  icu_init.cpp
+  chartype.cpp)
   
 IF(ZORBA_NO_UNICODE)
 LIST(APPEND ZORBATYPES_SRCS 

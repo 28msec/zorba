@@ -1287,7 +1287,7 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
 
 
   xqpString
-  xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining)
+  xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining, bool *hasmatched)
   {
     UErrorCode status = U_ZERO_ERROR;
     UnicodeString uspattern = getUnicodeString (pattern.getStore()),
@@ -1298,10 +1298,12 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
       return "";
     }
     if (m.find ()) {
+      *hasmatched = true;
       int32_t start = m.start (status), end = m.end (status);
       *remaining = substr (end, length () - end);
       return substr (0, start);
     } else {
+      *hasmatched = false;
       *remaining = xqpString ();
       return substr (0, length ());
     }

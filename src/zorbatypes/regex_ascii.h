@@ -62,11 +62,19 @@ public:
 
   bool match_anywhere(const char *source, int flags, int *match_pos, int *matched_len);
   virtual bool match(const char *source, int *matched_len);
+
+  //for replace $1, $2 ...
+  bool  get_indexed_match(int index, const char **matched_source, int *matched_len);
+  int get_indexed_regex_count();
 public:
   int flags;
 private:
   std::list<CRegexAscii_branch*>   branch_list;
   bool  align_begin;
+
+  const char  *matched_source;
+  int         matched_len;
+  std::vector<CRegexAscii_regex*>    subregex;
 private:
   void set_align_begin(bool align_begin);
   void add_branch(CRegexAscii_branch *branch);
@@ -185,6 +193,7 @@ protected:
 
 private:
   CRegexAscii_regex   *current_regex;
+  int   regex_depth;
 };
 
 }}//end namespace zorba::regex_ascii

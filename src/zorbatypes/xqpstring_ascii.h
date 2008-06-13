@@ -174,6 +174,10 @@ public:
 
   void append_in_place(xqpStringStore *suffix);
 
+  void append_in_place(const char *str);
+
+  void append_in_place(const char *str, int len);
+
   xqpStringStore_t
   substr(std::string::size_type index, std::string::size_type length) const;
 
@@ -301,6 +305,10 @@ public:
     operator+=(char c);
 
     void append_in_place(const char c);
+
+    void append_in_place(const char *str);
+
+    void append_in_place(const char *str, int len);
 
     bool
     operator==(xqpString src) const
@@ -566,7 +574,7 @@ public:
       replace(xqpString pattern, xqpString replacement, xqpString flags);
 
       xqpString
-      tokenize(xqpString pattern, xqpString flags, xqpString *remaining);
+      tokenize(xqpString pattern, xqpString flags, xqpString *remaining, bool *hasmatched);
 
       // Removes the leading and trailing whitespace (one of the " \t\r\n")
       // TODO: xqpString trim_whitespace() const;

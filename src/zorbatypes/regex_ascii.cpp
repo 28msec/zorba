@@ -17,6 +17,8 @@
 #include "regex_ascii.h"
 #include "string.h"
 #include <ctype.h>
+#include "zorbatypes/chartype.h"
+#include "zorbatypes/zorbatypeserror.h"
 
 namespace zorba {
   namespace regex_ascii{
@@ -83,15 +85,19 @@ CRegexAscii_regex* CRegexAscii_parser::parse_regexp(const char *pattern,
 {
   *regex_len = 0;
   int   branch_len;
+  regex_depth++;
   CRegexAscii_regex *regex = new CRegexAscii_regex(current_regex);
   if(!current_regex)
     current_regex = regex;
+  if(regex_depth == 2)
+    current_regex->subregex.push_back(regex);
   CRegexAscii_branch  *branch;
   while(pattern[*regex_len] && (pattern[*regex_len] != ')'))
   {
     branch = parse_branch(pattern+*regex_len, &branch_len);
     if(!branch)
     {
+      regex_depth--;
       delete regex;
       return NULL;
     }
@@ -101,6 +107,7 @@ CRegexAscii_regex* CRegexAscii_parser::parse_regexp(const char *pattern,
   if(pattern[*regex_len])
     (*regex_len)++;
 
+  regex_depth--;
   return regex;
 }
 
@@ -168,7 +175,7 @@ bool CRegexAscii_parser::myisdigit(char c)
 
 char CRegexAscii_parser::readChar(const char *pattern, int *char_len, bool *is_multichar)
 {
-  char  c;
+  char  c = 0;
   *char_len = 0;
   *is_multichar = false;
   switch(pattern[*char_len])
@@ -199,6 +206,7 @@ char CRegexAscii_parser::readChar(const char *pattern, int *char_len, bool *is_m
     case 'p'://catEsc
     case 'P'://complEsc
       //ignore the prop for now
+      c = pattern[*char_len];
       *is_multichar = true;
       if(pattern[*char_len+1] == '{')
       {
@@ -414,6 +422,7 @@ void CRegexAscii_parser::read_quantifier(CRegexAscii_piece *piece,
     }
     else
     {
+      (*quantif_len)++;
       while(pattern[*quantif_len] &&
         isdigit(pattern[*quantif_len]) && (pattern[*quantif_len] != '}'))
       {
@@ -450,6 +459,8 @@ void CRegexAscii_parser::read_quantifier(CRegexAscii_piece *piece,
 
 CRegexAscii_regex::CRegexAscii_regex(CRegexAscii_regex *topregex) : IRegexAtom(topregex?topregex:this)
 {
+  matched_source = NULL;
+  matched_len = 0;
 }
 
 CRegexAscii_regex::~CRegexAscii_regex()
@@ -470,6 +481,23 @@ void CRegexAscii_regex::set_align_begin(bool align_begin)
 void CRegexAscii_regex::add_branch(CRegexAscii_branch *branch)
 {
   branch_list.push_back(branch);
+}
+
+bool  CRegexAscii_regex::get_indexed_match(int index, 
+                                           const char **matched_source, 
+                                           int *matched_len)
+{
+  if(!index || index > subregex.size())
+    return false;
+  CRegexAscii_regex *subr = subregex[index-1];
+  *matched_source = subr->matched_source;
+  *matched_len = subr->matched_len;
+  return true;
+}
+
+int CRegexAscii_regex::get_indexed_regex_count()
+{
+  return subregex.size();
 }
 
 CRegexAscii_branch::CRegexAscii_branch(CRegexAscii_regex* regex) :
@@ -592,6 +620,7 @@ CRegexAscii_wildchar::~CRegexAscii_wildchar()
 CRegexAscii_parser::CRegexAscii_parser()
 {
   current_regex = NULL;
+  regex_depth = 0;
 }
 
 CRegexAscii_parser::~CRegexAscii_parser()
@@ -609,22 +638,48 @@ bool CRegexAscii_regex::match_anywhere(const char *source, int flags,
 {
   this->flags = flags;
   *match_pos = 0;
-  if(!source[0])
-  {
-    if(branch_list.empty())
-      return true;
-    else
-      return false;
-  }
+//  if(!source[0])
+//  {
+//    if(branch_list.empty())
+//      return true;
+//    else
+//      return false;
+//  }
 
-  while(source[*match_pos])
+  do
   {
     if(match(source + *match_pos, matched_len))
       return true;
     if(align_begin)
+    {
+      if(flags & REGEX_ASCII_MULTILINE)
+      {
+        //goto the next line
+        while(source[*match_pos] && (source[*match_pos] != '\n') && (source[*match_pos] != '\r'))
+          (*match_pos)++;
+        if(source[*match_pos] == '\n')
+        {
+          (*match_pos)++;
+          if(source[*match_pos] == '\r')
+            (*match_pos)++;
+        }
+        else if(source[*match_pos] == '\r')
+        {
+          (*match_pos)++;
+          if(source[*match_pos] == '\n')
+            (*match_pos)++;
+        }
+        if(!source[*match_pos])
+          return false;
+        continue;
+      }
       return false;
+    }
+    if(!source[*match_pos])
+      break;
     (*match_pos)++;
   }
+  while(source[*match_pos]);
   return false;
 }
 
@@ -636,8 +691,14 @@ bool CRegexAscii_regex::match(const char *source, int *matched_len)
   for(branch_it = branch_list.begin(); branch_it != branch_list.end(); branch_it++)
   {
     if((*branch_it)->match(source, matched_len))
+    {
+      matched_source = source;
+      this->matched_len = *matched_len;
       return true;
+    }
   }
+  matched_source = NULL;
+  matched_len = 0;
   return false;
 }
 
@@ -688,7 +749,7 @@ bool CRegexAscii_branch::match_piece_iter_reluctant(
     if((max > 0) && (i>max))
       break;
    int piecelen = 0;
-   if((*piece_it)->match_piece_times(source+pieceslen, &piecelen, i /*pieceslen ? i : 1*/, NULL))
+   if((*piece_it)->match_piece_times(source+pieceslen, &piecelen, !pieceslen ? i : 1, NULL))
    {
       pieceslen += piecelen;
       int   otherpieces = 0;
@@ -736,7 +797,7 @@ bool CRegexAscii_branch::match_piece_iter_normal(
   next_it++;
   if(next_it == piece_list.end())
   {
-    if(match_lens.size() > 1)
+    if(match_lens.size() > min)
     {
       *matched_len = timeslen;
       return true;
@@ -798,11 +859,92 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
       return false;
   }
 
+  if(source[0] == 0x0A)
+  {
+    if((regex_intern->flags & REGEX_ASCII_MULTILINE) &&
+        (chargroup_list.size() == 1) && (chargroup_list.begin()->flags == CHARGROUP_FLAGS_ENDLINE))
+    {
+      *matched_len = 1;
+      return true;
+    }
+  }
+
   for(cgt_it = chargroup_list.begin(); cgt_it != chargroup_list.end(); cgt_it++)
   {
     if(cgt_it->flags == CHARGROUP_FLAGS_MULTICHAR)
     {
-      //not for now
+      switch(cgt_it->c1)
+      {
+        case 'p'://catEsc
+        case 'P'://complEsc
+          //ignore the prop for now
+          throw zorbatypesException("", ZorbatypesError::FORX0002);
+          break;
+        case 's'://[#x20\t\n\r]
+          switch(source[0])
+          {
+          case '\t':
+          case '\r':
+          case '\n':
+          case ' ':
+            *matched_len = 1;
+            return true;
+          default:
+            return false;
+          }
+        case 'S'://[^\s]
+          switch(source[0])
+          {
+          case 0:
+          case '\t':
+          case '\r':
+          case '\n':
+          case ' ':
+            return false;
+          default:
+            *matched_len = 1;
+            return true;
+          }
+        case 'i'://the set of initial name characters, those ·match·ed by Letter | '_' | ':'
+          if((source[0] == '_') ||
+            (source[0] == ':') ||
+            XQCharType::isLetter(source[0]))
+          {
+            *matched_len = 1;
+            return true;
+          }
+          return false;
+        case 'I':
+          if((source[0] == '_') ||
+            (source[0] == ':') ||
+            XQCharType::isLetter(source[0]))
+          {
+            return false;
+          }
+          *matched_len = 1;
+          return true;
+        case 'c'://the set of name characters, those ·match·ed by NameChar
+          if(XQCharType::isNameChar(source[0]))
+          {
+            *matched_len = 1;
+            return true;
+          }
+          return false;
+        case 'C':
+          if(XQCharType::isNameChar(source[0]))
+          {
+            return false;
+          }
+          *matched_len = 1;
+          return true;
+        case 'd':
+        case 'D':
+        case 'w':
+        case 'W':
+        default:
+          throw zorbatypesException("", ZorbatypesError::FORX0002);
+          break;
+      }
       return false;
     }
     else if(cgt_it->flags == CHARGROUP_FLAGS_ENDLINE)
@@ -852,7 +994,7 @@ bool CRegexAscii_negchargroup::match(const char *source, int *matched_len)
 
 bool CRegexAscii_wildchar::match(const char *source, int *matched_len)
 {
-  if(source[0])
+  if(source[0] && (source[0] != '\n') && (source[0] != '\r'))
   {
     *matched_len = 1;
     return true;
