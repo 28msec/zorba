@@ -1052,7 +1052,7 @@ struct XQC_ItemFactory_s
    *
    * \param factory The XQC_ItemFactory that this function pointer is a member of
    * \param str The string as a char pointer.
-   * \pram[out] item The item to create. This can either be a wrapper created using 
+   * \param[out] item The item to create. This can either be a wrapper created using 
    *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
    *
    * \retval ::XQC_NO_ERROR
@@ -1067,7 +1067,7 @@ struct XQC_ItemFactory_s
    *
    * \param factory The XQC_ItemFactory that this function pointer is a member of
    * \param str The uri as a char pointer.
-   * \pram[out] item The item to create. This can either be a wrapper created using 
+   * \param[out] item The item to create. This can either be a wrapper created using 
    *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
    *
    * \retval ::XQC_NO_ERROR
@@ -1083,7 +1083,7 @@ struct XQC_ItemFactory_s
    * \param factory The XQC_ItemFactory that this function pointer is a member of
    * \param str The uri as a char pointer.
    * \param localname The localname as a char pointer.
-   * \pram[out] item The item to create. This can either be a wrapper created using 
+   * \param[out] item The item to create. This can either be a wrapper created using 
    *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
    *
    * \retval ::XQC_NO_ERROR
@@ -1103,7 +1103,7 @@ struct XQC_ItemFactory_s
    * \param str The uri as a char pointer.
    * \param prefix The prefix as a char pointer.
    * \param localname The localname as a char pointer.
-   * \pram[out] item The item to create. This can either be a wrapper created using 
+   * \param[out] item The item to create. This can either be a wrapper created using 
    *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
    *
    * \retval ::XQC_NO_ERROR
@@ -1117,12 +1117,12 @@ struct XQC_ItemFactory_s
                    const char* localname,
                    XQC_Item_Ref item); 
 
-  /** 
+  /**
    * Creates a Boolean Item see [http://www.w3.org/TR/xmlschema-2/#bool]
    *
    * \param factory The XQC_ItemFactory that this function pointer is a member of
    * \param boolean 0 for a boolean <code>false</code> boolean item, 1 otherwise.
-   * \pram[out] item The item to create. This can either be a wrapper created using 
+   * \param[out] item The item to create. This can either be a wrapper created using 
    *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
    *
    * \retval ::XQC_NO_ERROR
@@ -1133,9 +1133,566 @@ struct XQC_ItemFactory_s
   (*create_boolean)(XQC_ItemFactory factory, int boolean, XQC_Item_Ref item); 
 
   /**
+   * Creates a NCName Item see [http://www.w3.org/TR/xmlschema-2/#NCName]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param ncname The NCName as a char pointer.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_ncname)(XQC_ItemFactory factory, const char* ncname, XQC_Item_Ref item); 
+
+
+  /**
+   * Creates a Base64Binary Item see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param binary_data The binary data as a char pointer.
+   * \param letter The length of the binary data.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR 
+  (*create_base64binary)(XQC_ItemFactory factory, const char* binary_data, size_t length, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Decimal Item see [http://www.w3.org/TR/xmlschema-2/#decimal]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The value as a doule
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR 
+  (*create_decimal)(XQC_ItemFactory factory, double value, XQC_Item_Ref item );
+
+  /**
+   * Creates a Decimal Item see [http://www.w3.org/TR/xmlschema-2/#decimal]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The value as a char pointer.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR 
+  (*create_decimal_char)(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item );
+
+  /**
+   * Creates an Integer Item see [http://www.w3.org/TR/xmlschema-2/#integer]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param integer_value The value as a long long.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_integer)(XQC_ItemFactory factory, long long integer_value, XQC_Item_Ref item );
+
+  /**
+   * Creates an Integer Item see [http://www.w3.org/TR/xmlschema-2/#integer]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param integer_value The value as a char pointer.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_integer_char)(XQC_ItemFactory factory, const char* integer_value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Long Item see [http://www.w3.org/TR/xmlschema-2/#long]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param long_value The value as a long long.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_long)(XQC_ItemFactory factory, long long long_value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Int Item see [http://www.w3.org/TR/xmlschema-2/#int]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param int_value The value as an int.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_int)(XQC_ItemFactory factory, int int_value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Short Item see [http://www.w3.org/TR/xmlschema-2/#short]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param short_value The value as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_short)(XQC_ItemFactory factory, short short_value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Byte Item see [http://www.w3.org/TR/xmlschema-2/#byte]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param byte_value The byte value as a char.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_byte)(XQC_ItemFactory factory, char byte_value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Date Item see [http://www.w3.org/TR/xmlschema-2/#date]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param date_value The date value as a char pointer.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_date_char)(XQC_ItemFactory factory, const char* date_value, XQC_Item_Ref item );
+
+  /**
+   * Creates a Date Item see [http://www.w3.org/TR/xmlschema-2/#date]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param year The year value as a short.
+   * \param month The month value as a short.
+   * \param day The day value as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_date)(XQC_ItemFactory factory, short year, short month, short day, XQC_Item_Ref item );
+  
+  /**
+   * Creates a DateTime Item see [http://www.w3.org/TR/xmlschema-2/#dateTime]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param year The year value as a short.
+   * \param month The month value as a short.
+   * \param day The day value as a short.
+   * \param hour The hour value as a short.
+   * \param minute The minute value as a short.
+   * \param seconds The seconds value as a short.
+   * \param timezone_hours The timezone as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_datetime)(XQC_ItemFactory factory, short year, short month, short day, 
+                     short hour, short minute, double seconds, short timezone_hours, XQC_Item_Ref item );
+
+  /**
+   * Creates a DateTime Item see [http://www.w3.org/TR/xmlschema-2/#dateTime]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param datetime_value The string representation of the datetime value as a char pointer
+   *                       (for example, 2002-10-10T12:00:00-05:00).
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_datetime_char)(XQC_ItemFactory factory, const char* datetime_value, XQC_Item_Ref item );
+
+  /**
+   * Creates a Double Item see [http://www.w3.org/TR/xmlschema-2/#double]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_double)(XQC_ItemFactory factory, double value, XQC_Item_Ref item );
+
+  /**
+   * Creates a Double Item see [http://www.w3.org/TR/xmlschema-2/#double]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The value as a char pointer.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_double_char)(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Duration Item see [http://www.w3.org/TR/xmlschema-2/#duration]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param year The year value as a short.
+   * \param month The month value as a short.
+   * \param day The day value as a short.
+   * \param hour The hour value as a short.
+   * \param minute The minute value as a short.
+   * \param seconds The seconds value as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_duration)(XQC_ItemFactory factory, short year, short months, short days, 
+                      short hours, short minutes, double seconds, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Float Item see [http://www.w3.org/tr/xmlschema-2/#float]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The float value as a char pointer.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_float)(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a gDay Item see [http://www.w3.org/TR/xmlschema-2/#gDay]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param day The day value as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_gday)(XQC_ItemFactory factory, short day, XQC_Item_Ref item );
+  
+  /**
+   * Creates a gMonth Item see [http://www.w3.org/TR/xmlschema-2/#gMonth]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param month The month value as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_gmonth)(XQC_ItemFactory factory, short month, XQC_Item_Ref item );
+  
+  /**
+   * Creates a gMonthDay Item see [http://www.w3.org/TR/xmlschema-2/#gMonthDay]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param month The month value as a short.
+   * \param day The day value as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_gmonthday)(XQC_ItemFactory factory, short month, short day, XQC_Item_Ref item );
+  
+  /**
+   * Creates a gYear Item see [http://www.w3.org/TR/xmlschema-2/#gYear]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param year The year value as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_gyear)(XQC_ItemFactory factory, short year, XQC_Item_Ref item );
+  
+  /**
+   * Creates a gYearMonth Item see [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param year The year value as a short.
+   * \param month The month value as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_gyearmonth)(XQC_ItemFactory factory, short year, short month, XQC_Item_Ref item );
+  
+  /**
+   * Creates a HexBinary Item see [http://www.w3.org/TR/xmlschema-2/#hexBinary]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param hex_data The hex data as a char pointer.
+   * \param size The size of the hex data.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_hexbinary)(XQC_ItemFactory factory, const char* hex_data, size_t size, XQC_Item_Ref item );
+  
+  /**
+   * Creates a negativeInteger Item see [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The negative integer as a long long value.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_negativeinteger)(XQC_ItemFactory factory, long long value, XQC_Item_Ref item );
+
+  /**
+   * Creates a nonNegativeInteger Item see [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The non-negative integer as an unsigned long long value.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_nonnegativeinteger)(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item );
+
+  /**
+   * Creates a nonPositiveInteger Item see [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The non-positive integer as a long long value.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_nonpositiveinteger)(XQC_ItemFactory factory, long long value, XQC_Item_Ref item );
+
+  /**
+   * Creates a positiveInteger Item see [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The positive integer as an unsigned long long value.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_positiveinteger)(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item );
+
+  /**
+   * Creates a Time Item see [http://www.w3.org/TR/xmlschema-2/#time]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The time as a char pointer.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_time_char)(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Time Item see [http://www.w3.org/TR/xmlschema-2/#time]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param hour The hour as a short.
+   * \param minute The minute as a short.
+   * \param second The second as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_time)(XQC_ItemFactory factory, short hour, short minute, double second, XQC_Item_Ref item );
+  
+  /**
+   * Creates a Time Item see [http://www.w3.org/TR/xmlschema-2/#time]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param hour The hour as a short.
+   * \param minute The minute as a short.
+   * \param second The second as a double.
+   * \param timezone_hours The timezone hours as a short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_time_timezone)(XQC_ItemFactory factory, 
+                          short hour,
+                          short minute,
+                          double second,
+                          short timezone_hours,
+                          XQC_Item_Ref item );
+  
+  /**
+   * Creates an Unsigned Byte Item see [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The unsigned byte value as an unsigned char.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_unsignedbyte)(XQC_ItemFactory factory, const unsigned char value, XQC_Item_Ref item );
+  
+  /**
+   * Creates an unsigned int Item see [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The unsigned int value as an unsigned int.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_unsignedint)(XQC_ItemFactory factory, unsigned int value, XQC_Item_Ref item );
+  
+  /**
+   * Creates an unsignedLong Item see [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The unsigned long value as an unsigned long long.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_unsignedlong)(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item );
+  
+  /**
+   * Creates a unsignedShort Item see [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
+   *
+   * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param value The unsigned short value as an unsigned short.
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
+   *
+   * \retval ::XQC_NO_ERROR
+   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
+   */
+  XQUERY_ERROR
+  (*create_unsignedshort)(XQC_ItemFactory factory, unsigned short value, XQC_Item_Ref item );
+
+  /**
    * Called to free the resources associated with the XQC_ItemFactory.
    * 
    * \param factory The XQC_ItemFactory that this function pointer is a member of
+   * \param[out] item The item to create. This can either be a wrapper created using 
+   *                 ::XQC_ItemFactory::create_item or a pointer initialized to 0.
    */
   void
   (*free)(XQC_ItemFactory factory);
