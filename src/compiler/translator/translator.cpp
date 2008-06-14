@@ -180,7 +180,6 @@ protected:
   const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data;
 
   std::set<string> zorba_predef_mod_ns;
-  std::set<string> toplevel_vars;
 
   TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
     :
@@ -234,18 +233,35 @@ protected:
     return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
   }
 
-  var_expr_t create_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
-  {
-    store::Item_t qname = sctx_p->lookup_qname ("", varname);
+  var_expr_t create_var (const QueryLoc& loc, store::Item_t qname, var_expr::var_kind kind, xqtref_t type = NULL) {
     var_expr_t e = new var_expr (loc, kind, qname);
     e->set_type (type);
     return e;
   }
 
+  var_expr_t create_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  {
+    store::Item_t qname = sctx_p->lookup_qname ("", varname);
+    return create_var (loc, qname, kind, type);
+  }
+
+  void bind_var (var_expr_t e, static_context *sctx) {
+    assert (sctx != NULL);
+    store::Item_t qname = e->get_varname ();
+    if (! sctx->bind_var (qname, e.getp ()))
+      ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
+  }
+
   var_expr_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
     var_expr_t e = create_var (loc, varname, kind, type);
-    sctx_p->bind_var (e->get_varname (), e.getp ());
+    bind_var (e, sctx_p);
+    return e;
+  }
+  var_expr_t bind_var (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  {
+    var_expr_t e = create_var (loc, varname, kind, type);
+    bind_var (e, sctx_p);
     return e;
   }
 
@@ -256,11 +272,15 @@ protected:
     return e;
   }
 
+  void bind_udf (store::Item_t qname, function *f, int nargs, static_context *sctx) {
+    if (! sctx->bind_fn (qname, f, nargs))
+      ZORBA_ERROR_PARAM (XQST0034, qname->getStringValue (), "");
+  }
   void bind_udf (store::Item_t qname, function *f, int nargs) {
-    sctx_p->bind_fn (qname, f, nargs);
-    minfo->globals->bind_fn (qname, f, nargs);
+    bind_udf (qname, f, nargs, sctx_p);
+    bind_udf (qname, f, nargs, minfo->globals.get ());
     if (export_sctx != NULL)
-      export_sctx->bind_fn (qname, f, nargs);
+      bind_udf (qname, f, nargs, export_sctx);
   }
 
   fo_expr *create_seq (const QueryLoc& loc) {
@@ -1928,10 +1948,6 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   xqp_string varname = v.get_varname();
-  store::Item_t var_qname = sctx_p->lookup_qname ("", varname);
-  string expanded_qname = sctx_p->qname_internal_key (var_qname);
-  if (! toplevel_vars.insert (expanded_qname).second)
-    ZORBA_ERROR_LOC_PARAM (XQST0049, loc, var_qname->getStringValue (), "");
 
   // The declared type of a global or external is never tightened based on
   // type inference because globals are mutable.
@@ -1943,9 +1959,9 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   if (! mod_ns.empty () && xqp_string (ve->get_varname ()->getNamespace ()) != mod_ns)
     ZORBA_ERROR_LOC (XQST0048, loc);
   if (! v.is_extern ()) {
-    minfo->globals->bind_var (ve->get_varname (), &*ve);
+    bind_var (ve, minfo->globals.get ());
     if (export_sctx != NULL)
-      export_sctx->bind_var (ve->get_varname (), &*ve);
+      bind_var (ve, export_sctx);
   }
   expr_t val = v.is_extern() ? expr_t(NULL) : pop_nodestack();
   theGlobalVars.push_back(global_binding(ve, val));
@@ -2025,48 +2041,27 @@ void *begin_visit(const VFO_DeclList& v)
 
     signature sig(qname, arg_types, return_type);
 
+    function *f = NULL;
     switch(n->get_type()) 
     {
-    case ParseConstants::fn_extern:
-    {
-      StatelessExternalFunction *ef =
-        sctx_p->lookup_stateless_external_function(n->get_name()->get_prefix(),
-                                                   n->get_name()->get_localname());
-      ZORBA_ASSERT(ef != NULL);
-
-      sctx_p->bind_fn(qname,
-                      new stateless_external_function_adapter(sig, ef, false),
-                      nargs);
-      break;
-    }
     case ParseConstants::fn_extern_update:
-    {
+    case ParseConstants::fn_extern: {
       StatelessExternalFunction *ef =
         sctx_p->lookup_stateless_external_function(n->get_name()->get_prefix(),
                                                    n->get_name()->get_localname());
       ZORBA_ASSERT(ef != NULL);
-
-      sctx_p->bind_fn(qname, 
-                      new stateless_external_function_adapter(sig, ef, true),
-                      nargs);
-    }
-    case ParseConstants::fn_read:
-    {
-      bind_udf(qname,
-               new user_function(n->get_location(), sig, NULL, false),
-               nargs);
+      f = new stateless_external_function_adapter(sig, ef, n->get_type () == ParseConstants::fn_extern_update);
       break;
     }
     case ParseConstants::fn_update:
-    {
-      bind_udf(qname,
-               new user_function (n->get_location(), sig, NULL, true),
-               nargs);
+    case ParseConstants::fn_read: {
+      f = new user_function(n->get_location(), sig, NULL, n->get_type () == ParseConstants::fn_update);
       break;
     }
     default:
       ZORBA_ASSERT(false);
     }
+    bind_udf(qname, f, nargs);
   }
 
   return no_state;
@@ -2215,12 +2210,10 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   store::Item_t qname = sctx_p->lookup_qname ("", v.get_name());
 
-  var_expr_t param_var = new var_expr (v.get_location(), var_expr::param_var, qname);
-  var_expr_t subst_var = new var_expr(v.get_location(), var_expr::let_var, qname);
+  var_expr_t param_var = create_var (v.get_location(), qname, var_expr::param_var);
+  var_expr_t subst_var = bind_var (v.get_location(), qname, var_expr::let_var);
 
   flwor->add(wrap_in_letclause(&*param_var, subst_var));
-
-  sctx_p->bind_var(qname, subst_var);
 
   if (v.get_typedecl () != NULL) 
   {
@@ -2520,6 +2513,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
     if (imported_ns != target_ns)
       ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
+    // We catch duplicate functions / vars in minfo->globals.
+    // We can safely ignore the return value. We might even be able
+    // to assert() here (not sure though).
     sctx_p->import_module (imported_sctx);
   }
 }
@@ -3789,16 +3785,8 @@ xqpString tempname () {
 
 var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 {
-  xqpString empty;
   xqpString lname (tempname ());
-
-  store::Item_t varName;
-
-  ITEM_FACTORY->createQName(varName,
-                            empty.getStore(),
-                            empty.getStore(),
-                            lname.getStore());
-  return new var_expr(loc, kind, varName);
+  return create_var(loc, lname, kind);
 }
 
 

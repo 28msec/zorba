@@ -84,23 +84,19 @@ protected:
   }
 
   // defined in in static_context.cpp
-  void bind_expr (xqp_string key, expr *e);
-  void bind_func (xqp_string key, function *f);
+  bool bind_expr (xqp_string key, expr *e);
+  bool bind_func (xqp_string key, function *f);
 
   bool bind_stateless_function(xqp_string key, StatelessExternalFunction* f) {
     ctx_value_t v;
     v.stateless_function = f;
-    if (lookup_once (key, v))
-      return false;
-    keymap.put (key, v);
-    return true;
+    return ! keymap.put (key, v);
   }
 
   void bind_str (xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR) {
-    xqp_string old;
-    if (err != MAX_ZORBA_ERROR_CODE && lookup_once (key, old))
-      ZORBA_ERROR(err);
-    str_keymap.put (key, v);
+    if (str_keymap.put (key, v))
+      if (err != MAX_ZORBA_ERROR_CODE)
+        ZORBA_ERROR(err);
   }
 
 public:

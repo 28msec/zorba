@@ -101,19 +101,19 @@ static_context::~static_context()
   }
 }
 
-void context::bind_expr (xqp_string key, expr *e) {
+bool context::bind_expr (xqp_string key, expr *e) {
   ctx_value_t v = { e };
   RCHelper::addReference (e);
-  keymap.put (key, v);
+  return ! keymap.put (key, v);
 }
 
-void context::bind_func (xqp_string key, function *f) {
+bool context::bind_func (xqp_string key, function *f) {
   ctx_value_t v;
-  if (lookup_func (key) != NULL)
-    ZORBA_ERROR_PARAM (XQST0034, key, "");
   v.functionValue = f;
+  if (keymap.put (key, v))
+    return false;
   RCHelper::addReference (f);
-  keymap.put (key, v);
+  return true;
 }
 
 
@@ -537,7 +537,7 @@ xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_
   return make_absolute_uri (uri, abs_base_uri.empty () ? final_baseuri () : abs_base_uri);
 }
 
-void static_context::import_module (const static_context *module) {
+bool static_context::import_module (const static_context *module) {
   checked_vector<hashmap<ctx_value_t>::entry>::const_iterator   it;
   const char    *keybuff;
   
@@ -546,11 +546,15 @@ void static_context::import_module (const static_context *module) {
     const ctx_value_t *val = &(*it).val;
 
     if (0 == strncmp(keybuff, "var:", 4) && 0 != strncmp(keybuff, "var:$$", 6)) {
-      bind_expr (keybuff, val->exprValue);
+      if (! bind_expr (keybuff, val->exprValue))
+        return false;
     } else if (0 == strncmp(keybuff, "fn:", 3)) {
-      bind_func (keybuff, val->functionValue);
+      if (! bind_func (keybuff, val->functionValue))
+        return false;
     }
   }
+
+  return true;
 }
 
 

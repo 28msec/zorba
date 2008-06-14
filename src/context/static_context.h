@@ -111,8 +111,8 @@ public:
     ZORBA_ASSERT (e != NULL);
     return e;
   }
-  void bind_var (const store::Item *qname, expr *expr) {
-    bind_expr ("var:" + qname_internal_key (qname), expr);
+  bool bind_var (const store::Item *qname, expr *expr) {
+    return bind_expr ("var:" + qname_internal_key (qname), expr);
   }
   void bind_collation(const xqp_string& aCollURI)
   {
@@ -146,22 +146,10 @@ public:
   StatelessExternalFunction *
   lookup_stateless_external_function(xqp_string prefix, xqp_string local);
 
-  void bind_var (xqp_string prefix, xqp_string local, expr *expr) {
-    bind_expr ("var:" + qname_internal_key ("", prefix, local), expr);
-  }
-  void bind_var (xqp_string varname, expr *expr) {
-    bind_expr ("var:" + qname_internal_key ("", varname), expr);
-  }
   function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const;
   static function *lookup_builtin_fn (xqp_string local, int arity);
-  void bind_fn (xqp_string prefix, xqp_string local, function *f, int arity) {
-    bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local), f);
-  }
-  void bind_fn (xqp_string fname, function *f, int arity) {
-    bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), fname), f);
-  }
-  void bind_fn (const store::Item *qname, function *f, int arity) {
-    bind_func (fn_internal_key (arity) + qname_internal_key (qname), f);
+  bool bind_fn (const store::Item *qname, function *f, int arity) {
+    return bind_func (fn_internal_key (arity) + qname_internal_key (qname), f);
   }
 
 	void add_variable_type( const xqp_string var_name, xqtref_t var_type);
@@ -236,7 +224,7 @@ public:
 
   xqp_string resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri = xqp_string() );
 
-  void import_module (const static_context *module);
+  bool import_module (const static_context *module);
 };
 
 std::pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
