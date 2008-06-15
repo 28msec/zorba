@@ -28,6 +28,8 @@ void* query_thread_2(void *param);
 #define NR_THREADS  20
 static  XQuery_t    lQuery;
 
+#ifdef ZORBA_HAVE_PTHREAD_H
+
 /*
 Simple cloning test
 */
@@ -146,3 +148,5 @@ void* query_thread_2(void *param)
 
   return (void*)0;
 }
+
+#endif
