@@ -37,6 +37,8 @@
      <li> \ref commandline
      <li><a href="examples.html">C++ API Examples</a>
      <li><a href="../../c_api/html/index.html">Zorba's C API</a>
+     <li><a href="../../python_api/html/index.html">Zorba's Python API</a>
+     <li><a href="../../ruby_api/html/index.html">Zorba's Ruby API</a>
    </ul>
  </ul>
  */
