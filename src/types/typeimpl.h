@@ -19,6 +19,7 @@
 #include "common/shared_types.h"
 #include "types/node_test.h"
 #include "types/typeconstants.h"
+#include "zorbatypes/rchandle.h"
 
 
 namespace zorba {
@@ -27,7 +28,7 @@ namespace zorba {
  * Implementation specific classes after this point.
  */
 
-class XQType : virtual public SimpleRCObject {
+class XQType : public RCObject {
 public:
     typedef enum {
       ATOMIC_TYPE_KIND,
@@ -49,11 +50,17 @@ public:
 
     const TypeManager *get_manager() const { return m_manager; }
 
+    long *getSharedRefCounter() { return &theRefCount; }
+
+    SYNC_CODE(RCLock *getRCLock() { return &theLock; })
+
+
   protected:
     const TypeManager *m_manager;
     const type_kind_t m_type_kind;
     TypeConstants::quantifier_t m_quantifier;
     static const char *KIND_STRINGS[NONE_KIND + 1];
+    SYNC_CODE(RCLock theLock;)
 
     XQType(const TypeManager *manager, type_kind_t type_kind, TypeConstants::quantifier_t quantifier)
       : m_manager(manager),
