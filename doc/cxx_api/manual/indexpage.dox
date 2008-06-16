@@ -1,4 +1,15 @@
 /*! \mainpage C++ API Documentation
 
-     <a href="examples.html">C++ API Examples</a>
+    Zorba in it's version 0.9.2 ships with a C++ API that provides the following features:
+
+    <ul>
+      <li>Preparing and executing Queries from strings, files, and streams.
+      <li>Working with the static and dynamic context as defined in the XQuery 1.0 specification.
+      <li>Error handling using exceptions or a user-defined error handler.
+      <li>Managing documents or collections.
+      <li>Writing external XQuery functions in C++.
+    </ul>
+
+    To start with, this documentation provides a <a class="el" href="examples.html">set of examples</a> that demonstrate all of the above
+    features.
  */

@@ -1,4 +1,4 @@
-/*! \mainpage Zorba C API Documentation
+/*! \mainpage C API Documentation
 
   Zorba implements the <a href="https://sourceforge.net/projects/xqc">XQC (XQuery C) API</a> which was designed 
   with the goal to create a standardized C API for interfacing with XQuery processors.
@@ -23,6 +23,7 @@
         written in C.
   </ul>
 
-      <a href="examples.html">C API Examples</a>
+  To start with, this documentation provides a <a class="el" href="examples.html">set of examples</a> that demonstrate 
+  some features.
  */
 
