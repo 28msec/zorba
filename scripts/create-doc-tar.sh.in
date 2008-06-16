@@ -4,10 +4,12 @@
 ZORBA_VERSION=@ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@
 
 mkdir /tmp/zorba-$ZORBA_VERSION
+mkdir /tmp/zorba-$ZORBA_VERSION/zorba
 mkdir /tmp/zorba-$ZORBA_VERSION/c_api
 mkdir /tmp/zorba-$ZORBA_VERSION/cxx_api
 mkdir /tmp/zorba-$ZORBA_VERSION/python_api
 mkdir /tmp/zorba-$ZORBA_VERSION/ruby_api
+cp -r @CMAKE_BINARY_DIR@/doc/zorba/html /tmp/zorba-$ZORBA_VERSION/zorba/html
 cp -r @CMAKE_BINARY_DIR@/doc/c_api/html /tmp/zorba-$ZORBA_VERSION/c_api/html
 cp -r @CMAKE_BINARY_DIR@/doc/cxx_api/html /tmp/zorba-$ZORBA_VERSION/cxx_api/html
 cp -r @CMAKE_BINARY_DIR@/doc/python_api/html /tmp/zorba-$ZORBA_VERSION/python_api/html

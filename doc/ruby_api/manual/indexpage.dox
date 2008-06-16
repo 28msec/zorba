@@ -5,7 +5,7 @@
 
   For the moment, we provide a <a class="en" href="examples.html">set of examples</a> that show how this language binding can be used.
 
-  \example ruby_test.rb.in
+  \example ruby_test.rb
    This is a simple example that demonstrate how to use the Zorba XQuery Engine to
    create, compile, and execute queries.
  */
