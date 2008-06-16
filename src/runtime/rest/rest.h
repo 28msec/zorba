@@ -78,18 +78,31 @@ public:
 class ChildrenIterator : public NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >
 {
 public:
-  ChildrenIterator(const QueryLoc& loc, store::Item_t child) 
-    : NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >(loc)
+  ChildrenIterator()
+  : NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >(QueryLoc())  { } 
+  
+  ChildrenIterator(store::Item_t child)
+    : NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >(QueryLoc())
   { 
     children.push_back(child);
   }
-  
-  ChildrenIterator(const QueryLoc& loc, store::Item_t child1, store::Item_t child2) 
-    : NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >(loc)
+
+  ChildrenIterator(store::Item_t child1, store::Item_t child2)
+    : NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >(QueryLoc())
   {
     children.push_back(child1);
     children.push_back(child2);
   }
+
+  ChildrenIterator(store::Item_t child1, store::Item_t child2, store::Item_t child3)
+    : NoaryBaseIterator<ChildrenIterator, ChildrenIteratorState >(QueryLoc())
+  {
+    children.push_back(child1);
+    children.push_back(child2);
+    children.push_back(child3);
+  }
+  
+  void addChild(store::Item_t child)  { children.push_back(child); }
     
   bool
   nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -156,15 +169,35 @@ public:
     }
     v.endVisit(*this);
   }
+};
 
-  static size_t
-  getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState);
-  
-protected:
-  bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, ChildrenIterator_t children = NULL) const;
-  bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child) const;
-  bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child1, store::Item_t child2) const;
-  
+/****************************************************************************
+ *
+ * zorba-rest post iterator
+ *
+ ****************************************************************************/
+
+class ZorbaRestPostIterator : public NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >
+{
+public:
+  ZorbaRestPostIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  { }
+
+  bool
+  nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  virtual void
+      accept(PlanIterVisitor& v) const
+  {
+    v.beginVisit(*this);
+    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
+    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
+    for ( ; iter != lEnd; ++iter ) {
+      ( *iter )->accept ( v );
+    }
+    v.endVisit(*this);
+  }
 };
 
 

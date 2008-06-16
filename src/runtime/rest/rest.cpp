@@ -16,6 +16,10 @@
 #include "runtime/rest/rest.h"
 
 #include <curl/curl.h>
+#include <curl/types.h>
+#include <curl/easy.h>
+
+#include "api/serialization/serializer.h"
 
 #include "runtime/util/iterator_impl.h"
 #include "runtime/api/runtimecb.h"
@@ -27,9 +31,11 @@
 #include "store/api/store.h"
 #include "store/naive/node_items.h"
 #include "store/api/copymode.h"
+#include "store/naive/store_defs.h"
+#include "store/naive/simple_store.h"
+#include "store/naive/basic_item_factory.h"
 
 #include "types/root_typemanager.h"
-
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
@@ -37,14 +43,16 @@
 #include "zorbatypes/datetime/parse.h"
 
 #include "system/globalenv.h"
-
 #include "zorbaerrors/error_manager.h"
 
 #include <iostream>
 #include <fstream>
 using namespace std;
 
+
 namespace zorba {
+
+using namespace store;
 
 /****************************************************************************
  *
@@ -176,6 +184,87 @@ ChildrenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
  *
  ****************************************************************************/
 
+bool createQNameHelper(store::Item_t& result, xqpString name) 
+{
+  xqpString ns = ZORBA_REST_FN_NS;
+  xqpString pre = "zorba-rest";
+  return GENV_ITEMFACTORY->createQName(result, ns.getStore(), pre.getStore(), name.getStore());
+}
+    
+bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, ChildrenIterator_t children) 
+{
+  store::Item_t qname;
+  createQNameHelper(qname, name);
+  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
+  store::NsBindings bindings;
+  store::CopyMode copymode;
+  
+  std::auto_ptr<store::Iterator> cwrapper;
+  if (children != NULL)
+    cwrapper.reset(new PlanWrapper(children.getp(), planState.theCompilerCB, planState.dctx()));
+  
+  return GENV_ITEMFACTORY->createElementNode(result, (ulong)&planState,
+      qname,
+      GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
+      cwrapper.get(),
+      NULL,
+      NULL,
+      bindings,
+      baseUri,
+      true,
+      true,
+      false,
+      copymode);
+}
+
+bool createAttributeHelper(store::Item_t& result, PlanState& planState, xqpString name, xqpString value) 
+{
+  std::auto_ptr<store::Iterator> cwrapper1, cwrapper2;
+  store::Item_t qname, value_string;
+  createQNameHelper(qname, name);
+  GENV_ITEMFACTORY->createString(value_string, value.theStrStore);
+  cwrapper1.reset(new PlanWrapper(new ChildrenIterator(qname), planState.theCompilerCB, planState.dctx()));
+  cwrapper2.reset(new PlanWrapper(new ChildrenIterator(value_string), planState.theCompilerCB, planState.dctx()));
+  store::Item_t type = GET_STORE().theSchemaTypeNames[store::XS_STRING];
+  return GENV_ITEMFACTORY->createAttributeNode(
+      result,
+      (ulong)&planState,
+      cwrapper1.get(),
+      type,
+      cwrapper2.get(),
+      true,
+      true);
+}
+
+bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, store::Item_t child) 
+{
+  ChildrenIterator_t childIterator;
+  childIterator = new ChildrenIterator(child);
+  return createResultNode(result, planState, name, childIterator);
+}
+
+bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, store::Item_t child1, store::Item_t child2) 
+{
+  ChildrenIterator_t childIterator;
+  childIterator = new ChildrenIterator(child1, child2);
+  return createResultNode(result, planState, name, childIterator);
+}
+
+bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name,
+                                            store::Item_t child1, store::Item_t child2, store::Item_t child3) 
+{
+  ChildrenIterator_t childIterator;
+  childIterator = new ChildrenIterator(child1, child2, child3);
+  return createResultNode(result, planState, name, childIterator);
+}
+
+
+/****************************************************************************
+ *
+ * rest-get Iterator
+ *
+ ****************************************************************************/
+
 ZorbaRestGetIteratorState::ZorbaRestGetIteratorState() 
 {
 }
@@ -185,7 +274,7 @@ ZorbaRestGetIteratorState::~ZorbaRestGetIteratorState()
 }
 
 void
-ZorbaRestGetIteratorState::init(PlanState& planState) 
+ZorbaRestGetIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
 }
@@ -196,156 +285,357 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
 }
 
-bool ZorbaRestGetIterator::createResultNode(store::Item_t& result, PlanState& planState, xqpString name, ChildrenIterator_t children) const
+int processReply(store::Item_t& result, PlanState& planState, xqpStringStore_t& lUriString,
+                 int code, std::vector<std::string>& headers, CurlStreamBuffer* theStreamBuffer) 
 {
-  xqpString ns = ZORBA_REST_FN_NS;
-  xqpString pre = "zorba-rest";
-  store::Item_t qname;
-  
-  GENV_ITEMFACTORY->createQName(qname, ns.getStore(), pre.getStore(), name.getStore());
-  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
-  store::NsBindings bindings;
-  store::CopyMode copymode;
-  
-  std::auto_ptr<store::Iterator> cwrapper;
-  if (children != NULL)
-    cwrapper.reset(new PlanWrapper(children.getp(), planState.theCompilerCB, planState.dctx()));
-  
-  return GENV_ITEMFACTORY->createElementNode(result, (ulong)&planState,
-    qname,
-    GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
-    cwrapper.get(),
-    NULL,
-    NULL,
-    bindings,
-    baseUri,
-    true,
-    true,
-    false,
-    copymode);
-}
-
-bool ZorbaRestGetIterator::createResultNode(store::Item_t& result, PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child) const
-{
-  ChildrenIterator_t childIterator;
-  childIterator = new ChildrenIterator(loc, child); 
-  return createResultNode(result, planState, name, childIterator);
-}
-
-bool ZorbaRestGetIterator::createResultNode(store::Item_t& result, PlanState& planState, xqpString name, const QueryLoc& loc, store::Item_t child1, store::Item_t child2) const
-{
-  ChildrenIterator_t childIterator;
-  childIterator = new ChildrenIterator(loc, child1, child2);
-  return createResultNode(result, planState, name, childIterator);
-}
-
-
-bool
-ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t lUri;
-  xqpStringStore_t lUriString;
-  int code;
-  store::Item_t doc = NULL;
+  int reply_code;
+  xqpString content_type;
+  ChildrenIterator_t headers_iterator = new ChildrenIterator();
   store::Store& store = GENV.getStore();
-  
-  ZorbaRestGetIteratorState* state;
-  bool valid = false;
-  DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
-  
-  /********* Initialization ***********************/
-  curl_global_init(CURL_GLOBAL_ALL); // TODO: once per application, needs to be moved somewhere else
-  state->MultiHandle = curl_multi_init(); // TODO check error
-  state->EasyHandle = curl_easy_init();
-  state->theStreamBuffer = NULL;
-  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPGET, 1);
-  curl_easy_setopt(state->EasyHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-  curl_easy_setopt(state->EasyHandle, CURLOPT_HEADERFUNCTION, ZorbaRestGetIterator::getHeaderData);
-  curl_easy_setopt(state->EasyHandle, CURLOPT_WRITEHEADER, state);
-  curl_multi_add_handle(state->MultiHandle, state->EasyHandle);
-
-  if (!CONSUME(lUri, 0)) {
-    // todo raise an error
-  }
-
-  lUriString = lUri->getStringValue();
-  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, lUriString->c_str());
-
-  state->headers = std::auto_ptr<std::vector<std::string> >(new std::vector<std::string>);
-  state->theStreamBuffer = new CurlStreamBuffer(state->MultiHandle, state->EasyHandle);
-  
-  code = state->theStreamBuffer->multi_perform(); 
-  
-  /********* Process the reply **********************/
+    
+  if (headers.size() == 0)
   {
-    int result_code;
-    if (state->headers->size() == 0)
+    reply_code = code; // TODO change cURL's error code to something else? // TODO: throw exception?
+  }
+  else
+  {
+    if (parse_int_const_position<int>(headers.operator[](0), 9, reply_code, 1))
     {
-      result_code = code; // TODO change cURL's error code to something else?
+      reply_code = -1; // TODO change this code
     }
-    else if (parse_int_const_position<int>(state->headers->operator[](0), 9, result_code, 1))
+      
+    for (unsigned int i = 1; i < headers.size(); i++)
     {
-      result_code = -1; // TODO change this code
-    }
-    
-    xqpString temp = NumConversions::intToStr(result_code);
-    store::Item_t text_code;
-    GENV_ITEMFACTORY->createTextNode(text_code, (ulong)&planState, temp.theStrStore, false, true);
-    store::Item_t status_code;
-    createResultNode(status_code, planState, "status_code", loc, text_code);
-    
-    std::istream is(state->theStreamBuffer);
-    try {
-      doc = store.loadDocument(lUriString, is);
-    }
-    catch (...) {
-      doc = NULL;
-    }
+      int pos = headers.operator[](i).find(':');
+      if (pos > -1)
+      {
+        store::Item_t attrib, header_value, header;
+          
+        xqpString name_string = headers.operator[](i).substr(0, pos);
+        createAttributeHelper(attrib, planState, xqpString("name"), name_string);
+          
+        string temp = headers.operator[](i).substr(pos+2);
 
-    if (doc != NULL)
-    {
-      store::Iterator_t children = doc->getChildren();
-      children->open();
-      store::Item_t child;
-      children->next(child);
-      store::Item_t payload;
-      createResultNode(payload, planState, "payload", loc, child); // TODO: check NULL
-    
-      valid = createResultNode(result, planState, "result", loc, status_code, payload);
-    }
-    else
-    {
-      valid = createResultNode(result, planState, "result", loc, status_code);
+        xqpString value_string = temp;
+        GENV_ITEMFACTORY->createTextNode(header_value, (ulong)&planState, value_string.theStrStore, false, true);
+        createResultNode(header, planState, "header", attrib, header_value);
+        headers_iterator->addChild(header);
+
+        // extract content-type
+        if (name_string.lowercase() == "content-type")
+          content_type = temp;;
+      }
+      else
+      {
+          // TODO: invalid header
+      }
     }
   }
-  
-  STACK_PUSH(valid, state);
-  
-  /********* Deinitialization ***********************/
-  curl_multi_remove_handle(state->MultiHandle, state->EasyHandle);
-  curl_easy_cleanup(state->EasyHandle);
-  curl_multi_cleanup(state->MultiHandle);
-  curl_global_cleanup();
-  state->theStreamBuffer = NULL;
-  state->headers.reset();
-  /*
-  delete *state->headers;
-  state->headers = NULL;
-  */
-  
-  STACK_END (state);
+
+  store::Item_t text_code, status_code;
+  store::Item_t doc = NULL;
+    
+  xqpString temp = NumConversions::intToStr(reply_code);
+  GENV_ITEMFACTORY->createTextNode(text_code, (ulong)&planState, temp.theStrStore, false, true);
+  createResultNode(status_code, planState, "status_code", text_code);
+
+  if (reply_code == 200 )
+  {
+    int doc_type;  // values: 3 - xml, 2 - text, 1 - everything else (base64), 0 - do nothing, document has bee processed.
+
+    if (content_type.theStrStore.getp() == NULL)
+      doc_type = 1;
+    else if (content_type.indexOf("application/xml") == 0
+             ||
+             content_type.indexOf("application/xhtml") == 0
+             ||
+             content_type.indexOf("text/xml") == 0
+             ||
+             content_type.indexOf("text/xhtml") == 0)       // XMLs
+      doc_type = 3;
+    else if (content_type.indexOf("+xml") > -1)
+      doc_type = 3;
+    else if (content_type.indexOf("text/") == 0)
+      doc_type = 2;
+    else
+      doc_type = 1;
+
+    switch (doc_type)
+    {
+    case 3:  // xml
+      {
+        store::Item_t temp;
+        std::istream is(theStreamBuffer);
+        try {
+          temp = store.loadDocument(lUriString, is);
+        }
+        catch (...) {
+          temp = NULL;
+        }
+
+        if (temp != NULL)
+        {
+          store::Iterator_t doc_child = temp->getChildren();
+          doc_child->open();
+          doc_child->next(doc);
+        }
+        else
+        {
+          // TODO: error
+        }
+      }
+      break;
+      
+    case 2:  // text
+      {
+        stringstream str;
+        str << theStreamBuffer;
+        xqpString temp = str.str();
+        GENV_ITEMFACTORY->createTextNode(doc, (ulong)&planState, temp.theStrStore, false, true);
+      }
+      break;
+
+    case 1:  // base64
+      {
+        xqp_base64Binary base64;
+        std::istream is(theStreamBuffer);
+        xqpString temp = Base64::encode(is);
+        GENV_ITEMFACTORY->createTextNode(doc, (ulong)&planState, temp.theStrStore, false, true);
+      }
+      break;
+    }
+  }
+    
+  if (doc != NULL)
+  {
+    store::Item_t payload, headers_item;
+    createResultNode(payload, planState, "payload", doc);
+    createResultNode(headers_item, planState, "headers", headers_iterator);
+    createResultNode(result, planState, "result", status_code, headers_item, payload);
+  }
+  else
+  {
+    store::Item_t headers_item;
+    createResultNode(headers_item, planState, "headers", headers_iterator);
+    createResultNode(result, planState, "result", status_code, headers_item);
+  }
+
+  return 0;
 }
 
-size_t
-ZorbaRestGetIterator::getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState)
+static size_t getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState)
 {
   ZorbaRestGetIteratorState* state = static_cast<ZorbaRestGetIteratorState*>(aState);
   
   std::string temp(static_cast<char*>(ptr), size*nmemb-1);
+  if (temp[temp.size()-1] == 0x0D)  // delete the 0xD at the end.
+    temp.erase(temp.end()-1);
   state->headers->push_back(temp);
   // std::cout << "header: " << temp << std::endl;
   
   return size * nmemb;
 }
+
+static void setupConnection(ZorbaRestGetIteratorState* state, bool get_method)
+{
+  state->MultiHandle = curl_multi_init(); // TODO check error
+  state->EasyHandle = curl_easy_init();
+  
+  if (get_method)
+    curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPGET, 1);
+  else
+    curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPPOST, 1);
+    
+  curl_easy_setopt(state->EasyHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HEADERFUNCTION, getHeaderData);
+  curl_easy_setopt(state->EasyHandle, CURLOPT_WRITEHEADER, state);
+  curl_multi_add_handle(state->MultiHandle, state->EasyHandle);
+  state->headers = std::auto_ptr<std::vector<std::string> >(new std::vector<std::string>);
+  state->theStreamBuffer = new CurlStreamBuffer(state->MultiHandle, state->EasyHandle);
+}
+
+static void cleanupConnection(ZorbaRestGetIteratorState* state)
+{
+  curl_multi_remove_handle(state->MultiHandle, state->EasyHandle);
+  curl_easy_cleanup(state->EasyHandle);
+  curl_multi_cleanup(state->MultiHandle);
+  state->theStreamBuffer = NULL;
+  state->headers.reset();
+}
+
+void processHeader(store::Item_t& headers, curl_slist** headers_list)
+{
+  store::Iterator_t it;
+  store::Item_t child, name;
+
+  if (headers->getNodeKind() != store::StoreConsts::elementNode)
+    return; // TODO: error top node should be element node
+
+  if (xqpString("headers") == headers->getNodeName()->getLocalName())
+  {
+    it = headers->getChildren();
+    it->open();
+    while (it->next(child))
+      processHeader(child, headers_list);
+    return;
+  }
+
+  it = headers->getAttributes();
+  it->open();
+  while (it->next(child))
+  {
+    if (xqpString("name") == child->getNodeName()->getLocalName())
+      name = child;
+  }
+
+  if (name.getp() == NULL)
+    return; // TODO: signal error - header without an associated name
+
+  it = headers->getChildren();
+  it->open();
+  it->next(child);
+  if (child->getNodeKind() == store::StoreConsts::textNode)
+  {
+    xqpString temp = xqpString(name->getStringValue()) + xqpString(": ") + child->getStringValueP();
+    *headers_list = curl_slist_append(*headers_list , temp.c_str());
+  }
+  else 
+  {
+    // TODO: error
+  }
+}
+
+static void processPayload(Item_t& payload_data, struct curl_httppost** first, struct curl_httppost** last)
+{
+  store::Iterator_t it;
+  store::Item_t child, name;
+
+  if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
+    return; // TODO: error top node should be element node
+
+  if (xqpString("payload") == payload_data->getNodeName()->getLocalName())
+  {
+    it = payload_data->getChildren();
+    it->open();
+    while (it->next(child))
+      processPayload(child, first, last);
+    return;
+  }
+
+  it = payload_data->getAttributes();
+  it->open();
+  while (it->next(child))
+  {
+    if (xqpString("name") == child->getNodeName()->getLocalName())
+      name = child;
+  }
+
+  if (name.getp() == NULL)
+    return; // TODO: signal error - payload part without an associated name
+
+  it = payload_data->getChildren();
+  it->open();
+  it->next(child);
+  if (child->getNodeKind() == store::StoreConsts::textNode)
+  {
+    curl_formadd(first, last,
+                 CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                 CURLFORM_COPYCONTENTS, child->getStringValueP()->c_str(),
+                 CURLFORM_END);
+  }
+  else if (child->getNodeKind() == store::StoreConsts::elementNode)
+  {
+    stringstream ss;
+    error::ErrorManager lErrorManager;
+    serializer ser(&lErrorManager);
+    ser.set_parameter("omit-xml-declaration","yes");
+    ser.serialize(child, ss);
+    curl_formadd(first, last,
+                 CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                 CURLFORM_COPYCONTENTS, ss.str().c_str(),
+                 CURLFORM_CONTENTTYPE, "text/html",
+                 CURLFORM_END);
+  }
+  else
+  {
+    // TODO: process comments, pi nodes? or generate error?
+  }
+}
+
+bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lUri, headers;
+  xqpStringStore_t lUriString;
+  curl_slist *headers_list = NULL;
+  int code;
+  
+  ZorbaRestGetIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
+  
+  setupConnection(state, true);
+
+  if (CONSUME(lUri,0) )
+  {
+    //TODO: raise an error
+  }
+
+  if (theChildren.size() > 1)
+    while (CONSUME(headers, 1))
+      processHeader(headers, &headers_list);
+
+  lUriString = lUri->getStringValue();
+  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, lUriString->c_str());
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+  code = state->theStreamBuffer->multi_perform();
+  processReply(result, planState, lUriString, code, *state->headers, state->theStreamBuffer.getp());
+  
+  STACK_PUSH(true, state);
+  curl_slist_free_all(headers_list);
+  cleanupConnection(state);
+  STACK_END (state);
+}
+
+bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  static const char expect_buf[] = "Expect:";
+  store::Item_t lUri, payload_data, headers;
+  xqpStringStore_t lUriString;
+  curl_httppost *first = NULL, *last = NULL;
+  curl_slist *headers_list = NULL;
+  int code;
+  
+  ZorbaRestGetIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
+  
+  setupConnection(state, false);
+
+  if (CONSUME(lUri, 0) == false)
+  {
+    //TODO: raise an error
+  }
+
+  if (theChildren.size() > 1)
+    while (CONSUME(payload_data, 1))
+      processPayload(payload_data, &first, &last);
+
+  if (theChildren.size() > 2)
+    while (CONSUME(headers, 2))
+      processHeader(headers, &headers_list);
+
+  lUriString = lUri->getStringValue();
+  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, lUriString->c_str());
+  headers_list = curl_slist_append(headers_list , expect_buf);
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPPOST, first);
+  code = state->theStreamBuffer->multi_perform();
+  processReply(result, planState, lUriString, code, *state->headers, state->theStreamBuffer.getp());
+  
+  STACK_PUSH(true, state);
+  curl_formfree(first);
+  curl_slist_free_all(headers_list);
+  cleanupConnection(state);
+  STACK_END (state);
+}
+
 
 } /* namespace zorba */

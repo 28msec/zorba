@@ -694,17 +694,31 @@ DECL(sctx, node_by_reference,
 // end zorba functions
 
 #ifdef ZORBA_WITH_REST
+
 // zorba-rest functions
 DECL(sctx, rest_get_1,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
      GENV_TYPESYSTEM.STRING_TYPE_ONE, // need to make this an ANY_URI_TYPE_ONE
      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-#if 0
-DECL(sctx, rest_get_2,
-     (createQName("http://www.flworfound.org/", "zorba-rest", "get"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-#endif
+DECL(sctx, rest_get_1,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+     
+DECL(sctx, rest_post_1,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+DECL(sctx, rest_post_2,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 
 #endif
 

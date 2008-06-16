@@ -219,8 +219,9 @@ namespace zorba
 #endif
 
 #ifdef ZORBA_WITH_REST
-  class ZorbaRestGetIterator;
   class ChildrenIterator;
+  class ZorbaRestGetIterator;
+  class ZorbaRestPostIterator;
 #endif
 
 #define PLAN_ITER_VISITOR(class)                  \
@@ -625,8 +626,9 @@ namespace zorba
 #endif
 
 #ifdef ZORBA_WITH_REST
-    PLAN_ITER_VISITOR(ZorbaRestGetIterator);
     PLAN_ITER_VISITOR(ChildrenIterator);
+    PLAN_ITER_VISITOR(ZorbaRestGetIterator);
+    PLAN_ITER_VISITOR(ZorbaRestPostIterator);
 #endif
 	  
   }; /* class PlanIterVisitor */

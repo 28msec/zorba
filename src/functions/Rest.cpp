@@ -24,7 +24,7 @@ rest_get_1::rest_get_1(const signature& sig)
  : function(sig)
 {}
 
-PlanIter_t 
+PlanIter_t
 rest_get_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRestGetIterator(loc, argv);
@@ -35,5 +35,40 @@ rest_get_1::return_type (const std::vector<xqtref_t> &arg_types) const
 {
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
+
+
+rest_post_1::rest_post_1(const signature& sig)
+  : function(sig)
+{}
+
+PlanIter_t
+rest_post_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaRestPostIterator(loc, argv);
+}
+
+xqtref_t
+rest_post_1::return_type (const std::vector<xqtref_t> &arg_types) const
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
+rest_post_2::rest_post_2(const signature& sig)
+  : function(sig)
+{}
+
+PlanIter_t
+rest_post_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaRestPostIterator(loc, argv);
+}
+
+xqtref_t
+rest_post_2::return_type (const std::vector<xqtref_t> &arg_types) const
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
+
 
 } /* namespace zorba */

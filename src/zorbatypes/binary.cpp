@@ -199,6 +199,20 @@ std::vector<char> Base64::encode(const std::vector<char>& aSource)
   return lRes;
 }
 
+xqpString Base64::encode(std::istream& aStream)
+{
+  std::vector<char> source, result;
+  xqpString xqpResult;
+  
+  while (aStream.good())
+    source.push_back((char)(aStream.get()));
+
+  result = encode(source);
+  for (unsigned int i=0; i<result.size(); i++)
+    xqpResult += result[i];
+  return xqpResult;
+}
+    
 std::vector<char> Base64::decode(const std::vector<char>& aSource)
 {
   std::vector<char> lRes;

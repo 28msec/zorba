@@ -54,6 +54,7 @@ public:
   xqpString str() const;
 
   static std::vector<char> encode(const std::vector<char>&);
+  static xqpString encode(std::istream& aStream);
   static std::vector<char> decode(const std::vector<char>&);
 
   uint32_t hash() const;
