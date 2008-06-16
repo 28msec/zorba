@@ -15,7 +15,7 @@
  */
 
 #include <zorba/zorba.h>
-#include <store/naive/simple_store.h>
+#include <inmemorystore/inmemorystore.h>
 
 #include "test_debugger_protocol.h"
 
@@ -24,6 +24,7 @@ using namespace zorba;
 int test_debugger_protocol( int argc, char* argv[] )
 {
   zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();
+  test->testReplyMessage();
   test->testRunMessage();
   test->testSuspendMessage();
   test->testResumeMessage();
@@ -45,7 +46,7 @@ int test_debugger_protocol( int argc, char* argv[] )
 namespace zorba{
 
 template<class T>
-void test_packet( AbstractCommandMessage * aMessage ) 
+void test_packet( AbstractMessage * aMessage ) 
 {
   //Cast to the concrete Message Type
   T * lMessage1 = dynamic_cast<T *> ( aMessage );
@@ -55,7 +56,7 @@ void test_packet( AbstractCommandMessage * aMessage )
   Length length;
   Byte * msg = lMessage1->serialize( length );
   AbstractMessage * lAbstractMessage = MessageFactory::buildMessage( msg, length );
-  delete[] msg;
+  //delete[] msg;
   T * lMessage2 = dynamic_cast<T *> ( lAbstractMessage );
   assert( lMessage2 != NULL);
   //Ensure that both message are identical
@@ -68,6 +69,18 @@ void test_packet( AbstractCommandMessage * aMessage )
     
     Byte * lMsg2 = reinterpret_cast<Byte *>( const_cast< char * >( aMsg2 ) );
     return memcmp( aMsg1, lMsg2, aLength ) == 0;
+  }
+
+  void TestDebuggerSerialization::testReplyMessage()
+  {
+    std::cerr << "Test reply message" << std::endl;
+    ReplyMessage msg( 1, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT );
+    test_packet<ReplyMessage>( &msg );
+    const char * lBinary = "\0\0\0\xb\0\0\0\1\0\b\6";
+    Length length;
+    Byte * lBmsg = msg.serialize( length );
+    assert( msgcmp( lBmsg, lBinary, length ) );
+    delete[] lBmsg;
   }
 
   void TestDebuggerSerialization::testRunMessage()
@@ -256,7 +269,7 @@ void test_packet( AbstractCommandMessage * aMessage )
 
   void TestDebuggerSerialization::testVariableMessage()
   {
-    store::SimpleStore* lStore = store::SimpleStore::getInstance();
+    store::SimpleStore* lStore = inmemorystore::InMemoryStore::getInstance();
     Zorba * lZorba = Zorba::getInstance( lStore );
     ItemFactory * lFactory = lZorba->getItemFactory();
     /* The item that is to be bound to the external variable */

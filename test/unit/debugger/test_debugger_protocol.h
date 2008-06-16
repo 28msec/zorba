@@ -24,11 +24,13 @@
 namespace zorba
 {
   template<class T>
-  void test_packet( AbstractCommandMessage * aMessage );
+  void test_packet( AbstractMessage * aMessage );
   
   class TestDebuggerSerialization
   {
     public:
+      void testReplyMessage();
+      
       void testRunMessage();
 
       void testResumeMessage();
