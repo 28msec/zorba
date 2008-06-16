@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+ADD_SUBDIRECTORY(zorba)
+
+# programming apis
 ADD_SUBDIRECTORY(cxx_api)
 ADD_SUBDIRECTORY(c_api)
 
@@ -21,6 +24,7 @@ IF (SWIG_FOUND)
 ENDIF (SWIG_FOUND)
 
 # workaround: a dir is already needed for the install command. the html directory, however, is generated with the make doc call
+FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/zorba/html)
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cxx_api/html)
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/c_api/html)
 

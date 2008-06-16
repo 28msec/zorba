@@ -23,26 +23,6 @@
         written in C.
   </ul>
 
-  <ul>
-    <li>The User Guide
-    <ul>
-      <li><a href="../../cxx_api/html/build.html">Build Instructions</a>
-      <li><a href="../../cxx_api/html/installation.html">Installation Instructions</a>
-      <li>Feature Description
-      <ul>
-        <li><a href="../../cxx_api/html/groupby.html">Group By - XQuery 1.1</a>
-        <li><a href="../../cxx_api/html/trycatch.html">Try-Catch</a>
-        <li><a href="../../cxx_api/html/eval.html">Eval</a>
-        <li><a href="../../cxx_api/html/rest.html">REST</a>
-        <li><a href="../../cxx_api/html/deref.html">node-reference() and node-by-reference()</a>
-      </ul>
-      <li><a href="../../cxx_api/html/commandline.html">The Zorba Command Line Utility</a>
-      <li><a href="examples.html">C API Examples</a>
-     <li><a href="../../cxx_api/html/index.html">Zorba's C++ API</a>
-     <li><a href="../../python_api/html/index.html">Zorba's Python API</a>
-     <li><a href="../../ruby_api/html/index.html">Zorba's Ruby API</a>
-
-    </ul>
-  </ul>
+      <a href="examples.html">C API Examples</a>
  */
 
