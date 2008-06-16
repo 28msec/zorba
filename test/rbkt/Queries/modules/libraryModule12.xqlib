@@ -1,0 +1,15 @@
+(:*******************************************************:)
+(: Test: libraryModule12.xqlib                           :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose:    schema import                             :)
+(:*******************************************************:)
+
+module namespace math = "http://example.org/math-functions";
+
+import schema namespace geometry = "triangle_schema.xsd" at "triangle_schema.xsd";
+
+declare function math:area($t as geometry:triangle) as xs:double
+{
+ fn:string-length($t cast as xs:string)
+};

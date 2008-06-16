@@ -1,0 +1,16 @@
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="triangle_schema.xsd"
+  xmlns="triangle_schema.xsd"
+  elementFormDefault="qualified">
+
+  <xs:simpleType name="triangle">
+   <xs:restriction base="xs:string">
+    <xs:enumeration value="Right"/>
+    <xs:enumeration value="Equilateral"/>
+    <xs:enumeration value="Isosceles"/>
+    <xs:enumeration value="Scalene"/>
+    <xs:enumeration value="Obtuse"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

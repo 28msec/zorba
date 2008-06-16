@@ -1,0 +1,19 @@
+(:*******************************************************:)
+(: Test: libraryModule13.xqlib                           :)
+(: Written By: Sorin Nasoi                               :)
+(: Date: 2008/05/26                                      :)
+(: Purpose:    schema import                             :)
+(:*******************************************************:)
+
+module namespace math = "http://example.org/math-functions";
+
+import schema namespace geometry = "triangle_schema.xsd" at "triangle_schema.xsd";
+
+declare function math:createTriangle($triangleType as xs:integer) as geometry:triangle
+{
+ if ($triangleType = 1) then 'Right'
+ else if ($triangleType = 2) then 'Equilateral'
+ else if ($triangleType = 3) then 'Isosceles'
+ else if ($triangleType = 4) then 'Obtuse'
+ else 'Scalene'
+};
