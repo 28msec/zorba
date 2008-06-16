@@ -64,6 +64,7 @@ public:
   virtual void clear() = 0;
   virtual void resize(ulong size) = 0;
   virtual void copy(ConstrNodeVector& dest) = 0;
+  virtual void compact() = 0;
 };
 
 
@@ -87,6 +88,7 @@ public:
   void clear()                           { theNodes.clear(); }
   void resize(ulong size)                { theNodes.resize(size); }
   void copy(ConstrNodeVector& dest);
+  void compact();
 
 private:
   LoadedNodeVector(const LoadedNodeVector& v);
@@ -120,6 +122,7 @@ public:
   void resize(ulong size);
   void copy(ConstrNodeVector& dest);
   void copy(LoadedNodeVector& dest)  { dest.theNodes = theNodes; }
+  void compact();
 
 private:
   ConstrNodeVector(const ConstrNodeVector& v);

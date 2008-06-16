@@ -101,6 +101,8 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         child->copy(result, -1, copymode);
       }
     }
+
+    result->finalizeNode();
   }
   catch (...)
   {
@@ -305,6 +307,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         valid = consumeNext(child, theChildrenIter, planState);
       }
     }
+
+    result->finalizeNode();
   }
   catch (...)
   {

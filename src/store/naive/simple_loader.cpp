@@ -307,6 +307,8 @@ void XmlLoader::endDocument(void * ctx)
 
     ZORBA_ASSERT(docNode != NULL);
 
+    docNode->finalizeNode();
+
     LOADER_TRACE2("End Doc Node = " << docNode);
   }
   catch (error::ZorbaError& e)
@@ -473,6 +475,8 @@ void XmlLoader::endElement(
     Item* node = loader.theNodeStack.top();
     ZORBA_ASSERT(node != NULL);
     loader.theNodeStack.pop();
+
+    node->finalizeNode();
 
     LOADER_TRACE2("End Element: node = " << node << " name = "
                   << node->getNodeName()->show() << std::endl);

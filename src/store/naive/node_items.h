@@ -169,6 +169,8 @@ public:
 
   virtual Item_t getNilled() const { return 0; }
 
+  virtual void finalizeNode() { return; }
+
   //
   // SimpleStore Methods
   //
@@ -340,6 +342,8 @@ public:
   NodeVector& children()             { return theChildren; }
   const NodeVector& children() const { return theChildren; }
   XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
+
+  void finalizeNode()                { theChildren.compact(); }
 };
 
 
@@ -361,6 +365,8 @@ public:
   NodeVector& children()             { return theChildren; }
   const NodeVector& children() const { return theChildren; }
   XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
+
+  void finalizeNode()                { theChildren.compact(); }
 };
 
 
@@ -518,6 +524,12 @@ public:
   const NodeVector& children() const   { return theChildren; }
   XmlNode* getChild(ulong i) const     { return theChildren.get(i); }
 
+  void finalizeNode()
+  {
+    theChildren.compact();
+    theAttributes.compact();
+  }
+
 protected:
   xqpStringStore_t getBaseURIInternal(bool& local) const;
 
@@ -561,6 +573,12 @@ public:
   NodeVector& children()               { return theChildren; }
   const NodeVector& children() const   { return theChildren; }
   XmlNode* getChild(ulong i) const     { return theChildren.get(i); }
+
+  void finalizeNode()
+  {
+    theChildren.compact();
+    theAttributes.compact();
+  }
 
 protected:
   xqpStringStore_t getBaseURIInternal(bool& local) const;

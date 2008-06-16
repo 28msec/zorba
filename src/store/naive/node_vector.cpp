@@ -102,6 +102,17 @@ void LoadedNodeVector::copy(ConstrNodeVector& dest)
 }
 
 
+void LoadedNodeVector::compact()
+{
+  if (theNodes.capacity() > theNodes.size())
+  {
+    std::vector<XmlNode*> tmp(theNodes.size());
+    tmp = theNodes;
+    theNodes.swap(tmp);
+  }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class ConstrNodeVector                                                     //
@@ -246,7 +257,7 @@ void ConstrNodeVector::resize(ulong newSize)
     {
       if (theBitmap[i])
         *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = NULL; 
-     }
+    }
 
     theNodes.resize(newSize);
     theBitmap.resize(newSize);
@@ -275,6 +286,17 @@ void ConstrNodeVector::copy(ConstrNodeVector& dest)
       dest.theNodes[i] = theNodes[i];
       dest.theBitmap[i] = false;
     }
+  }
+}
+
+
+void ConstrNodeVector::compact()
+{
+  if (theNodes.capacity() > theNodes.size())
+  {
+    std::vector<XmlNode*> tmp(theNodes.size());
+    tmp = theNodes;
+    theNodes.swap(tmp);
   }
 }
 
