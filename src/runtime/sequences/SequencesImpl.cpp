@@ -142,7 +142,6 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
   store::Item_t lCollationItem;
   xqtref_t      lCollationItemType;
-  int8_t lCmpRes;
 
   FnIndexOfIteratorState* state;
   DEFAULT_STACK_INIT(FnIndexOfIteratorState, state, planState);
@@ -161,9 +160,8 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     // inc the position in the sequence; do it at the beginning of the loop because index-of starts with one
     ++state->theCurrentPos;
     
-    lCmpRes = CompareIterator::valueCompare(planState.theRuntimeCB, 
-                                            lSequenceItem, state->theSearchItem, state->theCollator);
-    if ( lCmpRes == 0 ) 
+    if (CompareIterator::valueEqual(planState.theRuntimeCB,
+                                    lSequenceItem, state->theSearchItem, state->theCollator) == 0)
       STACK_PUSH(GENV_ITEMFACTORY->createInteger(
         result,
         Integer::parseInt(state->theCurrentPos)), 
