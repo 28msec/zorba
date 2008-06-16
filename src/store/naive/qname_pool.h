@@ -107,10 +107,9 @@ public:
         const char* ln);
 
   Item_t insert(
-        xqpStringStore* ns,
-        xqpStringStore* pre,
-        xqpStringStore* ln,
-        bool*           inserted);
+        const xqpStringStore_t& ns,
+        const xqpStringStore_t& pre,
+        const xqpStringStore_t& ln);
 
   void remove(QNameItemImpl* qn);
 

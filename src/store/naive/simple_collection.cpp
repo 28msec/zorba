@@ -68,7 +68,7 @@ Item_t SimpleCollection::addToCollection(std::istream& stream)
   std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
   xqpStringStore_t docUri;
 
-  XmlNode* root = loader->loadXml(docUri, stream);
+  XmlNode_t root = loader->loadXml(docUri, stream);
 
   if (lErrorManager.hasErrors()) 
   {

@@ -440,13 +440,12 @@ public:
 };
 
 
-// [6] Prolog
-// ----------
+/******************************************************************************
+
+  [6] Prolog ::= SIND_DeclList  VFO_DeclList
+
+********************************************************************************/
 class Prolog : public parsenode
-/*______________________________________________________________________
-|
-|	::= SIND_DeclList  VFO_DeclList
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<SIND_DeclList> sind_list_h;
@@ -458,7 +457,6 @@ public:
 		rchandle<SIND_DeclList>,
 		rchandle<VFO_DeclList>);
 
-
 public:
 	rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
 	rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
@@ -467,17 +465,15 @@ public:
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [6a] SIND_DeclList
-// ------------------
+/******************************************************************************
+
+  [6a] SIND_DeclList ::= SIND_Decl | SIND_DeclList  SEMI  SIND_Decl
+
+********************************************************************************/
 class SIND_DeclList : public parsenode
-/*______________________________________________________________________
-|
-|	::= SIND_Decl | SIND_DeclList  SEMI  SIND_Decl
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<parsenode> > sind_hv;
@@ -491,17 +487,18 @@ public:
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [6b] VFO_DeclList
-// -----------------
+/******************************************************************************
+
+  [6b] VFO_DeclList ::= VFO_Decl | VFO_DeclList  SEMI  VFO_Decl
+
+  VFO_DeclList represents a list of prolog declarations that consists of all
+  the variable, udf, and option declaration in the prolog. 
+
+********************************************************************************/
 class VFO_DeclList : public parsenode
-/*______________________________________________________________________
-|
-|	::= VFO_Decl | VFO_DeclList  SEMI  VFO_Decl
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<parsenode> > vfo_hv;
@@ -524,34 +521,36 @@ public:
 };
 
 
+/******************************************************************************
 
-// [6c] SIND_Decl
-/*______________________________________________________________________
-|	::= Setter
-|			| Import
-|			| NamespaceDecl
-|			| DefaultNamespaceDecl
-|_______________________________________________________________________*/
+  [6c] SIND_Decl ::= Setter |
+                     Import |
+                     NamespaceDecl |
+                     DefaultNamespaceDecl
 
-
-// [6d] VFO_Decl
-/*______________________________________________________________________
-|	::= VarDecl
-|			| FunctionDecl
-|			| OptionDecl
-|_______________________________________________________________________*/
+********************************************************************************/
 
 
-// [7] Setter
-/*______________________________________________________________________
-|	::= BoundarySpaceDecl
-|			| DefaultCollationDecl
-|			| BaseURIDecl
-|			| ConstructionDecl
-|			| OrderingModeDecl
-|			| EmptyOrderDecl
-|			| CopyNamespacesDecl
-|_______________________________________________________________________*/
+/******************************************************************************
+
+  [6d] VFO_Decl ::= VarDecl |
+                    FunctionDecl |
+                    OptionDecl
+
+********************************************************************************/
+
+
+/******************************************************************************
+
+  [7] Setter ::= BoundarySpaceDecl |
+                 DefaultCollationDecl |
+                 BaseURIDecl |
+                 ConstructionDecl |
+                 OrderingModeDecl |
+                 EmptyOrderDecl |
+                 CopyNamespacesDecl
+
+********************************************************************************/
 
 
 // [8] Import

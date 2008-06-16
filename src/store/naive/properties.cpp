@@ -25,7 +25,7 @@
 
 
 #define CONFIG_FOLDER "zorba"
-#define CONFIG_FILE "properties.cfg"
+#define CONFIG_FILE "simplestore.cfg"
 
 namespace po = boost::program_options;
 

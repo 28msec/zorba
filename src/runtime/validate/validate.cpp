@@ -123,8 +123,7 @@ namespace zorba
                 store::Iterator_t children = processChildren( planState, loc, schemaValidator,
                     item->getChildren() );
 
-                GENV_ITEMFACTORY->createDocumentNode(result, (ulong)&planState, baseUri, children, 
-                    true /* isroot */, true /* assign ids */, true /* copy children */, copymode );
+                //GENV_ITEMFACTORY->createDocumentNode(result, (ulong)&planState, baseUri, children);
 
                 schemaValidator.endDoc();
 

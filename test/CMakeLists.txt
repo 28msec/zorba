@@ -28,23 +28,16 @@ ADD_SUBDIRECTORY(sax2)
 SET(API_TEST_SRCS
     apitest.cpp)
 
+SET(requiredlibs-apitest ${requiredlibs-apitest} zorba simplestore)
+
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
-TARGET_LINK_LIBRARIES(apitest zorba simplestore)
+
+TARGET_LINK_LIBRARIES(apitest ${requiredlibs-apitest})
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(apitest_static ${API_TEST_SRCS})
-  TARGET_LINK_LIBRARIES(apitest_static zorba_static simplestore)
+  TARGET_LINK_LIBRARIES(apitest_static ${requiredlibs-apitest})
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-
-#
-# For now, xerces is needed by zorbatypes, but is not included in the $requiredlibs-zorbatypes
-# (because this dependency is going to be removed). So, we have to explictly include it in any
-# executable that does not link with libzorba
-#
-IF (XERCESC_FOUND)
-	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
-ENDIF (XERCESC_FOUND)
 
 
 #
@@ -54,8 +47,12 @@ SET(TEST_STORE_SRCS
     timer.cpp
     test_store.cpp)
 
+SET(requiredlibs-teststore ${requiredlibs-teststore} simplestore)
+
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
-TARGET_LINK_LIBRARIES(test_store simplestore ${XERCESC_LIBRARY})
+
+TARGET_LINK_LIBRARIES(test_store ${requiredlibs-teststore})
+
 
 #
 # test_ordpath
@@ -63,5 +60,8 @@ TARGET_LINK_LIBRARIES(test_store simplestore ${XERCESC_LIBRARY})
 SET(TEST_ORDPATH_SRCS
     test_ordpath.cpp)
 
+SET(requiredlibs-testordpath ${requiredlibs-testordpath} simplestore)
+
 ADD_EXECUTABLE(test_ordpath ${TEST_ORDPATH_SRCS})
-TARGET_LINK_LIBRARIES(test_ordpath simplestore ${XERCESC_LIBRARY})
+
+TARGET_LINK_LIBRARIES(test_ordpath ${requiredlibs-testordpath})

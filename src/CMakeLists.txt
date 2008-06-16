@@ -56,7 +56,7 @@ ADD_SUBDIRECTORY(store)
 ################################################################################
 
 #
-# Internal common libraries
+# Get all libraries that libzorba depends on
 #
 SET(requiredlibs-zorba ${requiredlibs-zorba} zorbautils)
 SET(requiredlibs-zorba ${requiredlibs-zorba} zorbatypes)

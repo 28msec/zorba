@@ -180,7 +180,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 }
 
 
-xqtref_t TypeManagerImpl::create_value_type(store::Item* item) const 
+xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const 
 {
   if (item->isAtomic ())
     return create_named_atomic_type(item->getType(), TypeConstants::QUANT_ONE);

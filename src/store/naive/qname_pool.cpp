@@ -166,20 +166,11 @@ Item_t QNamePool::insert(
   If the pool does not already contain a qname with the given namespace, prefix,
   and local name, then create such a qname, insert it in the pool and return an
   rchandle to it. Otherwise, return an rchandle to the existing qname. 
-
-  The method also returns a boolean that says whether a qname was inserted or
-  one existed already in the pool.
-
-  Note: The given namespace, prefix, and local name must be heap-allocated
-  xqpStringStore objects. If a qname is inserted, then ownership of those
-  xqpStringStore objects is transfered to the inserted qname. Otherwise, the
-  caller is resposnible for freeing the objects.
 ********************************************************************************/
 Item_t QNamePool::insert(
-    xqpStringStore* ns,
-    xqpStringStore* pre,
-    xqpStringStore* ln,
-    bool*           inserted)
+    const xqpStringStore_t& ns,
+    const xqpStringStore_t& pre,
+    const xqpStringStore_t& ln)
 {
   QNameItemImpl* qn;
   bool found;
@@ -211,9 +202,6 @@ Item_t QNamePool::insert(
     qn = entry->theItem;
     cachePin(qn);
   }
-
-  if (inserted)    
-    *inserted = (!found);
 
   return qn;
 }

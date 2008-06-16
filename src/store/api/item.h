@@ -490,11 +490,45 @@ public:
   getTarget() const;
 
   /**
-   * Make a copy of the xml tree rooted at "this" node.
-   * @param copymode 
-   * @return A pointer to the root node of the copied tree 
+   * Make a copy of the xml tree rooted at this node and place the copied
+   * tree at a given position under a given node.
+   *
+   * @param parent   The node P under which the copied tree is to be placed.
+   *                 P may be NULL, in which case the copied tree becomes a
+   *                 new standalone xml tree.
+   * @param pos      The position under P where the copied tree is to be placed.
+   *                 If "this" is an attribute node, pos is a position among the
+   *                 attributes of P; otherwise it is a position among the 
+   *                 children of P. If pos is negative or greater or equal to
+   *                 the current number of attributes/children in P, then the
+   *                 copied tree is appended to P's attributes/children.
+   * @param copymode Encapsulates the construction-mode and copy-namespace-mode
+   *                 components of the query's static context. To optimize
+   *                 node-construction expressions, copymode also says whether
+   *                 a copy can actually be avoided by simply placing this node
+   *                 among P's children/attributes. In this case, the node 
+   *                 becomes a "shared" child among P and its current parent.
+   *                 (P must have been created with the "allowSharing" paremeter
+   *                 set to true; see ItemFactory::createDocumentNode() and
+   *                 ItemFactory::createElementNode() methods).
+   * @return         A pointer to the root node of the copied tree, or to this
+   *                 node if no copy was actually done. 
    */
-  virtual Item* copyXmlTree(const CopyMode& copymode) const;
+  virtual Item* copy(
+        Item*           parent,
+        long            pos,
+        const CopyMode& copymode) const;
+
+  /**
+   * An optimization method used to indicate to the store that the construction
+   * of this node (including its children and attributes) is complete. Some 
+   * stores may benefit from this information to do internal cleanup, memory
+   * management, or other optimizations when they know that a node has reach a
+   * "stable" state (e.g. after the initial creation of this node or after a
+   * set of updates). Other stores may just provide an empty implementation of
+   * this method.
+   */
+  virtual void finalizeNode();
 
   /** Method to print to content of the Item
    */

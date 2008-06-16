@@ -45,14 +45,13 @@ public:
    * @param localName local name of the qname
    */
   virtual bool createQName(
-        Item_t& result,
-        xqpStringStore* nameSpace,
-        xqpStringStore* prefix,
-        xqpStringStore* localName,
-        bool*           inserted = 0) = 0;
+        Item_t&                 result,
+        const xqpStringStore_t& nameSpace,
+        const xqpStringStore_t& prefix,
+        const xqpStringStore_t& localName) = 0;
 
   virtual bool createQName(
-        Item_t& result,
+        Item_t&     result,
         const char* ns,
         const char* pre,
         const char* ln) = 0;
@@ -441,100 +440,165 @@ public:
    */
   virtual bool createUnsignedShort(Item_t& result, xqp_ushort value) = 0;
 
+
   /**
-   * @param baseUri The base URI of the document.
-   * @param docUri The document URI of the document.
-   * @param children Content of the Document(root element + comment nodes + PI nodes). 
-   * 								The item factory does not check if the parameter contains exactly one root element!
-   * @param createId Does the created item need an ID?
+   * Create a new document node N and make it the root (and single node) of
+   * a new XML tree. 
+   *
+   * @param result        The new node N created by this method.
+   * @param baseUri       The base uri of N. It may be NULL.
+   * @param docUri        The document uri of N. It may be NULL.
+   * @param allowSharing  A zorba-specific parameter used to optimize
+   *                      node-construction expressions by avoiding node copying
+   *                      whenever possible. It is the zorba compiler who decides,
+   *                      based on semantic query analysis, if copying can be
+   *                      avoided, and indicates its decision to the store by
+   *                      setting this parameter to true (see also the Item::copy()
+   *                      method). If true, then N may have as children/attributes
+   *                      nodes that belong to a different XML tree than N (such
+   *                      a "shared" child node C will be pointed to by multiple
+   *                      nodes, but it will still have a single parent that
+   *                      belongs to the same xml tree as C). A store may choose
+   *                      to ignore this parameter. 
+   * @return              Always true (if any errors occur, the method throws
+   *                      exceptions)
    */
   virtual bool createDocumentNode(
-        Item_t& result, unsigned long     qid,
-        xqpStringStore_t& baseURI,
-        Iterator*         children,
-        bool              isRoot,
-        bool              assignIds,
-        bool              copy,
-        const CopyMode&   copymode) = 0;
+        Item_t&           result,
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri,
+        bool              allowSharing = false) = 0;
 
   /**
-   * @param name QName which contains the name of the element
-   * @param type QName which contains the type of the element
-   * @param children Content of the element
-   * @param attributes Attributes of the element
-   * @param namespaces Namespace definitions of this element
-   * @param copy Should the children of the element be copied? (for element construction)
-   * @param newTypes Have the children to be checked agains the type of the parent?
-   * @param createId Does the created item need an ID?
+   * Create a new element node N and place it at a given position among the
+   * children of a given parent node. If no parent is given, N becomes the
+   * root (and single node) of a new XML tree. 
+   *
+   * @param result        The new node N created by this method
+   * @param parent        The parent P of the new node; may be NULL.
+   * @param pos           The position, among the children of P, that N will
+   *                      occupy. If pos < 0 or pos >= current number of P's
+   *                      children, then N is appended to the list of children.
+   * @param nodeName      The fully qualified name of the new node.
+   * @param typeName      The fully qualified name of the new node's type.
+   * @param localBindings A set of namespace bindings. The namespaces property
+   *                      of N will be the union of this set and the namespaces 
+   *                      property of P.
+   * @param baseUri       The base uri of N. It may be NULL, in which case, the 
+   *                      base-uri property of N is the same as that of P.
+   * @param allowSharing  A zorba-specific parameter used to optimize
+   *                      node-construction expressions by avoiding node copying
+   *                      whenever possible. It is the zorba compiler who decides,
+   *                      based on semantic query analysis, if copying can be
+   *                      avoided, and indicates its decision to the store by
+   *                      setting this parameter to true (see also the Item::copy()
+   *                      method). If true, then N may accept as a child/attribute
+   *                      a node C that already has another parent. In this case,
+   *                      C retains its original parent (which will always be in
+   *                      the same xml tree as C), but becomes a "shared" child
+   *                      between N and its original parent. A store may choose
+   *                      to ignore this parameter. 
+   * @return              Always true (if any errors occur, the method throws
+   *                      exceptions)
    */
-  virtual bool createElementNode (
-        Item_t& result, unsigned long     qid,
-        Item_t&           qname,
+ virtual bool createElementNode(
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
+        Item_t&           nodeName,
         Item_t&           typeName,
-        Iterator*         childrenIte,
-        Iterator*         attributesIte,
-        Iterator*         namespacesIte,
         const NsBindings& localBindings,
         xqpStringStore_t& baseURI,
-        bool              isRoot,
-        bool              assignIds,
-        bool              copy,
-        const CopyMode&   copymode) = 0;
+        bool              allowSharing = false) = 0;
 
   /**
-   * @param name QName which contains the name of the element
-   * @param type QName which contains the type of the element
-   * @param lexicalValue lexical value (atomic) of the attribute element
-   * @param typedValue typed value (atomic) of the attribute element
-   * @param createId Does the created item need an ID?
+   * Create a new attribute node N and place it at a given position among the
+   * attributes of a given parent node. If no parent is given, N becomes the
+   * root (and single node) of a new XML tree. 
    *
-   * Implementations might only store the typed value.
+   * @param result   The new node N created by this method
+   * @param parent   The parent P of the new node; may be NULL.
+   * @param pos      The position, among the attributes of P, that N will occupy.
+   *                 If pos < 0 or pos >= current number of P's attributes, then
+   *                 N is appended to the list of attributes.
+   * @param nodeName The fully qualified name of the new node. The nemaspace
+   *                 binding implied by this name will be added to the namespaces
+   *                 of P. If the name prefix is "xml" and the local name is
+   *                 "base", then the base-uri property of P will be set or
+   *                 updated accordingly.
+   * @param typeName The fully qualified name of the new node's type.
+   * @param stringValue The string value of the new node.
+   * @return         Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createAttributeNode(
-        Item_t& result, unsigned long qid,
-        Iterator*     nameIter,
-        Item_t&       typeName,
-        Iterator*     valueIter,
-        bool          isRoot,
-        bool          assignIds) = 0;
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
+        Item_t&           nodeName,
+        Item_t&           typeName,
+        xqpStringStore_t& stringValue) = 0;
 
   /**
-   * @param value text
-   * @param createId Does the created item need an ID (default == false)?
+   * Create a new text node N and place it at a given position among the
+   * children of a given parent node. If no parent is given, N becomes the
+   * root (and single node) of a new XML tree. 
+   *
+   * @param result  The new node N created by this method
+   * @param parent  The parent P of the new node; may be NULL.
+   * @param pos     The position, among the children of P, that N will occupy.
+   *                If pos < 0 or pos >= current number of P's children, then
+   *                N is appended to the list of children.
+   * @param content The content of the new node.
+   * @return        Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createTextNode(
-        Item_t& result, unsigned long   qid,
-        Iterator*       valueIter,
-        bool            isRoot,
-        bool            assignIds) = 0;
-
-  virtual bool createTextNode(
-        Item_t& result, unsigned long     qid,
-        xqpStringStore_t& value,
-        bool              isRoot,
-        bool              assignIds) = 0;
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
+        xqpStringStore_t& content) = 0;
 
   /**
-   * @param target The QName for the processing instruction.
-   * @param data The content of the processing instruction.
-   * @param createId Does the created item need an ID?
+   * Create a new processing instruction node N and place it at a given position
+   * among the children of a given parent node. If no parent is given, N becomes
+   * the root (and single node) of a new XML tree. 
+   *
+   * @param result  The new node N created by this method
+   * @param parent  The parent P of the new node; may be NULL.
+   * @param pos     The position, among the children of P, that N will occupy.
+   *                If pos < 0 or pos >= current number of P's children, then
+   *                N is appended to the list of children.
+   * @param target  The target of the new node.
+   * @param content The content of the new node.
+   * @param baseUri The base uri of the new node. May be NULL.
+   * @return        Always true (if any errors occur, the method throws exceptions)
    */
-  virtual bool createPiNode(
-        Item_t& result, unsigned long     qid,
+  virtual bool createPiNode (
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
         xqpStringStore_t& target,
         xqpStringStore_t& content,
-        bool              isRoot,
-        bool              assignIds) = 0;
+        xqpStringStore_t& baseUri) = 0;
 
   /**
-   * @param comment
-   * @param createId Does the created item need an ID (default == false)?
+   * Create a new comment node N and place it at a given position among the
+   * children of a given parent node. If no parent is given, N becomes the
+   * root (and single node) of a new XML tree. 
+   *
+   * @param result  The new node N created by this method
+   * @param parent  The parent P of the new node; may be NULL.
+   * @param pos     The position, among the children of P, that N will occupy.
+   *                If pos < 0 or pos >= current number of P's children, then
+   *                N is appended to the list of children.
+   * @param content The content of the new node.
+   * @return        Always true (if any errors occur, the method throws exceptions)
    */
-  virtual bool createCommentNode(
-        Item_t& result, unsigned long     qid,
-        xqpStringStore_t& content,
-        bool              isRoot,
-        bool              assignIds) = 0;
+  virtual bool createCommentNode (
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
+        xqpStringStore_t& content) = 0;
+
 
   virtual PUL* createPendingUpdateList() = 0;
 };

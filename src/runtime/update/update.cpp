@@ -67,16 +67,24 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   static_context* sctx;
   store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   sctx = aPlanState.theRuntimeCB->theStaticContext;
-  lCopyMode = store::CopyMode(
-    sctx->construction_mode(),
-    sctx->preserve_mode(),
-    sctx->inherit_mode());
 
+  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
+  
   if (!consumeNext(target, theChild1, aPlanState))
   {
     ZORBA_ERROR_LOC(XUDY0027, loc);
@@ -266,7 +274,6 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   store::StoreConsts::NodeKind lTargetKind;
   store::StoreConsts::NodeKind lWithKind;
-  store::Iterator_t withWrapper;
   store::Item_t lWith;
   store::Item_t lTarget;
   store::Item_t lParent;
@@ -277,15 +284,23 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   static_context* sctx;
   store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
   
   sctx = aPlanState.theRuntimeCB->theStaticContext;
-  lCopyMode = store::CopyMode(
-    sctx->construction_mode(),
-    sctx->preserve_mode(),
-    sctx->inherit_mode());
+
+  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
   if (!consumeNext(lTarget, theChild0, aPlanState))
     ZORBA_ERROR_LOC(XUDY0027, loc);
@@ -363,46 +378,52 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   {
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
+    xqpStringStore_t content;
+
+    if (consumeNext(lWith, theChild1, aPlanState))
+    {
+      content = (lWith->isAtomic() ?
+                 lWith->getStringValue() : 
+                 lWith->getAtomizationValue()->getStringValue());
+                   
+      std::string buf;
+      while (consumeNext(lWith, theChild1, aPlanState))
+      {
+        buf += " ";
+        buf += (lWith->isAtomic() ?
+                lWith->getStringValue()->c_str() :
+                lWith->getAtomizationValue()->getStringValue()->str());
+      }
+      if (!buf.empty())
+        content = content->append(buf);
+    }
+
     if (lTargetKind == store::StoreConsts::elementNode)
     {
-      withWrapper = new PlanIteratorWrapper(theChild1, aPlanState);
-
-      GENV_ITEMFACTORY->createTextNode(lWith, (ulong)&aPlanState,
-                                               withWrapper,
-                                               false,
-                                               true);
+      if (content != NULL)
+        GENV_ITEMFACTORY->createTextNode(lWith, NULL, 0, content);
+      else
+        lWith = NULL;
 
       lPul->addReplaceContent(lTarget, lWith, false, lCopyMode);
     }
     else
     {
-      xqpStringStore_t stringValue;
-
-      if (consumeNext(lWith, theChild1, aPlanState))
-      {
-        stringValue = lWith->getStringValue();
-
-        std::string buf;
-        while (consumeNext(lWith, theChild1, aPlanState))
-        {
-          buf += lWith->getStringValue()->str();
-        }
-        if (!buf.empty())
-          stringValue = stringValue->append(buf);
-      }
+      if (content == NULL)
+        content = new xqpStringStore("");
 
       if (lTargetKind == store::StoreConsts::commentNode &&
-          (stringValue->indexOf("--") >= 0 || stringValue->endsWith("-")))
+          (content->indexOf("--") >= 0 || content->endsWith("-")))
       {
         ZORBA_ERROR_LOC(XQDY0072, loc);
       }
       else if (lTargetKind == store::StoreConsts::piNode &&
-               stringValue->indexOf("?>") >= 0)
+               content->indexOf("?>") >= 0)
       {
         ZORBA_ERROR_LOC(XQDY0026, loc);
       }
 
-      lPul->addReplaceValue(lTarget, stringValue);
+      lPul->addReplaceValue(lTarget, content);
     }
   }
 
@@ -524,7 +545,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         ZORBA_ERROR_LOC(XUTY0013, loc);
       }
 
-      copyNodes[i] = lCopyNode->copyXmlTree(lCopyMode);
+      copyNodes[i] = lCopyNode->copy(NULL, 0, lCopyMode);
 
       if (consumeNext(temp, copyClause.theInput, aPlanState))
       {

@@ -57,7 +57,8 @@ ulong NodeVector::find(XmlNode* n)
 
 void LoadedNodeVector::insert(XmlNode* n, ulong pos, bool shared)
 {
-  ZORBA_FATAL(pos <= size(), "pos = " << pos << " size = " << size());
+  if (pos > size())
+    pos = size();
 
   theNodes.insert(theNodes.begin() + pos, n);
 }
@@ -120,7 +121,8 @@ ConstrNodeVector::ConstrNodeVector(ulong size) : NodeVector(size), theBitmap(siz
 
 void ConstrNodeVector::insert(XmlNode* n, ulong pos, bool shared)
 {
-  ZORBA_FATAL(pos <= size(),  "pos = " << pos << " size = " << size());
+  if (pos > size())
+    pos = size();
 
   theNodes.insert(theNodes.begin() + pos, n);
   theBitmap.insert(theBitmap.begin() + pos, shared);

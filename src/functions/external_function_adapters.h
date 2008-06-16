@@ -28,6 +28,7 @@ class stateless_external_function_adapter : public external_function {
       const signature& sig, 
       StatelessExternalFunction *function,
       bool aIsUpdating);
+
     ~stateless_external_function_adapter();
 
     virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;

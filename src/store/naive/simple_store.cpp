@@ -249,7 +249,7 @@ ulong SimpleStore::getTreeId()
 ********************************************************************************/
 XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 {
-  return new XmlLoader(aErrorManager);
+  return new XmlLoader(theItemFactory, aErrorManager);
 }
 
 

@@ -92,9 +92,9 @@ namespace zorba {
   ItemFactoryImpl::createQName(const String& aNamespace, const String& aPrefix,
                                const String& aLocalname)
   {
-    xqpStringStore* lNamespace = Unmarshaller::getInternalString( aNamespace );
-    xqpStringStore* lPrefix = Unmarshaller::getInternalString( aPrefix );
-    xqpStringStore* lLocalname = Unmarshaller::getInternalString( aLocalname );
+    xqpStringStore_t lNamespace = Unmarshaller::getInternalString( aNamespace );
+    xqpStringStore_t lPrefix = Unmarshaller::getInternalString( aPrefix );
+    xqpStringStore_t lLocalname = Unmarshaller::getInternalString( aLocalname );
 
     store::Item_t lItem;
     theItemFactory->createQName(lItem, lNamespace, lPrefix, lLocalname);
@@ -104,11 +104,11 @@ namespace zorba {
   Item
   ItemFactoryImpl::createQName(const String& aNamespace, const String& aLocalname)
   {
-    xqpStringStore* lNamespace = Unmarshaller::getInternalString( aNamespace );
-    xqpString lPrefix("");
-    xqpStringStore* lLocalname = Unmarshaller::getInternalString( aLocalname );
+    xqpStringStore_t lNamespace = Unmarshaller::getInternalString( aNamespace );
+    xqpStringStore_t lPrefix(new xqpStringStore(""));
+    xqpStringStore_t lLocalname = Unmarshaller::getInternalString( aLocalname );
     store::Item_t lItem;
-    theItemFactory->createQName(lItem, lNamespace, &*lPrefix.theStrStore, lLocalname);
+    theItemFactory->createQName(lItem, lNamespace, lPrefix, lLocalname);
     return &*lItem;
   }
 

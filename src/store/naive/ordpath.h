@@ -266,14 +266,14 @@ protected:
   }
 
 
-  ulong getBitLength() const
+  ulong getBitLength(ulong& byteLen) const
   {
-    return (isLocal() ? getLocalBitLength() : getRemoteBitLength());
+    return (isLocal() ? getLocalBitLength(byteLen) : getRemoteBitLength(byteLen));
   }
 
-  ulong getLocalBitLength() const;
+  ulong getLocalBitLength(ulong& byteLen) const;
 
-  ulong getRemoteBitLength() const;
+  ulong getRemoteBitLength(ulong& byteLen) const;
 
   bool compressLocal(const std::vector<long>& dewey);
   void compressRemote(const std::vector<long>& dewey);

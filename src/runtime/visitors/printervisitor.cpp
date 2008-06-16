@@ -133,8 +133,8 @@ public:
     else
       thePrinter.addAttribute("qname","*");
 
-    if (a->getTypeName() != 0)
-      thePrinter.addAttribute("typename", a->getTypeName()->show());
+    if (a->getType() != 0)
+      thePrinter.addAttribute("typename", a->getType()->toString());
     else
       thePrinter.addAttribute("typename","*");
 

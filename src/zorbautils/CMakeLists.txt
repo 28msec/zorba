@@ -18,3 +18,5 @@ SET(ZORBAUTILS_SRCS
 
 
 ADD_LIBRARY(zorbautils ${ZORBAUTILS_SRCS})
+
+TARGET_LINK_LIBRARIES(zorbautils ${requiredlibs-zorbautils})

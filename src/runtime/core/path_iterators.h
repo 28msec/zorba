@@ -22,6 +22,10 @@
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h" 
 #include "compiler/expression/expr_consts.h"
+#include "types/typeimpl.h"
+#include "types/typeops.h"
+#include "types/typemanager.h"
+#include "context/static_context.h"
 
 namespace zorba 
 {
@@ -39,7 +43,7 @@ protected:
   store::StoreConsts::NodeKind theNodeKind;
   store::Item_t                theQName;
   match_wild_t                 theWildKind;
-  store::Item_t                theTypeName;
+  xqtref_t                     theType;
   bool                         theNilledAllowed;
 
 public:
@@ -50,7 +54,7 @@ public:
     theNodeKind(store::StoreConsts::anyNode),
     theQName(NULL),
     theWildKind(match_no_wild),
-    theTypeName(NULL),
+    theType(NULL),
     theNilledAllowed(false)
   {
   }
@@ -62,16 +66,16 @@ public:
   void setNodeKind(store::StoreConsts::NodeKind k) { theNodeKind = k; }
   void setQName(const store::Item_t& qn)           { theQName = qn; }
   void setWildKind(match_wild_t k)                 { theWildKind = k; }
-  void setTypeName(const store::Item_t& qn)        { theTypeName = qn; }
+  void setType(const xqtref_t& t)                  { theType = t; }
   void setNilledAllowed(bool v)                    { theNilledAllowed = v; }
 
   const match_test_t& getTestKind() const { return theTestKind; }
   const match_test_t& getDocTestKind() const { return theDocTestKind; }
   const store::Item_t& getQName() const { return theQName; }
-  const store::Item_t& getTypeName() const { return theTypeName; }
+  const xqtref_t& getType() const { return theType; }
   bool nilledAllowed() const { return theNilledAllowed; }
 
-  inline bool nameOrKindTest(const store::Item* node) const;
+  inline bool nameOrKindTest(const store::Item* node, PlanState& planState) const;
 };
 
 
@@ -473,7 +477,9 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-bool AxisIteratorHelper::nameOrKindTest(const store::Item* node) const
+bool AxisIteratorHelper::nameOrKindTest(
+    const store::Item* node,
+    PlanState& planState) const
 {
   switch (theTestKind)
   {
@@ -553,18 +559,17 @@ doctest1:
     if (theQName != NULL && !theQName->equals(node->getNodeName()))
       return false;
 
-      /*
-      if (theTypeName != NULL)
-      {
-        TypeCode etype = Zorba::getSequenceTypeManager()->
-                         getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
-        TypeCode atype = contextNode->getType();
+    if (theType != NULL)
+    {
+      xqtref_t atype = planState.theCompilerCB->m_sctx->get_typemanager()->
+                       create_value_type(node);
+      
+      if ((!TypeOps::is_subtype(*atype, *theType)) || 
+          (theNilledAllowed == false &&
+           node->getNilled()->getBooleanValue() == true))
+        return false;
+    }
 
-        if ((atype != etype && !sequence_type::derives_from(atype, etype)) ||
-            (theNilledAllowed == false && contextNode->getNilled() == true))
-          skip = true;
-      }
-      */
     return true;
   }
   case match_attr_test:

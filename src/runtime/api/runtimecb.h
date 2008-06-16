@@ -16,24 +16,39 @@
 #ifndef XQP_RUNTIMECB_H
 #define XQP_RUNTIMECB_H
 
+#include <stack>
+
+
 namespace zorba {
+
+namespace store
+{
+  class Item;
+}
 
   class static_context;
   class dynamic_context;
   class CollationCache;
+  
 
-  class RuntimeCB {
+class RuntimeCB 
+{
+public:
+  RuntimeCB() 
+    :
+    theStaticContext(0),
+    theDynamicContext(0),
+    theCollationCache(0)
+  {
+  }
 
-    public:
-      RuntimeCB() :
-        theDynamicContext(0) {}
+  // TODO remove the static context from here
+  static_context           * theStaticContext;  
+  dynamic_context          * theDynamicContext; 
+  CollationCache           * theCollationCache; 
 
-      // TODO remove the static context from here
-      static_context*  theStaticContext;  
-      dynamic_context* theDynamicContext; 
-      CollationCache*  theCollationCache;
-
-  }; /* class RuntimeCB */
+  std::stack<store::Item*>   theNodeConstuctionPath; 
+};
 
 } /* namespace zorba */
 #endif

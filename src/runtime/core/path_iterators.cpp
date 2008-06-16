@@ -76,7 +76,7 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
                            "The context item of an axis step is not a node");
     }
   }
-  while (!nameOrKindTest(result));
+  while (!nameOrKindTest(result, planState));
 
   return true;
 }
@@ -136,7 +136,7 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     while (state->theAttributes->next(result))
     {
-      if (nameOrKindTest(result))
+      if (nameOrKindTest(result, planState))
         STACK_PUSH(true, state);
     }
 
@@ -167,7 +167,7 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     result = state->theContextNode->getParent();
 
-    if (result != NULL && nameOrKindTest(result))
+    if (result != NULL && nameOrKindTest(result, planState))
     {
       STACK_PUSH(true, state);
     }
@@ -200,7 +200,7 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     while (state->theCurrentAnc != NULL)
     {
-      if (nameOrKindTest(state->theCurrentAnc))
+      if (nameOrKindTest(state->theCurrentAnc, planState))
       {
         result = state->theCurrentAnc;
         STACK_PUSH(true, state);
@@ -237,7 +237,7 @@ bool AncestorSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
     while (state->theCurrentAnc != NULL)
     {
-      if (nameOrKindTest(state->theCurrentAnc))
+      if (nameOrKindTest(state->theCurrentAnc, planState))
       {
         result = state->theCurrentAnc;
         STACK_PUSH(true, state);
@@ -315,7 +315,7 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     while (state->theChildren->next(result))
     {
-      if (nameOrKindTest(result))
+      if (nameOrKindTest(result, planState))
       {
         STACK_PUSH(true, state);
       }
@@ -388,7 +388,7 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     while (state->theChildren->next(result) && result != state->theContextNode)
     {
-      if (nameOrKindTest(result))
+      if (nameOrKindTest(result, planState))
       {
         STACK_PUSH(true, state);
       }
@@ -454,7 +454,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     while (state->theChildren->next(result))
     {
-      if (nameOrKindTest(result))
+      if (nameOrKindTest(result, planState))
       {
         STACK_PUSH(true, state);
       }
@@ -540,7 +540,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
                                   (result, result->getChildren()));
         }
 
-        if (nameOrKindTest(result))
+        if (nameOrKindTest(result, planState))
         {
           STACK_PUSH(true, state);
         }
@@ -636,7 +636,7 @@ bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& plan
                                   (result, children));
       }
 
-      if (nameOrKindTest(result))
+      if (nameOrKindTest(result, planState))
       {
         STACK_PUSH(true, state);
       }
@@ -758,7 +758,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
                                     (result, children));
         }
 
-        if (nameOrKindTest(result))
+        if (nameOrKindTest(result, planState))
         {
           STACK_PUSH(true, state);
           result = NULL;
@@ -884,7 +884,7 @@ bool FollowingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
                                     (result, children));
         }
 
-        if (nameOrKindTest(result))
+        if (nameOrKindTest(result, planState))
         {
           STACK_PUSH(true, state);
         }

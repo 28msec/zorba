@@ -51,7 +51,7 @@ class TypeManager {
 
     virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
 
-    virtual xqtref_t create_value_type(store::Item* item) const = 0;
+    virtual xqtref_t create_value_type(const store::Item* item) const = 0;
 
     virtual xqtref_t create_named_type(
         store::Item* qname,

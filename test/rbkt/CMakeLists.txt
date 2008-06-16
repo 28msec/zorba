@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 ADD_SUBDIRECTORY(Scripts)
 ADD_SUBDIRECTORY(ExpCompilerResults)
 
@@ -19,11 +20,17 @@ IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
     FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 
-# configure and compile the testdriver
+# configurethe testdriver
 CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfig.h)
+
+# Compile and build the testdriver executable
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+SET(requiredlibs-testdriver ${requiredlibs-testdriver} zorba simplestore)
+
 ADD_EXECUTABLE(testdriver testdriver.cpp)
-TARGET_LINK_LIBRARIES(testdriver ${requiredlibs} zorba simplestore)
+
+TARGET_LINK_LIBRARIES(testdriver ${requiredlibs-testdriver})
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)

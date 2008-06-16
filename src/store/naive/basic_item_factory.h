@@ -45,14 +45,13 @@ public:
   virtual ~BasicItemFactory();
 
   bool createQName(
-        Item_t& result,
-        xqpStringStore* ns,
-        xqpStringStore* pre,
-        xqpStringStore* local,
-        bool*           inserted = 0);
+        Item_t&                 result,
+        const xqpStringStore_t& ns,
+        const xqpStringStore_t& pre,
+        const xqpStringStore_t& local);
 
   bool createQName(
-        Item_t& result,
+        Item_t&     result,
         const char* ns,
         const char* pre,
         const char* ln);
@@ -192,67 +191,49 @@ public:
 
 
   bool createDocumentNode(
-        Item_t& result,
-        ulong             qid,
-        xqpStringStore_t& baseURI,
-        Iterator*         children,
-        bool              isRoot,
-        bool              assignIds,
-        bool              copy,
-        const CopyMode&   copymode);
+        Item_t&           result,
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri,
+        bool              allowSharing = false);
 
   bool createElementNode(
-        Item_t& result,
-        ulong             qid,
-        Item_t&           name,
-        Item_t&           type,
-        Iterator*         childrenIte,
-        Iterator*         attributesIte,
-        Iterator*         namespacesIte,
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
+        Item_t&           nodeName,
+        Item_t&           typeName,
         const NsBindings& localBindings,
         xqpStringStore_t& baseURI,
-        bool              isRoot,
-        bool              assignIds,
-        bool              copy,
-        const CopyMode&   copymode);
+        bool              allowSharing = false);
 
   bool createAttributeNode(
-        Item_t& result,
-        ulong     qid,
-        Iterator* nameIter,
-        Item_t&   typeName,
-        Iterator* valueIter,
-        bool      isRoot,
-        bool      assignIds);
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
+        Item_t&           nodeName,
+        Item_t&           typeName,
+        xqpStringStore_t& stringValue);
 
   bool createTextNode(
-        Item_t& result,
-        ulong           qid,
-        Iterator*       valueIter,
-        bool            isRoot,
-        bool            assignIds);
-
-  bool createTextNode(
-        Item_t& result,
-        ulong             qid,
-        xqpStringStore_t& content,
-        bool              isRoot,
-        bool              assignIds);
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
+        xqpStringStore_t& content);
 
   bool createPiNode (
-        Item_t& result,
-        ulong             qid,
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
         xqpStringStore_t& target,
         xqpStringStore_t& content,
-        bool              isRoot,
-        bool              assignIds);
+        xqpStringStore_t& baseUri);
 
   bool createCommentNode (
-        Item_t& result,
-        ulong             qid,
-        xqpStringStore_t& content,
-        bool              isRoot,
-        bool              assignIds);
+        Item_t&           result,
+        Item*             parent,
+        long              pos,
+        xqpStringStore_t& content);
+
 
   PUL* createPendingUpdateList();
 };

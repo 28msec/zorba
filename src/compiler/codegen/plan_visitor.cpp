@@ -1195,7 +1195,8 @@ bool begin_visit(match_expr& v)
     axisItep->setDocTestKind(v.getDocTestKind());
     axisItep->setNodeKind(v.getNodeKind());
     axisItep->setQName(v.getQName());
-    axisItep->setTypeName(v.getTypeName());
+    axisItep->setType(ccb->m_sctx->get_typemanager()->
+                      create_named_type(v.getTypeName()));
     axisItep->setNilledAllowed(v.getNilledAllowed());
   }
 

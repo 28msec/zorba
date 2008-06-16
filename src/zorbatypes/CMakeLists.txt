@@ -12,23 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-INCLUDE(${CMAKE_MODULE_PATH}/FindICU.cmake)
-
-SET(requiredlibs-zorbatypes)
-IF (CYGWIN)
-  SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${XERCESC_LIBRARY})
-ENDIF(CYGWIN)
-               
-IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-  MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
-
-ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-
-  SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})           
-  INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
-
-ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)                                                                  
-
+                                   
 SET(ZORBATYPES_SRCS 
   decimal.cpp
   floatimpl.cpp

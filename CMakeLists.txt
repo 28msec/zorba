@@ -83,42 +83,113 @@ MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMB
 ADD_DEFINITIONS(${DEFINITIONS})
 
 
-#
-# Collect all the external libraries that zorba lib depends on
-#
+#################################################################################
+#                                                                               #
+# Search for all the external libraries that any library or executable under    #
+#  this CMake depends on.                                                       #
+#                                                                               #
+#################################################################################
 
+
+SET(requiredlibs-zorbautils)
+SET(requiredlibs-zorbatypes)
+SET(requiredlibs-zorbaerrors)
+SET(requiredlibs-simplestore)
 SET(requiredlibs-zorba)
+SET(requiredlibs-apitest)
+SET(requiredlibs-teststore)
+SET(requiredlibs-testordpath)
+SET(requiredlibs-testdriver)
+SET(requiredlibs-zorbacmd)
+
+#
+#  LibXml2
+#
+FIND_PACKAGE(LibXml2)
+IF(LIBXML2_FOUND)
+
+    MESSAGE(STATUS "Found  LIBXML2 library -- " ${LIBXML2_LIBRARIES})
+    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+
+    SET(requiredlibs-simplestore ${requiredlibs-simplestore} ${LIBXML2_LIBRARIES})
+    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+
+ELSE(LIBXML2_FOUND)
+    MESSAGE(FATAL_ERROR "The libxml2 library is required in order to build simple store.")
+ENDIF(LIBXML2_FOUND)
+
+
+#
+# Pthreads
+#
+IF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
+  SET(requiredlibs-zorbautils ${requiredlibs-zorbautils} pthread)
+ENDIF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
+
 
 #
 # cURL
 #    
 FIND_PACKAGE(CURL)
 IF(CURL_FOUND)
+
   MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
-  SET(requiredlibs-zorba ${requiredlibs-zorba} ${CURL_LIBRARIES})  
   INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIRS})
+
+  SET(requiredlibs-zorba ${requiredlibs-zorba} ${CURL_LIBRARIES})
+
 ELSE(CURL_FOUND)
   MESSAGE(STATUS "The cURL library was not found.")
 ENDIF(CURL_FOUND)
+
 
 #
 # Iconv
 #
 INCLUDE(${CMAKE_MODULE_PATH}/FindIconv.cmake)
 FIND_PACKAGE(Iconv)
+
 IF (Iconv_FOUND)
-    INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
-    SET(requiredlibs-zorba ${requiredlibs-zorba} ${ICONV_LIBRARY})
+
+  MESSAGE(STATUS "Found Iconv library -- " ${ICONV_LIBRARIES})
+  INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
+
+  SET(requiredlibs-zorba ${requiredlibs-zorba} ${ICONV_LIBRARY})
+
+ELSE(Iconv_FOUND)
+  MESSAGE(STATUS "The Iconv library was not found.")
 ENDIF (Iconv_FOUND)
+
+
+#
+# ICU
+#
+INCLUDE(${CMAKE_MODULE_PATH}/FindICU.cmake)
+  
+IF (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
+
+  INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
+
+  SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES}) 
+
+ELSE (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
+  MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
+ENDIF (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)       
+
 
 #
 # Xerces-C
 #
 INCLUDE(${CMAKE_MODULE_PATH}/FindXercesC.cmake)
 IF (XERCESC_FOUND)
+
 	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
-	SET(requiredlibs-zorba ${requiredlibs-zorba} ${XERCESC_LIBRARY})
+
+  SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${XERCESC_LIBRARY})
+  SET(requiredlibs-zorba ${requiredlibs-zorba} ${XERCESC_LIBRARY})
+
 ENDIF (XERCESC_FOUND)
+
 
 #
 # Json
@@ -126,6 +197,7 @@ ENDIF (XERCESC_FOUND)
 IF (ZORBA_DEBUGGER)
   SET(requiredlibs-zorba ${requiredlibs-zorba} json)
 ENDIF (ZORBA_DEBUGGER)
+
 
 #
 # Boost
@@ -136,7 +208,9 @@ MESSAGE(STATUS "BOOST_CHECK_LIBRARIES:     " ${BOOST_CHECK_LIBRARIES})
 IF (BOOST_CHECK_LIBRARIES)
 
 INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
+
 SET (REQUIRED_BOOST_PACKAGES date_time filesystem program_options)
+
 IF (ZORBA_DEBUGGER)
   SET(REQUIRED_BOOST_PACKAGES ${REQUIRED_BOOST_PACKAGES} boost_thread)
 ENDIF (ZORBA_DEBUGGER)
@@ -148,75 +222,98 @@ FIND_PACKAGE(Boost REQUIRED COMPONENTS
 
 IF (NOT Boost_FOUND)
   MESSAGE(FATAL "Boost not found")
+
 ELSE (NOT Boost_FOUND)
   MESSAGE(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
   MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
 
   INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
   LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+
   IF (NOT WIN32)
-      IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-          SET(BOOST_PROGRAM_OPTIONS   boost_program_options-mt)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options-mt)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_date_time-mt)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_filesystem-mt)
-          IF (34 LESS ${Boost_MINOR_VERSION})
-            MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system-mt)
-          ENDIF (34 LESS ${Boost_MINOR_VERSION})
-          IF(ZORBA_DEBUGGER)
-            SET(requiredlibs-zorba ${requiredlibs-zorba} boost_thread-mt)
-          ENDIF(ZORBA_DEBUGGER)
-      ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-          SET(BOOST_PROGRAM_OPTIONS   boost_program_options)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_date_time)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_filesystem)
-          IF (34 LESS ${Boost_MINOR_VERSION})
-            MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system)
-          ENDIF (34 LESS ${Boost_MINOR_VERSION})
-          IF(ZORBA_DEBUGGER)
-            SET(requiredlibs-zorba ${requiredlibs-zorba} boost_thread)
-          ENDIF(ZORBA_DEBUGGER)
-      ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+    IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+      SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} boost_date_time-mt)
+      SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options-mt)
+      SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options-mt)
+      SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem-mt)
+      SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem-mt)
+      SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem-mt)
+      SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} boost_filesystem-mt)
+
+      IF (34 LESS ${Boost_MINOR_VERSION})
+        MESSAGE(STATUS "Boost minor version is greater than 34")
+        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system-mt)
+      ENDIF (34 LESS ${Boost_MINOR_VERSION})
+
+      IF(ZORBA_DEBUGGER)
+        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_thread-mt)
+      ENDIF(ZORBA_DEBUGGER)
+
+    ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+      SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} boost_date_time)
+      SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options)
+      SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options)
+      SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem)
+      SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem)
+      SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem)
+      SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} boost_filesystem)
+
+      IF (34 LESS ${Boost_MINOR_VERSION})
+        MESSAGE(STATUS "Boost minor version is greater than 34")
+        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system)
+      ENDIF (34 LESS ${Boost_MINOR_VERSION})
+
+      IF(ZORBA_DEBUGGER)
+        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_thread)
+      ENDIF(ZORBA_DEBUGGER)
+
+    ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
   ELSE (NOT WIN32)
-      IF (CYGWIN)
-          SET(CMAKE_INCLUDE_PATH)            
-          SET(BOOST_PROGRAM_OPTIONS   boost_program_options-gcc-mt)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options-gcc-mt)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_date_time-gcc-mt)
-          SET(requiredlibs-zorba ${requiredlibs-zorba} boost_filesystem-gcc-mt)
-          IF (34 LESS ${Boost_MINOR_VERSION})
-            MESSAGE(STATUS "Boost minor version is greater than 34")
-            SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system-gcc-mt)
-          ENDIF (34 LESS ${Boost_MINOR_VERSION})
-      ELSE (CYGWIN)
-          IF(ZORBA_DEBUGGER)
-	          SET(requiredlibs-zorba ${requiredlibs-zorba} WSock32)
-          ENDIF(ZORBA_DEBUGGER)
-  	  ENDIF (CYGWIN)
+
+    IF (CYGWIN)
+      SET(CMAKE_INCLUDE_PATH)
+      SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} boost_date_time-gcc-mt)
+      SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options-gcc-mt)
+      SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options-gcc-mt)
+      SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem-gcc-mt)
+      SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem-gcc-mt)
+      SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem-gcc-mt)
+      SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} boost_filesystem-gcc-mt)
+
+      IF (34 LESS ${Boost_MINOR_VERSION})
+        MESSAGE(STATUS "Boost minor version is greater than 34")
+        SET(requiredlibs-zorba ${requiredlibs-zorba}  boost_system-gcc-mt)
+      ENDIF (34 LESS ${Boost_MINOR_VERSION})
+
+    ELSE (CYGWIN)
+
+      IF(ZORBA_DEBUGGER)
+	      SET(requiredlibs-zorba ${requiredlibs-zorba} WSock32)
+      ENDIF(ZORBA_DEBUGGER)
+
+  	ENDIF (CYGWIN)
+
   ENDIF (NOT WIN32)
 ENDIF (NOT Boost_FOUND)
 
 ENDIF (BOOST_CHECK_LIBRARIES)
 
-#
-# Pthreads
-#
-IF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
-  SET(requiredlibs-zorba ${requiredlibs-zorba} pthread)
-ENDIF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
-
 
 ################################################################################
-# Subfolders inclusion
+#                                                                              #
+# Tell CMake to process the sub-directories                                    #
+#                                                                              #
+################################################################################
 
-# Tell CMake to process the sub-directories
 IF(ZORBA_DEBUGGER)
   INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external)
   ADD_SUBDIRECTORY(external)
 ENDIF(ZORBA_DEBUGGER)
+
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(swig)

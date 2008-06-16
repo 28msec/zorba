@@ -118,6 +118,7 @@ multithread(int argc, char* argv[])
   return 0;
 }
 
+
 void* query_thread_1(void *param)
 {
   XQuery_t        xquery_clone;
@@ -135,6 +136,7 @@ void* query_thread_1(void *param)
 
   return (void*)0;
 }
+
 
 void* query_thread_2(void *param)
 {

@@ -35,28 +35,19 @@ namespace zorba {
   theChild:      Iter that produces the content of the document element
 
 *********************************************************************************/
-class DocumentIteratorState : public PlanIteratorState
+class DocumentIterator : public UnaryBaseIterator<DocumentIterator,
+                                                  PlanIteratorState>
 {
-public:
+private:
   bool      theTypePreserve;
   bool      theNsPreserve;
   bool      theNsInherit;
 
-  store::Iterator* childWrapper;
-
-  ~DocumentIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
-class DocumentIterator : public UnaryBaseIterator<DocumentIterator,
-                                                  DocumentIteratorState>
-{
 public:
   DocumentIterator(const QueryLoc& loc, PlanIter_t& aChild)
-    : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
+    :
+    UnaryBaseIterator<DocumentIterator, PlanIteratorState>(loc, aChild)
+  {}
 
   void openImpl(PlanState& planState, uint32_t& offset);
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -78,7 +69,8 @@ class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator
 {
 public:
   DocumentContentIterator(const QueryLoc& loc, PlanIter_t& aContent)
-    : UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent)
+    :
+    UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent)
   {}
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;

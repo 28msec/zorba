@@ -1160,14 +1160,14 @@ void UpdReplaceContent::undo()
     child->deleteTree();
   }
 
-  if (target->isConstructed())
+  if (dynamic_cast<ElementDagNode*>(target) != NULL)
   {
-    ConstrElementNode* target1 = reinterpret_cast<ConstrElementNode*>(target);
+    ElementDagNode* target1 = reinterpret_cast<ElementDagNode*>(target);
     theOldChildren.copy(target1->theChildren);
   }
   else
   {
-    LoadedElementNode* target1 = reinterpret_cast<LoadedElementNode*>(target);
+    ElementTreeNode* target1 = reinterpret_cast<ElementTreeNode*>(target);
     theOldChildren.copy(target1->theChildren); 
   }
 

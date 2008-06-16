@@ -28,9 +28,10 @@ SimpleTempSeq::SimpleTempSeq(Iterator_t iter, bool copy, bool lazy)
   CopyMode lCopyMode;
   Item_t curItem;
 
-  while ( iter->next(curItem) ) {
+  while ( iter->next(curItem) ) 
+  {
     if (copy && curItem->isNode()) 
-      curItem = curItem->copyXmlTree(lCopyMode);
+      curItem = curItem->copy(NULL, 0, lCopyMode);
 
     theItems.push_back(curItem.transfer());
   }
@@ -113,7 +114,7 @@ void SimpleTempSeq::append(Iterator_t iter, bool copy)
   while ( iter->next(curItem) )
   {
     if (copy && curItem->isNode())
-      curItem = curItem->copyXmlTree(lCopyMode);
+      curItem = curItem->copy(NULL, 0, lCopyMode);
 
     theItems.push_back(curItem.transfer());
   }

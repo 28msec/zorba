@@ -20,7 +20,7 @@
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
 
-#include "store/naive/ordpath.h"
+#include "store/api/item.h"
 
 namespace zorba { 
   
@@ -28,11 +28,10 @@ namespace zorba {
     class ErrorManager;
   }
 
-  namespace store {
+namespace store {
 
-class XmlTree;
-class XmlNode;
-class NsBindingsContext;
+class Item;
+class ItemFactory;
 
 
 /*******************************************************************************
@@ -40,12 +39,11 @@ class NsBindingsContext;
   theBaseUri   : The loader does not not own the string memory
   theDocUri    : The loader does not not own the string memory
 
-  theNodeStack : The startElement and startDocument methods create an element
-                 or document XmlNode (say N) and push it in theNodeStack. If N 
-                 has k children, then when the closing tag of N is reached,
-                 the children of N will be at the k top positions of theNodeStack
-                 and the endElement and endDocument methods will remove these
-                 children from the stack and link them with N.
+  theNodeStack : The startElement and startDocument events create an element or
+                 document XmlNode (say N) and push it in theNodeStack. N will
+                 at the top of the stack during the "start" event on each of N's
+                 children. N is removed from the stack during the corresponding
+                 endElement or endDocument events.
 
   theBuffer    : A buffer to read chunks of the source stream in.
 
@@ -55,35 +53,29 @@ class XmlLoader
 protected:
   xmlSAXHandler                    theSaxHandler;
 
+  ItemFactory                    * theFactory;
+
   xqpStringStore_t                 theBaseUri;
   xqpStringStore_t                 theDocUri;
 
-  XmlTree                        * theTree;
-  OrdPathStack                     theOrdPath;
-
-  XmlNode                        * theRootNode;
-  std::stack<XmlNode*>             theNodeStack;
-  std::stack<NsBindingsContext*>   theBindingsStack;
-
-  std::string                      theWarnings;
+  Item_t                           theRootNode;
+  std::stack<Item*>                theNodeStack;
 
   char                             theBuffer[4096];
 
   error::ErrorManager            * theErrorManager;
 
 public:
-  XmlLoader(error::ErrorManager*);
+  XmlLoader(ItemFactory* factory, error::ErrorManager*);
 
   ~XmlLoader();
 
-  XmlNode* loadXml(xqpStringStore_t& uri, std::istream& xmlStream);
+  Item_t loadXml(xqpStringStore_t& docuri, std::istream& xmlStream);
 
 protected:
   void abortload();
-  void reset();
-  long readPacket(std::istream& stream, char* buf, long size);
 
-  void setRoot(XmlNode* root);
+  long readPacket(std::istream& stream, char* buf, long size);
 
 public:
   static void	startDocument(void * ctx);

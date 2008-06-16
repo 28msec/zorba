@@ -19,3 +19,5 @@ SET(ZORBAERRORS_SRCS
 
 
 ADD_LIBRARY(zorbaerrors ${ZORBAERRORS_SRCS})
+
+TARGET_LINK_LIBRARIES(zorbaerrors ${requiredlibs-zorbaerrors})
