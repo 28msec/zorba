@@ -22,28 +22,19 @@
 
 namespace zorba {
 
-class rest_get_1 : public function
+class rest_get : public function
 {
 public:
-  rest_get_1(const signature&);
+  rest_get(const signature&);
 
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 };
 
-class rest_post_1 : public function
+class rest_post : public function
 {
 public:
-  rest_post_1(const signature&);
-
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-};
-
-class rest_post_2 : public function
-{
-public:
-  rest_post_2(const signature&);
+  rest_post(const signature&);
 
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;

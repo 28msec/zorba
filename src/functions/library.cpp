@@ -696,29 +696,49 @@ DECL(sctx, node_by_reference,
 #ifdef ZORBA_WITH_REST
 
 // zorba-rest functions
-DECL(sctx, rest_get_1,
+
+// zorba-rest:get with an URI
+DECL(sctx, rest_get,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
      GENV_TYPESYSTEM.STRING_TYPE_ONE, // need to make this an ANY_URI_TYPE_ONE
      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(sctx, rest_get_1,
+// zorba-rest:get with an URI and a payload
+DECL(sctx, rest_get,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-     
-DECL(sctx, rest_post_1,
+// zorba-rest:get with an URI, a payload and custom headers
+DECL(sctx, rest_get,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+
+// zorba-rest:post with an URI
+DECL(sctx, rest_post,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE, 
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(sctx, rest_post_2,
+// zorba-rest:post with an URI and a payload
+DECL(sctx, rest_post,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+// zorba-rest:post with an URI, a payload and custom headers
+DECL(sctx, rest_post,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 #endif
 

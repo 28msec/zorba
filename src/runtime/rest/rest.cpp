@@ -285,7 +285,7 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
 }
 
-int processReply(store::Item_t& result, PlanState& planState, xqpStringStore_t& lUriString,
+int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriString,
                  int code, std::vector<std::string>& headers, CurlStreamBuffer* theStreamBuffer) 
 {
   int reply_code;
@@ -367,7 +367,7 @@ int processReply(store::Item_t& result, PlanState& planState, xqpStringStore_t& 
         store::Item_t temp;
         std::istream is(theStreamBuffer);
         try {
-          temp = store.loadDocument(lUriString, is);
+          temp = store.loadDocument(lUriString.theStrStore, is);
         }
         catch (...) {
           temp = NULL;
@@ -562,10 +562,56 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
   }
 }
 
+static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
+{
+  store::Iterator_t it;
+  store::Item_t child, name;
+
+  if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
+    return Uri; // TODO: error top node should be element node
+
+  if (xqpString("payload") == payload_data->getNodeName()->getLocalName())
+  {
+    it = payload_data->getChildren();
+    it->open();
+    while (it->next(child))
+      Uri = processGetPayload(child, Uri);
+    return Uri;
+  }
+
+  it = payload_data->getAttributes();
+  it->open();
+  while (it->next(child))
+  {
+    if (xqpString("name") == child->getNodeName()->getLocalName())
+      name = child;
+  }
+
+  if (name.getp() == NULL)
+    return Uri; // TODO: signal error - payload part without an associated name
+
+  it = payload_data->getChildren();
+  it->open();
+  it->next(child);
+  if (child->getNodeKind() == store::StoreConsts::textNode)
+  {
+    if (Uri.indexOf("?") == -1)
+      Uri = Uri + "?" + name->getStringValue()->str() + "=" + child->getStringValueP();
+    else
+      Uri = Uri + "&" + name->getStringValue()->str() + "=" + child->getStringValueP();
+  }
+  else
+  {
+    // TODO: generate error or ignore?
+  }
+
+  return Uri;
+}
+
 bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lUri, headers;
-  xqpStringStore_t lUriString;
+  store::Item_t lUri, payload_data, headers;
+  xqpString Uri;
   curl_slist *headers_list = NULL;
   int code;
   
@@ -578,16 +624,20 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   {
     //TODO: raise an error
   }
+  Uri = lUri->getStringValue()->str();
 
   if (theChildren.size() > 1)
-    while (CONSUME(headers, 1))
+    while (CONSUME(payload_data, 1))
+      Uri = processGetPayload(payload_data, Uri);
+  
+  if (theChildren.size() > 2)
+    while (CONSUME(headers, 2))
       processHeader(headers, &headers_list);
 
-  lUriString = lUri->getStringValue();
-  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, lUriString->c_str());
+  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, lUriString, code, *state->headers, state->theStreamBuffer.getp());
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
   
   STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
@@ -599,7 +649,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
 {
   static const char expect_buf[] = "Expect:";
   store::Item_t lUri, payload_data, headers;
-  xqpStringStore_t lUriString;
+  xqpString Uri;
   curl_httppost *first = NULL, *last = NULL;
   curl_slist *headers_list = NULL;
   int code;
@@ -613,6 +663,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   {
     //TODO: raise an error
   }
+  Uri = lUri->getStringValue()->str();
 
   if (theChildren.size() > 1)
     while (CONSUME(payload_data, 1))
@@ -621,14 +672,13 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   if (theChildren.size() > 2)
     while (CONSUME(headers, 2))
       processHeader(headers, &headers_list);
-
-  lUriString = lUri->getStringValue();
-  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, lUriString->c_str());
+  
+  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPPOST, first);
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, lUriString, code, *state->headers, state->theStreamBuffer.getp());
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
   
   STACK_PUSH(true, state);
   curl_formfree(first);
