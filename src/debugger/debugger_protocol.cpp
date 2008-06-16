@@ -29,11 +29,11 @@ namespace zorba{
 bool is_little_endian()
 {
   short int word = 0x0001;
-  char *byte = (char *) &word;
+  char * byte = (char *) &word;
   return(byte[0] ? true : false);
 }
 
-unsigned short uint_swap( unsigned short i )
+uint16_t uint_swap( uint16_t i )
 {
   if ( ! is_little_endian() )
   {
@@ -46,7 +46,7 @@ unsigned short uint_swap( unsigned short i )
   }
 }
 
-unsigned int uint_swap( unsigned int i )
+uint32_t uint_swap( uint32_t i )
 {
   if ( ! is_little_endian() )
   {
@@ -137,6 +137,14 @@ ReplyMessage::ReplyMessage( const Id aId, const ErrorCode aErrorCode ):
   setLength( MESSAGE_SIZE );
 }
 
+ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  AbstractMessage( aMessage )
+{
+  ErrorCode * lmsg =  reinterpret_cast< ErrorCode * >( aMessage + SIZE_OF_HEADER_CONTENT );
+  theReplyContent = new ReplyContent();
+  memcpy( theReplyContent, lmsg, sizeof( SIZE_OF_REPLY_CONTENT ) );
+  checkIntegrity();
+}
+
 ReplyMessage::~ReplyMessage()
 {
   delete theReplyContent;
@@ -148,9 +156,9 @@ Byte * ReplyMessage::serialize( Length & aLength ) const
   Byte * lHeader = reinterpret_cast< Byte * > ( theHeaderContent );
   Byte * lReply  = reinterpret_cast< Byte * > ( theReplyContent );
   //Harcoded value to avoid padding on sizeof(HeaderContent)
-  Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + sizeof( ReplyContent ) ];
+  Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT ];
   memcpy( lMsg, lHeader, SIZE_OF_HEADER_CONTENT );
-  memcpy( lMsg + SIZE_OF_HEADER_CONTENT, lReply, sizeof( ReplyContent ) );
+  memcpy( lMsg + SIZE_OF_HEADER_CONTENT, lReply, SIZE_OF_REPLY_CONTENT );
   return lMsg;
 }
 

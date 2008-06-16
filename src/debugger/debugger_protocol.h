@@ -34,15 +34,16 @@ namespace zorba{
 
 /* Type definition of fields */
 typedef unsigned char  Byte;
-typedef unsigned int   Length;
-typedef unsigned int   Id;
-typedef unsigned char  Flags;
-typedef unsigned short ErrorCode;
+typedef uint32_t   Length;
+typedef uint32_t   Id;
+typedef uint16_t  Flags;
+typedef uint16_t ErrorCode;
 typedef unsigned char  CommandSet;
 typedef unsigned char  Command;
 
 /* sizeof(HeaderContent) == 12 because of the padding */
 const int SIZE_OF_HEADER_CONTENT = 9;
+const int SIZE_OF_REPLY_CONTENT = 2;
 
 /* Flags */
 const Flags NULL_FLAG = 0x0;
@@ -233,15 +234,22 @@ class ReplyMessage: public AbstractMessage
   public:
     ReplyMessage( const Id aId, const ErrorCode aErrorCode );
 
+    ReplyMessage( Byte * aMessage, const unsigned int aLength );
+
     virtual ~ReplyMessage();
     
     Byte * serialize( Length & aLength ) const;
 
-    const ErrorCode getErrorCode() const { return uint_swap( theReplyContent->theErrorCode ); }
+    const ErrorCode getErrorCode() const
+    {
+      return uint_swap( theReplyContent->theErrorCode );
+    }
 
+    void setErrorCode( ErrorCode aErrorCode )
+    {
+      theReplyContent->theErrorCode = uint_swap(aErrorCode);
+    }
 
-    void setErrorCode( ErrorCode aErrorCode ) { theReplyContent->theErrorCode = uint_swap( aErrorCode ); }
-    
     const std::string getMessage()
     {
       switch ( getErrorCode() )

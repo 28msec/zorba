@@ -21,7 +21,6 @@
 #include <boost/bind.hpp>
 
 #include  <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
 
 #include  "debugger/debugger_serverimpl.h"
 
@@ -43,7 +42,7 @@ ZorbaDebuggerImpl::~ZorbaDebuggerImpl()
   delete theEventSocket;
 }
 
-void ZorbaDebuggerImpl::start( std::istream * aQuery, const String & aFileName, unsigned short aRequestPortno, unsigned short aEventPortno)
+void ZorbaDebuggerImpl::start( void * aStore, std::istream * aQuery, const String & aFileName, unsigned short aRequestPortno, unsigned short aEventPortno)
 {
   TCPSocket * lSock;
   //try
@@ -140,13 +139,12 @@ void ZorbaDebuggerImpl::terminatedEvent()
     sendEvent( &lMessage );
 }
 
-void ZorbaDebuggerImpl::run( std::istream * aQuery )
+void ZorbaDebuggerImpl::run( void * aStore, std::istream * aQuery )
 {
   setStatus( QUERY_RUNNING );
   try
   {
-    store::SimpleStore * lStore = inmemorystore::InMemoryStore::getInstance();
-    XQuery_t lQuery = Zorba::getInstance( lStore )->createQuery();
+    XQuery_t lQuery = Zorba::getInstance( aStore )->createQuery();
     lQuery->setFileName( theFileName );
     Zorba_CompilerHints lCompilerHints;
     lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
@@ -260,7 +258,7 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
 void ZorbaDebuggerImpl::run()
 {
   boost::thread theRuntimeThread (
-      boost::bind( &ZorbaDebuggerImpl::run, this, theQuery ) );
+      boost::bind( &ZorbaDebuggerImpl::run, this, theStore, theQuery ) );
 }
 
 void ZorbaDebuggerImpl::suspend()

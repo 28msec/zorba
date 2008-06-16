@@ -51,7 +51,8 @@ void server( std::istream * aQuery,
   zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
   try
   {
-    lDebugger->start( aQuery, aFileName, aRequestPort, aEventPort );
+    zorba::store::SimpleStore* lStore = zorba::inmemorystore::InMemoryStore::getInstance();
+    lDebugger->start( lStore, aQuery, aFileName, aRequestPort, aEventPort );
   } catch( std::exception &e ) {
     std::cout << e.what() << std::endl;
     exit(7);
@@ -240,7 +241,12 @@ int _tmain(int argc, _TCHAR* argv[])
       qfile.reset (new std::istringstream(fname));
     }
 #ifdef ZORBA_DEBUGGER
-  // debug mode
+  // debug server
+  if ( lProperties.debugServer() )
+  {
+    server( qfile.get(), fname, lProperties.requestPort(), lProperties.eventPort() );
+  }
+  // debug client
   if ( lProperties.debugMode() )
   {
     std::cout << "Zorba XQuery debugger." << std::endl;
@@ -284,7 +290,8 @@ int _tmain(int argc, _TCHAR* argv[])
       if ( lProperties.debugMode() )
     {
       zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
-      lDebugger->start( qfile.get(), "",
+      zorba::store::SimpleStore* lStore = zorba::inmemorystore::InMemoryStore::getInstance();
+      lDebugger->start( lStore, qfile.get(), "",
                         lProperties.requestPort(),
                         lProperties.eventPort() );
       return 0;

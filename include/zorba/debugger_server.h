@@ -37,7 +37,8 @@ class ZorbaDebugger
     virtual ~ZorbaDebugger();
     
     virtual void
-    start( std::istream * aQuery,
+    start(  void * aStore, 
+            std::istream * aQuery,
             const String & aFileName,
             unsigned short aRequestPort = 8000,
             unsigned short aEventPort = 9000 ) = 0;

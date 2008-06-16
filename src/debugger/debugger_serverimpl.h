@@ -23,7 +23,6 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
 
-#include <zorba/zorba.h>
 #include <zorba/debugger_server.h>
 
 #include "debugger/debugger_common.h"
@@ -64,7 +63,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     bool isEnabled() const;
 
-    void start( std::istream * aQuery, const String & aFileName, unsigned short aRequestPort = 8000,
+    void start( void * aStore, std::istream * aQuery, const String & aFileName, unsigned short aRequestPort = 8000,
       unsigned short aEventPort = 9000 );
 
   protected:
@@ -73,12 +72,15 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     ZorbaDebuggerImpl()
     :
-    theDebugMode(true),
+    theStore( 0 ),
+    theDebugMode( true ),
     theRequestServerSocket(0), 
     theEventSocket(0), 
     theStatus( QUERY_IDLE  ),
     theFileName("")
     {}
+
+    void * theStore;
     
     bool theDebugMode;
     
@@ -112,7 +114,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     
     void setStatus( ExecutionStatus aStatus, SuspensionCause aCause = CAUSE_USER );
 
-    void run( std::istream * aQuery );
+    void run( void * aStore, std::istream * aQuery );
 
     void handleTcpClient( TCPSocket * aSock );
 

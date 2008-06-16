@@ -41,6 +41,7 @@ private:
 
 #ifdef ZORBA_DEBUGGER
   // debug mode
+  bool theDebugServer;
   bool theDebugMode;
   std::string thePorts;
   unsigned int theRequestPort;
@@ -143,6 +144,8 @@ public:
   queriesOrFilesEnd()   { return theQueriesOrFiles.end(); }
   
 #ifdef ZORBA_DEBUGGER
+  bool
+  debugServer() { return theDebugServer; }
   bool
   debugMode() { return theDebugMode; }
 
