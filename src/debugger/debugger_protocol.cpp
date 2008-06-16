@@ -16,7 +16,6 @@
 
 #include <iomanip>
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
 
 #include "api/unmarshaller.h"
 #include "tiny_json/json.hpp"
@@ -572,11 +571,12 @@ ResumedEvent::~ResumedEvent(){}
 /**
  * Variable Message
  */
-VariableMessage::VariableMessage( String aQName, Item aItem ):
+VariableMessage::VariableMessage( void * aStore, String aQName, Item aItem ):
   AbstractCommandMessage( DYNAMIC, VARIABLES ),
   theQName( Unmarshaller::getInternalString( aQName ) ),
   theType( Unmarshaller::getInternalString ( aItem.getType().getStringValue() ) ),
-  theValue( Unmarshaller::getInternalString( aItem.getStringValue() ) )
+  theValue( Unmarshaller::getInternalString( aItem.getStringValue() ) ),
+  theStore( aStore )
 {
   //theQName = Unmarshaller::getInternalString( aQName
   unsigned int l = MESSAGE_SIZE + getData().length();
@@ -645,9 +645,7 @@ Byte * VariableMessage::serialize( Length & aLength ) const
 
 Item VariableMessage::getItem() const
 {
-  
-  store::SimpleStore * lStore = inmemorystore::InMemoryStore::getInstance();
-  ItemFactory * lFactory = Zorba::getInstance( lStore )->getItemFactory();
+  ItemFactory * lFactory = Zorba::getInstance( theStore )->getItemFactory();
   Item lExternalItem;
   if ( theType == "xs:integer" ) {
     lExternalItem = lFactory->createInteger( String( theValue ) );

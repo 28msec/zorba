@@ -36,9 +36,9 @@ namespace zorba {
 
   bool RemoteDynamicContext::setVariable( const String& aQName, const Item& aItem )
   {
-    AbstractCommandMessage * lmsg = new VariableMessage( aQName, aItem );
-    theDebuggerClient->send( lmsg );
-    delete lmsg;
-    return true;
+    //AbstractCommandMessage * lmsg = new VariableMessage( aQName, aItem );
+    //theDebuggerClient->send( lmsg );
+    //delete lmsg;
+    //return true;
   }
 }//end of namespace

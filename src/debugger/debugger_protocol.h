@@ -541,10 +541,12 @@ class VariableMessage: public AbstractCommandMessage
 
     xqpString theValue;
 
+    void * theStore;
+
     xqpString getData() const;
 
   public:
-    VariableMessage( String aQName, Item aItem );
+    VariableMessage( void * aStore, String aQName, Item aItem );
 
     VariableMessage( Byte * aMessage, const unsigned int aLength );
 

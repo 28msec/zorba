@@ -274,7 +274,7 @@ void test_packet( AbstractMessage * aMessage )
     ItemFactory * lFactory = lZorba->getItemFactory();
     /* The item that is to be bound to the external variable */
     Item lItem = lFactory->createInteger(4);
-    VariableMessage msg( String("var"), lItem );
+    VariableMessage msg( lStore, String("var"), lItem );
     test_packet< VariableMessage >( &msg );
   }
 }
