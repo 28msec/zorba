@@ -3553,7 +3553,7 @@ typedef zorba::xquery_parser::token token;
   PUSH_STATE(MODE_EXPR_COMMENT);
 }
 
-. {
+.|"\n" {
   /* do nothing */
 }
 
