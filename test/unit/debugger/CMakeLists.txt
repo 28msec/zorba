@@ -17,7 +17,7 @@ CREATE_TEST_SOURCELIST(DebuggerTests
     DebuggerTests.cpp
     test_debugger_socket.cpp
     test_debugger_protocol.cpp
-    test_debugger_endianess.cpp
+    test_debugger_endianness.cpp
 )
  
 ADD_EXECUTABLE(DebuggerTests ${DebuggerTests})

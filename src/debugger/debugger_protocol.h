@@ -47,7 +47,7 @@ const int SIZE_OF_REPLY_CONTENT = 2;
 
 /* Flags */
 const Flags NULL_FLAG = 0x0;
-const Flags REPLY_FLAG = 0x80;
+const Flags REPLY_FLAG = 8;
 
 /* CommandSet */
 const CommandSet EXECUTION    = 0xf1;
@@ -118,9 +118,8 @@ const unsigned short MESSAGE_DATA = 7;
 
 /* deals with endianness */
 bool is_little_endian();
-unsigned short uint_swap( unsigned short i );
-unsigned int uint_swap( unsigned int i );
-
+uint32_t uint_swap( uint32_t i );
+uint16_t uint_swap( uint16_t i );
 
 /**
  *   Signals a problem with the debugging protocol.

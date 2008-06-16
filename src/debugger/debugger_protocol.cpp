@@ -40,7 +40,7 @@ uint16_t uint_swap( uint16_t i )
   } else {
     unsigned char b1, b2;
     b1 = i & 255;
-    b2 = ( i >> 8 ) + 255;
+    b2 = ( i >> 8 ) & 255;
     return ( b1 << 8 ) + b2;
   }
 }
