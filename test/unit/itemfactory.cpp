@@ -72,7 +72,6 @@ int itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "abc" );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
-    CHECK_NOT_IMPLEMENTED(lItem, isNaN() );
 
     lItem.close();
     UNIT_ASSERT (lItem.isNull());
