@@ -16,6 +16,7 @@
 
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 #include <zorba/zorba.h>
 #include <inmemorystore/inmemorystore.h>
@@ -96,6 +97,15 @@ multithread_example_2(Zorba* aZorba)
 }
 
 
+/*
+Create 2 separate threads that are working with the same document.
+*/
+bool
+multithread_example_3(Zorba* zZorba)
+{
+  return false;
+}
+
 int
 multithread(int argc, char* argv[])
 {
@@ -103,16 +113,36 @@ multithread(int argc, char* argv[])
   Zorba*              lZorba = Zorba::getInstance(lStore);
   bool                res = false;
 
-  std::cout << std::endl  << "executing multithread test 1" << std::endl;
+  std::cout << std::endl  << "executing multithread test 1 : ";
   res = multithread_example_1(lZorba);
-  if (!res) return 1;
-  std::cout << std::endl;
+  if (!res) {
+    std::cout << "Failed" << std::endl;
+    lZorba->shutdown();
+    inmemorystore::InMemoryStore::shutdown(lStore);
+    return 1;
+  }
+  else std::cout << "Passed" << std::endl;
 
-  std::cout << std::endl  << "executing multithread test 2" << std::endl;
+  std::cout << std::endl  << "executing multithread test 2 : ";
   res = multithread_example_2(lZorba);
-  if (!res) return 1;
-  std::cout << std::endl;
+  if (!res) {
+    std::cout << "Failed" << std::endl;
+    lZorba->shutdown();
+    inmemorystore::InMemoryStore::shutdown(lStore);
+    return 1;
+  }
+  else std::cout << "Passed" << std::endl;
 
+//   std::cout << std::endl  << "executing multithread test 3 : ";
+//   res = multithread_example_3(lZorba);
+//   if (!res) {
+//     std::cout << "Failed" << std::endl;
+//     lZorba->shutdown();
+//     inmemorystore::InMemoryStore::shutdown(lStore);
+//     return 1;
+//   }
+//   else std::cout << "Passed" << std::endl;
+  
   lZorba->shutdown();
   inmemorystore::InMemoryStore::shutdown(lStore);
   return 0;
@@ -130,7 +160,8 @@ void* query_thread_1(void *param)
     return (void*)1;
   }
 
-  std::cout << xquery_clone << std::endl;
+  std::ostringstream os;
+  os << xquery_clone << std::endl;
 
   xquery_clone->close();
 
@@ -143,8 +174,9 @@ void* query_thread_2(void *param)
   XQuery_t    query;
   
   query = ((Zorba*)param)->compileQuery("2+2");
-  
-  std::cout << query << std::endl;
+
+  std::ostringstream os;
+  os << query << std::endl;
 
   query->close();
 
