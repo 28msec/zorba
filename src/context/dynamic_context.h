@@ -27,15 +27,16 @@ class dynamic_context
 {
 protected:
 
-  typedef struct {
-    enum { no_val, var_iterator_val, temp_seq_val } type;
+  struct dctx_value_t {
+    typedef enum { no_val, var_iterator_val, temp_seq_val } val_type_t;
+    val_type_t type;
     bool in_progress;
     union
     {
       store::Iterator* var_iterator;
       store::TempSeq*  temp_seq;
     } val;
-  } dctx_value_t;
+  };
 
 protected:
 	static bool static_init;
