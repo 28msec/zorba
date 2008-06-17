@@ -115,6 +115,7 @@ dynamic_context::~dynamic_context()
 
 
 string dynamic_context::var_key (void *var) {
+  ZORBA_ASSERT (var != NULL);
   var_expr *ve = static_cast<var_expr *> (var);
   return to_string (var) + ":" + xqp_string (ve->get_varname ()->getStringValue ());
 }
