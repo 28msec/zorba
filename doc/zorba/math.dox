@@ -1,0 +1,29 @@
+/** \page zorba-math Math functions
+
+
+
+\section zorba-math Math functions
+
+\code
+import module namespace math =
+  "http://www.flworfound.org/zorba/math-functions";
+
+math:sqrt ($arg as numeric?) as numeric?
+
+math:exp ($arg as xs:double) as xs:double
+math:ln ($arg as xs:double) as xs:double
+math:sin ($arg as xs:double) as xs:double
+math:cos ($arg as xs:double) as xs:double
+
+\endcode
+
+For sqrt, if type of $arg is one of the four numeric types xs:float,
+xs:double, xs:decimal or xs:integer the type of the result is the same
+as the type of $arg. If the type of $arg is a type derived from one of
+the numeric types, the result is an instance of the base numeric
+type. If the argument is negative, NaN is returned.
+
+All the transcendental functions (exp, ln, sin, cos) take double arguments
+and return doubles.
+
+*/
