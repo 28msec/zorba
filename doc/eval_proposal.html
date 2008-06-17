@@ -209,11 +209,11 @@ local:f1 ($x) + local:f2 ()
 declare namespace ns1 = "myns";
 declare variable $ns1:x := 1;
 declare variable $ns1:y := 40;
-eval { "
+eval { '
 declare namespace ns2 = "myns";
 declare variable $ns2:x := 2;
 $ns1:x + $ns1:y
-" }
+' }
 </pre></div>
 
     <p>In this example, the namespace prefix <code>ns1</code> is
@@ -231,7 +231,7 @@ $ns1:x + $ns1:y
     should raise <kbd>err:XPST0008</kbd> (undefined variable).</p>
 
     <div class="exampleInner"><pre>
-declare variable $n := &lt;a&gt;&lt;b&gt;1&lt;/b&gt;&lt;b&gt;+$x&lt;/b&gt;&lt;/a&gt;
+declare variable $n := &lt;a&gt;&lt;b&gt;1&lt;/b&gt;&lt;b&gt;+$x&lt;/b&gt;&lt;/a&gt;;
 declare variable $x :=2;
 eval { $n }
 </pre></div>

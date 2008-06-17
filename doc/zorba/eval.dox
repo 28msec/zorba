@@ -1,7 +1,50 @@
 /** \page eval Eval
 
 \section evalgrammar Eval Grammar
+<pre>
+EvalExpr ::= UsingClause? "eval" "{" ExprSingle "}"
+UsingClause ::= "using " "$" VarName ("," "$" VarName)*
+</pre>
+
+\section evalsemantics Eval Semantics
+
+
+The Eval expression first computes the value of its target expression in the context of the surrounding query. The result of this computation is atomized and cast as a string, then parsed and evaluated in a new static context and dynamic context derived from the contexts of the enclosing query at the global (top-level) scope. The derived contexts contain declarations for, and values of, the variables bound by the optional UsingClause. The values are taken from the innermost in-scope variable in the enclosing query with the same QName as the variable being declared.
+
+The evaluated query may contain its own prolog, but may not be a library module, may not contain schema imports, and may not declare external variables. In all other respects, the evaluated query behaves like a regular query.
+
+As eval introduces a distinct static context, it is not an error if the prolog of the evaluated query declares variables and/or functions shadowing components with the same name of the original query. However, the evaulated query may not declare global and/or external variables with names conflicting with the bindings specified by the UsingClause (which are implicitly declared in the evaluated query's static context).
 
 \section evalexamples Eval Examples
+
+\subsection example1 Example 1
+\include eval_spec_ex_1.xq
+
+\subsection example2 Example 2
+\include eval_spec_ex_2.xq
+
+\subsection example3 Example 3
+\include eval_spec_ex_3.xq
+
+\subsection example4 Example 4
+\include eval_spec_ex_4.xq
+
+\subsection example5 Example 5
+\include eval_spec_ex_5.xq
+
+\subsection example6 Example 6
+\include eval_spec_ex_6.xq
+
+\subsection example7 Example 7
+\include eval_spec_ex_7.xq
+
+\subsection example8 Example 8
+\include eval_spec_ex_8.xq
+
+\subsection example9 Example 9
+\include eval_spec_ex_9.xq
+
+\subsection example10 Example 10
+\include eval_spec_ex_10.xq
 
 */
