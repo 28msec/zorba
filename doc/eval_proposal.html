@@ -1,0 +1,281 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>XQuery Eval Facility</title><style type="text/css">
+      code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+</style>
+<link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css">
+</head>
+
+<body>
+
+  <h1>XQuery Eval Facility</h1>
+
+  <h2>Syntax</h2>
+
+<div class="exampleInner"><pre>
+EvalExpr ::= UsingClause? "eval" "{" ExprSingle "}"
+UsingClause ::= "using " "$" VarName ("," "$" VarName)*
+</pre></div>
+
+<h2>Semantics</h2>
+    
+    <p>The Eval expression first computes the value of its target
+      expression in the context of the surrounding query. The result
+      of this computation is atomized and cast as a string, then
+      parsed and evaluated in a new static context and dynamic context
+      derived from the contexts of the enclosing query at the global
+      (top-level) scope. The derived contexts contain declarations
+      for, and values of, the variables bound by the optional
+      UsingClause. The values are taken from the innermost in-scope
+      variable in the enclosing query with the same QName as the
+      variable being declared.</p>
+    
+    <p>The evaluated query may contain its own prolog, but may not be
+      a library module, may not contain schema imports, and may not
+      declare external variables. In all other respects, the evaluated
+      query behaves like a regular query.  The rules for deriving the
+      evaluated query's static and dynamic context are explained in a
+      subsection below.
+    </p>
+
+    <p>As eval introduces a distinct static context, it is not an error
+      if the prolog of the evaluated query declares variables and/or
+      functions shadowing components with the same name of the original
+      query. However, the evaulated query may not declare global and/or
+      external variables with names conflicting with the bindings
+      specified by the UsingClause (which are implicitly declared in
+      the evaluated query's static context).</p>
+    
+    <h3>Derived static context</h3>
+
+    <p>This section describes how the static context of the evaluated
+      query is derived from the static context of the enclosing query
+      and the evaluated query's prolog ("evaluated prolog").</p>
+
+    <p>In the following definitions, the <em>enclosing static
+      context</em> refers to the static context of the enclosing query
+      after the prolog has been parsed.</p>
+
+    <ul>
+      <li>the in-scope schema definitions of the derived static
+      context are inherited from the enclosing query's static context
+      and cannot be over-ridden.</li>
+
+      <li>the context item static type is undefined (since the context item
+      itself is undefined in the dynamic context of an evaluated query.)</li>
+
+      <li>if the evaluated prolog declares a base URI, it is resolved
+        (if relative) against the base URI of the enclosing query's
+        static context and becomes the base URI of the derived static
+        context.</li>
+      <li>if the evaluated prolog does not declare a base URI,
+        the value from the enclosing query's static context is
+        inherited.</li>
+      
+      <li>all the other components of a derived static context inherit
+      their value from the enclosing static context, unless the prolog
+      of the evaluated query over-rides the inherited values. These
+      are: XPath 1.0 compatibility mode; statically known namespaces
+      and variables (each prefix and each variable is inherited or
+      over-ridden separately &mdash; note that variables from UsingClause
+      are pre-declared, possibly over-riding inherited declarations);
+      default element/type namespace; all function signatures;
+      statically known collations; default collation; construction
+      mode; ordering mode; default order for empty sequences;
+      boundary-space policy; copy-namespaces mode; statically known
+      documents; statically known collections; statically known
+      default collection type.</li>
+
+    </ul>
+
+    <h3>Derived dynamic context</h3>
+
+    <ul>
+      <li>the context item, context position and context size are undefined
+      in an evaluated query</li>
+
+      <li>the global and external variables from the enclosing query's
+        dynamic context are inherited in the derived dynamic
+        context. Any global variables declared in the evaluated
+        query's prolog are bound to their respective values. The
+        variables listed in the UsingClause act as if they where
+        implicitly declared in the evaluated prolog; their values are
+        taken from innermost in-scope variable in the enclosing query
+        with the same QName as the UsingClause variable. All variables
+        in the evaluated prolog (either explicitly or implicitly
+        declared) may over-ride inherited variables with the same
+        QName.
+      </li>
+
+      <li>all other components of the derived dynamic context are
+        inherited from the enclosing query, unless over-ridden in the
+        evaluated query: function implementations, current dateTime,
+        implicit timezone, available documents, available collections,
+        default collection.
+    </ul>
+    
+
+  <h2>Errors</h2>
+
+    <ul>
+      <li>Errors from the execution of evaluated query propagate to
+      the main query.</li>
+      
+      <li>If the UsingClause lists the same variable (in the sense of
+        QName equality) twice, <kbd>err:XQST0049</kbd> must be raised. The same
+        error is raised if the evaluated query re-declares one of the
+        implicitly defined variables from the UsingClause.</li>
+
+      <li>If the evaluated query does not parse at all, or parses as a
+        library module, or if it attempts to declare schema imports or
+        external variables, <kbd>err:XPST0003</kbd> must be raised.</li>
+
+      <li>If ExprSingle is a sequence of zero items or more than one item,
+        <kbd>err:XPTY0004</kbd> should be raised.</li>
+
+    </ul>
+
+  <h2>Examples</h2>
+
+    <div class="exampleInner"><pre>
+let $x := 10 return
+using $x eval {
+"declare variable $x := 11;
+$x + 1"
+}</pre></div>
+
+  <p>The query above is invalid as it re-declares the UsingClause bindings,
+      which are implicitly defined in the evaluated prolog. It should raise
+    <kbd>err:XQST0049</kbd></p>
+
+  <div class="exampleInner"><pre>
+declare variable $x := 41;
+eval { concat ("$x", "+", "1") }
+</pre></div>
+
+  <p>The above query is valid and produces the result 42. It
+    illustrates that evaluated code has access to global variables of
+    the enclosing query.</p>
+
+  <div class="exampleInner"><pre>
+declare variable $g := 11;
+declare function local:f1 ($a) { $g + $a };
+
+let $x := 10 return
+using $x eval { "
+declare function local:f2 () { $g + $x };
+local:f1 ($x) + local:f2 ()
+"}
+</pre></div>
+
+  <p>This example, which in a conforming implementation should return
+    the integer 42, illustrates that both global variables and
+    user-defined functions from the enclosing query are available to
+    the evaluated query, which may in turn contain its own
+    user-defined functions.</p>
+
+    <div class="exampleInner"><pre>
+declare namespace ns1 = "myns";
+declare variable $ns1:x := 1;
+declare variable $ns1:y := 40;
+eval { "
+declare namespace ns2 = "myns";
+declare variable $ns2:x := 2;
+$ns1:x + $ns1:y
+" }
+</pre></div>
+
+    <p>In this example, the namespace prefix <code>ns1</code> is
+      inherited by the evaluated query, which also binds the prefix
+      <code>ns2</code> to the same namespace. The evaluated query
+      declares variable <code>$ns2:x</code> which has the same
+      expanded QName (and thus over-rides) the variable
+      <code>$ns1:x</code> from the surrounding query. The correct
+      result for this query is 42.</p>
+
+    <div class="exampleInner"><pre>let $x := 42 return eval { "$x" }</pre></div>
+
+    <p>This eval query attempts to use a FLWOR variable from the
+    surrounding query without declaring it in the UsingClause; it
+    should raise <kbd>err:XPST0008</kbd> (undefined variable).</p>
+
+    <div class="exampleInner"><pre>
+declare variable $n := &lt;a&gt;&lt;b&gt;1&lt;/b&gt;&lt;b&gt;+$x&lt;/b&gt;&lt;/a&gt;
+declare variable $x :=2;
+eval { $n }
+</pre></div>
+
+<p>This example should return 3 (nodes are atomized before being passed
+to eval).</p>
+
+    <div class="exampleInner"><pre>
+declare namespace ns1 = "myns";
+declare namespace ns2 = "myns";
+let $ns1:x := 3 return
+using $ns1:x, $ns2:x eval { "$ns1:x" }
+</pre></div>
+
+<p>Since the UsingClause lists two variables with equal QName's, this
+query should raise <kbd>err:XQST0049</kbd>
+
+    <div class="exampleInner"><pre>
+eval { 1 to 2 }
+</pre></div>
+
+<p>As eval expects a single item, this query should raise
+<kbd>err:XPTY0004</kbd></p>
+
+    <div class="exampleInner"><pre>
+let $x := "21" return
+using $x eval { concat ($x, " + xs:double ($x)") }
+</pre></div>
+
+<p>This eval expression accesses <kbd>$x</kbd> in two ways &mdash; both in
+the ExprSingle and in the evaluated code. The result should be 42.
+
+    <div class="exampleInner"><pre>
+declare variable $x := 20;
+
+declare function local:f () { $x };
+
+let $x := 22 return
+using $x eval { "$x + local:f ()" }
+</pre></div>
+
+<p>The correct answer is 42. This query illustrates that references to
+global variables within a user-defined function's body are resolved in
+the original dynamic context that the function was compiled against,
+not in the innermost dynamic context available.</p>
+
+</body></html>
