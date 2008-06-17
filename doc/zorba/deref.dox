@@ -1,7 +1,19 @@
 /** \page deref node-reference() and node-by-reference()
 
+
+
 \section nodereference node-reference()
 
+\code
+import module namespace zorba =
+  "http://www.flworfound.org/zorba/internal-functions";
+
+  let $book := doc("books.xml")/bib/book[1]
+  return zorba:node-reference($book)
+\endcode
+
 \section nodebyreference node-by-reference()
+
+
 
 */
