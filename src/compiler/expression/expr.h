@@ -26,7 +26,7 @@
 
 #include "zorbaerrors/errors.h"
 
-#include "compiler/expression/expr_base.h"
+#include "compiler/expression/var_expr.h"
 #include "types/node_test.h"
 #include "types/typeimpl.h"
 
@@ -39,7 +39,6 @@ namespace zorba {
 
 class match_expr;
 class expr_visitor;
-class var_expr;
 class NodeNameTest;
 
 // imperative construct: do this, then that
@@ -100,71 +99,6 @@ public:
 // [29] [http://www.w3.org/TR/xquery/#prod-xquery-EnclosedExpr]
 
 // [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
-
-
-/******************************************************************************
-
-  var_expr represents a variable reference within any kind of expression.
-
-*******************************************************************************/
-
-class forlet_clause;
-
-class var_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () { return var_expr_kind; }
-
-  enum var_kind {
-    eval_var,
-    for_var,
-    let_var,
-    pos_var,
-    score_var,
-    quant_var,
-    context_var,
-    param_var,
-    catch_var,
-    copy_var,
-    groupby_var,
-    non_groupby_var,
-    unknown_var  // TODO: get rid
-  };
-
-  var_kind kind;
-  store::Item_t varname_h;
-  xqtref_t type;
-
-public:
-  var_expr(const QueryLoc& loc, store::Item_t name);
-  var_expr(const QueryLoc& loc, var_kind k, store::Item_t name);
-
-public:
-  store::Item_t get_varname() const;
-
-  var_kind get_kind() const { return kind; }
-  void set_kind(var_kind k) { kind = k; }
-
-  xqtref_t get_type() const;
-  void set_type(xqtref_t t);
-
-public:
-  static std::string decode_var_kind(enum var_kind);
-
-public:
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-
-  virtual expr_t clone(substitution_t& substitution);
-  virtual xqtref_t return_type_impl (static_context *);
-
-  void set_forlet_clause(forlet_clause *flclause) { m_forlet_clause = flclause; }
-  forlet_clause *get_forlet_clause() { return m_forlet_clause; }
-
-protected:
-  forlet_clause *m_forlet_clause;
-};
-
 
 // [41] [http://www.w3.org/TR/xquery/#prod-xquery-OrderModifier]
 

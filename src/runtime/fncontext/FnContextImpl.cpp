@@ -57,8 +57,10 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
     state->theIter = planState.theRuntimeCB->theDynamicContext->
                      get_variable(varName);
 
-    if (state->theIter == NULL)
-			ZORBA_ERROR_LOC_PARAM( XPDY0002, loc, varName->getStringValue (), "");
+    if (state->theIter == NULL) {
+      std::string var_key = xqp_string (varName->getStringValue ());
+			ZORBA_ERROR_LOC_PARAM( XPDY0002, loc, var_key.substr (var_key.find (":") + 1), "");
+    }
 
     state->theIter->open();
 

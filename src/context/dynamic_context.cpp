@@ -27,6 +27,8 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
+#include "compiler/expression/var_expr.h"
+
 #include "types/root_typemanager.h"
 
 #include "runtime/api/plan_wrapper.h"
@@ -113,7 +115,8 @@ dynamic_context::~dynamic_context()
 
 
 string dynamic_context::var_key (void *var) {
-  return to_string (var);
+  var_expr *ve = static_cast<var_expr *> (var);
+  return to_string (var) + ":" + xqp_string (ve->get_varname ()->getStringValue ());
 }
 
 xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qname) const
