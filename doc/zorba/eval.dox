@@ -20,31 +20,51 @@ As eval introduces a distinct static context, it is not an error if the prolog o
 \subsection example1 Example 1
 \include eval_spec_ex_1.xq
 
+The query above is invalid as it re-declares the UsingClause bindings, which are implicitly defined in the evaluated prolog. It should raise err:XQST0049
+
 \subsection example2 Example 2
 \include eval_spec_ex_2.xq
+
+The above query is valid and produces the result 42. It illustrates that evaluated code has access to global variables of the enclosing query.
 
 \subsection example3 Example 3
 \include eval_spec_ex_3.xq
 
+This example, which in a conforming implementation should return the integer 42, illustrates that both global variables and user-defined functions from the enclosing query are available to the evaluated query, which may in turn contain its own user-defined functions.
+
 \subsection example4 Example 4
 \include eval_spec_ex_4.xq
+
+In this example, the namespace prefix ns1 is inherited by the evaluated query, which also binds the prefix ns2 to the same namespace. The correct result for this query is 42.
 
 \subsection example5 Example 5
 \include eval_spec_ex_5.xq
 
+This eval query attempts to use a FLWOR variable from the surrounding query without declaring it in the UsingClause; it should raise err:XPST0008 (undefined variable).
+
 \subsection example6 Example 6
 \include eval_spec_ex_6.xq
+
+This example should return 3 (nodes are atomized before being passed to eval).
 
 \subsection example7 Example 7
 \include eval_spec_ex_7.xq
 
+Since the UsingClause lists two variables with equal QName's, this query should raise err:XQST0049
+
 \subsection example8 Example 8
 \include eval_spec_ex_8.xq
+
+As eval expects a single item, this query should raise err:XPTY0004
 
 \subsection example9 Example 9
 \include eval_spec_ex_9.xq
 
+This eval expression accesses $x in two ways — both in the ExprSingle and in the evaluated code. The result should be 42.
+
 \subsection example10 Example 10
 \include eval_spec_ex_10.xq
+
+The correct answer is 42. This query illustrates that references to global variables within a user-defined function's body are resolved in the original dynamic context that the function was compiled against, not in the innermost dynamic context available.
 
 */
