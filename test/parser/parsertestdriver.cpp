@@ -60,16 +60,18 @@ main(int argc, char** argv)
     try {
       lDriver.parse_file(lQueryFileString.c_str());
     } catch (...) {
-      status = 2;
+      assert(false);
     }
   }
 
   if (!status) {
     parsenode* lNode = lDriver.get_expr();
-    if ( lNode == 0 ) {
-      std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
-      status = 3;
-    } 
+    if (typeid (*lNode) == typeid (ParseErrorNode)) {
+        ParseErrorNode *err = static_cast<ParseErrorNode *> (&*lNode);
+        std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
+        std::cerr << err->msg << std::endl;
+        status = 3;
+    }
   }
 
   lZorba->shutdown();
