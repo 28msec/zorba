@@ -27,8 +27,8 @@ as the type of $arg. If the type of $arg is a type derived from one of
 the numeric types, the result is an instance of the base numeric
 type.
 
-All the transcendental functions (exp, log, sin, cos) take double arguments
-and return doubles.
+All the transcendental functions (exp, log, sin, cos, tan, asin, acos,
+atan) take double arguments and return doubles.
 
 For arguments outside their domain, the following functions return NaN: sqrt
 and ln, for negative arguments; and asin and acos, for arguments outside [-1, 1].
