@@ -539,10 +539,14 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
   it->next(child);
   if (child->getNodeKind() == store::StoreConsts::textNode)
   {
+    // TODO: check if the name of parameter should be escaped too
+    xqpString value = child->getStringValueP();
+    value = value.encodeForUri();
+    
     if (Uri.indexOf("?") == -1)
-      Uri = Uri + "?" + name->getStringValue()->str() + "=" + child->getStringValueP();
+      Uri = Uri + "?" + name->getStringValue()->str() + "=" + value;
     else
-      Uri = Uri + "&" + name->getStringValue()->str() + "=" + child->getStringValueP();
+      Uri = Uri + "&" + name->getStringValue()->str() + "=" + value;
   }
   else
   {
