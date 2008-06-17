@@ -26,6 +26,7 @@ using namespace zorba;
 void* query_thread_1(void *param);
 void* query_thread_2(void *param);
 void* query_thread_3(void *param);
+void* query_thread_4(void *param);
 
 #define NR_THREADS  20
 
@@ -35,6 +36,7 @@ struct data {
 } dataObj;
 
 static  XQuery_t    lQuery;
+std::string make_absolute_file_name(const char *target_file_name, const char *this_file_name);
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 
@@ -140,6 +142,40 @@ multithread_example_3(Zorba* aZorba)
   }
 }
 
+/*
+Load a big document in store and query it from diffrent threads.
+*/
+bool
+multithread_example_4(Zorba* aZorba)
+{
+  unsigned int  i;
+  pthread_t     pt[NR_THREADS];
+
+  try {
+    Item aItem = aZorba->getXmlDataManager()->loadDocument(make_absolute_file_name("XQTSCatalog.xml", __FILE__));
+
+    dataObj.lZorba = aZorba;
+    dataObj.lItem = aItem;
+
+    for(i=0; i<NR_THREADS; i++)
+    {
+      pthread_create(&pt[i], NULL, query_thread_4, (void*)(&dataObj));
+    }
+
+    for(i=0;i<NR_THREADS;i++)
+    {
+      void  *thread_result;
+      pthread_join(pt[i], &thread_result);
+    }
+
+    return true;
+  }
+  catch (ZorbaException &e) {
+    std::cerr << "some exception " << e << std::endl;
+    return false;
+  }
+}
+
 int
 multithread(int argc, char* argv[])
 {
@@ -169,6 +205,16 @@ multithread(int argc, char* argv[])
 
   std::cout << std::endl  << "executing multithread test 3 : ";
   res = multithread_example_3(lZorba);
+  if (!res) {
+    std::cout << "Failed" << std::endl;
+    lZorba->shutdown();
+    inmemorystore::InMemoryStore::shutdown(lStore);
+    return 1;
+  }
+  else std::cout << "Passed" << std::endl;
+
+  std::cout << std::endl  << "executing multithread test 4 : ";
+  res = multithread_example_4(lZorba);
   if (!res) {
     std::cout << "Failed" << std::endl;
     lZorba->shutdown();
@@ -232,5 +278,40 @@ void* query_thread_3(void *param)
   os << lQuery << std::endl;
 
   return (void*)0;
+}
+
+void* query_thread_4(void *param)
+{
+  data* var = (data*)param;
+
+  XQuery_t aQuery = var->lZorba->compileQuery(".//citation-spec");
+
+  DynamicContext* lCtx = aQuery->getDynamicContext();
+
+  lCtx->setContextItem(var->lItem);
+
+  std::ostringstream os;
+  os << aQuery << std::endl;
+
+  aQuery->close();
+  
+  return (void*)0;
+}
+
+std::string make_absolute_file_name(const char *target_file_name, const char *this_file_name)
+{
+  std::string             str_result;
+  std::string::size_type  pos;
+
+  str_result = this_file_name;
+  pos = str_result.rfind('/');
+  if(pos == std::string::npos)
+    pos = str_result.rfind('\\');
+  if(pos == std::string::npos)
+    return target_file_name;
+  str_result.erase(pos+1);
+  str_result += target_file_name;
+//   std::cout << "make_absolute_file_name -> " << str_result << std::endl;
+  return str_result;
 }
 #endif
