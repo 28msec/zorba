@@ -2,6 +2,11 @@
 
 \section restgrammar REST Grammar
 
+\code
+import module namespace rest =
+  "http://www.zorba-xquery.com/zorba/rest-functions";
+\endcode
+
 \section restexamples REST Examples
 
 */
