@@ -26,6 +26,10 @@ namespace zorba {
  *
  * Each Collection is created by the XmlDataManager and referenced by a URI.
  * The URI can be accessed in a query's fn:collection function.
+ *
+ * Note: This class is reference counted. When writing multi-threaded clients,
+ * it is the responibility of the client code to synchronize assignments to the
+ * SmartPtr holding this object.
  */
 class ZORBA_EXTERN_DECL Collection : public SmartObject
 {

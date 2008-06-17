@@ -26,6 +26,10 @@ namespace zorba {
 /** \brief Type identifiers
  *
  * The type identifiers are not used, yet.
+ *
+ * Note: This class is reference counted. When writing multi-threaded clients,
+ * it is the responibility of the client code to synchronize assignments to the
+ * SmartPtr holding this object.
  */
 class ZORBA_EXTERN_DECL TypeIdentifier : public SmartObject {
   public:

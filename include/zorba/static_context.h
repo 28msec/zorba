@@ -34,6 +34,10 @@ namespace zorba {
    * to the Zorba::compileQuery or XQuery::compile functions.
    * If no static context has been passed to any of these functions, a default static context
    * is used. It can be accessed by calling XQuery::getStaticContext on a compiled XQuery object.
+   *
+   * Note: This class is reference counted. When writing multi-threaded clients,
+   * it is the responibility of the client code to synchronize assignments to the
+   * SmartPtr holding this object.
    */
   class ZORBA_EXTERN_DECL StaticContext : public SmartObject
   {

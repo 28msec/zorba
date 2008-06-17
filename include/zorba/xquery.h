@@ -48,6 +48,10 @@ namespace zorba {
    *
    * The file \link simple.cpp \endlink contains some basic examples the demonstrate
    * the use of this class.
+   *
+   * Note: This class is reference counted. When writing multi-threaded clients,
+   * it is the responibility of the client code to synchronize assignments to the
+   * SmartPtr holding this object.
    */
   class ZORBA_EXTERN_DECL XQuery : public SmartObject
   {
