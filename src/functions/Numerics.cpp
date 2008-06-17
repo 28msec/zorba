@@ -569,6 +569,10 @@ DECL_DOUBLE_MATH_FUN (exp, Exp);
 DECL_DOUBLE_MATH_FUN (log, Log);
 DECL_DOUBLE_MATH_FUN (sin, Sin);
 DECL_DOUBLE_MATH_FUN (cos, Cos);
+DECL_DOUBLE_MATH_FUN (tan, Tan);
+DECL_DOUBLE_MATH_FUN (asin, ArcSin);
+DECL_DOUBLE_MATH_FUN (acos, ArcCos);
+DECL_DOUBLE_MATH_FUN (atan, ArcTan);
 
 #define REGISTER_DOUBLE_MATH_FUN( name )                        \
   DECL(sctx, fn_##name,                                         \
@@ -586,6 +590,10 @@ void populateContext_Math (static_context *sctx) {
   REGISTER_DOUBLE_MATH_FUN (log);
   REGISTER_DOUBLE_MATH_FUN (sin);
   REGISTER_DOUBLE_MATH_FUN (cos);
+  REGISTER_DOUBLE_MATH_FUN (tan);
+  REGISTER_DOUBLE_MATH_FUN (asin);
+  REGISTER_DOUBLE_MATH_FUN (acos);
+  REGISTER_DOUBLE_MATH_FUN (atan);
 }
 
 void populateContext_Numerics(static_context *sctx) {

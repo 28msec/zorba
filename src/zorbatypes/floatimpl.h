@@ -169,6 +169,18 @@ template <typename FloatType> class FloatImplTraits;
       zero_neg();
 
       /**
+       * @return float or double that represents +1
+       */
+      static FloatImpl<FloatType>&
+      one();
+
+      /**
+       * @return float or double that represents -1
+       */
+      static FloatImpl<FloatType>&
+      one_neg();
+
+      /**
        * @return float or double that represents NaN
        */
       static FloatImpl<FloatType>&

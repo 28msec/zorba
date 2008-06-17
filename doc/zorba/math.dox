@@ -11,9 +11,13 @@ import module namespace math =
 math:sqrt ($arg as numeric?) as numeric?
 
 math:exp ($arg as xs:double) as xs:double
-math:ln ($arg as xs:double) as xs:double
+math:log ($arg as xs:double) as xs:double
 math:sin ($arg as xs:double) as xs:double
 math:cos ($arg as xs:double) as xs:double
+math:tan ($arg as xs:double) as xs:double
+math:asin ($arg as xs:double) as xs:double
+math:acos ($arg as xs:double) as xs:double
+math:atan ($arg as xs:double) as xs:double
 
 \endcode
 
@@ -21,9 +25,12 @@ For sqrt, if type of $arg is one of the four numeric types xs:float,
 xs:double, xs:decimal or xs:integer the type of the result is the same
 as the type of $arg. If the type of $arg is a type derived from one of
 the numeric types, the result is an instance of the base numeric
-type. If the argument is negative, NaN is returned.
+type.
 
-All the transcendental functions (exp, ln, sin, cos) take double arguments
+All the transcendental functions (exp, log, sin, cos) take double arguments
 and return doubles.
+
+For arguments outside their domain, the following functions return NaN: sqrt
+and ln, for negative arguments; and asin and acos, for arguments outside [-1, 1].
 
 */

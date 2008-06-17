@@ -102,6 +102,10 @@ namespace zorba
   class FnLogIterator;
   class FnSinIterator;
   class FnCosIterator;
+  class FnTanIterator;
+  class FnArcSinIterator;
+  class FnArcCosIterator;
+  class FnArcTanIterator;
   class FnConcatIterator;
   class FnEmptyIterator;
   class FnExistsIterator;
@@ -390,6 +394,10 @@ namespace zorba
     PLAN_ITER_VISITOR (FnLogIterator);
     PLAN_ITER_VISITOR (FnSinIterator);
     PLAN_ITER_VISITOR (FnCosIterator);
+    PLAN_ITER_VISITOR (FnTanIterator);
+    PLAN_ITER_VISITOR (FnArcSinIterator);
+    PLAN_ITER_VISITOR (FnArcCosIterator);
+    PLAN_ITER_VISITOR (FnArcTanIterator);
 
     PLAN_ITER_VISITOR (FnConcatIterator);
 

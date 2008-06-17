@@ -299,6 +299,18 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::zero_neg() {
 }
 
 template <typename FloatType>
+FloatImpl<FloatType>& FloatImpl<FloatType>::one() {
+  static FloatImpl<FloatType> lValue(FloatCommons::NORMAL, MAPM(1));
+  return lValue;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType>& FloatImpl<FloatType>::one_neg() {
+  static FloatImpl<FloatType> lValue(FloatCommons::NORMAL, MAPM(-1));
+  return lValue;
+}
+
+template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::nan() {
   static FloatImpl<FloatType> lValue(FloatCommons::NOT_A_NUM, MAPM(0));
   return lValue;
@@ -1134,12 +1146,34 @@ FloatImpl<FloatType> FloatImpl<FloatType>::log10() const
 #endif
 }
 
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::asin() const
+{
+  if (*this < one_neg() || *this > one())
+    return nan();
+#ifndef ZORBA_NO_BIGNUMBERS
+  return FloatImpl (getType (), theFloatImpl.asin());
+#else
+  return FloatImpl (getType (), ::asin(theFloatImpl));
+#endif
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::acos() const
+{
+  if (*this < one_neg() || *this > one())
+    return nan();
+#ifndef ZORBA_NO_BIGNUMBERS
+  return FloatImpl (getType (), theFloatImpl.acos());
+#else
+  return FloatImpl (getType (), ::acos(theFloatImpl));
+#endif
+}
+
 PASSTHRU (exp)
 PASSTHRU (sin)
 PASSTHRU (cos)
 PASSTHRU (tan)
-PASSTHRU (asin)
-PASSTHRU (acos)
 PASSTHRU (atan)
 PASSTHRU (sinh)
 PASSTHRU (cosh)

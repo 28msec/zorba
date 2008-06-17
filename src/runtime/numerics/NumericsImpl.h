@@ -184,6 +184,10 @@ namespace zorba
   NARY_ITER (FnLogIterator);
   NARY_ITER (FnSinIterator);
   NARY_ITER (FnCosIterator);
+  NARY_ITER (FnTanIterator);
+  NARY_ITER (FnArcSinIterator);
+  NARY_ITER (FnArcCosIterator);
+  NARY_ITER (FnArcTanIterator);
 
 } /* namespace zorba */
 #endif  /* ZORBA_NUMERICS_H */
