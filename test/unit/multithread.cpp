@@ -168,6 +168,8 @@ multithread_example_4(Zorba* aZorba)
       pthread_join(pt[i], &thread_result);
     }
 
+    dataObj.lItem = NULL;
+    
     return true;
   }
   catch (ZorbaException &e) {
