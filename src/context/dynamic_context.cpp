@@ -115,7 +115,7 @@ dynamic_context::~dynamic_context()
 
 
 string dynamic_context::var_key (void *var) {
-  ZORBA_ASSERT (var != NULL);
+  if (var == NULL) return "";
   var_expr *ve = static_cast<var_expr *> (var);
   return to_string (var) + ":" + xqp_string (ve->get_varname ()->getStringValue ());
 }
@@ -206,6 +206,8 @@ constructed by static_context::qname_internal_key( .. )
 */
 void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_iterator)
 {
+  if (var_name.empty()) return;
+
   // TODO: lazy conversion to a temp sequence
   dctx_value_t v;
   string key = "var:" + var_name;
