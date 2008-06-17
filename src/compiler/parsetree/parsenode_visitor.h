@@ -19,6 +19,10 @@
 
 #include "common/shared_types.h"
 
+// Any file that includes parsenode_visitor.h will need to access the
+// actual parsendoe classes.
+#include "compiler/parsetree/parsenodes.h"
+
 namespace zorba 
 {
 
@@ -244,6 +248,8 @@ public:
 	DECL_PARSENODE_VISIT_METHODS (FTWords);
 	DECL_PARSENODE_VISIT_METHODS (FTWordsSelection);
 	DECL_PARSENODE_VISIT_METHODS (FTWordsValue);
+
+  DECL_PARSENODE_VISIT_METHODS (ParseErrorNode);
 
     /* Methods that deviate from the visitor pattern that are
      * needed in various situations.

@@ -75,8 +75,7 @@ Module::Module(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-Module::
@@ -98,8 +97,7 @@ VersionDecl::VersionDecl(
   parsenode(_loc),
   version(_version),
   encoding(_encoding)
-{
-}
+{}
 
 
 //-VersionDecl::
@@ -121,8 +119,7 @@ MainModule::MainModule(
   parsenode(_loc),
   prolog_h(_prolog_h),
   query_body_h(_query_body_h)
-{
-}
+{}
 
 MainModule::MainModule(
   const QueryLoc& _loc,
@@ -131,8 +128,7 @@ MainModule::MainModule(
   parsenode(_loc),
   prolog_h(NULL),
   query_body_h(_query_body_h)
-{
-}
+{}
 
 
 //-MainModule::
@@ -157,8 +153,7 @@ LibraryModule::LibraryModule(
   parsenode(_loc),
   decl_h(_decl_h),
   prolog_h(_prolog_h)
-{
-}
+{}
 
 
 //-LibraryModule::
@@ -182,8 +177,7 @@ ModuleDecl::ModuleDecl(
   parsenode(_loc),
   prefix(_prefix),
   target_namespace(_target_namespace)
-{
-}
+{}
 
 
 //-ModuleDecl::
@@ -205,8 +199,7 @@ Prolog::Prolog(
   parsenode(_loc),
   sind_list_h(_sind_list_h),
   vfo_list_h(_vfo_list_h)
-{
-}
+{}
 
 
 //-Prolog::
@@ -226,8 +219,7 @@ SIND_DeclList::SIND_DeclList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-SIND_DeclList::
@@ -251,8 +243,7 @@ VFO_DeclList::VFO_DeclList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-VFO_DeclList::
@@ -294,9 +285,7 @@ NamespaceDecl::NamespaceDecl(
   parsenode(loc),
   thePrefix(prefix),
   theUri(uri)
-  //  theUri(uri, 1, uri.size()-2)
-{
-}
+{}
 
 
 void NamespaceDecl::accept(parsenode_visitor& v) const
@@ -314,8 +303,7 @@ BoundarySpaceDecl::BoundarySpaceDecl(
 :
   parsenode(_loc),
   mode(_mode)
-{
-}
+{}
 
 
 //-BoundarySpaceDecl::
@@ -337,8 +325,7 @@ DefaultNamespaceDecl::DefaultNamespaceDecl(
   parsenode(_loc),
   mode(_mode),
   default_namespace(_default_namespace)
-{
-}
+{}
 
 
 //-DefaultNamespaceDecl::
@@ -360,8 +347,7 @@ OptionDecl::OptionDecl(
   parsenode(_loc),
   qname_h(_qname_h),
   val(_val)
-{
-}
+{}
 
 
 //-OptionDecl::
@@ -382,8 +368,7 @@ FTOptionDecl::FTOptionDecl(
 :
   parsenode(_loc),
   match_option_h(_match_option_h)
-{
-}
+{}
 
 
 //-FTOptionDecl::
@@ -404,8 +389,7 @@ OrderingModeDecl::OrderingModeDecl(
 :
   parsenode(_loc),
   mode(_mode)
-{
-}
+{}
 
 
 //-OrderingModeDecl::
@@ -425,8 +409,7 @@ EmptyOrderDecl::EmptyOrderDecl(
 :
   parsenode(_loc),
   mode(_mode)
-{
-}
+{}
 
 
 //-EmptyOrderDecl::
@@ -448,8 +431,7 @@ CopyNamespacesDecl::CopyNamespacesDecl(
   parsenode(_loc),
   preserve_mode(_preserve_mode),
   inherit_mode(_inherit_mode)
-{
-}
+{}
 
 
 //-CopyNamespacesDecl::
@@ -476,8 +458,7 @@ DefaultCollationDecl::DefaultCollationDecl(
 :
   parsenode(_loc),
   collation(_collation)
-{
-}
+{}
 
 
 //-DefaultCollationDecl::
@@ -497,8 +478,7 @@ BaseURIDecl::BaseURIDecl(
 :
   parsenode(_loc),
   base_uri(_base_uri)
-{
-}
+{}
 
 
 //-BaseURIDecl::
@@ -522,8 +502,7 @@ SchemaImport::SchemaImport(
   prefix_h(_prefix_h),
   uri(_uri),
   at_list_h(_at_list_h)
-{
-}
+{}
 
 
 //-SchemaImport::
@@ -543,8 +522,7 @@ URILiteralList::URILiteralList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-URILiteralList::
@@ -571,8 +549,7 @@ SchemaPrefix::SchemaPrefix(
   parsenode(_loc),
   prefix(""),
   default_b(_default_b)
-{
-}
+{}
 
 SchemaPrefix::SchemaPrefix(
   const QueryLoc& _loc,
@@ -581,8 +558,7 @@ SchemaPrefix::SchemaPrefix(
   parsenode(_loc),
   prefix(_prefix),
   default_b(false)
-{
-}
+{}
 
 
 //-SchemaPrefix::
@@ -604,8 +580,7 @@ ModuleImport::ModuleImport(
   parsenode(_loc),
   uri (_uri),
   uri_list_h(_uri_list_h)
-{
-}
+{}
 
 ModuleImport::ModuleImport(
   const QueryLoc& _loc,
@@ -617,8 +592,7 @@ ModuleImport::ModuleImport(
   prefix(_prefix),
   uri(_uri),
   uri_list_h(_uri_list_h)
-{
-}
+{}
 
 
 //-ModuleImport::
@@ -643,8 +617,7 @@ VarDecl::VarDecl(
   varname(_varname),
   typedecl_h(_typedecl_h),
   initexpr_h(_initexpr_h)
-{
-}
+{}
 
 
 //-VarDecl::
@@ -666,8 +639,7 @@ ConstructionDecl::ConstructionDecl(
 :
   parsenode(_loc),
   mode(_mode)
-{
-}
+{}
 
 
 //-ConstructionDecl::
@@ -695,8 +667,7 @@ FunctionDecl::FunctionDecl(
   paramlist_h(_paramlist_h),
   body_h(_body_h),
   return_type_h(_return_type_h)
-{
-}
+{}
 
 
 //-FunctionDecl::
@@ -721,8 +692,7 @@ ParamList::ParamList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-ParamList::
@@ -751,8 +721,7 @@ Param::Param(
   parsenode(_loc),
   name(_name),
   typedecl_h(_typedecl_h)
-{
-}
+{}
 
 
 //-Param::
@@ -773,8 +742,7 @@ EnclosedExpr::EnclosedExpr(
 :
   exprnode(_loc),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-EnclosedExpr::
@@ -795,8 +763,7 @@ QueryBody::QueryBody(
 :
   exprnode(_loc),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-QueryBody::
@@ -815,8 +782,7 @@ Expr::Expr(
   const QueryLoc& _loc)
 :
   exprnode(_loc)
-{
-}
+{}
 
 
 //-Expr::
@@ -858,8 +824,7 @@ FLWORExpr::FLWORExpr(
   groupby_h(_groupby_h),
   orderby_h(_orderby_h),
   return_val_h(_return_val_h)
-{
-}
+{}
 
 
 //-FLWORExpr::
@@ -882,8 +847,7 @@ ForLetClauseList::ForLetClauseList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-ForLetClauseList::
@@ -912,8 +876,7 @@ ForClause::ForClause(
 :
   ForOrLetClause(_loc),
   vardecl_list_h(_vardecl_list_h)
-{
-}
+{}
 
 
 //-ForClause::
@@ -934,8 +897,7 @@ VarInDeclList::VarInDeclList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-VarInDeclList::
@@ -968,8 +930,7 @@ VarInDecl::VarInDecl(
   posvar_h(_posvar_h),
   ftscorevar_h(_ftscorevar_h),
   valexpr_h(_valexpr_h)
-{
-}
+{}
 
 
 //-VarInDecl::
@@ -993,8 +954,7 @@ PositionalVar::PositionalVar(
 :
   parsenode(_loc),
   varname(_varname)
-{
-}
+{}
 
 
 //-PositionalVar::
@@ -1014,8 +974,7 @@ LetClause::LetClause(
 :
   ForOrLetClause(_loc),
   vardecl_list_h(_vardecl_list_h)
-{
-}
+{}
 
 
 //-LetClause::
@@ -1036,8 +995,7 @@ VarGetsDeclList::VarGetsDeclList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-VarGetsDeclList::
@@ -1079,8 +1037,7 @@ FTScoreVar::FTScoreVar(
 :
   parsenode(_loc),
   varname(_varname)
-{
-}
+{}
 
 
 //-FTScoreVar::
@@ -1100,8 +1057,7 @@ WhereClause::WhereClause(
 :
   parsenode(_loc),
   predicate_h(_predicate_h)
-{
-}
+{}
 
 
 //-WhereClause::
@@ -1210,8 +1166,7 @@ OrderByClause::OrderByClause(
   parsenode(_loc),
   spec_list_h(_spec_list_h),
   stable_b(_stable_b)
-{
-}
+{}
 
 
 //-OrderByClause::
@@ -1230,8 +1185,7 @@ OrderSpecList::OrderSpecList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-OrderSpecList::
@@ -1258,8 +1212,7 @@ OrderSpec::OrderSpec(
   parsenode(_loc),
   spec_h(_spec_h),
   modifier_h(_modifier_h)
-{
-}
+{}
 
 
 //-OrderSpec::
@@ -1285,8 +1238,7 @@ OrderModifier::OrderModifier(
   dir_spec_h(_dir_spec_h),
   empty_spec_h(_empty_spec_h),
   collation_spec_h(_collation_spec_h)
-{
-}
+{}
 
 
 //-OrderModifier::
@@ -1309,8 +1261,7 @@ OrderDirSpec::OrderDirSpec(
 :
   parsenode(_loc),
   dir_spec(_dir_spec)
-{
-}
+{}
 
 
 
@@ -1332,8 +1283,7 @@ OrderEmptySpec::OrderEmptySpec(
 :
   parsenode(_loc),
   empty_order_spec(_empty_order_spec)
-{
-}
+{}
 
 
 //-OrderEmptySpec::
@@ -1353,8 +1303,7 @@ OrderCollationSpec::OrderCollationSpec(
 :
   parsenode(_loc),
   uri(_uri)
-{
-}
+{}
 
 
 //-OrderCollationSpec::
@@ -1378,8 +1327,7 @@ QuantifiedExpr::QuantifiedExpr(
   qmode(_qmode),
   decl_list_h(_decl_list_h),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-QuantifiedExpr::
@@ -1399,8 +1347,7 @@ QVarInDeclList::QVarInDeclList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-QVarInDeclList::
@@ -1424,8 +1371,7 @@ QVarInDecl::QVarInDecl(
   name(_name),
   typedecl_h(NULL),
   val_h(_val_h)
-{
-}
+{}
 
 QVarInDecl::QVarInDecl(
   const QueryLoc& _loc,
@@ -1437,8 +1383,7 @@ QVarInDecl::QVarInDecl(
   name(_name),
   typedecl_h(_typedecl_h),
   val_h(_val_h)
-{
-}
+{}
 
 
 //-QVarInDecl::
@@ -1464,8 +1409,7 @@ TypeswitchExpr::TypeswitchExpr(
   switch_expr_h(_switch_expr_h),
   clause_list_h(_clause_list_h),
   default_clause_h(_default_clause_h)
-{
-}
+{}
 
 
 TypeswitchExpr::TypeswitchExpr(
@@ -1480,8 +1424,7 @@ TypeswitchExpr::TypeswitchExpr(
   clause_list_h(_clause_list_h),
   default_varname(_default_varname),
   default_clause_h(_default_clause_h)
-{
-}
+{}
 
 
 //-TypeswitchExpr::
@@ -1503,8 +1446,7 @@ CaseClauseList::CaseClauseList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-CaseClauseList::
@@ -1533,8 +1475,7 @@ CaseClause::CaseClause(
   varname(_varname),
   type_h(_type_h),
   val_h(_val_h)
-{
-}
+{}
 
 CaseClause::CaseClause(
   const QueryLoc& _loc,
@@ -1545,8 +1486,7 @@ CaseClause::CaseClause(
   varname(""),
   type_h(_type_h),
   val_h(_val_h)
-{
-}
+{}
 
 
 //-CaseClause::
@@ -1572,8 +1512,7 @@ IfExpr::IfExpr(
   cond_expr_h(_cond_expr_h),
   then_expr_h(_then_expr_h),
   else_expr_h(_else_expr_h)
-{
-}
+{}
 
 
 //-IfExpr::
@@ -1598,8 +1537,7 @@ OrExpr::OrExpr(
   exprnode(_loc),
   or_expr_h(_or_expr_h),
   and_expr_h(_and_expr_h)
-{
-}
+{}
 
 
 //-OrExpr::
@@ -1623,8 +1561,7 @@ AndExpr::AndExpr(
   exprnode(_loc),
   and_expr_h(_and_expr_h),
   comp_expr_h(_comp_expr_h)
-{
-}
+{}
 
 
 //-AndExpr::
@@ -1652,8 +1589,7 @@ ComparisonExpr::ComparisonExpr(
   valcomp_h(_valcomp_h),
   gencomp_h(NULL),
   nodecomp_h(NULL)
-{
-}
+{}
 
 ComparisonExpr::ComparisonExpr(
   const QueryLoc& _loc,
@@ -1667,8 +1603,7 @@ ComparisonExpr::ComparisonExpr(
   valcomp_h(NULL),
   gencomp_h(_gencomp_h),
   nodecomp_h(NULL)
-{
-}
+{}
 
 ComparisonExpr::ComparisonExpr(
   const QueryLoc& _loc,
@@ -1682,8 +1617,7 @@ ComparisonExpr::ComparisonExpr(
   valcomp_h(NULL),
   gencomp_h(NULL),
   nodecomp_h(_nodecomp_h)
-{
-}
+{}
 
 
 //-ComparisonExpr::
@@ -1712,8 +1646,7 @@ FTContainsExpr::FTContainsExpr(
   range_expr_h(_range_expr_h),
   ftselect_h(_ftselect_h),
   ftignore_h(_ftignore_h)
-{
-}
+{}
 
 
 //-FTContainsExpr::
@@ -1738,8 +1671,7 @@ RangeExpr::RangeExpr(
   exprnode(_loc),
   from_expr_h(_from_expr_h),
   to_expr_h(_to_expr_h)
-{
-}
+{}
 
 
 //-RangeExpr::
@@ -1765,8 +1697,7 @@ AdditiveExpr::AdditiveExpr(
   add_op(_add_op),
   add_expr_h(_add_expr_h),
   mult_expr_h(_mult_expr_h)
-{
-}
+{}
 
 
 //-AdditiveExpr::
@@ -1792,8 +1723,7 @@ MultiplicativeExpr::MultiplicativeExpr(
   mult_op(_mult_op),
   mult_expr_h(_mult_expr_h),
   union_expr_h(_union_expr_h)
-{
-}
+{}
 
 
 //-MultiplicativeExpr::
@@ -1817,8 +1747,7 @@ UnionExpr::UnionExpr(
   exprnode(_loc),
   union_expr_h(_union_expr_h),
   intex_expr_h(_intex_expr_h)
-{
-}
+{}
 
 
 //-UnionExpr::
@@ -1844,8 +1773,7 @@ IntersectExceptExpr::IntersectExceptExpr(
   intex_op(_intex_op),
   intex_expr_h(_intex_expr_h),
   instof_expr_h(_instof_expr_h)
-{
-}
+{}
 
 
 //-IntersectExceptExpr::
@@ -1869,8 +1797,7 @@ InstanceofExpr::InstanceofExpr(
   exprnode(_loc),
   treat_expr_h(_treat_expr_h),
   seqtype_h(_seqtype_h)
-{
-}
+{}
 
 
 //-InstanceofExpr::
@@ -1894,8 +1821,7 @@ TreatExpr::TreatExpr(
   exprnode(_loc),
   castable_expr_h(_castable_expr_h),
   seqtype_h(_seqtype_h)
-{
-}
+{}
 
 
 //-TreatExpr::
@@ -1919,8 +1845,7 @@ CastableExpr::CastableExpr(
   exprnode(_loc),
   cast_expr_h(_cast_expr_h),
   singletype_h(_singletype_h)
-{
-}
+{}
 
 
 //-CastableExpr::
@@ -1944,8 +1869,7 @@ CastExpr::CastExpr(
   exprnode(_loc),
   unary_expr_h(_unary_expr_h),
   singletype_h(_singletype_h)
-{
-}
+{}
 
 
 //-CastExpr::
@@ -1969,8 +1893,7 @@ UnaryExpr::UnaryExpr(
   exprnode(_loc),
   value_expr_h(_value_expr_h),
   signlist_h(_signlist_h)
-{
-}
+{}
 
 
 //-UnaryExpr::
@@ -1992,8 +1915,7 @@ SignList::SignList(
 :
   parsenode(_loc),
   sign(_sign)
-{
-}
+{}
 
 
 //-SignList::
@@ -2017,8 +1939,7 @@ GeneralComp::GeneralComp(
 :
   parsenode(_loc),
   type(_type)
-{
-}
+{}
 
 
 //-GeneralComp::
@@ -2038,8 +1959,7 @@ ValueComp::ValueComp(
 :
   parsenode(_loc),
   type(_type)
-{
-}
+{}
 
 
 //-ValueComp::
@@ -2059,8 +1979,7 @@ NodeComp::NodeComp(
 :
   parsenode(_loc),
   type(_type)
-{
-}
+{}
 
 
 //-NodeComp::
@@ -2082,8 +2001,7 @@ ValidateExpr::ValidateExpr(
   exprnode(_loc),
   valmode(_valmode=="lax" ? ParseConstants::val_lax : ParseConstants::val_strict),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-ValidateExpr::
@@ -2106,8 +2024,7 @@ ExtensionExpr::ExtensionExpr(
   exprnode(_loc),
   pragma_list_h(_pragma_list_h),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-ExtensionExpr::
@@ -2127,8 +2044,7 @@ PragmaList::PragmaList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-PragmaList::
@@ -2155,8 +2071,7 @@ Pragma::Pragma(
   parsenode(_loc),
   name_h(_name_h),
   pragma_lit(_pragma_lit)
-{
-}
+{}
 
 
 //-Pragma::
@@ -2189,8 +2104,7 @@ PathExpr::PathExpr(
   exprnode(_loc),
   type(_type),
   relpath_expr_h(_relpath_expr_h)
-{
-}
+{}
 
 
 void PathExpr::accept(parsenode_visitor& v) const
@@ -2275,8 +2189,7 @@ AxisStep::AxisStep(
   forward_step_h(_forward_step_h),
   reverse_step_h(NULL),
   predicate_list_h(_predicate_list_h)
-{
-}
+{}
 
 
 AxisStep::AxisStep(
@@ -2288,8 +2201,7 @@ AxisStep::AxisStep(
   forward_step_h(NULL),
   reverse_step_h(_reverse_step_h),
   predicate_list_h(_predicate_list_h)
-{
-}
+{}
 
 
 void AxisStep::accept(parsenode_visitor& v) const
@@ -2321,8 +2233,7 @@ ForwardStep::ForwardStep(
   forward_axis_h(_forward_axis_h),
   node_test_h(_node_test_h),
   abbrev_step_h(NULL)
-{
-}
+{}
 
 
 ForwardStep::ForwardStep(
@@ -2333,8 +2244,7 @@ ForwardStep::ForwardStep(
   forward_axis_h(NULL),
   node_test_h(NULL),
   abbrev_step_h(_abbrev_step_h)
-{
-}
+{}
 
 
 
@@ -2360,8 +2270,7 @@ ForwardAxis::ForwardAxis(
   :
   parsenode(_loc),
   axis(_axis)
-{
-}
+{}
 
 
 
@@ -2386,8 +2295,7 @@ AbbrevForwardStep::AbbrevForwardStep(
   parsenode(_loc),
   node_test_h(_node_test_h),
   attr_b(_attr_b)
-{
-}
+{}
 
 
 AbbrevForwardStep::AbbrevForwardStep(
@@ -2397,8 +2305,7 @@ AbbrevForwardStep::AbbrevForwardStep(
   parsenode(_loc),
   node_test_h(_node_test_h),
   attr_b(false)
-{
-}
+{}
 
 
 
@@ -2424,8 +2331,7 @@ ReverseStep::ReverseStep(
   parsenode(_loc),
   axis_h(_axis_h),
   node_test_h(_node_test_h)
-{
-}
+{}
 
 
 ReverseStep::ReverseStep(
@@ -2435,8 +2341,7 @@ ReverseStep::ReverseStep(
   parsenode(_loc),
   axis_h(_axis_h),
   node_test_h(NULL)
-{
-}
+{}
 
 
 
@@ -2461,8 +2366,7 @@ ReverseAxis::ReverseAxis(
   :
   parsenode(_loc),
   axis(_axis)
-{
-}
+{}
 
 
 
@@ -2498,8 +2402,7 @@ NameTest::NameTest(const QueryLoc& loc, rchandle<QName> qname)
   parsenode(loc),
   theQName(qname),
   theWildcard(NULL)
-{
-}
+{}
 
 
 NameTest::NameTest(const QueryLoc& loc, rchandle<Wildcard> wild)
@@ -2507,8 +2410,7 @@ NameTest::NameTest(const QueryLoc& loc, rchandle<Wildcard> wild)
   parsenode(loc),
   theQName(NULL),
   theWildcard(wild)
-{
-}
+{}
 
 
 
@@ -2535,8 +2437,7 @@ Wildcard::Wildcard(
   theKind(kind),
   thePrefix(prefix),
   theLocalName(lname)
-{
-}
+{}
 
 
 
@@ -2563,8 +2464,7 @@ FilterExpr::FilterExpr(
   primary_h(_primary_h),
   pred_list_h(_pred_list_h),
   theIsPathStep(false)
-{
-}
+{}
 
 
 void FilterExpr::accept(parsenode_visitor& v) const
@@ -2585,8 +2485,7 @@ PredicateList::PredicateList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 void PredicateList::accept(parsenode_visitor& v) const
@@ -2625,8 +2524,7 @@ NumericLiteral::NumericLiteral(
   exprnode(_loc),
   type(ParseConstants::num_integer),
   theValue(_ival)
-{
-}
+{}
 
 NumericLiteral::NumericLiteral(
   const QueryLoc& _loc,
@@ -2635,8 +2533,7 @@ NumericLiteral::NumericLiteral(
   exprnode(_loc),
   type(ParseConstants::num_double),
   theValue(_dval)
-{
-}
+{}
 
 NumericLiteral::NumericLiteral(
   const QueryLoc& _loc,
@@ -2645,8 +2542,7 @@ NumericLiteral::NumericLiteral(
   exprnode(_loc),
   type(ParseConstants::num_decimal),
   theValue(_decval)
-{
-}
+{}
 
 string NumericLiteral::toString () const {
   switch (type) {
@@ -2675,8 +2571,7 @@ VarRef::VarRef(
 :
   exprnode(_loc),
   varname(_varname)
-{
-}
+{}
 
 
 //-VarRef::
@@ -2700,8 +2595,7 @@ ParenthesizedExpr::ParenthesizedExpr(
 :
   exprnode(_loc),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-ParenthesizedExpr::
@@ -2720,8 +2614,7 @@ ContextItemExpr::ContextItemExpr(
   const QueryLoc& _loc)
 :
   exprnode(_loc)
-{
-}
+{}
 
 
 //-ContextItemExpr::
@@ -2742,8 +2635,7 @@ OrderedExpr::OrderedExpr(
 :
   exprnode(_loc),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-OrderedExpr::
@@ -2764,8 +2656,7 @@ UnorderedExpr::UnorderedExpr(
 :
   exprnode(_loc),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-UnorderedExpr::
@@ -2789,8 +2680,7 @@ FunctionCall::FunctionCall(
   exprnode(_loc),
   fname_h(_fname_h),
   arg_list_h(_arg_list_h)
-{
-}
+{}
 
 
 //-FunctionCall::
@@ -2810,8 +2700,7 @@ ArgList::ArgList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-ArgList::
@@ -2850,8 +2739,7 @@ DirElemConstructor::DirElemConstructor(
   end_name_h(_close_name_h),
   attr_list_h(_attr_list_h),
   dir_content_list_h(_dir_content_list_h)
-{
-}
+{}
 
 
 //-DirElemConstructor::
@@ -2876,8 +2764,7 @@ DirElemContentList::DirElemContentList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-DirElemContentList::
@@ -2913,8 +2800,7 @@ DirAttributeList::DirAttributeList(
   const QueryLoc& loc)
 :
   parsenode(loc)
-{
-}
+{}
 
 
 void DirAttributeList::accept(parsenode_visitor& v) const
@@ -2940,8 +2826,7 @@ DirAttr::DirAttr(
   parsenode(loc),
   theName(name),
   theValue(value)
-{
-}
+{}
 
 
 void DirAttr::accept(parsenode_visitor& v) const
@@ -2961,8 +2846,7 @@ DirAttributeValue::DirAttributeValue(
   parsenode(_loc),
   quot_attr_content_h(_quot_attr_content_h),
   apos_attr_content_h(NULL)
-{
-}
+{}
 
 DirAttributeValue::DirAttributeValue(
   const QueryLoc& _loc,
@@ -2971,8 +2855,7 @@ DirAttributeValue::DirAttributeValue(
   parsenode(_loc),
   quot_attr_content_h(NULL),
   apos_attr_content_h(_apos_attr_content_h)
-{
-}
+{}
 
 
 //-DirAttributeValue::
@@ -2992,8 +2875,7 @@ QuoteAttrContentList::QuoteAttrContentList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-QuoteAttrContentList::
@@ -3017,8 +2899,7 @@ AposAttrContentList::AposAttrContentList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-AposAttrContentList::
@@ -3045,8 +2926,7 @@ QuoteAttrValueContent::QuoteAttrValueContent(
   parsenode(_loc),
   quot_atcontent(_quot_atcontent),
   common_content_h(NULL)
-{
-}
+{}
 
 QuoteAttrValueContent::QuoteAttrValueContent(
   const QueryLoc& _loc,
@@ -3055,8 +2935,7 @@ QuoteAttrValueContent::QuoteAttrValueContent(
   parsenode(_loc),
   quot_atcontent(""),
   common_content_h(_common_content_h)
-{
-}
+{}
 
 
 //-QuoteAttrValueContent::
@@ -3078,8 +2957,7 @@ AposAttrValueContent::AposAttrValueContent(
   parsenode(_loc),
   apos_atcontent(_apos_atcontent),
   common_content_h(NULL)
-{
-}
+{}
 
 AposAttrValueContent::AposAttrValueContent(
   const QueryLoc& _loc,
@@ -3088,8 +2966,7 @@ AposAttrValueContent::AposAttrValueContent(
   parsenode(_loc),
   apos_atcontent(""),
   common_content_h(_common_content_h)
-{
-}
+{}
 
 
 //-AposAttrValueContent::
@@ -3109,8 +2986,7 @@ DirElemContent::DirElemContent(
 :
   exprnode(_loc),
   direct_cons_h(_direct_cons_h)
-{
-}
+{}
 
 DirElemContent::DirElemContent(
   const QueryLoc& _loc,
@@ -3118,8 +2994,7 @@ DirElemContent::DirElemContent(
 :
   exprnode(_loc),
   elem_content(_elem_content)
-{
-}
+{}
 
 DirElemContent::DirElemContent(
   const QueryLoc& _loc,
@@ -3127,8 +3002,7 @@ DirElemContent::DirElemContent(
 :
   exprnode(_loc),
   cdata_h(_cdata_h)
-{
-}
+{}
 
 DirElemContent::DirElemContent(
   const QueryLoc& _loc,
@@ -3136,8 +3010,7 @@ DirElemContent::DirElemContent(
 :
   exprnode(_loc),
   common_content_h(_common_content_h)
-{
-}
+{}
 
 
 //-DirElemContent::
@@ -3166,8 +3039,7 @@ CommonContent::CommonContent(
   type(_type),
   ref(_ref),
   expr_h(NULL)
-{
-}
+{}
 
 CommonContent::CommonContent(
   const QueryLoc& _loc,
@@ -3177,8 +3049,7 @@ CommonContent::CommonContent(
   type(ParseConstants::cont_expr),
   ref(""),
   expr_h(_expr_h)
-{
-}
+{}
 
 CommonContent::CommonContent(
   const QueryLoc& _loc,
@@ -3188,8 +3059,7 @@ CommonContent::CommonContent(
   type(_type),
   ref(""),
   expr_h(NULL)
-{
-}
+{}
 
 
 //-CommonContent::
@@ -3210,8 +3080,7 @@ DirCommentConstructor::DirCommentConstructor(
 :
   exprnode(_loc),
   comment(_comment)
-{
-}
+{}
 
 
 //-DirCommentConstructor::
@@ -3237,8 +3106,7 @@ DirPIConstructor::DirPIConstructor(
   exprnode(_loc),
   pi_target(_pi_target),
   pi_content("")
-{
-}
+{}
 
 DirPIConstructor::DirPIConstructor(
   const QueryLoc& _loc,
@@ -3248,8 +3116,7 @@ DirPIConstructor::DirPIConstructor(
   exprnode(_loc),
   pi_target(_pi_target),
   pi_content(_pi_content)
-{
-}
+{}
 
 
 //-DirPIConstructor::
@@ -3274,8 +3141,7 @@ CDataSection::CDataSection(
 :
   exprnode(_loc),
   cdata_content(_cdata_content)
-{
-}
+{}
 
 
 //-CDataSection::
@@ -3304,8 +3170,7 @@ CompDocConstructor::CompDocConstructor(
 :
   exprnode(_loc),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 void CompDocConstructor::accept(parsenode_visitor& v) const
@@ -3326,8 +3191,7 @@ CompElemConstructor::CompElemConstructor(
   exprnode(_loc),
   qname_expr_h(_qname_expr_h),
   content_expr_h(_content_expr_h)
-{
-}
+{}
 
 
 void CompElemConstructor::accept(parsenode_visitor& v) const
@@ -3350,8 +3214,7 @@ CompAttrConstructor::CompAttrConstructor(
   exprnode(_loc),
   qname_expr_h(_qname_expr_h),
   val_expr_h(_val_expr_h)
-{
-}
+{}
 
 
 void CompAttrConstructor::accept(parsenode_visitor& v) const
@@ -3372,8 +3235,7 @@ CompTextConstructor::CompTextConstructor(
 :
   exprnode(_loc),
   text_expr_h(_text_expr_h)
-{
-}
+{}
 
 
 void CompTextConstructor::accept(parsenode_visitor& v) const
@@ -3392,8 +3254,7 @@ CompCommentConstructor::CompCommentConstructor(
 :
   exprnode(_loc),
   comment_expr_h(_comment_expr_h)
-{
-}
+{}
 
 
 //-CompCommentConstructor::
@@ -3417,8 +3278,7 @@ CompPIConstructor::CompPIConstructor(
   target(_target),
   target_expr_h(NULL),
   content_expr_h(_content_expr_h)
-{
-}
+{}
 
 CompPIConstructor::CompPIConstructor(
   const QueryLoc& _loc,
@@ -3429,8 +3289,7 @@ CompPIConstructor::CompPIConstructor(
   target(""),
   target_expr_h(_target_expr_h),
   content_expr_h(_content_expr_h)
-{
-}
+{}
 
 
 //-CompPIConstructor::
@@ -3454,8 +3313,7 @@ SingleType::SingleType(
   parsenode(_loc),
   atomic_type_h(_atomic_type_h),
   hook_b(_hook_b)
-{
-}
+{}
 
 
 //-SingleType::
@@ -3476,8 +3334,7 @@ TypeDeclaration::TypeDeclaration(
 :
   parsenode(_loc),
   seqtype_h(_seqtype_h)
-{
-}
+{}
 
 
 //-TypeDeclaration::
@@ -3500,8 +3357,7 @@ SequenceType::SequenceType(
   parsenode(_loc),
   itemtype_h(_itemtype_h),
   occur_h(_occur_h)
-{
-}
+{}
 
 
 //-SequenceType::
@@ -3523,8 +3379,7 @@ OccurrenceIndicator::OccurrenceIndicator(
 :
   parsenode(_loc),
   type(_type)
-{
-}
+{}
 
 
 //-OccurrenceIndicator::
@@ -3544,16 +3399,14 @@ ItemType::ItemType(
 :
   parsenode(_loc),
   item_test_b(_item_test_b)
-{
-}
+{}
 
 ItemType::ItemType(
   const QueryLoc& _loc)
 :
   parsenode(_loc),
   item_test_b(false)
-{
-}
+{}
 
 
 //-ItemType::
@@ -3573,8 +3426,7 @@ AtomicType::AtomicType(
 :
   parsenode(_loc),
   qname_h(_qname_h)
-{
-}
+{}
 
 
 //-AtomicType::
@@ -3597,8 +3449,7 @@ AnyKindTest::AnyKindTest(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-AnyKindTest::
@@ -3618,8 +3469,7 @@ DocumentTest::DocumentTest(
   parsenode(_loc),
   elem_test_h(NULL),
   schema_elem_test_h(NULL)
-{
-}
+{}
 
 DocumentTest::DocumentTest(
   const QueryLoc& _loc,
@@ -3628,8 +3478,7 @@ DocumentTest::DocumentTest(
   parsenode(_loc),
   elem_test_h(_elem_test_h),
   schema_elem_test_h(NULL)
-{
-}
+{}
 
 DocumentTest::DocumentTest(
   const QueryLoc& _loc,
@@ -3638,8 +3487,7 @@ DocumentTest::DocumentTest(
   parsenode(_loc),
   elem_test_h(NULL),
   schema_elem_test_h(_schema_elem_test_h)
-{
-}
+{}
 
 
 //-DocumentTest::
@@ -3657,8 +3505,7 @@ TextTest::TextTest(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-TextTest::
@@ -3676,8 +3523,7 @@ CommentTest::CommentTest(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-CommentTest::
@@ -3698,8 +3544,7 @@ PITest::PITest(
 :
   parsenode(_loc),
   target(_target)
-{
-}
+{}
 
 
 void PITest::accept(parsenode_visitor& v) const
@@ -3719,8 +3564,7 @@ AttributeTest::AttributeTest(
   parsenode(loc),
   theAttrName(attrName),
   theTypeName(typeName)
-{
-}
+{}
 
 
 void AttributeTest::accept(parsenode_visitor& v) const
@@ -3741,8 +3585,7 @@ SchemaAttributeTest::SchemaAttributeTest(
 :
   parsenode(_loc),
   attr_h(_attr_h)
-{
-}
+{}
 
 
 //-SchemaAttributeTest::
@@ -3773,8 +3616,7 @@ ElementTest::ElementTest(
   theElementName(ename),
   theTypeName(tname),
   theNilledAllowed(na)
-{
-}
+{}
 
 
 void ElementTest::accept(parsenode_visitor& v) const
@@ -3792,8 +3634,7 @@ SchemaElementTest::SchemaElementTest(
 :
   parsenode(_loc),
   elem_h(_elem_h)
-{
-}
+{}
 
 
 //-SchemaElementTest::
@@ -3825,8 +3666,7 @@ TypeName::TypeName(
   parsenode(_loc),
   qname_h(_qname_h),
   optional_b(false)
-{
-}
+{}
 
 TypeName::TypeName(
   const QueryLoc& _loc,
@@ -3836,8 +3676,7 @@ TypeName::TypeName(
   parsenode(_loc),
   qname_h(_qname_h),
   optional_b(_b)
-{
-}
+{}
 
 
 //-TypeName::
@@ -3866,8 +3705,7 @@ StringLiteral::StringLiteral(
 :
   exprnode(_loc),
   strval(_strval)
-{
-}
+{}
 
 
 //-StringLiteral::
@@ -3907,8 +3745,7 @@ QName::QName(
 :
   exprnode(_loc),
   qname(_qname)
-{
-}
+{}
 
 
 string QName::get_localname() const
@@ -3948,8 +3785,7 @@ RevalidationDecl::RevalidationDecl(
 :
   parsenode(_loc),
   qname_h(_qname_h)
-{
-}
+{}
 
 
 //-RevalidationDecl::
@@ -4021,8 +3857,7 @@ ReplaceExpr::ReplaceExpr(
   theReplaceType(aReplaceType),
   theTargetExpr(aTargetExpr),
   theReplaceExpr(aReplaceExpr)
-{
-}
+{}
 
 
 //-ReplaceExpr::
@@ -4046,8 +3881,7 @@ RenameExpr::RenameExpr(
   exprnode(aLoc),
   theTargetExpr(aTargetExpr),
   theNameExpr(aNameExpr)
-{
-}
+{}
 
 
 //-RenameExpr::
@@ -4086,8 +3920,7 @@ TransformExpr::TransformExpr(
   varname_list_h(_varname_list_h),
   source_expr_h(_source_expr_h),
   target_expr_h(_target_expr_h)
-{
-}
+{}
 
 
 //-TransformExpr::
@@ -4108,8 +3941,7 @@ VarNameList::VarNameList(
   const QueryLoc& _loc)
 :
   exprnode(_loc)
-{
-}
+{}
 
 
 //-VarNameList::
@@ -4137,8 +3969,7 @@ VarBinding::VarBinding(
   exprnode(_loc),
   varname(_varname),
   val_h(_val_h)
-{
-}
+{}
 
 
 //-VarBinding::
@@ -4210,8 +4041,7 @@ FTSelection::FTSelection(
   ftor_h(_ftor_h),
   option_list_h(_option_list_h),
   weight_expr_h(_weight_expr_h)
-{
-}
+{}
 
 
 //-FTSelection::
@@ -4232,8 +4062,7 @@ FTMatchOptionProximityList::FTMatchOptionProximityList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-FTMatchOptionProximityList::
@@ -4260,8 +4089,7 @@ FTMatchOptionProximity::FTMatchOptionProximity(
   parsenode(_loc),
   opt_h(_opt_h),
   prox_h(NULL)
-{
-}
+{}
 
 FTMatchOptionProximity::FTMatchOptionProximity(
   rchandle<FTProximity> _prox_h,
@@ -4270,8 +4098,7 @@ FTMatchOptionProximity::FTMatchOptionProximity(
   parsenode(_loc),
   opt_h(NULL),
   prox_h(_prox_h)
-{
-}
+{}
 
 FTMatchOptionProximity::FTMatchOptionProximity(
   const QueryLoc& _loc)
@@ -4279,8 +4106,7 @@ FTMatchOptionProximity::FTMatchOptionProximity(
   parsenode(_loc),
   opt_h(NULL),
   prox_h(NULL)
-{
-}
+{}
 
 
 //-FTMatchOptionProximity::
@@ -4303,8 +4129,7 @@ FTOr::FTOr(
   parsenode(_loc),
   ftor_h(_ftor_h),
   ftand_h(_ftand_h)
-{
-}
+{}
 
 
 //-FTOr::
@@ -4328,8 +4153,7 @@ FTAnd::FTAnd(
   parsenode(_loc),
   ftand_h(_ftand_h),
   ftmild_not_h(_ftmild_not_h)
-{
-}
+{}
 
 
 //-FTAnd::
@@ -4353,8 +4177,7 @@ FTMildnot::FTMildnot(
   parsenode(_loc),
   ftmild_not_h(_ftmild_not_h),
   ftunary_not_h(_ftunary_not_h)
-{
-}
+{}
 
 
 //-FTMildnot::
@@ -4378,8 +4201,7 @@ FTUnaryNot::FTUnaryNot(
   parsenode(_loc),
   words_selection_h(_words_selection_h),
   not_b(_not_b)
-{
-}
+{}
 
 
 //-FTUnaryNot::
@@ -4404,8 +4226,7 @@ FTWordsSelection::FTWordsSelection(
   words_h(_words_h),
   times_h(_times_h),
   selection_h(_selection_h)
-{
-}
+{}
 
 
 //-FTWordsSelection::
@@ -4430,8 +4251,7 @@ FTWords::FTWords(
   parsenode(_loc),
   words_val_h(_words_val_h),
   any_all_option_h(_any_all_option_h)
-{
-}
+{}
 
 
 //-FTWords::
@@ -4455,8 +4275,7 @@ FTWordsValue::FTWordsValue(
   parsenode(_loc),
   lit_h(_lit_h),
   expr_h(_expr_h)
-{
-}
+{}
 
 
 //-FTWordsValue::
@@ -4476,8 +4295,7 @@ FTProximity::FTProximity(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-FTProximity::
@@ -4495,8 +4313,7 @@ FTOrderedIndicator::FTOrderedIndicator(
   const QueryLoc& _loc)
 :
   FTProximity(_loc)
-{
-}
+{}
 
 
 //-FTOrderedIndicator::
@@ -4514,8 +4331,7 @@ FTMatchOption::FTMatchOption(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-FTMatchOption::
@@ -4535,8 +4351,7 @@ FTCaseOption::FTCaseOption(
 :
   FTMatchOption(_loc),
   mode(_mode)
-{
-}
+{}
 
 
 //-FTCaseOption::
@@ -4556,8 +4371,7 @@ FTDiacriticsOption::FTDiacriticsOption(
 :
   FTMatchOption(_loc),
   mode(_mode)
-{
-}
+{}
 
 
 //-FTDiacriticsOption::
@@ -4577,8 +4391,7 @@ FTStemOption::FTStemOption(
 :
   FTMatchOption(_loc),
   mode(_mode)
-{
-}
+{}
 
 
 //-FTStemOption::
@@ -4604,8 +4417,7 @@ FTThesaurusOption::FTThesaurusOption(
   thesaurus_list_h(_thesaurus_list_h),
   default_b(_default_b),
   without_b(_without_b)
-{
-}
+{}
 
 
 //-FTThesaurusOption::
@@ -4625,8 +4437,7 @@ FTThesaurusList::FTThesaurusList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-FTThesaurusList::
@@ -4655,8 +4466,7 @@ FTThesaurusID::FTThesaurusID(
   thesaurus_name(_thesaurus_name),
   relationship_name(_relationship_name),
   levels_h(_levels_h)
-{
-}
+{}
 
 
 //-FTThesaurusID::
@@ -4681,8 +4491,7 @@ FTStopwordOption::FTStopwordOption(
   refor_list_h(_refor_list_h),
   incl_excl_list_h(_incl_excl_list_h),
   mode(_mode)
-{
-}
+{}
 
 
 //-FTStopwordOption::
@@ -4702,8 +4511,7 @@ FTInclExclStringLiteralList::FTInclExclStringLiteralList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-FTInclExclStringLiteralList::
@@ -4731,8 +4539,7 @@ FTRefOrList::FTRefOrList(
   parsenode(_loc),
   at_str(_at_str),
   stringlit_list_h(_stringlit_list_h)
-{
-}
+{}
 
 
 //-FTRefOrList::
@@ -4751,8 +4558,7 @@ FTStringLiteralList::FTStringLiteralList(
   const QueryLoc& _loc)
 :
   parsenode(_loc)
-{
-}
+{}
 
 
 //-FTStringLiteralList::
@@ -4778,8 +4584,7 @@ FTInclExclStringLiteral::FTInclExclStringLiteral(
   parsenode(_loc),
   ref_or_list_h(_ref_or_list_h),
   mode(_mode)
-{
-}
+{}
 
 
 //-FTInclExclStringLiteral::
@@ -4800,8 +4605,7 @@ FTLanguageOption::FTLanguageOption(
 :
   FTMatchOption(_loc),
   lang(_lang)
-{
-}
+{}
 
 
 //-FTLanguageOption::
@@ -4821,8 +4625,7 @@ FTWildcardOption::FTWildcardOption(
 :
   FTMatchOption(_loc),
   with_b(_with_b)
-{
-}
+{}
 
 
 //-FTWildcardOption::
@@ -4842,8 +4645,7 @@ FTContent::FTContent(
 :
   FTProximity(_loc),
   mode(_mode)
-{
-}
+{}
 
 
 //-FTContent::
@@ -4863,8 +4665,7 @@ FTAnyallOption::FTAnyallOption(
 :
   parsenode(_loc),
   option(_option)
-{
-}
+{}
 
 
 //-FTAnyallOption::
@@ -4888,8 +4689,7 @@ FTRange::FTRange(
   mode (_mode),
   src_expr_h(_src_expr_h),
   dst_expr_h(_dst_expr_h)
-{
-}
+{}
 
 
 //-FTRange::
@@ -4913,8 +4713,7 @@ FTDistance::FTDistance(
   FTProximity(_loc),
   dist_h(_dist_h),
   unit_h(_unit_h)
-{
-}
+{}
 
 
 //-FTDistance::
@@ -4938,8 +4737,7 @@ FTWindow::FTWindow(
   FTProximity(_loc),
   window_h(_window_h),
   unit_h(_unit_h)
-{
-}
+{}
 
 
 //-FTWindow::
@@ -4961,8 +4759,7 @@ FTTimes::FTTimes(
 :
   parsenode(_loc),
   range_h(_range_h)
-{
-}
+{}
 
 
 //-FTTimes::
@@ -4983,8 +4780,7 @@ FTScope::FTScope(
 :
   FTProximity(_loc),
   scope(_scope)
-{
-}
+{}
 
 
 //-FTScope::
@@ -5004,8 +4800,7 @@ FTUnit::FTUnit(
 :
   parsenode(_loc),
   unit(_unit)
-{
-}
+{}
 
 
 //-FTUnit::
@@ -5025,8 +4820,7 @@ FTBigUnit::FTBigUnit(
 :
   parsenode(_loc),
   unit(_unit)
-{
-}
+{}
 
 
 //-FTBigUnit::
@@ -5046,8 +4840,7 @@ FTIgnoreOption::FTIgnoreOption(
 :
   parsenode(_loc),
   union_h(_union_h)
-{
-}
+{}
 
 
 //-FTIgnoreOption::

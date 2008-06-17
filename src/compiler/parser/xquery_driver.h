@@ -56,10 +56,6 @@ public:
 
   bool parse_file(const xqpString& aFilename);
 
-  void error(const location& l, const std::string& m);
-
-  void error(const std::string& m);
-
 	void set_expr(parsenode* e_p);
 	parsenode* get_expr() { return expr_p; }
 

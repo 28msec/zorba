@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include <ostream>
-#include "compiler/parsetree/parsenodes.h"
 #include "parsenode_print_dot_visitor.h"
 #include "types/typemanager.h"
 

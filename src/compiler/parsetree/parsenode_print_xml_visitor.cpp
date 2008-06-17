@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include <ostream>
-#include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "types/typemanager.h"
@@ -1237,6 +1236,9 @@ END_TAG (FTWords)
 END_TAG (FTWordsSelection)
 
 END_TAG (FTWordsValue)
+
+BEGIN_TAG (ParseErrorNode)
+END_TAG (ParseErrorNode)
 
 };
 

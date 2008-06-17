@@ -56,20 +56,6 @@ bool xquery_driver::parse_string(const xqpString& input)
   return parse_stream(iss);
 }
 
-void xquery_driver::error(
-	const zorba::location& l,
-	string const& m)
-{
-  QueryLoc lLoc = createQueryLoc(l);
-  ZORBA_ERROR_LOC_DESC( XPST0003, lLoc, m);
-}
-     
-void xquery_driver::error(
-	string const& m)
-{
-  ZORBA_ERROR_DESC( XPST0003, m); 
-}
-
 void xquery_driver::set_expr(parsenode* e_p) {
   if (theCompilerCB->m_config.parse_cb != NULL)
     theCompilerCB->m_config.parse_cb (e_p, theCompilerCB->m_sctx->entity_retrieval_url ());

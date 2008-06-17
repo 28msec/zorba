@@ -103,10 +103,6 @@ signature::signature(store::Item_t name,
   copy (_argv.begin (), _argv.end (), back_inserter (argv));
 }
 
-signature::~signature()
-{
-}
-
 
 } /* namespace zorba */
 

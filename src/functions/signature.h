@@ -76,7 +76,6 @@ public:
   signature(store::Item_t name,
             const std::vector<xqtref_t>& argv,
             xqtref_t return_type);
-  ~signature();
 
 public:
   const store::Item_t& get_name() const            { return qname_p; }

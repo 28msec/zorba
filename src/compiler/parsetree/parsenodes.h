@@ -6310,6 +6310,16 @@ public:
 
 };
 
+class ParseErrorNode : public parsenode {
+public:
+  std::string msg;
+  ParseErrorNode (const QueryLoc& loc, std::string msg_)
+    : parsenode (loc), msg (msg_)
+  {}
+
+public:
+	void accept(parsenode_visitor&) const {}
+};
 
 }	/* namespace zorba */
 #endif	/*  ZORBA_PARSENODES_H */

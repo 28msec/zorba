@@ -19,6 +19,8 @@
 #include <iostream>
 #include <ostream>
 
+#include "common/shared_types.h"
+
 namespace zorba {
 
   void print_parsetree_xml (std::ostream &, const parsenode *p);
