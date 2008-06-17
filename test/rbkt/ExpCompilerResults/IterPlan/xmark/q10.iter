@@ -5,7 +5,7 @@ Iterator tree for main query:
    <PromoteIterator type="[AtomicXQType XS_STRING]">
     <FnDataIterator>
      <CtxVariableIterator>
-      <SingletonIterator value="xs:QName(,,input-context)"/>
+      <SingletonIterator value="xs:string(0x8089080:input-context)"/>
      </CtxVariableIterator>
     </FnDataIterator>
    </PromoteIterator>
@@ -16,21 +16,19 @@ Iterator tree for main query:
    <ForVariable name="i">
     <FnDistinctValuesIterator>
      <FnDataIterator>
-      <NodeSortIterator>
-       <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,category)" typename="*" nill allowed="0">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,interest)" typename="*" nill allowed="0">
-         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
-             <LetVarIterator varname="auction"/>
-            </ChildAxisIterator>
+      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,category)" typename="*" nill allowed="0">
+       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,interest)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
+           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+            <LetVarIterator varname="auction"/>
            </ChildAxisIterator>
           </ChildAxisIterator>
          </ChildAxisIterator>
         </ChildAxisIterator>
-       </AttributeAxisIterator>
-      </NodeSortIterator>
+       </ChildAxisIterator>
+      </AttributeAxisIterator>
      </FnDataIterator>
     </FnDistinctValuesIterator>
    </ForVariable>
@@ -128,13 +126,11 @@ Iterator tree for main query:
                  <ElementContentIterator>
                   <EnclosedIterator attr_cont="false">
                    <FnDataIterator>
-                    <NodeSortIterator>
-                     <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
-                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
-                       <ForVarIterator varname="t"/>
-                      </ChildAxisIterator>
-                     </AttributeAxisIterator>
-                    </NodeSortIterator>
+                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
+                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="t"/>
+                     </ChildAxisIterator>
+                    </AttributeAxisIterator>
                    </FnDataIterator>
                   </EnclosedIterator>
                  </ElementContentIterator>

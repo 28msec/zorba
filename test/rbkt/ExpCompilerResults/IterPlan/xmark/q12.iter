@@ -5,7 +5,7 @@ Iterator tree for main query:
    <PromoteIterator type="[AtomicXQType XS_STRING]">
     <FnDataIterator>
      <CtxVariableIterator>
-      <SingletonIterator value="xs:QName(,,input-context)"/>
+      <SingletonIterator value="xs:string(0x8089080:input-context)"/>
      </CtxVariableIterator>
     </FnDataIterator>
    </PromoteIterator>
@@ -41,13 +41,11 @@ Iterator tree for main query:
       <SingletonIterator value="xs:QName(,,person)"/>
       <EnclosedIterator attr_cont="true">
        <FnDataIterator>
-        <NodeSortIterator>
-         <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
-           <ForVarIterator varname="p"/>
-          </ChildAxisIterator>
-         </AttributeAxisIterator>
-        </NodeSortIterator>
+        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
+         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+          <ForVarIterator varname="p"/>
+         </ChildAxisIterator>
+        </AttributeAxisIterator>
        </FnDataIterator>
       </EnclosedIterator>
      </AttributeIterator>

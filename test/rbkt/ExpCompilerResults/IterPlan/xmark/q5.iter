@@ -9,7 +9,7 @@ Iterator tree for main query:
        <PromoteIterator type="[AtomicXQType XS_STRING]">
         <FnDataIterator>
          <CtxVariableIterator>
-          <SingletonIterator value="xs:QName(,,input-context)"/>
+          <SingletonIterator value="xs:string(0x8089080:input-context)"/>
          </CtxVariableIterator>
         </FnDataIterator>
        </PromoteIterator>

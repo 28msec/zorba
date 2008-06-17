@@ -8,12 +8,12 @@ Iterator tree for main query:
      <NodeSortIterator>
       <FLWORIterator>
        <ForVariable name="$$dot">
-        <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+        <DescendantSelfAxisIterator test kind="match_anykind_test" doc test kind="" qname="*" typename="*" nill allowed="0">
          <FnDocIterator>
           <PromoteIterator type="[AtomicXQType XS_STRING]">
            <FnDataIterator>
             <CtxVariableIterator>
-             <SingletonIterator value="xs:QName(,,input-context)"/>
+             <SingletonIterator value="xs:string(0x80838d0:input-context)"/>
             </CtxVariableIterator>
            </FnDataIterator>
           </PromoteIterator>
