@@ -69,6 +69,9 @@ namespace zorba {
   XQPCollator*
   CollationFactory::createCollator(const std::string& aCollationURI)
   {
+    static const char *coll_uri_start = "http://www.zorba-xquery.com/collations/";
+    static int coll_uri_start_len = strlen (coll_uri_start);
+
     if (aCollationURI == "http://www.w3.org/2005/xpath-functions/collation/codepoint")
     {
 #ifndef ZORBA_NO_UNICODE
@@ -86,12 +89,12 @@ namespace zorba {
 #endif
     }
 
-    size_t lStartURI = aCollationURI.find("http://www.zorba-xquery.com/collations/"); 
+    size_t lStartURI = aCollationURI.find(coll_uri_start);
     if ( lStartURI == std::string::npos )
       return 0;
 
     // e.g. PRIMARY/en/US
-    std::string lCollationIdentifier = aCollationURI.substr(37, aCollationURI.size() - 37);
+    std::string lCollationIdentifier = aCollationURI.substr(coll_uri_start_len, aCollationURI.size() - coll_uri_start_len);
 
     std::vector<std::string> lTokens = std_string_tokenize(lCollationIdentifier, "/");
     if(lTokens.size() < 2)
