@@ -135,6 +135,7 @@ public:
     std::stringstream lStream(aContent);
     theManager->loadDocument(aName, lStream);
   }
+  bool deleteDocument(const std::string& aName) { return theManager->deleteDocument(aName); }
 };
 
 class S_Zorba {
@@ -158,6 +159,7 @@ public:
   }
   void shutdown() { theZorba->shutdown(); }
 }; // class S_Zorba
+
 
 %}
 
@@ -192,7 +194,8 @@ public:
 
 class S_XmlDataManager {
 public:
-  void loadDocument(const std::string& aStream, const std::string& aContent);
+  void loadDocument(const std::string& aName, const std::string& aContent);
+  bool deleteDocument(const std::string& aName);
 };
 
 class S_Zorba {
@@ -202,3 +205,4 @@ public:
   S_XmlDataManager getXmlDataManager();
   void shutdown();
 };
+
