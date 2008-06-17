@@ -2250,11 +2250,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   string fname = qn_h->get_localname();
 
   store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
+  xqp_string fn_local = fn_qname->getLocalName ();
 
   if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS))
   {
-    xqp_string fn_local = fn_qname->getLocalName ();
-
     if (fn_local == "position" && sz == 0) 
     {
       nodestack.push(sctx_p->lookup_var_nofail(DOT_POS_VARNAME));
@@ -2343,7 +2342,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       if (sz < 2)
         ZORBA_ERROR_PARAM (XPST0017, "concat", to_string (sz));
     }
-  } 
+  } else if (fn_qname->getNamespace()->byteEqual(ZORBA_FN_NS)) {
+    if (fn_local == "inline-xml" && sz == 1) {
+      nodestack.push (new eval_expr(loc, create_cast_expr (loc, arguments [0], GENV_TYPESYSTEM.STRING_TYPE_ONE, true)));
+      return;
+    }
+  }
 
   sz = arguments.size ();  // recompute size
 
