@@ -34,10 +34,11 @@ class CompilerCB;
 class xquery_driver
 {
 private:
-  typedef struct {
-    bool rename_bit         : 1;
-    bool ftcontains_bit     : 1;
-  } extra_scanner_state_t;
+  struct extra_scanner_state_t {
+    bool rename_bit;
+    bool ftcontains_bit;
+    extra_scanner_state_t () : rename_bit (false), ftcontains_bit (false) {}
+  };
 
 public:
   std::string theFilename;
