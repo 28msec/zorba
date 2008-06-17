@@ -827,7 +827,6 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
 #endif
 
 #ifdef ZORBA_WITH_REST
-  PRINTER_VISITOR_DEFINITION(ChildrenIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaRestPostIterator);
 #endif

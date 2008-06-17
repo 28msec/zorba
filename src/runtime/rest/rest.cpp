@@ -144,39 +144,6 @@ int CurlStreamBuffer::underflow()
   return EOF;
 }
 
-/****************************************************************************
- *
- * ChildrenIterator
- *
- ****************************************************************************/
- 
-void ChildrenIteratorState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-}
-
-void ChildrenIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-}
-
-bool
-ChildrenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  ChildrenIteratorState* state;
-  DEFAULT_STACK_INIT(ChildrenIteratorState, state, planState);
-  
-  state->index = 0;
-  while(state->index < children.size())
-  {
-    result = children[state->index];
-    STACK_PUSH(true, state);
-    state->index++;
-  }
-  
-  STACK_END (state);
-}
-
 
 /****************************************************************************
  *
@@ -191,73 +158,48 @@ bool createQNameHelper(store::Item_t& result, xqpString name)
   return GENV_ITEMFACTORY->createQName(result, ns.getStore(), pre.getStore(), name.getStore());
 }
     
-bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, ChildrenIterator_t children) 
+bool createNodeHelper(store::Item_t parent, PlanState& planState, xqpString name, store::Item_t* result = NULL)
 {
-  store::Item_t qname;
-  createQNameHelper(qname, name);
-  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
+  store::Item_t qname, temp_result;
   store::NsBindings bindings;
-  store::CopyMode copymode;
+  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
+  createQNameHelper(qname, name);
   
-  std::auto_ptr<store::Iterator> cwrapper;
-  if (children != NULL)
-    cwrapper.reset(new PlanWrapper(children.getp(), planState.theCompilerCB, planState.dctx()));
-  
-  return GENV_ITEMFACTORY->createElementNode(result, (ulong)&planState,
+  bool status = GENV_ITEMFACTORY->createElementNode(
+      temp_result,
+      parent,
+      -1,
       qname,
       GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
-      cwrapper.get(),
-      NULL,
-      NULL,
       bindings,
       baseUri,
-      true,
-      true,
-      false,
-      copymode);
+      false);
+
+  if (result != NULL)
+    *result = temp_result;
+  
+  return status;
 }
 
-bool createAttributeHelper(store::Item_t& result, PlanState& planState, xqpString name, xqpString value) 
+bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value, store::Item_t* result = NULL)
 {
   std::auto_ptr<store::Iterator> cwrapper1, cwrapper2;
-  store::Item_t qname, value_string;
+  store::Item_t qname, temp_result;
   createQNameHelper(qname, name);
-  GENV_ITEMFACTORY->createString(value_string, value.theStrStore);
-  cwrapper1.reset(new PlanWrapper(new ChildrenIterator(qname), planState.theCompilerCB, planState.dctx()));
-  cwrapper2.reset(new PlanWrapper(new ChildrenIterator(value_string), planState.theCompilerCB, planState.dctx()));
   store::Item_t type = GET_STORE().theSchemaTypeNames[store::XS_STRING];
-  return GENV_ITEMFACTORY->createAttributeNode(
-      result,
-      (ulong)&planState,
-      cwrapper1.get(),
+  GENV_ITEMFACTORY->createAttributeNode(
+      temp_result,
+      parent, 
+      -1,
+      qname,
       type,
-      cwrapper2.get(),
-      true,
-      true);
-}
+      value.theStrStore);
 
-bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, store::Item_t child) 
-{
-  ChildrenIterator_t childIterator;
-  childIterator = new ChildrenIterator(child);
-  return createResultNode(result, planState, name, childIterator);
+  if (result != NULL)
+    *result = temp_result;
+  
+  return true;
 }
-
-bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name, store::Item_t child1, store::Item_t child2) 
-{
-  ChildrenIterator_t childIterator;
-  childIterator = new ChildrenIterator(child1, child2);
-  return createResultNode(result, planState, name, childIterator);
-}
-
-bool createResultNode(store::Item_t& result, PlanState& planState, xqpString name,
-                                            store::Item_t child1, store::Item_t child2, store::Item_t child3) 
-{
-  ChildrenIterator_t childIterator;
-  childIterator = new ChildrenIterator(child1, child2, child3);
-  return createResultNode(result, planState, name, childIterator);
-}
-
 
 /****************************************************************************
  *
@@ -290,8 +232,16 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
 {
   int reply_code;
   xqpString content_type;
-  ChildrenIterator_t headers_iterator = new ChildrenIterator();
   store::Store& store = GENV.getStore();
+  store::Item_t payload, headers_node, text_code, status_code;
+  store::Item_t doc = NULL;
+
+  createNodeHelper(NULL, planState, "result", &result); // status_code, headers_item, payload);
+
+  createNodeHelper(result, planState, "status_code", &status_code);
+  createNodeHelper(result, planState, "headers", &headers_node);
+  createNodeHelper(result, planState, "payload", &payload);
+  
     
   if (headers.size() == 0)
   {
@@ -303,23 +253,21 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
     {
       reply_code = -1; // TODO change this code
     }
-      
+
     for (unsigned int i = 1; i < headers.size(); i++)
     {
       int pos = headers.operator[](i).find(':');
       if (pos > -1)
       {
-        store::Item_t attrib, header_value, header;
-          
-        xqpString name_string = headers.operator[](i).substr(0, pos);
-        createAttributeHelper(attrib, planState, xqpString("name"), name_string);
-          
-        string temp = headers.operator[](i).substr(pos+2);
+        store::Item_t header, header_value;
+        createNodeHelper(headers_node, planState, "header", &header);
 
+        xqpString name_string = headers.operator[](i).substr(0, pos);
+        createAttributeHelper(header, "name", name_string);
+        
+        string temp = headers.operator[](i).substr(pos+2);
         xqpString value_string = temp;
-        GENV_ITEMFACTORY->createTextNode(header_value, (ulong)&planState, value_string.theStrStore, false, true);
-        createResultNode(header, planState, "header", attrib, header_value);
-        headers_iterator->addChild(header);
+        GENV_ITEMFACTORY->createTextNode(header_value, header, -1, value_string.theStrStore);
 
         // extract content-type
         if (name_string.lowercase() == "content-type")
@@ -332,12 +280,8 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
     }
   }
 
-  store::Item_t text_code, status_code;
-  store::Item_t doc = NULL;
-    
   xqpString temp = NumConversions::intToStr(reply_code);
-  GENV_ITEMFACTORY->createTextNode(text_code, (ulong)&planState, temp.theStrStore, false, true);
-  createResultNode(status_code, planState, "status_code", text_code);
+  GENV_ITEMFACTORY->createTextNode(text_code, status_code, -1, temp.theStrStore);
 
   if (reply_code == 200 )
   {
@@ -388,19 +332,21 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
       
     case 2:  // text
       {
+        store::Item_t temp_item;
         stringstream str;
         str << theStreamBuffer;
         xqpString temp = str.str();
-        GENV_ITEMFACTORY->createTextNode(doc, (ulong)&planState, temp.theStrStore, false, true);
+        GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp.theStrStore);
       }
       break;
 
     case 1:  // base64
       {
+        store::Item_t temp_item;
         xqp_base64Binary base64;
         std::istream is(theStreamBuffer);
         xqpString temp = Base64::encode(is);
-        GENV_ITEMFACTORY->createTextNode(doc, (ulong)&planState, temp.theStrStore, false, true);
+        GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp.theStrStore);
       }
       break;
     }
@@ -408,16 +354,14 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
     
   if (doc != NULL)
   {
-    store::Item_t payload, headers_item;
-    createResultNode(payload, planState, "payload", doc);
-    createResultNode(headers_item, planState, "headers", headers_iterator);
-    createResultNode(result, planState, "result", status_code, headers_item, payload);
   }
   else
   {
+    /*
     store::Item_t headers_item;
-    createResultNode(headers_item, planState, "headers", headers_iterator);
-    createResultNode(result, planState, "result", status_code, headers_item);
+    createNodeHelper(headers_item, planState, "headers", headers_iterator);
+    createNodeHelper(result, planState, "result", status_code, headers_item);
+    */
   }
 
   return 0;

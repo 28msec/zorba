@@ -700,7 +700,7 @@ DECL(sctx, node_by_reference,
 // zorba-rest:get with an URI
 DECL(sctx, rest_get,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
-     GENV_TYPESYSTEM.STRING_TYPE_ONE, // need to make this an ANY_URI_TYPE_ONE
+     GENV_TYPESYSTEM.STRING_TYPE_ONE, 
      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 // zorba-rest:get with an URI and a payload
