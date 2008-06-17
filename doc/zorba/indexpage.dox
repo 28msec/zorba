@@ -31,11 +31,11 @@
        <li> \ref groupby
        <li> \ref trycatch
        <li> \ref eval
-       <li> \ref zorba-math
        <li> Additional Function Libraries
        <ul>
          <li> \ref rest
          <li> \ref deref
+         <li> \ref zorba-math
        </ul>
      </ul>
      <li> \ref commandline
