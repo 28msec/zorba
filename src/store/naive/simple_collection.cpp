@@ -68,7 +68,7 @@ Item_t SimpleCollection::addToCollection(std::istream& stream)
   std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
   xqpStringStore_t docUri;
 
-  XmlNode_t root = loader->loadXml(docUri, stream);
+  XmlNode_t root = static_cast<XmlNode*>(loader->loadXml(docUri, stream).getp());
 
   if (lErrorManager.hasErrors()) 
   {
@@ -78,10 +78,10 @@ Item_t SimpleCollection::addToCollection(std::istream& stream)
   if (root != NULL)
   {
     SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-    theXmlTrees.insert(root);
+    theXmlTrees.insert(root.getp());
   }
 
-  return root;
+  return root.getp();
 }
 
 Item_t SimpleCollection::addToCollection(std::istream* stream)
