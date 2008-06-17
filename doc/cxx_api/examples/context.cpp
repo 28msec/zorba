@@ -172,15 +172,15 @@ context_example_6(Zorba* aZorba)
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
   /* Add the German collation to the context */
-  lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY/de/DE");
+  lStaticContext->addCollation("http://www.zorba-xquery.com/collations/PRIMARY/de/DE");
 
-  lStaticContext->setBaseURI("http://www.flworfound.org/");
+  lStaticContext->setBaseURI("http://www.zorba-xquery.com/");
 
-  if ( lStaticContext->getBaseURI() != "http://www.flworfound.org/")
+  if ( lStaticContext->getBaseURI() != "http://www.zorba-xquery.com/")
     return false;
 
   /* Use the German collation as the third argument to the fn:compare() XQuery function */
-  XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')", 
+  XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.zorba-xquery.com/collations/PRIMARY/de/DE')", 
           lStaticContext); 
 
   try {
@@ -204,9 +204,9 @@ context_example_7(Zorba* aZorba)
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
   try {
-    lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY");
+    lStaticContext->addCollation("http://www.zorba-xquery.com/collations/PRIMARY");
 
-    XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY')", 
+    XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.zorba-xquery.com/collations/PRIMARY')", 
         lStaticContext); 
 
     std::cout << lQuery << std::endl;

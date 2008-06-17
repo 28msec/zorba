@@ -86,7 +86,7 @@ namespace zorba {
 #endif
     }
 
-    size_t lStartURI = aCollationURI.find("http://www.flworfound.org/collations/"); 
+    size_t lStartURI = aCollationURI.find("http://www.zorba-xquery.com/collations/"); 
     if ( lStartURI == std::string::npos )
       return 0;
 

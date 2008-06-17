@@ -6,7 +6,7 @@
 
 \code
 import module namespace math =
-  "http://www.flworfound.org/zorba/math-functions";
+  "http://www.zorba-xquery.com/zorba/math-functions";
 
 math:sqrt ($arg as numeric?) as numeric?
 

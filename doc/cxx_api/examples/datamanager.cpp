@@ -56,7 +56,7 @@ datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
   try {
     /* Create a collection and give it a URI */
     Collection_t lCollection = 
-      aDataManager->createCollection("http://www.flworfound.org/collections/mybooks");
+      aDataManager->createCollection("http://www.zorba-xquery.com/collections/mybooks");
 
     std::cout << "URI "  << lCollection->getUri().getStringValue() << std::endl;
 
@@ -72,7 +72,7 @@ datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
 
     /* Set the default collection to the one we created above */
     Item lDefaultCollection = aZorba->getItemFactory()
-      ->createAnyURI("http://www.flworfound.org/collections/mybooks");
+      ->createAnyURI("http://www.zorba-xquery.com/collections/mybooks");
     lQuery->getDynamicContext()->setDefaultCollection(lDefaultCollection);
 
     std::cout << lQuery << std::endl;
@@ -92,7 +92,7 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
 {
   try {
     Collection_t lCollection = 
-      aDataManager->getCollection("http://www.flworfound.org/collections/mybooks");
+      aDataManager->getCollection("http://www.zorba-xquery.com/collections/mybooks");
 
     std::stringstream lInStream;
     lInStream << "<book>Book";
@@ -117,7 +117,7 @@ datamanager_example_4(Zorba* aZorba, XmlDataManager* aDataManager)
   try {
     // error if the collection already exists
     Collection_t lCollection = 
-      aDataManager->createCollection("http://www.flworfound.org/collections/mybooks");
+      aDataManager->createCollection("http://www.zorba-xquery.com/collections/mybooks");
 
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;

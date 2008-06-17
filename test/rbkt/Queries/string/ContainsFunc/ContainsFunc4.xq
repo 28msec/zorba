@@ -1,1 +1,1 @@
-fn:contains ( "abcdefghi", "def", "http://www.flworfound.org/collations/IDENTICAL/en/US")
+fn:contains ( "abcdefghi", "def", "http://www.zorba-xquery.com/collations/IDENTICAL/en/US")

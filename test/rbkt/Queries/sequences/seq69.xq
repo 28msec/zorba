@@ -1,1 +1,1 @@
-fn:max (("a", "b", "c"), "http://www.flworfound.org/collations/IDENTICAL/en/US")
+fn:max (("a", "b", "c"), "http://www.zorba-xquery.com/collations/IDENTICAL/en/US")

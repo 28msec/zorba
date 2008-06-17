@@ -1,5 +1,5 @@
 import module namespace zorba =
-  "http://www.flworfound.org/zorba/internal-functions";
+  "http://www.zorba-xquery.com/node-ref-functions";
 
 declare variable $input-context external;
 

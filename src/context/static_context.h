@@ -213,7 +213,7 @@ public:
   xqp_string entity_retrieval_url() const;
   void set_encapsulating_entity_baseuri(xqp_string);
   void set_entity_retrieval_url(xqp_string);
-  xqp_string implementation_baseuri () const { return "http://www.flworfound.org/"; }
+  xqp_string implementation_baseuri () const { return "http://www.zorba-xquery.com/"; }
   xqp_string final_baseuri ();
   xqp_string baseuri() const;
   void set_baseuri(xqp_string, bool from_prolog = true);

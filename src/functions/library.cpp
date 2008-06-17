@@ -682,12 +682,12 @@ DECL(sctx, zor_numgen,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 DECL(sctx, node_reference,
-     (createQName(ZORBA_FN_NS, "fn-zorba", "node-reference"),
+     (createQName(ZORBA_NODEREF_FN_NS, "fn-zorba", "node-reference"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
 
 DECL(sctx, node_by_reference,
-     (createQName(ZORBA_FN_NS, "fn-zorba", "node-by-reference"),
+     (createQName(ZORBA_NODEREF_FN_NS, "fn-zorba", "node-by-reference"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 

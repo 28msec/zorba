@@ -71,14 +71,14 @@ ccontext_example_2(XQC_Implementation impl)
 
   impl->create_context(impl, &lContext);
 
-  lContext->set_base_uri(lContext, "http://www.flworfound.org/");
-  lContext->add_collation(lContext, "http://www.flworfound.org/collations/PRIMARY/de/DE");
+  lContext->set_base_uri(lContext, "http://www.zorba-xquery.com/");
+  lContext->add_collation(lContext, "http://www.zorba-xquery.com/collations/PRIMARY/de/DE");
 
   lContext->get_base_uri(lContext, &lStringValue);
-  if ( strcmp (lStringValue, "http://www.flworfound.org/") != 0) return 0;
+  if ( strcmp (lStringValue, "http://www.zorba-xquery.com/") != 0) return 0;
 
   impl->prepare(impl, 
-                "fn:compare('Strasse', 'Straße', 'http://www.flworfound.org/collations/PRIMARY/de/DE')",
+                "fn:compare('Strasse', 'Straße', 'http://www.zorba-xquery.com/collations/PRIMARY/de/DE')",
                 lContext, 0, &lXQuery);
 
   lXQuery->execute(lXQuery, lOutFile);

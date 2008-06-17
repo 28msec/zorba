@@ -6,7 +6,7 @@
 
 \code
 import module namespace zorba =
-  "http://www.flworfound.org/zorba/internal-functions";
+  "http://www.zorba-xquery.com/zorba/internal-functions";
 
   let $book := doc("books.xml")/bib/book[1]
   return zorba:node-reference($book)

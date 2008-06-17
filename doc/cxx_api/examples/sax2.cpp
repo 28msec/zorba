@@ -85,7 +85,7 @@ int sax2( int argc, char * argv[] )
   try 
   {
     // compile a query
-    XQuery_t lQuery = lZorba->compileQuery("<a xmlns:f=\"foo\" xmlns=\"http://flworfound.org/defaultns\"> text a text a <b xmlns:ns1=\"http://flworfound.org/usecase1\" attr1=\"value1\" attr2=\"value2\"> text b </b><f:bar>foo</f:bar><foo /><bar /><b><![CDATA[ foo ]]></b></a>");
+    XQuery_t lQuery = lZorba->compileQuery("<a xmlns:f=\"foo\" xmlns=\"http://zorba-xquery.com/defaultns\"> text a text a <b xmlns:ns1=\"http://zorba-xquery.com/usecase1\" attr1=\"value1\" attr2=\"value2\"> text b </b><f:bar>foo</f:bar><foo /><bar /><b><![CDATA[ foo ]]></b></a>");
 
     // register the content handler created above
     lQuery->registerSAXHandler( &lContentHandler );

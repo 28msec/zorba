@@ -55,12 +55,12 @@ class Collator
        * The URI specifies the locale and collation strengh that is used.
        *
        * The uri must begin with 
-       * http://www.flworfound.org/collations/.
+       * http://www.zorba-xquery.com/collations/.
        * Then a collation strengh (PRIMARY, SECONDARY, TERTIARY, QUATTERNARY, 
        * or IDENTICAL followed by a '/'.
        * Then a lowercase two-letter or three-letter ISO-639 code
        * followed by '/' and an optional uppercase two-letter ISO-3166 code.
-       * For example, http://www.flworfound.org/collations/PRIMARY/en/US
+       * For example, http://www.zorba-xquery.com/collations/PRIMARY/en/US
        * specifies an english language with US begin the country..
        * 
        * For a detailed description see

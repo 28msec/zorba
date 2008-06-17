@@ -406,7 +406,7 @@ static_context::default_collation_uri() const
   xqp_string lURI;
   if (!lookup_default_collation(lURI))
   {
-    lURI = "http://www.flworfound.org/collations/IDENTICAL/en/US";
+    lURI = ZORBA_DEF_COLLATION_NS;
   }
   return lURI;
 }
