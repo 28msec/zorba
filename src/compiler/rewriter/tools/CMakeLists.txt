@@ -13,4 +13,5 @@
 # limitations under the License.
 SET(REWRITER_TOOLS_SRCS
     freevars.cpp
-    var_counter.cpp)
+    var_counter.cpp
+    dataflow_annotations.cpp)

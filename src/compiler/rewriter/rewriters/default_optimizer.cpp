@@ -54,10 +54,10 @@ DefaultOptimizer::DefaultOptimizer()
 
   // First eliminate operations which are not required UPSTREAM
   ADD_SINGLETON_DRIVER(MarkConsumerNodeProps);
-  ADD_SINGLETON_DRIVER(EliminateProducerNodeOps);
   // Now eliminate operations which are redundant because of
   // properties of DOWNSTREAM expressions
   ADD_SINGLETON_DRIVER(MarkProducerNodeProps);
+  ADD_SINGLETON_DRIVER(EliminateProducerNodeOps);
   ADD_SINGLETON_DRIVER(EliminateConsumerNodeOps);
 
   // For UDFs, which need this annotation in udf::requires_dyn_ctx()

@@ -22,6 +22,7 @@
 #include "types/typeops.h"
 
 #include "functions/nodeid_internal.h"
+#include "compiler/rewriter/tools/dataflow_annotations.h"
 
 using namespace std;
 
@@ -48,51 +49,6 @@ template<typename T> void exprs_to_holders (T exprs_begin, T exprs_end, vector <
 {
   for (T i = exprs_begin; i < exprs_end; i++)
     anns.push_back (static_cast<AnnotationHolder *> (&* (*i)));
-}
-
-static bool propagate_up_nodeid_props(expr *target, expr *src) {
-  bool result = false;
-
-  Annotation::value_ref_t snnr = src->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES);
-  Annotation::value_ref_t dnnr = src->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES);
-
-  if (snnr != NULL && target->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES) == NULL) {
-    target->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, snnr);
-    result = true;
-  }
-  if (dnnr != NULL && target->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES) == NULL) {
-    target->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, dnnr);
-    result = true;
-  }
-
-  return result;
-}
-
-static bool propagate_up_nodeid_props_to_flwor_variables(flwor_expr *flwor)
-{
-  bool result = false;
-  uint32_t n = flwor->forlet_count();
-  for(uint32_t i = 0; i < n; ++i) {
-    flwor_expr::forletref_t& fl = (*flwor)[i];
-    expr_t e = fl->get_expr();
-    forlet_clause::varref_t v = fl->get_var();
-    Annotation::value_ref_t snnr = fl->get_type() == forlet_clause::for_clause
-      ? TSVAnnotationValue::TRUE_VAL
-      : e->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES);
-    Annotation::value_ref_t dnnr = fl->get_type() == forlet_clause::for_clause
-      ? TSVAnnotationValue::TRUE_VAL
-      : e->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES);
-
-    if (snnr != NULL && v->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES) == NULL) {
-      v->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, snnr);
-      result = true;
-    }
-    if (dnnr != NULL && v->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES) == NULL) {
-      v->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, dnnr);
-      result = true;
-    }
-  }
-  return result;
 }
 
 // If the result of a FLWOR ignores node order, than the sources of all
@@ -305,87 +261,17 @@ RULE_REWRITE_POST(MarkConsumerNodeProps) {
   return NULL;
 }
 
-RULE_REWRITE_PRE(MarkProducerNodeProps) { return NULL; }
+RULE_REWRITE_PRE(MarkProducerNodeProps)
+{
+  if (rCtx.getRoot().getp() == node) {
+    DataflowAnnotationsComputer computer(rCtx.getStaticContext());
+    computer.compute(node);
+  }
+  return NULL;
+}
+
 RULE_REWRITE_POST(MarkProducerNodeProps)
 {
-  static_context *sctx = rCtx.getStaticContext ();
-
-  switch(node->get_expr_kind()) {
-  case flwor_expr_kind: {
-    flwor_expr *flwor = static_cast<flwor_expr *>(node);
-    if (propagate_up_nodeid_props_to_flwor_variables(flwor))
-      return node;
-#if 0 // TODO: only if FLWOR has no FOR clauses
-    propagate_up_nodeid_props(flwor, &*flwor->get_retval());
-#endif
-    break;
-  }
-
-#if 0  // under construction
-  case trycatch_expr_kind: {
-    trycatch_expr *tc = static_cast<trycatch_expr *>(node);
-    for(expr_iterator i = tc->expr_begin(); !i.done(); ++i) {
-    }
-    break;
-  }
-#endif
-
-  case fo_expr_kind: {
-    fo_expr *fo = static_cast<fo_expr *>(node);
-    const function *f = fo->get_func ();
-
-    const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
-    if (nsdf != NULL) {
-      // not necessary to consider IGNORES_* annotations here, but it's easier to write, and it shouldn't hurt
-      const function *fmin = nsdf->min_action (sctx, node, (*fo) [0], nodes_or_atomics ((*fo) [0]->return_type (sctx)));
-      if (fmin != NULL)
-        fo->set_func (f = fmin);
-      else
-        return (*fo)[0];
-    }
-
-    vector <AnnotationHolder *> anns;
-    exprs_to_holders (fo->begin (), fo->end (), anns);
-    f->compute_annotation (node, anns, AnnotationKey::PRODUCES_DISTINCT_NODES);
-    f->compute_annotation (node, anns, AnnotationKey::PRODUCES_SORTED_NODES);
-
-    break;
-  }
-
-  case relpath_expr_kind: {
-    relpath_expr *relp = static_cast<relpath_expr *> (node);
-    if (TypeOps::type_max_cnt (*((*relp) [0]->return_type (sctx))) > 1)
-      return NULL;
-    int sz = relp->size ();
-    bool backward_steps = false, non_child_steps = false;
-    for (int i = 1; i < sz; i++) {
-      axis_step_expr *ase = ((*relp) [i]).dyn_cast<axis_step_expr> ().getp();
-      if (ase == NULL)
-        return NULL;
-      backward_steps = backward_steps || ase->is_reverse_axis ();
-      non_child_steps = non_child_steps || (ase->getAxis () != axis_kind_child);
-    }
-    bool sorted = false, distinct = false;
-    if (sz == 2) {
-      distinct = true;
-      sorted = ! backward_steps;
-    } else {
-      if (! non_child_steps)
-        sorted = distinct = true;
-    }
-    node->put_annotation (AnnotationKey::PRODUCES_SORTED_NODES, TSVAnnotationValue::from_bool (sorted));
-    node->put_annotation (AnnotationKey::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::from_bool (distinct));
-    break;
-  }
-
-  default: {
-    cast_base_expr *cbe = dynamic_cast<cast_base_expr *> (node);
-    if (cbe != NULL) {
-      propagate_up_nodeid_props (node, cbe->get_input ());
-    }
-    break;
-  }
-  }
   return NULL;
 }
 
@@ -399,7 +285,7 @@ RULE_REWRITE_PRE(EliminateProducerNodeOps)
       return (*fo)[0];
     const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
     if (nsdf != NULL) {
-      const function *fmin = nsdf->min_action (sctx, node, NULL, nodes_or_atomics ((*fo) [0]->return_type (sctx)));
+      const function *fmin = nsdf->min_action (sctx, node, (*fo)[0], nodes_or_atomics ((*fo) [0]->return_type (sctx)));
       if (fmin != NULL)
         fo->set_func (fmin);
       else

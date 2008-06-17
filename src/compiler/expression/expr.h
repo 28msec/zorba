@@ -27,6 +27,8 @@
 #include "zorbaerrors/errors.h"
 
 #include "compiler/expression/expr_base.h"
+#include "types/node_test.h"
+#include "types/typeimpl.h"
 
 #include <zorba/store_consts.h>
 #include "store/api/fullText/ft_options.h"
@@ -65,7 +67,7 @@ public:
     sequence.push_back (result);
   }
 
-  const unsigned size () const { return sequence.size (); }
+  unsigned size () const { return sequence.size (); }
 
   const expr_t &operator [] (int i) const { return sequence [i]; }
   expr_t &operator [] (int i) { invalidate (); return sequence [i]; }
@@ -992,18 +994,18 @@ class validate_expr : public expr {
 public:
   expr_kind_t get_expr_kind () { return validate_expr_kind; }
 protected:
-  enum ParseConstants::validation_mode_t valmode;
+  ParseConstants::validation_mode_t valmode;
   expr_t expr_h;
 
 public:
   validate_expr(
     const QueryLoc&,
-    enum ParseConstants::validation_mode_t,
+    ParseConstants::validation_mode_t,
     expr_t);
 
 public:
   expr_t get_expr() const { return expr_h; }
-  enum ParseConstants::validation_mode_t get_valmode() const { return valmode; }
+  ParseConstants::validation_mode_t get_valmode() const { return valmode; }
 
 public:
   void next_iter (expr_iterator_data&);
