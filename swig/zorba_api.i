@@ -41,43 +41,43 @@
 #include <sstream>
 #include <iostream>
 
-class S_Item {
-  friend class S_ResultIterator;
+class Item {
+  friend class ResultIterator;
 private:
   zorba::Item theItem;
 public:
-  S_Item() {}
-  S_Item(const S_Item& aItem) : theItem(aItem.theItem) {}
-  static S_Item createEmptyItem() { return S_Item(); }
+  Item() {}
+  Item(const Item& aItem) : theItem(aItem.theItem) {}
+  static Item createEmptyItem() { return Item(); }
   std::string getStringValue() const { return std::string(theItem.getStringValue().c_str()); }
-}; // class S_Item
+}; // class Item
 
-class S_ResultIterator {
+class ResultIterator {
 private:
   zorba::ResultIterator_t theResultIterator;
 public:
-  S_ResultIterator() {}
-  S_ResultIterator(const S_ResultIterator& aResultIterator) 
+  ResultIterator() {}
+  ResultIterator(const ResultIterator& aResultIterator) 
   : theResultIterator(aResultIterator.theResultIterator) 
   {}
-  S_ResultIterator(zorba::ResultIterator_t aResultIterator) : theResultIterator(aResultIterator) {}
+  ResultIterator(zorba::ResultIterator_t aResultIterator) : theResultIterator(aResultIterator) {}
   void open() { theResultIterator->open(); }
-  bool next(S_Item& aItem) 
+  bool next(Item& aItem) 
   { 
       return theResultIterator->next(aItem.theItem); 
   }
   void close() { theResultIterator->close(); }
   void destroy() { theResultIterator = 0; }
 
-}; // class S_ResultIterator
+}; // class ResultIterator
 
-class S_XQuery {
+class XQuery {
 private:
   zorba::XQuery_t theQuery;
 public:
-  S_XQuery() {}
-  S_XQuery(const S_XQuery& aXQuery) : theQuery(aXQuery.theQuery) {}
-  S_XQuery(zorba::XQuery_t aQuery) : theQuery(aQuery) {}
+  XQuery() {}
+  XQuery(const XQuery& aXQuery) : theQuery(aXQuery.theQuery) {}
+  XQuery(zorba::XQuery_t aQuery) : theQuery(aQuery) {}
   std::string execute()
   {
     std::stringstream lStream;
@@ -85,35 +85,35 @@ public:
     return lStream.str();
   }
   void destroy() { theQuery = 0; }
-  S_ResultIterator iterator() { return S_ResultIterator(theQuery->iterator()); }
-}; // class S_XQuery
+  ResultIterator iterator() { return ResultIterator(theQuery->iterator()); }
+}; // class XQuery
 
-class S_Store {
+class Store {
 public:
-  S_Store() {}
-  S_Store(const S_Store&) {}
-  virtual ~S_Store() {}
+  Store() {}
+  Store(const Store&) {}
+  virtual ~Store() {}
   virtual zorba::store::SimpleStore* getStore() const { return 0; }
   // TODO the above line must be replace by the following line!!
   // virtual zorba::store::Store* getStore() const { return 0; }
 };
 
-class S_InMemoryStore : public S_Store {
+class InMemoryStore : public Store {
 private:
   zorba::store::SimpleStore* theStore;
 public:
-  S_InMemoryStore() : theStore(0) {}
-  S_InMemoryStore(const S_InMemoryStore& aStore) : S_Store(aStore), theStore(aStore.theStore) {}
-  virtual ~S_InMemoryStore() {}
-  S_InMemoryStore(zorba::store::SimpleStore* aStore) : theStore(aStore) {}
-  static S_InMemoryStore getInstance() { return S_InMemoryStore(zorba::inmemorystore::InMemoryStore::getInstance());
+  InMemoryStore() : theStore(0) {}
+  InMemoryStore(const InMemoryStore& aStore) : Store(aStore), theStore(aStore.theStore) {}
+  virtual ~InMemoryStore() {}
+  InMemoryStore(zorba::store::SimpleStore* aStore) : theStore(aStore) {}
+  static InMemoryStore getInstance() { return InMemoryStore(zorba::inmemorystore::InMemoryStore::getInstance());
   }
-  S_InMemoryStore& operator=(const S_InMemoryStore& aStore) 
+  InMemoryStore& operator=(const InMemoryStore& aStore) 
   {
     theStore = aStore.theStore; 
     return *this;
   }
-  static void shutdown(S_InMemoryStore& aStore)
+  static void shutdown(InMemoryStore& aStore)
   {
     zorba::inmemorystore::InMemoryStore::shutdown(aStore.theStore);
   }
@@ -123,13 +123,13 @@ public:
   }
 };
 
-class S_XmlDataManager {
+class XmlDataManager {
 private:
   zorba::XmlDataManager* theManager;
 public:
-  S_XmlDataManager() : theManager(0) {}
-  S_XmlDataManager(const S_XmlDataManager& aManager) : theManager(aManager.theManager) {} 
-  S_XmlDataManager(zorba::XmlDataManager* aManager) : theManager(aManager) {}
+  XmlDataManager() : theManager(0) {}
+  XmlDataManager(const XmlDataManager& aManager) : theManager(aManager.theManager) {} 
+  XmlDataManager(zorba::XmlDataManager* aManager) : theManager(aManager) {}
   void loadDocument(const std::string& aName, const std::string& aContent)
   {
     std::stringstream lStream(aContent);
@@ -138,71 +138,71 @@ public:
   bool deleteDocument(const std::string& aName) { return theManager->deleteDocument(aName); }
 };
 
-class S_Zorba {
+class Zorba {
 private:
   zorba::Zorba* theZorba;
-  S_Zorba(zorba::Zorba* aZorba):theZorba(aZorba){}
+  Zorba(zorba::Zorba* aZorba):theZorba(aZorba){}
 public:
-  S_Zorba():theZorba(0){}
-  S_Zorba(const S_Zorba& aZorba) : theZorba(aZorba.theZorba) {}
-  static S_Zorba getInstance(const S_Store& aStore)
+  Zorba():theZorba(0){}
+  Zorba(const Zorba& aZorba) : theZorba(aZorba.theZorba) {}
+  static Zorba getInstance(const Store& aStore)
   {
-    return S_Zorba(zorba::Zorba::getInstance(aStore.getStore()));
+    return Zorba(zorba::Zorba::getInstance(aStore.getStore()));
   }
-  S_XQuery compileQuery(const std::string& aStr) 
+  XQuery compileQuery(const std::string& aStr) 
   {
-      return S_XQuery(theZorba->compileQuery(aStr));
+      return XQuery(theZorba->compileQuery(aStr));
   }
-  S_XmlDataManager getXmlDataManager()
+  XmlDataManager getXmlDataManager()
   {
-    return S_XmlDataManager(theZorba->getXmlDataManager());
+    return XmlDataManager(theZorba->getXmlDataManager());
   }
   void shutdown() { theZorba->shutdown(); }
-}; // class S_Zorba
+}; // class Zorba
 
 
 %}
 
-class S_Item {
+class Item {
 public: 
-  static S_Item createEmptyItem();
+  static Item createEmptyItem();
   std::string getStringValue() const;
 };
 
-class S_ResultIterator {
+class ResultIterator {
 public:
   void open();
-  bool next(S_Item&);
+  bool next(Item&);
   void close();
   void destroy();
 };
 
-class S_XQuery {
+class XQuery {
 public:
   std::string execute(); 
   void destroy();
-  S_ResultIterator iterator();
+  ResultIterator iterator();
 };
 
-class S_Store {};
+class Store {};
 
-class S_InMemoryStore : public S_Store {
+class InMemoryStore : public Store {
 public:
-  static S_InMemoryStore getInstance();
-  static void shutdown(S_InMemoryStore&);
+  static InMemoryStore getInstance();
+  static void shutdown(InMemoryStore&);
 };
 
-class S_XmlDataManager {
+class XmlDataManager {
 public:
   void loadDocument(const std::string& aName, const std::string& aContent);
   bool deleteDocument(const std::string& aName);
 };
 
-class S_Zorba {
+class Zorba {
 public:
-  static S_Zorba getInstance(const S_Store&);
-  S_XQuery compileQuery(const std::string& aStr);
-  S_XmlDataManager getXmlDataManager();
+  static Zorba getInstance(const Store&);
+  XQuery compileQuery(const std::string& aStr);
+  XmlDataManager getXmlDataManager();
   void shutdown();
 };
 

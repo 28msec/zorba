@@ -24,7 +24,7 @@ def example2(zorba)
   xquery = zorba.compileQuery("(1,2,3,4,5)")
   iter = xquery.iterator()
   iter.open()
-  item = Zorba_api::S_Item::createEmptyItem()
+  item = Zorba_api::Item::createEmptyItem()
   while iter.next(item) do
     print item.getStringValue()
     print "\n"
@@ -66,8 +66,8 @@ def example5(zorba)
   xquery.destroy()
 end
 
-store = Zorba_api::S_InMemoryStore.getInstance()
-zorba = Zorba_api::S_Zorba.getInstance(store)
+store = Zorba_api::InMemoryStore.getInstance()
+zorba = Zorba_api::Zorba.getInstance(store)
 
 print "Example1:\n"
 example1(zorba)
@@ -90,4 +90,4 @@ example5(zorba)
 print "\n\n"
 
 zorba.shutdown()
-Zorba_api::S_InMemoryStore.shutdown(store)
+Zorba_api::InMemoryStore.shutdown(store)
