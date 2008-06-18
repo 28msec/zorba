@@ -4,16 +4,11 @@
 
 \section nodereference node-reference()
 
-\code
-import module namespace zorba =
-  "http://www.zorba-xquery.com/zorba/node-ref-functions";
+\include reference_doc_example_01.xq
 
-  let $book := doc("books.xml")/bib/book[1]
-  return zorba:node-reference($book)
-\endcode
 
 \section nodebyreference node-by-reference()
 
-
+\include reference_doc_example_02.xq
 
 */

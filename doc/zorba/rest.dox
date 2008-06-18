@@ -1,12 +1,199 @@
 /** \page rest REST
 
-\section restgrammar REST Grammar
+In order to use Zorba's REST functionality, the module "http://www.zorba-xquery.com/zorba/rest-functions" has
+to be included at the beginning of a query. For example
 
 \code
-import module namespace rest =
-  "http://www.zorba-xquery.com/zorba/rest-functions";
+  import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
 \endcode
 
+Currently, Zorba provides function to setup HTTP GET and POST requests. We'll add additional functions for
+HEAD, DELETE, and PUT with a later release.
+Moreover, all of the functions will be declared nondeterministic (as in the upcoming XQuery 1.1. specification) and 
+sequential (as in the upcoming XQuery Scripting specification).
+
+\section restfunctions REST Functions
+The following section defines the various REST XQuery functions (and their parameters) provided by Zorba.
+
+\subsection getfunctions GET Functions
+
+\code
+ declare nondeterministic sequential function zorba-rest:get(url as xs:string) as zorba-rest:result;
+ declare nondeterministic sequential function zorba-rest:get(url as xs:string, payload as zorba-rest:payload*) as zorba-rest:result;
+ declare nondeterministic sequential function zorba-rest:get(url as xs:string, payload as zorba-rest:payload*, 
+                                                             headers as zorba-rest:headers*) as zorba-rest:result;
+\endcode
+
+\subsection postfunctions POST Functions
+
+\code
+ declare nondeterministic sequential function zorba-rest:post(url as xs:string) as zorba-rest:result;
+ declare nondeterministic sequential function zorba-rest:post(url as xs:string, payload as zorba-rest:payload*) as zorba-rest:result;
+ declare nondeterministic sequential function zorba-rest:post(url as xs:string, payload as zorba-rest:payload*, 
+                                                              headers as zorba-rest:headers*) as zorba-rest:result;
+\endcode
+
+\subsection parameterdesc Parameter Descriptions
+
+\subsubsection resturl URL
+The URL as an xs:string. This can be either a HTTP or a HTTPS URL optionally containing additional parameters.
+
+\subsubsection restpayload Payload
+
+Parameter values may be text nodes for the PUT and POST, and XML nodes for the POST request. 
+The XML nodes will be sent with the "text/xml" content-type.
+
+\code
+ <zorba-rest:payload>
+   <zorba-rest:part name="parameter name">parameter value</zorba-rest:part>
+     ...
+ </zorba-rest:payload>
+\endcode
+
+\subsubsection restheaders Headers
+Custom headers to be sent with the HTTP request.
+
+\code
+ <zorba-rest:headers>
+   <zorba-rest:header name="header name">header value</zorba-rest:header>
+   ...
+ <zorba-rest:headers>
+\endcode
+
+\subsubsection restresult Result
+Contains the reply of the HTTP request.
+
+\code
+  <zorba-rest:result>
+    <zorba-rest:status_code>code</zorba-rest:status_code>
+    <zorba-rest:headers>
+      <zorba-rest:header name="header name">header value</zorba:rest:header>
+      ...
+    </zorba-rest:headers>
+    <zorba-rest:payload>
+      Payload contents 
+      ...
+    </zorba-rest:payload>
+  </zorba-rest:result>
+\endcode
+
+The headers part contains the headers sent by the servers, e.g. content-type, content-length, etc.
+The payload will be: an XML part when the content type is xml or xhtml, a text node for all content-types that begin with "text/" (except "text/xml") a Base64 encoded value in all the other cases.
+
+\subsubsection resterrors Errors
+
+An error will be generated for any reply that has a status code different from 200. 
+The payload, however, will be returned too if available.
+
 \section restexamples REST Examples
+
+\subsection restgetexamples REST GET Examples
+
+\subsubsection restexample2 Example 2
+
+\code
+(: Simple GET example :)
+import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
+
+zorba-rest:get("http://www.google.com/")
+\endcode
+
+\subsubsection restexample2 Example 2
+
+\code
+(: Invoke Google search for the "zorba xquery" term :)
+
+import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
+
+zorba-rest:get("http://www.google.com/search",
+               <payload>
+                <part name="q">zorba xquery</part>
+               </payload>)
+\endcode
+
+\subsubsection restexample3 Example 3
+
+\code
+(: Invoke zorba-rest:get and pass a value for the Referer header :)
+
+import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
+
+zorba-rest:get("http://www.google.com/", 
+               (),
+               <headers>
+                <header name="Referer">http://www.yahoo.com/</header>
+               </headers>)
+\endcode
+
+\subsubsection restexample4 Example 4
+
+\code
+(: Complex GET example with parameters and headers :)
+
+import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
+
+zorba-rest:get("http://www.example.com/path",
+               <payload>
+                 <part name="parameter1">value1</part>
+                 <part name="parameter2">value2</part>
+               </payload>,
+               <headers>
+                 <header name="Referer">http://www.example2.com/path2</header>
+                 <header name="User_agent">ZorbaREST</header>
+               </headers>)
+\endcode
+
+
+\subsection restpostexamples REST POST Examples
+
+\subsubsection restpostexample1 Example 1
+
+\code
+(: Example of zorba-rest:post with string parameters :)
+
+import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
+
+zorba-rest:post("http://www.example.com/path",
+                <payload>
+                  <part name="parameter1">value1</part>
+                  <part name="parameter2">value2</part>
+                </payload>)
+\endcode
+
+\subsubsection restpostexample2 Example 2
+
+\code
+(: Example of zorba-rest:post with string parameters and custom headers :)
+
+import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
+
+zorba-rest:post("http://www.example.com/path",
+                <payload>
+                  <part name="parameter1">value1</part>
+                  <part name="parameter2">value2</part>
+                </payload>,
+                <headers>
+                  <header name="custom">custom header value</header>
+                 </headers>)
+\endcode
+
+\subsubsection restpostexample3 Example 3
+
+\code
+(: Example of zorba-rest:post with XML parts and strings as parameters :)
+
+import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
+
+zorba-rest:post("http://www.example.com/path",
+                <payload>
+                  <part name="parameter1">value1</part>
+                  <part name="parameter2">
+                    <data attr="value">
+                      <a>text</a>
+                      <b>text2</b>
+                    </data>
+                  </part>
+                </payload>)
+\endcode
 
 */
