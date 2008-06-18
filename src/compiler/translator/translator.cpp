@@ -2492,7 +2492,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0073, loc);
     
     string imported_ns;
-    static_context *imported_sctx;
+    static_context *imported_sctx = NULL;
     if (minfo->mod_ns_map.get (aturi, imported_ns)) {
       bool found = minfo->mod_sctx_map.get (aturi, imported_sctx);
       assert (found);

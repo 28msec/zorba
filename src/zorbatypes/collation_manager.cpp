@@ -72,7 +72,7 @@ namespace zorba {
     static const char *coll_uri_start = "http://www.zorba-xquery.com/collations/";
     static int coll_uri_start_len = strlen (coll_uri_start);
 
-    if (aCollationURI == "http://www.w3.org/2005/xpath-functions/collation/codepoint")
+    if (aCollationURI == W3C_CODEPT_COLLATION_NS)
     {
 #ifndef ZORBA_NO_UNICODE
       Collator* lCollator;

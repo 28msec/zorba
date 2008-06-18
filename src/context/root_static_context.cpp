@@ -50,9 +50,9 @@ void root_static_context::init()
   set_default_elem_type_ns ("");		
   set_default_function_namespace (lookup_ns ("fn"));
   set_context_item_static_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-  set_default_collation_uri ("http://www.w3.org/2005/xpath-functions/collation/codepoint");
-  add_collation("http://www.zorba-xquery.com/collations/IDENTICAL/en/US");
-  add_collation("http://www.w3.org/2005/xpath-functions/collation/codepoint");
+  set_default_collation_uri (W3C_CODEPT_COLLATION_NS);
+  add_collation(ZORBA_DEF_COLLATION_NS);
+  add_collation(W3C_CODEPT_COLLATION_NS);
   set_construction_mode(StaticContextConsts::cons_preserve);
   set_ordering_mode(StaticContextConsts::ordered);
   set_order_empty_mode(StaticContextConsts::empty_greatest);
