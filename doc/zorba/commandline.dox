@@ -106,7 +106,34 @@
 
 \section commandlineexamples Examples
 
-\subsection cmdlineExample1 Execute multiple queries:
+\subsection cmdlineExample1 Execute inline queries:
+This example shows the use of <tt>-t</tt>, <tt>--print-query</tt> output options and <tt>-i</tt> execute option.
+
+Zorba command:
+\verbatim
+zorba -t --print-query -i "1+1" -i "fn:concat('un', 'grateful')"
+\endverbatim
+
+Output:
+\verbatim
+Query number 1 :
+1+1
+<?xml version="1.0" encoding="UTF-8"?>
+2
+Number of executions = 1
+Compilation time: 31 milliseconds
+First Execution time: 0 milliseconds (i.e. parsing the document is included)
+
+Query number 2 :
+fn:concat('un', 'grateful')
+<?xml version="1.0" encoding="UTF-8"?>
+ungrateful
+Number of executions = 1
+Compilation time: 9 milliseconds
+First Execution time: 0 milliseconds (i.e. parsing the document is included)
+\endverbatim
+
+\subsection cmdlineExample2 Execute multiple queries:
 The purpose of this example is to demonstrate the use of <tt>-f</tt> and <tt>-e</tt> execute options.
 
  These are the files used in this example and their meaning:
@@ -171,7 +198,9 @@ $input-context/works[1]/employee[1]
 \endverbatim
 
 %Zorba command:
-<tt>%zorba -e input-context=works-mod.xml -f id-typeswitch-expr-04.xq -f id-typeswitch-expr-04-test.xq</tt>
+\verbatim
+zorba -e input-context=works-mod.xml -f id-typeswitch-expr-04.xq -f id-typeswitch-expr-04-test.xq
+\endverbatim
 
 \Note Make sure you give the correct path to the works-mod.xml, id-typeswitch-expr-04.xq and id-typeswitch-expr-04-test.xq files.
  
