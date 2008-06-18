@@ -29,3 +29,7 @@ FOREACH (test ${TestsToRun})
 	MESSAGE(STATUS ${TName})
 	ADD_TEST(${TName} cexamples ${TName})
 ENDFOREACH(test)
+
+INSTALL(FILES ${CAPI_EXAMPLES} ${CMAKE_CURRENT_BINARY_DIR}/cexamples.c
+        DESTINATION
+        share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/c/examples)

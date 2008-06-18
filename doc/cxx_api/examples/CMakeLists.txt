@@ -51,6 +51,8 @@ MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/Makefile.cmake ${CMAKE_CU
 
 # install the examples
 INSTALL(FILES ${API_EXAMPLES} ${CMAKE_CURRENT_BINARY_DIR}/examples.cpp 
-        DESTINATION share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/examples)
+        DESTINATION
+        share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/cxx/examples)
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba 
-        DESTINATION share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/examples RENAME Makefile)
+        DESTINATION
+        share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/cxx/examples RENAME Makefile)

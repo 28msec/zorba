@@ -28,3 +28,7 @@ ELSE(${PYTHON_LIBS_NOT_FOUND} OR ${PYTHON_INCL_NOT_FOUND})
     MESSAGE(STATUS "Python test not added because Python Interpreter not found.")
   ENDIF(${PYTHON_FOUND})
 ENDIF(${PYTHON_LIBS_NOT_FOUND} OR ${PYTHON_INCL_NOT_FOUND})
+
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/python_test.py
+        DESTINATION
+        share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/python/examples)
