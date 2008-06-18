@@ -595,14 +595,14 @@ void* thread_main(void* param)
     //
     // Set the error file to be used by the error handler for the current query
     //
-    errHandler.setErrorFile(errorPath.file_string());
+    errHandler.setErrorFile(errorPath.native_file_string());
 
     //
     // Read the xargs and expected errors from the spec file, if it exists
     //
     Specification querySpec;
     if (fs::exists(specPath)) 
-      querySpec.parseFile(specPath.file_string()); 
+      querySpec.parseFile(specPath.native_file_string()); 
 
 
     //
@@ -611,11 +611,11 @@ void* thread_main(void* param)
     if (queries->theQueryObjects[queryNo] == 0)
     {
       // Read the query string from the query file
-      slurp_file(queryPath.file_string().c_str(), queryString);
+      slurp_file(queryPath.native_file_string().c_str(), queryString);
 
       // Compile the query
       zorba::XQuery_t query = zorba->createQuery(&errHandler);
-      query->setFileName(queryPath.file_string());
+      query->setFileName(queryPath.native_file_string());
       query->compile(queryString.c_str(), getCompilerHints());
 
       if (errHandler.errors())
@@ -838,7 +838,7 @@ main(int argc, char** argv)
     std::cerr << "The directory " << queriesDir << " could not be found" << std::endl;
     exit(2);
   }
-  queries.theQueriesDir = bucketPath.directory_string();
+  queries.theQueriesDir = bucketPath.native_directory_string();
 
   bucketPath = fs::system_complete(fs::path(refsDir, fs::native));
   if (!fs::is_directory(bucketPath))
@@ -846,7 +846,7 @@ main(int argc, char** argv)
     std::cerr << "The directory " << refsDir << " could not be found" << std::endl;
     exit(2);
   }
-  queries.theRefsDir = bucketPath.directory_string();
+  queries.theRefsDir = bucketPath.native_directory_string();
 
   bucketPath = fs::system_complete(fs::path(resultsDir, fs::native));
   if (!fs::exists(bucketPath))
@@ -858,7 +858,7 @@ main(int argc, char** argv)
     std::cerr << "The pathname " << refsDir << " is not a directory" << std::endl;
     exit(2);
   }
-  queries.theResultsDir = bucketPath.directory_string();
+  queries.theResultsDir = bucketPath.native_directory_string();
 
   //
   // Search and collect all the query files in the bucket.
