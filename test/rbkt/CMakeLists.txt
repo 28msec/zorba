@@ -37,9 +37,9 @@ TARGET_LINK_LIBRARIES(testdriver ${requiredlibs-testdriver})
 #
 # Compile and build the multi-threaded testdriver executable
 #
-ADD_EXECUTABLE(testdriver_mt testdriver_mt.cpp)
+#ADD_EXECUTABLE(testdriver_mt testdriver_mt.cpp)
 
-TARGET_LINK_LIBRARIES(testdriver_mt ${requiredlibs-testdriver})
+#TARGET_LINK_LIBRARIES(testdriver_mt ${requiredlibs-testdriver})
 
 
 #
