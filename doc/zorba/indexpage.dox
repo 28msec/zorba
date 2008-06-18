@@ -42,10 +42,10 @@
      <li> \ref commandline
      <li> Application Programming Interfaces (APIs)
      <ul>
-       <li><a class="el" href="../../cxx_api/html/index.html">C++ API</a>
-       <li><a class="el" href="../../c_api/html/index.html">C API</a>
-       <li><a class="el" href="../../python_api/html/index.html">Python API</a>
-       <li><a class="el" href="../../ruby_api/html/index.html">Ruby API</a>
+       <li><a class="el" href="../../cxx/html/index.html">C++ API</a>
+       <li><a class="el" href="../../c/html/index.html">C API</a>
+       <li><a class="el" href="../../python/html/index.html">Python API</a>
+       <li><a class="el" href="../../ruby/html/index.html">Ruby API</a>
      </ul>
    </ul>
  </ul>
