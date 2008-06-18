@@ -26,6 +26,7 @@
 #include <cstring>
 #include <cstdlib>
 #include "zorbatypes/collation_manager.h"
+#include "zorbamisc/ns_consts.h"
 
 namespace zorba {
 
