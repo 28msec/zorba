@@ -59,7 +59,8 @@ def example6(zorba):
   dataManager = zorba.getXmlDataManager()
   dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
   xquery1 = zorba.compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books")
-  xquery1.applyUpdates()
+  if xquery1.isUpdateQuery():
+    xquery1.applyUpdates()
   xquery2 = zorba.compileQuery("doc('books.xml')//book")
   print xquery2.execute()
   return
