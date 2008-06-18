@@ -45,13 +45,6 @@
 #include "store/api/item_factory.h"
 
 
-// MS Visual Studio does not fully support throw(), and issues a warning
-#ifndef _MSC_VER
-#define THROW_XQP_EXCEPTION   throw(xqp_exception)
-#else
-#define THROW_XQP_EXCEPTION   
-#endif
-
 using namespace std;
 namespace zorba {
 
