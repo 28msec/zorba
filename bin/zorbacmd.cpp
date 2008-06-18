@@ -394,23 +394,23 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lTiming) {
       lNumExecutions = lProperties.getNoOfExecutions();
 
-      std::cerr << std::endl << "Number of executions = "
+      std::cout << std::endl << "Number of executions = "
           << lNumExecutions << std::endl;
 
       lDiffCompileTime = lStopCompileTime - lStartCompileTime;
-      std::cerr << "Compilation time: "
+      std::cout << "Compilation time: "
           << lDiffCompileTime.total_milliseconds()
           << " milliseconds" << std::endl;
 
       lDiffFirstExecutionTime = lStopFirstExecutionTime - lStartFirstExecutionTime;
-      std::cerr << "First Execution time: "
+      std::cout << "First Execution time: "
           << lDiffFirstExecutionTime.total_milliseconds()
           << " milliseconds (i.e. parsing the document is included)" << std::endl;
 
       if (lNumExecutions > 1) {
         lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime) /
             (lNumExecutions - 1);
-        std::cerr << "Average Execution time: "
+        std::cout << "Average Execution time: "
             << lDiffExecutionTime.total_milliseconds()
             << " milliseconds" << std::endl;
       }
