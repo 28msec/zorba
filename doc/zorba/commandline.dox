@@ -218,6 +218,7 @@ Expected result:
   <empnum>E1</empnum>
   <pnum>P1</pnum>
   <hours>40</hours>
-<hours>30</hours></employee></td>
+  <hours>30</hours>
+</employee>
 \endverbatim
 */
