@@ -66,6 +66,17 @@ def example5(zorba)
   xquery.destroy()
 end
 
+def example6(zorba)
+  dataManager = zorba.getXmlDataManager()
+  dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
+  xquery1 = zorba.compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books")
+  xquery1.applyUpdates()
+  xquery2 = zorba.compileQuery("doc('books.xml')//book")
+  print xquery2.execute()
+  xquery1.destroy()
+  xquery2.destroy()
+end
+
 store = Zorba_api::InMemoryStore.getInstance()
 zorba = Zorba_api::Zorba.getInstance(store)
 
@@ -87,6 +98,10 @@ print "\n\n"
 
 print "Example5:\n"
 example5(zorba)
+print "\n\n"
+
+print "Example6:\n"
+example6(zorba)
 print "\n\n"
 
 zorba.shutdown()

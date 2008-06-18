@@ -55,6 +55,15 @@ def example5(zorba):
   print xquery.execute()
   return
 
+def example6(zorba):
+  dataManager = zorba.getXmlDataManager()
+  dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
+  xquery1 = zorba.compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books")
+  xquery1.applyUpdates()
+  xquery2 = zorba.compileQuery("doc('books.xml')//book")
+  print xquery2.execute()
+  return
+
 store = zorba_api.InMemoryStore_getInstance()
 zorba = zorba_api.Zorba_getInstance(store)
 
@@ -76,6 +85,10 @@ print ""
 
 print "Example5:"
 example5(zorba)
+print ""
+
+print "Example6:"
+example6(zorba)
 print ""
 
 zorba.shutdown()

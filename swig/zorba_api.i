@@ -84,6 +84,8 @@ public:
       lStream << theQuery;
     return lStream.str();
   }
+  bool isUpdateQuery() { return theQuery->isUpdateQuery(); }
+  void applyUpdates() { theQuery->applyUpdates(); }
   void destroy() { theQuery = 0; }
   ResultIterator iterator() { return ResultIterator(theQuery->iterator()); }
 }; // class XQuery
@@ -180,6 +182,8 @@ public:
 class XQuery {
 public:
   std::string execute(); 
+  bool isUpdateQuery();
+  void applyUpdates();
   void destroy();
   ResultIterator iterator();
 };
