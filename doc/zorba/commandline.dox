@@ -111,7 +111,7 @@ This example shows the use of <tt>-t</tt>, <tt>--print-query</tt> output options
 
 Zorba command:
 \verbatim
-zorba -t --print-query -i "1+1" -i "fn:concat('un', 'grateful')"
+zorba -t --print-query -i "1+1" -i "fn:concat('un', 'grateful')" -i "fn:matches('abracadabra', '^a.*a$')"
 \endverbatim
 
 Output:
@@ -131,9 +131,17 @@ ungrateful
 Number of executions = 1
 Compilation time: 9 milliseconds
 First Execution time: 0 milliseconds (i.e. parsing the document is included)
+
+Query number 3 :
+fn:matches('abracadabra', '^a.*a$')
+<?xml version="1.0" encoding="UTF-8"?>
+true
+Number of executions = 1
+Compilation time: 8 milliseconds
+First Execution time: 0 milliseconds (i.e. parsing the document is included)
 \endverbatim
 
-\subsection cmdlineExample2 Execute multiple queries:
+\subsection cmdlineExample2 Execute update queries:
 The purpose of this example is to demonstrate the use of <tt>-f</tt> and <tt>-e</tt> execute options.
 
  These are the files used in this example and their meaning:
