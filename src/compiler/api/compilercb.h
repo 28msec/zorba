@@ -21,36 +21,43 @@
 
 namespace zorba {
   
-  class CompilerCB 
+class static_context;
+
+
+class CompilerCB 
+{
+ public:
+  typedef struct __config_t 
   {
-  public:
-      typedef struct __config_t {
-        typedef enum {
-          O0,
-          O1
-        } opt_level_t;
+    typedef enum {
+      O0,
+      O1
+    } opt_level_t;
 
-        typedef void (* expr_callback) (const expr *, std::string name);
-        typedef void (* ast_callback) (const parsenode *, std::string name);
+    typedef void (* expr_callback) (const expr *, std::string name);
+    typedef void (* ast_callback) (const parsenode *, std::string name);
 
-        opt_level_t opt_level;
-        ast_callback parse_cb;
-        expr_callback translate_cb, normalize_cb, optimize_cb;
-        bool print_item_flow;  // TODO: move to RuntimeCB
+    opt_level_t opt_level;
+    ast_callback parse_cb;
+    expr_callback translate_cb, normalize_cb, optimize_cb;
+    bool print_item_flow;  // TODO: move to RuntimeCB
 
-        __config_t()
-        : opt_level (O1), parse_cb (NULL), print_item_flow (false)
-        {
-          translate_cb = normalize_cb = optimize_cb = NULL;
-        }
-      } config_t;
-      
-      ~CompilerCB ();
-      static_context*               m_sctx;          
-      std::vector<static_context_t> m_sctx_list;     
-      error::ErrorManager*          m_error_manager;
-      config_t                      m_config;
-  }; /* class CompilerCB */
+    __config_t() : opt_level (O1), parse_cb (NULL), print_item_flow (false)
+    {
+      translate_cb = normalize_cb = optimize_cb = NULL;
+    }
+  } config_t;
+  
+
+  CompilerCB();
+
+  ~CompilerCB();
+
+  static_context*               m_sctx;          
+  std::vector<static_context_t> m_sctx_list;     
+  error::ErrorManager*          m_error_manager;
+  config_t                      m_config;
+};
 
 } /* namespace zorba */
 

@@ -20,6 +20,15 @@
 
 namespace zorba {
 
-  CompilerCB::~CompilerCB() {}
+
+CompilerCB::CompilerCB()
+  :
+  m_sctx(NULL),
+  m_error_manager(NULL)
+{
+}
+
+
+CompilerCB::~CompilerCB() {}
 
 } /* namespace zorba */

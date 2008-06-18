@@ -159,9 +159,10 @@ XQueryImpl::clone() const
     lImpl->registerErrorHandler(theErrorHandler);
     lImpl->thePlan = thePlan;
     lImpl->theFileName = theFileName;
-
+    
     // child static context
     lImpl->theStaticContext = theStaticContext->create_child_context();
+    lImpl->theCompilerCB->m_sctx = lImpl->theStaticContext;
 
     // child dynamic context
     delete lImpl->theDynamicContext;
@@ -190,6 +191,7 @@ XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
     if ( ! theUserErrorHandler ) {
       delete theErrorHandler;
     }
+
     theErrorHandler = aErrorHandler;
     theUserErrorHandler = true;
 
