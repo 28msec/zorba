@@ -20,10 +20,12 @@ IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
     FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 
-# configurethe testdriver
+# configure the testdriver
 CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfig.h)
 
+#
 # Compile and build the testdriver executable
+#
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 SET(requiredlibs-testdriver ${requiredlibs-testdriver} zorba simplestore)
@@ -32,8 +34,19 @@ ADD_EXECUTABLE(testdriver testdriver.cpp)
 
 TARGET_LINK_LIBRARIES(testdriver ${requiredlibs-testdriver})
 
+#
+# Compile and build the multi-threaded testdriver executable
+#
+ADD_EXECUTABLE(testdriver_mt testdriver_mt.cpp)
+
+TARGET_LINK_LIBRARIES(testdriver_mt ${requiredlibs-testdriver})
+
+
+#
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
+#
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
+
 
 MESSAGE(STATUS "Adding tests for CTest")
 SET(TESTCOUNTER 0)
