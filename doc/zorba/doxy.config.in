@@ -498,7 +498,9 @@ EXCLUDE_PATTERNS       = */.svn \
 # directories that contain example code fragments that are included (see 
 # the \include command).
 
-EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/test/rbkt/Queries
+EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/test/rbkt/Queries \
+                         @CMAKE_SOURCE_DIR@/test/update/Queries \
+                         @CMAKE_SOURCE_DIR@/test/update/ExpectedTestResults
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the 
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -511,6 +513,7 @@ EXAMPLE_PATTERNS       = *.cpp \
                          *.hh \
                          *.xq \
                          *.xqlib \
+                         *.xml \
                          INSTALL DEPENDENCIES CHANGELOG LICENSE LGPL
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be 

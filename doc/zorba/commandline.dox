@@ -151,74 +151,32 @@ The purpose of this example is to demonstrate the use of <tt>-f</tt> and <tt>-e<
   <td>File that will be used as external variable.</td>
  </tr>
  <tr>
-  <td><tt>  id-typeswitch-expr-04.xq</tt></td>
+  <td><tt>  comandline_doc_example_2.xq</tt></td>
   <td>This is an update query. For details please see below.</td>
  </tr>
  <tr>
-  <td><tt>  id-typeswitch-expr-04-test.xq</tt></td>
+  <td><tt>  comandline_doc_example_2-test.xq</tt></td>
   <td>Query used to see the results of the update query. For details please see below.</td>
  </tr>
 </table>
 
 works-mod.xml :
-\verbatim
-<?xml version="1.0"?>
- <works>
-  <employee name="Jane Doe 1" gender="female">
-   <empnum>E1</empnum>
-   <pnum>P1</pnum>
-   <hours>40</hours>
-  </employee>
-  <employee name = "John Doe 2" gender="male">
-   <empnum>E1</empnum>
-   <pnum>P2</pnum>
-   <hours>70</hours>
-   <hours>20</hours>Text data from Employee[2]
-  </employee>
- </works>
-\endverbatim
+\include works-mod.xml
 
-id-typeswitch-expr-04.xq :
-\verbatim
-(: Description: Evaluation of insert expression used with typeswitch expression where branch (a "case") is an updating expression. :)
-(: All other branches return "fn:error()". :)
+comandline_doc_example_2.xq :
+\include comandline_doc_example_2.xq
 
-(: insert-start :)
-declare variable $input-context external;
-(: insert-end :)
-
-typeswitch(xs:int(1))
- case $i as xs:int
-    return (insert node <hours>30</hours> into $input-context/works[1]/employee[1])
- case $i as xs:double
-    return fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000'))
- default
-    return fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000'))
-\endverbatim
-
-id-typeswitch-expr-04-test.xq :
-\verbatim
-(: insert-start :)
-declare variable $input-context external;
-(: insert-end :)
-
-$input-context/works[1]/employee[1]
-\endverbatim
+comandline_doc_example_2-test.xq :
+\include comandline_doc_example_2-test.xq
 
 %Zorba command:
 \verbatim
-zorba -e input-context=works-mod.xml -f id-typeswitch-expr-04.xq -f id-typeswitch-expr-04-test.xq
+zorba -e input-context=works-mod.xml -f comandline_doc_example_2.xq -f comandline_doc_example_2-test.xq
 \endverbatim
 
-\Note Make sure you give the correct path to the works-mod.xml, id-typeswitch-expr-04.xq and id-typeswitch-expr-04-test.xq files.
+\Note Make sure you give the correct path to the works-mod.xml, comandline_doc_example_2.xq and comandline_doc_example_2-test.xq files.
  
 Expected result:
-\verbatim
-<employee name="Jane Doe 1" gender="female">
-  <empnum>E1</empnum>
-  <pnum>P1</pnum>
-  <hours>40</hours>
-  <hours>30</hours>
-</employee>
-\endverbatim
+\include comandline_doc_example_2.xml
+
 */
