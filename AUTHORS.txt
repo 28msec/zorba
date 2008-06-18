@@ -10,9 +10,11 @@ The primary authors are:
   * Dana Florescu                                                                                       
   * David Graf
   * Donald Kossmann 
+  * Paul Kunz
   * Tim Kraska
   * Dan Muresan
   * Sorin Nasoi
   * Paul Pedersen
+  * Sam Rehman
   * Daniel Turcanu
   * Markos Zaharioudakis
