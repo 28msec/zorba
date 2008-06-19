@@ -19,7 +19,7 @@
 #include <string.h>
 
 #include <zorba/zorbac.h>
-#include <inmemorystore/inmemorystorec.h>
+#include <simplestore/simplestorec.h>
 
 
 /**
@@ -184,7 +184,7 @@ ccontext(int argc, char** argv)
   int res = 0; 
   XQC_Implementation impl;
 
-  void* store = create_inmemory_store();
+  void* store = create_simple_store();
 
   if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
     return 1;
@@ -210,6 +210,6 @@ ccontext(int argc, char** argv)
   printf("\n");
 
   impl->free(impl);
-  shutdown_inmemory_store(store);
+  shutdown_simple_store(store);
   return 0;
 }

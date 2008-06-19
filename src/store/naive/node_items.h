@@ -18,24 +18,38 @@
 #define ZORBA_SIMPLE_STORE_NODE_ITEMS
 
 #include <zorba/error.h>
-#include "common/common.h"
-#include "store/api/item.h"
+
 #include "common/shared_types.h"
+#include "zorbamisc/config/platform.h"
 #include "zorbautils/fatal.h"
+#include "store/api/item.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/node_vector.h"
 #include "store/naive/node_updates.h"
 
-namespace zorba { namespace store {
+namespace zorba 
+{ 
 
-class CopyMode;
+namespace store
+{
+  class CopyMode;
+}
+
+
+namespace simplestore 
+{
+
+class AttributeNode;
+class NsBindingsContext;
+
+typedef rchandle<NsBindingsContext> NsBindingsContext_t;
 
 extern ConstrNodeVector dummyVector;
 
 
 #define NODE_STOP \
   ZORBA_FATAL(0, "Invalid method invocation on " \
-              << StoreConsts::toString(getNodeKind()))
+              << store::StoreConsts::toString(getNodeKind()))
 
 
 /*******************************************************************************
@@ -79,7 +93,7 @@ public:
   node, before the node becomes visible to any other thread.
 
 ********************************************************************************/
-class XmlNode : public Item
+class XmlNode : public store::Item
 {
   friend class DocumentNode;
   friend class ElementNode;
@@ -115,10 +129,10 @@ protected:
 
 public:
   XmlNode(
-        XmlTree*              tree,
-        XmlNode*              parent,
-        long                  pos,
-        StoreConsts::NodeKind nodeKind);
+        XmlTree*                     tree,
+        XmlNode*                     parent,
+        long                         pos,
+        store::StoreConsts::NodeKind nodeKind);
 
   virtual ~XmlNode();
 
@@ -132,10 +146,10 @@ public:
   bool isAtomic() const     { return false; }
   bool isPul() const        { return false; }
 
-  Item* getParent() const   { return theParent; }
+  store::Item* getParent() const   { return theParent; }
 
   bool equals(
-        const Item* other,
+        const store::Item* other,
         long timezone = 0,
         XQPCollator* aCollation = 0) const
   {
@@ -146,18 +160,18 @@ public:
         long timezone = 0,
         XQPCollator* aCollation = 0) const;
 
-  Item* copy(
-        Item*           parent,
-        long            pos,
-        const CopyMode& copymode) const
+  store::Item* copy(
+        store::Item*           parent,
+        long                   pos,
+        const store::CopyMode& copymode) const
   {
-    return copy2(static_cast<store::XmlNode*>(parent),
-                 static_cast<store::XmlNode*>(parent),
+    return copy2(static_cast<XmlNode*>(parent),
+                 static_cast<XmlNode*>(parent),
                  pos,
                  copymode);
   }
 
-  Item_t getEBV() const;
+  store::Item_t getEBV() const;
 
   xqpStringStore_t getBaseURI() const
   {
@@ -167,7 +181,7 @@ public:
 
   virtual xqpStringStore* getDocumentURI() const { return 0; }
 
-  virtual Item_t getNilled() const { return 0; }
+  virtual store::Item_t getNilled() const { return 0; }
 
   virtual void finalizeNode() { return; }
 
@@ -185,12 +199,15 @@ public:
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 
-  void setOrdPath(XmlNode* parent, long pos, StoreConsts::NodeKind nodeKind);
+  void setOrdPath(
+        XmlNode* parent,
+        long pos,
+        store::StoreConsts::NodeKind nodeKind);
 
   void switchTree(
-        XmlNode*        parent,
-        ulong           pos,
-        const CopyMode& copymode) throw();
+        XmlNode*               parent,
+        ulong                  pos,
+        const store::CopyMode& copymode) throw();
 
   void deleteTree() throw();
 
@@ -204,42 +221,42 @@ public:
         ulong  numChildren);
 
   void insertChildren(
-        std::vector<Item_t>& newChildren,
-        ulong                pos,
-        bool                 copy,
-        const CopyMode&      copymode);
+        std::vector<store::Item_t>& newChildren,
+        ulong                       pos,
+        bool                        copy,
+        const store::CopyMode&      copymode);
   
   void insertChildrenFirst(
-        std::vector<Item_t>& newChildren,
-        bool                 copy,
-        const CopyMode&      copymode);
+        std::vector<store::Item_t>& newChildren,
+        bool                        copy,
+        const store::CopyMode&      copymode);
 
   void insertChildrenLast(
-        std::vector<Item_t>& newChildren,
-        bool                 copy,
-        const CopyMode&      copymode);
+        std::vector<store::Item_t>& newChildren,
+        bool                        copy,
+        const store::CopyMode&      copymode);
 
   void insertSiblingsBefore(
-        std::vector<Item_t>& siblings,
-        bool                 copy,
-        const CopyMode&      copymode);
+        std::vector<store::Item_t>& siblings,
+        bool                        copy,
+        const store::CopyMode&      copymode);
 
   void insertSiblingsAfter(
-        std::vector<Item_t>& siblings,
-        bool                 copy,
-        const CopyMode&      copymode);
+        std::vector<store::Item_t>& siblings,
+        bool                        copy,
+        const store::CopyMode&      copymode);
 
   void replaceChild(
-        std::vector<Item_t>& newChildren,
-        ulong                pos,
-        bool                 copy,
-        const CopyMode&      copymode);
+        std::vector<store::Item_t>& newChildren,
+        ulong                       pos,
+        bool                        copy,
+        const store::CopyMode&      copymode);
 
   virtual XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
-        const CopyMode& copyMode) const = 0;
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copyMode) const = 0;
 
   virtual ulong numAttributes() const          { return 0; }
   virtual AttributeNode* getAttr(ulong i) const{ NODE_STOP; return NULL; }
@@ -292,16 +309,19 @@ public:
   // Item methods
   //
 
-  StoreConsts::NodeKind getNodeKind() const { return StoreConsts::documentNode; }
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::documentNode;
+  }
 
-  Item* getType() const; 
+  store::Item* getType() const; 
 
   xqpStringStore* getDocumentURI() const { return theDocUri.getp(); }
 
-  Iterator_t getChildren() const;
+  store::Iterator_t getChildren() const;
 
-  Iterator_t getTypedValue() const;
-  Item_t getAtomizationValue() const;
+  store::Iterator_t getTypedValue() const;
+  store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 
   xqp_string show() const;
@@ -314,7 +334,7 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         long            pos,
-        const CopyMode& copyMode) const;
+        const store::CopyMode& copyMode) const;
 
   NsBindingsContext* getNsContext() const                { return NULL; }
   xqpStringStore* findBinding(xqpStringStore* pre) const { return NULL; }
@@ -380,19 +400,19 @@ class ElementNode : public XmlNode
   friend class AttributeNode;
 
 protected:
-  Item_t                theName;
-  Item_t                theTypeName;
+  store::Item_t         theName;
+  store::Item_t         theTypeName;
   NsBindingsContext_t   theNsContext;
   uint32_t              theFlags;
 
 public:
   ElementNode(
-        XmlTree*          tree,
-        XmlNode*          parent,
-        long              pos,
-        Item_t&           nodeName,
-        Item_t&           typeName,
-        const NsBindings* localBindings);
+        XmlTree*                 tree,
+        XmlNode*                 parent,
+        long                     pos,
+        store::Item_t&           nodeName,
+        store::Item_t&           typeName,
+        const store::NsBindings* localBindings);
 
   virtual ~ElementNode();
 
@@ -400,21 +420,25 @@ public:
   // Item methods
   //
 
-  StoreConsts::NodeKind getNodeKind() const { return StoreConsts::elementNode; }
-  Item* getType() const                     { return theTypeName.getp(); }
-  Item* getNodeName() const                 { return theName.getp(); }
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::elementNode; 
+  }
 
-  Iterator_t getTypedValue() const;
-  Item_t getAtomizationValue() const;
+  store::Item* getType() const     { return theTypeName.getp(); }
+  store::Item* getNodeName() const { return theName.getp(); }
+
+  store::Iterator_t getTypedValue() const;
+  store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
-  Item_t getNilled() const;
+  store::Item_t getNilled() const;
 
-  Iterator_t getAttributes() const;
-  Iterator_t getChildren() const;
+  store::Iterator_t getAttributes() const;
+  store::Iterator_t getChildren() const;
 
   void getNamespaceBindings(
-        NsBindings& bindings,
-        StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_NAMESPACES) const;
+        store::NsBindings& bindings,
+        store::StoreConsts::NsScoping scope = store::StoreConsts::ALL_NAMESPACES) const;
 
   xqp_string show() const;
 
@@ -436,45 +460,45 @@ public:
 
   void setNsContext(NsBindingsContext* ctx);
   xqpStringStore* findBinding(const xqpStringStore* prefix) const;
-  const NsBindings& getLocalBindings() const;
+  const store::NsBindings& getLocalBindings() const;
   void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
-  void addBindingForQName(Item_t& qname);
-  void addBindingForQName2(const Item* qname);
+  void addBindingForQName(store::Item_t& qname);
+  void addBindingForQName2(const store::Item* qname);
 
   void checkNamespaceConflict(
-        const Item*           qname,
-        XQUERY_ERROR ecode) const;
+        const store::Item* qname,
+        XQUERY_ERROR       ecode) const;
 
-  void checkUniqueAttr(const Item* attrName) const;
+  void checkUniqueAttr(const store::Item* attrName) const;
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
-        const CopyMode& copymode) const;
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
 
   void removeAttributes(
         ulong  pos,
         ulong  numAttributes);
 
   void insertAttributes(
-        std::vector<Item_t>&  newAttrs,
-        bool                  copy,
-        const CopyMode&       copymode);
+        std::vector<store::Item_t>& newAttrs,
+        bool                        copy,
+        const store::CopyMode&      copymode);
 
   void replaceAttribute(
-        std::vector<Item_t>& newAttrs,
-        ulong                pos,
-        bool                 copy,
-        const CopyMode&      copymode);
+        std::vector<store::Item_t>& newAttrs,
+        ulong                       pos,
+        bool                        copy,
+        const store::CopyMode&      copymode);
 
   void replaceContent(
-        XmlNode*          newText,
-        ConstrNodeVector& oldChildren,
-        bool              copy,
-        const CopyMode&   copymode);
+        XmlNode*               newText,
+        ConstrNodeVector&      oldChildren,
+        bool                   copy,
+        const store::CopyMode& copymode);
 
-  void rename(Item_t& newname, Item_t& oldName);
+  void rename(store::Item_t& newname, store::Item_t& oldName);
 
 protected:
   void addBaseUriProperty(
@@ -502,13 +526,13 @@ protected:
 
 public:
   ElementTreeNode(
-        XmlTree*          tree,
-        XmlNode*          parent,
-        long              pos,
-        Item_t&           nodeName,
-        Item_t&           typeName,
-        const NsBindings* localBindings,
-        xqpStringStore_t& baseUri);
+        XmlTree*                  tree,
+        XmlNode*                  parent,
+        long                      pos,
+        store::Item_t&            nodeName,
+        store::Item_t&            typeName,
+        const store::NsBindings*  localBindings,
+        xqpStringStore_t&         baseUri);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -552,13 +576,13 @@ protected:
 
 public:
   ElementDagNode(
-        XmlTree*          tree,
-        XmlNode*          parent,
-        long              pos,
-        Item_t&           nodeName,
-        Item_t&           typeName,
-        const NsBindings* localBindings,
-        xqpStringStore_t& baseUri);
+        XmlTree*                 tree,
+        XmlNode*                 parent,
+        long                     pos,
+        store::Item_t&           nodeName,
+        store::Item_t&           typeName,
+        const store::NsBindings* localBindings,
+        xqpStringStore_t&        baseUri);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -599,35 +623,38 @@ class AttributeNode : public XmlNode
   friend class ConstrElementNode;
 
 protected:
-  Item_t   theName;
-  Item_t   theTypeName;
-  Item_t   theTypedValue;
-  uint32_t theFlags;
+  store::Item_t   theName;
+  store::Item_t   theTypeName;
+  store::Item_t   theTypedValue;
+  uint32_t        theFlags;
 
 public:
   AttributeNode(
-        XmlTree*  tree,
-        XmlNode*  parent,
-        long      pos,
-        Item_t&   attrName,
-        Item_t&   typeName,
-        Item_t&   typedValue,
-        bool      hidden = false);
+        XmlTree*         tree,
+        XmlNode*         parent,
+        long             pos,
+        store::Item_t&   attrName,
+        store::Item_t&   typeName,
+        store::Item_t&   typedValue,
+        bool             hidden = false);
 
   virtual ~AttributeNode();
 
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
-        const CopyMode& copymode) const;
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
 
-  StoreConsts::NodeKind getNodeKind() const { return StoreConsts::attributeNode; }
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::attributeNode;
+  }
 
-  Item* getType() const       { return theTypeName.getp(); }
+  store::Item* getType() const     { return theTypeName.getp(); }
 
-  Item* getNodeName() const   { return theName.getp(); }
+  store::Item* getNodeName() const { return theName.getp(); }
 
   bool isId() const           { return (theFlags & XmlNode::IsId) != 0; }
   void resetIsId()            { theFlags &= ~XmlNode::IsId; }
@@ -640,15 +667,15 @@ public:
 
   bool isBaseUri() const      { return (theFlags & XmlNode::IsBaseUri) != 0; }
 
-  Iterator_t getTypedValue() const;
-  Item_t getAtomizationValue() const;
+  store::Iterator_t getTypedValue() const;
+  store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 
   xqp_string show() const;
 
   void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
 
-  void rename(Item_t& newname, Item_t& oldName);
+  void rename(store::Item_t& newname, store::Item_t& oldName);
 };
    
 
@@ -675,17 +702,20 @@ public:
   virtual ~TextNode();
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
-        const CopyMode& copymode) const;
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
 
-  StoreConsts::NodeKind getNodeKind() const { return StoreConsts::textNode; }
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::textNode;
+  }
 
-  Item* getType() const;
+  store::Item* getType() const;
 
-  Iterator_t getTypedValue() const;
-  Item_t getAtomizationValue() const;
+  store::Iterator_t getTypedValue() const;
+  store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }
 			
@@ -717,21 +747,24 @@ public:
   ~PiNode();
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
-        const CopyMode& copymode) const;
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
 
-  StoreConsts::NodeKind getNodeKind() const { return StoreConsts::piNode; }
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::piNode;
+  }
 
-  Item* getType() const;
+  store::Item* getType() const;
 
-  Iterator_t getTypedValue() const;
-  Item_t getAtomizationValue() const;
+  store::Iterator_t getTypedValue() const;
+  store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const    { return theContent; }
   xqpStringStore* getStringValueP() const    { return theContent.getp(); }
 
-  xqpStringStore* getTarget() const { return theTarget.getp(); }
+  xqpStringStore* getTarget() const          { return theTarget.getp(); }
 
   xqp_string show() const;
 
@@ -761,17 +794,20 @@ public:
   ~CommentNode();
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
-        const CopyMode& copymode) const;
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
 
-  StoreConsts::NodeKind getNodeKind() const { return StoreConsts::commentNode; }
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::commentNode;
+  }
 
-  Item* getType() const;
+  store::Item* getType() const;
 
-  Iterator_t getTypedValue() const;
-  Item_t getAtomizationValue() const;
+  store::Iterator_t getTypedValue() const;
+  store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }
 

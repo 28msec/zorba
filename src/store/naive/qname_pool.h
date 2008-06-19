@@ -26,8 +26,9 @@
 
 #include "store/naive/atomic_items.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
+class StringPool;
 
 /*******************************************************************************
 
@@ -101,12 +102,12 @@ public:
 
   ~QNamePool();
 
-  Item_t insert(
+  store::Item_t insert(
         const char* ns,
         const char* pre,
         const char* ln);
 
-  Item_t insert(
+  store::Item_t insert(
         const xqpStringStore_t& ns,
         const xqpStringStore_t& pre,
         const xqpStringStore_t& ln);

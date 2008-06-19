@@ -26,16 +26,18 @@
 #include <boost/filesystem/convenience.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "testdriverconfig.h" // SRC and BIN dir definitions
-#include "specification.h" // parsing spec files
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
 
 #include <zorbatypes/URI.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
+
 #include "zorbautils/mutex.h"
-#include "store/naive/simple_store.h"
+
+#include "testdriverconfig.h" // SRC and BIN dir definitions
+#include "specification.h" // parsing spec files
+
 
 namespace fs = boost::filesystem;
 
@@ -914,7 +916,9 @@ main(int argc, char** argv)
   //
   // Start the store and zorba
   //
-  zorba::store::SimpleStore* store = zorba::inmemorystore::InMemoryStore::getInstance();
+  zorba::simplestore::SimpleStore* store =
+    zorba::simplestore::SimpleStoreManager::getStore();
+
   zorba::Zorba* zorba = zorba::Zorba::getInstance(store);
 
   //
@@ -967,7 +971,7 @@ main(int argc, char** argv)
   delete [] threads;
   queries.clear();
   zorba->shutdown();
-  zorba::inmemorystore::InMemoryStore::shutdown(store);
+  zorba::simplestore::SimpleStoreManager::shutdownStore(store);
 
   if (queries.theHaveErrors)
     return 1;

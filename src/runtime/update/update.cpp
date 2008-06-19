@@ -83,7 +83,7 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
-  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
+  lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
   
   if (!consumeNext(target, theChild1, aPlanState))
   {
@@ -138,16 +138,16 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     {
       attrs.resize(numAttrs);
 
-      pul->addInsertAttributes(parent, attrs, theDoCopy, lCopyMode);
+      pul->addInsertAttributes(parent, attrs, lCopyMode);
     }
 
     if (numNodes > 0)
     {
       nodes.resize(numNodes);
       if (theType == store::UpdateConsts::BEFORE)
-        pul->addInsertBefore(target, nodes, theDoCopy, lCopyMode);
+        pul->addInsertBefore(target, nodes, lCopyMode);
       else
-        pul->addInsertAfter(target, nodes, theDoCopy, lCopyMode);
+        pul->addInsertAfter(target, nodes, lCopyMode);
     }
 
     result = pul.release();
@@ -198,18 +198,18 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     if (numAttrs > 0)
     {
       attrs.resize(numAttrs);
-      pul->addInsertAttributes(target, attrs, theDoCopy, lCopyMode);
+      pul->addInsertAttributes(target, attrs, lCopyMode);
     }
 
     if (numNodes > 0)
     {
       nodes.resize(numNodes);
       if (theType == store::UpdateConsts::INTO)
-        pul->addInsertInto(target, nodes, theDoCopy, lCopyMode);
+        pul->addInsertInto(target, nodes, lCopyMode);
       else if (theType == store::UpdateConsts::AS_FIRST_INTO)
-        pul->addInsertFirst(target, nodes, theDoCopy, lCopyMode);
+        pul->addInsertFirst(target, nodes, lCopyMode);
       else
-        pul->addInsertLast(target, nodes, theDoCopy, lCopyMode);
+        pul->addInsertLast(target, nodes, lCopyMode);
     }
 
     result = pul.release();
@@ -300,7 +300,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
-  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
+  lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
 
   if (!consumeNext(lTarget, theChild0, aPlanState))
     ZORBA_ERROR_LOC(XUDY0027, loc);
@@ -372,7 +372,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
     lNodes.resize(lNumNodes);
-    lPul->addReplaceNode(lTarget, lNodes, theDoCopy, lCopyMode);
+    lPul->addReplaceNode(lTarget, lNodes, lCopyMode);
   }
   else
   {
@@ -405,7 +405,8 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       else
         lWith = NULL;
 
-      lPul->addReplaceContent(lTarget, lWith, false, lCopyMode);
+      lCopyMode.theDoCopy = false;
+      lPul->addReplaceContent(lTarget, lWith, lCopyMode);
     }
     else
     {

@@ -18,7 +18,7 @@
 #include "zorbatypes/xqpstring.h"
 #include "store/naive/nsbindings.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 NsBindingsContext::NsBindingsContext(ulong numBindings)
 {
@@ -30,7 +30,7 @@ NsBindingsContext::NsBindingsContext(ulong numBindings)
 }
 
 
-NsBindingsContext::NsBindingsContext(const NsBindings& bindings)
+NsBindingsContext::NsBindingsContext(const store::NsBindings& bindings)
   :
   theBindings(bindings)
 {
@@ -56,7 +56,7 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
 
   while (currentContext != NULL)
   {
-    const NsBindings& bindings = currentContext->theBindings;
+    const store::NsBindings& bindings = currentContext->theBindings;
     ulong numBindings = bindings.size();
 
     for (ulong i = 0; i < numBindings; i++)

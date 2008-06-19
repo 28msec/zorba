@@ -19,17 +19,13 @@
 #include "timer.h"
 
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 #include "zorbaerrors/errors.h"
-#include "store/naive/store_defs.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_collection.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/simple_loader.h"
-#include "store/naive/basic_item_factory.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 
@@ -76,7 +72,7 @@ int main(int argc, const char * argv[])
   //
   // Store initialization
   //
-  SimpleStore* lStore = inmemorystore::InMemoryStore::getInstance();
+  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
 
   //
   // Test boost::shared_ptr
@@ -267,7 +263,8 @@ int main(int argc, const char * argv[])
 
   for (ulong i = 0; i < 3; i++)
   {
-    zorba::store::XmlNode* parent = BASE_NODE(doc);
+    zorba::simplestore::XmlNode* parent =
+      reinterpret_cast<zorba::simplestore::XmlNode*>(doc.getp());
 
     double factor;
     if (i == 0) factor = 0.5;
@@ -281,7 +278,7 @@ int main(int argc, const char * argv[])
         break;
 
       ulong childPos = (ulong)(numChildren * factor);
-      XmlNode* child = parent->getChild(childPos);
+      zorba::simplestore::XmlNode* child = parent->getChild(childPos);
 
       while (child->getNodeKind() != StoreConsts::elementNode)
       {

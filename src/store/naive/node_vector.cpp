@@ -22,8 +22,9 @@
 
 #include "store/naive/shared_types.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
+typedef rchandle<XmlNode> XmlNode_t;
 
 ConstrNodeVector dummyVector;
 

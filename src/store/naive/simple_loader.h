@@ -24,14 +24,20 @@
 
 namespace zorba { 
   
-  namespace error {
-    class ErrorManager;
-  }
+namespace error
+{
+  class ErrorManager; 
+}
 
-namespace store {
+namespace store 
+{
+  class Item;
+  class ItemFactory;
+}
 
-class Item;
-class ItemFactory;
+ 
+namespace simplestore 
+{
 
 
 /*******************************************************************************
@@ -53,24 +59,24 @@ class XmlLoader
 protected:
   xmlSAXHandler                    theSaxHandler;
 
-  ItemFactory                    * theFactory;
+  store::ItemFactory             * theFactory;
 
   xqpStringStore_t                 theBaseUri;
   xqpStringStore_t                 theDocUri;
 
-  Item_t                           theRootNode;
-  std::stack<Item*>                theNodeStack;
+  store::Item_t                    theRootNode;
+  std::stack<store::Item*>         theNodeStack;
 
   char                             theBuffer[4096];
 
   error::ErrorManager            * theErrorManager;
 
 public:
-  XmlLoader(ItemFactory* factory, error::ErrorManager*);
+  XmlLoader(store::ItemFactory* factory, error::ErrorManager*);
 
   ~XmlLoader();
 
-  Item_t loadXml(xqpStringStore_t& docuri, std::istream& xmlStream);
+  store::Item_t loadXml(xqpStringStore_t& docuri, std::istream& xmlStream);
 
 protected:
   void abortload();

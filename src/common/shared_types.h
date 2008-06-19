@@ -43,28 +43,10 @@ namespace zorba
     class ItemFactory;
     class Collection;
     typedef rchandle<Collection> Collection_t;
-    class StringPool;
-    class QNamePool;
-    class SimpleCollection;
-    typedef rchandle<SimpleCollection> SimpleCollection_t;
     class AnyUriItem;
     typedef rchandle<AnyUriItem> AnyUriItem_t;
     class Store;
-    class XmlLoader;
-    class QueryContextContainer;
-    class QueryContext;
-    class BasicItemFactory;
     class XmlDataManager_Impl;
-    class ElementNode;
-    typedef rchandle<ElementNode> ElementNode_t;
-    class AttributeNode;
-    class NsBindingsContext;
-    typedef rchandle<NsBindingsContext> NsBindingsContext_t;
-    class QNameItemImpl;
-    typedef rchandle<QNameItemImpl> QNameItem_t;
-    class ConstrNodeVector;
-    class NsBindingsContext;
-    typedef rchandle<NsBindingsContext> NsBindingsContext_t;
     class Iterator;
     typedef rchandle<Iterator> Iterator_t;
   }

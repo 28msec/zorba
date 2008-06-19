@@ -18,13 +18,10 @@
 
 #include <vector>
 
-#include "common/common.h"
-#include "common/shared_types.h"
+#include "zorbamisc/config/platform.h"
+#include "store/api/item.h"
 
-namespace zorba { namespace store {
-
-
-typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
+namespace zorba { namespace simplestore {
 
 
 /*******************************************************************************
@@ -33,25 +30,25 @@ typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 class NsBindingsContext : public SimpleRCObject
 {
 private:
-  NsBindings           theBindings;
-  NsBindingsContext_t  theParent;
+  store::NsBindings            theBindings;
+  rchandle<NsBindingsContext>  theParent;
 
 public:
   NsBindingsContext() { }
 
   NsBindingsContext(ulong numBindings);
 
-  NsBindingsContext(const NsBindings& bindings);
+  NsBindingsContext(const store::NsBindings& bindings);
 
   ~NsBindingsContext();
 
-  bool empty() const                          { return theBindings.empty(); }
+  bool empty() const                           { return theBindings.empty(); }
 
-  const NsBindings& getBindings() const       { return theBindings; }
-  NsBindings& getBindings()                   { return theBindings; }
+  const store::NsBindings& getBindings() const { return theBindings; }
+  store::NsBindings& getBindings()             { return theBindings; }
 
-  void setParent(NsBindingsContext* p)        { theParent = p; }
-  const NsBindingsContext* getParent() const  { return theParent.getp(); }
+  void setParent(NsBindingsContext* p)         { theParent = p; }
+  const NsBindingsContext* getParent() const   { return theParent.getp(); }
 
   xqpStringStore* findBinding(const xqpStringStore* prefix) const;
 

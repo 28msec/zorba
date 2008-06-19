@@ -16,7 +16,7 @@
 #include "store/api/item.h"
 #include "store/naive/item_iterator.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 ItemIterator::ItemIterator(std::vector<store::Item_t> aItems) 
   :

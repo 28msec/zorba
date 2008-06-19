@@ -25,7 +25,6 @@
 
 namespace zorba { namespace store {
 
-class var_iterator;
 
 /**
  * XQuery Data Model Instance: Logically, implements a "vector&lt;Item_t&gt;"
@@ -80,7 +79,7 @@ public:
   virtual Iterator_t getIterator(
         int32_t startPos,
         Iterator_t function,
-        const std::vector<var_iterator>& var,
+        const std::vector<Iterator_t>& var,
         bool streaming = false) = 0;
 				
 		

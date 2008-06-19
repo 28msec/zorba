@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_STORE_NODE_UPDATES_H
-#define ZORBA_STORE_NODE_UPDATES_H
+#ifndef ZORBA_SIMPLE_STORE_NODE_UPDATES_H
+#define ZORBA_SIMPLE_STORE_NODE_UPDATES_H
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 
 struct NodeTypeInfo
 {
-  NodeTypeInfo(Item* tname, bool isId, bool isIdRefs) 
+NodeTypeInfo(store::Item* tname, bool isId, bool isIdRefs) 
     :
     theTypeName(tname),
     theIsId(isId),
@@ -31,10 +31,10 @@ struct NodeTypeInfo
   {
   }
 
-  Item    * theTypeName;
-  bool      theIsId;
-  bool      theIsIdRefs;
-  bool      theIsNillable;
+  store::Item  * theTypeName;
+  bool           theIsId;
+  bool           theIsIdRefs;
+  bool           theIsNillable;
 };
 
 

@@ -21,10 +21,11 @@
 
 #include "common/common.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 
 class XmlNode;
+class ConstrNodeVector;
 
 
 /*******************************************************************************

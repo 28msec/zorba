@@ -31,7 +31,7 @@
 #include "store/api/item.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 #ifndef NDEBUG
 
@@ -64,7 +64,7 @@ int traceLevel = 0;
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader::XmlLoader(ItemFactory* factory, error::ErrorManager* aErrorManager)
+XmlLoader::XmlLoader(store::ItemFactory* factory, error::ErrorManager* aErrorManager)
 :
   theFactory(factory),
   theBaseUri(NULL),
@@ -115,7 +115,7 @@ void XmlLoader::abortload()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t XmlLoader::loadXml(xqpStringStore_t& docuri, std::istream& stream)
+store::Item_t XmlLoader::loadXml(xqpStringStore_t& docuri, std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
   long numChars;
@@ -207,7 +207,7 @@ Item_t XmlLoader::loadXml(xqpStringStore_t& docuri, std::istream& stream)
 
   ZORBA_FATAL(theNodeStack.empty(), "");
 
-  Item_t result;
+  store::Item_t result;
   result.transfer(theRootNode);
   return result;
 }
@@ -263,7 +263,7 @@ void XmlLoader::startDocument(void * ctx)
   {
     xqpStringStore_t docUri = loader.theDocUri;
     xqpStringStore_t baseUri = loader.theBaseUri;
-    Item_t docNode;
+    store::Item_t docNode;
 
     loader.theFactory->createDocumentNode(docNode, baseUri, docUri);
 
@@ -302,7 +302,7 @@ void XmlLoader::endDocument(void * ctx)
     if (loader.theNodeStack.size() == 0 )
       return;
   
-    Item* docNode = loader.theNodeStack.top();
+    store::Item* docNode = loader.theNodeStack.top();
     loader.theNodeStack.pop();
 
     ZORBA_ASSERT(docNode != NULL);
@@ -360,9 +360,9 @@ void XmlLoader::startElement(
     ulong numAttributes = (ulong)numAttrs;
     ulong numBindings = (ulong)numNamespaces;
 
-    Item* parent = NULL;
-    Item_t qname;
-    Item_t tname;
+    store::Item* parent = NULL;
+    store::Item_t qname;
+    store::Item_t tname;
     xqpStringStore_t baseUri;
 
     // Get the parent node from the node stack
@@ -384,7 +384,7 @@ void XmlLoader::startElement(
       baseUri = loader.theBaseUri;
 
     // Process namespace bindings
-    NsBindings bindings(numBindings);
+    store::NsBindings bindings(numBindings);
     for (ulong i = 0; i < numBindings; ++i)
     {
       const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
@@ -400,7 +400,7 @@ void XmlLoader::startElement(
     }
 
     // Create the element node and push it to the node stack
-    Item_t node;
+    store::Item_t node;
     loader.theFactory->createElementNode(node, parent, -1, qname, tname,
                                          bindings, baseUri);
 
@@ -431,8 +431,8 @@ void XmlLoader::startElement(
 
       xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
 
-      Item_t tnameCopy = tname;
-      Item_t attr;
+      store::Item_t tnameCopy = tname;
+      store::Item_t attr;
       loader.theFactory->createAttributeNode(attr, node, -1, qname, tnameCopy, value);
 
       LOADER_TRACE1("Attribute: node = " << attr.getp() << std::endl
@@ -472,7 +472,7 @@ void XmlLoader::endElement(
 
   try
   {
-    Item* node = loader.theNodeStack.top();
+    store::Item* node = loader.theNodeStack.top();
     ZORBA_ASSERT(node != NULL);
     loader.theNodeStack.pop();
 
@@ -508,7 +508,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
   try
   {
-    Item* parent = NULL;
+    store::Item* parent = NULL;
 
     // Get the parent node from the node stack
     if (!loader.theNodeStack.empty())
@@ -519,7 +519,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
     // Create the text node
-    Item_t node;
+    store::Item_t node;
     loader.theFactory->createTextNode(node, parent, -1, content);
 
     if (loader.theNodeStack.empty())
@@ -555,7 +555,7 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   try
   {
-    Item* parent = NULL;
+    store::Item* parent = NULL;
 
     // Get the parent node from the node stack
     if (!loader.theNodeStack.empty())
@@ -566,7 +566,7 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
     // Create the text node
-    Item_t node;
+    store::Item_t node;
     loader.theFactory->createTextNode(node, parent, -1, content);
 
     if (loader.theNodeStack.empty())
@@ -604,7 +604,7 @@ void XmlLoader::processingInstruction(
 
   try
   {
-    Item* parent = NULL;
+    store::Item* parent = NULL;
 
     // Get the parent node from the node stack
     if (!loader.theNodeStack.empty())
@@ -614,7 +614,7 @@ void XmlLoader::processingInstruction(
     xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
     xqpStringStore_t baseUri;
 
-    Item_t node;
+    store::Item_t node;
     loader.theFactory->createPiNode(node, parent, -1, target, content, baseUri);
 
     if (loader.theNodeStack.empty())
@@ -649,7 +649,7 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
 
   try
   {
-    Item* parent = NULL;
+    store::Item* parent = NULL;
 
     // Get the parent node from the node stack
     if (!loader.theNodeStack.empty())
@@ -658,7 +658,7 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp));
 
-    Item_t node;
+    store::Item_t node;
     loader.theFactory->createCommentNode(node, parent, -1, content);
 
     if (loader.theNodeStack.empty())

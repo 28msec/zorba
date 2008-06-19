@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_INMEMORYSTORE_INMEMORYSTOREC_H
-#define ZORBA_INMEMORYSTORE_INMEMORYSTOREC_H
+#ifndef ZORBA_SIMPLESTORE_SIMPLESTOREC_H
+#define ZORBA_SIMPLESTORE_SIMPLESTOREC_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void* create_inmemory_store();
-void shutdown_inmemory_store(void*);
+void* create_simple_store();
+void shutdown_simple_store(void*);
 
 #ifdef __cplusplus
 }

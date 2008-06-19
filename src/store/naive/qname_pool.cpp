@@ -27,7 +27,7 @@
 #include "zorbatypes/datetime.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 /*******************************************************************************
 
@@ -117,7 +117,7 @@ void QNamePool::remove(QNameItemImpl* qn)
   copied internally into xqpStringStore objects. So, it's always the caller
   who is resposnible for freeing the given strings.
 ********************************************************************************/
-Item_t QNamePool::insert(
+store::Item_t QNamePool::insert(
     const char* ns,
     const char* pre,
     const char* ln)
@@ -167,7 +167,7 @@ Item_t QNamePool::insert(
   and local name, then create such a qname, insert it in the pool and return an
   rchandle to it. Otherwise, return an rchandle to the existing qname. 
 ********************************************************************************/
-Item_t QNamePool::insert(
+store::Item_t QNamePool::insert(
     const xqpStringStore_t& ns,
     const xqpStringStore_t& pre,
     const xqpStringStore_t& ln)

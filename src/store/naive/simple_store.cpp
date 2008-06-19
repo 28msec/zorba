@@ -41,9 +41,9 @@
 
 #include "store/api/pul.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
-typedef rchandle<TempSeq> TempSeq_t;
+typedef rchandle<store::TempSeq> TempSeq_t;
 
 const ulong SimpleStore::NAMESPACE_POOL_SIZE = 128;
 const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
@@ -66,7 +66,6 @@ SimpleStore::SimpleStore()
   theItemFactory(NULL),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
-  theQueryContextContainer(NULL),
   theTraceLevel(0)
 {
 }
@@ -100,8 +99,6 @@ void SimpleStore::init()
     theItemFactory = new BasicItemFactory(theNamespacePool, theQNamePool);
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
-
-    theQueryContextContainer = new QueryContextContainer;
 
     theIsInitialized = true;
   }
@@ -193,12 +190,6 @@ void SimpleStore::shutdown()
 
   theDocuments.clear();
 
-  if (theQueryContextContainer != NULL)
-  {
-    delete theQueryContextContainer;
-    theQueryContextContainer = NULL;
-  }
-
   if (theItemFactory != NULL)
   {
     delete theItemFactory;
@@ -254,31 +245,16 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 
 
 /*******************************************************************************
-
-********************************************************************************/
-QueryContext& SimpleStore::getQueryContext(ulong queryId)
-{
-  return theQueryContextContainer->getContext(queryId);
-}
-
-
-void SimpleStore::deleteQueryContext(ulong queryId)
-{
-  theQueryContextContainer->removeContext(queryId);
-}
-
-
-/*******************************************************************************
   Create an internal URI and return an rchandle to it. 
 ********************************************************************************/
-Item_t SimpleStore::createUri()
+store::Item_t SimpleStore::createUri()
 {
   SYNC_CODE(theUriCounterMutex.lock();)
   std::ostringstream uristream;
   uristream << "zorba://internalURI-" << SimpleStore::theUriCounter++;
   SYNC_CODE(theUriCounterMutex.unlock();)
 
-  Item_t val;
+  store::Item_t val;
   theItemFactory->createAnyURI(val, uristream.str().c_str());
   return val;
 }
@@ -289,15 +265,15 @@ Item_t SimpleStore::createUri()
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.
 ********************************************************************************/
-Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
+store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
 
-  Item_t uriItem;
+  store::Item_t uriItem;
   theItemFactory->createAnyURI(uriItem, uri);
 
-  Collection_t collection(new SimpleCollection(uriItem));
+  store::Collection_t collection(new SimpleCollection(uriItem));
 
   const xqpStringStore* urip = collection->getUri()->getStringValueP();
   bool inserted = theCollections.insert(urip, collection);
@@ -316,9 +292,9 @@ Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
   Create a collection in the store. The collection will be assigned an internal
   URI by the store.
 ********************************************************************************/
-Collection_t SimpleStore::createCollection()
+store::Collection_t SimpleStore::createCollection()
 {
-  Item_t uriItem = createUri();
+  store::Item_t uriItem = createUri();
 
   xqpStringStore_t uriStr = uriItem->getStringValue();
 
@@ -330,12 +306,12 @@ Collection_t SimpleStore::createCollection()
   Return an rchandle to the Collection object corresponding to the given URI,
   or NULL if there is no collection with that URI.
 ********************************************************************************/
-Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
+store::Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
 
-  Collection_t collection;
+  store::Collection_t collection;
   if (theCollections.get(uri, collection) )
     return collection.getp();
   else
@@ -359,7 +335,7 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
+store::Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
 {
   if (uri == NULL)
     return NULL;
@@ -390,9 +366,9 @@ Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
 /*******************************************************************************
 For lazy loading...
 ********************************************************************************/
-Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
+store::Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
 {
-  Item_t    docitem;
+  store::Item_t    docitem;
   //do full loading for now
   docitem = loadDocument(uri, *stream);
   delete stream;
@@ -406,7 +382,7 @@ Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
   already associated to another node, the method raises an error. If the given
   uri is already associated to the given node, this method is a noop.
 ********************************************************************************/
-void SimpleStore::addNode(const xqpStringStore* uri, const Item_t& node)
+void SimpleStore::addNode(const xqpStringStore* uri, const store::Item_t& node)
 {
   ZORBA_ASSERT(uri != NULL);
 
@@ -431,7 +407,7 @@ void SimpleStore::addNode(const xqpStringStore* uri, const Item_t& node)
   Return an rchandle to the root node of the document corresponding to the given
   URI, or NULL if there is no document with that URI.
 ********************************************************************************/
-Item_t SimpleStore::getDocument(const xqpStringStore_t& uri)
+store::Item_t SimpleStore::getDocument(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
@@ -462,7 +438,7 @@ void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if
   node1 == node2, or 1 if node1 > node2.
 ********************************************************************************/
-long SimpleStore::compareNodes(Item* node1, Item* node2) const
+long SimpleStore::compareNodes(store::Item* node1, store::Item* node2) const
 {
   ZORBA_FATAL(node1->isNode(), "");
   ZORBA_FATAL(node2->isNode(), "");
@@ -490,8 +466,8 @@ long SimpleStore::compareNodes(Item* node1, Item* node2) const
   @param duplicate duplicate elemination should be applied
   @return iterator which produces the sorted items
 ********************************************************************************/
-Iterator_t SimpleStore::sortNodes(
-    Iterator* input,
+store::Iterator_t SimpleStore::sortNodes(
+    store::Iterator* input,
     bool ascendent,
     bool duplicateElemination,
     bool aAllowAtomics)
@@ -507,7 +483,7 @@ Iterator_t SimpleStore::sortNodes(
   Create an iterator that eliminates the duplicate nodes in the set of items
   which is produced by the passed iterator
 ********************************************************************************/
-Iterator_t SimpleStore::distinctNodes(Iterator* input, bool aAllowAtomics)
+store::Iterator_t SimpleStore::distinctNodes(store::Iterator* input, bool aAllowAtomics)
 {
   if (aAllowAtomics)
     return new StoreNodeDistinctOrAtomicIterator(input);
@@ -519,13 +495,13 @@ Iterator_t SimpleStore::distinctNodes(Iterator* input, bool aAllowAtomics)
 /*******************************************************************************
   Computes the URI for the given node.
 ********************************************************************************/
-bool SimpleStore::getReference(Item_t& result, const Item* node)
+bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
 {
   std::ostringstream stream;
 
   const XmlNode* n = reinterpret_cast<const XmlNode*>(node);
 
-  if (n->getNodeKind() == StoreConsts::attributeNode)
+  if (n->getNodeKind() == store::StoreConsts::attributeNode)
   {
     stream << "zorba://node_reference/" << n->getTreeId() << "/a/"
            << n->getOrdPath().serialize();
@@ -549,7 +525,7 @@ bool SimpleStore::getReference(Item_t& result, const Item* node)
   @param uri Has to be an xs:URI item
   @returns referenced item if it exists, otherwise NULL
 ********************************************************************************/
-bool SimpleStore::getNodeByReference(Item_t& result, const Item* uri)
+bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* uri)
 {
   xqpStringStore* str = uri->getStringValueP();
 
@@ -618,13 +594,13 @@ bool SimpleStore::getNodeByReference(Item_t& result, const Item* uri)
 
     for (; it != end; ++it)
     {
-      Collection_t col = (*it).second.getp();
+      store::Collection_t col = (*it).second.getp();
 
-      Iterator_t colIter = col->getIterator(true);
+      store::Iterator_t colIter = col->getIterator(true);
 
       colIter->open();
 
-      Item_t rootItem;
+      store::Item_t rootItem;
       if (!colIter->next(rootItem)) {
         rootItem = NULL;
       }
@@ -641,7 +617,8 @@ bool SimpleStore::getNodeByReference(Item_t& result, const Item* uri)
         break;
     }
 
-    if (rootNode == NULL) {
+    if (rootNode == NULL) 
+    {
       result = NULL;
       return false;
     }
@@ -653,7 +630,8 @@ bool SimpleStore::getNodeByReference(Item_t& result, const Item* uri)
   
   OrdPath op((unsigned char*)start, strlen(start));
 
-  if (rootNode->getOrdPath() == op) {
+  if (rootNode->getOrdPath() == op) 
+  {
     result = rootNode;
     return true;
   }
@@ -740,7 +718,10 @@ bool SimpleStore::getNodeByReference(Item_t& result, const Item* uri)
                     evaluated lazily. For XQueryP it might be necassary to set
                     this to false.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(Iterator* iterator, bool copyNodes, bool lazy)
+TempSeq_t SimpleStore::createTempSeq(
+    store::Iterator* iterator,
+    bool copyNodes,
+    bool lazy)
 {
   TempSeq_t tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
   return tempSeq;

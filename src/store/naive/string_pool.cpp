@@ -17,7 +17,7 @@
 #include "zorbautils/fatal.h"
 #include "store/naive/string_pool.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 /*******************************************************************************
 

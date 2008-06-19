@@ -19,7 +19,7 @@
 #include <limits>
 
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 
 
@@ -60,7 +60,7 @@ checkType(const Item& aItem, const String& aLocalname)
 
 int itemfactory(int argc, char* argv[]) 
 {
-  Zorba* lZorba = Zorba::getInstance(inmemorystore::InMemoryStore::getInstance());
+  Zorba* lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
 
   ItemFactory* lFactory = lZorba->getItemFactory();
 

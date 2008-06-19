@@ -33,7 +33,7 @@
 #include <zorba/default_content_handler.h>
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 using namespace zorba;
 namespace fs = boost::filesystem;
@@ -428,7 +428,7 @@ main(int argc, char** argv)
   printFile(std::cout, lQueryFile.native_file_string());
   std::cout << std::endl;
 
-  zorba::Zorba *engine = zorba::Zorba::getInstance(zorba::inmemorystore::InMemoryStore::getInstance());
+  zorba::Zorba *engine = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
 
   TestErrorHandler errHandler;
   std::stringstream lResult;

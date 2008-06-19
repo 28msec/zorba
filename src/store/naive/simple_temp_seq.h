@@ -21,7 +21,7 @@
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 /**
  * Very simple implementation of Temp Sequence. It saves the resulting items
@@ -29,49 +29,50 @@ namespace zorba { namespace store {
  */
 typedef rchandle<class SimpleTempSeq> SimpleTempSeq_t;
 
-class SimpleTempSeq : public TempSeq
+
+class SimpleTempSeq : public store::TempSeq
 {
 private:
-  std::vector<Item_t> theItems;
+  std::vector<store::Item_t> theItems;
 
 public:
   SimpleTempSeq() { }
 
-  SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
+  SimpleTempSeq(const std::vector<store::Item_t>& items) : theItems(items) {}
 
-  SimpleTempSeq(Iterator_t iter, bool copy = false, bool lazy = true);
+  SimpleTempSeq(store::Iterator_t iter, bool copy = false, bool lazy = true);
 
   virtual ~SimpleTempSeq();
 
   virtual bool empty();
   
-  Item_t operator[](int32_t aIndex);
+  store::Item_t operator[](int32_t aIndex);
   int32_t getSize();
 
-  virtual void append(Iterator_t iter, bool copy);
+  virtual void append(store::Iterator_t iter, bool copy);
 
-  virtual Item_t getItem(int32_t position);
+  virtual store::Item_t getItem(int32_t position);
   virtual bool containsItem(int32_t position);
 
-  virtual Iterator_t getIterator();
+  virtual store::Iterator_t getIterator();
 
-  virtual Iterator_t getIterator(
+  virtual store::Iterator_t getIterator(
         int32_t startPos,
         int32_t endPos,
         bool streaming = false);
 
-  virtual Iterator_t getIterator(
+  virtual store::Iterator_t getIterator(
         int32_t startPos,
-        Iterator_t function,
-        const std::vector<var_iterator>& var,
+        store::Iterator_t function,
+        const std::vector<store::Iterator_t>& var,
         bool streaming = false );
 
-  virtual Iterator_t getIterator(
+  virtual store::Iterator_t getIterator(
         const std::vector<int32_t>& positions,
         bool streaming = false);
 
-  virtual Iterator_t getIterator(
-        Iterator_t positions,
+  virtual store::Iterator_t getIterator(
+        store::Iterator_t positions,
         bool streaming = false);
   
   virtual void purge();
@@ -79,7 +80,7 @@ public:
   virtual void purgeItem(const std::vector<int32_t>& positions );
   virtual void purgeItem(int32_t position );
 
-  class SimpleTempSeqIter : public Iterator
+  class SimpleTempSeqIter : public store::Iterator
 	{
   private:
     enum BorderType
@@ -104,7 +105,7 @@ public:
     virtual ~SimpleTempSeqIter();
 
     void open();
-    bool next(Item_t& result);
+    bool next(store::Item_t& result);
     void reset();
     void close();
   };

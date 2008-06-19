@@ -18,7 +18,7 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 using namespace zorba;
 
@@ -182,7 +182,7 @@ example_10( Zorba * aZorba )
 int 
 simple(int argc, char* argv[])
 {
-  store::SimpleStore* lStore = inmemorystore::InMemoryStore::getInstance();
+  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
 
   Zorba* lZorba = Zorba::getInstance(lStore);
 
@@ -239,7 +239,7 @@ simple(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  inmemorystore::InMemoryStore::shutdown(lStore);
+  simplestore::SimpleStoreManager::shutdownStore(lStore);
   return 0;
 }
 

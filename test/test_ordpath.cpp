@@ -108,7 +108,7 @@ int main(int argc, char * argv[])
   {
     parseDeweyString(deweyStr, dewey1);
 
-    zorba::store::OrdPath path;
+    zorba::simplestore::OrdPath path;
     path.compress(dewey1);
 
     std::cout << "ordpath = " << path.show() << std::endl;
@@ -119,10 +119,10 @@ int main(int argc, char * argv[])
     parseDeweyString(deweyStrVector[0], dewey1);
     parseDeweyString(deweyStrVector[1], dewey2);
 
-    zorba::store::OrdPath parent;
-    zorba::store::OrdPath path1;
-    zorba::store::OrdPath path2;
-    zorba::store::OrdPath path;
+    zorba::simplestore::OrdPath parent;
+    zorba::simplestore::OrdPath path1;
+    zorba::simplestore::OrdPath path2;
+    zorba::simplestore::OrdPath path;
 
     try
     {
@@ -144,7 +144,7 @@ int main(int argc, char * argv[])
         std::cout << "ordpath2 = " << path2.show() << std::endl;
       }
 
-      zorba::store::OrdPath::insertInto(parent, path1, path2, path);
+      zorba::simplestore::OrdPath::insertInto(parent, path1, path2, path);
 
       std::cout << "ordpath = " << path.show() << std::endl;
     }
@@ -160,8 +160,8 @@ int main(int argc, char * argv[])
     parseDeweyString(deweyStrVector[0], dewey1);
     parseDeweyString(deweyStrVector[1], dewey2);
 
-    zorba::store::OrdPath path1;
-    zorba::store::OrdPath path2;
+    zorba::simplestore::OrdPath path1;
+    zorba::simplestore::OrdPath path2;
 
     path1.compress(dewey1);
     path2.compress(dewey2);
@@ -172,19 +172,19 @@ int main(int argc, char * argv[])
       std::cout << "ordpath2 = " << path2.show() << std::endl;
     }
 
-    zorba::store::OrdPath::RelativePosition pos;
+    zorba::simplestore::OrdPath::RelativePosition pos;
     pos = path1.getRelativePosition(path2);
     switch (pos)
     {
-    case zorba::store::OrdPath::SELF:
+    case zorba::simplestore::OrdPath::SELF:
       std::cout << "SELF" << std::endl; break;
-    case zorba::store::OrdPath::DESCENDANT:
+    case zorba::simplestore::OrdPath::DESCENDANT:
       std::cout << "DESCENDANT" << std::endl; break;
-    case zorba::store::OrdPath::ANCESTOR:
+    case zorba::simplestore::OrdPath::ANCESTOR:
       std::cout << "ANCESTOR" << std::endl; break;
-    case zorba::store::OrdPath::FOLLOWING:
+    case zorba::simplestore::OrdPath::FOLLOWING:
       std::cout << "FOLLOWING" << std::endl; break;
-    case zorba::store::OrdPath::PRECEDING:
+    case zorba::simplestore::OrdPath::PRECEDING:
       std::cout << "PRECEDING" << std::endl; break;
     }
   }

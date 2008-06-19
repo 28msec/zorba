@@ -44,49 +44,41 @@ public:
   virtual void addInsertInto(
         Item_t&              target,
         std::vector<Item_t>& children,
-        bool                 copy,
         const CopyMode&      copymode) = 0;
 
   virtual void addInsertFirst(
         Item_t&              target,
         std::vector<Item_t>& children,
-        bool                 copy,
         const CopyMode&      copymode) = 0;
 
   virtual void addInsertLast(
         Item_t&              target,
         std::vector<Item_t>& children,
-        bool                 copy,
         const CopyMode&      copymode) = 0;
 
   virtual void addInsertBefore(
         Item_t&              target,
         std::vector<Item_t>& siblings,
-        bool                 copy,
         const CopyMode&      copymode) = 0;
 
   virtual void addInsertAfter(
         Item_t&              target,
         std::vector<Item_t>& siblings,
-        bool                 copy,
         const CopyMode&      copymode) = 0;
   
   virtual void addInsertAttributes(
         Item_t&              target,
         std::vector<Item_t>& attrs,
-        bool                 copy,
         const CopyMode&      copymode) = 0;
 
   virtual void addReplaceNode(
         Item_t&              target,
         std::vector<Item_t>& replacementNodes,
-        bool                 copy,
         const CopyMode&      copymode) = 0;
 
   virtual void addReplaceContent(
         Item_t&              target,
         Item_t&              newTextChild,
-        bool                 copy,
         const CopyMode&      copymode) = 0;
 
   virtual void addReplaceValue(

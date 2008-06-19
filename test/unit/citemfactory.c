@@ -17,7 +17,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <zorba/zorbac.h>
-#include <inmemorystore/inmemorystorec.h>
+#include <simplestore/simplestorec.h>
 
 
 #define UNIT_ASSERT(x) \
@@ -37,7 +37,7 @@ citemfactory(int argc, char* argv[])
   int                lTmpInt = 0;
   const char*        lStringValue = 0;
  
-  void* store = create_inmemory_store();
+  void* store = create_simple_store();
 
   const char* lURI = "http://www.zorba-xquery.com/";
   const char* lPrefix = "zorba";

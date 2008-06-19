@@ -22,8 +22,6 @@
 #include "store/api/iterator.h"
 #include "store/naive/store_defs.h"
 
-//#include "api/serialization/serializer.h"
-
 
 namespace zorba { namespace store {
 
@@ -37,7 +35,7 @@ Item::getType( ) const
 }
 
 
-bool Item::equals(const Item*, long timezone, XQPCollator* aCollation) const
+bool Item::equals(const store::Item*, long timezone, XQPCollator* aCollation) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -70,7 +68,7 @@ xqpStringStore_t Item::getStringValue() const
 
 
 /**
- * Helper method with is used to return a StringValue of an Item
+ * Helper method with is used to return a StringValue of an store::Item
  * by pointer instead of rchandle
  */
 xqpStringStore* Item::getStringValueP() const 
@@ -408,7 +406,7 @@ xqpStringStore_t Item::getBaseURI() const
 }
 
 
-Iterator_t Item::getAttributes() const
+store::Iterator_t Item::getAttributes() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -416,7 +414,7 @@ Iterator_t Item::getAttributes() const
 }
 
 
-Iterator_t Item::getChildren() const
+store::Iterator_t Item::getChildren() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -473,7 +471,7 @@ store::Item* Item::getNodeName() const
 }
 
 
-store::Item* Item::getParent() const
+Item* Item::getParent() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -550,7 +548,10 @@ void Item::finalizeNode()
 }
 
 
-Item* Item::copy(Item* parent, long pos, const CopyMode& copymode) const
+Item* Item::copy(
+    store::Item* parent,
+    long pos,
+    const CopyMode& copymode) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());

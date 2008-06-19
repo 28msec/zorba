@@ -23,16 +23,16 @@
 #include "store/api/item.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 /*******************************************************************************
 
 ********************************************************************************/
-class AtomicItem : public Item
+class AtomicItem : public store::Item
 {
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
 public:
-  AtomicItem() : Item() { }
+  AtomicItem() : store::Item() { }
 
 #else
 
@@ -40,7 +40,7 @@ protected:
   SYNC_CODE(RCLock  theRCLock;)
 
 public:
-  AtomicItem() : Item() { theRCLockPtr = &theRCLock; }
+  AtomicItem() : store::Item() { theRCLockPtr = &theRCLock; }
 #endif
 
   virtual ~AtomicItem() {}
@@ -49,8 +49,8 @@ public:
   bool isAtomic() const { return true; }
   bool isPul() const    { return false; }
 
-  virtual Item_t getAtomizationValue() const;
-  virtual Iterator_t getTypedValue() const;
+  virtual store::Item_t getAtomizationValue() const;
+  virtual store::Iterator_t getTypedValue() const;
 };
 
 
@@ -87,10 +87,10 @@ private:
   xqpStringStore* getPrefix() const    { return thePrefix.getp(); }
   xqpStringStore* getLocalName() const { return theLocal.getp(); }
 
-  Item* getType() const;
+  store::Item* getType() const;
   uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  Item_t getEBV() const;
+  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  store::Item_t getEBV() const;
   xqpStringStore_t getStringValue() const;
 
   bool isId() const;
@@ -110,10 +110,10 @@ protected:
 public:
   StringItemNaive(xqpStringStore_t& value) { theValue.transfer(value); }
   
-  virtual Item* getType( ) const;
+  virtual store::Item* getType( ) const;
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual Item_t getEBV( ) const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const { return theValue; }
   virtual xqpStringStore* getStringValueP() const { return theValue.getp(); }
   virtual xqp_string show() const;
@@ -134,10 +134,10 @@ public:
     theValue.transfer(value);
   }
 
-  virtual Item* getType() const;
+  virtual store::Item* getType() const;
   uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  Item_t getEBV() const;
+  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  store::Item_t getEBV() const;
   xqpStringStore_t getStringValue() const { return theValue.getp(); }
   xqpStringStore* getStringValueP() const { return theValue.getp(); }
 
@@ -153,7 +153,7 @@ class IDItemImpl : public NCNameItemImpl
 public:
   IDItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
 
-  Item* getType() const;
+  store::Item* getType() const;
 
   virtual xqp_string show() const;
 };
@@ -171,10 +171,10 @@ protected:
 public:
   AnyUriItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
-  Item* getType( ) const;
+  store::Item* getType( ) const;
   uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  Item_t getEBV( ) const;
+  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  store::Item_t getEBV( ) const;
   xqpStringStore_t getStringValue( ) const { return theValue.getp(); }
   xqpStringStore* getStringValueP() const  { return theValue.getp(); }
   xqp_string show() const;
@@ -192,10 +192,10 @@ private:
 public:
   UntypedAtomicItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
-  Item* getType( ) const;
+  store::Item* getType( ) const;
   uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  Item_t getEBV( ) const;
+  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  store::Item_t getEBV( ) const;
   xqpStringStore_t getStringValue() const { return theValue; }
   xqpStringStore* getStringValueP() const { return theValue.getp(); }
   xqp_string show() const;
@@ -214,7 +214,7 @@ public:
   static int createFromDateAndTime(
         const xqp_date& date,
         const xqp_time& time,
-        Item_t& item);
+        store::Item_t& item);
 
   DateTimeItemNaive(xqp_dateTime& aValue) : theValue(aValue) { };
   
@@ -229,9 +229,9 @@ public:
   virtual xqp_gMonthDay getGMonthDayValue() const { return theValue; }
   virtual xqp_gDay getGDayValue() const { return theValue; }
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  virtual store::Item_t getEBV( ) const;
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
   virtual xqp_string show() const;
 
@@ -255,9 +255,9 @@ public:
   virtual xqp_duration getDurationValue() const;
   virtual xqp_yearMonthDuration getYearMonthDurationValue() const;
   virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqp_string show() const;
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
 };
@@ -275,9 +275,9 @@ public:
   DayTimeDurationItemNaive(xqp_dayTimeDuration& aValue) : theValue(aValue) { };
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqp_string show() const;
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
 };
@@ -295,9 +295,9 @@ public:
   YearMonthDurationItemNaive(xqp_yearMonthDuration& aValue) : theValue(aValue) { };
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_yearMonthDuration getYearMonthDurationValue() const;
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqp_string show() const;
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
 };
@@ -316,9 +316,9 @@ public:
 
   virtual xqp_decimal getDecimalValue() const { return theValue; }
 
-  virtual Item* getType( ) const;
-  virtual bool equals(const Item*, long timezone = 0 , XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType( ) const;
+  virtual bool equals(const store::Item*, long timezone = 0 , XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue( ) const;
   virtual xqp_string show() const;
   virtual bool isNaN() const;
@@ -339,9 +339,9 @@ class IntegerItemNaive : public AtomicItem
   virtual xqp_integer getIntegerValue() const { return theValue; }
   virtual xqp_decimal getDecimalValue() const;
 
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -362,9 +362,9 @@ class NonPositiveIntegerItemNaive : public AtomicItem
   virtual xqp_integer getIntegerValue() const { return theValue; }
   virtual xqp_decimal getDecimalValue() const;
     
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -385,9 +385,9 @@ class NegativeIntegerItemNaive : public AtomicItem
   virtual xqp_integer getIntegerValue() const { return theValue; }
   virtual xqp_decimal getDecimalValue() const;
     
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -409,9 +409,9 @@ class NonNegativeIntegerItemNaive : public AtomicItem
   virtual xqp_integer getIntegerValue() const;
   virtual xqp_decimal getDecimalValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -433,9 +433,9 @@ class PositiveIntegerItemNaive : public AtomicItem
   virtual xqp_integer getIntegerValue() const;
   virtual xqp_decimal getDecimalValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV() const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV() const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -459,9 +459,9 @@ class IntItemNaive : public AtomicItem
   virtual xqp_decimal getDecimalValue() const;
   virtual xqp_long getLongValue() const;
     
-  virtual Item* getType( ) const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType( ) const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -485,9 +485,9 @@ class UnsignedIntItemNaive : public AtomicItem
   virtual xqp_uinteger getUnsignedIntegerValue() const;
   virtual xqp_ulong getUnsignedLongValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -509,9 +509,9 @@ class LongItemNaive : public AtomicItem
   virtual xqp_integer getIntegerValue() const;
   virtual xqp_decimal getDecimalValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -534,9 +534,9 @@ class UnsignedLongItemNaive : public AtomicItem
   virtual xqp_decimal getDecimalValue() const;
   virtual xqp_uinteger getUnsignedIntegerValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -560,9 +560,9 @@ class ShortItemNaive : public AtomicItem
   virtual xqp_long getLongValue() const;
   virtual xqp_int getIntValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -588,9 +588,9 @@ class UnsignedShortItemNaive : public AtomicItem
   virtual xqp_ulong getUnsignedLongValue() const;
   virtual xqp_uint getUnsignedIntValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -615,9 +615,9 @@ class ByteItemNaive : public AtomicItem
   virtual xqp_int getIntValue() const;
   virtual xqp_short getShortValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -644,9 +644,9 @@ class UnsignedByteItemNaive : public AtomicItem
   virtual xqp_uint getUnsignedIntValue() const;
   virtual xqp_ushort getUnsignedShortValue() const;
   
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
@@ -667,9 +667,9 @@ public:
 
 	virtual xqp_double getDoubleValue() const { return theValue; }
 	
-	virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-	virtual Item_t getEBV( ) const;
+	virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+	virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const;
@@ -689,9 +689,9 @@ public:
   FloatItemNaive ( xqp_float aValue ) : theValue ( aValue ) {}
   virtual xqp_float getFloatValue() const { return theValue; }
 	
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual bool isNaN() const;
@@ -712,10 +712,10 @@ class BooleanItemNaive : public AtomicItem
   BooleanItemNaive ( xqp_boolean aValue ) : theValue(aValue) {}
   virtual xqp_boolean getBooleanValue() const { return theValue; }
 
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual Item_t getEBV( ) const;
+  virtual store::Item_t getEBV( ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
 };
@@ -733,8 +733,8 @@ public:
   Base64BinaryItemNaive(xqp_base64Binary aValue) : theValue(aValue) {}
   virtual xqp_base64Binary getBase64BinaryValue() const { return theValue; }
 
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
@@ -753,8 +753,8 @@ class HexBinaryItemNaive : public AtomicItem
  HexBinaryItemNaive(xqp_hexBinary aValue) : theValue(aValue) {}
   virtual xqp_hexBinary getHexBinaryValue() const { return theValue; }
 
-  virtual Item* getType() const;
-  virtual bool equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
+  virtual store::Item* getType() const;
+  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;
   virtual xqpStringStore_t getStringValue() const;
   virtual xqp_string show() const;
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;

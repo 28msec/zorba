@@ -22,7 +22,7 @@
 #include "common/common.h"
 #include "zorbautils/fatal.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 class OrdPathStack;
 

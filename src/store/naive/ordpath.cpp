@@ -23,7 +23,7 @@
 #include "store/naive/store_defs.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

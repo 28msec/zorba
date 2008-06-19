@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 #include <fstream>
 #include <iostream>
@@ -114,7 +114,7 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // Instantiate the simple store
-  store::SimpleStore* store = inmemorystore::InMemoryStore::getInstance();
+  simplestore::SimpleStore* store = simplestore::SimpleStoreManager::getStore();
 
   // start processing
   Zorba* zengine = Zorba::getInstance(store);

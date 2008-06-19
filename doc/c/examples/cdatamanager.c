@@ -19,7 +19,7 @@
 #include <string.h>
 
 #include <zorba/zorbac.h>
-#include <inmemorystore/inmemorystorec.h>
+#include <simplestore/simplestorec.h>
 
 /**
  */
@@ -71,7 +71,7 @@ cdatamanager(int argc, char** argv)
   XQC_Implementation impl;
   XQC_DataManager mgr;
 
-  void* store = create_inmemory_store();
+  void* store = create_simple_store();
 
   if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
     return 1;
@@ -85,6 +85,6 @@ cdatamanager(int argc, char** argv)
 
   mgr->free(mgr);
   impl->free(impl);
-  shutdown_inmemory_store(store);
+  shutdown_simple_store(store);
   return 0;
 }

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 #include "store/naive/simple_store.h"
 
-namespace zorba { namespace inmemorystore {
+namespace zorba { namespace simplestore {
 
-store::SimpleStore*
-InMemoryStore::getInstance()
+SimpleStore*
+SimpleStoreManager::getStore()
 {
-  static store::SimpleStore lInstance;
+  static SimpleStore lInstance;
 
   if ( ! lInstance.theIsInitialized )
     lInstance.init();
@@ -30,8 +30,9 @@ InMemoryStore::getInstance()
   return &lInstance;
 }
 
+
 void
-InMemoryStore::shutdown(store::SimpleStore* aStore)
+SimpleStoreManager::shutdownStore(SimpleStore* aStore)
 {
   aStore->shutdown();
 }

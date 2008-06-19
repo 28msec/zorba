@@ -32,7 +32,7 @@
 #include "zorbatypes/duration.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 
 /*******************************************************************************
@@ -44,7 +44,7 @@ void XmlNode::removeType(TypeUndoList& undoList)
 
   while(currNode != NULL)
   {
-    if (currNode->getNodeKind() == StoreConsts::elementNode)
+    if (currNode->getNodeKind() == store::StoreConsts::elementNode)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
@@ -59,7 +59,7 @@ void XmlNode::removeType(TypeUndoList& undoList)
       n->resetIsId();
       n->resetIsIdRefs();
     }
-    else if (currNode->getNodeKind() == StoreConsts::attributeNode)
+    else if (currNode->getNodeKind() == store::StoreConsts::attributeNode)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
@@ -91,7 +91,7 @@ void XmlNode::restoreType(const TypeUndoList& undoList)
 
   while(currNode != NULL && pos >= 0)
   {
-    if (currNode->getNodeKind() == StoreConsts::elementNode)
+    if (currNode->getNodeKind() == store::StoreConsts::elementNode)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
@@ -99,7 +99,7 @@ void XmlNode::restoreType(const TypeUndoList& undoList)
 
       n->theTypeName = undoList[pos].second.theTypeName;
     }
-    else if (currNode->getNodeKind() == StoreConsts::attributeNode)
+    else if (currNode->getNodeKind() == store::StoreConsts::attributeNode)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
@@ -123,7 +123,7 @@ void XmlNode::restoreType(const TypeUndoList& undoList)
 ********************************************************************************/
 void XmlNode::setToUntyped()
 {
-  if (getNodeKind() == StoreConsts::elementNode)
+  if (getNodeKind() == store::StoreConsts::elementNode)
   {
     ElementNode* n = reinterpret_cast<ElementNode*>(this);
 
@@ -142,11 +142,11 @@ void XmlNode::setToUntyped()
     for (ulong i = 0; i < numChildren; i++)
     {
       XmlNode* child = n->getChild(i);
-      if (child->getNodeKind() == StoreConsts::elementNode)
+      if (child->getNodeKind() == store::StoreConsts::elementNode)
         child->setToUntyped();
     }
   }
-  else if (getNodeKind() == StoreConsts::attributeNode)
+  else if (getNodeKind() == store::StoreConsts::attributeNode)
   {
     AttributeNode* n = reinterpret_cast<AttributeNode*>(this);
 
@@ -190,7 +190,7 @@ void XmlNode::removeChildren(
     {
       ZORBA_FATAL(child->getTree() == getTree(), "");
 
-      CopyMode copymode;
+      store::CopyMode copymode;
       copymode.set(false, true, true, false);
 
       child->switchTree(NULL, 0, copymode);
@@ -207,10 +207,10 @@ void XmlNode::removeChildren(
 
 ********************************************************************************/
 void XmlNode::insertChildren(
-    std::vector<Item_t>& newChildren,
-    ulong                pos,
+    std::vector<store::Item_t>& newChildren,
+    ulong                       pos,
     bool                 copy,
-    const CopyMode&      copymode)
+    const store::CopyMode&      copymode)
 {
   ulong numNewChildren = newChildren.size();
   for (ulong i = 0; i < numNewChildren; i++)
@@ -233,9 +233,9 @@ void XmlNode::insertChildren(
 
 ********************************************************************************/
 void XmlNode::insertChildrenFirst(
-    std::vector<Item_t>& newChildren,
+    std::vector<store::Item_t>& newChildren,
     bool                 copy,
-    const CopyMode&      copymode)
+    const store::CopyMode&      copymode)
 {
   ulong numNewChildren = newChildren.size();
   for (long i = numNewChildren - 1; i >= 0; i--)
@@ -258,9 +258,9 @@ void XmlNode::insertChildrenFirst(
 
 ********************************************************************************/
 void XmlNode::insertChildrenLast(
-    std::vector<Item_t>& newChildren,
+    std::vector<store::Item_t>& newChildren,
     bool                 copy,
-    const CopyMode&      copymode)
+    const store::CopyMode&      copymode)
 {
   insertChildren(newChildren, numChildren(), copy, copymode);
 }
@@ -270,9 +270,9 @@ void XmlNode::insertChildrenLast(
 
 ********************************************************************************/
 void XmlNode::insertSiblingsBefore(
-    std::vector<Item_t>& siblings,
-    bool                 copy,
-    const CopyMode&      copymode)
+    std::vector<store::Item_t>& siblings,
+    bool                        copy,
+    const store::CopyMode&      copymode)
 {
   ZORBA_FATAL(theParent, "");
 
@@ -291,9 +291,9 @@ void XmlNode::insertSiblingsBefore(
 
 ********************************************************************************/
 void XmlNode::insertSiblingsAfter(
-    std::vector<Item_t>& siblings,
-    bool                 copy,
-    const CopyMode&      copymode)
+    std::vector<store::Item_t>& siblings,
+    bool                        copy,
+    const store::CopyMode&      copymode)
 {
   ZORBA_FATAL(theParent, "");
 
@@ -310,10 +310,10 @@ void XmlNode::insertSiblingsAfter(
 
 ********************************************************************************/
 void XmlNode::replaceChild(
-    std::vector<Item_t>& newChildren,
-    ulong                pos,
-    bool                 copy,
-    const CopyMode&      copymode)
+    std::vector<store::Item_t>& newChildren,
+    ulong                       pos,
+    bool                        copy,
+    const store::CopyMode&      copymode)
 {
   removeChild(pos);
 
@@ -355,7 +355,7 @@ void ElementNode::removeAttributes(
     {
       ZORBA_FATAL(attr->getTree() == getTree(), "");
 
-      CopyMode copymode;
+      store::CopyMode copymode;
       copymode.set(false, true, true, false);
 
       attr->switchTree(NULL, 0, copymode);
@@ -372,9 +372,9 @@ void ElementNode::removeAttributes(
 
 ********************************************************************************/
 void ElementNode::insertAttributes(
-    std::vector<Item_t>& attrs,
-    bool                 copy,
-    const CopyMode&      copymode)
+    std::vector<store::Item_t>& attrs,
+    bool                        copy,
+    const store::CopyMode&      copymode)
 {
   ulong numAttrs = numAttributes();
   ulong numNewAttrs = attrs.size();
@@ -400,10 +400,10 @@ void ElementNode::insertAttributes(
 
 ********************************************************************************/
 void ElementNode::replaceAttribute(
-    std::vector<Item_t>& newAttrs,
-    ulong                pos,
-    bool                 copy,
-    const CopyMode&      copymode)
+    std::vector<store::Item_t>& newAttrs,
+    ulong                       pos,
+    bool                        copy,
+    const store::CopyMode&      copymode)
 {
   removeAttr(pos);
 
@@ -432,10 +432,10 @@ void ElementNode::replaceAttribute(
   children.
 ********************************************************************************/
 void ElementNode::replaceContent(
-    XmlNode*          newTextChild,
-    ConstrNodeVector& oldChildren,
-    bool              copy,
-    const CopyMode&   copymode)
+    XmlNode*               newTextChild,
+    ConstrNodeVector&      oldChildren,
+    bool                   copy,
+    const store::CopyMode& copymode)
 {
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
@@ -501,7 +501,7 @@ void CommentNode::replaceValue(
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::rename(Item_t& newName, Item_t& oldName)
+void ElementNode::rename(store::Item_t& newName, store::Item_t& oldName)
 {
   QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
 
@@ -514,7 +514,7 @@ void ElementNode::rename(Item_t& newName, Item_t& oldName)
 }
 
 
-void AttributeNode::rename(Item_t& newName, Item_t& oldName)
+void AttributeNode::rename(store::Item_t& newName, store::Item_t& oldName)
 {
   if (theParent)
   {

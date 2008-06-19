@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-#include <inmemorystore/inmemorystorec.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestorec.h>
+#include <simplestore/simplestore.h>
 #include "store/naive/simple_store.h"
 
 void* 
-create_inmemory_store()
+create_simple_store()
 {
-  return zorba::inmemorystore::InMemoryStore::getInstance();
+  return zorba::simplestore::SimpleStoreManager::getStore();
 }
 
+
 void 
-shutdown_inmemory_store(void* aStore)
+shutdown_simple_store(void* aStore)
 {
-  static_cast<zorba::store::SimpleStore*>(aStore)->shutdown();
+  static_cast<zorba::simplestore::SimpleStore*>(aStore)->shutdown();
 }

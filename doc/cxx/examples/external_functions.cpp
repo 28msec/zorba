@@ -19,7 +19,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/external_function.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 
 using namespace zorba;
@@ -181,7 +181,7 @@ func_example_4(Zorba* aZorba)
 int 
 external_functions(int argc, char* argv[])
 {
-  store::SimpleStore* lStore = inmemorystore::InMemoryStore::getInstance();
+  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
@@ -206,6 +206,6 @@ external_functions(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  inmemorystore::InMemoryStore::shutdown(lStore);
+  simplestore::SimpleStoreManager::shutdownStore(lStore);
   return 0;
 }

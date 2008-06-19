@@ -33,7 +33,7 @@
 #include <zorba/exception.h>
 
 #include <zorbatypes/URI.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 #include "store/naive/simple_store.h"
 
 namespace fs = boost::filesystem;
@@ -364,7 +364,8 @@ main(int argc, char** argv)
   std::cout << std::endl;
 
   // Instantiate the simple store
-  zorba::store::SimpleStore* store = zorba::inmemorystore::InMemoryStore::getInstance();
+  zorba::simplestore::SimpleStore* store =
+    zorba::simplestore::SimpleStoreManager::getStore();
 
   // Instantiate zorba query processor
   zorba::Zorba *engine = zorba::Zorba::getInstance(store);

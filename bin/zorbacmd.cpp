@@ -23,7 +23,7 @@
 #include "zorbacmdproperties.h"
 
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 #ifdef ZORBA_DEBUGGER
 #include <boost/thread/thread.hpp>
@@ -51,7 +51,7 @@ void server( std::istream * aQuery,
   zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
   try
   {
-    zorba::store::SimpleStore* lStore = zorba::inmemorystore::InMemoryStore::getInstance();
+    zorba::store::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
     lDebugger->start( lStore, aQuery, aFileName, aRequestPort, aEventPort );
   } catch( std::exception &e ) {
     std::cout << e.what() << std::endl;
@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(zorba::inmemorystore::InMemoryStore::getInstance());
+  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
 
   // time compilation and execution per each query
   boost::posix_time::ptime lStartCompileTime, lStopCompileTime;

@@ -37,7 +37,7 @@
 #include "zorbatypes/datetime.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
@@ -55,7 +55,7 @@ BasicItemFactory::~BasicItemFactory()
 
 
 bool BasicItemFactory::createQName(
-    Item_t&                 result,
+    store::Item_t&                 result,
     const xqpStringStore_t& ns,
     const xqpStringStore_t& pre,
     const xqpStringStore_t& local)
@@ -66,7 +66,7 @@ bool BasicItemFactory::createQName(
 
 
 bool BasicItemFactory::createQName(
-    Item_t&     result,
+    store::Item_t&     result,
     const char* ns,
     const char* pre,
     const char* ln)
@@ -76,14 +76,14 @@ bool BasicItemFactory::createQName(
 }
 
 
-bool BasicItemFactory::createNCName(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createNCName(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new NCNameItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createAnyURI(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createAnyURI(store::Item_t& result, xqpStringStore_t& value)
 {
   xqpStringStore_t str = value;
   theUriPool->insert(str, str);
@@ -92,7 +92,7 @@ bool BasicItemFactory::createAnyURI(Item_t& result, xqpStringStore_t& value)
 }
 
 
-bool BasicItemFactory::createAnyURI(Item_t& result, const char* value)
+bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 {
   xqpStringStore_t str;
   theUriPool->insertc(value, str);
@@ -101,82 +101,82 @@ bool BasicItemFactory::createAnyURI(Item_t& result, const char* value)
 }
 
 
-bool BasicItemFactory::createUntypedAtomic(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new UntypedAtomicItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createString(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createString(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new StringItemNaive(value);
   return true;
 }
 
 
-bool BasicItemFactory::createBase64Binary(Item_t& result, xqp_base64Binary value)
+bool BasicItemFactory::createBase64Binary(store::Item_t& result, xqp_base64Binary value)
 {
   result = new Base64BinaryItemNaive ( value );
   return true;
 }
 
-bool BasicItemFactory::createBoolean(Item_t& result, xqp_boolean value)
+bool BasicItemFactory::createBoolean(store::Item_t& result, xqp_boolean value)
 {
   result = new BooleanItemNaive(value);
   return true;
 }
 
 
-bool BasicItemFactory::createDecimal(Item_t& result, xqp_decimal value)
+bool BasicItemFactory::createDecimal(store::Item_t& result, xqp_decimal value)
 {
   result = new DecimalItemNaive(value);
   return true;
 }
 
 
-bool BasicItemFactory::createInteger(Item_t& result, xqp_integer value)
+bool BasicItemFactory::createInteger(store::Item_t& result, xqp_integer value)
 {
   result = new IntegerItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createLong (Item_t& result,  xqp_long value )
+bool BasicItemFactory::createLong (store::Item_t& result,  xqp_long value )
 {
   result = new LongItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createInt (Item_t& result,  xqp_int value )
+bool BasicItemFactory::createInt (store::Item_t& result,  xqp_int value )
 {
   result = new IntItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createShort (Item_t& result,  xqp_short value )
+bool BasicItemFactory::createShort (store::Item_t& result,  xqp_short value )
 {
   result = new ShortItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createByte (Item_t& result,  xqp_byte value )
+bool BasicItemFactory::createByte (store::Item_t& result,  xqp_byte value )
 {
   result = new ByteItemNaive ( value );
   return true;
 }
 
-bool BasicItemFactory::createDate(Item_t& result, xqp_date& value)
+bool BasicItemFactory::createDate(store::Item_t& result, xqp_date& value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
 bool BasicItemFactory::createDate (
-    Item_t& result,
+    store::Item_t& result,
     short year,
     short month,
     short day )
@@ -193,7 +193,7 @@ bool BasicItemFactory::createDate (
   }
 }
 
-bool BasicItemFactory::createDate (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createDate (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -206,14 +206,14 @@ bool BasicItemFactory::createDate (Item_t& result,  const xqp_string& value )
   }
 }
 
-bool BasicItemFactory::createDateTime(Item_t& result, xqp_dateTime& value)
+bool BasicItemFactory::createDateTime(store::Item_t& result, xqp_dateTime& value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
 bool BasicItemFactory::createDateTime(
-    Item_t& result,
+    store::Item_t& result,
     short   year,
     short   month,
     short   day,
@@ -235,7 +235,7 @@ bool BasicItemFactory::createDateTime(
 
 
 bool BasicItemFactory::createDateTime(
-    Item_t& result,
+    store::Item_t& result,
     short   year ,
     short   month,
     short   day,
@@ -256,7 +256,10 @@ bool BasicItemFactory::createDateTime(
   }
 }
 
-bool BasicItemFactory::createDateTime ( Item_t& result, const xqp_string& value )
+
+bool BasicItemFactory::createDateTime(
+    store::Item_t& result,
+    const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -269,7 +272,11 @@ bool BasicItemFactory::createDateTime ( Item_t& result, const xqp_string& value 
   }
 }
 
-bool BasicItemFactory::createDateTime (Item_t& result, const Item_t& date, const Item_t& time)
+
+bool BasicItemFactory::createDateTime(
+    store::Item_t& result,
+    const store::Item_t& date,
+    const store::Item_t& time)
 {
   if (date.isNull() || time.isNull()) {
     result = NULL;
@@ -283,19 +290,26 @@ bool BasicItemFactory::createDateTime (Item_t& result, const Item_t& date, const
   }
 }
 
-bool BasicItemFactory::createDouble (Item_t& result,  xqp_double value )
+
+bool BasicItemFactory::createDouble(
+    store::Item_t& result,
+    xqp_double value )
 {
   result = new DoubleItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createDuration (Item_t& result, xqp_duration& value )
+
+bool BasicItemFactory::createDuration(
+    store::Item_t& result,
+    xqp_duration& value )
 {
   result = new DurationItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createDuration (Item_t& result,  const xqp_string& value )
+
+bool BasicItemFactory::createDuration (store::Item_t& result,  const xqp_string& value )
 {
   YearMonthDuration_t ymd_t;
   DayTimeDuration_t   dtd_t;
@@ -315,8 +329,9 @@ bool BasicItemFactory::createDuration (Item_t& result,  const xqp_string& value 
   return false;
 }
 
+
 bool BasicItemFactory::createDuration (
-    Item_t& result,
+    store::Item_t& result,
     short   years,
     short   months,
     short   days,
@@ -341,34 +356,35 @@ bool BasicItemFactory::createDuration (
 }
 
 
-bool BasicItemFactory::createENTITIES(Item_t& result, xqpStringStore_t& /*value*/)
+bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& /*value*/)
 {
   result = NULL;
   return false;
 }
 
 
-bool BasicItemFactory::createENTITY(Item_t& result, xqpStringStore_t& /*value*/ )
+bool BasicItemFactory::createENTITY(store::Item_t& result, xqpStringStore_t& /*value*/ )
 {
   result = NULL;
   return false;
 }
 
 
-bool BasicItemFactory::createFloat (Item_t& result,  xqp_float value )
+bool BasicItemFactory::createFloat (store::Item_t& result,  xqp_float value )
 {
   result = new FloatItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createGDay (Item_t& result, xqp_gDay& value )
+
+bool BasicItemFactory::createGDay (store::Item_t& result, xqp_gDay& value )
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
 
-bool BasicItemFactory::createGDay (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createGDay (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -381,7 +397,8 @@ bool BasicItemFactory::createGDay (Item_t& result,  const xqp_string& value )
   }
 }
 
-bool BasicItemFactory::createGDay (Item_t& result,  short day )
+
+bool BasicItemFactory::createGDay (store::Item_t& result,  short day )
 {
   DateTime_t dt_t;
   
@@ -394,13 +411,15 @@ bool BasicItemFactory::createGDay (Item_t& result,  short day )
   }
 }
 
-bool BasicItemFactory::createGMonth(Item_t& result, xqp_gMonth& value )
+
+bool BasicItemFactory::createGMonth(store::Item_t& result, xqp_gMonth& value )
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createGMonth (Item_t& result,  const xqp_string& value )
+
+bool BasicItemFactory::createGMonth (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -413,7 +432,8 @@ bool BasicItemFactory::createGMonth (Item_t& result,  const xqp_string& value )
   }
 }
 
-bool BasicItemFactory::createGMonth (Item_t& result,  short month )
+
+bool BasicItemFactory::createGMonth (store::Item_t& result,  short month )
 {
   DateTime_t dt_t;
 
@@ -426,13 +446,15 @@ bool BasicItemFactory::createGMonth (Item_t& result,  short month )
   }
 }
 
-bool BasicItemFactory::createGMonthDay (Item_t& result, xqp_gMonthDay& value)
+
+bool BasicItemFactory::createGMonthDay (store::Item_t& result, xqp_gMonthDay& value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createGMonthDay (Item_t& result,  const xqp_string& value )
+
+bool BasicItemFactory::createGMonthDay (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -445,7 +467,8 @@ bool BasicItemFactory::createGMonthDay (Item_t& result,  const xqp_string& value
   }
 }
 
-bool BasicItemFactory::createGMonthDay (Item_t& result,  short month, short day )
+
+bool BasicItemFactory::createGMonthDay (store::Item_t& result,  short month, short day )
 {
   DateTime_t dt_t;
 
@@ -458,13 +481,15 @@ bool BasicItemFactory::createGMonthDay (Item_t& result,  short month, short day 
   }
 }
 
-bool BasicItemFactory::createGYear (Item_t& result, xqp_gYear& value )
+
+bool BasicItemFactory::createGYear (store::Item_t& result, xqp_gYear& value )
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createGYear (Item_t& result,  const xqp_string& value )
+
+bool BasicItemFactory::createGYear (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -478,7 +503,7 @@ bool BasicItemFactory::createGYear (Item_t& result,  const xqp_string& value )
 }
 
 
-bool BasicItemFactory::createGYear (Item_t& result,  short year )
+bool BasicItemFactory::createGYear (store::Item_t& result,  short year )
 {
   DateTime_t dt_t;
 
@@ -491,13 +516,19 @@ bool BasicItemFactory::createGYear (Item_t& result,  short year )
   }
 }
 
-bool BasicItemFactory::createGYearMonth (Item_t& result, xqp_gYearMonth& value )
+
+bool BasicItemFactory::createGYearMonth(
+    store::Item_t& result,
+    xqp_gYearMonth& value )
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createGYearMonth (Item_t& result,  const xqp_string& value )
+
+bool BasicItemFactory::createGYearMonth(
+    store::Item_t& result,
+    const xqp_string& value)
 {
   DateTime_t dt_t;
   
@@ -510,7 +541,11 @@ bool BasicItemFactory::createGYearMonth (Item_t& result,  const xqp_string& valu
   }
 }
 
-bool BasicItemFactory::createGYearMonth (Item_t& result,  short year, short month )
+
+bool BasicItemFactory::createGYearMonth(
+    store::Item_t& result,
+    short year,
+    short month)
 {
   DateTime_t dt_t;
 
@@ -524,52 +559,86 @@ bool BasicItemFactory::createGYearMonth (Item_t& result,  short year, short mont
 }
 
 
-bool BasicItemFactory::createHexBinary (Item_t& result,  xqp_hexBinary value )
+bool BasicItemFactory::createHexBinary (store::Item_t& result,  xqp_hexBinary value )
 {
   result = new HexBinaryItemNaive ( value ); 
   return true;
 }
 
 
-bool BasicItemFactory::createID(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createID(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new IDItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createIDREF(Item_t& result, xqpStringStore_t& /*value*/ )
+bool BasicItemFactory::createIDREF(
+    store::Item_t& result,
+    xqpStringStore_t& /*value*/ )
 {
   result = NULL;
   return false;
 }
 
 
-bool BasicItemFactory::createIDREFS(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createIDREFS(
+    store::Item_t& result,
+    xqpStringStore_t& /*value*/ )
+{
+  result = NULL;
+  return false;
+}
 
 
-bool BasicItemFactory::createLanguage(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createLanguage(
+    store::Item_t& result,
+    xqpStringStore_t& /*value*/ )
+{
+  result = NULL;
+  return false;
+}
 
 
-bool BasicItemFactory::createNMTOKEN(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createNMTOKEN(
+    store::Item_t& result,
+    xqpStringStore_t& /*value*/ )
+{
+  result = NULL;
+  return false;
+}
 
 
-bool BasicItemFactory::createNMTOKENS(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createNMTOKENS(
+    store::Item_t& result,
+    xqpStringStore_t& /*value*/ )
+{
+  result = NULL;
+  return false;
+}
 
 
-bool BasicItemFactory::createNOTATION(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createNOTATION(
+    store::Item_t& result,
+    xqpStringStore_t& /*value*/ )
+{
+  result = NULL;
+  return false;
+}
 
 
-bool BasicItemFactory::createName(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createName(
+    store::Item_t& result,
+    xqpStringStore_t& /*value*/ )
+{
+  result = NULL;
+  return false;
+}
 
 
-bool BasicItemFactory::createNegativeInteger (Item_t& result,  xqp_integer value )
+bool BasicItemFactory::createNegativeInteger(
+    store::Item_t& result,
+    xqp_integer value )
 {
   ZORBA_ASSERT(value < xqp_integer::parseInt(0));
   result = new NegativeIntegerItemNaive ( value );
@@ -577,14 +646,18 @@ bool BasicItemFactory::createNegativeInteger (Item_t& result,  xqp_integer value
 }
 
 
-bool BasicItemFactory::createNonNegativeInteger (Item_t& result,  xqp_uinteger value )
+bool BasicItemFactory::createNonNegativeInteger(
+    store::Item_t& result,
+    xqp_uinteger value )
 {
   result = new NonNegativeIntegerItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createNonPositiveInteger (Item_t& result,  xqp_integer value )
+bool BasicItemFactory::createNonPositiveInteger(
+    store::Item_t& result,
+    xqp_integer    value )
 {
   ZORBA_ASSERT(value <= Integer::parseInt(0));
   result = new NonPositiveIntegerItemNaive( value );
@@ -592,23 +665,33 @@ bool BasicItemFactory::createNonPositiveInteger (Item_t& result,  xqp_integer va
 }
 
 
-bool BasicItemFactory::createNormalizedString(Item_t& result, xqpStringStore_t& value)
-{ result = NULL; return false; }
+bool BasicItemFactory::createNormalizedString(
+    store::Item_t&    result,
+    xqpStringStore_t& value)
+{
+  result = NULL;
+  return false;
+}
 
 
-bool BasicItemFactory::createPositiveInteger (Item_t& result,  xqp_uinteger value ) {
+bool BasicItemFactory::createPositiveInteger(
+    store::Item_t& result,
+    xqp_uinteger value)
+{
   ZORBA_ASSERT(value > Integer::parseInt(0));
   result = new PositiveIntegerItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createTime(Item_t& result, xqp_time& value)
+
+bool BasicItemFactory::createTime(store::Item_t& result, xqp_time& value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createTime(Item_t& result, const xqp_string& value)
+
+bool BasicItemFactory::createTime(store::Item_t& result, const xqp_string& value)
 {
   DateTime_t dt_t;
   
@@ -622,10 +705,10 @@ bool BasicItemFactory::createTime(Item_t& result, const xqp_string& value)
 }
 
 bool BasicItemFactory::createTime(
-    Item_t& result,
-    short   hour,
-    short   minute,
-    double  second)
+    store::Item_t& result,
+    short          hour,
+    short          minute,
+    double         second)
 {
   DateTime_t dt_t;
   TimeZone_t tz_t;
@@ -640,11 +723,11 @@ bool BasicItemFactory::createTime(
 }
 
 bool BasicItemFactory::createTime(
-    Item_t& result,
-    short   hour,
-    short   minute,
-    double  second,
-    short   timeZone_hours)
+    store::Item_t& result,
+    short          hour,
+    short          minute,
+    double         second,
+    short          timeZone_hours)
 {
   DateTime_t dt_t;
   TimeZone_t tz_t = new TimeZone(timeZone_hours);
@@ -658,31 +741,31 @@ bool BasicItemFactory::createTime(
   }
 }
 
-bool BasicItemFactory::createToken(Item_t& result, xqpStringStore_t& /*value*/ )
+bool BasicItemFactory::createToken(store::Item_t& result, xqpStringStore_t& /*value*/ )
 {
   result = NULL;
   return false;
 }
 
-bool BasicItemFactory::createUnsignedByte (Item_t& result,  xqp_ubyte value )
+bool BasicItemFactory::createUnsignedByte (store::Item_t& result,  xqp_ubyte value )
 {
   result = new UnsignedByteItemNaive ( value );
   return true;
 }
 
-bool BasicItemFactory::createUnsignedInt (Item_t& result,  xqp_uint value )
+bool BasicItemFactory::createUnsignedInt (store::Item_t& result,  xqp_uint value )
 {
   result = new UnsignedIntItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createUnsignedLong(Item_t& result, xqp_ulong value)
+bool BasicItemFactory::createUnsignedLong(store::Item_t& result, xqp_ulong value)
 {
   result = new UnsignedLongItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createUnsignedShort(Item_t& result, xqp_ushort value)
+bool BasicItemFactory::createUnsignedShort(store::Item_t& result, xqp_ushort value)
 {
   result = new UnsignedShortItemNaive( value );
   return true;
@@ -702,7 +785,7 @@ bool BasicItemFactory::createUnsignedShort(Item_t& result, xqp_ushort value)
                   node C is not N, but a node in the same XmlTree as C). 
 ********************************************************************************/
 bool BasicItemFactory::createDocumentNode(
-    Item_t&           result,
+    store::Item_t&    result,
     xqpStringStore_t& baseUri,
     xqpStringStore_t& docUri,
     bool              allowSharing)
@@ -752,14 +835,14 @@ bool BasicItemFactory::createDocumentNode(
                   node C is not N, but a node in the same XmlTree as C). 
 ********************************************************************************/
 bool BasicItemFactory::createElementNode(
-    Item_t&           result,
-    Item*             parent,
-    long              pos,
-    Item_t&           nodeName,
-    Item_t&           typeName,
-    const NsBindings& localBindings,
-    xqpStringStore_t& baseUri,
-    bool              allowSharing)
+    store::Item_t&           result,
+    store::Item*             parent,
+    long                     pos,
+    store::Item_t&           nodeName,
+    store::Item_t&           typeName,
+    const store::NsBindings& localBindings,
+    xqpStringStore_t&        baseUri,
+    bool                     allowSharing)
 {
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
@@ -803,17 +886,17 @@ bool BasicItemFactory::createElementNode(
   stringValue   : The string-value property of N.
 ********************************************************************************/
 bool BasicItemFactory::createAttributeNode(
-    Item_t&           result,
-    Item*             parent,
+    store::Item_t&    result,
+    store::Item*      parent,
     long              pos,
-    Item_t&           nodeName,
-    Item_t&           typeName,
+    store::Item_t&    nodeName,
+    store::Item_t&    typeName,
     xqpStringStore_t& stringValue)
 {
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
 
-  Item_t typedValue = new UntypedAtomicItemImpl(stringValue);
+  store::Item_t typedValue = new UntypedAtomicItemImpl(stringValue);
 
   XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
 
@@ -847,8 +930,8 @@ bool BasicItemFactory::createAttributeNode(
   content       : The content property of N.
 ********************************************************************************/
 bool BasicItemFactory::createTextNode(
-    Item_t&           result,
-    Item*             parent,
+    store::Item_t&    result,
+    store::Item*      parent,
     long              pos,
     xqpStringStore_t& content)
 {
@@ -871,7 +954,7 @@ bool BasicItemFactory::createTextNode(
 
       XmlNode* lsib = (pos2 > 0 ? pnode->getChild(pos2-1) : NULL);
 
-      if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
+      if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
@@ -919,8 +1002,8 @@ bool BasicItemFactory::createTextNode(
   baseUri       : The base-uri property of N.
 ********************************************************************************/
 bool BasicItemFactory::createPiNode(
-    Item_t&           result,
-    Item*             parent,
+    store::Item_t&    result,
+    store::Item*      parent,
     long              pos,
     xqpStringStore_t& target,
     xqpStringStore_t& content,
@@ -961,8 +1044,8 @@ bool BasicItemFactory::createPiNode(
   content       : The content property of N.
 ********************************************************************************/
 bool BasicItemFactory::createCommentNode(
-    Item_t&           result,
-    Item*             parent,
+    store::Item_t&    result,
+    store::Item*      parent,
     long              pos,
     xqpStringStore_t& content)
 {
@@ -992,7 +1075,7 @@ bool BasicItemFactory::createCommentNode(
 /*******************************************************************************
 
 ********************************************************************************/
-PUL* BasicItemFactory::createPendingUpdateList()
+store::PUL* BasicItemFactory::createPendingUpdateList()
 {
   return new PULImpl();
 }

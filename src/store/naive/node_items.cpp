@@ -57,7 +57,7 @@
 #endif
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -118,9 +118,9 @@ XmlNode::XmlNode(
     XmlTree*              tree,
     XmlNode*              parent,
     long                  pos,
-    StoreConsts::NodeKind nodeKind)
+    store::StoreConsts::NodeKind nodeKind)
   :
-  Item(),
+  store::Item(),
   theParent(parent)
 {
   assert(tree || parent);
@@ -166,7 +166,7 @@ void XmlNode::setTree(const XmlTree* t)
 void XmlNode::setOrdPath(
     XmlNode*              parent,
     long                  pos,
-    StoreConsts::NodeKind nodeKind)
+    store::StoreConsts::NodeKind nodeKind)
 {
   if (!parent->theOrdPath.isValid())
     return;
@@ -174,7 +174,7 @@ void XmlNode::setOrdPath(
   ulong numChildren = parent->numChildren();
   ulong numAttrs = parent->numAttributes();
 
-  if (nodeKind == StoreConsts::attributeNode)
+  if (nodeKind == store::StoreConsts::attributeNode)
   {
     if (pos < 0)
     {
@@ -307,9 +307,9 @@ uint32_t XmlNode::hash(long timezone, XQPCollator* aCollation) const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t XmlNode::getEBV() const
+store::Item_t XmlNode::getEBV() const
 {
-  Item_t bVal;
+  store::Item_t bVal;
   GET_FACTORY().createBoolean(bVal, true);
   return bVal;
 }
@@ -399,7 +399,7 @@ ulong XmlNode::disconnect() throw()
 
   ulong pos;
 
-  if (getNodeKind() == StoreConsts::attributeNode)
+  if (getNodeKind() == store::StoreConsts::attributeNode)
   {
     pos = theParent->attributes().find(this);
     if (pos < theParent->numAttributes())
@@ -427,7 +427,7 @@ void XmlNode::connect(XmlNode* parent, ulong pos) throw()
 
   theParent = parent;
 
-  if (getNodeKind() == StoreConsts::attributeNode)
+  if (getNodeKind() == store::StoreConsts::attributeNode)
   {
     parent->attributes().insert(this, pos, false);
   }
@@ -447,7 +447,7 @@ void XmlNode::connect(XmlNode* parent, ulong pos) throw()
 void XmlNode::switchTree(
     XmlNode*        parent,
     ulong           pos,
-    const CopyMode& copymode) throw()
+    const store::CopyMode& copymode) throw()
 {
   try
   {
@@ -471,9 +471,9 @@ void XmlNode::switchTree(
 
     if (parent)
     {
-      if (getNodeKind() == StoreConsts::attributeNode)
+      if (getNodeKind() == store::StoreConsts::attributeNode)
       {
-        setOrdPath(parent, pos, StoreConsts::attributeNode);
+        setOrdPath(parent, pos, store::StoreConsts::attributeNode);
 
         parent->attributes().insert(this, pos, false);
       }
@@ -635,7 +635,7 @@ DocumentNode::DocumentNode(
     xqpStringStore_t& baseUri,
     xqpStringStore_t& docUri)
   :
-  XmlNode(tree, NULL, 0, StoreConsts::documentNode)
+  XmlNode(tree, NULL, 0, store::StoreConsts::documentNode)
 {
   if (baseUri != NULL && !baseUri->empty())
     theBaseUri.transfer(baseUri);
@@ -657,10 +657,10 @@ DocumentNode::~DocumentNode()
 
 ********************************************************************************/
 XmlNode* DocumentNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
-    const CopyMode& copymode) const
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
+    const store::CopyMode& copymode) const
 {
   ZORBA_ASSERT(rootParent == NULL && parent == NULL);
 
@@ -696,7 +696,7 @@ XmlNode* DocumentNode::copy2(
 }
 
 
-Item* DocumentNode::getType() const
+store::Item* DocumentNode::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNTYPED];
 }
@@ -709,21 +709,21 @@ xqpStringStore_t DocumentNode::getBaseURIInternal(bool& local) const
 }
 
 
-Iterator_t DocumentNode::getChildren() const
+store::Iterator_t DocumentNode::getChildren() const
 {
   return (new ChildrenIterator((XmlNode*)this));
 }
 
 
-Iterator_t DocumentNode::getTypedValue() const
+store::Iterator_t DocumentNode::getTypedValue() const
 {
   xqpStringStore_t rch = getStringValue();
-  Item_t item = new UntypedAtomicItemImpl(rch);
+  store::Item_t item = new UntypedAtomicItemImpl(rch);
   return new ItemIterator(item);
 }
 
 
-Item_t DocumentNode::getAtomizationValue() const
+store::Item_t DocumentNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = getStringValue();
   return new UntypedAtomicItemImpl(rch);
@@ -737,9 +737,9 @@ xqpStringStore_t DocumentNode::getStringValue() const
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
   {
-    StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
+    store::StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
-    if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
+    if (kind != store::StoreConsts::commentNode && kind != store::StoreConsts::piNode)
       buf += getChild(i)->getStringValue()->str();
   }
 
@@ -762,8 +762,8 @@ xqp_string DocumentNode::show() const
     strStream << " docUri = \"" << *theDocUri;
   strStream << "\">" << std::endl;
 
-  Iterator_t iter = getChildren();
-  Item_t item;
+  store::Iterator_t iter = getChildren();
+  store::Item_t item;
   while (iter->next(item))
   {
     strStream << item->show();
@@ -838,11 +838,11 @@ ElementNode::ElementNode(
     XmlTree*          tree,
     XmlNode*          parent,
     long              pos,
-    Item_t&           nodeName,
-    Item_t&           typeName,
-    const NsBindings* localBindings)
+    store::Item_t&    nodeName,
+    store::Item_t&    typeName,
+    const store::NsBindings* localBindings)
   :
-  XmlNode(tree, parent, pos, StoreConsts::elementNode),
+  XmlNode(tree, parent, pos, store::StoreConsts::elementNode),
   theFlags(0)
 {
   theName.transfer(nodeName);
@@ -898,10 +898,10 @@ ElementNode::~ElementNode()
 
 ********************************************************************************/
 XmlNode* ElementNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
-    const CopyMode& copymode) const
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
+    const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
 
@@ -918,8 +918,8 @@ XmlNode* ElementNode::copy2(
   XmlTree* tree = NULL;
   ElementTreeNode* copyNode = NULL;
 
-  Item_t nodeName = theName;
-  Item_t typeName = (copymode.theTypePreserve ?
+  store::Item_t nodeName = theName;
+  store::Item_t typeName = (copymode.theTypePreserve ?
                      theTypeName :
                      GET_STORE().theSchemaTypeNames[XS_UNTYPED]);
   xqpStringStore_t baseUri;
@@ -963,7 +963,7 @@ XmlNode* ElementNode::copy2(
           xqpStringStore* prefix = theName->getPrefix();
           if (prefix->empty() &&
               theName->getNamespace()->empty() &&
-              rootParent->getNodeKind() == StoreConsts::elementNode)
+              rootParent->getNodeKind() == store::StoreConsts::elementNode)
           {
             xqpStringStore* ns = reinterpret_cast<ElementNode*>(rootParent)->
                                  findBinding(prefix);
@@ -1012,7 +1012,7 @@ XmlNode* ElementNode::copy2(
         xqpStringStore* ns2 = NULL;
 
         if (rootParent &&
-            rootParent->getNodeKind() == StoreConsts::elementNode &&
+            rootParent->getNodeKind() == store::StoreConsts::elementNode &&
             copymode.theNsInherit)
         {
           ns2 = rootParent->getNsContext()->findBinding(prefix);
@@ -1036,7 +1036,7 @@ XmlNode* ElementNode::copy2(
           xqpStringStore* ns2 = NULL;
 
           if (rootParent &&
-              rootParent->getNodeKind() == StoreConsts::elementNode &&
+              rootParent->getNodeKind() == store::StoreConsts::elementNode &&
               copymode.theNsInherit)
           {
             ns2 = rootParent->getNsContext()->findBinding(prefix);
@@ -1138,9 +1138,9 @@ XmlNode* ElementNode::copy2(
 /*******************************************************************************
 
 ********************************************************************************/
-Iterator_t ElementNode::getTypedValue() const
+store::Iterator_t ElementNode::getTypedValue() const
 {
-  Item_t retItem = getAtomizationValue();
+  store::Item_t retItem = getAtomizationValue();
   return new ItemIterator(retItem);
 }
 
@@ -1148,7 +1148,7 @@ Iterator_t ElementNode::getTypedValue() const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ElementNode::getAtomizationValue() const
+store::Item_t ElementNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = getStringValue();
   return new UntypedAtomicItemImpl(rch);
@@ -1165,9 +1165,9 @@ xqpStringStore_t ElementNode::getStringValue() const
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
   {
-    StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
+    store::StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
-    if (kind != StoreConsts::commentNode && kind != StoreConsts::piNode)
+    if (kind != store::StoreConsts::commentNode && kind != store::StoreConsts::piNode)
       buf += getChild(i)->getStringValue()->str();
   }
 
@@ -1178,7 +1178,7 @@ xqpStringStore_t ElementNode::getStringValue() const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ElementNode::getNilled() const
+store::Item_t ElementNode::getNilled() const
 {
   if (theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
     return new BooleanItemNaive(false);
@@ -1187,8 +1187,8 @@ Item_t ElementNode::getNilled() const
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
   {
-    if (getChild(i)->getNodeKind() == StoreConsts::elementNode ||
-        getChild(i)->getNodeKind() == StoreConsts::textNode)
+    if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode ||
+        getChild(i)->getNodeKind() == store::StoreConsts::textNode)
     {
       nilled = false;
       break;
@@ -1222,7 +1222,7 @@ Item_t ElementNode::getNilled() const
 /*******************************************************************************
 
 ********************************************************************************/
-Iterator_t ElementNode::getAttributes() const
+store::Iterator_t ElementNode::getAttributes() const
 {
   return (new AttributesIterator((ElementNode*)this));
 }
@@ -1231,7 +1231,7 @@ Iterator_t ElementNode::getAttributes() const
 /*******************************************************************************
 
 ********************************************************************************/
-Iterator_t ElementNode::getChildren() const
+store::Iterator_t ElementNode::getChildren() const
 {
   return (new ChildrenIterator((XmlNode*)this));
 }
@@ -1242,22 +1242,22 @@ Iterator_t ElementNode::getChildren() const
   The higher parent gives the latest namespaces, instead of first.
 ********************************************************************************/
 void ElementNode::getNamespaceBindings(
-    NsBindings& bindings,
-    StoreConsts::NsScoping ns_scoping) const
+    store::NsBindings&            bindings,
+    store::StoreConsts::NsScoping ns_scoping) const
 {
   if (theNsContext != NULL)
   {
-    if(ns_scoping != StoreConsts::ONLY_PARENT_NAMESPACES)
+    if(ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
       bindings = theNsContext->getBindings();
 
-    if(ns_scoping == StoreConsts::ONLY_LOCAL_NAMESPACES)
+    if(ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
       return;
 
     const NsBindingsContext* parentContext = theNsContext->getParent();
 
     while (parentContext != NULL)
     {
-      const NsBindings& parentBindings = parentContext->getBindings();
+      const store::NsBindings& parentBindings = parentContext->getBindings();
       ulong parentSize = parentBindings.size();
       ulong currSize = bindings.size();
 
@@ -1308,7 +1308,7 @@ xqpStringStore* ElementNode::findBinding(const xqpStringStore* prefix) const
 /*******************************************************************************
 
 ********************************************************************************/
-const NsBindings& ElementNode::getLocalBindings() const
+const store::NsBindings& ElementNode::getLocalBindings() const
 {
   ZORBA_ASSERT(haveLocalBindings());
   return theNsContext->getBindings();
@@ -1321,7 +1321,7 @@ const NsBindings& ElementNode::getLocalBindings() const
   qname with a new one that has the same local name and ns uri, but whose
   prefix is artificially generated so that the conflict is resolved.
 ********************************************************************************/
-void ElementNode::addBindingForQName(Item_t& qname)
+void ElementNode::addBindingForQName(store::Item_t& qname)
 {
   xqpStringStore* prefix = qname->getPrefix();
   xqpStringStore* ns = qname->getNamespace();
@@ -1359,7 +1359,7 @@ void ElementNode::addBindingForQName(Item_t& qname)
 /*******************************************************************************
   Same as above, but used when we know that no ns binding conflict exists
 ********************************************************************************/
-void ElementNode::addBindingForQName2(const Item* qname)
+void ElementNode::addBindingForQName2(const store::Item* qname)
 {
   xqpStringStore* prefix = qname->getPrefix();
   xqpStringStore* ns = qname->getNamespace();
@@ -1410,8 +1410,8 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
   ns bindings of "this" node.
 ********************************************************************************/
 void ElementNode::checkNamespaceConflict(
-    const Item*  qname,
-    XQUERY_ERROR ecode) const
+    const store::Item*  qname,
+    XQUERY_ERROR        ecode) const
 {
   const QNameItemImpl* qn = reinterpret_cast<const QNameItemImpl*>(qname);
 
@@ -1436,7 +1436,7 @@ void ElementNode::checkNamespaceConflict(
 /*******************************************************************************
   Check that "this" does not have an attr with the same name as the given name.
 ********************************************************************************/
-void ElementNode::checkUniqueAttr(const Item* attrName) const
+void ElementNode::checkUniqueAttr(const store::Item* attrName) const
 {
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
@@ -1469,10 +1469,10 @@ void ElementNode::addBaseUriProperty(
 
   const SimpleStore& store = GET_STORE();
 
-  Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
-  Item_t tname = store.theSchemaTypeNames[XS_ANY_URI];
+  store::Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
+  store::Item_t tname = store.theSchemaTypeNames[XS_ANY_URI];
 
-  Item_t typedValue;
+  store::Item_t typedValue;
   if (relUri == NULL)
   {
     typedValue = new AnyUriItemImpl(absUri);
@@ -1506,7 +1506,7 @@ void ElementNode::adjustBaseUriProperty(
 {
   ZORBA_FATAL(absUri != NULL && !absUri->empty(), "");
 
-  Item_t typedValue;
+  store::Item_t typedValue;
   if (relUri == NULL)
   {
     typedValue = new AnyUriItemImpl(absUri);
@@ -1534,7 +1534,7 @@ xqp_string ElementNode::show() const
 
   str << " nid=\"" << theOrdPath.show() << "\"";
 
-  NsBindings nsBindings;
+  store::NsBindings nsBindings;
   getNamespaceBindings(nsBindings);
 
   for (ulong i = 0; i < nsBindings.size(); i++)
@@ -1543,8 +1543,8 @@ xqp_string ElementNode::show() const
         << nsBindings[i].second << "\"";
   }
 
-  Iterator_t iter = getAttributes();
-  Item_t item;
+  store::Iterator_t iter = getAttributes();
+  store::Item_t item;
   while (iter->next(item))
   {
     str << " " << item->show();
@@ -1575,13 +1575,13 @@ xqp_string ElementNode::show() const
 
 ********************************************************************************/
 ElementTreeNode::ElementTreeNode(
-    XmlTree*          tree,
-    XmlNode*          parent,
-    long              pos,
-    Item_t&           nodeName,
-    Item_t&           typeName,
-    const NsBindings* localBindings,
-    xqpStringStore_t& baseUri)
+    XmlTree*                 tree,
+    XmlNode*                 parent,
+    long                     pos,
+    store::Item_t&           nodeName,
+    store::Item_t&           typeName,
+    const store::NsBindings* localBindings,
+    xqpStringStore_t&        baseUri)
   :
   ElementNode(tree, parent, pos, nodeName, typeName, localBindings)
 {
@@ -1646,13 +1646,13 @@ xqpStringStore_t ElementTreeNode::getBaseURIInternal(bool& local) const
 
 ********************************************************************************/
 ElementDagNode::ElementDagNode(
-    XmlTree*          tree,
-    XmlNode*          parent,
-    long              pos,
-    Item_t&           nodeName,
-    Item_t&           typeName,
-    const NsBindings* localBindings,
-    xqpStringStore_t& baseUri)
+    XmlTree*                 tree,
+    XmlNode*                 parent,
+    long                     pos,
+    store::Item_t&           nodeName,
+    store::Item_t&           typeName,
+    const store::NsBindings* localBindings,
+    xqpStringStore_t&        baseUri)
   :
   ElementNode(tree, parent, pos, nodeName, typeName, localBindings)
 {
@@ -1712,15 +1712,15 @@ xqpStringStore_t ElementDagNode::getBaseURIInternal(bool& local) const
 
 ********************************************************************************/
 AttributeNode::AttributeNode(
-    XmlTree*  tree,
-    XmlNode*  parent,
-    long      pos,
-    Item_t&   attrName,
-    Item_t&   typeName,
-    Item_t&   typedValue,
-    bool      hidden)
+    XmlTree*        tree,
+    XmlNode*        parent,
+    long            pos,
+    store::Item_t&  attrName,
+    store::Item_t&  typeName,
+    store::Item_t&  typedValue,
+    bool            hidden)
   :
-  XmlNode(tree, parent, pos, StoreConsts::attributeNode),
+  XmlNode(tree, parent, pos, store::StoreConsts::attributeNode),
   theFlags(0)
 {
   theName.transfer(attrName);
@@ -1806,19 +1806,19 @@ AttributeNode::~AttributeNode()
 
 ********************************************************************************/
 XmlNode* AttributeNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
-    const CopyMode& copymode) const
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
+    const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
   ZORBA_FATAL(!isHidden(), "");
 
   XmlTree* tree = NULL;
   AttributeNode* copyNode = NULL;
-  Item_t nodeName = theName;
-  Item_t typeName;
-  Item_t typedValue;
+  store::Item_t nodeName = theName;
+  store::Item_t typeName;
+  store::Item_t typedValue;
 
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
 
@@ -1899,13 +1899,13 @@ docopy:
 /*******************************************************************************
 
 ********************************************************************************/
-Iterator_t AttributeNode::getTypedValue() const
+store::Iterator_t AttributeNode::getTypedValue() const
 {
   return new ItemIterator(theTypedValue);
 }
 
 
-Item_t AttributeNode::getAtomizationValue() const
+store::Item_t AttributeNode::getAtomizationValue() const
 {
   return theTypedValue;
 }
@@ -1945,7 +1945,7 @@ TextNode::TextNode(
     long              pos,
     xqpStringStore_t& content)
   :
-  XmlNode(tree, parent, pos, StoreConsts::textNode)
+  XmlNode(tree, parent, pos, store::StoreConsts::textNode)
 {
   theContent.transfer(content);
 
@@ -1978,10 +1978,10 @@ TextNode::~TextNode()
 
 ********************************************************************************/
 XmlNode* TextNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
-    const CopyMode& copymode) const
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
+    const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
 
@@ -2007,7 +2007,7 @@ XmlNode* TextNode::copy2(
    
       XmlNode* lsib = (pos2 > 0 ? parent->getChild(pos2-1) : NULL);
 
-      if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
+      if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
@@ -2060,21 +2060,21 @@ XmlNode* TextNode::copy2(
 /*******************************************************************************
 
 ********************************************************************************/
-Item* TextNode::getType() const
+store::Item* TextNode::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
 
 
-Iterator_t TextNode::getTypedValue() const
+store::Iterator_t TextNode::getTypedValue() const
 {
   xqpStringStore_t rch = theContent; 
-  const Item_t& item = new UntypedAtomicItemImpl(rch);
+  const store::Item_t& item = new UntypedAtomicItemImpl(rch);
   return new ItemIterator(item);
 }
 
 
-Item_t TextNode::getAtomizationValue() const
+store::Item_t TextNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = theContent; 
   return new UntypedAtomicItemImpl(rch);
@@ -2107,7 +2107,7 @@ PiNode::PiNode(
     xqpStringStore_t& target,
     xqpStringStore_t& content)
   :
-  XmlNode(tree, parent, pos, StoreConsts::piNode)
+  XmlNode(tree, parent, pos, store::StoreConsts::piNode)
 {
   theTarget.transfer(target);
   theContent.transfer(content);
@@ -2140,10 +2140,10 @@ PiNode::~PiNode()
 
 ********************************************************************************/
 XmlNode* PiNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
-    const CopyMode& copymode) const
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
+    const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
 
@@ -2196,21 +2196,21 @@ XmlNode* PiNode::copy2(
 /*******************************************************************************
 
 ********************************************************************************/
-Item* PiNode::getType() const
+store::Item* PiNode::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
 
 
-Iterator_t PiNode::getTypedValue() const
+store::Iterator_t PiNode::getTypedValue() const
 {
   xqpStringStore_t rch = theContent; 
-  const Item_t& item = new StringItemNaive(rch);
+  const store::Item_t& item = new StringItemNaive(rch);
   return new ItemIterator(item);
 }
 
 
-Item_t PiNode::getAtomizationValue() const
+store::Item_t PiNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = theContent; 
   return new StringItemNaive(rch);
@@ -2242,7 +2242,7 @@ CommentNode::CommentNode(
     long              pos,
     xqpStringStore_t& content)
   :
-  XmlNode(tree, parent, pos, StoreConsts::commentNode)
+  XmlNode(tree, parent, pos, store::StoreConsts::commentNode)
 {
   theContent.transfer(content);
 
@@ -2275,10 +2275,10 @@ CommentNode::~CommentNode()
 
 ********************************************************************************/
 XmlNode* CommentNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
-    const CopyMode& copymode) const
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
+    const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
 
@@ -2328,21 +2328,21 @@ XmlNode* CommentNode::copy2(
 /*******************************************************************************
 
 ********************************************************************************/
-Item* CommentNode::getType() const
+store::Item* CommentNode::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
 
 
-Iterator_t CommentNode::getTypedValue() const
+store::Iterator_t CommentNode::getTypedValue() const
 {
   xqpStringStore_t rch = theContent; 
-  const Item_t& item = new StringItemNaive(rch);
+  const store::Item_t& item = new StringItemNaive(rch);
   return new ItemIterator(item);
 }
 
 
-Item_t CommentNode::getAtomizationValue() const
+store::Item_t CommentNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = theContent; 
   return new StringItemNaive(rch);

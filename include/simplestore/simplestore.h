@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_INMEMORYSTORE_INMEMORYSTORE_H
-#define ZORBA_INMEMORYSTORE_INMEMORYSTORE_H
+#ifndef ZORBA_SIMPLESTORE_SIMPLESTOREMANAGER_H
+#define ZORBA_SIMPLESTORE_SIMPLESTOREMANAGER_H
 
 namespace zorba { 
 
-namespace store {
+namespace simplestore {
+
+
 class SimpleStore;
-}
 
-namespace inmemorystore {
 
-class InMemoryStore {
+class SimpleStoreManager
+{
 public:
-  static store::SimpleStore* 
-  getInstance();
+  static simplestore::SimpleStore* 
+  getStore();
 
   static void
-  shutdown(store::SimpleStore*);
+  shutdownStore(simplestore::SimpleStore*);
 };
 
 }}

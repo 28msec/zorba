@@ -13,36 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_STORE_DEFS_H
-#define ZORBA_STORE_STORE_DEFS_H
+#ifndef ZORBA_SIMPLE_STORE_STORE_DEFS_H
+#define ZORBA_SIMPLE_STORE_STORE_DEFS_H
 
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 namespace zorba { 
 
-namespace store {
+namespace simplestore {
 
 
 #define GET_STORE() \
-  (*inmemorystore::InMemoryStore::getInstance())
+  (*simplestore::SimpleStoreManager::getStore())
 
 #define GET_FACTORY() \
-  (*(reinterpret_cast<store::BasicItemFactory*>(GET_STORE().getItemFactory())))
+  (*(reinterpret_cast<BasicItemFactory*>(GET_STORE().getItemFactory())))
 
 
-#define BASE_NODE(item) (static_cast<store::XmlNode*>((item).getp()))
+#define BASE_NODE(item) (reinterpret_cast<XmlNode*>((item).getp()))
 
-#define DOC_NODE(item) (reinterpret_cast<store::DocumentNode*>((item).getp()))
+#define DOC_NODE(item) (reinterpret_cast<DocumentNode*>((item).getp()))
 
-#define ATTR_NODE(item) (reinterpret_cast<store::AttributeNode*>((item).getp()))
+#define ATTR_NODE(item) (reinterpret_cast<AttributeNode*>((item).getp()))
 
-#define ELEM_NODE(item) (reinterpret_cast<store::ElementNode*>((item).getp()))
+#define ELEM_NODE(item) (reinterpret_cast<ElementNode*>((item).getp()))
 
-#define TEXT_NODE(item) (reinterpret_cast<store::TextNode*>((item).getp()))
+#define TEXT_NODE(item) (reinterpret_cast<TextNode*>((item).getp()))
 
-#define PI_NODE(item) (reinterpret_cast<store::PiNode*>((item).getp()))
+#define PI_NODE(item) (reinterpret_cast<PiNode*>((item).getp()))
 
-#define COMMENT_NODE(item) (reinterpret_cast<store::CommentNode*>((item).getp()))
+#define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
 
 
 enum SchemaTypeNames
