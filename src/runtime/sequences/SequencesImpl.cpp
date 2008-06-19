@@ -313,6 +313,10 @@ FnDistinctValuesIteratorState::FnDistinctValuesIteratorState()
 
 FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() 
 {
+  if (theValueCompareParam) {
+    delete theValueCompareParam;
+    theValueCompareParam = 0;
+  }
   if (theAlreadySeenMap) {
     delete theAlreadySeenMap;
     theAlreadySeenMap = 0;
