@@ -186,7 +186,7 @@ bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value
   std::auto_ptr<store::Iterator> cwrapper1, cwrapper2;
   store::Item_t qname, temp_result;
   createQNameHelper(qname, name);
-  store::Item_t type = GET_STORE().theSchemaTypeNames[store::XS_STRING];
+  store::Item_t type = GET_STORE().theSchemaTypeNames[simplestore::XS_STRING];
   GENV_ITEMFACTORY->createAttributeNode(
       temp_result,
       parent, 
@@ -238,7 +238,7 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
 
   createNodeHelper(NULL, planState, "result", &result); // status_code, headers_item, payload);
 
-  createNodeHelper(result, planState, "status_code", &status_code);
+  createNodeHelper(result, planState, "status-code", &status_code);
   createNodeHelper(result, planState, "headers", &headers_node);
   createNodeHelper(result, planState, "payload", &payload);
   
@@ -283,7 +283,7 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
   xqpString temp = NumConversions::intToStr(reply_code);
   GENV_ITEMFACTORY->createTextNode(text_code, status_code, -1, temp.theStrStore);
 
-  if (reply_code == 200 )
+  if (reply_code >= 200 && reply_code < 300)
   {
     int doc_type;  // values: 3 - xml, 2 - text, 1 - everything else (base64), 0 - do nothing, document has bee processed.
 
@@ -319,9 +319,12 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
 
         if (temp != NULL)
         {
-          store::Iterator_t doc_child = temp->getChildren();
-          doc_child->open();
-          doc_child->next(doc);
+          store::Iterator_t doc_children = temp->getChildren();
+          doc_children->open();
+          doc_children->next(doc);
+          CopyMode copyMode;
+          copyMode.theDoCopy = false;
+          doc->copy(payload, -1, CopyMode());
         }
         else
         {
@@ -352,18 +355,6 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
     }
   }
     
-  if (doc != NULL)
-  {
-  }
-  else
-  {
-    /*
-    store::Item_t headers_item;
-    createNodeHelper(headers_item, planState, "headers", headers_iterator);
-    createNodeHelper(result, planState, "result", status_code, headers_item);
-    */
-  }
-
   return 0;
 }
 
@@ -452,7 +443,7 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
 static void processPayload(Item_t& payload_data, struct curl_httppost** first, struct curl_httppost** last)
 {
   store::Iterator_t it;
-  store::Item_t child, name;
+  store::Item_t child, name, filename, content_type;
 
   if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
     return; // TODO: error top node should be element node
@@ -472,38 +463,156 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
   {
     if (xqpString("name") == child->getNodeName()->getLocalName())
       name = child;
+
+    if (xqpString("filename") == child->getNodeName()->getLocalName())
+      filename = child;
+
+    if (xqpString("content-type") == child->getNodeName()->getLocalName())
+      content_type = child;
   }
 
   if (name.getp() == NULL)
     return; // TODO: signal error - payload part without an associated name
 
-  it = payload_data->getChildren();
-  it->open();
-  it->next(child);
-  if (child->getNodeKind() == store::StoreConsts::textNode)
+  if (filename.getp() != NULL)
   {
-    curl_formadd(first, last,
-                 CURLFORM_COPYNAME, name->getStringValue()->c_str(),
-                 CURLFORM_COPYCONTENTS, child->getStringValueP()->c_str(),
-                 CURLFORM_END);
-  }
-  else if (child->getNodeKind() == store::StoreConsts::elementNode)
-  {
-    stringstream ss;
-    error::ErrorManager lErrorManager;
-    serializer ser(&lErrorManager);
-    ser.set_parameter("omit-xml-declaration","yes");
-    ser.serialize(child, ss);
-    curl_formadd(first, last,
-                 CURLFORM_COPYNAME, name->getStringValue()->c_str(),
-                 CURLFORM_COPYCONTENTS, ss.str().c_str(),
-                 CURLFORM_CONTENTTYPE, "text/html",
-                 CURLFORM_END);
+    if (content_type != NULL)
+      curl_formadd(first, last,
+                CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                CURLFORM_FILE, filename->getStringValue()->c_str(),
+                CURLFORM_CONTENTTYPE, content_type->getStringValue()->c_str(),
+                CURLFORM_END);
+    else curl_formadd(first, last,
+                CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                CURLFORM_FILE, filename->getStringValue()->c_str(),
+                CURLFORM_END);
   }
   else
   {
-    // TODO: process comments, pi nodes? or generate error?
+
+    it = payload_data->getChildren();
+    it->open();
+    it->next(child);
+    if (child->getNodeKind() == store::StoreConsts::textNode)
+    {
+      curl_formadd(first, last,
+                  CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                  CURLFORM_COPYCONTENTS, child->getStringValueP()->c_str(),
+                  CURLFORM_END);
+    }
+    else if (child->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      stringstream ss;
+      error::ErrorManager lErrorManager;
+      serializer ser(&lErrorManager);
+      ser.set_parameter("omit-xml-declaration","yes");
+      ser.serialize(child, ss);
+      curl_formadd(first, last,
+                  CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                  CURLFORM_COPYCONTENTS, ss.str().c_str(),
+                  CURLFORM_CONTENTTYPE, "text/html",
+                  CURLFORM_END);
+    }
+    else
+    {
+      // TODO: process comments, pi nodes? or generate error?
+    }
   }
+}
+
+static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_slist **headers_list)
+{
+  store::Iterator_t it;
+  store::Item_t child, name, filename, content_type;
+
+  if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
+    return false;
+
+  if (xqpString("payload") != payload_data->getNodeName()->getLocalName())
+    return false;
+
+  it = payload_data->getAttributes();
+  it->open();
+  while (it->next(child))
+  {
+    if (xqpString("name") == child->getNodeName()->getLocalName())
+      name = child;
+
+    if (xqpString("filename") == child->getNodeName()->getLocalName())
+      filename = child;
+
+    if (xqpString("content-type") == child->getNodeName()->getLocalName())
+      content_type = child;
+  }
+
+  if (content_type.getp() != NULL
+      &&
+      xqpString("multipart/form-data") == content_type->getStringValue().getp())
+    return false;
+
+  if (filename.getp() != NULL)
+  {
+    xqpString test = filename->getStringValue()->c_str();
+    ifstream ifs(filename->getStringValue()->c_str());
+
+    if (!ifs)
+      return false; // TODO: generate error
+
+    filebuf* pbuf = ifs.rdbuf();
+    long size = pbuf->pubseekoff(0,ios::end,ios::in);
+    pbuf->pubseekpos(0,ios::in);
+    std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[size]);
+    pbuf->sgetn(buffer.get(),size);
+
+    curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , size);
+    curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, buffer.get());
+
+    if (content_type.getp() == NULL)
+      *headers_list = curl_slist_append(*headers_list, "Content-Type: application/octet-stream");
+
+    ifs.close();
+  }
+  else
+  {
+    it = payload_data->getChildren();
+    it->open();
+    it->next(child);
+    if (child->getNodeKind() == store::StoreConsts::textNode)
+    {
+      xqpStringStore* str = child->getStringValueP();
+      curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , str->bytes());
+      curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, str->c_str());
+      curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
+
+      if (content_type.getp() == NULL)
+        *headers_list = curl_slist_append(*headers_list, "Content-Type: text/plain");
+    }
+    else if (child->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      stringstream ss;
+      error::ErrorManager lErrorManager;
+      serializer ser(&lErrorManager);
+      ser.set_parameter("omit-xml-declaration","yes");
+      ser.serialize(child, ss);
+      
+      curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, ss.str().c_str());
+      curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
+
+      if (content_type.getp() == NULL)
+        *headers_list = curl_slist_append(*headers_list, "Content-Type: text/xml");
+    }
+    else
+    {
+      // TODO: process comments, pi nodes? or generate error?
+      return false;
+    }
+  }
+
+  if (content_type.getp() != NULL)
+    *headers_list = curl_slist_append(*headers_list,
+                                       (xqpString("Content-Type: ") + xqpString(content_type->getStringValue())).c_str());
+  
+  return true;
 }
 
 static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
@@ -601,6 +710,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   curl_httppost *first = NULL, *last = NULL;
   curl_slist *headers_list = NULL;
   int code;
+  bool single_payload = false;
   
   ZorbaRestGetIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
@@ -614,8 +724,26 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   Uri = lUri->getStringValue()->str();
 
   if (theChildren.size() > 1)
-    while (CONSUME(payload_data, 1))
-      processPayload(payload_data, &first, &last);
+  {
+    store::Item_t payload_data;
+    int status = CONSUME(payload_data, 1);
+
+    if (status)
+    {
+      if (processSinglePayload(payload_data, state->EasyHandle, &headers_list))
+      {
+        single_payload = true;
+      }
+      else
+      {
+        processPayload(payload_data, &first, &last);
+        while (CONSUME(payload_data, 1))
+          processPayload(payload_data, &first, &last);
+      }
+    }
+  }
+  if (!single_payload)
+    curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPPOST, first);
 
   if (theChildren.size() > 2)
     while (CONSUME(headers, 2))
@@ -624,7 +752,6 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
-  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPPOST, first);
   code = state->theStreamBuffer->multi_perform();
   processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
   
