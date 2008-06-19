@@ -15,7 +15,7 @@
  */
 
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 #include "test_debugger_protocol.h"
 
@@ -269,7 +269,7 @@ void test_packet( AbstractMessage * aMessage )
 
   void TestDebuggerSerialization::testVariableMessage()
   {
-    store::SimpleStore* lStore = inmemorystore::InMemoryStore::getInstance();
+    simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
     Zorba * lZorba = Zorba::getInstance( lStore );
     ItemFactory * lFactory = lZorba->getItemFactory();
     /* The item that is to be bound to the external variable */

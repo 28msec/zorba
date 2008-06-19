@@ -43,6 +43,7 @@
 namespace fs = boost::filesystem;
 
 #ifdef ZORBA_DEBUGGER
+
 void server( std::istream * aQuery,
             const char * aFileName,
             unsigned short aRequestPort,
@@ -51,7 +52,7 @@ void server( std::istream * aQuery,
   zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
   try
   {
-    zorba::store::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
+    zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
     lDebugger->start( lStore, aQuery, aFileName, aRequestPort, aEventPort );
   } catch( std::exception &e ) {
     std::cout << e.what() << std::endl;
@@ -290,7 +291,7 @@ int _tmain(int argc, _TCHAR* argv[])
       if ( lProperties.debugMode() )
     {
       zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
-      zorba::store::SimpleStore* lStore = zorba::inmemorystore::InMemoryStore::getInstance();
+      zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
       lDebugger->start( lStore, qfile.get(), "",
                         lProperties.requestPort(),
                         lProperties.eventPort() );
