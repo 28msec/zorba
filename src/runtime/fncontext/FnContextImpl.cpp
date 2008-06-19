@@ -74,10 +74,11 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 }
 
 
-static PlanIter_t compile (
-    XQueryCompiler &compiler, xqp_string query, 
-    checked_vector<store::Item_t> varnames,
-    checked_vector<xqtref_t> vartypes) {
+static PlanIter_t compile (CompilerCB *ccb, xqp_string query, 
+                           checked_vector<store::Item_t> varnames,
+                           checked_vector<xqtref_t> vartypes) 
+{
+    XQueryCompiler compiler (ccb);
     istringstream os (query);
     parsenode_t ast = compiler.parse (os);
     QueryLoc loc;
@@ -105,27 +106,29 @@ static PlanIter_t compile (
 
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item;
-  CompilerCB *ccb = new CompilerCB (*planState.theCompilerCB);
-  XQueryCompiler compiler (ccb);
-  auto_ptr<dynamic_context> dctx (new dynamic_context (planState.dctx ()));
-
   EvalIteratorState* state;
+
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
   // set up eval state's ccb
-  state->ccb.reset (ccb);
-  ccb->m_sctx = ccb->m_sctx->create_child_context ();
+  state->ccb.reset (new CompilerCB (*planState.theCompilerCB));
+  state->ccb->m_sctx_list.push_back (state->ccb->m_sctx = state->ccb->m_sctx->create_child_context ());
   CONSUME (item, 0);
-  state->eval_plan.reset (new PlanWrapper (compile (compiler, &*item->getStringValue (), varnames, vartypes),
-                                           ccb, dctx.get (), planState.theStackDepth + 1));
-  state->eval_plan->checkDepth (loc);
 
-  for (unsigned i = 0; i < theChildren.size () - 1; i++) {
-    store::Iterator_t lIter = new PlanIteratorWrapper (theChildren [i + 1], planState);
-    // TODO: is saving an open iterator efficient?
-    // Then again if we close theChildren [1] here,
-    // we won't be able to re-open it later via the PlanIteratorWrapper
-    dctx->add_variable (dynamic_context::var_key (ccb->m_sctx->lookup_var (varnames [i])), lIter);
+  {
+    state->dctx.reset (new dynamic_context (planState.dctx ()));
+    
+    state->eval_plan.reset (new PlanWrapper (compile (state->ccb.get (), &*item->getStringValue (), varnames, vartypes),
+                                             state->ccb.get (), state->dctx.get (), planState.theStackDepth + 1));
+    state->eval_plan->checkDepth (loc);
+    
+    for (unsigned i = 0; i < theChildren.size () - 1; i++) {
+      store::Iterator_t lIter = new PlanIteratorWrapper (theChildren [i + 1], planState);
+      // TODO: is saving an open iterator efficient?
+      // Then again if we close theChildren [1] here,
+      // we won't be able to re-open it later via the PlanIteratorWrapper
+      state->dctx->add_variable (dynamic_context::var_key (state->ccb->m_sctx->lookup_var (varnames [i])), lIter);
+    }
   }
 
   while (state->eval_plan->next (result)) {

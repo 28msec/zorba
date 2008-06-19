@@ -20,6 +20,8 @@
 #include "runtime/base/narybase.h"
 #include "runtime/util/plan_wrapper_holder.h"
 
+#include "context/dynamic_context.h"
+
 namespace zorba
 {
   
@@ -63,6 +65,7 @@ class EvalIteratorState : public PlanIteratorState {
 public:
   PlanWrapperHolder eval_plan;
   std::auto_ptr<CompilerCB> ccb;
+  std::auto_ptr<dynamic_context> dctx;
 };
 
 
