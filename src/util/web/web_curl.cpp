@@ -34,7 +34,11 @@ int http_get(const char* url, xqp_string& result)
   CURL* curl_handle;
   std::string temp;
 
+#ifdef ZORBA_WITH_SSL
   curl_global_init(CURL_GLOBAL_ALL);
+#else
+  curl_global_init(CURL_GLOBAL_NOTHING);
+#endif
   curl_handle = curl_easy_init();                                             /* init the curl session */
   curl_easy_setopt(curl_handle, CURLOPT_URL, url);                            /* specify URL to get */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);  /* send all data to this function  */

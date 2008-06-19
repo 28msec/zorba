@@ -72,7 +72,11 @@ void GlobalEnvironment::init(store::Store* store)
 
 
 #ifdef ZORBA_WITH_REST
-  curl_global_init(CURL_GLOBAL_ALL);
+#  ifdef ZORBA_WITH_SSL
+    curl_global_init(CURL_GLOBAL_ALL);
+#  else
+    curl_global_init(CURL_GLOBAL_NOTHING);
+#  endif
 #endif
 
   m_globalEnv->m_compilerSubSys = XQueryCompilerSubsystem::create();

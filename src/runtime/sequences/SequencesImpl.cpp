@@ -1439,6 +1439,7 @@ static store::Item_t get_doc(xqpStringStore_t& uriString, const char **err)
       return NULL;
 #endif
     }
+#ifdef ZORBA_WITH_FILE_ACCESS
     else 
     {
       // load file
@@ -1456,8 +1457,10 @@ static store::Item_t get_doc(xqpStringStore_t& uriString, const char **err)
         *err = "Failed to parse document."; return NULL;
       }
     }
+#else
+    return NULL;
+#endif
   }
-
   return doc;
 }
 
