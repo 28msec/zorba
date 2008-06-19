@@ -2042,7 +2042,7 @@ void *begin_visit(const VFO_DeclList& v)
 
     signature sig(qname, arg_types, return_type);
 
-    function *f = NULL;
+    rchandle<function> f;
     switch(n->get_type()) 
     {
     case ParseConstants::fn_extern_update:
