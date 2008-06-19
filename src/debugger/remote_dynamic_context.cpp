@@ -39,6 +39,6 @@ namespace zorba {
     //AbstractCommandMessage * lmsg = new VariableMessage( aQName, aItem );
     //theDebuggerClient->send( lmsg );
     //delete lmsg;
-    //return true;
+    return true;
   }
 }//end of namespace
