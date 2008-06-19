@@ -16,7 +16,6 @@
    <li> An in-memory replaceable XML store implementing the XQuery Data Model (XDM) W3C recommendation.
    <li> Group By (as in the evolving W3C XQuery 1.1 recommendation).
    <li> Try-Catch (as in the evolving W3C recommendation).
-   <li> REST functions in order to make HTTP calls from a query.
    <li> Eval Facility to dynamically evaluate a string and execute it as a query.
    <li> APIs in various programming languages (i.e. C++, C, Python, and Ruby).
    <li> Basic schema validation (without post schema validation and substitution groups).
@@ -34,7 +33,6 @@
        <li> \ref eval
        <li> Additional Function Libraries
        <ul>
-         <li> \ref rest
          <li> \ref deref
          <li> \ref zorba-math
        </ul>
