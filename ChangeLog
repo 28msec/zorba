@@ -1,11 +1,18 @@
 Zorba - The XQuery Processor
 
-version 0.9.2 (2008.04.15):
+version 0.9.2 (2008.04.19):
   * Module support (as in the XQuery 1.0 W3C recommendation)
   * Removed boost shared pointers from the API
   * Performance improvements and bug fixes
   * C API (zorbac.h)
-  * Added support for running multiple queries in zorba command line utility
+  * Rudimentar SWIG interface for generating other language bindings (i.e. Ruby and Python)
+  * Added support for running multiple queries in the command line utility
+  * group by (as in the evolving W3C XQuery 1.1 recommendation)
+  * try-catch (as in the evolving W3C recommendation)
+  * eval facility to dynamically evaluate a string and execute it as a query
+  * some math functions (e.g. sqrt, sin, cos, etc)
+  * Basic schema validation (without post schema validation and substitution groups)
+  * Stabilized the Store API & build the simplestore as a separate library
 
 version 0.9.1 (2008.04.30):
   * Initial release supporting 
