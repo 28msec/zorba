@@ -95,15 +95,18 @@ static_context::~static_context()
 }
 
 bool context::bind_expr (xqp_string key, expr *e) {
-  ctx_value_t v = { e };
+  ctx_value_t v;
+  v.exprValue = e;
+  if (keymap.put (key, v, false))
+    return false;
   RCHelper::addReference (e);
-  return ! keymap.put (key, v);
+  return true;
 }
 
 bool context::bind_func (xqp_string key, function *f) {
   ctx_value_t v;
   v.functionValue = f;
-  if (keymap.put (key, v))
+  if (keymap.put (key, v, false))
     return false;
   RCHelper::addReference (f);
   return true;

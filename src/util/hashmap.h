@@ -101,9 +101,9 @@ public: // map interface
   bool get(char const* key, V& result) const;   // copy hash entry at key to result, true on match
   bool get(char const* key, uint32_t, V&) const;// copy hash entry at key,len to result, true on match
 
-  bool put(std::string const& key, V val);           // add (key,val) entry to map, true on match
-  bool put(char const* key, V val);             // add (key,val) entry to map, true on match
-  bool put(char const* key, uint32_t, V val);   // add (key,len,val) entry to map, true on match
+  bool put(std::string const& key, V val, bool replace = true);           // add (key,val) entry to map, true on match
+  bool put(char const* key, V val, bool replace = true);             // add (key,val) entry to map, true on match
+  bool put(char const* key, uint32_t, V val, bool replace = true);   // add (key,len,val) entry to map, true on match
   uint64_t put0(char const* key, V val);        // add (key,val) entry to map, return key heap offset
 
 public: // the hash functions
@@ -429,14 +429,16 @@ inline bool hashmap<V>::get(const char* key, uint32_t len, V& result) const
 //  Store a new (key.val) pair in the map.
 //  Return true if key was matched, else false.
 template<class V>
-inline bool hashmap<V>::put(const std::string& key, V val)
+inline bool hashmap<V>::put(const std::string& key, V val, bool replace)
 {
   if (sz>tsz*ld) resize();
 
   uint32_t h0;
   if (find(key,h0)) {
-    entry* e = &v[tab[h0]]; 
-    e->val = val;
+    if (replace) {
+      entry* e = &v[tab[h0]]; 
+      e->val = val;
+    }
     return true;
   } else {
     v.push_back(entry(key,val));
@@ -449,14 +451,16 @@ inline bool hashmap<V>::put(const std::string& key, V val)
 //  Store a new (key.val) pair in the map.
 //  Return true if key was matched, else false.
 template<class V>
-inline bool hashmap<V>::put(const char* key, V val) 
+inline bool hashmap<V>::put(const char* key, V val, bool replace)
 {
   if (sz>tsz*ld) resize();
 
   uint32_t h0;
   if (find(key,h0)) {
-    entry* e = &v[tab[h0]]; 
-    e->val = val;
+    if (replace) {
+      entry* e = &v[tab[h0]]; 
+      e->val = val;
+    }
     return true;
   } else {
     v.push_back(entry(key,val));
@@ -469,14 +473,16 @@ inline bool hashmap<V>::put(const char* key, V val)
 //  Store a new (key.val) pair in the map.
 //  Return true if key was matched, else false.
 template<class V>
-inline bool hashmap<V>::put(const char* key, uint32_t len, V val) 
+inline bool hashmap<V>::put(const char* key, uint32_t len, V val, bool replace)
 {
   if (sz>tsz*ld) resize();
 
   uint32_t h0;
   if (find(key,len,h0)) {
-    entry* e = &v[tab[h0]]; 
-    e->val = val;
+    if (replace) {
+      entry* e = &v[tab[h0]]; 
+      e->val = val;
+    }
     return true;
   } else {
     v.push_back(entry(key,val));
