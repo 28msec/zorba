@@ -36,7 +36,7 @@
 
 %{
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -95,20 +95,20 @@ public:
   Store() {}
   Store(const Store&) {}
   virtual ~Store() {}
-  virtual zorba::store::SimpleStore* getStore() const { return 0; }
+  virtual zorba::simplestore::SimpleStore* getStore() const { return 0; }
   // TODO the above line must be replace by the following line!!
-  // virtual zorba::store::Store* getStore() const { return 0; }
+  // virtual zorba::simplestore::Store* getStore() const { return 0; }
 };
 
 class InMemoryStore : public Store {
 private:
-  zorba::store::SimpleStore* theStore;
+  zorba::simplestore::SimpleStore* theStore;
 public:
   InMemoryStore() : theStore(0) {}
   InMemoryStore(const InMemoryStore& aStore) : Store(aStore), theStore(aStore.theStore) {}
   virtual ~InMemoryStore() {}
-  InMemoryStore(zorba::store::SimpleStore* aStore) : theStore(aStore) {}
-  static InMemoryStore getInstance() { return InMemoryStore(zorba::inmemorystore::InMemoryStore::getInstance());
+  InMemoryStore(zorba::simplestore::SimpleStore* aStore) : theStore(aStore) {}
+  static InMemoryStore getInstance() { return InMemoryStore(zorba::simplestore::SimpleStoreManager::getStore());
   }
   InMemoryStore& operator=(const InMemoryStore& aStore) 
   {
@@ -117,9 +117,9 @@ public:
   }
   static void shutdown(InMemoryStore& aStore)
   {
-    zorba::inmemorystore::InMemoryStore::shutdown(aStore.theStore);
+    zorba::simplestore::SimpleStoreManager::shutdownStore(aStore.theStore);
   }
-  virtual zorba::store::SimpleStore* getStore() const
+  virtual zorba::simplestore::SimpleStore* getStore() const
   {
     return theStore;
   }

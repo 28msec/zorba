@@ -14,7 +14,7 @@
 
 import sys
 sys.path.append('@pythonPath@')
-import zorba_api
+import libzorba-python
 
 def example1(zorba):
   xquery = zorba.compileQuery("1+2")

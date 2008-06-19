@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require '@rubyPath@/zorba_api'
+require '@rubyPath@/libzorba_ruby'
 
 def example1(zorba)
   xquery = zorba.compileQuery("1+2")
