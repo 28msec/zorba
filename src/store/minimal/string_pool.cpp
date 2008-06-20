@@ -17,7 +17,7 @@
 #include "zorbautils/fatal.h"
 #include "store/minimal/string_pool.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 /*******************************************************************************
 
@@ -207,5 +207,5 @@ void StringPool::garbageCollect()
   */
 }
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba

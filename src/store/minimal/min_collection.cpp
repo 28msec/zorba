@@ -22,12 +22,12 @@
 #include "store/minimal/min_node_items.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::SimpleCollection(Item_t& uri)
+SimpleCollection::SimpleCollection(store::Item_t& uri)
 {
   theUri.transfer(uri);
 }
@@ -52,7 +52,7 @@ SimpleCollection::~SimpleCollection()
   to be faster. 'idsNeeded' should only be set to true if clients wants to
   sort or compare the items or sub-items generated from the returned iterator.
 ********************************************************************************/
-Iterator_t SimpleCollection::getIterator(bool idsNeeded)
+store::Iterator_t SimpleCollection::getIterator(bool idsNeeded)
 {
   return new CollectionIter(this);
 }
@@ -62,14 +62,14 @@ Iterator_t SimpleCollection::getIterator(bool idsNeeded)
   Insert into the collection an xml document or fragment given as text via an
   input stream. Return the root node of the new xml document or fragment.
 ********************************************************************************/
-Item_t SimpleCollection::addToCollection(std::istream& stream)
+store::Item_t SimpleCollection::addToCollection(std::istream& stream)
 {
   error::ErrorManager lErrorManager;
   //std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
-  XmlLoader_t     loader = new XmlLoader(&lErrorManager);
+  XmlLoader_t     loader = new XmlLoader(GET_STORE().getItemFactory(), &lErrorManager);
   xqpStringStore_t docUri;
 
-  XmlNode* root = loader->loadXml(docUri, stream);
+  store::Item_t root = loader->loadXml(docUri, stream);
 
   if (lErrorManager.hasErrors()) 
   {
@@ -89,14 +89,14 @@ Item_t SimpleCollection::addToCollection(std::istream& stream)
   Insert into the collection an xml document or fragment given as text via an
   input stream. Return the root node of the new xml document or fragment.
 ********************************************************************************/
-Item_t SimpleCollection::addToCollection(std::istream* stream)
+store::Item_t SimpleCollection::addToCollection(std::istream* stream)
 {
   error::ErrorManager lErrorManager;
   //std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
-  XmlLoader_t     loader = new XmlLoader(&lErrorManager);
+  XmlLoader_t     loader = new XmlLoader(GET_STORE().getItemFactory(), &lErrorManager);
   xqpStringStore_t docUri;
 
-  XmlNode* root = loader->startloadXml(docUri, stream);
+  store::Item_t root = loader->startloadXml(docUri, stream);
 
   if (lErrorManager.hasErrors()) 
   {
@@ -117,7 +117,7 @@ Item_t SimpleCollection::addToCollection(std::istream* stream)
   Insert the given node to the collection. If the node is in the collection
   already, this method is a noop.
 ********************************************************************************/
-void SimpleCollection::addToCollection(const Item* node)
+void SimpleCollection::addToCollection(const store::Item* node)
 {
   if (!node->isNode())
   {
@@ -125,16 +125,16 @@ void SimpleCollection::addToCollection(const Item* node)
   }
 
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-  theXmlTrees.insert(const_cast<Item*>(node));
+  theXmlTrees.insert(const_cast<store::Item*>(node));
 }
 
 
 /*******************************************************************************
   Insert into the collection the set of nodes returned by the given iterator.
 ********************************************************************************/
-void SimpleCollection::addToCollection(Iterator* nodeIter)
+void SimpleCollection::addToCollection(store::Iterator* nodeIter)
 {
-  Item_t node;
+  store::Item_t node;
 
   while (nodeIter->next(node))
   {
@@ -146,7 +146,7 @@ void SimpleCollection::addToCollection(Iterator* nodeIter)
 /*******************************************************************************
   Delete the given node from the collection.
 ********************************************************************************/
-void SimpleCollection::removeFromCollection(const Item* node)
+void SimpleCollection::removeFromCollection(const store::Item* node)
 {
   if (!node->isNode())
   {
@@ -154,7 +154,7 @@ void SimpleCollection::removeFromCollection(const Item* node)
   }
 
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-  theXmlTrees.erase(const_cast<Item*>(node));
+  theXmlTrees.erase(const_cast<store::Item*>(node));
 }
 
 
@@ -195,7 +195,7 @@ void SimpleCollection::CollectionIter::open()
 /*******************************************************************************
 
 ********************************************************************************/
-bool SimpleCollection::CollectionIter::next(Item_t& result)
+bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
   if (theIterator == theCollection->theXmlTrees.end()) {
     result = NULL;
@@ -226,6 +226,6 @@ void SimpleCollection::CollectionIter::close()
   theHaveLock = false;
   SYNC_CODE(theCollection->theLatch.unlock();)
 }
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 

@@ -20,7 +20,7 @@
 #include "store/minimal/min_node_items.h"
 #include "store/minimal/shared_types.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 
 ConstrNodeVector dummyVector;
@@ -55,7 +55,8 @@ ulong NodeVector::find(XmlNode* n)
 
 void LoadedNodeVector::insert(XmlNode* n, ulong pos, bool shared)
 {
-  ZORBA_FATAL(pos <= size(), "pos = " << pos << " size = " << size());
+  if(pos > size())
+    pos = size();
 
   theNodes.insert(theNodes.begin() + pos, n);
 }
@@ -98,6 +99,16 @@ void LoadedNodeVector::copy(ConstrNodeVector& dest)
   }
 }
 
+void LoadedNodeVector::compact()
+{
+  if (theNodes.capacity() > theNodes.size())
+  {
+    std::vector<XmlNode*> tmp(theNodes.size());
+    tmp = theNodes;
+    theNodes.swap(tmp);
+  }
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -118,7 +129,8 @@ ConstrNodeVector::ConstrNodeVector(ulong size) : NodeVector(size), theBitmap(siz
 
 void ConstrNodeVector::insert(XmlNode* n, ulong pos, bool shared)
 {
-  ZORBA_FATAL(pos <= size(),  "pos = " << pos << " size = " << size());
+  if(pos > size())
+    pos = size();
 
   theNodes.insert(theNodes.begin() + pos, n);
   theBitmap.insert(theBitmap.begin() + pos, shared);
@@ -271,6 +283,16 @@ void ConstrNodeVector::copy(ConstrNodeVector& dest)
       dest.theNodes[i] = theNodes[i];
       dest.theBitmap[i] = false;
     }
+  }
+}
+
+void ConstrNodeVector::compact()
+{
+  if (theNodes.capacity() > theNodes.size())
+  {
+    std::vector<XmlNode*> tmp(theNodes.size());
+    tmp = theNodes;
+    theNodes.swap(tmp);
   }
 }
 

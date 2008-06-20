@@ -17,7 +17,7 @@
 
 namespace zorba {
   
-  namespace store {
+  namespace storeminimal {
     class XmlTree;
     typedef rchandle<XmlTree> XmlTree_t;
     class XmlNode;

@@ -23,21 +23,21 @@
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 /*******************************************************************************
 
 ********************************************************************************/
-class SimpleCollection : public Collection
+class SimpleCollection : public store::Collection
 {
   friend class CollectionIter;
 
 public:
-  class CollectionIter : public Iterator
+  class CollectionIter : public store::Iterator
 	{
   private:
-    SimpleCollection_t            theCollection;
-    std::set<Item_t>::iterator    theIterator;
+    rchandle<SimpleCollection>           theCollection;
+    std::set<store::Item_t>::iterator    theIterator;
     bool                          theHaveLock;
 
   public:
@@ -46,36 +46,36 @@ public:
     ~CollectionIter();
 
     void open();
-    bool next(Item_t& result);
+    bool next(store::Item_t& result);
     void reset();
     void close();
   };
 
 
 protected:
-  Item_t               theUri;
-  std::set<Item_t>     theXmlTrees;
+  store::Item_t               theUri;
+  std::set<store::Item_t>     theXmlTrees;
   SYNC_CODE(Latch      theLatch;)
 
 public:
-  SimpleCollection(Item_t& uri);
+  SimpleCollection(store::Item_t& uri);
   virtual ~SimpleCollection();
 
-  Item* getUri() { return theUri; }
+  store::Item* getUri() { return theUri; }
 
   ulong size() const { return theXmlTrees.size(); }
 
-  Iterator_t getIterator(bool idsNeeded);
+  store::Iterator_t getIterator(bool idsNeeded);
 
-  Item_t addToCollection(std::istream& stream);
-  Item_t addToCollection(std::istream* stream);
-  void addToCollection(const Item* node);
-  void addToCollection(Iterator* nodes);
+  store::Item_t addToCollection(std::istream& stream);
+  store::Item_t addToCollection(std::istream* stream);
+  void addToCollection(const store::Item* node);
+  void addToCollection(store::Iterator* nodes);
 
-  void removeFromCollection(const Item* node);  
+  void removeFromCollection(const store::Item* node);  
 };
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif

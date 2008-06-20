@@ -25,7 +25,7 @@
 
 #include "store/api/collection.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 /*******************************************************************************
 
@@ -78,7 +78,7 @@ PULImpl::~PULImpl()
   Create a delete primitive in "this" pul for the given node, if another delete
   for the same node does not exist already.
 ********************************************************************************/
-void PULImpl::addDelete(Item_t& target)
+void PULImpl::addDelete(store::Item_t& target)
 {
   XmlNode* n = BASE_NODE(target);
 
@@ -99,7 +99,7 @@ void PULImpl::addDelete(Item_t& target)
     ulong numUpdates = updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if ((*updates)[i]->getKind() == UpdateConsts::UP_DELETE)
+      if ((*updates)[i]->getKind() == store::UpdateConsts::UP_DELETE)
         return;
     }
 
@@ -114,44 +114,40 @@ void PULImpl::addDelete(Item_t& target)
 
 ********************************************************************************/
 void PULImpl::addInsertInto(
-    Item_t&              target,
-    std::vector<Item_t>& children,
-    bool                 copy,
-    const CopyMode&      copymode)
+    store::Item_t&              target,
+    std::vector<store::Item_t>& children,
+    const store::CopyMode&      copymode)
 {
-  addInsertChildren(UpdateConsts::UP_INSERT_INTO,
-                    target, children, copy, copymode);
+  addInsertChildren(store::UpdateConsts::UP_INSERT_INTO,
+                    target, children, copymode);
 }
 
 
 void PULImpl::addInsertFirst(
-    Item_t&              target,
-    std::vector<Item_t>& children,
-    bool                 copy,
-    const CopyMode&      copymode)
+    store::Item_t&              target,
+    std::vector<store::Item_t>& children,
+    const store::CopyMode&      copymode)
 {
-  addInsertChildren(UpdateConsts::UP_INSERT_INTO_FIRST,
-                    target, children, copy, copymode);
+  addInsertChildren(store::UpdateConsts::UP_INSERT_INTO_FIRST,
+                    target, children, copymode);
 }
 
 
 void PULImpl::addInsertLast(
-    Item_t&              target,
-    std::vector<Item_t>& children,
-    bool                 copy,
-    const CopyMode&      copymode)
+    store::Item_t&              target,
+    std::vector<store::Item_t>& children,
+    const store::CopyMode&      copymode)
 {
-  addInsertChildren(UpdateConsts::UP_INSERT_INTO_LAST,
-                    target, children, copy, copymode);
+  addInsertChildren(store::UpdateConsts::UP_INSERT_INTO_LAST,
+                    target, children, copymode);
 }
 
 
 void PULImpl::addInsertChildren(
-    UpdateConsts::UpdPrimKind kind,
-    Item_t&                   target,
-    std::vector<Item_t>&      children,
-    bool                      copy,
-    const CopyMode&           copymode)
+    store::UpdateConsts::UpdPrimKind kind,
+    store::Item_t&                   target,
+    std::vector<store::Item_t>&      children,
+    const store::CopyMode&           copymode)
 {
   XmlNode* n = BASE_NODE(target);
 
@@ -159,9 +155,9 @@ void PULImpl::addInsertChildren(
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdInsertChildren* upd = new UpdInsertChildren(kind, target, children,
-                                                 copy, copymode);
+                                                 copymode);
 
-  if (kind == UpdateConsts::UP_INSERT_INTO)
+  if (kind == store::UpdateConsts::UP_INSERT_INTO)
     theDoFirstList.push_back(upd);
   else
     theInsertList.push_back(upd);
@@ -183,33 +179,30 @@ void PULImpl::addInsertChildren(
 
 ********************************************************************************/
 void PULImpl::addInsertBefore(
-    Item_t&                   target,
-    std::vector<Item_t>&      siblings,
-    bool                      copy,
-    const CopyMode&           copymode)
+    store::Item_t&                   target,
+    std::vector<store::Item_t>&      siblings,
+    const store::CopyMode&           copymode)
 {
-  addInsertSiblings(UpdateConsts::UP_INSERT_BEFORE,
-                    target, siblings, copy, copymode);
+  addInsertSiblings(store::UpdateConsts::UP_INSERT_BEFORE,
+                    target, siblings, copymode);
 }
 
 
 void PULImpl::addInsertAfter(
-    Item_t&                   target,
-    std::vector<Item_t>&      siblings,
-    bool                      copy,
-    const CopyMode&           copymode)
+    store::Item_t&                   target,
+    std::vector<store::Item_t>&      siblings,
+    const store::CopyMode&           copymode)
 {
-  addInsertSiblings(UpdateConsts::UP_INSERT_AFTER,
-                    target, siblings, copy, copymode);
+  addInsertSiblings(store::UpdateConsts::UP_INSERT_AFTER,
+                    target, siblings, copymode);
 }
 
 
 void PULImpl::addInsertSiblings(
-    UpdateConsts::UpdPrimKind kind,
-    Item_t&                   target,
-    std::vector<Item_t>&      siblings,
-    bool                      copy,
-    const CopyMode&           copymode)
+    store::UpdateConsts::UpdPrimKind kind,
+    store::Item_t&                   target,
+    std::vector<store::Item_t>&      siblings,
+    const store::CopyMode&           copymode)
 {
   XmlNode* n = BASE_NODE(target);
 
@@ -217,7 +210,7 @@ void PULImpl::addInsertSiblings(
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdInsertSiblings* upd = new UpdInsertSiblings(kind, target, siblings,
-                                                 copy, copymode);
+                                                 copymode);
   theInsertList.push_back(upd);
 
   if (!found)
@@ -237,10 +230,9 @@ void PULImpl::addInsertSiblings(
 
 ********************************************************************************/
 void PULImpl::addInsertAttributes(
-    Item_t&              target,
-    std::vector<Item_t>& attrs,
-    bool                 copy,
-    const CopyMode&      copymode)
+    store::Item_t&              target,
+    std::vector<store::Item_t>& attrs,
+    const store::CopyMode&      copymode)
 {
   ElementNode* n = ELEM_NODE(target);
 
@@ -253,7 +245,7 @@ void PULImpl::addInsertAttributes(
   NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertAttributes* upd = new UpdInsertAttributes(target, attrs, copy, copymode);
+  UpdInsertAttributes* upd = new UpdInsertAttributes(target, attrs, copymode);
   theDoFirstList.push_back(upd);
 
   if (!found)
@@ -274,30 +266,29 @@ void PULImpl::addInsertAttributes(
 
 ********************************************************************************/
 void PULImpl::addReplaceNode(
-    Item_t&              target,
-    std::vector<Item_t>& newNodes,
-    bool                 copy,
-    const CopyMode&      copymode)
+    store::Item_t&              target,
+    std::vector<store::Item_t>& newNodes,
+    const store::CopyMode&      copymode)
 {
   XmlNode* n = BASE_NODE(target);
 
-  Item_t parent = target->getParent();
+  store::Item_t parent = target->getParent();
 
   NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdatePrimitive* upd;
-  UpdateConsts::UpdPrimKind kind;
+  store::UpdateConsts::UpdPrimKind kind;
 
-  if (target->getNodeKind() == StoreConsts::attributeNode)
+  if (target->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    upd = new UpdReplaceAttribute(parent, target, newNodes, copy, copymode);
-    kind = UpdateConsts::UP_REPLACE_ATTRIBUTE;
+    upd = new UpdReplaceAttribute(parent, target, newNodes, copymode);
+    kind = store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
   }
   else
   {
-    upd = new UpdReplaceChild(parent, target, newNodes, copy, copymode);
-    kind = UpdateConsts::UP_REPLACE_CHILD;
+    upd = new UpdReplaceChild(parent, target, newNodes, copymode);
+    kind = store::UpdateConsts::UP_REPLACE_CHILD;
   }
 
   if (!found)
@@ -329,10 +320,9 @@ void PULImpl::addReplaceNode(
 
 ********************************************************************************/
 void PULImpl::addReplaceContent(
-    Item_t&         target,
-    Item_t&         newChild,
-    bool            copy,
-    const CopyMode& copymode)
+    store::Item_t&         target,
+    store::Item_t&         newChild,
+    const store::CopyMode& copymode)
 {
   XmlNode* n = BASE_NODE(target);
 
@@ -341,7 +331,7 @@ void PULImpl::addReplaceContent(
 
   if (!found)
   {
-    UpdatePrimitive* upd = new UpdReplaceContent(target, newChild, copy, copymode);
+    UpdatePrimitive* upd = new UpdReplaceContent(target, newChild, copymode);
     theReplaceContentList.push_back(upd);
 
     updates = new NodeUpdates(1);
@@ -353,11 +343,11 @@ void PULImpl::addReplaceContent(
     ulong numUpdates = updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if ((*updates)[i]->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
+      if ((*updates)[i]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
         ZORBA_ERROR(XUDY0017);
     }
 
-    UpdatePrimitive* upd = new UpdReplaceContent(target, newChild, copy, copymode);
+    UpdatePrimitive* upd = new UpdReplaceContent(target, newChild, copymode);
     theReplaceContentList.push_back(upd);
     updates->push_back(upd);
   }
@@ -367,10 +357,10 @@ void PULImpl::addReplaceContent(
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addReplaceValue(Item_t& target, xqpStringStore_t& newValue)
+void PULImpl::addReplaceValue(store::Item_t& target, xqpStringStore_t& newValue)
 {
   XmlNode* n = BASE_NODE(target);
-  StoreConsts::NodeKind targetKind = n->getNodeKind();
+  store::StoreConsts::NodeKind targetKind = n->getNodeKind();
 
   NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
@@ -378,16 +368,16 @@ void PULImpl::addReplaceValue(Item_t& target, xqpStringStore_t& newValue)
   UpdatePrimitive* upd;
   switch (targetKind)
   {
-  case StoreConsts::attributeNode:
+  case store::StoreConsts::attributeNode:
     upd = new UpdReplaceAttrValue(target, newValue);
     break;
-  case StoreConsts::textNode:
+  case store::StoreConsts::textNode:
     upd = new UpdReplaceTextValue(target, newValue);
     break;
-  case StoreConsts::piNode:
+  case store::StoreConsts::piNode:
     upd = new UpdReplacePiValue(target, newValue);
     break;
-  case StoreConsts::commentNode:
+  case store::StoreConsts::commentNode:
     upd = new UpdReplaceCommentValue(target, newValue);
     break;
   default:
@@ -407,7 +397,7 @@ void PULImpl::addReplaceValue(Item_t& target, xqpStringStore_t& newValue)
     ulong numUpdates = updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if (UpdateConsts::isReplaceValue((*updates)[i]->getKind()))
+      if (store::UpdateConsts::isReplaceValue((*updates)[i]->getKind()))
       {
         delete upd;
         ZORBA_ERROR(XUDY0017);
@@ -423,10 +413,10 @@ void PULImpl::addReplaceValue(Item_t& target, xqpStringStore_t& newValue)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addRename(Item_t& target, Item_t& newName)
+void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
 {
   XmlNode* n = BASE_NODE(target);
-  StoreConsts::NodeKind targetKind = n->getNodeKind();
+  store::StoreConsts::NodeKind targetKind = n->getNodeKind();
 
   NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
@@ -434,17 +424,17 @@ void PULImpl::addRename(Item_t& target, Item_t& newName)
   UpdatePrimitive* upd;
   switch (targetKind)
   {
-  case StoreConsts::elementNode:
+  case store::StoreConsts::elementNode:
   {
     upd = new UpdRenameElem(target, newName);
     break;
   }
-  case StoreConsts::attributeNode:
+  case store::StoreConsts::attributeNode:
   {
     upd = new UpdRenameAttr(target, newName);
     break;
   }
-  case StoreConsts::piNode:
+  case store::StoreConsts::piNode:
   {
     xqpStringStore_t tmp = newName->getStringValue();
     upd = new UpdRenamePi(target, tmp);
@@ -467,7 +457,7 @@ void PULImpl::addRename(Item_t& target, Item_t& newName)
     ulong numUpdates = updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if (UpdateConsts::isRename((*updates)[i]->getKind()))
+      if (store::UpdateConsts::isRename((*updates)[i]->getKind()))
       {
         delete upd;
         ZORBA_ERROR(XUDY0015);
@@ -483,7 +473,7 @@ void PULImpl::addRename(Item_t& target, Item_t& newName)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::mergeUpdates(Item* other)
+void PULImpl::mergeUpdates(store::Item* other)
 {
   PULImpl* otherp = reinterpret_cast<PULImpl*>(other);
 
@@ -524,10 +514,10 @@ void PULImpl::mergeUpdateList(
   for (ulong i = 0; i < numOtherUpdates; i++)
   {
     UpdatePrimitive* upd = otherList[i];
-    UpdateConsts::UpdPrimKind updKind = upd->getKind();
+    store::UpdateConsts::UpdPrimKind updKind = upd->getKind();
     XmlNode* target;
 
-    if (updKind == UpdateConsts::UP_REPLACE_CHILD)
+    if (updKind == store::UpdateConsts::UP_REPLACE_CHILD)
       target = BASE_NODE(reinterpret_cast<UpdReplaceChild*>(upd)->theChild);
     else
       target = BASE_NODE(upd->theTarget);
@@ -546,48 +536,48 @@ void PULImpl::mergeUpdateList(
     }
     else
     {
-      if (checkRename && UpdateConsts::isRename(updKind))
+      if (checkRename && store::UpdateConsts::isRename(updKind))
       {
         ulong numTargetUpdates = targetUpdates->size();
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
-          if (UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
+          if (store::UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
             ZORBA_ERROR(XUDY0015);
         }
       }
-      else if (checkReplaceValue && UpdateConsts::isReplaceValue(updKind))
+      else if (checkReplaceValue && store::UpdateConsts::isReplaceValue(updKind))
       {
         ulong numTargetUpdates = targetUpdates->size();
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
-          if (UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
+          if (store::UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
             ZORBA_ERROR(XUDY0017);
         }
       }
-      else if (checkReplaceNode && UpdateConsts::isReplaceNode(updKind))
+      else if (checkReplaceNode && store::UpdateConsts::isReplaceNode(updKind))
       {
         ulong numTargetUpdates = targetUpdates->size();
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
-          if (UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
+          if (store::UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
             ZORBA_ERROR(XUDY0016);
         }
       }
-      else if (checkReplaceContent && upd->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
+      else if (checkReplaceContent && upd->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
       {
         ulong numTargetUpdates = targetUpdates->size();
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
-          if ((*targetUpdates)[j]->getKind() == UpdateConsts::UP_REPLACE_CONTENT)
+          if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
             ZORBA_ERROR(XUDY0017);
         }
       }
-      else if (checkDelete && upd->getKind() == UpdateConsts::UP_DELETE)
+      else if (checkDelete && upd->getKind() == store::UpdateConsts::UP_DELETE)
       {
         ulong numTargetUpdates = targetUpdates->size();
         for (ulong j = 0; j < numTargetUpdates; j++)
         {
-          if ((*targetUpdates)[j]->getKind() == UpdateConsts::UP_DELETE)
+          if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_DELETE)
             continue;
         }
       }
@@ -605,7 +595,7 @@ void PULImpl::mergeUpdateList(
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::checkTransformUpdates(const std::vector<Item*>& rootNodes) const
+void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const
 {
   ulong numRoots = rootNodes.size();
 
@@ -699,7 +689,7 @@ void PULImpl::applyUpdates()
 
   try
   {
-    CopyMode copymode;
+    store::CopyMode copymode;
     copymode.set(false, true, true, false);
 
     ulong numUpdates = theReplaceNodeList.size();
@@ -707,7 +697,7 @@ void PULImpl::applyUpdates()
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
 
-      XmlNode* node = BASE_NODE(upd->getKind() == UpdateConsts::UP_REPLACE_CHILD ?
+      XmlNode* node = BASE_NODE(upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD ?
                                 reinterpret_cast<UpdReplaceChild*>(upd)->theChild :
                                 reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
 
@@ -799,10 +789,10 @@ void UpdDelete::apply()
   {
     thePos = target->disconnect();
 
-    StoreConsts::NodeKind targetKind = target->getNodeKind();
-    if (targetKind == StoreConsts::elementNode || 
-        targetKind == StoreConsts::attributeNode ||
-        targetKind == StoreConsts::textNode)
+    store::StoreConsts::NodeKind targetKind = target->getNodeKind();
+    if (targetKind == store::StoreConsts::elementNode || 
+        targetKind == store::StoreConsts::attributeNode ||
+        targetKind == store::StoreConsts::textNode)
       theParent->removeType(theTypeUndoList);
   }
 
@@ -828,15 +818,14 @@ void UpdDelete::undo()
 
 ********************************************************************************/
 UpdInsertChildren::UpdInsertChildren(
-    UpdateConsts::UpdPrimKind kind,
-    Item_t&                   target,
-    std::vector<Item_t>&      children,
-    bool                      copy,
-    const CopyMode&           copymode)
+    store::UpdateConsts::UpdPrimKind kind,
+    store::Item_t&                   target,
+    std::vector<store::Item_t>&      children,
+    const store::CopyMode&           copymode)
   :
   UpdatePrimitive(target),
   theKind(kind),
-  theDoCopy(copy),
+  theDoCopy(copymode.theDoCopy),
   theCopyMode(copymode)
 {
   ulong numChildren = children.size();
@@ -847,8 +836,9 @@ UpdInsertChildren::UpdInsertChildren(
 
     if (theRemoveType == false)
     {
-      StoreConsts::NodeKind childKind = theChildren[i]->getNodeKind();
-      if (childKind == StoreConsts::elementNode || childKind == StoreConsts::textNode)
+      store::StoreConsts::NodeKind childKind = theChildren[i]->getNodeKind();
+      if (childKind == store::StoreConsts::elementNode || 
+        childKind == store::StoreConsts::textNode)
         theRemoveType = true;
     }
   }
@@ -859,14 +849,14 @@ void UpdInsertChildren::apply()
 {
   XmlNode* target = BASE_NODE(theTarget);
 
-  if (theKind == UpdateConsts::UP_INSERT_INTO)
+  if (theKind == store::UpdateConsts::UP_INSERT_INTO)
   {
     target->insertChildren(theChildren,
                            target->numChildren(),
                            theDoCopy,
                            theCopyMode);
   }
-  else if (theKind == UpdateConsts::UP_INSERT_INTO_FIRST)
+  else if (theKind == store::UpdateConsts::UP_INSERT_INTO_FIRST)
   {
     target->insertChildrenFirst(theChildren, theDoCopy, theCopyMode);
   }
@@ -899,15 +889,14 @@ void UpdInsertChildren::undo()
 
 ********************************************************************************/
 UpdInsertSiblings::UpdInsertSiblings(
-    UpdateConsts::UpdPrimKind kind,
-    Item_t&                   target,
-    std::vector<Item_t>&      siblings,
-    bool                      copy,
-    const CopyMode&           copymode)
+    store::UpdateConsts::UpdPrimKind kind,
+    store::Item_t&                   target,
+    std::vector<store::Item_t>&      siblings,
+    const store::CopyMode&           copymode)
   :
   UpdatePrimitive(target),
   theKind(kind),
-  theDoCopy(copy),
+  theDoCopy(copymode.theDoCopy),
   theCopyMode(copymode)
 {
   ulong numSiblings = siblings.size();
@@ -918,8 +907,9 @@ UpdInsertSiblings::UpdInsertSiblings(
 
     if (theRemoveType == false)
     {
-      StoreConsts::NodeKind sibKind = theSiblings[i]->getNodeKind();
-      if (sibKind == StoreConsts::elementNode || sibKind == StoreConsts::textNode)
+      store::StoreConsts::NodeKind sibKind = theSiblings[i]->getNodeKind();
+      if (sibKind == store::StoreConsts::elementNode || 
+        sibKind == store::StoreConsts::textNode)
         theRemoveType = true;
     }
   }
@@ -930,7 +920,7 @@ void UpdInsertSiblings::apply()
 {
   XmlNode* target = BASE_NODE(theTarget);
 
-  if (theKind == UpdateConsts::UP_INSERT_BEFORE)
+  if (theKind == store::UpdateConsts::UP_INSERT_BEFORE)
   {
     target->insertSiblingsBefore(theSiblings, theDoCopy, theCopyMode);
   }
@@ -963,13 +953,12 @@ void UpdInsertSiblings::undo()
 
 ********************************************************************************/
 UpdInsertAttributes::UpdInsertAttributes(
-    Item_t&               target,
-    std::vector<Item_t>&  attrs,
-    bool                  copy,
-    const CopyMode&       copymode)
+    store::Item_t&               target,
+    std::vector<store::Item_t>&  attrs,
+    const store::CopyMode&       copymode)
   :
   UpdatePrimitive(target),
-  theDoCopy(copy),
+  theDoCopy(copymode.theDoCopy),
   theCopyMode(copymode)
 {
   ulong numAttrs = attrs.size();
@@ -1008,20 +997,20 @@ void UpdInsertAttributes::undo()
 
 ********************************************************************************/
 UpdReplaceChild::UpdReplaceChild(
-    Item_t&              target,
-    Item_t&              child,
-    std::vector<Item_t>& newChildren,
-    bool                 copy,
-    const CopyMode&      copymode)
+    store::Item_t&              target,
+    store::Item_t&              child,
+    std::vector<store::Item_t>& newChildren,
+    const store::CopyMode&      copymode)
   :
   UpdatePrimitive(target),
-  theDoCopy(copy),
+  theDoCopy(copymode.theDoCopy),
   theCopyMode(copymode)
 {
   theChild.transfer(child);
 
-  StoreConsts::NodeKind childKind = theChild->getNodeKind();
-  if (childKind == StoreConsts::elementNode || childKind == StoreConsts::textNode)
+  store::StoreConsts::NodeKind childKind = theChild->getNodeKind();
+  if (childKind == store::StoreConsts::elementNode || 
+    childKind == store::StoreConsts::textNode)
     theRemoveType = true;
 
   ulong numChildren = newChildren.size();
@@ -1032,8 +1021,9 @@ UpdReplaceChild::UpdReplaceChild(
 
     if (theRemoveType == false)
     {
-      StoreConsts::NodeKind childKind = theNewChildren[i]->getNodeKind();
-      if (childKind == StoreConsts::elementNode || childKind == StoreConsts::textNode)
+      store::StoreConsts::NodeKind childKind = theNewChildren[i]->getNodeKind();
+      if (childKind == store::StoreConsts::elementNode || 
+        childKind == store::StoreConsts::textNode)
         theRemoveType = true;
     }
   }
@@ -1077,14 +1067,13 @@ void UpdReplaceChild::undo()
 
 ********************************************************************************/
 UpdReplaceAttribute::UpdReplaceAttribute(
-    Item_t&              target,
-    Item_t&              attr,
-    std::vector<Item_t>& newAttrs,
-    bool                 copy,
-    const CopyMode&      copymode)
+    store::Item_t&              target,
+    store::Item_t&              attr,
+    std::vector<store::Item_t>& newAttrs,
+    const store::CopyMode&      copymode)
   :
   UpdatePrimitive(target),
-  theDoCopy(copy),
+  theDoCopy(copymode.theDoCopy),
   theCopyMode(copymode)
 {
   theAttr.transfer(attr);
@@ -1158,14 +1147,14 @@ void UpdReplaceContent::undo()
     child->deleteTree();
   }
 
-  if (target->isConstructed())
+  if (dynamic_cast<ElementDagNode*>(target) != NULL)
   {
-    ConstrElementNode* target1 = reinterpret_cast<ConstrElementNode*>(target);
+    ElementDagNode* target1 = reinterpret_cast<ElementDagNode*>(target);
     theOldChildren.copy(target1->theChildren);
   }
   else
   {
-    LoadedElementNode* target1 = reinterpret_cast<LoadedElementNode*>(target);
+    ElementTreeNode* target1 = reinterpret_cast<ElementTreeNode*>(target);
     theOldChildren.copy(target1->theChildren); 
   }
 

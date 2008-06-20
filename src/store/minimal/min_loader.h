@@ -32,16 +32,25 @@ namespace zorba {
     class ErrorManager;
   }
 
-  namespace store {
+  namespace store
+  {
+    class Item;
+    class ItemFactory;
+  }
+  namespace storeminimal 
+  {
 
 class XmlTree;
 class XmlNode;
 class NsBindingsContext;
-class LoadedElementNode;
+class ElementTreeNode;
 class NodeVector;
 class SimpleStore;
+class DocumentTreeNode;
 
 typedef char    xmlChar;
+
+typedef rchandle<DocumentTreeNode>    DocumentTreeNode_t;
 
 /*******************************************************************************
 
@@ -68,14 +77,9 @@ protected:
   xqpStringStore_t                 theBaseUri;
   xqpStringStore_t                 theDocUri;
 
-  XmlTree                        * theTree;
-  OrdPathStack                     theOrdPath;
+  DocumentTreeNode_t                      theRootNode;
 
-  XmlNode                        * theRootNode;
-  //std::stack<XmlNode*>             theNodeStack;
-  //std::stack<NsBindingsContext*>   theBindingsStack;
-
-  std::string                   theWarnings;
+  std::string                    theWarnings;
 
   char                             theBuffer[4096];
   int  buff_size;
@@ -84,7 +88,6 @@ protected:
   int  current_c;
   int  prev_c;
   SimpleStore& store;
-  QNamePool& qnpool;
   StringPool& namespacePool;
 
   typedef struct
@@ -100,9 +103,9 @@ protected:
   typedef struct
   {
     QNAME_ELEM    name;
-    NsBindingsContext_t    ns_bindings_context;
+    //NsBindingsContext_t    ns_bindings_context;
 
-    LoadedElementNode       *elemNode;
+    ElementTreeNode       *elemNode;
   }TAG_ELEM;
   std::list<TAG_ELEM*>      tag_stack;
 
@@ -114,7 +117,7 @@ protected:
   }ATTR_ELEM;
   typedef std::list<ATTR_ELEM>    attr_list_t;
 
-
+  store::ItemFactory                    * theFactory;
   error::ErrorManager            * theErrorManager;
   bool  end_document;
   int   is_end_tag;
@@ -132,7 +135,7 @@ public:
   };
 
 public:
-  XmlLoader(error::ErrorManager*);
+  XmlLoader(store::ItemFactory* factory, error::ErrorManager*);
 
   ~XmlLoader();
 
@@ -153,8 +156,8 @@ protected:
   bool isNameChar(int c);
   void skip_whitespaces();
   bool read_qname(QNAME_ELEM &qname, bool read_attr);
-  bool read_attributes(LoadedElementNode *elemNode, attr_list_t& attrs);
-  bool fill_in_uri(LoadedElementNode *elemNode, char* prefix, xqpStringStore_t &result_uri);
+  bool read_attributes(store::NsBindings *nsbindings, attr_list_t& attrs);
+  bool fill_in_uri(store::NsBindings *nsbindings, char* prefix, xqpStringStore_t &result_uri);
   bool compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2);
   bool read_tag();
   bool read_characters();
@@ -164,28 +167,19 @@ protected:
   bool read_xmlprolog();
 protected:
   void abortload();
-  void reset();
   void clear_tag_stack();
   long readPacket(std::istream& stream, char* buf, long size);
-
-  void setRoot(XmlNode* root);
 
 public:
   static void	startDocument(void * ctx);
 
   static void endDocument(void * ctx);
 
-//  void startElement(
-//        LoadedElementNode* elemNode);
-//        void * ctx, 
-//        const xmlChar * localname, 
-//        const xmlChar * prefix, 
-//        const xmlChar * URI, 
-//       int nb_namespaces, 
-//       const xmlChar ** namespaces, 
-//        int nb_attributes, 
-//        int nb_defaulted, 
-//        const xmlChar ** attributes);
+  void startElement(
+         TAG_ELEM *tag_elem,
+         store::NsBindings &nsbindings,
+         attr_list_t  &elem_attrs
+    );
   
   void endElement();
 //        void * ctx, 
@@ -220,7 +214,7 @@ public:
 
 typedef rchandle<XmlLoader>   XmlLoader_t;
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif /* ZORBA_SIMPLE_LOADER_H */

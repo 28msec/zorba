@@ -27,14 +27,12 @@
 
 #include "store/minimal/min_store.h"
 #include "store/minimal/min_loader.h"
-#include "store/minimal/min_atomic_items.h"
-#include "store/minimal/min_node_items.h"
-#include "store/minimal/min_store_defs.h"
 #include "store/minimal/min_node_vector.h"
-#include "store/minimal/qname_pool.h"
 #include "store/minimal/string_pool.h"
 #include "store/minimal/min_nsbindings.h"
+#include "store/minimal/min_store_defs.h"
 #include "store/api/collection.h"
+#include "store/api/item_factory.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/chartype.h"
 
@@ -45,7 +43,7 @@
 #include <string>
 #include <stdarg.h>
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 #ifndef NDEBUG
 
@@ -78,32 +76,16 @@ xqpString   g_empty_string;
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
+XmlLoader::XmlLoader(store::ItemFactory *factory, error::ErrorManager* aErrorManager)
 :
+  theFactory(factory),
   theBaseUri(NULL),
   theDocUri(NULL),
-  theTree(NULL),
   theRootNode(NULL),
   theErrorManager(aErrorManager),
   store(GET_STORE()),
-  qnpool(store.getQNamePool()),
   namespacePool(store.getNamespacePool())
 {
-  theOrdPath.init();
-
-  //memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
-  //theSaxHandler.initialized = XML_SAX2_MAGIC;
-  //theSaxHandler.startDocument = &XmlLoader::startDocument;
-  //theSaxHandler.endDocument = &XmlLoader::endDocument;
-  //theSaxHandler.startElementNs = &XmlLoader::startElement;
-  //theSaxHandler.endElementNs = &XmlLoader::endElement;
-  //theSaxHandler.characters = &XmlLoader::characters;
-  //theSaxHandler.cdataBlock = &XmlLoader::cdataBlock;
-  //theSaxHandler.comment = &XmlLoader::comment;
-  //theSaxHandler.processingInstruction = &XmlLoader::processingInstruction;
-  //theSaxHandler.warning = &XmlLoader::warning;
-  //theSaxHandler.error = &XmlLoader::error;
-
   buff_size = 0;
   buff_pos = 0;
   stream = NULL;
@@ -138,29 +120,7 @@ void XmlLoader::abortload()
   theBaseUri = NULL;
   theDocUri = NULL;
 
-  if (theTree != NULL)
-  {
-    delete theTree;
-    theTree = NULL;
-  }
-
-  theOrdPath.init();
   theRootNode = NULL;
-
-  //while(!theNodeStack.empty())
-  //{
-  //  XmlNode* node = theNodeStack.top();
-  //  theNodeStack.pop();
-  //  if (node != NULL)
-  //    node->deleteTree();
-  //}
-
-  //while(!theBindingsStack.empty())
-  //{
-  //  NsBindingsContext* ctx = theBindingsStack.top();
-  //  theBindingsStack.pop();
-  //  delete ctx;
-  //}
 
   theWarnings.clear();
 
@@ -172,76 +132,6 @@ void XmlLoader::abortload()
 }
 
 
-/*******************************************************************************
-  Method used to reset the loader so it can be used to load another document.
-********************************************************************************/
-void XmlLoader::reset()
-{
-  theBaseUri = NULL;
-  theDocUri = NULL;
-
-  theTree = NULL;
-  theOrdPath.init();
-  theRootNode = NULL;
-
-  //theNodeStack.pop();
-
-//  ZORBA_ASSERT(theNodeStack.empty());
-//  ZORBA_ASSERT(theBindingsStack.empty());
-
-  theWarnings.clear();
-
-  clear_tag_stack();
-
-  buff_size = 0;
-  buff_pos = 0;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlLoader::setRoot(XmlNode* root)
-{
-  theRootNode = root;
-  theTree->setRoot(root);
-}
-
-
-/*******************************************************************************
-  Read up to "size" bytes from the given input stream into the given buffer.
-  Return the number of bytes actually read, throw an exception if any I/O
-  error occured.
-********************************************************************************/
-//long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
-//{
-//  try
-//  {
-//    stream.read(buf, size);
-//
-//    if (stream.bad())
-//    {
-//      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-//                                XQP0016_LOADER_IO_ERROR,
-//                                "Input stream in bad state");
-//    }
-//
-//    return stream.gcount();
-//  }
-//  catch (std::iostream::failure e)
-//  {
-//    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-//                              XQP0016_LOADER_IO_ERROR, e.what());
-//  }
-//  catch (...)
-//  {
-//    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-//                              XQP0016_LOADER_IO_ERROR,
-//                              "Unknown exception");
-//  }
-//
-//  return -1;
-//}
 
 int XmlLoader::read_char()
 {
@@ -261,7 +151,7 @@ int XmlLoader::read_char()
       return 0;
     buff_pos = 0;
   }
-  prev_c = theBuffer[buff_pos++];
+  prev_c = (unsigned char)theBuffer[buff_pos++];
   return prev_c;
 }
 
@@ -383,7 +273,7 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
   return true;
 }
 
-bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
+bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementTreeNode *elemNode,
                               attr_list_t& attrs)
 {
 //  NsBindingsContext_t nscontext;
@@ -444,14 +334,15 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
     //  nsbind.second = attr_value.getp();
     //  if(nscontext == NULL)
     //    nscontext = new NsBindingsContext;
-    //  NsBindings& bindings = nscontext->getBindings();
+    //  store::NsBindings& bindings = nscontext->getBindings();
     //  bindings.push_back(nsbind);
-      if(elemNode)
+      if(nsbindings)
       {
         xqpStringStore_t pooledNs;
         namespacePool.insertc(attr.value.getp(), pooledNs);
-        elemNode->addLocalBinding(g_empty_string.getStore(), 
-                                  pooledNs.getp());
+        //elemNode->addLocalBinding(g_empty_string.getStore(), 
+        //                          pooledNs.getp());
+        nsbindings->push_back(std::pair<xqpString, xqpString>(g_empty_string.getStore(), pooledNs.getp()));
       }
     }
     //else if((attr.name.prefix != NULL) && attr.name.prefix->byteEqual("xmlns"))
@@ -470,23 +361,24 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
     //  nsbind.second = attr_value.getp();
     //  if(nscontext == NULL)
     //    nscontext = new NsBindingsContext;
-    //  NsBindings& bindings = nscontext->getBindings();
+    //  store::NsBindings& bindings = nscontext->getBindings();
     //  bindings.push_back(nsbind);
-      if(elemNode)
+      if(nsbindings)
       {
         xqpStringStore_t pooledNs;
         namespacePool.insertc(attr.value.getp(), pooledNs);
-        elemNode->addLocalBinding(new xqpStringStore(attr.name.localname),
-                                  pooledNs.getp());
+       // elemNode->addLocalBinding(new xqpStringStore(attr.name.localname),
+       //                           pooledNs.getp());
+        nsbindings->push_back(std::pair<xqpString, xqpString>(new xqpStringStore(attr.name.localname), pooledNs.getp()));
       }
     }
     else
     {
       //it is an attribute
-/*      Item_t  qname = new QNameItemImpl(store.uri_pool.getPooledStr(NULL), name.prefix.getp(), name.localname.getp());
+/*      store::Item_t  qname = new QNameItemImpl(store.uri_pool.getPooledStr(NULL), name.prefix.getp(), name.localname.getp());
 
-      Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-      Item_t typedValue = new UntypedAtomicItemImpl(attr_value);
+      store::Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+      store::Item_t typedValue = new UntypedAtomicItemImpl(attr_value);
 
       AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
       attrNode->theParent = elemNode;
@@ -508,31 +400,49 @@ bool XmlLoader::read_attributes(LoadedElementNode *elemNode,
   return true;
 }
 
-bool XmlLoader::fill_in_uri(LoadedElementNode *elemNode,
+bool XmlLoader::fill_in_uri(store::NsBindings  *nsbindings,
                             char *prefix, xqpStringStore_t &result_uri)
 {
-/*  std::list<TAG_ELEM*>::reverse_iterator    tag_it;
-  NsBindings::iterator      ns_it;
-
-  for(tag_it = tag_stack.rbegin(); tag_it != tag_stack.rend();tag_it++)
+  if(nsbindings)
   {
-    for(ns_it=(*tag_it)->ns_bindings.begin(); ns_it != (*tag_it)->ns_bindings.end(); ns_it++)
+    store::NsBindings::iterator      ns_it;
+
+    for(ns_it=nsbindings->begin(); ns_it != nsbindings->end(); ns_it++)
     {
-      if((*ns_it).first == prefix)
+      if((*ns_it).first.byteEqual(prefix))
       {
-        result_uri = (*ns_it).second;
+        result_uri = (*ns_it).second.getStore();
         return true;
       }
     }
   }
-*/
+  std::list<TAG_ELEM*>::reverse_iterator    tag_it;
+  store::NsBindings::iterator      ns_it;
+
+  for(tag_it = tag_stack.rbegin(); tag_it != tag_stack.rend();tag_it++)
+  {
+    ElementTreeNode       *elemNode = (*tag_it)->elemNode;
+    NsBindingsContext     *ns_context = elemNode->getNsContext();
+    if(!ns_context)
+      continue;
+    store::NsBindings  &ns_bindings = ns_context->getBindings();
+    for(ns_it=ns_bindings.begin(); ns_it != ns_bindings.end(); ns_it++)
+    {
+      if((*ns_it).first.byteEqual(prefix))
+      {
+        result_uri = (*ns_it).second.getStore();
+        return true;
+      }
+    }
+  }
+
   //result_uri = elemNode->findBinding(prefix);
-  result_uri = NULL;
+/*  result_uri = NULL;
   const NsBindingsContext* currentContext = elemNode->getNsContext();
 
   while (currentContext != NULL)
   {
-    const NsBindings& bindings = currentContext->getBindings();
+    const store::NsBindings& bindings = currentContext->getBindings();
     ulong numBindings = bindings.size();
 
     for (ulong i = 0; i < numBindings; i++)
@@ -547,8 +457,9 @@ bool XmlLoader::fill_in_uri(LoadedElementNode *elemNode,
     currentContext = currentContext->getParent();
   }
 
-  if(result_uri != NULL)
-    return true;
+ */
+  //if(result_uri != NULL)
+  //  return true;
 
 
   ///look into default namespaces
@@ -609,7 +520,7 @@ bool XmlLoader::read_tag()
       return false;///no tags to close
     }
     TAG_ELEM    *&last_tag = tag_stack.back();
-    if(!fill_in_uri(last_tag->elemNode, tag_elem->name.prefix, tag_elem->name.uri) && tag_elem->name.prefix[0])
+    if(!fill_in_uri(NULL, tag_elem->name.prefix, tag_elem->name.uri) && tag_elem->name.prefix[0])
     {
       delete tag_elem;
       return false;
@@ -641,26 +552,24 @@ bool XmlLoader::read_tag()
 //  QNameItemImpl*  qname = new QNameItemImpl(g_empty_string.theStrStore,//reinterpret_cast<const char*>(uri),
 //                                   tag_elem->name.prefix,//reinterpret_cast<const char*>(prefix),
 //                                   tag_elem->name.localname);//reinterpret_cast<const char*>(lname));
-//  Item_t    qname_item(qname);
-  Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
+//  store::Item_t    qname_item(qname);
+  ///-store::Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
   // Create the element node and push it to the node stack
-  tag_elem->elemNode = new LoadedElementNode(NULL,//qname_item,
-                                              tname,
-                                              0,//numBindings,
-                                              0);//numAttributes);
+  ///-tag_elem->elemNode = new ElementTreeNode(NULL,//qname_item,
+  ///-                                        tname);//numAttributes);
 
   //NodeVector  &elem_attrs = tag_elem->elemNode->attributes();
   attr_list_t elem_attrs;
+  store::NsBindings  nsbindings;
   //read all attributes and namespaces in this tag
-  if(!read_attributes(tag_elem->elemNode, elem_attrs))
+  if(!read_attributes(&nsbindings, elem_attrs))
   {
     delete tag_elem;
     return false;
   }
 
-  tag_stack.push_back(tag_elem);
 
-  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+/*-  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
   XmlNode   *parent_elem;
   parent_tag = tag_stack.rbegin();
   parent_tag++;
@@ -689,60 +598,20 @@ bool XmlLoader::read_tag()
   {
     tag_elem->elemNode->setNsContext(parent_elem->getNsContext());
   }
-
+*/
   //fill in the uri part of tag elem and attributes
-  if(!fill_in_uri(tag_elem->elemNode, tag_elem->name.prefix, tag_elem->name.uri))
+  if(!fill_in_uri(&nsbindings, tag_elem->name.prefix, tag_elem->name.uri))
   {
     //if(!tag_elem->name.prefix->empty())
     if(tag_elem->name.prefix[0])
       return false;
   }
+  tag_stack.push_back(tag_elem);
 //  bool  inserted;
-  tag_elem->elemNode->theName = qnpool.insert(tag_elem->name.uri->c_str(), 
+/*-  tag_elem->elemNode->theName = qnpool.insert(tag_elem->name.uri->c_str(), 
                                               tag_elem->name.prefix, 
                                               tag_elem->name.localname);
-
-  //int   attr_size = elem_attrs.size();
-  //fill in the uri part of attributes, if they have prefix
-  //for(int i=0;i<attr_size; i++)
-  attr_list_t::iterator   attr_it;
-  NodeVector& attrNodes = tag_elem->elemNode->attributes();
-  for(attr_it=elem_attrs.begin(); attr_it!=elem_attrs.end(); attr_it++)
-  {
-/*    AttributeNode *attr_node = reinterpret_cast<AttributeNode*>(elem_attrs.get(i));
-    QNameItemImpl *attr_qname = reinterpret_cast<QNameItemImpl*>(attr_node->getNodeName());
-    if(!attr_qname->thePrefix->empty())
-    {
-      if(!fill_in_uri(tag_elem->elemNode, attr_qname->thePrefix, attr_qname->theNamespace))
-        return false;
-    }
 */
-    //if(!(*attr_it).name.prefix->empty())
-    if((*attr_it).name.prefix[0])
-    {
-      if(!fill_in_uri(tag_elem->elemNode, (*attr_it).name.prefix, (*attr_it).name.uri))
-        return false;
-    }
-//    bool  inserted;
-    //Item_t  qname = new QNameItemImpl(store.uri_pool.getPooledStr(NULL), name.prefix.getp(), name.localname.getp());
-    Item_t qname = qnpool.insert((*attr_it).name.uri->c_str(), 
-                                (*attr_it).name.prefix, 
-                                (*attr_it).name.localname);
-
-    Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-    Item_t typedValue = new UntypedAtomicItemImpl((*attr_it).value);
-
-    AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
-    attrNode->theParent = tag_elem->elemNode;
-    attrNode->setId(theTree, &theOrdPath);
-    attrNode->theTypedValue.transfer(typedValue);
-
-    attrNodes.push_back(attrNode, false);
-
-    theOrdPath.nextChild();
-
-    SYNC_CODE(attrNode->theRCLockPtr = &theTree->getRCLock();)
-  }
 
 /*  //send start_element SAX notification
   const char  **namespaces = NULL;
@@ -789,7 +658,7 @@ bool XmlLoader::read_tag()
               0,
               attributes);
 */
-  //startElement(tag_elem->elemNode);
+  startElement(tag_elem, nsbindings, elem_attrs);
 
 //  delete [] namespaces;
 //  delete [] attributes;
@@ -1101,11 +970,32 @@ XmlNode* XmlLoader::startloadXml(
   end_document = false;
   this->stream = stream;
   theDocUri.transfer(uri);
-  theTree = new XmlTree(NULL, GET_STORE().getTreeId());
   prev_c = 0;
   current_c = 0;
 
   startDocument(this);
+
+  {
+    int c;
+    c = read_char();
+    if(c == 0xEF)
+    {
+      c = read_char();
+      if(c == 0xBB)
+      {
+        c = read_char();
+        if(c == 0xBF)//UTF8 mark (on Windows text editors) U+FEFF
+        {
+        }
+        else
+          unread_char();
+      }
+      else
+        unread_char();
+    }
+    else
+      unread_char();
+  }
 
   reading_prolog = 1;
   while(reading_prolog)
@@ -1187,7 +1077,7 @@ bool XmlLoader::continueloadXml(
 
 
 //  XmlNode* resultNode = theRootNode;
-  reset();
+//  reset();
   return true;//resultNode;
 }
 
@@ -1202,28 +1092,30 @@ void XmlLoader::startDocument(void * ctx)
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  xqpStringStore_t docUri = loader.theDocUri;
-  xqpStringStore_t baseUri = loader.theBaseUri;
-  if (docUri == NULL)
+  try
   {
-    std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << loader.theTree->getId();
+    xqpStringStore_t docUri = loader.theDocUri;
+    xqpStringStore_t baseUri = loader.theBaseUri;
+    store::Item_t docNode;
 
-    docUri = new xqpStringStore(uristream.str().c_str());
+    loader.theFactory->createDocumentNode(docNode, baseUri, docUri);
+
+    DocumentTreeNode*     docNode_cast = dynamic_cast<DocumentTreeNode*>(docNode.getp());
+    loader.theRootNode = docNode_cast;
+    docNode_cast->attachedloader = &loader;
+
+    LOADER_TRACE1("Start Doc Node = " << docNode.getp());
   }
-
-  LoadedDocumentNode* docNode = new LoadedDocumentNode(baseUri, docUri);
-
-  loader.setRoot(docNode);
-  //loader.theNodeStack.push(docNode);
-  //loader.theNodeStack.push(NULL);
-  docNode->attachedloader = &loader;
-
-  SYNC_CODE(docNode->theRCLockPtr = &loader.theTree->getRCLock();)
-  docNode->setId(loader.theTree, &loader.theOrdPath);
-  loader.theOrdPath.pushChild();
-
-  LOADER_TRACE1("Start Doc Node = " << docNode);
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              e.theErrorCode, e.theDescription);
+  }
+  catch (...)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+  }
 }
 
 
@@ -1237,46 +1129,27 @@ void XmlLoader::endDocument(void * ctx)
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  // This check is required because it is possible (in case of mal-formed doc)
-  // that libXml calls endDocument() without having called startDocument().
-  //if (loader.theNodeStack.size() == 0 )
-  //  return;
-  
-  //std::vector<XmlNode*> revChildNodes;
-
-  //XmlNode* childNode = loader.theNodeStack.top();
-
-  //while (childNode != NULL)
-  //{
-  //  revChildNodes.push_back(childNode);
-  //  loader.theNodeStack.pop();
-  //  childNode = loader.theNodeStack.top();
-  //}
-  //loader.theNodeStack.pop();
-
-  //LoadedDocumentNode* docNode = dynamic_cast<LoadedDocumentNode*>(loader.theNodeStack.top());
-  //ZORBA_ASSERT(docNode != NULL);
-
-  //NodeVector& children = docNode->children();
-  //children.resize(revChildNodes.size());
-
-  //std::vector<XmlNode*>::const_reverse_iterator it;
-  //ulong i = 0;
-  //for (it = revChildNodes.rbegin();
-  //     it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
-  //     it++, i++)
-  //{
-  //  children.set(*it, i, false);
-  //  (*it)->setParent(docNode);
-  //}
-
-  LoadedDocumentNode*     docNode = dynamic_cast<LoadedDocumentNode*>(loader.theRootNode);
-  if(docNode)
+  try
   {
-    docNode->attachedloader = NULL;
-  }
+//    DocumentTreeNode*     docNode = dynamic_cast<DocumentTreeNode*>(loader.theRootNode);
+    if(loader.theRootNode)
+    {
+      loader.theRootNode->attachedloader = NULL;
+      loader.theRootNode->finalizeNode();
+    }
 
-  LOADER_TRACE2("End Doc Node = " << docNode);
+   LOADER_TRACE2("End Doc Node = " << loader.theRootNode.getp());
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              e.theErrorCode, e.theDescription);
+  }
+  catch (...)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+  }
 }
 
 
@@ -1297,235 +1170,118 @@ void XmlLoader::endDocument(void * ctx)
  attributes:     pointer to the array of (localname/prefix/URI/value/end)
                  attribute values.
 ********************************************************************************/
-/*
+
 void XmlLoader::startElement(
-  LoadedElementNode* elemNode
-//    void * ctx,
-//    const xmlChar * lname, 
-//    const xmlChar * prefix, 
-//    const xmlChar * uri,
-//    int numNamespaces
-//    const xmlChar ** namespaces,
-//    int numAttrs, 
-//    int numDefaulted, 
-//    const xmlChar ** attributes)
+   TAG_ELEM *tag_elem,
+   store::NsBindings &nsbindings,
+   attr_list_t  &elem_attrs
     )
 {
-//  SimpleStore& store = GET_STORE();
-//  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
-//  QNamePool& qnpool = store.getQNamePool();
+  try
+  {
+    store::Item_t qname;
+    store::Item_t tname;
+    xqpStringStore_t baseUri;
 
-//  ulong numAttributes = (ulong)numAttrs;
-//  ulong numBindings = (ulong)numNamespaces;
+    // Get the parent node from the node stack
+    std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+    store::Item_t   parent;
+    parent_tag = tag_stack.rbegin();
+    parent_tag++;
+    if(parent_tag == tag_stack.rend())
+      parent = theRootNode;
+    else
+      parent = (*parent_tag)->elemNode;
 
-  std::list<TAG_ELEM*>::reverse_iterator      this_tag, parent_tag;
-  XmlNode   *parent_elem;
-  this_tag = tag_stack.rbegin();
-  parent_tag = this_tag;
-  parent_tag++;
-  if(parent_tag == tag_stack.rend())
-    parent_elem = theRootNode;
-  else
-    parent_elem = (*parent_tag)->elemNode;
+    // Construct node name and type
+    theFactory->createQName(qname,
+                             tag_elem->name.uri->c_str(), 
+                             tag_elem->name.prefix, 
+                             tag_elem->name.localname);
+    theFactory->createQName(tname,
+                             "http://www.w3.org/2001/XMLSchema",
+                             "xs",
+                             "untyped");
 
-  //if (loader.theNodeStack.empty())
-  //  loader.setRoot(elemNode);
+    // If this is going to be the root of the xml tree, give it the input base uri
+    if (parent == NULL)
+      baseUri = theBaseUri;
 
-  //loader.theNodeStack.push(elemNode);
-  //loader.theNodeStack.push(NULL);
-  (*this_tag)->elemNode = elemNode;
-  elemNode->attachedloader = this;
-  elemNode->depth = tag_stack.size();//has been already pushed into tag stack
-  elemNode->setParent(parent_elem);
-  parent_elem->children().push_back(elemNode, false);
+    store::Item_t node;
+    theFactory->createElementNode(node, parent, -1, qname, tname,
+                                  nsbindings, baseUri);
+    tag_elem->elemNode = dynamic_cast<ElementTreeNode*>(node.getp());
 
-  // Assign the current node id to this node, and compute the next node id.
-  elemNode->setId(theTree, &theOrdPath);
-  theOrdPath.pushChild();
 
-  SYNC_CODE(elemNode->theRCLockPtr = &theTree->getRCLock();)
-
-//  LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
-//                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
-//                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
-//                << std::endl << " ordpath = " << elemNode->getOrdPath().show()
-//                << std::endl);
-
-  // Process namespace bindings
-  //if (numNamespaces > 0)
-//  NsBindingsContext   *nscontext = elemNode->getNsContext();
-//  if(nscontext && nscontext->getBindings().size())
-//  {
-  //  NsBindingsContext*   newnscontext = new NsBindingsContext;
-  //  elemNode->setNsContext(newnscontext);
-  //  NsBindings& bindings = newnscontext->getBindings();
-  //  bindings.reserve(numBindings);
-      NsBindings& bindings = nscontext->getBindings();
-
-    for (ulong i = 0; i < numBindings; ++i)
+    theFactory->createQName(tname,
+                             "http://www.w3.org/2001/XMLSchema",
+                             "xs",
+                             "untypedAtomic");
+    attr_list_t::iterator   attr_it;
+    NodeVector& attrNodes = tag_elem->elemNode->attributes();
+    for(attr_it=elem_attrs.begin(); attr_it!=elem_attrs.end(); attr_it++)
     {
-      const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
-      const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
+      //if(!(*attr_it).name.prefix->empty())
+      if((*attr_it).name.prefix[0])
+      {
+        if(!fill_in_uri(NULL, (*attr_it).name.prefix, (*attr_it).name.uri))
+        {
+          ZORBA_ERROR_PARAM_OSS(XQP0016_LOADER_IO_ERROR,
+                "Cannot find namespace for attribute",  (*attr_it).name.prefix << ":" << (*attr_it).name.localname);
+        //  return false;
+        }
+      }
+      theFactory->createQName(qname, 
+                              (*attr_it).name.uri->c_str(), 
+                              (*attr_it).name.prefix, 
+                              (*attr_it).name.localname);
 
-      if (prefix == NULL)
-        prefix = "";
 
-      xqpStringStore_t pooledNs;
-//      store.getNamespacePool().insertc(nsuri, pooledNs);
-      pooledNs = new xqpStringStore(nsuri);
-
-      bindings[i].first = prefix;
-      bindings[i].second = pooledNs.getp();
-
-      LOADER_TRACE1("namespace decl: [" << prefix  << ":" << nsuri << "]");
+      store::Item_t tnameCopy = tname;
+      store::Item_t attr;
+      theFactory->createAttributeNode(attr, node, -1, qname, tnameCopy, (*attr_it).value);
     }
-
-    //loader.theBindingsStack.push(elemNode->getNsContext());
-    //elemNode->setNsContext(loader.theBindingsStack.top());
-
-//    nscontext->setParent(parent_elem->getNsContext());
-//  }
-//  else 
-//  {
-//    elemNode->setNsContext(parent_elem->getNsContext());
-//  }
-
-//  // Process attributes
-//  if (numAttributes > 0)
-//  {
-//    NodeVector& attrNodes = elemNode->attributes();
-
-  //  ulong index = 0;
-  //  for (ulong i = 0; i < numAttributes; ++i, index += 5)
-  //  {
-  //    const char* lname = reinterpret_cast<const char*>(attributes[index]);
-  //    const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
-  //    const char* uri = reinterpret_cast<const char*>(attributes[index+2]);
-  //    const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
-  //    const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
-
-  //    //Item_t qname = qnpool.insert(uri, prefix, lname);
-  //    Item_t  qname = new QNameItemImpl(uri, prefix, lname);
-  //    xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
-
-  //    Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-  //    Item_t typedValue = new UntypedAtomicItemImpl(value);
-
-  //    AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
-  //    attrNode->theParent = elemNode;
-  //    attrNode->setId(loader.theTree, &loader.theOrdPath);
-  //    attrNode->theTypedValue.transfer(typedValue);
-
-  //    attrNodes.set(attrNode, i, false);
-
-  //    loader.theOrdPath.nextChild();
-
-  //    SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
-  //    LOADER_TRACE1("Attribute: node = " << attrNode
-  //                  << " name [" << (prefix != NULL ? prefix : "") << ":"
-  //                  << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
-  //                  << " value = " << typedValue->getStringValue()->c_str() << std::endl
-  //                  << " ordpath = " << attrNode->getOrdPath().show() << std::endl);
-  //  }
-  //}
-  
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                              e.theErrorCode, e.theDescription);
+  }
+  catch (...)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+  }
 }
-*/
+
   
 /*******************************************************************************
   SAX2 callback when an element end has been detected by the parser. It
   provides the expanded qname of the element.
-
-  ctx:       the user data (XML parser context)
-  localname: the local name of the element
-  prefix:    the element namespace prefix if available
-  URI:       the element namespace name if available
 ********************************************************************************/
 void  XmlLoader::endElement()
-//    void * ctx, 
-//    const xmlChar * localName, 
-//    const xmlChar * prefix, 
-//    const xmlChar * uri)
 {
-//  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-//  ZORBA_LOADER_CHECK_ERROR(loader);
+  try{
+    std::list<TAG_ELEM*>::reverse_iterator      this_tag;
+    this_tag = tag_stack.rbegin();
 
-  // Collect the children of this element node from the node stack
-  //std::vector<XmlNode*> revChildNodes;
+    (*this_tag)->elemNode->attachedloader = NULL;//is loaded
 
-  //XmlNode* prevChild = NULL;
-  //XmlNode* currChild = loader.theNodeStack.top();
-  //while (currChild != NULL)
-  //{
-  //  if (currChild->getNodeKind() == StoreConsts::textNode &&
-  //      prevChild != NULL &&
-  //      prevChild->getNodeKind() == StoreConsts::textNode)
-  //  {
-  //    TextNode* textNode = reinterpret_cast<TextNode*>(prevChild);
-  //    textNode->theContent = new xqpStringStore(currChild->getStringValueP()->str() +
-  //                                              textNode->theContent->str());
-  //    delete currChild;
-  //  }
-  //  else
-  //  {
-  //    revChildNodes.push_back(currChild);
-  //    prevChild = currChild;
-  //  }
+    (*this_tag)->elemNode->finalizeNode();
 
-  //  loader.theNodeStack.pop();
-  //  currChild = loader.theNodeStack.top();
-  //}
-  //loader.theNodeStack.pop();
-
-  //// The element node is now at the top of the stack
-  //LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>(loader.theNodeStack.top());
-  //ZORBA_ASSERT(elemNode != NULL);
-  std::list<TAG_ELEM*>::reverse_iterator      this_tag;
-  //XmlNode   *elemNode;
-  this_tag = tag_stack.rbegin();
-  //LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>((*this_tag)->elem);
-
-  (*this_tag)->elemNode->attachedloader = NULL;//is loaded
-
-//  LOADER_TRACE2("End Element: node = " << elemNode << " name ["
-//                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
-//                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
-
-  // For each child, make this element node its parent and fix its namespace
-  // bindings context. Note: the children were popped from the stack in reverse
-  // order, so we copy them into the element node in the correct order.
-  //NodeVector& children = elemNode->children();
-  //children.resize(revChildNodes.size());
-
-  //std::vector<XmlNode*>::const_reverse_iterator it;
-  //ulong i = 0;
-  //for (it = revChildNodes.rbegin();
-  //     it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
-  //     it++, i++)
-  //{
-  //  currChild = *it;
-
-  //  children.set(currChild, i, false);
-  //  currChild->setParent(elemNode);
-
-  //  if (currChild->getNodeKind() == StoreConsts::elementNode)
-  //  {
-  //    if (!loader.theBindingsStack.empty())
-  //      currChild->setNsContext(loader.theBindingsStack.top());
-  //    else
-  //      currChild->setNsContext(NULL);
-  //  }
-  //}
-
-  //if (elemNode->getNsContext() != NULL)
-  //{
-  //  loader.theBindingsStack.pop();
-  //}
-
-  // Adjust the dewey id
-  theOrdPath.popChild();
+    LOADER_TRACE2("End Element: node = " << (*this_tag)->elemNode << " name = "
+                  << (*this_tag)->elemNode->getNodeName()->show() << std::endl);
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                              e.theErrorCode, e.theDescription);
+  }
+  catch (...)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
+                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+  }
 }
 
 
@@ -1543,45 +1299,32 @@ void XmlLoader::characters(void * ctx, xqpStringStore_t content)//const xmlChar 
 
 //  const char* charp = reinterpret_cast<const char*>(ch);
 //  xqpStringStore_t content(new xqpStringStore(charp, len));
-
-  TextNode* textNode = new TextNode(content);
-
-  //if (loader.theNodeStack.empty())
-  //  loader.setRoot(textNode);
-
-  //loader.theNodeStack.push(textNode);
-  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
-  parent_tag = loader.tag_stack.rbegin();
-  XmlNode *parent_elem;
-  if(parent_tag != loader.tag_stack.rend())
-    parent_elem = (*parent_tag)->elemNode;
-  else
-    parent_elem = loader.theRootNode;
-  if(parent_elem->numChildren())
+  try
   {
-    XmlNode *&last_child = parent_elem->children().get_last();
-    if (last_child->getNodeKind() == StoreConsts::textNode)
-    {
-      TextNode* lasttextNode = reinterpret_cast<TextNode*>(last_child);
-      //lasttextNode->theContent = new xqpStringStore(lasttextNode->getStringValueP()->str() +
-      //                                          textNode->theContent->str());
-      lasttextNode->getStringValueP()->append_in_place(textNode->getStringValueP());
-      delete textNode;
-      return;
-    }
+    std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+    parent_tag = loader.tag_stack.rbegin();
+    store::Item_t parent;
+    if(parent_tag != loader.tag_stack.rend())
+      parent = (*parent_tag)->elemNode;
+    else
+      parent = loader.theRootNode;
+
+    store::Item_t node;
+    loader.theFactory->createTextNode(node, parent, -1, content);
+
+    LOADER_TRACE1("Text Node = " << node.getp() << std::endl
+                  << node->show() << std::endl);
   }
-
-  parent_elem->children().push_back(textNode, false);
-  textNode->setParent(parent_elem);
-
-  textNode->setId(loader.theTree, &loader.theOrdPath);
-  loader.theOrdPath.nextChild();
-
-  SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
-  LOADER_TRACE1("Text Node = " << textNode << " content = "
-                << *content << std::endl << " ordpath = "
-                << textNode->getOrdPath().show() << std::endl);
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              e.theErrorCode, e.theDescription);
+  }
+  catch (...)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+  }
 }
 
 
@@ -1597,46 +1340,36 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  const char* charp = reinterpret_cast<const char*>(ch);
-  xqpStringStore_t content(new xqpStringStore(charp, len));
-
-  TextNode* textNode = new TextNode(content);
-
-  //if (loader.theNodeStack.empty())
-  //  loader.setRoot(textNode);
-
-  //loader.theNodeStack.push(textNode);
-  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
-  parent_tag = loader.tag_stack.rbegin();
-  XmlNode *parent_elem;
-  if(parent_tag != loader.tag_stack.rend())
-    parent_elem = (*parent_tag)->elemNode;
-  else
-    parent_elem = loader.theRootNode;
-  if(parent_elem->numChildren())
+  try
   {
-    XmlNode *&last_child = parent_elem->children().get_last();
-    if (last_child->getNodeKind() == StoreConsts::textNode)
-    {
-      TextNode* lasttextNode = reinterpret_cast<TextNode*>(last_child);
-      lasttextNode->theContent = new xqpStringStore(lasttextNode->getStringValueP()->str() +
-                                                textNode->theContent->str());
-      delete textNode;
-      return;
-    }
+    const char* charp = reinterpret_cast<const char*>(ch);
+    xqpStringStore_t content(new xqpStringStore(charp, len));
+
+    std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+    parent_tag = loader.tag_stack.rbegin();
+    store::Item_t parent;
+    if(parent_tag != loader.tag_stack.rend())
+      parent = (*parent_tag)->elemNode;
+    else
+      parent = loader.theRootNode;
+
+    // Create the text node
+    store::Item_t node;
+    loader.theFactory->createTextNode(node, parent, -1, content);
+
+    LOADER_TRACE1("Text Node = " << node.getp() << std::endl
+                  << node->show() << std::endl);
   }
-
-  parent_elem->children().push_back(textNode, false);
-  textNode->setParent(parent_elem);
-
-  textNode->setId(loader.theTree, &loader.theOrdPath);
-  loader.theOrdPath.nextChild();
-
-  SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
- 
-  LOADER_TRACE1("Text Node = " << textNode << " content = "
-                << std::string(charp, len) << std::endl << " ordpath = "
-                << textNode->getOrdPath().show() << std::endl);
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              e.theErrorCode, e.theDescription);
+  }
+  catch (...)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+  }
 }
 
 
@@ -1654,34 +1387,36 @@ void XmlLoader::processingInstruction(
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
-  xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
+  try
+  {
+    xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
+    xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
+    xqpStringStore_t baseUri;
 
-  XmlNode* piNode = new PiNode(target, content);
+    std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+    parent_tag = loader.tag_stack.rbegin();
+    XmlNode *parent;
+    if(parent_tag != loader.tag_stack.rend())
+      parent = (*parent_tag)->elemNode;
+    else
+      parent = loader.theRootNode;
 
-  //if (loader.theNodeStack.empty())
-  //  loader.setRoot(piNode);
+    store::Item_t node;
+    loader.theFactory->createPiNode(node, parent, -1, target, content, baseUri);
 
-  //loader.theNodeStack.push(piNode);
-  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
-  parent_tag = loader.tag_stack.rbegin();
-  XmlNode *parent_elem;
-  if(parent_tag != loader.tag_stack.rend())
-    parent_elem = (*parent_tag)->elemNode;
-  else
-    parent_elem = loader.theRootNode;
-
-  parent_elem->children().push_back(piNode, false);
-  piNode->setParent(parent_elem);
-
-  piNode->setId(loader.theTree, &loader.theOrdPath);
-  loader.theOrdPath.nextChild();
-
-  SYNC_CODE(piNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
-  LOADER_TRACE1("Pi Node = " << piNode << " target = "
-                << targetp << std::endl << " ordpath = "
-                << piNode->getOrdPath().show() << std::endl);
+    LOADER_TRACE1("Pi Node = " << node.getp() << std::endl
+                  << node->show() << std::endl);
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              e.theErrorCode, e.theDescription);
+  }
+  catch (...)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+  }
 }
 
 
@@ -1696,34 +1431,35 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  const char* charp = reinterpret_cast<const char*>(ch);
-  xqpStringStore_t content(new xqpStringStore(charp));
+  try
+  {
+    const char* charp = reinterpret_cast<const char*>(ch);
+    xqpStringStore_t content(new xqpStringStore(charp));
 
-  XmlNode* commentNode = new CommentNode(content);
+    std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
+    parent_tag = loader.tag_stack.rbegin();
+    XmlNode *parent;
+    if(parent_tag != loader.tag_stack.rend())
+      parent = (*parent_tag)->elemNode;
+    else
+      parent = loader.theRootNode;
 
-  //if (loader.theNodeStack.empty())
-  //  loader.setRoot(commentNode);
+    store::Item_t node;
+    loader.theFactory->createCommentNode(node, parent, -1, content);
 
-  //loader.theNodeStack.push(commentNode);
-  std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
-  parent_tag = loader.tag_stack.rbegin();
-  XmlNode *parent_elem;
-  if(parent_tag != loader.tag_stack.rend())
-    parent_elem = (*parent_tag)->elemNode;
-  else
-    parent_elem = loader.theRootNode;
-
-  parent_elem->children().push_back(commentNode, false);
-  commentNode->setParent(parent_elem);
-
-  commentNode->setId(loader.theTree, &loader.theOrdPath);
-  loader.theOrdPath.nextChild();
-
-  SYNC_CODE(commentNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
-  LOADER_TRACE1("Comment Node = " << commentNode << " content = "
-                << charp << std::endl << " ordpath = "
-                << commentNode->getOrdPath().show() << std::endl);
+    LOADER_TRACE1("Comment Node = " << node.getp() << std::endl
+                  << node->show() << std::endl);
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              e.theErrorCode, e.theDescription);
+  }
+  catch (...)
+  {
+    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
+                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+  }
 }
 
 
@@ -1772,5 +1508,5 @@ void  XmlLoader::warning(void * ctx, const char * msg, ... )
 
 #undef ZORBA_ERROR_DESC_CONTINUE
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba

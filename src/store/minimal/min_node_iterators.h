@@ -22,7 +22,7 @@
 #include "store/minimal/min_ordpath.h"
 #include "store/util/hashset_item_handle.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 
 /*******************************************************************************
@@ -32,10 +32,10 @@ namespace zorba { namespace store {
   theParentNode : The element or doc node whose children are being retrieved.
   theCurrentPos : The next child to be retrieved.
 ********************************************************************************/
-class ChildrenIterator : public Iterator
+class ChildrenIterator : public store::Iterator
 {
 protected:
-  XmlNode_t           theParentNode;
+  rchandle<XmlNode>           theParentNode;
 
   unsigned long       theNumChildren;
   unsigned long       theCurrentPos;
@@ -44,15 +44,15 @@ public:
   ChildrenIterator(XmlNode* parent);
 
   void open();
-  bool next(Item_t& result);
+  bool next(store::Item_t& result);
   void reset();
   void close();
 };
 
-class ChildrenIteratorLazy : public Iterator
+class ChildrenIteratorLazy : public store::Iterator
 {
 protected:
-  XmlNode_t           theParentNode;
+  rchandle<XmlNode>           theParentNode;
 
   //unsigned long       theNumChildren;
   unsigned long       theCurrentPos;
@@ -61,7 +61,7 @@ public:
   ChildrenIteratorLazy(XmlNode* parent);
 
   void open();
-  bool next(Item_t& result);
+  bool next(store::Item_t& result);
   void reset();
   void close();
 };
@@ -74,10 +74,10 @@ public:
   theCurrentPos : The next attribute to be retrieved.
 
 ********************************************************************************/
-class AttributesIterator : public Iterator
+class AttributesIterator : public store::Iterator
 {
 protected:
-  ElementNode_t       theParentNode;
+  rchandle<ElementNode>       theParentNode;
 
   unsigned long       theNumAttributes;
   unsigned long       theCurrentPos;
@@ -86,7 +86,7 @@ public:
   AttributesIterator(ElementNode* parent);
 
   void open();
-  bool next(Item_t& result);
+  bool next(store::Item_t& result);
   void reset();
   void close();
 };
@@ -101,14 +101,14 @@ public:
                elimination is done based on the values of the pointers that
                point to the input nodes.
 ********************************************************************************/
-class StoreNodeDistinctIterator : public Iterator
+class StoreNodeDistinctIterator : public store::Iterator
 {
 protected:
-  Iterator_t         theInput;
-  ItemHandleHashSet  theNodeSet;
+  store::Iterator_t         theInput;
+  store::ItemHandleHashSet  theNodeSet;
 
 public:
-  StoreNodeDistinctIterator(Iterator* input) 
+  StoreNodeDistinctIterator(store::Iterator* input) 
     :
     theInput(input),
     theNodeSet(1024, false)
@@ -118,7 +118,7 @@ public:
   virtual ~StoreNodeDistinctIterator() { close(); }
 
   void open();
-  bool next(Item_t& result);
+  bool next(store::Item_t& result);
   void reset();
   void close();
 };
@@ -138,7 +138,7 @@ protected:
   bool theNodeMode;
 
 public:
-  StoreNodeDistinctOrAtomicIterator(Iterator* aInput)
+  StoreNodeDistinctOrAtomicIterator(store::Iterator* aInput)
     :
     StoreNodeDistinctIterator(aInput),
     theAtomicMode(false),
@@ -146,7 +146,7 @@ public:
   {
   }
 
-  bool next(Item_t& result); 
+  bool next(store::Item_t& result); 
 
   void reset() 
   {
@@ -165,7 +165,7 @@ public:
   theInput  : input iterator
   theNodes  : A vector that stores rchandles to the nodes.
 ********************************************************************************/
-class StoreNodeSortIterator : public Iterator
+class StoreNodeSortIterator : public store::Iterator
 {
 protected:
   class ComparisonFunction
@@ -190,7 +190,7 @@ protected:
   };
 
 protected:
-  Iterator_t              theInput;
+  store::Iterator_t              theInput;
   bool                    theAscendant;
   bool                    theDistinct;
 
@@ -199,7 +199,7 @@ protected:
 
 public:
   StoreNodeSortIterator(
-        const Iterator_t& input,
+        const store::Iterator_t& input,
         bool              ascendant,
         bool              distinct)
     :
@@ -213,7 +213,7 @@ public:
   virtual ~StoreNodeSortIterator() { close(); }
 
   void open();
-  bool next(Item_t& result);
+  bool next(store::Item_t& result);
   void reset();
   void close();
 };
@@ -233,7 +233,7 @@ protected:
   bool theNodeMode;
 
 public:
-  StoreNodeSortOrAtomicIterator(const Iterator_t& aInput, bool aAsc, bool aDistinct)
+  StoreNodeSortOrAtomicIterator(const store::Iterator_t& aInput, bool aAsc, bool aDistinct)
     :
     StoreNodeSortIterator(aInput, aAsc, aDistinct),
     theAtomicMode(false),
@@ -241,7 +241,7 @@ public:
   {
   }
 
-  bool next(Item_t& result);
+  bool next(store::Item_t& result);
 
   void reset() 
   {
@@ -253,7 +253,7 @@ public:
 };
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif

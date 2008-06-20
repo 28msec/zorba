@@ -18,19 +18,20 @@
 #include "store/minimal/min_temp_seq.h"
 #include "store/api/copymode.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleTempSeq::SimpleTempSeq(Iterator_t iter, bool copy, bool lazy)
+SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy, bool lazy)
 {
-  CopyMode lCopyMode;
-  Item_t curItem;
+  store::CopyMode lCopyMode;
+  store::Item_t curItem;
 
-  while ( iter->next(curItem) ) {
+  while ( iter->next(curItem) ) 
+  {
     if (copy && curItem->isNode()) 
-      curItem = curItem->copyXmlTree(lCopyMode);
+      curItem = curItem->copy(NULL, 0, lCopyMode);
 
     theItems.push_back(curItem.transfer());
   }
@@ -45,7 +46,7 @@ SimpleTempSeq::~SimpleTempSeq()
   ulong numItems = theItems.size();
   for (ulong i = 0; i < numItems; i++)
   {
-    Item* n = theItems[i];
+    store::Item* n = theItems[i];
     n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
   }
 }
@@ -63,7 +64,7 @@ bool SimpleTempSeq::empty()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SimpleTempSeq::operator[](int32_t aIndex) 
+store::Item_t SimpleTempSeq::operator[](int32_t aIndex) 
 {
   return theItems[aIndex];
 }
@@ -81,7 +82,7 @@ int32_t SimpleTempSeq::getSize()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SimpleTempSeq::getItem(int32_t position)
+store::Item_t SimpleTempSeq::getItem(int32_t position)
 {
   if ( this->containsItem(position))
 	{
@@ -106,14 +107,14 @@ bool SimpleTempSeq::containsItem(int32_t position)
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleTempSeq::append(Iterator_t iter, bool copy)
+void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
 {
-  Item_t curItem;
-  CopyMode lCopyMode;
+  store::Item_t curItem;
+  store::CopyMode lCopyMode;
   while ( iter->next(curItem) )
   {
     if (copy && curItem->isNode())
-      curItem = curItem->copyXmlTree(lCopyMode);
+      curItem = curItem->copy(NULL, 0, lCopyMode);
 
     theItems.push_back(curItem.transfer());
   }
@@ -126,7 +127,7 @@ void SimpleTempSeq::append(Iterator_t iter, bool copy)
 
   @return Iterator which iterates over the complete TempSeq
 ********************************************************************************/
-Iterator_t SimpleTempSeq::getIterator()
+store::Iterator_t SimpleTempSeq::getIterator()
 {
   return new SimpleTempSeqIter(this);
 }
@@ -139,45 +140,47 @@ Iterator_t SimpleTempSeq::getIterator()
   @param endPos The last item which the iterator returns 
   @return Iterator
 ********************************************************************************/
-Iterator_t SimpleTempSeq::getIterator(
+store::Iterator_t SimpleTempSeq::getIterator(
     int32_t startPos,
     int32_t endPos,
     bool streaming)
 {
-  return Iterator_t ( NULL );
+  return store::Iterator_t ( NULL );
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-Iterator_t SimpleTempSeq::getIterator(
+store::Iterator_t SimpleTempSeq::getIterator(
     int32_t startPos,
-    Iterator_t function,
-    const std::vector<var_iterator>& vars,
+    store::Iterator_t function,
+    const std::vector<store::Iterator_t>& vars,
     bool streaming)
 {
-  return Iterator_t ( NULL );
+  return store::Iterator_t ( NULL );
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-Iterator_t SimpleTempSeq::getIterator(
+store::Iterator_t SimpleTempSeq::getIterator(
     const std::vector<int32_t>& positions,
     bool streaming)
 {
-  return Iterator_t ( NULL );
+  return store::Iterator_t ( NULL );
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-Iterator_t SimpleTempSeq::getIterator(Iterator_t positions, bool streaming)
+store::Iterator_t SimpleTempSeq::getIterator(
+  store::Iterator_t positions, 
+  bool streaming)
 {
-  return Iterator_t(NULL);
+  return store::Iterator_t(NULL);
 }
 
 
@@ -276,7 +279,7 @@ void SimpleTempSeq::SimpleTempSeqIter::open()
 }
 
 
-bool SimpleTempSeq::SimpleTempSeqIter::next(Item_t& result)
+bool SimpleTempSeq::SimpleTempSeqIter::next(store::Item_t& result)
 {
   theCurPos++;
   switch (theBorderType)
@@ -324,5 +327,5 @@ void SimpleTempSeq::SimpleTempSeqIter::close()
 {
 }
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba

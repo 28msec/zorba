@@ -33,7 +33,7 @@ Item::getType( ) const
 }
 
 
-bool Item::equals(const Item*, long timezone, XQPCollator* aCollation) const
+bool Item::equals(const store::Item*, long timezone, XQPCollator* aCollation) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -66,7 +66,7 @@ xqpStringStore_t Item::getStringValue() const
 
 
 /**
- * Helper method with is used to return a StringValue of an Item
+ * Helper method with is used to return a StringValue of an store::Item
  * by pointer instead of rchandle
  */
 xqpStringStore* Item::getStringValueP() const
@@ -404,7 +404,7 @@ xqpStringStore_t Item::getBaseURI() const
 }
 
 
-Iterator_t Item::getAttributes() const
+store::Iterator_t Item::getAttributes() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -412,7 +412,7 @@ Iterator_t Item::getAttributes() const
 }
 
 
-Iterator_t Item::getChildren() const
+store::Iterator_t Item::getChildren() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -427,9 +427,6 @@ bool Item::isId() const
   return false;
 }
 
-/** Accessor for attribute node
- * @return isIdRefs Used for attribute (defines the attribute an idref?))
- */
 bool Item::isIdRefs() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -437,9 +434,7 @@ bool Item::isIdRefs() const
   return false;
 }
 
-/** Accessor for element node
- *  @return  returns prefix namespace pairs
- */
+
 void Item::getNamespaceBindings(
     NsBindings& bindings,
     StoreConsts::NsScoping ns_scoping) const
@@ -449,9 +444,6 @@ void Item::getNamespaceBindings(
 }
 
 
-/** Accessor for element node
- *  @return  boolean?
- */
 store::Item_t Item::getNilled() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -459,10 +451,7 @@ store::Item_t Item::getNilled() const
   return 0;
 }
 
-/** Accessor for document node, element node, attribute node, namespace node,
- *  processing instruction node, comment node, text node
- *  @return  TypeCode of the current node
- */
+
 NodeKind Item::getNodeKind() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -470,9 +459,7 @@ NodeKind Item::getNodeKind() const
   return StoreConsts::elementNode;
 }
 
-/** Accessor for element node, attribute node
- *  @return qname?
- */
+
 store::Item* Item::getNodeName() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -480,22 +467,15 @@ store::Item* Item::getNodeName() const
   return NULL;
 }
 
-/** Accessor for element node, attribute node, namespace node, processing instruction node,
- * comment node, text node
- * @return node?
- */
-store::Item* Item::getParent() const
+
+Item* Item::getParent() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
 
-/** Accessor for document node, element node, attribute node, namespace node,
- * processing instruction node, comment node, text node
- *
- * @return typedValue?
- */
+
 Iterator_t Item::getTypedValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -503,9 +483,7 @@ Iterator_t Item::getTypedValue() const
   return NULL;
 }
 
-/** Accessor for xs:qname, namespace node
- * @return namespace uri
- */
+
 xqpStringStore* Item::getNamespace() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -513,9 +491,7 @@ xqpStringStore* Item::getNamespace() const
   return 0;
 }
 
-/** Accessor for xs:qname, namespace node
- * @return namespace prefix
- */
+
 xqpStringStore* Item::getPrefix() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -523,9 +499,7 @@ xqpStringStore* Item::getPrefix() const
   return 0;
 }
 
-/** Accessor for xs:qname
- * @return namespace local name
- */
+
 xqpStringStore* Item::getLocalName() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -533,9 +507,7 @@ xqpStringStore* Item::getLocalName() const
   return 0;
 }
 
-/** Accessor for document node
- * @return unparsed entity public id
- */
+
 xqpStringStore* Item::getUnparsedEntityPublicId() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -543,9 +515,7 @@ xqpStringStore* Item::getUnparsedEntityPublicId() const
   return 0;
 }
 
-/** Accessor for document node
- * @return unparsed entity system id
- */
+
 xqpStringStore* Item::getUnparsedEntitySystemId() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -553,10 +523,7 @@ xqpStringStore* Item::getUnparsedEntitySystemId() const
   return 0;
 }
 
-/**
- *  Accessor for processing instruction node
- * @return target of the PI
- */
+
 xqpStringStore* Item::getTarget() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -564,13 +531,6 @@ xqpStringStore* Item::getTarget() const
   return 0;
 }
 
-#if 0
-bool Item::isNumeric() const 
-{
-  xqtref_t type = GENV_TYPESYSTEM.create_named_type(getType(), TypeConstants::QUANT_ONE);
-  return TypeOps::is_numeric(*type);
-}
-#endif
 
 xqp_string Item::show() const
 {
@@ -578,21 +538,22 @@ xqp_string Item::show() const
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-Item* Item::copyXmlTree(const CopyMode& copymode) const
+void Item::finalizeNode()
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
-#if 0
-void Item::serializeXML(serializer& ser, std::ostream& os) const
+
+Item* Item::copy(
+                 store::Item* parent, 
+                 long pos, 
+                 const CopyMode& copymode) const
 {
-  ser.serialize(this, os);
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
 }
-#endif
+
 
 void Item::applyUpdates()
 {
@@ -601,5 +562,6 @@ void Item::applyUpdates()
 }
 
 
-} // namespace store
+
+} // namespace storeminimal
 } // namespace zorba

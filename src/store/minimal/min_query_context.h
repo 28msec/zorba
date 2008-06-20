@@ -24,7 +24,7 @@
 #include "zorbautils/fatal.h"
 #include "common/shared_types.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 class XmlNode;
 
@@ -84,7 +84,7 @@ public:
 };
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif

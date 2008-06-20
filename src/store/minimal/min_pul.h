@@ -26,7 +26,7 @@
 #include "store/minimal/min_node_updates.h"
 
 
-namespace zorba {  namespace store {
+namespace zorba {  namespace storeminimal {
 
 class XmlNode;
 class UpdatePrimitive;
@@ -69,7 +69,7 @@ public:
   theDoFirstList : insertInto, insertAttributes, replaceValue, rename
   theInsertList  : insertBefore, insertAfter, insertIntoFirst, insertIntoLast 
 ********************************************************************************/
-class PULImpl : public PUL
+class PULImpl : public store::PUL
 {
 protected:
   std::vector<UpdatePrimitive*>   theDoFirstList;
@@ -83,88 +83,78 @@ protected:
 public:
   ~PULImpl();
 
-  void addDelete(Item_t& n);
+  void addDelete(store::Item_t& n);
 
   void addInsertInto(
-        Item_t&              target,
-        std::vector<Item_t>& children,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& children,
+        const store::CopyMode&      copymode);
 
   void addInsertFirst(
-        Item_t&              target,
-        std::vector<Item_t>& children,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& children,
+        const store::CopyMode&      copymode);
 
   void addInsertLast(
-        Item_t&              target,
-        std::vector<Item_t>& children,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& children,
+        const store::CopyMode&      copymode);
 
   void addInsertBefore(
-        Item_t&              target,
-        std::vector<Item_t>& siblings,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& siblings,
+        const store::CopyMode&      copymode);
 
   void addInsertAfter(
-        Item_t&              target,
-        std::vector<Item_t>& siblings,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& siblings,
+        const store::CopyMode&      copymode);
   
   void addInsertAttributes(
-        Item_t&              target,
-        std::vector<Item_t>& attrs,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& attrs,
+        const store::CopyMode&      copymode);
 
   void addReplaceNode(
-        Item_t&              target,
-        std::vector<Item_t>& replacementNodes,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& replacementNodes,
+        const store::CopyMode&      copymode);
 
   void addReplaceContent(
-        Item_t&              target,
-        Item_t&              newTextChild,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        store::Item_t&              newTextChild,
+        const store::CopyMode&      copymode);
 
   void addReplaceValue(
-        Item_t&              target,
+        store::Item_t&              target,
         xqpStringStore_t&    newValue);
 
   void addRename(
-        Item_t&              target,
-        Item_t&              newName);
+        store::Item_t&              target,
+        store::Item_t&              newName);
 
   void applyUpdates();
 
   //void serializeUpdates(serializer& ser, std::ostream& os);
 
-  void mergeUpdates(Item* other);
+  void mergeUpdates(store::Item* other);
 
-  void checkTransformUpdates(const std::vector<Item*>& rootNodes) const;
+  void checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const;
 
 protected:
   void undoUpdates();
 
   void addInsertChildren(
-        UpdateConsts::UpdPrimKind kind,
-        Item_t&                   target,
-        std::vector<Item_t>&      children,
-        bool                      copy,
-        const CopyMode&           copymode);
+        store::UpdateConsts::UpdPrimKind kind,
+        store::Item_t&                   target,
+        std::vector<store::Item_t>&      children,
+        const store::CopyMode&           copymode);
 
   void addInsertSiblings(
-        UpdateConsts::UpdPrimKind kind,
-        Item_t&                   target,
-        std::vector<Item_t>&      siblings,
-        bool                      copy,
-        const CopyMode&           copymode);
+        store::UpdateConsts::UpdPrimKind kind,
+        store::Item_t&                   target,
+        std::vector<store::Item_t>&      siblings,
+        const store::CopyMode&           copymode);
 
   void mergeUpdateList(
         std::vector<UpdatePrimitive*>& myList,
@@ -185,20 +175,20 @@ class UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  Item_t        theTarget;
+  store::Item_t        theTarget;
   bool          theIsApplied;
   bool          theRemoveType;
   TypeUndoList  theTypeUndoList;
 
 public:
- UpdatePrimitive(Item_t& target) : theIsApplied(false), theRemoveType(false)
+ UpdatePrimitive(store::Item_t& target) : theIsApplied(false), theRemoveType(false)
   {
     theTarget.transfer(target);
   }
 
   virtual ~UpdatePrimitive() { }
 
-  virtual UpdateConsts::UpdPrimKind getKind() = 0;
+  virtual store::UpdateConsts::UpdPrimKind getKind() = 0;
 
   virtual void apply() = 0;
   virtual void undo() = 0;
@@ -217,9 +207,12 @@ protected:
   ulong         thePos;
 
 public:
-  UpdDelete(Item_t& target) : UpdatePrimitive(target) { }
+  UpdDelete(store::Item_t& target) : UpdatePrimitive(target) { }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_DELETE; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_DELETE; 
+  }
 
   void apply();
   void undo();
@@ -234,20 +227,22 @@ class UpdInsertChildren : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  UpdateConsts::UpdPrimKind theKind;
-  std::vector<Item_t>       theChildren;
+  store::UpdateConsts::UpdPrimKind theKind;
+  std::vector<store::Item_t>       theChildren;
   bool                      theDoCopy;
-  CopyMode                  theCopyMode;
+  store::CopyMode                  theCopyMode;
 
 public:
   UpdInsertChildren(
-        UpdateConsts::UpdPrimKind kind,
-        Item_t&                   target,
-        std::vector<Item_t>&      children,
-        bool                      copy,
-        const CopyMode&           copymode);
+        store::UpdateConsts::UpdPrimKind kind,
+        store::Item_t&                   target,
+        std::vector<store::Item_t>&      children,
+        const store::CopyMode&           copymode);
 
-  UpdateConsts::UpdPrimKind getKind() { return theKind; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return theKind; 
+  }
 
   void apply();
   void undo();
@@ -262,20 +257,22 @@ class UpdInsertSiblings : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  UpdateConsts::UpdPrimKind theKind;
-  std::vector<Item_t>       theSiblings;
+  store::UpdateConsts::UpdPrimKind theKind;
+  std::vector<store::Item_t>       theSiblings;
   bool                      theDoCopy;
-  CopyMode                  theCopyMode;
+  store::CopyMode                  theCopyMode;
 
 public:
   UpdInsertSiblings(
-        UpdateConsts::UpdPrimKind kind,
-        Item_t&                   target,
-        std::vector<Item_t>&      siblings,
-        bool                      copy,
-        const CopyMode&           copymode);
+        store::UpdateConsts::UpdPrimKind kind,
+        store::Item_t&                   target,
+        std::vector<store::Item_t>&      siblings,
+        const store::CopyMode&           copymode);
 
-  UpdateConsts::UpdPrimKind getKind() { return theKind; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return theKind; 
+  }
 
   void apply();
   void undo();
@@ -290,18 +287,20 @@ class UpdInsertAttributes : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  std::vector<Item_t>  theAttributes;
+  std::vector<store::Item_t>  theAttributes;
   bool                 theDoCopy;
-  CopyMode             theCopyMode;
+  store::CopyMode             theCopyMode;
 
 public:
   UpdInsertAttributes(
-        Item_t&               target,
-        std::vector<Item_t>&  attrs,
-        bool                  copy,
-        const CopyMode&       copymode);
+        store::Item_t&               target,
+        std::vector<store::Item_t>&  attrs,
+        const store::CopyMode&       copymode);
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_INSERT_ATTRIBUTES; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_INSERT_ATTRIBUTES; 
+  }
 
   void apply();
   void undo();
@@ -316,20 +315,22 @@ class UpdReplaceChild : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  Item_t               theChild;
-  std::vector<Item_t>  theNewChildren;
+  store::Item_t               theChild;
+  std::vector<store::Item_t>  theNewChildren;
   bool                 theDoCopy;
-  CopyMode             theCopyMode;
+  store::CopyMode             theCopyMode;
 
 public:
   UpdReplaceChild(
-        Item_t&              target,
-        Item_t&              child,
-        std::vector<Item_t>& newChildren,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        store::Item_t&              child,
+        std::vector<store::Item_t>& newChildren,
+        const store::CopyMode&      copymode);
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_CHILD; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_REPLACE_CHILD;
+  }
 
   void apply();
   void undo();
@@ -344,20 +345,22 @@ class UpdReplaceAttribute : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  Item_t               theAttr;
-  std::vector<Item_t>  theNewAttrs;
+  store::Item_t               theAttr;
+  std::vector<store::Item_t>  theNewAttrs;
   bool                 theDoCopy;
-  CopyMode             theCopyMode;
+  store::CopyMode             theCopyMode;
 
 public:
   UpdReplaceAttribute(
-        Item_t&              target,
-        Item_t&              attr,
-        std::vector<Item_t>& newAttrs,
-        bool                 copy,
-        const CopyMode&      copymode);
+        store::Item_t&              target,
+        store::Item_t&              attr,
+        std::vector<store::Item_t>& newAttrs,
+        const store::CopyMode&      copymode);
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_ATTRIBUTE; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
+  }
 
   void apply();
   void undo();
@@ -372,26 +375,28 @@ class UpdReplaceContent : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  Item_t            theNewChild;
+  store::Item_t            theNewChild;
   ConstrNodeVector  theOldChildren;
   bool              theDoCopy;
-  CopyMode          theCopyMode;
+  store::CopyMode          theCopyMode;
 
 public:
   UpdReplaceContent(
-        Item_t&         target,
-        Item_t&         newChild, 
-        bool            copy,
-        const CopyMode& copymode)
+        store::Item_t&         target,
+        store::Item_t&         newChild, 
+        const store::CopyMode& copymode)
     :
     UpdatePrimitive(target),
-    theDoCopy(copy),
+    theDoCopy(copymode.theDoCopy),
     theCopyMode(copymode)
   {
     theNewChild.transfer(newChild);
   }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_CONTENT; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_REPLACE_CONTENT;
+  }
 
   void apply();
   void undo();
@@ -410,12 +415,15 @@ protected:
   xqpStringStore_t    theOldValue;
 
 public:
-  UpdReplaceAttrValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
+  UpdReplaceAttrValue(store::Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
     theNewValue.transfer(newValue);
   }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_ATTR_VALUE; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_REPLACE_ATTR_VALUE;
+  }
 
   void apply();
   void undo();
@@ -434,12 +442,15 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplaceTextValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
+  UpdReplaceTextValue(store::Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
     theNewValue.transfer(newValue);
   }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_TEXT_VALUE; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_REPLACE_TEXT_VALUE;
+  }
 
   void apply();
   void undo();
@@ -458,12 +469,15 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplacePiValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
+  UpdReplacePiValue(store::Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
     theNewValue.transfer(newValue);
   }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_PI_VALUE; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_REPLACE_PI_VALUE;
+  }
 
   void apply();
   void undo();
@@ -482,12 +496,15 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplaceCommentValue(Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
+  UpdReplaceCommentValue(store::Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
     theNewValue.transfer(newValue);
   }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_REPLACE_COMMENT_VALUE; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_REPLACE_COMMENT_VALUE;
+  }
 
   void apply();
   void undo();
@@ -502,16 +519,19 @@ class UpdRenameElem : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  Item_t   theNewName;
-  Item_t   theOldName;
+  store::Item_t   theNewName;
+  store::Item_t   theOldName;
 
 public:
-  UpdRenameElem(Item_t& t, Item_t& newName) : UpdatePrimitive(t)
+  UpdRenameElem(store::Item_t& t, store::Item_t& newName) : UpdatePrimitive(t)
   {
     theNewName.transfer(newName);
   }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_ELEM; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_RENAME_ELEM;
+  }
 
   void apply();
   void undo();
@@ -526,16 +546,19 @@ class UpdRenameAttr : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  Item_t   theNewName;
-  Item_t   theOldName;
+  store::Item_t   theNewName;
+  store::Item_t   theOldName;
 
 public:
-  UpdRenameAttr(Item_t& t, Item_t& newName) : UpdatePrimitive(t)
+  UpdRenameAttr(store::Item_t& t, store::Item_t& newName) : UpdatePrimitive(t)
   {
     theNewName.transfer(newName);
   }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_ATTR; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_RENAME_ATTR;
+  }
 
   void apply();
   void undo();
@@ -554,12 +577,15 @@ protected:
   xqpStringStore_t   theOldName;
 
 public:
-  UpdRenamePi(Item_t& t, xqpStringStore_t& newName) : UpdatePrimitive(t)
+  UpdRenamePi(store::Item_t& t, xqpStringStore_t& newName) : UpdatePrimitive(t)
   {
     theNewName.transfer(newName);
   }
 
-  UpdateConsts::UpdPrimKind getKind() { return UpdateConsts::UP_RENAME_PI; }
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_RENAME_PI;
+  }
 
   void apply();
   void undo();

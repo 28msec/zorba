@@ -22,7 +22,7 @@
 #include "store/minimal/min_store_defs.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -325,9 +325,9 @@ OrdPath& OrdPath::operator=(const OrdPathStack& ops)
 /*******************************************************************************
 
 ********************************************************************************/
-ulong OrdPath::getLocalBitLength() const
+ulong OrdPath::getLocalBitLength(ulong& byteLen) const
 {
-  ulong byteLen = getLocalByteLength();
+  byteLen = getLocalByteLength();
 
   if (byteLen == 0)
     return 0;
@@ -348,9 +348,9 @@ ulong OrdPath::getLocalBitLength() const
 }
 
 
-ulong OrdPath::getRemoteBitLength() const
+ulong OrdPath::getRemoteBitLength(ulong& byteLen) const
 {
-  ulong byteLen = getRemoteByteLength();
+  byteLen = getRemoteByteLength();
 
   if (byteLen == 0)
     return 0;
@@ -686,7 +686,8 @@ void OrdPath::insertBeforeOrAfter(
   ulong byteLen;
   unsigned char* data;
 
-  ulong parentBitLen = parent.getBitLength();
+  ulong parentByteLen;
+  ulong parentBitLen = parent.getBitLength(parentByteLen);
 
   // Decompress the last level-component of sibling.
   sibling.decompress(parentBitLen, dewey, offsets, numComps, bitLen);
@@ -744,7 +745,8 @@ void OrdPath::insertInto(
 {
   assert(sib1 < sib2);
 
-  ulong parentBitLen = parent.getBitLength();
+  ulong parentByteLen;
+  ulong parentBitLen = parent.getBitLength(parentByteLen);
 
   ulong numComps1 = 0;
   ulong bitLen1 = 0;
@@ -953,6 +955,7 @@ void OrdPath::appendComp(long value)
 {
   uint32_t eval;
 
+  ulong byteLen;
   ulong bitLen;
   ulong byteIndex;
   ulong bitsAvailable = 0;
@@ -961,7 +964,7 @@ void OrdPath::appendComp(long value)
 
   bool isLocal = this->isLocal();
 
-  bitLen = (isLocal ? getLocalBitLength() : getRemoteBitLength());
+  bitLen = (isLocal ? getLocalBitLength(byteLen) : getRemoteBitLength(byteLen));
 
   byteIndex = bitLen / 8;
   bitsAvailable = 8 - bitLen % 8;
@@ -980,7 +983,7 @@ void OrdPath::appendComp(long value)
   {
     data = getLocalData();
   }
-  else if (isLocal || (bytesNeeded > byteIndex + 1))
+  else if (isLocal || (bytesNeeded > byteLen))
   {
     unsigned char* newbuf = new unsigned char[bytesNeeded + 1];
     memset(newbuf, 0, bytesNeeded+1);
@@ -989,12 +992,12 @@ void OrdPath::appendComp(long value)
     if (isLocal)
     {
       markRemote();
-      memcpy(&newbuf[1], getLocalData(), byteIndex+1);
+      memcpy(&newbuf[1], getLocalData(), byteLen);
       setRemoteBuffer(newbuf);
     }
     else
     {
-      memcpy(&newbuf[1], getRemoteData(), byteIndex+1);
+      memcpy(&newbuf[1], getRemoteData(), byteLen);
       delete [] getRemoteBuffer();
       setRemoteBuffer(newbuf);
     }
@@ -1007,6 +1010,8 @@ void OrdPath::appendComp(long value)
   {
     data = getRemoteData();
   }
+
+  ZORBA_FATAL(byteIndex <= bytesNeeded, "");
 
   do
   {
@@ -1024,6 +1029,7 @@ void OrdPath::appendComp(long value)
     ulong zerone = (bitsAvailable + 7) / 8;
     bitsAvailable = bitsAvailable * zerone + 8 * (1 - zerone);
     byteIndex += (1 - zerone);
+    ZORBA_FATAL(byteIndex <= bytesNeeded, "");
   }
   while (bitsNeeded > 0);
 }
@@ -1231,11 +1237,27 @@ void OrdPath::decompress(
     ulong& numComps,
     ulong& bitLen) const
 {
+  unsigned char tmpbuf[MAX_EMBEDDED_BYTE_LEN];
+
   ulong byteIndex = startOffset / 8;
   ulong bitIndex = startOffset % 8;
 
   ulong len;
-  unsigned char* data = getDataAndLength(len);
+  unsigned char* data;
+  bool isLocal = this->isLocal();
+
+  if (isLocal)
+  {
+    len = getLocalByteLength();
+    memcpy(tmpbuf, theBuffer, MAX_EMBEDDED_BYTE_LEN);
+    data = tmpbuf;
+    tmpbuf[MAX_EMBEDDED_BYTE] &= 0xFE;
+  }
+  else
+  {
+    len = getRemoteByteLength();
+    data = getRemoteData();
+  }
 
   bitLen = byteIndex * 8 + bitIndex;
 
@@ -1253,7 +1275,7 @@ void OrdPath::decompress(
   if (byteIndex == len - 1)
   {
     unsigned char lastByte = data[byteIndex];
-    ZORBA_ASSERT(lastByte != 0);
+    ZORBA_FATAL(lastByte != 0, "");
     lastByte <<= bitIndex;
     if (lastByte != 0)
       decodeByte(data, bitLen, byteIndex, bitIndex, lastByte,
@@ -3622,8 +3644,10 @@ void OrdPath::decodeByte(
     break;
   }
   case 255:   // 1111 1111   11111111,...           (28/8,20)
-    ZORBA_ASSERT (false);
+  {
+    ZORBA_FATAL(false, "");
     break;
+  }
   default:
   {
     std::cerr << "byte " << std::hex << (unsigned short)byte << " NYI" << std::endl;
@@ -3998,6 +4022,6 @@ std::string OrdPathStack::show() const
   return str.str().c_str();
 }
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 

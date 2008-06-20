@@ -17,12 +17,12 @@
 #define ZORBA_MINIMAL_STORE_NODE_UPDATES_H
 
 namespace zorba { 
-  namespace store {
+  namespace storeminimal {
 
 
 struct NodeTypeInfo
 {
-  NodeTypeInfo(Item* tname, bool isId, bool isIdRefs) 
+  NodeTypeInfo(store::Item* tname, bool isId, bool isIdRefs) 
     :
     theTypeName(tname),
     theIsId(isId),
@@ -31,7 +31,7 @@ struct NodeTypeInfo
   {
   }
 
-  Item    * theTypeName;
+  store::Item    * theTypeName;
   bool      theIsId;
   bool      theIsIdRefs;
   bool      theIsNillable;

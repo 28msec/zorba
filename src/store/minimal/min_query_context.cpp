@@ -17,7 +17,7 @@
 #include "store/minimal/min_node_items.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 
 QueryContext& QueryContextContainer::getContext(ulong queryId)

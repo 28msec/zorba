@@ -20,12 +20,11 @@
 
 #include "common/common.h"
 #include "common/shared_types.h"
+#include "store/api/item_factory.h"
 
 namespace zorba { 
-  namespace store {
+  namespace storeminimal {
 
-
-typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
 
 /*******************************************************************************
@@ -34,22 +33,22 @@ typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 class NsBindingsContext : public SimpleRCObject
 {
 private:
-  NsBindings           theBindings;
-  NsBindingsContext_t  theParent;
+  store::NsBindings           theBindings;
+  rchandle<NsBindingsContext> theParent;
 
 public:
   NsBindingsContext() { }
 
   NsBindingsContext(ulong numBindings);
 
-  NsBindingsContext(const NsBindings& bindings);
+  NsBindingsContext(const store::NsBindings& bindings);
 
   ~NsBindingsContext();
 
   bool empty() const                          { return theBindings.empty(); }
 
-  const NsBindings& getBindings() const       { return theBindings; }
-  NsBindings& getBindings()                   { return theBindings; }
+  const store::NsBindings& getBindings() const       { return theBindings; }
+  store::NsBindings& getBindings()                   { return theBindings; }
 
   void setParent(NsBindingsContext* p)        { theParent = p; }
   const NsBindingsContext* getParent() const  { return theParent.getp(); }
@@ -60,7 +59,7 @@ public:
 };
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif

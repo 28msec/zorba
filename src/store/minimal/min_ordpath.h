@@ -21,7 +21,7 @@
 #include "common/common.h"
 #include "zorbautils/fatal.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 class OrdPathStack;
 
@@ -264,14 +264,14 @@ protected:
   }
 
 
-  ulong getBitLength() const
+  ulong getBitLength(ulong& byteLen) const
   {
-    return (isLocal() ? getLocalBitLength() : getRemoteBitLength());
+    return (isLocal() ? getLocalBitLength(byteLen) : getRemoteBitLength(byteLen));
   }
 
-  ulong getLocalBitLength() const;
+  ulong getLocalBitLength(ulong& byteLen) const;
 
-  ulong getRemoteBitLength() const;
+  ulong getRemoteBitLength(ulong& byteLen) const;
 
   bool compressLocal(const std::vector<long>& dewey);
   void compressRemote(const std::vector<long>& dewey);
@@ -336,7 +336,7 @@ private:
 };
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif

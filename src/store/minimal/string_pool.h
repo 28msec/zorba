@@ -22,7 +22,7 @@
 #include "zorbautils/hashset.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 /*******************************************************************************
   A hash-based set container of string rchandles, where equality is based on
@@ -56,7 +56,7 @@ protected:
 };
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif

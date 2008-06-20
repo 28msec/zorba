@@ -23,8 +23,9 @@
 #include "common/common.h"
 #include "store/minimal/min_atomic_items.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
+class StringPool;
 
 /*******************************************************************************
 
@@ -106,16 +107,15 @@ public:
 
   ~QNamePool();
 
-  Item_t insert(
+  store::Item_t insert(
         const char* ns,
         const char* pre,
         const char* ln);
 
-  Item_t insert(
-        xqpStringStore_t ns,
-        xqpStringStore* pre,
-        xqpStringStore* ln,
-        bool*           inserted);
+  store::Item_t insert(
+        const xqpStringStore_t& ns,
+        const xqpStringStore_t& pre,
+        const xqpStringStore_t& ln);
 
   void remove(QNameItemImpl* qn);
 
@@ -137,7 +137,7 @@ protected:
 };
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif

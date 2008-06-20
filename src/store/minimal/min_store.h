@@ -36,20 +36,25 @@ namespace zorba {
 
 class GlobalEnvironment;
 
-namespace error {
+namespace error 
+{
   class ErrorManager;
 }
 
-namespace store {
+namespace storeminimal 
+{
 
-typedef StringHashMap<Collection_t> CollectionSet;
-typedef StringHashMap<XmlNode_t> DocumentSet;
+class QueryContextContainer;
+class QueryContext;
+
+typedef store::StringHashMap<XmlNode_t> DocumentSet;
+typedef store::StringHashMap<store::Collection_t> CollectionSet;
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class SimpleStore : public Store
+class SimpleStore : public store::Store
 {
   friend class zorba::GlobalEnvironment;
  
@@ -65,7 +70,7 @@ public:
   xqpStringStore_t         theEmptyNs;
   xqpStringStore_t         theXmlSchemaNs;
 
-  checked_vector<Item_t>   theSchemaTypeNames;
+  checked_vector<store::Item_t>   theSchemaTypeNames;
 
 protected:
   bool                     theIsInitialized;
@@ -79,7 +84,7 @@ protected:
   StringPool             * theNamespacePool;
   QNamePool              * theQNamePool;
 
-  ItemFactory            * theItemFactory;
+  store::ItemFactory            * theItemFactory;
 
   DocumentSet              theDocuments;
   CollectionSet            theCollections;
@@ -101,7 +106,7 @@ private:
 public:
   void shutdown();
 
-//  Item *getTypeQName(Item *item);
+//  store::Item *getTypeQName(store::Item *item);
 
   store::ItemFactory* getItemFactory() const     { return theItemFactory; }
 
@@ -119,40 +124,43 @@ public:
   QueryContext& getQueryContext(ulong queryId);
   void deleteQueryContext(ulong queryId);
 
-  Item_t createUri();
+  store::Item_t createUri();
 
-  Collection_t createCollection(xqpStringStore_t& uri);
-  Collection_t createCollection();
-  Collection_t getCollection(const xqpStringStore_t& uri);
+  store::Collection_t createCollection(xqpStringStore_t& uri);
+  store::Collection_t createCollection();
+  store::Collection_t getCollection(const xqpStringStore_t& uri);
   void deleteCollection(const xqpStringStore_t& uri);
 
-  Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
-  Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
-  void addNode(const xqpStringStore* uri, const Item_t&	 node);
-  Item_t getDocument(const xqpStringStore_t& uri);
+  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
+  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
+  void addNode(const xqpStringStore* uri, const store::Item_t&	 node);
+  store::Item_t getDocument(const xqpStringStore_t& uri);
   void deleteDocument(const xqpStringStore_t& uri);
 
-  long compareNodes(Item* node1, Item* node2) const;
+  long compareNodes(store::Item* node1, store::Item* node2) const;
 
-  Iterator_t sortNodes(
-        Iterator* iterator,
+  store::Iterator_t sortNodes(
+        store::Iterator* iterator,
         bool ascendent,
         bool duplicateElemination,
         bool aAllowAtomics = false);
 
-  Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false);
+  store::Iterator_t distinctNodes(store::Iterator*, bool aAllowAtomics = false);
 
-  bool getReference(Item_t& result, const Item* node);
-  bool getNodeByReference(Item_t& result, const Item* uri);
+  bool getReference(store::Item_t& result, const store::Item* node);
+  bool getNodeByReference(store::Item_t& result, const store::Item* uri);
 
-  TempSeq_t createTempSeq();
-  TempSeq_t createTempSeq(Iterator* iterator, bool copyNodes = false, bool lazy = true);
+  store::TempSeq_t createTempSeq();
+  store::TempSeq_t createTempSeq(
+                                store::Iterator* iterator, 
+                                bool copyNodes = false, 
+                                bool lazy = true);
 
 };
 
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif /* ZORBA_STORE_SIMPLE_STORE_H */

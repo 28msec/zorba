@@ -21,7 +21,7 @@
 #include "store/minimal/min_store_defs.h"
 #include <algorithm>
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -34,8 +34,8 @@ ChildrenIterator::ChildrenIterator(XmlNode* parent)
   theParentNode(parent),
   theCurrentPos(0)
 {
-  ZORBA_ASSERT(theParentNode->getNodeKind() == StoreConsts::documentNode ||
-               theParentNode->getNodeKind() == StoreConsts::elementNode);
+  ZORBA_ASSERT(theParentNode->getNodeKind() == store::StoreConsts::documentNode ||
+               theParentNode->getNodeKind() == store::StoreConsts::elementNode);
 
   theNumChildren = parent->numChildren();
 }
@@ -46,9 +46,10 @@ void ChildrenIterator::open()
 }
 
 
-bool ChildrenIterator::next(Item_t& result)
+bool ChildrenIterator::next(store::Item_t& result)
 {
-  if (theCurrentPos >= theNumChildren) {
+  if (theCurrentPos >= theNumChildren) 
+  {
     result = NULL;
     return false;
   }
@@ -85,8 +86,8 @@ ChildrenIteratorLazy::ChildrenIteratorLazy(XmlNode* parent)
   theParentNode(parent),
   theCurrentPos(0)
 {
-  ZORBA_ASSERT(theParentNode->getNodeKind() == StoreConsts::documentNode ||
-               theParentNode->getNodeKind() == StoreConsts::elementNode);
+  ZORBA_ASSERT(theParentNode->getNodeKind() == store::StoreConsts::documentNode ||
+               theParentNode->getNodeKind() == store::StoreConsts::elementNode);
 
   //theNumChildren = parent->numChildren();
 }
@@ -97,7 +98,7 @@ void ChildrenIteratorLazy::open()
 }
 
 
-bool ChildrenIteratorLazy::next(Item_t& result)
+bool ChildrenIteratorLazy::next(store::Item_t& result)
 {
   XmlLoader_t   xmlloader;
   while((xmlloader=theParentNode->hasLoaderAttached()) != NULL)
@@ -157,7 +158,7 @@ void AttributesIterator::open()
   theCurrentPos = 0;
 }
 
-bool AttributesIterator::next(Item_t& result)
+bool AttributesIterator::next(store::Item_t& result)
 {
   if (theCurrentPos >= theNumAttributes) {
     result = NULL;
@@ -210,7 +211,7 @@ void StoreNodeDistinctIterator::open()
 }
 
 
-bool StoreNodeDistinctIterator::next(Item_t& result)
+bool StoreNodeDistinctIterator::next(store::Item_t& result)
 {
   while (true)
   {
@@ -244,9 +245,9 @@ void StoreNodeDistinctIterator::close()
 }
 
 
-bool StoreNodeDistinctOrAtomicIterator::next(Item_t& result)
+bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
 {
-  Item_t contextNode;
+  store::Item_t contextNode;
 
   if (theAtomicMode) 
   {
@@ -301,7 +302,7 @@ void StoreNodeSortIterator::open()
 }
 
 
-bool StoreNodeSortIterator::next(Item_t& result)
+bool StoreNodeSortIterator::next(store::Item_t& result)
 {
   if (theCurrentNode < 0)
   {
@@ -309,7 +310,7 @@ bool StoreNodeSortIterator::next(Item_t& result)
 
     while (true)
     {
-      Item_t contextNode;
+      store::Item_t contextNode;
       if (!theInput->next(contextNode))
         break;
 
@@ -393,7 +394,7 @@ void StoreNodeSortIterator::close()
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-bool StoreNodeSortOrAtomicIterator::next(Item_t& result)
+bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
 {
   if (theAtomicMode)
   {
@@ -464,6 +465,6 @@ bool StoreNodeSortOrAtomicIterator::next(Item_t& result)
   }
  
 }
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 

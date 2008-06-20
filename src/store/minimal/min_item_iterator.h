@@ -20,27 +20,27 @@
 #include "store/api/iterator.h"
 #include "common/shared_types.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
-class ItemIterator : public Iterator
+class ItemIterator : public store::Iterator
 {
 private:
-  std::vector<Item_t> theItems;
-  std::vector<Item_t>::iterator theIterator;
+  std::vector<store::Item_t> theItems;
+  std::vector<store::Item_t>::iterator theIterator;
 
 public:
-  ItemIterator(std::vector<Item_t> aItems);
-  ItemIterator(Item_t aItem);
+  ItemIterator(std::vector<store::Item_t> aItems);
+  ItemIterator(store::Item_t aItem);
   ItemIterator(); // construct the empty sequence
   virtual ~ItemIterator(){}
 
   virtual void open();
-  virtual bool next(Item_t&);
+  virtual bool next(store::Item_t&);
   virtual void reset();
   virtual void close();
 };
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 
 #endif

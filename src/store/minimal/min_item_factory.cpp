@@ -37,7 +37,7 @@
 #include "zorbatypes/datetime.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
@@ -55,19 +55,18 @@ BasicItemFactory::~BasicItemFactory()
 
 
 bool BasicItemFactory::createQName(
-    Item_t& result,
-    xqpStringStore* ns,
-    xqpStringStore* pre,
-    xqpStringStore* local,
-    bool*           inserted)
+    store::Item_t&                 result,
+    const xqpStringStore_t& ns,
+    const xqpStringStore_t& pre,
+    const xqpStringStore_t& local)
 {
-  result = theQNamePool->insert(ns, pre, local, inserted);
+  result = theQNamePool->insert(ns, pre, local);
   return true;
 }
 
 
 bool BasicItemFactory::createQName(
-    Item_t& result,
+    store::Item_t& result,
     const char* ns,
     const char* pre,
     const char* ln)
@@ -77,14 +76,14 @@ bool BasicItemFactory::createQName(
 }
 
 
-bool BasicItemFactory::createNCName(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createNCName(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new NCNameItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createAnyURI(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createAnyURI(store::Item_t& result, xqpStringStore_t& value)
 {
   xqpStringStore_t str = value;
   theUriPool->insert(str, str);
@@ -93,7 +92,7 @@ bool BasicItemFactory::createAnyURI(Item_t& result, xqpStringStore_t& value)
 }
 
 
-bool BasicItemFactory::createAnyURI(Item_t& result, const char* value)
+bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 {
   xqpStringStore_t str;
   theUriPool->insertc(value, str);
@@ -102,82 +101,82 @@ bool BasicItemFactory::createAnyURI(Item_t& result, const char* value)
 }
 
 
-bool BasicItemFactory::createUntypedAtomic(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new UntypedAtomicItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createString(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createString(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new StringItemNaive(value);
   return true;
 }
 
 
-bool BasicItemFactory::createBase64Binary(Item_t& result, xqp_base64Binary value)
+bool BasicItemFactory::createBase64Binary(store::Item_t& result, xqp_base64Binary value)
 {
   result = new Base64BinaryItemNaive ( value );
   return true;
 }
 
-bool BasicItemFactory::createBoolean(Item_t& result, xqp_boolean value)
+bool BasicItemFactory::createBoolean(store::Item_t& result, xqp_boolean value)
 {
   result = new BooleanItemNaive(value);
   return true;
 }
 
 
-bool BasicItemFactory::createDecimal(Item_t& result, xqp_decimal value)
+bool BasicItemFactory::createDecimal(store::Item_t& result, xqp_decimal value)
 {
   result = new DecimalItemNaive(value);
   return true;
 }
 
 
-bool BasicItemFactory::createInteger(Item_t& result, xqp_integer value)
+bool BasicItemFactory::createInteger(store::Item_t& result, xqp_integer value)
 {
   result = new IntegerItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createLong (Item_t& result,  xqp_long value )
+bool BasicItemFactory::createLong (store::Item_t& result,  xqp_long value )
 {
   result = new LongItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createInt (Item_t& result,  xqp_int value )
+bool BasicItemFactory::createInt (store::Item_t& result,  xqp_int value )
 {
   result = new IntItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createShort (Item_t& result,  xqp_short value )
+bool BasicItemFactory::createShort (store::Item_t& result,  xqp_short value )
 {
   result = new ShortItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createByte (Item_t& result,  xqp_byte value )
+bool BasicItemFactory::createByte (store::Item_t& result,  xqp_byte value )
 {
   result = new ByteItemNaive ( value );
   return true;
 }
 
-bool BasicItemFactory::createDate(Item_t& result, xqp_date& value)
+bool BasicItemFactory::createDate(store::Item_t& result, xqp_date& value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
 bool BasicItemFactory::createDate (
-    Item_t& result,
+    store::Item_t& result,
     short year,
     short month,
     short day )
@@ -194,7 +193,7 @@ bool BasicItemFactory::createDate (
   }
 }
 
-bool BasicItemFactory::createDate (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createDate (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -207,14 +206,14 @@ bool BasicItemFactory::createDate (Item_t& result,  const xqp_string& value )
   }
 }
 
-bool BasicItemFactory::createDateTime(Item_t& result, xqp_dateTime& value)
+bool BasicItemFactory::createDateTime( store::Item_t& result, xqp_dateTime& value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
 bool BasicItemFactory::createDateTime(
-    Item_t& result,
+    store::Item_t& result,
     short   year,
     short   month,
     short   day,
@@ -236,7 +235,7 @@ bool BasicItemFactory::createDateTime(
 
 
 bool BasicItemFactory::createDateTime(
-    Item_t& result,
+    store::Item_t& result,
     short   year ,
     short   month,
     short   day,
@@ -257,7 +256,9 @@ bool BasicItemFactory::createDateTime(
   }
 }
 
-bool BasicItemFactory::createDateTime ( Item_t& result, const xqp_string& value )
+bool BasicItemFactory::createDateTime ( 
+     store::Item_t& result, 
+     const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -270,7 +271,10 @@ bool BasicItemFactory::createDateTime ( Item_t& result, const xqp_string& value 
   }
 }
 
-bool BasicItemFactory::createDateTime (Item_t& result, const Item_t& date, const Item_t& time)
+bool BasicItemFactory::createDateTime (
+        store::Item_t& result, 
+        const store::Item_t& date, 
+        const store::Item_t& time)
 {
   if (date.isNull() || time.isNull()) {
     result = NULL;
@@ -284,19 +288,23 @@ bool BasicItemFactory::createDateTime (Item_t& result, const Item_t& date, const
   }
 }
 
-bool BasicItemFactory::createDouble (Item_t& result,  xqp_double value )
+bool BasicItemFactory::createDouble (
+                                     store::Item_t& result,  
+                                     xqp_double value )
 {
   result = new DoubleItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createDuration (Item_t& result, xqp_duration& value )
+bool BasicItemFactory::createDuration (
+                                       store::Item_t& result, 
+                                       xqp_duration& value )
 {
   result = new DurationItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createDuration (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createDuration (store::Item_t& result,  const xqp_string& value )
 {
   YearMonthDuration_t ymd_t;
   DayTimeDuration_t   dtd_t;
@@ -317,7 +325,7 @@ bool BasicItemFactory::createDuration (Item_t& result,  const xqp_string& value 
 }
 
 bool BasicItemFactory::createDuration (
-    Item_t& result,
+    store::Item_t& result,
     short   years,
     short   months,
     short   days,
@@ -342,34 +350,34 @@ bool BasicItemFactory::createDuration (
 }
 
 
-bool BasicItemFactory::createENTITIES(Item_t& result, xqpStringStore_t& /*value*/)
+bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& /*value*/)
 {
   result = NULL;
   return false;
 }
 
 
-bool BasicItemFactory::createENTITY(Item_t& result, xqpStringStore_t& /*value*/ )
+bool BasicItemFactory::createENTITY(store::Item_t& result, xqpStringStore_t& /*value*/ )
 {
   result = NULL;
   return false;
 }
 
 
-bool BasicItemFactory::createFloat (Item_t& result,  xqp_float value )
+bool BasicItemFactory::createFloat (store::Item_t& result,  xqp_float value )
 {
   result = new FloatItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createGDay (Item_t& result, xqp_gDay& value )
+bool BasicItemFactory::createGDay (store::Item_t& result, xqp_gDay& value )
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
 
-bool BasicItemFactory::createGDay (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createGDay (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -382,7 +390,7 @@ bool BasicItemFactory::createGDay (Item_t& result,  const xqp_string& value )
   }
 }
 
-bool BasicItemFactory::createGDay (Item_t& result,  short day )
+bool BasicItemFactory::createGDay (store::Item_t& result,  short day )
 {
   DateTime_t dt_t;
   
@@ -395,13 +403,13 @@ bool BasicItemFactory::createGDay (Item_t& result,  short day )
   }
 }
 
-bool BasicItemFactory::createGMonth(Item_t& result, xqp_gMonth& value )
+bool BasicItemFactory::createGMonth(store::Item_t& result, xqp_gMonth& value )
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createGMonth (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createGMonth (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -414,7 +422,7 @@ bool BasicItemFactory::createGMonth (Item_t& result,  const xqp_string& value )
   }
 }
 
-bool BasicItemFactory::createGMonth (Item_t& result,  short month )
+bool BasicItemFactory::createGMonth (store::Item_t& result,  short month )
 {
   DateTime_t dt_t;
 
@@ -427,13 +435,13 @@ bool BasicItemFactory::createGMonth (Item_t& result,  short month )
   }
 }
 
-bool BasicItemFactory::createGMonthDay (Item_t& result, xqp_gMonthDay& value)
+bool BasicItemFactory::createGMonthDay (store::Item_t& result, xqp_gMonthDay& value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createGMonthDay (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createGMonthDay (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -446,7 +454,7 @@ bool BasicItemFactory::createGMonthDay (Item_t& result,  const xqp_string& value
   }
 }
 
-bool BasicItemFactory::createGMonthDay (Item_t& result,  short month, short day )
+bool BasicItemFactory::createGMonthDay (store::Item_t& result,  short month, short day )
 {
   DateTime_t dt_t;
 
@@ -459,13 +467,13 @@ bool BasicItemFactory::createGMonthDay (Item_t& result,  short month, short day 
   }
 }
 
-bool BasicItemFactory::createGYear (Item_t& result, xqp_gYear& value )
+bool BasicItemFactory::createGYear (store::Item_t& result, xqp_gYear& value )
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createGYear (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createGYear (store::Item_t& result,  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -479,7 +487,7 @@ bool BasicItemFactory::createGYear (Item_t& result,  const xqp_string& value )
 }
 
 
-bool BasicItemFactory::createGYear (Item_t& result,  short year )
+bool BasicItemFactory::createGYear (store::Item_t& result,  short year )
 {
   DateTime_t dt_t;
 
@@ -492,13 +500,17 @@ bool BasicItemFactory::createGYear (Item_t& result,  short year )
   }
 }
 
-bool BasicItemFactory::createGYearMonth (Item_t& result, xqp_gYearMonth& value )
+bool BasicItemFactory::createGYearMonth (
+  store::Item_t& result, 
+  xqp_gYearMonth& value )
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createGYearMonth (Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createGYearMonth (
+  store::Item_t& result,  
+  const xqp_string& value )
 {
   DateTime_t dt_t;
   
@@ -511,7 +523,10 @@ bool BasicItemFactory::createGYearMonth (Item_t& result,  const xqp_string& valu
   }
 }
 
-bool BasicItemFactory::createGYearMonth (Item_t& result,  short year, short month )
+bool BasicItemFactory::createGYearMonth (
+  store::Item_t& result,  
+  short year, 
+  short month )
 {
   DateTime_t dt_t;
 
@@ -525,52 +540,86 @@ bool BasicItemFactory::createGYearMonth (Item_t& result,  short year, short mont
 }
 
 
-bool BasicItemFactory::createHexBinary (Item_t& result,  xqp_hexBinary value )
+bool BasicItemFactory::createHexBinary (store::Item_t& result,  xqp_hexBinary value )
 {
   result = new HexBinaryItemNaive ( value ); 
   return true;
 }
 
 
-bool BasicItemFactory::createID(Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createID(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new IDItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createIDREF(Item_t& result, xqpStringStore_t& /*value*/ )
+bool BasicItemFactory::createIDREF(
+                                   store::Item_t& result, 
+                                   xqpStringStore_t& /*value*/ )
 {
   result = NULL;
   return false;
 }
 
 
-bool BasicItemFactory::createIDREFS(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createIDREFS(
+                                    store::Item_t& result, 
+                                    xqpStringStore_t& /*value*/ )
+{ 
+  result = NULL; 
+  return false; 
+}
 
 
-bool BasicItemFactory::createLanguage(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createLanguage(
+                                      store::Item_t& result, 
+                                      xqpStringStore_t& /*value*/ )
+{ 
+  result = NULL; 
+  return false; 
+}
 
 
-bool BasicItemFactory::createNMTOKEN(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createNMTOKEN(
+                                     store::Item_t& result, 
+                                     xqpStringStore_t& /*value*/ )
+{ 
+  result = NULL; 
+  return false; 
+}
 
 
-bool BasicItemFactory::createNMTOKENS(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createNMTOKENS(
+                                      store::Item_t& result, 
+                                      xqpStringStore_t& /*value*/ )
+{ 
+  result = NULL; 
+  return false; 
+}
 
 
-bool BasicItemFactory::createNOTATION(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createNOTATION(
+                                      store::Item_t& result, 
+                                      xqpStringStore_t& /*value*/ )
+{ 
+  result = NULL; 
+  return false; 
+}
 
 
-bool BasicItemFactory::createName(Item_t& result, xqpStringStore_t& /*value*/ )
-{ result = NULL; return false; }
+bool BasicItemFactory::createName(
+                                  store::Item_t& result, 
+                                  xqpStringStore_t& /*value*/ )
+{ 
+  result = NULL; 
+  return false; 
+}
 
 
-bool BasicItemFactory::createNegativeInteger (Item_t& result,  xqp_integer value )
+bool BasicItemFactory::createNegativeInteger (
+  store::Item_t& result,  
+  xqp_integer value )
 {
   ZORBA_ASSERT(value < xqp_integer::parseInt(0));
   result = new NegativeIntegerItemNaive ( value );
@@ -578,14 +627,18 @@ bool BasicItemFactory::createNegativeInteger (Item_t& result,  xqp_integer value
 }
 
 
-bool BasicItemFactory::createNonNegativeInteger (Item_t& result,  xqp_uinteger value )
+bool BasicItemFactory::createNonNegativeInteger (
+  store::Item_t& result,  
+  xqp_uinteger value )
 {
   result = new NonNegativeIntegerItemNaive ( value );
   return true;
 }
 
 
-bool BasicItemFactory::createNonPositiveInteger (Item_t& result,  xqp_integer value )
+bool BasicItemFactory::createNonPositiveInteger (
+  store::Item_t& result,  
+  xqp_integer value )
 {
   ZORBA_ASSERT(value <= Integer::parseInt(0));
   result = new NonPositiveIntegerItemNaive( value );
@@ -593,23 +646,31 @@ bool BasicItemFactory::createNonPositiveInteger (Item_t& result,  xqp_integer va
 }
 
 
-bool BasicItemFactory::createNormalizedString(Item_t& result, xqpStringStore_t& value)
-{ result = NULL; return false; }
+bool BasicItemFactory::createNormalizedString(
+  store::Item_t& result, 
+  xqpStringStore_t& value)
+{ 
+  result = NULL; 
+  return false; 
+}
 
 
-bool BasicItemFactory::createPositiveInteger (Item_t& result,  xqp_uinteger value ) {
+bool BasicItemFactory::createPositiveInteger (
+  store::Item_t& result,  
+  xqp_uinteger value ) 
+{
   ZORBA_ASSERT(value > Integer::parseInt(0));
   result = new PositiveIntegerItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createTime(Item_t& result, xqp_time& value)
+bool BasicItemFactory::createTime(store::Item_t& result, xqp_time& value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createTime(Item_t& result, const xqp_string& value)
+bool BasicItemFactory::createTime(store::Item_t& result, const xqp_string& value)
 {
   DateTime_t dt_t;
   
@@ -623,7 +684,7 @@ bool BasicItemFactory::createTime(Item_t& result, const xqp_string& value)
 }
 
 bool BasicItemFactory::createTime(
-    Item_t& result,
+    store::Item_t& result,
     short   hour,
     short   minute,
     double  second)
@@ -641,7 +702,7 @@ bool BasicItemFactory::createTime(
 }
 
 bool BasicItemFactory::createTime(
-    Item_t& result,
+    store::Item_t& result,
     short   hour,
     short   minute,
     double  second,
@@ -659,31 +720,31 @@ bool BasicItemFactory::createTime(
   }
 }
 
-bool BasicItemFactory::createToken(Item_t& result, xqpStringStore_t& /*value*/ )
+bool BasicItemFactory::createToken(store::Item_t& result, xqpStringStore_t& /*value*/ )
 {
   result = NULL;
   return false;
 }
 
-bool BasicItemFactory::createUnsignedByte (Item_t& result,  xqp_ubyte value )
+bool BasicItemFactory::createUnsignedByte (store::Item_t& result,  xqp_ubyte value )
 {
   result = new UnsignedByteItemNaive ( value );
   return true;
 }
 
-bool BasicItemFactory::createUnsignedInt (Item_t& result,  xqp_uint value )
+bool BasicItemFactory::createUnsignedInt (store::Item_t& result,  xqp_uint value )
 {
   result = new UnsignedIntItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createUnsignedLong(Item_t& result, xqp_ulong value)
+bool BasicItemFactory::createUnsignedLong(store::Item_t& result, xqp_ulong value)
 {
   result = new UnsignedLongItemNaive( value );
   return true;
 }
 
-bool BasicItemFactory::createUnsignedShort(Item_t& result, xqp_ushort value)
+bool BasicItemFactory::createUnsignedShort(store::Item_t& result, xqp_ushort value)
 {
   result = new UnsignedShortItemNaive( value );
   return true;
@@ -691,67 +752,39 @@ bool BasicItemFactory::createUnsignedShort(Item_t& result, xqp_ushort value)
 
 
 /*******************************************************************************
+  Create a new document node N and make it the root (and single node) of a new
+  XML tree.
 
+  baseUri       : The base-uri property of N. It may be NULL.
+  docUri        : The document-uri property of N. It may be NULL.
+  allowSharing  : A zorba-specific parameter used to optimize node-construction
+                  expressions by avoiding node copying whenever possible. If
+                  true, then N may have as children nodes that belong to a
+                  different XML tree than N (the parent of such a "shared"
+                  node C is not N, but a node in the same XmlTree as C). 
 ********************************************************************************/
 bool BasicItemFactory::createDocumentNode(
-    Item_t& result,
-    unsigned long     qid,
+    store::Item_t&           result,
     xqpStringStore_t& baseUri,
-    Iterator*         childrenIter,
-    bool              isRoot,
-    bool              assignIds,
-    bool              copy,
-    const CopyMode&   copymode)
+    xqpStringStore_t& docUri,
+    bool              allowSharing)
 {
   XmlTree* xmlTree = NULL;
-  QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  ConstrDocumentNode* n = NULL;
-  xqpStringStore_t docUri;
-
-  assert(isRoot);
-
-  bool topRoot = ctx.empty();
+  DocumentNode* n = NULL;
 
   try
   {
     xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
-    xmlTree->addReference();
 
-    n = new ConstrDocumentNode(xmlTree, assignIds, baseUri, docUri);
-
-    if (childrenIter != NULL)
-    {
-      ctx.push(n);
-      
-      n->constructSubtree(childrenIter, copy, copymode);
-
-      ctx.pop();
-    }
+   if (allowSharing)
+     n = new DocumentDagNode(xmlTree, baseUri, docUri);
+   else
+     n = new DocumentTreeNode(xmlTree, baseUri, docUri);
   }
   catch (...)
   {
-    if (xmlTree)
-    {
-      xmlTree->removeReference();
-      xmlTree->free();
-      if (topRoot)
-      {
-        ctx.clear();
-        GET_STORE().deleteQueryContext(qid);
-      }
-    }
-
+    if (xmlTree) delete xmlTree;
     throw;
-  }
-
-  if (xmlTree)
-  {
-    xmlTree->removeReference();
-    if (topRoot)
-    {
-      ZORBA_FATAL(ctx.empty(), "");
-      GET_STORE().deleteQueryContext(qid);
-    }
   }
 
   result = n;
@@ -760,83 +793,57 @@ bool BasicItemFactory::createDocumentNode(
 
 
 /*******************************************************************************
+  Create a new element node N and place it as the pos-th child of a given parent
+  node. If no parent is given, N becomes the root (and single node) of a new XML
+  tree. 
 
+  parent        : The parent P of the new element node; may be NULL.
+  pos           : The position, among the children of P, that N will occupy.
+                  If pos < 0 or pos >= current number of P's children, then
+                  N is appended to the list of children.
+  nodeName      : The node-name property of N.
+  typeName      : The type-name property of N.
+  localBindings : A set of namespace bindings. The namespaces property of N is
+                  the union of this set and the namespaces property of P.
+  baseUri       : The base-uri property of N. It may be NULL, in which case, 
+                  the base-uri property of N is the same as that of P.
+  allowSharing  : A zorba-specific parameter used to optimize node-construction
+                  expressions by avoiding node copying whenever possible. If
+                  true, then N may have as children/attributes nodes that belong
+                  to a different XML tree than N (the parent of such a "shared"
+                  node C is not N, but a node in the same XmlTree as C). 
 ********************************************************************************/
 bool BasicItemFactory::createElementNode(
-    Item_t& result,
-    unsigned long     qid,
-    Item_t&           name,
-    Item_t&           typeName,
-    Iterator*         childrenIter,
-    Iterator*         attrsIter,
-    Iterator*         nsIter,
-    const NsBindings& localBindings,
+    store::Item_t&           result,
+    store::Item*             parent,
+    long              pos,
+    store::Item_t&           nodeName,
+    store::Item_t&           typeName,
+    const store::NsBindings& localBindings,
     xqpStringStore_t& baseUri,
-    bool              isRoot,
-    bool              assignIds,
-    bool              copy,
-    const CopyMode&   copymode)
+    bool              allowSharing)
 {
   XmlTree* xmlTree = NULL;
-  XmlNode* parent = NULL;
-  QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  ConstrElementNode* n = NULL;
+  ElementNode* n = NULL;
 
-  ZORBA_FATAL(isRoot || !ctx.empty(), "");
-
-  bool topRoot = ctx.empty();
+  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
 
   try
   {
-    // We are at the root of a top-level node-constructor expr, or at the root
-    // of a node-constructor expr that is inside an enclosed expr.
-    if (isRoot)
-    {
+    if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
-      xmlTree->addReference();
 
-      n = new ConstrElementNode(xmlTree, assignIds, name, typeName);
-    }
-
-    // We are at a node-constructor expr directly nested inside another
-    // node-constructor expr.
+    if (allowSharing)
+      n = new ElementDagNode(xmlTree, pnode, pos,
+                             nodeName, typeName, &localBindings, baseUri);
     else
-    {
-      parent = ctx.top();
-
-      n = new ConstrElementNode(parent, name, typeName);
-    }
-
-    ctx.push(n);
-
-    n->constructSubtree(attrsIter, childrenIter, localBindings,
-                        baseUri, isRoot, copy, copymode);
-
-    ctx.pop();
+      n = new ElementTreeNode(xmlTree, pnode, pos,
+                              nodeName, typeName, &localBindings, baseUri);
   }
   catch (...)
   {
-    if (xmlTree)
-    {
-      xmlTree->removeReference();
-      xmlTree->free();
-      if (topRoot)
-      {
-        ctx.clear();
-        GET_STORE().deleteQueryContext(qid);
-      }
-    }
+    if (xmlTree) delete xmlTree;
     throw;
-  }
-
-  if (xmlTree)
-  {
-    xmlTree->removeReference();
-    if (topRoot)
-    {
-      ZORBA_FATAL(ctx.empty(), "");
-      GET_STORE().deleteQueryContext(qid);
-    }
   }
 
   result = n;
@@ -845,120 +852,45 @@ bool BasicItemFactory::createElementNode(
 
 
 /*******************************************************************************
+  Create a new attribute node N and place it as the pos-th attribute of a given
+  parent node. If no parent is given, N becomes the root (and single node) of a
+  new XML tree. 
 
+  parent        : The parent P of the new attribute node; may be NULL.
+  pos           : The position, among the attributes of P, that N will occupy.
+                  If pos < 0 or pos >= current number of P's attributes, then
+                  N is appended to the list of attributes.
+  nodeName      : The node-name property of N.
+  typeName      : The type-name property of N.
+  stringValue   : The string-value property of N.
 ********************************************************************************/
 bool BasicItemFactory::createAttributeNode(
-    Item_t& result,
-    ulong           qid,
-    Iterator*       nameIter,
-    Item_t&         typeName,
-    Iterator*       valueIter,
-    bool            isRoot,
-    bool            assignIds)
+    store::Item_t&           result,
+    store::Item*             parent,
+    long              pos,
+    store::Item_t&           nodeName,
+    store::Item_t&           typeName,
+    xqpStringStore_t& stringValue)
 {
   XmlTree* xmlTree = NULL;
-  ElementNode* parent = NULL;
   AttributeNode* n = NULL;
-  Item_t name;
-  Item_t typedValue;
-  xqpStringStore_t lexicalValue;
-  Item_t valueItem;
 
-  // Compute the attribute name. Note: we don't have to check that itemQName
-  // is indeed a valid qname, because the compiler wraps an xs:qname cast
-  // around thIteme expression.
-  nameIter->open();
-  nameIter->next(name);
+  store::Item_t typedValue = new UntypedAtomicItemImpl(stringValue);
 
-  if (name->getLocalName()->empty())
-  {
-    ZORBA_ERROR_DESC(XQDY0074,
-                     "Attribute name must not have an empty local part.");
-  }
-  
-  if (name->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
-      (name->getNamespace()->empty() &&
-       name->getLocalName()->byteEqual("xmlns", 5)))
-  {
-    ZORBA_ERROR(XQDY0044);
-  }
-  nameIter->close();
-
-  // Compute the attribute value.
-  valueIter->open();
-  if (valueIter->next(valueItem))
-  {
-    lexicalValue = valueItem->getStringValue();
-
-    std::string buf;
-    while (valueIter->next(valueItem))
-    {
-      buf += valueItem->getStringValue()->str();
-    }
-    if (!buf.empty())
-      lexicalValue = lexicalValue->append(buf);
-  }
-  else
-  {
-    lexicalValue = new xqpStringStore("");
-  }
-  valueIter->close();
-  
-  typedValue = new UntypedAtomicItemImpl(lexicalValue);
-
-  QueryContext& ctx = GET_STORE().getQueryContext(qid);
-
-  ZORBA_FATAL(isRoot || !ctx.empty(), "");
-
-  bool topRoot = ctx.empty();
+  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
 
   try
   {
-    // We are at the root of a top-level node-constructor expr, or at the root
-    // of a node-constructor expr that is inside an enclosed expr.
-    if (isRoot)
-    {
+    if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
-      xmlTree->addReference();
 
-      n = new AttributeNode(xmlTree, assignIds, name, typeName, typedValue, false);
-    }
-
-    // We are at a node-constructor expr directly nested inside another
-    // node-constructor expr.
-    else
-    {
-      parent = reinterpret_cast<ElementNode*>(ctx.top());
-
-      parent->checkUniqueAttr(name.getp());
-
-      n = new AttributeNode(parent, name, typeName, typedValue, false);
-    }
+    n = new AttributeNode(xmlTree, pnode, pos, nodeName, typeName, typedValue);
   }
   catch (...)
   {
-    if (xmlTree)
-    {
-      xmlTree->removeReference();
-      xmlTree->free();
-      if (topRoot)
-      {
-        ctx.clear();
-        GET_STORE().deleteQueryContext(qid);
-      }
-    }
+    if (xmlTree) delete xmlTree;
     throw;
   }
-
-  if (xmlTree)
-  {
-    xmlTree->removeReference();
-    if (topRoot)
-    {
-      ZORBA_FATAL(ctx.empty(), "");
-      GET_STORE().deleteQueryContext(qid);
-    }
-  }  
 
   result = n;
   return n != NULL;
@@ -966,83 +898,68 @@ bool BasicItemFactory::createAttributeNode(
 
 
 /*******************************************************************************
+  Create a new text node N and place it as the pos-th child of a given parent
+  node. If no parent is given, N becomes the root (and single node) of a
+  new XML tree. 
 
+  parent        : The parent P of the new text node; may be NULL.
+  pos           : The position, among the children of P, that N will occupy.
+                  If pos < 0 or pos >= current number of P's children, then
+                  N is appended to the list of children.
+  content       : The content property of N.
 ********************************************************************************/
 bool BasicItemFactory::createTextNode(
-    Item_t& result,
-    unsigned long     qid,
-    xqpStringStore_t& content,
-    bool              isRoot,
-    bool              assignIds)
+    store::Item_t&           result,
+    store::Item*             parent,
+    long              pos,
+    xqpStringStore_t& content)
 {
   XmlTree* xmlTree = NULL;
-  XmlNode* parent = NULL;
   TextNode* n = NULL;
-  QueryContext& ctx = GET_STORE().getQueryContext(qid);
 
-  // This assertion does not hold in the case of text nodes created by the
-  // source expr of an insert expr.
-  // ZORBA_FATAL(isRoot || !ctx.empty(), "");
-
-  bool topRoot = ctx.empty();
-  if (topRoot)
-    isRoot = true;
+  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
 
   try
   {
-    // We are at the root of a top-level node-constructor expr, or at the root
-    // of a node-constructor expr that is inside an enclosed expr. 
-    if (isRoot)
+    if (parent == NULL)
     {
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
-      xmlTree->addReference();
 
-      n = new TextNode(xmlTree, assignIds, content);
+      n = new TextNode(xmlTree, pnode, pos, content);
     }
-
-    // We are at a node-constructor expr directly nested inside another
-    // node-constructor expr.
     else
     {
-      parent = ctx.top();
+      ulong pos2 = (pos >= 0 ? pos : pnode->numChildren());
 
-      ulong pos = parent->numChildren();
-      XmlNode* lsib = (pos > 0 ? parent->getChild(pos-1) : NULL);
+      XmlNode* lsib = (pos2 > 0 ? pnode->getChild(pos2-1) : NULL);
 
-      if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
+      if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
-        textSibling->theContent = textSibling->theContent->append(content.getp());
-        result = lsib;
+
+        if (lsib->getParent() == parent)
+        {
+          textSibling->theContent = textSibling->theContent->append(content);
+          result = lsib;
+        }
+        else
+        {
+          xqpStringStore_t content2 = textSibling->theContent->append(content);
+
+          pnode->removeChild(pos2-1);
+
+          result = new TextNode(NULL, pnode, pos2-1, content2);
+        }
         return result != NULL;
       }
  
-      n = new TextNode(parent, content);
+      n = new TextNode(xmlTree, pnode, pos, content);
     }
   }
   catch (...)
   {
-    if (xmlTree)
-    {
-      xmlTree->removeReference();
-      xmlTree->free();
-      if (topRoot)
-      {
-        ctx.clear();
-        GET_STORE().deleteQueryContext(qid);
-      }
-    }
+    if (xmlTree) delete xmlTree;
     throw;
-  }
-
-  if (xmlTree)
-  {
-    xmlTree->removeReference();
-    if (topRoot)
-    {
-      ZORBA_FATAL(ctx.empty(), "");
-      GET_STORE().deleteQueryContext(qid);
-    }
   }
 
   result = n;
@@ -1050,111 +967,43 @@ bool BasicItemFactory::createTextNode(
 }
 
 
-bool BasicItemFactory::createTextNode(
-    Item_t& result,
-    unsigned long   qid,
-    Iterator*       valueIter,
-    bool            isRoot,
-    bool            assignIds)
-{
-  // We must compute the value of the node before the node itself because
-  // if the value is the empty sequence, no text node should be constructed.
-
-  xqpStringStore_t value;
-  Item_t valueItem;
-
-  if (valueIter->next(valueItem))
-  {
-    value = (valueItem->isAtomic() ?
-             valueItem->getStringValue() :
-             valueItem->getAtomizationValue()->getStringValue());
-
-    std::string buf;
-    while (valueIter->next(valueItem))
-    {
-      buf += " ";
-      buf += (valueItem->isAtomic() ?
-              valueItem->getStringValue()->c_str() :
-              valueItem->getAtomizationValue()->getStringValue()->str());
-
-    }
-    if (!buf.empty())
-      value = value->append(buf);
-  }
-  else
-  {
-    result = NULL;
-    return false;
-  }
-
-  return createTextNode(result, qid, value, isRoot, assignIds);
-}
-
-
 /*******************************************************************************
+  Create a new pi node N and place it as the pos-th child of a given parent
+  node. If no parent is given, N becomes the root (and single node) of a
+  new XML tree. 
 
+  parent        : The parent P of the new pi node; may be NULL.
+  pos           : The position, among the children of P, that N will occupy.
+                  If pos < 0 or pos >= current number of P's children, then
+                  N is appended to the list of children.
+  target        : The target property of N.
+  content       : The content property of N.
+  baseUri       : The base-uri property of N.
 ********************************************************************************/
 bool BasicItemFactory::createPiNode(
-    Item_t& result,
-    unsigned long     qid,
+    store::Item_t&           result,
+    store::Item*             parent,
+    long              pos,
     xqpStringStore_t& target,
     xqpStringStore_t& content,
-    bool              isRoot,
-    bool              assignIds)
+    xqpStringStore_t& baseUri)
 {
   XmlTree* xmlTree = NULL;
-  XmlNode* parent = NULL;
   PiNode* n = NULL;
-  QueryContext& ctx = GET_STORE().getQueryContext(qid);
 
-  ZORBA_FATAL(isRoot || !ctx.empty(), "");
-
-  bool topRoot = ctx.empty();
+  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
 
   try
   {
-    // We are at the root of a top-level node-constructor expr, or at the root
-    // of a node-constructor expr that is inside an enclosed expr.
-    if (isRoot)
-    {
+    if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
-      xmlTree->addReference();
 
-      n = new PiNode(xmlTree, assignIds, target, content);
-    }
-
-    // We are at a node-constructor expr directly nested inside another
-    // node-constructor expr.
-    else
-    {
-      parent = ctx.top();
-
-      n = new PiNode(parent, target, content);
-    }
+    n = new PiNode(xmlTree, pnode, pos, target, content);
   }
   catch (...)
   {
-    if (xmlTree)
-    {
-      xmlTree->removeReference();
-      xmlTree->free();
-      if (topRoot)
-      {
-        ctx.clear();
-        GET_STORE().deleteQueryContext(qid);
-      }
-    }
+    if (xmlTree) delete xmlTree;
     throw;
-  }
-
-  if (xmlTree)
-  {
-    xmlTree->removeReference();
-    if (topRoot)
-    {
-      ZORBA_FATAL(ctx.empty(), "");
-      GET_STORE().deleteQueryContext(qid);
-    }
   }
 
   result = n;
@@ -1163,68 +1012,38 @@ bool BasicItemFactory::createPiNode(
 
 
 /*******************************************************************************
+  Create a new comment node N and place it as the pos-th child of a given parent
+  node. If no parent is given, N becomes the root (and single node) of a
+  new XML tree. 
 
+  parent        : The parent P of the new comment node; may be NULL.
+  pos           : The position, among the children of P, that N will occupy.
+                  If pos < 0 or pos >= current number of P's children, then
+                  N is appended to the list of children.
+  content       : The content property of N.
 ********************************************************************************/
 bool BasicItemFactory::createCommentNode(
-    Item_t& result,
-    unsigned long     qid,
-    xqpStringStore_t& content,
-    bool              isRoot,
-    bool              assignIds)
+    store::Item_t&           result,
+    store::Item*             parent,
+    long              pos,
+    xqpStringStore_t& content)
 {
   XmlTree* xmlTree = NULL;
-  XmlNode* parent = NULL;
   CommentNode* n = NULL;
-  QueryContext& ctx = GET_STORE().getQueryContext(qid);
 
-  ZORBA_FATAL(isRoot || !ctx.empty(), "");
-
-  bool topRoot = ctx.empty();
+  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
 
   try
   {
-    // We are at the root of a top-level node-constructor expr, or at the root
-    // of a node-constructor expr that is inside an enclosed expr. 
-    if (isRoot)
-    {
+    if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
-      xmlTree->addReference();
 
-      n = new CommentNode(xmlTree, assignIds, content);
-    }
-
-    // We are at a node-constructor expr directly nested inside another
-    // node-constructor expr.
-    else
-    {
-      parent = ctx.top();
-
-      n = new CommentNode(parent, content);
-    }
+    n = new CommentNode(xmlTree, pnode, pos, content);
   }
   catch (...)
   {
-    if (xmlTree)
-    {
-      xmlTree->removeReference();
-      xmlTree->free();
-      if (topRoot)
-      {
-        ctx.clear();
-        GET_STORE().deleteQueryContext(qid);
-      }
-    }
+    if (xmlTree) delete xmlTree;
     throw;
-  }
-
-  if (xmlTree)
-  {
-    xmlTree->removeReference();
-    if (topRoot)
-    {
-      ZORBA_FATAL(ctx.empty(), "");
-      GET_STORE().deleteQueryContext(qid);
-    }
   }
 
   result = n;
@@ -1235,12 +1054,12 @@ bool BasicItemFactory::createCommentNode(
 /*******************************************************************************
 
 ********************************************************************************/
-PUL* BasicItemFactory::createPendingUpdateList()
+store::PUL* BasicItemFactory::createPendingUpdateList()
 {
   return new PULImpl();
 }
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 

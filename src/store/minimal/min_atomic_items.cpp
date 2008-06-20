@@ -37,20 +37,20 @@
 #define CREATE_BOOLITEM(item, aValue) \
   GET_STORE().getItemFactory()->createBoolean(item, aValue)
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AtomicItem::getAtomizationValue() const
+store::Item_t AtomicItem::getAtomizationValue() const
 {
-  Item* lItem = const_cast<AtomicItem *>(this);
+  store::Item* lItem = const_cast<AtomicItem *>(this);
   return lItem;
 }
 
 
-Iterator_t AtomicItem::getTypedValue() const
+store::Iterator_t AtomicItem::getTypedValue() const
 {
   return new ItemIterator(getAtomizationValue()); 
 }
@@ -66,7 +66,7 @@ void QNameItemImpl::free()
 }
 
 
-Item* QNameItemImpl::getType() const
+store::Item* QNameItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_QNAME];
 }
@@ -80,7 +80,7 @@ uint32_t QNameItemImpl::hash(long timezone, XQPCollator* aCollation) const
 
 
 bool QNameItemImpl::equals(
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* aCollation) const
 {
@@ -90,7 +90,7 @@ bool QNameItemImpl::equals(
 }
 
 
-Item_t QNameItemImpl::getEBV( ) const
+store::Item_t QNameItemImpl::getEBV( ) const
 {
   ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for QName!");
   return NULL;
@@ -136,7 +136,7 @@ xqp_string QNameItemImpl::show() const
 /*******************************************************************************
   class NCNameItemImpl
 ********************************************************************************/
-Item* NCNameItemImpl::getType() const
+store::Item* NCNameItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NCNAME];
 }
@@ -149,7 +149,7 @@ uint32_t NCNameItemImpl::hash(long timezone, XQPCollator* aCollation) const
 
 
 bool NCNameItemImpl::equals(
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* aCollation) const
 {
@@ -157,10 +157,10 @@ bool NCNameItemImpl::equals(
 }
 
 
-Item_t NCNameItemImpl::getEBV() const
+store::Item_t NCNameItemImpl::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -175,7 +175,7 @@ xqp_string NCNameItemImpl::show() const
 /*******************************************************************************
   class NCNameItemImpl
 ********************************************************************************/
-Item* IDItemImpl::getType() const
+store::Item* IDItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_ID];
 }
@@ -190,7 +190,7 @@ xqp_string IDItemImpl::show() const
 /*******************************************************************************
   class AnyUriItemNaive
 ********************************************************************************/
-Item* AnyUriItemImpl::getType() const
+store::Item* AnyUriItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_ANY_URI];
 }
@@ -202,7 +202,7 @@ uint32_t AnyUriItemImpl::hash(long timezone, XQPCollator* aCollation) const
 
 
 bool AnyUriItemImpl::equals(
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* aCollation) const
 {
@@ -210,10 +210,10 @@ bool AnyUriItemImpl::equals(
 }
 
 
-Item_t AnyUriItemImpl::getEBV() const
+store::Item_t AnyUriItemImpl::getEBV() const
 {
   bool b = ! (theValue->str() == "");
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -228,7 +228,7 @@ xqp_string AnyUriItemImpl::show() const
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
-Item* UntypedAtomicItemImpl::getType() const
+store::Item* UntypedAtomicItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
@@ -241,7 +241,7 @@ uint32_t UntypedAtomicItemImpl::hash(long timezone, XQPCollator* aCollation) con
 
 
 bool UntypedAtomicItemImpl::equals(
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* aCollation) const
 {
@@ -249,10 +249,10 @@ bool UntypedAtomicItemImpl::equals(
 }
 
 
-Item_t UntypedAtomicItemImpl::getEBV() const
+store::Item_t UntypedAtomicItemImpl::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -267,7 +267,7 @@ xqp_string UntypedAtomicItemImpl::show() const
 /*******************************************************************************
   class StingItemNaive
 ********************************************************************************/
-Item* StringItemNaive::getType() const
+store::Item* StringItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_STRING];
 }
@@ -280,7 +280,7 @@ uint32_t StringItemNaive::hash(long timezone, XQPCollator* aCollation) const
 
 
 bool StringItemNaive::equals(
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* aCollation) const
 {
@@ -288,10 +288,10 @@ bool StringItemNaive::equals(
 }
   
 
-Item_t StringItemNaive::getEBV() const
+store::Item_t StringItemNaive::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -306,23 +306,23 @@ xqp_string StringItemNaive::show() const
 /*******************************************************************************
   class DecimalItemNaive
 ********************************************************************************/
-Item* DecimalItemNaive::getType() const
+store::Item* DecimalItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_DECIMAL];
 }
 
 bool DecimalItemNaive::equals(
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* coll ) const
 {
   return item->getDecimalValue() == theValue;
 }
 
-Item_t DecimalItemNaive::getEBV() const
+store::Item_t DecimalItemNaive::getEBV() const
 {
   bool b = ( theValue != xqp_decimal::parseInt(0) );
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -365,23 +365,23 @@ xqp_long IntItemNaive::getLongValue() const {
   return static_cast<xqp_long>(theValue);
 }
 
-Item* IntItemNaive::getType() const
+store::Item* IntItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_INT];
 }
 
 bool IntItemNaive::equals (
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* coll ) const
 {
   return item->getIntValue() == theValue;
 }
   
-Item_t IntItemNaive::getEBV() const
+store::Item_t IntItemNaive::getEBV() const
 {
   bool b = ( theValue != (int32_t)0 );
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -411,23 +411,23 @@ xqp_decimal IntegerItemNaive::getDecimalValue() const
   return Decimal::parseInteger ( theValue );
 }
 
-Item* IntegerItemNaive::getType() const
+store::Item* IntegerItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_INTEGER];
 }
 
 bool IntegerItemNaive::equals (
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* aCollation ) const
 {
   return item->getIntegerValue() == theValue;
 }
 
-Item_t IntegerItemNaive::getEBV() const
+store::Item_t IntegerItemNaive::getEBV() const
 {
   bool b = ( theValue != xqp_integer::parseInt(0) );
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -450,20 +450,20 @@ IntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
 
 	
 	/* start class DoubleItem */
-Item* DoubleItemNaive::getType() const
+store::Item* DoubleItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_DOUBLE];
 }
 
 bool DoubleItemNaive::equals (
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* coll ) const
 {
   return item->getDoubleValue() == theValue;
 }
 
-Item_t DoubleItemNaive::getEBV() const
+store::Item_t DoubleItemNaive::getEBV() const
 {
   bool b;
   if (theValue.isNaN()) {
@@ -471,7 +471,7 @@ Item_t DoubleItemNaive::getEBV() const
   } else {
     b = !theValue.isZero();
   }
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -503,20 +503,20 @@ DoubleItemNaive::hash(long timezone, XQPCollator* aCollation) const
 /*******************************************************************************
   class FloatItemNaive
 ********************************************************************************/
-Item* FloatItemNaive::getType() const
+store::Item* FloatItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_FLOAT];
 }
 
 bool FloatItemNaive::equals (
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* aCollation ) const
 {
   return item->getFloatValue() == theValue;
 }
 
-Item_t FloatItemNaive::getEBV() const
+store::Item_t FloatItemNaive::getEBV() const
 {
   bool b;
   if (theValue.isNaN()) {
@@ -524,7 +524,7 @@ Item_t FloatItemNaive::getEBV() const
   } else {
     b = !theValue.isZero();
   }
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -556,13 +556,13 @@ FloatItemNaive::hash(long timezone, XQPCollator* aCollation) const
 /*******************************************************************************
   class BooleanItemNaive
 ********************************************************************************/
-Item* BooleanItemNaive::getType() const
+store::Item* BooleanItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_BOOLEAN];
 }
 
 bool BooleanItemNaive::equals (
-    const Item* item,
+    const store::Item* item,
     long timezone,
     XQPCollator* aCollation ) const
 {
@@ -574,7 +574,7 @@ uint32_t BooleanItemNaive::hash ( long timezone, XQPCollator* aCollation ) const
   return theValue?0:1;
 }
 
-Item_t BooleanItemNaive::getEBV() const
+store::Item_t BooleanItemNaive::getEBV() const
 {
   return this->getAtomizationValue();
 }
@@ -600,23 +600,23 @@ xqp_decimal NonPositiveIntegerItemNaive::getDecimalValue() const
   return Decimal::parseInteger ( theValue );
 }
 
-Item* NonPositiveIntegerItemNaive::getType() const 
+store::Item* NonPositiveIntegerItemNaive::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
 }
 
 bool NonPositiveIntegerItemNaive::equals(
-   const Item* aItem,
+   const store::Item* aItem,
    long timezone,
    XQPCollator* coll ) const
 {
   return theValue == aItem->getIntegerValue();
 }
 
-Item_t NonPositiveIntegerItemNaive::getEBV() const 
+store::Item_t NonPositiveIntegerItemNaive::getEBV() const 
 {
   bool b = (theValue != xqp_integer::parseInt(0));
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -645,23 +645,23 @@ xqp_decimal NegativeIntegerItemNaive::getDecimalValue() const
   return Decimal::parseInteger ( theValue );
 }
 
-Item* NegativeIntegerItemNaive::getType() const 
+store::Item* NegativeIntegerItemNaive::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_NEGATIVE_INTEGER];
 }
 
 bool NegativeIntegerItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const 
 {
   return theValue == aItem->getIntegerValue();
 }
 
-Item_t NegativeIntegerItemNaive::getEBV() const 
+store::Item_t NegativeIntegerItemNaive::getEBV() const 
 {
   bool b = (theValue != xqp_integer::parseInt(0));
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -695,23 +695,23 @@ xqp_decimal LongItemNaive::getDecimalValue() const
   return Decimal::parseLongLong(theValue);
 }
 
-Item* LongItemNaive::getType() const 
+store::Item* LongItemNaive::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_LONG];
 }
 
 bool LongItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const 
 {
   return theValue == aItem->getLongValue();
 }
 
-Item_t LongItemNaive::getEBV() const 
+store::Item_t LongItemNaive::getEBV() const 
 {
   bool b = (theValue != 0);
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -755,23 +755,23 @@ xqp_int ShortItemNaive::getIntValue() const
   return static_cast<xqp_int>(theValue);
 }
 
-Item* ShortItemNaive::getType() const 
+store::Item* ShortItemNaive::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_SHORT];
 }
 
 bool ShortItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const
 {
   return theValue == aItem->getLongValue();
 }
 
-Item_t ShortItemNaive::getEBV() const 
+store::Item_t ShortItemNaive::getEBV() const 
 {
   bool b = (theValue != 0);
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -820,22 +820,22 @@ xqp_short ByteItemNaive::getShortValue() const
   return static_cast<xqp_short>(theValue);
 }
 
-Item* ByteItemNaive::getType() const {
+store::Item* ByteItemNaive::getType() const {
   return GET_STORE().theSchemaTypeNames[XS_BYTE];
 }
 
 bool ByteItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const
 {
   return theValue == aItem->getLongValue();
 }
 
-Item_t ByteItemNaive::getEBV() const 
+store::Item_t ByteItemNaive::getEBV() const 
 {
   bool b = (theValue != 0);
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -868,21 +868,21 @@ xqp_decimal NonNegativeIntegerItemNaive::getDecimalValue() const {
   return Decimal::parseInteger(theValue);
 }
 
-Item* NonNegativeIntegerItemNaive::getType() const {
+store::Item* NonNegativeIntegerItemNaive::getType() const {
   return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
 }
 
 bool NonNegativeIntegerItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const
 {
   return theValue == aItem->getUnsignedIntegerValue();
 }
 
-Item_t NonNegativeIntegerItemNaive::getEBV() const {
+store::Item_t NonNegativeIntegerItemNaive::getEBV() const {
   bool b = (theValue != xqp_integer::parseInt(0));
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -917,20 +917,20 @@ xqp_uinteger UnsignedLongItemNaive::getUnsignedIntegerValue() const {
   return Integer::parseULongLong(theValue);
 }
 
-Item* UnsignedLongItemNaive::getType() const {
+store::Item* UnsignedLongItemNaive::getType() const {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_LONG];
 }
 
 bool UnsignedLongItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const {
   return theValue == aItem->getUnsignedLongValue();
 }
 
-Item_t UnsignedLongItemNaive::getEBV() const {
+store::Item_t UnsignedLongItemNaive::getEBV() const {
   bool b = (theValue != 0);
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -969,20 +969,20 @@ xqp_ulong UnsignedIntItemNaive::getUnsignedLongValue() const {
   return static_cast<xqp_ulong>(theValue);
 }
 
-Item* UnsignedIntItemNaive::getType() const {
+store::Item* UnsignedIntItemNaive::getType() const {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_INT];
 }
 
 bool UnsignedIntItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const {
   return theValue == aItem->getUnsignedIntValue();
 }
 
-Item_t UnsignedIntItemNaive::getEBV() const {
+store::Item_t UnsignedIntItemNaive::getEBV() const {
   bool b = (theValue != 0);
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -1025,20 +1025,20 @@ xqp_uint UnsignedShortItemNaive::getUnsignedIntValue() const {
   return static_cast<xqp_uint>(theValue);
 }
 
-Item* UnsignedShortItemNaive::getType() const {
+store::Item* UnsignedShortItemNaive::getType() const {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_SHORT];
 }
 
 bool UnsignedShortItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const {
   return theValue == aItem->getUnsignedShortValue();
 }
 
-Item_t UnsignedShortItemNaive::getEBV() const {
+store::Item_t UnsignedShortItemNaive::getEBV() const {
   bool b = (theValue != 0);
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -1084,20 +1084,20 @@ xqp_ushort UnsignedByteItemNaive::getUnsignedShortValue() const {
   return static_cast<xqp_ushort>(theValue);
 }
 
-Item* UnsignedByteItemNaive::getType() const {
+store::Item* UnsignedByteItemNaive::getType() const {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_BYTE];
 }
 
 bool UnsignedByteItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const {
   return theValue == aItem->getUnsignedByteValue();
 }
 
-Item_t UnsignedByteItemNaive::getEBV() const {
+store::Item_t UnsignedByteItemNaive::getEBV() const {
   bool b = (theValue != 0);
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -1129,23 +1129,23 @@ xqp_decimal PositiveIntegerItemNaive::getDecimalValue() const
   return Decimal::parseInteger(theValue);
 }
 
-Item* PositiveIntegerItemNaive::getType() const 
+store::Item* PositiveIntegerItemNaive::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_POSITIVE_INTEGER];
 }
 
 bool PositiveIntegerItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const 
 {
   return theValue == aItem->getUnsignedIntegerValue();
 }
 
-Item_t PositiveIntegerItemNaive::getEBV() const 
+store::Item_t PositiveIntegerItemNaive::getEBV() const 
 {
   bool b = (theValue != xqp_integer::parseInt(0));
-  Item_t bVal;
+  store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
@@ -1169,13 +1169,13 @@ PositiveIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
 /*******************************************************************************
   class Base64BinaryItemNaive
 ********************************************************************************/
-Item* Base64BinaryItemNaive::getType() const 
+store::Item* Base64BinaryItemNaive::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_BASE64BINARY];
 }
 
 bool Base64BinaryItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const {
   return theValue.equal(aItem->getBase64BinaryValue());
@@ -1198,13 +1198,13 @@ Base64BinaryItemNaive::hash(long timezone, XQPCollator* aCollation) const
 /*******************************************************************************
   class HexBinaryItemNaive
 ********************************************************************************/
-Item* HexBinaryItemNaive::getType() const 
+store::Item* HexBinaryItemNaive::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_HEXBINARY];
 }
 
 bool HexBinaryItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const {
   return theValue.equal(aItem->getHexBinaryValue());
@@ -1227,7 +1227,7 @@ HexBinaryItemNaive::hash(long timezone, XQPCollator* aCollation) const
 /*******************************************************************************
  * class DateTimeItem
  *******************************************************************************/
-int DateTimeItemNaive::createFromDateAndTime(const xqp_date& date, const xqp_time& time, Item_t& item)
+int DateTimeItemNaive::createFromDateAndTime(const xqp_date& date, const xqp_time& time, store::Item_t& item)
 {
   DateTimeItemNaive* dtin = new DateTimeItemNaive();
   int result = DateTime::createDateTime(date, time, dtin->theValue);
@@ -1240,7 +1240,7 @@ xqpStringStore_t DateTimeItemNaive::getStringValue() const
   return theValue->toString().getStore();
 }
   
-Item* DateTimeItemNaive::getType() const
+store::Item* DateTimeItemNaive::getType() const
 {
   switch (theValue->getFacet())
   {
@@ -1279,7 +1279,7 @@ Item* DateTimeItemNaive::getType() const
   }
 }
 
-bool DateTimeItemNaive::equals(const Item* aItem, long timezone, XQPCollator* coll) const
+bool DateTimeItemNaive::equals(const store::Item* aItem, long timezone, XQPCollator* coll) const
 {
   try {
     return 0 == theValue->compare(*aItem->getDateTimeValue(), 
@@ -1295,7 +1295,7 @@ uint32_t DateTimeItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue->hash(0);
 }
 
-Item_t DateTimeItemNaive::getEBV() const
+store::Item_t DateTimeItemNaive::getEBV() const
 {
   switch (theValue->getFacet())
   {
@@ -1371,7 +1371,7 @@ xqpStringStore_t DurationItemNaive::getStringValue() const
   return theValue->toString().getStore();
 }
   
-Item* DurationItemNaive::getType() const
+store::Item* DurationItemNaive::getType() const
 {
   // get the effective type or subtype
   DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
@@ -1386,14 +1386,14 @@ Item* DurationItemNaive::getType() const
 }
 
 bool DurationItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const
 {
   return *theValue == *aItem->getDurationValue();
 }
 
-Item_t DurationItemNaive::getEBV() const
+store::Item_t DurationItemNaive::getEBV() const
 {
   ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for Duration!");
   return NULL;
@@ -1422,20 +1422,20 @@ xqpStringStore_t DayTimeDurationItemNaive::getStringValue() const
   return theValue->toString().getStore();
 }
   
-Item* DayTimeDurationItemNaive::getType() const
+store::Item* DayTimeDurationItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
 }
 
 bool DayTimeDurationItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const
 {
   return *theValue == *aItem->getDayTimeDurationValue();
 }
 
-Item_t DayTimeDurationItemNaive::getEBV() const
+store::Item_t DayTimeDurationItemNaive::getEBV() const
 {
   ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for DayTimeDuration!");
   return NULL;
@@ -1465,20 +1465,20 @@ xqpStringStore_t YearMonthDurationItemNaive::getStringValue() const
   return theValue->toString().getStore();
 }
   
-Item* YearMonthDurationItemNaive::getType() const
+store::Item* YearMonthDurationItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_YM_DURATION];
 }
 
 bool YearMonthDurationItemNaive::equals(
-    const Item* aItem,
+    const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const
 {
   return *theValue == *aItem->getYearMonthDurationValue();
 }
 
-Item_t YearMonthDurationItemNaive::getEBV() const
+store::Item_t YearMonthDurationItemNaive::getEBV() const
 {
   ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for YearMonthDuration!");
   return NULL;
@@ -1495,6 +1495,6 @@ uint32_t YearMonthDurationItemNaive::hash(long timezone, XQPCollator* aCollation
 }
 
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
 

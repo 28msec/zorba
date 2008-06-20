@@ -16,7 +16,7 @@
 #include "store/api/item.h"
 #include "store/minimal/min_item_iterator.h"
 
-namespace zorba { namespace store {
+namespace zorba { namespace storeminimal {
 
 ItemIterator::ItemIterator(std::vector<store::Item_t> aItems) 
 : 
@@ -62,5 +62,5 @@ ItemIterator::close()
 {
 }
 
-} // namespace store
+} // namespace storeminimal
 } // namespace zorba
