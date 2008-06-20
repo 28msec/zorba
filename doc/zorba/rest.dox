@@ -40,8 +40,7 @@ The URL as an xs:string. This can be either a HTTP or a HTTPS URL optionally con
 
 \subsubsection restpayload Payload
 
-Parameter values may be text nodes for the PUT and POST, and XML nodes for the POST request. 
-The XML nodes will be sent with the "text/xml" content-type.
+For the GET function, the payload should have the form:
 
 \code
  <zorba-rest:payload>
@@ -49,6 +48,28 @@ The XML nodes will be sent with the "text/xml" content-type.
      ...
  </zorba-rest:payload>
 \endcode
+
+Accepted parameter values are text nodes. The payload will be assembled as key-value pairs and appended to the URL address.
+
+The POST function accepts any of the following three forms for the payload:
+
+\code
+ <zorba-rest:payload filename="filename" content-type="type"/>
+
+ <zorba-rest:payload content-type="content-type">data</zorba-rest:payload>
+
+ <zorba-rest:payload content-type="multipart/form-data">
+   <zorba-rest:part name="part name">part value</zorba-rest:part>
+   <zorba-rest:part name="part name" filename="file" content-type="type"/>
+     ...
+ </zorba-rest:payload>
+\endcode
+
+In the first two forms the content-type attribute is optional and if missing, a default value is used. In the first form the given file will be posted,
+with the default content type of "application/octet-stream". In the second form data may either be a string or an XML part, with the
+default content type of "text/plain" and "text/xml", respectively. The third form can be used to post HTML form data and the part values may
+be either text nodes or XML parts.
+
 
 \subsubsection restheaders Headers
 Custom headers to be sent with the HTTP request.
@@ -154,7 +175,7 @@ zorba-rest:get("http://www.example.com/path",
 import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
 
 zorba-rest:post("http://www.example.com/path",
-                <payload>
+                <payload content-type="multipart/form-data">
                   <part name="parameter1">value1</part>
                   <part name="parameter2">value2</part>
                 </payload>)
@@ -168,7 +189,7 @@ zorba-rest:post("http://www.example.com/path",
 import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
 
 zorba-rest:post("http://www.example.com/path",
-                <payload>
+                <payload content-type="multipart/form-data">
                   <part name="parameter1">value1</part>
                   <part name="parameter2">value2</part>
                 </payload>,
@@ -185,7 +206,7 @@ zorba-rest:post("http://www.example.com/path",
 import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
 
 zorba-rest:post("http://www.example.com/path",
-                <payload>
+                <payload content-type="multipart/form-data">
                   <part name="parameter1">value1</part>
                   <part name="parameter2">
                     <data attr="value">
@@ -195,5 +216,6 @@ zorba-rest:post("http://www.example.com/path",
                   </part>
                 </payload>)
 \endcode
+
 
 */
