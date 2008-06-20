@@ -119,7 +119,7 @@ import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-fun
 zorba-rest:get("http://www.google.com/")
 \endcode
 
-\subsubsection restexample2 Example 2
+\subsubsection restexample3 Example 3
 
 \code
 (: Invoke Google search for the "zorba xquery" term :)
@@ -132,7 +132,7 @@ zorba-rest:get("http://www.google.com/search",
                </payload>)
 \endcode
 
-\subsubsection restexample3 Example 3
+\subsubsection restexample4 Example 4
 
 \code
 (: Invoke zorba-rest:get and pass a value for the Referer header :)
@@ -146,7 +146,7 @@ zorba-rest:get("http://www.google.com/",
                </headers>)
 \endcode
 
-\subsubsection restexample4 Example 4
+\subsubsection restexample5 Example 5
 
 \code
 (: Complex GET example with parameters and headers :)
