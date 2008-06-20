@@ -984,6 +984,8 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
 
 bool CRegexAscii_negchargroup::match(const char *source, int *matched_len)
 {
+  if(!source[0])
+    return false;
   if(!CRegexAscii_chargroup::match(source, matched_len))
   {
     *matched_len = 1;
