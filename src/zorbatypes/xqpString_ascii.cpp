@@ -540,7 +540,7 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
   uint32_t len = numChars();
   newStr->theString.reserve(len+2);
 
-  const char* c = c_str();
+  const unsigned char* c = (unsigned char*)c_str();
   uint32_t cp;
 //  char seq[4];
   bool  wsp = false;
@@ -552,15 +552,23 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
     c++;
     if( is_whitespace(cp))
     {
-      if(strstarted)
+      //if(strstarted)
         wsp = true;
       continue;
     }
-    if(wsp)
+    if(strstarted && wsp)
       newStr->theString += 0x20;
     newStr->theString += cp;
     strstarted = true;
     wsp = false;
+  }
+  if(!strstarted && wsp)
+  {
+    c = (unsigned char*)c_str();
+    if((c[0] == '\t') && (c[1] == 0))
+      newStr->theString = '\t';
+    else
+      newStr->theString = 0x20;
   }
   //newStr->theString += "\0";
 
@@ -592,7 +600,7 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 
   bool found = true; 
 //  bool firstCp = true;
-  uint32_t cp;
+  char cp;
   
   while(StrLen && found)
   {
@@ -752,7 +760,7 @@ xqpStringStore_t xqpStringStore::trim(const char* start, uint16_t len) const
 
   const char* c = c_str();
   int   sz = theString.size();
-  uint32_t cp;
+  //char  cp;
   int   off1 = 0;
   int   off2 = sz-1;
   bool  found = true;
@@ -818,7 +826,7 @@ xqpStringStore_t xqpStringStore::formatAsXML() const
 {
   uint32_t i;
   uint32_t len = numChars();
-  const char* c = c_str();
+  const unsigned char* c = (unsigned char*)c_str();
   uint32_t cp;
 //  char seq[4];
 
@@ -856,10 +864,10 @@ xqpStringStore_t xqpStringStore::escapeHtmlUri() const
 {
   uint32_t i;
   uint32_t len = numChars();
-  const char* c = c_str();
+  const unsigned char* c = (unsigned char*)c_str();
   unsigned int cp;
 //  char seq[4];
-  const char* prev = c_str();
+  const unsigned char* prev = (unsigned char*)c_str();
   distance_type length;
 
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
@@ -878,7 +886,7 @@ xqpStringStore_t xqpStringStore::escapeHtmlUri() const
     {
       //codepoint has to be escaped
       length = 1;//sequence_length(prev);
-      if(length != 1)
+      //if(length != 1)
       {
         for(int j = 0; j < length;++j)
         {
@@ -905,10 +913,10 @@ xqpStringStore_t xqpStringStore::iriToUri() const
 {
   uint32_t i;
   uint32_t len = numChars();
-  const char* c = c_str();
+  const unsigned char* c = (unsigned char*)c_str();
   unsigned int cp;
 //  char seq[4];
-  const char* prev = c_str();
+  const unsigned char* prev = (unsigned char*)c_str();
   distance_type length;
 
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
@@ -950,10 +958,10 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
 {
   uint32_t i;
   uint32_t len = numChars();
-  const char* c = c_str();
+  const unsigned char* c = (unsigned char*)c_str();
   unsigned int cp;
 //  char seq[4];
-  const char* prev = c_str();
+  const unsigned char* prev = (unsigned char*)c_str();
   distance_type length;
   
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
@@ -994,6 +1002,7 @@ xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
 {
   xqpStringStore_t  newstr = new xqpStringStore(this->str());
   return newstr;
+  //return normalizeSpace();
 }
 
 /*******************************************************************************
@@ -1028,7 +1037,7 @@ checked_vector<uint32_t> xqpStringStore::getCodepoints() const
   uint16_t vLength;
   
   vLength = numChars() + 1;
-  const char* c = c_str();
+  const unsigned char* c = (unsigned char*)c_str();
   while( --vLength > 0 )
   {
     tt.push_back(*c);//UTF8Decode(c));
@@ -1229,8 +1238,8 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   {
     uint16_t      mapLen    = mapString.length();
     uint16_t      transLen  = transString.length();
-    const char*   mapPtr    = mapString.theStrStore->c_str();
-    const char*   transPtr  = transString.theStrStore->c_str();
+    const unsigned char*   mapPtr    = (unsigned char*)mapString.theStrStore->c_str();
+    const unsigned char*   transPtr  = (unsigned char*)transString.theStrStore->c_str();
     uint32_t      tmp0, tmp1;
     
     std::map<uint32_t,uint32_t> mapArray;
@@ -1271,7 +1280,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     //create the new xqpStringStore
     std::string tmp = "";
     uint32_t len = length();
-    const char* c = c_str();
+    const unsigned char* c = (unsigned char*)c_str();
     uint32_t cp, i;
 //    char seq[4];
 
