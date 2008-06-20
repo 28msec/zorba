@@ -15,9 +15,15 @@
  */
 #include <vector>
 
+#include <string>
+
 #include <zorba/debugger_client.h>
 
 #include "debugcmd_client.h"
+
+#if WIN32
+#include <windows.h>
+#endif
 
 std::vector<std::string> get_args( const std::string& str )
 {
@@ -63,9 +69,9 @@ void debugcmd_client( std::istream & anInput,
     anOutput.flush();
     
     std::string lLine;
-    
-    std::getline( anInput, lLine );
-    std::vector<std::string> lArgs = get_args( lLine );
+    std::getline( anInput, lLine, '\n' );
+
+	std::vector<std::string> lArgs = get_args( lLine );
     std::string lCommand = lArgs.at( 0 ); 
     
     if ( lCommand == "q" || lCommand == "quit" )
@@ -76,7 +82,11 @@ void debugcmd_client( std::istream & anInput,
       {
         if ( lDebuggerClient->isQuerySuspended() )
         {
-          usleep(10 );
+#if WIN32
+		  Sleep( 10 );
+#else
+          usleep( 10 );
+#endif
         }
       }
       exit(7);
@@ -104,7 +114,11 @@ void debugcmd_client( std::istream & anInput,
         }
       }
       
-      sleep( 1 );
+#if WIN32
+	  Sleep( 1 );
+#else
+	  sleep( 1 );
+#endif
     
     } else if ( lCommand == "s" || lCommand ==  "stop" ) {
       if( lDebuggerClient->isQueryIdle() || lDebuggerClient->isQueryTerminated() )
