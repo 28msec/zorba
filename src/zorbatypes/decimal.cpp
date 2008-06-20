@@ -82,6 +82,8 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal) {
     return true;
 #else
     aDecimal.theDecimal = atof(aCharStar);
+    if(aDecimal.theDecimal == -0)
+      aDecimal.theDecimal = 0;
     return true;
 #endif
   }
@@ -210,27 +212,54 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, MAPM aPrecision) {
 #else
 MAPM Decimal::round(MAPM aValue, int aPrecision) 
 {
-  double  intpart;
-  double  exp = modf(aValue, &intpart);
-  double  prec = pow((double)10, aPrecision);
-  exp *= prec;
-  exp = ::floor(exp+0.5);
-  return intpart + exp/prec;
+  if(aPrecision >= 0)
+  {
+    double  intpart;
+    double  exp = modf(aValue, &intpart);
+    double  prec = pow((double)10, aPrecision);
+    exp *= prec;
+    exp = ::floor(exp+0.5);
+    return intpart + exp/prec;
+  }
+  else
+  {
+    double  prec = pow((double)10, -aPrecision);
+    aValue  /= prec;
+    return ::floor(aValue+0.5)*prec;
+  }
 }
 
 MAPM Decimal::roundHalfToEven(MAPM aValue, int aPrecision) 
 {
-  double  intpart;
-  double  exp = modf(aValue, &intpart);
-  double  prec = pow((double)10, aPrecision);
-  exp *= prec;
-  bool  bHalfVal = false;
-  if((exp-0.5) == ::floor(exp))
-    bHalfVal = true;
-  exp = ::floor(exp+0.5);
-  if(bHalfVal && (((long long)exp)%2))
-    exp--;
-  return intpart + exp/prec;
+  if(aPrecision >= 0)
+  {
+    double  intpart;
+    double  exp = modf(aValue, &intpart);
+    double  prec = pow((double)10, aPrecision);
+    exp *= prec;
+    bool  bHalfVal = false;
+    if((exp-0.5) == ::floor(exp))
+    {
+      if(aPrecision == 0)
+        return ((long long)intpart)%2 ? intpart+1 : intpart;
+      bHalfVal = true;
+    }
+    exp = ::floor(exp+0.5);
+    if(bHalfVal && (((long long)exp)%2))
+      exp--;
+    return intpart + exp/prec;
+  }
+  else
+  {
+    double  prec = pow((double)10, -aPrecision);
+    aValue /= prec;
+    if((aValue-0.5) == ::floor(aValue))
+    {
+      return (((long long)aValue)%2) ? ::ceil(aValue)*prec : ::floor(aValue)*prec;
+    }
+    aValue += 0.5;
+    return ::floor(aValue)*prec;
+  }
 }
 #endif
 
@@ -321,22 +350,38 @@ Decimal& Decimal::operator/=(const Decimal& aDecimal) {
 }
 
 Decimal Decimal::operator%(const Integer& aInteger) const {
-  MAPM lRes = (IMAPM)theDecimal % aInteger.theInteger;
+#ifndef ZORBA_NO_BIGNUMBERS
+  MAPM lRes = theDecimal % aInteger.theInteger;
+#else
+  MAPM lRes = fmod(theDecimal, aInteger.theInteger);
+#endif
   return Decimal(lRes);
 }
 
 Decimal Decimal::operator%(const Decimal& aDecimal) const {
-  MAPM lRes = (IMAPM)theDecimal % (IMAPM)aDecimal.theDecimal;
+#ifndef ZORBA_NO_BIGNUMBERS
+  MAPM lRes = theDecimal % aDecimal.theDecimal;
+#else
+  MAPM lRes = fmod(theDecimal, aDecimal.theDecimal);
+#endif
   return Decimal(lRes);
 }
 
 Decimal& Decimal::operator%=(const Integer& aInteger) {
-  theDecimal = (IMAPM)theDecimal % aInteger.theInteger;
+#ifndef ZORBA_NO_BIGNUMBERS
+  theDecimal = theDecimal % aInteger.theInteger;
+#else
+  theDecimal = fmod(theDecimal, aInteger.theInteger);
+#endif
   return *this;
 }
 
 Decimal& Decimal::operator%=(const Decimal& aDecimal) {
-  theDecimal = (IMAPM)theDecimal % (IMAPM)aDecimal.theDecimal;
+#ifndef ZORBA_NO_BIGNUMBERS
+  theDecimal = theDecimal % aDecimal.theDecimal;
+#else
+  MAPM lRes = fmod(theDecimal, aDecimal.theDecimal);
+#endif
   return *this;
 }
 
@@ -393,10 +438,15 @@ xqpString Decimal::decimalToString(MAPM theValue) {
   char lBuffer[1024];
   theValue.toFixPtString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
 #else
-  char lBuffer[124];
+  char lBuffer[174];
 //  char  lflags[20];
 //  sprintf(lflags, "%%.%dlf", ZORBA_FLOAT_POINT_PRECISION);
-  sprintf(lBuffer, "%.7lf", theValue);
+  if(theValue == 0)
+    sprintf(lBuffer, "0");
+  else if(fabs(theValue) < 1.0e-10)
+    sprintf(lBuffer, "%.20lf", theValue);
+  else
+    sprintf(lBuffer, "%.10lf", theValue);
 #endif
 
   // Note in the canonical representation the decimal point is required

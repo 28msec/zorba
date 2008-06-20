@@ -1310,7 +1310,7 @@ xqpString FloatImpl<FloatType>::toIntegerString() const {
   char lBuffer[1024];
   theFloatImpl.toIntegerString(lBuffer);
 #else
-  char lBuffer[124];
+  char lBuffer[174];
   sprintf(lBuffer, "%d", (int)theFloatImpl);
 #endif
   xqpString lResult = lBuffer;
@@ -1381,8 +1381,13 @@ xqpString FloatImpl<FloatType>::toString() const {
       break;
   }
 
-  char lBuffer[124];
-  sprintf(lBuffer, "%#G", (double)theFloatImpl);
+  char lBuffer[174];
+  if(theFloatImpl == 0)
+    sprintf(lBuffer, "0.0");
+  else if((fabs(theFloatImpl) < 9.9999997e-7) || (fabs(theFloatImpl) > 9.9999997e5))
+    sprintf(lBuffer, "%#1.10E", (double)theFloatImpl);
+  else
+    sprintf(lBuffer, "%#lf", (double)theFloatImpl);
 
   char  *lE = strchr(lBuffer, 'E');
   char  *lZeros;
