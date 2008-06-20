@@ -17,8 +17,8 @@
 #include "regex_ascii.h"
 #include "string.h"
 #include <ctype.h>
-#include "zorbatypes/chartype.h"
-#include "zorbatypes/zorbatypeserror.h"
+#include "chartype.h"
+#include "zorbatypeserror.h"
 
 namespace zorba {
   namespace regex_ascii{
