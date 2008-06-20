@@ -16,7 +16,7 @@ CREATE_TEST_SOURCELIST(UnitTests
   UnitTests.cpp
   typesystem_isSubtype.cpp
   itemfactory.cpp
-  multithread_simple.cpp
+#   multithread_simple.cpp
 )
 
 # add the executable
