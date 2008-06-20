@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
-#include <inmemorystore/inmemorystore.h>
+#include <simplestore/simplestore.h>
 
 using namespace zorba;
 
@@ -33,12 +33,13 @@ void* query_thread_4(void *param);
 struct data {
   Zorba*  lZorba;
   Item    lItem;
-} dataObj;
+  int     index;
+};
+
+#ifdef ZORBA_HAVE_PTHREAD_H
 
 static  XQuery_t    lQuery;
 std::string make_absolute_file_name(const char *target_file_name, const char *this_file_name);
-
-#ifdef ZORBA_HAVE_PTHREAD_H
 
 /*
 Simple cloning test
@@ -64,8 +65,8 @@ multithread_example_1(Zorba* aZorba)
       pthread_join(pt[i], &thread_result);
     }
 
-    lQuery = NULL;
-    
+    lQuery->close();
+
     return true;
   }
   catch (ZorbaException &e) {
@@ -114,18 +115,20 @@ multithread_example_3(Zorba* aZorba)
 {
   unsigned int  i;
   pthread_t     pt[NR_THREADS];
+  data*         test;
 
   try {
     std::stringstream lInStream("<books><book>Book 1</book><book>Book 2</book><book>Book 3</book></books>");
 
     Item aItem = aZorba->getXmlDataManager()->loadDocument("books.xml", lInStream);
 
-    dataObj.lZorba = aZorba;
-    dataObj.lItem = aItem;
-    
     for(i=0; i<NR_THREADS; i++)
     {
-      pthread_create(&pt[i], NULL, query_thread_3, (void*)(&dataObj));
+      test = new data ();
+      test->lZorba = aZorba;
+      test->lItem = aItem;
+      test->index = i+1;
+      pthread_create(&pt[i], NULL, query_thread_3, (void*)test);
     }
 
     for(i=0;i<NR_THREADS;i++)
@@ -133,6 +136,9 @@ multithread_example_3(Zorba* aZorba)
       void  *thread_result;
       pthread_join(pt[i], &thread_result);
     }
+
+    aItem = NULL;
+    delete test;
 
     return true;
   }
@@ -143,23 +149,25 @@ multithread_example_3(Zorba* aZorba)
 }
 
 /*
-Load a big document in store and query it from diffrent threads.
+Load a document in store and query it from diffrent threads.
 */
 bool
 multithread_example_4(Zorba* aZorba)
 {
   unsigned int  i;
   pthread_t     pt[NR_THREADS];
+  data*         test;
 
   try {
-    Item aItem = aZorba->getXmlDataManager()->loadDocument(make_absolute_file_name("XQTSCatalog.xml", __FILE__));
-
-    dataObj.lZorba = aZorba;
-    dataObj.lItem = aItem;
+    Item aItem = aZorba->getXmlDataManager()->loadDocument(make_absolute_file_name("book.xml", __FILE__));
 
     for(i=0; i<NR_THREADS; i++)
     {
-      pthread_create(&pt[i], NULL, query_thread_4, (void*)(&dataObj));
+      test = new data ();
+      test->lZorba = aZorba;
+      test->lItem = aItem;
+      test->index = i+1;
+      pthread_create(&pt[i], NULL, query_thread_4, (void*)test);
     }
 
     for(i=0;i<NR_THREADS;i++)
@@ -168,8 +176,8 @@ multithread_example_4(Zorba* aZorba)
       pthread_join(pt[i], &thread_result);
     }
 
-    dataObj.lItem = NULL;
-    
+    aItem = NULL;
+
     return true;
   }
   catch (ZorbaException &e) {
@@ -179,18 +187,18 @@ multithread_example_4(Zorba* aZorba)
 }
 
 int
-multithread(int argc, char* argv[])
+multithread_simple(int argc, char* argv[])
 {
-  store::SimpleStore* lStore = inmemorystore::InMemoryStore::getInstance();
-  Zorba*              lZorba = Zorba::getInstance(lStore);
-  bool                res = false;
+  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  Zorba*                    lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
+  bool                      res = false;
 
   std::cout << std::endl  << "executing multithread test 1 : ";
   res = multithread_example_1(lZorba);
   if (!res) {
     std::cout << "Failed" << std::endl;
     lZorba->shutdown();
-    inmemorystore::InMemoryStore::shutdown(lStore);
+    simplestore::SimpleStoreManager::shutdownStore(lStore);
     return 1;
   }
   else std::cout << "Passed" << std::endl;
@@ -200,7 +208,7 @@ multithread(int argc, char* argv[])
   if (!res) {
     std::cout << "Failed" << std::endl;
     lZorba->shutdown();
-    inmemorystore::InMemoryStore::shutdown(lStore);
+    simplestore::SimpleStoreManager::shutdownStore(lStore);
     return 1;
   }
   else std::cout << "Passed" << std::endl;
@@ -210,23 +218,23 @@ multithread(int argc, char* argv[])
   if (!res) {
     std::cout << "Failed" << std::endl;
     lZorba->shutdown();
-    inmemorystore::InMemoryStore::shutdown(lStore);
+    simplestore::SimpleStoreManager::shutdownStore(lStore);
     return 1;
   }
   else std::cout << "Passed" << std::endl;
 
-  std::cout << std::endl  << "executing multithread test 4 : ";
-  res = multithread_example_4(lZorba);
-  if (!res) {
-    std::cout << "Failed" << std::endl;
-    lZorba->shutdown();
-    inmemorystore::InMemoryStore::shutdown(lStore);
-    return 1;
-  }
-  else std::cout << "Passed" << std::endl;
+//   std::cout << std::endl  << "executing multithread test 4 : ";
+//   res = multithread_example_4(lZorba);
+//   if (!res) {
+//     std::cout << "Failed" << std::endl;
+//     lZorba->shutdown();
+//     simplestore::SimpleStoreManager::shutdownStore(lStore);
+//     return 1;
+//   }
+//   else std::cout << "Passed" << std::endl;
   
   lZorba->shutdown();
-  inmemorystore::InMemoryStore::shutdown(lStore);
+  simplestore::SimpleStoreManager::shutdownStore(lStore);
   return 0;
 }
 
@@ -284,19 +292,20 @@ void* query_thread_3(void *param)
 
 void* query_thread_4(void *param)
 {
-  data* var = (data*)param;
+  std::ostringstream os;
+  os << ((data*)param)->index;
 
-  XQuery_t aQuery = var->lZorba->compileQuery(".//citation-spec");
+  XQuery_t aQuery = ((data*)param)->lZorba->compileQuery(".//chapter[@id=" + os.str() + "]");
 
   DynamicContext* lCtx = aQuery->getDynamicContext();
 
-  lCtx->setContextItem(var->lItem);
+  lCtx->setContextItem(((data*)param)->lItem);
 
-  std::ostringstream os;
+  os.clear();
   os << aQuery << std::endl;
 
   aQuery->close();
-  
+
   return (void*)0;
 }
 
