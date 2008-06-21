@@ -59,7 +59,7 @@ bool
 FnCurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
-  xqp_date d;
+  xqp_date* d = NULL;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -88,7 +88,7 @@ bool
 FnCurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
-  xqp_time t;
+  xqp_time* t = NULL;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

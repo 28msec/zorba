@@ -849,7 +849,7 @@ bool XercesParseUtils::parseXSDateTime(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     if (0 == DateTime::parseDateTime(textValue2.getp(), dt))  // Warning: parsing code is not using Xerces
     {
-      return factory->createDateTime(result, dt);
+      return factory->createDateTime(result, &dt);
     }
   }
   else
@@ -890,7 +890,7 @@ bool XercesParseUtils::parseXSDate(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     if (0 == DateTime::parseDate(textValue2.getp(), d))  // Warning: parsing code is not using Xerces
     {
-      return factory->createDate(result, d);
+      return factory->createDate(result, &d);
     }
   }
   else
@@ -936,7 +936,7 @@ bool XercesParseUtils::parseXSTime(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     if (0 == DateTime::parseTime(textValue2.getp(), t))  // Warning: parsing code is not using Xerces
     {
-      return factory->createTime(result, t);
+      return factory->createTime(result, &t);
     }
   }
   else
@@ -972,7 +972,7 @@ bool XercesParseUtils::parseXSGYearMonth(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     if (DateTime::parseGYearMonth(textValue2.getp(), tValue)) // Warning: parsing code is not using Xerces
     {
-      return factory->createGYearMonth(result, tValue);
+      return factory->createGYearMonth(result, &tValue);
     }
   }
   else
@@ -1008,7 +1008,7 @@ bool XercesParseUtils::parseXSGYear(
 
     if (DateTime::parseGYear(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
     {
-      return factory->createGYear(result, tValue);
+      return factory->createGYear(result, &tValue);
     }
   }
   else
@@ -1043,7 +1043,7 @@ bool XercesParseUtils::parseXSGMonthDay(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     if (DateTime::parseGMonthDay(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
     {
-      return factory->createGMonthDay(result, tValue);
+      return factory->createGMonthDay(result, &tValue);
     }
   }
   else
@@ -1077,7 +1077,7 @@ bool XercesParseUtils::parseXSGDay(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     if (DateTime::parseGDay(textValue2.getp(), tValue))   // Warning: parsing code is not using Xerces
     {
-      return factory->createGDay(result, tValue);
+      return factory->createGDay(result, &tValue);
     }
   }
   else
@@ -1111,7 +1111,7 @@ bool XercesParseUtils::parseXSGMonth(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     if (DateTime::parseGMonth(textValue2.getp(), tValue))   // Warning: parsing code is not using Xerces
     {
-      return factory->createGMonth(result, tValue);
+      return factory->createGMonth(result, &tValue);
     }
   }
   else

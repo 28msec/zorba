@@ -622,26 +622,27 @@ CompareIterator::compare(
   } 
     
   // catch InvalidTimezoneException
-  try {
+  try 
+  {
     if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE)
         &&
         TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
     {
-      return aItem0->getDateValue()->compare(*aItem1->getDateValue(),
+      return aItem0->getDateValue()->compare(aItem1->getDateValue(),
                                              aRuntimeCB->theDynamicContext->get_implicit_timezone());
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE)
              &&
              TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
     {
-      return aItem0->getTimeValue()->compare(*aItem1->getTimeValue(),
+      return aItem0->getTimeValue()->compare(aItem1->getTimeValue(),
                                              aRuntimeCB->theDynamicContext->get_implicit_timezone());
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)
              &&
              TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
     {
-      return aItem0->getDateTimeValue()->compare(*aItem1->getDateTimeValue(),
+      return aItem0->getDateTimeValue()->compare(aItem1->getDateTimeValue(),
                                                  aRuntimeCB->theDynamicContext->get_implicit_timezone());
       
     }
@@ -649,35 +650,35 @@ CompareIterator::compare(
              &&
              TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
     {
-      return aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue(),
+      return aItem0->getGYearMonthValue()->compare(aItem1->getGYearMonthValue(),
                                                    aRuntimeCB->theDynamicContext->get_implicit_timezone());
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE)
              &&
              TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE))
     {
-      return aItem0->getGYearValue()->compare(*aItem1->getGYearValue(),
+      return aItem0->getGYearValue()->compare(aItem1->getGYearValue(),
                                               aRuntimeCB->theDynamicContext->get_implicit_timezone());
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE)
              &&
              TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE))
     {
-      return aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue(),
+      return aItem0->getGMonthDayValue()->compare(aItem1->getGMonthDayValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE)
              &&
              TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE))
     {
-      return aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue(),
+      return aItem0->getGMonthValue()->compare(aItem1->getGMonthValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GDAY_TYPE_ONE)
              &&
              TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
     {
-      return aItem0->getGDayValue()->compare(*aItem1->getGDayValue(),
+      return aItem0->getGDayValue()->compare(aItem1->getGDayValue(),
                                        aRuntimeCB->theDynamicContext->get_implicit_timezone());
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)

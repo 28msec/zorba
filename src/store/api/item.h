@@ -237,16 +237,45 @@ public:
   getByteValue() const;
 
 
-  /** Accessor for xs:date
-   */
-  virtual xqp_date
-  getDateValue() const;
-
-
   /** Accessor for xs:dateTime
    */
-  virtual xqp_dateTime
+  virtual xqp_dateTime*
   getDateTimeValue() const;
+
+  /** Accessor for xs:date
+   */
+  virtual xqp_date*
+  getDateValue() const;
+
+  /** Accessor for xs:time
+   */
+  virtual xqp_time*
+  getTimeValue() const;
+
+  /** Accessor for xs:gYearMonth
+   */
+  virtual xqp_gYearMonth*
+  getGYearMonthValue() const;
+
+  /** Accessor for xs:gYear
+   */
+  virtual xqp_gYear*
+  getGYearValue() const;
+
+  /** Accessor for xs:gMonth
+   */
+  virtual xqp_gMonth*
+  getGMonthValue() const;
+
+  /** Accessor for xs:gMonthDay
+   */
+  virtual xqp_gMonthDay*
+  getGMonthDayValue() const;
+
+  /** Accessor for xs:gDay
+   */
+  virtual xqp_gDay*
+  getGDayValue() const;
 
 
   /** Accessor for xs:double
@@ -285,36 +314,6 @@ public:
   getFloatValue() const;
 
 
-  /** Accessor for xs:gDay
-   */
-  virtual xqp_gDay
-  getGDayValue() const;
-
-
-  /** Accessor for xs:gMonth
-   */
-  virtual xqp_gMonth
-  getGMonthValue() const;
-
-
-  /** Accessor for xs:gMonthDay
-   */
-  virtual xqp_gMonthDay
-  getGMonthDayValue() const;
-
-
-  /** Accessor for xs:gYear
-   */
-  virtual xqp_gYear
-  getGYearValue() const;
-
-
-  /** Accessor for xs:gYearMonth
-   */
-  virtual xqp_gYearMonth
-  getGYearMonthValue() const;
-
-
   /** Accessor for xs:hexBinary
    */
   virtual xqp_hexBinary
@@ -326,12 +325,6 @@ public:
   virtual xqp_uint
   getUnsignedIntValue() const;
   
-
-  /** Accessor for xs:time
-   */
-  virtual xqp_time
-  getTimeValue() const;
-
 
   /** Accessor for xs:unsignedLong
    */

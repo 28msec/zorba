@@ -36,10 +36,10 @@ namespace zorba { namespace simplestore {
 class ChildrenIterator : public store::Iterator
 {
 protected:
-  rchandle<XmlNode>   theParentNode;
+  rchandle<XmlNode>  theParentNode;
 
-  unsigned long       theNumChildren;
-  unsigned long       theCurrentPos;
+  ulong              theNumChildren;
+  ulong              theCurrentPos;
 
 public:
   ChildrenIterator(XmlNode* parent);
@@ -48,6 +48,9 @@ public:
   bool next(store::Item_t& result);
   void reset();
   void close();
+
+   store::Item* next();
+   void reset(store::Item_t& parent);
 };
 
 

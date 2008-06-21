@@ -40,6 +40,7 @@ ChildrenIterator::ChildrenIterator(XmlNode* parent)
   theNumChildren = parent->numChildren();
 }
 
+
 void ChildrenIterator::open()
 {
   theCurrentPos = 0;
@@ -73,6 +74,21 @@ void ChildrenIterator::close()
   theCurrentPos = 0;
   theParentNode = NULL;
 }
+
+
+void ChildrenIterator::reset(store::Item_t& parent)
+{
+  theParentNode.transfer(parent);
+  theNumChildren = theParentNode->numChildren();
+  theCurrentPos = 0;
+}
+
+
+store::Item* ChildrenIterator::next()
+{
+  return NULL;
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////

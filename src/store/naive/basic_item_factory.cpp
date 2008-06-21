@@ -169,48 +169,14 @@ bool BasicItemFactory::createByte (store::Item_t& result,  xqp_byte value )
   return true;
 }
 
-bool BasicItemFactory::createDate(store::Item_t& result, xqp_date& value)
+
+
+bool BasicItemFactory::createDateTime(store::Item_t& result, const xqp_dateTime* value)
 {
   result = new DateTimeItemNaive(value);
   return true;
 }
 
-bool BasicItemFactory::createDate (
-    store::Item_t& result,
-    short year,
-    short month,
-    short day )
-{
-  DateTime_t dt_t;
-  TimeZone_t tz_t;
-  
-  if(DateTime::createDate(year, month, day, tz_t, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-bool BasicItemFactory::createDate (store::Item_t& result,  const xqp_string& value )
-{
-  DateTime_t dt_t;
-  
-  if (DateTime::parseDate(value, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-bool BasicItemFactory::createDateTime(store::Item_t& result, xqp_dateTime& value)
-{
-  result = new DateTimeItemNaive(value);
-  return true;
-}
 
 bool BasicItemFactory::createDateTime(
     store::Item_t& result,
@@ -221,13 +187,16 @@ bool BasicItemFactory::createDateTime(
     short   minute,
     double  second)
 {
-  DateTime_t dt_t;
+  DateTime dt;
   TimeZone_t tz_t;
   
-  if(DateTime::createDateTime(year, month, day, hour, minute, second, tz_t, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
+  if(DateTime::createDateTime(year, month, day, hour, minute, second, tz_t, dt) == 0)
+  {
+    result = new DateTimeItemNaive(&dt);
     return true;
-  } else {
+  }
+  else
+  {
     result = NULL;
     return false;
   }
@@ -244,13 +213,16 @@ bool BasicItemFactory::createDateTime(
     double  second,
     short   timeZone_hours)
 {
-  DateTime_t dt_t;
+  DateTime dt;
   TimeZone_t tz_t = new TimeZone( timeZone_hours );
 
-  if (DateTime::createDateTime(year, month, day, hour, minute, second, tz_t, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
+  if (DateTime::createDateTime(year, month, day, hour, minute, second, tz_t, dt) == 0)
+  {
+    result = new DateTimeItemNaive(&dt);
     return true;
-  } else {
+  }
+  else 
+  {
     result = NULL;
     return false;
   }
@@ -261,12 +233,15 @@ bool BasicItemFactory::createDateTime(
     store::Item_t& result,
     const xqp_string& value )
 {
-  DateTime_t dt_t;
+  DateTime dt;
   
-  if ( DateTime::parseDateTime(value, dt_t) == 0 ) {
-    result = new DateTimeItemNaive(dt_t);
+  if (DateTime::parseDateTime(value, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
     return true;
-  } else {
+  }
+  else
+  {
     result = NULL;
     return false;
   }
@@ -278,17 +253,349 @@ bool BasicItemFactory::createDateTime(
     const store::Item_t& date,
     const store::Item_t& time)
 {
-  if (date.isNull() || time.isNull()) {
+  if (date.isNull() || time.isNull()) 
+  {
     result = NULL;
     return false;
-  } else
+  } 
+  else
   {
-    if (2 == DateTimeItemNaive::createFromDateAndTime(date->getDateValue(), time->getTimeValue(), result))
+    if (2 == DateTimeItemNaive::createFromDateAndTime(date->getDateValue(),
+                                                      time->getTimeValue(),
+                                                      result))
       ZORBA_ERROR(FORG0008);
     
     return true;
   }
 }
+
+
+bool BasicItemFactory::createDate(store::Item_t& result, const xqp_date* value)
+{
+  result = new DateTimeItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createDate (
+    store::Item_t& result,
+    short year,
+    short month,
+    short day )
+{
+  DateTime dt;
+  TimeZone_t tz_t;
+  
+  if(DateTime::createDate(year, month, day, tz_t, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createDate (store::Item_t& result,  const xqp_string& value )
+{
+  DateTime dt;
+  
+  if (DateTime::parseDate(value, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createTime(store::Item_t& result, const xqp_time* value)
+{
+  result = new DateTimeItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createTime(store::Item_t& result, const xqp_string& value)
+{
+  DateTime dt;
+  
+  if( DateTime::parseTime(value, dt) == 0 ) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createTime(
+    store::Item_t& result,
+    short          hour,
+    short          minute,
+    double         second)
+{
+  DateTime dt;
+  TimeZone_t tz_t;
+  
+  if( DateTime::createTime(hour, minute, second, tz_t, dt) == 0 ) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createTime(
+    store::Item_t& result,
+    short          hour,
+    short          minute,
+    double         second,
+    short          timeZone_hours)
+{
+  DateTime dt;
+  TimeZone_t tz_t = new TimeZone(timeZone_hours);
+  
+  if(DateTime::createTime(hour, minute, second, tz_t, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGDay(store::Item_t& result, const xqp_gDay* value)
+{
+  result = new DateTimeItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createGDay(store::Item_t& result,  const xqp_string& value)
+{
+  DateTime dt;
+  
+  if (DateTime::parseGDay(value, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGDay(store::Item_t& result,  short day)
+{
+  DateTime dt;
+  
+  if (DateTime::createGDay(day, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGMonth(store::Item_t& result, const xqp_gMonth* value)
+{
+  result = new DateTimeItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createGMonth(store::Item_t& result, const xqp_string& value)
+{
+  DateTime dt;
+  
+  if (DateTime::parseGMonth(value, dt) == 0)
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGMonth(store::Item_t& result, short month)
+{
+  DateTime dt;
+
+  if(DateTime::createGMonth(month, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else 
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGMonthDay(
+    store::Item_t& result,
+    const xqp_gMonthDay* value)
+{
+  result = new DateTimeItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createGMonthDay(
+    store::Item_t& result,
+    const xqp_string& value )
+{
+  DateTime dt;
+  
+  if (DateTime::parseGMonthDay(value, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGMonthDay(store::Item_t& result,  short month, short day)
+{
+  DateTime dt;
+
+  if(DateTime::createGMonthDay(month, day, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  } else {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGYear(store::Item_t& result, const xqp_gYear* value)
+{
+  result = new DateTimeItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createGYear(store::Item_t& result,  const xqp_string& value)
+{
+  DateTime dt;
+  
+  if (DateTime::parseGYear(value, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  } else {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGYear(store::Item_t& result,  short year)
+{
+  DateTime dt;
+
+  if(DateTime::createGYear(year, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGYearMonth(
+    store::Item_t& result,
+    const xqp_gYearMonth* value )
+{
+  result = new DateTimeItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createGYearMonth(
+    store::Item_t& result,
+    const xqp_string& value)
+{
+  DateTime dt;
+  
+  if (DateTime::parseGYearMonth(value, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else 
+  {
+    result = NULL;
+    return false;
+  }
+}
+
+
+bool BasicItemFactory::createGYearMonth(
+    store::Item_t& result,
+    short year,
+    short month)
+{
+  DateTime dt;
+
+  if(DateTime::createGYearMonth(year, month, dt) == 0) 
+  {
+    result = new DateTimeItemNaive(&dt);
+    return true;
+  }
+  else 
+  {
+    result = NULL;
+    return false;
+  }
+}
+
 
 
 bool BasicItemFactory::createDouble(
@@ -376,187 +683,6 @@ bool BasicItemFactory::createFloat (store::Item_t& result,  xqp_float value )
   return true;
 }
 
-
-bool BasicItemFactory::createGDay (store::Item_t& result, xqp_gDay& value )
-{
-  result = new DateTimeItemNaive(value);
-  return true;
-}
-
-
-bool BasicItemFactory::createGDay (store::Item_t& result,  const xqp_string& value )
-{
-  DateTime_t dt_t;
-  
-  if (DateTime::parseGDay(value, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGDay (store::Item_t& result,  short day )
-{
-  DateTime_t dt_t;
-  
-  if (DateTime::createGDay(day, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGMonth(store::Item_t& result, xqp_gMonth& value )
-{
-  result = new DateTimeItemNaive(value);
-  return true;
-}
-
-
-bool BasicItemFactory::createGMonth (store::Item_t& result,  const xqp_string& value )
-{
-  DateTime_t dt_t;
-  
-  if (DateTime::parseGMonth(value, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGMonth (store::Item_t& result,  short month )
-{
-  DateTime_t dt_t;
-
-  if(DateTime::createGMonth(month, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGMonthDay (store::Item_t& result, xqp_gMonthDay& value)
-{
-  result = new DateTimeItemNaive(value);
-  return true;
-}
-
-
-bool BasicItemFactory::createGMonthDay (store::Item_t& result,  const xqp_string& value )
-{
-  DateTime_t dt_t;
-  
-  if (DateTime::parseGMonthDay(value, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGMonthDay (store::Item_t& result,  short month, short day )
-{
-  DateTime_t dt_t;
-
-  if(DateTime::createGMonthDay(month, day, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGYear (store::Item_t& result, xqp_gYear& value )
-{
-  result = new DateTimeItemNaive(value);
-  return true;
-}
-
-
-bool BasicItemFactory::createGYear (store::Item_t& result,  const xqp_string& value )
-{
-  DateTime_t dt_t;
-  
-  if (DateTime::parseGYear(value, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGYear (store::Item_t& result,  short year )
-{
-  DateTime_t dt_t;
-
-  if(DateTime::createGYear(year, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGYearMonth(
-    store::Item_t& result,
-    xqp_gYearMonth& value )
-{
-  result = new DateTimeItemNaive(value);
-  return true;
-}
-
-
-bool BasicItemFactory::createGYearMonth(
-    store::Item_t& result,
-    const xqp_string& value)
-{
-  DateTime_t dt_t;
-  
-  if (DateTime::parseGYearMonth(value, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-
-bool BasicItemFactory::createGYearMonth(
-    store::Item_t& result,
-    short year,
-    short month)
-{
-  DateTime_t dt_t;
-
-  if(DateTime::createGYearMonth(year, month, dt_t) == 0) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
 
 
 bool BasicItemFactory::createHexBinary (store::Item_t& result,  xqp_hexBinary value )
@@ -683,63 +809,6 @@ bool BasicItemFactory::createPositiveInteger(
   return true;
 }
 
-
-bool BasicItemFactory::createTime(store::Item_t& result, xqp_time& value)
-{
-  result = new DateTimeItemNaive(value);
-  return true;
-}
-
-
-bool BasicItemFactory::createTime(store::Item_t& result, const xqp_string& value)
-{
-  DateTime_t dt_t;
-  
-  if( DateTime::parseTime(value, dt_t) == 0 ) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-bool BasicItemFactory::createTime(
-    store::Item_t& result,
-    short          hour,
-    short          minute,
-    double         second)
-{
-  DateTime_t dt_t;
-  TimeZone_t tz_t;
-  
-  if( DateTime::createTime(hour, minute, second, tz_t, dt_t) == 0 ) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
-
-bool BasicItemFactory::createTime(
-    store::Item_t& result,
-    short          hour,
-    short          minute,
-    double         second,
-    short          timeZone_hours)
-{
-  DateTime_t dt_t;
-  TimeZone_t tz_t = new TimeZone(timeZone_hours);
-  
-  if( DateTime::createTime(hour, minute, second, tz_t, dt_t) == 0 ) {
-    result = new DateTimeItemNaive(dt_t);
-    return true;
-  } else {
-    result = NULL;
-    return false;
-  }
-}
 
 bool BasicItemFactory::createToken(store::Item_t& result, xqpStringStore_t& /*value*/ )
 {

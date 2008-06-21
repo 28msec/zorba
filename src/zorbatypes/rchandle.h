@@ -361,6 +361,7 @@ public:
   }
 
   bool isNull () const        { return p == NULL; }
+  void setNull()              { p = NULL;}
 
   T* getp() const             { return p; }
 
@@ -405,12 +406,12 @@ public:
 
   template <class otherT> rchandle& transfer(rchandle<otherT>& rhs)
   {
-		if (p != rhs.p)
+		if (p != rhs.getp())
     {
 			if (p) p->removeReference(p->getSharedRefCounter()
                                 SYNC_PARAM2(p->getRCLock()));
-			p = static_cast<T*>(rhs.p);
-			rhs.p = NULL;
+			p = static_cast<T*>(rhs.getp());
+			rhs.setNull();
 		}
 		return *this;
   }

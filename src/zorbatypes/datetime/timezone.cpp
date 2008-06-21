@@ -35,11 +35,13 @@ using namespace std;
 
 namespace zorba
 {
+
 TimeZone::TimeZone(short hours)
 {
   boost::posix_time::time_duration t( hours, 0 , 0 , 0 );
   the_time_zone = t;
 }
+
 
 bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
 {

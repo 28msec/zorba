@@ -135,6 +135,45 @@ xqp_string QNameItemImpl::show() const
 
 
 /*******************************************************************************
+  class StringItemNaive
+********************************************************************************/
+store::Item* StringItemNaive::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_STRING];
+}
+
+
+uint32_t StringItemNaive::hash(long timezone, XQPCollator* aCollation) const
+{
+  return theValue->hash(aCollation);
+}
+
+
+bool StringItemNaive::equals(
+    const store::Item* item,
+    long timezone,
+    XQPCollator* aCollation) const
+{
+  return item->getStringValueP()->equals(theValue.getp());
+}
+  
+
+store::Item_t StringItemNaive::getEBV() const
+{
+  bool b = ! ( theValue->str() == "" );
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
+
+xqp_string StringItemNaive::show() const
+{
+  return "xs:string(" + theValue->str() + ")";
+}
+
+
+/*******************************************************************************
   class NCNameItemImpl
 ********************************************************************************/
 store::Item* NCNameItemImpl::getType() const
@@ -173,15 +212,15 @@ xqp_string NCNameItemImpl::show() const
 }
 
 
-/*******************************************************************************
-  class NCNameItemImpl
-********************************************************************************/
 store::Item* IDItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_ID];
 }
 
 
+/*******************************************************************************
+  class IDItemImpl
+********************************************************************************/
 xqp_string IDItemImpl::show() const
 {
   return "xs:ID(" + theValue->str() + ")";
@@ -189,7 +228,7 @@ xqp_string IDItemImpl::show() const
 
 
 /*******************************************************************************
-  class AnyUriItemNaive
+  class AnyUriItem
 ********************************************************************************/
 store::Item* AnyUriItemImpl::getType() const
 {
@@ -266,41 +305,133 @@ xqp_string UntypedAtomicItemImpl::show() const
 
 
 /*******************************************************************************
-  class StingItemNaive
+  class DateTimeItem
 ********************************************************************************/
-store::Item* StringItemNaive::getType() const
+int DateTimeItemNaive::createFromDateAndTime(
+    const xqp_date* date,
+    const xqp_time* time,
+    store::Item_t& item)
 {
-  return GET_STORE().theSchemaTypeNames[XS_STRING];
+  DateTimeItemNaive* dtin = new DateTimeItemNaive();
+  int result = DateTime::createDateTime(date, time, dtin->theValue);
+  item = dtin;
+  return result;
 }
 
 
-uint32_t StringItemNaive::hash(long timezone, XQPCollator* aCollation) const
+xqpStringStore_t DateTimeItemNaive::getStringValue() const
 {
-  return theValue->hash(aCollation);
+  return theValue.toString().getStore();
 }
 
-
-bool StringItemNaive::equals(
-    const store::Item* item,
-    long timezone,
-    XQPCollator* aCollation) const
-{
-  return item->getStringValueP()->equals(theValue.getp());
-}
   
-
-store::Item_t StringItemNaive::getEBV() const
+store::Item* DateTimeItemNaive::getType() const
 {
-  bool b = ! ( theValue->str() == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  switch (theValue.getFacet())
+  {
+  case DateTime::DATE_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_DATE];
+    break;
+      
+  case DateTime::TIME_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_TIME];
+    break;
+    
+  case DateTime::GYEARMONTH_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_GYEAR_MONTH];
+    break;
+    
+  case DateTime::GYEAR_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_GYEAR];
+    break;
+    
+  case DateTime::GMONTH_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_GMONTH];
+    break;
+
+  case DateTime::GMONTHDAY_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_GMONTH_DAY];
+    break;
+    
+  case DateTime::GDAY_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_GDAY];
+    break;
+
+  default:
+  case DateTime::DATETIME_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_DATETIME];
+    break;
+  }
 }
 
 
-xqp_string StringItemNaive::show() const
+bool DateTimeItemNaive::equals(
+    const store::Item* aItem,
+    long timezone,
+    XQPCollator* coll) const
 {
-  return "xs:string(" + theValue->str() + ")";
+  try 
+  {
+    return 0 == theValue.compare(aItem->getDateTimeValue(), timezone);
+  }
+  catch (InvalidTimezoneException)
+  {
+    ZORBA_ERROR(FODT0003);
+    return false;
+  }
+}
+
+
+uint32_t DateTimeItemNaive::hash(long timezone, XQPCollator* aCollation) const
+{
+  return theValue.hash(0);
+}
+
+
+store::Item_t DateTimeItemNaive::getEBV() const
+{
+  switch (theValue.getFacet())
+  {
+    case DateTime::DATE_FACET:
+      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:Date!");
+      break;
+      
+    case DateTime::TIME_FACET:
+      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:Time!");
+      break;
+    
+    case DateTime::GYEARMONTH_FACET:
+      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GYearMonth!");
+      break;
+    
+    case DateTime::GYEAR_FACET:
+      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GYear!");
+      break;
+    
+    case DateTime::GMONTH_FACET:
+      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GMonth!");
+      break;
+
+    case DateTime::GMONTHDAY_FACET:
+      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GMonthDay!");
+      break;
+    
+    case DateTime::GDAY_FACET:
+      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GDay!");
+      break;
+
+    default:
+    case DateTime::DATETIME_FACET:
+      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for DateTime!");
+      break;
+  }
+  return NULL;
+}
+
+
+xqp_string DateTimeItemNaive::show() const
+{
+  return theValue.toString();
 }
 
 
@@ -1225,121 +1356,6 @@ HexBinaryItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue.hash();
 }
 
-/*******************************************************************************
- * class DateTimeItem
- *******************************************************************************/
-int DateTimeItemNaive::createFromDateAndTime(const xqp_date& date, const xqp_time& time, store::Item_t& item)
-{
-  DateTimeItemNaive* dtin = new DateTimeItemNaive();
-  int result = DateTime::createDateTime(date, time, dtin->theValue);
-  item = dtin;
-  return result;
-}
-
-xqpStringStore_t DateTimeItemNaive::getStringValue() const
-{
-  return theValue->toString().getStore();
-}
-  
-store::Item* DateTimeItemNaive::getType() const
-{
-  switch (theValue->getFacet())
-  {
-  case DateTime::DATE_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_DATE];
-    break;
-      
-  case DateTime::TIME_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_TIME];
-    break;
-    
-  case DateTime::GYEARMONTH_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GYEAR_MONTH];
-    break;
-    
-  case DateTime::GYEAR_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GYEAR];
-    break;
-    
-  case DateTime::GMONTH_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GMONTH];
-    break;
-
-  case DateTime::GMONTHDAY_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GMONTH_DAY];
-    break;
-    
-  case DateTime::GDAY_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GDAY];
-    break;
-
-  default:
-  case DateTime::DATETIME_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_DATETIME];
-    break;
-  }
-}
-
-bool DateTimeItemNaive::equals(const store::Item* aItem, long timezone, XQPCollator* coll) const
-{
-  try {
-    return 0 == theValue->compare(*aItem->getDateTimeValue(), 
-                                  timezone);
-  } catch (InvalidTimezoneException) {
-    ZORBA_ERROR(FODT0003);
-    return false;
-  }
-}
-
-uint32_t DateTimeItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue->hash(0);
-}
-
-store::Item_t DateTimeItemNaive::getEBV() const
-{
-  switch (theValue->getFacet())
-  {
-    case DateTime::DATE_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:Date!");
-      break;
-      
-    case DateTime::TIME_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:Time!");
-      break;
-    
-    case DateTime::GYEARMONTH_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GYearMonth!");
-      break;
-    
-    case DateTime::GYEAR_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GYear!");
-      break;
-    
-    case DateTime::GMONTH_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GMonth!");
-      break;
-
-    case DateTime::GMONTHDAY_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GMonthDay!");
-      break;
-    
-    case DateTime::GDAY_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GDay!");
-      break;
-
-    default:
-    case DateTime::DATETIME_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for DateTime!");
-      break;
-  }
-  return NULL;
-}
-
-xqp_string DateTimeItemNaive::show() const
-{
-  return theValue->toString();
-}
 
 /*******************************************************************************
  * class Duration

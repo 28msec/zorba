@@ -168,6 +168,7 @@ inline bool str_yMD(store::Item_t& result, store::Item* aItem, store::ItemFactor
   return false;
 }
 
+
 inline bool str_dTD(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   DayTimeDuration_t dtd_t;
@@ -181,85 +182,94 @@ inline bool str_dTD(store::Item_t& result, store::Item* aItem, store::ItemFactor
   return false;
 }
 
+
 inline bool str_dT(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_dateTime dt;
   if (0 == DateTime::parseDateTime(doTrim(aItem->getStringValue()).getp(), dt))
-    return aFactory->createDateTime(result, dt);
+    return aFactory->createDateTime(result, &dt);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
+
 
 inline bool str_tim(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_time t;
   if (0 == DateTime::parseTime(doTrim(aItem->getStringValue()).getp(), t))
-    return aFactory->createTime(result, t);
+    return aFactory->createTime(result, &t);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
+
 
 inline bool str_dat(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_date d;
   if (0 == DateTime::parseDate(doTrim(aItem->getStringValue()).getp(), d))
-    return aFactory->createDate(result, d);
+    return aFactory->createDate(result, &d);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
+
 
 inline bool str_gYM(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gYearMonth ym;
   if (0 == DateTime::parseGYearMonth(doTrim(aItem->getStringValue()).getp(), ym))
-    return aFactory->createGYearMonth(result, ym);
+    return aFactory->createGYearMonth(result, &ym);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
+
 
 inline bool str_gYr(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gYear y;
   if (0 == DateTime::parseGYear(doTrim(aItem->getStringValue()).getp(), y))
-    return aFactory->createGYear(result, y);
+    return aFactory->createGYear(result, &y);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
+
 
 inline bool str_gMD(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gMonthDay md;
   if (0 == DateTime::parseGMonthDay(doTrim(aItem->getStringValue()).getp(), md))
-    return aFactory->createGMonthDay(result, md);
+    return aFactory->createGMonthDay(result, &md);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
+
 
 inline bool str_gDay(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gDay d;
   if (0 == DateTime::parseGDay(doTrim(aItem->getStringValue()).getp(), d))
-    return aFactory->createGDay(result, d);
+    return aFactory->createGDay(result, &d);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
+
 
 inline bool str_gMon(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_gMonth m;
   if (0 == DateTime::parseGMonth(doTrim(aItem->getStringValue()).getp(), m))
-    return aFactory->createGMonth(result, m);
+    return aFactory->createGMonth(result, &m);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
+
 
 inline bool str_bool(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
@@ -663,136 +673,158 @@ inline bool dT_str(store::Item_t& result, store::Item* aItem, store::ItemFactory
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool dT_tim(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateTimeValue()->createWithNewFacet(DateTime::TIME_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::TIME_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dT_dat(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateTimeValue()->createWithNewFacet(DateTime::DATE_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::DATE_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dT_gYM(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GYEARMONTH_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GYEARMONTH_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dT_gYr(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GYEAR_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GYEAR_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dT_gMD(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GMONTHDAY_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GMONTHDAY_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dT_gDay(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GDAY_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GDAY_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dT_gMon(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GMONTH_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateTimeValue()->createWithNewFacet(DateTime::GMONTH_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool tim_uA(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return str_uA(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool tim_str(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
+
 
 inline bool dat_uA(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return str_uA(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool dat_str(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool dat_dT(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateValue()->createWithNewFacet(DateTime::DATETIME_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateValue()->createWithNewFacet(DateTime::DATETIME_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dat_gYM(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateValue()->createWithNewFacet(DateTime::GYEARMONTH_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GYEARMONTH_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dat_gYr(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateValue()->createWithNewFacet(DateTime::GYEAR_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GYEAR_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dat_gMD(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateValue()->createWithNewFacet(DateTime::GMONTHDAY_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GMONTHDAY_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dat_gDay(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateValue()->createWithNewFacet(DateTime::GDAY_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GDAY_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool dat_gMon(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DateTime_t dt_t;
-  aItem->getDateValue()->createWithNewFacet(DateTime::GMONTH_FACET, dt_t);
-  return aFactory->createTime(result, dt_t);
+  DateTime dt;
+  aItem->getDateValue()->createWithNewFacet(DateTime::GMONTH_FACET, dt);
+  return aFactory->createTime(result, &dt);
 }
+
 
 inline bool gYM_uA(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return str_uA(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool gYM_str(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
+
 
 inline bool gYr_uA(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return str_uA(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool gYr_str(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
+
 
 inline bool gMD_uA(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
@@ -804,35 +836,42 @@ inline bool gMD_str(store::Item_t& result, store::Item* aItem, store::ItemFactor
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool gDay_uA(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return str_uA(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
+
 
 inline bool gDay_str(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool gMon_uA(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return str_uA(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
+
 
 inline bool gMon_str(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool bool_uA(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return str_uA(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
+
 inline bool bool_str(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
+
 
 inline bool bool_flt(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
@@ -841,6 +880,7 @@ inline bool bool_flt(store::Item_t& result, store::Item* aItem, store::ItemFacto
   else
     return aFactory->createFloat(result, xqp_float::zero());
 }
+
 
 inline bool bool_dbl(store::Item_t& result, store::Item* aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
@@ -1224,10 +1264,11 @@ store::Item_t castUserDefinedType(store::Item* aItem,
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::cast(store::Item_t& result,
-                                store::Item* aItem, 
-                                const XQType* aTargetType,
-                                namespace_context* aNCtx) const
+bool GenericCast::cast(
+    store::Item_t& result,
+    store::Item* aItem, 
+    const XQType* aTargetType,
+    namespace_context* aNCtx) const
 {
   RootTypeManager& lTS = GENV_TYPESYSTEM;
   store::ItemFactory* lFactory = GENV_ITEMFACTORY;

@@ -208,32 +208,35 @@ public:
 class DateTimeItemNaive : public AtomicItem
 {
 protected:
-  DateTime_t theValue;
+  DateTime theValue;
 
 public:
   static int createFromDateAndTime(
-        const xqp_date& date,
-        const xqp_time& time,
+        const xqp_date* date,
+        const xqp_time* time,
         store::Item_t& item);
 
-  DateTimeItemNaive(xqp_dateTime& aValue) : theValue(aValue) { };
+  DateTimeItemNaive(const DateTime* aValue) : theValue(*aValue) { };
   
-  virtual xqpStringStore_t getStringValue() const;
+  xqp_dateTime* getDateTimeValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  xqp_date* getDateValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  xqp_time* getTimeValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  xqp_gYearMonth* getGYearMonthValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  xqp_gYear* getGYearValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  xqp_gMonth* getGMonthValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  xqp_gMonthDay* getGMonthDayValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  xqp_gDay* getGDayValue() const { return const_cast<xqp_dateTime*>(&theValue); }
   
-  virtual xqp_dateTime getDateTimeValue() const { return theValue; }
-  virtual xqp_date getDateValue() const { return theValue; }
-  virtual xqp_time getTimeValue() const { return theValue; }
-  virtual xqp_gYearMonth getGYearMonthValue() const { return theValue; }
-  virtual xqp_gYear getGYearValue() const { return theValue; }
-  virtual xqp_gMonth getGMonthValue() const { return theValue; }
-  virtual xqp_gMonthDay getGMonthDayValue() const { return theValue; }
-  virtual xqp_gDay getGDayValue() const { return theValue; }
-  
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual store::Item_t getEBV( ) const;
-  virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual xqp_string show() const;
+  store::Item* getType() const;
+
+  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
+
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue() const;
+
+  xqp_string show() const;
 
 protected:
   DateTimeItemNaive() { };

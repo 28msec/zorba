@@ -130,32 +130,12 @@ public:
   virtual bool createByte ( Item_t& result, xqp_byte value ) = 0;
 
 
-  virtual bool createDate ( Item_t& result, xqp_date& value ) = 0;
-  
-  /**
-   * @param year
-   * @param month
-   * @param day
-   */
-  virtual bool createDate ( Item_t& result, short year, short month, short day ) = 0;
+  virtual bool createDateTime(
+        Item_t& result,
+        const xqp_dateTime* value) = 0;
 
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#date]
-   * @param value string representation of the value
-   */
-  virtual bool createDate ( Item_t& result, const xqp_string& value ) = 0;
-
-  virtual bool createDateTime(Item_t& result, xqp_dateTime& value) = 0;
-            
-  /**
-   * @param year
-   * @param month
-   * @param day
-   * @param hour
-   * @param minute
-   * @param second
-   */
-  virtual bool createDateTime (Item_t& result,  
+  virtual bool createDateTime(
+        Item_t& result,  
         short year,
         short month,
         short day,
@@ -172,15 +152,17 @@ public:
    * @param second
    * @param timeZone_hours Difference in hours to UTC
    */
-  virtual bool createDateTime (Item_t& result,  
-      short year , short month, short day,
-      short hour, short minute, double second, short timeZone_hours) = 0;
+  virtual bool createDateTime(
+        Item_t& result,  
+        short year , short month, short day,
+        short hour, short minute, double second,
+        short timeZone_hours) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#dateTime]
    * @param value string representation of the value
    */
-  virtual bool createDateTime ( Item_t& result, const xqp_string& value ) = 0;
+  virtual bool createDateTime(Item_t& result, const xqp_string& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xpath-functions/] Section 5.2
@@ -188,7 +170,118 @@ public:
    * @param xs:date Item (might be NULL)
    * @param xs:time Item (might be NULL)
    */
-  virtual bool createDateTime ( Item_t& result, const Item_t&, const Item_t& ) = 0;
+  virtual bool createDateTime(Item_t& result, const Item_t&, const Item_t&) = 0;
+
+
+  virtual bool createDate(Item_t& result, const xqp_date* value) = 0;
+  
+  /**
+   * @param year
+   * @param month
+   * @param day
+   */
+  virtual bool createDate ( Item_t& result, short year, short month, short day ) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#date]
+   * @param value string representation of the value
+   */
+  virtual bool createDate ( Item_t& result, const xqp_string& value ) = 0;
+
+  /**
+   *
+   */
+  virtual bool createTime(Item_t& result, const xqp_time* value) = 0;
+  
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
+   * @param value string representation of the value
+   */
+  virtual bool createTime(Item_t& result, const xqp_string& value) = 0;
+
+  /**
+   * @param hour
+   * @param minute
+   * @param second
+   */
+  virtual bool createTime(Item_t& result, short hour, short minute, double second) = 0;
+
+  /**
+   * @param hour
+   * @param minute
+   * @param second
+   * @param timeZone_hours Difference in hours to UTC
+   */
+  virtual bool createTime(Item_t& result, short hour, short minute, double second, short timeZone_hours) = 0;
+
+
+  virtual bool createGDay ( Item_t& result, const xqp_gDay* value ) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#gDay]
+   * @param value string representation of the value
+   */
+  virtual bool createGDay(Item_t& result, const xqp_string& value) = 0;
+
+  /**
+   * @param day
+   */
+  virtual bool createGDay(Item_t& result, short day) = 0;
+
+  virtual bool createGMonth(Item_t& result, const xqp_gMonth* value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonth]
+   * @param value string representation of the value
+   */
+  virtual bool createGMonth(Item_t& result, const xqp_string& value) = 0;
+
+  /**
+   * @param month
+   */
+  virtual bool createGMonth(Item_t& result, short month) = 0;
+
+  virtual bool createGMonthDay(Item_t& result, const xqp_gMonthDay* value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonthDay]
+   * @param value string representation of the value
+   */
+  virtual bool createGMonthDay(Item_t& result, const xqp_string& value) = 0;
+
+  /**
+   * @param month
+   * @param day
+   */
+  virtual bool createGMonthDay(Item_t& result, short month, short day) = 0;
+
+  virtual bool createGYear(Item_t& result, const xqp_gYear* value) = 0;
+  
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#gYear]
+   * @param value string representation of the value
+   */
+  virtual bool createGYear(Item_t& result, const xqp_string& value) = 0;
+
+  /**
+   * @param year
+   */
+  virtual bool createGYear(Item_t& result, short year) = 0;
+
+  virtual bool createGYearMonth(Item_t& result, const xqp_gYearMonth* value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
+   * @param value string representation of the value
+   */
+  virtual bool createGYearMonth(Item_t& result, const xqp_string& value) = 0;
+
+  /**
+   * @param year
+   * @param month
+   */
+  virtual bool createGYearMonth(Item_t& result, short year, short month) = 0;
+
 
   /**
    * @param value double value
@@ -235,73 +328,6 @@ public:
    * @param value
    */
   virtual bool createFloat ( Item_t& result, xqp_float value ) = 0;
-
-  virtual bool createGDay ( Item_t& result, xqp_gDay& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#gDay]
-   * @param value string representation of the value
-   */
-  virtual bool createGDay ( Item_t& result, const xqp_string& value ) = 0;
-
-  /**
-   * @param day
-   */
-  virtual bool createGDay ( Item_t& result, short day ) = 0;
-
-  virtual bool createGMonth ( Item_t& result, xqp_gMonth& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonth]
-   * @param value string representation of the value
-   */
-  virtual bool createGMonth ( Item_t& result, const xqp_string& value ) = 0;
-
-  /**
-   * @param month
-   */
-  virtual bool createGMonth ( Item_t& result, short month ) = 0;
-
-  virtual bool createGMonthDay ( Item_t& result, xqp_gMonthDay& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonthDay]
-   * @param value string representation of the value
-   */
-  virtual bool createGMonthDay ( Item_t& result, const xqp_string& value ) = 0;
-
-  /**
-   * @param month
-   * @param day
-   */
-  virtual bool createGMonthDay ( Item_t& result, short month, short day ) = 0;
-
-  virtual bool createGYear ( Item_t& result, xqp_gYear& value ) = 0;
-  
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#gYear]
-   * @param value string representation of the value
-   */
-  virtual bool createGYear ( Item_t& result, const xqp_string& value ) = 0;
-
-  /**
-   * @param year
-   */
-  virtual bool createGYear ( Item_t& result, short year ) = 0;
-
-  virtual bool createGYearMonth ( Item_t& result, xqp_gYearMonth& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
-   * @param value string representation of the value
-   */
-  virtual bool createGYearMonth ( Item_t& result, const xqp_string& value ) = 0;
-
-  /**
-   * @param year
-   * @param month
-   */
-  virtual bool createGYearMonth ( Item_t& result, short year, short month ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
@@ -387,28 +413,6 @@ public:
    */
   virtual bool createPositiveInteger(Item_t& result, xqp_uinteger value) = 0;
 
-  virtual bool createTime(Item_t& result, xqp_time& value) = 0;
-  
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
-   * @param value string representation of the value
-   */
-  virtual bool createTime(Item_t& result, const xqp_string& value) = 0;
-
-  /**
-   * @param hour
-   * @param minute
-   * @param second
-   */
-  virtual bool createTime(Item_t& result, short hour, short minute, double second) = 0;
-
-  /**
-   * @param hour
-   * @param minute
-   * @param second
-   * @param timeZone_hours Difference in hours to UTC
-   */
-  virtual bool createTime(Item_t& result, short hour, short minute, double second, short timeZone_hours) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#token]
