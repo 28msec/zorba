@@ -255,8 +255,10 @@ FnDistinctValuesIterator::~FnDistinctValuesIterator()
 {
 }
 
+
 bool 
-FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t lItem;
   xqtref_t lItemType;
   XQPCollator* lCollator;
@@ -293,29 +295,39 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
+
+FnDistinctValuesIteratorState::FnDistinctValuesIteratorState()
+  :
+  theHasNaN (false),
+  theAlreadySeenMap(0)
+{
+}
+
+
+FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() 
+{
+  if (theAlreadySeenMap) 
+  {
+    delete theAlreadySeenMap;
+    theAlreadySeenMap = 0;
+  }
+}
+
+
 void
 FnDistinctValuesIteratorState::init(PlanState& planState) 
 {
   PlanIteratorState::init(planState);
 }
 
+
 void
-FnDistinctValuesIteratorState::reset(PlanState& planState) {
+FnDistinctValuesIteratorState::reset(PlanState& planState) 
+{
   PlanIteratorState::reset(planState);
   theHasNaN = false;
-  theAlreadySeenMap->clear();
-}
-
-FnDistinctValuesIteratorState::FnDistinctValuesIteratorState()
-  : theHasNaN (false),
-    theAlreadySeenMap(0) {}
-
-FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() 
-{
-  if (theAlreadySeenMap) {
-    delete theAlreadySeenMap;
-    theAlreadySeenMap = 0;
-  }
+  if (theAlreadySeenMap)
+    theAlreadySeenMap->clear();
 }
 
 
