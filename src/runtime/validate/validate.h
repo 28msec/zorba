@@ -57,7 +57,7 @@ namespace zorba
             PlanState& planState, const PlanIterator* iter, bool isLax);
 
         static store::Iterator_t processChildren ( PlanState& planState, const QueryLoc& loc,
-            SchemaValidator& schemaValidator, store::Iterator_t children);
+            SchemaValidator& schemaValidator, store::Item_t parernt, store::Iterator_t children);
 
         static void processNamespaces ( SchemaValidator& schemaValidator, 
             store::Item_t item);

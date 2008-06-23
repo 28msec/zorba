@@ -106,7 +106,6 @@ namespace zorba
 
             xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
                 final_baseuri().getStore();
-            store::CopyMode copymode;
 
             SchemaValidator schemaValidator = SchemaValidator(schema->getGrammarPool(), isLax, loc);
             
@@ -119,9 +118,9 @@ namespace zorba
 
                 schemaValidator.startDoc();
                 store::Iterator_t atts = processChildren( planState, loc, schemaValidator,
-                    item->getAttributes() );
+                    item, item->getAttributes() );
                 store::Iterator_t children = processChildren( planState, loc, schemaValidator,
-                    item->getChildren() );
+                    item, item->getChildren() );
 
                 //GENV_ITEMFACTORY->createDocumentNode(result, (ulong)&planState, baseUri, children);
 
@@ -143,15 +142,20 @@ namespace zorba
                 schemaValidator.startElem(nodeName);
 
 
+                store::Item_t newElem;
+                store::NsBindings bindings;
+                item->getNamespaceBindings(bindings);
+                store::Item_t elemName = item->getNodeName();
+                GENV_ITEMFACTORY->createElementNode(newElem, NULL, 0, elemName, typeName, 
+                    bindings, baseUri, true);
+
+
                 processNamespaces( schemaValidator, item);
                 store::Iterator_t attributesIterator = processChildren(planState, loc, schemaValidator, 
-                    item->getAttributes());
+                    newElem, item->getAttributes());
                 store::Iterator_t childrenIterator = processChildren(planState, loc, schemaValidator, 
-                    item->getChildren());
+                    newElem, item->getChildren());
 
-                //GENV_ITEMFACTORY->createElementNode(result, (ulong)&planState, nodeName, typeName, 
-                //   childrenIterator, attributesIterator, NULL, bindings, baseUri, true, true, false, 
-                //    copymode);
 
                 schemaValidator.endElem(nodeName);
                 schemaValidator.endDoc();
@@ -159,28 +163,31 @@ namespace zorba
                 //std::cout << "End Validate" << "\n"; std::cout.flush();
                 //break;
                 result = item;
+                //result = newElem;
                 return true;
             }
             default:
                 ZORBA_ERROR_LOC_DESC( XQDY0061, loc, 
                     "Argument in validate expression not a document or element node.");
+                returnVal = false;
+                result = NULL;
             }
         }
         else
         {
             ZORBA_ERROR_LOC_DESC( XQDY0061, loc, "Argument in validate expression not a document node.");
+            returnVal = false;
+            result = NULL;
         }
 
-        result = NULL;
         return returnVal;
     }
 
 
     store::Iterator_t ValidateIterator::processChildren ( PlanState& planState, const QueryLoc& loc,
-        SchemaValidator& schemaValidator, store::Iterator_t children)
+        SchemaValidator& schemaValidator, store::Item_t parent, store::Iterator_t children)
     {
         store::Item_t child;
-        std::vector<store::Item_t> processedChildren;
 
         xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
         store::NsBindings bindings;
@@ -206,17 +213,20 @@ namespace zorba
 
                         schemaValidator.startElem(nodeName);
 
+
+                        store::Item_t newElem;
+                        store::NsBindings bindings;
+                        child->getNamespaceBindings(bindings);
+                        store::Item_t elemName = child->getNodeName();
+                        GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName, typeName, 
+                            bindings, baseUri, true);
+
                         processNamespaces(schemaValidator, child);
 
                         store::Iterator_t attributesIterator = processChildren(planState, loc, 
-                            schemaValidator, child->getAttributes());
+                            schemaValidator, child, child->getAttributes());
                         store::Iterator_t childrenIterator = processChildren(planState, loc,
-                            schemaValidator, child->getChildren());
-
-                        //GENV_ITEMFACTORY->createElementNode(result, (ulong)&planState, nodeName, typeName, 
-                        //    childrenIterator, attributesIterator, NULL, bindings, baseUri, false, false, 
-                        //    false, copymode);
-                        //result = child;
+                            schemaValidator, child, child->getChildren());
 
                         schemaValidator.endElem(nodeName);
                     }
@@ -229,16 +239,9 @@ namespace zorba
                         
                         store::Item_t attName = child->getNodeName();
                         schemaValidator.attr(attName, child->getStringValue());
-
-                        std::vector<store::Item_t> attNameVector;
-                        attNameVector.push_back(attName);
-                        store::Iterator_t attNameIterator = new ItemIterator(attNameVector);
-                        //new SingletonIterator(loc, attName); 
-                        
+                       
                         //GENV_ITEMFACTORY->createAttributeNode(result, (ulong)&planState, attNameIterator,
-                        //    typeName, child->getTypedValue(), false, false);
-                        
-                        //result = child;
+                        //    typeName, child->getTypedValue(), false, false);                        
                     }
                     break;
                 
@@ -255,14 +258,8 @@ namespace zorba
 
                         store::Item_t stringItem;
                         //GENV_ITEMFACTORY->createString(stringItem, child->getStringValue());
-                        store::Iterator_t stringIterator = new ItemIterator(stringItem);
-                        stringIterator->open();
-
                         //GENV_ITEMFACTORY->createTextNode(result, (ulong)&planState, stringIterator,
                         //    true, false);
-
-                        stringIterator->close();
-                        //result = child;
                     }
                     break;
                 
@@ -285,13 +282,8 @@ namespace zorba
                     ZORBA_ASSERT(false);
                 }
             }
-            
-            processedChildren.push_back(result);
         }
        
-        //store::Iterator_t resultIterator = new ItemIterator(processedChildren);       
-        
-        //return resultIterator;
         return children;
     }
 
