@@ -47,7 +47,7 @@ const int SIZE_OF_REPLY_CONTENT = 2;
 
 /* Flags */
 const Flags NULL_FLAG = 0x0;
-const Flags REPLY_FLAG = 8;
+const Flags REPLY_FLAG = 0x80;
 
 /* CommandSet */
 const CommandSet EXECUTION    = 0xf1;
