@@ -26,7 +26,6 @@
 #include <zorba/debugger_client.h>
 
 #include "debugger/debugger_common.h"
-#include "debugger/remote_dynamic_context.h"
 
 namespace zorba{
 
@@ -37,7 +36,7 @@ namespace zorba{
 
   class ZorbaDebuggerClientImpl: public ZorbaDebuggerClient
   {
-    friend bool RemoteDynamicContext::setVariable( const String& aQName, const Item& aItem );
+    //friend bool RemoteDynamicContext::setVariable( const String& aQName, const Item& aItem );
 
     public:
 

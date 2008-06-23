@@ -168,6 +168,11 @@ bool ReplyMessage::isValidMessage() const
   return true;
 }
 
+bool ReplyMessage::isOk() const
+{
+  return getErrorCode() == DEBUGGER_NO_ERROR;
+}
+
 unsigned long AbstractCommandMessage::theLastId = 0;
 
 /**

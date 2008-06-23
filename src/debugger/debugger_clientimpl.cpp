@@ -36,26 +36,15 @@ namespace zorba{
 
   ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno )
   :
-    theEventHandler(0), theRequestSocket(0), theEventServerSocket(0), theExecutionStatus( QUERY_IDLE ) 
+    theEventHandler(0), 
+    theRequestSocket( new TCPSocket( "127.0.0.1", aRequestPortno ) ),
+    theEventServerSocket( new TCPServerSocket( aEventPortno ) ),
+    theExecutionStatus( QUERY_IDLE ) 
   {
-    //try
-    //{ 
-      //Start the Event Server Socket
-      theEventServerSocket = new TCPServerSocket( aEventPortno );
-      //Connect the Request Client Socket
-      theRequestSocket = new TCPSocket( "127.0.0.1", aRequestPortno );
-      //Perform the handshake with the server
-      handshake();
-      //Start the event listener thread
-      boost::thread theEventListener (
-        boost::bind( &ZorbaDebuggerClientImpl::listenEvents,  this ) );
-    //} catch ( SocketException &e ) {
-      //std::cerr << e.what() << std::endl;
-      //std::cerr << "Host: localhost" << std::endl;
-      //std::cerr << "Request port: " << aRequestPortno << std::endl;
-      //std::cerr << "Event port: " << aEventPortno << std::endl;
-    //}
-    //delete theRequestSocket;
+    //Perform the handshake with the server
+    handshake();
+    //Start the event listener thread
+    boost::thread theEventListener ( boost::bind( &ZorbaDebuggerClientImpl::listenEvents,  this ) );
   }
 
   ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
@@ -158,7 +147,20 @@ namespace zorba{
     Byte * lMessage = aMessage->serialize( length );
     try
     {
+      //send the command
       theRequestSocket->send( lMessage, length );
+      //check the reply
+      AbstractMessage * lMessage = MessageFactory::buildMessage( theRequestSocket );
+      ReplyMessage * lReplyMessage = dynamic_cast< ReplyMessage * >( lMessage );
+      if ( lReplyMessage )
+      {
+        if( ! lReplyMessage->isOk() )
+        {
+          std::cerr << "Error occured: " << lReplyMessage->getMessage() << std::endl;
+        }
+      } else {
+        std::cerr << "Internal error occured" << std::endl;
+      }
     } catch( SocketException &e ) {
       std::cerr << "Request client:" << e.what() << std::endl;
     }

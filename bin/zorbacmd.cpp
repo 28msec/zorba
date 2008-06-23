@@ -275,12 +275,15 @@ int _tmain(int argc, _TCHAR* argv[])
   // debug server
   if ( lProperties.debugServer() )
   {
+    std::cout << "Zorba XQuery debugger server." << std::endl;
+    std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
+    std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
     server( qfile.get(), fname, lProperties.requestPort(), lProperties.eventPort() );
   }
   // debug client
   if ( lProperties.debugClient() )
   {
-    std::cout << "Zorba XQuery debugger." << std::endl;
+    std::cout << "Zorba XQuery debugger client." << std::endl;
     std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
     std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
 

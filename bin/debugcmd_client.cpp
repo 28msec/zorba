@@ -105,6 +105,7 @@ void debugcmd_client( std::istream & anInput,
     if ( lCommand == "q" || lCommand == "quit" )
     {
       lDebuggerClient->terminate();
+      exit(7);
     } else if  ( lCommand == "b" || lCommand == "break" ) {
      
       if ( lArgs.size() < 2 )

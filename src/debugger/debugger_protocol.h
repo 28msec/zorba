@@ -88,12 +88,11 @@ const Command COLLECTIONS = 0x06;
 const Command COLLECTION  = 0x07;
 
 /* Error codes */
-const ErrorCode DEBUGGER_NO_ERROR                      = 0x01;
-const ErrorCode DEBUGGER_ERROR_EMPTY                   = 0x02;
-const ErrorCode DEBUGGER_ERROR_UNKNOWN                 = 0x03;
-const ErrorCode DEBUGGER_ERROR_INVALID_COMMAND         = 0x04;
-const ErrorCode DEBUGGER_ERROR_COMMAND_NOT_IMPLEMENTED = 0x05;
-const ErrorCode DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT  = 0x06;
+const ErrorCode DEBUGGER_NO_ERROR                      = 0;
+const ErrorCode DEBUGGER_ERROR_UNKNOWN                 = 1;
+const ErrorCode DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT  = 11;
+const ErrorCode DEBUGGER_ERROR_INVALID_COMMAND         = 12;
+const ErrorCode DEBUGGER_ERROR_COMMAND_NOT_IMPLEMENTED = 13;
 
 /**
  * The header of the packet (containning the length of the whole packet) 
@@ -239,6 +238,8 @@ class ReplyMessage: public AbstractMessage
     
     Byte * serialize( Length & aLength ) const;
 
+    bool isOk() const;
+    
     const ErrorCode getErrorCode() const
     {
       return uint_swap( theReplyContent->theErrorCode );
@@ -248,15 +249,13 @@ class ReplyMessage: public AbstractMessage
     {
       theReplyContent->theErrorCode = uint_swap(aErrorCode);
     }
-
+    
     const std::string getMessage()
     {
       switch ( getErrorCode() )
       {
         case DEBUGGER_NO_ERROR:
           return "No error";
-        case DEBUGGER_ERROR_EMPTY:
-          return "Error empy";
         case DEBUGGER_ERROR_INVALID_COMMAND:
           return "Invalid Command";
         case DEBUGGER_ERROR_COMMAND_NOT_IMPLEMENTED:
