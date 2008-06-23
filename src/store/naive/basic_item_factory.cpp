@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-#include "common/common.h"
+#include "zorbamisc/config/platform.h"
 
-#include "store/api/iterator.h"
 #include "zorbaerrors/error_manager.h"
-#include "system/globalenv.h"
 #include "zorbaerrors/Assert.h"
+#include "zorbatypes/datetime.h"
 
-#include "store/api/temp_seq.h"
+#include "store/api/collection.h"
 #include "store/api/copymode.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
@@ -29,12 +28,11 @@
 #include "store/naive/query_context.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
+#include "store/naive/node_iterators.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_pul.h"
 #include "store/naive/qname_pool.h"
-#include "store/api/collection.h"
 #include "store/naive/string_pool.h"
-#include "zorbatypes/datetime.h"
 
 
 namespace zorba { namespace simplestore {
@@ -960,12 +958,10 @@ bool BasicItemFactory::createAttributeNode(
     long              pos,
     store::Item_t&    nodeName,
     store::Item_t&    typeName,
-    xqpStringStore_t& stringValue)
+    store::Item_t&    typedValue)
 {
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
-
-  store::Item_t typedValue = new UntypedAtomicItemImpl(stringValue);
 
   XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
 
@@ -1148,6 +1144,25 @@ store::PUL* BasicItemFactory::createPendingUpdateList()
 {
   return new PULImpl();
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::ChildrenIterator* BasicItemFactory::createChildrenIterator()
+{
+  return static_cast<store::ChildrenIterator*>(new ChildrenIteratorImpl());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::AttributesIterator* BasicItemFactory::createAttributesIterator()
+{
+  return new AttributesIteratorImpl();
+}
+
 
 
 } // namespace store

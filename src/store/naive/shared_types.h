@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "common/shared_types.h"
 
-namespace zorba {
+#include "zorbamisc/config/platform.h"
+
+namespace zorba 
+{
   
-  namespace store {
-    class XmlTree;
-    typedef rchandle<XmlTree> XmlTree_t;
-    class XmlNode;
-    typedef rchandle<class XmlNode> XmlNode_t;
-  }
+namespace simplestore 
+{
+  class XmlTree;
+  typedef rchandle<XmlTree> XmlTree_t;
+  class XmlNode;
+  typedef rchandle<class XmlNode> XmlNode_t;
+}
+
 }

@@ -462,6 +462,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   store::Item_t valueItem;
   xqpStringStore_t lexicalValue;
+  store::Item_t typedValue;
   store::Item* parent;
   std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
 
@@ -504,13 +505,17 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     lexicalValue = new xqpStringStore("");
   }
   
+  GENV_ITEMFACTORY->createUntypedAtomic(typedValue, lexicalValue);
+
   // Create the attribute node
   ZORBA_FATAL(theIsRoot || !path.empty(), "");
 
   parent = (theIsRoot ? NULL : path.top());
 
-  GENV_ITEMFACTORY->createAttributeNode(result, parent, -1, name, typeName,
-                                        lexicalValue);
+  GENV_ITEMFACTORY->createAttributeNode(result, parent, -1,
+                                        name,
+                                        typeName,
+                                        typedValue);
 
   STACK_PUSH(true, state);
   STACK_END (state);

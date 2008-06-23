@@ -71,6 +71,8 @@ protected:
 
   error::ErrorManager            * theErrorManager;
 
+  long                             theTraceLevel;
+
 public:
   XmlLoader(store::ItemFactory* factory, error::ErrorManager*);
 

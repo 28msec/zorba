@@ -29,6 +29,7 @@ SET(SIMPLE_STORE_SRCS
     qname_pool.cpp
     simple_store.cpp
     simple_loader.cpp
+    fast_loader.cpp
     simple_pul.cpp
     ordpath.cpp
     nsbindings.cpp

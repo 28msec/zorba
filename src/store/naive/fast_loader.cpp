@@ -28,7 +28,7 @@
 
 #include "store/naive/string_pool.h"
 #include "store/naive/simple_store.h"
-#include "store/naive/simple_loader.h"
+#include "store/naive/fast_loader.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
 #include "store/naive/store_defs.h"
@@ -38,7 +38,7 @@
 #include "zorbatypes/datetime.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { namespace simplestore {
 
 #ifndef NDEBUG
 
@@ -70,7 +70,7 @@ int traceLevel = 0;
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
+FastXmlLoader::FastXmlLoader(error::ErrorManager* aErrorManager)
 :
   theBaseUri(NULL),
   theDocUri(NULL),
@@ -82,23 +82,23 @@ XmlLoader::XmlLoader(error::ErrorManager* aErrorManager)
 
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
-  theSaxHandler.startDocument = &XmlLoader::startDocument;
-  theSaxHandler.endDocument = &XmlLoader::endDocument;
-  theSaxHandler.startElementNs = &XmlLoader::startElement;
-  theSaxHandler.endElementNs = &XmlLoader::endElement;
-  theSaxHandler.characters = &XmlLoader::characters;
-  theSaxHandler.cdataBlock = &XmlLoader::cdataBlock;
-  theSaxHandler.comment = &XmlLoader::comment;
-  theSaxHandler.processingInstruction = &XmlLoader::processingInstruction;
-  theSaxHandler.warning = &XmlLoader::warning;
-  theSaxHandler.error = &XmlLoader::error;
+  theSaxHandler.startDocument = &FastXmlLoader::startDocument;
+  theSaxHandler.endDocument = &FastXmlLoader::endDocument;
+  theSaxHandler.startElementNs = &FastXmlLoader::startElement;
+  theSaxHandler.endElementNs = &FastXmlLoader::endElement;
+  theSaxHandler.characters = &FastXmlLoader::characters;
+  theSaxHandler.cdataBlock = &FastXmlLoader::cdataBlock;
+  theSaxHandler.comment = &FastXmlLoader::comment;
+  theSaxHandler.processingInstruction = &FastXmlLoader::processingInstruction;
+  theSaxHandler.warning = &FastXmlLoader::warning;
+  theSaxHandler.error = &FastXmlLoader::error;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader::~XmlLoader()
+FastXmlLoader::~FastXmlLoader()
 {
 }
 
@@ -106,7 +106,7 @@ XmlLoader::~XmlLoader()
 /*******************************************************************************
   Method called to do cleanup in case of errors.
 ********************************************************************************/
-void XmlLoader::abortload()
+void FastXmlLoader::abortload()
 {
   theBaseUri = NULL;
   theDocUri = NULL;
@@ -142,7 +142,7 @@ void XmlLoader::abortload()
 /*******************************************************************************
   Method used to reset the loader so it can be used to load another document.
 ********************************************************************************/
-void XmlLoader::reset()
+void FastXmlLoader::reset()
 {
   theBaseUri = NULL;
   theDocUri = NULL;
@@ -163,7 +163,7 @@ void XmlLoader::reset()
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlLoader::setRoot(XmlNode* root)
+void FastXmlLoader::setRoot(XmlNode* root)
 {
   theRootNode = root;
   theTree->setRoot(root);
@@ -175,7 +175,7 @@ void XmlLoader::setRoot(XmlNode* root)
   Return the number of bytes actually read, throw an exception if any I/O
   error occured.
 ********************************************************************************/
-long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
+long FastXmlLoader::readPacket(std::istream& stream, char* buf, long size)
 {
   try
   {
@@ -209,7 +209,7 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 /*******************************************************************************
 
 ********************************************************************************/
-XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
+XmlNode* FastXmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
   long numChars;
@@ -309,9 +309,9 @@ XmlNode* XmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
 
   ctx: the user data (XML parser context)
 ********************************************************************************/
-void XmlLoader::startDocument(void * ctx)
+void FastXmlLoader::startDocument(void * ctx)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   xqpStringStore_t docUri = loader.theDocUri;
@@ -324,7 +324,7 @@ void XmlLoader::startDocument(void * ctx)
     docUri = new xqpStringStore(uristream.str().c_str());
   }
 
-  LoadedDocumentNode* docNode = new LoadedDocumentNode(baseUri, docUri);
+  DocumentTreeNode* docNode = new DocumentTreeNode(baseUri, docUri);
 
   loader.setRoot(docNode);
   loader.theNodeStack.push(docNode);
@@ -343,9 +343,9 @@ void XmlLoader::startDocument(void * ctx)
 
   ctx: the user data (XML parser context)
 ********************************************************************************/
-void XmlLoader::endDocument(void * ctx)
+void FastXmlLoader::endDocument(void * ctx)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   // This check is required because it is possible (in case of mal-formed doc)
@@ -365,7 +365,7 @@ void XmlLoader::endDocument(void * ctx)
   }
   loader.theNodeStack.pop();
 
-  LoadedDocumentNode* docNode = dynamic_cast<LoadedDocumentNode*>(loader.theNodeStack.top());
+  DocumentTreeNode* docNode = dynamic_cast<DocumentTreeNode*>(loader.theNodeStack.top());
   ZORBA_ASSERT(docNode != NULL);
 
   NodeVector& children = docNode->children();
@@ -402,7 +402,7 @@ void XmlLoader::endDocument(void * ctx)
  attributes:     pointer to the array of (localname/prefix/URI/value/end)
                  attribute values.
 ********************************************************************************/
-void XmlLoader::startElement(
+void FastXmlLoader::startElement(
     void * ctx, 
     const xmlChar * lname, 
     const xmlChar * prefix, 
@@ -414,7 +414,7 @@ void XmlLoader::startElement(
     const xmlChar ** attributes)
 {
   SimpleStore& store = GET_STORE();
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
   QNamePool& qnpool = store.getQNamePool();
 
@@ -422,16 +422,16 @@ void XmlLoader::startElement(
   ulong numBindings = (ulong)numNamespaces;
 
   // Construct node name and type
-  Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
-                               reinterpret_cast<const char*>(prefix),
-                               reinterpret_cast<const char*>(lname));
-  Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
+  store::Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
+                                      reinterpret_cast<const char*>(prefix),
+                                      reinterpret_cast<const char*>(lname));
+  store::Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
 
   // Create the element node and push it to the node stack
-  LoadedElementNode* elemNode = new LoadedElementNode(qname,
-                                                      tname,
-                                                      numBindings,
-                                                      numAttributes);
+  ElementTreeNode* elemNode = new ElementTreeNode(qname,
+                                                  tname,
+                                                  numBindings,
+                                                  numAttributes);
   if (loader.theNodeStack.empty())
     loader.setRoot(elemNode);
 
@@ -453,7 +453,7 @@ void XmlLoader::startElement(
   // Process namespace bindings
   if (numBindings > 0)
   {
-    NsBindings& bindings = elemNode->getNsContext()->getBindings();
+    store::NsBindings& bindings = elemNode->getNsContext()->getBindings();
 
     for (ulong i = 0; i < numBindings; ++i)
     {
@@ -489,11 +489,11 @@ void XmlLoader::startElement(
       const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
       const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
-      Item_t qname = qnpool.insert(uri, prefix, lname);
+      store::Item_t qname = qnpool.insert(uri, prefix, lname);
       xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
 
-      Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-      Item_t typedValue = new UntypedAtomicItemImpl(value);
+      store::Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+      store::Item_t typedValue = new UntypedAtomicItemImpl(value);
 
       AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
       attrNode->theParent = elemNode;
@@ -525,13 +525,13 @@ void XmlLoader::startElement(
   prefix:    the element namespace prefix if available
   URI:       the element namespace name if available
 ********************************************************************************/
-void  XmlLoader::endElement(
+void  FastXmlLoader::endElement(
     void * ctx, 
     const xmlChar * localName, 
     const xmlChar * prefix, 
     const xmlChar * uri)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   // Collect the children of this element node from the node stack
@@ -541,9 +541,9 @@ void  XmlLoader::endElement(
   XmlNode* currChild = loader.theNodeStack.top();
   while (currChild != NULL)
   {
-    if (currChild->getNodeKind() == StoreConsts::textNode &&
+    if (currChild->getNodeKind() == store::StoreConsts::textNode &&
         prevChild != NULL &&
-        prevChild->getNodeKind() == StoreConsts::textNode)
+        prevChild->getNodeKind() == store::StoreConsts::textNode)
     {
       TextNode* textNode = reinterpret_cast<TextNode*>(prevChild);
       textNode->theContent = new xqpStringStore(currChild->getStringValueP()->str() +
@@ -562,7 +562,7 @@ void  XmlLoader::endElement(
   loader.theNodeStack.pop();
 
   // The element node is now at the top of the stack
-  LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>(loader.theNodeStack.top());
+  ElementTreeNode* elemNode = dynamic_cast<ElementTreeNode*>(loader.theNodeStack.top());
   ZORBA_ASSERT(elemNode != NULL);
 
   LOADER_TRACE2("End Element: node = " << elemNode << " name ["
@@ -586,7 +586,7 @@ void  XmlLoader::endElement(
     children.set(currChild, i, false);
     currChild->setParent(elemNode);
 
-    if (currChild->getNodeKind() == StoreConsts::elementNode)
+    if (currChild->getNodeKind() == store::StoreConsts::elementNode)
     {
       if (!loader.theBindingsStack.empty())
         currChild->setNsContext(loader.theBindingsStack.top());
@@ -612,9 +612,9 @@ void  XmlLoader::endElement(
   ch:  a xmlChar string
   len: the number of xmlChar
 ********************************************************************************/
-void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
+void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   const char* charp = reinterpret_cast<const char*>(ch);
@@ -645,9 +645,9 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   ch:  a xmlChar string
   len: the number of xmlChar
 ********************************************************************************/
-void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
+void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   const char* charp = reinterpret_cast<const char*>(ch);
@@ -677,12 +677,12 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   ctx: the user data (XML parser context)
 
 ********************************************************************************/
-void XmlLoader::processingInstruction(
+void FastXmlLoader::processingInstruction(
     void * ctx, 
     const xmlChar * targetp, 
     const xmlChar * data)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
@@ -712,9 +712,9 @@ void XmlLoader::processingInstruction(
   ctx: the user data (XML parser context)
   content:  the comment content
 ********************************************************************************/
-void XmlLoader::comment(void * ctx, const xmlChar * ch)
+void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   const char* charp = reinterpret_cast<const char*>(ch);
@@ -745,9 +745,9 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
 ********************************************************************************/
-void  XmlLoader::error(void * ctx, const char * msg, ... )
+void  FastXmlLoader::error(void * ctx, const char * msg, ... )
 {
-  XmlLoader* loader = (static_cast<XmlLoader *>(ctx));
+  FastXmlLoader* loader = (static_cast<FastXmlLoader *>(ctx));
   char buf[1024];
   va_list args;
   va_start(args, msg);
@@ -765,9 +765,9 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
 ********************************************************************************/
-void  XmlLoader::warning(void * ctx, const char * msg, ... )
+void  FastXmlLoader::warning(void * ctx, const char * msg, ... )
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   char buf[1024];
   va_list args;
   va_start(args, msg);

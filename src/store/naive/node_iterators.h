@@ -16,24 +16,32 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITERATORS
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
-#include "common/shared_types.h"
-
 #include "store/api/iterator.h"
+#include "store/util/hashset_item_handle.h"
 #include "store/naive/shared_types.h"
 #include "store/naive/ordpath.h"
-#include "store/util/hashset_item_handle.h"
+
 
 namespace zorba { namespace simplestore {
 
 
 /*******************************************************************************
-  This iterator is used during the getChildren() method to set the parent
-  pointer and the nodeid in each child node of an element or document node.
-
+  This iterator is used to iterate over the children of a document or element
+  node. It implements the interface of a generic iterator, but also offers the
+  following additional methods:
+ 
+  - An init method that takes as input a document or element node and
+    initializes the iterator so that it will start returning the children of
+    this node.
+  - A next method that returns pointers to the children instead of rchandles.
+    These pointers should not be used beyond the lifetime of the ChildrenIterator
+    object. 
+ 
   theParentNode : The element or doc node whose children are being retrieved.
   theCurrentPos : The next child to be retrieved.
+  theNumChildren: The number of children.
 ********************************************************************************/
-class ChildrenIterator : public store::Iterator
+class ChildrenIteratorImpl : public store::ChildrenIterator
 {
 protected:
   rchandle<XmlNode>  theParentNode;
@@ -42,15 +50,17 @@ protected:
   ulong              theCurrentPos;
 
 public:
-  ChildrenIterator(XmlNode* parent);
+ ChildrenIteratorImpl() : theNumChildren(0), theCurrentPos(0) { }
+
+  void init(store::Item_t& parent);
+  void init(XmlNode* parent);
+
+  store::Item* next();
 
   void open();
   bool next(store::Item_t& result);
   void reset();
   void close();
-
-   store::Item* next();
-   void reset(store::Item_t& parent);
 };
 
 
@@ -62,16 +72,21 @@ public:
   theCurrentPos : The next attribute to be retrieved.
 
 ********************************************************************************/
-class AttributesIterator : public store::Iterator
+class AttributesIteratorImpl : public store::AttributesIterator
 {
 protected:
-  rchandle<ElementNode>  theParentNode;
+  rchandle<XmlNode>  theParentNode;
 
-  unsigned long          theNumAttributes;
-  unsigned long          theCurrentPos;
+  ulong              theNumAttributes;
+  ulong              theCurrentPos;
 
 public:
-  AttributesIterator(ElementNode* parent);
+  AttributesIteratorImpl() : theNumAttributes(0), theCurrentPos(0) { }
+
+  void init(store::Item_t& parent);
+  void init(XmlNode* parent);
+
+  store::Item* next();
 
   void open();
   bool next(store::Item_t& result);

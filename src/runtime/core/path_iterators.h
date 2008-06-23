@@ -141,7 +141,8 @@ public:
 class AttributeAxisState : public AxisState
 {
 public:
-  store::Iterator_t  theAttributes;
+  rchandle<store::AttributesIterator> theAttributes;
+
   AttributeAxisState();
   ~AttributeAxisState();
   void init(PlanState&);
@@ -236,6 +237,7 @@ public:
   store::Item_t  theCurrentAnc;
 };
 
+
 class AncestorSelfAxisIterator : public AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>
 {
 protected:
@@ -262,11 +264,14 @@ class RSiblingAxisState : public AxisState
 {
 public:
   store::Iterator_t  theChildren;
+
   RSiblingAxisState();
   ~RSiblingAxisState();
   void init(PlanState&);
   void reset(PlanState&);
 };
+
+
 class RSiblingAxisIterator : public AxisIterator<RSiblingAxisIterator, RSiblingAxisState>
 {
 public:
@@ -291,11 +296,13 @@ class LSiblingAxisState : public AxisState
 {
 public:
   store::Iterator_t  theChildren;
+
   LSiblingAxisState();
   ~LSiblingAxisState();
   void init(PlanState&);
   void reset(PlanState&);
 };
+
 
 class LSiblingAxisIterator : public AxisIterator<LSiblingAxisIterator, LSiblingAxisState>
 {
@@ -322,7 +329,7 @@ public:
 class ChildAxisState : public AxisState
 {
 public:
-  store::Iterator_t  theChildren;
+  rchandle<store::ChildrenIterator>  theChildren;
 
   ChildAxisState();
   ~ChildAxisState();
@@ -356,11 +363,13 @@ class DescendantAxisState : public AxisState
 {
 public:
   std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
+
   DescendantAxisState();
   ~DescendantAxisState();
   void init(PlanState&);
   void reset(PlanState&);
 };
+
 
 class DescendantAxisIterator : public AxisIterator<DescendantAxisIterator, DescendantAxisState>
 {

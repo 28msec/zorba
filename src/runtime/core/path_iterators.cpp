@@ -17,11 +17,13 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 
+#include "system/globalenv.h"
+
 #include "store/api/item.h"
 #include "store/api/iterator.h"
+#include "store/api/item_factory.h"
 
 #include "runtime/core/path_iterators.h"
-//#include "runtime/visitors/planitervisitor.h"
 
 
 #define MYTRACE(msg) \
@@ -99,6 +101,7 @@ void
 AttributeAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
+  theAttributes = GENV_ITEMFACTORY->createAttributesIterator();
 }
 
 
@@ -131,7 +134,7 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
     }
     while (state->theContextNode->getNodeKind() != store::StoreConsts::elementNode);
 
-    state->theAttributes = state->theContextNode->getAttributes();
+    state->theAttributes->init(state->theContextNode);
     state->theAttributes->open();
 
     while (state->theAttributes->next(result))
@@ -416,6 +419,7 @@ void
 ChildAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
+  theChildren = GENV_ITEMFACTORY->createChildrenIterator();
 }
 
 
@@ -443,22 +447,22 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
+        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                             "The context item of an axis step is not a node");
       }
     }
     while (!isElementOrDocumentNode(state->theContextNode.getp()));
 
-    state->theChildren = state->theContextNode->getChildren();
-    assert (state->theChildren != NULL);
+    state->theChildren->init(state->theContextNode);
     state->theChildren->open();
 
-    while (state->theChildren->next(result))
+    while ((result = state->theChildren->next()) != NULL)
     {
       if (nameOrKindTest(result, planState))
-      {
         STACK_PUSH(true, state);
-      }
     }
+
+    state->theChildren->close();
   }
 
   STACK_END (state);

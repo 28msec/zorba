@@ -115,9 +115,7 @@ public:
 
   Latch& getGlobalLock()                  { return theGlobalLock; }
 
-#ifndef NDEBUG
   long getTraceLevel() const              { return theTraceLevel; }
-#endif
 
   XmlLoader* getXmlLoader(error::ErrorManager*);
 

@@ -111,6 +111,7 @@ class XmlNode : public store::Item
   friend class UpdReplaceAttrValue;
   friend class UpdReplaceTextValue;
   friend class BasicItemFactory;
+  friend class FastXmlLoader;
 
 public:
   enum NodeFlags
@@ -128,6 +129,8 @@ protected:
   XmlNode    * theParent;
 
 public:
+  XmlNode() : Item(), theParent(NULL) { }
+
   XmlNode(
         XmlTree*                     tree,
         XmlNode*                     parent,
@@ -299,6 +302,10 @@ protected:
 
 public:
   DocumentNode(
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
+
+  DocumentNode(
         XmlTree*          tree,
         xqpStringStore_t& baseUri,
         xqpStringStore_t& docUri);
@@ -349,10 +356,16 @@ protected:
 ********************************************************************************/
 class DocumentTreeNode : public DocumentNode
 {
+  friend class FastXmlLoader;
+
 private:
   LoadedNodeVector theChildren;
 
 public:
+  DocumentTreeNode(
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
+
   DocumentTreeNode(
         XmlTree*          tree,
         xqpStringStore_t& baseUri,
@@ -406,6 +419,10 @@ protected:
   uint32_t              theFlags;
 
 public:
+  ElementNode(
+        store::Item_t& nodeName,
+        store::Item_t& typeName);
+
   ElementNode(
         XmlTree*                 tree,
         XmlNode*                 parent,
@@ -519,12 +536,19 @@ class ElementTreeNode : public ElementNode
 {
   friend class ElementNode;
   friend class UpdReplaceContent;
+  friend class FastXmlLoader;
 
 protected:
   LoadedNodeVector  theChildren;
   LoadedNodeVector  theAttributes;
 
 public:
+  ElementTreeNode(
+        store::Item_t& nodeName,
+        store::Item_t& typeName,
+        ulong          numBindings,
+        ulong          numAttributes);
+
   ElementTreeNode(
         XmlTree*                  tree,
         XmlNode*                  parent,
@@ -621,6 +645,7 @@ class AttributeNode : public XmlNode
   friend class XmlNode;
   friend class ElementNode;
   friend class ConstrElementNode;
+  friend class FastXmlLoader;
 
 protected:
   store::Item_t   theName;
@@ -629,6 +654,11 @@ protected:
   uint32_t        theFlags;
 
 public:
+  AttributeNode(
+        store::Item_t&  attrName,
+        store::Item_t&  typeName,
+        bool            isIdrefs);
+
   AttributeNode(
         XmlTree*         tree,
         XmlNode*         parent,
@@ -688,11 +718,14 @@ class TextNode : public XmlNode
   friend class DocumentDagNode;
   friend class ConstrElementNode;
   friend class BasicItemFactory;
+  friend class FastXmlLoader;
 
 protected:
   xqpStringStore_t theContent;
 
 public:
+  TextNode(xqpStringStore_t& content);
+
   TextNode(
         XmlTree*          tree,
         XmlNode*          parent,
@@ -731,12 +764,15 @@ public:
 class PiNode : public XmlNode
 {
   friend class XmlNode;
+  friend class FastXmlLoader;
 
  protected:
   xqpStringStore_t theTarget;
   xqpStringStore_t theContent;
 
 public:
+  PiNode(xqpStringStore_t& target, xqpStringStore_t& content);
+
   PiNode(
         XmlTree*          tree,
         XmlNode*          parent,
@@ -780,11 +816,14 @@ public:
 class CommentNode : public XmlNode
 {
   friend class XmlNode;
+  friend class FastXmlLoader;
 
 protected:
   xqpStringStore_t theContent;
 
 public:
+  CommentNode(xqpStringStore_t& content);
+
   CommentNode(
         XmlTree*          tree,
         XmlNode*          parent,

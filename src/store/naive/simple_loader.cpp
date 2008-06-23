@@ -26,20 +26,17 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 
-#include "store/naive/simple_loader.h"
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
-
+#include "store/naive/simple_loader.h"
 
 namespace zorba { namespace simplestore {
 
 #ifndef NDEBUG
 
-int traceLevel = 0;
-
 #define LOADER_TRACE(level, msg)             \
 {                                            \
-  if (level <= traceLevel)                   \
+  if (level <= loader.theTraceLevel)         \
     std::cout << msg << std::endl;           \
 }
 
@@ -70,7 +67,8 @@ XmlLoader::XmlLoader(store::ItemFactory* factory, error::ErrorManager* aErrorMan
   theBaseUri(NULL),
   theDocUri(NULL),
   theRootNode(NULL),
-  theErrorManager(aErrorManager)
+  theErrorManager(aErrorManager),
+  theTraceLevel(0)
 {
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
@@ -429,11 +427,18 @@ void XmlLoader::startElement(
 
       loader.theFactory->createQName(qname, uri, prefix, lname);
 
-      xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
+      xqpStringStore_t stringValue = new xqpStringStore(valueBegin, valueEnd);
+      store::Item_t typedValue;
+      loader.theFactory->createUntypedAtomic(typedValue, stringValue);
 
       store::Item_t tnameCopy = tname;
       store::Item_t attr;
-      loader.theFactory->createAttributeNode(attr, node, -1, qname, tnameCopy, value);
+      loader.theFactory->createAttributeNode(attr,
+                                             node,
+                                             -1,
+                                             qname,
+                                             tnameCopy,
+                                             typedValue);
 
       LOADER_TRACE1("Attribute: node = " << attr.getp() << std::endl
                     << attr->show() << std::endl);

@@ -22,13 +22,16 @@
 
 #include "store/naive/ordpath.h"
 
-namespace zorba { 
+namespace zorba 
+{ 
   
-  namespace error {
-    class ErrorManager;
-  }
+namespace error 
+{
+  class ErrorManager;
+}
 
-  namespace store {
+namespace simplestore 
+{
 
 class XmlTree;
 class XmlNode;
@@ -50,7 +53,7 @@ class NsBindingsContext;
   theBuffer    : A buffer to read chunks of the source stream in.
 
 ********************************************************************************/
-class XmlLoader
+class FastXmlLoader
 {
 protected:
   xmlSAXHandler                    theSaxHandler;
@@ -72,9 +75,9 @@ protected:
   error::ErrorManager            * theErrorManager;
 
 public:
-  XmlLoader(error::ErrorManager*);
+  FastXmlLoader(error::ErrorManager*);
 
-  ~XmlLoader();
+  ~FastXmlLoader();
 
   XmlNode* loadXml(xqpStringStore_t& uri, std::istream& xmlStream);
 

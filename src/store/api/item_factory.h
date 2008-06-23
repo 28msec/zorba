@@ -20,9 +20,9 @@
 
 #include "zorbatypes/representations.h"
 
-#include "common/common.h"
-
 #include "common/shared_types.h"
+
+#include "store/api/iterator.h"
 
 
 namespace zorba { namespace store {
@@ -540,7 +540,7 @@ public:
         long              pos,
         Item_t&           nodeName,
         Item_t&           typeName,
-        xqpStringStore_t& stringValue) = 0;
+        Item_t&           typedValue) = 0;
 
   /**
    * Create a new text node N and place it at a given position among the
@@ -604,7 +604,21 @@ public:
         xqpStringStore_t& content) = 0;
 
 
+  /**
+   * Create a pending updates list.
+   */
   virtual PUL* createPendingUpdateList() = 0;
+
+  /**
+   * Create an iterator to iterate over the children of a document or element
+   * node.
+   */
+  virtual ChildrenIterator* createChildrenIterator() = 0;
+
+  /**
+   * Create an iterator to iterate over the attributes of an element node.
+   */
+  virtual AttributesIterator* createAttributesIterator() = 0;
 };
 
 } // namespace store

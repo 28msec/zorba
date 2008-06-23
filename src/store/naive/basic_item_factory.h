@@ -23,7 +23,7 @@
 #include "common/shared_types.h"
 
 #include "store/api/item_factory.h"
-
+#include "store/api/iterator.h"
 
 namespace zorba 
 {
@@ -222,7 +222,7 @@ public:
         long              pos,
         store::Item_t&    nodeName,
         store::Item_t&    typeName,
-        xqpStringStore_t& stringValue);
+        store::Item_t&    typedValue);
 
   bool createTextNode(
         store::Item_t&    result,
@@ -246,6 +246,10 @@ public:
 
 
   store::PUL* createPendingUpdateList();
+
+  store::ChildrenIterator* createChildrenIterator();
+
+  store::AttributesIterator* createAttributesIterator();
 };
 
 } // namespace store

@@ -21,7 +21,11 @@
 #include "store/naive/store_defs.h"
 #include <algorithm>
 
-namespace zorba { namespace simplestore {
+namespace zorba 
+{ 
+
+namespace simplestore
+{
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -29,25 +33,39 @@ namespace zorba { namespace simplestore {
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-ChildrenIterator::ChildrenIterator(XmlNode* parent)
-  :
-  theParentNode(parent),
-  theCurrentPos(0)
-{
-  ZORBA_ASSERT(theParentNode->getNodeKind() == store::StoreConsts::documentNode ||
-               theParentNode->getNodeKind() == store::StoreConsts::elementNode);
 
-  theNumChildren = parent->numChildren();
+void ChildrenIteratorImpl::init(store::Item_t& parent)
+{
+  theParentNode.transfer(parent);
+  theNumChildren = theParentNode->numChildren();
+  theCurrentPos = 0;
 }
 
 
-void ChildrenIterator::open()
+void ChildrenIteratorImpl::init(XmlNode* parent)
+{
+  theParentNode = parent;
+  theNumChildren = theParentNode->numChildren();
+  theCurrentPos = 0;
+}
+
+
+store::Item* ChildrenIteratorImpl::next()
+{
+  if (theCurrentPos >= theNumChildren) 
+    return NULL;
+
+  return theParentNode->getChild(theCurrentPos++);
+}
+
+
+void ChildrenIteratorImpl::open()
 {
   theCurrentPos = 0;
 }
 
 
-bool ChildrenIterator::next(store::Item_t& result)
+bool ChildrenIteratorImpl::next(store::Item_t& result)
 {
   if (theCurrentPos >= theNumChildren) 
   {
@@ -63,32 +81,17 @@ bool ChildrenIterator::next(store::Item_t& result)
 }
 
 
-void ChildrenIterator::reset()
+void ChildrenIteratorImpl::reset()
 {
   theCurrentPos = 0;
 }
 
 
-void ChildrenIterator::close()
+void ChildrenIteratorImpl::close()
 {
   theCurrentPos = 0;
   theParentNode = NULL;
 }
-
-
-void ChildrenIterator::reset(store::Item_t& parent)
-{
-  theParentNode.transfer(parent);
-  theNumChildren = theParentNode->numChildren();
-  theCurrentPos = 0;
-}
-
-
-store::Item* ChildrenIterator::next()
-{
-  return NULL;
-}
-
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -97,22 +100,41 @@ store::Item* ChildrenIterator::next()
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-AttributesIterator::AttributesIterator(ElementNode* parent)
-  :
-  theParentNode(parent),
-  theCurrentPos(0)
+void AttributesIteratorImpl::init(store::Item_t& parent)
 {
-  theNumAttributes = parent->numAttributes();
+  theParentNode.transfer(parent);
+  theNumAttributes = theParentNode->numAttributes();
+  theCurrentPos = 0;
 }
 
-void AttributesIterator::open()
+
+void AttributesIteratorImpl::init(XmlNode* parent)
+{
+  theParentNode = parent;
+  theNumAttributes = theParentNode->numAttributes();
+  theCurrentPos = 0;
+}
+
+
+store::Item* AttributesIteratorImpl::next()
+{
+  if (theCurrentPos >= theNumAttributes) 
+    return NULL;
+
+  return theParentNode->getChild(theCurrentPos++);
+}
+
+
+void AttributesIteratorImpl::open()
 {
   theCurrentPos = 0;
 }
 
-bool AttributesIterator::next(store::Item_t& result)
+
+bool AttributesIteratorImpl::next(store::Item_t& result)
 {
-  if (theCurrentPos >= theNumAttributes) {
+  if (theCurrentPos >= theNumAttributes) 
+  {
     result = NULL;
     return false;
   }
@@ -124,7 +146,8 @@ bool AttributesIterator::next(store::Item_t& result)
   {
     theCurrentPos++;
 
-    if (theCurrentPos >= theNumAttributes) {
+    if (theCurrentPos >= theNumAttributes) 
+    {
       result = NULL;
       return false;
     }
@@ -139,13 +162,13 @@ bool AttributesIterator::next(store::Item_t& result)
 }
 
 
-void AttributesIterator::reset()
+void AttributesIteratorImpl::reset()
 {
   theCurrentPos = 0;
 }
 
 
-void AttributesIterator::close()
+void AttributesIteratorImpl::close()
 {
   theCurrentPos = 0;
   theParentNode = NULL;
