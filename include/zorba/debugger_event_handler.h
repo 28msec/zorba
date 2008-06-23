@@ -63,7 +63,7 @@ namespace zorba{
       suspended( QueryLocation & aLocation, SuspendedBy aCause ) = 0;
 
       virtual void
-      resumed();
+      resumed() = 0;
 
       virtual void
       terminated() = 0;
