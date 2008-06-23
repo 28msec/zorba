@@ -45,6 +45,8 @@ namespace zorba{
 
       virtual ~ZorbaDebuggerClientImpl();
 
+      void registerEventHandler( DebuggerEventHandler * anEventHandler );
+      
       bool isQueryRunning() const;
 
       bool isQueryIdle() const;
@@ -77,6 +79,8 @@ namespace zorba{
 
       unsigned int getLineNo() const;
     protected:
+
+      DebuggerEventHandler * theEventHandler;
 
       std::string theRemoteFileName;
 

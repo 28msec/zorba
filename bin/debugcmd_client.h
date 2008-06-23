@@ -17,9 +17,29 @@
 #define DEBUGCMD_CLIEND_H
 
 #include <iostream>
+#include <zorba/debugger_default_event_handler.h>
+
+using namespace zorba;
 
 void debugcmd_client( std::istream & anInput,
                       std::ostream & anOutput,
                       unsigned short aRequestPortno,
                       unsigned short aEventPortno );
+
+class CommandLineEventHandler: public DefaultDebuggerEventHandler
+{
+  public:
+
+    virtual ~CommandLineEventHandler(){}
+
+    void started();
+
+    void idle();
+
+    void suspended( zorba::QueryLocation & aLocation, zorba::SuspendedBy aCause );
+
+    void resumed();
+
+    void terminated();
+};
 #endif

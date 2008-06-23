@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 #include <vector>
-
 #include <string>
-
 #include <zorba/debugger_client.h>
 
 #include "debugcmd_client.h"
@@ -24,6 +22,33 @@
 #if WIN32
 #include <windows.h>
 #endif
+
+using namespace zorba;
+
+void CommandLineEventHandler::started()
+{
+
+}
+
+void CommandLineEventHandler::idle()
+{
+
+}
+
+void CommandLineEventHandler::suspended( QueryLocation & aLocation, SuspendedBy aCause )
+{
+
+}
+
+void CommandLineEventHandler::resumed()
+{
+
+}
+
+void CommandLineEventHandler::terminated()
+{
+
+}
 
 std::vector<std::string> get_args( const std::string& str )
 {

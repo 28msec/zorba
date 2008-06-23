@@ -60,7 +60,8 @@ void test_packet( AbstractMessage * aMessage )
   T * lMessage2 = dynamic_cast<T *> ( lAbstractMessage );
   assert( lMessage2 != NULL);
   //Ensure that both message are identical
-  assert((*lMessage1) == (*lMessage2));
+  bool lResult = (*lMessage1) == (*lMessage2);
+  assert(lResult);
   delete lAbstractMessage;
 }
 
@@ -79,7 +80,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary = "\0\0\0\xb\0\0\0\1\x8\0\6";
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length ) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -91,7 +93,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary =  "\0\0\0\xb\0\0\0\1\0\xf1\1";
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length ) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -103,7 +106,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary =  "\0\0\0\xb\0\0\0\2\0\xf1\2"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -115,7 +119,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary =  "\0\0\0\xb\0\0\0\3\0\xf1\3"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -127,7 +132,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary =  "\0\0\0\xb\0\0\0\4\0\xf1\4"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -139,7 +145,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary =  "\0\0\0\xc\0\0\0\5\0\xf1\5\1"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -151,7 +158,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary =  "\0\0\0\xc\0\0\0\6\0\xf1\5\2"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -163,7 +171,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary =  "\0\0\0\xc\0\0\0\7\0\xf1\5\3"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -175,7 +184,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary = "\0\0\0\xb\0\0\0\x8\0\xf8\1";
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
   
@@ -187,7 +197,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary = "\0\0\0\xb\0\0\0\x9\0\xf8\2";
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 
@@ -215,8 +226,8 @@ void test_packet( AbstractMessage * aMessage )
     memcpy( lBinary, "\0\0\0\x070\0\0\0\xa\0\xf8\3", MESSAGE_SIZE );
     const char * lJSONString = "{\"cause\":1,\"location\":{\"fileName\":\"data.xq\",\"lineBegin\":1,\"columnBegin\":1,\"lineEnd\":1,\"columnEnd\":1}}";
     memcpy( lBinary + MESSAGE_SIZE, lJSONString, length - MESSAGE_SIZE );
-    assert( msgcmp( lBmsg, lBinary, length) );
-    
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
     delete[] lBinary;
   }
@@ -229,7 +240,8 @@ void test_packet( AbstractMessage * aMessage )
     const char * lBinary = "\0\0\0\xb\0\0\0\xb\0\xf8\4";
     Length length;
     Byte * lBmsg = msg.serialize( length );
-    assert( msgcmp( lBmsg, lBinary, length) );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
     delete[] lBmsg;
   }
 

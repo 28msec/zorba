@@ -544,6 +544,11 @@ QueryLoc SuspendedEvent::getLocation() const
   return theLocation;
 }
 
+SuspensionCause SuspendedEvent::getCause() const
+{
+  return theCause;
+}
+
 std::string SuspendedEvent::getData() const
 {
   std::stringstream lJSONString;

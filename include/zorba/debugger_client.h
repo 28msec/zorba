@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_ZORBA_DEBUGGER_CLIENT_H
-#define XQP_ZORBA_DEBUGGER_CLIENT_H
+#ifndef ZORBA_DEBUGGER_CLIENT_H
+#define ZORBA_DEBUGGER_CLIENT_H
 
 #include <zorba/api_shared_types.h>
+#include <zorba/debugger_event_handler.h>
 
 namespace zorba{
-
-  class ZorbaDebuggerClient{
+  
+  class ZORBA_EXTERN_DECL ZorbaDebuggerClient
+  {
 
     public:
 
@@ -29,6 +31,9 @@ namespace zorba{
       static ZorbaDebuggerClient *
       createClient( unsigned short aRequestPortno, unsigned short aEventPortno );
 
+      virtual void
+      registerEventHandler( DebuggerEventHandler * aDebuggerEventHandler ) = 0;
+      
       virtual bool
       isQueryRunning() const = 0;
 

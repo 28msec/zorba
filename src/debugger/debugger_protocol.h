@@ -33,13 +33,13 @@
 namespace zorba{
 
 /* Type definition of fields */
-typedef unsigned char  Byte;
-typedef uint32_t   Length;
-typedef uint32_t   Id;
-typedef uint16_t  Flags;
-typedef uint16_t ErrorCode;
-typedef unsigned char  CommandSet;
-typedef unsigned char  Command;
+typedef unsigned char Byte;
+typedef uint32_t      Length;
+typedef uint32_t      Id;
+typedef uint16_t      Flags;
+typedef uint16_t      ErrorCode;
+typedef unsigned char CommandSet;
+typedef unsigned char Command;
 
 /* sizeof(HeaderContent) == 12 because of the padding */
 const int SIZE_OF_HEADER_CONTENT = 9;
@@ -512,6 +512,8 @@ class SuspendedEvent: public AbstractCommandMessage
     virtual Byte * serialize( Length & aLength ) const;
 
     QueryLoc getLocation() const;
+
+    SuspensionCause getCause() const;
 
 };
 

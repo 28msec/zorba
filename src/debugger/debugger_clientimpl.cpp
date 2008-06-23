@@ -27,7 +27,7 @@
 #include "api/unmarshaller.h"
 #include "zorbatypes/xqpstring.h"
 #include "debugger/debugger_clientimpl.h"
-
+#include "debugger/query_locationimpl.h"
 #include "debugger/socket.h"
 #include "debugger/debugger_protocol.h"
 #include "debugger/message_factory.h"
@@ -36,7 +36,7 @@ namespace zorba{
 
   ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno )
   :
-    theRequestSocket(0), theEventServerSocket(0), theExecutionStatus( QUERY_IDLE ) 
+    theEventHandler(0), theRequestSocket(0), theEventServerSocket(0), theExecutionStatus( QUERY_IDLE ) 
   {
     //try
     //{ 
@@ -64,6 +64,11 @@ namespace zorba{
     delete theEventServerSocket;
   }
 
+  void ZorbaDebuggerClientImpl::registerEventHandler( DebuggerEventHandler * anEventHandler )
+  {
+    theEventHandler = anEventHandler;
+  }
+  
   void ZorbaDebuggerClientImpl::handshake()
   {
     bool result = false;
@@ -97,12 +102,29 @@ namespace zorba{
         theExecutionStatus = QUERY_SUSPENDED;
         theRemoteLineNo   = lSuspendedMsg->getLocation().getLineno();
         theRemoteFileName = lSuspendedMsg->getLocation().getFilename();
+        if ( theEventHandler )
+        {
+          QueryLocationImpl loc( lSuspendedMsg->getLocation() );
+          theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
+        }
       } else if ( dynamic_cast< StartedEvent * > ( lMessage ) ) {
         theExecutionStatus = QUERY_RUNNING;
+        if ( theEventHandler )
+        {
+          theEventHandler->started();
+        }
       } else if ( dynamic_cast< ResumedEvent * > ( lMessage ) ) {
         theExecutionStatus = QUERY_RESUMED;
+        if ( theEventHandler )
+        {
+          theEventHandler->resumed();
+        }
       } else if ( dynamic_cast< TerminatedEvent * > ( lMessage ) ) {
         theExecutionStatus = QUERY_TERMINATED;
+        if ( theEventHandler )
+        {
+          theEventHandler->terminated();
+        }
       }
       delete lMessage;
     }

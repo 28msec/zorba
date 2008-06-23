@@ -26,7 +26,7 @@ namespace zorba{
  * @
  */
 
-class ZorbaDebugger
+class ZORBA_EXTERN_DECL ZorbaDebugger
 {
 
   public:

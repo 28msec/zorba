@@ -19,6 +19,7 @@
 #include <string>
 #include "zorbatypes/xqpstring.h"
 #ifdef ZORBA_DEBUGGER
+#include <zorba/debugger_default_event_handler.h>
 #include "tiny_json/json.hpp"
 #endif
 namespace zorba {
