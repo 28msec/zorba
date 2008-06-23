@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef _SCHEMAVALIDATORFILTER_HPP
-#define _SCHEMAVALIDATORFILTER_HPP
+#ifndef _SCHEMAVALIDATORFILTER_H
+#define _SCHEMAVALIDATORFILTER_H
 
 #include <vector>
 
@@ -63,9 +63,12 @@ public:
     virtual void textEvent(const XMLCh *value);
     virtual void textEvent(const XMLCh *chars, unsigned int length);
     virtual void commentEvent(const XMLCh *value);
-    virtual void attributeEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localname, const XMLCh *value,
-        const XMLCh *typeURI, const XMLCh *typeName);
+    virtual void attributeEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localname, 
+        const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName);
     virtual void namespaceEvent(const XMLCh *prefix, const XMLCh *uri);
+    
+    virtual const XMLCh* getTypeName();
+    virtual const XMLCh* getTypeUri();
 
 private:
     // XMLScanner
@@ -127,23 +130,23 @@ private:
     const LocationInfo *info_;
     const QueryLoc& _loc;
 
-    XERCES_CPP_NAMESPACE_QUALIFIER SchemaValidator *fSchemaValidator;
-    XERCES_CPP_NAMESPACE_QUALIFIER SchemaGrammar *fSchemaGrammar;
-    XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer fContent;
-    XERCES_CPP_NAMESPACE_QUALIFIER IdentityConstraintHandler *fICHandler;
-    XERCES_CPP_NAMESPACE_QUALIFIER RefHash3KeysIdPool<XERCES_CPP_NAMESPACE_QUALIFIER SchemaElementDecl> *fElemNonDeclPool;
+    XERCES_CPP_NAMESPACE_QUALIFIER SchemaValidator *_fSchemaValidator;
+    XERCES_CPP_NAMESPACE_QUALIFIER SchemaGrammar *_fSchemaGrammar;
+    XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer _fContent;
+    XERCES_CPP_NAMESPACE_QUALIFIER IdentityConstraintHandler *_fICHandler;
+    XERCES_CPP_NAMESPACE_QUALIFIER RefHash3KeysIdPool<XERCES_CPP_NAMESPACE_QUALIFIER SchemaElementDecl> *_fElemNonDeclPool;
 
-    bool strictValidation_;
-    bool errorOccurred_;
+    bool _strictValidation;
+    bool _errorOccurred;
 
-    XERCES_CPP_NAMESPACE_QUALIFIER ElemStack::StackElem *parentStack_;
-    unsigned int elemDepth_;
-    XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer prefix_;
-    XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer uri_;
-    XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer localname_;
-    bool elementToProcess_;
-    const XMLCh *xsiType_;
-    unsigned int attrCount_;
+    XERCES_CPP_NAMESPACE_QUALIFIER ElemStack::StackElem *_parentStack;
+    unsigned int _elemDepth;
+    XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer _prefix;
+    XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer _uri;
+    XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer _localname;
+    bool _elementToProcess;
+    const XMLCh *_xsiType;
+    unsigned int _attrCount;
 };
 
 }  // namespace zorba
