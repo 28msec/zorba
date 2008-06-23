@@ -8,10 +8,11 @@
   <xs:element name="item" type="ItemType"/>
   <xs:element name="items" type="ItemsType"/>
 
+
   <xs:complexType name="ProductType">
     <xs:sequence>
       <xs:element name="name" type="xs:string"/>
-      <xs:element name="number" type="xs:string"/>
+      <xs:element name="number" type="xs:int"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -42,7 +43,7 @@
     <xs:complexContent>
       <xs:extension base="ProductType">
         <xs:sequence>
-          <xs:element name="size" type="HatSizeType"/>
+          <xs:element name="size" type="HatSizeType" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -58,7 +59,7 @@
   </xs:simpleType>
 
   <xs:simpleType name="HatSizeType">
-    <xs:restriction base="xs:integer">
+    <xs:restriction base="xs:int">
       <xs:minInclusive value="7"/>
       <xs:maxInclusive value="12"/>
     </xs:restriction>
