@@ -1,6 +1,6 @@
 Name:    zorba
 Version: 0.9.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Zorba is a general purpose XQuery processor implementing in C++ the W3C family of specifications
 
 Group: System Environment/Libraries
@@ -10,6 +10,8 @@ Source0: file://mirror.optus.net/sourceforge/z/zo/zorba/%{name}-%{version}.tar.g
 
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(0)")}
 
+%{!?ruby_sitelib: %define ruby_sitelib %( ruby -r rbconfig -e "print Config::CONFIG['sitearchdir']")}
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 
@@ -17,6 +19,7 @@ BuildRequires: cmake >= 2.4 libxml2 >= 2.2.16 icu >= 2.6 libicu
 BuildRequires: boost >= 1.32 xerces-c >= 2.7
 BuildRequires: ruby-devel
 %description
+
 Zorba is a general purpose XQuery processor implementing in C++ the W3C family of specifications. It is not an XML database. The query processor has been designed to be embeddable in a variety of environments such as other programming languages extended with XML processing capabilities, browsers, database servers, XML message dispatchers, or smartphones. Its architecture employes a modular design, which allows customizing the Zorba query processor to the environment’s needs. In particular the architecture of the query processor allows a pluggable XML store (e.g. main memory, DOM stores, persistent disk-based large stores, S3 stores). Zorba runs on most platforms and is available under the Apache license v2.
 
 %package python
@@ -43,7 +46,7 @@ Provides ruby module to use %{name} API
 %build
 mkdir -p build
 pushd build
-cmake -D PYTHON_INSTALL_PATH=%{python_sitelib} -D CMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug --debug-output ..
+cmake -D CMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug --debug-output ..
 make %{?_smp_mflags}
 popd
 
@@ -95,10 +98,17 @@ make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" -C build
 
 %files ruby
 
+%dir %{ruby_sitelib}/zorba_api.so
 %{_datadir}/doc/%{name}-%{version}/ruby/examples/*.rb
 %{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
 
 %changelog
+* Sun Jun 22 2008 Paul F. Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.2-2
+- Added correct install of ruby and python modules
+
+* Fri Jun 20 2008 Paul F. Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.2-1
+- update to version 0.9.2
+
 * Mon Jun 16 2008 Paul F. Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.2541-1
 - added python and ruby subpackages
 
