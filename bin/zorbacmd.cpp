@@ -241,31 +241,7 @@ int _tmain(int argc, _TCHAR* argv[])
     else {
       qfile.reset (new std::istringstream(fname));
     }
-#ifdef ZORBA_DEBUGGER
-  // debug server
-  if ( lProperties.debugServer() )
-  {
-    server( qfile.get(), fname, lProperties.requestPort(), lProperties.eventPort() );
-  }
-  // debug client
-  if ( lProperties.debugMode() )
-  {
-    std::cout << "Zorba XQuery debugger." << std::endl;
-    std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
-    std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-
-    boost::thread lServerThread ( boost::bind(&server, qfile.get(),
-                                  fname,
-                                  lProperties.requestPort(),
-                                  lProperties.eventPort())
-                                   );
-
-    debugcmd_client( std::cin, std::cout, lProperties.requestPort(), lProperties.eventPort() );
-    lServerThread.join(); 
-    return 0;
-  }
-#endif
-
+    
     if ( !lProperties.inlineQuery() && !qfile->good() || qfile->eof() ) {
       std::cerr << "file " << fname << " not found or not readable" << std::endl;
       lProperties.printHelp(std::cerr);
@@ -286,19 +262,6 @@ int _tmain(int argc, _TCHAR* argv[])
       qfile->seekg(0); // go back to the beginning
     }
 
-    #ifdef ZORBA_DEBUGGER
-      // debug mode
-      if ( lProperties.debugMode() )
-    {
-      zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
-      zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
-      lDebugger->start( lStore, qfile.get(), "",
-                        lProperties.requestPort(),
-                        lProperties.eventPort() );
-      return 0;
-    }
-    #endif
-
     zorba::XQuery_t lQuery;
     zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
 
@@ -307,6 +270,31 @@ int _tmain(int argc, _TCHAR* argv[])
       lProperties.printHelp(std::cerr);
       return 3;
     }
+
+#ifdef ZORBA_DEBUGGER
+  // debug server
+  if ( lProperties.debugServer() )
+  {
+    server( qfile.get(), fname, lProperties.requestPort(), lProperties.eventPort() );
+  }
+  // debug client
+  if ( lProperties.debugClient() )
+  {
+    std::cout << "Zorba XQuery debugger." << std::endl;
+    std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
+    std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
+
+    boost::thread lServerThread ( boost::bind(&server, qfile.get(),
+                                  fname,
+                                  lProperties.requestPort(),
+                                  lProperties.eventPort())
+                                   );
+
+    debugcmd_client( std::cin, std::cout, lProperties.requestPort(), lProperties.eventPort() );
+    lServerThread.join(); 
+    return 0;
+  }
+#endif
 
     try {
       Zorba_CompilerHints lHints;

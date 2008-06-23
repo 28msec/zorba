@@ -90,7 +90,7 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
     ("optimization-level", boost::program_options::value<std::string>(&theOptLevel)->default_value("O1"),
      "Optimization level for compiling the query (i.e. O0, O1)")
 #ifdef ZORBA_DEBUGGER
-    ("debug-mode,d", boost::program_options::value< std::string >(&thePorts),
+    ("debug-client,d", boost::program_options::value< std::string >(&thePorts),
       "Launch the debugger command line client. Provide request and event port number: requestNo:eventNo")
     ("debug-server,s", boost::program_options::value< std::string >(&thePorts),
       "Launch queries on the debugger server. Provide request and event port number: requestNo:eventNo")
@@ -188,8 +188,9 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
   theMultipleExecutions = ((lVarMap.count("multiple")!=0)?lVarMap["multiple"].as<int>():1);
   theInlineQuery        = (lVarMap.count("inline") != 0);
 #ifdef ZORBA_DEBUGGER
-  theDebugMode          = (lVarMap.count("debug-mode") != 0);
-  if ( theDebugMode )
+  theDebugServer        = (lVarMap.count("debug-server") != 0);
+  theDebugClient        = (lVarMap.count("debug-client") != 0);
+  if ( theDebugServer || theDebugClient )
   {
     unsigned int lSemiColon = thePorts.find(":");
     theRequestPort = atoi( thePorts.substr(0, lSemiColon).c_str() );

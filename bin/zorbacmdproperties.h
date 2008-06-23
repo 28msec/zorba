@@ -42,7 +42,7 @@ private:
 #ifdef ZORBA_DEBUGGER
   // debug mode
   bool theDebugServer;
-  bool theDebugMode;
+  bool theDebugClient;
   std::string thePorts;
   unsigned int theRequestPort;
   unsigned int theEventPort;
@@ -146,8 +146,9 @@ public:
 #ifdef ZORBA_DEBUGGER
   bool
   debugServer() { return theDebugServer; }
+  
   bool
-  debugMode() { return theDebugMode; }
+  debugClient() { return theDebugClient; }
 
   unsigned int
   requestPort() { return theRequestPort; }

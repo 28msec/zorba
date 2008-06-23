@@ -28,7 +28,12 @@ void debugcmd_client( std::istream & anInput,
 
 class CommandLineEventHandler: public DefaultDebuggerEventHandler
 {
+  private:
+    std::ostream & theOutput;
+
   public:
+
+    CommandLineEventHandler( std::ostream & anOutput );
 
     virtual ~CommandLineEventHandler(){}
 

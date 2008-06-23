@@ -25,6 +25,8 @@
 
 using namespace zorba;
 
+CommandLineEventHandler::CommandLineEventHandler( std::ostream & anOutput ): theOutput( anOutput ){}
+
 void CommandLineEventHandler::started()
 {
 
@@ -37,7 +39,7 @@ void CommandLineEventHandler::idle()
 
 void CommandLineEventHandler::suspended( QueryLocation & aLocation, SuspendedBy aCause )
 {
-
+  theOutput << "Suspended at line " << aLocation.getLineBegin() << std::endl; 
 }
 
 void CommandLineEventHandler::resumed()
@@ -80,8 +82,9 @@ void debugcmd_client( std::istream & anInput,
   zorba::ZorbaDebuggerClient * lDebuggerClient;
   try
   {
-    lDebuggerClient = zorba::ZorbaDebuggerClient::createClient( aRequestPortno,
-                                                                aEventPortno );
+    lDebuggerClient = ZorbaDebuggerClient::createClient( aRequestPortno, aEventPortno );
+    CommandLineEventHandler lEventHandler( anOutput );
+    lDebuggerClient->registerEventHandler( &lEventHandler );
   } catch( std::exception &e ) {
     anOutput << "Could not start the debugger client: " << std::endl;
     anOutput << e.what() << std::endl;
@@ -96,26 +99,12 @@ void debugcmd_client( std::istream & anInput,
     std::string lLine;
     std::getline( anInput, lLine, '\n' );
 
-	std::vector<std::string> lArgs = get_args( lLine );
+	  std::vector<std::string> lArgs = get_args( lLine );
     std::string lCommand = lArgs.at( 0 ); 
     
     if ( lCommand == "q" || lCommand == "quit" )
     {
-      
       lDebuggerClient->terminate();
-      while( ! lDebuggerClient->isQueryTerminated() )
-      {
-        if ( lDebuggerClient->isQuerySuspended() )
-        {
-#if WIN32
-		  Sleep( 10 );
-#else
-          usleep( 10 );
-#endif
-        }
-      }
-      exit(7);
-    
     } else if  ( lCommand == "b" || lCommand == "break" ) {
      
       if ( lArgs.size() < 2 )
@@ -130,14 +119,6 @@ void debugcmd_client( std::istream & anInput,
     } else if ( lCommand ==  "r" || lCommand == "run" ) {
       
       lDebuggerClient->run();
-      
-      while( ! lDebuggerClient->isQueryTerminated() )
-      {
-        if ( lDebuggerClient->isQuerySuspended() )
-        {
-          anOutput << "Suspended at line " << lDebuggerClient->getLineNo() << std::endl; 
-        }
-      }
       
 #if WIN32
 	  Sleep( 1 );
