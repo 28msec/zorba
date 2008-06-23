@@ -111,7 +111,6 @@ int DateTime::createDateTime(
     int fractional_seconds,
     DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = DATETIME_FACET;
   dt.data[YEAR_DATA] = years;
   dt.data[MONTH_DATA] = abs<int>(months);
@@ -135,7 +134,6 @@ int DateTime::createDateTime(
     const TimeZone_t& tz_t,
     DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = DATETIME_FACET;
   dt.data[YEAR_DATA] = years;
   dt.data[MONTH_DATA] = abs<int>(months);
@@ -162,7 +160,6 @@ int DateTime::createDateTime(
     const TimeZone_t& tz_t,
     DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = DATETIME_FACET;
   dt.data[YEAR_DATA] = years;
   dt.data[MONTH_DATA] = abs<int>(months);
@@ -189,7 +186,6 @@ int DateTime::createDateTime(
     const TimeZone& tz,
     DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = DATETIME_FACET;
   dt.data[YEAR_DATA] = years;
   dt.data[MONTH_DATA] = abs<int>(months);
@@ -212,7 +208,6 @@ int DateTime::createDate(
     const TimeZone_t& tz_t,
     DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = DATE_FACET;
   dt.data[YEAR_DATA] = years;
   dt.data[MONTH_DATA] = abs<int>(months);
@@ -236,7 +231,6 @@ int DateTime::createTime(
     const TimeZone_t& tz_t,
     DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = TIME_FACET;
   dt.data[YEAR_DATA] = 1;
   dt.data[MONTH_DATA] = 1;
@@ -255,7 +249,6 @@ int DateTime::createTime(
 
 int DateTime::createGYearMonth(int years, int months, DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = GYEARMONTH_FACET;
   dt.data[YEAR_DATA] = years;
   dt.data[MONTH_DATA] = abs<int>(months);
@@ -271,7 +264,6 @@ int DateTime::createGYearMonth(int years, int months, DateTime& dt)
 
 int DateTime::createGYear(int years, DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = GYEAR_FACET;
   dt.data[YEAR_DATA] = years;
   dt.data[MONTH_DATA] = 1;
@@ -287,7 +279,6 @@ int DateTime::createGYear(int years, DateTime& dt)
 
 int DateTime::createGMonth(int months, DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = GMONTH_FACET;
   dt.data[YEAR_DATA] = 1;
   dt.data[MONTH_DATA] = abs<int>(months);
@@ -303,7 +294,6 @@ int DateTime::createGMonth(int months, DateTime& dt)
 
 int DateTime::createGMonthDay(int months, int days, DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = GMONTHDAY_FACET;
   dt.data[YEAR_DATA] = 1;
   dt.data[MONTH_DATA] = abs<int>(months);
@@ -319,7 +309,6 @@ int DateTime::createGMonthDay(int months, int days, DateTime& dt)
 
 int DateTime::createGDay(int days, DateTime& dt)
 {
-  dt = new DateTime();
   dt.facet = GDAY_FACET;
   dt.data[YEAR_DATA] = 1;
   dt.data[MONTH_DATA] = 1;
