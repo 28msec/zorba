@@ -25,6 +25,7 @@ int test_debugger_protocol( int argc, char* argv[] )
 {
   zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();
   test->testReplyMessage();
+  test->testReplyMessageOk();
   test->testRunMessage();
   test->testSuspendMessage();
   test->testResumeMessage();
@@ -77,7 +78,7 @@ void test_packet( AbstractMessage * aMessage )
     std::cerr << "Test reply message" << std::endl;
     ReplyMessage msg( 1, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT );
     //test_packet<ReplyMessage>( &msg );
-    const char * lBinary = "\0\0\0\xb\0\0\0\1\x8\0\6";
+    const char * lBinary = "\0\0\0\xb\0\0\0\1\x8\0\xb";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
@@ -85,7 +86,20 @@ void test_packet( AbstractMessage * aMessage )
     delete[] lBmsg;
   }
 
-  void TestDebuggerSerialization::testRunMessage()
+  void TestDebuggerSerialization::testReplyMessageOk()
+  {
+    std::cerr << "Test reply message Ok" << std::endl;
+    ReplyMessage msg( 1, DEBUGGER_NO_ERROR );
+    //test_packet<ReplyMessage>( &msg );
+    const char * lBinary = "\0\0\0\xb\0\0\0\1\x8\0\0";
+    Length length;
+    Byte * lBmsg = msg.serialize( length );
+    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
+    assert( lMsgcmp );
+    delete[] lBmsg;
+  }
+
+void TestDebuggerSerialization::testRunMessage()
   {
     std::cerr << "Test run message" << std::endl;
     RunMessage msg;

@@ -29,6 +29,8 @@ namespace zorba
   class TestDebuggerSerialization
   {
     public:
+      void testReplyMessageOk();
+
       void testReplyMessage();
       
       void testRunMessage();
