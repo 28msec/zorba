@@ -82,7 +82,11 @@ void ZorbaDebuggerImpl::start( void * aStore, std::istream * aQuery, const Strin
 }
 
 void ZorbaDebuggerImpl::setStatus( ExecutionStatus Status, SuspensionCause aCause ){
-  theStatus = Status;
+  if (theStatus == QUERY_SUSPENDED && Status == QUERY_RUNNING)
+    theStatus = QUERY_RESUMED;
+  else
+	theStatus = Status;
+
   switch ( theStatus )
   {
     case QUERY_RUNNING:
@@ -95,6 +99,7 @@ void ZorbaDebuggerImpl::setStatus( ExecutionStatus Status, SuspensionCause aCaus
       terminatedEvent();
       break;
     case QUERY_RESUMED:
+	  theStatus = QUERY_RUNNING;
       resumedEvent();
       break;
   }
