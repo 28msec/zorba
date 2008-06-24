@@ -183,17 +183,17 @@ bool createNodeHelper(store::Item_t parent, PlanState& planState, xqpString name
 
 bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value, store::Item_t* result = NULL)
 {
-  std::auto_ptr<store::Iterator> cwrapper1, cwrapper2;
-  store::Item_t qname, temp_result;
+  store::Item_t qname, temp_result, str_item;
   createQNameHelper(qname, name);
   store::Item_t type = GET_STORE().theSchemaTypeNames[simplestore::XS_STRING];
+  GENV_ITEMFACTORY->createString(str_item, value.theStrStore);
   GENV_ITEMFACTORY->createAttributeNode(
       temp_result,
       parent, 
       -1,
       qname,
       type,
-      value.theStrStore);
+      str_item);
 
   if (result != NULL)
     *result = temp_result;

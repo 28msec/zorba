@@ -99,12 +99,13 @@ Contains the reply of the HTTP request.
 \endcode
 
 The headers part contains the headers sent by the servers, e.g. content-type, content-length, etc.
-The payload will be: an XML part when the content type is xml or xhtml, a text node for all content-types that begin with "text/" (except "text/xml") a Base64 encoded value in all the other cases.
+The payload will be: an XML part when the content type is xml or xhtml, a text node for all content-types that begin with "text/" (except "text/xml"), and 
+a Base64 encoded value in all the other cases.
 
 \subsubsection resterrors Errors
 
 An error will be generated for any reply that has a status code different from 200. 
-The payload, however, will be returned too if available.
+The payload, however, will be returned too, if available.
 
 \section restexamples REST Examples
 
