@@ -161,12 +161,14 @@ static xqpStringStore_t getXqpString(UnicodeString source)
 
   int32_t targetLen = source.getCapacity()*4 + 1;
   char* target = new char[targetLen];
+  int32_t srcLen = source.length();
+  UChar *buf = source.getBuffer(srcLen);
 
   //Convert from UTF-16 to UTF-8
   ucnv_fromUChars(conv, target, targetLen,
-                  source.getBuffer(source.length()),
-                  source.length(),
+                  buf, srcLen,
                   &status);
+  source.releaseBuffer ();
 
   //close the converter
   ucnv_close(conv);
@@ -1322,6 +1324,7 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
     UErrorCode status = U_ZERO_ERROR;
 
     wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
+    unicodeStr.releaseBuffer ();
 
     if(U_FAILURE(status))
     {
