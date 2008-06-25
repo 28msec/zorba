@@ -147,20 +147,25 @@ int _tmain(int argc, _TCHAR* argv[])
   
     try {
       if (lProp->useSerializer()) {
-        if (query->isUpdateQuery())
+        if (query->isUpdateQuery()) {
           query->applyUpdates();
-        else
+        } else {
           *resultFile << query;
-      } else {
-        ResultIterator_t result = query->iterator();
-        result->open();
-        Item lItem;
-        while (result->next(lItem)) {
-          // unmarshall the store item from the api item
-          store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
-          *resultFile << lStoreItem->show() << endl;
         }
-        result->close();
+      } else {
+        if (query->isUpdateQuery()) {
+          query->applyUpdates();
+        } else {
+          ResultIterator_t result = query->iterator();
+          result->open();
+          Item lItem;
+          while (result->next(lItem)) {
+            // unmarshall the store item from the api item
+            store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
+            *resultFile << lStoreItem->show() << endl;
+          }
+          result->close();
+        }
       }
     } catch (QueryException &e) {
       query->close();
