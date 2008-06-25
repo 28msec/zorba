@@ -153,7 +153,7 @@ public:
 
 #ifdef ZORBA_DEBUGGER
           PlanIter_t debugIterator(PlanIter_t aStoppableIterator){
-            if ( false && ZorbaDebugger::getInstance()->isEnabled() )
+            if ( ZorbaDebugger::getInstance()->isEnabled() )
             {
               std::vector<PlanIter_t> lChildren;
               lChildren.push_back(aStoppableIterator);
@@ -439,8 +439,11 @@ void end_visit(flwor_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
+#ifdef ZORBA_DEBUGGER
   PlanIter_t ret = pop_itstack ();
-
+#else
+  PlanIter_t ret = debugIterator( pop_itstack () );
+#endif
   vector<FLWORIterator::OrderSpec> orderSpecs;
   for (flwor_expr::orderspec_list_t::reverse_iterator i = v.orderspec_rbegin ();
        i != v.orderspec_rend ();
