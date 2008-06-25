@@ -193,8 +193,6 @@ public:
 
   PRINTER_VISITOR_DEFINITION (ElementIterator)
 
-  PRINTER_VISITOR_DEFINITION (ElementContentIterator)
-
   PRINTER_VISITOR_DEFINITION (AttributeIterator)
 
   PRINTER_VISITOR_DEFINITION (DocumentIterator)

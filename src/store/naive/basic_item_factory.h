@@ -246,10 +246,6 @@ public:
 
 
   store::PUL* createPendingUpdateList();
-
-  store::ChildrenIterator* createChildrenIterator();
-
-  store::AttributesIterator* createAttributesIterator();
 };
 
 } // namespace store

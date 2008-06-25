@@ -147,6 +147,12 @@ store::ItemFactory* GlobalEnvironment::getItemFactory()
 }
 
 
+store::IteratorFactory* GlobalEnvironment::getIteratorFactory()
+{
+  return m_store->getIteratorFactory();
+}
+
+
 XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 {
   return *m_compilerSubSys;

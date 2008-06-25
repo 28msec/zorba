@@ -137,30 +137,6 @@ public:
   
 
 /*******************************************************************************
-
-  ElementContentIterator
-
-  Used to (a) create text nodes in the content sequence of an element constructor,
-  and (b) to check that all attribute nodes in the content sequence appear before
-  any other item in the sequence.
-
-  Usually, the child of this iterator will be a ConcatIterator that computes
-  the content sequence from its various components.
-
-********************************************************************************/
-class ElementContentState : public PlanIteratorState
-{
-public:
-  bool  theNoAttrAllowed;
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-NARY_ITER_STATE(ElementContentIterator, ElementContentState);
-
-
-/*******************************************************************************
   AttributeIterator constructs an attribute element
   
   theQNameIter:     Iter that produces the name (qname) of the element

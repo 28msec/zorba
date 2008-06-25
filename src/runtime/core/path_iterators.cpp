@@ -21,7 +21,7 @@
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"
-#include "store/api/item_factory.h"
+#include "store/api/iterator_factory.h"
 
 #include "runtime/core/path_iterators.h"
 
@@ -101,7 +101,7 @@ void
 AttributeAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
-  theAttributes = GENV_ITEMFACTORY->createAttributesIterator();
+  theAttributes = GENV_ITERATOR_FACTORY->createAttributesIterator();
 }
 
 
@@ -419,7 +419,7 @@ void
 ChildAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
-  theChildren = GENV_ITEMFACTORY->createChildrenIterator();
+  theChildren = GENV_ITERATOR_FACTORY->createChildrenIterator();
 }
 
 
@@ -511,7 +511,7 @@ void DescendantAxisState::push(store::Item_t& node)
   }
   else
   {
-    store::ChildrenIterator* ite = GENV_ITEMFACTORY->createChildrenIterator();;
+    store::ChildrenIterator* ite = GENV_ITERATOR_FACTORY->createChildrenIterator();;
     store::Item* node1 = node.getp();
     ite->init(node);
     theCurrentPath.push_back(std::pair<store::Item*, store::ChildrenIterator*>

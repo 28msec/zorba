@@ -19,6 +19,7 @@
 #include "store/api/iterator.h"
 #include "store/util/hashset_item_handle.h"
 #include "store/naive/shared_types.h"
+#include "store/naive/node_items.h"
 #include "store/naive/ordpath.h"
 
 

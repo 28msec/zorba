@@ -17,9 +17,14 @@
 # Source Files
 #
 SET(SIMPLE_STORE_SRCS
+    simple_store.cpp
     basic_item_factory.cpp
+    simple_iterator_factory.cpp
     simple_collection.cpp
     simple_temp_seq.cpp
+    simple_pul.cpp
+    simple_loader.cpp
+    fast_loader.cpp
     atomic_items.cpp
     item.cpp
     node_items.cpp
@@ -27,10 +32,6 @@ SET(SIMPLE_STORE_SRCS
     node_updates.cpp
     node_iterators.cpp
     qname_pool.cpp
-    simple_store.cpp
-    simple_loader.cpp
-    fast_loader.cpp
-    simple_pul.cpp
     ordpath.cpp
     nsbindings.cpp
     item_iterator.cpp
@@ -39,7 +40,7 @@ SET(SIMPLE_STORE_SRCS
     properties.cpp
     inmemorystore.cpp
     inmemorystorec.cpp
-    )
+)
 
 #
 # Internal common libraries

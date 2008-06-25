@@ -37,6 +37,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/basic_item_factory.h"
+#include "store/naive/simple_iterator_factory.h"
 #include "store/naive/query_context.h"
 
 #include "store/api/pul.h"
@@ -64,6 +65,7 @@ SimpleStore::SimpleStore()
   theNamespacePool(NULL),
   theQNamePool(NULL),
   theItemFactory(NULL),
+  theIteratorFactory(NULL),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
@@ -97,6 +99,8 @@ void SimpleStore::init()
     initTypeNames();
 
     theItemFactory = new BasicItemFactory(theNamespacePool, theQNamePool);
+
+    theIteratorFactory = new SimpleIteratorFactory();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 

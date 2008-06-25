@@ -42,7 +42,6 @@ namespace zorba
   class UDFunctionCallIterator;
   class StatelessExtFunctionCallIterator;
   class ElementIterator;
-  class ElementContentIterator;
   class AttributeIterator;
   class CommentIterator;
   class PiIterator;
@@ -283,8 +282,6 @@ namespace zorba
     PLAN_ITER_VISITOR (CompareIterator);
        
     PLAN_ITER_VISITOR (ElementIterator);
-       
-    PLAN_ITER_VISITOR (ElementContentIterator);
        
     PLAN_ITER_VISITOR (AttributeIterator );
       

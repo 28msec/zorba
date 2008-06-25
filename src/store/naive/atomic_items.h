@@ -244,8 +244,8 @@ protected:
 
 
 /*******************************************************************************
- * class DurationItem
- *******************************************************************************/
+  class DurationItem
+********************************************************************************/
 class DurationItemNaive : public AtomicItem
 {
 protected:
@@ -254,21 +254,21 @@ protected:
 public:
   DurationItemNaive(xqp_duration& aValue) : theValue(aValue) { };
 
-  virtual xqpStringStore_t getStringValue() const;
-  virtual xqp_duration getDurationValue() const;
-  virtual xqp_yearMonthDuration getYearMonthDurationValue() const;
-  virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual store::Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-  virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
+  xqpStringStore_t getStringValue() const;
+  xqp_duration getDurationValue() const;
+  xqp_yearMonthDuration getYearMonthDurationValue() const;
+  xqp_dayTimeDuration getDayTimeDurationValue() const;
+  store::Item* getType() const;
+  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  store::Item_t getEBV( ) const;
+  xqp_string show() const;
+  uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
 };
 
 
 /*******************************************************************************
- * class DayTimeDurationItem
- *******************************************************************************/
+  class DayTimeDurationItem
+ ********************************************************************************/
 class DayTimeDurationItemNaive : public AtomicItem
 {
 protected:
@@ -276,19 +276,20 @@ protected:
 
 public:
   DayTimeDurationItemNaive(xqp_dayTimeDuration& aValue) : theValue(aValue) { };
-  virtual xqpStringStore_t getStringValue() const;
-  virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual store::Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-  virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
+
+  xqpStringStore_t getStringValue() const;
+  xqp_dayTimeDuration getDayTimeDurationValue() const;
+  store::Item* getType() const;
+  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  store::Item_t getEBV( ) const;
+  xqp_string show() const;
+  uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
 };
 
 
 /*******************************************************************************
- * class YearMonthDurationItem
- *******************************************************************************/
+  class YearMonthDurationItem
+********************************************************************************/
 class YearMonthDurationItemNaive : public AtomicItem
 {
 protected:

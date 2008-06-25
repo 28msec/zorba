@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ITERATOR_H
-#define ZORBA_ITERATOR_H
+#ifndef ZORBA_STORE_ITERATOR_H
+#define ZORBA_STORE_ITERATOR_H
 
 #include "zorbamisc/config/platform.h"
 #include "store/api/item.h"

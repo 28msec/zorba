@@ -608,17 +608,6 @@ public:
    * Create a pending updates list.
    */
   virtual PUL* createPendingUpdateList() = 0;
-
-  /**
-   * Create an iterator to iterate over the children of a document or element
-   * node.
-   */
-  virtual ChildrenIterator* createChildrenIterator() = 0;
-
-  /**
-   * Create an iterator to iterate over the attributes of an element node.
-   */
-  virtual AttributesIterator* createAttributesIterator() = 0;
 };
 
 } // namespace store

@@ -202,10 +202,12 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
   store::Item* parent;
   store::Item_t nodeName;
   store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   xqpStringStore_t baseUri;
+  xqpStringStore_t content;
 
   std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
   store::Item_t attr;
@@ -278,7 +280,12 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       while (valid = consumeNext(child, theChildrenIter, planState))
       {
-        assert(child->isNode());
+        if (!child->isNode())
+        {
+          content = child->getStringValue();
+          factory->createTextNode(child, result, -1, content);
+        }
+
         assert(child->getNodeKind() != store::StoreConsts::documentNode);
 
         if (child->getNodeKind() != store::StoreConsts::attributeNode)
@@ -290,9 +297,16 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       while (valid)
       {
-        assert(child->isNode());
+        if (!child->isNode())
+        {
+          content = child->getStringValue();
+          factory->createTextNode(child, result, -1, content);
+        }
+
         assert(child->getNodeKind() != store::StoreConsts::documentNode);
-        assert(child->getNodeKind() != store::StoreConsts::attributeNode);
+
+        if (child->getNodeKind() == store::StoreConsts::attributeNode)
+          ZORBA_ERROR_LOC(XQTY0024, loc); 
 
         // Skip text node with zero-length value
         if (child->getNodeKind() == store::StoreConsts::textNode && 
@@ -379,66 +393,6 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
     size += theNamespacesIter->getStateSizeOfSubtree();
 
   return getStateSize() + size;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void ElementContentState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  theNoAttrAllowed = false;
-}
-
-
-void ElementContentState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  theNoAttrAllowed = false;
-}
-
-
-bool ElementContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::ItemFactory* factory = GENV_ITEMFACTORY;
-  store::Item_t textNode;
-  xqpStringStore_t content;
-  std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
-
-  ElementContentState* state;
-  bool valid;
-  DEFAULT_STACK_INIT(ElementContentState, state, planState);
-  
-  while (true)
-  {
-    if (!consumeNext(result, theChildren[0], planState ))
-      break;
-
-    valid = true;
-
-    // Check to find out if the content contains an attribute child which is
-    // located after a non attribute child.
-    if (result->isNode() &&
-        result->getNodeKind() == store::StoreConsts::attributeNode) 
-    {
-      if (state->theNoAttrAllowed)
-        ZORBA_ERROR_LOC(XQTY0024, loc); 
-    }
-    else
-    {
-      state->theNoAttrAllowed = true;
-    }
-    
-    if (!result->isNode())
-    {
-      content = result->getStringValue();
-      valid = factory->createTextNode(result, path.top(), -1, content);
-    }
-    STACK_PUSH(valid, state);
-  }
-
-  STACK_END (state);
 }
 
 

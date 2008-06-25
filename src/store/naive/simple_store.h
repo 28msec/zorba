@@ -39,6 +39,10 @@ namespace error
   class ErrorManager;
 }
 
+namespace store
+{
+  class IteratorFactory;
+}
 
 namespace simplestore 
 {
@@ -90,6 +94,7 @@ protected:
   QNamePool                   * theQNamePool;
 
   store::ItemFactory          * theItemFactory;
+  store::IteratorFactory      * theIteratorFactory;
 
   DocumentSet                   theDocuments;
   CollectionSet                 theCollections;
@@ -108,7 +113,9 @@ private:
 
 public:
   void shutdown();
+
   store::ItemFactory* getItemFactory() const { return theItemFactory; }
+  store::IteratorFactory* getIteratorFactory() const { return theIteratorFactory; }
 
   StringPool& getNamespacePool() const    { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }

@@ -1146,25 +1146,6 @@ store::PUL* BasicItemFactory::createPendingUpdateList()
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-store::ChildrenIterator* BasicItemFactory::createChildrenIterator()
-{
-  return static_cast<store::ChildrenIterator*>(new ChildrenIteratorImpl());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::AttributesIterator* BasicItemFactory::createAttributesIterator()
-{
-  return new AttributesIteratorImpl();
-}
-
-
-
 } // namespace store
 } // namespace zorba
 

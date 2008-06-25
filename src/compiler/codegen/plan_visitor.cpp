@@ -1266,12 +1266,7 @@ void end_visit(elem_expr& v)
   PlanIter_t lAttrsIter = 0;
 
   if ( v.getContent() != 0 )
-  {
     lContentIter = pop_itstack();
-    vector<PlanIter_t> lArgs;
-    lArgs.push_back(lContentIter);
-    lContentIter = new ElementContentIterator(qloc, lArgs);
-  }
 
   if ( v.getAttrs() != 0 )
     lAttrsIter = pop_itstack();

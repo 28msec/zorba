@@ -24,8 +24,12 @@ namespace zorba {
 
 class Latch;
 
+
 namespace store 
 {
+
+class IteratorFactory;
+
 
 /**
  * Manages XDM Instances 
@@ -45,6 +49,11 @@ public:
    *  Get the item factory used by this store.
    */
   virtual ItemFactory* getItemFactory() const = 0;
+
+  /**
+   *  Get the iterator factory used by this store.
+   */
+  virtual IteratorFactory* getIteratorFactory() const = 0;
 
   virtual Latch& getGlobalLock() = 0;
 

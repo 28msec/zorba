@@ -41,6 +41,7 @@ namespace zorba
     class PUL;
     typedef rchandle<PUL> PUL_t;
     class ItemFactory;
+    class IteratorFactory;
     class Collection;
     typedef rchandle<Collection> Collection_t;
     class AnyUriItem;

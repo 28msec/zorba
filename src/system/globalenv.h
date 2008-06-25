@@ -51,6 +51,7 @@ class GlobalEnvironment
   XQueryCompilerSubsystem& getCompilerSubsystem();
   store::Store& getStore();
   store::ItemFactory* getItemFactory();
+  store::IteratorFactory* getIteratorFactory();
 
  private:
   GlobalEnvironment();
@@ -75,6 +76,8 @@ class GlobalEnvironment
 #define GENV_STORE GlobalEnvironment::getInstance().getStore()
 
 #define GENV_ITEMFACTORY GlobalEnvironment::getInstance().getItemFactory()
+
+#define GENV_ITERATOR_FACTORY GlobalEnvironment::getInstance().getIteratorFactory()
 
 #define GENV_ROOT_STATIC_CONTEXT GlobalEnvironment::getInstance().getRootStaticContext()
 
