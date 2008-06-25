@@ -76,6 +76,8 @@ class GlobalEnvironment
 
 #define GENV_ITEMFACTORY GlobalEnvironment::getInstance().getItemFactory()
 
+#define GENV_ROOT_STATIC_CONTEXT GlobalEnvironment::getInstance().getRootStaticContext()
+
 }
 
 #endif /* ZORBA_GLOBALENV_H */

@@ -290,6 +290,18 @@ namespace zorba {
       virtual StaticContext_t
       createStaticContext(ErrorHandler* aErrorHandler = 0) = 0;
 
+      /** \brief Registers a stateless external function globally.
+       *
+       * Register an external function that can be called within a query, no matter in which
+       * context it is. The caller keeps the ownership of the StatelessExternalFunction object passed
+       * to this function.
+       *
+       * @param aExternalFunction the stateless external function.
+       * @return true if the function has been set, false otherwise.
+       */
+      virtual bool
+      registerStatelessGlobalExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
+
       /** \brief Gets the singelton instance of the ItemFactory.
        *
        * @return ItemFactory the singleton instance of the ItemFactory.

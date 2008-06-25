@@ -129,6 +129,9 @@ class ZorbaImpl : public Zorba
   StaticContext_t
   createStaticContext(ErrorHandler* aErrorHandler = 0);
 
+  bool
+  registerStatelessGlobalExternalFunction(StatelessExternalFunction* aExternalFunction);
+
   ItemFactory*
   getItemFactory();
 

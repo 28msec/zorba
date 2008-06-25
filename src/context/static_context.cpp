@@ -569,8 +569,19 @@ static_context::bind_stateless_external_function(StatelessExternalFunction* aExt
 StatelessExternalFunction *
 static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_string aLocalName)
 {
-  return lookup_stateless_function( 
+  StatelessExternalFunction* lFunc = lookup_stateless_function( 
     qname_internal_key(default_function_namespace(), aPrefix, aLocalName)); 
+
+  // checks the parent if it contains the external function
+  if (lFunc != 0) {
+    return lFunc;
+  }
+  else if(parent != 0) {
+    return dynamic_cast<static_context*>(parent)->lookup_stateless_external_function(aPrefix, aLocalName);
+  }
+  else {
+    return 0;
+  }
 }
 
 } /* namespace zorba */

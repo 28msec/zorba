@@ -16,6 +16,7 @@
 #include "api/zorbaimpl.h"
 
 #include <istream>
+#include <zorba/stateless_function.h>
 
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
@@ -27,6 +28,7 @@
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
+#include "context/static_context.h"
 
 namespace zorba {
 
@@ -183,6 +185,29 @@ StaticContext_t
 ZorbaImpl::createStaticContext(ErrorHandler* aErrorHandler)
 {
   return StaticContext_t(new StaticContextImpl(aErrorHandler));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+ZorbaImpl::registerStatelessGlobalExternalFunction(StatelessExternalFunction* aExternalFunction)
+{
+  try {
+    if (!GENV_ROOT_STATIC_CONTEXT.bind_stateless_external_function(aExternalFunction)) {
+      xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
+      xqpString lMsg = lLocalName + " is already registered";
+
+      ZORBA_ERROR_DESC(API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
+    }
+  }
+  catch (error::ZorbaError& e) {
+    DefaultErrorHandler h;
+    ZorbaImpl::notifyError(&h, e);
+    return false;
+  }
+  return true;
 }
 
 
