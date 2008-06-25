@@ -168,7 +168,7 @@ static xqpStringStore_t getXqpString(UnicodeString source)
   ucnv_fromUChars(conv, target, targetLen,
                   buf, srcLen,
                   &status);
-  source.releaseBuffer ();
+  source.releaseBuffer (srcLen);
 
   //close the converter
   ucnv_close(conv);
@@ -1324,7 +1324,7 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
     UErrorCode status = U_ZERO_ERROR;
 
     wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
-    unicodeStr.releaseBuffer ();
+    unicodeStr.releaseBuffer (srcLen);
 
     if(U_FAILURE(status))
     {
