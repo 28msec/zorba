@@ -251,7 +251,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                       nodeName,
                                       typeName,
                                       theLocalBindings->get_bindings(),
-                                      baseUri);
+                                      baseUri,
+                                      false);
   path.push(result);
 
   // Compute the attributes and children of the element node

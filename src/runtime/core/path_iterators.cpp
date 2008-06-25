@@ -472,16 +472,17 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 /*******************************************************************************
 
 ********************************************************************************/
-DescendantAxisState::DescendantAxisState()
+DescendantAxisState::DescendantAxisState() : theTop(0)
 {
 }
 
 
 DescendantAxisState::~DescendantAxisState()
 {
-  while (!theCurrentPath.empty())
+  ulong len = theCurrentPath.size();
+  for (ulong i = 0; i < len; i++)
   {
-    theCurrentPath.pop();
+    delete theCurrentPath[i].second;
   }
 }
 
@@ -497,17 +498,33 @@ void
 DescendantAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
-  while (!theCurrentPath.empty())
+  theTop = 0;
+}
+
+
+void DescendantAxisState::push(store::Item_t& node)
+{
+  if (theTop < theCurrentPath.size())
   {
-    theCurrentPath.pop();
+    theCurrentPath[theTop].first = node.getp();
+    theCurrentPath[theTop].second->init(node);
   }
+  else
+  {
+    store::ChildrenIterator* ite = GENV_ITEMFACTORY->createChildrenIterator();;
+    store::Item* node1 = node.getp();
+    ite->init(node);
+    theCurrentPath.push_back(std::pair<store::Item*, store::ChildrenIterator*>
+                             (node1, ite));
+  }
+
+  theTop++;
 }
 
 
 bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Iterator_t children;
-
+  store::Item_t desc;
   DescendantAxisState* state;
   DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
 
@@ -523,25 +540,22 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
+        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                             "The context item of an axis step is not a node");
       }
     }
     while (!isElementOrDocumentNode(state->theContextNode.getp()));
 
-    children = state->theContextNode->getChildren();
-    children->open();
-
-    state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
-                              (state->theContextNode, children));
+    state->push(state->theContextNode);
     
-    if (state->theCurrentPath.top().second->next(result))
+    if ((result = state->top()->next()) != NULL)
     {
-      while(true) 
+      while(!state->empty()) 
       {
         if (result->getNodeKind() == store::StoreConsts::elementNode)
         {
-          state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
-                                  (result, result->getChildren()));
+          desc = result;
+          state->push(desc);
         }
 
         if (nameOrKindTest(result, planState))
@@ -554,63 +568,31 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
         // children have been processed already, N is removed from the stack
         // and the process is repeated.
 
-        while (!checked_top(state->theCurrentPath).second->next(result))
+        while ((result = state->top()->next()) == NULL)
         {
-          checked_pop (state->theCurrentPath);
-          if (state->theCurrentPath.empty())
-            break;
-        }
-        if (state->theCurrentPath.empty()) {
+          state->pop();
+          if (state->empty())
             break;
         }
       }
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-DescendantSelfAxisState::DescendantSelfAxisState()
+bool DescendantSelfAxisIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-}
-
-
-DescendantSelfAxisState::~DescendantSelfAxisState()
-{
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-}
-
-
-void
-DescendantSelfAxisState::init(PlanState& planState)
-{
-  AxisState::init(planState);
-}
-
-
-void
-DescendantSelfAxisState::reset(PlanState& planState)
-{
-  AxisState::reset(planState);
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-}
-
-
-bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  DescendantSelfAxisState* state;
+  store::Item_t desc;
+  DescendantAxisState* state;
   bool first = false;
-  DEFAULT_STACK_INIT(DescendantSelfAxisState, state, planState);
+  DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
 
   while (true)
   {
@@ -621,7 +603,8 @@ bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& plan
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
+        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                             "The context item of an axis step is not a node");
       }
     }
     while (!isElementOrDocumentNode(state->theContextNode.getp()));
@@ -629,15 +612,13 @@ bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& plan
     result = state->theContextNode;
     first = true;
 
-    while(first || !state->theCurrentPath.empty()) 
+    while(first || !state->empty()) 
     {
       first = false;
       if (isElementOrDocumentNode(result))
       {
-        store::Iterator_t children = result->getChildren();
-        children->open();
-        state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
-                                  (result, children));
+        desc = result;
+        state->push(desc);
       }
 
       if (nameOrKindTest(result, planState))
@@ -649,10 +630,10 @@ bool DescendantSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& plan
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      while (!checked_top (state->theCurrentPath).second->next(result))
+      while ((result = state->top()->next()) == NULL)
       {
-        checked_pop (state->theCurrentPath);
-        if (state->theCurrentPath.empty())
+        state->pop();
+        if (state->empty())
           break;
       }
     }

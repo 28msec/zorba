@@ -52,15 +52,48 @@ protected:
 public:
  ChildrenIteratorImpl() : theNumChildren(0), theCurrentPos(0) { }
 
-  void init(store::Item_t& parent);
-  void init(XmlNode* parent);
+  void init(store::Item_t& parent)
+  {
+    theParentNode.transfer(parent);
+    theNumChildren = theParentNode->numChildren();
+    theCurrentPos = 0;
+  }
 
-  store::Item* next();
 
-  void open();
+  void init(XmlNode* parent)
+  {
+    theParentNode = parent;
+    theNumChildren = theParentNode->numChildren();
+    theCurrentPos = 0;
+  }
+
+
+  store::Item* next()
+  {
+    if (theCurrentPos >= theNumChildren) 
+      return NULL;
+
+    return theParentNode->getChild(theCurrentPos++);
+  }
+
+
+  void open()
+  {
+    theCurrentPos = 0;
+  }
+
+  void reset()
+  {
+    theCurrentPos = 0;
+  }
+
+  void close()
+  {
+    theCurrentPos = 0;
+    theParentNode = NULL;
+  }
+
   bool next(store::Item_t& result);
-  void reset();
-  void close();
 };
 
 
@@ -83,15 +116,61 @@ protected:
 public:
   AttributesIteratorImpl() : theNumAttributes(0), theCurrentPos(0) { }
 
-  void init(store::Item_t& parent);
-  void init(XmlNode* parent);
+  void init(store::Item_t& parent)
+  {
+    theParentNode.transfer(parent);
+    theNumAttributes = theParentNode->numAttributes();
+    theCurrentPos = 0;
+  }
 
-  store::Item* next();
+  void init(XmlNode* parent)
+  {
+    theParentNode = parent;
+    theNumAttributes = theParentNode->numAttributes();
+    theCurrentPos = 0;
+  }
 
-  void open();
+  store::Item* next()
+  {
+    if (theCurrentPos >= theNumAttributes) 
+      return NULL;
+
+    AttributeNode* attr =
+      reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+
+    while (attr->isHidden())
+    {
+      theCurrentPos++;
+
+      if (theCurrentPos >= theNumAttributes) 
+        return NULL;
+
+      attr = reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+    }
+
+    theCurrentPos++;
+
+    return attr;
+  }
+
+
+  void open()
+  {
+    theCurrentPos = 0;
+  }
+
+  void reset()
+  {
+    theCurrentPos = 0;
+  }
+
+  void close()
+  {
+    theCurrentPos = 0;
+    theParentNode = NULL;
+  }
+
   bool next(store::Item_t& result);
-  void reset();
-  void close();
 };
 
 

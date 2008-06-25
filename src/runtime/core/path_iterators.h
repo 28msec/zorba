@@ -362,19 +362,38 @@ public:
 class DescendantAxisState : public AxisState
 {
 public:
-  std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
+  ulong theTop;
+  std::vector<std::pair<store::Item*, store::ChildrenIterator*> > theCurrentPath;
 
   DescendantAxisState();
   ~DescendantAxisState();
+
   void init(PlanState&);
   void reset(PlanState&);
+
+  bool empty() const
+  {
+    return theTop == 0;
+  }
+
+  store::ChildrenIterator* top() const
+  {
+    return theCurrentPath[theTop-1].second; 
+  }
+
+  void pop()
+  {
+    theCurrentPath[theTop-1].second->close();
+    theTop--;
+  }
+
+  void push(store::Item_t& node);
 };
 
 
-class DescendantAxisIterator : public AxisIterator<DescendantAxisIterator, DescendantAxisState>
+class DescendantAxisIterator : public AxisIterator<DescendantAxisIterator,
+                                                   DescendantAxisState>
 {
-protected:
-
 public:
   DescendantAxisIterator(const QueryLoc& loc, PlanIter_t input)
     :
@@ -393,23 +412,13 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class DescendantSelfAxisState : public AxisState
+class DescendantSelfAxisIterator : public AxisIterator<DescendantSelfAxisIterator,
+                                                       DescendantAxisState>
 {
-public:
-  std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
-  DescendantSelfAxisState();
-  ~DescendantSelfAxisState();
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-class DescendantSelfAxisIterator : public AxisIterator<DescendantSelfAxisIterator, DescendantSelfAxisState>
-{
-protected:
-
 public:
   DescendantSelfAxisIterator(const QueryLoc& loc, PlanIter_t input)
     :
-    AxisIterator<DescendantSelfAxisIterator, DescendantSelfAxisState>(loc, input)
+    AxisIterator<DescendantSelfAxisIterator, DescendantAxisState>(loc, input)
   {
   }
 
@@ -427,15 +436,18 @@ public:
 class PrecedingAxisState : public AxisState
 {
 public:
-  std::stack<store::Item_t>                         theAncestorPath;
+  std::stack<store::Item_t>                                theAncestorPath;
   std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
+
   PrecedingAxisState();
   ~PrecedingAxisState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class PrecedingAxisIterator : public AxisIterator<PrecedingAxisIterator, PrecedingAxisState>
+class PrecedingAxisIterator : public AxisIterator<PrecedingAxisIterator,
+                                                  PrecedingAxisState>
 {
 public:
   PrecedingAxisIterator(const QueryLoc& loc, PlanIter_t input)
@@ -458,14 +470,19 @@ public:
 class FollowingAxisState : public AxisState
 {
 public:
-  std::stack<store::Item_t>                         theAncestorPath;
+  std::stack<store::Item_t>                                theAncestorPath;
   std::stack<std::pair<store::Item_t, store::Iterator_t> > theCurrentPath;
+
   FollowingAxisState();
   ~FollowingAxisState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
-class FollowingAxisIterator : public AxisIterator<FollowingAxisIterator, FollowingAxisState>
+
+
+class FollowingAxisIterator : public AxisIterator<FollowingAxisIterator,
+                                                  FollowingAxisState>
 {
 
 public:

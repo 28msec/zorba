@@ -34,37 +34,6 @@ namespace simplestore
 /////////////////////////////////////////////////////////////////////////////////
 
 
-void ChildrenIteratorImpl::init(store::Item_t& parent)
-{
-  theParentNode.transfer(parent);
-  theNumChildren = theParentNode->numChildren();
-  theCurrentPos = 0;
-}
-
-
-void ChildrenIteratorImpl::init(XmlNode* parent)
-{
-  theParentNode = parent;
-  theNumChildren = theParentNode->numChildren();
-  theCurrentPos = 0;
-}
-
-
-store::Item* ChildrenIteratorImpl::next()
-{
-  if (theCurrentPos >= theNumChildren) 
-    return NULL;
-
-  return theParentNode->getChild(theCurrentPos++);
-}
-
-
-void ChildrenIteratorImpl::open()
-{
-  theCurrentPos = 0;
-}
-
-
 bool ChildrenIteratorImpl::next(store::Item_t& result)
 {
   if (theCurrentPos >= theNumChildren) 
@@ -81,54 +50,11 @@ bool ChildrenIteratorImpl::next(store::Item_t& result)
 }
 
 
-void ChildrenIteratorImpl::reset()
-{
-  theCurrentPos = 0;
-}
-
-
-void ChildrenIteratorImpl::close()
-{
-  theCurrentPos = 0;
-  theParentNode = NULL;
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class AttributesIterator                                                   //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
-
-void AttributesIteratorImpl::init(store::Item_t& parent)
-{
-  theParentNode.transfer(parent);
-  theNumAttributes = theParentNode->numAttributes();
-  theCurrentPos = 0;
-}
-
-
-void AttributesIteratorImpl::init(XmlNode* parent)
-{
-  theParentNode = parent;
-  theNumAttributes = theParentNode->numAttributes();
-  theCurrentPos = 0;
-}
-
-
-store::Item* AttributesIteratorImpl::next()
-{
-  if (theCurrentPos >= theNumAttributes) 
-    return NULL;
-
-  return theParentNode->getChild(theCurrentPos++);
-}
-
-
-void AttributesIteratorImpl::open()
-{
-  theCurrentPos = 0;
-}
 
 
 bool AttributesIteratorImpl::next(store::Item_t& result)
@@ -159,19 +85,6 @@ bool AttributesIteratorImpl::next(store::Item_t& result)
 
   result = cnode;
   return true;
-}
-
-
-void AttributesIteratorImpl::reset()
-{
-  theCurrentPos = 0;
-}
-
-
-void AttributesIteratorImpl::close()
-{
-  theCurrentPos = 0;
-  theParentNode = NULL;
 }
 
 
