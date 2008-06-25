@@ -56,18 +56,18 @@ namespace zorba
         static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
             PlanState& planState, const PlanIterator* iter, bool isLax);
 
-        static store::Item_t processElement ( SchemaValidator& schemaValidator, store::Item_t parent, 
-            store::Item_t element);
+        static store::Item_t processElement ( SchemaValidator& schemaValidator, store::Item *parent, 
+            const store::Item_t& element);
 
         static void validateAttributes ( SchemaValidator& schemaValidator, store::Iterator_t attributes);
 
-        static void processAttributes( SchemaValidator& schemaValidator, store::Item_t parent, 
+        static void processAttributes( SchemaValidator& schemaValidator, store::Item *parent, 
             store::Iterator_t attributes);
 
-        static void processChildren ( SchemaValidator& schemaValidator, store::Item_t parent, 
+        static void processChildren ( SchemaValidator& schemaValidator, store::Item *parent, 
             store::Iterator_t children);
 
-        static void processNamespaces ( SchemaValidator& schemaValidator, store::Item_t item);
+        static void processNamespaces ( SchemaValidator& schemaValidator, const store::Item_t& item);
     };
 
 }

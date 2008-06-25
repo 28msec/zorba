@@ -708,7 +708,7 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
     if(_elementToProcess) 
         processStartElement();
 
-    const XMLCh *typeURI;
+    const XMLCh *typeURI = NULL;
     
     if(fValidate) 
     {
@@ -737,7 +737,7 @@ const XMLCh* SchemaValidatorFilter::getTypeUri()
     if(_elementToProcess) 
         processStartElement();
 
-    const XMLCh *typeName;
+    const XMLCh *typeName = NULL;
     
     if(fValidate) 
     {

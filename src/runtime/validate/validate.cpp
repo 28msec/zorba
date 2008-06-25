@@ -162,14 +162,15 @@ namespace zorba
         return returnVal;
     }
 
-    store::Item_t ValidateIterator::processElement( SchemaValidator& schemaValidator, store::Item_t parent, 
-        store::Item_t element)
+    store::Item_t ValidateIterator::processElement( SchemaValidator& schemaValidator, store::Item *parent, 
+        const store::Item_t& element)
     {
         ZORBA_ASSERT(element->isNode());
         ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
 
         store::Item_t typeName = element->getType();
         store::Item_t nodeName = element->getNodeName();
+        xqpStringStore_t baseUri = element->getBaseURI();
 
         schemaValidator.startElem(nodeName);
 
@@ -189,11 +190,11 @@ namespace zorba
 
         store::Item_t elemName = element->getNodeName();
         GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName, typeName, 
-            bindings, element->getBaseURI(), true);
+            bindings, baseUri, true);
 
 
-        processAttributes( schemaValidator, newElem, element->getAttributes());
-        processChildren( schemaValidator, newElem, element->getChildren());
+        processAttributes( schemaValidator, (store::Item *)newElem, element->getAttributes());
+        processChildren( schemaValidator, (store::Item *)newElem, element->getChildren());
 
 
         schemaValidator.endElem(nodeName);
@@ -217,7 +218,7 @@ namespace zorba
         }
     }
 
-    void ValidateIterator::processAttributes( SchemaValidator& schemaValidator, store::Item_t parent, 
+    void ValidateIterator::processAttributes( SchemaValidator& schemaValidator, store::Item *parent, 
         store::Iterator_t attributes)
     {
         store::Item_t attribute;
@@ -229,9 +230,10 @@ namespace zorba
                 
             store::Item_t attName = attribute->getNodeName();
             store::Item_t typeName = attribute->getType();
+            xqpStringStore_t attValue = attribute->getStringValue();
             
             store::Item_t textValue;
-            GENV_ITEMFACTORY->createString( textValue, attribute->getStringValue() );                        
+            GENV_ITEMFACTORY->createString( textValue, attValue);                        
             
             store::Item_t validatedAttNode;
             GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attName,
@@ -239,7 +241,7 @@ namespace zorba
         }
     }
 
-    void ValidateIterator::processChildren( SchemaValidator& schemaValidator, store::Item_t parent, 
+    void ValidateIterator::processChildren( SchemaValidator& schemaValidator, store::Item *parent, 
         store::Iterator_t children)
     {
         store::Item_t child;
@@ -270,10 +272,11 @@ namespace zorba
                 case store::StoreConsts::textNode:
                     {
                         //std::cout << "     - text: " << child->getStringValue() << "\n"; std::cout.flush();                    
-                        schemaValidator.text(child->getStringValue());
+                        xqpStringStore_t childStringValue = child->getStringValue();
+                        schemaValidator.text(childStringValue);
 
                         store::Item_t validatedTextNode;
-                        GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, -1, child->getStringValue());
+                        GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, -1, childStringValue);
                     }
                     break;
                 
@@ -282,7 +285,9 @@ namespace zorba
                         //std::cout << "     - pi: " << child->getStringValue() << "\n"; std::cout.flush();
                         store::Item_t piNode;
                         xqpStringStore_t piTarget = child->getTarget();
-                        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget, child->getStringValue(), child->getBaseURI());                    
+                        xqpStringStore_t childStringValue = child->getStringValue();
+                        xqpStringStore_t childBaseUri = child->getBaseURI();
+                        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget, childStringValue, childBaseUri);                    
                     }
                     break;
                 
@@ -290,13 +295,14 @@ namespace zorba
                     {
                         //std::cout << "     - comment: " << child->getStringValue() << "\n"; std::cout.flush();
                         store::Item_t commentNode;
-                        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, -1, child->getStringValue());                    
+                        xqpStringStore_t childStringValue = child->getStringValue();
+                        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, -1, childStringValue);                    
                     }
                     break;
                 
                 case store::StoreConsts::anyNode:
                     //std::cout << "     - any: " << child->getStringValue() << "\n"; std::cout.flush();
-                    // todo Cezar: check with Marcos
+                    ZORBA_ASSERT(false);                    
                     break;
                                     
                 default:
@@ -306,7 +312,7 @@ namespace zorba
         }
     }
 
-    void ValidateIterator::processNamespaces ( SchemaValidator& schemaValidator, store::Item_t item)
+    void ValidateIterator::processNamespaces ( SchemaValidator& schemaValidator, const store::Item_t& item)
     {
         store::NsBindings bindings;
         item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
