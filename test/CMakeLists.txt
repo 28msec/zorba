@@ -28,15 +28,16 @@ ADD_SUBDIRECTORY(sax2)
 SET(API_TEST_SRCS
     apitest.cpp)
 
-SET(requiredlibs-apitest ${requiredlibs-apitest} zorba simplestore)
+SET(requiredlibs-apitest-shared ${requiredlibs-apitest} zorba simplestore)
 
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
 
-TARGET_LINK_LIBRARIES(apitest ${requiredlibs-apitest})
+TARGET_LINK_LIBRARIES(apitest ${requiredlibs-apitest-shared})
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(apitest_static ${API_TEST_SRCS})
-  TARGET_LINK_LIBRARIES(apitest_static ${requiredlibs-apitest})
+  TARGET_LINK_LIBRARIES(apitest_static ${requiredlibs-apitest} zorba_static
+  simplestore)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 
