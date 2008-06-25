@@ -440,9 +440,9 @@ void end_visit(flwor_expr& v)
   CODEGEN_TRACE_OUT("");
 
 #ifdef ZORBA_DEBUGGER
-  PlanIter_t ret = pop_itstack ();
-#else
   PlanIter_t ret = debugIterator( pop_itstack () );
+#else
+  PlanIter_t ret = pop_itstack ();
 #endif
   vector<FLWORIterator::OrderSpec> orderSpecs;
   for (flwor_expr::orderspec_list_t::reverse_iterator i = v.orderspec_rbegin ();
