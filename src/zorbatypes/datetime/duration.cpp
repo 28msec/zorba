@@ -548,7 +548,7 @@ DurationBase_t DayTimeDuration::operator*(const Double value) const
   long frac_seconds;
   Double tps = Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
   
-  result = Double::parseFloatType(getTotalSeconds()) * value;
+  result = getTotalSeconds() * value;
   result = (result * tps).round() / tps;
 #ifndef NDEBUG
   assert(NumConversions::doubleToLong(result.floor(), seconds));
@@ -574,7 +574,7 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
   long frac_seconds;
   Double tps = Double::parseFloatType(boost::posix_time::time_duration::ticks_per_second());
   
-  result = Double::parseFloatType(getTotalSeconds()) / value;
+  result = getTotalSeconds() / value;
   result = (result * tps).round() / tps;
 #ifndef NDEBUG
   assert(NumConversions::doubleToLong(result.floor(), seconds));
@@ -599,11 +599,11 @@ Decimal DayTimeDuration::operator/(const DurationBase& db) const
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
   
 #ifndef NDEBUG
-  assert(Decimal::parseNativeDouble(getTotalSeconds(), op1));
-  assert(Decimal::parseNativeDouble(dtd.getTotalSeconds(), op2));
+  assert(Decimal::parseDouble(getTotalSeconds(), op1));
+  assert(Decimal::parseDouble(dtd.getTotalSeconds(), op2));
 #else
-  Decimal::parseNativeDouble(getTotalSeconds(), op1);
-  Decimal::parseNativeDouble(dtd.getTotalSeconds(), op2);
+  Decimal::parseDouble(getTotalSeconds(), op1);
+  Decimal::parseDouble(dtd.getTotalSeconds(), op2);
 #endif
   
   return op1/op2;
@@ -640,10 +640,11 @@ double DayTimeDuration::getSeconds() const
   return (is_negative? -1 : 1) * (timeDuration.seconds()+frac_sec);
 }
 
-double DayTimeDuration::getTotalSeconds() const
+Double DayTimeDuration::getTotalSeconds() const
 {
   double frac_sec = double(timeDuration.fractional_seconds()) / boost::posix_time::time_duration::ticks_per_second();
-  return (is_negative? -1 : 1) * (days*NO_SEC_IN_DAY + timeDuration.total_seconds() + frac_sec);
+  
+  return (is_negative? Double::parseFloatType(-1) : Double::parseFloatType(1)) * (Double::parseFloatType(days)*Double::parseFloatType(NO_SEC_IN_DAY) + Double::parseFloatType(timeDuration.total_seconds()) + Double::parseFloatType(frac_sec));
 }
 
 // parse a 'nS' string, with fractional seconds, returns true on success and false on failure

@@ -261,7 +261,7 @@ namespace zorba
       virtual double
       getSeconds() const;
       
-      double
+      Double
       getTotalSeconds() const;
 
       bool
