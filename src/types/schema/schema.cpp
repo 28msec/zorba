@@ -97,7 +97,6 @@ Schema::Schema()
 Schema::~Schema()
 {
     delete _grammarPool;
-    //_grammarPool = NULL;
     delete _udTypesCache;
 }
 
@@ -119,7 +118,7 @@ void Schema::registerXSD(const char* xsdURL)
         LoadSchemaErrorHandler handler;    
         parser->setErrorHandler(&handler);
 
-        cout << "== Parsing == " << xsdURL << endl;
+        //cout << "== Parsing == " << xsdURL << endl;
         XMLChArray xerces_xsdURL (xsdURL);
         XMLURL url (xerces_xsdURL.get ());
         URLInputSource input_src (url);
@@ -149,100 +148,6 @@ void Schema::registerXSD(const char* xsdURL)
 void Schema::printXSDInfo(bool excludeBuiltIn)
 {
     PrintSchema::printInfo(excludeBuiltIn, _grammarPool);
-  
-  //xqp_string val;
-  //store::Item_t res;
-
-  //val = "  \t\n  1 \t ";
-  //XercesParseUtils::parseXSBoolean(val, res);
-  //XercesParseUtils::parseXSInteger(val, res);
-  //XercesParseUtils::parseXSPositiveInteger(val, res);
-  //XercesParseUtils::parseXSNonPositiveInteger(val, res);
-  //XercesParseUtils::parseXSNegativeInteger(val, res);
-  //XercesParseUtils::parseXSNonNegativeInteger(val, res);
-  //XercesParseUtils::parseXSUnsignedByte(val, res);
-  //XercesParseUtils::parseXSUnsignedShort(val, res);
-  //XercesParseUtils::parseXSUnsignedInt(val, res);
-  //XercesParseUtils::parseXSUnsignedLong(val, res);
-  //XercesParseUtils::parseXSByte(val, res);
-  //XercesParseUtils::parseXSShort(val, res);
-  //XercesParseUtils::parseXSInt(val, res);
-  //XercesParseUtils::parseXSLong(val, res);
-  //val = "  \t\n  1.1 \t ";
-  //XercesParseUtils::parseXSFloat(val, res);
-  //XercesParseUtils::parseXSDouble(val, res);
-  //XercesParseUtils::parseXSDecimal(val, res);
-  
-  //XercesParseUtils::parseXSString(val, res);
-  //XercesParseUtils::parseXSNormalizedString(val, res);
-  //val = "  \t\n  ACBD \t ";
-  //XercesParseUtils::parseXSToken(val, res);
-  //XercesParseUtils::parseXSNMToken(val, res);
-  //XercesParseUtils::parseXSName(val, res);
-  //XercesParseUtils::parseXSNCName(val, res);
-  //XercesParseUtils::parseXSID(val, res);
-  //XercesParseUtils::parseXSIDRef(val, res);
-  //XercesParseUtils::parseXSEntity(val, res);
-  //XercesParseUtils::parseXSNotation(val, res);
-
-  //val = "   2002-10-10T12:00:00  ";
-  //XercesParseUtils::parseXSDateTime(val, res);
-  //val = "   2002-10-11+12:00  ";
-  //XercesParseUtils::parseXSDate(val, res);
-  //val = "   13:20:00-05:00  ";
-  //XercesParseUtils::parseXSTime(val, res);
-    //val = "   1999-04-05:00  ";
-  //XercesParseUtils::parseXSGYearMonth(val, res);
-  //val = "  1999-05:00  ";
-  //XercesParseUtils::parseXSGYear(val, res);
-  //val = "  --12-30-05:00  ";
-  //XercesParseUtils::parseXSGMonthDay(val, res);
-  //val = "  ---30-05:00  ";
-  //XercesParseUtils::parseXSGDay(val, res);
-  //val = "  --12-05:00  ";
-  //XercesParseUtils::parseXSGMonth(val, res);
-  //val = "  P1Y2M3DT10H30M12.123S  ";
-  //XercesParseUtils::parseXSDuration(val, res);
-  //val = "  P1Y2M ";
-  //XercesParseUtils::parseXSYearMonthDuration(val, res);
-  //val = "  P3DT10H30M12.123S  ";
-  //XercesParseUtils::parseXSDayTimeDuration(val, res);
-  //val = "  blah blah blah  ";
-  //XercesParseUtils::parseXSAnyAtomicType(val, res);
-  //XercesParseUtils::parseXSUntypedAtomic(val, res);
-  //val = "  SGVsbG8gV29ybGQ=  ";
-  //XercesParseUtils::parseXSBase64Binary(val, res);
-  //val = "  FF0099  ";
-  //XercesParseUtils::parseXSHexBinary(val, res);
-  //val = "  http://a.b.c/a/b/c.d  ";
-  //XercesParseUtils::parseXSAnyUri(val, res);
-  //val = "  p:local  ";
-  //XercesParseUtils::parseXSQName(val, res);
-  //std::cout << "Val: " << val << "\tResult: '" << res->getStringValue() << "'\n\n\n\n";
-
-
-
-    //std::cout <<"\n\nValidate the value of a user defined atomic type:\n";
-    //
-    //RootTypeManager& ts = GENV_TYPESYSTEM;
-    //const DelegatingTypeManager *typeManager = new DelegatingTypeManager(&ts);
-
-    //store::ItemFactory* factory = GENV_ITEMFACTORY;
-    //
-    //xqp_string lNamespace("simple.xsd");
-    //xqp_string lPrefix("");
-    //xqp_string lLocal("HatSizeType");
-    //store::Item_t qname = factory->createQName(lNamespace.getStore(),
-    //    lPrefix.getStore(), lLocal.getStore());;
-
-    //xqtref_t type = createIfExists(typeManager, qname, TypeConstants::QUANT_ONE);
-    //
-    //const xqp_string textValue("17");
-    //xqtref_t aSourceType = ts.STRING_TYPE_ONE;
-    //xqtref_t aTargetType = type;
-
-    //store::Item_t result;
-    //parseUserAtomicTypes(textValue, aSourceType, aTargetType, result);
 }
 
 xqtref_t Schema::createIfExists( const TypeManager *typeManager, const store::Item* qname,
