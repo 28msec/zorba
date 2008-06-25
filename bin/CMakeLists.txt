@@ -20,17 +20,17 @@ IF(ZORBA_DEBUGGER)
  SET(ZORBA_CMD_SRCS ${ZORBA_CMD_SRCS} debugcmd_client.cpp) 
 ENDIF(ZORBA_DEBUGGER)
 
-SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} zorba simplestore)
+SET(requiredlibs-zorbacmd-shared ${requiredlibs-zorbacmd} zorba simplestore)
 
 ADD_EXECUTABLE(zorbacmd ${ZORBA_CMD_SRCS})
 
-TARGET_LINK_LIBRARIES(zorbacmd ${requiredlibs-zorbacmd})
+TARGET_LINK_LIBRARIES(zorbacmd ${requiredlibs-zorbacmd-shared})
 
 SET_TARGET_PROPERTIES(zorbacmd PROPERTIES OUTPUT_NAME "zorba") # cmake way to rename the file
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(zorbacmd_static ${ZORBA_CMD_SRCS})
-  TARGET_LINK_LIBRARIES(zorbacmd_static zorba_static simplestore)
+  TARGET_LINK_LIBRARIES(zorbacmd_static ${requiredlibs-zorbacmd} zorba_static simplestore)
   SET_TARGET_PROPERTIES(zorbacmd_static PROPERTIES OUTPUT_NAME "zorba_static") # cmake way to rename the file
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
