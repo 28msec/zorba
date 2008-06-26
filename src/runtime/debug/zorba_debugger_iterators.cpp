@@ -39,15 +39,13 @@ namespace zorba {
   bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState& planState) const
   {
 
-    store::Item_t lSequenceItem;
-  
     PlanIteratorState * state;
     
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
     theDebugger->theLocation = loc;
     
-    while ( consumeNext( lSequenceItem, theChildren[0], planState ) ) {
+    while ( consumeNext( result, theChildren[0], planState ) ) {
       
       if ( theDebugger->hasToSuspend() )
       {

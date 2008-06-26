@@ -73,7 +73,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     ZorbaDebuggerImpl()
     :
     theStore( 0 ),
-    theDebugMode( true ),
+    theDebugMode( false ),
     theRequestServerSocket(0), 
     theEventSocket(0), 
     theStatus( QUERY_IDLE  ),
