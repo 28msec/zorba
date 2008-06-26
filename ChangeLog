@@ -1,6 +1,11 @@
 Zorba - The XQuery Processor
 
-version 0.9.2 (2008.04.19):
+version 0.9.2-4299 (2008.06.25):
+  * fixed installation problem for the python and ruby language bindings
+  * fixed some valgrind reported memory problems
+  * other minor bug fixes
+
+version 0.9.2-4251 (2008.06.19):
   * Module support (as in the XQuery 1.0 W3C recommendation)
   * Removed boost shared pointers from the API
   * Performance improvements and bug fixes
