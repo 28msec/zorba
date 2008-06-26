@@ -14,25 +14,7 @@
 
 IF(ZORBA_MINIMAL_STORE)
 
-SET(STORE_SRCS
-    minimal/min_item_factory.cpp
-    minimal/min_collection.cpp
-    minimal/min_temp_seq.cpp
-    minimal/min_atomic_items.cpp
-    minimal/min_item.cpp
-    minimal/min_node_items.cpp
-    minimal/min_node_vector.cpp
-    minimal/min_node_updates.cpp
-    minimal/min_node_iterators.cpp
-    minimal/min_store.cpp
-    minimal/min_loader.cpp
-    minimal/min_pul.cpp
-    minimal/min_ordpath.cpp
-    minimal/min_nsbindings.cpp
-    minimal/min_item_iterator.cpp
-    minimal/min_query_context.cpp
-    minimal/qname_pool.cpp
-    minimal/string_pool.cpp)
+ADD_SUBDIRECTORY(minimal)
 
 HEADER_GROUP_SUBFOLDER(STORE_SRCS api)
 HEADER_GROUP_SUBFOLDER(STORE_SRCS util)

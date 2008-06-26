@@ -26,6 +26,7 @@ namespace zorba {  namespace storeminimal {
 
 
 class XmlNode;
+class ConstrNodeVector;
 
 
 /*******************************************************************************

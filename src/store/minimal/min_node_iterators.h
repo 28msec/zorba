@@ -16,38 +16,86 @@
 #ifndef ZORBA_MINIMAL_STORE_NODE_ITERATORS
 #define ZORBA_MINIMAL_STORE_NODE_ITERATORS
 
-#include "common/shared_types.h"
 #include "store/api/iterator.h"
-#include "store/minimal/shared_types.h"
-#include "store/minimal/min_ordpath.h"
 #include "store/util/hashset_item_handle.h"
+#include "store/minimal/shared_types.h"
+#include "store/minimal/min_node_items.h"
+#include "store/minimal/min_ordpath.h"
 
 namespace zorba { namespace storeminimal {
 
 
 /*******************************************************************************
-  This iterator is used during the getChildren() method to set the parent
-  pointer and the nodeid in each child node of an element or document node.
-
+  This iterator is used to iterate over the children of a document or element
+  node. It implements the interface of a generic iterator, but also offers the
+  following additional methods:
+ 
+  - An init method that takes as input a document or element node and
+    initializes the iterator so that it will start returning the children of
+    this node.
+  - A next method that returns pointers to the children instead of rchandles.
+    These pointers should not be used beyond the lifetime of the ChildrenIterator
+    object. 
+ 
   theParentNode : The element or doc node whose children are being retrieved.
   theCurrentPos : The next child to be retrieved.
+  theNumChildren: The number of children.
 ********************************************************************************/
-class ChildrenIterator : public store::Iterator
+class ChildrenIteratorImpl : public store::ChildrenIterator
 {
 protected:
-  rchandle<XmlNode>           theParentNode;
+  rchandle<XmlNode>  theParentNode;
 
-  unsigned long       theNumChildren;
-  unsigned long       theCurrentPos;
+  ulong              theNumChildren;
+  ulong              theCurrentPos;
 
 public:
-  ChildrenIterator(XmlNode* parent);
+ ChildrenIteratorImpl() : theNumChildren(0), theCurrentPos(0) { }
 
-  void open();
+  void init(store::Item_t& parent)
+  {
+    theParentNode.transfer(parent);
+    theNumChildren = theParentNode->numChildren();
+    theCurrentPos = 0;
+  }
+
+
+  void init(XmlNode* parent)
+  {
+    theParentNode = parent;
+    theNumChildren = theParentNode->numChildren();
+    theCurrentPos = 0;
+  }
+
+
+  store::Item* next()
+  {
+    if (theCurrentPos >= theNumChildren) 
+      return NULL;
+
+    return theParentNode->getChild(theCurrentPos++);
+  }
+
+
+  void open()
+  {
+    theCurrentPos = 0;
+  }
+
+  void reset()
+  {
+    theCurrentPos = 0;
+  }
+
+  void close()
+  {
+    theCurrentPos = 0;
+    theParentNode = NULL;
+  }
+
   bool next(store::Item_t& result);
-  void reset();
-  void close();
 };
+
 
 class ChildrenIteratorLazy : public store::Iterator
 {
@@ -74,21 +122,72 @@ public:
   theCurrentPos : The next attribute to be retrieved.
 
 ********************************************************************************/
-class AttributesIterator : public store::Iterator
+class AttributesIteratorImpl : public store::AttributesIterator
 {
 protected:
-  rchandle<ElementNode>       theParentNode;
+  rchandle<XmlNode>  theParentNode;
 
-  unsigned long       theNumAttributes;
-  unsigned long       theCurrentPos;
+  ulong              theNumAttributes;
+  ulong              theCurrentPos;
 
 public:
-  AttributesIterator(ElementNode* parent);
+  AttributesIteratorImpl() : theNumAttributes(0), theCurrentPos(0) { }
 
-  void open();
+  void init(store::Item_t& parent)
+  {
+    theParentNode.transfer(parent);
+    theNumAttributes = theParentNode->numAttributes();
+    theCurrentPos = 0;
+  }
+
+  void init(XmlNode* parent)
+  {
+    theParentNode = parent;
+    theNumAttributes = theParentNode->numAttributes();
+    theCurrentPos = 0;
+  }
+
+  store::Item* next()
+  {
+    if (theCurrentPos >= theNumAttributes) 
+      return NULL;
+
+    AttributeNode* attr =
+      reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+
+    while (attr->isHidden())
+    {
+      theCurrentPos++;
+
+      if (theCurrentPos >= theNumAttributes) 
+        return NULL;
+
+      attr = reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+    }
+
+    theCurrentPos++;
+
+    return attr;
+  }
+
+
+  void open()
+  {
+    theCurrentPos = 0;
+  }
+
+  void reset()
+  {
+    theCurrentPos = 0;
+  }
+
+  void close()
+  {
+    theCurrentPos = 0;
+    theParentNode = NULL;
+  }
+
   bool next(store::Item_t& result);
-  void reset();
-  void close();
 };
 
 

@@ -22,7 +22,7 @@
 
 namespace zorba { namespace storeminimal {
 
-
+typedef rchandle<XmlNode>   XmlNode_t;
 ConstrNodeVector dummyVector;
 
 

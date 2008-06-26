@@ -36,6 +36,8 @@
 #include "store/minimal/min_query_context.h"
 #include "store/minimal/qname_pool.h"
 #include "store/minimal/string_pool.h"
+#include "store/minimal/min_iterator_factory.h"
+#include "store/minimal/min_query_context.h"
 
 #include "store/api/pul.h"
 
@@ -74,6 +76,7 @@ SimpleStore::SimpleStore()
   theNamespacePool(NULL),
   theQNamePool(NULL),
   theItemFactory(NULL),
+  theIteratorFactory(NULL),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
   theQueryContextContainer(NULL),
@@ -102,6 +105,8 @@ void SimpleStore::init()
     initTypeNames();
 
     theItemFactory = new BasicItemFactory(theNamespacePool, theQNamePool);
+
+    theIteratorFactory = new SimpleIteratorFactory();
 
     theTraceLevel = 0;//store::Properties::instance()->storeTraceLevel();
 
@@ -306,6 +311,12 @@ void SimpleStore::shutdown()
 
     delete theNamespacePool;
     theNamespacePool = NULL;
+  }
+
+  if (theIteratorFactory != NULL)
+  {
+    delete theIteratorFactory;
+    theIteratorFactory = NULL;
   }
 
   theIsInitialized = false;

@@ -20,9 +20,9 @@
 
 #include <zorba/store_consts.h>
 
-#include "common/common.h"
+#include "zorbamisc/config/platform.h"
 #include "zorbaerrors/error_manager.h"
-#include "system/globalenv.h"
+//#include "system/globalenv.h"
 #include "zorbaerrors/Assert.h"
 
 #include "store/minimal/min_store.h"
@@ -36,10 +36,11 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/chartype.h"
 
-#include "context/static_context.h"
+//#include "context/static_context.h"
+#include "zorbamisc/ns_consts.h"
 
-#include "types/casting.h"
-#include "context/namespace_context.h"
+//#include "types/casting.h"
+//#include "context/namespace_context.h"
 #include <string>
 #include <stdarg.h>
 
@@ -73,6 +74,9 @@ int traceLevel = 0;
   } while (0);
 
 xqpString   g_empty_string;
+xqpString   g_xml_ns(XML_NS);
+xqpString   g_xml_schema_ns(XML_SCHEMA_NS);
+xqpString   g_xsi_ns(XSI_NS);
 /*******************************************************************************
 
 ********************************************************************************/
@@ -463,12 +467,22 @@ bool XmlLoader::fill_in_uri(store::NsBindings  *nsbindings,
 
 
   ///look into default namespaces
-  xqp_string    nsuri;
-  if(GENV.getRootStaticContext().lookup_ns(&*prefix, nsuri))
+  if(!strcmp(prefix, "xml"))
   {
-    result_uri = nsuri.theStrStore;
+    result_uri = g_xml_ns.getStore();
     return true;
   }
+  if(!strcmp(prefix, "xs"))
+  {
+    result_uri = g_xml_schema_ns.getStore();
+    return true;
+  }
+  if(!strcmp(prefix, "xsi"))
+  {
+    result_uri = g_xsi_ns.getStore();
+    return true;
+  }
+
   result_uri = g_empty_string.theStrStore;
   return false;
 }
@@ -1239,7 +1253,13 @@ void XmlLoader::startElement(
 
       store::Item_t tnameCopy = tname;
       store::Item_t attr;
-      theFactory->createAttributeNode(attr, node, -1, qname, tnameCopy, (*attr_it).value);
+      store::Item_t typedValue;
+      theFactory->createUntypedAtomic(typedValue, (*attr_it).value);
+      theFactory->createAttributeNode(attr, 
+                                      node, -1, 
+                                      qname, 
+                                      tnameCopy, 
+                                      typedValue);
     }
   }
   catch (error::ZorbaError& e)

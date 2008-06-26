@@ -16,7 +16,6 @@
 #ifndef ZORBA_MINIMAL_STORE___
 #define ZORBA_MINIMAL_STORE___
 
-#include <zorba/config.h>
 
 #include "zorbautils/mutex.h"
 #include "zorbautils/latch.h"
@@ -41,12 +40,23 @@ namespace error
   class ErrorManager;
 }
 
+namespace store
+{
+  class IteratorFactory;
+}
+
 namespace storeminimal 
 {
 
 class QueryContextContainer;
 class QueryContext;
 
+class StringPool;
+class QNamePool;
+class XmlLoader;
+
+
+typedef rchandle<XmlNode> XmlNode_t;
 typedef store::StringHashMap<XmlNode_t> DocumentSet;
 typedef store::StringHashMap<store::Collection_t> CollectionSet;
 
@@ -84,7 +94,8 @@ protected:
   StringPool             * theNamespacePool;
   QNamePool              * theQNamePool;
 
-  store::ItemFactory            * theItemFactory;
+  store::ItemFactory          * theItemFactory;
+  store::IteratorFactory      * theIteratorFactory;
 
   DocumentSet              theDocuments;
   CollectionSet            theCollections;
@@ -109,13 +120,12 @@ public:
 //  store::Item *getTypeQName(store::Item *item);
 
   store::ItemFactory* getItemFactory() const     { return theItemFactory; }
+  store::IteratorFactory* getIteratorFactory() const { return theIteratorFactory; }
 
   StringPool& getNamespacePool() const    { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }
   Latch&    getGlobalLock()                 { return theGlobalLock; }
-#ifndef NDEBUG
   long getTraceLevel() const              { return theTraceLevel; }
-#endif
 
   XmlLoader* getXmlLoader(error::ErrorManager*);
 

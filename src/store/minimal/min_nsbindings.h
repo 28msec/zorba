@@ -18,8 +18,7 @@
 
 #include <vector>
 
-#include "common/common.h"
-#include "common/shared_types.h"
+#include "zorbamisc/config/platform.h"
 #include "store/api/item_factory.h"
 
 namespace zorba { 

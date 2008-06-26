@@ -636,6 +636,19 @@ void XmlNode::deleteTree() throw()
 /*******************************************************************************
 
 ********************************************************************************/
+DocumentNode::DocumentNode(xqpStringStore_t& baseUri, xqpStringStore_t& docUri)
+  :
+  XmlNode()
+{
+  if (baseUri != NULL && !baseUri->empty())
+    theBaseUri.transfer(baseUri);
+
+  theDocUri.transfer(docUri);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 DocumentNode::DocumentNode(
     XmlTree*          tree,
     xqpStringStore_t& baseUri,
@@ -727,7 +740,11 @@ store::Iterator_t DocumentNode::getChildren() const
   if(this->hasLoaderAttached())
     return (new ChildrenIteratorLazy((XmlNode*)this));
   else
-    return (new ChildrenIterator((XmlNode*)this));
+  {
+    ChildrenIteratorImpl* res = new ChildrenIteratorImpl();
+    res->init((XmlNode*)this);
+    return res;
+  }
 }
 
 store::Iterator_t DocumentNode::getTypedValue() const
@@ -805,6 +822,20 @@ xqp_string DocumentNode::show() const
 
 
 /*******************************************************************************
+  Node constructor used by FastXmlLoader
+********************************************************************************/
+DocumentTreeNode::DocumentTreeNode(
+    xqpStringStore_t& baseUri,
+    xqpStringStore_t& docUri)
+  :
+  DocumentNode(baseUri, docUri)
+{
+  NODE_TRACE1("Loaded doc node " << this << " base uri = "
+              << (theBaseUri != 0 ? theBaseUri->c_str() : "NULL")
+              << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
+}
+
+/*******************************************************************************
 
 ********************************************************************************/
 DocumentTreeNode::DocumentTreeNode(
@@ -848,6 +879,18 @@ DocumentDagNode::DocumentDagNode(
 //  class ElementNode                                                          //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+/*******************************************************************************
+
+********************************************************************************/
+ElementNode::ElementNode(store::Item_t&  nodeName, store::Item_t& typeName)
+  :
+  XmlNode(),
+  theFlags(0)
+{
+  theName.transfer(nodeName);
+  theTypeName.transfer(typeName);
+}
 
 
 /*******************************************************************************
@@ -1267,7 +1310,9 @@ store::Item_t ElementNode::getNilled() const
 ********************************************************************************/
 store::Iterator_t ElementNode::getAttributes() const
 {
-  return (new AttributesIterator((ElementNode*)this));
+  AttributesIteratorImpl* res = new AttributesIteratorImpl();
+  res->init((XmlNode*)this);
+  return res;
 }
 
 
@@ -1279,7 +1324,11 @@ store::Iterator_t ElementNode::getChildren() const
   if(this->hasLoaderAttached())
     return (new ChildrenIteratorLazy((XmlNode*)this));
   else
-    return (new ChildrenIterator((XmlNode*)this));
+  {
+    ChildrenIteratorImpl* res = new ChildrenIteratorImpl();
+    res->init((XmlNode*)this);
+    return res;
+  }
 }
 
 
@@ -1616,6 +1665,31 @@ xqp_string ElementNode::show() const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/*******************************************************************************
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+ElementTreeNode::ElementTreeNode(
+    store::Item_t& nodeName,
+    store::Item_t& typeName,
+    ulong          numBindings,
+    ulong          numAttributes)
+  :
+  ElementNode(nodeName, typeName)
+{
+  if (numBindings > 0)
+  {
+    theNsContext = new NsBindingsContext(numBindings);
+    theFlags |= XmlNode::HaveLocalBindings;
+  }
+
+  if (numAttributes > 0)
+    theAttributes.resize(numAttributes);
+
+  NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
+              << " num bindings = " << numBindings << " num attributes = "
+              << numAttributes << std::endl);
+}
+
 
 /*******************************************************************************
 
@@ -1753,6 +1827,34 @@ xqpStringStore_t ElementDagNode::getBaseURIInternal(bool& local) const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
+/*******************************************************************************
+  Node constructor used by FastXmlLoader
+********************************************************************************/
+AttributeNode::AttributeNode(
+    store::Item_t&  attrName,
+    store::Item_t&  typeName,
+    bool            isIdrefs)
+  :
+  XmlNode(),
+  theFlags(0)
+{
+  theName.transfer(attrName);
+  theTypeName.transfer(typeName);
+
+  if (isIdrefs)
+    theFlags |= XmlNode::IsIdRefs;
+
+  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
+
+  if (qn->isBaseUri())
+    theFlags |= XmlNode::IsBaseUri;
+  else if (qn->isId())
+    theFlags |= XmlNode::IsId;
+
+  NODE_TRACE1("Loaded attr node " << this << " name = "
+              << *theName->getStringValue());
+}
 
 /*******************************************************************************
 
@@ -1981,6 +2083,15 @@ xqp_string AttributeNode::show() const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/*******************************************************************************
+  Node constructor used by FastXmlLoader
+********************************************************************************/
+TextNode::TextNode(xqpStringStore_t& value) : XmlNode()
+{
+  theContent.transfer(value);
+
+  NODE_TRACE1("Loaded text node " << this << " content = " << *theContent);
+}
 
 /*******************************************************************************
 
@@ -2144,6 +2255,19 @@ xqp_string TextNode::show() const
 
 
 /*******************************************************************************
+  Node constructor used by FastXmlLoader
+********************************************************************************/
+PiNode::PiNode(xqpStringStore_t& target, xqpStringStore_t& content)
+  :
+  XmlNode()
+{
+  theTarget.transfer(target);
+  theContent.transfer(content);
+
+  NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget << std::endl);
+}
+
+/*******************************************************************************
 
 ********************************************************************************/
 PiNode::PiNode(
@@ -2278,6 +2402,18 @@ xqp_string PiNode::show() const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
+/*******************************************************************************
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+CommentNode::CommentNode(xqpStringStore_t& content)
+  :
+  XmlNode()
+{
+  theContent.transfer(content);
+
+  NODE_TRACE1("Loaded comment node " << this << " content = " << *theContent);
+}
 
 /*******************************************************************************
 

@@ -21,7 +21,10 @@
 #include "store/minimal/min_store_defs.h"
 #include <algorithm>
 
-namespace zorba { namespace storeminimal {
+namespace zorba 
+{ 
+  namespace storeminimal 
+  {
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -29,24 +32,7 @@ namespace zorba { namespace storeminimal {
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-ChildrenIterator::ChildrenIterator(XmlNode* parent)
-  :
-  theParentNode(parent),
-  theCurrentPos(0)
-{
-  ZORBA_ASSERT(theParentNode->getNodeKind() == store::StoreConsts::documentNode ||
-               theParentNode->getNodeKind() == store::StoreConsts::elementNode);
-
-  theNumChildren = parent->numChildren();
-}
-
-void ChildrenIterator::open()
-{
-  theCurrentPos = 0;
-}
-
-
-bool ChildrenIterator::next(store::Item_t& result)
+bool ChildrenIteratorImpl::next(store::Item_t& result)
 {
   if (theCurrentPos >= theNumChildren) 
   {
@@ -62,18 +48,6 @@ bool ChildrenIterator::next(store::Item_t& result)
 }
 
 
-
-void ChildrenIterator::reset()
-{
-  theCurrentPos = 0;
-}
-
-
-void ChildrenIterator::close()
-{
-  theCurrentPos = 0;
-  theParentNode = NULL;
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -145,22 +119,10 @@ void ChildrenIteratorLazy::close()
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-AttributesIterator::AttributesIterator(ElementNode* parent)
-  :
-  theParentNode(parent),
-  theCurrentPos(0)
+bool AttributesIteratorImpl::next(store::Item_t& result)
 {
-  theNumAttributes = parent->numAttributes();
-}
-
-void AttributesIterator::open()
-{
-  theCurrentPos = 0;
-}
-
-bool AttributesIterator::next(store::Item_t& result)
-{
-  if (theCurrentPos >= theNumAttributes) {
+  if (theCurrentPos >= theNumAttributes) 
+  {
     result = NULL;
     return false;
   }
@@ -172,7 +134,8 @@ bool AttributesIterator::next(store::Item_t& result)
   {
     theCurrentPos++;
 
-    if (theCurrentPos >= theNumAttributes) {
+    if (theCurrentPos >= theNumAttributes) 
+    {
       result = NULL;
       return false;
     }
@@ -186,18 +149,6 @@ bool AttributesIterator::next(store::Item_t& result)
   return true;
 }
 
-
-void AttributesIterator::reset()
-{
-  theCurrentPos = 0;
-}
-
-
-void AttributesIterator::close()
-{
-  theCurrentPos = 0;
-  theParentNode = NULL;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////

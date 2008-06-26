@@ -194,20 +194,20 @@ xqp_byte Item::getByteValue() const
 
 /** Accessor for xs:date
  */
-xqp_date Item::getDateValue() const
+xqp_date* Item::getDateValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_date();
+  return 0;
 }
 
 /** Accessor for xs:dateTime
  */
-xqp_dateTime Item::getDateTimeValue() const
+xqp_dateTime* Item::getDateTimeValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_dateTime();
+  return 0;
 }
 
 /** Accessor for xs:double
@@ -266,47 +266,47 @@ xqp_float Item::getFloatValue() const
 
 /** Accessor for xs:gDay
  */
-xqp_gDay Item::getGDayValue() const
+xqp_gDay* Item::getGDayValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_gDay();
+  return 0;
 }
 
 /** Accessor for xs:gMonth
  */
-xqp_gMonth Item::getGMonthValue() const
+xqp_gMonth* Item::getGMonthValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_gMonth();
+  return 0;
 }
 
 /** Accessor for xs:gMonthDay
  */
-xqp_gMonthDay Item::getGMonthDayValue() const
+xqp_gMonthDay* Item::getGMonthDayValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_gMonthDay();
+  return 0;
 }
 
 /** Accessor for xs:gYear
  */
-xqp_gYear Item::getGYearValue() const
+xqp_gYear* Item::getGYearValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_gYear();
+  return 0;
 }
 
 /** Accessor for xs:gYearMonth
  */
-xqp_gYearMonth Item::getGYearMonthValue() const
+xqp_gYearMonth* Item::getGYearMonthValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_gYearMonth();
+  return 0;
 }
 
 /** Accessor for xs:hexBinary
@@ -329,11 +329,11 @@ xqp_uint Item::getUnsignedIntValue() const
 
 /** Accessor for xs:time
  */
-xqp_time Item::getTimeValue() const
+xqp_time* Item::getTimeValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_time();
+  return 0;
 }
 
 /** Accessor for xs:unsignedLong
@@ -426,6 +426,7 @@ bool Item::isId() const
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
+
 
 bool Item::isIdRefs() const
 {
@@ -546,9 +547,9 @@ void Item::finalizeNode()
 
 
 Item* Item::copy(
-                 store::Item* parent, 
-                 long pos, 
-                 const CopyMode& copymode) const
+    store::Item* parent,
+    long pos,
+    const CopyMode& copymode) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -560,7 +561,6 @@ void Item::applyUpdates()
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
-
 
 
 } // namespace storeminimal

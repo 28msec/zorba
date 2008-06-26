@@ -17,10 +17,10 @@
 #define ZORBA_MINIMAL_STORE_NODE_ITEMS
 
 #include <zorba/error.h>
-#include "common/common.h"
-#include "store/api/item.h"
 #include "common/shared_types.h"
+#include "zorbamisc/config/platform.h"
 #include "zorbautils/fatal.h"
+#include "store/api/item.h"
 #include "store/minimal/min_ordpath.h"
 #include "store/minimal/min_node_vector.h"
 #include "store/minimal/min_node_updates.h"
@@ -125,6 +125,8 @@ protected:
   XmlNode    * theParent;
 
 public:
+  XmlNode() : Item(), theParent(NULL) { }
+
   XmlNode(
         XmlTree*              tree,
         XmlNode*              parent,
@@ -298,6 +300,10 @@ protected:
 
 public:
   DocumentNode(
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
+
+  DocumentNode(
         XmlTree*          tree,
         xqpStringStore_t& baseUri,
         xqpStringStore_t& docUri);
@@ -354,6 +360,10 @@ public:
   XmlLoader_t   attachedloader;//for documents and elements might be false. Means it is full loaded
 
   DocumentTreeNode(
+        xqpStringStore_t& baseUri,
+        xqpStringStore_t& docUri);
+
+  DocumentTreeNode(
         XmlTree*          tree,
         xqpStringStore_t& baseUri,
         xqpStringStore_t& docUri);
@@ -407,6 +417,10 @@ protected:
   uint32_t              theFlags;
 
 public:
+  ElementNode(
+        store::Item_t& nodeName,
+        store::Item_t& typeName);
+
   ElementNode(
         XmlTree*          tree,
         XmlNode*          parent,
@@ -529,6 +543,12 @@ public:
   unsigned int           depth;
 public:
   ElementTreeNode(
+        store::Item_t& nodeName,
+        store::Item_t& typeName,
+        ulong          numBindings,
+        ulong          numAttributes);
+
+  ElementTreeNode(
         XmlTree*          tree,
         XmlNode*          parent,
         long              pos,
@@ -637,6 +657,11 @@ protected:
 
 public:
   AttributeNode(
+        store::Item_t&  attrName,
+        store::Item_t&  typeName,
+        bool            isIdrefs);
+
+  AttributeNode(
         XmlTree*  tree,
         XmlNode*  parent,
         long      pos,
@@ -700,6 +725,8 @@ protected:
   xqpStringStore_t theContent;
 
 public:
+  TextNode(xqpStringStore_t& content);
+
   TextNode(
         XmlTree*          tree,
         XmlNode*          parent,
@@ -744,6 +771,8 @@ class PiNode : public XmlNode
   xqpStringStore_t theContent;
 
 public:
+  PiNode(xqpStringStore_t& target, xqpStringStore_t& content);
+
   PiNode(
         XmlTree*          tree,
         XmlNode*          parent,
@@ -792,6 +821,8 @@ protected:
   xqpStringStore_t theContent;
 
 public:
+  CommentNode(xqpStringStore_t& content);
+
   CommentNode(
         XmlTree*          tree,
         XmlNode*          parent,
