@@ -36,7 +36,7 @@ namespace zorba {
   {
   }
 
-  store::Item_t FnDebugIterator::nextImpl( store::Item_t& result, PlanState& planState) const
+  bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState& planState) const
   {
 
     store::Item_t lSequenceItem;
@@ -55,7 +55,7 @@ namespace zorba {
         theDebugger->theRuntimeSuspendedCV.wait( lock );
       }
 
-      STACK_PUSH(lSequenceItem, state);
+      STACK_PUSH(true, state);
     }
     STACK_END(state);
   }

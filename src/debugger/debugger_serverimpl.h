@@ -106,7 +106,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     
     boost::condition theRuntimeSuspendedCV;
 
-    friend store::Item_t FnDebugIterator::nextImpl( store::Item_t& result, PlanState &  planState ) const;
+    friend bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState &  planState ) const;
 
     friend FnDebugIterator::FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args );
 
