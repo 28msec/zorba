@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "types/schema/SchemaValidator.h"
-
+#include <zorbatypes/xerces_xmlcharray.h>
 
 using namespace std;
 XERCES_CPP_NAMESPACE_USE;
@@ -57,28 +57,22 @@ void SchemaValidator::startElem(store::Item_t elemName)
 {   
     //cout << "   SElem: " << elemName->getLocalName()->c_str() << "\n";
 
-    XMLCh *prefix = XMLString::transcode(elemName->getPrefix()->c_str()); 
-    XMLCh *uri = XMLString::transcode(elemName->getNamespace()->c_str());
-    XMLCh *localname = XMLString::transcode(elemName->getLocalName()->c_str()); 
+    XMLChArray prefix(elemName->getPrefix()->c_str()); 
+    XMLChArray uri(elemName->getNamespace()->c_str());
+    XMLChArray localname(elemName->getLocalName()->c_str()); 
     _schemaValidatorFilter->startElementEvent(prefix, uri, localname);
-    XMLString::release(&prefix);
-    XMLString::release(&uri);
-    XMLString::release(&localname);
 }
 
 void SchemaValidator::endElem(store::Item_t elemName)
 {
     //cout << "   EElem: " << elemName->getLocalName()->c_str() << "\n";
 
-    XMLCh *prefix = XMLString::transcode(elemName->getPrefix()->c_str()); 
-    XMLCh *uri = XMLString::transcode(elemName->getNamespace()->c_str());
-    XMLCh *localname = XMLString::transcode(elemName->getLocalName()->c_str()); 
+    XMLChArray prefix(elemName->getPrefix()->c_str()); 
+    XMLChArray uri(elemName->getNamespace()->c_str());
+    XMLChArray localname(elemName->getLocalName()->c_str()); 
     XMLCh *typeURI = NULL;
     XMLCh *typeName = NULL;
     _schemaValidatorFilter->endElementEvent(prefix, uri, localname, typeURI, typeName);
-    XMLString::release(&prefix);
-    XMLString::release(&uri);
-    XMLString::release(&localname);
 }
 
 void SchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
@@ -86,37 +80,30 @@ void SchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
     //cout << "     Attr: " << attrName->getPrefix()->c_str() << ":" << 
     //    attrName->getLocalName()->c_str() << " = '" << textValue->c_str() << "'\n";
 
-    XMLCh *prefix = XMLString::transcode(attrName->getPrefix()->c_str()); 
-    XMLCh *uri = XMLString::transcode(attrName->getNamespace()->c_str());
-    XMLCh *localname = XMLString::transcode(attrName->getLocalName()->c_str()); 
-    XMLCh *value = XMLString::transcode(textValue->c_str());
+    XMLChArray prefix(attrName->getPrefix()->c_str()); 
+    XMLChArray uri(attrName->getNamespace()->c_str());
+    XMLChArray localname(attrName->getLocalName()->c_str()); 
+    XMLChArray value(textValue->c_str());
     XMLCh *typeURI = NULL; 
     XMLCh *typeName = NULL;
     _schemaValidatorFilter->attributeEvent(prefix, uri, localname, value, typeURI, typeName);
-    XMLString::release(&prefix);
-    XMLString::release(&uri);
-    XMLString::release(&localname);
-    XMLString::release(&value);
 }
 
 void SchemaValidator::text(xqpStringStore_t textValue)
 {
     //cout << "     Text: " << textValue->c_str() << "\n";
 
-    XMLCh *value = XMLString::transcode(textValue->c_str());
+    XMLChArray value(textValue->c_str());
     _schemaValidatorFilter->textEvent(value);
-    XMLString::release(&value);
 }
 
 void SchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)
 {
     //cout << "     Ns  : " << prefix->c_str() << " = '" << uri->c_str() << "'\n";
 
-    XMLCh *prefixVal = XMLString::transcode(prefix->c_str());
-    XMLCh *uriVal    = XMLString::transcode(uri->c_str());
+    XMLChArray prefixVal(prefix->c_str());
+    XMLChArray uriVal(uri->c_str());
     _schemaValidatorFilter->namespaceEvent(prefixVal, uriVal);
-    XMLString::release(&prefixVal);
-    XMLString::release(&uriVal);
 }
 
 
