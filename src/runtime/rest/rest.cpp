@@ -29,11 +29,7 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
-#include "store/naive/node_items.h"
 #include "store/api/copymode.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/basic_item_factory.h"
 
 #include "types/root_typemanager.h"
 #include "context/static_context.h"
@@ -185,14 +181,18 @@ bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value
 {
   store::Item_t qname, temp_result, str_item;
   createQNameHelper(qname, name);
-  store::Item_t type = GET_STORE().theSchemaTypeNames[simplestore::XS_STRING];
+  store::Item_t type_qname;
+  xqpString xs_ns = "http://www.w3.org/2001/XMLSchema";
+  xqpString xs_pre = "xs";
+  xqpString type_name = "string";
+  GENV_ITEMFACTORY->createQName(type_qname, xs_ns.theStrStore, xs_pre.theStrStore, type_name.theStrStore);
   GENV_ITEMFACTORY->createString(str_item, value.theStrStore);
   GENV_ITEMFACTORY->createAttributeNode(
       temp_result,
       parent, 
       -1,
       qname,
-      type,
+      type_qname,
       str_item);
 
   if (result != NULL)
@@ -232,7 +232,6 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
 {
   int reply_code;
   xqpString content_type;
-  store::Store& store = GENV.getStore();
   store::Item_t payload, headers_node, text_code, status_code;
   store::Item_t doc = NULL;
 
@@ -311,7 +310,7 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
         store::Item_t temp;
         std::istream is(theStreamBuffer);
         try {
-          temp = store.loadDocument(lUriString.theStrStore, is);
+          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
         }
         catch (...) {
           temp = NULL;

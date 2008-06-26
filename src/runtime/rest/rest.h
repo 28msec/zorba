@@ -20,7 +20,6 @@
 #include <streambuf>
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
-#include "runtime/base/noarybase.h"
 
 namespace zorba {
 
