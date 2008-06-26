@@ -54,7 +54,7 @@ xqp_string transcode(const XMLCh *const str)
 {
     char* trStr = XMLString::transcode(str);
     xqp_string res (trStr);
-    delete trStr;
+    XMLString::release(&trStr);
     return res;
 }
 

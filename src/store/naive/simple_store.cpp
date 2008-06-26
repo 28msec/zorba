@@ -219,6 +219,12 @@ void SimpleStore::shutdown()
     theNamespacePool = NULL;
   }
 
+  if (theIteratorFactory != NULL)
+  {
+    delete theIteratorFactory;
+    theIteratorFactory = NULL;
+  }
+
   // do cleanup of the libxml2 library
   // however, after that, a user will have to call 
   // LIBXML_TEST_VERSION if he wants to use libxml2
