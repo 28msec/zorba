@@ -703,7 +703,7 @@ void SchemaValidatorFilter::piEvent(const XMLCh *target, const XMLCh *value)
     ///next_->piEvent(target, value);
 }
 
-const XMLCh* SchemaValidatorFilter::getTypeName()
+const XMLCh* SchemaValidatorFilter::getTypeUri()
 {
     if(_elementToProcess) 
         processStartElement();
@@ -732,7 +732,7 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
     return typeURI;
 }
 
-const XMLCh* SchemaValidatorFilter::getTypeUri()
+const XMLCh* SchemaValidatorFilter::getTypeName()
 {
     if(_elementToProcess) 
         processStartElement();

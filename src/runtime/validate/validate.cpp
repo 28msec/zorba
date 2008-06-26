@@ -107,7 +107,8 @@ namespace zorba
             xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
                 final_baseuri().getStore();
 
-            SchemaValidator schemaValidator = SchemaValidator(schema->getGrammarPool(), isLax, loc);
+            SchemaValidator schemaValidator = SchemaValidator(typeManager, 
+                schema->getGrammarPool(), isLax, loc);
             
 
             switch ( item->getNodeKind() )
@@ -117,16 +118,19 @@ namespace zorba
                 //std::cout << "Validate document" << "\n"; std::cout.flush();
 
                 schemaValidator.startDoc();
-                processChildren( schemaValidator, item, item->getAttributes() );
-                processChildren( schemaValidator, item, item->getChildren() );
 
-                //GENV_ITEMFACTORY->createDocumentNode(result, (ulong)&planState, baseUri, children);
+                xqpStringStore_t docBaseUri = item->getBaseURI();
+                xqpStringStore_t docUri = item->getDocumentURI();
+                store::Item_t newDoc;
+                GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri, true);
+
+                processChildren( schemaValidator, newDoc, item->getChildren() );
 
                 schemaValidator.endDoc();
 
-                //std::cout << "End Validate" << "\n"; std::cout.flush();
+                //std::cout << "End Validate doc" << "\n"; std::cout.flush();
                 //break;
-                result = item;
+                result = newDoc;
                 return true;
             }
             case store::StoreConsts::elementNode: 
@@ -139,7 +143,7 @@ namespace zorba
 
                 schemaValidator.endDoc();
                 
-                //std::cout << "End Validate" << "\n"; std::cout.flush();
+                //std::cout << "End Validate elem" << "\n"; std::cout.flush();
                 //break;
                 //result = item;
                 result = newElem;
@@ -168,7 +172,7 @@ namespace zorba
         ZORBA_ASSERT(element->isNode());
         ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
 
-        store::Item_t typeName = element->getType();
+        //store::Item_t typeName = element->getType();
         store::Item_t nodeName = element->getNodeName();
         xqpStringStore_t baseUri = element->getBaseURI();
 
@@ -182,6 +186,8 @@ namespace zorba
         // of it's attributes, and an attribute node needs it's parent when created 
         // we need to go through the attributes twice: once for validation and once for creation
         validateAttributes(schemaValidator, element->getAttributes());
+        
+        store::Item_t typeName = schemaValidator.getTypeQName();
 
         store::Item_t newElem;
 
@@ -277,6 +283,15 @@ namespace zorba
 
                         store::Item_t validatedTextNode;
                         GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, -1, childStringValue);
+                        
+                        /*store::Item_t textType = schemaValidator.getTypeQName();
+
+                        store::NsBindings nsBindings;
+                        parent->getNamespaceBindings(nsBindings);
+                        namespace_context *nsCtx = NULL;
+                        store::Item_t typedValue;
+                        GenericCast::instance()->cast(typedValue, childStringValue, nsCtx);*/
+
                     }
                     break;
                 

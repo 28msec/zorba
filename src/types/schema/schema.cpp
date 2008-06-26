@@ -410,8 +410,56 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
         }
     }
     else
-      // not implemented for complex Types
-      result = NULL;
+    {  
+        // is not a simple type 
+        // first check if it is a built-in type
+        const XMLCh* uri = xsTypeDef->getNamespace();
+        xqp_string strUri = transcode(uri);
+
+        if ( XMLString::equals(strUri.c_str (), Schema::XSD_NAMESPACE) )
+        {
+            const XMLCh* local = xsTypeDef->getName();
+            // maybe there is a better way than comparing strings 
+            // but it seems Xerces doesn't have a code for built-in types
+            if ( XMLString::equals(XMLChArray("anyType").get(), local) )
+            {
+                result = GENV_TYPESYSTEM.ANY_TYPE;
+            }
+            else if ( XMLString::equals(XMLChArray("untyped").get(), local) )
+            {
+                result = GENV_TYPESYSTEM.UNTYPED_TYPE;
+            }            
+            else
+            {
+                // there are no other non simple known types in xsd namespace
+                ZORBA_ASSERT(false);
+            }
+        }
+        else
+        {
+            // user defined complex Type
+            XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
+            if ( !baseTypeDef )
+            {
+                //error allway must have a baseType
+                ZORBA_ASSERT(false);             
+                result = NULL;
+            }
+
+            xqtref_t baseXQType = getXQTypeForXSTypeDefinition(typeManager, baseTypeDef);
+
+            xqp_string lNamespace (strUri);
+            xqp_string lPrefix;
+            xqp_string lLocal = transcode(xsTypeDef->getName());
+
+            store::Item_t qname;
+            GENV_ITEMFACTORY->createQName(qname, lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
+
+            xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager, qname, baseXQType, TypeConstants::QUANT_ONE));
+
+            result = xqType;
+        }
+    } 
 
     return result;
 }

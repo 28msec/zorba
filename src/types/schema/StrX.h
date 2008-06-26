@@ -49,6 +49,11 @@ public :
         fLocalForm = XMLString::transcode(toTranscode);
     }
 
+    StrX(char* chars)
+    {
+        fLocalForm = chars;
+    }
+
     ~StrX()
     {
         XMLString::release(&fLocalForm);
@@ -74,7 +79,7 @@ private :
 
 inline XERCES_STD_QUALIFIER ostream& operator<<(XERCES_STD_QUALIFIER ostream& target, const StrX& toDump)
 {
-    target << toDump.localForm();
+    target << (toDump.localForm()==NULL ? "NULL" : toDump.localForm() );
     return target;
 }
 

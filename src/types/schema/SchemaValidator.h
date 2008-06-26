@@ -20,6 +20,7 @@
 #include "types/schema/SchemaValidatorFilter.h"
 #include "store/api/item.h"
 #include "common/shared_types.h"
+#include "types/root_typemanager.h"
 
 namespace zorba
 {
@@ -30,11 +31,12 @@ class SchemaValidator;
 class SchemaValidator
 {
 private:
+    TypeManager *_typeManager;
     SchemaValidatorFilter *_schemaValidatorFilter;
     XERCES_CPP_NAMESPACE::GrammarResolver       *_grammarResolver;
 
 public:
-    SchemaValidator(XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax, 
+    SchemaValidator(TypeManager* typeManager, XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax, 
         const QueryLoc& loc);
     virtual ~SchemaValidator();
 
@@ -47,6 +49,10 @@ public:
     void attr(store::Item_t attrName, xqpStringStore_t textValue);
     void text(xqpStringStore_t textValue);
     void ns(xqpStringStore_t prefix, xqpStringStore_t uri);
+
+    store::Item_t getTypeQName();
+    xqtref_t      getType();
+
 };
 
 } // namespace zorba

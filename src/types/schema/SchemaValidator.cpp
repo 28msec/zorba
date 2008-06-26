@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "system/globalenv.h"
 #include "types/schema/SchemaValidator.h"
+#include "types/schema/StrX.h"
+#include "types/typeimpl.h"
 #include <zorbatypes/xerces_xmlcharray.h>
+#include "store/api/item_factory.h"
+#include "types/schema/schema.h"
+
 
 using namespace std;
 XERCES_CPP_NAMESPACE_USE;
@@ -22,8 +28,9 @@ XERCES_CPP_NAMESPACE_USE;
 namespace zorba
 {
 
-SchemaValidator::SchemaValidator(XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax, 
-    const QueryLoc& loc)
+SchemaValidator::SchemaValidator(TypeManager *typeManager, 
+    XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax, const QueryLoc& loc)
+    : _typeManager(typeManager)
 {
     XERCES_CPP_NAMESPACE::MemoryManager* memoryManager = XERCES_CPP_NAMESPACE::XMLPlatformUtils::fgMemoryManager;
 
@@ -106,5 +113,44 @@ void SchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)
     _schemaValidatorFilter->namespaceEvent(prefixVal, uriVal);
 }
 
+
+store::Item_t SchemaValidator::getTypeQName()
+{
+    StrX typeName(_schemaValidatorFilter->getTypeName());
+    StrX typeUri(_schemaValidatorFilter->getTypeUri());
+
+    //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<"\n"; 
+
+    if ( typeName.localForm()==NULL || typeUri.localForm()==NULL )
+    {
+        typeUri = StrX((char *)Schema::XSD_NAMESPACE);
+        typeName = StrX("anyType");
+    }
+
+    store::Item_t typeQName;
+    GENV_ITEMFACTORY->createQName(typeQName, typeUri.localForm(), "", typeName.localForm());
+
+    return typeQName;
+}
+
+xqtref_t SchemaValidator::getType()
+{
+    StrX typeName(_schemaValidatorFilter->getTypeName());
+    StrX typeUri(_schemaValidatorFilter->getTypeUri());
+
+    //cout << "  - getType: " << typeName << "@" << typeUri <<"\n"; 
+    
+    if ( typeName.localForm()==NULL || typeUri.localForm()==NULL )
+    {
+        typeUri = StrX((char *)Schema::XSD_NAMESPACE);
+        typeName = StrX("anyType");
+    }
+
+    store::Item_t typeQName;
+    GENV_ITEMFACTORY->createQName(typeQName, typeUri.localForm(), "", typeName.localForm());
+
+    xqtref_t type = _typeManager->create_named_type(typeQName);
+    return type;
+}
 
 }// namespace zorba
