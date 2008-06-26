@@ -220,10 +220,15 @@ void end_visit(sequential_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
-  for (unsigned i = 0; i < v.size (); i++)
+  bool lUpdating = false;
+  size_t lSize = v.size();
+  for (unsigned i = 0; i < lSize; i++)
     argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  itstack.push (new SequentialIterator (qloc, argv));
+
+  if (lSize > 0)
+    lUpdating = argv[lSize-1]->isUpdating();
+  itstack.push (new SequentialIterator (qloc, argv, lUpdating));
 }
 
 bool begin_visit(var_expr& v)

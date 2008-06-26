@@ -27,7 +27,19 @@ NARY_ITER(FnErrorIterator);
 // 8.1 fn:resolve-uri
 NARY_ITER(FnResolveUriIterator);
 
-NARY_ITER(SequentialIterator);
+class SequentialIterator : public NaryBaseIterator<SequentialIterator, PlanIteratorState >
+{
+private:
+  bool theUpdating;
+public:
+  SequentialIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aUpdating) 
+  : NaryBaseIterator<SequentialIterator, PlanIteratorState>(loc, aChildren), theUpdating(aUpdating)
+  {}
+
+public:
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+  bool isUpdating() const { return theUpdating; }
+};
 
 } /* namespace zorba */
 
