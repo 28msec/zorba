@@ -17,7 +17,12 @@ IF (SWIG_FOUND)
   INCLUDE(${SWIG_USE_FILE})
   ADD_SUBDIRECTORY(python)
 #  ADD_SUBDIRECTORY(php)
+
+# ruby module on Mac OS doesn't link because cmake is generating
+# -framework ruby instead of -framework Ruby
+IF ( NOT APPLE )
   ADD_SUBDIRECTORY(ruby)
+END ( NOT APPLE )
 ELSE(SWIG_FOUND)
   MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
 ENDIF(SWIG_FOUND)
