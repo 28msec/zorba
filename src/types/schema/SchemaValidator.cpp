@@ -121,14 +121,8 @@ store::Item_t SchemaValidator::getTypeQName()
 
     //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<"\n"; 
 
-    if ( typeName.localForm()==NULL || typeUri.localForm()==NULL )
-    {
-        typeUri = StrX((char *)Schema::XSD_NAMESPACE);
-        typeName = StrX("anyType");
-    }
-
     store::Item_t typeQName;
-    GENV_ITEMFACTORY->createQName(typeQName, typeUri.localForm(), "", typeName.localForm());
+    GENV_ITEMFACTORY->createQName(typeQName, typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), "", typeName.localFormOrDefault ("anyType"));
 
     return typeQName;
 }
@@ -140,14 +134,8 @@ xqtref_t SchemaValidator::getType()
 
     //cout << "  - getType: " << typeName << "@" << typeUri <<"\n"; 
     
-    if ( typeName.localForm()==NULL || typeUri.localForm()==NULL )
-    {
-        typeUri = StrX((char *)Schema::XSD_NAMESPACE);
-        typeName = StrX("anyType");
-    }
-
     store::Item_t typeQName;
-    GENV_ITEMFACTORY->createQName(typeQName, typeUri.localForm(), "", typeName.localForm());
+    GENV_ITEMFACTORY->createQName(typeQName, typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), "", typeName.localFormOrDefault ("anyType"));
 
     xqtref_t type = _typeManager->create_named_type(typeQName);
     return type;

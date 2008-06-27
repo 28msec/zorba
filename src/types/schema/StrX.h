@@ -51,7 +51,9 @@ public :
 
     StrX(char* chars)
     {
-        fLocalForm = chars;
+      // Should not be used. ~StrX() will call XMLString::release!!
+      assert (false);
+      fLocalForm = NULL;
     }
 
     ~StrX()
@@ -65,6 +67,10 @@ public :
     const char* localForm() const
     {
         return fLocalForm;
+    }
+
+    const char *localFormOrDefault (const char *def) {
+      return (fLocalForm == NULL ? def : fLocalForm);
     }
 
 private :
