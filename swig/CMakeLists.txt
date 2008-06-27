@@ -22,7 +22,7 @@ IF (SWIG_FOUND)
 # -framework ruby instead of -framework Ruby
 IF ( NOT APPLE )
   ADD_SUBDIRECTORY(ruby)
-END ( NOT APPLE )
+ENDIF ( NOT APPLE )
 ELSE(SWIG_FOUND)
   MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
 ENDIF(SWIG_FOUND)
