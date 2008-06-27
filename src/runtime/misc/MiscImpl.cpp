@@ -22,6 +22,7 @@
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+#include "store/api/pul.h"
 
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
@@ -114,10 +115,13 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   PlanIteratorState *state;
+  rchandle<store::PUL> lPul;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   for (unsigned i = 0; i < theChildren.size () - 1; i++) {
-    while (CONSUME (result, i));
+    while (CONSUME (result, i))
+      if (theChildren [i]->isUpdating ())
+        static_cast<store::PUL *> (result.getp ())->applyUpdates ();
   }
 
   while (CONSUME (result, theChildren.size () - 1))
