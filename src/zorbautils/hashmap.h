@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_UTIL_HASHMAP
-#define ZORBA_STORE_UTIL_HASHMAP
+#ifndef ZORBA_UTILS_HASHMAP
+#define ZORBA_UTILS_HASHMAP
 
 #include "zorbamisc/config/platform.h"
 #include "zorbautils/fatal.h"
