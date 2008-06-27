@@ -226,8 +226,10 @@ void end_visit(sequential_expr& v)
     argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
 
+#if 0
   if (lSize > 0)
     lUpdating = argv[lSize-1]->isUpdating();
+#endif
   itstack.push (new SequentialIterator (qloc, argv, lUpdating));
 }
 

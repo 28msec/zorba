@@ -321,6 +321,11 @@ typedef zorba::xquery_parser::token token;
 
   /* maintain INITIAL */
   /* ---------------- */
+
+"exit"{SP}"with"/{WordBreak} {
+  return token::EXIT_WITH;
+}
+
 "validate"{S}"{" {
   PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::VALIDATE_LBRACE;
@@ -396,6 +401,10 @@ typedef zorba::xquery_parser::token token;
 
 "declare"{SP}"updating"{SP}"function"{SP} {
   return token::DECLARE_UPDATING_FUNCTION;
+}
+
+"declare"{SP}"sequential"{SP}"function"{SP} {
+  return token::DECLARE_SEQ_FUNCTION;
 }
 
 "{" {

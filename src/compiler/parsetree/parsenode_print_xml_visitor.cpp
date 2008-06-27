@@ -671,6 +671,8 @@ BEGIN_TAG (DirPIConstructor)
 
 BEGIN_TAG (EnclosedExpr)
 
+BEGIN_TAG (BlockBody)
+
 BEGIN_TAG (Expr)
 
 BEGIN_TAG (ExtensionExpr)
@@ -1088,6 +1090,8 @@ END_TAG (DirElemContent)
 END_TAG (DirPIConstructor)
 
 END_TAG (EnclosedExpr)
+
+END_TAG (BlockBody)
 
 END_TAG (Expr)
 

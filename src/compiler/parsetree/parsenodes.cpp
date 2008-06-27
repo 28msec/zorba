@@ -755,6 +755,14 @@ void EnclosedExpr::accept(parsenode_visitor& v) const
 }
 
 
+void BlockBody::accept (parsenode_visitor& v) const {
+  BEGIN_VISITOR ();
+  for (int i = 0; i < size (); i++)
+    (*this) [i]->accept (v);
+  END_VISITOR ();
+}
+
+
 // [30] QueryBody
 // --------------
 QueryBody::QueryBody(

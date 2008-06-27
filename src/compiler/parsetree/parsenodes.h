@@ -1179,6 +1179,24 @@ public:
 
 };
 
+class BlockBody : public exprnode
+{
+protected:
+  std::vector<rchandle <exprnode> > statements;
+
+public:
+  BlockBody (const QueryLoc& loc) : exprnode (loc) {}
+  void add (rchandle<exprnode> statement) {
+    statements.push_back (statement);
+  }
+  const rchandle<exprnode> &operator[](int k) const { return statements [k]; }
+  rchandle<exprnode> &operator[](int k) { return statements [k]; }
+
+  int size () const { return statements.size (); }
+
+public:
+	void accept(parsenode_visitor&) const;
+};
 
 // [30] QueryBody
 // --------------

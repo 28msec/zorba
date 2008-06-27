@@ -32,6 +32,8 @@ class ParseConstants
       fn_read,
       fn_update,
       fn_extern_update,
+      fn_sequential,
+      fn_extern_sequential
     };
 
     enum dir_spec_t {
