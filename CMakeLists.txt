@@ -339,3 +339,15 @@ INCLUDE(CMakeCPack.cmake)
 #CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/CPackSourceConfig.cmake.in 
 #               ${CMAKE_BINARY_DIR}/CPackSourceConfig.cmake)
 
+IF( APPLE )
+  SET ( CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "archs" FORCE)
+  SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -v" )
+# The following is not the default when building universal
+  INCLUDE_DIRECTORIES	 ( SYSTEM /usr/local/include )
+  SET ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -v")
+  SET ( CMAKE_SHARED_LINKER_FLAGS "-syslibroot ${CMAKE_OSX_SYSROOT} ${CMAKE_SHARED_LINKER_FLAGS}" )
+  MESSAGE( "Building Apple universal binaries" )
+ENDIF ( APPLE )
+
+SET ( CMAKE_VERBOSE_MAKEFILE ON )
+
