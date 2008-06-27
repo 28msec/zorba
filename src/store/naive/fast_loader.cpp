@@ -21,32 +21,29 @@
 
 #include <zorba/store_consts.h>
 
-#include "common/common.h"
+#include "zorbamisc/config/platform.h"
+#include "zorbatypes/datetime.h"
 #include "zorbaerrors/error_manager.h"
-#include "system/globalenv.h"
 #include "zorbaerrors/Assert.h"
 
 #include "store/naive/string_pool.h"
 #include "store/naive/simple_store.h"
-#include "store/naive/fast_loader.h"
+#include "store/naive/sax_loader.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
+#include "store/naive/dataguide.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/nsbindings.h"
-#include "store/api/collection.h"
-#include "zorbatypes/datetime.h"
 
 
 namespace zorba { namespace simplestore {
 
 #ifndef NDEBUG
 
-int traceLevel = 0;
-
 #define LOADER_TRACE(level, msg)             \
 {                                            \
-  if (level <= traceLevel)                   \
+  if (level <= loader.theTraceLevel)         \
     std::cout << msg << std::endl;           \
 }
 
@@ -67,16 +64,18 @@ int traceLevel = 0;
       return; \
   } while (0);
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-FastXmlLoader::FastXmlLoader(error::ErrorManager* aErrorManager)
-:
-  theBaseUri(NULL),
-  theDocUri(NULL),
+FastXmlLoader::FastXmlLoader(
+    store::ItemFactory* factory,
+    error::ErrorManager* errorManager,
+    bool dataguide)
+  :
+  XmlLoader(factory, errorManager, dataguide),
   theTree(NULL),
-  theRootNode(NULL),
-  theErrorManager(aErrorManager)
+  theRootNode(NULL)
 {
   theOrdPath.init();
 
@@ -100,6 +99,16 @@ FastXmlLoader::FastXmlLoader(error::ErrorManager* aErrorManager)
 ********************************************************************************/
 FastXmlLoader::~FastXmlLoader()
 {
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void FastXmlLoader::setRoot(XmlNode* root)
+{
+  theRootNode = root;
+  theTree->setRoot(root);
 }
 
 
@@ -128,14 +137,23 @@ void FastXmlLoader::abortload()
       node->deleteTree();
   }
 
+#ifdef DATAGUIDE
+  if(!theGuideStack.empty())
+  {
+    GuideNode* node = theGuideStack[0];
+    if (node != NULL)
+      node->deleteTree();
+  }
+#endif
+
+  theGuideStack.clear();
+
   while(!theBindingsStack.empty())
   {
     NsBindingsContext* ctx = theBindingsStack.top();
     theBindingsStack.pop();
     delete ctx;
   }
-
-  theWarnings.clear();
 }
 
 
@@ -154,19 +172,10 @@ void FastXmlLoader::reset()
   theNodeStack.pop();
 
   ZORBA_ASSERT(theNodeStack.empty());
+#ifdef DATAGUIDE
+  ZORBA_ASSERT(theGuideStack.empty());
+#endif
   ZORBA_ASSERT(theBindingsStack.empty());
-
-  theWarnings.clear();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void FastXmlLoader::setRoot(XmlNode* root)
-{
-  theRootNode = root;
-  theTree->setRoot(root);
 }
 
 
@@ -209,7 +218,7 @@ long FastXmlLoader::readPacket(std::istream& stream, char* buf, long size)
 /*******************************************************************************
 
 ********************************************************************************/
-XmlNode* FastXmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
+store::Item_t FastXmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
   long numChars;
@@ -324,11 +333,21 @@ void FastXmlLoader::startDocument(void * ctx)
     docUri = new xqpStringStore(uristream.str().c_str());
   }
 
-  DocumentTreeNode* docNode = new DocumentTreeNode(baseUri, docUri);
+  XmlNode* docNode = new DocumentTreeNode(baseUri, docUri);
 
   loader.setRoot(docNode);
   loader.theNodeStack.push(docNode);
   loader.theNodeStack.push(NULL);
+
+#ifdef DATAGUIDE
+  if (loader.theBuildDataGuide)
+  {
+    assert(loader.theGuideStack.empty());
+    store::Item_t nodeName;
+    ElementGuideNode* gnode = new ElementGuideNode(NULL, nodeName);
+    loader.theGuideStack.push(gnode);
+  }
+#endif
 
   SYNC_CODE(docNode->theRCLockPtr = &loader.theTree->getRCLock();)
   docNode->setId(loader.theTree, &loader.theOrdPath);
@@ -381,6 +400,23 @@ void FastXmlLoader::endDocument(void * ctx)
     (*it)->setParent(docNode);
   }
 
+#ifdef DATAGUIDE
+  if (loader.theBuildDataGuide)
+  {
+    // Remove from the dataguide stack
+    ElementGuideNode* rootGNode = loader.theGuideStack.top();
+    loader.theGuideStack.pop();
+    assert(loader.theGuideStack.empty());
+
+    loader.theTree->setDataGuide(rootGNode);
+
+#ifndef NDEBUG
+    std::cout << rootGNode->show(0) << std::endl;
+#endif
+  }
+#endif
+
+
   LOADER_TRACE2("End Doc Node = " << docNode);
 }
 
@@ -422,20 +458,68 @@ void FastXmlLoader::startElement(
   ulong numBindings = (ulong)numNamespaces;
 
   // Construct node name and type
-  store::Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
-                                      reinterpret_cast<const char*>(prefix),
-                                      reinterpret_cast<const char*>(lname));
-  store::Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
+  store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
+                                         reinterpret_cast<const char*>(prefix),
+                                         reinterpret_cast<const char*>(lname));
+  store::Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED];
 
   // Create the element node and push it to the node stack
-  ElementTreeNode* elemNode = new ElementTreeNode(qname,
-                                                  tname,
+  ElementTreeNode* elemNode = new ElementTreeNode(nodeName,
+                                                  typeName,
                                                   numBindings,
                                                   numAttributes);
+
+  nodeName = elemNode->getNodeName();
+
   if (loader.theNodeStack.empty())
     loader.setRoot(elemNode);
 
-  loader.theNodeStack.push(elemNode);
+#ifdef DATAGUIDE
+  // Push new node to dataguide, if not there already
+  if (loader.theBuildDataGuide && loader.theNodeStack.empty())
+  {
+    assert(loader.theGuideStack.empty());
+    ElementGuideNode* gnode = new ElementGuideNode(NULL, nodeName);
+    loader.theGuideStack.push(gnode);
+  }
+  else if (loader.theBuildDataGuide)
+  {
+    bool duplicate = false;
+
+    assert(!loader.theGuideStack.empty());
+
+    // See if we have seen an element with the same tag name among the left
+    // siblings of this element node.
+    for (long i = loader.theNodeStack.size() - 1; loader.theNodeStack[i] != NULL; i--)
+    {
+      XmlNode* sib = loader.theNodeStack[i];
+      if (sib->getNodeKind() == store::StoreConsts::elementNode &&
+          sib->getNodeName()->equals(nodeName))
+      {
+        duplicate = true;
+        break;
+      }
+    }
+
+    ElementGuideNode* parentGNode = loader.theGuideStack.top();
+    ElementGuideNode* childGNode = parentGNode->findChild(nodeName);
+
+    if (duplicate)
+    {
+      assert(childGNode != NULL);
+      childGNode->setUnique(false);
+    }
+    else
+    {
+      if (childGNode == NULL)
+        childGNode = new ElementGuideNode(parentGNode, nodeName);
+    }
+
+    loader.theGuideStack.push(childGNode);
+  }
+#endif
+
+  loader.theNodeStack.push((XmlNode*)elemNode);
   loader.theNodeStack.push(NULL);
 
   // Assign the current node id to this node, and compute the next node id.
@@ -602,6 +686,15 @@ void  FastXmlLoader::endElement(
 
   // Adjust the dewey id
   loader.theOrdPath.popChild();
+
+#ifdef DATAGUIDE
+  if (loader.theBuildDataGuide)
+  {
+    // Remove from the dataguide stack
+    assert(loader.theGuideStack.top()->getName()->equals(elemNode->getNodeName()));
+    loader.theGuideStack.pop();
+  }
+#endif
 }
 
 
@@ -767,15 +860,13 @@ void  FastXmlLoader::error(void * ctx, const char * msg, ... )
 ********************************************************************************/
 void  FastXmlLoader::warning(void * ctx, const char * msg, ... )
 {
-  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   char buf[1024];
   va_list args;
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  if (loader.theWarnings.size() > 0)
-    loader.theWarnings += "+ ";
-  loader.theWarnings += buf;
+
+  std::cerr << buf << std::endl;
 }
 
 #undef ZORBA_ERROR_DESC_CONTINUE

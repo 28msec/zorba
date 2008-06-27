@@ -28,7 +28,8 @@
 
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
-#include "store/naive/simple_loader.h"
+#include "store/naive/sax_loader.h"
+
 
 namespace zorba { namespace simplestore {
 
@@ -61,34 +62,33 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader::XmlLoader(store::ItemFactory* factory, error::ErrorManager* aErrorManager)
-:
-  theFactory(factory),
-  theBaseUri(NULL),
-  theDocUri(NULL),
-  theRootNode(NULL),
-  theErrorManager(aErrorManager),
-  theTraceLevel(0)
+SimpleXmlLoader::SimpleXmlLoader(
+    store::ItemFactory* factory,
+    error::ErrorManager* errorManager,
+    bool dataguide)
+  :
+  XmlLoader(factory, errorManager, dataguide),
+  theRootNode(NULL)
 {
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
-  theSaxHandler.startDocument = &XmlLoader::startDocument;
-  theSaxHandler.endDocument = &XmlLoader::endDocument;
-  theSaxHandler.startElementNs = &XmlLoader::startElement;
-  theSaxHandler.endElementNs = &XmlLoader::endElement;
-  theSaxHandler.characters = &XmlLoader::characters;
-  theSaxHandler.cdataBlock = &XmlLoader::cdataBlock;
-  theSaxHandler.comment = &XmlLoader::comment;
-  theSaxHandler.processingInstruction = &XmlLoader::processingInstruction;
-  theSaxHandler.warning = &XmlLoader::warning;
-  theSaxHandler.error = &XmlLoader::error;
+  theSaxHandler.startDocument = &SimpleXmlLoader::startDocument;
+  theSaxHandler.endDocument = &SimpleXmlLoader::endDocument;
+  theSaxHandler.startElementNs = &SimpleXmlLoader::startElement;
+  theSaxHandler.endElementNs = &SimpleXmlLoader::endElement;
+  theSaxHandler.characters = &SimpleXmlLoader::characters;
+  theSaxHandler.cdataBlock = &SimpleXmlLoader::cdataBlock;
+  theSaxHandler.comment = &SimpleXmlLoader::comment;
+  theSaxHandler.processingInstruction = &SimpleXmlLoader::processingInstruction;
+  theSaxHandler.warning = &SimpleXmlLoader::warning;
+  theSaxHandler.error = &SimpleXmlLoader::error;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader::~XmlLoader()
+SimpleXmlLoader::~SimpleXmlLoader()
 {
 }
 
@@ -96,7 +96,7 @@ XmlLoader::~XmlLoader()
 /*******************************************************************************
   Method called to do cleanup in case of errors.
 ********************************************************************************/
-void XmlLoader::abortload()
+void SimpleXmlLoader::abortload()
 {
   theBaseUri = NULL;
   theDocUri = NULL;
@@ -113,7 +113,7 @@ void XmlLoader::abortload()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t XmlLoader::loadXml(xqpStringStore_t& docuri, std::istream& stream)
+store::Item_t SimpleXmlLoader::loadXml(xqpStringStore_t& docuri, std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
   long numChars;
@@ -216,7 +216,7 @@ store::Item_t XmlLoader::loadXml(xqpStringStore_t& docuri, std::istream& stream)
   Return the number of bytes actually read, throw an exception if any I/O
   error occured.
 ********************************************************************************/
-long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
+long SimpleXmlLoader::readPacket(std::istream& stream, char* buf, long size)
 {
   try
   {
@@ -252,9 +252,9 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 
   ctx: the user data (XML parser context)
 ********************************************************************************/
-void XmlLoader::startDocument(void * ctx)
+void SimpleXmlLoader::startDocument(void * ctx)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  SimpleXmlLoader& loader = *(static_cast<SimpleXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   try
@@ -288,9 +288,9 @@ void XmlLoader::startDocument(void * ctx)
 
   ctx: the user data (XML parser context)
 ********************************************************************************/
-void XmlLoader::endDocument(void * ctx)
+void SimpleXmlLoader::endDocument(void * ctx)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  SimpleXmlLoader& loader = *(static_cast<SimpleXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   try
@@ -339,7 +339,7 @@ void XmlLoader::endDocument(void * ctx)
   attributes:    pointer to the array of (localname/prefix/URI/value/end)
                  attribute values.
 ********************************************************************************/
-void XmlLoader::startElement(
+void SimpleXmlLoader::startElement(
     void * ctx, 
     const xmlChar * lname, 
     const xmlChar * prefix, 
@@ -350,7 +350,7 @@ void XmlLoader::startElement(
     int numDefaulted, 
     const xmlChar ** attributes)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  SimpleXmlLoader& loader = *(static_cast<SimpleXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   try
@@ -466,13 +466,13 @@ void XmlLoader::startElement(
   prefix:    the element namespace prefix if available
   URI:       the element namespace name if available
 ********************************************************************************/
-void XmlLoader::endElement(
+void SimpleXmlLoader::endElement(
     void * ctx, 
     const xmlChar * localName, 
     const xmlChar * prefix, 
     const xmlChar * uri)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  SimpleXmlLoader& loader = *(static_cast<SimpleXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   try
@@ -506,9 +506,9 @@ void XmlLoader::endElement(
   ch:  a xmlChar string
   len: the number of xmlChar
 ********************************************************************************/
-void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
+void SimpleXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  SimpleXmlLoader& loader = *(static_cast<SimpleXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   try
@@ -553,9 +553,9 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   ch:  a xmlChar string
   len: the number of xmlChar
 ********************************************************************************/
-void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
+void SimpleXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  SimpleXmlLoader& loader = *(static_cast<SimpleXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   try
@@ -599,12 +599,12 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   ctx: the user data (XML parser context)
 
 ********************************************************************************/
-void XmlLoader::processingInstruction(
+void SimpleXmlLoader::processingInstruction(
     void * ctx, 
     const xmlChar * targetp, 
     const xmlChar * data)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  SimpleXmlLoader& loader = *(static_cast<SimpleXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   try
@@ -647,9 +647,9 @@ void XmlLoader::processingInstruction(
   ctx: the user data (XML parser context)
   content:  the comment content
 ********************************************************************************/
-void XmlLoader::comment(void * ctx, const xmlChar * ch)
+void SimpleXmlLoader::comment(void * ctx, const xmlChar * ch)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  SimpleXmlLoader& loader = *(static_cast<SimpleXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
   try
@@ -692,9 +692,9 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
 ********************************************************************************/
-void  XmlLoader::error(void * ctx, const char * msg, ... )
+void  SimpleXmlLoader::error(void * ctx, const char * msg, ... )
 {
-  XmlLoader* loader = (static_cast<XmlLoader *>(ctx));
+  SimpleXmlLoader* loader = (static_cast<SimpleXmlLoader *>(ctx));
   char buf[1024];
   va_list args;
   va_start(args, msg);
@@ -712,7 +712,7 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
 ********************************************************************************/
-void  XmlLoader::warning(void * ctx, const char * msg, ... )
+void  SimpleXmlLoader::warning(void * ctx, const char * msg, ... )
 {
   char buf[1024];
   va_list args;

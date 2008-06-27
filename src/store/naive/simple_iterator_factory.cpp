@@ -17,6 +17,7 @@
 
 #include "store/naive/simple_iterator_factory.h"
 #include "store/naive/node_iterators.h"
+#include "store/naive/simple_temp_seq.h"
 
 namespace zorba { namespace simplestore {
 
@@ -36,6 +37,15 @@ store::ChildrenIterator* SimpleIteratorFactory::createChildrenIterator()
 store::AttributesIterator* SimpleIteratorFactory::createAttributesIterator()
 {
   return new AttributesIteratorImpl();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::TempSeqIterator* SimpleIteratorFactory::createTempSeqIterator()
+{
+  return new SimpleTempSeqIter();
 }
 
 

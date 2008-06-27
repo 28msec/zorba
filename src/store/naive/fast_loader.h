@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_DEFAULT_STORE_LOADER_H
-#define ZORBA_DEFAULT_STORE_LOADER_H
+#ifndef ZORBA_SIMPLE_STORE_FASTLOADER_H
+#define ZORBA_SIMPLE_STORE_FASTLOADER_H
 
 #include <stack>
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
+
+#include "zorbautils/stack.h"
 
 #include "store/naive/ordpath.h"
 
@@ -35,13 +37,11 @@ namespace simplestore
 
 class XmlTree;
 class XmlNode;
+class ElementGuideNode;
 class NsBindingsContext;
 
 
 /*******************************************************************************
-
-  theBaseUri   : The loader does not not own the string memory
-  theDocUri    : The loader does not not own the string memory
 
   theNodeStack : The startElement and startDocument methods create an element
                  or document XmlNode (say N) and push it in theNodeStack. If N 
@@ -50,32 +50,21 @@ class NsBindingsContext;
                  and the endElement and endDocument methods will remove these
                  children from the stack and link them with N.
 
-  theBuffer    : A buffer to read chunks of the source stream in.
-
 ********************************************************************************/
 class FastXmlLoader
 {
 protected:
-  xmlSAXHandler                    theSaxHandler;
-
-  xqpStringStore_t                 theBaseUri;
-  xqpStringStore_t                 theDocUri;
-
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
 
   XmlNode                        * theRootNode;
-  std::stack<XmlNode*>             theNodeStack;
+  zorba::Stack<XmlNode*>           theNodeStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 
-  std::string                      theWarnings;
-
-  char                             theBuffer[4096];
-
-  error::ErrorManager            * theErrorManager;
+  zorba::Stack<ElementGuideNode*>  theGuideStack;
 
 public:
-  FastXmlLoader(error::ErrorManager*);
+  FastXmlLoader(store::ItemFactory* factory, error::ErrorManager*);
 
   ~FastXmlLoader();
 

@@ -63,16 +63,16 @@ class Iterator : virtual public SimpleRCObject
 class ChildrenIterator : public Iterator
 {
 public:
- ChildrenIterator() { }
+  virtual ~ChildrenIterator() {}
 
   virtual void
   init(Item_t& parent) = 0;
 
-  virtual Item*
-  next() = 0;
-
   virtual void
   open() = 0;
+
+  virtual Item*
+  next() = 0;
   
   virtual bool
   next(Item_t& result) = 0;
@@ -99,16 +99,52 @@ public:
 class AttributesIterator : public Iterator
 {
 public:
- AttributesIterator() { }
+  virtual ~AttributesIterator() { }
 
   virtual void
   init(Item_t& parent) = 0;
 
+  virtual void
+  open() = 0;
+
   virtual Item*
   next() = 0;
+  
+  virtual bool
+  next(Item_t& result) = 0;
+
+  virtual void
+  reset() = 0;
+
+  virtual void
+  close() = 0;
+};
+
+
+/**
+ * This iterator is used to iterate over the items of a temporary sequence.
+ * It implements the interface of a generic iterator, but also offers the
+ * following additional methods:
+ *
+ * - An init method that takes as input a temp sequence and initializes the
+ *   iterator so that it will start returning the items of this sequence.
+ * - A next method that returns pointers to the items instead of rchandles.
+ *   These pointers should not be used beyond the lifetime of the TempSeqIterator
+ *   object. 
+ */
+class TempSeqIterator : public Iterator
+{
+public:
+  virtual ~TempSeqIterator() { }
+
+  virtual void
+  init(const TempSeq_t& seq) = 0;
 
   virtual void
   open() = 0;
+
+  virtual Item*
+  next() = 0;
   
   virtual bool
   next(Item_t& result) = 0;

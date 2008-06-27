@@ -40,6 +40,7 @@ SET(SIMPLE_STORE_SRCS
     properties.cpp
     inmemorystore.cpp
     inmemorystorec.cpp
+    dataguide.cpp
 )
 
 #

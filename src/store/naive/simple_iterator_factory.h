@@ -34,6 +34,8 @@ public:
   store::ChildrenIterator* createChildrenIterator();
 
   store::AttributesIterator* createAttributesIterator();
+
+  store::TempSeqIterator* createTempSeqIterator();
 };
 
 }

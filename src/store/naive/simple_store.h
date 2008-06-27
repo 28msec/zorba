@@ -51,7 +51,7 @@ class SimpleStoreManager;
 class StringPool;
 class QNamePool;
 class XmlLoader;
-
+class FastXmlLoader;
 
 typedef rchandle<XmlNode> XmlNode_t;
 typedef store::StringHashMap<XmlNode_t> DocumentSet;

@@ -29,6 +29,7 @@ private:
 
 private:
   long theStoreTraceLevel;
+  bool theBuildDataGuide;
 
   /**
    * Constructor.
@@ -96,7 +97,10 @@ public:
   load(int argc, char *argv[]);
       
   long
-  storeTraceLevel() { return theStoreTraceLevel; }    
+  storeTraceLevel() const { return theStoreTraceLevel; }    
+
+  bool
+  buildDataGuide() const { return theBuildDataGuide; }
 };
 
 }

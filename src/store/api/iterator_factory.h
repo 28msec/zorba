@@ -38,6 +38,11 @@ public:
    * Create an iterator to iterate over the attributes of an element node.
    */
   virtual AttributesIterator* createAttributesIterator() = 0;
+
+  /**
+   * Create an iterator to iterate over the items of a temp sequence.
+   */
+  virtual TempSeqIterator* createTempSeqIterator() = 0;
 };
 
 

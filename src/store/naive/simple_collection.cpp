@@ -17,7 +17,7 @@
 #include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "store/naive/simple_collection.h"
-#include "store/naive/simple_loader.h"
+#include "store/naive/sax_loader.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
@@ -68,7 +68,7 @@ store::Item_t SimpleCollection::addToCollection(std::istream& stream)
   std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
   xqpStringStore_t docUri;
 
-  XmlNode_t root = static_cast<XmlNode*>(loader->loadXml(docUri, stream).getp());
+  store::Item_t root = loader->loadXml(docUri, stream);
 
   if (lErrorManager.hasErrors()) 
   {
@@ -78,10 +78,10 @@ store::Item_t SimpleCollection::addToCollection(std::istream& stream)
   if (root != NULL)
   {
     SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-    theXmlTrees.insert(root.getp());
+    theXmlTrees.insert(root);
   }
 
-  return root.getp();
+  return root;
 }
 
 store::Item_t SimpleCollection::addToCollection(std::istream* stream)

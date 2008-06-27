@@ -436,6 +436,169 @@ xqp_string DateTimeItemNaive::show() const
 
 
 /*******************************************************************************
+  class DurationItem
+********************************************************************************/
+xqp_duration DurationItemNaive::getDurationValue() const
+{
+  return theValue;
+}
+
+
+xqp_yearMonthDuration DurationItemNaive::getYearMonthDurationValue() const
+{
+  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
+  if (ymd != NULL)
+    return theValue;
+  else
+    return AtomicItem::getYearMonthDurationValue();
+}
+
+
+xqp_dayTimeDuration DurationItemNaive::getDayTimeDurationValue() const
+{
+  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
+  if (dtd != NULL)
+    return theValue;
+  else
+    return AtomicItem::getDayTimeDurationValue();
+}
+
+
+xqpStringStore_t DurationItemNaive::getStringValue() const
+{
+  return theValue->toString().getStore();
+}
+  
+
+store::Item* DurationItemNaive::getType() const
+{
+  // get the effective type or subtype
+  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
+  if (dtd != NULL)
+    return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
+  
+  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
+  if (ymd != NULL)
+    return GET_STORE().theSchemaTypeNames[XS_YM_DURATION];
+  
+  return GET_STORE().theSchemaTypeNames[XS_DURATION];
+}
+
+
+bool DurationItemNaive::equals(
+    const store::Item* aItem,
+    long timezone,
+    XQPCollator* coll ) const
+{
+  return *theValue == *aItem->getDurationValue();
+}
+
+store::Item_t DurationItemNaive::getEBV() const
+{
+  ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for Duration!");
+  return NULL;
+}
+
+xqp_string DurationItemNaive::show() const
+{
+  return theValue->toString().getStore();
+}
+
+uint32_t DurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
+/*******************************************************************************
+ * class DayTimeDuration
+ *******************************************************************************/
+xqp_dayTimeDuration DayTimeDurationItemNaive::getDayTimeDurationValue() const
+{
+  return theValue;
+}
+
+xqpStringStore_t DayTimeDurationItemNaive::getStringValue() const
+{
+  return theValue->toString().getStore();
+}
+  
+store::Item* DayTimeDurationItemNaive::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
+}
+
+bool DayTimeDurationItemNaive::equals(
+    const store::Item* aItem,
+    long timezone,
+    XQPCollator* coll ) const
+{
+  return *theValue == *aItem->getDayTimeDurationValue();
+}
+
+store::Item_t DayTimeDurationItemNaive::getEBV() const
+{
+  ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for DayTimeDuration!");
+  return NULL;
+}
+
+xqp_string DayTimeDurationItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+uint32_t DayTimeDurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
+
+/*******************************************************************************
+ * class YearMonthDuration
+ *******************************************************************************/
+xqp_yearMonthDuration YearMonthDurationItemNaive::getYearMonthDurationValue() const
+{
+  return theValue;
+}
+
+xqpStringStore_t YearMonthDurationItemNaive::getStringValue() const
+{
+  return theValue->toString().getStore();
+}
+  
+store::Item* YearMonthDurationItemNaive::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_YM_DURATION];
+}
+
+bool YearMonthDurationItemNaive::equals(
+    const store::Item* aItem,
+    long timezone,
+    XQPCollator* coll ) const
+{
+  return *theValue == *aItem->getYearMonthDurationValue();
+}
+
+store::Item_t YearMonthDurationItemNaive::getEBV() const
+{
+  ZORBA_ERROR_DESC(FORG0006,
+                   "Effective Boolean Value is not defined for YearMonthDuration!");
+  return NULL;
+}
+
+xqp_string YearMonthDurationItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+uint32_t YearMonthDurationItemNaive::hash(
+    long timezone,
+    XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
+
+/*******************************************************************************
   class DecimalItemNaive
 ********************************************************************************/
 store::Item* DecimalItemNaive::getType() const
@@ -1356,165 +1519,6 @@ HexBinaryItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue.hash();
 }
 
-
-/*******************************************************************************
- * class Duration
- *******************************************************************************/
-xqp_duration DurationItemNaive::getDurationValue() const
-{
-  return theValue;
-}
-
-
-xqp_yearMonthDuration DurationItemNaive::getYearMonthDurationValue() const
-{
-  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
-  if (ymd != NULL)
-    return theValue;
-  else
-    return AtomicItem::getYearMonthDurationValue();
-}
-
-
-xqp_dayTimeDuration DurationItemNaive::getDayTimeDurationValue() const
-{
-  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
-  if (dtd != NULL)
-    return theValue;
-  else
-    return AtomicItem::getDayTimeDurationValue();
-}
-
-
-xqpStringStore_t DurationItemNaive::getStringValue() const
-{
-  return theValue->toString().getStore();
-}
-  
-
-store::Item* DurationItemNaive::getType() const
-{
-  // get the effective type or subtype
-  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
-  if (dtd != NULL)
-    return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
-  
-  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
-  if (ymd != NULL)
-    return GET_STORE().theSchemaTypeNames[XS_YM_DURATION];
-  
-  return GET_STORE().theSchemaTypeNames[XS_DURATION];
-}
-
-
-bool DurationItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    XQPCollator* coll ) const
-{
-  return *theValue == *aItem->getDurationValue();
-}
-
-store::Item_t DurationItemNaive::getEBV() const
-{
-  ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for Duration!");
-  return NULL;
-}
-
-xqp_string DurationItemNaive::show() const
-{
-  return theValue->toString().getStore();
-}
-
-uint32_t DurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue->hash();
-}
-
-/*******************************************************************************
- * class DayTimeDuration
- *******************************************************************************/
-xqp_dayTimeDuration DayTimeDurationItemNaive::getDayTimeDurationValue() const
-{
-  return theValue;
-}
-
-xqpStringStore_t DayTimeDurationItemNaive::getStringValue() const
-{
-  return theValue->toString().getStore();
-}
-  
-store::Item* DayTimeDurationItemNaive::getType() const
-{
-  return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
-}
-
-bool DayTimeDurationItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    XQPCollator* coll ) const
-{
-  return *theValue == *aItem->getDayTimeDurationValue();
-}
-
-store::Item_t DayTimeDurationItemNaive::getEBV() const
-{
-  ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for DayTimeDuration!");
-  return NULL;
-}
-
-xqp_string DayTimeDurationItemNaive::show() const
-{
-  return theValue->toString();
-}
-
-uint32_t DayTimeDurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue->hash();
-}
-
-
-/*******************************************************************************
- * class YearMonthDuration
- *******************************************************************************/
-xqp_yearMonthDuration YearMonthDurationItemNaive::getYearMonthDurationValue() const
-{
-  return theValue;
-}
-
-xqpStringStore_t YearMonthDurationItemNaive::getStringValue() const
-{
-  return theValue->toString().getStore();
-}
-  
-store::Item* YearMonthDurationItemNaive::getType() const
-{
-  return GET_STORE().theSchemaTypeNames[XS_YM_DURATION];
-}
-
-bool YearMonthDurationItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    XQPCollator* coll ) const
-{
-  return *theValue == *aItem->getYearMonthDurationValue();
-}
-
-store::Item_t YearMonthDurationItemNaive::getEBV() const
-{
-  ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for YearMonthDuration!");
-  return NULL;
-}
-
-xqp_string YearMonthDurationItemNaive::show() const
-{
-  return theValue->toString();
-}
-
-uint32_t YearMonthDurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue->hash();
-}
 
 
 } // namespace store

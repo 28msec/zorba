@@ -365,6 +365,7 @@ public:
   ulong theTop;
   std::vector<std::pair<store::Item*, store::ChildrenIterator*> > theCurrentPath;
 
+public:
   DescendantAxisState();
   ~DescendantAxisState();
 

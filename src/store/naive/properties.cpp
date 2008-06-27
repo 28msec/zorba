@@ -47,7 +47,8 @@ Properties* Properties::instance(bool aCheckLoad)
   
 Properties::Properties() 
   :
-  theStoreTraceLevel(0)
+  theStoreTraceLevel(0),
+  theBuildDataGuide(false)
 {
 }
 
@@ -115,7 +116,8 @@ bool Properties::loadProps(int argc, char *argv[], bool aNoCmdLineOptions)
   // Declaration of Configuration Options
   po::options_description lConfigOptions ( "Configuration Options" );
   lConfigOptions.add_options()
-      ("store-trace-level", po::value<long>(&theStoreTraceLevel), "store trace level (<= 0 : no tracing)")
+    ("store-trace-level", po::value<long>(&theStoreTraceLevel), "store trace level (<= 0 : no tracing)")
+    ("build-dataguide", po::value<bool>(&theBuildDataGuide), "build-dataguide (true/false)")
   ;  
 
   // Classifies everything which can be defined over the command line

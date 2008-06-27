@@ -29,10 +29,9 @@
 #include "store/naive/qname_pool.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/nsbindings.h"
-#include "store/api/temp_seq.h"
 #include "store/naive/item_iterator.h"
-#include "store/api/collection.h"
-#include "zorbatypes/datetime.h"
+#include "store/naive/dataguide.h"
+
 
 
 #ifndef NDEBUG
@@ -71,7 +70,8 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
   :
   theRefCount(0),
   theId(id),
-  theRootNode(root)
+  theRootNode(root),
+  theDataGuideRootNode(NULL)
 {
 }
 
@@ -83,6 +83,13 @@ void XmlTree::free() throw()
     theRootNode->deleteTree();
     theRootNode = NULL;
   }
+
+  if (theDataGuideRootNode != NULL)
+  {
+    theDataGuideRootNode->deleteTree();
+    theDataGuideRootNode = NULL;
+  }
+
   delete this;
 }
 

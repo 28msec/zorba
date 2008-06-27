@@ -41,6 +41,7 @@ namespace simplestore
 
 class AttributeNode;
 class NsBindingsContext;
+class GuideNode;
 
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
 
@@ -61,8 +62,10 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  ulong             theId;
-  XmlNode         * theRootNode;
+  ulong                     theId;
+  XmlNode                 * theRootNode;
+
+  GuideNode               * theDataGuideRootNode;
 
 public:
   XmlTree(XmlNode* root, ulong id);
@@ -78,9 +81,12 @@ public:
 
   SYNC_CODE(RCLock& getRCLock() const { return theRCLock; })
 
-  ulong getId() const           { return theId; }
-  XmlNode* getRoot() const      { return theRootNode; }
-  void setRoot(XmlNode* root)   { theRootNode = root; }
+  ulong getId() const                { return theId; }
+  XmlNode* getRoot() const           { return theRootNode; }
+  void setRoot(XmlNode* root)        { theRootNode = root; }
+
+  GuideNode* getDataGuide() const    { return theDataGuideRootNode; }
+  void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
 };
 
 

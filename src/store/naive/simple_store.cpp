@@ -32,7 +32,7 @@
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/qname_pool.h"
-#include "store/naive/simple_loader.h"
+#include "store/naive/sax_loader.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"
@@ -250,7 +250,9 @@ ulong SimpleStore::getTreeId()
 ********************************************************************************/
 XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 {
-  return new XmlLoader(theItemFactory, aErrorManager);
+  return new FastXmlLoader(theItemFactory,
+                           aErrorManager,
+                           store::Properties::instance()->buildDataGuide());
 }
 
 
