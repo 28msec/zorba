@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import sys
-sys.path.append('@pythonPath@')
+sys.path.inset(0, '@pythonPath@')
 import zorba_api
 
 def example1(zorba):
