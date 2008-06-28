@@ -116,6 +116,7 @@ namespace zorba {
   public:
     fn_subsequence(const signature&sig) : single_seq_function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
   };
 
 

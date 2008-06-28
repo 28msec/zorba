@@ -131,6 +131,14 @@ PlanIter_t fn_subsequence::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
   return new FnSubsequenceIterator(loc, argv);
 }
 
+void fn_subsequence::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
+  switch (k) {
+  case AnnotationKey::IGNORES_SORTED_NODES:
+    // don't use single_seq_fun default propagation rule
+    return;
+  default: single_seq_function::compute_annotation (parent, kids, k);
+  }
+}
 
 
 
@@ -306,6 +314,9 @@ const function *op_node_sort_distinct::op_for_action (const static_context *sctx
 
   bool atomics = A_ATOMICS && noa == MIXED;
 
+#if 0
+  cout << "op_for_action parent " << parent << " child " << child << " A_SORT " << A_SORT << " parent_ignores_sorted " << (parent != NULL && parent->get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VAL) << " child_prod_sorted " << (child != NULL && child->get_annotation (AnnotationKey::PRODUCES_SORTED_NODES) == TSVAnnotationValue::TRUE_VAL) << endl;
+#endif
   if (! A_SORT
       || (parent != NULL && parent->get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VAL)
       || (child != NULL && child->get_annotation (AnnotationKey::PRODUCES_SORTED_NODES) == TSVAnnotationValue::TRUE_VAL))
