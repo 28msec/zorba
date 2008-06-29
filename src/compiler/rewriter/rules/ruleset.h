@@ -42,9 +42,8 @@ RULE(EchoNodes);
 RULE(InferVarTypes);
 
 RULE(MarkConsumerNodeProps);
-RULE(EliminateProducerNodeOps);
 RULE(MarkProducerNodeProps);
-RULE(EliminateConsumerNodeOps);
+RULE(EliminateNodeOps);
 
 RULE(EliminateTypeEnforcingOperations);
 RULE(EliminateUnusedLetVars);

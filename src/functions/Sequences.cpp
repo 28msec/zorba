@@ -134,6 +134,7 @@ PlanIter_t fn_subsequence::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 void fn_subsequence::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
   switch (k) {
   case AnnotationKey::IGNORES_SORTED_NODES:
+  case AnnotationKey::IGNORES_DUP_NODES:
     // don't use single_seq_fun default propagation rule
     return;
   default: single_seq_function::compute_annotation (parent, kids, k);

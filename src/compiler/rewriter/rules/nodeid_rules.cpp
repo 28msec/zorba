@@ -17,12 +17,14 @@
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+#include "compiler/rewriter/tools/dataflow_annotations.h"
+#include "compiler/rewriter/framework/rule_driver.h"
+
 #include "compiler/expression/expr.h"
 
 #include "types/typeops.h"
 
 #include "functions/nodeid_internal.h"
-#include "compiler/rewriter/tools/dataflow_annotations.h"
 
 using namespace std;
 
@@ -275,7 +277,7 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
   return NULL;
 }
 
-RULE_REWRITE_PRE(EliminateProducerNodeOps)
+RULE_REWRITE_PRE(EliminateNodeOps)
 {
   static_context *sctx = rCtx.getStaticContext ();
   fo_expr *fo = dynamic_cast<fo_expr *>(node);
@@ -286,19 +288,22 @@ RULE_REWRITE_PRE(EliminateProducerNodeOps)
     const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
     if (nsdf != NULL) {
       const function *fmin = nsdf->min_action (sctx, node, (*fo)[0], nodes_or_atomics ((*fo) [0]->return_type (sctx)));
-      if (fmin != NULL)
+      if (fmin != NULL) {
         fo->set_func (fmin);
-      else
+      }
+      else {
+        // re-compute IGNORES_*
+        fo->set_func (LOOKUP_FN ("fn", "reverse", 1));  // HACK: need fn:identity here
+        auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new MarkConsumerNodeProps ())));
+        rw->rewrite (rCtx);
         return (*fo)[0];
+      }
     }
   }
   return NULL;
 }
 
-RULE_REWRITE_POST(EliminateProducerNodeOps) { return NULL; }
-
-RULE_REWRITE_PRE(EliminateConsumerNodeOps) { return NULL; }
-RULE_REWRITE_POST(EliminateConsumerNodeOps) { return NULL; }
+RULE_REWRITE_POST(EliminateNodeOps) { return NULL; }
 
 }
 /* vim:set ts=2 sw=2: */

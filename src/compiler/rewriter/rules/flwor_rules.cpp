@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 #include "compiler/rewriter/rules/ruleset.h"
+#include "compiler/rewriter/framework/rule_driver.h"
 #include "compiler/expression/expr.h"
 #include "context/static_context.h"
 #include "compiler/rewriter/tools/expr_tools.h"
-#include "compiler/rewriter/framework/rule_driver.h"
 #include "types/typeops.h"
 #include "types/casting.h"
 
