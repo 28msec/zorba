@@ -147,41 +147,78 @@ namespace zorba
   {
     store::Item_t lItem0;
     store::Item_t lItem1;
-    store::Iterator_t lIter0;
-    store::Iterator_t lIter1;
-    store::TempSeq_t temp0;
-    store::TempSeq_t temp1;
-    int32_t i0;
-    int32_t i1;
-    bool found;
+    store::Item_t tItem0;
+    store::Item_t tItem1;
+    bool c0Done = false;
+    bool c1Done = false;
+    bool done = false;
+    bool found = false;
+    std::vector<store::Item_t> seq0;
+    std::vector<store::Item_t> seq1;
+    std::vector<store::Item_t>::iterator i0;
+    std::vector<store::Item_t>::iterator i1;
+    std::vector<store::Item_t>::iterator end0;
+    std::vector<store::Item_t>::iterator end1;
   
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
   
     if ( this->isGeneralComparison() )
     {
-      // TODO Optimizations for >, >=, < and <=
-      lIter0 = new PlanIteratorWrapper ( theChild0, planState );
-      lIter1 = new PlanIteratorWrapper ( theChild1, planState );
-      temp0 = GENV_STORE.createTempSeq ( lIter0 );
-      temp1 = GENV_STORE.createTempSeq ( lIter1 );
-      i0 = 1;
-      found = false;
-      while ( !found && temp0->containsItem ( i0 ) )
-      {
-        i1 = 1;
-        while ( !found && temp1->containsItem ( i1 ) )
-        {
-          lItem0 = temp0->getItem(i0);
-          lItem1 = temp1->getItem(i1);
-          if ( CompareIterator::generalComparison ( planState.theRuntimeCB, 
-                                                    lItem0, lItem1, theCompType ) )
-            found = true;
-          i1++;
+      if (consumeNext(lItem0, theChild0.getp(), planState)) {
+        if (consumeNext(tItem0, theChild0.getp(), planState)) {
+          seq0.push_back(lItem0);
+          seq0.push_back(tItem0);
+        } else {
+          c0Done = true;
+          if (consumeNext(lItem1, theChild1.getp(), planState)) {
+            if (consumeNext(tItem1, theChild1.getp(), planState)) {
+              seq0.push_back(lItem0);
+              seq1.push_back(lItem1);
+              seq1.push_back(tItem1);
+            } else {
+              c1Done = true;
+              found = CompareIterator::generalComparison(planState.theRuntimeCB, lItem0, lItem1, theCompType);
+              done = true;
+            }
+          } else {
+            c1Done = true;
+            found = false;
+            done = true;
+          }
         }
-        i0++;
+      } else {
+        c0Done = true;
+        found = false;
+        done = true;
       }
-  
+
+      if (!done) {
+        if (!c0Done) {
+          while(consumeNext(lItem0, theChild0.getp(), planState)) {
+            seq0.push_back(lItem0);
+          }
+        }
+        if (!c1Done) {
+          while(consumeNext(lItem1, theChild1.getp(), planState)) {
+            seq1.push_back(lItem1);
+          }
+        }
+        end0 = seq0.end();
+        end1 = seq1.end();
+        i0 = seq0.begin();
+        while(!found && i0 != end0) {
+          i1 = seq1.begin();
+          while(!found && i1 != end1) {
+            if (CompareIterator::generalComparison(planState.theRuntimeCB, *i0, *i1, theCompType)) {
+              found = true;
+            }
+            ++i1;
+          }
+          ++i0;
+        }
+      }
+ 
       STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, found ), state );
     } /* if general comparison */
     else if ( this->isValueComparison() )
@@ -207,66 +244,6 @@ namespace zorba
     STACK_END (state);
   }
   
-  bool 
-  CompareIterator::isValueComparison() const
-  {
-    bool retVal = false;
-    switch(theCompType)
-    {
-    case CompareConsts::VALUE_EQUAL:
-    case CompareConsts::VALUE_NOT_EQUAL:
-    case CompareConsts::VALUE_LESS:
-    case CompareConsts::VALUE_LESS_EQUAL:
-    case CompareConsts::VALUE_GREATER:
-    case CompareConsts::VALUE_GREATER_EQUAL:
-      retVal = true;
-      break;
-    default:
-      retVal = false;
-      break;
-    }
-    return retVal;
-  }
-  
-  bool 
-  CompareIterator::isGeneralComparison() const
-  {
-    bool retVal = false;
-    switch(theCompType)
-    {
-    case CompareConsts::GENERAL_EQUAL:
-    case CompareConsts::GENERAL_NOT_EQUAL:
-    case CompareConsts::GENERAL_LESS:
-    case CompareConsts::GENERAL_LESS_EQUAL:
-    case CompareConsts::GENERAL_GREATER:
-    case CompareConsts::GENERAL_GREATER_EQUAL:
-      retVal = true;
-      break;
-    default:
-      retVal = false;
-      break;
-    }
-    return retVal;
-  }
-  
-  bool
-  CompareIterator::isNodeComparison() const
-  {
-    bool retVal = false;
-    switch(theCompType)
-    {
-    case CompareConsts::NODE_EQUAL:
-    case CompareConsts::NODE_NOT_EQUAL:
-      retVal = true;
-      break;
-    default:
-      retVal = false;
-      break;
-    }
-    return retVal;
-  }
-  
-
   std::pair<store::Item_t, store::Item_t>
   CompareIterator::valueCasting(
     RuntimeCB* aRuntimeCB,

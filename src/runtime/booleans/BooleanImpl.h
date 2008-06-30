@@ -92,9 +92,62 @@ namespace zorba
 
       bool nextImpl(store::Item_t& result, PlanState& planState) const;
       
-      bool isValueComparison() const;
-      bool isGeneralComparison() const;
-      bool isNodeComparison() const;
+      bool isValueComparison() const
+      {
+          bool retVal = false;
+          switch(theCompType)
+          {
+              case CompareConsts::VALUE_EQUAL:
+              case CompareConsts::VALUE_NOT_EQUAL:
+              case CompareConsts::VALUE_LESS:
+              case CompareConsts::VALUE_LESS_EQUAL:
+              case CompareConsts::VALUE_GREATER:
+              case CompareConsts::VALUE_GREATER_EQUAL:
+                  retVal = true;
+                  break;
+              default:
+                  retVal = false;
+                  break;
+          }
+          return retVal;
+      }
+
+      bool isGeneralComparison() const
+      {
+          bool retVal = false;
+          switch(theCompType)
+          {
+              case CompareConsts::GENERAL_EQUAL:
+              case CompareConsts::GENERAL_NOT_EQUAL:
+              case CompareConsts::GENERAL_LESS:
+              case CompareConsts::GENERAL_LESS_EQUAL:
+              case CompareConsts::GENERAL_GREATER:
+              case CompareConsts::GENERAL_GREATER_EQUAL:
+                  retVal = true;
+                  break;
+              default:
+                  retVal = false;
+                  break;
+          }
+          return retVal;
+      }
+
+      bool isNodeComparison() const
+      {
+          bool retVal = false;
+          switch(theCompType)
+          {
+              case CompareConsts::NODE_EQUAL:
+              case CompareConsts::NODE_NOT_EQUAL:
+                  retVal = true;
+                  break;
+              default:
+                  retVal = false;
+                  break;
+          }
+          return retVal;
+      }
+
       
     private:
       static std::pair<store::Item_t, store::Item_t> valueCasting(RuntimeCB* aRuntimeCB, 
