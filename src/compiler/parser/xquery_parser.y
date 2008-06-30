@@ -4589,15 +4589,19 @@ EvalExpr :
 FTSelection :
 		FTOr
 		{
+      $$ = new FTSelection (LOC (@$), static_cast<FTOr *> ($1), NULL, NULL);
 		}
 	|	FTOr  FTMatchOptionProximityList
 		{
+      $$ = new FTSelection (LOC (@$), static_cast<FTOr *> ($1), static_cast<FTMatchOptionProximityList *> ($2), NULL);
 		}
 	|	FTOr  WEIGHT  RangeExpr
 		{
+      $$ = new FTSelection (LOC (@$), static_cast<FTOr *> ($1), NULL, static_cast<RangeExpr *> ($3));
 		}
 	|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
 		{
+      $$ = new FTSelection (LOC (@$), static_cast<FTOr *> ($1), static_cast<FTMatchOptionProximityList *> ($2), static_cast<RangeExpr *> ($4));
 		}
 	;
 
@@ -4700,9 +4704,11 @@ FTWords :
 FTWordsValue :
 		Literal
 		{
+      $$ = new FTWordsValue (LOC (@$), static_cast<StringLiteral *> ($1), NULL);
 		}
 	| LBRACE  Expr  RBRACE
 		{
+      $$ = new FTWordsValue (LOC (@$), NULL, static_cast<Expr *> ($2));
 		}
 	;
 
@@ -5038,6 +5044,7 @@ FTDistance :
 FTWindow :
 		WINDOW  UnionExpr  FTUnit
 		{
+      $$ = new FTWindow (LOC (@$), static_cast<UnionExpr *> ($2), static_cast<FTUnit *> ($3));
 		}
 	;
 
@@ -5095,6 +5102,7 @@ FTBigUnit :
 FTIgnoreOption :
 		WITHOUT_CONTENT  UnionExpr
 		{
+      $$ = new FTIgnoreOption (LOC (@$), static_cast<UnionExpr *> ($2));
 		}
 	;
 
