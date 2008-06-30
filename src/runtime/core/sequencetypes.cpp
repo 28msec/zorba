@@ -243,25 +243,20 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
-    GenericCast::instance()->promote(result, lItem, thePromoteType);
+    if (! GenericCast::instance()->promote(result, lItem, thePromoteType))
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "Type promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
     if(consumeNext(temp, theChild.getp(), planState)) {
       ZORBA_ERROR_LOC_DESC(  XPTY0004, loc,  
-      "Seq with 2 or more items cannot be promotioned to a QUANT_QUESTION or QUANT_ONE type.");
+      "Seq with 2 or more items cannot be promoted to a QUANT_QUESTION or QUANT_ONE type.");
     }
-    if (result == 0) {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
-    } else {
-      STACK_PUSH(true, lState);
-    }
+    STACK_PUSH(true, lState);
   } else {
     do {
-      GenericCast::instance()->promote(result, lItem, thePromoteType);
-      if (result == 0) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
-      } else{
+      if (! GenericCast::instance()->promote(result, lItem, thePromoteType))
+        ZORBA_ERROR_LOC_DESC( XPTY0004, loc,  "Type promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
+      else
         STACK_PUSH(true, lState);
-      }
     } while (consumeNext(lItem, theChild.getp(), planState));
   }
   STACK_END (lState);

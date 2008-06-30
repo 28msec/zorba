@@ -1644,7 +1644,6 @@ bool GenericCast::promote(
     return result != NULL;
   }
 
-  store::Item_t lResult = 0;
   if (TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
       && ! TypeOps::is_equal(*TypeOps::prime_type (*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
     return GenericCast::instance()->cast(result, aItem, aTargetType);
