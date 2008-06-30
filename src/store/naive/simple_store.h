@@ -151,6 +151,14 @@ public:
 
   store::Iterator_t distinctNodes(store::Iterator*, bool aAllowAtomics = false);
 
+  bool getPathInfo(
+    const store::Item*               docUri,
+    std::vector<const store::Item*>& contextPath,
+    std::vector<const store::Item*>& relativePath,
+    bool                             isAttrPath,
+    bool&                            found,
+    bool&                            unique);
+
   bool getReference(store::Item_t& result, const store::Item* node);
   bool getNodeByReference(store::Item_t& result, const store::Item* uri);
 

@@ -45,9 +45,6 @@ namespace simplestore
 {
 
 
-#define DATAGUIDE
-
-
 /*******************************************************************************
 
   theSaxHandler   : The struct containing the callback functions defined by the

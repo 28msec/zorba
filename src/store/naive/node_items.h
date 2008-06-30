@@ -198,6 +198,8 @@ public:
   // SimpleStore Methods
   //
 
+  GuideNode* getDataGuide() const   { return getTree()->getDataGuide(); }
+
   void setParent(XmlNode* p)        { theParent = p; }
 
   void setTree(const XmlTree* t);

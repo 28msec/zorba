@@ -35,6 +35,7 @@
 #include "store/naive/sax_loader.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
+#include "store/naive/dataguide.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/simple_iterator_factory.h"
@@ -717,6 +718,32 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
       }
     }
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool SimpleStore::getPathInfo(
+    const store::Item*               docUri,
+    std::vector<const store::Item*>& contextPath,
+    std::vector<const store::Item*>& relativePath,
+    bool                             isAttrPath,
+    bool&                            found,
+    bool&                            unique)
+{
+  rchandle<XmlNode> docRoot = BASE_NODE(getDocument(docUri->getStringValue()));
+
+  if (docRoot == NULL)
+    return false;
+
+  GuideNode* guideRoot = docRoot->getDataGuide();
+
+  if (!guideRoot)
+    return false;
+
+  guideRoot->getPathInfo(contextPath, relativePath, isAttrPath, found, unique);
+  return true;
 }
 
 

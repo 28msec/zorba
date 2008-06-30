@@ -123,6 +123,18 @@ public:
    */
   virtual Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false) = 0;
 
+#ifdef DATAGUIDE
+  /**
+   *
+   */
+  bool getPathInfo(
+        const store::Item*               docUri,
+        std::vector<const store::Item*>& contextPath,
+        std::vector<const store::Item*>& relativePath,
+        bool                             isAttrPath,
+        bool&                            found,
+        bool&                            unique);
+#endif
 
   /* ------------------------ Document Management ---------------------------*/
 
@@ -134,6 +146,7 @@ public:
    *         with the given uri exists already.
    */
   virtual Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream) = 0;
+
   /**
    * Load a document to the store. The document is loaded from an input stream.
      Do the lazy loading of document. The stream will be freed by Zorba when finished.

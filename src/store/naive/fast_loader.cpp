@@ -26,15 +26,15 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 
+#include "store/naive/store_defs.h"
 #include "store/naive/string_pool.h"
+#include "store/naive/qname_pool.h"
 #include "store/naive/simple_store.h"
-#include "store/naive/sax_loader.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
 #include "store/naive/dataguide.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/qname_pool.h"
 #include "store/naive/nsbindings.h"
+#include "store/naive/sax_loader.h"
 
 
 namespace zorba { namespace simplestore {
@@ -144,9 +144,9 @@ void FastXmlLoader::abortload()
     if (node != NULL)
       node->deleteTree();
   }
-#endif
 
   theGuideStack.clear();
+#endif
 
   while(!theBindingsStack.empty())
   {
