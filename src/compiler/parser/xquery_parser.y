@@ -191,7 +191,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token COMMENT_END								"':)'"
 %token COMMENT_LBRACE							"'<comment {>'"
 %token COMMENT_LPAR								"'<comment (>'"
-%token DECIMAL_LITERAL						"'DECIMAL'"
+%token <decval> DECIMAL_LITERAL	  "'DECIMAL'"
 %token DECLARE_BASE_URI						"'<declare base URI>'"
 %token DECLARE_BOUNDARY_SPACE			"'<declare boundary space>'"
 %token DECLARE_CONSTRUCTION				"'<declare construction>'"
@@ -220,7 +220,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DOT												"'.'"
 %token DOT_DOT										"'..'"
 %token DOUBLE_LBRACE							"'{{'"
-%token DOUBLE_LITERAL							"'DOUBLE'"
+%token <dval> DOUBLE_LITERAL			"'DOUBLE'"
 %token DOUBLE_RBRACE							"'<double {>'"
 %token ELEMENT_LBRACE							"'<element {>'"
 %token ELEMENT_LPAR								"'<element (>'"
@@ -251,7 +251,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token _IN_													"'in'"
 %token INHERIT										"'inherit'"
 %token INSTANCE_OF								"'<instance of>'"
-%token INTEGER_LITERAL						"'INTEGER'"
+%token <ival> INTEGER_LITERAL			"'INTEGER'"
 %token INTERSECT									"'intersect'"
 %token IS													"'is'"
 %token ITEM_TEST									"'item()'"
@@ -663,9 +663,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <fnsig> FunctionSig
 
 // destructors for token values
-%destructor { delete $$.ival; } INTEGER_LITERAL
-%destructor { delete $$.dval; } DOUBLE_LITERAL
-%destructor { delete $$.decval; } DECIMAL_LITERAL
+%destructor { delete $$; } INTEGER_LITERAL
+%destructor { delete $$; } DOUBLE_LITERAL
+%destructor { delete $$; } DECIMAL_LITERAL
 
 // Module must not be destroyed since it is returned by the parser
 // TODO: FT stuff, update stuff
@@ -3184,17 +3184,17 @@ Literal :
 NumericLiteral :
 		DECIMAL_LITERAL
 		{
-			$$ = new NumericLiteral(LOC (@$), *yylval.decval);
+			$$ = new NumericLiteral(LOC (@$), *$1);
       delete yylval.decval;
 		}
 	| INTEGER_LITERAL
 		{
-			$$ = new NumericLiteral(LOC (@$), *yylval.ival);
+			$$ = new NumericLiteral(LOC (@$), *$1);
       delete yylval.ival;
 		}
 	|	DOUBLE_LITERAL
 		{
-			$$ = new NumericLiteral(LOC (@$), *yylval.dval);
+			$$ = new NumericLiteral(LOC (@$), *$1);
       delete yylval.dval;
 		}
 	;

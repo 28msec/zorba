@@ -206,17 +206,17 @@ namespace zorba
       {
         case 53: /* "\"'DECIMAL'\"" */
 #line 668 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-	{ delete (*yyvaluep).decval; };
+	{ delete (yyvaluep->decval); };
 #line 211 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 82: /* "\"'DOUBLE'\"" */
 #line 667 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-	{ delete (*yyvaluep).dval; };
+	{ delete (yyvaluep->dval); };
 #line 216 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 113: /* "\"'INTEGER'\"" */
 #line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-	{ delete (*yyvaluep).ival; };
+	{ delete (yyvaluep->ival); };
 #line 221 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 288: /* "VersionDecl" */
@@ -3860,7 +3860,7 @@ namespace zorba
   case 305:
 #line 3186 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *yylval.decval);
+			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *(yysemantic_stack_[(1) - (1)].decval));
       delete yylval.decval;
 		;}
     break;
@@ -3868,7 +3868,7 @@ namespace zorba
   case 306:
 #line 3191 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *yylval.ival);
+			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *(yysemantic_stack_[(1) - (1)].ival));
       delete yylval.ival;
 		;}
     break;
@@ -3876,7 +3876,7 @@ namespace zorba
   case 307:
 #line 3196 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *yylval.dval);
+			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *(yysemantic_stack_[(1) - (1)].dval));
       delete yylval.dval;
 		;}
     break;
