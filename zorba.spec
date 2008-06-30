@@ -1,6 +1,6 @@
 Name:    zorba
-Version: 0.9.2
-Release: 2%{?dist}
+Version: 0.9.21
+Release: 1%{?dist}
 Summary: Zorba is a general purpose XQuery processor implementing in C++ the W3C family of specifications
 
 Group: System Environment/Libraries
@@ -103,6 +103,9 @@ make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" -C build
 %{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
 
 %changelog
+* Sun Jun 29 2008 Paul F. Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.21-1
+- Update to 0.9.21
+
 * Sun Jun 22 2008 Paul F. Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.2-2
 - Added correct install of ruby and python modules
 
