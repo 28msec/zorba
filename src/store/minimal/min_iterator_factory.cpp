@@ -17,6 +17,7 @@
 
 #include "store/minimal/min_iterator_factory.h"
 #include "store/minimal/min_node_iterators.h"
+#include "store/minimal/min_temp_seq.h"
 
 namespace zorba { namespace storeminimal {
 
@@ -36,6 +37,15 @@ store::ChildrenIterator* SimpleIteratorFactory::createChildrenIterator()
 store::AttributesIterator* SimpleIteratorFactory::createAttributesIterator()
 {
   return new AttributesIteratorImpl();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::TempSeqIterator* SimpleIteratorFactory::createTempSeqIterator()
+{
+  return new SimpleTempSeqIter();
 }
 
 

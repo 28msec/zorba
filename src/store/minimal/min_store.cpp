@@ -842,6 +842,17 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   }
 }
 
+bool SimpleStore::getPathInfo(
+  const store::Item*               docUri,
+  std::vector<const store::Item*>& contextPath,
+  std::vector<const store::Item*>& relativePath,
+  bool                             isAttrPath,
+  bool&                            found,
+  bool&                            unique)
+{
+  ZORBA_ERROR( XQP0015_SYSTEM_NOT_YET_IMPLEMENTED );
+}
+
 
 /*******************************************************************************
   Creates a new TempSeq. The instance can be used, e.g. for variable bindings

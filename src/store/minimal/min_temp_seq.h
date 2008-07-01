@@ -78,38 +78,43 @@ public:
   virtual void purgeUpTo(int32_t upTo );
   virtual void purgeItem(const std::vector<int32_t>& positions );
   virtual void purgeItem(int32_t position );
+}; /* class SimpleTempSeq */
 
-  class SimpleTempSeqIter : public store::Iterator
-	{
-  private:
-    enum BorderType
-    {
-      none,
-      startEnd,
-      specificPositions
-    };
-
-    SimpleTempSeq_t            theTempSeq;
-    BorderType                 theBorderType;
-
-    int32_t                    theCurPos;
-    int32_t                    theStartPos;
-    int32_t                    theEndPos;
-    std::vector<int32_t>       thePositions;
-    
-  public:
-    SimpleTempSeqIter(SimpleTempSeq_t aTempSeq);
-    SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, int startPos, int endPos);
-    SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, const std::vector<int32_t>& positions);
-    virtual ~SimpleTempSeqIter();
-
-    void open();
-    bool next(store::Item_t& result);
-    void reset();
-    void close();
+class SimpleTempSeqIter : public store::TempSeqIterator
+{
+ private:
+  enum BorderType
+  {
+    none,
+    startEnd,
+    specificPositions
   };
 
-}; /* class SimpleTempSeq */
+  SimpleTempSeq_t            theTempSeq;
+  BorderType                 theBorderType;
+
+  int32_t                    theCurPos;
+  int32_t                    theStartPos;
+  int32_t                    theEndPos;
+  std::vector<int32_t>       thePositions;
+    
+ public:
+  SimpleTempSeqIter() {}
+  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq);
+  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, int startPos, int endPos);
+  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, const std::vector<int32_t>& positions);
+
+  virtual ~SimpleTempSeqIter();
+
+  void init(const store::TempSeq_t& seq);
+
+  store::Item* next();
+
+  void open();
+  bool next(store::Item_t& result);
+  void reset();
+  void close();
+ };
 
 } // namespace storeminimal
 } // namespace zorba
