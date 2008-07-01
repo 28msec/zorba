@@ -37,6 +37,7 @@
 #cmakedefine MSVC70
 #cmakedefine MSVC71
 #cmakedefine MSVC80
+#cmakedefine LINUX
 
 
 /* zorba runtime configuration parameters */
