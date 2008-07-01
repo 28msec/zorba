@@ -298,43 +298,53 @@ namespace zorba
       BinaryBaseIterator<NumArithIterator<Operations>, PlanIteratorState > ( loc, iter0, iter1 )
   { }
 
-  template < class Operation >
-  bool NumArithIterator<Operation>::nextImpl ( store::Item_t& result, PlanState& planState ) const
-  {
-    bool res;
-    store::Item_t n0;
-    store::Item_t n1;
 
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext( n0, this->theChild0.getp(), planState ))
+template < class Operation >
+bool NumArithIterator<Operation>::nextImpl (
+    store::Item_t& result,
+    PlanState& planState ) const
+{
+  bool res;
+  store::Item_t n0;
+  store::Item_t n1;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext( n0, this->theChild0.getp(), planState ))
+  {
+    if (consumeNext( n1, this->theChild1.getp(), planState ))
     {
-      if (consumeNext( n1, this->theChild1.getp(), planState ))
-      {
-        res = compute(result, planState.theRuntimeCB, this->loc, n0.getp(), n1.getp());
+      res = compute(result, planState.theRuntimeCB, this->loc, n0.getp(), n1.getp());
       
-        if ( consumeNext(n0, this->theChild0.getp(), planState )
-             || consumeNext(n1, this->theChild1.getp(), planState ) )
-          ZORBA_ERROR_DESC( XPTY0004, "Arithmetic operation has a sequences greater than one as an operator.");
-        STACK_PUSH ( res, state );
-      }
+      if (consumeNext(n0, this->theChild0.getp(), planState) ||
+          consumeNext(n1, this->theChild1.getp(), planState))
+        ZORBA_ERROR_DESC(XPTY0004,
+                         "Arithmetic operation has a sequences greater than one as an operator.");
+      STACK_PUSH ( res, state );
     }
-    STACK_END (state);
   }
+  STACK_END (state);
+}
 
-  template < class Operation >
-  bool NumArithIterator<Operation>::compute(store::Item_t& result, RuntimeCB* aRuntimeCB,
+
+template < class Operation >
+bool NumArithIterator<Operation>::compute(
+    store::Item_t& result,
+    RuntimeCB* aRuntimeCB,
     const QueryLoc& aLoc, 
-    store::Item *n0, store::Item *n1)
-  {
-    store::Item_t an0 = n0->getAtomizationValue();
-    store::Item_t an1 = n1->getAtomizationValue();
+    store::Item *n0,
+    store::Item *n1)
+{
+  store::Item_t an0 = n0->getAtomizationValue();
+  store::Item_t an1 = n1->getAtomizationValue();
 
-    xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type (an0);
-    xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type (an1);
+  xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type (an0);
+  xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type (an1);
 
-    return computeAtomic(result, aRuntimeCB, aLoc, an0.getp(), type0, an1.getp(), type1);
-  }
+  return computeAtomic(result, aRuntimeCB, aLoc, an0.getp(), type0, an1.getp(), type1);
+}
+
   
   template < class Operation >
   bool NumArithIterator<Operation>::computeAtomic

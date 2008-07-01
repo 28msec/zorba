@@ -434,7 +434,6 @@ void ElementNode::replaceAttribute(
 void ElementNode::replaceContent(
     XmlNode*               newTextChild,
     ConstrNodeVector&      oldChildren,
-    bool                   copy,
     const store::CopyMode& copymode)
 {
   ulong numChildren = this->numChildren();
@@ -451,7 +450,7 @@ void ElementNode::replaceContent(
   if (newTextChild->getStringValueP()->empty())
     return;
 
-  if (copy)
+  if (copymode.theDoCopy)
     newTextChild->copy2(this, this, 0, copymode);
   else
     newTextChild->switchTree(this, 0, copymode);

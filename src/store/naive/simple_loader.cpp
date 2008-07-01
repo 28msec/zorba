@@ -361,6 +361,7 @@ void SimpleXmlLoader::startElement(
     store::Item* parent = NULL;
     store::Item_t qname;
     store::Item_t tname;
+    store::Item_t nullValue;
     xqpStringStore_t baseUri;
 
     // Get the parent node from the node stack
@@ -399,7 +400,8 @@ void SimpleXmlLoader::startElement(
 
     // Create the element node and push it to the node stack
     store::Item_t node;
-    loader.theFactory->createElementNode(node, parent, -1, qname, tname,
+    loader.theFactory->createElementNode(node, parent, -1, qname,
+                                         tname, nullValue,
                                          bindings, baseUri);
 
     if (loader.theNodeStack.empty())

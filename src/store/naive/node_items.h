@@ -122,6 +122,7 @@ class XmlNode : public store::Item
 public:
   enum NodeFlags
   {
+    HaveTypedValue    =   1,
     HaveLocalBindings =   2,
     IsId              =   4,
     IsIdRefs          =   8,
@@ -423,6 +424,7 @@ class ElementNode : public XmlNode
 protected:
   store::Item_t         theName;
   store::Item_t         theTypeName;
+  store::Item_t         theTypedValue;
   NsBindingsContext_t   theNsContext;
   uint32_t              theFlags;
 
@@ -520,7 +522,6 @@ public:
   void replaceContent(
         XmlNode*               newText,
         ConstrNodeVector&      oldChildren,
-        bool                   copy,
         const store::CopyMode& copymode);
 
   void rename(store::Item_t& newname, store::Item_t& oldName);
@@ -558,13 +559,15 @@ public:
         ulong          numAttributes);
 
   ElementTreeNode(
-        XmlTree*                  tree,
-        XmlNode*                  parent,
-        long                      pos,
-        store::Item_t&            nodeName,
-        store::Item_t&            typeName,
-        const store::NsBindings*  localBindings,
-        xqpStringStore_t&         baseUri);
+        XmlTree*                    tree,
+        XmlNode*                    parent,
+        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        store::Item_t&              typedValue,
+        std::vector<store::Item_t>* typedValueV,
+        const store::NsBindings*    localBindings,
+        xqpStringStore_t&           baseUri);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -608,13 +611,15 @@ protected:
 
 public:
   ElementDagNode(
-        XmlTree*                 tree,
-        XmlNode*                 parent,
-        long                     pos,
-        store::Item_t&           nodeName,
-        store::Item_t&           typeName,
-        const store::NsBindings* localBindings,
-        xqpStringStore_t&        baseUri);
+        XmlTree*                    tree,
+        XmlNode*                    parent,
+        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        store::Item_t&              typedValue,
+        std::vector<store::Item_t>* typedValueV,
+        const store::NsBindings*    localBindings,
+        xqpStringStore_t&           baseUri);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -668,13 +673,14 @@ public:
         bool            isIdrefs);
 
   AttributeNode(
-        XmlTree*         tree,
-        XmlNode*         parent,
-        long             pos,
-        store::Item_t&   attrName,
-        store::Item_t&   typeName,
-        store::Item_t&   typedValue,
-        bool             hidden = false);
+        XmlTree*                    tree,
+        XmlNode*                    parent,
+        long                        pos,
+        store::Item_t&              attrName,
+        store::Item_t&              typeName,
+        store::Item_t&              typedValue,
+        std::vector<store::Item_t>* typedValue,
+        bool                        hidden = false);
 
   virtual ~AttributeNode();
 
@@ -717,6 +723,40 @@ public:
 };
    
 
+#if 0
+/*******************************************************************************
+
+********************************************************************************/
+class TextNode : public XmlNode
+{
+  friend class XmlNode;
+  friend class DocumentDagNode;
+  friend class ConstrElementNode;
+  friend class BasicItemFactory;
+  friend class FastXmlLoader;
+
+public:
+  TextNode(XmlTree* tree, XmlNode* parent,
+        long              pos)
+
+  virtual ~TextNode();
+
+  XmlNode* copy2(
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
+
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::textNode;
+  }
+
+  store::Item* getType() const;
+};
+#endif
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -729,7 +769,7 @@ class TextNode : public XmlNode
   friend class FastXmlLoader;
 
 protected:
-  xqpStringStore_t theContent;
+    xqpStringStore_t theContent;
 
 public:
   TextNode(xqpStringStore_t& content);
@@ -764,6 +804,57 @@ public:
 
   void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
 };
+
+
+#if 0
+/*******************************************************************************
+
+********************************************************************************/
+class TextNodeTyped : public XmlNode
+{
+  friend class XmlNode;
+  friend class DocumentDagNode;
+  friend class ConstrElementNode;
+  friend class BasicItemFactory;
+  friend class FastXmlLoader;
+
+protected:
+    xqpStringStore_t theContent;
+
+public:
+  TextNode(xqpStringStore_t& content);
+
+  TextNode(
+        XmlTree*          tree,
+        XmlNode*          parent,
+        long              pos,
+        xqpStringStore_t& content);
+
+  virtual ~TextNode();
+
+  XmlNode* copy2(
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
+
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::textNode;
+  }
+
+  store::Item* getType() const;
+
+  store::Iterator_t getTypedValue() const;
+  store::Item_t getAtomizationValue() const;
+  xqpStringStore_t getStringValue() const   { return theContent; }
+  xqpStringStore* getStringValueP() const   { return theContent.getp(); }
+			
+  xqp_string show() const;
+
+  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+};
+#endif
 
 
 /*******************************************************************************

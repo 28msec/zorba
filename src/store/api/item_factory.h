@@ -485,6 +485,8 @@ public:
    *                      children, then N is appended to the list of children.
    * @param nodeName      The fully qualified name of the new node.
    * @param typeName      The fully qualified name of the new node's type.
+   * @param typedValue    The typed value of the new node. It may be NULL (for
+   *                      example if the node is untyped).
    * @param localBindings A set of namespace bindings. The namespaces property
    *                      of N will be the union of this set and the namespaces 
    *                      property of P.
@@ -506,14 +508,26 @@ public:
    *                      exceptions)
    */
  virtual bool createElementNode(
-        Item_t&           result,
-        Item*             parent,
-        long              pos,
-        Item_t&           nodeName,
-        Item_t&           typeName,
-        const NsBindings& localBindings,
-        xqpStringStore_t& baseURI,
-        bool              allowSharing = false) = 0;
+        Item_t&               result,
+        Item*                 parent,
+        long                  pos,
+        Item_t&               nodeName,
+        Item_t&               typeName,
+        Item_t&               typedValue,
+        const NsBindings&     localBindings,
+        xqpStringStore_t&     baseURI,
+        bool                  allowSharing = false) = 0;
+
+ virtual bool createElementNode(
+        Item_t&               result,
+        Item*                 parent,
+        long                  pos,
+        Item_t&               nodeName,
+        Item_t&               typeName,
+        std::vector<Item_t>*  typedValue,
+        const NsBindings&     localBindings,
+        xqpStringStore_t&     baseURI,
+        bool                  allowSharing = false) = 0;
 
   /**
    * Create a new attribute node N and place it at a given position among the
@@ -531,16 +545,24 @@ public:
    *                 "base", then the base-uri property of P will be set or
    *                 updated accordingly.
    * @param typeName The fully qualified name of the new node's type.
-   * @param stringValue The string value of the new node.
+   * @param typedValue The typed value of the new node.
    * @return         Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createAttributeNode(
-        Item_t&           result,
-        Item*             parent,
-        long              pos,
-        Item_t&           nodeName,
-        Item_t&           typeName,
-        Item_t&           typedValue) = 0;
+        Item_t&              result,
+        Item*                parent,
+        long                 pos,
+        Item_t&              nodeName,
+        Item_t&              typeName,
+        Item_t&              typedValue) = 0;
+
+  virtual bool createAttributeNode(
+        Item_t&              result,
+        Item*                parent,
+        long                 pos,
+        Item_t&              nodeName,
+        Item_t&              typeName,
+        std::vector<Item_t>& typedValue) = 0;
 
   /**
    * Create a new text node N and place it at a given position among the

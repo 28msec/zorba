@@ -206,6 +206,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   store::Item* parent;
   store::Item_t nodeName;
   store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  store::Item_t nullValue;
   xqpStringStore_t baseUri;
   xqpStringStore_t content;
 
@@ -252,6 +253,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                       -1,
                                       nodeName,
                                       typeName,
+                                      nullValue,
                                       theLocalBindings->get_bindings(),
                                       baseUri,
                                       false);
