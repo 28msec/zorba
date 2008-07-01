@@ -266,7 +266,7 @@ int main(int argc, const char * argv[])
     zorba::simplestore::XmlNode* parent =
       reinterpret_cast<zorba::simplestore::XmlNode*>(doc.getp());
 
-    double factor;
+    double factor = 0.0;
     if (i == 0) factor = 0.5;
     else if (i == 1) factor = 0.66;
     else if (i == 2) factor = 0.90;
