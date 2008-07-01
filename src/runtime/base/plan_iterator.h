@@ -349,12 +349,24 @@ public:
   static
   store::Item_t consumeNext(store::Item_t& result, const PlanIterator* subIter, PlanState& planState)
   {
-    // use the producer's (subIter) planstate to access it's batch
-    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, subIter->getStateOffset());
-    if ( lState->theCurrItem == ZORBA_BATCHING_BATCHSIZE )
+    try
     {
-      subIter->produceNext(planState);
-      lState->theCurrItem = 0;
+      // use the producer's (subIter) planstate to access it's batch
+      PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, subIter->getStateOffset());
+      if ( lState->theCurrItem == ZORBA_BATCHING_BATCHSIZE )
+      {
+        subIter->produceNext(planState);
+        lState->theCurrItem = 0;
+      }
+    }
+    catch(error::ZorbaError& e)
+    {
+      if(loc != NULL)
+      {
+        e->theQueryLine = loc.getLineBegin();
+        e->theQueryColumn = loc.getColumnBegin();
+        throw(e);
+      }
     }
     return lState->theBatch[lState->theCurrItem++];
   }
