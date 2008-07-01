@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#ifndef ZORBA_INTERNATIONAL_COMPONENTS_FOR_UNICODE_INITIALIZATION
+#define ZORBA_INTERNATIONAL_COMPONENTS_FOR_UNICODE_INITIALIZATION
+
 namespace zorba {
 
 class icu_init {
@@ -25,3 +28,6 @@ class icu_init {
     unsigned char * icu_appdata;
 };
 }
+
+
+#endif
