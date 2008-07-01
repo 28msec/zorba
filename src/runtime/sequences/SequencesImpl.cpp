@@ -1488,11 +1488,11 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     uriString = uriItem->getStringValue();
 
     if(!URI::is_valid(uriString))
-      ZORBA_ERROR_PARAM(FODC0005, uriString->c_str(), "");
+      ZORBA_ERROR_LOC_PARAM(FODC0005, loc, uriString->c_str(), "");
 
     uriString2 = uriString;
   if(!URI::is_valid(uriString))
-    ZORBA_ERROR_PARAM(FODC0005, uriString->c_str(), "");
+    ZORBA_ERROR_LOC_PARAM(FODC0005, loc, uriString->c_str(), "");
 
     result = get_doc(uriString, &err);
 
@@ -1524,11 +1524,11 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
     uriString = uriItem->getStringValue();
 
     if(!URI::is_valid(uriString))
-      ZORBA_ERROR_PARAM(FODC0005, xqp_string(uriString), "");
+      ZORBA_ERROR_LOC_PARAM(FODC0005, loc, xqp_string(uriString), "");
 
     doc = get_doc(uriString, &err);
     if(!URI::is_valid(uriString))
-      ZORBA_ERROR_PARAM(FODC0005, xqp_string(uriString), "");
+      ZORBA_ERROR_LOC_PARAM(FODC0005, loc, xqp_string(uriString), "");
 
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, doc != NULL), state);
   }
