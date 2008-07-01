@@ -118,6 +118,8 @@ MESSAGE(STATUS "ZORBA_NO_BIGNUMBERS:               " ${ZORBA_NO_BIGNUMBERS})
 SET(ZORBA_USE_SWIG ON CACHE BOOL "use Swig to generate api for Python, Php and Ruby")
 MESSAGE(STATUS "ZORBA_USE_SWIG:               " ${ZORBA_USE_SWIG})
 
+SET(ZORBA_USE_SEPARATE_WINCE_SVN OFF CACHE BOOL "Daniel's flag")
+
 # below we print some variables you might be interested in, when compiling
 
 # if you are building in-source, this is the same as CMAKE_SOURCE_DIR, otherwise 
