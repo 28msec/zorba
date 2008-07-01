@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include "zorbatypes/icu_init.h"
-
 #include "common/common.h"
 
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -54,7 +52,7 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv = new GlobalEnvironment();
 
-  m_globalEnv->m_icu->zorbatypes_global_init();
+  m_globalEnv->m_icu.zorbatypes_global_init();
 
   ZORBA_FATAL(store != NULL, "Must provide store during zorba initialization");
 
@@ -111,7 +109,7 @@ void GlobalEnvironment::destroy()
   // releases statically initialized memory and prevents
   // valgrind from reporting those problems at the end
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
-  m_globalEnv->m_icu->zorbatypes_global_cleanup();
+  m_globalEnv->m_icu.zorbatypes_global_cleanup();
 
   delete m_globalEnv;
 	m_globalEnv = NULL;

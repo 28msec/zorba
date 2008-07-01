@@ -22,6 +22,7 @@
 #include "zorbatypes/m_apm.h"
 #endif
 #include "common/shared_types.h"
+#include "zorbatypes/icu_init.h"
 
 namespace zorba {
 
@@ -64,7 +65,7 @@ class GlobalEnvironment
   std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
 
   static GlobalEnvironment             * m_globalEnv;
-  icu_init                             * m_icu;
+  icu_init                               m_icu;
 };
 
 #define GENV GlobalEnvironment::getInstance()
