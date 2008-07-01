@@ -1102,7 +1102,7 @@ bool str_down(
       return aFactory->createENTITY(result, lString);
     break;
   default:
-    assert(false);
+    ZORBA_ASSERT(false);
   }
 
   throwError(FORG0001, aErrorInfo);
@@ -1213,7 +1213,7 @@ bool int_down(
     break;
   }
   default:
-    assert(false);
+    ZORBA_ASSERT (false);
   }
   throwError(FORG0001, aErrorInfo);
   return 0;

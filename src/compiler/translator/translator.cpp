@@ -1051,7 +1051,7 @@ void *begin_visit(const DirAttributeList& v)
 void end_visit(const DirAttributeList& v, void* /*visit_state*/)
 {
   // begin_visit() rejects visitor
-  assert (false);
+  ZORBA_ASSERT (false);
 }
 
 
@@ -1230,7 +1230,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
   {
   case ParseConstants::cont_entity:
   {
-    assert (false); 
+    ZORBA_ASSERT (false); 
     break;
   }
   case ParseConstants::cont_charref:
@@ -2474,7 +2474,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC (XQST0070, loc);
   sctx_p->bind_ns (mod_pfx, mod_ns);
   bool found = minfo->mod_sctx_map.get (sctx_p->entity_retrieval_url (), export_sctx);
-  assert (found);
+  ZORBA_ASSERT (found);
 }
 
 
@@ -2514,7 +2514,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     static_context *imported_sctx = NULL;
     if (minfo->mod_ns_map.get (aturi, imported_ns)) {
       bool found = minfo->mod_sctx_map.get (aturi, imported_sctx);
-      assert (found);
+      ZORBA_ASSERT (found);
     } else {
       ifstream modfile (URI::decode_file_URI (xqp_string (aturi).getStore ())->c_str ());
       if (! modfile)
@@ -4616,7 +4616,7 @@ void end_visit(const TypeswitchExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // shouldn't get here, begin_visit() rejects visitor
-  assert (false);
+  ZORBA_ASSERT (false);
 }
 
 

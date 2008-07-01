@@ -491,7 +491,7 @@ xqtref_t TypeOps::primitive_type(const XQType& type)
   else if (is_subtype(type, *genv_ts.NOTATION_TYPE_ONE))
     return genv_ts.NOTATION_TYPE_ONE;
   
-  assert(false);
+  ZORBA_ASSERT (false);
   return genv_ts.ANY_ATOMIC_TYPE_ONE;
 }
 

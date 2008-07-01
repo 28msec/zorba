@@ -92,7 +92,7 @@ void dynamic_context::destroy_dctx_value (const dctx_value_t* val) {
     RCHelper::removeReference (val->val.temp_seq);
     break;
   default:
-    assert (false);
+    ZORBA_ASSERT (false);
   }
 }
 

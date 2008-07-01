@@ -126,7 +126,7 @@ namespace zorba {
     }
     case comment_constructor: nt = NodeTest::COMMENT_TEST; break;
     case pi_constructor: nt = NodeTest::PI_TEST; break;
-    default: assert (false); break;
+    default: ZORBA_ASSERT (false); break;
     }
     return sctx->get_typemanager ()->create_node_type (nt, text == NULL ? NULL : text->return_type (sctx), q);
   }

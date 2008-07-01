@@ -88,7 +88,7 @@ xqtref_t TypeManagerImpl::create_type(
   }
   }
 
-  assert(false);
+  ZORBA_ASSERT (false);
   return 0;
 }
 

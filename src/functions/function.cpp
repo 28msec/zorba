@@ -151,7 +151,7 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
           break;
 
         default:
-          assert(false);
+          ZORBA_ASSERT (false);
           break;
       }
     }

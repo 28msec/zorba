@@ -1291,14 +1291,14 @@ FnMatchesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     input = item->getStringValue().getp();
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
-    assert(false);
+    ZORBA_ASSERT (false);
 
   pattern = item->getStringValue().getp();
 
   if(theChildren.size() == 3) 
   {
     if (!consumeNext(item, theChildren[2].getp(), planState))
-      assert (false);
+      ZORBA_ASSERT (false);
     flags = item->getStringValue().getp();
   }
   try{
@@ -1343,16 +1343,16 @@ FnReplaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     input = item->getStringValue().getp();
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
-    assert (false);
+    ZORBA_ASSERT (false);
   pattern = item->getStringValue().getp();
 
   if (!consumeNext(item, theChildren[2].getp(), planState))
-    assert (false);
+    ZORBA_ASSERT (false);
   replacement = item->getStringValue().getp();
 
   if(theChildren.size() == 4) {
     if (!consumeNext(item, theChildren[3].getp(), planState))
-      assert (false);
+      ZORBA_ASSERT (false);
     flags = item->getStringValue().getp();
   }
 
@@ -1428,12 +1428,12 @@ FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->theString = item->getStringValue().getp();
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
-    assert (false);
+    ZORBA_ASSERT (false);
   state->thePattern = item->getStringValue().getp();
 
   if(theChildren.size() == 3) {
     if (!consumeNext(item, theChildren[2].getp(), planState))
-      assert (false);
+      ZORBA_ASSERT (false);
     state->theFlags = item->getStringValue().getp();
   }
 
