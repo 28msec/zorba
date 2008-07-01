@@ -40,6 +40,10 @@ ELSE(WIN32 AND NOT UNIX)
 	INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/zorba DESTINATION bin)
 ENDIF(WIN32 AND NOT UNIX)
 
+IF(UNIX)
+  ADD_CUSTOM_TARGET(zorbacmd_man help2man -N -s1 -n Zorba -S "FLWOR Foundation" ./zorba > "${PROJECT_BINARY_DIR}/doc/zorba.1")
+  ADD_DEPENDENCIES(zorbacmd_man zorbacmd)
+ENDIF(UNIX)
 
 # test the command line tool
 ADD_TEST(bin/zorba1 zorba --omit-xml-declaration -i "1+1")
