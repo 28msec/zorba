@@ -679,7 +679,7 @@ public:
         store::Item_t&              attrName,
         store::Item_t&              typeName,
         store::Item_t&              typedValue,
-        std::vector<store::Item_t>* typedValue,
+        std::vector<store::Item_t>* typedValueV,
         bool                        hidden = false);
 
   virtual ~AttributeNode();
