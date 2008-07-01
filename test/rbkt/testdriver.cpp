@@ -33,8 +33,13 @@
 #include <zorba/exception.h>
 
 #include <zorbatypes/URI.h>
+#include "zorba_test_setting.h"
+#ifndef ZORBA_MINIMAL_STORE
 #include <simplestore/simplestore.h>
 #include "store/naive/simple_store.h"
+#else
+#include "store/minimal/min_store.h"
+#endif
 
 namespace fs = boost::filesystem;
 
@@ -364,8 +369,13 @@ main(int argc, char** argv)
   std::cout << std::endl;
 
   // Instantiate the simple store
-  zorba::simplestore::SimpleStore* store =
-    zorba::simplestore::SimpleStoreManager::getStore();
+#ifdef ZORBA_MINIMAL_STORE
+  zorba::storeminimal::SimpleStore* store = 
+        zorba::storeminimal::SimpleStore::getInstance();
+#else
+  zorba::simplestore::SimpleStore* store = 
+        zorba::simplestore::SimpleStoreManager::getStore();
+#endif
 
   // Instantiate zorba query processor
   zorba::Zorba *engine = zorba::Zorba::getInstance(store);

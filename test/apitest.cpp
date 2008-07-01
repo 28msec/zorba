@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
 
 #include <fstream>
 #include <iostream>
@@ -32,7 +31,13 @@
 #include "util/properties.h"
 
 #include "store/api/item.h"
+#include "zorba_test_setting.h"
+#ifndef ZORBA_MINIMAL_STORE
+#include <simplestore/simplestore.h>
 #include "store/naive/simple_store.h"
+#else
+#include "store/minimal/min_store.h"
+#endif
 
 using namespace zorba;
 using namespace std;
@@ -114,7 +119,13 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // Instantiate the simple store
-  simplestore::SimpleStore* store = simplestore::SimpleStoreManager::getStore();
+#ifdef ZORBA_MINIMAL_STORE
+  zorba::storeminimal::SimpleStore* store = 
+        zorba::storeminimal::SimpleStore::getInstance();
+#else
+  zorba::simplestore::SimpleStore* store = 
+        zorba::simplestore::SimpleStoreManager::getStore();
+#endif
 
   // start processing
   Zorba* zengine = Zorba::getInstance(store);
