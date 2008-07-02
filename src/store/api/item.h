@@ -442,8 +442,8 @@ public:
    *
    * @return typedValue?
    */
-  virtual Iterator_t
-  getTypedValue() const;
+  virtual void
+  getTypedValue(Item_t& val, Iterator_t& iter) const;
 
   /** Accessor for xs:qname, namespace node
    * @return namespace uri

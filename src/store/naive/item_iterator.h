@@ -33,6 +33,7 @@ public:
   ItemIterator(std::vector<store::Item_t> aItems);
   ItemIterator(store::Item_t aItem);
   ItemIterator(); // construct the empty sequence
+
   virtual ~ItemIterator(){}
 
   virtual void open();

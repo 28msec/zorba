@@ -336,7 +336,7 @@ public:
 
   store::Iterator_t getChildren() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 
@@ -455,7 +455,7 @@ public:
   store::Item* getType() const     { return theTypeName.getp(); }
   store::Item* getNodeName() const { return theName.getp(); }
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
   store::Item_t getNilled() const;
@@ -711,7 +711,7 @@ public:
 
   bool isBaseUri() const      { return (theFlags & XmlNode::IsBaseUri) != 0; }
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 
@@ -795,7 +795,7 @@ public:
 
   store::Item* getType() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }
@@ -845,7 +845,7 @@ public:
 
   store::Item* getType() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }
@@ -894,7 +894,7 @@ public:
 
   store::Item* getType() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const    { return theContent; }
   xqpStringStore* getStringValueP() const    { return theContent.getp(); }
@@ -944,7 +944,7 @@ public:
 
   store::Item* getType() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }

@@ -627,7 +627,12 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 bool DeepEqual(store::Item_t& item1, store::Item_t& item2, XQPCollator* collator, RuntimeCB* theRuntimeCB);
     
-bool DeepEqual(store::Iterator_t it1, store::Iterator_t it2, XQPCollator* collator, RuntimeCB* theRuntimeCB)
+
+bool DeepEqual(
+    store::Iterator_t it1,
+    store::Iterator_t it2,
+    XQPCollator* collator,
+    RuntimeCB* theRuntimeCB)
 {
   store::Item_t child1, child2;
   bool c1Valid, c2Valid;
@@ -651,11 +656,19 @@ bool DeepEqual(store::Iterator_t it1, store::Iterator_t it2, XQPCollator* collat
   return true;
 }
 
-bool DeepEqual(store::Item_t& item1, store::Item_t& item2, XQPCollator* collator, RuntimeCB* theRuntimeCB)
+
+bool DeepEqual(
+    store::Item_t& item1,
+    store::Item_t& item2,
+    XQPCollator* collator,
+    RuntimeCB* theRuntimeCB)
 {
   if (item1.isNull() && item2.isNull())
     return true;
-  
+
+  if (item1 == NULL || item2 == NULL)
+    return false;
+
   if (item1->isNode() != item2->isNode())
     return false;
   
@@ -714,11 +727,24 @@ bool DeepEqual(store::Item_t& item1, store::Item_t& item2, XQPCollator* collator
         break;
         
       case store::StoreConsts::attributeNode:
+      {
         if (0 != item1->getNodeName()->getStringValue()->compare(item2->getNodeName()->getStringValue(), collator))
           return false;
-        return DeepEqual(item1->getTypedValue(), item2->getTypedValue(), collator, theRuntimeCB);
+
+        store::Item_t tvalue1, tvalue2;
+        store::Iterator_t tvalue1Iter, tvalue2Iter;
+        item1->getTypedValue(tvalue1, tvalue1Iter);
+        item2->getTypedValue(tvalue2, tvalue2Iter);
+
+        if (tvalue1Iter == NULL && tvalue2Iter == NULL)
+          return DeepEqual(tvalue1, tvalue2, collator, theRuntimeCB);
+        else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
+          return DeepEqual(tvalue1Iter, tvalue2Iter, collator, theRuntimeCB);
+        else
+          return false;
+
         break;
-        
+      }  
       case store::StoreConsts::textNode:     /* deliberate fall-through */
       case store::StoreConsts::commentNode:
         return (0 == item1->getStringValue()->compare(item2->getStringValue(), collator));
@@ -1142,20 +1168,22 @@ FnIdIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theIterator = NULL;
-  theTypedValue = NULL;
+  theTypedValueIter = NULL;
   inNode = NULL;
   inArg = NULL;
 }
+
 
 void
 FnIdIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theIterator = NULL;
-  theTypedValue = NULL;
+  theTypedValueIter = NULL;
   inNode = NULL;
   inArg = NULL;
 }
+
 
 bool 
 FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
@@ -1166,6 +1194,7 @@ FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   xqp_string        strArg;
   bool              tmp;
   store::Item*      rootNode;
+  store::Item_t typedValue;
 
   FnIdIteratorState *state;
   DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
@@ -1193,26 +1222,20 @@ FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           if(result->isId())
           {
-            state->theTypedValue = result->getTypedValue();
-            state->theTypedValue->open();
+            result->getTypedValue(typedValue, state->theTypedValueIter);
+            assert(state->theTypedValueIter == NULL);
     
-            while (true)
-            {
-              if (!state->theTypedValue->next(item))
-                break;
+            strArg = state->inArg->getStringValue().getp();
 
-              strArg = state->inArg->getStringValue().getp();
-
-              try {
-                tmp = strArg.matches(item->getStringValue().getp()," ");
-              }
-              catch(zorbatypesException& ex){
-                ZORBA_ERROR_LOC(error::DecodeZorbatypesError(ex.ErrorCode()), loc);
-              }
-                
-              if(tmp)
-                STACK_PUSH(true, state );
+            try {
+              tmp = strArg.matches(typedValue->getStringValue().getp()," ");
             }
+            catch(zorbatypesException& ex){
+              ZORBA_ERROR_LOC(error::DecodeZorbatypesError(ex.ErrorCode()), loc);
+            }
+                
+            if(tmp)
+              STACK_PUSH(true, state );
           }
           else
           {
@@ -1227,24 +1250,16 @@ FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     
               if(result->isId())
               {
-                state->theTypedValue = result->getTypedValue();
-                state->theTypedValue->open();
+                result->getTypedValue(typedValue, state->theTypedValueIter);
+                assert(state->theTypedValueIter == NULL);
     
-                while (!push)
-                {
-                  if (!state->theTypedValue->next(item))
-                    break;
-
-                  strArg = state->inArg->getStringValue().getp();
+                strArg = state->inArg->getStringValue().getp();
     
-                  if(strArg.matches(item->getStringValue().getp()," "))
-                  {
-                    push = true;
-                    break;
-                  }
-                }
+                if(strArg.matches(typedValue->getStringValue().getp()," "))
+                  push = true;
               }
             }
+
             if(push)
               STACK_PUSH(true, state );
           }
@@ -1256,6 +1271,7 @@ FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
   
+
 //15.5.3 fn:idref
 void
 FnIdRefIteratorState::init(PlanState& planState)
@@ -1264,7 +1280,7 @@ FnIdRefIteratorState::init(PlanState& planState)
   inNode = NULL;
   inArg = NULL;
   theIterator = NULL;
-  theTypedValue = NULL;
+  theTypedValueIter = NULL;
 }
 
 void
@@ -1274,7 +1290,7 @@ FnIdRefIteratorState::reset(PlanState& planState)
   inNode = NULL;
   inArg = NULL;
   theIterator = NULL;
-  theTypedValue = NULL;
+  theTypedValueIter = NULL;
 }
 
 /**
@@ -1283,8 +1299,10 @@ FnIdRefIteratorState::reset(PlanState& planState)
  * @return 
  */
 bool
-FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t     item;
+  store::Item_t     typedValue;
   store::Iterator_t theAttributes;
   store::Item_t     res;
   bool              push;
@@ -1319,14 +1337,10 @@ FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
         {
           if(result->isIdRefs())
           {
-            state->theTypedValue = result->getTypedValue();
-            state->theTypedValue->open();
-    
-            while (true)
-            {
-              if (!state->theTypedValue->next(item))
-                break;
+            result->getTypedValue(typedValue, state->theTypedValueIter);
 
+            if (state->theTypedValueIter == NULL && typedValue != NULL)
+            {
               strArg = state->inArg->getStringValue().getp();
 
               try {
@@ -1338,6 +1352,28 @@ FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
                 
               if(tmp)
                 STACK_PUSH(true, state );
+            }
+            else if (state->theTypedValueIter != NULL)
+            {
+              state->theTypedValueIter->open();
+    
+              while (true)
+              {
+                if (!state->theTypedValueIter->next(item))
+                  break;
+
+                strArg = state->inArg->getStringValue().getp();
+
+                try {
+                  tmp = strArg.matches(item->getStringValue().getp()," ");
+                }
+                catch(zorbatypesException& ex){
+                  ZORBA_ERROR_LOC(error::DecodeZorbatypesError(ex.ErrorCode()), loc);
+                }
+                
+                if(tmp)
+                  STACK_PUSH(true, state );
+              }
             }
           }
           else
@@ -1353,20 +1389,31 @@ FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     
               if(item->isId())
               {
-                state->theTypedValue = item->getTypedValue();
-                state->theTypedValue->open();
-    
-                while (!push)
-                {
-                  if (!state->theTypedValue->next(item))
-                    break;
+                item->getTypedValue(typedValue, state->theTypedValueIter);
 
+                if (state->theTypedValueIter == NULL && typedValue != NULL)
+                {
                   strArg = state->inArg->getStringValue().getp();
     
-                  if(strArg.matches(item->getStringValue().getp()," "))
-                  {
+                  if(strArg.matches(typedValue->getStringValue().getp()," "))
                     push = true;
-                    break;
+                }
+                else if (state->theTypedValueIter != NULL)
+                {
+                  state->theTypedValueIter->open();
+    
+                  while (!push)
+                  {
+                    if (!state->theTypedValueIter->next(item))
+                      break;
+
+                    strArg = state->inArg->getStringValue().getp();
+    
+                    if(strArg.matches(item->getStringValue().getp()," "))
+                    {
+                      push = true;
+                      break;
+                    }
                   }
                 }
               }

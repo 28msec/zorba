@@ -26,45 +26,57 @@ namespace zorba
 {
   class RuntimeCB;
 
+/**
+ * Generic Iterator for Numeric Arithmetic Operations. Specific operation
+ * (add, mod, etc.) is passed over the template parameter.
+ */
+template < class Operation >
+class NumArithIterator : public BinaryBaseIterator<NumArithIterator<Operation>,
+                                                   PlanIteratorState>
+{
+public:
+  NumArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
+
+  virtual ~NumArithIterator(){}
+
+  bool nextImpl(store::Item_t& result, PlanState&) const;
+      
+  virtual void accept(PlanIterVisitor&) const;
+
   /**
-    * Generic Iterator for Numeric Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
-    */
-  template < class Operation >
-  class NumArithIterator 
-    : public BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>
-  {
-    public:
-      NumArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
-      virtual ~NumArithIterator(){}
-
-      bool nextImpl(store::Item_t& result, PlanState&) const;
+   * Computes Operation on passed items.
+   *
+   * @param loc
+   * @param item0
+   * @param item1
+   */
+  static bool
+  compute(
+        store::Item_t& result,
+        RuntimeCB* aRuntimeCB,
+        const QueryLoc& loc,
+        store::Item *item0,
+        store::Item *item1);
       
-      virtual void accept(PlanIterVisitor&) const;
-
-      /**
-       * Computes Operation on passed items.
-       *
-       * @param loc
-       * @param item0
-       * @param item1
-       */
-      static bool
-      compute(store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc& loc, store::Item *item0, store::Item *item1);
-      
-      /**
-       * Computes Operation on passed items.
-       *
-       * @param loc
-       * @param item0 Atomized Item
-       * @param type0 Type of item0
-       * @param item1 Atomized Item
-       * @param type1 Type of item1
-       */
-      static bool
-      computeAtomic
-        (store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc&, store::Item *item0, xqtref_t type0, store::Item *item1, xqtref_t type1);
-
-  }; /* class NumArithIterator */
+  /**
+   * Computes Operation on passed items.
+   *
+   * @param loc
+   * @param item0 Atomized Item
+   * @param type0 Type of item0
+   * @param item1 Atomized Item
+   * @param type1 Type of item1
+   */
+  static bool
+  computeAtomic(
+        store::Item_t& result,
+        RuntimeCB* aRuntimeCB,
+        const QueryLoc&,
+        store::Item *item0,
+        xqtref_t type0,
+        store::Item *item1,
+        xqtref_t type1);
+}; /* class NumArithIterator */
 
   /*______________________________________________________________________
   |

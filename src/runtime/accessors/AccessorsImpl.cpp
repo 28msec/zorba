@@ -27,20 +27,27 @@ namespace zorba {
 
 // 2.4 fn:data
 //---------------------
-FnDataIteratorState::FnDataIteratorState() {}
+FnDataIteratorState::FnDataIteratorState() 
+{
+}
 
-FnDataIteratorState::~FnDataIteratorState() {}
+
+FnDataIteratorState::~FnDataIteratorState()
+{
+}
+
 
 void FnDataIteratorState::init(PlanState& planState) 
 { 
   PlanIteratorState::init( planState );
-  theTypedValue = NULL;
+  theTypedValueIter = NULL;
 }
+
 
 void FnDataIteratorState::reset(PlanState& planState) 
 {
   PlanIteratorState::reset( planState );
-  theTypedValue = NULL;
+  theTypedValueIter = NULL;
 }
 
 
@@ -52,28 +59,54 @@ FnDataIterator::FnDataIterator (
 {
 }
 
+
 bool
 FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIter_t iter;
-  
+  store::Item_t item;
+
   FnDataIteratorState* state;
   DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
   
-  while (true) {
-    if (!consumeNext( result, theChild, planState ))
+  while (true) 
+  {
+    if (!consumeNext(result, theChild, planState))
       break;
-    state->theTypedValue = result->getTypedValue();
-    state->theTypedValue->open();
+
+    if (result->isAtomic())
+    {
+      STACK_PUSH(true, state);
+    }
+    else
+    {
+      item.transfer(result);
+      item->getTypedValue(result, state->theTypedValueIter);
+
+      if (state->theTypedValueIter == NULL)
+      {
+        if (result == NULL)
+          continue;
+
+        STACK_PUSH(true, state );
+      }
+      else
+      {
+        state->theTypedValueIter->open();
       
-    while (true) {
-      if (!state->theTypedValue->next(result))
-        break;
-      ZORBA_ASSERT(!result->isNode());
-      STACK_PUSH(true, state );
+        while (true) 
+        {
+          if (!state->theTypedValueIter->next(result))
+            break;
+
+          assert(!result->isNode());
+          STACK_PUSH(true, state );
+        }
+      }
     }
   }
-  state->theTypedValue = 0; // TODO remove???
+
+  state->theTypedValueIter = 0; // TODO remove???
   STACK_END (state);
 }
   

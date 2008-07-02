@@ -42,16 +42,29 @@ class AddOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static bool compute(store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc*, const store::Item*, const store::Item*);
+  static bool compute(
+        store::Item_t& result,
+        RuntimeCB* aRuntimeCB,
+        const QueryLoc*,
+        const store::Item*,
+        const store::Item*);
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static bool computeSingleType(store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1) 
+  static bool computeSingleType(
+        store::Item_t& result,
+        RuntimeCB* aRuntimeCB,
+        const QueryLoc* loc,
+        const store::Item* i0,
+        const store::Item* i1) 
   {
     return AddOperation::compute<ATC,ATC>(result, aRuntimeCB, loc, i0, i1);
   }
 };
+
+
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline bool AddOperation::compute(store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item*, const store::Item*) {
+inline bool AddOperation::compute(store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item*, const store::Item*) 
+{
   ArithOperationsCommons::createError(aRuntimeCB, "add", loc, ATC0, ATC1);
   return 0;
 }

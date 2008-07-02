@@ -683,18 +683,33 @@ void FLWORIterator::matVarsAndGroupBy (
     bool status = consumeNext ( location, lSpecIter->theInput.getp(), planState );
     
     //Getting the typed value
-    if(!status){
+    if(!status)
+    {
       lTypedKey.push_back(NULL);
-    }else{
+    }
+    else
+    {
       store::Item_t temp;
-      store::Iterator_t lTypedValue = location->getTypedValue();
-      lTypedValue->open();
-      lTypedKey.push_back(NULL);
-      store::Item_t& typedItem = lTypedKey.back();
-      if(lTypedValue->next(typedItem)){
-        if (lTypedValue->next(temp))
+
+      store::Iterator_t lTypedValueIter;
+      store::Item_t lTypedValue;
+      location->getTypedValue(lTypedValue, lTypedValueIter);
+      if (lTypedValueIter == NULL)
+      {
+        lTypedKey.push_back(NULL);
+        lTypedKey.back().transfer(lTypedValue);
+      }
+      else
+      {
+        lTypedValueIter->open();
+        lTypedKey.push_back(NULL);
+        store::Item_t& typedItem = lTypedKey.back();
+        if(lTypedValueIter->next(typedItem))
         {
-          ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton (atomization has more than one value)" );
+          if (lTypedValueIter->next(temp))
+          {
+            ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton (atomization has more than one value)" );
+          }
         }
       }
     }

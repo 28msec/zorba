@@ -738,11 +738,11 @@ store::Iterator_t DocumentNode::getChildren() const
 }
 
 
-store::Iterator_t DocumentNode::getTypedValue() const
+void DocumentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = getStringValue();
-  store::Item_t item = new UntypedAtomicItemImpl(rch);
-  return new ItemIterator(item);
+  val = new UntypedAtomicItemImpl(rch);
+  iter = NULL;
 }
 
 
@@ -1191,10 +1191,10 @@ XmlNode* ElementNode::copy2(
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t ElementNode::getTypedValue() const
+void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  store::Item_t retItem = getAtomizationValue();
-  return new ItemIterator(retItem);
+  val = getAtomizationValue();
+  iter = NULL;
 }
 
 
@@ -2045,9 +2045,10 @@ docopy:
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t AttributeNode::getTypedValue() const
+void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  return new ItemIterator(theTypedValue);
+  val = theTypedValue;
+  iter = NULL;
 }
 
 
@@ -2225,11 +2226,11 @@ store::Item* TextNode::getType() const
 }
 
 
-store::Iterator_t TextNode::getTypedValue() const
+void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = theContent; 
-  const store::Item_t& item = new UntypedAtomicItemImpl(rch);
-  return new ItemIterator(item);
+  val = new UntypedAtomicItemImpl(rch);
+  iter = NULL;
 }
 
 
@@ -2375,11 +2376,11 @@ store::Item* PiNode::getType() const
 }
 
 
-store::Iterator_t PiNode::getTypedValue() const
+void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = theContent; 
-  const store::Item_t& item = new StringItemNaive(rch);
-  return new ItemIterator(item);
+  val = new StringItemNaive(rch);
+  iter = NULL;
 }
 
 
@@ -2520,11 +2521,11 @@ store::Item* CommentNode::getType() const
 }
 
 
-store::Iterator_t CommentNode::getTypedValue() const
+void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = theContent; 
-  const store::Item_t& item = new StringItemNaive(rch);
-  return new ItemIterator(item);
+  val = new StringItemNaive(rch);
+  iter = NULL;
 }
 
 

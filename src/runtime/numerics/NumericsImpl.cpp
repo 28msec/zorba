@@ -31,13 +31,18 @@
 
 namespace zorba
 {
-  /* begin class AddOperations */
-  template<>
-  bool AddOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( store::Item_t& result, RuntimeCB* /* aRuntimeCB */, const QueryLoc*,  const store::Item* i0, const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createDouble (result,  i0->getDoubleValue() + i1->getDoubleValue() );
-  }
+/* begin class AddOperations */
+template<>
+bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
+    store::Item_t& result,
+    RuntimeCB* /* aRuntimeCB */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->createDouble(result, i0->getDoubleValue() + i1->getDoubleValue());
+}
+
   template<>
   bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
   ( store::Item_t& result, RuntimeCB* /* aRuntimeCB */, const QueryLoc*,  const store::Item* i0, const store::Item* i1 )
@@ -336,47 +341,56 @@ bool NumArithIterator<Operation>::compute(
     store::Item *n0,
     store::Item *n1)
 {
-  store::Item_t an0 = n0->getAtomizationValue();
-  store::Item_t an1 = n1->getAtomizationValue();
+  assert(n0->isAtomic());
+  assert(n1->isAtomic());
+  //store::Item_t an0 = n0->getAtomizationValue();
+  //store::Item_t an1 = n1->getAtomizationValue();
 
-  xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type (an0);
-  xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type (an1);
+  xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type(n0);
+  xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type(n1);
 
-  return computeAtomic(result, aRuntimeCB, aLoc, an0.getp(), type0, an1.getp(), type1);
+  return computeAtomic(result, aRuntimeCB, aLoc, n0, type0, n1, type1);
 }
 
   
-  template < class Operation >
-  bool NumArithIterator<Operation>::computeAtomic
-    (store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc& aLoc, store::Item *item0, xqtref_t type0, store::Item *item1, xqtref_t type1)
+template < class Operation >
+bool NumArithIterator<Operation>::computeAtomic(
+    store::Item_t& result,
+    RuntimeCB* aRuntimeCB,
+    const QueryLoc& aLoc,
+    store::Item *item0,
+    xqtref_t type0,
+    store::Item *item1,
+    xqtref_t type1)
+{
+  bool res;
+  xqtref_t resultType = TypeOps::arithmetic_type ( *type0, *type1 );
+  store::Item_t n0;
+  store::Item_t n1;
+
+  GenericCast::instance()->cast ( n0, item0, &*resultType );
+  GenericCast::instance()->cast ( n1, item1, &*resultType );
+
+  switch ( TypeOps::get_atomic_type_code ( *resultType ) )
   {
-    bool res;
-    xqtref_t resultType = TypeOps::arithmetic_type ( *type0, *type1 );
-    store::Item_t n0;
-    store::Item_t n1;
-
-    GenericCast::instance()->cast ( n0, item0, &*resultType );
-    GenericCast::instance()->cast ( n1, item1, &*resultType );
-
-    switch ( TypeOps::get_atomic_type_code ( *resultType ) )
-    {
-      case TypeConstants::XS_DOUBLE:
-        res = Operation::template computeSingleType<TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, &aLoc, n0, n1 );
-        break;
-      case TypeConstants::XS_FLOAT:
-        res = Operation::template computeSingleType<TypeConstants::XS_FLOAT> ( result, aRuntimeCB, &aLoc,n0, n1 );
-        break;
-      case TypeConstants::XS_DECIMAL:
-        res = Operation::template computeSingleType<TypeConstants::XS_DECIMAL> ( result, aRuntimeCB, &aLoc,n0, n1 );
-        break;
-      case TypeConstants::XS_INTEGER:
-        res = Operation::template computeSingleType<TypeConstants::XS_INTEGER> ( result, aRuntimeCB, &aLoc,n0, n1 );
-        break;
-      default:
-        ZORBA_ASSERT(false);
-    }
-    return res;
+  case TypeConstants::XS_DOUBLE:
+    res = Operation::template computeSingleType<TypeConstants::XS_DOUBLE> (result, aRuntimeCB, &aLoc, n0, n1 );
+    break;
+  case TypeConstants::XS_FLOAT:
+    res = Operation::template computeSingleType<TypeConstants::XS_FLOAT> ( result, aRuntimeCB, &aLoc,n0, n1 );
+    break;
+  case TypeConstants::XS_DECIMAL:
+    res = Operation::template computeSingleType<TypeConstants::XS_DECIMAL> ( result, aRuntimeCB, &aLoc,n0, n1 );
+    break;
+  case TypeConstants::XS_INTEGER:
+    res = Operation::template computeSingleType<TypeConstants::XS_INTEGER> ( result, aRuntimeCB, &aLoc,n0, n1 );
+    break;
+  default:
+    ZORBA_ASSERT(false);
   }
+  return res;
+}
+
   
   /**
    * Information: It is not possible to move this function to
