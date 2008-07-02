@@ -52,14 +52,14 @@ void test_packet( AbstractMessage * aMessage )
   //Cast to the concrete Message Type
   T * lMessage1 = dynamic_cast<T *> ( aMessage );
   //Ensure that the cast is correct
-  assert( lMessage1 != NULL);
+  assert( lMessage1 != 0 );
   //Serialize and unserialize the message
   Length length;
   Byte * msg = lMessage1->serialize( length );
   AbstractMessage * lAbstractMessage = MessageFactory::buildMessage( msg, length );
-  //delete[] msg;
+  delete[] msg;
   T * lMessage2 = dynamic_cast<T *> ( lAbstractMessage );
-  assert( lMessage2 != NULL);
+  assert( lMessage2 != 0 );
   //Ensure that both message are identical
   bool lResult = (*lMessage1) == (*lMessage2);
   assert(lResult);
@@ -77,7 +77,7 @@ void test_packet( AbstractMessage * aMessage )
   {
     std::cerr << "Test reply message" << std::endl;
     ReplyMessage msg( 1, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT );
-    //test_packet<ReplyMessage>( &msg );
+    test_packet<ReplyMessage>( &msg );
     const char * lBinary = "\0\0\0\xb\0\0\0\1\x8\0\xb";
     Length length;
     Byte * lBmsg = msg.serialize( length );
@@ -90,7 +90,7 @@ void test_packet( AbstractMessage * aMessage )
   {
     std::cerr << "Test reply message Ok" << std::endl;
     ReplyMessage msg( 1, DEBUGGER_NO_ERROR );
-    //test_packet<ReplyMessage>( &msg );
+    test_packet<ReplyMessage>( &msg );
     const char * lBinary = "\0\0\0\xb\0\0\0\1\x8\0\0";
     Length length;
     Byte * lBmsg = msg.serialize( length );

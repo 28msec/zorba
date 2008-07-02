@@ -26,10 +26,10 @@
 #include <simplestore/simplestore.h>
 
 #ifdef ZORBA_DEBUGGER
-#include <boost/thread/thread.hpp>
+#include "debugcmd_client.h"
+
 #include <boost/bind.hpp> 
 #include <zorba/debugger_server.h>
-#include "debugcmd_client.h"
 #endif
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -279,10 +279,9 @@ int _tmain(int argc, _TCHAR* argv[])
     std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
     std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
     server( qfile.get(), fname, lProperties.requestPort(), lProperties.eventPort() );
-  }
-  // debug client
-  if ( lProperties.debugClient() )
-  {
+
+  } else if ( lProperties.debugClient() ) {
+    
     std::cout << "Zorba XQuery debugger client." << std::endl;
     std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
     std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
@@ -292,9 +291,17 @@ int _tmain(int argc, _TCHAR* argv[])
                                   lProperties.requestPort(),
                                   lProperties.eventPort())
                                    );
-
-    debugcmd_client( std::cin, std::cout, lProperties.requestPort(), lProperties.eventPort() );
-    lServerThread.join(); 
+    try
+    {
+      ZorbaDebuggerClient * lDebuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
+      CommandLineEventHandler lEventHandler( std::cin, std::cout, lDebuggerClient );
+      lDebuggerClient->registerEventHandler( &lEventHandler );
+      lServerThread.join();
+    } catch( std::exception &e ) {
+      std::cerr << "Could not start the debugger client: " << std::endl;
+      std::cerr << e.what() << std::endl;
+      exit(7);
+    }
     return 0;
   }
 #endif

@@ -56,6 +56,11 @@ namespace zorba{
   void ZorbaDebuggerClientImpl::registerEventHandler( DebuggerEventHandler * anEventHandler )
   {
     theEventHandler = anEventHandler;
+    //Special case for event handler initialization
+    if ( theEventHandler != 0 && theExecutionStatus == QUERY_IDLE )
+    {
+      theEventHandler->idle();
+    }
   }
   
   void ZorbaDebuggerClientImpl::handshake()
@@ -109,15 +114,18 @@ namespace zorba{
           theEventHandler->resumed();
         }
       } else if ( dynamic_cast< TerminatedEvent * > ( lMessage ) ) {
-        theExecutionStatus = QUERY_TERMINATED;
-        if ( theEventHandler )
+        if( theExecutionStatus != QUERY_IDLE )
         {
-          theEventHandler->terminated();
+          theExecutionStatus = QUERY_TERMINATED;
+          if ( theEventHandler )
+          {
+            theEventHandler->terminated();
+          }
         }
       }
       delete lMessage;
     }
-    //delete lSocket;
+    delete lSocket;
   }
 
   bool ZorbaDebuggerClientImpl::isQueryRunning() const

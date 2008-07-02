@@ -90,10 +90,10 @@ ZorbaCMDProperties::loadProperties(int argc, char* argv[])
     ("optimization-level", boost::program_options::value<std::string>(&theOptLevel)->default_value("O1"),
      "Optimization level for compiling the query (i.e. O0, O1)")
 #ifdef ZORBA_DEBUGGER
-    ("debug-client,d", boost::program_options::value< std::string >(&thePorts),
-      "Launch the debugger command line client. Provide request and event port number: requestNo:eventNo")
-    ("debug-server,s", boost::program_options::value< std::string >(&thePorts),
-      "Launch queries on the debugger server. Provide request and event port number: requestNo:eventNo")
+    ("debug-ports,p", boost::program_options::value< std::string >(&thePorts)->default_value("8000:9000"),
+      "Specify the ports for zorba debugger")
+    ("debug-client,c", "Launch the debugger command line client.")
+    ("debug-server,s", "Launch queries on the debugger server.")
 #endif
     ;
 

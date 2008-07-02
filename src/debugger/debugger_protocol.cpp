@@ -140,7 +140,7 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
 {
   ErrorCode * lmsg =  reinterpret_cast< ErrorCode * >( aMessage + SIZE_OF_HEADER_CONTENT );
   theReplyContent = new ReplyContent();
-  memcpy( theReplyContent, lmsg, sizeof( SIZE_OF_REPLY_CONTENT ) );
+  memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
   checkIntegrity();
 }
 

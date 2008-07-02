@@ -76,6 +76,13 @@ class MessageFactory
     {
       switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND_SET ] )
       {
+        case 0:
+        {
+          if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == 0x8 )
+          {
+            return new ReplyMessage( aMessage, aLength );
+          }
+        }
         case EXECUTION:
         {
           switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )

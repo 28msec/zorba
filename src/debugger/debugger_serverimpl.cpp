@@ -22,6 +22,10 @@
 
 #include  <zorba/zorba.h>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include  "debugger/debugger_serverimpl.h"
 
 #include "api/unmarshaller.h"
@@ -60,6 +64,11 @@ void ZorbaDebuggerImpl::start( void * aStore, std::istream * aQuery, const Strin
 
     //Wait for a client to connect
     lSock = theRequestServerSocket->accept(); 
+#ifdef WIN32
+    Sleep(1000);
+#else
+    sleep(1);
+#endif
     //Connect the client to the event server
     theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
     

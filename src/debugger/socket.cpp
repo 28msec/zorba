@@ -133,7 +133,8 @@ void Socket::setLocalPort(unsigned short localPort) throw(SocketException) {
   localAddr.sin_family = AF_INET;
   localAddr.sin_addr.s_addr = htonl(INADDR_ANY);
   localAddr.sin_port = htons(localPort);
-
+  int opt = 1;
+  setsockopt(sockDesc, SOL_SOCKET,SO_REUSEADDR, (char *)&opt, (socklen_t)sizeof(opt)); 
   if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) {
     stringstream lMsg;
     lMsg << "Set of local port failed: " << localPort;
@@ -146,7 +147,8 @@ void Socket::setLocalAddressAndPort(const string &localAddress,
   // Get the address of the requested host
   sockaddr_in localAddr;
   fillAddr(localAddress, localPort, localAddr);
-
+  int opt = 1;
+  setsockopt(sockDesc, SOL_SOCKET,SO_REUSEADDR, (char *)&opt, (socklen_t)sizeof(opt)); 
   if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) {
     throw SocketException("Set of local address and port failed (bind())", true);
   }
