@@ -23,11 +23,11 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 # Compile and build the testdriver executable
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-SET(requiredlibs-testdriver ${requiredlibs-testdriver} zorba simplestore)
+SET(requiredlibs-updtestdriver ${requiredlibs-testdriver} zorba simplestore)
 
-ADD_EXECUTABLE(testdriver testdriver.cpp)
+ADD_EXECUTABLE(updtestdriver updtestdriver.cpp)
 
-TARGET_LINK_LIBRARIES(testdriver ${requiredlibs-testdriver})
+TARGET_LINK_LIBRARIES(updtestdriver ${requiredlibs-updtestdriver})
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.spec)
@@ -41,7 +41,7 @@ FOREACH(TESTFILE ${TESTFILES})
  MATH(EXPR TESTLENGTH '${TESTFILELENGTH}-5' )
  STRING(SUBSTRING ${TESTFILE} 0 ${TESTLENGTH} TESTNAME)
 
-ADD_TEST(${TESTNAME} testdriver ${TESTFILE})
+ADD_TEST(${TESTNAME} updtestdriver ${TESTFILE})
 SET_TESTS_PROPERTIES (${TESTNAME} PROPERTIES TIMEOUT "1")
 
  MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
