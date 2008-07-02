@@ -547,4 +547,11 @@ ostream& transform_expr::put( ostream& os) const
   CLOSE_EXPR;
 }
 
+ostream& exit_expr::put( ostream& os) const
+{
+  BEGIN_EXPR (exit_expr);
+  val->put (os);
+  CLOSE_EXPR;
+}
+
 }  // namespace zorba

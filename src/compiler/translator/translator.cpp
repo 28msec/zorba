@@ -768,11 +768,10 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   vector<expr_t> statements;
-  expr_t result = pop_nodestack ();
-  for (int i = 0; i < v.size() - 1; i++)
+  for (int i = 0; i < v.size(); i++)
     statements.push_back (pop_nodestack ());
   reverse (statements.begin (), statements.end ());
-  nodestack.push (new sequential_expr (loc, statements, result));
+  nodestack.push (new sequential_expr (loc, statements, create_seq (loc)));
 }
 
 
@@ -4975,6 +4974,17 @@ void end_visit(const CatchExpr& v, void* visit_state)
   pop_scope();
 }
 
+void *begin_visit(const ExitExpr& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const ExitExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT ();
+  nodestack.push (new exit_expr (loc, pop_nodestack ()));
+}
 
 /* full-text-related */
 void *begin_visit(const FTAnd& v)

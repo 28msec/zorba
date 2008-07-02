@@ -153,6 +153,8 @@ public:
 
   PRINTER_VISITOR_DEFINITION (SequentialIterator)
 
+  PRINTER_VISITOR_DEFINITION (FlowCtlIterator)
+
   PRINTER_VISITOR_DEFINITION (FnRootIterator)
 
   PRINTER_VISITOR_DEFINITION (FnNodeNameIterator)

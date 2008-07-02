@@ -1400,7 +1400,7 @@ BlockBody :
 ExitExpr :
     EXIT_WITH ExprSingle
     {
-      $$ = $2;
+      $$ = new ExitExpr (LOC (@$), $2);
     }
   ;
 
@@ -1411,6 +1411,7 @@ FunctionDecl :
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
                 &* $3->param, &* $3->ret, NULL,
 								ParseConstants::fn_extern);
+      delete $3;
 		}
 	|	DECLARE_FUNCTION  QNAME FunctionSig BracedExpr
 		{
@@ -1419,6 +1420,7 @@ FunctionDecl :
                 &* $3->param, &* $3->ret, 
 								$4,
 								ParseConstants::fn_read);
+      delete $3;
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME FunctionSig EXTERNAL
 		{
@@ -1427,6 +1429,7 @@ FunctionDecl :
 								&* $3->param, &* $3->ret, 
 								NULL,
 								ParseConstants::fn_extern_update);
+      delete $3;
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME FunctionSig BracedExpr
 		{
@@ -1435,6 +1438,7 @@ FunctionDecl :
                 &* $3->param, &* $3->ret, 
 								$4,
 								ParseConstants::fn_update);
+      delete $3;
 		}
   | DECLARE_SEQ_FUNCTION QNAME FunctionSig Block
 		{
@@ -1443,6 +1447,7 @@ FunctionDecl :
                 &* $3->param, &* $3->ret, 
 								$4,
 								ParseConstants::fn_sequential);
+      delete $3;
 		}
 	;
 

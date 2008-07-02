@@ -19,10 +19,13 @@
 #include <zorba/stateless_function.h>
 
 #include "zorbaerrors/error_manager.h"
+
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/fncall_iterator.h"
-#include "functions/function.h"
+#include "runtime/misc/MiscImpl.h"  // for ExitException
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "functions/function.h"
+
 #include "api/unmarshaller.h"
 
 namespace zorba {
@@ -124,6 +127,7 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   UDFunctionCallIteratorState *state;
+  bool success;
 
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
@@ -143,10 +147,22 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
   }
 
-  while (consumeNext(result, state->thePlan, *state->theFnBodyStateBlock)) 
-  {
-    STACK_PUSH(true, state);
+  for (;;) {
+    try {
+      success = consumeNext (result, state->thePlan, *state->theFnBodyStateBlock);
+    } catch (FlowCtlIterator::ExitException &e) {
+      state->exitValue = e.val;
+      success = false;
+    }
+    
+    if (success)
+      STACK_PUSH(true, state);
+    else break;
   }
+
+  if (state->exitValue != NULL)
+    while (state->exitValue->next (result))
+      STACK_PUSH(true, state);
 
   STACK_END (state);
 }

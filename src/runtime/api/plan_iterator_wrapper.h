@@ -33,11 +33,11 @@ namespace zorba {
 ********************************************************************************/
 class PlanIteratorWrapper : public store::Iterator
 {
- private:
+private:
   const PlanIterator*   theIterator;
   PlanState*            theStateBlock;
 
- public:
+public:
   PlanIteratorWrapper(const PlanIterator* iter, PlanState& planState);
 
   virtual ~PlanIteratorWrapper();
@@ -50,3 +50,9 @@ class PlanIteratorWrapper : public store::Iterator
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

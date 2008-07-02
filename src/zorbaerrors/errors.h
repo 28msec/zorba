@@ -144,8 +144,16 @@ public:
         const std::string& aFileName,
         int                aLineNumber);  
 };
-    
+
+class ZorbaInternalException {
+};
 
 } /* namespace error */
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -31,6 +31,7 @@ namespace zorba {
 enum expr_kind_t {
   expr_kind,
   sequential_expr_kind,
+  exit_expr_kind,
   constructor_expr_kind,
   var_expr_kind,
   flwor_expr_kind,

@@ -6339,6 +6339,16 @@ public:
 	void accept(parsenode_visitor&) const {}
 };
 
+class ExitExpr : public exprnode {
+	rchandle<exprnode> value_h;
+public:
+  ExitExpr (const QueryLoc &loc, rchandle<exprnode> val_)
+    : exprnode (loc), value_h (val_)
+  {}
+  rchandle<exprnode> get_value () { return value_h; }
+	void accept(parsenode_visitor&) const;
+};
+
 }	/* namespace zorba */
 #endif	/*  ZORBA_PARSENODES_H */
 

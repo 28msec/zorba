@@ -250,6 +250,8 @@ public:
 	DECL_PARSENODE_VISIT_METHODS (FTWordsSelection);
 	DECL_PARSENODE_VISIT_METHODS (FTWordsValue);
 
+  DECL_PARSENODE_VISIT_METHODS (ExitExpr);
+
   DECL_PARSENODE_VISIT_METHODS (ParseErrorNode);
 
     /* Methods that deviate from the visitor pattern that are

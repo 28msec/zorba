@@ -130,4 +130,12 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
+bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  if (act == EXIT)
+    throw ExitException (new PlanIteratorWrapper (theChildren [0], planState));
+  STACK_END (state);
+}
+
 } /* namespace zorba */

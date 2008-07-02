@@ -77,6 +77,7 @@ public:
   EXPR_VISITOR_METHODS (rename_expr);
   EXPR_VISITOR_METHODS (replace_expr);
   EXPR_VISITOR_METHODS (transform_expr);
+  EXPR_VISITOR_METHODS (exit_expr);
 
 #undef EXPR_VISITOR_METHODS
 

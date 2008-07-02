@@ -180,6 +180,7 @@ DEF_ACCEPT (delete_expr)
 DEF_ACCEPT (rename_expr)
 DEF_ACCEPT (replace_expr)
 DEF_ACCEPT (transform_expr)
+DEF_ACCEPT (exit_expr)
 
 #undef DEF_ACCEPT
 
@@ -1237,6 +1238,13 @@ void transform_expr::next_iter(expr_iterator_data& v)
   ITER(theReturnExpr);
   END_EXPR_ITER();
 } 
+
+void exit_expr::next_iter (expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER();
+  ITER(val);
+  END_EXPR_ITER();
+}
 
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

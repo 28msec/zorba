@@ -17,7 +17,11 @@
 #define ZORBA_MISC_IMPL_H
  
 #include "common/shared_types.h"
+
 #include "runtime/base/narybase.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+
+#include "zorbaerrors/errors.h"
 
 namespace zorba {
 
@@ -41,7 +45,47 @@ public:
   bool isUpdating() const { return theUpdating; }
 };
 
+class FlowCtlIterator : public NaryBaseIterator<FlowCtlIterator, PlanIteratorState>
+{
+public:
+  enum action {
+    BREAK, CONTINUE, EXIT
+  };
+
+  class FlowCtlException : public error::ZorbaInternalException {
+  public:
+  enum action act;
+    
+    FlowCtlException (enum action act_)
+      : act (act_) 
+    {}
+  };
+
+  class ExitException : public FlowCtlException {
+  public:
+    store::Iterator_t val;
+    ExitException (store::Iterator_t val_)
+      : FlowCtlException (EXIT),
+        val (val_)
+    {}
+  };
+
+private:
+  enum action act;
+
+public:
+  FlowCtlIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, enum action act_)
+    : NaryBaseIterator<FlowCtlIterator, PlanIteratorState>(loc, aChildren), act (act_)
+  {}
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+};
+
 } /* namespace zorba */
 
 #endif /* ZORBA_MISC_IMPL_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

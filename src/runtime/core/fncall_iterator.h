@@ -31,6 +31,7 @@ class UDFunctionCallIteratorState : public PlanIteratorState
   uint32_t                        thePlanStateSize;
   std::vector<store::Iterator_t>  theChildIterators;
   bool                            thePlanOpen;
+  store::Iterator_t               exitValue;
 
   UDFunctionCallIteratorState();
   ~UDFunctionCallIteratorState();

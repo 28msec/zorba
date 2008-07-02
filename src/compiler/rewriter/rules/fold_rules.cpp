@@ -157,6 +157,7 @@ namespace zorba {
         node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
       
+    case exit_expr_kind:
     case elem_expr_kind:
     case attr_expr_kind:
     case text_expr_kind:

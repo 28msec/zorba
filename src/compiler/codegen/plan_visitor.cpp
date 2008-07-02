@@ -863,6 +863,21 @@ void end_visit(transform_expr& v)
 }
 
 
+bool begin_visit(exit_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(exit_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  checked_vector<PlanIter_t> argv;
+  argv.push_back (pop_itstack ());
+  itstack.push (new FlowCtlIterator (qloc, argv, FlowCtlIterator::EXIT));
+}
+
+
 bool begin_visit(fo_expr& v)
 {
   CODEGEN_TRACE_IN ("");

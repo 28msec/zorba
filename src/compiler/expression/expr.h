@@ -1671,6 +1671,22 @@ public:
 
 };
 
+class exit_expr : public expr {
+  expr_t val;
+
+public:
+  exit_expr (const QueryLoc &loc, expr_t val_)
+    : expr (loc), val (val_)
+  {}
+  expr_kind_t get_expr_kind () { return exit_expr_kind; }
+  expr_t get_value () { return val; }
+
+public:
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+};
+
 } /* namespace zorba */
 #endif  /*  ZORBA_EXPR_H */
 

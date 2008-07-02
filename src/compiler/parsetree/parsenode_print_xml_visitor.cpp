@@ -1241,6 +1241,9 @@ END_TAG (FTWordsSelection)
 
 END_TAG (FTWordsValue)
 
+BEGIN_TAG (ExitExpr)
+END_TAG (ExitExpr)
+
 BEGIN_TAG (ParseErrorNode)
 END_TAG (ParseErrorNode)
 
