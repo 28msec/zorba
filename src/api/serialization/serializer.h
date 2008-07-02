@@ -28,6 +28,13 @@
 namespace zorba
 {
 
+namespace store
+{
+  class ChildrenIterator;
+  class AttributesIterator;
+}
+
+
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
 class serializer : public SimpleRCObject
@@ -161,8 +168,7 @@ protected:
      */
     virtual void emit_node(
         const store::Item* item,
-        int depth,
-        const store::Item* element_parent = NULL);
+        int depth);
     
     /**
      *  Serializes the given string, performing character expansion
@@ -203,22 +209,34 @@ protected:
      */
     virtual void emit_indentation(int depth);
     
-    virtual ~emitter() { };
+    virtual ~emitter();
   
   protected:
     bool haveBinding(std::pair<xqpString,xqpString>& nsBinding) const;
     bool havePrefix(const xqpString& pre) const;
     std::string expand_string(const xqpStringStore * str, bool emit_attribute_value );
 
-    serializer              * ser;
-    transcoder              & tr;
-    std::vector<NsBindings>   bindings;
-    
-    enum {
+    store::ChildrenIterator* getChildIter();
+    void releaseChildIter(store::ChildrenIterator* iter);
+
+    store::AttributesIterator* getAttrIter();
+    void releaseAttrIter(store::AttributesIterator* iter);
+
+    serializer                           * ser;
+    transcoder                           & tr;
+    std::vector<NsBindings>                bindings;
+
+    enum 
+    {
       INVALID_ITEM,   
       PREVIOUS_ITEM_WAS_TEXT,
       PREVIOUS_ITEM_WAS_NODE
-    } previous_item;
+    }                                      previous_item;
+
+    std::vector<store::ChildrenIterator*>  theChildIters;
+    ulong                                  theFirstFreeChildIter;
+
+    store::AttributesIterator            * theAttrIter;
   };
 
   
@@ -241,18 +259,18 @@ protected:
   //  class html_emitter                                   //
   //                                                       //
   ///////////////////////////////////////////////////////////
-
+  
   class html_emitter : public emitter
   {
   public:
     html_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    
     virtual void emit_declaration();
     virtual void emit_declaration_end();
-
+    
     virtual void emit_node(
         const store::Item* item,
-        int depth,
-        const store::Item* element_parent = NULL);
+        int depth);
   };
 
 
@@ -283,20 +301,21 @@ protected:
     virtual void emit_declaration_end();
 
     virtual void emit_node(
-        const store::Item * item,
-        int depth,
-        const store::Item * element_parent);
+        const store::Item* item,
+        int depth);
    
-    void emit_node( store::Item * item );
+    void emit_node(store::Item* item);
 
-    virtual void emit_expanded_string(const xqpStringStore * aStrStore, bool aEmitAttributeValue = false );
+    virtual void emit_expanded_string(
+        const xqpStringStore * aStrStore,
+        bool aEmitAttributeValue = false );
     
     virtual int emit_node_children(
         const store::Item* item,
         int depth,
         bool perform_escaping);
 
-    void emit_node_children( const store::Item * item );
+    void emit_node_children(const store::Item* item);
 
     virtual bool emit_bindings(const store::Item* item);
         

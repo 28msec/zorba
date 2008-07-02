@@ -16,14 +16,18 @@
 #include <sstream>
 
 #include "runtime/api/plan_wrapper.h"
-#include "store/api/iterator.h"
-#include "store/api/item.h"
 #include "api/serialization/serializer.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbatypes/utf8.h"
 #include <zorba/zorbastring.h>
+
+#include "system/globalenv.h"
+#include "store/api/iterator.h"
+#include "store/api/iterator_factory.h"
+#include "store/api/item.h"
+
 
 using namespace std;
 
@@ -39,8 +43,44 @@ serializer::emitter::emitter(serializer *the_serializer, transcoder& the_transco
   :
   ser(the_serializer),
   tr(the_transcoder),
-  previous_item(INVALID_ITEM)
-{  
+  previous_item(INVALID_ITEM),
+  theChildIters(8),
+  theFirstFreeChildIter(0)
+{
+  for (ulong i = 0; i < 8; i++)
+    theChildIters[i] = GENV_ITERATOR_FACTORY->createChildrenIterator();
+
+  theAttrIter = GENV_ITERATOR_FACTORY->createAttributesIterator();
+}
+
+
+serializer::emitter::~emitter()
+{
+  ulong numIters = theChildIters.size();
+  for (ulong i = 0; i < numIters; i++)
+    delete theChildIters[i];
+
+  delete theAttrIter;
+}
+ 
+
+store::ChildrenIterator* serializer::emitter::getChildIter()
+{
+  if (theFirstFreeChildIter == theChildIters.size())
+  {
+    theChildIters.push_back(GENV_ITERATOR_FACTORY->createChildrenIterator());
+  }
+
+  theFirstFreeChildIter++;
+
+  return theChildIters[theFirstFreeChildIter-1];
+}
+
+
+void serializer::emitter::releaseChildIter(store::ChildrenIterator* iter)
+{
+  theFirstFreeChildIter--;
+  assert(iter == theChildIters[theFirstFreeChildIter]);
 }
 
 
@@ -260,19 +300,23 @@ int serializer::emitter::emit_node_children(
     int depth,
     bool perform_escaping = true)
 {
-  store::Iterator_t it;
-  store::Item_t child;	
+  store::Item* child;
+  store::Item* attr;
   int closed_parent_tag = 0;
+  
   
   if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
-    // emit attributes 
-    it = item->getAttributes();
-    it->open();
-    while (it->next(child))
+    // emit attributes
+    store::AttributesIterator* iter = theAttrIter;
+    store::Item_t parent = const_cast<store::Item*>(item);
+    iter->init(parent);
+    iter->open(); 
+    while ((attr = iter->next()) != NULL)
     {		
-      emit_node(child, depth);
+      emit_node(attr, depth);
     }
+    iter->close();
   }
   else if (item->getNodeKind() == store::StoreConsts::documentNode)
   {
@@ -280,9 +324,11 @@ int serializer::emitter::emit_node_children(
   }
 	
 	// output all the other nodes
-	it = item->getChildren();
-  it->open();
-	while (it->next(child))
+  store::ChildrenIterator* iter = getChildIter();
+  store::Item_t parent = const_cast<store::Item*>(item);
+  iter->init(parent);
+  iter->open();
+	while ((child = iter->next()) != NULL)
 	{
     if (closed_parent_tag == 0)
 		{
@@ -290,8 +336,10 @@ int serializer::emitter::emit_node_children(
       closed_parent_tag = 1;
     }
 
-    emit_node(child, depth, item);
+    emit_node(child, depth);
   }
+  iter->close();
+  releaseChildIter(iter);
 
   return closed_parent_tag;
 }
@@ -383,8 +431,7 @@ bool serializer::emitter::havePrefix(const xqpString& pre) const
 
 void serializer::emitter::emit_node(
     const store::Item* item,
-    int depth,
-    const store::Item* element_parent /* = NULL */)
+    int depth)
 {
 	if( item->getNodeKind() == store::StoreConsts::documentNode )
 	{		
@@ -631,9 +678,10 @@ int is_html_empty_element(const store::Item* item)
 
 void serializer::html_emitter::emit_node(
     const store::Item* item,
-    int depth,
-    const store::Item* element_parent)
+    int depth)
 {
+  const store::Item* element_parent = item->getParent();
+      
   if( item->getNodeKind() == store::StoreConsts::documentNode )
   {
     emit_node_children(item, depth+1);
@@ -834,11 +882,11 @@ bool serializer::sax2_emitter::emit_bindings( const store::Item * item )
 
 void serializer::sax2_emitter::emit_node(
     const store::Item * item,
-    int depth,
-    const store::Item * element_parent )
+    int depth)
 {
-  emit_node( item, 0, 0 );
+  emit_node( item, 0);
 }
+
 
 int serializer::sax2_emitter::emit_node_children( const store::Item* item, int depth, bool perform_escaping )
 {
