@@ -355,3 +355,10 @@ ENDIF ( APPLE )
 
 SET ( CMAKE_VERBOSE_MAKEFILE ON )
 
+# Create config (build settings, library dependencies, etc.) files that are needed by 
+# cmake projects which extend the zorba project
+INCLUDE(CMakeExportBuildSettings)
+CMAKE_EXPORT_BUILD_SETTINGS(${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake)
+EXPORT_LIBRARY_DEPENDENCIES(${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake)
+
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/ZorbaConfig.cmake.in ${CMAKE_BINARY_DIR}/ZorbaConfig.cmake)
