@@ -80,6 +80,8 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
 
+NARY_ITER (FnReadStringIterator);
+
 } /* namespace zorba */
 
 #endif /* ZORBA_MISC_IMPL_H */

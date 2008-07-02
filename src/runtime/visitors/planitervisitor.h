@@ -130,6 +130,7 @@ namespace zorba
   class HashSemiJoinIterator;
   class SortSemiJoinIterator;
   class FnTraceIterator;
+  class FnReadStringIterator;
   class ResolveQNameIterator;
   class QNameIterator;
   class QNameEqualIterator;
@@ -445,6 +446,8 @@ namespace zorba
     PLAN_ITER_VISITOR (SortSemiJoinIterator);
 
     PLAN_ITER_VISITOR (FnTraceIterator);
+
+    PLAN_ITER_VISITOR (FnReadStringIterator);
 
     PLAN_ITER_VISITOR (ResolveQNameIterator);
 

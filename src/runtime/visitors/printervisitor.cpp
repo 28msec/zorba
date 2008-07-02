@@ -499,6 +499,8 @@ public:
 
   PRINTER_VISITOR_DEFINITION (FnTraceIterator)
 
+  PRINTER_VISITOR_DEFINITION (FnReadStringIterator)
+
   PRINTER_VISITOR_DEFINITION (ResolveQNameIterator)
 
   PRINTER_VISITOR_DEFINITION (QNameIterator)

@@ -48,6 +48,11 @@ PlanIter_t fn_resolve_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
   return new FnResolveUriIterator ( loc, argv );
 }
 
+PlanIter_t fn_read_string::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnReadStringIterator (loc, argv);
+}
+
 
 }
 /* vim:set ts=2 sw=2: */

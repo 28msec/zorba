@@ -138,4 +138,16 @@ bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   STACK_END (state);
 }
 
+bool FnReadStringIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
+  PlanIteratorState *state;
+  xqpStringStore_t xstr;
+  char str [512];
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  std::cin.getline (str, sizeof (str));
+  xstr = new xqpStringStore (str);
+  GENV_ITEMFACTORY->createString (result, xstr);
+  STACK_PUSH (true, state);
+  STACK_END (state);
+}
+
 } /* namespace zorba */
