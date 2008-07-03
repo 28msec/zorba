@@ -72,6 +72,11 @@ public:
         bool copyNodes = false,
         bool lazy = true) = 0;
 
+  /**
+   * Creates a new TempSeq that is initialized with the given vector.
+   */
+  virtual TempSeq_t createTempSeq(const std::vector<Item_t>& item_v) = 0;
+
 
   /* -------------------------- Reference Management --------------------------*/
 		

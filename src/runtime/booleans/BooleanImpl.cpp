@@ -155,10 +155,8 @@ namespace zorba
     bool found = false;
     std::vector<store::Item_t> seq0;
     std::vector<store::Item_t> seq1;
-    std::vector<store::Item_t>::iterator i0;
-    std::vector<store::Item_t>::iterator i1;
-    std::vector<store::Item_t>::iterator end0;
-    std::vector<store::Item_t>::iterator end1;
+    store::TempSeq_t tSeq0;
+    store::TempSeq_t tSeq1;
   
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -194,23 +192,23 @@ namespace zorba
       }
 
       if (!done) {
+        store::Iterator_t lIter0;
+        store::Iterator_t lIter1;
+        tSeq0 = GENV_STORE.createTempSeq(seq0);
+        tSeq1 = GENV_STORE.createTempSeq(seq1);
         if (!c0Done) {
-          while(consumeNext(lItem0, theChild0.getp(), planState)) {
-            seq0.push_back(lItem0);
-          }
+          lIter0 = new PlanIteratorWrapper ( theChild0, planState );
+          tSeq0->append(lIter0, false);
         }
         if (!c1Done) {
-          while(consumeNext(lItem1, theChild1.getp(), planState)) {
-            seq1.push_back(lItem1);
-          }
+          lIter1 = new PlanIteratorWrapper ( theChild1, planState );
+          tSeq1->append(lIter1, false);
         }
-        end0 = seq0.end();
-        end1 = seq1.end();
-        i0 = seq0.begin();
-        while(!found && i0 != end0) {
-          i1 = seq1.begin();
-          while(!found && i1 != end1) {
-            if (CompareIterator::generalComparison(planState.theRuntimeCB, *i0, *i1, theCompType)) {
+        int i0 = 1;
+        while(!found && tSeq0->containsItem(i0)) {
+          int i1 = 1;
+          while(!found && tSeq1->containsItem(i1)) {
+            if (CompareIterator::generalComparison(planState.theRuntimeCB, tSeq0->getItem(i0), tSeq1->getItem(i1), theCompType)) {
               found = true;
             }
             ++i1;

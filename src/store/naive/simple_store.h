@@ -168,6 +168,8 @@ public:
         store::Iterator* iterator,
         bool copyNodes = false,
         bool lazy = true);
+
+  store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
 };
 
 
