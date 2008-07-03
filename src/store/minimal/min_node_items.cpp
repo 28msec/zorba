@@ -747,11 +747,11 @@ store::Iterator_t DocumentNode::getChildren() const
   }
 }
 
-store::Iterator_t DocumentNode::getTypedValue() const
+void DocumentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = getStringValue();
-  store::Item_t item = new UntypedAtomicItemImpl(rch);
-  return new ItemIterator(item);
+  val = new UntypedAtomicItemImpl(rch);
+  iter = NULL;
 }
 
 
@@ -987,6 +987,7 @@ XmlNode* ElementNode::copy2(
   store::Item_t typeName = (copymode.theTypePreserve ?
                      theTypeName :
                      GET_STORE().theSchemaTypeNames[XS_UNTYPED]);
+  store::Item_t nullValue;
   xqpStringStore_t baseUri;
 
   try
@@ -996,7 +997,8 @@ XmlNode* ElementNode::copy2(
 
     pos = (parent == rootParent ? pos : -1);
 
-    copyNode = new ElementTreeNode(tree, parent, pos, nodeName, typeName, NULL, baseUri);
+    copyNode = new ElementTreeNode(tree, parent, pos, nodeName,
+                                   typeName, nullValue, NULL, NULL, baseUri);
 
     if (copymode.theNsPreserve)
     {
@@ -1210,10 +1212,10 @@ XmlNode* ElementNode::copy2(
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t ElementNode::getTypedValue() const
+void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  store::Item_t retItem = getAtomizationValue();
-  return new ItemIterator(retItem);
+  val = getAtomizationValue();
+  iter = NULL;
 }
 
 
@@ -1582,7 +1584,7 @@ void ElementNode::addBaseUriProperty(
     typedValue = new AnyUriItemImpl(resolvedUri);
   }
 
-  new AttributeNode(NULL, this, 0, qname, tname, typedValue, true);
+  new AttributeNode(NULL, this, 0, qname, tname, typedValue, NULL, true);
   setHaveBaseUri();
 }
 
@@ -1695,34 +1697,49 @@ ElementTreeNode::ElementTreeNode(
 
 ********************************************************************************/
 ElementTreeNode::ElementTreeNode(
-    XmlTree*          tree,
-    XmlNode*          parent,
-    long              pos,
-    store::Item_t&           nodeName,
-    store::Item_t&           typeName,
-    const store::NsBindings* localBindings,
-    xqpStringStore_t& baseUri)
+    XmlTree*                    tree,
+    XmlNode*                    parent,
+    long                        pos,
+    store::Item_t&              nodeName,
+    store::Item_t&              typeName,
+    store::Item_t&              typedValue,
+    std::vector<store::Item_t>* typedValueV,
+    const store::NsBindings*    localBindings,
+    xqpStringStore_t&           baseUri)
   :
   ElementNode(tree, parent, pos, nodeName, typeName, localBindings)
 {
-  // Setting the base uri property of "this" cannot be done in the ElementNode
-  // constructor, because it involves the creation of an attribute node having
-  // "this" as the parent, and within the attribute constructor the class type
-  // of "this" cannot be ElementNode.
-  if (baseUri != NULL)
+  try
   {
-    try
+    if (typedValueV == NULL)
+      theTypedValue.transfer(typedValue);
+    else if (!typedValueV->empty())
+      theTypedValue.transfer((*typedValueV)[0]);
+
+    // Setting the base uri property of "this" cannot be done in the ElementNode
+    // constructor, because it involves the creation of an attribute node having
+    // "this" as the parent, and within the attribute constructor the class type
+    // of "this" cannot be ElementNode.
+    if (baseUri != NULL)
     {
       xqpStringStore_t dummy;
       addBaseUriProperty(baseUri, dummy);
     }
-    catch(...)
-    {
-      if (parent)
-        parent->removeChild(this);
+  }
+  catch(...)
+  {
+    if (parent)
+      parent->removeChild(this);
 
-      throw;
+    if (numAttributes() != 0)
+    {
+      ulong pos = 0;
+      XmlNode* attr = getAttr(pos);
+      removeAttr(pos);
+      delete attr;
     }
+
+    throw;
   }
 
   NODE_TRACE1("Constructed element node " << this << " parent = "
@@ -1766,30 +1783,37 @@ xqpStringStore_t ElementTreeNode::getBaseURIInternal(bool& local) const
 
 ********************************************************************************/
 ElementDagNode::ElementDagNode(
-    XmlTree*          tree,
-    XmlNode*          parent,
-    long              pos,
-    store::Item_t&           nodeName,
-    store::Item_t&           typeName,
-    const store::NsBindings* localBindings,
-    xqpStringStore_t& baseUri)
+    XmlTree*                    tree,
+    XmlNode*                    parent,
+    long                        pos,
+    store::Item_t&              nodeName,
+    store::Item_t&              typeName,
+    store::Item_t&              typedValue,
+    std::vector<store::Item_t>* typedValueV,
+    const store::NsBindings*    localBindings,
+    xqpStringStore_t&           baseUri)
   :
   ElementNode(tree, parent, pos, nodeName, typeName, localBindings)
 {
-  if (baseUri != NULL)
+  try
   {
-    try
+    if (typedValueV == NULL)
+      theTypedValue.transfer(typedValue);
+    else if (!typedValueV->empty())
+      theTypedValue.transfer((*typedValueV)[0]);
+
+    if (baseUri != NULL)
     {
       xqpStringStore_t dummy;
       addBaseUriProperty(baseUri, dummy);
     }
-    catch(...)
-    {
-      if (parent)
-        parent->removeChild(this);
+  }
+  catch(...)
+  {
+    if (parent)
+      parent->removeChild(this);
 
-      throw;
-    }
+    throw;
   }
 
   NODE_TRACE1("Constructed element node " << this << " parent = " 
@@ -1860,20 +1884,31 @@ AttributeNode::AttributeNode(
 
 ********************************************************************************/
 AttributeNode::AttributeNode(
-    XmlTree*  tree,
-    XmlNode*  parent,
-    long      pos,
-    store::Item_t&   attrName,
-    store::Item_t&   typeName,
-    store::Item_t&   typedValue,
-    bool      hidden)
+    XmlTree*                    tree,
+    XmlNode*                    parent,
+    long                        pos,
+    store::Item_t&              attrName,
+    store::Item_t&              typeName,
+    store::Item_t&              typedValue,
+    std::vector<store::Item_t>* typedValueV,
+    bool                        hidden)
   :
   XmlNode(tree, parent, pos, store::StoreConsts::attributeNode),
   theFlags(0)
 {
   theName.transfer(attrName);
   theTypeName.transfer(typeName);
-  theTypedValue.transfer(typedValue);
+
+  if (typedValueV == NULL)
+  {
+    assert(typedValue != NULL);
+    theTypedValue.transfer(typedValue);
+  }
+  else
+  {
+    assert(!typedValueV->empty());
+    theTypedValue.transfer((*typedValueV)[0]);
+  }
 
   QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
 
@@ -2026,7 +2061,8 @@ docopy:
       if (parent == NULL)
         tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      copyNode = new AttributeNode(tree, parent, pos, nodeName, typeName, typedValue);
+      copyNode = new AttributeNode(tree, parent, pos, nodeName,
+                                   typeName, typedValue, NULL);
     }
     catch (...)
     {
@@ -2047,9 +2083,10 @@ docopy:
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t AttributeNode::getTypedValue() const
+void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  return new ItemIterator(theTypedValue);
+  val = theTypedValue;
+  iter = NULL;
 }
 
 
@@ -2072,8 +2109,8 @@ xqpStringStore_t AttributeNode::getStringValue() const
 ********************************************************************************/
 xqp_string AttributeNode::show() const
 {
-  return theName->getStringValue()->str() + "=\"" +
-         (theTypedValue != NULL ? theTypedValue->show() : "") + "\"";
+  return xqpString::concat(theName->getStringValue(), "=\"", 
+         (theTypedValue != NULL ? theTypedValue->show() : ""), "\"");
 }
 
 
@@ -2108,6 +2145,8 @@ TextNode::TextNode(
 
   if (parent)
   {
+    //ZORBA_FATAL(!parent->haveTypedValue(), "");
+
     if (pos < 0)
       parent->children().push_back(this, false);
     else
@@ -2223,11 +2262,11 @@ store::Item* TextNode::getType() const
 }
 
 
-store::Iterator_t TextNode::getTypedValue() const
+void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = theContent; 
-  const store::Item_t& item = new UntypedAtomicItemImpl(rch);
-  return new ItemIterator(item);
+  val = new UntypedAtomicItemImpl(rch);
+  iter = NULL;
 }
 
 
@@ -2243,7 +2282,7 @@ store::Item_t TextNode::getAtomizationValue() const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-  return xqp_string ("<text nid=\"") + theOrdPath.show() + "\">" + theContent.getp() + "</text>";
+  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", theContent, "</text>");
 }
 
 
@@ -2372,11 +2411,11 @@ store::Item* PiNode::getType() const
 }
 
 
-store::Iterator_t PiNode::getTypedValue() const
+void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = theContent; 
-  const store::Item_t& item = new StringItemNaive(rch);
-  return new ItemIterator(item);
+  val = new StringItemNaive(rch);
+  iter = NULL;
 }
 
 
@@ -2516,11 +2555,11 @@ store::Item* CommentNode::getType() const
 }
 
 
-store::Iterator_t CommentNode::getTypedValue() const
+void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = theContent; 
-  const store::Item_t& item = new StringItemNaive(rch);
-  return new ItemIterator(item);
+  val = new StringItemNaive(rch);
+  iter = NULL;
 }
 
 

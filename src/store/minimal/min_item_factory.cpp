@@ -894,6 +894,7 @@ bool BasicItemFactory::createDocumentNode(
                   N is appended to the list of children.
   nodeName      : The node-name property of N.
   typeName      : The type-name property of N.
+  typedValue    : The typed-value property of N.
   localBindings : A set of namespace bindings. The namespaces property of N is
                   the union of this set and the namespaces property of P.
   baseUri       : The base-uri property of N. It may be NULL, in which case, 
@@ -905,14 +906,15 @@ bool BasicItemFactory::createDocumentNode(
                   node C is not N, but a node in the same XmlTree as C). 
 ********************************************************************************/
 bool BasicItemFactory::createElementNode(
-    store::Item_t&           result,
-    store::Item*             parent,
-    long                     pos,
-    store::Item_t&           nodeName,
-    store::Item_t&           typeName,
-    const store::NsBindings& localBindings,
-    xqpStringStore_t&        baseUri,
-    bool                     allowSharing)
+    store::Item_t&              result,
+    store::Item*                parent,
+    long                        pos,
+    store::Item_t&              nodeName,
+    store::Item_t&              typeName,
+    store::Item_t&              typedValue,
+    const store::NsBindings&    localBindings,
+    xqpStringStore_t&           baseUri,
+    bool                        allowSharing)
 {
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
@@ -925,11 +927,55 @@ bool BasicItemFactory::createElementNode(
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
     if (allowSharing)
-      n = new ElementDagNode(xmlTree, pnode, pos,
-                             nodeName, typeName, &localBindings, baseUri);
+      n = new ElementDagNode(xmlTree, pnode, pos, nodeName,
+                             typeName, typedValue, NULL,
+                             &localBindings, baseUri);
     else
-      n = new ElementTreeNode(xmlTree, pnode, pos,
-                              nodeName, typeName, &localBindings, baseUri);
+      n = new ElementTreeNode(xmlTree, pnode, pos, nodeName,
+                              typeName, typedValue, NULL,
+                              &localBindings, baseUri);
+  }
+  catch (...)
+  {
+    if (xmlTree) delete xmlTree;
+    throw;
+  }
+
+  result = n;
+  return n != NULL;
+}
+
+
+bool BasicItemFactory::createElementNode(
+    store::Item_t&              result,
+    store::Item*                parent,
+    long                        pos,
+    store::Item_t&              nodeName,
+    store::Item_t&              typeName,
+    std::vector<store::Item_t>* typedValue,
+    const store::NsBindings&    localBindings,
+    xqpStringStore_t&           baseUri,
+    bool                        allowSharing)
+{
+  XmlTree* xmlTree = NULL;
+  ElementNode* n = NULL;
+  store::Item_t dummy;
+
+  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+
+  try
+  {
+    if (parent == NULL)
+      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+
+    if (allowSharing)
+      n = new ElementDagNode(xmlTree, pnode, pos, nodeName,
+                             typeName, dummy, typedValue,
+                             &localBindings, baseUri);
+    else
+      n = new ElementTreeNode(xmlTree, pnode, pos, nodeName,
+                              typeName, dummy, typedValue,
+                              &localBindings, baseUri);
   }
   catch (...)
   {
@@ -953,15 +999,15 @@ bool BasicItemFactory::createElementNode(
                   N is appended to the list of attributes.
   nodeName      : The node-name property of N.
   typeName      : The type-name property of N.
-  stringValue   : The string-value property of N.
+  typedValue    : The typed-value property of N.
 ********************************************************************************/
 bool BasicItemFactory::createAttributeNode(
-    store::Item_t&    result,
-    store::Item*      parent,
-    long              pos,
-    store::Item_t&    nodeName,
-    store::Item_t&    typeName,
-    store::Item_t&    typedValue)
+    store::Item_t&  result,
+    store::Item*    parent,
+    long            pos,
+    store::Item_t&  nodeName,
+    store::Item_t&  typeName,
+    store::Item_t&  typedValue)
 {
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
@@ -973,7 +1019,41 @@ bool BasicItemFactory::createAttributeNode(
     if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-    n = new AttributeNode(xmlTree, pnode, pos, nodeName, typeName, typedValue);
+    n = new AttributeNode(xmlTree, pnode, pos, nodeName, typeName,
+                          typedValue, NULL);
+  }
+  catch (...)
+  {
+    if (xmlTree) delete xmlTree;
+    throw;
+  }
+
+  result = n;
+  return n != NULL;
+}
+
+
+bool BasicItemFactory::createAttributeNode(
+    store::Item_t&              result,
+    store::Item*                parent,
+    long                        pos,
+    store::Item_t&              nodeName,
+    store::Item_t&              typeName,
+    std::vector<store::Item_t>& typedValue)
+{
+  XmlTree* xmlTree = NULL;
+  AttributeNode* n = NULL;
+
+  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+
+  try
+  {
+    if (parent == NULL)
+      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+
+    store::Item_t dummy;
+    n = new AttributeNode(xmlTree, pnode, pos, nodeName, typeName,
+                          dummy, &typedValue);
   }
   catch (...)
   {

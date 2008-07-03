@@ -205,22 +205,42 @@ public:
         bool              allowSharing = false);
 
   bool createElementNode(
-        store::Item_t&           result,
-        store::Item*             parent,
-        long                     pos,
-        store::Item_t&           nodeName,
-        store::Item_t&           typeName,
-        const store::NsBindings& localBindings,
-        xqpStringStore_t&        baseURI,
-        bool                     allowSharing = false);
+        store::Item_t&              result,
+        store::Item*                parent,
+        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        store::Item_t&              typedValue,
+        const store::NsBindings&    localBindings,
+        xqpStringStore_t&           baseURI,
+        bool                        allowSharing = false);
+
+  bool createElementNode(
+        store::Item_t&              result,
+        store::Item*                parent,
+        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        std::vector<store::Item_t>* typedValueV,
+        const store::NsBindings&    localBindings,
+        xqpStringStore_t&           baseURI,
+        bool                        allowSharing = false);
 
   bool createAttributeNode(
-        store::Item_t&    result,
-        store::Item*      parent,
-        long              pos,
-        store::Item_t&    nodeName,
-        store::Item_t&    typeName,
-        store::Item_t&    typedValue);
+        store::Item_t&              result,
+        store::Item*                parent,
+        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        store::Item_t&              typedValue);
+
+  bool createAttributeNode(
+        store::Item_t&              result,
+        store::Item*                parent,
+        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        std::vector<store::Item_t>& typedValueV);
 
   bool createTextNode(
         store::Item_t&    result,

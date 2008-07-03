@@ -50,9 +50,10 @@ store::Item_t AtomicItem::getAtomizationValue() const
 }
 
 
-store::Iterator_t AtomicItem::getTypedValue() const
+void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  return new ItemIterator(getAtomizationValue()); 
+  store::Item* lItem = const_cast<AtomicItem *>(this);
+  val = lItem;
 }
 
 

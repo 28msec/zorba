@@ -477,11 +477,11 @@ Item* Item::getParent() const
 }
 
 
-Iterator_t Item::getTypedValue() const
+void Item::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return NULL;
+  return;
 }
 
 

@@ -1195,6 +1195,7 @@ void XmlLoader::startElement(
   {
     store::Item_t qname;
     store::Item_t tname;
+    store::Item_t nullValue;
     xqpStringStore_t baseUri;
 
     // Get the parent node from the node stack
@@ -1222,7 +1223,8 @@ void XmlLoader::startElement(
       baseUri = theBaseUri;
 
     store::Item_t node;
-    theFactory->createElementNode(node, parent, -1, qname, tname,
+    theFactory->createElementNode(node, parent, -1, qname, 
+                                  tname, nullValue,
                                   nsbindings, baseUri);
     tag_elem->elemNode = dynamic_cast<ElementTreeNode*>(node.getp());
 

@@ -112,6 +112,7 @@ class XmlNode : public store::Item
 public:
   enum NodeFlags
   {
+    HaveTypedValue    =   1,
     HaveLocalBindings =   2,
     IsId              =   4,
     IsIdRefs          =   8,
@@ -325,7 +326,7 @@ public:
 
   store::Iterator_t getChildren() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 
@@ -413,6 +414,7 @@ public:
   store::Item_t                theName;
 protected:
   store::Item_t                theTypeName;
+  store::Item_t         theTypedValue;
   NsBindingsContext_t   theNsContext;
   uint32_t              theFlags;
 
@@ -442,7 +444,7 @@ public:
   store::Item* getType() const                     { return theTypeName.getp(); }
   store::Item* getNodeName() const                 { return theName.getp(); }
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
   store::Item_t getNilled() const;
@@ -509,7 +511,6 @@ public:
   void replaceContent(
         XmlNode*          newText,
         ConstrNodeVector& oldChildren,
-        bool              copy,
         const store::CopyMode&   copymode);
 
   void rename(store::Item_t& newname, store::Item_t& oldName);
@@ -549,13 +550,15 @@ public:
         ulong          numAttributes);
 
   ElementTreeNode(
-        XmlTree*          tree,
-        XmlNode*          parent,
-        long              pos,
-        store::Item_t&           nodeName,
-        store::Item_t&           typeName,
-        const store::NsBindings* localBindings,
-        xqpStringStore_t& baseUri);
+        XmlTree*                    tree,
+        XmlNode*                    parent,
+        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        store::Item_t&              typedValue,
+        std::vector<store::Item_t>* typedValueV,
+        const store::NsBindings*    localBindings,
+        xqpStringStore_t&           baseUri);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -603,13 +606,15 @@ protected:
 
 public:
   ElementDagNode(
-        XmlTree*          tree,
-        XmlNode*          parent,
-        long              pos,
-        store::Item_t&           nodeName,
-        store::Item_t&           typeName,
-        const store::NsBindings* localBindings,
-        xqpStringStore_t& baseUri);
+        XmlTree*                    tree,
+        XmlNode*                    parent,
+        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        store::Item_t&              typedValue,
+        std::vector<store::Item_t>* typedValueV,
+        const store::NsBindings*    localBindings,
+        xqpStringStore_t&           baseUri);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -668,6 +673,7 @@ public:
         store::Item_t&   attrName,
         store::Item_t&   typeName,
         store::Item_t&   typedValue,
+        std::vector<store::Item_t>* typedValueV,
         bool      hidden = false);
 
   virtual ~AttributeNode();
@@ -699,7 +705,7 @@ public:
 
   bool isBaseUri() const      { return (theFlags & XmlNode::IsBaseUri) != 0; }
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 
@@ -711,6 +717,7 @@ public:
 };
    
 
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -720,9 +727,43 @@ class TextNode : public XmlNode
   friend class DocumentDagNode;
   friend class ConstrElementNode;
   friend class BasicItemFactory;
+  friend class FastXmlLoader;
+
+public:
+  TextNode(XmlTree* tree, XmlNode* parent,
+        long              pos)
+
+  virtual ~TextNode();
+
+  XmlNode* copy2(
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
+
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::textNode;
+  }
+
+  store::Item* getType() const;
+};
+#endif
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class TextNode : public XmlNode
+{
+  friend class XmlNode;
+  friend class DocumentDagNode;
+  friend class ConstrElementNode;
+  friend class BasicItemFactory;
+  friend class FastXmlLoader;
 
 protected:
-  xqpStringStore_t theContent;
+    xqpStringStore_t theContent;
 
 public:
   TextNode(xqpStringStore_t& content);
@@ -736,19 +777,19 @@ public:
   virtual ~TextNode();
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
         const store::CopyMode& copymode) const;
 
-  store::StoreConsts::NodeKind getNodeKind() const 
-  { 
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
     return store::StoreConsts::textNode;
   }
 
   store::Item* getType() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }
@@ -757,6 +798,57 @@ public:
 
   void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
 };
+
+
+#if 0
+/*******************************************************************************
+
+********************************************************************************/
+class TextNodeTyped : public XmlNode
+{
+  friend class XmlNode;
+  friend class DocumentDagNode;
+  friend class ConstrElementNode;
+  friend class BasicItemFactory;
+  friend class FastXmlLoader;
+
+protected:
+    xqpStringStore_t theContent;
+
+public:
+  TextNode(xqpStringStore_t& content);
+
+  TextNode(
+        XmlTree*          tree,
+        XmlNode*          parent,
+        long              pos,
+        xqpStringStore_t& content);
+
+  virtual ~TextNode();
+
+  XmlNode* copy2(
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const store::CopyMode& copymode) const;
+
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::textNode;
+  }
+
+  store::Item* getType() const;
+
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  store::Item_t getAtomizationValue() const;
+  xqpStringStore_t getStringValue() const   { return theContent; }
+  xqpStringStore* getStringValueP() const   { return theContent.getp(); }
+			
+  xqp_string show() const;
+
+  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+};
+#endif
 
 
 /*******************************************************************************
@@ -795,7 +887,7 @@ public:
 
   store::Item* getType() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const    { return theContent; }
   xqpStringStore* getStringValueP() const    { return theContent.getp(); }
@@ -844,7 +936,7 @@ public:
 
   store::Item* getType() const;
 
-  store::Iterator_t getTypedValue() const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }

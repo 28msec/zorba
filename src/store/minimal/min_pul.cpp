@@ -1124,8 +1124,7 @@ void UpdReplaceContent::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
 
-  target->replaceContent(BASE_NODE(theNewChild), theOldChildren,
-                         theDoCopy, theCopyMode);
+  target->replaceContent(BASE_NODE(theNewChild), theOldChildren, theCopyMode);
 
   target->removeType(theTypeUndoList);
 

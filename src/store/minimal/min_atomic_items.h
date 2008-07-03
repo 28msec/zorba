@@ -50,7 +50,7 @@ public:
   bool isPul() const    { return false; }
 
   virtual store::Item_t getAtomizationValue() const;
-  virtual store::Iterator_t getTypedValue() const;
+  virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 };
 
 
