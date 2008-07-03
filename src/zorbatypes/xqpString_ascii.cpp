@@ -423,12 +423,12 @@ void xqpStringStore::append_in_place(const char c)
   theString += c;
 }
 
-void xqpStringStore::append_in_place(xqpStringStore* suffix)
+void xqpStringStore::append_in_place(const xqpStringStore* suffix)
 {
   theString += suffix->theString;
 }
 
-void xqpStringStore::append_in_place(xqpStringStore* suffix, const char *s2)
+void xqpStringStore::append_in_place(const xqpStringStore* suffix, const char *s2)
 {
   theString += suffix->theString;
   theString += s2;
@@ -444,7 +444,7 @@ void xqpStringStore::append_in_place(const char *str, int len)
   theString.append(str, len);
 }
 
-void xqpStringStore::append_in_place(std::string &str)
+void xqpStringStore::append_in_place(const std::string &str)
 {
   theString.append(str);
 }
@@ -1576,12 +1576,12 @@ void xqpString::append_in_place(const char c)
   theStrStore->append_in_place(c);
 }
 
-void xqpString::append_in_place(xqpStringStore *suffix)
+void xqpString::append_in_place(const xqpStringStore *suffix)
 {
   theStrStore->append_in_place(suffix);
 }
 
-void xqpString::append_in_place(xqpStringStore *suffix, const char *s2)
+void xqpString::append_in_place(const xqpStringStore *suffix, const char *s2)
 {
   theStrStore->append_in_place(suffix, s2);
 }
@@ -1596,7 +1596,7 @@ void xqpString::append_in_place(const char *str, int len)
   theStrStore->append_in_place(str, len);
 }
 
-void xqpString::append_in_place(std::string &str)
+void xqpString::append_in_place(const std::string &str)
 {
   theStrStore->append_in_place(str);
 }

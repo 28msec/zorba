@@ -175,15 +175,16 @@ public:
 
   void append_in_place(const char c);
 
-  void append_in_place(xqpStringStore *suffix);
+  void append_in_place(const xqpStringStore *suffix);
 
-  void append_in_place(xqpStringStore *suffix, const char *s2);
+  void append_in_place(const xqpStringStore *suffix, const char *s2);
 
   void append_in_place(const char *str);
 
   void append_in_place(const char *str, int len);
 
-  void append_in_place(std::string &str);
+  void append_in_place(const std::string &str);
+
   xqpStringStore_t
   substr(std::string::size_type index, std::string::size_type length) const;
 
@@ -311,15 +312,15 @@ public:
 
   void append_in_place(const char c);
 
-  void append_in_place(xqpStringStore *suffix);
+  void append_in_place(const xqpStringStore *suffix);
 
-  void append_in_place(xqpStringStore *suffix, const char *s2);
+  void append_in_place(const xqpStringStore *suffix, const char *s2);
 
   void append_in_place(const char *str);
 
   void append_in_place(const char *str, int len);
 
-  void append_in_place(std::string &str);
+  void append_in_place(const std::string &str);
 
   bool
   operator==(xqpString src) const
