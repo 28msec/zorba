@@ -71,6 +71,8 @@ public:
   const expr_t &operator [] (int i) const { return sequence [i]; }
   expr_t &operator [] (int i) { invalidate (); return sequence [i]; }
 
+  void push_front (expr_t front) { invalidate (); sequence.insert (sequence.begin(), front); }
+
   bool cache_compliant () { return true; }
 
   virtual xqtref_t return_type_impl (static_context *);

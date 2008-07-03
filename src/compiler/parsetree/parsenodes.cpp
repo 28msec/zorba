@@ -4870,6 +4870,7 @@ void ExitExpr::accept(parsenode_visitor& v) const
 void WhileExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+  ACCEPT (cond);
   ACCEPT (body);
   END_VISITOR ();
 }
