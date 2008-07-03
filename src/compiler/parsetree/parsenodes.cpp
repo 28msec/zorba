@@ -4867,6 +4867,19 @@ void ExitExpr::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
+void WhileExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (body);
+  END_VISITOR ();
+}
+
+void FlowCtlStatement::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  END_VISITOR ();
+}
+
 } /* namespace zorba */
 
 

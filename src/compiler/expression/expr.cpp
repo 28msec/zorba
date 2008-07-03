@@ -181,6 +181,8 @@ DEF_ACCEPT (rename_expr)
 DEF_ACCEPT (replace_expr)
 DEF_ACCEPT (transform_expr)
 DEF_ACCEPT (exit_expr)
+DEF_ACCEPT (flowctl_expr)
+DEF_ACCEPT (while_expr)
 
 #undef DEF_ACCEPT
 
@@ -1243,6 +1245,19 @@ void exit_expr::next_iter (expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
   ITER(val);
+  END_EXPR_ITER();
+}
+
+void flowctl_expr::next_iter (expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER();
+  END_EXPR_ITER();
+}
+
+void while_expr::next_iter (expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER();
+  ITER (body);
   END_EXPR_ITER();
 }
 

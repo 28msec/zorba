@@ -133,8 +133,13 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  if (act == EXIT)
+  switch (act) {
+  case EXIT:
     throw ExitException (new PlanIteratorWrapper (theChildren [0], planState));
+  default:
+    throw FlowCtlException (act);
+  }
+    
   STACK_END (state);
 }
 
@@ -155,6 +160,31 @@ bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) con
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   while (CONSUME (result, theChildren.size () - 1))
     std::cout << result->getStringValue ();
+  STACK_END (state);
+}
+
+bool LoopIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  for (;;) {
+    try {
+      while (! CONSUME (result, 0))
+        theChildren [0]->reset (planState);
+    } catch (FlowCtlIterator::FlowCtlException &e) {
+      switch (e.act) {
+      case FlowCtlIterator::BREAK:
+        goto done;
+      case FlowCtlIterator::CONTINUE:
+        theChildren [0]->reset (planState);
+        continue;
+      default:
+        throw;
+      }
+    }
+    STACK_PUSH (true, state);
+  }
+
+done:
   STACK_END (state);
 }
 

@@ -873,6 +873,42 @@ void end_visit(exit_expr& v)
   itstack.push (new FlowCtlIterator (qloc, argv, FlowCtlIterator::EXIT));
 }
 
+bool begin_visit(flowctl_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(flowctl_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  enum FlowCtlIterator::action a;
+  switch (v.get_action ()) {
+  case flowctl_expr::BREAK:
+    a = FlowCtlIterator::BREAK;
+    break;
+  case flowctl_expr::CONTINUE:
+    a = FlowCtlIterator::CONTINUE;
+    break;
+  }
+  checked_vector<PlanIter_t> argv;
+  itstack.push (new FlowCtlIterator (qloc, argv, a));
+}
+
+bool begin_visit(while_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(while_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  checked_vector<PlanIter_t> argv;
+  argv.push_back (pop_itstack ());
+  itstack.push (new LoopIterator (qloc, argv));
+}
+
 
 bool begin_visit(fo_expr& v)
 {

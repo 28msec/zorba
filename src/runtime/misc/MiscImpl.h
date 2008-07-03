@@ -80,6 +80,8 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
 
+NARY_ITER (LoopIterator);
+
 NARY_ITER (FnReadStringIterator);
 NARY_ITER (FnPrintIterator);
 

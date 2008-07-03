@@ -157,6 +157,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> QNAME										"'QName'"
 %token <sval> QNAME_AND_END_PRAGMA    "'QName #)'"
 %token <sval> QNAME_LPAR							"'<QName (>'"
+%token <sval> WHILE_LPAR              "'<while (>'"
 %token <sval> QUOTE_ATTR_CONTENT			"'quote attribute content'"
 %token <sval> STRING_LITERAL					"'STRING'"
 %token <sval> URI_LITERAL							"'URI'"
@@ -207,6 +208,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DECLARE_UPDATING_FUNCTION	"'<declare updating function>'"
 %token DECLARE_SEQ_FUNCTION       "'<declare sequential function>'"
 %token EXIT_WITH                  "'<exit with>'"
+%token BREAK_LOOP                 "'<break loop>'"
+%token CONT_LOOP                  "'<continue loop>'"
 %token DECLARE_VARIABLE_DOLLAR		"'<declare var $>'"
 %token DEFAULT										"'default'"
 %token DEFAULT_ELEMENT						"'<default element>'"
@@ -534,7 +537,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> WhereClause
 %type <node> Wildcard
 
-
 /* left-hand sides: expressions */
 /* ---------------------------- */
 %type <expr> AdditiveExpr
@@ -596,6 +598,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> ValueExpr
 %type <expr> VarRef
 %type <expr> ExitExpr
+%type <expr> WhileExpr
+%type <expr> FlowCtlStatement
 
 
 /* update-related */
@@ -671,8 +675,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // TODO: FT stuff, update stuff
 // HACK to trigger rchandle release: rchandles are freed when refcount == 0
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue  FTContainsExpr
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl ExitExpr
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 %destructor { delete $$; } FunctionSig;
 
 /*_____________________________________________________________________
@@ -1404,6 +1408,24 @@ ExitExpr :
     }
   ;
 
+WhileExpr :
+    WHILE_LPAR ExprSingle RPAR Block
+    {
+      $$ = new WhileExpr (LOC (@$), $2, dynamic_cast<BlockBody *> ($4));
+    }
+  ;
+
+FlowCtlStatement :
+    BREAK_LOOP
+    {
+      $$ = new FlowCtlStatement (LOC (@$), FlowCtlStatement::BREAK);
+    }
+  | CONT_LOOP
+    {
+      $$ = new FlowCtlStatement (LOC (@$), FlowCtlStatement::CONTINUE);
+    }
+  ;
+
 FunctionDecl :
 		DECLARE_FUNCTION  QNAME FunctionSig EXTERNAL
 		{
@@ -1594,6 +1616,14 @@ ExprSingle :
       $$ = $1;
     }
   | ExitExpr
+    {
+      $$ = $1;
+    }
+  | WhileExpr
+    {
+      $$ = $1;
+    }
+  | FlowCtlStatement
     {
       $$ = $1;
     }

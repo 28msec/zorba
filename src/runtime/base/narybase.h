@@ -24,6 +24,8 @@
 namespace zorba
 {
 
+  class PlanIterVisitor;
+
 /*******************************************************************************
   Superclass for all iterators which have n child iterators 
 ********************************************************************************/

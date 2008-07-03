@@ -4986,6 +4986,39 @@ void end_visit(const ExitExpr& v, void* visit_state)
   nodestack.push (new exit_expr (loc, pop_nodestack ()));
 }
 
+void *begin_visit(const WhileExpr& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const WhileExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT ();
+  nodestack.push (new while_expr (loc, pop_nodestack ()));
+}
+
+void *begin_visit(const FlowCtlStatement& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const FlowCtlStatement& v, void* visit_state)
+{
+  TRACE_VISIT_OUT ();
+  enum flowctl_expr::action a;
+  switch (v.get_action ()) {
+  case FlowCtlStatement::BREAK:
+    a = flowctl_expr::BREAK;
+    break;
+  case FlowCtlStatement::CONTINUE:
+    a = flowctl_expr::CONTINUE;
+    break;
+  }
+  nodestack.push (new flowctl_expr (loc, a));
+}
+
 /* full-text-related */
 void *begin_visit(const FTAnd& v)
 {

@@ -1687,6 +1687,42 @@ public:
 	std::ostream& put(std::ostream&) const;
 };
 
+class flowctl_expr : public expr {
+public:
+  enum action { BREAK, CONTINUE };
+
+protected:
+  enum action action;
+
+public:
+  flowctl_expr (const QueryLoc &loc, enum action action_)
+    : expr (loc), action (action_)
+  {}
+  expr_kind_t get_expr_kind () { return flowctl_expr_kind; }
+  enum action get_action () const { return action; }
+
+public:
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+};
+
+class while_expr : public expr {
+  expr_t body;
+
+public:
+  while_expr (const QueryLoc &loc, expr_t body_)
+    : expr (loc), body (body_)
+  {}
+  expr_kind_t get_expr_kind () { return while_expr_kind; }
+  expr_t get_body () { return body; }
+
+public:
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+};
+
 } /* namespace zorba */
 #endif  /*  ZORBA_EXPR_H */
 

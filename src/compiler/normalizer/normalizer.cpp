@@ -293,6 +293,8 @@ DEF_VISIT_METHODS (rename_expr)
 DEF_VISIT_METHODS (replace_expr)
 DEF_VISIT_METHODS (transform_expr)
 DEF_VISIT_METHODS (exit_expr)
+DEF_VISIT_METHODS (while_expr)
+DEF_VISIT_METHODS (flowctl_expr)
 DEF_VISIT_METHODS (function_def_expr)
 
 DEF_VISIT_METHODS (ft_select_expr)

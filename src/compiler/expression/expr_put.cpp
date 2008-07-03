@@ -554,4 +554,17 @@ ostream& exit_expr::put( ostream& os) const
   CLOSE_EXPR;
 }
 
+ostream& flowctl_expr::put( ostream& os) const
+{
+  BEGIN_EXPR (flowctl_expr);
+  CLOSE_EXPR;
+}
+
+ostream& while_expr::put( ostream& os) const
+{
+  BEGIN_EXPR (while_expr);
+  body->put (os);
+  CLOSE_EXPR;
+}
+
 }  // namespace zorba

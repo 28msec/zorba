@@ -6349,6 +6349,35 @@ public:
 	void accept(parsenode_visitor&) const;
 };
 
+class FlowCtlStatement : public exprnode {
+public:
+  enum action { BREAK, CONTINUE };
+
+private:
+  enum action action;
+
+public:
+  FlowCtlStatement (const QueryLoc &loc, enum action action_)
+    : exprnode (loc), action (action_)
+  {}
+  enum action get_action () const { return action; }
+	void accept(parsenode_visitor&) const;
+};
+
+class WhileExpr : public exprnode {
+  rchandle<exprnode> cond;
+  rchandle<BlockBody> body;
+
+public:
+  WhileExpr (const QueryLoc &loc, rchandle<exprnode> cond_, rchandle<BlockBody> body_)
+    : exprnode (loc), cond (cond_), body (body_)
+  {}
+  rchandle<exprnode> get_cond () { return cond; }
+  rchandle<BlockBody> get_body () { return body; }
+
+	void accept(parsenode_visitor&) const;
+};
+
 }	/* namespace zorba */
 #endif	/*  ZORBA_PARSENODES_H */
 

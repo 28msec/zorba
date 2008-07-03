@@ -25,6 +25,7 @@ namespace zorba
   class PlanIterator;
   class SequentialIterator;
   class FlowCtlIterator;
+  class LoopIterator;
   class FnDataIterator;
   class FnRootIterator;
   class FnNodeNameIterator;
@@ -249,6 +250,8 @@ namespace zorba
     PLAN_ITER_VISITOR (SequentialIterator);
 
     PLAN_ITER_VISITOR (FlowCtlIterator);
+
+    PLAN_ITER_VISITOR (LoopIterator);
 
     PLAN_ITER_VISITOR (FnDataIterator);
        

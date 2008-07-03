@@ -326,6 +326,20 @@ typedef zorba::xquery_parser::token token;
   return token::EXIT_WITH;
 }
 
+"break"{SP}"loop" {
+  BEGIN (MODE_OPERATOR);
+  return token::BREAK_LOOP;
+}
+
+"continue"{SP}"loop" {
+  BEGIN (MODE_OPERATOR);
+  return token::CONT_LOOP;
+}
+
+"while"{SP}"(" {
+  return token::WHILE_LPAR;
+}
+
 "validate"{S}"{" {
   PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
   return token::VALIDATE_LBRACE;

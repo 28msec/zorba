@@ -1244,6 +1244,12 @@ END_TAG (FTWordsValue)
 BEGIN_TAG (ExitExpr)
 END_TAG (ExitExpr)
 
+BEGIN_TAG (FlowCtlStatement)
+END_TAG (FlowCtlStatement)
+
+BEGIN_TAG (WhileExpr)
+END_TAG (WhileExpr)
+
 BEGIN_TAG (ParseErrorNode)
 END_TAG (ParseErrorNode)
 

@@ -78,6 +78,8 @@ public:
   EXPR_VISITOR_METHODS (replace_expr);
   EXPR_VISITOR_METHODS (transform_expr);
   EXPR_VISITOR_METHODS (exit_expr);
+  EXPR_VISITOR_METHODS (while_expr);
+  EXPR_VISITOR_METHODS (flowctl_expr);
 
 #undef EXPR_VISITOR_METHODS
 
