@@ -83,6 +83,5 @@ namespace zorba{
       getLineNo() const = 0;
   };
 
-
 }//end of namespace
 #endif

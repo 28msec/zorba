@@ -13,17 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <vector>
-#include <string>
-
 #include "debugcmd_client.h"
+
+#include <zorba/zorba.h>
 
 using namespace zorba;
 
-CommandLineEventHandler::CommandLineEventHandler( std::istream & anInput,
+CommandLineEventHandler::CommandLineEventHandler( std::istringstream & aQueryFile,
+                                                  std::istream & anInput,
                                                   std::ostream & anOutput,
                                                   ZorbaDebuggerClient * aClient )
-  : theOutput( anOutput ), theInput( anInput ), theClient( aClient ){}
+ : theQueryFile( aQueryFile ),
+   theOutput( anOutput ),
+   theInput( anInput ),
+   theClient( aClient ){}
+
+void CommandLineEventHandler::list()
+{
+  int start = theClient->getLineNo() - 2;
+  if ( start <= 0 )
+  {
+    list( 1, 5 );
+  } else {
+    list( start, theClient->getLineNo() + 2 );
+  }
+}
+
+void CommandLineEventHandler::list( unsigned int aLineNo )
+{
+  list( aLineNo, aLineNo );
+}
+
+void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
+{
+  std::string lLine;
+  unsigned int lLineNo = 0;
+  theQueryFile.clear();
+  theQueryFile.seekg( 0, std::ios::beg );
+  while ( ! theQueryFile.eof() )
+  {
+    lLineNo++;
+    std::getline( theQueryFile, lLine, '\n');
+    if ( lLineNo >= aBegin && lLineNo <= aBegin )
+    {
+      theOutput << lLineNo << '\t' << lLine << std::endl;
+    }
+  }
+}
 
 void CommandLineEventHandler::started()
 {
@@ -38,19 +74,19 @@ void CommandLineEventHandler::idle()
 
 void CommandLineEventHandler::suspended( QueryLocation & aLocation, SuspendedBy aCause )
 {
-  theOutput << "Suspended at line " << aLocation.getLineBegin() << std::endl; 
+  list( aLocation.getLineBegin() );
   handle_cmd();
 }
 
 void CommandLineEventHandler::resumed()
 {
-
+  //do nothing...
 }
 
 void CommandLineEventHandler::terminated()
 {
   theOutput << "End of query" << std::endl;
-  handle_cmd();
+  exit(0);
 }
 
 std::vector<std::string> CommandLineEventHandler::get_args( const std::string& str )
@@ -83,7 +119,7 @@ void CommandLineEventHandler::handle_cmd()
     theOutput.flush();
     
     std::string lLine;
-    std::getline( theInput, lLine );
+    std::getline( theInput, lLine, '\n');
 
 	  std::vector<std::string> lArgs = get_args( lLine );
     std::string lCommand = lArgs.at( 0 ); 
@@ -97,34 +133,62 @@ void CommandLineEventHandler::handle_cmd()
       {
         theOutput << "Invalid syntax." << std::endl;
         theOutput << "(b|break) <line number>" << std::endl;
+      } else {
+        unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
+        if( lLineNo == 0 )
+        {
+          theOutput << "Invalid line number: " << lArgs.at(1) << '.' << std::endl;
+        } else {
+          theClient->addBreakpoint( lLineNo );
+          theOutput << "Set breakpoint at line " << lLineNo << '.' << std::endl;
+        }
       }
-      unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
-      theClient->addBreakpoint( lLineNo );
-      theOutput << "Set breakpoint at line " << lLineNo << std::endl;
-      handle_cmd(); 
     } else if ( lCommand ==  "r" || lCommand == "run" ) {
       theClient->run();
-    } else if ( lCommand == "s" || lCommand ==  "stop" ) {
-      theClient->terminate();
-    }else if ( lCommand == "h" || lCommand == "help" ) {
+      return;
+    } else if ( lCommand == "h" || lCommand == "help" ) {
       help();
-      handle_cmd();
+    } else if ( lCommand == "c" || lCommand == "continue" ) {
+      if ( theClient->isQuerySuspended() )
+      {
+        theClient->resume();
+        return;
+      } else {
+        theOutput << "The query is not suspended." << std::endl;
+      }
+    } else if ( lCommand == "l" || lCommand == "list" ) {
+      if ( theClient->isQuerySuspended() )
+      {
+        list();
+        return;
+      } else {
+        theOutput << "The query is not suspended." << std::endl;
+      }
+    } else if ( lCommand == "v" || lCommand == "version" ) {
+        version();
     } else {
       theOutput << "Unknown command \"" << lCommand << "\" Try \"help\"." << std::endl;
-      handle_cmd();
     }
+    handle_cmd();
   }
 }
 void CommandLineEventHandler::help()
 {
   //TODO: Full documentation of each command
   theOutput << "List of available commands:" << std::endl;
-  theOutput << "run     -- Run the query." << std::endl;
-  theOutput << "break   -- Set a breakpoint at the specified file and line." << std::endl;
-  theOutput << "list    -- Display the executed query line." << std::endl;
-  theOutput << "stop    -- Stop the query execution." << std::endl;
-  theOutput << "quit    -- Quit Zorba debugger." << std::endl;
-  theOutput << "version -- Display the version of Zorba engine and its debugger" << std::endl;
-  theOutput << "help    -- This help." << std::endl;
+  theOutput << "run      -- Run the query." << std::endl;
+  theOutput << "break    -- Set a breakpoint at the specified file and line." << std::endl;
+  theOutput << "continue -- Resume the query execution." << std::endl;
+  theOutput << "list     -- Display the executed query line." << std::endl;
+//  theOutput << "stop     -- Stop the query execution." << std::endl;
+  theOutput << "quit     -- Quit Zorba debugger." << std::endl;
+  theOutput << "version  -- Display the version of Zorba engine and its debugger" << std::endl;
+  theOutput << "help     -- This help." << std::endl;
+}
+
+void CommandLineEventHandler::version()
+{
+  //TODO: Add debugger version
+  theOutput << "Zorba " << Zorba::version() << '.' << std::endl;
 }
 

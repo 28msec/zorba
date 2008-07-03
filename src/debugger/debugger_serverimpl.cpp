@@ -46,17 +46,25 @@ ZorbaDebuggerImpl::~ZorbaDebuggerImpl()
   delete theEventSocket;
 }
 
-void ZorbaDebuggerImpl::start( void * aStore, std::istream * aQuery, const String & aFileName, unsigned short aRequestPortno, unsigned short aEventPortno)
+void ZorbaDebuggerImpl::start( void * aStore,
+                               std::istream * aQuery,
+                               const String & aFileName,
+                               unsigned short aRequestPortno,
+                               unsigned short aEventPortno)
 {
   TCPSocket * lSock;
   //try
   //{
-    //Set the query to process
-    theQuery = aQuery;
+    //Compiles the query
+    theDebugMode = true;
+    theQuery = Zorba::getInstance( aStore )->createQuery();
+    theQuery->setFileName( theFileName );
+    Zorba_CompilerHints lCompilerHints;
+    lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
+    theQuery->compile( * aQuery, lCompilerHints);
     //Set the fileName
     theFileName = aFileName; 
     //activate the debug mode
-    theDebugMode = true;
     
     //Run the server 
     theRequestServerSocket = new TCPServerSocket( aRequestPortno );
@@ -64,13 +72,27 @@ void ZorbaDebuggerImpl::start( void * aStore, std::istream * aQuery, const Strin
 
     //Wait for a client to connect
     lSock = theRequestServerSocket->accept(); 
+    //Try to connect to the event server 3 times
+    for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ )
+    {
+      try
+      {
+        //Connect the client to the event server
+        theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
+        //Wait one second before trying to reconnect
 #ifdef WIN32
-    Sleep(1000);
+        Sleep(1000);
 #else
-    sleep(1);
+        sleep(1);
 #endif
-    //Connect the client to the event server
-    theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
+      } catch ( SocketException &e )  {
+        if ( i == 2 )
+        {
+          std::cerr << "Couldn't connect to the debugger server event" << std::endl;
+          std::cerr << e.what() << std::endl;
+        }
+      }
+    }
     
     //Perform handshake
     handshake( lSock );
@@ -92,9 +114,11 @@ void ZorbaDebuggerImpl::start( void * aStore, std::istream * aQuery, const Strin
 
 void ZorbaDebuggerImpl::setStatus( ExecutionStatus Status, SuspensionCause aCause ){
   if (theStatus == QUERY_SUSPENDED && Status == QUERY_RUNNING)
+  {
     theStatus = QUERY_RESUMED;
-  else
-	theStatus = Status;
+  } else {
+	  theStatus = Status;
+  }
 
   switch ( theStatus )
   {
@@ -153,17 +177,12 @@ void ZorbaDebuggerImpl::terminatedEvent()
     sendEvent( &lMessage );
 }
 
-void ZorbaDebuggerImpl::run( void * aStore, std::istream * aQuery )
+void ZorbaDebuggerImpl::runQuery()
 {
   setStatus( QUERY_RUNNING );
   try
   {
-    XQuery_t lQuery = Zorba::getInstance( aStore )->createQuery();
-    lQuery->setFileName( theFileName );
-    Zorba_CompilerHints lCompilerHints;
-    lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
-    lQuery->compile( * aQuery, lCompilerHints);
-    ResultIterator_t lIterator = lQuery->iterator();
+    ResultIterator_t lIterator = theQuery->iterator();
     lIterator->open();
 
     Item lItem;
@@ -177,7 +196,6 @@ void ZorbaDebuggerImpl::run( void * aStore, std::istream * aQuery )
   } catch ( DynamicException& de ) {
     std::cerr << de << std::endl;
   }
-
   setStatus( QUERY_TERMINATED );
 }
 
@@ -272,7 +290,7 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
 void ZorbaDebuggerImpl::run()
 {
   boost::thread theRuntimeThread (
-      boost::bind( &ZorbaDebuggerImpl::run, this, theStore, theQuery ) );
+      boost::bind( &ZorbaDebuggerImpl::runQuery, this ) );
 }
 
 void ZorbaDebuggerImpl::suspend()
@@ -282,9 +300,12 @@ void ZorbaDebuggerImpl::suspend()
 
 void ZorbaDebuggerImpl::resume()
 {
-// boost::mutex::scoped_lock lock(theRuntimeMutex);
-  setStatus( QUERY_RUNNING );
-  theRuntimeSuspendedCV.notify_one();
+  if ( theStatus == QUERY_SUSPENDED )
+  {
+    //boost::mutex::scoped_lock lock(theRuntimeMutex);
+    setStatus( QUERY_RUNNING );
+    theRuntimeSuspendedCV.notify_one();
+  }
 }
 
 void ZorbaDebuggerImpl::terminate()

@@ -63,8 +63,11 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     bool isEnabled() const;
 
-    void start( void * aStore, std::istream * aQuery, const String & aFileName, unsigned short aRequestPort = 8000,
-      unsigned short aEventPort = 9000 );
+    void start( void * aStore,
+                std::istream * aQuery,
+                const String & aFileName,
+                unsigned short aRequestPort = 8000,
+                unsigned short aEventPort = 9000 );
 
   protected:
     
@@ -72,7 +75,6 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     ZorbaDebuggerImpl()
     :
-    theStore( 0 ),
     theDebugMode( false ),
     theRequestServerSocket(0), 
     theEventSocket(0), 
@@ -80,8 +82,6 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     theFileName("")
     {}
 
-    void * theStore;
-    
     bool theDebugMode;
     
     TCPServerSocket * theRequestServerSocket;
@@ -92,7 +92,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     ExecutionStatus theStatus;
 
-    std::istream * theQuery;
+    XQuery_t theQuery;
 
     String theFileName;
 
@@ -114,7 +114,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     
     void setStatus( ExecutionStatus aStatus, SuspensionCause aCause = CAUSE_USER );
 
-    void run( void * aStore, std::istream * aQuery );
+    void run();
 
     void handleTcpClient( TCPSocket * aSock );
 
@@ -122,7 +122,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     void processMessage( AbstractCommandMessage * );
 
-    void run();
+    void runQuery();
 
     void suspend();
 

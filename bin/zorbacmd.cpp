@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "zorbacmdproperties.h"
+
 #include <memory>
 #include <iostream>
 #include <fstream>
@@ -20,7 +22,9 @@
 #include <vector>
 #include <string>
 
-#include "zorbacmdproperties.h"
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 #include <zorba/zorba.h>
 #include <simplestore/simplestore.h>
@@ -43,7 +47,6 @@
 namespace fs = boost::filesystem;
 
 #ifdef ZORBA_DEBUGGER
-
 void server( std::istream * aQuery,
             const char * aFileName,
             unsigned short aRequestPort,
@@ -286,23 +289,44 @@ int _tmain(int argc, _TCHAR* argv[])
     std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
     std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
 
-    boost::thread lServerThread ( boost::bind(&server, qfile.get(),
-                                  fname,
-                                  lProperties.requestPort(),
-                                  lProperties.eventPort())
-                                   );
-    try
+    std::stringstream out;
+    std::copy( std::istreambuf_iterator<char>(*qfile),
+               std::istreambuf_iterator<char>(),
+               std::ostreambuf_iterator<char>(out));
+    qfile->seekg(0);
+    std::istringstream lInputQuery( out.str() );
+
+    boost::thread lServerThread ( 
+                                  boost::bind(
+                                    &server,
+                                    qfile.get(),
+                                    fname,
+                                    lProperties.requestPort(),
+                                    lProperties.eventPort()
+                                  )
+                                );
+
+    for ( unsigned int i = 0; i < 3; i++ )
     {
-      ZorbaDebuggerClient * lDebuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
-      CommandLineEventHandler lEventHandler( std::cin, std::cout, lDebuggerClient );
-      lDebuggerClient->registerEventHandler( &lEventHandler );
-      lServerThread.join();
-    } catch( std::exception &e ) {
-      std::cerr << "Could not start the debugger client: " << std::endl;
-      std::cerr << e.what() << std::endl;
-      exit(7);
-    }
-    return 0;
+      try
+      {
+#ifdef WIN32
+        Sleep(1000);
+#else
+        sleep(1);
+#endif
+        ZorbaDebuggerClient * lDebuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
+        CommandLineEventHandler lEventHandler( lInputQuery, std::cin, std::cout, lDebuggerClient );
+        lDebuggerClient->registerEventHandler( &lEventHandler );
+        lServerThread.join();
+      } catch( std::exception &e ) {
+        if ( i < 2 ){ continue; }
+        std::cerr << "Could not start the debugger client: " << std::endl;
+        std::cerr << e.what() << std::endl;
+        exit(7);
+     }
+     return 0;
+   }
   }
 #endif
 

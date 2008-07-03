@@ -17,6 +17,9 @@
 #define DEBUGCMD_CLIEND_H
 
 #include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
 #include <boost/thread/thread.hpp>
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_event_handler.h>
@@ -26,6 +29,9 @@ using namespace zorba;
 class CommandLineEventHandler: public DebuggerEventHandler
 {
   private:
+    
+    std::istringstream & theQueryFile;
+    
     std::ostream & theOutput;
     
     std::istream & theInput;
@@ -38,8 +44,17 @@ class CommandLineEventHandler: public DebuggerEventHandler
 
     void help();
 
+    void version();
+
+    void list();
+
+    void list( unsigned int aLineNo );
+
+    void list( unsigned int aBegin, unsigned int anEnd );
+
   public:
-    CommandLineEventHandler( std::istream & anInput,
+    CommandLineEventHandler( std::istringstream & aQueryFile,
+                             std::istream & anInput,
                              std::ostream & anOutput,
                              ZorbaDebuggerClient * aClient );
 

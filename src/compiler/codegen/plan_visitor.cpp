@@ -257,11 +257,7 @@ void end_visit(var_expr& v)
             loc,
             (void *) &v);
     map->push_back (v_p);
-#ifdef ZORBA_DEBUGGER
-                  itstack.push(debugIterator(v_p));
-#else
-                  itstack.push(v_p);
-#endif
+    itstack.push(v_p);
     break;
   }
 
