@@ -56,7 +56,28 @@ public:
     entry(char const* k, uint32_t l, V v) : key(std::string(k,0,l)), val(v) {}
     entry(entry const& e) : key(e.key), val(e.val) {}
     entry& operator=(entry const& e) { key = e.key; val = e.val; return *this; }
+    entry(const char *k1, std::string const& k2, V v)
+    {
+      key = k1;
+      key += k2;
+      val = v;
+    }
     ~entry() {}
+    bool matchKey2(const char *key1, const std::string &key2) const
+    {
+      const char  *k = key.c_str();
+      int   i = 0;
+      while(*key1)
+      {
+        if(*k != *key1)
+          return false;
+        k++;
+        key1++;
+      }
+      if(strcmp(k, key2.c_str()))
+        return false;
+      return true;
+    }
   };
 
 private:
@@ -96,20 +117,24 @@ public: // map interface
   bool find(std::string const& key, uint32_t& index) const;    // find hash position(key), true on match
   bool find(char const* key, uint32_t& index) const;      // find hash position(key), true on match
   bool find(char const* key, uint32_t, uint32_t&) const;  // find hash position(key,len), true on match
+  bool find2(const char *key1, std::string const& key2, uint32_t& index) const;      // find hash position(key), true on match
 
   bool get(std::string const& key, V& result) const; // copy hash entry at key to result, true on match
   bool get(char const* key, V& result) const;   // copy hash entry at key to result, true on match
   bool get(char const* key, uint32_t, V&) const;// copy hash entry at key,len to result, true on match
+  bool get2(const char *key1, std::string const& key2, V& result) const; // copy hash entry at key to result, true on match
 
   bool put(std::string const& key, V val, bool replace = true);           // add (key,val) entry to map, true on match
   bool put(char const* key, V val, bool replace = true);             // add (key,val) entry to map, true on match
   bool put(char const* key, uint32_t, V val, bool replace = true);   // add (key,len,val) entry to map, true on match
   uint64_t put0(char const* key, V val);        // add (key,val) entry to map, return key heap offset
+  bool put2(const char *key1, std::string const& key2, V val, bool replace = true);           // add (key,val) entry to map, true on match
 
 public: // the hash functions
   uint32_t h(std::string const& key) const;
   uint32_t h(char const*) const;
   uint32_t h(char const*, uint32_t len) const;
+  uint32_t h(const char* key1, const std::string& key2) const;
 
 };
 
@@ -355,6 +380,28 @@ inline bool hashmap<V>::find(const std::string& key, uint32_t& index) const
   return result;
 }
 
+//  Store the hash location for a given key (or next available slot) 
+//  in 'index'.  Return true on match, else false. 
+template<class V>
+inline bool hashmap<V>::find2(const char *key1, const std::string& key2, uint32_t& index) const
+{
+  uint32_t h0 = h(key1, key2);
+  bool result = false;
+  while (true) {
+    int x = tab[h0];
+    if (x==-1) break;
+    const entry& e = v[x];
+    if (e.matchKey2(key1, key2)){//strcmp(e.key.c_str(), key.c_str ())==0) {
+      result = true; 
+      break;
+    }
+    h0 = (h0 + 1) % tsz;
+  }
+  index = h0;
+  return result;
+}
+
+
 
 //  Store the hash location for a given key (or next available slot) 
 //  into 'index'.  Return true on match, else false.   
@@ -424,6 +471,14 @@ inline bool hashmap<V>::get(const char* key, uint32_t len, V& result) const
   return false;
 }
 
+//  Copy hash value for a given key, return false if not found. 
+template<class V>
+inline bool hashmap<V>::get2(const char *key1, const std::string& key2, V& result) const
+{
+  uint32_t h0;
+  if (find2(key1, key2, h0)) { result = v[tab[h0]].val; return true; }
+  return false;
+}
 
 
 //  Store a new (key.val) pair in the map.
@@ -511,6 +566,29 @@ inline uint64_t hashmap<V>::put0(const char* key, V val)
   }
 }
 
+//  Store a new (key.val) pair in the map.
+//  Return true if key was matched, else false.
+template<class V>
+inline bool hashmap<V>::put2(const char *key1, const std::string& key2, V val, bool replace)
+{
+  if (sz>tsz*ld) resize();
+
+  uint32_t h0;
+  if (find2(key1, key2, h0)) {
+    if (replace) {
+      entry* e = &v[tab[h0]]; 
+      e->val = val;
+    }
+    return true;
+  } else {
+    v.push_back(entry(key1, key2, val));
+    tab[h0] = sz++;
+    return false;
+  }
+}
+
+
+
 
 
 //  The hash functions.
@@ -530,6 +608,13 @@ template<class V>
 inline uint32_t hashmap<V>::h(const char* key, uint32_t len) const
 {
   return  hashfun::h32(key,len,FNV_32_INIT) % tsz;
+}
+
+//  The hash functions.
+template<class V>
+inline uint32_t hashmap<V>::h(const char *key1, const std::string& key2) const
+{
+  return  hashfun::h32(key2, hashfun::h32(key1)) % tsz;
 }
 
 

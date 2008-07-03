@@ -2071,8 +2071,8 @@ xqpStringStore_t AttributeNode::getStringValue() const
 ********************************************************************************/
 xqp_string AttributeNode::show() const
 {
-  return theName->getStringValue()->str() + "=\"" +
-         (theTypedValue != NULL ? theTypedValue->show() : "") + "\"";
+  return xqpString::concat(theName->getStringValue(), "=\"",
+         (theTypedValue != NULL ? theTypedValue->show() : ""), "\"");
 }
 
 
@@ -2246,7 +2246,7 @@ store::Item_t TextNode::getAtomizationValue() const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-  return xqp_string ("<text nid=\"") + theOrdPath.show() + "\">" + theContent.getp() + "</text>";
+  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", theContent.getp(), "</text>");
 }
 
 

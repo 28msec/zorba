@@ -467,6 +467,36 @@ xqpStringStore_t xqpStringStore::append(const char* suffix) const
   return new xqpStringStore(theString + suffix);
 }
 
+void xqpStringStore::append_in_place(const char c)
+{
+  theString += c;
+}
+
+void xqpStringStore::append_in_place(xqpStringStore* suffix)
+{
+  theString += suffix->theString;
+}
+
+void xqpStringStore::append_in_place(xqpStringStore* suffix, const char *s2)
+{
+  theString += suffix->theString;
+  theString += s2;
+}
+
+void xqpStringStore::append_in_place(const char *str)
+{
+  theString += str;
+}
+
+void xqpStringStore::append_in_place(const char *str, int len)
+{
+  theString.append(str, len);
+}
+
+void xqpStringStore::append_in_place(std::string &str)
+{
+  theString.append(str);
+}
 
 /*******************************************************************************
 
@@ -1333,6 +1363,150 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
 
     return ret;
   }
+
+
+void xqpString::append_in_place(const char c)
+{
+  theStrStore->append_in_place(c);
+}
+
+void xqpString::append_in_place(xqpStringStore *suffix)
+{
+  theStrStore->append_in_place(suffix);
+}
+
+void xqpString::append_in_place(xqpStringStore *suffix, const char *s2)
+{
+  theStrStore->append_in_place(suffix, s2);
+}
+
+void xqpString::append_in_place(const char *str)
+{
+  theStrStore->append_in_place(str);
+}
+
+void xqpString::append_in_place(const char *str, int len)
+{
+  theStrStore->append_in_place(str, len);
+}
+
+void xqpString::append_in_place(std::string &str)
+{
+  theStrStore->append_in_place(str);
+}
+
+//static concat
+xqpString xqpString::concat(const char *s1, 
+                            const char *s2)
+{
+//  int l1 = strlen(s1);
+//  int l2 = strlen(s2);
+
+  xqpString   result;//(l1+l2+1);
+  result.append_in_place(s1);
+  result.append_in_place(s2);
+  return result;
+}
+
+xqpString xqpString::concat(const char *s1, 
+                        const char *s2,
+                        xqpStringStore_t s3)
+{
+//  int l1 = strlen(s1);
+//  int l2 = strlen(s2);
+//  int l3 = s3->bytes();
+
+  xqpString   result;//(l1+l2+l3+1);
+  result.append_in_place(s1);
+  result.append_in_place(s2);
+  result.append_in_place(s3.getp());
+  return result;
+}
+
+xqpString xqpString::concat(const char *s1, 
+                        const char *s2,
+                        const char *s3)
+{
+//  int l1 = strlen(s1);
+//  int l2 = strlen(s2);
+//  int l3 = strlen(s3);
+
+  xqpString   result;//(l1+l2+l3+1);
+  result.append_in_place(s1);
+  result.append_in_place(s2);
+  result.append_in_place(s3);
+  return result;
+}
+
+xqpString xqpString::concat(xqpString s1, 
+                        const char *s2,
+                        xqpString s3)
+{
+//  int l1 = s1.bytes();
+//  int l2 = strlen(s2);
+//  int l3 = s3.bytes();
+
+  xqpString   result;//(l1+l2+l3+1);
+  result.append_in_place(s1.getStore());
+  result.append_in_place(s2);
+  result.append_in_place(s3.getStore());
+  return result;
+}
+
+xqpString xqpString::concat(std::string &s1, 
+                        const char *s2,
+                        xqpStringStore_t s3)
+{
+//  int l1 = s1.length();
+//  int l2 = strlen(s2);
+//  int l3 = s3->bytes();
+
+  xqpString   result;//(l1+l2+l3+1);
+  result.append_in_place(s1);
+  result.append_in_place(s2);
+  result.append_in_place(s3.getp());
+  return result;
+}
+
+xqpString xqpString::concat(xqpStringStore_t s1, 
+                        const char *s2,
+                        xqpString s3,
+                        const char *s4)
+{
+//  int l1 = s1->bytes();
+//  int l2 = strlen(s2);
+//  int l3 = s3.bytes();
+//  int l4 = strlen(s4);
+
+  xqpString   result;//(l1+l2+l3+l4+1);
+  result.append_in_place(s1.getp());
+  result.append_in_place(s2);
+  result.append_in_place(s3.getStore());
+  result.append_in_place(s4);
+  return result;
+}
+
+xqpString xqpString::concat(const char *s1, 
+                        std::string &s2,
+                        const char *s3,
+                        xqpStringStore_t s4,
+                        const char *s5)
+{
+//  int l1 = strlen(s1);
+//  int l2 = s2.length();
+//  int l3 = strlen(s3);
+//  int l4 = s4->bytes();
+//  int l5 = strlen(s5);
+
+  xqpString   result;//(l1+l2+l3+l4+l5+1);
+  result.append_in_place(s1);
+  result.append_in_place(s2);
+  result.append_in_place(s3);
+  result.append_in_place(s4.getp());
+  result.append_in_place(s5);
+  return result;
+}
+
 }/* namespace zorba */
 
 #endif//#ifndef ZORBA_NO_UNICODE

@@ -737,34 +737,34 @@ xqpString DateTime::toString() const
   // output sign
   if (FACET_MEMBERS[facet][0])
     if (data[YEAR_DATA] < 0)
-      result += "-";
+      result.append_in_place("-");
   
   // output preceding '-' for Gregorian dates, when needed
   if (facet == GMONTH_FACET || facet == GMONTHDAY_FACET)
-    result += "--";
+    result.append_in_place("--");
   if (facet == GDAY_FACET)
-    result += "---";
+    result.append_in_place("---");
   
   for (int i=0; i<=5; i++)
   {
     if (FACET_MEMBERS[facet][i])
     {
-      result += to_string(abs<int>(data[i]), min_length[i]);
+      result.append_in_place(to_string(abs<int>(data[i]), min_length[i]));
       if (FACET_MEMBERS[facet][i+1] && i<=4)
-        result += separators[i];
+        result.append_in_place(separators[i]);
     }
   }
   
   if (FACET_MEMBERS[facet][FRACSECONDS_DATA] && (data[FRACSECONDS_DATA] != 0))
   {
     int temp;
-    result += '.';
+    result .append_in_place('.');
     
     // print leading 0s, if any
     temp = FRAC_SECONDS_UPPER_LIMIT / 10;
     while (temp > data[FRACSECONDS_DATA] && temp > 0)
     {
-      result += '0';
+      result.append_in_place('0');
       temp /= 10;
     }
     
@@ -773,10 +773,10 @@ xqpString DateTime::toString() const
     while (temp%10 == 0 && temp > 0)
       temp = temp / 10;
     
-    result += to_string(temp);
+    result.append_in_place(to_string(temp));
   }
   
-  result += the_time_zone.toString();
+  result.append_in_place(the_time_zone.toString().getStore());
   
   return result;
 }

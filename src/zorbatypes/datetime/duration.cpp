@@ -83,7 +83,7 @@ bool YearMonthDuration::operator==(const YearMonthDuration& ymd) const
 
 xqpString YearMonthDuration::toString(bool output_when_zero) const
 {
-  xqpString result = "";
+  xqpString result;// = "";
   long abs_months = months;
 
   if (months == 0)
@@ -96,17 +96,17 @@ xqpString YearMonthDuration::toString(bool output_when_zero) const
 
   if (months < 0)
   {
-    result += "-";
+    result.append_in_place("-");
     abs_months = -months;
   }
 
-  result += "P";
+  result.append_in_place("P");
 
   if (abs_months >= 12 )
-    result = result + NumConversions::longToStr(abs_months / 12) + "Y";
+    result.append_in_place(NumConversions::longToStr(abs_months / 12).getStore(), "Y");
 
   if ((abs_months%12) != 0)
-    result = result + NumConversions::longToStr(abs_months % 12) + "M";
+    result.append_in_place(NumConversions::longToStr(abs_months % 12).getStore(), "M");
     
   return result;
 }
@@ -418,7 +418,7 @@ bool DayTimeDuration::isZero() const
 
 xqpString DayTimeDuration::toString(bool output_when_zero) const
 {
-  xqpString result = "";
+  xqpString result;// = "";
   bool have_t_separator = false;
 
   if (isZero())
@@ -430,40 +430,40 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
   }
     
   if ( is_negative )
-    result += "-";
+    result.append_in_place("-");
 
-  result += "P";
+  result .append_in_place("P");
 
   if ( days != 0 )
-    result += NumConversions::longToStr ( days ) + "D";
+    result.append_in_place(NumConversions::longToStr ( days ).getStore(), "D");
 
   if ( timeDuration.hours() != 0)
   {
     OUTPUT_T_SEPARATOR(result, have_t_separator);
-    result += NumConversions::intToStr ( timeDuration.hours() ) + "H";
+    result.append_in_place(NumConversions::intToStr ( timeDuration.hours() ).getStore(), "H");
   }
 
   if ( timeDuration.minutes() != 0 )
   {
     OUTPUT_T_SEPARATOR(result, have_t_separator);
-    result += NumConversions::intToStr ( timeDuration.minutes() ) + "M";
+    result.append_in_place(NumConversions::intToStr ( timeDuration.minutes() ).getStore(), "M");
   }
 
   if (timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0)
   {
     OUTPUT_T_SEPARATOR(result, have_t_separator);
-    result += NumConversions::intToStr ( timeDuration.seconds() );
+    result.append_in_place(NumConversions::intToStr ( timeDuration.seconds() ).getStore());
 
     if ( timeDuration.fractional_seconds() != 0 )
     {
       int frac_seconds = timeDuration.fractional_seconds();
-      result += ".";
+      result.append_in_place(".");
       
       // print leading 0s, if any
       int temp = boost::posix_time::time_duration::ticks_per_second() / 10;
       while (temp > frac_seconds && temp > 0)
       {
-        result += '0';
+        result .append_in_place('0');
         temp /= 10;
       }
       
@@ -471,10 +471,10 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
       while (frac_seconds%10 == 0 && frac_seconds > 0)
         frac_seconds = frac_seconds / 10;
       
-      result += to_string(frac_seconds);
+      result.append_in_place(to_string(frac_seconds));
     }
 
-    result += "S";
+    result.append_in_place("S");
   }
 
   return result;

@@ -125,7 +125,10 @@ std::ostream& NodeXQType::serialize(std::ostream& os) const
     os << "nametest=[uri: " << nametest->get_uri () << ", local: " << nametest->get_local () << "]";
   }
   if (content_type != NULL)
-    os << (xqp_string ("content=") + content_type->toString ());
+  {
+    os << "content=";
+    os << content_type->toString ();
+  }
   return os << "]";
 }
     

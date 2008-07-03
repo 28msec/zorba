@@ -112,6 +112,24 @@ bool context::bind_func (xqp_string key, function *f) {
   return true;
 }
 
+bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e) {
+  ctx_value_t v;
+  v.exprValue = e;
+  if (keymap.put2 (key1, key2, v, false))
+    return false;
+  RCHelper::addReference (e);
+  return true;
+}
+
+bool context::bind_func2 (const char *key1, xqp_string key2, function *f) {
+  ctx_value_t v;
+  v.functionValue = f;
+  if (keymap.put2 (key1, key2, v, false))
+    return false;
+  RCHelper::addReference (f);
+  return true;
+}
+
 
 
 DECL_ENUM_PARAM (static_context, construction_mode)
@@ -147,7 +165,7 @@ pair<xqp_string, xqp_string> parse_qname (xqp_string qname)
 
 xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
 {
-  return local + ":" + ns;
+  return xqpString::concat(local, ":", ns);
 }
 
 
@@ -196,13 +214,13 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
 
   xqp_string static_context::fn_internal_key (int arity) 
   {
-    return "fn:" + to_string (arity) + "/";
+    return xqpString::concat("fn:", to_string (arity).c_str(), "/");
   }
 
 
 function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int arity) const 
 {
-  function *f = lookup_func (fn_internal_key (arity) +
+  function *f = lookup_func2 (fn_internal_key (arity),
                              qname_internal_key (default_function_namespace (),
                                                  prefix,
                                                  local));
@@ -210,7 +228,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
     return f;
   else 
   {
-    f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) +
+    f = lookup_func2(fn_internal_key (VARIADIC_SIG_SIZE),
                      qname_internal_key (default_function_namespace (),
                                          prefix,
                                          local));
@@ -221,7 +239,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
 }
 
   bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const {
-    return context_value ("ns:" + prefix, ns) && ! ns.empty();    
+    return context_value2 ("ns:", prefix, ns) && ! ns.empty();    
   }
 
   xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const {
@@ -246,7 +264,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
     {
       ns = default_elem_type_ns(); 
     } else {
-      if (!context_value("ns:" + pfx, ns))
+      if (!context_value2("ns:", pfx, ns))
       {
         return false;
       }
@@ -259,12 +277,12 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
 
   void static_context::bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err)
   {
-    bind_str ("ns:" + prefix, ns, err);
+    bind_str2 ("ns:", prefix, ns, err);
   }
 
   function *static_context::lookup_builtin_fn (xqp_string local, int arity)
   {
-    function *f = GENV.getRootStaticContext().lookup_func (fn_internal_key (arity) + qname_internal_key2 (XQUERY_FN_NS, local));
+    function *f = GENV.getRootStaticContext().lookup_func2 (fn_internal_key (arity), qname_internal_key2 (XQUERY_FN_NS, local));
     if (f == NULL)
       ZORBA_NOT_IMPLEMENTED ("built-in `" + local + "/" + to_string (arity) + "'");
     return f;
@@ -274,6 +292,12 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
   {
     ctx_value_t val;
     ZORBA_ASSERT (context_value (key, val));
+    return val.typeValue;
+  }
+  xqtref_t static_context::lookup_type2( const char *key1, xqp_string key2)
+  {
+    ctx_value_t val;
+    ZORBA_ASSERT (context_value2 (key1, key2, val));
     return val.typeValue;
   }
 
@@ -295,7 +319,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
   xqtref_t  static_context::get_variable_type(
     store::Item *var_name)
   {
-    return lookup_type( "type:var:" + qname_internal_key("",
+    return lookup_type2( "type:var:", qname_internal_key("",
                                                          var_name->getPrefix(),
                                                          var_name->getLocalName()));
   }
@@ -322,7 +346,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
 
 void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 {
-  bind_type("type:fun:"+qname_internal_key( default_function_namespace(),
+  bind_type("type:fun:" + qname_internal_key( default_function_namespace(),
                                             qname->getPrefix(),
                                             qname->getLocalName()),
             t);
@@ -331,32 +355,32 @@ void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 xqtref_t static_context::get_function_type(
   const store::Item_t qname) 
 {
-  return lookup_type("type:fun:" + qname_internal_key(default_function_namespace(),
+  return lookup_type2("type:fun:", qname_internal_key(default_function_namespace(),
                                                       qname->getPrefix(),
                                                       qname->getLocalName()));
 }
 
 void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 {
-  bind_type("type:doc:"+docURI, t);
+  bind_type("type:doc:" + docURI, t);
 }
 
 xqtref_t static_context::get_document_type(
   const xqp_string docURI) 
 {
-  return lookup_type("type:doc:" + docURI);
+  return lookup_type2("type:doc:", docURI);
 
 }
 
 void static_context::set_collection_type(xqp_string collURI, xqtref_t t)
 {
-  bind_type("type:collection:"+collURI, t);
+  bind_type("type:collection:" + collURI, t);
 }
 
 xqtref_t static_context::get_collection_type(
   const xqp_string collURI) 
 {
-  return lookup_type("type:collection:" + collURI);
+  return lookup_type2("type:collection:", collURI);
 }
 
 /**
@@ -563,7 +587,7 @@ static_context::bind_stateless_external_function(StatelessExternalFunction* aExt
   xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
   xqpString lURI = Unmarshaller::getInternalString(aExternalFunction->getURI());
 
-  return bind_stateless_function(lLocalName +":" +lURI, aExternalFunction);
+  return bind_stateless_function(xqpString::concat(lLocalName,":",lURI), aExternalFunction);
 }
 
 StatelessExternalFunction *

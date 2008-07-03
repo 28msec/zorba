@@ -93,10 +93,10 @@ public:
   }
 
   expr *lookup_var (xqp_string varname) const {
-    return lookup_expr ("var:" + qname_internal_key ("", varname));
+    return lookup_expr2 ("var:", qname_internal_key ("", varname));
   }
   expr *lookup_var (store::Item_t varname) {
-    return lookup_expr ("var:" + qname_internal_key (varname));
+    return lookup_expr2 ("var:", qname_internal_key (varname));
   }
   expr *lookup_var_nofail (xqp_string varname) const {
     expr *e = lookup_var (varname);
@@ -104,17 +104,17 @@ public:
     return e;
   }
   bool bind_var (const store::Item *qname, expr *expr) {
-    return bind_expr ("var:" + qname_internal_key (qname), expr);
+    return bind_expr2 ("var:", qname_internal_key (qname), expr);
   }
   void bind_collation(const xqp_string& aCollURI)
   {
-    bind_str("coll:" + aCollURI, "");
+    bind_str2("coll:", aCollURI, "");
   }
   bool lookup_collation(const xqp_string& aCollURI) const
   {
     // TODO better use a hashmap for collation itself
     xqpString lTmp;
-    return context_value<xqp_string>("coll:" + aCollURI, lTmp);  
+    return context_value2<xqp_string>("coll:", aCollURI, lTmp);  
   }
   void bind_default_collation(const xqp_string& aCollURI)
   {
@@ -149,6 +149,7 @@ public:
 
 	void bind_type( xqp_string key, xqtref_t t);
 	xqtref_t  lookup_type (xqp_string key);
+	xqtref_t  lookup_type2 (const char *key1, xqp_string key2);
 
   /**
    * collation management

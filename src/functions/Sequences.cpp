@@ -327,8 +327,8 @@ const function *op_node_sort_distinct::op_for_action (const static_context *sctx
     return distinct ? LOOKUP_OP1 ("sort-distinct-nodes-asc" + (atomics ? "-or-atomics" : "ending"))
 #endif
       : (atomics ? LOOKUP_OP1 ("either-nodes-or-atomics") : NULL);
-  xqp_string part1 = xqp_string ("sort-") + (distinct ? "distinct-" : "") + "nodes-";
-  xqp_string part2 = xqp_string (A_ASCENDING ? "asc" : "desc") + (atomics ? "-or-atomics" : "ending");
+  xqp_string part1 = xqpString::concat("sort-", (distinct ? "distinct-" : ""), "nodes-");
+  xqp_string part2 = xqpString::concat( A_ASCENDING ? "asc" : "desc", (atomics ? "-or-atomics" : "ending"));
   return LOOKUP_OP1 (part1 + part2);
 #undef LOOKUP_OP1
 }

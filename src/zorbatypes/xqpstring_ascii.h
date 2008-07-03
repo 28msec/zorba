@@ -86,6 +86,8 @@ public:
     theString(other.theString)
   {
   }
+  
+  xqpStringStore(long initial_len) { theString.reserve(initial_len); }
 
   long*
   getSharedRefCounter() const { return NULL; }  
@@ -174,9 +176,13 @@ public:
 
   void append_in_place(xqpStringStore *suffix);
 
+  void append_in_place(xqpStringStore *suffix, const char *s2);
+
   void append_in_place(const char *str);
 
   void append_in_place(const char *str, int len);
+
+  void append_in_place(std::string &str);
 
   xqpStringStore_t
   substr(std::string::size_type index, std::string::size_type length) const;
@@ -264,6 +270,11 @@ public:
      */
     xqpString(const char* src);
 
+    /**
+     * @param initial_len preallocates some bytes but the string is empty
+    */
+    xqpString(long initial_len);
+
     ~xqpString(){};
 
     xqpStringStore* 
@@ -296,8 +307,7 @@ public:
     xqpString&
     operator+=(const char* src);
       
-    /** @param cp Codepoint
-     */
+    // @param cp Codepoint
     xqpString&
     operator+=(uint32_t cp);
       
@@ -306,9 +316,15 @@ public:
 
     void append_in_place(const char c);
 
+    void append_in_place(xqpStringStore *suffix);
+
+    void append_in_place(xqpStringStore *suffix, const char *s2);
+
     void append_in_place(const char *str);
 
     void append_in_place(const char *str, int len);
+
+    void append_in_place(std::string &str);
 
     bool
     operator==(xqpString src) const
@@ -584,7 +600,30 @@ public:
        */
 //      static xqpString
 //      fromUTF16(const UChar* src, int32_t len);
-
+public:
+      static xqpString concat(const char *s1, 
+                              const char *s2);
+      static xqpString concat(const char *s1, 
+                              const char *s2,
+                              xqpStringStore_t s3);
+      static xqpString concat(const char *s1, 
+                              const char *s2,
+                              const char *s3);
+      static xqpString concat(xqpString s1, 
+                              const char *s2,
+                              xqpString s3);
+      static xqpString concat(std::string &s1, 
+                              const char *s2,
+                              xqpStringStore_t s3);
+      static xqpString concat(xqpStringStore_t s1, 
+                              const char *s2,
+                              xqpString s3,
+                              const char *s4);
+      static xqpString concat(const char *s1, 
+                              std::string &s2,
+                              const char *s3,
+                              xqpStringStore_t s4,
+                              const char *s5);
     private:
 
   
@@ -606,6 +645,7 @@ public:
        */
       std::map<uint32_t,uint32_t> 
       createMapArray(xqpString mapString, xqpString transString) const;
+
   };
 
 

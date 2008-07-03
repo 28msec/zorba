@@ -209,7 +209,7 @@ xqpString Base64::encode(std::istream& aStream)
 
   result = encode(source);
   for (unsigned int i=0; i<result.size(); i++)
-    xqpResult += result[i];
+    xqpResult.append_in_place(result[i]);
   return xqpResult;
 }
     
