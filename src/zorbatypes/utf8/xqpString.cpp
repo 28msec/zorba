@@ -1410,7 +1410,7 @@ xqpString xqpString::concat(const char *s1,
 
 xqpString xqpString::concat(const char *s1, 
                         const char *s2,
-                        xqpStringStore_t s3)
+                        const xqpStringStore_t s3)
 {
 //  int l1 = strlen(s1);
 //  int l2 = strlen(s2);
@@ -1440,7 +1440,7 @@ xqpString xqpString::concat(const char *s1,
 
 xqpString xqpString::concat(xqpString s1, 
                         const char *s2,
-                        xqpString s3)
+                        const xqpString s3)
 {
 //  int l1 = s1.bytes();
 //  int l2 = strlen(s2);
@@ -1453,9 +1453,9 @@ xqpString xqpString::concat(xqpString s1,
   return result;
 }
 
-xqpString xqpString::concat(std::string &s1, 
+xqpString xqpString::concat(const std::string &s1, 
                         const char *s2,
-                        xqpStringStore_t s3)
+                        const xqpStringStore_t s3)
 {
 //  int l1 = s1.length();
 //  int l2 = strlen(s2);
@@ -1468,9 +1468,9 @@ xqpString xqpString::concat(std::string &s1,
   return result;
 }
 
-xqpString xqpString::concat(xqpStringStore_t s1, 
+xqpString xqpString::concat(const xqpStringStore_t s1, 
                         const char *s2,
-                        xqpString s3,
+                        const xqpString s3,
                         const char *s4)
 {
 //  int l1 = s1->bytes();
@@ -1487,9 +1487,9 @@ xqpString xqpString::concat(xqpStringStore_t s1,
 }
 
 xqpString xqpString::concat(const char *s1, 
-                        std::string &s2,
+                        const std::string &s2,
                         const char *s3,
-                        xqpStringStore_t s4,
+                        const xqpStringStore_t s4,
                         const char *s5)
 {
 //  int l1 = strlen(s1);

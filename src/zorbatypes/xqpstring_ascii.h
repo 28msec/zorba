@@ -605,24 +605,24 @@ public:
                               const char *s2);
       static xqpString concat(const char *s1, 
                               const char *s2,
-                              xqpStringStore_t s3);
+                              const xqpStringStore_t s3);
       static xqpString concat(const char *s1, 
                               const char *s2,
                               const char *s3);
-      static xqpString concat(xqpString s1, 
+      static xqpString concat(const xqpString s1, 
                               const char *s2,
-                              xqpString s3);
-      static xqpString concat(std::string &s1, 
+                              const xqpString s3);
+      static xqpString concat(const std::string &s1, 
                               const char *s2,
-                              xqpStringStore_t s3);
-      static xqpString concat(xqpStringStore_t s1, 
+                              const xqpStringStore_t s3);
+      static xqpString concat(const xqpStringStore_t s1, 
                               const char *s2,
-                              xqpString s3,
+                              const xqpString s3,
                               const char *s4);
       static xqpString concat(const char *s1, 
-                              std::string &s2,
+                              const std::string &s2,
                               const char *s3,
-                              xqpStringStore_t s4,
+                              const xqpStringStore_t s4,
                               const char *s5);
     private:
 
