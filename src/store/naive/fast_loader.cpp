@@ -579,10 +579,10 @@ void FastXmlLoader::startElement(
       store::Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
       store::Item_t typedValue = new UntypedAtomicItemImpl(value);
 
-      AttributeNode* attrNode = new AttributeNode(qname, typeName, false);
+      AttributeNode* attrNode = new AttributeNode(qname, typeName);
       attrNode->theParent = elemNode;
       attrNode->setId(loader.theTree, &loader.theOrdPath);
-      attrNode->theTypedValue.transfer(typedValue);
+      attrNode->theTypedValue = typedValue.transfer();
 
       attrNodes.set(attrNode, i, false);
 

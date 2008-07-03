@@ -383,8 +383,8 @@ void ElementNode::insertAttributes(
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(attrs[i].getp());
 
-    checkNamespaceConflict(attr->theName, XUDY0024);
-    checkUniqueAttr(attr->theName);
+    checkNamespaceConflict(attr->getNodeName(), XUDY0024);
+    checkUniqueAttr(attr->getNodeName());
 
     if (copy)
       attr->copy2(this, this, numAttrs + i, copymode);
@@ -413,8 +413,8 @@ void ElementNode::replaceAttribute(
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(newAttrs[i].getp());
 
-    checkNamespaceConflict(attr->theName, XUDY0024);
-    checkUniqueAttr(attr->theName);
+    checkNamespaceConflict(attr->getNodeName(), XUDY0024);
+    checkUniqueAttr(attr->getNodeName());
 
     if (copy)
       attr->copy2(this, this, pos + i, copymode);
@@ -462,14 +462,35 @@ void ElementNode::replaceContent(
 ********************************************************************************/
 void AttributeNode::replaceValue(
     xqpStringStore_t& newValue,
-    xqpStringStore_t& oldValue)
+    store::Item_t&    oldType,
+    store::Item_t&    oldValue,
+    uint16_t&         oldFlags)
 {
-  xqpStringStore_t tmp = theTypedValue->getStringValue();
-  oldValue.transfer( tmp );
-  theTypedValue = new UntypedAtomicItemImpl(newValue);
+  oldValue.transfer(theTypedValue);
+  oldType.transfer(theTypeName);
+  oldFlags = theFlags;
+
+  theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+ 
+  store::Item_t item(new UntypedAtomicItemImpl(newValue));
+  theTypedValue.transfer(item);
 }
 
 
+void AttributeNode::restoreValue(
+    store::Item_t&    oldType,
+    store::Item_t&    oldValue,
+    uint16_t          oldFlags)
+{
+  theTypedValue.transfer(oldValue);
+  theTypeName.transfer(oldType);
+  theFlags = oldFlags;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void TextNode::replaceValue(
     xqpStringStore_t& newValue,
     xqpStringStore_t& oldValue)

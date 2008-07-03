@@ -26,12 +26,12 @@ namespace zorba { namespace simplestore {
 class ItemIterator : public store::Iterator
 {
 private:
-  std::vector<store::Item_t>           theItems;
-  std::vector<store::Item_t>::iterator theIterator;
+  const std::vector<store::Item_t>*          theItems;
+  std::vector<store::Item_t>::const_iterator theIterator;
 
 public:
-  ItemIterator(std::vector<store::Item_t> aItems);
-  ItemIterator(store::Item_t aItem);
+  ItemIterator(const std::vector<store::Item_t>& aItems);
+
   ItemIterator(); // construct the empty sequence
 
   virtual ~ItemIterator(){}

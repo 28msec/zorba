@@ -53,7 +53,7 @@ BasicItemFactory::~BasicItemFactory()
 
 
 bool BasicItemFactory::createQName(
-    store::Item_t&                 result,
+    store::Item_t&          result,
     const xqpStringStore_t& ns,
     const xqpStringStore_t& pre,
     const xqpStringStore_t& local)
@@ -64,10 +64,10 @@ bool BasicItemFactory::createQName(
 
 
 bool BasicItemFactory::createQName(
-    store::Item_t&     result,
-    const char* ns,
-    const char* pre,
-    const char* ln)
+    store::Item_t& result,
+    const char*    ns,
+    const char*    pre,
+    const char*    ln)
 {
   result = theQNamePool->insert(ns, pre, ln);
   return true;
@@ -909,6 +909,8 @@ bool BasicItemFactory::createElementNode(
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
     store::Item_t&              typedValue,
+    bool                        isId,
+    bool                        isIdRefs,
     const store::NsBindings&    localBindings,
     xqpStringStore_t&           baseUri,
     bool                        allowSharing)
@@ -950,6 +952,8 @@ bool BasicItemFactory::createElementNode(
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
     std::vector<store::Item_t>* typedValue,
+    bool                        isId,
+    bool                        isIdRefs,
     const store::NsBindings&    localBindings,
     xqpStringStore_t&           baseUri,
     bool                        allowSharing)
@@ -1004,7 +1008,9 @@ bool BasicItemFactory::createAttributeNode(
     long            pos,
     store::Item_t&  nodeName,
     store::Item_t&  typeName,
-    store::Item_t&  typedValue)
+    store::Item_t&  typedValue,
+    bool            isId,
+    bool            isIdRefs)
 {
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
@@ -1016,8 +1022,8 @@ bool BasicItemFactory::createAttributeNode(
     if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-    n = new AttributeNode(xmlTree, pnode, pos, nodeName, typeName,
-                          typedValue, NULL);
+    n = new AttributeNode(xmlTree, pnode, pos,
+                          nodeName, typeName, typedValue, isId, isIdRefs, false);
   }
   catch (...)
   {
@@ -1036,7 +1042,9 @@ bool BasicItemFactory::createAttributeNode(
     long                        pos,
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValue)
+    std::vector<store::Item_t>& typedValueV,
+    bool                        isId,
+    bool                        isIdRefs)
 {
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
@@ -1048,9 +1056,10 @@ bool BasicItemFactory::createAttributeNode(
     if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-    store::Item_t dummy;
-    n = new AttributeNode(xmlTree, pnode, pos, nodeName, typeName,
-                          dummy, &typedValue);
+    store::Item_t typedValue = new ItemVector(typedValueV);
+ 
+    n = new AttributeNode(xmlTree, pnode, pos,
+                          nodeName, typeName, typedValue, isId, isIdRefs, true);
   }
   catch (...)
   {

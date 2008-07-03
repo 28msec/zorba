@@ -23,6 +23,7 @@
 #include "zorbamisc/config/platform.h"
 #include "zorbautils/fatal.h"
 #include "store/api/item.h"
+#include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/node_vector.h"
 #include "store/naive/node_updates.h"
@@ -118,17 +119,6 @@ class XmlNode : public store::Item
   friend class UpdReplaceTextValue;
   friend class BasicItemFactory;
   friend class FastXmlLoader;
-
-public:
-  enum NodeFlags
-  {
-    HaveTypedValue    =   1,
-    HaveLocalBindings =   2,
-    IsId              =   4,
-    IsIdRefs          =   8,
-    IsBaseUri         =  32,
-    IsHidden          =  64
-  };
 
 protected:
   //XmlTree  * theTree;
@@ -421,12 +411,23 @@ class ElementNode : public XmlNode
   friend class ElementTreeNode;
   friend class AttributeNode;
 
+public:
+  typedef enum ElemFlags
+  {
+    IsId              =   1,
+    IsIdRefs          =   2,
+    HaveTypedValue    =   4,
+    HaveListValue     =   8,
+    HaveLocalBindings =   16,
+    HaveBaseUri       =   32
+  };
+
 protected:
   store::Item_t         theName;
   store::Item_t         theTypeName;
   store::Item_t         theTypedValue;
   NsBindingsContext_t   theNsContext;
-  uint32_t              theFlags;
+  uint16_t              theFlags;
 
 public:
   ElementNode(
@@ -473,15 +474,15 @@ public:
   // SimpleStore Methods
   // 
 
-  bool isId() const             { return (theFlags & XmlNode::IsId) != 0; }
-  void resetIsId()              { theFlags &= ~XmlNode::IsId; }
-  bool isIdRefs() const         { return (theFlags & XmlNode::IsIdRefs) != 0; }
-  void resetIsIdRefs()          { theFlags &= ~XmlNode::IsIdRefs; }
-  bool haveBaseUri() const      { return (theFlags & XmlNode::IsBaseUri); }
-  void setHaveBaseUri()         { theFlags |= XmlNode::IsBaseUri; }
-  void resetHaveBaseUri()       { theFlags &= ~XmlNode::IsBaseUri; }
+  bool isId() const             { return (theFlags & IsId) != 0; }
+  void resetIsId()              { theFlags &= ~IsId; }
+  bool isIdRefs() const         { return (theFlags & IsIdRefs) != 0; }
+  void resetIsIdRefs()          { theFlags &= ~IsIdRefs; }
+  bool haveBaseUri() const      { return (theFlags & HaveBaseUri); }
+  void setHaveBaseUri()         { theFlags |= HaveBaseUri; }
+  void resetHaveBaseUri()       { theFlags &= ~HaveBaseUri; }
 
-  bool haveLocalBindings() const{ return (theFlags & XmlNode::HaveLocalBindings) != 0; }
+  bool haveLocalBindings() const{ return (theFlags & HaveLocalBindings) != 0; }
 
   NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
@@ -656,21 +657,28 @@ private:
 class AttributeNode : public XmlNode
 {
   friend class XmlNode;
-  friend class ElementNode;
-  friend class ConstrElementNode;
   friend class FastXmlLoader;
+
+public:
+  typedef enum AttrFlags
+  {
+    IsId              =   1,
+    IsIdRefs          =   2,
+    IsBaseUri         =   4,
+    IsHidden          =   8,
+    HaveListValue     =  16
+  };
 
 protected:
   store::Item_t   theName;
   store::Item_t   theTypeName;
   store::Item_t   theTypedValue;
-  uint32_t        theFlags;
+  uint16_t        theFlags;
 
 public:
   AttributeNode(
         store::Item_t&  attrName,
-        store::Item_t&  typeName,
-        bool            isIdrefs);
+        store::Item_t&  typeName);
 
   AttributeNode(
         XmlTree*                    tree,
@@ -679,11 +687,12 @@ public:
         store::Item_t&              attrName,
         store::Item_t&              typeName,
         store::Item_t&              typedValue,
-        std::vector<store::Item_t>* typedValueV,
+        bool                        isListValue,
+        bool                        isId = false,
+        bool                        isIdRef = false,
         bool                        hidden = false);
 
   virtual ~AttributeNode();
-
 
   XmlNode* copy2(
         XmlNode*               rootParent,
@@ -700,26 +709,52 @@ public:
 
   store::Item* getNodeName() const { return theName.getp(); }
 
-  bool isId() const           { return (theFlags & XmlNode::IsId) != 0; }
-  void resetIsId()            { theFlags &= ~XmlNode::IsId; }
+  bool isId() const           { return (theFlags & IsId) != 0; }
+  void resetIsId()            { theFlags &= ~IsId; }
 
-  bool isIdRefs() const       { return (theFlags & XmlNode::IsIdRefs) != 0; }
-  void resetIsIdRefs()        { theFlags &= ~XmlNode::IsIdRefs; }
+  bool isIdRefs() const       { return (theFlags & IsIdRefs) != 0; }
+  void resetIsIdRefs()        { theFlags &= ~IsIdRefs; }
 
-  bool isHidden() const       { return (theFlags & XmlNode::IsHidden) != 0; }
-  void setHidden()            { theFlags |= XmlNode::IsHidden; }
+  bool haveListValue() const  { return (theFlags & HaveListValue) != 0; }
+  void resetHaveListValue()   { theFlags &= ~HaveListValue; }
+  void setHaveListValue()     { theFlags |= HaveListValue; }
 
-  bool isBaseUri() const      { return (theFlags & XmlNode::IsBaseUri) != 0; }
+  bool isHidden() const       { return (theFlags & IsHidden) != 0; }
+  void setHidden()            { theFlags |= IsHidden; }
 
+  bool isBaseUri() const      { return (theFlags & IsBaseUri) != 0; }
+
+  void setTypedValue(store::Item_t& val);
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-  store::Item_t getAtomizationValue() const;
+
   xqpStringStore_t getStringValue() const;
+  store::Item_t getAtomizationValue() const;
 
   xqp_string show() const;
 
-  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+  void replaceValue(
+        xqpStringStore_t& newValue,
+        store::Item_t&    oldType,
+        store::Item_t&    oldValue,
+        uint16_t&         oldFlags);
+
+  void restoreValue(
+        store::Item_t&    oldType,
+        store::Item_t&    oldValue,
+        uint16_t          oldFlags);
 
   void rename(store::Item_t& newname, store::Item_t& oldName);
+
+protected:
+  ItemVector& getValueVector() 
+  {
+    return *reinterpret_cast<ItemVector*>(theTypedValue.getp()); 
+  }
+
+  const ItemVector& getValueVector() const
+  {
+    return *reinterpret_cast<ItemVector*>(theTypedValue.getp()); 
+  }
 };
    
 

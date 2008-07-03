@@ -25,18 +25,18 @@ SET(SIMPLE_STORE_SRCS
     simple_pul.cpp
     simple_loader.cpp
     fast_loader.cpp
-    atomic_items.cpp
+    qname_pool.cpp
+    string_pool.cpp
     item.cpp
+    item_vector.cpp
+    item_iterator.cpp
+    atomic_items.cpp
     node_items.cpp
     node_vector.cpp
     node_updates.cpp
     node_iterators.cpp
-    qname_pool.cpp
     ordpath.cpp
     nsbindings.cpp
-    item_iterator.cpp
-    query_context.cpp
-    string_pool.cpp
     properties.cpp
     inmemorystore.cpp
     inmemorystorec.cpp

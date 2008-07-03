@@ -213,6 +213,8 @@ public:
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         store::Item_t&              typedValue,
+        bool                        isId,
+        bool                        isIdRefs,
         const store::NsBindings&    localBindings,
         xqpStringStore_t&           baseURI,
         bool                        allowSharing = false);
@@ -224,6 +226,8 @@ public:
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         std::vector<store::Item_t>* typedValueV,
+        bool                        isId,
+        bool                        isIdRefs,
         const store::NsBindings&    localBindings,
         xqpStringStore_t&           baseURI,
         bool                        allowSharing = false);
@@ -234,7 +238,9 @@ public:
         long                        pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
-        store::Item_t&              typedValue);
+        store::Item_t&              typedValue,
+        bool                        isId,
+        bool                        isIdRefs);
 
   bool createAttributeNode(
         store::Item_t&              result,
@@ -242,7 +248,9 @@ public:
         long                        pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
-        std::vector<store::Item_t>& typedValueV);
+        std::vector<store::Item_t>& typedValueV,
+        bool                        isId,
+        bool                        isIdRefs);
 
 
   bool createTextNode(

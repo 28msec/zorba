@@ -18,20 +18,14 @@
 
 namespace zorba { namespace simplestore {
 
-ItemIterator::ItemIterator(std::vector<store::Item_t> aItems) 
+ItemIterator::ItemIterator(const std::vector<store::Item_t>& aItems)
   :
-  theItems(aItems)
+  theItems(&aItems)
 {
 }
 
 
-ItemIterator::ItemIterator(store::Item_t aItem) 
-{
-  theItems.push_back(aItem);
-}
-
-
-ItemIterator::ItemIterator() 
+ItemIterator::ItemIterator() : theItems(NULL)
 {
 }
 
@@ -39,19 +33,31 @@ ItemIterator::ItemIterator()
 void
 ItemIterator::open() 
 {
-  theIterator = theItems.begin();
+  if (theItems)
+    theIterator = theItems->begin();
 }
 
 
 bool
 ItemIterator::next(store::Item_t& result) 
 {
-  if (theIterator == theItems.end()) {
+  if (theItems)
+  {
+    if (theIterator == theItems->end()) 
+    {
+      result = NULL;
+      return false;
+    }
+    else 
+    {
+      result = *(theIterator++);
+      return true;
+    }
+  }
+  else
+  {
     result = NULL;
     return false;
-  } else {
-    result = *(theIterator++);
-    return true;
   }
 }
 
@@ -59,7 +65,8 @@ ItemIterator::next(store::Item_t& result)
 void
 ItemIterator::reset() 
 {
-  theIterator = theItems.begin();
+  if (theItems)
+    theIterator = theItems->begin();
 }
 
 

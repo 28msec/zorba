@@ -405,13 +405,20 @@ class UpdReplaceAttrValue : public UpdatePrimitive
 
 protected:
   xqpStringStore_t    theNewValue;
-  xqpStringStore_t    theOldValue;
+
+  store::Item_t       theOldType;
+  store::Item_t       theOldValue;
+  uint16_t            theOldFlags;
 
 public:
   UpdReplaceAttrValue(store::Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
     theNewValue.transfer(newValue);
+    theOldValue = NULL;
+    theOldFlags = 0;
   }
+
+  ~UpdReplaceAttrValue();
 
   store::UpdateConsts::UpdPrimKind getKind() 
   {

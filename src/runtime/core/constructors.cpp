@@ -254,6 +254,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                       nodeName,
                                       typeName,
                                       nullValue,
+                                      false,
+                                      false,
                                       theLocalBindings->get_bindings(),
                                       baseUri,
                                       false);
@@ -472,7 +474,9 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   GENV_ITEMFACTORY->createAttributeNode(result, parent, -1,
                                         name,
                                         typeName,
-                                        typedValue);
+                                        typedValue,
+                                        false,
+                                        false);
 
   STACK_PUSH(true, state);
   STACK_END (state);

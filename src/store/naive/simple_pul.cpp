@@ -1167,11 +1167,16 @@ void UpdReplaceContent::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdReplaceAttrValue::~UpdReplaceAttrValue()
+{
+}
+
+
 void UpdReplaceAttrValue::apply()
 {
   AttributeNode* target = ATTR_NODE(theTarget);
 
-  target->replaceValue(theNewValue, theOldValue);
+  target->replaceValue(theNewValue, theOldType, theOldValue, theOldFlags);
 
   if (target->theParent)
     target->theParent->removeType(theTypeUndoList);
@@ -1184,13 +1189,16 @@ void UpdReplaceAttrValue::undo()
 {
   AttributeNode* target = ATTR_NODE(theTarget);
 
-  target->replaceValue(theOldValue, theNewValue);
+  target->restoreValue(theOldType, theOldValue, theOldFlags);
 
   if (!theTypeUndoList.empty())
     target->theParent->restoreType(theTypeUndoList);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void UpdReplaceTextValue::apply()
 {
   TextNode* target = TEXT_NODE(theTarget);

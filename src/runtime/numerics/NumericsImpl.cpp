@@ -392,26 +392,29 @@ bool NumArithIterator<Operation>::computeAtomic(
 }
 
   
-  /**
-   * Information: It is not possible to move this function to
-   * runtime/visitors/accept.cpp!
-   */
-  template < class Operation >
-  void NumArithIterator<Operation>::accept(PlanIterVisitor& v) const { 
-    v.beginVisit(*this); 
-    this->theChild0->accept(v); 
-    this->theChild1->accept(v); 
-    v.endVisit(*this); 
-  }
+/**
+ * Information: It is not possible to move this function to
+ * runtime/visitors/accept.cpp!
+ */
+template < class Operation >
+void NumArithIterator<Operation>::accept(PlanIterVisitor& v) const 
+{ 
+  v.beginVisit(*this); 
+  this->theChild0->accept(v); 
+  this->theChild1->accept(v); 
+  v.endVisit(*this); 
+}
 
-  /* instantiate NumArithIterator for all types */
-  template class NumArithIterator<AddOperation>;
-  template class NumArithIterator<SubtractOperation>;
-  template class NumArithIterator<MultiplyOperation>;
-  template class NumArithIterator<DivideOperation>;
-  template class NumArithIterator<IntegerDivideOperation>;
-  template class NumArithIterator<ModOperation>;
-  /* end class NumArithIterator */
+
+/* instantiate NumArithIterator for all types */
+template class NumArithIterator<AddOperation>;
+template class NumArithIterator<SubtractOperation>;
+template class NumArithIterator<MultiplyOperation>;
+template class NumArithIterator<DivideOperation>;
+template class NumArithIterator<IntegerDivideOperation>;
+template class NumArithIterator<ModOperation>;
+/* end class NumArithIterator */
+
 
   /*______________________________________________________________________
   |
@@ -564,7 +567,8 @@ bool NumArithIterator<Operation>::computeAtomic(
 
 
 
-  /*______________________________________________________________________
+
+/*______________________________________________________________________
   |
   | 6.2.8 op:numeric-unary-minus
   | op:numeric-unary-minus($arg as numeric) as numeric
@@ -578,65 +582,73 @@ bool NumArithIterator<Operation>::computeAtomic(
   | 0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns
   | INF.
   |_______________________________________________________________________*/
-  OpNumericUnaryIterator::OpNumericUnaryIterator ( const QueryLoc& loc, PlanIter_t& theChild, bool aPlus )
-      :
-      UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState> ( loc, theChild ), thePlus ( aPlus )
-  { }
+OpNumericUnaryIterator::OpNumericUnaryIterator (
+     const QueryLoc& loc,
+     PlanIter_t& theChild,
+     bool aPlus )
+  :
+  UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState> ( loc, theChild ), thePlus ( aPlus )
+{
+}
 
-  OpNumericUnaryIterator::~OpNumericUnaryIterator()
-  { }
 
-  bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
+OpNumericUnaryIterator::~OpNumericUnaryIterator()
+{
+}
+
+
+bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
+{
+  store::Item_t item;
+  xqtref_t type;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  if (consumeNext(item, theChild.getp(), planState ))
   {
-    store::Item_t item;
-    xqtref_t type;
-
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(item, theChild.getp(), planState ))
+    assert(item->isAtomic());
+    //item = item->getAtomizationValue();
+    type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
+    if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      item = item->getAtomizationValue();
+      GenericCast::instance()->cast ( item, item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
-      {
-        GenericCast::instance()->cast ( item, item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
-      }
-
-      // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createDouble (
-          result,
-          (thePlus ? item->getDoubleValue() : -item->getDoubleValue())
-        );
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createFloat (
-          result,
-          (thePlus ? item->getFloatValue() : -item->getFloatValue())
-        );
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createInteger (
-          result,
-          (thePlus ? item->getIntegerValue() : -item->getIntegerValue())
-        );
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createDecimal (
-          result,
-          (thePlus ? item->getDecimalValue() : -item->getDecimalValue())
-        );
-      else
-      {
-          ZORBA_ERROR_LOC_DESC( XPTY0004,
-              loc, "Wrong operator type for an unary arithmetic operation.");
-      }
-
-      if ( consumeNext(item, theChild.getp(), planState ) )
-          ZORBA_ERROR_LOC_DESC( XPTY0004,
-              loc, "Arithmetic operation has a sequences greater than one as an operator.");
-      STACK_PUSH (true, state );
     }
-    STACK_END (state);
+    
+    // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
+    if ( TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+      GENV_ITEMFACTORY->createDouble(
+                                     result,
+                                     (thePlus ? item->getDoubleValue() : -item->getDoubleValue())
+                                     );
+    else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createFloat(
+                                    result,
+                                    (thePlus ? item->getFloatValue() : -item->getFloatValue())
+                                    );
+    else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createInteger(
+                                      result,
+                                      (thePlus ? item->getIntegerValue() : -item->getIntegerValue())
+                                      );
+    else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createDecimal (
+                                       result,
+                                       (thePlus ? item->getDecimalValue() : -item->getDecimalValue())
+                                       );
+    else
+    {
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "Wrong operator type for an unary arithmetic operation.");
+    }
+    
+    if ( consumeNext(item, theChild.getp(), planState ) )
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "Arithmetic operation has a sequences greater than one as an operator.");
+    STACK_PUSH (true, state );
   }
+  STACK_END (state);
+}
 
 
 
@@ -666,7 +678,8 @@ bool NumArithIterator<Operation>::computeAtomic(
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     if (consumeNext(result, theChildren[0].getp(), planState ))
     {
-      result = result->getAtomizationValue();
+      assert(result->isAtomic());
+      //result = result->getAtomizationValue();
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
@@ -710,8 +723,8 @@ bool NumArithIterator<Operation>::computeAtomic(
 
       if ( consumeNext(item, theChildren[0].getp(), planState ))
       {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Abs operation has a sequences greater than one as an operator.");
+        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                             "Abs operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( true, state );
     }
@@ -731,7 +744,8 @@ bool NumArithIterator<Operation>::computeAtomic(
     if (consumeNext(result, theChildren[0].getp(), planState ))
     {
       //get the value and the type of the item
-      result = result->getAtomizationValue();
+      assert(result->isAtomic());
+      //result = result->getAtomizationValue();
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( result);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -785,7 +799,8 @@ bool NumArithIterator<Operation>::computeAtomic(
     if (consumeNext(result, theChildren[0].getp(), planState ))
     {
       //get the value and the type of the item
-      result = result->getAtomizationValue();
+      assert(result->isAtomic());
+      //result = result->getAtomizationValue();
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -840,7 +855,8 @@ bool NumArithIterator<Operation>::computeAtomic(
     if (consumeNext(result, theChildren[0].getp(), planState ))
     {
       //get the value and the type of the item
-      result = result->getAtomizationValue();
+      assert(result->isAtomic());
+      //result = result->getAtomizationValue();
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -896,14 +912,17 @@ bool NumArithIterator<Operation>::computeAtomic(
     
     if (consumeNext(result, theChildren [0].getp(), planState ))
     {
-      if (theChildren.size () == 2) {
-        consumeNext(itemPrec, theChildren [1].getp(), planState );
-        itemPrec = itemPrec->getAtomizationValue();
+      if (theChildren.size () == 2) 
+      {
+        consumeNext(itemPrec, theChildren[1].getp(), planState);
+        assert(itemPrec->isAtomic());
+        //itemPrec = itemPrec->getAtomizationValue();
         precision = itemPrec->getIntegerValue();
       }
       
       //get the value and the type of the item
-      result = result->getAtomizationValue();
+      assert(result->isAtomic());
+      //result = result->getAtomizationValue();
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -945,49 +964,52 @@ bool NumArithIterator<Operation>::computeAtomic(
   }
 
 
-  bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
-    store::Item_t item;
-    xqtref_t type;
+bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
+{
+  store::Item_t item;
+  xqtref_t type;
     
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState ))
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChildren[0].getp(), planState ))
+  {
+    assert(result->isAtomic());
+    //result = result->getAtomizationValue();
+
+    //get the value and the type of the item
+    
+    type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
+
+    //Parameters of type xs:untypedAtomic are always promoted to xs:double
+    if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      result = result->getAtomizationValue();
-
-      //get the value and the type of the item
-      result = result->getAtomizationValue();
+      GenericCast::instance()->cast ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
-
-      //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
-      {
-        GenericCast::instance()->cast ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
-      }
-
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());        
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().sqrt());
-      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
-        GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().sqrt());
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
-      else
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operator type for a sqrt operation.");
-
-      if ( consumeNext(item, theChildren[0].getp(), planState ))
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "sqrt operation has a sequence longer than one as an operator.");
-      }
-
-      STACK_PUSH (true, state);
     }
-    STACK_END (state);
+
+    if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());        
+    else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().sqrt());
+    else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+      GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().sqrt());
+    else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
+    else
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "Wrong operator type for a sqrt operation.");
+
+    if ( consumeNext(item, theChildren[0].getp(), planState ))
+    {
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "sqrt operation has a sequence longer than one as an operator.");
+    }
+    
+    STACK_PUSH (true, state);
   }
+  STACK_END (state);
+}
 
 
   bool FnExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const

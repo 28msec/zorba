@@ -487,6 +487,8 @@ public:
    * @param typeName      The fully qualified name of the new node's type.
    * @param typedValue    The typed value of the new node. It may be NULL (for
    *                      example if the node is untyped).
+   * @param isId          The is-id property of the new node.
+   * @param isIdRefs      The is-id-refs property of the new node.
    * @param localBindings A set of namespace bindings. The namespaces property
    *                      of N will be the union of this set and the namespaces 
    *                      property of P.
@@ -514,6 +516,8 @@ public:
         Item_t&               nodeName,
         Item_t&               typeName,
         Item_t&               typedValue,
+        bool                  isId,
+        bool                  isIdRefs,
         const NsBindings&     localBindings,
         xqpStringStore_t&     baseURI,
         bool                  allowSharing = false) = 0;
@@ -525,6 +529,8 @@ public:
         Item_t&               nodeName,
         Item_t&               typeName,
         std::vector<Item_t>*  typedValue,
+        bool                  isId,
+        bool                  isIdRefs,
         const NsBindings&     localBindings,
         xqpStringStore_t&     baseURI,
         bool                  allowSharing = false) = 0;
@@ -546,6 +552,8 @@ public:
    *                 updated accordingly.
    * @param typeName The fully qualified name of the new node's type.
    * @param typedValue The typed value of the new node.
+   * @param isId     The is-id property of the new node.
+   * @param isIdRefs The is-id-refs property of the new node.
    * @return         Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createAttributeNode(
@@ -554,7 +562,9 @@ public:
         long                 pos,
         Item_t&              nodeName,
         Item_t&              typeName,
-        Item_t&              typedValue) = 0;
+        Item_t&              typedValue,
+        bool                 isId,
+        bool                 isIdRefs) = 0;
 
   virtual bool createAttributeNode(
         Item_t&              result,
@@ -562,7 +572,9 @@ public:
         long                 pos,
         Item_t&              nodeName,
         Item_t&              typeName,
-        std::vector<Item_t>& typedValue) = 0;
+        std::vector<Item_t>& typedValue,
+        bool                 isId,
+        bool                 isIdRefs) = 0;
 
   /**
    * Create a new text node N and place it at a given position among the

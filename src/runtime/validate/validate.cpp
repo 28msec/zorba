@@ -197,7 +197,7 @@ namespace zorba
 
         store::Item_t elemName = element->getNodeName();
         GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
-                                            typeName, typedValue, 
+                                            typeName, typedValue, false, false, 
                                             bindings, baseUri, false);
 
 
@@ -245,7 +245,7 @@ namespace zorba
             
             store::Item_t validatedAttNode;
             GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attName,
-                typeName, textValue );
+                                                   typeName, textValue, false, false);
         }
     }
 
