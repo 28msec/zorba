@@ -66,7 +66,6 @@ public:
     bool matchKey2(const char *key1, const std::string &key2) const
     {
       const char  *k = key.c_str();
-      int   i = 0;
       while(*key1)
       {
         if(*k != *key1)
