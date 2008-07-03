@@ -674,6 +674,11 @@ DECL (sctx, fn_read_string,
       (createQName (ZORBA_FN_NS, "fn-zorba", "read-line"),
        GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
+DECL (sctx, fn_print,
+      (createQName (ZORBA_FN_NS, "fn-zorba", "print"),
+       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+       GENV_TYPESYSTEM.NONE_TYPE));
+
 // end debug functions
 
 

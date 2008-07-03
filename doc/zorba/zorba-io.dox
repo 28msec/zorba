@@ -1,0 +1,27 @@
+/** \page zorba-io Input and Output
+
+\section zorba-io Input and Output
+
+\code
+import module namespace zorba =
+  "http://www.zorba-xquery.com/zorba/internal-functions";
+
+zorba:read-line () as xs:string;
+zorba:print ($args as item()*) as xs:none;
+
+\endcode
+
+The read-line function will read a line from the console and return
+it as an xs:string.
+
+The print function prints the items in the given
+input sequence. There is no implicit separator, but you can
+include separators (such as " ") in the sequence:
+
+\code
+declare variable $nl := "
+";
+zorba:print (("Your speed is ", $speed, " ", $unit, $nl))
+\endcode
+
+*/

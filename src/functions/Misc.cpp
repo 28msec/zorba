@@ -53,6 +53,11 @@ PlanIter_t fn_read_string::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
   return new FnReadStringIterator (loc, argv);
 }
 
+PlanIter_t fn_print::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnPrintIterator (loc, argv);
+}
+
 
 }
 /* vim:set ts=2 sw=2: */

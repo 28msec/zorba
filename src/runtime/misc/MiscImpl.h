@@ -81,6 +81,7 @@ public:
 };
 
 NARY_ITER (FnReadStringIterator);
+NARY_ITER (FnPrintIterator);
 
 } /* namespace zorba */
 

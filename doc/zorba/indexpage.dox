@@ -35,6 +35,7 @@
        <ul>
          <li> \ref deref
          <li> \ref zorba-math
+         <li> \ref zorba-io
        </ul>
      </ul>
      <li> \ref commandline

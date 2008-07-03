@@ -50,6 +50,13 @@ namespace zorba {
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
+  class fn_print : public function {
+  public:
+    fn_print(const signature& sig) : function (sig) {}
+    bool requires_dyn_ctx () const { return true; }
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  };
+
 }
 
 #endif /* ZORBA_MISC_H */

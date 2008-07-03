@@ -150,4 +150,12 @@ bool FnReadStringIterator::nextImpl (store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  while (CONSUME (result, theChildren.size () - 1))
+    std::cout << result->getStringValue ();
+  STACK_END (state);
+}
+
 } /* namespace zorba */
