@@ -296,7 +296,6 @@ int _tmain(int argc, _TCHAR* argv[])
                std::ostreambuf_iterator<char>(out));
     qfile->seekg(0);
     std::istringstream lInputQuery( out.str() );
-
     boost::thread lServerThread ( 
                                   boost::bind(
                                     &server,

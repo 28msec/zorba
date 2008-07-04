@@ -1,0 +1,45 @@
+Zorba XQuery debugger client.
+Copyright 2006-2008 The FLWOR Foundation.
+License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>
+[Server Thread] Client connected
+[Client Thread] start event listener thread
+[Client Thread] wait for the event client to connect
+Query idle
+(xqdb) r
+Launch the query
+[Server Thread] send an event: started
+[Server Thread] event sent
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+[Server Thread] send an event: terminated
+[Server Thread] event sent
+End of query execution
+(xqdb) r
+Launch the query
+[Server Thread] send an event: started
+[Server Thread] event sent
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+[Server Thread] send an event: terminated
+[Server Thread] event sent
+End of query execution
+(xqdb) q
+[Server Thread] server quited
+[Server Thread] runtime thread joined
+

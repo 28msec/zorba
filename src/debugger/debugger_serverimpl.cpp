@@ -58,10 +58,11 @@ void ZorbaDebuggerImpl::start( void * aStore,
 
   //Compiles the query
   theQuery = Zorba::getInstance( aStore )->createQuery();
+  theFileName = aFileName ;
   theQuery->setFileName( theFileName );
   Zorba_CompilerHints lCompilerHints;
   lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
-  theQuery->compile( * aQuery, lCompilerHints);
+  theQuery->compile( * aQuery, lCompilerHints );
   
   //Set the fileName
   theFileName = aFileName; 
@@ -108,7 +109,9 @@ void ZorbaDebuggerImpl::start( void * aStore,
 #ifndef NDEBUG
   std::cerr << "[Server Thread] server quited" << std::endl;
 #endif
-  theRuntimeThread->join();
+  if ( theRuntimeThread != 0 ){
+    theRuntimeThread->join();
+  }
 #ifndef NDEBUG
   std::cerr << "[Server Thread] runtime thread joined" << std::endl;
 #endif 
