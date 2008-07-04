@@ -45,12 +45,6 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 ################################################################################
-# Variables
-
-SET(DEFINITIONS)
-
-
-################################################################################
 # Setup Compiler Options
 
 INCLUDE(CMakeCompiler.txt)
@@ -60,37 +54,6 @@ INCLUDE(CMakeCompiler.txt)
 # Various cmake macros
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
-
-
-################################################################################
-# Custom user-defined settings
-
-INCLUDE ("CMakeUser.txt" OPTIONAL)
-
-
-################################################################################
-# Compiler setup
-
-MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
-
-# add the include dir (i.e. the library) to the include path
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
-
-# add cmake configuration (zorba options, etc.)
-INCLUDE(CMakeConfiguration.txt)
-
-# zorba versioning
-SET(ZORBA_MAJOR_NUMBER "0")
-SET(ZORBA_MINOR_NUMBER "9")
-SET(ZORBA_PATCH_NUMBER "21")
-SET(ZORBA_SVN_NUMER)
-FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/svn_rev.txt ZORBA_SVN_NUMBER)
-STRING(REGEX REPLACE "[^0-9]*([0-9]*)..*" "\\1" ZORBA_SVN_NUMBER ${ZORBA_SVN_NUMBER})
-MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}-${ZORBA_SVN_NUMBER})
-
-# add compiler vvariables
-ADD_DEFINITIONS(${DEFINITIONS})
 
 
 #################################################################################
@@ -311,6 +274,45 @@ ELSE (NOT Boost_FOUND)
 ENDIF (NOT Boost_FOUND)
 
 ENDIF (BOOST_CHECK_LIBRARIES)
+
+################################################################################
+# Variables
+
+SET(DEFINITIONS)
+
+
+
+################################################################################
+# Custom user-defined settings
+
+INCLUDE ("CMakeUser.txt" OPTIONAL)
+
+
+################################################################################
+# Compiler setup
+
+MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
+
+# add the include dir (i.e. the library) to the include path
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
+
+# add cmake configuration (zorba options, etc.)
+INCLUDE(CMakeConfiguration.txt)
+
+# zorba versioning
+SET(ZORBA_MAJOR_NUMBER "0")
+SET(ZORBA_MINOR_NUMBER "9")
+SET(ZORBA_PATCH_NUMBER "21")
+SET(ZORBA_SVN_NUMER)
+FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/svn_rev.txt ZORBA_SVN_NUMBER)
+STRING(REGEX REPLACE "[^0-9]*([0-9]*)..*" "\\1" ZORBA_SVN_NUMBER ${ZORBA_SVN_NUMBER})
+MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}-${ZORBA_SVN_NUMBER})
+
+# add compiler vvariables
+ADD_DEFINITIONS(${DEFINITIONS})
+
+
 
 
 ################################################################################
