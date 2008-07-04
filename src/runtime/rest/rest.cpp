@@ -167,6 +167,9 @@ bool createNodeHelper(store::Item_t parent, PlanState& planState, xqpString name
       -1,
       qname,
       GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
+      NULL,
+      true,
+      true,
       bindings,
       baseUri,
       false);
@@ -193,7 +196,9 @@ bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value
       -1,
       qname,
       type_qname,
-      str_item);
+      str_item,
+      true,
+      true);
 
   if (result != NULL)
     *result = temp_result;
