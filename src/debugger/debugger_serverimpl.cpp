@@ -53,67 +53,71 @@ void ZorbaDebuggerImpl::start( void * aStore,
                                unsigned short aEventPortno)
 {
   TCPSocket * lSock;
-  //try
-  //{
-    //Compiles the query
-    theDebugMode = true;
-    theQuery = Zorba::getInstance( aStore )->createQuery();
-    theQuery->setFileName( theFileName );
-    Zorba_CompilerHints lCompilerHints;
-    lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
-    theQuery->compile( * aQuery, lCompilerHints);
-    //Set the fileName
-    theFileName = aFileName; 
-    //activate the debug mode
-    
-    //Run the server 
-    theRequestServerSocket = new TCPServerSocket( aRequestPortno );
-    theEventPortno = aEventPortno;
+  //activate the debug mode
+  theDebugMode = true;
 
-    //Wait for a client to connect
-    lSock = theRequestServerSocket->accept(); 
-    //Try to connect to the event server 3 times
-    for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ )
-    {
-      try
-      {
-        //Connect the client to the event server
-        theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
-        //Wait one second before trying to reconnect
-#ifdef WIN32
-        Sleep(1000);
-#else
-        sleep(1);
+  //Compiles the query
+  theQuery = Zorba::getInstance( aStore )->createQuery();
+  theQuery->setFileName( theFileName );
+  Zorba_CompilerHints lCompilerHints;
+  lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
+  theQuery->compile( * aQuery, lCompilerHints);
+  
+  //Set the fileName
+  theFileName = aFileName; 
+  
+  //Run the server 
+  theRequestServerSocket = new TCPServerSocket( aRequestPortno );
+  theEventPortno = aEventPortno;
+  
+  //Wait for a client to connect
+  lSock = theRequestServerSocket->accept(); 
+#ifndef NDEBUG
+  std::cerr << "[Server Thread] Client connected" << std::endl;
 #endif
-      } catch ( SocketException &e )  {
-        if ( i == 2 )
-        {
-          std::cerr << "Couldn't connect to the debugger server event" << std::endl;
-          std::cerr << e.what() << std::endl;
-        }
+  //Try to connect to the event server 3 times
+  for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ )
+  {
+    try
+    {
+      //Connect the client to the event server
+      theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
+      //Wait one second before trying to reconnect
+#ifdef WIN32
+      Sleep(1000);
+#else
+      sleep(1);
+#endif
+    } catch ( SocketException &e )  {
+      if ( i == 2 )
+      {
+        std::cerr << "Couldn't connect to the debugger server event" << std::endl;
+        std::cerr << e.what() << std::endl;
       }
     }
-    
-    //Perform handshake
-    handshake( lSock );
-    //delete lSock;
-    //Until the query execution has ended
-    while ( theStatus != QUERY_QUITED )
-    {
-      //Wait for the client to connect
-      //TCPSocket * lSock = theRequestServerSocket->accept();
-      handleTcpClient( lSock );
-      //delete lSock;
-    }
-    theRuntimeThread->join();
-  //} catch( std::exception &e ) {
-  //  std::cerr << e.what() << std::endl;
-  //}
+  }
+  
+  //Perform handshake
+  handshake( lSock );
+  
+  //Until the query execution has ended
+  while ( theStatus != QUERY_QUITED )
+  {
+    handleTcpClient( lSock );
+  }
+#ifndef NDEBUG
+  std::cerr << "[Server Thread] server quited" << std::endl;
+#endif
+  theRuntimeThread->join();
+#ifndef NDEBUG
+  std::cerr << "[Server Thread] runtime thread joined" << std::endl;
+#endif 
   delete lSock;
-  //exit( 0 );
 }
 
-void ZorbaDebuggerImpl::setStatus( ExecutionStatus Status, SuspensionCause aCause ){
+void ZorbaDebuggerImpl::setStatus( ExecutionStatus Status,
+                                   SuspensionCause aCause ){
+
   if ( theStatus == QUERY_SUSPENDED && Status == QUERY_RUNNING )
   {
     theStatus = QUERY_RESUMED;
@@ -145,7 +149,28 @@ void ZorbaDebuggerImpl::sendEvent( AbstractCommandMessage * aMessage )
     Byte * lMessage = aMessage->serialize( length );
     try
     {
+#ifndef NDEBUG
+      std::cerr << "[Server Thread] send an event: ";
+      switch ( aMessage->getCommand() )
+      {
+        case STARTED:
+          std::cerr << "started" << std::endl;
+          break;
+        case TERMINATED:
+          std::cerr << "terminated" << std::endl;
+          break;
+        case SUSPENDED:
+          std::cerr << "suspended" << std::endl;
+          break;
+        case RESUMED:
+          std::cerr << "resumed" << std::endl;
+          break;
+      }
+#endif
       theEventSocket->send( lMessage, length );
+#ifndef NDEBUG
+      std::cerr << "[Server Thread] event sent" << std::endl;
+#endif
     } catch( SocketException &e ) {
       std::cerr << e.what() << std::endl;
     }
@@ -302,7 +327,6 @@ void ZorbaDebuggerImpl::resume()
 {
   if ( theStatus == QUERY_SUSPENDED )
   {
-    //boost::mutex::scoped_lock lock(theRuntimeMutex);
     setStatus( QUERY_RUNNING );
     theRuntimeSuspendedCV.notify_one();
   }

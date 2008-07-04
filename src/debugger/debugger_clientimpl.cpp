@@ -85,6 +85,11 @@ namespace zorba{
 
   void ZorbaDebuggerClientImpl::listenEvents()
   {
+#ifndef NDEBUG
+    std::cerr << "[Client Thread] start event listener thread" << std::endl;
+    std::cerr << "[Client Thread] wait for the event client to connect" << std::endl;
+#endif
+
     TCPSocket * lSocket = theEventServerSocket->accept();
     
     while( theExecutionStatus != QUERY_QUITED )
@@ -126,6 +131,9 @@ namespace zorba{
       delete lMessage;
     }
     delete lSocket;
+#ifndef NDEBUG
+    std::cerr << "[Client Thread] end of the event listener thread" << std::endl;
+#endif
   }
 
   bool ZorbaDebuggerClientImpl::isQueryRunning() const

@@ -36,7 +36,6 @@ int test_debugger_protocol( int argc, char* argv[] )
   test->testStepOverMessage();
   test->testStartedEvent();
   test->testTerminatedEvent();
-  test->testQuitedEvent();
   test->testSuspendedEvent();
   test->testResumedEvent();
   test->testClearMessage();
@@ -231,19 +230,6 @@ void TestDebuggerSerialization::testRunMessage()
     delete[] lBmsg;
   }
 
-  void TestDebuggerSerialization::testQuitedEvent()
-  {
-    std::cerr << "Test quited event message" << std::endl;
-    QuitedEvent msg;
-    test_packet< QuitedEvent >( &msg );
-    const char * lBinary = "\0\0\0\xb\0\0\0\xb\0\xf8\5";
-    Length length;
-    Byte * lBmsg = msg.serialize( length );
-    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
-    assert( lMsgcmp );
-    delete[] lBmsg;
-  }
-  
   void TestDebuggerSerialization::testSuspendedEvent()
   {
     std::cerr << "Test suspended event message" << std::endl;
@@ -264,7 +250,7 @@ void TestDebuggerSerialization::testRunMessage()
     Byte * lBmsg = msg.serialize( length );
     
     char * lBinary = new char[length];
-    memcpy( lBinary, "\0\0\0\x070\0\0\0\xc\0\xf8\3", MESSAGE_SIZE );
+    memcpy( lBinary, "\0\0\0\x070\0\0\0\xb\0\xf8\3", MESSAGE_SIZE );
     const char * lJSONString = "{\"cause\":1,\"location\":{\"fileName\":\"data.xq\",\"lineBegin\":1,\"columnBegin\":1,\"lineEnd\":1,\"columnEnd\":1}}";
     memcpy( lBinary + MESSAGE_SIZE, lJSONString, length - MESSAGE_SIZE );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
@@ -278,7 +264,7 @@ void TestDebuggerSerialization::testRunMessage()
     std::cerr << "Test resumed event message" << std::endl;
     ResumedEvent msg;
     test_packet< ResumedEvent >( &msg );
-    const char * lBinary = "\0\0\0\xb\0\0\0\xd\0\xf8\4";
+    const char * lBinary = "\0\0\0\xb\0\0\0\xc\0\xf8\4";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );

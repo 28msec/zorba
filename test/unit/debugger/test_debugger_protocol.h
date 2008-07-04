@@ -57,8 +57,6 @@ namespace zorba
 
       void testResumedEvent();
 
-      void testQuitedEvent();
-
       void testClearMessage();
 
       void testSetMessage();

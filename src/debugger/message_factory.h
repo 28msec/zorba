@@ -42,7 +42,6 @@ class MessageFactory
       {
         //read the packet length and write it into lLength
         aSocket->recv( lengthField, MESSAGE_HEADER_SIZE );
-
         //Convert the length field into an integer
         Length length;
         if( is_little_endian() ){
@@ -123,8 +122,6 @@ class MessageFactory
               return new SuspendedEvent( aMessage, aLength );
             case RESUMED:
               return new ResumedEvent( aMessage, aLength );
-            case QUITED:
-              return new QuitedEvent( aMessage, aLength );
           }
         }
         case STATIC:

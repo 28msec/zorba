@@ -242,8 +242,7 @@ bool AbstractCommandMessage::isEngineEventCommand() const
 {
   return getCommandSet() == ENGINE_EVENT &&
           ( getCommand() == STARTED || getCommand() == TERMINATED ||
-            getCommand() == SUSPENDED || getCommand() == RESUMED  ||
-            getCommand() == QUITED );
+            getCommand() == SUSPENDED || getCommand() == RESUMED );
 }
 
 bool AbstractCommandMessage::isStaticCommand() const
@@ -495,17 +494,6 @@ TerminatedEvent::TerminatedEvent( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength ){}
 
 TerminatedEvent::~TerminatedEvent(){}
-
-/**
- * Quit Engine Event
- */
-QuitedEvent::QuitedEvent():
-  AbstractCommandMessage( ENGINE_EVENT, QUITED ){}
-
-QuitedEvent::QuitedEvent( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
-
-QuitedEvent::~QuitedEvent(){}
 
 /**
  * Suspended Engine Event

@@ -73,7 +73,6 @@ const Command STARTED    = 0x01;
 const Command TERMINATED = 0x02;
 const Command SUSPENDED  = 0x03;
 const Command RESUMED    = 0x04;
-const Command QUITED     = 0x05;
 
 /* Static Commands */
 const Command OPTIONS  = 0x01;
@@ -502,19 +501,6 @@ class TerminatedEvent: public AbstractCommandMessage
     TerminatedEvent( Byte * aMessage, const unsigned int aLength ); 
    
     virtual ~TerminatedEvent();
-};
-
-/**
- *
- */
-class QuitedEvent: public AbstractCommandMessage
-{
-  public:
-    QuitedEvent();
-
-    QuitedEvent( Byte * aMessage, const unsigned int aLength );
-
-    virtual ~QuitedEvent();
 };
 
 /**

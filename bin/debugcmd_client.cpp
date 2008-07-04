@@ -162,6 +162,15 @@ void CommandLineEventHandler::handle_cmd()
       } else {
         theOutput << "The query is not suspended." << std::endl;
       }
+    } else if ( lCommand == "n" || lCommand == "next" ) {
+      if ( theClient->isQuerySuspended() )
+      {
+        theOutput << "next is not implemented yet." << std::endl;
+        //theClient->stepOver();
+        return;
+      } else {
+        theOutput << "The query is not suspended." << std::endl;
+      }
     } else if ( lCommand == "l" || lCommand == "list" ) {
       if ( theClient->isQuerySuspended() )
       {
@@ -185,6 +194,7 @@ void CommandLineEventHandler::help()
   theOutput << "run      -- Run the query." << std::endl;
   theOutput << "break    -- Set a breakpoint at the specified file and line." << std::endl;
   theOutput << "continue -- Resume the query execution." << std::endl;
+  theOutput << "next     -- Step over the next instruction." << std::endl;
   theOutput << "clear    -- Clear breakpoints." << std::endl;
   theOutput << "list     -- Display the executed query line." << std::endl;
   theOutput << "stop     -- Stop the query execution." << std::endl;
