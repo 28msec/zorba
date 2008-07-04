@@ -4998,7 +4998,7 @@ void end_visit(const WhileExpr& v, void* visit_state)
   rchandle<sequential_expr> body = pop_nodestack ().cast<sequential_expr> ();
   expr_t cond = pop_nodestack ();
   body->push_front (new if_expr (loc, cond, create_seq (loc), new flowctl_expr (loc, flowctl_expr::BREAK)));
-  nodestack.push (new while_expr (loc, body));
+  nodestack.push (new while_expr (loc, body.getp()));
 }
 
 void *begin_visit(const FlowCtlStatement& v)
