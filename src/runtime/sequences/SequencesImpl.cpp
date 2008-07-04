@@ -1082,13 +1082,50 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 bool 
 FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lRunningItem;
+  xqtref_t      lResultType, lRunningType;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(result, theChildren[0].getp(), planState)) {
+
+    // casting of untyped atomic
+    lResultType = planState.theCompilerCB->m_sctx->get_typemanager()->
+        create_value_type (result);
+
+    if (TypeOps::is_subtype(*lResultType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
+      GenericCast::instance()->cast(result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      lResultType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
+    }
+
+    if (!TypeOps::is_numeric(*lResultType) && !TypeOps::is_subtype(*lResultType, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+      ZORBA_ERROR_LOC( FORG0006, loc );
+    
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState)) {
-      GenericArithIterator<AddOperation>::compute(result, planState.theRuntimeCB, loc, result, lRunningItem); 
+      // casting of untyped atomic
+      lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->
+          create_value_type (lRunningItem);
+
+      if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
+        GenericCast::instance()->cast(lRunningItem, lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
+      }
+
+      // handling of NaN
+      if (lRunningItem->isNaN()) {
+         result = lRunningItem;
+        break;
+      }
+
+      if((TypeOps::is_numeric(*lResultType) &&
+          TypeOps::is_numeric(*lRunningType)) ||
+         (TypeOps::is_subtype(*lResultType, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE) &&
+          TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE)) ||
+         (TypeOps::is_subtype(*lResultType, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE) &&
+          TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE)))
+        GenericArithIterator<AddOperation>::compute(result, planState.theRuntimeCB, loc, result, lRunningItem);
+      else
+        ZORBA_ERROR_LOC_DESC( FORG0006, loc, "Sum is not possible with parameters of the type " + TypeOps::toString (*lResultType) + " and " + TypeOps::toString (*lRunningType) );
     }
 
     STACK_PUSH(true, state);
