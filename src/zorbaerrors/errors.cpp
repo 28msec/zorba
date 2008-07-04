@@ -175,7 +175,7 @@ bool
 ZorbaError::isInternalError() const
 {
   return XQP0000_DYNAMIC_RUNTIME_ERROR <= theErrorCode && 
-    theErrorCode <= API0021_ITEM_TO_LOAD_IS_NOT_NODE; 
+    theErrorCode <= MAX_ZORBA_ERROR_CODE;
 }
   
 
