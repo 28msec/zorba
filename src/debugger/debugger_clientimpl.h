@@ -62,6 +62,8 @@ namespace zorba{
 
       void terminate();
 
+      void quit();
+
       void stepInto();
 
       void stepOut();
@@ -74,6 +76,8 @@ namespace zorba{
       
       void clearBreakpoint( const String & aFileName, const unsigned int aLineNo );
 
+      void clearBreakpoints();
+      
       String getFileName() const;
 
       unsigned int getLineNo() const;

@@ -229,7 +229,7 @@ bool AbstractCommandMessage::isExecutionCommand() const
   return getCommandSet() == EXECUTION &&
           ( getCommand() == RUN || getCommand() == SUSPEND ||
             getCommand() == RESUME || getCommand() == STEP ||
-            getCommand() == TERMINATE );
+            getCommand() == TERMINATE || getCommand() == QUIT );
 }
 
 bool AbstractCommandMessage::isBreakpointsCommand() const
@@ -242,7 +242,8 @@ bool AbstractCommandMessage::isEngineEventCommand() const
 {
   return getCommandSet() == ENGINE_EVENT &&
           ( getCommand() == STARTED || getCommand() == TERMINATED ||
-            getCommand() == SUSPENDED || getCommand() == RESUMED );
+            getCommand() == SUSPENDED || getCommand() == RESUMED  ||
+            getCommand() == QUITED );
 }
 
 bool AbstractCommandMessage::isStaticCommand() const
@@ -284,6 +285,14 @@ TerminateMessage::TerminateMessage( Byte * aMessage, const unsigned int aLength 
   AbstractCommandMessage( aMessage, aLength ){}
 
 TerminateMessage::~TerminateMessage(){}
+
+QuitMessage::QuitMessage():
+  AbstractCommandMessage( EXECUTION, QUIT ){}
+
+QuitMessage::QuitMessage( Byte * aMessage, const unsigned int aLength ):
+  AbstractCommandMessage( aMessage, aLength ){}
+
+QuitMessage::~QuitMessage(){}
 
 ResumeMessage::ResumeMessage():
   AbstractCommandMessage( EXECUTION, RESUME ){}
@@ -486,6 +495,17 @@ TerminatedEvent::TerminatedEvent( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength ){}
 
 TerminatedEvent::~TerminatedEvent(){}
+
+/**
+ * Quit Engine Event
+ */
+QuitedEvent::QuitedEvent():
+  AbstractCommandMessage( ENGINE_EVENT, QUITED ){}
+
+QuitedEvent::QuitedEvent( Byte * aMessage, const unsigned int aLength ):
+  AbstractCommandMessage( aMessage, aLength ){}
+
+QuitedEvent::~QuitedEvent(){}
 
 /**
  * Suspended Engine Event

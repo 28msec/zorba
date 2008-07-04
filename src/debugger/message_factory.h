@@ -78,7 +78,7 @@ class MessageFactory
       {
         case 0:
         {
-          if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == 0x8 )
+          if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_FLAG )
           {
             return new ReplyMessage( aMessage, aLength );
           }
@@ -97,6 +97,8 @@ class MessageFactory
               return new TerminateMessage( aMessage, aLength );
             case STEP:
               return new StepMessage( aMessage, aLength );
+            case QUIT:
+              return new QuitMessage( aMessage, aLength );
           }
         }
         case BREAKPOINTS:
@@ -121,6 +123,8 @@ class MessageFactory
               return new SuspendedEvent( aMessage, aLength );
             case RESUMED:
               return new ResumedEvent( aMessage, aLength );
+            case QUITED:
+              return new QuitedEvent( aMessage, aLength );
           }
         }
         case STATIC:

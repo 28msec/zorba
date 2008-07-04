@@ -98,13 +98,14 @@ void ZorbaDebuggerImpl::start( void * aStore,
     handshake( lSock );
     //delete lSock;
     //Until the query execution has ended
-    while ( theStatus != QUERY_TERMINATED )
+    while ( theStatus != QUERY_QUITED )
     {
       //Wait for the client to connect
       //TCPSocket * lSock = theRequestServerSocket->accept();
       handleTcpClient( lSock );
       //delete lSock;
     }
+    theRuntimeThread->join();
   //} catch( std::exception &e ) {
   //  std::cerr << e.what() << std::endl;
   //}
@@ -113,7 +114,7 @@ void ZorbaDebuggerImpl::start( void * aStore,
 }
 
 void ZorbaDebuggerImpl::setStatus( ExecutionStatus Status, SuspensionCause aCause ){
-  if (theStatus == QUERY_SUSPENDED && Status == QUERY_RUNNING)
+  if ( theStatus == QUERY_SUSPENDED && Status == QUERY_RUNNING )
   {
     theStatus = QUERY_RESUMED;
   } else {
@@ -186,7 +187,8 @@ void ZorbaDebuggerImpl::runQuery()
     lIterator->open();
 
     Item lItem;
-    while ( lIterator->next(lItem) ) {
+    while ( lIterator->next(lItem) && theStatus != QUERY_TERMINATED )
+    {
       std::cout << lItem.getStringValue() << std::endl;
     }
 
@@ -210,7 +212,6 @@ bool ZorbaDebuggerImpl::hasToSuspend()
   {
     return true;
   }
-  
   for( unsigned int i = 0; i < theBreakpoints.size(); i++ )
   {
 //    if( theLocation.getFilename() == theBreakpoints.at( i ).getFilename()
@@ -221,7 +222,6 @@ bool ZorbaDebuggerImpl::hasToSuspend()
       return true;
     }
   }
-
   return false;
 }
 
@@ -289,7 +289,7 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
 
 void ZorbaDebuggerImpl::run()
 {
-  boost::thread theRuntimeThread (
+  theRuntimeThread = new boost::thread (
       boost::bind( &ZorbaDebuggerImpl::runQuery, this ) );
 }
 
@@ -311,6 +311,11 @@ void ZorbaDebuggerImpl::resume()
 void ZorbaDebuggerImpl::terminate()
 {
   setStatus( QUERY_TERMINATED );
+}
+
+void ZorbaDebuggerImpl::quit()
+{
+  setStatus( QUERY_QUITED );
 }
 
 void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
@@ -346,6 +351,15 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
           assert( lMessage );
 #endif
           resume();
+          break;
+        }
+        case QUIT:
+        {
+#ifndef NDEGUB
+          QuitMessage * lMessage = dynamic_cast<QuitMessage *>( aMessage );
+          assert( lMessage );
+#endif
+          quit();
           break;
         }
         case TERMINATE:
@@ -392,7 +406,15 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
         }
         case CLEAR:
         {
-
+          ClearMessage * lMessage;
+#ifndef NDEBUG
+          lMessage = dynamic_cast< ClearMessage * > ( aMessage );
+          assert( lMessage );
+#else
+          lMessage =  static_cast< ClearMessage * > ( aMessage );
+#endif
+          break;
+          //TODO: unimplemented logic...
         }
         default: throw InvalidCommandException("Internal Error. Command not implemented.");
       }

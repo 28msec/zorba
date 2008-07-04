@@ -35,6 +35,7 @@ const ExecutionStatus QUERY_RUNNING    = 0x02;
 const ExecutionStatus QUERY_RESUMED    = 0x03;
 const ExecutionStatus QUERY_SUSPENDED  = 0x04;
 const ExecutionStatus QUERY_TERMINATED = 0x05;
+const ExecutionStatus QUERY_QUITED     = 0x06;
 
 /* Cause of the suspension of the engine */
 const SuspensionCause CAUSE_USER       = 0x01;

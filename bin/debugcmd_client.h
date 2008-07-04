@@ -19,7 +19,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <sstream>
 #include <boost/thread/thread.hpp>
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_event_handler.h>
@@ -30,7 +29,7 @@ class CommandLineEventHandler: public DebuggerEventHandler
 {
   private:
     
-    std::istringstream & theQueryFile;
+    std::istream & theQueryFile;
     
     std::ostream & theOutput;
     
@@ -53,7 +52,7 @@ class CommandLineEventHandler: public DebuggerEventHandler
     void list( unsigned int aBegin, unsigned int anEnd );
 
   public:
-    CommandLineEventHandler( std::istringstream & aQueryFile,
+    CommandLineEventHandler( std::istream & aQueryFile,
                              std::istream & anInput,
                              std::ostream & anOutput,
                              ZorbaDebuggerClient * aClient );

@@ -73,14 +73,13 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     
     friend class ZorbaDebugger;
 
-    ZorbaDebuggerImpl()
-    :
-    theDebugMode( false ),
-    theRequestServerSocket(0), 
-    theEventSocket(0), 
-    theStatus( QUERY_IDLE  ),
-    theFileName("")
-    {}
+    ZorbaDebuggerImpl():
+      theDebugMode( false ),
+      theRequestServerSocket(0), 
+      theEventSocket(0), 
+      theStatus( QUERY_IDLE  ),
+      theFileName(""),
+      theRuntimeThread(0){}
 
     bool theDebugMode;
     
@@ -100,7 +99,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     std::vector<QueryLoc> theBreakpoints;
 
-    boost::thread theRuntimeThread;
+    boost::thread * theRuntimeThread;
 
     boost::mutex theRuntimeMutex;
     
@@ -129,6 +128,8 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     void resume();
 
     void terminate();
+
+    void quit();
 
     void sendEvent( AbstractCommandMessage * aMessage );
 

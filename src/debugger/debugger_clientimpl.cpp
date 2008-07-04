@@ -87,7 +87,7 @@ namespace zorba{
   {
     TCPSocket * lSocket = theEventServerSocket->accept();
     
-    while( ! isQueryTerminated() )
+    while( theExecutionStatus != QUERY_QUITED )
     { 
       AbstractMessage * lMessage = MessageFactory::buildMessage( lSocket );
       SuspendedEvent * lSuspendedMsg;
@@ -167,6 +167,7 @@ namespace zorba{
           std::cerr << "Error occured: " << lReplyMessage->getMessage() << std::endl;
         }
       } else {
+      //TODO: print the error message.
         std::cerr << "Internal error occured" << std::endl;
       }
     } catch( SocketException &e ) {
@@ -196,6 +197,12 @@ namespace zorba{
   void ZorbaDebuggerClientImpl::terminate()
   {
     TerminateMessage lMessage;
+    send( &lMessage );
+  }
+
+  void ZorbaDebuggerClientImpl::quit()
+  {
+    QuitMessage lMessage;
     send( &lMessage );
   }
 
@@ -238,9 +245,15 @@ namespace zorba{
     loc.setFilenameBegin( &lTmp );
     loc.setLineBegin( aLineNo );
     
-    SetMessage lMessage;
+    ClearMessage lMessage;
     lMessage.addLocation( loc );
     send( &lMessage );
+  }
+
+  void ZorbaDebuggerClientImpl::clearBreakpoints()
+  {
+     ClearMessage lMessage;
+     send( &lMessage );
   }
 
   void ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineNo )

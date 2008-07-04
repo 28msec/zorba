@@ -33,13 +33,13 @@
 namespace zorba{
 
 /* Type definition of fields */
-typedef unsigned char Byte;
+typedef char Byte;
 typedef uint32_t      Length;
 typedef uint32_t      Id;
-typedef uint16_t      Flags;
+typedef char Flags;
 typedef uint16_t      ErrorCode;
-typedef unsigned char CommandSet;
-typedef unsigned char Command;
+typedef char CommandSet;
+typedef char Command;
 
 /* sizeof(HeaderContent) == 12 because of the padding */
 const int SIZE_OF_HEADER_CONTENT = 9;
@@ -47,7 +47,7 @@ const int SIZE_OF_REPLY_CONTENT = 2;
 
 /* Flags */
 const Flags NULL_FLAG = 0x0;
-const Flags REPLY_FLAG = 0x8;
+const Flags REPLY_FLAG = 0x80;
 
 /* CommandSet */
 const CommandSet EXECUTION    = 0xf1;
@@ -62,6 +62,7 @@ const Command SUSPEND   = 0x02;
 const Command RESUME    = 0x03;
 const Command TERMINATE = 0x04;
 const Command STEP      = 0x05;
+const Command QUIT      = 0x06;
 
 /* Breakpoints Commands */
 const Command SET   = 0x01;
@@ -72,6 +73,7 @@ const Command STARTED    = 0x01;
 const Command TERMINATED = 0x02;
 const Command SUSPENDED  = 0x03;
 const Command RESUMED    = 0x04;
+const Command QUITED     = 0x05;
 
 /* Static Commands */
 const Command OPTIONS  = 0x01;
@@ -369,6 +371,19 @@ class TerminateMessage: public AbstractCommandMessage
 };
 
 /**
+ *
+ */
+class QuitMessage: public AbstractCommandMessage
+{
+  public:
+    QuitMessage();
+
+    QuitMessage( Byte * aMessage, const unsigned int aLength );
+
+    virtual ~QuitMessage();
+};
+
+/**
  * 
  */
 class ResumeMessage: public AbstractCommandMessage
@@ -487,6 +502,19 @@ class TerminatedEvent: public AbstractCommandMessage
     TerminatedEvent( Byte * aMessage, const unsigned int aLength ); 
    
     virtual ~TerminatedEvent();
+};
+
+/**
+ *
+ */
+class QuitedEvent: public AbstractCommandMessage
+{
+  public:
+    QuitedEvent();
+
+    QuitedEvent( Byte * aMessage, const unsigned int aLength );
+
+    virtual ~QuitedEvent();
 };
 
 /**

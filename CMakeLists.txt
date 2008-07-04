@@ -358,7 +358,7 @@ IF( APPLE )
   MESSAGE( "Building Apple universal binaries" )
 ENDIF ( APPLE )
 
-SET ( CMAKE_VERBOSE_MAKEFILE ON )
+SET ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 # Create config (build settings, library dependencies, etc.) files that are needed by 
 # cmake projects which extend the zorba project

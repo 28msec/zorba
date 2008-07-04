@@ -40,6 +40,8 @@ namespace zorba
       void testSuspendMessage();
     
       void testTerminateMessage();
+
+      void testQuitMessage();
     
       void testStepIntoMessage();
     
@@ -54,6 +56,8 @@ namespace zorba
       void testSuspendedEvent();
 
       void testResumedEvent();
+
+      void testQuitedEvent();
 
       void testClearMessage();
 

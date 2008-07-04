@@ -59,6 +59,9 @@ namespace zorba{
       terminate() = 0;
 
       virtual void
+      quit() = 0;
+
+      virtual void
       stepInto() = 0;
 
       virtual void
@@ -75,6 +78,9 @@ namespace zorba{
 
       virtual void
       clearBreakpoint( const String & aFileName, const unsigned int aLineNo ) = 0;
+
+      virtual void
+      clearBreakpoints() = 0;
 
       virtual String
       getFileName() const = 0;

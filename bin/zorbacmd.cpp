@@ -289,6 +289,7 @@ int _tmain(int argc, _TCHAR* argv[])
     std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
     std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
 
+    //copy the input stream
     std::stringstream out;
     std::copy( std::istreambuf_iterator<char>(*qfile),
                std::istreambuf_iterator<char>(),
@@ -305,11 +306,12 @@ int _tmain(int argc, _TCHAR* argv[])
                                     lProperties.eventPort()
                                   )
                                 );
-
+    //Try to connect 3 times on the server thread
     for ( unsigned int i = 0; i < 3; i++ )
     {
       try
       {
+        //wait a second before trying to reconnect
 #ifdef WIN32
         Sleep(1000);
 #else

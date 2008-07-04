@@ -153,7 +153,7 @@ public:
 
 #ifdef ZORBA_DEBUGGER
           PlanIter_t debugIterator(PlanIter_t aStoppableIterator){
-            if ( ZorbaDebugger::getInstance()->isEnabled() )
+            if ( true || ZorbaDebugger::getInstance()->isEnabled() )
             {
               std::vector<PlanIter_t> lChildren;
               lChildren.push_back(aStoppableIterator);

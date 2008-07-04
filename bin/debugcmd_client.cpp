@@ -19,7 +19,7 @@
 
 using namespace zorba;
 
-CommandLineEventHandler::CommandLineEventHandler( std::istringstream & aQueryFile,
+CommandLineEventHandler::CommandLineEventHandler( std::istream & aQueryFile,
                                                   std::istream & anInput,
                                                   std::ostream & anOutput,
                                                   ZorbaDebuggerClient * aClient )
@@ -59,11 +59,11 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
       theOutput << lLineNo << '\t' << lLine << std::endl;
     }
   }
+  handle_cmd();
 }
 
 void CommandLineEventHandler::started()
 {
-  theOutput << "Launch the query" << std::endl;
 }
 
 void CommandLineEventHandler::idle()
@@ -85,8 +85,8 @@ void CommandLineEventHandler::resumed()
 
 void CommandLineEventHandler::terminated()
 {
-  theOutput << "End of query" << std::endl;
-  exit(0);
+  theOutput << "End of query execution" << std::endl;
+  handle_cmd();
 }
 
 std::vector<std::string> CommandLineEventHandler::get_args( const std::string& str )
@@ -126,8 +126,13 @@ void CommandLineEventHandler::handle_cmd()
     
     if ( lCommand == "q" || lCommand == "quit" )
     {
-      theClient->terminate();
+      theClient->quit();
       exit(7);
+    } else if ( lCommand == "s" || lCommand == "stop" ) {
+      theClient->terminate();
+      return;
+    } else if (lCommand == "cl" || lCommand == "clear" ) {
+      theClient->clearBreakpoints();
     } else if  ( lCommand == "b" || lCommand == "break" ) {
       if ( lArgs.size() < 2 )
       {
@@ -144,6 +149,7 @@ void CommandLineEventHandler::handle_cmd()
         }
       }
     } else if ( lCommand ==  "r" || lCommand == "run" ) {
+      theOutput << "Launch the query" << std::endl;
       theClient->run();
       return;
     } else if ( lCommand == "h" || lCommand == "help" ) {
@@ -179,8 +185,9 @@ void CommandLineEventHandler::help()
   theOutput << "run      -- Run the query." << std::endl;
   theOutput << "break    -- Set a breakpoint at the specified file and line." << std::endl;
   theOutput << "continue -- Resume the query execution." << std::endl;
+  theOutput << "clear    -- Clear breakpoints." << std::endl;
   theOutput << "list     -- Display the executed query line." << std::endl;
-//  theOutput << "stop     -- Stop the query execution." << std::endl;
+  theOutput << "stop     -- Stop the query execution." << std::endl;
   theOutput << "quit     -- Quit Zorba debugger." << std::endl;
   theOutput << "version  -- Display the version of Zorba engine and its debugger" << std::endl;
   theOutput << "help     -- This help." << std::endl;
