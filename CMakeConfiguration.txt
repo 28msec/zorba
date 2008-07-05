@@ -81,7 +81,12 @@ ENDIF (DEFINED UNIX)
 SET(ZORBA_WITH_FILE_ACCESS ON CACHE BOOL "compile zorba and allow loading documents from the filesystem")
 MESSAGE(STATUS "ZORBA_WITH_FILE_ACCESS [ON/OFF]:" ${ZORBA_WITH_FILE_ACCESS})
 
-SET(ZORBA_WITH_REST ON CACHE BOOL "Compile Zorba with REST support")
+# curl headers don't seem to work on darwin
+IF (APPLE )
+  SET(ZORBA_WITH_REST OFF CACHE BOOL "No REST for the Mac")
+ELSE( APPLE)
+  SET(ZORBA_WITH_REST ON CACHE BOOL "Compile Zorba with REST support")
+ENDIF (APPLE)
 IF (NOT CURL_FOUND AND ${ZORBA_WITH_REST} STREQUAL "ON")
    MESSAGE ( STATUS "Can't build Zorba with REST support because Curl is not found.")
   SET(ZORBA_WITH_REST OFF)
