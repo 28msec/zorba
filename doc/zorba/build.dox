@@ -42,6 +42,91 @@ In order ot build Zorba, you need the following libraries and development header
 
 \section mac Note for Mac OS Users
 The easiest way to install the required packages (like CMake, Boost, etc.) is to use Darwin Ports (http://darwinports.com/). After installating Darwin Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successfull, you can simply install packages by typing e.g. <tt>sudo port install cmake</tt>.
+Note that libxml2 is already installed as part of Mac OS X.
+
+\subsection universal Building as Universal binaries
+
+To build zorba as a universal binary one must also build the required
+external libaries as universal.  In most cases this is as easy as
+building them non-universal.   Following are instructions on how to do so.
+
+For ICU and Xerces-C the 
+<a href="http://developer.apple.com/documentation/Porting/Conceptual/PortingUnix/compiling/chapter_4_section_3.html">
+
+instructions given by Apple </a> almost just work.  One should change
+the CFLAGS to CXXFLAGS.  Zorba developers prefer a variation on those
+instructions like this ...
+
+@verbatim
+./configure CXXFLAGS="-arch i386 -arch ppc -isysroot /Developer/SDKs/MacOSX10.5.sdk" \
+-disable-dependency-tracking LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk \
+-arch i386 -arch ppc"
+@endverbatim
+
+As noted by Apple, dependency generation by gcc doesn't work when building universal, thus it is turned off with the above command.
+
+Since Boost uses @em bjam instead of @em make, it's not obvious how to
+build it for universal binaries.  However, the following patch was
+found by another project that uses Boost and works for Boost-1.33.1
+
+@verbatim
+$ cd boost_1_33_1
+$ patch -p0 <<EOF
+--- tools/build/v1/darwin-tools.jam.orig        2006-08-07 11:52:23.000000000 +\0200
++++ tools/build/v1/darwin-tools.jam     2006-08-07 11:40:26.000000000 +0200
+@@ -104,6 +105,8 @@
+ {
+     flags darwin C++FLAGS : -fcoalesce-templates ;
+ }
++flags darwin CFLAGS : -arch i386 -arch ppc ;
++flags darwin LINKFLAGS : -arch i386 -arch ppc ;
+ flags darwin LINKFLAGS <runtime-link>static : -static-libgcc ;
+ flags darwin CFLAGS <debug-symbols>on : -g ;
+ flags darwin LINKFLAGS <debug-symbols>on : -g ;
+EOF
+@endverbatim
+
+Note this patch adds two lines to the specified file..  After making
+this patch one can procced as if Boost was using the standard GNU
+autotools, namely 
+\verbatim 
+> configure 
+> make 
+> sudo make install
+\endverbatim
+
+Note the above is not documented in the Boost documentation but it
+works just fine on Mac OS X and Linux as well.
+
+For Boost-1.35 life has changed.  After configuring Boost as above, modify the
+top of the generated Makefile with a line that reads
+
+\verbatim
+BJAM_CONFIG=architecture=combined
+\endverbatim
+
+One last problem is that the "make install" doesn't install the
+variation of the Boost libraries required by Zorba.  The quick fix is
+to create symbolic links by hand in @em /usr/local/lib.  So that one has
+
+\verbatim
+libboost_date_time-mt.dylib -> libboost_date_time-mt-1_35.dylib
+libboost_date_time.dylib -> libboost_date_time-mt-1_35.dylib
+libboost_filesystem-mt.dylib -> libboost_filesystem-mt-1_35.dylib
+libboost_filesystem.dylib -> libboost_filesystem-mt-1_35.dylib
+libboost_program_options-mt.dylib -> libboost_program_options-mt-1_35.dylib
+libboost_program_options.dylib -> libboost_program_options-mt-1_35.dylib
+\endverbatim
+
+After installing the external libraries as universal binaries, Zorba
+itself can be built universal by adding an argument to the cmake
+command as follows
+
+\verbatim
+> cmake -D UNIVERSAL ..
+\endverbatim
+
+
 
 \section windows Notes for Windows Users
 - In order to compile Zorba on Windows, you need a working Visual Studio installation.

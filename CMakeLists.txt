@@ -350,7 +350,7 @@ INCLUDE(CMakeCPack.cmake)
 #CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/CPackSourceConfig.cmake.in 
 #               ${CMAKE_BINARY_DIR}/CPackSourceConfig.cmake)
 
-IF( APPLE )
+IF( APPLE AND UNIVERSAL )
   SET ( CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "archs" FORCE)
   SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -v" )
 # The following is not the default when building universal
@@ -358,6 +358,11 @@ IF( APPLE )
   SET ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -v")
   SET ( CMAKE_SHARED_LINKER_FLAGS "-syslibroot ${CMAKE_OSX_SYSROOT} ${CMAKE_SHARED_LINKER_FLAGS}" )
   MESSAGE( "Building Apple universal binaries" )
+  set_property (SOURCE 
+     PROPERTY MACOSX_PACKAGE_LOCATION Headers )
+set_target_properties( zorba PROPERTIES
+   FRAMEWORK TRUE
+   INSTALL_NAME_DIR "@executable_path/../../../Library/Frameworks")
 ENDIF ( APPLE )
 
 SET ( CMAKE_VERBOSE_MAKEFILE OFF )
