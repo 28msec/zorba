@@ -15,8 +15,8 @@ Source0: file://mirror.optus.net/sourceforge/z/zo/zorba/%{name}-%{version}.tar.g
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 
-BuildRequires: cmake >= 2.4 libxml2 >= 2.2.16 icu >= 2.6 libicu
-BuildRequires: boost >= 1.32 xerces-c >= 2.7
+BuildRequires: cmake >= 2.4 libxml2 >= 2.2.16 icu >= 2.6 libicu-devel
+BuildRequires: boost >= 1.32 xerces-c-devel >= 2.7
 BuildRequires: ruby-devel
 %description
 
@@ -103,8 +103,13 @@ make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" -C build
 %{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
 
 %changelog
+
 * Sun Jun 29 2008 Paul F. Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.21-1
 - Update to 0.9.21
+
+* Fri Jun 27 2008 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.2-2
+- Added required -devel packages for build
+
 
 * Sun Jun 22 2008 Paul F. Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.2-2
 - Added correct install of ruby and python modules
