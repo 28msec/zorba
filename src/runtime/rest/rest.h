@@ -17,6 +17,7 @@
 #define ZORBA_RUNTIME_REST_H
 
 #include <istream>
+#include <memory>
 #include <streambuf>
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
