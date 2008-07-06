@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my %hdr;
+
+my $inc_path = "/usr/include";
+
+sub process_file {
+    my $fname = shift;
+    if ($hdr {$fname}) {
+        return;
+    }
+    $hdr {$fname} = 1;
+    print ("$fname\n");
+    my $result = open (my $fh, "$inc_path/$fname");
+    if (! $result) {
+        warn ("Could not find $fname");
+        return;
+    }
+    while (<$fh>) {
+        if (m@^[#]include [<"](boost/.*)[>"]@) {
+            process_file ($1);
+        }
+    }
+    close $fh;
+}
+
+while (my $fname = shift) {
+    process_file ($fname);
+}
