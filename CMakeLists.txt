@@ -363,7 +363,7 @@ IF( APPLE AND UNIVERSAL )
 set_target_properties( zorba PROPERTIES
    FRAMEWORK TRUE
    INSTALL_NAME_DIR "@executable_path/../../../Library/Frameworks")
-ENDIF ( APPLE )
+ENDIF ( APPLE AND UNIVERSAL )
 
 SET ( CMAKE_VERBOSE_MAKEFILE OFF )
 
