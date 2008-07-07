@@ -23,6 +23,9 @@ SET(Zorba_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src"
                        "${CMAKE_BINARY_DIR}/src/zorbatypes"
                        "${CMAKE_BINARY_DIR}/src/zorbautils"
 )
+SET(Zorba_API "${CMAKE_BINARY_DIR}/include"
+              "${CMAKE_SOURCE_DIR}/include"
+)
 
 # Tell the user project where to find our build settings and library dependencies
 SET(Zorba_BUILD_SETTINGS_FILE "${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake")
