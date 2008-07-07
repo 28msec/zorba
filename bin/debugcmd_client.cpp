@@ -15,7 +15,7 @@
  */
 #include "debugcmd_client.h"
 
-#include <signal.h>
+#include <csignal>
 #include <boost/bind.hpp> 
 #include <zorba/zorba.h>
 
@@ -65,6 +65,15 @@ void CommandLineEventHandler::list()
   }
 }
 
+void CommandLineEventHandler::history()
+{
+  theOutput << "Command history:" << std::endl;
+  for ( unsigned int i = 0 ; i < theHistory.size(); i++ )
+  {
+    theOutput << i+1 << ' ' << theHistory.at( i ) << std::endl;
+  }
+}
+
 void CommandLineEventHandler::list( unsigned int aLineNo )
 {
   list( aLineNo, aLineNo );
@@ -80,7 +89,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
   {
     lLineNo++;
     std::getline( theQueryFile, lLine, '\n');
-    if ( lLineNo >= aBegin && lLineNo <= aBegin )
+    if ( lLineNo >= aBegin && lLineNo <= anEnd )
     {
       theOutput << lLineNo << '\t' << lLine << std::endl;
     }
@@ -146,26 +155,52 @@ std::vector<std::string> CommandLineEventHandler::get_args( const std::string& s
 
 void CommandLineEventHandler::handle_cmd()
 {
-  if( ! theInput.eof() )
-  {
     theOutput.flush();
     theOutput << "(xqdb) ";
     theOutput.flush();
-    
     std::string lLine;
     std::getline( theInput, lLine, '\n');
+    handle_cmd( lLine );
+}
 
-	  std::vector<std::string> lArgs = get_args( lLine );
+void CommandLineEventHandler::handle_cmd( unsigned int aCommandNo )
+{
+  if ( aCommandNo > 0 && aCommandNo <= theHistory.size() )
+  {
+    handle_cmd( theHistory.at( aCommandNo ) );
+  } else {
+    theOutput << "Invalid command number. Try \"history\"." << std::endl;
+  }
+}
+
+void CommandLineEventHandler::handle_cmd( std::string aCommand )
+{
+  if( ! theInput.eof() )
+  {
+    theHistory.push_back( aCommand );
+
+	  std::vector<std::string> lArgs = get_args( aCommand );
     std::string lCommand = lArgs.at( 0 ); 
     
     if ( lCommand == "q" || lCommand == "quit" )
     {
+      if ( ! theClient->isQueryIdle() )
+      {
+        std::string quit;
+        theOutput << "The query is running. Exit anyway? (y or n) " << std::endl;
+        std::getline( theInput, quit, '\n');
+        if( quit != "y" && quit != "yes" )
+        {
+          handle_cmd();
+          return;
+        }
+      }
       theClient->quit();
       exit(7);
     } else if ( lCommand == "s" || lCommand == "stop" ) {
       theClient->terminate();
       return;
-    } else if (lCommand == "cl" || lCommand == "clear" ) {
+    } else if ( lCommand == "cl" || lCommand == "clear" ) {
       theClient->clearBreakpoints();
     } else if  ( lCommand == "b" || lCommand == "break" ) {
       if ( lArgs.size() < 2 )
@@ -183,6 +218,18 @@ void CommandLineEventHandler::handle_cmd()
         }
       }
     } else if ( lCommand ==  "r" || lCommand == "run" ) {
+      if ( ! theClient->isQueryIdle() )
+      {
+        std::string reload;
+        theOutput << "The query being debugged has already started." << std::endl;
+        theOutput << "Reload query and start it from beginning? (y or n) " << std::endl;
+        std::getline( theInput, reload, '\n');
+        if ( reload != "y" && reload != "yes" )
+        {
+          handle_cmd();
+          return;
+        }
+      }
       theOutput << "Launch the query" << std::endl;
       theClient->run();
       return;
@@ -215,16 +262,24 @@ void CommandLineEventHandler::handle_cmd()
       }
     } else if ( lCommand == "v" || lCommand == "version" ) {
         version();
+    } else if ( lCommand == "hi" || lCommand == "history" ) {
+        history();
+    } else if( lCommand.at( 0 ) == '%' ) {
+      unsigned int lCommandNo = atoi( lCommand.substr( 1 ).c_str() );
+      handle_cmd( lCommandNo - 1 ); 
     } else {
-      theOutput << "Unknown command \"" << lCommand << "\" Try \"help\"." << std::endl;
+      theOutput << "Unknown command \"" << aCommand << " Try \"help\"." << std::endl;
     }
     handle_cmd();
   }
 }
+
 void CommandLineEventHandler::help()
 {
   //TODO: Full documentation of each command
   theOutput << "List of available commands:" << std::endl;
+  theOutput << "history  -- Print the command history." << std::endl;
+  theOutput << "%<num>   -- Execute a previous command." << std::endl;
   theOutput << "run      -- Run the query." << std::endl;
   theOutput << "break    -- Set a breakpoint at the specified file and line." << std::endl;
   theOutput << "continue -- Resume the query execution." << std::endl;

@@ -55,18 +55,12 @@ void ZorbaDebuggerImpl::start( void * aStore,
   TCPSocket * lSock;
   //activate the debug mode
   theDebugMode = true;
-
-  //Compiles the query
-  theQuery = Zorba::getInstance( aStore )->createQuery();
-  theFileName = aFileName ;
-  theQuery->setFileName( theFileName );
-  Zorba_CompilerHints lCompilerHints;
-  lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
-  theQuery->compile( * aQuery, lCompilerHints );
-  
+  //Set the input stream
+  theQuery = aQuery;
   //Set the fileName
   theFileName = aFileName; 
-  
+  //Set the instance of Zorba
+  theZorba = Zorba::getInstance( aStore );
   //Run the server 
   theRequestServerSocket = new TCPServerSocket( aRequestPortno );
   theEventPortno = aEventPortno;
@@ -209,22 +203,36 @@ void ZorbaDebuggerImpl::terminatedEvent()
 void ZorbaDebuggerImpl::runQuery()
 {
   setStatus( QUERY_RUNNING );
+  //Reload the query
+  theQuery->clear();
+  theQuery->seekg( 0, std::ios::beg );
+  //Compiles the query
+  XQuery_t lQuery = theZorba->createQuery();
+  lQuery->setFileName( theFileName );
+  Zorba_CompilerHints lCompilerHints;
+  lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
+
+  lQuery->compile( * theQuery, lCompilerHints );
   try
   {
-    ResultIterator_t lIterator = theQuery->iterator();
+    ResultIterator_t lIterator = lQuery->iterator();
     lIterator->open();
 
     Item lItem;
-    while ( lIterator->next(lItem) && theStatus != QUERY_TERMINATED )
+    while ( lIterator->next(lItem) &&
+            theStatus != QUERY_TERMINATED &&
+            theStatus != QUERY_QUITED )
     {
       std::cout << lItem.getStringValue() << std::endl;
     }
-
     lIterator->close();
   } catch ( StaticException& se ) {
     std::cerr << se << std::endl;
   } catch ( DynamicException& de ) {
     std::cerr << de << std::endl;
+  } catch ( SystemException& se ) {
+    //do nothing?
+    std::cerr << se << std::endl;
   }
   setStatus( QUERY_TERMINATED );
 }

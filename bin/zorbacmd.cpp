@@ -32,7 +32,7 @@
 #ifdef ZORBA_DEBUGGER
 #include "debugcmd_client.h"
 
-#include <signal.h>
+#include <csignal>
 #include <boost/bind.hpp> 
 #include <zorba/debugger_server.h>
 #endif

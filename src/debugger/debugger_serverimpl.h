@@ -74,6 +74,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     friend class ZorbaDebugger;
 
     ZorbaDebuggerImpl():
+      theZorba(0),
       theDebugMode( false ),
       theRequestServerSocket(0), 
       theEventSocket(0), 
@@ -81,17 +82,19 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
       theFileName(""),
       theRuntimeThread(0){}
 
+    Zorba* theZorba;
+
     bool theDebugMode;
     
-    TCPServerSocket * theRequestServerSocket;
+    TCPServerSocket* theRequestServerSocket;
 
-    TCPSocket * theEventSocket;
+    TCPSocket* theEventSocket;
 
     unsigned short theEventPortno;
 
     ExecutionStatus theStatus;
 
-    XQuery_t theQuery;
+    std::istream* theQuery;
 
     String theFileName;
 
@@ -99,7 +102,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     std::vector<QueryLoc> theBreakpoints;
 
-    boost::thread * theRuntimeThread;
+    boost::thread* theRuntimeThread;
 
     boost::mutex theRuntimeMutex;
     

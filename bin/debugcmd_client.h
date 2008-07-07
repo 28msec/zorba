@@ -39,11 +39,19 @@ class CommandLineEventHandler: public DebuggerEventHandler
     
     std::istream & theInput;
 
+    std::vector<std::string> theHistory;
+
     std::vector<std::string> get_args( const std::string& str );
-    
+   
     void handle_cmd();
 
+    void handle_cmd( std::string aCommand );
+
+    void handle_cmd( unsigned int aCommandNo );
+        
     void help();
+
+    void history();
 
     void version();
 
