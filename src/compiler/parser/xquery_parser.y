@@ -3223,17 +3223,17 @@ Literal :
 NumericLiteral :
 		DECIMAL_LITERAL
 		{
-			$$ = new NumericLiteral(LOC (@$), *$1);
+			$$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_decimal, *$1);
       delete yylval.decval;
 		}
 	| INTEGER_LITERAL
 		{
-			$$ = new NumericLiteral(LOC (@$), *$1);
+			$$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_integer, *$1);
       delete yylval.ival;
 		}
 	|	DOUBLE_LITERAL
 		{
-			$$ = new NumericLiteral(LOC (@$), *$1);
+			$$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_double, *$1);
       delete yylval.dval;
 		}
 	;

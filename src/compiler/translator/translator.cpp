@@ -3179,15 +3179,15 @@ void end_visit(const NumericLiteral& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   switch (v.get_type()) {
   case ParseConstants::num_integer: {
-    nodestack.push(new const_expr(loc, (xqp_integer) v.get_int()));
+    nodestack.push(new const_expr(loc, v.get<xqp_integer>()));
     break;
   }
   case ParseConstants::num_decimal: {
-    nodestack.push(new const_expr(loc, (xqp_decimal) v.get_decimal()));
+    nodestack.push(new const_expr(loc, v.get<xqp_decimal>()));
     break;
   }
   case ParseConstants::num_double: {
-    nodestack.push(new const_expr(loc, (xqp_double) v.get_double()));
+    nodestack.push(new const_expr(loc, v.get<xqp_double>()));
     break;
   }
   }

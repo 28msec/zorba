@@ -16,8 +16,6 @@
 
 #include "store/api/item.h"
 
-// TODO check the include
-#include "zorbatypes/Unicode_util.h"
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
@@ -2525,45 +2523,6 @@ void PredicateList::accept(parsenode_visitor& v) const
 
 // [86] NumericLiteral
 // -------------------
-NumericLiteral::NumericLiteral(
-  const QueryLoc& _loc,
-  xqp_integer _ival)
-:
-  exprnode(_loc),
-  type(ParseConstants::num_integer),
-  theValue(_ival)
-{}
-
-NumericLiteral::NumericLiteral(
-  const QueryLoc& _loc,
-  xqp_double _dval)
-:
-  exprnode(_loc),
-  type(ParseConstants::num_double),
-  theValue(_dval)
-{}
-
-NumericLiteral::NumericLiteral(
-  const QueryLoc& _loc,
-  xqp_decimal _decval)
-:
-  exprnode(_loc),
-  type(ParseConstants::num_decimal),
-  theValue(_decval)
-{}
-
-string NumericLiteral::toString () const {
-  switch (type) {
-  case ParseConstants::num_integer:
-  case ParseConstants::num_decimal:
-  case ParseConstants::num_double:
-    return to_string(theValue);
-    break;
-  default: return "??";
-  }
-}
-
-
 void NumericLiteral::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();

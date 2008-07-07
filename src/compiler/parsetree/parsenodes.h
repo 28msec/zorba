@@ -28,6 +28,7 @@
 #include "store/api/item.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/representations.h"
+#include "zorbatypes/Unicode_util.h"
 #include "context/static_context_consts.h"
 
 #include "compiler/parser/parse_constants.h"
@@ -3340,32 +3341,31 @@ class NumericLiteral : public exprnode
 public:
 
 protected:
-	enum ParseConstants::numeric_type_t type;
-  boost::variant< xqp_integer, xqp_decimal, xqp_double > theValue;
-//  xqp_integer ival;
-//	xqp_decimal decval;
-//	xqp_double dval;
+  enum ParseConstants::numeric_type_t type;
+
+  class ValueBase {
+  public:
+    virtual ~ValueBase () {}
+    virtual std::string toString () const = 0;
+  };
+  template<typename T> class Value : public ValueBase {
+  public:
+    T data;
+    Value (const T &x) : data (x) {}
+    std::string toString () const { return to_string (data); }
+  };
+  ValueBase *theValue;
+
+protected:
+	NumericLiteral(const QueryLoc& loc, ParseConstants::numeric_type_t type_, ValueBase *val)
+    : exprnode (loc), type (type_), theValue (val) {}
 
 public:
-	NumericLiteral(
-		const QueryLoc&,
-		xqp_integer);
-
-	NumericLiteral(
-		const QueryLoc&,
-		xqp_decimal);
-
-	NumericLiteral(
-		const QueryLoc&,
-		xqp_double);
-
-
-public:
-	enum ParseConstants::numeric_type_t get_type() const { return type; }
-  std::string toString () const;
-	xqp_integer get_int() const { return boost::get<xqp_integer>(theValue); }
-	xqp_decimal get_decimal() const { return boost::get<xqp_decimal>(theValue); }
-	xqp_double get_double() const { return boost::get<xqp_double>(theValue); }
+  template<typename T> static NumericLiteral *new_literal (const QueryLoc& loc, ParseConstants::numeric_type_t type_, const T &x)
+  { return new NumericLiteral (loc, type_, new Value<T> (x)); }
+  enum ParseConstants::numeric_type_t get_type() const { return type; }
+  std::string toString () const { return theValue->toString (); }
+  template<typename T> T get () const { return static_cast<Value<T> *> (theValue)->data; }
 
 public:
 	void accept(parsenode_visitor&) const;

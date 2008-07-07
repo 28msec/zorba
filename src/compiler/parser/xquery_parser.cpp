@@ -3922,7 +3922,7 @@ namespace zorba
   case 311:
 #line 3225 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *(yysemantic_stack_[(1) - (1)].decval));
+			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval));
       delete yylval.decval;
 		;}
     break;
@@ -3930,7 +3930,7 @@ namespace zorba
   case 312:
 #line 3230 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *(yysemantic_stack_[(1) - (1)].ival));
+			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival));
       delete yylval.ival;
 		;}
     break;
@@ -3938,7 +3938,7 @@ namespace zorba
   case 313:
 #line 3235 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *(yysemantic_stack_[(1) - (1)].dval));
+			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval));
       delete yylval.dval;
 		;}
     break;
