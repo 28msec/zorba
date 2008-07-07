@@ -25,82 +25,18 @@
 #include <assert.h>
 #include <boost/variant.hpp>
 
+#include "compiler/parsetree/parsenode_base.h"
+
 #include "store/api/item.h"
+
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/representations.h"
 #include "zorbatypes/Unicode_util.h"
-#include "context/static_context_consts.h"
 
-#include "compiler/parser/parse_constants.h"
-#include "store/api/update_consts.h"
+#include "context/static_context_consts.h"
 #include "context/dynamic_context.h"
-#include "compiler/parser/query_loc.h"
 
 namespace zorba {
-
-
-// (See: runtime/normalize.h)
-class parsenode_visitor;
-
-
-/*
-**  base class: syntax-only nodes
-*/
-class parsenode : public SimpleRCObject
-{
-protected:
-	QueryLoc loc;
-
-    friend class ParseNodePrintXMLVisitor;
-
-public:
-	parsenode(const QueryLoc& _loc) : loc(_loc) { }
-  virtual ~parsenode() {}
-
-public:
-	const QueryLoc& get_location() const { return loc; }
-
-  virtual void accept(parsenode_visitor&) const = 0;
-
-};
-
-
-/*______________________________________________________________________
-|
-|  See Section 21.2.3.1 in
-|  "The C++ Programming Language", by B. Stroustrup (1997) AT&T
-|_______________________________________________________________________*/
-
-/*
-std::ostream& operator<<(std::ostream& s, parsenode const& r)
-{
-	return r.put(s);
-}
-*/
-
-
-/*
-**  exprnode:  nodes with values.
-*/
-class exprnode : public parsenode
-{
-public:
-	exprnode(const QueryLoc& loc) : parsenode(loc) { }
-
-public:
-
-	virtual void accept(parsenode_visitor&) const = 0;
-
-};
-
-/*
-std::ostream& operator<<(std::ostream& s, exprnode const& r)
-{
-	return r.put(s);
-}
-*/
-
-
 
 
 class AbbrevForwardStep;
@@ -6326,17 +6262,6 @@ public:
 public:
 	void accept(parsenode_visitor&) const;
 
-};
-
-class ParseErrorNode : public parsenode {
-public:
-  std::string msg;
-  ParseErrorNode (const QueryLoc& loc, std::string msg_)
-    : parsenode (loc), msg (msg_)
-  {}
-
-public:
-	void accept(parsenode_visitor&) const {}
 };
 
 class ExitExpr : public exprnode {
