@@ -33,13 +33,13 @@
 namespace zorba{
 
 /* Type definition of fields */
-typedef char Byte;
+typedef unsigned char Byte;
 typedef uint32_t      Length;
 typedef uint32_t      Id;
-typedef char Flags;
+typedef unsigned char Flags;
 typedef uint16_t      ErrorCode;
-typedef char CommandSet;
-typedef char Command;
+typedef unsigned char CommandSet;
+typedef unsigned char Command;
 
 /* sizeof(HeaderContent) == 12 because of the padding */
 const int SIZE_OF_HEADER_CONTENT = 9;

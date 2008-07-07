@@ -98,6 +98,9 @@ namespace zorba{
       SuspendedEvent * lSuspendedMsg;
       if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage ) ) )
       {
+#ifndef NDEBUG
+        std::cerr << "[Client Thread] received a suspended event" << std::endl;
+#endif
         theExecutionStatus = QUERY_SUSPENDED;
         theRemoteLineNo   = lSuspendedMsg->getLocation().getLineno();
         theRemoteFileName = lSuspendedMsg->getLocation().getFilename();
@@ -107,18 +110,27 @@ namespace zorba{
           theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
         }
       } else if ( dynamic_cast< StartedEvent * > ( lMessage ) ) {
+#ifndef NDEBUG
+        std::cerr << "[Client Thread] receive a started event" << std::endl;
+#endif
         theExecutionStatus = QUERY_RUNNING;
         if ( theEventHandler )
         {
           theEventHandler->started();
         }
       } else if ( dynamic_cast< ResumedEvent * > ( lMessage ) ) {
+#ifndef NDEBUG
+        std::cerr << "[Client Thread] receive a resumed event" << std::endl;
+#endif
         theExecutionStatus = QUERY_RESUMED;
         if ( theEventHandler )
         {
           theEventHandler->resumed();
         }
       } else if ( dynamic_cast< TerminatedEvent * > ( lMessage ) ) {
+#ifndef NDEBUG
+        std::cerr << "[Client Thread] receive a suspended event" << std::endl;
+#endif
         if( theExecutionStatus != QUERY_IDLE )
         {
           theExecutionStatus = QUERY_TERMINATED;

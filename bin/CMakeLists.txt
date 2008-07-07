@@ -59,7 +59,5 @@ ADD_TEST(bin/zorba4 zorba --context-item=${CMAKE_CURRENT_SOURCE_DIR}/test.xml  -
 SET_TESTS_PROPERTIES(bin/zorba4 PROPERTIES PASS_REGULAR_EXPRESSION "(.*<child>child1</child>)*")
 
 IF(ZORBA_DEBUGGER)
-  SET(XQDB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/XQDBTests)
-  ADD_TEST(bin/xqdb1 zorba -cf ${XQDB_SRC}/Queries/query1.xq < ${XQDB_SRC}/Commands/command1.txt > ${XQDB_SRC}/Output/xqdb1.txt)
-  ADD_TEST(bin/xqdb2 ${CMAKE_COMMAND} -E compare_files ${XQDB_SRC}/ExpectedResults/result1.txt ${XQDB_SRC}/Output/xqdb1.txt)
+  ADD_SUBDIRECTORY(XQDBTests)
 ENDIF(ZORBA_DEBUGGER)

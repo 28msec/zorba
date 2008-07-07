@@ -32,6 +32,7 @@
 #ifdef ZORBA_DEBUGGER
 #include "debugcmd_client.h"
 
+#include <signal.h>
 #include <boost/bind.hpp> 
 #include <zorba/debugger_server.h>
 #endif
@@ -41,8 +42,6 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
-
-
 
 namespace fs = boost::filesystem;
 
@@ -288,7 +287,6 @@ int _tmain(int argc, _TCHAR* argv[])
     std::cout << "Zorba XQuery debugger client." << std::endl;
     std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
     std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-
     //copy the input stream
     std::stringstream out;
     std::copy( std::istreambuf_iterator<char>(*qfile),
@@ -296,6 +294,7 @@ int _tmain(int argc, _TCHAR* argv[])
                std::ostreambuf_iterator<char>(out));
     qfile->seekg(0);
     std::istringstream lInputQuery( out.str() );
+    //start the server thread
     boost::thread lServerThread ( 
                                   boost::bind(
                                     &server,
@@ -316,9 +315,12 @@ int _tmain(int argc, _TCHAR* argv[])
 #else
         sleep(1);
 #endif
-        ZorbaDebuggerClient * lDebuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
-        CommandLineEventHandler lEventHandler( lInputQuery, std::cin, std::cout, lDebuggerClient );
-        lDebuggerClient->registerEventHandler( &lEventHandler );
+        ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
+        CommandLineEventHandler lEventHandler( lInputQuery, std::cin, std::cout, debuggerClient );
+#ifdef SIGINT /* not all system have SIGINT */
+        signal( SIGINT, suspend );
+#endif
+        debuggerClient->registerEventHandler( &lEventHandler );
         lServerThread.join();
       } catch( std::exception &e ) {
         if ( i < 2 ){ continue; }

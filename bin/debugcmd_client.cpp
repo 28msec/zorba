@@ -15,9 +15,33 @@
  */
 #include "debugcmd_client.h"
 
+#include <signal.h>
+#include <boost/bind.hpp> 
 #include <zorba/zorba.h>
 
 using namespace zorba;
+
+#ifdef SIGINT /* not all system have SIGINT */
+void suspend( int aSignum )
+{
+  ZorbaDebuggerClient * lClient = CommandLineEventHandler::getClient();
+  if( lClient != 0 && lClient->isQueryRunning() )
+  {
+    lClient->suspend();
+  } else {
+    //if the query is not running, we call the default signal handling
+    signal( SIGINT, SIG_DFL ); 
+    raise( SIGINT );
+  }
+}
+#endif
+
+ZorbaDebuggerClient * CommandLineEventHandler::theClient = 0;
+
+ZorbaDebuggerClient * CommandLineEventHandler::getClient()
+{
+  return theClient;
+}
 
 CommandLineEventHandler::CommandLineEventHandler( std::istream & aQueryFile,
                                                   std::istream & anInput,
@@ -25,8 +49,10 @@ CommandLineEventHandler::CommandLineEventHandler( std::istream & aQueryFile,
                                                   ZorbaDebuggerClient * aClient )
  : theQueryFile( aQueryFile ),
    theOutput( anOutput ),
-   theInput( anInput ),
-   theClient( aClient ){}
+   theInput( anInput )
+{
+  theClient = aClient;
+}
 
 void CommandLineEventHandler::list()
 {
@@ -62,9 +88,17 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
   handle_cmd();
 }
 
-void CommandLineEventHandler::started()
+void CommandLineEventHandler::suspend( int aSignum )
 {
+  if( theClient->isQueryRunning() )
+  {
+    theClient->suspend();
+  } else {
+    exit(8);  
+  }
 }
+
+void CommandLineEventHandler::started(){}
 
 void CommandLineEventHandler::idle()
 {

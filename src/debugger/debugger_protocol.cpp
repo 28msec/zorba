@@ -502,8 +502,6 @@ SuspendedEvent::SuspendedEvent( const QueryLoc &aLocation, const SuspensionCause
   AbstractCommandMessage( ENGINE_EVENT, SUSPENDED ), theLocation( aLocation ), theCause( aCause ) 
 {
   unsigned int l = MESSAGE_SIZE + getData().length();
-  //std::cerr << "Length:" <<  l << std::endl;
-  //std::cerr << "String:" << getData() << std::endl;
   setLength( l );
   checkIntegrity();
 }

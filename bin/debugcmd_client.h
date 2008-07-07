@@ -25,17 +25,19 @@
 
 using namespace zorba;
 
+void suspend( int aSignum );
+
 class CommandLineEventHandler: public DebuggerEventHandler
 {
   private:
+    
+    static ZorbaDebuggerClient * theClient;
     
     std::istream & theQueryFile;
     
     std::ostream & theOutput;
     
     std::istream & theInput;
-    
-    ZorbaDebuggerClient * theClient;
 
     std::vector<std::string> get_args( const std::string& str );
     
@@ -51,6 +53,8 @@ class CommandLineEventHandler: public DebuggerEventHandler
 
     void list( unsigned int aBegin, unsigned int anEnd );
 
+    void suspend( int aSignum );
+
   public:
     CommandLineEventHandler( std::istream & aQueryFile,
                              std::istream & anInput,
@@ -58,6 +62,8 @@ class CommandLineEventHandler: public DebuggerEventHandler
                              ZorbaDebuggerClient * aClient );
 
     virtual ~CommandLineEventHandler(){}
+
+    static ZorbaDebuggerClient * getClient();
 
     //debugger events
     void started();
