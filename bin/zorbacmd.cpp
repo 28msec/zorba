@@ -45,6 +45,40 @@
 
 namespace fs = boost::filesystem;
 
+#ifdef ZORBA_HAVE_RUSAGE_FUNCTION
+#include <sys/time.h>
+#include <sys/resource.h>
+typedef struct rusage timeinfo;
+typedef struct timeval time_detail;
+long get_time_elapsed (const time_detail &t0, const time_detail &t1) {
+  return ((t1.tv_sec - t0.tv_sec) * 1000) + ((t1.tv_usec - t0.tv_usec) / 1000);
+}
+#define ZORBA_HAVE_SYSTEM_TIME 1
+time_detail extract_user_time_detail (const timeinfo &rusage) {
+  return rusage.ru_utime;
+}
+void get_timeinfo (timeinfo &t) {
+  getrusage (RUSAGE_SELF, &t);
+}
+
+#else
+
+#include <time.h>
+typedef clock_t timeinfo;
+typedef clock_t time_detail;
+long get_time_elapsed (const time_detail &t0, const time_detail &t1) {
+  return (t1 - t0) / (CLOCKS_PER_SEC / 1000);
+}
+time_detail extract_user_time_detail (const timeinfo &rusage) {
+  return rusage;
+}
+void get_timeinfo (timeinfo &t) {
+  t = clock ();
+}
+#define ZORBA_HAVE_SYSTEM_TIME 0
+#endif
+
+
 #ifdef ZORBA_DEBUGGER
 void server( std::istream * aQuery,
             const char * aFileName,
@@ -171,6 +205,13 @@ int _tmain(int argc, _TCHAR* argv[])
   boost::posix_time::time_duration lDiffCompileTime;
   boost::posix_time::time_duration lDiffFirstExecutionTime;
   boost::posix_time::time_duration lDiffExecutionTime;
+
+  timeinfo lStartCompileTimeInfo, lStopCompileTimeInfo;
+  timeinfo lStartFirstExecutionTimeInfo, lStopFirstExecutionTimeInfo;
+  timeinfo lStartExecutionTimeInfo, lStopExecutionTimeInfo;
+  long lDiffCompileUserTime;
+  long lDiffFirstExecutionUserTime;
+  long lDiffExecutionUserTime;
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
@@ -340,16 +381,20 @@ int _tmain(int argc, _TCHAR* argv[])
       if (lProperties.getOptLevel() == "O0")
         lHints.opt_level = ZORBA_OPT_LEVEL_O0;
 
-      if (lTiming)
+      if (lTiming) {
         lStartCompileTime = boost::posix_time::microsec_clock::local_time();
+        get_timeinfo (lStartCompileTimeInfo);
+      }
 
       lQuery = lZorbaInstance->createQuery ();
       if (! lProperties.inlineQuery())
         lQuery->setFileName (path.string ());
       lQuery->compile (*qfile, lStaticContext, lHints);
 
-      if (lTiming)
+      if (lTiming) {
         lStopCompileTime = boost::posix_time::microsec_clock::local_time();
+        get_timeinfo (lStopCompileTimeInfo);
+      }
     } catch (zorba::QueryException& qe) {
       std::cerr << qe << std::endl;
       return 5;
@@ -381,8 +426,10 @@ int _tmain(int argc, _TCHAR* argv[])
       Zorba_SerializerOptions lSerOptions;
       createSerializerOptions(lSerOptions, &lProperties);
 
-      if (lTiming)
+      if (lTiming) {
         lStartFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
+        get_timeinfo (lStartFirstExecutionTimeInfo);
+      }
 
       if (lQuery->isUpdateQuery()) {
         lQuery->applyUpdates();
@@ -390,13 +437,17 @@ int _tmain(int argc, _TCHAR* argv[])
         lQuery->serialize(*lOutputStream, lSerOptions);
       }
 
-      if (lTiming)
+      if (lTiming) {
         lStopFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
+        get_timeinfo (lStopFirstExecutionTimeInfo);
+      }
 
       --lNumExecutions;
 
-      if (lTiming)
+      if (lTiming) {
         lStartExecutionTime = boost::posix_time::microsec_clock::local_time();
+        get_timeinfo (lStartExecutionTimeInfo);
+      }
 
       while (--lNumExecutions >= 0 ) {
         if (lQuery->isUpdateQuery()) {
@@ -406,8 +457,10 @@ int _tmain(int argc, _TCHAR* argv[])
         }
       }
 
-      if (lTiming)
+      if (lTiming) {
         lStopExecutionTime = boost::posix_time::microsec_clock::local_time();
+        get_timeinfo (lStopExecutionTimeInfo);
+      }
 
     } catch (zorba::QueryException& qe) {
       std::cerr << qe << std::endl;
@@ -424,21 +477,27 @@ int _tmain(int argc, _TCHAR* argv[])
           << lNumExecutions << std::endl;
 
       lDiffCompileTime = lStopCompileTime - lStartCompileTime;
+      lDiffCompileUserTime = get_time_elapsed (extract_user_time_detail (lStartCompileTimeInfo), extract_user_time_detail (lStopCompileTimeInfo));
       std::cout << "Compilation time: "
-          << lDiffCompileTime.total_milliseconds()
-          << " milliseconds" << std::endl;
+                << lDiffCompileTime.total_milliseconds()
+                << " (user: " << lDiffCompileUserTime << ")"
+                << " milliseconds" << std::endl;
 
       lDiffFirstExecutionTime = lStopFirstExecutionTime - lStartFirstExecutionTime;
+      lDiffFirstExecutionUserTime = get_time_elapsed (extract_user_time_detail (lStartFirstExecutionTimeInfo), extract_user_time_detail (lStopFirstExecutionTimeInfo));
       std::cout << "First Execution time: "
-          << lDiffFirstExecutionTime.total_milliseconds()
-          << " milliseconds (i.e. parsing the document is included)" << std::endl;
+                << lDiffFirstExecutionTime.total_milliseconds()
+                << " (user: " << lDiffFirstExecutionUserTime << ")"
+                << " milliseconds (i.e. parsing the document is included)" << std::endl;
 
       if (lNumExecutions > 1) {
         lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime) /
             (lNumExecutions - 1);
+        lDiffExecutionUserTime = get_time_elapsed (extract_user_time_detail (lStartExecutionTimeInfo), extract_user_time_detail (lStopExecutionTimeInfo));
         std::cout << "Average Execution time: "
-            << lDiffExecutionTime.total_milliseconds()
-            << " milliseconds" << std::endl;
+                  << lDiffExecutionTime.total_milliseconds()
+                  << " (user: " << lDiffExecutionUserTime << ")"
+                  << " milliseconds" << std::endl;
       }
     }
     

@@ -78,6 +78,8 @@
 #cmakedefine ZORBA_HAVE_STRCAT_S_FUNCTION  
 #cmakedefine ZORBA_HAVE_STRCPY_S_FUNCTION  
 
+#cmakedefine ZORBA_HAVE_RUSAGE_FUNCTION
+
 /* Threading mechanism*/
 #cmakedefine ZORBA_FOR_ONE_THREAD_ONLY     
 #cmakedefine ZORBA_HAVE_PTHREAD_SPINLOCK

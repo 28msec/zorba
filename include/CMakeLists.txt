@@ -42,6 +42,9 @@ CHECK_INCLUDE_FILES (pthread.h                    ZORBA_HAVE_PTHREAD_H)
 CHECK_FUNCTION_EXISTS(pthread_spin_init           ZORBA_HAVE_PTHREAD_SPINLOCK)
 CHECK_FUNCTION_EXISTS(pthread_mutex_init          ZORBA_HAVE_PTHREAD_MUTEX)
 
+CHECK_INCLUDE_FILES ("sys/time.h;sys/resource.h"  ZORBA_HAVE_RUSAGE_INCLUDES)
+CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_RUSAGE_FUNCTION)
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake -->${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h")
 
