@@ -23,7 +23,6 @@
 #include <typeinfo>
 #include <vector>
 #include <assert.h>
-#include <boost/variant.hpp>
 
 #include "compiler/parsetree/parsenode_base.h"
 
