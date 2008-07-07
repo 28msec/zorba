@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Run from inittab:
+#zt:12345:respawn:nice -n -18 /usr/local/src/zorbatest_regressions/run_pending_tests >/var/log/zorbatest 2>&1
+
+cd `dirname $0`
+unalias -a
+export PATH=/usr/local/bin:$PATH
+
+while true; do
+  rs=`cd totest; ls`
+  while test -z "$rs"; do sleep 20; done
+  echo Revisions to test: $rs
+  for r in $rs; do
+    if test -f totest/$r; then
+      /etc/init.d/crond stop >/dev/null 2>&1
+      while ps ax | grep [r]un-parts; do sleep 30; done
+
+      ./integrate --no-accept --rev $r --regress --no-clean server
+      rm totest/$r
+
+      /etc/init.d/crond start  >/dev/null 2>&1
+      sleep 180
+    fi
+  done
+done
