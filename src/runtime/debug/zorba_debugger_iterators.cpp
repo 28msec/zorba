@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-#include <iostream>
-
-#include "debugger/debugger_serverimpl.h"
-
-#include "runtime/debug/debug_iterators.h"
-
 #include "runtime/debug/zorba_debugger_iterators.h"
 
+#include <iostream>
+
+#include "context/static_context.h"
+#include "debugger/debugger_serverimpl.h"
 
 using namespace std;
 
@@ -40,7 +38,7 @@ namespace zorba {
   {
 
     PlanIteratorState * state;
-    
+
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
     theDebugger->theLocation = loc;
@@ -49,6 +47,12 @@ namespace zorba {
       
       if ( theDebugger->hasToSuspend() )
       {
+        //if ( planState.sctx()->lookup_var("i") != 0 )
+        //{
+        //  std::cerr << "Horray!" << std::endl;
+        //} else {
+        //  std::cerr << "Didn't found anything :-(" << std::endl;
+        //}
         boost::mutex::scoped_lock lock( theDebugger->theRuntimeMutex );
         theDebugger->theRuntimeSuspendedCV.wait( lock );
       }

@@ -49,6 +49,7 @@ namespace zorba{
 
   ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
   {
+    theEventListener.join();
     delete theRequestSocket;
     delete theEventServerSocket;
   }
@@ -86,8 +87,8 @@ namespace zorba{
   void ZorbaDebuggerClientImpl::listenEvents()
   {
 #ifndef NDEBUG
-    std::cerr << "[Client Thread] start event listener thread" << std::endl;
-    std::cerr << "[Client Thread] wait for the event client to connect" << std::endl;
+    std::clog << "[Client Thread] start event listener thread" << std::endl;
+    std::clog << "[Client Thread] wait for the event client to connect" << std::endl;
 #endif
 
     TCPSocket * lSocket = theEventServerSocket->accept();
@@ -99,7 +100,7 @@ namespace zorba{
       if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage ) ) )
       {
 #ifndef NDEBUG
-        std::cerr << "[Client Thread] received a suspended event" << std::endl;
+        std::clog << "[Client Thread] received a suspended event" << std::endl;
 #endif
         theExecutionStatus = QUERY_SUSPENDED;
         theRemoteLineNo   = lSuspendedMsg->getLocation().getLineno();
@@ -111,7 +112,7 @@ namespace zorba{
         }
       } else if ( dynamic_cast< StartedEvent * > ( lMessage ) ) {
 #ifndef NDEBUG
-        std::cerr << "[Client Thread] receive a started event" << std::endl;
+        std::clog << "[Client Thread] receive a started event" << std::endl;
 #endif
         theExecutionStatus = QUERY_RUNNING;
         if ( theEventHandler )
@@ -120,7 +121,7 @@ namespace zorba{
         }
       } else if ( dynamic_cast< ResumedEvent * > ( lMessage ) ) {
 #ifndef NDEBUG
-        std::cerr << "[Client Thread] receive a resumed event" << std::endl;
+        std::clog << "[Client Thread] receive a resumed event" << std::endl;
 #endif
         theExecutionStatus = QUERY_RESUMED;
         if ( theEventHandler )
@@ -129,7 +130,7 @@ namespace zorba{
         }
       } else if ( dynamic_cast< TerminatedEvent * > ( lMessage ) ) {
 #ifndef NDEBUG
-        std::cerr << "[Client Thread] receive a suspended event" << std::endl;
+        std::clog << "[Client Thread] receive a suspended event" << std::endl;
 #endif
         if( theExecutionStatus != QUERY_IDLE )
         {
@@ -144,7 +145,7 @@ namespace zorba{
     }
     delete lSocket;
 #ifndef NDEBUG
-    std::cerr << "[Client Thread] end of the event listener thread" << std::endl;
+    std::clog << "[Client Thread] end of the event listener thread" << std::endl;
 #endif
   }
 
@@ -178,18 +179,20 @@ namespace zorba{
       //send the command
       theRequestSocket->send( lMessage, length );
       //check the reply
-      AbstractMessage * lMessage = MessageFactory::buildMessage( theRequestSocket );
-      ReplyMessage * lReplyMessage = dynamic_cast< ReplyMessage * >( lMessage );
+      AbstractMessage * lMsg = MessageFactory::buildMessage( theRequestSocket );
+      ReplyMessage * lReplyMessage = dynamic_cast< ReplyMessage * >( lMsg );
       if ( lReplyMessage )
       {
         if( ! lReplyMessage->isOk() )
         {
           std::cerr << "Error occured: " << lReplyMessage->getMessage() << std::endl;
         }
+        delete lReplyMessage;
       } else {
       //TODO: print the error message.
         std::cerr << "Internal error occured" << std::endl;
       }
+      //delete[] lMsg;
     } catch( SocketException &e ) {
       std::cerr << "Request client:" << e.what() << std::endl;
     }

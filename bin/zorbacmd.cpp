@@ -329,12 +329,12 @@ int _tmain(int argc, _TCHAR* argv[])
     std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
     std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
     //copy the input stream
-    std::stringstream out;
-    std::copy( std::istreambuf_iterator<char>(*qfile),
-               std::istreambuf_iterator<char>(),
-               std::ostreambuf_iterator<char>(out));
-    qfile->seekg(0);
-    std::istringstream lInputQuery( out.str() );
+    //std::stringstream out;
+    //std::copy( std::istreambuf_iterator<char>(*qfile),
+    //           std::istreambuf_iterator<char>(),
+    //           std::ostreambuf_iterator<char>(out));
+    //qfile->seekg(0);
+    //std::istringstream lInputQuery( out.str() );
     //start the server thread
     boost::thread lServerThread ( 
                                   boost::bind(
@@ -357,12 +357,13 @@ int _tmain(int argc, _TCHAR* argv[])
         sleep(1);
 #endif
         ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
-        CommandLineEventHandler lEventHandler( lInputQuery, std::cin, std::cout, debuggerClient );
+        CommandLineEventHandler lEventHandler( qfile.get(), std::cin, std::cout, debuggerClient );
 #ifdef SIGINT /* not all system have SIGINT */
         signal( SIGINT, suspend );
 #endif
         debuggerClient->registerEventHandler( &lEventHandler );
         lServerThread.join();
+        delete debuggerClient;
       } catch( std::exception &e ) {
         if ( i < 2 ){ continue; }
         std::cerr << "Could not start the debugger client: " << std::endl;

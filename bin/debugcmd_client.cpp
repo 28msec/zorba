@@ -15,6 +15,8 @@
  */
 #include "debugcmd_client.h"
 
+#include <fstream>
+#include <sstream>
 #include <csignal>
 #include <boost/bind.hpp> 
 #include <zorba/zorba.h>
@@ -43,7 +45,7 @@ ZorbaDebuggerClient * CommandLineEventHandler::getClient()
   return theClient;
 }
 
-CommandLineEventHandler::CommandLineEventHandler( std::istream & aQueryFile,
+CommandLineEventHandler::CommandLineEventHandler( std::istream * aQueryFile,
                                                   std::istream & anInput,
                                                   std::ostream & anOutput,
                                                   ZorbaDebuggerClient * aClient )
@@ -83,16 +85,34 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
 {
   std::string lLine;
   unsigned int lLineNo = 0;
-  theQueryFile.clear();
-  theQueryFile.seekg( 0, std::ios::beg );
-  while ( ! theQueryFile.eof() )
+  std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile );
+  if ( lFile != 0 )
+  {
+    std::stringstream lFileName;
+    lFileName << theClient->getFileName();
+    if ( lFile->is_open() )
+    {
+      lFile->close();
+    }
+    lFile->open( lFileName.str().c_str() );
+  } else {
+    theQueryFile->clear();
+    theQueryFile->seekg( 0, std::ios::beg );
+  }
+  
+  while ( ! theQueryFile->eof() )
   {
     lLineNo++;
-    std::getline( theQueryFile, lLine, '\n');
+    std::getline( *theQueryFile, lLine, '\n');
     if ( lLineNo >= aBegin && lLineNo <= anEnd )
     {
       theOutput << lLineNo << '\t' << lLine << std::endl;
     }
+  }
+  
+  if ( lFile != 0 )
+  {
+    lFile->close();
   }
   handle_cmd();
 }
@@ -177,7 +197,13 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
 {
   if( ! theInput.eof() )
   {
-    theHistory.push_back( aCommand );
+    if ( aCommand.at(0) != '%' )
+    {
+      std::vector< std::string >::iterator lEnd;
+      lEnd = std::unique( theHistory.begin(), theHistory.end() );
+      theHistory.erase( lEnd, theHistory.end() );
+      theHistory.push_back( aCommand );
+    }
 
 	  std::vector<std::string> lArgs = get_args( aCommand );
     std::string lCommand = lArgs.at( 0 ); 
@@ -196,7 +222,6 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
         }
       }
       theClient->quit();
-      exit(7);
     } else if ( lCommand == "s" || lCommand == "stop" ) {
       theClient->terminate();
       return;
@@ -268,7 +293,7 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
       unsigned int lCommandNo = atoi( lCommand.substr( 1 ).c_str() );
       handle_cmd( lCommandNo - 1 ); 
     } else {
-      theOutput << "Unknown command \"" << aCommand << " Try \"help\"." << std::endl;
+      theOutput << "Unknown command \"" << aCommand << "\" Try \"help\"." << std::endl;
     }
     handle_cmd();
   }

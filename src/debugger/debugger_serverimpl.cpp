@@ -16,10 +16,9 @@
 
 #include <iostream>
 #include <memory>
-
+#include <fstream>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-
 #include  <zorba/zorba.h>
 
 #ifdef WIN32
@@ -68,7 +67,7 @@ void ZorbaDebuggerImpl::start( void * aStore,
   //Wait for a client to connect
   lSock = theRequestServerSocket->accept(); 
 #ifndef NDEBUG
-  std::cerr << "[Server Thread] Client connected" << std::endl;
+  std::clog << "[Server Thread] Client connected" << std::endl;
 #endif
   //Try to connect to the event server 3 times
   for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ )
@@ -101,13 +100,13 @@ void ZorbaDebuggerImpl::start( void * aStore,
     handleTcpClient( lSock );
   }
 #ifndef NDEBUG
-  std::cerr << "[Server Thread] server quited" << std::endl;
+  std::clog << "[Server Thread] server quited" << std::endl;
 #endif
   if ( theRuntimeThread != 0 ){
     theRuntimeThread->join();
   }
 #ifndef NDEBUG
-  std::cerr << "[Server Thread] runtime thread joined" << std::endl;
+  std::clog << "[Server Thread] runtime thread joined" << std::endl;
 #endif 
   delete lSock;
 }
@@ -147,7 +146,7 @@ void ZorbaDebuggerImpl::sendEvent( AbstractCommandMessage * aMessage )
     try
     {
 #ifndef NDEBUG
-      std::cerr << "[Server Thread] send an event: ";
+      std::clog << "[Server Thread] send an event: ";
       switch ( aMessage->getCommand() )
       {
         case STARTED:
@@ -166,7 +165,7 @@ void ZorbaDebuggerImpl::sendEvent( AbstractCommandMessage * aMessage )
 #endif
       theEventSocket->send( lMessage, length );
 #ifndef NDEBUG
-      std::cerr << "[Server Thread] event sent" << std::endl;
+      std::clog << "[Server Thread] event sent" << std::endl;
 #endif
     } catch( SocketException &e ) {
       std::cerr << e.what() << std::endl;
@@ -203,16 +202,38 @@ void ZorbaDebuggerImpl::terminatedEvent()
 void ZorbaDebuggerImpl::runQuery()
 {
   setStatus( QUERY_RUNNING );
-  //Reload the query
-  theQuery->clear();
-  theQuery->seekg( 0, std::ios::beg );
+  //reload the query
+  std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQuery );
+  if ( lFile != 0 )
+  {
+    std::stringstream lFileName;
+    lFileName << theFileName;
+    if ( lFile->is_open() )
+    {
+      lFile->close();
+    }
+    lFile->open( lFileName.str().c_str() );
+    if ( lFile->fail() )
+    {
+      std::cerr << "Couldn't open " << lFileName.str().c_str() << std::endl;
+      return;
+    }
+  } else {
+    theQuery->clear();
+    theQuery->seekg( 0, std::ios::beg );
+  }
   //Compiles the query
   XQuery_t lQuery = theZorba->createQuery();
   lQuery->setFileName( theFileName );
   Zorba_CompilerHints lCompilerHints;
   lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
-
-  lQuery->compile( * theQuery, lCompilerHints );
+  if( lFile != 0 )
+  {
+    lQuery->compile( *lFile, lCompilerHints );
+    lFile->close();
+  } else {
+    lQuery->compile( *theQuery, lCompilerHints );
+  }
   try
   {
     ResultIterator_t lIterator = lQuery->iterator();
@@ -231,7 +252,6 @@ void ZorbaDebuggerImpl::runQuery()
   } catch ( DynamicException& de ) {
     std::cerr << de << std::endl;
   } catch ( SystemException& se ) {
-    //do nothing?
     std::cerr << se << std::endl;
   }
   setStatus( QUERY_TERMINATED );

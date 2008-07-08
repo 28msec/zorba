@@ -33,7 +33,7 @@ class CommandLineEventHandler: public DebuggerEventHandler
     
     static ZorbaDebuggerClient * theClient;
     
-    std::istream & theQueryFile;
+    std::istream * theQueryFile;
     
     std::ostream & theOutput;
     
@@ -64,12 +64,15 @@ class CommandLineEventHandler: public DebuggerEventHandler
     void suspend( int aSignum );
 
   public:
-    CommandLineEventHandler( std::istream & aQueryFile,
+    CommandLineEventHandler( std::istream * aQueryFile,
                              std::istream & anInput,
                              std::ostream & anOutput,
                              ZorbaDebuggerClient * aClient );
 
-    virtual ~CommandLineEventHandler(){}
+    virtual ~CommandLineEventHandler()
+    {
+    
+    }
 
     static ZorbaDebuggerClient * getClient();
 
