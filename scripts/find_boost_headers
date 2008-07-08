@@ -20,7 +20,7 @@ sub process_file {
         return;
     }
     while (<$fh>) {
-        if (m@^[#]include [<"](boost/.*)[>"]@) {
+        if (m@^[#]include [<"](boost/[^">]*)[>"]@) {
             process_file ($1);
         }
     }

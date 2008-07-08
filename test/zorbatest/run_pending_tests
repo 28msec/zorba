@@ -8,8 +8,7 @@ unalias -a
 export PATH=/usr/local/bin:$PATH
 
 while true; do
-  rs=`cd totest; ls`
-  while test -z "$rs"; do sleep 20; done
+  while test -z "$rs"; do rs=`cd totest; ls`; sleep 20; done
   echo Revisions to test: $rs
   for r in $rs; do
     if test -f totest/$r; then
