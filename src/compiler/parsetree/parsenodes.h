@@ -3296,6 +3296,7 @@ protected:
     : exprnode (loc), type (type_), theValue (val) {}
 
 public:
+  ~NumericLiteral () { delete theValue; }
   template<typename T> static NumericLiteral *new_literal (const QueryLoc& loc, ParseConstants::numeric_type_t type_, const T &x)
   { return new NumericLiteral (loc, type_, new Value<T> (x)); }
   enum ParseConstants::numeric_type_t get_type() const { return type; }
