@@ -82,8 +82,8 @@ class NodeTest : virtual public SimpleRCObject
   bool operator ==(const NodeTest& other) const;
 
  private:
-  store::StoreConsts::NodeKind    m_kind;
-  rchandle<NodeNameTest>   m_name_test;
+  store::StoreConsts::NodeKind  m_kind;
+  rchandle<NodeNameTest>        m_name_test;
 };
 
 }

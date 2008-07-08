@@ -196,29 +196,29 @@ xqp_byte Item::getByteValue() const
 
 /** Accessor for xs:date
  */
-xqp_date* Item::getDateValue() const
+const xqp_date& Item::getDateValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
+  return *(new xqp_date);
 }
 
 /** Accessor for xs:dateTime
  */
-xqp_dateTime* Item::getDateTimeValue() const
+const xqp_dateTime& Item::getDateTimeValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
+  return *(new xqp_dateTime);
 }
 
 /** Accessor for xs:double
  */
-xqp_double Item::getDoubleValue() const
+const xqp_double& Item::getDoubleValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_double::parseInt(0);
+  return *(new xqp_double);
 }
 
 /** Accessor for xs:duration
@@ -268,47 +268,47 @@ xqp_float Item::getFloatValue() const
 
 /** Accessor for xs:gDay
  */
-xqp_gDay* Item::getGDayValue() const
+const xqp_gDay& Item::getGDayValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
+  return *(new xqp_gDay);
 }
 
 /** Accessor for xs:gMonth
  */
-xqp_gMonth* Item::getGMonthValue() const
+const xqp_gMonth& Item::getGMonthValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
+  return *(new xqp_gMonth);
 }
 
 /** Accessor for xs:gMonthDay
  */
-xqp_gMonthDay* Item::getGMonthDayValue() const
+const xqp_gMonthDay& Item::getGMonthDayValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
+  return *(new xqp_gMonthDay);
 }
 
 /** Accessor for xs:gYear
  */
-xqp_gYear* Item::getGYearValue() const
+const xqp_gYear& Item::getGYearValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
+  return *(new xqp_gYear);
 }
 
 /** Accessor for xs:gYearMonth
  */
-xqp_gYearMonth* Item::getGYearMonthValue() const
+const xqp_gYearMonth& Item::getGYearMonthValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
+  return *(new xqp_gYearMonth);
 }
 
 /** Accessor for xs:hexBinary
@@ -331,11 +331,11 @@ xqp_uint Item::getUnsignedIntValue() const
 
 /** Accessor for xs:time
  */
-xqp_time* Item::getTimeValue() const
+const xqp_time& Item::getTimeValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
+  return *(new xqp_time);
 }
 
 /** Accessor for xs:unsignedLong

@@ -35,14 +35,18 @@ class Collator
     friend class xqpStringStore;
 
     private:
-      XQPCollator(void* Collator);
+    XQPCollator(void* Collator, bool doMemCmp = false);
 
     public:
       virtual ~XQPCollator();
 
+      bool doMemCmp() const { return theDoMemCmp; }
+
     protected:
-      void* theCollator;
+      void * theCollator;
+      bool   theDoMemCmp;
   };
+
 
   class CollationFactory 
   {

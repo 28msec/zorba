@@ -280,15 +280,19 @@ bool TypeOps::is_treatable(const store::Item_t item, const XQType& type)
   return is_subtype(*type.get_manager()->create_value_type (item.getp()), type);
 }
 
+
 bool TypeOps::is_atomic(const XQType& type)
 {
-  return type.get_quantifier() == TypeConstants::QUANT_ONE && type.type_kind() == XQType::ATOMIC_TYPE_KIND;
+  return type.get_quantifier() == TypeConstants::QUANT_ONE &&
+         type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
+
 
 bool TypeOps::is_simple(const XQType& type)
 {
   return type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
+
 
 bool TypeOps::is_numeric(const XQType& type)
 {
@@ -298,11 +302,15 @@ bool TypeOps::is_numeric(const XQType& type)
     || is_subtype(type, *genv_ts.DECIMAL_TYPE_ONE);
 }
 
-bool TypeOps::is_empty(const XQType& type) {
+
+bool TypeOps::is_empty(const XQType& type) 
+{
   return type.type_kind () == XQType::EMPTY_KIND;
 }
 
-bool TypeOps::maybe_date_time(const XQType& type) {
+
+bool TypeOps::maybe_date_time(const XQType& type) 
+{
   const XQType &prime = *prime_type (type);
   switch (prime.type_kind ()) {
   case XQType::ATOMIC_TYPE_KIND:
@@ -447,12 +455,21 @@ xqtref_t TypeOps::prime_type(const XQType& type) {
   }
 }
 
-xqtref_t TypeOps::primitive_type(const XQType& type)
+
+xqtref_t TypeOps::cast_primitive_type(const XQType& type)
 {
   // TODO more efficient?
   CACHE_ROOT_TS (genv_ts);
 
-  if (is_subtype(type, *genv_ts.STRING_TYPE_ONE))
+  if (is_subtype(type, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE))
+    return genv_ts.UNTYPED_ATOMIC_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.INTEGER_TYPE_ONE))
+    return genv_ts.INTEGER_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.YM_DURATION_TYPE_ONE))
+    return genv_ts.YM_DURATION_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.DT_DURATION_TYPE_ONE))
+    return genv_ts.DT_DURATION_TYPE_ONE;
+  else if (is_subtype(type, *genv_ts.STRING_TYPE_ONE))
     return genv_ts.STRING_TYPE_ONE;
   else if (is_subtype(type, *genv_ts.BOOLEAN_TYPE_ONE))
     return genv_ts.BOOLEAN_TYPE_ONE; 
@@ -490,26 +507,9 @@ xqtref_t TypeOps::primitive_type(const XQType& type)
     return genv_ts.QNAME_TYPE_ONE;
   else if (is_subtype(type, *genv_ts.NOTATION_TYPE_ONE))
     return genv_ts.NOTATION_TYPE_ONE;
-  
+
   ZORBA_ASSERT (false);
-  return genv_ts.ANY_ATOMIC_TYPE_ONE;
-}
-
-xqtref_t TypeOps::cast_primitive_type(const XQType& type)
-{
-  // TODO more efficient?
-  CACHE_ROOT_TS (genv_ts);
-
-  if (is_subtype(type, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE))
-    return genv_ts.UNTYPED_ATOMIC_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.INTEGER_TYPE_ONE))
-    return genv_ts.INTEGER_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.YM_DURATION_TYPE_ONE))
-    return genv_ts.YM_DURATION_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.DT_DURATION_TYPE_ONE))
-    return genv_ts.DT_DURATION_TYPE_ONE;
-
-  return primitive_type(type);
+  return genv_ts.ANY_ATOMIC_TYPE_ONE;  
 }
 
 xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)

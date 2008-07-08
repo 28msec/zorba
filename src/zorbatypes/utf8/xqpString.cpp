@@ -296,7 +296,9 @@ bool xqpStringStore::byteEqual(const char* src, uint32_t srcBytes) const
 int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
 {
   if ( ! coll )
+  {
     return theString.compare(src->theString);
+  }
 
   Collator::EComparisonResult result = ::Collator::EQUAL;
 

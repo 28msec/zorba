@@ -286,7 +286,7 @@ public:
   /**
    * @param value double value
    */
-  virtual bool createDouble ( Item_t& result, xqp_double value ) = 0;
+  virtual bool createDouble(Item_t& result, const xqp_double& value ) = 0;
 
   virtual bool createDuration(Item_t& result, xqp_duration& value ) = 0;
   

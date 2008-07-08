@@ -722,7 +722,7 @@ int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime*& dt)
 }
 #endif
 
-int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime& dt)
+int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime& dt) const
 {
   dt = *this;
   dt.setFacet(new_facet);

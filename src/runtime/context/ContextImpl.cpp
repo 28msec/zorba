@@ -67,7 +67,7 @@ FnCurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
   {
-    d = itemRes->getDateTimeValue()->getDate();
+    d = itemRes->getDateTimeValue().getDate();
     STACK_PUSH( GENV_ITEMFACTORY->createDate(result, d), state );
   }
 
@@ -96,7 +96,7 @@ FnCurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
   {
-    t = itemRes->getDateTimeValue()->getTime();
+    t = itemRes->getDateTimeValue().getTime();
     STACK_PUSH( GENV_ITEMFACTORY->createTime(result, t), state );
   }
 

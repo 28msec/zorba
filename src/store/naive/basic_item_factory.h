@@ -146,7 +146,7 @@ public:
   bool createGYearMonth (store::Item_t& result,  short year, short month );
 
 
-  bool createDouble(store::Item_t& result, xqp_double value);
+  bool createDouble(store::Item_t& result, const xqp_double& value);
 
   bool createDuration(store::Item_t& result, xqp_duration& value);
   

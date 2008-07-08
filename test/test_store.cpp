@@ -24,6 +24,7 @@
 #include "zorbaerrors/errors.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
+#include "store/naive/dataguide.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_collection.h"
 #include "zorbatypes/datetime.h"
@@ -261,16 +262,21 @@ int main(int argc, const char * argv[])
   if (doc != doc2)
     std::cout << "ERROR" << std::endl;
 
+  zorba::simplestore::XmlNode* rootNode =
+      reinterpret_cast<zorba::simplestore::XmlNode*>(doc.getp());
+
   for (ulong i = 0; i < 3; i++)
   {
-    zorba::simplestore::XmlNode* parent =
-      reinterpret_cast<zorba::simplestore::XmlNode*>(doc.getp());
+    zorba::simplestore::XmlNode* parent = rootNode;
 
     double factor = 0.0;
     if (i == 0) factor = 0.5;
     else if (i == 1) factor = 0.66;
     else if (i == 2) factor = 0.90;
 
+    std::vector<const zorba::store::Item*> ctxPath;
+    std::vector<const zorba::store::Item*> relPath;
+    
     while (1)
     {
       ulong numChildren = parent->numChildren();
@@ -292,6 +298,8 @@ int main(int argc, const char * argv[])
       if (childPos == numChildren)
         break;
 
+      ctxPath.push_back(child->getNodeName());
+
       lStore->getReference(uri, child);
       std::cout << "Reference URI for node " << child << ":" 
                 << child->getNodeName()->getStringValue()->c_str()
@@ -308,6 +316,30 @@ int main(int argc, const char * argv[])
 
       parent = child;
     }
+
+#ifdef DATAGUIDE
+    if (rootNode->getDataGuide() != NULL)
+    {
+      bool found, unique;
+      rootNode->getDataGuide()->getPathInfo(ctxPath, relPath, false, found, unique);
+      std::cout << "Info for path : ";
+
+      for (ulong i = 0; i < ctxPath.size(); i++)
+        std::cout << "/" << *ctxPath[i]->getStringValue();
+
+      std::cout << std::endl << "found = " << found << " unique = "
+                << unique << std::endl;
+
+      relPath.resize(1);
+      relPath[0] = ctxPath[ctxPath.size()-1];
+      ctxPath.resize(ctxPath.size()-1);
+
+      rootNode->getDataGuide()->getPathInfo(ctxPath, relPath, false, found, unique);
+
+      std::cout << "found = " << found << " unique = " << unique
+                << std::endl << std::endl;
+    }
+#endif
   }
 
   //

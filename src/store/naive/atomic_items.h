@@ -218,14 +218,14 @@ public:
 
   DateTimeItemNaive(const DateTime* aValue) : theValue(*aValue) { };
   
-  xqp_dateTime* getDateTimeValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_date* getDateValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_time* getTimeValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gYearMonth* getGYearMonthValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gYear* getGYearValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gMonth* getGMonthValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gMonthDay* getGMonthDayValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gDay* getGDayValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  const xqp_dateTime& getDateTimeValue() const { return theValue; }
+  const xqp_date& getDateValue() const { return theValue; }
+  const xqp_time& getTimeValue() const { return theValue; }
+  const xqp_gYearMonth& getGYearMonthValue() const { return theValue; }
+  const xqp_gYear& getGYearValue() const { return theValue; }
+  const xqp_gMonth& getGMonthValue() const { return theValue; }
+  const xqp_gMonthDay& getGMonthDayValue() const { return theValue; }
+  const xqp_gDay& getGDayValue() const { return theValue; }
   
   store::Item* getType() const;
 
@@ -667,9 +667,9 @@ protected:
 	xqp_double theValue;
 
 public:
-	DoubleItemNaive ( xqp_double aValue ) : theValue ( aValue ) {}
+	DoubleItemNaive(const xqp_double& aValue ) : theValue( aValue ) {}
 
-	virtual xqp_double getDoubleValue() const { return theValue; }
+	virtual const xqp_double& getDoubleValue() const { return theValue; }
 	
 	virtual store::Item* getType() const;
   virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;

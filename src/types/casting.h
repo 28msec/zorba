@@ -32,7 +32,7 @@ class GenericCast
 
   typedef bool (*CastFunc)(
                             store::Item_t&,
-                            store::Item*, 
+                            const store::Item_t&, 
                             store::ItemFactory*, 
                             namespace_context *nsCtx,
                             const ErrorInfo& aErrorInfo
@@ -65,10 +65,10 @@ public:
    * returned.
    */
   bool cast (
-        store::Item_t& result,
-        store::Item* aItem, 
-        const XQType* aTargetType, 
-        namespace_context* aNCtx = 0) const;
+        store::Item_t&       result,
+        const store::Item_t& aItem, 
+        const XQType*        aTargetType, 
+        namespace_context*   aNCtx = 0) const;
   
   /**
    * Executes the string casting of the passed string to an item of the passed
@@ -106,7 +106,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable(store::Item* aItem, const XQType* aTargetType) const; 
+  bool isCastable(const store::Item_t& aItem, const XQType* aTargetType) const; 
 
   /**
    * Checks if the passed string is castable to the passed target type.
@@ -124,7 +124,10 @@ public:
    *         if the item type is a subtype of the target type, then
    *         the passed item is returned
    */
-  bool promote(store::Item_t& result, store::Item_t aItem, const XQType* aTargetType) const;
+  bool promote(
+        store::Item_t&       result,
+        const store::Item_t& aItem,
+        const XQType*        aTargetType) const;
 
   
 }; /* class GenericCast */

@@ -28,124 +28,177 @@ namespace zorba {
  * Implementation specific classes after this point.
  */
 
-class XQType : public RCObject {
+class XQType : public RCObject 
+{
 public:
-    typedef enum {
-      ATOMIC_TYPE_KIND,
-      NODE_TYPE_KIND,
-      ANY_TYPE_KIND,
-      ITEM_KIND,
-      ANY_SIMPLE_TYPE_KIND,
-      UNTYPED_KIND,
-      EMPTY_KIND,
-      NONE_KIND,
-      USER_DEFINED_KIND,
-    } type_kind_t;
+  typedef enum {
+    ATOMIC_TYPE_KIND,
+    NODE_TYPE_KIND,
+    ANY_TYPE_KIND,
+    ITEM_KIND,
+    ANY_SIMPLE_TYPE_KIND,
+    UNTYPED_KIND,
+    EMPTY_KIND,
+    NONE_KIND,
+    USER_DEFINED_KIND,
+  } type_kind_t;
 
-    virtual std::ostream& serialize(std::ostream& os) const;
-    virtual std::string toString() const;
-    type_kind_t type_kind() const { return m_type_kind; }
-    TypeConstants::quantifier_t get_quantifier() const { return m_quantifier; }
-    virtual ~XQType() { }
+  virtual ~XQType() { }
 
-    const TypeManager *get_manager() const { return m_manager; }
+  virtual std::ostream& serialize(std::ostream& os) const;
+  virtual std::string toString() const;
 
-    long *getSharedRefCounter() { return &theRefCount; }
+  type_kind_t type_kind() const { return m_type_kind; }
 
-    SYNC_CODE(RCLock *getRCLock() { return &theLock; })
+  TypeConstants::quantifier_t get_quantifier() const { return m_quantifier; }
 
+  const TypeManager *get_manager() const { return m_manager; }
 
-  protected:
-    const TypeManager *m_manager;
-    const type_kind_t m_type_kind;
-    TypeConstants::quantifier_t m_quantifier;
-    static const char *KIND_STRINGS[NONE_KIND + 1];
-    SYNC_CODE(RCLock theLock;)
+  long *getSharedRefCounter() { return &theRefCount; }
 
-    XQType(const TypeManager *manager, type_kind_t type_kind, TypeConstants::quantifier_t quantifier)
-      : m_manager(manager),
-      m_type_kind(type_kind),
-      m_quantifier(quantifier) { }
+  SYNC_CODE(RCLock *getRCLock() { return &theLock; })
+
+protected:
+  XQType(const TypeManager *manager,
+         type_kind_t type_kind,
+         TypeConstants::quantifier_t quantifier)
+    :
+    m_manager(manager),
+    m_type_kind(type_kind),
+    m_quantifier(quantifier)
+  { 
+  }
+
+protected:
+  const TypeManager            * m_manager;
+  const type_kind_t              m_type_kind;
+  TypeConstants::quantifier_t    m_quantifier;
+  static const char            * KIND_STRINGS[NONE_KIND + 1];
+  SYNC_CODE(RCLock               theLock;)
 };
 
-class AtomicXQType : public XQType {
-  public:
-    AtomicXQType(const TypeManager *manager, TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier)
-      : XQType(manager, ATOMIC_TYPE_KIND, quantifier), m_type_code(type_code) { }
 
-    TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
+class AtomicXQType : public XQType 
+{
+ public:
+   static const char *ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
 
-    static const char *ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+ public:
+   AtomicXQType(
+        const TypeManager *manager,
+        TypeConstants::atomic_type_code_t type_code,
+        TypeConstants::quantifier_t quantifier)
+     :
+     XQType(manager, ATOMIC_TYPE_KIND, quantifier),
+     m_type_code(type_code)
+   {
+   }
 
-    virtual std::ostream& serialize(std::ostream& os) const;
+   TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
 
-  private:
-    TypeConstants::atomic_type_code_t m_type_code;
+   virtual std::ostream& serialize(std::ostream& os) const;
+
+ private:
+   TypeConstants::atomic_type_code_t m_type_code;
 };
 
-class NodeXQType : public XQType {
-  public:
-    NodeXQType(const TypeManager *manager, rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier);
 
-    rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
+class NodeXQType : public XQType 
+{
+public:
+  NodeXQType(
+        const TypeManager *manager,
+        rchandle<NodeTest> nodetest,
+        xqtref_t content_type,
+        TypeConstants::quantifier_t quantifier);
 
-    xqtref_t get_content_type() const { return m_content_type; }
+  rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
 
-    virtual std::ostream& serialize(std::ostream& os) const;
+  xqtref_t get_content_type() const { return m_content_type; }
 
-  private:
-    rchandle<NodeTest> m_nodetest;
-    xqtref_t m_content_type;
+  virtual std::ostream& serialize(std::ostream& os) const;
+
+private:
+  rchandle<NodeTest> m_nodetest;
+  xqtref_t           m_content_type;
 };
 
-class AnyXQType : public XQType {
-  public:
-    AnyXQType(const TypeManager *manager) : XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR) { }
+
+class AnyXQType : public XQType 
+{
+public:
+  AnyXQType(const TypeManager *manager)
+    :
+    XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR) { }
 };
 
-class ItemXQType : public XQType {
-  public:
-    ItemXQType(const TypeManager *manager, TypeConstants::quantifier_t quantifier) : XQType(manager, ITEM_KIND, quantifier) { }
+
+class ItemXQType : public XQType 
+{
+public:
+  ItemXQType(const TypeManager *manager, TypeConstants::quantifier_t quantifier)
+    :
+    XQType(manager, ITEM_KIND, quantifier) { }
 };
 
-class AnySimpleXQType : public XQType {
-  public:
-    AnySimpleXQType(const TypeManager *manager) : XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR) { }
+
+class AnySimpleXQType : public XQType 
+{
+public:
+  AnySimpleXQType(const TypeManager *manager) 
+    :
+    XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR) { }
 };
 
-class UntypedXQType : public XQType {
-  public:
-    UntypedXQType(const TypeManager *manager) : XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR) { }
+
+class UntypedXQType : public XQType 
+{
+public:
+  UntypedXQType(const TypeManager *manager) 
+    :
+    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR) { }
 };
 
-class EmptyXQType : public XQType {
-  public:
-    EmptyXQType(const TypeManager *manager) : XQType(manager, EMPTY_KIND, TypeConstants::QUANT_STAR) { }
+
+class EmptyXQType : public XQType 
+{
+public:
+  EmptyXQType(const TypeManager *manager) 
+    :
+    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_STAR) { }
 };
 
-class NoneXQType : public XQType {
-  public:
-    NoneXQType(const TypeManager *manager) : XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE) { }
+
+class NoneXQType : public XQType 
+{
+public:
+  NoneXQType(const TypeManager *manager) 
+    :
+    XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE) { }
 };
 
 
 class UserDefinedXQType : public XQType
 {
 private:
-    store::Item_t _qname;
-    xqtref_t _baseType;
-    bool _isAtomic;
+  store::Item_t m_qname;
+  xqtref_t      m_baseType;
+  bool          m_isAtomic;
     
 public:
-    UserDefinedXQType(const TypeManager *manager, store::Item_t qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
+  UserDefinedXQType(
+        const TypeManager *manager,
+        store::Item_t qname,
+        xqtref_t baseType,
+        TypeConstants::quantifier_t quantifier);
     
-    bool isSuperTypeOf(const XQType& subType) const;
+  bool isSuperTypeOf(const XQType& subType) const;
 
-    store::Item_t getQName() const { return _qname;    }
-    bool isAtomic()          const { return _isAtomic; }
-    xqtref_t getBaseType()   const { return _baseType; }
+  store::Item_t getQName() const { return m_qname;    }
+  bool isAtomic()          const { return m_isAtomic; }
+  xqtref_t getBaseType()   const { return m_baseType; }
 
-    virtual std::ostream& serialize(std::ostream& os) const;
+  virtual std::ostream& serialize(std::ostream& os) const;
 };
 
 }

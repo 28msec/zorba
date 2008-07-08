@@ -128,8 +128,6 @@ public:
      */
     static xqtref_t prime_type(const XQType& type);
 
-    static xqtref_t primitive_type(const XQType& type);
-
     static xqtref_t cast_primitive_type(const XQType& type);
 
     /*

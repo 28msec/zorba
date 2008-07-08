@@ -373,7 +373,7 @@ bool DateTimeItemNaive::equals(
 {
   try 
   {
-    return 0 == theValue.compare(aItem->getDateTimeValue(), timezone);
+    return 0 == theValue.compare(&aItem->getDateTimeValue(), timezone);
   }
   catch (InvalidTimezoneException)
   {
@@ -744,12 +744,15 @@ IntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue.hash();
 }
 
-	
-	/* start class DoubleItem */
+
+/*******************************************************************************
+  class DoubleItemNaive
+********************************************************************************/
 store::Item* DoubleItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_DOUBLE];
 }
+
 
 bool DoubleItemNaive::equals (
     const store::Item* item,
@@ -758,6 +761,7 @@ bool DoubleItemNaive::equals (
 {
   return item->getDoubleValue() == theValue;
 }
+
 
 store::Item_t DoubleItemNaive::getEBV() const
 {
@@ -772,29 +776,37 @@ store::Item_t DoubleItemNaive::getEBV() const
   return bVal;
 }
 
+
 xqpStringStore_t DoubleItemNaive::getStringValue() const
 {
   return NumConversions::doubleToStr(theValue).getStore();
 }
+
 
 xqp_string DoubleItemNaive::show() const
 {
   return "xs:double(" + getStringValue()->str() + ")";
 }
 
-bool DoubleItemNaive::isNaN() const {
+
+bool DoubleItemNaive::isNaN() const 
+{
   return theValue.isNaN();
 }
 
-bool DoubleItemNaive::isPosOrNegInf() const {
+
+bool DoubleItemNaive::isPosOrNegInf() const 
+{
   return theValue.isPosInf() || theValue.isNegInf();
 }
+
 
 uint32_t
 DoubleItemNaive::hash(long timezone, XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
+
   
 /*******************************************************************************
   class FloatItemNaive

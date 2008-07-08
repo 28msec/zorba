@@ -239,48 +239,48 @@ public:
 
   /** Accessor for xs:dateTime
    */
-  virtual xqp_dateTime*
+  virtual const xqp_dateTime&
   getDateTimeValue() const;
 
   /** Accessor for xs:date
    */
-  virtual xqp_date*
+  virtual const xqp_date&
   getDateValue() const;
 
   /** Accessor for xs:time
    */
-  virtual xqp_time*
+  virtual const xqp_time&
   getTimeValue() const;
 
   /** Accessor for xs:gYearMonth
    */
-  virtual xqp_gYearMonth*
+  virtual const xqp_gYearMonth&
   getGYearMonthValue() const;
 
   /** Accessor for xs:gYear
    */
-  virtual xqp_gYear*
+  virtual const xqp_gYear&
   getGYearValue() const;
 
   /** Accessor for xs:gMonth
    */
-  virtual xqp_gMonth*
+  virtual const xqp_gMonth&
   getGMonthValue() const;
 
   /** Accessor for xs:gMonthDay
    */
-  virtual xqp_gMonthDay*
+  virtual const xqp_gMonthDay&
   getGMonthDayValue() const;
 
   /** Accessor for xs:gDay
    */
-  virtual xqp_gDay*
+  virtual const xqp_gDay&
   getGDayValue() const;
 
 
   /** Accessor for xs:double
    */
-  virtual xqp_double
+  virtual const xqp_double&
   getDoubleValue() const;
 
 

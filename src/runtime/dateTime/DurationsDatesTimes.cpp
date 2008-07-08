@@ -256,7 +256,7 @@ FnYearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState
     STACK_PUSH(
         GENV_ITEMFACTORY->createInteger(
           result,
-          Integer::parseInt(itemArg->getDateTimeValue()->getYear())), state );
+          Integer::parseInt(itemArg->getDateTimeValue().getYear())), state );
   }
   STACK_END (state);
 }
@@ -284,7 +284,7 @@ FnMonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateTimeValue()->getMonth())), 
+      Integer::parseInt(itemArg->getDateTimeValue().getMonth())), 
       state 
     );
   }
@@ -314,7 +314,7 @@ FnDayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateTimeValue()->getDay())), 
+      Integer::parseInt(itemArg->getDateTimeValue().getDay())), 
       state 
     );
   }
@@ -344,7 +344,7 @@ FnHoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateTimeValue()->getHours())), 
+      Integer::parseInt(itemArg->getDateTimeValue().getHours())), 
       state 
     );
   }
@@ -374,7 +374,7 @@ FnMinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSt
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateTimeValue()->getMinutes())), 
+      Integer::parseInt(itemArg->getDateTimeValue().getMinutes())), 
       state 
     );
   }
@@ -404,7 +404,7 @@ FnSecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    lBool = Decimal::parseNativeDouble(itemArg->getDateTimeValue()->getSeconds(), lDecimal);
+    lBool = Decimal::parseNativeDouble(itemArg->getDateTimeValue().getSeconds(), lDecimal);
     ZORBA_ASSERT(lBool);
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(result, lDecimal), state );
   }
@@ -434,7 +434,7 @@ FnTimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planS
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    res = DayTimeDuration::from_Timezone(itemArg->getDateTimeValue()->getTimezone(), tmpDuration);
+    res = DayTimeDuration::from_Timezone(itemArg->getDateTimeValue().getTimezone(), tmpDuration);
     if(res)
       STACK_PUSH( GENV_ITEMFACTORY->createDuration(result, tmpDuration), state );
   }
@@ -464,7 +464,7 @@ FnYearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateValue()->getYear())), 
+      Integer::parseInt(itemArg->getDateValue().getYear())), 
       state 
     );
   }
@@ -494,7 +494,7 @@ FnMonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateValue()->getMonth())), 
+      Integer::parseInt(itemArg->getDateValue().getMonth())), 
       state 
     );
   }
@@ -524,7 +524,7 @@ FnDayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateValue()->getDay())), 
+      Integer::parseInt(itemArg->getDateValue().getDay())), 
       state 
     );
   }
@@ -554,7 +554,7 @@ FnTimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    res = DayTimeDuration::from_Timezone(itemArg->getDateValue()->getTimezone(), tmpDuration);
+    res = DayTimeDuration::from_Timezone(itemArg->getDateValue().getTimezone(), tmpDuration);
     if(res)
       STACK_PUSH( GENV_ITEMFACTORY->createDuration(result, tmpDuration), state );
   }
@@ -584,7 +584,7 @@ FnHoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getTimeValue()->getHours())), 
+      Integer::parseInt(itemArg->getTimeValue().getHours())), 
       state 
     );
   }
@@ -614,7 +614,7 @@ FnMinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getTimeValue()->getMinutes())), 
+      Integer::parseInt(itemArg->getTimeValue().getMinutes())), 
       state 
     );
   }
@@ -645,7 +645,7 @@ FnSecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    lBool = Decimal::parseNativeDouble(itemArg->getTimeValue()->getSeconds(), lDecimal);
+    lBool = Decimal::parseNativeDouble(itemArg->getTimeValue().getSeconds(), lDecimal);
     ZORBA_ASSERT(lBool);
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(result, lDecimal), state );
   }
@@ -678,7 +678,7 @@ FnTimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    res = DayTimeDuration::from_Timezone(itemArg->getTimeValue()->getTimezone(), tmpDuration);
+    res = DayTimeDuration::from_Timezone(itemArg->getTimeValue().getTimezone(), tmpDuration);
     if(res)
       STACK_PUSH( GENV_ITEMFACTORY->createDuration(result, tmpDuration), state );
   }
@@ -800,7 +800,7 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
   {
     try 
     {
-      dt = item0->getDateTimeValue()->adjustToTimeZone(
+      dt = item0->getDateTimeValue().adjustToTimeZone(
         planState.theRuntimeCB->theDynamicContext->get_implicit_timezone());
     }
     catch (InvalidTimezoneException)
@@ -831,7 +831,7 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     s1 = consumeNext(item1, theChild1.getp(), planState);
     try 
     {
-      dt = item0->getDateTimeValue()->adjustToTimeZone(!s1 ? NULL : item1->getDurationValue());
+      dt = item0->getDateTimeValue().adjustToTimeZone(!s1 ? NULL : item1->getDurationValue());
     }
     catch (InvalidTimezoneException)
     {

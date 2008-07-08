@@ -258,8 +258,8 @@ bool BasicItemFactory::createDateTime(
   } 
   else
   {
-    if (2 == DateTimeItemNaive::createFromDateAndTime(date->getDateValue(),
-                                                      time->getTimeValue(),
+    if (2 == DateTimeItemNaive::createFromDateAndTime(&date->getDateValue(),
+                                                      &time->getTimeValue(),
                                                       result))
       ZORBA_ERROR(FORG0008);
     
@@ -598,7 +598,7 @@ bool BasicItemFactory::createGYearMonth(
 
 bool BasicItemFactory::createDouble(
     store::Item_t& result,
-    xqp_double value )
+    const xqp_double& value )
 {
   result = new DoubleItemNaive( value );
   return true;

@@ -198,7 +198,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i0->getDateTimeValue()->addDuration(*i1->getDurationValue()->toDuration());
+  xqp_dateTime* d = i0->getDateTimeValue().addDuration(*i1->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createDateTime(result, d);
 }
 
@@ -206,7 +206,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i1->getDateTimeValue()->addDuration(*i0->getDurationValue()->toDuration());
+  xqp_dateTime* d = i1->getDateTimeValue().addDuration(*i0->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createDateTime (result, d);
 }
 
@@ -214,7 +214,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i0->getDateValue()->addDuration(*i1->getDurationValue()->toDuration());
+  xqp_date* d = i0->getDateValue().addDuration(*i1->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createDate (result, d);
 }
 
@@ -222,7 +222,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i1->getDateValue()->addDuration(*i0->getDurationValue()->toDuration());
+  xqp_date* d = i1->getDateValue().addDuration(*i0->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createDate (result, d);
 }
 
@@ -230,7 +230,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i0->getTimeValue()->addDuration(*i1->getDurationValue()->toDuration());
+  xqp_time* t = i0->getTimeValue().addDuration(*i1->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createTime (result, t);
 }
 
@@ -238,7 +238,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i1->getTimeValue()->addDuration(*i0->getDurationValue()->toDuration());
+  xqp_time* t = i1->getTimeValue().addDuration(*i0->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createTime (result, t);
 }
 
@@ -257,7 +257,7 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i0->getDateTimeValue()->subtractDuration(*i1->getDurationValue()->toDuration());
+  xqp_dateTime* d = i0->getDateTimeValue().subtractDuration(*i1->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createDateTime (result, d);
 }
 
@@ -266,7 +266,7 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i0->getDateValue()->subtractDuration(*i1->getDurationValue()->toDuration());
+  xqp_date* d = i0->getDateValue().subtractDuration(*i1->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createDate (result, d);
 }
 
@@ -275,7 +275,7 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i0->getTimeValue()->subtractDuration(*i1->getDurationValue()->toDuration());
+  xqp_time* t = i0->getTimeValue().subtractDuration(*i1->getDurationValue()->toDuration());
   return GENV_ITEMFACTORY->createTime (result, t);
 }
 
@@ -286,8 +286,8 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DAT
 {
   xqp_duration d;
   try {
-    d = i0->getDateTimeValue()->subtractDateTime(i1->getDateTimeValue(),
-                                                 aRuntimeCB->theDynamicContext->get_implicit_timezone());
+    d = i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
+                                                aRuntimeCB->theDynamicContext->get_implicit_timezone());
   }
   catch (InvalidTimezoneException) {
     ZORBA_ERROR(FODT0003);
@@ -303,7 +303,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
   xqp_duration d;
   try 
   {
-    d = i0->getTimeValue()->subtractDateTime(i1->getTimeValue(),
+    d = i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
                                              aRuntimeCB->theDynamicContext->get_implicit_timezone());
   }
   catch (InvalidTimezoneException) 
@@ -320,7 +320,7 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
 {
   xqp_duration d;
   try {
-    d = i0->getTimeValue()->subtractDateTime(i1->getTimeValue(),
+    d = i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
                          aRuntimeCB->theDynamicContext->get_implicit_timezone());
   }
   catch (InvalidTimezoneException) {

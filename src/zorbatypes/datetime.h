@@ -274,7 +274,7 @@ public:
   //createWithNewFacet(FACET_TYPE new_facet, DateTime*& dt);
 
   int 
-  createWithNewFacet(FACET_TYPE new_facet, DateTime& dt);
+  createWithNewFacet(FACET_TYPE new_facet, DateTime& dt) const;
 
   xqpString 
   toString() const;

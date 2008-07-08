@@ -59,120 +59,130 @@ namespace zorba {
   }
                                           
 
-  XQPCollator::XQPCollator(void* aCollator)
-  : theCollator((Collator*)aCollator) {}
+XQPCollator::XQPCollator(void* aCollator, bool doMemCmp)
+  :
+  theCollator((Collator*)aCollator),
+  theDoMemCmp(doMemCmp)
+{
+}
 
-  XQPCollator::~XQPCollator()
+
+XQPCollator::~XQPCollator()
+{
+  delete (Collator*)theCollator;
+}
+
+
+XQPCollator*
+CollationFactory::createCollator(const std::string& aCollationURI)
+{
+  static const char *coll_uri_start = "http://www.zorba-xquery.com/collations/";
+  static int coll_uri_start_len = strlen (coll_uri_start);
+
+  if (aCollationURI == W3C_CODEPT_COLLATION_NS)
   {
-    delete (Collator*)theCollator;
+#ifndef ZORBA_NO_UNICODE
+    Collator* lCollator;
+    UErrorCode lError = U_ZERO_ERROR;
+    lCollator = Collator::createInstance(Locale("root"), lError);
+    assert(lError == U_ZERO_ERROR);
+    lCollator->setStrength(Collator::TERTIARY);
+    lCollator->setAttribute(UCOL_CASE_FIRST, UCOL_UPPER_FIRST, lError);
+    assert( lError == U_ZERO_ERROR );
+    return new XQPCollator(lCollator, true);
+#else
+    Collator* coll = new Collator;
+    return new XQPCollator(coll, true);
+#endif
   }
 
-  XQPCollator*
-  CollationFactory::createCollator(const std::string& aCollationURI)
+  size_t lStartURI = aCollationURI.find(coll_uri_start);
+  if ( lStartURI == std::string::npos )
+    return 0;
+
+  // e.g. PRIMARY/en/US
+  std::string lCollationIdentifier = aCollationURI.substr(coll_uri_start_len, aCollationURI.size() - coll_uri_start_len);
+
+  std::vector<std::string> lTokens = std_string_tokenize(lCollationIdentifier, "/");
+  if(lTokens.size() < 2)
   {
-    static const char *coll_uri_start = "http://www.zorba-xquery.com/collations/";
-    static int coll_uri_start_len = strlen (coll_uri_start);
-
-    if (aCollationURI == W3C_CODEPT_COLLATION_NS)
-    {
+    return 0;
+  }
+  
+  Collator* lCollator;
 #ifndef ZORBA_NO_UNICODE
-      Collator* lCollator;
-      UErrorCode lError = U_ZERO_ERROR;
-      lCollator = Collator::createInstance(Locale("root"), lError);
-      assert(lError == U_ZERO_ERROR);
-      lCollator->setStrength(Collator::TERTIARY);
-      lCollator->setAttribute(UCOL_CASE_FIRST, UCOL_UPPER_FIRST, lError);
-      assert( lError == U_ZERO_ERROR );
-      return new XQPCollator(lCollator);
-#else
-      Collator  *coll = new Collator;
-      return new XQPCollator(coll);
-#endif
-    }
-
-    size_t lStartURI = aCollationURI.find(coll_uri_start);
-    if ( lStartURI == std::string::npos )
-      return 0;
-
-    // e.g. PRIMARY/en/US
-    std::string lCollationIdentifier = aCollationURI.substr(coll_uri_start_len, aCollationURI.size() - coll_uri_start_len);
-
-    std::vector<std::string> lTokens = std_string_tokenize(lCollationIdentifier, "/");
-    if(lTokens.size() < 2)
-    {
-      return 0;
-    }
-
-    Collator* lCollator;
-#ifndef ZORBA_NO_UNICODE
-    UErrorCode lError = U_ZERO_ERROR;
-    if (lTokens.size() == 2) {
-      lCollator = Collator::createInstance(Locale(lTokens[1].c_str()), lError);
-    } else {
-      lCollator = Collator::createInstance(Locale(lTokens[1].c_str(), lTokens[2].c_str()), lError);
-    }
-
-    if( U_FAILURE(lError) ) {
-      return 0;
-    }
-#else
-    lCollator = new Collator;
-#endif
-
-    if (lTokens[0].compare("PRIMARY") == 0) {
-#ifndef ZORBA_NO_UNICODE
-      lCollator->setStrength(Collator::PRIMARY);
-#endif
-    } else if (lTokens[0].compare("SECONDARY") == 0) {
-#ifndef ZORBA_NO_UNICODE
-      lCollator->setStrength(Collator::SECONDARY);
-#endif
-    } else if (lTokens[0].compare("TERTIARY") == 0) {
-#ifndef ZORBA_NO_UNICODE
-      lCollator->setStrength(Collator::TERTIARY);
-#endif
-    } else if (lTokens[0].compare("QUATERNARY") == 0) {
-#ifndef ZORBA_NO_UNICODE
-      lCollator->setStrength(Collator::QUATERNARY);
-#endif
-    } else if (lTokens[0].compare("IDENTICAL") == 0) {
-#ifndef ZORBA_NO_UNICODE
-      lCollator->setStrength(Collator::IDENTICAL);
-#endif
-    } else {
-      return 0;
-    }
-
-    return new XQPCollator(lCollator);
+  UErrorCode lError = U_ZERO_ERROR;
+  if (lTokens.size() == 2) {
+    lCollator = Collator::createInstance(Locale(lTokens[1].c_str()), lError);
+  } else {
+    lCollator = Collator::createInstance(Locale(lTokens[1].c_str(), lTokens[2].c_str()), lError);
   }
 
-  XQPCollator*
-  CollationFactory::createCollator()
-  {
-    Collator* lCollator;
+  if( U_FAILURE(lError) ) {
+    return 0;
+  }
+#else
+  lCollator = new Collator;
+#endif
+
+  if (lTokens[0].compare("PRIMARY") == 0) {
 #ifndef ZORBA_NO_UNICODE
-    UErrorCode lError = U_ZERO_ERROR;
-    lCollator = Collator::createInstance(Locale("en", "US"), lError); 
-    if( U_FAILURE(lError) ) {
-      assert(false);
-    }
+    lCollator->setStrength(Collator::PRIMARY);
+#endif
+  } else if (lTokens[0].compare("SECONDARY") == 0) {
+#ifndef ZORBA_NO_UNICODE
+    lCollator->setStrength(Collator::SECONDARY);
+#endif
+  } else if (lTokens[0].compare("TERTIARY") == 0) {
+#ifndef ZORBA_NO_UNICODE
+    lCollator->setStrength(Collator::TERTIARY);
+#endif
+  } else if (lTokens[0].compare("QUATERNARY") == 0) {
+#ifndef ZORBA_NO_UNICODE
+    lCollator->setStrength(Collator::QUATERNARY);
+#endif
+  } else if (lTokens[0].compare("IDENTICAL") == 0) {
+#ifndef ZORBA_NO_UNICODE
     lCollator->setStrength(Collator::IDENTICAL);
-#else
-    lCollator = new Collator;
 #endif
-    return new XQPCollator(lCollator);
+  } else {
+    return 0;
   }
+  
+  return new XQPCollator(lCollator);
+}
 
-  CollationFactory::CollationFactory()
-    : theRootCollator(0)
-  {
-    theRootCollator = createCollator();
-  }
 
-  CollationFactory::~CollationFactory()
-  {
-    if ( theRootCollator )
-      delete theRootCollator;
+XQPCollator*
+CollationFactory::createCollator()
+{
+  Collator* lCollator;
+#ifndef ZORBA_NO_UNICODE
+  UErrorCode lError = U_ZERO_ERROR;
+  lCollator = Collator::createInstance(Locale("en", "US"), lError); 
+  if( U_FAILURE(lError) ) {
+    assert(false);
   }
+  lCollator->setStrength(Collator::IDENTICAL);
+#else
+  lCollator = new Collator;
+#endif
+  return new XQPCollator(lCollator);
+}
+
+
+CollationFactory::CollationFactory()
+  :
+  theRootCollator(0)
+{
+  theRootCollator = createCollator();
+}
+
+
+CollationFactory::~CollationFactory()
+{
+  if ( theRootCollator )
+    delete theRootCollator;
+}
 
 } /* namespace xqp */

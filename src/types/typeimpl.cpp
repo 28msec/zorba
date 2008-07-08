@@ -87,7 +87,8 @@ const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CO
 
 std::ostream& XQType::serialize(std::ostream& os) const
 {
-  return os << "[XQType " << KIND_STRINGS[type_kind()] << TypeOps::decode_quantifier (get_quantifier()) << "]";
+  return os << "[XQType " << KIND_STRINGS[type_kind()]
+            << TypeOps::decode_quantifier(get_quantifier()) << "]";
 }
 
 
@@ -98,10 +99,13 @@ std::string XQType::toString() const
   return os.str();
 }
 
+
 std::ostream& AtomicXQType::serialize(std::ostream& os) const
 {
-  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()] << TypeOps::decode_quantifier (get_quantifier()) << "]";
+  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
+            << TypeOps::decode_quantifier (get_quantifier()) << "]";
 }
+
 
 NodeXQType::NodeXQType(
     const TypeManager *manager,
@@ -109,9 +113,12 @@ NodeXQType::NodeXQType(
     xqtref_t content_type,
     TypeConstants::quantifier_t quantifier)
   :
-  XQType(manager, NODE_TYPE_KIND, quantifier), m_nodetest(nodetest), m_content_type(content_type)
+  XQType(manager, NODE_TYPE_KIND, quantifier),
+  m_nodetest(nodetest),
+  m_content_type(content_type)
 {
 }
+
 
 std::ostream& NodeXQType::serialize(std::ostream& os) const
 {
@@ -131,69 +138,84 @@ std::ostream& NodeXQType::serialize(std::ostream& os) const
   }
   return os << "]";
 }
-    
-UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
-    XQType(manager, USER_DEFINED_KIND, quantifier), _qname(qname), _baseType(baseType)
-{
-    ZORBA_ASSERT(baseType!=NULL);
 
-    switch (baseType.getp()->type_kind())
-    {
-    case USER_DEFINED_KIND:
-        {
-            const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
-            _isAtomic = udBaseType.isAtomic();
-        }
-        break;
-    case ATOMIC_TYPE_KIND:
-        _isAtomic = true;
-        break;
-    default:
-        _isAtomic = false;            
-    }        
+
+UserDefinedXQType::UserDefinedXQType(
+    const TypeManager *manager,
+    store::Item_t qname,
+    xqtref_t baseType,
+    TypeConstants::quantifier_t quantifier)
+  :
+  XQType(manager, USER_DEFINED_KIND, quantifier),
+  m_qname(qname),
+  m_baseType(baseType)
+{
+  ZORBA_ASSERT(baseType!=NULL);
+
+  switch (baseType.getp()->type_kind())
+  {
+  case USER_DEFINED_KIND:
+  {
+    const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
+    m_isAtomic = udBaseType.isAtomic();
+    break;
+  }
+  case ATOMIC_TYPE_KIND:
+  {
+    m_isAtomic = true;
+    break;
+  }
+  default:
+    m_isAtomic = false;            
+  }        
 }
+
 
 bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 {
-    if (this==&subType)
-    {
-        return true;
-    }
+  if (this==&subType)
+  {
+    return true;
+  }
     
-    xqtref_t baseType = getBaseType();
-    const XQType* baseType_ptr = baseType.getp();
+  xqtref_t baseType = getBaseType();
+  const XQType* baseType_ptr = baseType.getp();
 
-    do
+  do
+  {
+    if (baseType_ptr == &subType)
+      return true;
+        
+    switch(baseType_ptr->type_kind())
     {
-        if (baseType_ptr == &subType)
-            return true;
-        
-        switch(baseType_ptr->type_kind())
-        {
-        case XQType::ATOMIC_TYPE_KIND:
-            return false;
-            break;
-            
-        case XQType::USER_DEFINED_KIND:
-            {
-                const UserDefinedXQType* udBaseType_ptr = static_cast<const UserDefinedXQType*>(baseType_ptr);
-                baseType_ptr = udBaseType_ptr->getBaseType().getp();
-            }
-            break;
-        
-        default:
-            return false;
-        }
+    case XQType::ATOMIC_TYPE_KIND:
+      return false;
+      break;
+      
+    case XQType::USER_DEFINED_KIND:
+    {
+      const UserDefinedXQType* udBaseType_ptr = static_cast<const UserDefinedXQType*>(baseType_ptr);
+      baseType_ptr = udBaseType_ptr->getBaseType().getp();
     }
-    while(true);
+    break;
     
-    return false;
+    default:
+      return false;
+    }
+  }
+  while(true);
+    
+  return false;
 }
+
 
 std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
 {
-    return os << "[UserDefinedXQType " << " " << TypeOps::decode_quantifier (get_quantifier()) 
-        << _qname->getLocalName()->str() << "@" << _qname->getNamespace()->str() << " " << 
-        ( _isAtomic ? "isAtomic" : "" ) << " base:" << TypeOps::toString(*_baseType) << " ]";
+  return os << "[UserDefinedXQType " << " "
+            << TypeOps::decode_quantifier (get_quantifier()) 
+            << m_qname->getLocalName()->str() << "@"
+            << m_qname->getNamespace()->str() << " "
+            << (m_isAtomic ? "isAtomic" : "" ) << " base:"
+            << TypeOps::toString(*m_baseType) << " ]";
 }    
 }  // namespace zorba
