@@ -15,7 +15,7 @@ Zorba is tested with the following compilers:
 In order ot build Zorba, you need the following libraries and development headers to be installed:
 - Libxml2 2.2.16 or higher (http://xmlsoft.org/ )
   - Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
-- ICU 2.6 or higher (http://www.icu-project.org/)
+- ICU4C 3.6 or higher (http://www.icu-project.org/)
 - Boost 1.32 or higher (http://www.boost.org/) 
   - boost_program_options
   - boost_date_time
