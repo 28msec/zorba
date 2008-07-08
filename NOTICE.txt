@@ -64,7 +64,7 @@ Furthermore, this software depends / makes use of:
 
      * LIBXML2 2.2.16 or higher (http://xmlsoft.org/ ) 
 
-     * ICU 3.6 or higher (http://www.icu-project.org/)
+     * ICU4C 3.6 or higher (http://www.icu-project.org/)
 
      * BOOST 1.32 or higher (http://www.boost.org/)
        * boost_program_options
