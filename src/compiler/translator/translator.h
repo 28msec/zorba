@@ -23,7 +23,7 @@
 namespace zorba {
 
   expr_t translate (const parsenode &, CompilerCB* aCompilerCB);
-  
+
 } /* namespace zorba */
 #endif /* ZORBA_NORMALIZE_VISITOR_H */
 

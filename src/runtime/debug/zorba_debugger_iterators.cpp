@@ -25,16 +25,19 @@ using namespace std;
 
 namespace zorba {
 
-  FnDebugIterator::FnDebugIterator(const QueryLoc& loc, std::vector<PlanIter_t>& args) 
+  std::map< uint64_t, PlanIter_t > FnDebugIterator::theVariables;
+
+  FnDebugIterator::FnDebugIterator(const QueryLoc& loc, std::vector<PlanIter_t>& args,
+                                  const static_context * aStaticContext ) 
     : NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, args),
-    theDebugger(0)
+    theDebugger(0), theStaticContext( aStaticContext )
   {}
 
   FnDebugIterator::~FnDebugIterator()
   {
   }
 
-  bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState& planState) const
+  bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState& planState ) const
   {
 
     PlanIteratorState * state;
@@ -47,12 +50,16 @@ namespace zorba {
       
       if ( theDebugger->hasToSuspend() )
       {
-        //if ( planState.sctx()->lookup_var("i") != 0 )
-        //{
-        //  std::cerr << "Horray!" << std::endl;
-        //} else {
-        //  std::cerr << "Didn't found anything :-(" << std::endl;
-        //}
+            //uint64_t lAdrr = theVariables[(uint64_t)lVar];
+            //PlanIter_t lIterator(0);
+            //lIterator = lAdrr;
+            //PlanIter_t lIterator = reinterpret_cast<PlanIter_t>(*lAdrr);
+            //if(lIterator != 0)
+            //{
+            //execute the iterator and serialize its result
+           //it->open(planS);
+           // it->close(planState);
+
         boost::mutex::scoped_lock lock( theDebugger->theRuntimeMutex );
         theDebugger->theRuntimeSuspendedCV.wait( lock );
       }

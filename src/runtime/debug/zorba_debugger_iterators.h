@@ -18,7 +18,7 @@
 #define ZORBA_DEBUGGER_ITERATORS_H
 
 #include <vector>
-
+#include <map>
 #include <boost/thread/mutex.hpp>
 
 #include "runtime/base/narybase.h"
@@ -33,9 +33,13 @@ class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorSta
 {
 protected:
   ZorbaDebuggerImpl *  theDebugger;
+  const static_context * theStaticContext;
 
 public:
-  FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args );
+  static std::map< uint64_t, PlanIter_t> theVariables;
+  
+  FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args,
+                   const static_context * aStaticContext );
 
   virtual ~FnDebugIterator();
 

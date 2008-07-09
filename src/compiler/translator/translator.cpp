@@ -154,6 +154,9 @@ protected:
   set<string> schema_import_ns_set;
   int tempvar_counter;
   std::list<global_binding> theGlobalVars;
+#ifdef ZORBA_DEBUGGER
+  std::list<var_expr_t> theVariables;
+#endif
   rchandle<namespace_context> ns_ctx;
   /// Current module's namespace and prefix
   string mod_ns, mod_pfx;
@@ -237,6 +240,9 @@ protected:
   var_expr_t create_var (const QueryLoc& loc, store::Item_t qname, var_expr::var_kind kind, xqtref_t type = NULL) {
     var_expr_t e = new var_expr (loc, kind, qname);
     e->set_type (type);
+#ifdef ZORBA_DEBUGGER
+    theVariables.push_back(e);
+#endif
     return e;
   }
 
@@ -378,6 +384,12 @@ protected:
 
 public:
 
+#ifdef ZORBA_DEBUGGER
+std::list<var_expr_t> getVariables()
+{
+  return theVariables;
+}
+#endif
 
 expr_t result ()
 {
@@ -5538,7 +5550,6 @@ expr_t translate (const parsenode &root, CompilerCB* aCompilerCB) {
   ModulesInfo minfo (aCompilerCB->m_sctx, aCompilerCB);
   return translate_aux (root, aCompilerCB, &minfo, mod_stack);
 }
-
 
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

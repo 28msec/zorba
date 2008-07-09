@@ -56,6 +56,7 @@
 #include "functions/function.h"
 
 #ifdef ZORBA_DEBUGGER
+#include <map>
 #include <zorba/debugger_server.h>
 #include "runtime/debug/zorba_debugger_iterators.h"
 #endif
@@ -210,9 +211,10 @@ void end_visit(debugger_expr& v)
   CODEGEN_TRACE_OUT(""); 
   checked_vector<PlanIter_t> argv;
   argv.push_back(pop_itstack());
+  const static_context * s_ctx = v.get_static_context();
   if( true || ZorbaDebugger::getInstance()->isEnabled() )
   {
-    itstack.push(new FnDebugIterator(qloc, argv));
+    itstack.push(new FnDebugIterator(qloc, argv, s_ctx));
   } else {
     //TODO...
   }
@@ -266,6 +268,9 @@ void end_visit(var_expr& v)
             loc,
             (void *) &v);
     map->push_back (v_p);
+#ifdef ZORBA_DEBUGGER
+    FnDebugIterator::theVariables.insert(pair<uint64_t, PlanIter_t>((uint64_t) &v, new ForVarIterator(v.get_varname()->getLocalName(), loc, (void *) &v)));
+#endif
     itstack.push(v_p);
     break;
   }

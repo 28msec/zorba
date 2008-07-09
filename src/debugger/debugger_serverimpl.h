@@ -110,7 +110,9 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     friend bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState &  planState ) const;
 
-    friend FnDebugIterator::FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args );
+    friend FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
+                                             std::vector<PlanIter_t>& args,
+                                             const static_context * aStaticContext );
 
     bool hasToSuspend();
     
