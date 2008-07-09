@@ -433,6 +433,7 @@ void ChildAxisState::reset(PlanState& planState)
 
 bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  store::Item *temp;
   store::Item_t child;
 
   ChildAxisState* state;
@@ -456,10 +457,12 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     state->theChildren->init(state->theContextNode);
     state->theChildren->open();
 
-    while ((result = state->theChildren->next()) != NULL)
+    while ((temp = state->theChildren->next()) != NULL)
     {
-      if (nameOrKindTest(result, planState))
+      if (nameOrKindTest(temp, planState)) {
+        result = temp;
         STACK_PUSH(true, state);
+      }
     }
 
     state->theChildren->close();
