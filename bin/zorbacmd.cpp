@@ -66,8 +66,8 @@ void get_timeinfo (timeinfo &t) {
 #include <time.h>
 typedef clock_t timeinfo;
 typedef clock_t time_detail;
-long get_time_elapsed (const time_detail &t0, const time_detail &t1) {
-  return (t1 - t0) / (CLOCKS_PER_SEC / 1000);
+double get_time_elapsed (const time_detail &t0, const time_detail &t1) {
+  return (double) (t1 - t0) / (CLOCKS_PER_SEC / 1000);
 }
 time_detail extract_user_time_detail (const timeinfo &rusage) {
   return rusage;
