@@ -253,6 +253,7 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
     return NULL; // Make the compiler happy
   }
 
+#if 0
 #ifdef ZORBA_ASSERT
   void debugger_expr::next_iter (expr_iterator_data& v)
   {
@@ -260,6 +261,7 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
     ITER(child);
     END_EXPR_ITER();
   }  
+#endif
 #endif
 
   expr_iterator_data *sequential_expr::make_iter () {

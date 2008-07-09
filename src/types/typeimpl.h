@@ -54,7 +54,7 @@ public:
 
   const TypeManager *get_manager() const { return m_manager; }
 
-  long *getSharedRefCounter() { return &theRefCount; }
+  long *getSharedRefCounter() { return NULL; }
 
   SYNC_CODE(RCLock *getRCLock() { return &theLock; })
 
