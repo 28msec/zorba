@@ -50,8 +50,8 @@ namespace fs = boost::filesystem;
 #include <sys/resource.h>
 typedef struct rusage timeinfo;
 typedef struct timeval time_detail;
-long get_time_elapsed (const time_detail &t0, const time_detail &t1) {
-  return ((t1.tv_sec - t0.tv_sec) * 1000) + ((t1.tv_usec - t0.tv_usec) / 1000);
+double get_time_elapsed (const time_detail &t0, const time_detail &t1) {
+  return ((t1.tv_sec - t0.tv_sec) * 1000.0) + ((t1.tv_usec - t0.tv_usec) / 1000.0);
 }
 #define ZORBA_HAVE_SYSTEM_TIME 1
 time_detail extract_user_time_detail (const timeinfo &rusage) {
@@ -209,9 +209,9 @@ int _tmain(int argc, _TCHAR* argv[])
   timeinfo lStartCompileTimeInfo, lStopCompileTimeInfo;
   timeinfo lStartFirstExecutionTimeInfo, lStopFirstExecutionTimeInfo;
   timeinfo lStartExecutionTimeInfo, lStopExecutionTimeInfo;
-  long lDiffCompileUserTime;
-  long lDiffFirstExecutionUserTime;
-  long lDiffExecutionUserTime;
+  double lDiffCompileUserTime;
+  double lDiffFirstExecutionUserTime;
+  double lDiffExecutionUserTime;
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
@@ -472,10 +472,11 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
     if (lTiming) {
+      std::cout.precision (3); std::cout.setf (std::ios::fixed);
       lNumExecutions = lProperties.getNoOfExecutions();
 
       std::cout << std::endl << "Number of executions = "
-          << lNumExecutions << std::endl;
+                << lNumExecutions << std::endl;
 
       lDiffCompileTime = lStopCompileTime - lStartCompileTime;
       lDiffCompileUserTime = get_time_elapsed (extract_user_time_detail (lStartCompileTimeInfo), extract_user_time_detail (lStopCompileTimeInfo));
@@ -494,11 +495,14 @@ int _tmain(int argc, _TCHAR* argv[])
       if (lNumExecutions > 1) {
         lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime) /
             (lNumExecutions - 1);
-        lDiffExecutionUserTime = get_time_elapsed (extract_user_time_detail (lStartExecutionTimeInfo), extract_user_time_detail (lStopExecutionTimeInfo));
-        std::cout << "Average Execution time: "
-                  << lDiffExecutionTime.total_milliseconds()
-                  << " (user: " << lDiffExecutionUserTime << ")"
-                  << " milliseconds" << std::endl;
+        lDiffExecutionUserTime =
+          get_time_elapsed (extract_user_time_detail (lStartExecutionTimeInfo), extract_user_time_detail (lStopExecutionTimeInfo))
+          / (lNumExecutions - 1);
+        std::cout
+          << "Average Execution time: "
+          << lDiffExecutionTime.total_milliseconds()
+          << " (user: " << lDiffExecutionUserTime << ")"
+          << " milliseconds" << std::endl;
       }
     }
     
