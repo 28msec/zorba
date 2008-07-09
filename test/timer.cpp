@@ -19,8 +19,7 @@
 
 //#define DEBUG
 
-Timer::Timer (bool verbose_, bool start_)
-  : verbose (verbose_)
+Timer::Timer (bool start_, bool verbose_) : verbose (verbose_)
 {
   if (start_) start ();
 }
@@ -96,15 +95,19 @@ double Timer::getClock()
     return (double)(suspendClock-startClock)/(double) CLOCKS_PER_SEC;
 }
 
-#ifndef WIN32
+
 double Timer::getTime()
 {
+#ifndef WIN32
     if (!suspended)
         return (double)(endTime-startTime);
 
     return (double)(suspendTime-startTime);
-}
+#else
+    return 0;
 #endif
+}
+
 
 std::ostream& Timer::print(std::ostream& os)
 {

@@ -62,13 +62,33 @@ void readXmlFile(const char* fileName, std::string& xmlString)
 
 int main(int argc, const char * argv[])
 {
-
-  if (argc < 2)
+  if (argc < 2 || argc > 4)
   {
-    std::cerr << "usage: test_store <input file name>" << std::endl;
+    std::cerr << "usage: test_store -n <times> <input file name>" << std::endl;
   }
 
-  std::string fileName(argv[1]);
+	Timer timer;
+  std::string fileName;
+  ulong numLoads = 0;
+
+  int arg = 1;
+  while (arg < argc)
+  {
+    if (strcmp(argv[arg], "-n") == 0)
+    {
+      arg++;
+      numLoads = atol(argv[arg]);
+    }
+    else
+    {
+      fileName = argv[arg];
+    }
+
+    arg++;
+  }
+
+  std::cout << "doc file = " << fileName << std::endl << "numLoads = "
+            << numLoads << std::endl;
 
   //
   // Store initialization
@@ -109,10 +129,6 @@ int main(int argc, const char * argv[])
   const char* data = "aaaaaaa0000000";
   ulong datalen = strlen(data);
 
-#ifndef WIN32
-	Timer timer;
-#endif
-
   for (ulong i = 0; i < loop; i++)
   {
     char* tmp = new char[datalen + 1];
@@ -120,11 +136,9 @@ int main(int argc, const char * argv[])
     delete [] tmp;
   }
 
-#ifndef WIN32
-  timer.suspend();
+  timer.end();
   std::cout << "char-pointer alloc time : " << timer.getTime() << std::endl;
-  timer.resume();
-#endif
+  timer.start();
 
   for (ulong i = 0; i < loop; i++)
   {
@@ -132,28 +146,18 @@ int main(int argc, const char * argv[])
     delete tmp;
   }
 
-#ifndef WIN32
-  timer.suspend();
+  timer.end();
   std::cout << "String-pointer alloc time : " << timer.getTime() << std::endl;
-  timer.resume();
-#endif
+  timer.start();
 
   for (ulong i = 0; i < loop; i++)
   {
     xqpStringStore_t tmp = new xqpStringStore(data);
   }
 
-#ifndef WIN32
-  timer.suspend();
+  timer.end();
   std::cout << "String-handle alloc time : " << timer.getTime() << std::endl;
-  timer.resume();
-#endif
-
-#else
-
-#ifndef WIN32
-	Timer timer;
-#endif
+  timer.start();
 
 #endif // RC_TIMMING
 
@@ -178,9 +182,56 @@ int main(int argc, const char * argv[])
   }
 
   //
-  // Load an xml doc from a file to a collection
+  // Repeatedly load an xml doc from a file to the store
   //
 
+  double totalTime = 0;
+
+  for (ulong i = 0; i < numLoads; i++)
+  {
+    timer.start();
+
+    std::ifstream ifs;
+    ifs.open(fileName.c_str(), std::ios::in);
+    if(!ifs.is_open())
+    {
+      std::cerr << "Error while opening: " << fileName << std::endl;
+      abort();
+    }
+
+    store::Item_t doc;
+    xqpStringStore_t docuri(new xqpStringStore(fileName));
+
+    try
+    {
+      doc = lStore->loadDocument(docuri, ifs);
+    }
+    catch (zorba::error::ZorbaError& e)
+    {
+      std::cout << e.theDescription << std::endl;
+      return 1;
+    }
+
+    timer.end();
+    if (i == 0)
+      std::cout << "First loading time : " << timer.getTime() << std::endl;
+    else
+      totalTime += timer.getTime();
+
+    lStore->deleteDocument(docuri);
+    doc = 0;
+
+    ifs.close();
+  }
+
+  if (numLoads > 1)
+  {
+    std::cout << "Average loading time : " << totalTime / (numLoads - 1) << std::endl;
+  }
+
+  //
+  // Load the doc to the collection, and keep a ref to it.
+  //
   std::ifstream xmlFile(fileName.c_str());
   if(!xmlFile)
   {
@@ -201,12 +252,6 @@ int main(int argc, const char * argv[])
     return 1;
   }
 
-#ifndef WIN32
-  timer.suspend();
-  std::cout << "Loading time : " << timer.getTime() << std::endl;
-  timer.resume();
-#endif
-
   xmlFile.close();
 
   //
@@ -218,6 +263,7 @@ int main(int argc, const char * argv[])
   //
   // Print out loaded document
   //
+#if 0
   fileName += ".res";
   std::ofstream outXmlFile(fileName.c_str());
   if(!outXmlFile)
@@ -230,7 +276,7 @@ int main(int argc, const char * argv[])
     outXmlFile << doc->show() << std::endl;
   else
     return 1;
-
+#endif
 
   //
   // Test node references

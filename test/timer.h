@@ -61,7 +61,7 @@ public:
     std::ostream& print(std::ostream& os);
     bool isRunning();
 
-    Timer (bool verbose = true, bool start = true);
+  Timer(bool start = true, bool verbose = false);
 };
 #endif
 
