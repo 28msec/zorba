@@ -64,6 +64,15 @@ static inline string expr_addr (const void *e) {
   }
 }
 
+#ifdef ZORBA_DEBUGGER
+std::ostream& debugger_expr::put(std::ostream& os) const
+{
+  BEGIN_EXPR(debugger_expr);
+  child->put(os);
+  CLOSE_EXPR;
+}
+#endif
+
 ostream& sequential_expr::put( ostream& os) const
 {
   BEGIN_EXPR (sequential_expr);
@@ -104,7 +113,7 @@ ostream & forlet_clause::put( ostream& os) const
 
 ostream& flwor_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (flwor_expr);
+  BEGIN_EXPR (flwor_expr);;
 
   vector<forletref_t>::const_iterator it = clause_begin();
   for (; it!=clause_end(); ++it)

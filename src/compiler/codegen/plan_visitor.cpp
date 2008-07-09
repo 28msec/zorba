@@ -151,18 +151,6 @@ protected:
 
 public:
 
-#ifdef ZORBA_DEBUGGER
-          PlanIter_t debugIterator(PlanIter_t aStoppableIterator){
-            if ( true || ZorbaDebugger::getInstance()->isEnabled() )
-            {
-              std::vector<PlanIter_t> lChildren;
-              lChildren.push_back(aStoppableIterator);
-              return new FnDebugIterator(aStoppableIterator->loc, lChildren);
-            }
-            return aStoppableIterator;
-          }
-#endif
-
 	plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *param_var_map = NULL)
     :
     depth (0),
@@ -209,6 +197,27 @@ void end_visit(expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
+
+#ifdef ZORBA_DEBUGGER
+bool begin_visit(debugger_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(debugger_expr& v)
+{
+  CODEGEN_TRACE_OUT(""); 
+  checked_vector<PlanIter_t> argv;
+  argv.push_back(pop_itstack());
+  if( true || ZorbaDebugger::getInstance()->isEnabled() )
+  {
+    itstack.push(new FnDebugIterator(qloc, argv));
+  } else {
+    //TODO...
+  }
+}
+#endif
 
 bool begin_visit(sequential_expr& v)
 {
@@ -441,11 +450,7 @@ void end_visit(flwor_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-#ifdef ZORBA_DEBUGGER
-  PlanIter_t ret = debugIterator( pop_itstack () );
-#else
   PlanIter_t ret = pop_itstack ();
-#endif
   vector<FLWORIterator::OrderSpec> orderSpecs;
   for (flwor_expr::orderspec_list_t::reverse_iterator i = v.orderspec_rbegin ();
        i != v.orderspec_rend ();

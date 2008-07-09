@@ -1499,8 +1499,11 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   int i, j;
-
+#ifdef ZORBA_DEBUGGER
+  expr_t lReturnExpr = new debugger_expr(loc, pop_nodestack(), sctx_p);
+#else
   expr_t lReturnExpr = pop_nodestack();
+#endif
   rchandle<flwor_expr> flwor = new flwor_expr (loc);
   flwor->setUpdateType(lReturnExpr->getUpdateType());
   flwor->set_retval (lReturnExpr);

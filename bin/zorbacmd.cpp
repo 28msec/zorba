@@ -363,7 +363,6 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
         debuggerClient->registerEventHandler( &lEventHandler );
         lServerThread.join();
-        delete debuggerClient;
       } catch( std::exception &e ) {
         if ( i < 2 ){ continue; }
         std::cerr << "Could not start the debugger client: " << std::endl;

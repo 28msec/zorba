@@ -14,7 +14,9 @@ Query idle
 11
 12
 End of query execution
-(xqdb) Launch the query
+(xqdb) The query being debugged has already started.
+Reload query and start it from beginning? (y or n) 
+Launch the query
 3
 4
 5
@@ -26,4 +28,4 @@ End of query execution
 11
 12
 End of query execution
-(xqdb) 
+(xqdb) The query is running. Exit anyway? (y or n) 

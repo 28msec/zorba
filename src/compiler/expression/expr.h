@@ -41,6 +41,34 @@ class match_expr;
 class expr_visitor;
 class NodeNameTest;
 
+#ifdef ZORBA_DEBUGGER
+//debugger expression
+class debugger_expr: public expr
+{
+  private:
+    expr_t child;
+    const static_context * s_ctx;
+
+  public:
+    debugger_expr( const QueryLoc& loc, expr_t aChild, const static_context * aS_ctx )
+      : expr(loc), child(aChild), s_ctx(aS_ctx){}
+
+    const static_context * get_static_context()
+    {
+      return s_ctx;
+    }
+
+    expr_t get_child()
+    {
+      return child;
+    }
+    
+    void next_iter (expr_iterator_data&);
+    void accept (expr_visitor&);
+    std::ostream& put(std::ostream&) const;
+};
+#endif
+
 // imperative construct: do this, then that
 class sequential_expr : public expr
 {

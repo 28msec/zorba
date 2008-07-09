@@ -41,6 +41,9 @@ public:
   virtual void end_visit(e&) { }
 
   EXPR_VISITOR_METHODS (expr);
+#ifdef ZORBA_DEBUGGER
+  EXPR_VISITOR_METHODS (debugger_expr);
+#endif
   EXPR_VISITOR_METHODS (sequential_expr);
   EXPR_VISITOR_METHODS (var_expr);
   EXPR_VISITOR_METHODS (order_modifier);

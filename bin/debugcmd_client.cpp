@@ -222,6 +222,7 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
         }
       }
       theClient->quit();
+      exit(7);
     } else if ( lCommand == "s" || lCommand == "stop" ) {
       theClient->terminate();
       return;
