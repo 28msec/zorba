@@ -329,6 +329,7 @@ protected:
                     SYNC_PARAM2(p->getRCLock()));
   }
 
+
   template <class otherT> rchandle& assign (const rchandle<otherT>& rhs)
   {
 		if (p != rhs.getp())
@@ -394,6 +395,30 @@ public:
 
   template <class otherT> operator const rchandle<otherT> () const {
     return cast<otherT> ();
+  }
+
+  rchandle& operator=(const T* rhs) 
+  {
+		if (p != rhs)
+    {
+			if (p) p->removeReference(p->getSharedRefCounter()
+                                SYNC_PARAM2(p->getRCLock()));
+			p = const_cast<T*>(rhs);
+			init();
+		}
+		return *this;
+  }
+
+	template <class otherT> rchandle& operator=(const otherT* rhs)
+  {
+		if (p != rhs)
+    {
+			if (p) p->removeReference(p->getSharedRefCounter()
+                                SYNC_PARAM2(p->getRCLock()));
+			p = static_cast<T*>(const_cast<otherT*>(rhs));
+			init();
+		}
+		return *this;
   }
 
   rchandle& operator=(rchandle const& rhs) {
