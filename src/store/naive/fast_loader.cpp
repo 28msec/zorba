@@ -218,12 +218,14 @@ long FastXmlLoader::readPacket(std::istream& stream, char* buf, long size)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t FastXmlLoader::loadXml(xqpStringStore_t& uri, std::istream& stream)
+store::Item_t FastXmlLoader::loadXml(
+    const xqpStringStore_t& uri,
+    std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
   long numChars;
 
-  theDocUri.transfer(uri);
+  theDocUri = uri;
 
   theTree = new XmlTree(NULL, GET_STORE().getTreeId());
 

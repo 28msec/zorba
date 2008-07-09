@@ -95,7 +95,7 @@ public:
   virtual ~XmlLoader() {}
 
   virtual store::Item_t loadXml(
-        xqpStringStore_t& docuri,
+        const xqpStringStore_t& docuri,
         std::istream& xmlStream) = 0;
 };
 
@@ -128,7 +128,7 @@ public:
 
   ~SimpleXmlLoader();
 
-  store::Item_t loadXml(xqpStringStore_t& docuri, std::istream& xmlStream);
+  store::Item_t loadXml(const xqpStringStore_t& docuri, std::istream& xmlStream);
 
 protected:
   void abortload();
@@ -201,6 +201,9 @@ class NsBindingsContext;
 class FastXmlLoader : public XmlLoader
 {
 protected:
+  static const ulong               theElementChunckSize = 200;
+      
+protected:
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
 
@@ -220,7 +223,7 @@ public:
 
   ~FastXmlLoader();
 
-  store::Item_t loadXml(xqpStringStore_t& uri, std::istream& xmlStream);
+  store::Item_t loadXml(const xqpStringStore_t& uri, std::istream& xmlStream);
 
 protected:
   void abortload();
@@ -228,6 +231,8 @@ protected:
   long readPacket(std::istream& stream, char* buf, long size);
 
   void setRoot(XmlNode* root);
+
+  void* getElementNode();
 
 public:
   static void	startDocument(void * ctx);

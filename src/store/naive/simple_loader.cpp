@@ -113,12 +113,14 @@ void SimpleXmlLoader::abortload()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleXmlLoader::loadXml(xqpStringStore_t& docuri, std::istream& stream)
+store::Item_t SimpleXmlLoader::loadXml(
+    const xqpStringStore_t& docuri,
+    std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
   long numChars;
 
-  theDocUri.transfer(docuri);
+  theDocUri = docuri;
 
   try
   {

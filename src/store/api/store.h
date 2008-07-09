@@ -150,7 +150,7 @@ public:
    * @return rchandle to the newly created document or NULL if a document
    *         with the given uri exists already.
    */
-  virtual Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream) = 0;
+  virtual Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream) = 0;
 
   /**
    * Load a document to the store. The document is loaded from an input stream.
@@ -161,7 +161,7 @@ public:
    * @return rchandle to the newly created document or NULL if a document
    *         with the given uri exists already.
    */
-  virtual Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream) = 0;
+  virtual Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream) = 0;
 
   virtual void addNode(const xqpStringStore* uri, const Item_t& node) = 0;
 

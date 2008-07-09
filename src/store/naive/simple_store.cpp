@@ -348,7 +348,9 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
+store::Item_t SimpleStore::loadDocument(
+    const xqpStringStore_t& uri,
+    std::istream& stream)
 {
   if (uri == NULL)
     return NULL;
@@ -379,9 +381,11 @@ store::Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& str
 /*******************************************************************************
 For lazy loading...
 ********************************************************************************/
-store::Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
+store::Item_t SimpleStore::loadDocument(
+    const xqpStringStore_t& uri, 
+    std::istream* stream)
 {
-  store::Item_t    docitem;
+  store::Item_t docitem;
   //do full loading for now
   docitem = loadDocument(uri, *stream);
   delete stream;
