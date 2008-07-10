@@ -49,13 +49,6 @@ public :
         fLocalForm = XMLString::transcode(toTranscode);
     }
 
-    StrX(char* chars)
-    {
-      // Should not be used. ~StrX() will call XMLString::release!!
-      assert (false);
-      fLocalForm = NULL;
-    }
-
     ~StrX()
     {
         XMLString::release(&fLocalForm);

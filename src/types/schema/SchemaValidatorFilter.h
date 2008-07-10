@@ -25,6 +25,7 @@
 #include <xercesc/internal/XMLScanner.hpp>
 #include <xercesc/util/RefHash3KeysIdPool.hpp>
 #include "common/shared_types.h"
+#include "types/schema/ValidationEventHandler.h"
 
 
 namespace zorba
@@ -40,13 +41,16 @@ class LocationInfo;
 * and attributes, and will normalize values according to the schema normalization
 * rules.
 */
-class SchemaValidatorFilter : ///public EventFilter,
+class SchemaValidatorFilter : 
     public XERCES_CPP_NAMESPACE_QUALIFIER XMLScanner,
     private XERCES_CPP_NAMESPACE_QUALIFIER XMLDocumentHandler,
     private XERCES_CPP_NAMESPACE_QUALIFIER XMLErrorReporter
 {
 public:
-    SchemaValidatorFilter(bool strictValidation, ///EventHandler *next,
+    static const XMLCh DT_UNTYPEDATOMIC[];
+
+public:
+    SchemaValidatorFilter(bool strictValidation, ValidationEventHandler *next,
         XERCES_CPP_NAMESPACE_QUALIFIER GrammarResolver *grammarResolver,
         XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager *mm, const LocationInfo *info, 
         const QueryLoc& loc);
@@ -147,6 +151,7 @@ private:
     bool _elementToProcess;
     const XMLCh *_xsiType;
     unsigned int _attrCount;
+    ValidationEventHandler *next_;
 };
 
 }  // namespace zorba

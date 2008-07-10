@@ -19,6 +19,7 @@
 #include "types/delegating_typemanager.h"
 #include "types/typeops.h"
 #include "types/schema/SchemaValidatorFilter.h"
+#include "types/schema/StrX.h"
 
 #include "runtime/validate/validate.h"
 #include "runtime/api/runtimecb.h"
@@ -107,6 +108,7 @@ namespace zorba
             xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
                 final_baseuri().getStore();
 
+            
             SchemaValidator schemaValidator = SchemaValidator(typeManager, 
                 schema->getGrammarPool(), isLax, loc);
             
@@ -247,6 +249,33 @@ namespace zorba
             GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attName,
                                                    typeName, textValue, false, false);
         }
+
+//         std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
+//         std::list<AttributeValidationInfo*>::iterator curAtt;
+//          
+//         for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
+//         {
+//             AttributeValidationInfo* att = *curAtt;
+//             std::cout << " proccessATT: " << StrX(att->_localName) << " T: " << StrX(att->_typeName) << "\n";
+//             
+//             store::Item_t attQName;
+//             GENV_ITEMFACTORY->createQName( attQName, StrX(att->_uri).localForm(), 
+//                 StrX(att->_prefix).localForm(), StrX(att->_localName).localForm());
+//             
+//             store::Item_t typeQName;
+//             GENV_ITEMFACTORY->createQName(typeQName, 
+//                 StrX(att->_typeURI).localFormOrDefault (Schema::XSD_NAMESPACE), "", 
+//                 StrX(att->_typeName).localFormOrDefault ("anyType"));
+// 
+//             StrX attValStrX = StrX(att->_value);
+//             xqpStringStore_t attValue( new xqpStringStore(attValStrX.localForm()));            
+//             
+//             store::Item_t textValue;
+//             GENV_ITEMFACTORY->createString( textValue, attValue);
+//             
+//             store::Item_t validatedAttNode;
+//             GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, typeQName, textValue);
+//         }
     }
 
     void ValidateIterator::processChildren( SchemaValidator& schemaValidator, store::Item *parent, 

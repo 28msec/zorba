@@ -20,4 +20,5 @@ SET(SCHEMA_SRCS
     XercesParseUtils.cpp
     SchemaValidator.cpp
     SchemaValidatorFilter.cpp
+    ValidationEventHandler.cpp
     )

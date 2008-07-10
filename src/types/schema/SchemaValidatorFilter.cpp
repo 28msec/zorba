@@ -17,8 +17,10 @@
 
 #include <xercesc/internal/XMLReader.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/validators/common/ContentLeafNameTypeVector.hpp>
 #include <xercesc/validators/schema/SubstitutionGroupComparator.hpp>
+
 #include <iostream>
 
 #include "runtime/accessors/AccessorsImpl.h"
@@ -32,11 +34,20 @@ XERCES_CPP_NAMESPACE_USE;
 namespace zorba
 {
 
-SchemaValidatorFilter::SchemaValidatorFilter(bool strictValidation, ///EventHandler *next, 
+const XMLCh* emptyToNull(const XMLCh * chars)
+{
+    return chars; //XMLString::equals("", chars) ? NULL : chars;
+}
+
+const XMLCh SchemaValidatorFilter::DT_UNTYPEDATOMIC[] =
+{
+    chLatin_u, chLatin_n, chLatin_t, chLatin_y, chLatin_p, chLatin_e, chLatin_d, chNull
+};
+
+SchemaValidatorFilter::SchemaValidatorFilter(bool strictValidation, ValidationEventHandler *next, 
     GrammarResolver *grammarResolver, MemoryManager *mm, const LocationInfo *info, 
     const QueryLoc& loc)
     :
-    //EventFilter(next),
     XMLScanner(0, grammarResolver, mm),
     info_(info),
     _loc(loc),
@@ -51,7 +62,8 @@ SchemaValidatorFilter::SchemaValidatorFilter(bool strictValidation, ///EventHand
     _elemDepth(0),
     _elementToProcess(false),
     _xsiType(0),
-    _attrCount(0)
+    _attrCount(0),
+    next_(next)
 {
     _fSchemaGrammar = new (fGrammarPoolMemoryManager) SchemaGrammar(fGrammarPoolMemoryManager);
     _fICHandler = new (fMemoryManager) IdentityConstraintHandler(this, fMemoryManager);
@@ -121,7 +133,7 @@ void SchemaValidatorFilter::reset()
 void SchemaValidatorFilter::startDocumentEvent(const XMLCh *documentURI, const XMLCh *encoding)
 {
     reset();
-    ///next_->startDocumentEvent(documentURI, encoding);
+    next_->startDocumentEvent(documentURI, encoding);
 }
 
 void SchemaValidatorFilter::endDocumentEvent()
@@ -129,7 +141,7 @@ void SchemaValidatorFilter::endDocumentEvent()
     if(fValidate) 
         _fICHandler->endDocument();
 
-    ///next_->endDocumentEvent();
+    next_->endDocumentEvent();
 }
 
 void SchemaValidatorFilter::startElementEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localname)
@@ -156,7 +168,7 @@ void SchemaValidatorFilter::startElementEvent(const XMLCh *prefix, const XMLCh *
 
     fElemStack.addPrefix(prefix, fURIStringPool->addOrFind(uri));
 
-    ///next_->startElementEvent(prefix, uri, localname);
+    next_->startElementEvent(prefix, uri, localname);
 }
 
 void SchemaValidatorFilter::processStartElement()
@@ -268,6 +280,8 @@ void SchemaValidatorFilter::processStartElement()
         _fICHandler->activateIdentityConstraint((SchemaElementDecl*)elemDecl, (int)_elemDepth, uriId, _prefix.getRawBuffer(), *fAttrList, _attrCount);
 
     _elementToProcess = false;
+    
+    next_->typeElementEvent(getTypeUri(), getTypeName());
 
     // We commandeer fCommentOrPISeen to keep _errorOccurred in
     if(_errorOccurred)
@@ -299,7 +313,7 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
         const XMLCh *value = attr->getValue();
 
         unsigned int uriId = attr->getURIId();
-        //const XMLCh *uri = getURIText(uriId);
+        const XMLCh *uri = getURIText(uriId);
 
         bool attrValid = true;
         DatatypeValidator *attrValidator = 0;
@@ -420,15 +434,15 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
             }
         }
 
-        //if(fValidate && attrValid) {
-        //  if(attrValidator)
-        //    next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value,
-        //                          emptyToNull(attrValidator->getTypeUri()), attrValidator->getTypeLocalName());
-        //  else 
-        //    next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value, SchemaSymbols::fgURI_SCHEMAFORSCHEMA, SchemaSymbols::fgDT_ANYSIMPLETYPE);
-        //}
-        //else
-        //  next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value, SchemaSymbols::fgURI_SCHEMAFORSCHEMA, ATUntypedAtomic::fgDT_UNTYPEDATOMIC);
+        if(fValidate && attrValid) {
+          if(attrValidator)
+            next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value,
+                                  emptyToNull(attrValidator->getTypeUri()), attrValidator->getTypeLocalName());
+          else 
+            next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value, SchemaSymbols::fgURI_SCHEMAFORSCHEMA, SchemaSymbols::fgDT_ANYSIMPLETYPE);
+        }
+        else
+          next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value, SchemaSymbols::fgURI_SCHEMAFORSCHEMA, DT_UNTYPEDATOMIC);
     }
 
     // Deal with default, required and prohibited attrs
@@ -474,12 +488,12 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
                             attrValidator = ((XERCES_CPP_NAMESPACE::SchemaValidator *)fValidator)->getMostRecentAttrValidator();
                         }
 
-                        ///if(attrValidator)
-                        //  next_->attributeEvent(emptyToNull(attName->getPrefix()), emptyToNull(getURIText(curUriId)), curName, curDef->getValue(),
-                        //                        emptyToNull(attrValidator->getTypeUri()), attrValidator->getTypeLocalName());
-                        //else
-                        //  next_->attributeEvent(emptyToNull(attName->getPrefix()), emptyToNull(getURIText(curUriId)), curName, curDef->getValue(),
-                        //                        SchemaSymbols::fgURI_SCHEMAFORSCHEMA, ATUntypedAtomic::fgDT_UNTYPEDATOMIC);
+                        if(attrValidator)
+                          next_->attributeEvent(emptyToNull(attName->getPrefix()), emptyToNull(getURIText(curUriId)), curName, curDef->getValue(),
+                                                emptyToNull(attrValidator->getTypeUri()), attrValidator->getTypeLocalName());
+                        else
+                          next_->attributeEvent(emptyToNull(attName->getPrefix()), emptyToNull(getURIText(curUriId)), curName, curDef->getValue(),
+                                                SchemaSymbols::fgURI_SCHEMAFORSCHEMA, DT_UNTYPEDATOMIC);
                         break;
                     }
                 default: break;
@@ -579,7 +593,7 @@ void SchemaValidatorFilter::endElementEvent(const XMLCh *prefix, const XMLCh *ur
         //typeName = DocumentCache::g_szUntyped;
     }
 
-    ///next_->endElementEvent(prefix, uri, localname, emptyToNull(typeURI), typeName);
+    next_->endElementEvent(prefix, uri, localname, emptyToNull(typeURI), typeName);
 }
 
 static inline const XMLCh *nullToZero(const XMLCh *in)
@@ -625,7 +639,7 @@ void SchemaValidatorFilter::namespaceEvent(const XMLCh *prefix, const XMLCh *uri
 {
     fElemStack.addPrefix(prefix, fURIStringPool->addOrFind(uri));
 
-    ///next_->namespaceEvent(prefix, uri);
+    next_->namespaceEvent(prefix, uri);
 }
 
 void SchemaValidatorFilter::textEvent(const XMLCh *chars)
@@ -678,7 +692,7 @@ void SchemaValidatorFilter::textEvent(const XMLCh *chars)
     if(fValidate && _fICHandler->getMatcherCount())
         _fContent.append(chars, len);
 
-    ///next_->textEvent(chars, len);
+    next_->textEvent(chars, len);
 }
 
 void SchemaValidatorFilter::textEvent(const XMLCh *chars, unsigned int len)
@@ -693,14 +707,14 @@ void SchemaValidatorFilter::commentEvent(const XMLCh *value)
 {
     if(_elementToProcess) processStartElement();
 
-    ///next_->commentEvent(value);
+    next_->commentEvent(value);
 }
 
 void SchemaValidatorFilter::piEvent(const XMLCh *target, const XMLCh *value)
 {
     if(_elementToProcess) processStartElement();
 
-    ///next_->piEvent(target, value);
+    next_->piEvent(target, value);
 }
 
 const XMLCh* SchemaValidatorFilter::getTypeUri()
