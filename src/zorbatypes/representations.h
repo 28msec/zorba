@@ -71,9 +71,9 @@ namespace zorba
   typedef DateTime            xqp_gMonthDay;
   typedef DateTime            xqp_gDay;
   typedef DateTime            xqp_gMonth;
-  typedef DurationBase_t      xqp_duration;
-  typedef DayTimeDuration_t   xqp_dayTimeDuration;
-  typedef YearMonthDuration_t xqp_yearMonthDuration;
+  typedef Duration            xqp_duration;
+  typedef DayTimeDuration     xqp_dayTimeDuration;
+  typedef YearMonthDuration   xqp_yearMonthDuration;
   typedef Base64              xqp_base64Binary;
   typedef Base16              xqp_hexBinary;
 

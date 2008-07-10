@@ -53,12 +53,6 @@ bool DurationBase::operator==(const DurationBase& dt) const
  *
  ****************************************************************************/
 
-YearMonthDuration::YearMonthDuration(long the_months)
-  :
-  months(the_months)
-{
-}
-
 YearMonthDuration& YearMonthDuration::operator=(const YearMonthDuration_t& ym_t)
 {
   months = ym_t->months;
@@ -83,7 +77,7 @@ bool YearMonthDuration::operator==(const YearMonthDuration& ymd) const
 
 xqpString YearMonthDuration::toString(bool output_when_zero) const
 {
-  xqpString result;// = "";
+  xqpString result = "";
   long abs_months = months;
 
   if (months == 0)
@@ -96,17 +90,17 @@ xqpString YearMonthDuration::toString(bool output_when_zero) const
 
   if (months < 0)
   {
-    result.append_in_place("-");
+    result += "-";
     abs_months = -months;
   }
 
-  result.append_in_place("P");
+  result += "P";
 
   if (abs_months >= 12 )
-    result.append_in_place(NumConversions::longToStr(abs_months / 12).getStore(), "Y");
+    result = result + NumConversions::longToStr(abs_months / 12) + "Y";
 
   if ((abs_months%12) != 0)
-    result.append_in_place(NumConversions::longToStr(abs_months % 12).getStore(), "M");
+    result = result + NumConversions::longToStr(abs_months % 12) + "M";
     
   return result;
 }
@@ -290,6 +284,7 @@ uint32_t YearMonthDuration::hash() const
  ****************************************************************************/
 DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long minutes,
                                  long seconds, long frac_seconds)
+  : DurationBase(DAYTIMEDURATION_FACET)
 {
   is_negative = negative;
   days = abs<long>(the_days);
@@ -310,6 +305,7 @@ DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long 
 }
 
 DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, double seconds)
+  : DurationBase(DAYTIMEDURATION_FACET)
 {
   long long_seconds;
   long frac_seconds;
@@ -344,6 +340,7 @@ DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, double
 }
 
 DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, long seconds, long frac_seconds)
+  : DurationBase(DAYTIMEDURATION_FACET)
 {
   if (the_days != 0)
     is_negative = the_days < 0;
@@ -418,7 +415,7 @@ bool DayTimeDuration::isZero() const
 
 xqpString DayTimeDuration::toString(bool output_when_zero) const
 {
-  xqpString result;// = "";
+  xqpString result = "";
   bool have_t_separator = false;
 
   if (isZero())
@@ -430,40 +427,40 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
   }
     
   if ( is_negative )
-    result.append_in_place("-");
+    result += "-";
 
-  result .append_in_place("P");
+  result += "P";
 
   if ( days != 0 )
-    result.append_in_place(NumConversions::longToStr ( days ).getStore(), "D");
+    result += NumConversions::longToStr ( days ) + "D";
 
   if ( timeDuration.hours() != 0)
   {
     OUTPUT_T_SEPARATOR(result, have_t_separator);
-    result.append_in_place(NumConversions::intToStr ( timeDuration.hours() ).getStore(), "H");
+    result += NumConversions::intToStr ( timeDuration.hours() ) + "H";
   }
 
   if ( timeDuration.minutes() != 0 )
   {
     OUTPUT_T_SEPARATOR(result, have_t_separator);
-    result.append_in_place(NumConversions::intToStr ( timeDuration.minutes() ).getStore(), "M");
+    result += NumConversions::intToStr ( timeDuration.minutes() ) + "M";
   }
 
   if (timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0)
   {
     OUTPUT_T_SEPARATOR(result, have_t_separator);
-    result.append_in_place(NumConversions::intToStr ( timeDuration.seconds() ).getStore());
+    result += NumConversions::intToStr ( timeDuration.seconds() );
 
     if ( timeDuration.fractional_seconds() != 0 )
     {
       int frac_seconds = timeDuration.fractional_seconds();
-      result.append_in_place(".");
+      result += ".";
       
       // print leading 0s, if any
       int temp = boost::posix_time::time_duration::ticks_per_second() / 10;
       while (temp > frac_seconds && temp > 0)
       {
-        result .append_in_place('0');
+        result += '0';
         temp /= 10;
       }
       
@@ -471,10 +468,10 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
       while (frac_seconds%10 == 0 && frac_seconds > 0)
         frac_seconds = frac_seconds / 10;
       
-      result.append_in_place(to_string(frac_seconds));
+      result += to_string(frac_seconds);
     }
 
-    result.append_in_place("S");
+    result += "S";
   }
 
   return result;
@@ -841,11 +838,11 @@ bool DayTimeDuration::parse_string(const xqpString& s, DayTimeDuration_t& dt_t, 
   return true;
 }
 
-bool DayTimeDuration::from_Timezone ( const TimeZone& t, DurationBase_t& dt )
+bool DayTimeDuration::from_Timezone ( const TimeZone& t, DayTimeDuration& dt )
 {
   if(!t.is_not_a_date_time())
   {
-    dt = new DayTimeDuration ( t.is_negative(), 0, t.getHours(), t.getMinutes(), t.getSeconds(), t.getFractionalSeconds() );
+    dt = DayTimeDuration ( t.is_negative(), 0, t.getHours(), t.getMinutes(), t.getSeconds(), t.getFractionalSeconds() );
     return true;
   }
   else
@@ -873,13 +870,47 @@ uint32_t DayTimeDuration::hash() const
  *
  ****************************************************************************/
 
-Duration::Duration(const YearMonthDuration& ymd, bool negate) : yearMonthDuration(ymd)
+Duration::Duration(const DurationBase& db)
+  : DurationBase(DURATION_FACET)
+{
+  switch (db.getFacet())
+  {
+  case DURATION_FACET:
+    {
+      const Duration& d = dynamic_cast<const Duration&>(db);
+      dayTimeDuration = d.dayTimeDuration;
+      yearMonthDuration = d.yearMonthDuration;
+    }
+    break;
+  case DAYTIMEDURATION_FACET:
+    {
+      const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
+      dayTimeDuration = dtd;
+    }
+    break;
+  case YEARMONTHDURATION_FACET:
+    {
+      const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db);
+      yearMonthDuration = ymd;
+    }
+    break;
+  }
+}
+
+Duration& Duration::operator=(Duration& d)
+{
+  yearMonthDuration = d.yearMonthDuration;
+  dayTimeDuration = d.dayTimeDuration;
+  return *this;
+}
+
+Duration::Duration(const YearMonthDuration& ymd, bool negate) : DurationBase(DURATION_FACET), yearMonthDuration(ymd)
 {
   if (negate)
     yearMonthDuration.months = -yearMonthDuration.months;
 }
 
-Duration::Duration(const DayTimeDuration& dtd, bool negate) : dayTimeDuration(dtd)
+Duration::Duration(const DayTimeDuration& dtd, bool negate) : DurationBase(DURATION_FACET), dayTimeDuration(dtd)
 {
   if (negate && !dayTimeDuration.isZero())
     dayTimeDuration.is_negative = !dayTimeDuration.is_negative;
@@ -985,16 +1016,19 @@ DurationBase_t Duration::operator-(const DurationBase& db) const
 
 DurationBase_t Duration::operator*(const Double value) const
 {
+  assert(0);
   return NULL;
 }
 
 DurationBase_t Duration::operator/(const Double value) const
 {
+  assert(0);
   return NULL;
 }
 
 Decimal Duration::operator/(const DurationBase& db) const
 {
+  assert(0);
   return Decimal::parseInt(0);
 }
 

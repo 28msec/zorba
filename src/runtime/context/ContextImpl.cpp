@@ -119,7 +119,7 @@ FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState
   long secs;
   bool neg;
   xqp_dayTimeDuration dtd;
-  DurationBase_t db;
+  DayTimeDuration_t db;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -129,7 +129,7 @@ FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState
   if (neg) secs = -secs;
   db = new DayTimeDuration( neg, 0, 0, 0 , secs, 0);
   
-  STACK_PUSH( GENV_ITEMFACTORY->createDuration(result, db), state );
+  STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, db), state );
 
   STACK_END (state);
 }

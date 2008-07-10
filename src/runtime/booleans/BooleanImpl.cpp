@@ -658,7 +658,7 @@ CompareIterator::equal(
              (!TypeOps::is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)) &&
              TypeOps::is_equal(*type0, *type1))
     {
-      return aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
+      return aItem0->getDurationValue().compare(aItem1->getDurationValue());
     }
   } 
   catch (InvalidTimezoneException)
@@ -670,7 +670,7 @@ CompareIterator::equal(
   if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
       TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
   {
-    equal = (*aItem0->getDurationValue() == *aItem1->getDurationValue());
+    equal = (aItem0->getDurationValue() == aItem1->getDurationValue());
     return (equal==-2)?-2:(equal==0?1:0);
   }
   else if(TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
@@ -886,7 +886,7 @@ CompareIterator::compare(
              &&
              TypeOps::is_equal(*type0, *type1))
     {
-      return aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
+      return aItem0->getDurationValue().compare(aItem1->getDurationValue());
     }
   } 
   catch (InvalidTimezoneException)

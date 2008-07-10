@@ -150,8 +150,7 @@ inline bool str_dur(store::Item_t& result, const store::Item_t& aItem, store::It
   Duration_t d_t;
   if (Duration::parse_string(doTrim(aItem->getStringValue()).getp(), d_t))
   {
-    xqp_duration d = d_t;
-    return aFactory->createDuration(result, d);
+    return aFactory->createDuration(result, d_t);
   }
 
   throwError(FORG0001, aErrorInfo);
@@ -164,8 +163,7 @@ inline bool str_yMD(store::Item_t& result, const store::Item_t& aItem, store::It
   YearMonthDuration_t ymd_t;
   if (YearMonthDuration::parse_string(doTrim(aItem->getStringValue()).getp(), ymd_t))
   {
-    xqp_duration d = ymd_t;
-    return aFactory->createDuration(result, d);
+    return aFactory->createYearMonthDuration(result, ymd_t);
   }
 
   throwError(FORG0001, aErrorInfo);
@@ -178,8 +176,7 @@ inline bool str_dTD(store::Item_t& result, const store::Item_t& aItem, store::It
   DayTimeDuration_t dtd_t;
   if (DayTimeDuration::parse_string(doTrim(aItem->getStringValue()).getp(), dtd_t))
   {
-    xqp_duration d = dtd_t;
-    return aFactory->createDuration(result, d);
+    return aFactory->createDayTimeDuration(result, dtd_t);
   }
 
   throwError(FORG0001, aErrorInfo);
@@ -613,14 +610,14 @@ inline bool dur_str(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool dur_yMD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  xqp_duration dur = aItem->getDurationValue()->toYearMonthDuration();
-  return aFactory->createDuration(result, dur);
+  YearMonthDuration_t dur = aItem->getDurationValue().toYearMonthDuration();
+  return aFactory->createYearMonthDuration(result, dur);
 }
 
 inline bool dur_dTD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  xqp_duration dur = aItem->getDurationValue()->toDayTimeDuration();
-  return aFactory->createDuration(result, dur);
+  DayTimeDuration_t dur = aItem->getDurationValue().toDayTimeDuration();
+  return aFactory->createDayTimeDuration(result, dur);
 }
 
 inline bool yMD_uA(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -635,13 +632,13 @@ inline bool yMD_str(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool yMD_dur(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  xqp_duration dur = aItem->getYearMonthDurationValue()->toDuration();
+  Duration_t dur = aItem->getYearMonthDurationValue().toDuration();
   return aFactory->createDuration(result, dur);
 }
 
 inline bool yMD_dTD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  xqp_duration dur = aItem->getYearMonthDurationValue()->toDayTimeDuration();
+  Duration_t dur = aItem->getYearMonthDurationValue().toDayTimeDuration();
   return aFactory->createDuration(result, dur);
 }
 
@@ -657,14 +654,14 @@ inline bool dTD_str(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool dTD_dur(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  xqp_duration dur = aItem->getDayTimeDurationValue()->toDuration();
+  Duration_t dur = aItem->getDayTimeDurationValue().toDuration();
   return aFactory->createDuration(result, dur);
 }
 
 inline bool dTD_yMD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  xqp_duration dur = aItem->getDayTimeDurationValue()->toYearMonthDuration();
-  return aFactory->createDuration(result, dur);
+  YearMonthDuration_t dur = aItem->getDayTimeDurationValue().toYearMonthDuration();
+  return aFactory->createYearMonthDuration(result, dur);
 }
 
 inline bool dT_uA(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)

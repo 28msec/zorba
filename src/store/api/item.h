@@ -286,19 +286,19 @@ public:
 
   /** Accessor for xs:duration
    */
-  virtual xqp_duration
+  virtual const xqp_duration&
   getDurationValue() const;
 
 
   /** Accessor for xs:dayTimeDuration
    */
-  virtual xqp_dayTimeDuration
+  virtual const xqp_dayTimeDuration&
   getDayTimeDurationValue() const;
 
 
   /** Accessor for xs:yearMonthDuration
    */
-  virtual YearMonthDuration_t
+  virtual const xqp_yearMonthDuration&
   getYearMonthDurationValue() const;
 
 

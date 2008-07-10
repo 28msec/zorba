@@ -524,7 +524,7 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
   }
 }
 
-static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_slist **headers_list)
+static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_slist **headers_list, std::auto_ptr<char>& buffer)
 {
   store::Iterator_t it;
   store::Item_t child, name, filename, content_type;
@@ -565,11 +565,12 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
     filebuf* pbuf = ifs.rdbuf();
     long size = pbuf->pubseekoff(0,ios::end,ios::in);
     pbuf->pubseekpos(0,ios::in);
-    std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[size]);
-    pbuf->sgetn(buffer.get(),size);
+    //std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[size]);
+    buffer = std::auto_ptr<char>(new char[size]);
+    pbuf->sgetn(buffer.get(), size);
 
     curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , size);
-    curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, buffer.get());
+    curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());
 
     if (content_type.getp() == NULL)
       *headers_list = curl_slist_append(*headers_list, "Content-Type: application/octet-stream");
@@ -584,8 +585,12 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
     if (child->getNodeKind() == store::StoreConsts::textNode)
     {
       xqpStringStore* str = child->getStringValueP();
+      buffer = std::auto_ptr<char>(new char[str->bytes()]);
+      memcpy(buffer.get(), str->c_str(), str->bytes());
+
+      // curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, str->c_str());
       curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , str->bytes());
-      curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, str->c_str());
+      curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());
       curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
 
       if (content_type.getp() == NULL)
@@ -598,8 +603,12 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
       serializer ser(&lErrorManager);
       ser.set_parameter("omit-xml-declaration","yes");
       ser.serialize(child, ss);
+      buffer = std::auto_ptr<char>(new char[ss.str().size()]);
+      memcpy(buffer.get(), ss.str().c_str(), ss.str().size());
       
-      curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, ss.str().c_str());
+      // curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, ss.str().c_str());
+      curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , ss.str().size());
+      curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());
       curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
 
       if (content_type.getp() == NULL)
@@ -713,6 +722,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   xqpString Uri;
   curl_httppost *first = NULL, *last = NULL;
   curl_slist *headers_list = NULL;
+  std::auto_ptr<char> buffer;
   int code;
   bool single_payload = false;
   
@@ -734,7 +744,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     if (status)
     {
-      if (processSinglePayload(payload_data, state->EasyHandle, &headers_list))
+      if (processSinglePayload(payload_data, state->EasyHandle, &headers_list, buffer))
       {
         single_payload = true;
       }

@@ -288,7 +288,11 @@ public:
    */
   virtual bool createDouble(Item_t& result, const xqp_double& value ) = 0;
 
-  virtual bool createDuration(Item_t& result, xqp_duration& value ) = 0;
+  virtual bool createDuration(Item_t& result, xqp_duration* value ) = 0;
+
+  virtual bool createYearMonthDuration(Item_t& result, xqp_yearMonthDuration* value ) = 0;
+
+  virtual bool createDayTimeDuration(Item_t& result, xqp_dayTimeDuration* value ) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#duration]

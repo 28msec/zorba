@@ -22,10 +22,7 @@
 
 namespace zorba
 {
-  
-class DateTime;
 
-  
 class InvalidTimezoneException : public std::exception
 {
 };
@@ -270,9 +267,6 @@ public:
    *  Creates a new DateTime object from the given one, adjusting it to the newly 
    *  given facet. Useful for casting. Will always return 0.
    */
-  //int 
-  //createWithNewFacet(FACET_TYPE new_facet, DateTime*& dt);
-
   int 
   createWithNewFacet(FACET_TYPE new_facet, DateTime& dt) const;
 

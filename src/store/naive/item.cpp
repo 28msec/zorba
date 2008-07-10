@@ -223,29 +223,29 @@ const xqp_double& Item::getDoubleValue() const
 
 /** Accessor for xs:duration
  */
-xqp_duration Item::getDurationValue() const
+const xqp_duration& Item::getDurationValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_duration();
+  return *(new xqp_duration);
 }
 
 /* Accessor for xs:dayTimeDuration
   */
-xqp_dayTimeDuration Item::getDayTimeDurationValue() const
+const xqp_dayTimeDuration& Item::getDayTimeDurationValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_dayTimeDuration();
+  return *(new xqp_dayTimeDuration);
 }
 
 /*Accessor for xs:yearMonthDuration
   */
-YearMonthDuration_t Item::getYearMonthDurationValue() const
+const xqp_yearMonthDuration& Item::getYearMonthDurationValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_yearMonthDuration();
+  return *(new xqp_yearMonthDuration);
 }
 
 /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS

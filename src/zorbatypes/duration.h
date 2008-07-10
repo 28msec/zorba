@@ -27,12 +27,24 @@
 
 namespace zorba
 {
-  class DurationBase;
-  typedef rchandle<DurationBase> DurationBase_t;
+
+class DurationBase;
+typedef rchandle<DurationBase> DurationBase_t;
+
 
 class DurationBase : public SimpleRCObject
 {
- public:
+public:
+  typedef enum
+  {
+    DURATION_FACET = 0,
+    YEARMONTHDURATION_FACET = 1,
+    DAYTIMEDURATION_FACET = 2
+  } FACET_TYPE;
+
+public:
+  DurationBase(FACET_TYPE facet_type) : facet(facet_type) { };
+  
   bool 
   operator==(const DurationBase& dt) const;
       
@@ -88,18 +100,24 @@ class DurationBase : public SimpleRCObject
   getSeconds() const = 0;
       
   virtual uint32_t
-    hash() const = 0;
+  hash() const = 0;
+
+  FACET_TYPE getFacet() const { return facet; };
+
+protected:
+  FACET_TYPE facet;
+  
 };
 
 
 class YearMonthDuration : public DurationBase
 {
-  friend class Duration;
+friend class Duration;
 
 public:
-  YearMonthDuration() : months(0) { };
+  YearMonthDuration() : DurationBase(YEARMONTHDURATION_FACET), months(0) { };
 
-  YearMonthDuration(long the_months);
+  YearMonthDuration(long the_months) : DurationBase(YEARMONTHDURATION_FACET), months(the_months) { };
 
   virtual ~YearMonthDuration() { };
 
@@ -179,10 +197,10 @@ public:
 
 class DayTimeDuration : public DurationBase
 {
-  friend class Duration;
+friend class Duration;
 
- public:
-   DayTimeDuration() : is_negative(false), days(0), timeDuration(0, 0, 0, 0) { };
+public:
+  DayTimeDuration() : DurationBase(DAYTIMEDURATION_FACET), is_negative(false), days(0), timeDuration(0, 0, 0, 0) { };
 
   /**
    *  The function will use the absolute values of all long parameters.
@@ -209,7 +227,7 @@ class DayTimeDuration : public DurationBase
   parse_string(const xqpString& s, DayTimeDuration_t& dtd_t, bool dont_check_letter_p = false);
       
   static bool
-  from_Timezone(const TimeZone& t, DurationBase_t& dt);
+  from_Timezone(const TimeZone& t, DayTimeDuration& dt);
 
   bool 
   operator==(const DayTimeDuration& dtd) const;
@@ -296,8 +314,13 @@ class DayTimeDuration : public DurationBase
 
 class Duration : public DurationBase
 {
- public:
+public:
+  Duration() : DurationBase(DURATION_FACET) { };
+  
   virtual ~Duration() { };
+
+  Duration(const YearMonthDuration& ymd, const DayTimeDuration& dtd)
+      : DurationBase(DURATION_FACET), yearMonthDuration(ymd), dayTimeDuration(dtd) { };
 
   /**
    * Constructs a Duration from an YearMonthDuration
@@ -312,6 +335,12 @@ class Duration : public DurationBase
    * @param negate if true, the created Duration's sign will be inverted
    */
   Duration(const DayTimeDuration& dtd, bool negate = false);
+
+  /**
+   * Constructs a Duration from a generic DurationBase 
+   * @param db source DurationBase
+   */
+  Duration(const DurationBase& db);
 
   /**
    * Returns true on success
@@ -390,6 +419,9 @@ class Duration : public DurationBase
       
   virtual uint32_t
   hash() const;
+
+  Duration&
+  operator=(Duration& d);
 
  protected:
   YearMonthDuration yearMonthDuration;

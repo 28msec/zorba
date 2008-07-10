@@ -595,7 +595,6 @@ bool BasicItemFactory::createGYearMonth(
 }
 
 
-
 bool BasicItemFactory::createDouble(
     store::Item_t& result,
     const xqp_double& value )
@@ -607,7 +606,7 @@ bool BasicItemFactory::createDouble(
 
 bool BasicItemFactory::createDuration(
     store::Item_t& result,
-    xqp_duration& value )
+    xqp_duration* value )
 {
   result = new DurationItemNaive(value);
   return true;
@@ -616,20 +615,13 @@ bool BasicItemFactory::createDuration(
 
 bool BasicItemFactory::createDuration (store::Item_t& result,  const xqp_string& value )
 {
-  YearMonthDuration_t ymd_t;
-  DayTimeDuration_t   dtd_t;
+  Duration_t d_t;
+  if (Duration::parse_string(value, d_t))
+  {
+    result = new DurationItemNaive(d_t);
+    return true;
+  }
   
-  if( YearMonthDuration::parse_string(value, ymd_t) ){
-    xqp_duration d = ymd_t;
-    result = new DurationItemNaive(d);
-    return true;
-  }
-  else if( DayTimeDuration::parse_string(value, dtd_t) ){
-    xqp_duration d = ymd_t;
-    result = new DurationItemNaive(d);
-    return true;
-  }
-
   result = NULL;
   return false;
 }
@@ -644,20 +636,23 @@ bool BasicItemFactory::createDuration (
     short   minutes,
     double  seconds)
 {
-  if( years != 0 || months!=0 ){
-    YearMonthDuration_t ymd_t = new YearMonthDuration(years*12 + months);
-    xqp_duration d = ymd_t;
-    result = new DurationItemNaive(d);
-    return true;
-  }
-  else if( days!=0 || hours!=0 || minutes!=0 || seconds!=0 ) {
-    DayTimeDuration_t dtd_t = new DayTimeDuration(days, hours, minutes, seconds);
-    xqp_duration d = dtd_t;
-    result = new DurationItemNaive(d); 
-    return false;
-  }
-  result = NULL;
-  return false;
+  Duration_t d_t = new Duration(YearMonthDuration(years*12 + months), DayTimeDuration(false, days, hours, minutes, seconds));
+  result = new DurationItemNaive(d_t);
+  return true;
+}
+
+
+bool BasicItemFactory::createYearMonthDuration(store::Item_t& result, xqp_yearMonthDuration* value )
+{
+  result = new YearMonthDurationItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createDayTimeDuration(store::Item_t& result, xqp_dayTimeDuration* value )
+{
+  result = new DayTimeDurationItemNaive(value);
+  return true;
 }
 
 
