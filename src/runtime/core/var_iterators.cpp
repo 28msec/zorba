@@ -52,7 +52,7 @@ bool ForVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-void ForVarIterator::bind(store::Item_t value, PlanState& planState)
+void ForVarIterator::bind(store::Item *value, PlanState& planState) const
 {
   ForVarState* state;
   state = StateTraitsImpl<ForVarState>::getState(planState, this->stateOffset);

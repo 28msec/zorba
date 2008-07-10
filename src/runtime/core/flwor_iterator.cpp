@@ -628,7 +628,7 @@ void FLWORIterator::bindGroupBy ( FLWORIterator::group_map_t::iterator lGroupMap
 {
   //Bind grouping vars
   GroupKey* lGroupKey = ( *lGroupMapIter ).first;
-  std::vector<store::Item_t>::const_iterator lGroupKeyIter = lGroupKey->theKey.begin();
+  std::vector<store::Item_t>::iterator lGroupKeyIter = lGroupKey->theKey.begin();
   std::vector<GroupingSpec> lgroupSpecs = theGroupByClause->theGroupingSpecs;
   std::vector<GroupingSpec>::const_iterator lSpecIter = lgroupSpecs.begin();
   while ( lSpecIter != lgroupSpecs.end() )
@@ -852,12 +852,13 @@ bool FLWORIterator::bindVariable (
     ++ ( flworState->varBindingState[varNb] );
 
     std::vector<ForVarIter_t>::const_iterator forIter;
+    std::vector<ForVarIter_t>::const_iterator forEnd = lForLetClause.theForVars.end();
     for (forIter = lForLetClause.theForVars.begin();
-         forIter != lForLetClause.theForVars.end();
+         forIter != forEnd;
          forIter++)
     {
-      ForVarIter_t variable = (*forIter);
-      variable->bind(lItem, planState);
+      const ForVarIter_t& variable = (*forIter);
+      variable->bind(lItem.getp(), planState);
     }
 
     if ( !lForLetClause.thePosVars.empty() )
@@ -867,12 +868,13 @@ bool FLWORIterator::bindVariable (
                        createInteger(posItem, Integer::parseInt(flworState->varBindingState[varNb]));
 
       std::vector<ForVarIter_t>::const_iterator posIter;
+      std::vector<ForVarIter_t>::const_iterator posEnd = lForLetClause.thePosVars.end();
       for (posIter = lForLetClause.thePosVars.begin();
-           posIter != lForLetClause.thePosVars.end();
+           posIter != posEnd;
            posIter++)
       {
-        ForVarIter_t variable = (*posIter);
-        variable->bind(posItem, planState);
+        const ForVarIter_t& variable = (*posIter);
+        variable->bind(posItem.getp(), planState);
       }
     }
     //TODO Pos Bindings
