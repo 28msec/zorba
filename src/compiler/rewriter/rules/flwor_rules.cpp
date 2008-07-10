@@ -81,29 +81,51 @@ static bool is_trivial_expr (expr *e) {
     }
   }
 
-static bool var_in_try_block(var_expr *v, expr *e, bool in_try_block)
+static bool var_in_try_block_or_in_loop(static_context *sctx, var_expr *v, expr *e, bool in_try_block_or_in_loop)
 {
   if (e->get_expr_kind() == trycatch_expr_kind) {
     trycatch_expr *tce = dynamic_cast<trycatch_expr *>(e);
-    if (var_in_try_block(v, &*tce->get_try_expr(), true)) {
+    if (var_in_try_block_or_in_loop(sctx, v, &*tce->get_try_expr(), true)) {
       return true;
     }
     std::vector<trycatch_expr::clauseref_t>::iterator i = tce->begin();
     std::vector<trycatch_expr::clauseref_t>::iterator end = tce->end();
     while(i != end) {
-      if (var_in_try_block(v, &*(*i)->get_catch_expr_h(), in_try_block)) {
+      if (var_in_try_block_or_in_loop(sctx, v, &*(*i)->get_catch_expr_h(), in_try_block_or_in_loop)) {
         return true;
       }
     }
     return false;
+  } else if (e->get_expr_kind() == flwor_expr_kind) {
+    flwor_expr *flwor = static_cast<flwor_expr *>(e);
+    
+		expr_t containing_expr = NULL;
+		for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin ();
+				i != flwor->clause_end (); i++) 
+		{
+			flwor_expr::forletref_t ref = *i;
+			if (count_variable_uses(ref->get_expr (), v, 1) == 1) {
+				containing_expr = ref->get_expr();
+				break;
+			}
+			// never go past a FOR clause
+			if (ref->get_type () == forlet_clause::for_clause
+					&& TypeOps::type_max_cnt (*ref->get_expr ()->return_type (sctx)) >= 2)
+				return true;
+		}
+		if (containing_expr == NULL) {
+			containing_expr = flwor->get_retval();
+		}
+
+		return var_in_try_block_or_in_loop(sctx, v, &*containing_expr, in_try_block_or_in_loop);
   } else if (e == v) {
-    return in_try_block;
+    return in_try_block_or_in_loop;
   }
 
   // Or else navigate down all children
   expr_iterator ei = e->expr_begin();
   while(!ei.done()) {
-    if (var_in_try_block(v, &*(*ei), in_try_block)) {
+    if (var_in_try_block_or_in_loop(sctx, v, &*(*ei), in_try_block_or_in_loop)) {
       return true;
     }
     ++ei;
@@ -137,7 +159,7 @@ static bool safe_to_fold_single_use(var_expr *v, flwor_expr *flwor, static_conte
     containing_expr = flwor->get_retval();
   }
 
-  return !var_in_try_block(v, &*containing_expr, false);
+  return !var_in_try_block_or_in_loop(sctx, v, &*containing_expr, false);
 }
 
 #define WHERE flwor->get_where ()
