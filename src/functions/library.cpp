@@ -21,6 +21,7 @@
 #include "functions/signature.h"
 
 #include "functions/Accessors.h"
+#include "functions/Collections.h"
 #include "functions/Numerics.h"
 #include "functions/QNames.h"
 #include "functions/Sequences.h"
@@ -710,7 +711,7 @@ DECL(sctx, node_by_reference,
 // zorba-rest:get with an URI
 DECL(sctx, rest_get,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
-     GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+     GENV_TYPESYSTEM.STRING_TYPE_ONE,
      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 // zorba-rest:get with an URI and a payload
@@ -732,7 +733,7 @@ DECL(sctx, rest_get,
 // zorba-rest:post with an URI
 DECL(sctx, rest_post,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 // zorba-rest:post with an URI and a payload
@@ -751,6 +752,100 @@ DECL(sctx, rest_post,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 #endif
+
+//begin collection functions
+DECL(sctx, zorba_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+DECL(sctx, zorba_list_collections,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "list-collections"),
+      GENV_TYPESYSTEM.STRING_TYPE_STAR));
+
+DECL(sctx, zorba_create_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "create-collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_create_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "create-collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_delete_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "delete-collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_delete_all_collections,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "delete-all-collections"),
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_node_first,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-node-first"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_node_last,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-node-last"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_node_before,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-node-before"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_node_after,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-node-after"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_node_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-node-at"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_remove_node,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "remove-node"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_remove_node_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "remove-node-at"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_node_count,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "node-count"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
+DECL(sctx, zorba_node_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "node-at"),
+     GENV_TYPESYSTEM.STRING_TYPE_ONE,
+     GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+     GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
+
+DECL(sctx, zorba_export_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "export-collection"),
+     GENV_TYPESYSTEM.STRING_TYPE_ONE,
+     GENV_TYPESYSTEM.STRING_TYPE_ONE,
+     GENV_TYPESYSTEM.NONE_TYPE));
+
+//end collection functions
 
 // begin context functions
 DECL(sctx, ctx_variable,

@@ -21,7 +21,6 @@
 namespace zorba
 {
   class xqpStringStore;
-
   class PlanIterator;
   class SequentialIterator;
   class FlowCtlIterator;
@@ -220,6 +219,22 @@ namespace zorba
   class FnLangIterator;
   class FnCollectionIterator;
   class FnDeepEqualIterator;
+
+  class ZorbaCollectionIterator;
+  class ZorbaListCollectionsIterator;
+  class ZorbaCreateCollectionIterator;
+  class ZorbaDeleteCollectionIterator;
+  class ZorbaDeleteAllCollectionsIterator;
+  class ZorbaInsertNodeFirstIterator;
+  class ZorbaInsertNodeLastIterator;
+  class ZorbaInsertNodeBeforeIterator;
+  class ZorbaInsertNodeAfterIterator;
+  class ZorbaInsertNodeAtIterator;
+  class ZorbaRemoveNodeIterator;
+  class ZorbaRemoveNodeAtIterator;
+  class ZorbaNodeCountIterator;
+  class ZorbaNodeAtIterator;
+  class ZorbaExportCollectionIterator;
 
 #ifdef ZORBA_DEBUGGER
   class FnDebugIterator;
@@ -636,6 +651,22 @@ namespace zorba
     PLAN_ITER_VISITOR(TransformIterator);
 
     PLAN_ITER_VISITOR(FnDeepEqualIterator);
+
+    PLAN_ITER_VISITOR(ZorbaCollectionIterator);
+    PLAN_ITER_VISITOR(ZorbaListCollectionsIterator);
+    PLAN_ITER_VISITOR(ZorbaCreateCollectionIterator);
+    PLAN_ITER_VISITOR(ZorbaDeleteCollectionIterator);
+    PLAN_ITER_VISITOR(ZorbaDeleteAllCollectionsIterator);
+    PLAN_ITER_VISITOR(ZorbaInsertNodeFirstIterator);
+    PLAN_ITER_VISITOR(ZorbaInsertNodeLastIterator);
+    PLAN_ITER_VISITOR(ZorbaInsertNodeBeforeIterator);
+    PLAN_ITER_VISITOR(ZorbaInsertNodeAfterIterator);
+    PLAN_ITER_VISITOR(ZorbaInsertNodeAtIterator);
+    PLAN_ITER_VISITOR(ZorbaRemoveNodeIterator);
+    PLAN_ITER_VISITOR(ZorbaRemoveNodeAtIterator);
+    PLAN_ITER_VISITOR(ZorbaNodeCountIterator);
+    PLAN_ITER_VISITOR(ZorbaNodeAtIterator);
+    PLAN_ITER_VISITOR(ZorbaExportCollectionIterator);
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  

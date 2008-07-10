@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(FUNCTIONS_SRCS
-    Accessors.cpp Sequences.cpp Strings.cpp library.cpp
-    Constructor.cpp ContextFunctions.cpp Numerics.cpp 
-    Boolean.cpp FnContext.cpp QNames.cpp signature.cpp
-    DateTime.cpp Misc.cpp function.cpp arithmetic.cpp Nodes.cpp
-    external_function_adapters.cpp)
+    Accessors.cpp arithmetic.cpp Boolean.cpp Collections.cpp
+    Constructor.cpp ContextFunctions.cpp DateTime.cpp
+    external_function_adapters.cpp FnContext.cpp function.cpp
+    library.cpp Misc.cpp Nodes.cpp Numerics.cpp QNames.cpp
+    Sequences.cpp signature.cpp Strings.cpp)
 
 IF (ZORBA_WITH_REST)
   SET(FUNCTIONS_SRCS ${FUNCTIONS_SRCS} Rest.cpp)

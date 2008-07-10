@@ -18,6 +18,7 @@ SET(RUNTIME_SRCS
     api/plan_wrapper.cpp
     base/plan_iterator.cpp
     booleans/BooleanImpl.cpp
+    collections/CollectionsImpl.cpp
     context/ContextImpl.cpp
     core/arithmetic_impl.cpp
     core/constructors.cpp
@@ -57,6 +58,7 @@ ENDIF (ZORBA_WITH_REST)
 
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS collections)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS context)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS core)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS numerics)

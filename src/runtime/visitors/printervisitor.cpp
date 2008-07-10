@@ -39,6 +39,7 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
+#include "runtime/collections/CollectionsImpl.h"
 #ifdef ZORBA_WITH_REST
 #include "runtime/rest/rest.h"
 #endif
@@ -827,6 +828,22 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(TransformIterator);
 
   PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator);
+
+  PRINTER_VISITOR_DEFINITION(ZorbaCollectionIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaListCollectionsIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaCreateCollectionIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaDeleteCollectionIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaDeleteAllCollectionsIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodeFirstIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodeLastIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodeBeforeIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodeAfterIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodeAtIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaRemoveNodeIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaRemoveNodeAtIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaNodeCountIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaNodeAtIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaExportCollectionIterator);
 
 #ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);
