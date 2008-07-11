@@ -86,9 +86,17 @@ bool QNameItemImpl::equals(
     long timezone,
     XQPCollator* aCollation) const
 {
-  return (this == item);
-  //(theNamespace->byteEqual(*item->getNamespace()) &&
-  //        theLocal->byteEqual(*item->getLocalName())));
+  //return (this == item);
+
+  if (this == item)
+  {
+    return true;
+  }
+  else
+  {
+    return (theNamespace->byteEqual(*item->getNamespace()) &&
+            theLocal->byteEqual(*item->getLocalName()));
+  }
 }
 
 
