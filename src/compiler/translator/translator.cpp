@@ -1777,6 +1777,7 @@ void *begin_visit(const GroupByClause& v)
 
   nodestack.push(0);
 
+  // Set of FOR/LET vars that are not group-by vars
   std::set<std::string> lFVars;;
 
   ForLetClauseList* lForLetList = &*(v.get_flwor()->get_forlet_list());
@@ -1814,6 +1815,8 @@ void *begin_visit(const GroupByClause& v)
     }
   }
 
+  // For each FOR/LET var_expr X that does not appear in the group-by clause,
+  // create a new var_exp ngX and push ngX and X in the node stack
   std::set<std::string>::iterator lIter = lFVars.begin();
   std::set<std::string>::iterator lEnd = lFVars.end();
   for(;lIter!=lEnd;++lIter)
@@ -1852,6 +1855,8 @@ void *begin_visit(const GroupSpec& v)
   if (e == NULL)
     ZORBA_ERROR_PARAM(XPST0008, v.get_var_name(), "");
   push_scope();
+  // Create a new var_expr gX, corresponding to the var X that is referenced
+  // by this group spec. Then push gX and X to the node stack.
   bind_var_and_push(loc, v.get_var_name(), var_expr::groupby_var);
   nodestack.push(rchandle<expr>(e));
   return no_state;

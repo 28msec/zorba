@@ -43,6 +43,7 @@
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
+#include "runtime/core/path.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
@@ -1090,6 +1091,120 @@ bool begin_visit(extension_expr& v)
 }
 
 
+#ifdef PATH_ITERATOR
+
+/*******************************************************************************
+
+********************************************************************************/
+bool begin_visit(relpath_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  //PlanIter_t input = pop_itstack();
+  //ZORBA_ASSERT(input != NULL);
+  //PlanIter_t pathIte(new PathIterator(qloc, input));
+  //itstack.push(pathIte);
+
+  return true;
+}
+
+
+void end_visit(relpath_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool begin_visit(axis_step_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  store::ItemFactory& factory = *(GENV.getStore().getItemFactory());
+  store::Item_t qname;
+
+  PlanIter_t& ite = peek_stack(itstack);
+  PathIterator* pathIte = dynamic_cast<PathIterator*>(ite.getp());
+
+  if (pathIte == NULL)
+  {
+    PlanIter_t inputStep = pop_itstack();
+    pathIte = new PathIterator(qloc, inputStep);
+    itstack.push(pathIte);
+  }
+  //ZORBA_ASSERT(pathIte != NULL);
+
+  rchandle<match_expr> testExpr = v.getTest();
+
+  NodePredicate* prd = new NodePredicate();
+
+  prd->setTestKind(testExpr->getTestKind());
+
+  if (testExpr->getTestKind() == match_name_test)
+  {
+    if (v.getAxis() == axis_kind_attribute)
+      prd->setNodeKind(store::StoreConsts::attributeNode);
+    else
+      prd->setNodeKind(store::StoreConsts::elementNode);
+
+    match_wild_t wildKind = testExpr->getWildKind();
+    prd->setWildKind(wildKind);
+
+    if (wildKind == match_no_wild)
+    {
+      prd->setQName(testExpr->getQName());
+    }
+    else if (wildKind == match_prefix_wild)
+    {
+      factory.createQName(qname, "", "*", testExpr->getWildName().c_str());
+
+      prd->setQName(qname);
+    }
+    else if (wildKind == match_name_wild)
+    {
+      prd->setQName(testExpr->getQName());
+    }
+  }
+  else
+  {
+    prd->setDocTestKind(testExpr->getDocTestKind());
+    prd->setNodeKind(testExpr->getNodeKind());
+    prd->setQName(testExpr->getQName());
+    prd->setType(ccb->m_sctx->get_typemanager()->
+                 create_named_type(testExpr->getTypeName()));
+    prd->setNilledAllowed(testExpr->getNilledAllowed());
+  }
+
+  pathIte->addStep(v.getAxis(), prd);
+
+  return true;
+}
+
+
+void end_visit(axis_step_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+}
+
+
+bool begin_visit(match_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  return true;
+}
+
+
+void end_visit(match_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+}
+
+
+#else
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1231,9 +1346,9 @@ bool begin_visit(match_expr& v)
   {
     match_wild_t wildKind = v.getWildKind();
 
-   axisItep->setTestKind(match_name_test);
+    axisItep->setTestKind(match_name_test);
  
-   if (dynamic_cast<AttributeAxisIterator*>(axisIte.getp()) != NULL)
+    if (dynamic_cast<AttributeAxisIterator*>(axisIte.getp()) != NULL)
       axisItep->setNodeKind(store::StoreConsts::attributeNode);
     else
       axisItep->setNodeKind(store::StoreConsts::elementNode);
@@ -1275,6 +1390,8 @@ void end_visit(match_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
+
+#endif // PATH_ITER
 
 
 /*******************************************************************************
