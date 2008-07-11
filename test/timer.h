@@ -54,9 +54,8 @@ public:
     void resume();
 
     double getClock();
-#ifndef WIN32
     double getTime();
-#endif
+
     // print all information
     std::ostream& print(std::ostream& os);
     bool isRunning();
