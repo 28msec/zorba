@@ -590,7 +590,8 @@ FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 //15.2.3 fn:exactly-one
 bool 
-FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t lNextItem;
   bool firstPresent = false;
   bool nextPresent = false;
@@ -601,11 +602,14 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (firstPresent = consumeNext(result, theChildren[0].getp(), planState))
     nextPresent = consumeNext(lNextItem, theChildren[0].getp(), planState);
 
-  if (firstPresent && !nextPresent) {
+  if (firstPresent && !nextPresent) 
+  {
     if (!raise_err) {
       GENV_ITEMFACTORY->createBoolean (result, true);
     }
-  } else {
+  }
+  else 
+  {
     if (raise_err)
       ZORBA_ERROR_LOC_DESC( FORG0005,
                             loc, "fn:exactly-one called with a sequence containing zero or more than one item.");

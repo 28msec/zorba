@@ -220,9 +220,7 @@ public:
 
   ~AncestorAxisIterator() {}
 
-  //void openImpl(PlanState& planState, uint32_t& offset);
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  //void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor&) const;
 };

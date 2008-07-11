@@ -24,6 +24,7 @@
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/path_iterators.h"
+#include "runtime/core/path.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/fncall_iterator.h"
@@ -89,6 +90,9 @@ namespace zorba {
   // unary iterators
   UNARY_ACCEPT(NodeDistinctIterator);
   UNARY_ACCEPT(NodeSortIterator);
+#ifdef PATH_ITERATOR
+  UNARY_ACCEPT(PathIterator);
+#endif
   UNARY_ACCEPT(SelfAxisIterator);
   UNARY_ACCEPT(AttributeAxisIterator);
   UNARY_ACCEPT(ParentAxisIterator);

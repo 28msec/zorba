@@ -62,7 +62,7 @@ public:
 public:
   xqpString getVarName() const { return theVarName; }
 
-  void bind(store::Item *value, PlanState& planState) const;
+  void bind(store::Item *value, PlanState& planState);
 };
 
 

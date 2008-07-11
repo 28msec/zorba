@@ -284,6 +284,8 @@ AttributeAxisState::reset(PlanState& planState)
 
 bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  store::Item* attr;
+
   AttributeAxisState* state;
   DEFAULT_STACK_INIT(AttributeAxisState, state, planState);
 
@@ -305,10 +307,13 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
     state->theAttributes->init(state->theContextNode);
     state->theAttributes->open();
 
-    while (state->theAttributes->next(result))
+    while ((attr = state->theAttributes->next()) != NULL)
     {
-      if (nameOrKindTest(result, planState))
+      if (nameOrKindTest(attr, planState))
+      {
+        result = attr;
         STACK_PUSH(true, state);
+      }
     }
 
     state->theAttributes->close();
@@ -333,7 +338,8 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0020, loc, "The context item of an axis step is not a node");
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node");
     }
 
     result = state->theContextNode->getParent();
@@ -601,8 +607,7 @@ void ChildAxisState::reset(PlanState& planState)
 
 bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item *temp;
-  store::Item_t child;
+  store::Item* child;
 
   ChildAxisState* state;
   DEFAULT_STACK_INIT(ChildAxisState, state, planState);
@@ -625,10 +630,11 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     state->theChildren->init(state->theContextNode);
     state->theChildren->open();
 
-    while ((temp = state->theChildren->next()) != NULL)
+    while ((child = state->theChildren->next()) != NULL)
     {
-      if (nameOrKindTest(temp, planState)) {
-        result = temp;
+      if (nameOrKindTest(child, planState)) 
+      {
+        result = child;
         STACK_PUSH(true, state);
       }
     }
@@ -695,7 +701,8 @@ void DescendantAxisState::push(store::Item_t& node)
 
 bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t desc;
+  store::Item* child;
+  store::Item_t tmp;
   DescendantAxisState* state;
   DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
 
@@ -719,32 +726,33 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     state->push(state->theContextNode);
     
-    if ((result = state->top()->next()) != NULL)
+    while(true) 
     {
-      while(!state->empty()) 
+      // The next descendant is the next child of the node N that is currently
+      // at the top of the path stack. If N has no children or all of its
+      // children have been processed already, N is removed from the stack
+      // and the process is repeated.
+
+      while ((child = state->top()->next()) == NULL)
       {
-        if (result->getNodeKind() == store::StoreConsts::elementNode)
-        {
-          desc = result;
-          state->push(desc);
-        }
+        state->pop();
+        if (state->empty())
+          break;
+      }
 
-        if (nameOrKindTest(result, planState))
-        {
-          STACK_PUSH(true, state);
-        }
+      if (child == NULL)
+        break;
 
-        // The next descendant is the next child of the node N that is currently
-        // at the top of the path stack. If N has no children or all of its
-        // children have been processed already, N is removed from the stack
-        // and the process is repeated.
+      if (child->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        tmp = child;
+        state->push(tmp);
+      }
 
-        while ((result = state->top()->next()) == NULL)
-        {
-          state->pop();
-          if (state->empty())
-            break;
-        }
+      if (nameOrKindTest(child, planState))
+      {
+        result = child;
+        STACK_PUSH(true, state);
       }
     }
   }

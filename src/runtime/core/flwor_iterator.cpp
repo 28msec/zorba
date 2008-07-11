@@ -105,7 +105,7 @@ void FLWORIterator::ForLetClause::accept ( PlanIterVisitor& v ) const
   switch ( theType )
   {
   case FOR:
-    v.beginVisitFlworForVariable(*theInput, getVarName());
+    v.beginVisitFlworForVariable(*theInput, getVarName(), theForVars);
     v.endVisitFlworForVariable(*theInput);
     break;
   case LET:
@@ -864,8 +864,8 @@ bool FLWORIterator::bindVariable (
     if ( !lForLetClause.thePosVars.empty() )
     {
       store::Item_t posItem;
-      GENV_ITEMFACTORY->
-                       createInteger(posItem, Integer::parseInt(flworState->varBindingState[varNb]));
+      GENV_ITEMFACTORY->createInteger(posItem,
+                                      Integer::parseInt(flworState->varBindingState[varNb]));
 
       std::vector<ForVarIter_t>::const_iterator posIter;
       std::vector<ForVarIter_t>::const_iterator posEnd = lForLetClause.thePosVars.end();
@@ -1121,7 +1121,7 @@ void FLWORIterator::accept ( PlanIterVisitor& v ) const
   std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
   for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
   {
-    iter->accept ( v );
+    iter->accept(v);
   }
 
   if ( whereClause != NULL )

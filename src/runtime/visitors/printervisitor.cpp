@@ -23,6 +23,7 @@
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
+#include "runtime/core/path.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/core/sequencetypes.h"
@@ -259,6 +260,17 @@ public:
   PRINTER_VISITOR_DEFINITION (NodeDistinctIterator)
 
   PRINTER_VISITOR_DEFINITION (NodeSortIterator)
+
+  void beginVisit ( const PathIterator& a ) {
+    thePrinter.startBeginVisit("PathIterator", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void endVisit(const PathIterator& /*a*/) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
 
   void beginVisit ( const SelfAxisIterator& a ) {
     thePrinter.startBeginVisit("SelfAxisIterator", ++theId);
@@ -666,12 +678,27 @@ void endVisitFlworLetVariable(const PlanIterator& /*a*/)
 
 void beginVisitFlworForVariable(
       const PlanIterator& a,
-      const xqpStringStore& varName)
+      const xqpStringStore& varName,
+      const std::vector<ForVarIter_t>& varReferences)
 {
   thePrinter.startBeginVisit("ForVariable", ++theId);
+
 #ifndef NDEBUG
   thePrinter.addAttribute("name", varName.str());
+
+  std::ostringstream str;
+
+  ulong numRefs = varReferences.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str << varReferences[i].getp();
+    if (i < numRefs-1)
+      str << " ";
+  }
+
+  thePrinter.addAttribute("referenced-by", str.str());
 #endif
+
   thePrinter.endBeginVisit(theId);
   a.accept(*this);
 }

@@ -27,6 +27,7 @@ SET(RUNTIME_SRCS
     core/item_iterator.cpp
     core/nodeid_iterators.cpp
     core/path_iterators.cpp
+    core/path.cpp
     core/sequencetypes.cpp
     core/trycatch.cpp
     core/var_iterators.cpp

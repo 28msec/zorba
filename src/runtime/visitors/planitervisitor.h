@@ -16,7 +16,11 @@
 #ifndef ZORBA_PLANITERVISITOR_H
 #define ZORBA_PLANITERVISITOR_H
 
+#include <vector>
+
 #include "common/common.h"
+
+#include "zorbatypes/rchandle.h"
 
 namespace zorba
 {
@@ -50,6 +54,7 @@ namespace zorba
   class SingletonIterator;
   class EmptyIterator;
   class ForVarIterator;
+  typedef rchandle<ForVarIterator> ForVarIter_t;
   class LetVarIterator;
   class EnclosedIterator;
   class IfThenElseIterator;
@@ -70,6 +75,7 @@ namespace zorba
   class DescendantSelfAxisIterator;
   class PrecedingAxisIterator;
   class FollowingAxisIterator;
+  class PathIterator;
   class InstanceOfIterator;
   class TreatIterator;
   class EitherNodesOrAtomicsIterator;
@@ -340,6 +346,8 @@ namespace zorba
 
     PLAN_ITER_VISITOR (NodeSortIterator);
 
+    PLAN_ITER_VISITOR (PathIterator);
+
     PLAN_ITER_VISITOR (SelfAxisIterator);
        
     PLAN_ITER_VISITOR (AttributeAxisIterator);
@@ -544,7 +552,11 @@ namespace zorba
     virtual void beginVisitFlworLetVariable(const PlanIterator&, bool, const xqpStringStore&) = 0;
     virtual void endVisitFlworLetVariable(const PlanIterator&) = 0;
     
-    virtual void beginVisitFlworForVariable(const PlanIterator&, const xqpStringStore&) = 0;
+    virtual void beginVisitFlworForVariable(
+       const PlanIterator&,
+       const xqpStringStore&,
+       const std::vector<ForVarIter_t>&) = 0;
+
     virtual void endVisitFlworForVariable(const PlanIterator&) = 0;
     
     virtual void beginVisitFlworGroupBy() = 0;
