@@ -21,6 +21,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/booleans/compare_types.h"
+#include "types/delegating_typemanager.h"
 #include "types/schema/SchemaValidator.h"
 
 namespace zorba
@@ -56,18 +57,21 @@ namespace zorba
         static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
             PlanState& planState, const PlanIterator* iter, bool isLax);
 
-        static store::Item_t processElement ( SchemaValidator& schemaValidator, store::Item *parent, 
-            const store::Item_t& element);
+        static store::Item_t processElement ( DelegatingTypeManager* delegatingTypeManager, 
+            SchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element);
 
         static void validateAttributes ( SchemaValidator& schemaValidator, store::Iterator_t attributes);
 
-        static void processAttributes( SchemaValidator& schemaValidator, store::Item *parent, 
-            store::Iterator_t attributes);
+        static void processAttributes( DelegatingTypeManager* delegatingTypeManager,
+            SchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t attributes);
 
-        static void processChildren ( SchemaValidator& schemaValidator, store::Item *parent, 
-            store::Iterator_t children);
+        static void processChildren ( DelegatingTypeManager* delegatingTypeManager,
+            SchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t children);
 
         static void processNamespaces ( SchemaValidator& schemaValidator, const store::Item_t& item);
+        
+        static store::Item_t processTextValue (DelegatingTypeManager* delegatingTypeManager, 
+            store::NsBindings bindings, store::Item_t typeQName, xqpStringStore_t& textValue);
     };
 
 }

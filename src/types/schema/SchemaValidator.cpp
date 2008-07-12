@@ -62,7 +62,7 @@ void SchemaValidator::endDoc()
 
 void SchemaValidator::startElem(store::Item_t elemName)
 {   
-    //cout << "   SElem: " << elemName->getLocalName()->c_str() << "\n";
+    //cout << "  sv SElem: " << elemName->getLocalName()->c_str() << "\n";
 
     XMLChArray prefix(elemName->getPrefix()->c_str()); 
     XMLChArray uri(elemName->getNamespace()->c_str());
@@ -72,7 +72,7 @@ void SchemaValidator::startElem(store::Item_t elemName)
 
 void SchemaValidator::endElem(store::Item_t elemName)
 {
-    //cout << "   EElem: " << elemName->getLocalName()->c_str() << "\n";
+    //cout << "  sv EElem: " << elemName->getLocalName()->c_str() << "\n";
 
     XMLChArray prefix(elemName->getPrefix()->c_str()); 
     XMLChArray uri(elemName->getNamespace()->c_str());
@@ -84,7 +84,7 @@ void SchemaValidator::endElem(store::Item_t elemName)
 
 void SchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
 {
-    //cout << "     Attr: " << attrName->getPrefix()->c_str() << ":" << 
+    //cout << "  sv   Attr: " << attrName->getPrefix()->c_str() << ":" << 
     //    attrName->getLocalName()->c_str() << " = '" << textValue->c_str() << "'\n";
 
     XMLChArray prefix(attrName->getPrefix()->c_str()); 
@@ -98,7 +98,7 @@ void SchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
 
 void SchemaValidator::text(xqpStringStore_t textValue)
 {
-    //cout << "     Text: " << textValue->c_str() << "\n";
+    //cout << "  sv   Text: " << textValue->c_str() << "\n";
 
     XMLChArray value(textValue->c_str());
     _schemaValidatorFilter->textEvent(value);

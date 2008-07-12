@@ -22,6 +22,7 @@
 #include "store/api/item.h"
 #include "common/shared_types.h"
 
+
 namespace zorba
 {
 
@@ -29,18 +30,16 @@ class AttributeValidationInfo
 {
 public:
     AttributeValidationInfo(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName, 
-    const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName)
-    : _prefix(prefix), _uri(uri), _localName(localName), _value(value), _typeURI(typeURI), _typeName(typeName)
-    {}
-    
+    const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName);
+        
     virtual ~AttributeValidationInfo(){}
 
-    const XMLCh *_prefix;
-    const XMLCh *_uri;
-    const XMLCh *_localName;
-    const XMLCh *_value;
-    const XMLCh *_typeURI;
-    const XMLCh *_typeName;  
+    xqpStringStore_t _prefix;
+    xqpStringStore_t _uri;
+    xqpStringStore_t _localName;
+    xqpStringStore_t _value;
+    xqpStringStore_t _typeURI;
+    xqpStringStore_t _typeName;  
 };
 
 class TextValidationInfo

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "types/schema/SchemaValidatorFilter.h"
+#include "types/schema/StrX.h"
 
 #include <xercesc/internal/XMLReader.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
@@ -36,7 +37,8 @@ namespace zorba
 
 const XMLCh* emptyToNull(const XMLCh * chars)
 {
-    return chars; //XMLString::equals("", chars) ? NULL : chars;
+    //return chars; 
+    return XMLString::stringLen(chars) == 0 ? NULL : chars;
 }
 
 const XMLCh SchemaValidatorFilter::DT_UNTYPEDATOMIC[] =
@@ -351,9 +353,11 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
                     if(!skipThisOne)
                     {
                         SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->getGrammar(getURIText(uriId));
-                        if (sGrammar && sGrammar->getGrammarType() == Grammar::SchemaGrammarType) {
+                        if (sGrammar && sGrammar->getGrammarType() == Grammar::SchemaGrammarType) 
+                        {
                             RefHashTableOf<XMLAttDef>* attRegistry = sGrammar->getAttributeDeclRegistry();
-                            if (attRegistry) {
+                            if (attRegistry) 
+                            {
                                 attDef = attRegistry->get(localname);
                             }
                         }
@@ -434,7 +438,8 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
             }
         }
 
-        if(fValidate && attrValid) {
+        if(fValidate && attrValid) 
+        {
           if(attrValidator)
             next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value,
                                   emptyToNull(attrValidator->getTypeUri()), attrValidator->getTypeLocalName());
@@ -613,7 +618,8 @@ void SchemaValidatorFilter::attributeEvent(const XMLCh *prefix, const XMLCh *uri
         curAttr = new (fMemoryManager) XMLAttr(uriId, localname, nullToZero(prefix), nullToZero(value), XMLAttDef::CData, true, fMemoryManager);
         fAttrList->addElement(curAttr);
     }
-    else {
+    else 
+    {
         curAttr = fAttrList->elementAt(_attrCount);
         curAttr->set(uriId, localname, nullToZero(prefix), nullToZero(value));
     }
@@ -631,7 +637,11 @@ void SchemaValidatorFilter::attributeEvent(const XMLCh *prefix, const XMLCh *uri
         {
             ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setNillable(true);
         }
-        --_attrCount;
+        --_attrCount;  // remove att from the list but still needs to be reported
+        
+        //std::cout << "   svf attrEvent: " << StrX(localname) << "  T: " << StrX(typeName) << "\n";
+        next_->attributeEvent(emptyToNull(prefix), emptyToNull(uri), localname, value,
+            emptyToNull(typeURI), typeName);
     }
 }
 
@@ -788,7 +798,8 @@ unsigned int SchemaValidatorFilter::resolveQName(const XMLCh *const qName, XMLBu
         bool unknown = false;
         return fElemStack.mapPrefixToURI(XMLUni::fgZeroLenString, (ElemStack::MapModes) mode, unknown);
     }
-    else {
+    else 
+    {
         prefixBuf.set(qName, prefixColonPos);
 
         if( XMLString::equals(prefixBuf.getRawBuffer(), XMLUni::fgXMLNSString)) 
@@ -1032,10 +1043,12 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(unsigned int uriId, uns
         }
     }
 
-    if(!elemDecl) {
+    if(!elemDecl) 
+    {
         // still not found, fault this in and issue error later
         // switch back to original grammar first (if necessary)
-        if(orgGrammarUri != uriId) {
+        if(orgGrammarUri != uriId) 
+        {
             switchGrammar(original_uriStr);
         }
         elemDecl = new (fMemoryManager) SchemaElementDecl(_prefix.getRawBuffer(), 
