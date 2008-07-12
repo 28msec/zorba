@@ -114,7 +114,6 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
   {
     lFile->close();
   }
-  handle_cmd();
 }
 
 void CommandLineEventHandler::suspend( int aSignum )
@@ -149,6 +148,12 @@ void CommandLineEventHandler::resumed()
 void CommandLineEventHandler::terminated()
 {
   theOutput << "End of query execution" << std::endl;
+  handle_cmd();
+}
+
+void CommandLineEventHandler::evaluated( String &anExpr, String &aResult )
+{
+  theOutput << aResult << std::endl;
   handle_cmd();
 }
 
@@ -197,6 +202,12 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
 {
   if( ! theInput.eof() )
   {
+    if ( aCommand == "" )
+    {
+      handle_cmd();
+      return;
+    }
+    
     if ( aCommand.at(0) != '%' )
     {
       std::vector< std::string >::iterator lEnd;
@@ -206,6 +217,7 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
     }
 
 	  std::vector<std::string> lArgs = get_args( aCommand );
+    
     std::string lCommand = lArgs.at( 0 ); 
     
     if ( lCommand == "q" || lCommand == "quit" )
@@ -282,7 +294,6 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
       if ( theClient->isQuerySuspended() )
       {
         list();
-        return;
       } else {
         theOutput << "The query is not suspended." << std::endl;
       }
@@ -290,6 +301,20 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
         version();
     } else if ( lCommand == "hi" || lCommand == "history" ) {
         history();
+    } else if ( lCommand == "p" || lCommand == "print" ||
+                lCommand == "e" || lCommand == "eval" ) {
+        if ( lArgs.size() < 2 )
+        {
+          theOutput << "Invalid syntax." << std::endl;
+          theOutput << "(e|eval) <expr>" << std::endl;
+          handle_cmd();
+        } else {
+          String lExpr( lArgs.at(1).c_str() );  
+          theClient->eval( lExpr );
+        }
+        return;
+        //theOutput << theClient->eval() << std::endl;
+        //handle_cmd();
     } else if( lCommand.at( 0 ) == '%' ) {
       unsigned int lCommandNo = atoi( lCommand.substr( 1 ).c_str() );
       handle_cmd( lCommandNo - 1 ); 
@@ -307,6 +332,7 @@ void CommandLineEventHandler::help()
   theOutput << "history  -- Print the command history." << std::endl;
   theOutput << "%<num>   -- Execute a previous command." << std::endl;
   theOutput << "run      -- Run the query." << std::endl;
+  theOutput << "eval     -- Evaluate an xquery expression and print its result." << std::endl;
   theOutput << "break    -- Set a breakpoint at the specified file and line." << std::endl;
   theOutput << "continue -- Resume the query execution." << std::endl;
   theOutput << "next     -- Step over the next instruction." << std::endl;

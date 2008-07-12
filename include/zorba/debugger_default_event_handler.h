@@ -36,6 +36,8 @@ namespace zorba{
       void resumed(){}
 
       void terminated(){}
+      
+      void evaluated( String &anExpr, String &aResult ){};
   };
 }//end of namespace
 #endif

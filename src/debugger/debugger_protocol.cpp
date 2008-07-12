@@ -242,7 +242,7 @@ bool AbstractCommandMessage::isEngineEventCommand() const
 {
   return getCommandSet() == ENGINE_EVENT &&
           ( getCommand() == STARTED || getCommand() == TERMINATED ||
-            getCommand() == SUSPENDED || getCommand() == RESUMED );
+            getCommand() == SUSPENDED || getCommand() == RESUMED  || getCommand() == EVALUATED );
 }
 
 bool AbstractCommandMessage::isStaticCommand() const
@@ -258,7 +258,7 @@ bool AbstractCommandMessage::isDynamicCommand() const
     ( getCommand() == DATA || getCommand() == VARIABLES ||
       getCommand() == FOCUS || getCommand() == TIME || 
       getCommand() == DOCUMENTS || getCommand() == COLLECTION ||
-      getCommand() == COLLECTIONS );
+      getCommand() == COLLECTIONS || getCommand() == EVAL );
 }
 
 RunMessage::RunMessage():
@@ -583,6 +583,145 @@ ResumedEvent::ResumedEvent( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength ){}
 
 ResumedEvent::~ResumedEvent(){}
+
+/**
+ * Evaluated Engine Event
+ */
+EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString aResult ):
+  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theResult( aResult )
+{
+    unsigned int l = MESSAGE_SIZE + getData().length();
+    setLength( l );
+    checkIntegrity();
+}
+
+EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
+  AbstractCommandMessage( aMessage, aLength )
+{
+  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
+  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
+  
+    if ( lData.type() == typeid( json::object ) )
+    {
+      json::object const & obj = boost::any_cast< json::object >( lData );
+      for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
+      {
+        std::string attrName = (*it).first;
+        if ( attrName == "expr" ) {
+          theExpr = boost::any_cast< std::string >( (*it).second );
+        } else if ( attrName == "result" ) {
+          theResult = boost::any_cast< std::string >( (*it).second );
+        }
+      }
+    } else {
+      throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
+    }
+  checkIntegrity();
+}
+
+EvaluatedEvent::~EvaluatedEvent(){}
+
+xqpString EvaluatedEvent::getExpr() const
+{
+  return theExpr;
+}
+
+xqpString EvaluatedEvent::getResult() const
+{
+  return theResult;
+}
+
+Byte * EvaluatedEvent::serialize( Length &aLength ) const
+{
+  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  xqpString lJSONString = getData();
+  Byte * lMsg = new Byte[ getLength() ];
+ // memset(lMsg, '\0', getLength());
+  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  const char * s = lJSONString.c_str();
+  unsigned int l = lJSONString.length();
+  //memcpy( lMsg + MESSAGE_SIZE, s, l - 1 );
+  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  //delete[] lHeader;
+  aLength = getLength();
+  return lMsg; 
+}
+
+xqpString EvaluatedEvent::getData() const
+{
+  std::stringstream lJSONString;
+  lJSONString << "{";
+  lJSONString << "\"expr\":\"" << theExpr << "\",";
+  lJSONString << "\"result\":\"" << theResult << "\"";
+  lJSONString << "}";
+  xqpString lReturnString( lJSONString.str() );
+  return lReturnString;
+}
+
+/**
+ * Eval Message
+ */
+EvalMessage::EvalMessage( xqpString anExpr ):
+  AbstractCommandMessage( DYNAMIC, EVAL ), theExpr( anExpr )
+{
+    unsigned int l = MESSAGE_SIZE + getData().length();
+    setLength( l );
+    checkIntegrity();
+}
+
+EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
+  AbstractCommandMessage( aMessage, aLength )
+{
+  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
+  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
+  
+  if ( lData.type() == typeid( json::object ) )
+  {
+    json::object const & obj = boost::any_cast< json::object >( lData );
+    for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
+    {
+      std::string attrName = (*it).first;
+      if ( attrName == "expr" ) {
+        theExpr = boost::any_cast< std::string >( (*it).second );
+      }
+    }
+   } else {
+    throw MessageFormatException("Invalid JSON format for Eval message.");
+  }
+
+  checkIntegrity();
+}
+
+EvalMessage::~EvalMessage(){}
+
+xqpString EvalMessage::getData() const
+{
+  std::stringstream lJSONString;
+  lJSONString << "{";
+  lJSONString << "\"expr\":\"" << theExpr << "\"";
+  lJSONString << "}";
+  xqpString lReturnString( lJSONString.str() );
+  return lReturnString;
+}
+
+Byte * EvalMessage::serialize( Length & aLength ) const
+{
+  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  xqpString lJSONString = getData();
+  Byte * lMsg = new Byte[ getLength() ];
+  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  const char * s = lJSONString.c_str();
+  unsigned int l = lJSONString.length();
+  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  delete[] lHeader;
+  aLength = getLength();
+  return lMsg; 
+}
+
+xqpString EvalMessage::getExpr() const
+{
+  return theExpr;
+}
 
 /**
  * Variable Message

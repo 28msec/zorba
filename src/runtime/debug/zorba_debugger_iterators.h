@@ -21,8 +21,9 @@
 #include <map>
 #include <boost/thread/mutex.hpp>
 
+#include "common/shared_types.h"
 #include "runtime/base/narybase.h"
-
+#include "types/typeimpl.h"
 #include "compiler/parser/location.hh"
 
 namespace zorba {
@@ -34,12 +35,14 @@ class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorSta
 protected:
   ZorbaDebuggerImpl *  theDebugger;
   const static_context * theStaticContext;
+  checked_vector<PlanIter_t>    theVariables;
+  checked_vector<store::Item_t> theVariableNames;
+  checked_vector<xqtref_t>      theVariableTypes;
 
 public:
-  static std::map< uint64_t, PlanIter_t> theVariables;
-  
   FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args,
-                   const static_context * aStaticContext );
+                   const static_context * aStaticContext, checked_vector<PlanIter_t> &variables,
+                   checked_vector<store::Item_t> &variableNames, checked_vector<xqtref_t> &variableTypes);
 
   virtual ~FnDebugIterator();
 

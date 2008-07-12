@@ -60,13 +60,16 @@ namespace zorba{
       idle() = 0;
 
       virtual void
-      suspended( QueryLocation & aLocation, SuspendedBy aCause ) = 0;
+      suspended( QueryLocation &aLocation, SuspendedBy aCause ) = 0;
 
       virtual void
       resumed() = 0;
 
       virtual void
       terminated() = 0;
+
+      virtual void
+      evaluated( String &anExpr, String &aResult ) = 0;
   };
 }//end of namespace
 #endif

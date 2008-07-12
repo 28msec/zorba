@@ -86,6 +86,10 @@ public:
   {}
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  static PlanIter_t compile(CompilerCB *ccb, xqp_string query, 
+                            checked_vector<store::Item_t> varnames,
+                            checked_vector<xqtref_t> vartypes); 
 };
 
 }

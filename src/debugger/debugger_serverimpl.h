@@ -25,6 +25,7 @@
 
 #include <zorba/debugger_server.h>
 
+#include "runtime/base/plan_iterator.h"
 #include "debugger/debugger_common.h"
 #include "runtime/debug/zorba_debugger_iterators.h"
 
@@ -80,6 +81,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
       theEventSocket(0), 
       theStatus( QUERY_IDLE  ),
       theFileName(""),
+      thePlanState(0),
       theRuntimeThread(0){}
 
     Zorba* theZorba;
@@ -100,6 +102,12 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     QueryLoc theLocation;
 
+    PlanState * thePlanState;
+
+    checked_vector<PlanIter_t>    theVariables;
+    checked_vector<store::Item_t> theVariableNames;
+    checked_vector<xqtref_t>      theVariableTypes;
+
     std::vector<QueryLoc> theBreakpoints;
 
     boost::thread* theRuntimeThread;
@@ -110,9 +118,10 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     friend bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState &  planState ) const;
 
-    friend FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
-                                             std::vector<PlanIter_t>& args,
-                                             const static_context * aStaticContext );
+    friend FnDebugIterator::FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args,
+                   const static_context * aStaticContext, checked_vector<PlanIter_t> &variables,
+                   checked_vector<store::Item_t> &variableNames, checked_vector<xqtref_t> &variableTypes);
+
 
     bool hasToSuspend();
     
@@ -150,22 +159,9 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     void clearBreakpoint( String & aFileName, unsigned int aLineNo );
 
-    //void processMessage( StepExecutionMessage * );
+    void eval( xqpString anExpr );
 
-    //void executeQuery( std::string aQuery );
-
-/*    ZorbaDebuggerReplyPacket processCommand( const ZorbaDebuggerCommandPacket aPacket );
-Select: All, None, Read, Unread, Starred, 
-    ZorbaDebuggerReplyPacket processExecutionCommand( const ZorbaDebuggerCommandPacket aPacket );
-
-    ZorbaDebuggerReplyPacket processBreakpointCommand( const ZorbaDebuggerCommandPacket aPacket );
-
-    ZorbaDebuggerReplyPacket processStaticCommand( const ZorbaDebuggerCommandPacket aPacket );
-
-    ZorbaDebuggerReplyPacket processDynamicCommand( const ZorbaDebuggerCommandPacket aPacket );
-
-    int step( int type );*/
-
+    xqpString fetchValue( const QueryLoc& loc, xqpString anExpr, PlanState& planState );
 };
 }//end of namespace xqp
 #endif

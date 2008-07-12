@@ -57,7 +57,6 @@
 #include "functions/function.h"
 
 #ifdef ZORBA_DEBUGGER
-#include <map>
 #include <zorba/debugger_server.h>
 #include "runtime/debug/zorba_debugger_iterators.h"
 #endif
@@ -149,6 +148,11 @@ protected:
 
   CompilerCB                           * ccb;
 
+#ifdef ZORBA_DEBUGGER
+  checked_vector<PlanIter_t>    theVariables;
+  checked_vector<store::Item_t> theVariableNames;
+  checked_vector<xqtref_t>      theVariableTypes;
+#endif
 #define LOOKUP_OP1( local ) static_cast<function *> (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
 
 public:
@@ -215,7 +219,8 @@ void end_visit(debugger_expr& v)
   const static_context * s_ctx = v.get_static_context();
   if( true || ZorbaDebugger::getInstance()->isEnabled() )
   {
-    itstack.push(new FnDebugIterator(qloc, argv, s_ctx));
+    itstack.push(new FnDebugIterator(qloc, argv, s_ctx,
+                                     theVariables, theVariableNames, theVariableTypes ));
   } else {
     //TODO...
   }
@@ -269,10 +274,13 @@ void end_visit(var_expr& v)
             loc,
             (void *) &v);
     map->push_back (v_p);
-#ifdef ZORBA_DEBUGGER
-    FnDebugIterator::theVariables.insert(pair<uint64_t, PlanIter_t>((uint64_t) &v, new ForVarIterator(v.get_varname()->getLocalName(), loc, (void *) &v)));
-#endif
     itstack.push(v_p);
+#ifdef ZORBA_DEBUGGER
+    theVariables.push_back(v_p);
+    theVariableNames.push_back(v.get_varname());
+    //theVariableKeys.push_back(v.var_key);
+    theVariableTypes.push_back(v.get_type());
+#endif
     break;
   }
 

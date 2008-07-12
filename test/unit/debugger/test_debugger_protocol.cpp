@@ -41,6 +41,8 @@ int test_debugger_protocol( int argc, char* argv[] )
   test->testClearMessage();
   test->testSetMessage();
   test->testVariableMessage();
+  test->testEvalMessage();
+  test->testEvaluatedEvent();
   delete test;
   return 0;
 }
@@ -308,6 +310,8 @@ void TestDebuggerSerialization::testRunMessage()
 
   void TestDebuggerSerialization::testVariableMessage()
   {
+    std::cerr << "Test variable message" << std::endl;
+   
     simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
     Zorba * lZorba = Zorba::getInstance( lStore );
     ItemFactory * lFactory = lZorba->getItemFactory();
@@ -315,6 +319,22 @@ void TestDebuggerSerialization::testRunMessage()
     Item lItem = lFactory->createInteger(4);
     VariableMessage msg( lStore, String("var"), lItem );
     test_packet< VariableMessage >( &msg );
+  }
+
+  void TestDebuggerSerialization::testEvalMessage()
+  {
+    std::cerr << "Test eval message" << std::endl;
+    
+    EvalMessage msg( "$i/foo" );
+    test_packet< EvalMessage >( &msg );
+  }
+
+  void TestDebuggerSerialization::testEvaluatedEvent()
+  {
+    std::cerr << "Test evaluated event" << std::endl;
+    
+    EvaluatedEvent msg( "$i", "4" );
+    test_packet< EvaluatedEvent >( &msg );
   }
 }
 

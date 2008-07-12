@@ -73,6 +73,7 @@ const Command STARTED    = 0x01;
 const Command TERMINATED = 0x02;
 const Command SUSPENDED  = 0x03;
 const Command RESUMED    = 0x04;
+const Command EVALUATED  = 0x05;
 
 /* Static Commands */
 const Command OPTIONS  = 0x01;
@@ -87,6 +88,7 @@ const Command TIME        = 0x04;
 const Command DOCUMENTS   = 0x05;
 const Command COLLECTIONS = 0x06;
 const Command COLLECTION  = 0x07;
+const Command EVAL        = 0x08;
 
 /* Error codes */
 const ErrorCode DEBUGGER_NO_ERROR                      = 0;
@@ -510,9 +512,7 @@ class SuspendedEvent: public AbstractCommandMessage
 {
   protected:
     QueryLoc theLocation;
-
     SuspensionCause theCause; 
-
     std::string getData() const;
 
   public:
@@ -534,13 +534,58 @@ class SuspendedEvent: public AbstractCommandMessage
  *
  */
 class ResumedEvent: public AbstractCommandMessage
-{
+{ 
   public:
     ResumedEvent();
     
     ResumedEvent( Byte * aMessage, const unsigned int aLength ); 
    
     virtual ~ResumedEvent();
+};
+
+/**
+ *
+ */
+class EvaluatedEvent: public AbstractCommandMessage
+{
+  protected:
+    xqpString theExpr;
+    xqpString theResult;
+    xqpString getData() const;
+ 
+  public:
+    EvaluatedEvent( xqpString anExpr, xqpString aResult );
+
+    EvaluatedEvent( Byte * aMessage, const unsigned int aLength );
+
+    virtual ~EvaluatedEvent();
+
+    virtual Byte * serialize( Length & aLength ) const;
+    
+    xqpString getExpr() const;
+
+    xqpString getResult() const;
+};
+
+/**
+ *
+ */
+class EvalMessage: public AbstractCommandMessage
+{
+  protected:
+    xqpString theExpr;
+    xqpString getData() const;
+
+  public:
+    EvalMessage( xqpString anExpr );
+
+    EvalMessage( Byte * aMessage, const unsigned int aLength );
+
+    virtual ~EvalMessage();
+
+    virtual Byte * serialize( Length & aLength ) const;
+
+    xqpString getExpr() const;
 };
 
 /**

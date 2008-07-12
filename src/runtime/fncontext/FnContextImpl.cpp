@@ -74,7 +74,7 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 }
 
 
-static PlanIter_t compile (CompilerCB *ccb, xqp_string query, 
+PlanIter_t EvalIterator::compile (CompilerCB *ccb, xqp_string query, 
                            checked_vector<store::Item_t> varnames,
                            checked_vector<xqtref_t> vartypes) 
 {

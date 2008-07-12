@@ -17,53 +17,43 @@
 #include "runtime/debug/zorba_debugger_iterators.h"
 
 #include <iostream>
+#include <sstream>
 
-#include "context/static_context.h"
 #include "debugger/debugger_serverimpl.h"
 
 using namespace std;
 
 namespace zorba {
-
-  std::map< uint64_t, PlanIter_t > FnDebugIterator::theVariables;
-
-  FnDebugIterator::FnDebugIterator(const QueryLoc& loc, std::vector<PlanIter_t>& args,
-                                  const static_context * aStaticContext ) 
+FnDebugIterator::FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args,
+                                  const static_context * aStaticContext,
+                                  checked_vector<PlanIter_t> &variables,
+                                  checked_vector<store::Item_t> &variableNames,
+                                  checked_vector<xqtref_t> &variableTypes ) 
     : NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, args),
-    theDebugger(0), theStaticContext( aStaticContext )
+    theDebugger(0), theStaticContext( aStaticContext ), theVariables( variables ),
+    theVariableNames( variableNames ), theVariableTypes( variableTypes )
   {}
 
-  FnDebugIterator::~FnDebugIterator()
-  {
-  }
+  FnDebugIterator::~FnDebugIterator(){}
 
   bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState& planState ) const
   {
-
     PlanIteratorState * state;
 
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
     theDebugger->theLocation = loc;
-    
+    theDebugger->thePlanState = &planState;
+    theDebugger->theVariables = theVariables;
+    theDebugger->theVariableNames = theVariableNames;
+    theDebugger->theVariableTypes = theVariableTypes;
+
     while ( consumeNext( result, theChildren[0], planState ) ) {
-      
       if ( theDebugger->hasToSuspend() )
       {
-            //uint64_t lAdrr = theVariables[(uint64_t)lVar];
-            //PlanIter_t lIterator(0);
-            //lIterator = lAdrr;
-            //PlanIter_t lIterator = reinterpret_cast<PlanIter_t>(*lAdrr);
-            //if(lIterator != 0)
-            //{
-            //execute the iterator and serialize its result
-           //it->open(planS);
-           // it->close(planState);
-
         boost::mutex::scoped_lock lock( theDebugger->theRuntimeMutex );
         theDebugger->theRuntimeSuspendedCV.wait( lock );
       }
-
       STACK_PUSH(true, state);
     }
     STACK_END(state);
@@ -84,6 +74,6 @@ namespace zorba {
       ( *iter )->accept ( v );
     }
     v.endVisit(*this);
-  }  
+  }
 } /* namespace zorba */
 

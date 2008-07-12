@@ -86,5 +86,7 @@ class CommandLineEventHandler: public DebuggerEventHandler
     void resumed();
 
     void terminated();
+
+    void evaluated( String &anExpr, String &aResult );
 };
 #endif

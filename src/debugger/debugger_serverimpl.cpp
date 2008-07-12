@@ -25,14 +25,24 @@
 #include <windows.h>
 #endif
 
-#include  "debugger/debugger_serverimpl.h"
-
-#include "api/unmarshaller.h"
-#include "zorbatypes/xqpstring.h"
-
+#include "debugger/debugger_serverimpl.h"
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
 
+#include "runtime/fncontext/FnContextImpl.h"
+
+#include "context/static_context.h"
+
+#include "runtime/core/item_iterator.h"
+#include "runtime/api/runtimecb.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/util/iterator_impl.h"
+
+
+#include "api/serialization/serializer.h"
+#include "api/unmarshaller.h"
+
+#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/numconversions.h"
 
 boost::mutex io_mutex;
@@ -161,6 +171,9 @@ void ZorbaDebuggerImpl::sendEvent( AbstractCommandMessage * aMessage )
         case RESUMED:
           std::cerr << "resumed" << std::endl;
           break;
+        case EVALUATED:
+          std::cerr << "evaluated" << std::endl;
+          break;
       }
 #endif
       theEventSocket->send( lMessage, length );
@@ -226,7 +239,7 @@ void ZorbaDebuggerImpl::runQuery()
   XQuery_t lQuery = theZorba->createQuery();
   lQuery->setFileName( theFileName );
   Zorba_CompilerHints lCompilerHints;
-  lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O0;
+  lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O1;
   if( lFile != 0 )
   {
     lQuery->compile( *lFile, lCompilerHints );
@@ -373,6 +386,70 @@ void ZorbaDebuggerImpl::quit()
   setStatus( QUERY_QUITED );
 }
 
+void ZorbaDebuggerImpl::eval( xqpString anExpr )
+{
+  xqpString lResult = fetchValue( theLocation, anExpr, *thePlanState );
+  EvaluatedEvent lMsg( anExpr, lResult ); 
+  sendEvent( &lMsg );
+}
+
+xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, PlanState& planState)
+  {
+    std::stringstream lOutputStream;
+    
+    PlanWrapperHolder eval_plan;
+    std::auto_ptr< CompilerCB > ccb;
+    std::auto_ptr< dynamic_context > dctx;
+
+    checked_vector< std::string > var_keys;
+ 
+    ccb.reset( new CompilerCB ( *planState.theCompilerCB ) );
+    ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
+
+    try
+    {
+      dctx.reset( new dynamic_context( planState.dctx() ) );
+      eval_plan.reset(
+        new PlanWrapper (
+          EvalIterator::compile ( ccb.get(), anExpr, theVariableNames, theVariableTypes ),
+          ccb.get(),
+          dctx.get(),
+          planState.theStackDepth + 1 )
+        );
+      eval_plan->checkDepth( loc );
+   
+      //for (unsigned i = 0; i < theVariables.size (); i++) {
+        //const PlanIterator *lPlanIter = theVariables[i].getp();
+        //store::Iterator_t lIter = new PlanIteratorWrapper(&*lPlanIter, *thePlanState);
+        // TODO: is saving an open iterator efficient?
+        // Then again if we close theChildren [1] here,
+        // we won't be able to re-open it later via the PlanIteratorWrapper
+        //std::cerr << "varname:" << dynamic_context::var_key(ccb->m_sctx->lookup_var(theVariableNames[i].getp())) << std::endl; 
+        //dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVariableNames[i].getp())), lIter);
+      //}
+
+      serializer lSerializer(0);
+      lSerializer.set_parameter("method", "xml");
+      lSerializer.set_parameter("indent", "no");
+      lSerializer.set_parameter("omit-xml-declaration", "yes");
+
+      //eval_plan->open();
+      lSerializer.serialize( eval_plan.get(), lOutputStream );
+    } catch ( error::ZorbaError& e ) {
+      lOutputStream << "Error, can't evaluate: " << anExpr; 
+    }
+    
+    if ( eval_plan.get() != 0 )
+    {
+      eval_plan->close();
+    }
+  
+    xqpString lOutput( lOutputStream.str() ); 
+    return lOutput;
+  }
+
+
+
 void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
 {
   switch( aMessage->getCommandSet() )
@@ -437,7 +514,7 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
 #endif
           break;
         }
-        default: throw InvalidCommandException("Internal Error. Command not implemented.");
+        default: throw InvalidCommandException("Internal Error. Command not implemented for execution command set .");
     }
       break;
     case BREAKPOINTS:
@@ -471,13 +548,32 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
           break;
           //TODO: unimplemented logic...
         }
-        default: throw InvalidCommandException("Internal Error. Command not implemented.");
+        default: throw InvalidCommandException("Internal Error. Command not implemented for breakpoints command set.");
       }
     }
       break;
     case ENGINE_EVENT:
     case STATIC:
     case DYNAMIC:
+    {
+      switch ( aMessage->getCommand() )
+      {
+        case EVAL:
+        {
+          EvalMessage * lMessage;
+#ifndef NDEBUG
+          lMessage = dynamic_cast< EvalMessage * > ( aMessage );
+          assert( lMessage );
+#else
+          lMessage = static_cast< EvalMessage * > ( aMessage );
+#endif
+          eval( lMessage->getExpr() );
+          break;
+        }
+        default: throw InvalidCommandException("Internal Error. Command not implemented for dynamic command set.");
+      }
+    }
+    break;
     default:
       throw InvalidCommandException("Internal Error. CommandSet not implemented.");
   }

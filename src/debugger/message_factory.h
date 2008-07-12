@@ -122,6 +122,8 @@ class MessageFactory
               return new SuspendedEvent( aMessage, aLength );
             case RESUMED:
               return new ResumedEvent( aMessage, aLength );
+            case EVALUATED:
+              return new EvaluatedEvent( aMessage, aLength );
           }
         }
         case STATIC:
@@ -134,6 +136,8 @@ class MessageFactory
           {
             case VARIABLES:
               return new VariableMessage( aMessage, aLength );
+            case EVAL:
+              return new EvalMessage( aMessage, aLength );
           }
         }
         default:

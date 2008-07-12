@@ -95,16 +95,17 @@ namespace zorba{
     
     while( theExecutionStatus != QUERY_QUITED )
     { 
-      AbstractMessage * lMessage = MessageFactory::buildMessage( lSocket );
-      SuspendedEvent * lSuspendedMsg;
+      AbstractMessage *lMessage = MessageFactory::buildMessage( lSocket );
+      SuspendedEvent  *lSuspendedMsg;
+      EvaluatedEvent  *lEvaluatedEvent;
       if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage ) ) )
       {
 #ifndef NDEBUG
         std::clog << "[Client Thread] received a suspended event" << std::endl;
 #endif
         theExecutionStatus = QUERY_SUSPENDED;
-        theRemoteLineNo   = lSuspendedMsg->getLocation().getLineno();
-        theRemoteFileName = lSuspendedMsg->getLocation().getFilename();
+        theRemoteLineNo    = lSuspendedMsg->getLocation().getLineno();
+        theRemoteFileName  = lSuspendedMsg->getLocation().getFilename();
         if ( theEventHandler )
         {
           QueryLocationImpl loc( lSuspendedMsg->getLocation() );
@@ -139,6 +140,16 @@ namespace zorba{
           {
             theEventHandler->terminated();
           }
+        }
+      } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >(lMessage))) {
+#ifndef NDEBUG
+        std::clog << "[Client Thread] evaluated expression" << std::endl;
+#endif
+        if ( theEventHandler )
+        {
+          String lExpr( lEvaluatedEvent->getExpr() );
+          String lResult( lEvaluatedEvent->getResult() );
+          theEventHandler->evaluated( lExpr, lResult );
         }
       }
       delete lMessage;
@@ -297,5 +308,14 @@ namespace zorba{
   unsigned int ZorbaDebuggerClientImpl::getLineNo() const
   {
     return theRemoteLineNo;
+  }
+
+
+  void ZorbaDebuggerClientImpl::eval( String &anExpr )
+  {
+    xqpString lExpr = Unmarshaller::getInternalString( anExpr );
+    //TODO: espace double quotes characters
+    EvalMessage lMessage( lExpr );
+    send( &lMessage );
   }
 }//end of namespace

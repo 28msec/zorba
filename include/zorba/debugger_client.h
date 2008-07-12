@@ -28,11 +28,11 @@ namespace zorba{
 
       virtual ~ZorbaDebuggerClient(){}
 
-      static ZorbaDebuggerClient *
+      static ZorbaDebuggerClient*
       createClient( unsigned short aRequestPortno, unsigned short aEventPortno );
 
       virtual void
-      registerEventHandler( DebuggerEventHandler * aDebuggerEventHandler ) = 0;
+      registerEventHandler( DebuggerEventHandler *aDebuggerEventHandler ) = 0;
       
       virtual bool
       isQueryRunning() const = 0;
@@ -71,13 +71,13 @@ namespace zorba{
       stepOver() = 0;
 
       virtual void
-      addBreakpoint( const String & aFileName, const unsigned int aLineNo ) = 0;
+      addBreakpoint( const String &aFileName, const unsigned int aLineNo ) = 0;
 
       virtual void
       addBreakpoint( const unsigned int aLineNo ) = 0;
 
       virtual void
-      clearBreakpoint( const String & aFileName, const unsigned int aLineNo ) = 0;
+      clearBreakpoint( const String &aFileName, const unsigned int aLineNo ) = 0;
 
       virtual void
       clearBreakpoints() = 0;
@@ -87,6 +87,9 @@ namespace zorba{
 
       virtual unsigned int
       getLineNo() const = 0;
+
+      virtual void
+      eval( String &anExpr ) = 0;
   };
 
 }//end of namespace

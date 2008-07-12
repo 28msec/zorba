@@ -81,6 +81,9 @@ namespace zorba{
       String getFileName() const;
 
       unsigned int getLineNo() const;
+
+      void eval( String &anExpr );
+
     protected:
 
       DebuggerEventHandler * theEventHandler;
