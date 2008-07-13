@@ -15,7 +15,6 @@
  */
 #include "common/common.h"
 
-#include <boost/lexical_cast.hpp>
 #include <sstream>
 #include <limits>
 #include "zorbatypes/numconversions.h"
@@ -54,99 +53,87 @@ namespace zorba {
     return aUInteger.toString();
   }
   bool NumConversions::starCharToInt(const char* aCharStar, xqp_int& aInt){
-    try {
-      aInt =  boost::lexical_cast<xqp_int>(aCharStar);
-      return true;
-    } catch (boost::bad_lexical_cast &) {
-      return false;
-    }
+    std::stringstream lStream;
+    return lStream << aCharStar && lStream >> aInt && lStream.get() == EOF;
   }
   bool NumConversions::strToInt(const xqpString& aStr, xqp_int& aInt) {
     return starCharToInt(aStr.c_str(), aInt);
   }
   xqpString NumConversions::intToStr(xqp_int aInt){
-    return boost::lexical_cast<std::string>(aInt);
+    std::stringstream lStream;
+    lStream << aInt;
+    return lStream.str();
   }
   bool NumConversions::strToUInt(const xqpString& aStr, xqp_uint& aUInt){
     if ( isNegZero(aStr)) {
       aUInt = 0;
       return true;
     }
-    try {
-      aUInt =  boost::lexical_cast<xqp_uint>(aStr.c_str());
-      return true;
-    } catch (boost::bad_lexical_cast &) {
-      return false;
-    }
+    std::stringstream lStream;
+    return lStream << aStr.c_str() && lStream >> aUInt && lStream.get() == EOF;
   }
   xqpString NumConversions::uintToStr(xqp_uint aUInt){
-    return boost::lexical_cast<std::string>(aUInt);
+    std::stringstream lStream;
+    lStream << aUInt;
+    return lStream.str();
   }
   bool NumConversions::strToLongLong(const xqpString& aStr, xqp_long& aLong){
-    try {
-      aLong = boost::lexical_cast<xqp_long>(aStr.c_str());
-      return true;
-    } catch (boost::bad_lexical_cast &) {
-      return false;
-    }
+    std::stringstream lStream;
+    return lStream << aStr.c_str() && lStream >> aLong && lStream.get() == EOF;
   }
   xqpString NumConversions::longLongToStr(xqp_long aLong){
-    return boost::lexical_cast<std::string>(aLong);
+    std::stringstream lStream;
+    lStream << aLong;
+    return lStream.str();
   }
   bool NumConversions::strToLong(const xqpString& aStr, long& aLong){
-    try {
-      aLong = boost::lexical_cast<long>(aStr.c_str());
-      return true;
-    } catch (boost::bad_lexical_cast &) {
-      return false;
-    }
+    std::stringstream lStream;
+    return lStream << aStr.c_str() && lStream >> aLong && lStream.get() == EOF;
   }
   xqpString NumConversions::longToStr(long aLong) {
-    return boost::lexical_cast<std::string>(aLong);
+    std::stringstream lStream;
+    lStream << aLong;
+    return lStream.str();
   }
   bool NumConversions::strToULongLong(const xqpString& aStr, xqp_ulong& aULong){
     if ( isNegZero(aStr)) {
       aULong = 0;
       return true;
     }
-    try {
-      aULong = boost::lexical_cast<xqp_ulong>(aStr.c_str());
-      return true;
-    } catch (boost::bad_lexical_cast &) {
-      return false;
-    }
+    std::stringstream lStream;
+    return lStream << aStr.c_str() && lStream >> aULong && lStream.get() == EOF;
   }
   xqpString NumConversions::ulongLongToStr(xqp_ulong aULong){
-    return boost::lexical_cast<std::string>(aULong);
+    std::stringstream lStream;
+    lStream << aULong;
+    return lStream.str();
   }
   xqpString NumConversions::ulongToStr(unsigned long aULong) {
-    return boost::lexical_cast<std::string>(aULong);
+    std::stringstream lStream;
+    lStream << aULong;
+    return lStream.str();
   }
   bool NumConversions::strToShort(const xqpString& aStr, xqp_short& aShort){
-    try {
-      aShort = boost::lexical_cast<xqp_short>(aStr.c_str());
-      return true;
-    } catch (boost::bad_lexical_cast &) {
-      return false;
-    }
+    std::stringstream lStream;
+    return lStream << aStr.c_str() && lStream >> aShort && lStream.get() == EOF;
   }
   xqpString NumConversions::shortToStr(xqp_short aShort){
-    return boost::lexical_cast<std::string>(aShort);
+    std::stringstream lStream;
+    lStream << aShort;
+    return lStream.str();
   }
   bool NumConversions::strToUShort(const xqpString& aStr, xqp_ushort& aUShort){
     if ( isNegZero(aStr )) {
       aUShort = 0;
       return true;
     }
-    try {
-      aUShort = boost::lexical_cast<xqp_ushort>(aStr.c_str());
-      return true;
-    } catch (boost::bad_lexical_cast &) {
-      return false;
-    }
+    std::stringstream lStream;
+    return lStream << aStr.c_str() && lStream >> aUShort && lStream.get() == EOF;
   }
   xqpString NumConversions::ushortToStr(xqp_ushort aUShort){
-    return boost::lexical_cast<std::string>(aUShort);
+    std::stringstream lStream;
+    lStream << aUShort;
+    return lStream.str();
   }
   bool NumConversions::starCharToDecimal(const char* aCharStar, xqp_decimal& aDecimal){
     return Decimal::parseString(aCharStar, aDecimal);
@@ -178,46 +165,42 @@ namespace zorba {
     return aDouble.toString();
   }
   bool NumConversions::strToByte(const xqpString& aStr, xqp_byte& aByte){
-    try {
-      xqp_int lInt = boost::lexical_cast<xqp_int>(aStr.c_str());
-      if (lInt >= -128 && lInt <= 127) {
-        aByte = lInt;
+    short lShort;
+    if (strToShort(aStr, lShort)) {
+      if (lShort >= -128 && lShort <= 127) {
+        aByte = lShort;
         return true;
-      } else {
+      } 
+      else
         return false;
-      }
-    } catch (boost::bad_lexical_cast &) {
-      return false;
     }
+    else
+      return false;
   }
   xqpString NumConversions::byteToStr(xqp_byte aByte){
-    xqp_int lInt = aByte;
-    return boost::lexical_cast<std::string>(lInt);
+    return shortToStr(aByte);
   }
   bool NumConversions::strToUByte(const xqpString& aStr, xqp_ubyte& aUByte){
-    if ( isNegZero(aStr)) {
-      aUByte = 0;
-      return true;
-    }
-    try {
-      xqp_uint lUInt = boost::lexical_cast<xqp_uint>(aStr.c_str());
-      if (lUInt <= 255) {
-        aUByte = lUInt;
+    unsigned short lUShort;
+    if (strToUShort(aStr, lUShort)) {
+      if (lUShort <= 255) {
+        aUByte = lUShort;
         return true;
-      } else {
-        return false;
       }
-    } catch (boost::bad_lexical_cast &) {
-      return false;
+      else
+        return false;
     }
+    else
+      return false;
   }
   xqpString NumConversions::ubyteToStr(xqp_ubyte aUByte){
-    xqp_uint lUInt = aUByte;
-    return boost::lexical_cast<std::string>(lUInt);
+    return ushortToStr(aUByte);
   }
 
   xqpString NumConversions::sizetToStr(size_t aSizeT) {
-    return boost::lexical_cast<std::string>(aSizeT);
+    std::stringstream lStream;
+    lStream << aSizeT;
+    return lStream.str();
   }
 
   bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt) {
