@@ -28,6 +28,7 @@
 
 namespace zorba {
 
+typedef rchandle<var_expr> var_expr_t;
 class ZorbaDebuggerImpl;
 
 class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorState>
@@ -35,14 +36,11 @@ class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorSta
 protected:
   ZorbaDebuggerImpl *  theDebugger;
   const static_context * theStaticContext;
-  checked_vector<PlanIter_t>    theVariables;
-  checked_vector<store::Item_t> theVariableNames;
-  checked_vector<xqtref_t>      theVariableTypes;
+  checked_vector<var_expr_t> theVariables;
 
 public:
-  FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args,
-                   const static_context * aStaticContext, checked_vector<PlanIter_t> &variables,
-                   checked_vector<store::Item_t> &variableNames, checked_vector<xqtref_t> &variableTypes);
+  FnDebugIterator( const QueryLoc& loc, checked_vector<PlanIter_t>& args,
+                   const static_context * aStaticContext, checked_vector<var_expr_t> &aVariables );
 
   virtual ~FnDebugIterator();
 

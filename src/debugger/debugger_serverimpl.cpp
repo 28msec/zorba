@@ -17,10 +17,9 @@
 #include <iostream>
 #include <memory>
 #include <fstream>
-#include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-#include  <zorba/zorba.h>
-
+#include <pthread.h>
+#include <zorba/zorba.h>
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -29,10 +28,9 @@
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
 
-#include "runtime/fncontext/FnContextImpl.h"
-
 #include "context/static_context.h"
 
+#include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -49,6 +47,14 @@ boost::mutex io_mutex;
 
 namespace zorba{
 
+void * runtimeThread( void * aDebugger )
+{
+  pthread_detach( pthread_self() );
+  ZorbaDebuggerImpl * lDebugger = (ZorbaDebuggerImpl *) aDebugger;
+  lDebugger->runQuery();
+  return 0;
+}
+
 ZorbaDebuggerImpl::~ZorbaDebuggerImpl()
 {
   delete theRequestServerSocket;
@@ -62,6 +68,9 @@ void ZorbaDebuggerImpl::start( void * aStore,
                                unsigned short aEventPortno)
 {
   TCPSocket * lSock;
+  //Pthread initialization
+  //theRuntimeMutex = PTHREAD_MUTEX_INITIALIZER;
+  //theRuntimeSuspendedCV = PTHREAD_COND_INITIALIZER;
   //activate the debug mode
   theDebugMode = true;
   //Set the input stream
@@ -113,7 +122,7 @@ void ZorbaDebuggerImpl::start( void * aStore,
   std::clog << "[Server Thread] server quited" << std::endl;
 #endif
   if ( theRuntimeThread != 0 ){
-    theRuntimeThread->join();
+    pthread_join( theRuntimeThread, 0 );
   }
 #ifndef NDEBUG
   std::clog << "[Server Thread] runtime thread joined" << std::endl;
@@ -358,8 +367,10 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
 
 void ZorbaDebuggerImpl::run()
 {
-  theRuntimeThread = new boost::thread (
-      boost::bind( &ZorbaDebuggerImpl::runQuery, this ) );
+  if ( pthread_create( &theRuntimeThread, 0, runtimeThread, this ) != 0 )
+  {
+    std::cerr << "Couldn't create the runtime thread" << std::endl;
+  }
 }
 
 void ZorbaDebuggerImpl::suspend()
@@ -372,7 +383,7 @@ void ZorbaDebuggerImpl::resume()
   if ( theStatus == QUERY_SUSPENDED )
   {
     setStatus( QUERY_RUNNING );
-    theRuntimeSuspendedCV.notify_one();
+    pthread_cond_signal( &theRuntimeSuspendedCV );
   }
 }
 
@@ -418,15 +429,15 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, 
         );
       eval_plan->checkDepth( loc );
    
-      //for (unsigned i = 0; i < theVariables.size (); i++) {
-        //const PlanIterator *lPlanIter = theVariables[i].getp();
-        //store::Iterator_t lIter = new PlanIteratorWrapper(&*lPlanIter, *thePlanState);
+      for (unsigned i = 0; i < theVariables.size (); i++) {
+        const PlanIterator *lPlanIter = theVariables[i].getp();
+        store::Iterator_t lIter = new PlanIteratorWrapper(&*lPlanIter, *thePlanState);
         // TODO: is saving an open iterator efficient?
         // Then again if we close theChildren [1] here,
         // we won't be able to re-open it later via the PlanIteratorWrapper
-        //std::cerr << "varname:" << dynamic_context::var_key(ccb->m_sctx->lookup_var(theVariableNames[i].getp())) << std::endl; 
-        //dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVariableNames[i].getp())), lIter);
-      //}
+        std::cerr << "varname:" << dynamic_context::var_key(ccb->m_sctx->lookup_var(theVariableNames[i].getp())) << std::endl; 
+        dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVariableNames[i].getp())), lIter);
+      }
 
       serializer lSerializer(0);
       lSerializer.set_parameter("method", "xml");

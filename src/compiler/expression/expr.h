@@ -17,6 +17,7 @@
 #define ZORBA_EXPR_H
 
 #include <string>
+#include <vector>
 #include <map>
 
 #include "zorbautils/checked_vector.h"
@@ -27,6 +28,7 @@
 #include "zorbaerrors/errors.h"
 
 #include "compiler/expression/var_expr.h"
+#include "context/static_context.h"
 #include "types/node_test.h"
 #include "types/typeimpl.h"
 
@@ -42,27 +44,37 @@ class expr_visitor;
 class NodeNameTest;
 
 #ifdef ZORBA_DEBUGGER
+typedef rchandle<var_expr> var_expr_t;
 //debugger expression
 class debugger_expr: public expr
 {
   private:
-    expr_t child;
     const static_context * s_ctx;
+    expr_t child;
+    checked_vector<var_expr_t> childs;
 
   public:
-    debugger_expr( const QueryLoc& loc, expr_t aChild, const static_context * aS_ctx )
-      : expr(loc), child(aChild), s_ctx(aS_ctx){}
+    debugger_expr( const QueryLoc& loc, expr_t aChild, const static_context * aS_ctx,
+                   std::vector<var_expr_t> vars )
+      : expr(loc), s_ctx(aS_ctx), child( aChild )
+    {
+      for ( unsigned int i = 0; i < vars.size(); i++ )
+      {
+        childs.push_back( vars.at( i ) ); 
+      }
+    }
 
     const static_context * get_static_context()
     {
       return s_ctx;
     }
 
-    expr_t get_child()
+    checked_vector<var_expr_t> get_vars()
     {
-      return child;
+      return childs;
     }
-    
+   
+    expr_iterator_data *make_iter();
     void next_iter (expr_iterator_data&);
     void accept (expr_visitor&);
     std::ostream& put(std::ostream&) const;

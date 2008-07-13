@@ -33,7 +33,7 @@
 #include "debugcmd_client.h"
 
 #include <csignal>
-#include <boost/bind.hpp> 
+#include <pthread.h> 
 #include <zorba/debugger_server.h>
 #endif
 
@@ -50,20 +50,27 @@ namespace fs = boost::filesystem;
 namespace zorbatm = zorba::time;
 
 #ifdef ZORBA_DEBUGGER
-void server( std::istream * aQuery,
-            const char * aFileName,
-            unsigned short aRequestPort,
-            unsigned short aEventPort)
+struct server_args
 {
+  std::istream * theQuery;
+  const char * theFileName;
+  unsigned short theRequestPort;
+  unsigned short theEventPort;
+};
+
+void * server( void * args)
+{
+  server_args * lArgs = (server_args*)args;
   zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
   try
   {
     zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
-    lDebugger->start( lStore, aQuery, aFileName, aRequestPort, aEventPort );
+    lDebugger->start( lStore, lArgs->theQuery, lArgs->theFileName, lArgs->theRequestPort, lArgs->theEventPort );
   } catch( std::exception &e ) {
     std::cout << e.what() << std::endl;
     exit(7);
   }
+  return 0;
 }
 #endif
 bool
@@ -285,13 +292,19 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
 #ifdef ZORBA_DEBUGGER
+  server_args * lArgs = new server_args;
+  lArgs->theQuery = qfile.get();
+  lArgs->theFileName = fname;
+  lArgs->theRequestPort = lProperties.requestPort();
+  lArgs->theEventPort = lProperties.eventPort();
+  
   // debug server
   if ( lProperties.debugServer() )
   {
     std::cout << "Zorba XQuery debugger server." << std::endl;
     std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
     std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-    server( qfile.get(), fname, lProperties.requestPort(), lProperties.eventPort() );
+    server( (void *)lArgs );
 
   } else if ( lProperties.debugClient() ) {
     
@@ -306,15 +319,11 @@ int _tmain(int argc, _TCHAR* argv[])
     //qfile->seekg(0);
     //std::istringstream lInputQuery( out.str() );
     //start the server thread
-    boost::thread lServerThread ( 
-                                  boost::bind(
-                                    &server,
-                                    qfile.get(),
-                                    fname,
-                                    lProperties.requestPort(),
-                                    lProperties.eventPort()
-                                  )
-                                );
+    pthread_t lServerThread;
+    if ( pthread_create( &lServerThread, 0, server, lArgs ) != 0 )
+    {
+      std::cerr << "Couldn't start the debugger server" << std::endl;
+    }
     //Try to connect 3 times on the server thread
     for ( unsigned int i = 0; i < 3; i++ )
     {
@@ -332,7 +341,7 @@ int _tmain(int argc, _TCHAR* argv[])
         signal( SIGINT, suspend );
 #endif
         debuggerClient->registerEventHandler( &lEventHandler );
-        lServerThread.join();
+        pthread_join( lServerThread, 0 );
       } catch( std::exception &e ) {
         if ( i < 2 ){ continue; }
         std::cerr << "Could not start the debugger client: " << std::endl;

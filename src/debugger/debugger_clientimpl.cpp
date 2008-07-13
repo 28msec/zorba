@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-#include "common/common.h"
+
+#include "debugger/debugger_clientimpl.h"
 
 #include <iostream>
 #include <memory>
 
-#include <boost/thread/thread.hpp>
-#include <boost/bind.hpp> 
-
 #include <zorba/api_shared_types.h>
 
+#include "common/common.h"
 #include "api/unmarshaller.h"
 #include "zorbatypes/xqpstring.h"
-#include "debugger/debugger_clientimpl.h"
 #include "debugger/query_locationimpl.h"
 #include "debugger/socket.h"
 #include "debugger/debugger_protocol.h"
@@ -44,12 +42,15 @@ namespace zorba{
     //Perform the handshake with the server
     handshake();
     //Start the event listener thread
-    boost::thread theEventListener ( boost::bind( &ZorbaDebuggerClientImpl::listenEvents,  this ) );
+    if ( pthread_create( &theEventListener, 0, listenEvents, this ) != 0 )
+    {
+      std::cerr << "Couldn't start the event listener thread" << std::endl;
+    }
   }
 
   ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
   {
-    theEventListener.join();
+    pthread_join( theEventListener, 0 );
     delete theRequestSocket;
     delete theEventServerSocket;
   }
@@ -84,16 +85,18 @@ namespace zorba{
     }
   }
 
-  void ZorbaDebuggerClientImpl::listenEvents()
+  void * listenEvents( void * aClient )
   {
+    pthread_detach( pthread_self() );
+    ZorbaDebuggerClientImpl * lClient = (ZorbaDebuggerClientImpl *) aClient;
 #ifndef NDEBUG
     std::clog << "[Client Thread] start event listener thread" << std::endl;
     std::clog << "[Client Thread] wait for the event client to connect" << std::endl;
 #endif
 
-    TCPSocket * lSocket = theEventServerSocket->accept();
+    TCPSocket * lSocket = lClient->theEventServerSocket->accept();
     
-    while( theExecutionStatus != QUERY_QUITED )
+    while( lClient->theExecutionStatus != QUERY_QUITED )
     { 
       AbstractMessage *lMessage = MessageFactory::buildMessage( lSocket );
       SuspendedEvent  *lSuspendedMsg;
@@ -103,53 +106,53 @@ namespace zorba{
 #ifndef NDEBUG
         std::clog << "[Client Thread] received a suspended event" << std::endl;
 #endif
-        theExecutionStatus = QUERY_SUSPENDED;
-        theRemoteLineNo    = lSuspendedMsg->getLocation().getLineno();
-        theRemoteFileName  = lSuspendedMsg->getLocation().getFilename();
-        if ( theEventHandler )
+        lClient->theExecutionStatus = QUERY_SUSPENDED;
+        lClient->theRemoteLineNo    = lSuspendedMsg->getLocation().getLineno();
+        lClient->theRemoteFileName  = lSuspendedMsg->getLocation().getFilename();
+        if ( lClient->theEventHandler )
         {
           QueryLocationImpl loc( lSuspendedMsg->getLocation() );
-          theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
+          lClient->theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
         }
       } else if ( dynamic_cast< StartedEvent * > ( lMessage ) ) {
 #ifndef NDEBUG
         std::clog << "[Client Thread] receive a started event" << std::endl;
 #endif
-        theExecutionStatus = QUERY_RUNNING;
-        if ( theEventHandler )
+        lClient->theExecutionStatus = QUERY_RUNNING;
+        if ( lClient->theEventHandler )
         {
-          theEventHandler->started();
+          lClient->theEventHandler->started();
         }
       } else if ( dynamic_cast< ResumedEvent * > ( lMessage ) ) {
 #ifndef NDEBUG
         std::clog << "[Client Thread] receive a resumed event" << std::endl;
 #endif
-        theExecutionStatus = QUERY_RESUMED;
-        if ( theEventHandler )
+        lClient->theExecutionStatus = QUERY_RESUMED;
+        if ( lClient->theEventHandler )
         {
-          theEventHandler->resumed();
+          lClient->theEventHandler->resumed();
         }
       } else if ( dynamic_cast< TerminatedEvent * > ( lMessage ) ) {
 #ifndef NDEBUG
         std::clog << "[Client Thread] receive a suspended event" << std::endl;
 #endif
-        if( theExecutionStatus != QUERY_IDLE )
+        if( lClient->theExecutionStatus != QUERY_IDLE )
         {
-          theExecutionStatus = QUERY_TERMINATED;
-          if ( theEventHandler )
+          lClient->theExecutionStatus = QUERY_TERMINATED;
+          if ( lClient->theEventHandler )
           {
-            theEventHandler->terminated();
+            lClient->theEventHandler->terminated();
           }
         }
       } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >(lMessage))) {
 #ifndef NDEBUG
         std::clog << "[Client Thread] evaluated expression" << std::endl;
 #endif
-        if ( theEventHandler )
+        if ( lClient->theEventHandler )
         {
           String lExpr( lEvaluatedEvent->getExpr() );
           String lResult( lEvaluatedEvent->getResult() );
-          theEventHandler->evaluated( lExpr, lResult );
+          lClient->theEventHandler->evaluated( lExpr, lResult );
         }
       }
       delete lMessage;
@@ -158,6 +161,7 @@ namespace zorba{
 #ifndef NDEBUG
     std::clog << "[Client Thread] end of the event listener thread" << std::endl;
 #endif
+    return 0;
   }
 
   bool ZorbaDebuggerClientImpl::isQueryRunning() const

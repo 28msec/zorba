@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef XQP_ZORBA_DEBUGGER_CLIENT_IMPL_CLIENT_H
-#define XQP_ZORBA_DEBUGGER_CLIENT_IMPL_CLIENT_H
+#ifndef ZORBA_DEBUGGER_CLIENT_IMPL_CLIENT_H
+#define ZORBA_DEBUGGER_CLIENT_IMPL_CLIENT_H
 
 #include <iostream>
 #include <vector>
-
-#include <boost/thread.hpp>
+#include <pthread.h>
 
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_client.h>
@@ -34,12 +33,13 @@ namespace zorba{
   class TCPSocket;
   class TCPServerSocket;
 
+  void * listenEvents( void * aClient );
+  
   class ZorbaDebuggerClientImpl: public ZorbaDebuggerClient
   {
-    //friend bool RemoteDynamicContext::setVariable( const String& aQName, const Item& aItem );
+    friend void * listenEvents( void * aClient );
 
     public:
-
       ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno );
 
       virtual ~ZorbaDebuggerClientImpl();
@@ -98,11 +98,9 @@ namespace zorba{
 
       ExecutionStatus theExecutionStatus; 
 
-      boost::thread theEventListener;
+      pthread_t theEventListener;
 
       void handshake();
-
-      void listenEvents();
 
       void send( AbstractCommandMessage * aMessage );
 

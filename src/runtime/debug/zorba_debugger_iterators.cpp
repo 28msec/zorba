@@ -18,21 +18,19 @@
 
 #include <iostream>
 #include <sstream>
+#include <pthread.h>
 
+#include "compiler/expression/var_expr.h"
 #include "debugger/debugger_serverimpl.h"
 
 using namespace std;
 
 namespace zorba {
-FnDebugIterator::FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args,
+FnDebugIterator::FnDebugIterator( const QueryLoc& loc, checked_vector<PlanIter_t>& args,
                                   const static_context * aStaticContext,
-                                  checked_vector<PlanIter_t> &variables,
-                                  checked_vector<store::Item_t> &variableNames,
-                                  checked_vector<xqtref_t> &variableTypes ) 
+                                  checked_vector<var_expr_t> &aVariables ) 
     : NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, args),
-    theDebugger(0), theStaticContext( aStaticContext ), theVariables( variables ),
-    theVariableNames( variableNames ), theVariableTypes( variableTypes )
-  {}
+    theDebugger(0), theStaticContext( aStaticContext ), theVariables( aVariables ){}
 
   FnDebugIterator::~FnDebugIterator(){}
 
@@ -44,15 +42,18 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& 
     
     theDebugger->theLocation = loc;
     theDebugger->thePlanState = &planState;
-    theDebugger->theVariables = theVariables;
-    theDebugger->theVariableNames = theVariableNames;
-    theDebugger->theVariableTypes = theVariableTypes;
 
     while ( consumeNext( result, theChildren[0], planState ) ) {
+      //std::cerr << "Number of variables in scope:" << theVariables.size() << std::endl;
+      for( unsigned int i=0; i<theVariables.size(); i++)
+      {
+        std::cerr << "name: " << theVariables.at(i)->toString() << std::endl;  
+      }
       if ( theDebugger->hasToSuspend() )
       {
-        boost::mutex::scoped_lock lock( theDebugger->theRuntimeMutex );
-        theDebugger->theRuntimeSuspendedCV.wait( lock );
+        pthread_mutex_lock( &theDebugger->theRuntimeMutex );
+        pthread_cond_wait( &theDebugger->theRuntimeSuspendedCV, &theDebugger->theRuntimeMutex ); 
+        pthread_mutex_unlock( &theDebugger->theRuntimeMutex ); 
       }
       STACK_PUSH(true, state);
     }

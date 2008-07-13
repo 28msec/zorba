@@ -18,11 +18,7 @@
 #define ZORBA_DEBUGGER_IMPL_H
 
 #include <iostream>
-
-#include <boost/thread/thread.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition.hpp>
-
+#include <pthread.h>
 #include <zorba/debugger_server.h>
 
 #include "runtime/base/plan_iterator.h"
@@ -58,6 +54,8 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     virtual ~ZorbaDebuggerImpl();
 
+    void runQuery();
+    
     ExecutionStatus getStatus() const { return theStatus; }
 
     const QueryLoc getLocation() const { return theLocation; }
@@ -73,6 +71,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
   protected:
     
     friend class ZorbaDebugger;
+    friend class FnDebugIterator;
 
     ZorbaDebuggerImpl():
       theZorba(0),
@@ -110,18 +109,11 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     std::vector<QueryLoc> theBreakpoints;
 
-    boost::thread* theRuntimeThread;
+    pthread_t theRuntimeThread;
 
-    boost::mutex theRuntimeMutex;
+    pthread_mutex_t theRuntimeMutex;
     
-    boost::condition theRuntimeSuspendedCV;
-
-    friend bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState &  planState ) const;
-
-    friend FnDebugIterator::FnDebugIterator( const QueryLoc& loc, std::vector<PlanIter_t>& args,
-                   const static_context * aStaticContext, checked_vector<PlanIter_t> &variables,
-                   checked_vector<store::Item_t> &variableNames, checked_vector<xqtref_t> &variableTypes);
-
+    pthread_cond_t theRuntimeSuspendedCV;
 
     bool hasToSuspend();
     
@@ -134,8 +126,6 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     void handshake( TCPSocket * aSock );
 
     void processMessage( AbstractCommandMessage * );
-
-    void runQuery();
 
     void suspend();
 

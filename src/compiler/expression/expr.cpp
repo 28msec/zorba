@@ -131,6 +131,14 @@ public:
   eval_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
+#ifdef ZORBA_DEBUGGER
+class debugger_expr_iterator_data: public expr_iterator_data {
+public:
+  checked_vector<var_expr_t>::iterator var_iter;
+  debugger_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
+};
+#endif
+
 class sequential_expr_iterator_data : public expr_iterator_data {
 public:
   checked_vector<expr_t>::iterator iter;
@@ -253,10 +261,17 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
     return NULL; // Make the compiler happy
   }
 #ifdef ZORBA_DEBUGGER
+  expr_iterator_data *debugger_expr::make_iter()
+  {
+    return new debugger_expr_iterator_data(this);
+  }
+
   void debugger_expr::next_iter (expr_iterator_data& v)
   {
-    BEGIN_EXPR_ITER();
+    BEGIN_EXPR_ITER2(debugger_expr);
     ITER(child);
+    ITER_FOR_EACH (var_iter, childs.begin (), childs.end (),
+                 *(vv.var_iter));
     END_EXPR_ITER();
   }  
 #endif

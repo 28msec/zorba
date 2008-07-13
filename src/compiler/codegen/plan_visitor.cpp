@@ -148,11 +148,6 @@ protected:
 
   CompilerCB                           * ccb;
 
-#ifdef ZORBA_DEBUGGER
-  checked_vector<PlanIter_t>    theVariables;
-  checked_vector<store::Item_t> theVariableNames;
-  checked_vector<xqtref_t>      theVariableTypes;
-#endif
 #define LOOKUP_OP1( local ) static_cast<function *> (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
 
 public:
@@ -219,8 +214,8 @@ void end_visit(debugger_expr& v)
   const static_context * s_ctx = v.get_static_context();
   if( true || ZorbaDebugger::getInstance()->isEnabled() )
   {
-    itstack.push(new FnDebugIterator(qloc, argv, s_ctx,
-                                     theVariables, theVariableNames, theVariableTypes ));
+    checked_vector<var_expr_t> vars = v.get_vars();
+    itstack.push(new FnDebugIterator(qloc, argv, s_ctx, vars));
   } else {
     //TODO...
   }
@@ -275,12 +270,6 @@ void end_visit(var_expr& v)
             (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
-#ifdef ZORBA_DEBUGGER
-    theVariables.push_back(v_p);
-    theVariableNames.push_back(v.get_varname());
-    //theVariableKeys.push_back(v.var_key);
-    theVariableTypes.push_back(v.get_type());
-#endif
     break;
   }
 

@@ -155,8 +155,10 @@ protected:
   int tempvar_counter;
   std::list<global_binding> theGlobalVars;
 #ifdef ZORBA_DEBUGGER
-  std::list<var_expr_t> theVariables;
+  unsigned long theLastScopeIndex;
+  vector<var_expr_t> theScopedVariables;
 #endif
+
   rchandle<namespace_context> ns_ctx;
   /// Current module's namespace and prefix
   string mod_ns, mod_pfx;
@@ -242,7 +244,7 @@ protected:
     var_expr_t e = new var_expr (loc, kind, qname);
     e->set_type (type);
 #ifdef ZORBA_DEBUGGER
-    theVariables.push_back(e);
+   // theScopedVariables.push_back(e); 
 #endif
     return e;
   }
@@ -297,11 +299,18 @@ protected:
 
   void push_scope ()
   {
+#ifdef ZORBA_DEBUGGER
+  theLastScopeIndex = theScopedVariables.size();
+#endif
     sctx_list.push_back (sctx_p = sctx_p->create_child_context());
   }
 
   void pop_scope (int n = 1)
   {
+#ifdef ZORBA_DEBUGGER
+    //vector<var_expr_t>::iterator it = theScopedVariables.begin();
+    //theScopedVariables.erase( it+theLastScopeIndex, theScopedVariables.end() );
+#endif
     while (n-- > 0) {
       static_context *parent = (static_context *) sctx_p->get_parent ();
       sctx_p = parent;
@@ -384,13 +393,6 @@ protected:
   
 
 public:
-
-#ifdef ZORBA_DEBUGGER
-std::list<var_expr_t> getVariables()
-{
-  return theVariables;
-}
-#endif
 
 expr_t result ()
 {
@@ -1513,7 +1515,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   int i, j;
 #ifdef ZORBA_DEBUGGER
-  expr_t lReturnExpr = new debugger_expr(loc, pop_nodestack(), sctx_p);
+  expr_t lReturnExpr = new debugger_expr(loc, pop_nodestack(), sctx_p, theScopedVariables );
 #else
   expr_t lReturnExpr = pop_nodestack();
 #endif
