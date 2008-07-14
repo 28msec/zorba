@@ -687,7 +687,6 @@ public:
     return tmp;
   }
 
-
 } /* namespace zorba */
 
 #endif
