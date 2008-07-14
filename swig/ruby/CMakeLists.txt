@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+CMAKE_FIND_FRAMEWORKS ( Ruby )
 FIND_PACKAGE(Ruby)
 
 MESSAGE("Libary: " ${RUBY_LIBRARY}) 

@@ -20,9 +20,9 @@ IF (SWIG_FOUND)
 
 # ruby module on Mac OS doesn't link because cmake is generating
 # -framework ruby instead of -framework Ruby
-IF ( NOT APPLE )
+#IF ( NOT APPLE )
   ADD_SUBDIRECTORY(ruby)
-ENDIF ( NOT APPLE )
+#ENDIF ( NOT APPLE )
 ELSE(SWIG_FOUND)
   MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
 ENDIF(SWIG_FOUND)
