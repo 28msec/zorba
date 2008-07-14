@@ -610,13 +610,13 @@ inline bool dur_str(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool dur_yMD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  YearMonthDuration_t dur = aItem->getDurationValue().toYearMonthDuration();
+  YearMonthDuration_t dur = (YearMonthDuration*)aItem->getDurationValue().toYearMonthDuration().getp();
   return aFactory->createYearMonthDuration(result, dur);
 }
 
 inline bool dur_dTD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DayTimeDuration_t dur = aItem->getDurationValue().toDayTimeDuration();
+  DayTimeDuration_t dur = (DayTimeDuration*)aItem->getDurationValue().toDayTimeDuration().getp();
   return aFactory->createDayTimeDuration(result, dur);
 }
 
@@ -638,8 +638,8 @@ inline bool yMD_dur(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool yMD_dTD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  Duration_t dur = aItem->getYearMonthDurationValue().toDayTimeDuration();
-  return aFactory->createDuration(result, dur);
+  DayTimeDuration_t dur = (DayTimeDuration*)aItem->getYearMonthDurationValue().toDayTimeDuration().getp();
+  return aFactory->createDayTimeDuration(result, dur);
 }
 
 inline bool dTD_uA(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -660,7 +660,7 @@ inline bool dTD_dur(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool dTD_yMD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  YearMonthDuration_t dur = aItem->getDayTimeDurationValue().toYearMonthDuration();
+  YearMonthDuration_t dur = (YearMonthDuration*)aItem->getDayTimeDurationValue().toYearMonthDuration().getp();
   return aFactory->createYearMonthDuration(result, dur);
 }
 
