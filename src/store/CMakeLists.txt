@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+SET(ZORBA_MINIMAL_STORE  OFF CACHE BOOL "Choose zorba minimal store for better performance")
+
+
 IF(ZORBA_MINIMAL_STORE)
 
 ADD_SUBDIRECTORY(minimal)
