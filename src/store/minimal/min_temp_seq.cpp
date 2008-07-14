@@ -33,7 +33,8 @@ SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy, bool lazy)
     if (copy && curItem->isNode()) 
       curItem = curItem->copy(NULL, 0, lCopyMode);
 
-    theItems.push_back(curItem.transfer());
+    theItems.push_back(NULL);
+    theItems.back().transfer(curItem);
   }
 }
 
@@ -47,7 +48,7 @@ SimpleTempSeq::~SimpleTempSeq()
   for (ulong i = 0; i < numItems; i++)
   {
     store::Item* n = theItems[i];
-    n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+    //n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
   }
 }
 
@@ -116,7 +117,8 @@ void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
     if (copy && curItem->isNode())
       curItem = curItem->copy(NULL, 0, lCopyMode);
 
-    theItems.push_back(curItem.transfer());
+    theItems.push_back(NULL);
+    theItems.back().transfer(curItem);
   }
 }
 

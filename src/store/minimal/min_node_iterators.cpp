@@ -75,10 +75,12 @@ void ChildrenIteratorLazy::open()
 bool ChildrenIteratorLazy::next(store::Item_t& result)
 {
   XmlLoader_t   xmlloader;
-  while((xmlloader=theParentNode->hasLoaderAttached()) != NULL)
+  while(!theParentNode->isFullLoaded())
   {
     if(theCurrentPos >= theParentNode->numChildren())
     {
+      if(xmlloader == NULL)
+        xmlloader = theParentNode->getTree()->attachedloader;
       xmlloader->continueloadXml(XmlLoader::UNTIL_START_ELEMENT, theParentNode->getDepth()+1);
     }
     else

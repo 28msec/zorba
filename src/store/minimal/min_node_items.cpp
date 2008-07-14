@@ -30,8 +30,6 @@
 #include "store/minimal/min_nsbindings.h"
 #include "store/api/temp_seq.h"
 #include "store/minimal/min_item_iterator.h"
-#include "store/api/collection.h"
-#include "zorbatypes/datetime.h"
 
 
 #ifndef NDEBUG
@@ -83,9 +81,9 @@ void XmlTree::free() throw()
     theRootNode->deleteTree();
     theRootNode = NULL;
   }
+
   delete this;
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -163,6 +161,7 @@ void XmlNode::setTree(const XmlTree* t)
 /*******************************************************************************
 
 ********************************************************************************/
+
 void XmlNode::setOrdPath(
     XmlNode*              parent,
     long                  pos,
@@ -330,12 +329,14 @@ xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
 ********************************************************************************/
 void XmlNode::removeChild(ulong i)
 {
+
   XmlNode* child = getChild(i);
 
   children().remove(i);
 
   if (child->theParent == this)
-    child->theParent = NULL;
+      child->theParent = NULL;
+
 }
 
 
@@ -345,12 +346,14 @@ void XmlNode::removeChild(ulong i)
 ********************************************************************************/
 bool XmlNode::removeChild(XmlNode* child)
 {
+
   bool found = children().find(child);
 
   if (found)
   {
     if (child->theParent == this)
       child->theParent = NULL;
+    
   }
 
   return found;
@@ -362,12 +365,14 @@ bool XmlNode::removeChild(XmlNode* child)
 ********************************************************************************/
 void XmlNode::removeAttr(ulong i)
 {
+
   XmlNode* attr = getAttr(i);
 
   attributes().remove(i);
 
   if (attr->theParent == this)
     attr->theParent = NULL;
+
 }
 
 
@@ -377,7 +382,8 @@ void XmlNode::removeAttr(ulong i)
 ********************************************************************************/
 bool XmlNode::removeAttr(XmlNode* attr)
 {
-  bool found = attributes().remove(attr);
+
+  bool found = attributes().find(attr);
 
   if (found)
   {
@@ -394,6 +400,7 @@ bool XmlNode::removeAttr(XmlNode* attr)
 ********************************************************************************/
 ulong XmlNode::disconnect() throw()
 {
+
   if (theParent == NULL)
     return 0;
 
@@ -423,6 +430,7 @@ ulong XmlNode::disconnect() throw()
 ********************************************************************************/
 void XmlNode::connect(XmlNode* parent, ulong pos) throw()
 {
+
   ZORBA_FATAL(theParent == NULL, "");
 
   theParent = parent;
@@ -435,6 +443,7 @@ void XmlNode::connect(XmlNode* parent, ulong pos) throw()
   {
     parent->children().insert(this, pos, false);
   }
+
 }
 
 
@@ -449,6 +458,7 @@ void XmlNode::switchTree(
     ulong           pos,
     const store::CopyMode& copymode) throw()
 {
+
   try
   {
     ulong refcount = 0;
@@ -586,6 +596,7 @@ void XmlNode::switchTree(
   {
     ZORBA_FATAL(0, "Unexpected exception");
   }
+
 }
 
 
@@ -596,6 +607,7 @@ void XmlNode::switchTree(
 ********************************************************************************/
 void XmlNode::deleteTree() throw()
 {
+
   ZORBA_FATAL(theParent == NULL, "");
   ZORBA_FATAL(theRefCount == 0, "");
 
@@ -623,6 +635,7 @@ void XmlNode::deleteTree() throw()
   } 
 
   delete this;
+
 }
 
 
@@ -737,7 +750,8 @@ xqpStringStore_t DocumentNode::getBaseURIInternal(bool& local) const
 
 store::Iterator_t DocumentNode::getChildren() const
 {
-  if(this->hasLoaderAttached())
+  //if(this->hasLoaderAttached())
+  if(!this->isFullLoaded())
     return (new ChildrenIteratorLazy((XmlNode*)this));
   else
   {
@@ -769,7 +783,7 @@ xqpStringStore_t DocumentNode::getStringValue() const
 //  ulong numChildren = this->numChildren();
 //  for (ulong i = 0; i < numChildren; i++)
 //  {
-    //store::StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
+    //store::StoreConsts::NodeKind kind = getChild(i)->getNodeKind;
   store::Iterator_t    child_iter = this->getChildren();
   child_iter->open();
   store::Item_t  child_item;
@@ -833,6 +847,8 @@ DocumentTreeNode::DocumentTreeNode(
   NODE_TRACE1("Loaded doc node " << this << " base uri = "
               << (theBaseUri != 0 ? theBaseUri->c_str() : "NULL")
               << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
+
+  is_full_loaded = true;
 }
 
 /*******************************************************************************
@@ -848,6 +864,8 @@ DocumentTreeNode::DocumentTreeNode(
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
               << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
+
+  is_full_loaded = true;
 }
 
 
@@ -890,6 +908,7 @@ ElementNode::ElementNode(store::Item_t&  nodeName, store::Item_t& typeName)
 {
   theName.transfer(nodeName);
   theTypeName.transfer(typeName);
+
 }
 
 
@@ -901,11 +920,12 @@ ElementNode::ElementNode(store::Item_t&  nodeName, store::Item_t& typeName)
 ********************************************************************************/
 ElementNode::ElementNode(
     XmlTree*          tree,
-    XmlNode*          parent,
+    XmlNode*     parent,
     long              pos,
     store::Item_t&           nodeName,
     store::Item_t&           typeName,
-    const store::NsBindings* localBindings)
+    const store::NsBindings* localBindings,
+    bool doswap_nsbindings)
   :
   XmlNode(tree, parent, pos, store::StoreConsts::elementNode),
   theFlags(0)
@@ -913,10 +933,11 @@ ElementNode::ElementNode(
   theName.transfer(nodeName);
   theTypeName.transfer(typeName);
 
+
   if (localBindings && !localBindings->empty())
   {
-    theNsContext = new NsBindingsContext(*localBindings);
-    theFlags |= XmlNode::HaveLocalBindings;
+    theNsContext = new NsBindingsContext(*localBindings, doswap_nsbindings);//do swap of nsbindings
+    theFlags |= HaveLocalBindings;
   }
 
   if (parent)
@@ -930,7 +951,7 @@ ElementNode::ElementNode(
     {
       try
       {
-        addBindingForQName(theName);
+        //+addBindingForQName(theName);
         setNsContext(parent->getNsContext());
       }
       catch(...)
@@ -942,8 +963,8 @@ ElementNode::ElementNode(
   }
   else
   {
-    if (localBindings)
-      addBindingForQName(theName);
+  //+  if (localBindings)
+  //+    addBindingForQName(theName);
   }
 }
 
@@ -998,7 +1019,7 @@ XmlNode* ElementNode::copy2(
     pos = (parent == rootParent ? pos : -1);
 
     copyNode = new ElementTreeNode(tree, parent, pos, nodeName,
-                                   typeName, nullValue, NULL, NULL, baseUri);
+                                   typeName, nullValue, NULL, NULL, false, baseUri);
 
     if (copymode.theNsPreserve)
     {
@@ -1019,7 +1040,7 @@ XmlNode* ElementNode::copy2(
           if (!ctx->empty())
           {
             copyNode->theNsContext = ctx.release();
-            copyNode->theFlags |= XmlNode::HaveLocalBindings;
+            copyNode->theFlags |= HaveLocalBindings;
           }
         }
 
@@ -1048,7 +1069,7 @@ XmlNode* ElementNode::copy2(
         if (haveLocalBindings())
         {
           copyNode->theNsContext = new NsBindingsContext(getLocalBindings());
-          copyNode->theFlags |= XmlNode::HaveLocalBindings;
+          copyNode->theFlags |= HaveLocalBindings;
         }
 
         copyNode->setNsContext(parent->getNsContext());
@@ -1117,7 +1138,7 @@ XmlNode* ElementNode::copy2(
       if (!ctx->empty())
       {
         copyNode->theNsContext = ctx.release();
-        copyNode->theFlags |= XmlNode::HaveLocalBindings;
+        copyNode->theFlags |= HaveLocalBindings;
       }
 
       if (copymode.theNsInherit)
@@ -1295,8 +1316,8 @@ store::Item_t ElementNode::getNilled() const
   for (ulong i = 0; i < numAttrs; i++)
   {
     AttributeNode* attr = getAttr(i);
-    if (attr->theName->getNamespace()->byteEqual("xsi", 3) &&
-        attr->theName->getLocalName()->byteEqual("nil", 3))
+    if (attr->getNodeName()->getNamespace()->byteEqual("xsi", 3) &&
+        attr->getNodeName()->getLocalName()->byteEqual("nil", 3))
     {
       nilled = true;
       break;
@@ -1323,7 +1344,9 @@ store::Iterator_t ElementNode::getAttributes() const
 ********************************************************************************/
 store::Iterator_t ElementNode::getChildren() const
 {
-  if(this->hasLoaderAttached())
+  //if(this->hasLoaderAttached())
+  //if(!this->isFullLoaded())
+  if(!(theFlags&IsNotFullLoaded))
     return (new ChildrenIteratorLazy((XmlNode*)this));
   else
   {
@@ -1492,13 +1515,13 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
   if (!haveLocalBindings())
   {
     NsBindingsContext* parent = theNsContext;
-    theNsContext = new NsBindingsContext(0);
+    theNsContext = new NsBindingsContext;//(0);
     theNsContext->setParent(parent);
   }
 
   theNsContext->addBinding(prefix, ns);
 
-  theFlags |= XmlNode::HaveLocalBindings;
+  theFlags |= HaveLocalBindings;
 }
 
 
@@ -1584,7 +1607,8 @@ void ElementNode::addBaseUriProperty(
     typedValue = new AnyUriItemImpl(resolvedUri);
   }
 
-  new AttributeNode(NULL, this, 0, qname, tname, typedValue, NULL, true);
+  new AttributeNode(NULL, this, 0, qname, tname, typedValue, false,
+                    false, false, true);
   setHaveBaseUri();
 }
 
@@ -1616,7 +1640,7 @@ void ElementNode::adjustBaseUriProperty(
     typedValue = new AnyUriItemImpl(resolvedUri);
   }
 
-  attr->theTypedValue.transfer(typedValue);
+  attr->setTypedValue(typedValue);
 }
 
 
@@ -1670,6 +1694,7 @@ xqp_string ElementNode::show() const
 /*******************************************************************************
   Node constructor used during loading of an xml doc
 ********************************************************************************/
+
 ElementTreeNode::ElementTreeNode(
     store::Item_t& nodeName,
     store::Item_t& typeName,
@@ -1681,7 +1706,7 @@ ElementTreeNode::ElementTreeNode(
   if (numBindings > 0)
   {
     theNsContext = new NsBindingsContext(numBindings);
-    theFlags |= XmlNode::HaveLocalBindings;
+    theFlags |= HaveLocalBindings;
   }
 
   if (numAttributes > 0)
@@ -1705,9 +1730,10 @@ ElementTreeNode::ElementTreeNode(
     store::Item_t&              typedValue,
     std::vector<store::Item_t>* typedValueV,
     const store::NsBindings*    localBindings,
+    bool doswap_nsbindings,
     xqpStringStore_t&           baseUri)
   :
-  ElementNode(tree, parent, pos, nodeName, typeName, localBindings)
+  ElementNode(tree, parent, pos, nodeName, typeName, localBindings, doswap_nsbindings)
 {
   try
   {
@@ -1770,6 +1796,14 @@ xqpStringStore_t ElementTreeNode::getBaseURIInternal(bool& local) const
   return theParent ? theParent->getBaseURI().getp() : 0;
 }
 
+void ElementTreeNode::setIsFullLoaded(bool is_loaded)
+{
+  if(is_loaded)
+    theFlags &= ~IsNotFullLoaded;
+  else
+    theFlags |= IsNotFullLoaded;
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1793,7 +1827,7 @@ ElementDagNode::ElementDagNode(
     const store::NsBindings*    localBindings,
     xqpStringStore_t&           baseUri)
   :
-  ElementNode(tree, parent, pos, nodeName, typeName, localBindings)
+  ElementNode(tree, parent, pos, nodeName, typeName, localBindings, false)
 {
   try
   {
@@ -1853,12 +1887,9 @@ xqpStringStore_t ElementDagNode::getBaseURIInternal(bool& local) const
 
 
 /*******************************************************************************
-  Node constructor used by FastXmlLoader
+  Node constructor used by FastXmlLoader only.
 ********************************************************************************/
-AttributeNode::AttributeNode(
-    store::Item_t&  attrName,
-    store::Item_t&  typeName,
-    bool            isIdrefs)
+AttributeNode::AttributeNode(store::Item_t& attrName, store::Item_t& typeName)
   :
   XmlNode(),
   theFlags(0)
@@ -1866,15 +1897,12 @@ AttributeNode::AttributeNode(
   theName.transfer(attrName);
   theTypeName.transfer(typeName);
 
-  if (isIdrefs)
-    theFlags |= XmlNode::IsIdRefs;
-
   QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
 
   if (qn->isBaseUri())
-    theFlags |= XmlNode::IsBaseUri;
+    theFlags |= IsBaseUri;
   else if (qn->isId())
-    theFlags |= XmlNode::IsId;
+    theFlags |= IsId;
 
   NODE_TRACE1("Loaded attr node " << this << " name = "
               << *theName->getStringValue());
@@ -1890,81 +1918,102 @@ AttributeNode::AttributeNode(
     store::Item_t&              attrName,
     store::Item_t&              typeName,
     store::Item_t&              typedValue,
-    std::vector<store::Item_t>* typedValueV,
+    bool                        isListValue,
+    bool                        isId,
+    bool                        isIdRef,
     bool                        hidden)
   :
   XmlNode(tree, parent, pos, store::StoreConsts::attributeNode),
   theFlags(0)
 {
-  theName.transfer(attrName);
-  theTypeName.transfer(typeName);
+  ElementNode* p = reinterpret_cast<ElementNode*>(parent);
 
-  if (typedValueV == NULL)
+  if (p)
+    p->checkUniqueAttr(attrName);
+
+  // Normally, no exceptions are expected by the rest of the code here, but
+  // just to be safe, we use a try-catch.
+  try
   {
-    assert(typedValue != NULL);
-    theTypedValue.transfer(typedValue);
-  }
-  else
-  {
-    assert(!typedValueV->empty());
-    theTypedValue.transfer((*typedValueV)[0]);
-  }
-
-  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
-
-  if (qn->isBaseUri())
-    theFlags |= XmlNode::IsBaseUri;
-  else if (qn->isId())
-    theFlags |= XmlNode::IsId;
-
-  if (hidden)
-    setHidden();
-
-  if (parent)
-  {
-    ElementNode* p = reinterpret_cast<ElementNode*>(parent);
-    p->checkUniqueAttr(theName);
-
-    // If this is an explicit base uri attribute, set or update the base-uri
-    // property of the parent.
-    if (isBaseUri() && !isHidden())
+    if (attrName->getPrefix()->empty() && !attrName->getNamespace()->empty())
     {
-      xqpStringStore_t parentBaseUri = p->getBaseURI();
-      xqpStringStore_t baseUri = this->getStringValue();
+      xqpStringStore_t prefix(new xqpStringStore("XXX"));
+      GET_FACTORY().createQName(attrName,
+                                attrName->getNamespace(),
+                                prefix,
+                                attrName->getLocalName());
+    }
 
-      if (p->haveBaseUri())
+    theName.transfer(attrName);
+    theTypeName.transfer(typeName);
+    theTypedValue.transfer(typedValue);
+
+    if (isListValue)
+      setHaveListValue();
+
+    QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
+
+    if (qn->isBaseUri())
+      theFlags |= IsBaseUri;
+    else if (qn->isId() || isId)
+      theFlags |= IsId;
+    else if (isIdRef)
+      theFlags |= IsIdRefs;
+
+    if (hidden)
+      setHidden();
+
+    if (p)
+    {
+      // If this is an explicit base uri attribute, set or update the base-uri
+      // property of the parent. Else, add the ns binding implied by the attr
+      // name into the in-scope ns bindings of the parent (if this ns binding
+      // is not there already) 
+      if (isBaseUri() && !isHidden())
       {
-        ulong numAttrs = p->numAttributes();
-        for (ulong i = 0; i < numAttrs; i++)
+        xqpStringStore_t parentBaseUri = p->getBaseURI();
+        xqpStringStore_t baseUri = this->getStringValue();
+
+        if (p->haveBaseUri())
         {
-          AttributeNode* attr = p->getAttr(i);
-          if (attr->isBaseUri() && attr->isHidden())
+          ulong numAttrs = p->numAttributes();
+          for (ulong i = 0; i < numAttrs; i++)
           {
-            attr->disconnect();
-            delete attr;
-            break;
+            AttributeNode* attr = p->getAttr(i);
+            if (attr->isBaseUri() && attr->isHidden())
+            {
+              attr->disconnect();
+              delete attr;
+              break;
+            }
           }
         }
+        
+        if (parentBaseUri == NULL)
+          p->addBaseUriProperty(baseUri, parentBaseUri);
+        else
+          p->addBaseUriProperty(parentBaseUri, baseUri);
+      }
+      else if (!isHidden())
+      {
+        p->addBindingForQName(theName);
       }
 
-      if (parentBaseUri == NULL)
-        p->addBaseUriProperty(baseUri, parentBaseUri);
+      // Connect "this" to its parent. We do this at the end of this method
+      // so that we don't have to undo it inside the catch clause below.
+      if (pos < 0)
+        theParent->attributes().push_back(this, false);
       else
-        p->addBaseUriProperty(parentBaseUri, baseUri);
+        theParent->attributes().insert(this, pos, false);
     }
+  }
+  catch (...)
+  {
+    theName = NULL;
+    theTypeName = NULL;
+    theTypedValue = NULL;
 
-    // Else add the ns binding implied by the attr name into the in-scope ns
-    // bindings of the parent (if this ns binding is not there already) 
-    else if (!isHidden())
-    {
-      p->addBindingForQName(theName);
-    }
-
-    // Connect "this" to its parent
-    if (pos < 0)
-      parent->attributes().push_back(this, false);
-    else
-      parent->attributes().insert(this, pos, false);
+    throw;
   }
 
   NODE_TRACE1("Constructed attribute node " << this << " parent = "
@@ -1972,7 +2021,7 @@ AttributeNode::AttributeNode(
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << *theName->getStringValue()
-              << " value = " << *theTypedValue->getStringValue());
+              << " value = " << *getStringValue());
 }
 
 
@@ -1984,14 +2033,82 @@ AttributeNode::~AttributeNode()
   NODE_TRACE1("Deleted attr node " << this);
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void AttributeNode::setTypedValue(store::Item_t& value)
+{
+  resetHaveListValue();
+  theTypedValue.transfer(value);
+}
+
 
 /*******************************************************************************
 
 ********************************************************************************/
+void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+{
+  if (haveListValue())
+  {
+    iter = new ItemIterator(getValueVector().getItems());
+    val = NULL;
+  }
+  else
+  {
+    val = theTypedValue;
+    iter = NULL;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t AttributeNode::getStringValue() const
+{
+  if (haveListValue())
+  {
+    const std::vector<store::Item_t>& items = getValueVector().getItems();
+
+    std::string str = items[0]->getStringValue()->c_str();
+
+    ulong size = items.size();
+    for (ulong i = 1; i < size; i++)
+    {
+      str += " ";
+      str += items[i]->getStringValue()->str();
+    }
+
+    return new xqpStringStore(str);
+  }
+  else
+  {
+    return theTypedValue->getStringValue();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t AttributeNode::getAtomizationValue() const
+{
+  if (haveListValue())
+  {
+    ZORBA_ASSERT(0);
+  }
+  else
+  {
+    return theTypedValue;
+  }
+}
+/*******************************************************************************
+
+********************************************************************************/
 XmlNode* AttributeNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2036,16 +2153,28 @@ XmlNode* AttributeNode::copy2(
   else
   {
 docopy:
+    bool isListValue;
+    bool isId, isIdRefs;
+
     if (copymode.theTypePreserve)
     {
       typeName = theTypeName;
       typedValue = theTypedValue;
+
+      isListValue = haveListValue();
+      isId = this->isId();
+      isIdRefs = this->isIdRefs();
     }
     else
     {
+      isListValue = false;
+      isId = false;
+      isIdRefs = false;
+
       typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
-      if (theTypedValue->getType() == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+      if (!haveListValue() &&
+          theTypedValue->getType() == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
       {
         typedValue = theTypedValue;
       }
@@ -2062,7 +2191,7 @@ docopy:
         tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
       copyNode = new AttributeNode(tree, parent, pos, nodeName,
-                                   typeName, typedValue, NULL);
+                                   typeName, typedValue, isListValue, isId, isIdRefs);
     }
     catch (...)
     {
@@ -2083,34 +2212,10 @@ docopy:
 /*******************************************************************************
 
 ********************************************************************************/
-void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
-{
-  val = theTypedValue;
-  iter = NULL;
-}
-
-
-store::Item_t AttributeNode::getAtomizationValue() const
-{
-  return theTypedValue;
-}
-
-xqpStringStore_t AttributeNode::getStringValue() const
-{
-  if (theTypedValue != 0)
-    return theTypedValue->getStringValue();
-  else
-    return new xqpStringStore("");
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 xqp_string AttributeNode::show() const
 {
-  return xqpString::concat(theName->getStringValue(), "=\"", 
-         (theTypedValue != NULL ? theTypedValue->show() : ""), "\"");
+  return xqpString::concat(theName->getStringValue(), "=\"",
+                           getStringValue()->str(), "\"");
 }
 
 
@@ -2119,6 +2224,7 @@ xqp_string AttributeNode::show() const
 //  class TextNode                                                             //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
 
 /*******************************************************************************
   Node constructor used by FastXmlLoader
@@ -2129,6 +2235,7 @@ TextNode::TextNode(xqpStringStore_t& value) : XmlNode()
 
   NODE_TRACE1("Loaded text node " << this << " content = " << *theContent);
 }
+
 
 /*******************************************************************************
 
@@ -2174,9 +2281,9 @@ TextNode::~TextNode()
 
 ********************************************************************************/
 XmlNode* TextNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2282,7 +2389,7 @@ store::Item_t TextNode::getAtomizationValue() const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", theContent, "</text>");
+  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", theContent.getp(), "</text>");
 }
 
 
@@ -2305,6 +2412,7 @@ PiNode::PiNode(xqpStringStore_t& target, xqpStringStore_t& content)
 
   NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget << std::endl);
 }
+
 
 /*******************************************************************************
 
@@ -2349,9 +2457,9 @@ PiNode::~PiNode()
 
 ********************************************************************************/
 XmlNode* PiNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2454,6 +2562,7 @@ CommentNode::CommentNode(xqpStringStore_t& content)
   NODE_TRACE1("Loaded comment node " << this << " content = " << *theContent);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2496,9 +2605,9 @@ CommentNode::~CommentNode()
 
 ********************************************************************************/
 XmlNode* CommentNode::copy2(
-    XmlNode*        rootParent,
-    XmlNode*        parent,
-    long            pos,
+    XmlNode*               rootParent,
+    XmlNode*               parent,
+    long                   pos,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);

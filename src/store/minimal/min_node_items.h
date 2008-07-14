@@ -21,6 +21,7 @@
 #include "zorbamisc/config/platform.h"
 #include "zorbautils/fatal.h"
 #include "store/api/item.h"
+#include "store/minimal/min_item_vector.h"
 #include "store/minimal/min_ordpath.h"
 #include "store/minimal/min_node_vector.h"
 #include "store/minimal/min_node_updates.h"
@@ -48,7 +49,6 @@ extern ConstrNodeVector dummyVector;
   ZORBA_FATAL(0, "Invalid method invocation on " \
               << store::StoreConsts::toString(getNodeKind()))
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -59,7 +59,10 @@ protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
   ulong             theId;
+public:
   XmlNode         * theRootNode;
+  //minNodeVector  xml_nodes;//keep all xml nodes here
+  XmlLoader_t   attachedloader;
 
 public:
   XmlTree(XmlNode* root, ulong id);
@@ -109,16 +112,6 @@ class XmlNode : public store::Item
   friend class UpdReplaceTextValue;
   friend class BasicItemFactory;
 
-public:
-  enum NodeFlags
-  {
-    HaveTypedValue    =   1,
-    HaveLocalBindings =   2,
-    IsId              =   4,
-    IsIdRefs          =   8,
-    IsBaseUri         =  32,
-    IsHidden          =  64
-  };
 
 protected:
   //XmlTree  * theTree;
@@ -276,8 +269,10 @@ public:
   virtual bool isId() const              { NODE_STOP; return false; }
   virtual bool isIdRefs() const          { NODE_STOP; return false; }
 
-  virtual XmlLoader_t hasLoaderAttached() const         {return NULL;}
-  virtual unsigned int        getDepth()         {return 0;}//depth is usefull only for loaded element nodes
+  //virtual XmlLoader_t hasLoaderAttached() const         {return NULL;}
+  virtual bool isFullLoaded() const       {return true;}
+  virtual unsigned int        getDepth()  {return 0;}         //depth is usefull only for loaded element nodes
+
 protected:
   virtual xqpStringStore_t getBaseURIInternal(bool& local) const;
 
@@ -289,7 +284,6 @@ protected:
   bool removeAttr(XmlNode* attr);
 };
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -298,6 +292,7 @@ class DocumentNode : public XmlNode
 protected:
   xqpStringStore_t    theBaseUri;
   xqpStringStore_t    theDocUri;
+
 
 public:
   DocumentNode(
@@ -357,8 +352,10 @@ class DocumentTreeNode : public DocumentNode
 {
 private:
   LoadedNodeVector theChildren;
+
 public:
-  XmlLoader_t   attachedloader;//for documents and elements might be false. Means it is full loaded
+  //XmlLoader_t   attachedloader;//for documents and elements might be false. Means it is full loaded
+  bool  is_full_loaded;
 
   DocumentTreeNode(
         xqpStringStore_t& baseUri,
@@ -375,7 +372,8 @@ public:
   XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
 
   void finalizeNode()                { theChildren.compact(); }
-  virtual XmlLoader_t hasLoaderAttached() const          {return attachedloader;}
+  //virtual XmlLoader_t hasLoaderAttached() const          {return attachedloader;}
+  virtual bool isFullLoaded() const              {return is_full_loaded;}
 };
 
 
@@ -411,12 +409,23 @@ class ElementNode : public XmlNode
   friend class ElementTreeNode;
   friend class AttributeNode;
 public:
+  typedef enum ElemFlags
+  {
+    IsId              =   1,
+    IsIdRefs          =   2,
+    HaveTypedValue    =   4,
+    HaveListValue     =   8,
+    HaveLocalBindings =   16,
+    HaveBaseUri       =   32,
+    IsNotFullLoaded   =   64
+  };
+public:
   store::Item_t                theName;
 protected:
   store::Item_t                theTypeName;
   store::Item_t         theTypedValue;
   NsBindingsContext_t   theNsContext;
-  uint32_t              theFlags;
+  uint16_t              theFlags;
 
 public:
   ElementNode(
@@ -429,7 +438,8 @@ public:
         long              pos,
         store::Item_t&           nodeName,
         store::Item_t&           typeName,
-        const store::NsBindings* localBindings);
+        const store::NsBindings* localBindings,
+        bool doswap_nsbindings);
 
   virtual ~ElementNode();
 
@@ -462,15 +472,15 @@ public:
   // SimpleStore Methods
   // 
 
-  bool isId() const             { return (theFlags & XmlNode::IsId) != 0; }
-  void resetIsId()              { theFlags &= ~XmlNode::IsId; }
-  bool isIdRefs() const         { return (theFlags & XmlNode::IsIdRefs) != 0; }
-  void resetIsIdRefs()          { theFlags &= ~XmlNode::IsIdRefs; }
-  bool haveBaseUri() const      { return (theFlags & XmlNode::IsBaseUri); }
-  void setHaveBaseUri()         { theFlags |= XmlNode::IsBaseUri; }
-  void resetHaveBaseUri()       { theFlags &= ~XmlNode::IsBaseUri; }
+  bool isId() const             { return (theFlags & IsId) != 0; }
+  void resetIsId()              { theFlags &= ~IsId; }
+  bool isIdRefs() const         { return (theFlags & IsIdRefs) != 0; }
+  void resetIsIdRefs()          { theFlags &= ~IsIdRefs; }
+  bool haveBaseUri() const      { return (theFlags & HaveBaseUri); }
+  void setHaveBaseUri()         { theFlags |= HaveBaseUri; }
+  void resetHaveBaseUri()       { theFlags &= ~HaveBaseUri; }
 
-  bool haveLocalBindings() const{ return (theFlags & XmlNode::HaveLocalBindings) != 0; }
+  bool haveLocalBindings() const{ return (theFlags & HaveLocalBindings) != 0; }
 
   NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
@@ -540,7 +550,7 @@ protected:
   LoadedNodeVector  theAttributes;
 
 public:
-  XmlLoader_t   attachedloader;//for documents and elements might be false. Means it is full loaded
+//  XmlLoader_t   attachedloader;//for documents and elements might be false. Means it is full loaded
   unsigned int           depth;
 public:
   ElementTreeNode(
@@ -558,6 +568,7 @@ public:
         store::Item_t&              typedValue,
         std::vector<store::Item_t>* typedValueV,
         const store::NsBindings*    localBindings,
+        bool doswap_nsbindings,
         xqpStringStore_t&           baseUri);
 
   ulong numAttributes() const          { return theAttributes.size(); }
@@ -580,7 +591,9 @@ public:
     theAttributes.compact();
   }
 
-  virtual XmlLoader_t hasLoaderAttached() const        {return attachedloader;}
+//  virtual XmlLoader_t hasLoaderAttached() const        {return attachedloader;}
+  virtual bool isFullLoaded() const              {return !(theFlags&IsNotFullLoaded);}
+  void setIsFullLoaded(bool is_loaded);
   virtual unsigned int        getDepth()         {return depth;}
 
 protected:
@@ -635,7 +648,6 @@ public:
     theChildren.compact();
     theAttributes.compact();
   }
-
 protected:
   xqpStringStore_t getBaseURIInternal(bool& local) const;
 
@@ -654,17 +666,25 @@ class AttributeNode : public XmlNode
   friend class ElementNode;
   friend class ConstrElementNode;
 
+public:
+  typedef enum AttrFlags
+  {
+    IsId              =   1,
+    IsIdRefs          =   2,
+    IsBaseUri         =   4,
+    IsHidden          =   8,
+    HaveListValue     =  16
+  };
 protected:
   store::Item_t   theName;
   store::Item_t   theTypeName;
   store::Item_t   theTypedValue;
-  uint32_t theFlags;
+  uint16_t theFlags;
 
 public:
   AttributeNode(
         store::Item_t&  attrName,
-        store::Item_t&  typeName,
-        bool            isIdrefs);
+        store::Item_t&  typeName);
 
   AttributeNode(
         XmlTree*  tree,
@@ -672,48 +692,76 @@ public:
         long      pos,
         store::Item_t&   attrName,
         store::Item_t&   typeName,
-        store::Item_t&   typedValue,
-        std::vector<store::Item_t>* typedValueV,
-        bool      hidden = false);
+        store::Item_t&              typedValue,
+        bool                        isListValue,
+        bool                        isId = false,
+        bool                        isIdRef = false,
+        bool                        hidden = false);
 
   virtual ~AttributeNode();
 
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
         const store::CopyMode& copymode) const;
 
-  store::StoreConsts::NodeKind getNodeKind() const 
-  { 
-    return store::StoreConsts::attributeNode; 
+  store::StoreConsts::NodeKind getNodeKind() const
+  {
+    return store::StoreConsts::attributeNode;
   }
 
-  store::Item* getType() const       { return theTypeName.getp(); }
+  store::Item* getType() const     { return theTypeName.getp(); }
 
-  store::Item* getNodeName() const   { return theName.getp(); }
+  store::Item* getNodeName() const { return theName.getp(); }
 
-  bool isId() const           { return (theFlags & XmlNode::IsId) != 0; }
-  void resetIsId()            { theFlags &= ~XmlNode::IsId; }
+  bool isId() const           { return (theFlags & IsId) != 0; }
+  void resetIsId()            { theFlags &= ~IsId; }
 
-  bool isIdRefs() const       { return (theFlags & XmlNode::IsIdRefs) != 0; }
-  void resetIsIdRefs()        { theFlags &= ~XmlNode::IsIdRefs; }
+  bool isIdRefs() const       { return (theFlags & IsIdRefs) != 0; }
+  void resetIsIdRefs()        { theFlags &= ~IsIdRefs; }
 
-  bool isHidden() const       { return (theFlags & XmlNode::IsHidden) != 0; }
-  void setHidden()            { theFlags |= XmlNode::IsHidden; }
+  bool haveListValue() const  { return (theFlags & HaveListValue) != 0; }
+  void resetHaveListValue()   { theFlags &= ~HaveListValue; }
+  void setHaveListValue()     { theFlags |= HaveListValue; }
 
-  bool isBaseUri() const      { return (theFlags & XmlNode::IsBaseUri) != 0; }
+  bool isHidden() const       { return (theFlags & IsHidden) != 0; }
+  void setHidden()            { theFlags |= IsHidden; }
 
+  bool isBaseUri() const      { return (theFlags & IsBaseUri) != 0; }
+
+  void setTypedValue(store::Item_t& val);
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-  store::Item_t getAtomizationValue() const;
+
   xqpStringStore_t getStringValue() const;
+  store::Item_t getAtomizationValue() const;
 
   xqp_string show() const;
 
-  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+  void replaceValue(
+        xqpStringStore_t& newValue,
+        store::Item_t&    oldType,
+        store::Item_t&    oldValue,
+        uint16_t&         oldFlags);
+
+  void restoreValue(
+        store::Item_t&    oldType,
+        store::Item_t&    oldValue,
+        uint16_t          oldFlags);
 
   void rename(store::Item_t& newname, store::Item_t& oldName);
+
+protected:
+  ItemVector& getValueVector() 
+  {
+    return *reinterpret_cast<ItemVector*>(theTypedValue.getp()); 
+  }
+
+  const ItemVector& getValueVector() const
+  {
+    return *reinterpret_cast<ItemVector*>(theTypedValue.getp()); 
+  }
 };
    
 

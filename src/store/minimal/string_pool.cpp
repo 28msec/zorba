@@ -31,6 +31,7 @@ StringPool::~StringPool()
     if (theHashTab[i].theItem != NULL &&
         theHashTab[i].theItem->getRefCount() != 1)
     {
+      xqpStringStore_t  strit = theHashTab[i].theItem;
       std::cout << "i = " << i << " String " << theHashTab[i].theItem->c_str()
                 << " is still in the pool" << std::endl;
       //delete theHashTab[i].theString.getp();
@@ -136,7 +137,6 @@ bool StringPool::insertc(xqpStringStore* str, xqpStringStore_t& outStr)
 ********************************************************************************/
 void StringPool::garbageCollect()
 {
-/*+debug this implem looks fishy
   HashEntry<xqpStringStore_t, DummyHashValue>* entry;
 
   HashEntry<xqpStringStore_t, DummyHashValue>* freeList = NULL;
@@ -204,7 +204,7 @@ void StringPool::garbageCollect()
     entry->setNext(theHashTab[theHashTabSize].getNext());
     theHashTab[theHashTabSize].setNext(freeList);
   }
-  */
+
 }
 
 } // namespace storeminimal

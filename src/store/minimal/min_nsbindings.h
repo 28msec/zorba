@@ -40,7 +40,7 @@ public:
 
   NsBindingsContext(ulong numBindings);
 
-  NsBindingsContext(const store::NsBindings& bindings);
+  NsBindingsContext(const store::NsBindings& bindings, bool doswap = false);
 
   ~NsBindingsContext();
 

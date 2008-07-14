@@ -52,6 +52,28 @@ typedef char    xmlChar;
 
 typedef rchandle<DocumentTreeNode>    DocumentTreeNode_t;
 
+
+class mystring
+{
+  char  prealloc_buff[100];
+  char  *buff;
+  int   buff_total;
+  int   buff_written;
+  int   grow_by;
+public:
+  mystring(int grow_by);
+  ~mystring();
+
+  void clear();
+  void append(char c);
+  int   length();
+  const char *c_str();
+  bool empty();
+  bool byteEqual(const char *str, int str_len);
+
+};
+
+
 /*******************************************************************************
 
   theBaseUri   : The loader does not not own the string memory
@@ -82,6 +104,7 @@ protected:
   std::string                    theWarnings;
 
   char                             theBuffer[4096];
+  mystring                         temp_buff;
   int  buff_size;
   int  buff_pos;
 
@@ -96,7 +119,9 @@ protected:
   //  xqpStringStore_t   prefix;
   //  xqpStringStore_t   uri;
     char    localname[100];
+    int     localname_len;
     char    prefix[100];
+    int     prefix_len;
     xqpStringStore_t   uri;
   }QNAME_ELEM;
 
@@ -109,13 +134,18 @@ protected:
   }TAG_ELEM;
   std::list<TAG_ELEM*>      tag_stack;
 
-  typedef struct
+  struct ATTR_ELEM
   {
+    //ATTR_ELEM() : value(20) {}
+
     QNAME_ELEM    name;
 
     xqpStringStore_t   value;
-  }ATTR_ELEM;
-  typedef std::list<ATTR_ELEM>    attr_list_t;
+    //mystring    value;
+  };
+  typedef std::vector<ATTR_ELEM>    attr_list_t;
+  attr_list_t elem_attrs;
+
 
   store::ItemFactory                    * theFactory;
   error::ErrorManager            * theErrorManager;
@@ -140,11 +170,11 @@ public:
   ~XmlLoader();
 
   //load all doc
-  XmlNode* loadXml(xqpStringStore_t& uri, 
+  XmlNode* loadXml(const xqpStringStore_t& uri, 
                    std::istream& stream);
   //or start lazy load
   XmlNode* startloadXml(
-                   xqpStringStore_t& uri, 
+                   const xqpStringStore_t& uri, 
                    std::istream* xmlStream);
   bool continueloadXml(
                    enum lazyloadType_t,//for lazy loading, UNTIL_START_ELEMENT or UNTIL_END_ELEMENT
@@ -157,7 +187,7 @@ protected:
   void skip_whitespaces();
   bool read_qname(QNAME_ELEM &qname, bool read_attr);
   bool read_attributes(store::NsBindings *nsbindings, attr_list_t& attrs);
-  bool fill_in_uri(store::NsBindings *nsbindings, char* prefix, xqpStringStore_t &result_uri);
+  bool fill_in_uri(store::NsBindings *nsbindings, char* prefix, int prefix_len, xqpStringStore_t &result_uri);
   bool compareQNames(QNAME_ELEM &name1, QNAME_ELEM &name2);
   bool read_tag();
   bool read_characters();

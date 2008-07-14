@@ -141,8 +141,8 @@ public:
   store::Collection_t getCollection(const xqpStringStore_t& uri);
   void deleteCollection(const xqpStringStore_t& uri);
 
-  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream& stream);
-  store::Item_t loadDocument(xqpStringStore_t& uri, std::istream* stream);
+  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream);
+  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream);
   void addNode(const xqpStringStore* uri, const store::Item_t&	 node);
   store::Item_t getDocument(const xqpStringStore_t& uri);
   void deleteDocument(const xqpStringStore_t& uri);
@@ -174,6 +174,7 @@ public:
                                 bool copyNodes = false, 
                                 bool lazy = true);
 
+  store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
 };
 
 

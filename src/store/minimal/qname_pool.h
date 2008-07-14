@@ -128,6 +128,8 @@ protected:
         const xqpStringStore* ns,
         const char* pre,
         const char* ln,
+        ulong       prelen,
+        ulong       lnlen,
         ulong       hval);
   QNHashEntry* hashFind(
       const xqpStringStore* ns,

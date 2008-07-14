@@ -218,14 +218,14 @@ public:
 
   DateTimeItemNaive(const DateTime* aValue) : theValue(*aValue) { };
   
-  xqp_dateTime* getDateTimeValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_date* getDateValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_time* getTimeValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gYearMonth* getGYearMonthValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gYear* getGYearValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gMonth* getGMonthValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gMonthDay* getGMonthDayValue() const { return const_cast<xqp_dateTime*>(&theValue); }
-  xqp_gDay* getGDayValue() const { return const_cast<xqp_dateTime*>(&theValue); }
+  const xqp_dateTime& getDateTimeValue() const { return theValue; }
+  const xqp_date& getDateValue() const { return theValue; }
+  const xqp_time& getTimeValue() const { return theValue; }
+  const xqp_gYearMonth& getGYearMonthValue() const { return theValue; }
+  const xqp_gYear& getGYearValue() const { return theValue; }
+  const xqp_gMonth& getGMonthValue() const { return theValue; }
+  const xqp_gMonthDay& getGMonthDayValue() const { return theValue; }
+  const xqp_gDay& getGDayValue() const { return theValue; }
   
   store::Item* getType() const;
 
@@ -243,22 +243,19 @@ protected:
 };
 
 
-
 /*******************************************************************************
   class DurationItem
 ********************************************************************************/
 class DurationItemNaive : public AtomicItem
 {
 protected:
-  DurationBase_t theValue;
+  Duration theValue;
 
 public:
-  DurationItemNaive(xqp_duration& aValue) : theValue(aValue) { };
+  DurationItemNaive(const xqp_duration* aValue) : theValue(*aValue) { };
 
   xqpStringStore_t getStringValue() const;
-  xqp_duration getDurationValue() const;
-  xqp_yearMonthDuration getYearMonthDurationValue() const;
-  xqp_dayTimeDuration getDayTimeDurationValue() const;
+  const xqp_duration& getDurationValue() const;
   store::Item* getType() const;
   bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
   store::Item_t getEBV( ) const;
@@ -269,17 +266,19 @@ public:
 
 /*******************************************************************************
   class DayTimeDurationItem
- ********************************************************************************/
+********************************************************************************/
 class DayTimeDurationItemNaive : public AtomicItem
 {
 protected:
-  DayTimeDuration_t theValue;
+  DayTimeDuration theValue;
+  Duration durationCastValue;
 
 public:
-  DayTimeDurationItemNaive(xqp_dayTimeDuration& aValue) : theValue(aValue) { };
+  DayTimeDurationItemNaive(const xqp_dayTimeDuration* aValue);
 
   xqpStringStore_t getStringValue() const;
-  xqp_dayTimeDuration getDayTimeDurationValue() const;
+  const xqp_dayTimeDuration& getDayTimeDurationValue() const;
+  const xqp_duration& getDurationValue() const;
   store::Item* getType() const;
   bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
   store::Item_t getEBV( ) const;
@@ -294,17 +293,19 @@ public:
 class YearMonthDurationItemNaive : public AtomicItem
 {
 protected:
-  YearMonthDuration_t theValue;
+  YearMonthDuration theValue;
+  Duration durationCastValue;
 
 public:
-  YearMonthDurationItemNaive(xqp_yearMonthDuration& aValue) : theValue(aValue) { };
-  virtual xqpStringStore_t getStringValue() const;
-  virtual xqp_yearMonthDuration getYearMonthDurationValue() const;
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  virtual store::Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-  virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
+  YearMonthDurationItemNaive(const xqp_yearMonthDuration* aValue);
+  xqpStringStore_t getStringValue() const;
+  const xqp_yearMonthDuration& getYearMonthDurationValue() const;
+  const xqp_duration& getDurationValue() const;
+  store::Item* getType() const;
+  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  store::Item_t getEBV( ) const;
+  xqp_string show() const;
+  uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
 };
 
 
@@ -668,9 +669,9 @@ protected:
 	xqp_double theValue;
 
 public:
-	DoubleItemNaive ( xqp_double aValue ) : theValue ( aValue ) {}
+	DoubleItemNaive ( const xqp_double& aValue ) : theValue ( aValue ) {}
 
-	virtual xqp_double getDoubleValue() const { return theValue; }
+	virtual const xqp_double& getDoubleValue() const { return theValue; }
 	
 	virtual store::Item* getType() const;
   virtual bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0 ) const;

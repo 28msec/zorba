@@ -13,33 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_ITEM_ITERATOR_H
-#define ZORBA_STORE_ITEM_ITERATOR_H
+#include "store/api/item.h"
+#include "store/minimal/min_item_vector.h"
 
-#include <vector>
-#include "store/api/iterator.h"
-#include "common/shared_types.h"
+namespace zorba { namespace storeminimal{
 
-namespace zorba { namespace storeminimal {
-
-class ItemIterator : public store::Iterator
+ItemVector::ItemVector(std::vector<store::Item_t>& items)
 {
-private:
-  const std::vector<store::Item_t>* theItems;
-  std::vector<store::Item_t>::const_iterator theIterator;
+  ulong numItems = items.size();
 
-public:
-  ItemIterator(const std::vector<store::Item_t> &aItems);
-  ItemIterator(); // construct the empty sequence
-  virtual ~ItemIterator(){}
+  theItems.resize(numItems);
 
-  virtual void open();
-  virtual bool next(store::Item_t&);
-  virtual void reset();
-  virtual void close();
-};
+  for (ulong i = 0; i < numItems; i++)
+    theItems[i].transfer(items[i]);
+}
+
 
 } // namespace storeminimal
 } // namespace zorba
-
-#endif

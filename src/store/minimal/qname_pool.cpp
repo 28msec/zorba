@@ -139,7 +139,8 @@ store::Item_t QNamePool::insert(
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
   QNHashEntry* entry = hashFind(pooledNs.getp(), pre, ln,
-                                //pooledNs->bytes(), strlen(pre), strlen(ln),
+                                //pooledNs->bytes(), 
+                                strlen(pre), strlen(ln),
                                 hval);
 
   if (entry == 0)
@@ -281,9 +282,9 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
     const xqpStringStore* ns,
     const char* pre,
     const char* ln,
-//    ulong       nslen,
-//    ulong       prelen,
-//    ulong       lnlen,
+    //ulong       nslen,
+    ulong       prelen,
+    ulong       lnlen,
     ulong       hval)
 {
   QNHashEntry* entry = theHashSet.bucket(hval);
@@ -295,8 +296,8 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
   {
     QNameItemImpl* qn = entry->theItem;
 
-    if (qn->theLocal->byteEqual(ln) &&
-        qn->thePrefix->byteEqual(pre) &&
+    if (qn->theLocal->byteEqual(ln, lnlen) &&
+        qn->thePrefix->byteEqual(pre, prelen) &&
         qn->theNamespace->byteEqual(*ns)
         )
       return entry;

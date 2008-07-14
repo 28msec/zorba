@@ -19,6 +19,7 @@
 
 namespace zorba { namespace storeminimal {
 
+
 NsBindingsContext::NsBindingsContext(ulong numBindings)
 {
   theBindings.resize(numBindings);
@@ -29,10 +30,12 @@ NsBindingsContext::NsBindingsContext(ulong numBindings)
 }
 
 
-NsBindingsContext::NsBindingsContext(const store::NsBindings& bindings)
-  :
-  theBindings(bindings)
+NsBindingsContext::NsBindingsContext(const store::NsBindings& bindings, bool doswap)
 {
+  if(doswap)
+	theBindings.swap((store::NsBindings&)bindings);
+  else
+	theBindings = bindings;
 #if 0
   std::cout << "Create binding context2 " << this << "; num bindings = "
             << bindings.size() << std::endl;
@@ -56,14 +59,20 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
   while (currentContext != NULL)
   {
     const store::NsBindings& bindings = currentContext->theBindings;
-    ulong numBindings = bindings.size();
+  /*  ulong numBindings = bindings.size();
 
     for (ulong i = 0; i < numBindings; i++)
     {
       if (bindings[i].first.getStore()->byteEqual(*prefix))
         return bindings[i].second.getStore();
     }
-
+	*/
+	store::NsBindings::const_iterator	nsit;
+	for(nsit = bindings.begin(); nsit != bindings.end(); nsit++)
+	{
+      if ((*nsit).first.getStore()->byteEqual(*prefix))
+        return (*nsit).second.getStore();
+	}
     currentContext = currentContext->getParent();
   }
 
@@ -75,8 +84,8 @@ void NsBindingsContext::addBinding(
     xqpStringStore* prefix,
     xqpStringStore* ns)
 {
+/*+
   ulong numBindings = theBindings.size();
-
   for (ulong i = 0; i < numBindings; i++)
   {
     if (theBindings[i].first.getStore()->byteEqual(*prefix))
@@ -86,7 +95,7 @@ void NsBindingsContext::addBinding(
       return;
     }
   }
-
+*/
   theBindings.push_back(std::pair<xqpString, xqpString>(prefix, ns));
 }
 

@@ -239,10 +239,7 @@ public:
         std::vector<store::Item_t>&      children,
         const store::CopyMode&           copymode);
 
-  store::UpdateConsts::UpdPrimKind getKind() 
-  {
-    return theKind; 
-  }
+  store::UpdateConsts::UpdPrimKind getKind() { return theKind; }
 
   void apply();
   void undo();
@@ -269,10 +266,7 @@ public:
         std::vector<store::Item_t>&      siblings,
         const store::CopyMode&           copymode);
 
-  store::UpdateConsts::UpdPrimKind getKind() 
-  {
-    return theKind; 
-  }
+  store::UpdateConsts::UpdPrimKind getKind() { return theKind; }
 
   void apply();
   void undo();
@@ -327,10 +321,7 @@ public:
         std::vector<store::Item_t>& newChildren,
         const store::CopyMode&      copymode);
 
-  store::UpdateConsts::UpdPrimKind getKind() 
-  {
-    return store::UpdateConsts::UP_REPLACE_CHILD;
-  }
+  store::UpdateConsts::UpdPrimKind getKind() {return store::UpdateConsts::UP_REPLACE_CHILD; }
 
   void apply();
   void undo();
@@ -359,7 +350,7 @@ public:
 
   store::UpdateConsts::UpdPrimKind getKind() 
   {
-    return store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
+    return store::UpdateConsts::UP_REPLACE_ATTRIBUTE; 
   }
 
   void apply();
@@ -395,9 +386,8 @@ public:
 
   store::UpdateConsts::UpdPrimKind getKind() 
   {
-    return store::UpdateConsts::UP_REPLACE_CONTENT;
+    return store::UpdateConsts::UP_REPLACE_CONTENT; 
   }
-
   void apply();
   void undo();
 };
@@ -412,13 +402,20 @@ class UpdReplaceAttrValue : public UpdatePrimitive
 
 protected:
   xqpStringStore_t    theNewValue;
-  xqpStringStore_t    theOldValue;
+
+  store::Item_t       theOldType;
+  store::Item_t       theOldValue;
+  uint16_t            theOldFlags;
 
 public:
   UpdReplaceAttrValue(store::Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
   {
     theNewValue.transfer(newValue);
+    theOldValue = NULL;
+    theOldFlags = 0;
   }
+
+  ~UpdReplaceAttrValue();
 
   store::UpdateConsts::UpdPrimKind getKind() 
   {

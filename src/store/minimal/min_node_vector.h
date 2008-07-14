@@ -28,6 +28,29 @@ namespace zorba {  namespace storeminimal {
 class XmlNode;
 class ConstrNodeVector;
 
+class minNodeVector
+{
+  XmlNode   **node_vector;
+  unsigned int   capacity;
+  unsigned int   size;
+public:
+  minNodeVector();
+  minNodeVector(int initial_capacity);
+  ~minNodeVector();
+
+  void    reserve(int capacity);
+
+  unsigned int get_size() {return size;}
+  XmlNode *getAt(int pos);
+
+  void push_back(XmlNode*);
+
+  void removeAt(int pos, int len);
+
+  void insertAt(int pos, XmlNode *node);
+};
+
+
 
 /*******************************************************************************
 
@@ -45,7 +68,7 @@ protected:
   std::vector<XmlNode*> theNodes;
 
 public:
-  NodeVector() { }
+	NodeVector() {  theNodes.reserve(10); }
   NodeVector(ulong size) : theNodes(size) { }
 
   virtual ~NodeVector() { }

@@ -85,9 +85,9 @@ bool QNameItemImpl::equals(
     long timezone,
     XQPCollator* aCollation) const
 {
-  return (this == item ||
-          (theNamespace->byteEqual(*item->getNamespace()) &&
-           theLocal->byteEqual(*item->getLocalName())));
+  return (this == item);
+          //(theNamespace->byteEqual(*item->getNamespace()) &&
+          // theLocal->byteEqual(*item->getLocalName())));
 }
 
 
@@ -373,7 +373,7 @@ bool DateTimeItemNaive::equals(
 {
   try 
   {
-    return 0 == theValue.compare(aItem->getDateTimeValue(), timezone);
+    return 0 == theValue.compare(&aItem->getDateTimeValue(), timezone);
   }
   catch (InvalidTimezoneException)
   {
@@ -439,59 +439,27 @@ xqp_string DateTimeItemNaive::show() const
 /*******************************************************************************
   class DurationItem
 ********************************************************************************/
-xqp_duration DurationItemNaive::getDurationValue() const
+const xqp_duration& DurationItemNaive::getDurationValue() const
 {
   return theValue;
 }
 
-
-xqp_yearMonthDuration DurationItemNaive::getYearMonthDurationValue() const
-{
-  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
-  if (ymd != NULL)
-    return theValue;
-  else
-    return AtomicItem::getYearMonthDurationValue();
-}
-
-
-xqp_dayTimeDuration DurationItemNaive::getDayTimeDurationValue() const
-{
-  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
-  if (dtd != NULL)
-    return theValue;
-  else
-    return AtomicItem::getDayTimeDurationValue();
-}
-
-
 xqpStringStore_t DurationItemNaive::getStringValue() const
 {
-  return theValue->toString().getStore();
+  return theValue.toString().getStore();
 }
-  
 
 store::Item* DurationItemNaive::getType() const
 {
-  // get the effective type or subtype
-  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
-  if (dtd != NULL)
-    return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
-  
-  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
-  if (ymd != NULL)
-    return GET_STORE().theSchemaTypeNames[XS_YM_DURATION];
-  
   return GET_STORE().theSchemaTypeNames[XS_DURATION];
 }
-
 
 bool DurationItemNaive::equals(
     const store::Item* aItem,
     long timezone,
     XQPCollator* coll ) const
 {
-  return *theValue == *aItem->getDurationValue();
+  return theValue == aItem->getDurationValue();
 }
 
 store::Item_t DurationItemNaive::getEBV() const
@@ -502,25 +470,35 @@ store::Item_t DurationItemNaive::getEBV() const
 
 xqp_string DurationItemNaive::show() const
 {
-  return theValue->toString().getStore();
+  return theValue.toString().getStore();
 }
 
 uint32_t DurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
 {
-  return theValue->hash();
+  return theValue.hash();
 }
 
 /*******************************************************************************
  * class DayTimeDuration
  *******************************************************************************/
-xqp_dayTimeDuration DayTimeDurationItemNaive::getDayTimeDurationValue() const
+DayTimeDurationItemNaive::DayTimeDurationItemNaive(const xqp_dayTimeDuration* aValue) : theValue(*aValue)
+{
+  durationCastValue = *theValue.toDuration();
+}
+
+const xqp_dayTimeDuration& DayTimeDurationItemNaive::getDayTimeDurationValue() const
 {
   return theValue;
 }
 
+const xqp_duration& DayTimeDurationItemNaive::getDurationValue() const
+{
+  return durationCastValue;
+}
+
 xqpStringStore_t DayTimeDurationItemNaive::getStringValue() const
 {
-  return theValue->toString().getStore();
+  return theValue.toString().getStore();
 }
   
 store::Item* DayTimeDurationItemNaive::getType() const
@@ -533,7 +511,7 @@ bool DayTimeDurationItemNaive::equals(
     long timezone,
     XQPCollator* coll ) const
 {
-  return *theValue == *aItem->getDayTimeDurationValue();
+  return theValue == aItem->getDayTimeDurationValue();
 }
 
 store::Item_t DayTimeDurationItemNaive::getEBV() const
@@ -544,26 +522,36 @@ store::Item_t DayTimeDurationItemNaive::getEBV() const
 
 xqp_string DayTimeDurationItemNaive::show() const
 {
-  return theValue->toString();
+  return theValue.toString();
 }
 
 uint32_t DayTimeDurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
 {
-  return theValue->hash();
+  return theValue.hash();
 }
 
 
 /*******************************************************************************
  * class YearMonthDuration
  *******************************************************************************/
-xqp_yearMonthDuration YearMonthDurationItemNaive::getYearMonthDurationValue() const
+YearMonthDurationItemNaive::YearMonthDurationItemNaive(const xqp_yearMonthDuration* aValue) : theValue(*aValue)
+{
+  durationCastValue = *theValue.toDuration();
+}
+
+const xqp_yearMonthDuration& YearMonthDurationItemNaive::getYearMonthDurationValue() const
 {
   return theValue;
 }
 
+const xqp_duration& YearMonthDurationItemNaive::getDurationValue() const
+{
+  return durationCastValue;
+}
+
 xqpStringStore_t YearMonthDurationItemNaive::getStringValue() const
 {
-  return theValue->toString().getStore();
+  return theValue.toString().getStore();
 }
   
 store::Item* YearMonthDurationItemNaive::getType() const
@@ -576,7 +564,7 @@ bool YearMonthDurationItemNaive::equals(
     long timezone,
     XQPCollator* coll ) const
 {
-  return *theValue == *aItem->getYearMonthDurationValue();
+  return theValue == aItem->getYearMonthDurationValue();
 }
 
 store::Item_t YearMonthDurationItemNaive::getEBV() const
@@ -588,14 +576,14 @@ store::Item_t YearMonthDurationItemNaive::getEBV() const
 
 xqp_string YearMonthDurationItemNaive::show() const
 {
-  return theValue->toString();
+  return theValue.toString();
 }
 
 uint32_t YearMonthDurationItemNaive::hash(
     long timezone,
     XQPCollator* aCollation) const
 {
-  return theValue->hash();
+  return theValue.hash();
 }
 
 
@@ -745,7 +733,9 @@ IntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
 }
 
 	
-	/* start class DoubleItem */
+/*******************************************************************************
+  class DoubleItemNaive
+********************************************************************************/
 store::Item* DoubleItemNaive::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_DOUBLE];
@@ -782,11 +772,13 @@ xqp_string DoubleItemNaive::show() const
   return "xs:double(" + getStringValue()->str() + ")";
 }
 
-bool DoubleItemNaive::isNaN() const {
+bool DoubleItemNaive::isNaN() const 
+{
   return theValue.isNaN();
 }
 
-bool DoubleItemNaive::isPosOrNegInf() const {
+bool DoubleItemNaive::isPosOrNegInf() const 
+{
   return theValue.isPosInf() || theValue.isNegInf();
 }
 

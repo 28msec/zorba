@@ -26,6 +26,97 @@ typedef rchandle<XmlNode>   XmlNode_t;
 ConstrNodeVector dummyVector;
 
 
+minNodeVector::minNodeVector()
+{
+  node_vector = NULL;
+  capacity = 0;
+  size = 0;
+}
+
+minNodeVector::minNodeVector(int initial_capacity)
+{
+  node_vector = (XmlNode**)malloc(initial_capacity*sizeof(XmlNode*));
+  capacity = initial_capacity;
+  size = 0;
+}
+
+minNodeVector::~minNodeVector()
+{
+  if(node_vector)
+    free(node_vector);
+}
+
+void    minNodeVector::reserve(int capacity2)
+{
+  if(capacity2 < capacity)
+    return;
+  capacity = capacity2;
+  if(node_vector)
+  {
+    node_vector = (XmlNode**)realloc(node_vector, capacity*sizeof(XmlNode*));
+  }
+  else
+  {
+    node_vector = (XmlNode**)malloc(capacity*sizeof(XmlNode*));
+  }
+}
+
+XmlNode *minNodeVector::getAt(int pos)
+{
+  return node_vector[pos];
+}
+
+void minNodeVector::push_back(XmlNode* node)
+{
+  if(size >= capacity)
+  {
+    if(node_vector)
+    {
+      capacity *= 2;
+      node_vector = (XmlNode**)realloc(node_vector, capacity*sizeof(XmlNode*));
+    }
+    else
+    {
+      capacity = 100;
+      node_vector = (XmlNode**)malloc(capacity*sizeof(XmlNode*));
+    }
+  }
+
+  node_vector[size++] = node;
+  return;
+}
+
+void minNodeVector::removeAt(int pos, int len)
+{
+  assert(pos >= size);
+
+  size -= len;
+  assert(size >= 0);
+  if(pos < size)
+    memmove(node_vector+pos, node_vector+pos+len, (size-pos)*sizeof(XmlNode*));
+}
+
+void minNodeVector::insertAt(int pos, XmlNode *node)
+{
+  if(size >= capacity)
+  {
+    if(node_vector)
+    {
+      capacity *= 2;
+      node_vector = (XmlNode**)realloc(node_vector, capacity*sizeof(XmlNode*));
+    }
+    else
+    {
+      capacity = 100;
+      node_vector = (XmlNode**)malloc(capacity*sizeof(XmlNode*));
+    }
+  }
+
+  size++;
+  memmove(node_vector+pos+1, node_vector+pos, (size-pos)*sizeof(XmlNode*));
+  node_vector[pos] = node;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class NodeVector                                                           //

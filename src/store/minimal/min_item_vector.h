@@ -13,66 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_MINIMAL_STORE_ITEM_VECTOR
+#define ZORBA_MINIMAL_STORE_ITEM_VECTOR
+
+#include <vector>
 #include "store/api/item.h"
-#include "store/minimal/min_item_iterator.h"
 
 namespace zorba { namespace storeminimal {
 
-ItemIterator::ItemIterator(const std::vector<store::Item_t>& aItems) 
-: 
-theItems(&aItems)
+
+class ItemVector : public store::Item
 {
-}
+private:
+  std::vector<store::Item_t> theItems;
 
-ItemIterator::ItemIterator() : theItems(NULL)
-{
-}
+public:
+  ItemVector() {}
 
+  ItemVector(std::vector<store::Item_t>& items);
 
-void
-ItemIterator::open() 
-{
-  if (theItems)
-    theIterator = theItems->begin();
-}
+  ~ItemVector() {}
 
+  bool isNode() const   { return false; }
+  bool isAtomic() const { return false; }
+  bool isPul() const    { return false; }
 
-bool
-ItemIterator::next(store::Item_t& result) 
-{
-  if (theItems)
-  {
-    if (theIterator == theItems->end()) 
-    {
-      result = NULL;
-      return false;
-    }
-    else 
-    {
-      result = *(theIterator++);
-      return true;
-    }
-  }
-  else
-  {
-    result = NULL;
-    return false;
-  }
-}
+  ulong size() const { return theItems.size(); }
 
+  bool empty() const { return theItems.empty(); }
 
-void
-ItemIterator::reset() 
-{
-  if (theItems)
-    theIterator = theItems->begin();
-}
-
-
-void
-ItemIterator::close() 
-{
-}
+  const std::vector<store::Item_t>& getItems() const { return theItems; }
+  std::vector<store::Item_t>& getItems()             { return theItems; }
+};
 
 } // namespace storeminimal
 } // namespace zorba
+
+#endif

@@ -449,7 +449,9 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& stream)
+store::Item_t SimpleStore::loadDocument(
+            const xqpStringStore_t& uri, 
+            std::istream& stream)
 {
   if (uri == NULL)
     return NULL;
@@ -481,7 +483,10 @@ store::Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream& str
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleStore::loadDocument(xqpStringStore_t& uri, std::istream* stream)
+store::Item_t SimpleStore::loadDocument(
+            const xqpStringStore_t& uri, 
+            std::istream *stream)
+
 {
   if (uri == NULL)
     return NULL;
@@ -880,6 +885,16 @@ TempSeq_t SimpleStore::createTempSeq(
 TempSeq_t SimpleStore::createTempSeq()
 {
   TempSeq_t tempSeq = new SimpleTempSeq();
+  return tempSeq;
+}
+
+/**
+ * Creates a temp seq initialized by the given vector.
+ * @param item_v - The vector to use to initialize the seq.
+ */
+TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
+{
+  TempSeq_t tempSeq = new SimpleTempSeq(item_v);
   return tempSeq;
 }
 

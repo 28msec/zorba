@@ -144,13 +144,17 @@ public:
   bool createGYearMonth (store::Item_t& result,  short year, short month );
 
 
-  bool createDouble(store::Item_t& result, xqp_double value);
+  bool createDouble(store::Item_t& result, const xqp_double& value);
 
-  bool createDuration(store::Item_t& result, xqp_duration& value);
+  bool createDuration(store::Item_t& result, xqp_duration* value);
   
   bool createDuration(store::Item_t& result, const xqp_string& value);
 
   bool createDuration(store::Item_t& result, short years, short months, short days, short hours, short minutes, double seconds);
+
+  bool createYearMonthDuration(store::Item_t& result, xqp_yearMonthDuration* value );
+
+  bool createDayTimeDuration(store::Item_t& result, xqp_dayTimeDuration* value );
 
   bool createENTITIES(store::Item_t& result, xqpStringStore_t& value);
 
@@ -211,6 +215,8 @@ public:
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         store::Item_t&              typedValue,
+        bool                        isId,
+        bool                        isIdRefs,
         const store::NsBindings&    localBindings,
         xqpStringStore_t&           baseURI,
         bool                        allowSharing = false);
@@ -222,6 +228,8 @@ public:
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         std::vector<store::Item_t>* typedValueV,
+        bool                        isId,
+        bool                        isIdRefs,
         const store::NsBindings&    localBindings,
         xqpStringStore_t&           baseURI,
         bool                        allowSharing = false);
@@ -232,7 +240,9 @@ public:
         long                        pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
-        store::Item_t&              typedValue);
+        store::Item_t&              typedValue,
+        bool                        isId,
+        bool                        isIdRefs);
 
   bool createAttributeNode(
         store::Item_t&              result,
@@ -240,7 +250,10 @@ public:
         long                        pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
-        std::vector<store::Item_t>& typedValueV);
+        std::vector<store::Item_t>& typedValueV,
+        bool                        isId,
+        bool                        isIdRefs);
+
 
   bool createTextNode(
         store::Item_t&    result,
@@ -257,8 +270,8 @@ public:
         xqpStringStore_t& baseUri);
 
   bool createCommentNode (
-        store::Item_t&   result,
-        store::Item*     parent,
+        store::Item_t&    result,
+        store::Item*      parent,
         long              pos,
         xqpStringStore_t& content);
 
