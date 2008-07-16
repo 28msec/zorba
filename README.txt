@@ -13,7 +13,7 @@
   Zorba runs on most platforms and is available under the Apache license v2.
 
   In this first release of Zorba, the following functionalities are implemented:
-
+  
    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) except modules and only limited support for schema validation
    * XQuery Update Facility 1.0 (as in the evolving W3C recommendation)
    * An in-memory replaceable XML store implementing the XQuery Data Model (XDM) W3C recommendation.
