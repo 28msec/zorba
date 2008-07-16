@@ -29,6 +29,11 @@
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/core/trycatch.h"
+#include "runtime/core/gflwor/tuplestream_iterator.h"
+#include "runtime/core/gflwor/for_iterator.h"
+#include "runtime/core/gflwor/let_iterator.h"
+#include "runtime/core/gflwor/count_iterator.h"
+#include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/validate/validate.h"
 #include "runtime/strings/StringsImpl.h"
@@ -86,6 +91,7 @@ namespace zorba {
   NOARY_ACCEPT(EmptyIterator);
   NOARY_ACCEPT(SingletonIterator);
   NOARY_ACCEPT(ForVarIterator);
+  NOARY_ACCEPT(gflwor::TupleSourceIterator);
   
   // unary iterators
   UNARY_ACCEPT(NodeDistinctIterator);
@@ -128,6 +134,7 @@ namespace zorba {
   UNARY_ACCEPT(FnAdjustToTimeZoneIterator_1);
   UNARY_ACCEPT(DeleteIterator);
   UNARY_ACCEPT(FnDataIterator);
+  UNARY_ACCEPT(gflwor::CountIterator);
 
   // binary iterators
   BINARY_ACCEPT(LogicIterator);
@@ -143,6 +150,10 @@ namespace zorba {
   BINARY_ACCEPT(InsertIterator);
   BINARY_ACCEPT(ReplaceIterator);
   BINARY_ACCEPT(RenameIterator);
+  BINARY_ACCEPT(gflwor::TupleStreamIterator);
+  BINARY_ACCEPT(gflwor::ForIterator);
+  BINARY_ACCEPT(gflwor::LetIterator);
+  
 
   // nary iterators
   NARY_ACCEPT(FnDistinctValuesIterator);

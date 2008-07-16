@@ -241,6 +241,14 @@ namespace zorba
   class ZorbaNodeCountIterator;
   class ZorbaNodeAtIterator;
   class ZorbaExportCollectionIterator;
+  
+  namespace gflwor{
+    class ForIterator;
+    class LetIterator;
+    class TupleStreamIterator;
+    class TupleSourceIterator;
+    class CountIterator;
+  }
 
 #ifdef ZORBA_DEBUGGER
   class FnDebugIterator;
@@ -267,6 +275,16 @@ namespace zorba
     PLAN_ITER_VISITOR(NodeReferenceIterator);
 
     PLAN_ITER_VISITOR(NodeByReferenceIterator);
+    
+    PLAN_ITER_VISITOR (gflwor::TupleStreamIterator);
+    
+    PLAN_ITER_VISITOR (gflwor::TupleSourceIterator);
+    
+    PLAN_ITER_VISITOR (gflwor::ForIterator);
+    
+    PLAN_ITER_VISITOR (gflwor::LetIterator);
+    
+    PLAN_ITER_VISITOR (gflwor::CountIterator);
     
     PLAN_ITER_VISITOR (SequentialIterator);
 

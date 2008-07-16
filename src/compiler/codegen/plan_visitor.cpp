@@ -47,6 +47,11 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
+#include "runtime/core/gflwor/tuplestream_iterator.h"
+#include "runtime/core/gflwor/for_iterator.h"
+#include "runtime/core/gflwor/let_iterator.h"
+#include "runtime/core/gflwor/count_iterator.h"
+#include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/validate/validate.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
@@ -515,6 +520,7 @@ void end_visit(flwor_expr& v)
     where = pop_itstack ();
   }
 
+#if 1
   vector<FLWORIterator::ForLetClause> clauses;
   stack<PlanIter_t> inputs;
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
@@ -559,6 +565,63 @@ void end_visit(flwor_expr& v)
       qloc, clauses, where, groupby.release(), 
       orderby.release(), ret, v.isUpdating());
   itstack.push(iter);
+#else
+  vector<PlanIter_t> clauses;
+  stack<PlanIter_t> inputs;
+  for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
+       it != v.clause_end();
+       ++it)
+  {
+    inputs.push(pop_itstack());
+  }
+
+  PlanIter_t previous = new gflwor::TupleSourceIterator(QueryLoc::null);
+  vector<rchandle<forlet_clause> >::const_iterator it;
+  for (it = v.clause_begin ();
+       it != v.clause_end();
+       ++it) 
+  {
+    PlanIter_t input = pop_stack(inputs);
+    if ((*it)->type == forlet_clause::for_clause)
+    {
+      vector<ForVarIter_t> *var_iters = NULL, *pvar_iters = NULL;
+      var_expr* var = (*it)->var_h.getp();
+      var_expr* pos_var = (*it)->get_pos_var().getp();
+      ZORBA_ASSERT( fvar_iter_map.get((uint64_t)var, var_iters) );
+      if (pos_var == NULL)
+      {
+        previous = new gflwor::ForIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters);
+      }
+      else 
+      {
+        ZORBA_ASSERT( pvar_iter_map.get((uint64_t) pos_var, pvar_iters) );
+        previous = new gflwor::ForIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters, *pvar_iters);
+      }
+    }
+    else if ((*it)->type == forlet_clause::let_clause)
+    {
+      vector<LetVarIter_t> *var_iters = NULL;
+      var_expr* var = (*it)->var_h;
+      ZORBA_ASSERT( lvar_iter_map.get((uint64_t)var, var_iters) );
+      previous = new gflwor::LetIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters, true);
+      //clauses.push_back(FLWORIterator::ForLetClause(var, *var_iters, input, true));
+    }
+
+  }
+  //bad HACK to test the countiter
+/*
+  PlanIter_t input = pop_stack(inputs);
+  vector<ForVarIter_t> *var_iters = NULL;
+  var_expr* var = (*it)->var_h.getp();
+  ZORBA_ASSERT( fvar_iter_map.get((uint64_t)var, var_iters) );
+  previous = new gflwor::CountIterator(QueryLoc::null, var->get_varname(), previous, *var_iters);
+*/
+  
+  gflwor::TupleStreamIterator *iter = new gflwor::TupleStreamIterator(
+      qloc, previous, ret, false);
+  itstack.push(iter);
+#endif
+  
 }
 
 

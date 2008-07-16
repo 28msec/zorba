@@ -30,6 +30,11 @@
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/validate/validate.h"
+#include "runtime/core/gflwor/let_iterator.h"
+#include "runtime/core/gflwor/for_iterator.h"
+#include "runtime/core/gflwor/count_iterator.h"
+#include "runtime/core/gflwor/tuplesource_iterator.h"
+#include "runtime/core/gflwor/tuplestream_iterator.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
 #include "runtime/core/nodeid_iterators.h"
@@ -146,7 +151,7 @@ public:
       thePrinter.addAttribute("nill allowed", lStream.str());
     }
   }
-
+  
   PRINTER_VISITOR_DEFINITION(NodeReferenceIterator)
 
   PRINTER_VISITOR_DEFINITION(NodeByReferenceIterator)
@@ -631,7 +636,17 @@ public:
   PRINTER_VISITOR_DEFINITION (FnTimezoneFromTimeIterator)
 
   PRINTER_VISITOR_DEFINITION (FLWORIterator)
+      
+  PRINTER_VISITOR_DEFINITION (gflwor::TupleStreamIterator)
+      
+  PRINTER_VISITOR_DEFINITION (gflwor::TupleSourceIterator)
+      
+  PRINTER_VISITOR_DEFINITION (gflwor::ForIterator)
 
+  PRINTER_VISITOR_DEFINITION (gflwor::LetIterator)
+      
+  PRINTER_VISITOR_DEFINITION (gflwor::CountIterator)
+      
   PRINTER_VISITOR_DEFINITION (TryCatchIterator)
 
   void beginVisitFlworWhereClause(const  PlanIterator& a){
