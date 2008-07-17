@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <boost/smart_ptr.hpp>
 #include <zorba/item.h>
 #include <zorba/item_sequence.h>
 #include <zorba/stateless_function.h>

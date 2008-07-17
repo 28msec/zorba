@@ -17,7 +17,6 @@
 #define ZORBA_TYPEMANAGER_H
 
 #include <ostream>
-#include <boost/shared_ptr.hpp>
 #include <zorba/typeident.h>
 #include "zorbatypes/rchandle.h"
 #include "common/shared_types.h"

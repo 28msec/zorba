@@ -28,6 +28,7 @@
 #include <typeinfo>
 #include <vector>
 #include <assert.h>
+#include <algorithm>
 
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "util/tracer.h"
@@ -1361,7 +1362,7 @@ QVarInDeclList::QVarInDeclList(
 void QVarInDeclList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  for_each (qvar_decl_hv.begin (), qvar_decl_hv.end (), visitor_functor (v));
+  std::for_each (qvar_decl_hv.begin (), qvar_decl_hv.end (), visitor_functor (v));
   END_VISITOR ();
 }
 
