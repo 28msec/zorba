@@ -34,7 +34,6 @@
 
 #include <csignal>
 #include <pthread.h> 
-#include <zorba/debugger_server.h>
 #endif
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -61,10 +60,10 @@ struct server_args
 void * server( void * args)
 {
   server_args * lArgs = (server_args*)args;
-  zorba::ZorbaDebugger * lDebugger = zorba::ZorbaDebugger::getInstance();
   try
   {
     zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
+    zorba::ZorbaDebugger * lDebugger = zorba::Zorba::getInstance(lStore)->getDebugger();
     lDebugger->start( lStore, lArgs->theQuery, lArgs->theFileName, lArgs->theRequestPort, lArgs->theEventPort );
   } catch( std::exception &e ) {
     std::cout << e.what() << std::endl;

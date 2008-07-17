@@ -23,6 +23,9 @@
 #endif
 #include "common/shared_types.h"
 #include "zorbatypes/icu_init.h"
+#ifdef ZORBA_DEBUGGER
+#include "debugger/debugger_serverimpl.h"
+#endif
 
 namespace zorba {
 
@@ -53,7 +56,9 @@ class GlobalEnvironment
   store::Store& getStore();
   store::ItemFactory* getItemFactory();
   store::IteratorFactory* getIteratorFactory();
-
+#ifdef ZORBA_DEBUGGER
+  ZorbaDebuggerImpl* getDebugger();
+#endif
  private:
   GlobalEnvironment();
 
@@ -66,6 +71,9 @@ class GlobalEnvironment
 
   static GlobalEnvironment             * m_globalEnv;
   icu_init                               m_icu;
+#ifdef ZORBA_DEBUGGER
+  ZorbaDebuggerImpl                     *m_debugger;
+#endif
 };
 
 #define GENV GlobalEnvironment::getInstance()

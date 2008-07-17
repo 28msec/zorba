@@ -413,7 +413,8 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, 
     std::auto_ptr< dynamic_context > dctx;
 
     checked_vector< std::string > var_keys;
- 
+
+    //set up eval state's ccb
     ccb.reset( new CompilerCB ( *planState.theCompilerCB ) );
     ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
 
@@ -422,21 +423,21 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, 
       dctx.reset( new dynamic_context( planState.dctx() ) );
       eval_plan.reset(
         new PlanWrapper (
-          EvalIterator::compile ( ccb.get(), anExpr, theVariableNames, theVariableTypes ),
+          EvalIterator::compile ( ccb.get(), anExpr, theVarnames, theVartypes ),
           ccb.get(),
           dctx.get(),
           planState.theStackDepth + 1 )
         );
       eval_plan->checkDepth( loc );
    
-      for (unsigned i = 0; i < theVariables.size (); i++) {
-        const PlanIterator *lPlanIter = theVariables[i].getp();
-        store::Iterator_t lIter = new PlanIteratorWrapper(&*lPlanIter, *thePlanState);
+      for (unsigned i = 0; i < theChildren.size () - 1; i++) {
+        //reset the plan iterator for multiple execution
+        theChildren[i+1]->reset(*thePlanState);
+        store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i+1], *thePlanState);
         // TODO: is saving an open iterator efficient?
         // Then again if we close theChildren [1] here,
         // we won't be able to re-open it later via the PlanIteratorWrapper
-        std::cerr << "varname:" << dynamic_context::var_key(ccb->m_sctx->lookup_var(theVariableNames[i].getp())) << std::endl; 
-        dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVariableNames[i].getp())), lIter);
+        dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVarnames[i])), lIter);
       }
 
       serializer lSerializer(0);
@@ -446,8 +447,10 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, 
 
       //eval_plan->open();
       lSerializer.serialize( eval_plan.get(), lOutputStream );
+
     } catch ( error::ZorbaError& e ) {
-      lOutputStream << "Error, can't evaluate: " << anExpr; 
+      lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << std::endl;
+      lOutputStream << "       " << e.theDescription << std::endl;
     }
     
     if ( eval_plan.get() != 0 )

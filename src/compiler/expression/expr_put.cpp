@@ -67,11 +67,8 @@ static inline string expr_addr (const void *e) {
 #ifdef ZORBA_DEBUGGER
 std::ostream& debugger_expr::put(std::ostream& os) const
 {
-  BEGIN_EXPR (sequential_expr);
-  child->put(os);
-  for (checked_vector<var_expr_t>::const_iterator i = this->childs.begin ();
-       i != childs.end (); i++)
-    (*i)->put (os);
+  BEGIN_EXPR (debugger_expr);
+  expr_h->put(os);
   CLOSE_EXPR;
 }
 #endif

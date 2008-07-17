@@ -19,7 +19,7 @@
 
 #include <iostream>
 #include <pthread.h>
-#include <zorba/debugger_server.h>
+#include <zorba/zorba.h>
 
 #include "runtime/base/plan_iterator.h"
 #include "debugger/debugger_common.h"
@@ -51,6 +51,16 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 {
 
   public:
+    ZorbaDebuggerImpl():
+      theZorba(0),
+      theDebugMode( false ),
+      theRequestServerSocket(0), 
+      theEventSocket(0), 
+      theStatus( QUERY_IDLE  ),
+      theFileName(""),
+      thePlanState(0),
+      theRuntimeThread(0){}
+
 
     virtual ~ZorbaDebuggerImpl();
 
@@ -73,16 +83,6 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     friend class ZorbaDebugger;
     friend class FnDebugIterator;
 
-    ZorbaDebuggerImpl():
-      theZorba(0),
-      theDebugMode( false ),
-      theRequestServerSocket(0), 
-      theEventSocket(0), 
-      theStatus( QUERY_IDLE  ),
-      theFileName(""),
-      thePlanState(0),
-      theRuntimeThread(0){}
-
     Zorba* theZorba;
 
     bool theDebugMode;
@@ -103,9 +103,10 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     PlanState * thePlanState;
 
-    checked_vector<PlanIter_t>    theVariables;
-    checked_vector<store::Item_t> theVariableNames;
-    checked_vector<xqtref_t>      theVariableTypes;
+    checked_vector<store::Item_t> theVarnames;
+    checked_vector<std::string>   theVarkeys;
+    checked_vector<xqtref_t>      theVartypes;
+    checked_vector<PlanIter_t>    theChildren;
 
     std::vector<QueryLoc> theBreakpoints;
 

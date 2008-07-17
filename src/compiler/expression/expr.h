@@ -43,44 +43,6 @@ class match_expr;
 class expr_visitor;
 class NodeNameTest;
 
-#ifdef ZORBA_DEBUGGER
-typedef rchandle<var_expr> var_expr_t;
-//debugger expression
-class debugger_expr: public expr
-{
-  private:
-    const static_context * s_ctx;
-    expr_t child;
-    checked_vector<var_expr_t> childs;
-
-  public:
-    debugger_expr( const QueryLoc& loc, expr_t aChild, const static_context * aS_ctx,
-                   std::vector<var_expr_t> vars )
-      : expr(loc), s_ctx(aS_ctx), child( aChild )
-    {
-      for ( unsigned int i = 0; i < vars.size(); i++ )
-      {
-        childs.push_back( vars.at( i ) ); 
-      }
-    }
-
-    const static_context * get_static_context()
-    {
-      return s_ctx;
-    }
-
-    checked_vector<var_expr_t> get_vars()
-    {
-      return childs;
-    }
-   
-    expr_iterator_data *make_iter();
-    void next_iter (expr_iterator_data&);
-    void accept (expr_visitor&);
-    std::ostream& put(std::ostream&) const;
-};
-#endif
-
 // imperative construct: do this, then that
 class sequential_expr : public expr
 {
@@ -495,6 +457,22 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
+
+#ifdef ZORBA_DEBUGGER
+//debugger expression
+typedef rchandle<var_expr> var_expr_t;
+class debugger_expr: public eval_expr
+{
+  public:
+    debugger_expr( const QueryLoc& loc, expr_t aChild ):
+      eval_expr(loc, aChild ){}
+
+    expr_iterator_data *make_iter();
+    void next_iter (expr_iterator_data&);
+    void accept (expr_visitor&);
+    std::ostream& put(std::ostream&) const;
+};
+#endif
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 

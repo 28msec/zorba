@@ -20,17 +20,18 @@
 #include <sstream>
 #include <pthread.h>
 
-#include "compiler/expression/var_expr.h"
-#include "debugger/debugger_serverimpl.h"
+#include "system/globalenv.h"
 
 using namespace std;
 
 namespace zorba {
-FnDebugIterator::FnDebugIterator( const QueryLoc& loc, checked_vector<PlanIter_t>& args,
-                                  const static_context * aStaticContext,
-                                  checked_vector<var_expr_t> &aVariables ) 
-    : NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, args),
-    theDebugger(0), theStaticContext( aStaticContext ), theVariables( aVariables ){}
+FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
+               checked_vector<store::Item_t> varnames_,
+               checked_vector<std::string> var_keys_,
+               checked_vector<xqtref_t> vartypes_,
+               std::vector<PlanIter_t>& aChildren ) 
+    : NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, aChildren),
+    theDebugger(0), varnames(varnames_), var_keys(var_keys_), vartypes(vartypes_){}
 
   FnDebugIterator::~FnDebugIterator(){}
 
@@ -42,13 +43,17 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc, checked_vector<PlanIter_t
     
     theDebugger->theLocation = loc;
     theDebugger->thePlanState = &planState;
+    theDebugger->theVarnames = varnames;
+    theDebugger->theVarkeys = var_keys;
+    theDebugger->theVartypes = vartypes;
+    theDebugger->theChildren = theChildren;
 
     while ( consumeNext( result, theChildren[0], planState ) ) {
       //std::cerr << "Number of variables in scope:" << theVariables.size() << std::endl;
-      for( unsigned int i=0; i<theVariables.size(); i++)
-      {
-        std::cerr << "name: " << theVariables.at(i)->toString() << std::endl;  
-      }
+      //for( unsigned int i=0; i<theVariables.size(); i++)
+      //{
+      //  std::cerr << "name: " << theVariables.at(i)->toString() << std::endl;  
+      //}
       if ( theDebugger->hasToSuspend() )
       {
         pthread_mutex_lock( &theDebugger->theRuntimeMutex );
@@ -63,7 +68,7 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc, checked_vector<PlanIter_t
   void FnDebugIterator::openImpl(PlanState& planState, uint32_t& offset )
   {
     NaryBaseIterator<FnDebugIterator, PlanIteratorState>::openImpl(planState, offset);
-    theDebugger = dynamic_cast<ZorbaDebuggerImpl *>( ZorbaDebugger::getInstance() );
+    theDebugger = GlobalEnvironment::getInstance().getDebugger();
   }
   
   void FnDebugIterator::accept( PlanIterVisitor& v ) const

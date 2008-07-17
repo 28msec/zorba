@@ -18,12 +18,12 @@
 #define ZORBA_DEBUGGER_ITERATORS_H
 
 #include <vector>
-#include <map>
 #include <boost/thread/mutex.hpp>
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 #include "types/typeimpl.h"
+#include "compiler/expression/expr.h"
 #include "compiler/parser/location.hh"
 
 namespace zorba {
@@ -35,12 +35,16 @@ class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorSta
 {
 protected:
   ZorbaDebuggerImpl *  theDebugger;
-  const static_context * theStaticContext;
-  checked_vector<var_expr_t> theVariables;
+  checked_vector<store::Item_t> varnames;
+  checked_vector<std::string> var_keys;  
+  checked_vector<xqtref_t> vartypes;
 
 public:
-  FnDebugIterator( const QueryLoc& loc, checked_vector<PlanIter_t>& args,
-                   const static_context * aStaticContext, checked_vector<var_expr_t> &aVariables );
+  FnDebugIterator(const QueryLoc& loc,
+               checked_vector<store::Item_t> varnames_,
+               checked_vector<std::string> var_keys_,
+               checked_vector<xqtref_t> vartypes_,
+               std::vector<PlanIter_t>& aChildren );
 
   virtual ~FnDebugIterator();
 

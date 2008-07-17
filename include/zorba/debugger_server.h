@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_ZORBA_DEBUGGER_H
-#define XQP_ZORBA_DEBUGGER_H
+#ifndef ZORBA_DEBUGGER_H
+#define ZORBA_DEBUGGER_H
 
-#include <iostream>
+#include <istream>
 
-#include <zorba/zorba.h>
 
 namespace zorba{
 
@@ -31,10 +30,7 @@ class ZORBA_EXTERN_DECL ZorbaDebugger
 
   public:
 
-    static ZorbaDebugger *
-    getInstance();
-
-    virtual ~ZorbaDebugger();
+    virtual ~ZorbaDebugger(){}
     
     virtual void
     start(  void * aStore, 

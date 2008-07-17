@@ -153,10 +153,10 @@ protected:
   set<string> mod_stack;
   set<string> schema_import_ns_set;
   int tempvar_counter;
-  std::list<global_binding> theGlobalVars;
+  list<global_binding> theGlobalVars;
 #ifdef ZORBA_DEBUGGER
-  unsigned long theLastScopeIndex;
-  vector<var_expr_t> theScopedVariables;
+  checked_vector<unsigned int> theScopes;
+  checked_vector<var_expr_t> theScopedVariables;
 #endif
 
   rchandle<namespace_context> ns_ctx;
@@ -213,7 +213,6 @@ protected:
     xquery_fns_def_dot.insert ("name");
 
     op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
-
     zorba_predef_mod_ns.insert (ZORBA_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
@@ -243,9 +242,6 @@ protected:
   var_expr_t create_var (const QueryLoc& loc, store::Item_t qname, var_expr::var_kind kind, xqtref_t type = NULL) {
     var_expr_t e = new var_expr (loc, kind, qname);
     e->set_type (type);
-#ifdef ZORBA_DEBUGGER
-   // theScopedVariables.push_back(e); 
-#endif
     return e;
   }
 
@@ -300,7 +296,7 @@ protected:
   void push_scope ()
   {
 #ifdef ZORBA_DEBUGGER
-  theLastScopeIndex = theScopedVariables.size();
+    theScopes.push_back( theScopedVariables.size() );
 #endif
     sctx_list.push_back (sctx_p = sctx_p->create_child_context());
   }
@@ -308,8 +304,8 @@ protected:
   void pop_scope (int n = 1)
   {
 #ifdef ZORBA_DEBUGGER
-    //vector<var_expr_t>::iterator it = theScopedVariables.begin();
-    //theScopedVariables.erase( it+theLastScopeIndex, theScopedVariables.end() );
+    theScopedVariables.erase( theScopedVariables.begin()+theScopes.back(), theScopedVariables.end() );
+    theScopes.pop_back();
 #endif
     while (n-- > 0) {
       static_context *parent = (static_context *) sctx_p->get_parent ();
@@ -1515,7 +1511,23 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   int i, j;
 #ifdef ZORBA_DEBUGGER
-  expr_t lReturnExpr = new debugger_expr(loc, pop_nodestack(), sctx_p, theScopedVariables );
+  expr_t lReturnExpr;
+  if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
+  {
+    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, pop_nodestack());
+    
+    checked_vector<var_expr_t>::iterator it;
+    for ( it = theScopedVariables.begin(); it != theScopedVariables.end(); it++ )
+    {
+      var_expr_t lValue = (*it);
+      var_expr_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
+      //TODO: set_type
+      lDebuggerExpr->add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
+    }
+    lReturnExpr = &*lDebuggerExpr;
+  } else {
+    lReturnExpr = pop_nodestack();
+  }
 #else
   expr_t lReturnExpr = pop_nodestack();
 #endif
@@ -1712,6 +1724,9 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
     bind_var_and_push (loc, v.get_varname (), var_expr::let_var, type);
   else
     nodestack.push (&*create_var (loc, v.get_varname (), var_expr::let_var, type));
+#ifdef ZORBA_DEBUGGER
+  theScopedVariables.push_back(nodestack.top());
+#endif
 }
 
 
@@ -1744,9 +1759,15 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
     if (pvarname == varname)
       ZORBA_ERROR_LOC (XQST0089, loc);
     bind_var_and_push (pv->get_location (), pvarname, var_expr::pos_var);
+#ifdef ZORBA_DEBUGGER
+    theScopedVariables.push_back(nodestack.top());
+#endif
     nodestack.push (val_expr);
   }
   bind_var_and_push (loc, v.get_varname (), var_expr::for_var, v.get_typedecl () == NULL ? NULL : pop_tstack ());
+#ifdef ZORBA_DEBUGGER
+  theScopedVariables.push_back(nodestack.top());
+#endif
 }
 
 void *begin_visit(const PositionalVar& v)
