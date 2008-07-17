@@ -1232,8 +1232,10 @@ bool begin_visit(axis_step_expr& v)
     prd->setDocTestKind(testExpr->getDocTestKind());
     prd->setNodeKind(testExpr->getNodeKind());
     prd->setQName(testExpr->getQName());
-    prd->setType(ccb->m_sctx->get_typemanager()->
-                 create_named_type(testExpr->getTypeName()));
+    store::Item *typeName = testExpr->getTypeName();
+    if (typeName != NULL) {
+      prd->setType(ccb->m_sctx->get_typemanager()->create_named_type(typeName));
+    }
     prd->setNilledAllowed(testExpr->getNilledAllowed());
   }
 
@@ -1436,8 +1438,10 @@ bool begin_visit(match_expr& v)
     axisItep->setDocTestKind(v.getDocTestKind());
     axisItep->setNodeKind(v.getNodeKind());
     axisItep->setQName(v.getQName());
-    axisItep->setType(ccb->m_sctx->get_typemanager()->
-                      create_named_type(v.getTypeName()));
+    store::Item *typeName = v.getTypeName();
+    if (typeName != NULL) {
+      axisItep->setType(ccb->m_sctx->get_typemanager()->create_named_type(typeName));
+    }
     axisItep->setNilledAllowed(v.getNilledAllowed());
   }
 
