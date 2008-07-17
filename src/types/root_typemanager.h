@@ -30,7 +30,7 @@ namespace zorba {
  * compares namespace
  */
 struct qname_compare {
-  bool operator()(const store::Item *qn1, const store::Item *qn2)
+  bool operator()(const store::Item *qn1, const store::Item *qn2) const
   {
     const xqpStringStore *qn1local = qn1->getLocalName();
     const xqpStringStore *qn2local = qn2->getLocalName();
