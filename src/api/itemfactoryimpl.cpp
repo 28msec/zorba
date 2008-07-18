@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#define  __STDC_LIMIT_MACROS
 #include <zorba/item.h>
-#include <boost/cast.hpp>
 #include "zorbaerrors/errors.h"
 #include "api/itemfactoryimpl.h"
+
 
 #include "zorbatypes/duration.h"
 #include "system/globalenv.h"
@@ -214,11 +215,8 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    try {
-      int32_t lInteger = boost::numeric_cast<int32_t>(aInt);
-      theItemFactory->createInt(lItem, lInteger);
-    } catch (boost::bad_numeric_cast e) {
-      return &*lItem;
+    if ( INT32_MIN <= aInt <= INT32_MAX ) {
+      theItemFactory->createInt(lItem, aInt);
     }
 
     return &*lItem;
@@ -536,11 +534,8 @@ namespace zorba {
   {
     store::Item_t lItem;
     
-    try {
-      uint32_t lInteger = boost::numeric_cast<uint32_t>(aValue);
-      theItemFactory->createUnsignedInt(lItem, lInteger);
-    } catch (boost::bad_numeric_cast e) {
-      return &*lItem;
+    if ( aValue <= UINT32_MAX ) {
+      theItemFactory->createUnsignedInt(lItem, aValue);
     }
 
     return &*lItem;
