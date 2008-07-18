@@ -33,8 +33,10 @@
 #include "runtime/core/gflwor/let_iterator.h"
 #include "runtime/core/gflwor/for_iterator.h"
 #include "runtime/core/gflwor/count_iterator.h"
+#include "runtime/core/gflwor/where_iterator.h"
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/core/gflwor/tuplestream_iterator.h"
+#include "runtime/core/gflwor/groupby_iterator.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
 #include "runtime/core/nodeid_iterators.h"
@@ -645,7 +647,11 @@ public:
 
   PRINTER_VISITOR_DEFINITION (gflwor::LetIterator)
       
+  PRINTER_VISITOR_DEFINITION (gflwor::WhereIterator)
+      
   PRINTER_VISITOR_DEFINITION (gflwor::CountIterator)
+      
+ PRINTER_VISITOR_DEFINITION (gflwor::GroupByIterator)
       
   PRINTER_VISITOR_DEFINITION (TryCatchIterator)
 

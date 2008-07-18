@@ -34,7 +34,9 @@ SET(RUNTIME_SRCS
     core/gflwor/tuplestream_iterator.cpp
     core/gflwor/for_iterator.cpp
     core/gflwor/let_iterator.cpp
+    core/gflwor/where_iterator.cpp
     core/gflwor/count_iterator.cpp
+    core/gflwor/groupby_iterator.cpp
     core/gflwor/tuplesource_iterator.cpp
     dateTime/DurationsDatesTimes.cpp
     debug/debug_iterators.cpp

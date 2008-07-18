@@ -243,11 +243,13 @@ namespace zorba
   class ZorbaExportCollectionIterator;
   
   namespace gflwor{
-    class ForIterator;
-    class LetIterator;
     class TupleStreamIterator;
     class TupleSourceIterator;
+    class ForIterator;
+    class LetIterator;
+    class WhereIterator;
     class CountIterator;
+    class GroupByIterator;
   }
 
 #ifdef ZORBA_DEBUGGER
@@ -283,6 +285,10 @@ namespace zorba
     PLAN_ITER_VISITOR (gflwor::ForIterator);
     
     PLAN_ITER_VISITOR (gflwor::LetIterator);
+    
+    PLAN_ITER_VISITOR (gflwor::GroupByIterator);
+    
+    PLAN_ITER_VISITOR (gflwor::WhereIterator);
     
     PLAN_ITER_VISITOR (gflwor::CountIterator);
     

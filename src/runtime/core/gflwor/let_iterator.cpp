@@ -16,7 +16,7 @@
 #include "runtime/core/gflwor/let_iterator.h"
 #include "zorbaerrors/Assert.h"
 #include "runtime/core/var_iterators.h"
-#include "runtime/core/gflwor/common_binding.h"
+#include "runtime/core/gflwor/common.h"
 
 namespace zorba {
   namespace gflwor {

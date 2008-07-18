@@ -47,9 +47,11 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
+#include "runtime/core/gflwor/groupby_iterator.h"
 #include "runtime/core/gflwor/tuplestream_iterator.h"
 #include "runtime/core/gflwor/for_iterator.h"
 #include "runtime/core/gflwor/let_iterator.h"
+#include "runtime/core/gflwor/where_iterator.h"
 #include "runtime/core/gflwor/count_iterator.h"
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/validate/validate.h"
@@ -478,50 +480,55 @@ void end_visit(flwor_expr& v)
   if (v.get_group_where() != 0)
     group_where = pop_itstack();
   
+
+  
+
+#if 1
+   
   vector<FLWORIterator::GroupingOuterVar> nonGroupBys;
   for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_rbegin();
-      i != v.non_group_rend();
-      ++i)
+  i != v.non_group_rend();
+  ++i)
   {
-    rchandle<group_clause> group = *i;
-    vector<LetVarIter_t>* lInnerVars = 0;
-    var_expr* lVar = group->getInnerVar();
-    ZORBA_ASSERT(non_group_var_iter_map.get((uint64_t)lVar, lInnerVars));
+  rchandle<group_clause> group = *i;
+  vector<LetVarIter_t>* lInnerVars = 0;
+  var_expr* lVar = group->getInnerVar();
+  ZORBA_ASSERT(non_group_var_iter_map.get((uint64_t)lVar, lInnerVars));
 
-    PlanIter_t lInput = pop_itstack();
+  PlanIter_t lInput = pop_itstack();
 
-    nonGroupBys.push_back(FLWORIterator::GroupingOuterVar(lInput, *lInnerVars));
-  }
+  nonGroupBys.push_back(FLWORIterator::GroupingOuterVar(lInput, *lInnerVars));
+}
 
+  
   vector<FLWORIterator::GroupingSpec> groupBys;
   for(flwor_expr::group_list_t::reverse_iterator i = v.group_rbegin();
-      i != v.group_rend();
-      ++i)
+  i != v.group_rend();
+  ++i)
   {
-    rchandle<group_clause> group = *i;
-    vector<ForVarIter_t>* lInnerVars = 0;
-    var_expr* lVar = group->getInnerVar();
-    ZORBA_ASSERT(group_var_iter_map.get((uint64_t)lVar, lInnerVars));
+  rchandle<group_clause> group = *i;
+  vector<ForVarIter_t>* lInnerVars = 0;
+  var_expr* lVar = group->getInnerVar();
+  ZORBA_ASSERT(group_var_iter_map.get((uint64_t)lVar, lInnerVars));
 
-    PlanIter_t lInput = pop_itstack();
+  PlanIter_t lInput = pop_itstack();
 
-    xqp_string lCollation = group->getCollation();
+  xqp_string lCollation = group->getCollation();
     
-    groupBys.push_back(FLWORIterator::GroupingSpec(lInput, *lInnerVars, lCollation));
-  }
+  groupBys.push_back(FLWORIterator::GroupingSpec(lInput, *lInnerVars, lCollation));
+}
   
   auto_ptr<FLWORIterator::GroupByClause> groupby(
-    groupBys.empty() 
+  groupBys.empty() 
   ? NULL 
   : new FLWORIterator::GroupByClause(groupBys, nonGroupBys, group_where));
 
   PlanIter_t where = NULL;
   if (v.get_where () != NULL)
   {
-    where = pop_itstack ();
-  }
-
-#if 1
+  where = pop_itstack ();
+}
+  
   vector<FLWORIterator::ForLetClause> clauses;
   stack<PlanIter_t> inputs;
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
@@ -567,6 +574,46 @@ void end_visit(flwor_expr& v)
       orderby.release(), ret, v.isUpdating());
   itstack.push(iter);
 #else
+  
+  vector<gflwor::GroupingOuterVar> nonGroupBys;
+  for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_rbegin();
+      i != v.non_group_rend();
+      ++i)
+  {
+    rchandle<group_clause> group = *i;
+    vector<LetVarIter_t>* lInnerVars = 0;
+    var_expr* lVar = group->getInnerVar();
+    ZORBA_ASSERT(non_group_var_iter_map.get((uint64_t)lVar, lInnerVars));
+
+    PlanIter_t lInput = pop_itstack();
+
+    nonGroupBys.push_back(gflwor::GroupingOuterVar(lInput, *lInnerVars));
+  }
+
+  
+  vector<gflwor::GroupingSpec> groupBys;
+  for(flwor_expr::group_list_t::reverse_iterator i = v.group_rbegin();
+      i != v.group_rend();
+      ++i)
+  {
+    rchandle<group_clause> group = *i;
+    vector<ForVarIter_t>* lInnerVars = 0;
+    var_expr* lVar = group->getInnerVar();
+    ZORBA_ASSERT(group_var_iter_map.get((uint64_t)lVar, lInnerVars));
+
+    PlanIter_t lInput = pop_itstack();
+
+    xqp_string lCollation = group->getCollation();
+    
+    groupBys.push_back(gflwor::GroupingSpec(lInput, *lInnerVars, lCollation));
+  }
+  
+  PlanIter_t where = NULL;
+  if (v.get_where () != NULL)
+  {
+    where = pop_itstack ();
+  }
+  
   vector<PlanIter_t> clauses;
   stack<PlanIter_t> inputs;
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
@@ -608,6 +655,14 @@ void end_visit(flwor_expr& v)
       //clauses.push_back(FLWORIterator::ForLetClause(var, *var_iters, input, true));
     }
 
+  }
+  
+  if(where){
+    previous = new gflwor::WhereIterator(QueryLoc::null, previous, where);
+  }
+  
+  if(!groupBys.empty()){
+    previous = new gflwor::GroupByIterator(QueryLoc::null, previous, groupBys, nonGroupBys);
   }
   //bad HACK to test the countiter
 /*

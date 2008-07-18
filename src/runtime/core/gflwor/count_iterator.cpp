@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "runtime/core/gflwor/count_iterator.h"
-#include "runtime/core/gflwor/common_binding.h"
+#include "runtime/core/gflwor/common.h"
 
 #include "runtime/core/var_iterators.h"
 #include "runtime/visitors/planitervisitor.h"

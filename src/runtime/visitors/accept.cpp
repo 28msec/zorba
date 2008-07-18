@@ -32,6 +32,7 @@
 #include "runtime/core/gflwor/tuplestream_iterator.h"
 #include "runtime/core/gflwor/for_iterator.h"
 #include "runtime/core/gflwor/let_iterator.h"
+#include "runtime/core/gflwor/where_iterator.h"
 #include "runtime/core/gflwor/count_iterator.h"
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -153,7 +154,7 @@ namespace zorba {
   BINARY_ACCEPT(gflwor::TupleStreamIterator);
   BINARY_ACCEPT(gflwor::ForIterator);
   BINARY_ACCEPT(gflwor::LetIterator);
-  
+  BINARY_ACCEPT(gflwor::WhereIterator);
 
   // nary iterators
   NARY_ACCEPT(FnDistinctValuesIterator);

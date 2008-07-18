@@ -392,6 +392,9 @@ bool remove(const T& item)
   return removeNoSync(item, hval);
 }
 
+bool empty(){
+  return (theNumEntries == 0); 
+}
 
 bool removeNoSync(const T& item, ulong hval)
 {
