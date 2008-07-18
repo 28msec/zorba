@@ -72,17 +72,21 @@ void * server( void * args)
   return 0;
 }
 #endif
+
 bool
-populateStaticContext(zorba::StaticContext_t& aStaticContext, ZorbaCMDProperties* aProperties)
+populateStaticContext(
+    zorba::StaticContext_t& aStaticContext,
+    ZorbaCMDProperties* aProperties)
 {
   if (aProperties->getBoundarySpace().size() != 0 )
   {
-    aStaticContext->setBoundarySpacePolicy( aProperties->getBoundarySpace().compare("preserve") == 0 
-                                            ? preserve_space 
-                                            : strip_space );
+    aStaticContext->setBoundarySpacePolicy(
+                       (aProperties->getBoundarySpace().compare("preserve") == 0 
+                        ? preserve_space 
+                        : strip_space));
   }
 
-  if (aProperties->getConstructionMode().size() != 0 )
+  if (aProperties->getConstructionMode().size() != 0)
   {
     aStaticContext->setConstructionMode( aProperties->getBoundarySpace().compare("preserve") == 0 
                                          ? preserve_cons 
@@ -114,6 +118,7 @@ populateStaticContext(zorba::StaticContext_t& aStaticContext, ZorbaCMDProperties
   return true;
 }
 
+
 bool
 populateDynamicContext(zorba::DynamicContext* aDynamicContext, ZorbaCMDProperties* aProperties)
 {
@@ -137,6 +142,7 @@ populateDynamicContext(zorba::DynamicContext* aDynamicContext, ZorbaCMDPropertie
     
   return true;
 }
+
 
 bool
 createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties* aProperties)
@@ -165,6 +171,11 @@ createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Main                                                                       //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WIN32_WCE
 int main(int argc, char* argv[])
@@ -228,10 +239,12 @@ int _tmain(int argc, _TCHAR* argv[])
                                            ? new std::ofstream(lProperties.getOutputFile().c_str()) 
                                            : 0 );
   std::ostream* lOutputStream = lFileStream.get();
-  if ( lOutputStream == 0 ) {
+  if ( lOutputStream == 0 ) 
+  {
     lOutputStream = &std::cout;
   }
-  else if ( !lOutputStream->good() ) {
+  else if ( !lOutputStream->good() ) 
+  {
     std::cerr << "could not write to output file " << lProperties.getOutputFile() << std::endl;
     lProperties.printHelp(std::cerr);
     return 2;
@@ -246,7 +259,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
   int queryNo = 1;
   for (ZorbaCMDProperties::QueriesOrFiles_t::const_iterator lIter = lProperties.queriesOrFilesBegin();
-       lIter != lProperties.queriesOrFilesEnd(); ++lIter)
+       lIter != lProperties.queriesOrFilesEnd();
+       ++lIter)
   {
     // input file (either from a file or given as parameter)
     const char* fname = (*lIter).c_str();
@@ -291,75 +305,78 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
 #ifdef ZORBA_DEBUGGER
-  server_args * lArgs = new server_args;
-  lArgs->theQuery = qfile.get();
-  lArgs->theFileName = fname;
-  lArgs->theRequestPort = lProperties.requestPort();
-  lArgs->theEventPort = lProperties.eventPort();
+    server_args * lArgs = new server_args;
+    lArgs->theQuery = qfile.get();
+    lArgs->theFileName = fname;
+    lArgs->theRequestPort = lProperties.requestPort();
+    lArgs->theEventPort = lProperties.eventPort();
   
-  // debug server
-  if ( lProperties.debugServer() )
-  {
-    std::cout << "Zorba XQuery debugger server." << std::endl;
-    std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
-    std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-    server( (void *)lArgs );
-
-  } else if ( lProperties.debugClient() ) {
+    // debug server
+    if ( lProperties.debugServer() )
+    {
+      std::cout << "Zorba XQuery debugger server." << std::endl;
+      std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
+      std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
+      server( (void *)lArgs );
+      
+    } else if ( lProperties.debugClient() ) {
     
-    std::cout << "Zorba XQuery debugger client." << std::endl;
-    std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
-    std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-    //copy the input stream
-    //std::stringstream out;
-    //std::copy( std::istreambuf_iterator<char>(*qfile),
-    //           std::istreambuf_iterator<char>(),
-    //           std::ostreambuf_iterator<char>(out));
-    //qfile->seekg(0);
-    //std::istringstream lInputQuery( out.str() );
-    //start the server thread
-    pthread_t lServerThread;
-    if ( pthread_create( &lServerThread, 0, server, lArgs ) != 0 )
-    {
-      std::cerr << "Couldn't start the debugger server" << std::endl;
-    }
-    //Try to connect 3 times on the server thread
-    for ( unsigned int i = 0; i < 3; i++ )
-    {
-      try
+      std::cout << "Zorba XQuery debugger client." << std::endl;
+      std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
+      std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
+      //copy the input stream
+      //std::stringstream out;
+      //std::copy( std::istreambuf_iterator<char>(*qfile),
+      //           std::istreambuf_iterator<char>(),
+      //           std::ostreambuf_iterator<char>(out));
+      //qfile->seekg(0);
+      //std::istringstream lInputQuery( out.str() );
+      //start the server thread
+      pthread_t lServerThread;
+      if ( pthread_create( &lServerThread, 0, server, lArgs ) != 0 )
       {
-        //wait a second before trying to reconnect
+        std::cerr << "Couldn't start the debugger server" << std::endl;
+      }
+
+      //Try to connect 3 times on the server thread
+      for ( unsigned int i = 0; i < 3; i++ )
+      {
+        try
+        {
+          //wait a second before trying to reconnect
 #ifdef WIN32
-        Sleep(1000);
+          Sleep(1000);
 #else
-        sleep(1);
+          sleep(1);
 #endif
-        ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
-        CommandLineEventHandler lEventHandler( qfile.get(), std::cin, std::cout, debuggerClient );
+          ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
+          CommandLineEventHandler lEventHandler( qfile.get(), std::cin, std::cout, debuggerClient );
 #ifdef SIGINT /* not all system have SIGINT */
-        signal( SIGINT, suspend );
+          signal( SIGINT, suspend );
 #endif
-        debuggerClient->registerEventHandler( &lEventHandler );
-        pthread_join( lServerThread, 0 );
-      } catch( std::exception &e ) {
-        if ( i < 2 ){ continue; }
-        std::cerr << "Could not start the debugger client: " << std::endl;
-        std::cerr << e.what() << std::endl;
-        exit(7);
-     }
-     return 0;
-   }
-  }
+          debuggerClient->registerEventHandler( &lEventHandler );
+          pthread_join( lServerThread, 0 );
+        } catch( std::exception &e ) {
+          if ( i < 2 ){ continue; }
+          std::cerr << "Could not start the debugger client: " << std::endl;
+          std::cerr << e.what() << std::endl;
+          exit(7);
+        }
+        return 0;
+      }
+    }
 #endif
 
-    try {
+    try 
+    {
       Zorba_CompilerHints lHints;
 
       // default is O1
       if (lProperties.getOptLevel() == "O0")
         lHints.opt_level = ZORBA_OPT_LEVEL_O0;
 
-      if (lTiming) {
+      if (lTiming) 
+      {
         lStartCompileTime = boost::posix_time::microsec_clock::local_time();
         zorbatm::get_timeinfo (lStartCompileTimeInfo);
       }
@@ -368,22 +385,28 @@ int _tmain(int argc, _TCHAR* argv[])
       if (! lProperties.inlineQuery())
         lQuery->setFileName (path.string ());
       lQuery->compile (*qfile, lStaticContext, lHints);
-
-      if (lTiming) {
+    
+      if (lTiming) 
+      {
         lStopCompileTime = boost::posix_time::microsec_clock::local_time();
         zorbatm::get_timeinfo (lStopCompileTimeInfo);
       }
-    } catch (zorba::QueryException& qe) {
+    }
+    catch (zorba::QueryException& qe) 
+    {
       std::cerr << qe << std::endl;
       return 5;
-    } catch (zorba::ZorbaException& ze) {
+    }
+    catch (zorba::ZorbaException& ze) 
+    {
       std::cerr << ze << std::endl;
       return 6;
     }
 
     // populate the dynamic context
     zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
-    try {
+    try 
+    {
       if ( ! populateDynamicContext(lDynamicContext, &lProperties) )
       {
         lProperties.printHelp(std::cerr);
@@ -404,88 +427,103 @@ int _tmain(int argc, _TCHAR* argv[])
       Zorba_SerializerOptions lSerOptions;
       createSerializerOptions(lSerOptions, &lProperties);
 
-      if (lTiming) {
+      if (lTiming) 
+      {
         lStartFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
         zorbatm::get_timeinfo (lStartFirstExecutionTimeInfo);
       }
 
-      if (lQuery->isUpdateQuery()) {
+      // RUN THE QUERY ONCE
+      if (lQuery->isUpdateQuery()) 
         lQuery->applyUpdates();
-      } else  {
+      else
         lQuery->serialize(*lOutputStream, lSerOptions);
-      }
 
-      if (lTiming) {
+      if (lTiming) 
+      {
         lStopFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
         zorbatm::get_timeinfo (lStopFirstExecutionTimeInfo);
       }
 
-      --lNumExecutions;
-
-      if (lTiming) {
+      if (lTiming) 
+      {
         lStartExecutionTime = boost::posix_time::microsec_clock::local_time();
         zorbatm::get_timeinfo (lStartExecutionTimeInfo);
       }
 
-      while (--lNumExecutions >= 0 ) {
-        if (lQuery->isUpdateQuery()) {
+      int numExecutions = lNumExecutions - 1;
+
+      // RUN THE QUERY N TIMES
+      while (--numExecutions >= 0 ) 
+      {
+        if (lQuery->isUpdateQuery())
           lQuery->applyUpdates();
-        } else  {
+        else
           lQuery->serialize(*lOutputStream, lSerOptions);
-        }
       }
 
-      if (lTiming) {
+      if (lTiming) 
+      {
         lStopExecutionTime = boost::posix_time::microsec_clock::local_time();
         zorbatm::get_timeinfo (lStopExecutionTimeInfo);
       }
-
-    } catch (zorba::QueryException& qe) {
+    }
+    catch (zorba::QueryException& qe) 
+    {
       std::cerr << qe << std::endl;
       return 5;
-    } catch (zorba::ZorbaException& ze) {
+    }
+    catch (zorba::ZorbaException& ze) 
+    {
       std::cerr << ze << std::endl;
       return 6;
     }
 
-    if (lTiming) {
+    if (lTiming) 
+    {
       std::cout.precision (3); std::cout.setf (std::ios::fixed);
       lNumExecutions = lProperties.getNoOfExecutions();
 
-      std::cout << std::endl << "Number of executions = "
-                << lNumExecutions << std::endl;
+      std::cout << std::endl << "Number of executions = " << lNumExecutions
+                << std::endl;
 
       lDiffCompileTime = lStopCompileTime - lStartCompileTime;
+
       lDiffCompileUserTime = zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartCompileTimeInfo), zorbatm::extract_user_time_detail (lStopCompileTimeInfo));
+
       std::cout << "Compilation time: "
                 << lDiffCompileTime.total_milliseconds()
                 << " (user: " << lDiffCompileUserTime << ")"
                 << " milliseconds" << std::endl;
-
+      
       lDiffFirstExecutionTime = lStopFirstExecutionTime - lStartFirstExecutionTime;
+
       lDiffFirstExecutionUserTime = zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartFirstExecutionTimeInfo), zorbatm::extract_user_time_detail (lStopFirstExecutionTimeInfo));
+
       std::cout << "First Execution time: "
                 << lDiffFirstExecutionTime.total_milliseconds()
                 << " (user: " << lDiffFirstExecutionUserTime << ")"
                 << " milliseconds (i.e. parsing the document is included)" << std::endl;
+    
+      if (lNumExecutions > 1) 
+      {
+        lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime) /
+                             (lNumExecutions - 1);
 
-      if (lNumExecutions > 1) {
-        lDiffExecutionTime =
-          (lStopExecutionTime - lStartExecutionTime) / (lNumExecutions - 1);
         lDiffExecutionUserTime =
           zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartExecutionTimeInfo),
                                      zorbatm::extract_user_time_detail (lStopExecutionTimeInfo))
           / (lNumExecutions - 1);
-        std::cout
-          << "Average Execution time: "
-          << lDiffExecutionTime.total_milliseconds()
-          << " (user: " << lDiffExecutionUserTime << ")"
-          << " milliseconds" << std::endl;
+
+        std::cout << "Average Execution time: "
+                  << lDiffExecutionTime.total_milliseconds()
+                  << " (user: " << lDiffExecutionUserTime << ")"
+                  << " milliseconds" << std::endl;
       }
     }
     
     queryNo++;
   }
-
+  
   return 0;
 }
