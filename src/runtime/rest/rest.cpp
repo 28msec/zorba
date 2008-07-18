@@ -167,9 +167,10 @@ bool createNodeHelper(store::Item_t parent, PlanState& planState, xqpString name
       -1,
       qname,
       GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
-      NULL,
       true,
-      true,
+      false,
+      false,
+      false,
       bindings,
       baseUri,
       false);
