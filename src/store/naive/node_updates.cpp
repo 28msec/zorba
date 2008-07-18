@@ -56,6 +56,9 @@ void XmlNode::removeType(TypeUndoList& undoList)
       undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
 
       n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
+      n->setHaveValue();
+      n->resetHaveEmptyValue();
+      n->resetHaveTypedValue();
       n->resetIsId();
       n->resetIsIdRefs();
     }
@@ -129,6 +132,9 @@ void XmlNode::setToUntyped()
 
     n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
 
+    n->setHaveValue();
+    n->resetHaveEmptyValue();
+    n->resetHaveTypedValue();
     n->resetIsId();
     n->resetIsIdRefs();
 
@@ -387,9 +393,15 @@ void ElementNode::insertAttributes(
     checkUniqueAttr(attr->getNodeName());
 
     if (copy)
-      attr->copy2(this, this, numAttrs + i, copymode);
+    {
+      attr = reinterpret_cast<AttributeNode*>(
+             attr->copy2(this, this, numAttrs + i, copymode));
+      attrs[i] = attr;
+    }
     else
+    {
       attr->switchTree(this, numAttrs + i, copymode);
+    }
 
     addBindingForQName2(attr->getNodeName());
   }
@@ -447,7 +459,7 @@ void ElementNode::replaceContent(
   children().copy(oldChildren);
   children().clear();
 
-  if (newTextChild->getStringValueP()->empty())
+  if (newTextChild->getStringValue()->empty())
     return;
 
   if (copymode.theDoCopy)
@@ -492,12 +504,39 @@ void AttributeNode::restoreValue(
 
 ********************************************************************************/
 void TextNode::replaceValue(
-    xqpStringStore_t& newValue,
-    xqpStringStore_t& oldValue)
+    xqpStringStore_t&   newValue,
+    rchandle<RCObject>& oldValue,
+    bool&               isTyped)
 {
-  oldValue.transfer(theContent);
-  theContent = newValue;
+  if (this->isTyped())
+  {
+    reinterpret_cast<store::Item_t*>(&oldValue)->
+      transfer(*reinterpret_cast<store::Item_t*>(&theContent));
+    isTyped = true;
+  }
+  else
+  {
+    reinterpret_cast<xqpStringStore_t*>(&oldValue)->
+      transfer(*reinterpret_cast<xqpStringStore_t*>(&theContent));
+    isTyped = false;
+  }
+
+  setText(newValue);
 }
+
+
+void TextNode::restoreValue(
+    rchandle<RCObject>& oldValue,
+    bool                isTyped)
+{
+  if (isTyped)
+    reinterpret_cast<store::Item_t*>(&theContent)->
+      transfer(*reinterpret_cast<store::Item_t*>(&oldValue));
+  else
+    reinterpret_cast<xqpStringStore_t*>(&theContent)->
+      transfer(*reinterpret_cast<xqpStringStore_t*>(&oldValue));
+}
+
 
 
 void PiNode::replaceValue(

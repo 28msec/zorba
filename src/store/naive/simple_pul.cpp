@@ -1199,11 +1199,23 @@ void UpdReplaceAttrValue::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdReplaceTextValue::~UpdReplaceTextValue()
+{
+  if (theOldValue)
+  {
+    if (theIsTyped)
+      *reinterpret_cast<store::Item_t*>(&theOldValue) = NULL;
+    else
+      *reinterpret_cast<xqpStringStore_t*>(&theOldValue) = NULL;
+  }
+}
+
+
 void UpdReplaceTextValue::apply()
 {
   TextNode* target = TEXT_NODE(theTarget);
 
-  target->replaceValue(theNewValue, theOldValue);
+  target->replaceValue(theNewValue, theOldValue, theIsTyped);
 
   if (target->theParent)
     target->theParent->removeType(theTypeUndoList);
@@ -1216,7 +1228,7 @@ void UpdReplaceTextValue::undo()
 {
   TextNode* target = TEXT_NODE(theTarget);
 
-  target->replaceValue(theOldValue, theNewValue);
+  target->restoreValue(theOldValue, theIsTyped);
 
   if (!theTypeUndoList.empty())
     target->theParent->restoreType(theTypeUndoList);

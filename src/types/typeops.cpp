@@ -665,6 +665,8 @@ int TypeOps::type_cnt (const XQType& type) {
   return -1;
 }
 
+
+//                                       1  ?  *  +
 const int TypeOps::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
 const int TypeOps::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
 

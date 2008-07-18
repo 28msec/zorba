@@ -482,36 +482,40 @@ public:
    * children of a given parent node. If no parent is given, N becomes the
    * root (and single node) of a new XML tree. 
    *
-   * @param result        The new node N created by this method
-   * @param parent        The parent P of the new node; may be NULL.
-   * @param pos           The position, among the children of P, that N will
-   *                      occupy. If pos < 0 or pos >= current number of P's
-   *                      children, then N is appended to the list of children.
-   * @param nodeName      The fully qualified name of the new node.
-   * @param typeName      The fully qualified name of the new node's type.
-   * @param typedValue    The typed value of the new node. It may be NULL (for
-   *                      example if the node is untyped).
-   * @param isId          The is-id property of the new node.
-   * @param isIdRefs      The is-id-refs property of the new node.
-   * @param localBindings A set of namespace bindings. The namespaces property
-   *                      of N will be the union of this set and the namespaces 
-   *                      property of P.
-   * @param baseUri       The base uri of N. It may be NULL, in which case, the 
-   *                      base-uri property of N is the same as that of P.
-   * @param allowSharing  A zorba-specific parameter used to optimize
-   *                      node-construction expressions by avoiding node copying
-   *                      whenever possible. It is the zorba compiler who decides,
-   *                      based on semantic query analysis, if copying can be
-   *                      avoided, and indicates its decision to the store by
-   *                      setting this parameter to true (see also the Item::copy()
-   *                      method). If true, then N may accept as a child/attribute
-   *                      a node C that already has another parent. In this case,
-   *                      C retains its original parent (which will always be in
-   *                      the same xml tree as C), but becomes a "shared" child
-   *                      between N and its original parent. A store may choose
-   *                      to ignore this parameter. 
-   * @return              Always true (if any errors occur, the method throws
-   *                      exceptions)
+   * @param result         The new node N created by this method
+   * @param parent         The parent P of the new node; may be NULL.
+   * @param pos            The position, among the children of P, that N will
+   *                       occupy. If pos < 0 or pos >= current number of P's
+   *                       children, then N is appended to the list of children.
+   * @param nodeName       The fully qualified name of the new node.
+   * @param typeName       The fully qualified name of the new node's type.
+   * @param haveTypedValue Whether the node has a typed value or not (element
+   *                       nodes with complex type and element-only content do
+   *                       not have typed value).
+   * @param haveEmptyValue True if the typed value of the node is the empty
+   *                       sequence. This is the case if the element has a
+   *                       complex type with empty content.
+   * @param isId           The is-id property of the new node.
+   * @param isIdRefs       The is-id-refs property of the new node.
+   * @param localBindings  A set of namespace bindings. The namespaces property
+   *                       of N will be the union of this set and the namespaces 
+   *                       property of P.
+   * @param baseUri        The base uri of N. It may be NULL, in which case, the 
+   *                       base-uri property of N is the same as that of P.
+   * @param allowSharing   A zorba-specific parameter used to optimize
+   *                       node-construction expressions by avoiding node copying
+   *                       whenever possible. It is the zorba compiler who decides,
+   *                       based on semantic query analysis, if copying can be
+   *                       avoided, and indicates its decision to the store by
+   *                       setting this parameter to true (see also the Item::copy()
+   *                       method). If true, then N may accept as a child/attribute
+   *                       a node C that already has another parent. In this case,
+   *                       C retains its original parent (which will always be in
+   *                       the same xml tree as C), but becomes a "shared" child
+   *                       between N and its original parent. A store may choose
+   *                       to ignore this parameter. 
+   * @return               Always true (if any errors occur, the method throws
+   *                       exceptions)
    */
  virtual bool createElementNode(
         Item_t&               result,
@@ -519,20 +523,8 @@ public:
         long                  pos,
         Item_t&               nodeName,
         Item_t&               typeName,
-        Item_t&               typedValue,
-        bool                  isId,
-        bool                  isIdRefs,
-        const NsBindings&     localBindings,
-        xqpStringStore_t&     baseURI,
-        bool                  allowSharing = false) = 0;
-
- virtual bool createElementNode(
-        Item_t&               result,
-        Item*                 parent,
-        long                  pos,
-        Item_t&               nodeName,
-        Item_t&               typeName,
-        std::vector<Item_t>*  typedValue,
+        bool                  haveTypedValue,
+        bool                  haveEmptyValue,
         bool                  isId,
         bool                  isIdRefs,
         const NsBindings&     localBindings,
@@ -598,6 +590,16 @@ public:
         Item*             parent,
         long              pos,
         xqpStringStore_t& content) = 0;
+
+  virtual bool createTextNode(
+        Item_t&           result,
+        Item*             parent,
+        Item_t&           content) = 0;
+
+  virtual bool createTextNode(
+        Item_t&              result,
+        Item*                parent,
+        std::vector<Item_t>& content) = 0;
 
   /**
    * Create a new processing instruction node N and place it at a given position

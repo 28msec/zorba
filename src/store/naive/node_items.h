@@ -416,23 +416,22 @@ public:
   {
     IsId              =   1,
     IsIdRefs          =   2,
-    HaveTypedValue    =   4,
-    HaveListValue     =   8,
-    HaveLocalBindings =   16,
-    HaveBaseUri       =   32
+    HaveValue         =   4,
+    HaveEmptyValue    =   8,
+    HaveTypedValue    =   16, // 1001 0000
+    HaveListValue     =   32,
+    HaveLocalBindings =   64,
+    HaveBaseUri       =   128
   };
 
 protected:
   store::Item_t         theName;
   store::Item_t         theTypeName;
-  store::Item_t         theTypedValue;
   NsBindingsContext_t   theNsContext;
   uint16_t              theFlags;
 
 public:
-  ElementNode(
-        store::Item_t& nodeName,
-        store::Item_t& typeName);
+  ElementNode(store::Item_t& nodeName);
 
   ElementNode(
         XmlTree*                 tree,
@@ -440,6 +439,10 @@ public:
         long                     pos,
         store::Item_t&           nodeName,
         store::Item_t&           typeName,
+        bool                     haveTypedValue,
+        bool                     haveEmptyValue,
+        bool                     isId,
+        bool                     isIdRefs,
         const store::NsBindings* localBindings);
 
   virtual ~ElementNode();
@@ -475,13 +478,26 @@ public:
   // 
 
   bool isId() const             { return (theFlags & IsId) != 0; }
+  void setIsId()                { theFlags |= IsId; }
   void resetIsId()              { theFlags &= ~IsId; }
   bool isIdRefs() const         { return (theFlags & IsIdRefs) != 0; }
+  void setIsIdRefs()            { theFlags |= IsIdRefs; }
   void resetIsIdRefs()          { theFlags &= ~IsIdRefs; }
   bool haveBaseUri() const      { return (theFlags & HaveBaseUri); }
   void setHaveBaseUri()         { theFlags |= HaveBaseUri; }
   void resetHaveBaseUri()       { theFlags &= ~HaveBaseUri; }
-
+  void setHaveValue()           { theFlags |= HaveValue; }
+  void resetHaveValue()         { theFlags &= ~HaveValue; }
+  bool haveValue() const        { return (theFlags & HaveValue) != 0; }
+  void setHaveEmptyValue()      { theFlags |= HaveEmptyValue; }
+  void resetHaveEmptyValue()    { theFlags &= ~HaveEmptyValue; }
+  bool haveEmptyValue() const   { return (theFlags & HaveEmptyValue) != 0; }
+  void setHaveTypedValue()      { theFlags |= HaveTypedValue; }
+  void resetHaveTypedValue()    { theFlags &= ~HaveTypedValue; }
+  bool haveTypedValue() const   { return (theFlags & HaveTypedValue) != 0; }
+  bool haveListValue() const    { return (theFlags & HaveListValue) != 0; }
+  void resetHaveListValue()     { theFlags &= ~HaveListValue; }
+  void setHaveListValue()       { theFlags |= HaveListValue; }
   bool haveLocalBindings() const{ return (theFlags & HaveLocalBindings) != 0; }
 
   NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
@@ -555,7 +571,6 @@ protected:
 public:
   ElementTreeNode(
         store::Item_t& nodeName,
-        store::Item_t& typeName,
         ulong          numBindings,
         ulong          numAttributes);
 
@@ -565,8 +580,10 @@ public:
         long                        pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
-        store::Item_t&              typedValue,
-        std::vector<store::Item_t>* typedValueV,
+        bool                        haveValue,
+        bool                        haveEmptyValue,
+        bool                        isId,
+        bool                        isIdRefs,
         const store::NsBindings*    localBindings,
         xqpStringStore_t&           baseUri);
 
@@ -617,8 +634,10 @@ public:
         long                        pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
-        store::Item_t&              typedValue,
-        std::vector<store::Item_t>* typedValueV,
+        bool                        haveTypedValue,
+        bool                        haveEmptyValue,
+        bool                        isId,
+        bool                        isIdRefs,
         const store::NsBindings*    localBindings,
         xqpStringStore_t&           baseUri);
 
@@ -758,40 +777,6 @@ protected:
 };
    
 
-#if 0
-/*******************************************************************************
-
-********************************************************************************/
-class TextNode : public XmlNode
-{
-  friend class XmlNode;
-  friend class DocumentDagNode;
-  friend class ConstrElementNode;
-  friend class BasicItemFactory;
-  friend class FastXmlLoader;
-
-public:
-  TextNode(XmlTree* tree, XmlNode* parent,
-        long              pos)
-
-  virtual ~TextNode();
-
-  XmlNode* copy2(
-        XmlNode*               rootParent,
-        XmlNode*               parent,
-        long                   pos,
-        const store::CopyMode& copymode) const;
-
-  store::StoreConsts::NodeKind getNodeKind() const
-  {
-    return store::StoreConsts::textNode;
-  }
-
-  store::Item* getType() const;
-};
-#endif
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -804,7 +789,7 @@ class TextNode : public XmlNode
   friend class FastXmlLoader;
 
 protected:
-    xqpStringStore_t theContent;
+    rchandle<RCObject> theContent;
 
 public:
   TextNode(xqpStringStore_t& content);
@@ -814,6 +799,11 @@ public:
         XmlNode*          parent,
         long              pos,
         xqpStringStore_t& content);
+
+  TextNode(
+        XmlNode*          parent,
+        store::Item_t&    content,
+        bool              isListValue);
 
   virtual ~TextNode();
 
@@ -830,66 +820,44 @@ public:
 
   store::Item* getType() const;
 
+  bool isTyped() const;
+
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
-  xqpStringStore_t getStringValue() const   { return theContent; }
-  xqpStringStore* getStringValueP() const   { return theContent.getp(); }
+  xqpStringStore_t getStringValue() const;
 			
   xqp_string show() const;
 
-  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
-};
+  void replaceValue(
+        xqpStringStore_t&   newValue,
+        rchandle<RCObject>& oldValue,
+        bool&               isTyped);
 
-
-#if 0
-/*******************************************************************************
-
-********************************************************************************/
-class TextNodeTyped : public XmlNode
-{
-  friend class XmlNode;
-  friend class DocumentDagNode;
-  friend class ConstrElementNode;
-  friend class BasicItemFactory;
-  friend class FastXmlLoader;
+  void restoreValue(
+        rchandle<RCObject>& oldValue,
+        bool                isTyped);
 
 protected:
-    xqpStringStore_t theContent;
-
-public:
-  TextNode(xqpStringStore_t& content);
-
-  TextNode(
-        XmlTree*          tree,
-        XmlNode*          parent,
-        long              pos,
-        xqpStringStore_t& content);
-
-  virtual ~TextNode();
-
-  XmlNode* copy2(
-        XmlNode*               rootParent,
-        XmlNode*               parent,
-        long                   pos,
-        const store::CopyMode& copymode) const;
-
-  store::StoreConsts::NodeKind getNodeKind() const
+  xqpStringStore* getText() const 
   {
-    return store::StoreConsts::textNode;
+    return reinterpret_cast<xqpStringStore*>(theContent.getp());
   }
 
-  store::Item* getType() const;
+  void setText(xqpStringStore_t& text)
+  {
+    reinterpret_cast<rchandle<xqpStringStore>*>(&theContent)->transfer(text);
+  }
 
-  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-  store::Item_t getAtomizationValue() const;
-  xqpStringStore_t getStringValue() const   { return theContent; }
-  xqpStringStore* getStringValueP() const   { return theContent.getp(); }
-			
-  xqp_string show() const;
+  store::Item* getValue() const
+  {
+    return reinterpret_cast<store::Item*>(theContent.getp());
+  }
 
-  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+  void setValue(store::Item_t& val)
+  {
+    reinterpret_cast<rchandle<store::Item>*>(&theContent)->transfer(val);
+  }
 };
-#endif
 
 
 /*******************************************************************************

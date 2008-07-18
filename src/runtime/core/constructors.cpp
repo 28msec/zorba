@@ -93,7 +93,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       {
         // Skip text node with zero-length value
         if (child->getNodeKind() == store::StoreConsts::textNode && 
-            child->getStringValueP()->empty())
+            child->getStringValue()->empty())
         {
           continue;
         }
@@ -253,7 +253,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                       -1,
                                       nodeName,
                                       typeName,
-                                      nullValue,
+                                      true,
+                                      false,
                                       false,
                                       false,
                                       theLocalBindings->get_bindings(),
@@ -314,7 +315,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
         // Skip text node with zero-length value
         if (child->getNodeKind() == store::StoreConsts::textNode && 
-            child->getStringValueP()->empty())
+            child->getStringValue()->empty())
         {
           ;
         }

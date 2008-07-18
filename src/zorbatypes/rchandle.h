@@ -21,6 +21,7 @@
 #include <cstdlib>
 
 #include "common/common.h"
+#include "zorbautils/fatal.h"
 
 namespace zorba {
 
@@ -205,6 +206,14 @@ public:
   {
     return theRefCount;
   }
+
+  long* getSharedRefCounter() const  
+  {
+    ZORBA_FATAL(0, "");
+    return NULL; 
+  } 
+ 
+  SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; })
 
   void addReference(long* counter
                     SYNC_PARAM2(RCLock* lock)) const

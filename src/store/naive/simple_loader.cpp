@@ -403,7 +403,7 @@ void SimpleXmlLoader::startElement(
     // Create the element node and push it to the node stack
     store::Item_t node;
     loader.theFactory->createElementNode(node, parent, -1, qname,
-                                         tname, nullValue, false, false,
+                                         tname, true, false, false, false,
                                          bindings, baseUri);
 
     if (loader.theNodeStack.empty())

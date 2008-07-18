@@ -494,7 +494,7 @@ void serializer::emitter::emit_node(
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
-    emit_expanded_string(item->getStringValueP());
+    emit_expanded_string(item->getStringValue());
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}

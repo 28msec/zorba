@@ -886,7 +886,11 @@ bool BasicItemFactory::createDocumentNode(
                   N is appended to the list of children.
   nodeName      : The node-name property of N.
   typeName      : The type-name property of N.
-  typedValue    : The typed-value property of N.
+  haveTypedValue: Whether the node has a typed value or not (element nodes with
+                  complex type and element-only content do not have typed value).
+  haveEmptyValue: True if the typed value of the node is the empty sequence.
+                  This is the case if the element has a complex type with empty
+                  content.
   localBindings : A set of namespace bindings. The namespaces property of N is
                   the union of this set and the namespaces property of P.
   baseUri       : The base-uri property of N. It may be NULL, in which case, 
@@ -903,7 +907,8 @@ bool BasicItemFactory::createElementNode(
     long                        pos,
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
-    store::Item_t&              typedValue,
+    bool                        haveTypedValue,
+    bool                        haveEmptyValue,
     bool                        isId,
     bool                        isIdRefs,
     const store::NsBindings&    localBindings,
@@ -922,55 +927,13 @@ bool BasicItemFactory::createElementNode(
 
     if (allowSharing)
       n = new ElementDagNode(xmlTree, pnode, pos, nodeName,
-                             typeName, typedValue, NULL,
+                             typeName, haveTypedValue, haveEmptyValue,
+                             isId, isIdRefs,
                              &localBindings, baseUri);
     else
       n = new ElementTreeNode(xmlTree, pnode, pos, nodeName,
-                              typeName, typedValue, NULL,
-                              &localBindings, baseUri);
-  }
-  catch (...)
-  {
-    if (xmlTree) delete xmlTree;
-    throw;
-  }
-
-  result = n;
-  return n != NULL;
-}
-
-
-bool BasicItemFactory::createElementNode(
-    store::Item_t&              result,
-    store::Item*                parent,
-    long                        pos,
-    store::Item_t&              nodeName,
-    store::Item_t&              typeName,
-    std::vector<store::Item_t>* typedValue,
-    bool                        isId,
-    bool                        isIdRefs,
-    const store::NsBindings&    localBindings,
-    xqpStringStore_t&           baseUri,
-    bool                        allowSharing)
-{
-  XmlTree* xmlTree = NULL;
-  ElementNode* n = NULL;
-  store::Item_t dummy;
-
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
-
-  try
-  {
-    if (parent == NULL)
-      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
-
-    if (allowSharing)
-      n = new ElementDagNode(xmlTree, pnode, pos, nodeName,
-                             typeName, dummy, typedValue,
-                             &localBindings, baseUri);
-    else
-      n = new ElementTreeNode(xmlTree, pnode, pos, nodeName,
-                              typeName, dummy, typedValue,
+                              typeName, haveTypedValue, haveEmptyValue,
+                              isId, isIdRefs,
                               &localBindings, baseUri);
   }
   catch (...)
@@ -1107,17 +1070,19 @@ bool BasicItemFactory::createTextNode(
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
+        ZORBA_ASSERT(pnode->getNodeKind() != store::StoreConsts::elementNode ||
+                     !reinterpret_cast<ElementNode*>(pnode)->haveTypedValue());
+
         if (lsib->getParent() == parent)
         {
-          textSibling->theContent = textSibling->theContent->append(content);
+          xqpStringStore_t content2 = textSibling->getText()->append(content);
+          textSibling->setText(content2);
           result = lsib;
         }
         else
         {
-          xqpStringStore_t content2 = textSibling->theContent->append(content);
-
+          xqpStringStore_t content2 = textSibling->getText()->append(content);
           pnode->removeChild(pos2-1);
-
           result = new TextNode(NULL, pnode, pos2-1, content2);
         }
         return result != NULL;
@@ -1134,6 +1099,42 @@ bool BasicItemFactory::createTextNode(
 
   result = n;
   return n != NULL;
+}
+
+
+/*******************************************************************************
+  Create a new text node N to store the typed value a given element node P (the
+  parent of N) that has simple type or complex type with simple content. P is
+  not allowed to have any other text or element children. 
+
+  parent        : The parent P of the new text node; must not be NULL.
+  content       : The typed value of P.
+********************************************************************************/
+bool BasicItemFactory::createTextNode(
+    store::Item_t&    result,
+    store::Item*      parent,
+    store::Item_t&    content)
+{
+  assert(parent != NULL);
+  ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
+
+  // Note: the TextNode constructor asserts that the parent hos 0 children
+  result = new TextNode(pnode, content, false);
+  return true;
+}
+
+
+bool BasicItemFactory::createTextNode(
+    store::Item_t&              result,
+    store::Item*                parent,
+    std::vector<store::Item_t>& content)
+{
+  assert(parent != NULL);
+  ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
+
+  store::Item_t typedValue = new ItemVector(content);
+  result = new TextNode(pnode, typedValue, true);
+  return true;
 }
 
 

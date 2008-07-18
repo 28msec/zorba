@@ -189,7 +189,6 @@ namespace zorba
         validateAttributes(schemaValidator, element->getAttributes());
         
         store::Item_t typeName = schemaValidator.getTypeQName();
-        store::Item_t typedValue;
 
         store::Item_t newElem;
 
@@ -198,7 +197,7 @@ namespace zorba
 
         store::Item_t elemName = element->getNodeName();
         GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
-                                            typeName, typedValue, false, false, 
+                                            typeName, true, false, false, false, 
                                             bindings, baseUri, false);
 
 

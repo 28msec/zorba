@@ -1661,7 +1661,7 @@ bool GenericCast::promote(
   }
   else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) 
   {
-    // Numeric Promotion to xs:float
+    // decimal --> xs:float
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) 
     {
       return GenericCast::instance()->cast(result, aItem,
@@ -1670,7 +1670,7 @@ bool GenericCast::promote(
   }
   else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
   {
-    // Numeric Promotion to xs:double
+    // Decimal/Float --> xs:double
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE) ||
         TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) 
     {
@@ -1680,7 +1680,7 @@ bool GenericCast::promote(
   }
   else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) 
   {
-    // URI Promotion
+    // URI --> xs:String Promotion
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
     {
       return GenericCast::instance()->cast(result, aItem,

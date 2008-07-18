@@ -439,13 +439,20 @@ class UpdReplaceTextValue : public UpdatePrimitive
 
 protected:
   xqpStringStore_t   theNewValue;
-  xqpStringStore_t   theOldValue;
+  rchandle<RCObject> theOldValue;
+  bool               theIsTyped;
 
 public:
-  UpdReplaceTextValue(store::Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
+  UpdReplaceTextValue(store::Item_t& t, xqpStringStore_t& newValue) 
+    :
+    UpdatePrimitive(t),
+    theOldValue(NULL),
+    theIsTyped(false)
   {
     theNewValue.transfer(newValue);
   }
+
+  ~UpdReplaceTextValue();
 
   store::UpdateConsts::UpdPrimKind getKind() 
   {

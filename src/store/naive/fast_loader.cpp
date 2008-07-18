@@ -459,24 +459,21 @@ void FastXmlLoader::startElement(
   ulong numAttributes = (ulong)numAttrs;
   ulong numBindings = (ulong)numNamespaces;
 
-  // Construct node name and type
+  // Construct node name 
   store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
                                          reinterpret_cast<const char*>(prefix),
                                          reinterpret_cast<const char*>(lname));
-  store::Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED];
 
   // Create the element node and push it to the node stack
   ElementTreeNode* elemNode = new ElementTreeNode(nodeName,
-                                                  typeName,
                                                   numBindings,
                                                   numAttributes);
-
-  nodeName = elemNode->getNodeName();
-
   if (loader.theNodeStack.empty())
     loader.setRoot(elemNode);
 
 #ifdef DATAGUIDE
+  nodeName = elemNode->getNodeName();
+
   // Push new node to dataguide, if not there already
   if (loader.theBuildDataGuide && loader.theNodeStack.empty())
   {
@@ -631,9 +628,10 @@ void  FastXmlLoader::endElement(
         prevChild != NULL &&
         prevChild->getNodeKind() == store::StoreConsts::textNode)
     {
-      TextNode* textNode = reinterpret_cast<TextNode*>(prevChild);
-      textNode->theContent = new xqpStringStore(currChild->getStringValueP()->str() +
-                                                textNode->theContent->str());
+      TextNode* textSibling = reinterpret_cast<TextNode*>(prevChild);
+      TextNode* textChild = reinterpret_cast<TextNode*>(currChild);
+      xqpStringStore_t content2 = textChild->getText()->append(textSibling->getText());
+      textSibling->setText(content2);
       delete currChild;
     }
     else
