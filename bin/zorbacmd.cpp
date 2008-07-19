@@ -338,7 +338,7 @@ int _tmain(int argc, _TCHAR* argv[])
       //qfile->seekg(0);
       //std::istringstream lInputQuery( out.str() );
       //start the server thread
-#ifdef ZORBA_HAVE_PTHREAD 
+#ifdef ZORBA_HAVE_PTHREAD_H 
       pthread_t lServerThread;
       if ( pthread_create( &lServerThread, 0, server, lArgs ) != 0 )
 #else

@@ -21,13 +21,11 @@
 #include <vector>
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
-#else
-#include <windows.h>
 #endif
-
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_client.h>
 
+#include "zorbamisc/config/platform.h"
 #include "debugger/debugger_common.h"
 
 namespace zorba{

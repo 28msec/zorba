@@ -13,5 +13,9 @@
 # limitations under the License.
 #
 
-ADD_SUBDIRECTORY(tiny_json)
-#ADD_SUBDIRECTORY(json)
+SET(JSON_SRCS
+  itow.cpp
+  parser.cpp
+  value.cpp)
+
+ADD_LIBRARY(json ${JSON_SRCS})

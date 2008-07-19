@@ -57,7 +57,7 @@ namespace zorba{
   {
     //TODO: shouldn't join but terminate and clean the listener thread
 #ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_join( &theEventListener, 0 );
+    pthread_join( theEventListener, 0 );
 #else
     WaitForSingleObject( theEventListener, INFINITE );
     CloseHandle( theEventListener );
