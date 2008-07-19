@@ -37,12 +37,17 @@ namespace zorba{
     theEventHandler(0), 
     theRequestSocket( new TCPSocket( "127.0.0.1", aRequestPortno ) ),
     theEventServerSocket( new TCPServerSocket( aEventPortno ) ),
-    theExecutionStatus( QUERY_IDLE ) 
+    theExecutionStatus( QUERY_IDLE ),
+    theEventListener(0)	
   {
     //Perform the handshake with the server
     handshake();
     //Start the event listener thread
+#ifdef ZORBA_HAVE_PTHREAD_H
     if ( pthread_create( &theEventListener, 0, listenEvents, this ) != 0 )
+#else
+    if ( (theEventListener = CreateThread( 0, 0, listenEvents, this, 0, 0 ) ) == 0 )
+#endif
     {
       std::cerr << "Couldn't start the event listener thread" << std::endl;
     }
@@ -50,7 +55,13 @@ namespace zorba{
 
   ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
   {
-    pthread_join( theEventListener, 0 );
+    //TODO: shouldn't join but terminate and clean the listener thread
+#ifdef ZORBA_HAVE_PTHREAD_H
+    pthread_join( &theEventListener, 0 );
+#else
+    WaitForSingleObject( theEventListener, INFINITE );
+    CloseHandle( theEventListener );
+#endif
     delete theRequestSocket;
     delete theEventServerSocket;
   }
@@ -84,10 +95,16 @@ namespace zorba{
       throw MessageException( "Handshake failed" ); 
     }
   }
-
+#ifdef ZORBA_HAVE_PTHREAD_H
   void * listenEvents( void * aClient )
+#else
+  DWORD WINAPI listenEvents( LPVOID aClient )
+#endif
   {
+#ifdef ZORBA_HAVE_PTHREAD_H
+    //TODO: to remove
     pthread_detach( pthread_self() );
+#endif
     ZorbaDebuggerClientImpl * lClient = (ZorbaDebuggerClientImpl *) aClient;
 #ifndef NDEBUG
     std::clog << "[Client Thread] start event listener thread" << std::endl;

@@ -18,8 +18,10 @@
 #include <memory>
 #include <fstream>
 #include <boost/bind.hpp>
-#include <pthread.h>
 #include <zorba/zorba.h>
+#ifdef ZORBA_HAVE_PTHREAD
+#include <pthread.h>
+#endif
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -43,13 +45,18 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/numconversions.h"
 
-boost::mutex io_mutex;
-
 namespace zorba{
 
+#ifdef ZORBA_HAVE_PTHREAD_H
 void * runtimeThread( void * aDebugger )
+#else
+DWORD WINAPI runtimeThread( LPVOID aDebugger )
+#endif
 {
+#ifdef ZORBA_HAVE_PTHREAD_H
+  //TODO: to remove
   pthread_detach( pthread_self() );
+#endif
   ZorbaDebuggerImpl * lDebugger = (ZorbaDebuggerImpl *) aDebugger;
   lDebugger->runQuery();
   return 0;
@@ -68,9 +75,6 @@ void ZorbaDebuggerImpl::start( void * aStore,
                                unsigned short aEventPortno)
 {
   TCPSocket * lSock;
-  //Pthread initialization
-  //theRuntimeMutex = PTHREAD_MUTEX_INITIALIZER;
-  //theRuntimeSuspendedCV = PTHREAD_COND_INITIALIZER;
   //activate the debug mode
   theDebugMode = true;
   //Set the input stream
@@ -122,7 +126,11 @@ void ZorbaDebuggerImpl::start( void * aStore,
   std::clog << "[Server Thread] server quited" << std::endl;
 #endif
   if ( theRuntimeThread != 0 ){
-    pthread_join( theRuntimeThread, 0 );
+#ifdef ZORBA_HAVE_PTHREAD_H
+      pthread_join( theRuntimeThread, 0 );
+#else
+      WaitForSingleObject( theRuntimeThread, INFINITE );    
+#endif
   }
 #ifndef NDEBUG
   std::clog << "[Server Thread] runtime thread joined" << std::endl;
@@ -367,7 +375,11 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
 
 void ZorbaDebuggerImpl::run()
 {
+#ifdef ZORBA_HAVE_PTHREAD_H
   if ( pthread_create( &theRuntimeThread, 0, runtimeThread, this ) != 0 )
+#else
+  if ( ( theRuntimeThread = CreateThread( 0, 0, runtimeThread, this, 0, 0 ) ) == 0 )
+#endif
   {
     std::cerr << "Couldn't create the runtime thread" << std::endl;
   }
@@ -383,7 +395,12 @@ void ZorbaDebuggerImpl::resume()
   if ( theStatus == QUERY_SUSPENDED )
   {
     setStatus( QUERY_RUNNING );
+#ifdef ZORBA_HAVE_PTHREAD_H
     pthread_cond_signal( &theRuntimeSuspendedCV );
+#else
+    ResumeThread( theRuntimeThread );
+    //WakeConditionVariable( &theRuntimeSuspendedCV );
+#endif
   }
 }
 

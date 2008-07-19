@@ -33,7 +33,9 @@
 #include "debugcmd_client.h"
 
 #include <csignal>
-#include <pthread.h> 
+#ifdef ZORBA_HAVE_PTHREAD
+#include <pthread.h>
+#endif
 #endif
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -57,7 +59,11 @@ struct server_args
   unsigned short theEventPort;
 };
 
+#ifdef ZORBA_HAVE_PTHREAD_H
 void * server( void * args)
+#else
+DWORD WINAPI server( LPVOID args )
+#endif
 {
   server_args * lArgs = (server_args*)args;
   try
@@ -332,8 +338,13 @@ int _tmain(int argc, _TCHAR* argv[])
       //qfile->seekg(0);
       //std::istringstream lInputQuery( out.str() );
       //start the server thread
+#ifdef ZORBA_HAVE_PTHREAD 
       pthread_t lServerThread;
       if ( pthread_create( &lServerThread, 0, server, lArgs ) != 0 )
+#else
+      HANDLE lServerThread = 0;
+      if ( (lServerThread = CreateThread( 0, 0, server, lArgs, 0, 0 )) == 0 )
+#endif
       {
         std::cerr << "Couldn't start the debugger server" << std::endl;
       }
@@ -355,7 +366,12 @@ int _tmain(int argc, _TCHAR* argv[])
           signal( SIGINT, suspend );
 #endif
           debuggerClient->registerEventHandler( &lEventHandler );
+#ifdef ZORBA_HAVE_PTHREAD_H
           pthread_join( lServerThread, 0 );
+#else
+          WaitForSingleObject( lServerThread, INFINITE );
+	  CloseHandle( lServerThread );
+#endif
         } catch( std::exception &e ) {
           if ( i < 2 ){ continue; }
           std::cerr << "Could not start the debugger client: " << std::endl;

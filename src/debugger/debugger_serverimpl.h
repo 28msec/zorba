@@ -18,7 +18,11 @@
 #define ZORBA_DEBUGGER_IMPL_H
 
 #include <iostream>
+#ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
+#else
+#include <windows.h>
+#endif
 #include <zorba/zorba.h>
 
 #include "runtime/base/plan_iterator.h"
@@ -42,8 +46,11 @@ class ResumeExecutionMessage;
 class TerminateExecutionMessage;
 class StepExecutionMessage;
 
+#ifdef ZORBA_HAVE_PTHREAD_H
 void * runQuery( void * aQuery );
-
+#else
+DWORD WINAPI runQuery( LPVOID aQuery );
+#endif
 /**
  * @
  */
@@ -110,11 +117,15 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     std::vector<QueryLoc> theBreakpoints;
 
+#ifdef ZORBA_HAVE_PTHREAD_H
     pthread_t theRuntimeThread;
-
     pthread_mutex_t theRuntimeMutex;
-    
     pthread_cond_t theRuntimeSuspendedCV;
+#else
+    HANDLE   theRuntimeThread;
+    HANDLE    theRuntimeMutex;
+    //CONDITION_VARIABLE theRuntimeSuspendedCV;
+#endif
 
     bool hasToSuspend();
     

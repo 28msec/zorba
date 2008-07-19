@@ -18,7 +18,11 @@
 
 #include <iostream>
 #include <sstream>
+#ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
+#else
+#include <windows.h>
+#endif
 
 #include "system/globalenv.h"
 
@@ -56,9 +60,15 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
       //}
       if ( theDebugger->hasToSuspend() )
       {
+#ifdef ZORBA_HAVE_PTHREAD_H
         pthread_mutex_lock( &theDebugger->theRuntimeMutex );
         pthread_cond_wait( &theDebugger->theRuntimeSuspendedCV, &theDebugger->theRuntimeMutex ); 
-        pthread_mutex_unlock( &theDebugger->theRuntimeMutex ); 
+        pthread_mutex_unlock( &theDebugger->theRuntimeMutex );
+#else
+	SuspendThread( theDebugger->theRuntimeThread );
+        //SleepConditionVariableCS( &theDebugger->theRuntimeSuspendedCV, &theDebugger->theRuntimeMutex, INFINITE );	
+	//ReleaseMutex( theDebugger->theRuntimeMutex );
+#endif	
       }
       STACK_PUSH(true, state);
     }

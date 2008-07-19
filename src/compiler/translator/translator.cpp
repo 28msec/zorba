@@ -1725,7 +1725,7 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
   else
     nodestack.push (&*create_var (loc, v.get_varname (), var_expr::let_var, type));
 #ifdef ZORBA_DEBUGGER
-  theScopedVariables.push_back(nodestack.top());
+  theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
 #endif
 }
 
@@ -1760,13 +1760,13 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0089, loc);
     bind_var_and_push (pv->get_location (), pvarname, var_expr::pos_var);
 #ifdef ZORBA_DEBUGGER
-    theScopedVariables.push_back(nodestack.top());
+    theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
 #endif
     nodestack.push (val_expr);
   }
   bind_var_and_push (loc, v.get_varname (), var_expr::for_var, v.get_typedecl () == NULL ? NULL : pop_tstack ());
 #ifdef ZORBA_DEBUGGER
-  theScopedVariables.push_back(nodestack.top());
+  theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
 #endif
 }
 

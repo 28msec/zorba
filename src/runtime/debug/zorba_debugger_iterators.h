@@ -18,7 +18,6 @@
 #define ZORBA_DEBUGGER_ITERATORS_H
 
 #include <vector>
-#include <boost/thread/mutex.hpp>
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
