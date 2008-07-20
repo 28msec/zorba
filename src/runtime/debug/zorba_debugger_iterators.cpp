@@ -18,17 +18,14 @@
 
 #include <iostream>
 #include <sstream>
-#ifdef ZORBA_HAVE_PTHREAD_H
-#include <pthread.h>
-#else
-#include <windows.h>
-#endif
 
 #include "system/globalenv.h"
+#include "zorbautils/thread.h"
 
 using namespace std;
 
 namespace zorba {
+
 FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
                checked_vector<store::Item_t> varnames_,
                checked_vector<std::string> var_keys_,
@@ -53,22 +50,9 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
     theDebugger->theChildren = theChildren;
 
     while ( consumeNext( result, theChildren[0], planState ) ) {
-      //std::cerr << "Number of variables in scope:" << theVariables.size() << std::endl;
-      //for( unsigned int i=0; i<theVariables.size(); i++)
-      //{
-      //  std::cerr << "name: " << theVariables.at(i)->toString() << std::endl;  
-      //}
       if ( theDebugger->hasToSuspend() )
       {
-#ifdef ZORBA_HAVE_PTHREAD_H
-        pthread_mutex_lock( &theDebugger->theRuntimeMutex );
-        pthread_cond_wait( &theDebugger->theRuntimeSuspendedCV, &theDebugger->theRuntimeMutex ); 
-        pthread_mutex_unlock( &theDebugger->theRuntimeMutex );
-#else
-	SuspendThread( theDebugger->theRuntimeThread );
-        //SleepConditionVariableCS( &theDebugger->theRuntimeSuspendedCV, &theDebugger->theRuntimeMutex, INFINITE );	
-	//ReleaseMutex( theDebugger->theRuntimeMutex );
-#endif	
+        theDebugger->theRuntimeThread->suspend();
       }
       STACK_PUSH(true, state);
     }

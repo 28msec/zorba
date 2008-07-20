@@ -19,14 +19,11 @@
 
 #include <iostream>
 #include <vector>
-#ifdef ZORBA_HAVE_PTHREAD_H
-#include <pthread.h>
-#endif
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_client.h>
 
-#include "zorbamisc/config/platform.h"
 #include "debugger/debugger_common.h"
+#include "zorbautils/thread.h"
 
 namespace zorba{
 
@@ -35,20 +32,12 @@ namespace zorba{
   class TCPSocket;
   class TCPServerSocket;
 
-#ifdef ZORBA_HAVE_PTHREAD_H
-  void * listenEvents( void * aClient );
-#else
-  DWORD WINAPI listenEvents( LPVOID aClient );
-#endif
+  THREAD_RETURN_TYPE listenEvents( void * aClient );
 
   class ZorbaDebuggerClientImpl: public ZorbaDebuggerClient
   {
     friend
-#ifdef ZORBA_HAVE_PTHREAD_H
-  void * listenEvents( void * aClient );
-#else
-  DWORD WINAPI listenEvents( LPVOID aClient );
-#endif
+    THREAD_RETURN_TYPE listenEvents( void * aClient );
 
     public:
       ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno );
@@ -109,11 +98,7 @@ namespace zorba{
 
       ExecutionStatus theExecutionStatus; 
 
-#ifdef ZORBA_HAVE_PTHREAD_H
-      pthread_t theEventListener;
-#else
-      HANDLE theEventListener;
-#endif
+      Thread *theEventListener;
 
       void handshake();
 

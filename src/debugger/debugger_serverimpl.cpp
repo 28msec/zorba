@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
+#include "debugger/debugger_serverimpl.h"
+
 #include <iostream>
 #include <memory>
 #include <fstream>
 #include <boost/bind.hpp>
 #include <zorba/zorba.h>
-#ifdef ZORBA_HAVE_PTHREAD
-#include <pthread.h>
-#endif
-#ifdef WIN32
-#include <windows.h>
-#endif
 
-#include "debugger/debugger_serverimpl.h"
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
 
@@ -38,7 +33,6 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
 
-
 #include "api/serialization/serializer.h"
 #include "api/unmarshaller.h"
 
@@ -47,16 +41,8 @@
 
 namespace zorba{
 
-#ifdef ZORBA_HAVE_PTHREAD_H
-void * runtimeThread( void * aDebugger )
-#else
-DWORD WINAPI runtimeThread( LPVOID aDebugger )
-#endif
+THREAD_RETURN_TYPE runtimeThread( void *aDebugger )
 {
-#ifdef ZORBA_HAVE_PTHREAD_H
-  //TODO: to remove
-  pthread_detach( pthread_self() );
-#endif
   ZorbaDebuggerImpl * lDebugger = (ZorbaDebuggerImpl *) aDebugger;
   lDebugger->runQuery();
   return 0;
@@ -126,11 +112,7 @@ void ZorbaDebuggerImpl::start( void * aStore,
   std::clog << "[Server Thread] server quited" << std::endl;
 #endif
   if ( theRuntimeThread != 0 ){
-#ifdef ZORBA_HAVE_PTHREAD_H
-      pthread_join( theRuntimeThread, 0 );
-#else
-      WaitForSingleObject( theRuntimeThread, INFINITE );    
-#endif
+    theRuntimeThread->join();
   }
 #ifndef NDEBUG
   std::clog << "[Server Thread] runtime thread joined" << std::endl;
@@ -375,14 +357,7 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
 
 void ZorbaDebuggerImpl::run()
 {
-#ifdef ZORBA_HAVE_PTHREAD_H
-  if ( pthread_create( &theRuntimeThread, 0, runtimeThread, this ) != 0 )
-#else
-  if ( ( theRuntimeThread = CreateThread( 0, 0, runtimeThread, this, 0, 0 ) ) == 0 )
-#endif
-  {
-    std::cerr << "Couldn't create the runtime thread" << std::endl;
-  }
+  theRuntimeThread = new Thread( runtimeThread, this );
 }
 
 void ZorbaDebuggerImpl::suspend()
@@ -395,12 +370,7 @@ void ZorbaDebuggerImpl::resume()
   if ( theStatus == QUERY_SUSPENDED )
   {
     setStatus( QUERY_RUNNING );
-#ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_cond_signal( &theRuntimeSuspendedCV );
-#else
-    ResumeThread( theRuntimeThread );
-    //WakeConditionVariable( &theRuntimeSuspendedCV );
-#endif
+    theRuntimeThread->resume();
   }
 }
 

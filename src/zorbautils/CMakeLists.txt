@@ -13,6 +13,7 @@
 # limitations under the License.
 
 SET(ZORBAUTILS_SRCS
+    thread.cpp
     mutex.cpp
     latch.cpp)
 

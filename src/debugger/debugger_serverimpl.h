@@ -18,22 +18,17 @@
 #define ZORBA_DEBUGGER_IMPL_H
 
 #include <iostream>
-#ifdef ZORBA_HAVE_PTHREAD_H
-#include <pthread.h>
-#else
-#include <windows.h>
-#endif
 #include <zorba/zorba.h>
 
-#include "runtime/base/plan_iterator.h"
 #include "debugger/debugger_common.h"
+
+#include "runtime/base/plan_iterator.h"
 #include "runtime/debug/zorba_debugger_iterators.h"
 
+#include "zorbautils/thread.h"
+
 namespace zorba{
-/**
- * The debug protocol is defined in Gabriel's slides: "XQuery Debug in Practice"
- * @link https://fifthelement.inf.ethz.ch/trac/xqpeclipse/attachment/wiki/Documents/2008.01.22%20-%20XQuery%20Debug%20In%20Practice.ppt
- */
+
 class TCPSocket;
 class TCPServerSocket;
 class ZorbaDebuggerCommandMessage;
@@ -46,11 +41,7 @@ class ResumeExecutionMessage;
 class TerminateExecutionMessage;
 class StepExecutionMessage;
 
-#ifdef ZORBA_HAVE_PTHREAD_H
-void * runQuery( void * aQuery );
-#else
-DWORD WINAPI runQuery( LPVOID aQuery );
-#endif
+THREAD_RETURN_TYPE runQuery( void *aQuery );
 /**
  * @
  */
@@ -89,7 +80,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     
     friend class ZorbaDebugger;
     friend class FnDebugIterator;
-
+   
     Zorba* theZorba;
 
     bool theDebugMode;
@@ -117,15 +108,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     std::vector<QueryLoc> theBreakpoints;
 
-#ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_t theRuntimeThread;
-    pthread_mutex_t theRuntimeMutex;
-    pthread_cond_t theRuntimeSuspendedCV;
-#else
-    HANDLE   theRuntimeThread;
-    HANDLE    theRuntimeMutex;
-    //CONDITION_VARIABLE theRuntimeSuspendedCV;
-#endif
+    Thread * theRuntimeThread;
 
     bool hasToSuspend();
     
