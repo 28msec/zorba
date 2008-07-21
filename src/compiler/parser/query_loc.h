@@ -19,7 +19,9 @@
 #include <string>
 
 #include "zorbatypes/xqpstring.h"
+#ifdef ZORBA_DEBUGGER
 #include "json/value.h"
+#endif
 
 namespace zorba {
 
