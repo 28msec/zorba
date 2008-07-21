@@ -761,7 +761,7 @@ DECL(sctx, zorba_collection,
 
 DECL(sctx, zorba_list_collections,
      (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "list-collections"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR));
+      GENV_TYPESYSTEM.ANY_URI_TYPE_STAR));
 
 DECL(sctx, zorba_create_collection,
      (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "create-collection"),

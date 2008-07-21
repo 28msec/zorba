@@ -19,11 +19,20 @@
 
 #include "runtime/base/narybase.h"
 
+#include "store/api/iterator.h"
+
 namespace zorba {
 
 NARY_ITER (ZorbaCollectionIterator);
 
-NARY_ITER (ZorbaListCollectionsIterator);
+class ZorbaListCollectionsState : public PlanIteratorState {
+public:
+  store::Iterator_t   uriItState;
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+NARY_ITER_STATE(ZorbaListCollectionsIterator, ZorbaListCollectionsState);
 
 NARY_ITER (ZorbaCreateCollectionIterator);
 

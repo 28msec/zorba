@@ -40,6 +40,7 @@
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/simple_iterator_factory.h"
 #include "store/naive/query_context.h"
+#include "store/naive/item_iterator.h"
 
 #include "store/api/pul.h"
 
@@ -285,6 +286,7 @@ store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
 
   store::Item_t uriItem;
   theItemFactory->createAnyURI(uriItem, uri);
+  theItemUris.push_back(uriItem);
 
   store::Collection_t collection(new SimpleCollection(uriItem));
 
@@ -294,8 +296,11 @@ store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
   if (!inserted)
   {
     ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
+    theItemUris.erase(theItemUris.end());
     return NULL;
   }
+
+
 
   return collection;
 }
@@ -342,8 +347,27 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
     return;
 
   theCollections.remove(uri);
+
+  checked_vector<store::Item_t>::iterator it = theItemUris.begin();
+  checked_vector<store::Item_t>::iterator end = theItemUris.end();
+
+  for (; it != end; ++it)
+  {
+    if( (*it)->getStringValue() == uri )
+    {
+      theItemUris.erase(it);
+      break;
+    }
+  }
 }
 
+/*******************************************************************************
+  Resturn an iterator that lists the URI's of all the available collections.
+********************************************************************************/
+store::Iterator_t SimpleStore::listCollectionsUri()
+{
+  return new ItemIterator(theItemUris);
+}
 
 /*******************************************************************************
 
@@ -466,9 +490,8 @@ long SimpleStore::compareNodes(store::Item* node1, store::Item* node2) const
   XmlNode* n1 = static_cast<XmlNode*>(node1);
   XmlNode* n2 = static_cast<XmlNode*>(node2);
 
-  
-  if (n1->getTreeId() < n2->getTreeId() ||
-      n1->getTreeId() == n2->getTreeId() && n1->getOrdPath() < n2->getOrdPath())
+  if ((n1->getTreeId() < n2->getTreeId()) ||
+      ((n1->getTreeId() == n2->getTreeId()) && (n1->getOrdPath() < n2->getOrdPath())))
     return -1;
 
   return 1;

@@ -25,23 +25,35 @@ class CollectionImpl : public Collection
 {
  public:
   CollectionImpl(const store::Collection_t& aCollection, ErrorHandler* aErrorHandler);
-  
+
   virtual ~CollectionImpl();
 
   Item
   getUri();
 
+  unsigned long
+  size() const;
+
   bool
-  addNode(const Item& aNode);
+  addNode(const Item& aNode, long aPosition = -1);
+
+  bool
+  addNode(const Item& aNode, const Item& aTargetNode, bool aOrder);
 
   bool
   deleteNode(const Item& aNode);
 
   bool
+  deleteNode(long aPosition = -1);
+
+  Item
+  nodeAt(long aPosition);
+
+  bool
   addNodes(const ResultIterator* aResultIterator);
 
   bool
-  addDocument(std::istream& lInStream);
+  addDocument(std::istream& lInStream, long aPosition = -1);
 
  protected:
   friend class Unmarshaller;

@@ -26,10 +26,15 @@ public:
   virtual ~Collection() {}
 
   /**
-   * Returns the URI of the collection
+   * Returns the URI of the collection.
    * @return URI
    */
   virtual Item* getUri() = 0;
+
+  /**
+   * Returns the number of items in the collection.
+   */
+  virtual unsigned long size() const = 0;
 
   /**
    * Reads the whole Collection from beginning to end; it is allowed to have
@@ -46,12 +51,14 @@ public:
 
   /**
    * Inserts into the collection an xml document or fragment given as text via
-   * an input stream.
+   * an input stream. Note that the collection is ordered.
    *
    * @param stream The stream providing the data to insert (e.g. from a file).
+   * @param position The position where the data will be inserted.
+   * By default the data will be appended at the end.
    * @return The root node of the xml document or fragment.
    */
-  virtual Item_t addToCollection(std::istream& stream) = 0;
+  virtual Item_t addToCollection(std::istream& stream, long position = -1) = 0;
 
   /**
    * Inserts into the collection an xml document or fragment given as text via
@@ -60,30 +67,67 @@ public:
    *
    * @param stream The stream providing the data to insert (e.g. from a file). 
    * Is allocated by user and freed by Zorba
+   * @param position The position where the data will be inserted.
+   * By default the data will be appended at the end.
    * @return The root node of the xml document or fragment.
    */
-  virtual Item_t addToCollection(std::istream* stream) = 0;
+  virtual Item_t addToCollection(std::istream* stream, long position = -1) = 0;
 
   /**
    * Inserts a node to the collection.
    *
    * @param node The node to insert
+   * @param position The position where the data will be inserted.
+   * By default the data will be appended at the end.
    */
-  virtual void addToCollection(const Item* node) = 0;
+  virtual void addToCollection(const Item* node, long position = -1) = 0;
+
+  /**
+   * Adds a Node Item to the Collection after the targetNode.
+   * 
+   * @param aNode the Node Item to add.
+   * @param aTargetNode the aNode will be added before the aTargetNode.
+   * @param sOrder if true the aNode will be inserted before the aTarget.
+   * Otherwise aNode will be inserted after aTarget.
+   * @return true if the Node Item was added to the Collection, false otherwise.
+   */
+  virtual void
+  addNode(const Item* aNode, const Item* aTargetNode, bool aOrder) = 0;
 
   /**
    * Inserts to the collection the set of nodes returned by the given iterator.
    *
    * @param nodeIter The iterator which produces the nodes to insert
+   * @param position The position where the data will be inserted.
+   * By default the data will be appended at the end.
    */
-  virtual void addToCollection(Iterator* nodeIter) = 0;
-		
+  virtual void addToCollection(Iterator* nodeIter, long position = -1) = 0;
+
   /**
    * Removes a node from the collection.
    *
    * @param node to be removed
+   * 
    */
   virtual void removeFromCollection(const Item* node) = 0;
+
+  /**
+   * Removes a node from the collection from the given position.
+   *
+   * @param position the position of the Node that will be removed from collection.
+   * By default the last Node will be removed from collection.
+   * 
+   */
+  virtual void removeFromCollection(long position = -1) = 0;
+
+  /**
+   * Get the node at the given position in the collection as a Node Item.
+   * 
+   * @param aPosition the position of the Node in the collection.
+   * @return the Node Item at the given position.
+   */
+  virtual Item_t
+  nodeAt(long aPosition) = 0;
 };
 
 } // namespace store

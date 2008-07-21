@@ -217,6 +217,16 @@ public:
    * @param URI to identify the collection to delete.
    */
   virtual void deleteCollection(const xqpStringStore_t& uri) = 0;
+
+  /** Deletes all collections.
+   *
+   */
+  virtual void deleteAllCollections() = 0;
+  
+  /** Returns an iterator that lists the URI's of all the available collections.
+   *
+   */
+  virtual Iterator_t listCollectionsUri() = 0;
 };
 
 

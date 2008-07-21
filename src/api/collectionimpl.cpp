@@ -62,9 +62,17 @@ CollectionImpl::getUri()
   return Item();
 }
 
- 
+
+unsigned long
+CollectionImpl::size() const
+{
+  return theCollection->size();
+}
+
+
+
 bool
-CollectionImpl::addNode(const Item& aNode) 
+CollectionImpl::addNode(const Item& aNode, long aPosition)
 {
   ZORBA_TRY
 
@@ -72,16 +80,34 @@ CollectionImpl::addNode(const Item& aNode)
 
     SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
 
-    theCollection->addToCollection(lItem);
+    theCollection->addToCollection(lItem, aPosition);
     return true;
 
   ZORBA_CATCH
-  return false;
+    return false;
 }
 
- 
 bool
-CollectionImpl::addNodes(const ResultIterator* aResultIterator) 
+CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool aOrder)
+{
+  ZORBA_TRY
+
+    store::Item* lItem = Unmarshaller::getInternalItem(aNode);
+    store::Item* targetItem = Unmarshaller::getInternalItem(aTargetNode);
+
+    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
+
+    theCollection->addNode(lItem, targetItem, aOrder);
+
+    return true;
+
+  ZORBA_CATCH
+    return false;
+}
+
+
+bool
+CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 {
   ZORBA_TRY
 
@@ -98,10 +124,10 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
 
 bool
-CollectionImpl::addDocument(std::istream& lInStream)
+CollectionImpl::addDocument(std::istream& lInStream, long aPosition)
 {
   ZORBA_TRY
-    theCollection->addToCollection(lInStream);
+    theCollection->addToCollection(lInStream, aPosition);
     return true;
   ZORBA_CATCH
   return false;
@@ -109,7 +135,7 @@ CollectionImpl::addDocument(std::istream& lInStream)
 
 
 bool
-CollectionImpl::deleteNode(const Item& aNode) 
+CollectionImpl::deleteNode(const Item& aNode)
 {
   ZORBA_TRY
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
@@ -121,6 +147,26 @@ CollectionImpl::deleteNode(const Item& aNode)
   ZORBA_CATCH
   return false;
 }
- 
+
+
+bool
+CollectionImpl::deleteNode(long aPosition)
+{
+  ZORBA_TRY
+    theCollection->removeFromCollection(aPosition);
+    return true;
+  ZORBA_CATCH
+  return false;
+}
+
+
+Item
+CollectionImpl::nodeAt(long aPosition)
+{
+  ZORBA_TRY
+      return theCollection->nodeAt(aPosition).getp();
+  ZORBA_CATCH
+      return Item();
+}
 
 } /* namespace zorba */
