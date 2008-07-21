@@ -40,7 +40,6 @@ int test_debugger_protocol( int argc, char* argv[] )
   test->testResumedEvent();
   test->testClearMessage();
   test->testSetMessage();
-  test->testVariableMessage();
   test->testEvalMessage();
   test->testEvaluatedEvent();
   delete test;
@@ -306,19 +305,6 @@ void TestDebuggerSerialization::testRunMessage()
     SetMessage msg;
     msg.addLocation( loc );
     test_packet< SetMessage >( &msg );
-  }
-
-  void TestDebuggerSerialization::testVariableMessage()
-  {
-    std::cerr << "Test variable message" << std::endl;
-   
-    simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
-    Zorba * lZorba = Zorba::getInstance( lStore );
-    ItemFactory * lFactory = lZorba->getItemFactory();
-    /* The item that is to be bound to the external variable */
-    Item lItem = lFactory->createInteger(4);
-    VariableMessage msg( lStore, String("var"), lItem );
-    test_packet< VariableMessage >( &msg );
   }
 
   void TestDebuggerSerialization::testEvalMessage()

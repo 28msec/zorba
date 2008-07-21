@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <ostream>
+
 #include "compiler/parser/query_loc.h"
+
+#include <ostream>
 
 namespace zorba {
 QueryLoc QueryLoc::null;
@@ -61,29 +63,34 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
   return lJSONString.str();
  }
 
- void QueryLoc::fromJSON( const json::object &obj )
+ void QueryLoc::fromJSON( json::value *obj )
  {
-      for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
-      {
-        std::string attrName = (*it).first;
-        if ( attrName == "fileName" )
-        {
-          std::string filename = boost::any_cast< std::string >( (*it).second );
-          setFilenameBegin( &filename );
-        } else if ( attrName == "lineBegin" ) {
-          int lineBegin = boost::any_cast< int >( (*it).second );
-          setLineBegin( lineBegin );
-        } else if ( attrName == "columnBegin" ) {
-          int columnBegin = boost::any_cast< int >( (*it).second );
-          setColumnBegin( columnBegin );
-        } else if ( attrName == "lineEnd" ) {
-          int lineEnd = boost::any_cast< int >( (*it).second );
-          setLineEnd( lineEnd );
-        } else if ( attrName == "columnEnd" ) {
-          int columnEnd = boost::any_cast< int >( (*it).second );
-          setColumnEnd( columnEnd );
-        }
-      }
+    if ( (*obj)["fileName"] != 0 )
+    {
+      std::wstring *lFileName = (*obj)["fileName"]->getstring(L"", true);
+      std::string filename( lFileName->begin()+1, lFileName->end()-1 );
+      setFilenameBegin( &filename );
+    }
+    
+    if ( (*obj)["lineBegin"] != 0 )
+    {
+      setLineBegin( (*obj)["lineBegin"]->getinteger() );
+    }
+    
+    if ( (*obj)["columnBegin"] != 0 )
+    {
+      setColumnBegin( (*obj)["columnBegin"]->getinteger() );
+    }
+
+    if ( (*obj)["lineEnd"] != 0 )
+    {
+      setLineEnd( (*obj)["lineEnd"]->getinteger() );
+    }
+
+    if ( (*obj)["columnEnd"] != 0 )
+    {
+      setColumnEnd( (*obj)["columnEnd"]->getinteger() );
+    }
  }
 #endif
 } // namespace zorba

@@ -14,6 +14,7 @@
 #
 
 SET(JSON_SRCS
+  errstrings.cpp
   itow.cpp
   parser.cpp
   value.cpp)

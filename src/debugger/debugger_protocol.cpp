@@ -17,11 +17,14 @@
 #include <iomanip>
 #include <zorba/zorba.h>
 
-#include "api/unmarshaller.h"
-#include "tiny_json/json.hpp"
-#include "zorbatypes/numconversions.h"
 #include "debugger/debugger_protocol.h"
 
+#include "api/unmarshaller.h"
+
+#include "zorbatypes/numconversions.h"
+
+#include "json/parser.h"
+#include "json/value.h"
 
 namespace zorba{
 
@@ -73,9 +76,7 @@ bool AbstractMessage::operator == ( const AbstractMessage & message )
   Length length;
   Byte * msg1 = serialize( length );
   Byte * msg2 = message.serialize( length );
-  
   bool r = memcmp( msg1, msg2, length ) == 0;
-  
   delete[] msg1;
   delete[] msg2;
   return r;
@@ -354,23 +355,22 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
   char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
-    if ( lData.type() == typeid( json::object ) )
+  json::parser lParser;
+  json::value * lValue = lParser.parse( lMessage );
+  if ( (*lValue)["breakpoints"]  != 0 )
+  {
+    json::array_list_t::iterator it; 
+    for ( it=(*lValue)["breakpoints"]->getarraylist()->begin(); it != (*lValue)["breakpoints"]->getarraylist()->end(); it++ )
     {
-      json::object const & lObject = boost::any_cast< json::object >( lData );
-      json::array const & arr = boost::any_cast< json::array >( (*(lObject.begin())).second );
-      for ( json::array::const_iterator it = arr.begin(); it != arr.end(); ++it )
-      {
-        json::object lQueryLoc = boost::any_cast< json::object >( *it );
-        QueryLoc loc;
-        loc.fromJSON( lQueryLoc );
-        theLocations.push_back( loc );
-      }
-    } else {
-      throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
+      QueryLoc loc;
+      loc.fromJSON( *it );
+      theLocations.push_back( loc );
     }
-    //setLength( MESSAGE_SIZE + getData().length() );  
-    checkIntegrity();
+  } else {
+    throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
+  }
+  //setLength( MESSAGE_SIZE + getData().length() );  
+  checkIntegrity();
 }
 
 SetMessage::~SetMessage(){}
@@ -420,23 +420,22 @@ ClearMessage::ClearMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
   char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
-    if ( lData.type() == typeid( json::object ) )
+  json::parser lParser;
+  json::value * lValue = lParser.parse( lMessage );
+  if ( (*lValue)["breakpoints"]  != 0 )
+  {
+    json::array_list_t::iterator it; 
+    for ( it=(*lValue)["breakpoints"]->getarraylist()->begin(); it != (*lValue)["breakpoints"]->getarraylist()->end(); it++ )
     {
-      json::object const & lObject = boost::any_cast< json::object >( lData );
-      json::array const & arr = boost::any_cast< json::array >( (*(lObject.begin())).second );
-      for ( json::array::const_iterator it = arr.begin(); it != arr.end(); ++it )
-      {
-        json::object lQueryLoc = boost::any_cast< json::object >( *it );
-        QueryLoc loc;
-        loc.fromJSON( lQueryLoc );
-        theLocations.push_back( loc );
-      }
-    } else {
-      throw MessageFormatException("Invalid JSON format for Set Clear message.");
+      QueryLoc loc;
+      loc.fromJSON( *it );
+      theLocations.push_back( loc );
     }
-    //setLength( MESSAGE_SIZE + getData().length() );  
-    checkIntegrity();
+  } else {
+    throw MessageFormatException("Invalid JSON format for Clear breakpoint message.");
+  }
+  //setLength( MESSAGE_SIZE + getData().length() );  
+  checkIntegrity();
 }
 
 ClearMessage::~ClearMessage(){}
@@ -510,25 +509,23 @@ SuspendedEvent::SuspendedEvent( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
   char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
+  json::parser lParser;
+  json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
+  assert( lValue != 0 );
+  if ( (*lValue)["cause"]  != 0 )
+  {
+    theCause = (*lValue)["cause"]->getinteger();
+  } else {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  }
   
-    if ( lData.type() == typeid( json::object ) )
-    {
-      json::object const & obj = boost::any_cast< json::object >( lData );
-      for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
-      {
-        std::string attrName = (*it).first;
-        if ( attrName == "cause" ) {
-          int lCause = boost::any_cast< int >( (*it).second );
-          theCause = lCause;
-        } else if ( attrName == "location" ) {
-          json::object lQueryLoc = boost::any_cast< json::object >( (*it).second );
-          theLocation.fromJSON( lQueryLoc );
-        }
-      }
-    } else {
-      throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
-    }
+  if ( (*lValue)["location"]  != 0 )
+  {
+    theLocation.fromJSON( (*lValue)["location"] );
+  } else {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  }
+  //setLength( MESSAGE_SIZE + getData().length() );  
   checkIntegrity();
 }
 
@@ -599,23 +596,25 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
   char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
+  json::parser lParser;
+  json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
+  if ( (*lValue)["expr"]  != 0 )
+  {
+    std::wstring* lWString = (*lValue)["expr"]->getstring(L"", true);
+    std::string lString( lWString->begin()+1, lWString->end()-1 );
+    theExpr = lString;
+  } else {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  }
   
-    if ( lData.type() == typeid( json::object ) )
-    {
-      json::object const & obj = boost::any_cast< json::object >( lData );
-      for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
-      {
-        std::string attrName = (*it).first;
-        if ( attrName == "expr" ) {
-          theExpr = boost::any_cast< std::string >( (*it).second );
-        } else if ( attrName == "result" ) {
-          theResult = boost::any_cast< std::string >( (*it).second );
-        }
-      }
-    } else {
-      throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
-    }
+  if ( (*lValue)["result"]  != 0 )
+  {
+    std::wstring* lWString = (*lValue)["result"]->getstring(L"", true);
+    std::string lString( lWString->begin()+1, lWString->end()-1 );
+    theResult = lString;
+  } else {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  }
   checkIntegrity();
 }
 
@@ -673,22 +672,16 @@ EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
   char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
-  
-  if ( lData.type() == typeid( json::object ) )
+  json::parser lParser;
+  json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
+  if ( (*lValue)["expr"]  != 0 )
   {
-    json::object const & obj = boost::any_cast< json::object >( lData );
-    for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
-    {
-      std::string attrName = (*it).first;
-      if ( attrName == "expr" ) {
-        theExpr = boost::any_cast< std::string >( (*it).second );
-      }
-    }
-   } else {
-    throw MessageFormatException("Invalid JSON format for Eval message.");
+    std::wstring* lWString = (*lValue)["expr"]->getstring(L"", true);
+    std::string lString( lWString->begin()+1, lWString->end()-1 );
+    theExpr = lString;
+  } else {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
-
   checkIntegrity();
 }
 
@@ -743,31 +736,31 @@ VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
 
-  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
-  
-  if ( lData.type() == typeid( json::object ) )
-  {
-    json::object const & obj = boost::any_cast< json::object >( lData );
-    for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
-    {
-      std::string attrName = (*it).first;
-      if ( attrName == "qname" ) {
-        xqpString lQName = boost::any_cast< std::string >( (*it).second );
-        theQName = lQName;
-      } else if ( attrName == "item" ) {
-        xqpString lValue = boost::any_cast< std::string >( (*it).second );
-        theValue = lValue;
-      } else if ( attrName == "type" ) {
-        xqpString lType = boost::any_cast< std::string >( (*it).second );
-        theType = lType;
-      }
-    }
-   } else {
-    throw MessageFormatException("Invalid JSON format for Variable message.");
-  }
+  //char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
+  //boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
+  //
+  //if ( lData.type() == typeid( json::object ) )
+  //{
+  //  json::object const & obj = boost::any_cast< json::object >( lData );
+  //  for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
+  //  {
+  //    std::string attrName = (*it).first;
+  //    if ( attrName == "qname" ) {
+  //      xqpString lQName = boost::any_cast< std::string >( (*it).second );
+  //      theQName = lQName;
+  //    } else if ( attrName == "item" ) {
+  //      xqpString lValue = boost::any_cast< std::string >( (*it).second );
+  //      theValue = lValue;
+  //    } else if ( attrName == "type" ) {
+  //      xqpString lType = boost::any_cast< std::string >( (*it).second );
+  //      theType = lType;
+  //    }
+  //  }
+  // } else {
+  //  throw MessageFormatException("Invalid JSON format for Variable message.");
+  //}
 
-  checkIntegrity();
+  //checkIntegrity();
 } 
 
 VariableMessage::~VariableMessage(){}

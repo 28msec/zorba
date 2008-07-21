@@ -17,11 +17,10 @@
 #define ZORBA_QUERY_LOC_H
 
 #include <string>
+
 #include "zorbatypes/xqpstring.h"
-#ifdef ZORBA_DEBUGGER
-#include <zorba/debugger_default_event_handler.h>
-#include "tiny_json/json.hpp"
-#endif
+#include "json/value.h"
+
 namespace zorba {
 
 /**
@@ -66,7 +65,7 @@ public:
   xqpString getFilename() const { return getFilenameBegin(); }
   unsigned int getLineno() const { return getLineBegin(); }
   xqpString toJSON() const;
-  void fromJSON( const json::object &obj );
+  void fromJSON( json::value *obj );
 #endif
 };
 

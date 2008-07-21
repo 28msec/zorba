@@ -516,7 +516,8 @@ value *value::operator[](const wchar_t *name){
 	if (dstval==((object_list_t *)val)->end()){
 		value *nval=new value;
 		addobjectvalue(name,nval);
-		return nval;
+		//return nval;
+    return 0;
 	}else{
 		return (*dstval).second;
 	}
@@ -531,7 +532,8 @@ value *value::operator[](const char *name){
 		value *nval=new value;
 		addobjectvalue(wname,nval);
 		delete [] wname;
-		return nval;
+		//return nval;
+    return 0;
 	}else{
 		delete [] wname;
 		return (*dstval).second;

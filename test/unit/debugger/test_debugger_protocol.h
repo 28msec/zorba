@@ -61,8 +61,6 @@ namespace zorba
 
       void testSetMessage();
 
-      void testVariableMessage();
-  
       void testEvalMessage();
 
       void testEvaluatedEvent();

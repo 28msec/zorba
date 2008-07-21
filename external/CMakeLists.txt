@@ -13,5 +13,4 @@
 # limitations under the License.
 #
 
-ADD_SUBDIRECTORY(tiny_json)
-#ADD_SUBDIRECTORY(json)
+ADD_SUBDIRECTORY(json)
