@@ -39,6 +39,7 @@ SET(RUNTIME_SRCS
     core/gflwor/groupby_iterator.cpp
     core/gflwor/tuplesource_iterator.cpp
     core/gflwor/window_iterator.cpp
+    core/gflwor/orderby_iterator.cpp
     dateTime/DurationsDatesTimes.cpp
     debug/debug_iterators.cpp
     fncontext/FnContextImpl.cpp

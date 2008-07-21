@@ -404,7 +404,7 @@ public:
 
   ~Batcher() {}
 
-protected:
+public:
 
 #if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) const 

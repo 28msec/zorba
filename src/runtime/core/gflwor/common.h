@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RUNTIME_GFLWOR_COMMON_BINDING
-#define ZORBA_RUNTIME_GFLWOR_COMMON_BINDING
+#ifndef ZORBA_RUNTIME_GFLWOR_COMMON
+#define ZORBA_RUNTIME_GFLWOR_COMMON
 
 #include "zorba/api_shared_types.h"
 #include "zorbautils/checked_vector.h"
@@ -28,7 +28,108 @@ using namespace zorba;
 
 namespace zorba {
   namespace gflwor {
+    
+    
+    
+      // Utility function -- is this item null or a NaN?
+    inline bool empty_item (RuntimeCB* aRuntimeCB, store::Item_t s)
+    {
+      return (s == 0) || (s->isNaN());
+    }
 
+    
+    template <class T> inline void resetVector(const std::vector<T >& aVector, PlanState& aPlanState)
+    {
+      typename std::vector<T >::const_iterator lIter;
+      for ( lIter = aVector.begin();
+           lIter != aVector.end();
+           ++lIter )
+      {
+        lIter->reset(aPlanState);
+      }
+    }
+    
+    template <class T> inline void closeVector(std::vector<T >& aVector, PlanState& aPlanState)
+    {
+      typename std::vector<T >::const_iterator lIter;
+      for (lIter = aVector.begin();
+           lIter != aVector.end();
+           ++lIter )
+      {
+        lIter->close(aPlanState);
+      }
+    }
+
+    template <class T> inline void openVector(std::vector<T >& aVector, PlanState& aPlanState, uint32_t& aOffset)
+    {
+      typename std::vector<T >::iterator lIter;
+      for (lIter = aVector.begin();
+           lIter != aVector.end();
+           ++lIter )
+      {
+        lIter->open(aPlanState, aOffset);
+      }
+    }
+    
+    template <class T> int32_t getStateSizeOfSubtreeVector(const std::vector<T >& aVector)
+    {
+      int32_t lSize=0;
+      typename std::vector<T >::const_iterator lIter;
+      for (lIter = aVector.begin();
+           lIter != aVector.end();
+           ++lIter )
+      {
+        lSize += lIter->getStateSizeOfSubtree();
+      }
+      return lSize;
+    }
+    
+    template <class T> void resetVectorPtr(const std::vector<T >& aVector, PlanState& aPlanState)
+    {
+      typename std::vector<T >::const_iterator lIter;
+      for ( lIter = aVector.begin();
+            lIter != aVector.end();
+            ++lIter )
+      {
+        (*lIter)->reset(aPlanState);
+      }
+    }
+    
+    template <class T> void closeVectorPtr(std::vector<T >& aVector, PlanState& aPlanState)
+    {
+      typename std::vector<T >::const_iterator lIter;
+      for (lIter = aVector.begin();
+           lIter != aVector.end();
+           ++lIter )
+      {
+        (*lIter)->close(aPlanState);
+      }
+    }
+
+    template <class T> inline void openVectorPtr(std::vector<T >& aVector, PlanState& aPlanState, uint32_t& aOffset)
+    {
+      typename std::vector<T >::iterator lIter;
+      for (lIter = aVector.begin();
+           lIter != aVector.end();
+           ++lIter )
+      {
+        (*lIter)->open(aPlanState, aOffset);
+      }
+    }
+    
+    template <class T> inline int32_t getStateSizeOfSubtreeVectorPtr(const std::vector<T >& aVector)
+    {
+      int32_t lSize=0;
+      typename std::vector<T >::const_iterator lIter;
+      for (lIter = aVector.begin();
+           lIter != aVector.end();
+           ++lIter )
+      {
+        lSize += (*lIter)->getStateSizeOfSubtree();
+      }
+      return lSize;
+    }
+    
     /////////////////////////////////////////////////////////////////////////////////
     //                                                                             //
     //  Static Binding Functions                                                   //
@@ -94,4 +195,4 @@ namespace zorba {
 
   }/* namespace gflwor */
 } /* namespace zorba */
-#endif  /* ZORBA_RUNTIME_GFLWOR_COMMON_BINDING */
+#endif  /* ZORBA_RUNTIME_GFLWOR_COMMON */
