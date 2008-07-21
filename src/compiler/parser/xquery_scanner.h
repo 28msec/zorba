@@ -71,6 +71,8 @@ public:
 
   xquery_driver* getDriver() const { return theDriver; } 
   void set_yy_flex_debug(bool aBool);
+
+  void interpretAsLessThan();
 };
 
 } 

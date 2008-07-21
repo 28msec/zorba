@@ -90,10 +90,23 @@ typedef zorba::xquery_parser::token_type token_type;
   Unfortunately yyterminate by default returns 0, which is
   not of token_type.
 */
-#define yyterminate() return token::END
+#define yyterminate() return token::_EOF
+
+/*
+    The macro YY_USER_ACTION can be defined to provide an action which is
+    always executed prior to the matched rule's action.
+
+    The following paragraph suffices to track locations accurately. Each
+    time yylex is invoked, the begin position is moved onto the end
+    position. Then when a pattern is matched, the end position is advanced
+    of its width. In case it matched ends of lines, the end cursor is
+    adjusted, and each time blanks are matched, the begin cursor is moved
+    onto the end cursor to effectively ignore the blanks preceding tokens.
+    Comments would be treated equally.
+ */
 
 std::string start_state(int);
-
+    
 #define YY_USER_ACTION \
 { \
   if (yy_flex_debug) { \
@@ -143,10 +156,8 @@ Comment         "(:"{CommentChars}
 blank           [ \t]
 S1              [ \t\r\n\f]
 S               {S1}*
-SOrComment      ({S1}|{Comment})*
 SP              ({S1}|{Comment})+
 SPNoComment     {S1}+
-WordBreak       [^a-zA-Z0-9_-]
 
   /*_____________________________________________________________________
    |
@@ -184,7 +195,7 @@ QName       ({NCName}":")?{NCName}
    |
    |  VarName definition
    |______________________________________________________________________*/
-VarName     {QName}
+  /* VarName     {QName} */
 
 
   /*_____________________________________________________________________
@@ -210,7 +221,6 @@ IntegerLiteral        [0-9]+
 NonQuotAnd            [^""&]
 NonAposAnd            [^''&]
 StringLiteral         ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos})
-URILiteral            {StringLiteral}
 
   /*_____________________________________________________________________
    |
@@ -244,9 +254,6 @@ PIChars                             ({NonQuestionMarkChar}|"?"+{NonGreaterThanNo
 NonSharpPragmaChar                  [\x09\x0A\x0D\x20-\x22\x24-\xFD]
 NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
 PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPragmaChar})*"#"*
-
-ValidationMode        ("strict"|"lax"|"skip")
-
 
   /*______________________________________________________________________
    |
@@ -289,25 +296,12 @@ ValidationMode        ("strict"|"lax"|"skip")
 %x MODE_CATCH
 
 
-/*
-  The macro YY_USER_ACTION can be defined to provide an action which is
-  always executed prior to the matched rule's action.
-
-  The following paragraph suffices to track locations accurately. Each
-  time yylex is invoked, the begin position is moved onto the end
-  position. Then when a pattern is matched, the end position is advanced
-  of its width. In case it matched ends of lines, the end cursor is
-  adjusted, and each time blanks are matched, the begin cursor is moved
-  onto the end cursor to effectively ignore the blanks preceding tokens.
-  Comments would be treated equally.
-*/
-
-%%
-
 %{
 typedef zorba::xquery_parser::token token;
 %}
 
+
+%%
 
   /*______________________________________________________________________
    |
@@ -317,487 +311,298 @@ typedef zorba::xquery_parser::token token;
    |  expression or subexpression.
    |______________________________________________________________________*/
 
-  /* <MODE_INITIAL> */
+"(" { return token::LPAR; }
+";" { return token::SEMI; }
+"," { return token::COMMA; }
+"-" { return token::MINUS; }
+"+" { return token::PLUS; }
+"/" { return token::SLASH; }
+"/ " { return token::LEADING_LONE_SLASH; }
+"//" { return token::SLASH_SLASH; }
+"@" { return token::AT_SIGN; }
+")" { return token::RPAR; }
+"*" { return token::STAR; }
+".." { return token::DOT_DOT; }
+"." { return token::DOT; }
+"?" { return token::HOOK; }
+"]" { return token::RBRACK; }
+"$" { return token::DOLLAR; }
 
-  /* maintain INITIAL */
-  /* ---------------- */
+"if" { return token::IF; }
+"exit" { return token::EXIT; }
+"with" { return token::WITH; }
+"break" { return token::BREAK; }
+"loop" { return token::LOOP; }
+"continue" { return token::CONTINUE; }
+"while" { return token::WHILE; }
+"validate" { return token::VALIDATE; }
+"typeswitch" { return token::TYPESWITCH; }
+"eval" { return token::EVAL; }
+"element" { return token::ELEMENT; }
+"attribute" { return token::ATTRIBUTE; }
+"document" { return token::DOCUMENT; }
+"text" { return token::TEXT; }
+"processing-instruction" { return token::PROCESSING_INSTRUCTION; }
+"comment" { return token::COMMENT; }
+"declare" { return token::DECLARE; }
+"function" { return token::FUNCTION; }
+"updating" { return token::UPDATING; }
+"sequential" { return token::SEQUENTIAL; }
+"ordered" { return token::ORDERED;}
+"unordered" { return token::UNORDERED; }
+"schema-element"  { return token::SCHEMA_ELEMENT; }
+"schema-attribute" { return token::SCHEMA_ATTRIBUTE; }
+"node" { return token::NODE; }
+"document-node" { return token::DOCUMENT_NODE; }
 
-"exit"{SP}"with"/{WordBreak} {
-  return token::EXIT_WITH;
-}
+"ancestor-or-self::" { return token::ANCESTOR_OR_SELF_AXIS; }
+"ancestor::" { return token::ANCESTOR_AXIS; }
+"attribute::" { return token::ATTRIBUTE_AXIS; }
+"child::" { return token::CHILD_AXIS; }
+"descendant-or-self::" { return token::DESCENDANT_OR_SELF_AXIS; }
+"descendant::" { return token::DESCENDANT_AXIS; }
+"following-sibling::" { return token::FOLLOWING_SIBLING_AXIS; }
+"following::" { return token::FOLLOWING_AXIS; }
+"parent::" { return token::PARENT_AXIS; }
+"preceding-sibling::" { return token::PRECEDING_SIBLING_AXIS; }
+"preceding::" { return token::PRECEDING_AXIS; }
+"self::" { return token::SELF_AXIS;}
 
-"break"{SP}"loop" {
-  BEGIN (MODE_OPERATOR);
-  return token::BREAK_LOOP;
-}
+"construction" { return token::CONSTRUCTION; }
+"default" { return token::DEFAULT; }
+"order" { return token::ORDER; }
+"collation" { return token::COLLATION; }
+"namespace" { return token::NAMESPACE; }
+"module" { return token::MODULE; }
+"base-uri" { return token::BASE_URI; }
+"import" { return token::IMPORT; }
+"schema" { return token::SCHEMA; }
+"copy-namespaces" { return token::COPY_NAMESPACES; }
+"for" { return token::FOR; }
+"let" { return token::LET; }
+"using" { return token::USING; }
+"some" { return token::SOME; }
+"every" { return token::EVERY; }
+"variable" { return token::VARIABLE; }
+"boundary-space" { return token::BOUNDARY_SPACE; }
+"ordering" { return token::ORDERING; }
+"xquery" { return token::XQUERY; }
+"version" { return token::VERSION; }
+"option" { return token::OPTION; }
+"at" { return token::AT; }
+"revalidation" { return token::REVALIDATION;}
+"as" { return token::AS; }
 
-"continue"{SP}"loop" {
-  BEGIN (MODE_OPERATOR);
-  return token::CONT_LOOP;
-}
+"try" { return token::TRY;}
+ 
+    /*______________________________________________________________________
+     |
+     | FT tokens
+     |______________________________________________________________________*/
 
-"while"{SP}"(" {
-  return token::WHILE_LPAR;
-}
+"&&" { return token::FTAND; }
+"!" { return token::FTNOT; }
+"||" { return token::FTOR; }
+"not" { return token::FTNOT; }
+"in" { return token::IN; }
+"all" { return token::ALL; }
+"words" { return token::WORDS; }
+"any" { return token::ANY; }
+"word" { return token::WORD; }
+"end" { return token::END; }
+"least" { return token::LEAST; }
+"most" { return token::MOST; }
+"start" { return token::START; }
+"case" { return token::CASE; }
+"insensitive" { return token::INSENSITIVE; }
+"sensitive" { return token::SENSITIVE; }
+"ft-option" { return token::FT_OPTION; }
+"diacritics" { return token::DIACRITICS; }
+"different" { return token::DIFFERENT; }
+"distance" { return token::DISTANCE; }
+"entire" { return token::ENTIRE; }
+"content" { return token::CONTENT; }
+"exactly" { return token::EXACTLY; }
+"from" { return token::FROM; }
+"language" { return token::LANGUAGE; }
+"levels" { return token::LEVELS; }
+"lowercase" { return token::LOWERCASE; }
+"occurs" { return token::OCCURS; }
+"paragraph" { return token::PARAGRAPH; }
+"phrase" { return token::PHRASE; }
+"relationship" { return token::RELATIONSHIP; }
+"same" { return token::SAME; }
+"score" { return token::SCORE; }
+"sentence" { return token::SENTENCE; }
+"sentences" { return token::SENTENCES; }
+"times" { return token::TIMES; }
+"uppercase" { return token::UPPERCASE; }
+"weight" { return token::WEIGHT; }
+"window" { return token::WINDOW; }
+"without" { return token::WITHOUT; }
+"stemming" { return token::STEMMING; }
+"stop" { return token::STOP; }
+"thesaurus" { return token::THESAURUS; }
+"wildcards" { return token::WILDCARDS; }
+":=" { return token::GETS; }
+"div" { return token::DIV; }
+"=" { return token::EQUALS; }
+"except" { return token::EXCEPT; }
+"eq" { return token::VAL_EQ; }
+"ge" { return token::VAL_GE; }
+"gt" { return token::VAL_GT; }
+"le" { return token::VAL_LE; }
+"lt" { return token::VAL_LT; }
+"ne" { return token::VAL_NE; }
+">=" { return token::GE; }
+">>" { return token::FOLLOWS; }
+">" { return token::GT; }
+"idiv" { return token::IDIV; }
+"intersect" { return token::INTERSECT; }
+"is" { return token::IS; }
+"[" { return token::LBRACK; }
+"<=" { return token::LE; }
+"<<" { return token::PRECEDES; }
+"mod" { return token::MOD; }
+"!=" { return token::NE; }
+"group" { return token::GROUP; }
+"by" { return token::BY; }
+"stable" { return token::STABLE; }
+"or" { return token::OR; }
+"return" { return token::RETURN; }
+"satisfies" { return token::SATISFIES; }
+"to" { return token::TO; }
+"union" { return token::UNION; }
+"|" { return token::VBAR; }
+"where" { return token::WHERE; }
+"preserve" { return token::PRESERVE; }
+"strip" { return token::STRIP; }
 
-"validate"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::VALIDATE_LBRACE;
-}
+  
+  /*______________________________________________________________________
+   |
+   | Update rules
+   |______________________________________________________________________*/
 
-"validate"{SP}{ValidationMode} {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  TRY_SVAL_TOKEN (VALIDATE_MODE, put(yytext+9, yyleng-9));
+"insert" { return token::INSERT; }
+"delete" { return token::DELETE; }
+"replace" { return token::REPLACE; }
+"value" { return token::VALUE; }
+"of" { return token::OF; }
+"rename" {
+  // TODO:
+  // getDriver()->set_rename(true);
+  return token::RENAME;
 }
+"copy" { return token::COPY; }
+"nodes" { return token::NODES; }
+"into" { return token::INTO; }
+"after" { return token::AFTER; }
+"before" { return token::BEFORE; }
+"modify" { return token::MODIFY; }
 
-"typeswitch"{S}"(" {
-  return token::TYPESWITCH_LPAR;
-}
+"strict" { return token::STRICT; }
+"lax" { return token::LAX; }
+"skip" { return token::SKIP; }
+"then" { return token::THEN; }
+"else" { return token::ELSE; }
+"external" { return token::EXTERNAL; }
+"and" { return token::AND; }
 
-"eval"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, INITIAL);
-  return token::EVAL_LBRACE;
-}
+"inherit" { return token::INHERIT; }
+"no-inherit" { return token::NO_INHERIT; }
+"no-preserve" { return token::NO_PRESERVE; }
+"empty-sequence" { return token::EMPTY_SEQUENCE; }
+"item" { return token::ITEM; }
+"cast" { return token::CAST; }
+"castable" { return token::CASTABLE; }
+"instance" { return token::INSTANCE;}
+"treat" { return token::TREAT; }
+"first" { return token::FIRST; }
+"last" { return token::LAST; }
+"catch" { return token::CATCH; }
+"empty" { return token::_EMPTY; }
+"greatest" { return token::GREATEST; }
+"ascending" { return token::ASCENDING; }
+"descending" { return token::DESCENDING; }
+"encoding" { return token::ENCODING; }
 
-"element"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::ELEMENT_LBRACE;
-}
-
-"attribute"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::ATTRIBUTE_LBRACE;
-}
-
-"attribute"{SP}{QName}{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  TRY_SVAL_TOKEN (ATTRIBUTE_QNAME_LBRACE, put_qname(yytext+10, yyleng-11, true, true));
-}
-
-"element"{SP}{QName}{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  TRY_SVAL_TOKEN (ELEMENT_QNAME_LBRACE, put_qname(yytext+8, yyleng-9, true, true));
-}
-
-"document"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::DOCUMENT_LBRACE;
-}
-
-"text"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::TEXT_LBRACE;
-}
-
-    /* transition to MODE_PROCESSING_INSTRUCTION_CTOR */
-    /* ---------------------------------------------- */
-
-    /* TODO: fix 'if (1) then 2 else processing-instruction' */
-
-"processing-instruction"{SP}/{Nmstart}  {
-  BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
-  return token::PROCESSING_INSTRUCTION;
-}
-"processing-instruction"{S}/"{"  {
-  BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
-  return token::PROCESSING_INSTRUCTION;
-}
-
-
-"comment"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::COMMENT_LBRACE;
-}
-
-"declare"{SP}"function"{SP} {
-  return token::DECLARE_FUNCTION;
-}
-
-"declare"{SP}"updating"{SP}"function"{SP} {
-  return token::DECLARE_UPDATING_FUNCTION;
-}
-
-"declare"{SP}"sequential"{SP}"function"{SP} {
-  return token::DECLARE_SEQ_FUNCTION;
-}
-
-"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::LBRACE;
-}
-
-"ordered"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::ORDERED_LBRACE;
-}
-
-"unordered"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::UNORDERED_LBRACE;
-}
-
-";" {
-  return token::SEMI;
-}
-"," {
-  return token::COMMA;
-}
-"(" {
-  return token::LPAR;
-}
-"if"{SOrComment}"(" {
-  return token::IF_LPAR;
-}
-
-
-  /* transition to KINDTEST */
-  /* ---------------------- */
-"element"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
-  return token::ELEMENT_LPAR;
-}
-
-"attribute"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
-  return token::ATTRIBUTE_LPAR;
-}
-
-"schema-element"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
-  return token::SCHEMA_ELEMENT_LPAR;
-}
-
-"schema-attribute"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
-  return token::SCHEMA_ATTRIBUTE_LPAR;
-}
-
-"comment"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
-  return token::COMMENT_LPAR;
-}
-
-"text"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
-  return token::TEXT_LPAR;
-}
-
-"node"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
-  return token::NODE_LPAR;
-}
-
-"document-node"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
-  return token::DOCUMENT_NODE_LPAR;
-}
-
-
-  /* transition to KINDTESTFORPI */
-  /* --------------------------- */
-"processing-instruction"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTESTFORPI, MODE_OPERATOR);
-  return token::PI_LPAR;
-}
-
-  /* order dependence: this must follow the rules: xxx{S}"(" */
-  /* {QName}{S}"(" {
-   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng-1, false, true);
-   return token::QNAME_LPAR;
-  }*/
-
-"-" {
-  return token::MINUS;
-}
-"+" {
-  return token::PLUS;
-}
-"/" {
-  return token::SLASH;
-}
-"/ " {
-  return token::LEADING_LONE_SLASH;
-}
-"//" {
-  return token::SLASH_SLASH;
-}
-"ancestor-or-self::" {
-  return token::ANCESTOR_OR_SELF_AXIS;
-}
-"ancestor::" {
-  return token::ANCESTOR_AXIS;
-}
-"attribute::" {
-  return token::ATTRIBUTE_AXIS;
-}
-"child::" {
-  return token::CHILD_AXIS;
-}
-"descendant-or-self::" {
-  return token::DESCENDANT_OR_SELF_AXIS;
-}
-"descendant::" {
-  return token::DESCENDANT_AXIS;
-}
-"following-sibling::" {
-  return token::FOLLOWING_SIBLING_AXIS;
-}
-"following::" {
-  return token::FOLLOWING_AXIS;
-}
-"parent::" {
-  return token::PARENT_AXIS;
-}
-"preceding-sibling::" {
-  return token::PRECEDING_SIBLING_AXIS;
-}
-"preceding::" {
-  return token::PRECEDING_AXIS;
-}
-"self::" {
-  return token::SELF_AXIS;
-}
-"@" {
-  return token::AT_SIGN;
+"ftcontains" {
+  // TODO: this flag should not be needed anymore
+  // BEGIN INITIAL;
+  // getDriver()->set_ftcontains(true);
+  return token::FTCONTAINS;
 }
 
 
-  /* transition to OPERATOR */
-  /* ---------------------- */
+  /* TODO: fix 'if (1) then 2 else processing-instruction' */
 
-{IntegerLiteral}/[a-zA-Z_]  {
-  return token::UNRECOGNIZED;
-}
+
+  /*______________________________________________________________________
+   |
+   | Tokens with values
+   |______________________________________________________________________*/
+
 {IntegerLiteral}  {
   yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
-  BEGIN MODE_OPERATOR;
   return token::INTEGER_LITERAL;
 }
 
-{DecimalLiteral}/[a-zA-Z_]  {
-  return token::UNRECOGNIZED;
-}
 {DecimalLiteral}  {
   yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
-  BEGIN MODE_OPERATOR;
   return token::DECIMAL_LITERAL;
 }
 
-{DoubleLiteral}/[a-zA-Z_] {
-  return token::UNRECOGNIZED;
-}
 {DoubleLiteral}   {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
-  BEGIN MODE_OPERATOR;
   return token::DOUBLE_LITERAL;
 }
 
+{IntegerLiteral}[a-zA-Z_][0-9a-zA-Z_]* {
+  /* invalid integer literal */
+  return token::UNRECOGNIZED;
+}
+
 {NCName}":*" {
-  BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
 }
 
 {QName} {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
-}
-
-")" {
-  BEGIN MODE_OPERATOR;
-  return token::RPAR;
+  TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng));
 }
 
 "*:"{NCName} {
-  BEGIN MODE_OPERATOR;
   TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
 }
 
-"*" {
-  BEGIN MODE_OPERATOR;
-  return token::STAR;
-}
-
-{StringLiteral} {
-  BEGIN MODE_OPERATOR;
+{StringLiteral} { 
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
-"declare"{SP}"construction"{SP} {
-  BEGIN MODE_OPERATOR;
-  return token::DECLARE_CONSTRUCTION;
-}
+  /*______________________________________________________________________
+   |
+   | State transitions
+   |______________________________________________________________________*/
 
-"declare"{SP}"default"{SP}"order"{SP} {
-  BEGIN MODE_OPERATOR;
-  return token::DECLARE_DEFAULT_ORDER;
-}
-
-".." {
-  BEGIN MODE_OPERATOR;
-  return token::DOT_DOT;
-}
-
-"." {
-  BEGIN MODE_OPERATOR;
-  return token::DOT;
-}
-
-
-  /* transition to NAMESPACEDECL */
-  /* --------------------------- */
-"declare"{SP}"default"{SP}"collation"{SP} {
-  BEGIN MODE_NAMESPACEDECL;
-  return token::DECLARE_DEFAULT_COLLATION;
-}
-
-"declare"{SP}"namespace"{SP} {
-  BEGIN MODE_NAMESPACEDECL;
-  return token::DECLARE_NAMESPACE;
-}
-
-"module"{SP}"namespace"/{WordBreak} {
-  BEGIN MODE_NAMESPACEDECL;
-  return token::MODULE_NAMESPACE;
-}
-
-"declare"{SP}"base-uri"/{WordBreak} {
-  BEGIN MODE_NAMESPACEDECL;
-  return token::DECLARE_BASE_URI;
-}
-
-
-  /* transition to NAMESPACEKEYWORD */
-  /* ------------------------------ */
-"declare"{SP}"default"{SP}"element"{SP} {
-  BEGIN MODE_NAMESPACEKEYWORD;
-  return token::DECLARE_DEFAULT_ELEMENT;
-}
-
-"declare"{SP}"default"{SP}"function"{SP} {
-  BEGIN MODE_NAMESPACEKEYWORD;
-  return token::DECLARE_DEFAULT_FUNCTION;
-}
-
-"import"{SP}"schema"/{WordBreak} {
-  BEGIN MODE_NAMESPACEKEYWORD;
-  return token::IMPORT_SCHEMA;
-}
-
-"import"{SP}"module"/{WordBreak} {
-  BEGIN MODE_NAMESPACEKEYWORD;
-  return token::IMPORT_MODULE;
-}
-
-"declare"{SP}"copy-namespaces"{SP} {
-  BEGIN MODE_NAMESPACEKEYWORD;
-  return token::DECLARE_COPY_NAMESPACES;
-}
-
-
-  /* transition to VARNAME */
-  /* --------------------- */
-"$" {
-  BEGIN MODE_VARNAME;
-  return token::DOLLAR;
-}
-
-"for"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::FOR_DOLLAR;
-}
-
-"let"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::LET_DOLLAR;
-}
-
-"using"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::USING_DOLLAR;
-}
-
-"some"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::SOME_DOLLAR;
-}
-
-"every"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::EVERY_DOLLAR;
-}
-
-"declare"{SP}"variable"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::DECLARE_VARIABLE_DOLLAR;
-}
-
-
-
-  /* transition to XML_COMMENT */
-  /* ------------------------- */
-"<!--" {
-  PUSH_AND_BEGIN (MODE_XML_COMMENT, MODE_OPERATOR);
-  return token::XML_COMMENT_BEGIN;
-}
-
+"<!--" { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 
   /* transition to PROCESSING_INSTRUCTION */
   /* ------------------------------------ */
 "<?" {
-  PUSH_AND_BEGIN (MODE_PROCESSING_INSTRUCTION, MODE_OPERATOR);
+  PUSH_STATE(MODE_PROCESSING_INSTRUCTION);
   return token::PI_BEGIN;
 }
-
 
   /* transition to CDATA_SECTION */
   /* --------------------------- */
 "<![CDATA[" {
-  PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
+  // PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
   return token::CDATA_BEGIN;
 }
 
+"<" { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 
-"<"{SP} {
-  return token::UNRECOGNIZED;
-}
-  /* transition to START_TAG */
-  /* ----------------------- */
-"<" {
-  PUSH_AND_BEGIN (MODE_START_TAG, MODE_OPERATOR);
-  return token::START_TAG;
-}
-
-
-  /* transition to XMLSPACE_DECL */
-  /* --------------------------- */
-"declare"{SP}"boundary-space"{SP} {
-  BEGIN MODE_XMLSPACE_DECL;
-  return token::DECLARE_BOUNDARY_SPACE;
-}
-
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-
-  /* transition to DECLAREORDERING */
-  /* ----------------------------- */
-"declare"{SP}"ordering"{SP} {
-  BEGIN MODE_DECLAREORDERING;
-  return token::DECLARE_ORDERING;
-}
-
-
-  /* transition to XQUERY_VERSION */
-  /* ---------------------------- */
-"xquery"{SP}"version"/{WordBreak} {
-  BEGIN MODE_XQUERY_VERSION;
-  return token::XQUERY_VERSION;
-}
-
+"(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
 
   /* transition to PRAGMA */
   /* -------------------- */
@@ -806,375 +611,19 @@ typedef zorba::xquery_parser::token token;
   return token::PRAGMA_BEGIN;
 }
 
-
-  /* transition to OPTION */
-  /* -------------------- */
-"declare"{SP}"option"{SP} {
-  BEGIN MODE_OPTION;
-  return token::DECLARE_OPTION;
-}
-
-
-  /* transition to NAMESPACEDECL */
-  /* --------------------------- */
-"at"{SP}{URILiteral} {
-  BEGIN MODE_NAMESPACEDECL;
-  TRY_URILIT (AT_URI_LITERAL, yytext+2, yyleng-2);
-}
+  /* push initial state */
+  /* ------------------ */
+"{" { PUSH_STATE(INITIAL); return token::LBRACE; }
 
   /* pop previous state */
   /* ------------------ */
-"}" {
-  POP_STATE();
-  return token::RBRACE;
-}
-
-"declare"{SP}"revalidation"{SP} {
-  BEGIN MODE_DECLAREREVALIDATION;
-  return token::DECLARE_REVALIDATION;
-}
-
-"as"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AS;
-}
-
-  /*______________________________________________________________________
-    |
-    | TRY-CATCH rules <INITIAL>
-    |______________________________________________________________________*/
-
-"try"/{WordBreak} {
-  return token::TRY;
-}
-
-  /*______________________________________________________________________
-   |
-   | FT rules <INITIAL>
-   |______________________________________________________________________*/
-
-"&&" {
-  return token::FTAND;
-}
-"!" {
-  return token::FTNOT;
-}
-"||" {
-  return token::FTOR;
-}
-"not"<SP>"in"/{WordBreak} {
-  return token::FTNOT_IN;
-}
-"all"/{WordBreak} {
-  return token::ALL;
-}
-"all"{SP}"words"/{WordBreak} {
-  return token::ALL_WORDS;
-}
-"any"/{WordBreak} {
-  return token::ANY;
-}
-"any"{SP}"word"/{WordBreak} {
-  return token::ANY_WORD;
-}
-"at"{SP}"end"/{WordBreak} {
-  return token::AT_END;
-}
-"at"{SP}"least"/{WordBreak} {
-  return token::AT_LEAST;
-}
-"at"{SP}"most"/{WordBreak} {
-  return token::AT_MOST;
-}
-"at"{SP}"start"/{WordBreak} {
-  return token::AT_START;
-}
-"case"{SP}"insensitive"/{WordBreak} {
-  return token::CASE_INSENSITIVE;
-}
-"case"{SP}"sensitive"/{WordBreak} {
-  return token::CASE_SENSITIVE;
-}
-"declare"{SP}"ftoption"/{WordBreak} {
-  return token::DECLARE_FTOPTION;
-}
-"diacritics"{SP}"insensitive"/{WordBreak} {
-  return token::DIACRITICS_INSENSITIVE;
-}
-"diacritic"{SP}"sensitive"/{WordBreak} {
-  return token::DIACRITICS_SENSITIVE;
-}
-"different"/{WordBreak} {
-  return token::DIFFERENT;
-}
-"distance"/{WordBreak} {
-  return token::DISTANCE;
-}
-"entire"{SP}"content"/{WordBreak} {
-  return token::ENTIRE_CONTENT;
-}
-"exactly"/{WordBreak} {
-  return token::EXACTLY;
-}
-"from"/{WordBreak} {
-  return token::FROM;
-}
-"language"/{WordBreak} {
-  return token::LANGUAGE;
-}
-"levels"/{WordBreak} {
-  return token::LEVELS;
-}
-"lowercase"/{WordBreak} {
-  return token::LOWERCASE;
-}
-"occurs"/{WordBreak} {
-  return token::OCCURS;
-}
-"paragraph"/{WordBreak} {
-  return token::PARAGRAPH;
-}
-"phrase"/{WordBreak} {
-  return token::PHRASE;
-}
-"relationship"/{WordBreak} {
-  return token::RELATIONSHIP;
-}
-"same"/{WordBreak} {
-  return token::SAME;
-}
-"score"/{WordBreak} {
-  return token::SCORE;
-}
-"sentence"/{WordBreak} {
-  return token::SENTENCE;
-}
-"sentences"/{WordBreak} {
-  return token::SENTENCES;
-}
-"times"/{WordBreak} {
-  return token::TIMES;
-}
-"uppercase"/{WordBreak} {
-  return token::UPPERCASE;
-}
-"weight"/{WordBreak} {
-  return token::WEIGHT;
-}
-"window"/{WordBreak} {
-  return token::WINDOW;
-}
-"without"{SP}"content"/{WordBreak} {
-  return token::WITHOUT_CONTENT;
-}
-"without"{SP}"diacritics"/{WordBreak} {
-  return token::WITHOUT_DIACRITICS;
-}
-"without"{SP}"stemming"/{WordBreak} {
-  return token::WITHOUT_STEMMING;
-}
-"without"{SP}"stop"{SP}"words"/{WordBreak} {
-  return token::WITHOUT_STOP_WORDS;
-}
-"without"{SP}"thesaurus"/{WordBreak} {
-  return token::WITHOUT_THESAURUS;
-}
-"without"{SP}"wildcards"/{WordBreak} {
-  return token::WITHOUT_WILDCARDS;
-}
-"with"{SP}"default"{SP}"stop"{SP}"words"/{WordBreak} {
-  return token::WITH_DEFAULT_STOP_WORDS;
-}
-"with"{SP}"diacritics"/{WordBreak} {
-  return token::WITH_DIACRITICS;
-}
-"with"{SP}"stemming"/{WordBreak} {
-  return token::WITH_STEMMING;
-}
-"with"{SP}"stop"{SP}"words"/{WordBreak} {
-  return token::WITH_STOP_WORDS;
-}
-"with"{SP}"thesaurus"/{WordBreak} {
-  return token::WITH_THESAURUS;
-}
-"with"{SP}"wildcards"/{WordBreak} {
-  return token::WITH_WILDCARDS;
-}
-"words"/{WordBreak} {
-  return token::WORDS;
-}
+"}" { POP_STATE(); return token::RBRACE; }
 
 {S} {
   /* eat up whitespace */
 }
 
-  /* catch all */
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
   /* END <MODE INITIAL> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /*______________________________________________________________________
-    |
-    | Update rules <INITIAL,MODE_OPERATOR>
-    |______________________________________________________________________*/
-
-<INITIAL,MODE_OPERATOR>{
-
-"insert"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INSERT_NODE;
-}
-"insert"{SP}"nodes"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INSERT_NODES;
-}
-"delete"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::DELETE_NODE;
-}
-"delete"{SP}"nodes"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::DELETE_NODES;
-}
-"replace"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::REPLACE;
-}
-"replace"{SP}"value"{SP}"of"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::REPLACE_VALUE_OF;
-}
-"rename"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL;
-  getDriver()->set_rename(true);
-  return token::RENAME;
-}
-
-"copy"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::COPY_DOLLAR;
-}
-"into"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INTO;
-}
-"after"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AFTER;
-}
-"before"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::BEFORE;
-}
-"with"/{WordBreak}  {
-  BEGIN INITIAL;
-  return token::WITH;
-}
-"modify"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::MODIFY;
-}
-
-}  /* <INITIAL, MODE_OPERATOR> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<MODE_CATCH>{
-
-{S}")" {
-  POP_STATE();
-  return token::RPAR;
-}
-
-{S}{QName}  {
-  BEGIN INITIAL;
-  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
-}
-
-{S}"*" {
-  BEGIN INITIAL;
-  return token::STAR;
-}
-
-{S}{NCName}":*" {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
-}
-
-{S}"*:"{NCName} {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
-}
-
-}  /* END <MODE_CATCH> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   /*______________________________________________________________________
@@ -1184,137 +633,10 @@ typedef zorba::xquery_parser::token token;
    |  transition to MODE_OPERATOR
    |______________________________________________________________________*/
 
-<MODE_PROCESSING_INSTRUCTION_CTOR>{
+  /* <MODE_PROCESSING_INSTRUCTION_CTOR>{ */
 
-"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::LBRACE;
-}
 
-{NCName}  {
-  TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_PROCESSING_INSTRUCTION_CTOR> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /*______________________________________________________________________
-   |
-   |  The DECLAREORDERING State
-   |
-   |  Special state to recognize declare ordering specific keywords.
-   |  transition to INITIAL
-   |______________________________________________________________________*/
-
-<MODE_DECLAREORDERING>{
-
-  /* transition to INITIAL */
-  /* --------------------- */
-"ordered"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::ORDERED;
-}
-
-"unordered"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::UNORDERED;
-}
-
-}  /* END <MODE_DECLAREORDERING> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /*______________________________________________________________________
-   |
-   |  The DECLAREREVALIDATION State
-   |
-   |  Special state to recognize declare revalidation specific keywords.
-   |  transition to INITIAL
-   |______________________________________________________________________*/
-
-<MODE_DECLAREREVALIDATION>{
-
-  /* transition to INITIAL */
-  /* --------------------- */
-"strict"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::REVAL_STRICT;
-}
-
-"lax"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::REVAL_LAX;
-}
-
-"skip"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::REVAL_SKIP;
-}
-
-}  /* END <MODE_DECLAREORDERING> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_PROCESSING_INSTRUCTION_CTOR> */
 
 
   /*______________________________________________________________________
@@ -1324,367 +646,7 @@ typedef zorba::xquery_parser::token token;
    |  This state is for patterns that are defined for operators.
    |______________________________________________________________________*/
 
-<MODE_OPERATOR>{
-
-  /* transition to INITIAL */
-  /* --------------------- */
-"{" {
-  PUSH_STATE(INITIAL);
-  return token::LBRACE;
-}
-"(" {
-  BEGIN INITIAL;
-  /* PUSH_STATE(INITIAL); */
-  return token::LPAR;
-}
-";" {
-  BEGIN INITIAL;
-  return token::SEMI;
-}
-"then"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::THEN;
-}
-"else"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::ELSE;
-}
-"external"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::EXTERNAL;
-}
-"and"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AND;
-}
-"at"/{WordBreak} {
-  if (!getDriver()->ftcontains()) {
-    BEGIN INITIAL;
-  }
-  return token::AT;
-}
-
-
-  /* full-text rule */
-"score"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::SCORE;
-}
-
-
-":=" {
-  BEGIN INITIAL;
-  return token::GETS;
-}
-"," {
-  BEGIN INITIAL;
-  return token::COMMA;
-}
-"div"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::DIV;
-}
-"=" {
-  BEGIN INITIAL;
-  return token::EQUALS;
-}
-"except"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::EXCEPT;
-}
-"eq"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_EQ;
-}
-"ge"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_GE;
-}
-"gt"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_GT;
-}
-"le"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_LE;
-}
-"lt"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_LT;
-}
-"ne"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_NE;
-}
-">=" {
-  BEGIN INITIAL;
-  return token::GE;
-}
-">>" {
-  BEGIN INITIAL;
-  return token::FOLLOWS;
-}
-">" {
-  BEGIN INITIAL;
-  return token::GT;
-}
-"idiv"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::IDIV;
-}
-"intersect"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INTERSECT;
-}
-
-
-
-"in"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::_IN_;
-}
-"is"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::IS;
-}
-"[" {
-  BEGIN INITIAL;
-  return token::LBRACK;
-}
-"<=" {
-  BEGIN INITIAL;
-  return token::LE;
-}
-"<<" {
-  BEGIN INITIAL;
-  return token::PRECEDES;
-}
-"<" {
-  BEGIN INITIAL;
-  return token::LT;
-}
-"-" {
-  BEGIN INITIAL;
-  return token::MINUS;
-}
-"mod"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::MOD;
-}
-"*" {
-  BEGIN INITIAL;
-  return token::STAR;
-}
-"!=" {
-  BEGIN INITIAL;
-  return token::NE;
-}
-"group"{SP}"by"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::GROUP_BY;
-}
-"order"{SP}"by"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::ORDER_BY;
-}
-"stable"{SP}"order"{SP}"by"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::STABLE_ORDER_BY;
-}
-"or"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::OR;
-}
-"+" {
-  BEGIN INITIAL;
-  return token::PLUS;
-}
-"return"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::RETURN;
-}
-"eval"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, INITIAL);
-  return token::EVAL_LBRACE;
-}
-"satisfies"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::SATISFIES;
-}
-"/" {
-  BEGIN INITIAL;
-  return token::SLASH;
-}
-"/ " {
-  BEGIN INITIAL;
-  return token::LEADING_LONE_SLASH;
-}
-"//" {
-  BEGIN INITIAL;
-  return token::SLASH_SLASH;
-}
-"to"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::TO;
-}
-"union"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::UNION;
-}
-"|" {
-  BEGIN INITIAL;
-  return token::VBAR;
-}
-"where"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::WHERE;
-}
-"preserve"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::PRESERVE;
-}
-"strip"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::STRIP;
-}
-
-
-
-
-  /* transition to SINGLETYPE */
-  /* ------------------------ */
-"castable"{SP}"as"/{WordBreak} {
-  BEGIN MODE_SINGLETYPE;
-  return token::CASTABLE_AS;
-}
-"cast"{SP}"as"/{WordBreak} {
-  BEGIN MODE_SINGLETYPE;
-  return token::CAST_AS;
-}
-
-
-  /* transition to ITEMTYPE */
-  /* ---------------------- */
-"instance"{SP}"of"/{WordBreak} {
-  BEGIN MODE_ITEMTYPE;
-  return token::INSTANCE_OF;
-}
-"treat"{SP}"as"/{WordBreak} {
-  BEGIN MODE_ITEMTYPE;
-  return token::TREAT_AS;
-}
-"case"/{WordBreak} {
-  BEGIN MODE_ITEMTYPE;
-  return token::CASE;
-}
-
-"as"{SP}"first"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::FIRST_INTO;
-}
-
-"as"{SP}"last"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::LAST_INTO;
-}
-
-"as"/{WordBreak} {
-  if (getDriver()->rename()) {
-    getDriver()->set_rename(false);
-    BEGIN INITIAL;
-  }
-  else if (getDriver()->ftcontains()) {
-    getDriver()->set_ftcontains(false);
-  }
-  else {
-    BEGIN MODE_ITEMTYPE;
-  }
-  return token::AS;
-}
-
-  /* transition to VARNAME */
-  /* --------------------- */
-"$" {
-  BEGIN MODE_VARNAME;
-  return token::DOLLAR;
-}
-"for"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::FOR_DOLLAR;
-}
-"let"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::LET_DOLLAR;
-}
-"using"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::USING_DOLLAR;
-}
-"let"{SP}"score"{SP}"$" {
-  BEGIN MODE_VARNAME;
-  return token::LET_SCORE_DOLLAR;
-}
-
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-
-  /* transition to MODE_CATCH   */
-  /* -------------------------- */
-"catch"{S}"(" {
-  PUSH_STATE(MODE_CATCH);
-  return token::CATCH_LPAR;
-}
-
-  /* transition to URITOOPERATOR */
-  /* --------------------------- */
-"collation"/{WordBreak} {
-  BEGIN MODE_URITOOPERATOR;
-  return token::COLLATION;
-}
-
-
-  /* restore previous state on closing brace */
-  /* --------------------------------------- */
-"}" {
-  POP_STATE();
-  return token::RBRACE;
-}
-
-
-  /* maintain OPERATOR state */
-  /* ----------------------- */
-")" {
-  return token::RPAR;
-}
-"?" {
-  return token::HOOK;
-}
-"empty"{SP}"greatest"/{WordBreak} {
-  return token::EMPTY_GREATEST;
-}
-"empty"{SP}"least"/{WordBreak} {
-  return token::EMPTY_LEAST;
-}
-"ascending"/{WordBreak} {
-  return token::ASCENDING;
-}
-"descending"/{WordBreak} {
-  return token::DESCENDING;
-}
-"default"/{WordBreak} {
-  return token::DEFAULT;
-}
-"]" {
-  return token::RBRACK;
-}
-{StringLiteral} {
-  TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
-}
+  /* <MODE_OPERATOR>{ */
 
 
   /*______________________________________________________________________
@@ -1692,216 +654,7 @@ typedef zorba::xquery_parser::token token;
    | FT rules <OPERATOR>
    |______________________________________________________________________*/
 
-  /* transition to INITIAL state */
-  /* --------------------------- */
-
-"ftcontains"/{WordBreak} {
-  BEGIN INITIAL;
-  getDriver()->set_ftcontains(true);
-  return token::FTCONTAINS;
-}
-"&&" {
-  BEGIN INITIAL;
-  return token::FTAND;
-}
-"!" {
-  BEGIN INITIAL;
-  return token::FTNOT;
-}
-"||" {
-  BEGIN INITIAL;
-  return token::FTOR;
-}
-"not"<SP>"in"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::FTNOT_IN;
-}
-"at"{SP}"least"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AT_LEAST;
-}
-"at"{SP}"most"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AT_MOST;
-}
-"distance"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::DISTANCE;
-}
-"exactly"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::EXACTLY;
-}
-"from"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::FROM;
-}
-"occurs"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::OCCURS;
-}
-"window"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::WINDOW;
-}
-
-
-  /* maintain OPERATOR state */
-  /* ----------------------- */
-"all"/{WordBreak} {
-  return token::ALL;
-}
-"all"{SP}"words"/{WordBreak} {
-  return token::ALL_WORDS;
-}
-"any"/{WordBreak} {
-  return token::ANY;
-}
-"any"{SP}"word"/{WordBreak} {
-  return token::ANY_WORD;
-}
-"at"{SP}"end"/{WordBreak} {
-  return token::AT_END;
-}
-"at"{SP}"start"/{WordBreak} {
-  return token::AT_START;
-}
-"case"{SP}"insensitive"/{WordBreak} {
-  return token::CASE_INSENSITIVE;
-}
-"case"{SP}"sensitive"/{WordBreak} {
-  return token::CASE_SENSITIVE;
-}
-"declare"{SP}"ftoption"/{WordBreak} {
-  return token::DECLARE_FTOPTION;
-}
-"diacritics"{SP}"insensitive"/{WordBreak} {
-  return token::DIACRITICS_INSENSITIVE;
-}
-"diacritics"{SP}"sensitive"/{WordBreak} {
-  return token::DIACRITICS_SENSITIVE;
-}
-"different"/{WordBreak} {
-  return token::DIFFERENT;
-}
-"entire"{SP}"content"/{WordBreak} {
-  return token::ENTIRE_CONTENT;
-}
-"language"/{WordBreak} {
-  return token::LANGUAGE;
-}
-"levels"/{WordBreak} {
-  return token::LEVELS;
-}
-"lowercase"/{WordBreak} {
-  return token::LOWERCASE;
-}
-"paragraph"/{WordBreak} {
-  return token::PARAGRAPH;
-}
-"phrase"/{WordBreak} {
-  return token::PHRASE;
-}
-"relationship"/{WordBreak} {
-  return token::RELATIONSHIP;
-}
-"same"/{WordBreak} {
-  return token::SAME;
-}
-"score"/{WordBreak} {
-  return token::SCORE;
-}
-"sentence"/{WordBreak} {
-  return token::SENTENCE;
-}
-"sentences"/{WordBreak} {
-  return token::SENTENCES;
-}
-"times"/{WordBreak} {
-  return token::TIMES;
-}
-"uppercase"/{WordBreak} {
-  return token::UPPERCASE;
-}
-"weight"/{WordBreak} {
-  return token::WEIGHT;
-}
-"without"{SP}"content"/{WordBreak} {
-  return token::WITHOUT_CONTENT;
-}
-"without"{SP}"diacritics"/{WordBreak} {
-  return token::WITHOUT_DIACRITICS;
-}
-"without"{SP}"stemming"/{WordBreak} {
-  return token::WITHOUT_STEMMING;
-}
-"without"{SP}"stop"{SP}"words"/{WordBreak} {
-  return token::WITHOUT_STOP_WORDS;
-}
-"without"{SP}"thesaurus"/{WordBreak} {
-  return token::WITHOUT_THESAURUS;
-}
-"without"{SP}"wildcards"/{WordBreak} {
-  return token::WITHOUT_WILDCARDS;
-}
-"with"{SP}"default"{SP}"stop"{SP}"words"/{WordBreak} {
-  return token::WITH_DEFAULT_STOP_WORDS;
-}
-"with"{SP}"diacritics"/{WordBreak} {
-  return token::WITH_DIACRITICS;
-}
-"with"{SP}"stemming"/{WordBreak} {
-  return token::WITH_STEMMING;
-}
-"with"{SP}"stop"{SP}"words"/{WordBreak} {
-  return token::WITH_STOP_WORDS;
-}
-"with"{SP}"thesaurus"/{WordBreak} {
-  return token::WITH_THESAURUS;
-}
-"with"{SP}"wildcards"/{WordBreak} {
-  return token::WITH_WILDCARDS;
-}
-"words"/{WordBreak} {
-  return token::WORDS;
-}
-"(#" {
-  BEGIN MODE_PRAGMA;
-  return token::PRAGMA_BEGIN;
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_OPERATOR> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_OPERATOR> */
 
   /*______________________________________________________________________
    |
@@ -1910,50 +663,9 @@ typedef zorba::xquery_parser::token token;
    | This state is for recognition of XQuery version specific keywords.
    |______________________________________________________________________*/
 
-<MODE_XQUERY_VERSION>{
+  /* <MODE_XQUERY_VERSION>{ */
 
-  /* transition to INITIAL */
-  /* --------------------- */
-";" {
-  BEGIN INITIAL;
-  return token::SEMI;
-}
-
-  /* maintain XQUERYVERSION */
-  /* ---------------------- */
-{StringLiteral} {
-  TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
-}
-
-"encoding"/{WordBreak} {
-  return token::ENCODING;
-}
-
-{SP} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_XQUERY_VERSION> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */ /* END <MODE_XQUERY_VERSION> */
 
   /*______________________________________________________________________
    |
@@ -1965,71 +677,9 @@ typedef zorba::xquery_parser::token token;
    | NCName and QName becomes ambiguous.)
    |______________________________________________________________________*/
 
-<MODE_NAMESPACEDECL>{
+  /* <MODE_NAMESPACEDECL>{ */
 
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-";" {
-  BEGIN INITIAL;
-  return token::SEMI;
-}
-
-  /* maintain NAMESPACEDECL */
-  /* ---------------------- */
-{URILiteral} {
-  TRY_URILIT (URI_LITERAL, yytext, yyleng);
-}
-
-"," {
-  return token::COMMA;
-}
-
-"at"/{WordBreak} {
-  return token::AT;
-}
-
-"=" {
-  return token::EQUALS;
-}
-
-{NCName} {
-  TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_NAMESPACEDECL> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */ /* END <MODE_NAMESPACEDECL> */ 
 
 
   /*______________________________________________________________________
@@ -2039,31 +689,6 @@ typedef zorba::xquery_parser::token token;
    | This state is to recognize a URILiteral that transitions to the
    | OPERATOR state.
    |______________________________________________________________________*/
-
-<MODE_URITOOPERATOR>{S}{URILiteral} {
-  BEGIN MODE_OPERATOR;
-  TRY_URILIT (URI_LITERAL, yytext, yyleng);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   /*______________________________________________________________________
@@ -2075,91 +700,12 @@ typedef zorba::xquery_parser::token token;
    | QNames can not occur in this state.
    |______________________________________________________________________*/
 
-<MODE_NAMESPACEKEYWORD>{
+  /* <MODE_NAMESPACEKEYWORD>{ */
 
-  /* transition to NAMESPACEDECL */
-  /* --------------------------- */
-{URILiteral} {
-  BEGIN MODE_NAMESPACEDECL;
-  TRY_URILIT (URI_LITERAL, yytext, yyleng);
-}
+  /* } */  /* END <MODE_NAMESPACEKEYWORD> */
 
-"namespace"/{WordBreak} {
-  BEGIN MODE_NAMESPACEDECL;
-  return token::NAMESPACE;
-}
-
-  /* transition to INITIAL */
-  /* --------------------- */
-"inherit"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INHERIT;
-}
-
-"no-inherit"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::NO_INHERIT;
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-
-  /* maintain NAMESPACEKEYWORD */
-  /* ------------------------- */
-"default"{SP}"element"/{WordBreak} {
-  return token::DEFAULT_ELEMENT;
-}
-
-"preserve"/{WordBreak} {
-  return token::PRESERVE;
-}
-
-"no-preserve"/{WordBreak} {
-  return token::NO_PRESERVE;
-}
-
-"," {
-  return token::COMMA;
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_NAMESPACEKEYWORD> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /*______________________________________________________________________
+  
+   /*______________________________________________________________________
     |
     | XMLSPACE_DECL State
     |
@@ -2168,60 +714,12 @@ typedef zorba::xquery_parser::token token;
     | occur in this state.
     |______________________________________________________________________*/
 
-<MODE_XMLSPACE_DECL>{
+  /* <MODE_XMLSPACE_DECL>{ */
 
   /* transition to INITIAL */
   /* --------------------- */
-"preserve"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::PRESERVE;
-}
 
-"strip"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::STRIP;
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_XMLSPACE_DECL> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */ /* END <MODE_XMLSPACE_DECL> */
 
 
   /*______________________________________________________________________
@@ -2232,59 +730,9 @@ typedef zorba::xquery_parser::token token;
    | SingleType production.
    |______________________________________________________________________*/
 
-<MODE_SINGLETYPE>{
+  /* <MODE_SINGLETYPE>{ */
 
-  /* transition to OPERATOR */
-  /* ---------------------- */
-{QName} {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_SINGLETYPE> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_SINGLETYPE> */
 
 
   /*______________________________________________________________________
@@ -2295,393 +743,9 @@ typedef zorba::xquery_parser::token token;
    | ItemType production.
    |______________________________________________________________________*/
 
-<MODE_ITEMTYPE>{
+  /* <MODE_ITEMTYPE>{ */
 
-
-  /* transition to VARNAME */
-  /* --------------------- */
-"$" {
-  BEGIN MODE_VARNAME;
-  return token::DOLLAR;
-}
-
-"empty-sequence"{S}"("{SOrComment}")" {
-  BEGIN MODE_OPERATOR;
-  return token::VOID_TEST;
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-  /* transition to KINDTEST */
-  /* ---------------------- */
-"element"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
-  return token::ELEMENT_LPAR;
-}
-
-"attribute"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
-  return token::ATTRIBUTE_LPAR;
-}
-
-"schema-element"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
-  return token::SCHEMA_ELEMENT_LPAR;
-}
-
-"schema-attribute"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
-  return token::SCHEMA_ATTRIBUTE_LPAR;
-}
-
-"comment"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
-  return token::COMMENT_LPAR;
-}
-
-"text"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
-  return token::TEXT_LPAR;
-}
-
-"node"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
-  return token::NODE_LPAR;
-}
-
-"document-node"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
-  return token::DOCUMENT_NODE_LPAR;
-}
-
-  /* transition to KINDTESTFORPI */
-  /* --------------------------- */
-"processing-instruction"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTESTFORPI, MODE_OCCURRENCE_INDICATOR);
-  return token::PI_LPAR;
-}
-
-"item"{S}"("{SOrComment}")" {
-  BEGIN MODE_OCCURRENCE_INDICATOR;
-  return token::ITEM_TEST;
-}
-
-  /* transition to PRAGMA */
-  /* -------------------- */
-"(#" {
-  BEGIN MODE_PRAGMA;
-  return token::PRAGMA_BEGIN;
-}
-
-  /* transition to INITIAL */
-  /* --------------------- */
-";" {
-  BEGIN INITIAL;
-  return token::SEMI;
-}
-
-"then"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::THEN;
-}
-
-"else"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::ELSE;
-}
-
-  /* transition to NAMESPACEDECL */
-  /* --------------------------- */
-"at"{SP}{URILiteral} {
-  BEGIN MODE_NAMESPACEDECL;
-  TRY_URILIT (AT_URI_LITERAL, yytext+2, yyleng-2);
-}
-
-  /* transition to INITIAL */
-  /* --------------------- */
-"external"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::EXTERNAL;
-}
-
-"and"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AND;
-}
-
-"at"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::AT;
-}
-
-":=" {
-  BEGIN INITIAL;
-  return token::GETS;
-}
-
-"," {
-  BEGIN INITIAL;
-  return token::COMMA;
-}
-
-"div"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::DIV;
-}
-
-"=" {
-  BEGIN INITIAL;
-  return token::EQUALS;
-}
-
-"except"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::EXCEPT;
-}
-
-"eq"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_EQ;
-}
-
-"ge"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_GE;
-}
-
-"gt"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_GT;
-}
-
-"le"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_LE;
-}
-
-"lt"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_LT;
-}
-
-"ne"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::VAL_NE;
-}
-
-">=" {
-  BEGIN INITIAL;
-  return token::GE;
-}
-
-">>" {
-  BEGIN INITIAL;
-  return token::FOLLOWS;
-}
-
-">" {
-  BEGIN INITIAL;
-  return token::GT;
-}
-
-"idiv"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::IDIV;
-}
-
-"intersect"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::INTERSECT;
-}
-
-"in"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::_IN_;
-}
-
-"is"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::IS;
-}
-
-"[" {
-  BEGIN INITIAL;
-  return token::LBRACK;
-}
-
-"(" {
-  BEGIN INITIAL;
-  return token::LPAR;
-}
-
-"<=" {
-  BEGIN INITIAL;
-  return token::LE;
-}
-
-"<<" {
-  BEGIN INITIAL;
-  return token::PRECEDES;
-}
-
-"<" {
-  BEGIN INITIAL;
-  return token::LT;
-}
-
-"-" {
-  BEGIN INITIAL;
-  return token::MINUS;
-}
-
-"mod"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::MOD;
-}
-
-"!=" {
-  BEGIN INITIAL;
-  return token::NE;
-}
-
-"group"{SP}"by"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::GROUP_BY;
-}
-
-"order"{SP}"by"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::ORDER_BY;
-}
-
-"stable"{SP}"order"{SP}"by"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::STABLE_ORDER_BY;
-}
-
-"or"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::OR;
-}
-
-"return"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::RETURN;
-}
-
-"eval"{S}"{" {
-  PUSH_AND_BEGIN (INITIAL, INITIAL);
-  return token::EVAL_LBRACE;
-}
-
-"satisfies"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::SATISFIES;
-}
-
-"to"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::TO;
-}
-
-"union"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::UNION;
-}
-
-"|" {
-  BEGIN INITIAL;
-  return token::VBAR;
-}
-
-"where"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::WHERE;
-}
-
-  /* transition to SINGLETYPE */
-  /* ------------------------ */
-"castable"{SP}"as"/{WordBreak} {
-  BEGIN MODE_SINGLETYPE;
-  return token::CASTABLE_AS;
-}
-
-"cast"{SP}"as"/{WordBreak} {
-  BEGIN MODE_SINGLETYPE;
-  return token::CAST_AS;
-}
-
-  /* maintain ITEMTYPE */
-  /* ----------------- */
-"instance"{SP}"of"/{WordBreak} {
-  return token::INSTANCE_OF;
-}
-
-"treat"{SP}"as"/{WordBreak} {
-  return token::TREAT_AS;
-}
-
-"case"/{WordBreak} {
-  return token::CASE;
-}
-
-")" {
-  return token::RPAR;
-}
-
-"as"/{WordBreak} {
-  return token::AS;
-}
-
-
-{QName} {
-  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
-  BEGIN MODE_OCCURRENCE_INDICATOR;
-  return token::QNAME;
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_ITEMTYPE> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */ /* END <MODE_ITEMTYPE> */
 
 
   /*______________________________________________________________________
@@ -2691,91 +755,9 @@ typedef zorba::xquery_parser::token token;
    | This state is for the psuedo-parameters for the KindTest productions
    |______________________________________________________________________*/
 
-<MODE_KINDTEST>{
+  /* <MODE_KINDTEST>{ */
 
-  /* transition to INITIAL */
-  /* --------------------- */
-"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::LBRACE;
-}
-
-  /* transition to CLOSE_KINDTEST */
-  /* --------------------------- */
-"*" {
-  BEGIN MODE_CLOSE_KINDTEST;
-  return token::STAR;
-}
-
-{QName} {
-  BEGIN MODE_CLOSE_KINDTEST;
-  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-  /* pop previous state on close paren */
-  /* --------------------------------- */
-")" {
-  POP_STATE();
-  return token::RPAR;
-}
-
-  /* maintain KINDTEST */
-  /* ----------------- */
-"element"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
-  return token::ELEMENT_LPAR;
-}
-
-"schema-element"{S}"(" {
-  PUSH_AND_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
-  return token::SCHEMA_ELEMENT_LPAR;
-}
-
-  /* catch-all */
-  /* --------- */
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_KINDTEST> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */ /* END <MODE_KINDTEST> */
 
 
   /*______________________________________________________________________
@@ -2786,61 +768,9 @@ typedef zorba::xquery_parser::token token;
    | QNames.
    |______________________________________________________________________*/
 
-<MODE_KINDTESTFORPI>{
+  /* <MODE_KINDTESTFORPI>{ */
 
-  /* pop previous state on close paren */
-  /* --------------------------------- */
-")" {
-  POP_STATE();
-  return token::RPAR;
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-  /* maintain KINDTESTFORPI */
-  /* ---------------------- */
-{NCName} {
-  TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
-}
-
-{StringLiteral} {
-  TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_KINDTESTFORPI> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_KINDTESTFORPI> */
 
 
   /*______________________________________________________________________
@@ -2850,74 +780,9 @@ typedef zorba::xquery_parser::token token;
    | This state is expecting to close a KINDTEST sequence.
    |______________________________________________________________________*/
 
-<MODE_CLOSE_KINDTEST>{
+  /* <MODE_CLOSE_KINDTEST>{ */
 
-  /* pop previous state */
-  /* ------------------ */
-")" {
-  POP_STATE();
-  return token::RPAR;
-}
-
-  /* transition to KINDTEST */
-  /* ---------------------- */
-"," {
-  BEGIN MODE_KINDTEST;
-  return token::COMMA;
-}
-
-  /* transition to INITIAL */
-  /* --------------------- */
-"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_OPERATOR);
-  return token::LBRACE;
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-  /* maintain CLOSE_KINDTEST */
-  /* ---------------------- */
-"?" {
-  return token::HOOK;
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_CLOSE_KINDTEST> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_CLOSE_KINDTEST> */
 
 
   /*______________________________________________________________________
@@ -2935,71 +800,28 @@ typedef zorba::xquery_parser::token token;
    | and $x", with the operator "and".
    |______________________________________________________________________*/
 
-<MODE_OCCURRENCE_INDICATOR>{
+  /* <MODE_OCCURRENCE_INDICATOR>{ */
 
   /* transition to OPERATOR */
   /* ---------------------- */
-"?" {
-  BEGIN MODE_OPERATOR;
+
+  /* "?" {
+  // TODO:
   return token::OCCURS_HOOK;
 }
 
 "*" {
-  BEGIN MODE_OPERATOR;
+  // TODO:
   return token::OCCURS_STAR;
 }
 
 "+" {
-  BEGIN MODE_OPERATOR;
+  // TODO:
   return token::OCCURS_PLUS;
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-  /* anything else: push back, goto OPERATOR */
-  /* --------------------------------------- */
-{CatchAll} {
-  yyless(0);
-  BEGIN MODE_OPERATOR;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-} /* MODE_OCCURRENCE_INDICATOR> */
+} */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */ /* MODE_OCCURRENCE_INDICATOR> */
 
 
   /*______________________________________________________________________
@@ -3011,50 +833,9 @@ typedef zorba::xquery_parser::token token;
    | OPERATOR state.
    |______________________________________________________________________*/
 
-<MODE_OPTION>{
+  /* <MODE_OPTION>{ */
 
-  /* transition to INITIAL */
-  /* --------------------- */
-{QName}  {
-  BEGIN INITIAL;
-  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_OPTION> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_OPTION> */
 
 
   /*______________________________________________________________________
@@ -3066,58 +847,15 @@ typedef zorba::xquery_parser::token token;
    | OPERATOR state.
    |______________________________________________________________________*/
 
-<MODE_PRAGMA>{
+  /* <MODE_PRAGMA>{  */
 
-  /* transition to PRAGMACONTENTS */
-  /* ---------------------------- */
-{QName}{SPNoComment} {
-  BEGIN MODE_PRAGMACONTENTS;
-  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng,true,true));
-}
+<MODE_PRAGMA>{QName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true)); }
+<MODE_PRAGMA>{QName}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2)); }
+<MODE_PRAGMA>{S} { /* continue lexing */ }
 
-{QName}"#)" {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (QNAME_AND_END_PRAGMA, put(yytext, yyleng-2));
-}
+  /* } */  /* END <MODE_PRAGMA> */
 
-{S} {
-  /* eat up whitespace */
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-}  /* END <MODE_PRAGMA> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
   /*______________________________________________________________________
    |
    | PRAGMACONTENTS State
@@ -3126,52 +864,11 @@ typedef zorba::xquery_parser::token token;
    | out of this state when a '#)' pattern is recognized.
    |______________________________________________________________________*/
 
-<MODE_PRAGMACONTENTS>{
+  /* <MODE_PRAGMACONTENTS>{  */
 
-  /* transition to OPERATOR */
-  /* ---------------------- */
-{PragmaChars}")" {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (PRAGMA_LITERAL_AND_END, put(yytext, yyleng-2));
-}
+<MODE_PRAGMACONTENTS>{PragmaChars}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2)); }
 
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-}  /* END <MODE_PRAGMACONTENTS> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_PRAGMACONTENTS> */
 
 
   /*______________________________________________________________________
@@ -3183,58 +880,9 @@ typedef zorba::xquery_parser::token token;
    | ambiguities could occur.
    |______________________________________________________________________*/
 
-<MODE_VARNAME>{
+  /* <MODE_VARNAME>{ */
 
-  /* transition to OPERATOR */
-  /* ---------------------- */
-{VarName} {
-  BEGIN MODE_OPERATOR;
-  TRY_SVAL_TOKEN (VARNAME, put_varname(yytext, yyleng));
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
-}
-
-}  /* END <MODE_VARNAME> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */ /* END <MODE_VARNAME> */
 
 
   /*______________________________________________________________________
@@ -3248,82 +896,18 @@ typedef zorba::xquery_parser::token token;
    | is associated with the transition to the original state.
    |______________________________________________________________________*/
 
-<MODE_START_TAG>{
+  /* <MODE_START_TAG>{ */  /* TODO: this one is needed */
 
-  /* transition to ELEMENT_CONTENT */
-  /* ----------------------------- */
-">" {
-  BEGIN MODE_ELEMENT_CONTENT;
-  return token::TAG_END;
-}
+<MODE_START_TAG>">" { BEGIN MODE_ELEMENT_CONTENT; return token::TAG_END; }
+<MODE_START_TAG>\" { BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
+<MODE_START_TAG>\' { BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
+<MODE_START_TAG>"=" { return token::EQUALS; }
+<MODE_START_TAG>{S} { return token::BLANK; }
+<MODE_START_TAG>"/>" { POP_STATE(); return token::EMPTY_TAG_END; }
+<MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng)); }
+<MODE_START_TAG>{CatchAll} { return token::UNRECOGNIZED; }
 
-  /* transition to QUOT_ATTRIBUTE_CONTENT */
-  /* ------------------------------------ */
-\" {
-  BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT;
-  return token::QUOTE;
-}
-
-  /* transition to APOS_ATTRIBUTE_CONTENT */
-  /* ------------------------------------ */
-\' {
-  BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
-  return token::APOS;
-}
-
-  /* transition to START_TAG */
-  /* ----------------------- */
-"=" {
-  BEGIN MODE_START_TAG;
-  return token::EQUALS;
-}
-
-  /* pop previous state on exit */
-  /* -------------------------- */
-"/>" {
-  POP_STATE();
-  return token::EMPTY_TAG_END;
-}
-
-  /* maintain START_TAG */
-  /* ------------------ */
-{S} {
-  /* continue lexing */
-}
-
-{QName} {
-  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
-}
-
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-}  /* END <MODE_START_TAG> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_START_TAG> */
 
 
   /*______________________________________________________________________
@@ -3340,107 +924,21 @@ typedef zorba::xquery_parser::token token;
    | associated with a transition to the END_TAG state.
    |______________________________________________________________________*/
 
-<MODE_ELEMENT_CONTENT>{
+  /* <MODE_ELEMENT_CONTENT>{ */
 
-  /* transition to END_TAG */
-  /* --------------------- */
-"</" {
-  BEGIN MODE_END_TAG;
-  return token::START_TAG_END;
-}
+<MODE_ELEMENT_CONTENT>"</" { BEGIN MODE_END_TAG; return token::START_TAG_END; }
+<MODE_ELEMENT_CONTENT>"{" { PUSH_STATE(INITIAL); return token::LBRACE; }
+<MODE_ELEMENT_CONTENT>"<!--" { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
+<MODE_ELEMENT_CONTENT>"<?" { PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
+<MODE_ELEMENT_CONTENT>"<![CDATA[" { PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
+<MODE_ELEMENT_CONTENT>"<" { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
+<MODE_ELEMENT_CONTENT>{ElementContentChar}+ { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, true)); }
+<MODE_ELEMENT_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng)); }
+<MODE_ELEMENT_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+<MODE_ELEMENT_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
+<MODE_ELEMENT_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
 
-  /* transition to INITIAL */
-  /* --------------------- */
-"{" {
-  PUSH_STATE(INITIAL);
-  return token::LBRACE;
-}
-
-  /* transition to EXPR_COMMENT */
-  /* -------------------------- */
-"<!--" {
-  PUSH_STATE(MODE_XML_COMMENT);
-  return token::XML_COMMENT_BEGIN;
-}
-
-  /* transition to PROCESSING_INSTRUCTION */
-  /* ------------------------------------ */
-"<?" {
-  PUSH_STATE(MODE_PROCESSING_INSTRUCTION);
-  return token::PI_BEGIN;
-}
-
-  /* transition to CDATA_SECTION */
-  /* --------------------------- */
-"<![CDATA[" {
-  PUSH_STATE(MODE_CDATA_SECTION);
-  return token::CDATA_BEGIN;
-}
-
-  /* transition to START_TAG */
-  /* ----------------------- */
-"<" {
-  PUSH_STATE(MODE_START_TAG);
-  return token::START_TAG;
-}
-
-  /* maintain ELEMENT_CONTENT */
-  /* ------------------------ */
-{ElementContentChar}+ {
-  TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, true));
-}
-
-{PredefinedEntityRef} {
-  TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng));
-}
-
-{CharRef}+ {
-  TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
-}
-
-"{{" {
-  return token::DOUBLE_LBRACE;
-}
-
-"}}" {
-  return token::DOUBLE_RBRACE;
-}
-
-  /* catch all else */
-  /* -------------- */
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-} /* MODE_ELEMENT_CONTENT> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */ /* MODE_ELEMENT_CONTENT> */
 
 
   /*______________________________________________________________________
@@ -3451,50 +949,12 @@ typedef zorba::xquery_parser::token token;
    | that was pushed at the start of the corresponding start tag.
    |______________________________________________________________________*/
 
-<MODE_END_TAG>{
+  /* <MODE_END_TAG>{ */
 
-  /* pop previous state on exit */
-  /* -------------------------- */
-">" {
-  POP_STATE();
-  return token::TAG_END;
-}
+<MODE_END_TAG>">" { POP_STATE(); return token::TAG_END; }
+<MODE_END_TAG>{QName}{S} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true)); }
 
-  /* maintain END_TAG */
-  /* ---------------- */
- {QName}{S} {
-   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng, false, true));
-}
-
-  /* catch all else */
-  /* -------------- */
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
-}  /* END <MODE_END_TAG> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_END_TAG> */
 
 
   /*______________________________________________________________________
@@ -3505,52 +965,12 @@ typedef zorba::xquery_parser::token token;
    | characters in this state.
    |______________________________________________________________________*/
 
-<MODE_XML_COMMENT>{
+  /* <MODE_XML_COMMENT>{  */
+  
+<MODE_XML_COMMENT>"-->" { POP_STATE(); return token::XML_COMMENT_END; }
+<MODE_XML_COMMENT>{XMLCommentChar}* { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng)); }
 
-  /* pop previous state on exit */
-  /* -------------------------- */
-"-->" {
-  POP_STATE();
-  return token::XML_COMMENT_END;
-}
-
-  /* maintain XML_COMMENT */
-  /* -------------------- */
-{XMLCommentChar}* {
-  TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng));
-}
-
- {CatchAll} {
-   return token::UNRECOGNIZED;
- }
-}  /* END <MODE_XML_COMMENT> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_XML_COMMENT> */
 
 
   /*______________________________________________________________________
@@ -3562,57 +982,14 @@ typedef zorba::xquery_parser::token token;
    | of other characters in this state.
    |______________________________________________________________________*/
 
-<MODE_EXPR_COMMENT>{
+  /* <MODE_EXPR_COMMENT>{  */
 
-  /* pop previous state */
-  /* ------------------ */
-":)" {
-  POP_STATE();
-}
+<MODE_EXPR_COMMENT>":)" { POP_STATE(); }
+<MODE_EXPR_COMMENT>"(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
+<MODE_EXPR_COMMENT>.|"\n" { /* do nothing */ }
+<MODE_EXPR_COMMENT><<EOF>> { return token::UNRECOGNIZED; }
 
-  /* maintain EXPR_COMMENT */
-  /* --------------------- */
-"(:" {
-  PUSH_STATE(MODE_EXPR_COMMENT);
-}
-
-.|"\n" {
-  /* do nothing */
-}
-
-<<EOF>> {
-  return token::UNRECOGNIZED;
-}
-
-}  /* END <MODE_EXPR_COMMENT> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_EXPR_COMMENT> */
 
 
   /*______________________________________________________________________
@@ -3623,57 +1000,13 @@ typedef zorba::xquery_parser::token token;
    | instruction name are recognized.
    |______________________________________________________________________*/
 
-<MODE_PROCESSING_INSTRUCTION>{
+  /* <MODE_PROCESSING_INSTRUCTION>{ */
 
-  /* transition to PROCESSING_INSTRUCTION_CONTENT */
-  /* -------------------------------------------- */
-{SP} {
-  BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT;
-  /* continue lexing */
-}
+<MODE_PROCESSING_INSTRUCTION>{SP} { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
+<MODE_PROCESSING_INSTRUCTION>"?>" { POP_STATE(); return token::PI_END; }
+<MODE_PROCESSING_INSTRUCTION>{PITarget} { TRY_SVAL_TOKEN (PI_TARGET_LITERAL, put(yytext, yyleng)); }
 
-  /* pop previous state on exit */
-  /* -------------------------- */
-"?>" {
-  POP_STATE();
-  return token::PI_END;
-}
-
-  /* maintain PROCESSING_INSTRUCTION */
-  /* ------------------------------- */
-{PITarget} {
-  BEGIN MODE_PROCESSING_INSTRUCTION;
-  TRY_SVAL_TOKEN (PI_TARGET_LITERAL, put(yytext, yyleng));
-}
-
-}  /* END <MODE_PROCESSING_INSTRUCTION> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_PROCESSING_INSTRUCTION> */
 
 
   /*______________________________________________________________________
@@ -3684,39 +1017,14 @@ typedef zorba::xquery_parser::token token;
    | instruction content are recognized.
    |______________________________________________________________________*/
 
-<MODE_PROCESSING_INSTRUCTION_CONTENT>{
+  /* <MODE_PROCESSING_INSTRUCTION_CONTENT>{ */
 
-  /* pop previous state on exit */
-  /* -------------------------- */
-{PIChars}"?>" {
+<MODE_PROCESSING_INSTRUCTION_CONTENT>{PIChars}"?>" {
   POP_STATE();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
 }
 
-}  /* END <MODE_PROCESSING_INSTRUCTION_CONTENT> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_PROCESSING_INSTRUCTION_CONTENT> */
 
 
   /*______________________________________________________________________
@@ -3727,50 +1035,12 @@ typedef zorba::xquery_parser::token token;
    | recognized.
    |______________________________________________________________________*/
 
-<MODE_CDATA_SECTION>{
+  /* <MODE_CDATA_SECTION>{ */
 
-  /* pop previous state on exit */
-  /* -------------------------- */
-"]]>" {
-  POP_STATE();
-  TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3));
-}
+<MODE_CDATA_SECTION>"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3)); }
+<MODE_CDATA_SECTION>{Char} { yymore(); }
 
-  /* maintain CDATA_SECTION */
-  /* ---------------------- */
-{Char} {
-  yymore();
-}
-
-}  /* END <MODE_CDATA_SECTION> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_CDATA_SECTION> */
 
 
   /*______________________________________________________________________
@@ -3787,82 +1057,18 @@ typedef zorba::xquery_parser::token token;
    | unescaped quote marks the end of the state.
    |______________________________________________________________________*/
 
-<MODE_QUOTE_ATTRIBUTE_CONTENT>{
+  /* <MODE_QUOTE_ATTRIBUTE_CONTENT>{ */
 
-  /* transition to START_TAG */
-  /* ----------------------- */
-\" {
-  BEGIN MODE_START_TAG;
-  return token::QUOTE;
-}
+<MODE_QUOTE_ATTRIBUTE_CONTENT>\" { BEGIN MODE_START_TAG; return token::QUOTE; }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>"{" { PUSH_STATE(INITIAL); return token::LBRACE; }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{EscapeQuot} { return token::ESCAPE_QUOTE; }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{QuotAttrContentChar}+ { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, true)); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
 
-  /* transition to INITIAL */
-  /* --------------------- */
-"{" {
-  PUSH_STATE(INITIAL);
-  return token::LBRACE;
-}
-
-  /* maintain QUOTE_ATTRIBUTE_CONTENT */
-  /* -------------------------------- */
-{EscapeQuot} {
-  return token::ESCAPE_QUOTE;
-}
-
-{QuotAttrContentChar}+ {
-  TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, true));
-}
-
-{PredefinedEntityRef} {
-  TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng));
-}
-
-{CharRef}+ {
-  TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
-}
-
-"{{" {
-  return token::DOUBLE_LBRACE;
-}
-
-"}}" {
-  return token::DOUBLE_RBRACE;
-}
-
-}  /* END <MODE_QUOTE_ATTRIBUTE_CONTENT> */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /* } */  /* END <MODE_QUOTE_ATTRIBUTE_CONTENT> */
 
 
   /*______________________________________________________________________
@@ -3874,109 +1080,39 @@ typedef zorba::xquery_parser::token token;
    | the state.
    |______________________________________________________________________*/
 
-<MODE_APOS_ATTRIBUTE_CONTENT>{
+  /* <MODE_APOS_ATTRIBUTE_CONTENT>{ */
 
-  /* transition to START_TAG */
-  /* ----------------------- */
-\' {
-  BEGIN MODE_START_TAG;
-  return token::APOS;
-}
+<MODE_APOS_ATTRIBUTE_CONTENT>\'                     { BEGIN MODE_START_TAG; return token::APOS; }
+<MODE_APOS_ATTRIBUTE_CONTENT>"{"                    { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
+<MODE_APOS_ATTRIBUTE_CONTENT>{EscapeApos}           { return token::ESCAPE_APOS; }
+<MODE_APOS_ATTRIBUTE_CONTENT>{AposAttrContentChar}+ { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, true)); }
+<MODE_APOS_ATTRIBUTE_CONTENT>{PredefinedEntityRef}  { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
+<MODE_APOS_ATTRIBUTE_CONTENT>{CharRef}+             { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+<MODE_APOS_ATTRIBUTE_CONTENT>"{{"                   { return token::DOUBLE_LBRACE; }
+<MODE_APOS_ATTRIBUTE_CONTENT>"}}"                   { return token::DOUBLE_RBRACE; }
 
-  /* transition to INITIAL */
-  /* --------------------- */
-"{" {
-  PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT);
-  return token::LBRACE;
-}
-
-  /* maintain APOS_ATTRIBUTE_CONTENT */
-  /* ------------------------------- */
-{EscapeApos} {
-  return token::ESCAPE_APOS;
-}
-
-{AposAttrContentChar}+ {
-  TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, true));
-}
-
-{PredefinedEntityRef} {
-  TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng));
-}
-
-{CharRef}+ {
-  TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
-}
-
-"{{" {
-  return token::DOUBLE_LBRACE;
-}
-
-"}}" {
-  return token::DOUBLE_RBRACE;
-}
-
-}  /* END <MODE_APOS_ATTRIBUTE_CONTENT> */
+  /* } */  /* END <MODE_APOS_ATTRIBUTE_CONTENT> */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /*______________________________________________________________________
+   |
+   | Catch-all rule
+   |______________________________________________________________________*/
 
 
 <*>. return token::UNRECOGNIZED;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /* END OF FLEX RULES */
 
+  
 %%
 
-/*
-  Finally, because the scanner related driver's member function depend
-  on the scanner's data, it is simpler to implement them in this file.
-*/
 
 std::string start_state(int state)
 {
-  switch (state) {
+  switch (state)
+  {
     case INITIAL: return "INITIAL";
     case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
     case MODE_CDATA_SECTION: return "MODE_CDATA_SECTION";
@@ -4028,7 +1164,15 @@ void xquery_scanner::set_yy_flex_debug(bool aBool)
 {
   yy_flex_debug = aBool;
 }
+
+void xquery_scanner::interpretAsLessThan()
+{
+  std::cout << "==> interpretAsLessThan()" << std::endl;
+  BEGIN INITIAL;
+  POP_STATE();
 }
+
+} /* namespace zorba */
 
 #ifdef yylex
 #undef yylex

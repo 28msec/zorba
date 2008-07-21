@@ -121,6 +121,11 @@ static void normalize_eol (const char *text, uint32_t length, string *out) {
   }
 }
 
+off_t symbol_table::put(char const* text)
+{
+  return put(text, strlen(text));
+}
+
 off_t symbol_table::put(char const* text, uint32_t length, bool eolNorm)
 {
   string normStr;

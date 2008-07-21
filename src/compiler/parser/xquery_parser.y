@@ -133,41 +133,86 @@ static void print_token_value(FILE *, int, YYSTYPE);
 **	$end. Similarly user friendly names are provided for each symbol.
 */
 
-%token	END	0 "end of file"
+%token	_EOF	0 "end of file"
 
 /* tokens that contain embedded string literals */
 /* -------------------------------------------- */
-%token <sval> APOS_ATTR_CONTENT				"'apos attribute content'"
-%token <sval> ATTRIBUTE_QNAME_LBRACE	"'<attribute QName {>'"
-%token <sval> AT_URI_LITERAL					"'<at URI>'"
-%token <sval> CHAR_LITERAL						"'char literal'"
-%token <sval> CHAR_LITERAL_AND_CDATA_END  "'char literal]]>'"
-%token <sval> CHAR_LITERAL_AND_PI_END "'char literal and pi end'"
-%token <sval> CHAR_REF_LITERAL				"'#charref;'"
-%token <sval> ELEMENT_CONTENT					"'element content'"
-%token <sval> ELEMENT_QNAME_LBRACE		"'<QName {>'"
-%token <sval> ELEM_WILDCARD						"'pref:*'"
-%token <sval> ENTITY_REF							"'&entity;'"
-%token <sval> EXPR_COMMENT_LITERAL		"'comment literal'"
-%token <sval> NCNAME									"'NCName'"
-%token <sval> PI_NCNAME_LBRACE				"'pi <NCName {>'"
-%token <sval> PI_TARGET_LITERAL				"'pi target'"
-%token <sval> PRAGMA_LITERAL_AND_END  "'pragma literal and end'"
-%token <sval> PREFIX_WILDCARD					"'*:QName'"
-%token <sval> QNAME										"'QName'"
-%token <sval> QNAME_AND_END_PRAGMA    "'QName #)'"
-%token <sval> QNAME_LPAR							"'<QName (>'"
-%token <sval> WHILE_LPAR              "'<while (>'"
-%token <sval> QUOTE_ATTR_CONTENT			"'quote attribute content'"
-%token <sval> STRING_LITERAL					"'STRING'"
-%token <sval> URI_LITERAL							"'URI'"
-%token <sval> VARNAME									"'variable name'"
-%token <sval> VALIDATE_MODE						"'validate mode'"
-%token <sval> XML_COMMENT_LITERAL			"'XML comment'"
 
+    /* %token <sval> ATTRIBUTE_QNAME_LBRACE  "'<attribute QName {>'" */
+    /* %token <sval> ELEMENT_QNAME_LBRACE    "'<QName {>'" */
+    /* %token <sval> AT_URI_LITERAL         "'<at URI>'" */
+    /* %token <sval> VARNAME                  "'variable name'" */
+      
+%token <sval> APOS_ATTR_CONTENT             "'apos attribute content'"
+%token <sval> CHAR_LITERAL                  "'char literal'"
+%token <sval> CHAR_LITERAL_AND_CDATA_END    "'char literal]]>'"
+%token <sval> CHAR_LITERAL_AND_PI_END       "'char literal and pi end'"
+%token <sval> CHAR_REF_LITERAL				      "'#charref;'"
+%token <sval> ELEMENT_CONTENT					      "'element content'"
+%token <sval> ELEM_WILDCARD						      "'pref:*'"
+%token <sval> ENTITY_REF							      "'&entity;'"
+%token <sval> EXPR_COMMENT_LITERAL		      "'comment literal'"
+
+%token <sval> PI_NCNAME_LBRACE              "'pi <NCName {>'"
+%token <sval> PI_TARGET_LITERAL             "'pi target'"
+%token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
+%token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
+%token <sval> PREFIX_WILDCARD					      "'*:QName'"
+%token <sval> QNAME_SVAL							      "'QName_sval'"
+%token <sval> QUOTE_ATTR_CONTENT			      "'quote attribute content'"
+%token <sval> STRING_LITERAL					      "'STRING'"
+%token <sval> XML_COMMENT_LITERAL			      "'XML comment'"
+
+%type <sval> QNAME                          "'QName'"
+%type <sval> URI_LITERAL                    "'URI'"
+%type <sval> NCNAME                         "'NCName'"
 
 /* simple tokens */
 /* ------------- */
+
+%token BLANK                      "<blank>"
+
+    
+%token EXIT                       "'exit'"
+%token BREAK                      "'break'"
+%token LOOP                       "'loop'"
+%token CONTINUE                   "'continue'"
+%token WHILE                      "'while'"
+%token VALIDATE                   "'validate'"
+%token TYPESWITCH                 "'typeswitch'"
+%token ELEMENT                    "'element'"
+%token DOCUMENT                   "'document'"
+%token TEXT                       "'text'"
+%token COMMENT                    "'comment'"
+%token DECLARE                    "'declare'"
+%token FUNCTION                   "'function'"
+%token UPDATING                   "'updating'"
+%token SEQUENTIAL                 "'sequential'"
+%token IF                         "'if'"
+%token PROCESSING_INSTRUCTION     "'processing-instruction'"
+%token MOST                       "'most'"
+%token IMPORT                     "'import'"
+%token SOME                       "'some'"
+%token STABLE                     "'stable'"
+%token MODULE                     "'module'"
+%token OPTION                     "'option'"
+%token WORD                       "'word'"
+%token SCHEMA                     "'schema'"
+%token SPACE                      "'space'"
+%token LET                        "'let'"
+%token CONSTRUCTION               "'construction'"
+%token EVAL                       "'eval'"
+%token FOR                        "'for'"
+%token ORDERING                   "'ordering'"
+%token CONT                       "'cont'"
+%token BASE_URI                   "'base-uri'"
+%token SCHEMA_ELEMENT             "'schema-element'"
+%token DOCUMENT_NODE              "'document-node'"
+%token COPY_NAMESPACES            "'copy-namespaces'"
+%token INSTANCE                   "'instance'"
+%token SCHEMA_ATTRIBUTE           "'schema-attribute'"
+%token BOUNDARY_SPACE             "'boundary-space'"
+    
 %token ANCESTOR_AXIS							"'ancestor::'"
 %token ANCESTOR_OR_SELF_AXIS			"'ancestor-or-self::'"
 %token AND												"'and'"
@@ -177,12 +222,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token AT													"'at'"
 %token ATTRIBUTE									"'attribute'"
 %token ATTRIBUTE_AXIS							"'attribute::'"
-%token ATTRIBUTE_LBRACE						"'<attribute {>'"
-%token ATTRIBUTE_LPAR							"'<attribute (>'"
 %token AT_SIGN										"'@'"
 %token CASE												"'case'"
-%token CASTABLE_AS								"'<castable as>'"
-%token CAST_AS										"'<cast as>'"
+%token CASTABLE                   "'castable'"
+%token CAST                       "'cast'"
 %token CDATA_BEGIN								"'CDATA[['"
 %token CDATA_END									"']]'"
 %token CHILD_AXIS									"'child::'"
@@ -190,107 +233,70 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token COMMA											"','"
 %token COMMENT_BEGIN							"'(:'"
 %token COMMENT_END								"':)'"
-%token COMMENT_LBRACE							"'<comment {>'"
-%token COMMENT_LPAR								"'<comment (>'"
 %token <decval> DECIMAL_LITERAL	  "'DECIMAL'"
-%token DECLARE_BASE_URI						"'<declare base URI>'"
-%token DECLARE_BOUNDARY_SPACE			"'<declare boundary space>'"
-%token DECLARE_CONSTRUCTION				"'<declare construction>'"
-%token DECLARE_COPY_NAMESPACES		"'<declare copy namespaces>'"
-%token DECLARE_DEFAULT_COLLATION	"'<declare default collation>'"
-%token DECLARE_DEFAULT_ELEMENT		"'<declare default element>'"
-%token DECLARE_DEFAULT_FUNCTION		"'<declare default function>'"
-%token DECLARE_DEFAULT_ORDER			"'<declare default order>'"
-%token DECLARE_FUNCTION						"'<declare function>'"
-%token DECLARE_NAMESPACE					"'<declare namespace>'"
-%token DECLARE_OPTION							"'<declare option>'"
-%token DECLARE_ORDERING						"'<declare ordering>'"
-%token DECLARE_UPDATING_FUNCTION	"'<declare updating function>'"
-%token DECLARE_SEQ_FUNCTION       "'<declare sequential function>'"
-%token EXIT_WITH                  "'<exit with>'"
-%token BREAK_LOOP                 "'<break loop>'"
-%token CONT_LOOP                  "'<continue loop>'"
-%token DECLARE_VARIABLE_DOLLAR		"'<declare var $>'"
+
+
+%token VARIABLE                   "'variable'"
 %token DEFAULT										"'default'"
-%token DEFAULT_ELEMENT						"'<default element>'"
 %token DESCENDANT_AXIS						"'descendant::'"
 %token DESCENDANT_OR_SELF_AXIS		"'descendant-or-self::'"
 %token DESCENDING									"'descending'"
 %token DIV												"'div'"
-%token DOCUMENT_LBRACE						"'<document {>'"
-%token DOCUMENT_NODE_LPAR					"'<document node (>'"
 %token DOLLAR											"'$'"
 %token DOT												"'.'"
 %token DOT_DOT										"'..'"
 %token DOUBLE_LBRACE							"'{{'"
 %token <dval> DOUBLE_LITERAL			"'DOUBLE'"
 %token DOUBLE_RBRACE							"'<double {>'"
-%token ELEMENT_LBRACE							"'<element {>'"
-%token ELEMENT_LPAR								"'<element (>'"
 %token ELSE												"'else'"
-%token EMPTY_GREATEST							"'<empty greatest>'"
-%token EMPTY_LEAST								"'<empty least>'"
+%token _EMPTY                     "'empty'"
+%token GREATEST                   "'greatest'"
+%token LEAST                      "'least'"
 %token EMPTY_TAG_END							"'/>'"
 %token ENCODING										"'encoding'"
 %token EQUALS											"'='"
 %token ESCAPE_APOS								"''''"
 %token ESCAPE_QUOTE								"'\"\"'"
-%token EVERY_DOLLAR								"'<every $>'"
+%token EVERY                      "'every'"
 %token EXCEPT											"'except'"
 %token EXTERNAL										"'external'"
 %token FOLLOWING_AXIS							"'following::'"
 %token FOLLOWING_SIBLING_AXIS			"'following-sibling::'"
 %token FOLLOWS										"'follows'"
-%token FOR_DOLLAR									"'<for $>'"
-%token GENERALCOMP								"'general comp'"
 %token GE													"'>='"
 %token GETS												"':='"
 %token GT													"'>'"
 %token HOOK												"'?'"
 %token IDIV												"'idiv'"
-%token IF_LPAR										"'<if (>'"
-%token IMPORT_MODULE							"'<import module>"	
-%token IMPORT_SCHEMA							"'<import schema>'"
-%token _IN_													"'in'"
+%token IN                         "'in'"
 %token INHERIT										"'inherit'"
-%token INSTANCE_OF								"'<instance of>'"
 %token <ival> INTEGER_LITERAL			"'INTEGER'"
 %token INTERSECT									"'intersect'"
 %token IS													"'is'"
-%token ITEM_TEST									"'item()'"
+%token ITEM                       "'item'"
 %token LBRACE											"'{'"
 %token LBRACK											"'['"
 %token LE													"'<='"
 %token LEADING_LONE_SLASH					"'[ / ]'"
-%token LET_DOLLAR									"'<let $>'"
-%token LET_SCORE_DOLLAR	  				"'<let score $>'"
 %token LPAR												"'('"
-%token LT													"'<'"
+%token LT_OR_START_TAG            "'<'"
 %token MINUS											"'-'"
 %token MOD												"'mod'"
-%token MODULE_NAMESPACE						"'<module namespace>'"
 %token NAMESPACE									"'namespace'"
 %token _NAN												"'nan'"
 %token NE													"'!='"
 %token NODECOMP										"'nodecomp'"
-%token NODE_LPAR									"'<node (>'"
 %token NOT_OPERATOR_KEYWORD				"'??'"
 %token NO_INHERIT									"'<no inherit>'"
 %token NO_PRESERVE								"'<no preserve>'"
-%token OCCURS_HOOK								"'occurs ?'"
-%token OCCURS_PLUS								"'occurs +'"
-%token OCCURS_STAR								"'occurs *'"
 %token OR													"'or'"
 %token ORDERED										"'ordered'"
-%token ORDERED_LBRACE							"'ordered {'"
-%token ORDER_BY										"'<order by>'"
-%token GROUP_BY                   "'<group by>'"
+%token ORDER                      "'order'"
+%token BY                         "'by'"
+%token GROUP                      "'group'"
 %token PARENT_AXIS								"'parent::'"
 %token PI_BEGIN										"'<?'"
 %token PI_END											"'?>'"
-%token PI_LBRACE									"'<pi {>'"
-%token PI_LPAR										"'<pi (>'"
-%token PI_TARGET									"'PI TARGET'"
 %token PLUS												"'+'"
 %token PRAGMA_BEGIN								"'PRAGMA BEGIN'"
 %token PRAGMA_END									"'PRAGMA END'"
@@ -298,7 +304,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token PRECEDING_AXIS							"'preceding::'"
 %token PRECEDING_SIBLING_AXIS			"'preceding-sibling::'"
 %token PRESERVE										"'preserve'"
-%token PROCESSING_INSTRUCTION			"'processing instruction'"
 %token QUOTE											"'\"'"
 %token RBRACE											"'}'"
 %token RBRACK											"']'"
@@ -306,27 +311,19 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token RPAR												"')'"
 %token SATISFIES									"'satisfies'"
 %token SCHEMA_ATTRIBUTE_LPAR			"'<schema attribute ('"
-%token SCHEMA_ELEMENT_LPAR				"'<schema element (>'"
 %token SELF_AXIS									"'self::'"
 %token SEMI												"';'"
 %token SLASH											"'/'"
 %token SLASH_SLASH								"'//'"
-%token SOME_DOLLAR								"'<some $>'"
-%token STABLE_ORDER_BY						"'<stable order by>'"
 %token STAR												"'*'"
-%token START_TAG_END							"'start tag end >'"
-%token START_TAG									"'start tag <'"
+%token START_TAG_END							"</ (start tag end)"
 %token STRIP											"'strip'"
-%token TAG_END										"'</'"
-%token TEXT_LBRACE								"'<text {>'"
-%token TEXT_LPAR									"'<text (>'"
+%token TAG_END										"> (tag end)"
 %token THEN												"'then'"
 %token TO													"'to'"
-%token TREAT_AS										"'<treat as>'"
-%token TYPESWITCH_LPAR						"'<typeswitch (>'"
+%token TREAT  										"'treat'"
 %token UNION											"'union'"
 %token UNORDERED									"'unordered'"
-%token UNORDERED_LBRACE						"'<unordered (>'"
 %token UNRECOGNIZED								"'unrecognized'"
 %token VAL_EQ											"'eq'"
 %token VAL_GE											"'ge'"
@@ -334,77 +331,73 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token VAL_LE											"'le'"
 %token VAL_LT											"'lt'"
 %token VAL_NE											"'ne'"
-%token VALIDATE_LBRACE						"'<validate {>'"
 %token VALUECOMP									"'VALUECOMP'"
 %token VBAR												"'|'"
-%token VOID_TEST									"'void()'"
+%token EMPTY_SEQUENCE             "'empty-sequence'"
 %token WHERE											"'where'"
 %token XML_COMMENT_BEGIN					"'<!--'"
 %token XML_COMMENT_END						"'-->'"
-%token XQUERY_VERSION							"'<XQuery Version>'"
+%token XQUERY                     "'xquery'"
+%token VERSION                    "'version'"
+%token END_PRAGMA                 "'#)'"
+%token START                      "'start'"
 
 
 /* update-related */
 /* -------------- */
 %token AFTER											"'after'"
 %token BEFORE											"'before'"
-%token DECLARE_REVALIDATION	      "'<declare revalidation>'"
-%token REVAL_STRICT								"'strict'"
-%token REVAL_LAX							  	"'lax'"
-%token REVAL_SKIP							  	"'skip'"
-%token DELETE_NODE                "'<delete node>'"           
-%token DELETE_NODES               "'<delete nodes>'"          
-%token INSERT_NODE                "'<insert node>'"           
-%token INSERT_NODES               "'<insert nodes>'"          
-%token RENAME                     "'<rename>'"                
-%token REPLACE                    "'<replace node>'"          
-%token REPLACE_VALUE_OF           "'<replace value of node>'" 
-%token FIRST_INTO                 "'<as first into>'"               
+%token REVALIDATION	              "'revalidation'"
+%token STRICT                     "'strict'"
+%token LAX                        "'lax'"
+%token SKIP                       "'skip'"
+%token DELETE                     "'delete'"
+%token NODE                       "'node'"
+%token INSERT                     "'insert'"
+%token NODES                      "'nodes'"
+%token RENAME                     "'rename'"
+%token REPLACE                    "'replace'"
+%token VALUE                      "'value'"
+%token OF                         "'of'"
+%token FIRST                      "'first'"
 %token INTO												"'into'"
-%token LAST_INTO							  	"'<as last into>'"
+%token LAST                       "'last'"
 %token MODIFY 										"'modify'"
-%token COPY_DOLLAR          			"'<copy $>'"
+%token COPY                       "'copy'"
 %token WITH												"'with'"
 
 /* try-catch-related */
 /* ----------------- */
-%token TRY                        "'<try>'"   
-%token CATCH_LPAR                 "'<catch (>'" 
+%token TRY                        "'try'"
+%token CATCH                      "'catch'"
 
 
 /* eval-related */
 /* ------------ */
-%token USING_DOLLAR               "'<using $>'"
-%token EVAL_LBRACE                "'<eval {>'"
+%token USING                      "'using'"
 
 /* full-text-related */
 /* ----------------- */
 %token ALL												"'all'"
-%token ALL_WORDS									"'<all words>'"
 %token ANY												"'any'"
-%token ANY_WORD										"'<any words>'"
-%token AT_END											"'<at end>'"
-%token AT_LEAST										"'<at least>'"
-%token AT_MOST										"'<at most>'"
-%token AT_START										"'<at start>'"
-%token CASE_INSENSITIVE						"'<case insensitive>'"
-%token CASE_SENSITIVE							"'<casesensitive>'"
-%token DECLARE_FTOPTION						"'<declare ftoption>'"
-%token DIACRITICS_INSENSITIVE			"'<diacritics insensitive>'"
-%token DIACRITICS_SENSITIVE				"'<diacritics sensitive>'"
+%token SENSITIVE                  "'casesensitive'"
+%token FT_OPTION                  "'ft-option'"
+%token DIACRITICS                 "'diacritics'"
+%token INSENSITIVE                "'insensitive'"
 %token DIFFERENT									"'different'"
 %token DISTANCE										"'distance'"
-%token ENTIRE_CONTENT							"'<entire content>'"
+%token ENTIRE                     "'entire'"
+%token END                        "'end'"
+%token CONTENT                    "'content'"
 %token EXACTLY										"'exactly'"
 %token FROM												"'from'"
 %token FTAND											"'&&'"
 %token FTCONTAINS 								"'ftcontains'"
-%token FTNOT											"'ftnot'"
+%token FTNOT                      "'not'"
 %token FTOR												"'||'"
 %token LANGUAGE 									"'language'"
 %token LEVELS											"'levels'"
 %token LOWERCASE									"'lowercase'"
-%token FTNOT_IN										"'<not in>'"
 %token OCCURS											"'occurs'"
 %token PARAGRAPH									"'paragraph'"
 %token PHRASE											"'phrase'"
@@ -417,21 +410,16 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token UPPERCASE									"'uppercase'"
 %token WEIGHT											"'weight'"
 %token WINDOW											"'window'"
-%token WITHOUT_CONTENT						"'<without content>'"
-%token WITHOUT_DIACRITICS					"'<without diacritics>'"
-%token WITHOUT_STEMMING						"'<without stemming>'"
-%token WITHOUT_STOP_WORDS					"'<without stop words>'"
-%token WITHOUT_THESAURUS					"'<without thesaurus>'"
-%token WITHOUT_WILDCARDS					"'<without wildcards>'"
-%token WITH_DEFAULT_STOP_WORDS 		"'<with default stop words>'"
-%token WITH_DIACRITICS						"'<with diacritics>'"
-%token WITH_STEMMING							"'<with stemming>'"
-%token WITH_STOP_WORDS 						"'<with stop words>'"
-%token WITH_THESAURUS							"'<with thesaurus>'"
-%token WITH_WILDCARDS							"'<with wildcards>'"
-%token WORDS											"'words'"
+%token WITHOUT                    "'without'"
+%token STEMMING                   "'stemming'"
+%token STOP                       "'stop'"
+%token WORDS                      "'words'"
+%token THESAURUS                  "'thesaurus'"
+%token WILDCARDS	         				"'wildcards'"
 
 
+
+    
 /* left-hand sides: syntax only */
 /* ---------------------------- */
 %type <node> AbbrevForwardStep
@@ -464,7 +452,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> ForwardAxis
 %type <node> ForwardStep
 %type <node> FunctionDecl
-%type <node> GeneralComp
 %type <node> Import
 %type <node> ItemType
 %type <node> KindTest
@@ -675,7 +662,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // TODO: FT stuff, update stuff
 // HACK to trigger rchandle release: rchandles are freed when refcount == 0
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 %destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 %destructor { delete $$; } FunctionSig;
 
@@ -820,14 +807,14 @@ Module :
 // [2] VersionDecl
 // ---------------
 VersionDecl :
-		XQUERY_VERSION  STRING_LITERAL  SEMI
+		XQUERY VERSION  STRING_LITERAL  SEMI
 		{
        std::string encoding = "utf-8";
-       $$ = new VersionDecl (LOC (@$), SYMTAB ($2), encoding);
+       $$ = new VersionDecl (LOC (@$), SYMTAB ($3), encoding);
 		}
-	|	XQUERY_VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
+	|	XQUERY VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
 		{
-       $$ = new VersionDecl (LOC (@$), SYMTAB ($2), SYMTAB ($4));
+       $$ = new VersionDecl (LOC (@$), SYMTAB ($3), SYMTAB ($5));
     }
 	;
 
@@ -866,11 +853,11 @@ LibraryModule :
 // [5] ModuleDecl
 // --------------
 ModuleDecl :
-		MODULE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
+		MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
 			$$ = new ModuleDecl(LOC (@$),
-								driver.symtab.get((off_t)$2), 
-								driver.symtab.get((off_t)$4));
+								driver.symtab.get((off_t)$3), 
+								driver.symtab.get((off_t)$5));
 		}
 	;
 
@@ -1046,11 +1033,11 @@ Import :
 // [10] NamespaceDecl
 // ------------------
 NamespaceDecl :
-		DECLARE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL
+		DECLARE NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 			$$ = new NamespaceDecl(LOC (@$),
-								driver.symtab.get((off_t)$2),
-								driver.symtab.get((off_t)$4));
+								driver.symtab.get((off_t)$3),
+								driver.symtab.get((off_t)$5));
 		}
 	;
 
@@ -1058,12 +1045,12 @@ NamespaceDecl :
 // [11] BoundarySpaceDecl
 // ----------------------
 BoundarySpaceDecl :
-		DECLARE_BOUNDARY_SPACE  PRESERVE
+		DECLARE BOUNDARY_SPACE  PRESERVE
 		{
 			$$ = new BoundarySpaceDecl(LOC (@$),
 								StaticContextConsts::preserve_space);
 		}
-	|	DECLARE_BOUNDARY_SPACE  STRIP
+	|	DECLARE BOUNDARY_SPACE  STRIP
 		{
 			$$ = new BoundarySpaceDecl(LOC (@$),
 								StaticContextConsts::strip_space);
@@ -1074,17 +1061,17 @@ BoundarySpaceDecl :
 // [12] DefaultNamespaceDecl
 // -------------------------
 DefaultNamespaceDecl :
-		DECLARE_DEFAULT_ELEMENT  NAMESPACE  URI_LITERAL
+		DECLARE DEFAULT ELEMENT  NAMESPACE  URI_LITERAL
 		{
 			$$ = new DefaultNamespaceDecl(LOC (@$),
 								ParseConstants::ns_element_default,
-								driver.symtab.get((off_t)$3));
+								driver.symtab.get((off_t)$5));
 		}
-	| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
+	| DECLARE DEFAULT FUNCTION  NAMESPACE  URI_LITERAL
 		{
 			$$ = new DefaultNamespaceDecl(LOC (@$),
 								ParseConstants::ns_function_default,
-								driver.symtab.get((off_t)$3));
+								driver.symtab.get((off_t)$5));
 		}
 	;
 
@@ -1092,11 +1079,11 @@ DefaultNamespaceDecl :
 // [13] OptionDecl
 // ---------------
 OptionDecl :
-		DECLARE_OPTION  QNAME  STRING_LITERAL
+		DECLARE OPTION  QNAME  STRING_LITERAL
 		{
 			$$ = new OptionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								driver.symtab.get((off_t)$3));
+								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
+								driver.symtab.get((off_t)$4));
 		}
 	;
 
@@ -1105,10 +1092,10 @@ OptionDecl :
 // [13a] FTOptionDecl
 // ------------------
 FTOptionDecl :
-		DECLARE_FTOPTION  FTMatchOption
+		DECLARE FT_OPTION  FTMatchOption
 		{
 			$$ = new FTOptionDecl(LOC (@$),
-								$2);
+								$3);
 		}
 	;
 
@@ -1116,12 +1103,12 @@ FTOptionDecl :
 // [14] OrderingModeDecl
 // ---------------------
 OrderingModeDecl :
-		DECLARE_ORDERING  ORDERED
+		DECLARE ORDERING  ORDERED
 		{
 			$$ = new OrderingModeDecl(LOC (@$),
 								StaticContextConsts::ordered);
 		}
-	| DECLARE_ORDERING  UNORDERED
+	| DECLARE ORDERING  UNORDERED
 		{
 			$$ = new OrderingModeDecl(LOC (@$),
 								StaticContextConsts::unordered);
@@ -1133,12 +1120,12 @@ OrderingModeDecl :
 // [15] EmptyOrderDecl
 // -------------------
 EmptyOrderDecl :
-		DECLARE_DEFAULT_ORDER  EMPTY_GREATEST
+		DECLARE DEFAULT ORDER _EMPTY GREATEST
 		{
 			$$ = new EmptyOrderDecl(LOC (@$),
 								StaticContextConsts::empty_greatest);
 		}
-	|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
+	|	DECLARE DEFAULT ORDER _EMPTY LEAST
 		{
 			$$ = new EmptyOrderDecl(LOC (@$),
 								StaticContextConsts::empty_least);
@@ -1149,25 +1136,25 @@ EmptyOrderDecl :
 // [16] CopyNamespacesDecl
 // -----------------------
 CopyNamespacesDecl :
-		DECLARE_COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
+		DECLARE COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
 		{
 			$$ = new CopyNamespacesDecl(LOC (@$),
 								StaticContextConsts::preserve_ns,
 								StaticContextConsts::inherit_ns);
 		}
-	| DECLARE_COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
+	| DECLARE COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
 		{
 			$$ = new CopyNamespacesDecl(LOC (@$),
 								StaticContextConsts::preserve_ns,
 								StaticContextConsts::no_inherit_ns);
 		}
-	| DECLARE_COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
+	| DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
 		{
 			$$ = new CopyNamespacesDecl(LOC (@$),
 								StaticContextConsts::no_preserve_ns,
 								StaticContextConsts::inherit_ns);
 		}
-	| DECLARE_COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
+	| DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
 		{
 			$$ = new CopyNamespacesDecl(LOC (@$),
 								StaticContextConsts::no_preserve_ns,
@@ -1186,10 +1173,10 @@ CopyNamespacesDecl :
 // [19] DefaultCollationDecl
 // -------------------------
 DefaultCollationDecl :
-		DECLARE_DEFAULT_COLLATION  URI_LITERAL
+		DECLARE DEFAULT COLLATION  URI_LITERAL
 		{
 			$$ = new DefaultCollationDecl(LOC (@$),
-								driver.symtab.get((off_t)$2));
+								driver.symtab.get((off_t)$4));
 		}
 	;
 
@@ -1197,10 +1184,10 @@ DefaultCollationDecl :
 // [20] BaseURIDecl
 // ----------------
 BaseURIDecl :
-		DECLARE_BASE_URI  URI_LITERAL
+		DECLARE BASE_URI  URI_LITERAL
 		{
 			$$ = new BaseURIDecl(LOC (@$),
-								driver.symtab.get((off_t)$2));
+								driver.symtab.get((off_t)$3));
 		}
 	;
 
@@ -1208,33 +1195,33 @@ BaseURIDecl :
 // [21] SchemaImport
 // -----------------
 SchemaImport :
-		IMPORT_SCHEMA  URI_LITERAL
+		IMPORT SCHEMA  URI_LITERAL
 		{
 			$$ = new SchemaImport(LOC (@$),
 								NULL,
-								driver.symtab.get((off_t)$2),
-								NULL);
-		}
-	| IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL
-		{
-			$$ = new SchemaImport(LOC (@$),
-								dynamic_cast<SchemaPrefix*>($2),
 								driver.symtab.get((off_t)$3),
 								NULL);
 		}
-	|	IMPORT_SCHEMA  URI_LITERAL  AT  URILiteralList
+	| IMPORT SCHEMA  SchemaPrefix  URI_LITERAL
+		{
+			$$ = new SchemaImport(LOC (@$),
+								dynamic_cast<SchemaPrefix*>($3),
+								driver.symtab.get((off_t)$4),
+								NULL);
+		}
+	|	IMPORT SCHEMA  URI_LITERAL  AT  URILiteralList
 		{
 			$$ = new SchemaImport(LOC (@$),
 								NULL,
-								driver.symtab.get((off_t)$2),
-								dynamic_cast<URILiteralList*>($4));
-		}
-	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
-		{
-			$$ = new SchemaImport(LOC (@$),
-								dynamic_cast<SchemaPrefix*>($2),
 								driver.symtab.get((off_t)$3),
 								dynamic_cast<URILiteralList*>($5));
+		}
+	|	IMPORT SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
+		{
+			$$ = new SchemaImport(LOC (@$),
+								dynamic_cast<SchemaPrefix*>($3),
+								driver.symtab.get((off_t)$4),
+								dynamic_cast<URILiteralList*>($6));
 		}
 	;
 
@@ -1267,7 +1254,7 @@ SchemaPrefix :
 		{
 			$$ = new SchemaPrefix(LOC (@$), driver.symtab.get((off_t)$2));
 		}
-	|	DEFAULT_ELEMENT  NAMESPACE
+	|	DEFAULT ELEMENT NAMESPACE
 		{
 			$$ = new SchemaPrefix(LOC (@$), true);
 		}
@@ -1277,31 +1264,31 @@ SchemaPrefix :
 // [23] ModuleImport
 // -----------------
 ModuleImport :
-		IMPORT_MODULE  URI_LITERAL 
-		{
-			$$ = new ModuleImport(LOC (@$),
-								driver.symtab.get((off_t)$2),
-								NULL);
-		}
-	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
+		IMPORT MODULE  URI_LITERAL
 		{
 			$$ = new ModuleImport(LOC (@$),
 								driver.symtab.get((off_t)$3),
-								driver.symtab.get((off_t)$5),
 								NULL);
 		}
-	|	IMPORT_MODULE  URI_LITERAL  AT  URILiteralList
+	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 			$$ = new ModuleImport(LOC (@$),
-								driver.symtab.get((off_t)$2),
-								dynamic_cast<URILiteralList*>($4));
+								driver.symtab.get((off_t)$4),
+								driver.symtab.get((off_t)$6),
+								NULL);
 		}
-	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
+	|	IMPORT MODULE  URI_LITERAL  AT  URILiteralList
 		{
 			$$ = new ModuleImport(LOC (@$),
 								driver.symtab.get((off_t)$3),
-								driver.symtab.get((off_t)$5),
-								dynamic_cast<URILiteralList*>($7));
+								dynamic_cast<URILiteralList*>($5));
+		}
+	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
+		{
+			$$ = new ModuleImport(LOC (@$),
+								driver.symtab.get((off_t)$4),
+								driver.symtab.get((off_t)$6),
+								dynamic_cast<URILiteralList*>($8));
 		}
 	;
 
@@ -1310,32 +1297,32 @@ ModuleImport :
 // [24] VarDecl
 // ------------
 VarDecl :
-		DECLARE_VARIABLE_DOLLAR  VARNAME  GETS  ExprSingle
+    DECLARE  VARIABLE  DOLLAR  QNAME  GETS  ExprSingle
 		{
 			$$ = new VarDecl(LOC (@$),
-								driver.symtab.get((off_t)$2),
+								driver.symtab.get((off_t)$4),
 								NULL,
-								$4);
+								$6);
 		}
-	|	DECLARE_VARIABLE_DOLLAR  VARNAME  EXTERNAL
+	|	DECLARE  VARIABLE  DOLLAR  QNAME  EXTERNAL
 		{
 			$$ = new VarDecl(LOC (@$),
-								driver.symtab.get((off_t)$2),
+								driver.symtab.get((off_t)$4),
 								NULL,
 								NULL);
 		}
-	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  GETS  ExprSingle
+	|	DECLARE  VARIABLE  DOLLAR  QNAME  TypeDeclaration  GETS  ExprSingle
 		{
 			$$ = new VarDecl(LOC (@$),
-								driver.symtab.get((off_t)$2),
-								dynamic_cast<TypeDeclaration*>($3),
-								$5);
+								driver.symtab.get((off_t)$4),
+								dynamic_cast<TypeDeclaration*>($5),
+								$7);
 		}
-	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  EXTERNAL
+	|	DECLARE  VARIABLE  DOLLAR  QNAME  TypeDeclaration  EXTERNAL
 		{
 			$$ = new VarDecl(LOC (@$),
-								driver.symtab.get((off_t)$2),
-								dynamic_cast<TypeDeclaration*>($3),
+								driver.symtab.get((off_t)$4),
+								dynamic_cast<TypeDeclaration*>($5),
 								NULL);
 		}
 	;
@@ -1344,12 +1331,12 @@ VarDecl :
 // [25] ConstructionDecl
 // ---------------------
 ConstructionDecl :
-		DECLARE_CONSTRUCTION  PRESERVE
+		DECLARE  CONSTRUCTION  PRESERVE
 		{
 			$$ = new ConstructionDecl(LOC (@$),
 								StaticContextConsts::cons_preserve);
 		}
-	|	DECLARE_CONSTRUCTION  STRIP
+	|	DECLARE  CONSTRUCTION  STRIP
 		{
 			$$ = new ConstructionDecl(LOC (@$),
 								StaticContextConsts::cons_strip);
@@ -1361,11 +1348,11 @@ ConstructionDecl :
 // -----------------
 
 FunctionSig :
-    LPAR RPAR
+    LPAR  RPAR
     {
       $$ = new FunctionSig (NULL);
     }
-  | LPAR ParamList RPAR
+  | LPAR  ParamList  RPAR
     {
       $$ = new FunctionSig (dynamic_cast<ParamList *> ($2));
     }
@@ -1402,74 +1389,74 @@ BlockBody :
   ;
 
 ExitExpr :
-    EXIT_WITH ExprSingle
+    EXIT WITH ExprSingle
     {
-      $$ = new ExitExpr (LOC (@$), $2);
+      $$ = new ExitExpr (LOC (@$), $3);
     }
   ;
 
 WhileExpr :
-    WHILE_LPAR ExprSingle RPAR Block
+    WHILE LPAR ExprSingle RPAR Block
     {
-      $$ = new WhileExpr (LOC (@$), $2, dynamic_cast<BlockBody *> ($4));
+      $$ = new WhileExpr (LOC (@$), $3, dynamic_cast<BlockBody *> ($5));
     }
   ;
 
 FlowCtlStatement :
-    BREAK_LOOP
+    BREAK LOOP
     {
       $$ = new FlowCtlStatement (LOC (@$), FlowCtlStatement::BREAK);
     }
-  | CONT_LOOP
+  | CONT LOOP
     {
       $$ = new FlowCtlStatement (LOC (@$), FlowCtlStatement::CONTINUE);
     }
   ;
 
 FunctionDecl :
-		DECLARE_FUNCTION  QNAME FunctionSig EXTERNAL
+		DECLARE FUNCTION  QNAME FunctionSig EXTERNAL
 		{
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-                &* $3->param, &* $3->ret, NULL,
+								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
+                &* $4->param, &* $4->ret, NULL,
 								ParseConstants::fn_extern);
-      delete $3;
+      delete $4;
 		}
-	|	DECLARE_FUNCTION  QNAME FunctionSig BracedExpr
+	|	DECLARE FUNCTION  QNAME FunctionSig BracedExpr
 		{
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-                &* $3->param, &* $3->ret, 
-								$4,
+								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
+                &* $4->param, &* $4->ret,
+								$5,
 								ParseConstants::fn_read);
-      delete $3;
+      delete $4;
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME FunctionSig EXTERNAL
+	|	DECLARE UPDATING FUNCTION  QNAME FunctionSig EXTERNAL
 		{
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								&* $3->param, &* $3->ret, 
+								new QName(LOC (@$),driver.symtab.get((off_t)$4)),
+								&* $5->param, &* $5->ret,
 								NULL,
 								ParseConstants::fn_extern_update);
-      delete $3;
+      delete $5;
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME FunctionSig BracedExpr
+	|	DECLARE UPDATING FUNCTION  QNAME FunctionSig BracedExpr
 		{
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-                &* $3->param, &* $3->ret, 
-								$4,
+								new QName(LOC (@$),driver.symtab.get((off_t)$4)),
+                &* $5->param, &* $5->ret,
+								$6,
 								ParseConstants::fn_update);
-      delete $3;
+      delete $5;
 		}
-  | DECLARE_SEQ_FUNCTION QNAME FunctionSig Block
+  | DECLARE SEQUENTIAL FUNCTION QNAME FunctionSig Block
 		{
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-                &* $3->param, &* $3->ret, 
-								$4,
+								new QName(LOC (@$),driver.symtab.get((off_t)$4)),
+                &* $5->param, &* $5->ret,
+								$6,
 								ParseConstants::fn_sequential);
-      delete $3;
+      delete $5;
 		}
 	;
 
@@ -1499,13 +1486,13 @@ ParamList :
 // [28] Param
 // ----------
 Param :
-		DOLLAR  VARNAME
+		DOLLAR  QNAME
 		{
 			$$ = new Param(LOC (@$),
 								driver.symtab.get((off_t)$2),
 								NULL);
 		}
-	|	DOLLAR  VARNAME  TypeDeclaration
+	|	DOLLAR  QNAME  TypeDeclaration
 		{
 			$$ = new Param(LOC (@$),
 								driver.symtab.get((off_t)$2),
@@ -1755,10 +1742,10 @@ ForLetClause :
 // [34] ForClause
 // --------------
 ForClause :
-		FOR_DOLLAR  VarInDeclList
+		FOR DOLLAR  VarInDeclList
 		{
 			$$ = new ForClause(LOC (@$),
-								dynamic_cast<VarInDeclList*>($2));
+								dynamic_cast<VarInDeclList*>($3));
 		}
 	;
 
@@ -1786,14 +1773,14 @@ VarInDeclList :
 // [34b] VarInDecl
 // ---------------
 VarInDecl :
-		VARNAME  _IN_  ExprSingle
+		QNAME  IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
 								NULL,NULL,NULL,
 								$3);
 		}
-	|	VARNAME  TypeDeclaration  _IN_  ExprSingle
+	|	QNAME  TypeDeclaration  IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1801,7 +1788,7 @@ VarInDecl :
 								NULL,NULL,
 								$4);
 		}
-	|	VARNAME  PositionalVar  _IN_  ExprSingle
+	|	QNAME  PositionalVar  IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1810,7 +1797,7 @@ VarInDecl :
 								NULL,
 								$4);
 		}
-	|	VARNAME  TypeDeclaration  PositionalVar  _IN_  ExprSingle
+	|	QNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1820,7 +1807,7 @@ VarInDecl :
 								$5);
 		}
 	/* full-text extensions */
-	| VARNAME  FTScoreVar  _IN_  ExprSingle
+	| QNAME  FTScoreVar  IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1828,7 +1815,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
 		}
-	| VARNAME  TypeDeclaration  FTScoreVar  _IN_  ExprSingle
+	| QNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1837,7 +1824,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
 		}
-	| VARNAME  PositionalVar  FTScoreVar  _IN_  ExprSingle
+	| QNAME  PositionalVar  FTScoreVar  IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1846,7 +1833,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
 		}
-	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN_  ExprSingle
+	| QNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1861,7 +1848,7 @@ VarInDecl :
 // [35] PositionalVar
 // ------------------
 PositionalVar :
-		AT  DOLLAR  VARNAME
+		AT  DOLLAR  QNAME
 		{
 			$$ = new PositionalVar(LOC (@$),
 								driver.symtab.get((off_t)$3));
@@ -1873,7 +1860,7 @@ PositionalVar :
 // [35a] FTScoreVar
 // ----------------
 FTScoreVar :
-		SCORE  DOLLAR  VARNAME
+		SCORE  DOLLAR  QNAME
 		{
 			$$ = new FTScoreVar(LOC (@$),
 								driver.symtab.get((off_t)$3));
@@ -1884,10 +1871,10 @@ FTScoreVar :
 // [36] LetClause
 // --------------
 LetClause :
-		LET_DOLLAR VarGetsDeclList
+		LET DOLLAR VarGetsDeclList
 		{
 			$$ = new LetClause(LOC (@$),
-								dynamic_cast<VarGetsDeclList*>($2));
+								dynamic_cast<VarGetsDeclList*>($3));
 			
 		}
 	;
@@ -1934,7 +1921,7 @@ EvalVarDeclList :
 // [36b] VarGetsDecl
 // ------------------
 VarGetsDecl :
-		VARNAME  GETS  ExprSingle
+		QNAME  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1942,7 +1929,7 @@ VarGetsDecl :
 								NULL,
 								$3);
 		}
-	|	VARNAME  TypeDeclaration  GETS  ExprSingle
+	|	QNAME  TypeDeclaration  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1951,7 +1938,7 @@ VarGetsDecl :
 								$4);
 		}
 	/* full-text extensions */
-	| VARNAME  FTScoreVar  GETS  ExprSingle
+	| QNAME  FTScoreVar  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1959,7 +1946,7 @@ VarGetsDecl :
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
 		}
-	| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
+	| QNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1971,7 +1958,7 @@ VarGetsDecl :
 
 
 EvalVarDecl :
-    VARNAME
+    QNAME
     {
       std::string name = driver.symtab.get ((off_t)$1);
       $$ = new VarGetsDecl(LOC (@$),
@@ -1994,33 +1981,33 @@ WhereClause :
 	;
 
 GroupByClause :
-    GROUP_BY GroupSpecList
+    GROUP BY GroupSpecList
     {
       $$ = new GroupByClause(LOC(@$),
-                 dynamic_cast<GroupSpecList*>($2),
+                 dynamic_cast<GroupSpecList*>($3),
                  NULL,
                  NULL);
     }
-  | GROUP_BY GroupSpecList LetClauseList
+  | GROUP BY GroupSpecList LetClauseList
     {
       $$ = new GroupByClause(LOC(@$),
-                 dynamic_cast<GroupSpecList*>($2),
-                 dynamic_cast<LetClauseList*>($3),
+                 dynamic_cast<GroupSpecList*>($3),
+                 dynamic_cast<LetClauseList*>($4),
                  NULL);
     }
-  | GROUP_BY GroupSpecList WhereClause
+  | GROUP BY GroupSpecList WhereClause
     {
       $$ = new GroupByClause(LOC(@$),
-                 dynamic_cast<GroupSpecList*>($2),
+                 dynamic_cast<GroupSpecList*>($3),
                  NULL,
-                 dynamic_cast<WhereClause*>($3));
-    }
-  | GROUP_BY GroupSpecList LetClauseList WhereClause
-    {
-      $$ = new GroupByClause(LOC(@$),
-                 dynamic_cast<GroupSpecList*>($2),
-                 dynamic_cast<LetClauseList*>($3),
                  dynamic_cast<WhereClause*>($4));
+    }
+  | GROUP BY GroupSpecList LetClauseList WhereClause
+    {
+      $$ = new GroupByClause(LOC(@$),
+                 dynamic_cast<GroupSpecList*>($3),
+                 dynamic_cast<LetClauseList*>($4),
+                 dynamic_cast<WhereClause*>($5));
     }
   ;
 
@@ -2042,13 +2029,13 @@ GroupSpecList :
   ;
 
 GroupSpec :
-    DOLLAR VARNAME
+    DOLLAR QNAME
     {
       $$ = new GroupSpec(LOC(@$),
                  driver.symtab.get((off_t)$2),
                  NULL);
     }
-  | DOLLAR VARNAME GroupCollationSpec
+  | DOLLAR QNAME GroupCollationSpec
     {
       $$ = new GroupSpec(LOC(@$), 
                  driver.symtab.get((off_t)$2), 
@@ -2083,15 +2070,15 @@ LetClauseList :
 // [38] OrderByClause
 // ------------------
 OrderByClause :
-		ORDER_BY  OrderSpecList
+		ORDER BY  OrderSpecList
 		{
 			$$ = new OrderByClause(LOC (@$),
-								dynamic_cast<OrderSpecList*>($2));
+								dynamic_cast<OrderSpecList*>($3));
 		}
-	|	STABLE_ORDER_BY  OrderSpecList
+	|	STABLE ORDER BY  OrderSpecList
 		{
 			$$ = new OrderByClause(LOC (@$),
-								dynamic_cast<OrderSpecList*>($2),
+								dynamic_cast<OrderSpecList*>($4),
 								true);
 		}
 	;
@@ -2207,12 +2194,12 @@ OrderDirSpec :
 // [41b] OrderEmptySpec
 // --------------------
 OrderEmptySpec:
-		EMPTY_GREATEST
+		_EMPTY GREATEST
 		{
 			$$ = new OrderEmptySpec(LOC (@$),
 								StaticContextConsts::empty_greatest);
 		}
-	|	EMPTY_LEAST
+	|	_EMPTY LEAST
 		{
 			$$ = new OrderEmptySpec(LOC (@$),
 								StaticContextConsts::empty_least);
@@ -2234,19 +2221,19 @@ OrderCollationSpec :
 // [42] QuantifiedExpr 	   
 // -------------------
 QuantifiedExpr :
-		SOME_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
+		SOME DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
 			$$ = new QuantifiedExpr(LOC (@$),
 								ParseConstants::quant_some,
-								dynamic_cast<QVarInDeclList*>($2),
-								$4);
+								dynamic_cast<QVarInDeclList*>($3),
+								$5);
 		}
-	|	EVERY_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
+	|	EVERY DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
 			$$ = new QuantifiedExpr(LOC (@$),
 								ParseConstants::quant_every,
-								dynamic_cast<QVarInDeclList*>($2),
-								$4);
+								dynamic_cast<QVarInDeclList*>($3),
+								$5);
 		}
 	;
 
@@ -2273,13 +2260,13 @@ QVarInDeclList :
 // [42b] QVarInDecl
 // ----------------
 QVarInDecl :
-		VARNAME  _IN_  ExprSingle 
+		QNAME  IN  ExprSingle
 		{
 			$$ = new QVarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
 								$3);
 		}
-	|	VARNAME  TypeDeclaration  _IN_  ExprSingle 
+	|	QNAME  TypeDeclaration  IN  ExprSingle
 		{
 			$$ = new QVarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -2292,20 +2279,20 @@ QVarInDecl :
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr :
-		TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
+		TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
 		{
 			$$ = new TypeswitchExpr(LOC (@$),
-								$2,
-								dynamic_cast<CaseClauseList*>($4),
-								$7);
+								$3,
+								dynamic_cast<CaseClauseList*>($5),
+								$8);
 		}
-	|	TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  DOLLAR  VARNAME  RETURN  ExprSingle
+	|	TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  DOLLAR  QNAME  RETURN  ExprSingle
 		{
 			$$ = new TypeswitchExpr(LOC (@$),
-								$2,
-								dynamic_cast<CaseClauseList*>($4),
-								driver.symtab.get((off_t)$7),
-								$9);
+								$3,
+								dynamic_cast<CaseClauseList*>($5),
+								driver.symtab.get((off_t)$8),
+								$10);
 		}
 	;
 
@@ -2337,7 +2324,7 @@ CaseClause :
 								dynamic_cast<SequenceType*>($2),
 								$4);
 		}
-	|	CASE  DOLLAR  VARNAME  AS  SequenceType  RETURN  ExprSingle
+	|	CASE  DOLLAR  QNAME  AS  SequenceType  RETURN  ExprSingle
 		{
 			$$ = new CaseClause(LOC (@$),
 								driver.symtab.get((off_t)$3),
@@ -2350,10 +2337,10 @@ CaseClause :
 // [45] IfExpr
 // -----------
 IfExpr :
-		IF_LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
+		IF LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
 		{
 			$$ = new IfExpr(LOC (@$),
-								$2, $5, $7);
+								$3, $6, $8);
 		}
 	;
 
@@ -2403,7 +2390,7 @@ ComparisonExpr :
 		{
 			$$ = $1;
 		}
-	| FTContainsExpr  ValueComp  FTContainsExpr
+	| FTContainsExpr ValueComp FTContainsExpr
 		{
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 			$$ = new ComparisonExpr(LOC (@$),
@@ -2411,22 +2398,62 @@ ComparisonExpr :
 								$1,
 								$3);
 		}
-	| FTContainsExpr  GeneralComp  FTContainsExpr
+  | FTContainsExpr NodeComp FTContainsExpr
+    {
+      /*  ::=  "is" | "<<" | ">>" */
+      $$ = new ComparisonExpr(LOC (@$),
+                dynamic_cast<NodeComp*>($2),
+                $1,
+                $3);
+    }  
+	| FTContainsExpr EQUALS FTContainsExpr
 		{
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 			$$ = new ComparisonExpr(LOC (@$),
-								dynamic_cast<GeneralComp*>($2),
+								new GeneralComp(LOC (@$), ParseConstants::op_eq),
 								$1,
 								$3);
 		}
-	| FTContainsExpr  NodeComp  FTContainsExpr
-		{
-			/*  ::=  "is" | "<<" | ">>" */
-			$$ = new ComparisonExpr(LOC (@$),
-								dynamic_cast<NodeComp*>($2),
-								$1,
-								$3);
-		}
+  | FTContainsExpr NE FTContainsExpr
+    {
+      /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
+      $$ = new ComparisonExpr(LOC (@$),
+                new GeneralComp(LOC (@$), ParseConstants::op_ne),
+                $1,
+                $3);
+    }  
+  | FTContainsExpr LT_OR_START_TAG { /* this call is needed */  driver.lexer->interpretAsLessThan(); } FTContainsExpr
+    {
+      /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
+      $$ = new ComparisonExpr(LOC (@$),
+                new GeneralComp(LOC (@$), ParseConstants::op_lt),
+                $1,
+                $4);
+    }
+  | FTContainsExpr LE FTContainsExpr
+    {
+      /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
+      $$ = new ComparisonExpr(LOC (@$),
+                new GeneralComp(LOC (@$), ParseConstants::op_le),
+                $1,
+                $3);
+    }
+  | FTContainsExpr GT FTContainsExpr
+    {
+      /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
+      $$ = new ComparisonExpr(LOC (@$),
+                new GeneralComp(LOC (@$), ParseConstants::op_gt),
+                $1,
+                $3);
+    }
+  | FTContainsExpr GE FTContainsExpr
+    {
+      /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
+      $$ = new ComparisonExpr(LOC (@$),
+                new GeneralComp(LOC (@$), ParseConstants::op_ge),
+                $1,
+                $3);
+    }  
 	;
 
 
@@ -2558,11 +2585,11 @@ InstanceofExpr :
 		{
 			$$ = $1;
 		}
-	|	TreatExpr  INSTANCE_OF  SequenceType
+	|	TreatExpr  INSTANCE OF  SequenceType
 		{
 			$$ = new InstanceofExpr(LOC (@$),
 								$1,
-								dynamic_cast<SequenceType*>($3));
+								dynamic_cast<SequenceType*>($4));
 		}
 	;
 
@@ -2574,11 +2601,11 @@ TreatExpr :
 		{
 			$$ = $1;
 		}
-	|	CastableExpr  TREAT_AS  SequenceType
+	|	CastableExpr  TREAT AS  SequenceType
 		{
 			$$ = new TreatExpr(LOC (@$),
 								$1,
-								dynamic_cast<SequenceType*>($3));
+								dynamic_cast<SequenceType*>($4));
 		}
 	;
 
@@ -2590,11 +2617,11 @@ CastableExpr :
 		{
 			$$ = $1;
 		}
-	|	CastExpr  CASTABLE_AS  SingleType
+	|	CastExpr  CASTABLE AS  SingleType
 		{
 			$$ = new CastableExpr(LOC (@$),
 								$1,
-								dynamic_cast<SingleType*>($3));
+								dynamic_cast<SingleType*>($4));
 		}
 	;
 
@@ -2606,11 +2633,11 @@ CastExpr :
 		{
 			$$ = $1;
 		}
-	|	UnaryExpr  CAST_AS  SingleType
+	|	UnaryExpr  CAST AS  SingleType
 		{
 			$$ = new CastExpr(LOC (@$),
 								$1,
-								dynamic_cast<SingleType*>($3));
+								dynamic_cast<SingleType*>($4));
 		}
 	;
 
@@ -2673,37 +2700,6 @@ ValueExpr :
 	;
 
 
-
-// [60] GeneralComp
-// ----------------
-GeneralComp :
-		EQUALS
-		{
-			$$ = new GeneralComp(LOC (@$), ParseConstants::op_eq);
-		}
-	| NE
-		{
-			$$ = new GeneralComp(LOC (@$), ParseConstants::op_ne);
-		}
-	| LT
-		{
-			$$ = new GeneralComp(LOC (@$), ParseConstants::op_lt);
-		}
-	| LE
-		{
-			$$ = new GeneralComp(LOC (@$), ParseConstants::op_le);
-		}
-	| GT
-		{
-			$$ = new GeneralComp(LOC (@$), ParseConstants::op_gt);
-		}
-	| GE
-		{
-			$$ = new GeneralComp(LOC (@$), ParseConstants::op_ge);
-		}
-	;
-
-
 // [61] ValueComp
 // --------------
 ValueComp :
@@ -2751,21 +2747,32 @@ NodeComp :
 		}
 	;
 
-
-
+    
 // [63] ValidateExpr
 // -----------------
 ValidateExpr :
-		VALIDATE_LBRACE  Expr  RBRACE
+		VALIDATE LBRACE  Expr  RBRACE
 		{
-			$$ = new ValidateExpr(LOC (@$), "strict", $2);
+			$$ = new ValidateExpr(LOC (@$), "strict", $3);
 		}
-	|	VALIDATE_MODE  LBRACE  Expr  RBRACE
+	|	VALIDATE STRICT  LBRACE  Expr  RBRACE
 		{
 			$$ = new ValidateExpr(LOC (@$),
-								driver.symtab.get((off_t)$1),
-								$3);
+                "strict",
+								$4);
 		}
+  | VALIDATE LAX  LBRACE  Expr  RBRACE
+    {
+      $$ = new ValidateExpr(LOC (@$),
+                "lax",
+                $4);
+    }
+  | VALIDATE SKIP  LBRACE  Expr  RBRACE
+    {
+      $$ = new ValidateExpr(LOC (@$),
+                "skip",
+                $4);
+    }
 	;
 
 
@@ -2810,17 +2817,18 @@ PragmaList :
 // [65] Pragma
 // -----------
 Pragma :
-		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL_AND_END
+		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL_AND_END_PRAGMA
 		{
 			$$ = new Pragma(LOC (@$),
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								driver.symtab.get((off_t)$3));
 
-		} | PRAGMA_BEGIN QNAME_AND_END_PRAGMA {
+		}
+  | PRAGMA_BEGIN QNAME_SVAL_AND_END_PRAGMA {
 			$$ = new Pragma(LOC (@$),
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								"");      
-    }
+    } 
 	;	/* ws: explicit */
 
 
@@ -3242,7 +3250,7 @@ NumericLiteral :
 // [86] VarRef
 // -----------
 VarRef :
-		DOLLAR  VARNAME
+		DOLLAR  QNAME
 		{
 			$$ = new VarRef(LOC (@$), driver.symtab.get((off_t)$2));
 		}
@@ -3277,10 +3285,10 @@ ContextItemExpr :
 // [89] OrderedExpr
 // ----------------
 OrderedExpr :
-		ORDERED_LBRACE  Expr  RBRACE
+		ORDERED LBRACE  Expr  RBRACE
 		{
 			$$ = new OrderedExpr(LOC (@$),
-								$2);
+								$3);
 		}
 	;
 
@@ -3288,10 +3296,10 @@ OrderedExpr :
 // [90] UnorderedExpr
 // ------------------
 UnorderedExpr :
-		UNORDERED_LBRACE  Expr  RBRACE
+		UNORDERED LBRACE  Expr  RBRACE
 		{
 			$$ = new UnorderedExpr(LOC (@$),
-								$2);
+								$3);
 		}
 	;
 
@@ -3412,7 +3420,7 @@ DirectConstructor :
 // [94] DirElemConstructor
 // -----------------------
 DirElemConstructor :
-		START_TAG  QNAME  EMPTY_TAG_END /* ws: explicitXQ */
+    LT_OR_START_TAG  QNAME  OptionalBlank  EMPTY_TAG_END /* ws: explicitXQ */
 		{
 			$$ = new DirElemConstructor(LOC (@$),
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
@@ -3420,7 +3428,7 @@ DirElemConstructor :
 								NULL,
 								NULL);
 		}
-	| START_TAG  QNAME  DirAttributeList EMPTY_TAG_END /* ws: explicitXQ */
+  | LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  EMPTY_TAG_END /* ws: explicitXQ */
 		{
 			$$ = new DirElemConstructor(LOC (@$),
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
@@ -3428,37 +3436,37 @@ DirElemConstructor :
 								dynamic_cast<DirAttributeList*>($3), 
 								NULL);
 		}
-	| START_TAG  QNAME  TAG_END  START_TAG_END  QNAME  TAG_END
-		{
-			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								new QName(LOC (@$),driver.symtab.get((off_t)$5)),
-								NULL,
-								NULL);
-		}
-	|	START_TAG  QNAME  TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
+  | LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  START_TAG_END  QNAME OptionalBlank TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								new QName(LOC (@$),driver.symtab.get((off_t)$6)),
 								NULL,
-								dynamic_cast<DirElemContentList*>($4));
-		}
-	| START_TAG  QNAME  DirAttributeList TAG_END  START_TAG_END  QNAME TAG_END
-		{
-			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								new QName(LOC (@$),driver.symtab.get((off_t)$6)),
-								dynamic_cast<DirAttributeList*>($3),
 								NULL);
 		}
-	|	START_TAG  QNAME  DirAttributeList TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
+  |	LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								new QName(LOC (@$),driver.symtab.get((off_t)$7)),
-								dynamic_cast<DirAttributeList*>($3), 
+								NULL,
 								dynamic_cast<DirElemContentList*>($5));
+		}
+  | LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  START_TAG_END  QNAME  OptionalBlank  TAG_END
+		{
+			$$ = new DirElemConstructor(LOC (@$),
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),driver.symtab.get((off_t)$7)),
+								dynamic_cast<DirAttributeList*>($3),
+								NULL);
+		}
+    |	LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
+		{
+			$$ = new DirElemConstructor(LOC (@$),
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),driver.symtab.get((off_t)$8)),
+								dynamic_cast<DirAttributeList*>($3), 
+								dynamic_cast<DirElemContentList*>($6));
 		}
 			/* ws: explicitXQ */
 	;
@@ -3501,17 +3509,21 @@ DirAttributeList :
 		}
 	;
 
-
 // [95a] DirAttr
 // -------------
 DirAttr :
-		QNAME  EQUALS  DirAttributeValue 	/* ws: explicitXQ */
+    BLANK  QNAME  OptionalBlank  EQUALS  OptionalBlank  DirAttributeValue 	/* ws: explicitXQ */
 		{
 			$$ = new DirAttr(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)),
-								dynamic_cast<DirAttributeValue*>($3));
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								dynamic_cast<DirAttributeValue*>($6));
 		}
 	;
+
+// OptionaBlank used in the DirElemConstr
+OptionalBlank :
+    /* nothing */
+    | BLANK;
 
 
 // [96] DirAttributeValue
@@ -3797,10 +3809,10 @@ ComputedConstructor :
 // [108] CompDocConstructor
 // ------------------------
 CompDocConstructor :
-		DOCUMENT_LBRACE  Expr  RBRACE
+		DOCUMENT LBRACE  Expr  RBRACE
 		{
 			$$ = new CompDocConstructor(LOC (@$),
-								$2);
+								$3);
 		}
 	;
 
@@ -3808,27 +3820,27 @@ CompDocConstructor :
 // [109] CompElemConstructor
 // -------------------------
 CompElemConstructor :
-		ELEMENT_QNAME_LBRACE  RBRACE
+		ELEMENT QNAME LBRACE  RBRACE
 		{
 			$$ = new CompElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)),
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								NULL);
 		}
-	|	ELEMENT_QNAME_LBRACE  Expr  RBRACE
+	|	ELEMENT QNAME LBRACE  Expr  RBRACE
 		{
 			$$ = new CompElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)),
-								$2);
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								$4);
 		}
-	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
+	|	ELEMENT LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 			$$ = new CompElemConstructor(LOC (@$),
-								$2, NULL);
+								$3, NULL);
 		}
-	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
+	|	ELEMENT LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 			$$ = new CompElemConstructor(LOC (@$),
-								$2, $5);
+								$3, $6);
 		}
 	;
 
@@ -3847,27 +3859,27 @@ ContentExpr :
 // [111] CompAttrConstructor
 // -------------------------
 CompAttrConstructor :
-		ATTRIBUTE_QNAME_LBRACE  RBRACE
+		ATTRIBUTE QNAME LBRACE  RBRACE
 		{
 			$$ = new CompAttrConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)),
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								NULL);
 		}
-	|	ATTRIBUTE_QNAME_LBRACE  Expr  RBRACE
+	|	ATTRIBUTE QNAME LBRACE  Expr  RBRACE
 		{
 			$$ = new CompAttrConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)),
-								$2);
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								$4);
 		}
-	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
+	|	ATTRIBUTE LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 			$$ = new CompAttrConstructor(LOC (@$),
-								$2, NULL);
+								$3, NULL);
 		}
-	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
+	|	ATTRIBUTE LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 			$$ = new CompAttrConstructor(LOC (@$),
-								$2, $5);
+								$3, $6);
 		}
 	;
 
@@ -3875,10 +3887,10 @@ CompAttrConstructor :
 // [112] CompTextConstructor
 // -------------------------
 CompTextConstructor :
-		TEXT_LBRACE  Expr  RBRACE
+		TEXT LBRACE  Expr  RBRACE
 		{
 			$$ = new CompTextConstructor(LOC (@$),
-								dynamic_cast<Expr*>($2));
+								dynamic_cast<Expr*>($3));
 		}
 	;
 
@@ -3886,10 +3898,10 @@ CompTextConstructor :
 // [113] CompCommentConstructor
 // ----------------------------
 CompCommentConstructor :
-		COMMENT_LBRACE  Expr  RBRACE
+		COMMENT LBRACE  Expr  RBRACE
 		{
 			$$ = new CompCommentConstructor(LOC (@$),
-								dynamic_cast<Expr*>($2));
+								dynamic_cast<Expr*>($3));
 		}
 	;
 
@@ -3954,7 +3966,8 @@ TypeDeclaration :
 // [117] SequenceType
 // ------------------
 SequenceType :
-		ItemType  %prec SEQUENCE_TYPE_REDUCE
+		// ItemType  %prec SEQUENCE_TYPE_REDUCE
+    ItemType  
 		{
 			$$ = new SequenceType(LOC (@$),
 								$1,
@@ -3966,7 +3979,7 @@ SequenceType :
 								$1,
 								dynamic_cast<OccurrenceIndicator*>($2));
 		}
-	|	VOID_TEST
+  |	EMPTY_SEQUENCE LPAR RPAR
 		{
 			$$ = new SequenceType(LOC (@$), NULL, NULL);
 		}
@@ -4003,17 +4016,17 @@ SequenceType :
 |	operator, which means this is not a legal expression. 
 |_________________________________________________________________________*/
 OccurrenceIndicator :
-		OCCURS_HOOK
+		HOOK
 		{
 			$$ = new OccurrenceIndicator(LOC (@$),
 								ParseConstants::occurs_optionally);
 		}
-	|	OCCURS_STAR
+	|	STAR
 		{
 			$$ = new OccurrenceIndicator(LOC (@$),
 								ParseConstants::occurs_zero_or_more);
 		}
-	|	OCCURS_PLUS 	/* gn: occurrence-indicatorsXQ */
+	|	PLUS 	/* gn: occurrence-indicatorsXQ */
 		{
 			$$ = new OccurrenceIndicator(LOC (@$),
 								ParseConstants::occurs_one_or_more);
@@ -4032,7 +4045,7 @@ ItemType :
 		{
 			$$ = $1;
 		}
-	|	ITEM_TEST
+	|	ITEM LPAR RPAR
 		{
 			$$ = new ItemType(LOC (@$),true);
 		}
@@ -4095,7 +4108,7 @@ KindTest :
 // [122] AnyKindTest
 // -----------------
 AnyKindTest :
-		NODE_LPAR  RPAR
+		NODE LPAR  RPAR
 		{
 			$$ = new AnyKindTest(LOC (@$));
 		}
@@ -4105,19 +4118,19 @@ AnyKindTest :
 // [123] DocumentTest
 // ------------------
 DocumentTest :
-		DOCUMENT_NODE_LPAR  RPAR
+		DOCUMENT_NODE LPAR  RPAR
 		{
 			$$ = new DocumentTest(LOC (@$));
 		}
-	|	DOCUMENT_NODE_LPAR  ElementTest  RPAR
+	|	DOCUMENT_NODE LPAR  ElementTest  RPAR
 		{
 			$$ = new DocumentTest(LOC (@$),
-								dynamic_cast<ElementTest*>($2));
+								dynamic_cast<ElementTest*>($3));
 		}
-	|	DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
+	|	DOCUMENT_NODE LPAR  SchemaElementTest  RPAR
 		{
 			$$ = new DocumentTest(LOC (@$),
-								dynamic_cast<SchemaElementTest*>($2));
+								dynamic_cast<SchemaElementTest*>($3));
 		}
 	;
 
@@ -4125,7 +4138,7 @@ DocumentTest :
 // [124] TextTest
 // --------------
 TextTest :
-		TEXT_LPAR  RPAR 
+		TEXT LPAR  RPAR
 		{
 			$$ = new TextTest(LOC (@$));
 		}
@@ -4135,7 +4148,7 @@ TextTest :
 // [125] CommentTest
 // -----------------
 CommentTest :
-		COMMENT_LPAR  RPAR 
+		COMMENT LPAR  RPAR
 		{
 			$$ = new CommentTest(LOC (@$));
 		}
@@ -4145,17 +4158,17 @@ CommentTest :
 // [126] PITest
 // ------------
 PITest :
-		PI_LPAR  RPAR
+		PROCESSING_INSTRUCTION LPAR  RPAR
 		{
 			$$ = new PITest(LOC (@$), "");
 		}
-	|	PI_LPAR  NCNAME  RPAR
+	|	PROCESSING_INSTRUCTION LPAR  NCNAME  RPAR
 		{
-			$$ = new PITest(LOC (@$), driver.symtab.get((off_t)$2));
+			$$ = new PITest(LOC (@$), driver.symtab.get((off_t)$3));
 		}
-	|	PI_LPAR  STRING_LITERAL  RPAR
+  |	PROCESSING_INSTRUCTION LPAR  STRING_LITERAL  RPAR
 		{
-			$$ = new PITest(LOC (@$), driver.symtab.get((off_t)$2));
+			$$ = new PITest(LOC (@$), driver.symtab.get((off_t)$3));
 		}
 	;
 
@@ -4163,35 +4176,35 @@ PITest :
 // [127] AttributeTest
 // -------------------
 AttributeTest :
-		ATTRIBUTE_LPAR  RPAR
+		ATTRIBUTE LPAR  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
 								NULL,
 								NULL);
 		}
-	|	ATTRIBUTE_LPAR  QNAME  RPAR
+	|	ATTRIBUTE LPAR  QNAME  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
 								NULL);
 		}
-	|	ATTRIBUTE_LPAR  QNAME  COMMA  TypeName  RPAR
+	|	ATTRIBUTE LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								dynamic_cast<TypeName*>($4));
+								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
+								dynamic_cast<TypeName*>($5));
 		}
-	|	ATTRIBUTE_LPAR  STAR  RPAR
+	|	ATTRIBUTE LPAR  STAR  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
 								NULL,
 								NULL);
 		}
-	|	ATTRIBUTE_LPAR  STAR  COMMA  TypeName  RPAR
+	|	ATTRIBUTE LPAR  STAR  COMMA  TypeName  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
 								NULL,
-								dynamic_cast<TypeName*>($4));
+								dynamic_cast<TypeName*>($5));
 		}
 	;
 
@@ -4210,49 +4223,49 @@ SchemaAttributeTest :
 // [131] ElementTest
 // -----------------
 ElementTest :
-		ELEMENT_LPAR  RPAR
+		ELEMENT LPAR  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
 									NULL,
 									NULL);
 		}
-	|	ELEMENT_LPAR  QNAME  RPAR
+	|	ELEMENT LPAR  QNAME  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-									new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+									new QName(LOC (@$),driver.symtab.get((off_t)$3)),
 									NULL);
 		}
-	|	ELEMENT_LPAR  QNAME  COMMA  TypeName  RPAR
+	|	ELEMENT LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-									new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-									dynamic_cast<TypeName*>($4));
+									new QName(LOC (@$),driver.symtab.get((off_t)$3)),
+									dynamic_cast<TypeName*>($5));
 		}
-	|	ELEMENT_LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
+	|	ELEMENT LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-									new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-									dynamic_cast<TypeName*>($4));
+									new QName(LOC (@$),driver.symtab.get((off_t)$3)),
+									dynamic_cast<TypeName*>($5));
 		}
-	|	ELEMENT_LPAR  STAR  RPAR
+	|	ELEMENT LPAR  STAR  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
 									NULL,
 									NULL,
 									true);
 		}
-	|	ELEMENT_LPAR  STAR  COMMA  TypeName  RPAR
+	|	ELEMENT LPAR  STAR  COMMA  TypeName  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
 									NULL,
-									dynamic_cast<TypeName*>($4),
+									dynamic_cast<TypeName*>($5),
 									true);
 		}
-	|	ELEMENT_LPAR  STAR  COMMA  TypeName_WITH_HOOK RPAR
+	|	ELEMENT LPAR  STAR  COMMA  TypeName_WITH_HOOK RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
 									NULL,
-									dynamic_cast<TypeName*>($4),
+									dynamic_cast<TypeName*>($5),
 									true);
 		}
 	;
@@ -4261,10 +4274,10 @@ ElementTest :
 // [133] SchemaElementTest
 // -----------------------
 SchemaElementTest :
-		SCHEMA_ELEMENT_LPAR  QNAME  RPAR
+		SCHEMA_ELEMENT LPAR  QNAME  RPAR
 		{
 			$$ = new SchemaElementTest(LOC (@$),
-									new QName(LOC (@$),driver.symtab.get((off_t)$2)));
+									new QName(LOC (@$),driver.symtab.get((off_t)$3)));
 		}
 	;
 
@@ -4349,15 +4362,15 @@ StringLiteral :
 // ----------------------
 // TODO: $$ = something
 RevalidationDecl :
-		DECLARE_REVALIDATION REVAL_STRICT
+		DECLARE REVALIDATION STRICT
 		{
 //			$$ = new OrderingModeDecl(@$,
 //								StaticQueryContext::ordered);
 		}
-    | DECLARE_REVALIDATION REVAL_LAX
+    | DECLARE REVALIDATION LAX
     {
     }
-    | DECLARE_REVALIDATION REVAL_SKIP
+    | DECLARE REVALIDATION SKIP
     {
     }
 	;
@@ -4365,66 +4378,66 @@ RevalidationDecl :
 // [242]	InsertExpr
 // ----------------
 InsertExpr :
-		INSERT_NODE  ExprSingle  INTO  ExprSingle
+		INSERT NODE ExprSingle INTO ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::INTO, $2, $4);
+                  store::UpdateConsts::INTO, $3, $5);
 		}
-	|	INSERT_NODE  ExprSingle  FIRST_INTO  ExprSingle
+	|	INSERT NODE ExprSingle AS FIRST INTO ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AS_FIRST_INTO, $2, $4);
+                  store::UpdateConsts::AS_FIRST_INTO, $3, $7);
 		}
-	|	INSERT_NODE  ExprSingle  LAST_INTO  ExprSingle
+	|	INSERT NODE ExprSingle AS LAST INTO ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AS_LAST_INTO, $2, $4);
+                  store::UpdateConsts::AS_LAST_INTO, $3, $7);
 		}
-	| INSERT_NODE  ExprSingle  AFTER  ExprSingle
+	| INSERT NODE ExprSingle AFTER ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AFTER, $2, $4);
+                  store::UpdateConsts::AFTER, $3, $5);
 		}
-	| INSERT_NODE  ExprSingle  BEFORE  ExprSingle
+	| INSERT NODE ExprSingle BEFORE ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::BEFORE, $2, $4);
+                  store::UpdateConsts::BEFORE, $3, $5);
 		}
   |
-		INSERT_NODES  ExprSingle  INTO  ExprSingle
+		INSERT NODES ExprSingle INTO ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::INTO, $2, $4);
+                  store::UpdateConsts::INTO, $3, $5);
 		}
-	|	INSERT_NODES  ExprSingle  FIRST_INTO  ExprSingle
+	|	INSERT NODES ExprSingle AS FIRST INTO ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AS_FIRST_INTO, $2, $4);
+                  store::UpdateConsts::AS_FIRST_INTO, $3, $7);
 		}
-	|	INSERT_NODES  ExprSingle  LAST_INTO  ExprSingle
+	|	INSERT NODES ExprSingle AS LAST INTO ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AS_LAST_INTO, $2, $4);
+                  store::UpdateConsts::AS_LAST_INTO, $3, $7);
 		}
-	| INSERT_NODES  ExprSingle  AFTER  ExprSingle
+	| INSERT NODES ExprSingle AFTER ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::AFTER, $2, $4);
+                  store::UpdateConsts::AFTER, $3, $5);
 		}
-	| INSERT_NODES  ExprSingle  BEFORE  ExprSingle
+	| INSERT NODES ExprSingle BEFORE ExprSingle
 		{
        $$ = new InsertExpr(
                   LOC (@$),
-                  store::UpdateConsts::BEFORE, $2, $4);
+                  store::UpdateConsts::BEFORE, $3, $5);
 		}
 	;
 
@@ -4432,14 +4445,14 @@ InsertExpr :
 // [243] DeleteExpr
 // ----------------
 DeleteExpr:
-		DELETE_NODE  ExprSingle
+		DELETE NODE ExprSingle
 		{
-       $$ = new DeleteExpr( LOC (@$), $2);
+       $$ = new DeleteExpr( LOC (@$), $3);
 		}
   |
-		DELETE_NODES  ExprSingle
+		DELETE NODES ExprSingle
 		{
-       $$ = new DeleteExpr( LOC (@$), $2);
+       $$ = new DeleteExpr( LOC (@$), $3);
 		}
 	;
 
@@ -4447,17 +4460,17 @@ DeleteExpr:
 // [244] ReplaceExpr
 // -----------------
 ReplaceExpr :
-		REPLACE  ExprSingle  WITH  ExprSingle
+		REPLACE NODE ExprSingle WITH ExprSingle
 		{
        $$ = new ReplaceExpr(
                   LOC (@$),
-                  store::UpdateConsts::NODE, $2, $4);
+                  store::UpdateConsts::NODE, $3, $5);
 		}
-	|	REPLACE_VALUE_OF  ExprSingle  WITH  ExprSingle
+	|	REPLACE VALUE OF NODE ExprSingle WITH ExprSingle
 		{
        $$ = new ReplaceExpr(
                   LOC (@$),
-                  store::UpdateConsts::VALUE_OF_NODE, $2, $4);
+                  store::UpdateConsts::VALUE_OF_NODE, $5, $7);
 		}
 	;
 
@@ -4465,10 +4478,10 @@ ReplaceExpr :
 // [245] RenameExpr
 // ----------------
 RenameExpr :
-		RENAME  ExprSingle  AS  ExprSingle
+		RENAME NODE ExprSingle AS ExprSingle
 		{
        $$ = new RenameExpr(
-                  LOC (@$), $2, $4);
+                  LOC (@$), $3, $5);
 		}
 	;
 
@@ -4491,10 +4504,10 @@ RenameExpr :
 // [249] TransformExpr
 // -------------------
 TransformExpr :
-		COPY_DOLLAR  VarNameList  MODIFY  ExprSingle  RETURN  ExprSingle
+		COPY DOLLAR VarNameList MODIFY ExprSingle RETURN ExprSingle
 		{
-      VarNameList* lList = dynamic_cast<VarNameList*>($2);
-      $$ = new TransformExpr(LOC(@$), lList, $4, $6);
+      VarNameList* lList = dynamic_cast<VarNameList*>($3);
+      $$ = new TransformExpr(LOC(@$), lList, $5, $7);
 		}
 	;
 
@@ -4521,7 +4534,7 @@ VarNameList :
 // [249b] VarNameElem
 // ------------------
 VarNameDecl :
-    VARNAME GETS ExprSingle
+    QNAME GETS ExprSingle
     {
        $$ = new VarBinding(LOC(@$), driver.symtab.get((off_t)$1), $3);  
     }
@@ -4560,40 +4573,205 @@ CatchListExpr:
   ;
 
 CatchExpr :
-    CATCH_LPAR NameTest RPAR BracedExpr
+    CATCH LPAR NameTest RPAR BracedExpr
     {
        $$ = new CatchExpr(LOC (@$),
-                          static_cast<NameTest*>($2),
-                          $4);
+                          static_cast<NameTest*>($3),
+                          $5);
     }
   |
-    CATCH_LPAR NameTest COMMA DOLLAR VARNAME RPAR BracedExpr
+    CATCH LPAR NameTest COMMA DOLLAR QNAME RPAR BracedExpr
     {
        $$ = new CatchExpr(LOC (@$),
-                          static_cast<NameTest*>($2),
-                          driver.symtab.get((off_t)$5),
-                          $7);
+                          static_cast<NameTest*>($3),
+                          driver.symtab.get((off_t)$6),
+                          $8);
     }
   |
-    CATCH_LPAR NameTest COMMA DOLLAR VARNAME COMMA DOLLAR VARNAME RPAR BracedExpr
+    CATCH LPAR NameTest COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
     {
        $$ = new CatchExpr(LOC (@$),
-                          static_cast<NameTest*>($2),
-                          driver.symtab.get((off_t)$5),
-                          driver.symtab.get((off_t)$8),
-                          $10);
+                          static_cast<NameTest*>($3),
+                          driver.symtab.get((off_t)$6),
+                          driver.symtab.get((off_t)$9),
+                          $11);
     }
   |
-    CATCH_LPAR NameTest COMMA DOLLAR VARNAME COMMA DOLLAR VARNAME COMMA DOLLAR VARNAME RPAR BracedExpr
+    CATCH LPAR NameTest COMMA DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
     {
        $$ = new CatchExpr(LOC (@$),
-                          static_cast<NameTest*>($2),
-                          driver.symtab.get((off_t)$5),
-                          driver.symtab.get((off_t)$8),
-                          driver.symtab.get((off_t)$11),
-                          $13);
+                          static_cast<NameTest*>($3),
+                          driver.symtab.get((off_t)$6),
+                          driver.symtab.get((off_t)$9),
+                          driver.symtab.get((off_t)$12),
+                          $14);
     }
   ;
+
+
+URI_LITERAL :
+    STRING_LITERAL;
+
+NCNAME :
+  QNAME_SVAL
+  {
+    std::string tmp = driver.symtab.get((off_t)$1);
+    for (unsigned int i = 0; i<tmp.size(); i++)
+      if (tmp[i] == ':')
+      {
+        error(@1, "A NCName is expected, found a QName");
+        YYERROR;
+      }
+    $$ = $1;
+  }
+
+/*_______________________________________________________________________
+ *                                                                       *
+ *  All QNames                                                           *
+ *                                                                       *
+ *_______________________________________________________________________*/
+QNAME :
+    QNAME_SVAL { $$ = $1; }
+  | _EMPTY { $$ = driver.symtab.put("empty"); }
+  | ATTRIBUTE { $$ = driver.symtab.put("attribute"); }
+  | COMMENT { $$ = driver.symtab.put("comment"); }
+  | DOCUMENT_NODE { $$ = driver.symtab.put("document-node"); }
+  | ELEMENT { $$ = driver.symtab.put("element"); }
+  | ITEM { $$ = driver.symtab.put("item"); }
+  | IF { $$ = driver.symtab.put("if"); }
+  | NODE { $$ = driver.symtab.put("node"); }
+  | PROCESSING_INSTRUCTION { $$ = driver.symtab.put("processing-instruction"); }
+  | SCHEMA_ATTRIBUTE { $$ = driver.symtab.put("schema-attribute"); }
+  | SCHEMA_ELEMENT { $$ = driver.symtab.put("schema-element"); }
+  | TEXT { $$ = driver.symtab.put("text"); }
+  | TYPESWITCH { $$ = driver.symtab.put("typeswitch"); }
+  | EMPTY_SEQUENCE { $$ = driver.symtab.put("empty-sequence"); }
+  | BOUNDARY_SPACE { $$ = driver.symtab.put("boundary-space"); }
+  | FT_OPTION { $$ = driver.symtab.put("ft-option"); }
+  | BASE_URI { $$ = driver.symtab.put("base-uri"); }
+  | LAX { $$ = driver.symtab.put("lax"); }
+  | STRICT { $$ = driver.symtab.put("strict"); }
+  | IDIV { $$ = driver.symtab.put("idiv"); }
+  | DOCUMENT { $$ = driver.symtab.put("document"); }
+  | FTNOT { $$ = driver.symtab.put("not"); }
+  | SENSITIVE { $$ = driver.symtab.put("sensitive"); }
+  | INSENSITIVE { $$ = driver.symtab.put("insensitive"); }
+  | DIACRITICS { $$ = driver.symtab.put("diacritics"); }
+  | WITHOUT { $$ = driver.symtab.put("without"); }
+  | STEMMING { $$ = driver.symtab.put("stemming"); }
+  | THESAURUS { $$ = driver.symtab.put("thesaurus"); }
+  | STOP { $$ = driver.symtab.put("stop"); }
+  | WILDCARDS { $$ = driver.symtab.put("wildcards"); }
+  | ENTIRE { $$ = driver.symtab.put("entire"); }
+  | CONTENT { $$ = driver.symtab.put("content"); }
+  | WORD { $$ = driver.symtab.put("word"); }
+  | START { $$ = driver.symtab.put("start"); }
+  | END { $$ = driver.symtab.put("end"); }
+  | MOST { $$ = driver.symtab.put("most"); }
+  | SKIP { $$ = driver.symtab.put("skip"); }
+  | COPY { $$ = driver.symtab.put("copy"); }
+  | VALUE { $$ = driver.symtab.put("value"); }
+  | VAL_EQ { $$ = driver.symtab.put("eq"); }
+  | VAL_NE { $$ = driver.symtab.put("ne"); }
+  | VAL_LT { $$ = driver.symtab.put("lt"); }
+  | VAL_LE { $$ = driver.symtab.put("le"); }
+  | VAL_GT { $$ = driver.symtab.put("gt"); }
+  | VAL_GE { $$ = driver.symtab.put("ge"); }
+  | AT { $$ = driver.symtab.put("at"); }
+  | VARIABLE { $$ = driver.symtab.put("variable"); }
+  | RETURN { $$ = driver.symtab.put("return"); }
+  | FOR { $$ = driver.symtab.put("for"); }
+  | IN { $$ = driver.symtab.put("in"); }
+  | LET { $$ = driver.symtab.put("let"); }
+  | WHERE { $$ = driver.symtab.put("where"); }
+  | BY { $$ = driver.symtab.put("by"); }
+  | ORDER { $$ = driver.symtab.put("order"); }
+  | STABLE { $$ = driver.symtab.put("stable"); }
+  | ASCENDING { $$ = driver.symtab.put("ascending"); }
+  | DESCENDING { $$ = driver.symtab.put("descending"); }
+  | GREATEST { $$ = driver.symtab.put("greatest"); }
+  | LEAST { $$ = driver.symtab.put("least"); }
+  | COLLATION { $$ = driver.symtab.put("collation"); }
+  | SOME { $$ = driver.symtab.put("some"); }
+  | EVERY { $$ = driver.symtab.put("every"); }
+  | SATISFIES { $$ = driver.symtab.put("satisfies"); }
+  | CASE { $$ = driver.symtab.put("case"); }
+  | AS { $$ = driver.symtab.put("as"); }
+  | THEN { $$ = driver.symtab.put("then"); }
+  | ELSE { $$ = driver.symtab.put("else"); }
+  | OR { $$ = driver.symtab.put("or"); }
+  | AND { $$ = driver.symtab.put("and"); }
+  | INSTANCE { $$ = driver.symtab.put("instance"); }
+  | OF { $$ = driver.symtab.put("of"); }
+  | CASTABLE { $$ = driver.symtab.put("castable"); }
+  | TO { $$ = driver.symtab.put("to"); }
+  | DIV { $$ = driver.symtab.put("div"); }
+  | MOD { $$ = driver.symtab.put("mod"); }
+  | UNION { $$ = driver.symtab.put("union"); }
+  | INTERSECT { $$ = driver.symtab.put("intersect"); }
+  | EXCEPT { $$ = driver.symtab.put("except"); }
+  | VALIDATE { $$ = driver.symtab.put("validate"); }
+  | CAST { $$ = driver.symtab.put("cast"); }
+  | TREAT { $$ = driver.symtab.put("treat"); }
+  | IS { $$ = driver.symtab.put("is"); }
+  | PRESERVE { $$ = driver.symtab.put("preserve"); }
+  | STRIP { $$ = driver.symtab.put("strip"); }
+  | NAMESPACE { $$ = driver.symtab.put("namespace"); }
+  | EXTERNAL { $$ = driver.symtab.put("external"); }
+  | ENCODING { $$ = driver.symtab.put("encoding"); }
+  | NO_PRESERVE { $$ = driver.symtab.put("no-preserve"); }
+  | INHERIT { $$ = driver.symtab.put("inherit"); }
+  | NO_INHERIT { $$ = driver.symtab.put("no-inherit"); }
+  | DECLARE { $$ = driver.symtab.put("declare"); }
+  | CONSTRUCTION { $$ = driver.symtab.put("construction"); }
+  | ORDERING { $$ = driver.symtab.put("ordering"); }
+  | DEFAULT { $$ = driver.symtab.put("default"); }
+  | COPY_NAMESPACES { $$ = driver.symtab.put("copy-namespaces"); }
+  | OPTION { $$ = driver.symtab.put("option"); }
+  | VERSION { $$ = driver.symtab.put("version"); }
+  | IMPORT { $$ = driver.symtab.put("import"); }
+  | SCHEMA { $$ = driver.symtab.put("schema"); }
+  | FUNCTION { $$ = driver.symtab.put("function"); }
+  | SCORE { $$ = driver.symtab.put("score"); }
+  | FTCONTAINS { $$ = driver.symtab.put("ftcontains"); }
+  | WEIGHT { $$ = driver.symtab.put("weight"); }
+  | WINDOW { $$ = driver.symtab.put("window"); }
+  | DISTANCE { $$ = driver.symtab.put("distance"); }
+  | OCCURS { $$ = driver.symtab.put("occurs"); }
+  | TIMES { $$ = driver.symtab.put("times"); }
+  | SAME { $$ = driver.symtab.put("same"); }
+  | DIFFERENT { $$ = driver.symtab.put("different"); }
+  | LOWERCASE { $$ = driver.symtab.put("lowercase"); }
+  | UPPERCASE { $$ = driver.symtab.put("uppercase"); }
+  | RELATIONSHIP { $$ = driver.symtab.put("relationship"); }
+  | LEVELS { $$ = driver.symtab.put("levels"); }
+  | LANGUAGE { $$ = driver.symtab.put("language"); }
+  | ANY { $$ = driver.symtab.put("any"); }
+  | ALL { $$ = driver.symtab.put("all"); }
+  | PHRASE { $$ = driver.symtab.put("phrase"); }
+  | EXACTLY { $$ = driver.symtab.put("exactly"); }
+  | FROM { $$ = driver.symtab.put("from"); }
+  | WORDS { $$ = driver.symtab.put("words"); }
+  | SENTENCES { $$ = driver.symtab.put("sentences"); }
+  | SENTENCE { $$ = driver.symtab.put("sentence"); }
+  | PARAGRAPH { $$ = driver.symtab.put("paragraph"); }
+  | REPLACE { $$ = driver.symtab.put("replace"); }
+  | MODIFY { $$ = driver.symtab.put("modify"); }
+  | FIRST { $$ = driver.symtab.put("first"); }
+  | INSERT { $$ = driver.symtab.put("insert"); }
+  | BEFORE { $$ = driver.symtab.put("bofer"); }
+  | AFTER { $$ = driver.symtab.put("after"); }
+  | REVALIDATION { $$ = driver.symtab.put("revalidation"); }
+  | WITH { $$ = driver.symtab.put("with"); }
+  | NODES { $$ = driver.symtab.put("nodes"); }
+  | RENAME { $$ = driver.symtab.put("rename"); }
+  | LAST { $$ = driver.symtab.put("last"); }
+  | DELETE { $$ = driver.symtab.put("delete"); }
+  | INTO { $$ = driver.symtab.put("into"); }
+  | UPDATING { $$ = driver.symtab.put("updating"); }
+  | ORDERED { $$ = driver.symtab.put("ordered"); }
+  | UNORDERED { $$ = driver.symtab.put("unordered"); }
+    ;
 
 
 /*_______________________________________________________________________
@@ -4603,15 +4781,15 @@ CatchExpr :
  *_______________________________________________________________________*/
 
 EvalExpr :
-    USING_DOLLAR EvalVarDeclList EVAL_LBRACE ExprSingle RBRACE
+    USING DOLLAR EvalVarDeclList EVAL LBRACE ExprSingle RBRACE
     {
        $$ = new EvalExpr (LOC (@$),
-                          dynamic_cast<VarGetsDeclList *> ($2),
-                          $4);
+                          dynamic_cast<VarGetsDeclList *> ($3),
+                          $6);
     }
-  | EVAL_LBRACE ExprSingle RBRACE
+  | EVAL LBRACE ExprSingle RBRACE
     {
-      $$ = new EvalExpr (LOC (@$), new VarGetsDeclList (LOC (@$)), $2);
+      $$ = new EvalExpr (LOC (@$), new VarGetsDeclList (LOC (@$)), $3);
     }
     ;
 
@@ -4693,7 +4871,7 @@ FTMildnot :
 		FTUnaryNot
 		{
 		}
-	|	FTMildnot  FTNOT_IN  FTUnaryNot
+	|	FTMildnot  FTNOT IN  FTUnaryNot
 		{
 		}
 	;
@@ -4825,10 +5003,10 @@ FTCaseOption :
 	| UPPERCASE
 		{
 		}
-	| CASE_SENSITIVE
+	| CASE SENSITIVE
 		{
 		}
-	| CASE_INSENSITIVE
+	| CASE INSENSITIVE
 		{
 		}
 	;
@@ -4837,16 +5015,16 @@ FTCaseOption :
 //[356] FTDiacriticsOption
 //------------------------
 FTDiacriticsOption :
-		WITH_DIACRITICS
+		WITH DIACRITICS
 		{
 		}
-	| WITHOUT_DIACRITICS
+	| WITHOUT   DIACRITICS
 		{
 		}
-	| DIACRITICS_SENSITIVE
+	| DIACRITICS SENSITIVE
 		{
 		}
-	| DIACRITICS_INSENSITIVE
+	| DIACRITICS INSENSITIVE
 		{
 		}
 	;
@@ -4855,10 +5033,10 @@ FTDiacriticsOption :
 //[357] FTStemOption
 //------------------
 FTStemOption :
-		WITH_STEMMING
+		WITH STEMMING
 		{
 		}
-	| WITHOUT_STEMMING
+	| WITHOUT STEMMING
 		{
 		}
 	;
@@ -4867,25 +5045,25 @@ FTStemOption :
 //[358] FTThesaurusOption
 //-----------------------
 FTThesaurusOption :
-		WITH_THESAURUS  FTThesaurusID
+		WITH THESAURUS  FTThesaurusID
 		{
 		}
-	|	WITH_THESAURUS  DEFAULT
+	|	WITH THESAURUS  DEFAULT
 		{
 		}
-	| WITH_THESAURUS  LPAR  FTThesaurusID  RPAR
+	| WITH THESAURUS  LPAR  FTThesaurusID  RPAR
 		{
 		}
-	| WITH_THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
+	| WITH THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
 		{
 		}
-	| WITH_THESAURUS  LPAR  DEFAULT  RPAR
+	| WITH THESAURUS  LPAR  DEFAULT  RPAR
 		{
 		}
-	| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
+	| WITH THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
 		{
 		}
-	| WITHOUT_THESAURUS
+	| WITHOUT THESAURUS
 		{
 		}
 	;
@@ -4924,19 +5102,19 @@ FTThesaurusID :
 //[360] FTStopwordOption
 //----------------------
 FTStopwordOption :
-		WITH_STOP_WORDS  FTRefOrList
+		WITH STOP WORDS  FTRefOrList
 		{
 		}
-	|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
+	|	WITH STOP WORDS  FTRefOrList  FTInclExclStringLiteralList
 		{
 		}
-	| WITH_DEFAULT_STOP_WORDS 
+	| WITH DEFAULT STOP WORDS
 		{
 		}
-	| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
+	| WITH DEFAULT STOP WORDS  FTInclExclStringLiteralList
 		{
 		}
-	| WITHOUT_STOP_WORDS
+	| WITHOUT STOP WORDS
 		{
 		}
 	;
@@ -5002,10 +5180,10 @@ FTLanguageOption :
 //[364] FTWildcardOption
 //----------------------
 FTWildcardOption :
-		WITH_WILDCARDS
+		WITH WILDCARDS
 		{
 		}
-	| WITHOUT_WILDCARDS
+	| WITHOUT WILDCARDS
 		{
 		}
 	;
@@ -5014,13 +5192,13 @@ FTWildcardOption :
 //[365]	FTContent
 //---------------
 FTContent :
-		AT_START
+		AT START
 		{
 		}
-	| AT_END
+	| AT END
 		{
 		}
-	| ENTIRE_CONTENT
+	| ENTIRE CONTENT
 		{
 		}
 	;
@@ -5032,13 +5210,13 @@ FTAnyallOption :
 		ANY
 		{
 		}
-	|	ANY_WORD
+	|	ANY WORD
 		{
 		}
 	| ALL
 		{
 		}
-	| ALL_WORDS
+	| ALL WORDS
 		{
 		}
 	| PHRASE
@@ -5054,13 +5232,13 @@ FTRange :
 		{
        $$ = new FTRange (LOC (@$), FTRange::exactly, $2);
 		}
-	| AT_LEAST  UnionExpr
+	| AT LEAST  UnionExpr
 		{
-       $$ = new FTRange (LOC (@$), FTRange::at_least, $2);
+       $$ = new FTRange (LOC (@$), FTRange::at_least, $3);
 		}
-	| AT_MOST  UnionExpr
+	| AT MOST  UnionExpr
 		{
-       $$ = new FTRange (LOC (@$), FTRange::at_most, $2);
+       $$ = new FTRange (LOC (@$), FTRange::at_most, $3);
 		}
 	| FROM  UnionExpr  TO  UnionExpr
 		{
@@ -5139,9 +5317,9 @@ FTBigUnit :
 //[374]	FTIgnoreOption
 //--------------------
 FTIgnoreOption :
-		WITHOUT_CONTENT  UnionExpr
+		WITHOUT CONTENT  UnionExpr
 		{
-      $$ = new FTIgnoreOption (LOC (@$), static_cast<UnionExpr *> ($2));
+      $$ = new FTIgnoreOption (LOC (@$), static_cast<UnionExpr *> ($3));
 		}
 	;
 
