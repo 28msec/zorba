@@ -18,6 +18,8 @@
 #define ZORBA_DEBUGGER_IMPL_H
 
 #include <iostream>
+#include <memory>
+#include <string>
 #include <zorba/zorba.h>
 
 #include "debugger/debugger_common.h"
@@ -55,6 +57,7 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
       theRequestServerSocket(0), 
       theEventSocket(0), 
       theStatus( QUERY_IDLE  ),
+      theQuery(0),
       theFileName(""),
       thePlanState(0),
       theRuntimeThread(0){}
@@ -71,8 +74,8 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     bool isEnabled() const;
 
     void start( void * aStore,
-                std::istream * aQuery,
-                const String & aFileName,
+                std::auto_ptr<std::istream> *aQuery,
+                std::string &aFileName,
                 unsigned short aRequestPort = 8000,
                 unsigned short aEventPort = 9000 );
 
@@ -93,9 +96,9 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     ExecutionStatus theStatus;
 
-    std::istream* theQuery;
+    std::auto_ptr<std::istream> *theQuery;
 
-    String theFileName;
+    std::string theFileName;
 
     QueryLoc theLocation;
 

@@ -17,7 +17,8 @@
 #define ZORBA_DEBUGGER_H
 
 #include <istream>
-
+#include <memory>
+#include <string>
 
 namespace zorba{
 
@@ -34,8 +35,8 @@ class ZORBA_EXTERN_DECL ZorbaDebugger
     
     virtual void
     start(  void * aStore, 
-            std::istream * aQuery,
-            const String & aFileName,
+            std::auto_ptr<std::istream> *aQuery,
+            std::string &aFileName,
             unsigned short aRequestPort = 8000,
             unsigned short aEventPort = 9000 ) = 0;
 

@@ -45,7 +45,7 @@ ZorbaDebuggerClient * CommandLineEventHandler::getClient()
   return theClient;
 }
 
-CommandLineEventHandler::CommandLineEventHandler( std::istream * aQueryFile,
+CommandLineEventHandler::CommandLineEventHandler( std::auto_ptr<std::istream> &aQueryFile,
                                                   std::istream & anInput,
                                                   std::ostream & anOutput,
                                                   ZorbaDebuggerClient * aClient )
@@ -85,16 +85,10 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
 {
   std::string lLine;
   unsigned int lLineNo = 0;
-  std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile );
+  std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile.get() );
   if ( lFile != 0 )
   {
-    std::stringstream lFileName;
-    lFileName << theClient->getFileName();
-    if ( lFile->is_open() )
-    {
-      lFile->close();
-    }
-    lFile->open( lFileName.str().c_str() );
+    theQueryFile.reset( new std::ifstream( theClient->getFileName().c_str() ) );
   } else {
     theQueryFile->clear();
     theQueryFile->seekg( 0, std::ios::beg );
@@ -108,11 +102,6 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
     {
       theOutput << lLineNo << '\t' << lLine << std::endl;
     }
-  }
-  
-  if ( lFile != 0 )
-  {
-    lFile->close();
   }
 }
 

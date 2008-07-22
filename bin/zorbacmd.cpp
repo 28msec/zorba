@@ -51,8 +51,8 @@ namespace zorbatm = zorba::time;
 #ifdef ZORBA_DEBUGGER
 struct server_args
 {
-  std::istream * theQuery;
-  const char * theFileName;
+  std::auto_ptr<std::istream> *theQuery;
+  std::string *theFileName;
   unsigned short theRequestPort;
   unsigned short theEventPort;
 };
@@ -64,7 +64,7 @@ THREAD_RETURN_TYPE server( void * args)
   {
     zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
     zorba::ZorbaDebugger * lDebugger = zorba::Zorba::getInstance(lStore)->getDebugger();
-    lDebugger->start( lStore, lArgs->theQuery, lArgs->theFileName, lArgs->theRequestPort, lArgs->theEventPort );
+    lDebugger->start( lStore, lArgs->theQuery, *lArgs->theFileName, lArgs->theRequestPort, lArgs->theEventPort );
   } catch( std::exception &e ) {
     std::cout << e.what() << std::endl;
     exit(7);
@@ -306,8 +306,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 #ifdef ZORBA_DEBUGGER
     server_args * lArgs = new server_args;
-    lArgs->theQuery = qfile.get();
-    lArgs->theFileName = fname;
+    lArgs->theQuery = new std::auto_ptr<std::istream>( new std::ifstream(path.native_file_string().c_str()) );
+    lArgs->theFileName = new std::string(path.native_file_string());
     lArgs->theRequestPort = lProperties.requestPort();
     lArgs->theEventPort = lProperties.eventPort();
   
@@ -347,7 +347,7 @@ int _tmain(int argc, _TCHAR* argv[])
           sleep(1);
 #endif
           ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
-          CommandLineEventHandler lEventHandler( qfile.get(), std::cin, std::cout, debuggerClient );
+          CommandLineEventHandler lEventHandler( *lArgs->theQuery, std::cin, std::cout, debuggerClient );
 #ifdef SIGINT /* not all system have SIGINT */
           signal( SIGINT, suspend );
 #endif

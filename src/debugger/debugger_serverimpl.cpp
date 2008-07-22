@@ -55,8 +55,8 @@ ZorbaDebuggerImpl::~ZorbaDebuggerImpl()
 }
 
 void ZorbaDebuggerImpl::start( void * aStore,
-                               std::istream * aQuery,
-                               const String & aFileName,
+                               std::auto_ptr<std::istream> *aQuery,
+                               std::string &aFileName,
                                unsigned short aRequestPortno,
                                unsigned short aEventPortno)
 {
@@ -215,37 +215,22 @@ void ZorbaDebuggerImpl::runQuery()
 {
   setStatus( QUERY_RUNNING );
   //reload the query
-  std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQuery );
-  if ( lFile != 0 )
-  {
-    std::stringstream lFileName;
-    lFileName << theFileName;
-    if ( lFile->is_open() )
-    {
-      lFile->close();
-    }
-    lFile->open( lFileName.str().c_str() );
-    if ( lFile->fail() )
-    {
-      std::cerr << "Couldn't open " << lFileName.str().c_str() << std::endl;
-      return;
-    }
+  std::cerr << "theFileName: " << theFileName.c_str() << std::endl;
+  std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQuery->get() );
+  if ( lFile != 0 ) {
+    theQuery->reset( new std::ifstream( theFileName.c_str() ) );
   } else {
-    theQuery->clear();
-    theQuery->seekg( 0, std::ios::beg );
+    (*theQuery)->clear();
+    (*theQuery)->seekg( 0, std::ios::beg );
   }
   //Compiles the query
   XQuery_t lQuery = theZorba->createQuery();
   lQuery->setFileName( theFileName );
   Zorba_CompilerHints lCompilerHints;
   lCompilerHints.opt_level = ZORBA_OPT_LEVEL_O1;
-  if( lFile != 0 )
-  {
-    lQuery->compile( *lFile, lCompilerHints );
-    lFile->close();
-  } else {
-    lQuery->compile( *theQuery, lCompilerHints );
-  }
+    
+  lQuery->compile( *(theQuery->get()), lCompilerHints );
+  
   try
   {
     ResultIterator_t lIterator = lQuery->iterator();

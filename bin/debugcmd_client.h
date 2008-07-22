@@ -19,6 +19,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <memory>
 #include <boost/thread/thread.hpp>
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_event_handler.h>
@@ -33,11 +34,11 @@ class CommandLineEventHandler: public DebuggerEventHandler
     
     static ZorbaDebuggerClient * theClient;
     
-    std::istream * theQueryFile;
+    std::auto_ptr<std::istream> &theQueryFile;
     
-    std::ostream & theOutput;
+    std::ostream &theOutput;
     
-    std::istream & theInput;
+    std::istream &theInput;
 
     std::vector<std::string> theHistory;
 
@@ -64,9 +65,9 @@ class CommandLineEventHandler: public DebuggerEventHandler
     void suspend( int aSignum );
 
   public:
-    CommandLineEventHandler( std::istream * aQueryFile,
-                             std::istream & anInput,
-                             std::ostream & anOutput,
+    CommandLineEventHandler( std::auto_ptr<std::istream> &aQueryFile,
+                             std::istream &anInput,
+                             std::ostream &anOutput,
                              ZorbaDebuggerClient * aClient );
 
     virtual ~CommandLineEventHandler()

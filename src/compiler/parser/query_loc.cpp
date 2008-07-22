@@ -53,8 +53,19 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
  xqpString QueryLoc::toJSON() const
  {
   std::stringstream lJSONString;
+  std::string lTmp( theFilenameBegin );
+  std::string lFileName;
+  std::string::iterator it;
+  for(it=lTmp.begin(); it!=lTmp.end(); it++)
+  {
+    if ( *it == '\\' )
+    {
+      lFileName.append(1, *it);
+    }
+    lFileName.append(1, *it);
+  } 
   lJSONString << "{";
-  lJSONString << "\"fileName\":\"" << theFilenameBegin << "\",";
+  lJSONString << "\"fileName\":\"" << lFileName << "\",";
   lJSONString << "\"lineBegin\":" << theLineBegin << ",";
   lJSONString << "\"columnBegin\":" << theColumnBegin << ",";
   lJSONString << "\"lineEnd\":" << theLineEnd << ",";
