@@ -505,19 +505,19 @@ void AttributeNode::restoreValue(
 ********************************************************************************/
 void TextNode::replaceValue(
     xqpStringStore_t&   newValue,
-    rchandle<RCObject>& oldValue,
+    Content&            oldContent,
     bool&               isTyped)
 {
   if (this->isTyped())
   {
-    reinterpret_cast<store::Item_t*>(&oldValue)->
-      transfer(*reinterpret_cast<store::Item_t*>(&theContent));
+    oldContent.value = theContent.value;
+    theContent.value = NULL;
     isTyped = true;
   }
   else
   {
-    reinterpret_cast<xqpStringStore_t*>(&oldValue)->
-      transfer(*reinterpret_cast<xqpStringStore_t*>(&theContent));
+    oldContent.text = theContent.text;
+    theContent.text = NULL;
     isTyped = false;
   }
 
@@ -526,15 +526,19 @@ void TextNode::replaceValue(
 
 
 void TextNode::restoreValue(
-    rchandle<RCObject>& oldValue,
-    bool                isTyped)
+    Content& oldContent,
+    bool     isTyped)
 {
   if (isTyped)
-    reinterpret_cast<store::Item_t*>(&theContent)->
-      transfer(*reinterpret_cast<store::Item_t*>(&oldValue));
+  {
+    theContent.text = oldContent.text;
+    oldContent.text = NULL;
+  }
   else
-    reinterpret_cast<xqpStringStore_t*>(&theContent)->
-      transfer(*reinterpret_cast<xqpStringStore_t*>(&oldValue));
+  {
+    theContent.value = oldContent.value;
+    oldContent.value = NULL;
+  }
 }
 
 

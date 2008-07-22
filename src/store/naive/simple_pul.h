@@ -438,18 +438,19 @@ class UpdReplaceTextValue : public UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  xqpStringStore_t   theNewValue;
-  rchandle<RCObject> theOldValue;
+  xqpStringStore_t   theNewContent;
+  TextNode::Content  theOldContent;
   bool               theIsTyped;
 
 public:
   UpdReplaceTextValue(store::Item_t& t, xqpStringStore_t& newValue) 
     :
     UpdatePrimitive(t),
-    theOldValue(NULL),
     theIsTyped(false)
   {
-    theNewValue.transfer(newValue);
+    theOldContent.text = NULL;
+
+    theNewContent.transfer(newValue);
   }
 
   ~UpdReplaceTextValue();

@@ -784,12 +784,37 @@ class TextNode : public XmlNode
 {
   friend class XmlNode;
   friend class DocumentDagNode;
-  friend class ConstrElementNode;
+  friend class ElementNode;
   friend class BasicItemFactory;
   friend class FastXmlLoader;
 
+public:
+  typedef union
+  {
+    xqpStringStore  * text;
+    store::Item     * value;
+  }
+  Content;
+
+public:
+  static void setText(Content& content, xqpStringStore_t& text)
+  {
+    if (content.text != NULL)
+      content.text->removeReference(NULL, content.text->getRCLock());
+
+    content.text = text.transfer();
+  }
+
+  static void setValue(Content& content, store::Item_t& val)
+  {
+    if (content.value != NULL)
+      content.value->removeReference(NULL, content.value->getRCLock());
+
+    content.value = val.transfer();
+  }
+
 protected:
-    rchandle<RCObject> theContent;
+  Content theContent;
 
 public:
   TextNode(xqpStringStore_t& content);
@@ -829,34 +854,22 @@ public:
   xqp_string show() const;
 
   void replaceValue(
-        xqpStringStore_t&   newValue,
-        rchandle<RCObject>& oldValue,
-        bool&               isTyped);
+        xqpStringStore_t&  newContent,
+        Content&           oldContent,
+        bool&              isTyped);
 
   void restoreValue(
-        rchandle<RCObject>& oldValue,
-        bool                isTyped);
+        Content&           oldContent,
+        bool               isTyped);
 
 protected:
-  xqpStringStore* getText() const 
-  {
-    return reinterpret_cast<xqpStringStore*>(theContent.getp());
-  }
+  xqpStringStore* getText() const      { return theContent.text; }
 
-  void setText(xqpStringStore_t& text)
-  {
-    reinterpret_cast<rchandle<xqpStringStore>*>(&theContent)->transfer(text);
-  }
+  void setText(xqpStringStore_t& text) { TextNode::setText(theContent, text); }
 
-  store::Item* getValue() const
-  {
-    return reinterpret_cast<store::Item*>(theContent.getp());
-  }
+  store::Item* getValue() const        { return theContent.value; }
 
-  void setValue(store::Item_t& val)
-  {
-    reinterpret_cast<rchandle<store::Item>*>(&theContent)->transfer(val);
-  }
+  void setValue(store::Item_t& val)    { TextNode::setValue(theContent, val); }
 };
 
 

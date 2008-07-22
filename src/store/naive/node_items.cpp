@@ -1227,7 +1227,21 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
   {
     if (haveTypedValue())
     {
-      getChild(0)->getTypedValue(val, iter);
+      assert(numChildren() == 1 &&
+             getChild(0)->getNodeKind() == store::StoreConsts::textNode);
+
+      const TextNode* child = reinterpret_cast<const TextNode*>(getChild(0));
+      if (haveListValue())
+      {
+        ItemVector* vec = reinterpret_cast<ItemVector*>(child->getValue());
+        iter = new ItemIterator(vec->getItems());
+        val = NULL;
+      }
+      else
+      {
+        val = child->getValue();
+        iter = NULL;
+      }
     }
     else if (haveEmptyValue())
     {
@@ -2213,9 +2227,9 @@ xqp_string AttributeNode::show() const
 ********************************************************************************/
 TextNode::TextNode(xqpStringStore_t& value) 
   :
-  XmlNode(),
-  theContent(NULL)
+  XmlNode()
 {
+  theContent.text = NULL;
   setText(value);
 
   NODE_TRACE1("Loaded text node " << this << " content = " << *getText());
@@ -2233,6 +2247,7 @@ TextNode::TextNode(
   :
   XmlNode(tree, parent, pos, store::StoreConsts::textNode)
 {
+  theContent.text = NULL;
   setText(content);
 
   if (parent)
@@ -2266,6 +2281,7 @@ TextNode::TextNode(
 {
   assert(parent != NULL);
 
+  theContent.value = NULL;
   setValue(content);
 
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
@@ -2291,7 +2307,15 @@ TextNode::TextNode(
 ********************************************************************************/
 TextNode::~TextNode()
 {
-  *reinterpret_cast<rchandle<xqpStringStore>*>(&theContent) = NULL;
+  if (isTyped())
+  {
+    if (theContent.value != NULL)
+      theContent.value->removeReference(NULL, theContent.value->getRCLock());
+  }
+  else if (theContent.text != NULL)
+  {
+    theContent.text->removeReference(NULL, theContent.text->getRCLock());;
+  }
   NODE_TRACE1("Deleted text node " << this);
 }
 
@@ -2332,7 +2356,7 @@ XmlNode* TextNode::copy2(
     {
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      textContent = theContent;
+      textContent = getText();
       copyNode = new TextNode(tree, NULL, pos, textContent);
     }
     else
@@ -2382,7 +2406,7 @@ XmlNode* TextNode::copy2(
         if (copymode.theTypePreserve)
         {
           ElementNode* myParent = reinterpret_cast<ElementNode*>(theParent);
-          typedContent = theContent;
+          typedContent = getValue();
           copyNode = new TextNode(parent, typedContent, myParent->haveListValue());
         }
         else
@@ -2393,7 +2417,7 @@ XmlNode* TextNode::copy2(
       }
       else
       {
-        textContent = theContent;
+        textContent = getText();
         copyNode = new TextNode(NULL, parent, pos, textContent);
       }
     }
@@ -2427,13 +2451,12 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 
   if (isTyped())
   {
-    rch = reinterpret_cast<store::Item*>(theContent.getp())->
-          getStringValue();
+    rch = getValue()->getStringValue();
     val = new UntypedAtomicItemImpl(rch);
   }
   else
   {
-    rch = theContent; 
+    rch = getText(); 
     val = new UntypedAtomicItemImpl(rch);
   }
   iter = NULL;
@@ -2442,8 +2465,18 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 
 store::Item_t TextNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch = theContent; 
-  return new UntypedAtomicItemImpl(rch);
+  xqpStringStore_t rch;
+
+  if (isTyped())
+  {
+    rch = getValue()->getStringValue();
+    return new UntypedAtomicItemImpl(rch);
+  }
+  else
+  {
+    rch = getText(); 
+    return new UntypedAtomicItemImpl(rch);
+  }
 }
 
 
