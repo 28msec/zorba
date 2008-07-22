@@ -1,5 +1,5 @@
 
-export ZORBA_BUILD_DIR=$ROOT/build/
+export ZORBA_BUILD_DIR=$BUILD
 
 export ZORBA_EXEC_DIR=$ZORBA_BUILD_DIR/test/
 

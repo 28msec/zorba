@@ -13,121 +13,91 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export ROOT=`pwd`          # Always zorbatest
+export ROOT=`pwd`
 export NOW=`date +%F-%T | tr ':' '_'`
 
+. $ROOT/zorbatest_functions.sh
 
 #
 # Process command line arguments
 #
 
-export CLEAN_BUILD=1
+export NEW_SNAPSHOT=1
+export CLEAN_BUILD=""
+export BUILD_TYPE=""
 export TEST_MODE="local"
 export REV=""
 export SRC=""
 export REGRESS_TEST=""
 export ACCEPT_TEST=1
 export SEND_MAIL=""
+export LASTDATE=""
+
+export SNAPSHOT=$ROOT/snapshots/$NOW
+export TESTS=$ROOT/testing
+export BUILD=$ROOT/build
+
+export BLREGRESS_SNAPSHOT=$ROOT/snapshots/regress_baseline; test -e $BLREGRESS_SNAPSHOT || BLREGRESS_SNAPSHOT=""
+
+set_snapshot () {
+    NOW=$1; echo Timestamp $NOW
+    SNAPSHOT=$ROOT/snapshots/$NOW
+    if test -d $SNAPSHOT; then
+        NEW_SNAPSHOT=""
+        REV=`cat $SNAPSHOT/rev`
+        LASTDATE=`cat $SNAPSHOT/prev/timestamp 2>/dev/null`
+        BLREGRESS_SNAPSHOT=`cat $SNAPSHOT/regress_baseline/timestamp 2>/dev/null`
+        if test "$BLREGRESS_SNAPSHOT"; then BLREGRESS_SNAPSHOT=$ROOT/snapshots/$BLREGRESS_SNAPSHOT; fi
+    fi
+}
+
 while test $# -gt 0; do
 case $1 in
---no-clean) export CLEAN_BUILD="" ;;
+--clean) CLEAN_BUILD=1 ;;
 --src) SRC=$2; shift ;;
 --rev) REV=$2; shift ;;
---regress) export REGRESS_TEST=1 ;;
---no-accept) export ACCEPT_TEST="" ;;
---mail) export SEND_MAIL=1 ;;
+--regress) REGRESS_TEST=1 ;;
+--no-accept) ACCEPT_TEST="" ;;
+--mail) SEND_MAIL=1 ;;
+--tstamp) set_snapshot $2; shift ;;
+--snapshot) set_snapshot `cat $2/timestamp`; shift ;;
+--last-tstamp) LASTDATE=$2; shift ;;
+--build-type) BUILD_TYPE=$2; BUILD=$ROOT/build_$BUILD_TYPE; shift;;
 local) TEST_MODE=local ;;
 server) TEST_MODE=server ;;
 esac
 shift
 done
 
-#
-# Prepare
-#
-
-latest_snapshot () {
-  (cd $ROOT/snapshots; ls -rd *-*-*-*_*_* 2>/dev/null | head -1)
-}
-
-mkdir -p snapshots
-export LASTDATE=`latest_snapshot`
-if test $LASTDATE; then
-    LASTREV=`cat snapshots/$LASTDATE/rev`
-    BLREV=`cat snapshots/regress_baseline/rev 2>/dev/null`
-    BLDATE=`cat snapshots/regress_baseline/timestamp 2>/dev/null`
-    echo Last date $LASTDATE, revision $LASTREV
-fi
-export TESTS=$ROOT/testing
-
-
-#
-# Check out sources
-#
-
-update_src () {
-local NEWREV;
-
-if test "x$TEST_MODE" = "xlocal"; then
-  export REV="local"
-  test $SRC || export SRC=$ROOT/../..
-else
-  test $SRC || export SRC=$ROOT/src
-
-  # test $LASTREV && svn update -r $LASTREV $SRC >/dev/null 2>&1
-  echo 'Updating sources...'
-  NEWREV=`svn update -r $1 $SRC | perl -ne 'if (/ revision ([0-9]+)\./) { print $1; }'`
-  REV=$NEWREV
-  svn update -rHEAD $SRC/test/cmp_ctest_logs $SRC/test/collect_ctest_log_errors >/dev/null 2>&1
-
-  if test -z $REV; then echo 'Could not update sources'; exit 1; fi
-  if test "x$REV" = "x$LASTREV"; then echo No changes, exiting; exit; fi
-fi
-}
-
-update_src `if test -z $REV; then echo HEAD; else echo $REV; fi`
-echo Building for snapshot $NOW, revision $REV
-
-rm -f svn_log.xml
-if test "x$LASTREV" != "x" -a "x$REV" != "xlocal"; then
-    svn log --xml $SRC -r`expr $LASTREV + 1`:$REV >svn_log.xml
-fi
-test -f svn_log.xml -a -s svn_log.xml || echo '<?xml version="1.0" encoding="UTF-8"?><log />' >svn_log.xml
-
 
 #
 # Compile
 #
 
+do_compile () {
+
 if test $CLEAN_BUILD; then rm -rf build; fi
 
-mkdir -p build
-cd build
-$ROOT/compile > $ROOT/build_log.txt 2>&1 || { cd $ROOT; ./on_build_failure; exit 1; }
-cd $ROOT
-
+mkdir -p $BUILD
+nice ./compile > build_log.txt 2>&1 || { ./on_build_failure; exit 1; }
 echo Build succeeded
-export SNAPSHOT=$ROOT/snapshots/$NOW
+
 mkdir -p $SNAPSHOT
 cd $SNAPSHOT
 echo $REV >rev; echo $NOW >timestamp
 touch BUILD_OK
 mv -f $ROOT/build_log.txt $ROOT/svn_log.xml .
+gzip -9 build_log.txt
 
-# Compile succeeded.
-# From this point on, the default current directory is $SNAPSHOT
+}
 
 
 #
 # Test
 #
 
-echo '<root></root>' >acceptance_failures.xml
-echo '<root></root>' >regressions.xml
-echo '<root></root>' >bl_regressions.xml
-echo '<pre></pre>' >errors.xml
-
 do_acceptance () {
+echo 'Running acceptance tests...'
 
 . $ROOT/load_test_env
 
@@ -137,60 +107,15 @@ find . -name fixture -exec $ROOT/run_fixture {} \;
 find . -name run -exec $ROOT/run_test {} \;
 cd $SNAPSHOT
 
-
 #
 # Process test results
 #
 
 $ROOT/process_test_results
 
-cd test_results
-diff -qr acceptance $TESTS/test_results/acceptance | $ROOT/report_acceptance_failure $TESTS >../acceptance_failures.xmlfrag
-cd ..
-test -s acceptance_failures.xmlfrag && export ACCEPTANCE_FAILURES=1
-echo '<root>' >acceptance_failures.xml
-cat acceptance_failures.xmlfrag >>acceptance_failures.xml
-echo '</root>' >>acceptance_failures.xml
-rm acceptance_failures.xmlfrag
-
-}
-
-do_regression () {
-
-local ref=$1
-local out=$2
-
-(
-echo '<root>'
-$SRC/test/cmp_ctest_logs $ref/ctest/LastTestsFailed.log ctest/LastTestsFailed.log |
-perl -pe 's#^[-](.*)$#<regress>$1</regress>#g;s#^[+](.*)$#<progress>$1</progress>#g'
-echo '</root>'
-) >$out
-
-}
-
-if test -d $TESTS/acceptance -a "x$ACCEPT_TEST" != "x"; then do_acceptance; fi
-
-if test "x$TEST_MODE" = "xserver" -a "x$REGRESS_TEST" != "x" -a "x$LASTDATE" != "x"; then
-    cd $ROOT/build
-    export VALGRIND=onfail
-    ctest
-    cp -a Testing/Temporary $SNAPSHOT/ctest
-    cd $SNAPSHOT
-
-    do_regression $ROOT/snapshots/$LASTDATE regressions.xml;
-    if test -e $ROOT/snapshots/regress_baseline; then
-        do_regression $ROOT/snapshots/regress_baseline bl_regressions.xml
-        BL_REGRESS_CNT=`egrep '^[<]regress[>]' bl_regressions.xml | wc -l`
-        echo $BL_REGRESS_CNT baseline regressions
-    fi
-    (echo '<pre>'; $SRC/test/collect_ctest_log_errors --html --blame --parse-err <ctest/LastTest.log; echo '</pre>') | perl -pe "s#$SRC/?##g" >errors.xml
-fi
-
-cp $ROOT/report.xqy .
-$ROOT/xquery report.xqy now=$NOW rev=$REV lastdate=$LASTDATE lastrev=$LASTREV blrev=$BLREV bldate=$BLDATE >index.html
-
-if test $ACCEPTANCE_FAILURES; then
+(cd test_results; diff -qr acceptance $TESTS/test_results/acceptance | $ROOT/report_acceptance_failure $TESTS >../acceptance_failures.xmlfrag)
+if test -s acceptance_failures.xmlfrag; then
+  export ACCEPTANCE_FAILURES=1
   echo Some acceptance tests failed, see $PWD/index.html
   export COMMITTERS=`echo '//span [@id="committers"]' | $ROOT/xquery -s index.html - | cut -f 2- -d'>' | cut -f1 -d'<'`
   test "x$TEST_MODE" != "xlocal" && echo Committers: $COMMITTERS
@@ -198,16 +123,125 @@ else
   echo 'All acceptance tests passed'
 fi
 
-if test "$BL_REGRESS_CNT" = "0"; then
-    rm -f $ROOT/snapshots/regress_baseline
-    (cd $ROOT/snapshots; ln -s $NOW regress_baseline)
-    echo Snapshot $NOW becomes new regression baseline
+{ echo '<root>';  cat acceptance_failures.xmlfrag; echo '</root>'; } >acceptance_failures.xml
+rm acceptance_failures.xmlfrag
+
+}  # do_acceptance
+
+
+compute_regressions () {
+
+local ref=$1
+local out=$2
+
+(
+echo '<root>'
+$SRC/test/cmp_ctest_logs $ref/ctest/LastTestsFailed.log.gz ctest/LastTestsFailed.log |
+perl -pe 's#^[-](.*)$#<regress><case>$1</case></regress>#g;s#^[+](.*)$#<progress><case>$1</case></progress>#g'
+echo '</root>'
+) >$out
+
+}  # compute_regressions
+
+run_ctest () {
+    cd $BUILD
+    export VALGRIND=onfail
+    ctest
+    cp -a Testing/Temporary $SNAPSHOT/ctest
+    cd $SNAPSHOT
+}
+
+do_regression () {
+
+    compute_regressions $ROOT/snapshots/$LASTDATE regressions.xml;
+    if test "$BLREGRESS_SNAPSHOT"; then
+        compute_regressions $BLREGRESS_SNAPSHOT bl_raw_regressions.xml
+        BL_REGRESS_CNT=`egrep '^[<]regress[>]' bl_raw_regressions.xml | wc -l`
+        $ROOT/xquery $ROOT/bl_regression_origin.xqy +bl_raw_regress=bl_raw_regressions.xml +bl_prev_regress=$ROOT/snapshots/$LASTDATE/bl_regressions.xml now=$NOW rev=$REV >bl_regressions.xml
+        echo $BL_REGRESS_CNT baseline regressions
+        if test "$BL_REGRESS_CNT" = "0" -a "$NEW_SNAPSHOT"; then
+            rm -f $ROOT/snapshots/regress_baseline
+            (cd $ROOT/snapshots; ln -s $NOW regress_baseline)
+            echo Snapshot $NOW becomes new regression baseline
+        fi
+    fi
+
+    echo 'Collecting errors...'
+    (echo '<pre>'; $SRC/test/collect_ctest_log_errors --html --blame --parse-err <ctest/LastTest.log; echo '</pre>') | perl -pe "s#$SRC/?##g" >errors.xml
+
+    echo 'Extracting elapsed times...'
+    chmod a+x $SRC/test/ctest_time_elapsed
+    cat ctest/LastTest.log | $SRC/test/ctest_time_elapsed | tail -10 | sort | perl -ne 'if (/([0-9:]+) (.*)/) { print "<entry><q>$2</q><t>$1</t></entry>\n" }' | (echo '<root>'; cat; echo '</root>') >worst_times.xml
+
+    gzip -9 ctest/*
+}
+
+
+#
+# Main
+#
+
+if test "x$TEST_MODE" = "xlocal"; then
+  REV="local"
+  test $SRC || SRC=$ROOT/../..
+else
+  test $SRC || SRC=$ROOT/src
 fi
 
-# Rewrite "latest" link
-rm -f $ROOT/snapshots/latest
-(cd $ROOT/snapshots; ln -s `latest_snapshot` latest)
-ln -s $ROOT/snapshots/`latest_snapshot` $ROOT/snapshots/latest
+mkdir -p snapshots
+test -z "$LASTDATE" -a "$NEW_SNAPSHOT" && LASTDATE=`latest_snapshot`
+if test "$LASTDATE"; then
+    LASTREV=`cat snapshots/$LASTDATE/rev`
+    BLREV=`cat snapshots/regress_baseline/rev 2>/dev/null`
+    BLDATE=`cat snapshots/regress_baseline/timestamp 2>/dev/null`
+    echo Last date $LASTDATE, revision $LASTREV
+fi
+if test "$BLREGRESS_SNAPSHOT"; then
+    echo "Regress baseline snapshot $BLREGRESS_SNAPSHOT"
+fi
+
+if test "$NEW_SNAPSHOT"; then
+
+    test "$REV" || REV='HEAD'
+    update_src
+    echo Building for snapshot $NOW, revision $REV
+    
+    . $ROOT/load_test_env
+    
+    do_compile
+    # Compile succeeded.
+    # From this point on, the default current directory is $SNAPSHOT
+    
+    test "$LASTDATE" && ln -s $ROOT/snapshots/$LASTDATE prev
+    test "$BLREGRESS_SNAPSHOT" && ln -s $BLREGRESS_SNAPSHOT regress_baseline
+    
+    # Rewrite "latest" link
+    (cd $ROOT/snapshots;
+     if test "$LASTDATE"; then cd "$LASTDATE"; rm -f next; ln -s ../$NOW next; cd ..; fi;
+     rm -f latest; ln -s `latest_snapshot` latest)
+    
+    if test -d $TESTS/tests/acceptance -a "x$ACCEPT_TEST" != "x"; then do_acceptance; fi
+    
+    if test "x$TEST_MODE" = "xserver" -a "x$REGRESS_TEST" != "x"; then
+        run_ctest
+    fi
+    
+else
+    cd $SNAPSHOT
+    gunzip ctest/* 2>/dev/null || true
+fi  # if test $NEW_SNAPSHOT
+
+if test "x$TEST_MODE" = "xserver" -a "x$REGRESS_TEST" != "x"; then
+    if test "x$LASTDATE" != "x"; then
+        do_regression
+    else
+        ln -s $SNAPSHOT $ROOT/snapshots/regress_baseline
+    fi
+fi
+
+cp $ROOT/report.xqy .
+echo 'Generating report...'
+$ROOT/xquery report.xqy now=$NOW rev=$REV lastdate=$LASTDATE lastrev=$LASTREV blrev=$BLREV bldate=$BLDATE >index.html
 
 if test "x$TEST_MODE" != "xlocal" -a "x$ACCEPTANCE_FAILURES" != "x" -a "x$SEND_MAIL" != "x"; then
   echo 'Sending e-mail to committers.'

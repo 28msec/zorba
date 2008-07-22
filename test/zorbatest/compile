@@ -13,14 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-. $ROOT/load_test_env
+# Mandatory vars: $ROOT, $SRC, $BUILD, $ZORBA
+# Optional vars:  $BUILD_TYPE
+
+test "$BUILD_TYPE" || export BUILD_TYPE="Debug"
 
 rm -f $ZORBA
-cmake $SRC
-make
 
-if which cygpath &>/dev/null; then
-  mv $ROOT/build/src/*.dll $ROOT/build/test/
-fi
+cd $BUILD
+
+cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DZORBA_WITH_REST=OFF $SRC
+make -j 2
 
 test -f $ZORBA || exit 1
