@@ -35,6 +35,7 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/collation_cache.h"
+#include "context/namespace_context.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/datetime.h"
 #include "zorbaerrors/error_messages.h"
@@ -125,7 +126,7 @@ namespace zorba
                 store::Item_t newDoc;
                 GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri, true);
 
-                processChildren( delegatingTypeManager, schemaValidator, newDoc, item->getChildren() );
+                processChildren( planState, delegatingTypeManager, schemaValidator, newDoc, item->getChildren() );
 
                 schemaValidator.endDoc();
 
@@ -140,13 +141,12 @@ namespace zorba
 
                 schemaValidator.startDoc();
 
-                store::Item_t newElem = processElement(delegatingTypeManager, schemaValidator, NULL, item);
+                store::Item_t newElem = processElement(planState, delegatingTypeManager, schemaValidator, NULL, item);
 
                 schemaValidator.endDoc();
                 
                 //std::cout << "End Validate elem" << "\n"; std::cout.flush();
-                //break;
-                //result = item;
+
                 result = newElem;
                 return true;
             }
@@ -167,13 +167,13 @@ namespace zorba
         return returnVal;
     }
 
-    store::Item_t ValidateIterator::processElement( DelegatingTypeManager* delegatingTypeManager, 
+    store::Item_t ValidateIterator::processElement( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
         SchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element)
     {
         ZORBA_ASSERT(element->isNode());
         ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
 
-        //store::Item_t typeName = element->getType();
+        
         store::Item_t nodeName = element->getNodeName();
         xqpStringStore_t baseUri = element->getBaseURI();
 
@@ -201,10 +201,10 @@ namespace zorba
                                             bindings, baseUri, false);
 
 
-        processAttributes( delegatingTypeManager, schemaValidator, (store::Item *)newElem, 
+        processAttributes( planState, delegatingTypeManager, schemaValidator, (store::Item *)newElem, 
             element->getAttributes());
         
-        processChildren( delegatingTypeManager, schemaValidator, (store::Item *)newElem, 
+        processChildren( planState, delegatingTypeManager, schemaValidator, (store::Item *)newElem, 
             element->getChildren());
 
 
@@ -229,30 +229,9 @@ namespace zorba
         }
     }
 
-    void ValidateIterator::processAttributes( DelegatingTypeManager* delegatingTypeManager, 
+    void ValidateIterator::processAttributes( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
         SchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t attributes)
     {
-//         store::Item_t attribute;
-//         
-//         while ( attributes->next(attribute) )
-//         {
-//             ZORBA_ASSERT(attribute->isNode());
-//             ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
-//                 
-//             //std::cout << "     proccessATT1: " << attribute->getNodeName()->getLocalName()->str() << " T: " << attribute->getType()->getLocalName()->str() << "\n";
-//             
-//             store::Item_t attName = attribute->getNodeName();
-//             store::Item_t typeName = attribute->getType();
-//             xqpStringStore_t attValue = attribute->getStringValue();
-//             
-//             store::Item_t textValue;
-//             GENV_ITEMFACTORY->createString( textValue, attValue);                        
-//             
-//             store::Item_t validatedAttNode;
-//             GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attName,
-//                                                    typeName, textValue, false, false);
-//         }
-
         std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
         std::list<AttributeValidationInfo*>::iterator curAtt;
          
@@ -276,7 +255,7 @@ namespace zorba
 
             store::NsBindings bindings;
             parent->getNamespaceBindings(bindings);
-            store::Item_t typedValue = processTextValue(delegatingTypeManager, bindings, typeQName, att->_value);
+            store::Item_t typedValue = processTextValue(planState, delegatingTypeManager, bindings, typeQName, att->_value);
             
             store::Item_t validatedAttNode;
             GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
@@ -284,7 +263,7 @@ namespace zorba
         }
     }
 
-    void ValidateIterator::processChildren( DelegatingTypeManager* delegatingTypeManager, 
+    void ValidateIterator::processChildren( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
         SchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t children)
     {
         store::Item_t child;
@@ -301,7 +280,7 @@ namespace zorba
                 switch ( child->getNodeKind() )
                 { 
                 case store::StoreConsts::elementNode:                                     
-                    processElement( delegatingTypeManager, schemaValidator, parent, child);
+                    processElement( planState, delegatingTypeManager, schemaValidator, parent, child);
                     break;
                     
                 case store::StoreConsts::attributeNode:
@@ -318,17 +297,14 @@ namespace zorba
                         xqpStringStore_t childStringValue = child->getStringValue();
                         schemaValidator.text(childStringValue);
 
-                        store::Item_t validatedTextNode;
-                        GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, -1, childStringValue);
-                        
-                        /*store::Item_t textType = schemaValidator.getTypeQName();
+                        store::Item_t type = schemaValidator.getTypeQName();
 
                         store::NsBindings nsBindings;
                         parent->getNamespaceBindings(nsBindings);
-                        namespace_context *nsCtx = NULL;
-                        store::Item_t typedValue;
-                        GenericCast::instance()->cast(typedValue, childStringValue, nsCtx);*/
-
+                        store::Item_t typedValue = processTextValue(planState, delegatingTypeManager, nsBindings, type, childStringValue );
+                        
+                        store::Item_t validatedTextNode;
+                        GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValue);
                     }
                     break;
                 
@@ -375,7 +351,7 @@ namespace zorba
         }
     }
     
-    store::Item_t ValidateIterator::processTextValue (DelegatingTypeManager* delegatingTypeManager, 
+    store::Item_t ValidateIterator::processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
         store::NsBindings bindings, store::Item_t typeQName, xqpStringStore_t& textValue)
     {
         xqtref_t type = delegatingTypeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
@@ -383,13 +359,18 @@ namespace zorba
         //    typeQName->getNamespace()->str() ; std::cout.flush();
         //std::cout << " type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; std::cout.flush();                    
     
+        static_context* staticContext = planState.sctx();
+        namespace_context* nsCtx = new namespace_context(staticContext);
+
         
         store::Item_t result;                    
         if (type!=NULL)
-            GenericCast::instance()->cast(result, textValue, type.getp());
+            GenericCast::instance()->cast(result, textValue, type.getp(), nsCtx);
         else
             GENV_ITEMFACTORY->createUntypedAtomic( result, textValue);
                     
+        delete nsCtx;
+
         return result;
     }
 

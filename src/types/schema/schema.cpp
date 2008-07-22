@@ -46,9 +46,6 @@ const char* Schema::XSD_NAMESPACE = XML_SCHEMA_NS;
 
 bool Schema::_isInitialized = false;
 
-xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, 
-    XSTypeDefinition* xsTypeDef);
-
 
 xqp_string transcode(const XMLCh *const str)
 {
@@ -143,6 +140,10 @@ void Schema::registerXSD(const char* xsdURL)
     {
         std::cerr << "\nUnexpected exception during parsing: '" << xsdURL << "'\n" << std::endl;
     }
+
+#if 0                   // enable this to debug registered user defined schema types
+      printXSDInfo();
+#endif
 }
 
 void Schema::printXSDInfo(bool excludeBuiltIn)
@@ -187,10 +188,10 @@ xqtref_t Schema::createIfExists( const TypeManager *typeManager, const store::It
 
     return res;
 }
-#endif//ZORBA_NO_XMLSCHEMA
 
 
-xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef)
+
+xqtref_t Schema::getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef)
 {
     if (!xsTypeDef)
     {
@@ -404,6 +405,9 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
             store::Item_t qname;
             GENV_ITEMFACTORY->createQName(qname, lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
 
+            // todo: find out if the type is an atomic, list or union type
+            UserDefinedXQType::TYPE_CATEGORY typeCat = getTypeCategory(xsTypeDef);
+
             xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager, qname, baseXQType, TypeConstants::QUANT_ONE));
 
             result = xqType;
@@ -464,8 +468,69 @@ xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefi
     return result;
 }
 
+UserDefinedXQType::TYPE_CATEGORY Schema::getTypeCategory(XSTypeDefinition* xsTypeDef)
+{
+    XSSimpleTypeDefinition * xsSimpleTypeDef = (XSSimpleTypeDefinition *)xsTypeDef;
+    
 
-#ifndef ZORBA_NO_XMLSCHEMA
+    bool wasError = false;
+    const XMLCh* uri = xsTypeDef->getNamespace();
+    const XMLCh* local = xsTypeDef->getName();
+    
+    try 
+    {
+        // Create grammar resolver and string pool that we pass to the scanner
+        std::auto_ptr<GrammarResolver> fGrammarResolver (new GrammarResolver(_grammarPool));
+        fGrammarResolver->useCachedGrammarInParse(true);
+
+        // retrieve Grammar for the uri
+        SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->getGrammar(uri);
+        if (sGrammar) 
+        {
+            DatatypeValidator* xsiTypeDV = fGrammarResolver->getDatatypeValidator(uri, local);
+
+            if (!xsiTypeDV) 
+            {
+                ZORBA_ERROR_DESC_OSS( FORG0001, 
+                    "Type '" << StrX(local) << "@" << StrX(uri) << "' not found in current context.");
+                wasError = true;
+            }
+
+            //DatatypeValidator::ValidatorType typeCategory = xsiTypeDV->getType();
+            switch( xsiTypeDV->getType() )
+            {
+            case DatatypeValidator::List:   
+                return UserDefinedXQType::LIST_TYPE;
+
+            case DatatypeValidator::Union:   
+                return UserDefinedXQType::UNION_TYPE;
+
+            default:
+                return UserDefinedXQType::ATOMIC_TYPE;
+            }
+        }
+        else
+        {
+          ZORBA_ERROR_DESC_OSS( FORG0001, 
+              "Uri '" << StrX(uri) << "' not found in current schema context.");
+          wasError = true;
+        }
+
+        if (wasError)
+            throw;
+    }
+    catch(const OutOfMemoryException&) 
+    {
+        throw;
+    }
+    catch (...)
+    {
+        throw;
+    }
+    
+    return UserDefinedXQType::ATOMIC_TYPE;
+}
+
 
 XERCES_CPP_NAMESPACE::XMLGrammarPool* Schema::getGrammarPool()
 {

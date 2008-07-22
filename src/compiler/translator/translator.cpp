@@ -2753,9 +2753,6 @@ void *begin_visit(const SchemaImport& v)
       Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
       
       schema_p->registerXSD (at.c_str ());
-#if 0
-      schema_p->printXSDInfo();
-#endif
     }
 
     return no_state;

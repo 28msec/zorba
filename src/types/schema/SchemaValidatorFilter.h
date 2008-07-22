@@ -47,7 +47,7 @@ class SchemaValidatorFilter :
     private XERCES_CPP_NAMESPACE_QUALIFIER XMLErrorReporter
 {
 public:
-    static const XMLCh DT_UNTYPEDATOMIC[];
+    static const XMLCh DT_UNTYPED[];
 
 public:
     SchemaValidatorFilter(bool strictValidation, ValidationEventHandler *next,

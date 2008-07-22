@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,8 @@
 #include "types/node_test.h"
 #include "types/typeconstants.h"
 #include "zorbatypes/rchandle.h"
-
+//#include "system/globalenv.h"
+//#include "types/root_typemanager.h"
 
 namespace zorba {
 
@@ -28,7 +29,7 @@ namespace zorba {
  * Implementation specific classes after this point.
  */
 
-class XQType : public RCObject 
+class XQType : public RCObject
 {
 public:
   typedef enum {
@@ -66,7 +67,7 @@ protected:
     m_manager(manager),
     m_type_kind(type_kind),
     m_quantifier(quantifier)
-  { 
+  {
   }
 
 protected:
@@ -78,7 +79,7 @@ protected:
 };
 
 
-class AtomicXQType : public XQType 
+class AtomicXQType : public XQType
 {
  public:
    static const char *ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
@@ -103,7 +104,7 @@ class AtomicXQType : public XQType
 };
 
 
-class NodeXQType : public XQType 
+class NodeXQType : public XQType
 {
 public:
   NodeXQType(
@@ -124,7 +125,7 @@ private:
 };
 
 
-class AnyXQType : public XQType 
+class AnyXQType : public XQType
 {
 public:
   AnyXQType(const TypeManager *manager)
@@ -133,7 +134,7 @@ public:
 };
 
 
-class ItemXQType : public XQType 
+class ItemXQType : public XQType
 {
 public:
   ItemXQType(const TypeManager *manager, TypeConstants::quantifier_t quantifier)
@@ -142,37 +143,37 @@ public:
 };
 
 
-class AnySimpleXQType : public XQType 
+class AnySimpleXQType : public XQType
 {
 public:
-  AnySimpleXQType(const TypeManager *manager) 
+  AnySimpleXQType(const TypeManager *manager)
     :
     XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR) { }
 };
 
 
-class UntypedXQType : public XQType 
+class UntypedXQType : public XQType
 {
 public:
-  UntypedXQType(const TypeManager *manager) 
+  UntypedXQType(const TypeManager *manager)
     :
     XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR) { }
 };
 
 
-class EmptyXQType : public XQType 
+class EmptyXQType : public XQType
 {
 public:
-  EmptyXQType(const TypeManager *manager) 
+  EmptyXQType(const TypeManager *manager)
     :
     XQType(manager, EMPTY_KIND, TypeConstants::QUANT_STAR) { }
 };
 
 
-class NoneXQType : public XQType 
+class NoneXQType : public XQType
 {
 public:
-  NoneXQType(const TypeManager *manager) 
+  NoneXQType(const TypeManager *manager)
     :
     XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE) { }
 };
@@ -180,22 +181,57 @@ public:
 
 class UserDefinedXQType : public XQType
 {
+public:
+    enum TYPE_CATEGORY
+    {
+        ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
+        LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
+        UNION_TYPE,   // union of simple types: ShirtSize int or string: "8", "small"
+                      // ATOMIC, LIST and UNION types are all SIMPLE types: i.e. their representation is a text value
+
+        COMPLEX_TYPE  // complex types: they represent structure
+    };
+
+
 private:
   store::Item_t m_qname;
   xqtref_t      m_baseType;
-  bool          m_isAtomic;
-    
+  TYPE_CATEGORY m_typeCategory;
+  xqtref_t      m_listItemType;
+  std::vector<xqtref_t> m_unionItemTypes;
+
 public:
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
         xqtref_t baseType,
         TypeConstants::quantifier_t quantifier);
-    
+
+  UserDefinedXQType(
+        const TypeManager *manager,
+        store::Item_t qname,
+        xqtref_t baseType,
+        TypeConstants::quantifier_t quantifier,
+        xqtref_t listItemType);
+
+  UserDefinedXQType(
+        const TypeManager *manager,
+        store::Item_t qname,
+        xqtref_t baseType,
+        TypeConstants::quantifier_t quantifier,
+        std::vector<xqtref_t> unionItemTypes);
+
+
   bool isSuperTypeOf(const XQType& subType) const;
 
   store::Item_t getQName() const { return m_qname;    }
-  bool isAtomic()          const { return m_isAtomic; }
+
+  bool isAtomic()                 const { return m_typeCategory == ATOMIC_TYPE;  }
+  bool isList()                   const { return m_typeCategory == LIST_TYPE;    }
+  bool isUnion()                  const { return m_typeCategory == UNION_TYPE;   }
+  bool isComplex()                const { return m_typeCategory == COMPLEX_TYPE; }
+  TYPE_CATEGORY getTypeCategory() const { return m_typeCategory; }
+
   xqtref_t getBaseType()   const { return m_baseType; }
 
   virtual std::ostream& serialize(std::ostream& os) const;

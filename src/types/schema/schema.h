@@ -43,6 +43,8 @@ public:
     /* before finishing up terminate must be called */
     static void terminate();
 
+    store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
+
 #ifndef ZORBA_NO_XMLSCHEMA
     Schema();
     virtual ~Schema();
@@ -64,9 +66,13 @@ public:
         TypeConstants::quantifier_t quantifier);
 
     XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool();
+
+private:
+    xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef);
+    UserDefinedXQType::TYPE_CATEGORY getTypeCategory(XSTypeDefinition* xsTypeDef);
+
 #endif//ZORBA_NO_XMLSCHEMA
 
-    store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
 
 private:
     static bool _isInitialized;

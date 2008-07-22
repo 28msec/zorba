@@ -1248,10 +1248,10 @@ store::Item_t castUserDefinedType(
   {
     store::Item_t lResult;
     if (lDelegatingTypeManager->getSchema()->
-        parseUserAtomicTypes(xqpString(aItem->getStringValue()), 
-                             aErrorInfo.theSourceType,
-                             aErrorInfo.theTargetType,
-                             lResult))
+            parseUserAtomicTypes(xqpString(aItem->getStringValue()), 
+                                 aErrorInfo.theSourceType,
+                                 aErrorInfo.theTargetType,
+                                 lResult))
     {
       return lResult;
     }

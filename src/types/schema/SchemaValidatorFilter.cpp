@@ -41,10 +41,11 @@ const XMLCh* emptyToNull(const XMLCh * chars)
     return XMLString::stringLen(chars) == 0 ? NULL : chars;
 }
 
-const XMLCh SchemaValidatorFilter::DT_UNTYPEDATOMIC[] =
+const XMLCh SchemaValidatorFilter::DT_UNTYPED[] =
 {
     chLatin_u, chLatin_n, chLatin_t, chLatin_y, chLatin_p, chLatin_e, chLatin_d, chNull
 };
+
 
 SchemaValidatorFilter::SchemaValidatorFilter(bool strictValidation, ValidationEventHandler *next, 
     GrammarResolver *grammarResolver, MemoryManager *mm, const LocationInfo *info, 
@@ -447,7 +448,7 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
             next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value, SchemaSymbols::fgURI_SCHEMAFORSCHEMA, SchemaSymbols::fgDT_ANYSIMPLETYPE);
         }
         else
-          next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value, SchemaSymbols::fgURI_SCHEMAFORSCHEMA, DT_UNTYPEDATOMIC);
+          next_->attributeEvent(emptyToNull(attr->getPrefix()), emptyToNull(uri), localname, value, SchemaSymbols::fgURI_SCHEMAFORSCHEMA, DT_UNTYPED);
     }
 
     // Deal with default, required and prohibited attrs
@@ -498,7 +499,7 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
                                                 emptyToNull(attrValidator->getTypeUri()), attrValidator->getTypeLocalName());
                         else
                           next_->attributeEvent(emptyToNull(attName->getPrefix()), emptyToNull(getURIText(curUriId)), curName, curDef->getValue(),
-                                                SchemaSymbols::fgURI_SCHEMAFORSCHEMA, DT_UNTYPEDATOMIC);
+                                                SchemaSymbols::fgURI_SCHEMAFORSCHEMA, DT_UNTYPED);
                         break;
                     }
                 default: break;
@@ -595,7 +596,7 @@ void SchemaValidatorFilter::endElementEvent(const XMLCh *prefix, const XMLCh *ur
     if(!fValidate || _errorOccurred) 
     {
         typeURI = SchemaSymbols::fgURI_SCHEMAFORSCHEMA;
-        //typeName = DocumentCache::g_szUntyped;
+        typeName = DT_UNTYPED; // DocumentCache::g_szUntyped;
     }
 
     next_->endElementEvent(prefix, uri, localname, emptyToNull(typeURI), typeName);

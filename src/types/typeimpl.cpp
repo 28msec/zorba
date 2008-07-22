@@ -157,17 +157,47 @@ UserDefinedXQType::UserDefinedXQType(
   case USER_DEFINED_KIND:
   {
     const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
-    m_isAtomic = udBaseType.isAtomic();
+    m_typeCategory = udBaseType.getTypeCategory();
     break;
   }
   case ATOMIC_TYPE_KIND:
   {
-    m_isAtomic = true;
-    break;
+      m_typeCategory = ATOMIC_TYPE;
+      break;
   }
   default:
-    m_isAtomic = false;            
+      m_typeCategory = COMPLEX_TYPE;            
   }        
+}
+
+UserDefinedXQType::UserDefinedXQType(
+    const TypeManager *manager,
+    store::Item_t qname,
+    xqtref_t baseType,
+    TypeConstants::quantifier_t quantifier,
+    xqtref_t listItemType)
+    :
+    XQType(manager, USER_DEFINED_KIND, quantifier),
+    m_qname(qname),
+    m_baseType(baseType),
+    m_typeCategory(LIST_TYPE),
+    m_listItemType(listItemType)
+{
+}
+
+UserDefinedXQType::UserDefinedXQType(
+    const TypeManager *manager,
+    store::Item_t qname,
+    xqtref_t baseType,
+    TypeConstants::quantifier_t quantifier,
+    std::vector<xqtref_t> unionItemTypes)
+    : 
+    XQType(manager, USER_DEFINED_KIND, quantifier),
+    m_qname(qname),
+    m_baseType(baseType),
+    m_typeCategory(UNION_TYPE),
+    m_unionItemTypes(unionItemTypes)
+{
 }
 
 
@@ -215,7 +245,10 @@ std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
             << TypeOps::decode_quantifier (get_quantifier()) 
             << m_qname->getLocalName()->str() << "@"
             << m_qname->getNamespace()->str() << " "
-            << (m_isAtomic ? "isAtomic" : "" ) << " base:"
+            << (m_typeCategory == ATOMIC_TYPE ? "isAtomic" : 
+                m_typeCategory == LIST_TYPE ? "isList" : 
+                m_typeCategory == UNION_TYPE ? "isUnion" : 
+                m_typeCategory == COMPLEX_TYPE ? "isComplex" : "" ) << " base:"
             << TypeOps::toString(*m_baseType) << " ]";
 }    
 }  // namespace zorba
