@@ -404,7 +404,7 @@ typedef zorba::xquery_parser::token token;
 "!" { return token::FTNOT; }
 "||" { return token::FTOR; }
 "not" { return token::FTNOT; }
-"in" { return token::IN; }
+"in" { return token::_IN; }
 "all" { return token::ALL; }
 "words" { return token::WORDS; }
 "any" { return token::ANY; }
@@ -485,7 +485,7 @@ typedef zorba::xquery_parser::token token;
    |______________________________________________________________________*/
 
 "insert" { return token::INSERT; }
-"delete" { return token::DELETE; }
+"delete" { return token::_DELETE; }
 "replace" { return token::REPLACE; }
 "value" { return token::VALUE; }
 "of" { return token::OF; }
@@ -501,7 +501,7 @@ typedef zorba::xquery_parser::token token;
 "before" { return token::BEFORE; }
 "modify" { return token::MODIFY; }
 
-"strict" { return token::STRICT; }
+"strict" { return token::_STRICT; }
 "lax" { return token::LAX; }
 "skip" { return token::SKIP; }
 "then" { return token::THEN; }

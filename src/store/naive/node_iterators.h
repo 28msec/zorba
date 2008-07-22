@@ -263,12 +263,12 @@ protected:
     {
       return (theAscending ?
               n1->getTreeId() < n2->getTreeId() ||
-              n1->getTreeId() == n2->getTreeId() &&
-              n1->getOrdPath() < n2->getOrdPath()
+              (n1->getTreeId() == n2->getTreeId() &&
+              n1->getOrdPath() < n2->getOrdPath())
               : 
               n1->getTreeId() > n2->getTreeId() ||
-              n1->getTreeId() == n2->getTreeId() &&
-              n1->getOrdPath() > n2->getOrdPath());
+              (n1->getTreeId() == n2->getTreeId() &&
+              n1->getOrdPath() > n2->getOrdPath()));
     }
   };
 

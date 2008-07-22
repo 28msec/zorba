@@ -60,7 +60,8 @@ namespace zorba {
   template <class InputIterator, class Size, class OutputIterator>
   OutputIterator copy_n(InputIterator first, Size count, 
                         OutputIterator result) {
-    for (Size n = 0; n < count; n++, *result++ = *first++);
+    for (Size n = 0; n < count; n++, *result++ = *first++)
+      ;
     return result;
   }
 

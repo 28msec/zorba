@@ -2400,7 +2400,7 @@ protected:
 public:
 	IntersectExceptExpr(
 		const QueryLoc&,
-		enum ParseConstants::intex_op_t,
+		ParseConstants::intex_op_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -2891,7 +2891,7 @@ protected:
 public:
 	RelativePathExpr(
 		const QueryLoc&,
-		enum ParseConstants::steptype_t,
+		ParseConstants::steptype_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -3637,7 +3637,7 @@ protected:
 public:
 	CommonContent(
 		const QueryLoc&,
-		enum ParseConstants::common_content_t,
+		ParseConstants::common_content_t,
 		std::string ref);
 
 	CommonContent(

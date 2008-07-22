@@ -412,7 +412,7 @@ class ElementNode : public XmlNode
   friend class AttributeNode;
 
 public:
-  typedef enum ElemFlags
+  enum ElemFlags
   {
     IsId              =   1,
     IsIdRefs          =   2,
@@ -679,7 +679,7 @@ class AttributeNode : public XmlNode
   friend class FastXmlLoader;
 
 public:
-  typedef enum AttrFlags
+  enum AttrFlags
   {
     IsId              =   1,
     IsIdRefs          =   2,

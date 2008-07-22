@@ -268,7 +268,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token GT													"'>'"
 %token HOOK												"'?'"
 %token IDIV												"'idiv'"
-%token IN                         "'in'"
+%token _IN                         "'in'"
 %token INHERIT										"'inherit'"
 %token <ival> INTEGER_LITERAL			"'INTEGER'"
 %token INTERSECT									"'intersect'"
@@ -348,10 +348,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token AFTER											"'after'"
 %token BEFORE											"'before'"
 %token REVALIDATION	              "'revalidation'"
-%token STRICT                     "'strict'"
+%token _STRICT                     "'strict'"
 %token LAX                        "'lax'"
 %token SKIP                       "'skip'"
-%token DELETE                     "'delete'"
+%token _DELETE                     "'delete'"
 %token NODE                       "'node'"
 %token INSERT                     "'insert'"
 %token NODES                      "'nodes'"
@@ -1773,14 +1773,14 @@ VarInDeclList :
 // [34b] VarInDecl
 // ---------------
 VarInDecl :
-		QNAME  IN  ExprSingle
+		QNAME  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
 								NULL,NULL,NULL,
 								$3);
 		}
-	|	QNAME  TypeDeclaration  IN  ExprSingle
+	|	QNAME  TypeDeclaration  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1788,7 +1788,7 @@ VarInDecl :
 								NULL,NULL,
 								$4);
 		}
-	|	QNAME  PositionalVar  IN  ExprSingle
+	|	QNAME  PositionalVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1797,7 +1797,7 @@ VarInDecl :
 								NULL,
 								$4);
 		}
-	|	QNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
+	|	QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1807,7 +1807,7 @@ VarInDecl :
 								$5);
 		}
 	/* full-text extensions */
-	| QNAME  FTScoreVar  IN  ExprSingle
+	| QNAME  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1815,7 +1815,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
 		}
-	| QNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
+	| QNAME  TypeDeclaration  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1824,7 +1824,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
 		}
-	| QNAME  PositionalVar  FTScoreVar  IN  ExprSingle
+	| QNAME  PositionalVar  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -1833,7 +1833,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
 		}
-	| QNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
+	| QNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -2260,13 +2260,13 @@ QVarInDeclList :
 // [42b] QVarInDecl
 // ----------------
 QVarInDecl :
-		QNAME  IN  ExprSingle
+		QNAME  _IN  ExprSingle
 		{
 			$$ = new QVarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
 								$3);
 		}
-	|	QNAME  TypeDeclaration  IN  ExprSingle
+	|	QNAME  TypeDeclaration  _IN  ExprSingle
 		{
 			$$ = new QVarInDecl(LOC (@$),
 								driver.symtab.get((off_t)$1),
@@ -2755,7 +2755,7 @@ ValidateExpr :
 		{
 			$$ = new ValidateExpr(LOC (@$), "strict", $3);
 		}
-	|	VALIDATE STRICT  LBRACE  Expr  RBRACE
+	|	VALIDATE _STRICT  LBRACE  Expr  RBRACE
 		{
 			$$ = new ValidateExpr(LOC (@$),
                 "strict",
@@ -4362,7 +4362,7 @@ StringLiteral :
 // ----------------------
 // TODO: $$ = something
 RevalidationDecl :
-		DECLARE REVALIDATION STRICT
+		DECLARE REVALIDATION _STRICT
 		{
 //			$$ = new OrderingModeDecl(@$,
 //								StaticQueryContext::ordered);
@@ -4445,12 +4445,12 @@ InsertExpr :
 // [243] DeleteExpr
 // ----------------
 DeleteExpr:
-		DELETE NODE ExprSingle
+		_DELETE NODE ExprSingle
 		{
        $$ = new DeleteExpr( LOC (@$), $3);
 		}
   |
-		DELETE NODES ExprSingle
+		_DELETE NODES ExprSingle
 		{
        $$ = new DeleteExpr( LOC (@$), $3);
 		}
@@ -4650,7 +4650,7 @@ QNAME :
   | FT_OPTION { $$ = driver.symtab.put("ft-option"); }
   | BASE_URI { $$ = driver.symtab.put("base-uri"); }
   | LAX { $$ = driver.symtab.put("lax"); }
-  | STRICT { $$ = driver.symtab.put("strict"); }
+  | _STRICT { $$ = driver.symtab.put("strict"); }
   | IDIV { $$ = driver.symtab.put("idiv"); }
   | DOCUMENT { $$ = driver.symtab.put("document"); }
   | FTNOT { $$ = driver.symtab.put("not"); }
@@ -4681,7 +4681,7 @@ QNAME :
   | VARIABLE { $$ = driver.symtab.put("variable"); }
   | RETURN { $$ = driver.symtab.put("return"); }
   | FOR { $$ = driver.symtab.put("for"); }
-  | IN { $$ = driver.symtab.put("in"); }
+  | _IN { $$ = driver.symtab.put("in"); }
   | LET { $$ = driver.symtab.put("let"); }
   | WHERE { $$ = driver.symtab.put("where"); }
   | BY { $$ = driver.symtab.put("by"); }
@@ -4766,7 +4766,7 @@ QNAME :
   | NODES { $$ = driver.symtab.put("nodes"); }
   | RENAME { $$ = driver.symtab.put("rename"); }
   | LAST { $$ = driver.symtab.put("last"); }
-  | DELETE { $$ = driver.symtab.put("delete"); }
+  | _DELETE { $$ = driver.symtab.put("delete"); }
   | INTO { $$ = driver.symtab.put("into"); }
   | UPDATING { $$ = driver.symtab.put("updating"); }
   | ORDERED { $$ = driver.symtab.put("ordered"); }
@@ -4871,7 +4871,7 @@ FTMildnot :
 		FTUnaryNot
 		{
 		}
-	|	FTMildnot  FTNOT IN  FTUnaryNot
+	|	FTMildnot  FTNOT _IN  FTUnaryNot
 		{
 		}
 	;
