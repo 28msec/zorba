@@ -255,7 +255,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   store::Collection_t theColl;
   store::Item_t       itemUri, itemPos, itemNode;
   xqpStringStore_t    strURI;
-  uint                pos = 0;
+  int                 pos = 0;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -268,7 +268,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if(consumeNext(itemPos, theChildren[1].getp(), planState))
   {
     if(itemPos->getIntegerValue() < Integer::zero())
-      NumConversions::integerToUInt(itemPos->getIntegerValue(), pos);
+      pos = itemPos->getIntValue();
 
     //add the nodes to the newly created collection
     while (consumeNext(itemNode, theChildren[2].getp(), planState))
@@ -306,7 +306,6 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   store::Collection_t theColl;
   xqpStringStore_t    strURI;
   store::Item_t       itemUri, itemPos;
-  uint                pos;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -320,10 +319,7 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (consumeNext(itemPos, theChildren[1].getp(), planState))
   {
     if(itemPos->getIntegerValue() >= Integer::zero())
-    {
-      NumConversions::integerToUInt(itemPos->getIntegerValue(), pos);
-      ((CollectionImpl*)theColl.getp())->deleteNode(pos);
-    }
+      ((CollectionImpl*)theColl.getp())->deleteNode(itemPos->getIntValue());
   }
 
   STACK_END (state);
@@ -357,7 +353,6 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Collection_t theColl;
   store::Item_t       itemUri, itemPos;
   xqpStringStore_t    strURI;
-  uint                pos;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -370,10 +365,7 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(itemPos, theChildren[1].getp(), planState))
   {
     if(itemPos->getIntegerValue() >= Integer::zero())
-    {
-      NumConversions::integerToUInt(itemPos->getIntegerValue(), pos);
-      STACK_PUSH(theColl->nodeAt(pos), state);
-    }
+      STACK_PUSH(theColl->nodeAt(itemPos->getIntValue()), state);
   }
 
   STACK_END (state);
