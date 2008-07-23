@@ -51,5 +51,11 @@ namespace zorba {
   class Item;
   class String;
 
+  // uri resolvers
+  class DocumentURIResolver;
+  class CollectionURIResolver;
+  class SchemaURIResolver;
+  class ModuleURIResolver;
+
 } /* namespace zorba */
 #endif

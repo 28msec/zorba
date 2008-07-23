@@ -22,6 +22,9 @@
 #include "context/namespace_context.h"
 #include "context/collation_cache.h"
 #include "context/context_impl.h"
+#include "context/uri_resolver_wrapper.h"
+#include "context/standard_uri_resolvers.h"
+
 
 #include "compiler/expression/expr_base.h"
 
@@ -52,7 +55,11 @@ namespace zorba {
 
 static_context::static_context()
   :
-  context(NULL)
+  context(NULL),
+  theDocResolver(0),
+  theColResolver(0),
+  theSchemaResolver(0),
+  theModuleResolver(0)
 {
   set_encapsulating_entity_baseuri ("");
   set_entity_retrieval_url ("");
@@ -61,7 +68,11 @@ static_context::static_context()
   
 static_context::static_context (static_context *_parent)
   :
-  context (_parent)
+  context (_parent),
+  theDocResolver(0),
+  theColResolver(0),
+  theSchemaResolver(0),
+  theModuleResolver(0)
 {
 }
 
@@ -92,6 +103,11 @@ static_context::~static_context()
       RCHelper::removeReference (const_cast<function *> (val->functionValue));
     }
   }
+
+  set_document_uri_resolver(0);
+  set_collection_uri_resolver(0);
+  set_schema_uri_resolver(0);
+  set_module_uri_resolver(0);
 }
 
 bool context::bind_expr (xqp_string key, expr *e) {
@@ -596,6 +612,81 @@ static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_strin
   return lookup_stateless_function( 
     qname_internal_key(default_function_namespace(), aPrefix, aLocalName)); 
 }
+
+// URI Resolver
+void
+static_context::set_document_uri_resolver(InternalDocumentURIResolver* aDocResolver)
+{
+  if ( theDocResolver &&
+       dynamic_cast<DocumentURIResolverWrapper*>(theDocResolver) != 0 ) // not the user's resolver
+    delete theDocResolver;
+
+  theDocResolver = aDocResolver;
+}
+
+InternalDocumentURIResolver*
+static_context::get_document_uri_resolver()
+{
+  if ( theDocResolver != 0 )
+    return theDocResolver;
+  return dynamic_cast<static_context*>(parent)->get_document_uri_resolver();
+}
+
+void
+static_context::set_collection_uri_resolver(InternalCollectionURIResolver* aColResolver)
+{
+  if ( theColResolver && 
+       dynamic_cast<CollectionURIResolverWrapper*>(theColResolver) != 0 ) // not the user's resolver
+    delete theColResolver;
+
+  theColResolver = aColResolver;
+}
+
+InternalCollectionURIResolver*
+static_context::get_collection_uri_resolver()
+{
+  if ( theColResolver != 0 )
+    return theColResolver;
+  return dynamic_cast<static_context*>(parent)->get_collection_uri_resolver();
+}
+
+void
+static_context::set_schema_uri_resolver(InternalSchemaURIResolver* aSchemaResolver)
+{
+  if ( theSchemaResolver && 
+       dynamic_cast<SchemaURIResolverWrapper*>(theSchemaResolver) != 0 ) // not the user's resolver
+    delete theSchemaResolver;
+
+  theSchemaResolver = aSchemaResolver;
+}
+
+InternalSchemaURIResolver*
+static_context::get_schema_uri_resolver()
+{
+  if ( theSchemaResolver != 0 )
+    return theSchemaResolver;
+  return dynamic_cast<static_context*>(parent)->get_schema_uri_resolver();
+}
+
+void
+static_context::set_module_uri_resolver(InternalModuleURIResolver* aModuleResolver)
+{
+  if ( theModuleResolver && 
+       dynamic_cast<ModuleURIResolverWrapper*>(theModuleResolver) != 0 ) // not the user's resolver
+    delete theModuleResolver;
+
+  theModuleResolver = aModuleResolver;
+}
+
+InternalModuleURIResolver*
+static_context::get_module_uri_resolver()
+{
+  if ( theModuleResolver != 0 )
+    return theModuleResolver;
+  return dynamic_cast<static_context*>(parent)->get_module_uri_resolver();
+}
+
+
 
 } /* namespace zorba */
 

@@ -16,4 +16,7 @@ SET(CONTEXT_SRCS
     dynamic_context.cpp
     static_context.cpp
     namespace_context.cpp
-    root_static_context.cpp)
+    root_static_context.cpp
+    standard_uri_resolvers.cpp
+    uri_resolver_wrapper.cpp
+    )

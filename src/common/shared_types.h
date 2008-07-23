@@ -152,6 +152,12 @@ typedef rchandle<LetVarIterator> LetVarIter_t;
 /* api */
 class serializer;
 
+/* URI resolvers */
+class InternalDocumentURIResolver;
+class InternalCollectionURIResolver;
+class InternalSchemaURIResolver;
+class InternalModuleURIResolver;
+
 }
 
 #endif /* ZORBA_SHARED_TYPES_H */

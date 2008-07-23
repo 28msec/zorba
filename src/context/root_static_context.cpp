@@ -16,6 +16,8 @@
 #include "types/root_typemanager.h"
 #include "context/root_static_context.h"
 #include "context/namespace_context.h"
+#include "context/uri_resolver_wrapper.h"
+#include "context/standard_uri_resolvers.h"
 #include "system/globalenv.h"
 #include "common/common.h"
 
@@ -60,6 +62,10 @@ void root_static_context::init()
   set_inherit_mode(StaticContextConsts::inherit_ns);
   set_preserve_mode(StaticContextConsts::preserve_ns);
   set_default_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+  set_document_uri_resolver(new StandardDocumentURIResolver());
+  set_collection_uri_resolver(new StandardCollectionURIResolver());
+  set_schema_uri_resolver(new StandardSchemaURIResolver());
+  set_module_uri_resolver(new StandardModuleURIResolver());
 }
 
 }

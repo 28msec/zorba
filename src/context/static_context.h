@@ -218,6 +218,38 @@ public:
   xqp_string resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri = xqp_string() );
 
   bool import_module (const static_context *module);
+
+// URI Resolver function and members
+public:
+  void
+  set_document_uri_resolver(InternalDocumentURIResolver*);
+
+  InternalDocumentURIResolver*
+  get_document_uri_resolver();
+
+  void
+  set_collection_uri_resolver(InternalCollectionURIResolver*);
+
+  InternalCollectionURIResolver*
+  get_collection_uri_resolver();
+
+  void
+  set_schema_uri_resolver(InternalSchemaURIResolver*);
+
+  InternalSchemaURIResolver*
+  get_schema_uri_resolver();
+
+  void
+  set_module_uri_resolver(InternalModuleURIResolver*);
+
+  InternalModuleURIResolver*
+  get_module_uri_resolver();
+
+protected:
+  InternalDocumentURIResolver*   theDocResolver;
+  InternalCollectionURIResolver* theColResolver;
+  InternalSchemaURIResolver*     theSchemaResolver;
+  InternalModuleURIResolver*     theModuleResolver;
 };
 
 std::pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
