@@ -516,7 +516,7 @@ public:
    * An optimization method used to indicate to the store that the construction
    * of this node (including its children and attributes) is complete. Some 
    * stores may benefit from this information to do internal cleanup, memory
-   * management, or other optimizations when they know that a node has reach a
+   * management, or other optimizations when they know that a node has reached a
    * "stable" state (e.g. after the initial creation of this node or after a
    * set of updates). Other stores may just provide an empty implementation of
    * this method.
