@@ -1299,7 +1299,7 @@ void XmlLoader::startElement(
 
     store::Item_t node;
     theFactory->createElementNode(node, parent, -1, qname, 
-                                  tname, nullValue, false, false,
+                                  tname, true, false, false, false,
                                   nsbindings, baseUri);
     tag_elem->elemNode = dynamic_cast<ElementTreeNode*>(node.getp());
     tag_elem->elemNode->setIsFullLoaded(false);

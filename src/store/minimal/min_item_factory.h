@@ -214,20 +214,8 @@ public:
         long                        pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
-        store::Item_t&              typedValue,
-        bool                        isId,
-        bool                        isIdRefs,
-        const store::NsBindings&    localBindings,
-        xqpStringStore_t&           baseURI,
-        bool                        allowSharing = false);
-
-  bool createElementNode(
-        store::Item_t&              result,
-        store::Item*                parent,
-        long                        pos,
-        store::Item_t&              nodeName,
-        store::Item_t&              typeName,
-        std::vector<store::Item_t>* typedValueV,
+        bool                        haveTypedValue,
+        bool                        haveEmptyValue,
         bool                        isId,
         bool                        isIdRefs,
         const store::NsBindings&    localBindings,
@@ -260,6 +248,16 @@ public:
         store::Item*      parent,
         long              pos,
         xqpStringStore_t& content);
+
+  bool createTextNode(
+        store::Item_t&    result,
+        store::Item*      parent,
+        store::Item_t&    content);
+
+  bool createTextNode(
+        store::Item_t&              result,
+        store::Item*                parent,
+        std::vector<store::Item_t>& content);
 
   bool createPiNode (
         store::Item_t&    result,

@@ -1195,11 +1195,27 @@ void UpdReplaceAttrValue::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdReplaceTextValue::~UpdReplaceTextValue()
+{
+  if (theIsTyped)
+  {
+    if (theOldContent.value)
+      theOldContent.value->removeReference(NULL
+                                            SYNC_PARAM2(theOldContent.value->getRCLock()));
+  }
+  else if (theOldContent.text)
+  {
+    theOldContent.text->removeReference(NULL
+                                        SYNC_PARAM2(theOldContent.text->getRCLock()));
+  }
+}
+
+
 void UpdReplaceTextValue::apply()
 {
   TextNode* target = TEXT_NODE(theTarget);
 
-  target->replaceValue(theNewValue, theOldValue);
+  target->replaceValue(theNewContent, theOldContent, theIsTyped);
 
   if (target->theParent)
     target->theParent->removeType(theTypeUndoList);
@@ -1212,7 +1228,7 @@ void UpdReplaceTextValue::undo()
 {
   TextNode* target = TEXT_NODE(theTarget);
 
-  target->replaceValue(theOldValue, theNewValue);
+  target->restoreValue(theOldContent, theIsTyped);
 
   if (!theTypeUndoList.empty())
     target->theParent->restoreType(theTypeUndoList);

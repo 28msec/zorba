@@ -608,7 +608,6 @@ void XmlNode::switchTree(
 void XmlNode::deleteTree() throw()
 {
 
-  ZORBA_FATAL(theParent == NULL, "");
   ZORBA_FATAL(theRefCount == 0, "");
 
   ulong numChildren = this->numChildren();
@@ -619,7 +618,6 @@ void XmlNode::deleteTree() throw()
     XmlNode* child = getChild(i);
     if (child->theParent == this)
     {
-      child->theParent = NULL; 
       child->deleteTree();
     }
   }
@@ -629,7 +627,6 @@ void XmlNode::deleteTree() throw()
     XmlNode* attr = getAttr(i);
     if (attr->theParent == this)
     {
-      attr->theParent = NULL;
       attr->deleteTree();
     }
   } 
@@ -901,14 +898,15 @@ DocumentDagNode::DocumentDagNode(
 /*******************************************************************************
 
 ********************************************************************************/
-ElementNode::ElementNode(store::Item_t&  nodeName, store::Item_t& typeName)
+ElementNode::ElementNode(store::Item_t&  nodeName)
   :
   XmlNode(),
   theFlags(0)
 {
   theName.transfer(nodeName);
-  theTypeName.transfer(typeName);
+  theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
 
+  setHaveValue();
 }
 
 
@@ -924,6 +922,10 @@ ElementNode::ElementNode(
     long              pos,
     store::Item_t&           nodeName,
     store::Item_t&           typeName,
+    bool                     haveValue,
+    bool                     haveEmptyValue,
+    bool                     isId,
+    bool                     isIdRefs,
     const store::NsBindings* localBindings,
     bool doswap_nsbindings)
   :
@@ -933,6 +935,17 @@ ElementNode::ElementNode(
   theName.transfer(nodeName);
   theTypeName.transfer(typeName);
 
+  if (haveValue)
+  {
+    setHaveValue();
+
+    if (haveEmptyValue)
+      setHaveEmptyValue();
+    else if (isId)
+      setIsId();
+    else if (isIdRefs)
+      setIsIdRefs();
+  }
 
   if (localBindings && !localBindings->empty())
   {
@@ -1005,10 +1018,26 @@ XmlNode* ElementNode::copy2(
   ElementTreeNode* copyNode = NULL;
 
   store::Item_t nodeName = theName;
-  store::Item_t typeName = (copymode.theTypePreserve ?
-                     theTypeName :
-                     GET_STORE().theSchemaTypeNames[XS_UNTYPED]);
-  store::Item_t nullValue;
+  store::Item_t typeName;
+  bool haveValue, haveEmptyValue, haveTypedValue, haveListValue, isId, isIdRefs; 
+
+  if (copymode.theTypePreserve)
+  { 
+    typeName = theTypeName;
+    haveValue = this->haveValue();
+    haveEmptyValue = this->haveEmptyValue();
+    haveTypedValue = this->haveTypedValue();
+    haveListValue = this->haveListValue();
+    isId = this->isId();
+    isIdRefs = this->isIdRefs();
+  }
+  else
+  {
+    typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
+    haveValue = true;
+    isId = isIdRefs = haveEmptyValue = haveTypedValue = haveListValue = false;
+  }
+
   xqpStringStore_t baseUri;
 
   try
@@ -1018,8 +1047,9 @@ XmlNode* ElementNode::copy2(
 
     pos = (parent == rootParent ? pos : -1);
 
-    copyNode = new ElementTreeNode(tree, parent, pos, nodeName,
-                                   typeName, nullValue, NULL, NULL, false, baseUri);
+    copyNode = new ElementTreeNode(tree, parent, pos, nodeName, typeName,
+                                   haveValue, haveEmptyValue, isId, isIdRefs,
+								   NULL, false, baseUri);
 
     if (copymode.theNsPreserve)
     {
@@ -1235,8 +1265,44 @@ XmlNode* ElementNode::copy2(
 ********************************************************************************/
 void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  val = getAtomizationValue();
-  iter = NULL;
+  if (haveValue())
+  {
+    if (haveTypedValue())
+    {
+      assert(numChildren() == 1 &&
+             getChild(0)->getNodeKind() == store::StoreConsts::textNode);
+
+      const TextNode* child = reinterpret_cast<const TextNode*>(getChild(0));
+      if (haveListValue())
+      {
+        ItemVector* vec = reinterpret_cast<ItemVector*>(child->getValue());
+        iter = new ItemIterator(vec->getItems());
+        val = NULL;
+      }
+      else
+      {
+        val = child->getValue();
+        iter = NULL;
+      }
+    }
+    else if (haveEmptyValue())
+    {
+      val = NULL;
+      iter = NULL;
+    }
+    else
+    {
+      xqpStringStore_t rch = getStringValue();
+      val = new UntypedAtomicItemImpl(rch);
+    }
+  }
+  else
+  {
+    ZORBA_ERROR_DESC_OSS(FOTY0012,
+                        "The element node " << *theName->getStringValue()
+                        << " with type " << *theTypeName->getStringValue()
+                        << " does not have a typed value");
+  }
 }
 
 
@@ -1268,7 +1334,8 @@ xqpStringStore_t ElementNode::getStringValue() const
     XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
     store::StoreConsts::NodeKind kind = child->getNodeKind();
 
-    if (kind != store::StoreConsts::commentNode && kind != store::StoreConsts::piNode)
+    if (kind != store::StoreConsts::commentNode && 
+        kind != store::StoreConsts::piNode)
       buf += child->getStringValue()->str();
   }
   child_iter->close();
@@ -1697,11 +1764,10 @@ xqp_string ElementNode::show() const
 
 ElementTreeNode::ElementTreeNode(
     store::Item_t& nodeName,
-    store::Item_t& typeName,
     ulong          numBindings,
     ulong          numAttributes)
   :
-  ElementNode(nodeName, typeName)
+  ElementNode(nodeName)
 {
   if (numBindings > 0)
   {
@@ -1727,20 +1793,20 @@ ElementTreeNode::ElementTreeNode(
     long                        pos,
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
-    store::Item_t&              typedValue,
-    std::vector<store::Item_t>* typedValueV,
+    bool                        haveTypedValue,
+    bool                        haveEmptyValue,
+    bool                        isId,
+    bool                        isIdRefs,
     const store::NsBindings*    localBindings,
     bool doswap_nsbindings,
     xqpStringStore_t&           baseUri)
   :
-  ElementNode(tree, parent, pos, nodeName, typeName, localBindings, doswap_nsbindings)
+  ElementNode(tree, parent, pos, nodeName, 
+              typeName, haveTypedValue, haveEmptyValue, isId, isIdRefs,
+              localBindings, doswap_nsbindings)
 {
   try
   {
-    if (typedValueV == NULL)
-      theTypedValue.transfer(typedValue);
-    else if (!typedValueV->empty())
-      theTypedValue.transfer((*typedValueV)[0]);
 
     // Setting the base uri property of "this" cannot be done in the ElementNode
     // constructor, because it involves the creation of an attribute node having
@@ -1822,20 +1888,19 @@ ElementDagNode::ElementDagNode(
     long                        pos,
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
-    store::Item_t&              typedValue,
-    std::vector<store::Item_t>* typedValueV,
+    bool                        haveTypedValue,
+    bool                        haveEmptyValue,
+    bool                        isId,
+    bool                        isIdRefs,
     const store::NsBindings*    localBindings,
     xqpStringStore_t&           baseUri)
   :
-  ElementNode(tree, parent, pos, nodeName, typeName, localBindings, false)
+  ElementNode(tree, parent, pos, nodeName, 
+              typeName, haveTypedValue, haveEmptyValue, isId, isIdRefs,
+              localBindings, false)
 {
   try
   {
-    if (typedValueV == NULL)
-      theTypedValue.transfer(typedValue);
-    else if (!typedValueV->empty())
-      theTypedValue.transfer((*typedValueV)[0]);
-
     if (baseUri != NULL)
     {
       xqpStringStore_t dummy;
@@ -2229,11 +2294,14 @@ xqp_string AttributeNode::show() const
 /*******************************************************************************
   Node constructor used by FastXmlLoader
 ********************************************************************************/
-TextNode::TextNode(xqpStringStore_t& value) : XmlNode()
+TextNode::TextNode(xqpStringStore_t& value) 
+  :
+  XmlNode()
 {
-  theContent.transfer(value);
+  theContent.text = NULL;
+  setText(value);
 
-  NODE_TRACE1("Loaded text node " << this << " content = " << *theContent);
+  NODE_TRACE1("Loaded text node " << this << " content = " << *getText());
 }
 
 
@@ -2248,11 +2316,13 @@ TextNode::TextNode(
   :
   XmlNode(tree, parent, pos, store::StoreConsts::textNode)
 {
-  theContent.transfer(content);
+  theContent.text = NULL;
+  setText(content);
 
   if (parent)
   {
-    //ZORBA_FATAL(!parent->haveTypedValue(), "");
+    ElementNode* p = dynamic_cast<ElementNode*>(parent);
+    ZORBA_FATAL(p == NULL || !p->haveTypedValue(), "");
 
     if (pos < 0)
       parent->children().push_back(this, false);
@@ -2264,7 +2334,40 @@ TextNode::TextNode(
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " content = "
-              << theContent->c_str());
+              << *getText());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+TextNode::TextNode(
+    XmlNode*          parent,
+    store::Item_t&    content,
+    bool              isListValue)
+  :
+  XmlNode(NULL, parent, -1, store::StoreConsts::textNode)
+{
+  assert(parent != NULL);
+
+  theContent.value = NULL;
+  setValue(content);
+
+  ElementNode* p = reinterpret_cast<ElementNode*>(parent);
+
+  ZORBA_ASSERT(p->numChildren() == 0);
+  ZORBA_ASSERT(p->haveValue() && !p->haveEmptyValue());
+
+  p->children().push_back(this, false);
+
+  p->setHaveTypedValue();
+  if (isListValue)
+    p->setHaveListValue();
+
+  NODE_TRACE1("Constructed text node " << this << " parent = "
+              << std::hex << (parent ? (ulong)parent : 0) 
+              << " ordpath = " << theOrdPath.show() << " content = "
+              << getValue()->getStringValue()->c_str());
 }
 
 
@@ -2273,7 +2376,32 @@ TextNode::TextNode(
 ********************************************************************************/
 TextNode::~TextNode()
 {
+  if (isTyped())
+  {
+    if (theContent.value != NULL)
+      theContent.value->removeReference(NULL
+                                         SYNC_PARAM2(theContent.value->getRCLock()));
+  }
+  else if (theContent.text != NULL)
+  {
+    theContent.text->removeReference(NULL
+                                      SYNC_PARAM2(theContent.text->getRCLock()));
+  }
   NODE_TRACE1("Deleted text node " << this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool TextNode::isTyped() const 
+{
+  ElementNode* p = dynamic_cast<ElementNode*>(theParent);
+
+  if (p == NULL)
+    return false;
+
+  return p->haveTypedValue();
 }
 
 
@@ -2290,7 +2418,8 @@ XmlNode* TextNode::copy2(
 
   XmlTree* tree = NULL;
   TextNode* copyNode = NULL;
-  xqpStringStore_t content;
+  xqpStringStore_t textContent;
+  store::Item_t typedContent;
 
   try
   {
@@ -2298,8 +2427,8 @@ XmlNode* TextNode::copy2(
     {
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      content = theContent;
-      copyNode = new TextNode(tree, NULL, pos, content);
+      textContent = getText();
+      copyNode = new TextNode(tree, NULL, pos, textContent);
     }
     else
     {
@@ -2314,18 +2443,22 @@ XmlNode* TextNode::copy2(
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
+        ZORBA_ASSERT(!isTyped());
+        ZORBA_ASSERT(!textSibling->isTyped());
+
         if (lsib->theParent == parent)
         {
-          textSibling->theContent = textSibling->theContent->append(theContent);
+          textContent = textSibling->getText()->append(getText());
+          textSibling->setText(textContent);
           copyNode = textSibling;
         }
         else
         {
-          content = textSibling->theContent->append(theContent);
+          textContent = textSibling->getText()->append(getText());
 
           parent->removeChild(pos2-1);
 
-          copyNode = new TextNode(tree, parent, pos2-1, content);
+          copyNode = new TextNode(tree, parent, pos2-1, textContent);
         }
       }
       // Skip copy if caller says so.
@@ -2339,10 +2472,24 @@ XmlNode* TextNode::copy2(
         copyNode = const_cast<TextNode*>(this);
       }
       // Regular copy
+      else if (isTyped())
+      {
+        if (copymode.theTypePreserve)
+        {
+          ElementNode* myParent = reinterpret_cast<ElementNode*>(theParent);
+          typedContent = getValue();
+          copyNode = new TextNode(parent, typedContent, myParent->haveListValue());
+        }
+        else
+        {
+          textContent = getValue()->getStringValue();
+          copyNode = new TextNode(NULL, parent, pos, textContent);
+        }
+      }
       else
       {
-        content = theContent;
-        copyNode = new TextNode(NULL, parent, pos, content);
+        textContent = getText();
+        copyNode = new TextNode(NULL, parent, pos, textContent);
       }
     }
   }
@@ -2371,16 +2518,49 @@ store::Item* TextNode::getType() const
 
 void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  xqpStringStore_t rch = theContent; 
-  val = new UntypedAtomicItemImpl(rch);
+  xqpStringStore_t rch;
+
+  if (isTyped())
+  {
+    rch = getValue()->getStringValue();
+    val = new UntypedAtomicItemImpl(rch);
+  }
+  else
+  {
+    rch = getText(); 
+    val = new UntypedAtomicItemImpl(rch);
+  }
   iter = NULL;
 }
 
 
 store::Item_t TextNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch = theContent; 
-  return new UntypedAtomicItemImpl(rch);
+  xqpStringStore_t rch;
+
+  if (isTyped())
+  {
+    rch = getValue()->getStringValue();
+    return new UntypedAtomicItemImpl(rch);
+  }
+  else
+  {
+    rch = getText(); 
+    return new UntypedAtomicItemImpl(rch);
+  }
+}
+
+
+xqpStringStore_t TextNode::getStringValue() const
+{
+  if (isTyped())
+  {
+    return getValue()->getStringValue();
+  }
+  else
+  {
+    return getText();
+  }
 }
 
 
@@ -2389,8 +2569,9 @@ store::Item_t TextNode::getAtomizationValue() const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", theContent.getp(), "</text>");
+  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", getStringValue(), "</text>");
 }
+
 
 
 /////////////////////////////////////////////////////////////////////////////////

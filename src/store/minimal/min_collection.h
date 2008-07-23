@@ -18,6 +18,8 @@
 
 #include <set>
 #include "zorbautils/latch.h"
+#include "zorbautils/checked_vector.h"
+
 #include "common/common.h"
 
 #include "store/api/iterator.h"
@@ -37,7 +39,7 @@ public:
 	{
   private:
     rchandle<SimpleCollection>           theCollection;
-    std::set<store::Item_t>::iterator    theIterator;
+    checked_vector<store::Item_t>::iterator theIterator;
     bool                          theHaveLock;
 
   public:
@@ -53,12 +55,13 @@ public:
 
 
 protected:
-  store::Item_t               theUri;
-  std::set<store::Item_t>     theXmlTrees;
-  SYNC_CODE(Latch      theLatch;)
+  store::Item_t                 theUri;
+  checked_vector<store::Item_t> theXmlTrees;
+  SYNC_CODE(Latch               theLatch;)
 
 public:
   SimpleCollection(store::Item_t& uri);
+
   virtual ~SimpleCollection();
 
   store::Item* getUri() { return theUri; }
@@ -67,12 +70,18 @@ public:
 
   store::Iterator_t getIterator(bool idsNeeded);
 
-  store::Item_t addToCollection(std::istream& stream);
-  store::Item_t addToCollection(std::istream* stream);
-  void addToCollection(const store::Item* node);
-  void addToCollection(store::Iterator* nodes);
+  store::Item_t addToCollection(std::istream& stream, long position = -1);
+  store::Item_t addToCollection(std::istream* stream, long position = -1);
 
-  void removeFromCollection(const store::Item* node);  
+  void addToCollection(const store::Item* node, long position = -1);
+  void addNode(const store::Item* node, const store::Item* aTargetNode, bool aOrder);
+
+  void addToCollection(store::Iterator* nodes, long position = -1);
+
+  void removeFromCollection(const store::Item* node);
+  void removeFromCollection(long position = -1);
+
+  store::Item_t nodeAt(long position);
 };
 
 } // namespace storeminimal

@@ -38,6 +38,7 @@
 #include "store/minimal/string_pool.h"
 #include "store/minimal/min_iterator_factory.h"
 #include "store/minimal/min_query_context.h"
+#include "store/minimal/min_item_iterator.h"
 
 #include "store/api/pul.h"
 
@@ -386,6 +387,7 @@ store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
 
   store::Item_t uriItem;
   theItemFactory->createAnyURI(uriItem, uri);
+  theItemUris.push_back(uriItem);
 
   store::Collection_t collection(new SimpleCollection(uriItem));
 
@@ -395,6 +397,7 @@ store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
   if (!inserted)
   {
     ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
+    theItemUris.erase(theItemUris.end());
     return NULL;
   }
 
@@ -443,6 +446,26 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
     return;
 
   theCollections.remove(uri);
+
+  checked_vector<store::Item_t>::iterator it = theItemUris.begin();
+  checked_vector<store::Item_t>::iterator end = theItemUris.end();
+
+  for (; it != end; ++it)
+  {
+    if( (*it)->getStringValue() == uri )
+    {
+      theItemUris.erase(it);
+      break;
+    }
+  }
+}
+
+/*******************************************************************************
+  Resturn an iterator that lists the URI's of all the available collections.
+********************************************************************************/
+store::Iterator_t SimpleStore::listCollectionsUri()
+{
+  return new storeminimal::ItemIterator(theItemUris);
 }
 
 
@@ -590,8 +613,8 @@ long SimpleStore::compareNodes(store::Item* node1, store::Item* node2) const
   XmlNode* n2 = static_cast<XmlNode*>(node2);
 
   
-  if (n1->getTreeId() < n2->getTreeId() ||
-      n1->getTreeId() == n2->getTreeId() && n1->getOrdPath() < n2->getOrdPath())
+  if ((n1->getTreeId() < n2->getTreeId()) ||
+      ((n1->getTreeId() == n2->getTreeId()) && (n1->getOrdPath() < n2->getOrdPath())))
     return -1;
 
   return 1;
@@ -847,6 +870,9 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   }
 }
 
+/*******************************************************************************
+
+********************************************************************************/
 bool SimpleStore::getPathInfo(
   const store::Item*               docUri,
   std::vector<const store::Item*>& contextPath,

@@ -55,6 +55,9 @@ void XmlNode::removeType(TypeUndoList& undoList)
       undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
 
       n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
+      n->setHaveValue();
+      n->resetHaveEmptyValue();
+      n->resetHaveTypedValue();
       n->resetIsId();
       n->resetIsIdRefs();
     }
@@ -128,6 +131,9 @@ void XmlNode::setToUntyped()
 
     n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
 
+    n->setHaveValue();
+    n->resetHaveEmptyValue();
+    n->resetHaveTypedValue();
     n->resetIsId();
     n->resetIsIdRefs();
 
@@ -207,7 +213,7 @@ void XmlNode::removeChildren(
 ********************************************************************************/
 void XmlNode::insertChildren(
     std::vector<store::Item_t>& newChildren,
-    ulong                pos,
+    ulong                       pos,
     bool                 copy,
     const store::CopyMode&      copymode)
 {
@@ -270,7 +276,7 @@ void XmlNode::insertChildrenLast(
 ********************************************************************************/
 void XmlNode::insertSiblingsBefore(
     std::vector<store::Item_t>& siblings,
-    bool                 copy,
+    bool                        copy,
     const store::CopyMode&      copymode)
 {
   ZORBA_FATAL(theParent, "");
@@ -291,7 +297,7 @@ void XmlNode::insertSiblingsBefore(
 ********************************************************************************/
 void XmlNode::insertSiblingsAfter(
     std::vector<store::Item_t>& siblings,
-    bool                 copy,
+    bool                        copy,
     const store::CopyMode&      copymode)
 {
   ZORBA_FATAL(theParent, "");
@@ -310,8 +316,8 @@ void XmlNode::insertSiblingsAfter(
 ********************************************************************************/
 void XmlNode::replaceChild(
     std::vector<store::Item_t>& newChildren,
-    ulong                pos,
-    bool                 copy,
+    ulong                       pos,
+    bool                        copy,
     const store::CopyMode&      copymode)
 {
   removeChild(pos);
@@ -356,6 +362,7 @@ void ElementNode::removeAttributes(
 
       store::CopyMode copymode;
       copymode.set(false, true, true, false);
+
       attr->switchTree(NULL, 0, copymode);
     }
     else
@@ -371,7 +378,7 @@ void ElementNode::removeAttributes(
 ********************************************************************************/
 void ElementNode::insertAttributes(
     std::vector<store::Item_t>& attrs,
-    bool                 copy,
+    bool                        copy,
     const store::CopyMode&      copymode)
 {
   ulong numAttrs = numAttributes();
@@ -385,9 +392,15 @@ void ElementNode::insertAttributes(
     checkUniqueAttr(attr->getNodeName());
 
     if (copy)
-      attr->copy2(this, this, numAttrs + i, copymode);
+    {
+      attr = reinterpret_cast<AttributeNode*>(
+             attr->copy2(this, this, numAttrs + i, copymode));
+      attrs[i] = attr;
+    }
     else
+    {
       attr->switchTree(this, numAttrs + i, copymode);
+    }
 
     addBindingForQName2(attr->getNodeName());
   }
@@ -399,8 +412,8 @@ void ElementNode::insertAttributes(
 ********************************************************************************/
 void ElementNode::replaceAttribute(
     std::vector<store::Item_t>& newAttrs,
-    ulong                pos,
-    bool                 copy,
+    ulong                       pos,
+    bool                        copy,
     const store::CopyMode&      copymode)
 {
   removeAttr(pos);
@@ -430,9 +443,9 @@ void ElementNode::replaceAttribute(
   children.
 ********************************************************************************/
 void ElementNode::replaceContent(
-    XmlNode*          newTextChild,
-    ConstrNodeVector& oldChildren,
-    const store::CopyMode&   copymode)
+    XmlNode*               newTextChild,
+    ConstrNodeVector&      oldChildren,
+    const store::CopyMode& copymode)
 {
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
@@ -445,7 +458,7 @@ void ElementNode::replaceContent(
   children().copy(oldChildren);
   children().clear();
 
-  if (newTextChild->getStringValueP()->empty())
+  if (newTextChild->getStringValue()->empty())
     return;
 
   if (copymode.theDoCopy)
@@ -485,17 +498,48 @@ void AttributeNode::restoreValue(
   theFlags = oldFlags;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-
 void TextNode::replaceValue(
-    xqpStringStore_t& newValue,
-    xqpStringStore_t& oldValue)
+    xqpStringStore_t&   newValue,
+    Content&            oldContent,
+    bool&               isTyped)
 {
-  oldValue.transfer(theContent);
-  theContent = newValue;
+  if (this->isTyped())
+  {
+    oldContent.value = theContent.value;
+    theContent.value = NULL;
+    isTyped = true;
+  }
+  else
+  {
+    oldContent.text = theContent.text;
+    theContent.text = NULL;
+    isTyped = false;
+  }
+
+  setText(newValue);
 }
+
+
+void TextNode::restoreValue(
+    Content& oldContent,
+    bool     isTyped)
+{
+  if (isTyped)
+  {
+    theContent.text = oldContent.text;
+    oldContent.text = NULL;
+  }
+  else
+  {
+    theContent.value = oldContent.value;
+    oldContent.value = NULL;
+  }
+}
+
 
 
 void PiNode::replaceValue(

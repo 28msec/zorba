@@ -99,6 +99,7 @@ protected:
 
   DocumentSet              theDocuments;
   CollectionSet            theCollections;
+  checked_vector<store::Item_t> theItemUris;
 
   QueryContextContainer  * theQueryContextContainer; 
 
@@ -140,6 +141,8 @@ public:
   store::Collection_t createCollection();
   store::Collection_t getCollection(const xqpStringStore_t& uri);
   void deleteCollection(const xqpStringStore_t& uri);
+  void deleteAllCollections() { theCollections.clear(); };
+  store::Iterator_t listCollectionsUri();
 
   store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream);
   store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream);
