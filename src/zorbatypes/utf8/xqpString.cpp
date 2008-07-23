@@ -435,7 +435,8 @@ int32_t xqpStringStore::lastIndexOf(const xqpStringStore* pattern, XQPCollator* 
 bool xqpStringStore::endsWith(const char* pattern) const
 {
   //TODO check if this condition is enough
-  return (lastIndexOf(pattern) + strlen(pattern) == bytes());
+  int lFound = lastIndexOf(pattern);
+  return (lFound != -1 && (lastIndexOf(pattern) + strlen(pattern) == bytes()));
 }
 
 
@@ -445,7 +446,8 @@ bool xqpStringStore::endsWith(const char* pattern) const
 bool xqpStringStore::endsWith(const xqpStringStore* pattern, XQPCollator* coll) const
 {
   //TODO check if this condition is enough
-  return (lastIndexOf(pattern, coll) + pattern->numChars() == numChars());
+  int lFound = lastIndexOf(pattern, coll);
+  return (lFound != -1 && (lFound + pattern->numChars() == numChars()));
 }
 
 
@@ -1274,7 +1276,7 @@ xqpString xqpString::normalize(xqpString normMode)
   }
 
   bool
-  xqpString::matches(xqpString pattern, xqpString flags)
+  xqpString::matches(const xqpString& pattern, xqpString flags) const
   {
     UErrorCode    status = U_ZERO_ERROR;
     UnicodeString uspattern = getUnicodeString (pattern.getStore()),
