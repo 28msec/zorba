@@ -2310,11 +2310,13 @@ TextNode::~TextNode()
   if (isTyped())
   {
     if (theContent.value != NULL)
-      theContent.value->removeReference(NULL, theContent.value->getRCLock());
+      theContent.value->removeReference(NULL
+                                        SYNC_PARAM2(theContent.value->getRCLock()));
   }
   else if (theContent.text != NULL)
   {
-    theContent.text->removeReference(NULL, theContent.text->getRCLock());;
+    theContent.text->removeReference(NULL
+                                      SYNC_PARAM2(theContent.text->getRCLock()));
   }
   NODE_TRACE1("Deleted text node " << this);
 }

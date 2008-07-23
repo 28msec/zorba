@@ -800,7 +800,8 @@ public:
   static void setText(Content& content, xqpStringStore_t& text)
   {
     if (content.text != NULL)
-      content.text->removeReference(NULL, content.text->getRCLock());
+      content.text->removeReference(NULL
+                                    SYNC_PARAM2(content.text->getRCLock()));
 
     content.text = text.transfer();
   }
@@ -808,7 +809,8 @@ public:
   static void setValue(Content& content, store::Item_t& val)
   {
     if (content.value != NULL)
-      content.value->removeReference(NULL, content.value->getRCLock());
+      content.value->removeReference(NULL
+                                      SYNC_PARAM2(content.value->getRCLock()));
 
     content.value = val.transfer();
   }

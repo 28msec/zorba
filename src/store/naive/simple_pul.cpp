@@ -1204,11 +1204,13 @@ UpdReplaceTextValue::~UpdReplaceTextValue()
   if (theIsTyped)
   {
     if (theOldContent.value)
-      theOldContent.value->removeReference(NULL, theOldContent.value->getRCLock());
+      theOldContent.value->removeReference(NULL
+                                            SYNC_PARAM2(theOldContent.value->getRCLock()));
   }
   else if (theOldContent.text)
   {
-    theOldContent.text->removeReference(NULL, theOldContent.text->getRCLock());
+    theOldContent.text->removeReference(NULL
+                                        SYNC_PARAM2(theOldContent.text->getRCLock()));
   }
 }
 
