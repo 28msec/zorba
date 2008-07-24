@@ -15,6 +15,9 @@
  */
 #include "context/standard_uri_resolvers.h"
 
+#include "store/api/item.h"
+#include "store/api/collection.h"
+
 namespace zorba {
 
   store::Item_t
@@ -23,6 +26,7 @@ namespace zorba {
                                      dynamic_context* aDynamicContext)
   {
     std::cout << "hello! it's me" << std::endl;
+    return NULL;
   }
 
   store::Collection_t 
@@ -30,6 +34,7 @@ namespace zorba {
           static_context* aStaticContext,
           dynamic_context* aDynamicContext)
   {
+    return NULL;
   }
 
   std::istream* 
@@ -37,6 +42,7 @@ namespace zorba {
           const std::vector<store::Item_t> aLocationHints,
           static_context* aStaticContext)
   {
+    return 0;
   }
 
   void // TODO

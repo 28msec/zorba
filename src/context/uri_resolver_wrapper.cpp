@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #include "context/uri_resolver_wrapper.h"
+#include "store/api/item.h"
+#include "store/api/collection.h"
 
 namespace zorba {
 
@@ -26,6 +28,7 @@ namespace zorba {
                                       dynamic_context* aDynamicContext)
   {
     // TODO: Call the users uri resolver and unmarshall the item here
+    return NULL;
   }
 
   CollectionURIResolverWrapper::CollectionURIResolverWrapper(CollectionURIResolver* aColResolver)
@@ -36,6 +39,7 @@ namespace zorba {
                                         static_context* aStaticContext,
                                         dynamic_context* aDynamicContext)
   {
+    return NULL;
   }
 
   SchemaURIResolverWrapper::SchemaURIResolverWrapper(SchemaURIResolver* aSchemaResolver)
@@ -46,6 +50,7 @@ namespace zorba {
                                     const std::vector<store::Item_t> aLocationHints,
                                     static_context* aStaticContext)
   {
+    return 0;
   }
 
   ModuleURIResolverWrapper::ModuleURIResolverWrapper(ModuleURIResolver* aModuleResolver)
