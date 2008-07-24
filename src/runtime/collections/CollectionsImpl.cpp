@@ -368,7 +368,10 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(itemPos, theChildren[1].getp(), planState))
   {
     if(itemPos->getIntegerValue() >= Integer::zero())
-      STACK_PUSH(theColl->nodeAt(itemPos->getIntValue()), state);
+    {
+      result = theColl->nodeAt(itemPos->getIntValue());
+      STACK_PUSH(true, state);
+    }
   }
 
   STACK_END (state);
