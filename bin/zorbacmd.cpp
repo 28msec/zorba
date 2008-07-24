@@ -347,7 +347,7 @@ int _tmain(int argc, _TCHAR* argv[])
           sleep(1);
 #endif
           ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
-          CommandLineEventHandler lEventHandler( *lArgs->theQuery, std::cin, std::cout, debuggerClient );
+          CommandLineEventHandler lEventHandler( *lIter, *lArgs->theQuery, std::cin, std::cout, debuggerClient );
 #ifdef SIGINT /* not all system have SIGINT */
           signal( SIGINT, suspend );
 #endif

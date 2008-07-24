@@ -45,12 +45,12 @@ ZorbaDebuggerClient * CommandLineEventHandler::getClient()
   return theClient;
 }
 
-CommandLineEventHandler::CommandLineEventHandler( std::auto_ptr<std::istream> &aQueryFile,
+CommandLineEventHandler::CommandLineEventHandler( std::string aFileName,
+                                                  std::auto_ptr<std::istream> &aQueryFile,
                                                   std::istream & anInput,
                                                   std::ostream & anOutput,
                                                   ZorbaDebuggerClient * aClient )
- : theStore( simplestore::SimpleStoreManager::getStore() ),
-   theZorba(Zorba::getInstance(theStore)),
+ : theFileName( aFileName ),
    theQueryFile( aQueryFile ),
    theOutput( anOutput ),
    theInput( anInput )
@@ -80,15 +80,6 @@ void CommandLineEventHandler::list()
   }
 }
 
-void CommandLineEventHandler::history()
-{
-  theOutput << "Command history:" << std::endl;
-  for ( unsigned int i = 0 ; i < theHistory.size(); i++ )
-  {
-    theOutput << i+1 << ' ' << theHistory.at( i ) << std::endl;
-  }
-}
-
 void CommandLineEventHandler::list( unsigned int aLineNo )
 {
   list( aLineNo, aLineNo );
@@ -101,7 +92,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
   std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile.get() );
   if ( lFile != 0 )
   {
-    theQueryFile.reset( new std::ifstream( theClient->getFileName().c_str() ) );
+    theQueryFile.reset( new std::ifstream( theFileName.c_str() ) );
   } else {
     theQueryFile->clear();
     theQueryFile->seekg( 0, std::ios::beg );
@@ -191,43 +182,20 @@ std::vector<std::string> CommandLineEventHandler::get_args( const std::string& s
 
 void CommandLineEventHandler::handle_cmd()
 {
+  while( ! theInput.eof() )
+  {
     theOutput.flush();
     theOutput << "(xqdb) ";
     theOutput.flush();
     std::string lLine;
     std::getline( theInput, lLine, '\n');
-    handle_cmd( lLine );
-}
-
-void CommandLineEventHandler::handle_cmd( unsigned int aCommandNo )
-{
-  if ( aCommandNo > 0 && aCommandNo <= theHistory.size() )
-  {
-    handle_cmd( theHistory.at( aCommandNo ) );
-  } else {
-    theOutput << "Invalid command number. Try \"history\"." << std::endl;
-  }
-}
-
-void CommandLineEventHandler::handle_cmd( std::string aCommand )
-{
-  if( ! theInput.eof() )
-  {
-    if ( aCommand == "" )
+    
+    if ( lLine == "" )
     {
-      handle_cmd();
-      return;
+      continue;
     }
     
-    if ( aCommand.at(0) != '%' )
-    {
-      std::vector< std::string >::iterator lEnd;
-      lEnd = std::unique( theHistory.begin(), theHistory.end() );
-      theHistory.erase( lEnd, theHistory.end() );
-      theHistory.push_back( aCommand );
-    }
-
-	  std::vector<std::string> lArgs = get_args( aCommand );
+	  std::vector<std::string> lArgs = get_args( lLine );
     
     std::string lCommand = lArgs.at( 0 ); 
     
@@ -240,15 +208,13 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
         std::getline( theInput, quit, '\n');
         if( quit != "y" && quit != "yes" )
         {
-          handle_cmd();
-          return;
+          continue;
         }
       }
       theClient->quit();
       exit(7);
     } else if ( lCommand == "s" || lCommand == "stop" ) {
       theClient->terminate();
-      return;
     } else if ( lCommand == "cl" || lCommand == "clear" ) {
       theClient->clearBreakpoints();
     } else if  ( lCommand == "b" || lCommand == "break" ) {
@@ -256,20 +222,11 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
       {
         theOutput << "Invalid syntax." << std::endl;
         theOutput << "(b|break) <line number>" << std::endl;
-        theOutput << "(b|break) <xquery expression>" << std::endl;
       } else {
         unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
         if( lLineNo == 0 )
         {
-          try {
-            XQuery_t lQuery = theZorba->compileQuery( lArgs.at(1) );
-            lQuery->close();
-          } catch ( StaticException& e ) {
-            theOutput << "Invalid watchpoint:" << std::endl;
-            theOutput << e << std::endl;
-          }
-          //theClient->addBreakpoint( lArgs.at(1) );
-          theOutput << "Set watchpoint: " << lArgs.at(1) << '.' << std::endl;
+          theOutput << "Invalid line number." << std::endl;
         } else {
           theClient->addBreakpoint( lLineNo );
           theOutput << "Set breakpoint at line " << lLineNo << '.' << std::endl;
@@ -325,7 +282,7 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
           list();
        }
       } else {
-        list(0, 50);
+        list(0, 0, true);
       }
     } else if( lCommand == "vars" || lCommand == "variables" ) {
       std::list<Variable> list = theClient->getAllVariables();
@@ -336,8 +293,6 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
       }
     }else if ( lCommand == "v" || lCommand == "version" ) {
         version();
-    } else if ( lCommand == "hi" || lCommand == "history" ) {
-        history();
     } else if ( lCommand == "p" || lCommand == "print" ||
                 lCommand == "e" || lCommand == "eval" ) {
         if ( lArgs.size() < 2 )
@@ -352,13 +307,9 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
         return;
         //theOutput << theClient->eval() << std::endl;
         //handle_cmd();
-    } else if( lCommand.at( 0 ) == '%' ) {
-      unsigned int lCommandNo = atoi( lCommand.substr( 1 ).c_str() );
-      handle_cmd( lCommandNo - 1 ); 
     } else {
-      theOutput << "Unknown command \"" << aCommand << "\" Try \"help\"." << std::endl;
+      theOutput << "Unknown command \"" << lLine << "\" Try \"help\"." << std::endl;
     }
-    handle_cmd();
   }
 }
 

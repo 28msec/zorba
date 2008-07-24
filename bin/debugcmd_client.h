@@ -20,8 +20,6 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include <simplestore/simplestore.h>
-#include <zorba/zorba.h>
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_event_handler.h>
 
@@ -32,31 +30,21 @@ void suspend( int aSignum );
 class CommandLineEventHandler: public DebuggerEventHandler
 {
   private:
-    simplestore::SimpleStore *theStore;
-
-    Zorba *theZorba;
-
     static ZorbaDebuggerClient * theClient;
-    
+
+    std::string theFileName;
+
     std::auto_ptr<std::istream> &theQueryFile;
     
     std::ostream &theOutput;
     
     std::istream &theInput;
 
-    std::vector<std::string> theHistory;
-
     std::vector<std::string> get_args( const std::string& str );
    
     void handle_cmd();
 
-    void handle_cmd( std::string aCommand );
-
-    void handle_cmd( unsigned int aCommandNo );
-        
     void help();
-
-    void history();
 
     void version();
 
@@ -71,16 +59,13 @@ class CommandLineEventHandler: public DebuggerEventHandler
     void suspend( int aSignum );
 
   public:
-    CommandLineEventHandler( std::auto_ptr<std::istream> &aQueryFile,
+    CommandLineEventHandler( std::string aFileName,
+                             std::auto_ptr<std::istream> &aQueryFile,
                              std::istream &anInput,
                              std::ostream &anOutput,
                              ZorbaDebuggerClient * aClient );
 
-    virtual ~CommandLineEventHandler()
-    {
-      theZorba->shutdown();
-      simplestore::SimpleStoreManager::shutdownStore( theStore );
-    }
+    virtual ~CommandLineEventHandler(){}
 
     static ZorbaDebuggerClient * getClient();
 
