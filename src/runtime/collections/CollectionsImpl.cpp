@@ -74,7 +74,10 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   for ((state->uriItState = GENV_STORE.listCollectionsUri())->open ();
        state->uriItState->next(uriItem); )
-    STACK_PUSH(uriItem, state);
+  {
+    result = uriItem;
+    STACK_PUSH( true, state);
+  }
 
   STACK_END (state);
 }

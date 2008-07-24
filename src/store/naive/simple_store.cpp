@@ -192,6 +192,8 @@ SimpleStore::~SimpleStore()
 ********************************************************************************/
 void SimpleStore::shutdown()
 {
+  theItemUris.clear();
+
   theCollections.clear();
 
   theDocuments.clear();
