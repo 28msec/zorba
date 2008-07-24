@@ -23,6 +23,7 @@
 #include <sstream>
 #include <ostream>
 #include <istream>
+#include <map>
 
 #include "common/common.h"
 #include "compiler/parser/query_loc.h"
@@ -227,10 +228,12 @@ class ReplyMessage: public AbstractMessage
 
     struct ReplyContent
     {
-      ErrorCode theErrorCode;      
+      ErrorCode theErrorCode; 
     };
 
     ReplyContent * theReplyContent;
+
+    xqpString theData;
 
   public:
     ReplyMessage( const Id aId, const ErrorCode aErrorCode );
@@ -251,6 +254,17 @@ class ReplyMessage: public AbstractMessage
     void setErrorCode( ErrorCode aErrorCode )
     {
       theReplyContent->theErrorCode = uint_swap(aErrorCode);
+    }
+
+    xqpString getData() const
+    {
+      return theData;
+    }
+
+    void setData( xqpString lData )
+    {
+      setLength( MESSAGE_SIZE + lData.length() );
+      theData = lData;
     }
     
     const std::string getMessage()
@@ -326,7 +340,7 @@ class AbstractCommandMessage: public AbstractMessage
 
     const Command getCommand() const { return theCommandContent->theCommand; }
 
-    ReplyMessage * getReplyMessage() { return new ReplyMessage( getId(), DEBUGGER_NO_ERROR ); }
+    virtual ReplyMessage * getReplyMessage() { return new ReplyMessage( getId(), DEBUGGER_NO_ERROR ); }
 
     virtual Byte * serialize( Length & aLength ) const;
 };
@@ -594,26 +608,35 @@ class EvalMessage: public AbstractCommandMessage
 class VariableMessage: public AbstractCommandMessage
 {
   protected:
-    xqpString theQName;
-
-    xqpString theType;
-
-    xqpString theValue;
-
-    void * theStore;
-
+    std::map<xqpString, xqpString> theGlobals;
+    std::map<xqpString, xqpString> theLocals;
     xqpString getData() const;
 
   public:
-    VariableMessage( void * aStore, String aQName, Item aItem );
+    VariableMessage();
 
     VariableMessage( Byte * aMessage, const unsigned int aLength );
 
     virtual ~VariableMessage();
 
-    virtual Byte * serialize( Length & aLength ) const;
+    virtual Byte * serialize( Length &aLength ) const;
 
-    Item getItem() const;
+    virtual ReplyMessage * getReplyMessage()
+    {
+      ReplyMessage * lReply =  new ReplyMessage( getId(), DEBUGGER_NO_ERROR );
+      lReply->setData( getData() );
+      return lReply;
+    }
+
+    std::map<xqpString, xqpString> getVariables() const; 
+
+    std::map<xqpString, xqpString> getLocalVariables() const;
+
+    std::map<xqpString, xqpString> getGlobalVariables() const;
+
+    void addGlobal( xqpString aVariable, xqpString aType );
+    
+    void addLocal( xqpString aVariable, xqpString aType );
 };
 }//end of namespace
 #endif

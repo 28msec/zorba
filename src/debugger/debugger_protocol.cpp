@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
+#include "debugger/debugger_protocol.h"
+
 #include <iomanip>
 #include <zorba/zorba.h>
-
-#include "debugger/debugger_protocol.h"
 
 #include "api/unmarshaller.h"
 
@@ -142,6 +142,10 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
   ErrorCode * lmsg =  reinterpret_cast< ErrorCode * >( aMessage + SIZE_OF_HEADER_CONTENT );
   theReplyContent = new ReplyContent();
   memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
+  char * lData = new char[ aLength - MESSAGE_SIZE ];
+  //char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
+  memcpy( lData, aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
+  theData = xqpString( lData );
   checkIntegrity();
 }
 
@@ -152,13 +156,16 @@ ReplyMessage::~ReplyMessage()
 
 Byte * ReplyMessage::serialize( Length & aLength ) const
 {
-  aLength = MESSAGE_SIZE;
+  std::stringstream lData;
+  lData << theData;
+  aLength = getLength();
   Byte * lHeader = reinterpret_cast< Byte * > ( theHeaderContent );
   Byte * lReply  = reinterpret_cast< Byte * > ( theReplyContent );
   //Harcoded value to avoid padding on sizeof(HeaderContent)
-  Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT ];
+  Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT + theData.length() ];
   memcpy( lMsg, lHeader, SIZE_OF_HEADER_CONTENT );
   memcpy( lMsg + SIZE_OF_HEADER_CONTENT, lReply, SIZE_OF_REPLY_CONTENT );
+  memcpy( lMsg + SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT, lData.str().c_str(), lData.str().length() );
   return lMsg;
 }
 
@@ -719,14 +726,9 @@ xqpString EvalMessage::getExpr() const
 /**
  * Variable Message
  */
-VariableMessage::VariableMessage( void * aStore, String aQName, Item aItem ):
-  AbstractCommandMessage( DYNAMIC, VARIABLES ),
-  theQName( Unmarshaller::getInternalString( aQName ) ),
-  theType( Unmarshaller::getInternalString ( aItem.getType().getStringValue() ) ),
-  theValue( Unmarshaller::getInternalString( aItem.getStringValue() ) ),
-  theStore( aStore )
+VariableMessage::VariableMessage():
+  AbstractCommandMessage( DYNAMIC, VARIABLES )
 {
-  //theQName = Unmarshaller::getInternalString( aQName
   unsigned int l = MESSAGE_SIZE + getData().length();
   setLength( l );
   checkIntegrity();
@@ -735,32 +737,66 @@ VariableMessage::VariableMessage( void * aStore, String aQName, Item aItem ):
 VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
+  char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
+  json::parser lParser;
+  json::value *lValue = lParser.parse( lMessage );
+  if ( (*lValue)["globals"] != 0 )
+  {
+    json::array_list_t::iterator it;
+    for ( it  = (*lValue)["globals"]->getarraylist()->begin();
+          it != (*lValue)["globals"]->getarraylist()->end();
+          it++ )
+    {
+      json::value *lVariable = (*it);
+      
+      if ( (*lVariable)["name"] == 0 )
+      {
+        throw MessageFormatException("Invalid JSON format for variable message.");
+      }
+      std::wstring *lName = (*lVariable)["name"]->getstring(L"", true);
+      std::string name = std::string( lName->begin()+1, lName->end()-1 );
+      
+      if ( (*lVariable)["type"] == 0 )
+      {
+        throw MessageFormatException("Invalid JSON format for variable message.");
+      }
+      std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
+      std::string type = std::string( lType->begin()+1, lType->end()-1 );
+      
+      addGlobal(name, type);
+    }
+  } else {
+    throw MessageFormatException("Invalid JSON format for variable message.");
+  }
 
-  //char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  //boost::any lData = json::parse( &lMessage[0], &lMessage[ aLength - MESSAGE_SIZE ] );
-  //
-  //if ( lData.type() == typeid( json::object ) )
-  //{
-  //  json::object const & obj = boost::any_cast< json::object >( lData );
-  //  for ( json::object::const_iterator it = obj.begin(); it != obj.end(); ++it )
-  //  {
-  //    std::string attrName = (*it).first;
-  //    if ( attrName == "qname" ) {
-  //      xqpString lQName = boost::any_cast< std::string >( (*it).second );
-  //      theQName = lQName;
-  //    } else if ( attrName == "item" ) {
-  //      xqpString lValue = boost::any_cast< std::string >( (*it).second );
-  //      theValue = lValue;
-  //    } else if ( attrName == "type" ) {
-  //      xqpString lType = boost::any_cast< std::string >( (*it).second );
-  //      theType = lType;
-  //    }
-  //  }
-  // } else {
-  //  throw MessageFormatException("Invalid JSON format for Variable message.");
-  //}
-
-  //checkIntegrity();
+  if ( (*lValue)["locals"] != 0 )
+  {
+    json::array_list_t::iterator it;
+    for ( it  = (*lValue)["locals"]->getarraylist()->begin();
+          it != (*lValue)["locals"]->getarraylist()->end();
+          it++ )
+    {
+      json::value *lVariable = (*it);
+      
+      if ( (*lVariable)["name"] == 0 )
+      {
+        throw MessageFormatException("Invalid JSON format for variable message.");
+      }
+      std::wstring *lName = (*lVariable)["name"]->getstring(L"", true);
+      std::string name = std::string( lName->begin()+1, lName->end()-1 );
+      
+      if ( (*lVariable)["type"] == 0 )
+      {
+        throw MessageFormatException("Invalid JSON format for variable message.");
+      }
+      std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
+      std::string type = std::string( lType->begin()+1, lType->end()-1 );
+      
+      addLocal(name, type);
+    }
+  } else {
+    throw MessageFormatException("Invalid JSON format for variable message.");
+  }
 } 
 
 VariableMessage::~VariableMessage(){}
@@ -769,10 +805,18 @@ xqpString VariableMessage::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{";
-  lJSONString << "\"qname\":\"" << theQName << "\",";
-  lJSONString << "\"type\":\"" << theType << "\",";
-  lJSONString << "\"item\":\"" << theValue << "\"";
-  lJSONString << "}";
+  lJSONString << "\"globals\":[";
+  std::map<xqpString, xqpString>::const_iterator it = theGlobals.begin();
+  for(; it != theGlobals.end(); it++ )
+  {
+    lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"},";
+  }
+  lJSONString << "],\"locals\":[";
+  for( it = theLocals.begin(); it != theLocals.end(); it++ )
+  {
+    lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"},";
+  }
+  lJSONString << "]}";
   xqpString lReturnString( lJSONString.str() );
   return lReturnString;
 }
@@ -781,61 +825,42 @@ Byte * VariableMessage::serialize( Length & aLength ) const
 {
   Byte * lHeader = AbstractCommandMessage::serialize( aLength );
   xqpString lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() ];
-  memcpy( lMsg, lHeader, MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
+  Byte * lMsg = new Byte[ MESSAGE_SIZE + l ];
+  memcpy( lMsg, lHeader, MESSAGE_SIZE );
   memcpy( lMsg + MESSAGE_SIZE, s, l );
   delete[] lHeader;
   aLength = getLength();
   return lMsg; 
 }
 
-Item VariableMessage::getItem() const
+std::map<xqpString, xqpString> VariableMessage::getVariables() const
 {
-  ItemFactory * lFactory = Zorba::getInstance( theStore )->getItemFactory();
-  Item lExternalItem;
-  if ( theType == "xs:integer" ) {
-    lExternalItem = lFactory->createInteger( String( theValue ) );
-  } else if ( theType == "xs:boolean" ){
-    if ( theValue == "true" || theValue == "1" ) {
-      lExternalItem = lFactory->createBoolean( true );
-    } else {
-      lExternalItem = lFactory->createBoolean( false );
-    }
-  } else if ( theType == "xs:byte" ) {
-    lExternalItem = lFactory->createByte( theValue.c_str()[0] );
-  } else if ( theType == "xs:date" ) {
-    lExternalItem = lFactory->createDate( String( theValue ) );
-  } else if ( theType == "xs:dateTime" ) {
-    lExternalItem = lFactory->createDateTime( String( theValue ) );
-  } else if ( theType == "xs:decimal" ) {
-    lExternalItem = lFactory->createDecimal( String( theValue ) );
-  } else if ( theType == "xs:double" ) {
-    lExternalItem = lFactory->createDouble( String( theValue ) );
-  } else if ( theType == "xs:duration" ) {
-    lExternalItem = lFactory->createDuration( String( theValue ) );
-  } else if ( theType == "xs:float" ) {
-    lExternalItem = lFactory->createFloat( String( theValue ) );
-  } else if ( theType == "xs:gDay" ) {
-    lExternalItem = lFactory->createGDay( String( theValue ) );
-  } else if ( theType == "xs:gMonth" ) {
-    lExternalItem = lFactory->createGMonth( String( theValue ) );
-  } else if ( theType == "xs:gMonthDay" ) {
-    lExternalItem = lFactory->createGMonthDay( String( theValue ) );
-  } else if ( theType == "xs:gYear" ) {
-    lExternalItem = lFactory->createGYear( String( theValue ) );
-  } else if ( theType == "xs:gYearMonth" ) {
-    lExternalItem = lFactory->createGYearMonth( String( theValue ) );
-  } else if ( theType == "xs:NCName" ) {
-    lExternalItem = lFactory->createNCName( String( theValue ) );
-  } else if ( theType == "xs:time" ) {
-    lExternalItem = lFactory->createTime( String( theValue ) );
-  } else {
-    throw MessageFormatException("Invalid Item type"); 
-  }
-  return lExternalItem;
+  std::map<xqpString, xqpString> lVariables;
+  lVariables.insert( theGlobals.begin(), theGlobals.end() );
+  lVariables.insert( theLocals.begin(), theLocals.end() );
+  return lVariables;
 }
 
+std::map<xqpString, xqpString> VariableMessage::getLocalVariables() const
+{
+  return theLocals;
+}
+
+std::map<xqpString, xqpString> VariableMessage::getGlobalVariables() const
+{
+  return theGlobals;
+}
+
+void VariableMessage::addGlobal( xqpString aVariable, xqpString aType )
+{
+  theGlobals.insert( std::make_pair( aVariable, aType ) );
+}
+    
+void VariableMessage::addLocal( xqpString aVariable, xqpString aType )
+{
+  theLocals.insert( std::make_pair( aVariable, aType ) );
+}
 }//end of namespace
 

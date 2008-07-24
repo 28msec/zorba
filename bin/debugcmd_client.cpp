@@ -286,7 +286,14 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
       } else {
         theOutput << "The query is not suspended." << std::endl;
       }
-    } else if ( lCommand == "v" || lCommand == "version" ) {
+    } else if( lCommand == "vars" || lCommand == "variables" ) {
+      std::list<Variable> list = theClient->getAllVariables();
+      std::list<Variable>::iterator it;
+      for ( it = list.begin(); it != list.end(); it++ )
+      {
+        theOutput << "$" << it->getName() << " (" << it->getType() << ")" << std::endl;
+      }
+    }else if ( lCommand == "v" || lCommand == "version" ) {
         version();
     } else if ( lCommand == "hi" || lCommand == "history" ) {
         history();

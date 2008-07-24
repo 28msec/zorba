@@ -33,6 +33,11 @@ class xqpStringStore;
 class ZORBA_EXTERN_DECL String 
 {
 public:
+  /**
+   * \brief Empty default constructor
+   */
+  String();
+
   /** \brief Copy constructor
    */
   String(const String& other);

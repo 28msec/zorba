@@ -22,8 +22,12 @@
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_client.h>
 
-#include "debugger/debugger_common.h"
 #include "zorbautils/thread.h"
+
+#include "zorbatypes/xqpstring.h"
+
+#include "debugger/debugger_common.h"
+#include "debugger/debugger_protocol.h"
 
 namespace zorba{
 
@@ -84,6 +88,12 @@ namespace zorba{
 
       void eval( String &anExpr );
 
+      std::list<Variable> getAllVariables();
+      
+      std::list<Variable> getLocalVariables();
+      
+      std::list<Variable> getGlobalVariables();
+    
     protected:
 
       DebuggerEventHandler * theEventHandler;
@@ -102,9 +112,13 @@ namespace zorba{
 
       void handshake();
 
-      void send( AbstractCommandMessage * aMessage );
+      ReplyMessage* send( AbstractCommandMessage * aMessage );
 
       void send( std::string aMessage );
+
+      std::list<Variable> parseLocalVariables( xqpString aJSON );
+      
+      std::list<Variable> parseGlobalVariables( xqpString aJSON );
   };
 }//end of namespace
 #endif

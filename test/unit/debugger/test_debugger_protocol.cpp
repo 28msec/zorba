@@ -42,6 +42,7 @@ int test_debugger_protocol( int argc, char* argv[] )
   test->testSetMessage();
   test->testEvalMessage();
   test->testEvaluatedEvent();
+  test->testVariableMessage();
   delete test;
   return 0;
 }
@@ -321,6 +322,18 @@ void TestDebuggerSerialization::testRunMessage()
     
     EvaluatedEvent msg( "$i", "4" );
     test_packet< EvaluatedEvent >( &msg );
+  }
+
+  void TestDebuggerSerialization::testVariableMessage()
+  {
+    std::cerr << "Test variable message" << std::endl;
+
+    VariableMessage msg;
+    msg.addGlobal( "$i", "xs:integer" );
+    msg.addGlobal( "$j", "xs:integer" );
+    msg.addLocal("$foo", "xs:string" );
+    msg.addLocal("$bar", "xs:string" );
+    test_packet< VariableMessage >( &msg );
   }
 }
 

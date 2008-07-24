@@ -20,6 +20,12 @@
 
 namespace zorba {
 
+String::String()
+{
+  m_string = new xqpStringStore("");
+  RCHelper::addReference(m_string);
+}
+
 String::String(xqpStringStore *other)
   : m_string(other)
 {

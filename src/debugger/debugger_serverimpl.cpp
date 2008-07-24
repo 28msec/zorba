@@ -215,7 +215,6 @@ void ZorbaDebuggerImpl::runQuery()
 {
   setStatus( QUERY_RUNNING );
   //reload the query
-  std::cerr << "theFileName: " << theFileName.c_str() << std::endl;
   std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQuery->get() );
   if ( lFile != 0 ) {
     theQuery->reset( new std::ifstream( theFileName.c_str() ) );
@@ -312,12 +311,12 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
     
     if ( lCommandMessage )
     {
+      //process the command message
+      processMessage( lCommandMessage );
       //Send the reply message
       lReplyMessage = lCommandMessage->getReplyMessage();
       lByteMessage = lReplyMessage->serialize( length );
       aSock->send( lByteMessage, length );
-      //process the command message
-      processMessage( lCommandMessage );
     } else {
 #ifndef NDEBUG
       std::cerr << "Received something wrong" << std::endl;
@@ -554,6 +553,23 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
           lMessage = static_cast< EvalMessage * > ( aMessage );
 #endif
           eval( lMessage->getExpr() );
+          break;
+        }
+        case VARIABLES:
+        {
+          VariableMessage * lMessage;
+#ifndef NDEBUG
+          lMessage = dynamic_cast< VariableMessage * > ( aMessage );
+#else
+          lMessage = static_cast< VariableMessage * > ( aMessage );
+#endif
+          checked_vector<xqtref_t>::iterator it;
+          for( unsigned i = 0; i<theVarnames.size(); i++ )
+          {
+            xqpString lName(theVarnames.at(i)->getStringValue());
+            xqpString lType("unknown");
+            lMessage->addLocal( lName, lType );
+          }
           break;
         }
         default: throw InvalidCommandException("Internal Error. Command not implemented for dynamic command set.");

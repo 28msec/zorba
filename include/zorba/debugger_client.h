@@ -16,11 +16,27 @@
 #ifndef ZORBA_DEBUGGER_CLIENT_H
 #define ZORBA_DEBUGGER_CLIENT_H
 
+#include <list>
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_event_handler.h>
 
 namespace zorba{
   
+  class ZORBA_EXTERN_DECL Variable
+  {
+    private:
+      String theName;
+      String theType;
+    public:
+      Variable( String &aName, String &aType ): theName(aName), theType(aType){}
+      
+      virtual ~Variable(){}
+
+      String getName() const { return theName; }
+
+      String getType() const { return theType; }
+  };
+
   class ZORBA_EXTERN_DECL ZorbaDebuggerClient
   {
 
@@ -90,7 +106,15 @@ namespace zorba{
 
       virtual void
       eval( String &anExpr ) = 0;
-  };
 
+      virtual std::list<Variable>
+      getAllVariables() = 0;
+
+      virtual std::list<Variable>
+      getLocalVariables() = 0;
+
+      virtual std::list<Variable>
+      getGlobalVariables() = 0;
+  };
 }//end of namespace
 #endif

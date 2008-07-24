@@ -19,16 +19,20 @@
 
 #include <iostream>
 #include <memory>
-
 #include <zorba/api_shared_types.h>
 
 #include "common/common.h"
+
 #include "api/unmarshaller.h"
+
 #include "zorbatypes/xqpstring.h"
+
 #include "debugger/query_locationimpl.h"
 #include "debugger/socket.h"
-#include "debugger/debugger_protocol.h"
 #include "debugger/message_factory.h"
+
+#include "json/parser.h"
+#include "json/value.h"
 
 namespace zorba{
 
@@ -125,7 +129,7 @@ namespace zorba{
 #ifndef NDEBUG
         std::clog << "[Client Thread] receive a resumed event" << std::endl;
 #endif
-        lClient->theExecutionStatus = QUERY_RESUMED;
+        lClient->theExecutionStatus = QUERY_RUNNING;
         if ( lClient->theEventHandler )
         {
           lClient->theEventHandler->resumed();
@@ -182,7 +186,7 @@ namespace zorba{
     return theExecutionStatus == QUERY_TERMINATED;
   }
  
-  void ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage )
+  ReplyMessage *ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage )
   {
     //Connect the client
     Length length;
@@ -200,7 +204,7 @@ namespace zorba{
         {
           std::cerr << "Error occured: " << lReplyMessage->getMessage() << std::endl;
         }
-        delete lReplyMessage;
+        return lReplyMessage;
       } else {
       //TODO: print the error message.
         std::cerr << "Internal error occured" << std::endl;
@@ -210,6 +214,7 @@ namespace zorba{
       std::cerr << "Request client:" << e.what() << std::endl;
     }
     delete[] lMessage;
+    return 0;
   }
 
   void ZorbaDebuggerClientImpl::run()
@@ -312,12 +317,144 @@ namespace zorba{
     return theRemoteLineNo;
   }
 
-
   void ZorbaDebuggerClientImpl::eval( String &anExpr )
   {
     xqpString lExpr = Unmarshaller::getInternalString( anExpr );
     //TODO: espace double quotes characters
     EvalMessage lMessage( lExpr );
     send( &lMessage );
+  }
+
+  std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables()
+  {
+    std::list<Variable> lVariables;
+    VariableMessage lMessage;
+    ReplyMessage * lReply = send( &lMessage );
+    if ( lReply )
+    {
+      std::list<Variable> lLocals = parseLocalVariables( lReply->getData() ); 
+      std::list<Variable> lGlobals = parseGlobalVariables( lReply->getData() ); 
+      std::list<Variable>::iterator it;
+      for( it = lLocals.begin(); it != lLocals.end(); it++ )
+      {
+        lVariables.push_back(*it); 
+      }      
+      for( it = lGlobals.begin(); it != lGlobals.end(); it++ )
+      {
+        lVariables.push_back(*it); 
+      }
+    }
+    return lVariables;
+  }
+  
+  std::list<Variable> ZorbaDebuggerClientImpl::getLocalVariables()
+  {
+    std::list<Variable> lVariables;
+    VariableMessage lMessage;
+    ReplyMessage * lReply = send( &lMessage );
+    if ( lReply )
+    {
+      std::list<Variable> lLocals = parseLocalVariables( lReply->getData() ); 
+      std::list<Variable>::iterator it;
+      for( it = lLocals.begin(); it != lLocals.end(); it++ )
+      {
+        lVariables.push_back(*it); 
+      }
+    }
+    return lVariables;
+  }
+
+  std::list<Variable> ZorbaDebuggerClientImpl::getGlobalVariables()
+  {
+    std::list<Variable> lVariables;
+    VariableMessage lMessage;
+    ReplyMessage * lReply = send( &lMessage );
+    if ( lReply )
+    {
+      std::list<Variable> lGlobals = parseGlobalVariables( lReply->getData() ); 
+      std::list<Variable>::iterator it;
+      for( it = lGlobals.begin(); it != lGlobals.end(); it++ )
+      {
+        lVariables.push_back(*it); 
+      }
+    }
+    return lVariables;
+  }
+
+  std::list<Variable> ZorbaDebuggerClientImpl::parseLocalVariables( xqpString aJSON )
+  {
+    std::list<Variable> variables;
+    std::stringstream lJSON;
+    lJSON << aJSON;
+    json::parser lParser;
+    json::value *lValue = lParser.parse( lJSON.str().c_str(), lJSON.str().length() );
+    if ( (*lValue)["locals"] != 0 )
+    {
+      json::array_list_t::iterator it;
+      for ( it  = (*lValue)["locals"]->getarraylist()->begin();
+            it != (*lValue)["locals"]->getarraylist()->end();
+            it++ )
+      {
+        json::value *lVariable = (*it);
+      
+        if ( (*lVariable)["name"] == 0 )
+        {
+          throw MessageFormatException("Invalid JSON format for variable message.");
+        }
+        std::wstring *lName = (*lVariable)["name"]->getstring(L"", true);
+        String name(std::string( lName->begin()+1, lName->end()-1 ));
+        if ( (*lVariable)["type"] == 0 )
+        {
+          throw MessageFormatException("Invalid JSON format for variable message.");
+        }
+        std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
+        String type(std::string( lType->begin()+1, lType->end()-1 ));
+  
+        Variable lv( name, type );
+        variables.push_back(lv);
+      }
+    } else {
+      throw MessageFormatException("Invalid JSON format for variable message.");
+    }
+    return variables;
+  }
+      
+  std::list<Variable> ZorbaDebuggerClientImpl::parseGlobalVariables( xqpString aJSON )
+  {
+    std::list<Variable> variables;
+    std::stringstream lJSON;
+    lJSON << aJSON;
+    json::parser lParser;
+    json::value *lValue = lParser.parse( lJSON.str().c_str(), lJSON.str().length() );
+
+    if ( (*lValue)["globals"] != 0 )
+    {
+      json::array_list_t::iterator it;
+      for ( it  = (*lValue)["globals"]->getarraylist()->begin();
+            it != (*lValue)["globals"]->getarraylist()->end();
+            it++ )
+      {
+        json::value *lVariable = (*it);
+      
+        if ( (*lVariable)["name"] == 0 )
+        {
+          throw MessageFormatException("Invalid JSON format for variable message.");
+        }
+        std::wstring *lName = (*lVariable)["name"]->getstring(L"", true);
+        String name( std::string( lName->begin()+1, lName->end()-1 ) );
+        
+        if ( (*lVariable)["type"] == 0 )
+        {
+          throw MessageFormatException("Invalid JSON format for variable message.");
+        }
+        std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
+        String type( std::string( lType->begin()+1, lType->end()-1 ) );
+        Variable lv( name, type );
+        variables.push_back(lv);
+      }
+    } else {
+      throw MessageFormatException("Invalid JSON format for variable message.");
+    }
+    return variables;
   }
 }//end of namespace

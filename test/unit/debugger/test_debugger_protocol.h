@@ -64,6 +64,8 @@ namespace zorba
       void testEvalMessage();
 
       void testEvaluatedEvent();
+
+      void testVariableMessage();
   };
 }
 #endif
