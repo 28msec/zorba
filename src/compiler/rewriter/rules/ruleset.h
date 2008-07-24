@@ -54,6 +54,8 @@ RULE(MarkFreeVars);
 RULE(MarkExpensiveOps);
 RULE(MarkUnfoldableExprs);
 RULE(MarkImpureExprs);
+RULE(HoistExprsOutOfLoops);
+RULE(PlanPrinter);
 
 class FoldConst : public RewriteRule {
 protected:

@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <sstream>
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/api/compilercb.h"
+#include "system/globalenv.h"
+#include "store/api/item_factory.h"
 
 namespace zorba {
 
 RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
   : compilerCB(aCompilerCB),
     m_sctx(aCompilerCB->m_sctx),
-    m_root(root) { }
+    m_root(root),
+    m_tempvarCounter(0) { }
 
 RewriterContext::~RewriterContext() { }
 
@@ -34,6 +38,18 @@ expr_t RewriterContext::getRoot()
 void RewriterContext::setRoot(expr_t root)
 {
   m_root = root;
+}
+
+rchandle<var_expr> RewriterContext::createTempVar(const QueryLoc& loc, var_expr::var_kind kind)
+{
+  std::stringstream ss;
+  ss << "$$opt_temp_" << (m_tempvarCounter++);
+  std::string varname = ss.str();
+  store::Item_t qname;
+  GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
+  rchandle<var_expr> var = new var_expr(loc, var_expr::let_var, qname);
+
+  return var;
 }
 
 }

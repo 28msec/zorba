@@ -18,4 +18,6 @@ SET(REWRITER_RULES_SRCS
     flwor_rules.cpp
     fold_rules.cpp
     path_rules.cpp
-    expr_minimize_rules.cpp)
+    expr_minimize_rules.cpp
+    hoist_rules.cpp
+)

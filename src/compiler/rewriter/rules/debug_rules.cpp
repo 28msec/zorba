@@ -32,5 +32,18 @@ RULE_REWRITE_POST(EchoNodes)
   return NULL;
 }
 
+RULE_REWRITE_PRE(PlanPrinter)
+{
+  if (node == rCtx.getRoot()) {
+    node->put(std::cerr);
+  }
+  return NULL;
+}
+
+RULE_REWRITE_POST(PlanPrinter)
+{
+  return NULL;
+}
+
 }
 /* vim:set ts=2 sw=2: */

@@ -17,6 +17,7 @@
 #define ZORBA_REWRITER_CONTEXT_H
 
 #include "common/shared_types.h"
+#include "compiler/expression/var_expr.h"
 
 namespace zorba {
 
@@ -32,10 +33,13 @@ class RewriterContext {
 
     CompilerCB* getCompilerCB() { return compilerCB; }
 
+    rchandle<var_expr> createTempVar(const QueryLoc& loc, var_expr::var_kind kind);
+
   private:
     CompilerCB      * compilerCB;
     static_context  * m_sctx;
     expr_t            m_root;
+    int               m_tempvarCounter;
 };
 
 }

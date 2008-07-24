@@ -54,6 +54,10 @@ DefaultOptimizer::DefaultOptimizer()
 
   ADD_SINGLETON_DRIVER(ReplaceExprWithConstantOneWhenPossible);
 
+  //ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);
+
+  //ADD_SINGLETON_DRIVER(EliminateUnusedLetVars);
+
   ADD_SINGLETON_DRIVER(MarkConsumerNodeProps);
   ADD_SINGLETON_DRIVER(MarkProducerNodeProps);
   ADD_SINGLETON_DRIVER(EliminateNodeOps);
