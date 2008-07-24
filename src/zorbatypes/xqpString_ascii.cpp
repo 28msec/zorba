@@ -407,8 +407,13 @@ int32_t xqpStringStore::lastIndexOf(const xqpStringStore* pattern, XQPCollator* 
 ********************************************************************************/
 bool xqpStringStore::endsWith(const char* pattern) const
 {
-  //TODO check if this condition is enough
-  return (lastIndexOf(pattern) + strlen(pattern) == bytes());
+  int pattern_len = strlen(pattern);
+  int mylen = bytes();
+  if(pattern_len < mylen)
+    return false;
+  if(!memcmp(c_str()+ mylen - pattern_len, pattern, pattern_len))
+    return true;
+  return false;
 }
 
 
@@ -417,8 +422,13 @@ bool xqpStringStore::endsWith(const char* pattern) const
 ********************************************************************************/
 bool xqpStringStore::endsWith(const xqpStringStore* pattern, XQPCollator* coll) const
 {
-  //TODO check if this condition is enough
-  return (lastIndexOf(pattern, coll) + pattern->numChars() == numChars());
+  int pattern_len = pattern->bytes();
+  int mylen = bytes();
+  if(pattern_len < mylen)
+    return false;
+  if(!memcmp(c_str()+ mylen - pattern_len, pattern->c_str(), pattern_len))
+    return true;
+  return false;
 }
 
 
@@ -1364,7 +1374,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   }
 
   bool
-    xqpString::matches(xqpString pattern, xqpString flags)
+    xqpString::matches(const xqpString& pattern, xqpString flags) const  
   {
     regex_ascii::CRegexAscii_parser    regex_parser;
     regex_ascii::CRegexAscii_regex     *regex;

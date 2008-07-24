@@ -584,7 +584,7 @@ public:
     }
     
       bool
-      matches(xqpString pattern, xqpString flags);
+      matches(const xqpString& pattern, xqpString flags) const;
 
       xqpString
       replace(xqpString pattern, xqpString replacement, xqpString flags);
