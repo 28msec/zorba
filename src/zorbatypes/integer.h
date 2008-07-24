@@ -40,6 +40,8 @@ namespace zorba {
     template <typename Type>
     friend class FloatImpl;
 
+    friend class NumConversions;
+
     private:
       IMAPM theInteger;
       Integer(IMAPM aInteger) : theInteger(aInteger) { }

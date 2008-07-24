@@ -204,33 +204,63 @@ namespace zorba {
   }
 
   bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt) {
+#ifndef ZORBA_NO_BIGNUMBERS
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToInt(lStr, aInt);
+#else
+    aInt = (xqp_int)aDouble.theFloatImpl;
+    return true;
+#endif
   }
 
   bool NumConversions::doubleToLongLong(const xqp_double& aDouble, xqp_long& aLong) {
+#ifndef ZORBA_NO_BIGNUMBERS
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLongLong(lStr, aLong);
+#else
+    aLong = (xqp_long)aDouble.theFloatImpl;
+    return true;
+#endif
   }
 
   bool NumConversions::doubleToLong(const xqp_double& aDouble, long& aLong) {
+#ifndef ZORBA_NO_BIGNUMBERS
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLong(lStr, aLong);
+#else
+    aLong = (long)aDouble.theFloatImpl;
+    return true;
+#endif
   }
 
   bool NumConversions::integerToUInt(const xqp_integer& aInteger, xqp_uint& aUInt) {
+#ifndef ZORBA_NO_BIGNUMBERS
     xqpString lStr = aInteger.toString();
     return NumConversions::strToUInt(lStr, aUInt);
+#else
+    aUInt = (xqp_uint)aInteger.theInteger;
+    return true;
+#endif
   }
 
   bool NumConversions::floatToInt(const xqp_float& aFloat, xqp_int& aInt) {
+#ifndef ZORBA_NO_BIGNUMBERS
     xqpString lStr = aFloat.toIntegerString();
     return NumConversions::strToInt(lStr, aInt);
+#else
+    aInt = (xqp_int)aFloat.theFloatImpl;
+    return true;
+#endif
   }
 
   bool NumConversions::decimalToInt(const xqp_decimal& aDecimal, xqp_int& aInt) {
+#ifndef ZORBA_NO_BIGNUMBERS
     xqpString lStr = aDecimal.toIntegerString();
     return NumConversions::strToInt(lStr, aInt);
+#else
+    aInt = (xqp_int)aDecimal.theDecimal;
+    return true;
+#endif
   }
 
 } /* namespace zorba */

@@ -133,6 +133,7 @@ template <typename FloatType> class FloatImplTraits;
     friend class FloatCommons;
     template <typename Type>
       friend class FloatImplTraits;
+    friend class NumConversions;
 
     private:
       FloatCommons::NumType theType;

@@ -36,6 +36,7 @@ class Decimal {
   friend class Integer;
   template <typename Type>
     friend class FloatImpl;
+  friend class NumConversions;
 
 private:
   MAPM theDecimal;
