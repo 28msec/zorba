@@ -509,7 +509,7 @@ void eval_expr::next_iter (expr_iterator_data& v) {
 
   eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
     : varname (ve->get_varname ()),
-      var_key (dynamic_context::var_key (ve)), val (val_)
+      var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_)
   {
   }
 

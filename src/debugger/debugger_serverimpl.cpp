@@ -567,7 +567,13 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
           for( unsigned i = 0; i<theVarnames.size(); i++ )
           {
             xqpString lName(theVarnames.at(i)->getStringValue());
-            xqpString lType("unknown");
+            xqpString lType;
+            if( theVartypes.at(i) != 0 )
+            {
+              lType = theVartypes.at(i)->toString();
+            } else {
+              lType = "[XS_UNTYPED]";
+            }
             lMessage->addLocal( lName, lType );
           }
           break;

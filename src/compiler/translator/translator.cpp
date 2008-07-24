@@ -1521,7 +1521,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     {
       var_expr_t lValue = (*it);
       var_expr_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
-      //TODO: set_type
+      lVariable->set_type( lValue->get_type() );
       lDebuggerExpr->add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
     }
     lReturnExpr = &*lDebuggerExpr;
@@ -2026,6 +2026,9 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   }
   expr_t val = v.is_extern() ? expr_t(NULL) : pop_nodestack();
   theGlobalVars.push_back(global_binding(ve, val));
+#ifdef ZORBA_DEBUGGER
+  theScopedVariables.push_back( ve );
+#endif
 }
 
 

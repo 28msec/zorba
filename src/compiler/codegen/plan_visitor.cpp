@@ -220,9 +220,11 @@ void end_visit(debugger_expr& v)
   checked_vector<store::Item_t> varnames;
   checked_vector<std::string> var_keys;
   checked_vector<xqtref_t> vartypes;
-  for (unsigned i = 0; i < v.var_count (); i++) {
+  for (unsigned i = 0; i < v.var_count (); i++) 
+  {
     varnames.push_back (v.var_at (i).varname);
     var_keys.push_back (v.var_at (i).var_key);
+    vartypes.push_back (v.var_at (i).type);
     argv.push_back (pop_itstack ());
   }
   argv.push_back (pop_itstack ());

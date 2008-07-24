@@ -291,7 +291,7 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
       std::list<Variable>::iterator it;
       for ( it = list.begin(); it != list.end(); it++ )
       {
-        theOutput << "$" << it->getName() << " (" << it->getType() << ")" << std::endl;
+        theOutput << "$" << it->getName() << " " << it->getType() << std::endl;
       }
     }else if ( lCommand == "v" || lCommand == "version" ) {
         version();
