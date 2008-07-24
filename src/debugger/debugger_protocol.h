@@ -439,6 +439,7 @@ class StepMessage: public AbstractCommandMessage
 class SetMessage: public AbstractCommandMessage
 {
   protected:
+    std::vector<xqpString> theExprs;
     std::vector<QueryLoc> theLocations;
     std::string getData() const;
 
@@ -446,9 +447,18 @@ class SetMessage: public AbstractCommandMessage
 
     SetMessage();
 
-    SetMessage( const std::vector<QueryLoc> &aLocation );
-
     SetMessage( Byte * aMessage, const unsigned int aLength );
+
+    void addExpr( xqpString &anExpr )
+    {
+      theExprs.push_back( anExpr );
+      setLength( MESSAGE_SIZE + getData().length() );
+    }
+
+    std::vector<xqpString> getExprs()
+    {
+      return theExprs;
+    }
 
     void addLocation( QueryLoc &aLocation )
     {

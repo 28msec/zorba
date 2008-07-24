@@ -74,11 +74,13 @@ namespace zorba{
 
       void stepOver();
 
-      void addBreakpoint( const String & aFileName, const unsigned int aLineNo );
+      void addBreakpoint( const String &anExpr );
+
+      void addBreakpoint( const String &aFileName, const unsigned int aLineNo );
 
       void addBreakpoint( const unsigned int aLineNo );
       
-      void clearBreakpoint( const String & aFileName, const unsigned int aLineNo );
+      void clearBreakpoint( const String &aFileName, const unsigned int aLineNo );
 
       void clearBreakpoints();
       

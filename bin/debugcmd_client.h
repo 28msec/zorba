@@ -20,7 +20,8 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include <boost/thread/thread.hpp>
+#include <simplestore/simplestore.h>
+#include <zorba/zorba.h>
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_event_handler.h>
 
@@ -31,7 +32,10 @@ void suspend( int aSignum );
 class CommandLineEventHandler: public DebuggerEventHandler
 {
   private:
-    
+    simplestore::SimpleStore *theStore;
+
+    Zorba *theZorba;
+
     static ZorbaDebuggerClient * theClient;
     
     std::auto_ptr<std::istream> &theQueryFile;
@@ -56,11 +60,13 @@ class CommandLineEventHandler: public DebuggerEventHandler
 
     void version();
 
+    void listMore();
+
     void list();
 
     void list( unsigned int aLineNo );
 
-    void list( unsigned int aBegin, unsigned int anEnd );
+    void list( unsigned int aBegin, unsigned int anEnd, bool listAll = false );
 
     void suspend( int aSignum );
 
@@ -72,7 +78,8 @@ class CommandLineEventHandler: public DebuggerEventHandler
 
     virtual ~CommandLineEventHandler()
     {
-    
+      theZorba->shutdown();
+      simplestore::SimpleStoreManager::shutdownStore( theStore );
     }
 
     static ZorbaDebuggerClient * getClient();

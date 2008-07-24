@@ -23,7 +23,6 @@
 #include "runtime/base/narybase.h"
 #include "types/typeimpl.h"
 #include "compiler/expression/expr.h"
-#include "compiler/parser/location.hh"
 
 namespace zorba {
 

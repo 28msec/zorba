@@ -49,11 +49,24 @@ CommandLineEventHandler::CommandLineEventHandler( std::auto_ptr<std::istream> &a
                                                   std::istream & anInput,
                                                   std::ostream & anOutput,
                                                   ZorbaDebuggerClient * aClient )
- : theQueryFile( aQueryFile ),
+ : theStore( simplestore::SimpleStoreManager::getStore() ),
+   theZorba(Zorba::getInstance(theStore)),
+   theQueryFile( aQueryFile ),
    theOutput( anOutput ),
    theInput( anInput )
 {
   theClient = aClient;
+}
+
+void CommandLineEventHandler::listMore()
+{
+  int start = theClient->getLineNo() - 4;
+  if ( start <= 0 )
+  {
+    list( 1, 9 );
+  } else {
+    list( start, theClient->getLineNo() + 4 );
+  }
 }
 
 void CommandLineEventHandler::list()
@@ -81,7 +94,7 @@ void CommandLineEventHandler::list( unsigned int aLineNo )
   list( aLineNo, aLineNo );
 }
 
-void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
+void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, bool listAll )
 {
   std::string lLine;
   unsigned int lLineNo = 0;
@@ -94,13 +107,22 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd )
     theQueryFile->seekg( 0, std::ios::beg );
   }
   
-  while ( ! theQueryFile->eof() )
+  while ( theQueryFile->good() && ! theQueryFile->eof() )
   {
     lLineNo++;
     std::getline( *theQueryFile, lLine, '\n');
-    if ( lLineNo >= aBegin && lLineNo <= anEnd )
+    if ( (lLineNo >= aBegin && lLineNo <= anEnd) || listAll )
     {
-      theOutput << lLineNo << '\t' << lLine << std::endl;
+      if ( lLineNo == theClient->getLineNo() )
+      {
+#ifdef WIN32
+        theOutput << "\033" << lLineNo << '\t' << lLine <<  std::endl;
+#else
+        theOutput << "\033[1m" << lLineNo << '\t' << lLine << "\033[0m" << std::endl;
+#endif
+     } else {
+        theOutput << lLineNo << '\t' << lLine << std::endl;
+      }
     }
   }
 }
@@ -234,11 +256,20 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
       {
         theOutput << "Invalid syntax." << std::endl;
         theOutput << "(b|break) <line number>" << std::endl;
+        theOutput << "(b|break) <xquery expression>" << std::endl;
       } else {
         unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
         if( lLineNo == 0 )
         {
-          theOutput << "Invalid line number: " << lArgs.at(1) << '.' << std::endl;
+          try {
+            XQuery_t lQuery = theZorba->compileQuery( lArgs.at(1) );
+            lQuery->close();
+          } catch ( StaticException& e ) {
+            theOutput << "Invalid watchpoint:" << std::endl;
+            theOutput << e << std::endl;
+          }
+          //theClient->addBreakpoint( lArgs.at(1) );
+          theOutput << "Set watchpoint: " << lArgs.at(1) << '.' << std::endl;
         } else {
           theClient->addBreakpoint( lLineNo );
           theOutput << "Set breakpoint at line " << lLineNo << '.' << std::endl;
@@ -282,9 +313,19 @@ void CommandLineEventHandler::handle_cmd( std::string aCommand )
     } else if ( lCommand == "l" || lCommand == "list" ) {
       if ( theClient->isQuerySuspended() )
       {
-        list();
+        if ( lArgs.size() >= 2 && lArgs.at(1) == "more" )
+        {
+          listMore(); 
+        } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) !=0 ) {
+          int line = atoi(lArgs.at(1).c_str());
+          int start = theClient->getLineNo()-line;
+          int end = theClient->getLineNo()+line;
+          list( start<=0?1:start, end<=0?1:end );
+        } else {
+          list();
+       }
       } else {
-        theOutput << "The query is not suspended." << std::endl;
+        list(0, 50);
       }
     } else if( lCommand == "vars" || lCommand == "variables" ) {
       std::list<Variable> list = theClient->getAllVariables();

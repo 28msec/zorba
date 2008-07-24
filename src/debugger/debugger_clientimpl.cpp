@@ -265,7 +265,12 @@ namespace zorba{
     send( &lMessage );
   }
 
-  void ZorbaDebuggerClientImpl::addBreakpoint( const String & aFileName, const unsigned int aLineNo )
+  void ZorbaDebuggerClientImpl::addBreakpoint( const String &anExpr )
+  {
+
+  }
+
+  void ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
   {
     xqpString lFilename = Unmarshaller::getInternalString( aFileName );
     QueryLoc loc;
@@ -278,7 +283,7 @@ namespace zorba{
     send( &lMessage );
   }
 
-  void ZorbaDebuggerClientImpl::clearBreakpoint( const String & aFileName, const unsigned int aLineNo )
+  void ZorbaDebuggerClientImpl::clearBreakpoint( const String &aFileName, const unsigned int aLineNo )
   {
     xqpString lFilename = Unmarshaller::getInternalString( aFileName );
     QueryLoc loc;

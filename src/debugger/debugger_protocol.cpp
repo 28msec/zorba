@@ -351,13 +351,6 @@ const StepCommand StepMessage::getStepKind() const
  */
 SetMessage::SetMessage(): AbstractCommandMessage( BREAKPOINTS, SET ){}
 
-SetMessage::SetMessage( const std::vector<QueryLoc> &aLocation ):
-  AbstractCommandMessage( BREAKPOINTS, SET ), theLocations( aLocation )
-{
-  setLength( MESSAGE_SIZE + getData().length() );  
-}
-
-
 SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
@@ -369,9 +362,18 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
     json::array_list_t::iterator it; 
     for ( it=(*lValue)["breakpoints"]->getarraylist()->begin(); it != (*lValue)["breakpoints"]->getarraylist()->end(); it++ )
     {
-      QueryLoc loc;
-      loc.fromJSON( *it );
-      theLocations.push_back( loc );
+      if ((**it)["fileName"] != 0 )
+      {
+        QueryLoc loc;
+        loc.fromJSON( *it );
+        theLocations.push_back( loc );
+      } else if ( (**it)["expr"] != 0 ) {
+        std::wstring *lExpr = (**it)["expr"]->getstring(L"", true);
+        std::string expr( lExpr->begin()+1, lExpr->end()-1 );
+        theExprs.push_back( xqpString( expr ) );
+      } else {
+        throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
+      }
     }
   } else {
     throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
@@ -402,10 +404,13 @@ std::string SetMessage::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{\"breakpoints\":[";
-  lJSONString << theLocations.at(0).toJSON();
-  for(unsigned int i=1; i<theLocations.size(); i++)
+  for(unsigned int i=0; i<theLocations.size(); i++)
   {
-    lJSONString << "," << theLocations.at(i).toJSON();
+    lJSONString << theLocations.at(i).toJSON() << ",";
+  }
+  for(unsigned int i=0; theExprs.size(); i++)
+  {
+    lJSONString << "{\"expr\":\"" << theExprs.at(i) << "\"},";
   }
   lJSONString << "]}";
   return lJSONString.str();
