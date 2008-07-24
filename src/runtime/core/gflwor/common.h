@@ -136,7 +136,7 @@ namespace zorba {
     //                                                                             //
     /////////////////////////////////////////////////////////////////////////////////
 
-    inline void bindVariables ( store::Item_t& aItem,
+    inline void bindVariables ( const store::Item_t& aItem,
                                 const std::vector<ForVarIter_t>& aForVariables,
                                 PlanState& aPlanState ) {
       std::vector<ForVarIter_t>::const_iterator forIter;
@@ -148,7 +148,7 @@ namespace zorba {
       }
     }
 
-    inline void bindVariables ( store::TempSeq_t& aTmpSeq,
+    inline void bindVariables ( const store::TempSeq_t& aTmpSeq,
                                 const std::vector<LetVarIter_t>& aLetVariables,
                                 PlanState& aPlanState ) {
       std::vector<LetVarIter_t>::const_iterator letIter;
@@ -160,16 +160,24 @@ namespace zorba {
         ( *letIter )->bind ( iter, aPlanState );
       }
     }
+    
+    inline void createTempSeq(store::TempSeq_t& aTempSeqResult, const PlanIter_t& aInput, PlanState& aPlanState,  const bool aLazyEval){
+      store::Iterator_t iterWrapper = new PlanIteratorWrapper ( aInput, aPlanState );
+      aTempSeqResult = GENV_STORE.createTempSeq ( iterWrapper, false, aLazyEval );
+    }
+    
 
     inline void bindVariables ( const PlanIter_t& aInput,
                                 const std::vector<LetVarIter_t>& aLetVariables,
                                 PlanState& aPlanState,
-                                const bool aNeedsMaterialization ) {
-      store::Iterator_t iterWrapper = new PlanIteratorWrapper ( aInput, aPlanState );
+                                const bool aNeedsMaterialization) {
+      
       if ( aNeedsMaterialization ) {
-        store::TempSeq_t tmpSeq = GENV_STORE.createTempSeq ( iterWrapper, false, true );
-        bindVariables ( tmpSeq, aLetVariables, aPlanState );
+        store::TempSeq_t lTempSeq;
+        createTempSeq(lTempSeq, aInput, aPlanState, true);
+        bindVariables ( lTempSeq, aLetVariables, aPlanState );
       } else {
+        store::Iterator_t iterWrapper = new PlanIteratorWrapper ( aInput, aPlanState );
         std::vector<LetVarIter_t>::const_iterator letIter;
         for ( letIter = aLetVariables.begin();
               letIter != aLetVariables.end();
@@ -179,6 +187,7 @@ namespace zorba {
       }
     }
     
+
     inline bool evalToBool ( const PlanIter_t& checkIter, PlanState& planState )
     {
       store::Item_t boolValue;

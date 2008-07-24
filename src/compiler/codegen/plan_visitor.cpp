@@ -54,6 +54,7 @@
 #include "runtime/core/gflwor/where_iterator.h"
 #include "runtime/core/gflwor/count_iterator.h"
 #include "runtime/core/gflwor/tuplesource_iterator.h"
+#include "runtime/core/gflwor/orderby_iterator.h"
 #include "runtime/validate/validate.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
@@ -464,28 +465,27 @@ void end_visit(flwor_expr& v)
   CODEGEN_TRACE_OUT("");
 
   PlanIter_t ret = pop_itstack ();
+
+
+#if 1
+  
   vector<FLWORIterator::OrderSpec> orderSpecs;
   for (flwor_expr::orderspec_list_t::reverse_iterator i = v.orderspec_rbegin ();
-       i != v.orderspec_rend ();
-       i++) 
+  i != v.orderspec_rend ();
+  i++) 
   {
-    flwor_expr::orderspec_t spec = *i;
-    orderSpecs.push_back(FLWORIterator::OrderSpec(pop_itstack(),
-                         spec.second->empty_mode == StaticContextConsts::empty_least,
-                         spec.second->dir == ParseConstants::dir_descending, spec.second->collation));
-  }
+  flwor_expr::orderspec_t spec = *i;
+  orderSpecs.push_back(FLWORIterator::OrderSpec(pop_itstack(),
+  spec.second->empty_mode == StaticContextConsts::empty_least,
+  spec.second->dir == ParseConstants::dir_descending, spec.second->collation));
+}
   reverse (orderSpecs.begin (), orderSpecs.end ());
 
   auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
   
   PlanIter_t group_where = 0;
   if (v.get_group_where() != 0)
-    group_where = pop_itstack();
-  
-
-  
-
-#if 1
+  group_where = pop_itstack();
    
   vector<FLWORIterator::GroupingOuterVar> nonGroupBys;
   for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_rbegin();
@@ -576,6 +576,25 @@ void end_visit(flwor_expr& v)
       orderby.release(), ret, v.isUpdating());
   itstack.push(iter);
 #else
+  bool orderBy=false;
+  vector<gflwor::OrderSpec> orderSpecs;
+  for (flwor_expr::orderspec_list_t::reverse_iterator i = v.orderspec_rbegin ();
+       i != v.orderspec_rend ();
+       i++) 
+  {
+    flwor_expr::orderspec_t spec = *i;
+    orderSpecs.push_back(gflwor::OrderSpec(pop_itstack(),
+                         spec.second->empty_mode == StaticContextConsts::empty_least,
+                         spec.second->dir == ParseConstants::dir_descending, spec.second->collation));
+    orderBy=true;
+  }
+  reverse (orderSpecs.begin (), orderSpecs.end ());
+
+  //auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
+  
+  PlanIter_t group_where = 0;
+  if (v.get_group_where() != 0)
+    group_where = pop_itstack();
   
   vector<gflwor::GroupingOuterVar> nonGroupBys;
   for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_rbegin();
@@ -625,6 +644,12 @@ void end_visit(flwor_expr& v)
     inputs.push(pop_itstack());
   }
 
+  
+  std::vector<ForVarIter_t> theForVariableInput;
+  std::vector<LetVarIter_t> theLetVariableInput;
+  std::vector< std::vector< ForVarIter_t > > theForVariableOutput;
+  std::vector< std::vector< LetVarIter_t > > theLetVariableOutput;
+  
   PlanIter_t previous = new gflwor::TupleSourceIterator(QueryLoc::null);
   vector<rchandle<forlet_clause> >::const_iterator it;
   for (it = v.clause_begin ();
@@ -638,6 +663,15 @@ void end_visit(flwor_expr& v)
       var_expr* var = (*it)->var_h.getp();
       var_expr* pos_var = (*it)->get_pos_var().getp();
       ZORBA_ASSERT( fvar_iter_map.get((uint64_t)var, var_iters) );
+      if(orderBy){
+        ForVarIter_t v_p = new ForVarIterator(var->get_varname()->getLocalName(),
+                                              QueryLoc::null,
+                                                  0);
+        theForVariableOutput.push_back(*var_iters);
+        //var_iters->clear();
+        var_iters->push_back(v_p);
+        theForVariableInput.push_back(v_p);
+      }
       if (pos_var == NULL)
       {
         previous = new gflwor::ForIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters);
@@ -653,6 +687,17 @@ void end_visit(flwor_expr& v)
       vector<LetVarIter_t> *var_iters = NULL;
       var_expr* var = (*it)->var_h;
       ZORBA_ASSERT( lvar_iter_map.get((uint64_t)var, var_iters) );
+      
+      if(orderBy){
+        LetVarIter_t v_p = new LetVarIterator(var->get_varname()->getLocalName(),
+                                              QueryLoc::null,
+            0);
+        theLetVariableOutput.push_back(*var_iters);
+        //var_iters->clear();
+        var_iters->push_back(v_p);
+        theLetVariableInput.push_back(v_p);
+      }
+      
       previous = new gflwor::LetIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters, true);
       //clauses.push_back(FLWORIterator::ForLetClause(var, *var_iters, input, true));
     }
@@ -665,6 +710,16 @@ void end_visit(flwor_expr& v)
   
   if(!groupBys.empty()){
     previous = new gflwor::GroupByIterator(QueryLoc::null, previous, groupBys, nonGroupBys);
+  }
+  
+  if(orderBy){
+    previous = new gflwor::OrderByIterator ( QueryLoc::null,
+                                     previous,
+                                     orderSpecs,
+                      theForVariableInput,
+                      theLetVariableInput,
+                      theForVariableOutput,
+                      theLetVariableOutput ); 
   }
   //bad HACK to test the countiter
 /*

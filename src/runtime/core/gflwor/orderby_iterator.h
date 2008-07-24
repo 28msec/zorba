@@ -22,12 +22,15 @@
 
 #include "runtime/base/plan_iterator.h"
 
+#include "store/api/temp_seq.h" //FIXME not sure why this is needed here
+
 namespace zorba {
   namespace gflwor {
 
     class OrderByIterator;
 
     class OrderValue;
+    
 
     class OrderValue {
         friend class OrderByIterator;
@@ -43,7 +46,7 @@ namespace zorba {
     };
 
     class OrderKeyCmp;
-    typedef std::multimap<std::vector<store::Item_t >, std::vector<OrderValue >, OrderKeyCmp> order_map_t;
+    typedef std::multimap<std::vector<store::Item_t >, OrderValue, OrderKeyCmp> order_map_t;
 
 
     class OrderSpec {
@@ -130,8 +133,8 @@ namespace zorba {
         std::vector<OrderSpec> theOrderSpecs;
         std::vector<ForVarIter_t> theForVariableInput;
         std::vector<LetVarIter_t> theLetVariableInput;
-        std::vector<ForVarIter_t> theForVariableOutput;
-        std::vector<LetVarIter_t> theLetVariableOutput;
+        std::vector< std::vector< ForVarIter_t > > theForVariableOutput;
+        std::vector< std::vector< LetVarIter_t > > theLetVariableOutput;
 
       public:
         OrderByIterator ( const QueryLoc& aLoc,
@@ -139,8 +142,8 @@ namespace zorba {
                           std::vector<OrderSpec>& aOrderSpecs,
                           std::vector<ForVarIter_t>& aForVariableInput,
                           std::vector<LetVarIter_t>& aLetVariableInput,
-                          std::vector<ForVarIter_t>& aForVariableOutput,
-                          std::vector<LetVarIter_t>& aLetVariableOutput );
+                          std::vector< std::vector< ForVarIter_t > >& aForVariableOutput,
+                          std::vector< std::vector< LetVarIter_t > >& aLetVariableOutput );
 
         ~OrderByIterator();
 
@@ -158,8 +161,7 @@ namespace zorba {
         void matVarsAndOrderBy ( OrderByState* aOrderByState,
                                  PlanState& aPlanState ) const;
 
-        void bindOrderBy ( order_map_t::iterator aOrderMapIter,
-                           OrderByState* aOrderByState,
+        void bindOrderBy ( order_map_t::const_iterator& aOrderMapIter,
                            PlanState& aPlanState ) const;
         
         
