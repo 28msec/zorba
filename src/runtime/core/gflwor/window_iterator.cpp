@@ -71,7 +71,7 @@ namespace zorba {
         bindVariables ( lItem, theCurVars, aPlanState );
       }
       if ( !thePrevVars.empty() ) {
-        if ( aPosition > 0 ) {
+        if ( aPosition > 1 ) {
           lItem = aInputSeq->getItem ( aPosition-1 );
         } else {
           lItem = 0;
@@ -88,7 +88,7 @@ namespace zorba {
       }
       if ( !thePosVars.empty() ) {
         store::Item_t lPosItem;
-        GENV_ITEMFACTORY->createInteger ( lPosItem, Integer::parseInt ( aPosition+1 ) );
+        GENV_ITEMFACTORY->createInteger ( lPosItem, Integer::parseInt ( aPosition ) );
         bindVariables ( lPosItem, thePosVars, aPlanState );
       }
     }
@@ -100,7 +100,7 @@ namespace zorba {
         bindVariables ( lItem, theCurOuterVars, aPlanState );
       }
       if ( !thePrevOuterVars.empty() ) {
-        if ( aPosition > 0 ) {
+        if ( aPosition > 1 ) {
           lItem = aInputSeq->getItem ( aPosition-1 );
         } else {
           lItem = 0;
@@ -116,7 +116,7 @@ namespace zorba {
         bindVariables ( lItem, theNextOuterVars, aPlanState );
       }
       if ( !thePosOuterVars.empty() ) {
-        GENV_ITEMFACTORY->createInteger ( lItem, Integer::parseInt ( aPosition+1 ) );
+        GENV_ITEMFACTORY->createInteger ( lItem, Integer::parseInt ( aPosition ) );
         bindVariables ( lItem, thePosOuterVars, aPlanState );
       }
     }
@@ -247,7 +247,7 @@ namespace zorba {
     //                                                                             //
     /////////////////////////////////////////////////////////////////////////////////
 
-    WindowState::WindowState() : theInputSeq ( NULL ) , theCurInputPos ( 0 ) {
+    WindowState::WindowState() : theInputSeq ( NULL ) , theCurInputPos ( 1 ) {
     }
 
 
@@ -258,13 +258,13 @@ namespace zorba {
 
     void WindowState::init ( PlanState& aState ) {
       PlanIteratorState::init ( aState );
-      theCurInputPos = 0;
+      theCurInputPos = 1;
       theInputSeq = NULL;
     }
 
     void WindowState::reset ( PlanState& aPlanState ) {
       PlanIteratorState::reset ( aPlanState );
-      theCurInputPos = 0;
+      theCurInputPos = 1;
       theInputSeq = NULL;
       theOpenWindowsStartPos.clear();
     }

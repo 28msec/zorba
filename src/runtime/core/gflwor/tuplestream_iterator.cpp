@@ -21,45 +21,62 @@
 #include "runtime/visitors/planitervisitor.h"
 #include "store/api/pul.h"
 #include "store/api/store.h"
+#include "system/globalenv.h"
+#include "store/api/item_factory.h"
+
 using namespace zorba;
 
 namespace zorba {
-  namespace gflwor {
+    namespace gflwor {
 
-    TupleStreamIterator::TupleStreamIterator (
-      const QueryLoc&             aLoc,
-      PlanIter_t&                 aTupleIter,
-      PlanIter_t&                 aReturnIter,
-      bool                        aIsUpdating ) :
-        BinaryBaseIterator<TupleStreamIterator, PlanIteratorState> ( aLoc, aTupleIter, aReturnIter ),
-        theIsUpdating ( aIsUpdating ) {
-    }
-
-    TupleStreamIterator::~TupleStreamIterator() {}
-
-    //theChild0 == TupleClause
-    //theChild1 == ReturnClause
-    bool TupleStreamIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
-      PlanIteratorState* lState;
-      store::Item_t lTuple;
-      DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
-      while ( consumeNext ( lTuple, theChild0, aPlanState ) ) {
-        while ( consumeNext ( aResult, theChild1, aPlanState ) ) {
-          STACK_PUSH ( true, lState );
+        TupleStreamIterator::TupleStreamIterator (
+          const QueryLoc&             aLoc,
+          PlanIter_t&                 aTupleIter,
+          PlanIter_t&                 aReturnIter,
+          bool                        aIsUpdating) :
+            BinaryBaseIterator<TupleStreamIterator, PlanIteratorState> (aLoc, aTupleIter, aReturnIter),
+            theIsUpdating (aIsUpdating) {
         }
-        theChild1->reset ( aPlanState );
-      }
-      STACK_PUSH ( false, lState );
-      STACK_END ( lState );
-    }
 
-    /*
-    void TupleStreamIterator::accept ( PlanIterVisitor& v ) const {
-      v.beginVisit ( *this );
-      theTupleIter->accept ( v );
-      theReturnIter->accept ( v );
-      v.endVisit ( *this );
-    }*/
+        TupleStreamIterator::~TupleStreamIterator() {}
 
-  } //Namespace flwor
-}//Namespace zorba
+        //theChild0 == TupleClause
+        //theChild1 == ReturnClause
+        bool TupleStreamIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanState) const {
+            PlanIteratorState* lState;
+            std::auto_ptr<store::PUL> pul;
+            store::Item_t lTuple;
+
+            DEFAULT_STACK_INIT (PlanIteratorState, lState, aPlanState);
+            if (theIsUpdating) {
+                pul.reset (GENV_ITEMFACTORY->createPendingUpdateList());
+                while (consumeNext (lTuple, theChild0, aPlanState)) {
+                  while (consumeNext (aResult, theChild1, aPlanState)) {
+                    ZORBA_FATAL (aResult->isPul(), "");
+                    pul->mergeUpdates (aResult);
+                  }
+                }
+                aResult = pul.release();
+                STACK_PUSH (true, lState);
+              } else {
+                while (consumeNext (lTuple, theChild0, aPlanState)) {
+                    while (consumeNext (aResult, theChild1, aPlanState)) {
+                        STACK_PUSH (true, lState);
+                      }
+                    theChild1->reset (aPlanState);
+                  }
+              }
+            STACK_PUSH (false, lState);
+            STACK_END (lState);
+          }
+
+        /*
+        void TupleStreamIterator::accept ( PlanIterVisitor& v ) const {
+          v.beginVisit ( *this );
+          theTupleIter->accept ( v );
+          theReturnIter->accept ( v );
+          v.endVisit ( *this );
+        }*/
+
+      } //Namespace flwor
+  }//Namespace zorba

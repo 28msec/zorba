@@ -103,7 +103,7 @@ class SimpleTempSeqIter : public store::TempSeqIterator
  public:
   SimpleTempSeqIter() {}
   SimpleTempSeqIter(SimpleTempSeq_t aTempSeq);
-  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, int startPos, int endPos);
+  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, int32_t startPos, int32_t endPos);
   SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, const std::vector<int32_t>& positions);
 
   virtual ~SimpleTempSeqIter();

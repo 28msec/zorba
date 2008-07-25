@@ -30,6 +30,7 @@
 #include "store/naive/string_pool.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_temp_seq.h"
+#include "store/naive/simple_lazy_temp_seq.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/sax_loader.h"
@@ -799,7 +800,14 @@ TempSeq_t SimpleStore::createTempSeq(
     bool copyNodes,
     bool lazy)
 {
-  TempSeq_t tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
+  TempSeq_t tempSeq;
+  if(lazy){
+    tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
+    //tempSeq = new SimpleLazyTempSeq(iterator, copyNodes);
+  }else{
+    tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
+  }
+  
   return tempSeq;
 }
 

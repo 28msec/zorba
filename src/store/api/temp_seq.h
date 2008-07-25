@@ -55,8 +55,9 @@ public:
 		
   /**
    * Returns an iterator which reads just a part of the underlying TempSeq
+   * Starts counting with 1.
    *
-   * @param startPos The first item which the iterator returns
+   * @param startPos The first item which the iterator returns. Starts counting with 1.
    * @param endPos The last item which the iterator returns 
    * @return Iterator
    */
@@ -70,6 +71,8 @@ public:
    * Returns an iterator which reads just a part of the underlying XMD instance
    * Note: Not every store needs to implement this method.
    * If an store is not implementing it, the iterator should throw an exception;
+   * 
+   * Starts counting with 1.
    *
    * @param startPos The first item which the iterator returns
    * @param endPos HigherOrderedFunction is called for every item in the sequence. If its returns true, the sequence ends
@@ -86,6 +89,8 @@ public:
   /** Info: Tim's territory. Do not touch for the moment!
    *
    * Returns an iterator which just returns the positions given by the iterator.
+   * 
+   * Starts counting with 1.
    *
    * @param positions Positions to return
    * @return Iterator
@@ -105,6 +110,8 @@ public:
 		
   /**
    * Gets an item at a certain position.
+   * 
+   * Starts counting with 1.
    *
    * @param position (first position in XQuery is 1 and not 0!)
    * @return item
@@ -114,6 +121,8 @@ public:
 		
   /**
    * Returns true if the item at the passed position is available.
+   * 
+   * Starts counting with 1.
    *
    * @param position 
    * @return 
@@ -133,6 +142,8 @@ public:
    * Similar to purge(), but in contrast it is still allowed to ask for items
    * or iterators which start with an item higher than the position number upTo
    * 
+   * Starts counting with 1.
+   * 
    * @param upTo boundary for garbage collector
    */
   virtual void purgeUpTo(int32_t upTo) = 0;
@@ -141,6 +152,8 @@ public:
    *
    * This optimizations gives the store a hint that the caller will never
    * ask for an iterator again, which might contain those items.
+   * 
+   * Starts counting with 1.
    *
    * @param positions
    */
@@ -150,6 +163,8 @@ public:
    *
    * This optimizations gives the store a hint that the caller will never
    * ask for an iterator again, which might contain this item. 
+   * 
+   * Starts counting with 1.
    */
   virtual void purgeItem(int32_t position) = 0;
 		

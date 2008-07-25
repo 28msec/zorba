@@ -22,6 +22,7 @@ SET(SIMPLE_STORE_SRCS
     simple_iterator_factory.cpp
     simple_collection.cpp
     simple_temp_seq.cpp
+    simple_lazy_temp_seq.cpp
     simple_pul.cpp
     simple_loader.cpp
     fast_loader.cpp
