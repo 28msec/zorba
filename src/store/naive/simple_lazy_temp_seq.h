@@ -67,6 +67,7 @@ namespace zorba {
 
         inline bool containsItem ( int32_t position ) {
           uint32_t maxPos = position - thePurgedUpTo;
+          assert(maxPos > 0); //Otherwise we have a serious problem
           while ( !theMatFinished && theItems.size() < maxPos ) { //Need to fix size type
             matNextItem();
           }

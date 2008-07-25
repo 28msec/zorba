@@ -173,6 +173,7 @@ namespace zorba {
         StartClause theStartClause;
         EndClause theEndClause;
         bool theLazyEval;
+        int32_t theMaxNeededHistory;
 
       public:
 
@@ -184,6 +185,12 @@ namespace zorba {
          * @param aWindowType The window Type
          * @param aStartclause The start clause. The iterator has to return a Boolean Value or Null.
          * @param aEndClause The end clause. The iterator has to return a Boolean Value or Null.
+         * @param aLazyEval For Windowing the input sequence needs to be materialized. Is it allowed to do this lazy?
+         * @param aMaxNeededHistory To allow Continous Queries we need to garbage collect a possible infinite input sequence. 
+         *                          But the Start, End and other Clauses might require to look back from the start position of a window.
+         *                          The MaxNeededHistory specifies how much it is required to look back. 
+         *                          If the value is -1 no Garbage Colleciton is performed.
+         * 
          */
         WindowIterator ( const QueryLoc& aLoc,
                          PlanIter_t& aTupleIterator,
@@ -192,7 +199,8 @@ namespace zorba {
                          std::vector<LetVarIter_t >& aVars,
                          StartClause& aStartclause,
                          EndClause& aEndClause,
-                         bool aLazyEval = true);
+                         bool aLazyEval = true,
+                         int32_t aMaxNeededHistory = -1);
         ~WindowIterator();
 
         void openImpl ( PlanState& aPlanState, uint32_t& aOffset );
@@ -207,6 +215,7 @@ namespace zorba {
         
       private:
         void bindVariable ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aStartPos, const uint32_t aEndPos ) const;
+        void doGarbageCollection(WindowState* lState) const;
     };
 
   }//namespace gflwor
