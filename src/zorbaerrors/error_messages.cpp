@@ -123,8 +123,6 @@ DEF_ERR_CODE(SERE0015, SERE0015, "SERE0015")
 
 DEF_ERR_CODE(SEPM0016, SEPM0016, "Invalid parameter value")
 
-
-
 //
 // ZORBA Errors
 //
@@ -138,7 +136,13 @@ DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI
 
 DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI `/s' does not exist.")
 
-DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collectionan item that is not a node.")
+DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collection an item that is not a node.")
+
+DEF_ERR_CODE (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, API0029, "The node does not belong to the given collection.")
+
+DEF_ERR_CODE (API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at the given position (/s), the collection has fewer nodes.");
+
+DEF_ERR_CODE (API0031_NODE_ALREADY_IN_COLLECTION, API0031, "Node is already part of the collection /s.");
 
 DEF_ERR_CODE (API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri `/s' exists in the store already.")
 

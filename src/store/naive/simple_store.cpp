@@ -335,7 +335,10 @@ store::Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
   if (theCollections.get(uri, collection) )
     return collection.getp();
   else
+  {
+    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
     return NULL;
+  }
 }
 
 
@@ -348,19 +351,24 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
   if (uri == NULL)
     return;
 
-  theCollections.remove(uri);
+  bool deleted = theCollections.remove(uri);
 
-  checked_vector<store::Item_t>::iterator it = theItemUris.begin();
-  checked_vector<store::Item_t>::iterator end = theItemUris.end();
-
-  for (; it != end; ++it)
+  if(deleted )
   {
-    if( (*it)->getStringValue() == uri )
+    checked_vector<store::Item_t>::iterator it = theItemUris.begin();
+    checked_vector<store::Item_t>::iterator end = theItemUris.end();
+
+    for (; it != end; ++it)
     {
-      theItemUris.erase(it);
-      break;
+      if( (*it)->getStringValue() == uri )
+      {
+        theItemUris.erase(it);
+        break;
+      }
     }
   }
+  else
+    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
 }
 
 /*******************************************************************************

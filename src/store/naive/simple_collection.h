@@ -84,6 +84,10 @@ public:
   void removeFromCollection(long position = -1);
 
   store::Item_t nodeAt(long position);
+
+protected:
+  int
+  nodePositionInCollection(store::Item* newNode);
 };
 
 } // namespace store

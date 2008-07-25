@@ -80,6 +80,7 @@ CollectionImpl::addNode(const Item& aNode, long aPosition)
 
     SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
 
+    //check if the item is already in the collection
     theCollection->addToCollection(lItem, aPosition);
     return true;
 
@@ -168,5 +169,6 @@ CollectionImpl::nodeAt(long aPosition)
   ZORBA_CATCH
       return Item();
 }
+
 
 } /* namespace zorba */
