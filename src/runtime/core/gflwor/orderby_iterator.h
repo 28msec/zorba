@@ -127,6 +127,7 @@ namespace zorba {
         void reset ( PlanState& );
     };
 
+    
     class OrderByIterator : public Batcher<OrderByIterator> {
       private:
         PlanIter_t theTupleIter;

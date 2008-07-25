@@ -162,6 +162,7 @@ namespace zorba {
       }
 
       lOrderByState->init ( aPlanState, &theOrderSpecs );
+      
       theTupleIter->open ( aPlanState, aOffset );
       openVectorPtr<ForVarIter_t> ( theForVariableInput, aPlanState, aOffset );
       openVectorPtr<LetVarIter_t> ( theLetVariableInput, aPlanState, aOffset );
@@ -192,14 +193,16 @@ namespace zorba {
 
     uint32_t OrderByIterator::getStateSizeOfSubtree() const {
       int32_t lSize = this->getStateSize();
+      lSize += theTupleIter->getStateSizeOfSubtree();
       lSize += getStateSizeOfSubtreeVector<OrderSpec> ( theOrderSpecs );
       lSize += getStateSizeOfSubtreeVectorPtr<ForVarIter_t> ( theForVariableInput );
       lSize += getStateSizeOfSubtreeVectorPtr<LetVarIter_t> ( theLetVariableInput );
       return lSize;
     }
 
-    void OrderByIterator::accept ( PlanIterVisitor& ) const {
-
+    void OrderByIterator::accept ( PlanIterVisitor& v ) const {
+      theTupleIter->accept(v);
+      callAcceptVector(theOrderSpecs,v);
     }
 
     bool OrderByIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {

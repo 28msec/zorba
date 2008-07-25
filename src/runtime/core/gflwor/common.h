@@ -29,6 +29,11 @@ using namespace zorba;
 namespace zorba {
   namespace gflwor {
     
+    /////////////////////////////////////////////////////////////////////////////////
+    //                                                                             //
+    //  Standard Iterator Tasks                                                    //
+    //                                                                             //
+    /////////////////////////////////////////////////////////////////////////////////
     
     
       // Utility function -- is this item null or a NaN?
@@ -37,6 +42,29 @@ namespace zorba {
       return (s == 0) || (s->isNaN());
     }
 
+    template <class T> inline void callAcceptVector(const std::vector<T >& aVector, PlanIterVisitor& aVisitor)
+    {
+      typename std::vector<T >::const_iterator lIter;
+      for ( lIter = aVector.begin();
+            lIter != aVector.end();
+            ++lIter )
+      {
+        lIter->accept(aVisitor);
+      }
+    }
+    
+    template <class T> inline void callAcceptVectorPtr(const std::vector<T >& aVector, PlanIterVisitor& aVisitor)
+    {
+      typename std::vector<T >::const_iterator lIter;
+      for ( lIter = aVector.begin();
+            lIter != aVector.end();
+            ++lIter )
+      {
+        (*lIter)->accept(aVisitor);
+      }
+    }
+    
+    
     
     template <class T> inline void resetVector(const std::vector<T >& aVector, PlanState& aPlanState)
     {
@@ -130,6 +158,8 @@ namespace zorba {
       return lSize;
     }
     
+    
+    
     /////////////////////////////////////////////////////////////////////////////////
     //                                                                             //
     //  Static Binding Functions                                                   //
@@ -187,6 +217,12 @@ namespace zorba {
       }
     }
     
+    
+    /////////////////////////////////////////////////////////////////////////////////
+    //                                                                             //
+    //  Other Helper Functions                                                     //
+    //                                                                             //
+    /////////////////////////////////////////////////////////////////////////////////
 
     inline bool evalToBool ( const PlanIter_t& checkIter, PlanState& planState )
     {
