@@ -107,7 +107,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
       if ( lLineNo == theClient->getLineNo() )
       {
 #ifdef WIN32
-        theOutput << "\033" << lLineNo << '\t' << lLine <<  std::endl;
+        theOutput << lLineNo << '\t' << lLine <<  std::endl;
 #else
         theOutput << "\033[1m" << lLineNo << '\t' << lLine << "\033[0m" << std::endl;
 #endif
@@ -215,8 +215,33 @@ void CommandLineEventHandler::handle_cmd()
       exit(7);
     } else if ( lCommand == "s" || lCommand == "stop" ) {
       theClient->terminate();
-    } else if ( lCommand == "cl" || lCommand == "clear" ) {
-      theClient->clearBreakpoints();
+    }else if ( lCommand == "cl" || lCommand == "clear" ) {
+      if ( lArgs.size() > 2 && lArgs.at(1) == "all" )
+      {
+        theClient->clearBreakpoints();
+        theOutput << "All breakpoints have been cleared." << std::endl;
+      } else if ( atoi(lArgs.at(1).c_str()) != 0 ) {
+        bool lResult = theClient->clearBreakpoint( atoi(lArgs.at(1).c_str()) );
+        if ( lResult )
+        {
+          theOutput << "Breakpoint " << atoi(lArgs.at(1).c_str()) << " has been cleared." << std::endl;
+        } else {
+          theOutput << "The breakpoint " << atoi(lArgs.at(1).c_str()) << " doesn't exit." << std::endl;
+        }
+      } else {
+        theOutput << "Invalid syntax." << std::endl;
+        theOutput << "clear <number>" << std::endl;
+        theOutput << "clear all" << std::endl;
+      }
+    } else if ( lCommand == "w" || lCommand == "watch" ) {
+      if ( lArgs.size() < 2 )
+      {
+        theOutput << "Invalid syntax." << std::endl;
+        theOutput << "watch <xquery expr>" << std::endl;
+      } else {
+        theClient->addBreakpoint( lArgs.at(1) );
+        theOutput << "Set watchpoint: " << lArgs.at(1) << '.' << std::endl;
+      }
     } else if  ( lCommand == "b" || lCommand == "break" ) {
       if ( lArgs.size() < 2 )
       {
@@ -268,11 +293,18 @@ void CommandLineEventHandler::handle_cmd()
         theOutput << "The query is not suspended." << std::endl;
       }
     } else if ( lCommand == "l" || lCommand == "list" ) {
-      if ( theClient->isQuerySuspended() )
-      {
         if ( lArgs.size() >= 2 && lArgs.at(1) == "more" )
         {
-          listMore(); 
+          listMore();
+        } else if ( lArgs.size() >= 2 && lArgs.at(1) == "all" ) {
+          list( 0, 0, true );
+        } else if ( lArgs.size() >= 2 && ( lArgs.at(1) == "b" || lArgs.at(1) == "breakpoints" ) ) {
+          std::map<unsigned int, String> lBreakpoints = theClient->getBreakpoints();
+          std::map<unsigned int, String>::const_iterator it;
+          for( it = lBreakpoints.begin(); it != lBreakpoints.end(); it++ )
+          {
+            theOutput << "id:" << it->first << '\t' << it->second << std::endl;
+          }       
         } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) !=0 ) {
           int line = atoi(lArgs.at(1).c_str());
           int start = theClient->getLineNo()-line;
@@ -281,10 +313,7 @@ void CommandLineEventHandler::handle_cmd()
         } else {
           list();
        }
-      } else {
-        list(0, 0, true);
-      }
-    } else if( lCommand == "vars" || lCommand == "variables" ) {
+    } else if( lCommand == "var" || lCommand == "vars" || lCommand == "variables" ) {
       std::list<Variable> list = theClient->getAllVariables();
       std::list<Variable>::iterator it;
       for ( it = list.begin(); it != list.end(); it++ )
@@ -326,9 +355,11 @@ void CommandLineEventHandler::help()
   theOutput << "next     -- Step over the next instruction." << std::endl;
   theOutput << "clear    -- Clear breakpoints." << std::endl;
   theOutput << "list     -- Display the executed query line." << std::endl;
+  theOutput << "status   -- Display the status of the query." << std::endl;
   theOutput << "stop     -- Stop the query execution." << std::endl;
   theOutput << "quit     -- Quit Zorba debugger." << std::endl;
   theOutput << "version  -- Display the version of Zorba engine and its debugger" << std::endl;
+  theOutput << "watch    -- Add watchpoint to the query" << std::endl;
   theOutput << "help     -- This help." << std::endl;
 }
 

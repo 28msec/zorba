@@ -16,6 +16,7 @@
 #ifndef ZORBA_DEBUGGER_CLIENT_H
 #define ZORBA_DEBUGGER_CLIENT_H
 
+#include <map>
 #include <list>
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_event_handler.h>
@@ -95,8 +96,14 @@ namespace zorba{
       virtual void
       addBreakpoint( const String &anExpr ) = 0;
 
+      virtual bool
+      clearBreakpoint( unsigned int anId ) = 0;
+
       virtual void
-      clearBreakpoint( const String &aFileName, const unsigned int aLineNo ) = 0;
+      clearBreakpoints( std::list<unsigned int> &Ids ) = 0;
+
+      virtual std::map<unsigned int, String>
+      getBreakpoints() const = 0;
 
       virtual void
       clearBreakpoints() = 0;

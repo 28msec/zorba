@@ -20,6 +20,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <map>
 #include <zorba/zorba.h>
 
 #include "debugger/debugger_common.h"
@@ -109,7 +110,8 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
     checked_vector<xqtref_t>      theVartypes;
     checked_vector<PlanIter_t>    theChildren;
 
-    std::vector<QueryLoc> theBreakpoints;
+    std::map<unsigned int, QueryLoc> theBreakpoints;
+    std::map<unsigned int, xqpString> theWatchpoints;
 
     Thread * theRuntimeThread;
 

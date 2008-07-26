@@ -79,8 +79,12 @@ namespace zorba{
       void addBreakpoint( const String &aFileName, const unsigned int aLineNo );
 
       void addBreakpoint( const unsigned int aLineNo );
-      
-      void clearBreakpoint( const String &aFileName, const unsigned int aLineNo );
+
+      std::map<unsigned int, String> getBreakpoints() const;
+
+      bool clearBreakpoint( unsigned int anId );
+
+      void clearBreakpoints( std::list<unsigned int> &Ids );
 
       void clearBreakpoints();
       
@@ -97,6 +101,7 @@ namespace zorba{
       std::list<Variable> getGlobalVariables();
     
     protected:
+      static unsigned int theLastId;
 
       DebuggerEventHandler * theEventHandler;
 
@@ -111,6 +116,8 @@ namespace zorba{
       ExecutionStatus theExecutionStatus; 
 
       Thread *theEventListener;
+
+      std::map<unsigned int, String> theBreakpoints;
 
       void handshake();
 

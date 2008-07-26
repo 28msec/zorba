@@ -439,8 +439,8 @@ class StepMessage: public AbstractCommandMessage
 class SetMessage: public AbstractCommandMessage
 {
   protected:
-    std::vector<xqpString> theExprs;
-    std::vector<QueryLoc> theLocations;
+    std::map<unsigned int, xqpString> theExprs;
+    std::map<unsigned int, QueryLoc> theLocations;
     std::string getData() const;
 
   public:
@@ -449,24 +449,24 @@ class SetMessage: public AbstractCommandMessage
 
     SetMessage( Byte * aMessage, const unsigned int aLength );
 
-    void addExpr( xqpString &anExpr )
+    void addExpr( unsigned int anId, xqpString &anExpr )
     {
-      theExprs.push_back( anExpr );
+      theExprs.insert( std::make_pair( anId,  anExpr ) );
       setLength( MESSAGE_SIZE + getData().length() );
     }
 
-    std::vector<xqpString> getExprs()
+    std::map<unsigned int, xqpString> getExprs()
     {
       return theExprs;
     }
 
-    void addLocation( QueryLoc &aLocation )
+    void addLocation( unsigned int anId, QueryLoc &aLocation )
     {
-      theLocations.push_back(aLocation);
+      theLocations.insert( std::make_pair( anId, aLocation ) );
       setLength( MESSAGE_SIZE + getData().length() );
     }
 
-    std::vector< QueryLoc > getLocations()
+    std::map<unsigned int, QueryLoc> getLocations()
     {
       return theLocations;
     }
@@ -482,20 +482,23 @@ class SetMessage: public AbstractCommandMessage
 class ClearMessage: public AbstractCommandMessage
 {
   protected:
-    std::vector<QueryLoc> theLocations;
+    std::vector<unsigned int> theIds;
     std::string getData() const;
 
   public:
     ClearMessage();
 
-    ClearMessage( const std::vector<QueryLoc> &aLocation );
-
     ClearMessage( Byte * aMessage, const unsigned int aLength ); 
-
-    void addLocation( QueryLoc & aLocation )
+    
+    void addId( unsigned int id )
     {
-      theLocations.push_back( aLocation );
+      theIds.push_back( id );
       setLength( MESSAGE_SIZE + getData().length() );
+    }
+
+    std::vector<unsigned int> getIds()
+    {
+      return theIds;
     }
  
     virtual ~ClearMessage();

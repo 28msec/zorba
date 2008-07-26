@@ -142,10 +142,13 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
   ErrorCode * lmsg =  reinterpret_cast< ErrorCode * >( aMessage + SIZE_OF_HEADER_CONTENT );
   theReplyContent = new ReplyContent();
   memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
-  char * lData = new char[ aLength - MESSAGE_SIZE ];
-  //char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
-  memcpy( lData, aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
-  theData = xqpString( lData );
+  if ( aLength - MESSAGE_SIZE > 0 )
+  {
+    char * lData = new char[ aLength - MESSAGE_SIZE ];
+    //char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
+    memcpy( lData, aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
+    theData = xqpString( lData );
+  }
   checkIntegrity();
 }
 
@@ -162,10 +165,13 @@ Byte * ReplyMessage::serialize( Length & aLength ) const
   Byte * lHeader = reinterpret_cast< Byte * > ( theHeaderContent );
   Byte * lReply  = reinterpret_cast< Byte * > ( theReplyContent );
   //Harcoded value to avoid padding on sizeof(HeaderContent)
-  Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT + theData.length() ];
+  Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT + lData.str().length() ];
   memcpy( lMsg, lHeader, SIZE_OF_HEADER_CONTENT );
   memcpy( lMsg + SIZE_OF_HEADER_CONTENT, lReply, SIZE_OF_REPLY_CONTENT );
-  memcpy( lMsg + SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT, lData.str().c_str(), lData.str().length() );
+  if ( lData.str().length() > 0 )
+  {
+    memcpy( lMsg + SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT, lData.str().c_str(), lData.str().length() );
+  }
   return lMsg;
 }
 
@@ -362,15 +368,23 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
     json::array_list_t::iterator it; 
     for ( it=(*lValue)["breakpoints"]->getarraylist()->begin(); it != (*lValue)["breakpoints"]->getarraylist()->end(); it++ )
     {
-      if ((**it)["fileName"] != 0 )
+      if ((**it)["location"] != 0 )
       {
         QueryLoc loc;
-        loc.fromJSON( *it );
-        theLocations.push_back( loc );
+        loc.fromJSON( (**it)["location"] );
+        if ( (**it)["id"] == 0 )
+        {
+          throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
+        }
+        theLocations.insert( std::make_pair((**it)["id"]->getinteger(), loc) );
       } else if ( (**it)["expr"] != 0 ) {
         std::wstring *lExpr = (**it)["expr"]->getstring(L"", true);
         std::string expr( lExpr->begin()+1, lExpr->end()-1 );
-        theExprs.push_back( xqpString( expr ) );
+        if ( (**it)["id"] == 0 )
+        {
+          throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
+        }
+        theExprs.insert( std::make_pair( (**it)["id"]->getinteger(),  xqpString( expr ) ) );
       } else {
         throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
       }
@@ -404,13 +418,20 @@ std::string SetMessage::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{\"breakpoints\":[";
-  for(unsigned int i=0; i<theLocations.size(); i++)
-  {
-    lJSONString << theLocations.at(i).toJSON() << ",";
+  std::map<unsigned int, QueryLoc>::const_iterator it;
+  for( it = theLocations.begin(); it != theLocations.end(); it++ )
+  { 
+    if ( it != theLocations.begin() )
+    {
+      lJSONString << ',';
+    }
+    lJSONString << "{\"id\":" << it->first << ",\"location\":" << it->second.toJSON() << "}";
   }
-  for(unsigned int i=0; theExprs.size(); i++)
+
+  std::map<unsigned int, xqpString>::const_iterator it2;
+  for( it2 = theExprs.begin(); it2 != theExprs.end(); it2++ )
   {
-    lJSONString << "{\"expr\":\"" << theExprs.at(i) << "\"},";
+    lJSONString << ",{\"id\":" << it2->first << ",\"expr\":\"" << it2->second << "\"}";
   }
   lJSONString << "]}";
   return lJSONString.str();
@@ -421,27 +442,18 @@ std::string SetMessage::getData() const
  */
 ClearMessage::ClearMessage(): AbstractCommandMessage( BREAKPOINTS, CLEAR ){}
 
-ClearMessage::ClearMessage( const std::vector<QueryLoc> &aLocation ):
-  AbstractCommandMessage( BREAKPOINTS, CLEAR ), theLocations( aLocation )
-{
-  setLength( MESSAGE_SIZE + getData().length() );  
-}
-
-
 ClearMessage::ClearMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
   char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
   json::parser lParser;
   json::value * lValue = lParser.parse( lMessage );
-  if ( (*lValue)["breakpoints"]  != 0 )
+  if ( (*lValue)["ids"]  != 0 )
   {
     json::array_list_t::iterator it; 
-    for ( it=(*lValue)["breakpoints"]->getarraylist()->begin(); it != (*lValue)["breakpoints"]->getarraylist()->end(); it++ )
+    for ( it=(*lValue)["ids"]->getarraylist()->begin(); it != (*lValue)["ids"]->getarraylist()->end(); it++ )
     {
-      QueryLoc loc;
-      loc.fromJSON( *it );
-      theLocations.push_back( loc );
+      theIds.push_back( (*it)->getinteger() );
     }
   } else {
     throw MessageFormatException("Invalid JSON format for Clear breakpoint message.");
@@ -471,11 +483,15 @@ Byte * ClearMessage::serialize( Length & aLength ) const
 std::string ClearMessage::getData() const
 {
   std::stringstream lJSONString;
-  lJSONString << "{\"breakpoints\":[";
-  lJSONString << theLocations.at(0).toJSON();
-  for(unsigned int i=1; i<theLocations.size(); ++i)
+  lJSONString << "{\"ids\":[";
+  std::vector<unsigned int>::const_iterator it;
+  for( it = theIds.begin(); it != theIds.end(); it++ )
   {
-    lJSONString << "," << theLocations.at(i).toJSON();
+    if ( it != theIds.begin() )
+    {
+      lJSONString << ",";
+    }
+    lJSONString << *it;
   }
   lJSONString << "]}";
   return lJSONString.str();

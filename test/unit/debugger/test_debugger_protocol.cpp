@@ -277,17 +277,11 @@ void TestDebuggerSerialization::testRunMessage()
   void TestDebuggerSerialization::testClearMessage()
   {
     std::cerr << "Test clear message" << std::endl;
-    
-    QueryLoc loc;
-    std::string lFilename( "data.xq" );
-    loc.setFilenameBegin( &lFilename );
-    loc.setLineBegin( 1 );
-    loc.setColumnBegin( 1 );
-    loc.setLineEnd( 1 );
-    loc.setColumnEnd( 1 );
-    
     ClearMessage msg;
-    msg.addLocation( loc );
+    msg.addId( 1 );
+    msg.addId( 2 );
+    msg.addId( 3 );
+    msg.addId( 4 );
     test_packet< ClearMessage >( &msg );
   }
   
@@ -302,9 +296,10 @@ void TestDebuggerSerialization::testRunMessage()
     loc.setColumnBegin( 1 );
     loc.setLineEnd( 1 );
     loc.setColumnEnd( 1 );
-    
     SetMessage msg;
-    msg.addLocation( loc );
+    msg.addLocation( 1, loc );
+    xqpString lExpr("$i=1");
+    msg.addExpr( 2, lExpr);
     test_packet< SetMessage >( &msg );
   }
 

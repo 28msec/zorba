@@ -36,9 +36,13 @@
 
 namespace zorba{
 
+  unsigned int ZorbaDebuggerClientImpl::theLastId = 0;
+
   ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno )
   :
-    theEventHandler(0), 
+    theEventHandler(0),
+    theRemoteFileName(""),
+    theRemoteLineNo(0),
     theRequestSocket( new TCPSocket( "127.0.0.1", aRequestPortno ) ),
     theEventServerSocket( new TCPServerSocket( aEventPortno ) ),
     theExecutionStatus( QUERY_IDLE ),
@@ -267,9 +271,29 @@ namespace zorba{
 
   void ZorbaDebuggerClientImpl::addBreakpoint( const String &anExpr )
   {
-
+    xqpString lExpr = Unmarshaller::getInternalString( anExpr );
+    SetMessage lMessage;
+    theLastId++;
+    lMessage.addExpr( theLastId, lExpr );
+    theBreakpoints.insert( std::make_pair( theLastId, lExpr ) );
+    send( &lMessage );
   }
 
+
+  void ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineNo )
+  {
+    QueryLoc loc;
+    loc.setLineBegin( aLineNo );
+    
+    SetMessage lMessage;
+    theLastId++;
+    lMessage.addLocation( theLastId, loc );
+    std::stringstream lB;
+    lB << "line:" << aLineNo;
+    theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
+    send( &lMessage );
+  }
+  
   void ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
   {
     xqpString lFilename = Unmarshaller::getInternalString( aFileName );
@@ -279,39 +303,57 @@ namespace zorba{
     loc.setLineBegin( aLineNo );
     
     SetMessage lMessage;
-    lMessage.addLocation( loc );
+    theLastId++;
+    lMessage.addLocation( theLastId, loc );
+    std::stringstream lB;
+    lB << lFilename << ':' << aLineNo;
+    theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
     send( &lMessage );
   }
 
-  void ZorbaDebuggerClientImpl::clearBreakpoint( const String &aFileName, const unsigned int aLineNo )
+  bool ZorbaDebuggerClientImpl::clearBreakpoint( unsigned int anId )
   {
-    xqpString lFilename = Unmarshaller::getInternalString( aFileName );
-    QueryLoc loc;
-    std::string lTmp(lFilename);
-    loc.setFilenameBegin( &lTmp );
-    loc.setLineBegin( aLineNo );
-    
     ClearMessage lMessage;
-    lMessage.addLocation( loc );
+    lMessage.addId( anId );
+    if ( theBreakpoints.find( anId ) != theBreakpoints.end() )
+    {
+      theBreakpoints.erase( theBreakpoints.find( anId ) );
+    } else {
+      return false;
+    }
+    send( &lMessage );
+    return true;
+  }
+
+  void ZorbaDebuggerClientImpl::clearBreakpoints( std::list<unsigned int> &Ids )
+  {
+    ClearMessage lMessage;
+    std::list<unsigned int>::const_iterator it;
+    for ( it = Ids.begin(); it != Ids.end(); it++)
+    {
+      lMessage.addId( *it );
+      theBreakpoints.erase( theBreakpoints.find( *it ) );
+    }
     send( &lMessage );
   }
 
   void ZorbaDebuggerClientImpl::clearBreakpoints()
   {
-     ClearMessage lMessage;
-     send( &lMessage );
+    ClearMessage lMessage;
+    std::map<unsigned int, String>::iterator it;
+    for ( it = theBreakpoints.begin(); it != theBreakpoints.end(); it++ )
+    {
+      lMessage.addId( it->first );
+    }
+    send( &lMessage );
+    theBreakpoints.clear();
+  }
+ 
+  std::map<unsigned int, String> ZorbaDebuggerClientImpl::getBreakpoints() const
+  {
+    return theBreakpoints;
   }
 
-  void ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineNo )
-  {
-    QueryLoc loc;
-    loc.setLineBegin( aLineNo );
-    
-    SetMessage lMessage;
-    lMessage.addLocation( loc );
-    send( &lMessage );
-  }
-  
   String ZorbaDebuggerClientImpl::getFileName() const
   {
     return String( theRemoteFileName );

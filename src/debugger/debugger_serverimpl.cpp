@@ -264,16 +264,27 @@ bool ZorbaDebuggerImpl::hasToSuspend()
   {
     return true;
   }
-  for( unsigned int i = 0; i < theBreakpoints.size(); i++ )
+  std::map<unsigned int, QueryLoc>::iterator it;
+  for ( it = theBreakpoints.begin(); it != theBreakpoints.end(); it++ )
   {
-//    if( theLocation.getFilename() == theBreakpoints.at( i ).getFilename()
-//        && theLocation.getLineno() == theBreakpoints.at( i ).getLineno() )
-    if ( theLocation.getLineno() == theBreakpoints.at( i ).getLineno() )
+    if ( theLocation.getLineno() == it->second.getLineno() )
     {
       setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
       return true;
     }
   }
+ 
+  std::map<unsigned int, xqpString>::iterator lIter;
+  for ( lIter = theWatchpoints.begin(); lIter != theWatchpoints.end(); lIter++ )
+  {
+    xqpString lResult = fetchValue( theLocation, lIter->second, *thePlanState );
+    if ( lResult == "true" || lResult == "1" )
+    {
+      setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
+      return true;
+    }
+  }
+  
   return false;
 }
 
@@ -299,9 +310,9 @@ void ZorbaDebuggerImpl::handshake( TCPSocket * aSock )
  */
 void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
 {
-    Byte * lByteMessage;
-    AbstractMessage * lMessage;
-    ReplyMessage * lReplyMessage;
+    Byte * lByteMessage = 0;
+    AbstractMessage * lMessage = 0;
+    ReplyMessage * lReplyMessage = 0;
     Length length;
     try
     {
@@ -334,7 +345,8 @@ void ZorbaDebuggerImpl::handleTcpClient( TCPSocket * aSock )
   } catch ( std::exception &e ) {
     std::cerr <<  e.what() << std::endl;
   }
-  delete[] lByteMessage;
+  if ( lByteMessage != 0 )
+    delete[] lByteMessage;
   delete lMessage;
   delete lReplyMessage;
 }
@@ -515,9 +527,18 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
 #else
           lMessage =  static_cast< SetMessage * > ( aMessage );
 #endif
-          for( unsigned int i = 0; i < lMessage->getLocations().size(); i++ )
+          std::map<unsigned int, QueryLoc> locations = lMessage->getLocations();
+          std::map<unsigned int, QueryLoc>::iterator it;
+          for ( it = locations.begin(); it != locations.end(); it++ )
           {
-            theBreakpoints.push_back( lMessage->getLocations().at( i ) ); 
+            theBreakpoints.insert( std::make_pair( it->first, it->second ) ); 
+          }
+          
+          std::map<unsigned int, xqpString> exprs = lMessage->getExprs();
+          std::map<unsigned int, xqpString>::iterator lIt;
+          for ( lIt = exprs.begin(); lIt != exprs.end(); lIt++ )
+          {
+            theWatchpoints.insert( std::make_pair( lIt->first, lIt->second ) ); 
           }
           break;
         }
@@ -530,8 +551,24 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
 #else
           lMessage =  static_cast< ClearMessage * > ( aMessage );
 #endif
+          std::vector<unsigned int>::iterator it;
+          std::vector<unsigned int> ids = lMessage->getIds();
+          for ( it = ids.begin(); it != ids.end(); it++ )
+          {
+            std::map<unsigned int, QueryLoc>::iterator
+            lIter = theBreakpoints.find( *it );
+            if ( lIter !=  theBreakpoints.end() )
+            {
+              theBreakpoints.erase( lIter );
+            } else {
+              std::map<unsigned int, xqpString>::iterator lIter2 =
+              theWatchpoints.find( *it );
+              if ( lIter2 != theWatchpoints.end() ) {
+                theWatchpoints.erase( lIter2 );
+              }
+            }
+          }
           break;
-          //TODO: unimplemented logic...
         }
         default: throw InvalidCommandException("Internal Error. Command not implemented for breakpoints command set.");
       }
