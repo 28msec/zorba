@@ -52,9 +52,21 @@ public:
     void registerXSD(const char* xsdFileName);
     void printXSDInfo(bool excludeBuiltIn = true);
 
-    // user defined atomic type
+    // user defined simple types, i.e. Atomic, List or Union Types
+    bool parseUserSimpleTypes(const xqp_string textValue, const xqtref_t& aSourceType,
+        const xqtref_t& aTargetType, std::vector<store::Item_t> &resultList);    
+
+    // user defined atomic types
     bool parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aSourceType,
         const xqtref_t& aTargetType, store::Item_t &result);    
+
+    // user defined list types
+    bool parseUserListTypes(const xqp_string textValue, const xqtref_t& aSourceType,
+        const xqtref_t& aTargetType, std::vector<store::Item_t> &resultList);    
+
+    // user defined union types
+    bool parseUserUnionTypes(const xqp_string textValue, const xqtref_t& aSourceType,
+        const xqtref_t& aTargetType, std::vector<store::Item_t> &resultList);    
 
     /*
     * Checks if the Type with the qname exists in the schema as a user-defined type
@@ -69,7 +81,7 @@ public:
 
 private:
     xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef);
-    UserDefinedXQType::TYPE_CATEGORY getTypeCategory(XSTypeDefinition* xsTypeDef);
+
 
 #endif//ZORBA_NO_XMLSCHEMA
 

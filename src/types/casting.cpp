@@ -1240,25 +1240,51 @@ store::Item_t castUserDefinedType(
     const store::Item_t& aItem,
     const ErrorInfo& aErrorInfo)
 {
-  const DelegatingTypeManager* lDelegatingTypeManager 
-    = static_cast<const DelegatingTypeManager*>(aErrorInfo.theTargetType->get_manager()); 
+    const DelegatingTypeManager* lDelegatingTypeManager 
+        = static_cast<const DelegatingTypeManager*>(aErrorInfo.theTargetType->get_manager()); 
 
-  if (aErrorInfo.theSourceType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
-      (TypeOps::get_atomic_type_code(*aErrorInfo.theSourceType) == TypeConstants::XS_STRING))
-  {
-    store::Item_t lResult;
-    if (lDelegatingTypeManager->getSchema()->
-            parseUserAtomicTypes(xqpString(aItem->getStringValue()), 
-                                 aErrorInfo.theSourceType,
-                                 aErrorInfo.theTargetType,
-                                 lResult))
+    if (aErrorInfo.theSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
+        (TypeOps::get_atomic_type_code(*aErrorInfo.theSourceType) != TypeConstants::XS_STRING))
     {
-      return lResult;
+        throwError(FORG0001, aErrorInfo); 
+        return 0;
     }
-  }
 
-  throwError(FORG0001, aErrorInfo); 
-  return 0;
+    const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*(aErrorInfo.theTargetType));
+
+    switch ( udXQType.getTypeCategory() )
+    {
+    case UserDefinedXQType::ATOMIC_TYPE:
+        {
+            store::Item_t atomicResult;
+            bool hasResult = lDelegatingTypeManager->getSchema()->
+                parseUserAtomicTypes(xqpString(aItem->getStringValue()), 
+                                     aErrorInfo.theSourceType,
+                                     aErrorInfo.theTargetType,
+                                     atomicResult);
+            
+            if ( hasResult )
+                return atomicResult;
+        }
+        break;
+
+    case UserDefinedXQType::LIST_TYPE:
+        // todo for David: list and union type may return multiple Items
+        //parseUserListTypes( textValue, aSourceType, aTargetType, resultList);
+        break;
+
+    case UserDefinedXQType::UNION_TYPE:
+        // todo for David: list and union type may return multiple Items
+        //parseUserUnionTypes( textValue, aSourceType, aTargetType, resultList);
+        break;
+
+    case UserDefinedXQType::COMPLEX_TYPE:
+    default:
+        ZORBA_ASSERT( false);
+        break;
+    }
+
+    return 0;
 }
 #endif
 

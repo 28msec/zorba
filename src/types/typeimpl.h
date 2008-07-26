@@ -194,11 +194,11 @@ public:
 
 
 private:
-  store::Item_t m_qname;
-  xqtref_t      m_baseType;
-  TYPE_CATEGORY m_typeCategory;
-  xqtref_t      m_listItemType;
-  std::vector<xqtref_t> m_unionItemTypes;
+  store::Item_t              m_qname;
+  xqtref_t                   m_baseType;
+  TYPE_CATEGORY              m_typeCategory;
+  const XQType*              m_listItemType;
+  std::vector<const XQType*> m_unionItemTypes;
 
 public:
   UserDefinedXQType(
@@ -212,15 +212,16 @@ public:
         store::Item_t qname,
         xqtref_t baseType,
         TypeConstants::quantifier_t quantifier,
-        xqtref_t listItemType);
+        const XQType* listItemType);
 
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
         xqtref_t baseType,
         TypeConstants::quantifier_t quantifier,
-        std::vector<xqtref_t> unionItemTypes);
+        std::vector<const XQType*> unionItemTypes);
 
+  virtual ~UserDefinedXQType() {}
 
   bool isSuperTypeOf(const XQType& subType) const;
 
@@ -232,7 +233,9 @@ public:
   bool isComplex()                const { return m_typeCategory == COMPLEX_TYPE; }
   TYPE_CATEGORY getTypeCategory() const { return m_typeCategory; }
 
-  xqtref_t getBaseType()   const { return m_baseType; }
+  xqtref_t getBaseType()                            const { return m_baseType; }
+  const XQType*  getListItemType()                  const { return m_listItemType; }
+  std::vector<const XQType*> getUnionItemTypes()    const { return m_unionItemTypes; }
 
   virtual std::ostream& serialize(std::ostream& os) const;
 };

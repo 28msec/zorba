@@ -255,11 +255,16 @@ namespace zorba
 
             store::NsBindings bindings;
             parent->getNamespaceBindings(bindings);
-            store::Item_t typedValue = processTextValue(planState, delegatingTypeManager, bindings, typeQName, att->_value);
+            std::vector<store::Item_t> typedValues;
+            processTextValue(planState, delegatingTypeManager, bindings, typeQName, att->_value, typedValues);
             
             store::Item_t validatedAttNode;
-            GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
-                typeQName, typedValue, false, false );
+            if ( typedValues.size()==1 ) // hack around serialization bug
+                GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
+                    typeQName, typedValues[0], false, false );
+            else            
+                GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
+                    typeQName, typedValues, false, false );
         }
     }
 
@@ -301,10 +306,14 @@ namespace zorba
 
                         store::NsBindings nsBindings;
                         parent->getNamespaceBindings(nsBindings);
-                        store::Item_t typedValue = processTextValue(planState, delegatingTypeManager, nsBindings, type, childStringValue );
+                        std::vector<store::Item_t> typedValues;
+                        processTextValue(planState, delegatingTypeManager, nsBindings, type, childStringValue, typedValues );
                         
                         store::Item_t validatedTextNode;
-                        GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValue);
+                        if ( typedValues.size()==1 ) // hack around serialization bug
+                            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues[0]);
+                        else
+                            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues);
                     }
                     break;
                 
@@ -351,8 +360,9 @@ namespace zorba
         }
     }
     
-    store::Item_t ValidateIterator::processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        store::NsBindings bindings, store::Item_t typeQName, xqpStringStore_t& textValue)
+    void ValidateIterator::processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
+        store::NsBindings bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
+        std::vector<store::Item_t> &resultList)
     {
         xqtref_t type = delegatingTypeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
         //std::cout << "     - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << 
@@ -360,18 +370,40 @@ namespace zorba
         //std::cout << " type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; std::cout.flush();                    
     
         static_context* staticContext = planState.sctx();
-        namespace_context* nsCtx = new namespace_context(staticContext);
-
+        namespace_context nsCtx = namespace_context(staticContext);
+        // todo fill nsCtx
         
         store::Item_t result;                    
         if (type!=NULL)
-            GenericCast::instance()->cast(result, textValue, type.getp(), nsCtx);
-        else
-            GENV_ITEMFACTORY->createUntypedAtomic( result, textValue);
-                    
-        delete nsCtx;
+        {
+            bool listOrUnion = false;
+            if ( type->type_kind() == XQType::USER_DEFINED_KIND )
+            {
+                const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
+                if ( udXQType.isList() || udXQType.isUnion() )
+                {
+                    listOrUnion = true;
+                }
+            }
 
-        return result;
+            if ( listOrUnion )
+            {
+                xqp_string str(textValue);
+                delegatingTypeManager->getSchema()->
+                    parseUserSimpleTypes(str, GENV_TYPESYSTEM.STRING_TYPE_ONE, type, resultList);
+            }
+            else
+            {
+                bool isResult = GenericCast::instance()->cast(result, textValue, type.getp(), &nsCtx);
+                if ( isResult )
+                    resultList.push_back(result);
+            }
+        }
+        else
+        {
+            if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
+                resultList.push_back(result);
+        }
     }
 
     /* end class ValidateIterator */

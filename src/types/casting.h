@@ -58,17 +58,6 @@ public:
   static GenericCast* instance();
 
 public:
-
-  /**
-   * Executes the casting of the passed item. If the passed item has the same
-   * type or a subtype of the passed targetType, the passed item is directly
-   * returned.
-   */
-  bool cast (
-        store::Item_t&       result,
-        const store::Item_t& aItem, 
-        const XQType*        aTargetType, 
-        namespace_context*   aNCtx = 0) const;
   
   /**
    * Executes the string casting of the passed string to an item of the passed
@@ -79,6 +68,17 @@ public:
         xqpStringStore_t& aStr, 
         const XQType* aTargetType,
         namespace_context* aNCtx = 0) const;
+  /**
+   * Executes the casting of the passed item. If the passed item has the same
+   * type or a subtype of the passed targetType, the passed item is directly
+   * returned.
+   */
+  bool cast (
+        store::Item_t&       result,
+        const store::Item_t& aItem, 
+        const XQType*        aTargetType, 
+        namespace_context*   aNCtx = 0) const;
+
 
   /**
    * Casts the passed string to xs:QName if possible.
