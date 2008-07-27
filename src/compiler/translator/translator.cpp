@@ -1515,14 +1515,19 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
   {
     rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, pop_nodestack());
-    
-    checked_vector<var_expr_t>::iterator it;
-    for ( it = theScopedVariables.begin(); it != theScopedVariables.end(); it++ )
+   
+    std::set<store::Item_t> lQNames;
+    checked_vector<var_expr_t>::iterator it = theScopedVariables.end();
+    for ( it--; it >= theScopedVariables.begin(); it-- )
     {
-      var_expr_t lValue = (*it);
-      var_expr_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
-      lVariable->set_type( lValue->get_type() );
-      lDebuggerExpr->add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
+      if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
+      {
+        lQNames.insert( (*it)->get_varname() );
+        var_expr_t lValue = (*it);
+        var_expr_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
+        lVariable->set_type( lValue->get_type() );
+        lDebuggerExpr->add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
+      }
     }
     lReturnExpr = &*lDebuggerExpr;
   } else {
