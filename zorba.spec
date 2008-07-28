@@ -1,10 +1,10 @@
 Name:    zorba
 Version: 0.9.21
-Release: 1%{?dist}
-Summary: Zorba is a general purpose XQuery processor implementing in C++ the W3C family of specifications
+Release: 2%{?dist}
+Summary: General purpose XQuery processor implementing in C++
 
 Group: System Environment/Libraries
-License: Apache v2
+License: ASL 2.0
 URL: http://www.zorba-xquery.com/
 Source0: file://mirror.optus.net/sourceforge/z/zo/zorba/%{name}-%{version}.tar.gz
 
@@ -19,8 +19,16 @@ BuildRequires: cmake >= 2.4 libxml2 >= 2.2.16 icu >= 2.6 libicu-devel
 BuildRequires: boost >= 1.32 xerces-c-devel >= 2.7
 BuildRequires: ruby-devel
 %description
-
-Zorba is a general purpose XQuery processor implementing in C++ the W3C family of specifications. It is not an XML database. The query processor has been designed to be embeddable in a variety of environments such as other programming languages extended with XML processing capabilities, browsers, database servers, XML message dispatchers, or smartphones. Its architecture employes a modular design, which allows customizing the Zorba query processor to the environment’s needs. In particular the architecture of the query processor allows a pluggable XML store (e.g. main memory, DOM stores, persistent disk-based large stores, S3 stores). Zorba runs on most platforms and is available under the Apache license v2.
+Zorba is a general purpose XQuery processor implementing in C++ the
+W3C family of specifications. It is not an XML database. The query
+processor has been designed to be embeddable in a variety of
+environments such as other programming languages extended with XML
+processing capabilities, browsers, database servers, XML message
+dispatchers, or smartphones. Its architecture employes a modular
+design, which allows customizing the Zorba query processor to the
+environment's needs. In particular the architecture of the query
+processor allows a pluggable XML store (e.g. main memory, DOM stores,
+persistent disk-based large stores, S3 stores).
 
 %package python
 Summary: %{name} Python module
@@ -46,7 +54,7 @@ Provides ruby module to use %{name} API
 %build
 mkdir -p build
 pushd build
-cmake -D CMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug --debug-output ..
+cmake -D CMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug --debug-output -DCMAKE_SKIP_BUILD_RPATH=1  ..
 make %{?_smp_mflags}
 popd
 
@@ -103,6 +111,12 @@ make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" -C build
 %{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
 
 %changelog
+* Mon Jul 28 2008 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.21-2
+- remove rpath in build
+- remove non utf8 character
+- fix license entry
+- fix description line
+
 
 * Sun Jun 29 2008 Paul F. Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.21-1
 - Update to 0.9.21
