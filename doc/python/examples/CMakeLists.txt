@@ -21,8 +21,8 @@ IF ( PYTHONINTERP_FOUND )
     ADD_TEST("python" ${PYTHON_EXECUTABLE} python_test.py)
 ELSE( PYTHONINTERP_FOUND )
     MESSAGE(STATUS "Python test not added because Python Interpreter not found.")
-ENDIF ( PYTHONINTERP_FOUND )
-
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/python_test.py
         DESTINATION
         share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/python/examples)
+ENDIF ( PYTHONINTERP_FOUND )
+
