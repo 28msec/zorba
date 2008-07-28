@@ -68,6 +68,14 @@ private:
   xqpStringStore_t  thePrefix;
   xqpStringStore_t  theLocal;
 
+  enum qname_flags
+  {
+    qname_isId = 1,
+    qname_isBaseUri = 2,
+  };
+
+  uint16_t    flags;
+
   uint16_t          thePosition;
   uint16_t          theNextFree;
   uint16_t          thePrevFree;

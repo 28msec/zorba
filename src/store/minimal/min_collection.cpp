@@ -131,10 +131,17 @@ void SimpleCollection::addToCollection(const store::Item* node, long position)
   }
 
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-  if(position == -1)
-    theXmlTrees.insert(theXmlTrees.end(), const_cast<store::Item*>(node));
+  if( nodePositionInCollection((store::Item*)node) == -1)
+  {
+    if(position == -1)
+      theXmlTrees.insert(theXmlTrees.end(), const_cast<store::Item*>(node));
+    else
+      theXmlTrees.insert(theXmlTrees.begin() + position, const_cast<store::Item*>(node));
+  }
   else
-    theXmlTrees.insert(theXmlTrees.begin() + position, const_cast<store::Item*>(node));
+  {
+    ZORBA_ERROR(API0031_NODE_ALREADY_IN_COLLECTION);
+  }
 }
 
 /*******************************************************************************
@@ -147,24 +154,36 @@ void SimpleCollection::addNode(const store::Item* node, const store::Item* aTarg
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
+  if( nodePositionInCollection((store::Item*)aTargetNode)  == -1)
+  {
+    ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
+  }
+
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
 
   checked_vector<store::Item_t>::iterator it = theXmlTrees.begin();
   checked_vector<store::Item_t>::iterator end = theXmlTrees.end();
   const XmlNode* rTargetNode = reinterpret_cast<const XmlNode*>(aTargetNode);
 
-  for (; it != end; ++it)
+  if( nodePositionInCollection((store::Item*)node) == -1)
   {
-    //check if the nodes have the same ID
-    if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rTargetNode->getOrdPath())
+    for (; it != end; ++it)
     {
-      if(aOrder)
-        theXmlTrees.insert(it, const_cast<store::Item*>(node));
-      else
-        theXmlTrees.insert(++it,const_cast<store::Item*>(node));
+      //check if the nodes have the same ID
+      if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rTargetNode->getOrdPath())
+      {
+        if(aOrder)
+          theXmlTrees.insert(it, const_cast<store::Item*>(node));
+        else
+          theXmlTrees.insert(++it,const_cast<store::Item*>(node));
 
-      break;
+        break;
+      }
     }
+  }
+  else
+  {
+    ZORBA_ERROR(API0031_NODE_ALREADY_IN_COLLECTION);
   }
 }
 
@@ -192,20 +211,17 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+  int position = nodePositionInCollection((store::Item*) node);
 
-  checked_vector<store::Item_t>::iterator it = theXmlTrees.begin();
-  checked_vector<store::Item_t>::iterator end = theXmlTrees.end();
-  const XmlNode* rnode = reinterpret_cast<const XmlNode*>(node);
-
-  for (; it != end; ++it)
+  if(position != -1)
   {
-    //check if the nodes have the same ID
-    if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rnode->getOrdPath())
-    {
-      theXmlTrees.erase(it);
-      break;
-    }
+    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+
+    theXmlTrees.erase(theXmlTrees.begin() + position);
+  }
+  else
+  {
+    ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
   }
 }
 
@@ -215,16 +231,31 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 void SimpleCollection::removeFromCollection(long position)
 {
   if(position == -1)
-    theXmlTrees.erase(theXmlTrees.end());
+  {
+    if( theXmlTrees.erase(theXmlTrees.end()) == theXmlTrees.end() )
+    {
+      ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
+    }
+  }
   else
-    theXmlTrees.erase(theXmlTrees.begin() + position);
+  {
+    if( theXmlTrees.erase(theXmlTrees.begin() + position) == theXmlTrees.end() )
+    {
+      ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
+    }
+  }
 }
 
 /*******************************************************************************
-  Delete the node at the given position from the collection.
+  Return the node at the given position from the collection.
 ********************************************************************************/
 store::Item_t SimpleCollection::nodeAt(long position)
 {
+  if( position < 0 || position >= theXmlTrees.size() )
+  {
+    ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
+  }
+
   return theXmlTrees[position];
 }
 
@@ -298,6 +329,27 @@ void SimpleCollection::CollectionIter::close()
   theHaveLock = false;
   SYNC_CODE(theCollection->theLatch.unlock();)
 }
+
+int
+SimpleCollection::nodePositionInCollection(store::Item* newNode)
+{
+  if( theXmlTrees.empty() )
+    return -1;
+  else
+  {
+    checked_vector<store::Item_t>::iterator it = theXmlTrees.begin();
+    checked_vector<store::Item_t>::iterator end = theXmlTrees.end();
+    const XmlNode* rNewNode = reinterpret_cast<const XmlNode*>(newNode);
+
+    for (; it != end; ++it)
+      //check if the nodes have the same ID
+      if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rNewNode->getOrdPath())
+        return (it - theXmlTrees.begin());
+
+    return -1;
+  }
+}
+
 } // namespace storeminimal
 } // namespace zorba
 

@@ -1764,14 +1764,20 @@ xqp_string ElementNode::show() const
 
 ElementTreeNode::ElementTreeNode(
     store::Item_t& nodeName,
-    ulong          numBindings,
+    //ulong          numBindings,
+    store::NsBindings *nsbindings,
     ulong          numAttributes)
   :
   ElementNode(nodeName)
 {
-  if (numBindings > 0)
+  //if (numBindings > 0)
+  //{
+  //  theNsContext = new NsBindingsContext(numBindings);
+  //  theFlags |= HaveLocalBindings;
+  //}
+  if (nsbindings && !nsbindings->empty())
   {
-    theNsContext = new NsBindingsContext(numBindings);
+    theNsContext = new NsBindingsContext(*nsbindings, true);//do swap of nsbindings
     theFlags |= HaveLocalBindings;
   }
 
@@ -1779,7 +1785,7 @@ ElementTreeNode::ElementTreeNode(
     theAttributes.resize(numAttributes);
 
   NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
-              << " num bindings = " << numBindings << " num attributes = "
+              << " num bindings = " << nsbindings->size() << " num attributes = "
               << numAttributes << std::endl);
 }
 

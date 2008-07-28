@@ -74,7 +74,7 @@ public:
   virtual ~NodeVector() { }
 
   bool empty() const            { return theNodes.empty(); }
-  ulong size() const            { return theNodes.size(); }
+  ulong size() const            { return (ulong)theNodes.size(); }
 
   XmlNode* get(ulong pos) const { return theNodes[pos]; } 
   ulong find(XmlNode* n);

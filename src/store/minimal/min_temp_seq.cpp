@@ -147,7 +147,7 @@ store::Iterator_t SimpleTempSeq::getIterator(
     int32_t endPos,
     bool streaming)
 {
-  return store::Iterator_t ( NULL );
+  return new SimpleTempSeqIter(this, startPos, endPos);
 }
 
 
@@ -237,8 +237,8 @@ SimpleTempSeqIter::SimpleTempSeqIter(
 
 SimpleTempSeqIter::SimpleTempSeqIter(
     SimpleTempSeq_t aTempSeq,
-    int startPos,
-    int endPos)
+    int32_t startPos,
+    int32_t endPos)
 	:
 		theTempSeq(aTempSeq),
     theBorderType(startEnd),

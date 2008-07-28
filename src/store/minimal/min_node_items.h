@@ -560,6 +560,7 @@ class ElementTreeNode : public ElementNode
 {
   friend class ElementNode;
   friend class UpdReplaceContent;
+  friend class XmlLoader;
 
 protected:
   LoadedNodeVector  theChildren;
@@ -571,7 +572,7 @@ public:
 public:
   ElementTreeNode(
         store::Item_t& nodeName,
-        ulong          numBindings,
+        store::NsBindings *nsbindings,
         ulong          numAttributes);
 
   ElementTreeNode(
@@ -684,6 +685,7 @@ class AttributeNode : public XmlNode
   friend class XmlNode;
   friend class ElementNode;
   friend class ConstrElementNode;
+  friend class XmlLoader;
 
 public:
   enum AttrFlags
@@ -793,7 +795,7 @@ class TextNode : public XmlNode
   friend class DocumentDagNode;
   friend class ElementNode;
   friend class BasicItemFactory;
-  friend class FastXmlLoader;
+  friend class XmlLoader;
 
 public:
   typedef union

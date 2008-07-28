@@ -17,24 +17,26 @@
 # Source Files
 #
 SET(MIN_STORE_SRCS
-    min_store.cpp
-    min_item_factory.cpp
-    min_iterator_factory.cpp
-    min_collection.cpp
-    min_temp_seq.cpp
-    min_pul.cpp
-    min_loader.cpp
     min_atomic_items.cpp
+    min_collection.cpp
     min_item.cpp
-    min_node_items.cpp
-    min_node_vector.cpp
-    min_node_updates.cpp
-    min_node_iterators.cpp
-    qname_pool.cpp
-    min_ordpath.cpp
-    min_nsbindings.cpp
+    min_item_factory.cpp
     min_item_iterator.cpp
+    min_item_vector.cpp
+    min_iterator_factory.cpp
+    min_lazy_temp_seq.cpp
+    min_loader.cpp
+    min_node_items.cpp
+    min_node_iterators.cpp
+    min_node_updates.cpp
+    min_node_vector.cpp
+    min_nsbindings.cpp
+    min_ordpath.cpp
+    min_pul.cpp
     min_query_context.cpp
+    min_store.cpp
+    min_temp_seq.cpp
+    qname_pool.cpp
     string_pool.cpp
 )
 

@@ -26,6 +26,7 @@
 
 #include "store/minimal/min_store.h"
 #include "store/minimal/min_temp_seq.h"
+#include "store/minimal/min_lazy_temp_seq.h"
 #include "store/minimal/min_collection.h"
 #include "store/minimal/min_loader.h"
 #include "store/minimal/min_store_defs.h"
@@ -279,6 +280,8 @@ SimpleStore::~SimpleStore()
 ********************************************************************************/
 void SimpleStore::shutdown()
 {
+  theItemUris.clear();
+
   theCollections.clear();
 
   theDocuments.clear();
@@ -432,7 +435,10 @@ store::Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
   if (theCollections.get(uri, collection) )
     return collection.getp();
   else
+  {
+    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
     return NULL;
+  }
 }
 
 
@@ -445,19 +451,24 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
   if (uri == NULL)
     return;
 
-  theCollections.remove(uri);
+  bool deleted = theCollections.remove(uri);
 
-  checked_vector<store::Item_t>::iterator it = theItemUris.begin();
-  checked_vector<store::Item_t>::iterator end = theItemUris.end();
-
-  for (; it != end; ++it)
+  if(deleted )
   {
-    if( (*it)->getStringValue() == uri )
+    checked_vector<store::Item_t>::iterator it = theItemUris.begin();
+    checked_vector<store::Item_t>::iterator end = theItemUris.end();
+
+    for (; it != end; ++it)
     {
-      theItemUris.erase(it);
-      break;
+      if( (*it)->getStringValue() == uri )
+      {
+        theItemUris.erase(it);
+        break;
+      }
     }
   }
+  else
+    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
 }
 
 /*******************************************************************************
@@ -900,7 +911,13 @@ TempSeq_t SimpleStore::createTempSeq(
   bool copyNodes, 
   bool lazy)
 {
-  TempSeq_t tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
+  TempSeq_t tempSeq;
+  if(lazy){
+    tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
+    //tempSeq = new SimpleLazyTempSeq(iterator, copyNodes);
+  }else{
+    tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
+  }
   return tempSeq;
 }
 

@@ -66,7 +66,7 @@ public:
 
   store::Item* getUri() { return theUri; }
 
-  ulong size() const { return theXmlTrees.size(); }
+  ulong size() const { return (ulong)theXmlTrees.size(); }
 
   store::Iterator_t getIterator(bool idsNeeded);
 
@@ -82,6 +82,9 @@ public:
   void removeFromCollection(long position = -1);
 
   store::Item_t nodeAt(long position);
+protected:
+  int
+  nodePositionInCollection(store::Item* newNode);
 };
 
 } // namespace storeminimal

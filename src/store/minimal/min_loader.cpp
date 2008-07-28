@@ -147,16 +147,18 @@ bool mystring::byteEqual(const char *str, int str_len)
 XmlLoader::XmlLoader(store::ItemFactory *factory, error::ErrorManager* aErrorManager)
 :
   theFactory(factory),
-  theBaseUri(NULL),
-  theDocUri(NULL),
+  theTree(NULL),
   theRootNode(NULL),
   theErrorManager(aErrorManager),
   store(GET_STORE()),
+  qnpool(store.getQNamePool()),
   namespacePool(store.getNamespacePool()),
   temp_buff(1024)
 {
   //temp_buff.reserve(1024);
+  theOrdPath.init();
 
+  cursorBuffer = cursorEnd = NULL;
   buff_size = 0;
   buff_pos = 0;
   stream = NULL;
@@ -187,6 +189,15 @@ void XmlLoader::clear_tag_stack()
 }
 
 /*******************************************************************************
+
+********************************************************************************/
+void XmlLoader::setRoot(DocumentTreeNode* root)
+{
+  theRootNode = root;
+  theTree->setRoot(root);
+}
+
+/*******************************************************************************
   Method called to do cleanup in case of errors.
 ********************************************************************************/
 void XmlLoader::abortload()
@@ -196,6 +207,15 @@ void XmlLoader::abortload()
 
   if(theRootNode != NULL)
     theRootNode->getTree()->attachedloader = NULL;
+
+  if (theTree != NULL)
+  {
+    //delete theTree;
+    theTree->free();
+    theTree = NULL;
+  }
+
+  theOrdPath.init();
   theRootNode = NULL;
 
   theWarnings.clear();
@@ -208,8 +228,8 @@ void XmlLoader::abortload()
 }
 
 
-
-int XmlLoader::read_char()
+/*
+inline int XmlLoader::read_char()
 {
   if(current_c)
   {
@@ -226,14 +246,43 @@ int XmlLoader::read_char()
     if(!buff_size)
       return 0;
     buff_pos = 0;
+    //cursorBuffer = (unsigned char*)theBuffer;
   }
   prev_c = (unsigned char)theBuffer[buff_pos++];
+  //cursorBuffer++;
+  //buff_pos++;
+  
   return prev_c;
 }
 
 void XmlLoader::unread_char()
 {
   current_c = prev_c;
+}
+*/
+
+inline int XmlLoader::read_char()
+{
+  if(cursorBuffer == cursorEnd)
+  {
+    if(cursorEnd == NULL)
+      theBuffer[7] = 0;
+    else
+      theBuffer[7] = theBuffer[8+buff_size-1];
+
+    stream->read((char*)theBuffer+8, sizeof(theBuffer)-8);
+    buff_size = stream->gcount();
+    if(!buff_size)
+      return 0;
+    cursorBuffer = theBuffer + 8;
+    cursorEnd = cursorBuffer + buff_size;
+  }
+  return *cursorBuffer++;
+}
+
+inline void XmlLoader::unread_char()
+{
+  cursorBuffer--;
 }
 
 bool XmlLoader::isWhitespace(int c)
@@ -906,7 +955,7 @@ bool XmlLoader::read_cdata()
     cdata_str += c;
   }
 
-  cdataBlock(this, cdata_str.c_str(), cdata_str.length());
+  cdataBlock(this, cdata_str.c_str(), (int)cdata_str.length());
   return true;
 }
 
@@ -1056,6 +1105,8 @@ XmlNode* XmlLoader::startloadXml(
   prev_c = 0;
   current_c = 0;
 
+  theTree = new XmlTree(NULL, GET_STORE().getTreeId());
+
   startDocument(this);
 
   {
@@ -1181,17 +1232,27 @@ void XmlLoader::startDocument(void * ctx)
   {
     xqpStringStore_t docUri = loader.theDocUri;
     xqpStringStore_t baseUri = loader.theBaseUri;
-    store::Item_t docNode;
+    if (docUri == NULL)
+    {
+      std::ostringstream uristream;
+      uristream << "zorba://internalDocumentURI-" << loader.theTree->getId();
 
-    loader.theFactory->createDocumentNode(docNode, baseUri, docUri);
+      docUri = new xqpStringStore(uristream.str().c_str());
+    }
 
-    DocumentTreeNode*     docNode_cast = dynamic_cast<DocumentTreeNode*>(docNode.getp());
-    loader.theRootNode = docNode_cast;
-    //docNode_cast->attachedloader = &loader;
-    docNode_cast->is_full_loaded = false;
-    docNode_cast->getTree()->attachedloader = &loader;
+    DocumentTreeNode* docNode = new DocumentTreeNode(baseUri, docUri);
 
-    LOADER_TRACE1("Start Doc Node = " << docNode.getp());
+    loader.setRoot(docNode);
+
+    docNode->is_full_loaded = false;
+
+    SYNC_CODE(docNode->theRCLockPtr = &loader.theTree->getRCLock();)
+    docNode->setId(loader.theTree, &loader.theOrdPath);
+    loader.theOrdPath.pushChild();
+
+    docNode->getTree()->attachedloader = &loader;
+
+    LOADER_TRACE1("Start Doc Node = " << docNode);
   }
   catch (error::ZorbaError& e)
   {
@@ -1218,15 +1279,13 @@ void XmlLoader::endDocument(void * ctx)
 
   try
   {
-//    DocumentTreeNode*     docNode = dynamic_cast<DocumentTreeNode*>(loader.theRootNode);
     if(loader.theRootNode)
     {
-      //loader.theRootNode->attachedloader = NULL;
       loader.theRootNode->is_full_loaded = true;
       loader.theRootNode->finalizeNode();
     }
 
-   LOADER_TRACE2("End Doc Node = " << loader.theRootNode.getp());
+   LOADER_TRACE2("End Doc Node = " << loader.theRootNode);
   }
   catch (error::ZorbaError& e)
   {
@@ -1265,16 +1324,16 @@ void XmlLoader::startElement(
    attr_list_t  &elem_attrs
     )
 {
-  try
-  {
     store::Item_t qname;
     store::Item_t tname;
     store::Item_t nullValue;
     xqpStringStore_t baseUri;
 
+  try
+  {
     // Get the parent node from the node stack
     std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
-    store::Item_t   parent;
+    XmlNode   *parent;
     parent_tag = tag_stack.rbegin();
     parent_tag++;
     if(parent_tag == tag_stack.rend())
@@ -1283,36 +1342,37 @@ void XmlLoader::startElement(
       parent = (*parent_tag)->elemNode;
 
     // Construct node name and type
-    theFactory->createQName(qname,
-                             tag_elem->name.uri->c_str(), 
+    qname = qnpool.insert(   tag_elem->name.uri->c_str(), 
                              tag_elem->name.prefix, 
                              tag_elem->name.localname);
-    //+theFactory->createQName(tname,
-    //+                         "http://www.w3.org/2001/XMLSchema",
-    //+                         "xs",
-    //+                         "untyped");
-    tname = store.theSchemaTypeNames[XS_UNTYPED];
 
     // If this is going to be the root of the xml tree, give it the input base uri
     if (parent == NULL)
       baseUri = theBaseUri;
 
-    store::Item_t node;
-    theFactory->createElementNode(node, parent, -1, qname, 
-                                  tname, true, false, false, false,
-                                  nsbindings, baseUri);
-    tag_elem->elemNode = dynamic_cast<ElementTreeNode*>(node.getp());
+    tag_elem->elemNode = new ElementTreeNode(qname,
+                                            &nsbindings,//numBindings,
+                                            (ulong)elem_attrs.size());
     tag_elem->elemNode->setIsFullLoaded(false);
-    tag_elem->elemNode->depth = tag_stack.size();//has been already pushed into tag stack
+    tag_elem->elemNode->depth = (unsigned int)tag_stack.size();//has been already pushed into tag stack
 
-    //+theFactory->createQName(tname,
-    //+                         "http://www.w3.org/2001/XMLSchema",
-    //+                         "xs",
-    //+                         "untypedAtomic");
-    tname = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+    parent->children().push_back(tag_elem->elemNode, false);
+    tag_elem->elemNode->setParent(parent);
+
+    if(tag_elem->elemNode->theNsContext)
+      tag_elem->elemNode->theNsContext->setParent(parent->getNsContext());
+    else
+      tag_elem->elemNode->theNsContext = parent->getNsContext();
+
+    // Assign the current node id to this node, and compute the next node id.
+    tag_elem->elemNode->setId(theTree, &theOrdPath);
+    theOrdPath.pushChild();
+
+    SYNC_CODE(tag_elem->elemNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
     attr_list_t::iterator   attr_it;
     NodeVector& attrNodes = tag_elem->elemNode->attributes();
+    int   i=0;
     for(attr_it=elem_attrs.begin(); attr_it!=elem_attrs.end(); attr_it++)
     {
       //if(!(*attr_it).name.prefix->empty())
@@ -1325,21 +1385,29 @@ void XmlLoader::startElement(
         //  return false;
         }
       }
-      theFactory->createQName(qname, 
+      store::Item_t qname = qnpool.insert(
                               (*attr_it).name.uri->c_str(), 
                               (*attr_it).name.prefix, 
                               (*attr_it).name.localname);
 
 
-      store::Item_t tnameCopy = tname;
-      store::Item_t attr;
-      store::Item_t typedValue;
-      theFactory->createUntypedAtomic(typedValue, (*attr_it).value);
-      theFactory->createAttributeNode(attr, 
-                                      node, -1, 
-                                      qname, 
-                                      tnameCopy, 
-                                      typedValue, false, false);
+      //store::Item_t tnameCopy = tname;
+      //store::Item_t attr;
+      store::Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+
+      AttributeNode* attrNode = new AttributeNode(qname, typeName);
+      
+      attrNode->setParent(tag_elem->elemNode);
+      attrNode->setId(theTree, &theOrdPath);
+      attrNode->theTypedValue = new UntypedAtomicItemImpl((*attr_it).value);
+
+      attrNodes.set(attrNode, i, false);
+
+      theOrdPath.nextChild();
+
+      SYNC_CODE(attrNode->theRCLockPtr = &theTree->getRCLock();)
+
+      i++;
     }
   }
   catch (error::ZorbaError& e)
@@ -1361,14 +1429,18 @@ void XmlLoader::startElement(
 ********************************************************************************/
 void  XmlLoader::endElement()
 {
-  try{
     std::list<TAG_ELEM*>::reverse_iterator      this_tag;
     this_tag = tag_stack.rbegin();
 
+  try
+  {
     //(*this_tag)->elemNode->attachedloader = NULL;//is loaded
     (*this_tag)->elemNode->setIsFullLoaded(true);
 
-    (*this_tag)->elemNode->finalizeNode();
+    //(*this_tag)->elemNode->finalizeNode();
+
+    // Adjust the dewey id
+    theOrdPath.popChild();
 
     LOADER_TRACE2("End Element: node = " << (*this_tag)->elemNode << " name = "
                   << (*this_tag)->elemNode->getNodeName()->show() << std::endl);
@@ -1400,21 +1472,40 @@ void XmlLoader::characters(void * ctx, xqpStringStore_t content)//const xmlChar 
 
 //  const char* charp = reinterpret_cast<const char*>(ch);
 //  xqpStringStore_t content(new xqpStringStore(charp, len));
+
   try
   {
     std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
     parent_tag = loader.tag_stack.rbegin();
-    store::Item_t parent;
+    XmlNode* parent;
     if(parent_tag != loader.tag_stack.rend())
       parent = (*parent_tag)->elemNode;
     else
       parent = loader.theRootNode;
 
-    store::Item_t node;
-    loader.theFactory->createTextNode(node, parent, -1, content);
+    ulong pos2 = parent->numChildren();
+ 
+    XmlNode* lsib = (pos2 > 0 ? parent->getChild(pos2-1) : NULL);
 
-    LOADER_TRACE1("Text Node = " << node.getp() << std::endl
-                  << node->show() << std::endl);
+    if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
+    {
+      TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
+
+      xqpStringStore_t textContent;
+      textContent = textSibling->getText()->append(content);
+      textSibling->setText(textContent);
+    }
+    else
+    {
+      XmlNode* textNode = new TextNode(content);
+      parent->children().push_back(textNode, false);
+      textNode->setParent(parent);
+
+      textNode->setId(loader.theTree, &loader.theOrdPath);
+      loader.theOrdPath.nextChild();
+
+      SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
+    }
   }
   catch (error::ZorbaError& e)
   {
@@ -1441,36 +1532,12 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  try
-  {
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
-    std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
-    parent_tag = loader.tag_stack.rbegin();
-    store::Item_t parent;
-    if(parent_tag != loader.tag_stack.rend())
-      parent = (*parent_tag)->elemNode;
-    else
-      parent = loader.theRootNode;
+    XmlLoader::characters(ctx, content);
+    return;
 
-    // Create the text node
-    store::Item_t node;
-    loader.theFactory->createTextNode(node, parent, -1, content);
-
-    LOADER_TRACE1("Text Node = " << node.getp() << std::endl
-                  << node->show() << std::endl);
-  }
-  catch (error::ZorbaError& e)
-  {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
-  }
-  catch (...)
-  {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
-  }
 }
 
 
@@ -1492,7 +1559,7 @@ void XmlLoader::processingInstruction(
   {
     xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
     xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
-    xqpStringStore_t baseUri;
+    //xqpStringStore_t baseUri;
 
     std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
     parent_tag = loader.tag_stack.rbegin();
@@ -1502,11 +1569,18 @@ void XmlLoader::processingInstruction(
     else
       parent = loader.theRootNode;
 
-    store::Item_t node;
-    loader.theFactory->createPiNode(node, parent, -1, target, content, baseUri);
+    XmlNode* piNode = new PiNode(target, content);
 
-    LOADER_TRACE1("Pi Node = " << node.getp() << std::endl
-                  << node->show() << std::endl);
+    parent->children().push_back(piNode, false);
+    piNode->setParent(parent);
+
+    piNode->setId(loader.theTree, &loader.theOrdPath);
+    loader.theOrdPath.nextChild();
+
+    SYNC_CODE(piNode->theRCLockPtr = &loader.theTree->getRCLock();)
+
+    LOADER_TRACE1("Pi Node = " << piNode << std::endl
+                  << piNode->show() << std::endl);
   }
   catch (error::ZorbaError& e)
   {
@@ -1545,11 +1619,18 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
     else
       parent = loader.theRootNode;
 
-    store::Item_t node;
-    loader.theFactory->createCommentNode(node, parent, -1, content);
+  XmlNode* commentNode = new CommentNode(content);
 
-    LOADER_TRACE1("Comment Node = " << node.getp() << std::endl
-                  << node->show() << std::endl);
+  parent->children().push_back(commentNode, false);
+  commentNode->setParent(parent);
+
+  commentNode->setId(loader.theTree, &loader.theOrdPath);
+  loader.theOrdPath.nextChild();
+
+  SYNC_CODE(commentNode->theRCLockPtr = &loader.theTree->getRCLock();)
+
+    LOADER_TRACE1("Comment Node = " << commentNode << std::endl
+                  << commentNode->show() << std::endl);
   }
   catch (error::ZorbaError& e)
   {

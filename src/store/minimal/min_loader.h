@@ -94,23 +94,28 @@ public:
 class XmlLoader : public SimpleRCObject
 {
 protected:
+  XmlTree                        * theTree;
+  OrdPathStack                     theOrdPath;
 //  xmlSAXHandler                    theSaxHandler;
 
   xqpStringStore_t                 theBaseUri;
   xqpStringStore_t                 theDocUri;
 
-  DocumentTreeNode_t                      theRootNode;
+  DocumentTreeNode                *theRootNode;
 
   std::string                    theWarnings;
 
-  char                             theBuffer[4096];
-  mystring                         temp_buff;
+  unsigned char                   theBuffer[8+4*4096];
+  unsigned char                   *cursorBuffer;
+  unsigned char                   *cursorEnd;
   int  buff_size;
   int  buff_pos;
+  mystring                         temp_buff;
 
   int  current_c;
   int  prev_c;
   SimpleStore& store;
+  QNamePool &qnpool;
   StringPool& namespacePool;
 
   typedef struct
@@ -180,6 +185,8 @@ public:
                    enum lazyloadType_t,//for lazy loading, UNTIL_START_ELEMENT or UNTIL_END_ELEMENT
                    unsigned int   depth);//for lazy loading, 1 based, when to stop loading;
 protected:
+  void setRoot(DocumentTreeNode* root);
+
   int  read_char();
   void unread_char();
   bool isWhitespace(int c);
