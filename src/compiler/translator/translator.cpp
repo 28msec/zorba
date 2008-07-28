@@ -1514,7 +1514,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   expr_t lReturnExpr;
   if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
   {
-    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, pop_nodestack());
+    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, pop_nodestack(), theGlobalVars);
    
     std::set<store::Item_t> lQNames;
     checked_vector<var_expr_t>::iterator it = theScopedVariables.end();

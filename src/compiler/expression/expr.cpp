@@ -262,23 +262,6 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
     return NULL; // Make the compiler happy
   }
 #ifdef ZORBA_DEBUGGER
- // debugger_expr::debugger_expr( const QueryLoc& loc, expr_t aChild,
- //                               checked_vector<var_expr_t> aVars )
- // : eval_expr(loc, aChild ) 
- // {
- //   checked_vector<var_expr_t>::iterator it;
- //   for ( it = aVars.begin(); it != aVars.end(); it++ )
- //   {
- //     var_expr_t lVariable(new var_expr(loc, var_expr::eval_var, (*it)->get_varname()));
- //     expr_t lValue = (*it); 
- //     if ( lVariable->get_type () != 0 )
- //     {
- //       lValue = new treat_expr (lValue->get_loc (), lValue, lVariable->get_type (), XPTY0004);
- //     }
- //    add_var(eval_expr::eval_var(&*lVariable, lValue));
- //   }
- // }
-
   expr_iterator_data *debugger_expr::make_iter()
   {
     return new debugger_expr_iterator_data(this);

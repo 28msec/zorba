@@ -39,6 +39,10 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/numconversions.h"
 
+#ifdef WIN32
+#define sleep(s) Sleep(s*1000)
+#endif
+
 namespace zorba{
 
 THREAD_RETURN_TYPE runtimeThread( void *aDebugger )
@@ -86,11 +90,7 @@ void ZorbaDebuggerImpl::start( void * aStore,
       //Connect the client to the event server
       theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
       //Wait one second before trying to reconnect
-#ifdef WIN32
-      Sleep(1000);
-#else
       sleep(1);
-#endif
     } catch ( SocketException &e )  {
       if ( i == 2 )
       {
@@ -382,9 +382,12 @@ void ZorbaDebuggerImpl::quit()
 
 void ZorbaDebuggerImpl::eval( xqpString anExpr )
 {
-  xqpString lResult = fetchValue( theLocation, anExpr, *thePlanState );
-  EvaluatedEvent lMsg( anExpr, lResult ); 
-  sendEvent( &lMsg );
+  if ( theStatus != QUERY_IDLE && theStatus != QUERY_TERMINATED )
+  {
+    xqpString lResult = fetchValue( theLocation, anExpr, *thePlanState );
+    EvaluatedEvent lMsg( anExpr, lResult ); 
+    sendEvent( &lMsg );
+  }
 }
 
 xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, PlanState& planState)

@@ -462,16 +462,25 @@ public:
 #ifdef ZORBA_DEBUGGER
 //debugger expression
 typedef rchandle<var_expr> var_expr_t;
+typedef std::pair<var_expr_t, expr_t> global_binding;
 class debugger_expr: public eval_expr
 {
+  private:
+    std::list<global_binding> theGlobals;
+  
   public:
-    debugger_expr( const QueryLoc& loc, expr_t aChild ):
-      eval_expr(loc, aChild ){}
+    debugger_expr( const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
+      eval_expr(loc, aChild ), theGlobals( aGlobals ){}
 
     expr_iterator_data *make_iter();
     void next_iter (expr_iterator_data&);
     void accept (expr_visitor&);
     std::ostream& put(std::ostream&) const;
+
+    std::list<global_binding> getGlobals() const
+    {
+      return theGlobals;
+    }
 };
 #endif
 

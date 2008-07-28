@@ -24,6 +24,7 @@
 
 #ifdef WIN32
 #include <windows.h>
+#define sleep(s) Sleep(s*1000)
 #endif
 
 #include <zorba/zorba.h>
@@ -341,11 +342,7 @@ int _tmain(int argc, _TCHAR* argv[])
         try
         {
           //wait a second before trying to reconnect
-#ifdef WIN32
-          Sleep(1000);
-#else
           sleep(1);
-#endif
           ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
           CommandLineEventHandler lEventHandler( *lIter, *lArgs->theQuery, std::cin, std::cout, debuggerClient );
 #ifdef SIGINT /* not all system have SIGINT */

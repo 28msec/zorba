@@ -362,7 +362,7 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
 {
   char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
   json::parser lParser;
-  json::value * lValue = lParser.parse( lMessage );
+  json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
   if ( (*lValue)["breakpoints"]  != 0 )
   {
     json::array_list_t::iterator it; 
@@ -402,8 +402,8 @@ Byte * SetMessage::serialize( Length & aLength ) const
 {
   Byte * lHeader = AbstractCommandMessage::serialize( aLength );
   std::string lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() ];
- // memset(lMsg, '\0', getLength());
+  Byte * lMsg = new Byte[ getLength() + 2 ];
+  memset(lMsg, '0', getLength()+2);
   memcpy( lMsg, lHeader, MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -468,8 +468,8 @@ Byte * ClearMessage::serialize( Length & aLength ) const
 {
   Byte * lHeader = AbstractCommandMessage::serialize( aLength );
   std::string lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() ];
- // memset(lMsg, '\0', getLength());
+  Byte * lMsg = new Byte[ getLength() + 1 ];
+  memset(lMsg, '\0', getLength()+1);
   memcpy( lMsg, lHeader, MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -563,8 +563,8 @@ Byte * SuspendedEvent::serialize( Length & aLength ) const
 {
   Byte * lHeader = AbstractCommandMessage::serialize( aLength );
   std::string lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() ];
- // memset(lMsg, '\0', getLength());
+  Byte * lMsg = new Byte[ getLength() + 1 ];
+  memset(lMsg, '0', getLength()+1);
   memcpy( lMsg, lHeader, MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -662,8 +662,8 @@ Byte * EvaluatedEvent::serialize( Length &aLength ) const
 {
   Byte * lHeader = AbstractCommandMessage::serialize( aLength );
   xqpString lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() ];
- // memset(lMsg, '\0', getLength());
+  Byte * lMsg = new Byte[ getLength() + 1 ];
+  memset(lMsg, '0', getLength()+1);
   memcpy( lMsg, lHeader, MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -729,7 +729,8 @@ Byte * EvalMessage::serialize( Length & aLength ) const
 {
   Byte * lHeader = AbstractCommandMessage::serialize( aLength );
   xqpString lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() ];
+  Byte * lMsg = new Byte[ getLength() + 1 ];
+  memset(lMsg, '0', getLength()+1);
   memcpy( lMsg, lHeader, MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -760,7 +761,7 @@ VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
 {
   char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
   json::parser lParser;
-  json::value *lValue = lParser.parse( lMessage );
+  json::value *lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
   if ( (*lValue)["globals"] != 0 )
   {
     json::array_list_t::iterator it;
@@ -848,7 +849,8 @@ Byte * VariableMessage::serialize( Length & aLength ) const
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  Byte * lMsg = new Byte[ MESSAGE_SIZE + l ];
+  Byte * lMsg = new Byte[ MESSAGE_SIZE + l + 1 ];
+  memset(lMsg, '0', MESSAGE_SIZE + l + 1);
   memcpy( lMsg, lHeader, MESSAGE_SIZE );
   memcpy( lMsg + MESSAGE_SIZE, s, l );
   delete[] lHeader;
@@ -877,11 +879,13 @@ std::map<xqpString, xqpString> VariableMessage::getGlobalVariables() const
 void VariableMessage::addGlobal( xqpString aVariable, xqpString aType )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
+  setLength( MESSAGE_SIZE + getData().length() );
 }
     
 void VariableMessage::addLocal( xqpString aVariable, xqpString aType )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
+  setLength( MESSAGE_SIZE + getData().length() );
 }
 }//end of namespace
 
