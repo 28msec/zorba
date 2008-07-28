@@ -267,7 +267,7 @@ void clear()
   theNumEntries = 0;
   numCollisions = 0;
 
-  ulong n = theHashTab.size();
+  ulong n = (ulong)theHashTab.size();
 
   for (ulong i = 0; i < n; i++)
   {
