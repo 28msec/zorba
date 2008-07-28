@@ -69,7 +69,7 @@ namespace zorba{
       terminated() = 0;
 
       virtual void
-      evaluated( String &anExpr, String &aResult ) = 0;
+      evaluated(String &anExpr, String &aResult, String &aReturnType, String &anError) = 0;
   };
 }//end of namespace
 #endif

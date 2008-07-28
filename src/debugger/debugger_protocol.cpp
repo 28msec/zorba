@@ -612,8 +612,16 @@ ResumedEvent::~ResumedEvent(){}
 /**
  * Evaluated Engine Event
  */
-EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString aResult ):
-  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theResult( aResult )
+EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString anError ):
+  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theError( anError )
+{
+    unsigned int l = MESSAGE_SIZE + getData().length();
+    setLength( l );
+    checkIntegrity();
+}
+
+EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString aResult, xqpString aReturnType ):
+  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theResult( aResult ), theReturnType( aReturnType )
 {
     unsigned int l = MESSAGE_SIZE + getData().length();
     setLength( l );
@@ -632,7 +640,7 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     theExpr = lString;
   } else {
-    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
   }
   
   if ( (*lValue)["result"]  != 0 )
@@ -641,7 +649,25 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     theResult = lString;
   } else {
-    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
+  }
+
+  if ( (*lValue)["type"]  != 0 )
+  {
+    std::wstring* lWString = (*lValue)["type"]->getstring(L"", true);
+    std::string lString( lWString->begin()+1, lWString->end()-1 );
+    theReturnType = lString;
+  } else {
+    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
+  }
+
+  if ( (*lValue)["error"]  != 0 )
+  {
+    std::wstring* lWString = (*lValue)["error"]->getstring(L"", true);
+    std::string lString( lWString->begin()+1, lWString->end()-1 );
+    theError = lString;
+  } else {
+    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
   }
   checkIntegrity();
 }
@@ -656,6 +682,16 @@ xqpString EvaluatedEvent::getExpr() const
 xqpString EvaluatedEvent::getResult() const
 {
   return theResult;
+}
+
+xqpString EvaluatedEvent::getReturnType() const
+{
+  return theReturnType;
+}
+
+xqpString EvaluatedEvent::getError() const
+{
+  return theError;
 }
 
 Byte * EvaluatedEvent::serialize( Length &aLength ) const
@@ -679,7 +715,9 @@ xqpString EvaluatedEvent::getData() const
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"expr\":\"" << theExpr << "\",";
-  lJSONString << "\"result\":\"" << theResult << "\"";
+  lJSONString << "\"result\":\"" << theResult << "\",";
+  lJSONString << "\"type\":\"" << theReturnType << "\",";
+  lJSONString << "\"error\":\"" << theError << "\"";
   lJSONString << "}";
   xqpString lReturnString( lJSONString.str() );
   return lReturnString;

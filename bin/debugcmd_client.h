@@ -21,13 +21,13 @@
 #include <string>
 #include <memory>
 #include <zorba/debugger_client.h>
-#include <zorba/debugger_event_handler.h>
+#include <zorba/debugger_default_event_handler.h>
 
 using namespace zorba;
 
 void suspend( int aSignum );
 
-class CommandLineEventHandler: public DebuggerEventHandler
+class CommandLineEventHandler: public DefaultDebuggerEventHandler
 {
   private:
     static ZorbaDebuggerClient * theClient;
@@ -67,19 +67,18 @@ class CommandLineEventHandler: public DebuggerEventHandler
 
     virtual ~CommandLineEventHandler(){}
 
-    static ZorbaDebuggerClient * getClient();
-
-    //debugger events
     void started();
 
     void idle();
 
-    void suspended( zorba::QueryLocation & aLocation, zorba::SuspendedBy aCause );
+    void suspended( QueryLocation &aLocation, SuspendedBy aCause );
 
     void resumed();
 
     void terminated();
 
-    void evaluated( String &anExpr, String &aResult );
+    void evaluated( String &anExpr, String &aReturnType, String &aReturnType, String &anError );
+
+    static ZorbaDebuggerClient * getClient();
 };
 #endif

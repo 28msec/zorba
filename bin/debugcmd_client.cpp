@@ -153,9 +153,15 @@ void CommandLineEventHandler::terminated()
   handle_cmd();
 }
 
-void CommandLineEventHandler::evaluated( String &anExpr, String &aResult )
+void CommandLineEventHandler::evaluated( String &anExpr, String &aResult,
+                                         String &aReturnType, String &anError )
 {
-  theOutput << aResult << std::endl;
+  if ( anError.length() > 0 )
+  {
+    theOutput << anError << std::endl;
+  } else {
+    theOutput << aResult << " (" << aReturnType << ')' << std::endl;
+  }
   handle_cmd();
 }
 

@@ -36,8 +36,9 @@
 #include "api/serialization/serializer.h"
 #include "api/unmarshaller.h"
 
-#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/numconversions.h"
+
+#include "common/shared_types.h"
 
 #ifdef WIN32
 #define sleep(s) Sleep(s*1000)
@@ -277,8 +278,8 @@ bool ZorbaDebuggerImpl::hasToSuspend()
   std::map<unsigned int, xqpString>::iterator lIter;
   for ( lIter = theWatchpoints.begin(); lIter != theWatchpoints.end(); lIter++ )
   {
-    xqpString lResult = fetchValue( theLocation, lIter->second, *thePlanState );
-    if ( lResult == "true" || lResult == "1" )
+    store::Item_t lResult = fetchValue( theLocation, lIter->second, *thePlanState, 0);
+    if ( lResult != 0 || lResult->getEBV() )
     {
       setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
       return true;
@@ -384,13 +385,22 @@ void ZorbaDebuggerImpl::eval( xqpString anExpr )
 {
   if ( theStatus != QUERY_IDLE && theStatus != QUERY_TERMINATED )
   {
-    xqpString lResult = fetchValue( theLocation, anExpr, *thePlanState );
-    EvaluatedEvent lMsg( anExpr, lResult ); 
-    sendEvent( &lMsg );
+    xqpString lError;
+    store::Item_t lResult = fetchValue( theLocation, anExpr, *thePlanState, &lError );
+    EvaluatedEvent * lMsg;
+    if ( lResult != 0 )
+    {
+      lMsg = new EvaluatedEvent( anExpr, xqpString(lResult->getStringValue()), xqpString(lResult->getType()->getStringValue()) ); 
+    } else {
+      lMsg = new EvaluatedEvent( anExpr, lError );
+    }
+    sendEvent( lMsg );
+    delete lMsg;
   }
 }
 
-xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, PlanState& planState)
+store::Item_t ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr,
+                                             PlanState& planState, xqpString *anError )
   {
     std::stringstream lOutputStream;
     
@@ -404,6 +414,7 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, 
     ccb.reset( new CompilerCB ( *planState.theCompilerCB ) );
     ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
 
+    store::Item_t lItem;
     try
     {
       dctx.reset( new dynamic_context( planState.dctx() ) );
@@ -416,7 +427,8 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, 
         );
       eval_plan->checkDepth( loc );
    
-      for (unsigned i = 0; i < theChildren.size () - 1; i++) {
+      for (unsigned i = 0; i < theChildren.size () - 1; i++)
+      {
         //reset the plan iterator for multiple execution
         theChildren[i+1]->reset(*thePlanState);
         store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i+1], *thePlanState);
@@ -426,13 +438,19 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, 
         dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVarnames[i])), lIter);
       }
 
-      serializer lSerializer(0);
-      lSerializer.set_parameter("method", "xml");
-      lSerializer.set_parameter("indent", "no");
-      lSerializer.set_parameter("omit-xml-declaration", "yes");
+      PlanWrapper *lIterator = eval_plan.get();
+      lIterator->next(lItem);
+      //while ( lIterator->next(lItem) )
+      //{
+      //  lOutputStream << lItem->getStringValue();
+      //}
+      //serializer lSerializer(0);
+      //lSerializer.set_parameter("method", "xml");
+      //lSerializer.set_parameter("indent", "no");
+      //lSerializer.set_parameter("omit-xml-declaration", "yes");
 
       //eval_plan->open();
-      lSerializer.serialize( eval_plan.get(), lOutputStream );
+      //lSerializer.serialize( eval_plan.get(), lOutputStream );
 
     } catch ( error::ZorbaError& e ) {
       lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << std::endl;
@@ -443,9 +461,8 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr, 
     {
       eval_plan->close();
     }
-  
-    xqpString lOutput( lOutputStream.str() ); 
-    return lOutput;
+    *anError = lOutputStream.str(); 
+    return lItem;
   }
 
 

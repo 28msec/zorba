@@ -158,7 +158,9 @@ namespace zorba{
         {
           String lExpr( lEvaluatedEvent->getExpr() );
           String lResult( lEvaluatedEvent->getResult() );
-          lClient->theEventHandler->evaluated( lExpr, lResult );
+          String lReturnType( lEvaluatedEvent->getReturnType() );
+          String lError( lEvaluatedEvent->getError() );
+          lClient->theEventHandler->evaluated( lExpr, lResult, lReturnType, lError );
         }
       }
       delete lMessage;

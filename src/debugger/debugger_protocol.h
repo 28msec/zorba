@@ -578,10 +578,14 @@ class EvaluatedEvent: public AbstractCommandMessage
   protected:
     xqpString theExpr;
     xqpString theResult;
+    xqpString theError;
+    xqpString theReturnType;
     xqpString getData() const;
  
   public:
-    EvaluatedEvent( xqpString anExpr, xqpString aResult );
+    EvaluatedEvent( xqpString anExpr, xqpString aResult, xqpString aReturnType );
+
+    EvaluatedEvent( xqpString anExpr, xqpString anError );
 
     EvaluatedEvent( Byte * aMessage, const unsigned int aLength );
 
@@ -592,6 +596,10 @@ class EvaluatedEvent: public AbstractCommandMessage
     xqpString getExpr() const;
 
     xqpString getResult() const;
+
+    xqpString getReturnType() const;
+
+    xqpString getError() const;
 };
 
 /**

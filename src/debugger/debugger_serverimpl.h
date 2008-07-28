@@ -151,7 +151,9 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     void eval( xqpString anExpr );
 
-    xqpString fetchValue( const QueryLoc& loc, xqpString anExpr, PlanState& planState );
+    store::Item_t
+    fetchValue( const QueryLoc& loc, xqpString anExpr,
+                PlanState& planState, xqpString * anError);
 };
 }//end of namespace xqp
 #endif
