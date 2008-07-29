@@ -107,7 +107,11 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
       if ( lLineNo == theClient->getLineNo() )
       {
 #ifdef WIN32
+        HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        const int saved_configuration = GetConsoleTextAttribute(lConsole);
+        SetConsoleTextAttribute(lConsole, 4+15*16); 
         theOutput << lLineNo << '\t' << lLine <<  std::endl;
+        SetConsoleTextAttribute(lConsole, saved_configuration);
 #else
         theOutput << "\033[1m" << lLineNo << '\t' << lLine << "\033[0m" << std::endl;
 #endif
