@@ -30,12 +30,31 @@ environment's needs. In particular the architecture of the query
 processor allows a pluggable XML store (e.g. main memory, DOM stores,
 persistent disk-based large stores, S3 stores).
 
+%package devel
+Summary: Header files for %{name}
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+
+%description devel
+The %{name}-devel package contains headerss for building applications
+that use %{zorba}.
+
+%package devel-docs
+Summary: Class library documentaton
+Group: Documentation
+
+
+%description devel-docs
+This package contains the html documentation files for the %{name}
+class library.  User documentation is part of the main package.
+
 %package python
 Summary: %{name} Python module
 Group: Development/Languages
 BuildRequires: swig
 
 %description python
+Summary: %{name} python module
 Provides Python module to use %{name} API
 
 %package ruby
@@ -56,6 +75,7 @@ mkdir -p build
 pushd build
 cmake -D CMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug --debug-output -DCMAKE_SKIP_BUILD_RPATH=1  ..
 make %{?_smp_mflags}
+make doc
 popd
 
 %install
@@ -78,8 +98,6 @@ make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" -C build
 %defattr(-,root,root,-)
 
 %{_bindir}/%{name}
-%{_includedir}/%{name}/%{name}/*.h
-%{_includedir}/%{name}/simplestore/*.h
 %{_libdir}/*.so.%{version}
 %{_libdir}/*.so
 %dir %{_datadir}/doc/%{name}-%{version}
@@ -93,6 +111,48 @@ make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" -C build
 %{_datadir}/doc/%{name}-%{version}/cxx/examples/Makefile
 %{_datadir}/doc/%{name}-%{version}/cxx/html/*.gif
 %{_datadir}/doc/%{name}-%{version}/zorba/html/*.gif
+
+%files devel
+%{_includedir}/%{name}/%{name}/*.h
+%{_includedir}/%{name}/simplestore/*.h
+
+%files devel-docs
+%{_datadir}/doc/%{name}-%{version}/c/html/*.html
+%{_datadir}/doc/%{name}-%{version}/c/html/%{name}.TAGFILE
+%{_datadir}/doc/%{name}-%{version}/c/html/*.css
+%{_datadir}/doc/%{name}-%{version}/c/html/*.png
+%{_datadir}/doc/%{name}-%{version}/c/html/index.*
+%{_datadir}/doc/%{name}-%{version}/c/html/installdox
+%{_datadir}/doc/%{name}-%{version}/c/html/search.*
+%{_datadir}/doc/%{name}-%{version}/cxx/html/*.html
+%{_datadir}/doc/%{name}-%{version}/cxx/html/%{name}.TAGFILE
+%{_datadir}/doc/%{name}-%{version}/cxx/html/*.css
+%{_datadir}/doc/%{name}-%{version}/cxx/html/*.png
+%{_datadir}/doc/%{name}-%{version}/cxx/html/index.*
+%{_datadir}/doc/%{name}-%{version}/cxx/html/installdox
+%{_datadir}/doc/%{name}-%{version}/cxx/html/search.*
+%{_datadir}/doc/%{name}-%{version}/python/html/*.css
+%{_datadir}/doc/%{name}-%{version}/python/html/*.html
+%{_datadir}/doc/%{name}-%{version}/python/html/doxygen.png
+%{_datadir}/doc/%{name}-%{version}/python/html/index.*
+%{_datadir}/doc/%{name}-%{version}/python/html/installdox
+%{_datadir}/doc/%{name}-%{version}/python/html/search.*
+%{_datadir}/doc/%{name}-%{version}/python/html/%{name}.TAGFILE
+%{_datadir}/doc/%{name}-%{version}/ruby/html/*.html
+%{_datadir}/doc/%{name}-%{version}/ruby/html/*.css
+%{_datadir}/doc/%{name}-%{version}/ruby/html/index.*
+%{_datadir}/doc/%{name}-%{version}/ruby/html/doxygen.png
+%{_datadir}/doc/%{name}-%{version}/ruby/html/index.*
+%{_datadir}/doc/%{name}-%{version}/ruby/html/installdox
+%{_datadir}/doc/%{name}-%{version}/ruby/html/search.*
+%{_datadir}/doc/%{name}-%{version}/ruby/html/%{name}.TAGFILE
+%{_datadir}/doc/%{name}-%{version}/%{name}/html/index.*
+%{_datadir}/doc/%{name}-%{version}/%{name}/html/*.css
+%{_datadir}/doc/%{name}-%{version}/%{name}/html/*.html
+%{_datadir}/doc/%{name}-%{version}/%{name}/html/doxygen.png
+%{_datadir}/doc/%{name}-%{version}/%{name}/html/installdox
+%{_datadir}/doc/%{name}-%{version}/%{name}/html/search.*
+%{_datadir}/doc/%{name}-%{version}/%{name}/html/%{name}.TAGFILE
 
 
 %files python
@@ -113,6 +173,8 @@ make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" -C build
 %changelog
 * Mon Jul 28 2008 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.21-2
 - remove rpath in build
+- added documentation
+- added devel package
 - remove non utf8 character
 - fix license entry
 - fix description line
