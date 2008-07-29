@@ -77,7 +77,7 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
 
     void terminated();
 
-    void evaluated( String &anExpr, String &aReturnType, String &aReturnType, String &anError );
+    void evaluated( String &anExpr, String &aResult, String &aReturnType, String &anError );
 
     static ZorbaDebuggerClient * getClient();
 };

@@ -352,8 +352,6 @@ void CommandLineEventHandler::help()
 {
   //TODO: Full documentation of each command
   theOutput << "List of available commands:" << std::endl;
-  theOutput << "history  -- Print the command history." << std::endl;
-  theOutput << "%<num>   -- Execute a previous command." << std::endl;
   theOutput << "run      -- Run the query." << std::endl;
   theOutput << "eval     -- Evaluate an xquery expression and print its result." << std::endl;
   theOutput << "break    -- Set a breakpoint at the specified file and line." << std::endl;
