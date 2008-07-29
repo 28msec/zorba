@@ -360,7 +360,9 @@ SetMessage::SetMessage(): AbstractCommandMessage( BREAKPOINTS, SET ){}
 SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
-  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
+  char * lMessage = new char[ aLength + 1 ];
+  memset( lMessage, '\0', aLength );
+  memcpy( lMessage, aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
   json::parser lParser;
   json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
   if ( (*lValue)["breakpoints"]  != 0 )
@@ -394,6 +396,7 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
   }
   //setLength( MESSAGE_SIZE + getData().length() );  
   checkIntegrity();
+  delete[] lMessage;
 }
 
 SetMessage::~SetMessage(){}
@@ -402,8 +405,8 @@ Byte * SetMessage::serialize( Length & aLength ) const
 {
   Byte * lHeader = AbstractCommandMessage::serialize( aLength );
   std::string lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() + 2 ];
-  memset(lMsg, '0', getLength()+2);
+  Byte * lMsg = new Byte[ getLength() + 1 ];
+  memset(lMsg, '\0', getLength()+1);
   memcpy( lMsg, lHeader, MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -447,7 +450,7 @@ ClearMessage::ClearMessage( Byte * aMessage, const unsigned int aLength ):
 {
   char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
   json::parser lParser;
-  json::value * lValue = lParser.parse( lMessage );
+  json::value * lValue = lParser.parse( lMessage, aLength );
   if ( (*lValue)["ids"]  != 0 )
   {
     json::array_list_t::iterator it; 

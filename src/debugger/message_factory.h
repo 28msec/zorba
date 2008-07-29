@@ -35,7 +35,7 @@ class MessageFactory
     static AbstractMessage * buildMessage( TCPSocket * aSocket )
     {
       Byte * lengthField = new Byte[ MESSAGE_HEADER_SIZE ];
-      memset( lengthField, '\0', MESSAGE_HEADER_SIZE );
+      memset( lengthField, '0', MESSAGE_HEADER_SIZE );
       Byte * lPacket = 0;
       AbstractMessage * lMessage = 0;
       try
