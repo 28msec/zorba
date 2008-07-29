@@ -1,7 +1,7 @@
 Name:    zorba
 Version: 0.9.21
 Release: 2%{?dist}
-Summary: General purpose XQuery processor implementing in C++
+Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
 License: ASL 2.0
@@ -171,6 +171,9 @@ make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" -C build
 %{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
 
 %changelog
+* Tue Jul 29 2008 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.21-2
+- Fixed grammer of summary
+
 * Mon Jul 28 2008 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.21-2
 - remove rpath in build
 - added documentation
