@@ -21,23 +21,6 @@ class URI
 {
  public:
 
-   typedef enum {
-     INVALID_URI,
-     RESOLUTION_ERROR,
-     MAX_ERROR_CODE
-   } error_t;
-
-  static bool is_valid (const xqpStringStore_t& uri, bool has_base_uri = true);
-
-  // Has semantics of fn:resolve-uri (uri, base):
-  // * if @p rel is absolute OR if @p base is relative, result is @p rel
-  // * otherwise attempts relative URI resolution
-  // @return error code, or URI::MAX_ERROR_CODE if no error
-  static error_t resolve_relative(
-        const xqpStringStore_t& base,
-        const xqpStringStore_t& rel,
-        xqpStringStore_t&       result);
-
   static xqpStringStore_t  decode_file_URI(const xqpStringStore_t& uri);
   static xqpStringStore_t  encode_file_URI(const xqpStringStore_t& uri);
   static xqpStringStore_t encode_file_URI(const std::string& uri) {

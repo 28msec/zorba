@@ -23,6 +23,7 @@
 #include "api/unmarshaller.h"
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
+#include "context/uri_resolver_wrapper.h"
 #include "system/globalenv.h"
 #include <zorba/typeident.h>
 #include "zorbaerrors/error_manager.h"
@@ -463,5 +464,25 @@ StaticContextImpl::registerStatelessExternalFunction(StatelessExternalFunction* 
   return true;
 }
 
+
+void
+StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver)
+{
+  try {
+    theCtx->set_document_uri_resolver(new DocumentURIResolverWrapper(aDocumentURIResolver));
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+DocumentURIResolver*
+StaticContextImpl::getDocumentURIResolver()
+{
+  DocumentURIResolverWrapper* lWrapper = dynamic_cast<DocumentURIResolverWrapper*>(theCtx->get_document_uri_resolver());
+  if (lWrapper) { // if it's the user's resolver
+    return lWrapper->theDocResolver;
+  }
+  return 0;
+}
 
 } /* namespace zorba */

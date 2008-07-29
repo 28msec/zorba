@@ -14,53 +14,16 @@
  * limitations under the License.
  */
 
-#include <xercesc/util/XMLUri.hpp>
-#include <xercesc/util/XMLURL.hpp>
 #include "representations.h"
 
-#include <zorbatypes/xerces_xmlcharray.h>
 #include "zorbaerrors/error_manager.h"
-
 #include "URI.h"
 
 using namespace std;
 
 namespace zorba {
 
-bool URI::is_valid (const xqpStringStore_t& uri, bool has_base_uri) {
-  XMLChArray xuri(uri->c_str());
-  return XMLUri::isValidURI (has_base_uri, xuri.get ());
-}
 
-
-URI::error_t URI::resolve_relative (
-    const xqpStringStore_t&  base,
-    const xqpStringStore_t&  rel,
-    xqpStringStore_t&        result)
-{
-  XMLChArray xbase (base->c_str()), xrel (rel->c_str());
-  try {
-    if (! XMLUri::isValidURI (true, xbase.get ()) ||
-        ! XMLUri::isValidURI (true, xrel.get ()))
-      return URI::INVALID_URI;
-
-    if (XMLUri::isValidURI (false, xrel.get ())
-        || ! XMLUri::isValidURI (false, xbase.get ()))
-    {
-      result = rel;
-    } else {
-      XMLUri baseuri (xbase.get ());
-      XMLUri resuri (&baseuri, xrel.get ());
-      char *raw_result = XMLString::transcode (resuri.getUriText ());
-      result = new xqpStringStore(raw_result);
-      XMLString::release(&raw_result);
-    }
-  } catch (MalformedURLException &) {
-    return URI::RESOLUTION_ERROR;
-  }
-
-  return URI::MAX_ERROR_CODE;
-}
 
 // encode / decode URI are hacks. Doing it properly would require
 // boost-filesystem (or equivalent code).

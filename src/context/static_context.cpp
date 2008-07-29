@@ -505,11 +505,15 @@ void static_context::compute_current_absolute_baseuri()
 
   prolog_baseuri = baseuri();
 
-  if (!prolog_baseuri.empty() &&
-      URI::is_valid (prolog_baseuri.getStore (), false)) {
-    // is already absolute baseuri
-    set_current_absolute_baseuri(prolog_baseuri);
-    return;
+  if (!prolog_baseuri.empty()) {
+    try {
+      URI lCheckValid(prolog_baseuri);
+      // is already absolute baseuri
+      set_current_absolute_baseuri(prolog_baseuri);
+      return; // valid (absolute) uri
+    } catch (error::ZorbaError& e) {
+      throw e;
+    } // assume it's relative and go on
   }
   if (!prolog_baseuri.empty()) {
     /// is relative, needs to be resolved
@@ -543,16 +547,8 @@ void static_context::compute_current_absolute_baseuri()
 }
 
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri) {
-  xqpStringStore_t result;
-  URI::error_t err = URI::resolve_relative (base_uri.getStore (),
-                                            uri.getStore (),
-                                            result);
-  switch (err) {
-  case URI::MAX_ERROR_CODE:
-    return result.getp();
-  default:
-    ZORBA_ERROR (XQST0046);
-  }
+  URI resolved_uri(base_uri, uri);
+  return resolved_uri.get_uri_text();
 }
 
 xqp_string static_context::final_baseuri () {
@@ -617,8 +613,7 @@ static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_strin
 void
 static_context::set_document_uri_resolver(InternalDocumentURIResolver* aDocResolver)
 {
-  if ( theDocResolver &&
-       dynamic_cast<DocumentURIResolverWrapper*>(theDocResolver) != 0 ) // not the user's resolver
+  if ( theDocResolver )
     delete theDocResolver;
 
   theDocResolver = aDocResolver;
@@ -635,8 +630,7 @@ static_context::get_document_uri_resolver()
 void
 static_context::set_collection_uri_resolver(InternalCollectionURIResolver* aColResolver)
 {
-  if ( theColResolver && 
-       dynamic_cast<CollectionURIResolverWrapper*>(theColResolver) != 0 ) // not the user's resolver
+  if ( theColResolver )
     delete theColResolver;
 
   theColResolver = aColResolver;
@@ -653,8 +647,7 @@ static_context::get_collection_uri_resolver()
 void
 static_context::set_schema_uri_resolver(InternalSchemaURIResolver* aSchemaResolver)
 {
-  if ( theSchemaResolver && 
-       dynamic_cast<SchemaURIResolverWrapper*>(theSchemaResolver) != 0 ) // not the user's resolver
+  if ( theSchemaResolver )
     delete theSchemaResolver;
 
   theSchemaResolver = aSchemaResolver;
@@ -671,8 +664,7 @@ static_context::get_schema_uri_resolver()
 void
 static_context::set_module_uri_resolver(InternalModuleURIResolver* aModuleResolver)
 {
-  if ( theModuleResolver && 
-       dynamic_cast<ModuleURIResolverWrapper*>(theModuleResolver) != 0 ) // not the user's resolver
+  if ( theModuleResolver )
     delete theModuleResolver;
 
   theModuleResolver = aModuleResolver;

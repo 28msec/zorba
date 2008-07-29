@@ -1,5 +1,8 @@
 Zorba - The XQuery Processor
 
+version 0.9.23-XXXX (XXX)
+  * extended api to register user-defined URI resolvers for documents, collections, schemas, and modules
+
 version 0.9.21-4303 (2008.06.26):
   * fixed installation problem for python and ruby language bindings
   * fixed some valgrind reported memory problems

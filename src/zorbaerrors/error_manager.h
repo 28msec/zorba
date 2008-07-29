@@ -166,15 +166,20 @@ public:
   ZORBA_ERROR_DESC_OSS (code, (desc))
 
 
-#define ZORBA_ERROR_LOC_DESC(code, loc, descr)                          \
+#define ZORBA_ERROR_LOC_DESC_OSS(code, loc, descr)                      \
   do                                                                    \
   {                                                                     \
+    std::ostringstream lOStringStream;                                  \
+    lOStringStream << descr;                                            \
     throw error::ErrorManager::createException(code,                    \
-                                               descr,                   \
+                                               lOStringStream.str(),    \
                                                __FILE__, __LINE__,      \
                                                (loc).getLineBegin(),    \
                                                (loc).getColumnBegin()); \
   } while (0) 
+
+#define ZORBA_ERROR_LOC_DESC(code, loc, desc) \
+  ZORBA_ERROR_LOC_DESC_OSS(code, loc, (desc))
 
 
 //

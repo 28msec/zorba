@@ -294,6 +294,12 @@ namespace zorba {
       virtual bool 
       registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
 
+      virtual void
+      setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver) = 0;
+
+      virtual DocumentURIResolver*
+      getDocumentURIResolver() = 0;
+
   };
 
 } /* namespace zorba */

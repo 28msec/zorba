@@ -24,7 +24,8 @@ SET (API_EXAMPLES
   serialization.cpp
   chaining.cpp
   external_functions.cpp
-  datamanager.cpp)
+  datamanager.cpp
+  uri_resolvers.cpp)
 
 CREATE_TEST_SOURCELIST(examples
 	examples.cpp

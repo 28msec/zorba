@@ -31,9 +31,8 @@ namespace zorba {
       virtual ~InternalDocumentURIResolver() {}
 
       virtual store::Item_t
-      resolve(const store::Item_t& aAbsoluteURI,
-              static_context* aStaticContext,
-              dynamic_context* aDynamicContext) = 0;
+      resolve(const store::Item_t& aURI,
+              static_context* aStaticContext) = 0;
   };
 
   class InternalCollectionURIResolver
@@ -42,9 +41,8 @@ namespace zorba {
       virtual ~InternalCollectionURIResolver() {}
 
       virtual store::Collection_t 
-      resolve(const store::Item_t& aAbsoluteURI,
-              static_context* aStaticContext,
-              dynamic_context* aDynamicContext) = 0;
+      resolve(const store::Item_t& aURI,
+              static_context* aStaticContext) = 0;
   };
 
   class InternalSchemaURIResolver
@@ -53,8 +51,8 @@ namespace zorba {
       virtual ~InternalSchemaURIResolver() {}
       
       virtual std::istream* 
-      resolve(const store::Item_t& aAbsoluteURI,
-              const std::vector<store::Item_t> aLocationHints,
+      resolve(const store::Item_t& aURI,
+              const std::vector<store::Item_t>& aLocationHints,
               static_context* aStaticContext) = 0;
   };
 
@@ -63,9 +61,9 @@ namespace zorba {
     public:
       virtual ~InternalModuleURIResolver() {}
 
-      virtual void // TODO
-      resolve(const store::Item_t& aAbsoluteURI,
-              const std::vector<store::Item_t> aLocationHints,
+      virtual std::istream*
+      resolve(const store::Item_t& aURI,
+              const std::vector<store::Item_t>& aLocationHints,
               static_context* aStaticContext) = 0;
   };
 

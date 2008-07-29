@@ -24,7 +24,7 @@ class root_static_context : public static_context {
   private:
     root_static_context();
     void init();
-    virtual ~root_static_context() {}
+    virtual ~root_static_context();
     
     friend class GlobalEnvironment;
 };

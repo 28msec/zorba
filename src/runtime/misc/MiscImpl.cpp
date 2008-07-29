@@ -26,6 +26,7 @@
 
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
+#include "context/static_context.h"
 
 namespace zorba {
 
@@ -78,38 +79,42 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
   xqpStringStore_t strRelative;
   xqpStringStore_t strBase;
   xqpStringStore_t strResult;
-  URI::error_t err;
+  URI              baseURI;
+  URI              resolvedURI;
   
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  //TODO:check if both relative and base uri's are valid. If not raise err:FORG0002.
   if (consumeNext(item, theChildren[0], planState ))
   {
     strRelative = item->getStringValue();
 
-    consumeNext(item, theChildren[1], planState );
-    strBase = item->getStringValue();
+    try {
+      if (theChildren.size() == 1) { // use base-uri from static context
+        strBase = planState.sctx()->baseuri().getStore();
+        if (strBase->empty()) {
+          ZORBA_ERROR_DESC(FONS0005, "base-uri is not initialized in the static context");
+        }
+      } else if (consumeNext(item, theChildren[1], planState )) { // two parameters => get baseuri from the second argument
+        strBase = item->getStringValue();
+      } else {
+        ZORBA_ERROR_DESC(FORG0009, "Can't treat empty-sequence an base-uri");
+      }
+      baseURI = URI(&*strBase);
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_DESC(FORG0009, e.theDescription);
+    }
 
-    err = URI::resolve_relative (strBase, strRelative, strResult);
-
-    switch (err) 
-    {
-    case URI::INVALID_URI:
-      ZORBA_ERROR (FORG0002);
-      break;
-    case URI::RESOLUTION_ERROR:
-      ZORBA_ERROR (FORG0009);
-      break;
-    case URI::MAX_ERROR_CODE:
-      break;
+    try {
+      resolvedURI = URI(baseURI, &*strRelative); // resolve with baseURI or return strRelative if it's a valid absolute URI
+      strResult = resolvedURI.get_uri_text().getStore();
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_DESC(FORG0002, e.theDescription);
     }
 
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, strResult), state);
-  }
+  } // else return empty sequence if the first argument is the empty sequence
 
-  //TODO fix the implementation
-  
   STACK_END (state);
 }
 

@@ -1603,12 +1603,16 @@ void ElementNode::addBaseUriProperty(
   }
   else
   { 
-    xqpStringStore_t resolvedUri;
-    URI::error_t err = URI::resolve_relative(absUri, relUri, resolvedUri);
-    if (err != URI::MAX_ERROR_CODE)
-      resolvedUri.transfer(relUri);
+    xqpStringStore_t resolvedUriString;
+    try {
+      URI absoluteURI(&*absUri);
+      URI resolvedURI(absoluteURI, &*relUri);
+      resolvedUriString = resolvedURI.get_uri_text().getStore();
+    } catch (error::ZorbaError& e) {
+      resolvedUriString.transfer(relUri);
+    }
 
-    typedValue = new AnyUriItemImpl(resolvedUri);
+    typedValue = new AnyUriItemImpl(resolvedUriString);
   }
 
   new AttributeNode(NULL, this, 0, qname, tname, typedValue, false,
@@ -1638,10 +1642,15 @@ void ElementNode::adjustBaseUriProperty(
   }
   else
   { 
-    xqpStringStore_t resolvedUri;
-    URI::error_t err = URI::resolve_relative(absUri, relUri, resolvedUri);
-    ZORBA_FATAL(err == URI::MAX_ERROR_CODE, "err = " << (int)err);
-    typedValue = new AnyUriItemImpl(resolvedUri);
+    xqpStringStore_t resolvedUriString;
+    try {
+      URI lAbsoluteUri(&*absUri);
+      URI lResolvedUri(lAbsoluteUri, &*relUri);
+      resolvedUriString = lResolvedUri.get_uri_text().getStore();
+    } catch (error::ZorbaError& e) {
+      ZORBA_FATAL(e.theErrorCode, e.theDescription);
+    }
+    typedValue = new AnyUriItemImpl(resolvedUriString);
   }
 
   attr->setTypedValue(typedValue);

@@ -21,7 +21,6 @@
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypesError.h"
-#include "zorbatypes/URI.h"
 #include "zorbaerrors/error_messages.h"
 
 #include "runtime/sequences/SequencesImpl.h"
@@ -42,8 +41,8 @@
 
 #include "context/static_context.h"
 #include "context/collation_cache.h"
+#include "context/internal_uri_resolvers.h"
 
-#include "util/web/web.h"
 #include "store/util/hashset_node_handle.h"
 
 #include "runtime/booleans/compare_types.h"
@@ -1502,94 +1501,24 @@ FnDocIterator::~FnDocIterator()
 {
 }
 
-
-static store::Item_t get_doc(xqpStringStore_t& uriString, const char **err) 
-{
-  store::Store& store = GENV.getStore();
-
-  store::Item_t doc = store.getDocument(uriString);
-    
-  if (doc == NULL)
-  {
-    xqpStringStore_t lowercaseUri = uriString->lowercase();
-    if (lowercaseUri->byteStartsWith ("http://"))
-    {
-#ifdef ZORBA_HAVE_CURL_H
-      // retrieve web file
-      xqp_string xmlString;
-      int result = http_get(lowercaseUri->c_str(), xmlString);
-      if (result != 0)
-      {
-        *err = "HTTP get failure."; 
-        return NULL;
-      }
-
-      istringstream iss(xmlString.c_str());
-
-      doc = store.loadDocument(uriString, iss);
-      if (doc == NULL)
-      {
-        *err = "Failed to parse document.";
-        return NULL;
-      }
-#else
-      *err = "Can't perform HTTP request. Please build Zorba with libcurl."; 
-      return NULL;
-#endif
-    }
-#ifdef ZORBA_WITH_FILE_ACCESS
-    else 
-    {
-      // load file
-      ifstream ifs;
-      xqpStringStore_t decodedURI = URI::decode_file_URI(uriString);
-      ifs.open(decodedURI->c_str(), ios::in);
-      if (ifs.is_open() == false)
-      {
-        *err = "File does not exist."; return NULL;
-      }
-      
-      doc = store.loadDocument(uriString, ifs);
-      if (doc == NULL)
-      {
-        *err = "Failed to parse document."; return NULL;
-      }
-    }
-#else
-    return NULL;
-#endif
-  }
-  return doc;
-}
-
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t    uriItem;
-  xqpStringStore_t uriString;
-  xqpStringStore_t uriString2;
-  const char*      err = NULL;
+  store::Item_t                uriItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(uriItem, theChild.getp(), planState)) {
-    uriString = uriItem->getStringValue();
 
-    if(!URI::is_valid(uriString))
-      ZORBA_ERROR_LOC_PARAM(FODC0005, loc, uriString->c_str(), "");
+    try {
+      result = planState.sctx()->get_document_uri_resolver()->resolve(uriItem, planState.sctx()); 
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
 
-    uriString2 = uriString;
-  if(!URI::is_valid(uriString))
-    ZORBA_ERROR_LOC_PARAM(FODC0005, loc, uriString->c_str(), "");
-
-    result = get_doc(uriString, &err);
-
-    if (result == NULL)
-      ZORBA_ERROR_LOC_PARAM(FODC0002, loc,
-          uriString2->c_str(),
-          (err == NULL ? "" :  err));
     STACK_PUSH(true, state);
-  }
+
+  } // return empty sequence if input is the empty sequence
   STACK_END (state);
 }
 
@@ -1602,22 +1531,20 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
 {
   store::Item_t    doc;
   store::Item_t    uriItem;
-  xqpStringStore_t uriString;
-  const char*      err = NULL;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
-    uriString = uriItem->getStringValue();
 
-    if(!URI::is_valid(uriString))
-      ZORBA_ERROR_LOC_PARAM(FODC0005, loc, xqp_string(uriString), "");
-
-    doc = get_doc(uriString, &err);
-    if(!URI::is_valid(uriString))
-      ZORBA_ERROR_LOC_PARAM(FODC0005, loc, xqp_string(uriString), "");
-
+    try {
+      doc = planState.sctx()->get_document_uri_resolver()->resolve(uriItem, planState.sctx());
+    } catch (error::ZorbaError& e) {
+      if (e.theErrorCode == FODC0005) {
+        ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+      }
+      // other errors fall through and make the function return false
+    }
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, doc != NULL), state);
   }
   STACK_END (state);

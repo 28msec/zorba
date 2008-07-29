@@ -13,21 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <zorba/uri_resolvers.h>
+#include <zorba/zorbastring.h>
+#include <zorba/collection.h>
+#include <zorba/item.h>
+
 #include "context/uri_resolver_wrapper.h"
 #include "store/api/item.h"
 #include "store/api/collection.h"
 
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
+
+#include "api/staticcontextimpl.h"
+#include "api/unmarshaller.h"
+#include "api/xmldatamanagerimpl.h"
+
 namespace zorba {
+
+  static void
+  handle_resolver_error(URIResolverResult* aResolverResult)
+  {
+    XQUERY_ERROR lError;
+    switch (aResolverResult->getError()) {
+      case URIResolverResult::FODC0002: lError = FODC0002; break;
+      case URIResolverResult::FODC0003: lError = FODC0003; break;
+      case URIResolverResult::FODC0004: lError = FODC0004; break;
+      case URIResolverResult::FODC0005: lError = FODC0005; break;
+      case URIResolverResult::NO_ERROR: ZORBA_ASSERT(false); break; // avoid warnings => handled in the if-statement above
+    }
+    zorba::String lErrorDescription = aResolverResult->getErrorDescription();
+    if (lErrorDescription.length() != 0) {
+      ZORBA_ERROR_DESC(lError, *Unmarshaller::getInternalString(lErrorDescription));
+    } else {
+      ZORBA_ERROR(lError);
+    }
+  }
 
   DocumentURIResolverWrapper::DocumentURIResolverWrapper(DocumentURIResolver* aDocResolver)
     : theDocResolver(aDocResolver) {}
 
   store::Item_t
-  DocumentURIResolverWrapper::resolve(const store::Item_t& aAbsoluteURI,
-                                      static_context* aStaticContext,
-                                      dynamic_context* aDynamicContext)
+  DocumentURIResolverWrapper::resolve(const store::Item_t& aURI,
+                                      static_context* aStaticContext)
   {
-    // TODO: Call the users uri resolver and unmarshall the item here
+    StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
+    Item               lURIItem(aURI.getp());  
+
+    // we have the ownership; it will be destroyed automatically once we leave this function
+    std::auto_ptr<DocumentURIResolverResult> lResult = theDocResolver->resolve(lURIItem, 
+                                                                               &lOuterStaticContext,
+                                                                               XmlDataManagerImpl::getInstance());
+
+    if (lResult->getError() == URIResolverResult::NO_ERROR) {
+      return Unmarshaller::getInternalItem(lResult->getDocument());
+    } else {
+      // handle errors
+      handle_resolver_error(lResult.get());
+    }
+
+    // we either return a valid item or throw an error. hence, we should never get here
+    ZORBA_ASSERT(false);
     return NULL;
   }
 
@@ -35,10 +81,26 @@ namespace zorba {
     : theColResolver(aColResolver) {}
 
   store::Collection_t 
-  CollectionURIResolverWrapper::resolve(const store::Item_t& aAbsoluteURI,
-                                        static_context* aStaticContext,
-                                        dynamic_context* aDynamicContext)
+  CollectionURIResolverWrapper::resolve(const store::Item_t& aURI,
+                                        static_context* aStaticContext)
   {
+    StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
+    Item               lURIItem(aURI.getp());  
+
+    // we have the ownership; it will be destroyed automatically once we leave this function
+    std::auto_ptr<CollectionURIResolverResult> lResult = theColResolver->resolve(lURIItem, 
+                                                                                 &lOuterStaticContext,
+                                                                                 XmlDataManagerImpl::getInstance());
+
+    if (lResult->getError() == URIResolverResult::NO_ERROR) {
+      return  Unmarshaller::getInternalCollection(lResult->getCollection());
+    } else {
+      // handle errors
+      handle_resolver_error(lResult.get());
+    }
+
+    // we either return a valid item or throw an error. hence, we should never get here
+    ZORBA_ASSERT(false);
     return NULL;
   }
 
@@ -46,21 +108,66 @@ namespace zorba {
     : theSchemaResolver(aSchemaResolver) {}
 
   std::istream* 
-  SchemaURIResolverWrapper::resolve(const store::Item_t& aAbsoluteURI,
-                                    const std::vector<store::Item_t> aLocationHints,
+  SchemaURIResolverWrapper::resolve(const store::Item_t& aURI,
+                                    const std::vector<store::Item_t>& aLocationHints,
                                     static_context* aStaticContext)
   {
-    return 0;
+    StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
+    Item               lURIItem(aURI.getp());  
+    std::vector<Item>  lLocationHints(aLocationHints.size());
+    for (std::vector<store::Item_t>::const_iterator lIter = aLocationHints.begin();
+         lIter != aLocationHints.end(); ++lIter) {
+      lLocationHints.push_back(Item((*lIter).getp()));
+    }
+
+    // we have the ownership; it will be destroyed automatically once we leave this function
+    std::auto_ptr<SchemaURIResolverResult> lResult = theSchemaResolver->resolve(lURIItem, 
+                                                                                lLocationHints,
+                                                                                &lOuterStaticContext);
+
+    if (lResult->getError() == URIResolverResult::NO_ERROR) {
+      return lResult->getSchema();
+    } else {
+      // handle errors
+      handle_resolver_error(lResult.get());
+    }
+
+    // we either return a valid item or throw an error. hence, we should never get here
+    ZORBA_ASSERT(false);
+    return NULL;
   }
 
   ModuleURIResolverWrapper::ModuleURIResolverWrapper(ModuleURIResolver* aModuleResolver)
     : theModuleResolver(aModuleResolver) {}
 
-  void // TODO
-  ModuleURIResolverWrapper::resolve(const store::Item_t& aAbsoluteURI,
-                                    const std::vector<store::Item_t> aLocationHints,
+  std::istream*
+  ModuleURIResolverWrapper::resolve(const store::Item_t& aURI,
+                                    const std::vector<store::Item_t>& aLocationHints,
                                     static_context* aStaticContext)
   {
+    StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
+    Item               lURIItem(aURI.getp());  
+    std::vector<Item>  lLocationHints(aLocationHints.size());
+    for (std::vector<store::Item_t>::const_iterator lIter = aLocationHints.begin();
+         lIter != aLocationHints.end(); ++lIter) {
+      lLocationHints.push_back(Item((*lIter).getp()));
+    }
+
+    // we have the ownership; it will be destroyed automatically once we leave this function
+    std::auto_ptr<ModuleURIResolverResult> lResult = theModuleResolver->resolve(lURIItem, 
+                                                                                lLocationHints,
+                                                                                &lOuterStaticContext);
+
+    if (lResult->getError() == URIResolverResult::NO_ERROR) {
+      return lResult->getModule();
+    } else {
+      // handle errors
+      handle_resolver_error(lResult.get());
+    }
+
+    // we either return a valid item or throw an error. hence, we should never get here
+    ZORBA_ASSERT(false);
+    return NULL;
   }
 
 } /* namespace zorba */

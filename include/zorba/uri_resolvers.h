@@ -23,6 +23,7 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/item.h>
+#include <zorba/zorbastring.h>
 
 namespace zorba {
 
@@ -46,8 +47,18 @@ namespace zorba {
       ErrorCode
       getError() const { return theErrorCode; }
 
+      void
+      setError(const ErrorCode& aErrorCode) { theErrorCode = aErrorCode; }
+
+      void
+      setErrorDescription(const String& aDescription) { theDescription = aDescription; }
+
+      String
+      getErrorDescription() { return theDescription; }
+
     protected:
       ErrorCode theErrorCode;
+      String    theDescription;
   };
 
   class DocumentURIResolverResult : public URIResolverResult
@@ -55,6 +66,7 @@ namespace zorba {
     public:
       virtual ~DocumentURIResolverResult() {}
 
+      // TODO make this function throw()
       virtual Item
       getDocument() const = 0;
   };
@@ -65,9 +77,8 @@ namespace zorba {
       virtual ~DocumentURIResolver() {}
 
       virtual std::auto_ptr<DocumentURIResolverResult>
-      resolve(const Item& aAbsoluteURI,
+      resolve(const Item& aURI,
               StaticContext* aStaticContext,
-              DynamicContext* aDynamicContext,
               XmlDataManager* aXmlDataManager) = 0;
 
   };
@@ -87,9 +98,8 @@ namespace zorba {
       virtual ~CollectionURIResolver() {}
 
       virtual std::auto_ptr<CollectionURIResolverResult>
-      resolve(const Item& aAbsoluteURI,
+      resolve(const Item& aURI,
               StaticContext* aStaticContext,
-              DynamicContext* aDynamicContext,
               XmlDataManager* aXmlDataManager) = 0;
   };
 
@@ -99,7 +109,7 @@ namespace zorba {
       virtual ~SchemaURIResolverResult() {}
 
       virtual std::istream*
-      getCollection() const = 0;
+      getSchema() const = 0;
   };
 
   class SchemaURIResolver
@@ -108,8 +118,8 @@ namespace zorba {
       virtual ~SchemaURIResolver() {}
       
       virtual std::auto_ptr<SchemaURIResolverResult>
-      resolve(const Item& aAbsoluteURI,
-              const std::vector<Item> aLocationHints,
+      resolve(const Item& aURI,
+              const std::vector<Item>& aLocationHints,
               StaticContext* aStaticContext) = 0;
   };
 
@@ -118,7 +128,7 @@ namespace zorba {
     public:
       virtual ~ModuleURIResolverResult() {}
 
-      virtual XQuery_t
+      virtual std::istream*
       getModule() const = 0;
   };
 
@@ -128,8 +138,8 @@ namespace zorba {
       virtual ~ModuleURIResolver() {}
 
       virtual std::auto_ptr<ModuleURIResolverResult>
-      resolve(const Item& aAbsoluteURI,
-              const std::vector<Item> aLocationHints,
+      resolve(const Item& aURI,
+              const std::vector<Item>& aLocationHints,
               StaticContext* aStaticContext) = 0;
   };
 

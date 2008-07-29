@@ -134,6 +134,12 @@ class StaticContextImpl : public StaticContext
 
   virtual bool 
   registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction);
+
+  void
+  setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver);
+
+  DocumentURIResolver*
+  getDocumentURIResolver();
 };
 
 } /* namespace zorba */
