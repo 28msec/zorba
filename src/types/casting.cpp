@@ -1415,8 +1415,11 @@ bool GenericCast::parseUserSimpleTypes(const xqpString aStr,
                                        const xqtref_t& aTargetType,
                                        std::vector<store::Item_t> &aResultList)
 {
-  Schema lSchema;
-  return lSchema.parseUserSimpleTypes(aStr, aSourceType, aTargetType, aResultList);
+  const DelegatingTypeManager* lDelegatingTypeManager 
+     = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
+
+  return lDelegatingTypeManager->getSchema()->
+            parseUserSimpleTypes(aStr, aSourceType, aTargetType, aResultList);
 }
 
 
