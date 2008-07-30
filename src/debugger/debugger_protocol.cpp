@@ -197,7 +197,7 @@ unsigned long AbstractCommandMessage::theLastId = 0;
  * @param command (1 byte)
  * @param data (variable)
  */
-AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, const Command aCommand ): AbstractMessage( ++theLastId, NULL_FLAG )
+AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, const Command aCommand ): AbstractMessage( ++theLastId, NULL_FLAG ), theReply(0)
 {
   theCommandContent = new CommandContent();
   setCommandSet( aCommandSet );
@@ -206,7 +206,7 @@ AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, co
 }
 
 AbstractCommandMessage::AbstractCommandMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractMessage( aMessage )
+  AbstractMessage( aMessage ), theReply(0)
 {
   CommandContent * lmsg =  reinterpret_cast< CommandContent *>( aMessage + SIZE_OF_HEADER_CONTENT );
   theCommandContent = new CommandContent();
@@ -786,20 +786,33 @@ xqpString EvalMessage::getExpr() const
   return theExpr;
 }
 
+VariableMessage::VariableMessage():
+  AbstractCommandMessage( DYNAMIC, VARIABLES ) 
+{
+  checkIntegrity();
+}
+
+VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
+  AbstractCommandMessage( aMessage, aLength ){}
+
+VariableMessage::~VariableMessage(){}
+
 /**
  * Variable Message
  */
-VariableMessage::VariableMessage():
-  AbstractCommandMessage( DYNAMIC, VARIABLES )
+VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode ):
+  ReplyMessage( anId, aErrorCode )
 {
+  setFlags( REPLY_VARIABLE_FLAG );
   unsigned int l = MESSAGE_SIZE + getData().length();
   setLength( l );
   checkIntegrity();
 }
 
-VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
+VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
+  ReplyMessage( aMessage, aLength )
 {
+  setFlags( REPLY_VARIABLE_FLAG );
   char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
   json::parser lParser;
   json::value *lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
@@ -862,9 +875,9 @@ VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
   }
 } 
 
-VariableMessage::~VariableMessage(){}
+VariableReply::~VariableReply(){}
 
-xqpString VariableMessage::getData() const
+xqpString VariableReply::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{";
@@ -872,21 +885,29 @@ xqpString VariableMessage::getData() const
   std::map<xqpString, xqpString>::const_iterator it = theGlobals.begin();
   for(; it != theGlobals.end(); it++ )
   {
-    lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"},";
+    if ( it != theGlobals.begin() )
+    {
+      lJSONString << ',';
+    }
+    lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
   }
   lJSONString << "],\"locals\":[";
   for( it = theLocals.begin(); it != theLocals.end(); it++ )
   {
-    lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"},";
+    if ( it != theLocals.begin() )
+    {
+      lJSONString << ',';
+    }
+    lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
   }
   lJSONString << "]}";
   xqpString lReturnString( lJSONString.str() );
   return lReturnString;
 }
 
-Byte * VariableMessage::serialize( Length & aLength ) const
+Byte * VariableReply::serialize( Length & aLength ) const
 {
-  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  Byte * lHeader = ReplyMessage::serialize( aLength );
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -899,7 +920,7 @@ Byte * VariableMessage::serialize( Length & aLength ) const
   return lMsg; 
 }
 
-std::map<xqpString, xqpString> VariableMessage::getVariables() const
+std::map<xqpString, xqpString> VariableReply::getVariables() const
 {
   std::map<xqpString, xqpString> lVariables;
   lVariables.insert( theGlobals.begin(), theGlobals.end() );
@@ -907,23 +928,23 @@ std::map<xqpString, xqpString> VariableMessage::getVariables() const
   return lVariables;
 }
 
-std::map<xqpString, xqpString> VariableMessage::getLocalVariables() const
+std::map<xqpString, xqpString> VariableReply::getLocalVariables() const
 {
   return theLocals;
 }
 
-std::map<xqpString, xqpString> VariableMessage::getGlobalVariables() const
+std::map<xqpString, xqpString> VariableReply::getGlobalVariables() const
 {
   return theGlobals;
 }
 
-void VariableMessage::addGlobal( xqpString aVariable, xqpString aType )
+void VariableReply::addGlobal( xqpString aVariable, xqpString aType )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
   setLength( MESSAGE_SIZE + getData().length() );
 }
     
-void VariableMessage::addLocal( xqpString aVariable, xqpString aType )
+void VariableReply::addLocal( xqpString aVariable, xqpString aType )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
   setLength( MESSAGE_SIZE + getData().length() );

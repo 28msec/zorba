@@ -41,6 +41,8 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
     std::istream &theInput;
 
     std::vector<std::string> get_args( const std::string& str );
+
+    std::string get_expression( const std::vector<std::string> arr );
    
     void handle_cmd();
 

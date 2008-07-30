@@ -124,10 +124,6 @@ namespace zorba{
       ReplyMessage* send( AbstractCommandMessage * aMessage );
 
       void send( std::string aMessage );
-
-      std::list<Variable> parseLocalVariables( xqpString aJSON );
-      
-      std::list<Variable> parseGlobalVariables( xqpString aJSON );
   };
 }//end of namespace
 #endif

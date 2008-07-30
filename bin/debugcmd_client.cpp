@@ -20,6 +20,9 @@
 #include <csignal>
 #include <boost/bind.hpp> 
 #include <zorba/zorba.h>
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 using namespace zorba;
 
@@ -108,8 +111,10 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
       {
 #ifdef WIN32
         HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-        const int saved_configuration = GetConsoleTextAttribute(lConsole);
-        SetConsoleTextAttribute(lConsole, 4+15*16); 
+        CONSOLE_SCREEN_BUFFER_INFO lConsoleInfo;
+        GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
+        const int saved_configuration = lConsoleInfo.wAttributes;
+        SetConsoleTextAttribute(lConsole, 15+0*16); 
         theOutput << lLineNo << '\t' << lLine <<  std::endl;
         SetConsoleTextAttribute(lConsole, saved_configuration);
 #else
@@ -190,6 +195,20 @@ std::vector<std::string> CommandLineEventHandler::get_args( const std::string& s
    return tokens;
 }
 
+std::string CommandLineEventHandler::get_expression( const std::vector<std::string> arr )
+{
+  std::string lExpr;
+  std::vector<std::string>::const_iterator it;
+  for ( it = arr.begin(); it != arr.end(); ++it )
+  {
+    if ( it != arr.begin() )
+    {
+      lExpr.append( *it );
+    }
+  }
+  return lExpr;
+}
+
 void CommandLineEventHandler::handle_cmd()
 {
   while( ! theInput.eof() )
@@ -249,8 +268,8 @@ void CommandLineEventHandler::handle_cmd()
         theOutput << "Invalid syntax." << std::endl;
         theOutput << "watch <xquery expr>" << std::endl;
       } else {
-        theClient->addBreakpoint( lArgs.at(1) );
-        theOutput << "Set watchpoint: " << lArgs.at(1) << '.' << std::endl;
+        theClient->addBreakpoint( get_expression( lArgs ) );
+        theOutput << "Set watchpoint: " << get_expression( lArgs ) << '.' << std::endl;
       }
     } else if  ( lCommand == "b" || lCommand == "break" ) {
       if ( lArgs.size() < 2 )
@@ -340,7 +359,7 @@ void CommandLineEventHandler::handle_cmd()
           theOutput << "(e|eval) <expr>" << std::endl;
           handle_cmd();
         } else {
-          String lExpr( lArgs.at(1).c_str() );  
+          String lExpr( get_expression( lArgs ) );  
           theClient->eval( lExpr );
         }
         return;

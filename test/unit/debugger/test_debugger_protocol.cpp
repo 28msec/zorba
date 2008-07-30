@@ -327,13 +327,18 @@ void TestDebuggerSerialization::testRunMessage()
   void TestDebuggerSerialization::testVariableMessage()
   {
     std::cerr << "Test variable message" << std::endl;
-
-    VariableMessage msg;
-    msg.addGlobal( "$i", "xs:integer" );
-    msg.addGlobal( "$j", "xs:integer" );
-    msg.addLocal("$foo", "xs:string" );
-    msg.addLocal("$bar", "xs:string" );
-    test_packet< VariableMessage >( &msg );
+    {
+      VariableMessage msg;
+      test_packet<VariableMessage>( &msg );
+    }
+    {
+      VariableReply msg( 1, DEBUGGER_NO_ERROR );
+      msg.addGlobal( "$i", "xs:integer" );
+      msg.addGlobal( "$j", "xs:integer" );
+      msg.addLocal("$foo", "xs:string" );
+      msg.addLocal("$bar", "xs:string" );
+      test_packet< VariableReply >( &msg );
+    }
   }
 }
 

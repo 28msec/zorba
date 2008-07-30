@@ -49,6 +49,7 @@ const int SIZE_OF_REPLY_CONTENT = 2;
 /* Flags */
 const Flags NULL_FLAG = 0x0;
 const Flags REPLY_FLAG = 0x80;
+const Flags REPLY_VARIABLE_FLAG = 0xf0;
 
 /* CommandSet */
 const CommandSet EXECUTION    = 0xf1;
@@ -292,6 +293,7 @@ class AbstractCommandMessage: public AbstractMessage
 {
   private:
     static unsigned long theLastId;
+    ReplyMessage *theReply;
   
   protected:
 
@@ -340,7 +342,19 @@ class AbstractCommandMessage: public AbstractMessage
 
     const Command getCommand() const { return theCommandContent->theCommand; }
 
-    virtual ReplyMessage * getReplyMessage() { return new ReplyMessage( getId(), DEBUGGER_NO_ERROR ); }
+    virtual ReplyMessage * getReplyMessage()
+    {
+      if ( theReply != 0 )
+      {
+        return theReply;
+      }
+      return new ReplyMessage( getId(), DEBUGGER_NO_ERROR );
+    }
+
+    virtual void setReplyMessage( ReplyMessage *aReply )
+    {
+      theReply = aReply;
+    }
 
     virtual Byte * serialize( Length & aLength ) const;
 };
@@ -627,6 +641,19 @@ class EvalMessage: public AbstractCommandMessage
  *
  */
 class VariableMessage: public AbstractCommandMessage
+{ 
+  public:
+    VariableMessage();
+    
+    VariableMessage( Byte * aMessage, const unsigned int aLength ); 
+   
+    virtual ~VariableMessage();
+};
+
+/**
+ *
+ */
+class VariableReply: public ReplyMessage
 {
   protected:
     std::map<xqpString, xqpString> theGlobals;
@@ -634,11 +661,11 @@ class VariableMessage: public AbstractCommandMessage
     xqpString getData() const;
 
   public:
-    VariableMessage();
+    VariableReply( const Id anId, const ErrorCode aErrorCode );
 
-    VariableMessage( Byte * aMessage, const unsigned int aLength );
+    VariableReply( Byte * aMessage, const unsigned int aLength );
 
-    virtual ~VariableMessage();
+    virtual ~VariableReply();
 
     virtual Byte * serialize( Length &aLength ) const;
 

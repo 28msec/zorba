@@ -81,6 +81,11 @@ class MessageFactory
           {
             return new ReplyMessage( aMessage, aLength );
           }
+
+          if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_VARIABLE_FLAG )
+          {
+            return new VariableReply( aMessage, aLength );
+          }
         }
         case EXECUTION:
         {

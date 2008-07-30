@@ -279,7 +279,7 @@ bool ZorbaDebuggerImpl::hasToSuspend()
   for ( lIter = theWatchpoints.begin(); lIter != theWatchpoints.end(); lIter++ )
   {
     store::Item_t lResult = fetchItem( theLocation, lIter->second, *thePlanState, 0);
-    if ( lResult != 0 || lResult->getEBV() )
+    if ( lResult != 0 && lResult->getEBV()->getBooleanValue() )
     {
       setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
       return true;
@@ -404,7 +404,6 @@ void ZorbaDebuggerImpl::eval( xqpString anExpr )
 store::Item_t ZorbaDebuggerImpl::fetchItem( const QueryLoc& loc, xqpString anExpr,
                                              PlanState& planState, xqpString *anError )
   {
-    std::stringstream lOutputStream;
     
     PlanWrapperHolder eval_plan;
     std::auto_ptr< CompilerCB > ccb;
@@ -442,10 +441,6 @@ store::Item_t ZorbaDebuggerImpl::fetchItem( const QueryLoc& loc, xqpString anExp
 
       PlanWrapper *lIterator = eval_plan.get();
       lIterator->next(lItem);
-      //while ( lIterator->next(lItem) )
-      //{
-      //  lOutputStream << lItem->getStringValue();
-      //}
       //serializer lSerializer(0);
       //lSerializer.set_parameter("method", "xml");
       //lSerializer.set_parameter("indent", "no");
@@ -455,15 +450,12 @@ store::Item_t ZorbaDebuggerImpl::fetchItem( const QueryLoc& loc, xqpString anExp
       //lSerializer.serialize( eval_plan.get(), lOutputStream );
 
     } catch ( error::ZorbaError& e ) {
+      std::stringstream lOutputStream;
       lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << std::endl;
       lOutputStream << "       " << e.theDescription << std::endl;
+      if ( anError != 0 )
+        *anError = lOutputStream.str(); 
     }
-    
-    if ( eval_plan.get() != 0 )
-    {
-      eval_plan->close();
-    }
-    *anError = lOutputStream.str(); 
     return lItem;
   }
 
@@ -520,10 +512,6 @@ xqpString ZorbaDebuggerImpl::fetchValue( const QueryLoc& loc, xqpString anExpr,
       *anError = lError.str();
     }
     
-    if ( eval_plan.get() != 0 )
-    {
-      eval_plan->close();
-    }
     return xqpString( lOutputStream.str() );
   }
 
@@ -682,6 +670,7 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
 #else
           lMessage = static_cast< VariableMessage * > ( aMessage );
 #endif
+          VariableReply * lReply = new VariableReply( lMessage->getId(), DEBUGGER_NO_ERROR );
           checked_vector<xqtref_t>::iterator it;
           for( unsigned i = 0; i<theVarnames.size(); i++ )
           {
@@ -693,8 +682,9 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
             } else {
               lType = "[XS_UNTYPED]";
             }
-            lMessage->addLocal( lName, lType );
+            lReply->addLocal( lName, lType );
           }
+          lMessage->setReplyMessage( lReply );
           break;
         }
         default: throw InvalidCommandException("Internal Error. Command not implemented for dynamic command set.");
