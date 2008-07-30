@@ -30,9 +30,11 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
                checked_vector<store::Item_t> varnames_,
                checked_vector<std::string> var_keys_,
                checked_vector<xqtref_t> vartypes_,
+               checked_vector<global_binding> globals_,
                std::vector<PlanIter_t>& aChildren ) 
     : NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, aChildren),
-    theDebugger(0), varnames(varnames_), var_keys(var_keys_), vartypes(vartypes_){}
+    theDebugger(0), varnames(varnames_), var_keys(var_keys_), vartypes(vartypes_),
+    globals(globals_){}
 
   FnDebugIterator::~FnDebugIterator(){}
 
@@ -47,6 +49,7 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
     theDebugger->theVarnames = varnames;
     theDebugger->theVarkeys = var_keys;
     theDebugger->theVartypes = vartypes;
+    theDebugger->theGlobals  = globals;
     theDebugger->theChildren = theChildren;
 
     while ( consumeNext( result, theChildren[0], planState ) ) {

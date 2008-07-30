@@ -36,12 +36,14 @@ protected:
   checked_vector<store::Item_t> varnames;
   checked_vector<std::string> var_keys;  
   checked_vector<xqtref_t> vartypes;
+  checked_vector<global_binding> globals;
 
 public:
   FnDebugIterator(const QueryLoc& loc,
                checked_vector<store::Item_t> varnames_,
                checked_vector<std::string> var_keys_,
                checked_vector<xqtref_t> vartypes_,
+               checked_vector<global_binding> globals_,
                std::vector<PlanIter_t>& aChildren );
 
   virtual ~FnDebugIterator();

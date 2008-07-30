@@ -349,7 +349,21 @@ void CommandLineEventHandler::handle_cmd()
       {
         theOutput << "$" << it->getName() << " " << it->getType() << std::endl;
       }
-    }else if ( lCommand == "v" || lCommand == "version" ) {
+    } else if ( lCommand == "globals" ) {
+      std::list<Variable> list = theClient->getGlobalVariables();
+      std::list<Variable>::iterator it;
+      for ( it = list.begin(); it != list.end(); it++ )
+      {
+        theOutput << "$" << it->getName() << " " << it->getType() << std::endl;
+      }
+    } else if ( lCommand == "locals" ) {
+      std::list<Variable> list = theClient->getLocalVariables();
+      std::list<Variable>::iterator it;
+      for ( it = list.begin(); it != list.end(); it++ )
+      {
+        theOutput << "$" << it->getName() << " " << it->getType() << std::endl;
+      }
+    } else if ( lCommand == "v" || lCommand == "version" ) {
         version();
     } else if ( lCommand == "p" || lCommand == "print" ||
                 lCommand == "e" || lCommand == "eval" ) {

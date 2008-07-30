@@ -41,6 +41,7 @@
 #include "common/shared_types.h"
 
 #ifdef WIN32
+#include <windows.h>
 #define sleep(s) Sleep(s*1000)
 #endif
 
@@ -671,7 +672,7 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
           lMessage = static_cast< VariableMessage * > ( aMessage );
 #endif
           VariableReply * lReply = new VariableReply( lMessage->getId(), DEBUGGER_NO_ERROR );
-          checked_vector<xqtref_t>::iterator it;
+          
           for( unsigned i = 0; i<theVarnames.size(); i++ )
           {
             xqpString lName(theVarnames.at(i)->getStringValue());
@@ -682,7 +683,19 @@ void ZorbaDebuggerImpl::processMessage(AbstractCommandMessage * aMessage)
             } else {
               lType = "[XS_UNTYPED]";
             }
-            lReply->addLocal( lName, lType );
+            checked_vector<global_binding>::iterator it;
+            bool is_global = false;
+            for ( it = theGlobals.begin(); it != theGlobals.end(); ++it )
+            {
+              if ( it->first->get_varname() == theVarnames.at(i) )
+              {
+                lReply->addGlobal( lName, lType );
+                is_global = true;
+                break;
+              }
+            }
+            if ( ! is_global )
+              lReply->addLocal( lName, lType );
           }
           lMessage->setReplyMessage( lReply );
           break;

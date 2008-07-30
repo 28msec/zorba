@@ -220,6 +220,7 @@ void end_visit(debugger_expr& v)
   checked_vector<PlanIter_t> argv;
   checked_vector<store::Item_t> varnames;
   checked_vector<std::string> var_keys;
+  checked_vector<global_binding> globals;
   checked_vector<xqtref_t> vartypes;
   for (unsigned i = 0; i < v.var_count (); i++) 
   {
@@ -228,9 +229,15 @@ void end_visit(debugger_expr& v)
     vartypes.push_back (v.var_at (i).type);
     argv.push_back (pop_itstack ());
   }
+  std::list<global_binding> lGlobals = v.getGlobals();
+  std::list<global_binding>::iterator it;
+  for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
+  {
+    globals.push_back( *it );
+  }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  itstack.push (new FnDebugIterator (qloc, varnames, var_keys, vartypes, argv));
+  itstack.push (new FnDebugIterator (qloc, varnames, var_keys, vartypes, globals, argv));
 }
 #endif
 

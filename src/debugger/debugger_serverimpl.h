@@ -105,10 +105,11 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     PlanState * thePlanState;
 
-    checked_vector<store::Item_t> theVarnames;
-    checked_vector<std::string>   theVarkeys;
-    checked_vector<xqtref_t>      theVartypes;
-    checked_vector<PlanIter_t>    theChildren;
+    checked_vector<store::Item_t>  theVarnames;
+    checked_vector<std::string>    theVarkeys;
+    checked_vector<xqtref_t>       theVartypes;
+    checked_vector<PlanIter_t>     theChildren;
+    checked_vector<global_binding> theGlobals;
 
     std::map<unsigned int, QueryLoc> theBreakpoints;
     std::map<unsigned int, xqpString> theWatchpoints;
