@@ -156,6 +156,12 @@ protected:
 
   static bool
   is_alphanum(char c);
+
+  static bool
+  is_unreserved_char(char c);
+
+  static bool
+  is_path_character(char c);
   
 protected:
   void

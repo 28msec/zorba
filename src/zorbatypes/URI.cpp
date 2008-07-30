@@ -155,6 +155,21 @@ URI::is_alphanum(char c)
   return (is_alpha(c) || is_digit(c));
 }
 
+
+bool
+URI::is_unreserved_char(char c)
+{
+  std::string lMarkCharacter("-_.!~*'{}");
+  return (is_alphanum(c) || lMarkCharacter.find(c) != std::string::npos);
+}
+
+bool
+URI::is_path_character(char c)
+{
+  std::string lPathChracters(";/:@&=+$,");
+  return (lPathChracters.find(c) != std::string::npos);
+}
+
 // initialize this uri based on a base-uri (i.e. uri resolving) and a (relative) uri given as string
 void
 URI::initialize(const xqpString& uri)
@@ -731,6 +746,9 @@ URI::initializePath(const xqpString& uri)
           if ( lIndex + 2 >= lEnd ) { // TODO check hex and throw errors
             
           }
+        } else if (!is_unreserved_char(c) && !is_path_character(c)) 
+        {
+          ZORBA_ERROR_DESC(XQST0046, "Invalid char in URI");
         }
         ++lIndex;
       }
