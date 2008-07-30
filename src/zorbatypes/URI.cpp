@@ -433,6 +433,7 @@ URI::resolve(const URI * base_uri)
   }
   
   thePath = path;
+  theURIText = ""; // force rebuild in get_uri_text
 }
 
 // scheme = alpha *( alpha | digit | "+" | "-" | "." )
