@@ -304,6 +304,7 @@ URI::resolve(const URI * base_uri)
         theQueryString = base_uri->get_query();
         set_state(QueryString);
     }
+    theURIText = ""; // force rebuild in get_uri_text
     return;
   }
 
@@ -311,8 +312,10 @@ URI::resolve(const URI * base_uri)
   // starts with a scheme name, then the reference is interpreted as an
   // absolute URI and we are done.  Otherwise, the reference URI's
   // scheme is inherited from the base URI's scheme component.
-  if ( is_set(Scheme) )
+  if ( is_set(Scheme) ) {
+    theURIText = ""; // force rebuild in get_uri_text
     return;
+  }
 
   set_scheme(base_uri->get_scheme());
 
@@ -339,14 +342,17 @@ URI::resolve(const URI * base_uri)
       set_state(RegBasedAuthority);
     }
   } else {
+    theURIText = ""; // force rebuild in get_uri_text
     return;
   }
 
 
   // If the path component begins with a slash character ("/"), then
   // the reference is an absolute-path and we skip to step 7.
-  if ( (is_set(Path)) && (thePath.indexOf("/") == 0) )
+  if ( (is_set(Path)) && (thePath.indexOf("/") == 0) ) {
+    theURIText = ""; // force rebuild in get_uri_text
     return;
+  }
 
 
   xqpString base_path = base_uri->get_path();
@@ -434,6 +440,7 @@ URI::resolve(const URI * base_uri)
   
   thePath = path;
   theURIText = ""; // force rebuild in get_uri_text
+
 }
 
 // scheme = alpha *( alpha | digit | "+" | "-" | "." )
@@ -795,7 +802,7 @@ URI::set_scheme(const xqpString& new_scheme)
     ZORBA_ERROR_DESC_OSS(XQST0046, "URI contain's a scheme that is not a conformant URI scheme");
   }
 
-  theScheme = new_scheme.lowercase();
+  theScheme = new_scheme; //.lowercase();
   set_state(Scheme);
 }
 
