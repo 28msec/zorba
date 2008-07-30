@@ -162,6 +162,9 @@ protected:
 
   static bool
   is_path_character(char c);
+
+  static bool
+  is_reservered_or_unreserved_char(char c);
   
 protected:
   void

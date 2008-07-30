@@ -170,6 +170,13 @@ URI::is_path_character(char c)
   return (lPathChracters.find(c) != std::string::npos);
 }
 
+bool
+URI::is_reservered_or_unreserved_char(char c)
+{
+  std::string lMarkOrReservedChars("-_.!~*'();/?:@&=+$,[]");
+  return (is_alphanum(c) || lMarkOrReservedChars.find(c) != std::string::npos);
+}
+
 // initialize this uri based on a base-uri (i.e. uri resolving) and a (relative) uri given as string
 void
 URI::initialize(const xqpString& uri)
@@ -748,7 +755,7 @@ URI::initializePath(const xqpString& uri)
           }
         } else if (!is_unreserved_char(c) && !is_path_character(c)) 
         {
-          ZORBA_ERROR_DESC(XQST0046, "Invalid char in URI");
+          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char in URI: " << c);
         }
         ++lIndex;
       }
@@ -759,7 +766,12 @@ URI::initializePath(const xqpString& uri)
         if ( c == '?' || c == '#' ) {
           break;
         }
-        // TODO check errors
+
+        if ( c == '%' ) {
+          // TODO check errors
+        } else if (!is_reservered_or_unreserved_char(c)) {
+          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char in URI " << c);
+        }
         ++lIndex;
       }
     }
