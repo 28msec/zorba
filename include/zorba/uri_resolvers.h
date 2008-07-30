@@ -32,15 +32,15 @@ namespace zorba {
     public:
       enum ErrorCode
       {
-        NO_ERROR = 0,
-        FODC0002,
-        FODC0003,
-        FODC0004,
-        FODC0005
+        UR_NOERROR,
+        UR_FODC0002,
+        UR_FODC0003,
+        UR_FODC0004,
+        UR_FODC0005
       };
 
       URIResolverResult()
-        : theErrorCode(NO_ERROR) {}
+        : theErrorCode(UR_NOERROR) {}
 
       virtual ~URIResolverResult() {}
 
