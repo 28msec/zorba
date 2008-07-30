@@ -58,14 +58,15 @@ URI::URI( const xqpString& uri )
   : theState(0),
     thePort(0)
 {
-  initialize(0, uri); 
+  initialize(uri); 
 }
 
 URI::URI( const URI& base_uri, const xqpString& uri )
   :  theState(0),
      thePort(0)
 {
-  initialize(&base_uri, uri);
+  initialize(uri);
+  resolve(&base_uri);
 }
 
 URI::URI( const URI& to_copy )
@@ -96,6 +97,12 @@ URI::initialize(const URI& to_copy)
   thePath              = to_copy.thePath;
   theQueryString       = to_copy.theQueryString;
   theFragment          = to_copy.theFragment;
+}
+
+bool
+URI::is_absolute() const
+{
+  return is_set(Scheme);
 }
 
 // helper
@@ -150,22 +157,22 @@ URI::is_alphanum(char c)
 
 // initialize this uri based on a base-uri (i.e. uri resolving) and a (relative) uri given as string
 void
-URI::initialize(const URI* const base_uri,
-                const xqpString& uri)
+URI::initialize(const xqpString& uri)
 {
   // first, we need to trim the uri
   // and only work with the trimmed one from this point on
   xqpString lTrimmedURI = uri.trim();
   int    lTrimmedURILength = lTrimmedURI.length();
 
-  if ( base_uri == 0 && lTrimmedURI.empty() ) {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "No base URI given and URILiteral is of zero length");
-  }
+  // we don't throw errors now
+//if ( base_uri == 0 && lTrimmedURI.empty() ) {
+//  ZORBA_ERROR_DESC_OSS(XQST0046, "No base URI given and URILiteral is of zero length");
+//}
 
-  if ( lTrimmedURI.empty() ) {
-    // just copy the base uri 
-    initialize(*base_uri);
-  }
+//if ( lTrimmedURI.empty() ) {
+//  // just copy the base uri 
+//  initialize(*base_uri);
+//}
 
   // index of the current processing state used in this function
   int lIndex = 0;
@@ -184,10 +191,10 @@ URI::initialize(const URI* const base_uri,
       (lColonIdx > lQueryIdx && lQueryIdx != -1) ||
       (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) {
 
-     // A standalone base is a valid URI
-    if ( lColonIdx == 0 || (base_uri == 0 && lFragmentIdx != 0) ) {
-      ZORBA_ERROR_DESC_OSS(XQST0046, "URI doesn't have an URI scheme");
-    }
+//   // A standalone base is a valid URI
+//  if ( lColonIdx == 0 || (base_uri == 0 && lFragmentIdx != 0) ) {
+//    ZORBA_ERROR_DESC_OSS(XQST0046, "URI doesn't have an URI scheme");
+//  }
 
   } else {
     initializeScheme(lTrimmedURI);
@@ -195,10 +202,10 @@ URI::initialize(const URI* const base_uri,
   }
 
   // only a scheme or a scheme followed by a # is not valid
-  if ( lIndex == lTrimmedURILength || 
-       ( is_set(Scheme) && (lTrimmedURI.getStore()->str().at(lIndex) == '#'))) {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "A mandatory URI component is missing");
-  }
+//if ( lIndex == lTrimmedURILength || 
+//     ( is_set(Scheme) && (lTrimmedURI.getStore()->str().at(lIndex) == '#'))) {
+//  ZORBA_ERROR_DESC_OSS(XQST0046, "A mandatory URI component is missing");
+//}
 
   /**
    * Authority
@@ -243,179 +250,189 @@ URI::initialize(const URI* const base_uri,
   xqpString lPathUri = lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex);
 
   initializePath(lPathUri);
+}
 
-  /**
-   * URI resolving
-   */
-  // Resolve relative URI to base URI - see RFC 2396 Section 5.2
-  if ( base_uri ) {
+void
+URI::resolve(const URI * base_uri)
+{
+  if (is_absolute()) {
+    return;
+  }
 
-    // If the path component is empty and the scheme, authority, and
-    // query components are undefined, then it is a reference to the
-    // current document and we are done.  Otherwise, the reference URI's
-    // query and fragment components are defined as found (or not found)
-    // within the URI reference and not inherited from the base URI.
-    if ( ((!is_set(Path)) || (thePath.empty())) &&
-         (!is_set(Scheme) && (!is_set(Host)) && (!is_set(RegBasedAuthority)) )) {
+  if ( base_uri == 0 && get_uri_text().empty() ) {
+    ZORBA_ERROR_DESC_OSS(XQST0046, "No base URI given and URILiteral is of zero length");
+  }
 
-      set_scheme(base_uri->get_scheme());
-      if (base_uri->is_set(UserInfo)) {
-        set_user_info(base_uri->get_user_info());
-      }
-      if (base_uri->is_set(Host)) {
-        set_host(base_uri->get_host());
-      }
-      if (base_uri->is_set(Port)) {
-        set_port(base_uri->get_port());
-      }
-      if (base_uri->is_set(RegBasedAuthority)) {
-        set_reg_based_authority(base_uri->get_reg_based_authority());
-      }
-      if (base_uri->is_set(Path)) {
-        // I think this is a bug in xerces because it doesn't remove the last segment
-        int last_slash = base_uri->get_path().lastIndexOf("/");
-        if ( last_slash != -1 )
-          thePath = base_uri->get_path().substr(0, last_slash+1);
-        else 
-          thePath = base_uri->get_path();
-        set_state(Path);
-      }
-      if ( (! is_set(QueryString)) ) {
-          theQueryString = base_uri->get_query();
-          set_state(QueryString);
-      }
-      return;
-    }
+  if ( get_uri_text().empty() ) {
+    // just copy the base uri 
+    initialize(*base_uri);
+  }
 
-    // If the scheme component is defined, indicating that the reference
-    // starts with a scheme name, then the reference is interpreted as an
-    // absolute URI and we are done.  Otherwise, the reference URI's
-    // scheme is inherited from the base URI's scheme component.
-    if ( is_set(Scheme) )
-      return;
+  int lIndex = 0;
+
+  // If the path component is empty and the scheme, authority, and
+  // query components are undefined, then it is a reference to the
+  // current document and we are done.  Otherwise, the reference URI's
+  // query and fragment components are defined as found (or not found)
+  // within the URI reference and not inherited from the base URI.
+  if ( ((!is_set(Path)) || (thePath.empty())) &&
+       (!is_set(Scheme) && (!is_set(Host)) && (!is_set(RegBasedAuthority)) )) {
 
     set_scheme(base_uri->get_scheme());
-
-    // If the authority component is defined, then the reference is a
-    // network-path and we skip to step 7.  Otherwise, the reference
-    // URI's authority is inherited from the base URI's authority
-    // component, which will also be undefined if the URI scheme does not
-    // use an authority component.
-    if ( (!is_set(Host)) && (!is_set(RegBasedAuthority)) ) {
-      if (base_uri->is_set(UserInfo)) {
-        theUserInfo = base_uri->get_user_info(); 
-        set_state(UserInfo);
-      }
-      if (base_uri->is_set(Host)) {
-        theHost = base_uri->get_host();
-        set_state(Host);
-      }
-      if (base_uri->is_set(Port)) {
-        thePort = base_uri->get_port();
-        set_state(Port);
-      }
-      if (base_uri->is_set(RegBasedAuthority)) {
-        theRegBasedAuthority = base_uri->get_reg_based_authority();
-        set_state(RegBasedAuthority);
-      }
-    } else {
-      return;
+    if (base_uri->is_set(UserInfo)) {
+      set_user_info(base_uri->get_user_info());
     }
-
-
-    // If the path component begins with a slash character ("/"), then
-    // the reference is an absolute-path and we skip to step 7.
-    if ( (is_set(Path)) && (thePath.indexOf("/") == 0) )
-      return;
-
-
-    xqpString base_path = base_uri->get_path();
-
-    xqpString path;
-    if ( base_uri->is_set(Path) ) {
-      int last_slash = base_path.lastIndexOf("/");
+    if (base_uri->is_set(Host)) {
+      set_host(base_uri->get_host());
+    }
+    if (base_uri->is_set(Port)) {
+      set_port(base_uri->get_port());
+    }
+    if (base_uri->is_set(RegBasedAuthority)) {
+      set_reg_based_authority(base_uri->get_reg_based_authority());
+    }
+    if (base_uri->is_set(Path)) {
+      // I think this is a bug in xerces because it doesn't remove the last segment
+      int last_slash = base_uri->get_path().lastIndexOf("/");
       if ( last_slash != -1 )
-        path = base_path.substr(0, last_slash+1);
-
+        thePath = base_uri->get_path().substr(0, last_slash+1);
+      else 
+        thePath = base_uri->get_path();
+      set_state(Path);
     }
-
-    // 6b - append the relative URI path
-    path += thePath;
-
-    // 6c - remove all "./" where "." is a complete path segment
-    path = path.replace("/\\./", "/", "");
-
-    // 6d If the buffer string ends with "." as a complete path segment,
-    //  that "." is removed.
-    if (path.endsWith("/.")) {
-      path = path.substr(0, path.length() - 1);
+    if ( (! is_set(QueryString)) ) {
+        theQueryString = base_uri->get_query();
+        set_state(QueryString);
     }
+    return;
+  }
 
-    // 6e All occurrences of "<segment>/../", where <segment> is a
-    // complete path segment not equal to "..", are removed from the
-    // buffer string.  Removal of these path segments is performed
-    // iteratively, removing the leftmost matching pattern on each
-    // iteration, until no matching pattern remains.
-    lIndex = -1;
-    int segIndex = -1;
-    int offset = 1;
+  // If the scheme component is defined, indicating that the reference
+  // starts with a scheme name, then the reference is interpreted as an
+  // absolute URI and we are done.  Otherwise, the reference URI's
+  // scheme is inherited from the base URI's scheme component.
+  if ( is_set(Scheme) )
+    return;
 
-    xqpString tmp_path = path.substr(1, path.length() - 1 );
-    xqpString tmp1, tmp2;
-    while ((lIndex = tmp_path.indexOf("/../")) != -1) { // XMLString::patternMatch(&(path[offset]), SLASH_DOTDOT_SLASH)) != -1)
+  set_scheme(base_uri->get_scheme());
 
-      // Undo offset
-      lIndex += offset;
-      
-      // Find start of <segment> within substring ending at found point.
-      tmp1 = path.substr(0, lIndex - 1);
-      segIndex = tmp1.lastIndexOf("/");
-
-
-      // Ensure <segment> exists and != ".."
-      if (segIndex != -1                &&
-          (path.getStore()->str().at(segIndex+1) != '.' ||
-           path.getStore()->str().at(segIndex+2) != '.' ||
-           segIndex + 3 != lIndex)) {
-        
-
-        tmp1 = path.substr(0, segIndex);
-        tmp2 = path.substr(lIndex+3, path.length() - lIndex - 3);
-
-        path = "";
-        path += tmp1;
-        path += tmp2;
-
-        offset = (segIndex == 0 ? 1 : segIndex);
-      } else {
-        offset += 4;
-      }
-      tmp_path = path.substr(offset, tmp_path.length() - offset);
-    } // while
-
-    // 6f) If the buffer string ends with "<segment>/..", where <segment>
-    // is a complete path segment not equal to "..", that
-    // "<segment>/.." is removed.
-    if (path.endsWith("/..")) {
-
-      // Find start of <segment> within substring ending at found point.
-      lIndex = path.length() - 3;
-      tmp1 = path.substr(0, lIndex - 1);
-      segIndex = tmp1.lastIndexOf("/");
-
-      if (segIndex != -1                &&
-          (path.getStore()->str().at(segIndex+1) != '.' ||
-           path.getStore()->str().at(segIndex+2) != '.' ||
-           segIndex + 3 != lIndex))
-      {
-        path = path.substr(0, segIndex+1);
-      }
+  // If the authority component is defined, then the reference is a
+  // network-path and we skip to step 7.  Otherwise, the reference
+  // URI's authority is inherited from the base URI's authority
+  // component, which will also be undefined if the URI scheme does not
+  // use an authority component.
+  if ( (!is_set(Host)) && (!is_set(RegBasedAuthority)) ) {
+    if (base_uri->is_set(UserInfo)) {
+      theUserInfo = base_uri->get_user_info(); 
+      set_state(UserInfo);
     }
+    if (base_uri->is_set(Host)) {
+      theHost = base_uri->get_host();
+      set_state(Host);
+    }
+    if (base_uri->is_set(Port)) {
+      thePort = base_uri->get_port();
+      set_state(Port);
+    }
+    if (base_uri->is_set(RegBasedAuthority)) {
+      theRegBasedAuthority = base_uri->get_reg_based_authority();
+      set_state(RegBasedAuthority);
+    }
+  } else {
+    return;
+  }
+
+
+  // If the path component begins with a slash character ("/"), then
+  // the reference is an absolute-path and we skip to step 7.
+  if ( (is_set(Path)) && (thePath.indexOf("/") == 0) )
+    return;
+
+
+  xqpString base_path = base_uri->get_path();
+
+  xqpString path;
+  if ( base_uri->is_set(Path) ) {
+    int last_slash = base_path.lastIndexOf("/");
+    if ( last_slash != -1 )
+      path = base_path.substr(0, last_slash+1);
+
+  }
+
+  // 6b - append the relative URI path
+  path += thePath;
+
+  // 6c - remove all "./" where "." is a complete path segment
+  path = path.replace("/\\./", "/", "");
+
+  // 6d If the buffer string ends with "." as a complete path segment,
+  //  that "." is removed.
+  if (path.endsWith("/.")) {
+    path = path.substr(0, path.length() - 1);
+  }
+
+  // 6e All occurrences of "<segment>/../", where <segment> is a
+  // complete path segment not equal to "..", are removed from the
+  // buffer string.  Removal of these path segments is performed
+  // iteratively, removing the leftmost matching pattern on each
+  // iteration, until no matching pattern remains.
+  lIndex = -1;
+  int segIndex = -1;
+  int offset = 1;
+
+  xqpString tmp_path = path.substr(1, path.length() - 1 );
+  xqpString tmp1, tmp2;
+  while ((lIndex = tmp_path.indexOf("/../")) != -1) { // XMLString::patternMatch(&(path[offset]), SLASH_DOTDOT_SLASH)) != -1)
+
+    // Undo offset
+    lIndex += offset;
     
-    thePath = path;
+    // Find start of <segment> within substring ending at found point.
+    tmp1 = path.substr(0, lIndex - 1);
+    segIndex = tmp1.lastIndexOf("/");
 
-  } /* ( base_uri ) */
-         
+
+    // Ensure <segment> exists and != ".."
+    if (segIndex != -1                &&
+        (path.getStore()->str().at(segIndex+1) != '.' ||
+         path.getStore()->str().at(segIndex+2) != '.' ||
+         segIndex + 3 != lIndex)) {
+      
+
+      tmp1 = path.substr(0, segIndex);
+      tmp2 = path.substr(lIndex+3, path.length() - lIndex - 3);
+
+      path = "";
+      path += tmp1;
+      path += tmp2;
+
+      offset = (segIndex == 0 ? 1 : segIndex);
+    } else {
+      offset += 4;
+    }
+    tmp_path = path.substr(offset, tmp_path.length() - offset);
+  } // while
+
+  // 6f) If the buffer string ends with "<segment>/..", where <segment>
+  // is a complete path segment not equal to "..", that
+  // "<segment>/.." is removed.
+  if (path.endsWith("/..")) {
+
+    // Find start of <segment> within substring ending at found point.
+    lIndex = path.length() - 3;
+    tmp1 = path.substr(0, lIndex - 1);
+    segIndex = tmp1.lastIndexOf("/");
+
+    if (segIndex != -1                &&
+        (path.getStore()->str().at(segIndex+1) != '.' ||
+         path.getStore()->str().at(segIndex+2) != '.' ||
+         segIndex + 3 != lIndex))
+    {
+      path = path.substr(0, segIndex+1);
+    }
+  }
+  
+  thePath = path;
 }
 
 // scheme = alpha *( alpha | digit | "+" | "-" | "." )
