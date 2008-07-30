@@ -35,6 +35,8 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
     std::string theFileName;
 
     std::auto_ptr<std::istream> &theQueryFile;
+
+    std::auto_ptr<QueryLocation> theLocation;
     
     std::ostream &theOutput;
     
@@ -43,7 +45,9 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
     std::vector<std::string> get_args( const std::string& str );
 
     std::string get_expression( const std::vector<std::string> arr );
-   
+  
+    void update_location();
+    
     void handle_cmd();
 
     void help();

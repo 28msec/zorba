@@ -88,9 +88,7 @@ namespace zorba{
 
       void clearBreakpoints();
       
-      String getFileName() const;
-
-      unsigned int getLineNo() const;
+      QueryLocation *getLocation() const;
 
       void eval( String &anExpr );
 
@@ -105,9 +103,7 @@ namespace zorba{
 
       DebuggerEventHandler * theEventHandler;
 
-      std::string theRemoteFileName;
-
-      unsigned int theRemoteLineNo;
+      QueryLoc theRemoteLocation;
 
       TCPSocket * theRequestSocket;
       

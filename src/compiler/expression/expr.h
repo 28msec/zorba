@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 
 #include "zorbautils/checked_vector.h"
@@ -469,8 +470,25 @@ class debugger_expr: public eval_expr
     std::list<global_binding> theGlobals;
   
   public:
-    debugger_expr( const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
-      eval_expr(loc, aChild ), theGlobals( aGlobals ){}
+    debugger_expr( const QueryLoc& loc, expr_t aChild,
+                   checked_vector<var_expr_t> aScopedVariables,
+                   std::list<global_binding> aGlobals ):
+      eval_expr(loc, aChild ), theGlobals( aGlobals )
+    {
+      std::set<store::Item_t> lQNames;
+      checked_vector<var_expr_t>::reverse_iterator it;
+      for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
+		  {
+        if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
+        {
+          lQNames.insert( (*it)->get_varname() );
+          var_expr_t lValue = (*it);
+          var_expr_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
+          lVariable->set_type( lValue->get_type() );
+          add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
+        }
+      }
+    }
 
     expr_iterator_data *make_iter();
     void next_iter (expr_iterator_data&);

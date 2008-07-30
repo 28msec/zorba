@@ -44,7 +44,6 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
 
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
-    theDebugger->theLocation = loc;
     theDebugger->thePlanState = &planState;
     theDebugger->theVarnames = varnames;
     theDebugger->theVarkeys = var_keys;
@@ -53,6 +52,7 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
     theDebugger->theChildren = theChildren;
 
     while ( consumeNext( result, theChildren[0], planState ) ) {
+      theDebugger->theLocation = loc;
       if ( theDebugger->hasToSuspend() )
       {
         theDebugger->theRuntimeThread->suspend();

@@ -19,7 +19,7 @@
 #include <zorba/zorbastring.h>
 
 namespace zorba{
-  
+
   /* Cause of the suspension of the engine */
   enum SuspendedBy { A_USER, A_BREAKPOINT, A_STEP }; 
 

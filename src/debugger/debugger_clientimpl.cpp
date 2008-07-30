@@ -41,8 +41,6 @@ namespace zorba{
   ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno )
   :
     theEventHandler(0),
-    theRemoteFileName(""),
-    theRemoteLineNo(0),
     theRequestSocket( new TCPSocket( "127.0.0.1", aRequestPortno ) ),
     theEventServerSocket( new TCPServerSocket( aEventPortno ) ),
     theExecutionStatus( QUERY_IDLE ),
@@ -113,8 +111,7 @@ namespace zorba{
         std::clog << "[Client Thread] received a suspended event" << std::endl;
 #endif
         lClient->theExecutionStatus = QUERY_SUSPENDED;
-        lClient->theRemoteLineNo    = lSuspendedMsg->getLocation().getLineno();
-        lClient->theRemoteFileName  = lSuspendedMsg->getLocation().getFilename();
+        lClient->theRemoteLocation  = lSuspendedMsg->getLocation();
         if ( lClient->theEventHandler )
         {
           QueryLocationImpl loc( lSuspendedMsg->getLocation() );
@@ -356,14 +353,9 @@ namespace zorba{
     return theBreakpoints;
   }
 
-  String ZorbaDebuggerClientImpl::getFileName() const
+  QueryLocation *ZorbaDebuggerClientImpl::getLocation() const
   {
-    return String( theRemoteFileName );
-  }
-
-  unsigned int ZorbaDebuggerClientImpl::getLineNo() const
-  {
-    return theRemoteLineNo;
+    return new QueryLocationImpl( theRemoteLocation );
   }
 
   void ZorbaDebuggerClientImpl::eval( String &anExpr )

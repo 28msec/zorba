@@ -1519,22 +1519,10 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   expr_t lReturnExpr;
   if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
   {
-    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, pop_nodestack(), theGlobalVars);
-   
-    std::set<store::Item_t> lQNames;
-    checked_vector<var_expr_t>::reverse_iterator it;
-    for ( it = theScopedVariables.rbegin(); it != theScopedVariables.rend(); ++it )
-		{
-      if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
-      {
-        lQNames.insert( (*it)->get_varname() );
-        var_expr_t lValue = (*it);
-        var_expr_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
-        lVariable->set_type( lValue->get_type() );
-        lDebuggerExpr->add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
-      }
-    }
-    lReturnExpr = &*lDebuggerExpr;
+    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, pop_nodestack(),
+                                                              theScopedVariables,
+                                                              theGlobalVars);
+   lReturnExpr = &*lDebuggerExpr;
   } else {
     lReturnExpr = pop_nodestack();
   }
@@ -2448,8 +2436,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       fo_h->add(*iter);
     }
-
+#ifdef ZORBA_DEBUGGER
+    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, &*fo_h, theScopedVariables, theGlobalVars);
+    nodestack.push(&*lDebuggerExpr);
+#else
     nodestack.push(&*fo_h);
+#endif
   }
 }
 

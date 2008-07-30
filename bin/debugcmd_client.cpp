@@ -55,31 +55,39 @@ CommandLineEventHandler::CommandLineEventHandler( std::string aFileName,
                                                   ZorbaDebuggerClient * aClient )
  : theFileName( aFileName ),
    theQueryFile( aQueryFile ),
+   theLocation(0),
    theOutput( anOutput ),
    theInput( anInput )
 {
   theClient = aClient;
 }
 
+void CommandLineEventHandler::update_location()
+{
+  theLocation.reset( theClient->getLocation() );
+}
+
 void CommandLineEventHandler::listMore()
 {
-  int start = theClient->getLineNo() - 4;
+  update_location();
+  int start = theLocation->getLineBegin() - 4;
   if ( start <= 0 )
   {
     list( 1, 9 );
   } else {
-    list( start, theClient->getLineNo() + 4 );
+    list( start, theLocation->getLineBegin() + 4 );
   }
 }
 
 void CommandLineEventHandler::list()
 {
-  int start = theClient->getLineNo() - 2;
+  update_location();
+  int start = theLocation->getLineBegin() - 2;
   if ( start <= 0 )
   {
     list( 1, 5 );
   } else {
-    list( start, theClient->getLineNo() + 2 );
+    list( start, theLocation->getLineBegin() + 2 );
   }
 }
 
@@ -90,6 +98,7 @@ void CommandLineEventHandler::list( unsigned int aLineNo )
 
 void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, bool listAll )
 {
+  update_location();
   std::string lLine;
   unsigned int lLineNo = 0;
   std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile.get() );
@@ -107,7 +116,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
     std::getline( *theQueryFile, lLine, '\n');
     if ( (lLineNo >= aBegin && lLineNo <= anEnd) || listAll )
     {
-      if ( lLineNo == theClient->getLineNo() )
+      if ( lLineNo == theLocation->getLineBegin() )
       {
 #ifdef WIN32
         HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -118,6 +127,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         theOutput << lLineNo << '\t' << lLine <<  std::endl;
         SetConsoleTextAttribute(lConsole, saved_configuration);
 #else
+        //theOutput << "\033[1m" << lLineNo << "\033[0m\t" << 
         theOutput << "\033[1m" << lLineNo << '\t' << lLine << "\033[0m" << std::endl;
 #endif
      } else {
@@ -322,6 +332,7 @@ void CommandLineEventHandler::handle_cmd()
         theOutput << "The query is not suspended." << std::endl;
       }
     } else if ( lCommand == "l" || lCommand == "list" ) {
+        update_location();
         if ( lArgs.size() >= 2 && lArgs.at(1) == "more" )
         {
           listMore();
@@ -336,8 +347,8 @@ void CommandLineEventHandler::handle_cmd()
           }       
         } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) !=0 ) {
           int line = atoi(lArgs.at(1).c_str());
-          int start = theClient->getLineNo()-line;
-          int end = theClient->getLineNo()+line;
+          int start = theLocation.get()==0?0:theLocation->getLineBegin()-line;
+          int end = theLocation.get()==0?0:theLocation->getLineBegin()+line;
           list( start<=0?1:start, end<=0?1:end );
         } else {
           list();

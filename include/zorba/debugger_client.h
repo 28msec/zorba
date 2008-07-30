@@ -21,8 +21,8 @@
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_event_handler.h>
 
-namespace zorba{
-  
+namespace zorba{ 
+
   class ZORBA_EXTERN_DECL Variable
   {
     private:
@@ -108,11 +108,8 @@ namespace zorba{
       virtual void
       clearBreakpoints() = 0;
 
-      virtual String
-      getFileName() const = 0;
-
-      virtual unsigned int
-      getLineNo() const = 0;
+      virtual QueryLocation*
+      getLocation() const = 0;
 
       virtual void
       eval( String &anExpr ) = 0;
