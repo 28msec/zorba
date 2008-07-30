@@ -226,7 +226,7 @@ protected:
     transcoder                           & tr;
     std::vector<NsBindings>                bindings;
 
-    enum 
+    enum ItemState 
     {
       INVALID_ITEM,   
       PREVIOUS_ITEM_WAS_TEXT,
