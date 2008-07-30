@@ -51,9 +51,9 @@ class MyDocumentURIResolver : public  DocumentURIResolver
       if (aURI.getStringValue() == "mydoc.xml") {
         // we have only one document
         lResult->theDocument = aXmlDataManager->getDocument(aURI.getStringValue());
-        lResult->setError(URIResolverResult::NO_ERROR);
+        lResult->setError(URIResolverResult::UR_NOERROR);
       } else {
-        lResult->setError(URIResolverResult::FODC0002);
+        lResult->setError(URIResolverResult::UR_FODC0002);
         std::stringstream lErrorStream;
         lErrorStream << "Document could not be found " << aURI.getStringValue();
         lResult->setErrorDescription(lErrorStream.str());

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_INTERNAL_URI_RESOLVERS_H
-#define ZORBA_INTERNAL_URI_RESOLVERS_H
+#ifndef ZORBA_URI_RESOLVERS_API_H
+#define ZORBA_URI_RESOLVERS_API_H
 
 #include <istream>
 #include <vector>
