@@ -88,6 +88,21 @@ public:
         xqpStringStore_t& aStr,
         namespace_context* aNCtx = 0) const;
 
+  /**
+   * Parses user defined simple types, i.e. list or unions of atomic types
+   *
+   * @param aStr Source value, must always be a string
+   * @param aSourceType
+   * @param aTargetType user defined simple type
+   * @param aResultList result list of items
+   *
+   * @return true if parsing was successful, else false
+   */
+  bool parseUserSimpleTypes(const xqpString aStr, 
+                            const xqtref_t& aSourceType,
+                            const xqtref_t& aTargetType,
+                            std::vector<store::Item_t> &aResultList);
+
   bool castableToNCName(const xqpStringStore* str) const;
 
   bool castableToNormalizedString(const xqpStringStore *str) const;

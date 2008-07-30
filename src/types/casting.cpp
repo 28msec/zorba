@@ -1410,6 +1410,15 @@ bool GenericCast::castToQName (
     && cast(result, result, &*GENV_TYPESYSTEM.QNAME_TYPE_ONE, aNCtx);
 }
 
+bool GenericCast::parseUserSimpleTypes(const xqpString aStr, 
+                                       const xqtref_t& aSourceType,
+                                       const xqtref_t& aTargetType,
+                                       std::vector<store::Item_t> &aResultList)
+{
+  Schema lSchema;
+  return lSchema.parseUserSimpleTypes(aStr, aSourceType, aTargetType, aResultList);
+}
+
 
 /*******************************************************************************
   NCName				  ::= NCNameStartChar NCNameChar* // An XML Name, minus the ":" 
