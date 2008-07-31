@@ -119,20 +119,21 @@ ENDIF(CURL_FOUND)
 #
 # Iconv
 #
-INCLUDE(${CMAKE_MODULE_PATH}/FindIconv.cmake)
-FIND_PACKAGE(Iconv REQUIRED)
+IF (WIN32)
+    INCLUDE(${CMAKE_MODULE_PATH}/FindIconv.cmake)
+    FIND_PACKAGE(Iconv REQUIRED)
 
-IF (Iconv_FOUND)
+    IF (Iconv_FOUND)
 
-  MESSAGE(STATUS "Found Iconv library -- " ${ICONV_LIBRARIES})
-  INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
+      MESSAGE(STATUS "Found Iconv library -- " ${ICONV_LIBRARIES})
+      INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
 
-  SET(requiredlibs-zorba ${requiredlibs-zorba} ${ICONV_LIBRARY})
+      SET(requiredlibs-zorba ${requiredlibs-zorba} ${ICONV_LIBRARY})
 
-ELSE(Iconv_FOUND)
-  MESSAGE(STATUS "The Iconv library was not found.")
-ENDIF (Iconv_FOUND)
-
+    ELSE(Iconv_FOUND)
+      MESSAGE(STATUS "The Iconv library was not found.")
+    ENDIF (Iconv_FOUND)
+ENDIF (WIN32)
 
 #
 # ICU
