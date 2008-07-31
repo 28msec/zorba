@@ -377,7 +377,8 @@ public:
 #ifndef NDEBUG
     bool status = subIter->produceNext(result, planState);
     if (planState.theCompilerCB->m_config.print_item_flow) {
-      std::cout << "next (" << subIter << " = " << typeid (*subIter).name() << ") -> " << (result == NULL ? xqp_string ("(null)") : result->show ()) << std::endl;
+      std::cout << "next (" << subIter << " = " << typeid (*subIter).name()
+                << ") -> " << (status ? result->show () : xqp_string ("null")) << std::endl;
     }
     return status;
 #else
