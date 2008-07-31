@@ -170,7 +170,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
         || f == LOOKUP_FN ("fn", "max", 1)
         || f == LOOKUP_FN ("fn", "max", 2)
         || f == LOOKUP_FN ("fn", "min", 1)
-        || f == LOOKUP_FN ("fn", "min", 2))
+        || f == LOOKUP_FN ("fn", "min", 2)
+        || f == LOOKUP_FN ("fn", "boolean", 1))
     {
       expr_t arg = (*fo)[0];
       TSVAnnotationValue::update_annotation (arg, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
