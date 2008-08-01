@@ -79,6 +79,8 @@ FastXmlLoader::FastXmlLoader(
 {
   theOrdPath.init();
 
+  theTraceLevel = GET_STORE().getTraceLevel();
+
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
   theSaxHandler.startDocument = &FastXmlLoader::startDocument;
@@ -254,8 +256,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                XQP0017_LOADER_PARSING_ERROR, 
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, XQP0017_LOADER_PARSING_ERROR, 
                                 "Failed to initialize parser");
       abortload();
 			return NULL;
@@ -264,12 +265,18 @@ store::Item_t FastXmlLoader::loadXml(
     while ((numChars = readPacket(stream, theBuffer, 4096)) > 0)
     {
       xmlParseChunk(ctxt, theBuffer, numChars, 0);
+
+      if (theErrorManager->hasErrors())
+      {
+        xmlFreeParserCtxt(ctxt);
+        abortload();
+        return NULL;
+      }
     }
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                XQP0016_LOADER_IO_ERROR,
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, XQP0016_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       xmlFreeParserCtxt(ctxt);
       abortload();
@@ -556,11 +563,11 @@ void FastXmlLoader::startElement(
 
     SYNC_CODE(elemNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
-      LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
-                    << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
-                    << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
-                    << std::endl << " ordpath = " << elemNode->getOrdPath().show()
-                    << std::endl);
+    LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
+                  << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
+                  << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
+                  << std::endl << " ordpath = " << elemNode->getOrdPath().show()
+                  << std::endl);
 
     // Process namespace bindings
     if (numBindings > 0)
@@ -618,12 +625,12 @@ void FastXmlLoader::startElement(
 
         SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
-          LOADER_TRACE1("Attribute: node = " << attrNode
-                        << " name [" << (prefix != NULL ? prefix : "") << ":"
-                        << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
-                        << " value = " << typedValue->getStringValue()->c_str()
-                        << std::endl << " ordpath = "
-                        << attrNode->getOrdPath().show() << std::endl);
+        LOADER_TRACE2("Attribute: node = " << attrNode
+                      << " name [" << (prefix != NULL ? prefix : "") << ":"
+                      << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
+                      << " value = " << typedValue->getStringValue()->c_str()
+                      << std::endl << " ordpath = "
+                      << attrNode->getOrdPath().show() << std::endl);
       }
     }
   }
@@ -781,9 +788,9 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
     SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
-      LOADER_TRACE1("Text Node = " << textNode << " content = "
-                    << std::string(charp, len) << std::endl << " ordpath = "
-                    << textNode->getOrdPath().show() << std::endl);
+    LOADER_TRACE2("Text Node = " << textNode << " content = "
+                  << std::string(charp, len) << std::endl << " ordpath = "
+                  << textNode->getOrdPath().show() << std::endl);
   }
   catch (error::ZorbaError& e)
   {
@@ -827,9 +834,9 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
     SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
  
-      LOADER_TRACE1("Text Node = " << textNode << " content = "
-                    << std::string(charp, len) << std::endl << " ordpath = "
-                    << textNode->getOrdPath().show() << std::endl);
+    LOADER_TRACE2("Text Node = " << textNode << " content = "
+                  << std::string(charp, len) << std::endl << " ordpath = "
+                  << textNode->getOrdPath().show() << std::endl);
   }
   catch (error::ZorbaError& e)
   {
@@ -875,9 +882,9 @@ void FastXmlLoader::processingInstruction(
 
     SYNC_CODE(piNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
-      LOADER_TRACE1("Pi Node = " << piNode << " target = "
-                    << targetp << std::endl << " ordpath = "
-                    << piNode->getOrdPath().show() << std::endl);
+    LOADER_TRACE2("Pi Node = " << piNode << " target = "
+                  << targetp << std::endl << " ordpath = "
+                  << piNode->getOrdPath().show() << std::endl);
   }
   catch (error::ZorbaError& e)
   {
@@ -920,9 +927,9 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
 
     SYNC_CODE(commentNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
-      LOADER_TRACE1("Comment Node = " << commentNode << " content = "
-                    << charp << std::endl << " ordpath = "
-                    << commentNode->getOrdPath().show() << std::endl);
+    LOADER_TRACE2("Comment Node = " << commentNode << " content = "
+                  << charp << std::endl << " ordpath = "
+                  << commentNode->getOrdPath().show() << std::endl);
   }
   catch (error::ZorbaError& e)
   {
