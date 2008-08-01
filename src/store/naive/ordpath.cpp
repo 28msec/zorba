@@ -1084,7 +1084,7 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
       value = 1118484 - value;
       eval = ((uint32_t)value) << 12;
       eval >>= 9;
-      eval |= 0x00080000;
+      eval |= 0x00800000;
     }
     else
     {
@@ -1106,9 +1106,6 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
 
       value -= 24;
       eval = ((uint32_t)value) << 24;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
       eval >>= 5;
       eval |= 0xF0000000;
     }
@@ -1118,9 +1115,6 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
 
       value -= 280;
       eval = ((uint32_t)value) << 20;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
       eval >>= 6;
       eval |= 0xF8000000;
     }
@@ -1130,9 +1124,6 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
 
       value -= 4376;
       eval = ((uint32_t)value) << 16;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
       eval >>= 7;
       eval |= 0xFC000000;
     }
@@ -1142,11 +1133,17 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
 
       value -= 69912;
       eval = ((uint32_t)value) << 12;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
       eval >>= 8;
       eval |= 0xFE000000;
+    }
+    else if (value < 3215640)
+    {
+      bitsNeeded = 30;
+
+      value -= 1118488;
+      eval = ((uint32_t)value) << 11;
+      eval >>= 9;
+      eval |= 0xFF000000;
     }
     else
     {
@@ -2665,7 +2662,7 @@ void OrdPath::decodeByte(
     compOffsets[numComps+2] = bitLen + 2;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
-    ADVANCE(bitLen, byteIndex, bitIndex, 5);
+    ADVANCE(bitLen, byteIndex, bitIndex, 8);
     extractValue(data, bitLen, byteIndex, bitIndex, 2, 4, deweyid[numComps + 2]);    
     numComps += 3;
     break;
@@ -3644,9 +3641,11 @@ void OrdPath::decodeByte(
     numComps += 1;
     break;
   }
-  case 255:   // 1111 1111   11111111,...           (28/8,20)
+  case 255:   // 1111 1111   11111111 0,...         (29/9,20)
   {
-    ZORBA_FATAL(false, "");
+    ADVANCE(bitLen, byteIndex, bitIndex, 9);
+    extractValue(data, bitLen, byteIndex, bitIndex, 21, 1118488, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   default:
@@ -3922,9 +3921,6 @@ void OrdPathStack::compressComp(ulong comp, long value)
 
       value -= 24;
       eval = ((uint32_t)value) << 24;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
       eval >>= 5;
       eval |= 0xF0000000;
     }
@@ -3948,12 +3944,21 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 1118488)
     {
-      theCompLens[comp] = bitsNeeded = 28;
+      theCompLens[comp] = bitsNeeded = 28; // 8 + 20
 
       value -= 69912;
       eval = ((uint32_t)value) << 12;
       eval >>= 8;
       eval |= 0xFE000000;
+    }
+    else if (value < 3215640)
+    {
+      theCompLens[comp] = bitsNeeded = 30; // 9 + 21
+
+      value -= 1118488;
+      eval = ((uint32_t)value) << 11;
+      eval >>= 9;
+      eval |= 0xFF000000;
     }
     else
     {
