@@ -71,7 +71,7 @@ namespace zorba {
           while ( !theMatFinished && theItems.size() < maxPos ) { //Need to fix size type
             matNextItem();
           }
-          return int32_t ( theItems.size() ) >= maxPos;
+          return theItems.size() >= maxPos;
         }
 
         store::Iterator_t getIterator();

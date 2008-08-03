@@ -246,6 +246,7 @@ namespace zorba
     class TupleStreamIterator;
     class TupleSourceIterator;
     class ForIterator;
+    class OuterForIterator;
     class LetIterator;
     class WhereIterator;
     class CountIterator;
@@ -283,6 +284,8 @@ namespace zorba
     PLAN_ITER_VISITOR (gflwor::TupleSourceIterator);
     
     PLAN_ITER_VISITOR (gflwor::ForIterator);
+    
+    PLAN_ITER_VISITOR (gflwor::OuterForIterator);
     
     PLAN_ITER_VISITOR (gflwor::LetIterator);
     

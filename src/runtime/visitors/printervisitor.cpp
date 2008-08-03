@@ -32,6 +32,7 @@
 #include "runtime/validate/validate.h"
 #include "runtime/core/gflwor/let_iterator.h"
 #include "runtime/core/gflwor/for_iterator.h"
+#include "runtime/core/gflwor/outerfor_iterator.h"
 #include "runtime/core/gflwor/count_iterator.h"
 #include "runtime/core/gflwor/where_iterator.h"
 #include "runtime/core/gflwor/tuplesource_iterator.h"
@@ -644,6 +645,8 @@ public:
   PRINTER_VISITOR_DEFINITION (gflwor::TupleSourceIterator)
       
   PRINTER_VISITOR_DEFINITION (gflwor::ForIterator)
+      
+  PRINTER_VISITOR_DEFINITION (gflwor::OuterForIterator)
 
   PRINTER_VISITOR_DEFINITION (gflwor::LetIterator)
       

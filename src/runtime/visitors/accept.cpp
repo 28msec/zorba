@@ -31,6 +31,7 @@
 #include "runtime/core/trycatch.h"
 #include "runtime/core/gflwor/tuplestream_iterator.h"
 #include "runtime/core/gflwor/for_iterator.h"
+#include "runtime/core/gflwor/outerfor_iterator.h"
 #include "runtime/core/gflwor/let_iterator.h"
 #include "runtime/core/gflwor/where_iterator.h"
 #include "runtime/core/gflwor/count_iterator.h"
@@ -153,6 +154,7 @@ namespace zorba {
   BINARY_ACCEPT(RenameIterator);
   BINARY_ACCEPT(gflwor::TupleStreamIterator);
   BINARY_ACCEPT(gflwor::ForIterator);
+  BINARY_ACCEPT(gflwor::OuterForIterator);
   BINARY_ACCEPT(gflwor::LetIterator);
   BINARY_ACCEPT(gflwor::WhereIterator);
 

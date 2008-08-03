@@ -22,7 +22,7 @@
 namespace zorba {
   namespace simplestore {
 
-    const uint32_t SimpleLazyTempSeq::MAX_POSITION = 2147483647;
+    const uint32_t SimpleLazyTempSeq::MAX_POSITION = std::vector<store::Item_t>().max_size();  //FIXME Is there no better way?
 
     /*******************************************************************************
 

@@ -160,6 +160,8 @@ namespace zorba {
 
     class WindowIterator :public Batcher<WindowIterator> {
       public:
+        static const uint32_t MAX_HISTORY; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
+        
         enum WindowType   {
           TUMBLING,
           SLIDING
@@ -173,7 +175,7 @@ namespace zorba {
         StartClause theStartClause;
         EndClause theEndClause;
         bool theLazyEval;
-        int32_t theMaxNeededHistory;
+        uint32_t theMaxNeededHistory;
 
       public:
 
@@ -189,7 +191,7 @@ namespace zorba {
          * @param aMaxNeededHistory To allow Continous Queries we need to garbage collect a possible infinite input sequence. 
          *                          But the Start, End and other Clauses might require to look back from the start position of a window.
          *                          The MaxNeededHistory specifies how much it is required to look back. 
-         *                          If the value is -1 no Garbage Colleciton is performed.
+         *                          If the value is MAX_HISTORY no Garbage Colleciton is performed.
          * 
          */
         WindowIterator ( const QueryLoc& aLoc,
@@ -200,7 +202,7 @@ namespace zorba {
                          StartClause& aStartclause,
                          EndClause& aEndClause,
                          bool aLazyEval = true,
-                         int32_t aMaxNeededHistory = -1);
+                         uint32_t aMaxNeededHistory = MAX_HISTORY);
         ~WindowIterator();
 
         void openImpl ( PlanState& aPlanState, uint32_t& aOffset );

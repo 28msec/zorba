@@ -50,6 +50,7 @@
 #include "runtime/core/gflwor/groupby_iterator.h"
 #include "runtime/core/gflwor/tuplestream_iterator.h"
 #include "runtime/core/gflwor/for_iterator.h"
+#include "runtime/core/gflwor/outerfor_iterator.h"
 #include "runtime/core/gflwor/let_iterator.h"
 #include "runtime/core/gflwor/where_iterator.h"
 #include "runtime/core/gflwor/count_iterator.h"
@@ -681,12 +682,13 @@ void end_visit(flwor_expr& v)
       }
       if (pos_var == NULL)
       {
-        previous = new gflwor::ForIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters);
+        previous = new gflwor::OuterForIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters);
       }
       else 
       {
-        ZORBA_ASSERT( pvar_iter_map.get((uint64_t) pos_var, pvar_iters) );
-        previous = new gflwor::ForIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters, *pvar_iters);
+        ZORBA_ASSERT(false);
+        //ZORBA_ASSERT( pvar_iter_map.get((uint64_t) pos_var, pvar_iters) );
+        //previous = new gflwor::ForIterator(QueryLoc::null, var->get_varname(), previous, input, *var_iters, *pvar_iters);
       }
     }
     else if ((*it)->type == forlet_clause::let_clause)

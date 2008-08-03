@@ -64,4 +64,4 @@ namespace zorba {
 }
 
 
-#endif  /* ZORBA_RUNTIME_GFLWOR_TUPLESTREAM_ITERATOR */
+#endif  /* ZORBA_RUNTIME_GFLWOR_FOR_ITERATOR */

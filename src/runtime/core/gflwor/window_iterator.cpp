@@ -275,6 +275,8 @@ namespace zorba {
         //  WindowIterator                                                             //
         //                                                                             //
         /////////////////////////////////////////////////////////////////////////////////
+        
+        const uint32_t WindowIterator::MAX_HISTORY = 2147483647; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
 
         WindowIterator::WindowIterator (const QueryLoc& aLoc,
                                         PlanIter_t& aTupleIterator,
@@ -284,7 +286,7 @@ namespace zorba {
                                         StartClause& aStartclause,
                                         EndClause& aEndClause,
                                         bool aLazyEval,
-                                        int32_t aMaxNeededHistory) :
+                                        uint32_t aMaxNeededHistory) :
             Batcher<WindowIterator> (aLoc),
             theTupleIter (aTupleIterator),
             theInputIter (aInputIterator),
@@ -293,7 +295,7 @@ namespace zorba {
             theStartClause (aStartclause),
             theEndClause (aEndClause),
             theLazyEval (aLazyEval),
-            theMaxNeededHistory (aMaxNeededHistory + 1) {
+            theMaxNeededHistory (aMaxNeededHistory) {
 
         }
 
@@ -361,8 +363,7 @@ namespace zorba {
           }
 
         void WindowIterator::doGarbageCollection (WindowState* lState) const {
-          if (theMaxNeededHistory != -1) {
-              assert (theMaxNeededHistory >= 0);
+          if (theMaxNeededHistory != MAX_HISTORY) {
               if (lState->theOpenWindowsStartPos.empty()) {
                   if (lState->theCurInputPos > theMaxNeededHistory)
                     lState->theInputSeq->purgeUpTo (lState->theCurInputPos - theMaxNeededHistory);
