@@ -92,6 +92,10 @@ public:
     return lookup_qname (default_function_namespace (), pfx, local);
   }
 
+  store::Item_t lookup_var_qname (xqp_string varname) const {
+    return lookup_qname ("", varname);
+  }
+
   expr *lookup_var (xqp_string varname) const {
     return lookup_expr2 ("var:", qname_internal_key ("", varname));
   }

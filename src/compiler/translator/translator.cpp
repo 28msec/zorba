@@ -271,11 +271,16 @@ protected:
     return e;
   }
 
-  var_expr_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  var_expr_t bind_var_and_push (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
     var_expr_t e = bind_var (loc, varname, kind, type);
     nodestack.push (&*e);
     return e;
+  }
+
+  var_expr_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  {
+    return bind_var_and_push (loc, sctx_p->lookup_var_qname (varname), kind, type);
   }
 
   void bind_udf (store::Item_t qname, function *f, int nargs, static_context *sctx) {
@@ -1751,18 +1756,20 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   push_scope ();
   const PositionalVar *pv = v.get_posvar ();
   xqp_string varname = v.get_varname ();
+  store::Item_t var_qname = sctx_p->lookup_var_qname (varname);
   if (pv != NULL) {
     expr_t val_expr = pop_nodestack ();
     xqp_string pvarname = pv->get_varname ();
-    if (pvarname == varname)
+    store::Item_t pvar_qname = sctx_p->lookup_var_qname (pvarname);
+    if (pvar_qname->equals (var_qname.getp ()))
       ZORBA_ERROR_LOC (XQST0089, loc);
-    bind_var_and_push (pv->get_location (), pvarname, var_expr::pos_var);
+    bind_var_and_push (pv->get_location (), pvar_qname, var_expr::pos_var);
 #ifdef ZORBA_DEBUGGER
     theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
 #endif
     nodestack.push (val_expr);
   }
-  bind_var_and_push (loc, v.get_varname (), var_expr::for_var, v.get_typedecl () == NULL ? NULL : pop_tstack ());
+  bind_var_and_push (loc, var_qname, var_expr::for_var, v.get_typedecl () == NULL ? NULL : pop_tstack ());
 #ifdef ZORBA_DEBUGGER
   theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
 #endif
