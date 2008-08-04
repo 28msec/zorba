@@ -152,7 +152,7 @@ context_example_5(Zorba* aZorba)
 
   DynamicContext* lCtx = lQuery->getDynamicContext();
 
-  lCtx->setContextItemAsDocument("books.xml", lDocStream);
+  lCtx->setContextItemAsDocument("other_books.xml", lDocStream);
 
   try {
     std::cout << lQuery << std::endl;

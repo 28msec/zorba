@@ -29,16 +29,13 @@
 #include "api/zorbaimpl.h"
 #include "api/resultiteratorimpl.h"
 #include "api/resultiteratorchainer.h"
-#include "api/xmldatamanagerimpl.h"
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/util/item_iterator.h"
 #include "store/api/item.h"
+#include "store/api/store.h"
 
 
 namespace zorba {
-
-#define GET_DATA_MANAGER() \
-  reinterpret_cast<XmlDataManagerImpl*>(Zorba::getInstance(NULL)->getXmlDataManager());
 
 #define ZORBA_DCTX_TRY try 
  
@@ -133,10 +130,11 @@ DynamicContextImpl::setVariableAsDocument(
   {
     checkNoIterators();
 
-    XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER(); 
+    xqpStringStore* lInternalDocURI = Unmarshaller::getInternalString(aDocURI);
 
-    Item lDocItem = lDataManager->loadDocument(aDocURI, *(aStream.get()), theQuery->theErrorHandler);
-    setVariable ( aQName, lDocItem );
+    store::Item_t lDocItem = GENV_STORE.loadDocument(lInternalDocURI, *(aStream.get()));
+
+    setVariable ( aQName, Item(lDocItem) );
 
     return true;
   }
@@ -148,21 +146,21 @@ DynamicContextImpl::setVariableAsDocument(
 bool
 DynamicContextImpl::setContextItem ( const Item& aItem )
 {
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
-    ZorbaImpl::checkItem(lItem);
-
-    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
-
-    theCtx->set_context_item(lItem, 0);
-
-    return true;
-  }
-  ZORBA_DCTX_CATCH
-  return false;
+  ZORBA_DCTX_TRY                                                                                        
+  {                                                                                                     
+    checkNoIterators();                                                                                 
+                                                                                                        
+    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));                                          
+    ZorbaImpl::checkItem(lItem);                                                                        
+                                                                                                        
+    SYNC_CODE(AutoMutex lock(theCloningMutexp);)                                                        
+                                                                                                        
+    theCtx->set_context_item(lItem, 0);                                                                 
+                                                                                                        
+    return true;                                                                                        
+  }                                                                                                     
+  ZORBA_DCTX_CATCH                                                                                      
+  return false;    
 }
 
   
@@ -171,17 +169,17 @@ DynamicContextImpl::setContextItemAsDocument (
     const String& aDocURI,
     std::auto_ptr<std::istream> aInStream )
 {
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    XmlDataManagerImpl* lDataManager = GET_DATA_MANAGER();
-
-    Item lDocItem = lDataManager->loadDocument(aDocURI, *(aInStream.get()), theQuery->theErrorHandler);
-
-    setContextItem ( lDocItem );
-    return true;
-  }
+  ZORBA_DCTX_TRY                                                                                        
+  {                                                                                                     
+    checkNoIterators();                                                                                 
+                                                                                                        
+    xqpStringStore* lInternalDocURI = Unmarshaller::getInternalString(aDocURI);                         
+                                                                                                        
+    store::Item_t lDocItem = GENV_STORE.loadDocument(lInternalDocURI, *(aInStream.get()));              
+                                                                                                        
+    setContextItem ( Item(lDocItem) );                                                                  
+    return true;                                                                                        
+  }                                                                                                     
   ZORBA_DCTX_CATCH
   return false;
 }
