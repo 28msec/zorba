@@ -1167,7 +1167,6 @@ void xquery_scanner::set_yy_flex_debug(bool aBool)
 
 void xquery_scanner::interpretAsLessThan()
 {
-  std::cout << "==> interpretAsLessThan()" << std::endl;
   BEGIN INITIAL;
   POP_STATE();
 }
