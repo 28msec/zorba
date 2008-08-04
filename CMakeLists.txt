@@ -185,10 +185,6 @@ INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
 
 SET (REQUIRED_BOOST_PACKAGES date_time filesystem program_options)
 
-IF (ZORBA_DEBUGGER)
-  SET(REQUIRED_BOOST_PACKAGES ${REQUIRED_BOOST_PACKAGES} boost_thread)
-ENDIF (ZORBA_DEBUGGER)
-
 FIND_PACKAGE(Boost REQUIRED COMPONENTS
   date_time
   filesystem
@@ -221,10 +217,6 @@ ELSE (NOT Boost_FOUND)
         SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system-mt)
       ENDIF (34 LESS ${Boost_MINOR_VERSION})
 
-      IF(ZORBA_DEBUGGER)
-        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_thread-mt)
-      ENDIF(ZORBA_DEBUGGER)
-
     ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
       SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} boost_date_time)
@@ -239,10 +231,6 @@ ELSE (NOT Boost_FOUND)
         MESSAGE(STATUS "Boost minor version is greater than 34")
         SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system)
       ENDIF (34 LESS ${Boost_MINOR_VERSION})
-
-      IF(ZORBA_DEBUGGER)
-        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_thread)
-      ENDIF(ZORBA_DEBUGGER)
 
     ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
