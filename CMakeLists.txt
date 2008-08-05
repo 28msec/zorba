@@ -256,6 +256,13 @@ ELSE (NOT Boost_FOUND)
       IF(ZORBA_DEBUGGER)
 	      SET(requiredlibs-zorba ${requiredlibs-zorba} WSock32)
       ENDIF(ZORBA_DEBUGGER)
+      SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${Boost_DATE_TIME_LIBRARY})
+      SET(requiredlibs-zorba ${requiredlibs-zorba} ${Boost_PROGRAM_OPTIONS_LIBRARY})
+      SET(requiredlibs-simplestore ${requiredlibs-simplestore} ${Boost_PROGRAM_OPTIONS_LIBRARY})
+      SET(requiredlibs-apitest ${requiredlibs-apitest} ${Boost_DATE_TIME_LIBRARY})
+      SET(requiredlibs-testordpath ${requiredlibs-testordpath} ${Boost_DATE_TIME_LIBRARY})
+      SET(requiredlibs-testdriver ${requiredlibs-testdriver} ${Boost_DATE_TIME_LIBRARY})
+      SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} ${Boost_DATE_TIME_LIBRARY})
 
   	ENDIF (CYGWIN)
 
