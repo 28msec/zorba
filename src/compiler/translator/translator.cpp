@@ -35,6 +35,8 @@
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
+#include "context/internal_uri_resolvers.h"
+#include "context/standard_uri_resolvers.h"
 #include "types/node_test.h"
 #include "types/casting.h"
 #include "types/typeops.h"
@@ -2554,15 +2556,31 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   std::string pfx = v.get_prefix (), target_ns = v.get_uri ();
+
+  // The namespace prefix specified in a module import must not be xml or xmlns [err:XQST0070]
   if (pfx == "xml" || pfx == "xmlns")
     ZORBA_ERROR_LOC (XQST0070, loc);
+
+  // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
   if (target_ns.empty ())
     ZORBA_ERROR_LOC (XQST0088, loc);
+
+  // It is a static error [err:XQST0047] if more than one module import in a Prolog specifies the same target namespace
   if (! mod_import_ns_set.insert (target_ns).second)
     ZORBA_ERROR_LOC (XQST0047, loc);
 
-  if (! (pfx.empty () || (pfx == mod_pfx && target_ns == mod_ns)))
-    sctx_p->bind_ns(pfx, target_ns, XQST0033);
+  // The namespace prefix specified in a module import must not be the same as any namespace prefix bound 
+  // in the same module by another module import, 
+  // a schema import, a namespace declaration, or a module declaration with a different target namespace [err:XQST0033].
+  if (! (pfx.empty () || (pfx == mod_pfx && target_ns == mod_ns))) {
+    try {
+      sctx_p->bind_ns(pfx, target_ns, XQST0033);
+    } catch (error::ZorbaError& e) {
+      // rethrow with current location
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
+  }
+
   rchandle<URILiteralList> ats = v.get_uri_list ();
   // Handle pre-defined modules
   if (ats == NULL && zorba_predef_mod_ns.find (target_ns) != zorba_predef_mod_ns.end ())
@@ -2570,39 +2588,60 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   if (ats == NULL || ats->size () == 0)
     ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
+
+  InternalModuleURIResolver* lModuleResolver = sctx_p->get_module_uri_resolver();
+  bool isStandardResolver = dynamic_cast<StandardModuleURIResolver*>(lModuleResolver) != 0;
+
   for (int i = 0; i < ats->size (); i++) {
-    string aturi = sctx_p->resolve_relative_uri ((*ats) [i]);
+    
+    xqpStringStore_t resolveduri(sctx_p->resolve_relative_uri((*ats)[i]).getStore());
+    store::Item_t    aturiitem = NULL;
+    if (!GENV_ITEMFACTORY->createAnyURI(aturiitem, resolveduri))
+      ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << resolveduri);
+
     set<string> mod_stk1 = mod_stack;
-    if (! mod_stk1.insert (aturi).second)
+    if (! mod_stk1.insert (xqpString(resolveduri.getp())).second)
       ZORBA_ERROR_LOC (XQST0073, loc);
     
     string imported_ns;
     static_context *imported_sctx = NULL;
-    if (minfo->mod_ns_map.get (aturi, imported_ns)) {
-      bool found = minfo->mod_sctx_map.get (aturi, imported_sctx);
+    if (minfo->mod_ns_map.get (xqpString(resolveduri.getp()), imported_ns)) {
+      bool found = minfo->mod_sctx_map.get (xqpString(resolveduri.getp()), imported_sctx);
       ZORBA_ASSERT (found);
     } else {
-      ifstream modfile (URI::decode_file_URI (xqp_string (aturi).getStore ())->c_str ());
-      if (! modfile)
-        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
-      CompilerCB mod_ccb (*compilerCB);
-      static_context *independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
-      compilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = independent_sctx->create_child_context ());
-      mod_ccb.m_sctx->set_entity_retrieval_url (aturi);
-      minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx = independent_sctx->create_child_context ());
-      minfo->mod_sctx_map.put (aturi, imported_sctx);
-      XQueryCompiler xqc (&mod_ccb);
-      rchandle<parsenode> ast = xqc.parse (modfile);
-      LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
-      if (mod_ast == NULL)
-        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
-      imported_ns = mod_ast->get_decl ()->get_target_namespace ();
-      minfo->init_exprs.push_back (translate_aux (*ast, &mod_ccb, minfo, mod_stk1));
-      minfo->mod_ns_map.put (aturi, imported_ns);
+      // we get the ownership if the moduleResolver is a standard resolver
+      std::istream* modfile = lModuleResolver->resolve(aturiitem, sctx_p);
+
+      try {
+        if (! *modfile) {
+          ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+        }
+
+        CompilerCB mod_ccb (*compilerCB);
+        static_context *independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
+        compilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = independent_sctx->create_child_context ());
+        mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
+        minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx = independent_sctx->create_child_context ());
+        minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
+        XQueryCompiler xqc (&mod_ccb);
+        rchandle<parsenode> ast = xqc.parse (*modfile);
+
+        LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
+        if (mod_ast == NULL)
+          ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+        imported_ns = mod_ast->get_decl ()->get_target_namespace ();
+        minfo->init_exprs.push_back (translate_aux (*ast, &mod_ccb, minfo, mod_stk1));
+        minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
+
+      } catch (...) {
+        if (isStandardResolver) delete modfile;
+        throw;
+      }
+      if (isStandardResolver) delete modfile;
     }
 
     if (imported_ns != target_ns)
-      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, aturi, target_ns);
+      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
     // We catch duplicate functions / vars in minfo->globals.
     // We can safely ignore the return value. We might even be able
     // to assert() here (not sure though).

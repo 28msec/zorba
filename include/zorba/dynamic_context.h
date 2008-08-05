@@ -149,6 +149,15 @@ namespace zorba {
       virtual bool
       setDefaultCollection( const Item& aCollectionUri ) = 0;
 
+      /** \brief Return the value of the default collection that is used when calling the
+       *         fn:collection function without a parameter.
+       *
+       * @return Item the default collection that is set in this dynamic context.
+       * @throw ZorbaException if an error occured.
+       */
+      virtual Item
+      getDefaultCollection() = 0;
+
     protected:
       /** \brief Destructor
        *

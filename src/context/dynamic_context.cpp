@@ -251,12 +251,13 @@ store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) {
 }
 
 
-xqp_string dynamic_context::get_default_collection()
+store::Item_t
+dynamic_context::get_default_collection()
 {
 	return default_collection_uri;
 }
 
-void dynamic_context::set_default_collection(xqp_string default_collection_uri)
+void dynamic_context::set_default_collection(const store::Item_t& default_collection_uri)
 {
 	this->default_collection_uri = default_collection_uri;
 }

@@ -46,7 +46,7 @@ protected:
 	hashmap<dctx_value_t>   keymap;
   store::Item_t           current_date_time_item;
 	int			                implicit_timezone;
-	xqp_string		          default_collection_uri;  //default URI for fn:collection()
+  store::Item_t           default_collection_uri;  //default URI for fn:collection()
 
   store::Item_t		        ctxt_item;
 	unsigned long		        ctxt_position;
@@ -102,8 +102,8 @@ public:
 	void add_variable(xqp_string varname, store::Iterator_t var_iterator);
   store::Iterator_t	get_variable(store::Item_t);
 
-	xqp_string get_default_collection();
-	void set_default_collection(xqp_string default_collection_uri);
+  store::Item_t get_default_collection();
+	void set_default_collection(const store::Item_t& default_collection_uri);
 
 };
 

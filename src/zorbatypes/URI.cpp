@@ -733,7 +733,7 @@ URI::initializePath(const xqpString& uri)
   int lIndex = 0;
   int lStart = 0;
   int lEnd = uri.length();
-  char c;
+  char c = 0;
 
   // path - everything up to query string or fragment
   if ( lStart < lEnd ) {
@@ -755,7 +755,7 @@ URI::initializePath(const xqpString& uri)
           }
         } else if (!is_unreserved_char(c) && !is_path_character(c)) 
         {
-          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char in URI: " << c);
+          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char in URI: '" << c << "'");
         }
         ++lIndex;
       }
@@ -770,7 +770,7 @@ URI::initializePath(const xqpString& uri)
         if ( c == '%' ) {
           // TODO check errors
         } else if (!is_reservered_or_unreserved_char(c)) {
-          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char in URI " << c);
+          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char in URI '" << c << "'");
         }
         ++lIndex;
       }

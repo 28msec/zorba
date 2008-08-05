@@ -47,6 +47,7 @@ namespace zorba {
               static_context* aStaticContext);
 
     protected:
+      friend class StaticContextImpl;
       CollectionURIResolver* theColResolver;
   };
 
@@ -56,7 +57,7 @@ namespace zorba {
       SchemaURIResolverWrapper(SchemaURIResolver*);
       virtual ~SchemaURIResolverWrapper() {}
       
-      virtual std::istream* 
+      std::istream*
       resolve(const store::Item_t& aURI,
               const std::vector<store::Item_t>& aLocationHints,
               static_context* aStaticContext);
@@ -71,9 +72,8 @@ namespace zorba {
       ModuleURIResolverWrapper(ModuleURIResolver*);
       virtual ~ModuleURIResolverWrapper() {}
 
-      virtual std::istream* 
+      std::istream*
       resolve(const store::Item_t& aURI,
-              const std::vector<store::Item_t>& aLocationHints,
               static_context* aStaticContext);
 
     protected:

@@ -34,7 +34,7 @@ namespace zorba {
   static void
   handle_resolver_error(URIResolverResult* aResolverResult)
   {
-    XQUERY_ERROR lError;
+    XQUERY_ERROR lError = XQ_NO_ERROR;
     switch (aResolverResult->getError()) {
       case URIResolverResult::UR_FODC0002: lError = FODC0002; break;
       case URIResolverResult::UR_FODC0003: lError = FODC0003; break;
@@ -107,7 +107,7 @@ namespace zorba {
   SchemaURIResolverWrapper::SchemaURIResolverWrapper(SchemaURIResolver* aSchemaResolver)
     : theSchemaResolver(aSchemaResolver) {}
 
-  std::istream* 
+  std::istream*
   SchemaURIResolverWrapper::resolve(const store::Item_t& aURI,
                                     const std::vector<store::Item_t>& aLocationHints,
                                     static_context* aStaticContext)
@@ -142,20 +142,13 @@ namespace zorba {
 
   std::istream*
   ModuleURIResolverWrapper::resolve(const store::Item_t& aURI,
-                                    const std::vector<store::Item_t>& aLocationHints,
                                     static_context* aStaticContext)
   {
     StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
     Item               lURIItem(aURI.getp());  
-    std::vector<Item>  lLocationHints(aLocationHints.size());
-    for (std::vector<store::Item_t>::const_iterator lIter = aLocationHints.begin();
-         lIter != aLocationHints.end(); ++lIter) {
-      lLocationHints.push_back(Item((*lIter).getp()));
-    }
 
     // we have the ownership; it will be destroyed automatically once we leave this function
     std::auto_ptr<ModuleURIResolverResult> lResult = theModuleResolver->resolve(lURIItem, 
-                                                                                lLocationHints,
                                                                                 &lOuterStaticContext);
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {

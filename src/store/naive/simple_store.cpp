@@ -404,7 +404,7 @@ store::Item_t SimpleStore::loadDocument(
   root = loader->loadXml(uri, stream);
   if (lErrorManager.hasErrors()) 
   {
-    throw lErrorManager.getErrors().front();
+    ZORBA_ERROR(lErrorManager.getErrors().front().theErrorCode);
   }
 
   if (root != NULL)

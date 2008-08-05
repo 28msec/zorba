@@ -268,11 +268,10 @@ DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
 
     store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
     ZorbaImpl::checkItem(lItem);
-    xqpString     lString(lItem->getStringValue());
 
     SYNC_CODE(AutoMutex lock(theCloningMutexp);)
 
-    theCtx->set_default_collection(lString);
+    theCtx->set_default_collection(lItem);
     return true;
   }
   ZORBA_DCTX_CATCH
@@ -292,5 +291,15 @@ void DynamicContextImpl::checkNoIterators()
 }
 
 
+Item
+DynamicContextImpl::getDefaultCollection()
+{
+  ZORBA_DCTX_TRY
+  {
+    return &*theCtx->get_default_collection();
+  }
+  ZORBA_DCTX_CATCH
+  return Item();
+}
 
 } /* namespace zorba */

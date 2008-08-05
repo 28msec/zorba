@@ -300,6 +300,11 @@ namespace zorba {
       virtual DocumentURIResolver*
       getDocumentURIResolver() = 0;
 
+      virtual void
+      setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver) = 0;
+
+      virtual CollectionURIResolver*
+      getCollectionURIResolver() = 0;
   };
 
 } /* namespace zorba */

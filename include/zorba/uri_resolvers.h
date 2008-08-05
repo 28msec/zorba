@@ -33,10 +33,14 @@ namespace zorba {
       enum ErrorCode
       {
         UR_NOERROR,
+        // documents and collections
         UR_FODC0002,
         UR_FODC0003,
         UR_FODC0004,
-        UR_FODC0005
+        UR_FODC0005,
+        // modules
+        UR_XQST0088,
+        UR_XQST0046
       };
 
       URIResolverResult()
@@ -139,7 +143,6 @@ namespace zorba {
 
       virtual std::auto_ptr<ModuleURIResolverResult>
       resolve(const Item& aURI,
-              const std::vector<Item>& aLocationHints,
               StaticContext* aStaticContext) = 0;
   };
 

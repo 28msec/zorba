@@ -44,26 +44,13 @@ namespace zorba {
 
     store::Store& lStore = GENV.getStore();
 
-    // maybe the document is stored with the uri that is given by the user
-    lResultDoc = lStore.getDocument(lUriString);
-    if (lResultDoc != NULL)
-      return lResultDoc;
+    xqpString lURIString = xqpString(&*aURI->getStringValue());
+    URI lURI(lURIString);
 
-    // check and eventually resolve URI
-    // throw FODC0005 if the URI is not valid
-    URI lURI;
-    try {
-      URI lBaseURI(aStaticContext->final_baseuri());
-      lURI = URI(lBaseURI, &*lUriString); 
-    } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_DESC_OSS(FODC0005, "URI " << lUriString << " is not valid or could not be resolved. Reason: " 
-                           << e.theDescription);
-    }
-
-    // try to get it from the store again
     lResultDoc = lStore.getDocument(lURI.get_uri_text().getStore());
     if (lResultDoc != NULL)
       return lResultDoc;
+
 
     if (lURI.get_scheme() == "file") {
 #ifdef ZORBA_WITH_FILE_ACCESS // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
@@ -115,23 +102,59 @@ namespace zorba {
   StandardCollectionURIResolver::resolve(const store::Item_t& aURI,
           static_context* aStaticContext)
   {
-    return NULL;
+    store::Collection_t lResultCol;
+
+    xqpStringStore_t lUriString = aURI->getStringValue();
+
+    store::Store& lStore = GENV.getStore();
+
+    // maybe the document is stored with the uri that is given by the user
+    lResultCol = lStore.getCollection(lUriString);
+    if (lResultCol != NULL)
+      return lResultCol;
+
+    // check and eventually resolve URI
+    // throw FODC0004 if the URI is not valid
+    URI lURI;
+    try {
+      lURI = URI(&*lUriString);
+      if (!lURI.is_absolute()) {
+        URI lBaseURI(aStaticContext->final_baseuri());
+        lURI = URI(lBaseURI, &*lUriString); 
+      }
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_DESC_OSS(FODC0004, "URI " << lUriString << " is not valid or could not be resolved. Reason: " 
+                           << e.theDescription);
+    }
+
+    // try to get it from the store again
+    lResultCol = lStore.getCollection(lURI.get_uri_text().getStore());
+    return lResultCol;
   }
 
-  std::istream* 
+  std::istream*
   StandardSchemaURIResolver::resolve(const store::Item_t& aURI,
           const std::vector<store::Item_t>& aLocationHints,
           static_context* aStaticContext)
   {
-    return 0;
+    xqpStringStore_t lResolvedURI = aURI->getStringValue();
+    std::auto_ptr<std::istream> schemafile(
+      new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
+
+    // we transfer ownership to the caller
+    return schemafile.release();
   }
 
   std::istream*
   StandardModuleURIResolver::resolve(const store::Item_t& aURI,
-          const std::vector<store::Item_t>& aLocationHints,
           static_context* aStaticContext)
   {
-    return 0;
+    xqpStringStore_t lResolvedURI = aURI->getStringValue();
+    std::auto_ptr<std::istream> modfile(
+      new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
+
+    // we transfer ownership to the caller
+    return modfile.release();
   }
 
 } /* namespace zorba */

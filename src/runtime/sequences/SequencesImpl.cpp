@@ -1503,20 +1503,38 @@ FnDocIterator::~FnDocIterator()
 
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t                uriItem;
+  store::Item_t     uriItem;
+  xqpString         uriString;
+  xqpStringStore_t  resolvedURIString;
+  store::Item_t     resolvedURIItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(uriItem, theChild.getp(), planState)) {
 
+    uriString = uriItem->getStringValueP();
+
     try {
-      result = planState.sctx()->get_document_uri_resolver()->resolve(uriItem, planState.sctx()); 
+      // maybe the document is stored with the uri that is given by the user
+      result = GENV_STORE.getDocument(uriString.getStore());
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
+    if (result != NULL) {
+      STACK_PUSH(true, state);
+    } else {
+      try {
+        resolvedURIString = planState.sctx()->resolve_relative_uri(uriString).getStore(); 
+        GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+        result = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, 
+                                                                        planState.sctx());
+      } catch (error::ZorbaError& e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
 
-    STACK_PUSH(true, state);
+      STACK_PUSH(true, state);
+    }
 
   } // return empty sequence if input is the empty sequence
   STACK_END (state);

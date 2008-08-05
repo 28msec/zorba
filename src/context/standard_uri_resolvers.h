@@ -45,7 +45,7 @@ namespace zorba {
     public:
       virtual ~StandardSchemaURIResolver() {}
       
-      virtual std::istream* 
+      virtual std::istream*
       resolve(const store::Item_t& aURI,
               const std::vector<store::Item_t>& aLocationHints,
               static_context* aStaticContext);
@@ -58,8 +58,8 @@ namespace zorba {
 
       virtual std::istream*
       resolve(const store::Item_t& aURI,
-              const std::vector<store::Item_t>& aLocationHints,
               static_context* aStaticContext);
+              
   };
 
 } /* namespace zorba */

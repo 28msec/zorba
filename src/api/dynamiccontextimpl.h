@@ -113,6 +113,9 @@ public:
   virtual bool
   setDefaultCollection( const Item& aCollectionUri );
 
+  virtual Item
+  getDefaultCollection();
+
 protected:
   void checkNoIterators();
 };

@@ -23,7 +23,10 @@
 #include "runtime/context/ContextImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
+
 #include "context/dynamic_context.h"
+#include "context/static_context.h"
+#include "context/internal_uri_resolvers.h"
 #include "context/namespace_context.h"
 
 #include "store/api/store.h"
@@ -188,28 +191,26 @@ FnCollectionIteratorState::reset(PlanState& planState)
 
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       itemArg;
-  xqp_string          uri;
+  store::Item_t       lURI;
   store::Collection_t theColl;
   
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
 
-  if (theChildren.size() == 1 && consumeNext(itemArg, theChildren[0].getp(), planState)) 
-    uri = itemArg->getStringValue().getp();
-  else
-  {
-    uri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(uri.empty())
+  if (theChildren.size() == 1 && consumeNext(lURI, theChildren[0].getp(), planState)) {
+  } else {
+    lURI = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(lURI->getStringValue()->empty())
       ZORBA_ERROR_LOC_DESC(FODC0002, loc,
                            "Default collection is undefined in the dynamic context.");
   }
 
-  theColl = GENV_STORE.getCollection(uri.getStore());
+  theColl =  planState.sctx()->get_collection_uri_resolver()->resolve(lURI, planState.sctx()); 
 
   if(theColl == NULL)
-    ZORBA_ERROR_LOC_DESC(FODC0004, loc, "Invalid argument to fn:collection.");
+    ZORBA_ERROR_LOC_DESC_OSS(FODC0004, loc, "The collection could not be found: " << lURI->getStringValue());
 
+  /** return the nodes of the collection */
   state->theIterator = theColl->getIterator(false);
   ZORBA_ASSERT(state->theIterator!=NULL);
   state->theIterator->open();

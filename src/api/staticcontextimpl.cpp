@@ -485,4 +485,25 @@ StaticContextImpl::getDocumentURIResolver()
   return 0;
 }
 
+
+void
+StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver)
+{
+  try {
+    theCtx->set_collection_uri_resolver(new CollectionURIResolverWrapper(aCollectionUriResolver));
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+CollectionURIResolver*
+StaticContextImpl::getCollectionURIResolver()
+{
+  CollectionURIResolverWrapper* lWrapper = dynamic_cast<CollectionURIResolverWrapper*>(theCtx->get_collection_uri_resolver());
+  if (lWrapper) { // if it's the user's resolver
+    return lWrapper->theColResolver;
+  }
+  return 0;
+}
+
 } /* namespace zorba */
