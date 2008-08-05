@@ -39,8 +39,8 @@ namespace zorba {
         UR_FODC0004,
         UR_FODC0005,
         // modules
-        UR_XQST0088,
-        UR_XQST0046
+      //UR_XQST0088,
+      //UR_XQST0046
       };
 
       URIResolverResult()
