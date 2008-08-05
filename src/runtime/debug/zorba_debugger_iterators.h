@@ -27,12 +27,12 @@
 namespace zorba {
 
 typedef rchandle<var_expr> var_expr_t;
-class ZorbaDebuggerImpl;
+class ZorbaDebugger;
 
 class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorState>
 {
 protected:
-  ZorbaDebuggerImpl *  theDebugger;
+  ZorbaDebugger *theDebugger;
   checked_vector<store::Item_t> varnames;
   checked_vector<std::string> var_keys;  
   checked_vector<xqtref_t> vartypes;

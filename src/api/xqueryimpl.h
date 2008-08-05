@@ -28,9 +28,11 @@
 #include "common/shared_types.h" 
 #include "compiler/api/compilercb.h"
 
-
 namespace zorba {
 
+#ifdef ZORBA_DEBUGGER
+class ZorbaDebugger;
+#endif
   class DynamicContextImpl;
   class StaticContextImpl;
   class ResultIteratorImpl;
@@ -249,6 +251,24 @@ class XQueryImpl : public XQuery
   void
   checkNotCompiled() const;
 
+#ifdef ZORBA_DEBUGGER
+ private:
+  ZorbaDebugger *theDebugger;
+ 
+ protected:
+  void
+  checkIsDebugMode() const;
+
+ public:
+  void
+  setDebugMode( bool aDebugMode );
+
+  bool
+  getDebugMode() const;
+
+  void
+  debug( unsigned short aCommandPort, unsigned short anEventPort );
+#endif
 }; /* class XQueryImpl */
 
 

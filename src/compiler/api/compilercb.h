@@ -17,10 +17,14 @@
 #define XQP_COMPILERCB_H
 
 #include <vector>
+
 #include "common/shared_types.h"
 
 namespace zorba {
-  
+
+#ifdef ZORBA_DEBUGGER
+class ZorbaDebugger;
+#endif
 class static_context;
 
 
@@ -57,6 +61,9 @@ class CompilerCB
   std::vector<static_context_t> m_sctx_list;     
   error::ErrorManager*          m_error_manager;
   config_t                      m_config;
+#ifdef ZORBA_DEBUGGER
+  ZorbaDebugger*                m_debugger;
+#endif
 };
 
 } /* namespace zorba */

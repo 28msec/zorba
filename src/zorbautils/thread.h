@@ -20,9 +20,9 @@
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
-#define THREAD_RETURN_TYPE void *
+#define ZORBA_THREAD_RETURN void *
 #else
-#define THREAD_RETURN_TYPE DWORD WINAPI
+#define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
 
 namespace zorba {

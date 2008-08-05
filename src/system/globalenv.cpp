@@ -79,17 +79,11 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_compilerSubSys = XQueryCompilerSubsystem::create();
 
-#ifdef ZORBA_DEBUGGER
-  m_globalEnv->m_debugger = new ZorbaDebuggerImpl();
-#endif
 }
 
 
 void GlobalEnvironment::destroy()
 {
-#ifdef ZORBA_DEBUGGER
-  delete m_globalEnv->m_debugger;
-#endif
   // terminate Xerces-C lib
   Schema::terminate();
 
@@ -162,12 +156,5 @@ XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 {
   return *m_compilerSubSys;
 }
-
-#ifdef ZORBA_DEBUGGER
-ZorbaDebuggerImpl* GlobalEnvironment::getDebugger()
-{
-  return m_debugger;
-}
-#endif
 /* vim:set ts=2 sw=2: */
 

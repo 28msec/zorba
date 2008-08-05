@@ -30,10 +30,6 @@
 #include "system/globalenv.h"
 #include "context/static_context.h"
 
-#ifdef ZORBA_DEBUGGER
-#include "debugger/debugger_serverimpl.h"
-#endif
-
 namespace zorba {
 
 
@@ -233,16 +229,6 @@ ZorbaImpl::getXmlDataManager()
 {
   return XmlDataManagerImpl::getInstance();
 }
-
-/*******************************************************************************
-
-********************************************************************************/
-#ifdef ZORBA_DEBUGGER
-ZorbaDebugger* ZorbaImpl::getDebugger()
-{
-  return GlobalEnvironment::getInstance().getDebugger();
-}
-#endif
 
 /*******************************************************************************
   Convert an internal zorba error obj to a c++ api exception obj, and then

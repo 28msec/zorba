@@ -15,7 +15,6 @@
 
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 
-
 SET (API_EXAMPLES
 	simple.cpp
   sax2.cpp
@@ -26,6 +25,10 @@ SET (API_EXAMPLES
   external_functions.cpp
   datamanager.cpp
   uri_resolvers.cpp)
+
+IF (ZORBA_DEBUGGER)
+  SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)
+ENDIF (ZORBA_DEBUGGER)
 
 CREATE_TEST_SOURCELIST(examples
 	examples.cpp

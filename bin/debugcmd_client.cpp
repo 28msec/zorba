@@ -101,6 +101,8 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
   update_location();
   std::string lLine;
   unsigned int lLineNo = 0;
+  std::string::iterator lIterator;
+  unsigned int i = 0;
   std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile.get() );
   if ( lFile != 0 )
   {
@@ -116,7 +118,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
     std::getline( *theQueryFile, lLine, '\n');
     if ( (lLineNo >= aBegin && lLineNo <= anEnd) || listAll )
     {
-      if ( lLineNo == theLocation->getLineBegin() )
+      if ( lLineNo >= theLocation->getLineBegin() && lLineNo <= theLocation->getLineEnd() )
       {
 #ifdef WIN32
         HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -127,7 +129,19 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         theOutput << lLineNo << '\t' << lLine <<  std::endl;
         SetConsoleTextAttribute(lConsole, saved_configuration);
 #else
-        //theOutput << "\033[1m" << lLineNo << "\033[0m\t" << 
+        //TODO: useless with the query location bug
+	//theOutput << "\033[1m" << lLineNo << "\033[0m\t";
+        //for ( lIterator = lLine.begin(); lIterator != lLine.end(); ++lIterator )
+        //{
+        //  i++;
+        //  if ( i >= theLocation->getColumnBegin() && i <= theLocation->getColumnEnd() )
+        //  {
+        //    theOutput << "\033[1m" << *lIterator << "\033[0m";
+        //  } else {
+        //    theOutput << *lIterator;
+        //  } 
+        //} 
+        //theOutput << std::endl; 
         theOutput << "\033[1m" << lLineNo << '\t' << lLine << "\033[0m" << std::endl;
 #endif
      } else {
@@ -255,11 +269,11 @@ void CommandLineEventHandler::handle_cmd()
     } else if ( lCommand == "s" || lCommand == "stop" ) {
       theClient->terminate();
     }else if ( lCommand == "cl" || lCommand == "clear" ) {
-      if ( lArgs.size() > 2 && lArgs.at(1) == "all" )
+      if ( lArgs.size() >= 2 && lArgs.at(1) == "all" )
       {
         theClient->clearBreakpoints();
         theOutput << "All breakpoints have been cleared." << std::endl;
-      } else if ( atoi(lArgs.at(1).c_str()) != 0 ) {
+      } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) != 0 ) {
         bool lResult = theClient->clearBreakpoint( atoi(lArgs.at(1).c_str()) );
         if ( lResult )
         {
@@ -354,9 +368,17 @@ void CommandLineEventHandler::handle_cmd()
           list();
        }
     } else if( lCommand == "var" || lCommand == "vars" || lCommand == "variables" ) {
-      std::list<Variable> list = theClient->getAllVariables();
+      
+      std::list<Variable> global = theClient->getGlobalVariables();
       std::list<Variable>::iterator it;
-      for ( it = list.begin(); it != list.end(); it++ )
+      theOutput << "Global variables:" << std::endl;
+      for ( it = global.begin(); it != global.end(); it++ )
+      {
+        theOutput << "$" << it->getName() << " " << it->getType() << std::endl;
+      }
+      theOutput << std::endl << "Local variables:" << std::endl;
+      std::list<Variable> locals = theClient->getLocalVariables();
+      for ( it = locals.begin(); it != locals.end(); it++ )
       {
         theOutput << "$" << it->getName() << " " << it->getType() << std::endl;
       }

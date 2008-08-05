@@ -53,6 +53,9 @@
 #include "store/api/item.h"
 #include "store/api/store.h"
 
+#ifdef ZORBA_DEBUGGER
+#include "debugger/debugger_server.h"
+#endif
 
 namespace zorba {
 
@@ -74,6 +77,9 @@ XQueryImpl::XQueryImpl()
   theUserErrorHandler(false),
   theSAX2Handler(0),
   theIsClosed(false)
+#ifdef ZORBA_DEBUGGER
+  , theDebugger(0)
+#endif
 { 
   theCompilerCB = new CompilerCB();
 
@@ -113,6 +119,10 @@ XQueryImpl::close()
       ZORBA_ERROR(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS);
 
     thePlan = 0;
+
+#ifdef ZORBA_DEBUGGER
+    delete theDebugger;
+#endif
 
     delete theErrorManager;
 
@@ -432,7 +442,11 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
   theStaticContext->set_entity_retrieval_url (xqp_string (&*URI::encode_file_URI (theFileName)));
 
   theCompilerCB->m_sctx = theStaticContext;
-  
+
+#ifdef ZORBA_DEBUGGER
+  theCompilerCB->m_debugger = theDebugger;
+#endif
+
   // set the compiler config
   theCompilerCB->m_config = getCompilerConfig(aHints);
 
@@ -651,6 +665,47 @@ XQueryImpl::checkNotCompiled() const
   }
 }
 
+#ifdef ZORBA_DEBUGGER
+void XQueryImpl::setDebugMode( bool aDebugMode )
+{
+  //check if the query is not compiled already
+  checkNotCompiled();
+  if ( aDebugMode && theDebugger == 0 )
+  {
+    theDebugger = new ZorbaDebugger(); 
+  } else if ( ! aDebugMode ) {
+    delete theDebugger;
+  }
+}
+
+bool XQueryImpl::getDebugMode() const
+{
+  if ( theDebugger == 0 )
+  {
+    return false;
+  }
+  return true;
+}
+
+void XQueryImpl::checkIsDebugMode() const
+{
+  if ( theDebugger == 0 )
+  {
+    ZORBA_ERROR_DESC( API0032_QUERY_NOT_COMPILED_IN_DEBUG_MODE,
+                      "Can't perform the operation because the debug mode is not set to true");
+  }
+}
+
+void XQueryImpl::debug( unsigned short aCommandPort, unsigned short anEventPort )
+{
+  //check if the query is compiled and not closed
+  checkCompiled();
+  checkNotClosed();
+  //check if the debug mode is enabled
+  checkIsDebugMode();
+  theDebugger->start( this, aCommandPort, anEventPort );
+}
+#endif
 
 std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)
 {

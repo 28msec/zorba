@@ -54,8 +54,7 @@ namespace zorba{
 
   ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
   {
-    //TODO: join or terminate the thread ?
-    theEventListener->join();
+    delete theEventListener;
     delete theRequestSocket;
     delete theEventServerSocket;
   }
@@ -90,10 +89,10 @@ namespace zorba{
     }
   }
 
-  THREAD_RETURN_TYPE listenEvents( void * aClient )
+  ZORBA_THREAD_RETURN listenEvents( void * aClient )
   {
     ZorbaDebuggerClientImpl * lClient = (ZorbaDebuggerClientImpl *) aClient;
-#ifndef NDEBUG
+#if 0
     std::clog << "[Client Thread] start event listener thread" << std::endl;
     std::clog << "[Client Thread] wait for the event client to connect" << std::endl;
 #endif
@@ -107,7 +106,7 @@ namespace zorba{
       EvaluatedEvent  *lEvaluatedEvent;
       if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage ) ) )
       {
-#ifndef NDEBUG
+#if 0
         std::clog << "[Client Thread] received a suspended event" << std::endl;
 #endif
         lClient->theExecutionStatus = QUERY_SUSPENDED;
@@ -118,7 +117,7 @@ namespace zorba{
           lClient->theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
         }
       } else if ( dynamic_cast< StartedEvent * > ( lMessage ) ) {
-#ifndef NDEBUG
+#if 0
         std::clog << "[Client Thread] receive a started event" << std::endl;
 #endif
         lClient->theExecutionStatus = QUERY_RUNNING;
@@ -127,7 +126,7 @@ namespace zorba{
           lClient->theEventHandler->started();
         }
       } else if ( dynamic_cast< ResumedEvent * > ( lMessage ) ) {
-#ifndef NDEBUG
+#if 0
         std::clog << "[Client Thread] receive a resumed event" << std::endl;
 #endif
         lClient->theExecutionStatus = QUERY_RUNNING;
@@ -136,7 +135,7 @@ namespace zorba{
           lClient->theEventHandler->resumed();
         }
       } else if ( dynamic_cast< TerminatedEvent * > ( lMessage ) ) {
-#ifndef NDEBUG
+#if 0
         std::clog << "[Client Thread] receive a suspended event" << std::endl;
 #endif
         if( lClient->theExecutionStatus != QUERY_IDLE )
@@ -148,7 +147,7 @@ namespace zorba{
           }
         }
       } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >(lMessage))) {
-#ifndef NDEBUG
+#if 0
         std::clog << "[Client Thread] evaluated expression" << std::endl;
 #endif
         if ( lClient->theEventHandler )
@@ -163,7 +162,7 @@ namespace zorba{
       delete lMessage;
     }
     delete lSocket;
-#ifndef NDEBUG
+#if 0
     std::clog << "[Client Thread] end of the event listener thread" << std::endl;
 #endif
     return 0;

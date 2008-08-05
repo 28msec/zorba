@@ -36,9 +36,7 @@
 #include <zorba/default_error_handler.h>
 #include <zorba/collection.h>
 #include <zorba/options.h>
-#ifdef ZORBA_DEBUGGER
-#include <zorba/debugger_server.h>
-#endif
+
 namespace zorba {
 
   /**
@@ -324,16 +322,6 @@ namespace zorba {
        */
       static const Version&
       version();
-
-#ifdef ZORBA_DEBUGGER
-      /*8 \brief Get the singleton instance of Zorba debugger.
-       *
-       * @return ZorbaDebugger the singleton instance of the ZorbaDebugger
-       */
-      virtual ZorbaDebugger*
-      getDebugger() = 0;
-#endif
-
   }; /* class Zorba */
 
 } /* namespace zorba */

@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "zorbautils/thread.h"
 
 #include <iostream>
+
+#include <zorba/error.h>
+#include <zorbaerrors/errors.h>
+#include <zorbaerrors/error_manager.h>
 
 namespace zorba {
 
@@ -33,7 +38,7 @@ Thread::Thread( DWORD ( WINAPI *aFunction ) ( void *anArg ), void *anArg )
     if ( (theThread = CreateThread( 0, 0, aFunction, anArg, 0, 0 ) ) == 0 )
 #endif
     {
-      //TODO: zorba error
+      ZORBA_ERROR_DESC( XQP0026_COULD_NOT_CREATE_THREAD, "Could not create the thread" );
     }
 }
     

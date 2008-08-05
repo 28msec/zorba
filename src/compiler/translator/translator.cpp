@@ -1522,7 +1522,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   int i, j;
 #ifdef ZORBA_DEBUGGER
   expr_t lReturnExpr;
-  if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
+  if ( compilerCB->m_debugger != 0 )
   {
     rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, pop_nodestack(),
                                                               theScopedVariables,
@@ -2206,7 +2206,13 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         ZORBA_ASSERT(arg_var != NULL);
         args.push_back(arg_var);
       }
-
+#ifdef ZORBA_DEBUGGER
+      //if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
+      //{
+      //  rchandle<debugger_expr> lDebuggerExpr = new debugger_expr( loc, body, theGlobalVars );
+      //  body = lDebuggerExpr;
+      //}
+#endif
       flwor->set_retval(body);
       body = &*flwor;
     }
@@ -2444,8 +2450,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       fo_h->add(*iter);
     }
 #ifdef ZORBA_DEBUGGER
+  if ( compilerCB->m_debugger != 0 )
+  {
     rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, &*fo_h, theScopedVariables, theGlobalVars);
     nodestack.push(&*lDebuggerExpr);
+  } else {
+    nodestack.push(&*fo_h);
+  }
 #else
     nodestack.push(&*fo_h);
 #endif

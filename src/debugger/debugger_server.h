@@ -21,7 +21,8 @@
 #include <memory>
 #include <string>
 #include <map>
-#include <zorba/zorba.h>
+
+#include "api/xqueryimpl.h"
 
 #include "debugger/debugger_common.h"
 
@@ -44,27 +45,23 @@ class ResumeExecutionMessage;
 class TerminateExecutionMessage;
 class StepExecutionMessage;
 
-THREAD_RETURN_TYPE runQuery( void *aQuery );
+ZORBA_THREAD_RETURN runQuery( void *aQuery );
+
 /**
  * @
  */
-class ZorbaDebuggerImpl: public ZorbaDebugger
+class ZorbaDebugger
 {
-
   public:
-    ZorbaDebuggerImpl():
-      theZorba(0),
-      theDebugMode( false ),
+    ZorbaDebugger():
+      theQuery(0),
       theRequestServerSocket(0), 
       theEventSocket(0), 
       theStatus( QUERY_IDLE  ),
-      theQuery(0),
-      theFileName(""),
       thePlanState(0),
       theRuntimeThread(0){}
 
-
-    virtual ~ZorbaDebuggerImpl();
+    virtual ~ZorbaDebugger();
 
     void runQuery();
     
@@ -72,48 +69,42 @@ class ZorbaDebuggerImpl: public ZorbaDebugger
 
     const QueryLoc getLocation() const { return theLocation; }
 
-    bool isEnabled() const;
-
-    void start( void * aStore,
-                std::auto_ptr<std::istream> *aQuery,
-                std::string &aFileName,
+    void start( XQueryImpl *aQuery,
                 unsigned short aRequestPort = 8000,
                 unsigned short aEventPort = 9000 );
 
   protected:
-    
-    friend class ZorbaDebugger;
     friend class FnDebugIterator;
    
-    Zorba* theZorba;
+    XQueryImpl *theQuery;
 
-    bool theDebugMode;
-    
     TCPServerSocket* theRequestServerSocket;
 
     TCPSocket* theEventSocket;
 
+    //The event port number
     unsigned short theEventPortno;
 
+    //The execution status
     ExecutionStatus theStatus;
 
-    std::auto_ptr<std::istream> *theQuery;
-
-    std::string theFileName;
-
+    //Last known location of the query
     QueryLoc theLocation;
 
+    //The following attributes are used for the eval function
     PlanState * thePlanState;
-
+    
     checked_vector<store::Item_t>  theVarnames;
     checked_vector<std::string>    theVarkeys;
     checked_vector<xqtref_t>       theVartypes;
     checked_vector<PlanIter_t>     theChildren;
     checked_vector<global_binding> theGlobals;
 
+    //Map of breakpoints and watchpoints
     std::map<unsigned int, QueryLoc> theBreakpoints;
     std::map<unsigned int, xqpString> theWatchpoints;
 
+    //The runtime thread
     Thread * theRuntimeThread;
 
     bool hasToSuspend();

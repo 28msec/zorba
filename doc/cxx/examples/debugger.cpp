@@ -14,33 +14,143 @@
  * limitations under the License.
  */
 
+#include <iostream>
+#include <cassert>
 #include <zorba/zorba.h>
-#include <debugger/debugger_server.h>
+#include <zorba/debugger_client.h>
+#include <zorba/debugger_default_event_handler.h>
+#include <simplestore/simplestore.h>
+#include <zorbautils/thread.h>
+#include <zorbaerrors/errors.h>
+#ifdef WIN32
+#include <windows.h>
+#define sleep(s) Sleep(s*1000)
+#endif
 
 using namespace zorba;
 
-bool example_1(Zorba *aZorba)
+class MyDebuggerEventHandler: public DefaultDebuggerEventHandler
 {
-  ZorbaDebugger lDebugger( 8000, 9000 );
+  public:
+    virtual ~MyDebuggerEventHandler(){}
+
+    void started()
+    {
+      std::cerr << "Query started" << std::endl;
+    }
+
+    void idle()
+    {
+      std::cerr << "Query idle" << std::endl;
+    }
+
+    void suspended( QueryLocation &aLocation, SuspendedBy aCause )
+    {
+      std::cerr << "Suspended at line: " << aLocation.getLineBegin(); 
+    }
+
+    void resumed()
+    {
+      std::cerr << "Query resumed" << std::endl; 
+    }
+
+    void terminated()
+    {
+      std::cerr << "Query terminated" << std::endl; 
+    }
+
+    void evaluated( String &anExpr, String &aResult, String &aReturnType, String &anError )
+    {
+      if ( anError == "" )
+      {
+        std::cerr << anExpr << ": " << aResult << std::endl;
+      } else {
+        std::cerr << anError << std::endl;
+      }
+    }
+};
+
+ZORBA_THREAD_RETURN runClient( void* )
+{
+  sleep(3);
+  MyDebuggerEventHandler lEventHandler;
+  ZorbaDebuggerClient * lClient = ZorbaDebuggerClient::createClient( 8000, 9000 );
+  lClient->registerEventHandler( &lEventHandler );
+  lClient->run();
+  sleep(1);
+  lClient->quit();
+  delete lClient;
+  return 0;
+}
+
+bool debugger_example_1(Zorba *aZorba)
+{
   XQuery_t lQuery = aZorba->createQuery();
-  lQuery->attach(&lDebugger);
-  lQuery->setFileName("foo.xq");
-  lQuery->compile("1+2");
-  std::cout << lQuery << std::endl;
+  lQuery->setDebugMode(true);
+  lQuery->compile("for $i in ( 1 to 10 ) return $i");
+  lQuery->debug();
+  lQuery->close();
   return true;
+}
+
+bool debugger_example_2(Zorba *aZorba)
+{
+  XQuery_t lQuery = aZorba->createQuery();
+  lQuery->setFileName("foo.xq");
+  lQuery->setDebugMode(true);
+  assert(lQuery->getDebugMode());
+  lQuery->compile("1+2");
+  lQuery->debug( 8000, 9000 );
+  lQuery->close();
+  return true;
+}
+
+bool debugger_example_3(Zorba *aZorba)
+{
+  try
+  {
+    XQuery_t lQuery = aZorba->createQuery();
+    lQuery->compile("1+2");
+    lQuery->debug();
+    lQuery->close();
+  } catch( error::ZorbaError &e ) {
+    return true;
+  }
+  return false;
 }
 
 int debugger( int argc, char *argv[] )
 {
-  simplestore::SimpleStore *lStore = simplestore::SimpleStore::getStore();
+  simplestore::SimpleStore *lStore = simplestore::SimpleStoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance( lStore );
   bool res = false;
-  
-  std::cout << "executing example 1" << std::endl;
-  res = example_1(lZorba);
-  if ( !res ) return 1;
-  std::cout << std::endl;
+  {
+    Thread lThread(runClient, 0); 
+    std::cout << "executing example 1" << std::endl;
+    res = debugger_example_1(lZorba);
+    lThread.join();
+    if ( !res ) return 1;
+    std::cout << std::endl;
+  }
 
+  {
+    Thread lThread(runClient, 0);
+    std::cout << "executing example 2" << std::endl;
+    res = debugger_example_2(lZorba);
+    lThread.join();
+    if ( !res ) return 1;
+    std::cout << std::endl;
+  }
+ 
+  {
+    std::cout << "executing example 3" << std::endl;
+    res = debugger_example_3(lZorba);
+    if ( !res ) return 1;
+    std::cout << std::endl;
+  }
+
+  lZorba->shutdown();
+  simplestore::SimpleStoreManager::shutdownStore(lStore);
   return 0;
 }
 

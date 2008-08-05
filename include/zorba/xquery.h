@@ -286,6 +286,32 @@ namespace zorba {
       virtual XQuery_t
       clone() const = 0;
 
+#ifdef ZORBA_DEBUGGER
+      /** \brief Enable/disable debug mode on the query
+       *
+       */
+      virtual void
+      setDebugMode( bool aDebugMode ) = 0;
+
+      /** \brief Return true if the debug mode is enabled, false otherwise
+       *
+       */
+      virtual bool
+      getDebugMode() const = 0;
+
+      /** \brief Run the query with the debugger server.
+       *
+       * This method run the query with the debugger server.
+       * This method is blocking up until a debugger client connects to this
+       * server and decided to end the server. In order to call this method, the
+       * query has to be compiled.
+       *
+       * @param aCommandPort the port used to received commands from the client.
+       * @param anEventPort the port used to send events to the client.
+       */
+      virtual void
+      debug( unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000 ) = 0;
+#endif
   };
 
   // xml serialization of the query (equiv to calling serialize(os) 

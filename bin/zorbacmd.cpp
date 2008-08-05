@@ -58,14 +58,20 @@ struct server_args
   unsigned short theEventPort;
 };
 
-THREAD_RETURN_TYPE server( void * args)
+ZORBA_THREAD_RETURN server( void * args)
 {
   server_args * lArgs = (server_args*)args;
   try
   {
     zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
-    zorba::ZorbaDebugger * lDebugger = zorba::Zorba::getInstance(lStore)->getDebugger();
-    lDebugger->start( lStore, lArgs->theQuery, *lArgs->theFileName, lArgs->theRequestPort, lArgs->theEventPort );
+    zorba::Zorba *lZorba = zorba::Zorba::getInstance(lStore);
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->setFileName(*lArgs->theFileName);
+    lQuery->setDebugMode(true);
+    Zorba_CompilerHints lHints;
+    lHints.opt_level = ZORBA_OPT_LEVEL_O0;
+    lQuery->compile(*lArgs->theQuery->get(), lHints);
+    lQuery->debug();
   } catch( std::exception &e ) {
     std::cout << e.what() << std::endl;
     exit(7);

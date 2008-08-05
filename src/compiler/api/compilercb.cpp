@@ -23,8 +23,11 @@ namespace zorba {
 
 CompilerCB::CompilerCB()
   :
-  m_sctx(NULL),
-  m_error_manager(NULL)
+#ifdef ZORBA_DEBUGGER
+  m_debugger(0),
+#endif
+  m_sctx(0),
+  m_error_manager(0)
 {
 }
 

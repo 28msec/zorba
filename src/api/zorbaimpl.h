@@ -138,9 +138,6 @@ class ZorbaImpl : public Zorba
   XmlDataManager*
   getXmlDataManager();
 
-#ifdef ZORBA_DEBUGGER
-  ZorbaDebugger* getDebugger();
-#endif
  protected:
   ZorbaImpl();
 

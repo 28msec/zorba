@@ -36,12 +36,12 @@ namespace zorba{
   class TCPSocket;
   class TCPServerSocket;
 
-  THREAD_RETURN_TYPE listenEvents( void * aClient );
+  ZORBA_THREAD_RETURN listenEvents( void * aClient );
 
   class ZorbaDebuggerClientImpl: public ZorbaDebuggerClient
   {
     friend
-    THREAD_RETURN_TYPE listenEvents( void * aClient );
+    ZORBA_THREAD_RETURN listenEvents( void * aClient );
 
     public:
       ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno );

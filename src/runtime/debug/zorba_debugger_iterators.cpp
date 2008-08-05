@@ -19,8 +19,10 @@
 #include <iostream>
 #include <sstream>
 
+#include <zorbautils/thread.h>
+
 #include "system/globalenv.h"
-#include "zorbautils/thread.h"
+#include "debugger/debugger_server.h"
 
 using namespace std;
 
@@ -44,14 +46,13 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
 
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
-    theDebugger->thePlanState = &planState;
-    theDebugger->theVarnames = varnames;
-    theDebugger->theVarkeys = var_keys;
-    theDebugger->theVartypes = vartypes;
-    theDebugger->theGlobals  = globals;
-    theDebugger->theChildren = theChildren;
-
     while ( consumeNext( result, theChildren[0], planState ) ) {
+      theDebugger->thePlanState = &planState;
+      theDebugger->theVarnames = varnames;
+      theDebugger->theVarkeys = var_keys;
+      theDebugger->theVartypes = vartypes;
+      theDebugger->theGlobals  = globals;
+      theDebugger->theChildren = theChildren;
       theDebugger->theLocation = loc;
       if ( theDebugger->hasToSuspend() )
       {
@@ -65,7 +66,7 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
   void FnDebugIterator::openImpl(PlanState& planState, uint32_t& offset )
   {
     NaryBaseIterator<FnDebugIterator, PlanIteratorState>::openImpl(planState, offset);
-    theDebugger = GlobalEnvironment::getInstance().getDebugger();
+    theDebugger = planState.theCompilerCB->m_debugger;
   }
   
   void FnDebugIterator::accept( PlanIterVisitor& v ) const
