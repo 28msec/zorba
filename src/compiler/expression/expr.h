@@ -110,9 +110,6 @@ public:
 
 class catch_clause : public SimpleRCObject {
   friend class trycatch_expr;
-  public:
-    typedef rchandle<var_expr> varref_t;
-
   protected:
     rchandle<NodeNameTest> nametest_h;
     expr_t var_h;
@@ -304,10 +301,6 @@ class debugger_expr: public eval_expr
 
 class case_clause : public SimpleRCObject {
   friend class typeswitch_expr;
-public:
-  typedef rchandle<expr> expr_t;
-  typedef rchandle<var_expr> varref_t;
-
 protected:
   expr_t var_h;
   expr_t case_expr_h;
@@ -508,7 +501,6 @@ class typeswitch_expr : public expr {
 public:
   expr_kind_t get_expr_kind () { return typeswitch_expr_kind; }
 
-  typedef rchandle<var_expr> varref_t;
   typedef rchandle<case_clause> clauseref_t;
 
 protected:
@@ -1468,9 +1460,6 @@ class transform_expr : public expr
 |				MODIFY  expr  RETURN  expr
 |_______________________________________________________________________*/
 {
-public:
-	typedef rchandle<var_expr> varref_t;
-
 protected:
 	std::vector<rchandle<copy_clause> > theCopyClauses;
 	expr_t theModifyExpr;

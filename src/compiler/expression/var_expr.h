@@ -83,7 +83,15 @@ protected:
   forlet_clause *m_forlet_clause;
 };
 
+  typedef rchandle<var_expr> varref_t;
 
 }
 
 #endif  // ZORBA_VAR_EXPR_H
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+/* vim:set ts=2 sw=2: */
