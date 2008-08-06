@@ -373,10 +373,12 @@ void parser::readobject(value *val){
 			return;
 		}
 		std::wstring *name=readname();
-		if (curchar!=L':'){adderror(4); return;}
+		if (curchar!=L':'){adderror(4); delete name; return;}
 		value *tmpval=readvalue();
 		bool rv=val->addobjectvalue((*name),tmpval);
+		delete name;
 		if (rv==false){
+			delete tmpval;	
 			adderror(8);
 		}
 		if (curchar!=L','){

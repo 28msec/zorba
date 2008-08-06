@@ -167,14 +167,16 @@ bool value::clear(){
 			break;
 		case datatype::_array:
 			for (valaiter=((array_list_t *)val)->begin();valaiter!=((array_list_t *)val)->end();++valaiter){
-				(*valaiter)->deletevalue();
+				delete *valaiter;
+				//(*valaiter)->deletevalue();
 			}
 			((array_list_t *)val)->clear();
 			break;
 		case datatype::_object:
 			for (valoiter=((object_list_t *)val)->begin();valoiter!=((object_list_t *)val)->end();++valoiter){
 				delete [] (*valoiter).first;
-				(*valoiter).second->deletevalue();
+				delete (*valoiter).second;
+			        //(*valoiter).second->deletevalue();
 			}
 			((object_list_t *)val)->clear();
 			break;
@@ -533,7 +535,7 @@ value *value::operator[](const char *name){
 		addobjectvalue(wname,nval);
 		delete [] wname;
 		//return nval;
-    return 0;
+    		return 0;
 	}else{
 		delete [] wname;
 		return (*dstval).second;
