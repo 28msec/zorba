@@ -1618,37 +1618,47 @@ bool GenericCast::isCastable(
     const store::Item_t& aItem,
     const XQType* aTargetType) const
 {
-  RootTypeManager& lTS = GENV_TYPESYSTEM;
+  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND
+  && !static_cast<const UserDefinedXQType*>(aTargetType)->isComplex()) {
+    const DelegatingTypeManager* lDelegatingTypeManager 
+       = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
 
-  xqtref_t lSourceType = lTS.create_named_type(aItem->getType(), 
-                                               TypeConstants::QUANT_ONE);
+    return lDelegatingTypeManager->getSchema()->
+              isCastableUserSimpleTypes(xqpString(aItem->getStringValue().getp()), aTargetType);
+  }
+  else {
+    RootTypeManager& lTS = GENV_TYPESYSTEM;
 
-  TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
-                                                               *aTargetType);
-  switch(lIsCastable)
-  {
-  case TypeConstants::NOT_CASTABLE:
-    return false;
-    break;
-  case TypeConstants::CASTABLE:
-    return true;
-    break;
-  case TypeConstants::MAYBE_CASTABLE:
-  {
-    try 
+    xqtref_t lSourceType = lTS.create_named_type(aItem->getType(), 
+                                                 TypeConstants::QUANT_ONE);
+
+    TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
+                                                                 *aTargetType);
+    switch(lIsCastable)
     {
-      store::Item_t temp = aItem;
-      return castToAtomic(temp, temp, aTargetType);
-    }
-    catch (error::ZorbaError& e)
-    {
+    case TypeConstants::NOT_CASTABLE:
       return false;
+      break;
+    case TypeConstants::CASTABLE:
+      return true;
+      break;
+    case TypeConstants::MAYBE_CASTABLE:
+    {
+      try 
+      {
+        store::Item_t temp = aItem;
+        return castToAtomic(temp, temp, aTargetType);
+      }
+      catch (error::ZorbaError& e)
+      {
+        return false;
+      }
     }
-  }
-  break;
-  }
+    break;
+    }
 
-  return false;
+    return false;
+  }
 }
 
 /*******************************************************************************
