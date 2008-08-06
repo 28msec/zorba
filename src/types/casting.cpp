@@ -1259,7 +1259,6 @@ store::Item_t castUserDefinedType(
             store::Item_t atomicResult;
             bool hasResult = lDelegatingTypeManager->getSchema()->
                 parseUserAtomicTypes(xqpString(aItem->getStringValue()), 
-                                     aErrorInfo.theSourceType,
                                      aErrorInfo.theTargetType,
                                      atomicResult);
             
@@ -1419,7 +1418,7 @@ bool GenericCast::parseUserSimpleTypes(const xqpString aStr,
      = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
 
   return lDelegatingTypeManager->getSchema()->
-            parseUserSimpleTypes(aStr, aSourceType, aTargetType, aResultList);
+            parseUserSimpleTypes(aStr, aTargetType, aResultList);
 }
 
 

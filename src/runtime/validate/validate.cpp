@@ -390,7 +390,7 @@ namespace zorba
             {
                 xqp_string str(textValue);
                 delegatingTypeManager->getSchema()->
-                    parseUserSimpleTypes(str, GENV_TYPESYSTEM.STRING_TYPE_ONE, type, resultList);
+                    parseUserSimpleTypes(str, type, resultList);
             }
             else
             {

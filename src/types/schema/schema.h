@@ -53,36 +53,32 @@ public:
     void printXSDInfo(bool excludeBuiltIn = true);
 
     // user defined simple types, i.e. Atomic, List or Union Types
-    bool parseUserSimpleTypes(const xqp_string textValue, const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType, std::vector<store::Item_t> &resultList);    
+    bool parseUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType,
+        std::vector<store::Item_t> &resultList);    
 
     // user defined atomic types
-    bool parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType, store::Item_t &result);    
+    bool parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
+        store::Item_t &result);    
 
     // user defined list types
-    bool parseUserListTypes(const xqp_string textValue, const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType, std::vector<store::Item_t> &resultList);    
+    bool parseUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
+        std::vector<store::Item_t> &resultList);    
 
     // user defined union types
-    bool parseUserUnionTypes(const xqp_string textValue, const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType, std::vector<store::Item_t> &resultList);    
+    bool parseUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
+        std::vector<store::Item_t> &resultList);    
 
     // user defined simple types, i.e. Atomic, List or Union Types
-    bool isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType);    
+    bool isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType);    
 
     // user defined atomic types
-    bool isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType);    
+    bool isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType);    
 
     // user defined list types
-    bool isCastableUserListTypes(const xqp_string textValue, const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType);    
+    bool isCastableUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType);    
 
     // user defined union types
-    bool isCastableUserUnionTypes(const xqp_string textValue, const xqtref_t& aSourceType,
-        const xqtref_t& aTargetType);    
+    bool isCastableUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType);    
 
     /*
     * Checks if the Type with the qname exists in the schema as a user-defined type
