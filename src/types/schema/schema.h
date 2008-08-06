@@ -68,6 +68,22 @@ public:
     bool parseUserUnionTypes(const xqp_string textValue, const xqtref_t& aSourceType,
         const xqtref_t& aTargetType, std::vector<store::Item_t> &resultList);    
 
+    // user defined simple types, i.e. Atomic, List or Union Types
+    bool isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_t& aSourceType,
+        const xqtref_t& aTargetType);    
+
+    // user defined atomic types
+    bool isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_t& aSourceType,
+        const xqtref_t& aTargetType);    
+
+    // user defined list types
+    bool isCastableUserListTypes(const xqp_string textValue, const xqtref_t& aSourceType,
+        const xqtref_t& aTargetType);    
+
+    // user defined union types
+    bool isCastableUserUnionTypes(const xqp_string textValue, const xqtref_t& aSourceType,
+        const xqtref_t& aTargetType);    
+
     /*
     * Checks if the Type with the qname exists in the schema as a user-defined type
     * if it does than return an XQType for it, if not return NULL

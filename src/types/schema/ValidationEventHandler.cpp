@@ -40,6 +40,10 @@ const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName)
     _typeName  = new xqpStringStore(StrX(typeName) .localFormOrDefault ("anyType"));
 }
 
+TextValidationInfo::TextValidationInfo(const XMLCh *chars, unsigned int length)
+{
+    _value = new xqpStringStore( StrX(chars, length).localForm() );
+}
 
 void ValidationEventHandler::startDocumentEvent(const XMLCh *documentURI, const XMLCh *encoding)
 {
@@ -71,6 +75,11 @@ void ValidationEventHandler::endElementEvent(const XMLCh *prefix, const XMLCh *u
     const XMLCh *typeURI, const XMLCh *typeName)
 {
     //cout << "   veh EElm: " << StrX(localName) << "  T:" << StrX(typeName) << "\n";
+    if ( _textInfo != NULL )
+    {   
+        delete _textInfo;
+        _textInfo = NULL;
+    }
 }
 
 void ValidationEventHandler::piEvent(const XMLCh *target, const XMLCh *value)
@@ -81,8 +90,7 @@ void ValidationEventHandler::piEvent(const XMLCh *target, const XMLCh *value)
 void ValidationEventHandler::textEvent(const XMLCh *chars, unsigned int length)
 {
     //cout << "     veh Text: " << StrX(chars) << "  length:" << length << "\n";
-    _textInfo._chars = chars;
-    _textInfo._length = length;
+    resetTextInfo();
 }
 
 void ValidationEventHandler::commentEvent(const XMLCh *value)
@@ -105,8 +113,16 @@ void ValidationEventHandler::namespaceEvent(const XMLCh *prefix, const XMLCh *ur
 void ValidationEventHandler::reset()
 {
     _attributeList.clear();
-    _textInfo._chars = NULL;
-    _textInfo._length = 0;
+    resetTextInfo();
 }
                
+void ValidationEventHandler::resetTextInfo()
+{
+    if ( _textInfo != NULL )
+    {   
+        delete _textInfo;
+        _textInfo = NULL;
+    }
+}
+
 } // end namespace zorba

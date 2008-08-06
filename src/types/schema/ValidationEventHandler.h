@@ -32,7 +32,7 @@ public:
     AttributeValidationInfo(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName, 
     const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName);
         
-    virtual ~AttributeValidationInfo(){}
+    ~AttributeValidationInfo(){}
 
     xqpStringStore_t _prefix;
     xqpStringStore_t _uri;
@@ -44,9 +44,11 @@ public:
 
 class TextValidationInfo
 {
-public:      
-    const XMLCh *_chars;
-    unsigned int _length;
+public:          
+    TextValidationInfo(const XMLCh *chars, unsigned int length);
+    ~TextValidationInfo(){}
+
+    xqpStringStore_t _value;
 };
 
 /**
@@ -87,12 +89,14 @@ public:
     
     TextValidationInfo* getTextInfo()
     {
-        return &_textInfo;
+        return _textInfo;
     }
     
 private:
     std::list<AttributeValidationInfo*> _attributeList;
-    TextValidationInfo _textInfo;
+    TextValidationInfo *_textInfo;
+    
+    void resetTextInfo();
     
 }; // class ValidationEventHandler
 

@@ -40,9 +40,11 @@ namespace zorba
 class StrX
 {
 public :
-    // -----------------------------------------------------------------------
-    //  Constructors and Destructor
-    // -----------------------------------------------------------------------
+    StrX(const XMLCh* const toTranscode, unsigned int length)
+    {
+        XMLString::transcode(toTranscode, fLocalForm, length);
+    }
+
     StrX(const XMLCh* const toTranscode)
     {
         // Call the private transcoding method
