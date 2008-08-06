@@ -2442,26 +2442,30 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   }
   else
   {
-    rchandle<fo_expr> fo_h = new fo_expr (loc, LOOKUP_FN (prefix, fname, sz));
-    fo_h->setUpdateType(fo_h->get_func()->getUpdateType());
+    try {
+      rchandle<fo_expr> fo_h = new fo_expr (loc, LOOKUP_FN (prefix, fname, sz));
+      fo_h->setUpdateType(fo_h->get_func()->getUpdateType());
 
-    // TODO this should be a const iterator
-    std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
-    for(; iter != arguments.rend(); ++iter)
-    {
-      fo_h->add(*iter);
-    }
+      // TODO this should be a const iterator
+      std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
+      for(; iter != arguments.rend(); ++iter)
+      {
+        fo_h->add(*iter);
+      }
 #ifdef ZORBA_DEBUGGER
-  if ( compilerCB->m_debugger != 0 )
-  {
-    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, &*fo_h, theScopedVariables, theGlobalVars);
-    nodestack.push(&*lDebuggerExpr);
-  } else {
-    nodestack.push(&*fo_h);
-  }
+      if ( compilerCB->m_debugger != 0 )
+      {
+        rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, &*fo_h, theScopedVariables, theGlobalVars);
+        nodestack.push(&*lDebuggerExpr);
+      } else {
+        nodestack.push(&*fo_h);
+      }
 #else
-    nodestack.push(&*fo_h);
+      nodestack.push(&*fo_h);
 #endif
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
   }
 }
 
