@@ -72,9 +72,9 @@ ZORBA_THREAD_RETURN server( void * args)
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
     lQuery->compile(*lArgs->theQuery->get(), lHints);
     lQuery->debug();
+    lQuery->close();
   } catch( std::exception &e ) {
     std::cout << e.what() << std::endl;
-    exit(7);
   }
   return 0;
 }
@@ -312,9 +312,12 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
 #ifdef ZORBA_DEBUGGER
-    server_args * lArgs = new server_args;
-    lArgs->theQuery = new std::auto_ptr<std::istream>( new std::ifstream(path.native_file_string().c_str()) );
-    lArgs->theFileName = new std::string(path.native_file_string());
+    
+    std::auto_ptr<server_args> lArgs( new server_args() ); 
+    std::auto_ptr<std::istream> lXQ( new std::ifstream(path.native_file_string().c_str()) );
+    std::auto_ptr<std::string> lFileName(new std::string(path.native_file_string()));
+    lArgs->theQuery = &lXQ;
+    lArgs->theFileName = lFileName.get();
     lArgs->theRequestPort = lProperties.requestPort();
     lArgs->theEventPort = lProperties.eventPort();
   
@@ -324,8 +327,8 @@ int _tmain(int argc, _TCHAR* argv[])
       std::cout << "Zorba XQuery debugger server." << std::endl;
       std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
       std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-      server( (void *)lArgs );
-      
+      server( (void *)lArgs.get() );
+      return 0;  
     } else if ( lProperties.debugClient() ) {
     
       std::cout << "Zorba XQuery debugger client." << std::endl;
@@ -338,16 +341,16 @@ int _tmain(int argc, _TCHAR* argv[])
       //           std::ostreambuf_iterator<char>(out));
       //qfile->seekg(0);
       //std::istringstream lInputQuery( out.str() );
-      //start the server thread
       
-      Thread lServerThread( server, lArgs );
+      //start the server thread
+      Thread lServerThread( server, lArgs.get() );
 
       //Try to connect 3 times on the server thread
       for ( unsigned int i = 0; i < 3; i++ )
       {
         try
         {
-          //wait a second before trying to reconnect
+          //wait 1 second before trying to reconnect
           sleep(1);
           ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
           CommandLineEventHandler lEventHandler( *lIter, *lArgs->theQuery, std::cin, std::cout, debuggerClient );
@@ -356,13 +359,14 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
           debuggerClient->registerEventHandler( &lEventHandler );
           lServerThread.join();
+      	  delete debuggerClient;
+          return 0;
         } catch( std::exception &e ) {
           if ( i < 2 ){ continue; }
           std::cerr << "Could not start the debugger client: " << std::endl;
           std::cerr << e.what() << std::endl;
-          exit(7);
+          return 7;
         }
-        return 0;
       }
     }
 #endif

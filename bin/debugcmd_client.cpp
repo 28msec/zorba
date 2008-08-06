@@ -157,7 +157,9 @@ void CommandLineEventHandler::suspend( int aSignum )
   {
     theClient->suspend();
   } else {
-    exit(8);  
+    //if the query is not running, we call the default signal handler
+    signal( SIGINT, SIG_DFL );
+    raise( SIGINT );
   }
 }
 
@@ -265,7 +267,7 @@ void CommandLineEventHandler::handle_cmd()
         }
       }
       theClient->quit();
-      exit(7);
+      return;
     } else if ( lCommand == "s" || lCommand == "stop" ) {
       theClient->terminate();
     }else if ( lCommand == "cl" || lCommand == "clear" ) {
