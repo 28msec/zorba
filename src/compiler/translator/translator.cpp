@@ -2418,7 +2418,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
     } else if (fn_local == "concat") {
       if (sz < 2)
-        ZORBA_ERROR_PARAM (XPST0017, "concat", to_string (sz));
+        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
     }
   } else if (fn_qname->getNamespace()->byteEqual(ZORBA_FN_NS)) {
     if (fn_local == "inline-xml" && sz == 1) {
