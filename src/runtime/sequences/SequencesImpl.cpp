@@ -1530,7 +1530,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         result = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, 
                                                                         planState.sctx());
       } catch (error::ZorbaError& e) {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+        ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
       }
 
       STACK_PUSH(true, state);
