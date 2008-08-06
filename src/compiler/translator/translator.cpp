@@ -2352,7 +2352,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_PARAM( XPST0017,  "fn:string", sz );
+        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:string", sz );
       }
     } else if (fn_local == "number") {
       switch (sz) 
@@ -2363,7 +2363,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_PARAM( XPST0017, "fn:number", sz );
+        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:number", sz );
       }
 
       var_expr_t tv = tempvar (loc, var_expr::let_var);
@@ -2394,7 +2394,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       arguments.push_back (DOT_VAR);
     } else if (fn_local == "static-base-uri") {
       if (sz != 0)
-        ZORBA_ERROR_PARAM( XPST0017, "fn:static-base-uri", sz );
+        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:static-base-uri", sz );
 
       xqp_string baseuri = sctx_p->final_baseuri ();
       if (baseuri.empty ())
@@ -2437,7 +2437,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     if (sz != 1
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
-      ZORBA_ERROR_PARAM( XPST0017,  prefix + ":" + fname, sz);
+      ZORBA_ERROR_LOC_PARAM( XPST0017,  loc, prefix + ":" + fname, sz);
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
   }
   else
