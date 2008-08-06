@@ -92,23 +92,17 @@ namespace zorba{
   ZORBA_THREAD_RETURN listenEvents( void * aClient )
   {
     ZorbaDebuggerClientImpl * lClient = (ZorbaDebuggerClientImpl *) aClient;
-#if 0
-    std::clog << "[Client Thread] start event listener thread" << std::endl;
-    std::clog << "[Client Thread] wait for the event client to connect" << std::endl;
-#endif
+    assert(lClient != 0);
 
-    TCPSocket * lSocket = lClient->theEventServerSocket->accept();
+    std::auto_ptr<TCPSocket> lSocket( lClient->theEventServerSocket->accept() );
     
     while( lClient->theExecutionStatus != QUERY_QUITED )
-    { 
-      AbstractMessage *lMessage = MessageFactory::buildMessage( lSocket );
+    {
+      std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage( lSocket.get() ));
       SuspendedEvent  *lSuspendedMsg;
       EvaluatedEvent  *lEvaluatedEvent;
-      if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage ) ) )
+      if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage.get() ) ) )
       {
-#if 0
-        std::clog << "[Client Thread] received a suspended event" << std::endl;
-#endif
         lClient->theExecutionStatus = QUERY_SUSPENDED;
         lClient->theRemoteLocation  = lSuspendedMsg->getLocation();
         if ( lClient->theEventHandler )
@@ -116,28 +110,19 @@ namespace zorba{
           QueryLocationImpl loc( lSuspendedMsg->getLocation() );
           lClient->theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
         }
-      } else if ( dynamic_cast< StartedEvent * > ( lMessage ) ) {
-#if 0
-        std::clog << "[Client Thread] receive a started event" << std::endl;
-#endif
+      } else if ( dynamic_cast< StartedEvent * > ( lMessage.get() ) ) {
         lClient->theExecutionStatus = QUERY_RUNNING;
         if ( lClient->theEventHandler )
         {
           lClient->theEventHandler->started();
         }
-      } else if ( dynamic_cast< ResumedEvent * > ( lMessage ) ) {
-#if 0
-        std::clog << "[Client Thread] receive a resumed event" << std::endl;
-#endif
+      } else if ( dynamic_cast< ResumedEvent * > ( lMessage.get() ) ) {
         lClient->theExecutionStatus = QUERY_RUNNING;
         if ( lClient->theEventHandler )
         {
           lClient->theEventHandler->resumed();
         }
-      } else if ( dynamic_cast< TerminatedEvent * > ( lMessage ) ) {
-#if 0
-        std::clog << "[Client Thread] receive a suspended event" << std::endl;
-#endif
+      } else if ( dynamic_cast< TerminatedEvent * > ( lMessage.get() ) ) {
         if( lClient->theExecutionStatus != QUERY_IDLE )
         {
           lClient->theExecutionStatus = QUERY_TERMINATED;
@@ -146,10 +131,7 @@ namespace zorba{
             lClient->theEventHandler->terminated();
           }
         }
-      } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >(lMessage))) {
-#if 0
-        std::clog << "[Client Thread] evaluated expression" << std::endl;
-#endif
+      } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >( lMessage.get() ))) {
         if ( lClient->theEventHandler )
         {
           String lExpr( lEvaluatedEvent->getExpr() );
@@ -159,12 +141,7 @@ namespace zorba{
           lClient->theEventHandler->evaluated( lExpr, lResult, lReturnType, lError );
         }
       }
-      delete lMessage;
     }
-    delete lSocket;
-#if 0
-    std::clog << "[Client Thread] end of the event listener thread" << std::endl;
-#endif
     return 0;
   }
 
@@ -192,11 +169,11 @@ namespace zorba{
   {
     //Connect the client
     Length length;
-    Byte * lMessage = aMessage->serialize( length );
+    ZorbaArrayAutoPointer<Byte> lMessage(aMessage->serialize( length ));
     try
     {
       //send the command
-      theRequestSocket->send( lMessage, length );
+      theRequestSocket->send( lMessage.get(), length );
       //check the reply
       AbstractMessage * lMsg = MessageFactory::buildMessage( theRequestSocket );
       ReplyMessage * lReplyMessage = dynamic_cast< ReplyMessage * >( lMsg );
@@ -215,56 +192,63 @@ namespace zorba{
     } catch( SocketException &e ) {
       std::cerr << "Request client:" << e.what() << std::endl;
     }
-    delete[] lMessage;
     return 0;
   }
 
   void ZorbaDebuggerClientImpl::run()
   {
     RunMessage lMessage;
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::suspend()
   {
     SuspendMessage lMessage;
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::resume()
   {
     ResumeMessage lMessage;
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::terminate()
   {
     TerminateMessage lMessage;
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::quit()
   {
     QuitMessage lMessage;
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::stepInto()
   {
     StepMessage lMessage( STEP_INTO );
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::stepOver()
   {
     StepMessage lMessage( STEP_OVER );
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::stepOut()
   {
     StepMessage lMessage( STEP_OUT );
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::addBreakpoint( const String &anExpr )
@@ -274,7 +258,8 @@ namespace zorba{
     theLastId++;
     lMessage.addExpr( theLastId, lExpr );
     theBreakpoints.insert( std::make_pair( theLastId, lExpr ) );
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
 
@@ -289,7 +274,8 @@ namespace zorba{
     std::stringstream lB;
     lB << "line:" << aLineNo;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
   
   void ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
@@ -306,7 +292,8 @@ namespace zorba{
     std::stringstream lB;
     lB << lFilename << ':' << aLineNo;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   bool ZorbaDebuggerClientImpl::clearBreakpoint( unsigned int anId )
@@ -319,7 +306,8 @@ namespace zorba{
     } else {
       return false;
     }
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
     return true;
   }
 
@@ -332,7 +320,8 @@ namespace zorba{
       lMessage.addId( *it );
       theBreakpoints.erase( theBreakpoints.find( *it ) );
     }
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   void ZorbaDebuggerClientImpl::clearBreakpoints()
@@ -343,7 +332,8 @@ namespace zorba{
     {
       lMessage.addId( it->first );
     }
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
     theBreakpoints.clear();
   }
  
@@ -362,7 +352,8 @@ namespace zorba{
     xqpString lExpr = Unmarshaller::getInternalString( anExpr );
     //TODO: espace double quotes characters
     EvalMessage lMessage( lExpr );
-    send( &lMessage );
+    ReplyMessage *lReply = send( &lMessage );
+    delete lReply;
   }
 
   std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables()

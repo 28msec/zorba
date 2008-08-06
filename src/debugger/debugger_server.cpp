@@ -49,6 +49,8 @@ namespace zorba{
 ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
 {
   ZorbaDebugger * lDebugger = (ZorbaDebugger *)aDebugger;
+  //We wait for theRuntimeThread to be allocated
+  while( lDebugger->theRuntimeThread == 0 );
   lDebugger->runQuery();
   return 0;
 }
@@ -81,16 +83,16 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   {
     try
     {
-      //Connect the client to the event server
-      theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
       //Wait one second before trying to reconnect
       sleep(1);
+      //Connect the client to the event server
+      theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
+      break;
     } catch ( SocketException &e )  {
-      if ( i == 2 )
-      {
-        std::cerr << "Couldn't connect to the debugger server event" << std::endl;
-        std::cerr << e.what() << std::endl;
-      }
+      if ( i < 2 ) continue;
+      std::cerr << "[Server Thread] Couldn't connect to the debugger server event: " << std::endl;
+      std::cerr << "[Server Thread] " <<  e.what() << std::endl;
+      return;
     }
   }
 #ifndef NDEBUG

@@ -81,6 +81,7 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
       std::wstring *lFileName = (*obj)["fileName"]->getstring(L"", true);
       std::string filename( lFileName->begin()+1, lFileName->end()-1 );
       setFilenameBegin( &filename );
+      delete lFileName;
     }
     
     if ( (*obj)["lineBegin"] != 0 )

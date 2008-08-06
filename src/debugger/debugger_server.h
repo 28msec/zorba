@@ -75,7 +75,8 @@ class ZorbaDebugger
 
   protected:
     friend class FnDebugIterator;
-   
+    friend ZORBA_THREAD_RETURN runtimeThread( void* );
+ 
     XQueryImpl *theQuery;
 
     TCPServerSocket* theRequestServerSocket;

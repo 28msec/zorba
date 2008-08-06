@@ -183,8 +183,7 @@ int
 simple(int argc, char* argv[])
 {
   simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
-
-  Zorba* lZorba = Zorba::getInstance(lStore);
+  Zorba *lZorba = Zorba::getInstance(lStore);
 
   bool res = false;
 

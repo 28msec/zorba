@@ -144,10 +144,12 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
   memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
   if ( aLength - MESSAGE_SIZE > 0 )
   {
-    char * lData = new char[ aLength - MESSAGE_SIZE ];
+    char * lData = new char[ aLength - MESSAGE_SIZE + 1 ];
     //char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
+    memset(lData, '\0', aLength - MESSAGE_SIZE + 1);
     memcpy( lData, aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
     theData = xqpString( lData );
+    delete[] lData;
   }
   checkIntegrity();
 }
@@ -382,7 +384,8 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
       } else if ( (**it)["expr"] != 0 ) {
         std::wstring *lExpr = (**it)["expr"]->getstring(L"", true);
         std::string expr( lExpr->begin()+1, lExpr->end()-1 );
-        if ( (**it)["id"] == 0 )
+       	delete lExpr; 
+	if ( (**it)["id"] == 0 )
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
         }
@@ -394,6 +397,7 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
   } else {
     throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
   }
+  delete lValue;
   //setLength( MESSAGE_SIZE + getData().length() );  
   checkIntegrity();
   delete[] lMessage;
@@ -462,6 +466,7 @@ ClearMessage::ClearMessage( Byte * aMessage, const unsigned int aLength ):
     throw MessageFormatException("Invalid JSON format for Clear breakpoint message.");
   }
   //setLength( MESSAGE_SIZE + getData().length() );  
+  delete lValue;
   checkIntegrity();
 }
 
@@ -557,6 +562,7 @@ SuspendedEvent::SuspendedEvent( Byte * aMessage, const unsigned int aLength ):
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
   //setLength( MESSAGE_SIZE + getData().length() );  
+  delete lValue;
   checkIntegrity();
 }
 
@@ -641,6 +647,7 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
   {
     std::wstring* lWString = (*lValue)["expr"]->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
+    delete lWString;
     theExpr = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
@@ -650,6 +657,7 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
   {
     std::wstring* lWString = (*lValue)["result"]->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
+    delete lWString;
     theResult = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
@@ -659,6 +667,7 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
   {
     std::wstring* lWString = (*lValue)["type"]->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
+    delete lWString;
     theReturnType = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
@@ -668,10 +677,12 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
   {
     std::wstring* lWString = (*lValue)["error"]->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
+    delete lWString;
     theError = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
   }
+  delete lValue; 
   checkIntegrity();
 }
 
@@ -710,6 +721,7 @@ Byte * EvaluatedEvent::serialize( Length &aLength ) const
   memcpy( lMsg + MESSAGE_SIZE, s, l );
   //delete[] lHeader;
   aLength = getLength();
+  delete[] lHeader;
   return lMsg; 
 }
 
@@ -747,10 +759,12 @@ EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
   {
     std::wstring* lWString = (*lValue)["expr"]->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
+    delete lWString;
     theExpr = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
+  delete lValue;
   checkIntegrity();
 }
 
@@ -831,14 +845,14 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
       }
       std::wstring *lName = (*lVariable)["name"]->getstring(L"", true);
       std::string name = std::string( lName->begin()+1, lName->end()-1 );
-      
+      delete lName;
       if ( (*lVariable)["type"] == 0 )
       {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
       std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
-      
+      delete lType; 
       addGlobal(name, type);
     }
   } else {
@@ -860,16 +874,17 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
       }
       std::wstring *lName = (*lVariable)["name"]->getstring(L"", true);
       std::string name = std::string( lName->begin()+1, lName->end()-1 );
-      
+      delete lName;
       if ( (*lVariable)["type"] == 0 )
       {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
       std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
-      
+      delete lType; 
       addLocal(name, type);
     }
+    delete lValue;
   } else {
     throw MessageFormatException("Invalid JSON format for variable message.");
   }

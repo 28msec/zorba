@@ -24,6 +24,34 @@
 
 namespace zorba
 {
+
+template<class T>
+class ZorbaArrayAutoPointer
+{
+  private:
+    T* thePtr;
+
+  public:
+    ZorbaArrayAutoPointer(T *aPtr): thePtr(aPtr){}
+
+    ~ZorbaArrayAutoPointer()
+    {
+      delete[] thePtr;
+    }
+
+    void reset(T *aPtr)
+    {
+      T *lPtr = thePtr;
+      thePtr = aPtr;
+      delete[] lPtr;
+    }
+
+    T *get()
+    {
+      return thePtr;
+    }
+};
+
 /**
  * Zorba Debugger message factory
  * TODO: Check error handling 
@@ -34,39 +62,32 @@ class MessageFactory
 
     static AbstractMessage * buildMessage( TCPSocket * aSocket )
     {
-      Byte * lengthField = new Byte[ MESSAGE_HEADER_SIZE ];
-      memset( lengthField, '0', MESSAGE_HEADER_SIZE );
-      Byte * lPacket = 0;
+      ZorbaArrayAutoPointer<Byte> lengthField(new Byte[ MESSAGE_HEADER_SIZE ]);
+      memset( lengthField.get(), '0', MESSAGE_HEADER_SIZE );
       AbstractMessage * lMessage = 0;
       try
       {
         //read the packet length and write it into lLength
-        aSocket->recv( lengthField, MESSAGE_HEADER_SIZE );
+        aSocket->recv( lengthField.get(), MESSAGE_HEADER_SIZE );
         //Convert the length field into an integer
         Length length;
         if( is_little_endian() ){
-          length = lengthField[3] | lengthField[2] |
-                    lengthField[1] | lengthField[0];
+          length = lengthField.get()[3] | lengthField.get()[2] |
+                    lengthField.get()[1] | lengthField.get()[0];
         } else {
-          length = lengthField[0] | (lengthField[1]<<8) |
-                    (lengthField[2]<<16) | (lengthField[3]<<24);
+          length = lengthField.get()[0] | (lengthField.get()[1]<<8) |
+                    (lengthField.get()[2]<<16) | (lengthField.get()[3]<<24);
         }
         length -= MESSAGE_HEADER_SIZE;
         //allocate memory for the whole packet
-        lPacket = new Byte[ length + MESSAGE_HEADER_SIZE ];
-        memcpy( lPacket, lengthField, MESSAGE_HEADER_SIZE );
+        ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_HEADER_SIZE ]);
+        memcpy( lPacket.get(), lengthField.get(), MESSAGE_HEADER_SIZE );
         //read the command packet
-        aSocket->recv ( lPacket + MESSAGE_HEADER_SIZE, length );
+        aSocket->recv ( lPacket.get() + MESSAGE_HEADER_SIZE, length );
         //unserialize the packet
-        lMessage =  MessageFactory::buildMessage( lPacket, length + MESSAGE_HEADER_SIZE );
+        lMessage =  MessageFactory::buildMessage( lPacket.get(), length + MESSAGE_HEADER_SIZE );
       } catch ( SocketException &e ) {
         std::cerr << e.what() << std::endl;
-      }
-      delete[] lengthField;
-      //TODO: make it beautiful
-      if ( lPacket )
-      {
-        delete[] lPacket;
       }
       return lMessage;
     }
