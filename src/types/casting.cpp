@@ -1268,16 +1268,8 @@ store::Item_t castUserDefinedType(
         break;
 
     case UserDefinedXQType::LIST_TYPE:
-        // todo for David: list and union type may return multiple Items
-        //parseUserListTypes( textValue, aSourceType, aTargetType, resultList);
-        break;
-
     case UserDefinedXQType::UNION_TYPE:
-        // todo for David: list and union type may return multiple Items
-        //parseUserUnionTypes( textValue, aSourceType, aTargetType, resultList);
-        break;
-
-    case UserDefinedXQType::COMPLEX_TYPE:
+    case UserDefinedXQType::COMPLEX_TYPE:       
     default:
         ZORBA_ASSERT( false);
         break;
