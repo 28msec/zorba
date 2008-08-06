@@ -55,12 +55,22 @@ public:
 
   http://www.w3.org/TR/xquery/#id-cast
 ********************************************************************************/
-class CastIterator : public UnaryBaseIterator<CastIterator, PlanIteratorState> {
+class CastIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> theSimpleParseItems;
+  size_t theIndex;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class CastIterator : public UnaryBaseIterator<CastIterator, CastIteratorState> {
   friend class PrinterVisitor;
 private:
   xqtref_t theCastType;
   TypeConstants::quantifier_t theQuantifier;
-
+  bool theIsSimpleType;
 public:
   CastIterator(const QueryLoc& loc,
                PlanIter_t& aChild,

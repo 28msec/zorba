@@ -115,15 +115,36 @@ InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+void
+CastIteratorState::init(PlanState& aPlanState)
+{
+  PlanIteratorState::init(aPlanState);
+  theIndex = 0;
+}
+
+void
+CastIteratorState::reset(PlanState& aPlanState)
+{
+  PlanIteratorState::reset(aPlanState);
+  theSimpleParseItems.clear();
+  theIndex = 0;
+}
 
 CastIterator::CastIterator(
     const QueryLoc& loc,
     PlanIter_t& aChild,
     const xqtref_t& aCastType)
-  : UnaryBaseIterator<CastIterator, PlanIteratorState>(loc, aChild)
+  : UnaryBaseIterator<CastIterator, CastIteratorState>(loc, aChild)
 {
   theCastType = TypeOps::prime_type (*aCastType);
   theQuantifier = TypeOps::quantifier(*aCastType);
+  if (aCastType->type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    const UserDefinedXQType* lType = static_cast<const UserDefinedXQType*>(aCastType.getp());
+    theIsSimpleType = !lType->isComplex();
+  }
+  else
+    theIsSimpleType = false;
 }
 
 CastIterator::~CastIterator(){}
@@ -134,8 +155,8 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lItem;
   bool valid = false;
   
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  CastIteratorState* state;
+  DEFAULT_STACK_INIT(CastIteratorState, state, planState);
 
   if (!consumeNext(lItem, theChild.getp(), planState))
   {
@@ -150,22 +171,64 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   else if (theQuantifier == TypeConstants::QUANT_ONE ||
           theQuantifier == TypeConstants::QUANT_QUESTION)
   {
-    valid = GenericCast::instance()->cast(result, lItem, theCastType);
+    //--
+    if (theIsSimpleType) {
+      state->reset(planState); 
+      valid = GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
+                                            theCastType,
+                                            state->theSimpleParseItems);
+    }
+    else
+      valid = GenericCast::instance()->castToAtomic(result, lItem, theCastType);
+    //--
     if (consumeNext(lItem, theChild.getp(), planState))
     {
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
                         "Sequence with more than one item cannot be casted to a type with quantifier ONE or QUESTION!");
     }
-
-    STACK_PUSH(valid, state);
+    
+    if (theIsSimpleType) {
+      while(state->theIndex < state->theSimpleParseItems.size()) {
+        result = state->theSimpleParseItems[state->theIndex++];
+        STACK_PUSH(true, state);
+      }
+    } 
+    else
+      STACK_PUSH(valid, state);
   }
   else
   {
-    STACK_PUSH(GenericCast::instance()->cast(result, lItem, theCastType), state);
+    //--
+    if (theIsSimpleType) {
+      state->reset(planState); 
+      GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
+                                            theCastType,
+                                            state->theSimpleParseItems);
+      while(state->theIndex < state->theSimpleParseItems.size()) {
+        result = state->theSimpleParseItems[++state->theIndex];
+        STACK_PUSH(true, state);
+      }
+    }
+    else
+      STACK_PUSH(GenericCast::instance()->castToAtomic(result, lItem, theCastType), state);
+    //--
 
     while (consumeNext(lItem, theChild.getp(), planState))
     {
-      STACK_PUSH(GenericCast::instance()->cast(result, lItem, theCastType), state);
+      //--
+      if (theIsSimpleType) {
+        state->reset(planState); 
+        GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
+                                              theCastType,
+                                              state->theSimpleParseItems);
+        while(state->theIndex < state->theSimpleParseItems.size()) {
+          result = state->theSimpleParseItems[++state->theIndex];
+          STACK_PUSH(true, state);
+        }
+      }
+      else
+        STACK_PUSH(GenericCast::instance()->castToAtomic(result, lItem, theCastType), state);
+      //--
     }
   }
 
@@ -203,14 +266,14 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       lBool = true;
     }
   } else {
-    lBool = GenericCast::instance()->isCastable(lItem, theCastType);
+    lBool = GenericCast::instance()->isCastableToAtomic(lItem, theCastType);
     if (lBool) {
       if (consumeNext(lItem, theChild.getp(), planState)) {
         if (theQuantifier == TypeConstants::QUANT_ONE || theQuantifier == TypeConstants::QUANT_QUESTION) {
           lBool = false;
         } else {
           do {
-            lBool = GenericCast::instance()->isCastable(lItem, theCastType);
+            lBool = GenericCast::instance()->isCastableToAtomic(lItem, theCastType);
           } while (lBool && consumeNext(lItem, theChild.getp(), planState));
         }
       }

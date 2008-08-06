@@ -394,7 +394,7 @@ namespace zorba
             }
             else
             {
-                bool isResult = GenericCast::instance()->cast(result, textValue, type.getp(), &nsCtx);
+                bool isResult = GenericCast::instance()->castToAtomic(result, textValue, type.getp(), &nsCtx);
                 if ( isResult )
                     resultList.push_back(result);
             }

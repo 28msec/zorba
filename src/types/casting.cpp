@@ -1285,6 +1285,19 @@ store::Item_t castUserDefinedType(
 
     return 0;
 }
+
+bool GenericCast::castToSimple(const xqpString aStr, 
+                               const xqtref_t& aTargetType,
+                               std::vector<store::Item_t> &aResultList) const
+{
+  const DelegatingTypeManager* lDelegatingTypeManager 
+     = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
+
+  return lDelegatingTypeManager->getSchema()->
+            parseUserSimpleTypes(aStr, aTargetType, aResultList);
+}
+
+
 #endif
 
 
@@ -1292,7 +1305,7 @@ store::Item_t castUserDefinedType(
   Cast, if possible, a given item I1 to an atomic item I2 of a given type T2.
   If I1 is not  
 ********************************************************************************/
-bool GenericCast::cast(
+bool GenericCast::castToAtomic(
     store::Item_t&       result,
     const store::Item_t& aItem, 
     const XQType*        aTargetType,
@@ -1386,14 +1399,14 @@ bool GenericCast::cast(
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::cast(
+bool GenericCast::castToAtomic(
     store::Item_t& result,
     xqpStringStore_t& aStr,
     const XQType* aTargetType,
     namespace_context* aNCtx) const
 {
   return GENV_ITEMFACTORY->createString(result, aStr)
-      && cast(result, result, aTargetType, aNCtx);
+      && castToAtomic(result, result, aTargetType, aNCtx);
 }
 
 
@@ -1406,21 +1419,8 @@ bool GenericCast::castToQName (
     namespace_context* aNCtx) const
 {
   return GENV_ITEMFACTORY->createString(result, qname)
-    && cast(result, result, &*GENV_TYPESYSTEM.QNAME_TYPE_ONE, aNCtx);
+    && castToAtomic(result, result, &*GENV_TYPESYSTEM.QNAME_TYPE_ONE, aNCtx);
 }
-
-bool GenericCast::parseUserSimpleTypes(const xqpString aStr, 
-                                       const xqtref_t& aSourceType,
-                                       const xqtref_t& aTargetType,
-                                       std::vector<store::Item_t> &aResultList)
-{
-  const DelegatingTypeManager* lDelegatingTypeManager 
-     = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
-
-  return lDelegatingTypeManager->getSchema()->
-            parseUserSimpleTypes(aStr, aTargetType, aResultList);
-}
-
 
 /*******************************************************************************
   NCName				  ::= NCNameStartChar NCNameChar* // An XML Name, minus the ":" 
@@ -1622,7 +1622,7 @@ bool GenericCast::castableToName(const xqpStringStore *str) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::isCastable(
+bool GenericCast::isCastableToAtomic(
     const store::Item_t& aItem,
     const XQType* aTargetType) const
 {
@@ -1646,7 +1646,7 @@ bool GenericCast::isCastable(
     try 
     {
       store::Item_t temp = aItem;
-      return cast(temp, temp, aTargetType);
+      return castToAtomic(temp, temp, aTargetType);
     }
     catch (error::ZorbaError& e)
     {
@@ -1662,13 +1662,13 @@ bool GenericCast::isCastable(
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::isCastable(
+bool GenericCast::isCastableToAtomic(
     xqpStringStore_t& aStr,
     const XQType* aTargetType) const
 {
   store::Item_t lItem;
   GENV_ITEMFACTORY->createString(lItem, aStr);
-  return isCastable(lItem, aTargetType);
+  return isCastableToAtomic(lItem, aTargetType);
 }
 
 
@@ -1694,14 +1694,14 @@ bool GenericCast::promote(
   if (TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&
       ! TypeOps::is_equal(*TypeOps::prime_type(*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
   {
-    return GenericCast::instance()->cast(result, aItem, aTargetType);
+    return GenericCast::instance()->castToAtomic(result, aItem, aTargetType);
   }
   else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) 
   {
     // decimal --> xs:float
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) 
     {
-      return GenericCast::instance()->cast(result, aItem,
+      return GenericCast::instance()->castToAtomic(result, aItem,
                                            &*GENV_TYPESYSTEM.FLOAT_TYPE_ONE); 
     }
   }
@@ -1711,7 +1711,7 @@ bool GenericCast::promote(
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE) ||
         TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) 
     {
-      return GenericCast::instance()->cast(result, aItem,
+      return GenericCast::instance()->castToAtomic(result, aItem,
                                            &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
     }
   }
@@ -1720,7 +1720,7 @@ bool GenericCast::promote(
     // URI --> xs:String Promotion
     if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
     {
-      return GenericCast::instance()->cast(result, aItem,
+      return GenericCast::instance()->castToAtomic(result, aItem,
                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
   }

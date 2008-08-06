@@ -63,7 +63,7 @@ public:
    * Executes the string casting of the passed string to an item of the passed
    * target type.
    */
-  bool cast (
+  bool castToAtomic (
         store::Item_t& result,
         xqpStringStore_t& aStr, 
         const XQType* aTargetType,
@@ -73,13 +73,15 @@ public:
    * type or a subtype of the passed targetType, the passed item is directly
    * returned.
    */
-  bool cast (
+  bool castToAtomic (
         store::Item_t&       result,
         const store::Item_t& aItem, 
         const XQType*        aTargetType, 
         namespace_context*   aNCtx = 0) const;
 
-
+  bool castToSimple (const xqpString aStr, 
+                     const xqtref_t& aTargetType,
+                     std::vector<store::Item_t> &aResultList) const;
   /**
    * Casts the passed string to xs:QName if possible.
    */
@@ -87,21 +89,6 @@ public:
         store::Item_t& result,
         xqpStringStore_t& aStr,
         namespace_context* aNCtx = 0) const;
-
-  /**
-   * Parses user defined simple types, i.e. list or unions of atomic types
-   *
-   * @param aStr Source value, must always be a string
-   * @param aSourceType
-   * @param aTargetType user defined simple type
-   * @param aResultList result list of items
-   *
-   * @return true if parsing was successful, else false
-   */
-  bool parseUserSimpleTypes(const xqpString aStr, 
-                            const xqtref_t& aSourceType,
-                            const xqtref_t& aTargetType,
-                            std::vector<store::Item_t> &aResultList);
 
   bool castableToNCName(const xqpStringStore* str) const;
 
@@ -121,7 +108,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable(const store::Item_t& aItem, const XQType* aTargetType) const; 
+  bool isCastableToAtomic(const store::Item_t& aItem, const XQType* aTargetType) const; 
 
   /**
    * Checks if the passed string is castable to the passed target type.
@@ -129,7 +116,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable(xqpStringStore_t& aStr, const XQType* aTargetType) const;
+  bool isCastableToAtomic(xqpStringStore_t& aStr, const XQType* aTargetType) const;
 
   /**
    * Promotes the passed item to the passed target type.

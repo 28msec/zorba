@@ -106,7 +106,7 @@ bool GenericArithIterator<Operation>::compute(store::Item_t& result, RuntimeCB* 
       ||
       TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )))
   {
-    GenericCast::instance()->cast(an0, an0, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+    GenericCast::instance()->castToAtomic(an0, an0, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
     if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_YM_DURATION>(result, aRuntimeCB, &aLoc, an0, an1);
     else
@@ -122,7 +122,7 @@ bool GenericArithIterator<Operation>::compute(store::Item_t& result, RuntimeCB* 
   {
     if(TypeOps::is_numeric(*type1))
     {
-      GenericCast::instance()->cast ( an1, an1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+      GenericCast::instance()->castToAtomic ( an1, an1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       return Operation::template compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, &aLoc, an0, an1 );
     }
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
@@ -136,7 +136,7 @@ bool GenericArithIterator<Operation>::compute(store::Item_t& result, RuntimeCB* 
   {
     if(TypeOps::is_numeric(*type1))
     {
-      GenericCast::instance()->cast ( an1, an1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+      GenericCast::instance()->castToAtomic ( an1, an1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       return Operation::template compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, &aLoc, an0, an1 );
     }
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))

@@ -284,12 +284,12 @@ void CompareIterator::valueCasting(
   // all untyped Atomics to String
   if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    GenericCast::instance()->cast(castItem0, aItem0,
+    GenericCast::instance()->castToAtomic(castItem0, aItem0,
                                   &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
 
     if  (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::instance()->cast(castItem1, aItem1,
+      GenericCast::instance()->castToAtomic(castItem1, aItem1,
                                     &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     else
@@ -310,7 +310,7 @@ void CompareIterator::valueCasting(
                                           &*GENV_TYPESYSTEM.STRING_TYPE_ONE))
       castItem0 = aItem0;
 
-    GenericCast::instance()->cast(castItem1, aItem1,
+    GenericCast::instance()->castToAtomic(castItem1, aItem1,
                                   &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
 
     GenericCast::instance()->promote(castItem1, castItem1, &*type0);
@@ -343,7 +343,7 @@ void CompareIterator::generalCasting(
   {
     if (TypeOps::is_numeric(*type1))
     {
-      GenericCast::instance()->cast(castItem0, aItem0,
+      GenericCast::instance()->castToAtomic(castItem0, aItem0,
                                     &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 
       GenericCast::instance()->promote(castItem1, aItem1,
@@ -351,20 +351,20 @@ void CompareIterator::generalCasting(
     }
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::instance()->cast(castItem0, aItem0,
+      GenericCast::instance()->castToAtomic(castItem0, aItem0,
                                     &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
-      GenericCast::instance()->cast(castItem1, aItem1,
+      GenericCast::instance()->castToAtomic(castItem1, aItem1,
                                     &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     {
-      GenericCast::instance()->cast(castItem0, aItem0,
+      GenericCast::instance()->castToAtomic(castItem0, aItem0,
                                     &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
       castItem1 = aItem1;
     }
     else
     {
-      GenericCast::instance()->cast(castItem0, aItem0, &*type1);
+      GenericCast::instance()->castToAtomic(castItem0, aItem0, &*type1);
       castItem1 = aItem1;
     }
   }
@@ -372,7 +372,7 @@ void CompareIterator::generalCasting(
   {
     if (TypeOps::is_numeric(*type0))
     {
-      GenericCast::instance()->cast(castItem1, aItem1,
+      GenericCast::instance()->castToAtomic(castItem1, aItem1,
                                     &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       GenericCast::instance()->promote(castItem0, aItem0,
                                        &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
@@ -380,13 +380,13 @@ void CompareIterator::generalCasting(
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     {
-      GenericCast::instance()->cast(castItem1, aItem1,
+      GenericCast::instance()->castToAtomic(castItem1, aItem1,
                                     &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
       castItem0 = aItem0;
     }
     else
     {
-      GenericCast::instance()->cast(castItem1, aItem1, &*type0);
+      GenericCast::instance()->castToAtomic(castItem1, aItem1, &*type0);
       castItem0 = aItem0;
     }
   }

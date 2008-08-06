@@ -1031,7 +1031,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
                               create_value_type (lRunningItem);
 
       if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
-        GenericCast::instance()->cast(lRunningItem, lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        GenericCast::instance()->castToAtomic(lRunningItem, lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
       }
 
@@ -1097,7 +1097,7 @@ FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
         create_value_type (result);
 
     if (TypeOps::is_subtype(*lResultType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
-      GenericCast::instance()->cast(result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      GenericCast::instance()->castToAtomic(result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       lResultType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
     }
 
@@ -1110,7 +1110,7 @@ FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
           create_value_type (lRunningItem);
 
       if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
-        GenericCast::instance()->cast(lRunningItem, lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        GenericCast::instance()->castToAtomic(lRunningItem, lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
       }
 

@@ -368,8 +368,8 @@ bool NumArithIterator<Operation>::computeAtomic(
   store::Item_t n0;
   store::Item_t n1;
 
-  GenericCast::instance()->cast ( n0, item0, &*resultType );
-  GenericCast::instance()->cast ( n1, item1, &*resultType );
+  GenericCast::instance()->castToAtomic ( n0, item0, &*resultType );
+  GenericCast::instance()->castToAtomic ( n1, item1, &*resultType );
 
   switch ( TypeOps::get_atomic_type_code ( *resultType ) )
   {
@@ -611,7 +611,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
     type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
     if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      GenericCast::instance()->cast ( item, item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+      GenericCast::instance()->castToAtomic ( item, item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
     }
     
@@ -683,7 +683,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        GenericCast::instance()->cast ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
       }
 
@@ -751,7 +751,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        GenericCast::instance()->cast ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( result);
       }
 
@@ -806,7 +806,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        GenericCast::instance()->cast ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( result);
       }
 
@@ -862,7 +862,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        GenericCast::instance()->cast ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
       }
 
@@ -928,7 +928,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        GenericCast::instance()->cast (result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        GenericCast::instance()->castToAtomic (result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
       }
 
@@ -984,7 +984,7 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
     if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      GenericCast::instance()->cast ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+      GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
     }
 

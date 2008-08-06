@@ -547,7 +547,7 @@ bool Schema::parseUserSimpleTypes(const xqp_string textValue, const xqtref_t& aT
         // must be a built in type
         store::Item_t atomicResult;
         xqpStringStore_t textval = textValue.getStore();
-        bool res = GenericCast::instance()->cast(atomicResult, textval, aTargetType); //todo add nsCtx
+        bool res = GenericCast::instance()->castToAtomic(atomicResult, textval, aTargetType); //todo add nsCtx
         
         if ( res==false )
             return false;
@@ -681,7 +681,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aT
     ZORBA_ASSERT( baseType_ptr->type_kind() == XQType::ATOMIC_TYPE_KIND );
 
     xqpStringStore_t textval = textValue.getStore();
-    return GenericCast::instance()->cast(result, textval, baseType_ptr);
+    return GenericCast::instance()->castToAtomic(result, textval, baseType_ptr);
 }
 
 
@@ -772,7 +772,7 @@ bool Schema::isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_
         // must be a built in type
         store::Item_t atomicResult;
         xqpStringStore_t textval = textValue.getStore();
-        return GenericCast::instance()->isCastable(textval, aTargetType); //todo add nsCtx
+        return GenericCast::instance()->isCastableToAtomic(textval, aTargetType); //todo add nsCtx
     }
 
     ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
@@ -809,7 +809,7 @@ bool Schema::isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_
 bool Schema::isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType)
 {
     xqpStringStore_t text = xqpStringStore_t(textValue.getStore());
-    return GenericCast::instance()->isCastable( text, aTargetType.getp());
+    return GenericCast::instance()->isCastableToAtomic( text, aTargetType.getp());
 }        
 
 // user defined list types
