@@ -61,9 +61,6 @@ public:
     let_clause
   };
 
-  typedef rchandle<var_expr> varref_t;
-  typedef rchandle<expr> expr_t;
-
 public: // state
   enum forlet_t type;
   varref_t var_h;

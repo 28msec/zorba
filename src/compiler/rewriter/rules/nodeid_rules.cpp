@@ -62,8 +62,8 @@ static void mark_for_vars_ignoring_sort (flwor_expr *flwor) {
   for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
         i != flwor->clause_end(); i++) {
     flwor_expr::forletref_t ref = *i;
-    forlet_clause::varref_t vref = ref->get_var();
-    forlet_clause::varref_t pvref = ref->get_pos_var ();
+    varref_t vref = ref->get_var();
+    varref_t pvref = ref->get_pos_var ();
     if (vref->get_kind() == var_expr::for_var) {
       TSVAnnotationValue::update_annotation (ref->get_expr (), k, (pvref == NULL) ? v : TSVAnnotationValue::FALSE_VAL);
     }
@@ -78,7 +78,7 @@ static void init_let_vars_consumer_props (flwor_expr *flwor) {
   {
     int todo = 0;
     flwor_expr::forletref_t ref = *i;
-    forlet_clause::varref_t vref = ref->get_var();
+    varref_t vref = ref->get_var();
     for (int j = 0; j < 2; j++) {
       Annotation::key_t k = j == 0 ? AnnotationKey::IGNORES_SORTED_NODES : AnnotationKey::IGNORES_DUP_NODES;
       if (vref->get_kind() == var_expr::let_var) {
@@ -106,7 +106,7 @@ static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
        i != flwor->clause_rend(); i++)
   {
     flwor_expr::forletref_t ref = *i;
-    forlet_clause::varref_t vref = ref->get_var();
+    varref_t vref = ref->get_var();
     for (int j = 0; j < 2; j++) {
       Annotation::key_t k =
         j == 0 ? AnnotationKey::IGNORES_SORTED_NODES : AnnotationKey::IGNORES_DUP_NODES;

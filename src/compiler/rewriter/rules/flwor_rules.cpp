@@ -141,7 +141,7 @@ static bool safe_to_fold_single_use(var_expr *v, flwor_expr *flwor, static_conte
        i != flwor->clause_end (); i++) 
   {
     flwor_expr::forletref_t ref = *i;
-    forlet_clause::varref_t vref = ref->get_var();
+    varref_t vref = ref->get_var();
     if (! declared) {
       declared = v == vref.getp ();
       continue;
@@ -198,10 +198,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         i != flwor->clause_end(); ) {
     flwor_expr::forletref_t ref = *i;
     expr *cexpr = ref->get_expr ();
-    forlet_clause::varref_t vref = ref->get_var();
+    varref_t vref = ref->get_var();
     bool is_let = vref->get_kind() == var_expr::let_var;
     int quant_cnt = 2;  // cardinality of for clause: 0, 1 or more
-    forlet_clause::varref_t pvref = ref->get_pos_var ();
+    varref_t pvref = ref->get_pos_var ();
     if (pvref != NULL && count_variable_uses(flwor, &*pvref, 1) == 0)
       MODIFY (ref->set_pos_var (pvref = NULL));
     if (! is_let) {
@@ -255,7 +255,7 @@ RULE_REWRITE_POST(EliminateUnusedLetVars) {
 
 // Checks whether @p cond comes has the form '$pos_var = ($idx)'
 // where $idx would be a proper sequence position.
-static bool refactor_index_pred (RewriterContext& rCtx, expr_t cond, forlet_clause::varref_t &pvar, rchandle<const_expr> &pos_expr) {
+static bool refactor_index_pred (RewriterContext& rCtx, expr_t cond, varref_t &pvar, rchandle<const_expr> &pos_expr) {
   fo_expr *fo = cond.dyn_cast<fo_expr> ().getp ();
   if (fo == NULL) return false;
   const function *f = fo->get_func ();
@@ -289,7 +289,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if_expr *ite_result = flwor->get_retval().dyn_cast<if_expr> ();
 
   rchandle<const_expr> pos;
-  forlet_clause::varref_t pvar;
+  varref_t pvar;
 
   // 'for $x in ... return if (...) then ... else ()'
   if (ite_result != NULL && WHERE == NULL &&
