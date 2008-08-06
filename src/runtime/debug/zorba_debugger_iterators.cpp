@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cassert>
 
 #include <zorbautils/thread.h>
 
@@ -47,6 +48,7 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
     while ( consumeNext( result, theChildren[0], planState ) ) {
+      assert(theDebugger);
       theDebugger->thePlanState = &planState;
       theDebugger->theVarnames = varnames;
       theDebugger->theVarkeys = var_keys;
@@ -56,6 +58,7 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
       theDebugger->theLocation = loc;
       if ( theDebugger->hasToSuspend() )
       {
+        assert(theDebugger->theRuntimeThread);
         theDebugger->theRuntimeThread->suspend();
       }
       STACK_PUSH(true, state);
