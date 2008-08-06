@@ -205,7 +205,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                             theCastType,
                                             state->theSimpleParseItems);
       while(state->theIndex < state->theSimpleParseItems.size()) {
-        result = state->theSimpleParseItems[++state->theIndex];
+        result = state->theSimpleParseItems[state->theIndex++];
         STACK_PUSH(true, state);
       }
     }
@@ -222,7 +222,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                               theCastType,
                                               state->theSimpleParseItems);
         while(state->theIndex < state->theSimpleParseItems.size()) {
-          result = state->theSimpleParseItems[++state->theIndex];
+          result = state->theSimpleParseItems[state->theIndex++];
           STACK_PUSH(true, state);
         }
       }
