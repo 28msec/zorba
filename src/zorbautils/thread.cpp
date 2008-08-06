@@ -46,6 +46,7 @@ Thread::~Thread()
 {
 #ifdef ZORBA_HAVE_PTHREAD_H
   pthread_cancel( theThread );
+  pthread_detach( theThread );
   pthread_mutex_destroy( &theMutex );
   pthread_cond_destroy( &theCV );
 #else
@@ -60,7 +61,7 @@ void Thread::suspend()
   pthread_cond_wait( &theCV, &theMutex ); 
   pthread_mutex_unlock( &theMutex );
 #else
-	SuspendThread( theThread );
+  SuspendThread( theThread );
 #endif	
 }
 
