@@ -427,7 +427,7 @@ bool begin_visit(flwor_expr& v)
        it != v.clause_end();
        ++it) 
   {
-    rchandle<var_expr> var = (*it)->var_h;
+    rchandle<var_expr> var = (*it)->get_var ();
     uint64_t k = (uint64_t) &*var;
 
     if (var->kind == var_expr::for_var)
@@ -554,10 +554,10 @@ void end_visit(flwor_expr& v)
   {
     PlanIter_t input = pop_stack(inputs);
 
-    if ((*it)->type == forlet_clause::for_clause)
+    if ((*it)->get_type () == forlet_clause::for_clause)
     {
       vector<ForVarIter_t> *var_iters = NULL, *pvar_iters = NULL;
-      var_expr* var = (*it)->var_h.getp();
+      var_expr* var = (*it)->get_var ().getp();
       var_expr* pos_var = (*it)->get_pos_var().getp();
       ZORBA_ASSERT( fvar_iter_map.get((uint64_t)var, var_iters) );
       if (pos_var == NULL)
@@ -570,10 +570,10 @@ void end_visit(flwor_expr& v)
         clauses.push_back(FLWORIterator::ForLetClause(var, *var_iters, *pvar_iters, input));
       }
     }
-    else if ((*it)->type == forlet_clause::let_clause)
+    else if ((*it)->get_type () == forlet_clause::let_clause)
     {
       vector<LetVarIter_t> *var_iters = NULL;
-      var_expr* var = (*it)->var_h;
+      var_expr* var = (*it)->get_var ().getp ();
       ZORBA_ASSERT( lvar_iter_map.get((uint64_t)var, var_iters) );
       clauses.push_back(FLWORIterator::ForLetClause(var, *var_iters, input, true));
     }

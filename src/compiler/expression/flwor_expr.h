@@ -55,13 +55,14 @@ public:
 
 ********************************************************************************/
 class forlet_clause : public SimpleRCObject {
+  friend class flwor_expr;
 public:
   enum forlet_t {
     for_clause,
     let_clause
   };
 
-public: // state
+protected: // state
   enum forlet_t type;
   varref_t var_h;
   varref_t pos_var_h;
