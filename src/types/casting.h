@@ -108,7 +108,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastableToAtomic(const store::Item_t& aItem, const XQType* aTargetType) const; 
+  bool isCastable(const store::Item_t& aItem, const XQType* aTargetType) const; 
 
   /**
    * Checks if the passed string is castable to the passed target type.
@@ -116,7 +116,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastableToAtomic(xqpStringStore_t& aStr, const XQType* aTargetType) const;
+  bool isCastable(xqpStringStore_t& aStr, const XQType* aTargetType) const;
 
   /**
    * Promotes the passed item to the passed target type.

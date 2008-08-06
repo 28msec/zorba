@@ -266,14 +266,14 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       lBool = true;
     }
   } else {
-    lBool = GenericCast::instance()->isCastableToAtomic(lItem, theCastType);
+    lBool = GenericCast::instance()->isCastable(lItem, theCastType);
     if (lBool) {
       if (consumeNext(lItem, theChild.getp(), planState)) {
         if (theQuantifier == TypeConstants::QUANT_ONE || theQuantifier == TypeConstants::QUANT_QUESTION) {
           lBool = false;
         } else {
           do {
-            lBool = GenericCast::instance()->isCastableToAtomic(lItem, theCastType);
+            lBool = GenericCast::instance()->isCastable(lItem, theCastType);
           } while (lBool && consumeNext(lItem, theChild.getp(), planState));
         }
       }

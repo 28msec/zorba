@@ -1622,7 +1622,7 @@ bool GenericCast::castableToName(const xqpStringStore *str) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::isCastableToAtomic(
+bool GenericCast::isCastable(
     const store::Item_t& aItem,
     const XQType* aTargetType) const
 {
@@ -1662,13 +1662,13 @@ bool GenericCast::isCastableToAtomic(
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::isCastableToAtomic(
+bool GenericCast::isCastable(
     xqpStringStore_t& aStr,
     const XQType* aTargetType) const
 {
   store::Item_t lItem;
   GENV_ITEMFACTORY->createString(lItem, aStr);
-  return isCastableToAtomic(lItem, aTargetType);
+  return isCastable(lItem, aTargetType);
 }
 
 

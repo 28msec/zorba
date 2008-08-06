@@ -415,7 +415,7 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
     xqpStringStore_t lBaseURI = Unmarshaller::getInternalString(aBaseURI);
     xqpStringStore_t lBaseURI2 = lBaseURI;
     
-    if(!GenericCast::instance()->isCastableToAtomic(lBaseURI, &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
+    if(!GenericCast::instance()->isCastable(lBaseURI, &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
       ZORBA_ERROR_DESC(XQP0020_INVALID_URI, lBaseURI);
     }
     theCtx->set_baseuri(lBaseURI2.getp(), false);
