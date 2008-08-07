@@ -22,7 +22,9 @@
 
 namespace zorba {
 
-void normalize_expr_tree (const char *, CompilerCB*, expr_t root);
+class XQType;
+
+void normalize_expr_tree (const char *, CompilerCB*, expr_t& root, const XQType *rType);
 
 } /* namespace zorba */
 #endif /* ZORBA_NORMALIZER_H */

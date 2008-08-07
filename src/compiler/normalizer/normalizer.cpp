@@ -306,9 +306,17 @@ DEF_VISIT_METHODS (ft_contains_expr)
 
 };
 
-void normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_t root) {
+void normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_t& root, const XQType *rType) {
   normalizer n (aCompilerCB);
   root->accept(n);
+  if (rType != NULL) {
+    if (TypeOps::is_simple(*rType)) {
+      root = wrap_in_atomization(aCompilerCB->m_sctx, root);
+      root = wrap_in_type_conversion(root, rType);
+    } else {
+      root = new treat_expr (root->get_loc (), root, rType, XPTY0004);
+    }
+  }
   if (aCompilerCB->m_config.normalize_cb)
     aCompilerCB->m_config.normalize_cb (&*root, norm_descr);
 }

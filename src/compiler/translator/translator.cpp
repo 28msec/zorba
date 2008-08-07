@@ -2168,17 +2168,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         ZORBA_ERROR_LOC(XUST0002, loc);
     }
 
-    if (v.get_return_type () != NULL) 
-    {
-      xqtref_t rt = pop_tstack ();
-      // Perhaps promote_expr should handle user-defined types too.
-      // Perhaps it already does. Not sure. TODO.
-      if (TypeOps::is_simple (*rt))
-        body = new promote_expr (body->get_loc (), body, rt);
-      else
-        body = new treat_expr (body->get_loc (), body, rt, XPTY0004);
-    }
-
     int nargs = v.get_param_count ();
     vector<var_expr_t> args;
     if (nargs > 0)
@@ -2215,7 +2204,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     if (compilerCB->m_config.translate_cb != NULL)
       compilerCB->m_config.translate_cb (&*body, v.get_name ()->get_qname ());
 
-    normalize_expr_tree(v.get_name ()->get_qname().c_str(), compilerCB, body);
+    normalize_expr_tree(v.get_name ()->get_qname().c_str(), compilerCB, body, *&(udf->get_signature().return_type()));
 
     if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1)
     {
