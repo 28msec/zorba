@@ -1522,20 +1522,16 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   int i, j;
+
+  expr_t lReturnExpr = pop_nodestack ();
 #ifdef ZORBA_DEBUGGER
-  expr_t lReturnExpr;
-  if ( compilerCB->m_debugger != 0 )
-  {
-    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, pop_nodestack(),
-                                                              theScopedVariables,
-                                                              theGlobalVars);
-   lReturnExpr = &*lDebuggerExpr;
-  } else {
-    lReturnExpr = pop_nodestack();
+  if (compilerCB->m_debugger != 0) {
+    rchandle<debugger_expr> lDebuggerExpr =
+      new debugger_expr(loc, lReturnExpr, theScopedVariables, theGlobalVars);
+   lReturnExpr = lDebuggerExpr;
   }
-#else
-  expr_t lReturnExpr = pop_nodestack();
 #endif
+
   rchandle<flwor_expr> flwor = new flwor_expr (loc);
   flwor->setUpdateType(lReturnExpr->getUpdateType());
   flwor->set_retval (lReturnExpr);
@@ -1571,8 +1567,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   GroupByClause *lGroupBy = &*v.get_groupby();
   if (lGroupBy)
   {
-    if (lGroupBy->get_where() != 0)
-    {
+    if (lGroupBy->get_where() != 0) {
       expr_t lClauseExpr = pop_nodestack();
       if (lClauseExpr->isUpdating())
         ZORBA_ERROR_LOC(XUST0001, loc);
@@ -1583,15 +1578,14 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
     GroupSpecList *lGroupList = lGroupBy->get_spec_list();
     size_t lSize = lGroupList->size();
-    for (int i = (lSize-1); i >= 0; --i)
-    {
+    for (int i = (lSize-1); i >= 0; --i) {
       GroupSpec* lSpec = &*((*lGroupList)[i]);
 
       var_expr_t lOuterVarExpr = pop_nodestack().cast<var_expr>();
       var_expr_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
 
-      group_clause* lClause = 0;
-      if (lSpec->group_coll_spec() != 0)
+      group_clause* lClause = NULL;
+      if (lSpec->group_coll_spec() != NULL)
         lClause = new group_clause(lOuterVarExpr, lInnerVarExpr, lSpec->group_coll_spec()->get_uri());
       else
         lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
@@ -1601,8 +1595,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
     
     expr_t lVar = pop_nodestack();
-    while (lVar != 0)
-    {
+    while (lVar != NULL) {
       var_expr_t lOuterVarExpr = lVar.cast<var_expr>();
       var_expr_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
       group_clause* lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
@@ -1612,13 +1605,10 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     }
   }
 
-  if (v.get_where () != NULL)
-  {
+  if (v.get_where () != NULL) {
     expr_t lClauseExpr = pop_nodestack();
     if (lClauseExpr->isUpdating())
-    {
       ZORBA_ERROR_LOC(XUST0001, loc);
-    }
     flwor->set_where (lClauseExpr);
   }
   ForLetClauseList *clauses = v.get_forlet_list ().getp ();
@@ -1626,8 +1616,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   for (i = clauses->size () - 1; i >= 0; i--) {
     ForOrLetClause *clause = (*clauses) [i].getp ();
-    vector<rchandle <var_expr> > vars;
-    vector<rchandle <var_expr> > pos_vars;
+    vector<rchandle <var_expr> > vars, pos_vars;
     vector<rchandle <expr> > exprs;
     int size = clause->get_decl_count ();
 
@@ -1644,9 +1633,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
         // value expression
         expr_t lValueExpr = pop_nodestack();
         if (lValueExpr->isUpdating())
-        {
           ZORBA_ERROR_LOC(XUST0001, loc);
-        }
         exprs.push_back(lValueExpr);
         // pos var
         if ((*decl_list) [j]->get_posvar () == NULL)
@@ -1668,9 +1655,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
         var_expr_t ve = pop_nodestack ().cast<var_expr> ();
         expr_t lValueExpr = pop_nodestack();
         if (lValueExpr->isUpdating())
-        {
           ZORBA_ERROR_LOC(XUST0001, loc);
-        }
         exprs.push_back(lValueExpr);
         ve->set_kind (var_expr::let_var);
         vars.push_back (ve);
