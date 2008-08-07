@@ -383,7 +383,8 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
   XQType::type_kind_t tk1 = type1.type_kind (), tk2 = type2.type_kind ();
 
   if (tk1 < tk2)
-    return intersect_type (type2, type2);
+    //return intersect_type (type2, type2);
+    return intersect_type (type2, type1);
 
   TypeConstants::quantifier_t q1 = quantifier (type1), q2 = quantifier (type2);
   if (is_subtype (type1, type2))

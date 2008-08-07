@@ -78,8 +78,9 @@ xqtref_t TypeManagerImpl::create_type(
     return GENV_TYPESYSTEM.UNTYPED_TYPE;
 
   case XQType::EMPTY_KIND:
-  case XQType::NONE_KIND:
     return GENV_TYPESYSTEM.EMPTY_TYPE;
+  case XQType::NONE_KIND:
+    return quantifier == TypeConstants::QUANT_ONE || quantifier == TypeConstants::QUANT_PLUS ? GENV_TYPESYSTEM.NONE_TYPE : GENV_TYPESYSTEM.EMPTY_TYPE;
 
   case XQType::USER_DEFINED_KIND:
   {

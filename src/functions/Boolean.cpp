@@ -54,10 +54,16 @@ namespace zorba
   
   xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {
     xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
-    for (int i = 0; i < 2; i++)
-      if (TypeOps::is_subtype (*empty, *arg_types [i]))
+    TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+    for (int i = 0; i < 2; i++) {
+      if (TypeOps::is_equal (*empty, *arg_types [i]))
         return empty;
-    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+      TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
+      if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR) {
+        quant = TypeConstants::QUANT_QUESTION;
+      }
+    }
+    return quant == TypeConstants::QUANT_QUESTION ? GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION : GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
   }
 
   

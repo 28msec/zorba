@@ -166,7 +166,7 @@ class EmptyXQType : public XQType
 public:
   EmptyXQType(const TypeManager *manager)
     :
-    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_STAR) { }
+    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION) { }
 };
 
 
