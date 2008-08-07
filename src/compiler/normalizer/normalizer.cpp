@@ -90,7 +90,7 @@ DEF_VISIT_METHODS (typeswitch_expr)
 void end_visit (flwor_expr&) {}
 bool begin_visit (flwor_expr& node)
 {
-  QueryLoc loc = node.get_loc ();
+  const QueryLoc &loc = node.get_loc ();
   expr::expr_t where_h = node.get_where();
   if (where_h.getp()) {
     node.set_where(wrap_in_bev(m_sctx, where_h));
