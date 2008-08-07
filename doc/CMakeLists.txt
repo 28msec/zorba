@@ -21,6 +21,7 @@ FIND_PACKAGE(SWIG)
 IF (SWIG_FOUND)
   ADD_SUBDIRECTORY(python)
   ADD_SUBDIRECTORY(ruby)
+  ADD_SUBDIRECTORY(php)
 ENDIF (SWIG_FOUND)
 
 # workaround: a dir is already needed for the install command. the html directory, however, is generated with the make doc call
