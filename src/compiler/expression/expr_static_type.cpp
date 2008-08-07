@@ -28,10 +28,24 @@
 using namespace std;
 namespace zorba {
 
+#define DEBUG_RT(e, t) t
+
+#ifndef DEBUG_RT
+#define DEBUG_RT(e, t) print_expr_ant_type(e, t)
+
+static xqtref_t print_expr_ant_type(expr *e, xqtref_t t)
+{
+  e->put(std::cerr);
+  std::cerr << t->toString() << std::endl;
+  return t;
+}
+
+#endif
+
   xqtref_t expr::return_type(static_context *sctx) {
     bool cc = cache_compliant ();
     if (! cc)
-      return return_type_impl (sctx);
+      return DEBUG_RT(this, return_type_impl (sctx));
     if (! cache.type.valid
         || (cache.type.sctx != sctx && ! TypeOps::is_subtype (*cache.type.t, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE)))
       {
@@ -39,7 +53,7 @@ namespace zorba {
         cache.type.sctx = sctx;
         cache.type.valid = true;
       }
-    return cache.type.t;
+    return DEBUG_RT(this, cache.type.t);
   }
 
   xqtref_t expr::return_type_impl(static_context *sctx)
