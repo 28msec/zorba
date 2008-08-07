@@ -45,7 +45,6 @@ public:
 
     store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
 
-#ifndef ZORBA_NO_XMLSCHEMA
     Schema();
     virtual ~Schema();
 
@@ -89,13 +88,12 @@ public:
         const store::Item* qname,
         TypeConstants::quantifier_t quantifier);
 
+#ifndef ZORBA_NO_XMLSCHEMA
     XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool();
 
 private:
     xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef);
-
-
-#endif//ZORBA_NO_XMLSCHEMA
+#endif //ZORBA_NO_XMLSCHEMA
 
 
 private:
@@ -104,7 +102,7 @@ private:
 #ifndef ZORBA_NO_XMLSCHEMA
     XERCES_CPP_NAMESPACE::XMLGrammarPool *_grammarPool;
     hashmap<xqtref_t> *_udTypesCache;
-#endif
+#endif //ZORBA_NO_XMLSCHEMA
 };
 
 } // namespace zorba

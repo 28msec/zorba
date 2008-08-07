@@ -1235,7 +1235,6 @@ GenericCast* GenericCast::instance()
 }
 
 
-#ifndef ZORBA_NO_XMLSCHEMA
 store::Item_t castUserDefinedType(
     const store::Item_t& aItem,
     const ErrorInfo& aErrorInfo)
@@ -1278,6 +1277,7 @@ store::Item_t castUserDefinedType(
     return 0;
 }
 
+
 bool GenericCast::castToSimple(const xqpString aStr, 
                                const xqtref_t& aTargetType,
                                std::vector<store::Item_t> &aResultList) const
@@ -1290,7 +1290,6 @@ bool GenericCast::castToSimple(const xqpString aStr,
 }
 
 
-#endif
 
 
 /*******************************************************************************
@@ -1319,7 +1318,8 @@ bool GenericCast::castToAtomic(
     result = castUserDefinedType(aItem, lErrorInfo);
     return result != NULL;
   }
-#endif
+#endif // ZORBA_NO_XMLSCHEMA
+
 
   if (!TypeOps::is_atomic(*aTargetType))
     throwError(XPST0051, lErrorInfo);
@@ -1618,6 +1618,7 @@ bool GenericCast::isCastable(
     const store::Item_t& aItem,
     const XQType* aTargetType) const
 {
+#ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND
   && !static_cast<const UserDefinedXQType*>(aTargetType)->isComplex()) {
     const DelegatingTypeManager* lDelegatingTypeManager 
@@ -1626,7 +1627,8 @@ bool GenericCast::isCastable(
     return lDelegatingTypeManager->getSchema()->
               isCastableUserSimpleTypes(xqpString(aItem->getStringValue().getp()), aTargetType);
   }
-  else {
+#endif // ZORBA_NO_XMLSCHEMA
+    
     RootTypeManager& lTS = GENV_TYPESYSTEM;
 
     xqtref_t lSourceType = lTS.create_named_type(aItem->getType(), 
@@ -1658,7 +1660,6 @@ bool GenericCast::isCastable(
     }
 
     return false;
-  }
 }
 
 /*******************************************************************************

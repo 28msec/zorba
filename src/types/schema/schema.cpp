@@ -46,7 +46,7 @@ const char* Schema::XSD_NAMESPACE = XML_SCHEMA_NS;
 
 bool Schema::_isInitialized = false;
 
-
+#ifndef ZORBA_NO_XMLSCHEMA
 xqp_string transcode(const XMLCh *const str)
 {
     char* trStr = XMLString::transcode(str);
@@ -54,10 +54,12 @@ xqp_string transcode(const XMLCh *const str)
     XMLString::release(&trStr);
     return res;
 }
+#endif //ZORBA_NO_XMLSCHEMA
 
 
 void Schema::initialize()
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     if (_isInitialized)
         return;
     
@@ -72,33 +74,40 @@ void Schema::initialize()
                << StrX(toCatch.getMessage()) << std::endl;
         return;         
     }
+#endif //ZORBA_NO_XMLSCHEMA
 }
 
 void Schema::terminate()
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     if (_isInitialized)
     {
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();    
         _isInitialized = false;
     }
+#endif //ZORBA_NO_XMLSCHEMA
 }
 
-#ifndef ZORBA_NO_XMLSCHEMA
 
 Schema::Schema()
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     _grammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
     _udTypesCache = new hashmap<xqtref_t>;
+#endif //ZORBA_NO_XMLSCHEMA
 }
 
 Schema::~Schema()
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     delete _grammarPool;
     delete _udTypesCache;
+#endif //ZORBA_NO_XMLSCHEMA
 }
 
 void Schema::registerXSD(const char* xsdURL)
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     std::auto_ptr<SAX2XMLReader> parser;
     
     try
@@ -144,16 +153,20 @@ void Schema::registerXSD(const char* xsdURL)
 #if 0                   // enable this to debug registered user defined schema types
       printXSDInfo();
 #endif
+#endif //ZORBA_NO_XMLSCHEMA
 }
 
 void Schema::printXSDInfo(bool excludeBuiltIn)
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     PrintSchema::printInfo(excludeBuiltIn, _grammarPool);
+#endif //ZORBA_NO_XMLSCHEMA
 }
 
 xqtref_t Schema::createIfExists( const TypeManager *typeManager, const store::Item* qname,
     TypeConstants::quantifier_t quantifier)
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     const char* uri_cstr = qname->getNamespace()->c_str();
     if ( XMLString::equals(XSD_NAMESPACE, uri_cstr) )
         return NULL;
@@ -187,10 +200,13 @@ xqtref_t Schema::createIfExists( const TypeManager *typeManager, const store::It
     _udTypesCache->put(key, res);
 
     return res;
+#else  //ZORBA_NO_XMLSCHEMA
+    return NULL;
+#endif //ZORBA_NO_XMLSCHEMA
 }
 
 
-
+#ifndef ZORBA_NO_XMLSCHEMA
 xqtref_t Schema::getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef)
 {
     if (!xsTypeDef)
@@ -534,6 +550,7 @@ XERCES_CPP_NAMESPACE::XMLGrammarPool* Schema::getGrammarPool()
 {
     return _grammarPool;
 }
+#endif //ZORBA_NO_XMLSCHEMA
 
 
 // user simple types, i.e. Atomic, List or Union Types
@@ -616,6 +633,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aT
     ZORBA_ASSERT( udXQType->isAtomic() );
 
     store::Item_t typeQName = udXQType->getQName();
+#ifndef ZORBA_NO_XMLSCHEMA
     XMLChArray localPart (typeQName->getLocalName());
     XMLChArray uriStr (typeQName->getNamespace());
     
@@ -646,7 +664,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aT
         else
         {
           ZORBA_ERROR_DESC_OSS( FORG0001, 
-                                "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
+              "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
           wasError = true;
 
         }
@@ -669,6 +687,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aT
     {
         throw;
     }
+#endif //ZORBA_NO_XMLSCHEMA
 
     const XQType* baseType_ptr = udXQType->getBaseType().getp();
 
@@ -859,7 +878,6 @@ bool Schema::isCastableUserUnionTypes(const xqp_string textValue, const xqtref_t
     return false;
 }        
 
-#endif//ZORBA_NO_XMLSCHEMA
 
 } // namespace zorba
 

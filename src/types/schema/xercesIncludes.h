@@ -16,6 +16,7 @@
 #ifndef ZORBA_XERCESINCLUDES_H_
 #define ZORBA_XERCESINCLUDES_H_
 
+
 #include <xercesc/framework/psvi/XSModel.hpp>
 #include <xercesc/framework/psvi/XSElementDeclaration.hpp>
 #include <xercesc/framework/psvi/XSTypeDefinition.hpp>
@@ -42,6 +43,7 @@
 #include <xercesc/util/XMLUni.hpp>
 #include <xercesc/util/XMLUri.hpp>
 #include <xercesc/util/XMLURL.hpp>
+
 
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
 #ifdef CYGWIN

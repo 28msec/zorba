@@ -56,8 +56,6 @@ xqtref_t DelegatingTypeManager::create_named_atomic_type(
 }
 
 
-#ifndef ZORBA_NO_XMLSCHEMA
-
 void DelegatingTypeManager::initializeSchema()
 {
   if ( _schema==NULL )
@@ -67,10 +65,12 @@ void DelegatingTypeManager::initializeSchema()
 
 void DelegatingTypeManager::terminateSchema()
 {
-  delete _schema;
-  _schema = NULL;
+  if ( _schema != NULL )
+  {
+    delete _schema;
+    _schema = NULL;
+  }
 }
 
-#endif//ZORBA_NO_XMLSCHEMA
 
 } // namespace zorba
