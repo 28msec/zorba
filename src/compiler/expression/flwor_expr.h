@@ -100,8 +100,8 @@ public:
 class group_clause : public SimpleRCObject {
   friend class flwor_expr;
 protected:
-  expr_t      theOuterVar;
-  expr_t      theInnerVar;
+  varref_t    theOuterVar;
+  varref_t    theInnerVar;
   std::string theCollation;
 
 public:
@@ -112,10 +112,10 @@ public:
   : theOuterVar(aOuterVar.getp()), theInnerVar(aInnerVar.getp()), theCollation(aCollation) {}
 
   rchandle<var_expr> getOuterVar() const {
-    return rchandle<var_expr>(static_cast<var_expr*>(theOuterVar.getp())); 
+    return theOuterVar;
   }
   rchandle<var_expr> getInnerVar() const { 
-    return rchandle<var_expr>(static_cast<var_expr*>(theInnerVar.getp())); 
+    return theInnerVar;
   }
 
   std::string getCollation() const { return theCollation; }
