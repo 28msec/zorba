@@ -73,6 +73,7 @@ function example_5(Zorba $aZorba)
   $lQuery = $aZorba->compileQuery("doc('books.xml')//book");
   echo $lQuery->execute();
   $lQuery->destroy();
+  return true;
 }
 
 function example_6(Zorba $aZorba)
