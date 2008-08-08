@@ -95,9 +95,7 @@ namespace zorba {
 
 #define CTXTS sctx_p->get_typemanager ()
 
-  typedef rchandle<expr> expr_t;
-  typedef rchandle<var_expr> var_expr_t;
-  typedef std::pair<var_expr_t, expr_t> global_binding;
+  typedef std::pair<varref_t, expr_t> global_binding;
 
   template<class T> T &peek_stack (std::stack<T> &stk) {
     ZORBA_ASSERT (! stk.empty ());
@@ -158,7 +156,7 @@ protected:
   list<global_binding> theGlobalVars;
 #ifdef ZORBA_DEBUGGER
   checked_vector<unsigned int> theScopes;
-  checked_vector<var_expr_t> theScopedVariables;
+  checked_vector<varref_t> theScopedVariables;
 #endif
 
   rchandle<namespace_context> ns_ctx;
@@ -179,7 +177,7 @@ protected:
 
   bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
 
-  var_expr_t theDotVar, theDotPosVar, theLastVar;
+  varref_t theDotVar, theDotPosVar, theLastVar;
 
   // TODO: should be static
   // functions accepting . as default arg
@@ -241,46 +239,46 @@ protected:
     return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
   }
 
-  var_expr_t create_var (const QueryLoc& loc, store::Item_t qname, var_expr::var_kind kind, xqtref_t type = NULL) {
-    var_expr_t e = new var_expr (loc, kind, qname);
+  varref_t create_var (const QueryLoc& loc, store::Item_t qname, var_expr::var_kind kind, xqtref_t type = NULL) {
+    varref_t e = new var_expr (loc, kind, qname);
     e->set_type (type);
     return e;
   }
 
-  var_expr_t create_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  varref_t create_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
     store::Item_t qname = sctx_p->lookup_qname ("", varname);
     return create_var (loc, qname, kind, type);
   }
 
-  void bind_var (var_expr_t e, static_context *sctx) {
+  void bind_var (varref_t e, static_context *sctx) {
     assert (sctx != NULL);
     store::Item_t qname = e->get_varname ();
     if (! sctx->bind_var (qname, e.getp ()))
       ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
   }
 
-  var_expr_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  varref_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
-    var_expr_t e = create_var (loc, varname, kind, type);
+    varref_t e = create_var (loc, varname, kind, type);
     bind_var (e, sctx_p);
     return e;
   }
-  var_expr_t bind_var (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  varref_t bind_var (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
-    var_expr_t e = create_var (loc, varname, kind, type);
+    varref_t e = create_var (loc, varname, kind, type);
     bind_var (e, sctx_p);
     return e;
   }
 
-  var_expr_t bind_var_and_push (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  varref_t bind_var_and_push (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
-    var_expr_t e = bind_var (loc, varname, kind, type);
+    varref_t e = bind_var (loc, varname, kind, type);
     nodestack.push (&*e);
     return e;
   }
 
-  var_expr_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
+  varref_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
     return bind_var_and_push (loc, sctx_p->lookup_var_qname (varname), kind, type);
   }
@@ -416,7 +414,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
       i++)
   {
     global_binding b = *i;
-    var_expr_t var = b.first;
+    varref_t var = b.first;
     xqtref_t var_type = var->get_type ();
     expr_t expr = b.second;
     expr_t qname_expr = new const_expr (var->get_loc(), dynamic_context::var_key (&*var));
@@ -450,7 +448,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
   Create a LET clause for the given LET variable "lv", with the given expr "e" as
   its defining expression.
 ********************************************************************************/
-rchandle<forlet_clause> wrap_in_letclause(expr_t e, var_expr_t lv)
+rchandle<forlet_clause> wrap_in_letclause(expr_t e, varref_t lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
   return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, e.getp());
@@ -473,7 +471,7 @@ rchandle<forlet_clause> wrap_in_letclause(expr_t e)
   Create a FOR clause for the given FOR variable "fv" and its associated POS var
   "pv" (pv may be NULL). Use the given expr "e" as the defining expr for "fv". 
 ********************************************************************************/
-rchandle<forlet_clause> wrap_in_forclause(expr_t e, var_expr_t fv, var_expr_t pv)
+rchandle<forlet_clause> wrap_in_forclause(expr_t e, varref_t fv, varref_t pv)
 {
   assert (fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
@@ -484,9 +482,9 @@ rchandle<forlet_clause> wrap_in_forclause(expr_t e, var_expr_t fv, var_expr_t pv
 
 rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
 {
-  var_expr_t fv = tempvar(expr->get_loc(), var_expr::for_var);
-  var_expr_t pv = (add_posvar ? tempvar(expr->get_loc(), var_expr::pos_var) : 
-                                var_expr_t (NULL));
+  varref_t fv = tempvar(expr->get_loc(), var_expr::for_var);
+  varref_t pv = (add_posvar ? tempvar(expr->get_loc(), var_expr::pos_var) : 
+                                varref_t (NULL));
   return wrap_in_forclause (expr, fv, pv);
 }
 
@@ -1581,8 +1579,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     for (int i = (lSize-1); i >= 0; --i) {
       GroupSpec* lSpec = &*((*lGroupList)[i]);
 
-      var_expr_t lOuterVarExpr = pop_nodestack().cast<var_expr>();
-      var_expr_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
+      varref_t lOuterVarExpr = pop_nodestack().cast<var_expr>();
+      varref_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
 
       group_clause* lClause = NULL;
       if (lSpec->group_coll_spec() != NULL)
@@ -1596,8 +1594,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     
     expr_t lVar = pop_nodestack();
     while (lVar != NULL) {
-      var_expr_t lOuterVarExpr = lVar.cast<var_expr>();
-      var_expr_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
+      varref_t lOuterVarExpr = lVar.cast<var_expr>();
+      varref_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
       group_clause* lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
       flwor->add_non_group(lClause);
       pop_scope();
@@ -1625,7 +1623,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       VarInDeclList *decl_list = &*forclause->get_vardecl_list ();
 
       for (j = size - 1; j >= 0; j--) {
-        var_expr_t ve;
+        varref_t ve;
         ve = pop_nodestack ().cast<var_expr> ();
         ve->set_kind (var_expr::for_var);
         // for var
@@ -1639,7 +1637,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
         if ((*decl_list) [j]->get_posvar () == NULL)
           pos_vars.push_back (NULL);
         else {
-          var_expr_t pve = pop_nodestack ().cast<var_expr> ();
+          varref_t pve = pop_nodestack ().cast<var_expr> ();
           pve->set_kind (var_expr::pos_var);
           pos_vars.push_back (pve);
         }
@@ -1652,7 +1650,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       }
     } else {  // let clause
       for (j = 0; j < size; j++) {
-        var_expr_t ve = pop_nodestack ().cast<var_expr> ();
+        varref_t ve = pop_nodestack ().cast<var_expr> ();
         expr_t lValueExpr = pop_nodestack();
         if (lValueExpr->isUpdating())
           ZORBA_ERROR_LOC(XUST0001, loc);
@@ -2008,7 +2006,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   if (v.get_typedecl () != NULL)
     type = pop_tstack ();
 
-  var_expr_t ve = bind_var (loc, varname, var_expr::context_var, type);
+  varref_t ve = bind_var (loc, varname, var_expr::context_var, type);
   if (! mod_ns.empty () && xqp_string (ve->get_varname ()->getNamespace ()) != mod_ns)
     ZORBA_ERROR_LOC (XQST0048, loc);
   if (! v.is_extern ()) {
@@ -2169,7 +2167,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     }
 
     int nargs = v.get_param_count ();
-    vector<var_expr_t> args;
+    vector<varref_t> args;
     if (nargs > 0)
     {
       rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr> ();
@@ -2263,8 +2261,8 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   store::Item_t qname = sctx_p->lookup_qname ("", v.get_name());
 
-  var_expr_t param_var = create_var (loc, qname, var_expr::param_var);
-  var_expr_t subst_var = bind_var (loc, qname, var_expr::let_var);
+  varref_t param_var = create_var (loc, qname, var_expr::param_var);
+  varref_t subst_var = bind_var (loc, qname, var_expr::let_var);
 
   flwor->add(wrap_in_letclause(&*param_var, subst_var));
 
@@ -2340,7 +2338,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:number", sz );
       }
 
-      var_expr_t tv = tempvar (loc, var_expr::let_var);
+      varref_t tv = tempvar (loc, var_expr::let_var);
 
       expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
 
@@ -3887,14 +3885,14 @@ xqpString tempname () {
   return "$$temp" + to_string(tempvar_counter++);
 }
 
-var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
+varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 {
   xqpString lname (tempname ());
   return create_var(loc, lname, kind);
 }
 
 
-rchandle<flwor_expr> wrap_in_let_flwor (expr_t expr, var_expr_t lv, expr_t ret) {
+rchandle<flwor_expr> wrap_in_let_flwor (expr_t expr, varref_t lv, expr_t ret) {
   rchandle<flwor_expr> fe = new flwor_expr (lv->get_loc ());
   fe->add (wrap_in_letclause (expr, lv));
   fe->set_retval (ret);
@@ -4560,11 +4558,11 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
     sat = uw.getp();
   }
   flwor->set_where(sat);
-  vector<var_expr_t> vars_vals (2 * v.get_decl_list()->size());
+  vector<varref_t> vars_vals (2 * v.get_decl_list()->size());
   generate (vars_vals.rbegin (), vars_vals.rend (), stack_to_generator (nodestack));
   for (int i = 0; i < v.get_decl_list()->size(); ++i) {
     pop_scope ();
-    var_expr_t ve = vars_vals [2 * i + 1].cast<var_expr> ();
+    varref_t ve = vars_vals [2 * i + 1].cast<var_expr> ();
     flwor->add(wrap_in_forclause (&*vars_vals [2 * i], ve, NULL));
   }
   rchandle<fo_expr> quant = new fo_expr(loc, v.get_qmode() == ParseConstants::quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
@@ -4625,12 +4623,12 @@ void *begin_visit(const TypeswitchExpr& v)
 {
   TRACE_VISIT ();
 
-  var_expr_t sv = tempvar (v.get_switch_expr ()->get_location (), var_expr::let_var);
+  varref_t sv = tempvar (v.get_switch_expr ()->get_location (), var_expr::let_var);
 
   expr_t defret;
   {
     string defvar_name = v.get_default_varname ();
-    var_expr_t defvar;
+    varref_t defvar;
     if (! defvar_name.empty ()) {
       push_scope ();
       defvar = bind_var (v.get_default_clause ()->get_location (), defvar_name, var_expr::let_var);
@@ -4652,7 +4650,7 @@ void *begin_visit(const TypeswitchExpr& v)
     const CaseClause *e_p = &**it;
     const QueryLoc &loc = e_p->get_location ();
     string name = e_p->get_varname ();
-    var_expr_t var;
+    varref_t var;
     if (! name.empty ()) {
       push_scope ();
       var = bind_var (loc, name, var_expr::let_var);
@@ -4918,7 +4916,7 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
     {
       ZORBA_ERROR_LOC(XUST0001, loc);
     }
-    var_expr_t lVarExpr = pop_nodestack().cast<var_expr>();
+    varref_t lVarExpr = pop_nodestack().cast<var_expr>();
     lVarExpr->set_kind(var_expr::copy_var);
     copy_clause* lCCE = new copy_clause( lVarExpr, lExpr);
     lTransform->add(lCCE);
@@ -4980,7 +4978,7 @@ void end_visit(const EvalExpr& v, void* visit_state)
   rchandle<VarGetsDeclList> vgdl = v.get_vars ();
   
   for (size_t i = 0; i < vgdl->size (); i++) {
-    var_expr_t ve = pop_nodestack ().dyn_cast<var_expr> ();
+    varref_t ve = pop_nodestack ().dyn_cast<var_expr> ();
     ve->set_kind (var_expr::eval_var);
     expr_t val = pop_nodestack ();
     if (ve->get_type () != NULL)
@@ -5005,7 +5003,7 @@ void end_visit(const CatchListExpr& v, void* visit_state)
   TRACE_VISIT_OUT ();
 }
 
-expr_t cc_component(const QueryLoc& loc, var_expr_t var, const char *local)
+expr_t cc_component(const QueryLoc& loc, varref_t var, const char *local)
 {
   expr_t exists = new fo_expr(loc, LOOKUP_FN("fn", "exists", 1), &*var);
   expr_t emptyseq = create_seq (loc);
@@ -5029,15 +5027,15 @@ void *begin_visit(const CatchExpr& v)
   tce->add_clause_in_front(cc);
   push_scope();
   if (v.getVarErrorCode() != "") {
-    var_expr_t ev = bind_var(loc, v.getVarErrorCode(), var_expr::catch_var, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
+    varref_t ev = bind_var(loc, v.getVarErrorCode(), var_expr::catch_var, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
     cc->set_errorcode_var_h(ev);
 
     if (v.getVarErrorDescr() != "") {
-      var_expr_t dv = bind_var(loc, v.getVarErrorDescr(), var_expr::catch_var, GENV_TYPESYSTEM.STRING_TYPE_QUESTION);
+      varref_t dv = bind_var(loc, v.getVarErrorDescr(), var_expr::catch_var, GENV_TYPESYSTEM.STRING_TYPE_QUESTION);
       cc->set_errordesc_var_h(dv);
 
       if (v.getVarErrorVal() != "") {
-        var_expr_t vv = bind_var(loc, v.getVarErrorVal(), var_expr::catch_var, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION);
+        varref_t vv = bind_var(loc, v.getVarErrorVal(), var_expr::catch_var, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION);
         cc->set_errorobj_var_h(vv);
       }
     }
