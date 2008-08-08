@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 INCLUDE(${CMAKE_MODULE_PATH}/FindPHP5.cmake)
 FIND_PACKAGE(PHP5)
 IF( NOT PHP5_FOUND )
@@ -20,5 +21,10 @@ ELSE( NOT PHP5_FOUND )
   SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
   INCLUDE_DIRECTORIES(${PHP5_INCLUDES})
   SWIG_ADD_MODULE(zorba_api php5 zorba_api.i)
-  SWIG_LINK_LIBRARIES(zorba_api zorba simplestore ${CMAKE_SHARED_MODULE_CREATE_C_FLAGS})
+  IF(APPLE)  
+    SWIG_LINK_LIBRARIES(zorba_api zorba simplestore ${CMAKE_SHARED_MODULE_CREATE_C_FLAGS})
+  ELSE(APPLE)
+    SWIG_LINK_LIBRARIES(zorba_api zorba simplestore)
+  ENDIF(APPLE)
 ENDIF( NOT PHP5_FOUND )
+
