@@ -16,7 +16,7 @@
  */
 
 // Try to load our extension if it's not already loaded.
-if (!extension_loaded("@phpExtensionPath@/zorba_api")) {
+if (!extension_loaded("zorba_api")) {
   if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
     if (!dl('php_zorba_api.dll')) return;
   } else {

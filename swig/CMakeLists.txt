@@ -16,7 +16,7 @@ FIND_PACKAGE(SWIG)
 IF (SWIG_FOUND)
   INCLUDE(${SWIG_USE_FILE})
   ADD_SUBDIRECTORY(python)
-#  ADD_SUBDIRECTORY(php)
+  ADD_SUBDIRECTORY(php)
 
 ADD_SUBDIRECTORY(php)
 # ruby module on Mac OS doesn't link because cmake is generating

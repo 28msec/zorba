@@ -14,4 +14,22 @@
  * limitations under the License.
  */
 
+%{
+#include "zend_exceptions.h"
+%}
 %include ../zorba_api.i
+%{
+#define SWIG_exception(code, msg) { mt_zend_throw_exception(0, msg, code TSRMLS_CC); }
+
+ZEND_API zval * mt_zend_throw_exception(zend_class_entry *exception_ce, const char *message, long code TSRMLS_DC);
+
+zval * mt_zend_throw_exception(zend_class_entry *exception_ce, const char *message, long code TSRMLS_DC)
+{
+  char *mt_message = (char *)malloc(sizeof(message));
+  strcpy(mt_message, message);
+  zval *retval = zend_throw_exception(exception_ce, mt_message, code);
+  free(mt_message);
+  return retval;
+}
+%}
+
