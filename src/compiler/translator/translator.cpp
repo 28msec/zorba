@@ -1591,15 +1591,12 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       pop_scope();
     }
 
-    
-    expr_t lVar = pop_nodestack();
-    while (lVar != NULL) {
-      varref_t lOuterVarExpr = lVar.cast<var_expr>();
+    varref_t lOuterVarExpr;
+    while (NULL != (lOuterVarExpr = pop_nodestack().cast<var_expr> ())) {
       varref_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
       group_clause* lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
       flwor->add_non_group(lClause);
       pop_scope();
-      lVar = pop_nodestack();
     }
   }
 
