@@ -390,12 +390,12 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
   return new forlet_clause(type, var_copy_h, pos_var_copy_h, score_var_copy_h, expr_copy_h);
 }
 
-  flwor_expr::clause_list_t::iterator flwor_expr::remove_forlet_clause(flwor_expr::clause_list_t::iterator i) {
+flwor_expr::clause_list_t::iterator flwor_expr::remove_forlet_clause(flwor_expr::clause_list_t::iterator i) {
   (*i)->get_var ()->set_forlet_clause (NULL);
   var_expr *pvar = (*i)->get_pos_var ();
   if (pvar != NULL)
     pvar->set_forlet_clause (NULL);
-  return clause_v.erase(i); 
+  return clause_v.erase(i);
 }
 
 expr_iterator_data *flwor_expr::make_iter () {

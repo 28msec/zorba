@@ -284,9 +284,9 @@ void end_visit(var_expr& v)
     bool bound = fvar_iter_map.get ((uint64_t) &v, map);
     
     ZORBA_ASSERT (bound);
-    ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
-            loc,
-            (void *) &v);
+    ForVarIterator *v_p = 
+      new ForVarIterator(v.get_varname()->getLocalName(),
+                         loc, (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
     break;
@@ -297,9 +297,9 @@ void end_visit(var_expr& v)
     bool bound = pvar_iter_map.get ((uint64_t) &v, map);
 
     ZORBA_ASSERT (bound);
-    ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
-            loc,
-            (void *) &v);
+    ForVarIterator *v_p =
+      new ForVarIterator(v.get_varname ()->getLocalName(),
+                         loc, (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
     break;
@@ -310,9 +310,9 @@ void end_visit(var_expr& v)
     bool bound = lvar_iter_map.get ((uint64_t) &v, map);
       
     ZORBA_ASSERT (bound);
-    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-            loc,
-            (void *) &v);
+    LetVarIterator *v_p =
+      new LetVarIterator(v.get_varname()->getLocalName(),
+            loc, (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
     break;
@@ -321,9 +321,9 @@ void end_visit(var_expr& v)
   case var_expr::param_var: {
     vector<LetVarIter_t> *map = NULL;    
     ZORBA_ASSERT (param_var_iter_map->get ((uint64_t) &v, map));
-    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-                                             loc,
-                                             (void *) &v);
+    LetVarIterator *v_p =
+      new LetVarIterator(v.get_varname()->getLocalName(),
+                         loc, (void *) &v);
     
     map->push_back (v_p);
     itstack.push(v_p);
@@ -363,9 +363,9 @@ void end_visit(var_expr& v)
     bool bound = catchvar_iter_map.get ((uint64_t) &v, map);
       
     ZORBA_ASSERT (bound);
-    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-                                             loc,
-                                             (void *) &v);
+    LetVarIterator *v_p =
+      new LetVarIterator(v.get_varname()->getLocalName(),
+                         loc, (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
   }
@@ -377,9 +377,9 @@ void end_visit(var_expr& v)
     bool bound = copy_var_iter_map.get (k, map);
       
     ZORBA_ASSERT (bound);
-    ForVarIterator* v_p = new ForVarIterator(v.get_varname()->getLocalName(),
-                                             loc,
-                                             (void *) &v);
+    ForVarIterator* v_p =
+      new ForVarIterator(v.get_varname()->getLocalName(),
+                         loc, (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
   }
@@ -391,9 +391,9 @@ void end_visit(var_expr& v)
     bool bound = group_var_iter_map.get (k, map);
       
     ZORBA_ASSERT (bound);
-    ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
-                                             loc,
-                                             (void *) &v);
+    ForVarIterator *v_p =
+      new ForVarIterator(v.get_varname()->getLocalName(),
+                         loc, (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
   }
@@ -405,9 +405,9 @@ void end_visit(var_expr& v)
     bool bound = non_group_var_iter_map.get (k, map);
       
     ZORBA_ASSERT (bound);
-    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-                                             loc,
-                                             (void *) &v);
+    LetVarIterator *v_p =
+      new LetVarIterator(v.get_varname()->getLocalName(),
+                         loc, (void *) &v);
     map->push_back (v_p);
     itstack.push(v_p);
   }
