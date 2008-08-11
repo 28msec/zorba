@@ -19,7 +19,7 @@
 namespace zorba {
 
 #if !defined WIN32 && !defined WINCE
-#define TRACE __FILE__<<':'<<__LINE__<<"::"<<__PRETTY_FUNCTION__
+#define TRACE __PRETTY_FUNCTION__<<" ("__FILE__<<':'<<__LINE__<<")"
 #define LOCATION	(__oss.str(""), \
 										__oss<<__FILE__<<":"<<__LINE__<<"::"<<__PRETTY_FUNCTION__, \
 										__oss.str())

@@ -78,8 +78,8 @@ namespace zorba {
 #define CHK_SINGLE_DECL( state, err ) do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #define QLOCDECL const QueryLoc &loc = v.get_location(); (void) loc
 #ifndef NDEBUG
-# define TRACE_VISIT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << std::string(++print_depth, ' ') << TRACE << endl
-# define TRACE_VISIT_OUT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << std::string(print_depth--, ' ') << TRACE << endl
+# define TRACE_VISIT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << std::string(++print_depth, ' ') << TRACE << ", stk size " << nodestack.size () << ", scope depth " << scope_depth << endl
+# define TRACE_VISIT_OUT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << std::string(print_depth--, ' ') << TRACE << ", stk size: " << nodestack.size () << ", scope depth " << scope_depth << endl
 #else
 # define TRACE_VISIT() QLOCDECL
 # define TRACE_VISIT_OUT() QLOCDECL
@@ -141,6 +141,7 @@ public:
 protected:
 
   uint32_t print_depth;
+  int scope_depth;
 
   CompilerCB                           * compilerCB;
   static_context                       * sctx_p;
@@ -189,6 +190,7 @@ protected:
   TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
     :
     print_depth (0),
+    scope_depth (0),
     compilerCB(aCompilerCB),
     sctx_p (aCompilerCB->m_sctx),
     minfo (minfo_),
@@ -230,6 +232,12 @@ protected:
       nodestack.pop();
     }
     return e_h;
+  }
+
+  varref_t pop_nodestack_var () {
+    expr_t e = pop_nodestack ();
+    assert (e->get_expr_kind () == var_expr_kind);
+    return static_cast<var_expr *> (e.getp ());
   }
 
   xqtref_t pop_tstack()
@@ -304,6 +312,7 @@ protected:
     theScopes.push_back( theScopedVariables.size() );
 #endif
     sctx_list.push_back (sctx_p = sctx_p->create_child_context());
+    ++scope_depth;
   }
 
   void pop_scope (int n = 1)
@@ -315,6 +324,8 @@ protected:
     while (n-- > 0) {
       static_context *parent = (static_context *) sctx_p->get_parent ();
       sctx_p = parent;
+      --scope_depth;
+      assert (scope_depth >= 0);
     }
   }
 
@@ -397,6 +408,17 @@ public:
 
 expr_t result ()
 {
+  if (nodestack.size () != 1) {
+    cerr << "Error: extra nodes on translator stack\n";
+    while (! nodestack.empty ()) {
+      expr_t e = pop_nodestack ();
+    }
+    ZORBA_ASSERT (false);
+  }
+  if (scope_depth != 0) {
+    cerr << "Error: scope depth " << scope_depth << endl;
+    ZORBA_ASSERT (false);
+  }
   return pop_nodestack ();
 }
 
@@ -1579,8 +1601,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     for (int i = (lSize-1); i >= 0; --i) {
       GroupSpec* lSpec = &*((*lGroupList)[i]);
 
-      varref_t lOuterVarExpr = pop_nodestack().cast<var_expr>();
-      varref_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
+      varref_t lOuterVarExpr = pop_nodestack_var ();
+      varref_t lInnerVarExpr = pop_nodestack_var ();
 
       group_clause* lClause = NULL;
       if (lSpec->group_coll_spec() != NULL)
@@ -1592,8 +1614,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     }
 
     varref_t lOuterVarExpr;
-    while (NULL != (lOuterVarExpr = pop_nodestack().cast<var_expr> ())) {
-      varref_t lInnerVarExpr = pop_nodestack().cast<var_expr>();
+    while (NULL != (lOuterVarExpr = pop_nodestack_var ())) {
+      varref_t lInnerVarExpr = pop_nodestack_var ();
       group_clause* lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
       flwor->add_non_group(lClause);
       pop_scope();
@@ -1621,7 +1643,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
       for (j = size - 1; j >= 0; j--) {
         varref_t ve;
-        ve = pop_nodestack ().cast<var_expr> ();
+        ve = pop_nodestack_var ();
         ve->set_kind (var_expr::for_var);
         // for var
         vars.push_back (ve);
@@ -1634,7 +1656,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
         if ((*decl_list) [j]->get_posvar () == NULL)
           pos_vars.push_back (NULL);
         else {
-          varref_t pve = pop_nodestack ().cast<var_expr> ();
+          varref_t pve = pop_nodestack_var ();
           pve->set_kind (var_expr::pos_var);
           pos_vars.push_back (pve);
         }
@@ -1647,7 +1669,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       }
     } else {  // let clause
       for (j = 0; j < size; j++) {
-        varref_t ve = pop_nodestack ().cast<var_expr> ();
+        varref_t ve = pop_nodestack_var ();
         expr_t lValueExpr = pop_nodestack();
         if (lValueExpr->isUpdating())
           ZORBA_ERROR_LOC(XUST0001, loc);
@@ -1779,7 +1801,6 @@ void end_visit(const WhereClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
-
 
 void *begin_visit(const GroupByClause& v)
 {
@@ -4913,7 +4934,7 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
     {
       ZORBA_ERROR_LOC(XUST0001, loc);
     }
-    varref_t lVarExpr = pop_nodestack().cast<var_expr>();
+    varref_t lVarExpr = pop_nodestack_var ();
     lVarExpr->set_kind(var_expr::copy_var);
     copy_clause* lCCE = new copy_clause( lVarExpr, lExpr);
     lTransform->add(lCCE);
