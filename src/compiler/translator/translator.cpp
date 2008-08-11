@@ -236,7 +236,7 @@ protected:
 
   varref_t pop_nodestack_var () {
     expr_t e = pop_nodestack ();
-    assert (e->get_expr_kind () == var_expr_kind);
+    assert (e == NULL || e->get_expr_kind () == var_expr_kind);
     return static_cast<var_expr *> (e.getp ());
   }
 
@@ -2767,7 +2767,6 @@ void end_visit(const QVarInDeclList& v, void* /*visit_state*/)
 void *begin_visit(const SIND_DeclList& v)
 {
   TRACE_VISIT ();
-  nodestack.push(NULL);
   return no_state;
 }
 
@@ -5002,6 +5001,7 @@ void end_visit(const EvalExpr& v, void* visit_state)
     if (ve->get_type () != NULL)
       val = new treat_expr (val->get_loc (), val, ve->get_type (), XPTY0004);
     result->add_var (eval_expr::eval_var (&*ve, val));
+    pop_scope ();
   }
 
   nodestack.push (&*result);
