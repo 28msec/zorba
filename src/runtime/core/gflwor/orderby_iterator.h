@@ -139,7 +139,7 @@ namespace zorba {
 
       public:
         OrderByIterator ( const QueryLoc& aLoc,
-                          PlanIter_t& aTupleIterator,
+                          PlanIter_t aTupleIterator,
                           std::vector<OrderSpec>& aOrderSpecs,
                           std::vector<ForVarIter_t>& aForVariableInput,
                           std::vector<LetVarIter_t>& aLetVariableInput,
@@ -172,3 +172,9 @@ namespace zorba {
 
 
 #endif  /* ZORBA_RUNTIME_GFLWOR_ORDERBY */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -65,3 +65,8 @@ namespace zorba {
 
 
 #endif  /* ZORBA_RUNTIME_GFLWOR_FOR_ITERATOR */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

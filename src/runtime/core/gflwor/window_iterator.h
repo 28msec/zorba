@@ -94,7 +94,7 @@ namespace zorba {
         WindowVars theWindowVars;
 
       public:
-        StartClause ( PlanIter_t& aStartClauseIter,
+        StartClause ( PlanIter_t aStartClauseIter,
                       WindowVars& aWindowVars
                     );
         ~StartClause();
@@ -124,7 +124,7 @@ namespace zorba {
          * If the EndClause is missing in the case of a tumbling window, this constructor should be used
          */
         EndClause ();
-        EndClause ( PlanIter_t& aEndClauseIter,
+        EndClause ( PlanIter_t aEndClauseIter,
                     WindowVars& theWindowVars,
                     bool aOnlyEnd
                   );
@@ -195,8 +195,8 @@ namespace zorba {
          * 
          */
         WindowIterator ( const QueryLoc& aLoc,
-                         PlanIter_t& aTupleIterator,
-                         PlanIter_t& aInputIterator,
+                         PlanIter_t aTupleIterator,
+                         PlanIter_t aInputIterator,
                          WindowType aWindowType,
                          std::vector<LetVarIter_t >& aVars,
                          StartClause& aStartclause,
@@ -223,3 +223,8 @@ namespace zorba {
   }//namespace gflwor
 } //namespace zorba
 #endif  /* ZORBA_RUNTIME_GFLWOR_WINDOW */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

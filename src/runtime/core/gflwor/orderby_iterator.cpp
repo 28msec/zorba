@@ -123,7 +123,7 @@ namespace zorba {
     /////////////////////////////////////////////////////////////////////////////////
 
     OrderByIterator::OrderByIterator ( const QueryLoc& aLoc,
-                                       PlanIter_t& aTupleIterator,
+                                       PlanIter_t aTupleIterator,
                                        std::vector<OrderSpec>& aOrderSpecs,
                                        std::vector<ForVarIter_t>& aForVariableInput,
                                        std::vector<LetVarIter_t>& aLetVariableInput,

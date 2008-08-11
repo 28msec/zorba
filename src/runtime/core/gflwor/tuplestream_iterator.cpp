@@ -31,8 +31,8 @@ namespace zorba {
 
         TupleStreamIterator::TupleStreamIterator (
           const QueryLoc&             aLoc,
-          PlanIter_t&                 aTupleIter,
-          PlanIter_t&                 aReturnIter,
+          PlanIter_t                  aTupleIter,
+          PlanIter_t                  aReturnIter,
           bool                        aIsUpdating) :
             BinaryBaseIterator<TupleStreamIterator, PlanIteratorState> (aLoc, aTupleIter, aReturnIter),
             theIsUpdating (aIsUpdating) {

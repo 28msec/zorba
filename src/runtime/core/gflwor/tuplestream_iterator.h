@@ -37,8 +37,8 @@ namespace zorba {
       public:
         TupleStreamIterator (
           const QueryLoc&             aLoc,
-          PlanIter_t&                 aTupleClause,
-          PlanIter_t&                 aReturnClause,
+          PlanIter_t                  aTupleClause,
+          PlanIter_t                  aReturnClause,
           bool                        aIsUpdating );
 
         ~TupleStreamIterator();

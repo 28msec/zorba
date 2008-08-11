@@ -128,7 +128,7 @@ namespace zorba {
         //                                                                             //
         /////////////////////////////////////////////////////////////////////////////////
 
-        StartClause::StartClause (PlanIter_t& aStartClauseIter,
+        StartClause::StartClause (PlanIter_t aStartClauseIter,
                                   WindowVars& aWindowVars
                                  ) :
             theStartClauseIter (aStartClauseIter),
@@ -185,7 +185,7 @@ namespace zorba {
 
         }
 
-        EndClause::EndClause (PlanIter_t& aEndClauseIter,
+        EndClause::EndClause (PlanIter_t aEndClauseIter,
                               WindowVars& aWindowVars,
                               bool aOnlyEnd
                              ) : theEndClauseIter (aEndClauseIter),
@@ -279,8 +279,8 @@ namespace zorba {
         const uint32_t WindowIterator::MAX_HISTORY = 2147483647; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
 
         WindowIterator::WindowIterator (const QueryLoc& aLoc,
-                                        PlanIter_t& aTupleIterator,
-                                        PlanIter_t& aInputIterator,
+                                        PlanIter_t aTupleIterator,
+                                        PlanIter_t aInputIterator,
                                         WindowType aWindowType,
                                         std::vector<LetVarIter_t >& aVars,
                                         StartClause& aStartclause,

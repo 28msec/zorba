@@ -83,7 +83,7 @@
 #define CODEGEN_TRACE(msg)                      \
   QLOCDECL;                                     \
   if (Properties::instance()->traceCodegen())   \
-    cout << (msg) << TRACE << endl;
+    cout << (msg) << TRACE << ", stk size " << itstack.size () << endl;
 #define CODEGEN_TRACE_IN( msg )  \
   CODEGEN_TRACE (string (++depth, ' ') + msg)
 #define CODEGEN_TRACE_OUT( msg ) \

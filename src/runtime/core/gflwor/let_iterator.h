@@ -44,3 +44,8 @@ namespace zorba {
 
 
 #endif  /* ZORBA_RUNTIME_FLWOR_TUPLESTREAM_ITERATOR */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

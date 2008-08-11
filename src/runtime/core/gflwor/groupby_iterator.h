@@ -113,3 +113,8 @@ namespace zorba {
 
 
 #endif  /* ZORBA_RUNTIME_GFLWOR_GROUPBY */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
