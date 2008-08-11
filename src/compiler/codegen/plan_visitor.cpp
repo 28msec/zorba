@@ -271,62 +271,66 @@ bool begin_visit(var_expr& v)
   return true;
 }
 
+template<class Iter>
+void var_codegen (var_expr &v, hash64map<vector<rchandle<Iter> > *> &mmap) {
+  const QueryLoc &loc = v.get_loc ();
+  vector<rchandle<Iter> > *map = NULL;
+  bool bound = mmap.get ((uint64_t) &v, map);
+  
+  ZORBA_ASSERT (bound);
+  Iter *v_p =
+    new Iter(v.get_varname()->getLocalName(), loc, (void *) &v);
+  map->push_back (v_p);
+  itstack.push(v_p);
+}
 
 void end_visit(var_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   const QueryLoc &loc = qloc;
 
-  switch (v.kind) 
-  {
+  switch (v.kind) {
   case var_expr::for_var: {
-    vector<ForVarIter_t> *map = NULL;
-    bool bound = fvar_iter_map.get ((uint64_t) &v, map);
-    
-    ZORBA_ASSERT (bound);
-    ForVarIterator *v_p = 
-      new ForVarIterator(v.get_varname()->getLocalName(),
-                         loc, (void *) &v);
-    map->push_back (v_p);
-    itstack.push(v_p);
+    var_codegen (v, fvar_iter_map);
     break;
   }
 
   case var_expr::pos_var: {
-    vector<ForVarIter_t> *map = NULL;
-    bool bound = pvar_iter_map.get ((uint64_t) &v, map);
-
-    ZORBA_ASSERT (bound);
-    ForVarIterator *v_p =
-      new ForVarIterator(v.get_varname ()->getLocalName(),
-                         loc, (void *) &v);
-    map->push_back (v_p);
-    itstack.push(v_p);
+    var_codegen (v, pvar_iter_map);
     break;
   }
-
+    
   case var_expr::let_var: {
-    vector<LetVarIter_t> *map = NULL;
-    bool bound = lvar_iter_map.get ((uint64_t) &v, map);
-      
-    ZORBA_ASSERT (bound);
-    LetVarIterator *v_p =
-      new LetVarIterator(v.get_varname()->getLocalName(),
-            loc, (void *) &v);
-    map->push_back (v_p);
-    itstack.push(v_p);
+    var_codegen (v, lvar_iter_map);
     break;
   }
 
   case var_expr::param_var: {
-    vector<LetVarIter_t> *map = NULL;    
-    ZORBA_ASSERT (param_var_iter_map->get ((uint64_t) &v, map));
-    LetVarIterator *v_p =
-      new LetVarIterator(v.get_varname()->getLocalName(),
-                         loc, (void *) &v);
-    
-    map->push_back (v_p);
-    itstack.push(v_p);
+    var_codegen (v, *param_var_iter_map);
+    break;
+  }
+
+  case var_expr::catch_var:
+  {
+    var_codegen (v, catchvar_iter_map);
+    break;
+  }
+
+  case var_expr::copy_var:
+  {
+    var_codegen (v, copy_var_iter_map);
+    break;
+  }
+
+  case var_expr::groupby_var:
+  {
+    var_codegen (v, group_var_iter_map);
+    break;
+  }
+
+  case var_expr::non_groupby_var:
+  {
+    var_codegen (v, non_group_var_iter_map);
     break;
   }
 
@@ -357,65 +361,9 @@ void end_visit(var_expr& v)
     break;
   }
 
-  case var_expr::catch_var:
-  {
-    vector<LetVarIter_t> *map = NULL;
-    bool bound = catchvar_iter_map.get ((uint64_t) &v, map);
-      
-    ZORBA_ASSERT (bound);
-    LetVarIterator *v_p =
-      new LetVarIterator(v.get_varname()->getLocalName(),
-                         loc, (void *) &v);
-    map->push_back (v_p);
-    itstack.push(v_p);
-  }
-  break;
-  case var_expr::copy_var:
-  {
-    vector<ForVarIter_t> *map = NULL;
-    uint64_t k = (uint64_t) &v;
-    bool bound = copy_var_iter_map.get (k, map);
-      
-    ZORBA_ASSERT (bound);
-    ForVarIterator* v_p =
-      new ForVarIterator(v.get_varname()->getLocalName(),
-                         loc, (void *) &v);
-    map->push_back (v_p);
-    itstack.push(v_p);
-  }
-  break;
-  case var_expr::groupby_var:
-  {
-    vector<ForVarIter_t> *map = NULL;
-    uint64_t k = (uint64_t) &v;
-    bool bound = group_var_iter_map.get (k, map);
-      
-    ZORBA_ASSERT (bound);
-    ForVarIterator *v_p =
-      new ForVarIterator(v.get_varname()->getLocalName(),
-                         loc, (void *) &v);
-    map->push_back (v_p);
-    itstack.push(v_p);
-  }
-  break;
-  case var_expr::non_groupby_var:
-  {
-    vector<LetVarIter_t> *map = NULL;
-    uint64_t k = (uint64_t) &v;
-    bool bound = non_group_var_iter_map.get (k, map);
-      
-    ZORBA_ASSERT (bound);
-    LetVarIterator *v_p =
-      new LetVarIterator(v.get_varname()->getLocalName(),
-                         loc, (void *) &v);
-    map->push_back (v_p);
-    itstack.push(v_p);
-  }
-  break;
-
   case var_expr::unknown_var:
   default:
-    ZORBA_ASSERT (false);
+    // ZORBA_ASSERT (false);
     break;
   }
 }
