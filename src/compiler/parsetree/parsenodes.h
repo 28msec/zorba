@@ -1667,6 +1667,7 @@ class OrderByClause : public parsenode
 protected:
 	rchandle<OrderSpecList> spec_list_h;
 	bool stable_b;
+  const FLWORExpr *flwor;
 		
 public:
 	OrderByClause(
@@ -1677,6 +1678,9 @@ public:
 public:
 	rchandle<OrderSpecList> get_spec_list() const { return spec_list_h; }
 	bool get_stable_bit() const { return stable_b; }
+
+  const FLWORExpr *get_flwor () const { return flwor; }
+  void set_flwor (const FLWORExpr *flwor_) { flwor = flwor_; }
 
 public:
 	void accept(parsenode_visitor&) const;
