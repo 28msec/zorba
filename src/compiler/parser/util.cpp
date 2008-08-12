@@ -34,7 +34,8 @@ int decode_entity (const char *in, string *out)
     int base = 10;
     if (*in == 'x') { base = 16; ++in; }
 
-    for (; *in == '0'; ++in);
+    for (; *in == '0'; ++in)
+      ;
 
     unsigned long n = strtoul (in, (char **) &in, base);
 

@@ -215,7 +215,7 @@ namespace zorba {
   {
     store::Item_t lItem;
 
-    if ( INT32_MIN <= aInt <= INT32_MAX ) {
+    if ( (INT32_MIN <= aInt) && (aInt <= INT32_MAX) ) {
       theItemFactory->createInt(lItem, aInt);
     }
 

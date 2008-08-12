@@ -710,8 +710,8 @@ URI::is_well_formed_address(const xqpString& addr)
       char c1 = addr.getStore()->str().at(i);
       if ( c1 == '.' ) {
 
-        if ( ( i > 0 ) && ( ! is_alphanum(addr.getStore()->str().at(i-1))) ||
-             ( i + 1 < lStringLen ) && ( ! is_alphanum(addr.getStore()->str().at(i+1))) ) {
+        if ( (( i > 0 ) && ( ! is_alphanum(addr.getStore()->str().at(i-1)))) ||
+             (( i + 1 < lStringLen ) && ( ! is_alphanum(addr.getStore()->str().at(i+1)))) ) {
           return false;
         }
         

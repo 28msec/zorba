@@ -194,7 +194,7 @@ std::string serializer::emitter::expand_string(
         (*chars >= 0x7F && *chars <= 0x9F))
     {
       if ((!emit_attribute_value) &&
-          *chars == 0xA || *chars == 0x9)
+          (*chars == 0xA || *chars == 0x9))
         lTranscoder << *chars;
       else
         lTranscoder << "&#x" << toHexString(*chars).c_str() << ";";

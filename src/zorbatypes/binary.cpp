@@ -190,10 +190,10 @@ std::vector<char> Base64::encode(const std::vector<char>& aSource)
     }
 
     // 4 outputs...
-    lRes.push_back(ENCODE_TABLE[n1]);
-    lRes.push_back(ENCODE_TABLE[n2]);
-    lRes.push_back(ENCODE_TABLE[n3]);
-    lRes.push_back(ENCODE_TABLE[n4]);
+    lRes.push_back(ENCODE_TABLE[(int)n1]);
+    lRes.push_back(ENCODE_TABLE[(int)n2]);
+    lRes.push_back(ENCODE_TABLE[(int)n3]);
+    lRes.push_back(ENCODE_TABLE[(int)n4]);
   }
 
   return lRes;

@@ -598,7 +598,7 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (firstPresent = consumeNext(result, theChildren[0].getp(), planState))
+  if ((firstPresent = consumeNext(result, theChildren[0].getp(), planState)))
     nextPresent = consumeNext(lNextItem, theChildren[0].getp(), planState);
 
   if (firstPresent && !nextPresent) 

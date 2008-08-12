@@ -202,8 +202,8 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
 
   memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
 
-  if (byteLen < MAX_EMBEDDED_BYTE_LEN ||
-      byteLen == MAX_EMBEDDED_BYTE_LEN && (str[MAX_EMBEDDED_BYTE] & 0x1 == 0))
+  if ((byteLen < MAX_EMBEDDED_BYTE_LEN) ||
+      (byteLen == MAX_EMBEDDED_BYTE_LEN && ((str[MAX_EMBEDDED_BYTE] & 0x1) == 0)))
   {
     buf = theBuffer;
     isLocal = true;

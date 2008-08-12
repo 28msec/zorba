@@ -183,10 +183,9 @@ IF (BOOST_CHECK_LIBRARIES)
 
 INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
 
-SET (REQUIRED_BOOST_PACKAGES date_time filesystem program_options)
+SET (REQUIRED_BOOST_PACKAGES filesystem program_options)
 
 FIND_PACKAGE(Boost REQUIRED COMPONENTS
-  date_time
   filesystem
   program_options)
 
@@ -204,7 +203,6 @@ ELSE (NOT Boost_FOUND)
 
     IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-      SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} boost_date_time-mt)
       SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options-mt)
       SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options-mt)
       SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem-mt)
@@ -219,7 +217,6 @@ ELSE (NOT Boost_FOUND)
 
     ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-      SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} boost_date_time)
       SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options)
       SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options)
       SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem)
@@ -238,7 +235,6 @@ ELSE (NOT Boost_FOUND)
 
     IF (CYGWIN)
       SET(CMAKE_INCLUDE_PATH)
-      SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} boost_date_time-gcc-mt)
       SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options-gcc-mt)
       SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options-gcc-mt)
       SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem-gcc-mt)
@@ -256,13 +252,8 @@ ELSE (NOT Boost_FOUND)
       IF(ZORBA_DEBUGGER)
 	      SET(requiredlibs-zorba ${requiredlibs-zorba} WSock32)
       ENDIF(ZORBA_DEBUGGER)
-      SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${Boost_DATE_TIME_LIBRARY})
       SET(requiredlibs-zorba ${requiredlibs-zorba} ${Boost_PROGRAM_OPTIONS_LIBRARY})
       SET(requiredlibs-simplestore ${requiredlibs-simplestore} ${Boost_PROGRAM_OPTIONS_LIBRARY})
-      SET(requiredlibs-apitest ${requiredlibs-apitest} ${Boost_DATE_TIME_LIBRARY})
-      SET(requiredlibs-testordpath ${requiredlibs-testordpath} ${Boost_DATE_TIME_LIBRARY})
-      SET(requiredlibs-testdriver ${requiredlibs-testdriver} ${Boost_DATE_TIME_LIBRARY})
-      SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} ${Boost_DATE_TIME_LIBRARY})
 
   	ENDIF (CYGWIN)
 

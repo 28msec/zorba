@@ -283,7 +283,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       bool valid = false;
 
-      while (valid = consumeNext(child, theChildrenIter, planState))
+      while ((valid = consumeNext(child, theChildrenIter, planState)))
       {
         if (!child->isNode())
         {
