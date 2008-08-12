@@ -163,7 +163,7 @@ ostream& flwor_expr::put( ostream& os) const
 
   os << DENT << "RETURN\n";
   if (retval_h == NULL) {
-    os << "$NULL$";
+    os << DENT << "  NULL\n";
   } else {
     retval_h->put(os);
   }

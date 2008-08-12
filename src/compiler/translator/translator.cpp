@@ -2173,7 +2173,41 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   ParseConstants::function_type_t lFuncType = v.get_type();
-  switch(lFuncType) 
+  expr_t body;
+  bool is_external = 
+    lFuncType == ParseConstants::fn_extern
+    || lFuncType == ParseConstants::fn_extern_update
+    || lFuncType == ParseConstants::fn_extern_sequential;
+  if (! is_external)
+    body = pop_nodestack ();
+
+  // The following code must execute regardless of the function type
+  // to clean up the node and type stacks.
+  int nargs = v.get_param_count ();
+  vector<varref_t> args;
+  if (nargs > 0) {
+    rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr> ();
+    ZORBA_ASSERT(flwor != NULL);
+
+    for(int i = 0; i < nargs; ++i) {
+      rchandle<forlet_clause>& flc = (*flwor)[i];
+      var_expr* arg_var = flc->get_expr().dyn_cast<var_expr> ().getp();
+      ZORBA_ASSERT(arg_var != NULL);
+      args.push_back(arg_var);
+    }
+#ifdef ZORBA_DEBUGGER
+      //if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
+      //{
+      //  rchandle<debugger_expr> lDebuggerExpr = new debugger_expr( loc, body, theGlobalVars );
+      //  body = lDebuggerExpr;
+      //}
+#endif
+    if (body != NULL)
+      flwor->set_retval(body);
+    body = &*flwor;
+  }
+
+  switch(lFuncType)
   {
   case ParseConstants::fn_update:
   {
@@ -2185,7 +2219,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   case ParseConstants::fn_sequential:
   case ParseConstants::fn_read:
   {
-    expr_t body = pop_nodestack ();
     if (lFuncType == ParseConstants::fn_read)
     {
       if (body->isUpdating())
@@ -2195,31 +2228,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     {
       if (body->getUpdateType() == SIMPLE_EXPR)
         ZORBA_ERROR_LOC(XUST0002, loc);
-    }
-
-    int nargs = v.get_param_count ();
-    vector<varref_t> args;
-    if (nargs > 0)
-    {
-      rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr> ();
-      ZORBA_ASSERT(flwor != NULL);
-
-      for(int i = 0; i < nargs; ++i)
-      {
-        rchandle<forlet_clause>& flc = (*flwor)[i];
-        var_expr* arg_var = flc->get_expr().dyn_cast<var_expr> ().getp();
-        ZORBA_ASSERT(arg_var != NULL);
-        args.push_back(arg_var);
-      }
-#ifdef ZORBA_DEBUGGER
-      //if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
-      //{
-      //  rchandle<debugger_expr> lDebuggerExpr = new debugger_expr( loc, body, theGlobalVars );
-      //  body = lDebuggerExpr;
-      //}
-#endif
-      flwor->set_retval(body);
-      body = &*flwor;
     }
 
     assert(body != NULL);
