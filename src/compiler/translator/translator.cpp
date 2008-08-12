@@ -222,8 +222,7 @@ protected:
     zorba_predef_mod_ns.insert (ZORBA_COLLECTION_FN_NS);
   }
 
-  expr_t pop_nodestack (int n = 1)
-  {
+  expr_t pop_nodestack (int n = 1) {
     ZORBA_ASSERT (n >= 0);
     rchandle<expr> e_h;
     for (; n > 0; --n) {
@@ -260,8 +259,7 @@ protected:
     return e;
   }
 
-  varref_t create_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
-  {
+  varref_t create_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL) {
     store::Item_t qname = sctx_p->lookup_qname ("", varname);
     return create_var (loc, qname, kind, type);
   }
@@ -273,28 +271,24 @@ protected:
       ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
   }
 
-  varref_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
-  {
+  varref_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL) {
     varref_t e = create_var (loc, varname, kind, type);
     bind_var (e, sctx_p);
     return e;
   }
-  varref_t bind_var (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL)
-  {
+  varref_t bind_var (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL) {
     varref_t e = create_var (loc, varname, kind, type);
     bind_var (e, sctx_p);
     return e;
   }
 
-  varref_t bind_var_and_push (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL)
-  {
+  varref_t bind_var_and_push (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL) {
     varref_t e = bind_var (loc, varname, kind, type);
     nodestack.push (&*e);
     return e;
   }
 
-  varref_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
-  {
+  varref_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL) {
     return bind_var_and_push (loc, sctx_p->lookup_var_qname (varname), kind, type);
   }
 
@@ -313,8 +307,7 @@ protected:
     return new fo_expr (loc, CACHED (op_concatenate, LOOKUP_OPN ("concatenate")));
   }
 
-  void push_scope ()
-  {
+  void push_scope () {
 #ifdef ZORBA_DEBUGGER
     theScopes.push_back( theScopedVariables.size() );
 #endif
@@ -349,13 +342,11 @@ protected:
     return axisExpr;
   }
 
-  void push_elem_scope()
-  {
+  void push_elem_scope() {
     ns_ctx = new namespace_context(&*ns_ctx);
   }
 
-  void pop_elem_scope()
-  {
+  void pop_elem_scope() {
     ns_ctx = ns_ctx->get_parent();
   }
 
@@ -411,36 +402,11 @@ protected:
   }
   
 
-public:
-
-expr_t result ()
-{
-  if (nodestack.size () != 1) {
-    cerr << "Error: extra nodes on translator stack:\n";
-    while (! nodestack.empty ()) {
-      expr_t e_h = pop_nodestack ();
-      if (! Properties::instance()->traceTranslator()) {
-        if (e_h != NULL)
-          e_h->put (cerr) << endl;
-        else
-          cerr << "NULL" << endl;
-      }
-    }
-    ZORBA_ASSERT (false);
-  }
-  if (scope_depth != 0) {
-    cerr << "Error: scope depth " << scope_depth << endl;
-    ZORBA_ASSERT (false);
-  }
-  return pop_nodestack ();
-}
-
 expr_t wrap_in_atomization (expr_t e) {
   return new fo_expr (e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
 }
 
-expr_t wrap_in_globalvar_assign(expr_t e)
-{
+expr_t wrap_in_globalvar_assign(expr_t e) {
   const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
   const function *ctx_get = LOOKUP_OP1 ("ctxvariable");
 
@@ -483,8 +449,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
   Create a LET clause for the given LET variable "lv", with the given expr "e" as
   its defining expression.
 ********************************************************************************/
-rchandle<forlet_clause> wrap_in_letclause(expr_t e, varref_t lv)
-{
+rchandle<forlet_clause> wrap_in_letclause(expr_t e, varref_t lv) {
   assert (lv->get_kind () == var_expr::let_var);
   return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, e.getp());
 }
@@ -496,8 +461,7 @@ rchandle<forlet_clause> wrap_in_letclause(expr_t e, const QueryLoc& loc, string 
 }
 
 
-rchandle<forlet_clause> wrap_in_letclause(expr_t e)
-{
+rchandle<forlet_clause> wrap_in_letclause(expr_t e) {
   return wrap_in_letclause (e, tempvar(e->get_loc(), var_expr::let_var));
 }
 
@@ -506,8 +470,7 @@ rchandle<forlet_clause> wrap_in_letclause(expr_t e)
   Create a FOR clause for the given FOR variable "fv" and its associated POS var
   "pv" (pv may be NULL). Use the given expr "e" as the defining expr for "fv". 
 ********************************************************************************/
-rchandle<forlet_clause> wrap_in_forclause(expr_t e, varref_t fv, varref_t pv)
-{
+rchandle<forlet_clause> wrap_in_forclause(expr_t e, varref_t fv, varref_t pv) {
   assert (fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
     assert (pv->get_kind() == var_expr::pos_var);
@@ -515,8 +478,7 @@ rchandle<forlet_clause> wrap_in_forclause(expr_t e, varref_t fv, varref_t pv)
 }
 
 
-rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
-{
+rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar) {
   varref_t fv = tempvar(expr->get_loc(), var_expr::for_var);
   varref_t pv = (add_posvar ? tempvar(expr->get_loc(), var_expr::pos_var) : 
                                 varref_t (NULL));
@@ -586,8 +548,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t wrap_in_dos_and_dupelim(expr_t expr)
-{
+expr_t wrap_in_dos_and_dupelim(expr_t expr) {
   rchandle<fo_expr> dos = new fo_expr(expr->get_loc(),
                                       LOOKUP_OP1("sort-distinct-nodes-asc-or-atomics"));
   dos->add(expr);
@@ -5636,6 +5597,29 @@ void end_visit(const ParseErrorNode& v, void* /*visit_state*/)
 
 // End pass-thru
 
+public:
+
+expr_t result ()
+{
+  if (nodestack.size () != 1) {
+    cerr << "Error: extra nodes on translator stack:\n";
+    while (! nodestack.empty ()) {
+      expr_t e_h = pop_nodestack ();
+      if (! Properties::instance()->traceTranslator()) {
+        if (e_h != NULL)
+          e_h->put (cerr) << endl;
+        else
+          cerr << "NULL" << endl;
+      }
+    }
+    ZORBA_ASSERT (false);
+  }
+  if (scope_depth != 0) {
+    cerr << "Error: scope depth " << scope_depth << endl;
+    ZORBA_ASSERT (false);
+  }
+  return pop_nodestack ();
+}
 
 };
 
