@@ -202,23 +202,23 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_yearMonthDuration* d = (xqp_yearMonthDuration*)(i0->getYearMonthDurationValue() + i1->getYearMonthDurationValue()).getp();
-  return GENV_ITEMFACTORY->createYearMonthDuration(result, d);
+  std::auto_ptr<Duration> d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() + i1->getYearMonthDurationValue());
+  return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dayTimeDuration* d = (xqp_dayTimeDuration*)(i0->getDayTimeDurationValue() + i1->getDayTimeDurationValue()).getp();
-  return GENV_ITEMFACTORY->createDayTimeDuration(result, d);
+  std::auto_ptr<Duration> d = std::auto_ptr<Duration>(i0->getDayTimeDurationValue() + i1->getDayTimeDurationValue());
+  return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i0->getDateTimeValue().addDuration(*i1->getDurationValue().toDuration());
+  xqp_dateTime* d = i0->getDateTimeValue().addDuration(i1->getDurationValue());
   return GENV_ITEMFACTORY->createDateTime(result, d);
 }
 
@@ -226,7 +226,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i1->getDateTimeValue().addDuration(*i0->getDurationValue().toDuration());
+  xqp_dateTime* d = i1->getDateTimeValue().addDuration(i0->getDurationValue());
   return GENV_ITEMFACTORY->createDateTime (result, d);
 }
 
@@ -234,7 +234,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i0->getDateValue().addDuration(*i1->getDurationValue().toDuration());
+  xqp_date* d = i0->getDateValue().addDuration(i1->getDurationValue());
   return GENV_ITEMFACTORY->createDate (result, d);
 }
 
@@ -242,7 +242,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i1->getDateValue().addDuration(*i0->getDurationValue().toDuration());
+  xqp_date* d = i1->getDateValue().addDuration(i0->getDurationValue());
   return GENV_ITEMFACTORY->createDate (result, d);
 }
 
@@ -250,7 +250,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i0->getTimeValue().addDuration(*i1->getDurationValue().toDuration());
+  xqp_time* t = i0->getTimeValue().addDuration(i1->getDurationValue());
   return GENV_ITEMFACTORY->createTime (result, t);
 }
 
@@ -258,7 +258,7 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i1->getTimeValue().addDuration(*i0->getDurationValue().toDuration());
+  xqp_time* t = i1->getTimeValue().addDuration(i0->getDurationValue());
   return GENV_ITEMFACTORY->createTime (result, t);
 }
 
@@ -269,23 +269,23 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_yearMonthDuration* d = (xqp_yearMonthDuration*)(i0->getYearMonthDurationValue() - i1->getYearMonthDurationValue()).getp();
-  return GENV_ITEMFACTORY->createYearMonthDuration(result, d);
+  std::auto_ptr<Duration> d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() - i1->getYearMonthDurationValue());
+  return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dayTimeDuration* d = (xqp_dayTimeDuration*)(i0->getDayTimeDurationValue() - i1->getDayTimeDurationValue()).getp();
-  return GENV_ITEMFACTORY->createDayTimeDuration(result, d);
+  std::auto_ptr<Duration> d = std::auto_ptr<Duration>(i0->getDayTimeDurationValue() - i1->getDayTimeDurationValue());
+  return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i0->getDateTimeValue().subtractDuration(*i1->getDurationValue().toDuration());
+  xqp_dateTime* d = i0->getDateTimeValue().subtractDuration(i1->getDurationValue());
   return GENV_ITEMFACTORY->createDateTime (result, d);
 }
 
@@ -294,7 +294,7 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i0->getDateValue().subtractDuration(*i1->getDurationValue().toDuration());
+  xqp_date* d = i0->getDateValue().subtractDuration(i1->getDurationValue());
   return GENV_ITEMFACTORY->createDate (result, d);
 }
 
@@ -303,7 +303,7 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i0->getTimeValue().subtractDuration(*i1->getDurationValue().toDuration());
+  xqp_time* t = i0->getTimeValue().subtractDuration(i1->getDurationValue());
   return GENV_ITEMFACTORY->createTime (result, t);
 }
 
@@ -312,15 +312,15 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dayTimeDuration* d;
+  std::auto_ptr<Duration> d;
   try {
-    d = (xqp_dayTimeDuration*)i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
-                                                 aRuntimeCB->theDynamicContext->get_implicit_timezone()).getp();
+    d = std::auto_ptr<Duration>(i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
+                                                 aRuntimeCB->theDynamicContext->get_implicit_timezone()));
   }
   catch (InvalidTimezoneException) {
     ZORBA_ERROR(FODT0003);
   }
-  return GENV_ITEMFACTORY->createDayTimeDuration(result, d);
+  return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 
 
@@ -328,17 +328,17 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dayTimeDuration* d;
+  std::auto_ptr<Duration> d;
   try 
   {
-    d = (xqp_dayTimeDuration*)i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
-                                             aRuntimeCB->theDynamicContext->get_implicit_timezone()).getp();
+    d = std::auto_ptr<Duration>(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
+                                             aRuntimeCB->theDynamicContext->get_implicit_timezone()));
   }
   catch (InvalidTimezoneException) 
   {
     ZORBA_ERROR(FODT0003);
   }
-  return GENV_ITEMFACTORY->createDayTimeDuration(result, d);
+  return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 
 
@@ -346,15 +346,15 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dayTimeDuration* d;
+  std::auto_ptr<Duration> d;
   try {
-    d = (xqp_dayTimeDuration*)i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
-                         aRuntimeCB->theDynamicContext->get_implicit_timezone()).getp();
+    d = std::auto_ptr<Duration>(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
+                         aRuntimeCB->theDynamicContext->get_implicit_timezone()));
   }
   catch (InvalidTimezoneException) {
     ZORBA_ERROR(FODT0003);
   }
-  return GENV_ITEMFACTORY->createDayTimeDuration(result, d);
+  return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 /* end class SubtractOperations */
 
@@ -364,32 +364,32 @@ template<>
 bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
-  xqp_yearMonthDuration* d;
+  std::auto_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
   else if (  i1->getDoubleValue().isNaN() )
     ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
   else
-    d = (xqp_yearMonthDuration*)(i0->getYearMonthDurationValue() * (i1->getDoubleValue())).getp();
+    d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() * (i1->getDoubleValue()));
   
-  return GENV_ITEMFACTORY->createYearMonthDuration(result, d);
+  return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
 
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dayTimeDuration* d;
+  std::auto_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
   else if (  i1->getDoubleValue().isNaN() )
     ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
   else
-    d = (xqp_dayTimeDuration*)(i0->getDayTimeDurationValue() * (i1->getDoubleValue())).getp();
+    d = std::auto_ptr<Duration>(i0->getDayTimeDurationValue() * (i1->getDoubleValue()));
   
-  return GENV_ITEMFACTORY->createDayTimeDuration(result, d);
+  return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 
 template<>
@@ -412,40 +412,40 @@ template<>
 bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
-  xqp_yearMonthDuration* d;
+  std::auto_ptr<Duration> d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
   {
-    d = new YearMonthDuration();
+    d = std::auto_ptr<Duration>(new Duration(Duration::YEARMONTHDURATION_FACET));
   }
   else if ( i1->getDoubleValue().isZero() )
     ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
   else if ( i1->getDoubleValue().isNaN() )
     ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
   else
-    d = (xqp_yearMonthDuration*)(i0->getYearMonthDurationValue() / i1->getDoubleValue()).getp();
+    d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
 
-  return GENV_ITEMFACTORY->createYearMonthDuration(result, d);
+  return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
 
 template<>
 bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dayTimeDuration* d;
+  std::auto_ptr<Duration> d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
   {
-    d = new DayTimeDuration();
+    d = std::auto_ptr<Duration>(new Duration());
   }
   else if ( i1->getDoubleValue().isZero() )
     ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
   else if ( i1->getDoubleValue().isNaN() )
     ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
   else
-    d = (xqp_dayTimeDuration*)(i0->getDayTimeDurationValue() / i1->getDoubleValue()).getp();
+    d = std::auto_ptr<Duration>(i0->getDayTimeDurationValue() / i1->getDoubleValue());
 
-  return GENV_ITEMFACTORY->createDayTimeDuration(result, d);
+  return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 
 template<>

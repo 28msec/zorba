@@ -18,7 +18,7 @@
 
 #include "zorbatypes/timezone.h"
 #include "zorbatypes/duration.h"
-#include "zorbatypes/rchandle.h"
+
 
 namespace zorba
 {
@@ -91,7 +91,7 @@ public:
         int hours,
         int minutes,
         double seconds,
-        const TimeZone_t& tz_t,
+        const TimeZone* tz,
         DateTime& dt);
       
   /**
@@ -107,26 +107,9 @@ public:
         int minutes,
         int seconds,
         int fractional_seconds,
-        const TimeZone_t& tz_t,
+        const TimeZone* tz,
         DateTime& dt);
 
-  /**
-   *  The function will use the absolute values of all int parameters except years.
-   *  TimeZone is a reference
-   *  Returns 0 on success
-   */
-  static int
-  createDateTime(
-        int years,
-        int months,
-        int days,
-        int hours,
-        int minutes,
-        int seconds,
-        int fractional_seconds,
-        const TimeZone& tz,
-        DateTime& dt);
-  
   /**
    *  The function will use the absolute values of all int parameters except years.
    *  TimeZone may be NULL
@@ -137,9 +120,9 @@ public:
         int years,
         int months,
         int days,
-        const TimeZone_t& tz_t,
+        const TimeZone* tz,
         DateTime& dt);
-      
+
   /**
    *  The function will use the absolute values of all int parameters. TimeZone
    *  is a reference
@@ -150,9 +133,9 @@ public:
         int hours,
         int minutes,
         double seconds,
-        const TimeZone_t& tz,
+        const TimeZone* tz,
         DateTime& dt);
-
+      
   /**
    *  The function will use the absolute value of the months parameter.
    *  Returns 0 on success
@@ -235,24 +218,6 @@ public:
   static int 
   parseGDay(const xqpString& s, DateTime& dt);
 
-protected:
-  static int
-  parse_date(
-        std::string& ss,
-        unsigned int& position,
-        int& year,
-        int& month,
-        int& day);
-
-  static int
-  parse_time(
-        std::string& ss,
-        unsigned int& position,
-        int& hour,
-        int& minute,
-        int& seconds,
-        int& frac_seconds);
-
 public:
   DateTime();
 
@@ -323,7 +288,7 @@ public:
   /**
    *  Throws InvalidTimezoneException if the given timezone is not valid.
    */
-  DurationBase_t
+  Duration*
   subtractDateTime(const DateTime* dt, int implicit_timezone_seconds) const;
       
   /**
@@ -339,12 +304,27 @@ public:
   /**
    *  Throws InvalidTimezoneException if the given timezone is not valid.
    */
-  DateTime* adjustToTimeZone(const DurationBase* db_t) const;
+  DateTime* adjustToTimeZone(const Duration* db_t) const;
       
   FACET_TYPE getFacet() const { return facet; };     
       
 protected:
-  DurationBase_t toDayTimeDuration() const;
+  static int
+  parse_date(std::string& ss,
+             unsigned int& position,
+             int& year,
+             int& month,
+             int& day);
+
+  static int
+  parse_time(std::string& ss,
+             unsigned int& position,
+             int& hour,
+             int& minute,
+             int& seconds,
+             int& frac_seconds);
+
+  Duration* toDayTimeDuration() const;
 
   void adjustToFacet();
 

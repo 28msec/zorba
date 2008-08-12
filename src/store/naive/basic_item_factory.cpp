@@ -186,9 +186,9 @@ bool BasicItemFactory::createDateTime(
     double  second)
 {
   DateTime dt;
-  TimeZone_t tz_t;
-  
-  if(DateTime::createDateTime(year, month, day, hour, minute, second, tz_t, dt) == 0)
+  TimeZone tz;
+
+  if(DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -212,9 +212,9 @@ bool BasicItemFactory::createDateTime(
     short   timeZone_hours)
 {
   DateTime dt;
-  TimeZone_t tz_t = new TimeZone( timeZone_hours );
+  TimeZone tz(timeZone_hours);
 
-  if (DateTime::createDateTime(year, month, day, hour, minute, second, tz_t, dt) == 0)
+  if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -282,9 +282,9 @@ bool BasicItemFactory::createDate (
     short day )
 {
   DateTime dt;
-  TimeZone_t tz_t;
+  TimeZone tz;
   
-  if(DateTime::createDate(year, month, day, tz_t, dt) == 0) 
+  if(DateTime::createDate(year, month, day, &tz, dt) == 0) 
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -345,9 +345,9 @@ bool BasicItemFactory::createTime(
     double         second)
 {
   DateTime dt;
-  TimeZone_t tz_t;
+  TimeZone tz;
   
-  if( DateTime::createTime(hour, minute, second, tz_t, dt) == 0 ) 
+  if( DateTime::createTime(hour, minute, second, &tz, dt) == 0 ) 
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -368,9 +368,9 @@ bool BasicItemFactory::createTime(
     short          timeZone_hours)
 {
   DateTime dt;
-  TimeZone_t tz_t = new TimeZone(timeZone_hours);
+  TimeZone tz(timeZone_hours);
   
-  if(DateTime::createTime(hour, minute, second, tz_t, dt) == 0) 
+  if(DateTime::createTime(hour, minute, second, &tz, dt) == 0) 
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -615,10 +615,10 @@ bool BasicItemFactory::createDuration(
 
 bool BasicItemFactory::createDuration (store::Item_t& result,  const xqp_string& value )
 {
-  Duration_t d_t;
-  if (Duration::parse_string(value, d_t))
+  Duration d;
+  if (Duration::parseDuration(value, d))
   {
-    result = new DurationItemNaive(d_t);
+    result = new DurationItemNaive(&d);
     return true;
   }
   
@@ -636,22 +636,22 @@ bool BasicItemFactory::createDuration (
     short   minutes,
     double  seconds)
 {
-  Duration_t d_t = new Duration(YearMonthDuration(years*12 + months), DayTimeDuration(false, days, hours, minutes, seconds));
-  result = new DurationItemNaive(d_t);
+  Duration d(Duration::DURATION_FACET, years, months, days, hours, minutes, seconds);
+  result = new DurationItemNaive(&d);
   return true;
 }
 
 
 bool BasicItemFactory::createYearMonthDuration(store::Item_t& result, xqp_yearMonthDuration* value )
 {
-  result = new YearMonthDurationItemNaive(value);
+  result = new DurationItemNaive(value);
   return true;
 }
 
 
 bool BasicItemFactory::createDayTimeDuration(store::Item_t& result, xqp_dayTimeDuration* value )
 {
-  result = new DayTimeDurationItemNaive(value);
+  result = new DurationItemNaive(value);
   return true;
 }
 

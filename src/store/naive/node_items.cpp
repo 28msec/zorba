@@ -15,6 +15,7 @@
  */
 
 #include <stack>
+#include <memory>
 
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"

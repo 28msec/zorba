@@ -16,6 +16,7 @@
 #include <string>
 #include <exception>
 #include <cassert>
+#include <memory>
 
 #include "zorbautils/hashfun.h"
 #include <zorbatypes/datetime.h>
@@ -66,7 +67,7 @@ void DateTime::init()
   for (int i = HOUR_DATA; i <= FRACSECONDS_DATA; i++)
     data[i] = 0;
 
-  the_time_zone.init();
+  the_time_zone = TimeZone();
 }
 
 
@@ -75,8 +76,8 @@ int DateTime::createDateTime(
     const DateTime* time,
     DateTime& result)
 {
-  if (!date->getTimezone().is_not_a_date_time() &&
-      !time->getTimezone().is_not_a_date_time() &&
+  if (!date->getTimezone().timeZoneNotSet() &&
+      !time->getTimezone().timeZoneNotSet() &&
       !(date->getTimezone() == time->getTimezone()))
     return 2;
 
@@ -91,9 +92,9 @@ int DateTime::createDateTime(
 
   if (res == 0)
   {
-    if (!date->getTimezone().is_not_a_date_time())
+    if (!date->getTimezone().timeZoneNotSet())
       result.the_time_zone = date->getTimezone();
-    else if (!time->getTimezone().is_not_a_date_time())
+    else if (!time->getTimezone().timeZoneNotSet())
       result.the_time_zone = time->getTimezone();
   }
 
@@ -126,38 +127,11 @@ int DateTime::createDateTime(
 int DateTime::createDateTime(
     int years,
     int months,
-    int days,
-    int hours,
-    int minutes,
-    int seconds,
-    int fractional_seconds,
-    const TimeZone_t& tz_t,
-    DateTime& dt)
-{
-  dt.facet = DATETIME_FACET;
-  dt.data[YEAR_DATA] = years;
-  dt.data[MONTH_DATA] = abs<int>(months);
-  dt.data[DAY_DATA] = abs<int>(days);
-  dt.data[HOUR_DATA] = abs<int>(hours);
-  dt.data[MINUTE_DATA] = abs<int>(minutes);
-  dt.data[SECONDS_DATA] = abs<int>(seconds);
-  dt.data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
-      
-  if (!tz_t.isNull())
-    dt.the_time_zone = *tz_t;
-  
-  return 0;
-}
-
-
-int DateTime::createDateTime(
-    int years,
-    int months,
     int days, 
     int hours,
     int minutes,
     double seconds,
-    const TimeZone_t& tz_t,
+    const TimeZone* tz,
     DateTime& dt)
 {
   dt.facet = DATETIME_FACET;
@@ -168,8 +142,9 @@ int DateTime::createDateTime(
   dt.data[MINUTE_DATA] = abs<int>(minutes);
   dt.data[SECONDS_DATA] = floor<double>(abs<double>(seconds));
   dt.data[FRACSECONDS_DATA] = round(frac(abs<double>(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
-  if (!tz_t.isNull())
-    dt.the_time_zone = *tz_t;
+  
+  if (tz != NULL)
+    dt.the_time_zone = *tz;
   
   return 0;
 }
@@ -183,7 +158,7 @@ int DateTime::createDateTime(
     int minutes,
     int seconds,
     int fractional_seconds,
-    const TimeZone& tz,
+    const TimeZone* tz,
     DateTime& dt)
 {
   dt.facet = DATETIME_FACET;
@@ -195,7 +170,8 @@ int DateTime::createDateTime(
   dt.data[SECONDS_DATA] = abs<int>(seconds);
   dt.data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
       
-  dt.the_time_zone = tz;
+  if (tz != NULL)
+    dt.the_time_zone = *tz;
 
   return 0;
 }
@@ -205,7 +181,7 @@ int DateTime::createDate(
     int years,
     int months,
     int days,
-    const TimeZone_t& tz_t,
+    const TimeZone* tz,
     DateTime& dt)
 {
   dt.facet = DATE_FACET;
@@ -217,8 +193,8 @@ int DateTime::createDate(
   dt.data[SECONDS_DATA] = 0;
   dt.data[FRACSECONDS_DATA] = 0;
 
-  if (!tz_t.isNull())
-    dt.the_time_zone = *tz_t;
+  if (tz != NULL)
+    dt.the_time_zone = *tz;
   
   return 0;
 }
@@ -228,7 +204,7 @@ int DateTime::createTime(
     int hours, 
     int minutes, 
     double seconds, 
-    const TimeZone_t& tz_t,
+    const TimeZone* tz,
     DateTime& dt)
 {
   dt.facet = TIME_FACET;
@@ -240,8 +216,8 @@ int DateTime::createTime(
   dt.data[SECONDS_DATA] = floor<double>(abs<double>(seconds));
   dt.data[FRACSECONDS_DATA] = round(frac(abs<double>(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
       
-  if (!tz_t.isNull())
-    dt.the_time_zone = *tz_t;
+  if (tz != NULL)
+    dt.the_time_zone = *tz;
   
   return 0;
 }
@@ -325,7 +301,6 @@ int DateTime::createGDay(int days, DateTime& dt)
 
 int DateTime::parseDateTime(const xqpString& s, DateTime& dt)
 {
-  TimeZone_t tz_t;
   unsigned int position = 0;
   std::string ss = s.getStore()->str();
 
@@ -344,15 +319,16 @@ int DateTime::parseDateTime(const xqpString& s, DateTime& dt)
     
   if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+    if (0 != TimeZone::parseTimeZone(ss.substr(position), dt.the_time_zone))
       return 1;
-    dt.the_time_zone = *tz_t;
   }
   
   if (dt.data[HOUR_DATA] == 24)
   {
     dt.data[HOUR_DATA] = 0;
-    dt = *(dt.addDuration(Duration(DayTimeDuration(false, 1, 0, 0, 0, 0))));
+    std::auto_ptr<DateTime> temp = std::auto_ptr<DateTime>(
+        dt.addDuration(Duration(Duration::DAYTIMEDURATION_FACET, false, 0, 0, 1, 0, 0, 0)));
+    dt = *temp;
   }
 
   return 0;
@@ -361,7 +337,7 @@ int DateTime::parseDateTime(const xqpString& s, DateTime& dt)
 
 int DateTime::parseDate(const xqpString& s, DateTime& dt)
 {
-  TimeZone_t tz_t;
+  TimeZone tz;
   unsigned int position = 0;
   std::string ss = s.getStore()->str();
 
@@ -373,9 +349,8 @@ int DateTime::parseDate(const xqpString& s, DateTime& dt)
 
   if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+    if (0 != TimeZone::parseTimeZone(ss.substr(position), dt.the_time_zone))
       return 1;
-    dt.the_time_zone = *tz_t;
   }
   
   return 0;
@@ -384,7 +359,6 @@ int DateTime::parseDate(const xqpString& s, DateTime& dt)
 
 int DateTime::parseTime(const xqpString& s, DateTime& dt)
 {
-  TimeZone_t tz_t;
   unsigned int position = 0;
   std::string ss = s.getStore()->str();
 
@@ -396,9 +370,8 @@ int DateTime::parseTime(const xqpString& s, DateTime& dt)
     
   if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+    if (0 != TimeZone::parseTimeZone(ss.substr(position), dt.the_time_zone))
       return 1;
-    dt.the_time_zone = *tz_t;
   }
   
   if (dt.data[HOUR_DATA] == 24)
@@ -410,7 +383,6 @@ int DateTime::parseTime(const xqpString& s, DateTime& dt)
 
 int DateTime::parseGYearMonth(const xqpString& s, DateTime& dt)
 {
-  TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
   std::string ss = s.getStore()->str();
   std::string temp;
@@ -432,9 +404,8 @@ int DateTime::parseGYearMonth(const xqpString& s, DateTime& dt)
   position += 7;
   if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+    if (0 != TimeZone::parseTimeZone(ss.substr(position), dt.the_time_zone))
       return 1;
-    dt.the_time_zone = *tz_t;
   }
 
   return 0;
@@ -443,7 +414,6 @@ int DateTime::parseGYearMonth(const xqpString& s, DateTime& dt)
 
 int DateTime::parseGYear(const xqpString& s, DateTime& dt)
 {
-  TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
   std::string ss = s.getStore()->str();
   std::string temp;
@@ -465,9 +435,8 @@ int DateTime::parseGYear(const xqpString& s, DateTime& dt)
   position += 4;
   if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+    if (0 != TimeZone::parseTimeZone(ss.substr(position), dt.the_time_zone))
       return 1;
-    dt.the_time_zone = *tz_t;
   }
 
   return 0;
@@ -476,7 +445,6 @@ int DateTime::parseGYear(const xqpString& s, DateTime& dt)
 
 int DateTime::parseGMonth(const xqpString& s, DateTime& dt)
 {
-  TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
   std::string ss = s.getStore()->str();
   std::string temp;
@@ -501,9 +469,8 @@ int DateTime::parseGMonth(const xqpString& s, DateTime& dt)
   position += 3;
   if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+    if (0 != TimeZone::parseTimeZone(ss.substr(position), dt.the_time_zone))
       return 1;
-    dt.the_time_zone = *tz_t;
   }
 
   return 0;
@@ -512,7 +479,6 @@ int DateTime::parseGMonth(const xqpString& s, DateTime& dt)
 
 int DateTime::parseGMonthDay(const xqpString& s, DateTime& dt)
 {
-  TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
   std::string ss = s.getStore()->str();
   std::string temp;
@@ -540,9 +506,8 @@ int DateTime::parseGMonthDay(const xqpString& s, DateTime& dt)
   position += 6;
   if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+    if (0 != TimeZone::parseTimeZone(ss.substr(position), dt.the_time_zone))
       return 1;
-    dt.the_time_zone = *tz_t;
   }
 
   return 0;
@@ -551,7 +516,6 @@ int DateTime::parseGMonthDay(const xqpString& s, DateTime& dt)
 
 int DateTime::parseGDay(const xqpString& s, DateTime& dt)
 {
-  TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
   std::string ss = s.getStore()->str();
   std::string temp;
@@ -578,9 +542,8 @@ int DateTime::parseGDay(const xqpString& s, DateTime& dt)
   position += 3;
   if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+    if (0 != TimeZone::parseTimeZone(ss.substr(position), dt.the_time_zone))
       return 1;
-    dt.the_time_zone = *tz_t;
   }
 
   return 0;
@@ -712,15 +675,6 @@ DateTime& DateTime::operator=(const DateTime* dt)
   return *this;
 }
 
-#if 0
-int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime*& dt)
-{
-  dt = new DateTime();
-  *dt = *this;
-  dt->setFacet(new_facet);
-  return 0;
-}
-#endif
 
 int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime& dt) const
 {
@@ -903,21 +857,22 @@ uint32_t DateTime::hash(int implicit_timezone_seconds) const
 }
 
 
-DurationBase_t DateTime::toDayTimeDuration() const
+Duration* DateTime::toDayTimeDuration() const
 {
   if (data[YEAR_DATA] >= 0)
-    return new DayTimeDuration(false, 
-                               365 * (abs<int>(data[YEAR_DATA]) - 1) +
-                               leap_years_count(data[YEAR_DATA]) +
-                               days_since_year_start(data[YEAR_DATA],
-                                                     data[MONTH_DATA], data[DAY_DATA]),
-                               data[HOUR_DATA],
-                               data[MINUTE_DATA],
-                               data[SECONDS_DATA],
-                               data[FRACSECONDS_DATA]);
+    return new Duration(Duration::DAYTIMEDURATION_FACET, false, 0, 0,
+                        365 * (abs<int>(data[YEAR_DATA]) - 1) +
+                          leap_years_count(data[YEAR_DATA]) +
+                          days_since_year_start(data[YEAR_DATA],
+                            data[MONTH_DATA],
+                            data[DAY_DATA]),
+                        data[HOUR_DATA],
+                        data[MINUTE_DATA],
+                        data[SECONDS_DATA],
+                        data[FRACSECONDS_DATA]);
   else
   {
-    DayTimeDuration days(true,
+    Duration days(Duration::DAYTIMEDURATION_FACET, true, 0, 0,
                          365 * abs<int>(data[YEAR_DATA]) -
                          leap_years_count(data[YEAR_DATA]) -
                          days_since_year_start(data[YEAR_DATA],
@@ -925,7 +880,7 @@ DurationBase_t DateTime::toDayTimeDuration() const
                                                data[DAY_DATA]),
                          0, 0, 0, 0);
     
-    DayTimeDuration remainder(false, 0,
+    Duration remainder(Duration::DAYTIMEDURATION_FACET, false, 0, 0, 0,
                               data[HOUR_DATA],
                               data[MINUTE_DATA],
                               data[SECONDS_DATA],
@@ -1003,7 +958,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
   new_dt = new DateTime();
 
   if (DateTime::createDateTime(years, months, days, hours, minutes,
-                               int_seconds, frac_seconds, getTimezone(),
+                               int_seconds, frac_seconds, &the_time_zone,
                                *new_dt))
     assert(0);
   
@@ -1021,36 +976,38 @@ DateTime* DateTime::subtractDuration(const Duration& d, bool adjust_facet) const
 }
 
 
-DurationBase_t DateTime::subtractDateTime(
+Duration* DateTime::subtractDateTime(
     const DateTime* dt,
     int implicit_timezone_seconds) const
 {
   std::auto_ptr<DateTime> dt1(this->normalizeTimeZone(implicit_timezone_seconds));
   std::auto_ptr<DateTime> dt2(dt->normalizeTimeZone(implicit_timezone_seconds));
-  return *(dt1->toDayTimeDuration()) - *(dt2->toDayTimeDuration());
+  std::auto_ptr<Duration> dur1(dt1->toDayTimeDuration());
+  std::auto_ptr<Duration> dur2(dt2->toDayTimeDuration());
+  return *dur1 - *dur2;
 }
 
 
 DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
 {
   DateTime* dt;
-  Duration_t d_t;
+  Duration d;
   
-  if( the_time_zone.is_not_a_date_time() )
+  if( the_time_zone.timeZoneNotSet() )
   {
     // validate timezone value (-14 .. +14 H)
     if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
       throw InvalidTimezoneException();
     
-    d_t = new Duration(DayTimeDuration((tz_seconds < 0), 0, 0, 0, tz_seconds, 0));
+    d = Duration(Duration::DAYTIMEDURATION_FACET, 0, 0, (tz_seconds < 0), 0, 0, 0, tz_seconds, 0);
   }
   else
   {
-    if (Duration::from_Timezone(the_time_zone, d_t))
+    if (0 != Duration::fromTimezone(the_time_zone, d))
       assert(0);
   }
   
-  dt = subtractDuration(*d_t, false); // do not adjust to facet
+  dt = subtractDuration(d, false); // do not adjust to facet
   dt->the_time_zone = TimeZone(0);
   
   return dt;
@@ -1059,9 +1016,8 @@ DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
 
 DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
 {
-  DayTimeDuration_t dtduration_t;
-  DayTimeDuration_t context_tz_t;
-  TimeZone_t tz_t;
+  std::auto_ptr<Duration> dtduration;
+  std::auto_ptr<Duration> context_tz;
   std::auto_ptr<DateTime> dt;
   
   // validate timezone value (-14 .. +14 H)
@@ -1069,99 +1025,95 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
     throw InvalidTimezoneException();
 
   // If $timezone is not specified, then $timezone is the value of the implicit timezone in the dynamic context.
-  context_tz_t = new DayTimeDuration((tz_seconds<0), 0, 0, 0, tz_seconds, 0);
+  context_tz = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, (tz_seconds<0), 0, 0, 0, 0, 0, tz_seconds, 0));
 
-  dt.reset(new DateTime(*this));
+  dt = std::auto_ptr<DateTime>(new DateTime(*this));
   
   // If $arg does not have a timezone component and $timezone is not the empty sequence,
   // then the result is $arg with $timezone as the timezone component.
-  if (the_time_zone.is_not_a_date_time())
+  if (the_time_zone.timeZoneNotSet())
   {
-    if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), int(context_tz_t->getSeconds()), tz_t))
+    if (TimeZone::createTimeZone(context_tz->getHours(), context_tz->getMinutes(), int(context_tz->getSeconds()), dt->the_time_zone))
       assert(0);
-    dt->the_time_zone = *tz_t;
   }
   else
   {
     // If $arg has a timezone component and $timezone is not the empty sequence, then
     // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
-    dtduration_t = new DayTimeDuration(the_time_zone.is_negative(),
-                                       0, the_time_zone.getHours(),
-                                       the_time_zone.getMinutes(),
-                                       the_time_zone.getSeconds(), 0);
+    dtduration = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET,
+                                the_time_zone.isNegative(),
+                                0, 0, 0,
+                                the_time_zone.getHours(),
+                                the_time_zone.getMinutes(),
+                                the_time_zone.getSeconds(), 0));
 
-    dtduration_t = *context_tz_t - *dtduration_t;
-    dt.reset(dt->addDuration(*dtduration_t->toDuration()));
-    if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), int(context_tz_t->getSeconds()), tz_t))
+    dtduration = std::auto_ptr<Duration>(*context_tz - *dtduration);
+    dt = std::auto_ptr<DateTime>(dt->addDuration(*dtduration));
+    if (TimeZone::createTimeZone(context_tz->getHours(), context_tz->getMinutes(), int(context_tz->getSeconds()), dt->the_time_zone))
       assert(0);
-    dt->the_time_zone = *tz_t;
   }
 
   return dt.release();
 }
 
 
-DateTime* DateTime::adjustToTimeZone(const DurationBase* db_t) const
+DateTime* DateTime::adjustToTimeZone(const Duration* d) const
 {
-  DayTimeDuration_t dtduration_t;
-  const DayTimeDuration* context_tz_t;
-  TimeZone_t tz_t;
+  std::auto_ptr<Duration> dtduration;
+  std::auto_ptr<const Duration> context_tz;
+  std::auto_ptr<DateTime> dt;
 
   // A dynamic error is raised [err:FODT0003] if $timezone is less than -PT14H
   // or greater than PT14H or if does not contain an integral number of minutes.
   
-  std::auto_ptr<DateTime> dt(new DateTime(*this));
+  dt = std::auto_ptr<DateTime>(new DateTime(*this));
   
-  if (db_t == NULL)
+  if (d == NULL)
   {
-    if (!the_time_zone.is_not_a_date_time())
+    if (!the_time_zone.timeZoneNotSet())
       dt->the_time_zone = TimeZone();
   }
   else
   {
     // validate timezone value (-14 .. +14 H)
-    if (db_t->getYears() != 0 || db_t->getMonths() != 0 ||
-        db_t->getDays() != 0 ||
-        db_t->getSeconds() != 0 ||
-        db_t->getHours()*3600 + db_t->getMinutes()*60 > 14*3600 ||
-        db_t->getHours()*3600 + db_t->getMinutes()*60 < -14*3600)
+    if (d->getYears() != 0 || d->getMonths() != 0 ||
+        d->getDays() != 0 ||
+        d->getSeconds() != 0 ||
+        d->getHours()*3600 + d->getMinutes()*60 > 14*3600 ||
+        d->getHours()*3600 + d->getMinutes()*60 < -14*3600)
       throw InvalidTimezoneException();
         
     // If $arg does not have a timezone component and $timezone is not the
     // empty sequence, then the result is $arg with $timezone as the timezone
     // component.
-    if (the_time_zone.is_not_a_date_time())
+    if (the_time_zone.timeZoneNotSet())
     {
-      if (TimeZone::createTimeZone(db_t->getHours(), db_t->getMinutes(), int(db_t->getSeconds()), tz_t))
+      if (TimeZone::createTimeZone(d->getHours(), d->getMinutes(), int(d->getSeconds()), dt->the_time_zone))
         assert(0);
-
-      dt->the_time_zone = *tz_t;
     }
     else
     {
       // If $arg has a timezone component and $timezone is not the empty sequence, then
       // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
-      dtduration_t = new DayTimeDuration(the_time_zone.is_negative(),
-                                         0,
+      dtduration = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, the_time_zone.isNegative(),
+                                  0, 0, 0,
                                          the_time_zone.getHours(),
                                          the_time_zone.getMinutes(),
                                          the_time_zone.getSeconds(),
-                                         0);
+                                         0));
 
-      context_tz_t = dynamic_cast<const DayTimeDuration*>(db_t);
-      if (context_tz_t == NULL)
+      context_tz = std::auto_ptr<Duration>(new Duration(*d));
+      if (context_tz.get() == NULL)
         assert(0);
 
-      dtduration_t = *context_tz_t - *dtduration_t;
-      dt.reset(dt->addDuration(*dtduration_t->toDuration()));
+      dtduration = std::auto_ptr<Duration>(*context_tz - *dtduration);
+      dt.reset(dt->addDuration(*dtduration));
 
-      if (TimeZone::createTimeZone(context_tz_t->getHours(),
-                                   context_tz_t->getMinutes(),
-                                   int(context_tz_t->getSeconds()),
-                                   tz_t))
+      if (TimeZone::createTimeZone(context_tz->getHours(),
+                                   context_tz->getMinutes(),
+                                   int(context_tz->getSeconds()),
+                                   dt->the_time_zone))
         assert(0);
-
-      dt->the_time_zone = *tz_t;
     }
   }
 

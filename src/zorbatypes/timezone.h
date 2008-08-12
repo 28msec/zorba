@@ -17,35 +17,34 @@
 #define ZORBA_TIMEZONE_H
 
 
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
+#include "zorbatypes/duration.h"
 
 
 namespace zorba
 {
 
-class TimeZone : public SimpleRCObject
+class TimeZone : protected Duration
 {
- public:
+public:
   virtual ~TimeZone() { };
 
-  TimeZone() : the_time_zone(boost::posix_time::not_a_date_time) { };
-
-  TimeZone(boost::posix_time::time_duration t) : the_time_zone(t) { };
-
+  TimeZone() : timezone_not_set(true) { };
+  
   TimeZone(short hours);
-
-  void init() { the_time_zone = boost::posix_time::not_a_date_time; }
-
-  static bool
-  parse_string(const xqpString& s, TimeZone_t& tz_t);
 
   /**
    *  Returns 0 on success.
    */
   static int
-  createTimeZone(int hours, int minutes, int seconds, TimeZone_t& tz_t);
+  parseTimeZone(const xqpString& s, TimeZone& tz);
+
+  /**
+   *  Returns 0 on success.
+   */
+  static int
+  createTimeZone(int hours, int minutes, int seconds, TimeZone& tz);
 
   bool
   operator<(const TimeZone& t) const;
@@ -60,10 +59,7 @@ class TimeZone : public SimpleRCObject
   toString() const;
 
   virtual bool
-  is_negative() const;
-
-  virtual bool
-  is_not_a_date_time() const;
+  isNegative() const;
 
   virtual long
   getHours() const;
@@ -71,19 +67,21 @@ class TimeZone : public SimpleRCObject
   virtual long
   getMinutes() const;
 
-  virtual long
+  virtual double
   getSeconds() const;
 
   virtual long
   getFractionalSeconds() const;
-      
+
   uint32_t 
   hash(int implicit_timezone_seconds) const;
 
-protected:
-  TimeZone& operator=(const TimeZone_t& t_t);
+  bool
+  timeZoneNotSet() const;
 
-  boost::posix_time::time_duration the_time_zone;
+protected:
+  bool timezone_not_set;
+  
 };
 
 } /* namespace zorba */

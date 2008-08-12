@@ -16,23 +16,14 @@
 #ifndef ZORBA_DURATION_H
 #define ZORBA_DURATION_H
 
-// TODO can we remove boost includes from headers?
-//      otherwise a user would need development header for writing
-//      his apps
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/date_time/gregorian/gregorian.hpp>
-
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
 
 namespace zorba
 {
 
-class DurationBase;
-typedef rchandle<DurationBase> DurationBase_t;
 
-
-class DurationBase : public SimpleRCObject
+class Duration
 {
 public:
   typedef enum
@@ -42,391 +33,155 @@ public:
     DAYTIMEDURATION_FACET = 2
   } FACET_TYPE;
 
-public:
-  DurationBase(FACET_TYPE facet_type) : facet(facet_type) { };
+  static const int FRAC_SECONDS_UPPER_LIMIT; // = 1000000, maximum 6 digits
   
-  bool 
-  operator==(const DurationBase& dt) const;
-      
-  int
-  compare(const DurationBase& dt) const;
-      
-  virtual xqpString
-  toString(bool output_when_zero = true) const = 0;
-      
-  virtual Duration_t
-  toDuration() const = 0;
-      
-  virtual Duration_t
-  toNegDuration() const = 0;
-      
-  virtual DurationBase_t
-  toYearMonthDuration() const = 0;
-      
-  virtual DurationBase_t
-  toDayTimeDuration() const = 0;
-
-  virtual DurationBase_t
-  operator+(const DurationBase& db) const = 0;
-      
-  virtual DurationBase_t
-  operator-(const DurationBase& db) const = 0;
-      
-  virtual DurationBase_t
-  operator*(const Double value) const = 0;
-      
-  virtual DurationBase_t
-  operator/(const Double value) const = 0;
-      
-  virtual Decimal
-  operator/(const DurationBase& db) const = 0;
-
-  virtual int
-  getYears() const = 0;
-      
-  virtual int
-  getMonths() const = 0;
-      
-  virtual int
-  getDays() const = 0;
-      
-  virtual int
-  getHours() const = 0;
-      
-  virtual int
-  getMinutes() const = 0;
-      
-  virtual double
-  getSeconds() const = 0;
-      
-  virtual uint32_t
-  hash() const = 0;
-
-  FACET_TYPE getFacet() const { return facet; };
-
-protected:
-  FACET_TYPE facet;
+public:
+  Duration();
   
-};
+  Duration(FACET_TYPE facet_type);
 
-
-class YearMonthDuration : public DurationBase
-{
-friend class Duration;
-
-public:
-  YearMonthDuration() : DurationBase(YEARMONTHDURATION_FACET), months(0) { };
-
-  YearMonthDuration(long the_months) : DurationBase(YEARMONTHDURATION_FACET), months(the_months) { };
-
-  virtual ~YearMonthDuration() { };
-
-  static bool 
-  parse_string(const xqpString& s, YearMonthDuration_t& ymd_t);
-
-  bool 
-  operator==(const YearMonthDuration& ymd) const;
-      
-  bool
-  operator<(const YearMonthDuration& ymd) const;
-      
-  virtual xqpString
-  toString(bool output_when_zero = true) const;
-      
-  virtual Duration_t
-  toDuration() const;
-      
-  virtual Duration_t
-  toNegDuration() const;
-      
-  virtual DurationBase_t
-  toYearMonthDuration() const;
-      
-  virtual DurationBase_t
-  toDayTimeDuration() const;
-
-  virtual DurationBase_t
-  operator+(const DurationBase& db) const;
-      
-  virtual DurationBase_t 
-  operator-(const DurationBase& db) const;
-      
-  virtual DurationBase_t 
-  operator*(const Double value) const;
-      
-  virtual DurationBase_t
-  operator/(const Double value) const;
-      
-  virtual Decimal
-  operator/(const DurationBase& db) const;
-
-  virtual int
-  getYears() const;
-      
-  virtual int
-  getMonths() const;
-      
-  virtual int
-  getDays() const;
-
-  virtual int
-  getHours() const;
-
-  virtual int
-  getMinutes() const;
-
-  virtual double
-  getSeconds() const;
-
-  bool
-  isNegative() const { return (months < 0); }
-      
-  bool
-  isZero() const { return (months == 0); }
-      
-  virtual uint32_t
-  hash() const;
-
- protected:
-  YearMonthDuration& 
-  operator=(const YearMonthDuration_t& ym_t);
-
-  long months;
-};
-
-
-class DayTimeDuration : public DurationBase
-{
-friend class Duration;
-
-public:
-  DayTimeDuration() : DurationBase(DAYTIMEDURATION_FACET), is_negative(false), days(0), timeDuration(0, 0, 0, 0) { };
+ /**
+   *  The function will use the absolute values of all long parameters. The sign of the duration will
+   *  be set by the sign of the longest time unit different from 0. E.g. if years are not equal to 0,
+   *  their sign will be the sign of the duration, then months will be checked, then days, etc.
+  */
+  Duration(FACET_TYPE facet_type, long years, long months, long days,
+           long hours, long minutes, double seconds);
 
   /**
    *  The function will use the absolute values of all long parameters.
    */
-  DayTimeDuration(bool negative, long the_days, long hours, long minutes, long seconds, long frac_seconds);
-  
-  /**
-   *  The function will use the absolute values of all long parameters. The sign of the duration will
-   *  be set by the sign of the longest time period not equal to 0. E.g. if the_days is not equal to 0,
-   *  their sign will be the sign of the duration, then hours will be checked, then minutes, etc.
-   */
-  DayTimeDuration(long the_days, long hours, long minutes, double seconds);
-      
-  /**
-   *  The function will use the absolute values of all long parameters. The sign of the duration will 
-   *  be set by the sign of the longest time period not equal to 0. E.g. if the_days is not equal to 0, 
-   *  their sign will be the sign of the duration, then hours will be checked, then minutes, etc.
-   */
-  DayTimeDuration(long the_days, long hours, long minutes, long seconds, long frac_seconds);
-
-  virtual ~DayTimeDuration() { };
-
-  static bool 
-  parse_string(const xqpString& s, DayTimeDuration_t& dtd_t, bool dont_check_letter_p = false);
-      
-  static bool
-  from_Timezone(const TimeZone& t, DayTimeDuration& dt);
-
-  bool 
-  operator==(const DayTimeDuration& dtd) const;
-
-  bool
-  operator<(const DayTimeDuration& dtd) const;
-      
-  virtual xqpString
-  toString(bool output_when_zero = true) const;
-
-  virtual Duration_t
-  toDuration() const;
-
-  virtual Duration_t
-  toNegDuration() const;
-      
-  virtual DurationBase_t
-  toYearMonthDuration() const;
-      
-  virtual DurationBase_t
-  toDayTimeDuration() const;
-
-  virtual DurationBase_t
-  operator+(const DurationBase& dt) const;
-
-  virtual DurationBase_t
-  operator-(const DurationBase& dt) const;
-
-  virtual DurationBase_t
-  operator*(const Double value) const;
-
-  virtual DurationBase_t
-  operator/(const Double value) const;
-
-  virtual Decimal
-  operator/(const DurationBase& db) const;
-
-  virtual int
-  getYears() const;
-
-  virtual int
-  getMonths() const;
-
-  virtual int
-  getDays() const;
-
-  virtual int
-  getHours() const;
-
-  virtual int
-  getMinutes() const;
-
-  virtual double
-  getSeconds() const;
-      
-  Double
-  getTotalSeconds() const;
-
-  bool
-  isNegative() const { return is_negative; }
-      
-  bool
-  isZero() const;
-      
-  virtual uint32_t
-  hash() const;
-      
-  virtual uint32_t
-  hash(uint32_t hval) const;
-
- protected:
-  DayTimeDuration& 
-  operator=(const DayTimeDuration_t& dt_t);
-      
-  // Addition or subtraction
-  DurationBase_t
-  add_or_subtract(const DurationBase& dt, bool subtract = false) const;
-
-  bool is_negative;
-  long days;
-  boost::posix_time::time_duration timeDuration;
-};
-
-
-class Duration : public DurationBase
-{
-public:
-  Duration() : DurationBase(DURATION_FACET) { };
-  
-  virtual ~Duration() { };
-
-  Duration(const YearMonthDuration& ymd, const DayTimeDuration& dtd)
-      : DurationBase(DURATION_FACET), yearMonthDuration(ymd), dayTimeDuration(dtd) { };
+  Duration(FACET_TYPE facet_type, bool negative, long years, long months, long days,
+           long hours, long minutes, double seconds);
 
   /**
-   * Constructs a Duration from an YearMonthDuration
-   * @param ymd source YearMonthDuration
-   * @param negate if true, the created Duration's sign will be inverted
+   *  The function will use the absolute values of all long parameters.
    */
-  Duration(const YearMonthDuration& ymd, bool negate = false);
-
-  /**
-   * Constructs a Duration from a DateTimeDuration
-   * @param dtd source DateTimeDuration
-   * @param negate if true, the created Duration's sign will be inverted
-   */
-  Duration(const DayTimeDuration& dtd, bool negate = false);
-
-  /**
-   * Constructs a Duration from a generic DurationBase 
-   * @param db source DurationBase
-   */
-  Duration(const DurationBase& db);
-
-  /**
-   * Returns true on success
-   */
-  static bool
-  parse_string(const xqpString& s, Duration_t& d_t);
+  Duration(FACET_TYPE facet_type, bool negative, long years, long months, long days,
+           long hours, long minutes, int seconds, int frac_seconds);
 
   /**
    * Returns 0 on success
    */
   static int
-  from_Timezone(const TimeZone& t, Duration_t& dt);
+  parseYearMonthDuration(const xqpString& s, Duration& d);
+  
+  /**
+   * Returns 0 on success
+   */
+  static int
+  parseDayTimeDuration(const xqpString& s, Duration& d, bool dont_check_letter_p = false);
 
-  bool
+  /**
+   * Returns 0 on success
+   */
+  static int
+  parseDuration(const xqpString& s, Duration& d);
+
+  /**
+   * Returns 0 on success
+   */
+  static int
+  fromTimezone(const TimeZone& t, Duration& d);
+  
+  bool 
   operator==(const Duration& d) const;
       
   int
-  compare(const Duration& d) const;
+  compare(const Duration& d, bool ignore_sign = false) const;
       
-  bool
-  operator<(const Duration& d) const;
+  xqpString
+  toString() const;
       
-  virtual xqpString
-  toString(bool output_when_zero = true) const;
-
-  virtual Duration_t
+  Duration*
   toDuration() const;
-
-  virtual Duration_t
+      
+  Duration*
   toNegDuration() const;
       
-  virtual DurationBase_t
+  Duration*
   toYearMonthDuration() const;
       
-  virtual DurationBase_t
+  Duration*
   toDayTimeDuration() const;
 
-  virtual DurationBase_t
-  operator+(const DurationBase& d) const;
-
-  virtual DurationBase_t
-  operator-(const DurationBase& d) const;
-
-  virtual DurationBase_t
+  Duration*
+  operator+(const Duration& d) const;
+      
+  Duration*
+  operator-(const Duration& d) const;
+      
+  Duration*
   operator*(const Double value) const;
-
-  virtual DurationBase_t
+      
+  Duration*
   operator/(const Double value) const;
+      
+  Decimal
+  operator/(const Duration& d) const;
 
-  virtual Decimal
-  operator/(const DurationBase& db) const;
+  bool
+  isNegative() const;
 
-  virtual int
+  bool
+  isZero() const;
+
+  long
   getYears() const;
-
-  virtual int
+      
+  long
   getMonths() const;
-
-  virtual int
+      
+  long
   getDays() const;
-
-  virtual int
+      
+  long
   getHours() const;
-
-  virtual int
+      
+  long
   getMinutes() const;
-
-  virtual double
+      
+  double
   getSeconds() const;
 
-  bool 
-  isNegative() const;
+  long
+  getFractionalSeconds() const;
+
+  long
+  getIntSeconds() const;
+
+  Double
+  getTotalSeconds() const;
       
-  bool 
-  isZero() const;
-      
-  virtual uint32_t
+  uint32_t
   hash() const;
 
-  Duration&
-  operator=(Duration& d);
+  FACET_TYPE getFacet() const { return facet; };
 
- protected:
-  YearMonthDuration yearMonthDuration;
-  DayTimeDuration dayTimeDuration;
+protected:
+  void normalize();
+  void adjustToFacet();
+  void setFacet(FACET_TYPE a_facet);
+  
+protected:
+  typedef enum
+  {
+    YEAR_DATA = 0,
+    MONTH_DATA = 1,
+    DAY_DATA = 2,
+    HOUR_DATA = 3,
+    MINUTE_DATA = 4,
+    SECONDS_DATA = 5,
+    FRACSECONDS_DATA = 6
+  } DATA_TYPE;
+  
+  FACET_TYPE facet;
+
+  bool is_negative;
+  long data[7];
 };
 
+
 } /* namespace zorba */
+
 #endif

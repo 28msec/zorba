@@ -15,6 +15,7 @@
  */
 #include <iostream>
 #include <climits>
+#include <memory>
 
 #include <libxml/parser.h>
 

@@ -20,179 +20,147 @@
 #include "zorbatypes/datetime/parse.h"
 #include "zorbautils/hashfun.h"
 
-#define RETURN_FALSE_ON_EXCEPTION(sequence)     \
-  try                                           \
-  {                                             \
-    sequence;                                   \
-  }                                             \
-  catch (std::exception)                        \
-  {                                             \
-    return false;                               \
-  }
-
-#include <iostream>
-using namespace std;
 
 namespace zorba
 {
 
-TimeZone::TimeZone(short hours)
+TimeZone::TimeZone(short hours) : Duration(DAYTIMEDURATION_FACET)
 {
-  boost::posix_time::time_duration t( hours, 0 , 0 , 0 );
-  the_time_zone = t;
+  timezone_not_set = false;
+  if (hours < 0)
+    is_negative = true;
+  data[HOUR_DATA] = abs<long>(hours);
 }
 
 
-bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
+int TimeZone::parseTimeZone(const xqpString& s, TimeZone& tz)
 {
   std::string ss = s.getStore()->str();
   unsigned int position = 0;
-  bool is_negative = false;
   
   // A time zone is of form: (('+' | '-') hh ':' mm) | 'Z'
 
-  if (ss.size() != 1 && ss.size() != 6)
-    return false;
-
-  if (ss[position] == 'Z')
+  if (ss.size() == 1 && ss[position] == 'Z')
   {
     // '+00:00', '-00:00', and 'Z' all represent the same zero-length duration timezone, UTC; 'Z' is its canonical representation.
-
-    RETURN_FALSE_ON_EXCEPTION( tz_t = new TimeZone(boost::posix_time::duration_from_string("00:00:00")) );
-    
-    position++;
-    
-    if (ss.size() != position)
-      return false;
+    tz = TimeZone(0);
   }
   else
   {
+    if (ss.size() != 6)
+      return 1;
+    
+    tz = TimeZone(0);
+    
     if (ss[position] == '-')
-      is_negative = true;
+      tz.is_negative = true;
     else if (ss[position] == '+')
       /* do nothing */ ;
     else
-      return false;
+      return 1;
 
     position++;
 
-    // Validate the timezone
-    if (!is_digit(ss[position]) || !is_digit(ss[position+1]) || ss[position+2] != ':' ||
-         !is_digit(ss[position+3]) || !is_digit(ss[position+4]))
-      return false;
+    if ( parse_int(ss, position, tz.data[HOUR_DATA], 2, 2) )
+      return 1;
+
+    if (ss[position++] != ':')
+      return 1;
     
+    if ( parse_int(ss, position, tz.data[MINUTE_DATA], 2, 2) )
+      return 1;
+
     // minutes must be between 00..59
-    if (ss.substr (position + 3, 2) >= "60")
-      return false;
+    if (tz.data[MINUTE_DATA] >= 60)
+      return 1;
 
-    // Parse hh:mm . Add ":00" and pass it off to boost
-    std::string temp = ss.substr(position) + ":00";
-    if (is_negative)
-      temp = "-" + temp;
-
-    boost::posix_time::time_duration t;
-    RETURN_FALSE_ON_EXCEPTION( t = boost::posix_time::duration_from_string (temp); );
-    
-    if (t.minutes() < -59 || t.minutes() > 59)
-      return false;
-    
     // hours must be between -14 .. 14
-    if (t.hours()*60 + t.minutes() > 14*60 || t.hours()*60 + t.minutes() < -14*60)
-      return false;
-    
-    tz_t = new TimeZone(t);
+    if (tz.data[HOUR_DATA]*60 + tz.data[MINUTE_DATA] > 14*60)
+      return 1;
   }
   
-  return true;
-}
-
-int TimeZone::createTimeZone(int hours, int minutes, int seconds, TimeZone_t& tz_t)
-{
-  tz_t = new TimeZone(boost::posix_time::time_duration(hours, minutes, seconds, 0));
   return 0;
 }
 
-TimeZone& TimeZone::operator=(const TimeZone_t& tz_t)
+int TimeZone::createTimeZone(int hours, int minutes, int seconds, TimeZone& tz)
 {
-  the_time_zone = tz_t->the_time_zone;
-  return *this;
+  tz = TimeZone(hours);
+  tz.data[MINUTE_DATA] = abs<long>(minutes);
+  tz.data[SECONDS_DATA] = abs<long>(seconds);
+  tz.normalize(); 
+  return 0;
 }
 
 bool TimeZone::operator<(const TimeZone& t) const
 {
-  return (the_time_zone < t.the_time_zone);
+  return (compare(t) == -1);
 }
 
 bool TimeZone::operator==(const TimeZone& t) const
 {
-  return (the_time_zone == t.the_time_zone);
+  return (compare(t) == 0);
 }
 
 xqpString TimeZone::toString() const
 {
   xqpString result;
   
-  if (the_time_zone.is_not_a_date_time())
+  if (timeZoneNotSet())
     return xqpString("");
-  else
-  {
-    result = boost::posix_time::to_simple_string(the_time_zone);
 
-    if (the_time_zone.hours() == 0 && the_time_zone.minutes() == 0)
-      return xqpString("Z");
-    else if (the_time_zone.hours() >= 0 && the_time_zone.minutes() >= 0 && the_time_zone.seconds() >= 0)
-      result = "+" + result.substr(0, 5);
-    else
-      result = result.substr(0, 6);
-  }
-  
+  if (data[HOUR_DATA] == 0 && data[MINUTE_DATA] == 0)
+    return xqpString("Z");
+
+  if (isNegative())
+    result += "-";
+  else
+    result += "+";
+
+  result += to_string(data[HOUR_DATA], 2);
+  result += ":";
+  result += to_string(data[MINUTE_DATA], 2);
+    
   return result;
 }
 
 int TimeZone::compare(const TimeZone& t) const
 {
-  if (operator<(t))
-    return -1;
-  else if (operator==(t))
-    return 0;
-  else
-    return 1;
+  return Duration::compare(t);
 }
 
-bool TimeZone::is_negative() const
+bool TimeZone::isNegative() const
 {
-  return the_time_zone.is_negative();
+  return Duration::isNegative();
 }
 
-bool TimeZone::is_not_a_date_time() const
+bool TimeZone::timeZoneNotSet() const
 {
-  return the_time_zone.is_not_a_date_time();
+  return timezone_not_set;
 }
 
 long TimeZone::getHours() const
 {
-  return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.hours();
+  return Duration::getHours();
 }
 
 long TimeZone::getMinutes() const
 {
-  return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.minutes();
+  return Duration::getMinutes();
 }
 
-long TimeZone::getSeconds() const
+double TimeZone::getSeconds() const
 {
-  return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.seconds();
+  return Duration::getSeconds();
 }
 
 long TimeZone::getFractionalSeconds() const
 {
-  return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.fractional_seconds();
+  return Duration::getFractionalSeconds();
 }
 
 uint32_t TimeZone::hash(int implicit_timezone_seconds) const
 {
-  return hashfun::h32<boost::int64_t>(is_not_a_date_time() ? -1 : the_time_zone.ticks(), 0);
+  return hashfun::h32<uint32_t>(timeZoneNotSet() ? (uint32_t)-1 : Duration::hash(), 0);
 }
-
 
 } // namespace zorba

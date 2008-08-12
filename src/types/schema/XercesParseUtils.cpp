@@ -1147,13 +1147,10 @@ bool XercesParseUtils::parseXSDuration(
     //int milisec = (int)(msec*1000000);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    Duration_t tValue;
+    Duration tValue;
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (Duration::parse_string(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
-    {
-      xqp_duration* tValue_duration = &*tValue;
-      return factory->createDuration(result, tValue_duration);
-    }
+    if (0 == Duration::parseDuration(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
+      return factory->createDuration(result, &tValue);
   }
 
   ZORBA_ERROR_DESC( FORG0001, 
@@ -1166,14 +1163,12 @@ bool XercesParseUtils::parseXSYearMonthDuration(
     const xqpStringStore_t& textValue,
     store::Item_t &result)
 {
-  YearMonthDuration_t ymd_t;
+  Duration d;
 
-  if (YearMonthDuration::parse_string(textValue.getp(), ymd_t))
+  if (0 == Duration::parseYearMonthDuration(textValue.getp(), d))
   {
-    xqp_yearMonthDuration* d = ymd_t;
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-
-    return factory->createYearMonthDuration(result, d);
+    return factory->createYearMonthDuration(result, &d);
   }
 
   ZORBA_ERROR_DESC( FORG0001, 
@@ -1186,14 +1181,12 @@ bool XercesParseUtils::parseXSDayTimeDuration(
     const xqpStringStore_t& textValue,
     store::Item_t &result)
 {
-  DayTimeDuration_t dtd_t;
+  Duration d;
 
-  if (DayTimeDuration::parse_string(textValue.getp(), dtd_t))
+  if (0 == Duration::parseDayTimeDuration(textValue.getp(), d))
   {
-    xqp_dayTimeDuration* d = dtd_t;
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-
-    return factory->createDayTimeDuration(result, d);
+    return factory->createDayTimeDuration(result, &d);
   }
 
   ZORBA_ERROR_DESC( FORG0001, 

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <typeinfo>
+
 #include <zorba/error.h>
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/datetime.h"

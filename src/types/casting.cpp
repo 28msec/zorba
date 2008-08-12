@@ -147,11 +147,9 @@ inline bool str_int(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool str_dur(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  Duration_t d_t;
-  if (Duration::parse_string(doTrim(aItem->getStringValue()).getp(), d_t))
-  {
-    return aFactory->createDuration(result, d_t);
-  }
+  Duration d;
+  if (0 == Duration::parseDuration(doTrim(aItem->getStringValue()).getp(), d))
+    return aFactory->createDuration(result, &d);
 
   throwError(FORG0001, aErrorInfo);
   return false;
@@ -160,11 +158,9 @@ inline bool str_dur(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool str_yMD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  YearMonthDuration_t ymd_t;
-  if (YearMonthDuration::parse_string(doTrim(aItem->getStringValue()).getp(), ymd_t))
-  {
-    return aFactory->createYearMonthDuration(result, ymd_t);
-  }
+  Duration d;
+  if (0 == Duration::parseYearMonthDuration(doTrim(aItem->getStringValue()).getp(), d))
+    return aFactory->createYearMonthDuration(result, &d);
 
   throwError(FORG0001, aErrorInfo);
   return false;
@@ -173,11 +169,9 @@ inline bool str_yMD(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool str_dTD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DayTimeDuration_t dtd_t;
-  if (DayTimeDuration::parse_string(doTrim(aItem->getStringValue()).getp(), dtd_t))
-  {
-    return aFactory->createDayTimeDuration(result, dtd_t);
-  }
+  Duration d;
+  if (0 == Duration::parseDayTimeDuration(doTrim(aItem->getStringValue()).getp(), d))
+    return aFactory->createDayTimeDuration(result, &d);
 
   throwError(FORG0001, aErrorInfo);
   return false;
@@ -610,14 +604,14 @@ inline bool dur_str(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool dur_yMD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  YearMonthDuration_t dur = (YearMonthDuration*)aItem->getDurationValue().toYearMonthDuration().getp();
-  return aFactory->createYearMonthDuration(result, dur);
+  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getDurationValue().toYearMonthDuration());
+  return aFactory->createYearMonthDuration(result, dur.get());
 }
 
 inline bool dur_dTD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DayTimeDuration_t dur = (DayTimeDuration*)aItem->getDurationValue().toDayTimeDuration().getp();
-  return aFactory->createDayTimeDuration(result, dur);
+  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getDurationValue().toDayTimeDuration());
+  return aFactory->createDayTimeDuration(result, dur.get());
 }
 
 inline bool yMD_uA(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -632,14 +626,14 @@ inline bool yMD_str(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool yMD_dur(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  Duration_t dur = aItem->getYearMonthDurationValue().toDuration();
-  return aFactory->createDuration(result, dur);
+  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDuration());
+  return aFactory->createDuration(result, dur.get());
 }
 
 inline bool yMD_dTD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  DayTimeDuration_t dur = (DayTimeDuration*)aItem->getYearMonthDurationValue().toDayTimeDuration().getp();
-  return aFactory->createDayTimeDuration(result, dur);
+  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDayTimeDuration());
+  return aFactory->createDayTimeDuration(result, dur.get());
 }
 
 inline bool dTD_uA(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -654,14 +648,14 @@ inline bool dTD_str(store::Item_t& result, const store::Item_t& aItem, store::It
 
 inline bool dTD_dur(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  Duration_t dur = aItem->getDayTimeDurationValue().toDuration();
-  return aFactory->createDuration(result, dur);
+  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toDuration());
+  return aFactory->createDuration(result, dur.get());
 }
 
 inline bool dTD_yMD(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  YearMonthDuration_t dur = (YearMonthDuration*)aItem->getDayTimeDurationValue().toYearMonthDuration().getp();
-  return aFactory->createYearMonthDuration(result, dur);
+  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toYearMonthDuration());
+  return aFactory->createYearMonthDuration(result, dur.get());
 }
 
 inline bool dT_uA(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)

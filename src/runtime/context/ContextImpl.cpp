@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <memory>
+
 #include "system/globalenv.h"
 #include "runtime/context/ContextImpl.h"
 #include "store/api/item_factory.h"
@@ -119,17 +121,18 @@ FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState
   long secs;
   bool neg;
   xqp_dayTimeDuration dtd;
-  DayTimeDuration_t db;
+  std::auto_ptr<Duration> dur;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   secs = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
   neg = secs < 0;
-  if (neg) secs = -secs;
-  db = new DayTimeDuration( neg, 0, 0, 0 , secs, 0);
-  
-  STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, db), state );
+  if (neg)
+    secs = -secs;
+  dur = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, neg, 0, 0, 0, 0, 0 , secs));
+                                                                                                    
+  STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, dur.get()), state );
 
   STACK_END (state);
 }

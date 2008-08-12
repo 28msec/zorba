@@ -426,7 +426,6 @@ FnTimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planS
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
-  bool res = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -434,8 +433,7 @@ FnTimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planS
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    res = DayTimeDuration::from_Timezone(itemArg->getDateTimeValue().getTimezone(), tmpDuration);
-    if(res)
+    if (0 == Duration::fromTimezone(itemArg->getDateTimeValue().getTimezone(), tmpDuration))
       STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, &tmpDuration), state );
   }
   STACK_END (state);
@@ -546,7 +544,6 @@ FnTimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
-  bool res = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -554,8 +551,7 @@ FnTimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    res = DayTimeDuration::from_Timezone(itemArg->getDateValue().getTimezone(), tmpDuration);
-    if(res)
+    if (0 == Duration::fromTimezone(itemArg->getDateValue().getTimezone(), tmpDuration))
       STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, &tmpDuration), state );
   }
   STACK_END (state);
@@ -669,7 +665,6 @@ FnTimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
-  bool res = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -678,8 +673,7 @@ FnTimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    res = DayTimeDuration::from_Timezone(itemArg->getTimeValue().getTimezone(), tmpDuration);
-    if(res)
+    if (0 == Duration::fromTimezone(itemArg->getTimeValue().getTimezone(), tmpDuration))
       STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, &tmpDuration), state );
   }
   STACK_END (state);
