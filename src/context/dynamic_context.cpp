@@ -114,9 +114,9 @@ dynamic_context::~dynamic_context()
 }
 
 
-string dynamic_context::var_key (void *var) {
+string dynamic_context::var_key (const void *var) {
   if (var == NULL) return "";
-  var_expr *ve = static_cast<var_expr *> (var);
+  const var_expr *ve = static_cast<const var_expr *> (var);
   return xqpString::concat(to_string(var), ":", ve->get_varname ()->getStringValue ());
 }
 

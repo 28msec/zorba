@@ -272,22 +272,21 @@ bool begin_visit(var_expr& v)
 }
 
 template<class Iter>
-void var_codegen (var_expr &v, hash64map<vector<rchandle<Iter> > *> &mmap) {
-  const QueryLoc &loc = v.get_loc ();
+void var_codegen (const var_expr &v, hash64map<vector<rchandle<Iter> > *> &mmap) {
+  const QueryLoc &qloc = v.get_loc ();
   vector<rchandle<Iter> > *map = NULL;
   bool bound = mmap.get ((uint64_t) &v, map);
   
   ZORBA_ASSERT (bound);
   Iter *v_p =
-    new Iter(v.get_varname()->getLocalName(), loc, (void *) &v);
+    new Iter(v.get_varname()->getLocalName(), qloc, (void *) &v);
   map->push_back (v_p);
   itstack.push(v_p);
 }
 
-void end_visit(var_expr& v)
+void general_var_codegen (const var_expr& v)
 {
-  CODEGEN_TRACE_OUT("");
-  const QueryLoc &loc = qloc;
+  const QueryLoc &qloc = v.get_loc ();
 
   switch (v.kind) {
   case var_expr::for_var: {
@@ -341,16 +340,16 @@ void end_visit(var_expr& v)
       store::Item_t qname;
       xqpStringStore_t dot = new xqpStringStore (".");
       ITEM_FACTORY->createString (qname, dot);
-      ctx_args.push_back (new SingletonIterator (loc, qname));
-      itstack.push (new CtxVariableIterator (loc, ctx_args));
+      ctx_args.push_back (new SingletonIterator (qloc, qname));
+      itstack.push (new CtxVariableIterator (qloc, ctx_args));
     } else if (varname == DOT_POS_VAR) {
       store::Item_t i;
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
-      itstack.push (new SingletonIterator (loc, i));
+      itstack.push (new SingletonIterator (qloc, i));
     } else if (varname == LAST_IDX_VAR) {
       store::Item_t i;
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
-      itstack.push (new SingletonIterator (loc, i));
+      itstack.push (new SingletonIterator (qloc, i));
     } else {
       expr_t lookup_expr =
         new fo_expr (qloc, LOOKUP_OP1 ("ctxvariable"),
@@ -366,6 +365,12 @@ void end_visit(var_expr& v)
     // ZORBA_ASSERT (false);
     break;
   }
+}
+
+void end_visit(var_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  general_var_codegen (v);
 }
 
 bool begin_visit(flwor_expr& v)

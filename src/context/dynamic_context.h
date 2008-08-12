@@ -67,7 +67,7 @@ public:
 	dynamic_context(dynamic_context *parent=NULL);
 	~dynamic_context();
 
-  static std::string var_key (void *var);
+  static std::string var_key (const void *var);
   xqp_string expand_varname(static_context	*sctx, xqp_string qname) const;
 
 public:
