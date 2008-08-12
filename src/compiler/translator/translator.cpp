@@ -230,6 +230,13 @@ protected:
       ZORBA_FATAL(! nodestack.empty(), "");
       e_h = nodestack.top();
       nodestack.pop();
+      if (Properties::instance()->traceTranslator()) {
+        cerr << "Popped from nodestack:\n";
+        if (e_h != NULL)
+          e_h->put (cerr) << endl;
+        else
+          cerr << "NULL" << endl;
+      }
     }
     return e_h;
   }
@@ -409,9 +416,15 @@ public:
 expr_t result ()
 {
   if (nodestack.size () != 1) {
-    cerr << "Error: extra nodes on translator stack\n";
+    cerr << "Error: extra nodes on translator stack:\n";
     while (! nodestack.empty ()) {
-      expr_t e = pop_nodestack ();
+      expr_t e_h = pop_nodestack ();
+      if (! Properties::instance()->traceTranslator()) {
+        if (e_h != NULL)
+          e_h->put (cerr) << endl;
+        else
+          cerr << "NULL" << endl;
+      }
     }
     ZORBA_ASSERT (false);
   }
