@@ -220,7 +220,7 @@ void end_visit(debugger_expr& v)
   CODEGEN_TRACE_OUT(""); 
   checked_vector<PlanIter_t> argv;
   checked_vector<store::Item_t> varnames;
-  checked_vector<std::string> var_keys;
+  checked_vector<string> var_keys;
   checked_vector<global_binding> globals;
   checked_vector<xqtref_t> vartypes;
   for (unsigned i = 0; i < v.var_count (); i++) 
@@ -230,8 +230,8 @@ void end_visit(debugger_expr& v)
     vartypes.push_back (v.var_at (i).type);
     argv.push_back (pop_itstack ());
   }
-  std::list<global_binding> lGlobals = v.getGlobals();
-  std::list<global_binding>::iterator it;
+  list<global_binding> lGlobals = v.getGlobals();
+  list<global_binding>::iterator it;
   for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
   {
     globals.push_back( *it );
@@ -603,10 +603,10 @@ void end_visit(flwor_expr& v)
   }
 
   
-  std::vector<ForVarIter_t> theForVariableInput;
-  std::vector<LetVarIter_t> theLetVariableInput;
-  std::vector< std::vector< ForVarIter_t > > theForVariableOutput;
-  std::vector< std::vector< LetVarIter_t > > theLetVariableOutput;
+  vector<ForVarIter_t> theForVariableInput;
+  vector<LetVarIter_t> theLetVariableInput;
+  vector< vector< ForVarIter_t > > theForVariableOutput;
+  vector< vector< LetVarIter_t > > theLetVariableOutput;
   
   PlanIter_t previous = new gflwor::TupleSourceIterator(QueryLoc::null);
   vector<rchandle<forlet_clause> >::const_iterator it;
@@ -732,8 +732,8 @@ bool begin_visit(trycatch_expr& v)
 void end_visit(trycatch_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  std::vector<LetVarIter_t> *vec = NULL;
-  std::vector<TryCatchIterator::CatchClause> rev_ccs;
+  vector<LetVarIter_t> *vec = NULL;
+  vector<TryCatchIterator::CatchClause> rev_ccs;
   for(int i = v.clause_count() - 1; i >= 0; --i) {
     catch_clause *cc = &*v[i];
     TryCatchIterator::CatchClause rcc;
@@ -756,7 +756,7 @@ void end_visit(trycatch_expr& v)
     }
     rev_ccs.push_back(rcc);
   }
-  std::vector<TryCatchIterator::CatchClause> ccs(rev_ccs.rbegin(), rev_ccs.rend());
+  vector<TryCatchIterator::CatchClause> ccs(rev_ccs.rbegin(), rev_ccs.rend());
   PlanIter_t lChild = pop_itstack();
   itstack.push(new TryCatchIterator(qloc, lChild, ccs));
 }
@@ -770,7 +770,7 @@ void end_visit (eval_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   checked_vector<store::Item_t> varnames;
-  checked_vector<std::string> var_keys;
+  checked_vector<string> var_keys;
   checked_vector<xqtref_t> vartypes;
   for (unsigned i = 0; i < v.var_count (); i++) {
     varnames.push_back (v.var_at (i).varname);
@@ -1138,7 +1138,7 @@ bool begin_visit(treat_expr& v)
 void end_visit(treat_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  std::vector<PlanIter_t> argv;
+  vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
   itstack.push (new TreatIterator (qloc, argv, v.get_target_type (), v.get_check_prime (), v.get_err ()));
 }

@@ -78,8 +78,8 @@ namespace zorba {
 #define CHK_SINGLE_DECL( state, err ) do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #define QLOCDECL const QueryLoc &loc = v.get_location(); (void) loc
 #ifndef NDEBUG
-# define TRACE_VISIT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << std::string(++print_depth, ' ') << TRACE << ", stk size " << nodestack.size () << ", scope depth " << scope_depth << endl
-# define TRACE_VISIT_OUT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << std::string(print_depth--, ' ') << TRACE << ", stk size: " << nodestack.size () << ", scope depth " << scope_depth << endl
+# define TRACE_VISIT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << string(++print_depth, ' ') << TRACE << ", stk size " << nodestack.size () << ", scope depth " << scope_depth << endl
+# define TRACE_VISIT_OUT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << string(print_depth--, ' ') << TRACE << ", stk size: " << nodestack.size () << ", scope depth " << scope_depth << endl
 #else
 # define TRACE_VISIT() QLOCDECL
 # define TRACE_VISIT_OUT() QLOCDECL
@@ -95,14 +95,14 @@ namespace zorba {
 
 #define CTXTS sctx_p->get_typemanager ()
 
-  typedef std::pair<varref_t, expr_t> global_binding;
+  typedef pair<varref_t, expr_t> global_binding;
 
-  template<class T> T &peek_stack (std::stack<T> &stk) {
+  template<class T> T &peek_stack (stack<T> &stk) {
     ZORBA_ASSERT (! stk.empty ());
     return stk.top ();
   }
 
-  template <typename T> T pop_stack (std::stack<T> &stk) {
+  template <typename T> T pop_stack (stack<T> &stk) {
     T x = peek_stack (stk);
     stk.pop ();
     return x;
@@ -147,8 +147,8 @@ protected:
   static_context                       * sctx_p;
   ModulesInfo                          * minfo;
   vector<rchandle<static_context> >    & sctx_list;
-  std::stack<expr_t>                     nodestack;
-  std::stack<xqtref_t>                   tstack;  // types stack
+  stack<expr_t>                     nodestack;
+  stack<xqtref_t>                   tstack;  // types stack
 
   set<string> mod_import_ns_set;
   set<string> mod_stack;
@@ -169,12 +169,12 @@ protected:
   /**
    * Saves true if the previous DirElemContent is a boundary (DirElemConstructor or EnclosedExpr).
    */
-  std::stack<bool> theIsWSBoundaryStack;
+  stack<bool> theIsWSBoundaryStack;
   /**
    * Saves the previous DirElemContent if it might be boundary whitespace (its previous item is a boundary
    * and it contains whitespace). It must be checked if the next item (the current item) is a boundary.
    */
-  std::stack<const DirElemContent*> thePossibleWSContentStack;
+  stack<const DirElemContent*> thePossibleWSContentStack;
 
   bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
 
@@ -182,10 +182,10 @@ protected:
 
   // TODO: should be static
   // functions accepting . as default arg
-  std::set<string> xquery_fns_def_dot;
+  set<string> xquery_fns_def_dot;
   const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data;
 
-  std::set<string> zorba_predef_mod_ns;
+  set<string> zorba_predef_mod_ns;
 
   TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
     :
@@ -410,7 +410,7 @@ expr_t wrap_in_globalvar_assign(expr_t e) {
   const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
   const function *ctx_get = LOOKUP_OP1 ("ctxvariable");
 
-  for (std::list<global_binding>::iterator i = theGlobalVars.begin ();
+  for (list<global_binding>::iterator i = theGlobalVars.begin ();
       i != theGlobalVars.end ();
       i++)
   {
@@ -1029,7 +1029,7 @@ void *begin_visit(const DirAttributeList& v)
     }
 
   unsigned long numAttrs = 0;
-  std::vector<rchandle<attr_expr> > attributes;
+  vector<rchandle<attr_expr> > attributes;
   while(true) {
     expr_t expr = pop_nodestack();
     if (expr == NULL)
@@ -1051,7 +1051,7 @@ void *begin_visit(const DirAttributeList& v)
   else {
     fo_expr* expr_list = create_seq(loc);
 
-    for (std::vector<rchandle<attr_expr> >::reverse_iterator it = attributes.rbegin();
+    for (vector<rchandle<attr_expr> >::reverse_iterator it = attributes.rbegin();
          it != attributes.rend();
          ++it)
     {
@@ -1783,7 +1783,7 @@ void *begin_visit(const GroupByClause& v)
   nodestack.push(0);
 
   // Set of FOR/LET vars that are not group-by vars
-  std::set<std::string> lFVars;;
+  set<string> lFVars;;
 
   ForLetClauseList* lForLetList = &*(v.get_flwor()->get_forlet_list());
   for (size_t i = 0; i < lForLetList->size(); ++i)
@@ -1813,7 +1813,7 @@ void *begin_visit(const GroupByClause& v)
   for (size_t i = 0; i < lList->size(); ++i)
   {
     GroupSpec* lSpec = (*lList)[i];
-    std::set<std::string>::iterator lFindIter = lFVars.find(lSpec->get_var_name());
+    set<string>::iterator lFindIter = lFVars.find(lSpec->get_var_name());
     if (lFindIter != lFVars.end())
     {
       lFVars.erase(lFindIter);
@@ -1822,8 +1822,8 @@ void *begin_visit(const GroupByClause& v)
 
   // For each FOR/LET var_expr X that does not appear in the group-by clause,
   // create a new var_exp ngX and push ngX and X in the node stack
-  std::set<std::string>::iterator lIter = lFVars.begin();
-  std::set<std::string>::iterator lEnd = lFVars.end();
+  set<string>::iterator lIter = lFVars.begin();
+  set<string>::iterator lEnd = lFVars.end();
   for(;lIter!=lEnd;++lIter)
   {
     var_expr *e = static_cast<var_expr*>(sctx_p->lookup_var(*lIter));
@@ -2047,8 +2047,8 @@ void *begin_visit(const VFO_DeclList& v)
       params = new ParamList (n->get_location ());
 
     int nargs = params->size();
-    std::vector<xqtref_t> arg_types;
-    for (std::vector<rchandle<Param> >::const_iterator it = params->begin ();
+    vector<xqtref_t> arg_types;
+    for (vector<rchandle<Param> >::const_iterator it = params->begin ();
          it != params->end ();
          ++it)
     {
@@ -2285,7 +2285,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  std::vector<expr_t> arguments;
+  vector<expr_t> arguments;
   while (true) 
   {
     expr_t e_h = pop_nodestack();
@@ -2419,7 +2419,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       fo_h->setUpdateType(fo_h->get_func()->getUpdateType());
 
       // TODO this should be a const iterator
-      std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
+      vector<expr_t>::reverse_iterator iter = arguments.rbegin();
       for(; iter != arguments.rend(); ++iter)
       {
         fo_h->add(*iter);
@@ -2531,7 +2531,7 @@ void *begin_visit(const ModuleImport& v)
 void end_visit(const ModuleImport& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  std::string pfx = v.get_prefix (), target_ns = v.get_uri ();
+  string pfx = v.get_prefix (), target_ns = v.get_uri ();
 
   // The namespace prefix specified in a module import must not be xml or xmlns [err:XQST0070]
   if (pfx == "xml" || pfx == "xmlns")
@@ -2586,7 +2586,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ASSERT (found);
     } else {
       // we get the ownership if the moduleResolver is a standard resolver
-      std::istream* modfile = lModuleResolver->resolve(aturiitem, sctx_p);
+      istream* modfile = lModuleResolver->resolve(aturiitem, sctx_p);
 
       try {
         if (! *modfile) {
@@ -2777,12 +2777,12 @@ void *begin_visit(const SchemaImport& v)
     if (atlist == NULL || atlist->size () == 0)
       ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
     {
-      std::string at = sctx_p->resolve_relative_uri ((*atlist) [0]);
+      string at = sctx_p->resolve_relative_uri ((*atlist) [0]);
      
 #if 0
-      std::string prefix = sp == NULL ? "" : sp->get_prefix();
+      string prefix = sp == NULL ? "" : sp->get_prefix();
       cout << "SchemaImport: " << prefix << " : " << target_ns
-           << " @ " << at << std::endl;
+           << " @ " << at << endl;
       cout << " Context: " << CTXTS << "\n";
 #endif
       
@@ -5633,7 +5633,7 @@ expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInf
 }
 
 expr_t translate (const parsenode &root, CompilerCB* aCompilerCB) {
-  std::set<std::string> mod_stack = std::set<std::string> ();
+  set<string> mod_stack;
   ModulesInfo minfo (aCompilerCB->m_sctx, aCompilerCB);
   return translate_aux (root, aCompilerCB, &minfo, mod_stack);
 }
