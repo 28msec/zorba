@@ -1106,8 +1106,8 @@ GroupSpecList::GroupSpecList(
 void GroupSpecList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  vector<rchandle<GroupSpec> >::const_reverse_iterator it = spec_hv.rbegin();
-  for (; it!=spec_hv.rend(); ++it) {
+  vector<rchandle<GroupSpec> >::const_iterator it = spec_hv.begin();
+  for (; it!=spec_hv.end(); ++it) {
     const GroupSpec *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -1200,8 +1200,8 @@ OrderSpecList::OrderSpecList(
 void OrderSpecList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  vector<rchandle<OrderSpec> >::const_reverse_iterator it = spec_hv.rbegin();
-  for (; it!=spec_hv.rend(); ++it) {
+  vector<rchandle<OrderSpec> >::const_iterator it = spec_hv.begin();
+  for (; it!=spec_hv.end(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }

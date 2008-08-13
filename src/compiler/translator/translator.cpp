@@ -1543,6 +1543,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     flwor->set_order_stable (orderby->get_stable_bit ());
     OrderSpecList *order_list = &*orderby->get_spec_list ();
     int n = order_list->size ();
+    vector<expr_t> orders (n);
+    generate (orders.rbegin (), orders.rend (), stack_to_generator (nodestack));
     for (i = 0; i < n; i++) {
       OrderSpec *spec = &*((*order_list) [i]);
       OrderModifier *mod = &*spec->get_modifier ();
@@ -1558,7 +1560,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       if (! sctx_p->has_collation_uri (col))
         ZORBA_ERROR (XQST0076);
       rchandle<order_modifier> emod (new order_modifier (dir_spec, empty_spec, col));
-      expr_t lOrderExpr = pop_nodestack();
+      expr_t lOrderExpr = orders [i];
       if (lOrderExpr->isUpdating())
       {
         ZORBA_ERROR_LOC(XUST0001, loc);
@@ -1581,25 +1583,28 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
     GroupSpecList *lGroupList = lGroupBy->get_spec_list();
     size_t lSize = lGroupList->size();
+    vector<rchandle<group_clause> > gclauses;
     for (int i = (lSize-1); i >= 0; --i) {
       GroupSpec* lSpec = &*((*lGroupList)[i]);
 
-      varref_t lInnerVarExpr = pop_nodestack_var ();
-      varref_t lOuterVarExpr = pop_nodestack_var ();
+      varref_t inner_var = pop_nodestack_var ();
+      varref_t outer_var = pop_nodestack_var ();
 
       group_clause* lClause = NULL;
       if (lSpec->group_coll_spec() != NULL)
-        lClause = new group_clause(lOuterVarExpr, lInnerVarExpr, lSpec->group_coll_spec()->get_uri());
+        lClause = new group_clause(outer_var, inner_var, lSpec->group_coll_spec()->get_uri());
       else
-        lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
-      flwor->add(lClause);
+        lClause = new group_clause(outer_var, inner_var);
+      gclauses.push_back (lClause);
       pop_scope();
     }
+    for (int i = gclauses.size () - 1; i >= 0; --i)
+      flwor->add (gclauses [i]);
 
-    varref_t lInnerVarExpr;
-    while (NULL != (lInnerVarExpr = pop_nodestack_var ())) {
-      varref_t lOuterVarExpr = pop_nodestack_var ();
-      group_clause* lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
+    varref_t inner_var;
+    while (NULL != (inner_var = pop_nodestack_var ())) {
+      varref_t outer_var = pop_nodestack_var ();
+      group_clause* lClause = new group_clause(outer_var, inner_var);
       flwor->add_non_group(lClause);
       pop_scope();
     }
