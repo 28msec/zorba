@@ -21,4 +21,5 @@ SET(SCHEMA_SRCS
     SchemaValidator.cpp
     SchemaValidatorFilter.cpp
     ValidationEventHandler.cpp
+    Utils.cpp
     )

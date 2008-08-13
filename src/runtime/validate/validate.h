@@ -71,7 +71,7 @@ namespace zorba
         static void processNamespaces ( SchemaValidator& schemaValidator, const store::Item_t& item);
         
         static void processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-            store::NsBindings bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
+            store::NsBindings& bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
             std::vector<store::Item_t> &resultList);
     };
 

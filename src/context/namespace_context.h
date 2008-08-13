@@ -23,6 +23,7 @@
 #include "zorbatypes/rchandle.h"
 
 #include "zorbamisc/ns_consts.h"
+#include "store/api/item.h"
 
 namespace zorba {
 
@@ -37,6 +38,7 @@ class namespace_context : public SimpleRCObject {
 
     namespace_context(static_context *sctx)
       : m_sctx(sctx) { }
+    namespace_context(static_context *sctx, store::NsBindings& bindings);
     namespace_context(rchandle<namespace_context> parent)
       : m_parent(parent) { }
 

@@ -361,7 +361,7 @@ namespace zorba
     }
     
     void ValidateIterator::processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        store::NsBindings bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
+        store::NsBindings& bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
         std::vector<store::Item_t> &resultList)
     {
         xqtref_t type = delegatingTypeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
@@ -370,9 +370,13 @@ namespace zorba
         //std::cout << " type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; std::cout.flush();                    
     
         static_context* staticContext = planState.sctx();
-        namespace_context nsCtx = namespace_context(staticContext);
-        // todo fill nsCtx
-        
+        namespace_context nsCtx = namespace_context(staticContext, bindings);
+        // fill nsCtx
+        //for (unsigned long i = 0; i < bindings.size(); i++)
+        //{
+        //    nsCtx.bind_ns( bindings[i].first.getStore(), bindings[i].second.getStore() );
+        //}
+                
         store::Item_t result;                    
         if (type!=NULL)
         {

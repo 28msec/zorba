@@ -16,8 +16,18 @@
 #include "context/namespace_context.h"
 #include "context/static_context.h"
 
+
 namespace zorba {
 
+namespace_context::namespace_context(static_context *sctx, store::NsBindings& bindings)
+      : m_sctx(sctx)
+{
+    for (unsigned long i = 0; i < bindings.size(); i++)
+    {
+        bind_ns( bindings[i].first.getStore(), bindings[i].second.getStore() );
+    }    
+}
+      
 void namespace_context::bind_ns(xqp_string prefix, xqp_string ns)
 {
   m_bindings.push_back(std::pair<xqp_string, xqp_string>(prefix, ns));
