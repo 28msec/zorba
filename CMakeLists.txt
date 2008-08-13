@@ -359,5 +359,5 @@ SET ( CMAKE_VERBOSE_MAKEFILE OFF )
 INCLUDE(CMakeExportBuildSettings)
 CMAKE_EXPORT_BUILD_SETTINGS(${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake)
 EXPORT_LIBRARY_DEPENDENCIES(${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake)
-
+EXPORT(TARGETS zorba zorbautils zorbatypes zorbaerrors simplestore FILE ${CMAKE_BINARY_DIR}/ZorbaLibraries.cmake)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/ZorbaConfig.cmake.in ${CMAKE_BINARY_DIR}/ZorbaConfig.cmake)
