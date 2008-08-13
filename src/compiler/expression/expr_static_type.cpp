@@ -35,8 +35,8 @@ namespace zorba {
 
 static xqtref_t print_expr_ant_type(expr *e, xqtref_t t)
 {
-  e->put(std::cerr);
-  std::cerr << t->toString() << std::endl;
+  e->put(std::cout);
+  std::cout << t->toString() << std::endl;
   return t;
 }
 

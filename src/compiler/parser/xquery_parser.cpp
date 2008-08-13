@@ -38,7 +38,7 @@
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
-#line 762 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_scanner.h"
@@ -47,7 +47,7 @@
 
 
 /* Line 317 of lalr1.cc.  */
-#line 51 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 51 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -205,889 +205,889 @@ namespace zorba
     switch (yytype)
       {
         case 84: /* "\"'DECIMAL'\"" */
-#line 659 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 659 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->decval); };
-#line 211 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 211 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 95: /* "\"'DOUBLE'\"" */
-#line 658 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->dval); };
-#line 216 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 216 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 119: /* "\"'INTEGER'\"" */
-#line 657 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->ival); };
-#line 221 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 221 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 267: /* "VersionDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 226 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 226 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 268: /* "MainModule" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 231 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 231 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 269: /* "LibraryModule" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 236 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 236 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 270: /* "ModuleDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 241 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 241 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 271: /* "Prolog" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 246 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 246 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 272: /* "SIND_DeclList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 251 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 251 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 273: /* "VFO_DeclList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 256 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 256 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 274: /* "SIND_Decl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 261 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 261 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 275: /* "VFO_Decl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 266 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 266 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 276: /* "Setter" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 271 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 271 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 277: /* "Import" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 276 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 276 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 278: /* "NamespaceDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 281 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 281 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 279: /* "BoundarySpaceDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 286 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 286 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 280: /* "DefaultNamespaceDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 291 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 291 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 281: /* "OptionDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 296 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 296 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 283: /* "OrderingModeDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 301 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 301 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 284: /* "EmptyOrderDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 306 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 306 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 285: /* "CopyNamespacesDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 311 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 311 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 286: /* "DefaultCollationDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 316 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 316 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 287: /* "BaseURIDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 321 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 321 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 288: /* "SchemaImport" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 326 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 326 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 289: /* "URILiteralList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 331 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 331 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 290: /* "SchemaPrefix" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 336 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 336 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 291: /* "ModuleImport" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 341 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 341 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 292: /* "VarDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 346 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 346 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 293: /* "ConstructionDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 351 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 351 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 294: /* "FunctionSig" */
-#line 667 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 667 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->fnsig); };
-#line 356 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 356 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 295: /* "Block" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 361 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 361 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 296: /* "BlockBody" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 366 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 366 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 297: /* "ExitExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 371 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 371 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 298: /* "WhileExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 376 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 376 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 299: /* "FlowCtlStatement" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 381 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 381 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 300: /* "FunctionDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 386 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 386 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 301: /* "ParamList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 391 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 391 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 302: /* "Param" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 396 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 396 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 303: /* "EnclosedExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 401 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 401 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 304: /* "BracedExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 406 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 406 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 305: /* "QueryBody" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 411 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 411 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 306: /* "Expr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 416 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 416 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 307: /* "ExprSingle" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 421 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 421 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 308: /* "FLWORExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 426 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 426 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 309: /* "ForLetClauseList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 431 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 431 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 310: /* "ForLetClause" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 436 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 436 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 311: /* "ForClause" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 441 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 441 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 312: /* "VarInDeclList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 446 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 446 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 313: /* "VarInDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 451 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 451 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 314: /* "PositionalVar" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 456 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 456 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 316: /* "LetClause" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 461 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 461 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 317: /* "VarGetsDeclList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 466 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 466 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 318: /* "EvalVarDeclList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 471 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 471 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 319: /* "VarGetsDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 476 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 476 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 320: /* "EvalVarDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 481 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 481 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 321: /* "WhereClause" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 486 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 486 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 322: /* "GroupByClause" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 491 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 491 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 323: /* "GroupSpecList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 496 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 496 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 324: /* "GroupSpec" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 501 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 501 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 325: /* "GroupCollationSpec" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 506 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 506 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 326: /* "LetClauseList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 511 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 511 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 327: /* "OrderByClause" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 516 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 516 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 328: /* "OrderSpecList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 521 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 521 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 329: /* "OrderSpec" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 526 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 526 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 330: /* "OrderModifier" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 531 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 531 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 331: /* "OrderDirSpec" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 536 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 536 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 332: /* "OrderEmptySpec" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 541 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 541 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 333: /* "OrderCollationSpec" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 546 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 546 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 334: /* "QuantifiedExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 551 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 551 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 335: /* "QVarInDeclList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 556 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 556 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 336: /* "QVarInDecl" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 561 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 561 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 337: /* "TypeswitchExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 566 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 566 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 338: /* "CaseClauseList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 571 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 571 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 339: /* "CaseClause" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 576 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 576 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 340: /* "IfExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 581 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 581 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 341: /* "OrExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 586 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 586 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 342: /* "AndExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 591 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 591 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 343: /* "ComparisonExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 596 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 596 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 345: /* "FTContainsExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 601 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 601 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 346: /* "RangeExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 606 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 606 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 347: /* "AdditiveExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 611 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 611 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 348: /* "MultiplicativeExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 616 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 616 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 349: /* "UnionExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 621 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 621 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 350: /* "IntersectExceptExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 626 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 626 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 351: /* "InstanceofExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 631 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 631 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 352: /* "TreatExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 636 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 636 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 353: /* "CastableExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 641 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 641 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 354: /* "CastExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 646 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 646 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 355: /* "UnaryExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 651 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 651 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 356: /* "SignList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 656 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 656 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 357: /* "ValueExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 661 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 661 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 358: /* "ValueComp" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 666 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 666 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 359: /* "NodeComp" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 671 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 671 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 360: /* "ValidateExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 676 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 676 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 361: /* "ExtensionExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 681 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 681 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 362: /* "PragmaList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 686 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 686 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 363: /* "Pragma" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 691 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 691 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 364: /* "PathExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 696 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 696 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 365: /* "RelativePathExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 701 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 701 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 366: /* "StepExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 706 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 706 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 367: /* "AxisStep" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 711 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 711 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 368: /* "ForwardStep" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 716 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 716 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 369: /* "ForwardAxis" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 721 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 721 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 370: /* "AbbrevForwardStep" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 726 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 726 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 371: /* "ReverseStep" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 731 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 731 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 372: /* "ReverseAxis" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 736 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 736 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 373: /* "NodeTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 741 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 741 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 374: /* "NameTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 746 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 746 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 375: /* "Wildcard" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 751 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 751 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 376: /* "FilterExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 756 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 756 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 377: /* "PredicateList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 761 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 761 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 378: /* "Predicate" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 766 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 766 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 379: /* "PrimaryExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 771 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 771 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 380: /* "Literal" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 776 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 776 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 381: /* "NumericLiteral" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 781 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 781 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 382: /* "VarRef" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 786 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 786 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 383: /* "ParenthesizedExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 791 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 791 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 384: /* "ContextItemExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 796 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 796 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 385: /* "OrderedExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 801 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 801 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 386: /* "UnorderedExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 806 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 806 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 387: /* "FunctionCall" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 811 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 811 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 388: /* "ArgList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 816 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 816 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 389: /* "Constructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 821 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 821 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 390: /* "DirectConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 826 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 826 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 391: /* "DirElemConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 831 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 831 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 392: /* "DirElemContentList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 836 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 836 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 393: /* "DirAttributeList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 841 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 841 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 394: /* "DirAttr" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 846 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 846 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 396: /* "DirAttributeValue" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 851 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 851 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 397: /* "Opt_QuoteAttrContentList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 856 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 856 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 398: /* "QuoteAttrContentList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 861 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 861 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 399: /* "Opt_AposAttrContentList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 866 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 866 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 400: /* "AposAttrContentList" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 871 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 871 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 401: /* "QuoteAttrValueContent" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 876 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 876 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 402: /* "AposAttrValueContent" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 881 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 881 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 403: /* "DirElemContent" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 886 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 886 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 404: /* "CommonContent" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 891 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 891 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 405: /* "DirCommentConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 896 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 896 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 406: /* "DirPIConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 901 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 901 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 407: /* "CDataSection" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 906 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 906 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 408: /* "ComputedConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 911 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 911 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 409: /* "CompDocConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 916 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 916 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 410: /* "CompElemConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 921 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 921 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 411: /* "CompAttrConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 926 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 926 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 412: /* "CompTextConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 931 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 931 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 413: /* "CompCommentConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 936 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 936 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 414: /* "CompPIConstructor" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 941 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 941 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 415: /* "SingleType" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 946 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 946 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 416: /* "TypeDeclaration" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 951 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 951 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 417: /* "SequenceType" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 956 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 956 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 418: /* "OccurrenceIndicator" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 961 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 961 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 419: /* "ItemType" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 966 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 966 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 420: /* "AtomicType" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 971 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 971 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 421: /* "KindTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 976 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 976 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 422: /* "AnyKindTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 981 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 981 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 423: /* "DocumentTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 986 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 986 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 424: /* "TextTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 991 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 991 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 425: /* "CommentTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 996 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 996 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 426: /* "PITest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 1001 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1001 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 427: /* "AttributeTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 1006 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1006 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 428: /* "SchemaAttributeTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 1011 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1011 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 429: /* "ElementTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 1016 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1016 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 430: /* "SchemaElementTest" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 1021 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1021 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 431: /* "TypeName" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 1026 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1026 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 432: /* "TypeName_WITH_HOOK" */
-#line 665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); };
-#line 1031 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1031 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 433: /* "StringLiteral" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1036 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1036 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 435: /* "InsertExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1041 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1041 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 436: /* "DeleteExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1046 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1046 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 437: /* "ReplaceExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1051 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1051 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 438: /* "RenameExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1056 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1056 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 439: /* "TransformExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1061 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1061 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 440: /* "VarNameList" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1066 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1066 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 441: /* "VarNameDecl" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1071 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1071 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 442: /* "TryExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1076 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1076 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 443: /* "CatchListExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1081 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1081 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 444: /* "CatchExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1086 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1086 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 448: /* "EvalExpr" */
-#line 666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); };
-#line 1091 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1091 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
 
 	default:
@@ -1163,12 +1163,12 @@ namespace zorba
 
 
     /* User initialization code.  */
-    #line 91 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+    #line 91 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 {
   yylloc.begin.filename = yylloc.end.filename = &(driver.theFilename);
 }
   /* Line 547 of yacc.c.  */
-#line 1172 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1172 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
@@ -1284,7 +1284,7 @@ namespace zorba
     switch (yyn)
       {
 	  case 2:
-#line 783 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 			driver.set_expr ((yyval.node));
@@ -1292,7 +1292,7 @@ namespace zorba
     break;
 
   case 3:
-#line 788 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 788 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<MainModule *> ((yysemantic_stack_[(2) - (2)].node))->set_version_decl (static_cast<VersionDecl *> ((yysemantic_stack_[(2) - (1)].node)));
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -1301,7 +1301,7 @@ namespace zorba
     break;
 
   case 4:
-#line 794 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 794 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
        driver.set_expr ((yyval.node));
@@ -1309,7 +1309,7 @@ namespace zorba
     break;
 
   case 5:
-#line 799 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 799 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        dynamic_cast<LibraryModule *> ((yysemantic_stack_[(2) - (2)].node))->set_version_decl (static_cast<VersionDecl *> ((yysemantic_stack_[(2) - (1)].node)));
        (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -1318,7 +1318,7 @@ namespace zorba
     break;
 
   case 6:
-#line 811 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 811 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        std::string encoding = "utf-8";
        (yyval.node) = new VersionDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)), encoding);
@@ -1326,14 +1326,14 @@ namespace zorba
     break;
 
   case 7:
-#line 816 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 816 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new VersionDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), SYMTAB ((yysemantic_stack_[(6) - (5)].sval)));
     ;}
     break;
 
   case 8:
-#line 826 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 826 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new MainModule(LOC ((yyloc)),
 								static_cast<Prolog*>((yysemantic_stack_[(2) - (1)].node)),
@@ -1342,7 +1342,7 @@ namespace zorba
     break;
 
   case 9:
-#line 833 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 833 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new MainModule(LOC ((yyloc)),
 								NULL,
@@ -1351,7 +1351,7 @@ namespace zorba
     break;
 
   case 10:
-#line 845 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 845 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new LibraryModule(LOC ((yyloc)),
 								static_cast<ModuleDecl*>((yysemantic_stack_[(2) - (1)].node)),
@@ -1360,7 +1360,7 @@ namespace zorba
     break;
 
   case 11:
-#line 857 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 857 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(6) - (3)].sval)), 
@@ -1369,7 +1369,7 @@ namespace zorba
     break;
 
   case 12:
-#line 869 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(2) - (1)].node)),
@@ -1378,7 +1378,7 @@ namespace zorba
     break;
 
   case 13:
-#line 875 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 875 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								NULL,
@@ -1387,7 +1387,7 @@ namespace zorba
     break;
 
   case 14:
-#line 881 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 881 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -1396,7 +1396,7 @@ namespace zorba
     break;
 
   case 15:
-#line 893 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 893 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			SIND_DeclList* sindList_p = new SIND_DeclList(LOC ((yyloc)));
 			sindList_p->push_back((yysemantic_stack_[(1) - (1)].node));
@@ -1405,7 +1405,7 @@ namespace zorba
     break;
 
   case 16:
-#line 899 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 899 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (sindList_p) {
@@ -1416,7 +1416,7 @@ namespace zorba
     break;
 
   case 17:
-#line 913 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 913 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VFO_DeclList* vfoList_p = new VFO_DeclList(LOC ((yyloc)));
 			vfoList_p->push_back((yysemantic_stack_[(1) - (1)].node));
@@ -1425,7 +1425,7 @@ namespace zorba
     break;
 
   case 18:
-#line 919 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 919 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (vfoList_p) {
@@ -1436,133 +1436,133 @@ namespace zorba
     break;
 
   case 19:
-#line 933 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 933 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 20:
-#line 937 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 937 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 21:
-#line 941 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 941 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 22:
-#line 945 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 945 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 23:
-#line 954 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 954 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 24:
-#line 958 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 958 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 25:
-#line 962 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 962 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 26:
-#line 968 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 968 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 27:
-#line 978 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 978 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 28:
-#line 982 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 982 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 29:
-#line 986 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 986 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 30:
-#line 990 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 990 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 31:
-#line 994 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 994 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 32:
-#line 998 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 998 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 33:
-#line 1002 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1002 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 34:
-#line 1008 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1008 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 35:
-#line 1018 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1018 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 36:
-#line 1022 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1022 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 37:
-#line 1037 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1037 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NamespaceDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval)),
@@ -1571,7 +1571,7 @@ namespace zorba
     break;
 
   case 38:
-#line 1049 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1049 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BoundarySpaceDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_space);
@@ -1579,7 +1579,7 @@ namespace zorba
     break;
 
   case 39:
-#line 1054 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1054 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BoundarySpaceDecl(LOC ((yyloc)),
 								StaticContextConsts::strip_space);
@@ -1587,7 +1587,7 @@ namespace zorba
     break;
 
   case 40:
-#line 1065 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1065 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultNamespaceDecl(LOC ((yyloc)),
 								ParseConstants::ns_element_default,
@@ -1596,7 +1596,7 @@ namespace zorba
     break;
 
   case 41:
-#line 1071 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1071 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultNamespaceDecl(LOC ((yyloc)),
 								ParseConstants::ns_function_default,
@@ -1605,7 +1605,7 @@ namespace zorba
     break;
 
   case 42:
-#line 1083 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1083 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OptionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (3)].sval))),
@@ -1614,7 +1614,7 @@ namespace zorba
     break;
 
   case 43:
-#line 1096 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1096 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FTOptionDecl(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (3)].node));
@@ -1622,7 +1622,7 @@ namespace zorba
     break;
 
   case 44:
-#line 1107 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1107 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderingModeDecl(LOC ((yyloc)),
 								StaticContextConsts::ordered);
@@ -1630,7 +1630,7 @@ namespace zorba
     break;
 
   case 45:
-#line 1112 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderingModeDecl(LOC ((yyloc)),
 								StaticContextConsts::unordered);
@@ -1638,7 +1638,7 @@ namespace zorba
     break;
 
   case 46:
-#line 1124 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1124 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new EmptyOrderDecl(LOC ((yyloc)),
 								StaticContextConsts::empty_greatest);
@@ -1646,7 +1646,7 @@ namespace zorba
     break;
 
   case 47:
-#line 1129 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new EmptyOrderDecl(LOC ((yyloc)),
 								StaticContextConsts::empty_least);
@@ -1654,7 +1654,7 @@ namespace zorba
     break;
 
   case 48:
-#line 1140 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1140 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_ns,
@@ -1663,7 +1663,7 @@ namespace zorba
     break;
 
   case 49:
-#line 1146 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1146 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_ns,
@@ -1672,7 +1672,7 @@ namespace zorba
     break;
 
   case 50:
-#line 1152 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1152 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::no_preserve_ns,
@@ -1681,7 +1681,7 @@ namespace zorba
     break;
 
   case 51:
-#line 1158 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1158 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::no_preserve_ns,
@@ -1690,7 +1690,7 @@ namespace zorba
     break;
 
   case 52:
-#line 1177 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1177 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultCollationDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (4)].sval)));
@@ -1698,7 +1698,7 @@ namespace zorba
     break;
 
   case 53:
-#line 1188 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1188 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BaseURIDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
@@ -1706,7 +1706,7 @@ namespace zorba
     break;
 
   case 54:
-#line 1199 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1199 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								NULL,
@@ -1716,7 +1716,7 @@ namespace zorba
     break;
 
   case 55:
-#line 1206 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1206 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(4) - (3)].node)),
@@ -1726,7 +1726,7 @@ namespace zorba
     break;
 
   case 56:
-#line 1213 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1213 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								NULL,
@@ -1736,7 +1736,7 @@ namespace zorba
     break;
 
   case 57:
-#line 1220 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1220 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(6) - (3)].node)),
@@ -1746,7 +1746,7 @@ namespace zorba
     break;
 
   case 58:
-#line 1233 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1233 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			URILiteralList* uri_list_p = new URILiteralList(LOC ((yyloc)));
 			uri_list_p->push_back(driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
@@ -1755,7 +1755,7 @@ namespace zorba
     break;
 
   case 59:
-#line 1239 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1239 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>((yysemantic_stack_[(3) - (1)].node));
 			if (uri_list_p) {
@@ -1766,21 +1766,21 @@ namespace zorba
     break;
 
   case 60:
-#line 1254 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1254 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 61:
-#line 1258 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1258 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), true);
 		;}
     break;
 
   case 62:
-#line 1268 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1268 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)),
@@ -1789,7 +1789,7 @@ namespace zorba
     break;
 
   case 63:
-#line 1274 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1274 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(6) - (4)].sval)),
@@ -1799,7 +1799,7 @@ namespace zorba
     break;
 
   case 64:
-#line 1281 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1281 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval)),
@@ -1808,7 +1808,7 @@ namespace zorba
     break;
 
   case 65:
-#line 1287 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1287 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(8) - (4)].sval)),
@@ -1818,7 +1818,7 @@ namespace zorba
     break;
 
   case 66:
-#line 1301 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1301 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(6) - (4)].sval)),
@@ -1828,7 +1828,7 @@ namespace zorba
     break;
 
   case 67:
-#line 1308 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1308 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (4)].sval)),
@@ -1838,7 +1838,7 @@ namespace zorba
     break;
 
   case 68:
-#line 1315 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1315 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (4)].sval)),
@@ -1848,7 +1848,7 @@ namespace zorba
     break;
 
   case 69:
-#line 1322 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1322 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(6) - (4)].sval)),
@@ -1858,7 +1858,7 @@ namespace zorba
     break;
 
   case 70:
-#line 1335 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1335 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_preserve);
@@ -1866,7 +1866,7 @@ namespace zorba
     break;
 
   case 71:
-#line 1340 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1340 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_strip);
@@ -1874,42 +1874,42 @@ namespace zorba
     break;
 
   case 72:
-#line 1352 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1352 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig (NULL);
     ;}
     break;
 
   case 73:
-#line 1356 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1356 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(3) - (2)].node)));
     ;}
     break;
 
   case 74:
-#line 1360 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1360 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig (NULL, dynamic_cast<SequenceType *> ((yysemantic_stack_[(4) - (4)].node)));
     ;}
     break;
 
   case 75:
-#line 1364 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1364 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceType *> ((yysemantic_stack_[(5) - (5)].node)));
     ;}
     break;
 
   case 76:
-#line 1371 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1371 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     ;}
     break;
 
   case 77:
-#line 1378 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1378 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *blk = new BlockBody (LOC ((yyloc)));
       blk->add ((yysemantic_stack_[(2) - (1)].expr));
@@ -1918,7 +1918,7 @@ namespace zorba
     break;
 
   case 78:
-#line 1384 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1384 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *blk = dynamic_cast<BlockBody *> ((yysemantic_stack_[(3) - (1)].expr));
       blk->add ((yysemantic_stack_[(3) - (2)].expr));
@@ -1927,35 +1927,35 @@ namespace zorba
     break;
 
   case 79:
-#line 1393 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1393 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ExitExpr (LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
     ;}
     break;
 
   case 80:
-#line 1400 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1400 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new WhileExpr (LOC ((yyloc)), (yysemantic_stack_[(5) - (3)].expr), dynamic_cast<BlockBody *> ((yysemantic_stack_[(5) - (5)].expr)));
     ;}
     break;
 
   case 81:
-#line 1407 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1407 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::BREAK);
     ;}
     break;
 
   case 82:
-#line 1411 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1411 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::CONTINUE);
     ;}
     break;
 
   case 83:
-#line 1418 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1418 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval))),
@@ -1966,7 +1966,7 @@ namespace zorba
     break;
 
   case 84:
-#line 1426 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1426 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval))),
@@ -1978,7 +1978,7 @@ namespace zorba
     break;
 
   case 85:
-#line 1435 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1435 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (4)].sval))),
@@ -1990,7 +1990,7 @@ namespace zorba
     break;
 
   case 86:
-#line 1444 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1444 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (4)].sval))),
@@ -2002,7 +2002,7 @@ namespace zorba
     break;
 
   case 87:
-#line 1453 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1453 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (4)].sval))),
@@ -2014,7 +2014,7 @@ namespace zorba
     break;
 
   case 88:
-#line 1468 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1468 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ParamList* plist_p = new ParamList(LOC ((yyloc)));
 			if (plist_p) {
@@ -2025,7 +2025,7 @@ namespace zorba
     break;
 
   case 89:
-#line 1476 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1476 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ParamList* plist_p = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node));
 			if (plist_p) {
@@ -2036,7 +2036,7 @@ namespace zorba
     break;
 
   case 90:
-#line 1490 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1490 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Param(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
@@ -2045,7 +2045,7 @@ namespace zorba
     break;
 
   case 91:
-#line 1496 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1496 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Param(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
@@ -2054,7 +2054,7 @@ namespace zorba
     break;
 
   case 92:
-#line 1508 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new EnclosedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
@@ -2062,14 +2062,14 @@ namespace zorba
     break;
 
   case 93:
-#line 1516 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1516 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
 		;}
     break;
 
   case 94:
-#line 1527 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1527 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QueryBody(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
@@ -2077,7 +2077,7 @@ namespace zorba
     break;
 
   case 95:
-#line 1538 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1538 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			Expr* expr_p = new Expr(LOC ((yyloc)));
 			expr_p->push_back((yysemantic_stack_[(1) - (1)].expr));
@@ -2086,7 +2086,7 @@ namespace zorba
     break;
 
   case 96:
-#line 1544 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1544 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			Expr* expr_p = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
 			if (expr_p) expr_p->push_back((yysemantic_stack_[(3) - (3)].expr));
@@ -2095,119 +2095,119 @@ namespace zorba
     break;
 
   case 97:
-#line 1556 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1556 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 98:
-#line 1560 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1560 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 99:
-#line 1564 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1564 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 100:
-#line 1568 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1568 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 101:
-#line 1572 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1572 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 102:
-#line 1578 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1578 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 103:
-#line 1582 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1582 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 104:
-#line 1586 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1586 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 105:
-#line 1590 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1590 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 106:
-#line 1594 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1594 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 107:
-#line 1598 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1598 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 108:
-#line 1602 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1602 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 109:
-#line 1606 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1606 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 110:
-#line 1610 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1610 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 111:
-#line 1614 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1614 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 112:
-#line 1618 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1618 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 113:
-#line 1628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1628 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FLWORExpr(LOC ((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(3) - (1)].node)),
@@ -2217,7 +2217,7 @@ namespace zorba
     break;
 
   case 114:
-#line 1635 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1635 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FLWORExpr(LOC ((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -2228,7 +2228,7 @@ namespace zorba
     break;
 
   case 115:
-#line 1643 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1643 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FLWORExpr(LOC ((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -2239,7 +2239,7 @@ namespace zorba
     break;
 
   case 116:
-#line 1651 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1651 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FLWORExpr(LOC ((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(5) - (1)].node)),
@@ -2251,7 +2251,7 @@ namespace zorba
     break;
 
   case 117:
-#line 1660 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1660 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>((yysemantic_stack_[(4) - (2)].node));
 			FLWORExpr* lFLWOR = new FLWORExpr(LOC ((yyloc)),
@@ -2266,7 +2266,7 @@ namespace zorba
     break;
 
   case 118:
-#line 1672 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1672 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>((yysemantic_stack_[(5) - (3)].node));
 			FLWORExpr* lFLWOR = new FLWORExpr(LOC ((yyloc)),
@@ -2281,7 +2281,7 @@ namespace zorba
     break;
 
   case 119:
-#line 1684 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1684 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>((yysemantic_stack_[(5) - (2)].node));
 			FLWORExpr* lFLWOR = new FLWORExpr(LOC ((yyloc)),
@@ -2296,7 +2296,7 @@ namespace zorba
     break;
 
   case 120:
-#line 1696 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1696 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>((yysemantic_stack_[(6) - (3)].node));
 			FLWORExpr* lFLWOR = new FLWORExpr(LOC ((yyloc)),
@@ -2311,7 +2311,7 @@ namespace zorba
     break;
 
   case 121:
-#line 1714 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1714 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ForLetClauseList* flc_list_p = new ForLetClauseList(LOC ((yyloc)));
 			flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ((yysemantic_stack_[(1) - (1)].node)));
@@ -2320,7 +2320,7 @@ namespace zorba
     break;
 
   case 122:
-#line 1720 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1720 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ForLetClauseList* flc_list_p = dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(2) - (1)].node));
 			if (flc_list_p) flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ((yysemantic_stack_[(2) - (2)].node)));
@@ -2329,21 +2329,21 @@ namespace zorba
     break;
 
   case 123:
-#line 1732 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1732 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 124:
-#line 1736 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1736 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 125:
-#line 1746 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1746 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForClause(LOC ((yyloc)),
 								dynamic_cast<VarInDeclList*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2351,7 +2351,7 @@ namespace zorba
     break;
 
   case 126:
-#line 1757 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1757 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarInDeclList* vardecl_list_p = new VarInDeclList(LOC ((yyloc)));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2360,7 +2360,7 @@ namespace zorba
     break;
 
   case 127:
-#line 1763 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1763 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vardecl_list_p) {
@@ -2371,7 +2371,7 @@ namespace zorba
     break;
 
   case 128:
-#line 1777 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1777 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
@@ -2381,7 +2381,7 @@ namespace zorba
     break;
 
   case 129:
-#line 1784 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1784 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
@@ -2392,7 +2392,7 @@ namespace zorba
     break;
 
   case 130:
-#line 1792 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1792 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
@@ -2404,7 +2404,7 @@ namespace zorba
     break;
 
   case 131:
-#line 1801 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1801 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
@@ -2416,7 +2416,7 @@ namespace zorba
     break;
 
   case 132:
-#line 1811 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1811 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
@@ -2427,7 +2427,7 @@ namespace zorba
     break;
 
   case 133:
-#line 1819 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1819 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
@@ -2439,7 +2439,7 @@ namespace zorba
     break;
 
   case 134:
-#line 1828 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1828 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
@@ -2451,7 +2451,7 @@ namespace zorba
     break;
 
   case 135:
-#line 1837 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1837 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(6) - (1)].sval)),
@@ -2463,7 +2463,7 @@ namespace zorba
     break;
 
   case 136:
-#line 1852 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1852 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PositionalVar(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
@@ -2471,7 +2471,7 @@ namespace zorba
     break;
 
   case 137:
-#line 1864 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1864 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FTScoreVar(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
@@ -2479,7 +2479,7 @@ namespace zorba
     break;
 
   case 138:
-#line 1875 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1875 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new LetClause(LOC ((yyloc)),
 								dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2488,7 +2488,7 @@ namespace zorba
     break;
 
   case 139:
-#line 1887 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1887 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2497,7 +2497,7 @@ namespace zorba
     break;
 
   case 140:
-#line 1893 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1893 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vgdl_p) {
@@ -2508,7 +2508,7 @@ namespace zorba
     break;
 
   case 141:
-#line 1905 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1905 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2517,7 +2517,7 @@ namespace zorba
     break;
 
   case 142:
-#line 1911 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1911 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vgdl_p) {
@@ -2528,7 +2528,7 @@ namespace zorba
     break;
 
   case 143:
-#line 1925 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1925 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
@@ -2539,7 +2539,7 @@ namespace zorba
     break;
 
   case 144:
-#line 1933 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1933 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
@@ -2550,7 +2550,7 @@ namespace zorba
     break;
 
   case 145:
-#line 1942 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1942 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
@@ -2561,7 +2561,7 @@ namespace zorba
     break;
 
   case 146:
-#line 1950 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1950 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
@@ -2572,7 +2572,7 @@ namespace zorba
     break;
 
   case 147:
-#line 1962 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1962 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       std::string name = driver.symtab.get ((off_t)(yysemantic_stack_[(1) - (1)].sval));
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
@@ -2584,7 +2584,7 @@ namespace zorba
     break;
 
   case 148:
-#line 1977 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1977 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WhereClause(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (2)].expr));
@@ -2592,7 +2592,7 @@ namespace zorba
     break;
 
   case 149:
-#line 1985 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1985 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)),
                  dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (3)].node)),
@@ -2602,7 +2602,7 @@ namespace zorba
     break;
 
   case 150:
-#line 1992 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1992 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)),
                  dynamic_cast<GroupSpecList*>((yysemantic_stack_[(4) - (3)].node)),
@@ -2612,7 +2612,7 @@ namespace zorba
     break;
 
   case 151:
-#line 1999 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1999 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)),
                  dynamic_cast<GroupSpecList*>((yysemantic_stack_[(4) - (3)].node)),
@@ -2622,7 +2622,7 @@ namespace zorba
     break;
 
   case 152:
-#line 2006 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2006 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)),
                  dynamic_cast<GroupSpecList*>((yysemantic_stack_[(5) - (3)].node)),
@@ -2632,7 +2632,7 @@ namespace zorba
     break;
 
   case 153:
-#line 2016 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2016 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupSpecList* gsl_p = new GroupSpecList(LOC((yyloc)));
       gsl_p->push_back(dynamic_cast<GroupSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2641,7 +2641,7 @@ namespace zorba
     break;
 
   case 154:
-#line 2022 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2022 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupSpecList* gsl_p = dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (1)].node));
       if (gsl_p) {
@@ -2652,7 +2652,7 @@ namespace zorba
     break;
 
   case 155:
-#line 2033 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2033 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                  driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
@@ -2661,7 +2661,7 @@ namespace zorba
     break;
 
   case 156:
-#line 2039 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2039 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)), 
                  driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)), 
@@ -2670,14 +2670,14 @@ namespace zorba
     break;
 
   case 157:
-#line 2048 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2048 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupCollationSpec(LOC((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
     ;}
     break;
 
   case 158:
-#line 2055 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2055 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       LetClauseList* lc_list_p = new LetClauseList(LOC((yyloc)));
       lc_list_p->push_back(dynamic_cast<LetClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2686,7 +2686,7 @@ namespace zorba
     break;
 
   case 159:
-#line 2062 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2062 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       LetClauseList* lc_list_p = dynamic_cast<LetClauseList*>((yysemantic_stack_[(2) - (1)].node));
       if (lc_list_p) lc_list_p->push_back(dynamic_cast<LetClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2695,7 +2695,7 @@ namespace zorba
     break;
 
   case 160:
-#line 2074 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2074 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2703,7 +2703,7 @@ namespace zorba
     break;
 
   case 161:
-#line 2079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2079 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(4) - (4)].node)),
@@ -2712,7 +2712,7 @@ namespace zorba
     break;
 
   case 162:
-#line 2091 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2091 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			OrderSpecList* osl_p = new OrderSpecList(LOC ((yyloc)));
 			osl_p->push_back(dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2721,7 +2721,7 @@ namespace zorba
     break;
 
   case 163:
-#line 2097 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node));
 			if (osl_p) {
@@ -2732,7 +2732,7 @@ namespace zorba
     break;
 
   case 164:
-#line 2111 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2111 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr),
@@ -2741,7 +2741,7 @@ namespace zorba
     break;
 
   case 165:
-#line 2117 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2117 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].expr),
@@ -2750,7 +2750,7 @@ namespace zorba
     break;
 
   case 166:
-#line 2129 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)),
@@ -2760,7 +2760,7 @@ namespace zorba
     break;
 
   case 167:
-#line 2136 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2136 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -2770,7 +2770,7 @@ namespace zorba
     break;
 
   case 168:
-#line 2143 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2143 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -2780,7 +2780,7 @@ namespace zorba
     break;
 
   case 169:
-#line 2150 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2150 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -2790,7 +2790,7 @@ namespace zorba
     break;
 
   case 170:
-#line 2157 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2157 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -2800,7 +2800,7 @@ namespace zorba
     break;
 
   case 171:
-#line 2164 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2164 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -2810,7 +2810,7 @@ namespace zorba
     break;
 
   case 172:
-#line 2171 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2171 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(3) - (1)].node)),
@@ -2820,21 +2820,21 @@ namespace zorba
     break;
 
   case 173:
-#line 2184 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2184 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_ascending);
 		;}
     break;
 
   case 174:
-#line 2188 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2188 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_descending);
 		;}
     break;
 
   case 175:
-#line 2198 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2198 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
 								StaticContextConsts::empty_greatest);
@@ -2842,7 +2842,7 @@ namespace zorba
     break;
 
   case 176:
-#line 2203 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2203 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
 								StaticContextConsts::empty_least);
@@ -2850,7 +2850,7 @@ namespace zorba
     break;
 
   case 177:
-#line 2214 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2214 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderCollationSpec(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
@@ -2858,7 +2858,7 @@ namespace zorba
     break;
 
   case 178:
-#line 2225 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2225 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_some,
@@ -2868,7 +2868,7 @@ namespace zorba
     break;
 
   case 179:
-#line 2232 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2232 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_every,
@@ -2878,7 +2878,7 @@ namespace zorba
     break;
 
   case 180:
-#line 2245 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2245 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QVarInDeclList* qvid_list_p = new QVarInDeclList(LOC ((yyloc)));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2888,7 +2888,7 @@ namespace zorba
     break;
 
   case 181:
-#line 2252 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2252 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
             qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(4) - (4)].node)));
@@ -2897,7 +2897,7 @@ namespace zorba
     break;
 
   case 182:
-#line 2264 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2264 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
@@ -2906,7 +2906,7 @@ namespace zorba
     break;
 
   case 183:
-#line 2270 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2270 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
@@ -2916,7 +2916,7 @@ namespace zorba
     break;
 
   case 184:
-#line 2283 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2283 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(8) - (3)].expr),
@@ -2926,7 +2926,7 @@ namespace zorba
     break;
 
   case 185:
-#line 2290 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2290 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(10) - (3)].expr),
@@ -2937,7 +2937,7 @@ namespace zorba
     break;
 
   case 186:
-#line 2304 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2304 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2946,7 +2946,7 @@ namespace zorba
     break;
 
   case 187:
-#line 2310 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2310 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2955,7 +2955,7 @@ namespace zorba
     break;
 
   case 188:
-#line 2322 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2322 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
@@ -2964,7 +2964,7 @@ namespace zorba
     break;
 
   case 189:
-#line 2328 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2328 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (3)].sval)),
@@ -2974,7 +2974,7 @@ namespace zorba
     break;
 
   case 190:
-#line 2341 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2341 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new IfExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (6)].expr), (yysemantic_stack_[(8) - (8)].expr));
@@ -2982,14 +2982,14 @@ namespace zorba
     break;
 
   case 191:
-#line 2352 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2352 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 192:
-#line 2356 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2356 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new OrExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2997,14 +2997,14 @@ namespace zorba
     break;
 
   case 193:
-#line 2367 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2367 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 194:
-#line 2371 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2371 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AndExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3012,14 +3012,14 @@ namespace zorba
     break;
 
   case 195:
-#line 2390 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2390 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 196:
-#line 2394 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2394 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3030,7 +3030,7 @@ namespace zorba
     break;
 
   case 197:
-#line 2402 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2402 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /*  ::=  "is" | "<<" | ">>" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3041,7 +3041,7 @@ namespace zorba
     break;
 
   case 198:
-#line 2410 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2410 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3052,7 +3052,7 @@ namespace zorba
     break;
 
   case 199:
-#line 2418 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2418 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3063,12 +3063,12 @@ namespace zorba
     break;
 
   case 200:
-#line 2425 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2425 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { /* this call is needed */  driver.lexer->interpretAsLessThan(); ;}
     break;
 
   case 201:
-#line 2426 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2426 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3079,7 +3079,7 @@ namespace zorba
     break;
 
   case 202:
-#line 2434 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2434 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3090,7 +3090,7 @@ namespace zorba
     break;
 
   case 203:
-#line 2442 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2442 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3101,7 +3101,7 @@ namespace zorba
     break;
 
   case 204:
-#line 2450 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2450 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3112,14 +3112,14 @@ namespace zorba
     break;
 
   case 205:
-#line 2464 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2464 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 206:
-#line 2468 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2468 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
@@ -3129,7 +3129,7 @@ namespace zorba
     break;
 
   case 207:
-#line 2475 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2475 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3139,14 +3139,14 @@ namespace zorba
     break;
 
   case 208:
-#line 2488 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 209:
-#line 2492 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RangeExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3154,70 +3154,70 @@ namespace zorba
     break;
 
   case 210:
-#line 2503 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2503 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 211:
-#line 2507 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2507 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 212:
-#line 2511 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2511 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 213:
-#line 2521 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2521 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 214:
-#line 2525 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2525 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 215:
-#line 2529 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2529 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 216:
-#line 2533 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2533 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 217:
-#line 2537 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2537 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 218:
-#line 2547 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2547 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 219:
-#line 2551 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2551 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3225,7 +3225,7 @@ namespace zorba
     break;
 
   case 220:
-#line 2556 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2556 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3233,35 +3233,35 @@ namespace zorba
     break;
 
   case 221:
-#line 2567 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2567 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 222:
-#line 2571 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2571 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 223:
-#line 2575 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2575 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 224:
-#line 2585 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2585 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 225:
-#line 2589 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2589 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new InstanceofExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3270,14 +3270,14 @@ namespace zorba
     break;
 
   case 226:
-#line 2601 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2601 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 227:
-#line 2605 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2605 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TreatExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3286,14 +3286,14 @@ namespace zorba
     break;
 
   case 228:
-#line 2617 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2617 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 229:
-#line 2621 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2621 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CastableExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3302,14 +3302,14 @@ namespace zorba
     break;
 
   case 230:
-#line 2633 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2633 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 231:
-#line 2637 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2637 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CastExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3318,14 +3318,14 @@ namespace zorba
     break;
 
   case 232:
-#line 2649 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2649 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 233:
-#line 2653 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2653 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnaryExpr(LOC ((yyloc)),
 								dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3334,28 +3334,28 @@ namespace zorba
     break;
 
   case 234:
-#line 2665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SignList(LOC ((yyloc)), true);
 		;}
     break;
 
   case 235:
-#line 2669 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2669 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SignList(LOC ((yyloc)), false);
 		;}
     break;
 
   case 236:
-#line 2673 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2673 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 237:
-#line 2677 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2677 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			SignList* slist_p = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node));
 			if (slist_p) slist_p->negate();
@@ -3364,98 +3364,98 @@ namespace zorba
     break;
 
   case 238:
-#line 2689 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2689 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 239:
-#line 2693 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2693 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 240:
-#line 2697 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2697 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 241:
-#line 2707 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2707 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_eq);
 		;}
     break;
 
   case 242:
-#line 2711 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2711 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ne);
 		;}
     break;
 
   case 243:
-#line 2715 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2715 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_lt);
 		;}
     break;
 
   case 244:
-#line 2719 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2719 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_le);
 		;}
     break;
 
   case 245:
-#line 2723 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2723 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_gt);
 		;}
     break;
 
   case 246:
-#line 2727 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2727 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ge);
 		;}
     break;
 
   case 247:
-#line 2737 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2737 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_is);
 		;}
     break;
 
   case 248:
-#line 2741 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2741 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_precedes);
 		;}
     break;
 
   case 249:
-#line 2745 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2745 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_follows);
 		;}
     break;
 
   case 250:
-#line 2755 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
   case 251:
-#line 2759 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2759 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ValidateExpr(LOC ((yyloc)),
                 "strict",
@@ -3464,7 +3464,7 @@ namespace zorba
     break;
 
   case 252:
-#line 2765 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2765 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ValidateExpr(LOC ((yyloc)),
                 "lax",
@@ -3473,7 +3473,7 @@ namespace zorba
     break;
 
   case 253:
-#line 2771 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2771 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ValidateExpr(LOC ((yyloc)),
                 "skip",
@@ -3482,7 +3482,7 @@ namespace zorba
     break;
 
   case 254:
-#line 2783 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)),
@@ -3491,7 +3491,7 @@ namespace zorba
     break;
 
   case 255:
-#line 2789 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2789 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -3500,7 +3500,7 @@ namespace zorba
     break;
 
   case 256:
-#line 2801 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2801 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PragmaList* pragma_list_p = new PragmaList(LOC ((yyloc)));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3509,7 +3509,7 @@ namespace zorba
     break;
 
   case 257:
-#line 2807 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2807 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pragma_list_p) {
@@ -3520,7 +3520,7 @@ namespace zorba
     break;
 
   case 258:
-#line 2821 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2821 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
@@ -3530,7 +3530,7 @@ namespace zorba
     break;
 
   case 259:
-#line 2827 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2827 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval))),
@@ -3539,28 +3539,28 @@ namespace zorba
     break;
 
   case 260:
-#line 2870 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2870 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
 		;}
     break;
 
   case 261:
-#line 2874 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2874 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 262:
-#line 2878 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2878 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 263:
-#line 2882 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2882 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
        (yyval.expr) = (rpe == NULL ?
@@ -3570,7 +3570,7 @@ namespace zorba
     break;
 
   case 264:
-#line 2895 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2895 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
        (yyval.expr) = (as != NULL ?
@@ -3583,35 +3583,35 @@ namespace zorba
     break;
 
   case 265:
-#line 2906 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2906 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 266:
-#line 2911 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2911 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 267:
-#line 2921 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2921 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 268:
-#line 2925 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2925 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 269:
-#line 2935 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2935 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)),
@@ -3620,7 +3620,7 @@ namespace zorba
     break;
 
   case 270:
-#line 2941 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2941 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3629,7 +3629,7 @@ namespace zorba
     break;
 
   case 271:
-#line 2947 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2947 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)),
@@ -3638,7 +3638,7 @@ namespace zorba
     break;
 
   case 272:
-#line 2953 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2953 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3647,7 +3647,7 @@ namespace zorba
     break;
 
   case 273:
-#line 2965 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2965 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3656,7 +3656,7 @@ namespace zorba
     break;
 
   case 274:
-#line 2971 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2971 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3664,70 +3664,70 @@ namespace zorba
     break;
 
   case 275:
-#line 2982 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2982 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_child);
 		;}
     break;
 
   case 276:
-#line 2986 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2986 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant);
 		;}
     break;
 
   case 277:
-#line 2990 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2990 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_attribute);
 		;}
     break;
 
   case 278:
-#line 2994 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2994 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_self);
 		;}
     break;
 
   case 279:
-#line 2998 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2998 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant_or_self);
 		;}
     break;
 
   case 280:
-#line 3002 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3002 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following_sibling);
 		;}
     break;
 
   case 281:
-#line 3006 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3006 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following);
 		;}
     break;
 
   case 282:
-#line 3016 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3016 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].node));
 		;}
     break;
 
   case 283:
-#line 3020 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3020 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
 		;}
     break;
 
   case 284:
-#line 3030 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3030 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseStep(LOC ((yyloc)),
 								dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3736,7 +3736,7 @@ namespace zorba
     break;
 
   case 285:
-#line 3036 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3036 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ReverseAxis* rev_p = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
 			(yyval.node) = new ReverseStep(LOC ((yyloc)),
@@ -3745,70 +3745,70 @@ namespace zorba
     break;
 
   case 286:
-#line 3048 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3048 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
 		;}
     break;
 
   case 287:
-#line 3052 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3052 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor);
 		;}
     break;
 
   case 288:
-#line 3056 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3056 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding_sibling);
 		;}
     break;
 
   case 289:
-#line 3060 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3060 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding);
 		;}
     break;
 
   case 290:
-#line 3064 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3064 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor_or_self);
 		;}
     break;
 
   case 291:
-#line 3079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3079 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 292:
-#line 3083 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3083 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 293:
-#line 3093 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3093 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NameTest(LOC ((yyloc)), new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 294:
-#line 3097 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NameTest(LOC ((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 295:
-#line 3107 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3107 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
@@ -3818,7 +3818,7 @@ namespace zorba
     break;
 
   case 296:
-#line 3114 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3114 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
@@ -3828,7 +3828,7 @@ namespace zorba
     break;
 
   case 297:
-#line 3121 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
@@ -3838,14 +3838,14 @@ namespace zorba
     break;
 
   case 298:
-#line 3134 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3134 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 299:
-#line 3138 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3138 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FilterExpr(LOC ((yyloc)),
                           (yysemantic_stack_[(2) - (1)].expr),
@@ -3854,7 +3854,7 @@ namespace zorba
     break;
 
   case 300:
-#line 3150 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3150 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PredicateList* pred_list_p = new PredicateList(LOC ((yyloc)));
 			pred_list_p->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -3863,7 +3863,7 @@ namespace zorba
     break;
 
   case 301:
-#line 3156 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3156 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pred_list_p) {
@@ -3874,84 +3874,84 @@ namespace zorba
     break;
 
   case 302:
-#line 3170 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3170 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
 		;}
     break;
 
   case 303:
-#line 3181 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3181 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 304:
-#line 3185 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3185 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 305:
-#line 3189 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3189 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 306:
-#line 3193 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3193 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 307:
-#line 3197 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3197 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 308:
-#line 3201 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3201 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 309:
-#line 3205 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3205 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 310:
-#line 3209 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3209 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 311:
-#line 3219 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3219 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 312:
-#line 3223 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3223 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 313:
-#line 3233 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3233 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval));
       delete yylval.decval;
@@ -3959,7 +3959,7 @@ namespace zorba
     break;
 
   case 314:
-#line 3238 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3238 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival));
       delete yylval.ival;
@@ -3967,7 +3967,7 @@ namespace zorba
     break;
 
   case 315:
-#line 3243 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3243 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval));
       delete yylval.dval;
@@ -3975,21 +3975,21 @@ namespace zorba
     break;
 
   case 316:
-#line 3254 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3254 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new VarRef(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 317:
-#line 3264 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3264 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)), NULL);
 		;}
     break;
 
   case 318:
-#line 3268 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3268 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
@@ -3997,14 +3997,14 @@ namespace zorba
     break;
 
   case 319:
-#line 3279 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3279 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ContextItemExpr(LOC ((yyloc)));
 		;}
     break;
 
   case 320:
-#line 3289 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3289 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new OrderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
@@ -4012,7 +4012,7 @@ namespace zorba
     break;
 
   case 321:
-#line 3300 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3300 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnorderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
@@ -4020,7 +4020,7 @@ namespace zorba
     break;
 
   case 322:
-#line 3356 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3356 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
@@ -4029,7 +4029,7 @@ namespace zorba
     break;
 
   case 323:
-#line 3362 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3362 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval))),
@@ -4038,7 +4038,7 @@ namespace zorba
     break;
 
   case 324:
-#line 3374 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3374 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ArgList* a_list_p = new ArgList(LOC ((yyloc))); 
 			a_list_p->push_back((yysemantic_stack_[(1) - (1)].expr));
@@ -4047,7 +4047,7 @@ namespace zorba
     break;
 
   case 325:
-#line 3380 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3380 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ArgList* a_list_p = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node));
 			if (a_list_p) a_list_p->push_back((yysemantic_stack_[(3) - (3)].expr));
@@ -4056,42 +4056,42 @@ namespace zorba
     break;
 
   case 326:
-#line 3392 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3392 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 327:
-#line 3396 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3396 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 328:
-#line 3406 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3406 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 329:
-#line 3410 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3410 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 330:
-#line 3414 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3414 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 331:
-#line 3424 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3424 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
@@ -4102,7 +4102,7 @@ namespace zorba
     break;
 
   case 332:
-#line 3432 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3432 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
@@ -4113,7 +4113,7 @@ namespace zorba
     break;
 
   case 333:
-#line 3440 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3440 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (2)].sval))),
@@ -4124,7 +4124,7 @@ namespace zorba
     break;
 
   case 334:
-#line 3448 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3448 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(9) - (2)].sval))),
@@ -4135,7 +4135,7 @@ namespace zorba
     break;
 
   case 335:
-#line 3456 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3456 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(9) - (2)].sval))),
@@ -4146,7 +4146,7 @@ namespace zorba
     break;
 
   case 336:
-#line 3464 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3464 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(10) - (2)].sval))),
@@ -4157,7 +4157,7 @@ namespace zorba
     break;
 
   case 337:
-#line 3479 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3479 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirElemContentList* elem_content_list_p = new DirElemContentList(LOC ((yyloc)));
 			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4166,7 +4166,7 @@ namespace zorba
     break;
 
   case 338:
-#line 3485 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3485 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (elem_content_list_p) elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(2) - (2)].expr)));
@@ -4175,7 +4175,7 @@ namespace zorba
     break;
 
   case 339:
-#line 3497 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3497 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirAttributeList* at_list_p = new DirAttributeList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4184,7 +4184,7 @@ namespace zorba
     break;
 
   case 340:
-#line 3503 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3503 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4195,7 +4195,7 @@ namespace zorba
     break;
 
   case 341:
-#line 3516 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3516 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttr(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
@@ -4204,7 +4204,7 @@ namespace zorba
     break;
 
   case 344:
-#line 3533 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3533 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -4212,7 +4212,7 @@ namespace zorba
     break;
 
   case 345:
-#line 3538 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3538 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -4220,21 +4220,21 @@ namespace zorba
     break;
 
   case 346:
-#line 3549 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3549 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrContentList(LOC ((yyloc)));
 		;}
     break;
 
   case 347:
-#line 3553 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3553 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 348:
-#line 3560 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3560 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(new QuoteAttrValueContent(LOC ((yyloc)),std::string("\"")));
@@ -4243,7 +4243,7 @@ namespace zorba
     break;
 
   case 349:
-#line 3566 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3566 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4252,7 +4252,7 @@ namespace zorba
     break;
 
   case 350:
-#line 3572 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3572 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
@@ -4263,7 +4263,7 @@ namespace zorba
     break;
 
   case 351:
-#line 3580 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3580 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
@@ -4274,21 +4274,21 @@ namespace zorba
     break;
 
   case 352:
-#line 3594 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3594 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrContentList(LOC ((yyloc)));
 		;}
     break;
 
   case 353:
-#line 3598 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3598 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 354:
-#line 3605 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3605 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(new AposAttrValueContent(LOC ((yyloc)),"'"));
@@ -4297,7 +4297,7 @@ namespace zorba
     break;
 
   case 355:
-#line 3611 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3611 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4306,7 +4306,7 @@ namespace zorba
     break;
 
   case 356:
-#line 3617 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3617 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4317,7 +4317,7 @@ namespace zorba
     break;
 
   case 357:
-#line 3625 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3625 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4328,7 +4328,7 @@ namespace zorba
     break;
 
   case 358:
-#line 3639 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3639 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
@@ -4336,7 +4336,7 @@ namespace zorba
     break;
 
   case 359:
-#line 3644 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3644 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4344,7 +4344,7 @@ namespace zorba
     break;
 
   case 360:
-#line 3655 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3655 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
@@ -4352,7 +4352,7 @@ namespace zorba
     break;
 
   case 361:
-#line 3660 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3660 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4360,7 +4360,7 @@ namespace zorba
     break;
 
   case 362:
-#line 3671 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3671 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
@@ -4368,7 +4368,7 @@ namespace zorba
     break;
 
   case 363:
-#line 3676 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3676 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
@@ -4376,7 +4376,7 @@ namespace zorba
     break;
 
   case 364:
-#line 3681 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3681 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
@@ -4385,7 +4385,7 @@ namespace zorba
     break;
 
   case 365:
-#line 3687 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3687 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
@@ -4394,7 +4394,7 @@ namespace zorba
     break;
 
   case 366:
-#line 3699 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3699 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
                 ParseConstants::cont_charref,
@@ -4403,7 +4403,7 @@ namespace zorba
     break;
 
   case 367:
-#line 3705 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3705 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_lbrace);
@@ -4411,7 +4411,7 @@ namespace zorba
     break;
 
   case 368:
-#line 3710 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3710 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_rbrace);
@@ -4419,7 +4419,7 @@ namespace zorba
     break;
 
   case 369:
-#line 3715 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3715 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4427,7 +4427,7 @@ namespace zorba
     break;
 
   case 370:
-#line 3726 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3726 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirCommentConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
@@ -4435,14 +4435,14 @@ namespace zorba
     break;
 
   case 371:
-#line 3731 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3731 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor(LOC ((yyloc)), "");
     ;}
     break;
 
   case 372:
-#line 3746 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3746 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
@@ -4450,7 +4450,7 @@ namespace zorba
     break;
 
   case 373:
-#line 3751 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3751 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
@@ -4459,56 +4459,56 @@ namespace zorba
     break;
 
   case 374:
-#line 3768 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3768 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CDataSection(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 375:
-#line 3783 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 376:
-#line 3787 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3787 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 377:
-#line 3791 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 378:
-#line 3795 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3795 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 379:
-#line 3799 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3799 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 380:
-#line 3803 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3803 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 381:
-#line 3813 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3813 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompDocConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
@@ -4516,7 +4516,7 @@ namespace zorba
     break;
 
   case 382:
-#line 3824 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3824 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
@@ -4525,7 +4525,7 @@ namespace zorba
     break;
 
   case 383:
-#line 3830 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3830 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
@@ -4534,7 +4534,7 @@ namespace zorba
     break;
 
   case 384:
-#line 3836 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3836 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
@@ -4542,7 +4542,7 @@ namespace zorba
     break;
 
   case 385:
-#line 3841 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3841 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
@@ -4550,7 +4550,7 @@ namespace zorba
     break;
 
   case 386:
-#line 3863 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3863 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
@@ -4559,7 +4559,7 @@ namespace zorba
     break;
 
   case 387:
-#line 3869 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
@@ -4568,7 +4568,7 @@ namespace zorba
     break;
 
   case 388:
-#line 3875 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3875 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
@@ -4576,7 +4576,7 @@ namespace zorba
     break;
 
   case 389:
-#line 3880 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3880 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
@@ -4584,7 +4584,7 @@ namespace zorba
     break;
 
   case 390:
-#line 3891 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3891 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompTextConstructor(LOC ((yyloc)),
 								dynamic_cast<Expr*>((yysemantic_stack_[(4) - (3)].expr)));
@@ -4592,7 +4592,7 @@ namespace zorba
     break;
 
   case 391:
-#line 3902 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3902 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompCommentConstructor(LOC ((yyloc)),
 								dynamic_cast<Expr*>((yysemantic_stack_[(4) - (3)].expr)));
@@ -4600,7 +4600,7 @@ namespace zorba
     break;
 
   case 392:
-#line 3913 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3913 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
@@ -4609,7 +4609,7 @@ namespace zorba
     break;
 
   case 393:
-#line 3919 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3919 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)),
@@ -4618,7 +4618,7 @@ namespace zorba
     break;
 
   case 394:
-#line 3925 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3925 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
@@ -4626,7 +4626,7 @@ namespace zorba
     break;
 
   case 395:
-#line 3930 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3930 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
@@ -4634,7 +4634,7 @@ namespace zorba
     break;
 
   case 396:
-#line 3941 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3941 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(1) - (1)].node)),
@@ -4643,7 +4643,7 @@ namespace zorba
     break;
 
   case 397:
-#line 3947 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3947 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(2) - (1)].node)),
@@ -4652,7 +4652,7 @@ namespace zorba
     break;
 
   case 398:
-#line 3959 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3959 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeDeclaration(LOC ((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(2) - (2)].node)));
@@ -4660,7 +4660,7 @@ namespace zorba
     break;
 
   case 399:
-#line 3971 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3971 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].node),
@@ -4669,7 +4669,7 @@ namespace zorba
     break;
 
   case 400:
-#line 3977 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3977 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].node),
@@ -4678,14 +4678,14 @@ namespace zorba
     break;
 
   case 401:
-#line 3983 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3983 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)), NULL, NULL);
 		;}
     break;
 
   case 402:
-#line 4020 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4020 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_optionally);
@@ -4693,7 +4693,7 @@ namespace zorba
     break;
 
   case 403:
-#line 4025 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4025 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_zero_or_more);
@@ -4701,7 +4701,7 @@ namespace zorba
     break;
 
   case 404:
-#line 4030 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4030 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_one_or_more);
@@ -4709,28 +4709,28 @@ namespace zorba
     break;
 
   case 405:
-#line 4041 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4041 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 406:
-#line 4045 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4045 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 407:
-#line 4049 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4049 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ItemType(LOC ((yyloc)),true);
 		;}
     break;
 
   case 408:
-#line 4059 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4059 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AtomicType(LOC ((yyloc)),
 								new QName(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
@@ -4738,84 +4738,84 @@ namespace zorba
     break;
 
   case 409:
-#line 4070 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4070 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 410:
-#line 4074 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4074 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 411:
-#line 4078 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4078 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 412:
-#line 4082 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4082 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 413:
-#line 4086 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4086 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 414:
-#line 4090 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4090 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 415:
-#line 4094 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4094 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 416:
-#line 4098 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4098 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 417:
-#line 4102 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4102 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 418:
-#line 4112 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AnyKindTest(LOC ((yyloc)));
 		;}
     break;
 
   case 419:
-#line 4122 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4122 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)));
 		;}
     break;
 
   case 420:
-#line 4126 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4126 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)),
 								dynamic_cast<ElementTest*>((yysemantic_stack_[(4) - (3)].node)));
@@ -4823,7 +4823,7 @@ namespace zorba
     break;
 
   case 421:
-#line 4131 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4131 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)),
 								dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(4) - (3)].node)));
@@ -4831,42 +4831,42 @@ namespace zorba
     break;
 
   case 422:
-#line 4142 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4142 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TextTest(LOC ((yyloc)));
 		;}
     break;
 
   case 423:
-#line 4152 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4152 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CommentTest(LOC ((yyloc)));
 		;}
     break;
 
   case 424:
-#line 4162 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4162 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PITest(LOC ((yyloc)), "");
 		;}
     break;
 
   case 425:
-#line 4166 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4166 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PITest(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(4) - (3)].sval)));
 		;}
     break;
 
   case 426:
-#line 4170 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4170 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PITest(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(4) - (3)].sval)));
 		;}
     break;
 
   case 427:
-#line 4180 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4180 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -4875,7 +4875,7 @@ namespace zorba
     break;
 
   case 428:
-#line 4186 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4186 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (3)].sval))),
@@ -4884,7 +4884,7 @@ namespace zorba
     break;
 
   case 429:
-#line 4192 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4192 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (3)].sval))),
@@ -4893,7 +4893,7 @@ namespace zorba
     break;
 
   case 430:
-#line 4198 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4198 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -4902,7 +4902,7 @@ namespace zorba
     break;
 
   case 431:
-#line 4204 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4204 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -4911,7 +4911,7 @@ namespace zorba
     break;
 
   case 432:
-#line 4216 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4216 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaAttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
@@ -4919,7 +4919,7 @@ namespace zorba
     break;
 
   case 433:
-#line 4227 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4227 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -4928,7 +4928,7 @@ namespace zorba
     break;
 
   case 434:
-#line 4233 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4233 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (3)].sval))),
@@ -4937,7 +4937,7 @@ namespace zorba
     break;
 
   case 435:
-#line 4239 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4239 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (3)].sval))),
@@ -4946,7 +4946,7 @@ namespace zorba
     break;
 
   case 436:
-#line 4245 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4245 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (3)].sval))),
@@ -4955,7 +4955,7 @@ namespace zorba
     break;
 
   case 437:
-#line 4251 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4251 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -4965,7 +4965,7 @@ namespace zorba
     break;
 
   case 438:
-#line 4258 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4258 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -4975,7 +4975,7 @@ namespace zorba
     break;
 
   case 439:
-#line 4265 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4265 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -4985,7 +4985,7 @@ namespace zorba
     break;
 
   case 440:
-#line 4278 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4278 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaElementTest(LOC ((yyloc)),
 									new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (3)].sval))));
@@ -4993,7 +4993,7 @@ namespace zorba
     break;
 
   case 441:
-#line 4299 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4299 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeName(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
@@ -5001,7 +5001,7 @@ namespace zorba
     break;
 
   case 442:
-#line 4306 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4306 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeName(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
@@ -5010,14 +5010,14 @@ namespace zorba
     break;
 
   case 443:
-#line 4326 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4326 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new StringLiteral(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 444:
-#line 4366 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4366 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 //			$$ = new OrderingModeDecl(@$,
 //								StaticQueryContext::ordered);
@@ -5025,19 +5025,19 @@ namespace zorba
     break;
 
   case 445:
-#line 4371 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4371 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
     ;}
     break;
 
   case 446:
-#line 4374 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4374 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
     ;}
     break;
 
   case 447:
-#line 4382 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4382 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5046,7 +5046,7 @@ namespace zorba
     break;
 
   case 448:
-#line 4388 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4388 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5055,7 +5055,7 @@ namespace zorba
     break;
 
   case 449:
-#line 4394 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4394 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5064,7 +5064,7 @@ namespace zorba
     break;
 
   case 450:
-#line 4400 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4400 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5073,7 +5073,7 @@ namespace zorba
     break;
 
   case 451:
-#line 4406 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4406 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5082,7 +5082,7 @@ namespace zorba
     break;
 
   case 452:
-#line 4413 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4413 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5091,7 +5091,7 @@ namespace zorba
     break;
 
   case 453:
-#line 4419 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4419 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5100,7 +5100,7 @@ namespace zorba
     break;
 
   case 454:
-#line 4425 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4425 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5109,7 +5109,7 @@ namespace zorba
     break;
 
   case 455:
-#line 4431 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4431 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5118,7 +5118,7 @@ namespace zorba
     break;
 
   case 456:
-#line 4437 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4437 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5127,21 +5127,21 @@ namespace zorba
     break;
 
   case 457:
-#line 4449 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4449 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 458:
-#line 4454 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4454 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 459:
-#line 4464 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4464 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new ReplaceExpr(
                   LOC ((yyloc)),
@@ -5150,7 +5150,7 @@ namespace zorba
     break;
 
   case 460:
-#line 4470 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4470 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new ReplaceExpr(
                   LOC ((yyloc)),
@@ -5159,7 +5159,7 @@ namespace zorba
     break;
 
   case 461:
-#line 4482 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4482 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new RenameExpr(
                   LOC ((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
@@ -5167,7 +5167,7 @@ namespace zorba
     break;
 
   case 462:
-#line 4508 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameList* lList = dynamic_cast<VarNameList*>((yysemantic_stack_[(7) - (3)].expr));
       (yyval.expr) = new TransformExpr(LOC((yyloc)), lList, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr));
@@ -5175,7 +5175,7 @@ namespace zorba
     break;
 
   case 463:
-#line 4519 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4519 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        VarNameList* lList = new VarNameList(LOC((yyloc)));
        lList->push_back (dynamic_cast<VarBinding*> ((yysemantic_stack_[(1) - (1)].expr)));
@@ -5184,7 +5184,7 @@ namespace zorba
     break;
 
   case 464:
-#line 4525 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4525 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        VarNameList* lList = dynamic_cast<VarNameList*>((yysemantic_stack_[(4) - (1)].expr));
        VarBinding* lBinding = dynamic_cast<VarBinding*>((yysemantic_stack_[(4) - (4)].expr));
@@ -5194,14 +5194,14 @@ namespace zorba
     break;
 
   case 465:
-#line 4538 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4538 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new VarBinding(LOC((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (3)].expr));  
     ;}
     break;
 
   case 466:
-#line 4552 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4552 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new TryExpr(LOC ((yyloc)),
 								       (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
@@ -5209,7 +5209,7 @@ namespace zorba
     break;
 
   case 467:
-#line 4559 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4559 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        CatchListExpr* aCatchListExpr = new CatchListExpr(LOC ((yyloc)));
        aCatchListExpr->push_back(static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -5218,7 +5218,7 @@ namespace zorba
     break;
 
   case 468:
-#line 4566 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4566 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       CatchListExpr* aCatchListExpr = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
       if (aCatchListExpr) {
@@ -5229,7 +5229,7 @@ namespace zorba
     break;
 
   case 469:
-#line 4577 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4577 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(5) - (3)].node)),
@@ -5238,7 +5238,7 @@ namespace zorba
     break;
 
   case 470:
-#line 4584 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4584 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(8) - (3)].node)),
@@ -5248,7 +5248,7 @@ namespace zorba
     break;
 
   case 471:
-#line 4592 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4592 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(11) - (3)].node)),
@@ -5259,7 +5259,7 @@ namespace zorba
     break;
 
   case 472:
-#line 4601 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4601 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(14) - (3)].node)),
@@ -5271,7 +5271,7 @@ namespace zorba
     break;
 
   case 474:
-#line 4617 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4617 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
     std::string tmp = driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval));
     for (unsigned int i = 0; i<tmp.size(); i++)
@@ -5285,707 +5285,707 @@ namespace zorba
     break;
 
   case 475:
-#line 4634 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4634 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); ;}
     break;
 
   case 476:
-#line 4635 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4635 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("empty"); ;}
     break;
 
   case 477:
-#line 4636 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4636 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("attribute"); ;}
     break;
 
   case 478:
-#line 4637 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4637 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("comment"); ;}
     break;
 
   case 479:
-#line 4638 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4638 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("document-node"); ;}
     break;
 
   case 480:
-#line 4639 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4639 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("element"); ;}
     break;
 
   case 481:
-#line 4640 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4640 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("item"); ;}
     break;
 
   case 482:
-#line 4641 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4641 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("if"); ;}
     break;
 
   case 483:
-#line 4642 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4642 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("node"); ;}
     break;
 
   case 484:
-#line 4643 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4643 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("processing-instruction"); ;}
     break;
 
   case 485:
-#line 4644 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4644 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("schema-attribute"); ;}
     break;
 
   case 486:
-#line 4645 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4645 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("schema-element"); ;}
     break;
 
   case 487:
-#line 4646 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("text"); ;}
     break;
 
   case 488:
-#line 4647 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4647 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("typeswitch"); ;}
     break;
 
   case 489:
-#line 4648 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4648 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("empty-sequence"); ;}
     break;
 
   case 490:
-#line 4649 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4649 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("boundary-space"); ;}
     break;
 
   case 491:
-#line 4650 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4650 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("ft-option"); ;}
     break;
 
   case 492:
-#line 4651 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4651 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("base-uri"); ;}
     break;
 
   case 493:
-#line 4652 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4652 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("lax"); ;}
     break;
 
   case 494:
-#line 4653 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4653 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("strict"); ;}
     break;
 
   case 495:
-#line 4654 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4654 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("idiv"); ;}
     break;
 
   case 496:
-#line 4655 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4655 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("document"); ;}
     break;
 
   case 497:
-#line 4656 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4656 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("not"); ;}
     break;
 
   case 498:
-#line 4657 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("sensitive"); ;}
     break;
 
   case 499:
-#line 4658 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("insensitive"); ;}
     break;
 
   case 500:
-#line 4659 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4659 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("diacritics"); ;}
     break;
 
   case 501:
-#line 4660 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4660 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("without"); ;}
     break;
 
   case 502:
-#line 4661 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4661 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("stemming"); ;}
     break;
 
   case 503:
-#line 4662 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4662 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("thesaurus"); ;}
     break;
 
   case 504:
-#line 4663 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4663 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("stop"); ;}
     break;
 
   case 505:
-#line 4664 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4664 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("wildcards"); ;}
     break;
 
   case 506:
-#line 4665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("entire"); ;}
     break;
 
   case 507:
-#line 4666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("content"); ;}
     break;
 
   case 508:
-#line 4667 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4667 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("word"); ;}
     break;
 
   case 509:
-#line 4668 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4668 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("start"); ;}
     break;
 
   case 510:
-#line 4669 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4669 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("end"); ;}
     break;
 
   case 511:
-#line 4670 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4670 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("most"); ;}
     break;
 
   case 512:
-#line 4671 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4671 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("skip"); ;}
     break;
 
   case 513:
-#line 4672 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4672 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("copy"); ;}
     break;
 
   case 514:
-#line 4673 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4673 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("value"); ;}
     break;
 
   case 515:
-#line 4674 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4674 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("eq"); ;}
     break;
 
   case 516:
-#line 4675 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4675 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("ne"); ;}
     break;
 
   case 517:
-#line 4676 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4676 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("lt"); ;}
     break;
 
   case 518:
-#line 4677 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4677 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("le"); ;}
     break;
 
   case 519:
-#line 4678 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4678 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("gt"); ;}
     break;
 
   case 520:
-#line 4679 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4679 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("ge"); ;}
     break;
 
   case 521:
-#line 4680 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4680 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("at"); ;}
     break;
 
   case 522:
-#line 4681 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4681 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("variable"); ;}
     break;
 
   case 523:
-#line 4682 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4682 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("return"); ;}
     break;
 
   case 524:
-#line 4683 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4683 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("for"); ;}
     break;
 
   case 525:
-#line 4684 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4684 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("in"); ;}
     break;
 
   case 526:
-#line 4685 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4685 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("let"); ;}
     break;
 
   case 527:
-#line 4686 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4686 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("where"); ;}
     break;
 
   case 528:
-#line 4687 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4687 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("by"); ;}
     break;
 
   case 529:
-#line 4688 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4688 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("order"); ;}
     break;
 
   case 530:
-#line 4689 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4689 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("stable"); ;}
     break;
 
   case 531:
-#line 4690 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4690 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("ascending"); ;}
     break;
 
   case 532:
-#line 4691 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4691 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("descending"); ;}
     break;
 
   case 533:
-#line 4692 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4692 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("greatest"); ;}
     break;
 
   case 534:
-#line 4693 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4693 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("least"); ;}
     break;
 
   case 535:
-#line 4694 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4694 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("collation"); ;}
     break;
 
   case 536:
-#line 4695 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4695 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("some"); ;}
     break;
 
   case 537:
-#line 4696 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4696 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("every"); ;}
     break;
 
   case 538:
-#line 4697 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4697 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("satisfies"); ;}
     break;
 
   case 539:
-#line 4698 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4698 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("case"); ;}
     break;
 
   case 540:
-#line 4699 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4699 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("as"); ;}
     break;
 
   case 541:
-#line 4700 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4700 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("then"); ;}
     break;
 
   case 542:
-#line 4701 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4701 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("else"); ;}
     break;
 
   case 543:
-#line 4702 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4702 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("or"); ;}
     break;
 
   case 544:
-#line 4703 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4703 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("and"); ;}
     break;
 
   case 545:
-#line 4704 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4704 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("instance"); ;}
     break;
 
   case 546:
-#line 4705 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4705 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("of"); ;}
     break;
 
   case 547:
-#line 4706 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4706 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("castable"); ;}
     break;
 
   case 548:
-#line 4707 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4707 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("to"); ;}
     break;
 
   case 549:
-#line 4708 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4708 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("div"); ;}
     break;
 
   case 550:
-#line 4709 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4709 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("mod"); ;}
     break;
 
   case 551:
-#line 4710 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4710 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("union"); ;}
     break;
 
   case 552:
-#line 4711 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4711 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("intersect"); ;}
     break;
 
   case 553:
-#line 4712 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4712 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("except"); ;}
     break;
 
   case 554:
-#line 4713 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4713 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("validate"); ;}
     break;
 
   case 555:
-#line 4714 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4714 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("cast"); ;}
     break;
 
   case 556:
-#line 4715 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4715 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("treat"); ;}
     break;
 
   case 557:
-#line 4716 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4716 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("is"); ;}
     break;
 
   case 558:
-#line 4717 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4717 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("preserve"); ;}
     break;
 
   case 559:
-#line 4718 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4718 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("strip"); ;}
     break;
 
   case 560:
-#line 4719 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4719 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("namespace"); ;}
     break;
 
   case 561:
-#line 4720 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4720 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("external"); ;}
     break;
 
   case 562:
-#line 4721 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4721 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("encoding"); ;}
     break;
 
   case 563:
-#line 4722 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4722 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("no-preserve"); ;}
     break;
 
   case 564:
-#line 4723 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4723 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("inherit"); ;}
     break;
 
   case 565:
-#line 4724 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4724 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("no-inherit"); ;}
     break;
 
   case 566:
-#line 4725 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4725 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("declare"); ;}
     break;
 
   case 567:
-#line 4726 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4726 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("construction"); ;}
     break;
 
   case 568:
-#line 4727 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4727 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("ordering"); ;}
     break;
 
   case 569:
-#line 4728 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4728 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("default"); ;}
     break;
 
   case 570:
-#line 4729 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4729 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("copy-namespaces"); ;}
     break;
 
   case 571:
-#line 4730 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4730 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("option"); ;}
     break;
 
   case 572:
-#line 4731 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4731 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("version"); ;}
     break;
 
   case 573:
-#line 4732 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4732 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("import"); ;}
     break;
 
   case 574:
-#line 4733 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4733 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("schema"); ;}
     break;
 
   case 575:
-#line 4734 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4734 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("function"); ;}
     break;
 
   case 576:
-#line 4735 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4735 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("score"); ;}
     break;
 
   case 577:
-#line 4736 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4736 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("ftcontains"); ;}
     break;
 
   case 578:
-#line 4737 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4737 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("weight"); ;}
     break;
 
   case 579:
-#line 4738 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4738 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("window"); ;}
     break;
 
   case 580:
-#line 4739 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4739 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("distance"); ;}
     break;
 
   case 581:
-#line 4740 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4740 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("occurs"); ;}
     break;
 
   case 582:
-#line 4741 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4741 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("times"); ;}
     break;
 
   case 583:
-#line 4742 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4742 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("same"); ;}
     break;
 
   case 584:
-#line 4743 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4743 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("different"); ;}
     break;
 
   case 585:
-#line 4744 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4744 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("lowercase"); ;}
     break;
 
   case 586:
-#line 4745 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4745 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("uppercase"); ;}
     break;
 
   case 587:
-#line 4746 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4746 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("relationship"); ;}
     break;
 
   case 588:
-#line 4747 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4747 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("levels"); ;}
     break;
 
   case 589:
-#line 4748 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4748 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("language"); ;}
     break;
 
   case 590:
-#line 4749 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4749 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("any"); ;}
     break;
 
   case 591:
-#line 4750 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4750 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("all"); ;}
     break;
 
   case 592:
-#line 4751 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4751 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("phrase"); ;}
     break;
 
   case 593:
-#line 4752 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4752 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("exactly"); ;}
     break;
 
   case 594:
-#line 4753 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4753 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("from"); ;}
     break;
 
   case 595:
-#line 4754 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4754 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("words"); ;}
     break;
 
   case 596:
-#line 4755 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("sentences"); ;}
     break;
 
   case 597:
-#line 4756 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4756 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("sentence"); ;}
     break;
 
   case 598:
-#line 4757 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4757 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("paragraph"); ;}
     break;
 
   case 599:
-#line 4758 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4758 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("replace"); ;}
     break;
 
   case 600:
-#line 4759 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4759 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("modify"); ;}
     break;
 
   case 601:
-#line 4760 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4760 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("first"); ;}
     break;
 
   case 602:
-#line 4761 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4761 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("insert"); ;}
     break;
 
   case 603:
-#line 4762 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4762 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("bofer"); ;}
     break;
 
   case 604:
-#line 4763 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4763 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("after"); ;}
     break;
 
   case 605:
-#line 4764 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4764 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("revalidation"); ;}
     break;
 
   case 606:
-#line 4765 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4765 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("with"); ;}
     break;
 
   case 607:
-#line 4766 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4766 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("nodes"); ;}
     break;
 
   case 608:
-#line 4767 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4767 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("rename"); ;}
     break;
 
   case 609:
-#line 4768 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4768 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("last"); ;}
     break;
 
   case 610:
-#line 4769 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4769 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("delete"); ;}
     break;
 
   case 611:
-#line 4770 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4770 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("into"); ;}
     break;
 
   case 612:
-#line 4771 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4771 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("updating"); ;}
     break;
 
   case 613:
-#line 4772 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4772 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("ordered"); ;}
     break;
 
   case 614:
-#line 4773 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4773 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = driver.symtab.put("unordered"); ;}
     break;
 
   case 615:
-#line 4785 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new EvalExpr (LOC ((yyloc)),
                           dynamic_cast<VarGetsDeclList *> ((yysemantic_stack_[(7) - (3)].node)),
@@ -5994,614 +5994,614 @@ namespace zorba
     break;
 
   case 616:
-#line 4791 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new EvalExpr (LOC ((yyloc)), new VarGetsDeclList (LOC ((yyloc))), (yysemantic_stack_[(4) - (3)].expr));
     ;}
     break;
 
   case 617:
-#line 4808 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4808 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(1) - (1)].node)), NULL, NULL);
 		;}
     break;
 
   case 618:
-#line 4812 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4812 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(2) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(2) - (2)].node)), NULL);
 		;}
     break;
 
   case 619:
-#line 4816 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4816 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(3) - (1)].node)), NULL, static_cast<RangeExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
 		;}
     break;
 
   case 620:
-#line 4820 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4820 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(4) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(4) - (2)].node)), static_cast<RangeExpr *> ((yysemantic_stack_[(4) - (4)].expr)));
 		;}
     break;
 
   case 621:
-#line 4830 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4830 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 622:
-#line 4833 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4833 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 623:
-#line 4836 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4836 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 624:
-#line 4839 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4839 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 625:
-#line 4848 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4848 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 626:
-#line 4851 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4851 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 627:
-#line 4860 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4860 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 628:
-#line 4863 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4863 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 629:
-#line 4872 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4872 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 630:
-#line 4875 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4875 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 631:
-#line 4884 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4884 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 632:
-#line 4887 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4887 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 633:
-#line 4896 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4896 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 634:
-#line 4899 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4899 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 635:
-#line 4902 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4902 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 636:
-#line 4911 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4911 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 637:
-#line 4914 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4914 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 638:
-#line 4923 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4923 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTWordsValue (LOC ((yyloc)), static_cast<StringLiteral *> ((yysemantic_stack_[(1) - (1)].expr)), NULL);
 		;}
     break;
 
   case 639:
-#line 4927 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4927 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTWordsValue (LOC ((yyloc)), NULL, static_cast<Expr *> ((yysemantic_stack_[(3) - (2)].expr)));
 		;}
     break;
 
   case 640:
-#line 4937 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4937 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 641:
-#line 4940 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4940 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 642:
-#line 4943 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4943 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 643:
-#line 4946 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4946 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 644:
-#line 4949 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4949 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 645:
-#line 4958 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4958 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 646:
-#line 4967 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4967 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 647:
-#line 4971 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4971 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 648:
-#line 4975 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4975 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 649:
-#line 4979 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4979 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 650:
-#line 4983 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4983 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 651:
-#line 4987 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4987 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 652:
-#line 4991 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4991 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 653:
-#line 5001 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5001 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 654:
-#line 5004 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5004 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 655:
-#line 5007 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5007 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 656:
-#line 5010 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5010 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 657:
-#line 5019 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5019 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 658:
-#line 5022 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5022 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 659:
-#line 5025 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5025 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 660:
-#line 5028 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5028 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 661:
-#line 5037 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5037 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 662:
-#line 5040 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5040 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 663:
-#line 5049 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5049 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 664:
-#line 5052 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5052 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 665:
-#line 5055 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5055 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 666:
-#line 5058 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5058 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 667:
-#line 5061 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5061 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 668:
-#line 5064 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5064 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 669:
-#line 5067 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5067 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 670:
-#line 5076 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5076 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 671:
-#line 5079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5079 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 672:
-#line 5088 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5088 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 673:
-#line 5091 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5091 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 674:
-#line 5094 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5094 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 675:
-#line 5097 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 676:
-#line 5106 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5106 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 677:
-#line 5109 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5109 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 678:
-#line 5112 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 679:
-#line 5115 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5115 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 680:
-#line 5118 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5118 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 681:
-#line 5127 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5127 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 682:
-#line 5130 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5130 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 683:
-#line 5139 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5139 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 684:
-#line 5142 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5142 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 685:
-#line 5151 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5151 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 686:
-#line 5154 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5154 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 687:
-#line 5163 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5163 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 688:
-#line 5166 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5166 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 689:
-#line 5175 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5175 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 690:
-#line 5184 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5184 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 691:
-#line 5187 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5187 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 692:
-#line 5196 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5196 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 693:
-#line 5199 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5199 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 694:
-#line 5202 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5202 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 695:
-#line 5211 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5211 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 696:
-#line 5214 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5214 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 697:
-#line 5217 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5217 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 698:
-#line 5220 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5220 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 699:
-#line 5223 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5223 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 700:
-#line 5232 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5232 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::exactly, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 701:
-#line 5236 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5236 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_least, (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 702:
-#line 5240 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5240 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_most, (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 703:
-#line 5244 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5244 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 704:
-#line 5254 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5254 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 705:
-#line 5263 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5263 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTWindow (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (2)].expr)), static_cast<FTUnit *> ((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 706:
-#line 5273 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5273 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 707:
-#line 5282 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5282 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 708:
-#line 5285 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5285 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 709:
-#line 5294 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5294 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 710:
-#line 5297 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5297 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 711:
-#line 5300 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5300 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 712:
-#line 5309 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5309 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 713:
-#line 5312 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5312 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 714:
-#line 5321 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5321 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTIgnoreOption (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
 		;}
@@ -6609,7 +6609,7 @@ namespace zorba
 
 
     /* Line 675 of lalr1.cc.  */
-#line 6613 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 6613 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -9653,7 +9653,7 @@ namespace zorba
 
 } // namespace zorba
 
-#line 5328 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5328 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 
 

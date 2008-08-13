@@ -78,8 +78,8 @@ namespace zorba {
 #define CHK_SINGLE_DECL( state, err ) do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #define QLOCDECL const QueryLoc &loc = v.get_location(); (void) loc
 #ifndef NDEBUG
-# define TRACE_VISIT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << string(++print_depth, ' ') << TRACE << ", stk size " << nodestack.size () << ", scope depth " << scope_depth << endl
-# define TRACE_VISIT_OUT() QLOCDECL; if (Properties::instance()->traceTranslator()) cerr << string(print_depth--, ' ') << TRACE << ", stk size: " << nodestack.size () << ", scope depth " << scope_depth << endl
+# define TRACE_VISIT() QLOCDECL; if (Properties::instance()->traceTranslator()) cout << string(++print_depth, ' ') << TRACE << ", stk size " << nodestack.size () << ", scope depth " << scope_depth << endl
+# define TRACE_VISIT_OUT() QLOCDECL; if (Properties::instance()->traceTranslator()) cout << string(print_depth--, ' ') << TRACE << ", stk size: " << nodestack.size () << ", scope depth " << scope_depth << endl
 #else
 # define TRACE_VISIT() QLOCDECL
 # define TRACE_VISIT_OUT() QLOCDECL
@@ -231,11 +231,11 @@ protected:
       nodestack.pop();
 #ifndef NDEBUG
       if (Properties::instance()->traceTranslator()) {
-        cerr << "Popped from nodestack:\n";
+        cout << "Popped from nodestack:\n";
         if (e_h != NULL)
-          e_h->put (cerr) << endl;
+          e_h->put (cout) << endl;
         else
-          cerr << "NULL" << endl;
+          cout << "NULL" << endl;
       }
 #endif
     }
@@ -5611,22 +5611,22 @@ public:
 expr_t result ()
 {
   if (nodestack.size () != 1) {
-    cerr << "Error: extra nodes on translator stack:\n";
+    cout << "Error: extra nodes on translator stack:\n";
     while (! nodestack.empty ()) {
       expr_t e_h = pop_nodestack ();
 #ifndef NDEBUG
       if (! Properties::instance()->traceTranslator()) {
         if (e_h != NULL)
-          e_h->put (cerr) << endl;
+          e_h->put (cout) << endl;
         else
-          cerr << "NULL" << endl;
+          cout << "NULL" << endl;
       }
 #endif
     }
     ZORBA_ASSERT (false);
   }
   if (scope_depth != 0) {
-    cerr << "Error: scope depth " << scope_depth << endl;
+    cout << "Error: scope depth " << scope_depth << endl;
     ZORBA_ASSERT (false);
   }
   return pop_nodestack ();

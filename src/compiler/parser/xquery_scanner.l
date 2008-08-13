@@ -1179,6 +1179,6 @@ void xquery_scanner::interpretAsLessThan()
 
 int ZorbaFlexLexer::yylex()
 {
-  std::cerr << "in ZorbaFlexLexer::yylex() !" << std::endl;
+  std::cout << "in ZorbaFlexLexer::yylex() !" << std::endl;
   return 0;
 }
