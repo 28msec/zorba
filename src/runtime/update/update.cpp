@@ -17,6 +17,7 @@
 #include "zorbautils/fatal.h"
 #include "common/shared_types.h"
 #include "system/globalenv.h"
+#include "types/root_typemanager.h"
 #include "context/static_context.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/update/update.h"
@@ -38,15 +39,16 @@ namespace zorba
 
 ********************************************************************************/
 InsertIterator::InsertIterator (
-  const QueryLoc&                 aLoc,
-  store::UpdateConsts::InsertType aType,
-  PlanIter_t                      source,
-  PlanIter_t                      target)
+    const QueryLoc&                 aLoc,
+    store::UpdateConsts::InsertType aType,
+    PlanIter_t                      source,
+    PlanIter_t                      target)
   :
   BinaryBaseIterator<InsertIterator, PlanIteratorState>(aLoc, source, target),
   theType(aType),
   theDoCopy(true)
-{ }
+{ 
+}
 
 
 bool
@@ -107,6 +109,14 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     parent = target->getParent();
 
     elemParent = (parent->getNodeKind() == store::StoreConsts::elementNode);
+
+    // Do not preserve the type of the source nodes (we do this here so that
+    // we don't have to use the upd::setToUntyped() primitive later, during
+    // the application of the PUL).
+    if (lCopyMode.theTypePreserve &&
+        (!elemParent ||
+         parent->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME)))
+      lCopyMode.theTypePreserve = false;
 
     while (consumeNext(source, theChild0, aPlanState))
     {
@@ -169,6 +179,11 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
     elemTarget = (targetKind == store::StoreConsts::elementNode);
 
+    if (lCopyMode.theTypePreserve &&
+        (!elemTarget ||
+         target->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME)))
+      lCopyMode.theTypePreserve = false;
+
     while (consumeNext(source, theChild0, aPlanState))
     {
       ZORBA_FATAL(source->isNode(), "");
@@ -226,7 +241,8 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 DeleteIterator::DeleteIterator(const QueryLoc& aLoc, PlanIter_t target)
   :
   UnaryBaseIterator<DeleteIterator, PlanIteratorState>(aLoc, target)
-{ }
+{ 
+}
 
 
 bool
@@ -258,15 +274,16 @@ DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
 ********************************************************************************/
 ReplaceIterator::ReplaceIterator (
-  const QueryLoc& aLoc,
-  store::UpdateConsts::ReplaceType aType,
-  PlanIter_t target,
-  PlanIter_t source)
+    const QueryLoc& aLoc,
+    store::UpdateConsts::ReplaceType aType,
+    PlanIter_t target,
+    PlanIter_t source)
   :
   BinaryBaseIterator<ReplaceIterator, PlanIteratorState>(aLoc, target, source),
   theType(aType),
   theDoCopy(true)
-{ }
+{ 
+}
 
 
 bool
@@ -541,7 +558,8 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     {
       const CopyClause& copyClause = theCopyClauses[i];
 
-      if (!consumeNext(lCopyNode, copyClause.theInput, aPlanState)|| !lCopyNode->isNode())
+      if (!consumeNext(lCopyNode, copyClause.theInput, aPlanState) ||
+          !lCopyNode->isNode())
       {
         ZORBA_ERROR_LOC(XUTY0013, loc);
       }
@@ -570,9 +588,13 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
       lPul = static_cast<store::PUL *>(lItem.getp());
 
+      // check that every target node in the lPul is inside the tree rooted
+      // at some of the copied nodes.
       lPul->checkTransformUpdates(copyNodes);
 
-      lPul->applyUpdates();  
+      std::vector<zorba::store::Item*> validationNodes;
+
+      lPul->applyUpdates(validationNodes);  
     }
   }
 

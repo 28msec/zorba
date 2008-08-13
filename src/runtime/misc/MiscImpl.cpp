@@ -123,10 +123,17 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   rchandle<store::PUL> lPul;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for (unsigned i = 0; i < theChildren.size () - 1; i++) {
+  for (unsigned i = 0; i < theChildren.size () - 1; i++) 
+  {
     while (CONSUME (result, i))
+    {
       if (theChildren [i]->isUpdating ())
-        static_cast<store::PUL *> (result.getp ())->applyUpdates ();
+      {
+        std::vector<zorba::store::Item*> validationNodes;
+
+        static_cast<store::PUL *> (result.getp ())->applyUpdates(validationNodes);
+      }
+    }
   }
 
   while (CONSUME (result, theChildren.size () - 1))

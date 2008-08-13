@@ -30,6 +30,9 @@ namespace zorba { namespace simplestore {
 typedef rchandle<class SimpleTempSeq> SimpleTempSeq_t;
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class SimpleTempSeq : public store::TempSeq
 {
 private:
@@ -40,7 +43,7 @@ public:
 
   SimpleTempSeq(const std::vector<store::Item_t>& items) : theItems(items) {}
 
-  SimpleTempSeq(store::Iterator_t iter, bool copy = false, bool lazy = true);
+  SimpleTempSeq(store::Iterator_t iter, bool copy = false);
 
   virtual ~SimpleTempSeq();
 
@@ -79,9 +82,12 @@ public:
   virtual void purgeUpTo(int32_t upTo );
   virtual void purgeItem(const std::vector<int32_t>& positions );
   virtual void purgeItem(int32_t position );
-}; /* class SimpleTempSeq */
+};
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class SimpleTempSeqIter : public store::TempSeqIterator
 {
  private:

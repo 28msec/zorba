@@ -448,9 +448,9 @@ void XmlNode::connect(XmlNode* parent, ulong pos) throw()
 
 /*******************************************************************************
   Disconnect "this" node and its subtree from its current xml tree and make it
-  a member of a new given tree, placing it as a child or attribute of a given
-  parent node P. The position among P's children/attributes where "this" is to
-  be placed is also given.     
+  a child (or attribute) of a given parent node P. The position among P's 
+  children/attributes where "this" is to be placed is also given. P may be NULL,
+  in which case a new XmlTree T is allocated and "this" becomes the root of T.     
 ********************************************************************************/
 void XmlNode::switchTree(
     XmlNode*        parent,
@@ -491,6 +491,10 @@ void XmlNode::switchTree(
 
         parent->children().insert(this, pos, false);
       }
+    }
+    else
+    {
+      theOrdPath.setAsRoot();
     }
 
     nodes.push(this);
@@ -2239,7 +2243,6 @@ TextNode::TextNode(xqpStringStore_t& value)
   :
   XmlNode()
 {
-  theContent.text = NULL;
   setText(value);
 
   NODE_TRACE1("Loaded text node " << this << " content = " << *getText());
@@ -2257,7 +2260,6 @@ TextNode::TextNode(
   :
   XmlNode(tree, parent, pos, store::StoreConsts::textNode)
 {
-  theContent.text = NULL;
   setText(content);
 
   if (parent)
@@ -2291,7 +2293,6 @@ TextNode::TextNode(
 {
   assert(parent != NULL);
 
-  theContent.value = NULL;
   setValue(content);
 
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
@@ -2319,14 +2320,11 @@ TextNode::~TextNode()
 {
   if (isTyped())
   {
-    if (theContent.value != NULL)
-      theContent.value->removeReference(NULL
-                                        SYNC_PARAM2(theContent.value->getRCLock()));
+    theContent.setValue(NULL);
   }
-  else if (theContent.text != NULL)
+  else
   {
-    theContent.text->removeReference(NULL
-                                      SYNC_PARAM2(theContent.text->getRCLock()));
+    theContent.setText(NULL);
   }
   NODE_TRACE1("Deleted text node " << this);
 }
@@ -2510,7 +2508,8 @@ xqpStringStore_t TextNode::getStringValue() const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", getStringValue(), "</text>");
+  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", 
+                           getStringValue(), "</text>");
 }
 
 
@@ -2531,7 +2530,8 @@ PiNode::PiNode(xqpStringStore_t& target, xqpStringStore_t& content)
   theTarget.transfer(target);
   theContent.transfer(content);
 
-  NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget << std::endl);
+  NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget
+              << std::endl);
 }
 
 

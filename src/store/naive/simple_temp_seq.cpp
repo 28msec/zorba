@@ -23,7 +23,7 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy, bool lazy)
+SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy)
 {
   store::CopyMode lCopyMode;
   store::Item_t curItem;

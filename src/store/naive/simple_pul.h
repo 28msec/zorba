@@ -24,7 +24,6 @@
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
 #include "store/naive/node_vector.h"
-#include "store/naive/node_updates.h"
 
 
 namespace zorba { namespace simplestore {
@@ -38,7 +37,12 @@ typedef std::vector<UpdatePrimitive*> NodeUpdates;
 
 
 /*******************************************************************************
+  A map that maps each target node N to the update primitives having N as their
+  target. This map is a data member of each PUL. 
 
+  It is used to check that, for certain kinds of updates, there are no duplicate
+  updates of that kind on the same target node. In particular, there can be no
+  duplicate delete, rename, replaveValue, replaceContent, or replaceNode updates.
 ********************************************************************************/
 class NodeToUpdatesMap : public HashMap<XmlNode*,
                                         NodeUpdates*,
@@ -135,7 +139,39 @@ public:
         store::Item_t&              target,
         store::Item_t&              newName);
 
-  void applyUpdates();
+  void addSetElementType(
+        store::Item_t&               target,
+        store::Item_t&               typeName,
+        store::Item_t&               typedValue,
+        bool                         haveTypedValue,
+        bool                         haveEmptyValue,
+        bool                         isId,
+        bool                         isIdRefs);
+
+  void addSetElementType(
+        store::Item_t&               target,
+        store::Item_t&               typeName,
+        std::vector<store::Item_t>&  typedValue,
+        bool                         haveTypedValue,
+        bool                         haveEmptyValue,
+        bool                         isId,
+        bool                         isIdRefs);
+
+  void addSetAttributeType(
+        store::Item_t&               target,
+        store::Item_t&               typeName,
+        store::Item_t&               typedValue,
+        bool                         isId,
+        bool                         isIdRefs);
+
+  void addSetAttributeType(
+        store::Item_t&              target,
+        store::Item_t&              typeName,
+        std::vector<store::Item_t>& typedValue,
+        bool                        isId,
+        bool                        isIdRefs);
+
+  void applyUpdates(std::vector<zorba::store::Item*>& validationNodes);
 
   //void serializeUpdates(serializer& ser, std::ostream& os);
 
@@ -397,25 +433,21 @@ public:
 
 
 /*******************************************************************************
-
+  A target node cannot have more than 1 UpdReplaceAttrValue primitives
 ********************************************************************************/
 class UpdReplaceAttrValue : public UpdatePrimitive
 {
   friend class PULImpl;
 
 protected:
-  xqpStringStore_t    theNewValue;
-
-  store::Item_t       theOldType;
-  store::Item_t       theOldValue;
-  uint16_t            theOldFlags;
+  xqpStringStore_t theNewValue;
 
 public:
-  UpdReplaceAttrValue(store::Item_t& t, xqpStringStore_t& newValue) : UpdatePrimitive(t)
+  UpdReplaceAttrValue(store::Item_t& t, xqpStringStore_t& newValue)
+    :
+    UpdatePrimitive(t)
   {
     theNewValue.transfer(newValue);
-    theOldValue = NULL;
-    theOldFlags = 0;
   }
 
   ~UpdReplaceAttrValue();
@@ -433,27 +465,47 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class UpdRenameAttr : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  store::Item_t   theNewName;
+  store::Item_t   theOldName;
+
+public:
+  UpdRenameAttr(store::Item_t& t, store::Item_t& newName) : UpdatePrimitive(t)
+  {
+    theNewName.transfer(newName);
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_RENAME_ATTR; 
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class UpdReplaceTextValue : public UpdatePrimitive
 {
   friend class PULImpl;
 
 protected:
   xqpStringStore_t   theNewContent;
-  TextNode::Content  theOldContent;
-  bool               theIsTyped;
 
 public:
   UpdReplaceTextValue(store::Item_t& t, xqpStringStore_t& newValue) 
     :
-    UpdatePrimitive(t),
-    theIsTyped(false)
+    UpdatePrimitive(t)
   {
-    theOldContent.text = NULL;
-
     theNewContent.transfer(newValue);
   }
-
-  ~UpdReplaceTextValue();
 
   store::UpdateConsts::UpdPrimKind getKind() 
   {
@@ -539,33 +591,6 @@ public:
   store::UpdateConsts::UpdPrimKind getKind() 
   { 
     return store::UpdateConsts::UP_RENAME_ELEM; 
-  }
-
-  void apply();
-  void undo();
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class UpdRenameAttr : public UpdatePrimitive
-{
-  friend class PULImpl;
-
-protected:
-  store::Item_t   theNewName;
-  store::Item_t   theOldName;
-
-public:
-  UpdRenameAttr(store::Item_t& t, store::Item_t& newName) : UpdatePrimitive(t)
-  {
-    theNewName.transfer(newName);
-  }
-
-  store::UpdateConsts::UpdPrimKind getKind() 
-  {
-    return store::UpdateConsts::UP_RENAME_ATTR; 
   }
 
   void apply();

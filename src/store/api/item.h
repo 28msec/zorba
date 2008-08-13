@@ -532,7 +532,7 @@ public:
   //serializeXML(serializer& ser, std::ostream& os) const;
 
   virtual void
-  applyUpdates();
+  applyUpdates(std::vector<zorba::store::Item*>& validationNodes);
 }; 
 
 

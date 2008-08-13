@@ -506,6 +506,7 @@ XQueryImpl::applyUpdates()
     SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
 
     store::Item_t pul;
+    
     try 
     { 
       lPlan->open();
@@ -516,7 +517,16 @@ XQueryImpl::applyUpdates()
         if (!pul->isPul())
           ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
                            "Query does not return a pending update list");
-        pul->applyUpdates();
+
+        std::vector<zorba::store::Item*> validationNodes;
+
+        pul->applyUpdates(validationNodes);
+
+        ulong numNodes = validationNodes.size();
+        for (ulong i = 0; i < numNodes; i++)
+        {
+          std::cout << "Validating node " << validationNodes[i] << std::endl;
+        }
       }
     }
     catch (error::ZorbaError&)

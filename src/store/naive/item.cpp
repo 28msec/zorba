@@ -560,7 +560,7 @@ Item* Item::copy(
 }
 
 
-void Item::applyUpdates()
+void Item::applyUpdates(std::vector<zorba::store::Item*>& validationNodes)
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());

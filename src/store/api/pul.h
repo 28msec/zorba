@@ -89,6 +89,38 @@ public:
         Item_t&              target,
         Item_t&              newName) = 0;
 
+  virtual void addSetElementType(
+        Item_t&              target,
+        Item_t&              typeName,
+        Item_t&              typedValue,
+        bool                 haveTypedValue,
+        bool                 haveEmptyValue,
+        bool                 isId,
+        bool                 isIdRefs) = 0;
+
+  virtual void addSetElementType(
+        Item_t&              target,
+        Item_t&              typeName,
+        std::vector<Item_t>&  typedValue,
+        bool                 haveTypedValue,
+        bool                 haveEmptyValue,
+        bool                 isId,
+        bool                 isIdRefs) = 0;
+
+  virtual void addSetAttributeType(
+        Item_t&              target,
+        Item_t&              typeName,
+        Item_t&              typedValue,
+        bool                 isId,
+        bool                 isIdRefs) = 0;
+
+  virtual void addSetAttributeType(
+        Item_t&              target,
+        Item_t&              typeName,
+        std::vector<Item_t>& typedValue,
+        bool                 isId,
+        bool                 isIdRefs) = 0;
+
   //virtual void applyUpdates();
 
   //virtual void serializeUpdates(serializer ser&, std::ostream& os);

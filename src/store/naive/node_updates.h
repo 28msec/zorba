@@ -20,26 +20,6 @@
 namespace zorba { namespace simplestore {
 
 
-struct NodeTypeInfo
-{
-NodeTypeInfo(store::Item* tname, bool isId, bool isIdRefs) 
-    :
-    theTypeName(tname),
-    theIsId(isId),
-    theIsIdRefs(isIdRefs),
-    theIsNillable(false)
-  {
-  }
-
-  store::Item  * theTypeName;
-  bool           theIsId;
-  bool           theIsIdRefs;
-  bool           theIsNillable;
-};
-
-
-typedef std::vector<std::pair<XmlNode*, NodeTypeInfo> > TypeUndoList;
-
 }
 }
 #endif

@@ -803,10 +803,10 @@ TempSeq_t SimpleStore::createTempSeq(
 {
   TempSeq_t tempSeq;
   if(lazy){
-    tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
+    tempSeq = new SimpleTempSeq(iterator, copyNodes);
     //tempSeq = new SimpleLazyTempSeq(iterator, copyNodes);
   }else{
-    tempSeq = new SimpleTempSeq(iterator, copyNodes, lazy);
+    tempSeq = new SimpleTempSeq(iterator, copyNodes);
   }
   
   return tempSeq;
@@ -822,10 +822,11 @@ TempSeq_t SimpleStore::createTempSeq()
   return tempSeq;
 }
 
-/**
- * Creates a temp seq initialized by the given vector.
- * @param item_v - The vector to use to initialize the seq.
- */
+
+/*******************************************************************************
+  Creates a temp seq initialized by the given vector.
+  @param item_v - The vector to use to initialize the seq.
+********************************************************************************/
 TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
 {
   TempSeq_t tempSeq = new SimpleTempSeq(item_v);

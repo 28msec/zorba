@@ -26,7 +26,6 @@
 #include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/node_vector.h"
-#include "store/naive/node_updates.h"
 
 namespace zorba 
 { 
@@ -44,6 +43,7 @@ class AttributeNode;
 class NsBindingsContext;
 class GuideNode;
 
+
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
 
 extern ConstrNodeVector dummyVector;
@@ -52,6 +52,123 @@ extern ConstrNodeVector dummyVector;
 #define NODE_STOP \
   ZORBA_FATAL(0, "Invalid method invocation on " \
               << store::StoreConsts::toString(getNodeKind()))
+
+
+/*******************************************************************************
+  A helper class to model the content of text nodes, which can be either a
+  string or an item representing a simple-typed value.
+********************************************************************************/
+class TextNodeContent
+{
+private:
+  union
+  {
+    xqpStringStore  * text;
+    store::Item     * value;
+  }
+  theContent;
+
+public:
+  TextNodeContent() 
+  {
+    theContent.text = NULL;
+  }
+
+  ~TextNodeContent()
+  {
+    assert(theContent.text == NULL);
+  }
+
+  xqpStringStore* getText() const
+  {
+    return theContent.text;
+  }
+
+  store::Item* getValue() const
+  {
+    return theContent.value; 
+  }
+
+  void setText(xqpStringStore_t& text)
+  {
+    if (theContent.text != NULL)
+      theContent.text->removeReference(
+                               NULL
+                               SYNC_PARAM2(theContent.text->getRCLock()));
+
+    theContent.text = text.transfer();
+  }
+
+  void setText(xqpStringStore* text)
+  {
+    if (theContent.text != NULL)
+      theContent.text->removeReference(
+                               NULL
+                               SYNC_PARAM2(theContent.text->getRCLock()));
+
+    theContent.text = text;
+  }
+
+
+  void setValue(store::Item_t& val)
+  {
+    if (theContent.value != NULL)
+      theContent.value->removeReference(
+                                NULL
+                                SYNC_PARAM2(theContent.value->getRCLock()));
+
+    theContent.value = val.transfer();
+  }
+
+  void setValue(store::Item* val)
+  {
+    if (theContent.value != NULL)
+      theContent.value->removeReference(
+                                NULL
+                                SYNC_PARAM2(theContent.value->getRCLock()));
+
+    theContent.value = val;
+  }
+};
+
+
+/*******************************************************************************
+  A class to store the type-related info of a node. Used during node updates to
+  implement the undo of updates.
+********************************************************************************/
+class NodeTypeInfo
+{
+public:
+  XmlNode           * theNode;
+
+  store::Item_t       theTypeName;
+  store::Item_t       theTypedValue;
+  TextNodeContent     theTextContent;
+  bool                theIsTyped;
+  uint16_t            theFlags;
+
+  NodeTypeInfo() 
+    :
+    theTypeName(0),
+    theIsTyped(false),
+    theFlags(0)
+  { 
+  }
+
+  ~NodeTypeInfo()
+  {
+    if (theIsTyped)
+      theTextContent.setValue(NULL);
+    else
+      theTextContent.setText(NULL);
+  }
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+typedef std::vector<NodeTypeInfo> TypeUndoList;
 
 
 /*******************************************************************************
@@ -119,6 +236,21 @@ class XmlNode : public store::Item
   friend class UpdReplaceTextValue;
   friend class BasicItemFactory;
   friend class FastXmlLoader;
+
+public:
+  enum NodeFlags
+  {
+    IsId              =   1,
+    IsIdRefs          =   2,
+    HaveValue         =   4,
+    HaveEmptyValue    =   8,
+    HaveTypedValue    =   16, // 1001 0000
+    HaveListValue     =   32,
+    HaveLocalBindings =   64,  // for element nodes only
+    HaveBaseUri       =   128, // for element nodes only
+    IsBaseUri         =   256, // for attribute nodes only
+    IsHidden          =   512  // for attribute nodes only
+  };
 
 protected:
   //XmlTree  * theTree;
@@ -215,7 +347,7 @@ public:
 
   void setToUntyped();
   void removeType(TypeUndoList& undoList);
-  void restoreType(const TypeUndoList& undoList);
+  void restoreType(TypeUndoList& undoList);
   void revalidate();
 
   void removeChildren(
@@ -410,19 +542,6 @@ class ElementNode : public XmlNode
   friend class XmlNode;
   friend class ElementTreeNode;
   friend class AttributeNode;
-
-public:
-  enum ElemFlags
-  {
-    IsId              =   1,
-    IsIdRefs          =   2,
-    HaveValue         =   4,
-    HaveEmptyValue    =   8,
-    HaveTypedValue    =   16, // 1001 0000
-    HaveListValue     =   32,
-    HaveLocalBindings =   64,
-    HaveBaseUri       =   128
-  };
 
 protected:
   store::Item_t         theName;
@@ -678,16 +797,6 @@ class AttributeNode : public XmlNode
   friend class XmlNode;
   friend class FastXmlLoader;
 
-public:
-  enum AttrFlags
-  {
-    IsId              =   1,
-    IsIdRefs          =   2,
-    IsBaseUri         =   4,
-    IsHidden          =   8,
-    HaveListValue     =  16
-  };
-
 protected:
   store::Item_t   theName;
   store::Item_t   theTypeName;
@@ -753,16 +862,19 @@ public:
 
   void replaceValue(
         xqpStringStore_t& newValue,
-        store::Item_t&    oldType,
-        store::Item_t&    oldValue,
-        uint16_t&         oldFlags);
+        TypeUndoList&  undoList);
 
   void restoreValue(
-        store::Item_t&    oldType,
-        store::Item_t&    oldValue,
-        uint16_t          oldFlags);
+        TypeUndoList&  undoList);
 
-  void rename(store::Item_t& newname, store::Item_t& oldName);
+  void replaceName(
+        store::Item_t& newname,
+        store::Item_t& oldName,
+        TypeUndoList&  undoList);
+
+  void restoreName(
+        store::Item_t& oldName,
+        TypeUndoList&  undoList);
 
 protected:
   ItemVector& getValueVector() 
@@ -788,35 +900,8 @@ class TextNode : public XmlNode
   friend class BasicItemFactory;
   friend class FastXmlLoader;
 
-public:
-  typedef union
-  {
-    xqpStringStore  * text;
-    store::Item     * value;
-  }
-  Content;
-
-public:
-  static void setText(Content& content, xqpStringStore_t& text)
-  {
-    if (content.text != NULL)
-      content.text->removeReference(NULL
-                                    SYNC_PARAM2(content.text->getRCLock()));
-
-    content.text = text.transfer();
-  }
-
-  static void setValue(Content& content, store::Item_t& val)
-  {
-    if (content.value != NULL)
-      content.value->removeReference(NULL
-                                      SYNC_PARAM2(content.value->getRCLock()));
-
-    content.value = val.transfer();
-  }
-
 protected:
-  Content theContent;
+  TextNodeContent theContent;
 
 public:
   TextNode(xqpStringStore_t& content);
@@ -857,21 +942,21 @@ public:
 
   void replaceValue(
         xqpStringStore_t&  newContent,
-        Content&           oldContent,
-        bool&              isTyped);
+        TypeUndoList&  undoList);
 
   void restoreValue(
-        Content&           oldContent,
-        bool               isTyped);
+        TypeUndoList&  undoList);
 
 protected:
-  xqpStringStore* getText() const      { return theContent.text; }
+  xqpStringStore* getText() const      { return theContent.getText(); }
 
-  void setText(xqpStringStore_t& text) { TextNode::setText(theContent, text); }
+  void setText(xqpStringStore_t& text) { theContent.setText(text); }
+  void setText(xqpStringStore* text)   { theContent.setText(text); }
 
-  store::Item* getValue() const        { return theContent.value; }
+  store::Item* getValue() const        { return theContent.getValue(); }
 
-  void setValue(store::Item_t& val)    { TextNode::setValue(theContent, val); }
+  void setValue(store::Item_t& val)    { theContent.setValue(val); }
+  void setValue(store::Item* val)      { theContent.setValue(val); }
 };
 
 
@@ -971,6 +1056,7 @@ public:
 
   void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
 };
+
 
 
 } // namespace store
