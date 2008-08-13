@@ -342,6 +342,13 @@ protected:
     return axisExpr;
   }
 
+  var_expr *lookup_var (string varname) {
+    return static_cast<var_expr *> (sctx_p->lookup_var (varname));
+  }
+  var_expr *lookup_var (store::Item_t varname) {
+    return static_cast<var_expr *> (sctx_p->lookup_var (varname));
+  }
+  
   void push_elem_scope() {
     ns_ctx = new namespace_context(&*ns_ctx);
   }
@@ -1826,7 +1833,7 @@ void *begin_visit(const GroupByClause& v)
   set<string>::iterator lEnd = lFVars.end();
   for(;lIter!=lEnd;++lIter)
   {
-    var_expr *e = static_cast<var_expr*>(sctx_p->lookup_var(*lIter));
+    var_expr *e = lookup_var(*lIter);
     if (e == NULL)
       ZORBA_ERROR_PARAM(XPST0008, *lIter, "");
     push_scope();
@@ -1856,7 +1863,7 @@ void end_visit(const GroupSpecList& v, void* /*visit_state*/)
 void *begin_visit(const GroupSpec& v)
 {
   TRACE_VISIT ();
-  var_expr *e = static_cast<var_expr*>(sctx_p->lookup_var(v.get_var_name()));
+  var_expr *e = lookup_var (v.get_var_name());
   if (e == NULL)
     ZORBA_ERROR_PARAM(XPST0008, v.get_var_name(), "");
   push_scope();
@@ -4768,7 +4775,7 @@ void *begin_visit(const VarRef& v)
 void end_visit(const VarRef& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
+  var_expr *e = lookup_var (v.get_varname ());
   if (e == NULL)
     ZORBA_ERROR_LOC_PARAM( XPST0008, loc, v.get_varname (), "");
   nodestack.push (rchandle<expr> (e));
