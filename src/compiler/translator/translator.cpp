@@ -1582,8 +1582,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     for (int i = (lSize-1); i >= 0; --i) {
       GroupSpec* lSpec = &*((*lGroupList)[i]);
 
-      varref_t lOuterVarExpr = pop_nodestack_var ();
       varref_t lInnerVarExpr = pop_nodestack_var ();
+      varref_t lOuterVarExpr = pop_nodestack_var ();
 
       group_clause* lClause = NULL;
       if (lSpec->group_coll_spec() != NULL)
@@ -1594,9 +1594,9 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       pop_scope();
     }
 
-    varref_t lOuterVarExpr;
-    while (NULL != (lOuterVarExpr = pop_nodestack_var ())) {
-      varref_t lInnerVarExpr = pop_nodestack_var ();
+    varref_t lInnerVarExpr;
+    while (NULL != (lInnerVarExpr = pop_nodestack_var ())) {
+      varref_t lOuterVarExpr = pop_nodestack_var ();
       group_clause* lClause = new group_clause(lOuterVarExpr, lInnerVarExpr);
       flwor->add_non_group(lClause);
       pop_scope();
@@ -1837,8 +1837,8 @@ void *begin_visit(const GroupByClause& v)
     if (e == NULL)
       ZORBA_ERROR_PARAM(XPST0008, *lIter, "");
     push_scope();
+    nodestack.push(e);
     bind_var_and_push(loc, *lIter, var_expr::non_groupby_var);
-    nodestack.push(rchandle<expr>(e));
   }
 
   return no_state;
@@ -1869,8 +1869,8 @@ void *begin_visit(const GroupSpec& v)
   push_scope();
   // Create a new var_expr gX, corresponding to the var X that is referenced
   // by this group spec. Then push gX and X to the node stack.
+  nodestack.push(e);
   bind_var_and_push(loc, v.get_var_name(), var_expr::groupby_var);
-  nodestack.push(rchandle<expr>(e));
   return no_state;
 }
 
