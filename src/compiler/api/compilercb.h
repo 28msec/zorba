@@ -31,7 +31,7 @@ class static_context;
 class CompilerCB 
 {
  public:
-  typedef struct __config_t 
+  typedef struct config 
   {
     typedef enum {
       O0,
@@ -46,15 +46,11 @@ class CompilerCB
     expr_callback translate_cb, normalize_cb, optimize_cb;
     bool print_item_flow;  // TODO: move to RuntimeCB
 
-    __config_t() : opt_level (O1), parse_cb (NULL), print_item_flow (false)
-    {
-      translate_cb = normalize_cb = optimize_cb = NULL;
-    }
+    config();
   } config_t;
   
 
   CompilerCB();
-
   ~CompilerCB();
 
   static_context*               m_sctx;          
@@ -70,3 +66,8 @@ class CompilerCB
 
 #endif /* XQP_COMPILERCB_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

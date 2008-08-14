@@ -63,18 +63,6 @@ static void print_ast_tree (const parsenode *n, std::string name) {
   std::cout << std::endl;
 }
 
-#define DEF_PRINT_EXPR_TREE( phase )                                    \
-  static void print_expr_tree_##phase (const expr *e, std::string name) \
-  {                                                                     \
-    std::cout << "Expression tree after " << #phase                     \
-              << " for " << name << "\n";                               \
-    e->put (std::cout) << std::endl;                                    \
-  }
-
-  DEF_PRINT_EXPR_TREE (translation)
-  DEF_PRINT_EXPR_TREE (normalization)
-  DEF_PRINT_EXPR_TREE (optimization)
-
 
 PlanIter_t XQueryCompiler::compile(parsenode_t ast) 
 {
@@ -119,15 +107,6 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 expr_t
 XQueryCompiler::normalize(parsenode_t aParsenode)
 {
-  // TODO: move these out
-  if (Properties::instance()->printTranslatedExpressions())
-    theCompilerCB->m_config.translate_cb = print_expr_tree_translation;
-  if (Properties::instance()->printNormalizedExpressions())
-    theCompilerCB->m_config.normalize_cb = print_expr_tree_normalization;
-  if (Properties::instance()->printOptimizedExpressions())
-    theCompilerCB->m_config.optimize_cb = print_expr_tree_optimization;
-  theCompilerCB->m_config.print_item_flow = Properties::instance()->printItemFlow();
-
   expr_t lExpr = translate (*aParsenode, theCompilerCB);
   if ( lExpr == NULL ) { // TODO: can this happen?
     ZORBA_ERROR( API0002_COMPILE_FAILED);
